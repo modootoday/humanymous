@@ -1,0 +1,406 @@
+{
+  "schema": "humanymous.delivery-standalone-tool-handoff/1",
+  "state": "read-only-needs-root-profile-decision",
+  "maintained_census": {
+    "initial_main_workspace_packages": 41,
+    "initial_standalone_packages": 4,
+    "initial_maintained_packages": 45,
+    "current_main_workspace_packages": 34,
+    "current_standalone_packages": 4,
+    "current_maintained_packages": 38,
+    "current_tracked_cargo_manifests": 39,
+    "virtual_root_manifests": 1,
+    "final_target_maintained_packages": 8,
+    "cli_responsibilities": 13
+  },
+  "tools": [
+    {
+      "test_source_counts": [
+        {
+          "path": "scripts/ci/cef-pilot/src/desktop.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/diagnostics/tests.rs",
+          "authored_test_attributes": 8
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/main.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/provisioning.rs",
+          "authored_test_attributes": 2
+        }
+      ],
+      "lock_sha256": "4b1ef6e951d720b4901b7583c155eee36fba17891ca64f0568b20d9a4607c929",
+      "source_file_count": 8,
+      "tracked_files": [
+        {
+          "path": "scripts/ci/cef-pilot/Cargo.lock",
+          "sha256": "4b1ef6e951d720b4901b7583c155eee36fba17891ca64f0568b20d9a4607c929"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/Cargo.toml",
+          "sha256": "1dc5243ef268a1739f46c8d1b139e6e43153edcac19b55ad63bb93baf7399e17"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/README.md",
+          "sha256": "b9afbfab1898d07a1febb1db881277a614c31db9fdeaadb8d015d79d9dbdac04"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/desktop.rs",
+          "sha256": "c00e9b3896c7b78805d51aa6e30293c7747d514c4915b70856df2843da410fd7"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/diagnostics.rs",
+          "sha256": "dd158986a8f9c39f0864ad0d8fd1c3e2ac3c85d670321515d5c3a6d513252043"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/diagnostics/bootstrap.rs",
+          "sha256": "999bb9d4c60546167bf8d7bc2c0175e5976ea9ea38b42e0827dc7939e5c1cf84"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/diagnostics/bootstrap/observations.rs",
+          "sha256": "2687135bb78e2b9c9716c0466c7c7545636f8ecf5104e129a05ca62f317e08d1"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/diagnostics/tests.rs",
+          "sha256": "f6411d81a108887f4458cb6eb25c3228a5baf9902ed21d06ee0b07b8c1941b98"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/main.rs",
+          "sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/provisioning.rs",
+          "sha256": "98a7184508c8b56bd4b91c39fb2f1888d4596f53141c43e438095e9f815aa352"
+        },
+        {
+          "path": "scripts/ci/cef-pilot/src/provisioning/bundles.rs",
+          "sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9"
+        }
+      ],
+      "authored_test_attributes": 14,
+      "manifest_sha256": "1dc5243ef268a1739f46c8d1b139e6e43153edcac19b55ad63bb93baf7399e17",
+      "tool": "cef-pilot"
+    },
+    {
+      "test_source_counts": [
+        {
+          "path": "scripts/ci/windows-native-runner/src/actor.rs",
+          "authored_test_attributes": 3
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs",
+          "authored_test_attributes": 7
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/actor/scm.rs",
+          "authored_test_attributes": 1
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/controlled.rs",
+          "authored_test_attributes": 5
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/controlled/outcome.rs",
+          "authored_test_attributes": 4
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/accounting.rs",
+          "authored_test_attributes": 4
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/coverage.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/failure.rs",
+          "authored_test_attributes": 1
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/lifecycle.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/recovery.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/source_inputs.rs",
+          "authored_test_attributes": 3
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness.rs",
+          "authored_test_attributes": 5
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/build_observation.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/collection.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/helpers.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/packages.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/catalog.rs",
+          "authored_test_attributes": 1
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/receipt.rs",
+          "authored_test_attributes": 2
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/summary/tests.rs",
+          "authored_test_attributes": 8
+        }
+      ],
+      "lock_sha256": "7279a9106515e8c369dfae5897fee0ce7b01c185c5b490558729201ce5b71eb4",
+      "source_file_count": 28,
+      "tracked_files": [
+        {
+          "path": "scripts/ci/windows-native-runner/.gitignore",
+          "sha256": "306fd52e74fca6746e12acc750f232de15e71da917756a1270d74c91f5eb7368"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/Cargo.lock",
+          "sha256": "7279a9106515e8c369dfae5897fee0ce7b01c185c5b490558729201ce5b71eb4"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/Cargo.toml",
+          "sha256": "5264475f08f7317183729ace33c52064f97fecb61911423d4b774a9fad6022b2"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/INTEGRATION.md",
+          "sha256": "013cb30efe1a6284bb2b86cbc94b03e44d15828f443d0f1c5de8b5bb85a57a8d"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/actor.rs",
+          "sha256": "6577931ed28deba7a1c863d5c01f0e727f15b34ca7414bc0d3a977f8a5ef4a2c"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/actor/prebuilt.rs",
+          "sha256": "815611fb54a46a308b4e4be2abcae75c26dca4f661dd19c3a7fb17b244230bee"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs",
+          "sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/actor/scm.rs",
+          "sha256": "48acd4982b48d72ef457c70f2adc03623d8c237cc99257e4e71a95904280169b"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/controlled.rs",
+          "sha256": "61ad7eba41026752665ab6050e6dc06396f98b2638ad84bf7b8a5f760ae18733"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/controlled/outcome.rs",
+          "sha256": "33dabbfb1135e6f6e3bba6085733af51a7757da853783edaf172d9e186ed5511"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence.rs",
+          "sha256": "f9d404442b2e6db2a4d22b043e29dfd383ed8e6885a9b479d6c828c1164ffbed"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/accounting.rs",
+          "sha256": "dbbb287e4213423b566f799255c271e1c7251cc698d223b312699149b2a7c8b0"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/coverage.rs",
+          "sha256": "4ef369cdcf858f4f9277b42603f9e7b78aa75076f0778ec7accab5d732cd4034"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/failure.rs",
+          "sha256": "5773c36ac61de78dbed4d9bacffe13df872fc5a164924c39614289124cadbc77"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/lifecycle.rs",
+          "sha256": "abde401164ae871ad5dd61a862effa05a0f34039a098ab06fd69014eeb72254f"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/recovery.rs",
+          "sha256": "f12c8b9d384df315a5b2e5ec432561dd2dbfeaae8e8ae21166dd5876cd6d24cd"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/evidence/source_inputs.rs",
+          "sha256": "72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/fixture.rs",
+          "sha256": "a88b23b5034535dceb258e9c5d93e037c0f6ed423f873a7ee599217b68257743"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness.rs",
+          "sha256": "4998ba0b46485430397ac4ce4e5d730db2b270bd06d0b3df73bbb0da1c735a92"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/build_observation.rs",
+          "sha256": "ee838d670b4b34dce25e876e8d9e87f7e8cb27fac064bf36c2656b47fff9e114"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/collection.rs",
+          "sha256": "947b0f474c0daadc299ebdf93b463d0fcf9ed5c44d5104164d6ecddd2b22a769"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/helpers.rs",
+          "sha256": "2197b3f7fae54ba71c4393ea7996217713bfcc5f0ed58dd409584277403ffc89"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/harness/packages.rs",
+          "sha256": "1d7773724f4743c7e3603f2eaf1a33e296f2255b01b2cf2f005aeb73ae4d10dc"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/main.rs",
+          "sha256": "2e085f6c557e09b8842867e9dfc2bc6c3ec39b0def86778b897479900c76ca73"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/pilot.rs",
+          "sha256": "24dcd6de19e4e0c1a777374f889fc05dd77854f61d9b6c840c034c5ca498314f"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service.rs",
+          "sha256": "0db47f5425af60ecc6c608b1e349e8e38a2583b0cb60afce8eae5bf6d2dce3bf"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/catalog.rs",
+          "sha256": "e538e79bc903f83fb23846678cabf25dcb6956cb5c144010f2e93c54bf3017c7"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/execution.rs",
+          "sha256": "8d3b751093e2397a66859e9e69662dba32713fc2efbc81ae74303601211cd7d4"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/receipt.rs",
+          "sha256": "ce276fc46c5c134ba056b3e87e820731dd8307ee8e2c909d0544bfd5c8aabbc1"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/summary.rs",
+          "sha256": "01cffc53fd1879b4adf9229f448b96fcb1d6eeab4fc7dde266a566f0763a5172"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/service/summary/tests.rs",
+          "sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f"
+        },
+        {
+          "path": "scripts/ci/windows-native-runner/src/workspace.rs",
+          "sha256": "d8ae3b883a73eff1fe95ea35aa7cc9c9f3cc62aa45f6251eeefee92b8e66c60e"
+        }
+      ],
+      "authored_test_attributes": 60,
+      "manifest_sha256": "5264475f08f7317183729ace33c52064f97fecb61911423d4b774a9fad6022b2",
+      "tool": "windows-native-runner"
+    },
+    {
+      "test_source_counts": [
+        {
+          "path": "scripts/ci/docs-review/src/main.rs",
+          "authored_test_attributes": 8
+        }
+      ],
+      "lock_sha256": "601ced582328ad50175b10d7de9850aee6495cd0ad25be5465e33c94b007fdba",
+      "source_file_count": 1,
+      "tracked_files": [
+        {
+          "path": "scripts/ci/docs-review/Cargo.lock",
+          "sha256": "601ced582328ad50175b10d7de9850aee6495cd0ad25be5465e33c94b007fdba"
+        },
+        {
+          "path": "scripts/ci/docs-review/Cargo.toml",
+          "sha256": "1d4ff94c30e5ac85ebfd82fb08390c5d8e01635e1cb544365eeb5fbfc7c7f6c2"
+        },
+        {
+          "path": "scripts/ci/docs-review/src/main.rs",
+          "sha256": "d877646260960f94ec1c1c52c83822fe970e77dbd4e759b6f07bcda33194ffe6"
+        }
+      ],
+      "authored_test_attributes": 8,
+      "manifest_sha256": "1d4ff94c30e5ac85ebfd82fb08390c5d8e01635e1cb544365eeb5fbfc7c7f6c2",
+      "tool": "docs-review"
+    },
+    {
+      "test_source_counts": [
+        {
+          "path": "scripts/ci/local-parity/src/main.rs",
+          "authored_test_attributes": 1
+        }
+      ],
+      "lock_sha256": "e709acaa85b6cf3204713fb78665215c19587f74c1fc7557345bcf3f87aefa34",
+      "source_file_count": 1,
+      "tracked_files": [
+        {
+          "path": "scripts/ci/local-parity/.gitignore",
+          "sha256": "306fd52e74fca6746e12acc750f232de15e71da917756a1270d74c91f5eb7368"
+        },
+        {
+          "path": "scripts/ci/local-parity/Cargo.lock",
+          "sha256": "e709acaa85b6cf3204713fb78665215c19587f74c1fc7557345bcf3f87aefa34"
+        },
+        {
+          "path": "scripts/ci/local-parity/Cargo.toml",
+          "sha256": "d663079312863591e965544107a121cbeb83443e961e3d48caf80c2c6ae1f0e3"
+        },
+        {
+          "path": "scripts/ci/local-parity/README.md",
+          "sha256": "d7b7154827d7585e57b9f9128ca316696385604b1963e8cf0081bb31be3becf2"
+        },
+        {
+          "path": "scripts/ci/local-parity/src/main.rs",
+          "sha256": "c81a1aa4be0ae055f06c40cbcf9b7cde6c3816c07f083d1fbc8be77820591c7b"
+        }
+      ],
+      "authored_test_attributes": 1,
+      "manifest_sha256": "d663079312863591e965544107a121cbeb83443e961e3d48caf80c2c6ae1f0e3",
+      "tool": "local-parity"
+    }
+  ],
+  "static_test_attribute_counts_are_not_executed_inventory": true,
+  "unsafe": {
+    "cef_docs_parity": "forbid",
+    "native_runner_package": "deny",
+    "native_runner_existing_allowance_roots": [
+      "scripts/ci/windows-native-runner/src/actor.rs",
+      "scripts/ci/windows-native-runner/src/actor/scm.rs"
+    ],
+    "current_cli": "inherits workspace forbid",
+    "root_decision_required": true,
+    "proposal": "Four explicit feature-gated internal CLI bin Rust crates; package-local deny only if accepted, production and all safe crate/module roots forbid; only the separate Windows native controller retains the two existing allowance roots; release/default targets exclude qualification"
+  },
+  "handoff": {
+    "source_moves": false,
+    "manifest_or_lock_edits": false,
+    "source_edits": false,
+    "compiler_or_tests_executed": false,
+    "actual_native_or_cef_probes_executed": false,
+    "local_parity_rerun": false,
+    "local_parity_workload": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+    "local_parity_passes": 2,
+    "go_oracle_981d_git_only": true,
+    "existing_receipts_rewritten": false
+  },
+  "required_atomic_updates": [
+    "CLI qualification bin/features and lint isolation",
+    "exact self-reexec mode parser and source/cwd discovery",
+    "same-ID target/source/profile helper admission",
+    "fixture grants and required test inventories",
+    "standalone-lock meaning and all-maintained advisory coverage",
+    "workflow commands/path filters/catalog/policy",
+    "docs source and reader review inventory",
+    "explicit production release binary/feature exclusion"
+  ],
+  "full_product_qualified": false,
+  "release_ready": false
+}

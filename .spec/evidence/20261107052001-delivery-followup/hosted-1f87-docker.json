@@ -1,0 +1,99 @@
+{
+  "schema": "humanymous.delivery-hosted-component-observation/1",
+  "run_id": 42415763189,
+  "attempt": 1,
+  "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "overall_run_terminal": false,
+  "docker": {
+    "job_id": 128533798135,
+    "conclusion": "failure",
+    "assertions": {
+      "failed": 0,
+      "other": 0,
+      "passed": 72,
+      "total": 72
+    },
+    "owner_exit": 2,
+    "required_unavailable": 9,
+    "wargame": {
+      "full_product_qualified": false,
+      "internally_consistent": true,
+      "mode": "owned_process_network",
+      "schema": "humanymous.wargame-verification.v1",
+      "scoped_passed": true,
+      "totals": {
+        "errors": 0,
+        "evaluated": 19,
+        "expectation_mismatches": 0,
+        "scheduled": 26,
+        "skipped": 0,
+        "unsupported": 7
+      }
+    },
+    "source_changed": false,
+    "private_report_sha256": "28446a70a02a48fdda968c5fcdc5211e03bcbb7ffffaa6f23c5273623eee7dbf",
+    "original_private_report_recovered": false
+  },
+  "native_ubuntu": {
+    "job_id": 128533798155,
+    "conclusion": "failure",
+    "maintenance_passed": 33,
+    "runtime_passed": 84,
+    "capture_passed": 5,
+    "header": {
+      "status": "passed",
+      "requested_scope": "semantic-header-conformance",
+      "execution_passed": true,
+      "proof_return": {
+        "payload_exported": false,
+        "state": "not-requested"
+      },
+      "retained_proof_complete": false
+    },
+    "workspace": {
+      "required_harnesses": 95,
+      "executed_harnesses": 95,
+      "passed_tests": 1178,
+      "failed_tests": 0,
+      "errors": 1,
+      "raw_ignored_tests": 26,
+      "counts_complete": true,
+      "execution_complete": true,
+      "coverage_complete": false,
+      "failures": [
+        {
+          "code": "coverage-accounting",
+          "index": 16
+        },
+        {
+          "code": "coverage-accounting",
+          "index": 17
+        },
+        {
+          "code": "coverage-accounting",
+          "index": 26
+        },
+        {
+          "code": "coverage-accounting",
+          "index": 27
+        },
+        {
+          "code": "coverage-accounting",
+          "index": 54
+        },
+        {
+          "code": "coverage-accounting",
+          "index": 72
+        },
+        {
+          "code": "coverage-accounting",
+          "index": 73
+        }
+      ]
+    },
+    "original_private_report_recovered": false
+  },
+  "raw_scope": "Private retained API/annotation JSON and connector-decoded logs; original archive not yet recovered for this in-progress run",
+  "full_product_qualified": false,
+  "release_ready": false
+}
