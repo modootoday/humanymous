@@ -563,3 +563,11 @@ capabilities and empty qualified tuples in topology reference. Clarified existin
 integrator prose from migration target alone to experimental source interfaces.
 No source receipt renewed or native/browser test claimed; current-source platform,
 packaging and real authority/origin qualification remain outstanding.
+
+## Narrow Node source review receipts
+
+Read full lib.rs and admission.rs again and pinned their exact LF working-byte
+SHA256 in two manually authored reviews. Notes map wrappers/capabilities and
+64-owner refusal/RAII to actual public prose. No remaining module, whole package,
+execution gate or global freshness acceptance is inferred. JSON parse/duplicate
+check and existing Pages source check passed; no new build or runtime execution.

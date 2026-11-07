@@ -2,6 +2,20 @@
   "schema": 1,
   "reviews": [
     {
+      "source": "crates/node-adapter/src/lib.rs",
+      "sha256": "5bdf238aaf55c145380060eb8abe7e470edd550091be2bf645d14687fb75a863",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read all exported Rust Node-API wrappers and capabilities JSON. Public topology reference distinguishes owned Express server versus advanced root middleware, Hono stream-module dependency, explicit template-only HTML, normalized Bun/Fetch evidence and empty releaseQualifiedTuples. Delegation to implementation modules is not independent execution proof. Source/prose review only; current native host, packaging and authority/origin execution remains unqualified.",
+      "pages": ["docs/reference/supported-topologies.md", "docs/start-here/integrator.md"]
+    },
+    {
+      "source": "crates/node-adapter/src/admission.rs",
+      "sha256": "8650bee55940004e616a844b9a9a79bca01f31facae8c14b27478b77f8a253da",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read process-wide atomic 64-owner budget, refusal at exhaustion and RAII permit decrement, plus source unit case. Topology reference identifies a resource ownership limit rather than an abuse score, interaction-speed or motor-richness requirement. Did not execute this unit or infer cancellation/origin-effect qualification from permit release.",
+      "pages": ["docs/reference/supported-topologies.md"]
+    },
+    {
       "source": "crates/native-cli/Cargo.toml",
       "sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
       "reviewer": "codex/rust-pages",
