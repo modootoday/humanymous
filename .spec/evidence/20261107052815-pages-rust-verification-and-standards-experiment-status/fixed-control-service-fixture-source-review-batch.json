@@ -1,0 +1,50 @@
+{
+  "scope": "Complete fixed control and Unix service fixture source review",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/runtime/src/control.rs",
+      "lines": 98,
+      "sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc",
+      "current_primary_sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc",
+      "reviewer": "codex/rust-pages",
+      "notes": "Stable node/installation target bytes and commitment only; neither proposal data nor digest grants a destructive effect. Policy/tenant changes do not rearm the target."
+    },
+    {
+      "source": "crates/runtime/src/control/state.rs",
+      "lines": 151,
+      "sha256": "f681fdaa2a898a92e5da58eb53a17a7660f4d841596ab8046fde82072944925e",
+      "current_primary_sha256": "f681fdaa2a898a92e5da58eb53a17a7660f4d841596ab8046fde82072944925e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Inspection joins authenticated retained consumed intent and independently covered audit effect. Clear/Killed/Pending requires fresh serialized authority assessment; no integrated startup/admission/dispatcher execution is inferred."
+    },
+    {
+      "source": "crates/runtime/src/tests/settings.rs",
+      "lines": 71,
+      "sha256": "61010b762a74d6fb3b2611ce48c9c3cb7c3f462de2cb1cec27ebb66b724d4bb3",
+      "current_primary_sha256": "61010b762a74d6fb3b2611ce48c9c3cb7c3f462de2cb1cec27ebb66b724d4bb3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure snapshot tests assert canonical bytes, exact parent/scope binding, scoring-field refusal, safe revision exhaustion and bounded/canonical encoding. Source reviewed; no new test execution."
+    },
+    {
+      "source": "crates/runtime/src/tests/service.rs",
+      "lines": 297,
+      "sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a",
+      "current_primary_sha256": "14d47a12e7c8e80267cbb5290581547f457c6e45c5f36c43e6e367e4287a0b0a",
+      "reviewer": "codex/rust-pages",
+      "notes": "Unix fixture source covers witnessed settings restore, management credential/scope refusal, drain before custody release and closed-controller failure. Real signer/storage are same-process fixtures; source is not execution or independent deployment proof."
+    },
+    {
+      "source": "crates/runtime/src/tests/service/settings_operator.rs",
+      "lines": 198,
+      "sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70",
+      "current_primary_sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70",
+      "reviewer": "codex/rust-pages",
+      "notes": "Unix IPC operator fixture asserts observer/operator separation, witnessed CAS, stale revision refusal, old-session invalidation, changed capacity and restart restore. Known fixture keys and same-process witness do not qualify deployment independence."
+    }
+  ],
+  "reviewed_files": 5,
+  "lines": 815,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; exact source review prepared for later reconciliation"
+}

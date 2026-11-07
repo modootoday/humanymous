@@ -1,0 +1,66 @@
+{
+  "schema": "humanymous.local-pages-preview/1",
+  "source_commit": "269607366e4b2e37b47a974595b406b66642caae",
+  "docs_tree": "56b1e029952b5a3b29d4b0d056671bc79110e43b",
+  "image": "caddy:2.11.9-alpine@sha256:fc9cbc100585871d18d4e451cca7021785c90a7006087427ae5ceb3e4efe6424",
+  "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+  "context": "desktop-linux",
+  "admission": {
+    "committed_percent": 79.78,
+    "available_mib": 33554
+  },
+  "limits": {
+    "cpus": 0.5,
+    "memory_mib": 256,
+    "pids": 64,
+    "user": "1000:1000",
+    "read_only": true,
+    "capabilities": "ALL dropped",
+    "no_new_privileges": true,
+    "lease_minutes": 30
+  },
+  "apex": {
+    "cid": "06ef1a265c1cdcadf59da1a432d1fca177996c864aae27a1ee2af453360b3a8b",
+    "supervisor_session": 62630,
+    "http_status": 200,
+    "security_sha256": "edd7ec133b0b02f9759892c0b5da152048f052c52ca1640704b899eeb07088d3",
+    "removed": true,
+    "supervisor_exit": 0
+  },
+  "subpath": {
+    "cid": "04fd382f640c3f3b86d37ada74e00479fd7ef3c1d818d8a1daa021fac878c7a5",
+    "supervisor_session": 94571,
+    "http_status": 200,
+    "security_sha256": "edd7ec133b0b02f9759892c0b5da152048f052c52ca1640704b899eeb07088d3",
+    "removed": true,
+    "supervisor_exit": 0
+  },
+  "browser": {
+    "surface": "visible in-app browser",
+    "tab": "4",
+    "desktop_observations": [
+      "Apex home renders with pinned theme",
+      "Standards menu expands and navigates to profile",
+      "Profile visibly defines P-01 through P-10 as draft requirement identifiers rather than priorities",
+      "Subpath home navigates to implementation status"
+    ],
+    "mobile_observations": [
+      "390 by 844 profile and subpath home render",
+      "Menu expands with documented navigation links"
+    ],
+    "keyboard_observations": [
+      "Tab focuses visible skip link",
+      "Enter moves focus to main content"
+    ],
+    "viewport_reset": true,
+    "home_tab_retained": true,
+    "search": "NOT_RUN: no search control observed",
+    "interaction_failure": "One stale accessibility index after viewport reset; fresh observed index succeeded",
+    "full_browser_corpus_qualified": false,
+    "assistive_technology_qualified": false,
+    "wcag_qualified": false
+  },
+  "public_source_review_complete": false,
+  "deployment_performed": false,
+  "remaining_observation": "Implementation status page still contains older build and TLS execution wording; exact-source editorial reconciliation remains pending. Preview evidence applies only to the named source."
+}
