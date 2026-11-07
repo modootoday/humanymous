@@ -3,7 +3,7 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T23:41:55Z
+updated: 2026-11-07T23:59:27Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
@@ -13,9 +13,10 @@ files:
   - {path: runtime-slice02-formatted.json, sha256: 0583ceb99f97c8d2f2ffa2449220df0ab73cca3371cc44a32cc88bc05ab7a48e, bytes: 4763, store: repo}
   - {path: tools-freeze-census.json, sha256: 7e7765d28b232f5760235c715fd7dfe29dc2ca93efed12d12d0f702502e23cce, bytes: 111913, store: repo}
   - {path: tools-source-readers.json, sha256: d6f6e022d7991cad3d4a65da7c87e6ee861c1cca9a2400728ec392db69cc1f12, bytes: 22007, store: repo}
-  - {path: tools-linkage-map.json, sha256: 7b8621f9f11059e62a28a5e42e9a53d5cb9875561ef975b475a0c185e9ac2c4a, bytes: 89297, store: repo}
-  - {path: legacy-bin-unit-map.json, sha256: c8b1e8436e9bbb9188050da7d178acef31cc4aa4915fddaf4b540db4a35b17dc, bytes: 425533, store: repo}
-  - {path: legacy-lib-unit-map.json, sha256: acdc14a788d9683cedf28e8a6a9dc17d89ee0b99d2c658edcc2291cd0a57d835, bytes: 378413, store: repo}
+  - {path: tools-input-dispositions-accepted.json, sha256: ffeea085f2e4bd9097650d286551aacf1a81d6eda53e948e418fcbc1c312bcdb, bytes: 131634, store: repo}
+  - {path: tools-linkage-map.json, sha256: 002de30ae539aa5d08f1fa82acdb5a5d0cda9fe5538b12816fa2efe1a74665fa, bytes: 93370, store: repo}
+  - {path: legacy-lib-unit-map.json, sha256: 611e0a90ff1c2e9fd65b854b1062c7da4b4c10a5a38740e9d65255972423fee0, bytes: 459793, store: repo}
+  - {path: legacy-bin-unit-map.json, sha256: 9a4e64f93457c67c6af3c8c423ee41a3db417f5b2edccf3b02a26b3b384112ed, bytes: 425911, store: repo}
 ---
 
 ## Mission and current ownership
@@ -84,10 +85,14 @@ review; existing public tool namespaces may remain binary-only without exposing
 new private capability fields. No blanket lint suppressions are proposed.
 
 The expanded source reader review found25literal external inputs plus10resolved
-manifest-relative includes. Collector implementation path, shared lab files,
-mutable registry embeds, frozen Core/Collector replicas and remaining dynamic
-repository readers need Root/owner dispositions. Whole34root+resource closure is
-NOT_FROZEN. Root must route this detailed mapping for X review before any move.
+manifest-relative includes. Root a070983e and Delivery9cb6e435 ACCEPTall35row
+categories/destinations (34distinct paths); tools-input-dispositions-accepted.json
+retains decisions/pins/readers. CEF destination is qualification/browser/cef,
+Lab Rust basenames go directly under src/qualification/lab_support and Collector
+uses the accepted d49c19bc source-bound DATA pin, not an implementation copy.
+No generic ownership decision remains. Exact new readers/callers/source pins,
+role links and whole34root+resource/test closure remain NOT_FROZEN. Root must
+route the concrete joins for X review before any move.
 
 Root accepted Delivery daf541b8 maintenance relocation after human confirmation.
 Plan/machine map now adopt10integration/27compiled roots, superseding the earlier
@@ -200,6 +205,15 @@ Unresolved before the Root Tools freeze:
   copied old binaries or an idle target lease cannot authorize the new structure.
 
 ## Blockers and ordered next actions
+
+Subsequent separate Root allocation observed OLDWindows six-LIB --list inventories
+on immutable5d68:11Native,27Attacker,9Defender,76Maintenance,37Pages,26CLI, all186
+names exact. See [[evidence:root/20261107235307]]. The source-only unit maps now
+link that actual observation; no test functions ran. OldUnix cfg, all15BINsemantic
+lists and new private target/selectors remain unobserved. All3128source bytes,
+9510selected dependency/tool rows and17environment variables stayed stable;
+all actual handles/lease returned. This is not a new-layout test pass or full
+compiler/config/OS read closure.
 
 1. Root freezes this specific CLI slice and hands over exact source/path hashes
    after earlier engine/core and runtime/platform slices. No independent move is

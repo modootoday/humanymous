@@ -953,152 +953,202 @@
     {
       "path": ".agents/evals/language-preservation.json",
       "sha256": "4b4314e94f1862b10bdb7e59e47966e5eb5032a821dc402a11e5f58517fab406",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "original maintained agent/skill/script owner",
+      "copied": false,
+      "accepted_destination": null,
+      "accepted_disposition": "bounded-explicit-repository-source-reader"
     },
     {
       "path": ".agents/sessions/THREADS.md",
       "sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "original maintained agent/skill/script owner",
+      "copied": false,
+      "accepted_destination": null,
+      "accepted_disposition": "bounded-explicit-repository-source-reader"
     },
     {
       "path": "adapters/go/pilot-contract.json",
       "sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "CLI private qualification resource",
+      "copied": false,
+      "accepted_destination": "qualification/adapters/go/pilot-contract.json",
+      "accepted_disposition": "move-original-operational-resource"
     },
     {
       "path": "adapters/native/header-proof-profile.json",
       "sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "CLI private qualification resource",
+      "copied": false,
+      "accepted_destination": "qualification/adapters/native/header-proof-profile.json",
+      "accepted_disposition": "move-original-operational-resource"
     },
     {
       "path": "adapters/nginx/pilot-contract.json",
       "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "CLI private qualification resource",
+      "copied": false,
+      "accepted_destination": "qualification/adapters/nginx/pilot-contract.json",
+      "accepted_disposition": "move-original-operational-resource"
     },
     {
       "path": "adapters/node/host-pilot-contract.json",
       "sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "CLI private qualification resource",
+      "copied": false,
+      "accepted_destination": "qualification/adapters/node/host-pilot-contract.json",
+      "accepted_disposition": "move-original-operational-resource"
     },
     {
       "path": "crates/browser/native/desktop/pilot-contract.json",
       "sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/browser/cef/pilot-contract.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "crates/collector/pilot/fixture.json",
       "sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/fixtures/collector/pilot.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
       "sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "Collector owns Rust implementation; private CLI Lab owns data-only reviewed digest/line-code map",
+      "copied": false,
+      "accepted_destination": "qualification/pins/collector-runtime-pilot-source.json",
+      "accepted_disposition": "reviewed-owned-source-pin-plus-bounded-source-binding"
     },
     {
       "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
       "sha256": "04eb9bd2a02d70ea1dd7796c8128ef03b2cc10f41bcafb97d91c61873ef264b2",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/fixtures/core/scoring/bot-webdriver-cdp-hr9.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
       "sha256": "5fd5941b45ee6a43a113a91c132f5928a93bdaedc5f1fb447e13e3eca11a0725",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/fixtures/core/scoring/go-http-client.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
       "sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/fixtures/core/scoring/human-chrome-allow.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
       "sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/fixtures/core/scoring/no-client-hr10.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
       "sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/fixtures/core/scoring/selenium-hr1.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
       "sha256": "3a8474c8e3de9dd33d56a470ec79a20743b184699401c6311720f2af38be2236",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "producer retains canonical original; CLI owns one immutable data-only replica",
+      "copied": false,
+      "accepted_destination": "qualification/fixtures/core/scoring/ua-tls-h2-hr2.json",
+      "accepted_disposition": "immutable-DATA-producer-replica"
     },
     {
       "path": "deployments/lab/images/product.Dockerfile",
       "sha256": "b37a448b1b05e020a17e5c41699a2ae981cbcb18be81b194e093d2cb2ab84d9b",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "Lab deployment recipe stays canonical in deployments",
+      "copied": false,
+      "accepted_destination": null,
+      "accepted_disposition": "bounded-explicit-repository-source-reader"
     },
     {
       "path": "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
       "sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "public Docs standards retains canonical downloadable corpus",
+      "copied": false,
+      "accepted_destination": null,
+      "accepted_disposition": "bounded-explicit-repository-source-reader"
     },
     {
       "path": "scripts/agents/git-coord.ps1",
       "sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
-      "proposed_owner": "owning resource/provider decision required",
-      "copied": false
+      "proposed_owner": "original maintained agent/skill/script owner",
+      "copied": false,
+      "accepted_destination": null,
+      "accepted_disposition": "bounded-explicit-repository-source-reader"
     },
     {
       "path": "test/lab/browser_expectations.rs",
       "sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439",
-      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
-      "copied": false
+      "proposed_owner": "one canonical private CLI Lab support source tree",
+      "copied": false,
+      "accepted_destination": "src/qualification/lab_support/browser_expectations.rs",
+      "accepted_disposition": "move-original-shared-Rust-source"
     },
     {
       "path": "test/lab/browser_outcome.rs",
       "sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
-      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
-      "copied": false
+      "proposed_owner": "one canonical private CLI Lab support source tree",
+      "copied": false,
+      "accepted_destination": "src/qualification/lab_support/browser_outcome.rs",
+      "accepted_disposition": "move-original-shared-Rust-source"
     },
     {
       "path": "test/lab/browser_wire.rs",
       "sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d",
-      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
-      "copied": false
+      "proposed_owner": "one canonical private CLI Lab support source tree",
+      "copied": false,
+      "accepted_destination": "src/qualification/lab_support/browser_wire.rs",
+      "accepted_disposition": "move-original-shared-Rust-source"
     },
     {
       "path": "test/lab/browser-wire-contract.json",
       "sha256": "42eb19cdbd7ba1cd2b419467ceb6c0d2c2c25da6a9a0140093797a496a56a151",
-      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
-      "copied": false
+      "proposed_owner": "CLI private Lab qualification resource",
+      "copied": false,
+      "accepted_destination": "qualification/lab/browser-wire-contract.json",
+      "accepted_disposition": "move-original-operational-resource"
     },
     {
       "path": "test/lab/dns_wire.rs",
       "sha256": "0717cf28f759cf26b9b37183faa23148f7eb2d222977edfd21bef291cec403b1",
-      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
-      "copied": false
+      "proposed_owner": "one canonical private CLI Lab support source tree",
+      "copied": false,
+      "accepted_destination": "src/qualification/lab_support/dns_wire.rs",
+      "accepted_disposition": "move-original-shared-Rust-source"
     },
     {
       "path": "test/lab/go-configuration.json",
       "sha256": "bc85c6380b1369fd43ea5ce75f1ea591e53d6315b32f1e5946711cbb5a026ff8",
-      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
-      "copied": false
+      "proposed_owner": "CLI private Lab qualification resource",
+      "copied": false,
+      "accepted_destination": "qualification/lab/go-configuration.json",
+      "accepted_disposition": "move-original-operational-resource"
     },
     {
       "path": "test/lab/mount_policy.rs",
       "sha256": "0038b94c599bc4f19b382c9e19fcefdfbd8b2b4d6191317083a5e8ddc63fc3eb",
-      "proposed_owner": "src/qualification/lab_support/shared; Root assignment required",
-      "copied": false
+      "proposed_owner": "one canonical private CLI Lab support source tree",
+      "copied": false,
+      "accepted_destination": "src/qualification/lab_support/mount_policy.rs",
+      "accepted_disposition": "move-original-shared-Rust-source"
     }
   ],
   "unresolved_reader_expressions": [
@@ -1161,73 +1211,73 @@
       "original_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/../SKILL.md\"))",
       "resolved": "skills/SKILL.md",
       "sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/product.rs",
       "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/installation.md\"\n                ))",
       "resolved": "skills/references/installation.md",
       "sha256": "d61688100b9c0db630306ab0f9a27fd490b8ac1780131f88352fb13379e68c6d",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/product.rs",
       "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/operations.md\"\n                ))",
       "resolved": "skills/references/operations.md",
       "sha256": "015642b84019e645684372330547d24b487eef9882b372cf8eee5054b5ef100c",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/product.rs",
       "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/adapters.md\"\n                ))",
       "resolved": "skills/references/adapters.md",
       "sha256": "6e2cc2ad417c8d441df6a8ccac9f891c464b89554b7dfc2e21629d3572ee366d",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/product.rs",
       "original_expression": "include_str!(concat!(\n                    env!(\"CARGO_MANIFEST_DIR\"),\n                    \"/../references/qualification.md\"\n                ))",
       "resolved": "skills/references/qualification.md",
       "sha256": "85ba9bf8901016fc4bb970de693e15d71825ceb1a961e44ee5964b0e5f5e7eff",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/sessions/catalog.rs",
       "original_expression": "include_str!(concat!(\n            env!(\"CARGO_MANIFEST_DIR\"),\n            \"/../../.agents/sessions/lanes.json\"\n        ))",
       "resolved": ".agents/sessions/lanes.json",
       "sha256": "78c8790146ffc26fd69bf35684b826a78cc88a064f3e070f2b15a72a852261d7",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/sessions/catalog.rs",
       "original_expression": "include_str!(concat!(\n                env!(\"CARGO_MANIFEST_DIR\"),\n                \"/../../.agents/sessions/LANES.md\"\n            ))",
       "resolved": ".agents/sessions/LANES.md",
       "sha256": "b9f7d292a34c3cb0c1aedc9567fd64197cd9b13544b4dd5ed442aaf9b00c9b50",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/sessions/catalog.rs",
       "original_expression": "include_str!(concat!(\n                env!(\"CARGO_MANIFEST_DIR\"),\n                \"/../../scripts/agents/session-board.ps1\"\n            ))",
       "resolved": "scripts/agents/session-board.ps1",
       "sha256": "093e01174eb444249f9c1ea05f992e66fade9cc8693fd75225a278071c501304",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/sessions/catalog.rs",
       "original_expression": "include_str!(concat!(\n                env!(\"CARGO_MANIFEST_DIR\"),\n                \"/../../scripts/agents/session-board.sh\"\n            ))",
       "resolved": "scripts/agents/session-board.sh",
       "sha256": "6abeff6d9fe14364aec3025e24d89de948848d5066a7ca2fc199830e88b7e058",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     },
     {
       "source": "skills/agent-maintenance/src/sessions/registry.rs",
       "original_expression": "include_str!(concat!(\n            env!(\"CARGO_MANIFEST_DIR\"),\n            \"/../../.agents/sessions/THREADS.md\"\n        ))",
       "resolved": ".agents/sessions/THREADS.md",
       "sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
-      "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
+      "classification": "Root accepted bounded explicit original-canon source reader; exact source manifest/cap/absence/reader code still to freeze"
     }
   ],
-  "closure_status": "NOT_FROZEN: all34roots mapped;25literal external inputs+10resolvedmanifest expressions require owner disposition; registry embeds and Collector implementation path remain blockers",
+  "closure_status": "OWNERSHIP35ROWS_ACCEPTED; remaining exact reader/caller/source-pin/role/test closure NOT_FROZEN, no generic ownership decision pending",
   "maintenance_identity_reconciliation": {
     "status": "ROOT_ACCEPTED_DELIVERY_RELOCATION",
     "decision_source": "Root human-confirmed baseline and explicit acceptance of daf541b871c4c5255498e0b7e94fb0f976706ad4",
@@ -1872,5 +1922,6 @@
       "scope": "actual executable boundary",
       "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
     }
-  ]
+  ],
+  "accepted_inputs_record": "tools-input-dispositions-accepted.json; Roota070983e+Delivery9cb6e435"
 }

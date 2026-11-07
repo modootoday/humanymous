@@ -213,34 +213,36 @@ census must inspect unsafe operations/module reachability, not just count allows
 tools-linkage-map.json adds a recursive literal path/include source review to the
 34root map:25referenced inputs outside the13old package roots, plus10manifest-
 relative concat includes resolved to actual original hashes. The latter are
-filesystem-resolved, but their destination/reader policy is not accepted merely
-because a file exists. This expanded closure is NOT_FROZEN. The original10resource
-table alone is insufficient; no blanket closed-input claim is made.
+filesystem-resolved. Root a070983e and Delivery9cb6e435 now ACCEPTall35row
+ownership categories/destinations (34distinct paths). tools-input-dispositions-
+accepted.json mirrors the exact decisions/pins/readers. There is no remaining
+generic requirement for Root to decide every external input. Actual reader/caller/
+source-pin/role/test closure is still NOT_FROZEN; the table is not a compiler read
+census or source/resource move grant.
 
-Concrete closure blockers for Root/owning review:
+| Accepted rows | Final ownership direction and remaining exact freeze check |
+| --- | --- |
+| L01,L02,L18,C01-C10 | Keep original agent/skill/script canon; actual repository checks use explicit finite source-root manifests and bounded readers; synthetic parser units remain distinct |
+| L03-L06 | Move original adapter contracts to qualification/adapters with exact bytes and atomic callers |
+| L07 | One browser-owned CEF DATA replica at qualification/browser/cef/pilot-contract.json; preserve producer9251376f/blob4a134d4f/3098bytes/SHAeac4fab4, provenance/license and equality; no fixtures/cef-desktop substitute |
+| L08,L10-L15 | One pinned Collector DATA replica qualification/fixtures/collector/pilot.json and six original-filename Core scoring datasets qualification/fixtures/core/scoring; producer hash/license/equality before freeze |
+| L09 | qualification/pins/collector-runtime-pilot-source.json DATA pin and accepted d49c19bc actual selected-source binding, no Collector implementation copy |
+| L16,L17 | Keep Docker recipe/standards corpus canon; bounded explicit readers retain real recipe verification and25corpus rows/5accept/20reject |
+| L19-L21,L23,L25 | Move each original shared Lab Rust file ONCEto src/qualification/lab_support/<basename>, not a new shared subdirectory; all roles link actual same files |
+| L22,L24 | Move browser-wire-contract.json/go-configuration.json to qualification/lab unchanged with atomic reader/config/source-pin updates |
 
-- Shared test/lab browser_expectations/browser_outcome/browser_wire/dns_wire/
-  mount_policy Rust sources and their browser-wire/go-configuration JSON inputs
-  need one canonical src/qualification/lab_support/shared tree, exact bytes and
-  all readers assigned. This is an extension proposal, not an autonomous move.
-- test/lab/runtime currently links Collector implementation source at
-  crates/collector/src/browser/transport/runtime_pilot.rs. Do not copy it into CLI,
-  silently depend on an unpublished path or invent a fixture public API. Root
-  must settle the actual producer/ownership boundary with the Collector owner.
-- Existing Core frozen scoring JSON replicas require exact producer/path/blob/
-  hash/license binding and coordinated equality under the accepted replica rule;
-  collector fixture and desktop CEF contract need accepted producer-owned pins.
-- Mutable .agents registries/rules and scripts/agents verification inputs remain
-  original-owner resources. Replace snapshot-dependent repository checks with
-  bounded explicit repository readers and small synthetic parser fixtures as
-  accepted by Root; do not embed mutable THREADS/lanes/script snapshots in a
-  published tool or discard real repository verification. Product SKILL/reference
-  packaging likewise needs a genuine input contract, not an incidental embedded
-  copy just to compile under a new CARGO_MANIFEST_DIR.
-- docs normalized-profile fixtures, operational language-preservation inputs and
-  the Docker product image recipe need explicit owner/source-bound readers or
-  approved resource ownership. No implementation/source/template copying rule is
-  waived by this inventory. Root must assign all remaining dynamic reader paths.
+Collector d49c19bc is modest trusted-checkout drift detection: explicit frozen
+root and Compose context association, private selected record from same freeze
+bytes,16KiB bounded source read, exact digest/UTF8/line checks and revalidation
+before refinement. Missing/drifted required source refuses checkout qualification.
+Keep source_prefix_authenticated=false and unchanged Origin/policy/assertion/
+diagnostic fields; no hostile-race/nofollow/compiler-read/native-custody claim.
+Snapshot public paths or retained JSON are not authenticated authority.
+
+Remaining checks are concrete implementation/source joins: exact bounded reader
+calls/caps/absence/race rules, actual producer bytes/license/equality, unchanged
+profiles and canonical source links, final per-role tests and artifact admission.
+Accepted ownership does not waive any gate or authorize independent moves.
 
 Move exactly the10original operational contracts to Root's qualification paths
 recorded in tools-freeze-census.json. Preserve bytes, Git objects, hashes and
@@ -273,6 +275,16 @@ mandatory after the coherent move.
 # Ordered freeze and verification
 
 ## Legacy LIB unit inventory handoff
+
+OLDWindows semantic discovery is now observed under Root allocation on immutable
+5d68cd39, [[evidence:root/20261107235307]]: NativeCLI11, Attacker27, Defender9,
+Maintenance76, Pages37, CLI26registered names,186total, exact name differences0.
+All187case-source hashes match actual B's canonical source; the one absent lexical
+case is the expected Unix-only CLI permission test. Test functions executed0;
+ignored native names are not passes. OldLinux/nonWindows lists, all15BINsemantic
+lists and new private-bin selector/role collection remain unobserved.
+Post-analysis also matches all259BINcandidate source pins against the retained
+3128-source-before snapshot with0hash mismatches; this is not BINsemantic discovery.
 
 The completed machine artifacts are legacy-lib-unit-map.json and the separate
 legacy-bin-unit-map.json. All15MAIN/BINroots are now included rather than omitted:
@@ -367,7 +379,7 @@ Concrete unresolved items in the machine map:
   with all259lexical source-target cases retained; their cfg/semantic names and
   exact private command prefixes still require owning --list reconciliation.
 - Proposed module prefixes are not semantic discovery; external include/input
-  ownership blockers must close before the new private-bin graph can compile.
+  reader/caller/source-pin joins must close before the new private-bin graph can compile.
 
 The machine map includes exact nonexecuting discovery commands: six OLDlibrary
 selectors use cargo test --locked --offline -p <old-package> --lib --all-features
@@ -378,13 +390,15 @@ Root allocation must pin old/new immutable graphs separately, enforce one contex
 exclusive lease and before/after source/tool/config/env hashes. Stop first failure
 or inventory drift, no retry/source fix/test execution. --list may compile and
 spawn the harness but must not call a test function or native/service/SDK pilot.
-No discovery command was run by this source inventory task.
+The original source-only task ran none. The subsequent separately allocated
+OLDWindows six-LIB --list run above completed; no new-bin command is authorized.
 
 1. Accepted15bin names/features/default artifact policy stay fixed. Root reviews
    remaining test aliases/minimal feature selectors, per-bin shared module
    linkage, preserved bin-only public namespaces and dead-code handling. Resolve
-   every additional external input/Collector/mutable-registry boundary before
-   freeze. No public production tool API or implementation copying.
+   exact accepted input readers/callers/source pins and private role joins before
+   freeze. The35ownership decisions are already accepted; do not reopen them.
+   No public production tool API or implementation copying.
 2. Owners reconcile all34roots, unit inventories,10resources/123reader locations,
    Cargo categories, expanded input closure and actor operations. Freeze exact hashes/modes/current dirty
    paths only after the matrix and unresolved fixture/role edges are closed.

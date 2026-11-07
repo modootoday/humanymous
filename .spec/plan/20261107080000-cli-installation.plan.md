@@ -409,6 +409,20 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Root a070983e/Delivery9cb6e435 accepted all35external input row dispositions;
+tools-input-dispositions-accepted.json preserves exact category/destination/pins,
+including CEF qualification/browser/cef and d49c19bc modest Collector source
+binding. No generic ownership choice remains; exact reader/caller/source-pin/
+role/test closure is still not frozen and no move grant is inferred.
+
+OLDWindows six-LIB semantic inventory is now observed on immutable5d68 under
+[[evidence:root/20261107235307]]:11/27/9/76/37/26names,186total, exactdiff0,
+testfunctions0. Source3128Gitblob matches before/after,9510selected dependency/
+tool rows and17env stable. Work161.837s within390s, actual lease cleanup198.506s
+UTC attribution within450s, all handles/target/source B returned. No sourcefix/
+overlay/retry/newbin discovery/native/service/account/SDK/Docker/CI work. The new
+private layout/bin selectors and actual service gates remain unqualified.
+
 Root accepted Delivery daf541b8 maintenance relocation: final Tools design is
 10integration/27compiled roots, with33required unique maintenance cases split
 23integration/10actual owned-filesystem-provider bin cases, not pure. The detailed

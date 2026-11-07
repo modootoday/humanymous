@@ -1,6 +1,6 @@
 {
   "schema": "humanymous.cli-legacy-bin-unit-map/1",
-  "observed_utc": "2026-11-07T23:41:03.0174879+00:00",
+  "observed_utc": "2026-11-08T08:41:03.0174879+09:00",
   "scope": "ALL15oldbinaryroots and their actual declared source modules, excluding external library dependency unit cases",
   "method": "lexical module/path/test census with adjacent attrs only; inherited cfg unresolved until semantic --list",
   "bin_roots": 15,
@@ -8070,5 +8070,14 @@
   "compiler_executed": false,
   "tests_executed": false,
   "source_moves": false,
-  "qualification": "none; source inventory only"
+  "qualification": "none; source inventory only",
+  "old5d68_source_pin_postanalysis": {
+    "source": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+    "compared_case_source_pins": 259,
+    "hash_mismatches": 0,
+    "method": "post-analysis of old6LIB retained3128-source-before hashes, no new snapshot",
+    "source_receipt": "evidence:root/20261107235307",
+    "bin_semantic_discovery": false,
+    "bin_tests_executed": 0
+  }
 }
