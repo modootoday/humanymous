@@ -263,5 +263,11 @@
     "selected_foreign_extension_am_paths": 0,
     "actual_unread_pipe_run_observed": false,
     "complete_byte_or_language_conformance": false
+  },
+  "followup_native_security": {
+    "private_review_sha256": "902a2d037056bac23c28fc21cf80d51b4beb6ba1c669ee1b7f7c36412470d414",
+    "source_scope_only": true,
+    "known_partial_directory_failure_documented": true,
+    "actual_service_store_or_directory_pilot_qualified": false
   }
 }

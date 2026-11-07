@@ -186,3 +186,8 @@ Exact d7c74125..6aa87db1 source delta and historical network predicates were
 reviewed; no complete language or ordered-byte parity claim follows. The retained
 unread-pipe watchdog parent is source-only, with actual outer-supervised run open.
 Root has exact remaining SECRET01/BRIDGE-ALLOC01 regression selectors.
+
+Native secret and existing initializer boundaries were source-reviewed with
+exact leaf hashes and bounded CLI caller review. Known post-creation partial
+directory and anti-ABA limitations remain explicit; no new duplicate finding
+or actual OS/SCM/store qualification is claimed.

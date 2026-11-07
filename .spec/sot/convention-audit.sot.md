@@ -478,3 +478,22 @@ remains required. No actual run was observed, so this does not close LIFETIME01.
 Root was given the exact pending Authority key-retention and bridge UTF16/privacy
 selectors for future allocated frozen-source validation; earlier passes must
 not substitute for those fixes' actual regressions.
+
+### Native secret and existing initializer boundary review
+
+Exact-hashed source review covers the native secret facade/reference/Windows
+reader and existing private-directory initializer, plus bounded CLI prepare/
+finish caller fragments. Secret lookup requires the actual virtual service SID,
+explicit native store, exact target and Local persistence, bounded4096byte result
+in Zeroizing ownership, and no argv/environment/file/plaintext fallback. Before/
+after attributes are not atomic anti-ABA or provider-copy erasure. No actual
+credential-store/SCM/service-principal result follows from this source review.
+
+The existing initializer creates first, then opens/checks owner and hardens the
+same handle's DACL. Integration docs explicitly retain empty partial-directory
+failure and parent-replacement premises. CLI records the root only after success;
+its missing-root cleanup flag is false, not a fabricated cleanup pass. This is
+an existing disclosed limitation, not a new finding or evidence of actual leaked
+state. The new descriptor-at-create bridge does not qualify this existing caller.
+Actual creation/partial-failure/ACL/custody and retained-recovery integration gates
+remain separate. No unknown-path deletion or ACL repair was performed by audit.
