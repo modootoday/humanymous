@@ -4,8 +4,10 @@
 - [ ] Lane `release` claimed; `git-ops` free or held only for tag/push
 - [ ] Worktree clean (or only unrelated WIP ignored)
 - [ ] `HEAD` == `origin/main` (or human-named SHA)
-- [ ] `ci.yml` **success** on that SHA (`go` + `detector-vs-bots`)
-- [ ] Docker e2e if detection/Gate touched (`make e2e` / green CI detector job)
+- [ ] `ci.yml` required Rust validation **success** on that exact SHA; no missing/ignored required work
+- [ ] Actual source-bound hosted Docker product e2e qualified; component/oracle success alone is insufficient
+- [ ] Workflow/catalog names match and OIDC `release.yml`/environment identities are unchanged or explicitly migrated
+- [ ] Registry trust matches package environments: crates.io=`crates`, npm=`npm`; GitHub environment setup alone is not external publisher verification
 - [ ] Bump class from SoT-37 (MAJOR / MINOR / PATCH / pre-1.0)
 - [ ] `make changelog-unreleased` reviewed
 - [ ] Proposed `vX.Y.Z` free on `origin`

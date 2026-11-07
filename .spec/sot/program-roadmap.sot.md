@@ -13,6 +13,31 @@ rel:
 
 ## 무료 원격 검증 적용 결정
 
+### Workflow 명명 및 OIDC 환경 준비
+
+명명 checkpoint9a41374는 scripts/ci/workflows.json을 단일 machine catalog로
+사용한다. UI 이름은 CI / ..., Docs / ..., Release / ..., Legacy / ... 형식이며
+파일명/job key/OIDC workflow identity는 안정된 기술 계약으로 보존한다.
+기존10개 workflow의 이름·job·concurrency·artifact 식별자 drift를 Rust policy가
+검사한다. 공통 정책의 구현 정본은 delivery SoT이며 운영 skill은 이를 참조한다.
+github-actions-ops/cut-release 운영 가이드와 체크리스트도 catalog·Rust 검증·
+제품별 OIDC 환경 이름에 맞췄다. 기존 Rust canon checker로 errors0,
+compatibility mirror drift92를 관찰했다. 활성 채팅 중 recursive legacy sync는
+현재 AGENTS와 retirement 계약에 따라 보류하며 mirror를 수동 편집하지 않는다.
+이 문구 변경의 모델 기반 skill eval은 not_run으로 남기고 기존 eval을 소급하지
+않는다. 상세 정적 결과는 workflow-guides-canon-check.json에 등록했다.
+
+사용자는 배포가 아닌 환경 준비만 승인했다. modootoday/specfold의 실제 설정을
+조회하고 Humanymous에 npm/crates 환경을 생성해 readback 동등성을 확인했다.
+각 환경은 required reviewer myso-kr, prevent_self_review=false,
+can_admins_bypass=true, custom branch policy, tag v*만 허용으로 대칭 구성됐다.
+각 환경의 실제 deployment 수는 조회 시점0이다. 기존 github-pages는 유지했다.
+환경 설정만으로 npm/crates.io publisher ownership/trust가 검증되지는 않는다.
+워크플로 package job과 registry prerequisite는 각각 npm/crates 이름을 참조하며
+external trust verified=false를 유지한다. 태그·릴리스·패키지 게시·OIDC token
+exchange는 실행하지 않는다. 원본 대조 증거는 evidence:root/20261106194410의
+oidc-environments-specfold-parity.json에 등록했다.
+
 사용자가 로컬 대신 비용 없는 원격 환경을 적용하도록 승인했다. 현재 gh 조회로
 modootoday/humanymous의 PUBLIC visibility를 확인했다. 기본 실행 대상은 공개
 저장소의 GitHub-hosted standard Ubuntu24.04이며 유료 larger runner, 자체 유료
@@ -76,6 +101,18 @@ allowlisted summary·source/image/lock digest 및 job log를 사용한다. PUBLI
 artifact는 private vault가 아니다. 민감 raw는 업로드하지 않고 별도 승인된
 비공개 회수 경로가 없으면 raw-not-recovered를 명시한다. LLM eval 추론/API비용은
 무료 runner compute와 별개이며 이번 무료 실행 범위에 자동 포함하지 않는다.
+
+### 최초 무료 hosted 실행의 실제 결과
+
+Run42347732666/attempt1, source bfc9f62335ae41906996c6b01b0ae9e7993feeed는
+terminal failure다. ubuntu24.04에서 delivery Rust22tests와 policy 검사는 통과했다.
+action-pins의 인증된 GitHub API 공개 commit 조회가 aquasecurity 조직 IP 허용
+목록으로403을 반환해 공통 gate가 실패했다. 실제 관찰 job은13개로 policy와
+ready2개 failure, downstream11개 skipped다. 미실행 matrix를 성공 또는 실제
+실행한 tuple로 세지 않는다. 이 실패는 action SHA 불일치나 제품 runtime
+취약점의 증거가 아니다. 원본 job log와 terminal run/jobs/artifacts metadata는
+evidence:root/20261106194410에 보존했다. runtime/component 검증은 not_run이며
+기존 full-product 필수조건을 유지한 source-bound CI 수정 후 새 run으로 재검증한다.
 
 버전1.2.0. 2026-11-07 KST 기준13개 프로젝트 채팅의 최신 turn, 기존9개
 인계 기록, 현재 Git/spec/Actions를 대조한 전체 상태·순서·완료 조건의 정본이다.

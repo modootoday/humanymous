@@ -33,7 +33,7 @@ Hard gates: rule `93-release-and-ci.md`
 - Another session holds `release` or `git-ops` without agreement.
 - Dirty tree or HEAD is not the intended SHA (`origin/main` tip or human-named SHA).
 - Required delivery jobs (Rust native/wasm, actual browser/native/product Docker runners, docs freshness and supply-chain gates) not **success** on that exact SHA/tree. Legacy Go/oracle green alone is insufficient.
-  (`release.yml` also hard-gates on a green `ci.yml` via `require-ci`.)
+  (`release.yml` calls the required reusable validation and then its readiness gate.)
 - Freeze surfaces changed without `!` / `BREAKING CHANGE:` — refuse PATCH; demand markers + correct bump.
 - User only asked to prepare — stop before any remote tag push.
 
@@ -58,6 +58,13 @@ pwsh -File scripts/agents/git-coord.ps1 claim -Provider <provider> -Session "cut
 1. `git fetch origin --tags` · `git status -sb` clean for release-critical paths.
 2. `test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"` (or human-named SHA).
 3. CI green on that SHA:
+
+   Workflow filenames and job keys are stable identities; display-name categories
+   are defined by `scripts/ci/workflows.json`. Query by filename/ID, not display
+   title. Preserve `release.yml` and environment bindings used by OIDC trust.
+   Package environments follow the reference repository `modootoday/specfold`:
+   crates.io uses `crates`, npm uses `npm`. Environment creation/protection setup
+   is preparation only; it does not authorize tags, token exchanges or publishing.
 
    ```bash
    gh run list --branch main --commit "$(git rev-parse HEAD)" --workflow ci.yml --limit 5
@@ -99,12 +106,17 @@ gh run watch   # when run id known
 
 `release.yml` on `v*.*.*`:
 
-1. **images** matrix (`fail-fast: false`): `build/core.Dockerfile` →
+1. **validate** runs the shared required Rust workflow; **readiness** checks the
+   exact source, native Node artifacts, registry trust and crate publication waves.
+2. **images** matrix (`fail-fast: false`): `build/core.Dockerfile` →
    `ghcr.io/<owner>/humanymous-core`, `build/gate.Dockerfile` → `…/humanymous-gate`
    (amd64+arm64), tags include SemVer + **`latest`** + sha, SBOM, provenance, cosign OIDC.
-2. **images-ok**: both digests present; imagetools inspect version + `latest`.
-3. **gh-release** (`needs: [images, images-ok]`): git-cliff → GitHub Release body.
+3. **images-ok**: both digests present; imagetools inspect version + `latest`.
+4. **gh-release** (`needs: [images, images-ok]`): git-cliff → GitHub Release body.
    Concurrent releases use `concurrency.group: release` with **cancel-in-progress: false**.
+5. **crates** publishes dependency-ordered waves through OIDC after readiness and
+   image verification; **npm** follows crates with its own trusted publisher.
+   Workflow wiring is not evidence of an actual successful publication.
 
 Bots image is **never** in the matrix.
 
