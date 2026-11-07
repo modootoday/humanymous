@@ -104,6 +104,18 @@ qualified raw-TLS transition follows until the actual seam/product tests pass.
 Fresh source24pure/5hosted fixtures are NOT_RUN; the earlier22unit/feature compile
 receipt is historical for this delta. No manifest change or Cargo run here.
 
+Runtime consumer checkpoint80b38ee79e6f1cf5fd0046e3b705cfeb384b40b0 is now
+committed and independently inspected: application/tls.rs calls check_h1_idle
+before decision, immediately after durable audit and after origin connect/before
+first write. It consumes capture137e633c through one owned joined TLS/H1 worker
+and existing strict request parser, binding same-owner evidence to the request.
+This is authored integration, not serving/readiness or actual raw-TLS qualification.
+Its new source is NOT_RUN during the benchmark quiet window. TLS fixture rcgen
+dev-edge approval is queued with root; existing capture pins0.14.10, but that
+does not authorize changing runtime's manifest. Complete H2 body/flow/join remains
+a separate unresolved slice. Fixture barriers in capture do not replace runtime's
+actual durable-audit/origin-effect witnesses.
+
 Runtime owner accepted the pending-owner contract. New source exposes
 PendingHandshake::new(TcpStream,Arc<rustls::ServerConfig>,Duration),
 pending.cancellation(), pending.remaining() and pending.accept()->Connection.
