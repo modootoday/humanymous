@@ -132,3 +132,23 @@ that Desktop engine via explicit DOCKER_HOST. WSL native Rust is a different
 execution profile and does not identify its Docker engine as Desktop. Hosted
 Linux jobs are distinct. None of these local observations replaces actual
 hosted Go qualification; strict Go hosted-context rejection remains unchanged.
+
+Hosted checkpoint: run42365025258 at source438a3feea0ea2f5e305aa6e3816dc7b60a069bd6
+passed Go10, lab15 and delivery64 pure tests, selected Unix Clippy and workflow
+policy. Product job128381682745 failed at runtime_build before any scenario:
+scheduled8, evaluated0, passed0, failed0, not_run8. Owned cleanup was observed,
+the receipt validated and source_changed was false. Private ledger SHA256 was
+fc21fa7271d03df286bc2ac84d56526ee54f4c49a8eed3901453b9ae70f7534b.
+The actual run is https://github.com/modootoday/humanymous/actions/runs/42365025258;
+lab checkpoint724a7dd2 preserves its source-bound negative evidence. This is
+not completed hosted Go qualification.
+
+Root decision8f8f5e07 separates the explicit bounded Go component requirement
+from the unchanged full-product requirement. Lab99dc5606 owns
+--require-go-component; exit0 requires exact eight verified real hosted cases,
+artifact/source binding and owned cleanup, while full_product_qualified remains
+false. Never accept exit2 as a bounded success. CI438a3fee consumes that mode.
+Lab0ce4d82 replaces the deprecated relay atomic update API; its fixed snapshot
+passed Unix all-target compilation and strict Clippy with2288 source hashes
+unchanged. CI44876534 adds native actor preflight. Actual hosted Docker rerun
+with these fixes is still required. Owned evaluator sourcec959562 is unchanged.
