@@ -3,8 +3,9 @@
 Owner: network-capture/rust-network-capture-goal. Design authority:
 sot:root/network-capture. Existing network, integrity, authority and runtime are
 read-only here. Capture is a new transport-lifecycle context, not a fingerprint
-or security-engine fork. Root default-feature all-targets Clippy passed, followed
-by21pure lib units passed/0failed/0ignored/0filtered. hosted-pilot compile and its
+or security-engine fork. Historical46822eb default-feature all-targets Clippy
+passed, followed by21pure lib units passed/0failed/0ignored/0filtered. The new
+pending-handshake source has22pure units awaiting root validation. Hosted compile and its
 5actual cases remain NOT_RUN; runtime binding and product qualification remain0.
 
 Root has integrated crates/capture as a workspace member and resolved the
@@ -69,7 +70,36 @@ deployment actually terminates the original client; reterminated proxy traffic
 describes the proxy hop. Unit parsing and a successful TLS pilot do not qualify
 request integrity, collector execution, T4/human identity or full product.
 
-## Runtime contract for checkpoint46822eb
+## Pending-handshake runtime slice (user-authorized continuation)
+
+Runtime owner accepted the pending-owner contract. New source exposes
+PendingHandshake::new(TcpStream,Arc<rustls::ServerConfig>,Duration),
+pending.cancellation(), pending.remaining() and pending.accept()->Connection.
+Construction performs no TLS read/write, sets blocking mode under socket custody
+and starts one absolute lifetime before queue admission. Obtain Cancellation
+before worker spawn; accept never resets its socket, atomic state or deadline.
+Connection::remaining() supplies a terminal checked liveness snapshot after
+durable audit and immediately before the runtime's origin action.
+
+Cancel is idempotent: the first call atomically revokes before shutdown(Both),
+subsequent calls do not repeat that syscall. Pending/error/Connection Drop all
+close through the same Ingress owner, even when a supervisor handle survives.
+Dropping only Cancellation does not revoke. Read/write guards recheck lifetime
+after actual I/O; ambiguous partial writes are errors, never retry permission.
+Runtime must retain and join every worker after revoke, with admission/custody
+retained until that join. An async timeout or dropped join future is not reaping.
+
+The pure compile-bound fixture requires all three owners Send and Cancellation
+Sync. Hosted test5contains four cancellation subcases: before dispatch; after an
+actual server TLS flight without client Finished; pending Drop with a surviving
+handle; successful handshake revoked using its original pre-handshake handle.
+Other four actual hosted denominators remain unchanged. New source22pure/5hosted
+fixtures are NOT_RUN until root gates; historical21unit validation does not
+qualify these new Rust bytes. Complete H1/H2 request/body/stream/session/RIT,
+origin/audit policy and worker reaping remain runtime responsibilities. Existing
+plain required TLS/H2=422 remains. No manifest delta is made here.
+
+## Historical runtime contract for checkpoint46822eb
 
 This is the committed component API contract, not acceptance of a completed
 runtime integration. Default-feature21pure units and all-targets Clippy passed.

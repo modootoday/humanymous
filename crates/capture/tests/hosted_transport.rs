@@ -1,6 +1,6 @@
 //! Actual socket/TLS pilots for free standard hosted runners only. These are
 //! component results; no test here asserts runtime authorization/product e2e.
-use humanymous_capture::tls::Connection;
+use humanymous_capture::tls::{Connection, PendingHandshake};
 use rustls::{
     ClientConfig, ClientConnection, RootCertStore, ServerConfig,
     pki_types::{PrivatePkcs8KeyDer, ServerName},
@@ -227,18 +227,88 @@ fn actual_invalid_tls_never_creates_an_owner() {
 #[ignore = "hosted-only actual supervisor cancellation pilot"]
 fn actual_supervisor_cancellation_revokes_the_connection_epoch() {
     hosted();
-    let (server, config) = configs(b"http/1.1");
+    // Cancel before dispatch: the pending epoch must never enter TLS I/O.
+    let (server, _) = configs(b"http/1.1");
     let listener = listener();
     let addr = listener.local_addr().unwrap();
     let (send, receive) = std::sync::mpsc::sync_channel(1);
+    let (resume, wait) = std::sync::mpsc::sync_channel(1);
+    let worker = thread::spawn(move || {
+        let pending = PendingHandshake::new(accept(&listener), server, BUDGET).unwrap();
+        send.send(pending.cancellation().unwrap()).unwrap();
+        wait.recv_timeout(BUDGET).unwrap();
+        assert!(pending.remaining().is_err());
+        let result = pending.accept();
+        assert_eq!(
+            result.err().unwrap().kind(),
+            io::ErrorKind::ConnectionAborted
+        );
+    });
+    let _peer = TcpStream::connect_timeout(&addr, BUDGET).unwrap();
+    let cancellation = receive.recv_timeout(BUDGET).unwrap();
+    cancellation.cancel().unwrap();
+    cancellation.cancel().unwrap();
+    resume.send(()).unwrap();
+    worker.join().unwrap();
+
+    // Observe an actual server TLS flight before revoking a pending handshake.
+    // The client deliberately never sends its Finished, so no owner can qualify.
+    let (server, config) = configs(b"http/1.1");
+    let listener = self::listener();
+    let addr = listener.local_addr().unwrap();
+    let (send, receive) = std::sync::mpsc::sync_channel(1);
+    let worker = thread::spawn(move || {
+        let pending = PendingHandshake::new(accept(&listener), server, BUDGET).unwrap();
+        send.send(pending.cancellation().unwrap()).unwrap();
+        assert!(pending.accept().is_err());
+    });
+    let mut peer = TcpStream::connect_timeout(&addr, BUDGET).unwrap();
+    peer.set_read_timeout(Some(BUDGET)).unwrap();
+    peer.set_write_timeout(Some(BUDGET)).unwrap();
+    let mut tls =
+        ClientConnection::new(config, ServerName::try_from("capture.invalid").unwrap()).unwrap();
+    while tls.wants_write() {
+        tls.write_tls(&mut peer).unwrap();
+    }
+    let mut first_flight = [0];
+    assert_eq!(peer.read(&mut first_flight).unwrap(), 1);
+    let cancellation = receive.recv_timeout(BUDGET).unwrap();
+    cancellation.cancel().unwrap();
+    worker.join().unwrap();
+
+    // A surviving supervisor handle must not keep a dropped pending socket live.
+    let (server, _) = configs(b"http/1.1");
+    let listener = self::listener();
+    let addr = listener.local_addr().unwrap();
+    let (send, receive) = std::sync::mpsc::sync_channel(1);
+    let worker = thread::spawn(move || {
+        let pending = PendingHandshake::new(accept(&listener), server, BUDGET).unwrap();
+        send.send(pending.cancellation().unwrap()).unwrap();
+        drop(pending);
+    });
+    let mut peer = TcpStream::connect_timeout(&addr, BUDGET).unwrap();
+    peer.set_read_timeout(Some(BUDGET)).unwrap();
+    let surviving = receive.recv_timeout(BUDGET).unwrap();
+    assert_eq!(peer.read(&mut [0]).unwrap(), 0);
+    worker.join().unwrap();
+    surviving.cancel().unwrap();
+
+    // A pre-handshake handle also revokes the successfully handshaken owner.
+    let (server, config) = configs(b"http/1.1");
+    let listener = self::listener();
+    let addr = listener.local_addr().unwrap();
+    let (send, receive) = std::sync::mpsc::sync_channel(1);
     let server = thread::spawn(move || {
-        let mut conn = Connection::accept(accept(&listener), server, BUDGET).unwrap();
+        let pending = PendingHandshake::new(accept(&listener), server, BUDGET).unwrap();
+        let cancellation = pending.cancellation().unwrap();
+        let mut conn = pending.accept().unwrap();
         let mut first = [0];
         assert_eq!(conn.read_plaintext(&mut first).unwrap(), 1);
-        send.send(conn.cancellation().unwrap()).unwrap();
+        send.send(cancellation).unwrap();
         assert!(conn.read_plaintext(&mut first).is_err());
         assert!(conn.client_hello().is_none());
         assert!(conn.negotiated_alpn().is_none());
+        assert!(conn.remaining().is_err());
         assert!(conn.write_plaintext(b"late").is_err());
     });
     let mut client = client(addr, config);

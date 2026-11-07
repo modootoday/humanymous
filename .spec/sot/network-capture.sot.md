@@ -40,6 +40,15 @@ that owner; it is not a cross-process attestation or human identity.
 A supervisor cancellation handle may only revoke/shutdown its same socket; it
 cannot read/write bytes or mint observations. Revocation immediately removes
 evidence availability. Owner drop closes the socket even if that handle survives.
+PendingHandshake::new consumes the accepted socket and starts the absolute
+lifetime before any TLS reads/writes. Its cancellation handle must be obtained
+before worker dispatch. PendingHandshake::accept consumes that owner and moves
+the same socket, revocation state and deadline into Connection; no epoch reset
+or credential/capability handoff occurs. Cancellation is checked before and
+after actual I/O and before releasing handshake success or plaintext. All
+pending/error/drop paths shut down the owned socket even if a supervisor handle
+survives. Connection::accept remains a compatibility convenience, while runtime
+uses the pending owner to establish cancellation custody before blocking work.
 The synchronous owner requires a supervised joined blocking worker when used by
 an asynchronous service, with its absolute lifetime and explicit cancellation;
 it must not become an untracked detached runtime task.
@@ -112,3 +121,8 @@ passed/0failed/0ignored/0filtered. Five earlier lint diagnostics and their repai
 history remain explicit. hosted-pilot feature compilation,5actual hosted cases,
 runtime request/stream binding and Docker product qualification remain NOT_RUN
 or unimplemented. No capture source is integrated into the runtime yet.
+The user-authorized PendingHandshake continuation changes Rust source after that
+historical checkpoint. Runtime accepted same-epoch cancellation custody, one
+pre-queue lifetime, idempotent revoke, terminal owner Drop, Send/Sync bounds and
+joined worker ownership. The new22pure units and expanded fifth hosted test
+require fresh compilation and execution; no old success is transferred.
