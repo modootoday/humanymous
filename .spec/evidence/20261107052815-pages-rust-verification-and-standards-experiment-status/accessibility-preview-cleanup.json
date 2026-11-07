@@ -1,0 +1,15 @@
+{
+  "schema": "humanymous.pages-preview-cleanup/1",
+  "observed_at": "2026-11-08T04:53:38+09:00",
+  "container": "7d98ddd074311b5045128a539b22433845afae116b05f10b4ca60cf9ce373de2",
+  "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+  "context": "desktop-linux",
+  "deadline": "2026-11-08T04:37:20.8699663+09:00",
+  "stop_and_remove_logs": "Both contain the exact owned container ID and were last written at04:37:23+09:00.",
+  "actual_container_inventory": "Explicit desktop-linux docker ps -a -q --no-trunc with exact container filter returned empty and exit0.",
+  "supervisor_handle": "Session17945 is no longer retrievable; do not invent a supervisor exit code. Actual cleanup established from retained stop/remove receipts and absent container inventory.",
+  "preview_running": false,
+  "lease_extended_or_restarted": false,
+  "package_or_path_refactor_performed": false,
+  "private_receipts": "evidence:root/20261107051213 accessibility-followup/logs/preview-lease-{stop,remove}.log"
+}

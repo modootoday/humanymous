@@ -2464,3 +2464,13 @@ diff check passes. No build or runtime execution performed for this prose update
 The retained preview still serves earlier56ea5267 docs bytes and expires at its
 unchanged04:37:20+09 deadline; it is not a preview of this new authored prose.
 Production Pages, final candidate parity, full product and AT gates remain open.
+
+### Preview lease cleanup observed
+
+At04:53:38+09 observed the same Desktop Linux engine and no owned7d98ddd0
+container in all-container inventory. Stop/remove receipts both retain the exact
+owned ID and04:37:23+09 timestamps. Supervisor17945 was no longer retrievable;
+no supervisor exit code is invented. Evidence07052815/accessibility-preview-cleanup.json
+records actual removal. Preview is no longer live; no lease extension/restart.
+The new user approval gate blocks package/path/topology refactoring; none is in
+flight in this docs lane, and no new crate, branch or compatibility shim was made.
