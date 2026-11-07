@@ -13,6 +13,27 @@ rel:
 
 # Browser collector migration
 
+## Explicit bounded console-preview observation
+
+An explicit once-per-collector probe ports the legacy Error.stack getter with
+console.debug and prototype Proxy ownKeys with console.groupEnd. Synthetic
+objects contain no application body, URL, argument or input. The synchronous
+post-call result matches the original sampling boundary; callbacks invoked later
+remain inert and live under JS-managed closure lifetime. Both probes separately
+record attempted/unsupported/failed and triggered. Absence/failure is not a
+negative detection or a successful qualified plane. No universal CDP, current
+Chrome, automation identity or human guarantee follows from either result.
+It does not attach DevTools, enable a debugging port, navigate or run script
+source. Default construction does not perform these active console operations.
+The legacy groupEnd call can change developer-console grouping; it is not a
+passive or invisible operation. Synthetic positive callback tests do not prove
+behavior of a particular real CDP client.
+Only successful attempted observations may feed the existing unchanged CDP
+flag evaluator; no scoring weights/predicates/bands or new tells are added.
+Once explicitly requested, an incomplete CDP attempt rejects this collector's
+snapshot instead of silently substituting a negative flag. Repeated calls return
+the cached attempt; stop rejects later active probes.
+
 ## Owned script observer
 
 Observe document childList/subtree changes with an owned MutationObserver.

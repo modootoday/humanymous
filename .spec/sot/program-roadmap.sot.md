@@ -233,6 +233,14 @@ Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생
 
 ## 현재 종료를 막는 gate와 다음 착수
 
+현재explicit probe_cdp_json은legacy console-preview 두관측을actualRust로
+수행하며once-per-collectorcache/status/error/latecallback/stop을검증했다.
+Native19/actualDockerFirefox51/strictWASMClippy는component범위이며CDP종류나
+자동화/humanidentity를보증하지않는다. 기존frozenflag evaluator만재사용한다.
+공통workspace는작업트리25members로확장해delivery/M11tooling을rootlock으로
+테스트했다(관리7unit4process+delivery16,Clippy). 별도M11lock은private원본
+보존후제거했다. 공통manifest귀속/나머지worker최종source통합은아직진행중이다.
+
 후속 enable_guard_hooks는명시opt-in Proxyforwarding을구현했다. default생성자는
 전역eval/Function을대체하지않으며directeval lexical변경을API/정본에명시한다.
 actualFirefox47/0/0과WASM strictClippy로반환/예외/this/newTarget/중첩호출/

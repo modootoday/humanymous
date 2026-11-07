@@ -1,6 +1,7 @@
 //! Checked browser I/O. All executable glue is generated upstream by bindgen.
 pub(crate) mod advanced;
 pub(crate) mod behavior;
+pub(crate) mod cdp;
 pub(crate) mod environment;
 mod fingerprint;
 pub(crate) mod guard;

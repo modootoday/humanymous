@@ -14,6 +14,17 @@ rel:
 
 # Rust migration conventions
 
+## Explicit console-preview acquisition
+
+BrowserCollector.probe_cdp_json ports Error.stack/console.debug and prototype
+Proxy ownKeys/console.groupEnd using Rust-authored managed callbacks and empty
+synthetic objects. It is explicit, cached once per epoch and disabled after stop.
+Attempted/unsupported/failed remain separate. After explicitly requesting these
+observations, an incomplete attempt rejects snapshot rather than silently using
+negative flags. No universal current-Chrome/CDP/human/code-attestation claim.
+Native19/actualDockerFirefox51/strictWASMClippy pass in the mounted-WASM component
+scope. Bootstrap/distribution/session/transport and full product e2e remain pending.
+
 ## Explicit forwarding hook receipt
 
 BrowserCollector.enable_guard_hooks explicitly opts into global eval/Function

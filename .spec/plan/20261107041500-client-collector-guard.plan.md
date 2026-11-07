@@ -22,7 +22,9 @@ rel:
 - [x] Test partial setup rollback, nested forwarding, stop/drop, external replacements,
   current descriptor flags, failed restoration, retained managed callbacks and
   rejected overlapping same-realm activation; actualFirefox47/0/0.
-- [ ] Port bounded active CDP probes without claiming universal automation identity.
+- [x] Port explicit once-per-collector console-preview probes, attempted/unsupported/
+  failed statuses, synchronous legacy sampling and JS-managed inactive callbacks;
+  currentactualFirefox51/0/0, no universal automation identity claim.
 - [ ] Verify actual browser application/lifecycle tests and full collector bootstrap ordering.
 - [ ] Integrate qualified report with snapshot/session/RIT and actual Docker product e2e.
 
