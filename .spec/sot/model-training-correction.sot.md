@@ -17,10 +17,12 @@ Only the first source slice (training/record.rs, training/mod.rs and minimal lib
 export with module tests) is implemented and qualified at immutable source
 a0ebc9ae4da4c52020f6e39bb614d1e14d4e0b2e: fmt,13unit+1fixture, all-target check
 and strict Clippy passed, including the actual owned-file parser pilot. Evidence:
-[[evidence:root/20261107140000]]. This supersedes the initial source-only status
+[[evidence:root/20261108005200]]. This supersedes the initial source-only status
 for this bounded native component only; it does not qualify the full migration.
-New crates, manifests, binaries and subsequent kernel/lifecycle implementation
-remain unapproved. Full legacy responsibility
+Standardization was later qualified at e7d8f9a3 with17library+1fixture passed and
+fmt/check/strict Clippy. The next authorized source-only slice is evaluation metric
+reduction; new tests remain NOT_RUN. New crates, manifests, binaries, SGD/RNG and
+lifecycle implementation remain unapproved. Full legacy responsibility
 remains in scope. No retirement, training-loop, production inference or full runtime
 parity is claimed. Existing pure inference fixture comparison was executed only
 under the explicitly allocated component unit-test grant.
@@ -81,8 +83,33 @@ features and nonfinite intermediate sums/variance with typed errors. Overflow
 rejection is an explicit fail-closed hardening delta; no invalid bundle is emitted.
 The kernel neither selects samples nor admits provenance nor alters their bytes.
 Fixed-size shared FeatureVector arrays avoid a second schema/extractor definition.
-This pure source+tests/fmt slice is authorized; compilation is NOT_RUN and no
+This pure slice was qualified at e7d8f9a3 with4new tests passed; no
 training-loop/RNG, temporal gate, lifecycle or activation authority is inferred.
+
+### Next source-only slice: offline metric reduction and RNG L0 decision
+
+Original row/files/231 Evaluate classifies p>=0.5 as bot and computes float32
+correct/total, humanFP/humans and botTP/bots. training/evaluate.rs reduces existing
+inference::Prediction values, without running or duplicating forward math,
+Runtime configuration or model loading. Valid labels0/1 derive human/bot membership
+from one field, avoiding inconsistent legacy Y/Human pairs. Return exact numerators
+and denominators. Defined-denominator arithmetic is unchanged; absent support
+returns None instead of legacy zero, an explicit reporting delta preventing missing
+classes appearing measured. This reducer does not implement promotion, cohort
+requirements, time split or label admission. Reject invalid labels, abstention,
+nonfinite/out-of-range probabilities and zero/>100000/over-budget input counts.
+Late errors reject the whole result. No new test execution is authorized yet.
+
+RNG L0 target: retain Go1.26.3 math/rand NewSource(seed) sequence compatibility,
+not a generic seeded Rust generator. One stream feeds ordered NormFloat64 calls
+for W1 then W2 per hidden unit and subsequent epoch shuffles; compatible warm start
+consumes no initialization draws. Negative/zero seeds and shape rejection need
+fixtures. Independent init/shuffle streams, alternate PRNG/normal algorithms and
+seed-only reproducibility claims are excluded. Before RNG implementation, freeze
+exact rng/rand/normal algorithm/table source hashes plus cold/warm/epoch-order and
+intermediate state fixtures, or explicitly accept a non-byte-compatible versioned
+format. No Go execution, fixture generation, initialization or RNG implementation
+is granted here. This sequence-proof dependency does not block pure metric counts.
 
 The accepted first slice uses explicit configurable ceilings of1MiB per physical
 line including its newline,128MiB total bytes including blank lines,100000 parsed

@@ -1,5 +1,5 @@
 ---
-id: evidence:root/20261107140000
+id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
@@ -308,3 +308,20 @@ terminal and owner6 target was returned before read-only evidence work.
 No new target lease, GPU/heavy weights, process training, production activation,
 threshold change or product e2e occurred. Full baseline rows230/231 remain open:
 Standardize is only one function of the training/evaluation responsibility.
+
+## Next source-only evaluation checkpoint and metadata repair
+
+Root authorized training/evaluate.rs with training/mod.rs export. Original
+/files/231 Evaluate maps to bounded pure inference::Prediction reduction; no
+inference call or forward pass is duplicated. Four authored tests cover confusion
+counts/inclusive0.5/float32 rates, absent classes, unusable predictions/late invalid
+rows, and budgets. All4new tests remain NOT_RUN. Prior17library+1fixture applies
+only to e7d8f9a3. Full evaluation adapter, cohorts/AUT/time gates, SGD/RNG and
+baseline rows230/231 remain open. RNG source/fixture freeze is a dependency,
+not a new execution grant.
+
+Delivery's4unlisted metadata findings did not reproduce: scoped P2 including private
+documents returned0errors. Full scoped check instead exposed one I1 duplicate ID
+shared with CLI's private document. This evidence now uses evidence:root/20261108005200;
+its own SoT reference is updated. Directory, raw receipts, hashes and creation
+timestamps remain intact. No CLI document or global private tree was edited.

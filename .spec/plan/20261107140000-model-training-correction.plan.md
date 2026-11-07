@@ -46,6 +46,12 @@ This supersedes NOT_RUN for Standardize only, not Train/RNG/evaluation or whole
 legacy rows230/231. Next lowest kernel candidates remain evaluation primitives
 with explicitly separate gate policy, or RNG after sequence compatibility decision.
 
+Root next authorized source-only Evaluate reduction: evaluate.rs uses existing
+Prediction values, exact class counts and float32 rates with absent denominators
+unavailable. Four new tests are NOT_RUN; prior18-pass receipt is not inherited.
+RNG targets exact Go single-stream compatibility; source/fixture sequence freeze
+is required before RNG implementation. No new workload has been started.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.
