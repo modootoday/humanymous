@@ -36,10 +36,24 @@ scoped Clippy and allocated ordinary process/IPC/fixture tests. Root may assign
 at most four local pipelines A/B/C/D, each with an explicitly assigned distinct
 target, build jobs1 and incremental0. An idle slot is not authorization to start.
 Admit new work only at commit<85% and free physical memory>20GiB. Do not overlap
-targets or run CEF/native-heavy/bindgen together. At commit>=88% or free physical
+targets or run CEF/native-heavy/bindgen together. Native Docker, CEF and SDK heavy
+builds are exclusive against other cold compilation streams, including initial
+Windows/WSL targets. Four slots are a ceiling, not evidence that four concurrent
+cold streams are safe. Warm unit or bounded actual test processes may overlap
+only with explicit budget admission. Before starting a deferred heavy build,
+confirm all other cold streams are terminal and recheck commit<85%/free>20GiB.
+At commit>=88% or free physical
 memory<16GiB, automatically defer new compilation and reduce the next allocation
 count; never kill another owner's processes. GPU inference needs a separate
 explicit bounded allocation and owned-process stop policy.
+
+Root's later guard observation reached88.2594% host commit while initial WSL
+runtime/Python compilation overlapped an Apache Docker build. The exact owned
+Apache build was stopped and cleaned up; its45 cases remained NOT_RUN. This is
+the basis for cold-stream exclusion, not a passing Apache result. Preserve caches;
+do not shut down WSL, drop global caches, prune Docker state or kill foreign
+processes to force admission. Such actions require their own authorization and
+never follow from a slot assignment.
 The single execution-policy canon remains program-roadmap/delivery SoTs, including
 resource measurements and the root lock-integration window for manifest changes.
 Selected Linux pre-push checks may use Windows Docker Desktop `act` with the same

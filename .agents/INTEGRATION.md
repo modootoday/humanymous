@@ -24,7 +24,15 @@ historical evidence51014/51015; they do not qualify current source or model beha
 Local Cargo work requires one of at most four root-assigned distinct-target
 slots A/B/C/D, jobs1/incremental0 and the shared resource guards. Admit only at
 commit<85%/freeRAM>20GiB; defer and reduce subsequent allocations at commit>=88%
-or freeRAM<16GiB. GPU inference remains separately allocated. The pure command is:
+or freeRAM<16GiB. GPU inference remains separately allocated.
+
+Native Docker/CEF/SDK heavy builds must not overlap another cold compilation
+stream. The four-slot ceiling is not a safe-concurrency claim; warm unit or bounded
+process overlap still requires explicit admission. A deferred heavy build waits
+for other cold streams to become terminal and commit<85%/free>20GiB. Preserve
+caches and foreign processes; rule94 records the root-observed88.2594% guard stop.
+
+The pure command is:
 
 ```text
 cargo test --locked -p humanymous-agent-maintenance --lib

@@ -35,7 +35,12 @@ pipelines A/B/C/D with distinct targets, jobs1/incremental0 each. No automatic
 start from a free slot or same-target overlap. Admit only at commit<85% and free
 physical>20GiB; at commit>=88% or free physical<16GiB defer new compilation and
 automatically reduce subsequent allocations. No CEF/native-heavy/bindgen overlap
-or termination of foreign processes. Root's program-roadmap/delivery canon owns
+and no native Docker/CEF/SDK heavy build alongside another cold compilation
+stream. Four slots are only a ceiling; warm unit/bounded process overlap requires
+explicit budget admission. Resume deferred heavy builds only after other cold
+streams are terminal and commit<85%/free>20GiB. Preserve caches; no WSL shutdown,
+global cache drop, Docker pruning or foreign-process termination for admission.
+Root's program-roadmap/delivery canon owns
 resource measurements and manifest windows; rule94 defines measured hybrid venue
 selection. Supported local process/IPC/fixture checks still need allocation;
 Windows Desktop act follows rule96. Required GitHub profiles and final matrix

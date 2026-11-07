@@ -10,6 +10,19 @@ rel:
 
 # Agent maintenance
 
+## Cold-stream resource exclusion
+
+Root reported an actual88.2594% commit guard event from concurrent initial WSL
+runtime/Python compilation and Apache Docker build. Only the exact owned Apache
+build was stopped/cleaned; its45 tests remained NOT_RUN. Rule94 and local policy
+projections now make native Docker/CEF/SDK heavy builds exclusive against other
+cold compilation streams, preserving the four-slot ceiling rather than treating
+it as proven cold capacity. Warm unit/bounded process overlap still requires
+explicit budget admission. Deferred Apache/heavy work waits for every other cold
+stream to become terminal and commit<85%/free>20GiB. No WSL shutdown, global cache
+drop, Docker pruning or foreign-process kill is authorized for admission. This
+lane did not execute or measure the Apache event; root owns its raw receipts.
+
 ## Narrow Git coordinator array repair
 
 Result at8560e55e: actual local-Windows git_coord1/1 passed, zero failed/ignored/
