@@ -706,3 +706,11 @@ authority legacy harness, custody binary invocation scope, Firefox component,
 runtime pilot and historical Python controls. No fresh build/runtime inferred.
 CI42348518353 policy success with Docker/Linux native live observed; later docs
 changes remain outside that run. No duplicate dispatch or local runtime.
+
+## Evaluation mode and scoped verifier review
+
+Read full attacker manifest/simulationCLI/catalog/verifierCLI/network composition.
+Added five exact source reviews and public mode/exit/denominator boundaries.
+Synthetic60second accessibility CHALLENGE regression is not human completion.
+Shared verification internals, network ledger/cases and actual source-bound
+execution remain separate pending reviews/gates; no new local process pilot.

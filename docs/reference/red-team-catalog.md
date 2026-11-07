@@ -20,3 +20,35 @@ authenticated machine clients and coherent browsers as controls.
 Catalog expansion does not authorize changing frozen detection policy. A passing
 case supports only the tested condition. See [evaluation rules](red-team-rules-of-engagement.md)
 and [reporting](../explanation/transparency-report.md).
+
+## Current Rust evidence modes
+
+| Mode | Source-level scope |
+| --- | --- |
+| Pure engine simulation | Frozen/synthetic observation replay; the seed changes case order, not probabilistic coverage or browser behavior |
+| Supervisor-owned network report | A lab supervisor owns the actual runtime child, authenticated audit recovery and counted origin; caller-supplied external targets are not supported |
+| Report verification | Checks scoped report consistency, not a new network run or independent observation |
+
+The simulation CLI accepts only an optional unsigned ordering seed. It does not
+accept a runtime executable or target URL. A replay case labelled human or
+accessibility remains a fixture, not an actual participant. A synthetic sparse,
+long-window control can match an expected CHALLENGE and pass regression checks;
+that does not establish successful accessible completion or a qualified recovery
+flow. Keep unavailable/error/control rows in the scheduled denominator.
+
+The Rust verifier's current source reads a bounded report file and distinguishes
+simulation replay from network-ledger checks. Exit 0 means the scoped checks
+passed. Exit 2 means a consistent scoped acceptance failure, or a request for
+full qualification that the report does not establish. Exit 1 covers malformed,
+inconsistent, oversized or unreadable input. `--require-full` must not be omitted
+and then described as a full-product gate. A valid ledger may still contain
+unsupported cases and explicitly false human/assistive/full-product flags.
+
+Current verifier follow-through is source-authored with changed-source execution
+pending. Replaying a simulation against current code does not silently validate a
+historical binary. A self-consistent network ledger does not prove that an
+untrusted author executed its asserted topology. Bind actual results to the
+owned Docker supervisor, exact binary/source identity, audit custody and origin
+measurements. HTTP 403 alone is not an audited DENY, and a collection receipt is
+not a policy verdict. No catalog or verifier pass authorizes scoring changes or
+probing an unrelated deployment.

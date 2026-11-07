@@ -2,6 +2,51 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/attacker/Cargo.toml",
+  "sha256": "cd4d610d4d1c14b58459c3d6b6602ab38eedb25f4e8c588b9a826cb805fd480d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full publish=false attacker manifest and dependency direction through defender/signals, with no production package claim. Public evaluation reference distinguishes replay/network/verification and owned-lab-only scope; workspace membership or compilation does not qualify a public runtime/attacker artifact.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/src/main.rs",
+  "sha256": "a9415905b5be0967862ae5c3dbf9a9359c4acedba8f5c01012b7089048baa7d6",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full simulation CLI and argument tests: only optional u64 seed, no caller target/runtime, pure report serialization and scoped regressions exit. Public reference separates order seed and synthetic controls from browser/human/network coverage. No simulation or process executed in this review.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/src/catalog.rs",
+  "sha256": "2060dac40fcc78828fde79952c9b7394dc08d957b9194ef8e0ef6f5f9843c81e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete frozen replay catalog, synthetic60second zero-motor CHALLENGE expectation, explicit unavailable runtime/human cases and stable seed-only shuffle plus source test. Public reference notes matching regression is not successful accessible completion, randomized coverage or live human/T4 measurement; policy remains frozen.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/src/bin/humanymous-wargame-verify.rs",
+  "sha256": "d78c1f5b8694248019f94f8a3c1ced87279b3f3abe87f77bb16faa29832095e4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full bounded4MiB report CLI, argument rejection, shared verify_bytes delegation and exit0scoped/2consistentfailure-or-unqualifiedfull/1malformed-or-I/O mapping. Public reference distinguishes ledger/replay verification from actual network execution and warns not to silently omit require-full when claiming product acceptance. Deeper verifier implementation needs its own review; current follow-through execution pending.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/src/network/mod.rs",
+  "sha256": "bf8daac18a671bf097282d42f8ccdaa7d845d629b3b3c29552b7598795245e69",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full OwnedLab trait, catalog/shuffle execution and source rejection tests retaining19errors7unsupported when actual child/audit unavailable. Public reference requires owned runtime/custody/counted origin and all scheduled denominators; a mock implementer can test accounting but not establish real process/topology or human qualification.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
   "source": "build/rust/authority-lab.Dockerfile",
   "sha256": "b85739a80b67ed9bc8913b2fb0829b3e72b5b030c1dc51bb61599495b2a36729",
   "reviewer": "codex/rust-pages",
