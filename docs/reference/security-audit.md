@@ -133,3 +133,19 @@ compatibility default. Existing supplied values are retained. This operation
 does not authenticate a remote claimed event time, validate producer identity
 or prove ingestion completeness. Preserve the actual producer and observation
 boundary before interpreting a sealed event as evidence.
+
+## Append, checkpoint and effect ordering
+
+`Log::emit_and_act` calls the application callback only after append and any due
+checkpoint succeed. This orders operations; it is not an atomic transaction
+with the callback's external state. A record can already be durable when a later
+checkpoint fails, so the returned error does not authorize a blind logical retry.
+Append/checkpoint/flush failures poison the writer until verified recovery.
+
+A required witness is checked on each emitted checkpoint. The first witnessed
+record receives an immediate checkpoint; later emission follows the configured
+cadence or explicit checkpoint/flush. Successful append does not imply a new
+independent co-signature for every individual record. External receipts must
+match the complete expected commitment, signature and required durability, with
+no fallback to writer-only success. Graceful-stop handling needs an actual final
+checkpoint and WAL flush, plus the consuming service's shutdown evidence.

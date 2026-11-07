@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/log/mod.rs",
+  "sha256": "5709ec413d217990f663e50d5802e0661791c1f581cae6f32199ce7aebe2ed9e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete Log composition and source tests: authenticated WAL open, external versus legacy witness selection, durable record then due checkpoint, first witnessed record bootstrapping, exact external receipt/durability, poison/restart, emit-and-act ordering and final flush. Public audit reference distinguishes callback ordering from atomic/exactly-once effects, durable record on later failure and checkpoint cadence from per-record independent signatures. Read tests are not fresh execution or whole-service shutdown qualification.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/audit/src/log/proofs.rs",
   "sha256": "06626d02195e4be65e21697a50e6aabc44cd8a44258a64d515d2b0cd6d399fa8",
   "reviewer": "codex/rust-pages",

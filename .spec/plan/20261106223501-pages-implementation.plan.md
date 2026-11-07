@@ -836,3 +836,13 @@ records ASCII recordhash leaves, bare path versus exact persisted signed-head
 proof, optional witness and separate body/HMAC chain checks. Stamping fills only
 missing values and does not authenticate supplied time/producer. Larger log
 composition remains a separate unfinished source review; no proof/runtime run.
+
+## Full log composition and effect-order review
+
+Completed full log module/test source read after earlier truncated excerpts.
+Manual receipt/public audit section distinguish append+duecheckpoint callback
+ordering from atomic external effects and perrecord witness signatures. Failures
+can follow durable records; graceful stop requires actual final flush evidence.
+Hosted42348518353 still running; Pages/documentation not reached. Linux job
+128331816044 logs via API give owning workspace execution/summary failed only;
+no component success or precise root cause inferred. No local runtime run.
