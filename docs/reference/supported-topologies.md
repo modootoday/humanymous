@@ -149,3 +149,24 @@ idempotency or retract an application effect after dispatch. Response streaming
 remains handler-owned; permit release is not proof that a download completed,
 a client received it or a side effect was rolled back. Actual abort/race/timeout
 and accessible recovery outcomes remain execution gates.
+
+### Node package qualification boundary
+
+The package manifest points CommonJS and ESM imports at upstream-generated
+native loaders and separate type declarations. Its explicit archive list excludes
+legacy handwritten source/tests and host-pilot programs. Missing generated output
+or a missing native binary blocks the package inspection path; compilation alone
+does not establish that an installable archive is correct.
+
+The Rust package driver owns generation/inspection exclusively, invokes the
+pinned upstream generator with locked Cargo resolution, checks generated LF text
+and provenance markers, typechecks declarations and loads both entrypoints in
+Node and Bun. Inspection writes a `component-only` provenance record with file
+hashes. It is not a read-only command or a complete framework/authority pilot.
+Do not use it as a supposedly lightweight local check under a runtime hold.
+
+`engines.node >=22` is an installation floor. Configured native build targets,
+loader import success and provenance hashes do not establish release-qualified
+OS/architecture/runtime tuples. A source-bound qualification receipt and actual
+authority/origin, archive and platform gates remain required; no npm publication
+or generally supported installation is implied here.

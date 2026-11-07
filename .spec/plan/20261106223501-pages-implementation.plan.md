@@ -585,3 +585,12 @@ Read all stream.rs/host.rs. Added pre-parser refusal, bounded replay/Request
 reconstruction, no-store status mapping, handler-owned response streaming and
 post-dispatch cancellation/effect limits. Pinned two manually reviewed source
 hashes without claiming race freedom, host compatibility or actual AT/recovery.
+
+## Native package and live hosted evidence boundary
+
+Read complete Node package driver, package manifest and capability descriptor.
+Documented upstream-generated loaders/declarations, explicit archive exclusions,
+component-only provenance and inspect's typecheck/Node/Bun execution plus writes.
+No packaging command ran locally. gh run view confirmed CI42347732666 live at
+policy job128329016157 for bfc9f62335ae41906996c6b01b0ae9e7993feeed; later
+documentation commits are outside that run and no Pages/build success inferred.
