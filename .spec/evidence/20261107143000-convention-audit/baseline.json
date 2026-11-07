@@ -871,5 +871,29 @@
     },
     "new_audit_workload": 0,
     "goal_complete": false
+  },
+  "followup_runtime_authorization_and_cli_downgrade": {
+    "runtime_private_review_sha256": "cf3c63841e88c95cbfbccbedde5ab6819beb5a54a669f4f31d420ebff75665bb",
+    "runtime_review": "runtime-authorization-6-actual-review-001.json",
+    "receipt": "7bdda110907e1abc581766bd97a089ccc2f2fc76",
+    "source": "aba7934d4a00cbc4ed9581df8aff401e98e4ec91",
+    "attachments": 30,
+    "source_files": 2886,
+    "archive_and_snapshot_join_mismatches": 0,
+    "registry_files": 6576,
+    "tools_and_targetlib": 66,
+    "config": 14,
+    "environment": 14,
+    "all_before_after_bytes_equal": true,
+    "later_retained_leaf_drift": 0,
+    "actual_pure": 6,
+    "filtered": 73,
+    "library_inventory": 79,
+    "fmt_first_check_strict_clippy": 0,
+    "scope": "DATA consumer only, same owned signed Authority fixture; whole79suite/nativeproducer/Ready/product OPEN",
+    "cli_canonical_correction": "5d7104da9659b6a1d40e5cd13e730b9920ce5eea",
+    "cli_state": "Verified public HOLD/source_qualified=false; owner confirms no other immediate source snapshot; absolute target ancestor regex excluded all16localpackage trees",
+    "cli_required_next": "Future root-admitted run needs relative path exclusions and mandatory local manifests/source coverage assertion; no retrospective evidence or current allocation",
+    "complete_goal": false
   }
 }

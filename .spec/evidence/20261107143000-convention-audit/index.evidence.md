@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: be8546b8541b2d9b6dbfb4ab229435a3a4cf123208797b7f912e58557cd8b2bc, bytes: 43056, store: repo}
+  - {path: baseline.json, sha256: 1ef2861a54f0cf1c5926312535c50c4910b03838df6d0c30e7b998b50478b259, bytes: 44388, store: repo}
 ---
 
 # Convention audit baseline
@@ -507,3 +507,24 @@ future root-admitted run needs reachable local-source closure. Later source reha
 cannot be relabeled immediate-before/after. No rerun or new lease was allocated.
 Private review001's premature closure inference is preserved and superseded by002.
 The public baseline binds exact reviews; complete migration qualification is OPEN.
+
+## Runtime consumer re-audit and durable CLI downgrade
+
+Runtime7bdda110 receipt at aba7934d independently binds30 matching attachments.
+Literal Git archive matches receipt SHA; all2886 regular members match selected
+source snapshot hashes. Source2886/registry6576/compiler-targetlib66/config14/
+environment14 before/after bytes are equal, with zero later retained leaf drift.
+Actual authorization6passed/0failed/ignored/measured,73filtered, library inventory79;
+fmtFIRST/all-feature all-target check/strictClippy0. Source and all six tests use
+Authority's shared signed fixture, preserve the same owned pair and reject exact
+scope case/port mismatch, invalid routes, premature secrets and missing witness
+configuration. DATA consumer qualification is accepted, not whole79suite, native
+producer, custody unseal, W transport, Ready, SCM or full product qualification.
+
+CLI5d7104da durably withdraws d395 exact-source qualification: public status HOLD
+and source_qualified=false. Owner confirms the absolute-path target exclusion
+matched the ancestor and omitted all16 local package trees, with no alternative
+immediate snapshots. Actual command success and archive identity remain facts.
+Future root-admitted validation requires relative exclusions and mandatory local
+manifest/source coverage checks; no backdated evidence or new run was authorized.
+Private exact Runtime review hash is in baseline.json. Complete audit stays OPEN.
