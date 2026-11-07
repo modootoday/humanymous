@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T10:42:07Z
+updated: 2026-11-07T11:04:06Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -15,6 +15,7 @@ files:
   - {path: native-adb8e3ed-validation-summary.json, sha256: 843b633f147dd6a44a6a70609c47a82111ec8f4db7fa3965262fa4f2a24e2ba4, bytes: 11656, store: repo}
   - {path: status.json, sha256: bdc567f5d002a9b3782e92a99b32b33c566e11bf59a4d63092400d61fa32395f, bytes: 4792, store: repo}
   - {path: source-commitments.json, sha256: 084b8fdedcaedf3aef86473d9689a79aea2dd1fb2edb71e17c0c23f820a7afc4, bytes: 8815, store: repo}
+  - {path: tls-fa2db419-first-execution-summary.json, sha256: 46efc65494842b502e90cbdaeb75741a000b5711c473cc10ab7d838d26806596, bytes: 2306, store: repo}
 ---
 
 # Runtime application operational integration

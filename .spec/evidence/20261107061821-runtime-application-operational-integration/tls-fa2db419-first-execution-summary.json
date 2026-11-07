@@ -1,0 +1,68 @@
+{
+  "source_commit": "fa2db419",
+  "manifest_commit": "af6dc779",
+  "scope": "Windows ordinary owned loopback TLS component subset; synthetic report and in-memory audit",
+  "compile_all_features_all_targets_locked_offline_exit": 0,
+  "clippy_warnings_denied_exit": 0,
+  "listed_library_names": 51,
+  "listed_names_match_contract": true,
+  "executed": 5,
+  "passed": 4,
+  "failed": 1,
+  "ignored": 0,
+  "filtered": 46,
+  "actual_exit": 101,
+  "source_files_compared": 489,
+  "source_drift": 0,
+  "full_library_qualified": false,
+  "full_r13_qualified": false,
+  "full_product_qualified": false,
+  "first_failure": "Origin accept deadline elapsed in claimed-positive TLS fixture; response and verdict not asserted before upstream join. Chrome claim over actual rustls may correctly refuse; diagnosis not yet confirmed by response.",
+  "raw_private_artifacts": [
+    {
+      "name": "fa2db419-tls-actual-exit.json",
+      "bytes": 17,
+      "sha256": "a08e456d63c44acaba5aa7f6e5cbc2881df77f3f29feae10c87003efdf541b5f"
+    },
+    {
+      "name": "fa2db419-tls-actual.log",
+      "bytes": 1547,
+      "sha256": "6a465c2dada054d6434c69df07f61ea64812525e90d069b7bafa520793e07373"
+    },
+    {
+      "name": "fa2db419-tls-after.json",
+      "bytes": 73751,
+      "sha256": "1df297eed5c8d3ac4d36fd77db2d907a0d148e3d063e7f911ba77e977f09467c"
+    },
+    {
+      "name": "fa2db419-tls-before.json",
+      "bytes": 73751,
+      "sha256": "1df297eed5c8d3ac4d36fd77db2d907a0d148e3d063e7f911ba77e977f09467c"
+    },
+    {
+      "name": "fa2db419-tls-clippy-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "fa2db419-tls-clippy.log",
+      "bytes": 348,
+      "sha256": "caff097249f4ebf153a35f45e61c341346e7a7adf35acb94cdbeb10cc0de60d9"
+    },
+    {
+      "name": "fa2db419-tls-library-list.log",
+      "bytes": 4603,
+      "sha256": "1538a51974f791bc4f3e6c26b7d9ea7d0d1d9fa719c48e57e4987eabd253baad"
+    },
+    {
+      "name": "fa2db419-tls-no-run-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "fa2db419-tls-no-run.log",
+      "bytes": 689,
+      "sha256": "efb2f961fcd257e63b78b0a91b26114736cd7011e8cc119cb8834950159191d4"
+    }
+  ]
+}
