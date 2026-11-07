@@ -52,11 +52,9 @@ impl Process {
         assert_eq!(ready["qualification"], "experimental-local-authority");
         assert_eq!(ready["profile"]["id"], "application-http");
         assert_eq!(ready["profile"]["raw_tls"], false);
-        let nginx = config["adapter"] == "nginx";
-        assert_eq!(ready["profile"]["routes"][0]["node_raw"], !nginx);
-        assert_eq!(ready["profile"]["routes"][0]["nginx_raw"], nginx);
-        assert_eq!(ready["profile"]["routes"][0]["fetch_normalized"], false);
-        assert_eq!(ready["profile"]["routes"][1]["node_raw"], false);
+        let provisioned: humanymous_authority::configuration::Configuration =
+            serde_json::from_value(config.clone()).unwrap();
+        assert_eq!(ready["profile"], provisioned.capability_manifest());
         Self {
             child,
             endpoint: ready["endpoint"].as_str().unwrap().into(),
@@ -193,6 +191,73 @@ async fn shared_client_checks_real_server_and_profile_bound_credentials() {
             .unwrap(),
         Verdict::Allow
     );
+}
+
+#[tokio::test]
+async fn normalized_producers_are_bound_by_native_authority_credentials() {
+    use humanymous_integrity::adapter::AdapterProfile;
+    for (name, profile, mode, wrong_mode) in [
+        (
+            "python-asgi",
+            AdapterProfile::PythonAsgi,
+            "asgi-normalized",
+            "wsgi-normalized",
+        ),
+        (
+            "python-wsgi",
+            AdapterProfile::PythonWsgi,
+            "wsgi-normalized",
+            "asgi-normalized",
+        ),
+        (
+            "ruby-rack",
+            AdapterProfile::RubyRack,
+            "rack-normalized",
+            "asgi-normalized",
+        ),
+    ] {
+        let d = Directory::new();
+        let mut c = config_value(&d);
+        c["adapter"] = name.into();
+        c["routes"][0]["required"]["raw_header_order"] = false.into();
+        let p = Process::start(&c);
+        let server = server_peer(&p, &c);
+        let mut v = request(now_ms().unwrap(), 100);
+        v["adapter"]["id"] = profile.expected().id.into();
+        v["headerMode"] = mode.into();
+        v["capabilities"]["rawHeaderOrder"] = false.into();
+        v["peer"] = Value::Null;
+        v["connectionId"] = Value::Null;
+        let bound = client_call(&p, &server, &v, profile)
+            .await
+            .expect("profile-bound native reply");
+        bound.consume().expect("live one-use native decision");
+        assert!(
+            client_call(&p, &server, &v, profile).await.is_err(),
+            "replay refused"
+        );
+        v["id"] = "01234567-89ab-4cde-8fab-000000000101".into();
+        v["headerMode"] = wrong_mode.into();
+        assert_eq!(
+            p.send(&p.credential, &v).await.0,
+            400,
+            "wire mode cannot select profile"
+        );
+        v["headerMode"] = mode.into();
+        v["capture"] = serde_json::json!({"forged":true});
+        assert_ne!(
+            p.send(&p.credential, &v).await.0,
+            200,
+            "forged evidence refused"
+        );
+        v["capture"] = Value::Null;
+        v["target"] = "/capture".into();
+        assert_eq!(
+            p.send(&p.credential, &v).await.0,
+            422,
+            "missing raw plane refused"
+        );
+    }
 }
 impl Drop for Process {
     fn drop(&mut self) {

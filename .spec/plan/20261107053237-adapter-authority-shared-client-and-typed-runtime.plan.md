@@ -184,3 +184,19 @@ delivery; supervisor owns count and epoch. Current runtime management Handler
 now consumes shared LocalHandler/serve_handler_until with generated independent
 credential; injected credential integration and actual hosted results remain open.
 No Cargo slot/lock edge yet at this observation. Formatting/diff passed.
+
+## Hosted normalized-producer native fixture
+
+Added one native_process test with three producer iterations: actual child
+authority startup and manifest, native server verified shared-client decision,
+one-use consume, replay refusal, cross-profile wire-mode refusal, forged capture
+refusal and missing raw-plane422. Existing startup helper now checks the entire
+provisioned manifest rather than assuming every non-nginx producer is Node.
+This is authored actual-IPC component coverage for hosted OS runners, NOT_RUN.
+It does not run Python/Ruby interpreters or constitute their host/product e2e.
+One Rust test with three iterations must not be reported as three passed tests.
+Direct rustfmt and whitespace check passed; no local process/IPC test executed.
+
+Public spec check at this checkpoint returned1 E1 from runtime's concurrently
+changed source-commitments.json attachment and1 pre-existing binary U2 warning.
+Owner notified; no modification or waiver of other-owner evidence. No pass claim.
