@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T20:12:19Z
+updated: 2026-11-07T20:19:59Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -19,6 +19,7 @@ files:
   - {path: rng-validation-profile.json, sha256: 9ef43265eb2dda0d957c52ba5a0d8abbc4fbe78fdc402d395ee9e4fd82686ec9, bytes: 8074, store: repo}
   - {path: rng-first-attempt.json, sha256: 13a5649a6e29cca6c13e122e206bfb39ea0f3b6ddc3f6eb57177cbfe55de3e67, bytes: 1473, store: repo}
   - {path: model-core-handoff.json, sha256: 643d8461ebd89fc49565a4d71c6d2f887c735cc64335b562610a6bfdb6a0ced9, bytes: 11818, store: repo}
+  - {path: core-first-rng-validation.json, sha256: 3ae57b917a9c7885fd115d62b12121a06bdfffc5ca24d4aa9fae3d0deecba2a4, bytes: 7781, store: repo}
 ---
 
 # Read-only source inventory
@@ -517,3 +518,25 @@ manifest-relative fixture hazards, BSD data preservation and the Windows closure
 consumer. Required new tests are separate from historical14/18/4passes and RNG12
 NOT_RUN. Public family acceptance does not establish all APIs public, native/WASM
 compatibility, RNG qualification or completed29row training/correction migration.
+
+## First actual RNG validation on Root's moved core tuple
+
+Root allocated and executed the consolidated humanymous-core validation. Independent
+read-only inspection of its retained raw output confirms all12model::training::rng
+unit tests passed, within145unit plus17integration passes (162total), zero failed,
+ignored or filtered. All33model unit cases and the model inference integration
+harness passed. Clippy stderr ends with a successful dev-profile completion;
+Root reports locked/offline tests and strict all-target/all-feature Clippy exit0.
+Exact argv and terminal process handles remain Root-owned evidence, not recreated
+by this owner. core-first-rng-validation.json pins raw log hashes and the moved
+model source records from Root's143record pre-test manifest; a fresh read-only hash
+comparison against that manifest found0differences. Root also reports0before/after
+differences. This is the FIRSTactual RNG12 proof on the moved tuple, not retroactive
+qualification of72888805 or the failed pre-compiler attempt.
+
+Go upstream output expectations, Rust-derived state/mixed-stream reference checks
+and injected tapes retain their separate provenance. No Go runtime was executed;
+Go internal states remain unobserved. No product e2e, training/CLI pilot, activation,
+GPU or additional-platform parity is established. Prior NOT_RUN statements describe
+the historical checkpoints; the moved tuple now has this separately bound receipt.
+This owner started no formatter/compiler/test. Root's implementation freeze remains.

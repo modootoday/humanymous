@@ -463,3 +463,25 @@ shims, Cargo writes or new workload were performed by this handoff.
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.
+
+## First actual RNG validation on Root's moved core tuple
+
+Root allocated and executed the consolidated humanymous-core validation. Independent
+read-only inspection of its retained raw output confirms all12model::training::rng
+unit tests passed, within145unit plus17integration passes (162total), zero failed,
+ignored or filtered. All33model unit cases and the model inference integration
+harness passed. Clippy stderr ends with a successful dev-profile completion;
+Root reports locked/offline tests and strict all-target/all-feature Clippy exit0.
+Exact argv and terminal process handles remain Root-owned evidence, not recreated
+by this owner. core-first-rng-validation.json pins raw log hashes and the moved
+model source records from Root's143record pre-test manifest; a fresh read-only hash
+comparison against that manifest found0differences. Root also reports0before/after
+differences. This is the FIRSTactual RNG12 proof on the moved tuple, not retroactive
+qualification of72888805 or the failed pre-compiler attempt.
+
+Go upstream output expectations, Rust-derived state/mixed-stream reference checks
+and injected tapes retain their separate provenance. No Go runtime was executed;
+Go internal states remain unobserved. No product e2e, training/CLI pilot, activation,
+GPU or additional-platform parity is established. Prior NOT_RUN statements describe
+the historical checkpoints; the moved tuple now has this separately bound receipt.
+This owner started no formatter/compiler/test. Root's implementation freeze remains.

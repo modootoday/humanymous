@@ -1,0 +1,169 @@
+{
+  "schema": "humanymous.model-core-first-rng-validation/1",
+  "status": "ACTUAL_MOVED_CORE_OUTPUT_INDEPENDENTLY_INSPECTED_NO_RERUN",
+  "inspected_utc": "2026-11-07T20:19:41.5486698+00:00",
+  "historical_source_checkpoint": "728888051b7dacfa3e3181cf71da4fff2f526bd4",
+  "qualification_scope": "Root-executed moved humanymous-core tuple only; not retroactive historical checkpoint qualification",
+  "raw_store": "private",
+  "raw_directory": ".spec.local/root/evidence/20261108054000-core-consolidation",
+  "runner": "Windows native Cargo executable under target/core-consolidation-v0",
+  "root_reported_invocation": "locked/offline core test; all-target all-feature strict Clippy; exact argv and exit handles retained by Root",
+  "observed_test_totals": {
+    "integration": 17,
+    "unit": 145,
+    "filtered": 0,
+    "ignored": 0,
+    "rng": 12,
+    "failed": 0
+  },
+  "observed_model_unit_passes": 33,
+  "rng_pass_records": [
+    "test model::training::rng::tests::injected_normal_fast_slow_accept_and_rejection_paths_are_distinct ... ok",
+    "test model::training::rng::tests::injected_float64_rounding_retry_and_shuffle_rejection_consume_extra_draws ... ok",
+    "test model::training::rng::tests::budget_shape_and_size_errors_preserve_public_state_and_order ... ok",
+    "test model::training::rng::tests::retained_go1263_seed0_int63_output_goldens ... ok",
+    "test model::training::rng::tests::injected_normal_tail_sign_rejection_and_finite_tape_exhaustion ... ok",
+    "test model::training::rng::tests::retained_go1263_seed0_normal_output_goldens ... ok",
+    "test model::training::rng::tests::empty_singleton_and_seed_modulus_cases_preserve_draw_contract ... ok",
+    "test model::training::rng::tests::requested_warm_state_is_validated_before_any_draw_or_copy_alias ... ok",
+    "test model::training::rng::tests::translated_tables_match_unchanged_go1263_source_literals ... ok",
+    "test model::training::rng::tests::rust_derived_normal_and_shuffle_mixed_stream_checks_every_primitive_draw ... ok",
+    "test model::training::rng::tests::rust_derived_cold_warm_initialization_and_successive_epoch_orders ... ok",
+    "test model::training::rng::tests::rust_derived_seed_and_feedback_states_match_across_ring_wraps ... ok"
+  ],
+  "source_snapshot_count": 143,
+  "independent_snapshot_to_current_difference_count": 0,
+  "root_reported_before_after_difference_count": 0,
+  "model_source_records": [
+    {
+      "path": "crates/sdk/humanymous-core/src/model/mod.rs",
+      "sha256": "f576837b5348af278e0b8ba59f022cbf439ec123b7dab0fb43a25bfa160b567b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/bundle.rs",
+      "sha256": "d6a8d0c295b12df5a8537074d2023116941ad16df5a5ef830775fe6ced32983a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/mlp.rs",
+      "sha256": "17631d082ea1ba0f575a68de3031244deb2484542e9b1b843ff3d09c7c4de6e2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/mod.rs",
+      "sha256": "ab3db88975c14310c655d480079332e11c92467215756bfb90a638fda67cb13e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/inference/runtime.rs",
+      "sha256": "3490db46846fac78219a98f8e5e8620cbb32840c350fe94da1ab1ef4390b3235"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
+      "sha256": "941c940d46676687d4ea770b0a0c55f3aea18324dc8f12ef26a6f2bdf027783c"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/mod.rs",
+      "sha256": "0f98f8588ac55ea29e3485bf7dc5f737da393efcb38378ce583909d19f53c1f3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/record.rs",
+      "sha256": "0f4f56f3354823aced29baeb679a821edc9f54e931aa00e0849c3b1312565d57"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/standardize.rs",
+      "sha256": "2c709638f1b67538672e400ebbd7b854f775b961784e7d2eb12b73c7e3c32305"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/initialize.rs",
+      "sha256": "45bae023a845737e36567fadc6d30ab0e7232e67e52211163acd57dfe2e613e3"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/INTEGRATION.md",
+      "sha256": "21c4e0cf869c47577141b6115433c823ca669f988f9509fb9b922bfd24268c80"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/LICENSE",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/mod.rs",
+      "sha256": "ba8ce1867b988ca6d80402a4309ee1e9679d09711964942eb28b6ba9dd99f59c"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/normal.rs",
+      "sha256": "3f3037ba9ea1fdcea8a636bb687d151de34864609b42a3a91f3df200cd3eccb9"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/shuffle.rs",
+      "sha256": "5a1efcebb6deafce15ef673335db7c85f735fa5e5815f05d3f6cca00482a3c97"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/source.rs",
+      "sha256": "2d0102d192cde42f8b4223c4b76d7b58b9df3e3fa91b33ae5daa3980aed4bb98"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/tables.rs",
+      "sha256": "45967a8e11aaf2d8ff041b5704b98faf6f75637792c8af709a05b434678b04d7"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/model/training/rng/tests.rs",
+      "sha256": "f16bf7c10217f2202446828abdeb07e429aee67ece5aab9c22d39aa7ace13fa2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model.rs",
+      "sha256": "4652a6520351834e34d86f394eabae22bda4ed7848cf4c7ee62f96890bf0b6b2"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/inference_parity.rs",
+      "sha256": "c547223abb1ed215fe8bc58be5fca695bab1fab96dc4afa03e56966a116d0910"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/go1263-normal-seed0.json",
+      "sha256": "1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/go1263-normal-source.txt",
+      "sha256": "d8f4450a14b03bd0ec939eb4b127e199d9d78ba3d07c4ad0a65ac493dfa1c62a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/go1263-rng-source.txt",
+      "sha256": "e301d938fe5dbe4ef5ff52f31de68d2547c3ab50da5c95bb21c49ea983a817ab"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/model/fixtures/inference.json",
+      "sha256": "5b6764eac0aadcba60ed619126b7174b012e40be6deb8f32bfc7995ba354a9fe"
+    }
+  ],
+  "raw_files": [
+    {
+      "sha256": "7c6fa2626e3b1475865e9a8d5664578ec477133d8a44277397483d21ba586808",
+      "bytes": 16174,
+      "name": "core-test.stdout"
+    },
+    {
+      "sha256": "b92088db1fe4c073f4820119ee6df2211804e9b9b9c4d4186a0c7d2adaafb0de",
+      "bytes": 1934,
+      "name": "core-test.stderr"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "name": "core-clippy.stdout"
+    },
+    {
+      "sha256": "525d3e28975817f756643301c8a11458c5d9aed142cc0385a8daee71303dc651",
+      "bytes": 975,
+      "name": "core-clippy.stderr"
+    },
+    {
+      "sha256": "b68d1f980c27a76c81188cb04f3cf082a2ffb20f59a564e5531268eb5ce0045d",
+      "bytes": 24104,
+      "name": "core.before-test.json"
+    }
+  ],
+  "evidence_limits": [
+    "No new Go execution or observed mixed-stream/internal Go state",
+    "Rust-derived and injected-tape evidence retain their existing classifications",
+    "No product e2e, training/CLI pilot, activation, GPU or cross-platform qualification",
+    "Independent inspection does not recreate Root process exit handles or exact argv",
+    "No compiler, formatter or tests started by this owner; core remains Root frozen"
+  ]
+}
