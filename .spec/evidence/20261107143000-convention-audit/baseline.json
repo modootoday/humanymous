@@ -233,5 +233,20 @@
     "r1_release_and_benchmark_observed": true,
     "r1_product_performance_qualified": false,
     "notice_actual_archive_qualified": false
+  },
+  "followup_model_record": {
+    "private_review_sha256": "95d1fa85d30c9cc4b368dc1a8b0a64e37009ede1a6772a2aa6da117867e4048c",
+    "source_commit": "a0ebc9ae",
+    "actual_unit_tests": 13,
+    "actual_fixture_tests": 1,
+    "actual_owned_file_case": true,
+    "full_training_lifecycle_qualified": false
+  },
+  "followup_audit_facade": {
+    "private_review_sha256": "90fa2b48b52ea3eb4945e0a19e202eb18076ebdc348ab2fd08ff24467a66cba3",
+    "source_commit": "8025f735",
+    "source_direction_accepted": true,
+    "actual_new_tests_observed": false,
+    "production_recovery_qualified": false
   }
 }

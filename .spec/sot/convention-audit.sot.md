@@ -399,3 +399,31 @@ build followed by archive-member refusal and zero artifacts. The combined error
 does not identify which member/predicate failed. Sparse writer versus regular
 reader incompatibility is source-confirmed separately, not proven as that run's
 cause. NOTICE01 actual archive and final runtime-image gates remain OPEN.
+
+### Model record and private audit facade follow-up
+
+Independent full parser source review ata0ebc9ae confirms required binary labels
+and behavior, finite raw/extracted values, shared extractor reuse, bounded
+physical/total bytes including blank delimiters, record/cohort/metadata limits,
+whole-result refusal and explicit quarantine versus external review. These are
+aggregate admission mechanics, not authenticated labels or training activation.
+All three current/frozen source leaves match their saved closure entries.
+Actual raw output shows13units (eight parser plus five existing inference) and
+one fixture harness, all passed with no ignored/failed/filtered cases. The actual
+owned-file parser case exercised accept/reject and retained caller batch on error.
+Results record fmt/test/check/strict Clippy exit0; saved1493-entry before/after
+closures are byte-identical. Eighteen config candidates were recorded. The prior
+source's fmt failure remains separate. No SDK/DLL completeness, sink, training
+kernel, model lifecycle or production/product qualification is inferred. Owner
+was asked to reconcile stale current-status SoT wording with these parser-only
+receipts; immutable historical receipts must remain intact.
+
+The private audit S1 facade source at8025f735 was independently reviewed through
+its test-only dispatch, one owning NativeBudget validator, same borrowed policy/
+limits/control forwarding and final transcript/source publication barrier.
+The existing operational uninhabited factory remains Unsupported. Budget math
+is a trusted finite reservation (segments+7+other handles), not observed FD
+availability, identity or a recovery permit. New facade and controlled-route tests
+are authored; their execution was not independently observed. Capacity/FD/RSS,
+unsupported-platform execution and S2 typed production recovery remain OPEN.
+Narrow source-direction acceptance cannot close the complete audit/migration.

@@ -170,3 +170,9 @@ attachments verified. Five actual process parents remain NOT_RUN. R1 release
 and one benchmark actual exit0/hash/paired arithmetic verified, function scope
 only. Hosted archive release-build success followed by refusal does not close
 NOTICE01 artifact gates. See the SoT subsequent evidence section.
+
+Model record a0ebc9ae independently re-audited:13units+onefixture, actualfile
+parser case and exact source/1493entry closure confirmed; complete training and
+lifecycle still OPEN. Private audit facade8025f735 source direction accepted
+without production promotion or new execution/capacity claim. Owner status-prose
+reconciliation requested for parser-only qualification.
