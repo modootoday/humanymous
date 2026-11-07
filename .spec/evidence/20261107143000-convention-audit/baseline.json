@@ -2009,5 +2009,27 @@
     "state": "Two P2 design ambiguities CLOSED at90d3; noP0P1 identified in bounded private offline scope; implementation/execution NOT qualified",
     "residuals": "Warm stats/Cal nofunctioncontinuity; shuffle infallible allocation; actual pinnedGoFMA/bitparity unproven",
     "goal_complete": false
+  },
+  "tools_unit_and_input_map_review": {
+    "sources": [
+      "58a80c39dfe4a330fd7aa58b0f51b66dfb3e8cca",
+      "9cb6e4353c73b95b54a5511acc5bae0df384ceab"
+    ],
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-unit-input-review-001.json",
+        "sha256": "52e0589b009f92714778572534405b86972bc14f570e9c9e6aaa9b1618ab76e7",
+        "bytes": 5268
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-input-canonical-pin-review-001.json",
+        "sha256": "83d04f4a3823776e322388b28cb2c8fd4273edd2e95cf52f61798a33edeeaa60",
+        "bytes": 138
+      }
+    ],
+    "unit": "446oldsource-target/440physical;143sourcehashes+446locations0issues;15bins;528newcollection candidates0selectorcollision;actualperOSsemanticlist unqualified",
+    "inputs": "35rows/34paths exactqueue;35Gitpins+78readerhashes0issues; genericownershipdecisionRESOLVED",
+    "remaining": "Final per-reader/caller/role-feature/unsafe/release/native identity/extracted closure and actualold/new inventories; newRoot279filemapreview pending",
+    "goal_complete": false
   }
 }

@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 7b55a47d68a54fa2406a4eb15d56e356c0b99442ba21cac9a4d7f3b89c8e0472, bytes: 111573, store: repo}
+  - {path: baseline.json, sha256: 9f79c1098a51d24133d33c67dc551cdb118beb3d15b98c01e06d130b5be471b8, bytes: 112719, store: repo}
 ---
 
 # Convention audit baseline
@@ -1767,3 +1767,43 @@ No compiler, Go, GPU, filesystem pilot, activation or source implementation ran
 by audit. Actual SGD learning/file pilot/Go parity and temporal/cohort/calibration/
 correction lifecycle/product gates remain OPEN. Inference success is not training
 completion. Full migration audit remains active.
+
+## Independent complete Tools lexical-unit and input-decision map review
+
+Committed58a80c39 LIB/BIN maps were independently checked:187 library plus259
+old-bin source-target candidates equal446 collections at440 physical source/
+function sites. All143 source hashes and446 test-attribute/function locations
+match; six shared physical sites explain repeated old collection. All15 bin roots
+are represented, including zero-case fixture/entry roots whose executable role
+obligations remain. There are528 proposed new target-qualified unit collections
+with no selector collisions; this is not an actual compiled/executed denominator.
+Attacker25 nonignored plus one portable ignored and one Windows ignored case,
+and Defender non-Linux ninth case, match exact source attributes. Historical
+1f2 GNU Delivery121 actual names exactly match its121 map candidates; that is a
+name correlation, not current whole-executable qualification.
+
+All three reviewed map/table copies match their exact committed Git blobs.
+Delivery9cb6e435 accepted input decisions cover the CLI queue multiset exactly:
+35 rows/34 paths, comprising25 literal inputs and10 concat-site rows. All35
+canonical Git pins and78 reader-source hashes reproduce without mismatch.
+Categories are15 bounded repository-reader rows,6 original-resource moves in
+this expanded table,8 immutable DATA replicas,one Collector source pin and5
+original shared Rust moves. The six resource rows overlap four previously
+accepted originals and add browser-wire/go-configuration, yielding12 original
+operational resources overall; CEF is an additional DATA replica, not a moved
+producer. L07 uses qualification/browser/cef/pilot-contract.json.
+
+The generic ownership-decision blocker is RESOLVED by a070983e/9cb6e435. Do not
+repeat old ownership-pending claims as current. Complete source freeze is still
+OPEN: exact old/new per-OS semantic Cargo lists and cfg/module/command prefixes,
+unique source accounting and actual effect classification; final reader/caller/
+destination bindings including L09 actual selected-source verification; and
+role/feature/dependency/unsafe/release/native identity/extracted-package controls.
+No blanket pure status or lost legacy unit inventory closure follows from a
+lexical source map. The accepted Maintenance33 cases remain separate required
+coverage, not folded away by187/259/528 totals.
+
+Root solely owns OLD6LIB list-only allocation; audit launched no compiler or test.
+Actual relocated regressions/native/Docker/product qualification and complete
+migration remain OPEN. The new279-row Root file-map proposal is queued for
+independent source review; no relocation is accepted by this map review.
