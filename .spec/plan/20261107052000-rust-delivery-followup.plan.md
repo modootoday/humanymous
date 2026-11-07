@@ -1011,3 +1011,17 @@ hashes/sizes to actual Git payload bytes. All28 indexed payloads now match; firs
 mismatches and original CRLF working projections are privately retained. No
 private log or actual execution fact changed. This is not a waiver for normalizing
 raw evidence, whose original bytes and immutable indexes must remain untouched.
+
+Browser42390164354 at306 completed failure with actual closed typed outcome:
+matching67/1/66 inventory and successful DNS finish, but process exit1/parser
+summary mismatch/test_passed=false. Lab16/18 assertions passed and two failed.
+The final stage is not proof of DNS failure or exact private cause. Source was
+unchanged, artifacts0, raw actor/test bodies unavailable, prefix/full flags false.
+Watch79981 ended1; public terminal summary and sealed private capture retain the
+new observations separately from earlier493/bb failures. No unchanged retry.
+
+Root's adapter-family convention review is recorded in scripts/ci/INTEGRATION.md:
+owned selector/policy/Node packaging changes, dynamic crate graph implications,
+and foreign-owner ABI/workflow seams are identified without actual renames.
+Source-bound commands/receipts remain historical; root owns the atomic graph,
+locks, workflow and artifact migration after current frozen gates settle.

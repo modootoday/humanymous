@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:22:31Z
+updated: 2026-11-07T16:31:24Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -33,6 +33,7 @@ files:
   - {path: pages-29096f78-summary.json, sha256: 9ec48b7be63c94f8fd23e71a9708647b640e6c47050bf887020374a58b71ef8f, bytes: 7425, store: repo}
   - {path: wargame-306eedc8-targeted-preflight.json, sha256: 6e216f5f59948fb822811c21928fb47a21b33f7a356795e79c3c460d874ff7ac, bytes: 1748, store: repo}
   - {path: registry-environment-observation.json, sha256: 67e920e9b0fbfbe665941d4465380c3fc1137312d0eb17a4b1e8c4504d823e65, bytes: 3282, store: repo}
+  - {path: browser-306eedc8-summary.json, sha256: 753b4d66b05aac0726fc0226adad55abc35c598aaecc3e2a6de878a97a93c542, bytes: 5803, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -536,3 +537,21 @@ and original working projections remain in a separate immutable private audit,
 index SHA256 e5feeb5d31e4243a45f3faa5373d98876d573a7441771160ef31004666b4da13.
 This corrects published evidence metadata, not private original logs, raw report
 hashes, execution outcomes or source qualification.
+
+## Actual typed Browser product outcome
+
+browser-306eedc8-summary.json records terminal run42390164354 at306: successful
+Go10/Lab26/Delivery90/check/strictClippy/policy preflight, failed Docker product,
+artifacts0. Lab18 assertions had16 passes/2 failures, no other outcomes.
+The closed13-field actor outcome is observed: inventory67/selected1/filtered66
+matches; DNS finish succeeded; process exited1 and parser summary did not match.
+Test passed is false. The stage actor_browser_dns_finished must not be relabeled
+a DNS failure or an exact private test cause. Original actor/test streams were
+not recovered; authenticated source-prefix and full qualification remain false.
+The actual source stayed unchanged; nine required unavailable boundaries and
+three observed image identities do not qualify full product or image CVE coverage.
+
+Connector/CLI projections matched; all13 fields and count arithmetic were
+independently checked. Immutable private capture index SHA256 is
+76296d6a8215933eba3f7c798e8707f25403d70ed2a9193c526ad80d6fc79af2.
+Watch79981 ended1. No retry, deployment or publication was performed by Delivery.

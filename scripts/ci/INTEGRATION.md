@@ -188,3 +188,35 @@ registry archives in the image compiler stage. Delivery 67 and strict Clippy
 passed after a preserved initial needless-borrow failure. No tool installation,
 auditable runtime image build or actual scan was established by that source
 checkpoint; all candidate shipping qualification flags remain false.
+
+## Pending category-first adapter package migration
+
+Target-only handoff for structural-development.sot.md's ten-package map. Current
+names and frozen-source invocations remain until one root-coordinated migration;
+this note changes no package, directory, workflow, ABI or registry permission.
+
+| Delivery-owned seam | Required coordinated update or preserved contract |
+| --- | --- |
+| .github/workflows/browser-product-validation.yml and go-validation.yml | Both Go unit and selected all-target Clippy commands use humanymous-go-adapter; migrate to humanymous-adapter-go together with policy.rs's exact command allowlist. Keep workflow filenames, branches, job keys, concurrency, permissions and test selectors unchanged unless explicitly remapped. |
+| scripts/ci/delivery/src/package.rs::node | Cargo -p humanymous-node-adapter becomes humanymous-adapter-node. The explicit humanymous-node-package binary selector is a separate identity and does not change automatically. |
+| Delivery Cargo.toml and Rust imports | Delivery directly depends on test-support, not host-adapter packages; bounded searches found no host-adapter Rust use/import or explicit lib name in this crate. Preserve the shared native ABI/security provider identities. |
+| Dynamic crate metadata, waves and archives | package.rs and registry.rs derive package names, dependencies and name-version.crate identities from Cargo metadata. Regenerate and source-bind validation manifests after migration; old crate/archive receipts do not qualify renamed packages. publish=false and all ownership/trust/readiness guards remain. |
+| Registry-facing identities | @humanymous/node, package/provenance JSON, node-native-SHA and validated-crates-SHA artifact names, release.yml and crates/npm/rubygems/pypi environment bindings are separate contracts. A Rust package taxonomy change does not authorize changing them or publishing. |
+| Native runtime archive and image | Explicit humanymous CLI/runtime binaries, known notice paths and runtime image role are not host-adapter package identities; no mechanical rename follows. |
+
+Foreign-owned coordination: apache-validation.yml contains apache-adapter and
+apache-native package selectors, and python-validation.yml contains Python
+component-controller selectors; route both to their owners. Do not edit those
+excluded workflow paths in this lane. Root owns the common graph/lock/toolchain;
+standalone manifest/lock consumers and Lab image recipes need their own mapping.
+
+Node currently has no explicit lib.name, so a package rename changes its default
+Rust library identifier and cdylib basename from humanymous_node_adapter to
+humanymous_adapter_node. The Node owner must map native build/copy/provenance and
+loader compatibility; Delivery calls its packaging tool rather than guessing a
+new .node filename. Dotnet export likewise has a default library name and needs
+its owner's DLL/managed-loader mapping. Python and Ruby explicitly name their
+libraries humanymous_python and humanymous_ruby; keep host import/module names
+separate from the Cargo package rename. No ABI symbol or loader compatibility is
+claimed by this bounded source review. Historical command strings, raw payloads,
+source identities and evidence hashes are never rewritten for the new taxonomy.

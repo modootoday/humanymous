@@ -1,0 +1,174 @@
+{
+  "schema": "humanymous.browser-product-hosted-evidence/1",
+  "run_id": 42390164354,
+  "attempt": 1,
+  "source_sha": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "id": 128455868491,
+      "name": "preflight",
+      "conclusion": "success"
+    },
+    {
+      "id": 128456611513,
+      "name": "product",
+      "conclusion": "failure"
+    }
+  ],
+  "artifacts_total": 0,
+  "preflight": {
+    "go": {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "lab": {
+      "passed": 26,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "delivery": {
+      "passed": 90,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "runtime_all_target_check": "passed",
+    "selected_strict_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "observed_product": {
+    "canonical_git_tree_sha256": "39d438c7197f6ad7a3347c4dd6f7087643567d1d5239cfb27ebcf0951a5603c2",
+    "cases": [
+      {
+        "evidence": "private source-bound owning report",
+        "id": "collector-parity",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "challenge-keyboard",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "challenge-assistive",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "missing-signals-closed",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "human-control",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "coherent-browser-ceiling",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "documentation-examples",
+        "status": "blocked"
+      }
+    ],
+    "components": [
+      {
+        "assertions": {
+          "failed": 2,
+          "other": 0,
+          "passed": 16,
+          "total": 18
+        },
+        "exit_code": 1,
+        "full_product_qualified": false,
+        "owner": "lab-runner",
+        "public_receipt": null,
+        "qualification": null,
+        "required_unavailable_count": 9,
+        "safe_diagnostics": {
+          "browser_actor": {
+            "dns_finish": "succeeded",
+            "exit_code": 1,
+            "filtered_count": 66,
+            "full_product_qualified": false,
+            "inventory_count": 67,
+            "inventory_matched": true,
+            "parser_summary_matched": false,
+            "process_success": false,
+            "schema": "humanymous.lab-browser-actor-outcome/1",
+            "selected_count": 1,
+            "source_prefix_authenticated": false,
+            "state": "observed",
+            "test_passed": false
+          },
+          "failure_count": 2,
+          "failures": [
+            {
+              "case_id": "browser-actual-witness-exchange",
+              "error_code": "assertion_failed",
+              "status": "failed"
+            },
+            {
+              "case_id": "execution",
+              "error_code": "actor_browser_dns_finished",
+              "status": "failed"
+            }
+          ],
+          "partial": false,
+          "schema": "humanymous.lab-safe-diagnostics/1"
+        },
+        "schema": "humanymous.product-lab/2",
+        "status": null
+      }
+    ],
+    "documentation_review_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+    "errors": 1,
+    "full_product_qualified": false,
+    "images": [
+      "sha256:9e4465b91b77de0b4207874622ef46c796ed3661004da414f5528860e5d7e015",
+      "sha256:b9813955956119d83dff1f9e14073d6b1808e697ab587ead064695ac4b938a31",
+      "sha256:e29ac3022378ccdb6a56faa53c56925d8c3453a2bf641486bb82c27dd152bbbe"
+    ],
+    "isolation": "docker",
+    "kind": "browser-product",
+    "private_report_sha256": "7d045d0ee2e5c034494966385d920aa745b2975c58ca910b0c6baf5f32240107",
+    "qualification": "component-only",
+    "release_ready": false,
+    "runtime": "rust",
+    "schema": 1,
+    "skips": null,
+    "source_changed_during_execution": false,
+    "source_manifest_sha256": "98d579bfde1190e1e93f12460a2f4102c2962a47335d9421167e680715415084",
+    "source_sha": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+    "status": "failed"
+  },
+  "capture": {
+    "connector_cli_public_projection_match": true,
+    "closed_13_field_public_outcome_verified": true,
+    "public_count_arithmetic_verified": true,
+    "original_actor_body_retrieved": false,
+    "original_test_stdout_stderr_retrieved": false,
+    "root_cause_verified": false,
+    "private_index_sha256": "76296d6a8215933eba3f7c798e8707f25403d70ed2a9193c526ad80d6fc79af2",
+    "preflight_log_sha256": "4ad7a2f12bf93c2495f0362650ac7040a5658259213cbc4f18403f8dbd34e3e4",
+    "product_log_sha256": "f2e5a4dac05be9a9eec05a5224e42d49d5ec5b2accf68b82d984b6aac94f23e4",
+    "watch_session": 79981,
+    "watch_terminal_exit": 1
+  },
+  "limitations": [
+    "The typed outcome proves matching test inventory and successful DNS finish, while selected test process exited 1 and parser summary did not match. It does not expose the exact private test failure cause.",
+    "The actor_browser_dns_finished stage marker is not evidence of a DNS failure.",
+    "source_prefix_authenticated remains false; private original actor/test streams were not recovered for independent revalidation.",
+    "The three actual image identities do not qualify dependency CVE scan, full sandbox, native GUI, human/AT controls or release readiness.",
+    "Historical 493 and bb failures remain separate; no unchanged retry, deployment or publication."
+  ]
+}
