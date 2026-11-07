@@ -415,6 +415,19 @@ The earlier witness/backup single-summary contract was accepted in16c9e89;
 the key_custody update is a later paired source change. Historical pre-correction
 nested-summary failures remain evidence, not retroactive green.
 
+Retained erasure uses Custody::erase_retained with an owned RetainedActionPermit,
+trusted configured scope/time and exact subject commitment. Before shredding,
+the caller's vault snapshot must equal the authenticated committed sealed vault
+and no pending transaction may exist. The existing scoped tombstone validation
+and encrypted atomic replacement remain authoritative. The service must serialize
+vault access and stop serving after any post-shred persistence error.
+Custody::recover_retained_erasure requires a fresh retained subject approval,
+authenticates an existing committed generation and uses the existing unchanged-
+identity/exact-tombstone pending recovery. It never provisions on committed loss,
+reconstructs an old grant or resets a consumed nonce. The caller owns witnessed
+audit-before-apply; retention acknowledgement is not proof of effect completion.
+This local-generation operation does not establish backup/unknown-copy erasure.
+
 Native tests exercise restart identity, vault/tombstone persistence, rotation,
 parallel-process lock refusal, permission/alias rejection and interrupted pending
 recovery. Actual workspace Cargo integration remains root-owned. Raw execution

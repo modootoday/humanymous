@@ -1,6 +1,7 @@
 //! Exclusive local sealed custody. Provision the service directory privately
 //! before opening; trusted ancestors and same-owner processes remain premises.
 pub(crate) mod permissions;
+mod erasure;
 mod rotation;
 pub use rotation::{PreparedRotation, PreparedRotationRecovery};
 #[cfg(all(test, unix))]

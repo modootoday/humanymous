@@ -100,6 +100,15 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Retained erasure bridge source: erase_retained requires exact committed vault
+snapshot and no pending state; recover_retained_erasure authenticates existing
+committed state and requires fresh retained scoped subject approval. Both reuse
+existing tombstone/encrypted transaction rules. One native regression is authored
+for scope rejection, nonce reuse, actual tombstone and wrong-subject/fresh exact
+recovery with unchanged identity. No new Cargo/native execution in benchmark
+quiet window. Evidence:root/20261107094725; caller audit-before-apply, product
+integration and backup/unknown-copy removal remain open requirements.
+
 R10 producer coordination prioritized a typed retained-intent query before the
 planned retained erasure bridge. Source now reauthenticates actual control
 ledger bytes and exact independent current anchor before providing a private

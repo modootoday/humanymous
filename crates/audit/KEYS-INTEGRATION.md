@@ -1,5 +1,20 @@
 # Sealed key compatibility integration
 
+## New unqualified retained erasure bridge
+
+Custody::erase_retained and recover_retained_erasure accept only the owned
+RetainedActionPermit with trusted scope/time and exact subject commitment.
+Normal erasure requires a vault identical to authenticated committed state and
+no pending transaction. Explicit recovery requires an existing authenticated
+committed generation and fresh retained approval, then existing exact-tombstone
+validation/promotion. No old capability is replayed or reconstructed. Caller
+serialization, witnessed audit-before-apply and stopping after persistence error
+remain required. Backup retirement and unknown-copy erasure are separate.
+One native regression is authored for foreign scope rejection, nonce reuse,
+actual sealed erasure, wrong-subject pending preservation, fresh exact recovery
+and unchanged writer/HMAC/witness identity. Source only, no compile/execution;
+benchmark quiet window still applies. Evidence:root/20261107094725.
+
 ## Additional Linux observation at source 8132117
 
 Successful MSRV job128359709010 in aggregate run42355168729 recorded101 audit

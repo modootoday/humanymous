@@ -137,6 +137,140 @@ fn material() -> Result<KeyMaterial, humanymous_audit::keys::KeyError> {
 }
 
 #[test]
+fn retained_erasure_rejects_scope_and_recovers_only_with_fresh_exact_approval() {
+    let local = Dir::new();
+    let independent = Dir::new();
+    let keys = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let mut retainer = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        authority.public_key(),
+        authority.anchor(),
+        true,
+    )
+    .unwrap();
+    let vault = Vault::new_scoped(Mode::Hmac, 20, scope()).unwrap();
+    let before = vault.pseudonymize("subject-a", "synthetic-value").unwrap();
+    vault.link("handle-a", "subject-a").unwrap();
+    let snapshot = vault.snapshot().unwrap();
+    let mut custody = keys.custody();
+    custody
+        .load_or_create(b"synthetic-passphrase", || {
+            KeyMaterial::new([7; 32], vec![8; 32], Some(snapshot.to_vec()), Some([9; 32]))
+        })
+        .unwrap();
+    let committed = fs::read(keys.0.join("keys.sealed")).unwrap();
+    for wrong_scope in [true, false] {
+        let proposal = authority
+            .propose(
+                Action::EraseSubject,
+                target_commitment(b"subject-a"),
+                10,
+                100,
+            )
+            .unwrap();
+        let signatures = approvals(&proposal);
+        let grant = authority
+            .authorize_retained_action(
+                request(&proposal, &signatures),
+                &mut retainer,
+                RetentionRequirement::FileSynced,
+            )
+            .unwrap();
+        let mut configured = scope();
+        if wrong_scope {
+            configured.node.push_str("-other");
+        }
+        let result = custody.erase_retained(
+            &vault,
+            b"synthetic-passphrase",
+            grant,
+            &configured,
+            20,
+            "subject-a",
+        );
+        if wrong_scope {
+            assert!(result.is_err());
+            assert_eq!(fs::read(keys.0.join("keys.sealed")).unwrap(), committed);
+            assert_eq!(
+                vault.pseudonymize("subject-a", "synthetic-value").unwrap(),
+                before
+            );
+        } else {
+            assert_eq!(result.unwrap().1.operation_id, proposal.operation_id);
+        }
+        assert!(
+            authority
+                .authorize_retained_action(
+                    request(&proposal, &signatures),
+                    &mut retainer,
+                    RetentionRequirement::FileSynced,
+                )
+                .is_err()
+        );
+    }
+    assert!(vault.resolve("handle-a").unwrap().is_none());
+    let erased = fs::read(keys.0.join("keys.sealed")).unwrap();
+    drop(custody);
+    // Stage the real authenticated tombstone as a crash-before-promotion fixture.
+    fs::copy(keys.0.join("keys.sealed"), keys.0.join("keys.pending")).unwrap();
+    fs::write(keys.0.join("keys.sealed"), &committed).unwrap();
+    let mut custody = keys.custody();
+    for subject in ["subject-other", "subject-a"] {
+        let proposal = authority
+            .propose(
+                Action::EraseSubject,
+                target_commitment(subject.as_bytes()),
+                10,
+                100,
+            )
+            .unwrap();
+        let signatures = approvals(&proposal);
+        let grant = authority
+            .authorize_retained_action(
+                request(&proposal, &signatures),
+                &mut retainer,
+                RetentionRequirement::FileSynced,
+            )
+            .unwrap();
+        let result = custody.recover_retained_erasure(
+            b"synthetic-passphrase",
+            b"synthetic-passphrase",
+            grant,
+            &scope(),
+            20,
+            subject,
+        );
+        if subject == "subject-other" {
+            assert!(result.is_err());
+            assert_eq!(fs::read(keys.0.join("keys.pending")).unwrap(), erased);
+            assert_eq!(fs::read(keys.0.join("keys.sealed")).unwrap(), committed);
+        } else {
+            assert_eq!(result.unwrap().1.operation_id, proposal.operation_id);
+        }
+    }
+    assert!(!keys.0.join("keys.pending").exists());
+    let (restored, created) = custody
+        .load_or_create(b"synthetic-passphrase", || panic!("no remint"))
+        .unwrap();
+    assert!(created.is_none());
+    assert_eq!(restored.signing_seed(), &[7; 32]);
+    assert_eq!(restored.hmac_key(), &[8; 32]);
+    assert_eq!(restored.witness_seed(), Some(&[9; 32]));
+    let restored_vault =
+        Vault::load_scoped(restored.vault().unwrap(), Mode::Hmac, 20, scope()).unwrap();
+    assert!(
+        restored_vault
+            .pseudonymize("subject-a", "synthetic-value")
+            .unwrap()
+            .starts_with("shredded:")
+    );
+    assert!(restored_vault.resolve("handle-a").unwrap().is_none());
+}
+
+#[test]
 fn retained_state_authenticates_absence_and_preserves_unapplied_expired_kill_intent() {
     let directory = Dir::new();
     let independent = Dir::new();
