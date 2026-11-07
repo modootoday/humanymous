@@ -1,11 +1,37 @@
 //! Closed Cargo diagnostics; rendered text and unreviewed locations stay private.
+use humanymous_test_support::json::decode_strict_json;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{fs, io::Read, path::Path};
+mod bootstrap;
+use bootstrap::outcome as bootstrap_outcome;
+pub(super) fn bootstrap_selector() -> std::io::Result<String> {
+    bootstrap::selector()
+}
+pub(super) fn verify_bootstrap_protocol(text: &str) -> std::io::Result<Value> {
+    bootstrap::verify_protocol(text)
+}
 
 const MAX_BYTES: usize = 8 * 1024 * 1024;
 const MAX_LINE: usize = 256 * 1024;
 const MAX_DIAGNOSTICS: usize = 64;
+
+pub(super) fn text(path: &Path) -> std::io::Result<String> {
+    let metadata = fs::symlink_metadata(path)?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() {
+        return Err(std::io::Error::other("regular private log required"));
+    }
+    let mut text = String::new();
+    fs::File::open(path)?
+        .take((MAX_BYTES + 1) as u64)
+        .read_to_string(&mut text)?;
+    if text.len() > MAX_BYTES {
+        return Err(std::io::Error::other(
+            "private test receipt exceeds read bound",
+        ));
+    }
+    Ok(text)
+}
 
 fn location(file: &str, source: &Value) -> Option<String> {
     let file = file.replace('\\', "/");
@@ -59,7 +85,7 @@ fn project(bytes: &[u8], source: &Value, exit: Option<i32>, truncated: bool) -> 
             oversized += 1;
             continue;
         }
-        let Ok(value) = serde_json::from_slice::<Value>(line) else {
+        let Ok(value) = decode_strict_json(line, MAX_LINE) else {
             if line.first() == Some(&b'{') {
                 malformed += 1;
             }
@@ -74,7 +100,18 @@ fn project(bytes: &[u8], source: &Value, exit: Option<i32>, truncated: bool) -> 
         };
         if diagnostics.len() == MAX_DIAGNOSTICS {
             omitted += 1;
-            continue;
+            if level == "error" {
+                if let Some(index) = diagnostics
+                    .iter()
+                    .position(|row: &Value| row["level"] == "warning")
+                {
+                    diagnostics.remove(index);
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
         }
         let (error_code, lint) = code(&message["code"]["code"]);
         let locations: Vec<_> = message["spans"]
@@ -99,7 +136,7 @@ fn project(bytes: &[u8], source: &Value, exit: Option<i32>, truncated: bool) -> 
         "omitted_diagnostics":omitted,"diagnostic_read_truncated":truncated,
         "compiler_root_cause_verified":false,"rendered_messages_included":false})
 }
-pub(super) fn read(path: &Path, source: &Value, exit: Option<i32>) -> Value {
+pub(super) fn read(path: &Path, source: &Value, exit: Option<i32>, bootstrap: bool) -> Value {
     let bytes = (|| -> std::io::Result<Vec<u8>> {
         let metadata = fs::symlink_metadata(path)?;
         if !metadata.is_file() || metadata.file_type().is_symlink() {
@@ -125,6 +162,10 @@ pub(super) fn read(path: &Path, source: &Value, exit: Option<i32>) -> Value {
                 }
             }
             let mut result = project(&bytes, source, exit, truncated);
+            if bootstrap {
+                result["test_outcome"] = bootstrap_outcome(&bytes, exit, truncated);
+                result["bootstrap_observations"] = self::bootstrap::observations(&bytes, truncated);
+            }
             result["private_log_prefix_sha256"] = json!(digest);
             result["private_log_prefix_bytes"] = json!(observed_bytes);
             result["private_log_sha256"] = if truncated {
@@ -135,7 +176,12 @@ pub(super) fn read(path: &Path, source: &Value, exit: Option<i32>) -> Value {
             result
         }
         Err(_) => {
-            json!({"status":"missing_or_unreadable","exit_code":exit,"diagnostics":[],"compiler_root_cause_verified":false,"rendered_messages_included":false})
+            let mut result = json!({"status":"missing_or_unreadable","exit_code":exit,"diagnostics":[],"compiler_root_cause_verified":false,"rendered_messages_included":false});
+            if bootstrap {
+                result["test_outcome"] = bootstrap_outcome(&[], exit, false);
+                result["bootstrap_observations"] = self::bootstrap::observations(&[], false);
+            }
+            result
         }
     }
 }
@@ -172,6 +218,7 @@ fn native_public(value: &Value, source: &Value) -> Value {
         })
         .collect();
     let mut safe = json!({"status":status,"exit_code":value["exit_code"].as_i64().and_then(|code| i32::try_from(code).ok()),
+        "status_observed":value["status_observed"].as_bool(),
         "diagnostics":diagnostics,"compiler_root_cause_verified":false,"rendered_messages_included":false,
         "diagnostic_read_truncated":value["diagnostic_read_truncated"].as_bool()});
     for key in [
@@ -188,9 +235,37 @@ fn native_public(value: &Value, source: &Value) -> Value {
                 |hash| hash.len() == 64 && hash.bytes().all(|byte| byte.is_ascii_hexdigit())
             ));
     }
+    if let Some(outcome) = value.get("test_outcome") {
+        let status = outcome["required_case_status"]
+            .as_str()
+            .filter(|status| matches!(*status, "passed" | "failed" | "unverified"))
+            .unwrap_or("unverified");
+        let mut projected = json!({"required_case_status":status});
+        for key in ["executed_tests", "passed", "failed", "ignored", "filtered"] {
+            projected[key] = json!(outcome[key].as_u64().filter(|count| *count <= 1_000_000));
+        }
+        safe["test_outcome"] = projected;
+    }
+    if let Some(observations) = value.get("bootstrap_observations") {
+        safe["bootstrap_observations"] = bootstrap::public_observations(observations);
+    }
     safe
 }
 pub(super) fn public(report: &Value) -> Value {
+    let mut commands = serde_json::Map::new();
+    for stage in [
+        "native-build",
+        "desktop-protocol-build",
+        "desktop-protocol-tests",
+        "bootstrap-protocol-build",
+        "bootstrap-protocol-tests",
+        "bootstrap-rejection",
+        "desktop-process-tests",
+    ] {
+        if let Some(value) = report["stage_commands"].get(stage) {
+            commands.insert(stage.into(), native_public(value, &report["source"]));
+        }
+    }
     let stage = report["stage"]
         .as_str()
         .filter(|stage| {
@@ -200,6 +275,8 @@ pub(super) fn public(report: &Value) -> Value {
                     | "native-build"
                     | "desktop-protocol-build"
                     | "desktop-protocol-tests"
+                    | "bootstrap-protocol-build"
+                    | "bootstrap-protocol-tests"
                     | "bootstrap-rejection"
                     | "desktop-bundles"
                     | "desktop-process-tests"
@@ -217,6 +294,7 @@ pub(super) fn public(report: &Value) -> Value {
     json!({"schema":"humanymous.cef-safe-diagnostics/1","stage":stage,"source_sha":sha,
         "source_manifest_sha256":manifest,"native_build":report.get("native_build").map(|value| native_public(value, &report["source"])),
         "source_changed":report["source_changed"].as_bool(),
+        "stage_commands":commands,
         "status":if report["status"]=="passed"{"passed"}else{"failed"},
         "protocol_preflight":if report["protocol_preflight"].is_object(){Some(json!({
             "required":report["protocol_preflight"]["required"].as_u64(),
@@ -227,95 +305,17 @@ pub(super) fn public(report: &Value) -> Value {
             "initializes_cef":false,"starts_processes":false
         }))}else{None},
         "bootstrap_rejection_passed":report["bootstrap_rejection_passed"]==true,
+        "bootstrap_protocol_preflight":if report["bootstrap_protocol_preflight"].is_object(){Some(json!({
+            "required":report["bootstrap_protocol_preflight"]["required"].as_u64(),
+            "passed":report["bootstrap_protocol_preflight"]["passed"].as_u64(),
+            "failed":report["bootstrap_protocol_preflight"]["failed"].as_u64(),
+            "ignored":report["bootstrap_protocol_preflight"]["ignored"].as_u64(),
+            "filtered":report["bootstrap_protocol_preflight"]["filtered"].as_u64(),
+            "initializes_cef":false,"starts_processes":false
+        }))}else{None},
         "desktop_passed_tests":report["desktop_passed_tests"].as_u64(),
         "browser_ready":false,"full_runtime_qualified":false,"raw_contents_included":false})
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    fn source() -> Value {
-        json!({"files":{"crates/browser/native/bootstrap/src/lib.rs":"a"}})
-    }
-    fn message(file: &str) -> Value {
-        json!({"reason":"compiler-message","message":{"level":"error","code":{"code":"E0308"},"rendered":"PRIVATE_CANARY","message":"PRIVATE_CANARY","spans":[{"is_primary":true,"file_name":file,"line_start":9,"text":[{"text":"PRIVATE_CANARY"}]}]}})
-    }
-    #[test]
-    fn compiler_projection_keeps_only_codes_and_reviewed_locations() {
-        let bytes = message("crates/browser/native/bootstrap/src/lib.rs").to_string();
-        let value = project(bytes.as_bytes(), &source(), Some(101), false);
-        assert_eq!(value["diagnostics"][0]["error_code"], "E0308");
-        assert_eq!(value["diagnostics"][0]["locations"][0]["line"], 9);
-        assert!(!value.to_string().contains("PRIVATE_CANARY"));
-        for path in [
-            "C:/PRIVATE_CANARY/lib.rs",
-            "../PRIVATE_CANARY.rs",
-            "crates/PRIVATE_CANARY.rs",
-        ] {
-            let value = project(
-                message(path).to_string().as_bytes(),
-                &source(),
-                Some(101),
-                false,
-            );
-            assert_eq!(value["diagnostics"][0]["locations"], json!([]));
-            assert!(!value.to_string().contains("PRIVATE_CANARY"));
-        }
-    }
-    #[test]
-    fn malformed_and_unstructured_logs_cannot_invent_diagnostics() {
-        let value = project(
-            b"PRIVATE_CANARY\n{broken\n{\"reason\":\"build-script-executed\"}\n",
-            &source(),
-            Some(101),
-            false,
-        );
-        assert_eq!(value["status"], "unknown");
-        assert_eq!(value["malformed_json_records"], 1);
-        assert!(!value.to_string().contains("PRIVATE_CANARY"));
-    }
-    #[test]
-    fn long_and_excess_records_are_bounded_with_explicit_omissions() {
-        let mut bytes = vec![b'x'; MAX_LINE + 1];
-        bytes.push(b'\n');
-        for _ in 0..70 {
-            bytes.extend(
-                message("crates/browser/native/bootstrap/src/lib.rs")
-                    .to_string()
-                    .bytes(),
-            );
-            bytes.push(b'\n');
-        }
-        let value = project(&bytes, &source(), None, true);
-        assert_eq!(value["diagnostics"].as_array().unwrap().len(), 64);
-        assert_eq!(value["oversized_records"], 1);
-        assert_eq!(value["omitted_diagnostics"], 6);
-        assert_eq!(value["diagnostic_read_truncated"], true);
-    }
-    #[test]
-    fn arbitrary_codes_and_lints_remain_unknown() {
-        assert_eq!(code(&json!("PRIVATE_CANARY")), (None, None));
-        assert_eq!(code(&json!("E0000PRIVATE_CANARY")), (None, None));
-        assert_eq!(
-            code(&json!("unused_imports")),
-            (None, Some("unused_imports"))
-        );
-        assert_eq!(
-            read(Path::new("absent-private-compiler-log"), &source(), None)["status"],
-            "missing_or_unreadable"
-        );
-    }
-    #[test]
-    fn public_stage_and_protocol_fields_cannot_echo_private_text() {
-        let report = json!({"stage":"PRIVATE_CANARY","private_error":"PRIVATE_CANARY",
-            "source":{"commit":"PRIVATE_CANARY","files":{}},
-            "protocol_preflight":{"required":"PRIVATE_CANARY","raw":"PRIVATE_CANARY"},
-            "native_build":{"status":"PRIVATE_CANARY","private_log_sha256":"PRIVATE_CANARY","raw":"PRIVATE_CANARY",
-            "diagnostics":[{"level":"error","error_code":"PRIVATE_CANARY","lint":"PRIVATE_CANARY","locations":[{"file":"PRIVATE_CANARY","line":1}]}]}});
-        let value = public(&report);
-        assert_eq!(value["stage"], "unknown");
-        assert!(value["source_sha"].is_null());
-        assert!(value["protocol_preflight"]["required"].is_null());
-        assert!(!value.to_string().contains("PRIVATE_CANARY"));
-    }
-}
+mod tests;

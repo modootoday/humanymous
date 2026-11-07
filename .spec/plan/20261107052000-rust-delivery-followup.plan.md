@@ -717,3 +717,37 @@ B was returned after the first complete closure pass. Private index SHA256 is
 66df78336aa6291500cf6c4cfe0e647f0af4b6f9e5e793659169d901ff8cb898.
 CEF source was excluded and its stage extension is still uncompiled. No registry
 pull, Docker image build, tool install, scan, push or token exchange occurred.
+
+Browser froze producer/contract 9251376f after root integrated dev edges072c8e5.
+Its warm-only compile was deferred upon cold artifacts, not a source failure or
+test pass. CI now consumes its sole bootstrap_rejection marker inventory with
+typed/null facts, exact fields, fixed errors, duplicate/oversize rejection and
+safe re-projection. The three synthetic marker cases are a separate preflight;
+the existing actual case predicate remains unchanged and additionally requires
+the complete closed diagnostic inventory. Deadline data alone is never a new
+refusal rule. Existing privacy/harness tests now cover valid/partial/unknown,
+oversize, duplicate and private-canary markers while retaining the expected
+standalone helper count13. Source is frozen for narrow helper validation; no
+new Cargo edge, SDK, actual bootstrap child or CEF execution occurred here.
+
+Root review identified that raw serde_json marker decoding collapses duplicate
+decoded keys; repeated marker-ID tests did not cover that issue. The approved
+fix reuses test-support::json::decode_strict_json for marker/compiler records
+and the embedded contract, with a focused ordinary/escaped duplicate-key test.
+Standalone lock changes only add existing test-support0.1.0 plus its dependency
+edge and already-locked serde_derive activation; external versions/checksums and
+root Cargo/lock stay unchanged. Standalone lock SHA256 is
+4f59ec988857293689dcea569ea2465f0cadbe49dc6aad553fc04a48bcc4115f.
+
+Allocated D passed the actual fourteen helper tests (zero failed/ignored/filtered),
+all-target check, strict Clippy and fmt. Its 24 source/module/contract/root inputs,
+20 reachable registry packages/650 files, eight ancestor/home config paths,
+relevant environment hashes and observed cargo/rustc binaries stayed unchanged.
+Admission was 80.16 percent committed and 33,613,120 KiB free physical memory;
+locked/offline jobs one/incremental zero used exclusive validation-ci-cef. The
+specifically approved small proc-macro rebuild occurred; D was returned without
+any SDK, actual child, wrapper, GUI, Docker or installation workload. Private
+evidence index SHA256 is
+edc0765f7a7964adcc34a1308371293fd7ef941d90b191644affa5937447c049.
+Producer925 native compilation remains deferred/unqualified. No additional
+delivery76 suite was run or borrowed as producer/runtime qualification.

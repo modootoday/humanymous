@@ -19,8 +19,17 @@ fn logged_status(command: &mut Command, path: &Path) -> io::Result<std::process:
         .stderr(Stdio::from(file))
         .status()
 }
-fn logged(command: &mut Command, path: &Path) -> io::Result<()> {
-    let status = logged_status(command, path)?;
+fn logged(command: &mut Command, path: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+    let stage = report["stage"].as_str().unwrap_or("unknown").to_owned();
+    let result = logged_status(command, path);
+    report["stage_commands"][&stage] = diagnostics::read(
+        path,
+        &report["source"],
+        result.as_ref().ok().and_then(|status| status.code()),
+        stage == "bootstrap-rejection",
+    );
+    report["stage_commands"][&stage]["status_observed"] = result.is_ok().into();
+    let status = result?;
     if !status.success() {
         return Err(io::Error::other(format!(
             "command failed ({status}); inspect {}",
@@ -82,7 +91,10 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
         &native_log,
         &source,
         native_status.as_ref().ok().and_then(|status| status.code()),
+        false,
     );
+    report["native_build"]["status_observed"] = native_status.is_ok().into();
+    report["stage_commands"]["native-build"] = report["native_build"].clone();
     if !native_status?.success() {
         return Err(io::Error::other(
             "native build failed; compiler details retained privately",
@@ -100,8 +112,10 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
             "native-pilot-tests",
             "--lib",
             "--no-run",
+            "--message-format=json",
         ]),
         &output.join("desktop-protocol-build.log"),
+        report,
     )?;
     report["stage"] = "desktop-protocol-tests".into();
     let selector = desktop::protocol_selector()?;
@@ -116,12 +130,52 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
             "native-pilot-tests",
             "--lib",
             &selector,
+            "--message-format=json",
             "--",
             "--test-threads=1",
         ]),
         &protocol_log,
+        report,
     )?;
-    report["protocol_preflight"] = desktop::verify_protocol(&fs::read_to_string(protocol_log)?)?;
+    report["protocol_preflight"] = desktop::verify_protocol(&diagnostics::text(&protocol_log)?)?;
+    report["stage"] = "bootstrap-protocol-build".into();
+    logged(
+        Command::new("cargo").env("PATH", &tool_path).args([
+            "test",
+            "--locked",
+            "--message-format=json",
+            "-p",
+            "humanymous-cef-bootstrap",
+            "--features",
+            "native-pilot-tests",
+            "--lib",
+            "--no-run",
+        ]),
+        &output.join("bootstrap-protocol-build.log"),
+        report,
+    )?;
+    report["stage"] = "bootstrap-protocol-tests".into();
+    let bootstrap_selector = diagnostics::bootstrap_selector()?;
+    let bootstrap_protocol = output.join("bootstrap-protocol-tests.log");
+    logged(
+        Command::new("cargo").env("PATH", &tool_path).args([
+            "test",
+            "--locked",
+            "--message-format=json",
+            "-p",
+            "humanymous-cef-bootstrap",
+            "--features",
+            "native-pilot-tests",
+            "--lib",
+            &bootstrap_selector,
+            "--",
+            "--test-threads=1",
+        ]),
+        &bootstrap_protocol,
+        report,
+    )?;
+    report["bootstrap_protocol_preflight"] =
+        diagnostics::verify_bootstrap_protocol(&diagnostics::text(&bootstrap_protocol)?)?;
     report["stage"] = "bootstrap-rejection".into();
     let log = output.join("native-negative-pilot.log");
     logged(
@@ -133,18 +187,28 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
                 "-p",
                 "humanymous-cef-bootstrap",
                 "--locked",
+                "--lib",
+                "--message-format=json",
                 "--features",
                 "native-pilot-tests",
                 "--",
                 CASE,
                 "--exact",
-                "--nocapture",
+                "--show-output",
             ]),
         &log,
+        report,
     )?;
-    if !verified_case(&fs::read_to_string(log)?) {
+    if !verified_case(&diagnostics::text(&log)?) {
         return Err(io::Error::other(
             "required provisioned case was not executed exactly once without ignore",
+        ));
+    }
+    if report["stage_commands"]["bootstrap-rejection"]["bootstrap_observations"]["observations_complete"]
+        != true
+    {
+        return Err(io::Error::other(
+            "bootstrap child observation receipt incomplete",
         ));
     }
     report["passed_tests"] = 1.into();
@@ -176,13 +240,15 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
                 "--features",
                 "native-pilot-tests",
                 "pilot_process::",
+                "--message-format=json",
                 "--",
                 "--test-threads=1",
                 "--nocapture",
             ]),
         &desktop_log,
+        report,
     )?;
-    report["desktop_cases"] = desktop::verify(&fs::read_to_string(&desktop_log)?)?;
+    report["desktop_cases"] = desktop::verify(&diagnostics::text(&desktop_log)?)?;
     report["passed_tests"] = 3.into();
     report["desktop_passed_tests"] = 2.into();
     report["ignored_tests"] = 0.into();

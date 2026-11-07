@@ -1,10 +1,12 @@
 //! Independent count checks; process identities and native reports stay private.
 use serde_json::{Value, json};
 use std::io;
-fn contract() -> io::Result<Value> {
-    Ok(serde_json::from_str(include_str!(
-        "../../../../crates/browser/native/desktop/pilot-contract.json"
-    ))?)
+pub(super) fn contract() -> io::Result<Value> {
+    humanymous_test_support::json::decode_strict_json(
+        include_bytes!("../../../../crates/browser/native/desktop/pilot-contract.json"),
+        1024 * 1024,
+    )
+    .map_err(io::Error::other)
 }
 fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
     let contract = contract()?;
@@ -49,6 +51,9 @@ pub(super) fn protocol_selector() -> io::Result<String> {
 }
 pub(super) fn verify_protocol(log: &str) -> io::Result<Value> {
     let (_, names) = protocol_inventory()?;
+    verify_names(log, &names)
+}
+pub(super) fn verify_names(log: &str, names: &[String]) -> io::Result<Value> {
     let summaries: Vec<_> = log
         .lines()
         .filter(|line| line.starts_with("test result:"))

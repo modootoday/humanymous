@@ -1195,6 +1195,22 @@ Captured bootstrap output uses --show-output to preserve the exact named result
 line. Nested bootstrap child facts belong to the owning fixed-case contract;
 the runner never infers them from a cargo exit or assertion message.
 
+The CEF runner consumes the existing owner bootstrap_rejection contract's four
+fixed case IDs, exact fields, nullable observations, error enums and 1024-byte
+marker limit. It reconstructs only typed known fields and keeps missing records
+null. Invalid or duplicate markers reject the diagnostic projection without
+echoing payloads. A complete marker inventory is required alongside the unchanged
+actual bootstrap test receipt; elapsed deadline observations introduce no new
+refusal predicate. The owner's three synthetic marker protocol cases run as a
+separate selected preflight before the actual bootstrap case. Their counts are
+never combined with desktop protocol4, actual bootstrap1 or desktop process2.
+
+Compiler/marker JSON and the embedded contract use the existing shared bounded
+strict decoder. Duplicate decoded object keys, including escaped spellings,
+are rejected before field validation. The standalone runner adds only the
+existing test-support path dependency and its already-locked serde derive edge;
+no external dependency version or checksum changes are required.
+
 The dedicated mount diagnostic consumes only the lab's mount-probe contract and
 existing scoped CLI. CI independently binds this hosted run, source manifest,
 original private ledger, product recipe and observed image inspection. It checks
