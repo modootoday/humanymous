@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:56:15Z
+updated: 2026-11-07T05:02:41Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -45,6 +45,7 @@ files:
   - {path: evidence-portability-results.json, sha256: cffda8601731de70bcf45d6d55a619420b16e7db83d0aa87a58beb5753f1ad1b, bytes: 4877, store: repo}
   - {path: native-cli-integration-results.json, sha256: d4620a5c37eb7541044472a841d3e21696cd92972a1c26a6be13a948ab6bd9fd, bytes: 1676, store: repo}
   - {path: guard-baseline-results.json, sha256: 877d74e9709fde603f15fb53636903763e21e64ca9f5fe92c177add94dda8cd7, bytes: 7766, store: repo}
+  - {path: roadmap-refresh-results.json, sha256: a7e49ff0d0257230a42ec8ec7e1c8a2d427fa14968d4462898801370c4809595, bytes: 3751, store: repo}
 ---
 
 # Program status

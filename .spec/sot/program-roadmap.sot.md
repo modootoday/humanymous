@@ -11,12 +11,13 @@ rel:
 
 # 전체 로드맵과 마일스톤
 
-버전1.1.0. 2026-11-07 KST 기준13개 프로젝트 채팅의 최신 turn, 기존9개
+버전1.2.0. 2026-11-07 KST 기준13개 프로젝트 채팅의 최신 turn, 기존9개
 인계 기록, 현재 Git/spec/Actions를 대조한 전체 상태·순서·완료 조건의 정본이다.
 실행 체크리스트는 plan:root/20261106235521, 근거는 evidence:root/20261106235519다.
-이번 snapshot은5f90971 제품 통합과7e2d848 native framework 설계를 기준으로 한다.
-이후 사용자 승인으로 native CLI 명명 보정·초기 구현이 재개됐으며 아직 검증된
-지원으로 합산하지 않는다. 전체 목표는 미완료다. 완료율·완료일은 추정하지 않는다.
+이번 snapshot은 f32042a 원격 component 검증과 624c1c1 로컬 guard 구현을
+구분한다. native CLI는 실제20번째 workspace member이며11unit/6process가
+통과했다. SDK/framework runtime 지원은 아니다. 전체 목표는 미완료다.
+완료율·완료일은 추정하지 않는다.
 
 ## 판정과 개발 규약
 
@@ -93,8 +94,9 @@ native CLI최종Cargo통합은native-cli-integration-results.json에귀속한다
 ## 모든 병렬 채팅의 결과와 후속 책임
 
 초기9개+후속 runtime/keys/browser3개+REA1개=13개 채팅을 확인했다. root는 이
-13개와 별도로 공통 통합·collector를 수행한다. browser 채팅은 최신 사용자 승인에
-따라 native CLI 초기 구현을 재개했으며 나머지는 마지막 반환 turn이 completed다.
+13개와 별도로 공통 통합·collector를 수행한다. browser 채팅은 native CLI 인계 뒤
+최신 사용자 승인에 따라 실제 newtab과 chrome:// 개별 지원 확인을 진행 중이다.
+나머지는 마지막 반환 turn이 completed이며 notLoaded를 실행 상태로 해석하지 않는다.
 세부 최신 snapshot은 roadmap-reconciliation-latest.json,이전 인계는 chat-results.json이다.
 
 | 채팅/작업 | 귀속 결과 | 후속 작업 |
@@ -136,7 +138,9 @@ timeline
   13시19분 브라우저 UI : borderless SVG와 resize
   13시21분 guard 상태 : coverage와 bounded epoch
   13시23분 native 설계 : SDK framework와 init tooling
-  현재 : 최신 source 원격 검증 : native CLI 명명 보정과 구현 진행
+  13시47분 이후 : f32042a native 6환경과 collector CEF 성공 : full CI 실행 중
+  13시56분 이후 : 624c1c1 guard baseline 실제 관측 : native19 Firefox34 로컬 통과
+  14시 이후 현재 : newtab과 개별 chrome URL 구현 진행 : root 전체 로드맵 재정합화
 ```
 
 ## 목표 완결 마일스톤
@@ -148,7 +152,7 @@ timeline
 | M2 | network/raw capture | 부분 | TLS ClientHello·ordered headers·HPACK/H2설정/priority·connection/session binding |
 | M3 | audit/keys/state | 부분 | 독립durable witness·rotation운영·dual-control·backup/erasure/sinks |
 | M4 | Core/Gate·authority | bounded runtime | collector/capture/RIT·proxy/settings/abuse/admin 전체 실제 경로 |
-| M5 | Rust collector | env/advanced까지 부분 | guard hooks/CDP·fingerprint-ID/ICE·loader/session/RIT/recovery·Pass·API matrix |
+| M5 | Rust collector | baseline까지 부분 | native19/Firefox34 로컬; guard hooks/CDP·fingerprint-ID/ICE·loader/session/RIT/recovery·Pass·API matrix |
 | M6 | 서버 adapters | 부분/연구 | Node/Bun Express/Hono·nginx Rust-only,peer/route/header/body/stream/provenance와실제authority |
 | M7 | 운영 CLI·설치 | provisioning 구현 | signed package→서비스 활성/readiness→업데이트/rollback·native peer 부정 파일럿 |
 | M8 | 제품 Docker 워게임 | 제한된 파일럿 | live Gate/browser/Pass·egress·origin/audit·공격/정상/human/AT 분모 |
@@ -161,7 +165,7 @@ timeline
 | B3 | 진단/receipt | 미구현 | qualified target/input·collector/session/capture/audit typed join |
 | B4 | 대조 실험 | 미실행 | ordinary Chrome·human/AT·observer on/off·오탐 및 실제효과 |
 | B5 | 도구 배포 | 미구현 | native CVE/SBOM·서명/update/rollback·사용자문서 |
-| B6 | native SDK/framework/CLI | 설계/초기구현 진행 | 기반4crate·versionedABI/consumer·owned lifecycle/unload·frameworkmatrix·bounded init/doctor/verify |
+| B6 | native SDK/framework/CLI | 설계/manifest init 구현 | CLI11unit/6process; 기반4crate·versionedABI/consumer·owned lifecycle/unload·frameworkmatrix·scaffold/doctor/verify |
 
 ## 앞으로의 실행 타임라인
 
@@ -183,7 +187,7 @@ flowchart LR
 
 | 파동 | 다음 결과 | 병렬 경계 | 통과 증거 |
 |---|---|---|---|
-| W0 | 13채팅·정본 갱신,5f90971 CI와native CLI 통합요청 확인 | root공통Cargo/CI/Git;browser자기lane | source·로그·실행분모,실패보존 |
+| W0 | 13채팅 재확인,20crate/CLI 통합,guard baseline, f32042a component 성공/fullCI 관측 | root공통Cargo/CI/Git;browser자기lane | source·로그·실행분모,실패보존 |
 | W1 / F01-F02/F10-F11 | guard baseline/observer/forwarding,rawcapture,키 운영;UI/SDK/init 병렬 | collector/network/audit/browser 별도writer,scoring seam직렬 | 실제 producer·누락거절·cleanup/재시작·권한/ABI·API/OS matrix |
 | W2 / F03-F05 | qualified collector/RIT,서버 Rust binding,서비스 활성화 | 계약고정 뒤 adapter/CLI 분리 | 실제authority/origin/audit 효과·stream/header정상성·readiness/rollback |
 | W3 / F06 | full native/browser/Docker Rust runner와live워게임 | lab/CI와도구SDK 경계 분리 | six tuple·제품Docker e2e·human/AT·observer대조·SDK consumer |
@@ -228,8 +232,8 @@ CDP·bootstrap/session은여전히다음필수작업이다.
 5. 최신docs review/production Pages·registry·최종scan·Rust-only/agents/skills/eval이 남았다.
 6. 모든요건 전에 Go/oracle을지우거나main병합/branch삭제/publish를완료처리하지않는다.
 
-다음 root 구현은 guard의실제baseline/observer/안전한hook수명과현재native CLI의
-구체적인Cargo 통합이다. missingcoverage를reported=true로위장하지않는다.
+다음 root 구현은 guard의 MutationObserver/안전한 hook 수명이며 native CLI의
+Cargo 통합은 완료했다. missingcoverage를reported=true로위장하지않는다.
 공통Cargo/lock/toolchain/CI는root,나머지는session board단일writer로관리한다.
 새채팅을생성하지않았고idle채팅을임의재개하지않았다. browser재개는그채팅의
 최신사용자승인에따른다. 명시적인SDK확장과CLI명명보정도이정본에반영했다.

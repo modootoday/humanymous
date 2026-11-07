@@ -1,0 +1,128 @@
+{
+  "schema": "humanymous.roadmap-refresh/1",
+  "observedAt": "2026-11-07T05:02:40.761Z",
+  "source": "624c1c1",
+  "projectChats": [
+    {
+      "id": "01a1b35f-d3e9-7042-91a4-10c910a15515",
+      "title": "Meari + CEF · Rust 검증 브라우저 UI",
+      "appStatus": "active",
+      "updatedAt": 1794027690
+    },
+    {
+      "id": "01a1b35f-d1a1-7553-a0ed-65d09b9042a7",
+      "title": "Rust 키 저장 · sealed custody와 vault 영속성",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794011834
+    },
+    {
+      "id": "01a1b35f-cf83-74f2-aad1-34b3aee60cda",
+      "title": "Rust 런타임 · Core/Gate 세션과 collector",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794011999
+    },
+    {
+      "id": "01a1b34e-f9e9-77d3-b883-0cc4d76763a4",
+      "title": "내장 브라우저 분석 작업",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794010223
+    },
+    {
+      "id": "01a1b30d-454e-7a50-9ab1-48358dbd0ff1",
+      "title": "Rust authority · IPC 인증과 실제 어댑터 연결",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794006828
+    },
+    {
+      "id": "01a1b30d-4736-7281-a54f-5cb3a5fa4fe4",
+      "title": "Rust Compose · 격리 제품랩과 Cloudflare 프로필",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794006761
+    },
+    {
+      "id": "01a1b30d-439d-7030-8e38-789bc0b70f6a",
+      "title": "Windows 러너 · 표준 사용자 네이티브 테스트",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794006634
+    },
+    {
+      "id": "01a1b2da-2656-7a23-a60b-08a681b23117",
+      "title": "Rust docs · Pages와 공개 Draft v0",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794007989
+    },
+    {
+      "id": "01a1b2f5-ec55-7c91-863d-f539c70417be",
+      "title": "Rust 워게임 · attacker와 defender 격리 실험실",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794004508
+    },
+    {
+      "id": "01a1b2f5-e927-7a03-9d47-9d1084d14c53",
+      "title": "Rust CLI · doctor와 안전한 install",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794004339
+    },
+    {
+      "id": "01a1b2f5-ea98-7023-b7af-ad527b820084",
+      "title": "Rust nginx · 플러그인 어댑터와 계약 검증",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794004320
+    },
+    {
+      "id": "01a1b2da-d1e9-7a22-9052-9a90a8cba54f",
+      "title": "Rust 연동 · Node/Bun 어댑터와 서비스 계약",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794002635
+    },
+    {
+      "id": "01a1b2da-7d8a-73f2-9bb2-78bde5ae33f9",
+      "title": "Rust CI/CD · Cross-OS와 OIDC 릴리스",
+      "appStatus": "notLoaded",
+      "updatedAt": 1794003251
+    }
+  ],
+  "remoteSource": "f32042af9136560b41c1765f565c2e04fe373a22",
+  "runs": [
+    {
+      "id": 42339951722,
+      "scope": "six-native-tuples",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 42339951683,
+      "scope": "collector-component",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 42339952325,
+      "scope": "cef-component",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 42339951733,
+      "scope": "full-ci",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  ],
+  "localGuard": {
+    "nativePassed": 19,
+    "firefoxPassed": 34,
+    "reported": false
+  },
+  "activeBrowserScope": "user-approved newtab and individually measured chrome:// support",
+  "next": [
+    "guard observer lifecycle",
+    "source-specific full CI receipts",
+    "raw capture and witness",
+    "actual service/adapters",
+    "full Docker/native/browser human and AT",
+    "docs/supply-chain/skills",
+    "exact-tree main cutover and Pages live verification"
+  ],
+  "wholeGoalComplete": false
+}
