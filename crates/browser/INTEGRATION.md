@@ -6,6 +6,19 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Exactec4 run42377685195 passed the bounded standard Windows x64 component gate:
+runner14/Clippy, native build, desktop protocol4 (13filtered), bootstrap marker3
+(3filtered), actual bootstrap1 (5filtered) and desktop2. Four refusal children
+actually exited78 with spawn/wait/reaped true and unchanged profiles. Final
+declared source_changed=false; artifacts0/upload skipped. See both
+cef-run-42377685195 JSON files in evidence:root/20261107073932. Private report/log
+bodies remain unrecovered. The desktop producer/consumer checks passed, including
+the positive seven-route requirement, but no fresh manual GUI/IME/AX observation,
+full sandbox, descendant or Chrome-parity claim follows. BrowserReady=false.
+New native-feature strict Clippy also remains unexecuted.
+
+### Historical e77 and pre-ec4 source checkpoint
+
 Subsequent test-only source uses the existing ManagedChild owner for bootstrap
 negative children and emits closed case/profile observations from the shared
 pilot-contract inventory before unchanged assertions. Root integrated the two
@@ -34,7 +47,7 @@ experiment has been started under this new authorization, and no benchmark resul
 or supported tuple is inferred from it. Follow the root program/delivery canon
 for subsequent allocation rather than duplicating resource policy here.
 
-## Pending correlated canary source
+## Historical correlated canary source checkpoints
 
 Root-assigned D follow-up at source HEAD245abeda: browser default pure23/23 and
 native-cli pure argument/manifest4/4 passed. Seven Windows storage tests were
@@ -75,9 +88,9 @@ not provide Job-object ownership or qualify IME/AX/full sandbox behavior.
 Owner: browser-ui / rust-browser-native-lifecycle. The Meari management UI is integrated.
 Two actual Windows CEF native prototype packages are implemented below; shared
 workspace membership/lock integration is root-owned and now present in the shared checkout.
-BrowserReady=false; external target browsing is disabled. Current0.6 lifecycle
-source has pure-unit evidence only; the older native GUI evidence does not qualify
-this changed native adapter.
+BrowserReady=false; external target browsing is disabled. The latest bounded
+native compile/protocol/process result is exactec4 above; older GUI evidence does
+not qualify the current adapter's full GUI/input/accessibility behavior.
 
 ## Current canonical UI and SDK scope
 

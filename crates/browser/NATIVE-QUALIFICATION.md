@@ -8,12 +8,13 @@ owns the Meari/CEF integration. CI owns the existing provisioning runner.
 
 ## Current evidence boundary
 
-Windows x64 sourcee77 passed native compilation and four synthetic protocol tests.
-Its bootstrap stage failed with an unrecovered child/case result; desktop2 was
-not reached and final source closure was unknown. Source925 adds shared child
-ownership and closed observations. Its warm-only compile was interrupted when
-cold dependencies appeared; marker3/check/Clippy/runtime remain not_run.
-The first execution and subsequent evidence retain separate exact source scopes.
+Windows x64 sourceec4 passed native compilation, desktop synthetic protocol4,
+bootstrap synthetic marker3, actual bootstrap1 and actual desktop2, after runner14/
+Clippy success. Four refusal children exited78 with observed reaping and unchanged
+profiles. Final declared source_changed=false; original private report bodies
+were not retrieved. Native-feature strict Clippy and manual GUI/IME/AT remain open.
+Earlier0a1/e77 failures and925 local cold-dependency deferral retain their separate
+source scopes and unknown causes; the new success does not rewrite those records.
 
 Older Windows GUI, IME and UIA pilot observations are historical component
 evidence, not qualification of the current source/layout. No other OS/architecture
@@ -24,7 +25,7 @@ manifest. Full BrowserReady and external target browsing remain disabled.
 
 | Boundary | Evidence needed on the actual exact-source tuple | Owner and present frontier |
 |---|---|---|
-| CEF lifecycle | Actual parent/child identity, seven ordered diagnostic routes, current ticket/status/content receipts, real before-close and parent-close, cancellation and failure receipts; separately prove descendant termination | Browser integration + CI process gate. Protocol4 is synthetic; current desktop2 not_run. ManagedChild owns only the direct child. |
+| CEF lifecycle | Actual parent/child identity, seven ordered diagnostic routes, current ticket/status/content receipts, real before-close and parent-close, cancellation and failure receipts; separately prove descendant termination | Browser integration + CI process gate. Ec4 desktop2 passed bounded producer/consumer checks; protocol4 is synthetic. Failure streams and descendants remain open. ManagedChild owns only the direct child. |
 | Native keyboard and focus | Physical key edits in both CEF fixture and Meari address, Tab/Shift+Tab traversal and focus readbacks across both surfaces; IME-confirm Enter must not navigate | Browser integration with suitable Windows input environment. Programmatic Unicode/value actions are not physical key evidence. |
 | Korean IME | Actual incremental composition/update/commit/Backspace/Escape, physical or measured VK19/scanF1/extended Hanja delivery, visible candidate identity, caret-relative placement, selection and resulting committed text | Browser integration + installed IME and interactive operator/environment. SendInput insertion or IMM request success is not candidate proof; known IME class geometry alone is not ownership proof. |
 | Accessibility | Fresh roles/names/states/values, focus and usable bounds for Meari controls and CEF content; keyboard-only actions; real OS screen-reader output on synthetic content | Browser lane owns app integration; root owns any upstream Meari pin change. CEF accessibility enablement/UIA exposure alone is not full AX/AT qualification. Missing bounds/stale values remain failures or unknown. |

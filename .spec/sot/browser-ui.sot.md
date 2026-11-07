@@ -488,7 +488,10 @@ suitable-environment evidence; a hosted label or unsupported/skipped test is not
 qualification. Full sandbox/BrowserReady/external-navigation gates stay closed
 until their required premises are established.
 
-The current newtab checkpoint has not_run hosted qualification under this policy.
+The initial newtab checkpoint had not_run hosted qualification under that policy.
+Later exact-source bounded Windows results are recorded in
+plan:root/20261107071648 and evidence:root/20261107073932; they do not qualify
+GUI/IME/AT, full sandbox policy or all supported tuples.
 Earlier source-bound local receipts remain historical; they do not qualify new
 sources or hosted jobs. No runtime/build/dispatch was started for this policy
 record. Public collection and missing private-original handling defer to the
@@ -498,7 +501,7 @@ public artifacts. Required native gates are not removed by path heuristics.
 
 ## Navigation lifecycle and probe closure contract
 
-UI-25 (accepted implementation slice, native execution not_run): one pure Rust
+UI-25 (accepted implementation slice; execution evidence is source-bound): one pure Rust
 navigation authority owns bounded64 generation tickets, current request,
 observed commit and explicit terminal outcome. A ticket binds generation and an
 exact typed local route. New requests supersede pending tickets; revoke is
@@ -585,7 +588,7 @@ until actual before-close, and does not become a focus/observer grant. No global
 hooks or third-party window/process inspection is introduced.
 
 
-UI-28 (accepted source follow-up; native compile/runtime not_run): owner-scheme
+UI-28 (accepted source follow-up; execution evidence is source-bound): owner-scheme
 registration records the actual add_custom_scheme return in process-local atomic
 state. Unknown/missing/rejected registration is not success. Desktop factory
 registration refuses to proceed unless its browser App observed acceptance;
@@ -595,7 +598,8 @@ No filesystem or canary denial is inferred from the absence of a renderer report
 This is a process-local prerequisite, not all-process registration attestation,
 full sandbox qualification or a new BrowserReady value. Existing report/schema2
 fields do not retroactively prove UI-28. Old source c4b58be remains independently
-bound; this new native delta needs its own hosted compile and actual probe.
+bound; this native delta requires its own compile/probe receipts. The missing-
+registration fault case remains separate from a normal accepted registration run.
 
 
 UI-29 (accepted verification-source slice): the hosted consumer must independently
@@ -633,7 +637,8 @@ and contain only that initial generation/route and recognized callbacks. A stale
 multi-route positive inventory cannot become cancellation evidence by changing
 the producer's observed/pass flags. Initial CEF callbacks may race the close
 request; their runtime behavior remains unqualified and must not be masked by
-synthetic zero counts. Protocol regressions are authored, not executed.
+synthetic zero counts. Protocol execution is source-bound; passing synthetic
+report regressions does not prove actual desktop or accessibility behavior.
 
 The same owned contract lists protocol_preflight: its exact selector and four
 synthetic report test names, separate from the two actual process case names.
@@ -643,7 +648,7 @@ runner must verify all four exact names and executed count without ignored cases
 before separately reporting bootstrap rejection and actual desktop process cases.
 Passing protocol fixtures is not CEF execution or native runtime qualification.
 
-UI-30 (accepted source follow-up; native compile/runtime not_run): renderer file
+UI-30 (accepted source follow-up; execution evidence is source-bound): renderer file
 probe schema2 records an independent owned-process OS token observation when each
 bounded canary message is received. The browser discovers its own descendants and
 checks executable identity; it never opens an arbitrary renderer-supplied PID.

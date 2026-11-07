@@ -11,6 +11,30 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## Actual bounded Windows CEF gate passed
+
+Dedicated run42377685195/job128418538461 completed successfully at exact
+ec4f2da09a78ffa3ae7661661fc1d54b921f534b. Actual results are runner14/Clippy,
+native build0, desktop synthetic protocol4/13filtered, bootstrap synthetic
+marker3/3filtered, actual bootstrap1/5filtered and actual desktop2. All selected
+tests report zero failure/ignore. The four original refusal children each report
+spawn/wait/reaped true, exit78, deadline false and no errors. Profile inventories
+before/after succeeded and afterchanged=false. Normal completion did not call
+explicit cleanup; timeout/error cleanup remains a separate test frontier.
+
+The safe projection reports stage complete and source_changed=false within its
+declared source scope. Artifacts0/upload skipped. Safe stdout is retained with
+cef-run-42377685195.json and cef-run-42377685195-safe.json in
+evidence:root/20261107073932. Raw private report/stage-log bodies were not retrieved;
+their emitted hashes are commitments, not independent recovery. Do not infer
+exact unprojected per-route/PID/canary counts from them.
+
+This closes the bounded hosted component gate only. Actual keyboard/IME/Hanja
+candidates, AX/screen-reader behavior, DPI, Chrome parity, full sandbox policy,
+descendant termination and other tuples remain open. Native-feature strict Clippy
+was not run by this workflow. Earlier failures and925 warm deferral remain intact;
+their unknown causes are not retroactively diagnosed by this success.
+
 ## Allocated warm bootstrap compile: interrupted and deferred
 
 Root allocated C for immutable9251376f99dba1fbe36af4bb2908ed5e39dd6047 warm-only
@@ -169,8 +193,10 @@ Central execution policy remains sot:root/program-roadmap and sot:root/delivery.
   strict report/exit closure; collect failure outcomes and receipt-loss count.
 - [x] Bound owner/query/resource parsing before allocation; reset canceled IME.
 - [x] Run only root-assigned resource-bounded pure unit/fmt/scoped Clippy checks.
-- [ ] Obtain source-bound hosted compile/native safe URL/lifecycle/failure tests;
-  required unsupported GUI/IME/AT/GPU/DPI capability remains not_run.
+- [x] Execute source-bound bounded Windows compile/protocol/bootstrap/desktop gate
+  at exactec4, preserving separate counts and safe-source closure.
+- [ ] Complete GUI/IME/AT/GPU/DPI, full policy/failure-stream and supported-tuple
+  qualification beyond that bounded component gate.
 - [x] Register exact public/private evidence and coordinated owned-path checkpoint
   for implemented source/pure units; hosted qualification remains open.
 
