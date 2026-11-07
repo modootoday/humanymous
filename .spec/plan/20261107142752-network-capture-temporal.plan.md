@@ -3,17 +3,18 @@ id: plan:root/20261107142752
 title: Correlation and traffic producer placement review
 status: active
 created: 2026-11-07T14:27:52Z
-updated: 2026-11-07T14:35:00Z
+updated: 2026-11-07T14:59:00Z
 rel:
-  governs: [crates/network/src/lib.rs, crates/network/src/history/**]
+  governs: [crates/network/src/lib.rs, crates/network/src/history/**, crates/network/src/traffic/**, crates/network/src/correlation/**]
   depends_on: [sot:root/rust-migration, sot:root/crate-architecture, sot:root/network-capture]
 ---
 
 # Temporal network producer proposal
 
-Version0.2.0. Root accepted placement and the generic pure MAD source slice;
-37936ee0 implements that slice with12authored tests, NOT_RUN. Correlation/traffic
-producer implementation, runtime integration and qualification remain pending.
+Version0.3.0. Root accepted pure temporal producer placement. Original37936ee0
+MAD12selected passed separately; the combined MAD/rate/correlation/traffic source
+has56authored temporal fixtures, NOT_RUN. Runtime integration, real atomic
+coordinator, verified epoch backfill and current-source qualification remain open.
 Root requested eight additional retirement rows beyond the20network rows and
 subsequently assigned the two anomaly prerequisite rows to this owner.
 Initial inventory inspected734c62da0e493478bb2aa4d998664f11e432945c without source
@@ -198,7 +199,8 @@ explicit exhaustion Unavailable, and typed optional shared local-degraded result
 The atomic shared backend remains deferred; semantic trait alone is not fleet
 coverage. Rate limiter migration is a separate Root design and not in this slice.
 Runtime epoch/backfill integration remains pending and no runtime wiring is
-authorized by this acceptance. Existing eight rows remain unimplemented here.
+authorized by that acceptance. At the first slice the eight original rows were
+still unimplemented; their subsequently authored local source is recorded below.
 
 Two added source rows and exact first implementation paths:
 
@@ -366,3 +368,60 @@ all-target check, strict Clippy and fmt each exited0. Entire2614source files,
 after; no newly referenced registry roots. D returned immediately. Evidence is
 registered as evidence:root/20261107145000. These results do NOT qualify the later common
 clock/error refactor or rate source and do not mark all26network units executed.
+
+## Accepted next producer source bounds
+
+Root requested the original eight pure producers after the shared primitives.
+Traffic paths are traffic/{mod,record,log,consistency,tests}.rs; correlation paths
+are correlation/{mod,config,registry,velocity,shared,tests}.rs. Extend the current
+lane to these paths before writing. Reuse history's one ordered clock/error;
+correlation reuses the generic MAD rather than implementing median math again.
+No runtime wiring, production defaults, scoring or new dependencies.
+
+Traffic configuration supplies TTL plus positive max_sessions, max_addresses,
+max_field_bytes and max_payload_bytes. The frozen per-session ring remains64.
+Retained payload accounting includes duplicated map keys/record strings, not
+allocator metadata or bounded snapshot copies. Record/replace/admission is
+preflighted before internal mutation; exhaustion/time regression ->Unavailable.
+Legacy TLS address backfill explicitly returns AddressOnly association and
+unqualified coverage, never a verified epoch. Absent records/fields cannot become
+healthy from an empty signal vector. Production epoch binding remains runtime's
+pending owning contract, with no caller bool or fabricated proof here.
+
+Correlation configuration supplies TTL and finite max_keys, max_fanout_keys,
+max_distinct_per_set, max_field_bytes and max_payload_bytes plus explicit generic
+MAD resource limits sufficient for the frozen population profile. Preserve local
+subnet/session/fanout thresholds and512arrival resource behavior. Shared semantic
+types have no real backend and no fleet-qualified output: externally reported
+counts affect only weight0 velocity, retain explicit unqualified/degraded status,
+and cannot change local Stats/proxy rotation. A named coordinator trait describes
+the atomic operation without executing foreign scripts or pretending to connect.
+Hash/MAC inputs stay transient; field and payload budgets precede state mutation.
+Sorted deterministic set-value order replaces Go map's unspecified enumeration;
+do not change set membership, counts, signal order, predicates or notes.
+
+The accepted local producer source is now authored: traffic12tests plus
+correlation20tests (17public-contract cases and3private arrival/budget cases).
+Together with the later MAD12/rate12 shared-clock candidate,56temporal tests
+are authored for the new source; all are NOT_RUN for this combined candidate.
+The pre-existing network14tests are separate. Original37936ee0 selected MAD12
+proof is historical and does not transfer to this combined source.
+
+Traffic preserves optional field skip predicates but only reports Insufficient
+or UnqualifiedHistory coverage; log backfill returns Absent/AddressOnly, never a
+verified TLS epoch. Stats returns Absent explicitly rather than manufacturing a
+healthy zero count. CoordinatorReportedUnqualified is not fleet health; the
+atomic trait has no real implementation. Historical EVAL wire/backend testing
+is therefore deferred, while local fallback/count/clamp behavior has authored
+fixtures. No shared backend row is retired based on those injected counts.
+
+Correlation uses ONE history::anomaly detector with fixed256/6/20/1 population
+parameters and caller finite limits. Tests include SHA256 and RFC4231 HMAC-SHA256
+known-answer vectors, strict local cutoff equality, append-before-prune512cap,
+fallback retention across reset and runtime-owned concurrency serialization.
+Runtime policy still must preserve missing coverage after any Unavailable;
+subsequent pure observations do not prove failed admissions were recorded.
+Neither the fanout API nor new history observations are connected to serving.
+No dependencies, scoring/threshold/registry changes, runtime wiring, actual
+coordinator or Docker execution were authored or launched in this continuation.
+Source formatting/diff/spec checks are the only checks run for the new candidate.

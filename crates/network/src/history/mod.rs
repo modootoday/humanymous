@@ -18,20 +18,20 @@ pub enum Unavailable {
 
 // One ordered caller-clock contract for history domains. Owners commit only
 // after all fallible admission/measurement work has succeeded.
-struct OrderedTime {
+pub(crate) struct OrderedTime {
     last: Option<Duration>,
 }
 impl OrderedTime {
-    fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self { last: None }
     }
-    fn check(&self, now: Duration) -> Result<(), Unavailable> {
+    pub(crate) fn check(&self, now: Duration) -> Result<(), Unavailable> {
         if self.last.is_some_and(|last| now < last) {
             return Err(Unavailable::TimeRegression);
         }
         Ok(())
     }
-    fn commit(&mut self, now: Duration) {
+    pub(crate) fn commit(&mut self, now: Duration) {
         self.last = Some(now);
     }
 }
