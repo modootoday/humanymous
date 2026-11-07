@@ -3,11 +3,11 @@ id: evidence:root/20261107135643
 title: Performance readiness and four source-bound library builds
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:38:30Z
+updated: 2026-11-07T15:01:03Z
 rel:
   depends_on: [sot:root/performance-optimization, plan:root/20261107135643]
 files:
-  - {path: baseline.json, sha256: 8f328726aa1b710878bdd5905d6d3822409d3c31d0d5da577c909bbf492c0b47, bytes: 8401, store: repo}
+  - {path: baseline.json, sha256: 7786428c2bd847a59d7175623521b911c441bce23dbf72c20e206c88f7d37cea, bytes: 13105, store: repo}
 ---
 
 # Performance readiness and four source-bound library builds
@@ -92,13 +92,14 @@ The private R1 verification manifest lists18 files with SHA256
 Independent read-only source review found no narrow semantic blocker. Its
 measurement caveats remain: hot in-process pairs are not independent process
 repetitions, and the internal120second threshold is cooperative after preparation.
-Release compilation, actual function A/B execution and product-runtime validation
-remain not run. No optimization speedup or allocation count is claimed.
+At this verification stage, release compilation and function execution were not
+run. Their subsequent actual results are recorded below. Product-runtime
+validation and an observed allocation count remain outside this receipt.
 Root later accepted ordinary tool-session supervision and observed terminal
 status for the fixed trusted function example, without child spawning, network
 or external input. This does not establish a hard OS wall-clock or product
-cleanup guarantee. Exact release and direct-binary execution allocations remain
-required. Fixture inventory fields now explicitly distinguish initial inspection
+cleanup guarantee. Root separately allocated release build and one direct-binary
+execution. Fixture inventory fields explicitly distinguish initial inspection
 from the subsequent native parity execution receipt.
 Premeasurement corpus inspection found15174 UTF-8 bytes across all81 oracle
 canonical outputs, while one synthetic case has49152 header payload bytes before
@@ -106,6 +107,58 @@ framing. This byte-volume imbalance is not a timing result or representative
 product traffic. The fixed corpus remains unchanged and was not reweighted after
 timing. Case-sensitive JSON parsing preserved the deliberate header-key collisions;
 the initial rejected parse's zero-count exploratory output was discarded.
+
+## R1 release function comparison
+
+The existing authority-followup-release target avoided another owner's reserved
+target. One native locked/offline jobs1/incremental0 release example build on
+immutable c4786b67 terminated0 in Cargo's rounded16.97seconds. Its emitted
+623104byte executable SHA256 was
+cce5b7da9dbbebe5d85a97184036688955e86ae0b68dc8bb46f6ff112a795365.
+Cargo reported opt-level3/debug0 and existing release defaults, without a profile
+change. Source2563 and selected registry1041 files compared unchanged; config18,
+environment3 and observed tool3 records matched. Full SDK/reuse authority is not
+claimed.
+
+Exactly one direct process then terminated naturally with exit0. Before and after
+binary hashes matched, as did the2563file source closure. Standard error was empty.
+Strict validation accepted exactly13 top-level fields and10 timing rows:81oracle
+plus6synthetic cases,16 warmup corpus iterations,5 alternating AB/BA pairs and256
+corpus iterations per variant. Every row contains22272operations and16757760output
+bytes. Fixture hash and canonical output digest are retained in baseline.json.
+
+| Pair | Baseline ms | Candidate ms | Paired time reduction |
+|---|---:|---:|---:|
+| 0 | 20.3217 | 17.1348 | 15.68% |
+| 1 | 19.3021 | 16.6484 | 13.75% |
+| 2 | 19.5028 | 15.9280 | 18.33% |
+| 3 | 18.9100 | 15.9785 | 15.50% |
+| 4 | 19.0357 | 15.4773 | 18.69% |
+
+The paired reduction median is15.68%, range13.75-18.69%, for this fixed corpus in
+one hot process. This is an observed function comparison, not representative HTTP
+throughput, per-request tail latency, measured allocation counts or independent
+process reproducibility. The predeclared large-input byte imbalance is material.
+There was no rerun or reweighting after seeing data. The120second threshold is
+cooperative timed work after preparation, without a hard OS deadline claim.
+
+Admission saw82.9513% host commit,29.7420GiB free physical memory and0 Windows
+compiler processes. A later snapshot observed3 compilers; sparse snapshots do not
+establish actual timing overlap or continuous quiet. CPU/RSS/full background load
+remain unknown. The result does not establish machine-idle or production behavior.
+After-only host context identifies Windows11Pro build26200 and an i9-14900K,
+24physical/32logical cores with63.3379GiB visible memory. This experiment did not
+set a CPU quota or memory limit; inherited job limits were not observed. The
+after-only inventory does not prove matched before/after hardware controls.
+
+Exact private rows are r1-benchmark.stdout.json, SHA256
+b1eb3af9bd5f9a5a361ac420c3ba3545e56c4c036e0ba6d62a53f424c4376110.
+The release/benchmark/corpus manifest contains19files with SHA256
+0fbb24d63d113b46b684ba1bbde7f3feef2b45cd0c7f7894734d547409968129.
+Actual PID, tool terminal receipt, binary/profile data and detailed input/closure
+manifests remain in the owned private bundle. The B compiler/runtime reservation
+was returned. The complete performance goal still requires the remaining build
+cache/profile research and actual product runtime/security qualification.
 
 The controlling SoT retains build and runtime scope, exact-byte regression
 requirements, security invariants, resource admission and Docker product gates.

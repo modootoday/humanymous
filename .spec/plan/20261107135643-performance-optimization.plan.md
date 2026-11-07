@@ -3,7 +3,7 @@ id: plan:root/20261107135643
 title: Performance research and source-bound optimization execution
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:32:38Z
+updated: 2026-11-07T15:01:03Z
 rel:
   depends_on: [sot:root/performance-optimization]
 ---
@@ -102,10 +102,10 @@ The benchmark prevalidates81 frozen request vectors plus6 synthetic cases and
 retains its pre-optimization Rust oracle only in test/example code. At that source
 checkpoint, tests and benchmark compilation/execution were NOT_RUN during the
 Pages window. The later B allocation completed scoped tests/check/Clippy/fmt;
-release example build and actual function measurement still need allocation.
+release example build and function execution were allocated later, as below.
 
-R1 function measurements and Docker/product workloads remain NOT_RUN. No measured
-optimization improvement or full-product completion is claimed. Observed Cargo
+Docker/product workloads remain NOT_RUN. The later R1 function measurement has
+only the fixed-corpus scope below; no full-product completion follows. Cargo
 freshness is distinct from a compiler-cache or archive transport hit.
 
 ## R1 allocated verification preparation
@@ -120,7 +120,7 @@ running tests. Root later resolved the fixed function benchmark supervisor scope
 ordinary tool-owned session plus actual observed terminal exit is sufficient for
 the trusted no-child/no-network/no-external-input example. Preserve cooperative
 budget wording; no hard OS wall-clock or product cleanup guarantee follows. Exact
-release build and one direct-binary execution allocations remain pending.
+release build and one direct-binary execution were separately allocated later.
 
 An initial full user Cargo registry content census was started for before-state
 capture and remained live across bounded handle polls. This scope is broader
@@ -141,3 +141,46 @@ remains false. Raw footers/manifests and the source-review caveats are recorded
 in the public baseline/index. B target/compiler reservation was returned promptly.
 Root reserved the next cold window for native Audit; no release build or benchmark
 starts before its terminal result and a new exact allocation.
+
+## Root-requested verification overhead proposal
+
+The SoT now proposes per-batch defaults of5000 selected files/2GiB total/512MiB
+per file/64 roots/30seconds cooperative observation. Root acceptance and a
+tool-owner path grant are required before implementation. Select actual command
+sources/resolved dependencies/config/compiler target libraries, excluding unrelated
+toolchain documentation and global caches. Keep unknown actual linker/SDK inputs
+explicit rather than inventing complete tool closure.
+
+Reuse reviewed path inventories with fresh selected content hashes, or a single
+before manifest across an explicitly frozen admitted batch followed by its full
+after comparison. No cross-batch content-hash reuse based only on mtime/size,
+claim/version assertions or an unchanged path list. Immutable image/source reuse
+requires actual content-addressed provenance. Preserve partial censuses/failures
+and do not weaken mandatory actual tests. No new tooling code or measured policy
+speedup is claimed. Root assigned this proposal while Model C remained in its
+pre-compile toolchain census. Root subsequently chose a different existing target
+for release rather than overlapping that reservation.
+
+## Completed release/function slice and next work
+
+Root allocated existing target/authority-followup-release for one exact c4786b67
+release example build. It actually terminated0, with623104byte emitted binary
+SHA256cce5b7da9dbbebe5d85a97184036688955e86ae0b68dc8bb46f6ff112a795365
+and Cargo footer16.97seconds. Source2563/selected registry1041/config18/env3/tool3
+before/after records matched. Existing release defaults were not changed.
+
+The conditional once-only direct-run grant's receipt/admission conditions were
+met, then one native process actually terminated0. Its fixed13-key/10-row schema,
+81+6case counts,22272operations/16757760bytes per row, digests, unchanged binary
+and source all validated. Five hot paired reductions ranged13.75-18.69%, median
+15.68%. This is a fixed-corpus function observation. Large synthetic input byte
+weight, one process, sparse external-load snapshots, CPU/RSS unknown and lack of
+product/tail/allocator qualification remain explicit. No rerun or reweight occurred.
+Root's later explicit run confirmation was not interpreted as a second grant.
+
+The B reservation was returned after terminal execution. During the next Browser
+native-heavy window, continue source-only build-cache/preflight scope research
+and seek owner review of the bounded manifest proposal. Future experiments need
+their own exact allocation. R2 actual Runtime/Authority/Audit/collector profiles,
+security/product gates and the remaining build optimization areas stay open;
+this measured R1 slice does not close the persistent goal.

@@ -3,7 +3,7 @@ id: sot:root/performance-optimization
 title: Reproducible build and runtime performance optimization
 status: draft
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:38:30Z
+updated: 2026-11-07T15:01:03Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
   governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
@@ -91,10 +91,87 @@ source-specific checks because a transport cache reports a hit.
 
 ## Experiment sequence and ownership
 
+### Proposed bounded verification preflight
+
+Root requested this proposal after broad registry/toolchain censuses delayed
+small unit batches. These limits need root acceptance; they do not supersede
+program-roadmap admission, owner allocation or mandatory tests. No reusable
+implementation or new execution permission follows from this specification.
+
+The proposed default budget per admitted pure-Rust batch is5000 selected files,
+2GiB aggregate file bytes,512MiB maximum individual file size,64 explicitly
+selected roots and30seconds of cooperative observation. Check counts/lengths
+before hashing each file and time between files. A blocked filesystem/hash call
+can exceed that threshold; do not advertise a hard OS return guarantee. Root may
+assign a larger explicit finite profile when necessary, or move the batch to a
+qualified venue. No unbounded traversal or automatic budget increase.
+
+Select inputs by the exact command profile:
+
+- Frozen owning package sources, fixtures, path dependency packages, required
+  root manifests/locks/toolchain and applicable Cargo ancestor/home config.
+- Actual resolved external package source directories and corresponding archives
+  and relevant registry index/config records. Include required build inputs;
+  unrelated cache packages and other projects are outside this closure.
+- Selected Cargo/compiler executables, their required runtime libraries and
+  compiler target libraries for the declared host/target. Include the actual
+  linker/SDK inputs when the profile needs them. Unknown tool/library inputs
+  remain explicit; do not assert a complete compiler/SDK identity from rustc.exe
+  alone. Unused toolchain docs/examples/other target libraries are excluded.
+- Hashed effective flag/environment dimensions and declared feature/profile
+  selection. No raw credentials or unrelated user configuration are collected.
+
+A workspace-only metadata inventory with --no-deps is not a resolved dependency
+graph: resolve is null and dependency source fetching is excluded. Use actual
+artifact/package evidence or qualified scoped resolution for the dependency
+closure. Preserve a failed broader metadata attempt rather than rewriting it as
+a passing scoped observation. Package identity strings must be interpreted under
+their observed Cargo version; reject unsupported forms rather than guessing.
+
+An observation manifest records source/lock/toolchain/host/target/features/profile,
+the finite selected path set and its selection evidence, per-file content hashes,
+counts and bytes, budget/elapsed scope, missing inputs, completeness and terminal
+command identities. Refuse traversal escapes and unresolved reparse/symlink
+identities. A selected closure cannot prove unrelated shared cache unchanged.
+
+Root-owned manifest reuse has two separate meanings:
+
+1. Reuse a reviewed path inventory when source/lock, package set, toolchain,
+   target/features/profile and config scope match. Rehash selected current bytes
+   before and after the admitted batch; path inventory reuse is not content reuse.
+2. Within one root-declared frozen batch, reuse its before manifest across the
+   scheduled commands, then compare the same complete selected set after all
+   commands. Record the original manifest digest, command IDs and root's no-write
+   coordination window. This avoids repeated identical per-command censuses.
+
+Across separate batches, do not reuse stale content hashes solely because of
+mtime/size, a claim file, a version string or an owner's assertion. Root may
+reuse a content-addressed immutable source/image manifest only when actual
+materialization identity and the declared immutability boundary are evidenced;
+otherwise selected current content hashes are required. Repository coordination
+is not OS tamper resistance, and no hostile same-user guarantee is implied.
+Any changed source/package/config/toolchain/SDK or unresolved path invalidates
+the applicable reuse decision. No manifest cache authorizes skipping actual tests.
+
+On budget exhaustion or missing required evidence, retain the partial census
+with explicit completeness=false and its original failure/handle. The owner may
+request stopping its own I/O under its existing supervisor; never stop another
+owner's process or infer a terminal result from an observation timeout. Root must
+choose a corrected finite scope, explicit larger allocation, qualified venue or
+honestly limited observation before further work. Required tests/checks and
+security gates remain required; partial provenance cannot become artifact reuse
+authority or full qualification. No global cache deletion/prune is involved.
+
+The measured R1 precedent is a broad55842file before census followed by an
+actual30-package selected closure of1041 files, with before/after0 differences.
+This establishes the selected comparison's coverage, not a timed A/B speedup for
+the proposed policy. Required parser/selection/budget tests and actual tool pilot
+belong to the owning Rust tooling context under a separate implementation grant.
+
 | ID | Experiment and current status | Acceptance boundary |
 |---|---|---|
 | B1 | Four native signals builds completed on immutable9b064dbd; initial15fresh/8rebuilt, repeats23fresh/0rebuilt | Project-quiet/external-load-observed; no controlled A/B/cold-cache claim; [[evidence:root/20261107135643]] |
-| R1 | Native c4786b67 all-target tests27passed plus check/strict Clippy/fmt; independent source review accepted | Request81/verifier27vectors retained; source2563 and selected registry1041files unchanged; actual function comparison and product-runtime qualification remain pending |
+| R1 | Native c4786b67 tests27/check/strict Clippy/fmt; one release fixed-corpus comparison completed |5hot paired batches observed13.75-18.69% shorter time, paired median15.68%; unchanged source/binary/input closure; no product/tail/allocation or independent-process claim |
 | B2 | Archive fetch/preparation measurement and eligible-job restore proposal; research only | Current policy-job cache does not populate other runner filesystems; owner approves any exact policy expansion |
 | B3 | Package/version/feature/target duplicate compilation and invalidation; research only | Prove equivalent gates and actual dependency features before eliminating any build |
 | B4 | Profile/debug/codegen/linker/incremental/sccache; research only | Separate developer and CI profiles; matched compile and actual executable regressions; no inferred universal speedup |
@@ -253,4 +330,5 @@ Actual native identity observed: Cargo1.99.1(5f94df478),
 rustc1.99.1(58cf8f9c35b355199727627d07ae34a4e2846d67),
 x86_64-pc-windows-msvc, bundled LLVM23.1.1. This does not identify the installed
 external linker/SDK. Four allocated library builds have now completed; function
-A/B and product-runtime experiments remain not run. See the exact B1 evidence.
+A/B also completed once under the declared fixed-corpus limits. Product-runtime
+experiments remain not run. See the exact B1/R1 evidence and raw-row digests.
