@@ -1,0 +1,128 @@
+{
+  "schema": "humanymous.parallel-dispatch/1",
+  "at": "2026-11-07T05:05:15.509Z",
+  "reason": "Direct user authorization to resume all existing project chats; follow-up correction reuses existing Pages/draft-v0 chat, no new chat",
+  "assignments": [
+    {
+      "threadId": "01a1b35f-d3e9-7042-91a4-10c910a15515",
+      "lane": "misc",
+      "scope": "현재 newtab/chrome:// 작업을 유지하세요. 그 후 B0-B5의 실제 CEF lifecycle/sandbox/input/IME/AX/DPI/navigation/진단receipt/Chrome대조 및 배포 잔여 항목을 최신 코드 기준 목록화하고 가능한 실제 구현/검증을 계속하세요. crates/browser/**와 기존 browser/chromium SoT, 자기 evidence만. native SDK4crate/ABI/framework/CLI 후속은 INTEGRATION에 분리하여 충돌 없이 순차 수행, 신규 membership은 root 요청. docs/standards 수정 금지.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b35f-d1a1-7553-a0ed-65d09b9042a7",
+      "lane": "gate-edge",
+      "scope": "crates/audit/** 및 자신 key custody SoT/plan/evidence. 독립 durable witness, rotation 운영, dual-control issuer/erasure/backup/sinks의 미구현을 코드로 완성하고 crash/replay/rollback/권한 부정 파일럿까지. root의 custody/WAL 잠금수정을 보존. runtime/authority 소유 코드는 수정하지말고 typed contract 제공. gate-edge를 선점하여 먼저 audit 경계를 완성 후 runtime/authority에 해제 통지.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b35f-cf83-74f2-aad1-34b3aee60cda",
+      "lane": "gate-edge",
+      "scope": "crates/runtime/**, 자신 runtime/session SoT/plan/evidence만. audit 담당이 먼저 같은 lane 사용하므로 초기에는 읽기전용 전체 proxy/admin/settings/abuse/collector RIT/Pass/capture 통합 설계와 API 요청, audit 해제 후 claim하여 실제 구현. collector는 root 소유로 수정 금지. network raw capture가 미구현이므로 crates/network/** 확장은 authority와 계약 합의 후 root에 소유권 요청. 기존 sealed startup/정상origin 이전audit 보존. 실제 바이너리/서비스/부정 파일럿.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b30d-454e-7a50-9ab1-48358dbd0ff1",
+      "lane": "gate-edge",
+      "scope": "crates/authority/** 및 자신 authority SoT/plan/evidence. audit→runtime 선행 소유자와 gate-edge 직렬 조정, 그동안 읽기전용 typed provenance/stream/peer/auth/local-admin 계약과 Node/nginx 요청 대응. 이후 실제 authority의 adapter 연결/stream/body-binding/replay/ACL/admin/RIT를 완성, Windows remote-client 및 Unix UID 부정 검증. scoring 변경 금지. 다른 crate 수정 금지.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b30d-4736-7281-a54f-5cb3a5fa4fe4",
+      "lane": "red-catalog",
+      "scope": "deployments/lab/**,test/lab/** 및 container-test-environments SoT/자기 plan/evidence. attacker 담당과 같은 lane이라 먼저 조정하여 Compose를 먼저 claim하고 full Rust runtime/collector/origin/audit isolation/egress/witness 제품랩 및 실제 Docker runner 준비. 기존 Node/Python 실행 tooling은 Rust로 대체, generated 설정은 구분. AWS/Lightsail/Cloudflare profile 연구→실행준비를 정본화하되 미승인 비용리소스/외부배포 금지, Cloudflare cfCLI(Wrangler설정없으면). test/attacker crate는 수정 금지. 빨리 필요한 topology 계약을 wargame에 제공.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b30d-439d-7030-8e38-789bc0b70f6a",
+      "lane": "release",
+      "scope": "release lane은 여기서는 tag/publish 없이 runner 구현 범위로만 사용. crates/test-support/**,crates/native-security/**,scripts/ci/windows-* 및 cross-os runner 자신의 spec/evidence. 최신 full CI native runner 부재와6tuple component 한계를 확인하고 실제 Rust native product/service/peer runner 및 standard-user lifecycle/capture/readiness/negative 파일럿을 구현. CI chat은 workflows/general scripts 소유, 자신의 exact scripts만 선점하고 해당 인터페이스 통지. 실제 Linux/macOS 실행은 Actions로 통합요청. CLI chat과 release lane 순서 조정: windows 먼저, CLI는 준비 후 대기. shared Cargo 금지.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b2da-2656-7a23-a60b-08a681b23117",
+      "lane": "docs",
+      "scope": "docs/** 중 docs/standards/** 제외, Pages 전용 자신의 SoT/plan/evidence. 표준은 새 전용 채팅이 맡음. 최신20crate CLI/collector/browser 실제 구현에 맞는 tutorials/how-to/reference/explanation 갱신, remote_theme·디자인토큰 유지, 최신 docs freshness review와 dualbaseurl/build/keyboard/a11y 실제검증. docs/standards와 standards-governance 수정 금지, 공통 nav/_data 수정은 표준담당의 요청받아 단일writer로 반영. docs/scripts 기존 foreign tooling의 Rust 대체는 CI와 계약. build와 production deployment 분리.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b2f5-ec55-7c91-863d-f539c70417be",
+      "lane": "red-catalog",
+      "scope": "crates/attacker/**,crates/defender/**, 자신의 rust-wargame SoT/plan/evidence. Compose가 red-catalog 먼저쓰므로 읽기전용 live Gate/Pass/browser/humanAT cases 계약을 준비하고 해제 후 claim해 실제 Rust attack/defense 네트워크 runner 및 제품 Docker 검증 확장. pure simulation을 full e2e로 간주 금지, 기존HR-12 CHALLENGE 유지. Compose경로는 타담당만 수정. ownedlab만, human/AT 실제참여없이 증명 금지.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b2f5-e927-7a03-9d47-9d1084d14c53",
+      "lane": "release",
+      "scope": "crates/cli/** 및 자신의 cli-installation SoT/plan/evidence. Windows runner가 release 먼저사용하므로 읽기전용 설계/OS 서비스계약 준비 후 해제시 claim. signed artifact 검증→실제 서비스 등록/활성화/readiness/upgrade/rollback/doctor를 Rust로 완성, 자기소유 test service/account만 가역pilot. 임의관리자권한/영구host변경 없이 격리검증, Windows/Linux/macOS 실제증거는 CI요청. crates/native-cli는 browser채팅이 별도소유이므로 수정금지, provisioningCLI와frameworkinit 중복금지.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b2f5-ea98-7023-b7af-ad527b820084",
+      "lane": "pass",
+      "scope": "pass lane을 adapter 전용 경로 claim으로 사용(실제 Pass/scoring 수정금지). adapters/nginx/** 및 신규 crates/nginx-adapter/**,자신 nginx SoT/plan/evidence. Node 담당과 pass lane 선점순서 조정: nginx먼저 claim, Node는 준비후대기. 기존 njs 구현을 최종 Rust-only nginx plugin으로 대체하고 peer/ACL/replay/audit/actualauthority, duplicateheaders/SetCookie/SSE/body/route/failure/정상서비스 영향 실제Docker 검증. C/C++/JS 신규저작금지, upstream nginx ABI 의존성 pin정본화. shared 계약은 Node와 요청조정.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b2da-d1e9-7a22-9052-9a90a8cba54f",
+      "lane": "pass",
+      "scope": "adapters/node/**,adapters/contracts/** 및 신규 crates/node-adapter/**,자신 adapter-service-contract SoT/plan/evidence. nginx가 pass먼저사용하므로 먼저읽기전용 Rust Node-API/Bun ABI/framework 설계와 authority 계약, 해제후claim. Express/Hono 실제Rust-only binding·body/stream/header/provenance/route/adminlocality를 완성; hand-authored JS/TS wrapper/test 금지, 필요한 generated upstreamglue구분. 실제Node/Bun authority Docker tests, ESM/CJS/types/pack/npmoidc 요구 CI전달, npm publish하지말것.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b2da-7d8a-73f2-9bb2-78bde5ae33f9",
+      "lane": "e2e-infra",
+      "scope": "root가 e2e-infra 해제함. .github/workflows/**,scripts/ci/**(windows-*는 Windows담당제외),scripts/migration/**,build/rust/** 및 delivery SoT/자신 plan/evidence. 최신 f32042a full CI42339951733을 같은handle관측해terminal수집; 다른source성공혼합금지. missing full native/browser/Docker runner 3개 실제Rust 구현은 담당interface 받아통합, Python/PS/JS legacy validators authoredRust로대체, source-bound docsfreshness/OIDC crates.io/npm trust/supplychain/CVE/SBOM/image검증 완성. publish=false 임의해제/tag/main/publish 금지. root공통 Cargo delta요청. Docker deploy/testlab Compose소유와경계유지.",
+      "dispatch": "accepted",
+      "completion": false
+    },
+    {
+      "threadId": "01a1b34e-f9e9-77d3-b883-0cc4d76763a4",
+      "lane": "agents-meta",
+      "scope": "기존 bounded REA 분석 결과는 더확장/앱조작하지말고 참조로보존. 전체미구현 backlog의 M11을 후속담당: AGENTS.md,.agents/**(sessions/claims 및 현재타세션운영기록제외),skills/**,obsolete mirror정리계획. coordinate-sessions/hardconstraints보존하며 canonical .agents/{rules,skills,agents}와사용자루트skills를 Rust프로젝트맞게정본화/구현. modoo.today skills의 codex plugin eval스킬을도구검색해실제eval·개선·기록. 현세션들이읽는 generatedmirrors 무분별삭제금지: 최종퇴역manifest와호환전환먼저, root최종통합시삭제. 구현Rust-only규칙과현재Go전용AGENTS gate불일치고침, path관측/skills성능검증. 다른제품/표준SoT수정금지.",
+      "dispatch": "accepted",
+      "completion": false
+    }
+  ],
+  "root": {
+    "lane": "detection-core",
+    "scope": "collector guard, shared Cargo and integration/roadmap"
+  },
+  "ordering": {
+    "gate_edge": [
+      "audit",
+      "runtime",
+      "authority"
+    ],
+    "red_catalog": [
+      "compose",
+      "wargame"
+    ],
+    "release": [
+      "windows runner",
+      "cli"
+    ],
+    "pass": [
+      "nginx",
+      "node"
+    ]
+  },
+  "standards": {
+    "threadId": "01a1b2da-2656-7a23-a60b-08a681b23117",
+    "scope": "all docs including standards and standards governance",
+    "goalInstructionSent": true,
+    "newThreadCreated": false
+  },
+  "note": "Independent lanes run concurrently; same-lane writers serialize and prepare read-only contracts while waiting. Message acceptance is not task completion."
+}
