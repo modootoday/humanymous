@@ -1,0 +1,63 @@
+{
+  "schema": "humanymous.capture-hosted-evidence/1",
+  "run_id": 42372114913,
+  "attempt": 1,
+  "source_sha": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs_total": 2,
+  "artifacts_total": 0,
+  "preflight": {
+    "job_id": 128402198072,
+    "conclusion": "success",
+    "delivery_units": {
+      "passed": 69,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "selected_native_all_target_check": "passed",
+    "selected_native_all_target_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "component": {
+    "job_id": 128402635135,
+    "conclusion": "success",
+    "safe_component_summary": {
+      "cargo_lock_sha256": "339aa10ba586aa534fccfb0a4b1ebfe9aec0730be0e8304acbb167d2c02e2443",
+      "commands": {
+        "capture-tests": {
+          "exit_code": 0,
+          "stderr_sha256": "67fefb8db5feeb2cb6ef83450b2c41c85f20d6b6d0b6a208afc405ed2854d2db",
+          "stdout_sha256": "1c9b6672597c81e92bda026c8bfe5cf13d71413609601a87782768e461c679d1"
+        }
+      },
+      "component": "capture",
+      "full_product_qualified": false,
+      "runner_arch": "x86_64",
+      "runner_image": "20261101.360.1",
+      "runner_os": "linux",
+      "schema": "humanymous.hosted-component/1",
+      "source_changed": false,
+      "source_manifest_sha256": "43bfd4fc8c72650bb56c0c2d2e1b224a3066dd80d035b8252d39731d4adbf2d3",
+      "source_sha": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+      "stage": "capture-tests",
+      "status": "passed",
+      "test_counts": {
+        "failed": 0,
+        "filtered": 0,
+        "ignored": 0,
+        "passed": 5,
+        "required": 5
+      },
+      "toolchain_sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    }
+  },
+  "capture_index_sha256": "e5b597409c6a5c79611621ee1062f8b85e378ef0e42d63f2971946810d6dff38",
+  "limitations": [
+    "Original private child test stdout/stderr bodies were not retrieved; their emitted hashes are retained.",
+    "The existing owning runner verifies the exact five reviewed test names and unfiltered summary before success.",
+    "Capture transport coverage does not establish full Gate, browser/AT, header/dynamic ABI, image CVE or package trust qualification.",
+    "REST captures are normalized decoded JSON and job log captures are decoded connector wrappers, not HTTP wire bytes."
+  ]
+}

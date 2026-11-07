@@ -646,3 +646,15 @@ jobs one/incremental zero used the exclusive warm delivery target. C was returne
 Private validation index SHA256 is
 de4ed632dd3d2383822be41b11969508d155b4f239b1911946e62a81e0d749fb.
 This proves consumer/accounting/policy behavior, not actual mount observations.
+
+Dedicated capture run 42372114913 at immutable e77b9792 completed successfully:
+preflight128402198072 and component128402635135 both passed, artifacts zero.
+The safe owner summary records all five actual hosted transport cases passed,
+zero failed/ignored/filtered and unchanged source, with full product false.
+Preflight delivery69, selected native all-target check/Clippy and policy passed.
+The actual private child stdout/stderr were not retrieved; emitted hashes are
+retained in capture-e77b9792-summary.json. Private normalized REST and decoded
+job-log capture index SHA256 is
+e5b597409c6a5c79611621ee1062f8b85e378ef0e42d63f2971946810d6dff38.
+This proves capture transport only; header/dynamic ABI, browser/AT, image scanning
+and package trust remain separate. Concurrent CEF actual execution remains live.
