@@ -206,6 +206,15 @@
       "actual_false_positive_observed": false,
       "historic_9586_cause_established": false,
       "private_review_sha256": "04d3ef3bb00e61e607450e33cb97d64a757ad99f84121621d9330e4be24ce048"
+    },
+    {
+      "id": "CA-RUNTIME-LF-01",
+      "priority": "P2",
+      "owner": "Root",
+      "state": "CLOSED scoped worktree LF correction; old raw evidence and canonical archive representation distinction retained",
+      "trigger": "Runtime LICENSE CRLF202pairs and Native INTEGRATION mixed1pair while committed blobsLF, breaking worktreeLF convention and raw Git identity",
+      "fix": "BothcurrentiLF/wLF verified; Rootprivacyaddendum bindsrawbefore/after; no Rust behavior change or compiler rerun demanded",
+      "private_review_sha256": "ee2bfc9974a5e5b997de49c060cee892c306b5d3ed42163c69bc6bd90bdec216"
     }
   ],
   "evidence_references": {
@@ -1686,6 +1695,65 @@
     "contract": "v0.2 retains98common andUnixextra names aftergatewayprefix normalization, platformcounts/ignored0/fullproductfalse; contextfilter requires fullinventory selectednamesexact; integrationzero filtered",
     "visibility": "AcceptedAudit table spotchecks context/keys/control scopes correct; no full inventory or negative compile proof",
     "remaining": "Frozenmap, source-bound final inventory, compiler privacy/feature/normalpackage/extracted/native/helper/all366Runtime/wholegraph/product",
+    "goal_complete": false
+  },
+  "followup_runtime64_frozen_source_privacy_and_lf": {
+    "source": "64f74c7ac64a8f5380172504bf73a8d03b961afc",
+    "reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-component-actual-review-001.json",
+        "sha256": "d8780f19407b20a2420028ea3a8fcff65c6a3a9fac425c7a66f647a4fcf2b05b",
+        "bytes": 8501
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-source-map-join-001.json",
+        "sha256": "618caf44c0a4c8ae4bf6fdf29e480263a885ff4934c3569438faf3a14fd83ded",
+        "bytes": 110276
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-lf-review-001.json",
+        "sha256": "cdb8a688fcb33b430e004272e697832bc673cf313f51e828f6a6ce61207dbdbe",
+        "bytes": 1799
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-lf-review-002.json",
+        "sha256": "ee2bfc9974a5e5b997de49c060cee892c306b5d3ed42163c69bc6bd90bdec216",
+        "bytes": 1107
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-visibility-actual-review-001.json",
+        "sha256": "b9dfe91bea45ac92919d769fa16113e02a4fefb02479b8e0871e7e787c30b3b9",
+        "bytes": 6224
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-canonical-fixture-review-001.json",
+        "sha256": "706cd27d4c13158e708aef257d1200e91a92bec01a1fd56b486db22faaa7c6ea",
+        "bytes": 1909
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-feature-role-source-review-001.json",
+        "sha256": "907c83d3abc7c659923aa30e932024836a8bb2974d9c3f10003dd160f3d886e0",
+        "bytes": 7074
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-namespace-triage-001.json",
+        "sha256": "9591243d5dad45387423b4c11573bb6723d0a6a39226ca2adb1a5ba7799af537",
+        "bytes": 89565
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime64-residual-diffs-001\\index.json",
+        "sha256": "8a613180e37b3b4078216b382c5f16d6c9b86ac2ffbe11b7609bdc0ea12cc020",
+        "bytes": 32820
+      }
+    ],
+    "actual": "366inventory;177unique actual=8selectedgroups,27rawcopies,binary9ee59e6c matches;280historicalbeforeafter0differences,notfullclosure",
+    "map": "279preimages278exact+1NativeINTEGRATIONcanonicalLF/rawmixeddifference;273destinationsallpresent105unchanged168transformed",
+    "privacy": "53rawcopies;11source/argvrecords28extern exactmetadataartifactjoins;310beforeafterequal,current308plus2declaredpostprobeLFdocs;1positive0+10expectedprivacyerrorsonly",
+    "lf": "CA-RUNTIME-LF-01 CLOSED scopedworktreeLFfixed,bothGitblobsalreadyLF,oldrawpreserved",
+    "replicas": "Twoexact49dproducerGitblobs/sha256/sizes/provenanceverified;CoreworktreeCRLFnotreplicabasis",
+    "roles": "Static4bin17integrationroles/6contextfeaturesreviewed; actualfeaturecombinations/extracted/native/librarywhole366 remainopen",
+    "semantic": "250Rust83rawsame;183namespace/scope/whitespaceTRIAGEequalNOTproof;67residualdiffs1941linesmanualreviewpending",
+    "census": "29workspace+4standalone=33maintained,8target",
     "goal_complete": false
   }
 }

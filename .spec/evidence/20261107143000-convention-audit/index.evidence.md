@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 833e3ce501e9f938ca64367d6abe147f2d55f12d8d13c51f0a34b6e2076afeb3, bytes: 92338, store: repo}
+  - {path: baseline.json, sha256: 46de6397224f11e807ea13786f5e9f0a8e220acc0159257837ef08126069cd72, bytes: 96340, store: repo}
 ---
 
 # Convention audit baseline
@@ -1318,3 +1318,52 @@ immutable whole Runtime qualification. Final frozen map, source-bound inventory,
 privacy/feature/extracted-package/native-helper and full graph/product gates stay
 OPEN. Audit made no source/compiler/process changes. The private preparation
 hash is bound in baseline.json and must be superseded by final candidate review.
+## Frozen Runtime64 component, map, privacy and fixture review
+
+Root64f74c7a has582 raw changed paths (312 rename-detected diff records), not582
+package files. Independent current census is29 workspace plus4 standalone,33
+maintained packages toward8. All273 nonmanifest destinations exist;105 keep raw
+bytes and168 are transformed. The279 preimage map records match originaltar for
+278 files; Native INTEGRATION has one raw mixed-worktree versus canonicalLF
+archive representation difference. This is not source tampering or279 exact raw
+preimage matches. The initial current Git join was278/280 because two documents
+had non-LF worktree bytes; no executable source mismatch was observed.
+
+CA-RUNTIME-LF-01 P2 found Runtime LICENSE with202 CRLF pairs and Native
+INTEGRATION with one mixed pair, while both Git blobs were LF. Root normalized
+both current files; iLF/wLF and expected LF hashes now match. The scoped finding
+is CLOSED. Original raw snapshots and before/after hashes remain preserved;
+Root's privacy addendum explicitly records the canonical/raw distinction.
+
+Twenty-seven raw records (11 publicly indexed plus16 group logs) are copied and
+hashed. All366 library inventory names are read;177 unique actual names equal
+the exact eight selected groups, with no gaps/duplicates/failures/ignored cases.
+The recorded executable hash9ee59e6c matches. Runtime280 before/after records are
+byte-identical at their historical raw state. Check's deprecation warning and
+test-only equivalent method rename before final strict Clippy remain distinct.
+No full366,17integration, registry/toolchain/OS closure or product pass follows.
+
+Same-crate privacy evidence has53 raw files verified/copied. Eleven exact probe
+sources/edition2024/argv records match;28 extern records join exact metadata IDs,
+Cargo artifact filenames and targets. Selected310 inputs are before/after equal.
+Current308 match; the remaining two are precisely the declared post-probe LF
+corrections, not Rust/compiler/extern drift. One actual-source wrapper public-read
+control passes; ten negatives contain only expected E0624/E0451/E0603. Effective
+private-parent denials are not isolated modifier-sensitivity proofs. No native
+execution or complete loader/toolchain attestation is implied.
+
+The two frozen data replicas independently hash to exact49d producer Git blob
+objects and recorded SHA256/sizes/licenses. Core human fixture is canonical
+767bff/cbf3,5524bytes; its dbd103 producer CRLF observation is separate. Collector
+fixture4fc199/d160,1124bytes matches producer bytes. Static metadata/source
+review confirms four binary roles,17 explicit integration targets, six gated
+contexts and exact Native role target/kind/source checks with sibling negatives.
+Actual feature combinations, profile/executable custody and extracted package
+qualification remain separate and OPEN.
+
+Source semantic review is NOT complete:250 Rust files include83 raw-identical;
+namespace/scope/whitespace TRIAGE comparison marks183 equal but is not Rust
+lexical/semantic proof. Sixty-seven residual derived diffs (1941lines) are queued
+for manual review. No complete detection-behavior preservation claim or merge
+approval is made. Exact private hashes are in baseline.json. Audit launched no
+compiler/native/product workload; full migration remains OPEN.
