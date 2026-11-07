@@ -1,0 +1,18 @@
+{
+  "scope": "Authored Markdown source terminology and navigation review, not rendered-site or accessibility qualification",
+  "observed_utc": "2026-11-07T09:04:36.4924714Z",
+  "authored_markdown_count": 88,
+  "internal_marker_scan": {
+    "matches": 0,
+    "pattern": "\\b(P-[0-9]|P[0-3])\\b|SoT-[0-9]|root-assigned|TODO|TBD",
+    "executed_output_chunk": "93b324"
+  },
+  "profile_requirement_ids": "P-01 through P-10 are defined as candidate profile requirements, not priorities or assigned standard identifiers",
+  "navigation": "main/footer YAML manually inspected",
+  "theme": "modootoday/jekyll-theme-modootoday@ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+  "theme_config_sha256": "c0734b7901aceadea297d50cdd39788087c4e3ab659120f32187da182a606f8e",
+  "token_source_sha256": "7cf4cba051b9dceea298f24ed46b4c95305c1965b71e4122bc46b6d2330288ff",
+  "current_render": "NOT_RUN",
+  "actual_browser": "NOT_RUN",
+  "full_freshness": "incomplete"
+}

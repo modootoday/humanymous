@@ -1468,3 +1468,14 @@ cross-scope linkage and residual-copy limits. Existing implementation is unchang
 no generic erasure wire or anonymity/legal compliance claim. Added implementation-
 evidence change-manifest row. No Cargo/native/runtime/model/Docker commands during
 benchmark quiet window; source-text inspection only before lightweight checks.
+
+### Current public terminology and pinned design source audit
+
+Reinventoried88authored Markdown pages and searched literal one-digit priority
+P-/P0..3, private SoT identifiers, root-assigned and TODO/TBD markers:0matches.
+Read main/footer navigation, homepage, profile identifier definition, theme config
+and supported token overrides. P-01..P-10 remain named candidate requirements,
+not priorities or standards-assigned IDs. Themeba2b23f and tokens unchanged;
+recorded current hashes in sanitized source-audit evidence. This is authored
+source review only, not current render/link/browser/accessibility qualification.
+No Cargo/native/runtime/model/Docker commands during benchmark quiet window.
