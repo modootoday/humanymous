@@ -1,0 +1,47 @@
+{
+  "scope": "Complete fixed runtime entrypoint, dependency and qualification chronology review",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/runtime/Cargo.toml",
+      "lines": 35,
+      "sha256": "c51afb41efd90a1402608d57da6a01942e2d35845a7ca6819c22ee4b364a23ed",
+      "current_primary_sha256": "c51afb41efd90a1402608d57da6a01942e2d35845a7ca6819c22ee4b364a23ed",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete manifest read: shared authority/audit/capture/challenge/integrity dependencies, exact rustls ring/std/tls12 with default features disabled, Tokio runtime/network/sync, collector and rcgen dev fixtures. Dependency declarations do not qualify an executable or combined graph."
+    },
+    {
+      "source": "crates/runtime/src/main.rs",
+      "lines": 41,
+      "sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797",
+      "current_primary_sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete legacy inherited-pipe entrypoint: refuses arguments or terminal stdin/stdout, bounded configuration, two-worker Tokio, ServiceHost::bind then one readiness JSON line. A retained unsignaled watch sender supplies no platform shutdown adapter; no TLS or operator provisioning is selected by this main."
+    },
+    {
+      "source": "crates/runtime/qualification-contract.json",
+      "lines": 91,
+      "sha256": "df32f1501e3bb67b0d0922fe1c75e437e540eb573c5ae9f91d7045adf9a6e748",
+      "current_primary_sha256": "d8f4ca3e53392ff1d6271e71f924474aceae25800e55a0bd75a3c8d4bc26c39c",
+      "current_matches_fixed": false,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete fixed inventory: Windows52/Unix56 library names and one native-process case, no ignored/filtered acceptance. Source-authored names/counts are not executions. Current inventory was also fully read and differs: seven epoch cases increase expected Windows59/Unix63. Their source wiring/execution is not reviewed or qualified by an inventory read."
+    },
+    {
+      "source": "crates/runtime/INTEGRATION.md",
+      "lines": 520,
+      "sha256": "89d56da2df5f31133809ac4ef80ac18e80bddeca719e9bda38405fc2d2ed2893",
+      "current_primary_sha256": "89d56da2df5f31133809ac4ef80ac18e80bddeca719e9bda38405fc2d2ed2893",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete520-line owner chronology read. Leading exact adb8 Windows46+process1/Unix50+process1 observations supersede older unexecuted restrictions, while later historical paragraphs retain source-only chronology. Native management/resource fixtures use same-process witness; destructive issuer/kill startup-admission join and production credential broker remain incomplete. This narrative is not substituted for source or raw execution evidence."
+    }
+  ],
+  "reviewed_files": 4,
+  "fixed_lines": 687,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; changed current qualification inventory cannot be renewed from fixed hash",
+  "current_inventory_complete_read_sha256": "d8f4ca3e53392ff1d6271e71f924474aceae25800e55a0bd75a3c8d4bc26c39c"
+}

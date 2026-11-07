@@ -2210,3 +2210,29 @@ bounded observed lifecycle; no hidden shell/server implementation or source
 repair. WebDriver binaries not on PATH is not exhaustive machine inventory;
 automated all-page pilot/actual AT still need separate concrete services/gates.
 Plan is reviewable preparation, not local image/runtime/build/preview proof.
+
+### Actual fixed-source local build, archive and representative browser results
+
+The26960736/docs56b1e029 immutable clone built both base URLs with the pinned
+Ruby image, frozen Bundler2.5.22 and theme revision. Each output contained88HTML
+pages/165files and passed strict upstream checks. Source127files remained exact.
+Fresh Rust verifier compilation succeeded with7,691captured inputs unchanged;
+the capture does not attest all Windows SDK/linker/environment/OS inputs. Its
+executable digest ad04b2d159c4f42d0c5327cebd042c1246f951ea7b6ca0e4f5c3ff8d79b9fed4
+passed built/package/SECONDarchive-check for both actual outputs, errors0.
+
+Allocated pinned Caddy servers exposed only the second restored public trees on
+literal loopback, one variant at a time. HTTP200/security-file byte equality,
+representative desktop/390x844mobile menus and keyboard skip-to-content were
+observed in visible IAB. Both exact containers were stopped/removed and observed
+supervisors terminal0. Search/full-page browser corpus/AT/WCAG/deployment remain
+unqualified. Evidence checkpoints12e34ed2 and9a51edba preserve exact scope.
+
+Released status correction503e5949/docstreea048d101 replaces blanket old unrun
+claims with exact2696Pages and1646c482TLS6 observations. Five individually read
+receipts were published; four close baseline changed/new tasks, one is a repeat
+of a byte-identical source. Fixed2696task inventory preserves300remaining full
+reads across25proposed owners plus one removed-source disposition. Proposed page
+associations are not accepted review. Later source changes need reconciliation;
+old2696build/preview does not qualify503e5949. Docs refrozen after source88/0 and
+scopedSpec313/0/0. Full source freshness and whole goal remain incomplete.
