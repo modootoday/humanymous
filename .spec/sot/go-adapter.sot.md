@@ -97,6 +97,33 @@ No detection or a11y changes; fail-closed and T4 limits remain unchanged.
 
 ## Evidence and remaining gates
 
+The Rust Gate Go integration adapter has actual bounded net/http qualification
+at source c3211e27ba941f3f11809e420d07d61ececad623, genuine GitHub hosted Linux
+run42375310198/product job128412147497. This is Rust integration with an untouched
+external Go service, not work on the retiring legacy Go security core.
+Evidence:root/20261107132453 retains the safe original runner projection:
+8 scheduled/evaluated/passed,0 failed/not-run/unknown-assertion cases,40 executed
+owner checks, owner exit0, valid receipt, owned cleanup and unchanged source.
+Same-source preflight passed Go10/lab20/delivery74 units, Unix actor compilation,
+selected all-target strict Clippy and workflow policy. No ignored cases were
+counted as successes. Earlier438/448 image-build failures retain8NOT_RUN each;
+15f retains8 attempted writer-mount failures with0evaluated and unknown counts.
+
+The lab's typed bounded requirement verifies the real source/image/fixture/
+configuration/engine tuple internally. The public projection exports source,
+case accounting and private ledger digest
+5ab341d113866c367fff963681289978e324891af070496bd05821f8564240a4;
+it does not export individual runtime-image or other private tuple values.
+Do not substitute the custody-layout probe image for the actual runtime image,
+or claim independent reconstruction of the private tuple from public logs.
+This qualifies only bounded-http-8-case/2 at that immutable source. The recipe's
+unmeasured template fields remain null. Current metadata updates do not rerun
+or qualify a different binary. Other five hosts, native Go SDK, browser/human
+provenance, recovery,204/304,streaming and post-origin rollback remain outside it.
+Full-product qualification and release readiness remain false; the separate
+--require-full gate is unchanged. This source-bound evidence supersedes older
+pending-hosted wording only for the measured bounded profile.
+
 Root's two pure unit tests for307e9cc remain a separate older observation.
 User-authorized resumption obtained explicit B and verified the three contract
 pure units (3passed, zero failed/ignored/measured/filtered), plus locked scoped

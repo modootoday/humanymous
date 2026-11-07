@@ -1,5 +1,16 @@
 # Root integration
 
+Current accepted result: Rust Gate Go integration adapter, bounded net/http8,
+source c3211e27ba941f3f11809e420d07d61ececad623, actual hosted run42375310198.
+Evidence:root/20261107132453:8 evaluated/pass,40 checks,0failed/not-run/unknown,
+owner0, receipt valid, source unchanged and owned cleanup observed. Same-source
+Go10/lab20/delivery74 units, Unix actor compile and strict Clippy/policy passed.
+Full product/release remain false. Public projection binds source/private ledger
+hash, not individually exported runtime-image/fixture/configuration/engine values;
+do not substitute the mount-probe image. Other host families/native SDK remain
+unqualified. This is not legacy Go core work. Historical pending/quiet wording
+below describes earlier checkpoints, not current Root-authorized execution.
+
 Register crates/go-adapter as a workspace member and update Cargo.lock under the
 root Cargo slot. Dependencies reuse runtime and serde workspace declarations.
 No Go producer profile, new authority transport or unsafe/foreign glue is needed.
