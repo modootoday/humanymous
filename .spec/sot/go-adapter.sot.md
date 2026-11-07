@@ -57,6 +57,12 @@ never substitute unobserved application mutations under an effects field.
 Positive cases additionally require handler_response_verified=true, backed by
 actual binary echo or the HEAD/cookie response. Negative cases require false
 because there must be no protected handler response.
+The owned probe module checks the pinned fixture's dumped request line/query and
+binary entity without reconstructing text, and checks HEAD200/empty entity plus
+two separate Set-Cookie values. These are fixture assertions over the lab's
+already-decoded outer response, not a new HTTP ingress parser or authorization
+service. A successful assertion alone cannot prove an actual upstream process,
+network isolation or the authenticity of caller-supplied observations.
 Binary allow and response semantics each require one contact; dependency loss,
 cancellation, incomplete body, forged provenance, bypass and upgrade require zero.
 The forged-provenance case uses a route requiring unavailable authenticated
@@ -81,11 +87,13 @@ No detection or a11y changes; fail-closed and T4 limits remain unchanged.
 ## Evidence and remaining gates
 
 Root's two pure unit tests for307e9cc remain a separate older observation.
-User-authorized resumption obtained explicit B and verified the current three
+User-authorized resumption obtained explicit B and verified the three contract
 pure units (3passed, zero failed/ignored/measured/filtered), plus locked scoped
 all-target Clippy with denied warnings. Evidence:root/20261107075922 records the
 actual runner, stable owned source hashes and one concurrent runtime test-file
 change in the enumerated208-file subset. It is not whole-workspace qualification.
+That result predates the probe module's three added tests; the six-unit source
+requires its own assigned-slot verification and cannot inherit the older pass.
 Direct Rust formatting and scoped spec check passed with zero errors/warnings.
 Hosted external fixture execution, actual Go versions, image digests, isolation
 witness and product e2e are NOT_RUN. No host tuple is advertised as qualified.

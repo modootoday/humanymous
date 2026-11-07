@@ -4,13 +4,13 @@ Register crates/go-adapter as a workspace member and update Cargo.lock under the
 root Cargo slot. Dependencies reuse runtime and serde workspace declarations.
 No Go producer profile, new authority transport or unsafe/foreign glue is needed.
 
-Current source passed three locked pure units and scoped all-target Clippy on
+The pre-probe source passed three locked pure units and scoped all-target Clippy on
 the explicitly assigned B target/node-native/build, jobs1/incremental0. B was
 returned. Evidence:root/20261107075922 retains the exact scope and one concurrent
 runtime test-file drift; it is not an immutable full-workspace result. Actual
 processes, Go HTTP hosts and Docker product verification remain hosted-only.
 
-Root integration commands after registration (not executed by this owner yet):
+Commands used for that source, to rerun after later changes in an assigned slot:
 
 ```
 cargo test --locked -p humanymous-go-adapter --lib
@@ -82,3 +82,10 @@ User resumed work and root assigned B: current3units and all-target Clippy passe
 slot returned. This resolves the pure-check allocation gap, not actual Go hosted
 execution. Continue with product-lab's real composition and independent witness;
 no local server/process/Docker execution or root-only dispatch is authorized here.
+
+The new public probe module takes an already-decoded outer response. binary_dump
+checks the pinned dumped request's exact method/target/entity; head_cookies checks
+200/zero entity/two individual a=1,b=2 cookies. The lab owns actual process identity,
+transport decoding, artifact hashes and isolation. These helpers do not mint
+authority or authenticate evidence. Three added tests bring the source total to
+six; that new source still needs the next assigned unit/lint slot.

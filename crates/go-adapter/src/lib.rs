@@ -1,5 +1,6 @@
 //! Go HTTP origin deployment contracts consuming the shared Rust Gate.
 //! No Go SDK, authority implementation or fabricated capture provenance.
+pub mod probe;
 mod qualification;
 use humanymous_runtime::{Rejection, configuration::Configuration};
 pub use qualification::{Case, ExpectedTuple, Outcome, QUALIFICATION_PROFILE, Receipt};
