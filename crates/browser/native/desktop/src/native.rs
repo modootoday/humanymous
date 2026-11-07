@@ -119,6 +119,155 @@ pub fn focus_observed(browser: &Browser) -> io::Result<bool> {
     Ok(focus == child || unsafe { IsChild(child, focus) }.as_bool())
 }
 
+#[derive(Clone, PartialEq, Eq, serde::Serialize)]
+pub struct InputSnapshot {
+    language_id: u16,
+    installed_language_ids: Vec<u16>,
+    focus_within_child: bool,
+    ime_context: bool,
+    ime_open: bool,
+    conversion_mode: Option<u32>,
+    composition_bytes: i32,
+    candidate_style: Option<u32>,
+    candidate_position: Option<[i32; 2]>,
+}
+
+/// Inspect only this child's input context; composition text is never read.
+#[allow(unsafe_code)]
+pub fn input_snapshot(browser: &Browser) -> io::Result<InputSnapshot> {
+    use windows::Win32::UI::Input::{Ime::*, KeyboardAndMouse::*};
+    let child = child_hwnd(browser)?;
+    let thread = unsafe { GetWindowThreadProcessId(child, None) };
+    let mut info = GUITHREADINFO {
+        cbSize: size_of::<GUITHREADINFO>() as u32,
+        ..Default::default()
+    };
+    let mut layouts = [HKL::default(); 16];
+    // SAFETY: only read system layout metadata and our own child thread/window.
+    unsafe {
+        GetGUIThreadInfo(thread, &mut info).map_err(io::Error::other)?;
+        let count = GetKeyboardLayoutList(Some(&mut layouts)).clamp(0, 16) as usize;
+        let mut snapshot = InputSnapshot {
+            language_id: (GetKeyboardLayout(thread).0 as usize & 0xffff) as u16,
+            installed_language_ids: layouts[..count]
+                .iter()
+                .map(|h| (h.0 as usize & 0xffff) as u16)
+                .collect(),
+            focus_within_child: info.hwndFocus == child || IsChild(child, info.hwndFocus).as_bool(),
+            ime_context: false,
+            ime_open: false,
+            conversion_mode: None,
+            composition_bytes: -1,
+            candidate_style: None,
+            candidate_position: None,
+        };
+        if snapshot.focus_within_child {
+            let context = ImmGetContext(info.hwndFocus);
+            if !context.0.is_null() {
+                snapshot.ime_context = true;
+                snapshot.ime_open = ImmGetOpenStatus(context).as_bool();
+                let mut conversion = IME_CONVERSION_MODE::default();
+                if ImmGetConversionStatus(context, Some(&mut conversion), None).as_bool() {
+                    snapshot.conversion_mode = Some(conversion.0);
+                }
+                snapshot.composition_bytes =
+                    ImmGetCompositionStringW(context, GCS_COMPSTR, None, 0);
+                let mut form = CANDIDATEFORM::default();
+                if ImmGetCandidateWindow(context, 0, &mut form).as_bool() {
+                    snapshot.candidate_style = Some(form.dwStyle);
+                    snapshot.candidate_position = Some([form.ptCurrentPos.x, form.ptCurrentPos.y]);
+                }
+                let _ = ImmReleaseContext(info.hwndFocus, context);
+            }
+        }
+        Ok(snapshot)
+    }
+}
+
+/// Opt-in pilot setup on CEF's UI thread, using an already installed Korean IME.
+/// No layout installation, global/process-wide flag, settings or text injection.
+#[allow(unsafe_code)]
+pub fn prepare_korean_ime(browser: &Browser) -> io::Result<()> {
+    use windows::Win32::UI::Input::{Ime::*, KeyboardAndMouse::*};
+    if cef::currently_on(cef::ThreadId::UI) != 1 {
+        return Err(io::Error::other("IME setup requires CEF UI thread"));
+    }
+    let child = child_hwnd(browser)?;
+    let mut layouts = [HKL::default(); 16];
+    // SAFETY: select only an existing layout for the calling owned UI thread.
+    unsafe {
+        let count = GetKeyboardLayoutList(Some(&mut layouts)).clamp(0, 16) as usize;
+        let layout = layouts[..count]
+            .iter()
+            .find(|h| h.0 as usize & 0xffff == 0x412)
+            .ok_or_else(|| io::Error::other("Korean IME not installed"))?;
+        ActivateKeyboardLayout(*layout, ACTIVATE_KEYBOARD_LAYOUT_FLAGS(0))
+            .map_err(io::Error::other)?;
+        let mut info = GUITHREADINFO {
+            cbSize: size_of::<GUITHREADINFO>() as u32,
+            ..Default::default()
+        };
+        GetGUIThreadInfo(GetWindowThreadProcessId(child, None), &mut info)
+            .map_err(io::Error::other)?;
+        if info.hwndFocus != child && !IsChild(child, info.hwndFocus).as_bool() {
+            return Err(io::Error::other("IME focus outside owned child"));
+        }
+        let context = ImmGetContext(info.hwndFocus);
+        if context.0.is_null() {
+            return Err(io::Error::other("IME context unavailable"));
+        }
+        let opened = ImmSetOpenStatus(context, true).as_bool();
+        let mut conversion = IME_CONVERSION_MODE::default();
+        let mut sentence = IME_SENTENCE_MODE::default();
+        let converted = ImmGetConversionStatus(context, Some(&mut conversion), Some(&mut sentence))
+            .as_bool()
+            && ImmSetConversionStatus(
+                context,
+                IME_CONVERSION_MODE(conversion.0 | IME_CMODE_NATIVE.0),
+                sentence,
+            )
+            .as_bool();
+        let _ = ImmReleaseContext(info.hwndFocus, context);
+        if !opened || !converted {
+            return Err(io::Error::other("IME open request rejected"));
+        }
+    }
+    Ok(())
+}
+
+/// Ask the real IME to convert/open candidates; a successful request is not proof
+/// that a candidate window became visible or was placed correctly.
+#[allow(unsafe_code)]
+pub fn request_ime_candidates(browser: &Browser) -> io::Result<String> {
+    use windows::Win32::UI::Input::Ime::*;
+    if cef::currently_on(cef::ThreadId::UI) != 1 {
+        return Err(io::Error::other("candidate request requires CEF UI thread"));
+    }
+    let child = child_hwnd(browser)?;
+    let mut info = GUITHREADINFO {
+        cbSize: size_of::<GUITHREADINFO>() as u32,
+        ..Default::default()
+    };
+    // SAFETY: context belongs to the owned focused child; release on all paths.
+    unsafe {
+        GetGUIThreadInfo(GetWindowThreadProcessId(child, None), &mut info)
+            .map_err(io::Error::other)?;
+        if info.hwndFocus != child && !IsChild(child, info.hwndFocus).as_bool() {
+            return Err(io::Error::other("candidate focus outside child"));
+        }
+        let context = ImmGetContext(info.hwndFocus);
+        if context.0.is_null() {
+            return Err(io::Error::other("candidate context unavailable"));
+        }
+        let convert = ImmNotifyIME(context, NI_COMPOSITIONSTR, CPS_CONVERT, 0).as_bool();
+        let opened = ImmNotifyIME(context, NI_OPENCANDIDATE, NOTIFY_IME_INDEX(0), 0).as_bool();
+        let _ = ImmReleaseContext(info.hwndFocus, context);
+        Ok(format!(
+            "conversion_request={convert}; open_request={opened}; visible_window_unqualified"
+        ))
+    }
+}
+
 #[derive(serde::Serialize)]
 pub struct ProcessToken {
     pub pid: u32,

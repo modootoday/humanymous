@@ -3,7 +3,7 @@ id: sot:root/browser-ui
 title: Native browser UI and CEF boundary
 status: active
 created: 2026-11-07T00:20:14Z
-updated: 2026-11-07T01:40:32Z
+updated: 2026-11-07T02:20:30Z
 verify: [manual]
 rel:
   governs: [crates/browser/**]
@@ -163,3 +163,44 @@ AccessKit/input/resize tests, then launch the native window with synthetic data.
 Record actual build and run failures. Screen-reader, IME composition, native DPI,
 CEF attach/sandbox/renderer crash and six native tuples remain unqualified until
 their specific pilots run. Docker-only backend/product e2e remains authoritative.
+
+### Native input and sandbox probes, follow-up contract
+
+The opt-in --native-korean-ime pilot may select an already installed Korean
+layout only for CEF's calling UI thread (ActivateKeyboardLayout flags0) and open
+that owned child's IME context. It must not install a layout, set process/global
+layout flags, change security/privacy settings or inject committed text. Observe
+physical key delivery separately from native Unicode value actions. Read only
+input language IDs, context/open state, composition byte length and candidate-form
+coordinates, never composition text. Candidate-form geometry alone does not prove
+a visible candidate window. Bound retained transitions to64 and release contexts.
+
+The bootstrap may register a minimal Rust renderer handler for a bounded sandbox
+probe after CefExecuteProcess starts the renderer. Browser creation extra_info
+provides only the current owner PID; the renderer derives a fixed synthetic
+canary filename in its own executable directory, attempts a read and create_new
+of a fixed own-PID probe file, and sends only PID/error codes via CEF IPC. The
+browser accepts only the exact message/version, renderer source and three integer
+arguments, bounded to32 unique PIDs. Correlate with owned OS renderer tokens;
+ERROR_ACCESS_DENIED(5) is denial, other failures or missing IPC remain inconclusive.
+Never read personal paths or enable target navigation. These two checks do not
+qualify utility policy, network isolation or sandbox escape resistance.
+
+Native key/focus instrumentation retains counters only, not keystroke contents.
+An independent hard deadline must survive a blocked close wake. Both worker
+threads are joined before native DLL unload; an incomplete deadline is fail-stop.
+The user subsequently explicitly authorized deletion of generated private
+synthetic-profile directories. Check resolved paths remain direct children of
+the private bundle, reject reparse points, and stop owned processes before deletion.
+
+References: [ActivateKeyboardLayout](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-activatekeyboardlayout),
+[IMM functions](https://learn.microsoft.com/en-us/windows/win32/intl/input-method-manager-functions),
+and the pinned CEF RenderProcessHandler/Client headers and sandbox setup above.
+
+The opt-in pilot uses F8 only on a focused owned CEF input context to open Korean
+native conversion mode, and F9 to request real IME conversion/candidate opening.
+No synthesized Hanja event, committed-string injection or custom candidate UI is
+used. Record API acceptance separately from actual candidate display and geometry.
+The latest second deletion attempt after explicit user approval was again rejected
+by automatic approval review;31 generated profiles remain private and no bypass
+was attempted. evidence:root/20261107021004 records the current measured scope.

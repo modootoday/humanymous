@@ -18,8 +18,21 @@ pub struct State {
     pub observer: Option<Registration>,
     pub process_roles: Vec<ProcessRole>,
     pub process_info_status: &'static str,
+    pub key_events: usize,
+    pub editable_key_events: usize,
+    pub focus_events: usize,
+    pub file_probes: Vec<FileProbe>,
+    pub ime_setup: Option<String>,
+    pub ime_candidate_request: Option<String>,
 }
 pub type Shared = Arc<Mutex<State>>;
+
+#[derive(Clone, serde::Serialize)]
+pub struct FileProbe {
+    pub pid: u32,
+    pub read_os_error: i32,
+    pub create_os_error: i32,
+}
 
 #[derive(Clone, serde::Deserialize, serde::Serialize)]
 pub struct ProcessRole {
@@ -57,6 +70,11 @@ wrap_task! {
             else {
                 host.set_accessibility_state(cef::State::ENABLED);
                 host.set_focus(1);
+                if std::env::args().any(|a| a == "--native-korean-ime") {
+                    let outcome = crate::native::prepare_korean_ime(&self.browser)
+                        .map_or_else(|error| error.to_string(), |_| "open_requested_not_qualified".into());
+                    if let Ok(mut state) = self.state.lock() { state.ime_setup = Some(outcome); }
+                }
                 let mut observer = ProcessObserver::new(self.state.clone());
                 let registration = host.add_dev_tools_message_observer(Some(&mut observer));
                 if let Ok(mut state) = self.state.lock() { state.observer = registration; }
@@ -84,10 +102,61 @@ wrap_task! {
 wrap_client! {
     struct PilotClient { state: Shared, uri: String, }
     impl Client {
+        fn on_process_message_received(&self, _browser: Option<&mut Browser>, _frame: Option<&mut Frame>, source: ProcessId, message: Option<&mut ProcessMessage>) -> i32 {
+            if source != ProcessId::RENDERER { return 0; }
+            let Some(message) = message else { return 0; };
+            if CefString::from(&message.name()).to_string() != "humanymous.sandbox.v1" { return 0; }
+            let Some(args) = message.argument_list().filter(|a| a.size() == 3) else { return 1; };
+            if (0..3).any(|i| args.get_type(i) != ValueType::INT) { return 1; }
+            let pid = args.int(0);
+            if pid <= 0 { return 1; }
+            if let Ok(mut state) = self.state.lock()
+                && state.file_probes.len() < 32 && !state.file_probes.iter().any(|p| p.pid == pid as u32) {
+                state.file_probes.push(FileProbe { pid: pid as u32, read_os_error: args.int(1), create_os_error: args.int(2) });
+            }
+            1
+        }
+        fn keyboard_handler(&self) -> Option<KeyboardHandler> { Some(InputEvidence::new(self.state.clone())) }
+        fn focus_handler(&self) -> Option<FocusHandler> { Some(FocusEvidence::new(self.state.clone())) }
         fn life_span_handler(&self) -> Option<LifeSpanHandler> { Some(PilotLife::new(self.state.clone())) }
         fn request_handler(&self) -> Option<RequestHandler> { Some(DenyNavigation::new(self.uri.clone())) }
         fn permission_handler(&self) -> Option<PermissionHandler> { Some(DenyPermissions::new()) }
         fn dialog_handler(&self) -> Option<DialogHandler> { Some(DenyFiles::new()) }
+    }
+}
+wrap_keyboard_handler! {
+    struct InputEvidence { state: Shared, }
+    impl KeyboardHandler {
+        fn on_pre_key_event(&self, _browser: Option<&mut Browser>, event: Option<&KeyEvent>, _os_event: Option<&mut cef::sys::MSG>, _shortcut: Option<&mut i32>) -> i32 {
+            if event.is_some_and(|e| e.windows_key_code == 0x78 && e.type_ == KeyEventType::RAWKEYDOWN)
+                && std::env::args().any(|a| a == "--native-korean-ime")
+                && let Some(browser) = _browser.as_ref() {
+                let outcome = crate::native::request_ime_candidates(browser).unwrap_or_else(|error| error.to_string());
+                if let Ok(mut state) = self.state.lock() { state.ime_candidate_request = Some(outcome); }
+                return 1;
+            }
+            if event.is_some_and(|e| e.windows_key_code == 0x77 && e.type_ == KeyEventType::RAWKEYDOWN)
+                && std::env::args().any(|a| a == "--native-korean-ime")
+                && let Some(browser) = _browser {
+                let outcome = crate::native::prepare_korean_ime(browser)
+                    .map_or_else(|error| error.to_string(), |_| "focused_context_open_requested_not_qualified".into());
+                if let Ok(mut state) = self.state.lock() { state.ime_setup = Some(outcome); }
+                return 1;
+            }
+            if let Ok(mut state) = self.state.lock() {
+                state.key_events += 1;
+                state.editable_key_events += usize::from(event.is_some_and(|e| e.focus_on_editable_field != 0));
+            }
+            0
+        }
+    }
+}
+wrap_focus_handler! {
+    struct FocusEvidence { state: Shared, }
+    impl FocusHandler {
+        fn on_got_focus(&self, _browser: Option<&mut Browser>) {
+            if let Ok(mut state) = self.state.lock() { state.focus_events += 1; }
+        }
     }
 }
 wrap_permission_handler! {
@@ -206,12 +275,29 @@ impl CefChild {
                 javascript: cef::State::DISABLED,
                 ..Default::default()
             };
+            // Only our synthetic generated canary is offered to the renderer.
+            use std::io::Write;
+            let executable = std::env::current_exe()?;
+            let bundle = executable
+                .parent()
+                .ok_or_else(|| io::Error::other("bundle absent"))?;
+            let mut canary = std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(bundle.join(format!("sandbox-canary-{}.txt", std::process::id())))?;
+            canary.write_all(b"humanymous synthetic sandbox canary\n")?;
+            let mut extra = dictionary_value_create()
+                .ok_or_else(|| io::Error::other("CEF dictionary absent"))?;
+            extra.set_int(
+                Some(&CefString::from("humanymous_probe_owner")),
+                std::process::id() as i32,
+            );
             if browser_host_create_browser(
                 Some(&info),
                 Some(&mut client),
                 Some(&CefString::from(uri.as_str())),
                 Some(&settings),
-                None,
+                Some(&mut extra),
                 None,
             ) != 1
             {

@@ -1,6 +1,7 @@
 //! Minimal Windows M138+ bootstrap client. UI DLLs never load in subprocesses.
 #![deny(unsafe_code)]
 #![cfg(windows)]
+mod renderer_probe;
 /// Upstream bootstrapc.exe owns argc/argv and the sandbox pointer for this call.
 ///
 /// # Safety
@@ -27,7 +28,8 @@ fn run(sandbox_info: *mut u8) -> i32 {
     let _ = cef::api_hash(cef::sys::CEF_API_VERSION_LAST, 0);
     let args = cef::args::Args::new();
     // Must precede all application IO and GUI loading in sandboxed subprocesses.
-    let exit = cef::execute_process(Some(args.as_main_args()), None, sandbox_info);
+    let mut app = renderer_probe::app();
+    let exit = cef::execute_process(Some(args.as_main_args()), Some(&mut app), sandbox_info);
     if exit >= 0 {
         return exit;
     }
@@ -87,7 +89,7 @@ fn load_desktop(sandbox_info: *mut u8) -> Result<i32, Box<dyn std::error::Error>
 #[cfg(test)]
 mod tests {
     #[test]
-    #[ignore = "requires explicitly provisioned private native CEF bundle"]
+    #[cfg(feature = "native-pilot-tests")]
     fn native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation() {
         use std::{
             collections::BTreeSet,

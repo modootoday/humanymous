@@ -17,7 +17,7 @@ humanymous-browser = { path = "../..", features = ["native-ui"] }
 cef = { git = "https://github.com/tauri-apps/cef-rs.git", rev = "224a785c7b41758b51821cbb7395ea57ba493a63", default-features = false, features = ["sandbox"] }
 meari-native = { git = "https://github.com/modootoday/meari.git", rev = "1482b746ebc0d867f25d17d01c48c12df888ca6c", default-features = false, features = ["window"] }
 winit = "=0.31.0-beta.3"
-windows = { version = "=0.62.2", features = ["Wdk_System_Threading", "Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_HiDpi", "Win32_System_Threading", "Win32_System_Diagnostics_ToolHelp", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Com", "Win32_System_ProcessStatus"] }
+windows = { version = "=0.62.2", features = ["Wdk_System_Threading", "Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_Input_Ime", "Win32_UI_HiDpi", "Win32_System_Threading", "Win32_System_Diagnostics_ToolHelp", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Com", "Win32_System_ProcessStatus"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 

@@ -24,30 +24,54 @@ struct Host;
 struct CloseDeadline {
     cancel: std::sync::mpsc::Sender<()>,
     worker: Option<std::thread::JoinHandle<()>>,
+    cancel_watchdog: std::sync::mpsc::Sender<()>,
+    watchdog: Option<std::thread::JoinHandle<()>>,
 }
 impl CloseDeadline {
     fn start(wake: NativeWindowWake, seconds: u64) -> Self {
+        Self::start_with(
+            move || {
+                let _ = wake.request_close();
+            },
+            Duration::from_secs(seconds),
+            Duration::from_secs(seconds + 15),
+            || {
+                eprintln!("native: incomplete cleanup at independent hard deadline");
+                std::process::exit(78);
+            },
+        )
+    }
+    fn start_with(
+        close: impl FnOnce() + Send + 'static,
+        close_after: Duration,
+        hard_after: Duration,
+        fail_stop: impl FnOnce() + Send + 'static,
+    ) -> Self {
         use std::sync::mpsc::{RecvTimeoutError, channel};
         let (cancel, receiver) = channel();
+        let (cancel_watchdog, watchdog_receiver) = channel();
+        let watchdog = std::thread::spawn(move || {
+            if matches!(
+                watchdog_receiver.recv_timeout(hard_after),
+                Err(RecvTimeoutError::Timeout)
+            ) {
+                fail_stop();
+            }
+        });
         let worker = std::thread::spawn(move || {
             if matches!(
-                receiver.recv_timeout(Duration::from_secs(seconds)),
+                receiver.recv_timeout(close_after),
                 Err(RecvTimeoutError::Timeout)
             ) {
                 eprintln!("native: independent native close deadline");
-                let _ = wake.request_close();
-                if matches!(
-                    receiver.recv_timeout(Duration::from_secs(15)),
-                    Err(RecvTimeoutError::Timeout)
-                ) {
-                    eprintln!("native: incomplete cleanup at watchdog deadline");
-                    std::process::exit(78);
-                }
+                close();
             }
         });
         Self {
             cancel,
             worker: Some(worker),
+            cancel_watchdog,
+            watchdog: Some(watchdog),
         }
     }
 }
@@ -56,6 +80,10 @@ impl Drop for CloseDeadline {
         let _ = self.cancel.send(());
         if let Some(worker) = self.worker.take() {
             let _ = worker.join();
+        }
+        let _ = self.cancel_watchdog.send(());
+        if let Some(watchdog) = self.watchdog.take() {
+            let _ = watchdog.join();
         }
     }
 }
@@ -114,6 +142,14 @@ struct Report {
     ime_candidate_placement: &'static str,
     accessibility_qualified: bool,
     target_navigation_enabled: bool,
+    cef_key_events: usize,
+    cef_editable_key_events: usize,
+    cef_focus_events: usize,
+    parent_key_events: usize,
+    renderer_file_probes: Vec<crate::child::FileProbe>,
+    input_snapshots: Vec<native::InputSnapshot>,
+    ime_setup: Option<String>,
+    ime_candidate_request: Option<String>,
 }
 impl Pilot {
     fn tick(&mut self) -> io::Result<()> {
@@ -188,6 +224,12 @@ impl Pilot {
                     self.focus_requested = true;
                 }
                 report.focus_observed |= native::focus_observed(&browser)?;
+                let snapshot = native::input_snapshot(&browser)?;
+                if report.input_snapshots.len() < 64
+                    && report.input_snapshots.last() != Some(&snapshot)
+                {
+                    report.input_snapshots.push(snapshot);
+                }
                 // Native process tokens are independent OS observations, but process
                 // type/complete sandbox policy still needs separate attestation.
                 if self.started.elapsed() > Duration::from_secs(2)
@@ -241,6 +283,9 @@ impl ApplicationHandler for Pilot {
         self.driver.destroy_surfaces(event_loop);
     }
     fn window_event(&mut self, event_loop: &dyn ActiveEventLoop, id: WindowId, event: WindowEvent) {
+        if matches!(event, WindowEvent::KeyboardInput { .. }) {
+            self.report.borrow_mut().parent_key_events += 1;
+        }
         self.driver.window_event(event_loop, id, event);
         self.service(event_loop);
     }
@@ -341,6 +386,17 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     })?;
     {
         let mut report = report.borrow_mut();
+        if let Ok(state) = state.lock() {
+            report.cef_key_events = state.key_events;
+            report.cef_editable_key_events = state.editable_key_events;
+            report.cef_focus_events = state.focus_events;
+            report.renderer_file_probes = state.file_probes.clone();
+            report.ime_setup = state.ime_setup.clone();
+            report.ime_candidate_request = state.ime_candidate_request.clone();
+            if report.ime_candidate_request.is_some() {
+                report.ime_candidate_placement = "request_attempted_unqualified";
+            }
+        }
         report.cef_child_created = state
             .lock()
             .map_err(|_| io::Error::other("state poisoned"))?
@@ -385,4 +441,46 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         return Err("native cleanup receipt incomplete".into());
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod deadline_tests {
+    use super::*;
+    #[test]
+    fn hard_deadline_survives_a_blocked_close_wake() {
+        let (release, blocked) = std::sync::mpsc::channel::<()>();
+        let (fired, receipt) = std::sync::mpsc::channel();
+        let deadline = CloseDeadline::start_with(
+            move || {
+                let _ = blocked.recv();
+            },
+            Duration::from_millis(5),
+            Duration::from_millis(20),
+            move || {
+                fired.send(()).unwrap();
+            },
+        );
+        receipt
+            .recv_timeout(Duration::from_secs(2))
+            .expect("blocked close suppressed hard deadline");
+        release.send(()).unwrap();
+        drop(deadline);
+    }
+    #[test]
+    fn completed_lifecycle_cancels_and_joins_both_workers() {
+        let (fired, receipt) = std::sync::mpsc::channel();
+        let deadline = CloseDeadline::start_with(
+            || panic!("completed lifecycle must not request close"),
+            Duration::from_secs(60),
+            Duration::from_secs(75),
+            move || {
+                let _ = fired.send(());
+            },
+        );
+        drop(deadline);
+        assert!(matches!(
+            receipt.try_recv(),
+            Err(std::sync::mpsc::TryRecvError::Disconnected)
+        ));
+    }
 }

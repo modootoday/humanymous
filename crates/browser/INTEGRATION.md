@@ -2,13 +2,13 @@
 
 Owner: misc / rust-browser-cef-native. The Meari management UI is integrated.
 Two actual Windows CEF native prototype packages are implemented below; shared
-workspace membership/lock integration remains root-owned and requested.
+workspace membership/lock integration is root-owned and now present in the shared checkout.
 BrowserReady=false; external target browsing is disabled.
 
 ## Exact root delta
 
-Add `crates/browser/native/bootstrap` and `crates/browser/native/desktop` to
-workspace.members and resolve Cargo.lock. Keep both publish=false. The core
+Root has added `crates/browser/native/bootstrap` and `crates/browser/native/desktop` to
+workspace.members and resolved Cargo.lock. Keep both publish=false. The core
 humanymous-browser remains unsafe_code=forbid. Native packages explicitly deny
 unsafe by default with local reviewed FFI allowances; do not weaken core lints.
 They use explicit edition2024, MSRV1.99.1, Apache-2.0, version0.1.0 metadata.
@@ -26,7 +26,7 @@ crate compilation is not Linux/macOS native implementation or qualification.
   winit="=0.31.0-beta.3"; serde(version1, derive), serde_json(version1).
 - Desktop windows="=0.62.2", features Wdk_System_Threading,
   Win32_Foundation, Win32_UI_WindowsAndMessaging,
-  Win32_UI_Input_KeyboardAndMouse, Win32_UI_HiDpi,
+  Win32_UI_Input_KeyboardAndMouse, Win32_UI_Input_Ime, Win32_UI_HiDpi,
   Win32_System_Threading, Win32_System_Diagnostics_ToolHelp,
   Win32_Security, Win32_Security_Authorization, Win32_System_Com,
   Win32_System_ProcessStatus. cdylib+rlib humanymous_cef_desktop.dll.
@@ -124,3 +124,62 @@ separately and must not be conflated with disk-profile deletion.
 Repository-wide spec check remains blocked by pre-existing private documents outside
 this lane (1509 errors, 1 warning at the recorded full run). Scoped browser public
 and private evidence checks pass; this is not a whole-repository spec pass.
+
+## Keyboard, IME, AX and sandbox follow-up (current)
+
+Evidence: evidence:root/20261107021004 supersedes the earlier keyboard-unqualified
+and renderer-file-denial-unverified observations only for this Windows x64 pilot.
+The source-linked private harness passed seven native library tests, zero ignored,
+Clippy -D warnings, fmt and DLL linking. Core nine tests remain applicable. Normal
+and cancellation native runs exit0 with real on_before_close/Meari cleanup.
+
+Actual native input path: Tab enters the CEF editable field and selects its value;
+physical Latin keys mutate it. In --native-korean-ime mode, F8 opens the focused
+owned CEF context in the already installed Korean native conversion mode. Physical
+r -> k produces ㄱ -> 가; BackSpace returns ㄱ, k restores 가, Return commits.
+No Unicode value action or script implements these keyboard/IME mutations. This
+is an explicit pilot mode, not general automatic language switching or a keyboard
+focus fix. Initial direct click/focus and full parent/child traversal still need
+qualification. AX sometimes reports document focus and a stale value until a
+fresh observation. The unproven pointer-based focus restoration was removed.
+
+F9 in that opt-in mode asks the real IME for conversion and candidate opening
+(ImmNotifyIME). Conversion returned true; candidate opening returned false. No
+candidate window or candidate form was observed. Placement, candidate selection,
+IME Escape cancellation, other IMEs, DPI/monitor cases remain unqualified. IMM
+composition byte-length stayed0 even while the native Korean incremental edits
+and BackSpace were visible; do not invent an IMM preedit receipt from this.
+Native UIA role/name/value exposure and Unicode Value actions/readbacks passed for
+both the CEF field and Meari address. A Meari tab click reported no cached bounds;
+full focus/geometry, screen-reader speech and full AX qualification remain open.
+
+A minimal Rust renderer handler now receives bounded owner metadata after native
+renderer initialization. It directly attempts the generated canary read and a
+create_new sibling probe file. The fixture renderer reported ERROR_ACCESS_DENIED5
+for both and its PID matches the observed restricted/Untrusted renderer token.
+A spare renderer had no browser callback/probe: do not count it as file-tested.
+This does not prove all filesystem paths, utility-process policy, process/job
+mitigations, network isolation, escape resistance or signed distribution. The
+canary exists only as synthetic local data; no personal paths/content are read.
+
+### Required explicit provisioned gate
+
+The native rejection test is feature-gated, not ignored. Default workspace unit
+runs contain zero ignored tests. A default unit pass does not discharge this gate:
+
+HUMANYMOUS_CEF_PILOT_BUNDLE must be an absolute provisioned bundle path; then run
+`cargo test --locked -p humanymous-cef-bootstrap --features native-pilot-tests tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation -- --exact`.
+The case must execute once with1 passed/0 ignored and reject all4 flags before
+UI/profile creation. It passed locally on the final bundle. Missing provisioning,
+missing feature execution or a skipped job is NOT_RUN and blocks component
+acceptance. Root owns scripts/ci/cef-pilot and its dedicated Windows component CI;
+that gate proves build/negative startup only, not GUI/IME/AX/full sandbox support.
+The final source commit/hash still needs root's exact-source integrated gate.
+
+### Cleanup update
+
+The user explicitly approved deleting generated private profiles. A second
+PowerShell deletion command containing path validation was nevertheless rejected by automatic
+approval review with only blocked by policy. It did not execute; no alternative
+mechanism was attempted.31 generated profiles remain private. All own native test
+processes have closed; disk cleanup remains separate from successful child cleanup.

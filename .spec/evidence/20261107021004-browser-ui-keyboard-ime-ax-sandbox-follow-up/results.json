@@ -1,0 +1,196 @@
+{
+  "date": "2026-11-07",
+  "tuple": "x86_64-pc-windows-msvc",
+  "rust": "1.99.1",
+  "meariRevision": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+  "cefRevision": "224a785c7b41758b51821cbb7395ea57ba493a63",
+  "workspaceIntegration": "native2 members present in root-owned shared checkout; root exact-source component gate pending commit",
+  "tests": {
+    "nativeLibraryPassed": 7,
+    "nativeLibraryFailed": 0,
+    "nativeLibraryIgnored": 0,
+    "coreApplicablePassed": 9,
+    "provisionedFeatureCasePassed": 1,
+    "rejectedNativeOverrideCases": 4,
+    "clippy": "passed -D warnings",
+    "fmt": "passed",
+    "dllBuild": "passed"
+  },
+  "normal": {
+    "exit": 0,
+    "cefCreated": true,
+    "parentMatched": true,
+    "beforeClose": true,
+    "hostClosed": true,
+    "cefKeyEvents": 19,
+    "cefEditableKeyEvents": 16
+  },
+  "cancellation": {
+    "exit": 0,
+    "requested": true,
+    "lateCreation": true,
+    "beforeClose": true,
+    "hostClosed": true
+  },
+  "keyboard": {
+    "path": "native Tab selects generated CEF input; physical key events mutate value",
+    "latin": "observed",
+    "directInitialMouseFocus": "unqualified",
+    "parentChildFullTraversal": "unqualified"
+  },
+  "ime": {
+    "setup": "opt-in native-korean-ime; F8 opens installed Korean conversion on focused own CEF context only",
+    "languageId": 1042,
+    "observedSequence": [
+      "r -> ㄱ",
+      "k -> 가",
+      "BackSpace -> ㄱ",
+      "k -> 가",
+      "Return -> committed 가"
+    ],
+    "unicodeValueActionUsedForSequence": false,
+    "nativeOpenAndConversionMode1Observed": true,
+    "immCompositionBytes": "0 in sampled IMM readbacks; no IMM preedit receipt claimed",
+    "candidateApi": "conversion_request=true; open_request=false; visible_window_unqualified",
+    "candidatePlacement": "attempted but no visible window/form; unqualified",
+    "escapeCancellation": "not_run",
+    "otherImes": "not_run"
+  },
+  "accessibility": {
+    "cefRoleNameValue": "observed",
+    "cefUnicodeValueActionReadback": "passed",
+    "meariAddressUnicodeValueActionReadback": "passed",
+    "hostTabAction": "failed: no cached bounds",
+    "focusAndGeometry": "partial; focused element can report document and cached values can lag",
+    "screenReaderSpeech": "not_run",
+    "fullQualification": false
+  },
+  "sandbox": {
+    "required": true,
+    "cefSandboxFeature": true,
+    "readCanaryOsError": 5,
+    "createSiblingOsError": 5,
+    "probeMatchedRestrictedUntrustedOwnedRenderer": true,
+    "probedRenderers": 1,
+    "observedRenderers": 2,
+    "spareRendererFileProbe": "not_run",
+    "utilityPolicy": "unqualified; some utility tokens unrestricted medium",
+    "processJobMitigations": "not_run",
+    "networkIsolation": "not OS-qualified",
+    "signedDistribution": "not qualified",
+    "fullQualification": false
+  },
+  "readiness": {
+    "browserReady": false,
+    "externalTargetNavigation": false,
+    "dockerProductE2e": "not_run"
+  },
+  "cleanup": {
+    "explicitUserDeletionApproval": true,
+    "secondAutomaticReview": "rejected: blocked by policy",
+    "deletionExecuted": false,
+    "alternativeDeletionAttempt": false,
+    "retainedGeneratedProfiles": 31,
+    "ownProcessesRemaining": 0
+  },
+  "source": [
+    {
+      "path": "crates/browser/Cargo.toml",
+      "sha256": "ac0de68ab5e2f5777a7bcc10930a91be7a1ab57daf42c1465ca1321647f0df2b",
+      "bytes": 956
+    },
+    {
+      "path": "crates/browser/native/bootstrap/Cargo.toml",
+      "sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+      "bytes": 463
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/lib.rs",
+      "sha256": "e5f05198a536a82995feed724620b766c69fa0d94a6c72ed4a9a5c36610df3e0",
+      "bytes": 5392
+    },
+    {
+      "path": "crates/browser/native/bootstrap/src/renderer_probe.rs",
+      "sha256": "cfa279ac4ffeee4358fac3f64125716efb27262c53fbdb983db5412215f80243",
+      "bytes": 2251
+    },
+    {
+      "path": "crates/browser/native/desktop/Cargo.toml",
+      "sha256": "3084e4311d574666594918cbe8b9ea38efd23f3ea4c0e73ca67b9347b56580d2",
+      "bytes": 1206
+    },
+    {
+      "path": "crates/browser/native/desktop/src/child.rs",
+      "sha256": "42c6060e845061e8b5ebe640878c2c130b8e18429a78d44055d70bcd2756f469",
+      "bytes": 16468
+    },
+    {
+      "path": "crates/browser/native/desktop/src/fixture.rs",
+      "sha256": "49fe3a8f878c37fca671674d6291f463ac1d466a904163658d6718fb4ccdfda2",
+      "bytes": 4547
+    },
+    {
+      "path": "crates/browser/native/desktop/src/host.rs",
+      "sha256": "b51ad7201d295d8b97257997f77f3c87f1142b887c01f11887e996c95c398b47",
+      "bytes": 17539
+    },
+    {
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "sha256": "b2951bb56904e8e9669814c9adff74bcb91d8e6b410d3eaa1e2237b9433cd772",
+      "bytes": 3015
+    },
+    {
+      "path": "crates/browser/native/desktop/src/native.rs",
+      "sha256": "adbacbb4765b17054dcffe7f262836f99efefa4deda8340824989017ca6a6ae2",
+      "bytes": 20473
+    },
+    {
+      "path": "crates/browser/src/lib.rs",
+      "sha256": "b84e63353e3aaf2aaa2d9d998fe863b99ad68f4dca3a61598edc80fbe075774c",
+      "bytes": 182
+    },
+    {
+      "path": "crates/browser/src/lifecycle.rs",
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "bytes": 6140
+    },
+    {
+      "path": "crates/browser/src/main.rs",
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "bytes": 931
+    },
+    {
+      "path": "crates/browser/src/policy.rs",
+      "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "bytes": 4042
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "sha256": "81e320a7dd3375b323368a6affec43d4432405b59c05090d5c8634d5acf4f13b",
+      "bytes": 12088
+    }
+  ],
+  "nativeArtifacts": [
+    {
+      "name": "humanymous_cef_bootstrap.exe",
+      "sha256": "f3992741bc06d43cafc568aefcc80b2c740121d9adf0eda19a314e1a72699ded",
+      "bytes": 4316160
+    },
+    {
+      "name": "humanymous_cef_bootstrap.dll",
+      "sha256": "f31233e86fbe49a23c01e4a673a8af442e7405b7c04c82dc30a723cccf8ba7ed",
+      "bytes": 285696
+    },
+    {
+      "name": "humanymous_cef_desktop.dll",
+      "sha256": "0dbc231f48423841671b92f3a0580d6fa6282939062415467845280bae47cf27",
+      "bytes": 57760256
+    },
+    {
+      "name": "libcef.dll",
+      "sha256": "07168eacd81bc09ab9ab895d39bc1a80913b09c844f0b5a4730f5f89a71133f5",
+      "bytes": 294315008
+    }
+  ],
+  "privateDependencyLockSha256": "164a13ace1777789d3feadfcefc495b068cd25ae6c78bd7b724486b19593734d"
+}
