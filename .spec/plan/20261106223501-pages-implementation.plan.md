@@ -1370,3 +1370,15 @@ changed blocks and complete updated INTEGRATION metadata. Public text now record
 source correction rather than a still-open source bug; actual error-path/process
 containment remains unexecuted. Surgically renewed only inspected pilot receipt,
 retaining prior finding in history; default native check is not httpd/pilot proof.
+
+### Sealed writer API and corrected native qualification contract
+
+Read complete sealed writer module and two preflight test definitions. Public
+security reference documents shared custody/writer lifetime, required witness
+preflight, existing-key-only startup, explicit pinned tail recovery and actual
+repair versus verification receipts, without treating buffered reads as streaming
+or recovery as effect retry. Reviewed updated native pilot contract and complete
+81545 public evidence:25 local pure cases and strict lint,18-file source subset,
+actual hosted header/C/C++/dynamic ABI still not_run. Added two manual receipts.
+No tests/compiler/native execution; exact813 product-browser job now failure,
+Windows still in_progress, no Pages result observed or current-source green.

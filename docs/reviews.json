@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/native/pilot-contract.json",
+  "sha256": "d59f07bd888519b018430a20f2f8645d1c8f7399ec6f1fb68e40d62d4beb974e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete reconciled native contract and source-bound81545 summary: local core16/export6/parser3 plus strict Clippy are separate from unexecuted hosted header/C/C++/dynamic ABI. Removed obsolete registration blocker; managed generic probe, authored C++ glue, RAII/OS/product remain distinct and unqualified.18-file source subset is not immutable full graph.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/audit/src/log/sealed.rs",
+  "sha256": "211817ddf672de8821d086e0a0a3c6a4aee16dfd0066a39b4e1d256257336899",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete sealed owner and two preflight test definitions: existing custody lifetime, witness refusal before I/O/credential take, no replacement-key fallback, bounded stage errors, explicit pinned recovery/tail and verification-versus-repair receipt, whole-history reads. No native startup/recovery/secret or test execution performed.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/audit/src/bin/audit-control-retainer.rs",
   "sha256": "b728c1807b7b6360c9c11024df9a5db8de30946c34de784eb35b7d8b174cf77d",
   "reviewer": "codex/rust-pages",

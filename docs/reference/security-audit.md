@@ -156,6 +156,24 @@ does not authenticate a remote claimed event time, validate producer identity
 or prove ingestion completeness. Preserve the actual producer and observation
 boundary before interpreting a sealed event as evidence.
 
+## Sealed writer lifetime and explicit recovery
+
+`SealedLog` owns existing key custody and the WAL/witness writer for one service
+lifetime. It does not expose mutable custody or a mutable inner log. Required
+external-witness refusal precedes state access and credential consumption;
+startup never falls back to generating replacement keys. `allow_new_history`
+permits history initialization, not key provisioning. Unlock bytes come from
+the trusted composition root, not a public request field.
+
+Normal startup refuses an unwitnessed complete tail. `recover_pinned` is a
+separate explicit operation requiring a pinned witness and independently retained
+head, with a declared tail policy. Its receipt distinguishes checkpoint repair
+from verification only, reports native persistence strength and prior torn bytes,
+and exposes witnessed coverage versus ambiguous records. It does not authorize
+retrying origin effects. The record-reading API returns a complete buffered
+history; this is not constant-memory streaming recovery. Startup errors expose
+a bounded stage and I/O category without retaining raw paths or credentials.
+
 ## Append, checkpoint and effect ordering
 
 `Log::emit_and_act` calls the application callback only after append and any due
