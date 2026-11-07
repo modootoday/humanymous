@@ -23,8 +23,14 @@ pub enum Host {
     FastHttp,
 }
 impl Host {
-    /// Whether host request/context buffers require explicit ownership transfer.
-    pub const fn pooled_request_buffers(self) -> bool {
+    /// Whether this framework recycles its own context after handler return.
+    /// This does not grant permission to retain ordinary net/http request bodies.
+    pub const fn pooled_context(self) -> bool {
+        matches!(self, Self::Gin | Self::Echo | Self::Fiber | Self::FastHttp)
+    }
+    /// fasthttp-style borrowed entity slices need copying before retention.
+    /// Separate from pooled Gin/Echo framework contexts over net/http streams.
+    pub const fn borrows_entity_slices(self) -> bool {
         matches!(self, Self::Fiber | Self::FastHttp)
     }
 }

@@ -28,6 +28,19 @@ across handler return or reuse; a net/http conversion is not equivalent coverage
 Gate forwards HTTP to the external origin; it does not retain Go objects or
 promise in-process middleware cancellation, ResponseWriter interfaces or hijack.
 
+| Host | Origin transport contract | Host-owned lifetime boundary |
+| --- | --- | --- |
+| net/http | Standard Handler/Request/ResponseWriter | Body close and Request.Context cancellation; optional writer interfaces are not supplied by Gate |
+| chi | net/http router with nested middleware/mounts | Preserve final method/target inventory across mounts; request context cancellation is separate from completing origin effects |
+| Gin | net/http engine with Next/Abort handler chain | gin.Context is pooled; background work must not retain the original context; a copy does not mint authorization |
+| Echo | net/http engine with framework handler/error chain | Echo contexts are pooled; do not retain pooled context across request return or use it concurrently |
+| Fiber | fasthttp handler/context chain | Pooled context and borrowed entity slices require copying for retention; not the net/http body stream contract |
+| fasthttp | RequestCtx and parsed request/response | Borrowed Peek/body slices and RequestCtx do not survive handler reuse; no raw wire/casing capability follows |
+
+Rust Host metadata distinguishes pooled framework contexts (Gin/Echo included)
+from fasthttp-style borrowed entity slices (Fiber/fasthttp). These are integration
+premises, not measured host capabilities or extra authorization predicates.
+
 crates/go-adapter validates deployment through actual runtime Configuration,
 then transfers it to the shared composition root. No proxy, scoring, crypto,
 nonce, audit or authority implementation is copied. Network isolation remains
@@ -38,8 +51,13 @@ a separately measured deployment requirement, never inferred from loopback.
 Rust receipt validation requires exact host/version/Go-version/OS/architecture,
 source/image/external-fixture/configuration/engine bindings, hosted isolated Docker
 execution, complete unique eight-case accounting,
-positive executed assertions, no failures and independent origin effect counts.
-Binary allow and response semantics each require one effect; dependency loss,
+positive executed assertions, no failures and independent origin contact counts.
+The initial profile is bounded-http-8-case/2. Receipts require origin_contacts,
+never substitute unobserved application mutations under an effects field.
+Positive cases additionally require handler_response_verified=true, backed by
+actual binary echo or the HEAD/cookie response. Negative cases require false
+because there must be no protected handler response.
+Binary allow and response semantics each require one contact; dependency loss,
 cancellation, incomplete body, forged provenance, bypass and upgrade require zero.
 The forged-provenance case uses a route requiring unavailable authenticated
 capture; ordinary harmless forged headers may instead be stripped on ALLOW.
@@ -62,8 +80,9 @@ No detection or a11y changes; fail-closed and T4 limits remain unchanged.
 
 ## Evidence and remaining gates
 
-Root reports two pure unit tests passed after workspace registration (34 members).
-Detailed source-bound root artifact is pending; scoped Clippy remains in progress.
+Root reports two pure unit tests passed for307e9cc after workspace registration
+(34 members). That result does not cover subsequent contact/handler-proof changes.
+Detailed source-bound root artifact is pending; new source unit/Clippy NOT_RUN.
 Direct Rust formatting and scoped spec check passed with zero errors/warnings.
 Hosted external fixture execution, actual Go versions, image digests, isolation
 witness and product e2e are NOT_RUN. No host tuple is advertised as qualified.
@@ -78,10 +97,15 @@ outside that initial measurement. Cancellation means before complete body and
 origin handoff; no rollback after an effect is promised. An independent contact
 counter proves absence of origin contact conservatively; positive handler echo
 must separately establish actual Go execution. Contacts are not measured
-application mutations. Missing image/toolchain/full-fixture hashes stay null
-until the hosted owner measures them; this file cannot qualify itself.
+application mutations. Compiler input now pins an officially sourced
+Go1.26.10Alpine3.24 index and Linuxamd64 digest; fixture go.mod requires1.26.0,
+so legacy1.25 is insufficient. Metadata selection is not image execution or
+signature qualification. Full fixture/runtime image hashes stay null until the
+hosted owner measures them; this file cannot qualify itself.
 
 Official contracts: https://pkg.go.dev/net/http ; https://github.com/go-chi/chi ;
 https://gin-gonic.com/en/docs/ ; https://echo.labstack.com/ ;
 https://docs.gofiber.io/next/extra/internal/ ;
 https://pkg.go.dev/github.com/valyala/fasthttp .
+Gin context lifetime: https://gin-gonic.com/en/docs/middleware/goroutines-inside-a-middleware/ .
+Echo context pool: https://github.com/labstack/echo/blob/master/echo.go .

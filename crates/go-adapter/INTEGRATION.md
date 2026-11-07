@@ -23,7 +23,12 @@ The crate is a deployment contract and receipt qualifier, not a Go SDK or proxy.
 No tuple is qualified. It transfers validated runtime Configuration into the
 existing composition root. Receipt structs never execute tests or authenticate
 evidence. Hosted integration must supply source/image/external-fixture digests
-and independent origin counters for all eight cases, retaining failures.
+and independent origin contact counters for all eight cases, retaining failures.
+Corpus version2 replaces misleading origin_effects with origin_contacts and
+requires handler_response_verified for the two positive cases (false for all
+negative cases). Contact counts alone cannot prove binary echo or HEAD/cookies.
+Version1 receipts do not qualify; this corpus does not measure application
+mutations, human/browser provenance or 204/304/streaming support.
 ExpectedTuple additionally binds host/Go version, actual OS/architecture and
 sanitized configuration/frozen-engine digests. Expected values must come from
 the trusted runner independently of receipt contents. Empty or stale values fail.

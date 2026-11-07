@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.go-compiler-input/1",
+  "status": "selected-not-executed",
+  "fixture_repository": "mccutchen/go-httpbin",
+  "fixture_revision": "8b1bc1433750404fefd2a419cda3720d3088701b",
+  "fixture_go_mod_minimum": "1.26.0",
+  "fixture_go_mod_source": "https://github.com/mccutchen/go-httpbin/blob/8b1bc1433750404fefd2a419cda3720d3088701b/go.mod",
+  "compiler_image": "docker.io/library/golang:1.26.10-alpine3.24@sha256:87c65a688975c0b1d4585d204874c45ca78354670e3a5f11368c5a492303d696",
+  "manifest_index_digest": "sha256:87c65a688975c0b1d4585d204874c45ca78354670e3a5f11368c5a492303d696",
+  "linux_amd64_manifest_digest": "sha256:2173d702003b1a8d17b844191acaeb36e94de46f6cabf2cb27370e151bbce5aa",
+  "expected_go_version": "go1.26.10",
+  "platform": "linux/amd64",
+  "official_image_source_revision": "650cf2f338d22da87df8c773cfc88afa26699502",
+  "official_image_source": "https://github.com/docker-library/golang/blob/650cf2f338d22da87df8c773cfc88afa26699502/1.26/alpine3.24/Dockerfile",
+  "metadata_source": "https://hub.docker.com/v2/repositories/library/golang/tags/1.26.10-alpine3.24",
+  "metadata_updated_at": "2026-11-06T01:23:01.288042Z",
+  "build_environment": {"CGO_ENABLED":"0","GOTOOLCHAIN":"local","GOOS":"linux","GOARCH":"amd64"},
+  "build_arguments": ["build","-mod=readonly","-trimpath","-o","/out/go-httpbin","./cmd/go-httpbin"],
+  "verification_required": ["Root admits compiler input to hosted batch", "Verify index and selected platform manifest digest before build", "Record actual go version and binary SHA256", "Hash complete untouched upstream checkout and dependency closure", "Run only on standard free hosted runner", "Retain failure evidence; metadata selection is not execution or image signature attestation"],
+  "legacy_go_1_25_reuse": "rejected: below fixture go.mod minimum1.26.0"
+}

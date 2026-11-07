@@ -2,7 +2,7 @@ use crate::Host;
 use serde::{Deserialize, Serialize};
 
 /// Limited initial corpus identity, never native SDK or all-framework support.
-pub const QUALIFICATION_PROFILE: &str = "humanymous.go-gate/bounded-http-8-case/1";
+pub const QUALIFICATION_PROFILE: &str = "humanymous.go-gate/bounded-http-8-case/2";
 
 /// Required actual host and isolated Gate observations.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
@@ -12,7 +12,7 @@ pub enum Case {
     BinaryAllow,
     /// Authority or required evidence is unavailable; origin stays untouched.
     DependencyDown,
-    /// Request cancellation prevents a later protected origin effect.
+    /// Cancellation before complete input/handoff prevents later origin contact.
     Cancellation,
     /// Oversized/incomplete input cannot reach the application parser.
     IncompleteBody,
@@ -22,7 +22,7 @@ pub enum Case {
     OriginBypass,
     /// Upgrade and CONNECT cannot escape bounded HTTP authorization.
     Upgrade,
-    /// Response duplicate cookies and HEAD/bodyless semantics survive.
+    /// One HEAD response preserves duplicate cookies and has no entity body.
     ResponseSemantics,
 }
 const REQUIRED: [Case; 8] = [
@@ -70,8 +70,11 @@ pub struct Outcome {
     pub assertions: u32,
     /// Failed assertions are retained, never removed from the denominator.
     pub failures: u32,
-    /// Independent protected application effect counter.
-    pub origin_effects: u32,
+    /// Independent origin contact counter, not inferred application mutations.
+    pub origin_contacts: u32,
+    /// Actual upstream handler response matches the positive case's byte checks.
+    /// False for every negative case, where there must be no handler response.
+    pub handler_response_verified: bool,
     /// True only for real host execution; false for synthetic/component fixtures.
     pub actual_host: bool,
 }
@@ -162,7 +165,9 @@ impl Receipt {
                     && r.actual_host
                     && r.assertions > 0
                     && r.failures == 0
-                    && r.origin_effects
+                    && r.handler_response_verified
+                        == matches!(case, Case::BinaryAllow | Case::ResponseSemantics)
+                    && r.origin_contacts
                         == u32::from(matches!(case, Case::BinaryAllow | Case::ResponseSemantics))
             })
     }
@@ -192,10 +197,14 @@ mod tests {
                     case,
                     assertions: 1,
                     failures: 0,
-                    origin_effects: u32::from(matches!(
+                    origin_contacts: u32::from(matches!(
                         case,
                         Case::BinaryAllow | Case::ResponseSemantics
                     )),
+                    handler_response_verified: matches!(
+                        case,
+                        Case::BinaryAllow | Case::ResponseSemantics
+                    ),
                     actual_host: true,
                 })
                 .collect(),
@@ -250,7 +259,7 @@ mod tests {
         assert!(!qualifies(&r));
     }
     #[test]
-    fn missing_duplicate_failed_and_unexpected_effects_reject() {
+    fn missing_duplicate_failed_and_unexpected_contacts_reject() {
         let mut r = receipt();
         r.outcomes.pop();
         assert!(!qualifies(&r));
@@ -258,13 +267,28 @@ mod tests {
         r.outcomes[1].case = Case::BinaryAllow;
         assert!(!qualifies(&r));
         let mut r = receipt();
-        r.outcomes[1].origin_effects = 1;
+        r.outcomes[1].origin_contacts = 1;
         assert!(!qualifies(&r));
         let mut r = receipt();
         r.outcomes[1].failures = 1;
         assert!(!qualifies(&r));
         let mut r = receipt();
         r.outcomes[1].assertions = 0;
+        assert!(!qualifies(&r));
+    }
+    #[test]
+    fn contacts_alone_cannot_prove_handler_bytes_and_negative_cannot_have_response() {
+        let mut r = receipt();
+        r.outcomes[0].handler_response_verified = false;
+        assert!(!qualifies(&r));
+        let mut r = receipt();
+        r.outcomes[7].handler_response_verified = false;
+        assert!(!qualifies(&r));
+        let mut r = receipt();
+        r.outcomes[1].handler_response_verified = true;
+        assert!(!qualifies(&r));
+        let mut r = receipt();
+        r.profile = "humanymous.go-gate/bounded-http-8-case/1".into();
         assert!(!qualifies(&r));
     }
 }

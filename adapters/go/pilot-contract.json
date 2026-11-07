@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.go-gate-pilot/1",
   "status": "NOT_RUN",
-  "qualification_profile": "humanymous.go-gate/bounded-http-8-case/1",
+  "qualification_profile": "humanymous.go-gate/bounded-http-8-case/2",
   "host": "net-http",
   "evidence_profile": "synthetic-trusted-session-http-conformance",
   "fixture": {
@@ -14,7 +14,8 @@
     "argv": ["--host", "127.0.0.1", "--port", "18081", "--log-level", "OFF", "--max-body-size", "65536"],
     "backend_port": 18081,
     "full_fixture_digest": null,
-    "go_toolchain_image_digest": null,
+    "go_toolchain_image_digest": "sha256:87c65a688975c0b1d4585d204874c45ca78354670e3a5f11368c5a492303d696",
+    "compiler_input_contract": "adapters/go/compiler-input.json",
     "runtime_image_digest": null
   },
   "composition": {
