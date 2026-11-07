@@ -127,7 +127,22 @@ impl Lab {
     }
     fn compose(&mut self, args: &[&str], required: bool) -> Result<crate::docker::Output> {
         let command = self.compose_args(args)?;
-        self.docker.invoke(&command, &self.environment, required)
+        let result = if args.first() == Some(&"build") {
+            self.docker
+                .invoke_image_build(&command, &self.environment, required)
+        } else {
+            self.docker.invoke(&command, &self.environment, required)
+        };
+        if result.is_err()
+            && args.first() == Some(&"build")
+            && let Some(stage) = self
+                .docker
+                .last_failure
+                .and_then(|failure| failure.go_build_stage(args.get(1).copied().unwrap_or("")))
+        {
+            self.stage = stage;
+        }
+        result
     }
     fn case(&mut self, id: &str, passed: bool, detail: Value) -> Result<()> {
         self.cases
@@ -747,6 +762,20 @@ mod tests {
         assert_eq!(safe["failure_count"], 2);
         assert_eq!(safe["failures"][0]["error_code"], "browser_actor");
         assert_eq!(safe["failures"][1]["case_id"], "unclassified_case");
+        assert_eq!(safe["failures"][1]["error_code"], "assertion_failed");
+        for code in [
+            "go_runtime_build_deadline",
+            "go_runtime_build_capture",
+            "go_runtime_build_exit",
+            "go_canary_build_deadline",
+            "go_canary_build_capture",
+            "go_canary_build_exit",
+        ] {
+            let projected = super::safe_diagnostics(&[
+                serde_json::json!({"id":"execution","status":"failed","error_code":code}),
+            ]);
+            assert_eq!(projected["failures"][0]["error_code"], code);
+        }
         let bytes = safe.to_string();
         assert!(
             !bytes.contains("private") && !bytes.contains("detail") && !bytes.contains("Bearer")

@@ -1,0 +1,44 @@
+{
+  "schema": "humanymous.lab-diagnostic-pure-evidence/1",
+  "base_sha": "269607366e4b2e37b47a974595b406b66642caae",
+  "owned_overlay": [
+    {
+      "path": "test/lab/runner/safe-diagnostics.json",
+      "sha256": "0a8a8351af53edb8aae2d932040ed6ad9e7ba957a3d2b0aadce3c0d9be2cd569",
+      "bytes": 1030
+    },
+    {
+      "path": "test/lab/runner/src/docker.rs",
+      "sha256": "f0fbe02a9325558ed69aa685e69c7674d38362c423115275154ca84049bbcbe3",
+      "bytes": 12770
+    },
+    {
+      "path": "test/lab/runner/src/orchestration.rs",
+      "sha256": "759af15594971e3c4509f41f6cc6abcc9cce79a0e169b99baf6340bcd726de76",
+      "bytes": 32966
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_fixture.rs",
+      "sha256": "1396673fdace8c72a9957dfef13af30adbf6514cf0e2b99306a116a68f17a2c5",
+      "bytes": 8537
+    }
+  ],
+  "source_manifest_sha256": "e802756d512126f85c92554342449a5cf98f58cc48a807640cbdce49bcdec781",
+  "source_files": 2326,
+  "source_drift": 0,
+  "unit_passed": 16,
+  "unit_failed": 0,
+  "unit_ignored": 0,
+  "unit_filtered": 0,
+  "unit_exit": 0,
+  "clippy_exit": 0,
+  "rust_version": "1.99.1",
+  "target": "x86_64-pc-windows-msvc",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "docker_executed": false,
+  "partial_output_recovered": false,
+  "full_product_qualified": false
+}

@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T11:03:10Z
+updated: 2026-11-07T11:38:13Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -13,6 +13,8 @@ files:
   - {path: rust-runner-v3/witness-report.json, sha256: c9e9914dd4150aaceed3485d49d55cb4ae1efcedef6c8fb6f28a9d66eb60d64f, bytes: 3042, store: repo}
   - {path: hosted-go-438a3fee-failure.json, sha256: 1398c81f8eb44eebaec83d76f7060ba9833a99c6a702d5bb65757bfcdfa763da, bytes: 5954, store: repo}
   - {path: go-actor-0ce4d82-checks.json, sha256: de695aba678325d3e00ff0b134cd4f8aae390292d63c1c04ab36eb8f8b9d215c, bytes: 711, store: repo}
+  - {path: hosted-go-44876534-failure.json, sha256: 267bdc0896bfb0d8ad2cce633d5dc1e51bc69903853da94b0f18ec0a3f4c6e88, bytes: 5368, store: repo}
+  - {path: docker-build-diagnostic-pure-checks.json, sha256: 6eb5c2fc6af4f05bd6b118dc637cfacdab5465f6d7e7a5b261a2c1d75c120406, bytes: 1333, store: repo}
 ---
 
 # Container test environment research
@@ -77,6 +79,13 @@ Scanner authentication and undersized-cache failures are recorded as not_run,
 along with the corrected stopped-container harness inspection failure.
 
 ## How to read it
+
+hosted-go-44876534-failure.json records the separate retry42367272089:
+Go10/lab15/delivery65 plus Unix actor check, strict Clippy and policy passed;
+product128388486737 again failed runtime_build before all8 scenarios. Cleanup
+was observed and source was unchanged. Neither elapsed time nor the earlier
+deprecated API reproducer establishes this second Docker substep's cause.
+Private decoded logs and safe projection: evidence:root/20261107111707.
 
 hosted-go-438a3fee-failure.json preserves genuine hosted run42365025258,
 source438a3feea0ea2f5e305aa6e3816dc7b60a069bd6. Preflight passed Go10,

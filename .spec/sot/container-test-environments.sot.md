@@ -133,6 +133,18 @@ or manufacture zero counters. Complete successful ledgers alone may invoke the
 owner qualifier against the parent's independently provisioned source/artifact,
 configuration and OS tuple. New source is NOT_RUN until its own hosted receipt.
 
+Docker build failures retain typed transport outcomes before returning errors.
+For the owned Go runtime and canary build commands, public static diagnostics
+distinguish deadline, nonzero exit and other capture errors. Deadline requires
+io::ErrorKind::TimedOut; never infer it from elapsed time or arbitrary messages.
+Retain argv/error details privately. If the shared capture API cannot return
+partial output on failure, explicitly record that unavailability rather than
+claiming an original compiler transcript was recovered.
+Cold image compilation uses a separate bounded1200-second command budget;
+ordinary Docker control remains600seconds and private-input commands30seconds.
+Select the image budget only at explicit Compose build/buildx build call sites.
+Actor, scenario, witness, runtime and evaluator deadlines are unchanged.
+
 Save the initial eight-row NOT_RUN inventory before any fetch/compiler/image
 operation. Setup failures retain the unexecuted denominator. After a case,
 independently inspect backend liveness, then await controlled actor exit and

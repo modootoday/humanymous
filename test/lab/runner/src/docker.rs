@@ -8,6 +8,56 @@ use std::{
 };
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+#[derive(Clone, Copy)]
+enum CommandBudget {
+    Control,
+    Input,
+    ImageBuild,
+}
+impl CommandBudget {
+    fn seconds(self) -> u64 {
+        match self {
+            Self::Control => 600,
+            Self::Input => 30,
+            Self::ImageBuild => 1200,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum FailureKind {
+    Deadline,
+    Capture,
+    Exit,
+}
+impl FailureKind {
+    fn output(success: bool, valid_utf8: bool) -> Option<Self> {
+        if !success {
+            Some(Self::Exit)
+        } else if !valid_utf8 {
+            Some(Self::Capture)
+        } else {
+            None
+        }
+    }
+    fn capture(error: &std::io::Error) -> Self {
+        if error.kind() == std::io::ErrorKind::TimedOut {
+            Self::Deadline
+        } else {
+            Self::Capture
+        }
+    }
+    pub fn go_build_stage(self, service: &str) -> Option<&'static str> {
+        match (service, self) {
+            ("go-gate", Self::Deadline) => Some("go_runtime_build_deadline"),
+            ("go-gate", Self::Capture) => Some("go_runtime_build_capture"),
+            ("go-gate", Self::Exit) => Some("go_runtime_build_exit"),
+            ("go-egress-canary", Self::Deadline) => Some("go_canary_build_deadline"),
+            ("go-egress-canary", Self::Capture) => Some("go_canary_build_capture"),
+            ("go-egress-canary", Self::Exit) => Some("go_canary_build_exit"),
+            _ => None,
+        }
+    }
+}
 mod affinity;
 pub(crate) fn hosted_context(
     actions: Option<&str>,
@@ -33,6 +83,7 @@ pub struct Docker {
     executable: PathBuf,
     pub transcript: Vec<Value>,
     pub engine_identity: Option<Value>,
+    pub(crate) last_failure: Option<FailureKind>,
     desktop_baseline: Option<Value>,
 }
 pub struct Output {
@@ -52,6 +103,7 @@ impl Docker {
             },
             transcript: Vec::new(),
             engine_identity: None,
+            last_failure: None,
             desktop_baseline: None,
         }
     }
@@ -139,18 +191,57 @@ impl Docker {
         required: bool,
         input: &[u8],
     ) -> Result<Output> {
+        self.invoke_budget(
+            args,
+            environment,
+            required,
+            input,
+            if input.is_empty() {
+                CommandBudget::Control
+            } else {
+                CommandBudget::Input
+            },
+        )
+    }
+    pub fn invoke_image_build(
+        &mut self,
+        args: &[String],
+        environment: &[(String, String)],
+        required: bool,
+    ) -> Result<Output> {
+        self.invoke_budget(args, environment, required, b"", CommandBudget::ImageBuild)
+    }
+    fn invoke_budget(
+        &mut self,
+        args: &[String],
+        environment: &[(String, String)],
+        required: bool,
+        input: &[u8],
+        budget: CommandBudget,
+    ) -> Result<Output> {
+        self.last_failure = None;
         let mut command = self.command(args, environment)?;
         let captured = capture_with_stderr(
             &mut command,
             input,
-            Duration::from_secs(if input.is_empty() { 600 } else { 30 }),
+            Duration::from_secs(budget.seconds()),
             4 * 1024 * 1024,
-        )?;
+        );
+        let captured = match captured {
+            Ok(value) => value,
+            Err(error) => {
+                self.last_failure = Some(FailureKind::capture(&error));
+                self.transcript.push(json!({"argv":args,"budget_seconds":budget.seconds(),"capture_error_kind":format!("{:?}",error.kind()),"detail":error.to_string(),"partial_output_unavailable":true}));
+                return Err(error.into());
+            }
+        };
         let status = captured.status;
-        let stdout = String::from_utf8(captured.stdout)?;
+        let stdout_valid_utf8 = std::str::from_utf8(&captured.stdout).is_ok();
+        let stdout = String::from_utf8_lossy(&captured.stdout).into_owned();
         let stderr = String::from_utf8_lossy(&captured.stderr).into_owned();
         self.transcript
-            .push(json!({"argv":args,"exit":status.code(),"stdout":stdout,"stderr":stderr}));
+            .push(json!({"argv":args,"budget_seconds":budget.seconds(),"exit":status.code(),"stdout":stdout,"stdout_valid_utf8":stdout_valid_utf8,"stderr":stderr}));
+        self.last_failure = FailureKind::output(status.success(), stdout_valid_utf8);
         if required && !status.success() {
             return Err(format!(
                 "Docker {} failed, exit {:?}; see private transcript",
@@ -158,6 +249,12 @@ impl Docker {
                 status.code()
             )
             .into());
+        }
+        if !stdout_valid_utf8 {
+            return Err(
+                "Docker stdout is not UTF-8; observed exit and lossy text retained privately"
+                    .into(),
+            );
         }
         Ok(Output {
             success: status.success(),
@@ -215,4 +312,41 @@ pub fn engine_preflight(args: &[String]) -> Result<i32> {
     );
     result?;
     Ok(0)
+}
+#[cfg(test)]
+mod failure_tests {
+    use super::FailureKind;
+    #[test]
+    fn build_failures_use_typed_errors_and_only_owned_static_targets() {
+        assert_eq!(super::CommandBudget::Control.seconds(), 600);
+        assert_eq!(super::CommandBudget::Input.seconds(), 30);
+        assert_eq!(super::CommandBudget::ImageBuild.seconds(), 1200);
+        assert_eq!(FailureKind::output(false, false), Some(FailureKind::Exit));
+        assert_eq!(FailureKind::output(true, false), Some(FailureKind::Capture));
+        assert_eq!(FailureKind::output(true, true), None);
+        let deadline = FailureKind::capture(&std::io::Error::new(
+            std::io::ErrorKind::TimedOut,
+            "PRIVATE",
+        ));
+        assert_eq!(
+            deadline.go_build_stage("go-gate"),
+            Some("go_runtime_build_deadline")
+        );
+        let other = FailureKind::capture(&std::io::Error::other("deadline PRIVATE"));
+        assert_eq!(
+            other.go_build_stage("go-gate"),
+            Some("go_runtime_build_capture")
+        );
+        assert_eq!(
+            FailureKind::Exit.go_build_stage("go-gate"),
+            Some("go_runtime_build_exit")
+        );
+        assert_eq!(
+            deadline.go_build_stage("go-egress-canary"),
+            Some("go_canary_build_deadline")
+        );
+        for kind in [deadline, other, FailureKind::Exit] {
+            assert_eq!(kind.go_build_stage("PRIVATE_TARGET"), None);
+        }
+    }
 }

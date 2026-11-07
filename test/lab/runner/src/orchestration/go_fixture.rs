@@ -170,7 +170,7 @@ pub(super) fn prepare(lab: &mut Lab) -> Result<Fixture> {
     fs::create_dir(&output)?;
     let recipe = lab.config_file("adapters/go/Dockerfile.fixture")?;
     let export = format!("type=local,dest={}", output.display());
-    lab.docker.call(&[
+    let build_args = [
         "buildx",
         "build",
         "--platform",
@@ -182,7 +182,9 @@ pub(super) fn prepare(lab: &mut Lab) -> Result<Fixture> {
         "--output",
         &export,
         build_context.to_str().ok_or("fixture context UTF8")?,
-    ])?;
+    ]
+    .map(str::to_owned);
+    lab.docker.invoke_image_build(&build_args, &[], true)?;
     let binary = output.join("go-httpbin");
     let metadata = fs::symlink_metadata(&binary)?;
     if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > 64 * 1024 * 1024
