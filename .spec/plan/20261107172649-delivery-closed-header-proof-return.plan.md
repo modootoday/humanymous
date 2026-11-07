@@ -306,3 +306,23 @@ remain unobserved until the next coherent frozen validation. Historical107
 counts and source manifests must not be promoted to that candidate. Actual
 receiver parent qualification, hosted context, original16 payload admission and
 successful private reconstruction remain outstanding.
+
+## Full-native callsite correction after actual9586 failure
+
+Run42407744891/source9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b showed actual
+owner install/version/generation/header-conformance exits0, execution_passedtrue
+and unchanged source. The later closed observation refused the actual compiler
+profile, leaving retention incomplete. This is not an observed C11/C++11 syntax
+or layout failure. The exact rejected identity field and original16 payloads
+were not recovered; no OS compiler identity is inferred from a version hash.
+
+Root authorized fixed current-path callsite separation: component header keeps
+its required semantic conformance; native-component header retains the unchanged
+strict closed producer. Three new memory-only tests exercise fixed dispatch,
+owner/source/observation/preparation refusal without frame leakage, semantic
+no-frame behavior and closed write/flush failure propagation. New source in
+components.rs is authored/formatted but NOT compiled or tested. Expected full
+Delivery count113 is only a hypothesis; existing110 evidence remains historical.
+No shared compiler allocation is consumed before Root's coherent workspace and
+original bounded validation grant. Closed retention/private-parent readiness
+remains pending independently of a future semantic pass.

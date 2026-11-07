@@ -243,10 +243,25 @@ fn native_target(kind: &str) -> Result<&'static str> {
         _ => Err("native component target must be capture, header or archive".into()),
     }
 }
-pub fn native(root: &Path, kind: &str) -> Result<()> {
-    run(root, native_target(kind)?)
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum EntryPoint {
+    Component,
+    Native,
 }
-pub fn run(root: &Path, kind: &str) -> Result<()> {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum HeaderMode {
+    Semantic,
+    ClosedProof,
+}
+struct Request<'a> {
+    kind: &'a str,
+    header_mode: HeaderMode,
+}
+fn request(entry: EntryPoint, kind: &str) -> Result<Request<'_>> {
+    let kind = match entry {
+        EntryPoint::Component => kind,
+        EntryPoint::Native => native_target(kind)?,
+    };
     require(
         matches!(
             kind,
@@ -254,6 +269,60 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
         ),
         "unknown hosted component",
     )?;
+    Ok(Request {
+        kind,
+        header_mode: if entry == EntryPoint::Native && kind == "header" {
+            HeaderMode::ClosedProof
+        } else {
+            HeaderMode::Semantic
+        },
+    })
+}
+fn completion(
+    request: &Request<'_>,
+    owner: &Result<()>,
+    changed: bool,
+    observation: &Result<()>,
+    frames: Result<Option<&str>>,
+) -> Result<()> {
+    owner.as_ref().map_err(Clone::clone)?;
+    require(!changed, "component source changed during execution")?;
+    observation.as_ref().map_err(Clone::clone)?;
+    require(
+        matches!(
+            (request.header_mode, frames?),
+            (HeaderMode::Semantic, None) | (HeaderMode::ClosedProof, Some(_))
+        ),
+        "component proof scope or prepared frames mismatch",
+    )
+}
+fn finish(
+    request: &Request<'_>,
+    owner: &Result<()>,
+    changed: bool,
+    observation: &Result<()>,
+    frames: Result<Option<&str>>,
+    writer: &mut impl std::io::Write,
+) -> Result<()> {
+    completion(request, owner, changed, observation, frames.clone())?;
+    if let Some(frames) = frames? {
+        writer
+            .write_all(frames.as_bytes())
+            .map_err(|_| "header proof stdout write failed")?;
+        writer
+            .flush()
+            .map_err(|_| "header proof stdout flush failed")?;
+    }
+    Ok(())
+}
+pub fn native(root: &Path, kind: &str) -> Result<()> {
+    execute(root, request(EntryPoint::Native, kind)?)
+}
+pub fn run(root: &Path, kind: &str) -> Result<()> {
+    execute(root, request(EntryPoint::Component, kind)?)
+}
+fn execute(root: &Path, request: Request<'_>) -> Result<()> {
+    let kind = request.kind;
     require(
         (matches!(kind, "maintenance" | "runtime")
             || cfg!(all(target_os = "linux", target_arch = "x86_64")))
@@ -279,7 +348,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
         "archive" => native_archive::run(root, &dir, &mut report, &before),
         _ => header(root, &dir, &mut report),
     };
-    let proof_observation = if kind == "header" && result.is_ok() {
+    let proof_observation = if request.header_mode == HeaderMode::ClosedProof && result.is_ok() {
         match crate::header_proof::observe(root, &dir) {
             Ok(value) => {
                 report["header"]["proof_observation"] = value;
@@ -295,7 +364,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
     let changed = before["source_sha"] != after["source_sha"]
         || before["manifest_sha256"] != after["manifest_sha256"];
     report["source_changed"] = json!(changed);
-    let prepared = if kind == "header" {
+    let prepared = if request.header_mode == HeaderMode::ClosedProof {
         if result.is_ok() && !changed && proof_observation.is_ok() {
             crate::header_proof::prepare(root, &dir, &report).map(Some)
         } else {
@@ -305,36 +374,166 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
         Ok(None)
     };
     if kind == "header" {
+        report["requested_scope"] = json!(match request.header_mode {
+            HeaderMode::Semantic => "semantic-header-conformance",
+            HeaderMode::ClosedProof => "closed-header-proof-producer",
+        });
         report["execution_passed"] = json!(result.is_ok() && !changed);
+        report["retained_proof_complete"] = json!(false);
         report["proof_return"] = match &prepared {
             Ok(Some(value)) => value.summary.clone(),
+            Ok(None) => json!({"state":"not-requested","payload_exported":false}),
             _ => json!({"state":"retention-incomplete","payload_exported":false}),
         };
     }
-    if result.is_ok() && !changed && prepared.is_ok() {
+    let frames = prepared
+        .as_ref()
+        .map(|value| value.as_ref().map(|proof| proof.frames.as_str()))
+        .map_err(Clone::clone);
+    if completion(
+        &request,
+        &result,
+        changed,
+        &proof_observation,
+        frames.clone(),
+    )
+    .is_ok()
+    {
         report["status"] = json!("passed");
     }
     write_json(&dir.join("component.json"), &report)?;
     evidence::register(&dir, "Source-bound hosted component")?;
     evidence::emit_public_summary("Source-bound hosted component", &report)?;
-    result?;
-    require(!changed, "component source changed during execution")?;
-    proof_observation?;
-    if let Some(proof) = prepared? {
-        use std::io::Write;
-        let mut stdout = std::io::stdout().lock();
-        stdout
-            .write_all(proof.frames.as_bytes())
-            .map_err(|_| "header proof stdout write failed")?;
-        stdout
-            .flush()
-            .map_err(|_| "header proof stdout flush failed")?;
-    }
-    Ok(())
+    finish(
+        &request,
+        &result,
+        changed,
+        &proof_observation,
+        frames,
+        &mut std::io::stdout().lock(),
+    )
 }
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn fixed_header_entrypoints_select_distinct_required_scopes() {
+        let semantic = request(EntryPoint::Component, "header").unwrap();
+        let closed = request(EntryPoint::Native, "header").unwrap();
+        assert_eq!(semantic.kind, "header");
+        assert_eq!(semantic.header_mode, HeaderMode::Semantic);
+        assert_eq!(closed.kind, "header");
+        assert_eq!(closed.header_mode, HeaderMode::ClosedProof);
+        for kind in ["capture", "archive"] {
+            assert_eq!(
+                request(EntryPoint::Native, kind).unwrap().header_mode,
+                HeaderMode::Semantic
+            );
+        }
+        for kind in ["header --semantic", "header/closed", "../header"] {
+            assert!(request(EntryPoint::Component, kind).is_err());
+            assert!(request(EntryPoint::Native, kind).is_err());
+        }
+    }
+    #[test]
+    fn component_failures_never_export_prepared_header_bytes() {
+        for entry in [EntryPoint::Component, EntryPoint::Native] {
+            let selected = request(entry, "header").unwrap();
+            for failure in 0..4 {
+                let owner = if failure == 0 {
+                    Err("owner refused".into())
+                } else {
+                    Ok(())
+                };
+                let observation = if failure == 2 {
+                    Err("observation refused".into())
+                } else {
+                    Ok(())
+                };
+                let frames = if failure == 3 {
+                    Err("preparation refused".into())
+                } else if selected.header_mode == HeaderMode::ClosedProof {
+                    Ok(Some("prepared-byte-canary"))
+                } else {
+                    Ok(None)
+                };
+                let mut output = Vec::new();
+                assert!(
+                    finish(
+                        &selected,
+                        &owner,
+                        failure == 1,
+                        &observation,
+                        frames,
+                        &mut output
+                    )
+                    .is_err()
+                );
+                assert!(output.is_empty());
+            }
+        }
+    }
+    #[test]
+    fn semantic_header_has_no_frames_and_closed_producer_requires_successful_io() {
+        let semantic = request(EntryPoint::Component, "header").unwrap();
+        let closed = request(EntryPoint::Native, "header").unwrap();
+        let mut output = Vec::new();
+        assert!(finish(&semantic, &Ok(()), false, &Ok(()), Ok(None), &mut output).is_ok());
+        assert!(output.is_empty());
+        assert!(
+            finish(
+                &semantic,
+                &Ok(()),
+                false,
+                &Ok(()),
+                Ok(Some("unexpected-proof")),
+                &mut output
+            )
+            .is_err()
+        );
+        assert!(finish(&closed, &Ok(()), false, &Ok(()), Ok(None), &mut output).is_err());
+        assert!(output.is_empty());
+        let bytes = "prepared-frame-bytes\n";
+        assert!(
+            finish(
+                &closed,
+                &Ok(()),
+                false,
+                &Ok(()),
+                Ok(Some(bytes)),
+                &mut output
+            )
+            .is_ok()
+        );
+        assert_eq!(output, bytes.as_bytes());
+
+        struct BrokenOutput(bool);
+        impl std::io::Write for BrokenOutput {
+            fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+                if self.0 {
+                    Err(std::io::ErrorKind::BrokenPipe.into())
+                } else {
+                    Ok(bytes.len())
+                }
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                Err(std::io::ErrorKind::BrokenPipe.into())
+            }
+        }
+        for fail_write in [true, false] {
+            assert!(
+                finish(
+                    &closed,
+                    &Ok(()),
+                    false,
+                    &Ok(()),
+                    Ok(Some(bytes)),
+                    &mut BrokenOutput(fail_write)
+                )
+                .is_err()
+            );
+        }
+    }
     #[test]
     fn native_caller_accepts_only_the_owned_targets() {
         assert_eq!(native_target("capture").unwrap(), "capture");

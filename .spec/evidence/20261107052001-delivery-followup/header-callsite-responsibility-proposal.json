@@ -1,0 +1,76 @@
+{
+  "schema": "humanymous.delivery-header-callsite-proposal/1",
+  "status": "proposed-not-implemented",
+  "source_observed": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "actual_observation": {
+    "job": 128509489237,
+    "owner_install_generation_version_conformance_exit": 0,
+    "execution_passed": true,
+    "source_changed": false,
+    "first_failure": "header actual compiler profile refused",
+    "proof_return": "retention-incomplete",
+    "header_step_exit": 1,
+    "body_sha256": "f04362a14f40b0a74e6eab3cf7e9611818199aa0909139ff7f4822a57ce36134",
+    "limits": "No exact rejected compiler identity field inferred; individual original Header payloads not recovered"
+  },
+  "minimal_paths": [
+    "scripts/ci/delivery/src/components.rs",
+    ".spec/sot/delivery.sot.md",
+    ".spec/plan/20261107172649-delivery-closed-header-proof-return.plan.md"
+  ],
+  "wiring": [
+    {
+      "existing_entrypoint": "component header",
+      "mode": "Semantic",
+      "scope": "Required full-native C11/C++11 generated-header syntax/record-layout checks",
+      "requirements": [
+        "Same pinned generator and owning header_conformance commands/markers",
+        "Same real hosted Linux venue and exact source-before/after checks",
+        "Any owner/generator/source failure remains nonzero"
+      ],
+      "does_not_qualify": [
+        "Closed R3 compiler/profile/log proof",
+        "Original16 payload retention/reconstruction",
+        "Dynamic ABI, RAII, exceptions or full product"
+      ]
+    },
+    {
+      "existing_entrypoint": "native-component header",
+      "mode": "ClosedProof",
+      "scope": "Dedicated pinned header job producer",
+      "requirements": [
+        "Same semantic execution",
+        "Unchanged exact R3 compiler/argv/grammar/profile and GITHUB_JOB=header checks",
+        "Observe before original source-after capture; all16 payloads admitted before frame export",
+        "Actual buffered write/flush and successful exit required"
+      ],
+      "does_not_qualify": [
+        "Receiver completion based only on prepared buffer or final marker",
+        "NativeProof/DATA/authority credentials",
+        "Full product or release"
+      ]
+    }
+  ],
+  "mode_selection": "Private explicit callsite enum/descriptor; never infer from ambient job name and never add arbitrary caller mode/target",
+  "accounting": "Report requested scope, execution_passed and proof_return not-requested/prepared/incomplete. Semantic-only success leaves retained_proof_complete/full_product_qualified false. Closed-proof failure still fails its required producer scope.",
+  "retained_gate": {
+    "state": "pending",
+    "requirements": [
+      "Trusted official run/job/log/source association",
+      "Original16 byte-identical reconstruction under actual verified private parent",
+      "Completion receipt plus successful receiver return and retained original byte index"
+    ],
+    "current_gap": "Reusable ready.needs has no standalone retention dependency. Do not imply current job aggregation enforces this. Root must retain migration/shipping HOLD and select an explicit accepted readiness receipt/edge before claiming full migration; producer prepared is insufficient.",
+    "private_parent": "Current Windows parent refused; reviewed bootstrap/actual ordinary-actor storage proof remains required. No path/ACL repair or NativeProof substitution."
+  },
+  "tests_proposed": [
+    "Fixed CLI dispatch descriptors distinguish full semantic versus standalone closed mode",
+    "Semantic owner/source failure remains failure",
+    "Semantic mode never calls proof observe/prepare or emits frames",
+    "Incomplete closed proof remains failure with no false retained/full flag",
+    "Capture/archive routes and workflow/catalog identities stay unchanged"
+  ],
+  "external_actions": [],
+  "compiler_executed": false,
+  "structural_changes": []
+}

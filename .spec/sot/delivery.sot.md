@@ -1529,3 +1529,27 @@ This is input binding, not verification of complete dependency licensing or
 proof that an image was built. Header canonical source indexing uses the same
 path vocabulary; fresh observed path counts and manifest hashes change, while
 historical snapshots, indexes and receipts remain immutable.
+
+### Header semantic and retained-proof callsites
+
+The existing component header entrypoint requests actual generated C11/C++11
+semantic conformance only. It preserves the owning generator/conformance recipe,
+source checks and nonzero result for any semantic failure. It neither requests
+nor qualifies the closed R3 retained-proof profile and exports no proof frames.
+
+The existing native-component header entrypoint requests the standalone closed
+producer in addition to semantic execution. The mode is selected by a fixed
+private callsite descriptor, never an ambient job-name inference. Exact compiler,
+argv, grammar, symbolic header job,16-payload admission, observe-before-original
+source-after ordering and successful frame write/flush remain required. A
+prepared buffer is not successful receiver reconstruction.
+
+Reports identify the requested scope and retain execution_passed separately from
+proof_return. Semantic-only completion records not-requested and never marks
+retained_proof_complete or full_product_qualified true. Closed proof errors still
+fail their required producer scope. Full retained Header completion separately
+requires official run/job/log/source binding and original-byte reconstruction
+under an actually verified private parent. Existing reusable ready dependencies
+do not supply that receipt; the migration/shipping hold remains until Root
+accepts and measures the distinct retention-readiness integration. No raw receipt
+or immutable profile is rewritten to reclassify an old failed run.
