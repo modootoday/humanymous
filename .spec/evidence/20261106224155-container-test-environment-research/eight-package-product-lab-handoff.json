@@ -1,0 +1,77 @@
+{
+  "schema": "humanymous.product-lab-eight-package-handoff/1",
+  "responsibility": "L5 Product Isolation and Docker E2E",
+  "provider": "codex",
+  "session": "rust-product-lab-goal",
+  "baseline": "Root reports user explicitly approved eight-public-package baseline v0; Root alone sequences per-slice integration and branch synchronization.",
+  "source_paths": [
+    "deployments/lab/**",
+    "test/lab/**",
+    ".spec/sot/container-test-environments.sot.md",
+    ".spec/plan/20261106224156-container-test-environments.plan.md",
+    ".spec/evidence/20261106224155-container-test-environment-research/**"
+  ],
+  "owned_tracked_input_snapshot": {
+    "private_evidence": "evidence:root/20261107190848",
+    "file": "eight-package-handoff-owned-inputs.json",
+    "sha256": "f0b422e5fc5a1f3f97b4c47b859ba92b64a41fe893538eb266cc124ab65a0f3e",
+    "scope": "Tracked owned deployment/lab inputs only; not full transitive/tool/read closure or an immutable integration qualification.",
+    "target_node_modules_git_excluded": true,
+    "files": 88
+  },
+  "dirty_at_capture": {
+    "preexisting_evidence_path": ".spec/evidence/20261106224155-container-test-environment-research/browser-expectations-49394e38-checks.json",
+    "handling": "Pre-existing dirty bytes not authored/staged by this task; preserve and review separately.",
+    "source_paths": []
+  },
+  "leases": {
+    "path_move_in_flight": 0,
+    "watch": 0,
+    "target": 0,
+    "work_lane": "product-lab retained; no source move or integration delegation beyond a future exact Root handoff",
+    "compiler": 0,
+    "runtime_process": 0,
+    "git_ops": 0
+  },
+  "current_dependency_seams": {
+    "runtime_pilot": [
+      "humanymous-runtime",
+      "humanymous-integrity",
+      "humanymous-audit",
+      "humanymous-attacker",
+      "humanymous-defender",
+      "humanymous-test-support",
+      "humanymous feature adapter-go default-features=false"
+    ],
+    "lab_runner": [
+      "humanymous-test-support",
+      "humanymous-audit"
+    ]
+  },
+  "hazards": [
+    "Both non-published lab binary packages need an explicit Root-designated final home; no unilateral helper crate or compatibility shim. Keep attacker/defender and Go compiler fixtures out of production default/runtime initialization.",
+    "Both lab contexts forbid unsafe. Preserve this boundary when consuming platform/native code; do not broaden unsafe or duplicate the shared process owner. CA-LIFETIME-01 capture/deadline limitations remain unqualified.",
+    "Public humanymous::adapters::go exports original Configuration/Rejection/Case/scenario identities. Preserve SDK-free explicit admission and the selected feature; do not silently enable host SDK/provider dependencies.",
+    "Dockerfiles/Compose reference exact package, binary and source paths. Coordinate all callers, source allowlist, feature gates and policy together; never compile a live mixed migration tree.",
+    "Collector fixture and selected test path/inventory67/1/66, hardcoded reviewed source SHA c61 and include_bytes paths are coupled. Fail closed on drift; update only with explicit source review and new proof, never a wildcard fallback.",
+    "Private actor21 fields, public outcome13 fields, finite diagnostic catalog and owned failure framing are one contract. Never expose raw headers/panic bodies or reinterpret source-prefix false as attestation.",
+    "Keep witness, fail-closed, zero-origin, no-motor/speed A11y and frozen scoring unchanged. Four wire counter keys represent attempts, not completed effects or independent implementation attestation.",
+    "Historical source-specific evidence, old paths/names and unrecovered private tuple limits must stay unchanged. No old Go8 or component unit result qualifies new package topology."
+  ],
+  "remaining_goal": {
+    "browser": "Original e70/run42402268161 assertion unknown. Observer-only bb delta applies cleanly to e70, not yet executed as that isolated candidate. Core c66/wire/post-drain diagnostic corrections are separate.",
+    "go8": "Current facade sourcea19/run42406688473 actual8/40pass; canonical17d6c08e and own joine0a8458e; no rerun required for unchanged source",
+    "generic813": "Source306 measured72Labpass; catalog26/19evaluated/7unsupported/0errors; full false",
+    "existing_ci": "CI sole monitors42407744891/source9586 with corrected browser successor128512402634; Lab must not duplicate watch or infer old cause from repaired result."
+  },
+  "required_checks_after_exact_root_handoff": [
+    "Fresh source/selected inputs and actual target/process lease; never inherit old artifact or incomplete source closure.",
+    "Current pre-migration commands: cargo test --locked -p humanymous-lab-runner; scoped fmt/check/strictClippy. Root must provide the replacement package/bin/features after consolidation.",
+    "Actual GNU/Linux runtime actor all-target compile and strictClippy; Windows cfg-not-unix is unsupported/partial authority. Unit and non-default feature matrices remain distinct.",
+    "Collector wasm32 compile, exact selected inventory and actual isolated browser pilot. Preserve local65537 refusal versus real65536 traversal and source-derived request counts.",
+    "Actual Docker Go8 and browser B/G isolation, fixed wire observations, witness/ACK/audit-before-effect/drain/cleanup/source closure. New paths/names require new source-specific tuples.",
+    "Retain full-required exit2/9unavailable, generic7unsupported, native/human/AT/CVE/full/release missing gates; no blanket exit2 waiver or full qualification.",
+    "Spec check before attributed owned-path commits; globally serialized Git. No publishing, main merge or independent ref synchronization."
+  ],
+  "next_authorized_step": "Await Root exact source/path/hash/API slice freeze or explicit non-topological observer construction handoff; continue only non-overlapping current-path analysis/evidence."
+}

@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T19:58:05Z
+updated: 2026-11-07T20:16:50Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -37,6 +37,8 @@ files:
   - {path: hosted-go-a19e3802-success-join.json, sha256: 425247c508f09c9f3d8e4a62d5ef8940a0a76379e76a99652d88db2e0dd8fb38, bytes: 2511, store: repo}
   - {path: source-execution-index.json, sha256: 0a01d10375b2ad56ce1f2f845aef4593ae2046540b77de8dd0d42da664de7a4f, bytes: 6256, store: repo}
   - {path: framing-bb7076aa-a19e3802-checks.json, sha256: 91cd6ebe72032bfea580d2006fa8bc85c490a1b212ea4343e58970704e4efbc6, bytes: 2129, store: repo}
+  - {path: eight-package-product-lab-handoff.json, sha256: ab3e99c90ea2783823516be7d124ed943609f4a7496874ab86419c76d18d19cf, bytes: 5865, store: repo}
+  - {path: core-slice-01-client-consumer.json, sha256: d3c35979f4e7fe31eb6a0f225fc28bbeff60a53c56525c6f22c06619fd0fd2ad, bytes: 595, store: repo}
 ---
 
 # Container test environment research

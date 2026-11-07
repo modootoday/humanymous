@@ -1,0 +1,12 @@
+{
+  "schema": "humanymous.product-lab-core-consumer/1",
+  "path": "test/lab/runtime/src/client.rs",
+  "before_sha256": "a025959e257e2f1b10658e944e6eaf0f456ef58f85b1c1d61ee4f53b4009e289",
+  "after_sha256": "34c6252b87be3008a7b727cf415e8d9ab2b33e4ccd911658c1fba2d75d0dcbda",
+  "change": "Mechanical import humanymous_integrity::request to humanymous_core::integrity::request",
+  "behavior_changed": false,
+  "compiler_run": false,
+  "compiler_reason": "Root workspace-coherence gate; no compiler allocation",
+  "manifests_owned_by": "Root",
+  "historical_browser_failure_still_unresolved": true
+}
