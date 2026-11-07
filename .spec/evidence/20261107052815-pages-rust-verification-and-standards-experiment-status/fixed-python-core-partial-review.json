@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.pages-source-review-batch/1",
   "fixed_commit": "269607366e4b2e37b47a974595b406b66642caae",
-  "scope": "Python partial batch: thirteen fully read files only; not all26 Python task files; observations have per-file chronology",
+  "scope": "All26 files/3604 lines from fixed26960736 Python task list fully read; per-file current observations are chronological, not whole-current acceptance",
   "files": [
     {
       "path": "crates/python-adapter/INTEGRATION.md",
@@ -119,13 +119,130 @@
       "notes": "Strict duplicate-key JSON plus bounded8192-byte rows, allowed framework/group/fields, unique framework/group/control tuples, exact totals14rows/28cases and one8-pass footer. Discovery checks exact eight names. Does not independently authenticate producer truth, process status or source artifact lineage; controller has separate exit/manifest obligations. Included fixture test assertions are source-only here.",
       "current_sha256_at_observation": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45",
       "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_host.rs",
+      "fixed_sha256": "05ed1d66e8f33cec1e18fdefd3c3b2db5f4948235a75f26747edb39acf11db68",
+      "fixed_lines": 203,
+      "full_read": true,
+      "notes": "Direct child kill/wait only, no process-tree containment. WSGI can spawn without lifecycle refusal; ASGI refuses before server identity/spawn. Private temporary directory removed on Drop, server stderr private but file not capped here, stdin write synchronous. Ephemeral port reservation released before server spawn; connect readiness15s is not authenticated application readiness. Waitress idle timeout not a total upload deadline.",
+      "current_sha256_at_observation": "05ed1d66e8f33cec1e18fdefd3c3b2db5f4948235a75f26747edb39acf11db68",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_authority.rs",
+      "fixed_sha256": "f0e85bdedb469f2e40a919bb51b27923a3c721597e8a2f49cfb680e25c49a3ab",
+      "fixed_lines": 162,
+      "full_read": true,
+      "notes": "Real in-process authority/Unix listener/WAL with explicitly synthetic evidence. Gated decision has matched connected controls; exact fresh empty WAL identity/bytes preserved instead of reopening empty history. Listener abort joined then runtime shutdown timeout; this is not independent audit custody or whole task process-tree proof.",
+      "current_sha256_at_observation": "f0e85bdedb469f2e40a919bb51b27923a3c721597e8a2f49cfb680e25c49a3ab",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/framework_server_cases.rs",
+      "fixed_sha256": "ea9d542c228cabf614487fd1d5650994efc850802bb15b5d6031b5accdc9b93d",
+      "fixed_lines": 419,
+      "full_read": true,
+      "notes": "419 lines fully read across contiguous chunks. Six actual groups per framework: production non-ALLOW one audit/no origin; synthetic ALLOW binary replay/two cookies/hash/effect then four negatives; dependency down3; incomplete body2 idle/abort; matched disconnect versus connected control; accepted private0600 IPC timeout. WSGI28/ASGI42 are planned denominators. Effect hash/receipt is fixture observation, not business transaction or real browser witness. Some failure statuses permit500; no challenge UX/WCAG qualification.",
+      "current_sha256_at_observation": "ea9d542c228cabf614487fd1d5650994efc850802bb15b5d6031b5accdc9b93d",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/src/hosted.rs",
+      "fixed_sha256": "2a1a1df10f6f2596a41e486e6fa8811c8bf5e51fb9dfd3b7795b8f395b15f77e",
+      "fixed_lines": 313,
+      "full_read": true,
+      "notes": "313 lines fully read in contiguous chunks. Three ignored groups7 cases exercise actual framework object invocation only: dependency-unavailable WSGI2/ASGI3 and lifespan2. Native Rust callbacks/no script strings. Loop stop timer does not prove cancellation/drain of all pending tasks; no actual network server, production ALLOW or wheel install result.",
+      "current_sha256_at_observation": "2a1a1df10f6f2596a41e486e6fa8811c8bf5e51fb9dfd3b7795b8f395b15f77e",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/src/pilot.rs",
+      "fixed_sha256": "5f67c286ee834b9ddf8b33e951fd137e9ec4cc892689d4332800925320db0777",
+      "fixed_lines": 165,
+      "full_read": true,
+      "notes": "165 full lines. Host-pilot factory reads bounded64KiB stdin map, preserves configuration as original JSON string for strict downstream parser, requires absolute effect path but does not itself prove path ownership or bound receipt file growth. Real Flask/Django views append body length/hash before201/two cookies; no script generation.",
+      "current_sha256_at_observation": "5f67c286ee834b9ddf8b33e951fd137e9ec4cc892689d4332800925320db0777",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/src/pilot_asgi.rs",
+      "fixed_sha256": "4e8fa39fc083e5df8c690f3a2fea2dcdd044cb548ba3a51b8ec03cff25ff436d",
+      "fixed_lines": 135,
+      "full_read": true,
+      "notes": "135 full lines. Host-pilot factory mounts native ASGI echo for Starlette/FastAPI, standard Django ASGI native view. Bounded1MiB origin body and minimized effect receipts; public routing/middleware boundary only, not FastAPI parameter validation/DI. Factory source not import/runtime proof.",
+      "current_sha256_at_observation": "4e8fa39fc083e5df8c690f3a2fea2dcdd044cb548ba3a51b8ec03cff25ff436d",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_receipt_actual.json",
+      "fixed_sha256": "35a6cf047068deaf0c33db08181662e85ddc15f1142f6fb17cd27994132d21e1",
+      "fixed_lines": 129,
+      "full_read": true,
+      "notes": "129 full lines. Historical allowlisted14 rows/28 cases bound7842b6a8 and original raw-log hash. Fixture explicitly says not a new execution receipt; current validator accepting its data cannot qualify new server bytes.",
+      "current_sha256_at_observation": "35a6cf047068deaf0c33db08181662e85ddc15f1142f6fb17cd27994132d21e1",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/Cargo.toml",
+      "fixed_sha256": "9162e99c6636204fe6b7febaf1a96cdf3dbf1aa0cecc7fd5efdbeef41d1aac71",
+      "fixed_lines": 44,
+      "full_read": true,
+      "notes": "44 full lines. Native PyO3 and async runtime optional, empty default features. Host-pilot, extension-module and package-tool enable native; default build/tests do not compile or qualify native callbacks. Package binary requires package-tool.",
+      "current_sha256_at_observation": "9162e99c6636204fe6b7febaf1a96cdf3dbf1aa0cecc7fd5efdbeef41d1aac71",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/src/lib.rs",
+      "fixed_sha256": "f86d5db9f2ea71347d916e60822d8da5ba281f1e1c6f42ad0998cd34944cfded",
+      "fixed_lines": 46,
+      "full_read": true,
+      "notes": "46 full lines. Native-only callable exports; host-pilot-only factories and test module. Capabilities expose normalized profiles and empty release-qualified tuples; declared caps are not measured runtime qualification.",
+      "current_sha256_at_observation": "f86d5db9f2ea71347d916e60822d8da5ba281f1e1c6f42ad0998cd34944cfded",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "adapters/python/pilot-contract.json",
+      "fixed_sha256": "17765659c6b9960bfa7fb551843b7a2c6db4bf1e6ef3d0520bb886b8d4854c72",
+      "fixed_lines": 31,
+      "full_read": true,
+      "notes": "31 full lines. Three groups7 required native-object cases and exact source/artifact/interpreter/dependency bindings. not_run, no actual network server or installed-wheel proof. Required zero ignored/filtered is obligation, not result.",
+      "current_sha256_at_observation": "6e28056e27311f6962b7f7772c86e1c3208f951621834d2792275a5d6e8f9b3d",
+      "current_bytes_match_fixed": false
+    },
+    {
+      "path": "adapters/python/asgi-server-pilot-contract.json",
+      "fixed_sha256": "f989f7ba7b44bc4d51e147ef054bb83e5ae6e80a32f6f85daf34ae1af1b20e75",
+      "fixed_lines": 30,
+      "full_read": true,
+      "notes": "30 full lines. Source-only lifecycle refusal,8 required harness tests/42 planned cases21rows,0 executed. Candidate Uvicorn Linux CPython3.12 not installed; lifespan on only Starlette/FastAPI, off Django. Preserve current check/failedClippy chronology, no release tuple.",
+      "current_sha256_at_observation": "75b7b5d77702d38d04943810caf373bafd66bd3dedb02c375add714bfda00483",
+      "current_bytes_match_fixed": false
+    },
+    {
+      "path": "adapters/python/waitress-requirement.txt",
+      "fixed_sha256": "172356c34e37fb2695252aa29c7f22c9fcf895d425bffbb72844c567c517a237",
+      "fixed_lines": 4,
+      "full_read": true,
+      "notes": "4 full lines. Official wheel version/hash declaration for separately allocated fixture. Reading pin is not installation, dependency audit or current actual runtime proof.",
+      "current_sha256_at_observation": "172356c34e37fb2695252aa29c7f22c9fcf895d425bffbb72844c567c517a237",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "adapters/python/uvicorn-requirement.txt",
+      "fixed_sha256": "83de60f2e4dada27dc82eef238e455e400a919c9a9ed967f8bab26d9551bc24b",
+      "fixed_lines": 6,
+      "full_read": true,
+      "notes": "6 full lines. Uvicorn/h11/click exact candidate wheel hashes; no installation or audit implied. No external metadata fetched or validated during this source review.",
+      "current_sha256_at_observation": "83de60f2e4dada27dc82eef238e455e400a919c9a9ed967f8bab26d9551bc24b",
+      "current_bytes_match_fixed": true
     }
   ],
-  "full_read_files": 13,
-  "full_read_lines": 1917,
+  "full_read_files": 26,
+  "full_read_lines": 3604,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "source_review_receipts_renewed": false,
   "runtime_or_release_qualification": false,
-  "current_source_acceptance": "not accepted by this partial batch; recheck current hashes and complete remaining source first"
+  "current_source_acceptance": "No receipts renewed: current changed files require full current-source review, and matching files require final rehash at acceptance. No new compilation/import/server/wheel execution."
 }
