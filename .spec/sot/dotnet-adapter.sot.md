@@ -14,6 +14,14 @@ rel:
 
 ## Approved generic ABI-only startup flag (2026-11-07)
 
+The ABI owner's first actual FDD/JIT restore succeeded but managed build failed
+with two SYSLIB1051 aggregate marshalling diagnostics on GenericAbi.Invoke. No
+probe or server ran; that failed attempt remains in its private ABI bundle.
+Program.cs now declares assembly DisableRuntimeMarshalling as required by the
+source generator, plus the same safe assembly-directory search policy as the
+binding assembly. This corrective source is not compiled/run here; the ABI owner
+must rerun a separate attempt after the exact source checkpoint.
+
 Root explicitly requested a minimal startup continuation in the existing approved
 Program.cs only. generic_probe_only=true requires generic_probe=true and refuses
 configuration; after GenericAbi.Probe actually succeeds and its existing receipt

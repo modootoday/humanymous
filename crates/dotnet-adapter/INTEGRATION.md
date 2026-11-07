@@ -4,6 +4,13 @@
 
 ### Separate ABI-only managed startup, source not yet compiled/run
 
+ABI owner actual attempt1 restored successfully but build failed with two
+SYSLIB1051 diagnostics on GenericAbi.Invoke aggregate arguments/results. Its
+immutable logs remain failure evidence; no probe/server executed. Corrective
+Program.cs assembly attributes disable runtime marshalling and use the same
+safe assembly-directory DLL search policy as NativeBinding.cs. Rebuild in a
+new attempt from the corrective source checkpoint; do not overwrite attempt1.
+
 Root authorized the minimum generic_probe_only flag in the existing approved
 Program.cs. Send exactly {"generic_probe":true,"generic_probe_only":true} on
 private stdin, with no configuration. Startup rejects duplicate/unknown fields,

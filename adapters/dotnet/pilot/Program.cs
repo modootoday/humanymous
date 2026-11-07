@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+[assembly: DisableRuntimeMarshalling]
+[assembly: DefaultDllImportSearchPaths(DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.SafeDirectories)]
+
 // Test host only. All HTTP clients, authority provisioning and assertions belong to the Rust runner.
 internal static class Program
 {
