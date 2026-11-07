@@ -14,7 +14,9 @@ rel:
 
 Version0.1 experimental target; no Apache tuple is currently qualified.
 Authored implementation/tests are Rust1.99.1 edition2024. Native ABI unsafe is
-not approved. Safe lifecycle implementation does not establish module support.
+approved only for a separate reviewed native crate by root on2026-11-07; the
+safe lifecycle crate retains unsafe-forbid. ABI-SAFETY.md defines per-operation
+preconditions. Safe lifecycle implementation does not establish module support.
 
 ## Required lifetime contract
 
@@ -71,3 +73,14 @@ runner integration are required dependencies, not implicit waivers.
 
 References: https://httpd.apache.org/docs/2.4/developer/request.html and
 https://httpd.apache.org/docs/2.4/developer/modguide.html.
+
+## Native implementation checkpoint
+
+Bounded body replay supports READBYTES, GETLINE and SPECULATIVE semantics without
+copying the complete body or releasing admission. It remains an input mechanism,
+never a grant. Actual filter installation must follow consumed authority ALLOW.
+Nine pure tests are authored; only the earlier six have a root-reported pass.
+The new three replay tests have not run. Root owns the current Clippy rerun.
+Native source inputs are pinned in adapters/apache/upstream-lock.json using
+official release checksum pages and observed peeled Git tags. Configured header
+closure, builder/clang identity and actual source-bound hosted results are absent.

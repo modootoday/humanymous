@@ -34,5 +34,36 @@ six pure tests are now authored. Cleanup signal revocation is unit-contract only
 not actual APR cleanup qualification. Existing workspace/profile/slot remains
 absent on direct current-source reinspection; no Cargo task was started.
 No dependency lock, workspace, workflow or public docs changes are owned here.
-Native ABI is blocked pending explicit exception approval; independent safe Rust
-work continues. No foreign executable source/string/template workaround.
+Root now approved narrowly isolated native ABI, preserving safe-crate forbid.
+ABI-SAFETY.md and upstream-lock.json record scope, host preconditions and source
+pins before root graph integration. Generated configured closure/tool hashes
+remain hosted not_run; no foreign executable source/string/template workaround.
+User explicitly resumed this task to finish Clippy, coordinate ABI/slots and
+continue through native implementation and actual hosted pilot. Goal API still
+reports blocked; it offers no agent-side resume operation. Work proceeds under
+the explicit resume instruction without fabricating a goal status change.
+Initial6unit pass is root-reported, exact receipt pending; replay3units unrun.
+
+## Native source follow-through after explicit resume
+
+Native source now contains child-only private configuration acquisition, generated
+module/command export, initial body guard, quick/fixup drift checks and final
+handler consumption of shared BoundResponse. Replay callback bridges bounded
+READBYTES/GETLINE/SPECULATIVE input into APR brigades; request-pool callbacks own
+cleanup Boxes. Exact callback-thread identity is checked before context access.
+The initial tuple is a dedicated HTTP/1 listener with explicit Content-Length,
+no mod_cache, no subrequests/internal redirects and no virtualhost merge support.
+Socket read timeout is capped by the original pending budget and restored on
+scope exit; restoration failure marks the connection aborted.
+
+This source has only been rustfmt/diff/spec checked, not compiled or executed.
+There is deliberately no native Cargo manifest until root's graph window.
+Generated ABI spelling/layout, hook phase behavior, proxy body replay, socket
+timeouts, cancellation/reload and actual origin effects remain unproven. Source
+review identified and fixed early response consumption: the authoritative ticket
+now survives until final handler checks, preserving its shorter expiry.
+
+Root's live integration chat remains active (observed via wait_threads snapshot),
+but it has not assigned a Cargo slot or approved native dependency registration.
+User-authorized coordination requests are queued there; no local process/IPC/
+Docker/native build was substituted for the required hosted execution.
