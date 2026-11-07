@@ -427,7 +427,6 @@ struct VerifiedWitnessCapability;
 struct ObserverWitnessLease;
 struct VerifiedManagementEndpoint;
 struct SharedSealedAudit;
-struct RuntimeActivationEvidence;
 struct VerifiedServiceStopReceipt;
 // Authority owns validated scope, protocol and secret/lifetime guards.
 struct BootstrapBinding;
@@ -462,9 +461,9 @@ AuthenticatedObserver::provision_once(self, pending: PendingObserverListener,
     cancellation: Cancellation)
     -> Future<Result<ServiceProvisionedObserver, BootstrapError>>;
 ServiceProvisionedObserver::observer_receipt(&self) -> &ObserverCredentialReceipt;
-ServiceProvisionedObserver::announce_ready(self,
-    runtime_activation_evidence: RuntimeActivationEvidence)
-    -> Future<Result<ServiceObserverLease, BootstrapError>>;
+// Root accepted Ready composition in Runtime; there is no Authority method
+// accepting a Runtime-private evidence type or caller-provided activation bool.
+// The consuming PreparedObserverSession/transport transfer is pending joint review.
 ObserverProvisionedClient::wait_service_ready(self, cancellation: Cancellation)
     -> Future<Result<ObserverClientLease, BootstrapError>>;
 ServiceObserverLease::revoked(&self) -> Future<()>;
@@ -681,10 +680,19 @@ readiness proof; its exact bounded return type and call sites require review.
 Previously accepted/partial kernel effects remain ambiguous after revocation;
 cancel/revoke their credential, never claim that bytes cannot arrive later.
 
-Runtime privately constructs its actual listener/readiness evidence; native proof,
+Root accepted Ready COMPOSITION in Runtime. Runtime privately constructs its
+actual listener/readiness evidence; native proof,
 durable audit and observer receipt are independently required. Authority cannot
-import a Runtime proof type or accept activate(true). The exact sealed activation
-adapter/evidence boundary remains P0 for joint review; these ownership rules do
+import a Runtime proof type or accept activate(true). Proposed consuming interface:
+Authority transfers PreparedObserverSession (actual native publication/W/receipt,
+same gate and restricted bounded transport), never a synthetic Ready proof.
+Runtime-private ServiceHost::activate_observed consumes that session and actual
+owned listeners/capture/TLS/audit resources into RunningObservedService. Runtime
+privately creates RuntimeReadyReceipt and emits ServiceReady only after gated
+activation; that receipt never crosses back into Authority. Exact consuming types,
+transport ownership, failure retention and revocation races remain P0 joint review;
+this direction does not approve a native AcceptedObserverEpoch producer.
+The exact sealed activation adapter/evidence boundary remains P0; these rules do
 not fabricate an implemented constructor. Expensive checks/audit happen outside
 the gate, followed by final epoch/deadline/native-liveness validity at bounded
 activation acceptance. A revoked epoch cannot be activated after an await.

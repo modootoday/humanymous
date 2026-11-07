@@ -682,3 +682,47 @@ Proposal SHA2566ebd5cbcbb65befade9da1bdfe92bbbda3f7fab0576482d36cbd3a7372292645
 was sent to root/native/runtime for independent review. Required race/Drop/partial
 write/blocked-worker negative gates are listed. No channel/gate implementation,
 feature edge or runtime execution has been performed in this checkpoint.
+
+## Concrete independent expiry slice and Ready interface decision request
+
+Literal authority Rust was unchanged before this slice; historical frozen hosted
+813 and current local217-input/13pure+13native receipts do not cover new source.
+Authored private BoundResponse::consume_at(wall, monotonic), called by existing
+public consume using real clocks, with no new public constructor/proof. Added
+one deterministic independent authority expiry test: request deadline6000 and
+live monotonic budget cannot extend earlier authority expiry5000;4999 accepts,
+5000/5001 refuse authority_expired. No sleeps, production epoch or parent trust
+fabricated. Scoped fmt passed; compile/unit/Clippy NOT_RUN pending allocation.
+
+Concrete Ready interface decision sent to root/runtime: proposed Authority
+announce_ready(RuntimeActivationEvidence) cannot seal a Runtime-private proof
+without reverse dependency or a forgeable external trait. Recommend moving Ready
+COMPOSITION into Runtime. Native-security must produce opaque AcceptedObserverEpoch
+with actual pins and owned cancellation/join; Authority consumes it plus verified W
+into PreparedObserverSession with receipt, same EffectGate and restricted bounded
+transport. Runtime-private ServiceHost::activate_observed(self, pending) consumes
+actual bound listener/capture/TLS/audit resources into RunningObservedService;
+Runtime privately creates RuntimeReadyReceipt and emits ServiceReady under the
+same gate, never passes that proof back into Authority. No public activate(bool),
+parentUnverified conversion or callback identity proof. Exact transport ownership,
+phase and native producer constructors require joint API decision before code.
+This is a concrete proposed interface dependency, not an implemented proof source.
+
+## Independent expiry actual warm validation and accepted Ready direction
+
+Root accepted Ready composition in Runtime as architecture direction only. Removed
+the draft Authority announce_ready(RuntimeActivationEvidence) reverse-proof API;
+exact consuming session/transport/failure-retention and race types remain pending
+joint acceptance. Native AcceptedObserverEpoch producer is not approved or present.
+
+Root allocated A warm pure-only validation. At commit81percent/free31.92GiB,
+locked/offline jobs1/inc0 target/validation-authority ran library14passed,
+0failed/ignored/filtered, all-target check0, strict Clippy0, scoped fmt0. Independent
+expiry named case passed. Source is literal base HEAD plus client.rs overlay
+SHA2560e7c0d7ede66b79ce018143df79ea9f15a053c14a333ae7328f38e03b72fcd4c.
+Real tree and resolved metadata bound95packages and4590source/registry/config
+inputs, all unchanged before/after. Raw patch/snapshots/logs attached privately;
+public independent-expiry.json binds scope and hashes. Warm Rust compilation
+9.61s; no SDK/native cold graph, no actual handler/native/SCM/account execution.
+Slot returned terminal; no owned validation process remains. Historical IPC proof
+is not silently extended to this new client source; fresh hosted remains NOT_RUN.

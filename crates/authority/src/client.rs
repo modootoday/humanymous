@@ -60,8 +60,10 @@ impl BoundResponse {
     }
     /// Consume once, rejecting wall rollback and monotonic or authority expiry.
     pub fn consume(self) -> Result<Verdict, Rejection> {
-        let now = crate::now_ms()?;
-        if now < self.received || now >= self.expires || Instant::now() >= self.until {
+        self.consume_at(crate::now_ms()?, Instant::now())
+    }
+    fn consume_at(self, now: u64, monotonic: Instant) -> Result<Verdict, Rejection> {
+        if now < self.received || now >= self.expires || monotonic >= self.until {
             return Err(Rejection::new(503, "authority_expired"));
         }
         Ok(self.verdict)
@@ -221,6 +223,32 @@ mod tests {
             )
             .is_err()
         );
+    }
+    #[test]
+    fn authority_expiry_is_independent_of_request_and_monotonic_budgets() {
+        let monotonic = Instant::now();
+        let bytes = serde_json::to_vec(&reply()).unwrap();
+        // The request permits until6000 and the local transport budget remains
+        // live; neither can extend the authority's earlier5000 expiry.
+        for (wall, accepted) in [(4999, true), (5000, false), (5001, false)] {
+            let response = bound(
+                &bytes,
+                &expected(),
+                1000,
+                1000,
+                monotonic + Duration::from_secs(60),
+            )
+            .unwrap();
+            assert_eq!(response.expires(), 5000);
+            let result = response.consume_at(wall, monotonic);
+            if accepted {
+                assert_eq!(result.unwrap(), Verdict::Allow);
+            } else {
+                let error = result.unwrap_err();
+                assert_eq!(error.status, 503);
+                assert_eq!(error.code, "authority_expired");
+            }
+        }
     }
     #[test]
     fn consuming_rechecks_authority_and_monotonic_expiry() {

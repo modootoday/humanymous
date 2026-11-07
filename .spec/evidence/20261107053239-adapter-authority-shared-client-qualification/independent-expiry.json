@@ -1,0 +1,71 @@
+{
+  "schema": "humanymous.authority.independent-expiry-validation/1",
+  "base_head": "9251376f99dba1fbe36af4bb2908ed5e39dd6047",
+  "overlay": "crates/authority/src/client.rs",
+  "overlay_sha256": "0e7c0d7ede66b79ce018143df79ea9f15a053c14a333ae7328f38e03b72fcd4c",
+  "venue": "local Windows x86_64-pc-windows-msvc rustc1.99.1",
+  "allocation": "A warm jobs1 incremental0 target/validation-authority locked offline",
+  "admission": {
+    "free_physical_gib": 31.92,
+    "commit_percent": 81
+  },
+  "resolved_packages": 95,
+  "source_registry_config_inputs": 4590,
+  "changed_inputs": [],
+  "library": {
+    "failed": 0,
+    "filtered": 0,
+    "passed": 14,
+    "ignored": 0,
+    "exit": 0
+  },
+  "check_all_targets_exit": 0,
+  "clippy_all_targets_exit": 0,
+  "fmt_scoped_exit": 0,
+  "new_case": "client::tests::authority_expiry_is_independent_of_request_and_monotonic_budgets",
+  "invariant": "request deadline6000/live monotonic budget do not extend authority expiry5000;4999accepted,5000/5001refused",
+  "limits": [
+    "private deterministic clocks; no production epoch or Ready proof minted",
+    "no actual IPC/native/SCM/account execution",
+    "prior IPC receipt does not cover this new source",
+    "full source-bound hosted verification remains NOT_RUN"
+  ],
+  "raw": [
+    {
+      "name": "expiry-tree.log",
+      "sha256": "bb156d5b59481ed1ab92a730b3da063ae87c0b471e392348771de282da980143"
+    },
+    {
+      "name": "expiry-metadata.json",
+      "sha256": "c8a7e495d0b31c6bf3064268e97b86c3678ab3b246bab12ad4565daaa268422f"
+    },
+    {
+      "name": "expiry-before.json",
+      "sha256": "28a7237e612da3ac8ca9ca79047e4dede484126a750e397c6c98260cc24d8133"
+    },
+    {
+      "name": "expiry-after.json",
+      "sha256": "afe6cb2d93cd20d46a113ca549d54ba0f3eaa9b63a11914a6fb660bb6224781a"
+    },
+    {
+      "name": "expiry-source.patch",
+      "sha256": "59748c2a76862eca02073ef35805c45c1c2aa90330758aaae74d29465de08b7e"
+    },
+    {
+      "name": "expiry-lib.log",
+      "sha256": "6200d361e0ed39302fcd6afe6b72e19754e9d8f49c478b0c3fdb7556060ed60e"
+    },
+    {
+      "name": "expiry-check.log",
+      "sha256": "95d4ce68d47252c4b6a1a48be161a3de8bc24340f037bd7c138f9b8f201430f2"
+    },
+    {
+      "name": "expiry-clippy.log",
+      "sha256": "9692a20d1e0ac4e7c85dcd02b4fa761315268364e9fe76f40d294921d3384a49"
+    },
+    {
+      "name": "expiry-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
