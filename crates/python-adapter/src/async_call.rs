@@ -197,10 +197,13 @@ impl Drop for Guard {
         if self.complete {
             return;
         }
+        // Best-effort cancellation, not bounded or nonblocking cleanup: mutex
+        // acquisition and Python/GIL attachment may block. Unsupported interpreter
+        // states can panic; the loop call executes Python and scheduling can fail.
+        // This Drop path alone does not establish terminal task/permit settlement.
         if let Ok(mut state) = self.state.lock() {
             state.cancelled = true;
         }
-        // No blocking wait or foreign executable code on cleanup.
         Python::attach(|py| {
             if let Ok(cancel) = Py::new(
                 py,

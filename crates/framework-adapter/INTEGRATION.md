@@ -272,3 +272,13 @@ availability is not proof of safe initialization or qualified services. No publi
 availability claim follows. The pending Node Clippy correction and ASGI registered
 completion SDK controls remain source-only2e3f5053 until their separate allocated
 checks/actual tests; this matrix neither reruns nor replaces those unfinished gates.
+
+CA-ASGI-DROP-01 additionally limits Python cleanup claims: Guard::drop tries to
+acquire the State mutex, attaches to Python and calls the loop to schedule
+cancellation. Mutex/GIL contention, unsupported interpreter initialization/
+shutdown/GC states, stopped loops or failed scheduling
+can block, panic or leave cancellation unexecuted; the Drop path has no hard
+deadline. Registered completion custody is distinct from this unresolved teardown
+path. The owned SoT names future admitted GIL/shutdown/GC/loop/schedule controls;
+none has run, and try_attach is not a timeout/nonblocking fix. A runtime change
+requires the exact accepted supervision/retained-failure design, not a blind swap.

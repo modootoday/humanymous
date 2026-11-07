@@ -527,6 +527,25 @@ Registration failure still lacks a guaranteed anchor if no callback attached;
 partial creation/factory failure needs a separate retained-failure keeper/profile.
 No current Windows private-parent/peer or interactive host dependency is waived.
 
+CA-ASGI-DROP-01: Guard::drop is best-effort cancellation scheduling, not a bounded
+or nonblocking teardown path. The initial State Mutex::lock can also block.
+Python::attach can wait for the GIL and can panic
+in unsupported uninitialized/shutdown/GC-traversal states; loop method calls can
+execute Python and a stopped/closed loop or failed scheduling can prevent Cancel
+from running. No hard deadline encloses this Drop path. try_attach is not a
+timeout or a nonblocking guarantee. Registered Future ownership controls above
+do not test this path or prove interpreter/loop/task/permit cleanup.
+
+Future admitted teardown controls are named asgi_drop_contended_state_mutex,
+asgi_drop_contended_gil,
+asgi_drop_interpreter_shutdown, asgi_drop_gc_traversal,
+asgi_drop_stopped_loop and asgi_drop_schedule_failure, each with a timely control,
+retained owner/permit observations, actual terminal or unknown outcome, and an
+independently bounded supervision/cleanup contract. They remain NOT_RUN and need
+an exact root-accepted lifecycle/failure-retention design and supported SDK
+allocation. No API swap, new unsafe, authored foreign harness or full ASGI cleanup
+claim follows from correcting this source overstatement.
+
 ### Next public facade candidates, pending acceptance
 
 The owned framework INTEGRATION now records proposal0.1 for adapter-framework,
