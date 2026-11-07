@@ -160,7 +160,7 @@ fn regression_is_rejected_before_observe_gc_or_reset_mutates() {
     assert_eq!(detector.reset(ticks(9)), Err(Unavailable::TimeRegression));
     assert_eq!(snapshot(&detector), before);
     assert_eq!(detector.reserved_bytes, bytes);
-    assert_eq!(detector.last_time, Some(ticks(10)));
+    assert_eq!(detector.clock.last, Some(ticks(10)));
 }
 
 #[test]
@@ -179,7 +179,7 @@ fn budget_failure_does_not_evict_or_advance_clock() {
     );
     assert_eq!(snapshot(&detector), before);
     assert_eq!(detector.reserved_bytes, 17);
-    assert_eq!(detector.last_time, Some(ticks(1)));
+    assert_eq!(detector.clock.last, Some(ticks(1)));
 }
 
 #[test]
@@ -194,7 +194,7 @@ fn invalid_numeric_input_and_overflow_preserve_history() {
             Err(Unavailable::InvalidMeasurement)
         );
         assert_eq!(snapshot(&detector), before);
-        assert_eq!(detector.last_time, Some(ticks(1)));
+        assert_eq!(detector.clock.last, Some(ticks(1)));
     }
 }
 

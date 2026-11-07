@@ -260,3 +260,109 @@ the byte counter. This does not claim allocator OOM recovery or a heap-RSS limit
 Root's permission for this pure source slice does not authorize runtime wiring,
 new scoring, added dependencies or an actual workload. GenericMAD reuse by
 correlation remains the next source stage after this common core is reviewed.
+
+## Rate history: two additional rows awaiting contract review
+
+Root assigned rate design after reviewing37936ee0 as ready for independent
+source review, not execution proof. Source inventory at
+cd06355b09e7a4ed93b52b16909572d25485c99d. Existing Authority transport Admission
+is a per-instance one-second fixed-window connection gate using Instant; it is
+NOT an arbitrary fingerprint-keyed rolling timestamp history, configurable
+window/soft/hard classifier or TTL store. It cannot retire these two rows.
+
+| Legacy row | Proposed Rust paths/responsibility | Required matrix |
+|---|---|---|
+| internal/abuse/ratelimit.go | history/rate/{mod,config}.rs: bounded keyed sliding request timestamps; observe, inclusive soft/hard classification, hot configure preserving retained hits, TTL GC scan, reset | Keep timestamps with age<window (cutoff equality expires), append current hit then count; hard>= cutoff first, then soft; configure retains all existing lists and next observe trims only that key; TTL=window*6 checked; GC age>TTL, scan at most4096; no hidden default activation or score output |
+| internal/abuse/ratelimit_test.go | history/rate/tests.rs: port5legacy tests with ordered caller time, plus negative boundaries | Twelve fast hits ->hard;12spaced hits ->normal; independent keys; empty key ignored; hot configure preserves hits and immediately changes count classification. Add exact soft/hard/cutoff/TTL equality, bounded GC progress, budget failure preserving all hits/config/clock, bad config/overflow, configure regression, expansion history loss and reset high-water |
+
+Root accepted this source-only code delta after reviewing R01-R07: add
+crates/network/src/history/rate/{mod,config,tests}.rs; update history/mod.rs to
+export rate and hold ONE shared Unavailable/ordered-time helper; update
+history/anomaly/mod.rs and its tests to reuse that helper, retaining the public
+anomaly::Unavailable re-export. No duplicate clock/error implementation, no
+manifest/dependency/root source changes, no runtime or Authority edits.
+
+R01. Every rate policy comes from caller configuration: nonzero Duration window,
+soft and hard positive counts with hard>=soft, matching the existing Gate settings
+validation in internal/gate/settings_runtime.go. No comments' demo60/120 defaults
+or server40/80 values become generic defaults or activation. Equal soft/hard
+remains valid and hard classification wins. No registry/score/hard-rule changes.
+Reject formerly representable zero/inverted thresholds and zero/overflowing
+window as explicit invalid-configuration deltas, never reinterpret them as disable.
+
+R02. Propose immutable construction-time resource Limits: max_keys,
+max_hits_per_key, max_key_bytes, max_window, max_retained_payload_bytes and
+gc_scan_budget (positive and at most the legacy4096scan ceiling). No production
+numeric defaults. Counters reserve bounded timestamp payload and key bytes;
+map/deque allocator metadata is excluded but finite via cardinality bounds.
+Window/TTL arithmetic and admission must be checked before mutation. An existing
+key may prune expired hits and admit one hit only if the resulting state fits
+all limits. No saturation at hard, dropped recent hits, fresh-key eviction or
+clear-on-error, since each can lower a load-bearing rate. Budget exhaustion
+returns Unavailable with the prior state/clock intact; required runtime coverage
+must not become healthy from a zero count. A separate explicit GC can reclaim
+expired keys. Hot configure cannot silently shrink immutable resource limits.
+
+R03. Observe/configure/GC/reset share the accepted MAD caller Duration clock:
+nondecreasing ticks, equal allowed, any regression ->Unavailable before mutation.
+No wall clock, background task or internal lock. Legacy PerKeyIsolation test
+inserts the second key at an earlier time than the last first-key hit; migrate
+that fixture to equal/latest caller time to preserve its isolation purpose, and
+add a separate rejected-regression fixture documenting the accepted delta.
+
+R04. Empty key keeps the legacy no-count behavior as a typed IgnoredEmptyKey
+outcome, not a measured normal Level0. Check time first, but an ignored key does
+not create a series or advance the accepted high-water mark. Missing required
+fingerprint must be handled by runtime coverage, not guessed from an empty key.
+Result carries count and enum level Normal/Soft/Hard, not a verdict/signal/ban.
+Standalone level(count) uses current explicit policy and does not mutate clock.
+
+R05. Configure validates its complete candidate and caller time before committing,
+updates window/soft/hard/derived TTL together, and never clears/prunes existing
+hits. Tightening cannot buy an empty counter. Increasing a window cannot recover
+already discarded older hits; expose that limitation in a ConfigurationEffect
+with window_expanded/history_incomplete rather than claim complete retrospective
+coverage. The next observation still counts the actually retained hits exactly.
+Runtime must decide required-coverage readiness for expansion; this pure module
+does not mint health or origin authority. No implicit replay/backfill samples.
+
+R06. GC scans at most configured budget and never beyond4096keys per call.
+Propose an ordered-map cursor with bounded key storage, advancing past scanned
+keys and wrapping without visiting a key twice in one pass. This replaces Go's
+random map-subset selection with explicit deterministic progress for a stable
+key set; record this GC-order compatibility delta. Remove a key iff its latest
+hit age>current window*6, equality survives. Report scanned/removed counts;
+one bounded pass is not a claim that all stale keys were reclaimed. Deletions
+must release accounted payload. Reset clears hit histories and GC cursor only,
+retains policy/limits and accepted clock high-water, and requires valid now.
+
+R07. The shared clock/error refactor must preserve the12MAD fixtures and its
+public paths, with no second generic helper or default. Anomaly eviction remains
+explicit legacy measurement behavior; rate exhaustion never uses that eviction
+policy. These are distinct domain state semantics, not a generic eviction store.
+
+Status: Root accepted R01-R07 and the reported paths; pure rate source and the
+single clock/error refactor are now authored with12rate tests. All current24MAD/
+rate fixtures are NOT_RUN for this new candidate. The original
+8correlation/traffic rows and this new rate pair remain unretired. Subsequent
+source/locked tests/Clippy/native and Docker qualification require their actual
+separate evidence and Root allocations. Existing actual capture5 is unchanged.
+
+The rate observation Coverage describes expansion gaps only, not general health
+or completeness of request capture. Unavailable admissions must remain missing
+coverage in the consuming runtime; later successes do not attest that failed
+admissions were recorded. Reset retains a pending expansion gap as well as the
+clock and policy. No runtime wiring or default activation was added.
+
+## Original MAD candidate: actual selected validation
+
+Root allocated D for immutable37936ee0, offline/jobs1/incremental0 using exclusive
+target/validation-capture-b-edf700bc. The first archive setup failed due to argument
+construction before any Cargo/test; it was preserved, corrected after Root retry
+allocation, and not mislabeled a source failure. Fresh actual admission29.32GiB
+free/82%commit. Selected history::anomaly12passed0failed0ignored14filtered; network
+all-target check, strict Clippy and fmt each exited0. Entire2614source files,
+48registry source directories/2316files and4toolchain binaries unchanged before/
+after; no newly referenced registry roots. D returned immediately. Evidence is
+registered as evidence:root/20261107145000. These results do NOT qualify the later common
+clock/error refactor or rate source and do not mark all26network units executed.

@@ -1,0 +1,204 @@
+{
+  "schema": "humanymous.network.mad-selected-validation/0.1",
+  "observed_utc": "2026-11-07T14:49:02.2406031Z",
+  "source_checkpoint": "37936ee0",
+  "source_archive_sha256": "f87d0af3b402d6b49104f1680fd1e19c523c341a8a70a9bb34340cd78b47864b",
+  "runner": "local Windows Root-allocated D",
+  "target_dir": "target/validation-capture-b-edf700bc",
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "admission": {
+    "observed_utc": "2026-11-07T14:47:07.1267302Z",
+    "free_gib": 29.32,
+    "commit_percent": 82
+  },
+  "first_setup_failure": {
+    "stage": "archive-setup-attempt1",
+    "exit_code": 1,
+    "tests_started": 0,
+    "cargo_started": false,
+    "reason": "PowerShell expression supplied incorrectly to git --output; git rejected source.tar as object",
+    "source_changed": false,
+    "recovery": "Root authorized one literal-variable argument correction"
+  },
+  "stages": [
+    {
+      "stage": "pure",
+      "args": [
+        "test",
+        "--offline",
+        "--locked",
+        "-p",
+        "humanymous-network",
+        "--lib",
+        "history::anomaly",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:47:07.1648502Z",
+      "ended_utc": "2026-11-07T14:47:11.0076808Z"
+    },
+    {
+      "stage": "check",
+      "args": [
+        "check",
+        "--offline",
+        "--locked",
+        "-p",
+        "humanymous-network",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:47:11.0192859Z",
+      "ended_utc": "2026-11-07T14:47:12.9251318Z"
+    },
+    {
+      "stage": "clippy",
+      "args": [
+        "clippy",
+        "--offline",
+        "--locked",
+        "-p",
+        "humanymous-network",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:47:12.9303672Z",
+      "ended_utc": "2026-11-07T14:47:14.8733099Z"
+    },
+    {
+      "stage": "fmt",
+      "args": [
+        "fmt",
+        "--package",
+        "humanymous-network",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:47:14.8783101Z",
+      "ended_utc": "2026-11-07T14:47:15.038781Z"
+    }
+  ],
+  "counts": {
+    "passed": 12,
+    "measured": 0,
+    "filtered": 14,
+    "ignored": 0,
+    "failed": 0
+  },
+  "stability": {
+    "source_files": 2614,
+    "source_snapshot_unchanged": true,
+    "registry_roots": 48,
+    "registry_files": 2316,
+    "registry_snapshot_unchanged": true,
+    "new_registry_roots": [],
+    "tools_unchanged": true
+  },
+  "snapshots": [
+    {
+      "name": "source-before.json",
+      "sha256": "bb0a773c4f1360a043bf304389f12feb6a65b0109ec5a07cf4f71ff95a0882bf",
+      "bytes": 465781
+    },
+    {
+      "name": "source-after.json",
+      "sha256": "bb0a773c4f1360a043bf304389f12feb6a65b0109ec5a07cf4f71ff95a0882bf",
+      "bytes": 465781
+    },
+    {
+      "name": "registry-before.json",
+      "sha256": "7fe99022847a24c7d755a0696d71e3ea0f1787d676757ab567095924bc211509",
+      "bytes": 574947
+    },
+    {
+      "name": "registry-after.json",
+      "sha256": "7fe99022847a24c7d755a0696d71e3ea0f1787d676757ab567095924bc211509",
+      "bytes": 574947
+    },
+    {
+      "name": "tool-binaries-before.json",
+      "sha256": "2da550923e82c7f835a643d43366707305f18d40670c0488ef189d923efa977a",
+      "bytes": 584
+    },
+    {
+      "name": "tool-binaries-after.json",
+      "sha256": "2da550923e82c7f835a643d43366707305f18d40670c0488ef189d923efa977a",
+      "bytes": 584
+    }
+  ],
+  "raw_files": [
+    {
+      "name": "pure.log",
+      "sha256": "69cd2ad96f1a71ff71a0f4d6e1ef68940953ee048977acaa8f77736631895e6c",
+      "bytes": 1813
+    },
+    {
+      "name": "check.log",
+      "sha256": "9e266d929ba54e2b904a3808a5da2fe6b3521afaddfe5f067031fc4a6dc22246",
+      "bytes": 539
+    },
+    {
+      "name": "clippy.log",
+      "sha256": "8f44c745626f1866f6f254bff55c39ec888c4e81e1a374c6e2efdf74806de9b3",
+      "bytes": 539
+    },
+    {
+      "name": "fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "first-setup-failure.json",
+      "sha256": "9ce38c929c825651e7d89daf41696adcc08574a4d93639e006440c159c732927",
+      "bytes": 325
+    }
+  ],
+  "toolchain": [
+    "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "binary: rustc",
+    "commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "commit-date: 2026-10-13",
+    "host: x86_64-pc-windows-msvc",
+    "release: 1.99.1",
+    "LLVM version: 23.1.1"
+  ],
+  "tool_binaries": [
+    {
+      "name": "rustc.exe",
+      "sha256": "ba03e3ba03a73d9fef19ab3659140f94b43615ec1d587fe9befc9aed3bd5aa72",
+      "bytes": 110592
+    },
+    {
+      "name": "cargo.exe",
+      "sha256": "aa5b8980be3681899fde765ba47e2ed361463ae9dd8ee7cd1963c18d23743a0f",
+      "bytes": 27543552
+    },
+    {
+      "name": "clippy-driver.exe",
+      "sha256": "648db1897ec48a9f64bae9e0624761abab7b2904a6ab25d53cc2869a0245f99e",
+      "bytes": 11308544
+    },
+    {
+      "name": "rustfmt.exe",
+      "sha256": "231e4b294d5f6d9f025a9025514e3e6b0ee5defa524fd016498e1c77eb96980a",
+      "bytes": 4735488
+    }
+  ],
+  "configuration_scope": "Immutable full Git archive includes Cargo/toolchain context; literal jobs/incremental/offline/target settings recorded. External Cargo config and environment were not independently snapshotted before/after; tool hashes cover four real executable files, not complete sysroot/SDK/DLL closure.",
+  "executable": {
+    "executed": true,
+    "name": "humanymous_network-3d0fd2d90c4c9a21.exe",
+    "sha256": "55aacf3710cb9e28680472aef447ff62c5efa7e547229b6050bd5fb7b19976e0",
+    "bytes": 1817600
+  },
+  "later_source_qualified": false,
+  "scope": "Original generic MAD12 only; later shared-clock and rate source, remaining14units, capture/runtime/coordinator/Docker not executed.",
+  "private_evidence": ".spec.local/root/evidence/20261107144212-network-capture-mad-d"
+}

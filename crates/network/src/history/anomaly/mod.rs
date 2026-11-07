@@ -1,21 +1,10 @@
 //! Generic bounded median/MAD history, migrated from the read-only Go oracle.
 //! Measurements carry no serving authority. Runtime owns synchronization/clock.
 mod config;
+use super::OrderedTime;
+pub use super::Unavailable;
 pub use config::{Config, Limits};
 use std::{collections::BTreeMap, time::Duration};
-
-/// A missing measurement, never a healthy/normal sample.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Unavailable {
-    /// Non-finite or invalid parameters, zero/overflowing resource limits.
-    InvalidConfiguration,
-    /// Non-finite input or derived floating-point arithmetic.
-    InvalidMeasurement,
-    /// Caller time moved behind the last accepted observation/GC/reset.
-    TimeRegression,
-    /// A configured key or retained payload bound prevents admission.
-    Budget,
-}
 
 /// Result against history BEFORE appending this observation.
 #[derive(Debug, Clone, PartialEq)]
@@ -45,7 +34,7 @@ struct Series {
 pub struct Detector {
     config: Config,
     series: BTreeMap<String, Series>,
-    last_time: Option<Duration>,
+    clock: OrderedTime,
     reserved_bytes: usize,
 }
 impl Detector {
@@ -54,16 +43,9 @@ impl Detector {
         Self {
             config,
             series: BTreeMap::new(),
-            last_time: None,
+            clock: OrderedTime::new(),
             reserved_bytes: 0,
         }
-    }
-
-    fn check_time(&self, now: Duration) -> Result<(), Unavailable> {
-        if self.last_time.is_some_and(|last| now < last) {
-            return Err(Unavailable::TimeRegression);
-        }
-        Ok(())
     }
 
     /// Invalid time/input/budget/arithmetic returns before any state mutation.
@@ -74,7 +56,7 @@ impl Detector {
         value: f64,
         now: Duration,
     ) -> Result<Measurement, Unavailable> {
-        self.check_time(now)?;
+        self.clock.check(now)?;
         if !value.is_finite() {
             return Err(Unavailable::InvalidMeasurement);
         }
@@ -124,13 +106,13 @@ impl Detector {
         }
         series.last = now;
         self.reserved_bytes = admitted_bytes;
-        self.last_time = Some(now);
+        self.clock.commit(now);
         Ok(result)
     }
 
     /// Remove keys idle strictly longer than caller TTL. Equality survives.
     pub fn gc(&mut self, now: Duration, ttl: Duration) -> Result<usize, Unavailable> {
-        self.check_time(now)?;
+        self.clock.check(now)?;
         let before = self.series.len();
         let sample_bytes = self.config.sample_bytes;
         let reserved_bytes = &mut self.reserved_bytes;
@@ -142,17 +124,17 @@ impl Detector {
                 true
             }
         });
-        self.last_time = Some(now);
+        self.clock.commit(now);
         Ok(before - self.series.len())
     }
 
     /// Clear history while retaining ordered-time custody. A new epoch needs a
     /// new Detector. A regressing reset does not erase existing observations.
     pub fn reset(&mut self, now: Duration) -> Result<(), Unavailable> {
-        self.check_time(now)?;
+        self.clock.check(now)?;
         self.series.clear();
         self.reserved_bytes = 0;
-        self.last_time = Some(now);
+        self.clock.commit(now);
         Ok(())
     }
 }
