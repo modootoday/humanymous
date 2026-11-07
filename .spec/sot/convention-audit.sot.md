@@ -1164,3 +1164,41 @@ observed component gates must not become qualified fault execution. Rule94 owner
 was asked to distinguish confirmed same-target allocation/lock wait from unproven
 simultaneous writes/corruption. No foreign process/lease action or new audit
 workload follows. Private source-bound review hashes are in baseline.json.
+
+## Actual outer fault negatives and native test-boundary follow-up
+
+Native receipt584aef9c at62f47765 has92 matching raw attachments, two matching
+preserved executable pins and111 selected archive sources matching saved SHA256
+and canonical Git blob SHA1. R2 is a separate fresh target/lease, not the collided
+R1 cache. Immediate source111/registry2042 across31packages/config34/environment7
+records match. Immediate tool scope is10executables, with two directory maps
+omitted; historical76file comparison cannot substitute for that missing snapshot.
+
+Exactly two fixed cooperative outer negatives were independently observed.
+Missing grant: actual assigned Job, no grant, natural parent0, Job empty, timely
+refusal marker at5095ms; one inner test passed with43filtered. Live deadline:
+granted, actual parent still unexited at original10s, active Job count1 before
+successful termination, actual exit1, parent exit+Job empty+timely marker at10011ms.
+There is no completed inner footer/passing inner test for live termination.
+Both parent_test_passed fields remain false. Actual outer negatives are neither
+two inner passes nor blocked-I/O/descendant/interactive/producer qualification.
+R1 remains COLLIDED_NOT_QUALIFIED/actualcases0. CA-LIFETIME stays OPEN globally.
+
+Audit99317a50 prerequisite source review found no P0/P1 blocker: current-owner
+private ext/statx parent, fresh mkdirat/createEXCL synthetic files, reused real
+provider/read_at/lock exclusion/postdrop release and held-parent narrow cleanup.
+Failure or unknown cleanup cannot yield observed. Exact f9 baseline193 rows match
+Git SHA256/bytes and13 semantic selectors are unique. The single fixture gate and
+12 compiler attempts are separate counts. Execution must project exactf9 plus
+declared test seam: whole99317 also contains two later test-support changes.
+No actual Linux fixture/compiler/Delivery acceptance proof is supplied here.
+
+Browser UI36 at83131d4b source is ready for separate verification: live active
+nonclosing Ready parent lease, minimized skip, actual child-parent check, bounded
+geometry/DPI and native readback before cache; tab switch resets cache. Shared
+state/report borrows do not span native resize. Pre-parent resize/DPI handling
+and periodic recovery share one method. Normal3DIP/maximized0 perimeter is not
+actual event-order/reentrancy/latency/visual/AT proof or navigation isolation.
+Rule94ce24fe52 now matches confirmed same-target allocation/lock wait while
+concurrent byte writes/corruption remain unproven. Source-bound private review
+hashes are in baseline.json. No audit compiler/native workload was executed.

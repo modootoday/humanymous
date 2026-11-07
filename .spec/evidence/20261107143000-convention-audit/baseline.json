@@ -547,5 +547,23 @@
     "actual_outer_fault_cases": 0,
     "target_collision_diagnosis_pending": true,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_outer_fault_actual_and_native_seams": {
+    "private_review_sha256": {
+      "outer-faults-actual-review-001.json": "f9f8d88ea0f1384c998682ee7408f6543e1b762ab377f48c4c3afc97a8b1deb6",
+      "audit-prerequisite-browser-geometry-source-review-001.json": "aa7bc4c3ef58e81f8120f876c4e55cb661a66aca1c58b12925723a8c19593ae2"
+    },
+    "actual_outer_negative_cases": 2,
+    "missing_grant_inner_tests": 1,
+    "live_timeout_inner_tests": 0,
+    "raw_attachments_verified": 92,
+    "preserved_executables_verified": 2,
+    "selected_archive_git_source_members": 111,
+    "global_lifetime_closed": false,
+    "audit_baseline_git_rows": 193,
+    "audit_native_fixture_executed": false,
+    "browser_UI36_actual_native_qualified": false,
+    "rule94_incident_reconciliation_accepted": true,
+    "new_audit_runtime_workloads": 0
   }
 }
