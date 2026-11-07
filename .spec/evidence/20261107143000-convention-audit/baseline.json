@@ -477,5 +477,14 @@
     "global_lifetime_closed": false,
     "real_service_or_product_qualified": false,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_report_and_b3_preliminary": {
+    "private_review_sha256": "4900690b9aa14697a0c9f1a44b1ab144623cbf99e9cd27603b6740118ece077f",
+    "renderer_executable_foreign_template_found": false,
+    "b3_raw_attachments_verified": 25,
+    "b3_windows_tests": 93,
+    "b3_public_commit_binding_pending": true,
+    "gnu_wrapper_actual_pilot": false,
+    "new_audit_runtime_workloads": 0
   }
 }

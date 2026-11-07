@@ -306,3 +306,15 @@ Actual CLI91536cce parent1/subcases4 now independently accepted at frozen scope:
 Gitblobs verified. Simulatedruntime/endpointrelease do not qualify actualservice/
 EOF/joins/SCM/product; globalLIFETIME staysOPEN. Authority replay/deadline/audit
 review binds5unchanged leaves without newdefect or wholeauthoritypass. No newrun.
+
+Legacy report renderer review and preliminary B3 receipt review bind private
+report-and-b3-review-001.json (SHA256 4900690b9aa14697a0c9f1a44b1ab144623cbf99e9cd27603b6740118ece077f).
+The complete renderer emits static HTML/CSS and escapes dynamic text; script
+strings are adversarial test data. No executable foreign template was found in
+that bounded file; this is not a whole-migration foreign-code proof.
+B3 private25 attachments match hashes/lengths, current3 source overlays match,
+and sorted full before/after records match: source2786, registry3791, config20,
+tools4, environment9. Actual Windows footer is93/0/0ignored/0filtered. Initial
+compiler_started=false is historical; terminal execution is separate. Public
+summary remains uncommitted at this observation; immutable commit/archive binding
+and actual GNU single-metric pilot remain pending. No audit workload executed.

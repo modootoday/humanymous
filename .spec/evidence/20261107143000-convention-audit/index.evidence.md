@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 3a0f19e7d40d1ef3f6662be1b28b3c456c7f99639a445a02f9b2ae57b8403582, bytes: 22559, store: repo}
+  - {path: baseline.json, sha256: b593998d921b646f9cabd9c879f54848f888174dab41fea669e651f06414b9b8, bytes: 22949, store: repo}
 ---
 
 # Convention audit baseline
@@ -31,3 +31,15 @@ account, benchmark or model workload was launched by this audit. Their scope
 does not establish whole-source English, SRP, security, accessibility, licensing
 or product conformance. Historical first failures and source corrections remain
 described in the execution plan and owning receipts.
+
+Legacy report renderer review and preliminary B3 receipt review bind private
+report-and-b3-review-001.json (SHA256 4900690b9aa14697a0c9f1a44b1ab144623cbf99e9cd27603b6740118ece077f).
+The complete renderer emits static HTML/CSS and escapes dynamic text; script
+strings are adversarial test data. No executable foreign template was found in
+that bounded file; this is not a whole-migration foreign-code proof.
+B3 private25 attachments match hashes/lengths, current3 source overlays match,
+and sorted full before/after records match: source2786, registry3791, config20,
+tools4, environment9. Actual Windows footer is93/0/0ignored/0filtered. Initial
+compiler_started=false is historical; terminal execution is separate. Public
+summary remains uncommitted at this observation; immutable commit/archive binding
+and actual GNU single-metric pilot remain pending. No audit workload executed.
