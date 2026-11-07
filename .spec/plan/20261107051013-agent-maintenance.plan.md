@@ -10,6 +10,26 @@ rel:
 
 # Agent maintenance
 
+## Convention and performance chat registration
+
+Root supplied the user-approved convention/structure audit chat
+01a1b645-0bdc-7a53-b759-57c1eb998336 and build/runtime performance chat
+01a1b645-0e76-75b0-b509-fd8e7719fc51. Their exact titles and initially read-only
+responsibilities are registered; actual lane acquisition remains distinct.
+Requested dedicated IDs are convention-audit and performance, with only their
+respective named SoT/plan/public-private evidence scopes. Future benchmark code,
+foreign product code, Pages/rules and root graph remain outside those grants.
+
+Existing qualified binary SHA4b38ef6a5df79e8f083661116ccf1c195e2a83ff5cf36266872ff40a7513c8e8
+was probed read-only: session-list exited2 on the live CI claim's EXCEPT annotation.
+Separately, legacy-coexistence intentionally refuses Rust mutations. Exact legacy
+projection validation currently requires all25 IDs in PS/bash arrays; extending
+JSON alone cannot truthfully qualify the requested Rust-only claims. Root was
+notified before any unsafe mode flip, scope weakening or forbidden foreign-array
+extension. Both chats received the existing entrypoint, strict five-field request
+schema and explicit continued read-only status. Catalog/protocol resolution is
+pending root coordination; no successful claim or lane qualification is asserted.
+
 ## Missing-responsibility design chat registration
 
 Root supplied two user-approved chat IDs and literal titles for THREADS:
