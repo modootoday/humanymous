@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T13:12:31Z
+updated: 2026-11-07T13:14:40Z
 rel:
   governs: [docs]
 files:
@@ -84,6 +84,7 @@ files:
   - {path: pending-apache-public-status-correction.json, sha256: 9b6fc3d0fc22ff1f0fe031049e7d5436e29ab47035fb900209fd00a923046834, bytes: 1749, store: repo}
   - {path: apache-b400-public-status-review.json, sha256: 7eb801d8a03d266fdcd9b340ed3487c72cdc37c7749e0ba2f8d91aff182e5635, bytes: 791, store: repo}
   - {path: fixed-python-core-partial-review.json, sha256: a219c4fbfa3a4dda57f2accc5b2c65f3f441eb2a708addc72a7c1cb654b3eb33, bytes: 18515, store: repo}
+  - {path: current-python-review-preparation.json, sha256: 20d087b108a7b874085a940d4939a752205d7e107fbede68c558bbcb3ba57de9, bytes: 20351, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status

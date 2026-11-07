@@ -1,0 +1,329 @@
+{
+  "schema": "humanymous.pages-review-preparation/1",
+  "observed_at_utc": "2026-11-07T13:14:39.893944+00:00",
+  "scope": "Current Python26 source review prepared; docs/reviews.json remains frozen and unmodified",
+  "candidate_count": 26,
+  "current_lines": 3611,
+  "matching_fixed_full_reads": 22,
+  "changed_current_files_fully_read": 4,
+  "rehash_drift": 0,
+  "candidates": [
+    {
+      "source": "crates/python-adapter/INTEGRATION.md",
+      "sha256": "3769a14ca8ae15bbf5375aaaaf97fa32d9c30a12a77bfbd754d093a2228383ef",
+      "reviewer": "codex/rust-pages",
+      "notes": "Historical WSGI7842b6a8 actual8 tests/28 cases is distinct from later5655b965 all-target check and failed receipt-parser Clippy; ASGI, wheel install and hosted runtime remain separate. Narrative chronology is not a fresh execution receipt. Current source fully read separately: d68682e4 reported check/Clippy and two receipt pure tests supersede prior receipt-parser failure only; two filtered controller definitions, no new refactored WSGI/ASGI/server/import/package or accepted lifecycle execution. Chronology statements are not independently rerun or promoted as raw execution proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 144,
+      "current_matches_fixed_full_read": false,
+      "current_full_read": true
+    },
+    {
+      "source": "adapters/python/server-pilot-contract.json",
+      "sha256": "34304fa5b1ba38bbf68196b3dd36ac2f03f2a6339820e8af05e30106b494f07d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Historical WSGI counts bind7842b6a8 only. Current refactor runtime NOT_RUN and controller NOT_ACCEPTED; Unix-only, idle incomplete-body timeout not total slow-drip deadline. Required counts and artifact bindings are obligations, not current qualification. Current source fully read separately: d68682e4 reported check/Clippy and two receipt pure tests supersede prior receipt-parser failure only; two filtered controller definitions, no new refactored WSGI/ASGI/server/import/package or accepted lifecycle execution. Chronology statements are not independently rerun or promoted as raw execution proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 58,
+      "current_matches_fixed_full_read": false,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/async_call.rs",
+      "sha256": "2720d361e1c083fa5ff1f95e45fdd3f61b40679ecc1963acbcdca4e564e65b30",
+      "reviewer": "codex/rust-pages",
+      "notes": "Copied context and owning-loop call_soon_threadsafe schedule callback/task. Rust Drop marks cancelled and schedules task.cancel, discarding scheduling errors; it does not await cancellation acknowledgement or prove task termination/cleanup. No runtime execution in this review.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 181,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/wsgi.rs",
+      "sha256": "ab0e363d4c4e833ca92cbce8b5eb8f3afca65f65bfcf87a2d67c0a2dc40c8ac4",
+      "reviewer": "codex/rust-pages",
+      "notes": "Requires declared enforced synchronous input deadline and trusted disconnect callback. Normalized WSGI headers/body replay; GIL detached only for authority IPC. Pending checks around blocking input do not themselves preempt a blocked read. Final bound ALLOW, deadline and disconnect check precede app call; app iterable lifecycle is downstream-owned.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 184,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/asgi.rs",
+      "sha256": "fa719805a40c6106cc85a916ac17feb0e1690e9df976679f5b78cec27f702cc1",
+      "reviewer": "codex/rust-pages",
+      "notes": "HTTP1 only with original raw_path/query, normalized headers, bounded complete body and original pending timeout. One receive future retained across authority/handoff and passed downstream after replay; lifespan transparently bypasses HTTP decision. Source does not establish actual framework cancellation/context/cleanup behavior.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 276,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/bin/humanymous-python-package.rs",
+      "sha256": "0b6a8d92343bde8550f20870f6c2d6f924ba13f1a00a1d929596e0c1157533c5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Maturin1.16.0 version string and locked release command; inspect bounds archive bytes100MiB/member count128/individual claimed size and requires one native extension plus compatible tag. Filename tags and hashes do not attest generation provenance. Inspection uses embedded interpreter; install-test invokes external pip then imports through embedded interpreter after major/minor string comparison. External command status/output have no local timeout; output capture and descendant containment are not bounded here. No package/install/import execution performed.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 274,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/component_controller.rs",
+      "sha256": "4ab16775f6cf4081485d8c5251cacd2f4a77c1d2d84eede544254f42bc992f6e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Full387 lines read in two contiguous chunks. coordinate refuses lifecycle before Controller construction. Unreachable candidate flow restricts ordinary hosted actor/private bundle/runner-temp target; records private command streams, copies module/authority/harness, validates discovery and exact actual rows before before/after manifests. Existing source code is not an executed success or accepted process containment contract.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 387,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/component_lifecycle.rs",
+      "sha256": "5839d24ac3246523878c28f9e4174142c77ad53fa979ea42d366e00c4c41f5ad",
+      "reviewer": "codex/rust-pages",
+      "notes": "Unconditional NOT_ACCEPTED error; no reviewed atomic owned-lifetime backend accepted at this fixed source.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 4,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/component_process.rs",
+      "sha256": "2aa1be700f39bfbf0ca2b35abc4f298b98686ad30e3249c2bf0b4b0c0ecef9d7",
+      "reviewer": "codex/rust-pages",
+      "notes": "Actual execution unconditionally refuses. Cleanup scans readable proc environments for exact marker but returns NOT_ACCEPTED even when absent; skipped unreadable entries and non-atomic observations do not authorize signalling or prove empty process ownership.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 31,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/asgi_server.rs",
+      "sha256": "47b73211c233d08d3c31fbf6d8303ed03000ae38ab2b11e8fa14bc80c017cdf7",
+      "reviewer": "codex/rust-pages",
+      "notes": "Six ignored actual groups across Starlette/FastAPI/Django. Suite construction refuses lifecycle before framework/host execution. Unix host-pilot cfg and included framing sources are not actual42-case results.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 54,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/wsgi_server.rs",
+      "sha256": "edda82821667c0ddfc5a8ee52754d614a5c6b8ee297847ce6d5e917df4bbcbd3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Six ignored actual Flask/Django groups delegate shared cases. Includes shared lifecycle module but suite itself does not invoke refusal; host implementation must be read before claiming every direct WSGI path refuses. Historical execution not transferred to this source.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 53,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/component_files.rs",
+      "sha256": "9743800f6636d5741bd75d86045246c639b35fa4c98b1dd6d4a13efd7d366edd",
+      "reviewer": "codex/rust-pages",
+      "notes": "Tracks Git-index file contents only; ignores untracked paths in clean check and does not capture full compiler/registry/environment closure. Dependency manifest records symlink target text and file referent digest, directory links as marker only. Artifact manifest covers exactly three copied files. Cargo output selector requires one named harness executable, not artifact provenance attestation.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 116,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/wsgi_receipt.rs",
+      "sha256": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45",
+      "reviewer": "codex/rust-pages",
+      "notes": "Strict duplicate-key JSON plus bounded8192-byte rows, allowed framework/group/fields, unique framework/group/control tuples, exact totals14rows/28cases and one8-pass footer. Discovery checks exact eight names. Does not independently authenticate producer truth, process status or source artifact lineage; controller has separate exit/manifest obligations. Included fixture test assertions are source-only here.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 162,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/wsgi_host.rs",
+      "sha256": "05ed1d66e8f33cec1e18fdefd3c3b2db5f4948235a75f26747edb39acf11db68",
+      "reviewer": "codex/rust-pages",
+      "notes": "Direct child kill/wait only, no process-tree containment. WSGI can spawn without lifecycle refusal; ASGI refuses before server identity/spawn. Private temporary directory removed on Drop, server stderr private but file not capped here, stdin write synchronous. Ephemeral port reservation released before server spawn; connect readiness15s is not authenticated application readiness. Waitress idle timeout not a total upload deadline.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 203,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/wsgi_authority.rs",
+      "sha256": "f0e85bdedb469f2e40a919bb51b27923a3c721597e8a2f49cfb680e25c49a3ab",
+      "reviewer": "codex/rust-pages",
+      "notes": "Real in-process authority/Unix listener/WAL with explicitly synthetic evidence. Gated decision has matched connected controls; exact fresh empty WAL identity/bytes preserved instead of reopening empty history. Listener abort joined then runtime shutdown timeout; this is not independent audit custody or whole task process-tree proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 162,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/framework_server_cases.rs",
+      "sha256": "ea9d542c228cabf614487fd1d5650994efc850802bb15b5d6031b5accdc9b93d",
+      "reviewer": "codex/rust-pages",
+      "notes": "419 lines fully read across contiguous chunks. Six actual groups per framework: production non-ALLOW one audit/no origin; synthetic ALLOW binary replay/two cookies/hash/effect then four negatives; dependency down3; incomplete body2 idle/abort; matched disconnect versus connected control; accepted private0600 IPC timeout. WSGI28/ASGI42 are planned denominators. Effect hash/receipt is fixture observation, not business transaction or real browser witness. Some failure statuses permit500; no challenge UX/WCAG qualification.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 419,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/hosted.rs",
+      "sha256": "2a1a1df10f6f2596a41e486e6fa8811c8bf5e51fb9dfd3b7795b8f395b15f77e",
+      "reviewer": "codex/rust-pages",
+      "notes": "313 lines fully read in contiguous chunks. Three ignored groups7 cases exercise actual framework object invocation only: dependency-unavailable WSGI2/ASGI3 and lifespan2. Native Rust callbacks/no script strings. Loop stop timer does not prove cancellation/drain of all pending tasks; no actual network server, production ALLOW or wheel install result.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 313,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/pilot.rs",
+      "sha256": "5f67c286ee834b9ddf8b33e951fd137e9ec4cc892689d4332800925320db0777",
+      "reviewer": "codex/rust-pages",
+      "notes": "165 full lines. Host-pilot factory reads bounded64KiB stdin map, preserves configuration as original JSON string for strict downstream parser, requires absolute effect path but does not itself prove path ownership or bound receipt file growth. Real Flask/Django views append body length/hash before201/two cookies; no script generation.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 165,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/pilot_asgi.rs",
+      "sha256": "4e8fa39fc083e5df8c690f3a2fea2dcdd044cb548ba3a51b8ec03cff25ff436d",
+      "reviewer": "codex/rust-pages",
+      "notes": "135 full lines. Host-pilot factory mounts native ASGI echo for Starlette/FastAPI, standard Django ASGI native view. Bounded1MiB origin body and minimized effect receipts; public routing/middleware boundary only, not FastAPI parameter validation/DI. Factory source not import/runtime proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 135,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/tests/support/wsgi_receipt_actual.json",
+      "sha256": "35a6cf047068deaf0c33db08181662e85ddc15f1142f6fb17cd27994132d21e1",
+      "reviewer": "codex/rust-pages",
+      "notes": "129 full lines. Historical allowlisted14 rows/28 cases bound7842b6a8 and original raw-log hash. Fixture explicitly says not a new execution receipt; current validator accepting its data cannot qualify new server bytes.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 129,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/Cargo.toml",
+      "sha256": "9162e99c6636204fe6b7febaf1a96cdf3dbf1aa0cecc7fd5efdbeef41d1aac71",
+      "reviewer": "codex/rust-pages",
+      "notes": "44 full lines. Native PyO3 and async runtime optional, empty default features. Host-pilot, extension-module and package-tool enable native; default build/tests do not compile or qualify native callbacks. Package binary requires package-tool.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 44,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "crates/python-adapter/src/lib.rs",
+      "sha256": "f86d5db9f2ea71347d916e60822d8da5ba281f1e1c6f42ad0998cd34944cfded",
+      "reviewer": "codex/rust-pages",
+      "notes": "46 full lines. Native-only callable exports; host-pilot-only factories and test module. Capabilities expose normalized profiles and empty release-qualified tuples; declared caps are not measured runtime qualification.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 46,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "adapters/python/pilot-contract.json",
+      "sha256": "6e28056e27311f6962b7f7772c86e1c3208f951621834d2792275a5d6e8f9b3d",
+      "reviewer": "codex/rust-pages",
+      "notes": "31 full lines. Three groups7 required native-object cases and exact source/artifact/interpreter/dependency bindings. not_run, no actual network server or installed-wheel proof. Required zero ignored/filtered is obligation, not result. Current source fully read separately: d68682e4 reported check/Clippy and two receipt pure tests supersede prior receipt-parser failure only; two filtered controller definitions, no new refactored WSGI/ASGI/server/import/package or accepted lifecycle execution. Chronology statements are not independently rerun or promoted as raw execution proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 31,
+      "current_matches_fixed_full_read": false,
+      "current_full_read": true
+    },
+    {
+      "source": "adapters/python/asgi-server-pilot-contract.json",
+      "sha256": "75b7b5d77702d38d04943810caf373bafd66bd3dedb02c375add714bfda00483",
+      "reviewer": "codex/rust-pages",
+      "notes": "30 full lines. Source-only lifecycle refusal,8 required harness tests/42 planned cases21rows,0 executed. Candidate Uvicorn Linux CPython3.12 not installed; lifespan on only Starlette/FastAPI, off Django. Preserve current check/failedClippy chronology, no release tuple. Current source fully read separately: d68682e4 reported check/Clippy and two receipt pure tests supersede prior receipt-parser failure only; two filtered controller definitions, no new refactored WSGI/ASGI/server/import/package or accepted lifecycle execution. Chronology statements are not independently rerun or promoted as raw execution proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 30,
+      "current_matches_fixed_full_read": false,
+      "current_full_read": true
+    },
+    {
+      "source": "adapters/python/waitress-requirement.txt",
+      "sha256": "172356c34e37fb2695252aa29c7f22c9fcf895d425bffbb72844c567c517a237",
+      "reviewer": "codex/rust-pages",
+      "notes": "4 full lines. Official wheel version/hash declaration for separately allocated fixture. Reading pin is not installation, dependency audit or current actual runtime proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 4,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    },
+    {
+      "source": "adapters/python/uvicorn-requirement.txt",
+      "sha256": "83de60f2e4dada27dc82eef238e455e400a919c9a9ed967f8bab26d9551bc24b",
+      "reviewer": "codex/rust-pages",
+      "notes": "6 full lines. Uvicorn/h11/click exact candidate wheel hashes; no installation or audit implied. No external metadata fetched or validated during this source review.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "current_lines": 6,
+      "current_matches_fixed_full_read": true,
+      "current_full_read": true
+    }
+  ],
+  "receipt_renewal_applied": false,
+  "new_runtime_execution": "NOT_RUN",
+  "full_product_qualified": false,
+  "current_graph_closure_qualified": false,
+  "remaining": "Rehash candidates at permitted ledger update; complete other source groups and latest inventory before any whole-source freshness claim."
+}
