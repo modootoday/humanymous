@@ -1,0 +1,102 @@
+{
+  "schema": "humanymous.pages-fixed-ruby-review/1",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/ruby-adapter/src/lib.rs",
+      "lines": 6,
+      "sha256": "ed0e443b2d517797b0d2d68dc4850d5d9c987caedc12dc49db64dad73e85f4da",
+      "current_sha256": "ed0e443b2d517797b0d2d68dc4850d5d9c987caedc12dc49db64dad73e85f4da",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete6-line feature boundary: native module only with native feature, worker with native/test. Default empty host compilation cannot qualify Ruby callbacks or native ABI.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/ruby-adapter/INTEGRATION.md",
+      "lines": 77,
+      "sha256": "526fb402cc9d808236255db23155fd31fc5c28ef15589cb5d8cf324a15547eb9",
+      "current_sha256": "526fb402cc9d808236255db23155fd31fc5c28ef15589cb5d8cf324a15547eb9",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete77-line owner chronology: VM-owned ivars, Rust-only worker cancellation/join, required trusted server liveness, separate production/host-pilot/package features, single Ruby minor ABI and unsupported alternative engines. Old pure4/Clippy retry/moving closure observations do not qualify native feature, package or frameworks; quiet-window policy prose is operational history.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/ruby-adapter/src/bin/humanymous-ruby-package.rs",
+      "lines": 241,
+      "sha256": "2ad3ceabff49d9fe58afee78b5f873ebe9a46bacc26f5ef9e237e9c943cb9051",
+      "current_sha256": "2ad3ceabff49d9fe58afee78b5f873ebe9a46bacc26f5ef9e237e9c943cb9051",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete241-line opt-in Ruby/RubyGems driver: direct child kill/wait, concurrent1MiB-per-stream retention with overflow refusal and120s child-status check, selected6metadata fields and fresh staging/install dirs, capability receipt selection and production feature exclusion. Reader joins can outlive direct-child deadline if descendants retain pipes; not arbitrary tree containment. Upstream receipt JSON is not authenticated provenance or registry publication.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/ruby-adapter/src/hosted.rs",
+      "lines": 124,
+      "sha256": "8b9be5b125f84633febebf30383ec8732a41697dc9f8eab1ff4bd922c9d38758",
+      "current_sha256": "8b9be5b125f84633febebf30383ec8732a41697dc9f8eab1ff4bd922c9d38758",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete124-line opt-in fixture: real RackLint/Sinatra/Rails objects wrapped by origin spy, five liveness negatives and three dependency-down503/noeffect cases. Synthetic server callback/known unavailable endpoint and source assertions are not actual host execution, network server, successful production ALLOW, GC/GVL or installed gem qualification.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/ruby-adapter/src/native.rs",
+      "lines": 211,
+      "sha256": "b1df462ebe237c08518c42592f11fea1e091fdbfdd63e5a1263701a81b04a1d4",
+      "current_sha256": "b1df462ebe237c08518c42592f11fea1e091fdbfdd63e5a1263701a81b04a1d4",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete211-line VM-managed wrapper/app/options and normalized Rack callback: shared64admissions/original Pending budget, copied complete bounded bytes, sanitized CGI headers, hijack disabled, Rust-only authority worker with GVL-yielding wait/cancel/join, bound consume and final deadline/liveness before original app. Known input length is read to exact length, not proof of arbitrary upstream input framing. Response remains Rack/app-owned; real server disconnect/input-deadline and GC/GVL compatibility require native probes.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/ruby-adapter/src/package.rs",
+      "lines": 138,
+      "sha256": "207aab9ce9ed3f4de058b272f42ede78836cb07b4783b9c1542dac7dca8d4b77",
+      "current_sha256": "207aab9ce9ed3f4de058b272f42ede78836cb07b4783b9c1542dac7dca8d4b77",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete138-line feature-only upstream RubyGems API builder with64KiB private request, canonical staging/cwd and required binary/README/license. CRuby-only local platform and single minor requirement, generated archive SHA from upstream Digest, qualification fields false/not_run. No authored Ruby script, source gem, multiABI loader, signed publisher, independent artifact lineage or execution proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/ruby-adapter/src/worker.rs",
+      "lines": 68,
+      "sha256": "6a72de650b258e29ca797b9d16a7c72f40ae6d093a1209eb04e850e6cecf0c05",
+      "current_sha256": "6a72de650b258e29ca797b9d16a7c72f40ae6d093a1209eb04e850e6cecf0c05",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete68-line request-owned Rust thread guard: Drop closes cancellation sender and joins, with two source fixtures for completion and worker panic. Synchronous join has no arbitrary preemption guarantee; it does not qualify Ruby interrupts, GVL scheduling, GC compaction or host lifecycle.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    }
+  ],
+  "full_read_files": 7,
+  "lines": 865,
+  "execution": "NOT_RUN",
+  "public_ledger_updated": false,
+  "docs_frozen_checkpoint": "9e5ea12eb0bb749e9e26af259632ea2b928d0f8a"
+}

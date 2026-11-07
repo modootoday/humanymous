@@ -1,0 +1,34 @@
+{
+  "schema": "humanymous.pages-pending-status-correction/1",
+  "state": "Prepared only; docs frozen and unchanged",
+  "page": "docs/reference/supported-topologies.md",
+  "stale_statement": "An additional coordinator and strict receipt validator are authored but remain uncompiled and unexecuted at this checkpoint.",
+  "evidence_source": ".spec/evidence/20261107124614-apache-adapter-hosted-prefork-process-group-observation/result.json",
+  "evidence_sha256": "f9df0456157d87c4f78f1fbe62b87a16d0f0135d46f8a12862fd14c0a5832b18",
+  "runtime_source": "b5c15f0df324373adcbe9a139bfc73cdb2efcd3b",
+  "workflow_run": 42373232097,
+  "recomputed_case_rows": 45,
+  "recomputed_outcomes": {
+    "passed": 35,
+    "failed": 10
+  },
+  "per_mpm": {
+    "event": {
+      "passed": 15
+    },
+    "worker": {
+      "passed": 15
+    },
+    "prefork": {
+      "passed": 5,
+      "failed": 10
+    }
+  },
+  "pilot_cleanup_observed": false,
+  "container_image_cleanup_observed": true,
+  "status": "failed",
+  "proposed_replacement": "The coordinator and receipt validator have source-bound experimental execution. At source b5c15f0, hosted run42373232097 recorded45 distinct scenario/MPM rows:35passed and10failed, with no not-run rows. Event and worker each passed15; prefork passed5 and failed10. The report remained failed and pilot cleanup was not established, although separate container/image cleanup was observed. These historical partial results do not qualify later changes, all45cases, independent custody or the complete product.",
+  "new_execution": "NOT_RUN",
+  "docs_modified": false,
+  "full_product_qualified": false
+}
