@@ -1442,3 +1442,21 @@ executable native-role joins with sibling negatives are required. The bounded
 contract omissions are addressed; no consolidated implementation, unsafe isolation
 or release qualification is proved. Original review001 and correction002 remain
 separate. Private review hashes are bound in baseline.json; full audit stays OPEN.
+## Pre-relocation Audit freeze and Lab finite403 projection
+
+Independent verification of Audit919b088d's source-freeze record confirms106
+Git paths at8d362f49,106 actual disk paths and106 frozen records, with zero
+inventory/hash/size/blob differences. Two ancillary operational/license files
+and seven owned fixture hashes also match. Cargo remains Root-owned. This is a
+pre-relocation source baseline, not the eventual Runtime move, visibility
+negative compilation, merged execution or whole-graph qualification.
+
+Labedc30181 adds the two Collector field-free403 variants to the closed finite
+mapping/catalog. The pinned pilot SHA remains c61b7649; selected closed failure
+block, source location and adjacent exact variant constrain refinement. Unknown,
+extra payload/suffix, ambiguous and console-only messages do not gain the refined
+category. Projection remains a failed-case diagnostic; no source-log authenticity,
+authorization or historical403 cause is proved. No new P0/P1 was confirmed in
+this source slice. Authored parser inventory37 is expected, not actual execution.
+Private evidence hashes are bound in baseline.json. Audit launched no compiler,
+process, native or product workload; global gates remain OPEN.
