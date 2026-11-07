@@ -549,8 +549,8 @@ paths/unregistered inputs(17938errors/1warning); --no-local remained0errors/1war
 Root relayed explicit user authorization for an active Windows completion goal.
 get_goal returned none; create_goal set active without a token budget. Completion
 requires owned implementation/commits, pure unit checks, actual hosted pilots,
-strict accounting and Specfold evidence. Current title: Humanymous · Windows ·
-네이티브 러너. Policy canon remains program-roadmap/delivery; local actual process,
+strict accounting and Specfold evidence. Thread role: Windows native runner.
+Policy canon remains program-roadmap/delivery; local actual process,
 SCM/account mutation, duplicate dispatch and publication remain unauthorized.
 
 Pure evidence/accounting validates passed workspace publication: typed unsigned
@@ -589,3 +589,101 @@ ownership. CLI selects typed references, runtime consumes protected bytes and au
 custody retains key sealing responsibilities. Missing/locked/unsupported must fail
 closed, no UI or plaintext argv/env/file fallback. This ownership acceptance is not
 an implemented or verified OS secret provider; other-OS gaps stay explicit.
+
+## Protected service input draft (dependency activation pending)
+
+CLI and this owner agreed API native_security::secret::{ServiceSecretReference::
+new(service_name,credential_id),read_service_secret(&reference)} returning
+io::Result<Zeroizing<Vec<u8>>>. References are nonsecret owned-service selectors,
+not paths/argv/environment values. Existing humanymous-lab service namespace is
+retained; id is1..64 lowercase ASCII/digit/hyphen. Debug redacts selector values.
+Reader returns only nonempty <=4096 bytes; CLI additionally verifies UTF8 before
+injecting existing zeroized runtime audit passphrase into an otherwise secret-free
+signed config. No creation, fallback, UI, logging or custody reinitialization.
+
+Draft Windows implementation requires resolve_service_sid(service)==actual token
+user SID before accessing an explicit native store. Exact target is
+humanymous/service/{service}/{id}; existing target metadata and Local persistence
+are checked before and after secret retrieval. These separate reads are not an
+atomic anti-ABA snapshot. Returned bytes are immediately zeroized-owned; existing
+sealed custody authenticates its keys. Backend errors are replaced by a static
+unavailable error. Missing/locked/store/principal errors fail closed. Virtual
+service credential-store availability is not yet demonstrated; no installer
+credential store may substitute. Other OS readers return Unsupported.
+
+Proposed safe dependency graph is keyring-core1.0.1 and Windows-only
+windows-native-keyring-store1.1.0 without default features plus existing workspace
+zeroize. Root owns graph/lock activation. Draft secret files remain unexported and
+uncompiled until that coordination, with no manifest or existing lib change.
+Read-only provider has no provisioning endpoint; hosted fixture provision/cleanup
+in the actual service principal remains required, not_run. Caller may not implement
+a duplicate OS reader or pass plaintext through argv/env/file to evade this gate.
+
+Primary API basis: [explicit native Windows store](https://docs.rs/windows-native-keyring-store/latest/windows_native_keyring_store/),
+[store build](https://docs.rs/windows-native-keyring-store/latest/windows_native_keyring_store/store/struct.Store.html),
+and [keyring Entry](https://docs.rs/keyring-core/latest/keyring_core/struct.Entry.html).
+Pinned dependency activation and actual hosted tests must substantiate the draft.
+
+Root approved the pinned graph and sole-provider scope. Native-security manifest
+now declares workspace zeroize and Windows-only keyring-core1.0.1 plus
+windows-native-keyring-store1.1.0 with default features disabled; lib exports
+secret. The owned service-name check is shared by selector and SID resolution.
+No authored unsafe or shared root Cargo/lock change. Root must resolve common
+and isolated-runner locks; its current Cargo slot belongs elsewhere. Thus new
+provider compile/pure tests and actual service principal read remain not_run.
+
+Hosted observation is separate: run42348518353/attempt1/source63f69ae job
+128331815997 windows-2025 built workspace successfully then failed workspace
+actor step. The job log has only the wrapper's generic owner execution/summary
+failure. Specific harness and denominator are unknown; positive/negative service
+steps were not reached. CI owner holds raw native-windows-job.log in private
+evidence20261107064713 (SHA676b6a7d7695163f6e299b354b34a53596aa5ae58951251e3c744a3d04859443).
+No runner summary was recovered. Do not substitute historical local Node ignored
+failures as this run's cause. CI followupa0ceac3 emits sanitized formatter output;
+its execution is not qualified by the old run. Public job observation is attached.
+
+## Follow-up source closure and verification queue
+
+Root approved credential-pilot=[] and existing serde.workspace for test-support.
+The generic duplicate-decoded-key visitor moved with attacker-owner consent from
+671c439 into test-support::json::decode_strict_json(bytes,max_bytes), with typed
+TooLarge/Invalid, byte bound before parse, serde nesting limit, finite numbers,
+trailing-input refusal and no payload in errors. Attacker removed its private
+visitor in052c1da; lab consumes the same API. Schemas, replay and semantic checks
+remain consumer-owned. New shared pure2tests and graph verification are not_run.
+
+Service private children now have two explicit entry points: installer-owned
+delegated StateDirectory parent with signed installer SID, and already service-
+owned protected/inheritable parent. Both use one create-new/same-handle hardening
+body, actual service TokenUserSID, no existing-child repair or unknown cleanup.
+Parent-owner/path-replacement and trusted-ancestor premises remain explicit.
+Service fixtures clean their own newly created children after custody/WAL drop;
+production persistent state is not deleted on normal stop. New pure1test and
+actual OS directory initialization remain unverified.
+
+Credential-pilot fixture API accepts DisposableServiceContext::new(service,run,
+source_sha40or64lowerhex) and ServiceSecretFixture::create(ref,zeroizedbytes,context),
+finish(self)->Result. Context is caller-validated nonsecret metadata, not signed
+or hosted attestation. CLI authenticates its signed plan; external run/source/
+actor evidence is required. No SCM CI-environment inheritance is assumed. Actual
+service SID and unique pilot-32lowerhex target are mandatory. Existing/unknown/
+changed metadata or secret refuses mutation. WinCred create/delete is not atomic
+or CAS against same-principal writers; exclusive disposable context is a premise.
+Explicit finish observes cleanup and Drop is best effort only. Default production
+reader remains readonly; other OS fixture creation is Unsupported. Root's prior
+pure3 report does not qualify this feature/factory extension. New pure1featuretest
+and actual service provisioning/read/cleanup remain not_run.
+
+Runner early initialization errors now preserve failed reports with unknown/null
+source/required/executed denominators, without overwriting existing reports.
+Only typed facts/optional OS error number are public. Pure1fallback test pending.
+
+CI-requested build observations count compiler-artifact events separately from
+harnesses, including dependency events and fresh/rebuilt/unknown; each existing
+Cargo child has its own elapsed milliseconds. Source/locks/declared toolchain/
+OS-arch-ABI/profile/features/hashed flags and overrides form an observed input
+fingerprint. Actual compiler version and all configuration inputs are not proven:
+input_key_complete=false/cache_reuse_proven=false. No prebuild is removed. Existing
+commands request private --timings HTML; raw JSON/sidecar stay private and HTML
+retrieval is not claimed. Public output permits counters/known labels/digests only.
+New pure2metrics tests and actual hosted fresh/timing observation remain not_run.

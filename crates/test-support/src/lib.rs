@@ -1,6 +1,7 @@
 //! Shared cross-language contract assertions for migration and integration tests.
 //! Runtime crates use this only as a dev-dependency.
 use serde_json::{Number, Value};
+pub mod json;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod process;

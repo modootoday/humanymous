@@ -6,7 +6,13 @@ pub use windows::{
     InstallationObject, WindowsPrivacy, verify_windows_pipe_privacy, verify_windows_privacy,
 };
 #[cfg(windows)]
+mod private_directory;
+#[cfg(windows)]
 mod service;
+#[cfg(windows)]
+pub use private_directory::{
+    create_service_private_directory, create_service_private_subdirectory,
+};
 #[cfg(windows)]
 pub use service::{
     ServiceRole, grant_service_access, resolve_service_sid, revoke_service_access,

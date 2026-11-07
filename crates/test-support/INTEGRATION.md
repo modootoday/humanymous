@@ -29,3 +29,13 @@ WASM boundary: process is cfg(not(target_arch="wasm32")); the JSON assertion
 library remains available to WASM. OS child APIs cannot be invoked on that target.
 This fixes target-specific drop_non_drop without allowing lints or pretending an
 OS actor exists. wasm32-unknown-unknown all-target Clippy and host9tests passed.
+
+`json::decode_strict_json(bytes,max_bytes) -> Result<Value,StrictJsonError>` is the
+shared report syntax boundary, extracted with attacker-owner consent from671c439.
+TooLarge is decided before parse; Invalid covers duplicate decoded keys at every
+depth, syntax/nesting/number/trailing failures. Errors never retain input fragments.
+Serde's recursion limit remains enabled; escaped equivalent keys collide and u64
+precision is retained. Consumers own schema/unknown-field/replay verification and
+their byte budgets. Attacker removed its original visitor in052c1da; lab uses the
+same API rather than a second visitor. New shared two pure tests are not yet run;
+root lock/slot integration is required. The old9process tests do not qualify this API.

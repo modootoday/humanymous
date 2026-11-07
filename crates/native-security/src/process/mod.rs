@@ -4,6 +4,23 @@ mod windows;
 #[cfg(windows)]
 pub use windows::{WindowsIdentity, current_identity};
 
+pub(crate) fn require_owned_service_name(name: &str) -> std::io::Result<()> {
+    let valid = name.strip_prefix("humanymous-lab-").is_some_and(|tail| {
+        !tail.is_empty()
+            && tail.len() <= 48
+            && tail
+                .bytes()
+                .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
+    });
+    if !valid {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            "invalid owned service name",
+        ));
+    }
+    Ok(())
+}
+
 /// Effective native Unix identity; no shell command or environment lookup.
 #[cfg(unix)]
 pub fn current_uid() -> u32 {

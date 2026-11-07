@@ -58,15 +58,7 @@ fn policy(role: ServiceRole) -> WindowsPrivacy {
 }
 /// Resolve only the owned lab service namespace through the native account API.
 pub fn resolve_service_sid(name: &str) -> io::Result<String> {
-    let tail = name.strip_prefix("humanymous-lab-").ok_or_else(denied)?;
-    if tail.is_empty()
-        || tail.len() > 48
-        || !tail
-            .bytes()
-            .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
-    {
-        return Err(denied());
-    }
+    crate::process::require_owned_service_name(name)?;
     let (sid, _, _) = wrappers::LookupAccountName(
         Option::<&std::ffi::OsStr>::None,
         format!(r"NT SERVICE\{name}"),
@@ -75,7 +67,7 @@ pub fn resolve_service_sid(name: &str) -> io::Result<String> {
     service_sid(&text)?;
     Ok(text)
 }
-fn opened(path: &Path) -> io::Result<File> {
+pub(super) fn require_local_path(path: &Path) -> io::Result<()> {
     let text = path.to_str().ok_or_else(denied)?;
     let bytes = text.as_bytes();
     if !path.is_absolute()
@@ -86,12 +78,16 @@ fn opened(path: &Path) -> io::Result<File> {
         return Err(denied());
     }
     crate::volume::require_fixed(&format!("{}:\\", bytes[0] as char))?;
+    Ok(())
+}
+pub(super) fn opened(path: &Path) -> io::Result<File> {
+    require_local_path(path)?;
     OpenOptions::new()
         .access_mode(0x60000)
         .custom_flags(0x02200000)
         .open(path)
 }
-fn set_dacl(file: &mut File, sddl: &str) -> io::Result<()> {
+pub(super) fn set_dacl(file: &mut File, sddl: &str) -> io::Result<()> {
     let descriptor: LocalBox<SecurityDescriptor> = sddl.parse()?;
     wrappers::SetSecurityInfo(
         file,

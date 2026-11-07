@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.hosted-job-observation/1",
+  "run_id": 42348518353,
+  "attempt": 1,
+  "job_id": 128331815997,
+  "source_prefix": "63f69ae",
+  "runner": "windows-2025",
+  "status": "failed",
+  "workspace_build": "passed",
+  "workspace_actor_step": "failed",
+  "workspace_harness_denominator": null,
+  "failed_harness": "unknown",
+  "service_positive": "not_run",
+  "service_negative": "not_run",
+  "sanitized_runner_summary_recovered": false,
+  "private_job_log_sha256": "676b6a7d7695163f6e299b354b34a53596aa5ae58951251e3c744a3d04859443",
+  "private_evidence_owner": "delivery-hosted-second",
+  "followup_stdout_summary_change": "a0ceac3",
+  "followup_source_qualified_by_this_run": false,
+  "full_runtime_qualified": false
+}
