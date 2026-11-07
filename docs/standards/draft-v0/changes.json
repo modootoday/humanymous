@@ -7,6 +7,13 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "implementation-evidence",
+      "paths": ["validation/implementation-map.md", "reviews/security-privacy.md"],
+      "summary": "Reconcile observer settings reads and optional separately credentialed resource-operator source, with CAS/journal/session-invalidation and unknown-outcome limits; execution remains unqualified.",
+      "generic_wire_changed": false,
+      "destructive_controls_qualified": false
+    },
+    {
       "kind": "experimental-validation",
       "paths": ["validation/vectors.md", "validation/fixtures/adapter-normalized-profiles-v1.json"],
       "summary": "Author a separate25-case normalized producer-profile corpus with fixed expectations; extended runner compilation and execution remain pending.",

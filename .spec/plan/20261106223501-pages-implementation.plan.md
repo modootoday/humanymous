@@ -1680,3 +1680,17 @@ Completed host coordinator source reading. Added manual receipt with explicit
 bareDocker/no independently recordedengine gap and limited namedcontainer/tag
 cleanup rather than cache/content erasure. Relayed current Desktopengine canon
 to Apache owner for explicit local binding/preflight; no Docker/native execution.
+
+### Resource operator replaces obsolete observer-only description
+
+Inspected runtime Management/OperatorPolicy/ServiceHost bind_with_operator,
+OperationalSettings, application apply and SettingsStore commit source. Updated
+observer to status+settings reads, retained observerfalse flags and separate
+operator_available. Added source-only resourceoperator section: independent
+credential/witness/settings prerequisites, exactscope/parentrevision/body limits,
+five boundedresourcefields, capacity1queue/serialized stage-journal-finalize-apply,
+sessioninvalidation and ambiguous outcome poisoning/no blindretry. Standalone
+runtimebind doesnotprovisionrole; no scoring/destructive control/qualification.
+Draft implementationmap/privacy/change manifest reconciled. Two fullfile manual
+receipts; larger store/service/application excerpts not accepted as wholefiles.
+No compiler/native/runtime/Docker command during benchmarkquietwindow.

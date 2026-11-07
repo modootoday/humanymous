@@ -47,6 +47,14 @@ does not exercise approval or destructive-operation authorization. Retain actual
 cross-principal, credential-confusion, scope-replay, browser-header and listener
 shutdown cases before describing this boundary as qualified.
 
+The newer [resource-operator source](../../../reference/on-call-quick-reference.md#experimental-resource-operator)
+uses a distinct credential and witnessed durable settings, not the observer's
+read permission. Review role confusion, exact parent revision, queue saturation,
+session invalidation, cancellation after journal commit and restart selection.
+A timeout may leave a committed change without a successful response; do not
+repeat a mutation merely because its caller lost the reply. This resource-only
+path is not scoring policy, destructive control or a completed dual-control pilot.
+
 Sources: [Windows pipe security](https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights),
 [Unix sockets](https://www.man7.org/linux/man-pages/man7/unix.7.html),
 [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/).

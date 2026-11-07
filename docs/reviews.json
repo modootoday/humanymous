@@ -2,6 +2,26 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/runtime/src/management/operator.rs",
+  "sha256": "4c34921a740e3ac71fa1760cd0b732350e8f215cf8867bf65c5a9698e884d6ef",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete optional operator policy/request/dispatch: independent credential, exactnativepeer/scope/route/header checks, strict expectedrevision+resource schema, capacity1queue and unknown-outcome timeout; no scoring/destructive controls or actualexecution.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/configuration/operational.rs",
+  "sha256": "aa0a21fda1ed2bb760f34ecda727516e76220a630cff16c5bb116af5d92e7650",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete five-field resource schema and source negative test: capacity1..4096,TTL1000..3600000,timeout1..30000,global/sessionrate1..10000; rejects scoring/secrets. Validation is not durable application or completed tests.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/apache-adapter/native/src/coordinator/host.rs",
   "sha256": "c7d14894348a694ca1d567d845fd3e18cebc033a41b384056b1c6aa10bea15af",
   "reviewer": "codex/rust-pages",

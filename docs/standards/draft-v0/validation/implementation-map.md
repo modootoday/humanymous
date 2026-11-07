@@ -60,10 +60,12 @@ component results do not cover this refactor. The
 [Node reference](../../../reference/node-adapter.md) records the current interface
 and optional host declarations.
 
-The runtime's new management source exposes observer status only, with separate
-native-peer and credential checks and an exact installation scope. It does not
-implement writable settings or destructive controls. Its current policy fixtures
-and native listener lifecycle remain unexecuted; the
+The runtime management source exposes observer status/settings reads and an
+optional separately credentialed resource operator, with native-peer and exact
+installation-scope checks. The operator's source stages and journals resource-only
+CAS changes and invalidates volatile sessions; it does not change scoring or add
+destructive controls. The new operator's policy and native lifecycle fixtures
+remain unexecuted; the
 [operations reference](../../../reference/on-call-quick-reference.md#experimental-native-status-service)
 describes the source contract without treating it as deployment qualification.
 
