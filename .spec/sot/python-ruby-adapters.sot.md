@@ -262,6 +262,37 @@ Eight groups must execute with zero ignored/
 filtered cases. No source/object-smoke result qualifies actual runtime or Windows
 ABI/IPC; no server group is silently skipped green.
 
+Later execution evidence supersedes only the historical WSGI NOT_RUN state:
+summary009 retains the first immutable8eb66811 actual failure (6passed/2failed,
+10rows/22cases, exit101). Fixture-only correction7842b6a8 sets the stalled
+peer's required0600 permissions while retaining accepted request-byte proof,
+and compares exact fresh owned empty WAL bytes and file identities before/after
+shutdown without reopening empty history. Production history validation remains
+unchanged. Summary010 records new immutable7842b6a8 coherent artifact builds,
+all-targets check/Clippy and local UID1000 WSL actual success:8passed,0failed,
+0ignored/filtered,6actualgroups+2pure,14rows/28cases. Source2254-file and reused
+dependency manifests stayed unchanged; owned cleanup was empty. This establishes
+local WSGI component behavior only. Hosted execution, ASGI realserver, production
+wheel clean install, closure audit and Windows qualification remain independent.
+
+The dedicated python-validation.yml path is a component workflow with one
+standard Ubuntu job, exact github.sha checkout, Rust1.99.1, jobs1/incremental0,
+contents:read and no automatic artifact upload/cache write/publication/OIDC.
+Only codex/python-validation push and manual dispatch trigger it; root alone
+pushes/dispatches reviewed source. Rust tests/component_controller.rs reuses the
+sole wsgi_server cases. It prepares an ordinary-actor private venv, check/Clippy
+and required pure framing tests before coherent artifact builds and execution.
+Required discovery8, exact passed8/failed0/ignored0/filtered0,14distinct rows and
+28cases are independently parsed; missing/duplicate/unknown cases fail closed.
+Source, dependencies and copied artifacts bind to before/after hash closures.
+Safe bounded stdout exposes only status/counts/hashes; private output stays local.
+The shared helper bounds/reaps the direct harness; a recorded process group,
+current UID and exact private task marker govern cleanup of known children.
+Missing identity or a group escape fails cleanup and qualification. This is not
+arbitrary process-tree containment. Controller/policy/hosted execution remains
+NOT_RUN until separate compiled and actual receipts exist; the earlier local
+28-case receipt does not qualify newly authored controller code.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

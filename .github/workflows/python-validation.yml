@@ -1,0 +1,42 @@
+# Component evidence only. Private diagnostics stay on the ephemeral runner.
+name: CI / Python component
+'on':
+  push:
+    branches: [codex/python-validation]
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: python-validation-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CARGO_BUILD_JOBS: '1'
+  CARGO_INCREMENTAL: '0'
+  CARGO_TARGET_DIR: ${{ runner.temp }}/python-component-target
+  PYO3_PYTHON: /usr/bin/python3
+  PYTHONDONTWRITEBYTECODE: '1'
+  DOCKER_BUILD_RECORD_UPLOAD: 'false'
+jobs:
+  component:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+        components: clippy
+    - name: Reject incomplete component receipts
+      run: cargo test --locked -p humanymous-python-adapter --features host-pilot --test component_controller
+    - name: Run owned Rust controller and all 28 WSGI cases
+      id: pilot
+      timeout-minutes: 45
+      run: cargo test --locked -p humanymous-python-adapter --features host-pilot --test component_controller -- --exact coordinate --ignored --nocapture --test-threads=1
+    - name: Clean recorded owned task group
+      if: ${{ always() && steps.pilot.outcome != 'skipped' && steps.pilot.outcome != '' }}
+      timeout-minutes: 3
+      run: cargo test --locked -p humanymous-python-adapter --features host-pilot --test component_controller -- --exact coordinate_cleanup --ignored --nocapture --test-threads=1

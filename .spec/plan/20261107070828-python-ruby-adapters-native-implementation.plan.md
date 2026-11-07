@@ -399,3 +399,18 @@ Source2254-file and dependency manifests remained unchanged. Owned cleanup
 returned no task processes; B returned terminal0. Summary009 failure stays
 retained. WSGI component acceptance is now measured locally; ASGI realserver,
 wheel clean installation, hosted CI, Node/Bun and native Ruby gates remain open.
+
+### Dedicated Python hosted controller authored, not yet verified
+
+Root opened and closed a narrow manifest window in e83d5e55, integrating the
+existing humanymous-test-support dev path edge and locked tree resolution without
+external package changes. The literal python-validation.yml lane was handed off
+by CI owner and root; adapter-hosts includes that exact path. Root's latest rule
+supersedes earlier artifact wording: artifacts[] and no automatic upload.
+One standard Ubuntu component job invokes Rust-only orchestration and the sole
+existing wsgi_server case implementation. New receipt parser and known-group
+cleanup helper are formatted source only; no compiler or runtime was started
+after returning B. Required follow-up: static review, immutable checkpoint,
+allocated Unix check/Clippy/parser tests, source fixes if needed, then root-only
+reviewed branch push and genuine hosted controller execution. No new source is
+qualified by the earlier source7842b6a8 result.
