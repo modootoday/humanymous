@@ -86,5 +86,36 @@
     "broader13_run": false,
     "hosted_qualified": false,
     "full_goal_complete": false
+  },
+  "bounded_selected_inputs": {
+    "source_manifest_sha256": "185e11d8e250b3730864ba961140c8cf1b4b936342af2fc629ad03a9ec2e992b",
+    "scope": "trusted repository cooperative selected content only",
+    "l1_selected_passed": 18,
+    "actual_mutation_passed": 1,
+    "windows_file_target": {
+      "link_refusal_qualified": false,
+      "failed": 1,
+      "passed": 5,
+      "error": "symlink fixture creation OS1314"
+    },
+    "wsl_linux_file_target": {
+      "filtered": 0,
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0,
+      "selected_check_exit": 0,
+      "selected_clippy_exit": 0
+    },
+    "windows_all_target_check_exit": 0,
+    "windows_all_target_clippy_exit": 0,
+    "fmt_exit": 0,
+    "selected_closure_inputs": 13,
+    "selected_closure_changed_paths": 0,
+    "both_targets_returned": true,
+    "provider_identity_qualified": false,
+    "immutable_snapshot": false,
+    "cache_authorized": false,
+    "broader20_suite_run": false,
+    "full_goal_complete": false
   }
 }

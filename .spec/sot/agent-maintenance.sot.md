@@ -16,6 +16,19 @@ rel:
 
 # Rust agent canon and qualified skill evaluation
 
+## Accepted bounded selected-input observation
+
+Root authorized the separate selected_inputs primitive under the existing crate:
+5000 files,2GiB total actual reads,512MiB per-file content cap,64 roots and a
+cooperative30-second budget. The exact contract is
+`.agents/evals/bounded-input-contract.md`. L1 generic reader/state and L2 owned-file
+observations are separate gates. Probe bytes consume total budget; exact aggregate
+exhaustion without EOF is incomplete. Selection/content/provider qualification are
+separate; unknown identity never becomes complete qualification. Trusted repository
+observation is not an immutable security snapshot, cache or execution authority.
+Canonical LF inventory and Delivery provenance remain untouched. No new graph,
+dependency, native-security claim or hard blocking-I/O deadline is introduced.
+
 ## Draft new-lane coexistence v0.3
 
 Root requested a minimal Rust-only coexistence design for convention-audit and

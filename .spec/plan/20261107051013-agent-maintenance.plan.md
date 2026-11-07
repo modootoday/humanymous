@@ -10,6 +10,55 @@ rel:
 
 # Agent maintenance
 
+## Accepted selected-input implementation and role milestone
+
+Actual terminal evidence: Windows L1 reader/model17 plus accounting1 passed;
+one actual open-file mutation test passed. The6-case Windows file target passed5
+and failed1 before link observation because fixture creation required privilege
+(OS1314). The first failure is preserved without skip/ignore/config change.
+Windows all-target check/strict Clippy and scoped fmt passed. Root explicitly
+loaned the existing WSL benchmark-target-813 after compatibility/ownership check;
+the same frozen6-case file suite passed6/0failed/ignored/filtered, followed by
+selected check/Clippy. Fixtures were native Linux /tmp; source read closure was
+explicitly the same13 inputs, matching Windows freeze and both before/after sets.
+Neither result is a Windows link or adversarial identity proof. Both targets
+are returned with no live handles; no benchmark/installation/new target occurred.
+
+The accepted primitive/role milestone preserves the existing full goal and
+incomplete paired/discovery/session gates. Lowest ready unmet consumer is the
+root-authorized explicit selected-inputs CLI boundary using this module, with
+bounded JSON, metadata-only output and separate completion/identity flags; no
+automatic graph, cache authority or Delivery schema replacement. CLI workload
+execution requires a fresh assignment after this terminal return.
+
+Root's current lightweight ceiling is six admitted owners, superseding four;
+fresh commit<85% and free>20GiB remain mandatory. Heavy native/model/render
+profiles are separate. Rule94 and projections make that active admission
+precedence explicit rather than waiting for the historical88%/16GiB floor.
+The first Windows batch completed18 selected L1 tests plus1 actual mutation test;
+actual file target5passed/1failed on symlink creation OS1314, not provider refusal.
+All-target check/strict Clippy/scoped fmt passed,13 exact input hashes unchanged.
+Target returned with no live handles. Preserve the first failure; no skip,
+privilege change or Windows leaf-link qualification. Root allocated a separate
+existing compatible WSL warm target after Lab ownership coordination to run the
+same six-case file suite; actual Linux results remain distinct and pending.
+
+Root explicitly accepted implementation/defaults and trusted-repository scope,
+not another proposal gate. Added a separate selected_inputs module with frozen
+selection validation, streaming budgeted reader and actual-file observations;
+canonical inventory and Delivery provenance schemas/dependencies are unchanged.
+L1 and actual-file tests are authored, fmt-first; terminal execution is recorded
+only after the root-allocated selected batch. New integration inventory is20 cases
+across5 targets; the new selected_inputs target has6 cases, not an inherited pass.
+Provider identity/immutable/cache/execution qualification stay false; EOF/probe,
+aggregate-exhaustion and blocking-read limits are explicit in the accepted contract.
+
+Root's continuous-rotation policy is projected in rule94 and the dated THREADS
+transition to Developer Tooling and Bounded Preparation. Coordination obligations,
+original full goal and incomplete gates remain; the title adds no source grant.
+At terminal report exact source/gates/dependencies/handles/leases/paths and next
+ready unmet task. No idle-based reassignment or periodic automation is inferred.
+
 ## Exact23 bottom-up role projection
 
 The accepted [[sot:root/structural-development]], [[plan:root/20261107151000]]

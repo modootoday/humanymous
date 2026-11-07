@@ -6,4 +6,5 @@ pub mod package;
 pub mod paired;
 pub mod product;
 pub mod routing;
+pub mod selected_inputs;
 pub mod sessions;

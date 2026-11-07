@@ -8,6 +8,15 @@ are projected into `.agents/sessions/THREADS.md`. Titles do not grant source pat
 cancel in-flight work or change the current claim/protocol/resource permissions.
 Only rename chats in this project; preserve unrelated projects and historical runs.
 
+Root rotates responsibilities only after a meaningful source/test terminal report,
+not because a chat is idle or a turn ended. Report exact source, completed/missing
+gates, dependencies, live handles/target leases, paths and the lowest ready unmet
+task. Preserve dated old-role disposition and unfinished follow-up ownership.
+New responsibility needs exact contract/path/acceptance/resource grants and normal
+release/narrowing before acquisition. Root changes live title and M11 projects the
+same stable ID/history; neither renaming nor rotation authorizes foreign kills,
+new workloads or completion claims. Continue an authorized batch without busywork.
+
 Within each cluster, progress from accepted contract to pure units, actual provider
 boundary, service/host integration and product qualification. Upper owners prepare
 consumer contracts while lower proofs mature; fake/mock capability is never promoted
@@ -61,18 +70,21 @@ or incomplete snapshot. Preserve first failures and distinguish local/hosted run
 
 Local work includes coding, supported Windows/WSL compilation, pure units, fmt,
 scoped Clippy and allocated ordinary process/IPC/fixture tests. Root may assign
-at most four local pipelines A/B/C/D, each with an explicitly assigned distinct
-target, build jobs1 and incremental0. An idle slot is not authorization to start.
-Admit new work only at commit<85% and free physical memory>20GiB. Do not overlap
+at most six admitted lightweight owners, each with an explicitly assigned distinct
+existing target, jobs1, incremental0, offline and locked commands. An idle slot is
+not authorization to start. Recheck admission before launch: commit<85% and free
+physical memory>20GiB are both mandatory; failure of either defers new work.
+This six-owner ceiling excludes heavy CEF/SDK/Docker/model initialization/render
+profiles, which retain separate root allocation. Do not overlap
 targets or run CEF/native-heavy/bindgen together. Native Docker, CEF and SDK heavy
 builds are exclusive against other cold compilation streams, including initial
-Windows/WSL targets. Four slots are a ceiling, not evidence that four concurrent
+Windows/WSL targets. Six lightweight owners are a ceiling, not evidence that six concurrent
 cold streams are safe. Warm unit or bounded actual test processes may overlap
 only with explicit budget admission. Before starting a deferred heavy build,
 confirm all other cold streams are terminal and recheck commit<85%/free>20GiB.
-At commit>=88% or free physical
-memory<16GiB, automatically defer new compilation and reduce the next allocation
-count; never kill another owner's processes. GPU inference needs a separate
+The active launch rule does not wait for the historical88%/16GiB emergency floor.
+Guard events reduce subsequent allocations; owned stop actions follow only their
+explicit profile, never another owner's processes. GPU inference needs a separate
 explicit bounded allocation and owned-process stop policy.
 
 Root's later guard observation reached88.2594% host commit while initial WSL

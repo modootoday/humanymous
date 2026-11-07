@@ -3,10 +3,10 @@ id: evidence:root/20261107073348
 title: Agents M11 product skills
 status: active
 created: 2026-11-07T07:33:48Z
-updated: 2026-11-07T10:12:21Z
+updated: 2026-11-07T15:51:33Z
 files:
   - {path: hosted-813-summary.json, sha256: 245218b433c356a94c8e8c90621ebaec906fd733fa9accad4412964af9af27cd, bytes: 873, store: repo}
-  - {path: status.json, sha256: 1d1369dfb9c7d2a5d08710b9340cf63907b55a30cd8578a449a4ca1703115b07, bytes: 3155, store: repo}
+  - {path: status.json, sha256: f46fc8b2bf6da4814a7c597dfad0e022be24d9006992b3dc146412df5a8cb578, bytes: 4147, store: repo}
 ---
 
 # Agents M11 product skills

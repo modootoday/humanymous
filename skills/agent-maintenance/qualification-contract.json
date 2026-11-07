@@ -4,8 +4,8 @@
   "locked": true,
   "features": [],
   "inventory_status": "source-only; exact-source per-target --list must agree before execution",
-  "scope": "four integration targets only; excludes library units and whole-product qualification",
-  "expected_total": 14,
+  "scope": "five integration targets only; excludes library units and whole-product qualification",
+  "expected_total": 20,
   "required_summary": {
     "failed": 0,
     "ignored": 0,
@@ -53,6 +53,19 @@
       "expected_count": 1,
       "exact_test_names": [
         "single_literal_owned_path_commits_without_consuming_foreign_staging"
+      ]
+    },
+    {
+      "kind": "test",
+      "name": "selected_inputs",
+      "expected_count": 6,
+      "exact_test_names": [
+        "actual_files_share_the_aggregate_budget_without_hidden_probes",
+        "binary_and_empty_files_do_not_inherit_canonical_lf_policy",
+        "missing_or_directory_inputs_remain_explicit_provider_errors",
+        "selected_file_link_is_refused_without_reading_its_target",
+        "tighter_observation_counts_reject_a_looser_frozen_selection",
+        "unknown_selection_is_not_promoted_by_successful_content_reads"
       ]
     }
   ],

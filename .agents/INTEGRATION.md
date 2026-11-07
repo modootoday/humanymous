@@ -1,7 +1,7 @@
 # M11 agent-maintenance integration
 
-Owner: agents-meta / rust-agents-m11. REA remains reference-only. Current code
-checkpoint is `2899a89c`; the36pure result remains bound to `59c80426`, and earlier
+Owner: agents-meta / rust-agents-m11. REA remains reference-only. Exact source
+receipts and component boundaries are recorded below; the36pure result remains bound to `59c80426`, and earlier
 `1714b27` and `9c3b735` records remain historical.
 Shared Cargo/lock/toolchain and final candidate integration belong to root.
 
@@ -12,7 +12,8 @@ Shared Cargo/lock/toolchain and final candidate integration belong to root.
 - Rust tooling: `skills/agent-maintenance`, already a shared workspace member.
 - JSON lane catalog: `.agents/sessions/lanes.json`; default writer mode remains legacy-coexistence.
 - Product suite: three cases/twelve subject runs. Developer suite: five cases/twenty runs.
-- Latest allocated component batch:36pure passed, zero failed/ignored/filtered, all-target check/Clippy and fmt passed. Private developer-before/after hashes match.
+- Historical36pure batch and its check/Clippy/fmt remain bound to developer-before/after, not later source.
+- Selected-input batch:18 selected L1 passes,1 real mutation pass; Windows file target5passed/1failed on symlink fixture OS1314. Package all-target check/Clippy and scoped fmt passed. The same frozen6-case file target passed on allocated WSL Linux, with selected check/Clippy; exact13-input hashes unchanged on both venues. Linux does not qualify Windows link refusal.
 - Public evidence: `evidence:root/20261107073348`; exact logs, source hashes and original artifacts: `evidence:root/20261107073349`.
 
 Do not re-add a standalone workspace/lock or edit common Cargo files. The original
@@ -21,13 +22,13 @@ historical evidence51014/51015; they do not qualify current source or model beha
 
 ## Remaining execution gates
 
-Local Cargo work requires one of at most four root-assigned distinct-target
-slots A/B/C/D, jobs1/incremental0 and the shared resource guards. Admit only at
-commit<85%/freeRAM>20GiB; defer and reduce subsequent allocations at commit>=88%
-or freeRAM<16GiB. GPU inference remains separately allocated.
+Local Cargo work requires one of at most six admitted lightweight owners with an
+explicit distinct existing target and jobs1/incremental0/offline/locked commands.
+Fresh commit<85%/freeRAM>20GiB are both mandatory before launch; otherwise defer.
+Heavy CEF/SDK/Docker/model init/render profiles remain separately allocated.
 
 Native Docker/CEF/SDK heavy builds must not overlap another cold compilation
-stream. The four-slot ceiling is not a safe-concurrency claim; warm unit or bounded
+stream. The six-owner lightweight ceiling is not a safe-concurrency claim; warm unit or bounded
 process overlap still requires explicit admission. A deferred heavy build waits
 for other cold streams to become terminal and commit<85%/free>20GiB. Preserve
 caches and foreign processes; rule94 records the root-observed88.2594% guard stop.
@@ -53,7 +54,7 @@ failed total and missing coverage. A proposed independent scoped hosted step
 must not turn a failed whole-workspace/product job into a passing one.
 
 `skills/agent-maintenance/qualification-contract.json` is the single reviewed
-source-only inventory for these three targets: exact names, counts and zero
+source-only inventory for all five current integration targets (20 cases): exact names, counts and zero
 failed/ignored/measured/filtered requirements. Consumers must compare per-target
 discovery on the exact candidate before execution and bind each actual summary
 to that target. Reject duplicate/missing/extra names or targets and internal
@@ -61,7 +62,7 @@ count disagreements. Read this file rather than maintaining another count list.
 Its false qualification fields are intentional; the inventory is not a run receipt.
 
 The root-requested Git coordinator regression adds a fourth target, `git_coord`,
-with one actual isolated-repository test (14 total in the inventory). It requires
+with one actual isolated-repository test (14 total at that historical checkpoint). It requires
 Git and PowerShell7 available to the allocated runner. Its single-path case uses
 native `pwsh -File` arguments, a filename containing spaces/brackets, canonical
 attribution and a foreign staged-file preservation assertion. It never touches
@@ -84,6 +85,24 @@ Read-only canonical checks and artifact staging are actual tool executions, not
 pure tests. Respect their assigned execution scope and preserve receipts. The
 historical `eval` CLI pilot is not the isolated upstream harness and must not be
 rerun around its earlier policy denial.
+
+## Bounded selected-input consumer seam
+
+The library exports `selected_inputs`: caller-frozen finite inventory, streaming
+reader budgets and trusted-repository file observations. Accepted defaults and
+status semantics are in `.agents/evals/bounded-input-contract.md`. Existing LF
+inventory and Delivery Git/working provenance are unchanged. The current provider
+never claims immutable identity, cache/execution authority or complete provider
+qualification. Source selection is caller-declared, not an automatic SDK graph.
+
+Private73349 contains bounded-inputs-source-ready.json (eight exact source/test/
+inventory hashes plus the contract hash) and selected-inputs-20261108 raw logs,
+first Windows1314 failure, both venues'13-input closure comparisons and returned
+target receipts. The integration inventory adds selected_inputs with6 exact names;
+it is not a passing20-case whole-maintenance result. The next accepted slice is
+an explicit bounded selected-inputs CLI request/metadata boundary in this binary,
+not a replacement Delivery snapshot or new dependency edge. It needs its own
+source/tests and fresh execution allocation.
 
 ## Paired measurement and local runtime
 

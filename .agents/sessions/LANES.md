@@ -85,13 +85,14 @@ red-catalog loan remains unchanged and disjoint. Normal exact-owner handover and
 separate workload allocation still apply; no force or foreign release is allowed.
 The future convention-audit/performance Rust-only protocol remains draft.
 
-Execution slots are separate from work lanes: root assigns at most four local
-pipelines A/B/C/D with distinct targets, jobs1/incremental0 each. No automatic
-start from a free slot or same-target overlap. Admit only at commit<85% and free
-physical>20GiB; at commit>=88% or free physical<16GiB defer new compilation and
-automatically reduce subsequent allocations. No CEF/native-heavy/bindgen overlap
+Execution slots are separate from work lanes: root admits at most six lightweight
+owners with distinct existing targets and jobs1/incremental0/offline/locked commands.
+No automatic start from a free slot or same-target overlap. Fresh commit<85% and
+free physical>20GiB are both required before launch; otherwise defer new work and
+reduce subsequent allocations as necessary. Heavy CEF/SDK/Docker/model init/render
+profiles remain separately allocated, outside this lightweight ceiling. No CEF/native-heavy/bindgen overlap
 and no native Docker/CEF/SDK heavy build alongside another cold compilation
-stream. Four slots are only a ceiling; warm unit/bounded process overlap requires
+stream. Six lightweight owners are only a ceiling; warm unit/bounded process overlap requires
 explicit budget admission. Resume deferred heavy builds only after other cold
 streams are terminal and commit<85%/free>20GiB. Preserve caches; no WSL shutdown,
 global cache drop, Docker pruning or foreign-process termination for admission.

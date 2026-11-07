@@ -8,6 +8,15 @@ Titles preserve stable IDs and existing claims, not new write grants. Work botto
 within each dependency cluster while upper consumers prepare contracts in parallel;
 actual provider, host and product qualification remain separate evidence gates.
 
+Dated role transition,2026-11-08 KST: chat01a1b34e-f9e9-77d3-b883-0cc4d76763a4
+changed from Developer Tooling and Coordination to Developer Tooling and Bounded
+Preparation after root accepted the selected-input slice. Coordination duties,
+the original full goal and its unfinished paired/discovery/session gates remain
+with this owner; existing paths/mode/mutex are preserved. The new slice is finite
+trusted-repository observation with separate pure/provider evidence and allocated
+execution. Future rotations preserve old-role disposition, follow-up owner,
+contracts/paths/resources and terminal handles before root assigns the next task.
+
 | Chat | ID | Responsibility |
 |---|---|---|
 | Humanymous · X · Integration and Shared Core | 01a1b25e-8e4c-7a70-b7b7-f51a66c58514 | Own shared Cargo/lock/toolchain, signals/Integrity/Pass and frozen scoring seams; coordinate layer gates and final main integration. |
@@ -31,7 +40,7 @@ actual provider, host and product qualification remain separate evidence gates.
 | Humanymous · L5 · Wargame and Report Validation | 01a1b2f5-ec55-7c91-863d-f539c70417be | Pure legacy report/renderer/CLI, strict catalog contracts then actual generic26 evaluation; preserve unsupported denominators. |
 | Humanymous · X · Performance and Build Optimization | 01a1b645-0e76-75b0-b509-fd8e7719fc51 | Measure the touched layer, bound preparation overhead and research cache policy; no production source writes without an exact handoff. |
 | Humanymous · X · Conventions and Architecture Audit | 01a1b645-0bdc-7a53-b759-57c1eb998336 | Independent risk-prioritized layer/contract audit, batch nonblocking review, no duplicate source edits or fabricated qualification. |
-| Humanymous · X · Developer Tooling and Coordination | 01a1b34e-f9e9-77d3-b883-0cc4d76763a4 | Own Rust tooling, claims/title/role registry and concise rules; preserve global Git mutex and existing compatibility mode. |
+| Humanymous · X · Developer Tooling and Bounded Preparation | 01a1b34e-f9e9-77d3-b883-0cc4d76763a4 | Own Rust tooling, bounded selected-input preparation, claims/title/role registry and concise rules; preserve global Git mutex and existing compatibility mode. |
 | Humanymous · L5 · Pages and Public Draft v0 | 01a1b2da-2656-7a23-a60b-08a681b23117 | Consume actual source-bound layer receipts, publish maturity limits, batch render/AT checks at public-input milestones. |
 
 Root owns shared Cargo/lock/toolchain, program roadmap and final Git integration. Pages owner alone writes docs/**, including public Draft v0. Other owners submit INTEGRATION.md/spec deltas. Source authoring may parallelize when real paths do not overlap.
@@ -56,7 +65,7 @@ claim. This does not grant Challenge/Pass ownership, broader attacker files or a
 unnamed evidence bundle. Root retains Challenge ownership and separate delegation;
 the convention audit loan is unaffected.
 
-Local validation has at most four root-assigned pipelines A/B/C/D, jobs1/incremental0 and distinct targets, never same-target overlap or implicit permission to start. Admit only at commit<85% and free physical>20GiB. At commit>=88% or free physical<16GiB defer new compilation and automatically reduce subsequent allocations. Native Docker/CEF/SDK heavy builds are exclusive against other cold compilation streams; four slots do not prove concurrent cold capacity. Warm unit/bounded process overlap needs explicit budget admission. Deferred heavy builds wait for all other cold streams to become terminal and admission guards to pass. Preserve caches; no WSL shutdown, global cache drop, Docker pruning or foreign kills for admission. GPU inference remains separately allocated. Resource measurements and manifest windows follow program-roadmap/delivery and rule94.
+Local validation has at most six admitted lightweight owners, jobs1/incremental0/offline/locked and distinct existing targets, never same-target overlap or implicit permission to start. Fresh commit<85% and free physical>20GiB are both mandatory before launch; otherwise defer new work. Heavy CEF/SDK/Docker/model init/render stays separately allocated; native heavy builds are exclusive against other cold compilation streams. The lightweight ceiling does not prove concurrent cold capacity. Warm unit/bounded process overlap needs explicit admission. Deferred heavy builds wait for all other cold streams to become terminal and admission guards to pass. Preserve caches; no WSL shutdown, global cache drop, Docker pruning or foreign kills for admission. Return targets at terminal. Resource measurements and manifest windows follow program-roadmap/delivery and rule94.
 
 Supported Windows/WSL compilation and ordinary process/IPC/fixture tests may run locally by root allocation. Selected Linux pre-push checks may use the same YAML in Windows Desktop act under rule96. GitHub retains unavailable OS/architecture and SCM/account profiles, event/permission semantics, genuine hosted contracts and the final matrix. Preserve actual venue and source-bound evidence; never relabel local as hosted. Rule94 records the measured basis and its limits. User-authorized model smoke remains separately bounded and does not qualify full paired evaluation. No publication or paid infrastructure is authorized. Only explicitly accepted bounded language/unsafe exceptions in controlling SoTs apply.
 
