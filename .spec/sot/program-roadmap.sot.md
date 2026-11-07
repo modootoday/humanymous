@@ -20,11 +20,13 @@ They are component evidence, not final integration qualification.
 | --- | --- | --- |
 | Pages | Run42367274252 at44876534 succeeded: delivery65 and Pages37 tests; both88-page builds and165-file archive consumers passed; zero branch artifacts | Main upload/download roundtrip, browser/AT and deployment are not executed |
 | Go | Run42367272089 at44876534 failed runtime_build after successful explicit actor check/Clippy; eight scenarios NOT_RUN, cleanup true | Typed Docker build diagnosis and actual eight-scenario retry |
-| Apache | Run42367750854 atd65da705 failed the actual45-scenario step after successful unit/check/Clippy steps; ledger cleanup step passed | Case-level diagnosis, supported-MPM behavior fix and actual45-case qualification |
+| Apache | Run42367750854 atd65da705 actually ran45:23 passed/22 failed/zero NOT_RUN; event14/15, worker8/15, prefork1/15; container/image cleanup true but pilot cleanup false | Supported-MPM fixes plus independent event subrequest failure; actual45-case and pilot-cleanup qualification |
 | Audit | Exactf88e76f4 full suite115 passed; five ignored excluded; focused nine overlap the full suite | Remaining S1 streaming primitives, independent native custody and later production gates |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identity cases remain CHALLENGE with zero origin; positive TLS ALLOW-to-origin is unqualified |
-| Python | Exact5655b965 all-target check passed, strict Clippy failed; two pure receipt tests NOT_RUN | Immutable d68682e4 check/Clippy/two pure tests allocated; actual controller remains NOT_ACCEPTED |
+| Python | Exactd68682e4 all-target check and strict Clippy passed; exactly two receipt pure tests passed/two controller definitions filtered;2325-file source manifest unchanged | Actual controller remains NOT_ACCEPTED; ASGI/server pilots not executed; prior5655 failure retained |
 | .NET | Exact07967eae release harness compilation, eight selected pure tests and strict Clippy passed | Single context-document drift must be explicitly classified; immutable helper hash and actual managed ABI caller remain pending |
+
+Pages reference corrections are now26960736/docs tree56b1e029952b5a3b29d4b0d056671bc79110e43b; the older448 hosted build does not validate this newer tree. Source checker reports88 pages/errors zero, while fresh hosted/browser/AT checks remain pending.
 
 Root released only bounded Python check/Clippy/two pure tests, Lab diagnostic
 implementation and Audit private S1 implementation. Lab may extend the cold
