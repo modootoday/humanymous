@@ -30,6 +30,13 @@ Retiring, wrong-prior recovery refuses, fresh approval reconciles after prior
 expiry with exact old/fresh receipt identity. No ignored helper was added.
 Formatting and scoped document checks only; compile/native tests are NOT_RUN.
 
+Before allocation, the same tests were extended with actual live inventory
+corruption and signed older-generation rollback while an inventory object is
+open. Refusal must preserve both encrypted backup and fault bytes, then exact
+restoration leaves Active. Recovery also requires rejection of reauthorizing
+the spent prior operation before obtaining a different fresh grant. These are
+authored native cases within the same two test functions, not additional passes.
+
 ## How to read it
 
 Independent implementation review after aa655e7b found no new P0/P1 and judged

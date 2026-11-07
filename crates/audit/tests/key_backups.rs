@@ -212,16 +212,31 @@ fn retained_retirement_refuses_missing_inventory_foreign_authority_and_expired_g
         true,
     )
     .unwrap();
+    let empty_inventory = fs::read(path.join("backups.json")).unwrap();
     let digest = store.create(&sealed(), b"fixture-pass").unwrap().digest;
     let file = path.join(format!("{digest}.sealed"));
     let original = fs::read(&file).unwrap();
     let ledger = path.join("backups.json");
+    let current_inventory = fs::read(&ledger).unwrap();
     let saved = path.join("backups.saved-for-loss");
     let missing = proposal(&digest, 50);
     let grant = retained(&mut control, &mut retainer, &missing);
     fs::rename(&ledger, &saved).unwrap();
     assert!(store.retire_retained(&control, grant, 110).is_err());
     fs::rename(&saved, &ledger).unwrap();
+    for (nonce, bytes) in [
+        (60, b"corrupt live inventory probe".as_slice()),
+        (61, empty_inventory.as_slice()),
+    ] {
+        let rejected = proposal(&digest, nonce);
+        let grant = retained(&mut control, &mut retainer, &rejected);
+        fs::write(&ledger, bytes).unwrap();
+        assert!(store.retire_retained(&control, grant, 110).is_err());
+        assert_eq!(fs::read(&file).unwrap(), original);
+        assert_eq!(fs::read(&ledger).unwrap(), bytes);
+        fs::write(&ledger, &current_inventory).unwrap();
+        assert_eq!(store.list().unwrap()[0].status, BackupStatus::Active);
+    }
     let missing_control = proposal(&digest, 58);
     let grant = retained(&mut control, &mut retainer, &missing_control);
     let control_file = control_path.join("control.json");
@@ -325,6 +340,19 @@ fn retained_retirement_sharing_fault_requires_fresh_exact_reconciliation() {
     let mut store = inventory(&path, BackupBootstrap::Pinned(&pin));
     assert!(matches!(&store.list().unwrap()[0].status,
         BackupStatus::Retiring { proposal } if proposal == &prior));
+    assert!(
+        control
+            .authorize_retained_action(
+                ApprovalRequest {
+                    proposal: &prior,
+                    approvals: &approvals(&prior),
+                    now: 110
+                },
+                &mut retainer,
+                RetentionRequirement::FileSynced,
+            )
+            .is_err()
+    );
     let fresh = proposal(&digest, 55);
     let grant = retained(&mut control, &mut retainer, &fresh);
     let mut wrong_prior = prior.clone();
