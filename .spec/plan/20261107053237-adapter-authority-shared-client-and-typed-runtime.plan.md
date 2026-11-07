@@ -1110,3 +1110,95 @@ offline core tests terminal0; no full workspace/native qualification is inferred
 Authority include correction committed6c6902c9; decisions.rs final SHA256
 0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b.
 No compilation, normalization, manifest or fixture changes by Authority.
+
+## RUNTIME-SLICE-02 Authority owner disposition (read-only, 2026-11-08)
+
+Reviewed current-path source checkpoint6c6902c9 (last source change); runtime context
+mapping is Root-owned. No source move/import/manifest edits, compilation or test
+execution. Source tree clean at review; exact selected boundary hashes below.
+
+Concrete visibility map: exactly seven pub(crate) declarations across four files:
+protocol/framing.rs Head and read; transport/windows.rs Stream and connect;
+transport/unix.rs connect; transport/mod.rs cfg-gated unix/windows connect reexports
+(the reexports count as two declarations, so SEVEN textual declarations total).
+Each becomes pub(in crate::authority) or narrower after the move. Head fields and
+methods/Stream trait impls must remain constrained by the enclosing type; connect
+reexport restriction must match its definition. No exception needing sibling access
+was found. Existing pub(super), pub(self) and private items remain at that exact
+relative ancestor or narrower, not mechanically widened to authority scope.
+
+NativeProof remains PRIVATE and EMPTY in authority::startup::observer, including
+tests. VerifiedObserverPreparation/PreparedObserverSession/ObserverStartupFailure
+private owner/proof fields stay private. state::Owner stays pub(super) (observer
+only), and its model/advance/lose_at remain cfg(test) and pub(super). Moving to one
+package must not make a gateway/audit/network sibling construct these types, an
+ObserverEffectGate tuple or SignatureCheckedAuthorization private fields. No sibling
+factory or pub(crate) constructor exception is approved. native_preparation remains
+Unsupported until the separately accepted real native producer; DATA verification
+must never become native admission or Ready authority.
+
+Public DATA distinction: configuration::{Configuration,Scope,Peer,Audit,SealedKeys,
+UnlockSource} and authorization::{InstallerData,PublisherData,RoleData,ScopeData,
+AttemptData,ExpectedAuthorizationData} are already public DTO/policy inputs, not
+proven identity or protected ownership. Preserve their existing type identities,
+serde/deny_unknown_fields, exact scope/authority/revision/profile semantics. Do not
+replace them with similarly shaped gateway/audit scope types or derive capability
+conversion. CheckedAuthorization holds its cloned immutable validated expected scope;
+caller mutation must not alter it. ParsedHello nonce is untrusted DATA, not freshness.
+A public enum's variant fields remain externally constructible policy DATA even when
+the source field lacks pub: do not misclassify UnlockSource as a sealed capability.
+
+Secret ownership: Credential tuple stays private Zeroizing<String>; existing public
+generate/from_private_provisioning/expose_for_provisioning are explicit historical
+secret APIs, not new sibling-native capability factories. Audit hmac/signing inputs
+and inherited passphrase remain Zeroizing directly from deserialization and consumed
+by startup; no intermediate String clone, Serialize/Debug, broader getter or fallback
+is justified. Existing audit checkpoint DATA and PinnedWitness equality are not a
+protected-store/transport provenance proof. Audit owner must independently restrict
+its formerly package-private custody/recovery constructors to crate::audit (or less);
+Authority placement creates no permission to bypass them.
+
+Path mapping hazards: all old crate::Rejection/startup/protocol/configuration paths
+inside Authority must resolve to crate::authority equivalents (including tests and
+macros). Former external audit/network imports resolve to accepted crate::audit and
+crate::network; lower native_security mapping remains Root's platform prerequisite.
+core dependencies retain accepted external core identity. Bin/integration test
+imports need the final runtime public module identity; no forwarding helper package.
+No context name or type alias may silently unify Scope/credential/capability identity.
+
+Required validation after Root declares coherence and allocates execution:
+- sibling negative-compilation checks: gateway/audit cannot construct NativeProof,
+  VerifiedObserverPreparation, PreparedObserverSession, ObserverStartupFailure,
+  ObserverEffectGate, SignatureCheckedAuthorization or access state::Owner/model;
+  cannot call authority-internal framing::read/transport::connect. These are required
+  checks, NOT authored/executed tests or current proof. Preserve public DATA use.
+- exact unit identities: native_producer_is_unsupported_even_in_tests;
+  signed_data_is_bound_but_cannot_mint_native_preparation (scope snapshot assertion);
+  cancellation_in_every_phase_is_irreversible_and_preserves_first_cause;
+  owner_drop_revokes_restricted_clones_without_claiming_cleanup;
+  ready_transition_racing_loss_cannot_leave_a_live_epoch; credential validation and
+  encoded-key source/custody tests; all37kernel-era pure cases on final closure.
+- integration identities: auth_scope_revision_inventory_and_no_admin;
+  cancellation_before_commit_discards_work_but_keeps_nonce;
+  sealed_startup_retains_custody_and_reuses_existing_identity;
+  shared_client_checks_real_server_and_profile_bound_credentials;
+  untrusted_pipe_dacl_is_rejected_before_credential_disclosure;
+  actual_windows_client_pid_is_required; unix_other_user_is_denied_by_actual_socket_acl.
+  Real OS/cfg/privilege/ignored results must remain separate; preserve unit/native/
+  hosted/Docker denominators. NativeProof/Ready/real framed startup still NOT_RUN.
+
+Disposition: no sibling-access exception approved. Potential integration blockers
+are incorrect ancestor restriction, unqualified old crate paths, cross-context type
+identity substitutions and bin/test consumer imports. This is a concrete source
+review, not compile/privacy-test success or an approval to weaken native boundaries.
+
+- crates/authority/src/lib.rs SHA256 a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db
+- crates/authority/src/configuration.rs SHA256 42f675ac4b4063de4866160140adaae06105ba2156b8bd2f5444c0ac7d27b146
+- crates/authority/src/credentials.rs SHA256 d7e84bf9ad7b4853bfb12ad92990b222d7de24a0c9428d10cc22447667c3b170
+- crates/authority/src/startup/observer.rs SHA256 c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806
+- crates/authority/src/startup/observer/state.rs SHA256 3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21
+- crates/authority/src/startup/authorization.rs SHA256 27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e
+- crates/authority/src/protocol/framing.rs SHA256 e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6
+- crates/authority/src/transport/mod.rs SHA256 d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8
+- crates/authority/src/transport/windows.rs SHA256 196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86
+- crates/authority/src/transport/unix.rs SHA256 cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623
