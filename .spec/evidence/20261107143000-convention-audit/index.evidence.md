@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: aec1d0683f6d5729146f4c0e148ab6ec4df67ebdc69fd90b4ecf58b0607b62d9, bytes: 66110, store: repo}
+  - {path: baseline.json, sha256: 588846e4d913dedd4a8d1b2a86fbc655fd69fc97671d9f0ed6ef4b2864b725c9, bytes: 67540, store: repo}
 ---
 
 # Convention audit baseline
@@ -864,3 +864,25 @@ Final Root attachment is fixed by1e2b4b38 at canonical LF SHA recorded in
 baseline.json (28407bytes). The initial87d hash was a CRLF representation of
 the authored summary, not moved-fixture drift. Only the final attached hash is
 accepted; original input bytes and historical observations remain unchanged.
+
+## CA-NATIVE-SOURCE-01: native source inventory custody gap (P2 OPEN)
+
+The current native runner adds the new Core/src root but source(false) still
+collects manifests only from immediate crates/* children. It therefore omits
+crates/sdk/humanymous-core/Cargo.toml, whereas the seven former top-level package
+manifests were included. Pilot and service call this mode; actor transports its
+selected mode. This is a concrete relocation regression in the input inventory.
+Separately, the existing rs/toml/lock extension filter excludes production
+include_str data signals/wire/unicode.json and observation/registry.json in both
+modes. That is preexisting source-custody debt exposed by this review.
+
+verify_snapshot checks only supplied entries. Changes confined to these omitted
+inputs are therefore outside its per-file drift check; local dirty status alone
+is informational. No changed binary or hosted clean-SHA bypass was demonstrated.
+The independent143-file Core receipt includes these inputs and remains valid in
+its own scope. Native and Root received exact paths and controls: mutate the nested
+manifest and each included production table independently, require snapshot change
+and old-snapshot refusal in native/workspace modes, and fail closed on missing
+required roots/files. Native must obtain Root's workload allocation. Audit changed
+no implementation or scoring and launched no compiler/pilot. Owner fix, actual
+regression proof and independent closure remain OPEN; old receipts keep their scope.

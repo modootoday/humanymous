@@ -176,6 +176,17 @@
       "trigger": "GuardDrop states no blocking wait, but stdMutex::lock/Pythonattach and loopmethod invocation can block orpanic",
       "actual_hang_or_shutdown_failure_observed": false,
       "private_review_sha256": "f6eb3d45f523e8b318ab5972e30aed2130e506fb89450713242e57e33ea42893"
+    },
+    {
+      "id": "CA-NATIVE-SOURCE-01",
+      "priority": "P2",
+      "owner": "Native/root",
+      "state": "OPEN source inventory custody gap",
+      "trigger": "Native source(false) omits nested Core Cargo.toml; rs/toml/lock filter omits production include_str JSON in both modes",
+      "new_regression": "Nestedmanifest omission after Core relocation",
+      "existing_debt": "Productionunicode/registry include data omitted by extensionfilter",
+      "actual_changed_binary_observed": false,
+      "private_review_sha256": "d29b4b07d85b6e75f3126e45b2f732ac7fc15e15b0c332245b690df3f004b50d"
     }
   ],
   "evidence_references": {
@@ -1240,5 +1251,20 @@
       "receipt_observation": "Final canonical LF attachment28407bytes; initial87d hash was authoredsummary CRLF worktree representation, not fixture/input drift. Only finaldf8 attachment accepted.",
       "attachment_commit": "1e2b4b38c3778eeefd6424ca1b43f1deb4b0209f"
     }
+  },
+  "followup_native_source_inventory_regression": {
+    "private_review": "native-source-inventory-regression-review-001.json",
+    "private_review_sha256": "d29b4b07d85b6e75f3126e45b2f732ac7fc15e15b0c332245b690df3f004b50d",
+    "source": "evidence.rs1a9575257d4ed4fe30773098fce79e3fea1acbc4a366486d6f6f505026ab1484",
+    "required_inputs": [
+      "crates/sdk/humanymous-core/Cargo.toml",
+      "crates/sdk/humanymous-core/src/signals/wire/unicode.json",
+      "crates/sdk/humanymous-core/src/signals/observation/registry.json"
+    ],
+    "required_controls": "Independent mutations must alter snapshot/refuse oldsnapshot in false/workspace modes; missingroots/files failclosed",
+    "owner_and_root_notified": true,
+    "current_Core143_proof_not_invalidated": true,
+    "audit_workloads": 0,
+    "goal_complete": false
   }
 }
