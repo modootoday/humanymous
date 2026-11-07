@@ -356,6 +356,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
     let mut scm_proof = None;
     let mut job_empty_observed = None;
     let mut child_launch_attempted = false;
+    let mut recovered_coverage = None;
     let execution = (|| -> io::Result<u32> {
         acl(&scratch, &sid, identity.sid())?;
         let manifest_path = scratch.join("manifest.json");
@@ -424,6 +425,15 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
             launch(&account, &password, &arguments, &environment, &workspace)
         };
         job_empty_observed = launched.as_ref().ok().map(|(_, active)| *active == 0);
+        let recovery = (|| -> io::Result<()> {
+            let coverage_path = report.with_extension("coverage.json");
+            if !report.is_file() && coverage_path.is_file() {
+                let bytes = evidence::recovery::read(&coverage_path)?;
+                fs::write(options.report.with_extension("coverage.json"), &bytes)?;
+                recovered_coverage = Some(evidence::recovery::recover(&bytes, &manifest)?);
+            }
+            Ok(())
+        })();
         let copied = if report.is_file() {
             fs::copy(&report, &options.report).map(|_| ())
         } else {
@@ -461,6 +471,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
             restored?;
         }
         let (code, _) = launched?;
+        recovery?;
         copied?;
         copied_logs?;
         Ok(code)
@@ -494,6 +505,9 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
             failed["kind"] = "workspace".into();
             failed["scope"] = "workspace-default-features".into();
             failed["qualification"] = "implemented-workspace-component".into();
+        }
+        if let Some(coverage) = recovered_coverage {
+            failed["coverage"] = coverage;
         }
         failed
     });

@@ -1,0 +1,68 @@
+{
+  "schema": "humanymous.hosted-native-observation/1",
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42355168729",
+  "full_runtime_qualified": false,
+  "jobs": [
+    {
+      "os": "windows",
+      "job_id": 128351926153,
+      "status": "failed",
+      "executed_harnesses": 15,
+      "required_harnesses": 89,
+      "passed": 55,
+      "failed_tests": 0,
+      "raw_ignored": 4,
+      "errors": 1,
+      "coverage_complete": false,
+      "last_harness": "host_process"
+    },
+    {
+      "os": "linux",
+      "job_id": 128351926093,
+      "status": "failed",
+      "executed_harnesses": 15,
+      "required_harnesses": 88,
+      "passed": 51,
+      "failed_tests": 0,
+      "raw_ignored": 4,
+      "errors": 1,
+      "coverage_complete": false,
+      "last_harness": "host_process"
+    },
+    {
+      "os": "macos",
+      "job_id": 128351926084,
+      "status": "failed",
+      "executed_harnesses": 15,
+      "required_harnesses": 88,
+      "passed": 51,
+      "failed_tests": 0,
+      "raw_ignored": 4,
+      "errors": 1,
+      "coverage_complete": false,
+      "last_harness": "host_process"
+    }
+  ],
+  "qualification": "Earlier hosted source only; later runner fixes are not qualified by this run.",
+  "ignored_accounting": {
+    "verified_audit_helper": 1,
+    "required_node_product_cases": 3
+  },
+  "required_node_product_cases": [
+    "actual_authority_decisions_are_enforced_before_origin",
+    "actual_framework_allow_preserves_binary_body_and_headers",
+    "actual_framework_failure_paths_never_reach_origin"
+  ],
+  "evidence_limits": {
+    "windows_owner_report": "not_retrieved",
+    "windows_raw_cli_log": "retained by root; hash not supplied to this owner",
+    "linux_owner_report_sha256": "66355c1ea63d0b64e35fc559ca08bd064669036f56d98b5669c48758b0253ad9",
+    "linux_owner_report": "not_retrieved",
+    "linux_raw_ci_log_sha256": "5006c6d70bb6e716b217560a666810446a466faa1d38ecd39c159a7c84aa4c81",
+    "macos_cli_transcript_sha256": "318dbb4ba8f782ec4f148c54888fa370fc02927aedf94755b4fe0fb8628da766",
+    "macos_cli_transcript": "UTF-8 transcript; not asserted byte-identical to HTTP raw"
+  },
+  "later_execution": "MSRV direct workspace tests run separately; this observation does not mark all later rows globally not_run."
+}

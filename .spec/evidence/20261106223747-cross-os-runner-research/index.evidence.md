@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-07T08:58:42Z
+updated: 2026-11-07T09:02:29Z
 files:
   - {path: macos-arm64-initial.log, sha256: 05490700b79bff322d867d8ec71f87c98e226399511438e4c1541158cb2da587, bytes: 57321, store: repo}
   - {path: initial-artifacts.json, sha256: 88991429991b63ae1ec7bcda09792d986a137e482b1eded17f12c90158b5df56, bytes: 1277, store: repo}
@@ -33,6 +33,8 @@ files:
   - {path: shared-native-f44b32b-pure-summary.json, sha256: a75ed95d876828bc13e7fd8b53a0f62f1b4dcad462a8d967529107fadad444b5, bytes: 6938, store: repo}
   - {path: hosted-a26d1c3-startup-failure-summary.json, sha256: c7c19a5d091ff5c27fa52a41c0436b707e8b20aff1c73e65c75fb1f45cb8d907, bytes: 652, store: repo}
   - {path: runner-continuation-pure-summary.json, sha256: 1caaf91841da9069264243125df57b158c8f37fb6c96b666f5f5122400dbdfe4, bytes: 1605, store: repo}
+  - {path: hosted-8132117-native-failure-summary.json, sha256: 6a36c2b10e3eaca21d97c51a085bded8a4155fec2d0c8a12ef81cd5180c85f83, bytes: 2356, store: repo}
+  - {path: runner-sidecar-pure-summary.json, sha256: 5ca96505311cf983f88451b9618fe76fcbbc69293bc1bb59217783c2c8f18f9a, bytes: 1142, store: repo}
 ---
 
 # Cross OS runner research

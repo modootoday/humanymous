@@ -4,6 +4,7 @@ use std::{collections::BTreeMap, fs, io, path::Path, process::Command};
 mod accounting;
 mod failure;
 mod lifecycle;
+pub(crate) mod recovery;
 pub(crate) use failure::record as record_initial_failure;
 
 pub fn digest(path: &Path) -> io::Result<String> {
@@ -272,6 +273,8 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     summary["coverage_complete"] = report["coverage"]["complete"].clone();
     summary["execution_complete"] = json!(report["coverage"]["execution_complete"].as_bool());
     summary["fatal_stop"] = json!(report["coverage"]["fatal_stop"].as_bool());
+    summary["recovered_after_missing_final_report"] =
+        json!(report["coverage"]["recovered_after_missing_final_report"].as_bool());
     if report["initialization_failure"]["reported"] == true {
         summary["initialization_failure"] = json!({"reported":true,"os_error_code":report["initialization_failure"]["os_error_code"].as_i64()});
     }
