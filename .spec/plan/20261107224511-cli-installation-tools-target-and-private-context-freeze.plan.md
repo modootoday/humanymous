@@ -81,10 +81,32 @@ ships through a package-wide install/all-features accident.
 
 ## Precise34-root mapping and minimal bin linkage
 
+P2 pre-freeze reconciliation: X found that Delivery's
+maintenance-identity-proposal.json under evidence:root/20261107052001 relocates
+session_storage and selected_inputs cases into the maintenance bin. This plan's
+baseline maps those as two retained integration targets. Neither topology is
+accepted merely by this draft. The static34input-root census remains factual;
+postmerge counts below are conditional, not fixed freeze acceptance counts.
+
+| Root choice | Integration roots | Compiled roots | Maintenance qualification case identities |
+| --- | --- | --- | --- |
+| Keep the two current integration targets | 12 | 29 | Root must supply matching unchanged-target profile identities |
+| Accept Delivery's relocation into the owning bin | 10 | 27 | Proposed profile0.2 retains33unique old-to-new cases:23integration and10bin cases |
+
+The10relocated cases perform real owned filesystem/provider work; they are not
+pure/no-I/O. X verified33old target/test keys against profile0.1,33unique proposed
+identities and eight source hashes/sizes/function lines. Root must explicitly
+choose, then reconcile this prose, tools-linkage-map.json, target aliases/counts,
+source placement, qualified-name inventory and the final profile in one freeze.
+Do not retain empty integration targets, duplicate cases to preserve old counts,
+or alter workload/authority classification. No code/profile/target relocation
+has occurred. Delivery proposal SHA256 observed:
+fb43e083664731eaff32891c8ef587352837be506b550fbbe6f165cba8ad8e54.
+
 tools-linkage-map.json maps EVERYoriginal root: old package/kind/name/source/hash,
 new target alias/source/required feature/lint/disposition. The five retired public
 lib roots map to canonical private contexts with all unit cases retained. New
-compiled roots would be29before any justified additional test roots: one lib,
+baseline compiled roots would be29before the unresolved relocation: one lib,
 15bins,12integration tests and one example. This count reduction is not test loss.
 All Rust roots live under src, including src/qualification/tests and examples;
 disable automatic discovery and list those explicit targets in Root's manifest.

@@ -182,9 +182,9 @@
       "new_target_name": "maintenance-session-storage",
       "new_source": "src/qualification/tests/maintenance_session_storage.rs",
       "required_features": "qualification-maintenance",
-      "disposition": "retained compiled root",
+      "disposition": "CONDITIONAL baseline integration; Delivery proposes actual cases in maintenance bin; pending explicit Root choice",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "NOT_FROZEN: integration alias/source retained as proposal only; remove target if actual case relocation is accepted, never retain empty or duplicate case"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -221,9 +221,9 @@
       "new_target_name": "maintenance-selected-inputs",
       "new_source": "src/qualification/tests/maintenance_selected_inputs.rs",
       "required_features": "qualification-maintenance",
-      "disposition": "retained compiled root",
+      "disposition": "CONDITIONAL baseline integration; Delivery proposes actual cases in maintenance bin; pending explicit Root choice",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "NOT_FROZEN: integration alias/source retained as proposal only; remove target if actual case relocation is accepted, never retain empty or duplicate case"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -1159,5 +1159,23 @@
       "classification": "filesystem resolved; Root reader/fixture policy decision still required, original ownership retained"
     }
   ],
-  "closure_status": "NOT_FROZEN: all34roots mapped;25literal external inputs+10resolvedmanifest expressions require owner disposition; registry embeds and Collector implementation path remain blockers"
+  "closure_status": "NOT_FROZEN: all34roots mapped;25literal external inputs+10resolvedmanifest expressions require owner disposition; registry embeds and Collector implementation path remain blockers",
+  "maintenance_identity_reconciliation": {
+    "status": "PENDING_ROOT_CHOICE",
+    "proposal_path": ".spec/evidence/20261107052001-delivery-followup/maintenance-identity-proposal.json",
+    "proposal_sha256": "fb43e083664731eaff32891c8ef587352837be506b550fbbe6f165cba8ad8e54",
+    "keep_integration": {
+      "integration_roots": 12,
+      "compiled_roots": 29
+    },
+    "relocate_into_maintenance_bin": {
+      "integration_roots": 10,
+      "compiled_roots": 27,
+      "unique_cases": 33,
+      "integration_cases": 23,
+      "bin_cases": 10,
+      "bin_cases_are_pure": false
+    },
+    "requirements": "Root explicitly chooses; atomically reconcile target rows/aliases/source placement/counts/qualified case names/profile; no empty roots, duplicate cases or weakened workload"
+  }
 }
