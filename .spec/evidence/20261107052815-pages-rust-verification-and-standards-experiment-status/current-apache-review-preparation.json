@@ -1,6 +1,6 @@
 {
   "schema": "humanymous.pages-apache-review-preparation/1",
-  "state": "prepared-not-accepted",
+  "state": "accepted-source-review-only",
   "source_observation": "c78027719ce481e323cb071fd58d1eaed4f027f1",
   "candidates": [
     {
@@ -225,6 +225,8 @@
   "full_read_files": 19,
   "full_read_lines": 4403,
   "actual_execution": false,
-  "receipt_renewal": false,
-  "scope": "19 current complete-file authored reads plus4 retained byte-identical authored receipts cover observed23 package/adapter files. Rehash before any future ledger acceptance; does not close whole-workspace source freshness or native execution."
+  "receipt_renewal": true,
+  "scope": "19 current complete-file authored reads plus4 retained byte-identical authored receipts cover observed23 package/adapter files. Rehash before any future ledger acceptance; does not close whole-workspace source freshness or native execution.",
+  "acceptance_record": "current-reviewed-source-batch-acceptance.json",
+  "source_receipts_renewed": true
 }

@@ -1,0 +1,571 @@
+{
+  "schema": "humanymous.pages-reviewed-source-batch-acceptance/1",
+  "observed_at_utc": "2026-11-07T14:34:37.887487+00:00",
+  "accepted_reviews": [
+    {
+      "source": "crates/apache-adapter/Cargo.toml",
+      "sha256": "306897ca71d128a8ed0684286327496ad65e69a833159c6c1462b7c738ede7e5",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Safe lifecycle/replay manifest forbids unsafe; dependencies and target declaration do not qualify a native ABI or host tuple."
+    },
+    {
+      "source": "adapters/apache/pilot-contract.json",
+      "sha256": "7b178710f158de772173091fd32e14631eb1cbc91646bc1147051d99abb11e9b",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "45 named scenario/MPM pairs and b400 source-bound hosted result reference. Template artifact fields, cleanup false and empty results are not an actual failed or passed execution receipt. Missing report, unknown cases and cleanup failures must fail completion."
+    },
+    {
+      "source": "adapters/apache/ABI-SAFETY.md",
+      "sha256": "38f31c71b29ba7ba7e7a8f42779c1f99353a17a24b9bcb32996f141ba46afee5",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Host safety premises require live aligned pointers, pool/callback lifetimes, post-fork initialization and independent MPM capabilities. catch_unwind does not catch abort/OOM/SIGKILL. pidfd pinning before reap and exclusive owned child/actual process-group checks replace numeric signal fallback. No broad installed ABI proof."
+    },
+    {
+      "source": "adapters/apache/upstream-lock.json",
+      "sha256": "dc4f977fe1cd935a4282e7ffba7a5c47d281c8e531538e3199f0c5d4e1a8ff97",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Pinned Apache/APR/APU archives and selected direct headers plus bindgen version. Null historical builder/clang/include-closure fields do not attest actual installed inputs; generated build receipt remains separate."
+    },
+    {
+      "source": "crates/apache-adapter/INTEGRATION.md",
+      "sha256": "b98379480480bcff94dd0f4826546213f0909f887dc5042349be52513d4c2565",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Reviewed complete chronology: b400 45-case success supersedes narrower historical 23/22,33/12,35/10 outcomes at their own sources only. CLI diagnostic remains separate. No later-source, TLS/H2 or full-product promotion."
+    },
+    {
+      "source": "adapters/apache/coordinator-contract.json",
+      "sha256": "4f0fba11f6e10fb63f8e2d2d24003ef42ce1b4c88cc4db12cb020b29a984ee59",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Current b400 bound success declaration and strict counts/hash/cleanup report policy. CLI diagnostic not case46. Raw output and engine identities private; allowlisted public diagnostics. Execution allocation and engine/label ownership required, no global cache or volume erasure."
+    },
+    {
+      "source": "adapters/apache/Dockerfile.native",
+      "sha256": "178b2901519a1bf647ea73ae5272cf379a07ee59411a167798971f93f78c04b6",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Pinned builder/runtime and upstream archives; installs production and separate probe modules, builds pilot, nonroot runtime, SSL/H2 disabled. apt package repositories and dependency closure not pinned by archive hashes. Opening no-success-yet comment is historical and conflicts with b400 result; owner correction requested, no inference that current build reran."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/lib.rs",
+      "sha256": "2d43dfe00f870b8a544ec329f263a857f6d1d5161bf8a449ceae4c335a7a3363",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Linux httpd feature gate; generated declarations and reviewed host boundary are explicit unsafe exceptions, default checks omit hooks. Include of generated bindings is not runtime ABI evidence."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/bin/pilot.rs",
+      "sha256": "e020f7670bcd1f1fd0207ba43809a338ab2d5ba551b1eaf1899314163309204e",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Dispatches coordinate/cleanup or Linux pilot; unsupported args/non-Linux path fail. Error text static; executable source is not hosted execution."
+    },
+    {
+      "source": "crates/apache-adapter/src/lib.rs",
+      "sha256": "3f9cf51493ea40b9cf663dfbccb61a944bf25585e2508e059a1e299005e4e24d",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Safe owner exports Child/Request/Cancellation/MPM and Replay/ReadMode; no native pointer or authority API exported by this facade."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/diagnostic.rs",
+      "sha256": "2ad5f9e6985e5f09dd92316b1323c5bb2c350be96b71694a5756eda4bb2a266b",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Fresh isolated prefork master with nested-probe effect witness; private PID file must match reserved unreaped child before legacy CLI stop. Helper owned pidfd, 2s poll and 64KiB per-stream read bounds; files can exceed limits between polls, so not a hard disk byte quota. Actual cleanup/forced flag and raw-private vs allowlisted-code output separate. Success is not public CLI qualification or required case46."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/authority.rs",
+      "sha256": "a7c3cacb5ccb75f9d0fa5c479c16c81dde48dd0678f313009a1eb0e9626b56b8",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Real shared authority/IPC/WAL, but report provider uses frozen synthetic evidence except /production ApplicationHttp. /slow and /cancel block fixture worker for deliberate timing. stop aborts and awaits task; Drop requests abort only. Same-process no witness fixture is not independent custody or collector-origin product evidence."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/origin.rs",
+      "sha256": "34408581bcbc7f896edf48fe0c6931bf468e4e6439329d8fe33669fb6d672823",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Owned loopback synchronous witness counts only after exact bounded body read; rejects duplicate length, bounds header64KiB/body1MiB, reports sanitized-header spoof flag. 2s socket read/write timeouts are per-operation not whole-request wall deadline. Drop joins owned thread; this is synthetic origin component, not deployed product or arbitrary app rollback."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/coordinator/engine.rs",
+      "sha256": "7093accee95b3d3d0df94ea2d49f10d4aadc3922bb737214fe856a9aac899911",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Pure engine identity validation distinguishes Windows desktop named-pipe/context+expected ID/version from hosted Unix engine. Client path alone insufficient. Hosted identity observed not externally attested; tests declared not rerun."
+    },
+    {
+      "source": "crates/apache-adapter/src/lifecycle.rs",
+      "sha256": "f65ccd8df1937b0699c57359f3601542c3ed0cf54d5fba4c3a712cd76880a795",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "Current PID checked before inherited mutex access, generation/initial-request/capacity admission before body, maximum1MiB/original<=30s deadline. Exact-length finish requires actual host EOF call; no authorization granted. Detached cancellation and shutdown revoke completed body. !Send/!Sync request retains permit until drop; forked drop avoids parent state. MPM identify requires independent matching capabilities; source tests not executed by Pages."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/host.rs",
+      "sha256": "59b19ff84c6286fc5e6ca80f608a2cdf4172818fdcaec06f22699d7d1581e6ab",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "825-line native bridge fully read in contiguous bounded chunks. Explicit host-pointer/pool/thread premises; child config private same-UID NOFOLLOW/0600 and dedicated server, known queried MPMs, no pre-fork runtime. Strict HTTP1/single length/no TE-Upgrade-trailer-Expect/cache/SSL, lowercased sanitized headers no raw provenance. Socket timeout reset to remaining original Pending budget for each blocking body read then restored; exact decoded body copied. Per-request current-thread runtime decides; ALLOW retained for final route/header/URI/liveness checks and one consume before handler. Point-in-time EOF probe not future-disconnect guarantee. Pool cleanup cancellation/context and !Send replay remain host callback/serialization premises. Production and pilot-probes feature paths separate; no current actual native execution by Pages."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/coordinator.rs",
+      "sha256": "3a8572f403a6f2aed1d9de064c5eb5d8c56b18c97d25cf642d4185c0a4f60a95",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "677-line strict receipt/parser/projection and unit source fully read. <=1MiB canonical compact JSON serialization check rejects duplicate/extra encoding; exact fields and independently supplied source/manifest/image/5artifact hashes checked. All45 unique required IDs, only failed infrastructure supplementary, recomputed counts; unknown/notrun/cleanupfalse/nonzero cannot pass. Apache engine version substring is observation, not full version/ABI closure. CLI typed role/exit/signal/bytes/reap/cleanup consistency separate; private raw hex decoded into private carriers, public fixed AH codes/allowlisted labels. Unit fixture success is constructed source, not an actual pilot rerun."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/mod.rs",
+      "sha256": "cead21b9da12cfd13c56e10fa343a5dde52ecc02952564b4e42fdef1ed4645e0",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "593-line actual native pilot/controller fully read. 15 named cases times3MPMs plus failed-only infrastructure; requests use synthetic frozen ALLOW and owned loopback origin. Binary case contains16 concurrent subchecks, not16newtop-levelcases. Nested/redirect probes separate module+server, cache graph denied; reload waits authority inflight then pidfd USR1 and new child IDs. Parent/CLI born isolated process_group0, pin pidfd before any wait/reap and verify kernelgroup==pid!=ownergroup. TERM normalstop, KILL fallback never successful; request workers joined on errors. Request/connect/read/write timeouts and response byte cap are not whole-suite wall bounds. Module list/version Command.output calls have no local deadline/stream bound; outer coordinator Docker deadline supplies separate containment. Cancellation case observes no effect after450ms, not every future schedule. Missing cases synthesized not_run and separate CLI cleanup required; emitted actual hashes do not itself qualify later source."
+    },
+    {
+      "source": "crates/apache-adapter/native/src/coordinator/host.rs",
+      "sha256": "be11e1a3b73929b92712b48e2b800555b8adfe25850fe9d1bf2d0ee410baef6f",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "898-line owned Linux Docker coordinator fully read. Fresh canonical private0700sameUID bundle, create-new0600 outputs, strict owned UUID/name/tag engine+label cleanup with no global prune. Local explicit WSLWindowsclient/context/credentialhelper+daemon ID/version; hosted env labels not cryptographic actor proof. Source scoped clean inventory/raw byte manifest+Git HEAD archive before/afterbuild and expected GITHUB_SHA, not registry/sysroot/installed dependency closure or atomic whole-repo freeze. Command deadlines poll50ms then direct child kill/wait; no OS process tree or BuildKit teardown proof and raw file output not continuously quota-limited. Execution2280s, separatecleanup120s; creates networknone/read-only/capdrop/nonroot1GiB256PID2CPU pilot. Checks actual isolation fields except CPU value not rechecked. Attach and container exits separate, independently copies/hashes5artifacts then validates exact report/CLI rawstreamsizes/codes. Verified failed counts retained; unverified countsnull. Owned container/tag absence observed after cleanup, not descendant process/cached layer erasure or full-product success."
+    },
+    {
+      "source": "crates/cli/Cargo.toml",
+      "sha256": "e5bc2a643427f8b87653898535a466ee945701848e941f908b93f1a2c7800e7a",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete46-line manifest. Default CLI separate from service-pilot fixture; runtime-service optional shared runtime/authority/Tokio/zeroize and runtime-service-pilot adds disposable credential/audit edges. Features do not prove native execution or deployment support."
+    },
+    {
+      "source": "crates/cli/src/lib.rs",
+      "sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete7-line root. Plan/release/service always exported, runtime_host feature gated; native-cli browser tooling remains separate."
+    },
+    {
+      "source": "crates/cli/src/main.rs",
+      "sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete70-line dispatcher. Legacy doctor/install/rollback require explicit artifact/destination/digest/locality acknowledgement; service-prefixed commands separate. runtime-host refuses without feature. Doctor/dry branch read-only by intended Plan interface, actual Plan implementation not newly read in this batch."
+    },
+    {
+      "source": "crates/cli/src/commands.rs",
+      "sha256": "abac4c2db93b854c0c935de9d55eb22775494f4eff3d5e459f0e13a6f1a294f6",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete147-line strict service/runtime-host CLI composition. Unknown/duplicate options refused, activate and dry mutually exclusive; doctor read-only requires observed running/diagnostic report. Install/upgrade/rollback/remove delegate to ServicePlan; mutation authorization and filesystem/native guarantees require underlying code, not argument parsing. Success JSON keeps product_qualified false."
+    },
+    {
+      "source": "crates/cli/INTEGRATION.md",
+      "sha256": "30f574a9311570115a16d04c8c965cc4cd6c5d827cdabfc7506e1429d109991b",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete125-line chronology/source frontier. Signed lab lifecycle and optional ServiceHost path distinguish source/selected pure compilation from positive native service/SCM pilots. Same-owner private receipts/readiness,13 booleans and actor metadata not independent hosted attestation. Linux/macOS protected-secret providers Unsupported. No new raw execution result independently rechecked here."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/plan.rs",
+      "sha256": "b5672a15a5c0ff9582f45a0d514297001a76a251002f98b40fb80611557cb1b5",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete221-line pure HostPlan/ObserverPlan/StopPlan validation. Exact schema/lab namespace/hashes/absolute config/loopback/start budget/OS manager stopbound. Reuses runtime StopBudget. Credential selectors nonsecret and observer selector separate; Windows SID string precheck not actual identity/ACL proof. No native calls or secret retrieval."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/activation.rs",
+      "sha256": "94c4286cf2c7313ccfb49b5cf2698e74d89d3e5c0c9e615430d5b9706559f138",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete140-line Windows activation grant. Signed runtime-host argv exact5 tokens and digest-pinned direct-child launch doc,32KiB bound, descriptor/installowner/readiness binding and delegated access-role checks. Uses shared native-security grants/revokes, no permission repair on unexpected state. Path metadata/open/ACL observations are not independently qualified race-free install or actual SCM lifecycle."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/failure.rs",
+      "sha256": "3e31ebbbd7c215bcde5c4f495a7471636558d8ef669ae62e0e4887a78699ad6c",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete73-line bounded typed failure projection. Only downcast shared ExitFailure yields stage/drain/flush facts; arbitrary errors preserve None and raw message excluded. stopped/product_qualified always false on error; source test verifies partial flush versus unknown. No successful stop or native execution follows."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/mod.rs",
+      "sha256": "8adae68998aafc7710c9a99fa2bbf814b6cbe269a458cbe3e513ce8cf7ece104",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "243-line complete host composition reread. Opt-in runtime-service-pilot now exposes watchdog_fixture module. Protected input/executable digest before platformexecute; management needs actual private credential provisioner and selected witness, defaultplatformNone refuses observer. Runtime/diagnostic siblings joined, readiness delivery before published disarms startup, returnedHostExit records actual runtime report with productfalse. A module export/trait declaration is not installed backend, producer attestation, managedservice or new execution proof."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/input.rs",
+      "sha256": "43d999aa48f120227efae575b532222de2a582248eeb024ae9bffce88f9ae8e7",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete263-line input boundary fully read.32KiB plan/64KiB config digest and private input checks; Windows actualserviceSID/delegatedhandle role, Unix private file. Empty plaintext passphrase required; scope/diagnostic/witness checks precede native secret lookup. Shared provider returns bounded4096 UTF8 zeroizing secret; typed ProtectedReadFailure minimizes provider errors. No filesystem/OS/browser copy-erasure proof or independently qualified path-race resistance."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/control.rs",
+      "sha256": "c9cf54c2ad318eb1f5852bbad6640146fbe73368011ed284e27afae6c68ed160",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "428-line supervisor fully reread after hard-expiry stderr fix. Original startup/stop watchdog deadline remains armed across final stdout/SCM status delivery, delivery outside short state locks, completion only after successful delivery and rechecked drain/flush/current deadline. Hard-expiry branch now directly process::exit(74), with no preceding synchronous stderr/logging operation. This removes the specific full-pipe/stderr-lock stall from the terminal branch; does not independently qualify process::exit under arbitrary OS scheduling, poisoned native runtime, SCM or descendants. Thread creation/condvar/state pure tests source reviewed, no new execution by Pages."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/platform.rs",
+      "sha256": "fb611870c133341cd0beaffe8101ae9b3af9f97ecefce88027e271b6f577d25c",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "217-line complete OS adapters reread. write_report shares serialization/newline/flush for foreground and opt-in fixture, existing successful delivery routed through armed supervisor before stopped. Windows requires nativeSCM, status/control integration and separate pilot feature; Unix defaultNativeSecrets/witnessNone/observerNone unchanged. Defaultunsupportedprovider and boundaryfixture source do not qualify service accounts/SCM/OScleanup. Error publication not a successful graceful-stop receipt. No actual process or service rerun in Pages."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/pilot.rs",
+      "sha256": "efd2a584e9d32d1ebb802ff9ece04c3fcabf914cbffcb11f5b5e05e36ca90d12",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete278-line Windows feature-only fixture fully read. Digest-pinned nonsecret metadata for actual disposable service, shared protected directories/native credential fixture, runtime config in private child. Missing-credential path removes ownedfixturesecret before production read, exact typed failure/no ready. finish rechecks delegated/private storage, removes only owned child, syncs create-new PID-suffixed bounded8KiB private receipt. run/source labels not hosted attestation, private readiness/PID not publicaggregate, no independent custodian/product witness. Explicit cleanup failure retained; no native fixture execution in review."
+    },
+    {
+      "source": "crates/cli/src/service/mod.rs",
+      "sha256": "7edd0fad1c4f3651212b60d7c851e05853edde0471da0c21d7f963cd336ab010",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete366-line service state machine fully read. Explicit activate, exact signed artifact/private root, create-new lock/pending marker; install repeat verifies native state+diagnostic. Upgrade higher than retained floor, stages immutable generation then unregisters old/activates new; ordinary activation/persistence failure attempts prior restore, failures preserve pending. Rollback known predecessor preserves floor; removal verifies owned generations first. No power-loss/crash-atomic recovery, anti-rollback external anchor or actual native qualification. Doctor registration/running/loopback diagnostic not management authorization."
+    },
+    {
+      "source": "crates/cli/src/service/storage.rs",
+      "sha256": "ebea0785d60f51ca347608d313a214f3b841bbd90ff76015f9cbe5a250a10c2e",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete320-line generation/storage helpers fully read. Signed generation/state revalidation, <=14retired, sequence uniqueness/service consistency, private root/files, exact declarative definitions, shared ACL grants/revokes. State writes create-new deployment.next+sync then rename, pending+lock fail closed; no directory fsync or generalized recovery backend. Lock Drop removal is best effort. Filesystem path validation/reads not an independent race-free ownership proof. No arbitrary file/adopted service erasure."
+    },
+    {
+      "source": "crates/cli/src/service/backend.rs",
+      "sha256": "0e819678da2f00d3eb9109869e112e359377fd4f70fd6609bc31481e85ca5680",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete312-line OS manager adapter fully read. Shell-free fixed systemctl/launchctl argument arrays; escaped unit/XML definitions. Unix command10s direct-child polling with16KiB retained stdout, reader joined without separate EOF deadline; inherited descendant pipe can outlive child deadline. wait_ready5s is a loop bound, individual manager calls/exchanges can extend wall time; diagnostic read timeouts per operation not total adversarial slow-progress bound. Native service identity and actual usable manager still require execution. Loopback challenge not authenticated control."
+    },
+    {
+      "source": "crates/cli/src/service/backend/windows.rs",
+      "sha256": "243ca32336fbd76736fd5935573309e1fa96fcb3351b688aaaddf8776d5675e8",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete140-line Windows SCM implementation fully read. OnDemand OWN_PROCESS virtual account with resolvedSID and observed config fingerprint. Verify compares observed state to owned saved identity/account/type/startmode; no external provenance attestation. Stop polls6s, delete pollsabsence5s; stopped status not by itself drain/flush/business-effect proof. Registration failure deletion attempted; no privilege escalation/user creation. No actual SCM execution performed."
+    },
+    {
+      "source": "crates/cli/examples/service_evidence.rs",
+      "sha256": "1cea916877af8941fa668fe0c17e3407cd8a0aae21597b490fc31f205c9f3076",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete162-line source inventory example fully read. Offline locked metadata with CLI pilot features and host filter traverses resolved graph, recursively hashes only local package roots plus workspace/lock/toolchain/.cargo; ignores target/git/node_modules, rejects symlinks. Registry source pinned by lock but bytes not captured; compiler verbose string not sysroot/SDK closure. Captures working source once then canonical Git HEAD blobs; no before/after HEAD/index/file guard. Command .output has post-capture size check, no own timeout. This is source provenance report, not immutable full compilation or runtime qualification."
+    },
+    {
+      "source": "crates/cli/tests/runtime_service_process.rs",
+      "sha256": "74a988d87f19d31350807ac91c09964872f3d47f8d35cba67e73d6f179ac3c2d",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ],
+      "notes": "Complete471-line Windows runtime-service-pilot ignored test fully read in contiguous chunks. Signed fixture metadata, real virtual-service SCM PID/running/stopped-state correlation, private full readiness compared using shared standalone_profile, upgrade/rollback/replay-floor and three positive instances; missing OS credential has independently observed nonzero stop/no readiness/no listener and bound cleanup receipt. Aggregate13 booleans emitted only after assertions; shared helpers/parent provisioning not independent organizational custody or remote run attestation. No actual service execution here. Scoped-thread panic recovery and arbitrary process-tree cleanup not proved by source; inherited env labels cannot authenticate hosted provenance."
+    },
+    {
+      "source": "crates/cli/src/runtime_host/watchdog_fixture.rs",
+      "sha256": "e4c93467f7a256896013e66f8be948e9ca60ef915fe72352ed7b47760c302407",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "71-line opt-in source fullyread. Four fixed cases positive/blockedstdout/blockedstderr/latecompletion use actual Supervisor and productionwrite_report but simulated alltrue ExitReport; pressure8MiB, original600msstopbudget and latewriter1200ms. Parent must own native process and deliberately unread boundedpipes; function itself does not authenticate/retain OSactor or cleanup. No custody, account, manager or network action and productfalse. Testfixture compile/source is not actual blockedpipe termination, real runtime drain/flush or SCM qualification."
+    },
+    {
+      "source": "crates/cli/src/bin/service_fixture.rs",
+      "sha256": "be90a01df7aca4e229916d11f53f593cadd8994ed60ef467cdb51bc80e3749f9",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "notes": "164-line opt-in service fixture fully reread after dispatch addition. runtime-service-pilot accepts only --watchdog-boundary plus one fixed case and calls the shared bounded fixture before normal loopback/SCM path. Ordinary loopback challenge/response fixture has200ms socket operation timeouts and simple SCM status, not protected runtime/custody/flush proof. Parent ownership is an external test requirement; fixture itself cannot attest native actor/Job/cleanup. Main error diagnostics do not change independent watchdog directexit74 path. No actual process/SCM execution by Pages."
+    },
+    {
+      "source": "crates/authority/src/startup/observer.rs",
+      "sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ],
+      "notes": "Uninhabited private NativeProof even in tests prevents production preparation/session/failure construction; native_preparation Unsupported only. Restricted effect_gate diagnostics cannot activate. cancel consumes unique guard, retains revoked Authority owner and explicit NotSubmittedReady; no native/transport/credential receipt producer or async cleanup proof."
+    },
+    {
+      "source": "crates/authority/src/startup/observer/state.rs",
+      "sha256": "3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ],
+      "notes": "One private ArcMutex epoch owner, restricted diagnostic clones, firstloss cause/time immutable and terminal revoke on loss or ownerdrop. Poison snapshot fails closed. Close deadline min(original,firstloss+drain) checked overflow. Model advance constructors/transitions only cfg(test); no production Active constructor/effect gate. Mutex snapshot is not permission followed by asynchronous origin effect."
+    },
+    {
+      "source": "crates/authority/src/startup/observer/tests.rs",
+      "sha256": "c10d765a30a29df908135ef074e7f5a41682b82fc57517fd00a4b9e35593e470",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ],
+      "notes": "Seven internal pure state model tests cover unsupported producer, strict writer-offer-receipt-ready order, no skip, firstloss/cancel/drop revocation, closebudget conservation and model race. Cannot construct NativeProof or productionsession; no actual OS/IPC/SCM/monitor/effect acceptance. Source reviewed only, not rerun."
+    },
+    {
+      "source": "crates/authority/src/startup.rs",
+      "sha256": "0db86632a3e3d881eaab5d06e69f5af0dca5abb88d80da2329f1dec063e46034",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ],
+      "notes": "open_audit validates explicit inline or sealed source before listener. Required external witness absent refuses before unlock; trusted broker must supplyPinnedWitness, JSON cannot mint. Unixcurrentuser/WindowsSID private dirs, inheritedpassphrase vs Windowsnative store; nonWindows storeunsupported nofallback. Inline zeroizing hex parse and shared WAL/Log; does not become attested parent or independent witness. Tests source-only."
+    },
+    {
+      "source": "crates/authority/src/client.rs",
+      "sha256": "0e7c0d7ede66b79ce018143df79ea9f15a053c14a333ae7328f38e03b72fcd4c",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ],
+      "notes": "Singleowned nonClone decision checks expected protocol/nonce/tenant/origin/revision/deadline, actual native server profile, credentialgrammar and one full connect/write/read Tokio budget. BoundResponse consume checks rollback, authorityexpiry independently and originalmonotonicdeadline; host still owns liveness/final boundroute/handoff. No retry/TCPfallback/management grant. Rejection/verdict distinct, challenge doesnot implement recovery. Framing/expiry tests source-reviewed only."
+    },
+    {
+      "source": "crates/authority/INTEGRATION.md",
+      "sha256": "c30e968d7df24a28bf28bc5dcf799ed9c571325b9b6f6fda1c8b777d74ccc02d",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ],
+      "notes": "Complete287line current interface/chronology read. Distinguish old15/14 and25/22/native evidence, exact813Linux named30pass/2ignored, and latestfecdb4d1 Windows21pure incl7internalmodel/checkClippy. Later observer nativeproducer/transport/monitor/effects/Ready remainUnsupported or unimplemented. Historical omitted witness/OSstore/privilegedparent/fullproduct not silentlydischarged. Public21receipt read, raw logs not independently inspected this turn."
+    },
+    {
+      "source": "crates/framework-adapter/src/lib.rs",
+      "sha256": "e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "105-line complete source reread. Admission now private-field nonclone guard constructed only by successful64slot atomic acquire; external code cannot manufacture unit guard and underflow ACTIVE via Drop. Release restores one slot, no eviction. Strict decimal explicit length parser unchanged. compile_fail/no_run doctests and pure admission test are source declarations, not executed by Pages. This is shared permit API hardening, not changed detection or new host qualification."
+    },
+    {
+      "source": "crates/signals/src/wire/mod.rs",
+      "sha256": "cdfc6ec3d955e9a0a7730c2a7d4cba2f2472a63590249ccf99d4e93544fe6c5a",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ],
+      "notes": "217-line complete source reread. New quote_json_go_to writes exact HTML/control/line-separator Go string escaping to an IO sink, immediately returns partial sink failure; caller must not commit partial bytes. Existing allocating encoder delegates to it. Unicode15 simple lowercase/printability and float32 representations retain separate frozen model semantics. Source tests cover all valid scalar values against prior JSON escaping and partial-sink failure; Pages did not rerun them. This is scoped project compatibility, not generic JSON canonicalization or independent Draftv0 interoperable wire."
+    },
+    {
+      "source": "crates/dotnet-adapter/INTEGRATION.md",
+      "sha256": "c15481a7530d2656bedd37f9c9ed934159dd4ac733e77a3553a9923e85bf49e1",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ],
+      "notes": "Complete prior552-line authored review retained with exact byte-composition proof; only the18-line insertion was newly read, not a new570-line full read. Added chronology reiterates held-byte binding is uncompiled/unrun pure claims. Exact native producer check remainsUnsupported and must fail before Command; protected path/hash/label evidence does not bypass admission. Hosted-only actualHostIO and original budgets remain required. Historical supported-source chronology unchanged, no managed/runtime/package success promoted."
+    }
+  ],
+  "accepted_count": 49,
+  "accepted_groups": {
+    "apache": 19,
+    "cli": 21,
+    "authority": 6,
+    "shared": 3
+  },
+  "retained_existing_receipts": [
+    {
+      "source": "adapters/apache/Dockerfile.native.dockerignore",
+      "sha256": "f109462bbf68fda6bb0facea92828ae8ac3885fbcebe0f28ea9e3de2bca58b18",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/apache-adapter/native/build.rs",
+      "sha256": "e2ae3b6c36baa5bc8c5145840a7896c0e42a2cf187f35123378a3e2ae0f23298",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/apache-adapter/native/Cargo.toml",
+      "sha256": "201901bb42b6e3cb73e7b89b1c1ecb43de665bf6448685d31764371c6378210a",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/apache-adapter/src/replay.rs",
+      "sha256": "95c76e737a78202b8e093c5261cc0c0030b6b4a8cf828eeafb2a5e6b5c7a9b8c",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/cli/src/release.rs",
+      "sha256": "31a7e5a29b65d517958c8ddb565c05f3e902ba11da55dd79a4017d86b0389c35",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/cli/tests/service_process.rs",
+      "sha256": "ed1c830f9724d1d20696ffbf72628a64a7f14c0e08209945e22048f99d8f8601",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/cli/src/installation/mod.rs",
+      "sha256": "48e7240424efac2645f8a3ebd8a7b302e8a384d7a4e375e78575fbff7024d3d1",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/cli/src/installation/tests.rs",
+      "sha256": "d650455565c62efda21339adfff87fef5a81ce41ba03d5c74de8cf2d31fddc01",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/cli/src/service/tests.rs",
+      "sha256": "65cd703f5cb67f361c1557f6a1ae4906cfe54409acf2ebf28fc0dccdaaa301df",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/cli/src/installation/permissions/mod.rs",
+      "sha256": "a1ef82a31d1c8d3b71ac50f5d55baedba1ca8c1202915f778b8a89db2c46e209",
+      "reviewer": "codex/rust-pages"
+    },
+    {
+      "source": "crates/cli/src/installation/permissions/windows.rs",
+      "sha256": "50eb903dc102500c00083ec67182c1e29237bc4e1566618dbfec13fec2af8181",
+      "reviewer": "codex/rust-pages"
+    }
+  ],
+  "skipped": [],
+  "unchanged_unselected_receipts_preserved": true,
+  "replaced_existing_rows": 35,
+  "added_rows": 14,
+  "actual_execution": false,
+  "whole_source_freshness_complete": false,
+  "rendered_public_input_claim": "No authored page prose changed. Previous actual render remains bound to015cd2fa input; review ledger is excluded from that rendered input set. This acceptance does not qualify current Rust execution.",
+  "docs_checks": {
+    "source_pages": 88,
+    "source_errors": [],
+    "current_metadata_archive_check_exit": 0,
+    "source_input_sha256": "015cd2fa1dbd13f64c61caff6d473871548cbcf42d864fc1a927d6b6ac8dc332",
+    "archive_sha256": "04d6b3ca292cfec01d2178f403f5b1be84cd76bc8c7ae0d271247359e0ee577e",
+    "scope": "Known frozen verifier ad04 checked same public build inputs despite excluded review-ledger update; not a new Jekyll build or latest Rust dependency graph qualification."
+  }
+}

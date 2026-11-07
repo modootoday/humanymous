@@ -2,8 +2,8 @@
   "schema": "humanymous.pages-cli-review-preparation/1",
   "observed_at_utc": "2026-11-07T13:37:33.938526+00:00",
   "current_package_inventory": 27,
-  "new_full_reads": 19,
-  "new_full_read_lines": 4019,
+  "new_full_reads": 21,
+  "new_full_read_lines": 4264,
   "existing_matching_receipts": [
     {
       "source": "crates/cli/src/release.rs",
@@ -14,12 +14,6 @@
     {
       "source": "crates/cli/tests/service_process.rs",
       "sha256": "ed1c830f9724d1d20696ffbf72628a64a7f14c0e08209945e22048f99d8f8601",
-      "reviewer": "codex/rust-pages",
-      "basis": "Existing substantive review receipt, byte-identical; no new full-read claim"
-    },
-    {
-      "source": "crates/cli/src/bin/service_fixture.rs",
-      "sha256": "79302e405a861691581e779ae070fccd079887d36136f5f0bf606e19d48cc696",
       "reviewer": "codex/rust-pages",
       "basis": "Existing substantive review receipt, byte-identical; no new full-read claim"
     },
@@ -145,10 +139,10 @@
     },
     {
       "source": "crates/cli/src/runtime_host/mod.rs",
-      "sha256": "723cda4d4280ddb7669b9e76999bf7bfe4c40a20ebffcdc0d7b83e4a9853cf9f",
+      "sha256": "8adae68998aafc7710c9a99fa2bbf814b6cbe269a458cbe3e513ce8cf7ece104",
       "lines": 240,
       "reviewer": "codex/rust-pages",
-      "notes": "Complete240-line composition fully read. Reads pinned plan/executable under preflight watchdog, binds shared ServiceHost, creates fresh observer credential only with explicit PrivateObserverProvisioner, otherwise observer plan refuses before secret input. HostReadiness embeds actual runtime readiness but product false. Diagnostic loopback exact19-byte challenge with200ms exchanges not authenticated management/health. Joins runtime and diagnostic futures, maps actual exit facts; binding and publish not full product qualification.",
+      "notes": "243-line complete host composition reread. Opt-in runtime-service-pilot now exposes watchdog_fixture module. Protected input/executable digest before platformexecute; management needs actual private credential provisioner and selected witness, defaultplatformNone refuses observer. Runtime/diagnostic siblings joined, readiness delivery before published disarms startup, returnedHostExit records actual runtime report with productfalse. A module export/trait declaration is not installed backend, producer attestation, managedservice or new execution proof.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
@@ -178,10 +172,10 @@
     },
     {
       "source": "crates/cli/src/runtime_host/platform.rs",
-      "sha256": "10a3e002a5a9ba5db02ef2fe3af070113291de5ec1375a7df5e366044cd4626b",
+      "sha256": "fb611870c133341cd0beaffe8101ae9b3af9f97ecefce88027e271b6f577d25c",
       "lines": 210,
       "reviewer": "codex/rust-pages",
-      "notes": "Complete new210-line platform fully reread. Foreground finalstdout and successfulSCM finalstatus use deliver_stopped before clearing deadline; failed delivery does not become successfulStopped. Default witness/observerNone and native service qualification gaps unchanged. Actual blocked-pipe/status behavior not executed in Pages.",
+      "notes": "217-line complete OS adapters reread. write_report shares serialization/newline/flush for foreground and opt-in fixture, existing successful delivery routed through armed supervisor before stopped. Windows requires nativeSCM, status/control integration and separate pilot feature; Unix defaultNativeSecrets/witnessNone/observerNone unchanged. Defaultunsupportedprovider and boundaryfixture source do not qualify service accounts/SCM/OScleanup. Error publication not a successful graceful-stop receipt. No actual process or service rerun in Pages.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
@@ -263,14 +257,33 @@
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
       ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/watchdog_fixture.rs",
+      "sha256": "e4c93467f7a256896013e66f8be948e9ca60ef915fe72352ed7b47760c302407",
+      "reviewer": "codex/rust-pages",
+      "notes": "71-line opt-in source fullyread. Four fixed cases positive/blockedstdout/blockedstderr/latecompletion use actual Supervisor and productionwrite_report but simulated alltrue ExitReport; pressure8MiB, original600msstopbudget and latewriter1200ms. Parent must own native process and deliberately unread boundedpipes; function itself does not authenticate/retain OSactor or cleanup. No custody, account, manager or network action and productfalse. Testfixture compile/source is not actual blockedpipe termination, real runtime drain/flush or SCM qualification.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/bin/service_fixture.rs",
+      "sha256": "be90a01df7aca4e229916d11f53f593cadd8994ed60ef467cdb51bc80e3749f9",
+      "reviewer": "codex/rust-pages",
+      "notes": "164-line opt-in service fixture fully reread after dispatch addition. runtime-service-pilot accepts only --watchdog-boundary plus one fixed case and calls the shared bounded fixture before normal loopback/SCM path. Ordinary loopback challenge/response fixture has200ms socket operation timeouts and simple SCM status, not protected runtime/custody/flush proof. Parent ownership is an external test requirement; fixture itself cannot attest native actor/Job/cleanup. Main error diagnostics do not change independent watchdog directexit74 path. No actual process/SCM execution by Pages.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
     }
   ],
   "final_rehash_drift": [],
-  "source_receipts_renewed": false,
-  "docs_modified": false,
+  "source_receipts_renewed": true,
+  "docs_modified": true,
   "new_execution": "NOT_RUN",
   "full_product_qualified": false,
-  "remaining": "Prepared source-only reviews await a narrow ledger window and exact rehash. Previously identified stderr-before-exit operation is removed in the fully reread428-line control.rs. Actual process/service/watchdog/SCM and blocked-output termination qualification remains separate; whole-workspace freshness not established.",
+  "remaining": "Selected exact rehashed source reviews accepted; actual execution, whole-workspace freshness and full product qualification remain separate.",
   "preparation_correction": "Initial prepared note mentioned376-line read while bytes advanced to427; not committed or accepted. Fully reread all427 lines before finalizing this report.",
   "hard_expiry_followup_reread": {
     "source": "crates/cli/src/runtime_host/control.rs",
@@ -282,5 +295,33 @@
     "lines": 428,
     "new_execution": false
   },
-  "post_reread_candidate_drift": []
+  "post_reread_candidate_drift": [],
+  "shared_writer_fixture_followup": {
+    "revised_rows": [
+      {
+        "source": "crates/cli/src/runtime_host/mod.rs",
+        "prior_sha256": "723cda4d4280ddb7669b9e76999bf7bfe4c40a20ebffcdc0d7b83e4a9853cf9f",
+        "prior_notes": "Complete240-line composition fully read. Reads pinned plan/executable under preflight watchdog, binds shared ServiceHost, creates fresh observer credential only with explicit PrivateObserverProvisioner, otherwise observer plan refuses before secret input. HostReadiness embeds actual runtime readiness but product false. Diagnostic loopback exact19-byte challenge with200ms exchanges not authenticated management/health. Joins runtime and diagnostic futures, maps actual exit facts; binding and publish not full product qualification.",
+        "current_sha256": "8adae68998aafc7710c9a99fa2bbf814b6cbe269a458cbe3e513ce8cf7ece104",
+        "current_full_read_lines": 243
+      },
+      {
+        "source": "crates/cli/src/runtime_host/platform.rs",
+        "prior_sha256": "10a3e002a5a9ba5db02ef2fe3af070113291de5ec1375a7df5e366044cd4626b",
+        "prior_notes": "Complete new210-line platform fully reread. Foreground finalstdout and successfulSCM finalstatus use deliver_stopped before clearing deadline; failed delivery does not become successfulStopped. Default witness/observerNone and native service qualification gaps unchanged. Actual blocked-pipe/status behavior not executed in Pages.",
+        "current_sha256": "fb611870c133341cd0beaffe8101ae9b3af9f97ecefce88027e271b6f577d25c",
+        "current_full_read_lines": 217
+      }
+    ],
+    "new_fixture": "crates/cli/src/runtime_host/watchdog_fixture.rs",
+    "new_full_read_lines": 71,
+    "actual_execution": false
+  },
+  "current_observed_package_files": 28,
+  "previous_retained_receipt_reread": {
+    "source": "crates/cli/src/bin/service_fixture.rs",
+    "prior_sha256": "79302e405a861691581e779ae070fccd079887d36136f5f0bf606e19d48cc696",
+    "new_full_read_lines": 164
+  },
+  "acceptance_record": "current-reviewed-source-batch-acceptance.json"
 }

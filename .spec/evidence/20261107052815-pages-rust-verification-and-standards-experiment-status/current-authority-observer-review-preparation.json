@@ -78,7 +78,9 @@
   "full_read_lines": 1138,
   "post_read_recheck_drift": [],
   "source_review_only": true,
-  "receipt_renewal": false,
+  "receipt_renewal": true,
   "actual_execution": false,
-  "limits": "Current source review and owner public result inspection, not independent raw execution or latest whole-workspace freshness. Production native observer seam stays Unsupported."
+  "limits": "Current source review and owner public result inspection, not independent raw execution or latest whole-workspace freshness. Production native observer seam stays Unsupported.",
+  "acceptance_record": "current-reviewed-source-batch-acceptance.json",
+  "source_receipts_renewed": true
 }

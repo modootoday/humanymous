@@ -39,7 +39,9 @@
     }
   ],
   "source_review_only": true,
-  "receipt_renewal": false,
+  "receipt_renewal": true,
   "actual_execution": false,
-  "post_read_recheck_drift": []
+  "post_read_recheck_drift": [],
+  "acceptance_record": "current-reviewed-source-batch-acceptance.json",
+  "source_receipts_renewed": true
 }
