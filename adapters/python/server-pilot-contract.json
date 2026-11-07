@@ -14,6 +14,7 @@
   "requiredHarnessCounts": {"discovered":8,"passed":8,"failed":0,"ignored":0,"filtered":0,"exitCode":0},
   "requiredActualGroups": ["production_authority_nonallow_is_audited_before_origin", "actual_allow_preserves_binary_and_two_cookies", "dependency_down_and_invalid_routes_never_reach_origin", "incomplete_bodies_never_reach_available_authority_or_origin", "disconnected_client_cannot_reach_origin_after_allow", "authority_response_deadline_closes_without_origin"],
   "plannedActualCases": 28,
+  "incompleteBodyTimeoutScope": "idle/incomplete request closure only; not total slow-drip upload-time qualification",
   "casesPerFramework": {"productionNonAllow":1,"syntheticAllowAndInvalid":5,"dependencyDownAndRoutes":3,"incompleteBody":2,"disconnectAndMatchedConnectedControl":2,"authorityResponseTimeout":1},
   "requiredDistinctActualRows": 14,
   "remainingQualificationGates": ["first Unix native compilation", "execute all 28 actual cases", "native objects and lifecycle", "production wheel clean install", "exact closure audit", "Windows ABI and transport remain separate"],

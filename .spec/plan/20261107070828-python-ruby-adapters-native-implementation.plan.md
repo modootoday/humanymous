@@ -277,3 +277,29 @@ WSL-native Rust remain distinct. No preflight or Docker execution occurred while
 the benchmark quiet window remained active; older engine provenance is not
 invented from a Linux image digest. Root performed the authorized image cleanup;
 this adapter lane performed none and retains no owned process/container.
+
+Quiet-window execution allocation was re-requested, with source held clean rather
+than adding further native features. Independent read-only Rack server research
+inspected pinned Puma8.0.2 client_env/server/client source: the environment carries
+the actual puma.socket and buffered rack.input, while internal server classes are
+explicitly not a stable public hook contract. A possible clear-HTTP BasicSocket
+non-consuming EOF probe needs real runtime/TLS/type/error validation before any
+server bridge is implemented; IO#closed? alone remains insufficient.
+Puma resets first_data_timeout on reactor activity, so this is an idle deadline,
+not proof of a total slow-drip upload deadline. Existing partial-body idle-close
+tests must not be described as total upload-time qualification.
+
+Official RubyGems8.0.2 metadata without platform selection returned the java
+artifact SHA37392e0dbd01e2a157748b92b818bfacf801bb32628e41680e9ab1171dea2b3d.
+The explicit ?platform=ruby query returned the CRuby source artifact
+SHAc8ed871dfbbe66448ea9ffd46692342d9804d4071522b52b5331b7b6e7b686fb,
+Ruby>=3.0 and nio4r~>2.0 runtime dependency. Both private metadata responses are
+retained; no artifact download, installation, gem recipe/dependency selection or
+runtime occurred. Puma remains research-only/not selected, with closure/advisory
+audit and actual server tests unproven.
+
+Primary research references:
+https://raw.githubusercontent.com/puma/puma/v8.0.2/lib/puma/client_env.rb ;
+https://raw.githubusercontent.com/puma/puma/v8.0.2/lib/puma/client.rb ;
+https://raw.githubusercontent.com/puma/puma/v8.0.2/lib/puma/server.rb ;
+https://rubygems.org/api/v2/rubygems/puma/versions/8.0.2.json?platform=ruby .

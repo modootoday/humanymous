@@ -63,6 +63,8 @@ ALLOW disconnect with a matched connected control. Host lifecycle and authority
 orchestration live in separate support modules; Evidence/audit reuse is shared.
 All new Unix source remains NOT_COMPILED/NOT_RUN. Eight Rust groups must pass
 without ignores/filters; source completeness is not executable qualification.
+The incomplete-body timeout case measures idle closure. It does not establish
+a total network upload deadline against a continuously progressing slow body.
 
 User subsequently authorized actual local Windows/WSL execution for comparative
 measurements as well as hosted execution. Root allocation remains required;
