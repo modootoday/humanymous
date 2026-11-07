@@ -439,6 +439,18 @@ If O restarts without sufficient durable history, all possibly affected slots
 remain unqualified/Unknown and no fresh registration is ACKed under a guessed
 empty ledger. Do not claim exactly-once effects from journal transitions alone.
 
+Bound admission capacity BEFORE reservation/native create: explicit finite limits
+for attempt records, namespace reservations, replay-rejection tombstones, encoded
+record bytes and pending journal operations, with checked arithmetic on every
+count/size/generation. Both indexes and required tombstone capacity must be
+available as one admitted transition; no partially reserved success. Saturation,
+allocation uncertainty or overflow refuses BEFORE native create, preserving all
+existing owners, Unknown obligations and original clocks. Never evict Unknown,
+active records or replay-rejection tombstones to admit a new attempt. Exhausted
+generation space refuses rather than wrapping. Compaction/tombstone retirement
+requires a separate reviewed protocol proving replay exclusion; no TTL, restart,
+caller override or pressure-driven purge is supplied by this design/model.
+
 Crash handoff transfers only custody that is actually retained and admitted.
 A durable planned locator does not recover an unknown created FileID or transfer
 the dead process's File handles. O owns the unresolved obligation and original
@@ -476,9 +488,94 @@ Proposed negatives and expected assertions:
    absence/caller boolean/timeout are insufficient. A retained tombstone denies
    replay even after model namespace release. This models ordering, not native
    cleanup, secure erasure, durable persistence or supervisor authentication.
+8. Fill each independent capacity to its bound, then attempt one more admission;
+   require rejection before create, exact ledger/index/tombstone conservation,
+   no Unknown eviction and no clock reset. Checked counter/byte/generation
+   overflow and partial-index/tombstone capacity exhaustion likewise refuse.
+   An identical replay at capacity may only observe its retained same record;
+   it cannot allocate, erase replay protection or reopen an expired horizon.
 
 Implementation, precise pure API/module placement and actual test allocation
 remain pending Root review. No new code/native I/O/journal/directory/ACL/unsafe or
 callback has been introduced by this amendment. Native eight-family/private
 parent foundation remains the priority; Docker public-role DATA parsing does not
 provide any of these local persistence/ownership prerequisites.
+
+## Exact pure-model boundary for Root review (no code)
+
+Proposed location: private cfg(test) module in native-security storage/mod.rs,
+implemented later at storage/user_root_journal_model.rs and child
+storage/user_root_journal_model/tests.rs. Test-only on all host OSes, not just
+Windows; no platform module, manifest/dependency/feature change. Root's later
+Runtime move owns its eventual placement. These Rust files do not yet exist and
+have no fabricated hashes. This plan's committed bytes are the source handoff.
+
+All types/methods stay private to that test subtree: no pub use/serde, native
+identity/ACK/root/Ready type conversion, runtime caller or production factory.
+Symbolic IDs, costs, observations and relations are UNVERIFIED fixture data.
+
+```rust
+// Proposed signatures, not implemented or native-authority APIs.
+ModelLedger::new_fixture(caps: ModelCaps, epoch: ModelEpoch, now: ModelTick)
+    -> Result<ModelLedger, ModelError>;
+ModelLedger::propose_reservation(&mut self, request: ModelRequest,
+    relations: &[ModelNamespaceRelation], cost: ModelCost, now: ModelTick)
+    -> Result<ModelReservationOutcome, ModelError>;
+ModelLedger::mark_create_pending(&mut self, attempt: ModelAttempt, now: ModelTick)
+    -> Result<(), ModelError>;
+ModelLedger::mark_unknown(&mut self, attempt: ModelAttempt, now: ModelTick)
+    -> Result<(), ModelError>;
+ModelLedger::observe_not_created(&mut self, attempt: ModelAttempt,
+    epoch: ModelEpoch, now: ModelTick) -> Result<(), ModelError>;
+ModelLedger::propose_terminal(&mut self, observation: ModelTerminalObservation,
+    now: ModelTick) -> Result<(), ModelError>;
+ModelLedger::propose_handoff(&mut self, next: ModelEpoch,
+    history: ModelHistoryState, now: ModelTick) -> Result<(), ModelError>;
+ModelLedger::snapshot(&self) -> ModelSnapshot;
+```
+
+ModelRequest binds fixed symbolic attempt/owner/anchor volume+file IDs,
+selector+policy revision, namespace token, nonce, generation and immutable
+ModelOriginalPair {start_tick,run_until,cleanup_until}. Validate nonzero/ordering
+once and retain exact tuple. ModelTick is a monotonic u64 fixture timeline, not
+Instant/UTC/native time; rollback refuses without rewriting last valid state.
+ModelCaps separately bounds attempt/namespace/tombstone counts, symbolic encoded
+bytes and pending operations. ModelCost is unverified symbolic accounting, NOT
+actual durable bytes. Checked charges including eventual tombstone space precede
+admission. Finite errors: Invalid/Conflict/Capacity/Overflow/Expired/UnknownHistory/
+StaleEpoch/UnknownAttempt. Outcomes: ModelReserved or ModelExistingSameRecord,
+never Ack. No raw credential/path appears in these finite outcomes.
+
+Relations cover EVERY active reservation exactly once, consistent with equality
+of symbolic namespace tokens. Missing/duplicate rows, Unknown relations or aliases
+not proven Disjoint refuse. This is a fixture assertion, not a namespace oracle.
+ModelHistoryState is KnownFixtureHistory/UnknownFixtureHistory; unknown-history
+handoff retains reservations/Unknown and blocks fresh admission. new_fixture
+starts a NEW laboratory scenario, never a recovered O with missing journal.
+ModelTerminalObservation is deliberately caller-constructible symbolic evidence
+binding attempt/owner/anchor/namespace/epoch: it tests association and ordering,
+cannot justify actual cleanup or release, and cannot become NativeProof. Snapshot
+is assertion data, not a production receipt/serialization or replayable authority.
+
+Exact proposed twelve selectors under
+storage::user_root_journal_model::tests::, all not implemented/NOT_RUN:
+
+1. crashed_unopened_attempt_blocks_same_namespace_new_attempt
+2. alias_or_unknown_namespace_relation_cannot_bypass_reservation
+3. replay_requires_identical_owner_anchor_selector_nonce_epoch_and_original_pair
+4. later_not_created_never_resolves_another_attempt_unknown
+5. stale_ack_or_terminal_epoch_cannot_release_current_reservation
+6. lost_ack_and_partial_indexes_remain_unknown_without_admission
+7. crash_handoff_unknown_history_preserves_reservations_and_blocks_admission
+8. deadlines_expiry_rollback_and_handoff_never_reset_original_pair
+9. distinct_namespace_attempt_keeps_independent_original_pair
+10. every_capacity_saturates_before_admission_without_unknown_or_tombstone_eviction
+11. checked_byte_counter_and_generation_overflow_preserve_exact_prior_snapshot
+12. terminal_release_retains_tombstone_and_denies_stale_replay
+
+Rejected transitions assert complete snapshot conservation except explicitly
+modeled uncertainty; reservations check both indexes/owner/original pair.
+Test10 loops over each capacity independently; test11 uses bounded synthetic
+counter states, no huge allocations. No production loader/filesystem/real clock/
+token/SCM/provider/process/callback/durable journal invoked. Approval of this
+exact boundary precedes implementation and any compiler/test allocation.
