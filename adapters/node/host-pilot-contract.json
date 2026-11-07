@@ -1,6 +1,8 @@
 {
   "schema": "humanymous.node-host-pilot-contract/1",
   "scope": "actual Node/Bun Express/Hono component and authority lifecycle only",
+  "localContainerEngine": {"default":"Windows Docker Desktop desktop-linux","executable":"C:/Program Files/Docker/Docker/resources/bin/docker.exe","requiredGlobalArgs":["--context","desktop-linux"],"automaticWslDockerFallback":false,"preflightPrivateFields":["context","endpoint","serverId","serverVersion","osType"],"sdkHost":"explicit Desktop DOCKER_HOST"},
+  "hostedLinuxEngine": "distinct execution surface; do not label it Windows Desktop or WSL-native Docker",
   "testTarget": "host_process",
   "requiredHarnessCounts": {"discovered": 5, "passed": 5, "failed": 0, "ignored": 0, "filtered": 0, "exitCode": 0},
   "requiredActualGroups": ["actual_authority_decisions_are_enforced_before_origin", "actual_framework_allow_preserves_binary_body_and_headers", "actual_framework_failure_paths_never_reach_origin"],

@@ -267,3 +267,13 @@ stdin is closed, and no foreign-language source is authored. The installer is a
 separate cohesive binary support module. No graph or scoring edit. Compilation,
 actual install/import and package lineage remain NOT_RUN during the active quiet
 window; no new Cargo/native/runtime/Docker command was started.
+
+User's Docker canon correction was reconciled into owned Node/Python pilot
+contracts and integration guidance: Windows Docker Desktop desktop-linux via
+explicit Windows docker.exe; no automatic WSL engine fallback. Actual context,
+endpoint, server ID/version and OSType must be retained privately before allocated
+execution, with explicit Desktop DOCKER_HOST for SDK clients. Hosted Linux and
+WSL-native Rust remain distinct. No preflight or Docker execution occurred while
+the benchmark quiet window remained active; older engine provenance is not
+invented from a Linux image digest. Root performed the authorized image cleanup;
+this adapter lane performed none and retains no owned process/container.

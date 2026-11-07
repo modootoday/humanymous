@@ -1,5 +1,14 @@
 # Rust Node-API adapter integration
 
+Local container canon is Windows Docker Desktop: invoke the explicit Windows
+docker.exe with --context desktop-linux. If PATH is missing, use
+C:/Program Files/Docker/Docker/resources/bin/docker.exe; do not switch to WSL
+Docker. Before an allocated build/run, retain context endpoint, server ID/version
+and OSType privately. SDK clients such as act require explicit Desktop DOCKER_HOST.
+Hosted Linux and WSL-native Rust are separate execution surfaces. Historical
+Linux component receipts without engine identity are not Desktop provenance.
+No Docker preflight/build/run was executed during the benchmark quiet window.
+
 Latest packaging source exposes actual hostPilotEnabled and uses one native
 initializer for read-only capability receipts and optional host-pilot startup.
 Production-load assertion rejects host-pilot binaries before fixture code. The

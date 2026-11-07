@@ -136,6 +136,13 @@ No success from a label, cross-compilation or symbol listing alone.
 ## Verification and critique reflected
 
 Common local/hosted policy canon: sot:root/program-roadmap and sot:root/delivery.
+Local Docker engine selection follows sot:root/rust-migration: explicit Windows
+docker.exe --context desktop-linux, using Windows Docker Desktop. No automatic
+WSL Docker fallback. Retain observed context endpoint, server ID/version and
+OSType in private run evidence before allocated build/run; SDK clients such as
+act receive explicit Desktop DOCKER_HOST. WSL-native Rust and hosted Linux remain
+distinct surfaces. Do not retrofit Desktop provenance onto an older receipt whose
+actual engine identity was not retained.
 User's later explicit direction authorizes actual local Windows/WSL build/test/
 runtime measurements as well as hosted runs to compare execution policy. Root
 allocates execution; no new Cargo/native/runtime/model/Docker command starts

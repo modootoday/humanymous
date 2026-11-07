@@ -1,6 +1,8 @@
 {
   "schema": "humanymous.framework-server-pilot/1",
   "adapter": "python-wsgi",
+  "localContainerEngine": {"default":"Windows Docker Desktop desktop-linux","executable":"C:/Program Files/Docker/Docker/resources/bin/docker.exe","requiredGlobalArgs":["--context","desktop-linux"],"automaticWslDockerFallback":false,"preflightPrivateFields":["context","endpoint","serverId","serverVersion","osType"],"sdkHost":"explicit Desktop DOCKER_HOST"},
+  "engineProvenance": "WSL-native Rust and hosted Linux remain distinct; historical Docker receipts without engine identity do not establish Desktop provenance",
   "status": "not_run",
   "gateRequired": true,
   "factorySourceImplemented": true,
