@@ -74,8 +74,8 @@ renaming this provider. Crate directory moves are a separate root decision.
 All four manifests currently use `publish = false`; no crates.io publication or
 compatibility alias is implied.
 
-Host-facing compatibility map requiring explicit retention or separately accepted
-change in that transaction:
+Legacy host-facing inventory for the atomic public-identity migration below.
+These are current facts, not recommendations to retain public language suffixes:
 
 - Node npm identity is `@humanymous/node`; N-API `binaryName` is
   `humanymous-node`, with packaged `native/humanymous-node.*.node` and generated
@@ -151,3 +151,36 @@ fault/server/package behavior and exact compatible tuples remain required;
 `releaseQualifiedTuples` stays empty. Source paths for the canon are the four
 Cargo manifests, Node lib/host/stream/template, Python lib/wsgi/asgi/async_call,
 Ruby native/native/liveness/worker, and the three adapters' package metadata.
+
+### Superseding public identity: humanymous
+
+The user's subsequent clarification supersedes any earlier recommendation to
+retain implementation-specific public loader/import names. The public consumer
+identity is `humanymous`; `humanymous-adapter-*` identifies internal Rust packages
+only. Every existing language-specific public name inventoried above is LEGACY.
+No current source or artifact has been renamed by this handoff.
+
+| Surface | Legacy public name | Proposed atomic public face |
+| --- | --- | --- |
+| Rust | Direct implementation crate imports | Root-owned `humanymous` facade over context-separated internal packages, not merged implementation code. |
+| npm/Node/Bun | `@humanymous/node`, N-API binaryName `humanymous-node` | Package/import/require `humanymous`; generated entries and packaged native basename use the common brand. |
+| Python | Distribution `humanymous-python-adapter`, import `humanymous_python` | Distribution/import `humanymous`; update PyO3 module, pyclass module strings, wheel/module stem, factories and `PyInit_humanymous` together. |
+| Ruby | Gem `humanymous-ruby-adapter`, require `humanymous_ruby` | Gem/require `humanymous`, `lib/humanymous.<DLEXT>`, `Init_humanymous`; Ruby constant `Humanymous` already matches case convention. |
+| Product/native loader | Implementation-specific basenames | Public loader basename `humanymous`, with incompatible runtime/OS/architecture/ABI variants isolated in paths and a manifest. |
+
+Host-required exceptions are functional ABI names, not language branding:
+Node's generated `napi_register_module_v1` remains the host registration symbol;
+Python's `PyInit_humanymous` and Ruby's `Init_humanymous` must match their public
+module stems; `.node`, interpreter extension suffixes and Ruby DLEXT remain
+host/platform requirements. Shared native ABI `humanymous_*_v1` functions retain
+meaningful function/version distinctions under the native ABI owner's canon.
+
+Internal `[lib].name` and raw Cargo output may remain distinct to prevent build
+collisions, while packaging maps each to the public basename inside its isolated
+host/runtime destination. Do not put two incompatible `humanymous.dll` files in
+one directory or flatten Cargo outputs. Root's new artifact/ABI canon decides
+the facade, collision/isolation manifest, compatibility break/version, ownership,
+unwind/thread/lifetime and genuine import gates before implementation. No alias,
+registry availability/ownership, publication, new glue/unsafe permission or change
+to existing wire producer/version IDs is inferred. Historical receipts keep their
+original names and hashes; the unified public face needs migrated-source proof.
