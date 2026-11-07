@@ -55,7 +55,11 @@ impl State {
         }
     }
     fn validate_stopped(&self, report: &ExitReport) -> io::Result<()> {
+        self.validate_stopped_at(report, Instant::now())
+    }
+    fn validate_stopped_at(&self, report: &ExitReport, now: Instant) -> io::Result<()> {
         if self.phase != Phase::Draining
+            || self.deadline.is_none_or(|deadline| now >= deadline)
             || !report.stopped
             || !report.drained
             || !report.audit_flushed
@@ -65,7 +69,10 @@ impl State {
         Ok(())
     }
     fn stopped(&mut self, report: &ExitReport) -> io::Result<()> {
-        self.validate_stopped(report)?;
+        self.stopped_at(report, Instant::now())
+    }
+    fn stopped_at(&mut self, report: &ExitReport, now: Instant) -> io::Result<()> {
+        self.validate_stopped_at(report, now)?;
         self.phase = Phase::Stopped;
         self.deadline = None;
         Ok(())
@@ -172,7 +179,8 @@ impl Supervisor {
                     if let Some(deadline) = state.deadline {
                         let Some(remaining) = deadline.checked_duration_since(Instant::now())
                         else {
-                            eprintln!("runtime-host deadline expired; shutdown is unproven");
+                            // Hard expiry must not wait on stderr, logging or
+                            // another lock before terminating the owned host.
                             std::process::exit(74);
                         };
                         state = match monitor.1.wait_timeout(state, remaining) {
@@ -263,6 +271,50 @@ impl Drop for Supervisor {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn pure_final_delivery_rejects_expiry_before_and_during_delivery() {
+        let deadline = Instant::now();
+        let report = ExitReport {
+            stopped: true,
+            drained: true,
+            audit_flushed: true,
+        };
+        let state = std::cell::RefCell::new(State {
+            phase: Phase::Draining,
+            deadline: Some(deadline),
+        });
+        let delivered = std::cell::Cell::new(false);
+        assert!(
+            deliver_stop(
+                || state.borrow().validate_stopped_at(&report, deadline),
+                || {
+                    delivered.set(true);
+                    Ok(())
+                },
+                || state.borrow_mut().stopped_at(&report, deadline),
+            )
+            .is_err()
+        );
+        assert!(!delivered.get());
+        for completed_at in [deadline, deadline + Duration::from_nanos(1)] {
+            assert!(
+                deliver_stop(
+                    || state
+                        .borrow()
+                        .validate_stopped_at(&report, deadline - Duration::from_nanos(1)),
+                    || {
+                        delivered.set(true);
+                        Ok(())
+                    },
+                    || state.borrow_mut().stopped_at(&report, completed_at),
+                )
+                .is_err()
+            );
+            assert!(delivered.replace(false));
+            assert_eq!(state.borrow().phase, Phase::Draining);
+            assert_eq!(state.borrow().deadline, Some(deadline));
+        }
+    }
     #[test]
     fn pure_final_delivery_keeps_original_deadline_until_success() {
         let deadline = Instant::now() + Duration::from_secs(1);

@@ -55,7 +55,13 @@ Windows final SCM Stopped publication uses the same completion ordering. Deliver
 does not acquire the supervisor state lock or obtain a fresh deadline. Validation
 rejects an unproven phase/drain/flush before emitting a successful final report;
 delivery failure cannot commit supervisor Stopped. New regression and ordering
-changes are authored/NOT_RUN until their own allocated gates execute.
+changes require their own source-bound gates. Validation and completion each
+check the original monotonic deadline under the state lock; completion at or
+after expiry rejects without committing Stopped, even if the watchdog thread has
+not yet run. The hard-expiry branch performs no stderr/log write before exit74.
+Deterministic pure tests inject expiry before and during delivery; actual blocked
+stdout/stderr process-boundary qualification remains pending and is not implied
+by scoped compile/pure/Clippy results.
 Observer management e6dd38d uses the existing authenticated native transport and
 independent Credential; it is not exposed through browser/application routes.
 
