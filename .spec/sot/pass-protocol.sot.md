@@ -68,3 +68,19 @@ Source preparation, allocated native units/check/strict Clippy, actual issuance
 and replay/attestation process tests, and Docker product/a11y qualification are
 separate gates. All authored code/tests are Rust1.99.1/edition2024. Missing external
 evidence stays unavailable; this source contract cannot authorize enforcement.
+
+## Initial source handoff
+
+The five delegated Rust files now implement the pure protocol and27 authored
+tests:16 mapped legacy responsibilities plus11 edge cases. Direct pinned
+rustfmt/edition2024 and scoped whitespace checks passed. The subsequent native
+Windows component run passed35 library tests including27 Pass cases and two
+integration harness tests,37 Rust tests total, with no failures/ignored/filtered.
+Locked/offline all-target check, strict Clippy and fmt exited0. The718 selected
+package/root-manifest/dependency-source files matched before/after, with zero
+hash differences and no challenge-package file inventory change. Configuration,
+tool/SDK byte closure was not captured; this is not a full build-input attestation.
+Raw output and summary are attached to evidence:root/20261106194410 under the
+pass-protocol-first-check bundle. No independent Pass Go golden-vector or actual
+issuance/replay/attestation integration result is claimed. Existing proof-of-work
+and attestation modules are untouched; the library export adds no dependency edge.
