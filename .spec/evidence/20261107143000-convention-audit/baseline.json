@@ -157,6 +157,16 @@
       "source_file": "crates/cli/src/runtime_host/input.rs",
       "private_review_sha256": "c20c9597cd58b76eafdfa49cd760a23ed319a889aed4bfdf3b12d7daaa03b4fd",
       "actual_compilation_executed_by_auditor": false
+    },
+    {
+      "id": "CA-FACADE-GUARD-01",
+      "priority": "P2",
+      "owner": "Delivery/root",
+      "state": "CONFIRMED policy duplicate-occurrence guard gap; current workflows correct. Worktree source fix accepted, durable commit and actual scoped regression/gates OPEN",
+      "trigger": "Append known facade build after correct original with only toolchain-success condition; existential witness accepted original",
+      "observed_hosted_bypass": false,
+      "release_or_green_job_bypass_claim": false,
+      "private_review_sha256": "fdd4456bc840cee14af909d0c69dd2d7c0890345dcc67bb00b42f78fcbc8d492"
     }
   ],
   "evidence_references": {
@@ -933,6 +943,25 @@
       "full_product_qualified": false,
       "actor": "67inventory/1selected/66filtered"
     },
+    "new_audit_workload": 0,
+    "goal_complete": false
+  },
+  "followup_facade_occurrence_and_declared_dag": {
+    "private_review_sha256": {
+      "facade-admission-duplicate-followup-002.json": "895be1f67ef92477548390ecd0caae9e9ab99c6b05732c87d26fa027d964da68",
+      "declared-two-lane-independent-review-002.json": "e3d3b489d5ebb68b500ec5ee2d269626bad70f0ba75bc5eece5bc35829630da9",
+      "facade-admission-duplicate-source-review-001.json": "fdd4456bc840cee14af909d0c69dd2d7c0890345dcc67bb00b42f78fcbc8d492"
+    },
+    "source": "c858b1dc40d60c2d22f10411531a8b72b70aea63",
+    "policy_gap": "Knowncommand/order per occurrence plus any(correctguard) did not reject appended weakduplicate",
+    "fix": "Every facadebuild exactmatchingadmissioncondition/order, unique admissioncommand andID; negative tests authored, not executed",
+    "dag_workflow_sha256": "12d4086ae5d2405eb71d7405a281ab36e38414d3a6584c41b5ba85cbed23c3f5",
+    "declared_top_level_jobs": 16,
+    "source_needs_mismatches": 0,
+    "declared_width": 2,
+    "proof": "Two disjoint chains cover all16 nodes; native/docker incomparable; native/images maxparallel1",
+    "limits": "Top-level declared DAG only, not reusableworkflow expansion/actual scheduling/crossworkflow concurrency/billing/success",
+    "first_checker_error": "Review001 joined-string comparison precedence incorrectly yielded16mismatches; corrected002 named strings0mismatch, original retained",
     "new_audit_workload": 0,
     "goal_complete": false
   }

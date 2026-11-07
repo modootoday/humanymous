@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 68ea8270a82567b32dacd09acb243e2bdcc062a58711651d13d69a1ccaaa43bd, bytes: 46563, store: repo}
+  - {path: baseline.json, sha256: 4d6501a37e62d9c102ac305c832d7ee831f18b9d17a8556ae1d29fab73b03029, bytes: 48613, store: repo}
 ---
 
 # Convention audit baseline
@@ -561,3 +561,26 @@ Actor67inventory/1selected/66filtered does not identify its assertion/panic site
 Original private report/actor streams/full cleanup and three image roles remain
 unrecovered; future framing/transport fixes do not retroactively prove the cause.
 Complete migration audit and full product qualification remain OPEN.
+
+## Facade occurrence guard and declared CI graph
+
+CA-FACADE-GUARD-01 P2 is a confirmed c858b1dc policy-validation gap, not an
+observed bad workflow or hosted bypass. Append a known facade build with only
+its toolchain-success condition after the correctly guarded original: known
+command/order checks accept it, while any(correct occurrence) still succeeds.
+That extra build may run after failed admission; the job still fails, so this
+is not evidence of a green job, release authorization or successful product.
+Owner worktree correction requires the exact matching admission-success guard
+for EVERY facade build occurrence, plus unique admission command/ID. Duplicate
+negative regressions are authored; durable source and actual scoped gates remain
+OPEN. The actual supported-entrypoint request API remains separate from arbitrary
+Cargo invocation and effective feature/artifact qualification.
+
+Independent source review matches all16 top-level rust-validation job needs to
+owner graph and exact workflow hash12d4086a. Two disjoint dependency chains cover
+all16 nodes; native/docker are incomparable, proving declared width2. Native and
+images matrices have max-parallel1. This does not count called reusable-workflow
+expansion or prove actual scheduler overlap, cross-workflow limits, billing,
+failure execution semantics or hosted success. Review001 comparison-precedence
+error is preserved; corrected002 explicitly compared joined strings with zero
+mismatch. Exact private hashes are in baseline.json; complete audit remains OPEN.
