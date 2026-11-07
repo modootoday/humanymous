@@ -1,13 +1,13 @@
 use super::*;
 
-pub(super) struct Worker<T> {
+pub(in crate::process) struct Worker<T> {
     handle: Option<JoinHandle<()>>,
     receiver: Receiver<io::Result<T>>,
     result: Option<io::Result<T>>,
     joined: bool,
 }
 impl<T: Send + 'static> Worker<T> {
-    pub(super) fn start(
+    pub(in crate::process) fn start(
         name: &str,
         operation: impl FnOnce() -> io::Result<T> + Send + 'static,
     ) -> io::Result<Self> {
@@ -22,7 +22,7 @@ impl<T: Send + 'static> Worker<T> {
             joined: false,
         })
     }
-    pub(super) fn poll(&mut self) {
+    pub(in crate::process) fn poll(&mut self) {
         if self.result.is_none() {
             self.result = match self.receiver.try_recv() {
                 Ok(result) => Some(result),
@@ -33,20 +33,20 @@ impl<T: Send + 'static> Worker<T> {
             };
         }
     }
-    pub(super) fn failed(&self) -> bool {
+    pub(in crate::process) fn failed(&self) -> bool {
         self.result.as_ref().is_some_and(Result::is_err)
     }
-    pub(super) fn succeeded(&self) -> bool {
+    pub(in crate::process) fn succeeded(&self) -> bool {
         self.result.as_ref().is_some_and(Result::is_ok)
     }
-    pub(super) fn joined(&self) -> bool {
+    pub(in crate::process) fn joined(&self) -> bool {
         self.joined
     }
-    pub(super) fn join_ready(&self) -> bool {
+    pub(in crate::process) fn join_ready(&self) -> bool {
         self.handle.as_ref().is_none_or(JoinHandle::is_finished)
     }
     // Potentially blocking final operation, NEVER called by poll.
-    pub(super) fn join(&mut self) -> bool {
+    pub(in crate::process) fn join(&mut self) -> bool {
         let panicked = self
             .handle
             .take()
@@ -55,7 +55,7 @@ impl<T: Send + 'static> Worker<T> {
         self.poll();
         panicked
     }
-    pub(super) fn into_output(self) -> Option<T> {
+    pub(in crate::process) fn into_output(self) -> Option<T> {
         if self.joined {
             self.result.and_then(Result::ok)
         } else {

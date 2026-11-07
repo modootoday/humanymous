@@ -9,6 +9,7 @@ use std::{
 mod capture_attempt;
 mod controlled_barrier;
 mod direct_pipe;
+mod interactive;
 mod owned_child;
 pub use capture_attempt::{
     CaptureAttempt, CaptureDeadlines, CaptureIssue, CaptureLimits, CaptureProgress,
@@ -20,6 +21,11 @@ pub use controlled_barrier::{
 };
 pub use direct_pipe::{
     ClosedPipeChild, DirectChildProgress, RetainedDirectPipeAttempt, RetainedDirectPipeFailure,
+};
+pub use interactive::{
+    EnqueueResult, InteractiveAttempt, InteractiveLimits, InteractiveProgress,
+    InteractiveStartFailure, OutputChunk, RetainedInteractiveFailure, SettledInteractiveChild,
+    Stream,
 };
 
 fn piped_child(command: &mut Command, stderr: bool) -> io::Result<Child> {

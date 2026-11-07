@@ -865,3 +865,41 @@ source slice, then source freeze and .NET/X review BEFORE any new Cargo/actual
 allocation. The R2 fault slot authorizes no interactive workload. Full actual
 blocked-writer/descendant-pipe/partial-start and Kestrel/GC/AOT/package/producer
 gates remain open.
+
+## Interactive source candidate v1.8 (not compiled)
+
+The smallest coherent shared source now exports InteractiveAttempt, validated
+InteractiveLimits, EnqueueResult, Stream/OutputChunk, InteractiveProgress and
+retained start/settlement failures. It reuses existing OwnedDirectChild unchanged
+and the existing capture Worker result/join implementation, widening only its
+private visibility to process siblings. CaptureDeadlines adds a private original
+run accessor; no clock renewal, new dependency or unsafe/native mechanism.
+
+Start creates actual child then stdout/stderr workers and one deferred writer.
+Partial start returns the same boxed owner. Opaque input is Box<[u8]>, rather than
+Vec, to avoid caller excess capacity undermining accepted payload bounds. Exactly
+one startup acceptance precedes controls. Full/disconnect/order/size/expired input
+is sticky; returned refused Box preserves ownership. close_input drops senders
+independent of queue space so the writer drains accepted FIFO. cancel_input uses
+an independent atomic flag and explicitly records InputFailed; accepted-minus-
+actually-written message counts expose incomplete delivery. No queue acceptance
+or cancellation claim preempts an in-flight syscall.
+
+Each reader moves one fixed4096byte Box through its16slot try_send payload queue;
+the independent existing Worker result channel carries terminal error/EOF even
+if payload is full. Lifetime byte accounting stays in that worker and cannot
+reset on consumer drain. Queue full closes that worker with an explicit error,
+not successful truncation/EOF. Poll consumes only fixed result channels; raw
+chunks remain available through take_output both before and AFTER final actual
+joins. SettledInteractiveChild retains those receivers with private native facts.
+Direct exit, input close/drain, accepted/written counts, per-stream EOF, worker
+completion and actual join are separate exposed observations.
+
+Ten authored pure tests exercise closed caps; startup order; oversized/empty/
+expired refusal with same Box pointer;64slot full+sticky refusal; close-through-
+FIFO; disconnected/oversized control; cancelled/expired startup; output full with
+retained chunks; exact cap/overflow; synthetic read/write failure. They start no
+process or worker thread and are NOT_COMPILED/NOT_RUN. Only bare rustfmt and
+diff/spec checks have run. New source/API must be frozen and reviewed by .NET/X
+before a new explicit Cargo/actual slot. Full actual negative matrix, partial
+thread creation, blocked kernel IO, descendants and hosted producer remain open.

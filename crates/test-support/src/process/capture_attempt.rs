@@ -11,7 +11,7 @@ use std::{
     time::Instant,
 };
 
-mod worker;
+pub(super) mod worker;
 use super::owned_child::OwnedDirectChild;
 use worker::Worker;
 
@@ -23,6 +23,9 @@ pub struct CaptureDeadlines {
     cleanup_met: bool,
 }
 impl CaptureDeadlines {
+    pub(super) fn run_until(&self) -> Instant {
+        self.run
+    }
     /// Reject reversed deadlines. These values are caller claims, not authority.
     pub fn from_original(run: Instant, cleanup: Instant) -> io::Result<Self> {
         if cleanup < run {
@@ -86,11 +89,11 @@ pub enum CaptureIssue {
     CleanupExpired,
     /// Partial pipe or worker creation failed after the actual child was retained.
     SetupFailed,
-    /// Input write failed, or its worker outcome was unavailable.
+    /// Input offer/write failed, or its worker outcome was unavailable.
     InputFailed,
-    /// Stdout failed or exceeded its declared byte limit.
+    /// Stdout read/queue failed or exceeded its declared byte limit.
     StdoutFailed,
-    /// Stderr failed or exceeded its declared byte limit.
+    /// Stderr read/queue failed or exceeded its declared byte limit.
     StderrFailed,
     /// An actual joined worker panicked.
     WorkerPanicked,
