@@ -168,6 +168,43 @@ lane. Freeze an exact path/hash handoff before Root moves a group. Pause writers
 only on that group, return or explicitly retain its live target/process leases,
 and never relocate an active compiler/CEF/Docker/preview input tree.
 
+##### Platform slice accepted implementation map
+
+The next lower-layer slice absorbs test-support and windows-object-bridge into
+crates/integrations/humanymous-platform. Its two contextual API modules are
+testing and windows_object, without root-level forwarding exports. Default
+features are empty. The testing feature enables optional serde/serde_json and
+the testing module; windows-object enables optional Windows dependencies only
+on Windows, exposing the bridge only under both the feature and OS cfg. Neither
+feature implies the other or establishes native/provider authority.
+
+Keep the package unsafe lint at deny and the testing module at forbid. Preserve
+exactly the six existing function-local bridge exceptions inside windows_object;
+no new wrapper, unsafe operation, root allow or workspace-lint weakening is
+authorized by consolidation. Observation fields remain private to the bridge,
+including against the newly sibling testing module. Preserve process Worker
+visibility inside testing::process and one owning child/cancellation state.
+
+Core consumes platform/testing only as a development dependency. Existing tool
+consumers that normally depend on test-support explicitly select testing in the
+same dependency category; do not silently convert tools into production proof
+providers. Native-security remains a safe runtime context and selects platform's
+Windows feature only in its Windows-target normal dependency. Update exact
+harness names/selectors, fixture grants, source custody readers, examples,
+manifests, locks and consumers atomically. No wildcard admission or permanent
+old-name dependency alias substitutes for the new interface.
+
+Do not begin graph/path movement while the allocated native source-guard run
+uses these inputs. Freeze exact hashes and return its target/process lease first.
+Preserve every old source receipt. Validate default feature dependency absence,
+testing-only and Windows-only roles, legitimate imports plus sibling-forgery
+compiler negatives, and target-appropriate consumers on the new graph.
+
+The package-count milestones are41 initially,35 after core,34 after platform,
+29 after runtime,21 after tools,10 after adapters and8 after browser. Relocating
+the facade and collector changes paths without reducing this count. These are
+planned structural counts, not functional completion or performance claims.
+
 Move safe engine first, then runtime/platform contracts, developer tools, adapters
 by qualified role, and browser last. Each slice updates imports, manifests,
 fixtures, locks, CLI/workflow selectors, source inventories, packaging recipes,
