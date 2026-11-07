@@ -2366,3 +2366,31 @@ archive commitments. A local rebuild is not a download of the hosted archive;
 do not assume byte equality across renderer environments or build times. Any
 served artifact needs its own actual package/second-restore/HTTP byte evidence,
 and differences from the hosted archive hashes remain explicit.
+
+### Root-requested CLI/browser execution and ABI target reconciliation
+
+Consumed roadmap4d520c62 and exact public CLI/browser evidence in one public
+update. CLI c57cf0c6/controller24004321 establishes ONE cooperative Windows
+parent test with four subcases0/74/74/74 and separately observed outer assigned-Job
+cleanup. Simulated runtime completion, child endpoint release and kernel/SCM/
+production native/full-service qualification remain distinct.
+
+Browser source306eedc8/run42390164354 still failed16/18. Its closed DTO reports
+DNS finished, process exit1 and unmatched summary;67inventory/1selected/66filtered
+is not67executed tests. Source-prefix authentication is false and original private
+actor bodies are unavailable, so the cause and cleanup remain unclassified.
+The two owner summary projections were compared and match exactly.
+
+Naming contract3962278c targets public humanymous with distinct managed
+humanymous.dll and native humanymous-native.dll; it is not implemented package/
+resolver/export migration. The public supported-topologies reference preserves
+the current experimental interfaces and explicitly labels this target status.
+
+Edited CLI reference, browser collector, supported topologies and Draft-v0 change
+manifest. Evidence07052815/current-cli-browser-abi-reconciliation.json retains
+exact receipt hashes, source IDs and limits. Existing fixed-source checker again
+reports88pages/errors0. No new compiler/native/Jekyll/browser/deployment run was
+performed. These public text changes require a NEW render checkpoint: earlier
+29096/eac51f32 results remain historical and cannot qualify the new wording.
+Root's queued preview must select the later public-input milestone explicitly;
+do not silently reuse the old hosted-29096 LF source as the updated document.

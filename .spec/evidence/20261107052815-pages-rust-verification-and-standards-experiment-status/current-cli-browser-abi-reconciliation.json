@@ -1,0 +1,66 @@
+{
+  "schema": "humanymous.pages-layer-result-reconciliation/1",
+  "roadmap_source": "4d520c6202deb5b1c949b5387209ae2017bae401",
+  "cli": {
+    "receipt": ".spec/evidence/20261107164800-cli-installation-watchdog-actual/summary.json",
+    "receipt_sha256": "f3caba7888c840299ab58124dd8236cd30b59d97953bf30ffc0d37fded19dfc6",
+    "source": "c57cf0c6a63d9a99f0596e14e5328b8bf6a97c0b",
+    "controller_source": "2400432116a0ddd5b9d29ced92ab46954c2f24d2",
+    "venue": "cooperative Windows component",
+    "parent_tests_passed": 1,
+    "subcase_exits": [0, 74, 74, 74],
+    "outer_assigned_job_empty_observed": true,
+    "runtime_completion_simulated": true,
+    "kernel_blocked_write_proven": false,
+    "scm_or_native_producer_or_full_service_qualified": false,
+    "limits": "Direct child report fields and outer Job observations remain distinct; no universal native-call deadline or arbitrary untrusted launch qualification."
+  },
+  "browser": {
+    "source": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+    "run_id": 42390164354,
+    "run_url": "https://github.com/modootoday/humanymous/actions/runs/42390164354",
+    "lab_receipt": ".spec/evidence/20261106224155-container-test-environment-research/hosted-browser-306eedc8-failure.json",
+    "lab_receipt_sha256": "c7dc4e83f79c6b1c2c8463d9536efbadcf156c203cd85ad925c6513f0e59d3aa",
+    "ci_receipt": ".spec/evidence/20261107052001-delivery-followup/browser-306eedc8-summary.json",
+    "ci_receipt_sha256": "753b4d66b05aac0726fc0226adad55abc35c598aaecc3e2a6de878a97a93c542",
+    "owner_summary_projections_match": true,
+    "passed_assertions": 16,
+    "failed_assertions": 2,
+    "inventory": 67,
+    "selected": 1,
+    "filtered": 66,
+    "dto_dns_finish": "succeeded",
+    "process_exit": 1,
+    "test_summary_matched": false,
+    "source_prefix_authenticated": false,
+    "original_private_actor_output_available": false,
+    "cause_classified": false,
+    "cleanup_qualified": false,
+    "positive_browser_origin_join_qualified": false
+  },
+  "abi_naming": {
+    "contract_source": "3962278cf499f9968a4217e3eb3f912ed4e96aa1",
+    "public_product": "humanymous",
+    "managed_target": "humanymous.dll",
+    "native_target": "humanymous-native.dll",
+    "migration_implemented_by_contract": false,
+    "scope": "Read the accepted target identity and collision rules, not an assertion that current exports, imports, packages or artifacts were renamed."
+  },
+  "public_changes": [
+    "docs/reference/cli-config-policy.md",
+    "docs/reference/browser-collector.md",
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/changes.json"
+  ],
+  "source_check": {
+    "pages": 88,
+    "errors": [],
+    "verifier": "existing fixed-source Rust executable; no current compilation"
+  },
+  "execution_performed_by_pages": false,
+  "fresh_build_required_for_changed_public_prose": true,
+  "prior_hosted_29096_build_qualifies_this_edit": false,
+  "new_jekyll_or_browser_run": false,
+  "deployment_performed": false,
+  "full_source_review_or_product_qualification": false
+}

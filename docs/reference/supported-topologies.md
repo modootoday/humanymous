@@ -268,6 +268,12 @@ server's disconnect detection, input deadline or cancellation/GC/GVL behavior.
 
 ### Managed source follow-through
 
+The naming contract at source `3962278c` selects the public product name
+`humanymous`, with managed `humanymous.dll` and native `humanymous-native.dll`
+as distinct filenames. This is a target contract. It does not establish that
+the current package, imports, resolver or published artifacts have migrated;
+the experimental interfaces below retain their current source meaning.
+
 Current ASP.NET source declares `HumanymousHost(supervisorConfiguration)` and
 `HumanymousMiddleware.InvokeAsync(HttpContext)`. The private configuration must
 come from the supervisor, never a request or public log. The shim's

@@ -7,6 +7,18 @@
   "generic_wire_selected": false,
   "changes": [
 {
+  "kind": "implementation-evidence",
+  "paths": [
+    "../../reference/cli-config-policy.md",
+    "../../reference/browser-collector.md",
+    "../../reference/supported-topologies.md"
+  ],
+  "summary": "Record one cooperative Windows watchdog parent with four observed subcases and separate outer Job cleanup, retain the failed306eedc8 browser product outcome with DNS-finished but unclassified cause, and label unified humanymous managed/native naming as a target contract rather than implemented migration.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
   "kind": "editorial-clarification",
   "paths": [
     "validation/conformance.md",

@@ -54,6 +54,20 @@ fail. Signature and trust key are lowercase hexadecimal strings, respectively
 Successful service diagnostics retain `product_qualified: false`; a ready
 fixture is not authenticated runtime, recovery or management qualification.
 
+### Observed Windows final-delivery boundary
+
+At source `c57cf0c6`, one cooperative Windows parent test passed under the
+separate controller at source `24004321`. Its four subcases observed exit codes
+0, 74, 74 and 74 for normal completion, unread stdout pressure, unread stderr
+pressure and late completion. Writer entry and release of the parent's pipe
+ends were observed. The outer Windows Job controller observed the parent exit
+and an empty Job within the original cleanup deadline.
+
+These are four subcases of one parent test. Runtime completion was simulated;
+the result does not prove a kernel-blocked write, SCM/account operations,
+production native ownership or the full service lifecycle. The child report's
+own cleanup fields remain separate from the outer controller's observations.
+
 ## Runtime startup and limits
 
 Startup names `listen`, `origin`, `scope`, `routes`, `audit`, `owner`,

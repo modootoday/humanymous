@@ -110,6 +110,17 @@ alone does not authenticate its emitting process or establish completion of that
 operation, successful WASM execution or the failure's cause.
 Neither attempt qualifies the browser-to-origin flow.
 
+A later [run `42390164354`](https://github.com/modootoday/humanymous/actions/runs/42390164354)
+at source `306eedc8` also failed with 16 passing and two failing assertions out
+of 18. Its structured diagnostic reported DNS finalization succeeded, a test
+process exit of 1, and an unmatched test summary. The inventory matched 67 cases
+with one selected and 66 filtered; those counts are not 67 executed tests.
+The original private actor output was unavailable, and the source-prefix
+authentication field remained false. The result does not distinguish harness
+startup from a selected-test assertion failure or identify a Firefox, proxy,
+bootstrap or witness cause. Cleanup, ordinary-human recovery and the positive
+browser-to-origin join remain unqualified.
+
 ```console
 cargo test --locked -p humanymous-collector
 cargo build --locked -p humanymous-collector --target wasm32-unknown-unknown --release
