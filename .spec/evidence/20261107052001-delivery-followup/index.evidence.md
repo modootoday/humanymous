@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T14:41:52Z
+updated: 2026-11-07T14:54:59Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -25,6 +25,7 @@ files:
   - {path: browser-49394e38-summary.json, sha256: 87348a9cbf4bf927e78a81c6ed6ad894e31e6e4ad745e7a90d5bb506f35f53af, bytes: 4770, store: repo}
   - {path: native-notice-verifier-validation.json, sha256: 87e637e4bbbe6b88d2e766026ad72b23d5f34b4ae5cc958d6a4564a108aae233, bytes: 2097, store: repo}
   - {path: native-artifact-caller-validation.json, sha256: 52ccd28684bac0cd13146d08311c6ae4687816a04a96885527dc222b06f63045, bytes: 2830, store: repo}
+  - {path: native-b09e98cf-summary.json, sha256: 91a0f60a662ab9c1fbf7412134b9079a9f53fc35af5316fa5ffb3344ebf02f40, bytes: 2575, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -383,3 +384,20 @@ This is caller/receipt/member-verifier source validation, not an actual native
 binary archive or image run. Source-stable before/after hashes are not hostile
 atomic file attestation. First-stream archive scope and outer-timeout-only
 process limitations remain explicit; full-product/release qualification is false.
+
+## Actual native archive refusal
+
+native-b09e98cf-summary.json records run42383033991 at exactb09: two terminal jobs,
+fresh hosted preflight83/check/Clippy/policy success and component failure, zero
+artifacts. The actual release Cargo build exited0; typed artifact receipt parsing
+completed and execution advanced to native-archive. The member verifier refused
+duplicate, nonregular or wrong-size native member. Exact member/type/predicate and
+binary/archive hashes remain unknown publicly; no private archive or build receipt
+body was retrieved. Source stayed unchanged and full-product qualification false.
+Build stdout SHA256 isd0e5842dfaac3278831c87ab217ba509aa21efc826e93ff8ff5cba67eb55fb30;
+stderr SHA256 isf57d9698429e4fe4402751a923a2548c02b3bd713990f91c89c1a064938acdd3.
+Normalized REST/decoded connector capture index SHA256 is
+b0bf444993fc77aa22321f95c45fc6a0eda563ea4a13514b11e76b798619e23c.
+No duplicate dispatch or repeat push was performed. An independently identified
+sparse-writer/regular-reader source mismatch is not established as this old run's
+cause; unknown original entry metadata is not reconstructed from an inference.

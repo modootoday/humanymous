@@ -1,0 +1,63 @@
+{
+  "schema": "humanymous.native-archive-hosted-evidence/1",
+  "run_id": 42383033991,
+  "attempt": 1,
+  "source_sha": "b09e98cfb4824b8be151d997c7d22b1c28372f70",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs_total": 2,
+  "artifacts_total": 0,
+  "preflight": {
+    "job_id": 128434502460,
+    "conclusion": "success",
+    "delivery_units": {
+      "passed": 83,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "selected_native_all_target_check": "passed",
+    "selected_strict_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "component": {
+    "job_id": 128434969310,
+    "conclusion": "failure",
+    "safe_component_summary": {
+      "cargo_lock_sha256": "a22794d248c8c854a7138e4e8e7a821d20612b9c35d3d4bf0b850b6412cbb99e",
+      "commands": {
+        "native-release-build": {
+          "exit_code": 0,
+          "stderr_sha256": "f57d9698429e4fe4402751a923a2548c02b3bd713990f91c89c1a064938acdd3",
+          "stdout_sha256": "d0e5842dfaac3278831c87ab217ba509aa21efc826e93ff8ff5cba67eb55fb30"
+        }
+      },
+      "component": "archive",
+      "full_product_qualified": false,
+      "runner_arch": "x86_64",
+      "runner_image": "20261101.360.1",
+      "runner_os": "linux",
+      "schema": "humanymous.hosted-component/1",
+      "source_changed": false,
+      "source_manifest_sha256": "50b6be2db524ce7ea29feffbbb35d64c3362fb91a2d6e8b0d8748fe893315044",
+      "source_sha": "b09e98cfb4824b8be151d997c7d22b1c28372f70",
+      "stage": "native-archive",
+      "status": "failed",
+      "test_counts": null,
+      "toolchain_sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    },
+    "observed_refusal": "duplicate, nonregular or wrong-size native member",
+    "exact_failed_member": null,
+    "exact_failed_predicate": null,
+    "binary_hashes": null,
+    "actual_archive_hash": null,
+    "notice_hash": null
+  },
+  "capture_index_sha256": "b0bf444993fc77aa22321f95c45fc6a0eda563ea4a13514b11e76b798619e23c",
+  "limitations": [
+    "Actual release Cargo command exited0 and the typed build receipt parser completed; the later archive member verifier refused the archive.",
+    "The combined refusal does not identify the member, entry type or exact predicate. Individual binary/archive bytes and original private Cargo/receipt bodies were not retrieved.",
+    "An independently confirmed sparse-writer/regular-reader source incompatibility is not proven as this run's cause.",
+    "Normalized REST and decoded connector wrappers are not HTTP wire bytes. No retry or publication was performed."
+  ]
+}
