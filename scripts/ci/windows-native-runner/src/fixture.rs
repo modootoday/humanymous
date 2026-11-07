@@ -61,3 +61,30 @@ pub fn private(path: &Path) -> io::Result<()> {
     }
     Ok(())
 }
+/// Validate the hosted child's own temp root and actual workspace write denial.
+pub fn actor_environment(expected_sid: Option<&str>) -> io::Result<()> {
+    #[cfg(windows)]
+    if expected_sid.is_some() {
+        fs::create_dir(std::env::temp_dir())?;
+        let probe =
+            std::env::current_dir()?.join(format!("native-write-probe-{}", std::process::id()));
+        match fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&probe)
+        {
+            Err(error) if error.kind() == io::ErrorKind::PermissionDenied => (),
+            Ok(file) => {
+                drop(file);
+                fs::remove_file(probe)?;
+                return Err(io::Error::other(
+                    "workspace writable by hosted standard actor",
+                ));
+            }
+            Err(error) => return Err(error),
+        }
+    }
+    #[cfg(not(windows))]
+    let _ = expected_sid;
+    Ok(())
+}

@@ -22,6 +22,7 @@ use windows_sys::Win32::{
     UI::WindowsAndMessaging::SW_HIDE,
 };
 use zeroize::Zeroizing;
+mod scm;
 
 fn wide(text: impl AsRef<OsStr>) -> Vec<u16> {
     text.as_ref().encode_wide().chain(Some(0)).collect()
@@ -167,7 +168,7 @@ fn launch(
     arguments: &[OsString],
     environment: &[(String, String)],
     cwd: &Path,
-) -> io::Result<u32> {
+) -> io::Result<(u32, u32)> {
     let exe = std::env::current_exe()?.canonicalize()?;
     let application = wide(&exe);
     let text = std::iter::once(exe.into_os_string())
@@ -214,7 +215,7 @@ fn launch(
     let child = Handle(process.hProcess);
     let thread = Handle(process.hThread);
     let job = Handle(unsafe { CreateJobObjectW(null(), null()) });
-    let managed = (|| -> io::Result<u32> {
+    let managed = (|| -> io::Result<(u32, u32)> {
         if job.0.is_null() {
             return Err(io::Error::last_os_error());
         }
@@ -245,7 +246,34 @@ fn launch(
         if unsafe { GetExitCodeProcess(child.0, &mut code) } == 0 {
             return Err(io::Error::last_os_error());
         }
-        Ok(code)
+        if unsafe { TerminateJobObject(job.0, 1) } == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        let until = std::time::Instant::now() + std::time::Duration::from_secs(5);
+        loop {
+            let mut accounting: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION = unsafe { zeroed() };
+            if unsafe {
+                QueryInformationJobObject(
+                    job.0,
+                    JobObjectBasicAccountingInformation,
+                    (&mut accounting as *mut JOBOBJECT_BASIC_ACCOUNTING_INFORMATION).cast(),
+                    size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32,
+                    null_mut(),
+                )
+            } == 0
+            {
+                return Err(io::Error::last_os_error());
+            }
+            if accounting.ActiveProcesses == 0 {
+                return Ok((code, 0));
+            }
+            if std::time::Instant::now() >= until {
+                return Err(io::Error::other(
+                    "owned job still contains active processes",
+                ));
+            }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
     })();
     if managed.is_err() {
         unsafe {
@@ -256,10 +284,13 @@ fn launch(
     drop(job);
     managed
 }
-pub fn run(options: &Options) -> io::Result<i32> {
-    if std::env::var("GITHUB_ACTIONS").as_deref() != Ok("true")
-        || std::env::var("RUNNER_ENVIRONMENT").as_deref() != Ok("github-hosted")
-    {
+pub fn run(options: &Options, service: bool) -> io::Result<i32> {
+    if !service && options.actor_case != "normal" {
+        return Err(io::Error::other(
+            "SCM negative case requires service actor mode",
+        ));
+    }
+    if !evidence::disposable_host() {
         return Err(io::Error::other("disposable GitHub-hosted actor required"));
     }
     let identity = humanymous_native_security::process::current_identity()?;
@@ -293,8 +324,20 @@ pub fn run(options: &Options) -> io::Result<i32> {
         std::env::var_os("ProgramData").ok_or_else(|| io::Error::other("ProgramData missing"))?,
     )
     .canonicalize()?;
+    let text = base
+        .to_str()
+        .ok_or_else(|| io::Error::other("non-Unicode ProgramData"))?;
+    let text = text.strip_prefix(r"\\?\").unwrap_or(text);
+    let bytes = text.as_bytes();
+    if bytes.len() < 3 || bytes[1] != b':' || bytes[2] != b'\\' {
+        return Err(io::Error::other("local drive-letter ProgramData required"));
+    }
+    humanymous_native_security::volume::require_fixed(&format!("{}:\\", bytes[0] as char))?;
+    let base = PathBuf::from(text);
     let scratch = base.join(&name);
     fs::create_dir(&scratch)?;
+    let mut scm_proof = None;
+    let mut job_empty_observed = None;
     let execution = (|| -> io::Result<u32> {
         acl(&scratch, &sid, identity.sid())?;
         let manifest_path = scratch.join("manifest.json");
@@ -309,7 +352,7 @@ pub fn run(options: &Options) -> io::Result<i32> {
         ] {
             let status = Command::new("icacls.exe")
                 .arg(&workspace)
-                .args([flag, &format!("*{sid}:{rights}"), "/T", "/Q"])
+                .args([flag, &format!("*{sid}:{rights}"), "/T", "/Q", "/L"])
                 .stdout(std::process::Stdio::null())
                 .status()?;
             if !status.success() {
@@ -321,15 +364,25 @@ pub fn run(options: &Options) -> io::Result<i32> {
         let system = std::env::var("SystemRoot").map_err(io::Error::other)?;
         let temp = scratch.join("tmp");
         // The child itself creates and owns TEMP; no admin-owned product fixtures.
-        let environment = vec![
+        let mut environment = vec![
             ("SystemRoot".into(), system.clone()),
             ("WINDIR".into(), system.clone()),
             ("PATH".into(), format!("{system}\\System32;{system}")),
             ("TEMP".into(), temp.to_string_lossy().into_owned()),
             ("TMP".into(), temp.to_string_lossy().into_owned()),
         ];
+        if service {
+            environment.extend([
+                ("GITHUB_ACTIONS".into(), "true".into()),
+                ("RUNNER_ENVIRONMENT".into(), "github-hosted".into()),
+            ]);
+        }
         let arguments = vec![
-            "native".into(),
+            if service {
+                "service".into()
+            } else {
+                "native".into()
+            },
             "--report".into(),
             report.clone().into_os_string(),
             "--binaries".into(),
@@ -341,8 +394,53 @@ pub fn run(options: &Options) -> io::Result<i32> {
             "--expected-sid".into(),
             sid.clone().into(),
         ];
-        let code = launch(&account, &password, &arguments, &environment, &workspace)?;
-        fs::copy(report, &options.report)?;
+        let mut delegation = if service {
+            Some(scm::Delegation::grant(&sid)?)
+        } else {
+            None
+        };
+        let launched = if options.actor_case == "after-grant" {
+            Err(io::Error::other("injected failure after SCM grant"))
+        } else {
+            launch(&account, &password, &arguments, &environment, &workspace)
+        };
+        job_empty_observed = launched.as_ref().ok().map(|(_, active)| *active == 0);
+        let copied = if report.is_file() {
+            fs::copy(&report, &options.report).map(|_| ())
+        } else {
+            Err(io::Error::other("standard child report absent"))
+        };
+        let copied_logs = (|| -> io::Result<()> {
+            let harness_count = manifest["harnesses"].as_array().map_or(0, Vec::len);
+            for index in 0..harness_count {
+                for stream in ["list-stdout", "list-stderr", "run-stdout", "run-stderr"] {
+                    let extension = format!("harness-{index}-{stream}.log");
+                    let path = report.with_extension(&extension);
+                    if path.is_file() {
+                        fs::copy(path, options.report.with_extension(extension))?;
+                    }
+                }
+            }
+            if service {
+                for stream in ["service-stdout.log", "service-stderr.log"] {
+                    let path = report.with_extension(stream);
+                    if path.is_file() {
+                        fs::copy(path, options.report.with_extension(stream))?;
+                    }
+                }
+            }
+            Ok(())
+        })();
+        if let Some(guard) = &mut delegation {
+            let restored = guard.restore();
+            scm_proof = Some(
+                json!({"rights":3,"single_generated_sid":true,"original_descriptor_sha256":guard.original_sha256(),"restored":restored.is_ok(),"scope":"SCM manager; service-name restriction is CLI signed policy, not OS ACL"}),
+            );
+            restored?;
+        }
+        let (code, _) = launched?;
+        copied?;
+        copied_logs?;
         Ok(code)
     })();
     // Closing the job above killed descendants before account deletion/cleanup.
@@ -354,13 +452,35 @@ pub fn run(options: &Options) -> io::Result<i32> {
     } else {
         Err(io::Error::other("unsafe generated cleanup path"))
     };
-    deletion?;
-    cleanup?;
-    let code = execution?;
-    let mut report: serde_json::Value = serde_json::from_slice(&fs::read(&options.report)?)?;
-    report["standard_user_lifecycle"] = json!({"sid":sid,"account_deleted":true,"scratch_deleted":true,"child_exit_code":code,"provisioning":"native-Win32","job_kill_on_close":true});
+    let mut failures = Vec::new();
+    let account_deleted = deletion.is_ok();
+    let scratch_deleted = cleanup.is_ok();
+    let code = execution.as_ref().ok().copied();
+    if let Err(error) = execution {
+        failures.push(format!("child execution: {error}"));
+    }
+    if let Err(error) = deletion {
+        failures.push(format!("account deletion: {error}"));
+    }
+    if let Err(error) = cleanup {
+        failures.push(format!("scratch cleanup: {error}"));
+    }
+    let mut report:serde_json::Value=fs::read(&options.report).ok().and_then(|bytes|serde_json::from_slice(&bytes).ok()).unwrap_or_else(||json!({"schema":1,"kind":"native","status":"failed","qualification":"component-only","source_sha":source["source_sha"],"source":source,"full_runtime_qualified":false,"errors":0,"skips":0,"cases":[]}));
+    report["standard_user_lifecycle"] = json!({"sid":sid,"account_deleted":account_deleted,"scratch_deleted":scratch_deleted,"child_exit_code":code,"provisioning":"native-Win32","job_kill_on_close":true,"job_empty_observed":job_empty_observed,"scm_delegation_requested":service,"actor_case":options.actor_case});
+    if let Some(proof) = scm_proof {
+        report["scm_delegation"] = proof;
+    }
+    if !failures.is_empty() {
+        report["status"] = "failed".into();
+        report["errors"] = json!(report["errors"].as_u64().unwrap_or(0) + failures.len() as u64);
+        report["lifecycle_errors"] = json!(failures);
+    }
     evidence::write(&options.report, &report)?;
-    Ok(code as i32)
+    Ok(if report["status"] == "failed" {
+        1
+    } else {
+        code.unwrap_or(1) as i32
+    })
 }
 
 #[cfg(test)]
@@ -378,21 +498,14 @@ mod tests {
     }
     #[test]
     fn local_provisioning_is_refused_before_any_account_api() {
-        if std::env::var("GITHUB_ACTIONS").as_deref() == Ok("true") {
-            return;
+        for (actions, environment) in [
+            (None, None),
+            (Some("true"), Some("self-hosted")),
+            (Some("false"), Some("github-hosted")),
+            (None, Some("github-hosted")),
+        ] {
+            assert!(!evidence::host_allowed(actions, environment));
         }
-        let options = Options {
-            report: PathBuf::from(r"C:\unused.json"),
-            binaries: PathBuf::from(r"C:\unused"),
-            manifest: None,
-            expected_sid: None,
-            source: None,
-        };
-        assert!(
-            run(&options)
-                .unwrap_err()
-                .to_string()
-                .contains("GitHub-hosted")
-        );
+        assert!(evidence::host_allowed(Some("true"), Some("github-hosted")));
     }
 }

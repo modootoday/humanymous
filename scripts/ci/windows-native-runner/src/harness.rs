@@ -1,5 +1,5 @@
 use crate::evidence;
-use humanymous_test_support::process::{capture, capture_with_stderr};
+use humanymous_test_support::process::capture_with_stderr;
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, io, path::Path, process::Command, time::Duration};
 
@@ -13,6 +13,7 @@ pub fn prepare(evidence_base: &Path, binaries: &Path) -> io::Result<Value> {
     let release = binaries.file_name() == Some(std::ffi::OsStr::new("release"));
     let mut build = Command::new("cargo");
     build.args(["build", "--locked", "--bins", "--message-format=json"]);
+    build.args(["--features", "humanymous-cli/service-pilot"]);
     if release {
         build.arg("--release");
     }
@@ -44,6 +45,7 @@ pub fn prepare(evidence_base: &Path, binaries: &Path) -> io::Result<Value> {
         "--no-run",
         "--message-format=json",
     ]);
+    command.args(["--features", "humanymous-cli/service-pilot"]);
     if release {
         command.arg("--release");
     }
@@ -96,14 +98,15 @@ fn artifacts(messages: &str, test: bool) -> io::Result<Value> {
     }
     Ok(Value::Array(entries.into_values().collect()))
 }
-pub fn execute(manifest: &Value) -> io::Result<Value> {
+pub fn execute(manifest: &Value, evidence_base: &Path, progress: &mut Value) -> io::Result<()> {
     let entries = manifest
         .as_array()
         .ok_or_else(|| io::Error::other("test manifest array required"))?;
     let mut rows = Vec::new();
+    *progress = json!({"required_harnesses":entries.len(),"executed_harnesses":0,"harnesses":[],"complete":false,"scope":"four-package-native-process-component"});
     let mut runtime = false;
     let mut authority = false;
-    for entry in entries {
+    for (index, entry) in entries.iter().enumerate() {
         let path = Path::new(
             entry["executable"]
                 .as_str()
@@ -112,11 +115,19 @@ pub fn execute(manifest: &Value) -> io::Result<Value> {
         if evidence::digest(path)? != entry["sha256"] {
             return Err(io::Error::other("test executable identity mismatch"));
         }
-        let list = capture(
+        let list = capture_with_stderr(
             Command::new(path).args(["--list", "--format", "terse"]),
             b"",
             Duration::from_secs(30),
             1024 * 1024,
+        )?;
+        std::fs::write(
+            evidence_base.with_extension(format!("harness-{index}-list-stdout.log")),
+            &list.stdout,
+        )?;
+        std::fs::write(
+            evidence_base.with_extension(format!("harness-{index}-list-stderr.log")),
+            &list.stderr,
         )?;
         if !list.status.success() {
             return Err(io::Error::other("test enumeration failed"));
@@ -126,15 +137,40 @@ pub fn execute(manifest: &Value) -> io::Result<Value> {
             .lines()
             .filter(|line| line.ends_with(": test"))
             .count();
-        let execution = capture(
+        let execution = capture_with_stderr(
             Command::new(path).args(["--format", "pretty"]),
             b"",
             Duration::from_secs(300),
             2 * 1024 * 1024,
         )?;
+        std::fs::write(
+            evidence_base.with_extension(format!("harness-{index}-run-stdout.log")),
+            &execution.stdout,
+        )?;
+        std::fs::write(
+            evidence_base.with_extension(format!("harness-{index}-run-stderr.log")),
+            &execution.stderr,
+        )?;
         let output = String::from_utf8(execution.stdout).map_err(io::Error::other)?;
-        let passed = account(&output, count, execution.status.success())?;
         let package = entry["package_id"].as_str().unwrap_or_default();
+        let service = entry["target"] == "service_process" && package.contains("humanymous-cli");
+        let required_service = "native_service_install_upgrade_rollback_and_remove";
+        let pending = usize::from(service);
+        if service
+            && !output
+                .lines()
+                .any(|line| line.starts_with(&format!("test {required_service} ... ignored")))
+        {
+            return Err(io::Error::other(
+                "required privileged service inventory changed",
+            ));
+        }
+        let counts = totals(&output).ok();
+        let accounting = account_pending(&output, count, execution.status.success(), pending);
+        rows.push(json!({"index":index,"executable_sha256":entry["sha256"],"package_id":entry["package_id"],"target":entry["target"],"discovered":count,"passed":counts.map(|c|c[0]),"failed":counts.map(|c|c[1]),"ignored":counts.map(|c|c[2]),"required_not_run":if service{json!([required_service])}else{json!([])},"filtered":counts.map(|c|c[4]),"validated":accounting.is_ok(),"exit_code":execution.status.code(),"stdout_sha256":format!("{:x}",sha2::Sha256::digest(output.as_bytes()))}));
+        progress["executed_harnesses"] = json!(rows.len());
+        progress["harnesses"] = json!(rows);
+        let passed = accounting.map_err(|error|io::Error::other(format!("harness {index} target={} exit={:?} discovered={count}: {error}; inspect report-stem.harness-{index}-run-stdout.log",entry["target"],execution.status.code())))?;
         if entry["target"] == "native_process" {
             let required: &[&str] = if package.contains("humanymous-runtime") {
                 &["native_binary_session_collection_origin_restart_and_wal_authentication"]
@@ -158,28 +194,42 @@ pub fn execute(manifest: &Value) -> io::Result<Value> {
             runtime |= package.contains("humanymous-runtime") && passed > 0;
             authority |= package.contains("humanymous-authority") && passed > 0;
         }
-        rows.push(json!({"executable_sha256":entry["sha256"],"package_id":entry["package_id"],"target":entry["target"],"discovered":count,"passed":passed,"ignored":0,"filtered":0,"exit_code":execution.status.code(),"stdout_sha256":format!("{:x}",sha2::Sha256::digest(output.as_bytes()))}));
     }
     if !runtime || !authority {
         return Err(io::Error::other(
             "actual runtime/authority native process harness required",
         ));
     }
-    Ok(
-        json!({"required_harnesses":entries.len(),"executed_harnesses":rows.len(),"harnesses":rows,"scope":"four-package-native-process-component"}),
-    )
+    progress["complete"] = true.into();
+    Ok(())
 }
 use sha2::Digest;
-fn account(log: &str, discovered: usize, success: bool) -> io::Result<usize> {
+fn account_pending(
+    log: &str,
+    discovered: usize,
+    success: bool,
+    required_not_run: usize,
+) -> io::Result<usize> {
+    let [passed, failed, ignored, measured, filtered] = totals(log)?;
+    if !success
+        || passed + required_not_run != discovered
+        || ignored != required_not_run
+        || failed + measured + filtered != 0
+    {
+        return Err(io::Error::other("native manifest tests incomplete/ignored"));
+    }
+    Ok(passed)
+}
+pub(super) fn totals(log: &str) -> io::Result<[usize; 5]> {
     let summaries: Vec<_> = log
         .lines()
         .filter(|l| l.starts_with("test result: "))
         .collect();
-    if !success || summaries.len() != 1 {
+    if summaries.len() != 1 {
         return Err(io::Error::other("native test exit/summary failed"));
     }
     let fields: Vec<_> = summaries[0].split_whitespace().collect();
-    if fields.len() < 15 || fields[2] != "ok." {
+    if fields.len() < 15 || !matches!(fields[2], "ok." | "FAILED.") {
         return Err(io::Error::other("native test summary invalid"));
     }
     let numbers = [fields[3], fields[5], fields[7], fields[9], fields[11]].map(str::parse::<usize>);
@@ -193,10 +243,7 @@ fn account(log: &str, discovered: usize, success: bool) -> io::Result<usize> {
     else {
         return Err(io::Error::other("native test summary counts invalid"));
     };
-    if passed != discovered || failed + ignored + measured + filtered != 0 {
-        return Err(io::Error::other("native manifest tests incomplete/ignored"));
-    }
-    Ok(passed)
+    Ok([passed, failed, ignored, measured, filtered])
 }
 #[cfg(test)]
 mod tests {
@@ -204,10 +251,10 @@ mod tests {
     #[test]
     fn summary_rejects_skips_missing_tests_and_bad_exit() {
         let good = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.1s";
-        assert_eq!(account(good, 1, true).unwrap(), 1);
-        assert!(account(good, 2, true).is_err());
-        assert!(account(good, 1, false).is_err());
-        assert!(account(&good.replace("0 ignored", "1 ignored"), 1, true).is_err());
-        assert!(account(&format!("{good}\n{good}"), 1, true).is_err());
+        assert_eq!(account_pending(good, 1, true, 0).unwrap(), 1);
+        assert!(account_pending(good, 2, true, 0).is_err());
+        assert!(account_pending(good, 1, false, 0).is_err());
+        assert!(account_pending(&good.replace("0 ignored", "1 ignored"), 1, true, 0).is_err());
+        assert!(account_pending(&format!("{good}\n{good}"), 1, true, 0).is_err());
     }
 }

@@ -38,7 +38,7 @@ harnesses execute their existing actual native children and shared APIs.
 Exit2 means component execution completed but full delivery is blocked. The
 report explicitly misses local-only-admin and documentation-examples, with
 documentation_examples_executed=false and full_runtime_qualified=false. Exit1
-means infrastructure/assertion/refusal error; unknown/ignored/filtered tests fail.
+means infrastructure/assertion/refusal error; unknown ignored/filtered tests fail.
 No path returns full-qualified exit0 yet. Raw build stderr/messages use the report
 stem with `.build-stderr.log`, `.build-messages.jsonl`, `.tests-stderr.log` and
 `.tests-messages.jsonl`; retain privately. Credential-bearing runtime stdout is
@@ -53,3 +53,61 @@ service activation belongs to CLI; browser, positive raw TLS/H2, actual remote
 machine peer denial and Docker product qualification remain separate blockers.
 
 No push/tag/publish/main changes are performed by this lane.
+
+## Signed service continuation and explicit pending test
+
+Prepare now enables CLI's `service-pilot` feature. The exact required privileged
+`native_service_install_upgrade_rollback_and_remove` test is not a helper skip:
+default native execution preserves its raw ignored count in `skips`, records
+the exact `required_not_run` name and remains blocked. No generic ignore exception
+is added. Actual signed-plan/native-readiness and ordinary-SCM-denial tests do
+execute. New observed local snapshot is12/12harnesses,55passed,1required ignored,
+errors0,skips1,exit2. Later source manifests remain separate.
+
+`service --report ABS --binaries ABS_ROOT/target/debug|release` is an opt-in hosted
+native manager pilot executing exactly that ignored test with its explicit
+disposable-actor flag. Windows requires an ordinary token with externally scoped
+SCM creation rights; direct elevation is rejected because product installer
+checks remain nonadministrator. Unix requires actual non-root user service
+manager support. Missing manager/delegation fails. A successful fixture remains
+component-only and does not qualify runtime service readiness or full delivery.
+The temporary SCM delegation/restoration bootstrap is implemented in the later
+section below, but is not remotely observed. Root accepted its isolated feature
+delta; no shared manifest/lock change follows.
+
+`summarize --source ABS_PRIVATE_REPORT --report ABS_PUBLIC_SUMMARY` publishes typed
+counts/source commitments only, excluding actual SID, credentials and traces.
+It returns0 only for writing this separate summary schema; native/service modes
+still cannot produce full-qualified exit0. Source evidence distinguishes validated
+worktree SHA256 from canonical Git object SHA256 and checks LF-only own sources.
+
+## Hosted SCM actor contract (implemented; execution not_run)
+
+Root approved only this isolated tool's existing windows-sys Services feature;
+no shared Cargo/lock delta. Use `standard-user-service --report ABS --binaries
+ABS_ROOT/target/release` on an elevated disposable hosted Windows VM. The parent
+creates an ordinary Users-only actor and delegates SCM CONNECT|CREATE(0x3) through
+a captured manager DACL; the child runs `service` with actual ordinary SID/token.
+It restores/readbacks the exact original DACL before account/scratch deletion.
+Concurrent/unknown/inherited SCM ACLs are refused; namespace restriction is CLI
+policy, not a falsely claimed OS per-name grant. No local SCM execution allowed.
+
+Negative: append `--actor-case after-grant`. It intentionally exits1/statusfailed
+before launch; require actual `standard_user_lifecycle.account_deleted`,
+`scratch_deleted` and `scm_delegation.restored` all true to prove cleanup. Absent/
+false facts fail. Normal mode additionally observes owned job active-process count0;
+SCM-started processes are outside that job and CLI must prove service stop/delete.
+
+An earlier local release diagnostic13harness/62pass/rawrequiredignored1/errors0/blocked2
+is source-specific; no hosted service/account or Linux/macOS success is inferred.
+New raw logs use explicit reportstem.harness-i-{list,run}-{stdout,stderr}.log and
+errors identify failed index/target/exit/discovered. Copy only these expected names
+from child scratch; never copy account profiles or arbitrary temp files. The prior
+release failure at a different owner/source remains a failure, not overwritten.
+
+Newer source e30e0e9+dirty produced a real authority local_service failure:
+index9,exit101,2discovered,1passed/1failed. Its report/logs remain failed. Authority
+owner diagnosed reactor cleanup in the fixture and supplied a source repair;
+exact-source rerun is required after common lock resolution, not inferred from
+the prior62-pass snapshot. The runner now retains compiled manifests and partial
+coverage(counts,failed/validated flags,complete=false) even on early failure.

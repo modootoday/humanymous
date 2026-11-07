@@ -84,27 +84,7 @@ fn reject_invalid(options: &Options) -> io::Result<Value> {
 }
 pub fn run(options: &Options) -> io::Result<i32> {
     let identity = evidence::identity(options.expected_sid.as_deref())?;
-    #[cfg(windows)]
-    if options.expected_sid.is_some() {
-        fs::create_dir(std::env::temp_dir())?;
-        let probe =
-            std::env::current_dir()?.join(format!("native-write-probe-{}", std::process::id()));
-        match fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(&probe)
-        {
-            Err(error) if error.kind() == io::ErrorKind::PermissionDenied => (),
-            Ok(file) => {
-                drop(file);
-                fs::remove_file(probe)?;
-                return Err(io::Error::other(
-                    "workspace writable by hosted standard actor",
-                ));
-            }
-            Err(error) => return Err(error),
-        }
-    }
+    crate::fixture::actor_environment(options.expected_sid.as_deref())?;
     let source = match &options.source {
         Some(path) => serde_json::from_slice(&fs::read(path)?)?,
         None => evidence::source()?,
@@ -130,9 +110,20 @@ pub fn run(options: &Options) -> io::Result<i32> {
                 "product path/digest differs from Cargo build",
             )?;
         }
-        let coverage = harness::execute(&manifests["harnesses"])?;
-        report["manifest"] = manifests;
-        report["coverage"] = coverage;
+        report["manifest"] = manifests.clone();
+        harness::execute(
+            &manifests["harnesses"],
+            &options.report,
+            &mut report["coverage"],
+        )?;
+        report["skips"] = json!(
+            report["coverage"]["harnesses"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|r| r["ignored"].as_u64().unwrap_or(0))
+                .sum::<u64>()
+        );
         let cli = cli(options)?;
         let refusals = reject_invalid(options)?;
         report["cases"] = json!([
