@@ -1,0 +1,55 @@
+{
+  "schema": "humanymous.lab-go-facade-source-join/1",
+  "source": "c858b1dc40d60c2d22f10411531a8b72b70aea63",
+  "batch": "GO-FACADE-01",
+  "qualification_origin": "Root owner report; this Lab chat independently verified inclusion of its five delegated paths, not a new execution.",
+  "public_namespace": "humanymous::adapters::go",
+  "dependency_feature": "adapter-go",
+  "runtime_default_features": false,
+  "owned_paths": [
+    "test/lab/runtime/Cargo.toml",
+    "test/lab/runtime/src/go/client.rs",
+    "test/lab/runtime/src/go/gate.rs",
+    "test/lab/runtime/src/go/mod.rs",
+    "test/lab/runtime/src/go/receipt.rs"
+  ],
+  "root_reported_checks": {
+    "leaf_units": 10,
+    "facade_enabled": 2,
+    "actionlint": "passed",
+    "facade_default": 2,
+    "windows_actor_check": "passed",
+    "cli_admissions": 2,
+    "workflow_policy": "passed",
+    "fmt": "passed",
+    "selected_strict_clippy": "passed",
+    "delivery_units": 110,
+    "deployment_integration": 1,
+    "facade_consumer": 2,
+    "facade_distinct_tests": 4,
+    "facade_test_executions": 6
+  },
+  "closure_scope": {
+    "difference_records": 0,
+    "workflow_hash_checks": "separate before/final delegated comparisons",
+    "nontarget_files": 87,
+    "full_transitive_tool_read_closure_proven": false,
+    "filesystem_records": 3004,
+    "old_nested_target_outputs": 2917
+  },
+  "root_raw_evidence": "evidence:root/20261106194410; go-facade-01-*",
+  "unix_actor_compile_proven": false,
+  "new_facade_docker_go8_executed": false,
+  "historical_go8": {
+    "passed_cases": 8,
+    "qualifies_new_source": false,
+    "run": 42375310198,
+    "source": "c3211e27ba941f3f11809e420d07d61ececad623",
+    "unchanged": true,
+    "known_assertions": 40
+  },
+  "fixture_protocol_scoring_changed": false,
+  "full_product_qualified": false,
+  "release_qualified": false,
+  "canonical_go_owner_evidence": "evidence:root/20261107192637; commit f1aacc13"
+}
