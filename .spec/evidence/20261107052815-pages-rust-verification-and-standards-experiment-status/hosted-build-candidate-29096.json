@@ -1,0 +1,111 @@
+{
+  "schema": "humanymous.pages-hosted-candidate/1",
+  "candidate": "29096f78ee4aca79fab7d666ae46a5c58830892b",
+  "after_milestone": "3a29e017953f1e5b58f18b87377918955fa13692",
+  "reference_public_prose": "5341a880212a75b4f03528933a3ce5afaa1a6ee9",
+  "committed_docs_tree": "3cedb26fc55b3e9577b10f38fdf7edff3c4adf63",
+  "candidate_docs_files": 127,
+  "candidate_source_manifest_sha256": "f382b05d05d43e1377d26585c475c390a3d14b66e57465b0736e3ce2db467edf",
+  "candidate_materialization_exact": true,
+  "reference_git_matches": 126,
+  "reference_git_differences": [
+    "docs/reviews.json"
+  ],
+  "original_frozen_raw_matches": 121,
+  "original_frozen_raw_differences": [
+    "docs/.well-known/security.txt",
+    "docs/AGENTS.md",
+    "docs/CNAME",
+    "docs/assets/brand/favicon.svg",
+    "docs/assets/brand/mark.svg",
+    "docs/reviews.json"
+  ],
+  "explicit_lf_correspondences": [
+    {
+      "source": "docs/.well-known/security.txt",
+      "original_working_sha256": "c378b696d717ca072c7631ab11e0f0d8877d1fdc3c2f8666b493778cec21afea",
+      "candidate_git_lf_sha256": "edd7ec133b0b02f9759892c0b5da152048f052c52ca1640704b899eeb07088d3",
+      "original_crlf_count": 6,
+      "candidate_crlf_count": 0
+    },
+    {
+      "source": "docs/AGENTS.md",
+      "original_working_sha256": "03468185197b4b7bc87b8cc605523c1098cd2a8c93337de04e943d10a1b4988d",
+      "candidate_git_lf_sha256": "45361a958254669827713dde7fad4caa211aad5506263ae4865156ee2ac1d97a",
+      "original_crlf_count": 16,
+      "candidate_crlf_count": 0
+    },
+    {
+      "source": "docs/CNAME",
+      "original_working_sha256": "cfeb8094db8c1ade1dbc74dfc1f2b82b8b1b38d60812014f63ae2ad29954d67c",
+      "candidate_git_lf_sha256": "0df581c255e583d6132e9e9d73c472416da3738a1fd6e15848e4cfc5736fb4c7",
+      "original_crlf_count": 1,
+      "candidate_crlf_count": 0
+    },
+    {
+      "source": "docs/assets/brand/favicon.svg",
+      "original_working_sha256": "0d73b0289aed9e2388c0e22c715fc7f1056efd5c9969f5c6b9ec8df57988ffb6",
+      "candidate_git_lf_sha256": "01bdbccffcc9accc22a7a6c3fffd22bad16d7ab76c0736d1f5c4ae916c909d3a",
+      "original_crlf_count": 4,
+      "candidate_crlf_count": 0
+    },
+    {
+      "source": "docs/assets/brand/mark.svg",
+      "original_working_sha256": "55b7b3f59e04c656ed9b2ee8d9bf9481273eb7fee653d360b1bae103a2112a06",
+      "candidate_git_lf_sha256": "2f9d37bf1e22747a5cc7f3350907394ca12e2347cf7abea2afee284e477104fc",
+      "original_crlf_count": 5,
+      "candidate_crlf_count": 0
+    }
+  ],
+  "selected_candidate_pins": {
+    "docs/_config.yml": "c0734b7901aceadea297d50cdd39788087c4e3ab659120f32187da182a606f8e",
+    "docs/_sass/modootoday/_site.scss": "7cf4cba051b9dceea298f24ed46b4c95305c1965b71e4122bc46b6d2330288ff",
+    "docs/Gemfile.lock": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+    ".gitattributes": "9952f1f06fbe929c7853622e79f0e2101d5e6ffc57891f76de6954bec715be64",
+    ".github/workflows/pages-validation.yml": "3322e01ef98e2d24854eb7a95843907c09eabfcbd6aca7a20973ebd98f8714fa",
+    ".github/workflows/pages-build.yml": "33798511793d6ccf28febbc7f141e56c9c19b6d6277733b3aa1e4f448a562b8d",
+    "Cargo.toml": "2db4c87cb1d2524f75aa63a6cee6927a70623397b89f4df2a58cc755983873ad",
+    "Cargo.lock": "8fe664fe4d58ca61f0d5bb6d357090a78b300ed31c1b611040a1deed7e72583f",
+    "rust-toolchain.toml": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+    "docs/tooling/src/main.rs": "503c3563fa2894a08523344df195cb99b12396734472a310f0dfaf737de64b88",
+    "docs/tooling/src/build.rs": "499e1fcf23c0b57f0c4e01e329598177246c3556db3f0b6fcb86c4ecb5328c46",
+    "docs/tooling/src/package.rs": "2ab4507edd3d77bdf7d0e34f6d030abd607a1454e8bed60f305699eb96d0cad8",
+    "docs/tooling/src/inputs.rs": "f2bdf29c565be7c0218b7cc6656770ba15efdcfe8e7e2c6f906cd94836a2b547",
+    "scripts/ci/delivery/src/pages.rs": "b7c238fd58b6865f4d70f121775d21c1a3fc2e91336c0d49dd9707083351b0ff"
+  },
+  "theme_commit": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+  "source_rewritten": false,
+  "broad_freshness_census_performed": false,
+  "workflow_edits": false,
+  "nonmain_artifact_uploads": "suppressed by existing main-only conditions",
+  "limits": [
+    "Initial original127 raw equality assertion failed and is retained separately.",
+    "Reference5341 Git bytes match candidate except excluded review metadata.",
+    "Four public inputs plus excluded AGENTS differ from old working snapshot solely CRLF toLF; do not reuse old raw input/archive/security-file digests.",
+    "No actual new build, source-freshness acceptance, archive, HTTP/IAB or AT pass is claimed."
+  ],
+  "private_full_manifest": "evidence:root/20261107051213 render-5341/hosted-29096/candidate-receipt.json",
+  "expected_existing_gates": [
+    "delivery and Pages units/strict Clippy/workflow policy",
+    "source prepare clean hosted checkout",
+    "bundle install and audit",
+    "apex/subpath validate including pinned theme and rendered checks",
+    "apex/subpath package",
+    "apex/subpath second archive-check",
+    "source finish exact equality and archive binding"
+  ],
+  "excluded_wip": "Only immutable selected commit is proposed. Shared unstaged/untracked work is not part of this candidate; no broad census or cleanup performed.",
+  "root_push_only": true,
+  "run_started_by_pages": false,
+  "result": "prepared_not_executed",
+  "ci_owner_confirmation": {
+    "chat": "01a1b2da-7d8a-73f2-9bb2-78bde5ae33f9",
+    "status": "exact candidate and unchanged workflow/consumer contract confirmed",
+    "actionlint": "owner reports exit0; not newly executed by Pages",
+    "timeouts_minutes": {
+      "preflight": 20,
+      "build": 30
+    },
+    "root_owns_single_push_trigger": true
+  }
+}

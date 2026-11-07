@@ -2295,3 +2295,32 @@ The milestone handover retains the complete existing goal. Release the docs work
 lane with the board handover while awaiting allocation; reclaim it before new
 writes after checking ownership. Root remains scheduling/follow-up owner. No
 live process/target lease or uncommitted docs change is intentionally transferred.
+
+### Hosted build-only assignment and exact Git-byte candidate
+
+Root supplied the existing pages-validation.yml entrypoint on codex/pages-validation,
+calling pages-build.yml for hosted preflight, both baseurls, package and SECOND
+archive checks. Root reviews/pushes the single candidate; Pages changes no workflow,
+deployment or OIDC permissions and starts no local heavy work. Docs lane reclaimed.
+
+Candidate29096f78ee4aca79fab7d666ae46a5c58830892b is after3a29e017. Its docs tree is
+3cedb26fc55b3e9577b10f38fdf7edff3c4adf63;127Git files were separately materialized
+exactly, source-manifest SHA256f382b05d05d43e1377d26585c475c390a3d14b66e57465b0736e3ce2db467edf.
+Compared with5341Git bytes,126match and only excluded reviews.json differs.
+No shared working-tree changes are imported into this immutable candidate.
+
+The initial assertion against all127old raw prepared bytes FAILED and is retained.
+Only121are byte-identical: excluded AGENTS.md and four public inputs (security.txt,
+CNAME and two brand SVGs) use CRLF in the old working copy but LF in Git; all five
+explicit LF correspondences match. The sixth difference is reviews metadata.
+No source was rewritten. Thus candidate public Git inputs match5341 exactly,
+but the old raw input/archive/security-file digests cannot qualify this checkout.
+Config, Sass tokens, Gemfile lock and pinned theme remain identical.
+
+The full127manifest, selected workflow/build/root pins and first refusal are in
+private07051213/render-5341/hosted-29096. CI owner was given the literal candidate
+for contract confirmation. Existing main-only upload and serving-transfer guards
+mean this branch returns no downloadable Pages artifact or served HTTP evidence.
+Retain actual hosted logs/job outcomes; successful build alone cannot qualify
+source-review freshness, artifact HTTP/IAB or assistive technology. No new run
+or passing result is claimed by this candidate preparation.
