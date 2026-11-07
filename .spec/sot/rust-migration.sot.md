@@ -807,8 +807,4 @@ chunks and propagates sink failure without claiming that partial output is valid
 Audit may reuse it for counting/replay/signing encoders after the exact candidate
 is verified; this changes no signature format, policy, score or dependency edge.
 
-Two new tests compare all valid Unicode scalar values against the prior
-serde_json-plus-replacements encoder and inject a partial-write failure. They are
-authored but NOT_RUN while the single Pages Docker heavy phase owns local build
-resources. No allocation, end-to-end bounded-memory or downstream qualification
-is inferred from source review or formatting.
+The two new tests compare all valid Unicode scalar values against the prior serde_json-plus-replacements encoder and inject a partial-write failure. They actually passed within the six-test signals wire selector in the post-Pages allocated batch against source56a2acdb and Auditc26a5b53 plus its explicit usize annotation. Combined signals/Audit all-target check and strict Clippy passed; four selected harnesses passed26 unique tests with125 captured inputs unchanged. Audit checkpoint parity covered180 frozen Go signature vectors. Initial Audit E0689 failure is retained separately. Raw evidence is in .spec.local/root/evidence/20261107115851-audit-key-custody-frame-checkpoint-validation-raw. This does not qualify the full workspace, operational bounded-memory or whole Audit S1/S2/S3 behavior.
