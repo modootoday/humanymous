@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T20:55:48Z
+updated: 2026-11-07T21:01:25Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -63,6 +63,7 @@ files:
   - {path: hosted-9586-rust-image-scan.json, sha256: 94ea78739f2b8af2f2bcca2ee992e4aeaea6893f8d2055d9d471d601a3ee82a2, bytes: 3664, store: repo}
   - {path: shipping-role-source-map.json, sha256: 2eeadaa0bb64890133a27f89169bfdd29d8ed59ea0afff8fbde45187b6786946, bytes: 4475, store: repo}
   - {path: platform-slice-format.json, sha256: 39a258a8bb2374172b223f10072b500bb1c51fb38984345d18d87e89025a1182, bytes: 1252, store: repo}
+  - {path: hosted-9586-windows-and-node.json, sha256: 2b43d0573be0e0574423b4cbf23e8769154c0a377490c66a8f9a5d132179b26a, bytes: 3620, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up

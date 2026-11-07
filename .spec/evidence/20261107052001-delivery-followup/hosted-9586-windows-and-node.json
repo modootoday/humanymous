@@ -1,0 +1,114 @@
+{
+  "schema": "humanymous.delivery-hosted-windows-node-consumption/1",
+  "run_id": 42407744891,
+  "attempt": 1,
+  "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "windows": {
+    "job_id": 128509489275,
+    "job_conclusion": "cancelled",
+    "failure_annotations": 3,
+    "terminal_cause": "The job has exceeded the maximum execution time of 40m0s",
+    "manual_cancel_by_delivery": false,
+    "maintenance": {
+      "harnesses": 8,
+      "passed": 33,
+      "all_validated": true
+    },
+    "independent_runtime": {
+      "library": {
+        "discovered": 79,
+        "passed": 79,
+        "exit_code": 0
+      },
+      "process": {
+        "discovered": 1,
+        "passed": null,
+        "validated": false,
+        "exit_code": 101
+      },
+      "original_process_failure_assertion_recovered": false
+    },
+    "cef": {
+      "step_conclusion": "success",
+      "safe_report_status": "passed",
+      "stage": "complete",
+      "native_build_exit_code": 0,
+      "desktop_passed_tests": 2,
+      "protocol_preflight": {
+        "failed": 0,
+        "filtered": 16,
+        "ignored": 0,
+        "initializes_cef": false,
+        "passed": 4,
+        "required": 4,
+        "starts_processes": false
+      },
+      "bootstrap_protocol_preflight": {
+        "failed": 0,
+        "filtered": 3,
+        "ignored": 0,
+        "initializes_cef": false,
+        "passed": 3,
+        "required": 3,
+        "starts_processes": false
+      },
+      "bootstrap_rejection_passed": true,
+      "bootstrap_rejection_processes": {
+        "observed": 4,
+        "exit_codes": [
+          78,
+          78,
+          78,
+          78
+        ],
+        "all_reaped": true,
+        "profiles_changed": false
+      },
+      "browser_ready": false,
+      "full_runtime_qualified": false,
+      "source_changed": false,
+      "source_manifest_sha256": "49099c3e9afb6abd512c9dd0421bcce16edbd580a717f210e5837f9e0a57b664",
+      "original_private_report_sha256": "66e882c34be789fd4238a4b3bdf6c172606e9041e3e82383cc39e775c2cab5ce",
+      "original_private_report_recovered": false
+    },
+    "workspace_actor": {
+      "step_conclusion": "cancelled",
+      "test_counts_recovered": false,
+      "terminal_cleanup_verified": false
+    },
+    "release_build": "skipped",
+    "native_product_pilot": "skipped",
+    "native_artifacts": "skipped",
+    "uploads": "skipped",
+    "correction": "Final job metadata supersedes the earlier inference that CEF itself was cancelled: CEF succeeded and the following workspace actor was cancelled."
+  },
+  "node": {
+    "job_id": 128525143067,
+    "job_conclusion": "failure",
+    "failure_annotations": 2,
+    "first_failure_stage": "node-host-tests",
+    "host_test_exit_code": 1,
+    "test_counts": null,
+    "image_build_exit_code": 0,
+    "image_id": "sha256:3505b16fc3bcfd23d4629739ce10603deefa57b52fa25eed6e106de21753f66b",
+    "runtime_versions": {
+      "bun": "1.3.14",
+      "node": "v24.22.2"
+    },
+    "container_cleanup_observed": true,
+    "source_changed": false,
+    "package_qualification_receipt_created": false,
+    "later_package_failure": "Expected qualification receipt missing after failed host tests",
+    "original_host_test_assertion_recovered": false,
+    "full_native_qualified": false
+  },
+  "raw_accounting": {
+    "logs": "Connector-decoded text retained privately, not original archives",
+    "metadata": "GitHub API decoded job and annotation JSON retained",
+    "original_private_child_logs_recovered": false,
+    "raw_private_contents_included": false
+  },
+  "overall_run_terminal": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}
