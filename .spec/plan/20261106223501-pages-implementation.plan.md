@@ -1592,3 +1592,13 @@ extra-input/closure watch, cancelledblocking work retaining admission untilend,
 and explicit abort/drain error rather than graceful acknowledgement. Reusing
 LocalHandler does not add admin dispatch to decision wire. Added two manual
 receipts; no actual native/time/resource test or benchmark-prohibited command.
+
+### Actual native IPC identity and completion boundaries
+
+Read full private-directory,Unix andWindows transport modules. Gate reference
+now distinguishes filesystemUDS/private parent/kernelUID/device-inode binding,
+no startup unlink and originalidentity-only cleanup; Windows localname/private
+DACL/PID/privacy and nonblocking enqueue/closure behavior do not prove consumption
+or effects. Three manual receipts, no native/runtime execution. Checked current
+integration chat: root benchmark still active against isolated813; no Pages
+allocation, quiet window remains respected. No new Cargo/model/Docker commands.

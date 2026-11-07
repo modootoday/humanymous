@@ -73,6 +73,23 @@ client errors rather than application ALLOW.
 
 ## Local handlers and shutdown
 
+The Unix candidate requires an absolute filesystem socket in a private canonical
+directory, checks owner/mode and kernel peer UID, and compares the socket's
+device/inode before and after connection. Startup never unlinks an existing
+socket path. Listener cleanup only attempts removal of its original socket
+identity; neither startup failure nor a stale filename authorizes deleting a
+live endpoint. Trusted ancestor control and same-owner/privileged compromise
+remain deployment assumptions.
+
+The Windows candidate accepts only a local pipe name, applies the configured
+protected descriptor, rejects remote admission and checks the server PID plus
+pipe privacy before sending the credential. Its asynchronous write wrapper
+avoids blocking flush/deferred-close behavior; successful enqueue or flush is
+not proof that the peer consumed the message. The owner observes closure within
+its deadline, and cancellation can discard remaining bytes. Actual DACL,
+cross-principal, endpoint-replacement and shutdown cases need source-bound
+native execution; these checks do not establish application effect completion.
+
 The shared local transport also provides `LocalHandler`, `LocalContext` and
 `LocalResponse` for separately authorized consumers. Actual OS peer context,
 bounded framing and cancellation do not grant administration authority. A
