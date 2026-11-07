@@ -201,3 +201,29 @@ explicit test-only synthetic evidence; the actual production application-HTTP
 profile's 409/no-origin observation does not prove a successful human flow.
 Independent witness, cross-user isolation, sustained backpressure and full
 browser/human/assistive-technology qualification remain separate outstanding gates.
+
+### nginx provisioning and request projection
+
+Private provisioning is bounded to 64 KiB. The Linux reader requires a canonical
+absolute path, a private parent under the shared authority transport policy,
+no-follow file opening, a regular file owned by the current effective UID and
+exact `0600` permissions. The expected Unix authority UID must match that UID.
+The supervisor still owns ancestor mounts and removal of obsolete secret files;
+these checks do not establish protection from every hostile same-user process.
+Do not place credentials in request headers, public logs, argv or environment.
+
+The configuration declares scope, exact authority, a 1–30000 ms budget and at
+most 1024 unique method/path routes. Routes exclude the reserved namespace,
+CONNECT, dot segments and ambiguous query/fragment/percent/backslash forms.
+Projection checks that the target pathname equals the current location path,
+that exactly one Host matches the provisioned authority, and that complete body
+bytes fit the 1 MiB bound. Shared nginx-profile parsing verifies the resulting
+envelope; ordinary duplicate header order is distinct from forbidden duplicate
+framing or Host fields. Original peer, connection, TLS/H2 and capture evidence
+are not manufactured from this envelope.
+
+The default library feature set does not load nginx. Native exported-module and
+pilot features have different responsibilities; the pilot entrypoint refuses
+non-Linux targets rather than reporting zero executed tests as success. Executed
+native ABI, peer/ACL and request-lifecycle evidence remains separate from these
+source-level configuration and projection checks.

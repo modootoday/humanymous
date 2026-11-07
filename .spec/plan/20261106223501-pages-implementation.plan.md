@@ -640,3 +640,11 @@ production runtime and declarative isolation from actual effective controls.
 Workflow-name search found no public fixed-name/path references needing rename;
 reported root without inventing another policy/catalog. Theme SHA and override
 map remain unchanged. No build/browser/Docker execution.
+
+## nginx safe projection and provisioning review
+
+Completed full request module and manifest/pilot entrypoint source review.
+Documented private file ownership/mode/no-follow plus supervisor mount/cleanup
+assumptions, exact route/Host/body checks and feature/target distinctions. Added
+three manually reasoned hash receipts; native ABI/pilot internals/execution remain
+separate. No new runtime, Docker or build invocation.

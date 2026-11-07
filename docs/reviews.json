@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/nginx-adapter/src/request.rs",
+  "sha256": "07d868d19d08377f147ea64db4360f07ae545140046a2591582764fc595bfaac",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete safe configuration/projection/private-reader implementation and all source unit cases. Public reference records scope/routes/Host/body commitments, nginx profile reuse, absent original peer/capture, no-follow current-UID0600 file plus private-parent checks and trusted ancestor-mount/supervisor cleanup assumptions. Source tests were read, not executed; canonical path checks and zeroizing credentials do not establish full hostile-same-user or erasure guarantees.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/Cargo.toml",
+  "sha256": "bb7ac8adeae10d3938dd29d9bce1250c0030385e8b51be140499771c1e7b127c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete rlib/cdylib manifest, empty default features, optional Linux pinned ngx SDK, export-modules/native and pilot separation, shared authority/integrity reuse and safe-code lints with native ABI exception in composition root. Public reference distinguishes library units from actual nginx ABI/platform/feature qualification. No dependency build or advisory result claimed.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/src/bin/pilot.rs",
+  "sha256": "caca3a0bf53b71d3f9759f762d36b134d5db2109c2d0be747406ffa15ab3255a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete Linux-only owned-Docker pilot composition entrypoint, failure propagation and non-Linux exit2 explicitly reporting no tests executed. Public reference does not infer full product e2e from pilot existence or treat unsupported zero-test execution as success. Pilot modules and runtime need their own review/evidence.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "adapters/nginx/.gitignore",
   "sha256": "0bb5e908544e65360b69a4baebee1768a83b9f2499b1537246c80c3213554ff4",
   "reviewer": "codex/rust-pages",
