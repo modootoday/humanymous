@@ -15,24 +15,28 @@ rel:
 Linux retained-source admission follows [[plan:root/20261107135332]]. Root
 accepted the diagnostic-only quiescent cooperative-writer/trusted-namespace
 premise, dedicated WAL directory, same-held-FD statx mount ID (Unsupported if
-unavailable) and explicit descriptor ledger. A private test-compiled Linux Source
-backend is now authored with retained guard/pins, positioned readers and secure
-bounded membership revalidation; three unit cases and one explicitly ignored
-controlled-native qualification case are authored, all UNRUN/uncompiled. The
-single controlled case includes15 deterministic mutation/admission subcases and
-final-after-both-passes refusal; those are not15 separately executed Rust tests.
-FD exhaustion/peak, unsupported filesystem and capacity remain additional gates.
-Owned rustfmt1.10.0-stable edition2024 returned0 after explicit Root format-only
-permission. The native leaf now explicitly repeats test/Linux/x86_64; scan's
-ancestor was already cfg(test), so no non-test compiler failure was observed.
-The existing native entrypoint remains Unsupported and no product route is wired.
-Native qualification and remaining fault/capacity cases remain pending.
-The narrow prospective Unix WAL creation fix now requests0600
-for new lock/segment/checkpoint and rotated segment files; existing permissions
-are preserved. Two actual-file Unix regression tests are authored but NOT RUN.
-Future native inspection refuses non0600 history without repair. New source does
-not inherit prior Phase-B or full-package qualification; execution awaits a new
-Root A grant. No production scanner/repair/healthy owner or measured memory claim.
+unavailable) and explicit descriptor ledger. Exact immutable3d325 passed GNU
+Rust1.99.1 fmt/all-target check/strict Clippy and SIX selected tests in
+[[evidence:root/20261107144415]]: three native unit cases, two actual Unix WAL
+mode/rotation/existing-permission regressions, and one explicitly selected
+controlled-native Source/crypto/reader/lock/fault case. Its15 deterministic fault
+subcases are ONE Rust test. Historical five subprocess helpers were not executed.
+All2569 source files,67 resolved registry packages/3181 files,72 selected Rust
+tool files and16 absent config candidates unchanged; actual terminal5480/A
+returned. Full-workspace offline metadata's earlier asn1-rs failure is preserved
+in [[evidence:root/20261107143416]], followed by approved scoped offline tree
+success with no fetch/install or source correction.
+
+The private test-compiled Linux backend retains guard/pins, positioned readers,
+same-object mount binding and bounded named-source revalidation. Prospective
+Unix WAL creation now requests0600 for new lock/segment/checkpoint/rotation;
+existing modes/dev/inodes remain preserved. Native inspection refuses non0600
+history without repair. Explicit native leaf test/Linux/x86_64 repeats the
+pre-existing ancestor cfg(test); no suspected non-test compiler failure occurred.
+Public native entrypoint remains Unsupported and no product route is wired.
+FD exhaustion/actual peak, unsupported-filesystem matrix, memory/RSS and full
+S1/S2/S3 remain gates; selected success is not full audit/workspace, independent
+witness transport, production recovery/healthy owner or Docker product proof.
 
 Bounded streaming recovery follows [[plan:root/20261107103624]]. Private S1
 primitives are partially implemented; production S2/S3 remain design-only.

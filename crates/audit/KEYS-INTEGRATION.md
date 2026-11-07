@@ -1,6 +1,22 @@
 # Sealed key compatibility integration
 
-## Latest isolated two-pass diagnostic qualification
+## Latest isolated Linux retained Source qualification
+
+Exact3d325 native GNU Rust1.99.1 fmt/all-target check/strict Clippy and SIX
+selected Rust tests passed: native units3, actual Unix WAL creation/existing-mode
+tests2, controlled Source case1 explicitly --ignored. Each exact harness reported
+1pass/0fail/0ignored/104filtered. Controlled signed2-record/2-checkpoint fixture
+tested both passes, positioned-reader independence, last-reader lock lifetime,
+and15 deterministic fault subcases within that ONE test. Five historical helpers
+were not executed. Source2569, selected registry67packages/3181files, selected
+Rust tools72files and16 absent Cargo config candidates unchanged. Evidence144415,
+private142917; initial offline workspace ASN1 metadata failure143416 preserved,
+package-scoped offline tree retry succeeded without fetch/install/source fix.
+Session5480 terminal0/A returned. Public native entrypoint remains Unsupported;
+test-only backend is not production recovery/healthy owner, full audit/workspace,
+independent witness transport, capacity/RSS or Docker product qualification.
+
+## Historical Windows two-pass diagnostic qualification
 
 Correctedfb06 private visibility passed locked/offline all-target check/strict
 Clippy and33 Rust tests:scan15/82filtered, framing13/84filtered, four parity bins

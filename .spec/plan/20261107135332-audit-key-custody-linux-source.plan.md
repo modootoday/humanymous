@@ -18,7 +18,18 @@ No dependency change or production route is authorized. Phase-B qualification
 remains exactly [[evidence:root/20261107133648]]. Current native Source remains
 Unsupported and scanner composition remains test-only.
 
-## Current source slice (unqualified)
+## Latest exact-source scoped qualification
+
+Immutable3d325 passed actual GNU1.99.1 fmt/all-target check/strict Clippy and all
+SIX individually selected tests in [[evidence:root/20261107144415]], including
+the explicitly --ignored controlled Source case with15 subcases.2569 source,
+3181 registry files/67 packages,72 selected Rust tool files and16 absent config
+candidates unchanged; terminal5480 and A returned. Initial full-workspace offline
+metadata failure preserved [[evidence:root/20261107143416]]; package-scoped offline
+tree retry succeeded without source/network/dependency change. Production route
+remains Unsupported, and capacity/full-S1/S2/S3 are not qualified by six tests.
+
+## Source slice as authored (before allocated validation)
 
 The private test-compiled Linux x86_64 backend now lives under
 verification/scan/source/native.rs. It implements the sealed Source with a
@@ -220,8 +231,9 @@ claim is authorized. Native source must freeze as a separate concrete slice.
 Prospective creation source now requests0600 through std Unix OpenOptionsExt in
 both open_append (initial lock/segment/sidecar) and rotation create_new. Two Unix
 Rust tests are authored for actual created modes/rotation/restart and preservation
-of existing0644 file modes/dev/inode while appending. Tests are NOT RUN; no
-check, Clippy or native qualification is inherited from the prior33-case proof.
+of existing0644 file modes/dev/inode while appending. These two tests subsequently
+passed at exact3d325 in the allocated Linux scope above; no qualification is
+inherited from the prior33-case proof.
 No global umask mutation, chmod of actual history, dependency or graph edit.
 
 - Pure Rust tests cover checked offsets, limits, poison, lifetime/last-reader
@@ -242,10 +254,11 @@ No global umask mutation, chmod of actual history, dependency or graph edit.
 
 ## Critique reflected
 
-Verdict: needs-work for native qualification and full S1; Root accepted the
+Verdict: needs-work for capacity/production qualification and full S1; Root accepted the
 specified premises and prospective creation slice, not measured memory/product
-completion. New creation source remains unqualified until allocated execution.
-No independent review or native qualification is claimed by this local review.
+completion. Creation and private native source have scoped3d325 qualification
+above; capacity/production remain unqualified. No independent review is claimed
+by this local owner critique.
 
 P0: A Reader outliving Source could release the cooperative lock too early.
 Local sketch: obtain reader, drop Source, acquire writer lock, continue reading.
