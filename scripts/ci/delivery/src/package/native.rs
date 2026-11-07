@@ -1,6 +1,13 @@
 use crate::{Result, require, source, write_json};
 use serde_json::{Value, json};
-use std::{fs, path::Path};
+use std::{fs, io::Write, path::Path};
+
+pub(super) fn writer<W: Write>(output: W) -> tar::Builder<W> {
+    let mut archive = tar::Builder::new(output);
+    archive.sparse(false);
+    archive.follow_symlinks(false);
+    archive
+}
 
 pub fn native_artifacts(root: &Path) -> Result<()> {
     let summary = native_archive(root, None)?;
@@ -68,7 +75,7 @@ fn native_archive(root: &Path, build: Option<&Value>) -> Result<Value> {
     );
     let file = fs::File::create(directory.join(&name)).map_err(|e| e.to_string())?;
     let encoder = flate2::write::GzEncoder::new(file, flate2::Compression::default());
-    let mut archive = tar::Builder::new(encoder);
+    let mut archive = writer(encoder);
     for binary in names {
         let filename = format!("{binary}{}", std::env::consts::EXE_SUFFIX);
         archive
@@ -85,7 +92,23 @@ fn native_archive(root: &Path, build: Option<&Value>) -> Result<Value> {
         .finish()
         .map_err(|e| e.to_string())?;
     let notice_verification = crate::notices::verify_archive(&directory.join(&name))?;
-    let content_verification = crate::notices::members::verify(&directory.join(&name), &members)?;
+    let content_verification = match crate::notices::members::verify(
+        &directory.join(&name),
+        &members,
+    ) {
+        Ok(proof) => proof,
+        Err(failure) => {
+            let summary = json!({"schema":"humanymous.native-archive-summary/1","status":"failed",
+                "source_sha":before["source_sha"],"source_manifest_sha256":before["manifest_sha256"],
+                "archive_sha256":source::file(&directory.join(&name)).ok(),
+                "known_notice_verification":notice_verification,"content_verification":failure.public(),
+                "binary_build_source_receipt_verified":build.is_some(),
+                "source_changed":source::snapshot(root).ok().map(|after| after != before),
+                "full_product_qualified":false,"release_ready":false});
+            let _ = crate::evidence::emit_public_summary("Native archive member refusal", &summary);
+            return Err("native archive member verification failed".into());
+        }
+    };
     require(
         source::snapshot(root)? == before,
         "native packaging source changed",
@@ -110,3 +133,6 @@ fn native_archive(root: &Path, build: Option<&Value>) -> Result<Value> {
         "full_product_qualified":false,"release_ready":false}),
     )
 }
+
+#[cfg(test)]
+mod tests;

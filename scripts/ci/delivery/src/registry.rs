@@ -237,10 +237,9 @@ pub fn readiness(root: &Path) -> Result<()> {
     )
 }
 fn version(root: &Path) -> Result<String> {
-    let manifest: toml::Value = fs::read_to_string(root.join("Cargo.toml"))
-        .map_err(|e| e.to_string())?
-        .parse::<toml::Value>()
-        .map_err(|e| e.to_string())?;
+    let manifest: toml::Value =
+        toml::from_str(&fs::read_to_string(root.join("Cargo.toml")).map_err(|e| e.to_string())?)
+            .map_err(|e| e.to_string())?;
     manifest["workspace"]["package"]["version"]
         .as_str()
         .map(str::to_owned)
@@ -427,6 +426,11 @@ pub fn publish_npm(root: &Path) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn release_version_reads_the_actual_workspace_document() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        assert!(semver(&format!("v{}", version(&root).unwrap())));
+    }
     #[test]
     fn stable_semver_only() {
         assert!(semver("v0.1.0"));

@@ -8,6 +8,11 @@ use std::{
 pub mod policy;
 mod scan;
 
+fn read_lock(path: &Path) -> Result<toml::Value> {
+    toml::from_str(&std::fs::read_to_string(path).map_err(|_| "lock_unavailable")?)
+        .map_err(|_| "lock_invalid".into())
+}
+
 fn quota(storage: &Value, retention: &Value, usage: &Value, bytes: u64) -> Result<()> {
     let gb = storage["max_cache_size_gb"]
         .as_u64()
@@ -91,10 +96,7 @@ fn plan(root: &Path) -> Result<(Value, Vec<PathBuf>)> {
         "cargo_home_symlink_refused",
     )?;
     let lock_before = source::file(&root.join("Cargo.lock"))?;
-    let lock: toml::Value = std::fs::read_to_string(root.join("Cargo.lock"))
-        .map_err(|_| "lock_unavailable")?
-        .parse()
-        .map_err(|_| "lock_invalid")?;
+    let lock = read_lock(&root.join("Cargo.lock"))?;
     let archives = scan::collect(&cargo.join("registry/cache"), &lock)?;
     quota(&storage, &retention, &usage, archives.bytes)?;
     require(
@@ -159,6 +161,17 @@ pub fn run(root: &Path) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn archive_cache_reads_the_actual_lock_document_without_network() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let lock = read_lock(&root.join("Cargo.lock")).unwrap();
+        assert!(
+            lock["package"]
+                .as_array()
+                .is_some_and(|packages| !packages.is_empty())
+        );
+        assert!(read_lock(&root.join("Cargo.lock/not-a-document")).is_err());
+    }
     #[test]
     fn unknown_oversized_paid_or_long_retention_cache_is_not_allowed() {
         let storage = json!({"max_cache_size_gb":10});

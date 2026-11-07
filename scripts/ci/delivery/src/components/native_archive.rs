@@ -132,6 +132,7 @@ pub(super) fn run(root: &Path, dir: &Path, report: &mut Value, before: &Value) -
         "source_manifest_sha256":before["manifest_sha256"],"cargo_json_sha256":source::file(&path)?,
         "build_finished":true,"binaries":bindings});
     write_json(&dir.join("native-build-receipt.json"), &receipt)?;
+    report["native_build"] = receipt.clone();
     report["stage"] = json!("native-archive");
     report["native_archive"] = crate::package::native_artifacts_bound(root, &receipt)?;
     Ok(())
