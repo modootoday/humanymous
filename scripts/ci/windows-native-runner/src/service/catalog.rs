@@ -40,7 +40,10 @@ pub(crate) fn required_case(
     entry: &Value,
     packages: &crate::harness::packages::Packages,
 ) -> Option<&'static Case> {
-    if entry["kind"] != json!(["test"]) || !packages.matches(entry, "humanymous-cli") {
+    if entry["kind"] != json!(["test"])
+        || !(packages.matches(entry, crate::harness::packages::Role::CliService)
+            || packages.matches(entry, crate::harness::packages::Role::CliRuntimeService))
+    {
         return None;
     }
     CASES.iter().find(|case| entry["target"] == case.target)

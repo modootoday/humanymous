@@ -109,14 +109,22 @@ pub fn run(options: &Options) -> io::Result<i32> {
                 &report["source"],
             )?,
         };
-        for name in ["humanymous", "humanymous-runtime", "humanymous-authority"] {
+        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
+        for (name, role) in [
+            ("humanymous", harness::packages::Role::CliBinary),
+            ("humanymous-runtime", harness::packages::Role::GatewayBinary),
+            (
+                "humanymous-authority",
+                harness::packages::Role::AuthorityBinary,
+            ),
+        ] {
             let path = binary(&options.binaries, name).canonicalize()?;
             let products = manifests["products"]
                 .as_array()
                 .ok_or_else(|| io::Error::other("compiled products absent"))?;
             let row = products
                 .iter()
-                .find(|r| r["target"] == name)
+                .find(|r| packages.matches(r, role))
                 .ok_or_else(|| io::Error::other("required compiled binary missing"))?;
             assert(
                 row["executable"] == json!(path) && row["sha256"] == evidence::digest(&path)?,
@@ -124,7 +132,6 @@ pub fn run(options: &Options) -> io::Result<i32> {
             )?;
         }
         report["manifest"] = manifests.clone();
-        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
         harness::execute(
             &manifests["harnesses"],
             &options.report,
@@ -143,11 +150,11 @@ pub fn run(options: &Options) -> io::Result<i32> {
         let cli = cli(options)?;
         let refusals = reject_invalid(options)?;
         report["cases"] = json!([
-            {"id":"startup","status":"passed","evidence":"actual runtime native_process harness readiness assertion"},
+            {"id":"startup","status":"passed","evidence":"actual gateway-native-process harness readiness assertion"},
             {"id":"configuration-invalid","status":"passed","evidence":refusals},
             {"id":"doctor","status":"passed","evidence":cli},
             {"id":"install-dry-run-no-mutation","status":"passed","evidence":"CLI process snapshots and artifact bytes unchanged"},
-            {"id":"restart-replay","status":"passed","evidence":"runtime/authority native_process harness replay and restart assertions"},
+            {"id":"restart-replay","status":"passed","evidence":"gateway-native-process and authority-native-process harness replay and restart assertions"},
             {"id":"storage-failure-closed","status":"passed","evidence":"authority concurrent_nonce_reservation_and_durable_failure actual-process assertion"},
             {"id":"capture-prerequisite-refusal","status":"passed","evidence":"authority real_ipc_auth_replay_body_scope_capture_and_restart_epoch actual-process assertion"}
         ]);

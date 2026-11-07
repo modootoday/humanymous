@@ -1,0 +1,64 @@
+{
+  "schema": "humanymous.runtime-runner-consumer-source/1",
+  "state": "Mechanical consumer and exact source-role remap; NOT_RUN",
+  "files": [
+    {
+      "path": "scripts/ci/windows-native-runner/src/actor.rs",
+      "sha256": "c0b233b5fdbb9bb539406f68816190f898a1e82ec60f71b502e617bdedeb1323",
+      "bytes": 32576
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/evidence.rs",
+      "sha256": "355eaee65c8c93ded04af19f0bec10a9ac76d2621b77b76e8b8f6b4e352aa29d",
+      "bytes": 17093
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/fixture.rs",
+      "sha256": "cf3e1891aada03505b7262ca764d285cb07d1c6c6c1e371ba9678f085551cc4f",
+      "bytes": 2936
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness.rs",
+      "sha256": "4adf1a131db92433091bafa3e92acc78bdf21d1fa638b483588d674f17e4ac6f",
+      "bytes": 25427
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/helpers.rs",
+      "sha256": "e699a24c83c367e541c17a75781b74602877fa54fee4f6d35b85d6cb762349e6",
+      "bytes": 5223
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/packages.rs",
+      "sha256": "ee98b5e9c52787469110102cb501eedf864ae83e3463544b412554025d053466",
+      "bytes": 5032
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/packages/roles.rs",
+      "sha256": "be812642c58ddf276afa21b579ba8f6437f065aba47ab128ba151b2aba04581c",
+      "bytes": 6172
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/packages/tests.rs",
+      "sha256": "738abdf9742c5863e3926738c02c732260670bc18506f1e93642373fd90e2a59",
+      "bytes": 6227
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/pilot.rs",
+      "sha256": "763ee8e41bdd0336b178bd0384065040667219f16ac0bac17a4cc0c51a40fd31",
+      "bytes": 7522
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/catalog.rs",
+      "sha256": "3201f813199eef4c1530dc2b4ea12e048ecd5ff85a82fd3fbbadae09d2d1b0e2",
+      "bytes": 2373
+    }
+  ],
+  "required_core_guard_sha256": "72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c",
+  "package_identity": "Opaque ID joins same-source workspace metadata; shared Runtime ID is separated by closed Role, exact target/kind/src_path",
+  "new_pure_contract": "shared_runtime_id_requires_exact_context_target_kind_and_source",
+  "actual_runs": 0,
+  "manifests_changed": 0,
+  "runtime_source_edits": 0,
+  "accounting_policy_changes": 0,
+  "active_leases": 0
+}

@@ -67,16 +67,11 @@ pub fn source(workspace: bool) -> io::Result<Value> {
         files.insert(path.to_owned(), digest(Path::new(path))?);
     }
     let directories = &[
-        "crates/runtime/src",
-        "crates/runtime/tests",
-        "crates/authority/src",
-        "crates/authority/tests",
+        "crates/sdk/humanymous-runtime/src",
+        "crates/sdk/humanymous-runtime/tests",
         "crates/cli/src",
-        "crates/native-security/src",
         "crates/integrations/humanymous-platform/src",
-        "crates/audit/src",
         "crates/sdk/humanymous-core/src",
-        "crates/network/src",
         "scripts/ci/windows-native-runner",
     ];
     if workspace {
@@ -129,7 +124,7 @@ pub fn source(workspace: bool) -> io::Result<Value> {
     let mut git_bytes = BTreeMap::new();
     for (path, worktree) in &files {
         if [
-            "crates/native-security/",
+            "crates/sdk/humanymous-runtime/",
             "crates/integrations/humanymous-platform/",
             "scripts/ci/windows-native-runner/",
         ]
@@ -202,7 +197,7 @@ fn verify_snapshot_at(snapshot: &Value, root: &Path) -> io::Result<()> {
 pub fn identity(expected: Option<&str>) -> io::Result<Value> {
     #[cfg(windows)]
     {
-        let identity = humanymous_native_security::process::current_identity()?;
+        let identity = humanymous_runtime::native_security::process::current_identity()?;
         if !identity.installer_allowed() || expected.is_some_and(|sid| sid != identity.sid()) {
             return Err(io::Error::other("actual standard-user SID/token required"));
         }
@@ -213,7 +208,7 @@ pub fn identity(expected: Option<&str>) -> io::Result<Value> {
     #[cfg(unix)]
     {
         let _ = expected;
-        let uid = humanymous_native_security::process::current_uid();
+        let uid = humanymous_runtime::native_security::process::current_uid();
         if uid == 0 {
             return Err(io::Error::other("non-root native actor required"));
         }

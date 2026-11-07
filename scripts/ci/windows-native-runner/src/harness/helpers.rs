@@ -1,33 +1,36 @@
 //! Explicit subprocess entry points, never ignored product integration cases.
-use super::packages::Packages;
+use super::packages::{Packages, Role};
 use serde_json::{Value, json};
 pub(super) fn captured(
     entry: &Value,
     packages: &Packages,
 ) -> Option<(&'static str, &'static [&'static str])> {
-    if packages.matches(entry, "humanymous-audit") && entry["kind"] == json!(["test"]) {
+    if (packages.matches(entry, Role::AuditDurableWitness)
+        || packages.matches(entry, Role::AuditKeyBackups))
+        && entry["kind"] == json!(["test"])
+    {
         return match entry["target"].as_str()? {
-            "durable_witness" => Some((
+            "audit-durable-witness" => Some((
                 "child_witness_probe",
                 &["witness_process_lifetime_and_interrupted_recovery"],
             )),
-            "key_backups" => Some((
+            "audit-key-backups" => Some((
                 "child_retire_without_pin_acknowledgement",
                 &["crash_reconcile_preserves_consumed_authorization"],
             )),
             _ => None,
         };
     }
-    if packages.matches(entry, "humanymous-audit")
+    if packages.matches(entry, Role::RuntimeLibrary)
         && entry["kind"] == json!(["lib"])
-        && entry["target"] == "humanymous_audit"
+        && entry["target"] == "humanymous_runtime"
     {
         return Some((
-            "storage::wal::tests::process_lock_probe",
-            &["storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"],
+            "audit::storage::wal::tests::process_lock_probe",
+            &["audit::storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"],
         ));
     }
-    if packages.matches(entry, "humanymous-platform")
+    if packages.matches(entry, Role::PlatformLibrary)
         && entry["kind"] == json!(["lib"])
         && entry["target"] == "humanymous_platform"
     {
@@ -55,9 +58,9 @@ pub(super) fn external_scope(
     const PARENT: &str = "unix_other_user_is_denied_by_actual_socket_acl";
     const HELPER: &str = "unix_unprivileged_connect_probe";
     if !unix
-        || entry["target"] != "native_process"
+        || entry["target"] != "authority-native-process"
         || entry["kind"] != json!(["test"])
-        || !packages.matches(entry, "humanymous-authority")
+        || !packages.matches(entry, Role::AuthorityNative)
         || !output
             .lines()
             .any(|line| line.starts_with(&format!("test {PARENT} ... ignored")))
@@ -75,10 +78,10 @@ mod tests {
     fn exact_helper_owners_do_not_include_product_host_pilots() {
         let support = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/integrations/humanymous-platform#0.1.0","kind":["lib"],"target":"humanymous_platform"});
         assert_eq!(captured(&support, &Packages::fixture()).unwrap().1.len(), 6);
-        let audit = json!({"package_id":"opaque-humanymous-audit","kind":["lib"],"target":"humanymous_audit"});
+        let audit = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["lib"],"target":"humanymous_runtime"});
         assert_eq!(
             captured(&audit, &Packages::fixture()).unwrap().0,
-            "storage::wal::tests::process_lock_probe"
+            "audit::storage::wal::tests::process_lock_probe"
         );
         let mut wrong = audit;
         wrong["target"] = json!("different_lib");
@@ -89,7 +92,7 @@ mod tests {
     }
     #[test]
     fn ignored_privileged_parent_is_required_and_never_a_verified_helper() {
-        let entry = json!({"package_id":"opaque-humanymous-authority","kind":["test"],"target":"native_process"});
+        let entry = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["test"],"target":"authority-native-process"});
         let log = "test unix_other_user_is_denied_by_actual_socket_acl ... ignored, Docker only\n";
         let scope = external_scope(&entry, log, true, &Packages::fixture()).unwrap();
         assert_eq!(scope["ignored_subprocess_helpers"], 0);

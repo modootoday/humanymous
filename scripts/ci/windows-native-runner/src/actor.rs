@@ -599,7 +599,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
     if !evidence::disposable_host() {
         return Err(io::Error::other("disposable GitHub-hosted actor required"));
     }
-    let identity = humanymous_native_security::process::current_identity()?;
+    let identity = humanymous_runtime::native_security::process::current_identity()?;
     if !identity.elevated() || !identity.enabled_administrator() {
         return Err(io::Error::other(
             "hosted provisioning administrator required",
@@ -647,7 +647,10 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
     if bytes.len() < 3 || bytes[1] != b':' || bytes[2] != b'\\' {
         return Err(io::Error::other("local drive-letter ProgramData required"));
     }
-    humanymous_native_security::volume::require_fixed(&format!("{}:\\", bytes[0] as char))?;
+    humanymous_runtime::native_security::volume::require_fixed(&format!(
+        "{}:\\",
+        bytes[0] as char
+    ))?;
     let base = PathBuf::from(text);
     let scratch = base.join(&name);
     fs::create_dir(&scratch)?;

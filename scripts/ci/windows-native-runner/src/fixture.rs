@@ -46,7 +46,7 @@ pub fn private(path: &Path) -> io::Result<()> {
             constants::{SeObjectType, SecurityInformation},
             wrappers,
         };
-        let identity = humanymous_native_security::process::current_identity()?;
+        let identity = humanymous_runtime::native_security::process::current_identity()?;
         let sd: LocalBox<SecurityDescriptor> =
             format!("D:P(A;OICI;FA;;;{})", identity.sid()).parse()?;
         wrappers::SetNamedSecurityInfo(

@@ -7,12 +7,7 @@ mod collection;
 mod helpers;
 pub(crate) mod packages;
 
-const PACKAGES: [&str; 4] = [
-    "humanymous-runtime",
-    "humanymous-authority",
-    "humanymous-cli",
-    "humanymous-native-security",
-];
+const PACKAGES: [&str; 2] = ["humanymous-runtime", "humanymous-cli"];
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Scope {
     Native,
@@ -33,11 +28,7 @@ pub fn prepare(
     if release {
         build.arg("--release");
     }
-    for package in [
-        "humanymous-runtime",
-        "humanymous-authority",
-        "humanymous-cli",
-    ] {
+    for package in ["humanymous-runtime", "humanymous-cli"] {
         build.args(["-p", package]);
     }
     let products = if scope == Scope::Native {
@@ -266,9 +257,9 @@ fn execute_inner(
         };
         let service = service_case.is_some();
         let custody = scope == Scope::Workspace
-            && entry["target"] == "key_custody"
+            && entry["target"] == "audit-key-custody"
             && entry["kind"] == json!(["test"])
-            && packages.matches(entry, "humanymous-audit");
+            && packages.matches(entry, packages::Role::AuditKeyCustody);
         let captured_helper = if scope == Scope::Workspace {
             helpers::captured(entry, packages)
         } else {
@@ -323,10 +314,12 @@ fn execute_inner(
         progress["executed_harnesses"] = json!(rows.len());
         progress["harnesses"] = json!(rows);
         let mut required_missing = false;
-        if entry["target"] == "native_process" {
-            let required: &[&str] = if packages.matches(entry, "humanymous-runtime") {
+        if packages.matches(entry, packages::Role::GatewayNative)
+            || packages.matches(entry, packages::Role::AuthorityNative)
+        {
+            let required: &[&str] = if packages.matches(entry, packages::Role::GatewayNative) {
                 &["native_binary_session_collection_origin_restart_and_wal_authentication"]
-            } else if packages.matches(entry, "humanymous-authority") {
+            } else if packages.matches(entry, packages::Role::AuthorityNative) {
                 &[
                     "real_ipc_auth_replay_body_scope_capture_and_restart_epoch",
                     "concurrent_nonce_reservation_and_durable_failure",
@@ -347,11 +340,11 @@ fn execute_inner(
             }
             rows.last_mut().unwrap()["required_native_tests"] = json!(required);
             rows.last_mut().unwrap()["required_native_tests_verified"] = json!(!required_missing);
-            runtime |= packages.matches(entry, "humanymous-runtime")
+            runtime |= packages.matches(entry, packages::Role::GatewayNative)
                 && counts.is_some_and(|c| c[0] > 0)
                 && execution.status.success()
                 && !required_missing;
-            authority |= packages.matches(entry, "humanymous-authority")
+            authority |= packages.matches(entry, packages::Role::AuthorityNative)
                 && counts.is_some_and(|c| c[0] > 0)
                 && execution.status.success()
                 && !required_missing;
@@ -400,7 +393,7 @@ fn captured_helper_account(
                 .and_then(|s| s.split_once(" ... ignored").map(|(name, _)| name))
         })
         .collect();
-    if (helper == "storage::wal::tests::process_lock_probe"
+    if (helper == "audit::storage::wal::tests::process_lock_probe"
         && log
             .lines()
             .any(|line| line == "humanymous-wal-lock-refused"))
@@ -569,13 +562,14 @@ mod tests {
         assert!(captured_helper_account(good, 2, false, "helper", &["parent"]).is_err());
         assert!(captured_helper_account(good, 3, true, "helper", &["parent"]).is_err());
         let wal = good
-            .replace("helper", "storage::wal::tests::process_lock_probe")
+            .replace("helper", "audit::storage::wal::tests::process_lock_probe")
             .replace(
                 "parent",
-                "storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart",
+                "audit::storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart",
             );
-        let helper = "storage::wal::tests::process_lock_probe";
-        let parents = &["storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"];
+        let helper = "audit::storage::wal::tests::process_lock_probe";
+        let parents =
+            &["audit::storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"];
         assert_eq!(
             captured_helper_account(&wal, 2, true, helper, parents).unwrap(),
             1
