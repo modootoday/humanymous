@@ -1,0 +1,267 @@
+{
+  "schema": "humanymous.nginx.eight-package-handoff/1",
+  "observed_at_utc": "2026-11-07T20:10:18.9136242Z",
+  "source_head": "38c2defe260030639b6441857de758ae64eeeaec",
+  "accepted_baseline": "sot:root/structural-development accepted eight public packages v0; no further package topology is adopted here",
+  "target_context": "humanymous-adapters at root-sequenced crates/integrations/humanymous-adapters; exact module/target layout and source moves assigned by root only",
+  "observed_source_paths": [
+    "crates/nginx-adapter/**",
+    "adapters/nginx/**"
+  ],
+  "current_write_claim": "adapter-nginx: nginx evidence paths only; no source/manifest or target ownership retained",
+  "files": [
+    {
+      "path": "adapters/nginx/.gitignore",
+      "sha256": "0bb5e908544e65360b69a4baebee1768a83b9f2499b1537246c80c3213554ff4",
+      "bytes": 14,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "adapters/nginx/Dockerfile.native",
+      "sha256": "43601ec07795d039ba2e49bc95ac8db9798233a47d3995d01240014a61c8cd99",
+      "bytes": 4842,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "adapters/nginx/Dockerfile.native.dockerignore",
+      "sha256": "3ef3d62c8273e286062254bbbbf6f857de3c1fea8b730a3b07b28f8be7318a1a",
+      "bytes": 319,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "adapters/nginx/INTEGRATION.md",
+      "sha256": "11e1949b7b41ad49a90f97250b6862e7a1b578b5983c5ae6480f3cdf1a29690d",
+      "bytes": 2207,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "adapters/nginx/README.md",
+      "sha256": "63a349204895367e2817b83d75b6b6b61b9655635ac032f118727f8d138c93d5",
+      "bytes": 5121,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "adapters/nginx/compose.yaml",
+      "sha256": "27485d7795f9ad4c2be8dcab53f34a02a462f72974c70dffaf9dce137f767900",
+      "bytes": 618,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "adapters/nginx/legacy-njs/INTEGRATION.md",
+      "sha256": "96ed31cadb14247645d043fc52a7edc29433243137a749769894455eba521c90",
+      "bytes": 1158,
+      "lf_only": true,
+      "historical_legacy": true
+    },
+    {
+      "path": "adapters/nginx/legacy-njs/README.md",
+      "sha256": "1d8b57d2aa1f99334aa1522bbf386f6823caa52161edb38952ace4750bfbc330",
+      "bytes": 2078,
+      "lf_only": true,
+      "historical_legacy": true
+    },
+    {
+      "path": "adapters/nginx/legacy-njs/compose.yaml",
+      "sha256": "188063a6dd6a1fc09ba081b31b4162e97d049808aae177e9f6dfc796f9faaa65",
+      "bytes": 570,
+      "lf_only": true,
+      "historical_legacy": true
+    },
+    {
+      "path": "adapters/nginx/legacy-njs/gate.js",
+      "sha256": "f4e37b88bf59c4e296d8edd95569f4bf8935d709ab67938c4e6e430b8ae5bc25",
+      "bytes": 4359,
+      "lf_only": true,
+      "historical_legacy": true
+    },
+    {
+      "path": "adapters/nginx/legacy-njs/nginx.conf",
+      "sha256": "e809de0ccb7699edb0a1a45b208f80021ea229d654faf7e85420ec9692083557",
+      "bytes": 1767,
+      "lf_only": true,
+      "historical_legacy": true
+    },
+    {
+      "path": "adapters/nginx/legacy-njs/test/pilot.py",
+      "sha256": "5177f35bb3e2d4f8abea95b55bac8bce040e6275d2565650f6b592e0efe5a05b",
+      "bytes": 8268,
+      "lf_only": true,
+      "historical_legacy": true
+    },
+    {
+      "path": "adapters/nginx/legacy-njs/test/unit.js",
+      "sha256": "b9e486eac60c75ec7099b34540fd5d611102dd16f2280fef5d91de101223d303",
+      "bytes": 1612,
+      "lf_only": true,
+      "historical_legacy": true
+    },
+    {
+      "path": "adapters/nginx/pilot-contract.json",
+      "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+      "bytes": 4030,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/Cargo.toml",
+      "sha256": "ba9f8353715a0132022ea0f2a0013f7d4d592920a2f3cb96425fd2abfd1e4cfc",
+      "bytes": 1393,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/INTEGRATION.md",
+      "sha256": "d3960e346556fd5c5752c19f842f75ae01ef16be6c735d7a236d3c0a20d9e3c5",
+      "bytes": 11141,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/bin/package.rs",
+      "sha256": "5b4c2ebdd8f2a04c7540525b9e57431c5f2be110e34d746e86b7df590b56fb7e",
+      "bytes": 2249,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/bin/pilot.rs",
+      "sha256": "caca3a0bf53b71d3f9759f762d36b134d5db2109c2d0be747406ffa15ab3255a",
+      "bytes": 496,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/lib.rs",
+      "sha256": "2a2a11e4d441114b3441b7062bf0cf2d41d9b0b5d52609b125e3fe494d20f469",
+      "bytes": 425,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/native.rs",
+      "sha256": "c65131ac337558b87566eb9211d7c36ef823b728f337c4f59de83a705404393d",
+      "bytes": 24912,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/package.rs",
+      "sha256": "140dc60c0606a578742ce100c1acd634dbedfb8668bcc10cb0ab6719bebc1301",
+      "bytes": 8798,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/authority.rs",
+      "sha256": "a3e3d9e9463c17b469be772192a6bbda5abafb83485381a9a8cede68df016bca",
+      "bytes": 4995,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "sha256": "d570abcf18502f376dfc1ccc7e89dfbbc9a7420d5661bf4a54be48d28b703c37",
+      "bytes": 32435,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/origin.rs",
+      "sha256": "e01ddcf5ad2e14e9eb3c05d4b308c87f5edb76013326a4a5bf987775a8661790",
+      "bytes": 8664,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/report.rs",
+      "sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+      "bytes": 3633,
+      "lf_only": true,
+      "historical_legacy": false
+    },
+    {
+      "path": "crates/nginx-adapter/src/request.rs",
+      "sha256": "07d868d19d08377f147ea64db4360f07ae545140046a2591582764fc595bfaac",
+      "bytes": 15479,
+      "lf_only": true,
+      "historical_legacy": false
+    }
+  ],
+  "dirty_source_files": [],
+  "live_handles": [],
+  "active_compilers": [],
+  "target_leases": [],
+  "running_native_or_docker": [],
+  "inflight_moves": [],
+  "visibility_hazards": [
+    "Current lib publicly exposes request/package/report modules; these are implementation APIs, not automatically a curated public facade. Review/restrict them inside nginx context.",
+    "Configuration/Ingress and unsigned Manifest fields are public data, not trusted native identity or Authority/Ready tokens. Protected-file checks and shared parser/BoundResponse validation remain the gates.",
+    "Preserve context-restricted constructors, once-only BoundResponse consumption and runtime credential/custody fields when authority/audit move into runtime; do not broaden pub(crate) into sibling adapter minting access."
+  ],
+  "unsafe_abi_hazards": [
+    "Native unsafe allow is confined to nginx host bindings/callback module; pure request/package/report forbid unsafe. Do not move native FFI into safe core or broaden package-wide exceptions.",
+    "One merged adapters package has one library target: independently select host build profiles. nginx export-modules/native with ngx/bindgen must not leak into Node/Python/Ruby/Apache/.NET or WASM builds through feature union.",
+    "Keep ngx_modules/ngx_module_names/ngx_module_order host ABI tables and module-name entry ngx_http_humanymous_module explicit. Public humanymous loader identity needs isolated nginx/engine/ABI destinations; do not collide different host DLLs.",
+    "Copied Rust ingress only crosses to Tokio; nginx request/pool/event pointers remain on nginx callback thread. Worker-after-fork runtime, cleanup abort/timer removal, deferred JSON finalization and no-borrow-across-finalize invariants must survive consolidation."
+  ],
+  "dependency_path_hazards": [
+    "Replace current authority/integrity/audit/signals package edges with root-approved runtime/core contexts; no independent manifest/lock edits.",
+    "Relative include_str pilot contract paths, frozen scoring fixture paths, bin #[path] modules and package/pilot imports break under directory moves; update exact consumers together.",
+    "Dockerfile allowlist/workspace members, cargo -p and --bin selectors, saved native output path, provenance package identity, loader/config/hash paths and CI/lab consumer contracts must migrate atomically.",
+    "Existing naming handoff target humanymous-adapter-nginx is historical interim; accepted eight-package baseline absorbs nginx into humanymous-adapters. Do not create a ninth permanent helper crate or speculative compatibility shim."
+  ],
+  "required_checks": [
+    "Fmt first, then root-allocated selected locked pure library tests (historical14 denominator), package bin check and separate feature Clippy; derive new denominators from actual harness.",
+    "Root-selected eight-package graph/feature/target validation, including safe core/WASM closure and mutually exclusive host artifacts; no indiscriminate all-features load.",
+    "Actual selected nginx/Linux ABI build with pinned nginx1.30.6, ngx ebbcd514 and exact configure/header inputs; preserve native .so before standalone pilot/package builds.",
+    "Actual nginx/authority35 named scenario groups with exact new source/manifest/lock/module/engine/image identities, JSON keepalive, SSE upstream cancellation, peer/replay/audit/outage/reload/WAL cases and cleanup.",
+    "Validate unified public loader path and package manifest identity against actual staged bytes; no inferred ABI/export preservation or signed-release qualification.",
+    "Root/Pages own current-doc source associations and acceptance. Preserve historical source IDs/raw commands/hashes; renamed/moved source needs new receipts."
+  ],
+  "historical_proof": {
+    "scope": "Linux x86_64 GNU HTTP1.1 component and synthetic ALLOW with actual authority/WAL; separate local14 pure/check/Clippy. Not eight-package/new-graph evidence.",
+    "job": 128358355202,
+    "not_run": 0,
+    "ignored": 0,
+    "full_product_qualified": false,
+    "passed": 35,
+    "run": 42355168729,
+    "receipts": [
+      "0c2ba82",
+      "9be7cec",
+      "7f3dc93"
+    ],
+    "source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+    "scenario_groups": 35,
+    "failed": 0
+  },
+  "dependencies_and_missing_gates": [
+    "Root engine/core first, then runtime/platform interfaces and authority/native proof contracts, before adapter relocation and real host qualification.",
+    "Independent witness/cross-user/sustained load, sealed startup, full product/human/AT, original TLS/H2/H3, streaming upload/upgrade/gRPC, other host/arch/vendor ABI profiles remain missing or unsupported; preserve them.",
+    "No new workload authorization, publication/main merge or branch sync performed. Root freezes the specific source slice and controls common graph/refs."
+  ],
+  "implementation_or_topology_changed": false,
+  "observed_root_owned_graph": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "54a592b83810ae1c49d3a4cd7d912843ea47909cc5ecccc88d8baa2def7a68bf",
+      "ownership": "root; observation only"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "940281a7595a7044284aee03a10b9e31306a5ad06c3c19143d98d131c92bfd39",
+      "ownership": "root; observation only"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+      "ownership": "root; observation only"
+    }
+  ]
+}
