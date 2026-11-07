@@ -32,7 +32,7 @@ impl Fixture {
         fs::write(self.0.join("docs").join(name), format!("---\nlayout: doc\ntitle: Example\npermalink: {url}\nreviewed: 2026-11-07\n---\n**Diátaxis quadrant:** Reference. **Audience:** reviewers.\n{body}")).unwrap();
     }
     fn html(&self, name: &str, canonical: &str, body: &str) {
-        fs::write(self.0.join("site").join(name), format!("<!doctype html><html lang=\"en\"><head><link rel=\"canonical\" href=\"{canonical}\"></head><body><main>{body}</main></body></html>")).unwrap();
+        fs::write(self.0.join("site").join(name), format!("<!doctype html><html lang=\"en\"><head><title>Example</title><link rel=\"canonical\" href=\"{canonical}\"></head><body><a class=\"mt-skip\" href=\"#content\">Skip to content</a><main id=\"content\" tabindex=\"-1\">{body}</main></body></html>")).unwrap();
     }
     fn errors(&self, base: &str) -> Vec<String> {
         check_output(&self.0.join("docs"), &self.0.join("site"), base)
@@ -54,6 +54,33 @@ fn valid_source_and_output_are_read_only() {
     assert!(check_source(&f.0.join("docs")).unwrap().errors.is_empty());
     assert!(f.errors("").is_empty());
     assert_eq!(fs::read(path).unwrap(), before);
+}
+
+#[test]
+fn static_theme_skip_target_and_title_are_not_inferred_from_landmarks() {
+    use scraper::Html;
+    let valid = "<head><title>Example</title></head><body><a class='mt-skip' href='#doc'>Skip</a><main><div id='doc' tabindex='-1'><h1>Title</h1></div></main></body>";
+    assert!(crate::accessibility::check(&Html::parse_document(valid)).is_empty());
+    for changed in [
+        valid.replace("class='mt-skip'", "class='other'"),
+        valid.replace("href='#doc'", "href='#absent'"),
+        valid.replace("tabindex='-1'", "tabindex='1'"),
+        valid.replace("<main>", "<main hidden>"),
+        valid.replace("<main>", "<main aria-hidden='true'>"),
+        valid.replace(">Skip</a>", "> </a>"),
+        valid.replace("<title>Example</title>", "<title> </title>"),
+        valid.replace(
+            "<title>Example</title>",
+            "<title>One</title><title>Two</title>",
+        ),
+    ] {
+        assert!(
+            !crate::accessibility::check(&Html::parse_document(&changed)).is_empty(),
+            "{changed}"
+        );
+    }
+    let outside = "<head><title>Example</title></head><body><a class='mt-skip' href='#nav'>Skip</a><nav id='nav' tabindex='-1'>Navigation</nav><main><h1>Title</h1></main></body>";
+    assert!(!crate::accessibility::check(&Html::parse_document(outside)).is_empty());
 }
 
 #[test]
@@ -192,6 +219,82 @@ fn canonical_baseurl_escape_duplicate_id_and_missing_anchor_fail() {
     for expected in ["canonical", "baseurl", "duplicate id", "missing anchor"] {
         assert!(e.iter().any(|s| s.contains(expected)), "{e:?}");
     }
+}
+
+#[test]
+fn same_origin_absolute_and_protocol_relative_links_are_checked_locally() {
+    let f = Fixture::new();
+    f.html("index.html", "https://humanymous.net/", "<h1 id=\"home\">Home</h1><a href=\"https://humanymous.net:443/#home\">absolute</a><a href=\"//humanymous.net/#home\">protocol relative</a><a href=\"https://example.invalid/absent#missing\">external</a><a href=\"mailto:reviewer@example.invalid\">mail</a>");
+    assert!(f.errors("").is_empty());
+    f.html("index.html", "https://humanymous.net/", "<h1>Home</h1><a href=\"https://humanymous.net/absent.html\">missing</a><a href=\"https://humanymous.net/#missing\">anchor</a><a href=\"//humanymous.net/#other-missing\">other anchor</a>");
+    let errors = f.errors("");
+    assert!(
+        errors
+            .iter()
+            .any(|e| e.contains("missing or escaping built target"))
+    );
+    assert_eq!(
+        errors
+            .iter()
+            .filter(|e| e.contains("missing anchor"))
+            .count(),
+        2
+    );
+}
+
+#[test]
+fn absolute_same_origin_links_cannot_escape_repository_baseurl() {
+    let f = Fixture::new();
+    f.html("index.html", "https://humanymous.net/humanymous/", "<h1 id=\"home\">Home</h1><a href=\"https://humanymous.net/humanymous/#home\">valid</a><a href=\"//humanymous.net/humanymous/#home\">also valid</a>");
+    assert!(f.errors("/humanymous").is_empty());
+    f.html("index.html", "https://humanymous.net/humanymous/", "<h1>Home</h1><a href=\"https://humanymous.net/\">escape</a><a href=\"//humanymous.net/humanymous-other/\">prefix escape</a>");
+    assert_eq!(
+        f.errors("/humanymous")
+            .iter()
+            .filter(|e| e.contains("link escapes baseurl"))
+            .count(),
+        2
+    );
+}
+#[test]
+fn explicit_directory_index_links_validate_the_same_document_anchors() {
+    let f = Fixture::new();
+    f.html("index.html", "https://humanymous.net/", "<h1 id='home'>Home</h1><a href='index.html#home'>valid</a><a href='https://humanymous.net/index.html#absent'>missing</a>");
+    let errors = f.errors("");
+    assert_eq!(
+        errors
+            .iter()
+            .filter(|e| e.contains("missing anchor"))
+            .count(),
+        1,
+        "{errors:?}"
+    );
+}
+#[test]
+fn generated_html_is_checked_without_an_authored_markdown_counterpart() {
+    let f = Fixture::new();
+    f.html(
+        "generated.html",
+        "https://humanymous.net/generated.html",
+        "<h1>Generated</h1><a href='/absent.html'>broken</a>",
+    );
+    let errors = f.errors("");
+    assert!(
+        errors
+            .iter()
+            .any(|e| e.contains("/generated.html: missing or escaping built target")),
+        "{errors:?}"
+    );
+    f.html(
+        "generated.html",
+        "https://humanymous.net/generated.html",
+        "<h1>Generated</h1><a href='/'>Home</a>",
+    );
+    let report = check_output(&f.0.join("docs"), &f.0.join("site"), "").unwrap();
+    assert!(report.errors.is_empty());
+    assert_eq!(report.pages, 1);
+    assert_eq!(report.rendered_html, Some(2));
+    assert_eq!(check_source(&f.0.join("docs")).unwrap().rendered_html, None);
 }
 #[test]
 fn maps_private_output_and_missing_alt_fail() {

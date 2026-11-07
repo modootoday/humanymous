@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/runtime/src/http/origin_response.rs",
+  "sha256": "2443d67c8d86bfb61f5aa8a1467fd6b8c94cb7c27599406d86024c5120f2c950",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete bounded origin Response parser/encoder/chunk decoder and three authored fixtures: exact lengths, simple chunked or EOF entity framing, no extensions/trailers/interim/upgrades, empty HEAD/204/304 handling, ordinary duplicate field preservation and gateway/hop field filtering. Updated origin contract distinguishes complete buffering/reframing from streaming and explicitly leaves current decoder execution unverified. Source tests read only.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md"
+  ]
+},
+{
   "source": "crates/runtime/src/service/lifecycle.rs",
   "sha256": "481d0f14e70bcb5ed66a06d71be0f2438dd3b5165a366291a9ccaad61be8714b",
   "reviewer": "codex/rust-pages",

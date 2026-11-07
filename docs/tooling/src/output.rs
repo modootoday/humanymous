@@ -27,7 +27,7 @@ fn parse(text: &str) -> Document {
         ids: BTreeSet::new(),
         links: Vec::new(),
         canonical: Vec::new(),
-        errors: Vec::new(),
+        errors: crate::accessibility::check(&html),
         main: html.select(&select("main")).count(),
         h1: html.select(&select("h1")).count(),
         english: html
@@ -102,36 +102,37 @@ pub(crate) fn check(root: &Path, site: &Path, baseurl: &str) -> Result<Report, S
         }
     }
     for page in &pages {
-        let Some(d) = documents.get(&page.url) else {
+        if !documents.contains_key(&page.url) {
             errors.push(format!(
                 "{}: missing rendered page {}",
                 page.path.display(),
                 page.url
             ));
-            continue;
-        };
+        }
+    }
+    // Generated HTML is part of the public surface even without authored Markdown.
+    for (url, d) in &documents {
         if d.main != 1 || d.h1 != 1 || !d.english {
-            errors.push(format!(
-                "{}: expected one main/h1 and English language",
-                page.url
-            ));
+            errors.push(format!("{url}: expected one main/h1 and English language"));
         }
-        let expected = format!("https://humanymous.net{baseurl}{}", page.url);
+        let expected = format!("https://humanymous.net{baseurl}{url}");
         if d.canonical != [expected.clone()] {
-            errors.push(format!("{}: canonical mismatch", page.url));
+            errors.push(format!("{url}: canonical mismatch"));
         }
-        errors.extend(d.errors.iter().map(|e| format!("{}: {e}", page.url)));
+        errors.extend(d.errors.iter().map(|e| format!("{url}: {e}")));
         let base = Url::parse(&expected).map_err(|e| e.to_string())?;
         for link in &d.links {
-            if link.starts_with("//") || Url::parse(link).is_ok() {
+            let target = base.join(link).map_err(|e| e.to_string())?;
+            // Absolute and protocol-relative links to this site are local too.
+            // Never fetch external URLs; this checker validates artifact bytes.
+            if target.origin() != base.origin() {
                 continue;
             }
-            let target = base.join(link).map_err(|e| e.to_string())?;
             let decoded = percent_decode_str(target.path())
                 .decode_utf8()
                 .map_err(|e| e.to_string())?;
             if !baseurl.is_empty() && !decoded.starts_with(&format!("{baseurl}/")) {
-                errors.push(format!("{}: link escapes baseurl {link}", page.url));
+                errors.push(format!("{url}: link escapes baseurl {link}"));
                 continue;
             }
             let pathname = decoded.strip_prefix(baseurl).unwrap_or(&decoded);
@@ -143,17 +144,19 @@ pub(crate) fn check(root: &Path, site: &Path, baseurl: &str) -> Result<Report, S
                 pathname.trim_start_matches('/').to_owned()
             };
             if invalid || !output_files.contains(&key) {
-                errors.push(format!(
-                    "{}: missing or escaping built target {link}",
-                    page.url
-                ));
+                errors.push(format!("{url}: missing or escaping built target {link}"));
             }
-            if let (Some(fragment), Some(other)) = (target.fragment(), documents.get(pathname)) {
+            let document = documents.get(pathname).or_else(|| {
+                pathname
+                    .strip_suffix("index.html")
+                    .and_then(|directory| documents.get(directory))
+            });
+            if let (Some(fragment), Some(other)) = (target.fragment(), document) {
                 let fragment = percent_decode_str(fragment)
                     .decode_utf8()
                     .map_err(|e| e.to_string())?;
                 if !fragment.is_empty() && !other.ids.contains(fragment.as_ref()) {
-                    errors.push(format!("{}: missing anchor {link}", page.url));
+                    errors.push(format!("{url}: missing anchor {link}"));
                 }
             }
         }
@@ -180,6 +183,7 @@ pub(crate) fn check(root: &Path, site: &Path, baseurl: &str) -> Result<Report, S
     Ok(Report {
         build_input_sha256: None,
         pages: pages.len(),
+        rendered_html: Some(documents.len()),
         errors,
     })
 }

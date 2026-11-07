@@ -32,6 +32,17 @@ indented items, simple unquoted titles and URLs matching authored permalinks.
 Missing menus, malformed indentation, unknown targets and empty groups reject.
 This is a local authoring contract, not a general YAML parser or rendered-theme
 validation; expanding menu syntax requires explicit checker/tests review.
+Rendered link checks resolve relative, absolute and protocol-relative URLs
+against the configured canonical origin. Same-origin targets all require local
+artifact, fragment and exact baseurl containment checks. Different-origin links
+are not fetched or certified by this offline checker. Output checks are not a
+browser, CSS/layout, keyboard or assistive-technology execution result.
+Static accessibility checks follow the pinned theme's actual layout contract:
+one nonempty document title and a labelled `a.mt-skip` fragment link to an
+existing `tabindex=-1` target inside main, without explicit hidden/aria-hidden
+ancestors. These are HTML structure checks only, not computed style, actual
+focus movement, keyboard reachability, screen-reader output or WCAG conformance.
+A later browser pilot must record its own cases and actual outcomes separately.
 ### Theme and build authority
 
 Source-review triage uses `humanymous-pages review-delta --root .`, a read-only
@@ -169,6 +180,11 @@ real two-baseurl validation. The previous site shadowed the theme and generated
 secondary prose/assets. Tests of docs must not imply runtime qualification.
 
 ## Verification
+
+The output checker validates every rendered HTML file, including generated
+pages without authored Markdown counterparts. Authored-page presence is checked
+separately. Directory URLs and explicit `index.html` links share anchor lookup;
+missing fragments cannot bypass validation through the explicit filename.
 
 Execution and remaining gates: [[plan:root/20261106223501]]. Private raw logs:
 `.spec.local/root/evidence/20261106223502-pages-build/`. The inherited standards pilot

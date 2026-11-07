@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "scope": "Pages output checker pending enhancement",
+  "observed_utc": "2026-11-07T07:26:56.1410275Z",
+  "command": "cargo test --locked -p humanymous-pages --lib",
+  "cargo_build_jobs": 1,
+  "cargo_incremental": 0,
+  "exit_code": 1,
+  "stage": "lock resolution before compilation",
+  "diagnostic": "cannot update Cargo.lock because --locked was passed",
+  "tests_executed": 0,
+  "expected_tests": 22,
+  "clippy": "NOT_RUN",
+  "current_jekyll_build": "NOT_RUN",
+  "current_browser": "NOT_RUN",
+  "current_assistive_technology": "NOT_RUN",
+  "slot": "returned to root after lock failure",
+  "sources": [
+    {
+      "path": "docs/tooling/src/output.rs",
+      "sha256": "f39e812d1f6af2edfc51b95fb1d5e1656fadac9185b25ee7950243f9093edd41"
+    },
+    {
+      "path": "docs/tooling/src/accessibility.rs",
+      "sha256": "2ba9ff70a48317ec0e59a936daf365394275135d76d0785893ffdc8fc943b889"
+    },
+    {
+      "path": "docs/tooling/src/tests.rs",
+      "sha256": "1db1f2d028e09cf2b735da99a0ad5474d056a809ac3a814fc4d69bc5b8453296"
+    }
+  ],
+  "attempts": [
+    {
+      "number": 1,
+      "exit_code": 1,
+      "stage": "locked resolution",
+      "tests_executed": 0
+    },
+    {
+      "number": 2,
+      "exit_code": 1,
+      "stage": "locked resolution after root integration notification",
+      "tests_executed": 0,
+      "lock_sha256": "afe946d7b03b07fc1762356489ffa70ac0a8e3ef19532f6b92ff1de07f983555",
+      "workspace_manifest_sha256": "7609b2f9ce17b22c7d38260990d4b99dc25ad5a36c0aa41aaeb5e70bd9fe44be"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "docs/tooling/src/lib.rs",
+      "sha256": "d6edb884b5a022bf7cf8b64f76caae78f61eda30ba7eb5257e3a77988cdce540"
+    },
+    {
+      "path": "docs/tooling/src/output.rs",
+      "sha256": "052c85fd05fad943b13e3d38e7b1e05144b1894b8d1b381e8a806d30f2008165"
+    },
+    {
+      "path": "docs/tooling/src/accessibility.rs",
+      "sha256": "2ba9ff70a48317ec0e59a936daf365394275135d76d0785893ffdc8fc943b889"
+    },
+    {
+      "path": "docs/tooling/src/tests.rs",
+      "sha256": "d538342f22764d86975b2188bda222b13314cb4f29cf2c08fa82db30b527db9f"
+    }
+  ],
+  "root_verified_followup": {
+    "executor": "root integration chat",
+    "thread": "01a1b25e-8e4c-7a70-b7b7-f51a66c58514",
+    "command_handle": "exec-9c9ffb23-6054-422c-9429-bf9a9e75482b",
+    "command": "cargo test --locked --offline -p humanymous-pages --lib -- --test-threads=1",
+    "clippy_command": "cargo clippy --locked --offline -p humanymous-pages --lib -- -D warnings",
+    "exit_code": 0,
+    "passed": 22,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered_out": 0,
+    "clippy": "passed",
+    "cause_of_prior_failures": "concurrent CLI tokio signal feature required signal-hook-registry 1.4.8",
+    "raw_evidence": "private evidence:root/20261107051213 root-output-checker-22.log",
+    "source_hashes_rechecked_unchanged": true,
+    "render_browser_AT": "NOT_RUN"
+  }
+}

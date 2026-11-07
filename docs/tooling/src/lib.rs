@@ -1,4 +1,5 @@
 //! Read-only validation of authored Markdown and rendered Pages artifacts.
+mod accessibility;
 mod build;
 mod files;
 mod inputs;
@@ -20,6 +21,10 @@ pub struct Report {
     pub build_input_sha256: Option<String>,
     /// Number of authored reader pages examined.
     pub pages: usize,
+    /// All rendered HTML files checked, including generated-only public pages.
+    /// Absent for source-only checks, which never inspect output artifacts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendered_html: Option<usize>,
     /// Every observed validation failure, without writing replacement content.
     pub errors: Vec<String>,
 }
@@ -30,6 +35,7 @@ pub fn check_source(root: &Path) -> Result<Report, String> {
     Ok(Report {
         build_input_sha256: None,
         pages: pages.len(),
+        rendered_html: None,
         errors,
     })
 }

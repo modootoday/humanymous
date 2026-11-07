@@ -31,9 +31,21 @@ remains applicable to the verified slice.
 It accepts bounded complete HTTP/1.1 requests, with 64 KiB request and origin
 response body limits and a 16 KiB header bound. Transfer-encoded/chunked requests,
 upgrades, duplicate request headers and encoded/dot-segment paths are unsupported.
-Validated duplicate `Set-Cookie` response headers are preserved as opaque origin
-frames. Origin effects follow durable audit append and deadline/liveness checks;
+Validated duplicate `Set-Cookie` response fields retain their separate values.
+Origin effects follow durable audit append and deadline/liveness checks;
 an ambiguous origin failure is not retried.
+
+Current response-decoder source accepts bounded complete HTTP/1.1 responses with
+an exact Content-Length, a simple chunked body or a body delimited by connection
+close. It decodes chunked bodies and reframes chunked/close-delimited entities
+with Content-Length and `Connection: close`; this is buffering, not response
+streaming. Decoded entities remain bounded to 64 KiB. Chunk extensions, trailers,
+ambiguous lengths, interim responses and protocol upgrades reject. HEAD, 204 and
+304 responses cannot carry entity bytes. Gateway-owned `X-Humanymous-` fields and
+selected hop-by-hop fields are removed before response metadata is added.
+These changed decoder paths and their new fixtures have not yet been executed
+in the current qualification run; ordinary repeated fields are not a blanket
+HTTP compatibility or credential-preservation guarantee.
 
 The separate local IPC authority has a different capability boundary: its
 currently reviewed route path rejects required browser collection, request-
@@ -43,8 +55,8 @@ implementation must not be attributed to that IPC profile. See
 
 ## Native local decision client
 
-The shared Rust `humanymous_authority::client::decide` API uses a provisioned
-Node/nginx parser profile and independently supplied outstanding-request binding.
+The shared Rust `humanymous_authority::client::decide` API uses an explicitly
+provisioned adapter parser profile and independently supplied outstanding-request binding.
 It checks the actual local server UID or Windows SID/process identity before
 sending the scoped bearer. An envelope's declared peer is an application
 observation, not proof of that IPC server identity. The client has no TCP fallback,
@@ -67,7 +79,10 @@ bounded framing and cancellation do not grant administration authority. A
 management consumer still needs its own listener, credential, exact routes,
 Origin/CSRF/scope checks and audit/control issuers. The decision binary continues
 to refuse administration routes; generic handler availability is not completed
-runtime management integration.
+runtime management integration. Current runtime source now consumes this seam
+for a separate observer-only status listener; its exact contract and unexecuted
+native lifecycle gates are recorded in the
+[operations reference](on-call-quick-reference.md#experimental-native-status-service).
 
 `serve_handler_until` explicitly stops acceptance, cancels tracked connections
 and waits for admission-owning workers. Its successful return acknowledges that
