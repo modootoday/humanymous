@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.native-abi-managed-build/0.1",
+  "runner": "local-windows-x86_64",
+  "requiredSourceCommit": "d799a126d769c46dd59e65da85947147bca4e800",
+  "profile": "framework-dependent-JIT",
+  "sdk": "10.0.403",
+  "restoreExit": 0,
+  "buildExit": 0,
+  "warnings": 0,
+  "errors": 0,
+  "cleanCommittedInputs": 7,
+  "sourceInputsUnchanged": true,
+  "managedPilotSha256": "9e33b0202b064410e7490dd9edab42e22258c301f09a14c32fa794d137b19146",
+  "managedBindingSha256": "c534256bbca7de981b6638aaa6169e3d50aa3b6a8ac2ac5c28e96a7de9609739",
+  "genericNativeDllSha256": "2475d0497cb5e7a6b20c1ca17d6c3da39f9bba6ec455659e09d22bd8724a249d",
+  "firstAttempt": "restore-passed-build-failed-SYSLIB1051-preserved",
+  "genericProbe": "not_run",
+  "aot": "not_run",
+  "packageQualification": "not_run",
+  "productSuccess": false
+}

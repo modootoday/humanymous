@@ -3,7 +3,7 @@ id: evidence:root/20261107081545
 title: Native ABI pure ownership and export verification
 status: active
 created: 2026-11-07T08:15:45Z
-updated: 2026-11-07T10:51:46Z
+updated: 2026-11-07T10:55:34Z
 rel:
   depends_on: [sot:root/native-abi, plan:root/20261107072500]
 files:
@@ -12,6 +12,7 @@ files:
   - {path: hosted-813-ubuntu.json, sha256: c9e34a3a2368ccf6bd1dbf105ef4c04c5454a7d5c92d126a7189646ae1fcca0b, bytes: 1446, store: repo}
   - {path: hosted-813-windows.json, sha256: 616e7f6320c351bbcc924c6e0b29f90b1b50b5f7d93db5a1472c094d474dc4e7, bytes: 1392, store: repo}
   - {path: local-windows-artifacts.json, sha256: b982d034b1988ff12c3d7b782d855a0e24eb1919f6b59f56bbc5b32aff9941be, bytes: 951, store: repo}
+  - {path: managed-jit-attempt-2.json, sha256: 99473078db1c0cb9fd6fed49e1c6f58e3bfef3e9aa2d28f7d9df872075fa8755, bytes: 822, store: repo}
 ---
 
 # Native ABI pure ownership and export verification
@@ -54,6 +55,12 @@ The subsequent managed JIT restore passed, but actual pilot build failed with tw
 SYSLIB1051 aggregate-marshalling diagnostics. The .NET owner was notified; raw
 failure logs remain private. No probe or listener ran, and native header success
 does not convert that managed build failure to a passing caller result.
+After the .NET owner's source fix d799a126, separate attempt2 restored and built
+successfully with zero warnings/errors. Seven clean committed managed inputs
+stayed hash-unchanged. The attached managed-jit-attempt-2.json binds assembly and
+generic DLL hashes; private raw logs retain both attempts. This is framework-
+dependent JIT build evidence only. Actual generic calls, NativeAOT and package
+qualification remain not_run pending the shared bounded Rust launcher.
 
 ## Separate hosted startup failure
 
