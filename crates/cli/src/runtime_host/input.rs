@@ -37,6 +37,21 @@ impl HostAuthorizationData {
     pub fn into_parts(self) -> (HostPlan, Configuration, SignatureCheckedAuthorization) {
         (self.plan, self.configuration, self.authorization)
     }
+
+    /// Move the same checked pair through Runtime's shared pre-unseal checks.
+    /// This requires explicit external-witness configuration but supplies no
+    /// witness, native admission, secret or ServiceHost activation.
+    pub fn into_runtime_data(
+        self,
+    ) -> Result<
+        (HostPlan, humanymous_runtime::service::AuthorizationData),
+        humanymous_runtime::service::AuthorizationDataError,
+    > {
+        let (plan, configuration, authorization) = self.into_parts();
+        let data =
+            humanymous_runtime::service::AuthorizationData::bind(configuration, authorization)?;
+        Ok((plan, data))
+    }
 }
 
 /// Bind exact bounded BASE-plan/configuration bytes to the shared checked DATA.

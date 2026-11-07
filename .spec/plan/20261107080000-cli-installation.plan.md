@@ -409,6 +409,16 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+CLI `HostAuthorizationData::into_runtime_data` consumes the same configuration
+and signature-checked DATA through Runtime `service::AuthorizationData::bind`
+(owner checkpoint `aba7934d4a00cbc4ed9581df8aff401e98e4ec91`). It preserves the
+BASE plan separately and propagates Runtime's static refusal. Runtime owns
+configuration validation, exact scope, empty-secret and required-W configuration
+checks; CLI owns exact BASE/service/artifact/cap binding. This is pure DATA
+composition, not a witness, native preparation or ServiceHost start. Compilation,
+selected pure tests and strict Clippy for this caller remain NOT_RUN pending the
+root's bounded immutable-source allocation. No service/account mutation occurred.
+
 Accepted follow-up policy is linked through program-roadmap and delivery SoTs,
 not reimplemented here. CLI's existing FakeManager/Probe and ACL/temp-file tests
 are hosted component checks, not pure local fastchecks. No new local runtime,
