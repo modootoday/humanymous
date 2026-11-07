@@ -65,3 +65,22 @@ Root may allocate the smallest fresh single exact unit plus scoped type/lint
 checks after BOTH commits; no actual timeout/Job/process fixture is requested.
 Future scanner evidence must bind actual new source and raw scanner result;
 source rename alone is not a claimed full security scan pass or new full CI green.
+
+## Allocated immutable selector validation
+
+Root committed counterpart3a32f17d32c7ebfb4189a78848625b1c271847fc before owned
+e7969a870a5a65e5db63204c2b30a8f90510cc52. Exact e796 archive, no overlays, new
+native-selector-v0 target, ORIGINAL390/450 budget, jobs1/incremental0/locked/offline.
+Tool53798 actual terminal0 at97.92s, all owned processes terminal/own marker
+removed within original horizon. Fmt FIRST0; root Platform -p all-target/all-feature
+CHECK0 only (Windows actual fixture compiled, never executed); Runner all-target
+check0/strict Clippy0; exact inventory1 and ONLY named pure unit1 passed, zero
+failed/ignored/measured,60 other tests filtered. No actual controlled parent/helper.
+
+Archive/source/tool/config3143 files, union-selected registry5594 files and nine
+environment keys were byte-identical. native-selector-validation-summary.json
+binds44 raw attachments, archive SHA53beb75d910bc8a8c5e3c10a2445ea40ba8d1ca647a60eb1151814b32a754e21
+and executed test binary8cc7e0404623fca2. Initial orchestration JS template parse
+error occurred before ANY shell/process/clock/target; corrected before first actual
+execution, no snapshot/workload retry. Preparation note is retained separately.
+Scanner NOT_RUN; no security scan/product/native-provider pass is inferred.

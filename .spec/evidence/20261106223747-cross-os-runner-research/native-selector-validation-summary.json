@@ -1,0 +1,327 @@
+{
+  "schema": "humanymous.native-selector-validation/1",
+  "state": "ONE_SELECTOR_UNIT_FMT_PLATFORM_COMPILE_RUNNER_CHECK_CLIPPY_PASSED",
+  "source_sha": "e7969a870a5a65e5db63204c2b30a8f90510cc52",
+  "platform_counterpart_checkpoint": "3a32f17d32c7ebfb4189a78848625b1c271847fc",
+  "source_archive_sha256": "53beb75d910bc8a8c5e3c10a2445ea40ba8d1ca647a60eb1151814b32a754e21",
+  "overlays": 0,
+  "tool_session": 53798,
+  "actual_terminal_exit": 0,
+  "target": "target/native-selector-v0",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "work_seconds": 390,
+  "cleanup_seconds": 450,
+  "elapsed_seconds": 97.9200141,
+  "actual_tests": {
+    "ignored": 0,
+    "selector": "controlled::tests::fault_profiles_have_fixed_selectors_and_cannot_weaken_ordinary_outcomes",
+    "passed": 1,
+    "filtered": 60,
+    "measured": 0,
+    "inventory": 1,
+    "failed": 0
+  },
+  "phases": [
+    {
+      "name": "fmt",
+      "exit": 0,
+      "elapsed_seconds": 19.5126164
+    },
+    {
+      "name": "runner-tree",
+      "exit": 0,
+      "elapsed_seconds": 20.1015417
+    },
+    {
+      "name": "platform-tree",
+      "exit": 0,
+      "elapsed_seconds": 20.79974
+    },
+    {
+      "name": "platform-check",
+      "exit": 0,
+      "elapsed_seconds": 30.7421093
+    },
+    {
+      "name": "runner-check",
+      "exit": 0,
+      "elapsed_seconds": 59.1383232
+    },
+    {
+      "name": "runner-clippy",
+      "exit": 0,
+      "elapsed_seconds": 60.738224
+    },
+    {
+      "name": "inventory",
+      "exit": 0,
+      "elapsed_seconds": 96.1266638
+    },
+    {
+      "name": "tests",
+      "exit": 0,
+      "elapsed_seconds": 96.7943657
+    }
+  ],
+  "source_closure": {
+    "byte_equal": true,
+    "scope": "Full immutable archive and tar, resolved toolchain bin subtree, tool shims and present user Cargo configs; archive local configs included",
+    "selected_files": 3143
+  },
+  "registry_closure": {
+    "byte_equal": true,
+    "method": "Union of locked offline Windows normal/build/dev runner and Platform all-feature dependency trees",
+    "selected_files": 5594
+  },
+  "environment_closure": {
+    "selected_keys": 9,
+    "equal": true
+  },
+  "binary": {
+    "sha256": "fd2864faa24932bd9e4bbc59dbb4244f183b88b129b7143e2cb97267fa95cf90",
+    "name": "humanymous_native_runner-8cc7e0404623fca2.exe",
+    "bytes": 2951168
+  },
+  "preparation_error": {
+    "shell_or_workload_or_clock_or_target_started": 0,
+    "error": "SyntaxError from template escape",
+    "phase": "JavaScript orchestration source before actual execution",
+    "correction": "Removed escape before first actual execution; no archive change or workload retry"
+  },
+  "cleanup": {
+    "within_original_cleanup": true,
+    "lease_removed": true,
+    "all_owned_terminal": true
+  },
+  "limitations": [
+    "Platform Windows fixture was compiled only; actual controlled parent/helper NEVER executed",
+    "Actual Trivy scanner rerun NOT_RUN; no security scan pass claimed",
+    "No accounts/SCM/ACL/native-provider/journal/Ready or whole product qualification",
+    "No source changes, overlays or workload retries; initial preparation parse error preserved"
+  ],
+  "raw_attachments": [
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/environment-after.json",
+      "sha256": "128827411f246e872d4162b84d09e731c747ad676fdf68b49450f303ef31308a",
+      "bytes": 2684
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/environment-before.json",
+      "sha256": "128827411f246e872d4162b84d09e731c747ad676fdf68b49450f303ef31308a",
+      "bytes": 2684
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/fmt-end.json",
+      "sha256": "961428aaf3ca75d795df3df7a8b125bbf6669c47bf4903a4b765e720092266db",
+      "bytes": 78
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/fmt-start.json",
+      "sha256": "f9ea49d10fd1e0fc1ca0bdfa2abc52e4e7fdb317f97f5c1f5ab8ef8d2ca5b7d5",
+      "bytes": 223
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/fmt.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/fmt.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/inventory-end.json",
+      "sha256": "9bfb88306bf22c4eb97b7fb9038930343d48b07997e606cc755c622452f36380",
+      "bytes": 84
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/inventory-start.json",
+      "sha256": "454641e562d3e7f051df1a0ecbdd2fc15f20a1062349c560083c0c69a16b07c9",
+      "bytes": 329
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/inventory.stderr",
+      "sha256": "b8d9344956312501436112ed36b10f246abb6bbba942e6232c5cfda173cfb6a5",
+      "bytes": 3414
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/inventory.stdout",
+      "sha256": "85f7985a81b8e0b614d123546da0b00e8b952c069b96f1758eb63b484bc47fc1",
+      "bytes": 119
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/metadata.json",
+      "sha256": "3cc9cbffab4387f67165a9ebfca95851ee91b328c6b6854bd25aff2f05f28ca5",
+      "bytes": 2640
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-check-end.json",
+      "sha256": "e2936754027a0bdb2c37da654482442a5ce5922bb61b998cf7b8861c22f2f210",
+      "bytes": 89
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-check-start.json",
+      "sha256": "5f308feb791f73e124928e29707ddc80dcc4e6b88b01673ee77ccd70c076778f",
+      "bytes": 240
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-check.stderr",
+      "sha256": "c5ed1044bebbaaa76d20e86cddad2960d4850985eae0f3b71baed143f57e4b65",
+      "bytes": 744
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-tree-end.json",
+      "sha256": "9267b2c219d912508bc5de3993a9fa851271683aaa6a2832c4fa8d599c3ff650",
+      "bytes": 86
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-tree-start.json",
+      "sha256": "d0eaebd9fe34513ca0713596f74e95bc2afa5e9a07ab1b6064b37197aa51ea44",
+      "bytes": 365
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-tree.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/platform-tree.stdout",
+      "sha256": "5b3ec16ca06c3653a299c3680be7081fceb2f88baa46df6b332b75bd738b8d53",
+      "bytes": 574
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/preparation-note.json",
+      "sha256": "52cc9a4a66647ac56712cd12d5d752c6d7897bb6f50a32eb39e60397c3b612fe",
+      "bytes": 364
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/registry-after.json",
+      "sha256": "853b203cef9245f7fed2c140e3bf1273235fd20bac7d72f07ea8f64a3ca674cd",
+      "bytes": 1078583
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/registry-before.json",
+      "sha256": "853b203cef9245f7fed2c140e3bf1273235fd20bac7d72f07ea8f64a3ca674cd",
+      "bytes": 1078583
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-check-end.json",
+      "sha256": "b11a692106d5564ccc8467aebb4e3e0369e460daf8a63bbb571dd6e23d4ac6c2",
+      "bytes": 87
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-check-start.json",
+      "sha256": "4585544cbb8f55f28a0f5a22746929a3addcdb43e8524acfc824dfdc4f58f2c8",
+      "bytes": 211
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-check.stderr",
+      "sha256": "44158df21616e5bc491ab1ea31e173daba7b45b861ab86441943c761ff72d765",
+      "bytes": 3499
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-clippy-end.json",
+      "sha256": "a5628a73c3a4f973e57def15961aa7c3037eae013a124a75800fc8623d55c29a",
+      "bytes": 87
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-clippy-start.json",
+      "sha256": "39ff7e7227dc63fb3347bd6abbd06e199cc05519e3bf64d2e49940c011a2967d",
+      "bytes": 251
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-clippy.stderr",
+      "sha256": "b5e45f68a434eb663f2c2291d3aadf3334903917e61e5681a37f3c71ec8f1366",
+      "bytes": 252
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-tree-end.json",
+      "sha256": "b47ecaf752a6e3a327d98edd15d4365ac975c9f032c4fa53ba5bfabee869342c",
+      "bytes": 86
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-tree-start.json",
+      "sha256": "ca60ef52af410cedb760460bf4810bd9a86aae05ddaaf1426d2843a5665e6e0c",
+      "bytes": 336
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-tree.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/runner-tree.stdout",
+      "sha256": "5e838afb3b425d696558dbf172bd1d898ff3a30b06afecd9ba7596a0fb07dae4",
+      "bytes": 4369
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/selected-tests.json",
+      "sha256": "3a0bc7fb2616ed6313b9261c80b230c3ad5edc854c1d8dda391d11fcd0ef2663",
+      "bytes": 98
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/source-after.json",
+      "sha256": "89a675668d53cd893973ee38c67cb54a233c35126c9cd7a4de60796184807b3e",
+      "bytes": 759034
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/source-before.json",
+      "sha256": "89a675668d53cd893973ee38c67cb54a233c35126c9cd7a4de60796184807b3e",
+      "bytes": 759034
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/source-tuple.json",
+      "sha256": "a5c757c60942e5f316c81280211fa90d9793d58de6eb5bf9c02ebf355318c703",
+      "bytes": 302
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/source.tar",
+      "sha256": "53beb75d910bc8a8c5e3c10a2445ea40ba8d1ca647a60eb1151814b32a754e21",
+      "bytes": 75868160
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/tests-end.json",
+      "sha256": "6aa79bcac1b55716d8f7b34800c3aa03108732637001833c0f5aa3cda8fbe9e4",
+      "bytes": 80
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/tests-start.json",
+      "sha256": "86ce3529bb1903c32cddc143f89bd63ba33d98197996f2a6b2043964d82967af",
+      "bytes": 339
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/tests.stderr",
+      "sha256": "6fbf0f02d66110409346234d39a5af93ee1a2b0cdd2317891e82ce0b6f252b70",
+      "bytes": 218
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0/tests.stdout",
+      "sha256": "80343e102174f1bd7a9e2ff6c6ff8f935ef22e68a2bb2cd516c39e0d6d1429a4",
+      "bytes": 216
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108074500-windows-runner-selector-v0-clock.json",
+      "sha256": "e7e427ebb6498ae4bbee5b0e17cc90bf2045bd7690acb0b2c8dd5cf2816bb071",
+      "bytes": 175
+    }
+  ]
+}

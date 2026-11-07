@@ -169,6 +169,64 @@ callback or production journal writer from parser output. Native admission and
 Root-approved process-crash writer semantics remain separate; cold O operation
 is observation-only under its own independently admitted supervision bound.
 
+## Closed predecessor/successor grammar (X P2 refinement)
+
+This table is exhaustive for serialized frames. Every unlisted predecessor/kind
+pair is InvalidTransition -> QuarantinedData with prior claims/reservations kept,
+never a guessed empty ledger. A valid DATA successor still authorizes no effect.
+Global transaction state is separate from each attempt's state.
+
+| Global predecessor | Only accepted next frame | Result |
+| --- | --- | --- |
+|NoGenesis, slot0|GenesisIntent, sequence1|GenesisPending; no attempt records |
+|GenesisPending|IMMEDIATE GenesisCommit, sequence2 with exact intent reference|NoPendingTransaction |
+|NoPendingTransaction|ReserveIntent satisfying all key/capacity rules|ReservePending(A) |
+|ReservePending(A)|IMMEDIATE matching ReserveCommit(A)|NoPendingTransaction; A=Reserved |
+|NoPendingTransaction|One allowed per-attempt frame below|Apply its attempt transition; TerminalIntent sets TerminalPending(A) |
+|TerminalPending(A)|IMMEDIATE matching TerminalCommit(A)|NoPendingTransaction; A=Terminal/tombstone |
+
+No second intent, Unknown, other attempt event, unrelated commit, epoch frame or
+blank-gap-then-record can interleave with a pending intent. Valid end/zero suffix
+after ReservePending conservatively retains A Unknown; after TerminalPending it
+retains A's namespace/credits (no release); incomplete genesis quarantines all.
+A subsequent frame rather than the required adjacent commit is corruption, not
+an interrupted valid history to skip over.
+
+| Attempt predecessor while global NoPendingTransaction | Only accepted frame(s) | Result / required association |
+| --- | --- | --- |
+|Absent attempt|ReserveIntent (global rule)|No published attempt until matching commit; outstanding intent already reserves uncertainty |
+|Reserved|CreatePending OR Unknown OR TerminalIntent(NoCreateBeforeCall)|PendingCreate, UnknownWithoutChild, or terminal pending; exact immutable reservation reference |
+|PendingCreate|CreatedHeld OR Unknown|HeldChild once with native-object CLAIM, or UnknownWithoutChild; never NoCreate |
+|HeldChild|Unknown OR TerminalIntent(KnownEmptyRemoval)|UnknownWithChild preserving SAME child claim, or terminal pending with exact child/pair/parent association |
+|UnknownWithoutChild|NONE|Reservation retained; no delayed CreatedHeld, CreatePending, NoCreate or caller cleanup recovery |
+|UnknownWithChild|TerminalIntent(KnownEmptyRemoval) ONLY|Exact previously retained child/pair/parent; DATA consistency only, no restored File custody |
+|Terminal|NONE|Attempt and tombstone immutable; no Unknown/create/replay/release again |
+
+Unknown is idempotent at the local observation API: identical repeated observation
+returns the existing Unknown status with NO appended frame/credit/clock change.
+A second physical Unknown frame is a noncanonical duplicate and quarantines
+replay; no repeated-write loop consumes the spare frame credit. The listed
+Unknown reason IO-uncertain refers to TARGET-root IO, not a failed journal write/
+sync. Journal IO uncertainty poisons the writer and emits no speculative next
+frame; recovery derives uncertainty from the persisted prefix.
+
+A different attempt may reserve a proven-disjoint namespace only with no pending
+GLOBAL intent and sufficient retained credit. It cannot reuse an Unknown slot.
+UnknownWithoutChild's no-repair rule is deliberately conservative for this first
+profile; any future same-held native recovery needs separate reviewed semantics,
+not a DATA parser shortcut or a reconstructed native observation.
+
+Table-driven invalid-order fixtures must include: CreatedHeld before CreatePending;
+duplicate CreatedHeld; CreatePending after Unknown, TerminalIntent or TerminalCommit;
+Unknown after terminal; duplicate physical Unknown; second ReserveIntent during
+ReservePending; different-attempt intent during TerminalPending; missing/nonadjacent
+or wrong-reference commits; second genesis; Terminal(NoCreate) after PendingCreate;
+KnownEmptyRemoval without prior HeldChild; delayed CreatedHeld after Unknown;
+and reused attempt after terminal. Each fixture asserts quarantine plus no loss
+of prior reservation/tombstone/pair claims, no synthetic ACK/Root/Ready. This is
+part of the proposed12-test inventory (table loops in tests8..10), not new native
+test authority or an implemented codec. All remain NOT_RUN.
+
 # Proposed API, source slice and negative inventory
 
 Root-owned proposed location native_security/storage/root_journal/format.rs and
