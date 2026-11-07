@@ -22,6 +22,7 @@ humanymous-audit = { path = "../audit" }
 humanymous-signals.workspace = true
 humanymous-native-security.workspace = true
 humanymous-test-support.workspace = true
+sha2.workspace = true
 
 [lints]
 workspace = true

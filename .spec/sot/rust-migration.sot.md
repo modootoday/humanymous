@@ -820,3 +820,15 @@ Actual offline Windows cargo tree resolution and a subsequent locked resolution
 both succeeded. The earlier immutable 77ca7d9f workspace all-target build exited
 zero in 643.964 seconds with 2427 source files unchanged; it predates these edges
 and is not evidence for the new test source or GUI/product e2e.
+
+## Managed pilot context byte commitment dependency
+
+The .NET adapter's test-only hosted harness may depend directly on the existing
+workspace sha2 primitive to hash the bounded context bytes read through a retained
+native guard. This adds one dev-dependency/lock edge to sha2 0.10.9, no package
+version changes and no production dependency. Use standard lower-case hex output;
+no new hash algorithm or unrelated integrity adapter forwarding API is introduced.
+Content equality is not producer identity or Ready. The native producer-identity
+gate remains mandatory and Unsupported must stop before any Host command.
+Actual offline graph resolution and subsequent locked offline resolution passed.
+Future consumer code and actual hosted process behavior require separate proof.
