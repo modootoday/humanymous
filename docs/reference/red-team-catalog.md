@@ -60,3 +60,12 @@ duplicate-key wire validator. Network reports use typed decoding from original
 bytes for their declared fields, but this report checker is not the strict
 experimental adapter parser or a generic Draft v0 canonicalization test.
 Retain the original report and its hash alongside any normalized summary.
+
+Network ledger validation recomputes the catalog order, expected statuses/effects,
+class totals and audited policy-verdict counts. It checks declared process
+identity continuity and nonoverlapping audit sequence numbers. It does not reopen
+the original WAL, recheck its authentication keys or independently attest the
+reported binary hashes. Those responsibilities belong to the actual supervisor
+and audit reader before projection. Keep their source-bound raw evidence and
+custody context; hex-shaped hashes and consistent totals alone cannot authenticate
+an externally supplied ledger.

@@ -723,3 +723,11 @@ bytes/strict duplicate-key limitation. V1 Value parsing can erase duplicatekeys;
 reported root without modifying owner source. V2 original typed decode is not
 generic strict adapter-wire validation. No execution or independent qualification
 claimed. Current-source and historical ledger results remain separately bound.
+
+## Network ledger and scenario source review
+
+Read complete network report validator and case executor. Two manual receipts
+cover catalog/effect/status/accounting and original supervisor/audit-reader
+projection boundary. Clarified report checks do not reopen original WAL/keys or
+attest binary hashes; self-consistent supplied ledger is insufficient. No local
+network/process run and no inference that historical Docker qualifies new source.

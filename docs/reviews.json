@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/attacker/src/network/report.rs",
+  "sha256": "b07d214b495cad3ddc198bddd2266592941f8ab1ec6c7da799c42753e997b852",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full typed network row/step/totals/report and validator. Reviewed exact shuffled catalog, status/effect expectations, nonoverlapping audit sequences, process-receipt continuity, audited runtime.decision counts and scoped pass recomputation with false participant/full-product flags. Public catalog distinguishes internal consistency and hex/identity checks from reopening/authenticating original WAL or attesting binaries; actual supervisor and audit-reader evidence remains required.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
+  "source": "crates/attacker/src/network/cases.rs",
+  "sha256": "7d51de64fc0c8337e4cdb04e47f15282c98554ae3c5ccafe942539d39b59c934",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all26scheduled case definitions,19implemented expectations and7unsupported participant/capture controls, shared runtime session/RIT use, per-step actual status ledger, fixture-body/query/header/method/replay mutations, child stop and authenticated before/after delta flow. Source preserves simultaneous execution/snapshot errors. Public catalog retains synthetic controls and all denominators without treating expected CHALLENGE or HTTP403 as human completion or audited DENY. No network probe or scoring edit performed.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
   "source": "crates/attacker/src/lib.rs",
   "sha256": "8e2d72eb028b262cf99fae6f65c4b35b95cd077096254692b5db9465df5b2344",
   "reviewer": "codex/rust-pages",
