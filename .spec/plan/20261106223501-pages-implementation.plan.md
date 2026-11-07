@@ -1633,3 +1633,12 @@ Node authoritylab and a minimal service artifact. One manual receipt, no image
 build/run. Authority INTEGRATION profile list still omits Apache/ASP.NET Core;
 requested owner correction and withheld whole metadata receipt. Other partial
 configuration/integration inspection is not bulk freshness acceptance.
+
+### Complete authority configuration review
+
+Read entire configuration module without truncation, including private source
+selector, allprofile/route/nativegrammar and3testdefinitions; added manual receipt.
+Clarified unavailable planes may be present in valid config, manifestfalse and
+request422 do not mean startuprejectsconfig or listenerprovesreadiness. Config-
+projected capability declaration is not actual end-to-end probe or hosttuple proof.
+No behavior/dependency/test execution; quiet window preserved.

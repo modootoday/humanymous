@@ -152,8 +152,13 @@ refuses startup in this executable; a JSON field cannot instantiate a trusted
 witness or prove independent custody. Library support and an actually integrated
 supervisor/service deployment remain different qualification boundaries.
 
-The IPC authority rejects routes requiring original TLS, HTTP/2, authenticated
+The IPC authority refuses requests requiring original TLS, HTTP/2, authenticated
 browser collection or request-integrity planes not provided by that service.
+Those requirements can occur in otherwise valid route configuration: the
+corresponding capability availability is false and a decision attempt returns
+422. Binding the listener does not make such a route ready. The capability
+manifest is a configuration-derived availability declaration, not a live
+end-to-end readiness probe or host qualification report.
 The separate loopback runtime has session/request-integrity behavior, but that
 does not extend this protocol's capability. See the
 [implementation map](../validation/implementation-map.md).

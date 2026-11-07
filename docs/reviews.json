@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/src/configuration.rs",
+  "sha256": "42269d396e544e0034e89ce40eb32beda655671bdb44ba49a68f6795d967cac5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete strict configuration, private audit-source selector, seven provisioned profiles/defaultNode, native peer grammar, bounded exact route inventory and three regression definitions. Capability manifest is config projection, not live readiness; unavailable required planes may be configured but requests fail422. No native/profile tests executed or generic wire changed.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
   "source": "crates/authority/Dockerfile.pilot",
   "sha256": "8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad",
   "reviewer": "codex/rust-pages",
