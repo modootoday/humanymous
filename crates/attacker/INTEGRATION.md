@@ -154,6 +154,33 @@ The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
 
+## V0.8 terminal accounting (validation pending)
+
+The verifier now rejects attempted observations relabelled as skipped and any
+transport failure relabelled as evaluated/mismatched. A failed step ends the
+attempt prefix, requires a nonblank error and cannot claim a response verdict.
+Audit recovery may still fail after complete request observations; that remains
+an error ledger. V2 fieldset/order,26scheduled cases and expected scoring are
+unchanged. Two new pure regression tests use failed synthetic ledgers only.
+Fmt is complete; fresh bounded pure checks/Clippy require root allocation.
+
+The accepted coverage audit retains these boundaries:
+
+| Scope | Current owned catalog | Remaining evidence |
+|---|---|---|
+| Owned HTTP1 attacks and synthetic controls |19programs; actual813measured19errors, not19successes | Allocated actual runtime round after the shared readiness repair |
+| Ordinary human browser |ordinary-browser-human unsupported | Qualified collector plus actual human participation |
+| Assistive technology |assistive-technology-human unsupported | Actual AT interaction and recovery evidence |
+| Accessible Pass |accessible-pass-human unsupported | Accessible Pass producer and participant recovery |
+| Coherent real T4 |coherent-T4-browser unsupported; synthetic ceiling is separate | Direct coherent-browser control, without claiming detection beyond T4 |
+| Remote installation |signed-remote-installation unsupported | Pinned-key fresh-nonce attestation producer |
+| Full Gate TLS/H2 |full-gate-original-tls-h2 unsupported | Original capture integrated into the qualified Gate profile |
+| Audit fault injection |audit-outage-network-injection unsupported | Safe live fault producer wired into this supervisor contract |
+
+These are source/protocol obligations, not evidence of execution. Browser
+automation, component logs and local fixture ALLOW do not replace human/AT
+controls. No new Docker, runtime, third-party target or detection rule is added.
+
 ## V0.7 shared service profile (pure validated; hosted pending)
 
 Defender now expects runtime::service::standalone_profile(&Configuration), the

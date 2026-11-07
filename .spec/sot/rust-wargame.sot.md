@@ -161,6 +161,24 @@ browser/Cross-OS work moves to standard hosted execution. No local runtime run
 is resumed. No prior green qualifies this source; unavailable participants and
 full product requirements remain explicit until directly measured.
 
+### Terminal execution accounting v0.8
+
+An evaluated case completed its request sequence without transport errors; a
+regression mismatch is distinct from a failed request. Never relabel a transport
+failure as evaluated/mismatched. A skipped case was not attempted and therefore
+has no process, step or effect observations. Failed execution may retain an
+honest step prefix, including complete HTTP observations followed by an audit
+failure. Its first transport failure must terminate that prefix, have a nonblank
+safe error and have no response verdict. These are the existing executor's
+terminal-state invariants, not changes to scoring or HTTP expectations.
+
+V2 fields and the26-case catalog remain unchanged. Source audit preserves all
+seven missing participant/producer cases as unsupported, including ordinary
+human, AT, accessible Pass and coherent T4 controls. Automated browser or frozen
+fixture activity never supplies human/AT participation. New pure negative
+fixtures construct failed ledgers only; no runtime success is manufactured.
+Fresh allocated tests/Clippy and actual product validation remain pending.
+
 ### Standalone service readiness v0.7
 
 Expected child capability metadata comes from the runtime-owned

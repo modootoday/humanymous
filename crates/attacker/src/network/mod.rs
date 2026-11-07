@@ -28,6 +28,8 @@ pub fn run(lab: &mut impl OwnedLab, seed: u64) -> NetworkReport {
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
+    use crate::report::Status;
+    use humanymous_defender::lab::{ProcessReceipt, SnapshotDelta};
     pub(crate) struct Unavailable;
     impl OwnedLab for Unavailable {
         fn spawn(&mut self) -> Result<OwnedRuntime, LabError> {
@@ -36,6 +38,119 @@ pub(crate) mod tests {
         fn snapshot(&mut self) -> Result<VerifiedSnapshot, LabError> {
             Err(LabError("test-only unavailable audit"))
         }
+    }
+
+    fn attempted_failure() -> NetworkReport {
+        // Synthetic failed ledger only: no child/network success is manufactured.
+        let mut report = run(&mut Unavailable, 42);
+        let row = report
+            .rows
+            .iter_mut()
+            .find(|row| row.id == "rit-replay-after-control")
+            .unwrap();
+        row.processes.push(ProcessReceipt {
+            runtime_sha256: "1".repeat(64),
+            supervisor_sha256: "2".repeat(64),
+            installation: "unit-only-failure".into(),
+            revision: "r1".into(),
+            binding: "supervisor-owned-child/private-pipe/same-loopback-only-namespace".into(),
+        });
+        row.steps = [
+            ("collect-asserted-fixture", "setup"),
+            ("protected-request", "synthetic_control"),
+            ("replayed-request", "attack"),
+        ]
+        .into_iter()
+        .map(|(id, role)| Step {
+            id: id.into(),
+            role: role.into(),
+            http_status: Some(200),
+            response_verdict: None,
+            error: None,
+        })
+        .collect();
+        row.reason = Some("unit-only audit recovery failure".into());
+        assert!(!report.scoped_passed);
+        report.validate().unwrap();
+        report
+    }
+
+    #[test]
+    fn attempted_execution_cannot_be_skipped_or_transport_failure_evaluated() {
+        let mut report = attempted_failure();
+        let row = report
+            .rows
+            .iter_mut()
+            .find(|row| !row.steps.is_empty())
+            .unwrap();
+        row.status = Status::Skipped;
+        let report = NetworkReport::new(report.seed, report.rows);
+        assert!(report.validate().is_err());
+
+        let mut report = attempted_failure();
+        let row = report
+            .rows
+            .iter_mut()
+            .find(|row| !row.steps.is_empty())
+            .unwrap();
+        row.status = Status::Evaluated;
+        row.reason = None;
+        row.expectation_matches = Some(false);
+        row.effects = Some(SnapshotDelta {
+            origin_effects: 0,
+            audit: Vec::new(),
+        });
+        row.steps[2].http_status = None;
+        row.steps[2].error = Some("unit-only transport failure".into());
+        let report = NetworkReport::new(report.seed, report.rows);
+        assert!(report.validate().is_err());
+    }
+
+    #[test]
+    fn transport_failure_ends_steps_and_cannot_claim_a_response_verdict() {
+        let mut report = attempted_failure();
+        let row = report
+            .rows
+            .iter_mut()
+            .find(|row| !row.steps.is_empty())
+            .unwrap();
+        row.steps[1].http_status = None;
+        row.steps[1].error = Some("unit-only transport failure".into());
+        assert!(report.validate().is_err());
+
+        let row = report
+            .rows
+            .iter_mut()
+            .find(|row| !row.steps.is_empty())
+            .unwrap();
+        row.steps.truncate(2);
+        report.validate().unwrap();
+        let row = report
+            .rows
+            .iter_mut()
+            .find(|row| !row.steps.is_empty())
+            .unwrap();
+        row.steps[1].response_verdict = Some("DENY".into());
+        assert!(report.validate().is_err());
+
+        for error in ["", " \t\r\n"] {
+            let row = report
+                .rows
+                .iter_mut()
+                .find(|row| !row.steps.is_empty())
+                .unwrap();
+            row.steps[1].response_verdict = None;
+            row.steps[1].error = Some(error.into());
+            assert!(report.validate().is_err());
+        }
+        let mut report = attempted_failure();
+        report
+            .rows
+            .iter_mut()
+            .find(|row| !row.steps.is_empty())
+            .unwrap()
+            .reason = Some(" \t\r\n".into());
+        assert!(report.validate().is_err());
     }
     #[test]
     fn absent_lab_cannot_turn_into_success_or_disappear_from_denominator() {

@@ -186,6 +186,7 @@ impl NetworkReport {
                         || row.effects.is_none()
                         || row.processes.is_empty()
                         || row.reason.is_some()
+                        || row.steps.iter().any(|step| step.error.is_some())
                     {
                         return Err(fail);
                     }
@@ -202,9 +203,19 @@ impl NetworkReport {
                 }
                 Status::Error | Status::Skipped => {
                     if row.expectation_matches.is_some()
-                        || row.reason.as_ref().is_none_or(String::is_empty)
+                        || row
+                            .reason
+                            .as_ref()
+                            .is_none_or(|reason| reason.trim().is_empty())
                     {
                         return Err(fail);
+                    }
+                    if row.status == Status::Skipped
+                        && (!row.steps.is_empty()
+                            || !row.processes.is_empty()
+                            || row.effects.is_some())
+                    {
+                        return Err(LabError("skipped case contains attempted execution"));
                     }
                 }
             }
@@ -226,10 +237,19 @@ impl NetworkReport {
                 }
                 source = Some(process.clone());
             }
+            let mut transport_failed = false;
             for step in &row.steps {
-                if step.http_status.is_none() != step.error.is_some() {
+                if transport_failed
+                    || step.http_status.is_none() != step.error.is_some()
+                    || step
+                        .error
+                        .as_ref()
+                        .is_some_and(|error| error.trim().is_empty())
+                    || (step.error.is_some() && step.response_verdict.is_some())
+                {
                     return Err(fail);
                 }
+                transport_failed = step.error.is_some();
             }
             if let Some(effects) = &row.effects {
                 for event in &effects.audit {

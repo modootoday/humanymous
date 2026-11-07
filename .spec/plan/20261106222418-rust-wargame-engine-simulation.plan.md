@@ -18,6 +18,10 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 
 ## Steps
 
+- [x] Audit accepted attack/ordinary/human/AT scope:19owned programs and7unsupported participant/producer obligations remain visible.
+- [x] V0.8 source: reject transport-as-evaluated, attempted-as-skipped, post-failure steps and response verdicts without completed responses.
+- [ ] V0.8 fresh root-allocated28pure tests/scoped Clippy and source-bound actual validation; no Docker allocation held.
+
 - [x] V0.6: approved shared decoder consumption; remove duplicate visitor, preserve report budget/errors.
 - [x] V0.6: root lock integration and new allocated28pure/Clippy;13-crate snapshot and3file drift retained in075313/075756.
 - [x] V0.6: shared decoder f44b32b blob matches captured/current source and measured shared2pure checks.
