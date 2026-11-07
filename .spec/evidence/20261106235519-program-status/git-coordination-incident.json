@@ -1,0 +1,18 @@
+{
+  "schema": "humanymous.git-coordination-incident/1",
+  "at": "2026-11-07T05:40:33.003Z",
+  "rootMistake": "External pwsh preflight/claim failure did not abort a multi-command tool cell; own CDP commit f2e20e0 and git-ops release ran during pages-current-runtime claim",
+  "scope": "CDP commit10 owned files, no restore/unstage/amend/reset",
+  "observedRecovery": {
+    "pagesOwner": "01a1b2da-2656-7a23-a60b-08a681b23117",
+    "ownerReported": "detected lost claim, stopped first attempt, normal preflight/reclaim/OnlyPaths commit/release; own paths clean",
+    "commitsInOrder": [
+      "f2e20e0",
+      "b5e47d7"
+    ],
+    "rootReadOnlyObservedCachedIndexEmpty": true
+  },
+  "futureExecution": "Parent ErrorActionPreference=Stop; direct script invocation; successful own claim before staging; only release in own-claimed transaction finally; external Git/spec exit codes checked",
+  "destructiveRecovery": false,
+  "wholeProductQualification": false
+}

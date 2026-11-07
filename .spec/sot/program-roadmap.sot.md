@@ -237,23 +237,22 @@ Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생
 수행하며once-per-collectorcache/status/error/latecallback/stop을검증했다.
 Native19/actualDockerFirefox51/strictWASMClippy는component범위이며CDP종류나
 자동화/humanidentity를보증하지않는다. 기존frozenflag evaluator만재사용한다.
-공통workspace는작업트리25members로확장해delivery/M11tooling을rootlock으로
-테스트했다(관리7unit4process+delivery16,Clippy). 별도M11lock은private원본
-보존후제거했다. 공통manifest귀속/나머지worker최종source통합은아직진행중이다.
+공통workspace는작업트리27members다.25member시점의delivery/M11tooling은
+rootlock검증(관리7unit4process+delivery16,Clippy)을통과했고이후runtime-pilot과
+nginx-adapter를추가해Windowsdefault cargo check가통과했다. Linuxnative nginx
+실행자격화는아니다. 별도M11lock은private원본보존후제거했으며공통manifest
+귀속/나머지worker최종source통합은아직진행중이다.
 
-후속 enable_guard_hooks는명시opt-in Proxyforwarding을구현했다. default생성자는
-전역eval/Function을대체하지않으며directeval lexical변경을API/정본에명시한다.
-actualFirefox47/0/0과WASM strictClippy로반환/예외/this/newTarget/중첩호출/
-부분rollback/ownreference복원/외부교체보존/복원실패/동일realm중복거절을검증했다.
-명시opt-in에서측정coverage가보고돼도인간/코드실행attestation이나qualified
-collector가아니다. CDP/fingerprint/ICE/bootstrap/session/transport와제품e2e는남았다.
-
-Guard의 owned MutationObserver는실제document childList/subtree에연결됐고
-directSCRIPT/falsyhm만집계한다. 대기recorddrain/stop/drop/과대입력/잘못된
-record/재진입/실패disconnect를실제Firefox40/0/0으로검증했다. native19와
-WASM strictClippy도통과했다. Windows컴파일WASM을기존고정Linuximage에
-readonlymount한component증거로서새sourceimagebuild나full제품e2e는아니다.
-eval/Function미설치로guard.reported=false유지;forwarding/CDP/session필수잔여다.
+Guard는실제prototype/native baseline과ownedMutationObserver를구현했다.
+directSCRIPT/falsyhm만집계하고대기recorddrain/stop/drop/과대입력/재진입/
+실패disconnect를검증한다. enable_guard_hooks는명시opt-in이며default생성자는
+전역eval/Function을대체하지않는다. directeval lexical변경을API/정본에명시하고
+return/throw/this/newTarget/중첩호출/부분rollback/외부교체보존/복원실패/
+동일realm중복거절도현재51개browsercase에포함된다. defaultguard.reported=false와
+opt-in measuredcoverage를구분하며인간/코드실행attestation으로사용하지않는다.
+Windows컴파일WASM을기존고정Linuximage에readonlymount한component증거로서
+새sourceimagebuild나full제품e2e는아니다. 과거34/40/47분모는각sourceevidence에
+보존하며현재결과와혼합하지않는다.
 
 ### Browser request codec 구현 경계
 
@@ -286,23 +285,21 @@ null이다. normalized는 peer도null, rawHeaderOrder=false다. raw는 파싱된
 integrity13unit+3legacy parity와 strictClippy가 통과했으나 native nginx plugin과
 authority의 credential/profile 결합은 담당 채팅의 후속 구현이다.
 
-후속 guard baseline은실제prototype/native관측을BrowserCollector에연결했다.
-local native19/actualFirefox34과WASM/Clippy통과이며reported=false를유지한다.
-이는startup pristine증명이나hooks완료가아니다. MutationObserver·forwarding·
-CDP·bootstrap/session은여전히다음필수작업이다.
-
 1. 전체 rawcapture/qualified collector/Pass/proxy/admin 경로가 없다.
-2. 독립witness·dual-control운영·signed service activation이 남았다.
-3. full native/browser/Docker runner3개 및 실제human/AT 제품 e2e가 없다.
+2. audit d001ee6의witness/control·CLI83397fd의signedservice 경계를실제runtime/
+   OS운영/독립authority에연결하고자격화해야한다. API구현을미구현으로재분류하지않는다.
+3. native/browser/Docker Rust runner구현의제품전체연결·exactsource OS실행과
+   실제human/AT e2e가남았다. 기존component/nativefixture를전체성공으로바꾸지않는다.
 4. 브라우저·native SDK/framework의sandbox/ABI/OS/AT 자격화가 미완료다.
 5. 최신docs review/production Pages·registry·최종scan·Rust-only/agents/skills/eval이 남았다.
 6. 모든요건 전에 Go/oracle을지우거나main병합/branch삭제/publish를완료처리하지않는다.
 
-다음 root 구현은 guard의 MutationObserver/안전한 hook 수명이며 native CLI의
-Cargo 통합은 완료했다. missingcoverage를reported=true로위장하지않는다.
-공통Cargo/lock/toolchain/CI는root,나머지는session board단일writer로관리한다.
-새채팅을생성하지않았고idle채팅을임의재개하지않았다. browser재개는그채팅의
-최신사용자승인에따른다. 명시적인SDK확장과CLI명명보정도이정본에반영했다.
+다음root구현은fingerprint/ICE와clientfreshsession/transport,공통27member통합이다.
+공통Cargo/lock/toolchain과최종통합은root,CI는지정delivery채팅,나머지는각단일writer다.
+사용자의명시요청으로기존13채팅모두후속을재개했고새표준채팅은만들지않았다.
+기존Pages/draft-v0채팅이전체공개문서와표준지속goal을맡는다. 각채팅의계약/
+이력/실행근거지속정본화의무는7827477에기록됐으며대기R01-R17는rootprivate
+runtime-waiting-contracts.json에owner-reported상태로보존했다.
 
 공개 Specfold와private 전체tree상태는분리한다. browserPNG의자동secret-scan미지원
 U2는manualsynthetic시각검토범위와함께보존하며면제하지않는다. 과거profile삭제의
