@@ -1,0 +1,160 @@
+{
+  "schema": "humanymous.delivery-two-lane-source-audit/1",
+  "workflow_sha256": "12d4086ae5d2405eb71d7405a281ab36e38414d3a6584c41b5ba85cbed23c3f5",
+  "jobs": 16,
+  "maximum_incomparable_jobs": 2,
+  "example": [
+    "native",
+    "browser"
+  ],
+  "matrix_jobs": [
+    {
+      "job": "native",
+      "max_parallel": 1
+    },
+    {
+      "job": "images",
+      "max_parallel": 1
+    }
+  ],
+  "declared_graph": {
+    "policy": {
+      "needs": [],
+      "matrix_parallel": null,
+      "condition": null
+    },
+    "native": {
+      "needs": [
+        "policy"
+      ],
+      "matrix_parallel": 1,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "msrv": {
+      "needs": [
+        "policy",
+        "native"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "quality": {
+      "needs": [
+        "policy",
+        "msrv"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "browser": {
+      "needs": [
+        "policy",
+        "docker"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "docker": {
+      "needs": [
+        "policy"
+      ],
+      "matrix_parallel": null,
+      "condition": null
+    },
+    "browser-product": {
+      "needs": [
+        "policy",
+        "browser"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "nginx": {
+      "needs": [
+        "policy",
+        "browser-product"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "rust-images": {
+      "needs": [
+        "policy",
+        "nginx"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "images": {
+      "needs": [
+        "policy",
+        "rust-images"
+      ],
+      "matrix_parallel": 1,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "packages": {
+      "needs": [
+        "policy",
+        "images"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "node": {
+      "needs": [
+        "policy",
+        "packages"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "advisories": {
+      "needs": [
+        "policy",
+        "node"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "documentation": {
+      "needs": [
+        "policy",
+        "quality"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "pages": {
+      "needs": [
+        "policy",
+        "documentation"
+      ],
+      "matrix_parallel": null,
+      "condition": "${{ !cancelled() && needs.policy.result == 'success' }}"
+    },
+    "ready": {
+      "needs": [
+        "policy",
+        "native",
+        "msrv",
+        "quality",
+        "browser",
+        "browser-product",
+        "nginx",
+        "rust-images",
+        "docker",
+        "images",
+        "packages",
+        "node",
+        "advisories",
+        "documentation",
+        "pages"
+      ],
+      "matrix_parallel": null,
+      "condition": "always()"
+    }
+  },
+  "first_checker_error": "Initial indentation scan included defaults.run as a job; removed that non-jobs entry after confirming YAML jobs scope, no workflow bytes changed",
+  "scope": "Static declared DAG and matrix capacity; does not prove actual hosted overlap, cross-workflow concurrency, billing, failure execution semantics or successful qualification"
+}
