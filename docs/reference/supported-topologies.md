@@ -53,6 +53,31 @@ The current runtime's missing original TLS/HTTP/2 capability remains a readiness
 limit. See [implementation status](production-vs-reference.md) and the
 [origin contract](gate-origin-contract.md) before selecting a deployment profile.
 
+### Same-transport capture candidate
+
+A separate Rust capture context now contains a bounded first-ClientHello
+assembler and a `tls::Connection` owner that consumes the actual TCP socket and
+completes a rustls handshake. Its negotiated ALPN comes from that connection,
+not the first protocol offered by the client. HTTP/2 observations are fed from
+the same owner's decrypted bytes and borrowed by stream ID; the passive capture
+parser alone cannot establish that provenance. Complete header sections do not
+establish complete request bodies or application authorization.
+
+The initial owner has an absolute lifetime of at most 30 seconds, disables early
+data and refuses HelloRetryRequest. Observed terminal I/O failure, cancellation
+or expiry revokes access to its handshake/request evidence. A supervisor's
+revocation handle does not cancel merely by being dropped; dropping the
+connection owner shuts down the socket. Supervised worker joining and request,
+tenant and stream binding still belong to the consuming runtime.
+
+This candidate is not yet a qualified runtime ingress or framework profile.
+Pure parser fixtures and compilation do not prove actual TLS/HTTP2 serving,
+cancellation, origin isolation or product behavior. Original-hop observations
+describe the client only when this deployment terminates that client's original
+connection; behind retermination they describe the proxy hop. Existing adapter
+and loopback profiles must keep refusing required unavailable TLS/H2 planes until
+their actual integration is qualified. HTTP/3 and human identity are not implied.
+
 ## Experimental Rust Node-API framework bridge
 
 See the [Rust Node adapter API](node-adapter.md) for current interfaces and

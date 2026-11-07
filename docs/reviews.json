@@ -2,6 +2,39 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/capture/src/tls/transport.rs",
+  "sha256": "74d6204465c0964aed97213d94161e98372e9b4b4fa80529f78967248514681b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete capture composition/TLS transport ownership module: actual consumed socket and rustls handshake, bounded lifetime/early-data/HRR refusal, borrowed hello and stream observations, actual negotiated ALPN, failure/expiry/revocation, explicit cancellation versus handle Drop, owner socket shutdown. Public topology and privacy references distinguish original versus proxy hop, parser versus qualified ingress, and transient decrypted header sensitivity. No actual TLS/socket/hosted/product execution performed or inferred.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/reference/data-processing-inventory.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/tls/mod.rs",
+  "sha256": "e8453ccdbf191ab1f5030f009e9c1e37976b7530d64a42a959f325152e5c8a0e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete capture composition/TLS transport ownership module: actual consumed socket and rustls handshake, bounded lifetime/early-data/HRR refusal, borrowed hello and stream observations, actual negotiated ALPN, failure/expiry/revocation, explicit cancellation versus handle Drop, owner socket shutdown. Public topology and privacy references distinguish original versus proxy hop, parser versus qualified ingress, and transient decrypted header sensitivity. No actual TLS/socket/hosted/product execution performed or inferred.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/reference/data-processing-inventory.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/lib.rs",
+  "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete capture composition/TLS transport ownership module: actual consumed socket and rustls handshake, bounded lifetime/early-data/HRR refusal, borrowed hello and stream observations, actual negotiated ALPN, failure/expiry/revocation, explicit cancellation versus handle Drop, owner socket shutdown. Public topology and privacy references distinguish original versus proxy hop, parser versus qualified ingress, and transient decrypted header sensitivity. No actual TLS/socket/hosted/product execution performed or inferred.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/reference/data-processing-inventory.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/integrity/src/adapter/profile.rs",
   "sha256": "9b61f1163147dd3372556fa3f2fcbfbbc2811636f613230b243e07f8acb3becd",
   "reviewer": "codex/rust-pages",

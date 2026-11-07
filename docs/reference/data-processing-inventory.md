@@ -24,6 +24,18 @@ Raw passwords, forms, clipboard data and screenshots are excluded from routine
 collection. Hashing an identifier does not make it anonymous. See the
 [privacy companion](../explanation/dpia-companion.md).
 
+## Transient transport capture candidate
+
+The [same-transport capture candidate](supported-topologies.md#same-transport-capture-candidate)
+can retain handshake metadata and ordered decrypted HTTP/2 header bytes in its
+connection/stream owners. Those headers can contain Authorization, cookies or
+other linkable application data. Transient buffering is not permission to export
+them into analytics, logs or public conformance fixtures. Review necessity,
+minimization and access at the consuming runtime boundary before deployment.
+Dropping an owner or closing a socket is not proof of physical memory erasure or
+removal of application, operating-system or diagnostic copies. Use synthetic
+inputs for public examples and preserve independent operational retention rules.
+
 ## Retention classification versus storage action
 
 The audit library's `RetentionPolicy` classifies supplied ages into HOT, WARM,

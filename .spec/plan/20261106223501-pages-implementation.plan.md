@@ -1083,3 +1083,19 @@ freshness approval. Existing source binary reports88/errors0. Full CI review
 inventory still fails (latest missing first10 now Apache/.NET/Go/native files).
 No installed middleware, framework package or independently qualified tuple is
 inferred from this parser table. Rendered content changed after historical88run.
+
+### Same-transport capture and privacy source reconciliation
+
+Read full capture lib/TLS composition and transport owner source, plus the
+public HTTP/2 Request boundary and capture integration handover. Updated topology
+and Draft P-01/P-04 map to acknowledge the candidate without lifting existing
+runtime/adapter required-plane refusal. Preserved original versus proxy-hop
+limits, actual negotiated versus offered ALPN distinction, owner lifetime and
+revocation/handle-drop semantics, and complete headers versus request bodies.
+
+Privacy inventory now identifies transient decrypted ordered headers as possible
+credential/linkable data, not automatically permitted log/analytics/public
+fixtures; closing/drop does not establish erasure of copies. Added exact manual
+receipts for three fully read source modules only; did not bulk-approve the H2
+parser or other partially read sources. Existing source check88/errors0. No
+socket/hosted/browser/product execution or full freshness pass inferred.
