@@ -4,9 +4,10 @@ Owner: network-capture/rust-network-capture-goal. Design authority:
 sot:root/network-capture. Existing network, integrity, authority and runtime are
 read-only here. Capture is a new transport-lifecycle context, not a fingerprint
 or security-engine fork. Historical46822eb default-feature all-targets Clippy
-passed, followed by21pure lib units passed/0failed/0ignored/0filtered. The new
-pending-handshake source has22pure units awaiting root validation. Hosted compile and its
-5actual cases remain NOT_RUN; runtime binding and product qualification remain0.
+passed, followed by21pure lib units passed/0failed/0ignored/0filtered. New
+pending-handshake sourceb0363e9now passes22pure units, all-targets Clippy WITH
+hosted-pilot, and hosted_transport compile-only under root-allocated B. Actual5
+hosted cases remain NOT_RUN; runtime body binding/product qualification remain0.
 
 Root has integrated crates/capture as a workspace member and resolved the
 dependency graph. Add a workspace humanymous-capture dependency when a consumer
@@ -94,8 +95,10 @@ Sync. Hosted test5contains four cancellation subcases: before dispatch; after an
 actual server TLS flight without client Finished; pending Drop with a surviving
 handle; successful handshake revoked using its original pre-handshake handle.
 Other four actual hosted denominators remain unchanged. New source22pure/5hosted
-fixtures are NOT_RUN until root gates; historical21unit validation does not
-qualify these new Rust bytes. Complete H1/H2 request/body/stream/session/RIT,
+fixtures now have22pure passes, hosted-feature Clippy pass and --no-run compile
+pass in evidence:root/20261107084330. Recursive internal source/Cargo context
+60files stayed unchanged; B was returned. Actual5hosted cases remain unexecuted.
+Complete H1/H2 request/body/stream/session/RIT,
 origin/audit policy and worker reaping remain runtime responsibilities. Existing
 plain required TLS/H2=422 remains. No manifest delta is made here.
 

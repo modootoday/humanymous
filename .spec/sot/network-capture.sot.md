@@ -3,7 +3,7 @@ id: sot:root/network-capture
 title: Original TLS and HTTP2 connection capture
 status: active
 created: 2026-11-07T07:25:00Z
-updated: 2026-11-07T07:54:03Z
+updated: 2026-11-07T08:43:30Z
 verify: manual
 rel:
   governs: [crates/capture/**]
@@ -124,5 +124,9 @@ or unimplemented. No capture source is integrated into the runtime yet.
 The user-authorized PendingHandshake continuation changes Rust source after that
 historical checkpoint. Runtime accepted same-epoch cancellation custody, one
 pre-queue lifetime, idempotent revoke, terminal owner Drop, Send/Sync bounds and
-joined worker ownership. The new22pure units and expanded fifth hosted test
-require fresh compilation and execution; no old success is transferred.
+joined worker ownership. The new22pure units passed with0failed/ignored/filtered
+under root's explicit B allocation; hosted-feature all-targets Clippy and
+compile-only hosted_transport passed. Evidence:root/20261107084330 records
+60recursive source/context files unchanged and executable identities. Actual5
+hosted cases and runtime/Docker boundaries remain unqualified; no old or
+compile-only success is transferred into those execution claims.

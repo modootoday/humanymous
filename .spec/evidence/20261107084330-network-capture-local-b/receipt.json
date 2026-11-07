@@ -1,0 +1,446 @@
+{
+  "schema": "humanymous.capture.pending-owner-local-validation/0.1",
+  "observed_at": "2026-11-07T08:43:30Z",
+  "source_checkpoint": "b0363e9",
+  "runner": "local Windows, root-assigned B",
+  "target_dir": "target/validation-agents",
+  "build_jobs": 1,
+  "incremental": 0,
+  "first_attempt": {
+    "stage": "locked offline full-workspace metadata",
+    "exit_code": 1,
+    "reason": "missing cached archive asn1-rs0.7.2",
+    "tests_started": 0,
+    "context_changed_count": 0,
+    "lock_regenerated": false
+  },
+  "recovery": "Root approved selected-package locked-online dependency downloads and continued B allocation",
+  "commands": [
+    "cargo test --locked -p humanymous-capture --lib -- --test-threads=1",
+    "cargo clippy --locked -p humanymous-capture --all-targets --features hosted-pilot -- -D warnings",
+    "cargo test --locked -p humanymous-capture --features hosted-pilot --test hosted_transport --no-run"
+  ],
+  "stages": [
+    {
+      "stage": "selected-pure",
+      "exit": 0,
+      "elapsed_ms": 8930
+    },
+    {
+      "stage": "hosted-feature-clippy",
+      "exit": 0,
+      "elapsed_ms": 5046
+    },
+    {
+      "stage": "hosted-compile-only",
+      "exit": 0,
+      "elapsed_ms": 2720
+    }
+  ],
+  "pure_units": {
+    "passed": 22,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "measured": 0
+  },
+  "recursive_stability": {
+    "scope": "recursive capture/network/signals plus root Cargo/lock/toolchain; registry archives bound by unchanged locked graph",
+    "files": 60,
+    "changed_count": 0,
+    "before_sha256": "9d8db35391bed1f80d4a358c7cd0d0badd21e2102ae684f3527532cc00254d77",
+    "after_sha256": "9d8db35391bed1f80d4a358c7cd0d0badd21e2102ae684f3527532cc00254d77"
+  },
+  "toolchain": [
+    "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "binary: rustc",
+    "commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "commit-date: 2026-10-13",
+    "host: x86_64-pc-windows-msvc",
+    "release: 1.99.1",
+    "LLVM version: 23.1.1"
+  ],
+  "artifacts": [
+    {
+      "stage": "selected-pure.log",
+      "path": "target/validation-agents/debug/deps/humanymous_capture-e63e8fc1bee21e2f.exe",
+      "sha256": "f5b7783653fa42130dae4d8c058da8e388df2b04dbe7a10890ab61a2a5b54dc0",
+      "bytes": 1559040,
+      "executed": true
+    },
+    {
+      "stage": "selected-hosted-compile.log",
+      "path": "target/validation-agents/debug/deps/hosted_transport-d817f2e4bd2e6991.exe",
+      "sha256": "73d87155b4b3d4c7e34317472aecf7d96ca0ec98fdee5c2c4af2dd43c2a7b853",
+      "bytes": 4731904,
+      "executed": false
+    }
+  ],
+  "source_files": [
+    {
+      "path": "crates/capture/Cargo.toml",
+      "bytes": 635,
+      "sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840"
+    },
+    {
+      "path": "crates/capture/INTEGRATION.md",
+      "bytes": 15131,
+      "sha256": "df723689459ed431a0a203c1fdb7593b83fdc20ff3b5356c6d6e444ec58db224"
+    },
+    {
+      "path": "crates/capture/src/http2/headers.rs",
+      "bytes": 5002,
+      "sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787"
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "bytes": 14738,
+      "sha256": "bfaac7959c30a13483028b683317befb9594dc70c1f2a64140e13d34e2589b6d"
+    },
+    {
+      "path": "crates/capture/src/http2/tests.rs",
+      "bytes": 10800,
+      "sha256": "13a2222124e6c9e1f3ba700776d6105a7d12d2b5e52d532f9110c570c7fabfae"
+    },
+    {
+      "path": "crates/capture/src/lib.rs",
+      "bytes": 322,
+      "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076"
+    },
+    {
+      "path": "crates/capture/src/tls/hello.rs",
+      "bytes": 7833,
+      "sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153"
+    },
+    {
+      "path": "crates/capture/src/tls/hello/tests.rs",
+      "bytes": 5144,
+      "sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde"
+    },
+    {
+      "path": "crates/capture/src/tls/mod.rs",
+      "bytes": 223,
+      "sha256": "4700ee22d16277a2280ab10eab870b4205463aecd64d0a103823c8871b0c656f"
+    },
+    {
+      "path": "crates/capture/src/tls/transport.rs",
+      "bytes": 10967,
+      "sha256": "dae317e9f4960f8bdd88cc3fc371419e767b797540c426d1590711b459959aa2"
+    },
+    {
+      "path": "crates/capture/tests/hosted_transport.rs",
+      "bytes": 12162,
+      "sha256": "6f0f3e1fc6ea26a85ce4ed02098bc3e59134f9a9b32a27ce68d1fd897edfa9fc"
+    },
+    {
+      "path": "crates/network/Cargo.toml",
+      "bytes": 442,
+      "sha256": "45427b23f221262aa2bb409fa2678200ed67b360bff29186a2605e1400ae54f8"
+    },
+    {
+      "path": "crates/network/src/http/headers.rs",
+      "bytes": 6761,
+      "sha256": "afc5ebac8a99902a4e0482653242e4c97ebf98d5f426b663c4f0280a308fd0f8"
+    },
+    {
+      "path": "crates/network/src/http/mod.rs",
+      "bytes": 118,
+      "sha256": "72c33358a014143140ca9c71afb8fc1cae9c2ea0153836bf3505e5144f5c4e4e"
+    },
+    {
+      "path": "crates/network/src/http2/mod.rs",
+      "bytes": 4384,
+      "sha256": "f6ddb657dc4d964ad822ced39b69512cb310a2e24e82aef60d714580e90c2781"
+    },
+    {
+      "path": "crates/network/src/http2/monitor.rs",
+      "bytes": 5999,
+      "sha256": "c817c1f1ef0785ab9b4f83313060b5639df3b6b93ab6abf67ea95bf09e409f46"
+    },
+    {
+      "path": "crates/network/src/lib.rs",
+      "bytes": 168,
+      "sha256": "4b4355e176791191741ef51e7aaf05611a61a9030a5c8bab20166c72f629b84f"
+    },
+    {
+      "path": "crates/network/src/report/assembly.rs",
+      "bytes": 11254,
+      "sha256": "8e1fb60339e6f6cc0f01d5691cd21bd1846fa630612c629efa07a56a0bbeb7c6"
+    },
+    {
+      "path": "crates/network/src/report/claims.rs",
+      "bytes": 2295,
+      "sha256": "e4d798876767b3233d3806f6cecd22ba4c67b90522f6be99faab8ade6c622ea8"
+    },
+    {
+      "path": "crates/network/src/report/mod.rs",
+      "bytes": 1086,
+      "sha256": "6505735608b8a39d73ecb9f57a130e9a415b86af7305876450acebd2e50f19b1"
+    },
+    {
+      "path": "crates/network/src/residual/mod.rs",
+      "bytes": 3774,
+      "sha256": "1e0a4cf5377b553e907bd47e6d52399e7807a8a623afecd7bbfbfcf4858a35b5"
+    },
+    {
+      "path": "crates/network/src/tcp/mod.rs",
+      "bytes": 4102,
+      "sha256": "966663d089f9e6d6014992a915a3c0aad831ab04a8c54f3bc8c821434dad5abd"
+    },
+    {
+      "path": "crates/network/src/tls/fingerprint.rs",
+      "bytes": 6891,
+      "sha256": "6c10ab922e86d7f0504508f84497fdb85fb460220870ee582eb48d300e21a192"
+    },
+    {
+      "path": "crates/network/src/tls/hello.rs",
+      "bytes": 5937,
+      "sha256": "d95a2c3400ab6984a9e8f6bb6b533600febba36b8d4b2cb8756aa18f09e7a10e"
+    },
+    {
+      "path": "crates/network/src/tls/mod.rs",
+      "bytes": 367,
+      "sha256": "2e228aa45058301fdba6fa05533884f24fdd7fcfee140487b994d19f9279de02"
+    },
+    {
+      "path": "crates/network/tests/fixtures/h2.json",
+      "bytes": 44216,
+      "sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866"
+    },
+    {
+      "path": "crates/network/tests/fixtures/monitor.json",
+      "bytes": 12534269,
+      "sha256": "e0c640671f8ebe0cbf47f0ec893ede98255710f5b9eb95448c33b81d6f9f874f"
+    },
+    {
+      "path": "crates/network/tests/fixtures/reports.json",
+      "bytes": 4720797,
+      "sha256": "f4b534f80e214eb4b37f34cacc12aba3c3081aaeb920cf3be242752199fcf06e"
+    },
+    {
+      "path": "crates/network/tests/fixtures/tls.json",
+      "bytes": 556152,
+      "sha256": "048c7fb450ff33db5a91f1b8f6ddc9e480504b3a767971519b94ccc37c6e9540"
+    },
+    {
+      "path": "crates/network/tests/h2_parity.rs",
+      "bytes": 650,
+      "sha256": "51600f099b6ff78dfff0d099a9c3574f9373839a2c5f3c558d5932824f8d58cb"
+    },
+    {
+      "path": "crates/network/tests/monitor_parity.rs",
+      "bytes": 908,
+      "sha256": "3e3ce87642eb5c49ff428860e8f5fcbf99dda133b4f50c4b65432971a551a371"
+    },
+    {
+      "path": "crates/network/tests/report_parity.rs",
+      "bytes": 1446,
+      "sha256": "9d28088b687b038d18a226951889ecb8d83518b56f3934eb02f7ee6db92008d5"
+    },
+    {
+      "path": "crates/network/tests/tls_parity.rs",
+      "bytes": 1747,
+      "sha256": "32572b1c0a023eda9820aea849211598806f294ba1c3df07dce29cc8ef108153"
+    },
+    {
+      "path": "crates/signals/Cargo.toml",
+      "bytes": 363,
+      "sha256": "9cfd61796e5b60b8aadf2f70545816390436ff0ffbcf7e247a8a086b433ea97e"
+    },
+    {
+      "path": "crates/signals/src/lib.rs",
+      "bytes": 134,
+      "sha256": "439c8078d4e7eda349d62babfc51e6e3af31925c6fe76d5c3d27226b8a43c2c1"
+    },
+    {
+      "path": "crates/signals/src/observation/mod.rs",
+      "bytes": 305,
+      "sha256": "89d4b01e8bf265133e577ea5d1e8b6e72c3c3054b4a9fc30aeec5f76da92d7ef"
+    },
+    {
+      "path": "crates/signals/src/observation/registry.json",
+      "bytes": 25932,
+      "sha256": "daa6d3f397c1f0b80e84e38e0bc08ad800eac1d35dbc72ddb9532c5fae14312e"
+    },
+    {
+      "path": "crates/signals/src/observation/registry.rs",
+      "bytes": 2767,
+      "sha256": "a3ded1435bb3c1e0ba4cf5a3ed6bade87b890a6deb0d3eef13d2fd731516f631"
+    },
+    {
+      "path": "crates/signals/src/observation/signal.rs",
+      "bytes": 3653,
+      "sha256": "ba42b74765c5fa9a66d8bc5589e20cdb580676a82f6995c9793441931cc34184"
+    },
+    {
+      "path": "crates/signals/src/observation/verdict.rs",
+      "bytes": 1146,
+      "sha256": "c7f57dbda88e71a59c6ba2dac3615f8148a3ec6cd012fb18ca496ca433fc4d9f"
+    },
+    {
+      "path": "crates/signals/src/observation/vocabulary.rs",
+      "bytes": 2262,
+      "sha256": "14bfe697108b680a1911fbf058e9276432de6671bf6445661c25587ae101de1b"
+    },
+    {
+      "path": "crates/signals/src/report/aggregation.rs",
+      "bytes": 1416,
+      "sha256": "824192b7c149d5809eb05a28ab0eeea6caaf808ce79512a24f015f4c11ce916c"
+    },
+    {
+      "path": "crates/signals/src/report/behavior.rs",
+      "bytes": 6285,
+      "sha256": "1fe90181c6d158038336358e203fd05f663e63d926e69b5d1cdefe4ae0ca6bb6"
+    },
+    {
+      "path": "crates/signals/src/report/client.rs",
+      "bytes": 14069,
+      "sha256": "9139618e60152294c21705584fed6b1973b2dbf46130e1fec81cbbadb8b660f6"
+    },
+    {
+      "path": "crates/signals/src/report/mod.rs",
+      "bytes": 475,
+      "sha256": "907c1acbc341c52cb4169e0d43997648d0389e5aa94b8a6b735644e8fcc9515d"
+    },
+    {
+      "path": "crates/signals/src/report/network.rs",
+      "bytes": 3694,
+      "sha256": "3d126f8d7c09847051998d7d1bd267dcc47f09b214b61d2ff61b7665199eb362"
+    },
+    {
+      "path": "crates/signals/src/report/scoring.rs",
+      "bytes": 3238,
+      "sha256": "518497ccc0abd1b64589d81418241263a6a1b133b4ee59723cd5a9320b0aa402"
+    },
+    {
+      "path": "crates/signals/src/report/session.rs",
+      "bytes": 1674,
+      "sha256": "9c84a402f71690b646e3b2c64e23aee5e1a217bad38622440cb3b2d81455abe5"
+    },
+    {
+      "path": "crates/signals/src/report/timestamp.rs",
+      "bytes": 1739,
+      "sha256": "552dd3ba2af72d0ec762235da00b2bcec3543d1e4cce690a347f67606c08a72b"
+    },
+    {
+      "path": "crates/signals/src/wire/decode.rs",
+      "bytes": 3927,
+      "sha256": "af3d540fdf0fbf10f7f165a73a93ec0e56def8478e4c13a57caf88bd97891341"
+    },
+    {
+      "path": "crates/signals/src/wire/mod.rs",
+      "bytes": 5366,
+      "sha256": "5f6cf18336c6e6af907feb41e0ebb00ed6609a1d820e6286e8fd0b0a6bd080ea"
+    },
+    {
+      "path": "crates/signals/src/wire/unicode.json",
+      "bytes": 80454,
+      "sha256": "b1415483c6e97b437c7211e7e86d5c1772f9664e8a7ac32e0ca62c14484d2e17"
+    },
+    {
+      "path": "crates/signals/tests/fixtures/observations.json",
+      "bytes": 45654,
+      "sha256": "02fe6436254a243448e095855337e5ab5238771a96cd8314ed8061ae816a6e44"
+    },
+    {
+      "path": "crates/signals/tests/fixtures/reports.json",
+      "bytes": 29642,
+      "sha256": "84c7f771d7f70ff4473a5ced3c46a8074c58deb0fa89ec4f89688c2c8c247f13"
+    },
+    {
+      "path": "crates/signals/tests/observation_parity.rs",
+      "bytes": 842,
+      "sha256": "fc35eafbd8a627e8be25161bf742d81e6b3dd8e18028ec800694e9dc58f44a4b"
+    },
+    {
+      "path": "crates/signals/tests/registry_integrity.rs",
+      "bytes": 2720,
+      "sha256": "e3d9956397991c270946754fd234181510c4b1e250597b5b4d7ff1c9de5cbf67"
+    },
+    {
+      "path": "crates/signals/tests/report_parity.rs",
+      "bytes": 782,
+      "sha256": "4e4db0ff36539a095c2aeffcfe12d1bbbb7024bb22776ed24e7be0f74d4c9d35"
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 2769,
+      "sha256": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 169207,
+      "sha256": "9b96ab7ac2bc6a3f474c3f2b586c05d087e6cbaecc0f50e7b28eda2b392c58d3"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "bytes": 123,
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    }
+  ],
+  "raw_files": [
+    {
+      "name": "context-after-resolution-failure.json",
+      "bytes": 418,
+      "sha256": "62227e283cf91459d4218a40c0ae648cf81f9744435d7b80fcae1342fac4cf32"
+    },
+    {
+      "name": "context-before.json",
+      "bytes": 418,
+      "sha256": "62227e283cf91459d4218a40c0ae648cf81f9744435d7b80fcae1342fac4cf32"
+    },
+    {
+      "name": "metadata.stderr.log",
+      "bytes": 125,
+      "sha256": "b328781797f113093a8b848c212abe8238587f98e522e2ddd5cef8ce11be619f"
+    },
+    {
+      "name": "resolved-metadata.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "rustc-vv.txt",
+      "bytes": 194,
+      "sha256": "341fed434cf52bd9ba5ab2f3507dbd943a2062212028574e529fc3e7e5ecd7a8"
+    },
+    {
+      "name": "selected-hosted-compile.log",
+      "bytes": 328,
+      "sha256": "1f5cae9d1af044b5fa3e787ccce28372c357ccc9461f3fb63450c0e8ed4cee9e"
+    },
+    {
+      "name": "selected-hosted-feature-clippy.log",
+      "bytes": 1335,
+      "sha256": "0a8256df9106737e7c035401cedd573dd94b99fd928863390020441cb0ba38b1"
+    },
+    {
+      "name": "selected-pure.log",
+      "bytes": 2952,
+      "sha256": "4139aba65f1b7f9cc64641c2fdc218d3e378c8a67d01ed77b5ae50a6b634ea6a"
+    },
+    {
+      "name": "selected-recursive-after.json",
+      "bytes": 11431,
+      "sha256": "9d8db35391bed1f80d4a358c7cd0d0badd21e2102ae684f3527532cc00254d77"
+    },
+    {
+      "name": "selected-recursive-before.json",
+      "bytes": 11431,
+      "sha256": "9d8db35391bed1f80d4a358c7cd0d0badd21e2102ae684f3527532cc00254d77"
+    },
+    {
+      "name": "selected-result.json",
+      "bytes": 621,
+      "sha256": "5e76258e104a7d6bc8efb2e188ed8d54655a987c06f58eb748252dffca4a21b0"
+    }
+  ],
+  "hosted_pilots": {
+    "authored": 5,
+    "executed": 0,
+    "compile_only_passed": true
+  },
+  "docker_capture_product_qualified": false,
+  "slot_B_returned": true,
+  "lock_regenerated": false
+}
