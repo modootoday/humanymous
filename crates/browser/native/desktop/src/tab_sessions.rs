@@ -346,7 +346,7 @@ impl Sessions {
             let stamp = document.stamp().map_err(io::Error::other)?;
             document
                 .try_reproject(&stamp, |doc| {
-                    humanymous_browser::tabs_ui::project(doc, &views);
+                    humanymous_browser::tabs_ui::project(doc, &views).map_err(io::Error::other)?;
                     Ok::<_, io::Error>(())
                 })
                 .map_err(io::Error::other)?;

@@ -139,7 +139,10 @@ pub fn notice(doc: &mut InteractiveDocument, message: &str) {
 }
 
 /// Project engine availability to real disabled attributes and accessibility state.
-pub fn controls(doc: &mut InteractiveDocument, state: crate::history::Controls) {
+pub fn controls(
+    doc: &mut InteractiveDocument,
+    state: crate::history::Controls,
+) -> Result<(), String> {
     fn source(node: &mut Node, id: &str, enabled: bool) {
         if let NodeKind::Element {
             attributes,
@@ -191,6 +194,7 @@ pub fn controls(doc: &mut InteractiveDocument, state: crate::history::Controls) 
             );
         }
     }
+    crate::scene_projection::commit(doc)
 }
 
 /// Mutate one fixed shell attribute in both source and rendered scene.
@@ -250,6 +254,10 @@ mod tests {
             },
         )
         .unwrap();
+        let input = doc.renderer.document.get_element_by_id("address").unwrap();
+        let input_path = path(&doc, "address").unwrap();
+        doc.set_input_value(&input_path, "chrome://gpu/").unwrap();
+        doc.focus_path(&input_path).unwrap();
         controls(
             &mut doc,
             crate::history::Controls {
@@ -257,6 +265,17 @@ mod tests {
                 forward: false,
                 loading: false,
             },
+        )
+        .unwrap();
+        assert_eq!(
+            doc.renderer.document.get_element_by_id("address"),
+            Some(input)
+        );
+        assert_eq!(doc.renderer.document.get_focussed_node_id(), Some(input));
+        assert_eq!(address(&doc).as_deref(), Some("chrome://gpu/"));
+        assert_eq!(
+            doc.component_state().unwrap().values["browserReady"],
+            meari::domain::component_state::StateValue::Bool(false)
         );
         for (id, disabled) in [
             ("nav-back", false),
@@ -294,7 +313,8 @@ mod tests {
                 loading: true,
                 ..Default::default()
             },
-        );
+        )
+        .unwrap();
         let stop = doc.renderer.document.get_element_by_id("nav-stop").unwrap();
         meari_native::infrastructure::accessibility::act(
             &mut doc,

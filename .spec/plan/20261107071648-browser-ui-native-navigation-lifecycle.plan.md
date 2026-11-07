@@ -42,6 +42,15 @@ and IME reset on switch, inactive-command rejection, late-create close, final-ta
 window close and all-child cleanup receipts. Pure model/shortcuts and scene tests
 must precede actual multi-child pilot; initial single-child tests remain distinct.
 
+First actual native-ui scene batch at22ac1b36 executed41 tests:39 passed,2 failed,
+zero ignored/filtered. Both newly required accessibility Click actions were
+unsupported after direct source/DOM mutation; no check/Clippy stage ran. The
+86-file declared snapshot remained unchanged. Correction uses the pinned public
+retained-source prepare/commit API to synchronize action metadata/layout/AX,
+keeps required action assertions and adds dirty input/node/focus preservation.
+Remove the unused disabled-button helper rather than suppressing its warning.
+This is a scene boundary finding, not a native CEF or full AT result.
+
 Dedicated run42377685195/job128418538461 completed successfully at exact
 ec4f2da09a78ffa3ae7661661fc1d54b921f534b. Actual results are runner14/Clippy,
 native build0, desktop synthetic protocol4/13filtered, bootstrap synthetic

@@ -91,7 +91,7 @@ pub fn commands(doc: &InteractiveDocument) -> Vec<(String, Command)> {
     commands
 }
 /// Apply selected/name/hidden state without inventing a browser page or history.
-pub fn project(doc: &mut InteractiveDocument, views: &[View]) {
+pub fn project(doc: &mut InteractiveDocument, views: &[View]) -> Result<(), String> {
     for id in 0..Tabs::CREATIONS {
         let view = views.iter().find(|view| view.id == id);
         ui_navigation::attribute(
@@ -136,6 +136,7 @@ pub fn project(doc: &mut InteractiveDocument, views: &[View]) {
             );
         }
     }
+    crate::scene_projection::commit(doc)
 }
 
 #[cfg(test)]
@@ -167,7 +168,8 @@ mod tests {
                     selected: true,
                 },
             ],
-        );
+        )
+        .unwrap();
         for (id, selected) in [(0, "false"), (1, "true")] {
             let node = doc
                 .renderer

@@ -160,7 +160,7 @@ impl Controls {
             let stamp = self.document.stamp().map_err(io::Error::other)?;
             self.document
                 .try_reproject(&stamp, |doc| {
-                    ui_navigation::controls(doc, controls);
+                    ui_navigation::controls(doc, controls).map_err(io::Error::other)?;
                     Ok::<_, io::Error>(())
                 })
                 .map_err(io::Error::other)?;

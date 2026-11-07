@@ -691,6 +691,11 @@ remain authoritative. CEF loading callbacks supply history availability and
 loading state; request acceptance alone is not completion. Stop cancels pending
 authority before stop_load so delayed callbacks cannot finish stopped work.
 Named controls expose disabled state to keyboard and accessibility clients.
+Dynamic shell attributes and text commit through the pinned Meari retained-source
+API so action metadata, layout and AX state agree with pixels. Direct DOM paint
+mutation is insufficient. The shell owns a fail-closed browserReady=false state
+binding; mounting that source program does not qualify CEF or grant navigation.
+Retained updates must preserve dirty address content, node identity and focus.
 Home, Reload and address submission retain typed local routing and IME guards.
 Multi-tab, external navigation, downloads, persistence and Chrome parity remain
 separate gates; implemented controls do not imply BrowserReady. Pure snapshot and

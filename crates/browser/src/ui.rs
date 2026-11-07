@@ -33,6 +33,14 @@ pub(crate) fn element(tag: &str, attributes: &[(&str, &str)], children: Vec<Node
             value: Value::String(name),
         });
     }
+    if attributes.iter().any(|attribute| {
+        attribute.name == "id" && attribute.value == Value::String("browser-shell".into())
+    }) {
+        attributes.push(Attribute {
+            name: "data-browser-ready".into(),
+            value: Value::State("browserReady".into()),
+        });
+    }
     Node {
         kind: NodeKind::Element {
             tag: tag.into(),
@@ -73,32 +81,17 @@ pub fn component() -> Component {
     component_with_window_controls(false)
 }
 
+pub(crate) fn native_states() -> Vec<meari::domain::state_program::StateBinding> {
+    vec![meari::domain::state_program::StateBinding {
+        name: "browserReady".into(),
+        setter: "setBrowserReady".into(),
+        initial: meari::domain::component_state::StateValue::Bool(false),
+        span: Span::default(),
+    }]
+}
+
 /// Native pilot variant with owned window commands enabled.
 pub fn component_with_window_controls(enabled: bool) -> Component {
-    fn disabled_button(label: &str, name: &str) -> Node {
-        element(
-            "button",
-            &[
-                ("disabled", "true"),
-                ("aria-label", name),
-                ("title", name),
-                (
-                    "className",
-                    if label == "Reload" {
-                        "nav-button reload"
-                    } else {
-                        "nav-button"
-                    },
-                ),
-            ],
-            vec![crate::icons::node(match label {
-                "←" => crate::icons::Icon::Back,
-                "→" => crate::icons::Icon::Forward,
-                "Reload" => crate::icons::Icon::Reload,
-                _ => crate::icons::Icon::Plus,
-            })],
-        )
-    }
     fn inspector(prefix: &str, dock: &str) -> Node {
         let tabs = [
             (
@@ -179,7 +172,7 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
     }
     Component {
         hook_order: vec![],
-        states: vec![],
+        states: native_states(),
         client: false,
         name: "LaboratoryBrowser".into(),
         props: vec![],
