@@ -3,7 +3,7 @@ id: evidence:root/20261107073932
 title: Browser navigation lifecycle source checkpoint without native qualification
 status: active
 created: 2026-11-07T07:39:32Z
-updated: 2026-11-07T09:01:42Z
+updated: 2026-11-07T09:09:19Z
 rel:
   depends_on: [sot:root/browser-ui, plan:root/20261107071648]
 files:
@@ -14,6 +14,7 @@ files:
   - {path: protocol-source.json, sha256: 4a34bfcc04880cd21652201a9d28659dd3bd4ebeef3ae07f5056cd680d4b0c0b, bytes: 1601, store: repo}
   - {path: hosted-8132117-browser-scope.json, sha256: f644f4f84a828d7ff581802135d466af0c0040f1cbaf926c35060f641b035f46, bytes: 1103, store: repo}
   - {path: hosted-8132117-windows-scope.json, sha256: e767f64ee492aed7d07b20101dee704ec0fb1313b0976751869c826ed31b6b2f, bytes: 1125, store: repo}
+  - {path: hosted-8132117-windows-timing.json, sha256: 4c55daa3cbf6629ff8d15abff85093fb45dea25f7c18d42c84c5366e8f5a5835, bytes: 1168, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
