@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "status": "proposal_only_not_implemented_not_accepted_not_freeze_ready",
+  "source": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+  "profile": {
+    "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
+    "sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+    "bytes": 4658,
+    "maximum_read_bytes": 16384,
+    "retained_data": "Reviewed digest, exact path, selected test name, line plus small needle and finite diagnostic code. No complete Collector implementation copy."
+  },
+  "seam": [
+    "Create a private in-memory selected-source record from the same parsed bytes during snapshot freeze; Snapshot(pub PathBuf) alone is not authenticated immutable custody. Do not treat a retained JSON manifest as authority.",
+    "Bind an explicit canonical frozen root and selected record to the resolved Compose HM_LAB_BUILD_CONTEXT before actor classification. Thread the private binding through Lab and from_stdout to browser_failure and panic_site. Do not call snapshot::root or use cwd, CARGO_MANIFEST_DIR, Git discovery or installed-neighbor fallback.",
+    "Use a bounded explicit-root regular-file reader; verify path, byte count, exact digest, UTF-8 and line/needle before refinement. Revalidate the same source context before diagnostic emission. Missing or drifted source refuses panic and B-origin refinement.",
+    "Require matching source identity and Compose build context. Existing before/after source closure checks remain. Trusted-checkout drift detection is not hostile-race, compiler-read, nofollow or cryptographic custody proof; source_prefix_authenticated remains false."
+  ],
+  "package_only": [
+    "Packaged Tools must build without Collector source. Pure unit tests use tiny test-owned synthetic strings and custom data profiles, never a copied Collector implementation fixture.",
+    "Actual Collector line and needle tests belong to an explicit checkout gate using the real bounded source-root reader. Missing required source leaves product qualification nonzero and unqualified. No ambient fallback."
+  ],
+  "required_tests": [
+    "Exact real-source digest and all reviewed line/needle bindings",
+    "Missing file, wrong source identity, byte and CRLF drift, invalid UTF-8, oversize file",
+    "Duplicate or inconsistent selected records, wrong Compose context, escape or link rejection, changed bytes on revalidation",
+    "Package archive outside Git without Collector source; unsupported platform link guarantees explicitly unavailable"
+  ],
+  "preserved": [
+    "Current raw diagnostics and finite codes",
+    "Strict Origin and fail-closed policy",
+    "Public report 13 fields and private actor 21 fields",
+    "Witness/drain ordering and assertion denominators",
+    "No proof transfer from earlier source checkpoints"
+  ],
+  "root_decisions": [
+    "Final typed snapshot record API and reader module owner",
+    "Explicit source-root CLI contract",
+    "Platform-specific containment and race guarantees requiring separate review"
+  ],
+  "execution": "No source edits, compiler, local Docker, dispatch, retry or push performed for this proposal; active hosted candidate remains unchanged."
+}

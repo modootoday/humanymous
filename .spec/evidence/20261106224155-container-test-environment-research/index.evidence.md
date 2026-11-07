@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T23:26:53Z
+updated: 2026-11-07T23:40:58Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -60,6 +60,7 @@ files:
   - {path: hosted-browser-1f2b9a93-build-failure.json, sha256: 77d3a726381ccb55c30450f89e88c931bfdd081ca2bc7d625380a80298b5a76c, bytes: 3596, store: repo}
   - {path: source-execution-index.json, sha256: cfc5d18bd627b48340fb8a6b5aa0e9457cd11b5b67cb0744c299d7e13c17b640, bytes: 9691, store: repo}
   - {path: product-docker-runtime-audit-selector.json, sha256: 45e6997b01c0be7e13b9fc8989300dd5e5f39bc70383a2cec53d5f6d69afdb36, bytes: 1581, store: repo}
+  - {path: collector-source-pin-reader-proposal.json, sha256: c037a8fbf05f55352195b85d6c7331cc19824a50aeee655c39726900e9d51803, bytes: 3186, store: repo}
 ---
 
 # Container test environment research
