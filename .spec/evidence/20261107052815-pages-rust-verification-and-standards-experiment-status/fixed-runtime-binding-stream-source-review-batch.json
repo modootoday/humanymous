@@ -1,0 +1,65 @@
+{
+  "scope": "Manual complete-file fixed source review with owner execution-source comparison",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "reviews": [
+    {
+      "source": "crates/runtime/src/session.rs",
+      "lines": 384,
+      "sha256": "f9f84b80698e1c4d3013d380b687caa7b4532801f5c594d74695e88807c14b11",
+      "matches_owner_execution_source": true,
+      "current_primary_sha256": "f9f84b80698e1c4d3013d380b687caa7b4532801f5c594d74695e88807c14b11",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete384-line volatile session owner: independent random capability/key, no live eviction, clock rollback poison, native whole-header canonical binding versus browser subset profile, next-token consumption before admission/downstream work, session-bound reports and server-owned signal metadata. Browser report/ACK model is not actual browser collection or persistent logical-operation deduplication.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/http/origin_response.rs",
+      "lines": 287,
+      "sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39",
+      "matches_owner_execution_source": true,
+      "current_primary_sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete287-line bounded HTTP/1.1 origin parser/encoder: strict status/ASCII headers/framing, duplicate cookie fields preserved, hop and forged gateway fields stripped, complete-body chunk/EOF reframing,64KiB decoded bound; rejects extensions/trailers/ambiguous framing. Default buffering is distinct from explicit native response streaming.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/http/stream.rs",
+      "lines": 326,
+      "sha256": "02444bb5a9212b3976d3a60eb7dc03eb0802e902a889f252017e41e278dac56b",
+      "matches_owner_execution_source": true,
+      "current_primary_sha256": "02444bb5a9212b3976d3a60eb7dc03eb0802e902a889f252017e41e278dac56b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete326-line optional native incremental response forwarding:16KiB head,1MiB total,8192-byte buffers, bounded chunk syntax/count, backpressure, fail without success terminator after partial malformed stream, explicit downstream-start observation. In-memory flow-control tests do not prove actual socket abort/drain or arbitrary protocol compatibility.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/tests/stream.rs",
+      "lines": 69,
+      "sha256": "1768559c0ce1f6704efc038ba779436d6329be97b41ba74bb4a174b1d354e346",
+      "matches_owner_execution_source": true,
+      "current_primary_sha256": "1768559c0ce1f6704efc038ba779436d6329be97b41ba74bb4a174b1d354e346",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete69-line actual loopback fixture: native stream first SSE event arrives before origin release, second event/terminator only after release. Synthetic report and in-memory audit records; server aborted at end. Does not prove durable external audit, graceful service stop, generic streaming wire or real browser/AT.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "reviewed_files": 4,
+  "lines": 1066,
+  "this_chat_execution": "NOT_RUN",
+  "owner_evidence": "Frozen Runtime component summary records named parser/browser-model/native-stream cases; not actual Fetch/human/AT or independent audit deployment",
+  "pending_public_correction": "gate-origin-contract.md still calls changed browser/decoder paths unexecuted and lacks explicit NativeStream opt-in scope",
+  "partial_configuration_review": "Confirmed ResponseProfile default Buffered versus NativeStream; browser profile plus NativeStream rejects. No complete configuration.rs review receipt claimed.",
+  "public_ledger": "Frozen candidate unchanged; batch awaits reconciliation"
+}

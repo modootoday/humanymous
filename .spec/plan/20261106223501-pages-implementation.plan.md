@@ -2084,3 +2084,18 @@ readiness/budget relations and modeled crash selection remain distinct from
 actual native power-loss, manager stop, independent witness or product proof.
 Recorded per-file substantive notes for later ledger reconciliation; no public
 frozen ledger mutation or Cargo/native/browser execution. New Pages run absent.
+
+### Fixed Runtime binding and response manual batch
+
+Read session384/origin response287/native stream326/loopback stream fixture69
+completely:1066lines. All four exact hashes match both primary bytes and owner
+adb8 execution-source commitments. Separate native whole-header binding from
+browser subset/ACK, volatile counters from generic logical operation lifetime,
+default64KiB buffering from opt-in1MiB native incremental response. Loopback
+first-event fixture uses synthetic report/in-memory audit and aborts server;
+not independent durable audit or graceful service proof. Found stale unexecuted
+browser/decoder wording and missing NativeStream scope in gate-origin-contract.
+Reported root for next narrow reconciliation window; frozen public docs unchanged.
+No this-chat Cargo/native/browser/AT execution; configuration excerpts are partial
+and do not earn a full receipt. Existing published component evidence is exact
+source evidence, not full generic Draft v0 wire conformance.
