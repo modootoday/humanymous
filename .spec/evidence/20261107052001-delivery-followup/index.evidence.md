@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T11:24:17Z
+updated: 2026-11-07T11:55:34Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -12,6 +12,8 @@ files:
   - {path: pages-8624b57-summary.json, sha256: 68c72b8bf92dd11e7acd0f10c68d2779f5abaee2b08ce3e8f1427777e72c4079, bytes: 2857, store: repo}
   - {path: go-438a3fee-summary.json, sha256: d0c9cff601c48cfd11c6c978138006b352cd446d155ebf02451453e2caefdd6e, bytes: 5911, store: repo}
   - {path: pages-44876534-archive-summary.json, sha256: 75bf113b3a71d9eecf3e2a6d668909e906e2f0d17a9caa5f3de897f794e5fd8c, bytes: 4478, store: repo}
+  - {path: go-44876534-summary.json, sha256: 1a28cc8e1568fbf823d99fbd772d65990a74411f4cd1ca0dcf4cab2713413a99, bytes: 6201, store: repo}
+  - {path: go-15f63fef-summary.json, sha256: 5b20b0714e544cd1393c36391d1a1615298eee2ffe229a81e80069b436178ee3, bytes: 6172, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -213,3 +215,17 @@ index SHA256 is f224faca4b6fc7a3b336d750c1c99066eb23a19eea05a25ec05a8bc01d99b1cd
 Exact tar/manifest/inventory hashes are retained in the safe summary. Actual
 tar bodies were not acquired, branch uploads stayed off, and main serving
 transfer/browser/AT/full documentation review freshness remain unqualified.
+
+## Distinct Go diagnostic results
+
+The attached go-44876534-summary.json preserves the second runtime_build failure:
+eight NOT_RUN, zero evaluated and successful cleanup, with no acquired private
+compiler transcript or proven cause. The later go-15f63fef-summary.json records
+run 42369171124, successful Go10/lab16/delivery65 preflight, and eight attempted
+actor-start failures at actor_writer_mount. No case was evaluated and assertion
+counts remain unknown/null. Cleanup succeeded, source stayed unchanged and the
+typed requirement remained false. The marker identifies stage entry rather than
+an exact failing operation. Normalized REST data and decoded connector log
+wrappers are retained privately under evidence:root/20261107115500 with index
+SHA256 97a47bf664f0634dcffea2b41d481a5b3e9316e175768a81bef0e4b282c94aa7.
+There were zero artifacts; original private owner report bodies were not fetched.

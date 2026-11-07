@@ -1,0 +1,189 @@
+{
+  "schema": "humanymous.go-hosted-evidence/1",
+  "run_id": 42369171124,
+  "attempt": 1,
+  "source_sha": "15f63fefb23777eeee52c57f7dbf0dbeffef8f8b",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs_total": 2,
+  "artifacts_total": 0,
+  "preflight": {
+    "job_id": 128393523707,
+    "conclusion": "success",
+    "go_units": {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "lab_units": {
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "delivery_units": {
+      "passed": 65,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "unix_runtime_actor_all_target_check": "passed",
+    "selected_clippy_including_runtime_actor": "passed",
+    "workflow_policy": "passed"
+  },
+  "product": {
+    "job_id": 128393945764,
+    "conclusion": "failure",
+    "safe_delivery_summary": {
+      "cleanup_observed": true,
+      "component_status": "not_verified",
+      "diagnostics": {
+        "failure_count": 2,
+        "failures": [
+          {
+            "case_id": "go-eight-measured-cases",
+            "error_code": "assertion_failed",
+            "status": "failed"
+          },
+          {
+            "case_id": "execution",
+            "error_code": "go_case",
+            "status": "failed"
+          }
+        ],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "full_product_gate": "not_requested_in_bounded_profile",
+      "full_product_qualified": false,
+      "owner_exit_code": 1,
+      "receipt": {
+        "case_statuses": [
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "binary-allow",
+            "index": 0,
+            "status": "fail"
+          },
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "dependency-down",
+            "index": 1,
+            "status": "fail"
+          },
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "cancellation",
+            "index": 2,
+            "status": "fail"
+          },
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "incomplete-body",
+            "index": 3,
+            "status": "fail"
+          },
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "forged-provenance",
+            "index": 4,
+            "status": "fail"
+          },
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "origin-bypass",
+            "index": 5,
+            "status": "fail"
+          },
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "upgrade",
+            "index": 6,
+            "status": "fail"
+          },
+          {
+            "assertions": null,
+            "assertions_known": false,
+            "error_code": "actor_writer_mount",
+            "evaluated": false,
+            "id": "response-semantics",
+            "index": 7,
+            "status": "fail"
+          }
+        ],
+        "full_product_qualified": false,
+        "private_receipt_schema": "humanymous.go-product-ledger/1",
+        "private_receipt_sha256": "19037ee752451dad908726648b317411e2fbe4d0a4c31719953c8f723fdba832",
+        "profile": "humanymous.go-gate/bounded-http-8-case/2",
+        "qualified_component": false,
+        "raw_contents_included": false,
+        "run_context": {
+          "authenticated_provenance": false,
+          "hosted_qualification_admitted": true,
+          "job": "product",
+          "kind": "github-hosted-linux",
+          "repository": "modootoday/humanymous",
+          "requires_external_job_verification": true,
+          "run_attempt": 1,
+          "run_id": 42369171124,
+          "workflow_sha": "15f63fefb23777eeee52c57f7dbf0dbeffef8f8b"
+        },
+        "schema": "humanymous.lab-go-public/1",
+        "setup_or_qualification_error_code": "go_case",
+        "source_manifest_sha256": "3fac8043c7e4b0fd885f7ddeefd4b75d35de4fc1612c7878afa0b08d7e73472f",
+        "source_sha": "15f63fefb23777eeee52c57f7dbf0dbeffef8f8b",
+        "totals": {
+          "evaluated": 0,
+          "failed": 8,
+          "known_assertions": 0,
+          "not_run": 0,
+          "passed": 0,
+          "scheduled": 8,
+          "unknown_assertion_cases": 8
+        }
+      },
+      "receipt_valid": true,
+      "release_ready": false,
+      "requirement": {
+        "full_product_qualified": false,
+        "kind": "go-component",
+        "satisfied": false,
+        "schema": "humanymous.lab-requirement/1"
+      },
+      "schema": "humanymous.go-delivery-summary/1",
+      "source_changed": false,
+      "source_manifest_sha256": "300065a09f440b733ea108dd39d50ff957e13a2a66826ec642b62909a819c37e",
+      "source_sha": "15f63fefb23777eeee52c57f7dbf0dbeffef8f8b"
+    }
+  },
+  "limitations": [
+    "All eight cases attempted actor startup, but none reached evaluation; assertion counts remain unknown.",
+    "actor_writer_mount is a stage-entry marker, not proof of a precise failing operation or root cause.",
+    "Original private Docker/operator report bodies were not retrieved; only their safe emitted hashes were observed.",
+    "REST data is normalized decoded connector JSON and log captures are decoded connector wrappers, not HTTP wire bytes.",
+    "Earlier 438a3fee and 44876534 build failures remain separate historical results."
+  ],
+  "capture_index_sha256": "97a47bf664f0634dcffea2b41d481a5b3e9316e175768a81bef0e4b282c94aa7"
+}
