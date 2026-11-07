@@ -171,3 +171,41 @@ and a testing pyramid, without a fixed unit/integration/e2e percentage. Referenc
 and measured preparation bottlenecks are in the linked plans. Mandatory product
 and real native tests are retained, not replaced with more unit counts.
 
+## Continuous responsibility rotation
+
+Root monitors source checkpoints, terminal execution receipts and remaining
+acceptance gates across all project chats. An idle chat, a completed assistant
+turn or an exhausted local task is not proof that its responsibility is complete.
+
+Each owner reports a compact handover when its current slice reaches a terminal
+state: exact source commit, implemented scope, executed and missing gates, live
+process handles, retained resource reservations, remaining dependencies and owned
+paths. Preserve failed and deferred gates in the original responsibility record.
+
+Root then selects the lowest ready unmet dependency in an independent cluster.
+Prefer an actual implementation or boundary-validation task that unlocks blocked
+consumers; avoid inventing documentation or repeated audit work merely to keep a
+chat active. A blocked upper-layer owner may take a disjoint lower-layer slice,
+but cannot overwrite its provider or silently assume provider ownership.
+
+A reassignment records the old responsibility disposition, successor or retained
+follow-up owner, new acceptance criteria, exact paths, dependency contracts and
+resource limits. The old writer releases or explicitly narrows its claim before
+the new writer claims paths. Running processes and target leases require explicit
+handover or terminal cleanup; chat rotation never authorizes foreign termination.
+Shared Cargo, lockfile, toolchain and security decisions remain root-owned.
+
+After the new responsibility is accepted and its ownership is established, root
+updates the live title using `Humanymous · {L0|L1|L2|L3|L4|L5|X} · {English responsibility}`.
+M11 updates the canonical responsibility registry with the same chat ID and
+retains dated role history, contracts and source-bound evidence. Root verifies
+the live title against the registry. Renaming is neither a write grant nor a
+completion claim. No rename is needed when the next slice retains the same role.
+
+Repeat this cycle after meaningful source/test milestones and terminal failures,
+using bounded progress snapshots rather than constant polling. Concurrency follows
+actual compiler/process/resource admission, not the number of active chat turns.
+If no independent task is ready, retain an explicit dependency wait instead of
+creating duplicate work. Full migration completion still requires the original
+integration, product, documentation and post-main verification gates.
+

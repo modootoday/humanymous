@@ -2083,6 +2083,7 @@ dependencies = [
  "humanymous-authority",
  "humanymous-native-security",
  "humanymous-runtime",
+ "humanymous-test-support",
  "junction",
  "serde",
  "serde_json",
