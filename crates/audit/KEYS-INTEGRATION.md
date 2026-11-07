@@ -1,5 +1,15 @@
 # Sealed key compatibility integration
 
+## Additional Linux observation at source 8132117
+
+Successful MSRV job128359709010 in aggregate run42355168729 recorded101 audit
+test passes, four raw ignored helpers excluded and two zero-test bins excluded.
+The legacy nested custody helper pass is also excluded. This covers backup and
+custody targets not reached by the failed strict native actor. It is component
+evidence for exact8132117, not current-source/native-actor/product qualification.
+The aggregate completed with failure. Evidence:root/20261107092505 contains
+per-harness counts and footer times; times are neither CPU nor RSS measurements.
+
 ## New unqualified retained intent state
 
 `ControlAuthority::retained_action_state(retainer,action,target)` reauthenticates
@@ -29,10 +39,12 @@ sync and before deliberate exit. Both marker writes start/end with newline.
 Parents still prove file absence/exclusive release, pending refusal/authorized
 recovery and unchanged writer/HMAC identity, not just marker/exit success.
 Rawignored2 and names are unchanged; exactly one outer summary is required.
-The runner owner is pairing this with an exact inventory/both-parent/single-
-summary parser and negative leakage/nested-summary fixtures. Old813 used a
-different explicit nested-summary exception. Neither side of this new contract
-has compiled, formatted or executed during the benchmark quiet window.
+The runner owner paired this with an exact inventory/both-parent/single-summary
+parser and negative leakage/nested-summary fixtures. Runner checkpoint99e09209
+reports28 pure tests and all-target Clippy passing, with one filesystem fixture
+excluded. Actual de33864b custody parent execution remains NOT_RUN. Old813 used
+a different explicit nested-summary exception; its passes do not qualify the
+new bounded process behavior.
 
 Read the source/qualification sections above the historical checkpoints first.
 Historical counts and deferred-work lists below describe their own manifests;

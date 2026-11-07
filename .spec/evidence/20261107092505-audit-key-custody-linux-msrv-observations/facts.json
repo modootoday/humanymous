@@ -1,0 +1,166 @@
+{
+  "schema": "humanymous.audit-msrv-observation/2",
+  "sourceSha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "runId": 42355168729,
+  "jobId": 128359709010,
+  "jobConclusion": "success",
+  "scope": "audit all-target observations inside Linux workspace MSRV command",
+  "passed": 101.0,
+  "rawIgnored": 4.0,
+  "zeroTestHarnesses": 2,
+  "harnesses": [
+    {
+      "target": "humanymous_audit",
+      "discovered": 54,
+      "passed": 54,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 15.96,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": false
+    },
+    {
+      "target": "audit-control-retainer",
+      "discovered": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 0.0,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": true
+    },
+    {
+      "target": "audit-witness",
+      "discovered": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 0.0,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": true
+    },
+    {
+      "target": "checkpoint_parity",
+      "discovered": 2,
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 3.1,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": false
+    },
+    {
+      "target": "control_operations",
+      "discovered": 16,
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 30.88,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": false
+    },
+    {
+      "target": "durable_witness",
+      "discovered": 12,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 1,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 7.23,
+      "accountingContract": "captured helper excluded; required passing parent",
+      "zeroTestHarness": false,
+      "ignoredNames": [
+        "child_witness_probe"
+      ],
+      "requiredPassedParents": "witness_process_lifetime_and_interrupted_recovery"
+    },
+    {
+      "target": "key_backups",
+      "discovered": 8,
+      "passed": 7,
+      "failed": 0,
+      "ignored": 1,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 11.62,
+      "accountingContract": "captured helper excluded; required passing parent",
+      "zeroTestHarness": false,
+      "ignoredNames": [
+        "child_retire_without_pin_acknowledgement"
+      ],
+      "requiredPassedParents": "crash_reconcile_preserves_consumed_authorization"
+    },
+    {
+      "target": "key_custody",
+      "discovered": 10,
+      "passed": 8,
+      "failed": 0,
+      "ignored": 2,
+      "filtered": 0,
+      "summaryCount": 2,
+      "outerRuntimeSeconds": 27.31,
+      "accountingContract": "legacy813 nested child excluded; two ignored helpers and both actual parents",
+      "zeroTestHarness": false,
+      "ignoredNames": [
+        "child_interrupted_writer",
+        "child_lock_probe"
+      ],
+      "requiredPassedParents": [
+        "competing_process_cannot_load_or_create",
+        "process_exit_releases_lock_and_rotation_pending_requires_recovery"
+      ]
+    },
+    {
+      "target": "merkle_parity",
+      "discovered": 1,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 0.27,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": false
+    },
+    {
+      "target": "record_parity",
+      "discovered": 1,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 0.09,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": false
+    },
+    {
+      "target": "verification_parity",
+      "discovered": 1,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "summaryCount": 1,
+      "outerRuntimeSeconds": 2.53,
+      "accountingContract": "ordinary single summary",
+      "zeroTestHarness": false
+    }
+  ],
+  "qualification": "observed component tests; not native-actor workspace coverage or current future source",
+  "derivationNote": "case-sensitive Cargo Running headers; lowercase libtest running lines are not harness boundaries",
+  "rawLogSha256": "fdd0b9b0bd84be19c16d9608e28bd6c3b5d4356d95e7ab11a14f40e15906a6e2",
+  "manualAccounting": "exact helper identities/parents and legacy nested custody exception; zero-test bins and nested helper pass excluded",
+  "previousDerivation": "v1 row data preserved; aggregate null fields corrected using JSON object enumeration, not a test rerun"
+}
