@@ -24,7 +24,16 @@ Rust tool files and44 absent config candidates unchanged. Session36565 terminal0
 A/WSL use returned. No NativeFiles/VerifiedScan/operational owner is produced. Production
 authority, repair/clock/type-native proof and all prior gates remain incomplete.
 
-Next accepted S1 slice is a private test-compiled inspect_native composition
+Exact older8cbc subsequently passed native Windows check/strict Clippy/fmt and
+SIX exact cases in [[evidence:root/20261107162841]]: facade preflight/Unsupported
+plus five pure transitions, each1pass/102filtered.195 selected source files,
+3249 registry files/75 packages,56 selected Rust tools,52 absent config candidates
+and eight environment hashes unchanged; terminal45327/target returned. This does
+not qualify later NativeFiles20d57380 or current owner/clock source. Root accepted
+the actual private owner-type slice and its lower resource-lifetime refactor;
+20d57380 is SOURCE only, with actual types/native execution still pending.
+
+The accepted S1 slice is a private test-compiled inspect_native composition
 facade using one owning NativeSource and SAME policy/Limits/Control plus typed
 resource-only NativeBudget. It is now authored with one new platform-neutral
 preflight/unsupported test and controlled happy-path wiring, GNU-compiled at8cbc

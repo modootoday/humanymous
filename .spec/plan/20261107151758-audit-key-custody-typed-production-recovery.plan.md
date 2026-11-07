@@ -388,6 +388,17 @@ do not grant writes to Runtime/Authority/native-security/CLI/Lab paths.
 
 ## Record
 
+### Older-source Windows six-case qualification
+
+Exact frozen8cbc passed ordinary-user Windows Rust1.99.1 check/strict Clippy,
+changed-module rustfmt and six exact tests: facade preflight/Unsupported plus
+five pure transition cases, each1pass/0fail/0ignored/102filtered. Source195,
+registry3249files/75packages, selectedtools56, config52absent and eight environment
+hashes unchanged; terminal45327 and target returned before closure. Evidence
+[[evidence:root/20261107162841]]. This qualifies neither20d573 NativeFiles nor
+subsequent original-clock/actual-owner source. Linux/native/capacity/compile-fail,
+writable recovery, production and consumer gates stay open.
+
 ### Owned native resource prerequisite (source only)
 
 Root accepted the actual private owner-type slice after15174100/88cc4ba9 review,
