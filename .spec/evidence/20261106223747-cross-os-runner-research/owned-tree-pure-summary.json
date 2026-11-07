@@ -1,0 +1,68 @@
+{
+  "schema": "humanymous.owned-tree-pure-validation/1",
+  "status": "passed",
+  "observed_by_utc": "2026-11-07T11:41:47Z",
+  "venue": "native Windows",
+  "source_files": 10,
+  "source_drift": 0,
+  "atomic_head_captured": false,
+  "selectors": [
+    {
+      "name": "tree_lifecycle::tests",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 19
+    },
+    {
+      "name": "linux_tree_probe::tests",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 21
+    }
+  ],
+  "all_target_check": "passed",
+  "all_target_clippy": "passed with -D warnings",
+  "jobs": 1,
+  "incremental": false,
+  "target": "target/validation-agents-native",
+  "admission": {
+    "free_gib": 32.66,
+    "commit_percent": 81
+  },
+  "linux_cfg_executed": false,
+  "actual_probe_executed": false,
+  "native_backend_qualified": false,
+  "native_mutations": false,
+  "raw": {
+    "after.sha256": {
+      "sha256": "2d9812b52a66ca2128a21a4b67b702c1a6f0c177150ac8e244354915a403a6af",
+      "bytes": 951
+    },
+    "before.sha256": {
+      "sha256": "2d9812b52a66ca2128a21a4b67b702c1a6f0c177150ac8e244354915a403a6af",
+      "bytes": 951
+    },
+    "check.log": {
+      "sha256": "bafba17384469535f5aef7c273a00d3ce29427aafbc678f2f9d5b061dddd9d40",
+      "bytes": 165
+    },
+    "clippy.log": {
+      "sha256": "c168d923812e4853b51731c685e012b9c4a372f92e6de24b2235336016fed420",
+      "bytes": 165
+    },
+    "lifecycle.log": {
+      "sha256": "997dfbf377abae50093f1af85a9cea6188391f03cab9bcb5cf6314563ff06407",
+      "bytes": 780
+    },
+    "probe.log": {
+      "sha256": "2066ff0dbd91e16a296cf58f808375b51d9cc48f1f25e5e92e8a4734241c414d",
+      "bytes": 499
+    }
+  },
+  "private_directory": ".spec.local/root/evidence/20261107204100-windows-runner-owned-tree-pure",
+  "directory_name_is_not_execution_timestamp": true
+}

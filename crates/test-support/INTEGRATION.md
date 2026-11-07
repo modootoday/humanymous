@@ -44,3 +44,23 @@ Subsequent canonicalf44b32b sharedJSON pure2 passed (0failed/ignored,9filtered) 
 all-target warnings-denied Clippy passed. No process test was executed in this
 selection. Post-run owned source bytes match canonical Git blobs; exact counts,
 hashes and private-log registration are in the cross-os runner evidence bundle.
+
+## Owned-tree model and read-only prerequisite inventory (unqualified)
+
+`tree_lifecycle::Lifecycle<Owner>` is a PURE symbolic model, not a native resource
+adapter. It retains the owner on incomplete finish, borrows observations, and
+requires six separate terminal obligations. SDK execution success is separate
+from cleanup. No custom Drop, spawn, kill or recovery supervisor exists; actual
+consumers must not use it to bypass the blocked native backend contract. Four
+new pure tests passed in the allocated native Windows selector.
+
+`linux_tree_probe::inspect()` reads fixed PID1/mountinfo/socket prerequisites
+without subprocesses, D-Bus calls, policy prompts or filesystem mutations. Reads
+have byte bounds, not a cancellation/wall-clock guarantee. Manager version and
+broker authorization are explicitly NotQueried, and NativeBackendUnqualified is
+always returned. Two pure inventory tests passed on Windows; Linux cfg and inspect were not run. No supported
+Linux backend, actual prerequisite result or genuine-host claim is established.
+
+Both new selectors passed with all-target check and warnings-denied Clippy; ten
+source/manifest/lock/toolchain files had zero drift. Exact evidence is registered
+in the cross-OS runner owned-tree-pure-summary.json.

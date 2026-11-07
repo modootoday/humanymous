@@ -901,3 +901,107 @@ are included, nested custody child summary is not added. Original raw logs and
 original reported totals remain immutable. Existing local three-target44/raw3
 adoption is unchanged. This historical qualification correction is not a fresh
 execution pass of the changed WAL code.
+
+
+Root-assigned C validation of ee7ff0f1 runner source completed:29pure passes,
+zero failed/ignored and one excluded actual filesystem/ACL fixture. All-target
+check and Clippy with warnings denied passed. Forty-three source/manifest/lock/
+toolchain files had zero before/after drift. Exact selectors and raw hashes are
+attached; the working Git HEAD was not captured, so this is a component source
+checkpoint plus exact closure claim, not an atomic full-workspace HEAD claim.
+Admission observed33.15GiBfree/80.68%commit and verified exclusive target/
+validation-agents-native; jobs1/incremental0. C returned. No actual actor, account,
+SCM or process-native profile was run. ACT denial and WAL helper tests are now
+pure-qualified; actual changed WAL parent and service lifecycle remain distinct
+native/hosted gates. No .NET workload source changed during this validation.
+
+
+## Draft .NET ordinary-user actor workload v0.1
+
+Status: draft contract, not implemented or qualified. Root requested a narrow
+Windows workload hook reusing the existing account/token/job boundary; no SCM,
+new account implementation, administrator fallback or manifest change is included.
+The exact controller contract is crates/dotnet-adapter/INTEGRATION.md, Hosted
+ordinary actor handoff contract. .NET owns controller and dotnet-validation.yml;
+this owner owns actor dispatch, private environment, containment and safe summary.
+
+- Proposed parent mode standard-user-dotnet and fixed child mode dotnet-package
+  use the existing actor identity verification and suspended kill-on-close job.
+  The child runs only the digest-pinned package test executable with --ignored
+  --nocapture --exact sdk_package_and_real_host_matrix --test-threads=1. No generic
+  executable/argument runner, recursive Cargo or native default harness build.
+- Typed bounded strict input schema humanymous.dotnet-actor-input/1 binds the
+  clean source root/SHA, hashed controller/host harness/native library/provenance,
+  SDK root, Git executable and explicit read-only compiler/linker paths. Unknown,
+  duplicate, relative, missing, nonregular or changed inputs fail before launch.
+  Root/Cargo JSON build provenance and genuine hosted run/source evidence remain
+  separate; a local hash or environment label cannot create that provenance.
+- Parent validates source and artifacts before and after execution. The generated
+  Users actor has read/execute source/artifacts and verified source write denial.
+  Genuine hosted admission rejects ACT before any account mutation. The child
+  validates its actual SID and non-elevated token; no local-profile promotion.
+- Environment is constructed, never inherited wholesale: SystemRoot/WINDIR/
+  SystemDrive/COMSPEC, private TEMP/TMP/USERPROFILE/CLI home/NuGet caches,
+  DOTNET_ROOT, explicit SDK settings, and verified SDK/Git/MSVC/Windows SDK search
+  paths. Only named bounded path-list/toolchain values are accepted; credentials,
+  runner tokens and arbitrary command strings are excluded. SDK installs and
+  Rust release builds are prerequisites, not ordinary-child responsibilities.
+- Git ownership compatibility is process-local for the exact verified checkout;
+  no global safe.directory, user/system config writes or ambient credentials.
+  Optional index writes are disabled. .NET HumanymousBuildRoot redirects all
+  intermediate/output/cache files outside source into the private fixture tree.
+- Proposed profile deadline is30minutes inside a60minute workflow. Existing SDK
+  restore600s/publish1200s and host180s bounds are ceilings, never extensions of
+  remaining outer time. Parent timeout/nonzero/missing output remains failure;
+  killed work cannot manufacture complete counts or successful cleanup.
+- Controller outcome schema humanymous.dotnet-component-summary/1 is safe typed
+  metadata only. Proposed OBSERVATION_PATH publication is owner work, not assumed
+  to exist. A complete package unit footer is not full contract qualification;
+  required case IDs/modes, executed/failed/ignored/unknown/not_run and native
+  artifact identities stay explicit. Incomplete exit2 never becomes workflow0.
+
+### Required private handoff and cleanup decisions
+
+Current actor TEMP inherits restricted administrator+actor grants, whereas the
+shared ordinary private-directory factory requires a protected owner-only parent.
+The child must create/privatize its own parent before controller use. The elevated
+parent must not take ownership or repair ACLs to inspect private nested output.
+Selected bounded regular-file outcomes/raw logs must be published by the child
+into the restricted handoff root with relative allowlisted names/length/hash
+manifest; never copy whole package/cache/build trees into public evidence.
+
+Normal child exit must publish known results and clean its private work first.
+A timed-out child cannot self-clean. Proposed fallback is a fixed bounded cleanup
+mode launched under the SAME generated user, after main-job containment/empty
+observation and before account deletion, reusing the original account/token/job
+code and only the exact generated scratch identity. No arbitrary target, command,
+ACL repair, administrator deletion substitute or SCM authority is granted. Root
+and native/.NET owners must review this ordering before implementation; current
+account-delete-before-admin-scratch-remove is insufficient for private leftovers.
+Cleanup failure/unknown remains explicit and prevents a passing actor summary.
+
+LOGON_WITH_PROFILE is currently used. Account deletion and scratch deletion do
+not prove Windows profile directory or registry profile removal. USERPROFILE
+redirection is not proof of OS profile cleanup. Profile lifecycle is an explicit
+unresolved cleanup gate/residual; historical account/scratch/job facts are not
+rewritten as stronger profile-erasure evidence.
+
+### Verification and critique gates
+
+Pure: exact mode/controller/argument inventory; strict schema and fixed environment
+allowlist; path-list bounds; source/hash mismatch; 30minute deadline selection;
+unknown and incomplete result accounting; regular handoff paths; no secret/raw
+identifier publication. Actual hosted Windows: generated Users identity, source
+write denial, SDK/Rust artifact pinning, all source/packed JIT/AOT declared modes,
+independent native host evidence, main and cleanup job emptiness, private tree/
+account/scratch/profile outcomes and bounded timeout. No local account/SCM test
+is authorized by this draft. Docker product qualification remains separate.
+
+Blue: reuse one actor boundary and shared private-directory verification. Red:
+reject arbitrary commands, ambient environments, writable SDK search paths,
+ACT-spoofed hosted claims and stale outcomes. SRE: complete containment before
+same-user recovery and account deletion; keep bounded partial failures. Privacy:
+selected private handoff only, no admin ACL repair or token copying. Evaluator:
+package controller success is not every host contract case or full product pass.
+Verdict needs-work until outcome publication, cleanup/profile contract and typed
+input/environment details are agreed. No implementation starts from a placeholder.

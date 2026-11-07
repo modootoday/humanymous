@@ -1,0 +1,35 @@
+{
+  "schema": "humanymous.windows-runner-pure-validation/1",
+  "status": "passed",
+  "scope": "ACT-mutation-admission-and-exact-WAL-helper-accounting",
+  "runner_source_checkpoint": "ee7ff0f1",
+  "working_head_not_captured": true,
+  "source_files": 43,
+  "source_drift": 0,
+  "source_manifest_sha256": "1723ba7b062f72057865fa42995a65a01c65ced4520d09524e79571d53473c02",
+  "tests": {
+    "passed": 29,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 1,
+    "excluded": "public_summary_excludes_identity_credentials_and_raw_traces"
+  },
+  "all_target_check": "passed",
+  "all_target_clippy": "passed with -D warnings",
+  "selector": "cargo test --locked --manifest-path scripts/ci/windows-native-runner/Cargo.toml -- --skip public_summary_excludes_identity_credentials_and_raw_traces",
+  "jobs": 1,
+  "incremental": false,
+  "target": "target/validation-agents-native",
+  "admission": {
+    "free_gib": 33.15,
+    "commit_percent": 80.68,
+    "target_process_and_lock_probe_free": true
+  },
+  "actual_actor_accounts_scm_process_native_profiles": "not_run",
+  "full_runtime_qualified": false,
+  "raw_logs": {
+    "pure.log": "00e0c68cd3f42b558ae53aacf93b26cbdcfdebfcb303b600e898765128e8219a",
+    "check.log": "0d5d0e107aab741a5c798e4d1bf28cc8edc6fc8236bd2fcc2042756ff5e76118",
+    "clippy.log": "2046ca90521b10517e378834205e3aefb97eb8d655dfd62d9ce7fd614ff4f99e"
+  }
+}

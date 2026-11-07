@@ -3,8 +3,9 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-07T10:01:42Z
+updated: 2026-11-07T10:24:17Z
 files:
+  - {path: owned-tree-pure-summary.json, sha256: ee7c880877daabfa6e3b33073ff17d91f6b64928ce06076bec9cc9454686c143, bytes: 1876, store: repo}
   - {path: macos-arm64-initial.log, sha256: 05490700b79bff322d867d8ec71f87c98e226399511438e4c1541158cb2da587, bytes: 57321, store: repo}
   - {path: initial-artifacts.json, sha256: 88991429991b63ae1ec7bcda09792d986a137e482b1eded17f12c90158b5df56, bytes: 1277, store: repo}
   - {path: corrected-run-summary.json, sha256: 18f2ddaeee61015909ce12b74bc71238b5eea2012752ab2975c72a01191653f4, bytes: 1170, store: repo}
@@ -39,6 +40,7 @@ files:
   - {path: hosted-8132117-windows-owner-summary-extracted.json, sha256: 634a64ebf52316942fe61108e7ed4695001874d7b9f1eb4b501c4edfa52b157d, bytes: 20428, store: repo}
   - {path: runner-accounting-docker-pure-summary.json, sha256: 9ee82057857872e19acc69ffb2e74b3d5c35ca5be7611d039f116297279c0a32, bytes: 2604, store: repo}
   - {path: local-windows-audit-evidence-adoption.json, sha256: 04367fe5390d1dc2fadcbcceea5b3ecbe650d3b6fa85daf9776415bf8043f9af, bytes: 1624, store: repo}
+  - {path: runner-act-wal-pure-summary.json, sha256: 7b706eb725ec3523af073299a17611f4d46c8fc7d6ce3227e985f01b7787b88a, bytes: 1369, store: repo}
 ---
 
 # Cross OS runner research
@@ -46,3 +48,11 @@ files:
 ## What was measured
 
 ## How to read it
+
+## Shared lifecycle model validation
+
+Native Windows passed four lifecycle and two prerequisite-inventory pure tests,
+all-target check and strict Clippy. Ten source/manifest/lock/toolchain files had
+zero drift. Linux cfg, actual prerequisite inventory, native allocation and
+recovery-supervisor behavior were not executed or qualified. See the registered
+owned-tree-pure-summary.json for exact selectors and raw hashes.
