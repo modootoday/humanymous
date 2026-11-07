@@ -73,7 +73,7 @@ impl Controls {
                     self.modifiers.control_key(),
                     self.modifiers.alt_key(),
                     self.modifiers.shift_key(),
-                    self.modifiers.super_key(),
+                    self.modifiers.meta_key(),
                     event.repeat,
                 ) {
                     crate::tab_sessions::enqueue_window(&self.state, command)?;

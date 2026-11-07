@@ -6,6 +6,13 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Actual d2148b0a run42388354925 failed native build101 after runner14/helper-Clippy
+success, with E0599 at browser_controls.rs:76. Protocol/bootstrap/desktop stages
+were unreached. The pinned winit0.31.0-beta.3 API provides meta_key(), replacing
+the unsupported super_key() source call. Corrected native compilation is pending;
+the original private compiler body is unrecovered. See the delivery-owned
+cef-d2148b0a-summary.json and controls-cef-meta-key-candidate.json receipts.
+
 Current UI-32 controls source is newer than the ec4 qualification below. It adds
 real CEF Back/Forward entry traversal, loading availability and Stop. The engine
 entry stream must be ordered, complete, bounded and locally allowlisted; the

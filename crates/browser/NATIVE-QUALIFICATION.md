@@ -14,6 +14,11 @@ Subsequent d75c351c passed42 native-ui document tests, check/strict Clippy/fmt w
 87 declared files unchanged. Required native document AX actions and retained
 input/focus passed after three preserved scene failures. CEF compilation and an
 actual multi-tab GUI pilot remain unexecuted for this new lifecycle source.
+Actual d2148b0a build in run42388354925 subsequently failed101 with E0599 at
+browser_controls.rs:76 before any protocol/bootstrap/desktop tests. Static pinned
+winit review identified the obsolete super_key() call and its meta_key() API.
+The correction remains native-build unverified. Private compiler text was not
+recovered; diagnostic source review and compiler-message custody stay separate.
 The old single-child ec4 results below do not qualify the new lifecycle source.
 
 Windows x64 sourceec4 passed native compilation, desktop synthetic protocol4,

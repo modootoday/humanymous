@@ -13,6 +13,15 @@ rel:
 
 ## Actual bounded Windows CEF gate passed
 
+New actual run42388354925/job128450452895 at d2148b0a failed native build101 after
+runner14/helper-Clippy success. Safe diagnostics identify E0599 at native
+browser_controls.rs:76; rendered compiler text and the private build-log body
+were not recovered. Protocol/bootstrap/desktop tests were unreached and source
+postcheck is unknown. Static inspection of pinned winit0.31.0-beta.3 identifies
+ModifiersState::meta_key(), with no super_key() method at that call site. The
+one-line adapter correction is source-only until the next actual native build;
+scene42 at d75 and old ec4 process counts do not discharge this failed gate.
+
 Latest native-ui document gate passed42/42 at d75c351c, zero ignored/filtered;
 all-target check, strict Clippy and formatter passed. The87-file declared closure
 is unchanged. controls-scene-validation.json preserves22ac39/2 (unsupported AX
