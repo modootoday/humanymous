@@ -1243,3 +1243,20 @@ native jobs are still in progress and macOS/Windows queued. No Pages job observe
 yet; no terminal success/failure inferred and no duplicate dispatch. Current
 Ruby/image prose, manual receipts and frozen browser dot-segment fix are later
 working-source changes and are not qualified by this running SHA.
+
+### Host fixture completion source versus observed shutdown
+
+Read complete updated managed Program.cs and separate Python WSGI server contract.
+Public reference records .NET GC/control join source, timed-out control failure,
+separate generic ABI probe and supervisor exit/reaping obligations without claiming
+actual managed runtime. Python server contract records factory source only,
+unimplemented harness/unprovisioned server and executions0; the seven framework-
+object cases do not supply that network boundary. Added two exact manual receipts.
+Existing source88/errors0; no actual managed/server/network or Cargo execution.
+
+Re-polled exact813 run42355168729: Docker128351926068 and Ubuntu128351926093 are
+terminal failures; macOS128351926084 and product browser128353483559 live, Windows
+queued. Overall still not terminal. No specific test count/cause, Pages result
+or current WIP qualification inferred. Stored sanitized partial-failure snapshot
+separate from initial live state and prior startup_failure, notified root. No
+new push/dispatch or cancellation; pending dot-segment source fix remains frozen.

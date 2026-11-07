@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-07T08:34:58.1332745Z",
+  "run_id": 42355168729,
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "overall": "not terminal; run API queued with active child jobs",
+  "policy": "success",
+  "failed_jobs": [
+    {
+      "id": 128351926068,
+      "name": "validate / docker"
+    },
+    {
+      "id": 128351926093,
+      "name": "validate / native (ubuntu-24.04)"
+    }
+  ],
+  "active_jobs": [
+    {
+      "id": 128351926084,
+      "name": "validate / native (macos-15)"
+    },
+    {
+      "id": 128353483559,
+      "name": "validate / browser"
+    }
+  ],
+  "queued_jobs": [
+    {
+      "id": 128351926153,
+      "name": "validate / native (windows-2025)"
+    }
+  ],
+  "pages": "not observed yet",
+  "documentation": "not observed yet",
+  "failure_test_denominators": "not inferred from job failure",
+  "failure_causes": "not inspected in this snapshot",
+  "scope_limit": "Exact813 partial/live observation. No whole workflow or current working source qualification. Product browser job is not Pages keyboard/AT."
+}

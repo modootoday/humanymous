@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/python/server-pilot-contract.json",
+  "sha256": "e3ee1cce2d536912e7fce6f98a22efb131d58de93c77eb20db1ba86835bf05f2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete separate WSGI network-server candidate contract: native factory authored, executable harness and dependency unprovisioned, actual executedCases0, per-framework required groups and source/ABI/package/authority/image lineage. Public topology separates this planned network boundary from existing seven framework-object cases, and preserves cleanup/isolated-hosted/unqualified limits.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/pilot/Program.cs",
+  "sha256": "1f723043edae689ab82840dae842bde423a55472e94e5f4d8a292e4992462723",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete updated actual Kestrel test-host source: redirected private startup, actual loopback binding, middleware-before-handler, independent contact/mutation counters, binary/cookie/HEAD/204/304/stream/error routes, handoff probes, tracked GC worker and bounded control/GC joins. Optional generic native ABI roundtrip remains separate. Source stopped frame follows successful join, but caller must still observe process exit/reaping; no actual managed build/host/GC/ABI run performed.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "build/rust/browser-product.Dockerfile.dockerignore",
   "sha256": "5e0990d76142924cc9921068dc96912cb32591ddc47e0452afd6984b1228c2aa",
   "reviewer": "codex/rust-pages",

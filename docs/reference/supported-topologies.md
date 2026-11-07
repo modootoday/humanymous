@@ -134,6 +134,11 @@ Those cases are not an actual network server, production authority, successful
 authenticated ALLOW, installed wheel, response-streaming or cancellation-race
 qualification. Empty qualified tuples remain the current support declaration.
 
+A separate WSGI server contract selects a native factory and a candidate server,
+but still records an unimplemented executable harness, an unprovisioned server
+dependency and zero executed cases. That planned network boundary is not supplied by
+the seven framework-object cases or by a default crate build.
+
 The Ruby host contract selects three dependency-unavailable framework-object
 smoke cases. Those are not an actual server, successful production authority
 path, installed gem, GC-compaction or GVL/cancellation qualification. Its native
@@ -170,3 +175,10 @@ a supplied native artifact and runtime identifier; that check alone does not
 verify its hash or package lineage. .NET 10 target metadata,
 AOT-compatible settings and a pinned SDK do not qualify an installed package,
 JIT/NativeAOT tuple, managed cancellation race or complete product.
+
+The managed test host now tracks its GC worker and bounds its control-task join
+before emitting a successful stopped message. A timed-out control join returns
+failure instead. These are source checks, not observed shutdown: the supervisor
+must still measure process exit/reaping and retained-resource release. Its
+optional generic ABI roundtrip is a separate test profile, not a substitute for
+middleware, JIT/NativeAOT, C++ or package qualification.
