@@ -628,3 +628,62 @@ selected parent and all four correct subcase observations, along with both
 parent and baked fixture artifact pins. CLI reported its sole actual invocation
 terminal with parent1/four subcases, but that actual durable receipt belongs to
 the CLI owner and is not manufactured by this static build handoff.
+
+## Controlled outer-fault source contract v1.5
+
+Root assigned the next unmet L2 slice: missing cooperative grant and live-parent
+original run deadline. Source stays in the same controller and shared fixture
+package. No new FFI/unsafe/ACL/producer capability, manifest or dependency. All
+normal/native-five and CLI mappings remain positive profiles; fault acceptance
+cannot weaken their required grant/natural-exit0/timely-cleanup conditions.
+
+Two NEW closed case IDs use the existing test-support Cargo-hash executable and
+actual expected SHA256. There is no arbitrary fault flag or budget override:
+
+| Case | Exact ignored probe selector | Required observed negative outcome |
+| --- | --- | --- |
+| outer-missing-grant | process::controlled_barrier::actual_tests::missing_grant_refuses_before_workload | Real assigned Job, intentionally NO grant; shared wait returns typed TimedOut after its original5s, probe prints refusal marker, natural parent exit0, actual parent exit plus Job0 and cleanup within original15s. |
+| outer-live-timeout | process::controlled_barrier::actual_tests::live_parent_waits_for_original_outer_deadline | Real Job-before-grant; probe body-entry marker, held parent's actual try_wait=None at original10s, positive Job active count BEFORE successful termination request, actual exit1 AFTER request, Job0 and known timely cleanup by original15s. |
+
+Both keep original outer run10s/cleanup15s established BEFORE spawn. The missing
+grant probe starts no workload/descendant and asserts the exact error kind; a
+missing file is not itself terminal evidence. Its Rust test may pass1 after the
+expected refusal, while controller parent_test_passed remains false because no
+grant admitted a workload. Only explicit expected-outcome case_qualified may
+report the correctly observed negative case.
+
+The live probe starts no child or IO worker, flushes its bounded diagnostic marker
+then sleeps30s as a finite fallback. Natural fallback completion/panic cannot
+qualify: actual exit1 and positive pretermination Job membership are mandatory.
+It is intentionally killed before a completed Rust test footer; future evidence
+must count ONE outer negative case, not claim a passing inner Rust test. This
+proves the known live-parent branch, not arbitrary hostile containment or every
+hung IO/join shape. Existing kernel/preassignment limitations remain explicit.
+
+Private pure outcome.rs separates expected-negative diagnostic classification
+from ordinary parent success. Four authored pure cases reject absent actual
+exit, missing Job0, expired cleanup, unavailable pretermination count, missing
+marker and observation/termination errors. Marker observation also must finish
+inside the SAME original cleanup budget. Native cleanup facts stay distinct from
+later diagnostic evidence; no renewed deadline or caller-supplied clock exists.
+
+Cleanup now records a real optional active-process count before termination and
+clears any old Job-empty value BEFORE each new query, so failed observations
+cannot reuse a stale zero. Errors keep qualification failed. Known native
+convergence requires actual parent exit AND a successful current Job0 observation;
+unknown owners are retained before report IO. Probe logs are read only AFTER
+known native convergence, capped64KiB; unknown cleanup skips that read entirely.
+Markers alone confer no native ownership or producer authority.
+
+State at this source checkpoint: both probe parents are ignored by default and
+NOT_RUN; five profile-map pure cases and four outcome pure cases are authored
+NOT_RUN. No Cargo enumeration/check/build/runtime has started during Delivery/
+Audit reservations or Browser's GUI window. Browser subsequently returned its
+GUI reservation; Root requests this committed candidate before a new bounded
+slot decision. Only bare rustfmt/diff/spec checks ran; initial transient Windows
+mapped-file1224 fmt refusal was corrected without foreign process termination.
+Independent X source-only review found no confirmed defect in the initial bounded
+fault wiring, with final clock-bound hardening still a source claim until review.
+Unassigned failure injection, bridge native providers, SCM/accounts/privileges and
+duplicate CLI execution remain excluded. Runtime begins only after explicit slot
+coordination and fresh resource admission.

@@ -9,6 +9,10 @@ use std::{
 };
 
 const SCHEMA: &str = "humanymous.controlled-capture-grant/1";
+/// Diagnostic marker emitted only after the controlled missing-grant refusal.
+pub const CONTROLLED_MISSING_GRANT_MARKER: &str = "HUMANYMOUS-CONTROLLED-MISSING-GRANT/1";
+/// Diagnostic body-entry marker before the controlled finite live-parent hold.
+pub const CONTROLLED_LIVE_PARENT_MARKER: &str = "HUMANYMOUS-CONTROLLED-LIVE-PARENT/1";
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Grant {
@@ -167,3 +171,6 @@ mod tests {
         assert!(check_claim(&vec![b' '; 4097], &"a".repeat(32), "case", 7).is_err());
     }
 }
+
+#[cfg(all(test, windows))]
+mod actual_tests;

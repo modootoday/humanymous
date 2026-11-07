@@ -11,6 +11,8 @@ use std::{
     process::{Child, Command, ExitStatus, Stdio},
     time::{Duration, Instant},
 };
+mod outcome;
+use outcome::{ExpectedOutcome, Facts, classify};
 
 const CASES: &[(&str, &str)] = &[
     ("normal", "retained_normal_stdout_stderr_and_actual_joins"),
@@ -28,18 +30,39 @@ const CASES: &[(&str, &str)] = &[
 struct Profile {
     selector: String,
     executable_prefix: &'static str,
+    expected: ExpectedOutcome,
 }
 fn profile(case: &str) -> Option<Profile> {
+    let fault = match case {
+        "outer-missing-grant" => Some((
+            "missing_grant_refuses_before_workload",
+            ExpectedOutcome::MissingGrantRefusal,
+        )),
+        "outer-live-timeout" => Some((
+            "live_parent_waits_for_original_outer_deadline",
+            ExpectedOutcome::LiveDeadlineTermination,
+        )),
+        _ => None,
+    };
+    if let Some((name, expected)) = fault {
+        return Some(Profile {
+            selector: format!("process::controlled_barrier::actual_tests::{name}"),
+            executable_prefix: "humanymous_test_support-",
+            expected,
+        });
+    }
     if case == "cli-watchdog" {
         return Some(Profile {
             selector: "final_delivery_watchdog_with_retained_unread_pipes".into(),
             executable_prefix: "watchdog_boundary-",
+            expected: ExpectedOutcome::ParentPass,
         });
     }
     let (_, name) = CASES.iter().find(|(id, _)| *id == case)?;
     Some(Profile {
         selector: format!("process::capture_attempt::actual_tests::{name}"),
         executable_prefix: "humanymous_test_support-",
+        expected: ExpectedOutcome::ParentPass,
     })
 }
 fn executable_name(name: &str, profile: &Profile) -> bool {
@@ -123,6 +146,8 @@ struct CleanupFacts {
     parent_exit_observed: bool,
     job_empty_observed: bool,
     within_deadline: bool,
+    observation_failed: bool,
+    active_before_termination: Option<u32>,
 }
 impl OwnedController {
     fn observe(&mut self) -> io::Result<()> {
@@ -139,6 +164,12 @@ impl OwnedController {
         if Instant::now() >= cleanup {
             return facts;
         }
+        if self.assigned {
+            match self.job.active() {
+                Ok(active) => facts.active_before_termination = Some(active),
+                Err(_) => facts.observation_failed = true,
+            }
+        }
         facts.termination_requested = true;
         facts.termination_failed = if self.assigned {
             self.job.terminate().is_err()
@@ -147,12 +178,18 @@ impl OwnedController {
         };
         while Instant::now() < cleanup {
             if self.observe().is_err() {
+                facts.observation_failed = true;
                 return facts;
             }
             facts.parent_exit_observed = self.exit.is_some();
+            // Never reuse an earlier empty observation if this query fails.
+            facts.job_empty_observed = false;
             match self.job.active() {
                 Ok(active) => facts.job_empty_observed = active == 0,
-                Err(_) => return facts,
+                Err(_) => {
+                    facts.observation_failed = true;
+                    return facts;
+                }
             }
             if facts.parent_exit_observed && facts.job_empty_observed {
                 facts.within_deadline = Instant::now() < cleanup;
@@ -162,6 +199,23 @@ impl OwnedController {
         }
         facts
     }
+}
+
+fn probe_marker(path: &Path, expected: &str) -> io::Result<bool> {
+    const LIMIT: u64 = 64 * 1024;
+    let metadata = fs::symlink_metadata(path)?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > LIMIT {
+        return Err(refused());
+    }
+    let mut bytes = Vec::new();
+    File::open(path)?.take(LIMIT + 1).read_to_end(&mut bytes)?;
+    if bytes.len() as u64 > LIMIT {
+        return Err(refused());
+    }
+    Ok(std::str::from_utf8(&bytes)
+        .map_err(|_| refused())?
+        .lines()
+        .any(|line| line == expected))
 }
 
 pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
@@ -186,7 +240,9 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
     if format!("{:x}", hasher.finalize()) != options.digest {
         return Err(refused());
     }
-    let selector = profile(&options.case).ok_or_else(refused)?.selector;
+    let profile = profile(&options.case).ok_or_else(refused)?;
+    let selector = profile.selector;
+    let expected = profile.expected;
     fs::create_dir(&options.work)?;
     let stdout = new_file(&options.work.join("parent.stdout.log"))?;
     let stderr = new_file(&options.work.join("parent.stderr.log"))?;
@@ -218,11 +274,15 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
     let mut granted = false;
     let mut run_expired = false;
     let mut observation_error = false;
+    let mut live_at_run_deadline = false;
     let setup = (|| -> io::Result<()> {
         owner.job.assign(&owner.child)?;
         owner.assigned = true;
         if owner.job.active()? == 0 || Instant::now() >= run_until {
             return Err(refused());
+        }
+        if expected == ExpectedOutcome::MissingGrantRefusal {
+            return Ok(());
         }
         let mut file = new_file(&options.work.join("grant.pending"))?;
         let bytes = humanymous_test_support::process::encode_unverified_controlled_fixture_grant(
@@ -248,6 +308,7 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
             }
             if Instant::now() >= run_until {
                 run_expired = true;
+                live_at_run_deadline = true; // Last actual try_wait returned None.
                 break;
             }
             std::thread::sleep(Duration::from_millis(5));
@@ -258,29 +319,79 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
     let cleanup = owner.contain(cleanup_until);
     let cleanup_known = cleanup.parent_exit_observed && cleanup.job_empty_observed;
     let actual_exit = owner.exit.and_then(|status| status.code());
+    // Read diagnostic output only AFTER known native convergence. Unknown owners
+    // are retained below before any fallible report IO, never dropped by a read error.
+    let marker = match expected {
+        ExpectedOutcome::ParentPass => None,
+        ExpectedOutcome::MissingGrantRefusal => {
+            Some(humanymous_test_support::process::CONTROLLED_MISSING_GRANT_MARKER)
+        }
+        ExpectedOutcome::LiveDeadlineTermination => {
+            Some(humanymous_test_support::process::CONTROLLED_LIVE_PARENT_MARKER)
+        }
+    };
+    let mut marker_read_error = false;
+    let marker_observed = if cleanup_known {
+        marker.and_then(
+            |text| match probe_marker(&options.work.join("parent.stdout.log"), text) {
+                Ok(observed) => Some(observed),
+                Err(_) => {
+                    marker_read_error = true;
+                    None
+                }
+            },
+        )
+    } else {
+        None
+    };
+    let probe_timely = Instant::now() < cleanup_until;
     let elapsed_ms = original.elapsed().as_millis();
-    let passed = granted
-        && natural
-        && actual_exit == Some(0)
-        && cleanup_known
-        && cleanup.within_deadline
-        && !cleanup.termination_failed;
+    let classification = classify(
+        expected,
+        Facts {
+            setup_ok: setup.is_ok(),
+            assigned: owner.assigned,
+            granted,
+            natural,
+            run_expired,
+            live_at_deadline: live_at_run_deadline,
+            exit_code: actual_exit,
+            parent_exited: cleanup.parent_exit_observed,
+            job_empty: cleanup.job_empty_observed,
+            cleanup_timely: cleanup.within_deadline,
+            termination_requested: cleanup.termination_requested,
+            termination_failed: cleanup.termination_failed,
+            observation_failed: observation_error
+                || cleanup.observation_failed
+                || marker_read_error,
+            active_before_termination: cleanup.active_before_termination,
+            probe_marker: marker_observed,
+            probe_timely,
+        },
+    );
     let report = json!({"schema":"humanymous.controlled-capture-outer/1","case":options.case,
         "selector":selector,"test_exe_sha256":options.digest,"actual_parent_pid":pid,
         "actual_controller_pid":std::process::id(),"execution_token":"inherited-current-process",
         "run_budget_ms":10000,"cleanup_budget_ms":15000,"elapsed_ms":elapsed_ms,
-        "job_assigned_before_grant":owner.assigned,"cooperative_grant_written":granted,
+        "actual_job_assigned":owner.assigned,"job_assigned_before_grant":owner.assigned && granted,
+        "cooperative_grant_written":granted,"grant_intentionally_withheld":expected == ExpectedOutcome::MissingGrantRefusal,
+        "expected_outcome":expected.label(),"case_qualified":classification.case_qualified,
+        "parent_live_observed_at_original_deadline":live_at_run_deadline,
+        "active_job_processes_before_termination":cleanup.active_before_termination,
+        "probe_marker_observed":marker_observed,"probe_marker_read_error":marker_read_error,
+        "probe_observation_within_original_cleanup_budget":probe_timely,
         "natural_parent_exit_observed":natural,"actual_parent_exit_code":actual_exit,
         "run_expired":run_expired,"setup_failed":setup.is_err(),"observation_error":observation_error,
         "job_cleanup_termination_requested":cleanup.termination_requested && owner.assigned,
         "direct_parent_stop_requested":cleanup.termination_requested && !owner.assigned,
         "cleanup_termination_failed":cleanup.termination_failed,
+        "cleanup_observation_error":cleanup.observation_failed,
         "actual_job_empty_observed":cleanup.job_empty_observed,
         "actual_parent_exit_observed":cleanup.parent_exit_observed,
         "cleanup_within_original_deadline":cleanup.within_deadline,
         "cleanup_scope":if owner.assigned {"assigned-job"} else {"unassigned-cooperative-parent-only"},
         "parent_exit_and_job_empty":cleanup_known,
-        "outer_cleanup_unknown":!cleanup_known,"parent_test_passed":passed,
+        "outer_cleanup_unknown":!cleanup_known,"parent_test_passed":classification.parent_passed,
         "scope":"fixed-cooperative-test-only","race_free_untrusted_launch":false,
         "syscall_wallclock_guarantee":false,"account_scm_or_privilege_operations":false});
     // Retain first, BEFORE report IO can fail or panic.
@@ -291,7 +402,7 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
     serde_json::to_writer(&mut output, &report)?;
     output.write_all(b"\n")?;
     output.sync_all()?;
-    Ok(if passed { 0 } else { 1 })
+    Ok(if classification.case_qualified { 0 } else { 1 })
 }
 
 #[cfg(test)]
@@ -370,5 +481,29 @@ mod tests {
             "watchdog_boundary-0123456789abcdef.exe",
             &profile("normal").unwrap()
         ));
+    }
+    #[test]
+    fn fault_profiles_have_fixed_selectors_and_cannot_weaken_ordinary_outcomes() {
+        let missing = profile("outer-missing-grant").unwrap();
+        assert_eq!(
+            missing.selector,
+            "process::controlled_barrier::actual_tests::missing_grant_refuses_before_workload"
+        );
+        assert_eq!(missing.expected, ExpectedOutcome::MissingGrantRefusal);
+        let live = profile("outer-live-timeout").unwrap();
+        assert_eq!(
+            live.selector,
+            "process::controlled_barrier::actual_tests::live_parent_waits_for_original_outer_deadline"
+        );
+        assert_eq!(live.expected, ExpectedOutcome::LiveDeadlineTermination);
+        assert_eq!(
+            profile("normal").unwrap().expected,
+            ExpectedOutcome::ParentPass
+        );
+        assert_eq!(
+            profile("cli-watchdog").unwrap().expected,
+            ExpectedOutcome::ParentPass
+        );
+        assert!(profile("outer-live-timeout-arbitrary").is_none());
     }
 }

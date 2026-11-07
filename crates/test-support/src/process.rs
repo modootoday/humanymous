@@ -15,7 +15,8 @@ pub use capture_attempt::{
     CaptureStartFailure, CapturedDirectChild, RetainedCaptureFailure,
 };
 pub use controlled_barrier::{
-    await_controlled_fixture_grant, encode_unverified_controlled_fixture_grant,
+    CONTROLLED_LIVE_PARENT_MARKER, CONTROLLED_MISSING_GRANT_MARKER, await_controlled_fixture_grant,
+    encode_unverified_controlled_fixture_grant,
 };
 pub use direct_pipe::{
     ClosedPipeChild, DirectChildProgress, RetainedDirectPipeAttempt, RetainedDirectPipeFailure,
