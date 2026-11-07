@@ -49,6 +49,88 @@ altering product/scoring or extending the earlier bounded REA investigation.
 
 ### Continuation: transaction safety and input validation
 
+The next explicit B batch completed:36pure passed, zero failed/ignored/filtered,
+all-target check/Clippy-Dwarnings and fmt passed. Recursive source/data and shared
+Cargo/lock/toolchain before/after snapshots match exactly; developer-* raw logs
+and result/source records are registered privately. After RAMfree33.24GiB,
+commit81%, no owned validation process remains and B was returned. The docs were
+then updated to state this result; staging/model execution remain NOT_RUN and no
+later documentation bytes are claimed as executed artifacts. No new dependencies
+or shared-lock regeneration occurred. The next step is an attributed source
+checkpoint, followed by separately scheduled hosted/runtime qualification.
+
+Read-only pinned813 runner inspection explains why independent owned harnesses
+were not reached: after writing each row/progress, harness.rs propagates a failed
+accounting result immediately. The host_process row14 has exit0/two passes/three
+ignored/validatedfalse/no helper binding; durable_witness's one ignored helper is
+correctly bound and validated. Root/native owner received a narrow proposal to
+retain failure and collect later identity-valid harnesses without weakening any
+predicate or continuing executable-identity failures. No foreign lane was edited.
+
+Run42355168729 exact8132117 now has actual terminal Linux/Docker job failures.
+Connector-fetched decoded raw logs are registered in private hosted-813, plus the
+parsed native summary. Linux executed15/88harnesses,51passed/zero failed tests,
+fourrawignored/coveragefalse/errors1; maintenance harnesses are absent, so hosted
+ownership/process/package tests remain NOT_RUN. Docker wargame26scheduled,
+zeroevaluated/19errors/sevenunsupported also fails. No cause beyond those receipts
+is inferred. Root received the exact job/source/denominator report; no duplicate
+dispatch or cross-owner fix was attempted.
+
+Review corrected an accounting flaw in the pending slice: observed nonactivation
+or negative-case activation must remain visible discovery failures, not be hidden
+as missing-data errors that discard behavior deltas. The report now separates
+discovery_failures and expected/observed target reads from accounting errors.
+Missing observations, baseline contamination and cross-plugin reads still refuse
+a delta. Added pure fixtures retain all twelve runs when a target is not read or
+misactivates; numeric arm differences never prove skill-caused benefit. These
+new semantics/tests are NOT_RUN pending the requested allocation.
+
+Live claim text inspection found concrete rollout debt: e2e-infra's parenthetical
+scope exclusion and the legacy Git coordinator's explanatory scope suffix violate
+the strict Rust grammar. No foreign claim was edited and no annotation was
+silently removed. The integration contract records normal owner release/reclaim
+with explicit nonoverlapping scopes and coordinated writer switch as prerequisites.
+This text inventory is not an executed Rust session compatibility test.
+
+Developer packaging/accounting is now authored in the later working tree: stage
+selects its own eval directory and plugin, and paired-check's explicit developer
+profile requires five cases/twenty runs and per-case targeted skill reads. Pure
+fixtures reject product/developer interchange, missing cases and wrong reads;
+the hosted package fixture covers hashes, isolation and five developer prompts.
+These new paths are NOT_RUN and do not inherit the earlier34pure result or the
+running8132117 hosted candidate. No dependency/manifest or runtime policy changed.
+
+The allowed lighter candidate is now downloaded and hash verified: official
+Qwen3-4B-GGUF Q4_K_M at revisionbc640142c66e1fdd12af0bd68f40445458f3869b,
+2497280256 bytes, SHA2567485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5.
+Pinned config metadata is separate from embedded tokenizer. It is NOT_LOADED;
+no quality/performance equivalence to8B is assumed. A new explicit slot is required.
+Hosted run42354873001 at a26d1c3 was verified terminalstartup_failure with zero
+jobs/tests. Fixed source8132117 has new run42355168729 in progress; only exact
+source receipts from its actual jobs can qualify the hosted tests. No duplicate
+push/dispatch was made by this owner.
+
+Root assigned an initial single-process local inference smoke slot with strict
+host/GPU guards. Preflight RAMfree33.52GiB/commit82%, no local heavy CEF/native
+process. First attempt failed before GPU load because the explicit HF tokenizer
+had151669 entries versus GGUF151936. Removing that override used the embedded
+GGUF tokenizer without modifying weights. During the second load, host commit
+reached89% above the88% stop threshold; the verified owned PID92927 alone received
+TERM and the slot was returned. Drained output showed CUDA model-loaded before
+termination; API requests/tool calls/paired runs all remain zero. After stop:
+RAMfree33.16GiB/commit81%, GPUused1183MiB, no server survives. Structured tool-output
+observations are preserved in local-runtime/smoke-attempts.json, explicitly not
+misrepresented as full raw stdout. A smaller4B profile is a next candidate, not a
+passing rerun or authorization to load again without a separate slot.
+
+Developer evaluation source now contains two CI-guide positives, two explicitly
+invoked release-guide positives and one unrelated negative, two runs per arm
+(twenty subject runs). The release guide now repeats immediate native-claim
+failure checks and exact provider/session ownership, with no foreign release.
+These data/guide edits are NOT_RUN, including activation. Product paired-check
+still validates only its separate twelve-run suite; developer staging/accounting
+integration remains outstanding and must not be misreported as implemented.
+
 mistral.rs portable CUDA artifact installation is complete: archive and official
 model hashes matched, version command observed mistralrs0.9.5 and serve help
 executed successfully under existing WSL. Model/config/tokenizer artifacts are

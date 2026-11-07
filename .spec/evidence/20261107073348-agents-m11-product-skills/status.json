@@ -37,8 +37,31 @@
     "mirror_drift": 0
   },
   "hosted_session_and_package_fixtures": "not_run",
+  "developer_accounting_validation": {
+    "source_binding": "private developer-after.json",
+    "pure_passed": 36,
+    "pure_failed": 0,
+    "pure_ignored": 0,
+    "pure_filtered": 0,
+    "all_target_check": "passed",
+    "all_target_clippy": "passed",
+    "fmt": "passed",
+    "source_changed_during_validation": false,
+    "developer_subject_runs_expected": 20,
+    "developer_subject_runs_observed": 0,
+    "hosted_package_execution": "not_run"
+  },
   "product_paired_subject_runs_expected": 12,
   "product_paired_subject_runs_observed": 0,
   "fresh_provider_discovery": "not_run",
+  "local_inference_setup": {
+    "runtime": "mistral.rs0.9.5",
+    "qwen8b_first_attempt": "explicit tokenizer mismatch before GPU load",
+    "qwen8b_second_attempt": "CUDA model loaded; stopped owned process on host commit89 percent above88 guard",
+    "api_requests_sent": 0,
+    "owned_servers_remaining": 0,
+    "qwen4b_candidate": "downloaded and hash verified; not loaded; new slot required",
+    "paired_qualified": false
+  },
   "full_goal_complete": false
 }

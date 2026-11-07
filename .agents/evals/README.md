@@ -34,3 +34,18 @@ command checks its twelve-run denominator and complete behavioral grading agains
 the pinned upstream result shape. It refuses a delta for partial/missing/null or
 contaminated results. This accounting never establishes source/runtime provenance
 on its own, and synthetic unit fixtures are not model evaluation evidence.
+
+Observed failure to read the target skill, or activating it for a negative case,
+is a discovery outcome rather than missing run data. Such runs remain in the
+behavior denominator and are reported in discovery_failures plus expected/actual
+target-read counts. Missing read observations, baseline skill contamination or
+cross-plugin reads invalidate accounting. A numeric arm difference alone is not
+evidence that the skill caused improvement, especially when discovery failed.
+
+The developer suite is isolated under `developer/`: two operations-guide cases,
+two explicitly invoked release-guide cases and an unrelated negative, twenty
+subject runs. `stage-eval ROOT NEW_OUTPUT developer` stages its own plugin;
+`paired-check RESULT_JSON developer` enforces that distinct case/run denominator.
+The later allocated batch passed36 pure tests, all-target check/Clippy and fmt;
+developer-after.json binds those tested bytes. Hosted execution remains pending.
+No current8132117 CI result qualifies these later working-tree edits.

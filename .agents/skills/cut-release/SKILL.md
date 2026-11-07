@@ -36,6 +36,10 @@ Hard gates: rule `93-release-and-ci.md`
   (`release.yml` calls the required reusable validation and then its readiness gate.)
 - Freeze surfaces changed without `!` / `BREAKING CHANGE:` — refuse PATCH; demand markers + correct bump.
 - User only asked to prepare — stop before any remote tag push.
+- A failed native claim command ends the transaction immediately. Check its exit
+  code explicitly; PowerShell ErrorActionPreference alone is insufficient. Before
+  Git mutations, require the stored git-ops provider and session to match this
+  transaction. Never release another owner's claim or unstage their work.
 
 ## Steps
 
@@ -44,13 +48,20 @@ Hard gates: rule `93-release-and-ci.md`
 ```powershell
 pwsh -File scripts/agents/session-board.ps1 claim `
   -Lane release -Provider <claude|grok|codex|gemini> `
+  -Session "cut-vX.Y.Z" `
   -Goal "prepare/cut vX.Y.Z" -Paths "cliff.toml,.github/workflows/release.yml"
+if ($LASTEXITCODE -ne 0) { throw 'Release lane claim failed' }
 ```
 
 For the actual tag/push transaction only:
 
 ```powershell
 pwsh -File scripts/agents/git-coord.ps1 claim -Provider <provider> -Session "cut-vX.Y.Z"
+if ($LASTEXITCODE -ne 0) { throw 'Git claim failed' }
+$releaseClaim = Get-Content -Raw .agents/sessions/claims/git-ops.json | ConvertFrom-Json
+if ($releaseClaim.provider -ne '<provider>' -or $releaseClaim.session -ne 'cut-vX.Y.Z') {
+  throw 'Git transaction owner mismatch'
+}
 ```
 
 ### 2. Preflight (both modes)

@@ -88,6 +88,19 @@ the original result is preserved and current code emits null on blocked reads.
 
 ## Handoff frontier
 
+### Live claim migration prerequisite
+
+Read-only inspection on 2026-11-07 found two legacy scope-text shapes that the
+Rust fail-closed grammar deliberately refuses: e2e-infra contains
+`scripts/ci/** (except windows-*)`, and the legacy Git coordinator writes
+`.git/** (index/HEAD/ref writes only)`. These are human annotations, not valid
+relative glob scopes. This is a concrete compatibility frontier, not permission
+to strip annotations and silently broaden ownership. Keep legacy-coexistence
+until the owners normally release/reclaim explicit nonoverlapping scopes and
+all writers switch together. A temporary Git claim can disappear by normal
+owner release; never edit/delete a foreign live claim to make the parser pass.
+The Rust tool's default refusal is not a successful session rollout test.
+
 Read AGENTS, `.agents/lessons/HARD-WON.md`, agent-maintenance SoT/plan/evidence,
 then this integration contract. Root owns the proposed common Cargo/CI delta;
 the complete modoo plugin/shared package is now pinned and privately acquired at

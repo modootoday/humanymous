@@ -109,10 +109,15 @@ pub fn stage(
     } else {
         plan_developer(root, &license)?
     };
-    if kind == "product" {
-        let source = root.join(".agents/evals/product");
+    {
+        let source = root.join(".agents/evals").join(kind);
+        let plugin = if kind == "product" {
+            "humanymous-product"
+        } else {
+            "humanymous-development"
+        };
         if fs::symlink_metadata(&source)?.file_type().is_symlink() {
-            return Err("product eval root link refused".into());
+            return Err("eval root link refused".into());
         }
         let mut records = Vec::new();
         let mut errors = Vec::new();
@@ -122,10 +127,7 @@ pub fn stage(
         }
         for record in records {
             let text = fs::read_to_string(source.join(&record.path))?;
-            files.insert(
-                format!("plugins/humanymous-product/evals/{}", record.path),
-                text,
-            );
+            files.insert(format!("plugins/{plugin}/evals/{}", record.path), text);
         }
     }
     if files.len() > 512 || files.values().map(String::len).sum::<usize>() > 8 * 1024 * 1024 {

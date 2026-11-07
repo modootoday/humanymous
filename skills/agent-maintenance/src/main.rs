@@ -22,14 +22,18 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
             Ok(report.errors.is_empty() && report.findings.iter()
                 .all(|finding| finding.classification == "preserved-exact-line"))
         }
-        Some("paired-check") if args.len() == 2 => {
+        Some("paired-check") if args.len() == 2 || args.len() == 3 => {
             let path = Path::new(&args[1]);
             let metadata = std::fs::symlink_metadata(path)?;
             if metadata.file_type().is_symlink() || !metadata.is_file() || metadata.len() > 16 * 1024 * 1024 {
                 return Err("unsafe/oversized paired result".into());
             }
             let value = serde_json::from_slice(&std::fs::read(path)?)?;
-            let result = paired::validate(&value);
+            let result = match args.get(2).map(String::as_str).unwrap_or("product") {
+                "product" => paired::validate(&value),
+                "developer" => paired::validate_developer(&value),
+                _ => return Err("unknown paired suite; expected product or developer".into()),
+            };
             println!("{}", serde_json::to_string_pretty(&result)?);
             Ok(result.errors.is_empty())
         }
@@ -93,7 +97,7 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
             &args[4],
         ),
         _ => Err(
-            "usage: agent-maintenance check ROOT | routing ROOT | skill-check ROOT | lane-check ROOT | thread-check ROOT | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
+            "usage: agent-maintenance paired-check RESULT_JSON [product|developer] | language-check SOURCE PRESERVATION_JSON | check ROOT | routing ROOT | skill-check ROOT | lane-check ROOT | thread-check ROOT | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
                 .into(),
         ),
     }
