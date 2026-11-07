@@ -519,5 +519,14 @@
     "runtime_native_preparation_qualified": false,
     "watermark_runtime_issuance_qualified": false,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_runtime_retained_historical_correction": {
+    "private_review_sha256": "3cfe146e399b666e3fdb1be93b7c3a783c2d53a8f39ce07a9044fb4bcdc4dd48",
+    "historical_actual_tests": 3,
+    "historical_filtered_tests": 61,
+    "private_attachments_verified": 18,
+    "current_source_leaves_equal": 5,
+    "latest_graph_or_native_qualified": false,
+    "new_audit_runtime_workloads": 0
   }
 }

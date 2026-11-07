@@ -1113,3 +1113,17 @@ missing/invalid/capture failures remain unknown. This is not actual browser-caus
 witness, Docker, prefix or product qualification. Archive Git membership remains
 unverified here. No audit workload executed. Private review hashes are attached
 in baseline.json; the source-bound records are not a global coverage percentage.
+
+## Historical retained-test execution correction
+
+Earlier auditor-not-executed statements must not be read as no historical run.
+Receipt7e208649 at exact6c02bd222e2982aaeeeffa47eec6ec00797bd8a9 independently
+has18 matching registered attachments and raw3passed/0failed/0ignored/61filtered
+(session39315), plus check/strictClippy/fmt exit0. Raw test log SHA256 is
+567b4476f5359aa6ebfb87fa466807dfc2a409f576b84da01b7ab82bf9bbc349.
+Five current Runtime observed/retained/tests and Authority observer/state leaves
+match that historical Git tree. This recognizes actual shared allocation/drop
+regressions at frozen scope, without inheriting current whole-graph compilation,
+native factory, transport, flush/drain/JOIN or product qualification. No rerun
+was executed. Prior private source review is preserved; correction review SHA256
+3cfe146e399b666e3fdb1be93b7c3a783c2d53a8f39ce07a9044fb4bcdc4dd48.
