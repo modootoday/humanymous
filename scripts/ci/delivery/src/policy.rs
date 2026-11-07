@@ -438,6 +438,15 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                     "facade_go_admission",
                 ),
             ] {
+                require(
+                    preflight
+                        .iter()
+                        .filter(|step| step["run"] == admission)
+                        .count()
+                        == 1
+                        && preflight.iter().filter(|step| step["id"] == id).count() == 1,
+                    "facade admission command or identity missing/duplicated",
+                )?;
                 let admitted_at = preflight
                     .iter()
                     .position(|step| step["run"] == admission)
@@ -458,9 +467,14 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                                 "facade build outside closed command profile",
                             )?;
                             if run.contains("--features adapter-go") == enabled {
+                                let condition = if enabled {
+                                    "${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_go_admission.outcome == 'success' }}"
+                                } else {
+                                    "${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_default_admission.outcome == 'success' }}"
+                                };
                                 require(
-                                    admitted_at < index,
-                                    "facade build precedes request admission",
+                                    admitted_at < index && step["if"] == condition,
+                                    "every facade build requires prior successful matching admission",
                                 )?;
                             }
                         }
@@ -1349,7 +1363,15 @@ mod tests {
                         ),
                     ] {
                         let mut changed = original.clone();
-                        changed["jobs"]["preflight"]["steps"][index]["if"] = condition;
+                        changed["jobs"]["preflight"]["steps"][index]["if"] = condition.clone();
+                        assert!(document(name, &changed).is_err());
+                        let mut changed = original.clone();
+                        let mut duplicate = step.clone();
+                        duplicate["if"] = condition;
+                        changed["jobs"]["preflight"]["steps"]
+                            .as_array_mut()
+                            .unwrap()
+                            .push(duplicate);
                         assert!(document(name, &changed).is_err());
                     }
                 }
@@ -1359,9 +1381,31 @@ mod tests {
                 {
                     for id in [Value::Null, json!("unrelated")] {
                         let mut changed = original.clone();
-                        changed["jobs"]["preflight"]["steps"][index]["id"] = id;
+                        changed["jobs"]["preflight"]["steps"][index]["id"] = id.clone();
+                        assert!(document(name, &changed).is_err());
+                        let mut changed = original.clone();
+                        let mut duplicate = step.clone();
+                        duplicate["id"] = id;
+                        changed["jobs"]["preflight"]["steps"]
+                            .as_array_mut()
+                            .unwrap()
+                            .push(duplicate);
                         assert!(document(name, &changed).is_err());
                     }
+                    let mut changed = original.clone();
+                    changed["jobs"]["preflight"]["steps"]
+                        .as_array_mut()
+                        .unwrap()
+                        .push(json!({
+                            "id":step["id"],"run":"cargo --version"
+                        }));
+                    assert!(document(name, &changed).is_err());
+                    let mut changed = original.clone();
+                    changed["jobs"]["preflight"]["steps"]
+                        .as_array_mut()
+                        .unwrap()
+                        .push(step.clone());
+                    assert!(document(name, &changed).is_err());
                 }
             }
             let admission = steps.iter().position(|step| step["run"] ==
