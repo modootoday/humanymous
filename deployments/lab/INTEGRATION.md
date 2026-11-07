@@ -65,6 +65,17 @@ user-authorized local/hosted timing comparison controls execution admission;
 no lab command starts during its benchmark quiet window. The current Go
 qualification contract still requires its actual standard free hosted runner.
 
+The strict Go profile requires GITHUB_ACTIONS=true, RUNNER_OS=Linux,
+RUNNER_ENVIRONMENT=github-hosted and ACT absent. Missing/self-hosted/act context
+is rejected before image builds and retains eight NOT_RUN rows. Environment
+markers are an admission check, not cryptographic attestation: the owning
+reviewer must independently match real GitHub run/job/source/image receipts.
+A local act comparison cannot mint hosted=true qualification; it needs a
+distinct nonqualifying context/profile if Go execution is requested there.
+References: https://docs.github.com/en/actions/reference/workflows-and-actions/variables
+and https://nektosact.com/usage/index.html#skipping-steps . The new pure context
+test is authored but NOT_RUN during root's benchmark quiet window.
+
 The accepted browser product profile is separate from collector component tests:
 `cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --browser-product --require-full`.
 Do not combine it with --collector or --topology-only. Its source is authored,

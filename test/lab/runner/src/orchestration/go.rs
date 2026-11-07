@@ -586,6 +586,9 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     result
 }
 fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> {
+    // Same-YAML local act is not actual GitHub hosted evidence. Reject before
+    // building this strict-hosted profile; the outer eight NOT_RUN rows survive.
+    go_fixture::require_hosted()?;
     lab.stage = "runtime_build";
     // No fixture-dependent interpolation is needed for the initial build.
     let placeholder = lab.config_file("test/lab")?;

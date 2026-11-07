@@ -102,6 +102,17 @@ The user-authorized local/hosted timing comparison supersedes the earlier
 blanket local restriction; no lab command starts during root's quiet window.
 The current Go qualification contract still requires actual free hosted Linux.
 
+For this strict-hosted Go profile, require GITHUB_ACTIONS=true,
+RUNNER_OS=Linux, RUNNER_ENVIRONMENT=github-hosted and no ACT environment marker.
+Reject local/unknown context before builds while retaining the eight scheduled
+NOT_RUN rows. These conventional markers are not a signed remote attestation;
+independently bind actual GitHub run/job/source/image receipts. Local same-YAML
+act comparisons must not set a qualifying hosted=true receipt. A distinct
+nonqualifying local profile is required before using Go8 for local comparisons.
+Official references checked2026-11-07:
+https://docs.github.com/en/actions/reference/workflows-and-actions/variables
+and https://nektosact.com/usage/index.html#skipping-steps .
+
 Canonical configurations are deployments/lab/compose.rust.yaml, its contextual
 witness/browser overlays and topology/sandbox.yaml. The collector component
 overlay remains distinct and network-none. Adapter-owned pilot configurations
