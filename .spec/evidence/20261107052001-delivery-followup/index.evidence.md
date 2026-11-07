@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:31:24Z
+updated: 2026-11-07T16:39:02Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -34,6 +34,7 @@ files:
   - {path: wargame-306eedc8-targeted-preflight.json, sha256: 6e216f5f59948fb822811c21928fb47a21b33f7a356795e79c3c460d874ff7ac, bytes: 1748, store: repo}
   - {path: registry-environment-observation.json, sha256: 67e920e9b0fbfbe665941d4465380c3fc1137312d0eb17a4b1e8c4504d823e65, bytes: 3282, store: repo}
   - {path: browser-306eedc8-summary.json, sha256: 753b4d66b05aac0726fc0226adad55abc35c598aaecc3e2a6de878a97a93c542, bytes: 5803, store: repo}
+  - {path: controlled-capture-owner-consumption.json, sha256: d50f74aa5d4ba1f85d5cfb339feae88446cacfb40793e96f430bbe699a39bc7c, bytes: 2318, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -555,3 +556,19 @@ Connector/CLI projections matched; all13 fields and count arithmetic were
 independently checked. Immutable private capture index SHA256 is
 76296d6a8215933eba3f7c798e8707f25403d70ed2a9193c526ad80d6fc79af2.
 Watch79981 ended1. No retry, deployment or publication was performed by Delivery.
+
+## Independent consumption of the narrow capture owner proof
+
+controlled-capture-owner-consumption.json binds owner commitccd83927's actual
+Git summary bytes and48 declared original files, independently rehashed with zero
+missing/hash/size differences. The owner observed five fixed cooperative Windows
+parents, each1 passed/0failed/0ignored/41filtered, three actual I/O joins, parent
+exit0 and Job empty within original10/15-second outer thresholds. Delivery ran
+no duplicate workload. The private consumption index SHA256 is
+02bb420f318bdb7bd81ea06baf035bdd1467331bd2e17967ce604c3495a152da.
+
+This does not admit Docker or arbitrary executables into the controller. Three
+outer fault scenarios remain untested; legacy consumers and Docker daemon object
+cleanup remain separate. Delivery SoT now names the fixed-profile admission and
+cooperative-before-Docker-child seam that must be accepted and actually exercised
+before notice extraction can claim its cleanup contract.

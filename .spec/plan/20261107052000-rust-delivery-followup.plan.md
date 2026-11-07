@@ -1025,3 +1025,13 @@ owned selector/policy/Node packaging changes, dynamic crate graph implications,
 and foreign-owner ABI/workflow seams are identified without actual renames.
 Source-bound commands/receipts remain historical; root owns the atomic graph,
 locks, workflow and artifact migration after current frozen gates settle.
+
+Native's ccd83927 controlled five-parent Windows receipt is independently consumed:
+exact committed summary SHA and all48 original declared files match. No duplicate
+execution or broad process-supervision promotion. The source canon and attached
+consumption projection retain test-support-only executable/selector admission,
+three missing outer fault injections and daemon-cleanup limits. A fixed Delivery
+notice probe waiting the cooperative grant before Docker children is the proposed
+consumer seam; root/owner profile acceptance and actual allocated consumer proof
+remain required. Existing native archive and image build/scan gates are separate
+ready work; no allowlist/resource/privilege change follows from this evidence.

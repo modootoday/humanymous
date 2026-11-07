@@ -1,0 +1,48 @@
+{
+  "schema": "humanymous.delivery-controlled-capture-consumption/1",
+  "owner_commit": "ccd8392743421e437b3806c74ac4f0f1d86d611e",
+  "owner_summary": ".spec/evidence/20261106223747-cross-os-runner-research/controlled-capture-parents-summary.json",
+  "owner_summary_git_sha256": "f4c85272e4880f5d971cde18d1e48b328f48fd94099926f8d879384ff4fbd398",
+  "owner_declared_base": "5cd2cdc94e9337cc4af4056fa3e601412ce55f29",
+  "controller_ancestor": "ea024229beebd6de655a70adcee4ef2a51a9845b",
+  "independent_consumption": {
+    "actual_committed_summary_bytes_verified": true,
+    "original_owner_files_rehashed": 48,
+    "missing_files": 0,
+    "hash_or_size_mismatches": 0,
+    "new_compilation_or_execution_by_delivery": false
+  },
+  "owner_observed_component": {
+    "venue": "local Windows x86_64-pc-windows-msvc",
+    "actual_parent_passed": 5,
+    "actual_parent_failed": 0,
+    "per_parent": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 41
+    },
+    "started_and_joined_io_workers_per_parent": 3,
+    "actual_parent_exit_code": 0,
+    "actual_job_empty": true,
+    "original_outer_run_ms": 10000,
+    "original_outer_cleanup_ms": 15000
+  },
+  "scope": "Fixed trusted cooperative fixtures only; not an image or Docker cleanup qualification",
+  "missing": [
+    "Live-parent outer-timeout fault injection",
+    "Missing-grant fault injection",
+    "Unassigned-parent failure injection",
+    "Fixed Delivery image-notice controller profile and exact executable/selector admission",
+    "Actual image create/copy/remove operation and independently observed daemon ownership/cleanup",
+    "Hosted or arbitrary/hostile process-tree supervision"
+  ],
+  "private_capture_index_sha256": "02bb420f318bdb7bd81ea06baf035bdd1467331bd2e17967ce604c3495a152da",
+  "limitations": [
+    "This is independent byte verification and consumption of the owner's component evidence, not a duplicate test execution.",
+    "The controller remains restricted to the test-support executable prefix and five fixed selectors.",
+    "Existing legacy capture consumers are not migrated or globally qualified by this receipt.",
+    "Job emptiness or CLI exit cannot establish Docker daemon object cleanup.",
+    "No shared Cargo/controller allowlist, workload, privilege, deployment or publication was changed."
+  ]
+}

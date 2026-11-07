@@ -1297,6 +1297,22 @@ handles are not retained. No extraction implementation may infer reap/join or
 successful cleanup from Drop or a deadline label. Actual process wiring awaits
 an accepted supervision contract and the root-owned dependency lock handshake.
 
+Native owner evidence at ccd8392743421e437b3806c74ac4f0f1d86d611e now qualifies
+five fixed cooperative Windows capture parents under the assigned Job controller:
+each observed parent exit0, three actual joined I/O workers and Job emptiness
+within original10/15-second outer thresholds. Delivery independently verified the
+committed summary and all48 declared raw file hashes/sizes; see
+evidence:root/20261107052001's controlled-capture-owner-consumption.json. This is
+not general Docker supervision. The controller admits only its test-support
+executable prefix and five fixed selectors; live-parent timeout, missing-grant
+and unassigned-parent fault paths were not injected. No image-notice process
+wiring may silently broaden that profile or count CLI/Job completion as daemon
+object cleanup. A future fixed Delivery probe must be explicitly admitted by the
+owning controller contract, await its cooperative grant before Docker children,
+and separately observe exact stopped-container ownership and cleanup. Root profile
+acceptance and the actual consumer pilot remain required; this paragraph grants
+no allowlist, resource, privilege or workload extension.
+
 The existing native component caller adds the closed archive choice and a
 dedicated codex/native-artifact-validation push branch. That branch selects
 archive, while the existing native-component branch retains capture by default.
