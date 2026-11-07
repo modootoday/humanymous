@@ -1,0 +1,55 @@
+{
+  "schema": "humanymous.pages-source-followup/1",
+  "full_read_files": 4,
+  "full_read_lines": 587,
+  "before_after_exact": true,
+  "reviews": [
+    {
+      "source": "crates/audit/src/record/canonical.rs",
+      "sha256": "649465eb6bf3b9c5d37010ffb59f0add91cc240ac5e433455d9565095019136f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete105-line source review: empty HMAC keys refused; HMAC covers exact hash text and constant-time encoded-text comparison preserves lowercase behavior. Canonical semantic bytes and previous-hash text feed SHA256 separately; integrity/read-time fields excluded. Public compatibility wrappers use unbounded usize maxima and may allocate/panic on field framing overflow; private bounded hashing streams through8KiB BufWriter. No generic Draft v0 wire, caller allocation bound, trusted anchor or new executed-test claim.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/record/canonical/encoder.rs",
+      "sha256": "6c770f22a8cff9cc7a337990d29fff928a3e6fb37daa35e1bf5b4fae35ad0abe",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete229-line source review: one count/replay emitter for compatibility bytes and bounded hashing, u32 big-endian key/value byte framing, checked output budgets and item limits before sorting borrowed rule/signal references. Scalar text uses stream-safe NFC, empty scalars omitted, array fields retained; raw rule IDs and signal verdicts retain bytes, signal IDs normalize, confidence three decimals. Collection payloads use legacy unescaped delimiters; not a generic unambiguous arbitrary-string grammar. Count/replay disagreement and partial sink errors refuse success; output may already contain a prefix. Limits do not bound caller-owned Record allocations or every CPU/memory cost.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/record/canonical/encoder/tests.rs",
+      "sha256": "d2cf1d1aa84e8e9d2ff8fb26e6e81e50c132248b9119b5b1982d10dd35e00252",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete155-line source review of five authored tests:92fixture-record expected bytes/exact budget and one-byte-short refusal/input preservation; pre-emission item/zero-byte refusal; count/replay disagreement; usize/u32 overflow without huge allocation; partial three-byte sink writes/BrokenPipe propagation. Existing fixture content not independently reread in this batch. Source review only, no execution or broad audit/native/product qualification.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/record/normalization.rs",
+      "sha256": "7c386e79eaa025b0f160d1bcc3aff923e75b1ecd067762d822683242a1b8630f",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete98-line source review: streaming Go-compatibility Unicode15 transform counts compatibility-decomposed nonstarters and backwards-combining zero-CCC Jamo using NFKC quick checks; inserts U+034F beyond30 then NFC with fresh per-traversal state. Two authored tests assert Unicode15, composed/decomposed and30/31boundary, and existing >13000text fixture expectations. Fixture corpus not reread/executed in this batch. Audit record compatibility only; not request-body normalization or selected generic signature wire.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "fixture_corpus_independently_reviewed": false,
+  "public_prose_changed": false
+}
