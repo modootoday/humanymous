@@ -2,6 +2,104 @@
 
 ## Current approved continuation
 
+Release C returned: standalone clean source2ffa4335df49c111685a764a81f8e4b414685cd4
+built the Rust facade DLL in76.032s and hosted Rust test executable in12.616s.
+Both actual exits0,261recursive inputs unchanged and source clean afterward.
+Artifacts were selected from Cargo JSON and hashed; strict native-provenance.json
+and exact paths are private evidence100408/artifacts.json. Public evidence:
+evidence:root/20261107100735. No test/SDK compilation/PInvoke/host execution follows
+from this --no-run build. Actual source/packed JIT/AOT/GC stages remain NOT_RUN.
+
+### Release build preparation and reproducible commands
+
+Root ran the release facade and hosted Rust harness before the separately
+allocated actual managed fixture. No repeat build slot is assigned by this text.
+Freeze the owned implementation/configuration before commands; coordinate the
+recursive dependency closure through root, snapshot it before/after, and reject
+drift. No manifest, source or lock changes during compilation. Preserve the
+actual clean checkout HEAD and Cargo.lock hash. A shared dirty workspace HEAD
+alone cannot populate the strict clean-source provenance expected by package.rs;
+root must provide a committed clean source checkout that contains these files.
+Root owns checkout/worktree setup and any common graph edits.
+
+After explicit allocation, use Rust1.99.1/edition2024, CARGO_BUILD_JOBS=1 and
+CARGO_INCREMENTAL=0, the assigned CARGO_TARGET_DIR, and the actual host target
+x86_64-pc-windows-msvc. Record environment/target rather than guessing artifact
+paths. Run these commands from that exact source checkout, serially, checking
+each real exit before continuing:
+
+```text
+cargo build --locked --release -p humanymous-dotnet-adapter-export --message-format=json-render-diagnostics
+cargo test --locked --release -p humanymous-dotnet-adapter --test hosted --no-run --message-format=json-render-diagnostics
+```
+
+Capture both stdout JSONL and stderr privately, including elapsed time, compiler
+identity and resource admission/exit measurements. Select the actual facade
+filename from its compiler-artifact record and the hosted test executable from
+its test target compiler-artifact.executable; do not select the newest similarly
+named file from a shared target cache. Hash those exact outputs using stock
+SHA256. The strict provenance JSON requires source_sha, cargo_lock_sha256,
+native_sha256, harness_sha256, rustc, target and native_profile=release; omit the
+optional generic_sha256 unless its separate real generic ABI artifact is supplied.
+These two builds do not execute any actual host test. The package.rs controller
+also needs its own compiled test executable in a later assigned stage; do not
+recursively build Cargo from the controller or silently add it to this allocation.
+
+### Later managed fixture prerequisites
+
+The prepared SDK's exact executable, verified official ZIP hash and private
+paths are in private evidence094726/readiness.json. Invoke that executable
+explicitly. The package controller resolves dotnet through PATH, so prepend
+only the private SDK install directory to the supervisor process's PATH; never
+change the user/system PATH. Set DOTNET_ROOT to that directory, private
+DOTNET_CLI_HOME and NUGET_PACKAGES, DOTNET_CLI_TELEMETRY_OPTOUT=1,
+DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1, DOTNET_NOLOGO=1,
+DOTNET_GENERATE_ASPNET_CERTIFICATE=false,
+DOTNET_ADD_GLOBAL_TOOLS_TO_PATH=false and
+DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE=true. DOTNET_CLI_UI_LANGUAGE=en-US
+makes future tool diagnostics consistent; preserve earlier raw localized logs.
+The SDK working directory remains the checkout's adapters/dotnet so global.json
+resolves10.0.403. MSBuild runs one node, no shared compilation or node reuse;
+source/packed builds use separate private output roots and fresh package caches.
+
+Windows NativeAOT requires Visual Studio2022 or later with Desktop development
+with C++ and its default components, per the official Native AOT prerequisites:
+https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/ . Discover and
+record the existing native compiler/linker/Windows SDK; prior Rust linking alone
+does not prove the full NativeAOT prerequisite set. No administrator installer,
+account creation, SCM/service operation or global setup is authorized here.
+If a prerequisite is absent, report it and retain that tuple as NOT_RUN.
+
+An actual Windows host fixture requires the shared ordinary-user identity checks
+with no enabled administrator identity and an existing verified private parent.
+The SDK owner-only installation does not grant another account access. Root and
+the native-Windows owner must supply the actual actor and controlled readable
+artifact/source layout without relaxing the shared protected-directory checks.
+Each source/packed JIT/AOT run creates its own new audit-parent children. Keep
+production ApplicationHttp negative evidence separate from synthetic immutable
+evidence passed through the real authority/audit engine. No SDK preparation or
+release compilation establishes managed GC, PInvoke, Kestrel or package behavior.
+
+The shared create_user_private_directory implementation calls current_identity
+and installer_allowed, rejecting elevated or enabled-administrator tokens. It
+opens the local non-reparse parent and verifies both ProtectedDirectory and
+InheritableDirectory before creating a new child; it then verifies the child's
+owner, installs the same protected owner-only inheritable DACL and re-verifies.
+It does not repair an existing arbitrary parent or accept ambient TEMP. The
+prepared SDK owner-only root is a candidate parent, not established shared-helper
+proof; each actual run must use a fresh child layout and retain helper failure.
+The hosted runner creates production/synthetic children and refuses existing
+children. Never rerun against an already-used audit parent.
+
+For explicit local fixtures set HUMANYMOUS_DOTNET_LOCAL_ALLOCATION to
+root-approved-local only after root allocates the actual run, and remove inherited
+GITHUB_ACTIONS/RUNNER_ENVIRONMENT from that local child environment. Report
+execution_environment=root-allocated-local. Do not spoof standard hosted runner
+variables. Manual native DLL placement is permitted only in the source-reference
+JIT fixture with its original source/hash recorded; it is never a clean installed
+NuGet consumer result. The controller's packed fixture must restore its native
+asset from the measured nupkg and compare exact installed bytes.
+
 SDK preparation A returned: official SDK10.0.403Windowsx64 ZIP hash verified and
 private installation ready. Only --version/--info ran successfully, reporting
 runtime10.0.14; no managed build/host. Evidence094859/private094726. Exact executable

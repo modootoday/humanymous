@@ -12,6 +12,17 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Source-bound release compilation (2026-11-07T10:07Z)
+
+Separately allocated C compiled the release Rust export DLL and hosted Rust test
+executable from standalone clean source2ffa4335df49c111685a764a81f8e4b414685cd4.
+Both actual commands returned0 (76.032s/12.616s),261recursive input hashes did
+not drift, and the source checkout remained clean. Cargo JSON selected the exact
+artifacts for source/lock/compiler/target/native/harness hash provenance. Evidence:
+evidence:root/20261107100735, private evidence:root/20261107100408. C returned.
+The harness used --no-run. No actual test, SDK build, PInvoke, Kestrel, managed GC,
+NativeAOT or package installation executed; next stages require allocation.
+
 ## SDK preparation only (2026-11-07T09:48Z)
 
 Root separately allocated A for private official Windowsx64 SDK10.0.403
