@@ -741,3 +741,13 @@ independent custody. Three manual source hashes recorded; policy/ledger/service
 internals remain pending. No erasure/admin/witness process or runtime executed.
 Hosted42348518353 Linux native failed while Docker/macOS remained live; exact
 cause not yet collected, not treated as Pages failure or later source evidence.
+
+## Reader control-character guard
+
+After correcting an authoring escape mistake, added source rejection of control
+characters except tab/LF after CRLF normalization. Pure regression covers NUL,
+bell, DEL, NEL and loneCR, with Korean/Arabic/accented text, RTL format mark, tabs
+and CRLF accepted. Resource58363494400/72303525888 bytes and no cargo/rustc observed;
+oneCargo/jobs1/incremental0.17libtests0failed, scoped strict Clippy and rebuilt
+88page source/nav checks passed. No Jekyll/browser/native service run. This is not
+full visual-spoofing, accessibility or whole-source-review qualification.

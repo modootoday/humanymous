@@ -17,6 +17,9 @@ rel:
 ## Rule
 
 Public content is English authored Markdown. No script generates page bodies.
+Reader source rejects Unicode control characters except tab/newline after CRLF
+normalization; Unicode text and format marks are not a substitute target for this
+check. It prevents accidental escaped-shell control bytes, not all visual spoofing.
 All reader pages declare doc layout, stable permalink, reviewed date, Diátaxis
 purpose and audience. The seven standards research pages retain their authored
 substance, project-draft maturity and explicit no-submission/no-adoption status.

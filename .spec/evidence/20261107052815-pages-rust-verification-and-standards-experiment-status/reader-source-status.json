@@ -1,0 +1,52 @@
+{
+  "schema": "humanymous.pages-reader-source-status/1",
+  "resource_review": {
+    "cargo_rustc_observed": 0,
+    "committed_bytes": 58363494400,
+    "commit_limit_bytes": 72303525888
+  },
+  "cargo_build_jobs": 1,
+  "cargo_incremental": 0,
+  "unit_tests": {
+    "failed": 0,
+    "scope": "humanymous-pages lib",
+    "passed": 17,
+    "ignored": 0
+  },
+  "clippy": "passed; package lib; -D warnings",
+  "source": {
+    "errors": 0,
+    "pages": 88
+  },
+  "tested_rejections": [
+    "NUL",
+    "BEL",
+    "DEL",
+    "NEL",
+    "lone CR"
+  ],
+  "tested_acceptance": [
+    "Korean",
+    "Arabic",
+    "accented Unicode",
+    "RTL format mark",
+    "tab",
+    "LF",
+    "CRLF"
+  ],
+  "source_files": [
+    {
+      "path": "docs/tooling/src/source.rs",
+      "sha256": "e03164ee1862a581e5540357a4cd3e676b93737e96fa9ce71c782060f99406ba"
+    },
+    {
+      "path": "docs/tooling/src/tests.rs",
+      "sha256": "d35997ec14e833a536cbae7e008666f923137492417706f1b740d7cf91479a1d"
+    }
+  ],
+  "jekyll_build": "not_run",
+  "rendered_links": "not_run",
+  "browser": "not_run",
+  "assistive_technology": "not_run",
+  "complete_review_freshness": "not_qualified"
+}

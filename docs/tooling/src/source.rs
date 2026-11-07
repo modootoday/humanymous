@@ -39,6 +39,14 @@ pub(crate) fn load(root: &Path) -> Result<(Vec<Page>, Vec<String>), String> {
         }
         let rel = files::relative(&root, &path);
         let text = files::read(&path)?.replace("\r\n", "\n");
+        if text
+            .chars()
+            .any(|c| c.is_control() && !matches!(c, '\n' | '\t'))
+        {
+            errors.push(format!(
+                "{rel}: unexpected control character in reader source"
+            ));
+        }
         let Some((front, body)) = text
             .strip_prefix("---\n")
             .and_then(|s| s.split_once("\n---\n"))

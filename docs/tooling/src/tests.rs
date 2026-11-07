@@ -57,6 +57,31 @@ fn valid_source_and_output_are_read_only() {
 }
 
 #[test]
+fn reader_controls_fail_without_rejecting_unicode_or_layout_whitespace() {
+    let f = Fixture::new();
+    for control in ['\0', '\u{7}', '\u{7f}', '\u{85}', '\r'] {
+        f.page("index.md", "/", &format!("Visible{control}text"));
+        assert!(
+            check_source(&f.0.join("docs"))
+                .unwrap()
+                .errors
+                .iter()
+                .any(|e| e.contains("unexpected control character"))
+        );
+    }
+    f.page(
+        "index.md",
+        "/",
+        "한국어 café العربية \u{200f}\n\tIndented text\n",
+    );
+    assert!(check_source(&f.0.join("docs")).unwrap().errors.is_empty());
+    let path = f.0.join("docs/index.md");
+    let text = fs::read_to_string(&path).unwrap().replace('\n', "\r\n");
+    fs::write(path, text).unwrap();
+    assert!(check_source(&f.0.join("docs")).unwrap().errors.is_empty());
+}
+
+#[test]
 fn navigation_rejects_misindentation_missing_targets_and_empty_groups() {
     let f = Fixture::new();
     let menu = f.0.join("docs/_data/nav/main.yml");
