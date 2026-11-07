@@ -110,14 +110,36 @@
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
+    },
+    {
+      "source": "crates/dotnet-adapter/src/lib.rs",
+      "sha256_at_post_read_observation": "f365a4f7239e33f0167702b0c6418840a11eca4c2dc2e3cdd9b7d95f835cd3b2",
+      "lines": 454,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "454 lines fully read in contiguous chunks. Owned copied body, shared admission/original Pending deadline, actualEOF seal with declared-length equality. Sealed slice not authorization. One decision attempt only; dropped/failed future cancels request and no retry. Final authority consume then exact method/target/authority/sanitized ordered headers/currenthostflags and deadline before mutex-linearized handoff. Cancellation after winning handoff belongs to application. Pure tests use synthetic config/verdict and race barriers, not actual PInvoke/Kestrel. No new execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/src/bridge.rs",
+      "sha256_at_post_read_observation": "254790bc7c3c8980f584987ec537ea138c5741ee88a17af059ce0d440df3d1e6",
+      "lines": 580,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "580 lines fully read in contiguous chunks. Shared nativeABI registry owns handles/buffers, perinstallation config and perrequest active state. Bounded32-byte append and64KiB strict metadata; route vector checked across decide/handoff. Ticket takes request once and runs authority outside globalmutex; cancellation loop5ms plus schedulerdelay drops actual IPC future. Completion binds Arc bridge identity before context lookup, preventing foreign bridge same-numeric-handle completion. Close cancels children; Flight counts retained work, not independent OS-worker termination proof. Replay copy issued once only afterALLOW and before final handoff; metrics not body integrity or unload safety. Source tests cover ownership/revocation/crossbridge/version/metadata, not actual managed runtime.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
     }
   ],
-  "full_read_files": 10,
-  "lines": 600,
+  "full_read_files": 12,
+  "lines": 1634,
   "post_read_rehash_drift": [],
   "source_receipts_renewed": false,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "full_product_qualified": false,
-  "remaining": "Rust request/bridge, full current owner chronology, host orchestration and actual managed/package test source still require full review. Initial truncated Rust lib output not counted as full read."
+  "remaining": "Full current owner chronology, Kestrel host orchestration, managed fixture and package test source remain. No native ABI/runtime/host execution or source receipt acceptance."
 }
