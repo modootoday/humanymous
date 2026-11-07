@@ -47,14 +47,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - name: core
-          dockerfile: build/core.Dockerfile
-        - name: gate
-          dockerfile: build/gate.Dockerfile
+        - name: runtime
+          dockerfile: build/rust/runtime-candidate.Dockerfile
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       with:
         persist-credentials: false
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Recheck source and candidate shipping qualification
+      run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources
+    - name: Bind exact source manifest
+      id: image-source
+      run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-scan prepare
     - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130
     - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
     - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
@@ -84,9 +90,9 @@ jobs:
         context: https://github.com/${{ github.repository }}.git#${{ github.sha }}
         file: ${{ matrix.dockerfile }}
         platforms: linux/amd64,linux/arm64
-        build-args: 'VERSION=${{ steps.meta.outputs.version }}
-
-          '
+        build-args: |
+          HUMANYMOUS_SOURCE_REV=${{ github.sha }}
+          HUMANYMOUS_SOURCE_MANIFEST=${{ steps.image-source.outputs.source-manifest-sha256 }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}

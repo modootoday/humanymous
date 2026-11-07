@@ -126,3 +126,15 @@ exact Git source, nonempty per-platform SBOM and exact release-workflow OIDC
 signature. It also verifies version/latest tags still resolve to that digest.
 This code has fixture/negative coverage; live release verification and account
 bootstrap are not claimed. Attacker images are never public release targets.
+
+The prepared image matrix uses only `humanymous-runtime` and the existing Rust
+runtime candidate Dockerfile on both Linux architectures. Candidate flags stay
+false; readiness and a pre-login guard block publication until reviewed actual
+source/platform/product/scan qualification exists. Old core/gate paths remain
+forbidden shipping inputs and are retired by their owners, never silently
+aliased to the runtime private-pipes component. This change grants no release.
+
+CodeQL scans current Rust with the existing pinned action and `build-mode: none`.
+The manual Go oracle uses only immutable baseline `981d25cf`, with automatic
+uploads and remote cache writes disabled. Its historical results do not qualify
+the current product or become a final Rust shipping dependency.

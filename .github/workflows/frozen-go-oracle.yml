@@ -6,19 +6,13 @@ on:
 permissions:
   contents: read
 
-# Cancel superseded runs on the same ref (saves runner minutes on rapid pushes).
+# Historical manual oracle only; never validates the current product source.
 concurrency:
   group: frozen-go-oracle-${{ github.ref }}
   cancel-in-progress: true
 
-# Runner-minute budget (Actions quota): the fast `go` job (build + unit + vet +
-# race + vulncheck + wasm) runs on EVERY push to main and on PRs. The two heavy
-# Docker jobs (compact kernel smoke, and the detector-vs-bots integration gate
-# that runs the whole attack in real containers) are the real minute sinks, so
-# they are gated to pull_request + workflow_dispatch — NOT every push to main.
-# Rule 60 makes the local Docker compose stack (scripts/e2e-docker.*) the same
-# authority as CI, so intermediate work on main is validated locally; the full
-# gate runs on the PR that merges it, or on demand via "Run workflow".
+# Every checkout is the immutable pre-migration baseline. Results are historical
+# fixture provenance, never a final Rust shipping dependency or runtime parity.
 jobs:
   go:
     name: build + unit tests
@@ -27,11 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
+          persist-credentials: false
           fetch-depth: 0        # full history + tags for the git-cliff config check below
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
-          go-version: "1.25"
-          cache: true
+          go-version: "1.25.3"
+          cache: false
       - run: go build ./...
       - run: go vet ./...
       - run: go test ./...
@@ -76,14 +72,8 @@ jobs:
         with:
           config: cliff.toml
           args: --context
-      # Canonical maintenance never regenerates retired vendor compatibility trees.
-      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
-        with:
-          toolchain: 1.99.1
-      - name: Check canonical agent inventory
-        run: cargo run --locked -p humanymous-agent-maintenance -- check .
-      - name: Compile canonical maintenance targets
-        run: cargo check --locked -p humanymous-agent-maintenance --all-targets
+      # Current Rust maintenance is validated by rust-validation.yml, not this
+      # historical tree, which predates the Rust maintenance package.
       - name: Retain frozen attack assertion contract
         run: node --test scripts/assert-attack.test.mjs
 
@@ -96,7 +86,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
+        with:
+          ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
+          persist-credentials: false
       - name: Capture storage baseline
         run: df -B1 --output=used / | tail -n 1 > /tmp/humanymous-storage-before
 
@@ -116,8 +108,6 @@ jobs:
           provenance: false
           sbom: false
           tags: humanymous/external-input-kernel-smoke:ci
-          cache-from: type=gha,scope=external-input-kernel-smoke
-          cache-to: type=gha,mode=min,scope=external-input-kernel-smoke
 
       - name: Enforce compact image budget
         run: |
@@ -184,7 +174,9 @@ jobs:
       BUILDKIT_PROGRESS: plain
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
+        with:
+          ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
+          persist-credentials: false
       - name: Capture detector storage baseline
         run: |
           set -euo pipefail
@@ -410,15 +402,6 @@ jobs:
           )"
           echo "artifact_input_bytes=$bytes"
           test "$bytes" -le 4194304
-
-      - name: Upload run artifacts
-        if: ${{ always() && steps.artifact-budget.outcome == 'success' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: attack-artifacts
-          retention-days: 5
-          path: |
-            deployments/artifacts/
 
       - name: Tear down
         if: always()

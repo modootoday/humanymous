@@ -112,7 +112,7 @@ pub fn verify_images(root: &Path) -> Result<()> {
         "https://github.com/modootoday/humanymous/.github/workflows/release.yml@refs/tags/{tag}"
     );
     let mut reports = Vec::new();
-    for image in ["core", "gate"] {
+    for image in ["runtime"] {
         let digest =
             std::fs::read_to_string(root.join("digests").join(image)).map_err(|e| e.to_string())?;
         let digest = digest.trim();

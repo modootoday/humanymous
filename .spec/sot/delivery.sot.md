@@ -247,7 +247,9 @@ the corrected hosted source still requires its own actual run.
 
 Explicit obsolete-cleanup delta: frozen-go-oracle.yml no longer invokes legacy
 agent adapter synchronization, vendor mirror diff or shell layout verification.
-It uses pinned Rust1.99.1 canonical agent-maintenance check and compile targets.
+Current Rust validation uses pinned Rust1.99.1 canonical agent-maintenance check
+and compile targets. The historical oracle no longer runs current Rust targets
+after its checkout was pinned to the immutable pre-migration baseline.
 The unrelated frozen attack assertion test remains; legacy Node agent/hook tests
 are no longer maintenance authority. No vendor trees are regenerated. Root owns
 verified mirror deletion and canonical rule changes; Go/oracle product paths,
@@ -1234,3 +1236,25 @@ The caller adds no scanner parser, package publication or qualification state.
 Automatic artifacts, remote cache writes and OIDC remain disabled. Actual tool
 installation, binary inventory and scan evidence require a separately admitted
 hosted execution; source/helper success alone leaves the candidate unqualified.
+
+The future tag-only release image matrix has exactly one runtime identity,
+ghcr.io/modootoday/humanymous-runtime, built from the existing Rust candidate
+Dockerfile for linux/amd64 and linux/arm64. This preparation does not make it a
+core/gate compatibility alias. Readiness and a repeated pre-login image guard
+require retirement of old core/gate shipping inputs and reviewed source-bound
+build, nonroot, CVE, platform and full-product qualification. Current candidate
+flags remain false, and the current source validator refuses fabricated true
+flags. Promotion therefore needs an explicit reviewed implementation change and
+actual receipts, not an inventory boolean edit. Max provenance, SBOM, cosign,
+exact source/digest/platform verification and tag-only authorization remain.
+The source manifest build argument uses the existing image-scan preparation.
+
+Current CodeQL analyzes Rust with build-mode none using the existing pinned
+action e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 (4.37.3, bundled CLI2.26.1;
+its builtin language inventory includes rust). Go setup/autobuild and old Go-only
+exclusions are not part of this profile. Static analysis grants no runtime or
+publication qualification. The manual historical Go oracle checks out only
+981d25cf71a5a54855d7e2b4359e832a9d5998e5, uses that baseline's Go1.25.3,
+and has no automatic artifact upload or remote cache write. Current Rust agent
+maintenance belongs to current Rust validation, never the historical baseline.
+No final Rust shipping gate depends on successful current-tree Go compilation.

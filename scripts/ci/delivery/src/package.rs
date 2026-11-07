@@ -203,18 +203,7 @@ pub fn validated_crate(root: &Path, name: &str, version: &str) -> Result<(PathBu
     Ok((archive, hash))
 }
 pub fn image_sources(root: &Path) -> Result<()> {
-    for path in ["build/core.Dockerfile", "build/gate.Dockerfile"] {
-        let text = fs::read_to_string(root.join(path)).map_err(|e| e.to_string())?;
-        require(
-            !text.contains("golang:") && !crate::docker_source::has_go_build(&text),
-            format!("Go shipping image still present: {path}"),
-        )?;
-        require(
-            text.contains("cargo build") || text.contains("cargo chef"),
-            format!("Rust shipping image unqualified: {path}"),
-        )?;
-    }
-    Ok(())
+    crate::image_candidates::shipping(root)
 }
 pub fn native_artifacts(root: &Path) -> Result<()> {
     // Actual names are canonical in runtime/CLI INTEGRATION. These are bounded

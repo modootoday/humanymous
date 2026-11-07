@@ -751,3 +751,31 @@ evidence index SHA256 is
 edc0765f7a7964adcc34a1308371293fd7ef941d90b191644affa5937447c049.
 Producer925 native compilation remains deferred/unqualified. No additional
 delivery76 suite was run or borrowed as producer/runtime qualification.
+
+Root accepted source-only retirement preparation: replace active release Go
+core/gate rows with the existing runtime candidate identity on both Linux
+architectures, preserve all final/signature/provenance/platform gates and keep
+false candidate qualification blocking. Recheck the typed guard before login;
+bind source through existing image-scan preparation. Preserve forbidden legacy
+paths and root-owned deletion responsibility. CodeQL uses the existing verified
+Rust-capable pin with build-mode none; the manual Go oracle uses only immutable
+981d25cf baseline, without automatic uploads/cache writes. Current maintenance
+stays in current Rust validation. Dedicated policy regressions cover restoring
+Go aliases/autobuild/current-source oracle and bypassing candidate/platform
+guards. Static actionlint passed after removing a rejected constant-false upload
+condition and its automatic upload step. Allocated C then passed79 tests with
+zero failed/ignored/filtered plus all-target check, strict Clippy, policy,
+actionlint and fmt. The shipping command correctly rejected remaining legacy
+core input. Immutable archive37a85fe1 plus eight declared overlays had2531source,
+3791registryfiles/105packages,14configpaths,4tools and relevantenvironment all
+unchanged; live overlays still matched. Private index SHA256 is
+fc38d1982156314809d8bd149b82565a313825a35760ebe58a8ccc177d14f263.
+C was returned. No image build, scan, tag, publication or OIDC occurred.
+
+The sole approved CEF run42377685195 at exactec4 completed successfully with
+zero artifacts and unchanged source: helper14, synthetic desktopprotocol4,
+synthetic bootstrapprotocol3, actual bootstrap1 and desktopprocess2 passed
+separately. Actual four bootstrap refusals exited78/reapedtrue, with unchanged
+profiles. browser_ready/full_runtime_qualified remainfalse. Public safe summary
+and private capture indexe7294dc8154c2388e3bddf06ae33365624d4b5afb32cf8409af99c92e586aa39
+preserve exact filtered counts and command/child observations. No retry issued.

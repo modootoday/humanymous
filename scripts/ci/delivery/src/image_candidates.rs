@@ -113,6 +113,32 @@ pub fn check(root: &Path) -> Result<()> {
         "candidate":candidate,"scope":"source inventory only; actual build, CVE scan, actor and shipping parity are separate evidence"}),
     )
 }
+/// Preparation never grants publication. Promoting this candidate requires a
+/// reviewed source change and real source-bound platform/product/scan receipts.
+pub fn shipping(root: &Path) -> Result<()> {
+    let inventory = read_json(&root.join("build/rust/image-candidates.json"))?;
+    let candidate = validate(&inventory)?;
+    for legacy in ["build/core.Dockerfile", "build/gate.Dockerfile"] {
+        require(
+            !root.join(legacy).exists(),
+            format!("retired Go shipping input remains: {legacy}"),
+        )?;
+    }
+    let dockerfile = std::fs::read_to_string(root.join("build/rust/runtime-candidate.Dockerfile"))
+        .map_err(|e| e.to_string())?;
+    builder(
+        &dockerfile,
+        &read_json(&root.join("build/rust/runtime-build-tool.json"))?,
+    )?;
+    require(
+        candidate["source_build_verified"] == true
+            && candidate["nonroot_runtime_verified"] == true
+            && candidate["image_cve_scan_verified"] == true
+            && candidate["full_product_qualified"] == true
+            && candidate["qualified_platforms"] == json!(["linux/amd64", "linux/arm64"]),
+        "runtime candidate remains unqualified for shipping; reviewed receipts required",
+    )
+}
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T13:42:09Z
+updated: 2026-11-07T13:51:03Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -20,6 +20,7 @@ files:
   - {path: cef-e77b9792-summary.json, sha256: 4c975b1d2936d6020d927eee6ac72c05b7cd20d98f90e64005ab1aad4a44051d, bytes: 2858, store: repo}
   - {path: mount-c3211e27-summary.json, sha256: ac09e1f630bbed4bae72079c55cfe20fcfd5d8c67c02acd5a6362a34038644a2, bytes: 5296, store: repo}
   - {path: go-c3211e27-summary.json, sha256: c858af3a68fcb2ac12acf04151fd1c32a193c90ec4fd59f3c8652d0075336b16, bytes: 5490, store: repo}
+  - {path: cef-ec4f2da0-summary.json, sha256: e219dcffd0361c3fd66676d30b10f4c83b7fc777f4839b7f5f8a696a8e83cb0a, bytes: 10375, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -273,3 +274,36 @@ passed lab20/delivery74. The Go private capture index SHA256 is
 26a9861791f5fa7117adc3db0941ba573a9706909806b235d47f378d64caa887.
 These captures are normalized REST and decoded connector wrappers, not HTTP
 wire bytes or the original private owner ledgers.
+
+## Source-bound CEF completion
+
+cef-ec4f2da0-summary.json records terminal successful run 42377685195 at exact
+ec4f2da0 with one successful job and zero artifacts. Helper14 and strict Clippy
+passed. Desktop protocol4/13filtered and bootstrap protocol3/3filtered are
+synthetic, without CEF/process initialization. Actual bootstrap1/5filtered and
+desktop process2 passed separately. All four original bootstrap flags spawned,
+waited, exited78 and were reaped before the deadline; profile inventories were
+observed before and after with changedfalse. Normal completion required no
+explicit cleanup attempt. Every actual command exit was observed zero; source
+stayed unchanged. browser_ready/full_runtime_qualified remain false. Private
+report SHA256 is 8da22ca217db5e2c0872c60e1d0824a55c785b6c7ae13709af776bdca972669c;
+its body was not retrieved. Normalized REST/decoded-log capture index SHA256 is
+e7294dc8154c2388e3bddf06ae33365624d4b5afb32cf8409af99c92e586aa39.
+
+## Frozen retirement preparation validation
+
+Allocated C tested an immutable archive at 37a85fe1 plus eight explicitly hashed
+delivery workflow/source overlays. Actual79 tests passed with zero failed,
+ignored or filtered; all-target check, strict Clippy, policy, actionlint and fmt
+passed. The shipping guard was expected to reject and did reject the remaining
+legacy core Dockerfile. It did not qualify the false runtime candidate. Full
+frozen source2531, reachable registry105packages/3791files, fourteen config paths,
+four tool binaries and relevant environment hashes had zero differences before
+and after. Eight live overlays still matched the frozen bytes. Metadata closure
+may overapproximate selected registry features; it is not a compiled reuse claim.
+Admission was80percent committed/31.83GiB free; jobs1/incremental0/locked/offline
+used the exclusive warm delivery target. First actionlint rejection of a constant
+false upload condition was preserved, then its automatic oracle upload removed.
+Private evidence index SHA256 is
+fc38d1982156314809d8bd149b82565a313825a35760ebe58a8ccc177d14f263.
+C was returned; no image/SDK/Docker/actual child/install/publish/OIDC ran.

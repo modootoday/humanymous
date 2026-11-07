@@ -94,7 +94,7 @@ fn pinned(action: &str) -> bool {
 }
 fn upload_allowed(name: &str, condition: Option<&str>) -> bool {
     match name {
-        "release.yml" | "frozen-go-oracle.yml" => true,
+        "release.yml" => true,
         "collector-component.yml" | "cef-native-component.yml" | "cross-os-probe.yml" => {
             condition == Some("always() && vars.CI_COMPONENT_ARTIFACTS == 'true'")
         }
@@ -153,6 +153,50 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         "privileged untrusted PR trigger forbidden",
     )?;
     let jobs = doc["jobs"].as_object().ok_or("missing workflow jobs")?;
+    if name == "codeql.yml" {
+        let steps = jobs["analyze"]["steps"]
+            .as_array()
+            .ok_or("CodeQL steps absent")?;
+        let pin = "e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81";
+        require(
+            steps.len() == 3
+                && steps[1]["uses"] == format!("github/codeql-action/init@{pin}")
+                && steps[1]["with"]["languages"] == "rust"
+                && steps[1]["with"]["build-mode"] == "none"
+                && steps[1]["with"]["config-file"].is_null()
+                && steps[2]["uses"] == format!("github/codeql-action/analyze@{pin}"),
+            "CodeQL must scan current Rust without legacy Go build or exclusions",
+        )?;
+    }
+    if name == "frozen-go-oracle.yml" {
+        require(
+            doc["on"].as_object().is_some_and(|events| {
+                events.len() == 1 && events.contains_key("workflow_dispatch")
+            }),
+            "historical Go oracle must remain manual only",
+        )?;
+        for job in jobs.values() {
+            let steps = job["steps"].as_array().ok_or("oracle steps absent")?;
+            let checkouts: Vec<_> = steps
+                .iter()
+                .filter(|step| {
+                    step["uses"]
+                        .as_str()
+                        .is_some_and(|action| action.starts_with("actions/checkout@"))
+                })
+                .collect();
+            require(
+                checkouts.len() == 1
+                    && checkouts[0]["with"]["ref"] == "981d25cf71a5a54855d7e2b4359e832a9d5998e5"
+                    && checkouts[0]["with"]["persist-credentials"] == false,
+                "historical oracle must not consume current shipping Go source",
+            )?;
+            require(
+                steps.iter().all(|step| step["with"]["cache-to"].is_null()),
+                "historical oracle remote cache writes forbidden",
+            )?;
+        }
+    }
     if name == "component-validation.yml" {
         let input = &doc["on"]["workflow_dispatch"]["inputs"]["component"];
         require(
@@ -621,22 +665,48 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             .filter_map(|v| v["name"].as_str())
             .collect();
         require(
-            images == ["core", "gate"].into(),
-            "only defender core/gate may publish",
+            images == ["runtime"].into(),
+            "only the explicit Rust runtime image identity may publish",
         )?;
         require(
             jobs["images"]["strategy"]["matrix"]["include"]
                 .as_array()
                 .is_some_and(|images| {
-                    images.iter().all(|image| {
-                        matches!(
-                            (image["name"].as_str(), image["dockerfile"].as_str()),
-                            (Some("core"), Some("build/core.Dockerfile"))
-                                | (Some("gate"), Some("build/gate.Dockerfile"))
-                        )
-                    })
+                    images.len() == 1
+                        && images.iter().all(|image| {
+                            matches!(
+                                (image["name"].as_str(), image["dockerfile"].as_str()),
+                                (
+                                    Some("runtime"),
+                                    Some("build/rust/runtime-candidate.Dockerfile")
+                                )
+                            )
+                        })
                 }),
-            "defender image name may not alias an attacker Dockerfile",
+            "runtime identity may not alias legacy or attacker Dockerfiles",
+        )?;
+        let steps = jobs["images"]["steps"]
+            .as_array()
+            .ok_or("release image steps absent")?;
+        let guard = steps.iter().position(|step| step["run"] == "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources");
+        let login = steps.iter().position(|step| {
+            step["uses"]
+                .as_str()
+                .is_some_and(|action| action.starts_with("docker/login-action@"))
+        });
+        let build = steps
+            .iter()
+            .find(|step| step["id"] == "build")
+            .ok_or("release image build absent")?;
+        require(
+            guard.zip(login).is_some_and(|(guard, login)| guard < login)
+                && steps.iter().any(|step| step["id"] == "image-source"
+                    && step["run"] == "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-scan prepare")
+                && build["with"]["platforms"] == "linux/amd64,linux/arm64"
+                && build["with"]["provenance"] == "mode=max"
+                && build["with"]["sbom"] == true
+                && build["with"]["build-args"] == "HUMANYMOUS_SOURCE_REV=${{ github.sha }}\nHUMANYMOUS_SOURCE_MANIFEST=${{ steps.image-source.outputs.source-manifest-sha256 }}\n",
+            "release image qualification/source/platform/provenance boundary changed",
         )?;
         for id in ["crates", "npm"] {
             require(
@@ -1215,6 +1285,75 @@ mod tests {
         assert!(document("release.yml", &release).is_ok());
         release["on"]["workflow_dispatch"] = Value::Null;
         assert!(document("release.yml", &release).is_err());
+    }
+    #[test]
+    fn rust_release_cannot_restore_go_alias_or_skip_candidate_guard() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let docs = workflows(&root).unwrap();
+        let release = &docs
+            .iter()
+            .find(|(name, _)| name == "release.yml")
+            .unwrap()
+            .1;
+        assert!(document("release.yml", release).is_ok());
+        for mutation in 0..3 {
+            let mut changed = release.clone();
+            match mutation {
+                0 => {
+                    changed["jobs"]["images"]["strategy"]["matrix"]["include"] =
+                        json!([{"name":"core","dockerfile":"build/core.Dockerfile"}])
+                }
+                1 => changed["jobs"]["images"]["steps"]
+                    .as_array_mut()
+                    .unwrap()
+                    .retain(|step| {
+                        step["name"] != "Recheck source and candidate shipping qualification"
+                    }),
+                _ => {
+                    changed["jobs"]["images"]["steps"]
+                        .as_array_mut()
+                        .unwrap()
+                        .iter_mut()
+                        .find(|step| step["id"] == "build")
+                        .unwrap()["with"]["platforms"] = json!("linux/amd64")
+                }
+            }
+            assert!(document("release.yml", &changed).is_err());
+        }
+    }
+    #[test]
+    fn rust_codeql_cannot_restore_go_or_autobuild() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let docs = workflows(&root).unwrap();
+        let original = &docs
+            .iter()
+            .find(|(name, _)| name == "codeql.yml")
+            .unwrap()
+            .1;
+        assert!(document("codeql.yml", original).is_ok());
+        for mutation in 0..2 {
+            let mut changed = original.clone();
+            changed["jobs"]["analyze"]["steps"][1]["with"][if mutation == 0 {
+                "languages"
+            } else {
+                "build-mode"
+            }] = json!(if mutation == 0 { "go" } else { "autobuild" });
+            assert!(document("codeql.yml", &changed).is_err());
+        }
+    }
+    #[test]
+    fn historical_oracle_cannot_follow_current_source() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let docs = workflows(&root).unwrap();
+        let mut oracle = docs
+            .iter()
+            .find(|(name, _)| name == "frozen-go-oracle.yml")
+            .unwrap()
+            .1
+            .clone();
+        assert!(document("frozen-go-oracle.yml", &oracle).is_ok());
+        oracle["jobs"]["go"]["steps"][0]["with"]["ref"] = json!("main");
+        assert!(document("frozen-go-oracle.yml", &oracle).is_err());
     }
     #[test]
     fn registry_job_cannot_return_to_shared_release_environment() {
