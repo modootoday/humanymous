@@ -54,11 +54,17 @@ impl Evidence for Frozen {
             std::thread::sleep(std::time::Duration::from_millis(200));
         }
         let fixture = match path {
-            "/deny" => include_str!("../../../../scoring/tests/fixtures/frozen/selenium-hr1.json"),
+            "/deny" => include_str!(
+                "../../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json"
+            ),
             "/challenge" => {
-                include_str!("../../../../scoring/tests/fixtures/frozen/no-client-hr10.json")
+                include_str!(
+                    "../../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json"
+                )
             }
-            _ => include_str!("../../../../scoring/tests/fixtures/frozen/human-chrome-allow.json"),
+            _ => include_str!(
+                "../../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json"
+            ),
         };
         let value: serde_json::Value = serde_json::from_str(fixture)
             .map_err(|_| Rejection::new(503, "fixture_unavailable"))?;
