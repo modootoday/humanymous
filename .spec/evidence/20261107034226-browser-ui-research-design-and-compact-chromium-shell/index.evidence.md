@@ -7,7 +7,7 @@ updated: 2026-11-07T04:17:05Z
 rel:
   depends_on: [sot:root/browser-ui, sot:root/chromium-lab-browser, sot:root/native-embedding]
 files:
-  - {path: results.json, sha256: 0a0b91dd0c5a0c211429fc7a116bd53a091dffafe56e826c19b98ed7e51e4265, bytes: 16385, store: repo}
+  - {path: results.json, sha256: 6d949e55a21ddb07c14455f2c57bc3167e5fc2d3e0e0f35149c8df044d542f51, bytes: 19681, store: repo}
   - {path: native-preview.png, sha256: 16af87c7c10d8947ff02b77d09a79ca2fc99b29e44dddc02d2884c36ee2de15d, bytes: 47789, store: repo}
 ---
 
@@ -54,3 +54,9 @@ no automatic secret scan of pixels is claimed. The published native-preview.png
 was manually visually reviewed: generated owned CEF fixture and local UI only,
 no personal page/profile or unrelated desktop content. Its original bytes are
 hashed above. No exemption or scanning-policy weakening was added.
+
+
+Canonical-byte correction: attached results.json is explicitly LF under
+.gitattributes; its declared hash/length cover clean-checkout Git bytes. Existing
+validation-worktree source hashes remain intact, with canonical Git source hashes
+recorded separately. This fixes text-byte portability only, not runtime evidence.

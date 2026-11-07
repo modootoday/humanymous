@@ -557,5 +557,96 @@
     "global_snapshot_errors": 3048,
     "global_snapshot_warnings": 1,
     "global_not_passed": "Other shared private-evidence manifest drift; browser-owned scopes pass. U2 skips binary PNG secret scanning; preview was manually visually reviewed as owned synthetic fixture only."
-  }
+  },
+  "canonical_git_source_files": {
+    "crates/browser/Cargo.toml": {
+      "sha256": "ac0de68ab5e2f5777a7bcc10930a91be7a1ab57daf42c1465ca1321647f0df2b",
+      "bytes": 956
+    },
+    "crates/browser/native/bootstrap/Cargo.toml": {
+      "sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+      "bytes": 463
+    },
+    "crates/browser/native/bootstrap/src/lib.rs": {
+      "sha256": "e5f05198a536a82995feed724620b766c69fa0d94a6c72ed4a9a5c36610df3e0",
+      "bytes": 5392
+    },
+    "crates/browser/native/bootstrap/src/renderer_probe.rs": {
+      "sha256": "cfa279ac4ffeee4358fac3f64125716efb27262c53fbdb983db5412215f80243",
+      "bytes": 2251
+    },
+    "crates/browser/native/desktop/Cargo.toml": {
+      "sha256": "3084e4311d574666594918cbe8b9ea38efd23f3ea4c0e73ca67b9347b56580d2",
+      "bytes": 1206
+    },
+    "crates/browser/native/desktop/src/child.rs": {
+      "sha256": "b611d0e5c1156894d5d0923bebf8a01af06632481a2ecb670b6d8a6979712c3c",
+      "bytes": 17425
+    },
+    "crates/browser/native/desktop/src/fixture.rs": {
+      "sha256": "b0bd84913bfc0dce0a9f23892e124bd84237dafc1a4d07926b6136bfbf49f2e2",
+      "bytes": 4764
+    },
+    "crates/browser/native/desktop/src/host.rs": {
+      "sha256": "7aaa3a1dea3a3421702843a6560ba79d8792dd09a73b83038e016560e71fa947",
+      "bytes": 21384
+    },
+    "crates/browser/native/desktop/src/host_report.rs": {
+      "sha256": "883920d564b5445b083cf93174d84c2595f1799e92d71f01532a1316c0df94d0",
+      "bytes": 1712
+    },
+    "crates/browser/native/desktop/src/lib.rs": {
+      "sha256": "74d01f17d6540461c079f63bb81f87bf6bb03f62a805cff73c1d2f574899a832",
+      "bytes": 3053
+    },
+    "crates/browser/native/desktop/src/measured_input.rs": {
+      "sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+      "bytes": 7599
+    },
+    "crates/browser/native/desktop/src/native.rs": {
+      "sha256": "735787f42e631d0c79d1ecbc685ba7badf5533003d0dee109fb8aeebcfb62f2b",
+      "bytes": 20266
+    },
+    "crates/browser/native/desktop/src/window_frame.rs": {
+      "sha256": "01480502c485dccfec6daf7bee020d989b42b5e0279b786df0c1a0187a88310d",
+      "bytes": 10794
+    },
+    "crates/browser/src/frame_geometry.rs": {
+      "sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247",
+      "bytes": 5326
+    },
+    "crates/browser/src/icons.rs": {
+      "sha256": "d44fbaf12bfcf288a5c80aec6ef4f9168938c5afd6bae955b22d4150339bcf05",
+      "bytes": 1984
+    },
+    "crates/browser/src/lib.rs": {
+      "sha256": "f719a4d02796b5be1c71458676512b3515b0431dd0192a9d145fea293863c2a8",
+      "bytes": 324
+    },
+    "crates/browser/src/lifecycle.rs": {
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "bytes": 6140
+    },
+    "crates/browser/src/main.rs": {
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "bytes": 931
+    },
+    "crates/browser/src/policy.rs": {
+      "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "bytes": 4042
+    },
+    "crates/browser/src/ui.rs": {
+      "sha256": "6a43d6b35c1bd6ef827780f00cd45a43070d1da0125e32d60298da7fbc9ae6da",
+      "bytes": 21342
+    },
+    "crates/browser/src/viewport.rs": {
+      "sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329",
+      "bytes": 4304
+    },
+    "crates/browser/src/window_chrome.rs": {
+      "sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+      "bytes": 7483
+    }
+  },
+  "text_byte_provenance": "Existing validated source hash fields record actual validation-worktree bytes; canonical_git_source_files records LF Git source bytes. Attachment JSON is now explicitly LF and its index hash covers canonical committed bytes. No executable, manifest payload, test result or measured runtime claim changed."
 }

@@ -7,7 +7,7 @@ updated: 2026-11-07T04:35:44Z
 rel:
   depends_on: [sot:root/native-embedding, plan:root/20261107042614]
 files:
-  - {path: results.json, sha256: a4b1227438699f78ae8624a193fd5dce88719ad475f9c2b583d6ca2fe2daf043, bytes: 6578, store: repo}
+  - {path: results.json, sha256: dd327a290bc19451b59e4a390c740484265710a50c7ecd89906e6f4ed683731d, bytes: 8468, store: repo}
   - {path: manifest-example.json, sha256: 44a663b163506e5a57741c4821eca637215d355cc461aa891a8d7fbf2194c8ac, bytes: 1303, store: repo}
 ---
 
@@ -41,3 +41,9 @@ Writes require trusted non-mutating workspace entries; temp cleanup after handle
 close is path-based. Atomic no-clobber publication is not crash durability or a
 host-security proof. No foreign templates, installer/hooks, network/profile access,
 scoring change or sandbox relaxation. Read SDK-15..18 and plan:root/20261107042614.
+
+
+Canonical-byte correction: attached results.json is explicitly LF under
+.gitattributes; its declared hash/length cover clean-checkout Git bytes. Existing
+validation-worktree source hashes remain intact, with canonical Git source hashes
+recorded separately. This fixes text-byte portability only, not runtime evidence.

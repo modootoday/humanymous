@@ -178,5 +178,52 @@
   ],
   "cleanup_premise": "Workspace entries trusted/non-mutating while operating; post-close temporary cleanup is path-based, not handle-bound erasure.",
   "publication_semantics": "Destination absent or complete no-clobber JSON; temp links can remain on crash/cleanup failure; readiness always false.",
-  "raw_path_note": "Historical pilot stdout records the original42614 workspace location before private evidence directory was renamed to42615 to give its index a distinct canonical ID."
+  "raw_path_note": "Historical pilot stdout records the original42614 workspace location before private evidence directory was renamed to42615 to give its index a distinct canonical ID.",
+  "canonical_git_source_files": {
+    "crates/native-cli/Cargo.toml": {
+      "sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "bytes": 442
+    },
+    "crates/native-cli/src/arguments.rs": {
+      "sha256": "0c8e593d0d027cdf0b26852eeaf8e29eff51d29bc3ccb5a98c5cae4f99432b48",
+      "bytes": 6480
+    },
+    "crates/native-cli/src/lib.rs": {
+      "sha256": "727de2499f0b3beaa0084a4375ae14c39915482e08bb1ed7c73bcf2f3dfbb1d5",
+      "bytes": 221
+    },
+    "crates/native-cli/src/main.rs": {
+      "sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "bytes": 2423
+    },
+    "crates/native-cli/src/manifest.rs": {
+      "sha256": "92ee2ad9635a2f297e864316d64152d9aa5ab8de198ef98c0e98fe028bca3239",
+      "bytes": 3438
+    },
+    "crates/native-cli/src/storage.rs": {
+      "sha256": "92ba13c460f74860751d5959e7fbe4ad7e163f86856475b9e042f7b668cc4d7b",
+      "bytes": 1726
+    },
+    "crates/native-cli/src/storage/windows.rs": {
+      "sha256": "21aca8c7b0efc4c81be93c62a686f475f82afb168c0dfae8f1c86fe30ac430d7",
+      "bytes": 5579
+    },
+    "crates/native-cli/src/storage/windows/tests.rs": {
+      "sha256": "f009da89234090e20336449cecf9a6c5198b212d2e4b42b6b380c1dd70bf6deb",
+      "bytes": 5013
+    },
+    "crates/native-cli/src/test_support.rs": {
+      "sha256": "af4483477730588c90df5bba8d2cce770eb78a51872f5931246e8d0f080d84b6",
+      "bytes": 1146
+    },
+    "crates/native-cli/src/tests.rs": {
+      "sha256": "3bedb8ba4418c75dff24220642b9bbd86a08aec2fb91c4df3b9ad5ba70f17d92",
+      "bytes": 4079
+    },
+    "crates/native-cli/tests/command.rs": {
+      "sha256": "cbb6d07e578998e71b9a8c343a5400efdbc8bbac7ea2143d5ddbd3414640f508",
+      "bytes": 4880
+    }
+  },
+  "text_byte_provenance": "Existing validated source hash fields record actual validation-worktree bytes; canonical_git_source_files records LF Git source bytes. Attachment JSON is now explicitly LF and its index hash covers canonical committed bytes. No executable, manifest payload, test result or measured runtime claim changed."
 }
