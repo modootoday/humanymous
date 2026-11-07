@@ -518,3 +518,28 @@ are registered in evidence:root/20261106223747. Passed workspace summaries requi
 complete coverage, every row validated, zero failed/errors/skips, required count
 equal executed rows and raw ignored equal explicitly classified helper counts.
 Public rows retain helper/required-parent names; account identities are excluded.
+On rejected multiple-summary output, subsequent runner versions preserve the
+observed final summary counts with validated=false rather than dropping counts.
+Summaries from older raw reports with unreadable counters explicitly expose
+counts_complete=false and unknown_count_harnesses; aggregate observed zeros do
+not imply that unmeasured counts were zero. Actual workspace-member retry at
+16c9e89 plus recorded dirty inputs still rejected the old durable_witness nested
+summary after73 discovered/10 executed harnesses. Seven runner tests and Clippy
+passed after this accounting correction. Native91f93c5 plus dirty inputs completed
+14harness67passed/errors0/requiredignored1/blocked2, preserved separately.
+
+Root memory-investigation instruction on 2026-11-07 deferred all new heavy
+validation. Already-running workspace-captured-helper compile was identified by
+owned process chain and reported to root; it was not killed or restarted.
+No new heavy runs may start until root reallocates capacity. This scheduling
+constraint does not alter qualification status or the remaining hosted gates.
+The existing workspace-captured-helper run subsequently exited1 on its own;
+owned processes all ended. It discovered73/executed14 harnesses. Audit
+durable_witness now passed12 plus rawignoredhelper1/validatedtrue. The next
+node-adapter host_process target passed2 but ignored3 explicit actual Node/Bun
+production pilots, so required workspace coverage failed. These are required
+product cases, not subprocess entrypoints, and receive no helper exception.
+key_backups was not reached in this execution. Raw partial-run artifacts are
+registered privately. Root and CI received the exact failure and no-running-
+process report. Full local Specfold check also failed on other private analysis
+paths/unregistered inputs(17938errors/1warning); --no-local remained0errors/1warning.

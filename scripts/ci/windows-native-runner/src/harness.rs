@@ -221,11 +221,9 @@ pub fn execute(
                 "required privileged service inventory changed",
             ));
         }
-        let counts = if custody {
-            summaries(&output).ok().and_then(|s| s.last().copied())
-        } else {
-            totals(&output).ok()
-        };
+        // Retain the observed final counts even when strict summary accounting
+        // rejects extra child output. `validated` still records that rejection.
+        let counts = summaries(&output).ok().and_then(|s| s.last().copied());
         let accounting = if custody {
             custody_account(&output, count, execution.status.success())
         } else if let Some((helper, parent)) = captured_helper {

@@ -255,6 +255,16 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
         .sum::<u64>();
     let summary = json!({"schema":"humanymous.native-runner-summary/1","scope":"four-package-native-process-component","status":report["status"],"qualification":"component-only","full_runtime_qualified":false,"source_sha":report["source_sha"],"validated_worktree_dirty":report["source"]["dirty"],"raw_report_sha256":digest(input)?,"os":report["os"],"arch":report["arch"],"errors":report["errors"],"skips":report["skips"],"missing_required_cases":report["missing_required_cases"],"unsupported":report["unsupported"],"documentation_examples_executed":report["documentation_examples_executed"],"harnesses":rows,"passed_tests":passed,"raw_ignored_tests":ignored,"zero_test_harnesses":zero,"own_source_git_bytes":report["source"]["own_source_git_bytes"]});
     let mut summary = summary;
+    let unknown_counts = rows
+        .iter()
+        .filter(|row| {
+            ["passed", "failed", "ignored", "filtered"]
+                .iter()
+                .any(|key| !row[*key].is_u64())
+        })
+        .count();
+    summary["unknown_count_harnesses"] = json!(unknown_counts);
+    summary["counts_complete"] = json!(unknown_counts == 0);
     summary["failed_tests"] = json!(failed);
     summary["required_harnesses"] = report["coverage"]["required_harnesses"].clone();
     summary["executed_harnesses"] = report["coverage"]["executed_harnesses"].clone();
