@@ -1,4 +1,4 @@
-//! Provisioned hosted-only CEF cases. Wire behind the explicit native pilot feature.
+//! Provisioned hosted-only CEF cases behind the explicit native pilot feature.
 //! The shared supervisor reaps only its direct child; descendant cleanup is not attested.
 use crate::pilot_assertions::{self, Case};
 use humanymous_test_support::process::capture_with_stderr;

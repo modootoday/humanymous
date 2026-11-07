@@ -17,8 +17,8 @@ capture, compares the actual spawned PID, refuses a pre-existing report, reads a
 most8MiB and emits only the verifier's safe summary. Positive and cancellation
 cases require separate fresh bundles via HUMANYMOUS_CEF_POSITIVE_BUNDLE and
 HUMANYMOUS_CEF_CANCELLED_BUNDLE. Missing provisioning fails explicitly. The source
-is not wired until root approves the native-pilot-tests feature edge; no process
-test has run. Capture failure leaves descendant cleanup unknown; this driver does
+is wired behind root-approved native-pilot-tests; no process test has run. Missing
+provisioning fails rather than skipping. Capture failure leaves descendant cleanup unknown; this driver does
 not provide Job-object ownership or qualify IME/AX/full sandbox behavior.
 
 Owner: browser-ui / rust-browser-native-lifecycle. The Meari management UI is integrated.

@@ -13,6 +13,8 @@ mod navigation;
 mod owner_scheme;
 #[cfg(test)]
 mod pilot_assertions;
+#[cfg(all(test, feature = "native-pilot-tests"))]
+mod pilot_process;
 mod window_frame;
 use cef::*;
 

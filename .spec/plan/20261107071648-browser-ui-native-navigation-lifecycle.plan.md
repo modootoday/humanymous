@@ -89,3 +89,13 @@ from navigation schema2. Missing/failed token observations disqualify canary joi
 Protocol fixtures do not count as process tests. Shared supervisor dependency and
 actual hosted positive/cancellation driver remain pending root graph coordination;
 new native compilation and protocol execution are not_run.
+
+Root subsequently approved the narrow desktop native-pilot-tests feature. The
+two provisioned process cases are wired behind that explicit feature, with no
+ignored cases and no successful environment-missing skips. The manifest is frozen
+for root lock resolution. Future hosted execution uses separate fresh bundle
+variables HUMANYMOUS_CEF_POSITIVE_BUNDLE and HUMANYMOUS_CEF_CANCELLED_BUNDLE:
+`cargo test --locked -p humanymous-cef-desktop --features native-pilot-tests pilot_process:: -- --test-threads=1 --nocapture`.
+Require exactly2 passed/0 ignored; default tests do not discharge this gate.
+No Cargo or native execution occurred during this graph window. Source/artifact
+provisioning and raw receipt retention remain the owning hosted runner's duties.
