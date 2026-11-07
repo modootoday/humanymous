@@ -49,6 +49,13 @@ including native SCM status or nonsecret output flush. Listener bind alone canno
 disarm it. If stop arrives during publication, publication completion preserves
 the stricter existing deadline instead of clearing or extending it. The watchdog
 never holds its state lock across the potentially blocking publisher call.
+Final successful foreground JSON delivery, including synchronous serialize/write/
+flush, likewise runs before Stopped/disarm and under the existing stop deadline.
+Windows final SCM Stopped publication uses the same completion ordering. Delivery
+does not acquire the supervisor state lock or obtain a fresh deadline. Validation
+rejects an unproven phase/drain/flush before emitting a successful final report;
+delivery failure cannot commit supervisor Stopped. New regression and ordering
+changes are authored/NOT_RUN until their own allocated gates execute.
 Observer management e6dd38d uses the existing authenticated native transport and
 independent Credential; it is not exposed through browser/application routes.
 

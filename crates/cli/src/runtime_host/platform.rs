@@ -51,10 +51,7 @@ fn foreground(plan: HostPlan) -> io::Result<()> {
         signal.abort();
         let _ = signal.await;
         match result {
-            Ok(report) => {
-                supervisor.stopped(&report.report())?;
-                output(&report)
-            }
+            Ok(report) => supervisor.deliver_stopped(&report.report(), || output(&report)),
             Err(error) => {
                 let _ = output(&super::describe_failure(&error, &generation, &executable));
                 Err(error)
@@ -198,13 +195,16 @@ mod windows {
             Some(pilot) => pilot.finish(result, ready.get(), readiness_manifest.into_inner()),
             None => result,
         };
-        if let Ok(report) = &result {
-            supervisor.stopped(&report.report())?;
-        }
         let exit = if result.is_ok() { 0 } else { 1 };
-        handle
-            .set_service_status(status(ServiceState::Stopped, exit, wait))
-            .map_err(io::Error::other)?;
+        let publish_stopped = || {
+            handle
+                .set_service_status(status(ServiceState::Stopped, exit, wait))
+                .map_err(io::Error::other)
+        };
+        match &result {
+            Ok(report) => supervisor.deliver_stopped(&report.report(), publish_stopped)?,
+            Err(_) => publish_stopped()?,
+        }
         result.map(|_| ())
     }
 }

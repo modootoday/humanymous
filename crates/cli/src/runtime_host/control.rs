@@ -54,7 +54,7 @@ impl State {
             _ => false,
         }
     }
-    fn stopped(&mut self, report: &ExitReport) -> io::Result<()> {
+    fn validate_stopped(&self, report: &ExitReport) -> io::Result<()> {
         if self.phase != Phase::Draining
             || !report.stopped
             || !report.drained
@@ -62,12 +62,28 @@ impl State {
         {
             return Err(invalid("unproven runtime shutdown"));
         }
+        Ok(())
+    }
+    fn stopped(&mut self, report: &ExitReport) -> io::Result<()> {
+        self.validate_stopped(report)?;
         self.phase = Phase::Stopped;
         self.deadline = None;
         Ok(())
     }
 }
 type Shared = Arc<(Mutex<State>, Condvar)>;
+
+// Validation and completion acquire their own short state locks. Delivery must
+// run between them without a lock, while the original watchdog remains armed.
+fn deliver_stop(
+    validate: impl FnOnce() -> io::Result<()>,
+    deliver: impl FnOnce() -> io::Result<()>,
+    complete: impl FnOnce() -> io::Result<()>,
+) -> io::Result<()> {
+    validate()?;
+    deliver()?;
+    complete()
+}
 
 #[derive(Clone)]
 pub(super) struct StopHandle {
@@ -202,6 +218,23 @@ impl Supervisor {
         self.state.1.notify_all();
         Ok(())
     }
+    pub(super) fn deliver_stopped(
+        &self,
+        report: &ExitReport,
+        deliver: impl FnOnce() -> io::Result<()>,
+    ) -> io::Result<()> {
+        deliver_stop(
+            || {
+                self.state
+                    .0
+                    .lock()
+                    .map_err(|_| invalid("supervisor poisoned"))?
+                    .validate_stopped(report)
+            },
+            deliver,
+            || self.stopped(report),
+        )
+    }
     pub(super) fn published(&self) -> io::Result<()> {
         self.state
             .0
@@ -230,6 +263,56 @@ impl Drop for Supervisor {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn pure_final_delivery_keeps_original_deadline_until_success() {
+        let deadline = Instant::now() + Duration::from_secs(1);
+        let state = std::cell::RefCell::new(State {
+            phase: Phase::Draining,
+            deadline: Some(deadline),
+        });
+        let report = ExitReport {
+            stopped: true,
+            drained: true,
+            audit_flushed: true,
+        };
+        let delivery_error = deliver_stop(
+            || state.borrow().validate_stopped(&report),
+            || {
+                assert_eq!(state.borrow().phase, Phase::Draining);
+                assert_eq!(state.borrow().deadline, Some(deadline));
+                Err(invalid("injected final flush failure"))
+            },
+            || state.borrow_mut().stopped(&report),
+        );
+        assert!(delivery_error.is_err());
+        assert_eq!(state.borrow().phase, Phase::Draining);
+        assert_eq!(state.borrow().deadline, Some(deadline));
+        deliver_stop(
+            || state.borrow().validate_stopped(&report),
+            || {
+                assert_eq!(state.borrow().phase, Phase::Draining);
+                assert_eq!(state.borrow().deadline, Some(deadline));
+                Ok(())
+            },
+            || state.borrow_mut().stopped(&report),
+        )
+        .unwrap();
+        assert_eq!(state.borrow().phase, Phase::Stopped);
+        assert_eq!(state.borrow().deadline, None);
+        let delivered = std::cell::Cell::new(false);
+        assert!(
+            deliver_stop(
+                || state.borrow().validate_stopped(&report),
+                || {
+                    delivered.set(true);
+                    Ok(())
+                },
+                || state.borrow_mut().stopped(&report),
+            )
+            .is_err()
+        );
+        assert!(!delivered.get());
+    }
     #[test]
     fn pure_stop_state_never_extends_deadline_or_fabricates_flush() {
         let now = Instant::now();
