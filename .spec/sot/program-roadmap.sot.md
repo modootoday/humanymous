@@ -23,6 +23,26 @@ and resource admission; follow the exact live run or process handle.
 
 ### Integration delta after the 17:27 snapshot
 
+At the user's request, root enumerated all393 repository Actions runs and their
+393 distinct Check Suites through gh CLI pagination:1207 unique Check Runs and
+1886 annotations, matching the captured advertised total exactly, with no fetch
+errors or missing suite IDs. Levels are984 warning,518 failure and384 notice;
+35 distinct full-message groups retain every original record privately in the
+root migration evidence bundle. A second repository count remained393. This is
+a bounded API snapshot; the live e70 job can still add later annotations.
+
+Current successful e70 preflight128492411204 reproduces the Node20 checkout
+deprecation. The same exact pin occurs in18 current workflow files, so this is
+an active source defect, not only historical noise. Delivery coordinates verified
+Node24 action pins and common policy; Apache/Python retain their actual workflow
+ownership. The historical .NET-specific workflow path no longer exists and must
+not be recreated from an old ownership list. Independent audit checks all35
+message groups against current source and exact historical/current execution
+evidence. Generic exit-code annotations require owning failure analysis, not
+silent dismissal. Platform notices, cancellation and immutable prior-source
+warnings remain evidence; deleting old runs or suppressing annotations is not a
+remediation. Current-source fixes and fresh execution proof remain pending.
+
 This table supersedes the corresponding older status below; it does not replace
 the final candidate gates or imply that changing inputs retain previous proof.
 
