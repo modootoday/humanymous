@@ -35,16 +35,22 @@ receipts qualify their exact inputs, not the final migration candidate.
 | Audit | Exact3d325bdb SIX selected GNU tests/check/strict Clippy/fmt passed; source-bound receipt9bb51b44 | Facade8025/capacity50df are source-only; S2 draft61bb6b4c requires correction of independent review findings. Production native open remains Unsupported |
 | Watermark | Corrected2eb2069a actual29 tests/check/strict Clippy/fmt passed in9ba8e308; earlier27f Clippy failure retained | Standards-validating WASM/PNG, high-level composition and actual carrier/file/product gates remain |
 | Integrity performance | c4786b67 actual27 tests; fixed-corpus release comparisonfc74b9be observed five hot paired batches13.75-18.69% shorter, paired median15.68% | Function/corpus observation only; no product/tail/allocation claim. Source ownership returned; bounded preparation tooling now prioritized |
-| Network temporal layer | e1ed50ce rejects invalid Vec layouts; import correction0429731c plus public documentation overlay passed72 tests/check/strict Clippy/fmt in the third immutable attempt; owner receipt/overlay commit pending | Initial import compile failure and subsequent82 missing-public-doc Clippy errors retained. Fleet coordinator/capture epochs/runtime integration remain unqualified |
-| Native shared ownership | 7a1e8dee common owner and3a0 bounded-create source prepared; selected pure/doc/check/Clippy batch allocated | New actual OS parent/pipe/bridge/producer gates remain; old14-test receipt cannot qualify new source |
-| Authority | Encoded-secret ownership2ca6e4fa source-ready; first22-test batch failed before tests on the same Network dependency imports; no Authority diagnostic or key access | Corrected Network dependency checkpoint then retry; actual current-source result and real authenticated provider/IPC integration remain required |
+| Network temporal layer | e1ed50ce rejects invalid Vec layouts; import correction0429731c plus public documentation overlay passed72 tests/check/strict Clippy/fmt in the third immutable attempt; frozen source and receipt306eedc8 | Initial import compile failure and subsequent82 missing-public-doc Clippy errors retained. Fleet coordinator/capture epochs/runtime integration remain unqualified |
+| Native shared ownership | Common owner7a1e8dee and bounded-create3a0 passed9 pure tests plus2 Rustdoc tests/check/strict Clippy/fmt; receipt3200a5a1. Historical admission recorded disk free, not physical RAM; explicit clarification retained | Five actual OS parent cases, direct-pipe CLI, bridge/producer gates remain; pure results cannot qualify them |
+| Authority | Source2ca6e4fa plus Network306eedc8 passed22 pure tests/check/strict Clippy/fmt;4632 selected inputs unchanged, receipt14ad4378. First dependency compile failure retainedd3e03749 | Real authenticated native/provider/IPC integration remains required; no key OS read, account or production Ready qualification |
 | Runtime and model | Runtime temporal composition and next deterministic model kernel assigned within existing owners; source preparation only | No readiness/scoring activation or new test success inferred; actual lower-provider contracts and full original parity scope retained |
 | Pages | Public input5341a880 remains a separate prepared candidate; later source-review batches do not constitute rendering | Fresh both-baseurl render, link/browser/AT validation, final-source reconciliation and approved main deployment remain |
 | Dedicated wargame | d6b24b76 authors strict dedicated caller; its policy is included in the90-test component batch | Root exact candidate push/dispatch review, actual generic26 run and full failure/unsupported accounting still required |
 
-Four one-job local pure owners maximum are admitted, subject to fresh memory and
-target ownership checks. Terminal Browser/Delivery slots were returned before
-Lab/Authority allocation. This is a dated allocation record, not a reusable grant.
+The initial allocation admitted four one-job local pure owners; terminal
+Browser/Delivery slots were returned before Lab/Authority allocation. The user's
+subsequent CPU-capacity request raises the lightweight ceiling to SIX under the
+structural canon:32 logical CPUs, sampled CPU15/13/23 percent,32.69 GiB physical
+available and commit82 percent. Runtime temporal tests and model standardization
+tests receive the two additional grants. Existing target exclusivity, one-job,
+physical available greater than20 GiB and commit below85 percent still apply;
+heavyweight work is scheduled separately. This is a dated allocation record,
+not a reusable workload grant.
 No package publication, tag, OIDC exchange, final main merge or branch deletion
 has been performed by this checkpoint.
 

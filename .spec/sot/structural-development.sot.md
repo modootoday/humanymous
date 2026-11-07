@@ -216,3 +216,28 @@ If no independent task is ready, retain an explicit dependency wait instead of
 creating duplicate work. Full migration completion still requires the original
 integration, product, documentation and post-main verification gates.
 
+## Adaptive lightweight validation concurrency
+
+The user requested higher concurrency on 2026-11-08 (Asia/Seoul). Root measured
+32 logical processors, CPU samples15/13/23 percent,32.69 GiB physical available
+of63.34 GiB, commit82 percent and no live Cargo/rustc process. The previous
+four-owner lightweight ceiling is superseded by SIX independent admitted owners.
+This is an initial measured increase, not permission for unbounded builds.
+
+Each owner uses an exclusive existing target, one Cargo build job and disabled
+incremental compilation for the declared comparison/validation profile. Selected
+test harnesses use one test worker where appropriate; explicit concurrency tests
+retain their required internal scheduling. Source preparation and evidence work
+do not retain compiler reservations after terminal commands.
+
+Before launch, require physical available greater than20 GiB and commit below85
+percent. At or beyond either limit, admit no additional compiler and let existing
+bounded commands finish; never kill another owner's process. Root measures actual
+processes, memory and CPU before increasing the ceiling again. A slow preparation
+phase is not evidence that compilation itself consumes the CPU budget.
+
+CEF/SDK builds, model initialization, Docker product tests and rendering containers
+remain separately scheduled heavyweight work. Six lightweight grants do not
+authorize them, shared target writes, new cache directories, dependency fetching,
+publication or extra hosted runs. Git writes remain globally serialized.
+

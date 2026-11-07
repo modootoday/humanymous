@@ -91,6 +91,13 @@ sum database disabled, local toolchain only, one build worker and a30second test
 timeout. All16 original named tests passed with no source changes. Every copied
 file's raw SHA256 matched its baseline retirement row. This is an unchanged
 historical oracle execution, not new Go implementation or retained Go shipping.
+These raw copied bytes use CRLF, while the recorded Git blobs use LF. A separate
+three-file byte comparison confirms every executed-copy SHA256 matches the
+recorded execution inventory and converting only Git LF to CRLF reproduces each
+copy exactly. Canonical Git bytes therefore are not byte-identical to executed
+copies; no zero-transformation Git-byte execution claim is made. The private
+pass-go-baseline-line-ending-proof.json retains both hashes and the comparison.
+No Go source logic changed and no new test was executed for this clarification.
 Its prefixed source inventory, JSON test log and summary are attached to the same
 private root evidence. It strengthens original-responsibility coverage but does
 not produce independent challenge/seed byte vectors or prove the Rust runtime
