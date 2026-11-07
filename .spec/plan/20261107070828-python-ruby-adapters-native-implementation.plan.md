@@ -222,3 +222,19 @@ quiet window; no new Cargo/native/runtime/model/Docker execution was started.
 Our B was already returned, session93294 terminal0, no owned runtime/CPU/GPU
 server/process. Coding/docs continue; actual execution awaits root allocation
 after measurements. Root common manifests/lock/toolchain remain untouched here.
+
+Quiet-window source review identified Rack's missing network-disconnect seam:
+only deadline/Ruby interrupts were previously checked. Added mandatory trusted
+server callback before input, during IPC wait and before handoff. Exact Magnus
+Qfalse/Qtrue conversions avoid treating nil/truthy strings as connected. Missing
+or invalid state/errors fail closed. A real server bridge remains required, not
+fabricated from HTTP or local IO closure. No scoring/dependency change.
+
+Request worker now has cancel-and-join Drop using Rust values only, including
+Ruby error/interrupt paths. Two pure ownership/panic definitions are available
+without Magnus; together with package-driver two, default expected pure count4.
+Native fixture adds five negative liveness cases and explicit connected callback
+to Rack/Sinatra/Rails dependency-down probes: native4groups/8cases. Separate Ruby
+contract prevents default pure results becoming ABI/server qualification.
+All new compile/unit/native/package/runtime gates remain NOT_RUN while root
+benchmark quiet window is active. Earlier summary003 precedes these later bytes.

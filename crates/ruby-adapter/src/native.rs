@@ -6,6 +6,8 @@ use humanymous_framework_adapter::{
 use humanymous_integrity::adapter::AdapterProfile;
 use magnus::{Error, RClass, RHash, RString, Ruby, Value, function, method, prelude::*};
 use std::sync::Arc;
+mod liveness;
+use crate::worker::DecisionWorker;
 #[cfg(feature = "host-pilot")]
 #[path = "hosted.rs"]
 mod hosted;
@@ -22,6 +24,7 @@ fn capabilities() -> String {
         "rawTls":false,"originalH2":false,"rawHeaderOrder":false,"capture":false,
         "requestStreaming":false,"websocket":false,"administration":false,
         "hijack":false,
+        "disconnectCallbackRequired":true,
         "maximumBodyBytes":1048576,"maximumPending":64,
         "hostPilotEnabled":cfg!(feature="host-pilot"),"packageToolEnabled":cfg!(feature="package-tool"),
         "releaseQualifiedTuples":[]}).to_string()
@@ -45,6 +48,9 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
     let _admission = Admission::acquire().map_err(|e| failure(ruby, e))?;
     let pending = Arc::new(Pending::new(&c).map_err(|e| failure(ruby, e))?);
     let env: RHash = original.funcall("dup", ())?;
+    if liveness::disconnected(ruby, env)? {
+        return reject(ruby, 503);
+    }
     let method: String = env.fetch("REQUEST_METHOD")?;
     let target: String = env.fetch("REQUEST_URI")?;
     let authority: String = env.fetch("HTTP_HOST")?;
@@ -115,12 +121,12 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
         raw: false,
     };
     let (tx, rx) = std::sync::mpsc::sync_channel(1);
-    let (_cancel, mut cancelled) = tokio::sync::watch::channel(false);
+    let (cancel, mut cancelled) = tokio::sync::watch::channel(false);
     let decision_pending = pending.clone();
     let decision_body = body.clone();
     // Worker owns Rust values only. Ruby waits through upstream thread_sleep,
-    // yielding GVL without handwritten unsafe. Drop of _cancel cancels IPC.
-    std::thread::Builder::new().name("humanymous-rack-decision".into()).spawn(move || {
+    // yielding GVL without handwritten unsafe. The request cancels and joins it.
+    let thread = std::thread::Builder::new().name("humanymous-rack-decision".into()).spawn(move || {
         let result=(||{
             let rt=tokio::runtime::Builder::new_current_thread().enable_all().build()
                 .map_err(|_|humanymous_framework_adapter::Error("adapter runtime unavailable"))?;
@@ -131,16 +137,21 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
         })();
         let _=tx.send(result);
     }).map_err(|_|failure(ruby,"adapter worker unavailable"))?;
+    let worker = DecisionWorker::new(cancel, thread);
     let result = loop {
         match rx.try_recv() {
             Ok(result) => break result,
             Err(std::sync::mpsc::TryRecvError::Disconnected) => return reject(ruby, 503),
             Err(std::sync::mpsc::TryRecvError::Empty) => {
+                if liveness::disconnected(ruby, env)? {
+                    return reject(ruby, 503);
+                }
                 let remaining = pending.remaining().map_err(|e| failure(ruby, e))?;
                 ruby.thread_sleep(remaining.min(std::time::Duration::from_millis(2)))?;
             }
         }
     };
+    drop(worker);
     let bound = match result {
         Ok(v) => v,
         Err(_) => return reject(ruby, 503),
@@ -162,6 +173,9 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
     pending
         .check_handoff(expires)
         .map_err(|e| failure(ruby, e))?;
+    if liveness::disconnected(ruby, env)? {
+        return reject(ruby, 503);
+    }
     app.funcall("call", (env,))
 }
 fn reject(ruby: &Ruby, status: u16) -> Result<Value, Error> {

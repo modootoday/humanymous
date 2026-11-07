@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.ruby-host-pilot-contract/1",
+  "scope": "native callable and dependency-unavailable component only; not an HTTP server pilot",
+  "requiredFeatures": ["host-pilot"],
+  "requiredCapabilities": {"adapter":"humanymous.ruby","hostPilotEnabled":true,"packageToolEnabled":false,"disconnectCallbackRequired":true},
+  "requiredRows": [
+    {"group":"liveness-negative","cases":5,"origin_effects":0},
+    {"framework":"rack","profile":"dependency-unavailable","status":503,"cases":1,"origin_effects":0},
+    {"framework":"sinatra","profile":"dependency-unavailable","status":503,"cases":1,"origin_effects":0},
+    {"framework":"rails","profile":"dependency-unavailable","status":503,"cases":1,"origin_effects":0}
+  ],
+  "nativeGroups": 4,
+  "nativeCases": 8,
+  "separateDefaultPureRustCases": 4,
+  "compiled": false,
+  "executedCases": 0,
+  "actualHttpServerQualified": false,
+  "packageInstallQualified": false,
+  "wholeProductQualified": false,
+  "requiredFutureGates": ["native ABI compile", "execute all native cases", "four default Rust pure cases", "real server disconnect callback", "ALLOW and production authority audit/effect", "GC.compact and GVL interruption", "production native gem clean install", "exact dependency audit"]
+}

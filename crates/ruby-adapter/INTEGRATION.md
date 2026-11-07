@@ -4,8 +4,15 @@ Native lib uses explicit Init_humanymous_ruby export. Humanymous.wrap returns
 a VM Rack object whose app/config live in Ruby ivars. No Ruby Value is stored
 in Rust heap collections. Body copies use safe upstream Magnus bytes API.
 IPC runs on a Rust-only worker; upstream thread_sleep yields GVL while awaiting
-it. Watch sender Drop cancels the worker client future. Thread scheduling,
-interrupt and GC.compact require actual hosted probes.
+it. A request-owned guard closes cancellation and joins the worker, including
+Ruby interrupt/error exits. Thread scheduling, interrupt and GC.compact require
+actual probes. This latest native source has not compiled or executed.
+
+Trusted server-owned humanymous.client_disconnected callable is mandatory before
+input, during the IPC wait and before origin handoff. Only exact Ruby false is
+connected; true rejects and absence/nil/truthy/error fails closed. Rack has no
+universal standard callable; a real server bridge and its disconnect proof remain
+unfinished. A header or local IO#closed? cannot establish remote liveness.
 
 Feature package-tool exports Humanymous.build_native_gem(staging,metadata_json).
 It calls upstream Gem::Specification/Requirement/Platform/Package methods,
@@ -23,7 +30,8 @@ Compiler/unit/runtime/package/install/require/framework/GC/GVL/ABI/IPC/audit
 all NOT_RUN. Hosted must exercise Rack/Sinatra/Rails and preserve actual counts.
 
 Feature host-pilot opts into unchanged ruby --require native-extension, stdin
-closed; contract expects3unique dependency-down503/noeffects0 groups only.
+closed. The current contract expects four native groups/eight cases: five
+liveness-negative cases plus three framework dependency-down503/noeffect cases.
 Production excludes host-pilot/package-tool. Package-tool init reads at most64KiB
 of private JSON from HUMANYMOUS_NATIVE_GEM_PACKAGE_REQUEST and calls upstream
 APIs, not eval or a generated Ruby executable string. Archive/install remain
@@ -48,3 +56,11 @@ No publish command or authored Ruby script exists. The default Rust driver does
 not enable Magnus; its compilation cannot qualify Ruby ABI. Default all-targets
 Rust-driver check/Clippy passed as recorded in evidence:root/20261107075243
 summary003. No tests, Ruby native build/import or package execution ran.
+That earlier snapshot does not compile the later worker/liveness changes.
+Two worker cancellation/join/panic pure definitions and two package-driver pure
+definitions now require a separate four-case default test gate. These pure tests
+do not establish native Ruby ABI or callback behavior. All new tests are NOT_RUN.
+
+Local Windows/WSL actual execution is now user-authorized under root allocation;
+the active benchmark quiet window still permits no new build/runtime command.
+The historical HOSTED opt-in variable name is unchanged and is not provenance.

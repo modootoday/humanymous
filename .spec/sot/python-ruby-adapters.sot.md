@@ -90,6 +90,14 @@ reads bounded binary input, replays via upstream StringIO and returns the origin
 must remain on the Ruby stack or in VM-managed ivars; no unmarked Value in Rust
 Vec/Box/Arc. Hold GVL for Ruby calls. GVL scheduling/timeout and GC.compact are
 mandatory actual runtime probes; source safety annotations are insufficient.
+Rack has no universal standard request-disconnect callable. Require a trusted,
+server-owned humanymous.client_disconnected callback before input, during IPC
+wait and immediately before application handoff. Only exact Ruby false means
+connected; true rejects, and absence/nil/truthy values/callback errors fail closed.
+Never derive it from a request header or assume IO#closed? attests remote liveness.
+Until a real server supplies and validates this seam, generic Rack HTTP support
+is unqualified. Request-owned Rust worker Drop closes cancellation and joins
+without Ruby/GVL calls; no detached task is accepted as cleanup proof.
 
 ASGI is a distinct async callable (scope,receive,send). HTTP1 only initially;
 require raw_path. Trusted-server lifespan forwards the original scope/state and
@@ -351,6 +359,7 @@ https://httpd.apache.org/docs/2.4/mpm.html ; https://httpd.apache.org/docs/2.4/m
 - https://www.maturin.rs/distribution.html and https://pypi.org/project/maturin/
 - https://raw.githubusercontent.com/matsadler/magnus/main/src/lib.rs (GC safety)
 - https://github.com/oxidize-rb/rb-sys
+- https://raw.githubusercontent.com/matsadler/magnus/0.9.3/src/value.rs (exact Qfalse/Qtrue conversion)
 - https://guides.rubygems.org/c-extensions/ and https://guides.rubygems.org/platforms/
 - https://asgi.readthedocs.io/en/latest/specs/www.html
 - https://peps.python.org/pep-3333/ and https://github.com/rack/rack/blob/main/SPEC.rdoc
