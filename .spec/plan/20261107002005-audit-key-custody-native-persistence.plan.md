@@ -100,6 +100,25 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+### Exact Ubuntu hosted subset, not whole-product completion
+
+Actual source8132117e7bf1445939d7dee9066fcf45ccf0915b contains audit20b57d2
+unchanged. Run42355168729 native Ubuntujob128351926093 built all locked workspace
+targets successfully, then executed control_operations16pass/fail0/ignored0/
+filtered0/exit0/validatedtrue and durable_witness11pass/rawignored1/exit0/
+validatedtrue. This supplies actual native execution for all eleven newly
+authored cases in control_operations, including the latest snapshot and exact
+prepared-recovery delta. Audit binary zero-test harnesses are not successes.
+
+The actor stopped at host_process5discovered/2passed/3ignored/exit0 but
+validatedfalse; overall15of88harnesses executed, coverage incomplete, errors1.
+Full audit-library/custody/backup, macOS/Windows and product gates remain open.
+The workflow skipped preservation, so required private originals were not
+recovered. Exact completed-job REST log and derived structured summary remain
+private; sanitized source/count/hash facts and limitations are recorded in
+[[evidence:root/20261107083318]]. Earlier unrun checkpoints remain historical;
+this subset does not retroactively qualify a whole candidate or later worktree.
+
 Current recovery source closes the untyped pending-rotation selection gap with
 PreparedRotationRecovery. Authenticate both envelopes, require exact identity
 and vault preservation, bind exact source/pending ciphertexts, require explicit

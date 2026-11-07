@@ -1,5 +1,18 @@
 # Sealed key compatibility integration
 
+## Latest actual hosted subset, source 8132117
+
+Fixed candidate8132117 includes audit20b57d2 unchanged. Ubuntu's full locked
+workspace/all-target build passed. Actual control_operations16passed with
+fail0/ignored0/filtered0/exit0/validatedtrue, including all eleven new native
+cases. durable_witness11passed with one raw ignored helper under the exact
+parent contract. Zero-test audit binaries are not successes. The workspace actor
+then stopped at host_process(rawignored3,validatedfalse):15of88harnesses executed,
+coverage incomplete. Full audit-library/custody/backup and cross-OS/product
+qualification remain unproven. Private harness originals were unavailable after
+the workflow skipped preservation; exact REST log/derived summary hashes and
+limits are in evidence:root/20261107083318. No full-suite success is claimed.
+
 ## Active product-goal source checkpoint
 
 Neutral `log::{SealedLog,SealedLogOptions,PinnedWitness,UnlockCredential,
@@ -40,7 +53,8 @@ both on-disk ciphertexts; recovery consumes an explicit retained rotation grant
 and rechecks exact digests before the existing sync/rename/poison path. It never
 reissues a consumed grant or re-encrypts after approval. Two hosted tests cover
 exact-byte promotion, wrong credentials, vault mutation and changed pending data.
-This source is not compiled/executed yet; prior7pure/static green is historical.
+This source compiled and its two native cases passed within the exact Ubuntu
+control_operations16 result above; prior7pure/static green remains historical.
 
 Newer unqualified source adds `storage::{TrustedSnapshot,SnapshotInspection}`
 for runtime operational state: open(path,owner,namespace,max_bytes), read,
@@ -52,7 +66,8 @@ No reset/discard API exists. This is native privacy/atomicity only: runtime owns
 typed state, semantic candidate lifecycle, revision/CAS, signed WAL digest and
 audit-before-apply. Native .pending and semantic candidate are distinct states.
 One additional hosted-only bound/lock/recovery test is authored; this newer
-source has not compiled or executed and does not inherit the prior7pure green.
+source compiled and its native case passed within the exact Ubuntu target above;
+that does not extend the older7pure result or prove cross-OS/runtime completion.
 
 `ControlAuthority::authorize_retained_action` accepts an `ApprovalRequest`, a
 trusted `ControlAnchorRetainer` and explicit `RetentionRequirement`. It requires
@@ -98,7 +113,8 @@ and exact retained proposal binding, then writes precisely the approved bytes
 through the shared existing custody transaction. No post-approval re-encryption
 or seed generation occurs. Local generation-only rotate_approved remains a
 different lower-level API. Hosted wrong-password/empty-password, complete snapshot
-identity, substituted candidate and stale source cases are authored, not executed.
+identity, substituted candidate and stale source cases passed within the exact
+Ubuntu control_operations target above; private originals remain unavailable.
 
 The eighth native case runs the actual audit-control-retainer binary through
 the shared bounded capture API (60seconds,64KiB). It checks exact first-session
@@ -107,8 +123,8 @@ client, exit status, empty success stderr and bounded stale-pin refusal, then
 reopens the actual store. There are three child invocations in one normal test,
 with no self-test helper or ignored-test exception. Captured-protocol verification
 is not a live interactive deadline test or proof of a different OS owner/volume.
-This test compiled/linked with --no-run and remains unexecuted;
-fa327b7's source manifest is historical.
+This test later executed within the exact Ubuntu target above;
+fa327b7's source manifest remains historical.
 
 ## Test-output correction for strict workspace accounting
 

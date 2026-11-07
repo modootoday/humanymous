@@ -1,0 +1,111 @@
+{
+  "schema": "humanymous.audit-hosted-native-subset/1",
+  "sourceSha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "auditSourceCheckpoint": "20b57d2",
+  "runId": 42355168729,
+  "jobId": 128351926093,
+  "os": "ubuntu-24.04",
+  "arch": "x86_64",
+  "candidateWorktreeDirty": false,
+  "workspaceStatus": "failed",
+  "workspaceCoverageComplete": false,
+  "workspaceExecutedHarnesses": 15,
+  "workspaceRequiredHarnesses": 88,
+  "workspaceFailedTests": 0,
+  "workspaceErrors": 1,
+  "auditHarnesses": [
+    {
+      "discovered": 0,
+      "executable_sha256": "9fa8fea894ef2569ea98fecfc81cab36eb2cf568afd70fb611fc00911511a0d2",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "audit-control-retainer",
+      "validated": true
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "663ac8092b58dbbb94095360974556a82a2e654a89009a166fcd9f02575a367d",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "audit-witness",
+      "validated": true
+    },
+    {
+      "discovered": 16,
+      "executable_sha256": "e886d14a242e48c5def7eb61066da8fac4950bc6505c47bab88d3e047455caa0",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 16,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "0d531997e1ee74b4289ed81713a11935ce4b8a62235cc57b23c8074c5b78223c",
+      "subprocess_helpers": null,
+      "target": "control_operations",
+      "validated": true
+    },
+    {
+      "discovered": 12,
+      "executable_sha256": "5c3e0335d22936f47e107fd1ae1a08097917bf631567c9038e4e1e9c0da7a92e",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 1,
+      "ignored_subprocess_helpers": 1,
+      "passed": 11,
+      "required_not_run": [],
+      "required_parent_tests": [
+        "witness_process_lifetime_and_interrupted_recovery"
+      ],
+      "stdout_sha256": "1165f350705e3ff34ae167936e3bc984df56c529563a79e0173415bf14f7f03b",
+      "subprocess_helpers": [
+        "child_witness_probe"
+      ],
+      "target": "durable_witness",
+      "validated": true
+    }
+  ],
+  "blockingHarness": [
+    {
+      "discovered": 5,
+      "executable_sha256": "519b2727f593b66b719ea0bfea7f71525d33ad54f295ec27c2407610e5a75101",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 3,
+      "ignored_subprocess_helpers": null,
+      "passed": 2,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "dd3e72f66742553a36d85ca72a18f5efb0645f5721a2a2cbdc7c91257e40b954",
+      "subprocess_helpers": null,
+      "target": "host_process",
+      "validated": false
+    }
+  ],
+  "auditFullSuiteQualified": false,
+  "crossOsQualified": false,
+  "productQualified": false,
+  "privateHarnessOriginalsRecovered": false,
+  "originalsLimitation": "workflow accounting preservation step skipped; only actual REST job log and derived public summary recovered",
+  "rawJobLogSha256": "1ba0d5fcd209487333e6085d63d9edcf93f8ae034bad0cb1ba8a1f21dcc46a1d",
+  "derivedSummarySha256": "9dbe561436fe7e5692da9715374702a33b4b59fb24e8bddc49e9515c81108165"
+}
