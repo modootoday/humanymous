@@ -170,8 +170,10 @@ qualified by these component receipts. Target and owned children returned termin
 The accepted `humanymous-adapter-<context>` target is an INTERNAL Rust package
 convention; it is not the public consumer identity. Cargo does not mandate adapter
 word order. The superseding user decision makes public usage `humanymous` across
-the Rust facade, npm, Python import, Ruby require and native product loader, with
-case-adapted `Humanymous` for .NET. Only root's single coordinated migration may
+the Rust facade, npm, Python import and Ruby require. The final filename decision
+sets managed assembly/file and NuGet identity to lowercase `humanymous`, C#
+namespace `Humanymous`, and the common native FFI stem to `humanymous-native`.
+Only root's single coordinated migration may
 change the ten mapped graph names, source imports, lock/workflows/artifacts/docs
 and claims. Current in-flight names and historical command/hash receipts stay as
 recorded until that migration; no independent rename occurred here.
@@ -195,14 +197,16 @@ names as LEGACY, not accepted future public branding or namespace ownership:
 | npm | `@humanymous/node` | `humanymous`; package exports and all consumer examples/install checks move atomically |
 | Python | distribution `humanymous-python-adapter`, module and `[lib].name` `humanymous_python` | distribution/import `humanymous`; map maturin/module/native entrypoint together |
 | Ruby | candidate gem `humanymous-ruby-adapter`, require/native init `humanymous_ruby` | gem/require `humanymous`; map package file and host init together |
-| .NET | candidate `Humanymous.Native.Experimental`, loader `humanymous_dotnet_adapter_export` | public `Humanymous` and unified product loader, with explicit native packaging/ABI mapping |
-| Native | Cargo export package `humanymous-native-abi-export` implies raw artifact basename `humanymous_native_abi_export`; entrypoint `humanymous_native_abi_v1` | public product loader basename `humanymous`; meaningful versioned ABI entrypoint may remain |
+| .NET | candidate `Humanymous.Native.Experimental`, loader `humanymous_dotnet_adapter_export` | package/NuGet and AssemblyName `humanymous`, file `humanymous.dll`, namespace `Humanymous`; NativeBinding LibraryImport logical name `humanymous-native` |
+| Native | Cargo export package `humanymous-native-abi-export` implies raw artifact basename `humanymous_native_abi_export`; entrypoint `humanymous_native_abi_v1` | common FFI stem `humanymous-native`: Windows `humanymous-native.dll`, Unix `libhumanymous-native.so`/`libhumanymous-native.dylib`; meaningful versioned ABI entrypoint may remain |
 | Rust facade | no public facade established by this maintenance-owner inspection | public facade `humanymous`; internal adapter crates remain independently organized |
 
 The native filename inference above is manifest-derived, not a new artifact run.
 Python's host-required `PyInit_humanymous` and Ruby's `Init_humanymous` must agree
 with the new import/require basename when implemented; platform suffixes and
-Python ABI tags remain legitimate loader exceptions. Internal raw Cargo outputs
+Python ABI tags and NAPI registration remain legitimate host-loader exceptions.
+Host extension module stems stay `humanymous`; upstream DLLs are not arbitrarily
+renamed. Internal raw Cargo outputs
 may be mapped during packaging, but implementation/language suffixes must not
 survive as public product branding. The existing `humanymous_*_v1` C ABI symbols
 can retain meaningful contract names. Native/Ruby/Python init/export compatibility
@@ -212,9 +216,13 @@ Proposed atomic move: root first fixes facade, native isolation/version/ownershi
 and compatibility canon; then one coordinated graph/source/lock/packaging/loader/
 workflow/docs transition updates all current names and clean-consumer fixtures.
 Host/ABI/architecture variants belong in isolated paths and a verified manifest.
-Two different DLL implementations must never land at one `humanymous.dll` path;
+The distinct managed `humanymous.dll` and native `humanymous-native.dll` basenames
+resolve their prior collision. Two native role implementations must still never
+land at one `humanymous-native.dll` path;
 the manifest must choose one compatible host variant and reject collision or
-ambiguous ownership. Package registry availability/publisher authority is still
+ambiguous ownership. Target/ABI/role isolation, trusted resolution, single-role
+domains, domain leases and unload restrictions remain mandatory under root's ABI
+canon. Package registry availability/publisher authority is still
 unverified; no namespace reservation/publication is claimed. Historical receipts,
 raw commands and hashes stay unchanged and are explicitly labeled legacy.
 
