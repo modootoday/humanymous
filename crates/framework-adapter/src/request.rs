@@ -15,6 +15,12 @@ pub struct Observation {
     pub authority: String,
     /// Sanitized received header view; CGI maps have lost original order/duplicates.
     pub headers: Vec<[String; 2]>,
+    /// Node HTTP1 peer only; normalized profiles must leave absent.
+    pub peer: Option<String>,
+    /// Node HTTP1 connection ID only; never original capture authority.
+    pub connection: Option<String>,
+    /// Original Node rawHeaders evidence, false for CGI/ASGI/Fetch.
+    pub raw: bool,
 }
 /// Names not trusted or forwarded to the application as capture authority.
 pub fn internal_header(name: &str) -> bool {
@@ -48,10 +54,16 @@ impl Pending {
     /// Remaining input/IPC duration; a caller cannot reset the original budget.
     pub fn remaining(&self) -> Result<Duration, Error> {
         let now = humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))?;
-        if now >= self.deadline || Instant::now() >= self.until {
+        let remaining = self
+            .until
+            .checked_duration_since(Instant::now())
+            .filter(|d| !d.is_zero());
+        if now >= self.deadline || remaining.is_none() {
             return Err(Error("adapter deadline expired"));
         }
-        Ok((self.until - Instant::now()).min(Duration::from_millis(self.deadline - now)))
+        Ok(remaining
+            .unwrap()
+            .min(Duration::from_millis(self.deadline - now)))
     }
     /// Encode observations and delegate validation/peer authentication/decision.
     pub async fn decide(
@@ -61,44 +73,8 @@ impl Pending {
         body: &[u8],
         profile: AdapterProfile,
     ) -> Result<BoundResponse, Error> {
-        let mode = match profile {
-            AdapterProfile::PythonAsgi => "asgi-normalized",
-            AdapterProfile::PythonWsgi => "wsgi-normalized",
-            AdapterProfile::RubyRack => "rack-normalized",
-            _ => return Err(Error("unsupported framework profile")),
-        };
-        if !c.permits_target(&o.target) || body.len() > c.max_body {
-            return Err(Error("route or body unavailable"));
-        }
-        let mut nonce = [0u8; 16];
-        getrandom::fill(&mut nonce).map_err(|_| Error("entropy unavailable"))?;
-        nonce[6] = (nonce[6] & 15) | 64;
-        nonce[8] = (nonce[8] & 63) | 128;
-        let h = hex::encode(nonce);
-        let id = format!(
-            "{}-{}-{}-{}-{}",
-            &h[..8],
-            &h[8..12],
-            &h[12..16],
-            &h[16..20],
-            &h[20..]
-        );
-        let headers: Vec<_> = o
-            .headers
-            .iter()
-            .filter(|[n, _]| !internal_header(n))
-            .collect();
-        let expected = profile.expected();
-        let wire=serde_json::to_vec(&serde_json::json!({"protocol":"humanymous.adapter/0.1",
-            "id":id,"tenant":c.tenant,"origin":c.origin,"revision":c.revision,"deadline":self.deadline,
-            "method":o.method,"target":o.target,"authority":o.authority,"peer":null,"headers":headers,
-            "headerMode":mode,"body":{"layer":"transfer-decoded-content-encoded","complete":true,
-            "length":body.len(),"sha256":hex::encode(Sha256::digest(body)),"base64":STANDARD.encode(body)},
-            "capabilities":{"rawTls":false,"originalH2":false,"rawHeaderOrder":false,"completeBody":true},
-            "stream":null,"capture":null,"connectionId":null,
-            "adapter":{"id":expected.id,"version":expected.version,"installation":c.installation}}))
-            .map_err(|_| Error("envelope encoding unavailable"))?;
-        parse_with_profile(
+        let wire = encode(c, o, body, self.deadline, profile)?;
+        let parsed = parse_with_profile(
             &wire,
             humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))?,
             profile,
@@ -118,7 +94,7 @@ impl Pending {
             },
             &wire,
             ExpectedBinding {
-                id: &id,
+                id: parsed.id(),
                 tenant: &c.tenant,
                 origin: &c.origin,
                 revision: &c.revision,
@@ -135,5 +111,127 @@ impl Pending {
             return Err(Error("authority result expired"));
         }
         Ok(())
+    }
+}
+
+/// Native entropy-generated request identity; no caller-chosen replay nonce.
+pub fn uuid() -> Result<String, Error> {
+    let mut nonce = [0u8; 16];
+    getrandom::fill(&mut nonce).map_err(|_| Error("entropy unavailable"))?;
+    nonce[6] = (nonce[6] & 15) | 64;
+    nonce[8] = (nonce[8] & 63) | 128;
+    let h = hex::encode(nonce);
+    Ok(format!(
+        "{}-{}-{}-{}-{}",
+        &h[..8],
+        &h[8..12],
+        &h[12..16],
+        &h[16..20],
+        &h[20..]
+    ))
+}
+/// Project the exact selected producer profile, then use the integrity parser.
+pub fn encode(
+    c: &Configuration,
+    o: &Observation,
+    body: &[u8],
+    deadline: u64,
+    profile: AdapterProfile,
+) -> Result<Vec<u8>, Error> {
+    let mode = match profile {
+        AdapterProfile::Node if o.raw => "node-raw",
+        AdapterProfile::Node => "fetch-normalized",
+        AdapterProfile::PythonAsgi => "asgi-normalized",
+        AdapterProfile::PythonWsgi => "wsgi-normalized",
+        AdapterProfile::RubyRack => "rack-normalized",
+        _ => return Err(Error("unsupported framework profile")),
+    };
+    if (profile != AdapterProfile::Node && o.raw)
+        || !c.permits_target(&o.target)
+        || body.len() > c.max_body
+    {
+        return Err(Error("route body or provenance unavailable"));
+    }
+    let headers: Vec<_> = o
+        .headers
+        .iter()
+        .filter(|[n, _]| !internal_header(n))
+        .collect();
+    let expected = profile.expected();
+    let wire=serde_json::to_vec(&serde_json::json!({"protocol":"humanymous.adapter/0.1",
+        "id":uuid()?,"tenant":c.tenant,"origin":c.origin,"revision":c.revision,"deadline":deadline,
+        "method":o.method,"target":o.target,"authority":o.authority,"peer":o.peer,"headers":headers,
+        "headerMode":mode,"body":{"layer":"transfer-decoded-content-encoded","complete":true,
+        "length":body.len(),"sha256":hex::encode(Sha256::digest(body)),"base64":STANDARD.encode(body)},
+        "capabilities":{"rawTls":false,"originalH2":false,"rawHeaderOrder":o.raw,"completeBody":true},
+        "stream":null,"capture":null,"connectionId":o.connection,
+        "adapter":{"id":expected.id,"version":expected.version,"installation":c.installation}}))
+        .map_err(|_|Error("envelope encoding unavailable"))?;
+    parse_with_profile(
+        &wire,
+        humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))?,
+        profile,
+    )
+    .map_err(|_| Error("invalid framework request"))?;
+    Ok(wire)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn observation() -> Observation {
+        Observation {
+            method: "POST".into(),
+            target: "/api?q=1".into(),
+            authority: "example.test".into(),
+            headers: vec![
+                ["host".into(), "example.test".into()],
+                ["content-length".into(), "2".into()],
+                ["x-humanymous-capture".into(), "forged".into()],
+            ],
+            peer: None,
+            connection: None,
+            raw: false,
+        }
+    }
+    #[test]
+    fn normalized_profiles_bind_binary_bytes_without_raw_claims() {
+        let c = Configuration::parse(&crate::configuration::fixture().to_string()).unwrap();
+        for profile in [
+            AdapterProfile::PythonAsgi,
+            AdapterProfile::PythonWsgi,
+            AdapterProfile::RubyRack,
+            AdapterProfile::Node,
+        ] {
+            let now = humanymous_authority::now_ms().unwrap();
+            let wire = encode(&c, &observation(), &[0, 255], now + 1000, profile).unwrap();
+            let r = parse_with_profile(&wire, now, profile).unwrap();
+            assert_eq!(r.body(), [0, 255]);
+            assert!(!r.headers().iter().any(|[n, _]| internal_header(n)));
+            for other in [
+                AdapterProfile::PythonAsgi,
+                AdapterProfile::PythonWsgi,
+                AdapterProfile::RubyRack,
+                AdapterProfile::Node,
+            ] {
+                if profile != other {
+                    assert!(parse_with_profile(&wire, now, other).is_err());
+                }
+            }
+        }
+    }
+    #[test]
+    fn forged_raw_peer_and_expired_or_incomplete_body_reject() {
+        let c = Configuration::parse(&crate::configuration::fixture().to_string()).unwrap();
+        let now = humanymous_authority::now_ms().unwrap();
+        let mut o = observation();
+        o.raw = true;
+        assert!(encode(&c, &o, &[0, 255], now + 1000, AdapterProfile::PythonAsgi).is_err());
+        o.raw = false;
+        o.peer = Some("127.0.0.1".into());
+        assert!(encode(&c, &o, &[0, 255], now + 1000, AdapterProfile::RubyRack).is_err());
+        o.peer = None;
+        assert!(encode(&c, &o, &[0], now + 1000, AdapterProfile::PythonWsgi).is_err());
+        assert!(encode(&c, &o, &[0, 255], now, AdapterProfile::PythonWsgi).is_err());
     }
 }

@@ -1,5 +1,12 @@
 # Rust Node-API adapter integration
 
+Current followup consumes framework-adapter shared config/envelope/entropy and
+process admission. NAPI error/host lifecycle remain here. Common schema adds only
+optional syncInputDeadlineEnforced=false; original Node required fields remain.
+Credential buffer is zeroizing. Shared migration is compile/unit/runtime NOT_RUN;
+previous Windows52/Linux36 receipts do not validate this new source. The admission
+unit moved to shared framework context; Node pure envelope3/template1 remain.
+
 Root Cargo delta: add `crates/node-adapter` to workspace members. The crate's
 manifest carries exact Node-API dependencies: napi=3.16.1 (default-features=false,
 napi8,dyn-symbols,tokio_rt), napi-derive=3.7.0, napi-build=2.6.0. Other dependencies

@@ -14,7 +14,7 @@ use std::{
 };
 
 struct Pending {
-    _admission: crate::admission::Permit<'static>,
+    _admission: humanymous_framework_adapter::Admission,
     cancelled: Arc<AtomicBool>,
     request: Lease,
     response: Option<Lease>,
@@ -52,7 +52,8 @@ pub(crate) fn express(env: &Env, config: Configuration) -> Result<Function<'stat
         let res: Object = ctx.get(1)?;
         let next: Function<(), Unknown> = ctx.get(2)?;
         let run = || -> Result<()> {
-            let admission = crate::admission::HOST.acquire()?;
+            let admission =
+                humanymous_framework_adapter::Admission::acquire().map_err(|e| error(e.0))?;
             if prop::<bool>(&req, "readableEnded")?
                 || req.has_named_property("body")?
                 || prop::<Option<String>>(&req, "readableEncoding")?.is_some()
@@ -127,7 +128,8 @@ pub(crate) fn fetch(
     let streams = Rc::new(reference(env, &stream_module)?);
     let callback = env.create_function_from_closure("humanymousFetch", move |ctx| {
         let result = (|| -> Result<Unknown> {
-            let admission = crate::admission::HOST.acquire()?;
+            let admission =
+                humanymous_framework_adapter::Admission::acquire().map_err(|e| error(e.0))?;
             let request: Object = ctx.get(0)?;
             if prop::<bool>(&request, "bodyUsed")? {
                 return Err(error("guard must precede Fetch parsers"));
@@ -312,7 +314,11 @@ fn collect(
             terminate(ctx.env, &timeout_state, 503)
         })?;
     let g = global(env)?;
-    let _: Unknown = call(&g, "setTimeout", FnArgs::from((timer, config.timeout_ms)))?;
+    let _: Unknown = call(
+        &g,
+        "setTimeout",
+        FnArgs::from((timer, config.timeout_ms as u32)),
+    )?;
     let end_state = state.clone();
     let end =
         env.create_function_from_closure::<(), (), _>("humanymousBodyComplete", move |ctx| {
@@ -377,7 +383,7 @@ fn start_decision(
             use humanymous_authority::client::{ClientOptions,ExpectedBinding};
             let parsed=humanymous_integrity::adapter::parse(&wire,envelope::now()?).map_err(error)?;
             let (origin,revision,_)=parsed.origin_binding();
-            let options=ClientOptions{endpoint:&config.endpoint,credential:&config.credential,server:&config.server,timeout_ms:config.timeout_ms as u64,adapter:humanymous_integrity::adapter::AdapterProfile::Node};
+            let options=ClientOptions{endpoint:&config.endpoint,credential:config.credential(),server:&config.server,timeout_ms:config.timeout_ms,adapter:humanymous_integrity::adapter::AdapterProfile::Node};
             let expected=ExpectedBinding{id:parsed.id(),tenant:parsed.tenant(),origin,revision,deadline};
             humanymous_authority::client::decide(&options,&wire,expected).await.map_err(|_|error("authority unavailable"))
         };

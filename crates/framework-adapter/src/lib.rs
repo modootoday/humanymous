@@ -2,7 +2,7 @@
 mod configuration;
 mod request;
 pub use configuration::Configuration;
-pub use request::{Observation, Pending, internal_header};
+pub use request::{Observation, Pending, encode, internal_header, uuid};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 /// Static, non-sensitive host boundary failure. Never contains credentials/body.
@@ -51,6 +51,15 @@ pub fn body_length(value: &str, maximum: usize) -> Result<usize, Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn admission_is_bounded_and_restored_without_eviction() {
+        let permits: Vec<_> = (0..64).map(|_| Admission::acquire().unwrap()).collect();
+        assert!(Admission::acquire().is_err());
+        drop(permits);
+        let permit = Admission::acquire().unwrap();
+        drop(permit);
+        assert_eq!(ACTIVE.load(Ordering::Acquire), 0);
+    }
     #[test]
     fn missing_ambiguous_and_oversized_lengths_reject() {
         for value in ["", "-1", "+1", "1,1", " 1", "1\n", "42949672960"] {

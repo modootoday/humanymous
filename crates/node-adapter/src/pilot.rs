@@ -1,10 +1,6 @@
 //! Rust-authored host process fixture. Upstream framework modules are loaded by
 //! their real module loader; no foreign test source is generated or evaluated.
-use crate::{
-    envelope::{Configuration, error},
-    host::*,
-    stream,
-};
+use crate::{envelope::error, host::*, stream};
 use napi::{Env, Result, bindgen_prelude::*};
 use napi_derive::napi;
 use serde::Deserialize;
@@ -30,7 +26,7 @@ fn initialize(_exports: Object<'_>, env: Env) -> Result<()> {
         .read_to_string(&mut input)
         .map_err(|_| error("private pilot input"))?;
     let options: Pilot = serde_json::from_str(&input).map_err(|_| error("pilot configuration"))?;
-    let config = Configuration::parse(&options.config.to_string())?;
+    let config = crate::envelope::parse(&options.config.to_string())?;
     let module = builtin(&env, "module")?;
     let require: Function<String, Object> = call(&module, "createRequire", options.package_json)?;
     let server = if options.framework == "express" {

@@ -63,6 +63,22 @@ GVL scheduling and generated metadata are source paths, not runtime proof.
 
 Go requirement is accepted for design and subsequent implementation; no Go source
 or C ABI unsafe shim is authorized implicitly. See Go boundary in the context SoT.
+User subsequently added C/C++/C# targets. Same active goal is maintained; no new
+goal replaces it. C ABI ownership/panic/buffer/cancel and C++/.NET host glue require
+the context contract and explicit exception decisions where Rust-only cannot
+express a native middleware. Core language slices continue independently.
+Apache httpd also joins this goal. Native hook/filter/MPM and Compose deployment
+ownership remain separate. No binding selected; hosted Docker acceptance required.
+
+## Shared Node migration source (pending compilation)
+
+Node consumes shared Configuration/Observation/encode/entropy/admission, retaining
+NAPI error translation and host lifecycle. Original required config fields stay;
+shared optional syncInputDeadlineEnforced defaults false, refusing sync WSGI/Rack
+unless explicitly provisioned. Credentials become zeroizing. Node timer converts
+common bounded timeout to u32. Existing admission unit moves to shared budget;
+retained Node envelope3/template1 and new shared6 pure tests need separate counts.
+Compile/unit/runtime NOT_RUN for this new source; no old green transfers.
 
 ## Goal
 

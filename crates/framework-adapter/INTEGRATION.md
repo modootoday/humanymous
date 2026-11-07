@@ -10,9 +10,10 @@ humanymous.python/wsgi-normalized; RubyRack humanymous.ruby/rack-normalized;
 all version0.1.0-experimental.1. Authority config spelling python-asgi,
 python-wsgi, ruby-rack. No original raw/capture/connection capability.
 
-Followup migrates existing Node config/envelope/admission into this context,
+Current source migrates existing Node config/envelope/admission into this context,
 without changing its accepted config schema or measured provenance. The existing
 Node Windows/Linux regression corpus must be rerun after that source change.
+Shared six pure units cover length/admission/config/routes/binary profiles/forgery.
 
 Local pure units/fmt/scoped Clippy use the root-assigned single Cargo slot.
 Actual framework/IPC/process/package/CrossOS execute hosted. All compile/current

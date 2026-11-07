@@ -26,6 +26,7 @@ pub struct Configuration {
     /// At most1MiB of transfer-decoded entity bytes.
     pub max_body: usize,
     /// Sync host input deadline must be separately enforced by the server.
+    #[serde(default)]
     pub sync_input_deadline_enforced: bool,
 }
 impl Configuration {
@@ -75,7 +76,8 @@ impl Configuration {
         }
         Ok(c)
     }
-    pub(crate) fn credential(&self) -> &str {
+    /// Borrow the zeroizing supervisor secret only while preparing IPC.
+    pub fn credential(&self) -> &str {
         &self.credential
     }
     /// Exact route check. This is an inventory, not a local authorization policy.
@@ -86,4 +88,48 @@ impl Configuration {
 }
 fn reserved(p: &str) -> bool {
     p == "/_humanymous" || p.starts_with("/_humanymous/")
+}
+
+#[cfg(test)]
+pub(crate) fn fixture() -> serde_json::Value {
+    let endpoint = if cfg!(windows) {
+        r"\\.\pipe\humanymous-framework-unit"
+    } else {
+        "/tmp/humanymous-framework-unit.sock"
+    };
+    serde_json::json!({"installation":"i","tenant":"t","origin":"o","revision":"r","endpoint":endpoint,
+        "credential":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","server":{"kind":"unix","uid":0},
+        "routes":["/api"],"timeoutMs":1000,"maxBody":8})
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn strict_config_has_no_unknown_duplicate_or_remote_fallback() {
+        let value = fixture();
+        let text = value.to_string();
+        assert!(Configuration::parse(&text).is_ok());
+        assert!(Configuration::parse(&text.replacen('{', "{\"tenant\":\"other\",", 1)).is_err());
+        let mut bad = value.clone();
+        bad["unknown"] = true.into();
+        assert!(Configuration::parse(&bad.to_string()).is_err());
+        let mut bad = value.clone();
+        bad["endpoint"] = "http://localhost:1234".into();
+        assert!(Configuration::parse(&bad.to_string()).is_err());
+        let mut bad = value.clone();
+        bad["maxBody"] = 1_048_577.into();
+        assert!(Configuration::parse(&bad.to_string()).is_err());
+        let mut bad = value;
+        bad.as_object_mut().unwrap().remove("credential");
+        assert!(Configuration::parse(&bad.to_string()).is_err());
+    }
+    #[test]
+    fn routes_are_exact_and_management_stays_unavailable() {
+        let c = Configuration::parse(&fixture().to_string()).unwrap();
+        assert!(c.permits_target("/api?q=1"));
+        for target in ["/api/sub", "/unknown", "/_humanymous", "/_humanymous/admin"] {
+            assert!(!c.permits_target(target));
+        }
+        assert!(!c.sync_input_deadline_enforced);
+    }
 }

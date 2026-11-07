@@ -88,6 +88,9 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
         target,
         authority,
         headers,
+        peer: None,
+        connection: None,
+        raw: false,
     };
     let (tx, rx) = std::sync::mpsc::sync_channel(1);
     let (_cancel, mut cancelled) = tokio::sync::watch::channel(false);

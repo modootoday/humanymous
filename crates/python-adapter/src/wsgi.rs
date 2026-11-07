@@ -100,6 +100,9 @@ impl Wsgi {
             target,
             authority,
             headers,
+            peer: None,
+            connection: None,
+            raw: false,
         };
         let config = self.config.clone();
         let result = py.detach(|| {

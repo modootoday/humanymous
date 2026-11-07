@@ -173,6 +173,68 @@ https://gin-gonic.com/en/docs/ ; https://echo.labstack.com/docs/middleware ;
 https://docs.gofiber.io/next/extra/faq/ . Findings are feasibility constraints,
 not claims of a generated Go bridge already working.
 
+## C, C++ and .NET extension (explicit user scope)
+
+Add one versioned C ABI contract over the shared Rust core, not one detector per
+language. Candidate Rust cdylib/staticlib exports must specify opaque handle
+ownership, fixed-width repr(C) layouts/size/version, exact allocator/free pairing,
+buffer-length maximums, error/status codes, panic containment, secret zeroization,
+deadline and cancel ownership. Cbindgen can generate headers from Rust declarations;
+it does not prove foreign pointer validity or make unsafe pointer dereference safe.
+Core unsafe_code=forbid remains intact. No authored unsafe C ABI shim is silently
+waived: isolate a reviewed generated upstream boundary or request a narrow explicit
+exception for the necessary pointer/lifetime/export boundary before implementing it.
+
+C++ RAII, exception translation, thread/callback lifetime and allocator behavior
+are separate host glue. .NET LibraryImport's source generator produces P/Invoke
+marshalling from C# declarations; it does not author an ASP.NETCore middleware
+InvokeAsync(HttpContext) registration/lifecycle. Kestrel RequestAborted, bounded
+body replay, headers/trailers, Response.BodyWriter/backpressure, managed GC rooting,
+NativeAOT/trimming and SafeHandle disposal require actual managed-host evidence.
+No new authored C/C++/C#/Go implementation or executable template is authorized
+by listing these targets. Rust reverse proxy coverage does not complete middleware.
+
+Initial feasibility status: generated header/marshaller tools exist; full native
+host callback bridge and exception decision unresolved. Report the minimal missing
+host declarations/middleware glue to root rather than fabricate support. No new
+crate/workspace member or producer profile until ownership/contract is accepted.
+NuGet trust/distribution and native runtime asset selection are separate CI-owner
+work; no environment, tag, token exchange or publish action is authorized here.
+
+Primary references: https://doc.rust-lang.org/nomicon/ffi.html ;
+https://github.com/mozilla/cbindgen ;
+https://learn.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke-source-generation ;
+https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/write?view=aspnetcore-10.0 ;
+https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing .
+All C/C++/.NET compiler/package/runtime/ABI cases are NOT_RUN.
+
+## Apache httpd extension (explicit user scope)
+
+Apache HTTP Server is a distinct native target. A reverse proxy to Rust Gate
+provides HTTP-origin topology coverage, not a loaded native httpd module.
+Qualification binds exact httpd/APR ABI, build flags, OS/arch, request pool and
+MPM. Interception must precede application effects and correctly replay bounded
+input through filters. A content handler alone cannot gate arbitrary later proxy
+handlers. Never retain request_rec/pool/bucket pointers past cleanup or transfer
+them to an unowned asynchronous thread.
+
+event/worker require thread-safe lifetimes; prefork requires fork-safe per-process
+client/admission initialization. Graceful reload/shutdown, internal redirects,
+subrequests, handler re-entry, timeout/disconnect/filter failures, upgrades and
+once-only decisions require real probes. MPM names do not establish safety.
+Reuse shared authority/integrity/admission and coordinate nginx seams; no scoring
+copy. No binding/version is selected before maintained ABI/unsafe/CVE research.
+Core forbid-unsafe remains; hook/pool-pointer boundary needs reviewed upstream
+binding or an explicit narrow exception, never an implicit waiver.
+
+Hosted isolated Docker must verify module load/reload/MPM/filter/product cases.
+Compose is deployment orchestration, distinct from adapter implementation.
+Product-lab owner must agree exact image/module/config, isolation, bypass denial
+and audit/effect witness. Priority follows compiling current Node/Python/Ruby
+commonization. Implementation=false; all Apache tests NOT_RUN.
+Primary: https://httpd.apache.org/docs/2.4/developer/modguide.html ;
+https://httpd.apache.org/docs/2.4/mpm.html ; https://httpd.apache.org/docs/2.4/mod/event.html .
+
 ## Primary research (2026-11-07)
 
 - https://pyo3.rs/main/class/call and https://docs.rs/pyo3/latest/pyo3/

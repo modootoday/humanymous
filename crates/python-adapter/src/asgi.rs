@@ -95,6 +95,9 @@ impl Asgi {
             target,
             authority: authority.ok_or_else(|| failure("host required"))?,
             headers,
+            peer: None,
+            connection: None,
+            raw: false,
         };
         let locals = pyo3_async_runtimes::tokio::get_current_locals(py)?;
         let app = self.app.clone_ref(py);

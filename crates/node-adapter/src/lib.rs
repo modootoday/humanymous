@@ -1,6 +1,5 @@
 //! Rust-owned Node-API framework lifecycle bridge to the shared Rust authority.
 //! No scoring, credential verification or security receipt implementation lives here.
-mod admission;
 mod envelope;
 mod host;
 mod server;
@@ -16,7 +15,7 @@ use napi_derive::napi;
 /// Create root-mounted Express middleware before every body parser and effect.
 #[napi(ts_return_type = "(request: object, response: object, next: () => void) => void")]
 pub fn express(env: Env, options: String) -> Result<Function<'static, (), ()>> {
-    stream::express(&env, envelope::Configuration::parse(&options)?)
+    stream::express(&env, envelope::parse(&options)?)
 }
 
 /// Create the Node HTTP server around an existing Express app before its parsers
@@ -28,7 +27,7 @@ pub fn create_express_server(
     options: String,
     app: Object<'_>,
 ) -> Result<Object<'static>> {
-    server::express_server(&env, envelope::Configuration::parse(&options)?, app)
+    server::express_server(&env, envelope::parse(&options)?, app)
 }
 
 /// Create an outer Fetch handler around a Hono app with an explicit route inventory.
@@ -39,12 +38,7 @@ pub fn hono(
     app: Object<'_>,
     stream_module: Object<'_>,
 ) -> Result<Function<'static, (), Unknown<'static>>> {
-    stream::fetch(
-        &env,
-        envelope::Configuration::parse(&options)?,
-        app,
-        stream_module,
-    )
+    stream::fetch(&env, envelope::parse(&options)?, app, stream_module)
 }
 
 pub use template::{HtmlHook, html_hook};
