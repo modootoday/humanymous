@@ -230,6 +230,16 @@ fn header(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     report["header"] = json!({"generator_version":"0.29.4","generator_sha256":source::file(&tool)?,"header_sha256":source::file(&generated)?,"compiler_evidence_sha256":hashes,"compiler_profiles":["C11","C++11"],"layout_verifier":"owning header_conformance example","dynamic_abi_qualified":false});
     Ok(())
 }
+fn native_target(kind: &str) -> Result<&'static str> {
+    match kind {
+        "capture" => Ok("capture"),
+        "header" => Ok("header"),
+        _ => Err("native component target must be capture or header".into()),
+    }
+}
+pub fn native(root: &Path, kind: &str) -> Result<()> {
+    run(root, native_target(kind)?)
+}
 pub fn run(root: &Path, kind: &str) -> Result<()> {
     require(
         matches!(
@@ -279,6 +289,21 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn native_caller_accepts_only_the_two_owned_targets() {
+        assert_eq!(native_target("capture").unwrap(), "capture");
+        assert_eq!(native_target("header").unwrap(), "header");
+        for value in [
+            "",
+            "node-host",
+            "runtime",
+            "maintenance",
+            "capture; true",
+            "../header",
+        ] {
+            assert!(native_target(value).is_err());
+        }
+    }
     #[test]
     fn capture_requires_all_five_actual_tests_without_ignore_or_extra_summary() {
         let cases = CAPTURE_CASES

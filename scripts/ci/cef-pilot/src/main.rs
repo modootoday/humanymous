@@ -1,5 +1,6 @@
 //! Provision and execute the explicit native CEF rejection pilot, never GUI qualification.
 mod desktop;
+mod diagnostics;
 mod provisioning;
 use serde_json::json;
 use std::{
@@ -11,12 +12,15 @@ use std::{
 const CASE: &str =
     "tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation";
 
-fn logged(command: &mut Command, path: &Path) -> io::Result<()> {
+fn logged_status(command: &mut Command, path: &Path) -> io::Result<std::process::ExitStatus> {
     let file = fs::File::create(path)?;
-    let status = command
+    command
         .stdout(Stdio::from(file.try_clone()?))
         .stderr(Stdio::from(file))
-        .status()?;
+        .status()
+}
+fn logged(command: &mut Command, path: &Path) -> io::Result<()> {
+    let status = logged_status(command, path)?;
     if !status.success() {
         return Err(io::Error::other(format!(
             "command failed ({status}); inspect {}",
@@ -61,7 +65,8 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
     report["source"] = source.clone();
     report["stage"] = "native-build".into();
     let tool_path = provisioning::tool_path()?;
-    logged(
+    let native_log = output.join("native-build.log");
+    let native_status = logged_status(
         Command::new("cargo").env("PATH", &tool_path).args([
             "build",
             "-p",
@@ -69,9 +74,20 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
             "-p",
             "humanymous-cef-desktop",
             "--locked",
+            "--message-format=json",
         ]),
-        &output.join("native-build.log"),
-    )?;
+        &native_log,
+    );
+    report["native_build"] = diagnostics::read(
+        &native_log,
+        &source,
+        native_status.as_ref().ok().and_then(|status| status.code()),
+    );
+    if !native_status?.success() {
+        return Err(io::Error::other(
+            "native build failed; compiler details retained privately",
+        ));
+    }
     let bundle = provisioning::prepare()?;
     report["stage"] = "desktop-protocol-build".into();
     logged(
@@ -170,7 +186,9 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
     report["passed_tests"] = 3.into();
     report["desktop_passed_tests"] = 2.into();
     report["ignored_tests"] = 0.into();
-    if source["files"] != provisioning::source_snapshot()?["files"] {
+    let changed = source["files"] != provisioning::source_snapshot()?["files"];
+    report["source_changed"] = changed.into();
+    if changed {
         return Err(io::Error::other("native source changed during build/pilot"));
     }
     let artifacts = [
@@ -192,6 +210,14 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
     Ok(())
 }
 
+fn emit(output: &Path, report: &serde_json::Value) -> io::Result<()> {
+    let path = output.join("report.json");
+    fs::write(&path, serde_json::to_vec_pretty(report)?)?;
+    let mut safe = diagnostics::public(report);
+    safe["private_report_sha256"] = provisioning::digest(&path)?.into();
+    println!("{safe}");
+    Ok(())
+}
 fn main() -> io::Result<()> {
     let mut args = std::env::args_os().skip(1);
     let output = args
@@ -210,18 +236,15 @@ fn main() -> io::Result<()> {
     fs::create_dir_all(output)?;
     let mut report = json!({"status":"failed","scope":"separate synthetic protocol preflight, bootstrap rejection and two provisioned desktop process cases","required_test":CASE,"passed_tests":null,"ignored_tests":null,"desktop_passed_tests":null,"protocol_preflight":null,"bootstrap_rejection_passed":false,"required_override_cases":4,"rejected_override_cases":null,"stage":"source-preflight","browser_ready":false,"full_runtime_qualified":false,"gui_keyboard_ime_ax":"not qualified by these bounded probes","descendant_cleanup_attested":false});
     match run(output, &mut report) {
-        Ok(()) => fs::write(
-            output.join("report.json"),
-            serde_json::to_vec_pretty(&report)?,
-        ),
+        Ok(()) => emit(output, &report),
         Err(error) => {
             report["status"] = "failed".into();
             report["error_code"] = "native_pilot_failed".into();
-            fs::write(
-                output.join("report.json"),
-                serde_json::to_vec_pretty(&report)?,
-            )?;
-            Err(error)
+            report["private_error"] = error.to_string().into();
+            emit(output, &report)?;
+            Err(io::Error::other(
+                "native CEF pilot failed; private report retained",
+            ))
         }
     }
 }

@@ -15,6 +15,7 @@
     "pypi": {"workflow":"release.yml","environment":"pypi","state":"preparation-only","job_present":false}
   },
   "workflows": [
+    {"file":"component-validation.yml","name":"CI / Native components","jobs":["preflight","component"],"concurrency":{"group":"native-component-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"browser-product-validation.yml","name":"CI / Browser product diagnostic","jobs":["preflight","product"],"concurrency":{"group":"browser-product-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"python-validation.yml","name":"CI / Python component","jobs":["component"],"concurrency":{"group":"python-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"go-validation.yml","name":"CI / Go component","jobs":["preflight","product"],"concurrency":{"group":"go-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},

@@ -153,6 +153,64 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         "privileged untrusted PR trigger forbidden",
     )?;
     let jobs = doc["jobs"].as_object().ok_or("missing workflow jobs")?;
+    if name == "component-validation.yml" {
+        let input = &doc["on"]["workflow_dispatch"]["inputs"]["component"];
+        require(
+            doc["on"]
+                .as_object()
+                .is_some_and(|triggers| triggers.len() == 2)
+                && doc["on"]["push"]["branches"] == json!(["codex/native-component-validation"])
+                && input["type"] == "choice"
+                && input["default"] == "capture"
+                && input["required"] == true
+                && input["options"] == json!(["capture", "header"])
+                && jobs.len() == 2
+                && jobs["component"]["needs"] == "preflight"
+                && jobs["component"].get("if").is_none()
+                && jobs["component"].get("continue-on-error").is_none()
+                && jobs["preflight"]["timeout-minutes"] == 25
+                && jobs["component"]["timeout-minutes"] == 35
+                && jobs["component"]["env"]["HUMANYMOUS_NATIVE_COMPONENT"]
+                    == "${{ inputs.component || 'capture' }}",
+            "native caller must retain closed targets and bounded preflight",
+        )?;
+        for job in ["preflight", "component"] {
+            require(
+                jobs[job]["runs-on"] == "ubuntu-24.04"
+                    && jobs[job]["steps"].as_array().is_some_and(|steps| {
+                        steps.iter().any(|step| {
+                            step["uses"]
+                                == "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+                                && step["with"]["ref"] == "${{ github.sha }}"
+                                && step["with"]["persist-credentials"] == false
+                        })
+                    }),
+                "native caller requires exact-source hosted checkout",
+            )?;
+        }
+        let preflight = jobs["preflight"]["steps"]
+            .as_array()
+            .ok_or("native preflight absent")?;
+        for command in [
+            "cargo test --locked -p humanymous-delivery -j1",
+            "cargo check --locked -p humanymous-capture -p humanymous-native-abi-export --all-targets -j1",
+            "cargo clippy --locked -p humanymous-delivery -p humanymous-capture -p humanymous-native-abi-export --all-targets -j1 -- -D warnings",
+            "cargo run --locked -p humanymous-delivery -- policy",
+        ] {
+            require(
+                preflight.iter().any(|step| {
+                    step["run"] == command
+                        && step["if"]
+                            == "${{ !cancelled() && steps.toolchain.outcome == 'success' }}"
+                }),
+                "native current-source preflight required",
+            )?;
+        }
+        require(jobs["component"]["steps"].as_array().is_some_and(|steps| steps.iter().any(|step| {
+            step["run"] == "cargo run --locked -p humanymous-delivery -- native-component \"$HUMANYMOUS_NATIVE_COMPONENT\""
+                && step.get("if").is_none()
+        })), "native target must pass only through the quoted environment and closed Rust dispatch")?;
+    }
     if matches!(name, "go-validation.yml" | "browser-product-validation.yml") {
         let browser = name == "browser-product-validation.yml";
         let branch = if browser {
@@ -769,6 +827,7 @@ mod tests {
             "rust-validation.yml",
             "go-validation.yml",
             "browser-product-validation.yml",
+            "component-validation.yml",
             "apache-validation.yml",
             "python-validation.yml",
             "dotnet-validation.yml",
@@ -788,6 +847,38 @@ mod tests {
             "collector-component.yml",
             Some("always() && vars.CI_COMPONENT_ARTIFACTS == 'true'")
         ));
+    }
+    #[test]
+    fn native_caller_rejects_open_inputs_and_success_masking() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "component-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("component-validation.yml", &original).is_ok());
+        for mutation in 0..5 {
+            let mut changed = original.clone();
+            match mutation {
+                0 => {
+                    changed["on"]["workflow_dispatch"]["inputs"]["component"]["type"] =
+                        json!("string")
+                }
+                1 => {
+                    changed["on"]["workflow_dispatch"]["inputs"]["component"]["options"] =
+                        json!(["capture", "header", "runtime"])
+                }
+                2 => {
+                    changed["jobs"]["component"]["steps"][2]["run"] = json!(
+                        "cargo run --locked -p humanymous-delivery -- component ${{ inputs.component }}"
+                    )
+                }
+                3 => changed["jobs"]["component"]["needs"] = json!([]),
+                _ => changed["jobs"]["component"]["continue-on-error"] = json!(true),
+            }
+            assert!(document("component-validation.yml", &changed).is_err());
+        }
     }
     #[test]
     fn browser_diagnostic_cannot_promote_or_replace_the_full_gate() {

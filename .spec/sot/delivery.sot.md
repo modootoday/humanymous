@@ -1157,3 +1157,30 @@ they do not establish a current runtime image scan. The runtime source/lock,
 scratch image, nonroot UID, entrypoint and source labels remain unchanged.
 Installation, auditable build and Trivy binary inventory require actual evidence
 before any qualification is asserted. Existing shipping guards stay fail closed.
+
+The dedicated native component caller accepts only capture and header, with
+capture as the dedicated branch push default. Manual selection is a closed
+choice passed through a quoted environment variable into the Rust
+native-component selector, which rejects all other targets before resources.
+The selector reuses the existing component owner invocations and receipt checks.
+Read-only exact-source Ubuntu preflight runs delivery units, selected owner
+all-target checks/Clippy and workflow policy before a bounded component job.
+Capture must execute all five hosted transport cases without ignored/filtered
+counts; header uses pinned cbindgen and the owning C11/C++11 layout verifier.
+Neither profile qualifies dynamic ABI, product e2e or browser/AT behavior.
+Automatic uploads/cache writes, publication and OIDC are absent.
+
+The standalone CEF runner requests Cargo JSON for its native build and emits
+a closed safe summary on terminal success or failure. Only Rust E-number codes,
+reviewed lint labels and primary file/line locations matching its canonical
+repository source inventory may leave the private log. Rendered diagnostics,
+source snippets, messages and arbitrary paths are excluded. Diagnostic reads
+are bounded to eight MiB, records to 256 KiB and output to 64 diagnostics with
+four locations each. Malformed, oversized, omitted, missing and truncated data
+remain explicit; unsupported build-script/linker failures retain unknown cause.
+The observed private prefix and terminal private report are hashed. A full log
+hash is absent when the read is truncated. Raw files remain private; this read
+bound does not impose a new bound on temporary on-disk compiler log growth.
+Source drift is null when the existing final source check was not reached.
+Protocol fixtures, bootstrap rejection and actual process cases stay separate,
+and no diagnostic implies browser, GUI, AT or whole-runtime qualification.

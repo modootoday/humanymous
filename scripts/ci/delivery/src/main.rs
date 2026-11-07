@@ -74,6 +74,7 @@ fn run() -> Result<()> {
     match argument(0)? {
         "policy" => policy::check(&root),
         "component" => components::run(&root, argument(1)?),
+        "native-component" => components::native(&root, argument(1)?),
         "action-pins" => policy::pins(&root),
         "jobs" => policy::jobs(&std::env::var("NEEDS_JSON").map_err(|e| e.to_string())?),
         "package" => package::check(&root),

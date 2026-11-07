@@ -585,3 +585,43 @@ The corrected private index is
 Admission was 81.45 percent committed and 33,307,188 KiB free physical memory;
 jobs one/incremental zero used the exclusive warm delivery target. C was returned.
 No actual tool install, runtime auditable build or image scan was performed.
+
+Root requested a single bounded native component caller rather than another
+full-workflow run. component-validation.yml defaults dedicated branch pushes
+to capture and offers only capture/header for manual dispatch. The Rust
+native-component selector rejects every other target before delegating to the
+existing owner component runner. The workflow uses quoted environment input,
+exact-source read-only Ubuntu jobs, independent selected preflight checks,
+no success masking and no artifacts/cache/OIDC. Source policy rejects open
+input types/options, direct shell interpolation, missing preflight and ignored
+job failures. Source/actionlint checks pass; new Rust tests and actual capture5
+or header C11/C++11 evidence remain pending a fresh allocation/root review.
+
+CEF hosted run 42370958371 at exact 0a1bb36e terminated in native-build with
+Cargo exit 101 and runner exit one. Six runner helper units and strict Clippy
+passed; protocol4, bootstrap1 and actual desktop process2 were not reached.
+The upload was skipped and artifacts were zero. The compiler log/report bodies
+were not recovered, so the exact cause remains unknown. The attached safe
+cef-0a1bb36e-summary.json preserves this failure; private decoded capture index
+SHA256 is 60f0bcec3dd7ea9d010e5ffcefc4696dcb10e37ab6ea94fd46d9ca4ad7dab1c8.
+Root requested a source-only Cargo JSON diagnostic projection before retry.
+The new code retains typed native child exit, bounds diagnostic reads/output,
+projects reviewed codes/locations and emits source/report/prefix hashes with
+explicit unknown or missing fields. Five new privacy/bounds tests are pending
+execution (expected standalone helper count eleven); no new dependency or native
+semantic change was introduced. Raw log capture remains private and its on-disk
+growth is unchanged; only parsing and public output have the new hard bounds.
+
+Allocated warm A executed CEF11 and delivery69 tests successfully. Initial CEF
+Clippy rejected two allowlist matches as manual_unwrap_or; that failed batch is
+preserved under private index
+8ac5414274d2f97a0e53a5c39eb33568cdc0dc9c65c6d03012b6e223e68e42af.
+The fix uses filter(allowlist).unwrap_or("unknown"), preserving rejection of
+private/unrecognized values. A fresh batch passed both test suites with zero
+failed/ignored/filtered, both strict all-target Clippy commands, current compiled
+policy and actionlint. All 84 scoped source/workflow/image/embedded-contract/root
+inputs stayed unchanged. Corrected private index is
+e159d7496cb8f6159d961be81398b375359943b40427c1d865800f87ccc6ffa9.
+Admission was 79.95 percent committed and 34,276,580 KiB free physical memory;
+jobs one/incremental zero used separate exclusive warm targets. A was returned.
+No CEF SDK, native GUI/process, actual capture5/header or Docker workload ran.
