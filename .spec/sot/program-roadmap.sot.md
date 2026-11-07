@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T12:57:09Z
+updated: 2026-11-07T13:05:37Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -21,7 +21,7 @@ freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
-Snapshot: 2026-11-07T12:57:09Z. Source-bound component results below do not
+Snapshot: 2026-11-07T13:05:37Z. Source-bound component results below do not
 qualify the final integration candidate. Execution allocations are ephemeral;
 only an explicit current root grant and resource admission authorize a new run.
 
@@ -32,9 +32,9 @@ only an explicit current root grant and resource admission authorize a new run.
 | Capture | Genuine hosted42372114913 at e77b9792 succeeded: five actual fixtures passed, source unchanged and full=false | Serving H2, DNS/origin/witness and full Docker composition remain separate product gates |
 | Audit | Captured319a5992 full140 accepted tests passed; five exact ignored helpers excluded; evidence:root/20261107122437 | New PhaseA4b49e933 scan owner source is unqualified; bounded scoped tests allocated, native producer and operational memory/custody gates remain |
 | CEF | Genuine hosted42372115353 at e77b9792: helper11, strict Clippy, native build and four native protocol tests passed | Bootstrap stage did not yield authoritative execution/count/child-exit evidence; desktop2 NOT_RUN and post-run source closure unknown; fix typed stage/case diagnostics before retry |
-| Mount custody | Baseline42372825588 at b482d5be collected four observations/eight path refusals at actor_mount_mode; cleanup/source binding passed, custody/full/release=false | Exact c3211e27 parent-tree COPY repair has20 pure tests/Clippy and2444-file zero drift; same hosted probe42374587466 currently in progress, require all eight paths accepted |
-| Go | Genuine hosted42369171124 at15f63fef attempted eight actors, all failed at writer mount; zero evaluated and assertion counts unknown | Go8 retry remains held until successful repaired mount probe; older build and startup failures retained |
-| Apache | b5c15f0d genuine hosted42373232097 ran45:35 passed/10 failed, event15/worker15/prefork5; isolated CLI signal15, diagnostic cleanup true but pilot not qualified | b4000944 isolates master/helper groups,25 scoped units/check/Clippy passed; genuine hosted42374566498 currently in progress; require all45 and pilot cleanup |
+| Mount custody | Baseline b482 had eight mode refusals. Repaired exact c3211e27 hosted42374587466 passed: four ordered observations/eight accepted paths, owner0/receipt valid/source unchanged/cleanup true | This clears the mount prerequisite for one exact c321 Go8 retry; custody/full/release remain false, not a product qualification |
+| Go | Genuine hosted42369171124 at15f63fef attempted eight actors, all failed at writer mount; zero evaluated and assertion counts unknown | Repaired mount prerequisite passed; root granted one exact c3211e27 Go8 retry, genuine hosted42375310198 is in progress. Older failures remain retained |
+| Apache | Exact b4000944 genuine hosted42374566498/job128409407533 passed45 unique scenarios: event15/worker15/prefork15; pilot/container/image/ledger cleanup passed; CLI exit0/reaped/no force/timeout | Exact Linux component tuple qualified only; fullProductSuccess=false. Earlier b5 35/10 and SIGTERM15 remain historical failure evidence; final composition/current graph remain separate |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identities still CHALLENGE/zero origin; positive TLS ALLOW-to-origin unqualified; epoch gate pure tests do not establish production/native Ready |
 | Native/.NET | Parent-context shared4/runner7 and .NET consumer13/check/Clippy passed on captured inputs; generic managed ABI079 actual once passed independently | Context remains UNVERIFIED syntax/budget data; retained Job partial-start and duplex changes await current tests; actual ASP.NET IO, independent expiry, reader convergence and protected native owner remain open |
 | Pages | Exact26960736/docs56b1e029 local pinned Jekyll builds and archive consumers passed both88-page/165-file variants; limited actual browser navigation/keyboard observations recorded | Current docs9e5ea12e/tree c323055e has newer source reviews only, no fresh render/browser; main artifact roundtrip/deployment and AT remain open |
