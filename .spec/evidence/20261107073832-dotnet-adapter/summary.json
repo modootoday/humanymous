@@ -1,0 +1,34 @@
+{
+  "schema": "humanymous.dotnet-component-observation/1",
+  "observed_at": "2026-11-07T07:38:32Z",
+  "source_checkpoint": "c23b504f5260d7506ef3039b1f62845953ab25a9",
+  "owned_source_sha256": "cc9a2fc63fde361edeed8386cb633d2db75b87f741560fbd44cb233318a177a6",
+  "source_hash_scope": "post-run owned file hash; complete run-time workspace hashes not captured",
+  "runner": "local-windows-rust-pure-unit",
+  "command_handle": "exec-b6805700-3564-4e01-bd4e-b2a091e9c933",
+  "test": {
+    "command": "cargo test --locked --offline -p humanymous-dotnet-adapter --lib -- --test-threads=1",
+    "passed": 7,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0
+  },
+  "clippy": {
+    "command": "cargo clippy --locked --offline -p humanymous-dotnet-adapter -p humanymous-native-abi -p humanymous-go-adapter -p humanymous-authority -p humanymous-framework-adapter -p humanymous-integrity --lib -- -D warnings",
+    "exit_code": 0
+  },
+  "actual_host_process": 0,
+  "actual_ipc": 0,
+  "kestrel": 0,
+  "nativeaot": 0,
+  "managed_gc": 0,
+  "docker_e2e": 0,
+  "release_qualified_tuples": [],
+  "retained_failures": [
+    "E0282/E0283 initial unit compile",
+    "collapsible_if initial library Clippy",
+    "subsequent broader Clippy failed in concurrently edited runtime stream source"
+  ],
+  "scope": "component only"
+}

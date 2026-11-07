@@ -85,6 +85,21 @@ impl Cancellation {
     }
 }
 
+// Cancels on dropped async decisions, including unwinding. No host callback or
+// runtime task is retained; poisoning remains a terminal lock error.
+struct DecisionAttempt {
+    cancellation: Cancellation,
+    completed: bool,
+}
+
+impl Drop for DecisionAttempt {
+    fn drop(&mut self) {
+        if !self.completed {
+            let _ = self.cancellation.cancel();
+        }
+    }
+}
+
 /// Owned complete-body request. Dropping it releases process admission.
 /// The host must start this before reading and before any application effect.
 pub struct Request {
@@ -199,6 +214,10 @@ impl Request {
         }
         self.body()?;
         self.decision_started = true;
+        let mut attempt = DecisionAttempt {
+            cancellation: self.cancellation(),
+            completed: false,
+        };
         if observation.method == "CONNECT"
             || observation
                 .headers
@@ -217,6 +236,7 @@ impl Request {
                 self.body()?;
                 self.binding = Some(Binding::observed(observation));
                 self.decision = Some(decision);
+                attempt.completed = true;
                 Ok(())
             }
             Err(error) => {
@@ -415,5 +435,18 @@ mod tests {
             let cancelled = worker.join().unwrap();
             assert_ne!(handed_off, cancelled);
         }
+    }
+
+    #[test]
+    fn dropping_an_incomplete_decision_attempt_revokes_sealed_body() {
+        let mut request = Request::begin(&config(), Some(0)).unwrap();
+        request.eof().unwrap();
+        let attempt = DecisionAttempt {
+            cancellation: request.cancellation(),
+            completed: false,
+        };
+        drop(attempt);
+        assert!(request.body().is_err());
+        assert!(request.finish(Verdict::Allow, u64::MAX, true).is_err());
     }
 }

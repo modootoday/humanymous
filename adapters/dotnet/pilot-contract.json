@@ -1,0 +1,55 @@
+{
+  "schema": "humanymous.dotnet-host-pilot/1",
+  "status": "not-implemented",
+  "runnable": false,
+  "reason": "Reviewed managed host glue and native export mechanism are not approved or implemented",
+  "implementationOwner": "crates/dotnet-adapter",
+  "abiOwner": "crates/native-abi",
+  "runner": "free-standard-github-hosted-only",
+  "localActualExecutionAllowed": false,
+  "publicationAllowed": false,
+  "requiredTuples": [
+    {"os": "windows", "arch": "x86_64", "runtime": "jit"},
+    {"os": "linux", "arch": "x86_64", "runtime": "jit"},
+    {"os": "windows", "arch": "x86_64", "runtime": "nativeaot"},
+    {"os": "linux", "arch": "x86_64", "runtime": "nativeaot"}
+  ],
+  "requiredLineage": [
+    "source_sha", "owned_source_hashes", "cargo_lock_sha256", "rust_toolchain",
+    "dotnet_sdk_version", "dotnet_runtime_version", "host_fixture_source_sha256",
+    "host_fixture_provenance", "native_library_sha256", "host_binary_sha256",
+    "binding_mechanism", "link_mode", "library_load_path_policy",
+    "authority_binary_sha256", "authority_configuration_sha256", "package_sha256"
+  ],
+  "hostCases": [
+    {"id": "binary-replay", "expect": "exact body including NUL and invalid UTF8, next exactly once after actual authenticated ALLOW"},
+    {"id": "unknown-length-eof", "expect": "complete bounded body only after actual EOF, exact replay once"},
+    {"id": "body-limit", "expect": "zero next calls, no protected origin contact"},
+    {"id": "truncated-body", "expect": "zero next calls, no protected origin contact"},
+    {"id": "abort-during-input", "expect": "zero next calls and all native/body leases released"},
+    {"id": "abort-during-authority", "expect": "drop actual IPC future, zero next calls, no automatic retry"},
+    {"id": "drop-pending-decision", "expect": "native request cancelled, no later completion reactivates it"},
+    {"id": "expired-result", "expect": "zero next calls after authenticated authority expiry"},
+    {"id": "response-started", "expect": "zero next calls, no rewriting already started response"},
+    {"id": "request-rewrite", "expect": "method, raw target, host, route or sanitized header mutation refuses next"},
+    {"id": "deny-challenge", "expect": "distinct verdict counts, zero protected next calls, no fabricated recovery flow"},
+    {"id": "authority-down", "expect": "zero next calls, bounded deadline, all leases released"},
+    {"id": "wrong-peer", "expect": "zero next calls using real OS peer mismatch"},
+    {"id": "authority-restart", "expect": "no reuse of old epoch result or pending decision"},
+    {"id": "gc-pressure", "expect": "actual managed collections during awaited calls cannot free retained native resources early"},
+    {"id": "dispose-race", "expect": "deterministic release and stale SafeHandle calls cannot target a replacement request"},
+    {"id": "pooled-buffer-reuse", "expect": "mutating or returning host read buffers does not alter approved replay bytes"},
+    {"id": "shutdown-active", "expect": "cancel pending input and IPC before native library unload, no callbacks afterward"},
+    {"id": "unsupported-upgrade", "expect": "upgrade and CONNECT never invoke a protected application delegate"},
+    {"id": "response-semantics", "expect": "HEAD/204/304, duplicate Set-Cookie and ordinary response streaming remain correct"},
+    {"id": "package-install", "expect": "same source-bound package installs in a clean host without development-path native library fallback"}
+  ],
+  "accounting": {
+    "required": ["attempted", "passed", "failed", "ignored", "unsupported", "not_run", "ALLOW", "CHALLENGE", "DENY", "error", "next_calls", "origin_contacts", "origin_mutations", "remaining_leases"],
+    "origin_contacts_are_not_mutations": true,
+    "synthetic_decisions_are_not_authenticated_allow": true,
+    "unit_tests_are_not_managed_host_qualification": true,
+    "dockerProductGateSeparate": true
+  },
+  "releaseQualifiedTuples": []
+}

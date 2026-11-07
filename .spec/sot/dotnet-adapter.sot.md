@@ -39,8 +39,12 @@ additional memory. Exact reservation avoids geometric Vec growth; no temp-file
 spill is used by the Rust core.
 
 Exactly one shared decision attempt is permitted, including when its future is
-dropped before completion. Shared authority authenticates peer/scope/framing,
-exact request nonce/body/binding, replay and durable audit. An external response
+dropped before completion.
+The owned DecisionAttempt guard cancels a request when a polled decision future
+is dropped before successful completion or unwinds; no host callback is needed
+for that native Rust cleanup. A never-polled future has not started an attempt.
+Shared authority authenticates peer/scope/framing, exact request nonce/body/
+binding, replay and durable audit. An external response
 cannot be attached to a different Request. No Rust adapter score or synthetic
 ALLOW capability exists. Only consuming the internal BoundResponse, rechecking
 its expiry and original Pending, and ALLOW permits transfer of the owned body.
