@@ -17,6 +17,7 @@ PINS = {
     "crates-auth": "rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9",
     "bun": "oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6",
 }
+RUST_TOOLCHAIN = "1.99.1"
 
 
 def action(action_id, **inputs):
@@ -52,7 +53,7 @@ def write(name, value):
 
 
 def main():
-    rust = action("rust", toolchain="stable")
+    rust = action("rust", toolchain=RUST_TOOLCHAIN)
     python = action("python", **{"python-version": "3.12"})
     node = action("node", **{"node-version": "24"})
     bun = action("bun", **{"bun-version": "1.3.14"})
@@ -79,17 +80,17 @@ def main():
                    path="target/delivery-evidence/", **{"if-no-files-found": "error"})], 40,
             **{"runs-on": "${{ matrix.os }}", "strategy": {"fail-fast": False,
                 "matrix": {"os": ["ubuntu-latest", "macos-latest", "windows-latest"]}}}),
-        "msrv": job([checkout(), action("rust", toolchain="1.88.0"),
+        "msrv": job([checkout(), action("rust", toolchain=RUST_TOOLCHAIN),
             command("cargo build --workspace --all-targets --locked"),
             command("cargo test --workspace --all-targets --locked"),
             command("cargo test --manifest-path scripts/ci/docs-review/Cargo.toml --locked")]),
-        "quality": job([checkout(), action("rust", toolchain="stable", components="rustfmt, clippy"),
+        "quality": job([checkout(), action("rust", toolchain=RUST_TOOLCHAIN, components="rustfmt, clippy"),
             command("cargo fmt --all -- --check"),
             command("cargo clippy --workspace --all-targets --locked -- -D warnings"),
             command("cargo fmt --manifest-path scripts/ci/docs-review/Cargo.toml -- --check"),
             command("cargo clippy --manifest-path scripts/ci/docs-review/Cargo.toml --all-targets --locked -- -D warnings"),
             command("cargo test --manifest-path scripts/ci/docs-review/Cargo.toml --locked")]),
-        "browser": job([checkout(), action("rust", toolchain="stable", targets="wasm32-unknown-unknown"), node,
+        "browser": job([checkout(), action("rust", toolchain=RUST_TOOLCHAIN, targets="wasm32-unknown-unknown"), node,
             command("cargo build --locked --target wasm32-unknown-unknown -p humanymous-wasm --release"),
             command("python3 scripts/ci/delivery.py pilot browser"),
             action("upload", name="browser-linux-${{ github.sha }}", path="target/delivery-evidence/",

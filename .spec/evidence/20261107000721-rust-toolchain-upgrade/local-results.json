@@ -1,0 +1,65 @@
+{
+  "schema": "humanymous.toolchain-upgrade/1",
+  "baseCommit": "512a73f9c198003e48efe1cd0c357f3dd4b621f2",
+  "workingTreeDirty": true,
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+  "workspacePackages": 13,
+  "declaredRustVersion": "1.99.1",
+  "windowsWorkspacePassed": 151,
+  "workspaceIgnored": 0,
+  "docsToolPassed": 7,
+  "ciPolicyTestsPassed": 9,
+  "fmt": "passed",
+  "clippyWarningsDenied": "passed",
+  "portableWasmLibraries": 8,
+  "actionlint": "passed",
+  "dockerAuthorityDefaultPassed": 14,
+  "dockerAuthorityDefaultIgnored": 2,
+  "dockerOtherUidParentPassed": 1,
+  "dockerOtherUidHelper": "executed by explicit parent, not independently counted",
+  "dockerNetwork": "none",
+  "dockerBase": "rust:1.99.1-slim-bookworm@sha256:f2c004e3d2d8b547e8cf7ffbc29205385f4e71d23e53e4e383065db5e9f822cd",
+  "dockerImage": "sha256:00c29675cc6f98909a0a7da1352f74394d290b2aec3767a1dcc0910c39d8b6ad",
+  "fullRuntimeQualified": false,
+  "meariCefBuilt": false,
+  "remoteNativeThisRevision": "pending",
+  "sourceFiles": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "421e082bcaed9ebe9de55120956d2a81698ef1fe31dd2f9ce6f6fde016b3ce2b"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "86133fa895d5127adc48604c2a1e2721fc9e31ec39017a6d8f4b267980561c99"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    },
+    {
+      "path": "scripts/ci/docs-review/Cargo.toml",
+      "sha256": "212fa80156a6d2938d1ee7f5bf9b9d46579596aa489aa8a6bb0bf2bb03fffd54"
+    },
+    {
+      "path": "scripts/ci/render_workflows.py",
+      "sha256": "f28919b62e9fec5aca77de0ec0ca6b88fd99813ffdfe3d2bc914d89b1a093c6b"
+    },
+    {
+      "path": ".github/workflows/rust-validation.yml",
+      "sha256": "7ca4c04345053d6d139f33f744519d14431ade0fa2b3f44b3b922680039b1f57"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "sha256": "5ad20190e0b503c4cbc1122520c0bb634aed1d9d4bc8142d3911979269cc80d8"
+    },
+    {
+      "path": ".github/workflows/cross-os-probe.yml",
+      "sha256": "4811a9b958311ed950748b1f4dfba104229b9bf900bdafe5cee066db28f82ae3"
+    },
+    {
+      "path": "crates/authority/Dockerfile.pilot",
+      "sha256": "c504303d328bd90b3856435fb3035b7325f0cda9a44f80d349cc8061613e041e"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 # Isolated authority contract/security pilot, not a full Rust product runtime.
-FROM rust:1.88-slim-bookworm@sha256:38bc5a86d998772d4aec2348656ed21438d20fcdce2795b56ca434cf21430d89
+FROM rust:1.99.1-slim-bookworm@sha256:f2c004e3d2d8b547e8cf7ffbc29205385f4e71d23e53e4e383065db5e9f822cd
 WORKDIR /lab
 COPY Cargo.toml Cargo.lock ./
 COPY crates/ ./crates/

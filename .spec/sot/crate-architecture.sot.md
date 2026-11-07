@@ -36,7 +36,7 @@ forwarding-only crate cannot implement missing capture/session/browser/admin.
 | Rust identifier | Default library replaces package hyphens with underscores | humanymous-audit is imported as humanymous_audit |
 | Binary target | May have a different explicit name from its package | humanymous-cli exposes operator command humanymous |
 | Package layout | Cargo.toml, src/lib.rs/main.rs, tests/examples/benches | Context modules inside each package, no unrelated handler dump |
-| Workspace | Shared lock, explicit resolver, inherited metadata/lints | Root virtual workspace, edition 2024, resolver 3, MSRV 1.88 |
+| Workspace | Shared lock, explicit resolver, inherited metadata/lints | Root virtual workspace, edition 2024, resolver 3, user-approved MSRV 1.99.1 (initial survey was 1.88) |
 | Crate count/SRP | Cargo specifies no count or file-size budget | Boundaries require responsibility, target/dependency or consumer reason |
 | Core naming | Rust core is a standard library, not a domain-layer template | Do not alias a project library to core or imply no_std support |
 

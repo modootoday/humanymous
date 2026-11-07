@@ -160,7 +160,7 @@ fallbacks, vacuous documentation gates and treating registry errors as success.
 ### Workflow implementation boundary (2026-11-07 KST)
 
 The reusable `.github/workflows/rust-validation.yml` now owns mandatory native
-Linux/macOS/Windows, 1.88.0 MSRV, stable format/Clippy, actual WASM/browser,
+Linux/macOS/Windows, user-approved pinned 1.99.1 MSRV/toolchain format/Clippy, actual WASM/browser,
 Linux Docker lab, defender image scans, packages, Node/Bun, advisory, authored
 documentation review and Pages jobs. The aggregate explicitly rejects any
 skipped/failed/cancelled required job. `ci.yml`, `release.yml` and Pages deployment

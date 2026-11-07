@@ -32,7 +32,8 @@ the caller owns the observe/act/verify loop. The tool release version, JSON
 envelope version 2.6 and any caller model version are different identifiers.
 Published native artifacts cover x64/ARM64 macOS, Windows and Linux. npm launcher
 requirements and Rust source-build requirements are also distinct: a Rust 1.89
-tool build does not silently raise Humanymous's Rust 1.88 MSRV. [V2-V4]
+tool build does not choose Humanymous's MSRV. The user later explicitly approved
+Humanymous core/toolchain1.99.1; this is separate from the vendor tool's floor. [V2-V4]
 
 Vercel's current Labs listing places agent-desktop among active experiments,
 while a repository badge uses product wording. Neither SemVer 1.x nor a badge

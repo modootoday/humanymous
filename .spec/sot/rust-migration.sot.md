@@ -30,8 +30,9 @@ foreign-language scripts, including script strings embedded in Rust. Do not
 classify those as Rust merely by container file extension. Existing non-Rust
 prototypes remain explicit migration debt until reconciled.
 
-The laboratory-browser UI uses user-selected Meari. Its current newer toolchain
-is a separate desktop build boundary and does not silently change core MSRV1.88.
+The laboratory-browser UI uses user-selected Meari. The user subsequently
+authorized core MSRV and pinned toolchain 1.99.1 as well. Keep desktop dependency
+and integration boundaries explicit without retaining an obsolete 1.88 baseline.
 Chromium/CEF is an external native engine dependency, not a Rust implementation.
 
 - Each crate has one bounded-context responsibility, a kebab-case package name,

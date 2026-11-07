@@ -15,8 +15,9 @@ zeroize = { version = "1.9.1", features = ["serde"] }
 ```
 
 Run actual audit/workspace/MSRV/advisory/WASM checks after changes. The declared
-MSRV 1.88 selects aes 0.9.2 because newer 0.9.4 requires Rust 1.89; do not raise
-the supported toolchain silently. Refer to execution evidence for scan results.
+historical MSRV 1.88 selected aes 0.9.2 because newer 0.9.4 requires Rust 1.89.
+The user has now approved MSRV/toolchain1.99.1; the reviewed lock is retained
+without an unrelated dependency update. Refer to execution evidence for scan results.
 
 This is the frozen scrypt N=32768/r=8/p=1, 16-byte salt, 12-byte nonce,
 AES256-GCM compatibility envelope. It is not a new stronger KDF policy or

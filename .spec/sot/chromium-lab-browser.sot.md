@@ -58,8 +58,8 @@ separate from optional offline replay through the same Rust libraries.
 cef-rs is maintained under tauri-apps, not an upstream Chromium-maintained Rust
 API. Observed source 224a785c7b41758b51821cbb7395ea57ba493a63, dated 2026-11-01,
 declares cef/cef-dll-sys 156.3.0+156.0.15, edition 2021, Apache-2.0 OR MIT. No
-rust-version is declared; Rust 1.88 compatibility remains unverified. The core
-MSRV is not raised by this research. Lock exact features/dependency closure and
+rust-version is declared; full binding closure compatibility remains unverified.
+The user subsequently approved core/toolchain1.99.1. Lock exact features/dependency closure and
 prove native target builds before adoption. README target support is not our
 execution evidence. [C2]
 
@@ -78,9 +78,9 @@ license MIT OR Apache-2.0. Its native renderer is not Chromium and does not repl
 the target-content engine. Rust source need not include authored TSX/JS. [U1-U3]
 
 Meari pins Rust1.99.1 and its mandatory oxc_parser0.154.0 declares Rust1.97.0.
-Current Meari cannot be represented as compatible with core MSRV1.88. Keep a
-separate desktop toolchain/build boundary until a reviewed dependency decision;
-do not silently raise core MSRV. No full Meari closure build was performed. [U2]
+The user explicitly approved core MSRV/toolchain1.99.1, removing that known floor
+conflict with the former1.88 baseline. Keep desktop dependency/feature boundaries
+separate and prove the full closure; no full Meari build was performed. [U2]
 
 Meari's generic native child registrar and scoped parent leases are candidate
 integration seams. Its video surface slot accepts real video nodes and requires
@@ -209,7 +209,8 @@ contract and tests while retaining the one shared enforcement authority.
 
 - BRW-01 Rust-only: Authored browser code and tests are Rust. Native engine and
   upstream bootstrap dependencies are declared; Meari UI is required and Electron
-  JS shell is excluded. Desktop dependency/toolchain scope does not change core MSRV.
+  JS shell is excluded. Core and desktop use the user-approved1.99.1 baseline;
+  every native dependency closure still needs actual qualification.
 - BRW-02 No self-trust: Modified browser evidence is not human identity, server
   capture or a bypass credential. Keep actual authority and audit server-side.
 - BRW-03 Safe process model: Prove sandbox and privilege isolation per tuple;

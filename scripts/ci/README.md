@@ -6,7 +6,7 @@ commit. Its final gate rejects failure, cancellation and skipped required jobs.
 `frozen-go-oracle.yml` preserves the old lab for manual comparison only; it never
 authorizes a Rust release. Frozen workflow originals are retained beside this file.
 
-Local checks (Python 3.11+, Rust stable, Node 24):
+Local checks (Python 3.11+, Rust 1.99.1, Node 24):
 
 ```text
 python -m unittest discover -s scripts/ci -p "test_*.py"

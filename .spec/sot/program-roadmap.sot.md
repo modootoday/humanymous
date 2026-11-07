@@ -13,7 +13,7 @@ rel:
 
 문서 버전 0.1.0. 2026-11-07 KST 기준으로 사용자 생성 프로젝트 채팅 9개의
 최신 완료 turn, 실제 커밋·파일·검증 기록을 대조했다. 새 내장 브라우저 분석
-채팅은 별도로 실행 중이다. 이 문서가 현재 상태·우선순위의 정본이며 기존
+채팅도 제한된 정적 분석을512a73f에 완료했다. 이 문서가 현재 상태·우선순위의 정본이며 기존
 실행 plan의 과거 기록은 이력이다. 채팅 완료, 구현 존재, 파일럿 성공, 제품
 전체 자격화를 서로 대체하지 않는다. 날짜나 전체 완료율을 추정하지 않는다.
 
@@ -48,7 +48,7 @@ evidence:root/20261106235519의 chat-results.json에 기록했다.
 | Windows runner | c6a2457 실행,99cf472 근거;6native tuples 통과 | 최종 SHA 전체 runtime/GUI/service와 remote-peer 부정 시험 |
 | Rust authority | 6f5d83a; Windows15/Linux Docker14 및 다른 UID 거부 | full Core/Gate/capture/collector/RIT/admin과 독립 witness |
 | Compose 제품랩 | 3b9c306; topology26/26,actual authority22/22,경계unit2 | releaseReady=false 유지;fullRequiredExit2의 미완료 기능 구현 |
-| 내장 브라우저 REA | 01a1b34e-f9e9-77d3-b883-0cc4d76763a4;별도 채팅 실행 중 | 탭 guest/attach/profile/control 근거만 분석;Owl 복제는 제외 |
+| 내장 브라우저 REA | 512a73f;guest attach·adoption·session/control의 bounded static 분석 | 현재runtime activation/native compositor는 미관측;Owl 복제는 제외 |
 
 root 통합 후 CLI/wargame workspace membership, authority와 key/vault의 실제
 Cargo 통합이 추가됐다. 각 채팅이 남긴 당시의 'root 통합 필요'는 이 후속
@@ -56,7 +56,8 @@ Cargo 통합이 추가됐다. 각 채팅이 남긴 당시의 'root 통합 필요
 
 ## 현재 구현 근거의 범위
 
-- 13개 Cargo packages, edition2024, core MSRV1.88, shared unsafe forbid.
+- 13개 Cargo packages, edition2024, 사용자 승인 core MSRV/toolchain1.99.1,
+  shared unsafe forbid. 이전1.88 실행 기록은 당시의 이력으로 보존한다.
 - migration inventory314행: unit-parity ported54 / partial5 / pending255,
   verified_runtime_parity0. 원본 테스트 함수804개. 파일 수는 전체 완료율이 아니다.
 - 기록된 integrated-key 전체 workspace151테스트와 Clippy/MSRV/WASM 검증,
@@ -104,9 +105,10 @@ parity의 성공 근거로 합산하지 않는다. 상세 구현은 해당 spec-
 
 ## 중요한 요구사항 정정
 
-UI는 사용자 선택 Meari를 사용한다. 현재 Meari0.2.0은 Rust1.99.1을 pin하고
-필수 parser가 Rust1.97을 요구하므로 core1.88과 desktop toolchain/build를
-명시적으로 분리한다. Meari의 render-only video surface는 interactive browser
+UI는 사용자 선택 Meari를 사용한다. Meari0.2.0은 Rust1.99.1을 pin하고 필수
+parser가 Rust1.97을 요구한다. 사용자가 코어도1.99.1로 명시 승격했으므로
+이전1.88과의 알려진 하한 충돌은 해소됐다. Desktop dependency/build 경계는
+유지하고 전체closure를 검증한다. Meari의 render-only video surface는 interactive browser
 slot이 아니다. CEF/native FFI·입력·접근성 lifecycle이 별도 미완료다.
 
 새 작성 코드는 Rust를 기본으로 한다. 기존 JS/njs/Python/PowerShell 및 .rs에
@@ -147,7 +149,7 @@ flowchart TD
 | F10 | Meari interactive surface·CEF sandbox/MSRV 설계와 B pilot | 제품parity와 별도;현재 실행 REA 채팅은 읽기전용조사 |
 
 이미 완료된9개 채팅에 자동으로 새 구현을 맡긴 상태는 아니다. 새로 생성한
-REA 채팅1개만 실제 실행을 확인했다. 후속 작업은 새 claim/명확한 인터페이스로
+REA 채팅1개는 실제 진행과 초기 분석 완료를 확인했다. 후속 작업은 새 claim/명확한 인터페이스로
 배분하며 같은 경로·Git index 동시쓰기와 고장난 통합을 피한다.
 
 ## 남은 검증·배포 차단 사유
