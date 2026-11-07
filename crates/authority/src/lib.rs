@@ -1,4 +1,5 @@
 //! Local-only, fail-closed adapter decision composition.
+pub mod client;
 pub mod configuration;
 pub mod credentials;
 pub mod decision;

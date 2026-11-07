@@ -24,6 +24,97 @@ The ordinary helper remains explicitly ignored until its parent provisions it.
 
 ## Rule
 
+### Follow-up contract v0.2: accepted and component-verified
+
+2026-11-07 KST serial coordination: audit checkpoint d001ee6 releases gate-edge
+to authority for the shared adapter client and generic local IPC boundary, then
+runtime reclaims it for actual management/session wiring. Node and nginx owners
+accepted this shared client instead of duplicating IPC validation. Rust1.99.1 /
+edition2024 only; root owns common Cargo/lock/toolchain. Historical results below
+remain scoped to their original source and are not current qualification.
+
+Configuration gains optional `adapter: "node" | "nginx"` (default node). Public
+Configuration.adapter is integrity::adapter::AdapterProfile. Credentials are
+bound to this provisioned profile; envelope data never selects it. Reuse
+parse_with_profile, not a copied parser. Node id/version/modes remain unchanged;
+Nginx is humanymous.nginx/0.1.0-experimental.1, nginx-raw or nginx-normalized.
+Nginx connectionId is always null, normalized peer is null. Raw means observed
+application HTTP1 order, never original TLS/H2. capture/stream remain null;
+no raw plane is enabled by a profile name.
+
+Accepted and implemented client API: authority::client::ClientOptions holds
+endpoint/credential &str, server &Peer, timeout_ms u64, adapter AdapterProfile;
+ExpectedBinding holds id/tenant/origin/revision &str and deadline u64.
+async decide(&ClientOptions, &[u8], ExpectedBinding) returns a non-Clone
+BoundResponse with verdict()/expires() and consuming consume()->Result<Verdict>.
+Verdict is Allow/Deny/Challenge. Request bytes are shared-parser verified;
+response is exact seven fields, duplicate/unknown/missing fields rejected,
+scope/nonce/revision/expiry matched. Non-200, framing/peer/state/clock failures
+are typed static 503 refusals. No retries, redirects, cache or TCP fallback.
+The supervisor provides actual authority PID/SID or UID, not HTTP peer claims.
+Verify private socket paths and kernel server peer, or native pipe PID and actual
+owner/protected DACL via shared native-security. Windows client uses identification
+SQOS and no unbounded connect/flush wait. consume rechecks wall and monotonic
+expiry; adapters also check cancellation and expiry immediately before origin.
+
+Accepted generic IPC seam: LocalHandler: Send+Sync+'static supplies
+handle(&self, LocalRequest, LocalContext)->impl Future<Output=Result<LocalResponse,
+Rejection>>+Send. LocalRequest owns method, exact target, ordered service headers,
+authorization and complete bounded body. LocalContext supplies actual NativePeer,
+clock/deadline/cancellation and admission lifetime. Scope comes from the handler's
+trusted configuration, never transport headers. LocalResponse is status plus
+bounded JSON only. Listener::bind_ipc(endpoint,&Peer) and serve_handler(handler,
+Limits{capacity,rate_per_second,timeout_ms}) reuse the native ACL/peer/admission
+boundary. Existing decision bind/serve APIs remain compatible and reject admin
+paths. Runtime owns a distinct management endpoint/credential and route allowlist,
+CSRF/header policy, signed approvals and operations-only settings. Transport alone
+does not authorize administration. It owns response writes; write failure closes
+without appending another error frame. Windows cancellation closes its own pipe
+without leaving unbounded FlushFileBuffers/limbo work; slow-peer regressions are
+required. Response streaming remains the runtime/adapter origin relay's concern.
+
+RIT/typed provenance dependency: runtime owns Sessions and canonical/authorize.
+It must join the exact adapter scope, nonce, method/target/headers/body commitment,
+connection/stream context and credential epoch to a consumed session receipt.
+Client assertions, a signed subset, cookies/auth commitments and native capture
+are separate evidence axes. v0.1 strips internal headers and has no session receipt
+field, so required.rit/collector/raw capture remain 422 without a verified native
+provider. An in-process one-use reference is preferred; future wire v0.2 requires
+an audited opaque one-use grant, RequestBinding commitment, session/protocol/
+consumed counter/expiry and authenticated peer/adapter epoch. No arbitrary IPC
+report or boolean can mint this evidence. Browser Fetch's cookiefree auth-only
+profile is separate from native ordered-header RIT and does not cover HttpOnly or
+path-scoped application cookies. Stream uploads/upgrades/gRPC/trailers remain
+unsupported by v0.1; bounded complete request/SSE-response profiles are distinct.
+
+R15 accepted and implemented shutdown addition: serve_handler_until(handler,
+Limits, shutdown:impl Future<Output=()>+Send, drain_timeout_ms:u64) returns
+io::Result<()>. Tracked connections are canceled/closed and joined; global cancel
+reaches LocalContext clones, and all admission permits must return before Ok.
+A detached worker holding context prevents a false graceful acknowledgement.
+Drain timeout is TimedOut, never success. Drop cancels/aborts but cannot promise
+graceful drain. Runtime retains custody/service state until actual until success
+or the final remaining worker ends. No partial-response503 is appended on stop.
+
+Audit/runtime contracts accepted: reuse the new audit CheckpointWitness and
+WitnessServiceClient plus durable signed ControlAuthority/ActionPermit; no new
+signing, RIT or scoring implementation here. A shared Log+Custody lifetime owner
+is not yet implemented. Authority inline-key startup remains experimental debt;
+do not duplicate runtime::startup::SealedAudit or call it sealed-qualified.
+Remaining native remote-client/multi-user, full runtime, provider and product
+e2e requirements stay tracked in the follow-up plan until source-bound execution.
+
+Component verification: Windows25 scoped tests, release LocalHandler3 and Linux
+network-none Docker22 plus explicit other-UID parent1 pass. Two default Linux
+privileged/helper ignores are not included in passed counts. Actual Windows
+pipe grant/PID, no credential disclosure,144 nonreaders, exact response binding,
+profile scope and canceled blocking-work lifetime are tested. Synthetic local
+management is transport conformance only; runtime control/session qualification
+and actual remote Windows host denial are still not_run. Current public summary
+is evidence:root/20261107053239; private logs retain failed and earlier sources.
+
+### Historical v0.1 baseline
+
 Version 0.1.0 implements the accepted Node service contract without changing
 scoring. One process owns one installation, tenant, origin, revision and peer
 identity. Its only endpoint is POST /adapter/v0.1/decision; unknown/admin routes

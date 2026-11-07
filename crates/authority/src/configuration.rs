@@ -1,5 +1,6 @@
 //! Provisioned scope, complete route inventory and explicit capability loss.
 use crate::Rejection;
+use humanymous_integrity::adapter::AdapterProfile;
 use serde::Deserialize;
 use std::path::PathBuf;
 
@@ -7,6 +8,9 @@ use std::path::PathBuf;
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Configuration {
+    /// Credential-bound known producer. Omission preserves the Node profile.
+    #[serde(default = "node_profile", deserialize_with = "adapter_profile")]
+    pub adapter: AdapterProfile,
     /// Absolute filesystem UDS or local Windows pipe path.
     pub endpoint: String,
     /// Required installation, tenant, origin and active revision.
@@ -27,6 +31,16 @@ pub struct Configuration {
     pub timeout_ms: u64,
     /// Nonce retention beyond request deadline (0..30000 milliseconds).
     pub clock_skew_ms: u64,
+}
+fn node_profile() -> AdapterProfile {
+    AdapterProfile::Node
+}
+fn adapter_profile<'de, D: serde::Deserializer<'de>>(d: D) -> Result<AdapterProfile, D::Error> {
+    match String::deserialize(d)?.as_str() {
+        "node" => Ok(AdapterProfile::Node),
+        "nginx" => Ok(AdapterProfile::Nginx),
+        _ => Err(serde::de::Error::custom("unsupported provisioned adapter")),
+    }
 }
 /// Independently provisioned decision credential scope.
 #[derive(Deserialize)]
@@ -117,6 +131,7 @@ impl Configuration {
     /// This contains no keys, credentials or client observations. A bound IPC
     /// listener does not imply routes requiring absent planes are ready.
     pub fn capability_manifest(&self) -> serde_json::Value {
+        let node = self.adapter == AdapterProfile::Node;
         let routes: Vec<_> = self
             .routes
             .iter()
@@ -124,13 +139,15 @@ impl Configuration {
                 let r = &route.required;
                 let available = !r.raw_tls && !r.original_h2 && !r.collector && !r.rit;
                 serde_json::json!({"method": route.method, "path": route.path,
-                "node_raw": available, "fetch_normalized": available && !r.raw_header_order})
+                "node_raw": node && available, "fetch_normalized": node && available && !r.raw_header_order,
+                "nginx_raw": !node && available,"nginx_normalized":!node && available && !r.raw_header_order})
             })
             .collect();
         serde_json::json!({"id":"application-http", "revision":self.scope.revision,
             "raw_tls":false, "original_h2":false, "collector":false, "rit":false,
             "complete_body":true, "raw_header_order":"node-raw-only", "routes":routes,
-            "administration":false, "browser_recovery":false})
+            "administration":false, "browser_recovery":false,
+            "adapter":self.adapter.expected().id,"adapter_version":self.adapter.expected().version})
     }
 
     /// Validate trusted configuration before opening any public decision surface.

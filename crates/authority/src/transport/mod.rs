@@ -1,29 +1,34 @@
-//! Native IPC security plus bounded connection admission and lifecycle.
+//! Native IPC security, bounded handler lifecycle and shared local services.
 mod permissions;
+mod service;
 #[cfg(unix)]
 mod unix;
 #[cfg(windows)]
 mod windows;
 use crate::{
     Rejection,
-    configuration::Configuration,
+    configuration::{Configuration, Peer},
     decision::{Authority, NativePeer},
     protocol,
 };
-use std::sync::atomic::{AtomicBool, Ordering};
+pub use permissions::private_directory;
+pub use service::{Limits, LocalContext, LocalHandler, LocalRequest, LocalResponse};
 use std::{
     io,
-    sync::{Arc, Mutex},
+    sync::{
+        Arc, Mutex,
+        atomic::{AtomicBool, Ordering},
+    },
     time::{Duration, Instant},
 };
 use tokio::{
-    io::{AsyncRead, AsyncWrite},
+    io::{AsyncRead, AsyncReadExt, AsyncWrite},
     sync::Semaphore,
 };
-
-/// A private directory must already exist and belong to the trusted principal.
-pub use permissions::private_directory;
-
+#[cfg(unix)]
+pub(crate) use unix::connect;
+#[cfg(windows)]
+pub(crate) use windows::connect;
 /// Peer-specific/global fixed-window admission limiter (one peer per instance).
 pub struct Admission {
     start: Instant,
@@ -52,7 +57,7 @@ impl Admission {
         true
     }
 }
-/// Bound native listener that refuses TCP, remote UNC and namespace fallbacks.
+/// Restricted native listener; no TCP, DNS or remote-UNC fallback.
 pub struct Listener {
     #[cfg(unix)]
     inner: unix::Listener,
@@ -60,31 +65,35 @@ pub struct Listener {
     inner: windows::Listener,
 }
 impl Listener {
-    /// Create restricted IPC before publishing the credential readiness line.
+    /// Bind the legacy decision service using its provisioned endpoint/principal.
     pub fn bind(config: &Configuration) -> io::Result<Self> {
+        Self::bind_ipc(&config.endpoint, &config.peer)
+    }
+    /// Bind an independently configured local service, with the same actual native
+    /// ACL/peer checks. This does not authenticate any administrative credential.
+    pub fn bind_ipc(endpoint: &str, peer: &Peer) -> io::Result<Self> {
         #[cfg(unix)]
         {
             Ok(Self {
-                inner: unix::Listener::bind(config)?,
+                inner: unix::Listener::bind(endpoint, peer)?,
             })
         }
         #[cfg(windows)]
         {
             Ok(Self {
-                inner: windows::Listener::bind(config)?,
+                inner: windows::Listener::bind(endpoint, peer)?,
             })
         }
         #[cfg(not(any(unix, windows)))]
         {
-            let _ = config;
+            let _ = (endpoint, peer);
             Err(io::Error::new(
                 io::ErrorKind::Unsupported,
                 "unsupported IPC platform",
             ))
         }
     }
-    /// Run an accept loop with bounded tasks, body storage and decision work.
-    /// Cancellation drops connections; already reserved nonces/audit stay spent.
+    /// Legacy decision-only service. Its handler still refuses every admin path.
     pub async fn serve(
         self,
         authority: Authority,
@@ -92,98 +101,190 @@ impl Listener {
         rate: u32,
         timeout_ms: u64,
     ) -> io::Result<()> {
-        let authority = Arc::new(Mutex::new(authority));
-        let slots = Arc::new(Semaphore::new(capacity));
-        let timeout = Duration::from_millis(timeout_ms);
-        let mut admission = Admission::new(rate);
-        loop {
-            let (stream, peer) = self.inner.accept().await?;
+        self.serve_handler(
+            DecisionHandler(Arc::new(Mutex::new(authority))),
+            Limits {
+                capacity,
+                rate_per_second: rate,
+                timeout_ms,
+            },
+        )
+        .await
+    }
+    /// Bounded shared transport for a separately authorized local handler.
+    pub async fn serve_handler<H: LocalHandler>(
+        self,
+        handler: H,
+        limits: Limits,
+    ) -> io::Result<()> {
+        self.serve_handler_until(handler, limits, std::future::pending(), 30_000)
+            .await
+    }
+    /// Stop acceptance, cancel/close tracked connections and wait for every
+    /// admission-owning worker to end. Timeout is an error, never a graceful
+    /// acknowledgement. Dropping this future cancels but cannot acknowledge drain.
+    pub async fn serve_handler_until<
+        H: LocalHandler,
+        F: std::future::Future<Output = ()> + Send,
+    >(
+        self,
+        handler: H,
+        limits: Limits,
+        shutdown: F,
+        drain_timeout_ms: u64,
+    ) -> io::Result<()> {
+        let limits = limits.validate()?;
+        if !(1..=30_000).contains(&drain_timeout_ms) {
+            return Err(io::Error::other("invalid IPC drain deadline"));
+        }
+        let handler = Arc::new(handler);
+        let slots = Arc::new(Semaphore::new(limits.capacity));
+        let mut admission = Admission::new(limits.rate_per_second);
+        let stopping = Arc::new(AtomicBool::new(false));
+        let _stop_on_drop = CancelOnDrop(stopping.clone());
+        let mut tasks = tokio::task::JoinSet::new();
+        tokio::pin!(shutdown);
+        let outcome = loop {
+            let accepted = tokio::select! {
+                _=&mut shutdown=>break Ok(()),
+                joined=tasks.join_next(),if !tasks.is_empty()=>{
+                    if let Some(Err(_))=joined{break Err(io::Error::other("IPC connection task failed"));}
+                    continue;
+                },
+                accepted=self.inner.accept()=>accepted,
+            };
+            let (stream, peer) = match accepted {
+                Ok(value) => value,
+                Err(error) => break Err(error),
+            };
             let Some(peer) = peer else {
-                // A client disconnecting during credential lookup must fail
-                // only its own connection, not terminate the listener.
                 continue;
             };
             let permit = slots.clone().try_acquire_owned();
             if !admission.admit() || permit.is_err() {
-                // No task is spawned for rejected peers, keeping task count
-                // bounded even if clients refuse to read the rejection.
                 let mut stream = stream;
                 let error = Rejection::new(429, "ipc_capacity");
                 let _ = tokio::time::timeout(Duration::from_millis(10), async {
                     let _ = protocol::discard(&mut stream).await;
-                    protocol::write(&mut stream, error.status, &protocol::error_body(error)).await
+                    if protocol::write(&mut stream, error.status, &protocol::error_body(error))
+                        .await
+                        .is_ok()
+                    {
+                        finish(&mut stream).await;
+                    }
                 })
                 .await;
                 continue;
             }
             let permit = Arc::new(permit.expect("checked permit"));
-            let authority = authority.clone();
-            tokio::spawn(async move {
-                // Permit is held by the blocking decision itself after dispatch,
-                // so a timed-out disk operation cannot create unbounded workers.
-                let _ = tokio::time::timeout(timeout, connection(stream, peer, authority, permit))
-                    .await;
+            let handler = handler.clone();
+            let until = Instant::now() + Duration::from_millis(limits.timeout_ms);
+            let stopping = stopping.clone();
+            tasks.spawn(async move {
+                let _ = tokio::time::timeout_at(
+                    until.into(),
+                    connection(stream, peer, handler, permit, until, stopping),
+                )
+                .await;
             });
-        }
+        };
+        stopping.store(true, Ordering::Release);
+        tasks.abort_all();
+        drop(self);
+        tokio::time::timeout(Duration::from_millis(drain_timeout_ms), async {
+            while tasks.join_next().await.is_some() {}
+            let _all = slots
+                .acquire_many(limits.capacity as u32)
+                .await
+                .map_err(|_| io::Error::other("IPC admission closed"))?;
+            Ok::<(), io::Error>(())
+        })
+        .await
+        .map_err(|_| io::Error::new(io::ErrorKind::TimedOut, "IPC drain deadline exceeded"))??;
+        outcome
     }
 }
-async fn connection(
+struct DecisionHandler(Arc<Mutex<Authority>>);
+impl LocalHandler for DecisionHandler {
+    async fn handle(
+        &self,
+        request: LocalRequest,
+        context: LocalContext,
+    ) -> Result<LocalResponse, Rejection> {
+        if request.method != "POST" || request.target != "/adapter/v0.1/decision" {
+            return Err(Rejection::new(403, "decision_endpoint_only"));
+        }
+        let authority = self.0.clone();
+        let response = tokio::task::spawn_blocking(move || {
+            context.check()?;
+            authority
+                .lock()
+                .map_err(|_| Rejection::new(503, "state_poisoned"))?
+                .decide(
+                    context.peer(),
+                    &request.authorization,
+                    &request.body,
+                    || context.check(),
+                )
+        })
+        .await
+        .map_err(|_| Rejection::new(503, "decision_worker"))??;
+        LocalResponse::json(200, &response)
+    }
+}
+async fn connection<H: LocalHandler>(
     mut stream: impl AsyncRead + AsyncWrite + Unpin,
     peer: NativePeer,
-    authority: Arc<Mutex<Authority>>,
+    handler: Arc<H>,
     permit: Arc<tokio::sync::OwnedSemaphorePermit>,
+    until: Instant,
+    stopping: Arc<AtomicBool>,
 ) {
     let cancelled = Arc::new(AtomicBool::new(false));
-    let _cancel_on_drop = CancelOnDrop(cancelled.clone());
-    let result = match protocol::read(&mut stream).await {
+    let _cancel = CancelOnDrop(cancelled.clone());
+    let result = match protocol::read_local(&mut stream).await {
         Err(error) => Err(error),
         Ok(request) => {
-            let worker_permit = permit.clone();
-            let worker_cancelled = cancelled.clone();
-            let mut worker = tokio::task::spawn_blocking(move || {
-                let _permit = worker_permit;
-                authority
-                    .lock()
-                    .map_err(|_| Rejection::new(503, "state_poisoned"))?
-                    .decide(peer, &request.authorization, &request.body, || {
-                        if worker_cancelled.load(Ordering::Acquire) {
-                            Err(Rejection::new(503, "request_cancelled"))
-                        } else {
-                            crate::now_ms()
+            match LocalContext::new(peer, cancelled.clone(), stopping, until, permit.clone()) {
+                Err(error) => Err(error),
+                Ok(context) => {
+                    let future = handler.handle(request, context.clone());
+                    tokio::pin!(future);
+                    let mut extra = [0u8; 1];
+                    tokio::select! {
+                        result=&mut future=>result.and_then(|response|{context.check()?;response.validate()?;Ok(response)}),
+                        read=stream.read(&mut extra)=>{
+                            cancelled.store(true,Ordering::Release);
+                            Err(if matches!(read,Ok(1)){Rejection::new(400,"trailing_frame")}else{Rejection::new(503,"request_cancelled")})
                         }
-                    })
-            });
-            let mut extra = [0u8; 1];
-            tokio::select! {
-                result = &mut worker => result.unwrap_or(Err(Rejection::new(503, "decision_worker"))),
-                read = tokio::io::AsyncReadExt::read(&mut stream, &mut extra) => {
-                    cancelled.store(true, Ordering::Release);
-                    Err(match read {
-                        Ok(1) => Rejection::new(400, "trailing_frame"),
-                        _ => Rejection::new(503, "request_cancelled"),
-                    })
+                    }
                 }
             }
         }
     };
     let (status, bytes) = match result {
-        Ok(response) => (
-            200,
-            serde_json::to_vec(&response).expect("bounded response serializes"),
-        ),
+        Ok(response) => (response.status, response.body),
         Err(error) => (error.status, protocol::error_body(error)),
     };
-    let _ = protocol::write(&mut stream, status, &bytes).await;
+    // A partial/failed write is closed. Never append another response or error.
+    if protocol::write(&mut stream, status, &bytes).await.is_ok() {
+        finish(&mut stream).await;
+    }
     drop(permit);
 }
-
+async fn finish(_stream: &mut (impl AsyncRead + Unpin)) {
+    #[cfg(windows)]
+    {
+        let mut closed = [0u8; 1];
+        let _ = _stream.read(&mut closed).await;
+    }
+}
 struct CancelOnDrop(Arc<AtomicBool>);
 impl Drop for CancelOnDrop {
     fn drop(&mut self) {
         self.0.store(true, Ordering::Release);
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -195,5 +296,33 @@ mod tests {
         assert!(!a.admit());
         a.start = Instant::now() - Duration::from_secs(2);
         assert!(a.admit());
+    }
+    #[test]
+    fn invalid_limits_and_unbounded_or_non_json_response_reject() {
+        assert!(
+            Limits {
+                capacity: 0,
+                rate_per_second: 1,
+                timeout_ms: 1
+            }
+            .validate()
+            .is_err()
+        );
+        assert!(
+            LocalResponse {
+                status: 200,
+                body: vec![b' '; 65_537]
+            }
+            .validate()
+            .is_err()
+        );
+        assert!(
+            LocalResponse {
+                status: 200,
+                body: b"not-json".to_vec()
+            }
+            .validate()
+            .is_err()
+        );
     }
 }

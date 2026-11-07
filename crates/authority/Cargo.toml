@@ -28,6 +28,7 @@ rustix = { version = "1.1", features = ["process", "fs"] }
 workspace = true
 
 [target.'cfg(windows)'.dependencies]
+humanymous-native-security.workspace = true
 widestring = "1.2.1"
 interprocess = { version = "=2.4.7", features = ["tokio"] }
 

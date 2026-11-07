@@ -8,6 +8,20 @@ use std::{
     sync::atomic::{AtomicU64, Ordering},
 };
 static NEXT: AtomicU64 = AtomicU64::new(0);
+#[cfg(unix)]
+pub async fn connect(endpoint: &str) -> tokio::net::UnixStream {
+    tokio::net::UnixStream::connect(endpoint).await.unwrap()
+}
+#[cfg(windows)]
+pub async fn connect(
+    endpoint: &str,
+) -> interprocess::os::windows::named_pipe::tokio::DuplexPipeStream<
+    interprocess::os::windows::named_pipe::pipe_mode::Bytes,
+> {
+    interprocess::os::windows::named_pipe::tokio::DuplexPipeStream::connect_by_path(endpoint)
+        .await
+        .unwrap()
+}
 pub struct Directory(pub PathBuf);
 impl Directory {
     pub fn new() -> Self {
@@ -36,18 +50,9 @@ impl Drop for Directory {
 }
 #[cfg(windows)]
 pub fn sid() -> String {
-    let result = std::process::Command::new("whoami.exe")
-        .args(["/user", "/fo", "csv", "/nh"])
-        .output()
-        .unwrap();
-    assert!(result.status.success());
-    let output = String::from_utf8(result.stdout).unwrap();
-    let sid = output
-        .trim()
-        .trim_matches('"')
-        .rsplit(",\"")
-        .next()
+    let sid = humanymous_native_security::process::current_identity()
         .unwrap()
+        .sid()
         .to_owned();
     assert!(humanymous_authority::configuration::valid_sid(&sid));
     sid

@@ -2,9 +2,96 @@
 
 Package/binary: `humanymous-authority` (publish=false). Build with
 `cargo build --locked --release -p humanymous-authority`; executable at
-`target/release/humanymous-authority[.exe]`. No TCP, admin, nginx pilot protocol,
-collector or browser recovery endpoints. Node's exact
-`humanymous.adapter/0.1` POST `/adapter/v0.1/decision` is the sole endpoint.
+`target/release/humanymous-authority[.exe]`. No TCP, admin, collector or browser
+recovery endpoints are added to this binary. Node and explicitly provisioned
+nginx use `humanymous.adapter/0.1` POST `/adapter/v0.1/decision`.
+The old nginx mock projection is not this native contract.
+
+## Current follow-up shared interfaces
+
+Accepted by the existing Node/nginx/runtime chats; implemented working source
+passes Windows25 scoped tests, release LocalHandler3, Linux network-none Docker22
+and explicit other-UID parent1. Linux default2helper ignores are not successes.
+Scoped check/Clippy/format pass. Source-bound evidence is in public Specfold
+evidence20261107053239; canonical checkpoint proof is registered after commit.
+This is component qualification; runtime admin/RIT and full product remain open.
+All new code/tests use Rust1.99.1/edition2024; no authored foreign-language glue.
+
+Startup JSON adds optional `"adapter":"node"|"nginx"` (omitted means Node).
+Configuration.adapter is the shared integrity::adapter::AdapterProfile. It is
+credential scope, never selected from wire contents. Native nginx identity is
+humanymous.nginx/0.1.0-experimental.1 and headerMode nginx-raw/nginx-normalized;
+connectionId is null, normalized peer is null. Existing Node vocabulary remains.
+Both are application observations; capture/stream null and missing raw TLS/H2/
+collector/RIT capability422 remain. Shared parse_with_profile is the only parser.
+
+```
+use humanymous_authority::client::{ClientOptions,ExpectedBinding,decide,Verdict};
+// ClientOptions<'a>: endpoint:&str, credential:&str, server:&Peer,
+// timeout_ms:u64, adapter:humanymous_integrity::adapter::AdapterProfile.
+// ExpectedBinding<'a>: id/tenant/origin/revision:&str, deadline:u64.
+// decide(&ClientOptions, &[u8], ExpectedBinding) -> Result<BoundResponse,Rejection>.
+```
+
+BoundResponse is non-Clone; verdict()/expires() inspect and consume(self) checks
+wall rollback, authority expiry and monotonic budget before yielding Verdict.
+The host must still check cancellation/expiry immediately before invoking the
+original bound handler exactly once. HTTP/data errors become static503; no retry,
+redirect, cache or TCP fallback. server is the actual authority UID or SID/PID
+from a trusted supervisor, not the declared original application peer. Client
+validates native server identity and owner/protected pipe DACL before sending
+the bearer. Windows identification SQOS prevents impersonation privilege; Drop
+closes immediately without blocking FlushFileBuffers or deferred-close limbo.
+The strict response reader completes at exact Content-Length, then client closes.
+
+Runtime local management reuses these native server interfaces:
+
+```
+use humanymous_authority::transport::{
+    Listener,Limits,LocalHandler,LocalRequest,LocalContext,LocalResponse,
+};
+// Listener::bind_ipc(endpoint:&str, peer:&Peer) -> io::Result<Listener>.
+// listener.serve_handler(handler, Limits{capacity,rate_per_second,timeout_ms}).await.
+// listener.serve_handler_until(handler, limits, shutdown_future, drain_timeout_ms).await.
+// trait LocalHandler: Send+Sync+'static {
+//   fn handle(&self, LocalRequest, LocalContext)
+//       -> impl Future<Output=Result<LocalResponse,Rejection>>+Send;
+// }
+```
+
+LocalRequest owns method,target,ordered headers,authorization,body. Headers are
+service framing metadata, not original-client evidence. Duplicated framing/auth
+singletons fail; ordinary duplicates are preserved for handler Origin/CSRF checks.
+LocalContext.peer() is actual OS identity; check() returns trusted Unix millis
+only within cancellation/monotonic/rollback limits; remaining() is Duration.
+Clone the context into detached workers so admission remains held until they end.
+LocalResponse has status/body, or json(status,&Serialize); transport revalidates
+JSON/65KiB and alone writes HTTP. A partial write closes without appending503.
+Management requires a separate listener, credential, strict route/CSRF/scope
+policy and shared audit/control issuers; generic locality is not admin authority.
+Existing decision serve refuses every admin path. protocol::read_response returns
+actual status/ordered headers/body for common native tests, without fake frames.
+
+Explicit shutdown uses serve_handler_until, which stops acceptance, signals
+global cancellation, aborts/joins tracked connections and waits for every
+admission-owning context/worker. Ok means drained; TimedOut is incomplete shutdown,
+not graceful success. Dropping serve_handler cancels but does not acknowledge
+drain. Runtime must retain custody/state while remaining workers own it and only
+report graceful shutdown after explicit until/flush completion. Native controlled
+blocking-work tests prove no early success and no canceled effect.
+
+Current actual negative pilots: server PID/scope/profile/replay; foreign pipe
+grant rejected before credential disclosure; 144 nonreaders then healthy service;
+separate fixture-management credential/route/Origin checks; canceled blocking
+worker holds capacity and cannot act. Fixture-management is not runtime admin
+qualification. Historical15/14 results below are not results for this new source.
+
+Dependencies still open: runtime's actual LocalHandler management/session join;
+typed one-use provenance/RIT grant (v0.1 has no receipt field); shared audit-owned
+Log+Custody lifetime owner (do not duplicate runtime startup::SealedAudit);
+sealed-only authority startup; Windows different-machine remote denial and full
+OS tuple/product e2e. No actual raw TLS/H2/capture producer exists in this crate.
+Node/nginx observed application-http CHALLENGE is not ALLOW or human acceptance.
 
 Startup reads one bounded JSON configuration from inherited stdin until EOF.
 The supervisor must keep stdin/stdout private, never log readiness, and drain
@@ -40,8 +127,8 @@ turns application User-Agent headers into collector evidence.
 ALLOW requires the existing durable audit Log append/checkpoint before the
 seven-field response. A test-only injected evidence provider can exercise that
 ordering, but cannot qualify a browser/capture profile. nginx's current mock
-protocol is incompatible; a future protocol version needs authenticated
-capture/stream binding rather than impersonating Node.
+protocol is incompatible; the new native profile uses its explicit nginx
+identity. Authenticated capture/stream binding still requires a future version.
 
 Admin and dual-control operations are unavailable; decision credentials cannot
 invoke them. Qualification remains incomplete until remaining native multi-user/remote
@@ -65,7 +152,7 @@ verify process exit/socket ownership before removing its own stale socket;
 startup never unlinks an existing path. No live configuration reload exists:
 revision changes require supervised restart and new credential delivery.
 
-Windows currently requires inbox Windows PowerShell/.NET for fail-closed audit
+Windows uses the native shared safe owner/DACL verifier for fail-closed audit
 directory ACL inspection. It creates a protected SID-only pipe DACL with the
 interprocess 2.4.7 safe API, rejects remote clients and checks actual client PID.
 It does not impersonate the client or claim an independently queried client

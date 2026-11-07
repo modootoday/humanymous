@@ -8,12 +8,12 @@ use humanymous_audit::{log::Log, record::Record};
 use humanymous_integrity::adapter::{self, ValidatedRequest};
 use humanymous_scoring::engine::Engine;
 use humanymous_signals::report::SessionReport;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 
 /// Actual IPC identity obtained from the accepted OS stream, never HTTP fields.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NativePeer {
     /// Effective UID from Unix peer credentials.
     Unix(u32),
@@ -105,14 +105,6 @@ pub struct Response {
     /// Frozen engine's ALLOW/DENY/CHALLENGE verdict.
     pub verdict: String,
 }
-// Shared parser owns every schema check. This projection reads only provenance
-// not exposed by its public getters, and only after parse has rejected duplicates.
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct Provenance {
-    header_mode: String,
-}
-
 /// One serialized authority/credential epoch. A mutex at the composition root
 /// ensures nonce check-and-reserve cannot race across concurrent requests.
 pub struct Authority {
@@ -178,14 +170,15 @@ impl Authority {
             return Err(Rejection::new(503, "authority_poisoned"));
         }
         let now = observe_time(&mut self.last_now, &mut self.poisoned, clock())?;
-        let request = adapter::parse(bytes, now).map_err(|code| {
-            let status = if code.contains("body") || code.contains("capabilit") {
-                422
-            } else {
-                400
-            };
-            Rejection::new(status, "invalid_envelope")
-        })?;
+        let request =
+            adapter::parse_with_profile(bytes, now, self.config.adapter).map_err(|code| {
+                let status = if code.contains("body") || code.contains("capabilit") {
+                    422
+                } else {
+                    400
+                };
+                Rejection::new(status, "invalid_envelope")
+            })?;
         let scope = &self.config.scope;
         let (origin, revision, authority) = request.origin_binding();
         if request.installation() != scope.installation
@@ -209,9 +202,7 @@ impl Authority {
             .iter()
             .find(|r| r.method == method && r.path == path)
             .ok_or(Rejection::new(409, "route_inventory"))?;
-        let provenance: Provenance =
-            serde_json::from_slice(bytes).map_err(|_| Rejection::new(400, "provenance"))?;
-        let raw = provenance.header_mode == "node-raw";
+        let raw = matches!(request.header_mode(), "node-raw" | "nginx-raw");
         let req = &route.required;
         if req.raw_tls
             || req.original_h2

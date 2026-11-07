@@ -1,0 +1,226 @@
+{
+  "schema": "humanymous.authority.component-qualification/1",
+  "date_kst": "2026-11-07",
+  "source_kind": "validated working source; canonical proof follows",
+  "base_git": "89271d530f955ddee3b0a341d72b02f95c64695d",
+  "combined_canonical_workspace_qualified": false,
+  "rust": "1.99.1",
+  "edition": "2024",
+  "windows": {
+    "tests_passed": 25,
+    "failed": 0,
+    "ignored": 0,
+    "release_local_service_passed": 3,
+    "commands_file_sha256": "0d918e15d83cb419016660a233aff50042124a9f94063773424af6bf42b65cd2"
+  },
+  "linux_docker": {
+    "tests_passed": 22,
+    "failed": 0,
+    "default_ignored_helpers": 2,
+    "explicit_other_uid_parent_passed": 1,
+    "nested_helper_counted_separately": false,
+    "network": "none",
+    "normal_extra_capabilities": [],
+    "uid_extra_capabilities": [
+      "SETUID",
+      "SETGID"
+    ],
+    "image_id": "sha256:f168204d726f85c6ef9550e81075d5c3ffcbd2acb61732e93e30498076168c1a",
+    "rust_base_digest": "sha256:f2c004e3d2d8b547e8cf7ffbc29205385f4e71d23e53e4e383065db5e9f822cd",
+    "source_overrides": [
+      "crates/authority/**",
+      "crates/integrity/src/request/browser/ack.rs"
+    ],
+    "main_exit": 0,
+    "other_uid_exit": 0
+  },
+  "security_cases": [
+    "exact response schema/binding/expiry and monotonic consume",
+    "actual IPC server PID/UID and profile-bound credential",
+    "world-granted pipe rejected before any credential byte",
+    "144 nonreading pipe clients followed by healthy service",
+    "separate fixture management credential/route/Origin refusals",
+    "canceled blocking context retains admission and cannot act",
+    "explicit shutdown waits for detached context before graceful acknowledgement",
+    "native nonce/restart/body/tenant/capture/audit/timeout failures"
+  ],
+  "qualified": {
+    "shared_client": "component",
+    "shared_handler": "component",
+    "explicit_shutdown": "component",
+    "real_runtime_admin": false,
+    "rit_receipt_join": false,
+    "sealed_authority_startup": false,
+    "external_windows_host_denial": false,
+    "raw_capture": false,
+    "full_product": false
+  },
+  "prior_failures": [
+    "old EOF fixture spent request deadline: expected422 observed400",
+    "release fixture observed legitimate429 before peer-close cleanup; expected403",
+    "shared release executable held: OS5, retested with isolated target",
+    "initial Docker context omitted new non-crates workspace members",
+    "root lock temporarily out of date: no --locked bypass",
+    "broad Docker context transfer canceled before test execution"
+  ],
+  "advisory": {
+    "known_vulnerabilities": 0,
+    "db_commit": "309392b18f6b17022f82c701f300433126901068",
+    "retained_warning": "RUSTSEC-2026-0192 unmaintained ttf-parser outside authority closure",
+    "container_os_clean_claim": false
+  },
+  "authority_sources": [
+    {
+      "path": "crates/authority/Cargo.toml",
+      "sha256": "fde08562706e2ac34de3e12bed1b081903a3226f711c3208751e2d2c9c129a26",
+      "working_blob_sha1": "a70601f79d9dce21e9280ef6076034488057b75a",
+      "git_filtered_blob_sha1": "a70601f79d9dce21e9280ef6076034488057b75a",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/Dockerfile.pilot",
+      "sha256": "8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad",
+      "working_blob_sha1": "7e371cc56650d4ce1705ff702e7fc4e5b235c1ab",
+      "git_filtered_blob_sha1": "7e371cc56650d4ce1705ff702e7fc4e5b235c1ab",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/client.rs",
+      "sha256": "703fbc7e4bafbc0aa7e21b8ef5cf320070548cf51e19e2fcc53f779235a4622e",
+      "working_blob_sha1": "ecaeb91a86bebebd42f5310c2a0d9d91ec83f1bd",
+      "git_filtered_blob_sha1": "ecaeb91a86bebebd42f5310c2a0d9d91ec83f1bd",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/configuration.rs",
+      "sha256": "4b229b8a256e28317ac027ada9b9a45c6653d2825bc9fca1a24f3f04cf24ab62",
+      "working_blob_sha1": "1dae38574a283f68ec66268a993aa5c2309b93ff",
+      "git_filtered_blob_sha1": "1dae38574a283f68ec66268a993aa5c2309b93ff",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/credentials.rs",
+      "sha256": "4c55d5e28e99bfda3f361d6b5198449d067f15eb13632770dee2e79470895a90",
+      "working_blob_sha1": "4e8125af0f67319ef7517a3f232c66d4934ad57c",
+      "git_filtered_blob_sha1": "4e8125af0f67319ef7517a3f232c66d4934ad57c",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/decision.rs",
+      "sha256": "fda9b0e507dd95cdfaa52b14e003e3a98459e53861be9f47a825fde9988f7734",
+      "working_blob_sha1": "cdeda16ff2453a98697ca947c48afc8e6368ca96",
+      "git_filtered_blob_sha1": "cdeda16ff2453a98697ca947c48afc8e6368ca96",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/lib.rs",
+      "sha256": "30a8e6daa85bb3c7674c8148374d275168d35a3e521156a2d6e5d4d290b3560c",
+      "working_blob_sha1": "4063f86d714aadcd2ecf6d2fdb00f7c31ee79427",
+      "git_filtered_blob_sha1": "4063f86d714aadcd2ecf6d2fdb00f7c31ee79427",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "sha256": "1eed44297c6ee5c8e333d9fd87f61814c425536d627988091e1bf7faf9773dac",
+      "working_blob_sha1": "e9af422784c8448727c76d2e6f492be7c1d51efe",
+      "git_filtered_blob_sha1": "e9af422784c8448727c76d2e6f492be7c1d51efe",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/protocol.rs",
+      "sha256": "745ab89800e26457b469e11e8733874cce816203db3cd725f372f37805aae78c",
+      "working_blob_sha1": "b63903b7a0fc790e44d76130d00235b78dbd3123",
+      "git_filtered_blob_sha1": "b63903b7a0fc790e44d76130d00235b78dbd3123",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/protocol/framing.rs",
+      "sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6",
+      "working_blob_sha1": "39734942e5475b07111d46c7255d9b5a4785aadf",
+      "git_filtered_blob_sha1": "39734942e5475b07111d46c7255d9b5a4785aadf",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/transport/mod.rs",
+      "sha256": "d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8",
+      "working_blob_sha1": "e98a4a01c8685059878a392538cf7fd2cfc29fb4",
+      "git_filtered_blob_sha1": "e98a4a01c8685059878a392538cf7fd2cfc29fb4",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/transport/permissions.rs",
+      "sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c",
+      "working_blob_sha1": "e646652f96143c589032370f8fb8155094964c3c",
+      "git_filtered_blob_sha1": "e646652f96143c589032370f8fb8155094964c3c",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/transport/service.rs",
+      "sha256": "1e7faf4a2f7d89a642c2f59f5ab7467b07cda381c2cdcfcf74ae0e71f93ba86a",
+      "working_blob_sha1": "f64a19b3ec29716c5ac5b21082009baa56971427",
+      "git_filtered_blob_sha1": "f64a19b3ec29716c5ac5b21082009baa56971427",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/transport/unix.rs",
+      "sha256": "cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623",
+      "working_blob_sha1": "97c669a20b38601ce835a849ac7c8b2ba6173245",
+      "git_filtered_blob_sha1": "97c669a20b38601ce835a849ac7c8b2ba6173245",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/src/transport/windows.rs",
+      "sha256": "196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86",
+      "working_blob_sha1": "5f29076883d1779e288b995c854c700470d6ace6",
+      "git_filtered_blob_sha1": "5f29076883d1779e288b995c854c700470d6ace6",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/tests/decisions.rs",
+      "sha256": "3a0f2a2894e1fd32532936110b78b6187ff09ff722eec9597b4cbe829ad2b06d",
+      "working_blob_sha1": "77c449207d0810281227035f6ca98623776d199e",
+      "git_filtered_blob_sha1": "77c449207d0810281227035f6ca98623776d199e",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/tests/local_service.rs",
+      "sha256": "0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442",
+      "working_blob_sha1": "8fb596c6778ab60b155337cfee5d1136d6f2fa1c",
+      "git_filtered_blob_sha1": "8fb596c6778ab60b155337cfee5d1136d6f2fa1c",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/tests/native_process.rs",
+      "sha256": "d374db56d989782084144db0644a56134422a748b6feb17da8d8cc58ad92cd43",
+      "working_blob_sha1": "8732be4d139b699086da5e2ae6e8007f725ed0c5",
+      "git_filtered_blob_sha1": "8732be4d139b699086da5e2ae6e8007f725ed0c5",
+      "filter_bytes_match": true,
+      "has_cr": false
+    },
+    {
+      "path": "crates/authority/tests/support/mod.rs",
+      "sha256": "34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820",
+      "working_blob_sha1": "66bc374d53bbb4bfa4ed2bf93160d75924d8c1da",
+      "git_filtered_blob_sha1": "66bc374d53bbb4bfa4ed2bf93160d75924d8c1da",
+      "filter_bytes_match": true,
+      "has_cr": false
+    }
+  ]
+}

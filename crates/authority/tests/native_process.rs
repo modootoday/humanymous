@@ -52,7 +52,9 @@ impl Process {
         assert_eq!(ready["qualification"], "experimental-local-authority");
         assert_eq!(ready["profile"]["id"], "application-http");
         assert_eq!(ready["profile"]["raw_tls"], false);
-        assert_eq!(ready["profile"]["routes"][0]["node_raw"], true);
+        let nginx = config["adapter"] == "nginx";
+        assert_eq!(ready["profile"]["routes"][0]["node_raw"], !nginx);
+        assert_eq!(ready["profile"]["routes"][0]["nginx_raw"], nginx);
         assert_eq!(ready["profile"]["routes"][0]["fetch_normalized"], false);
         assert_eq!(ready["profile"]["routes"][1]["node_raw"], false);
         Self {
@@ -68,25 +70,129 @@ impl Process {
             body.len()
         );
         let wire = [header.as_bytes(), &body].concat();
-        let bytes = self.exchange(&wire).await;
-        let text = std::str::from_utf8(&bytes).unwrap();
-        let (head, body) = text.split_once("\r\n\r\n").unwrap();
-        let status = head.split_whitespace().nth(1).unwrap().parse().unwrap();
-        assert!(head.contains("Connection: close"));
-        assert!(head.contains("Cache-Control: no-store"));
-        (status, serde_json::from_str(body).unwrap())
+        let response = self.exchange(&wire).await;
+        assert!(
+            response
+                .headers
+                .iter()
+                .any(|(n, v)| n.eq_ignore_ascii_case("connection") && v == "close")
+        );
+        assert!(
+            response
+                .headers
+                .iter()
+                .any(|(n, v)| n.eq_ignore_ascii_case("cache-control") && v == "no-store")
+        );
+        (
+            response.status,
+            serde_json::from_slice(&response.body).unwrap(),
+        )
     }
-    async fn exchange(&self, wire: &[u8]) -> Vec<u8> {
+    async fn exchange(&self, wire: &[u8]) -> protocol::Response {
         let mut stream = connect(&self.endpoint).await;
         tokio::time::timeout(Duration::from_secs(5), async {
             stream.write_all(wire).await.unwrap();
-            let mut bytes = Vec::new();
-            stream.read_to_end(&mut bytes).await.unwrap();
-            bytes
+            let response = protocol::read_response(&mut stream).await.unwrap();
+            #[cfg(windows)]
+            stream.assume_flushed();
+            drop(stream);
+            tokio::time::sleep(Duration::from_millis(10)).await;
+            response
         })
         .await
         .expect("bounded response")
     }
+}
+
+fn server_peer(p: &Process, c: &Value) -> humanymous_authority::configuration::Peer {
+    let mut peer: humanymous_authority::configuration::Peer =
+        serde_json::from_value(c["peer"].clone()).unwrap();
+    if let humanymous_authority::configuration::Peer::Windows { pid, .. } = &mut peer {
+        *pid = p.child.id();
+    }
+    peer
+}
+async fn client_call(
+    p: &Process,
+    server: &humanymous_authority::configuration::Peer,
+    v: &Value,
+    profile: humanymous_integrity::adapter::AdapterProfile,
+) -> Result<humanymous_authority::client::BoundResponse, humanymous_authority::Rejection> {
+    use humanymous_authority::client::{ClientOptions, ExpectedBinding, decide};
+    let options = ClientOptions {
+        endpoint: &p.endpoint,
+        credential: &p.credential,
+        server,
+        timeout_ms: 2000,
+        adapter: profile,
+    };
+    let expected = ExpectedBinding {
+        id: v["id"].as_str().unwrap(),
+        tenant: v["tenant"].as_str().unwrap(),
+        origin: v["origin"].as_str().unwrap(),
+        revision: v["revision"].as_str().unwrap(),
+        deadline: v["deadline"].as_u64().unwrap(),
+    };
+    decide(&options, &envelope(v), expected).await
+}
+#[tokio::test]
+async fn shared_client_checks_real_server_and_profile_bound_credentials() {
+    use humanymous_authority::client::Verdict;
+    use humanymous_integrity::adapter::AdapterProfile;
+    let d = Directory::new();
+    let c = config_value(&d);
+    let p = Process::start(&c);
+    let server = server_peer(&p, &c);
+    let v = request(now_ms().unwrap(), 31);
+    let bound = client_call(&p, &server, &v, AdapterProfile::Node)
+        .await
+        .expect("real verified server response");
+    assert_ne!(bound.consume().unwrap(), Verdict::Allow);
+    assert!(
+        client_call(&p, &server, &v, AdapterProfile::Node)
+            .await
+            .is_err()
+    );
+    let mut wrong = server_peer(&p, &c);
+    match &mut wrong {
+        humanymous_authority::configuration::Peer::Unix { uid } => *uid = uid.wrapping_add(1),
+        humanymous_authority::configuration::Peer::Windows { pid, .. } => {
+            *pid = pid.wrapping_add(1)
+        }
+    }
+    assert!(
+        client_call(
+            &p,
+            &wrong,
+            &request(now_ms().unwrap(), 32),
+            AdapterProfile::Node
+        )
+        .await
+        .is_err()
+    );
+    let mut nginx = request(now_ms().unwrap(), 33);
+    nginx["adapter"]["id"] = "humanymous.nginx".into();
+    nginx["headerMode"] = "nginx-raw".into();
+    nginx["connectionId"] = Value::Null;
+    assert!(
+        client_call(&p, &server, &nginx, AdapterProfile::Nginx)
+            .await
+            .is_err()
+    );
+    drop(p);
+    let mut c = c;
+    c["adapter"] = "nginx".into();
+    let p = Process::start(&c);
+    let server = server_peer(&p, &c);
+    nginx["deadline"] = (now_ms().unwrap() + 5000).into();
+    assert_ne!(
+        client_call(&p, &server, &nginx, AdapterProfile::Nginx)
+            .await
+            .unwrap()
+            .consume()
+            .unwrap(),
+        Verdict::Allow
+    );
 }
 impl Drop for Process {
     fn drop(&mut self) {
@@ -98,21 +204,6 @@ impl Drop for Process {
         }
     }
 }
-#[cfg(unix)]
-async fn connect(endpoint: &str) -> tokio::net::UnixStream {
-    tokio::net::UnixStream::connect(endpoint).await.unwrap()
-}
-#[cfg(windows)]
-async fn connect(
-    endpoint: &str,
-) -> interprocess::os::windows::named_pipe::tokio::DuplexPipeStream<
-    interprocess::os::windows::named_pipe::pipe_mode::Bytes,
-> {
-    interprocess::os::windows::named_pipe::tokio::DuplexPipeStream::connect_by_path(endpoint)
-        .await
-        .unwrap()
-}
-
 #[tokio::test]
 async fn real_ipc_auth_replay_body_scope_capture_and_restart_epoch() {
     let d = Directory::new();
@@ -141,11 +232,11 @@ async fn real_ipc_auth_replay_body_scope_capture_and_restart_epoch() {
     let mut capture = request.clone();
     capture["target"] = "/capture".into();
     assert_eq!(p.send(&p.credential, &capture).await.0, 422);
-    assert_eq!(
-        p.exchange(b"POST /admin/erase HTTP/1.1\r\nHost: localhost\r\nContent-Length: 0\r\n\r\n")
-            .await[..12],
-        *b"HTTP/1.1 403"
+    let admin = format!(
+        "POST /admin/erase HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {}\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{{}}",
+        p.credential
     );
+    assert_eq!(p.exchange(admin.as_bytes()).await.status, 403);
     let old = p.credential.clone();
     drop(p);
     let p = Process::start(&c);
@@ -251,6 +342,115 @@ fn private_directory_and_endpoint_configuration_fail_closed() {
     }
     assert!(humanymous_authority::transport::private_directory(&d2.0, &c.peer).is_err());
     assert_eq!(protocol::MAX_BODY, 1_600_000);
+}
+
+#[cfg(windows)]
+#[tokio::test]
+async fn untrusted_pipe_dacl_is_rejected_before_credential_disclosure() {
+    use humanymous_authority::{
+        client::{ClientOptions, ExpectedBinding, decide},
+        configuration::Peer,
+    };
+    use interprocess::os::windows::{
+        named_pipe::{PipeListenerOptions, pipe_mode},
+        security_descriptor::SecurityDescriptor,
+    };
+    let d = Directory::new();
+    let c = config_value(&d);
+    let endpoint = c["endpoint"].as_str().unwrap();
+    let owner = sid();
+    let sddl = widestring::U16CString::from_str(format!(
+        "O:{owner}G:{owner}D:P(A;;GA;;;{owner})(A;;GRGW;;;WD)"
+    ))
+    .unwrap();
+    let listener = PipeListenerOptions::new()
+        .path(endpoint)
+        .accept_remote(false)
+        .security_descriptor(Some(SecurityDescriptor::deserialize(&sddl).unwrap()))
+        .create_tokio_duplex::<pipe_mode::Bytes>()
+        .unwrap();
+    let observed = tokio::spawn(async move {
+        let mut stream = listener.accept().await.unwrap();
+        let mut byte = [0];
+        let got = stream.read(&mut byte).await.unwrap();
+        stream.assume_flushed();
+        got
+    });
+    let v = request(now_ms().unwrap(), 71);
+    let server = Peer::Windows {
+        sid: owner,
+        pid: std::process::id(),
+    };
+    let token = "A".repeat(64);
+    let options = ClientOptions {
+        endpoint,
+        credential: &token,
+        server: &server,
+        timeout_ms: 1000,
+        adapter: humanymous_integrity::adapter::AdapterProfile::Node,
+    };
+    let expected = ExpectedBinding {
+        id: v["id"].as_str().unwrap(),
+        tenant: "t",
+        origin: "o",
+        revision: "r",
+        deadline: v["deadline"].as_u64().unwrap(),
+    };
+    assert_eq!(
+        decide(&options, &envelope(&v), expected)
+            .await
+            .err()
+            .unwrap()
+            .code,
+        "client_peer_or_transport"
+    );
+    assert_eq!(
+        tokio::time::timeout(Duration::from_secs(2), observed)
+            .await
+            .unwrap()
+            .unwrap(),
+        0
+    );
+}
+
+#[cfg(windows)]
+#[tokio::test]
+async fn nonreading_pipe_clients_do_not_accumulate_flush_workers() {
+    let d = Directory::new();
+    let mut c = config_value(&d);
+    c["capacity"] = 4.into();
+    c["timeout_ms"] = 125.into();
+    c["replay_capacity"] = 512.into();
+    c["rate_per_second"] = 10_000.into();
+    let p = Process::start(&c);
+    let mut abandoned = Vec::new();
+    // More than the service's 128 blocking-thread ceiling. Previously each
+    // nonreader retained an uncancelled FlushFileBuffers worker after timeout.
+    for batch in 0..36 {
+        for offset in 0..4 {
+            let v = request(now_ms().unwrap(), 1000 + batch * 4 + offset);
+            let body = envelope(&v);
+            let head = format!(
+                "POST /adapter/v0.1/decision HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+                p.credential,
+                body.len()
+            );
+            let mut stream = connect(&p.endpoint).await;
+            let frame = [head.as_bytes(), &body].concat();
+            // An overload/expired prior connection may refuse transport, but
+            // no successful response is read by this deliberately hostile peer.
+            let _ = stream.write_all(&frame).await;
+            abandoned.push(stream);
+        }
+        tokio::time::sleep(Duration::from_millis(150)).await;
+    }
+    assert_eq!(
+        p.send(&p.credential, &request(now_ms().unwrap(), 2000))
+            .await
+            .0,
+        200
+    );
+    drop(abandoned);
 }
 
 #[cfg(target_os = "linux")]

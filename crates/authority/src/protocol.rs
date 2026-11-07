@@ -1,176 +1,113 @@
-//! Strict single-request HTTP/1.1 framing over authenticated local IPC.
+//! Strict single-request HTTP framing over authenticated local IPC.
+mod framing;
 use crate::Rejection;
-use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
-
-/// Header/body budget for the local service envelope, not origin entity bytes.
+#[cfg(test)]
+use framing::MAX_HEADER;
+use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt};
+/// Maximum complete service-envelope bytes.
 pub const MAX_BODY: usize = 1_600_000;
-const MAX_HEADER: usize = 16_384;
-/// Parsed service request; secrets intentionally have no Debug implementation.
+/// An owned local request. Values never establish native peer or administrative scope.
 pub struct Request {
-    /// Exact service credential header (never an origin Authorization value).
+    /// Exact HTTP method.
+    pub method: String,
+    /// Exact origin-form service target, without URL decoding.
+    pub target: String,
+    /// Ordered service headers, including ordinary duplicates for handler policy.
+    pub headers: Vec<(String, String)>,
+    /// Service bearer, never an original application's Authorization observation.
     pub authorization: String,
-    /// Still-untrusted JSON; the shared integrity parser owns its validation.
+    /// Complete entity bytes; handler owns schema and endpoint authorization.
     pub body: Vec<u8>,
 }
-fn token(b: u8) -> bool {
-    b.is_ascii_alphanumeric() || b"!#$%&'*+-.^_`|~".contains(&b)
-}
-fn headers(bytes: &[u8]) -> Result<(String, usize), Rejection> {
-    let bad = Rejection::new(400, "http_framing");
-    let text = std::str::from_utf8(bytes).map_err(|_| bad)?;
-    let mut lines = text.split("\r\n");
-    let start = lines.next().ok_or(bad)?;
-    if start != "POST /adapter/v0.1/decision HTTP/1.1" {
+/// Strict legacy decision endpoint; no administration dispatch.
+pub async fn read(stream: &mut (impl AsyncRead + Unpin)) -> Result<Request, Rejection> {
+    let request = read_local(stream).await?;
+    if request.method != "POST" || request.target != "/adapter/v0.1/decision" {
         return Err(Rejection::new(403, "decision_endpoint_only"));
     }
-    let mut seen = std::collections::HashSet::new();
-    let mut authorization = None;
-    let mut length = None;
-    let mut content_type = false;
-    let mut host = false;
-    for (i, line) in lines.enumerate() {
-        if i >= 100 {
-            return Err(bad);
-        }
-        let (name, value) = line.split_once(':').ok_or(bad)?;
-        if name.is_empty()
-            || !name.bytes().all(token)
-            || value
-                .bytes()
-                .any(|b| b < 32 && b != b'\t' || b == 127 || b >= 128)
-        {
-            return Err(bad);
-        }
-        let name = name.to_ascii_lowercase();
-        // Reject all repeated service-envelope headers, even innocuous ones.
-        if !seen.insert(name.clone()) {
-            return Err(bad);
-        }
-        let value = value.trim_matches([' ', '\t']);
-        match name.as_str() {
-            "authorization" => {
-                if value.len() > 263 {
-                    return Err(Rejection::new(401, "credentials"));
-                }
-                authorization = Some(value.to_owned());
-            }
-            "content-length" => {
-                if value.is_empty()
-                    || value.len() > 7
-                    || !value.bytes().all(|b| b.is_ascii_digit())
-                    || (value.len() > 1 && value.starts_with('0'))
-                {
-                    return Err(bad);
-                }
-                let n: usize = value.parse().map_err(|_| bad)?;
-                if n > MAX_BODY {
-                    return Err(Rejection::new(413, "envelope_size"));
-                }
-                length = Some(n);
-            }
-            "content-type" => {
-                if !value.eq_ignore_ascii_case("application/json") {
-                    return Err(bad);
-                }
-                content_type = true;
-            }
-            "host" => {
-                if value.is_empty()
-                    || !value
-                        .bytes()
-                        .all(|b| (33..=126).contains(&b) && !b"@/#?\\,".contains(&b))
-                {
-                    return Err(bad);
-                }
-                host = true;
-            }
-            "connection"
-                if value.eq_ignore_ascii_case("close")
-                    || value.eq_ignore_ascii_case("keep-alive") => {}
-            "connection" | "transfer-encoding" | "upgrade" | "expect" | "trailer" | "te" => {
-                return Err(bad);
-            }
-            _ => {}
-        }
+    if request.authorization.is_empty() {
+        return Err(Rejection::new(401, "credentials"));
     }
-    if !host || !content_type {
-        return Err(bad);
-    }
-    Ok((
-        authorization.ok_or(Rejection::new(401, "credentials"))?,
-        length.ok_or(bad)?,
-    ))
+    Ok(request)
 }
-/// Consume a single bounded request. Caller supplies a whole-connection timeout.
-/// Already-buffered trailing bytes are rejected; connection is always closed,
-/// so late pipelining can never invoke a second decision.
-pub async fn read(stream: &mut (impl AsyncRead + Unpin)) -> Result<Request, Rejection> {
-    read_frame(stream, true).await
-}
-
-/// Drain one valid rejected frame using bounded scratch storage, so closing a
-/// Unix stream with unread inbound bytes cannot reset a completed 429 response.
-pub async fn discard(stream: &mut (impl AsyncRead + Unpin)) -> Result<(), Rejection> {
-    read_frame(stream, false).await.map(|_| ())
-}
-
-async fn read_frame(
-    stream: &mut (impl AsyncRead + Unpin),
-    retain: bool,
-) -> Result<Request, Rejection> {
-    let mut buffer = Vec::with_capacity(4096);
-    let end = loop {
-        if let Some(i) = buffer.windows(4).position(|b| b == b"\r\n\r\n") {
-            if i + 4 > MAX_HEADER {
-                return Err(Rejection::new(413, "header_size"));
-            }
-            break i;
-        }
-        if buffer.len() >= MAX_HEADER {
-            return Err(Rejection::new(413, "header_size"));
-        }
-        let mut chunk = [0u8; 1024];
-        let n = stream
-            .read(&mut chunk)
-            .await
-            .map_err(|_| Rejection::new(400, "http_read"))?;
-        if n == 0 {
-            return Err(Rejection::new(400, "truncated_headers"));
-        }
-        buffer.extend_from_slice(&chunk[..n]);
-    };
-    let (authorization, length) = headers(&buffer[..end])?;
-    let mut body = buffer.split_off(end + 4);
-    if body.len() > length {
-        return Err(Rejection::new(400, "trailing_frame"));
+/// Common complete JSON framing for a separately authenticated local handler.
+pub async fn read_local(stream: &mut (impl AsyncRead + Unpin)) -> Result<Request, Rejection> {
+    let (head, body) = framing::read(stream, MAX_BODY, true).await?;
+    let parts: Vec<_> = head.start.split(' ').collect();
+    if parts.len() != 3
+        || parts[2] != "HTTP/1.1"
+        || parts[0].is_empty()
+        || parts[0].len() > 32
+        || !parts[0]
+            .bytes()
+            .all(|b| b.is_ascii_uppercase() || b"!#$%&'*+-.^_`|~0123456789".contains(&b))
+        || !parts[1].starts_with('/')
+        || parts[1].starts_with("//")
+        || parts[1].len() > 8192
+        || parts[1]
+            .bytes()
+            .any(|b| b <= 32 || b >= 127 || b"#\\".contains(&b))
+    {
+        return Err(Rejection::new(400, "http_framing"));
     }
-    let got = body.len();
-    if !retain {
-        let mut remaining = length - got;
-        let mut scratch = [0u8; 4096];
-        while remaining > 0 {
-            let chunk = remaining.min(scratch.len());
-            stream
-                .read_exact(&mut scratch[..chunk])
-                .await
-                .map_err(|_| Rejection::new(400, "truncated_body"))?;
-            remaining -= chunk;
-        }
-        body.clear();
-        return Ok(Request {
-            authorization,
-            body,
-        });
+    let host = head
+        .header("host")
+        .ok_or(Rejection::new(400, "http_host"))?;
+    if host.is_empty()
+        || !host
+            .bytes()
+            .all(|b| (33..127).contains(&b) && !b"@/#?\\,".contains(&b))
+    {
+        return Err(Rejection::new(400, "http_host"));
     }
-    body.resize(length, 0);
-    stream
-        .read_exact(&mut body[got..])
-        .await
-        .map_err(|_| Rejection::new(400, "truncated_body"))?;
+    let authorization = head.header("authorization").unwrap_or("").to_owned();
+    if authorization.len() > 263 {
+        return Err(Rejection::new(401, "credentials"));
+    }
     Ok(Request {
+        method: parts[0].into(),
+        target: parts[1].into(),
         authorization,
+        headers: head.headers,
         body,
     })
+}
+/// Scratch-only drain on overload, under the caller's rejection deadline.
+pub async fn discard(stream: &mut (impl AsyncRead + Unpin)) -> Result<(), Rejection> {
+    framing::read(stream, MAX_BODY, false).await.map(|_| ())
+}
+/// Read one bounded JSON response without requiring EOF after its exact entity.
+/// The caller closes immediately; buffered extra bytes are rejected and no second response is interpreted.
+pub async fn read_response(stream: &mut (impl AsyncRead + Unpin)) -> Result<Response, Rejection> {
+    let (head, body) = framing::read(stream, 65_536, true).await?;
+    let parts: Vec<_> = head.start.splitn(3, ' ').collect();
+    if parts.len() != 3
+        || parts[0] != "HTTP/1.1"
+        || parts[1].len() != 3
+        || !parts[1].bytes().all(|b| b.is_ascii_digit())
+        || !head
+            .header("connection")
+            .is_some_and(|s| s.eq_ignore_ascii_case("close"))
+    {
+        return Err(Rejection::new(503, "authority_framing"));
+    }
+    let status = parts[1]
+        .parse()
+        .map_err(|_| Rejection::new(503, "authority_framing"))?;
+    Ok(Response {
+        status,
+        headers: head.headers,
+        body,
+    })
+}
+/// One observed bounded response; no header is forwarded to an application.
+pub struct Response {
+    /// Actual HTTP status.
+    pub status: u16,
+    /// Ordered validated headers.
+    pub headers: Vec<(String, String)>,
+    /// Exact complete JSON entity bytes.
+    pub body: Vec<u8>,
 }
 /// Emit one bounded response with close/no-store semantics and no reflected data.
 pub async fn write(
@@ -186,10 +123,13 @@ pub async fn write(
         400 => "Bad Request",
         401 => "Unauthorized",
         403 => "Forbidden",
+        404 => "Not Found",
+        405 => "Method Not Allowed",
         409 => "Conflict",
         413 => "Content Too Large",
         422 => "Unprocessable Content",
         429 => "Too Many Requests",
+        500 => "Internal Server Error",
         _ => "Service Unavailable",
     };
     let head = format!(
