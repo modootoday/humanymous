@@ -273,6 +273,21 @@ Operator/admin paths and actual Docker product faults complete the same target;
 they are not inferred from S1/S2 component results. API details and resource policy
 are accepted jointly with those owners before S2/S3 implementation.
 
+```mermaid
+flowchart LR
+  L[Existing keys and exclusive source lock] --> A[Phase A: bounded complete parse and metadata]
+  A --> B[Phase B: complete authentication and frontier]
+  B --> V[Private verified context and source epoch]
+  V --> R[Exact selected repair and source epoch update]
+  R --> P[Bounded consumer projection through EOF]
+  P --> F[Same-context completion check]
+  F --> Y[Ready only if coverage and policy permit]
+  A -->|fault or cancellation| X[No published authority, effect or Ready]
+  B -->|fault or cancellation| X
+  P -->|late fault or cancellation| X
+  R -->|uncertain durability| X
+```
+
 Runtime owner reviewed the design and supplied concrete S3 requirements, without
 accepting an API or changing source. Replace startup witnessed_through's
 checkpoints().last Vec with a bounded latest authenticated head/coverage accessor.
@@ -299,6 +314,20 @@ cancellation state. Async caller integration must avoid blocking its stop/watchd
 control path; OS-read interruption still needs the owned external supervisor.
 Bounded projections and O(history) rescan costs are not throughput or independent
 deployment evidence. Full consumer acceptance remains a separate design gate.
+
+Runtime boundary follow-up: retained_action_state already authenticates a native
+snapshot and materializes a BTreeSet plus Vec of other consumed targets. Its
+validated control-ledger capacity is1..10000; it is bounded by capacity, not a
+zero-allocation or history-free operation. The whole startup ledger must count
+cached ledger body, native snapshot bytes/decoded body, selected proposal clone,
+distinct-target set/vector and their overlapping lifetimes, alongside bounded
+WAL recovery, sealed custody and witness/client buffers. A4MiB native file limit
+or post-decode capacity check alone is not a pre-allocation proof; apply the same
+preflight/capacity accounting where that decoder participates in the claimed
+startup bound, or explicitly keep whole-startup qualification open.
+Preserve refusal of other consumed kill targets across protocol versions. A
+future scalar any_other_target view could reduce allocation only through an
+accepted typed API change; it must not remove that check or reinterpret absence.
 
 Self-critique: P1 allocation amplification is addressed by predecode limits plus
 required measured/conservative bounds, not trusted to frame length alone. P1
