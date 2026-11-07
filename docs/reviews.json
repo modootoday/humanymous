@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/measured_input.rs",
+  "sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete214line explicit measured Hanja probe: foregroundownPID+CEFUIthread+childfocus+CEF/OSmodifier refusal, VK19scanF1extended down/up SendInput2/2 still candidateunqualified. Surfaceclass/geometry bounded32, ownerchain8 plus knownIMEclass correlation not ownership/candidate proof, no foreigntitle/text. Purepacket/modifier/class tests not actualIME/AT or genericbehaviorcollector qualification.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/src/host.rs",
+  "sha256": "9180d637b34d74b0f4c06bb01ac90fcc4ad11a06aa00983a3007cbb071588a25",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read all556lines in three bounded sections: nativechild registration/parentleases, bounded window/input/geometry observations, cancel/phase close,10ms service, independent close+harddeadline seconds+15, joinedwatchers and source regression. Report written before failure/closechecks; CleanExit requires childbeforeclose+hostClosed, not probe success or globaldescendant cleanup. Private input/process evidence not publictelemetry; no actual native/IME/AT qualification inferred.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/native/desktop/src/lib.rs",
   "sha256": "509685802513f69c7e1b9113ac22cc5774642db1a3e3e29386c17590a2e731bf",
   "reviewer": "codex/rust-pages",
