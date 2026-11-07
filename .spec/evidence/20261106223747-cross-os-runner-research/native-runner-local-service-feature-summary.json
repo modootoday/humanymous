@@ -1,0 +1,165 @@
+{
+  "arch": "x86_64",
+  "documentation_examples_executed": false,
+  "errors": 0,
+  "full_runtime_qualified": false,
+  "harnesses": [
+    {
+      "discovered": 7,
+      "executable_sha256": "1d3f58c3d525ea02340bec52a701481685960da2c91103a03ec48889426ef527",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 7,
+      "required_not_run": [],
+      "stdout_sha256": "6f4ca754a8ca17f9349968291a9ae8a706642266f3485738314a86fc90ca1bc9",
+      "target": "decisions"
+    },
+    {
+      "discovered": 1,
+      "executable_sha256": "64d5034a9c3b659ef935e69dab9f369f6a0b3144b3945d73466fc1465794cc93",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 1,
+      "required_not_run": [],
+      "stdout_sha256": "e2fbc84d720d329eef6474d422969cdcdf139a17996f48fb4041535cb5e52aec",
+      "target": "humanymous"
+    },
+    {
+      "discovered": 3,
+      "executable_sha256": "ff53a611dd92d861f47f7b26438b19d7afb261ba1b7c6d34f7b22324b03ecc71",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 3,
+      "required_not_run": [],
+      "stdout_sha256": "68238d00dc131e1835f0b3e9d14a8b443f19a861797e894f30477930bf16b8c1",
+      "target": "humanymous_authority"
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "0540a9dc19861d8e4778ec89e8a753006682a93726523aec03daa03a3d08f05b",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 0,
+      "required_not_run": [],
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "target": "humanymous-authority"
+    },
+    {
+      "discovered": 14,
+      "executable_sha256": "2b38e458135e893661d1bf875b5f738f1664c914287228e1c6c537f5dd20dc31",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 14,
+      "required_not_run": [],
+      "stdout_sha256": "044d064c0245d6bfe47b801de3a4ddcfd75cc1a1a2498ba49ef1200197a1ce7c",
+      "target": "humanymous_cli"
+    },
+    {
+      "discovered": 9,
+      "executable_sha256": "a9701d847a96dd5066a07ec48d3929fe8a7fada53e917c16697c9b6f63a19f19",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 9,
+      "required_not_run": [],
+      "stdout_sha256": "f0b3d7c8ef50ba3285ed05b6920661750f7237734e71826a96fb9bfa113f0899",
+      "target": "humanymous_native_security"
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "79e5a10ab2c108f8d34f61e95541605354c1898ccf4e5d204bfddf99aca51e14",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 0,
+      "required_not_run": [],
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "target": "humanymous-runtime"
+    },
+    {
+      "discovered": 13,
+      "executable_sha256": "311768e9cf74921ee643917e6834047f67834163f420446d2925b6bd99b255ef",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 13,
+      "required_not_run": [],
+      "stdout_sha256": "c2bc1e61b9ee9747384de3e903a77c3315d9d2ca2bacfcd9a72476a6286ed578",
+      "target": "humanymous_runtime"
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "064978fb99d0b1d073c409d77ad78ef76b45ce76b1666d833e0499e4c7fa5694",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 0,
+      "required_not_run": [],
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "target": "humanymous-service-fixture"
+    },
+    {
+      "discovered": 5,
+      "executable_sha256": "4d9e6d8b98a9dc42bd3137c3354dd4110c360c2f0af658129011202151165895",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 5,
+      "required_not_run": [],
+      "stdout_sha256": "e30ee4faf56487b7101436fea2e2b08316a00bc38bdd177e59f8d16045ca3fee",
+      "target": "native_process"
+    },
+    {
+      "discovered": 1,
+      "executable_sha256": "da8ab110c56abd520e226784faf71d1e687e1a049af7e8ee7fa53775b4605d37",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 1,
+      "required_not_run": [],
+      "stdout_sha256": "f46dbc30d7ab77262f7bdbffa92b5fccdafed56a4c8e951b0ca97f4af42480c8",
+      "target": "native_process"
+    },
+    {
+      "discovered": 3,
+      "executable_sha256": "625cf5b2e0233e86e81b5ffed4775446ff1ec7400d651d410569b1635db2b00c",
+      "exit_code": 0,
+      "filtered": 0,
+      "ignored": 1,
+      "passed": 2,
+      "required_not_run": [
+        "native_service_install_upgrade_rollback_and_remove"
+      ],
+      "stdout_sha256": "759d5f8ab89249cc499cae9e2f74f3da8fc2259caf8ad9fe5cdaac5aeb6e0fc1",
+      "target": "service_process"
+    }
+  ],
+  "missing_required_cases": [
+    "local-only-admin",
+    "documentation-examples"
+  ],
+  "os": "windows",
+  "own_source_git_bytes": null,
+  "passed_tests": 55,
+  "qualification": "component-only",
+  "raw_ignored_tests": 1,
+  "raw_report_sha256": "9b906245b649a7ab99caee26ea282a9b3f9c4d06286eb0adccd693404f1b7e65",
+  "schema": "humanymous.native-runner-summary/1",
+  "scope": "four-package-native-process-component",
+  "skips": 1,
+  "source_sha": "26d99254997466a8bb1e14f8473fbe3948d6c585",
+  "status": "blocked",
+  "unsupported": [
+    "raw-tls-h2-positive-capture",
+    "real-browser-collector",
+    "OS-service-activation",
+    "remote-machine-peer-denial"
+  ],
+  "validated_worktree_dirty": true,
+  "zero_test_harnesses": 3
+}

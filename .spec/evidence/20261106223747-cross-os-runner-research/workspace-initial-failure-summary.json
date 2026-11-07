@@ -1,0 +1,323 @@
+{
+  "arch": "x86_64",
+  "coverage_complete": false,
+  "documentation_examples_executed": null,
+  "errors": 1,
+  "executed_harnesses": 10,
+  "failed_tests": 0,
+  "full_runtime_qualified": false,
+  "harnesses": [
+    {
+      "discovered": 1,
+      "executable_sha256": "be6366fb550762ab7f3d5f8bd98772e683e1f57c032ae0d8f6518564f039be6f",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 1,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "ec93967abd192b26fbd7438844547d895f13c0c23326b7ec624e0d28f0b0a375",
+      "subprocess_helpers": null,
+      "target": "attestation_parity",
+      "validated": true
+    },
+    {
+      "discovered": 0,
+      "executable_sha256": "181989f164350ae5b28562a02ee15ec76f5b31fc977e509f9ec2747c85a9be3c",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 0,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "subprocess_helpers": null,
+      "target": "audit-witness",
+      "validated": true
+    },
+    {
+      "discovered": 1,
+      "executable_sha256": "5d70f56cea29bc6f3046f14c252ee57e714f6643fb73175c9b0e159a89c4c249",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 1,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "45629e691322fdd7b98d76689599b6613d7250126733c8b39c0eeee8ce71d76e",
+      "subprocess_helpers": null,
+      "target": "behavior_parity",
+      "validated": true
+    },
+    {
+      "discovered": 2,
+      "executable_sha256": "f30a2ce5f7c951f02b30bebb144eaa03393761472f3e8b54c6a36f55ce9441c8",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 2,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "283260eec715394166e797da950f28d5bc3908be85bc814fc3ec9f52a24c27d8",
+      "subprocess_helpers": null,
+      "target": "checkpoint_parity",
+      "validated": true
+    },
+    {
+      "discovered": 6,
+      "executable_sha256": "ada8c7bf4570c6070762328e8f593dc375917b44522f87a5ba23c875300d5755",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 6,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "ae1f78ef17f28e9979d30749735ec9e5744f05b43b17c613464b03221b4c2d12",
+      "subprocess_helpers": null,
+      "target": "command",
+      "validated": true
+    },
+    {
+      "discovered": 7,
+      "executable_sha256": "2143c5e3eea8b9f22ddbbb7de322280ece529eac44fc34e2db99d491eb53e8f4",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 7,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "5ddd24f670cd77b1abce34e9b75fe3e1c8e48dfacc343ce2d2512dfe35e07e67",
+      "subprocess_helpers": null,
+      "target": "control_operations",
+      "validated": true
+    },
+    {
+      "discovered": 1,
+      "executable_sha256": "a4cd7014e77e95955538a7b5d1fd82c58b71971caea9fd7f69a50e15239f7835",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 1,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "fbc71f68184de94b5713887016be435f4dbd6ee9e0f07ab4789624f8c2af93aa",
+      "subprocess_helpers": null,
+      "target": "crosscheck_parity",
+      "validated": true
+    },
+    {
+      "discovered": 7,
+      "executable_sha256": "516905486cef7bcb4304d0b03ec198ee6d68ed84538bdb86642e7cb0aca69fd8",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 7,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "d922ad4d65126140648c4eb4a13e0ef88296f920a480fe959895aaaa43a8e83b",
+      "subprocess_helpers": null,
+      "target": "decisions",
+      "validated": true
+    },
+    {
+      "discovered": 1,
+      "executable_sha256": "c527bf7979170df7a2eb890188d8ba0072ae53a093163fb0d4dfaa8c7a087d5d",
+      "exit_code": 0,
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "ignored_subprocess_helpers": null,
+      "passed": 1,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "5088100c36e9ca09a582f92a8107819ed015c9de680271c1c9106326a8d3664b",
+      "subprocess_helpers": null,
+      "target": "derivation_parity",
+      "validated": true
+    },
+    {
+      "discovered": 13,
+      "executable_sha256": "6ddde8dea535ff30243ae721b92ca72d52fe9aba15cf22d27720baeba15e8008",
+      "exit_code": 0,
+      "failed": null,
+      "filtered": null,
+      "ignored": null,
+      "ignored_subprocess_helpers": null,
+      "passed": null,
+      "required_not_run": [],
+      "required_parent_tests": null,
+      "stdout_sha256": "2d844cdf8375182e18b9e8e2ae9e9b47d89d4488a51262c621e0cb2938c415fb",
+      "subprocess_helpers": null,
+      "target": "durable_witness",
+      "validated": false
+    }
+  ],
+  "ignored_subprocess_helpers": null,
+  "missing_required_cases": null,
+  "os": "windows",
+  "own_source_git_bytes": {
+    "crates/native-security/Cargo.toml": {
+      "canonical_git_sha256": "c119a4d812c7d00d3e1b1e5de44e33ead8c5398d7a7ecf1bf117d98017965345",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "c119a4d812c7d00d3e1b1e5de44e33ead8c5398d7a7ecf1bf117d98017965345"
+    },
+    "crates/native-security/src/lib.rs": {
+      "canonical_git_sha256": "72b4616da895650e08dd595cfb542ccb0bb26780a64104e368d857374c066a1b",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "72b4616da895650e08dd595cfb542ccb0bb26780a64104e368d857374c066a1b"
+    },
+    "crates/native-security/src/process/mod.rs": {
+      "canonical_git_sha256": "efe7784a4b5d3f878923fd66e1235bc719a3116471e7d6ce692c62ebb54becbe",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "efe7784a4b5d3f878923fd66e1235bc719a3116471e7d6ce692c62ebb54becbe"
+    },
+    "crates/native-security/src/process/windows.rs": {
+      "canonical_git_sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b"
+    },
+    "crates/native-security/src/storage/mod.rs": {
+      "canonical_git_sha256": "5ee09d86ad5e4e6e59d0b07ae4180cd2d5c0a2e6017d42ff954f981ff8ce034e",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "5ee09d86ad5e4e6e59d0b07ae4180cd2d5c0a2e6017d42ff954f981ff8ce034e"
+    },
+    "crates/native-security/src/storage/service.rs": {
+      "canonical_git_sha256": "365f949d4f78cdf6e3c922f9fc716006b7e33d912bd79f2b1defa27e4190ce61",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "365f949d4f78cdf6e3c922f9fc716006b7e33d912bd79f2b1defa27e4190ce61"
+    },
+    "crates/native-security/src/storage/windows.rs": {
+      "canonical_git_sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f"
+    },
+    "crates/native-security/src/volume/mod.rs": {
+      "canonical_git_sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956"
+    },
+    "crates/test-support/Cargo.toml": {
+      "canonical_git_sha256": "0c85873065399ed81b5d31cce03ecf3c5ca98491ad3f63bca08386c53ce56177",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "0c85873065399ed81b5d31cce03ecf3c5ca98491ad3f63bca08386c53ce56177"
+    },
+    "crates/test-support/src/lib.rs": {
+      "canonical_git_sha256": "044accbbe9550b75b72b2cd4d9ac46c6b69348897635c4982cb21d454331c0de",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "044accbbe9550b75b72b2cd4d9ac46c6b69348897635c4982cb21d454331c0de"
+    },
+    "crates/test-support/src/process.rs": {
+      "canonical_git_sha256": "dd0333c783a27ad37880a6b9537ee6efa479df2bc404b0b59aa23455eb68a8e6",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "dd0333c783a27ad37880a6b9537ee6efa479df2bc404b0b59aa23455eb68a8e6"
+    },
+    "scripts/ci/windows-native-runner/Cargo.lock": {
+      "canonical_git_sha256": "4b0c75f5e0193c9e491b12ec5361a8834a35def9f21d5208dc4de1a32d11ddb5",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "4b0c75f5e0193c9e491b12ec5361a8834a35def9f21d5208dc4de1a32d11ddb5"
+    },
+    "scripts/ci/windows-native-runner/Cargo.toml": {
+      "canonical_git_sha256": "2dd231fee4d83e01148aa59be9ab6c815a1e2d99896d570e0e2d19e23fea5d53",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "2dd231fee4d83e01148aa59be9ab6c815a1e2d99896d570e0e2d19e23fea5d53"
+    },
+    "scripts/ci/windows-native-runner/src/actor.rs": {
+      "canonical_git_sha256": "f00bb1942551200fb620771c22da7dc75f2508ad976e5aa78234c7d47c7a02ca",
+      "lf_only": true,
+      "matches_git": false,
+      "validated_worktree_sha256": "5013bed7742435e34b34b9289be2ff294c6766c3f88005544bfad5b45f1e09d4"
+    },
+    "scripts/ci/windows-native-runner/src/actor/scm.rs": {
+      "canonical_git_sha256": "48acd4982b48d72ef457c70f2adc03623d8c237cc99257e4e71a95904280169b",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "48acd4982b48d72ef457c70f2adc03623d8c237cc99257e4e71a95904280169b"
+    },
+    "scripts/ci/windows-native-runner/src/evidence.rs": {
+      "canonical_git_sha256": "493eb278af854a1b9fa452804ddcadbda2305d9d8e93c37768bb28ae72607c93",
+      "lf_only": true,
+      "matches_git": false,
+      "validated_worktree_sha256": "56a7efee1ce4565a243779cab8e884c0f8a56d651a6faf54c737159990a9ecf3"
+    },
+    "scripts/ci/windows-native-runner/src/fixture.rs": {
+      "canonical_git_sha256": "a88b23b5034535dceb258e9c5d93e037c0f6ed423f873a7ee599217b68257743",
+      "lf_only": true,
+      "matches_git": true,
+      "validated_worktree_sha256": "a88b23b5034535dceb258e9c5d93e037c0f6ed423f873a7ee599217b68257743"
+    },
+    "scripts/ci/windows-native-runner/src/harness.rs": {
+      "canonical_git_sha256": "ccac1c0379a327e78d0885e92b648ab71ce2ba2e461dbc3a5d9b33c0504f0e54",
+      "lf_only": true,
+      "matches_git": false,
+      "validated_worktree_sha256": "26e3855c0b2cbbae30fb13c942cb0056e993e836b92e3bd15004785ebc960a27"
+    },
+    "scripts/ci/windows-native-runner/src/main.rs": {
+      "canonical_git_sha256": "9c55bb0727447aec376f0444ed746b56703bacd71593147c883991d4ef05a5b3",
+      "lf_only": true,
+      "matches_git": false,
+      "validated_worktree_sha256": "018802103ee74308f81283d9bfb90d5ffbf316f9bc5ed3bab0b9f714e7f53758"
+    },
+    "scripts/ci/windows-native-runner/src/pilot.rs": {
+      "canonical_git_sha256": "b32401b5c113df5079caca8c7844a24b6e93262798b052b463908df6f69d0d69",
+      "lf_only": true,
+      "matches_git": false,
+      "validated_worktree_sha256": "303bece2a72bcdcb61f79cf447b64a89918b88057a700384eed5e3b493399676"
+    },
+    "scripts/ci/windows-native-runner/src/service.rs": {
+      "canonical_git_sha256": "e517f96e4b44d935c6906f6c07c1ac4a3917720878c0169ed21a2151373185b9",
+      "lf_only": true,
+      "matches_git": false,
+      "validated_worktree_sha256": "b300a4044148a8ba953f46e1702f6220d496bc9b69de76d26d875467e5bdb4a5"
+    },
+    "scripts/ci/windows-native-runner/src/workspace.rs": {
+      "canonical_git_sha256": null,
+      "lf_only": true,
+      "matches_git": false,
+      "validated_worktree_sha256": "58b50132b7425fdf4985062bad8925dd7f61c9be2ccd8e9e55b31e755da9bfe5"
+    }
+  },
+  "passed_tests": 26,
+  "qualification": "implemented-workspace-component",
+  "raw_ignored_tests": 0,
+  "raw_report_sha256": "9659bb24dc8a6d721690d508fcce52445fcafe3af4a66acdaf228500074d1c00",
+  "required_harnesses": 73,
+  "runner_provenance": {},
+  "schema": "humanymous.workspace-probe-summary/1",
+  "scope": "workspace-default-features",
+  "skips": 0,
+  "source_manifest_sha256": "8bdc6e5058fadb76b5c3791843a9517d1b04d95b589a7f3c6cc8f3ed6ab7576c",
+  "source_sha": "89271d530f955ddee3b0a341d72b02f95c64695d",
+  "status": "failed",
+  "unsupported": null,
+  "validated_worktree_dirty": true,
+  "zero_test_harnesses": 1
+}
