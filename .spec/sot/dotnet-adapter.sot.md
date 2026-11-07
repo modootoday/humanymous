@@ -14,13 +14,30 @@ rel:
 
 ## Approved generic ABI-only startup flag (2026-11-07)
 
+Actual ABI owner's attempt2 restore/build returned0 with0warnings/errors on the
+corrected d799a126-required7inputs, unchanged before/after. This owner inspected
+its raw build/result manifests and independently verified managed DLL SHA256
+9e33b0202b064410e7490dd9edab42e22258c301f09a14c32fa794d137b19146. Raw evidence:
+evidence:root/20261107104057, managed-attempt-2. This FDD/JIT build disabled AOT
+analysis/publishing; no managed process or host executed.
+
+Root requested a reusable Rust caller in the already test-support-depending
+hosted test target. generic::actual_generic_abi_only_process now verifies strict
+prebuilt SDK/managed/native/source/support artifact inputs through stock OS
+hash tools, stages a bounded runtime closure, clears inherited environment and
+uses only shared capture_with_stderr for the actual direct child. It requires
+exit0/empty stderr/exact PID-bound two-frame receipt and checked staging removal.
+No SDK compilation, server, account, unsafe code or dependency is introduced.
+The helper and its pure frame/hash parser tests remain NOT_COMPILED/NOT_RUN.
+Exact environment/schema/selector/bounds are in owned INTEGRATION.md.
+
 The ABI owner's first actual FDD/JIT restore succeeded but managed build failed
 with two SYSLIB1051 aggregate marshalling diagnostics on GenericAbi.Invoke. No
 probe or server ran; that failed attempt remains in its private ABI bundle.
 Program.cs now declares assembly DisableRuntimeMarshalling as required by the
 source generator, plus the same safe assembly-directory search policy as the
-binding assembly. This corrective source is not compiled/run here; the ABI owner
-must rerun a separate attempt after the exact source checkpoint.
+binding assembly. The ABI owner's separate attempt2 compiled that correction;
+the first failure remains preserved and actual managed execution is still pending.
 
 Root explicitly requested a minimal startup continuation in the existing approved
 Program.cs only. generic_probe_only=true requires generic_probe=true and refuses
@@ -28,8 +45,8 @@ configuration; after GenericAbi.Probe actually succeeds and its existing receipt
 is emitted, the process returns0 before constructing HumanymousHost or Kestrel.
 Startup must be an object with unique known control fields; malformed/unknown/
 duplicate fields and wrong boolean types fail closed. Probe exceptions propagate
-to nonzero exit; a skipped probe cannot produce the success receipt. This new
-managed source is NOT_COMPILED/NOT_RUN. Rust ABI owner retains actual assertions;
+to nonzero exit; a skipped probe cannot produce the success receipt. This managed
+startup compiled in attempt2 but has NOT_RUN. Rust ABI owner retains actual assertions;
 no fourth C# file, manual loader, unsafe exception or manifest change is added.
 
 ## Narrow hosted component continuation (2026-11-07)

@@ -2,14 +2,23 @@
 
 ## Current approved continuation
 
-### Separate ABI-only managed startup, source not yet compiled/run
+### Separate ABI-only managed startup, FDD/JIT built and runtime pending
+
+Actual ABI attempt2 now restored/built with exit0,0warnings/errors; required
+d799a126 inputs stayed unchanged across7source hashes. Managed FDD/JIT DLL
+SHA256 is9e33b0202b064410e7490dd9edab42e22258c301f09a14c32fa794d137b19146.
+Raw ABI bundle evidence:root/20261107104057/managed-attempt-2 has actual logs,
+result and before/after manifests. This owner inspected them and independently
+rehashes the DLL. NativeAOT/IsAotCompatible analysis was disabled for that build.
+No managed probe/server process ran. The generic export DLL is a separate
+native ABI artifact, not the .NET facade; no full middleware result follows.
 
 ABI owner actual attempt1 restored successfully but build failed with two
 SYSLIB1051 diagnostics on GenericAbi.Invoke aggregate arguments/results. Its
 immutable logs remain failure evidence; no probe/server executed. Corrective
 Program.cs assembly attributes disable runtime marshalling and use the same
-safe assembly-directory DLL search policy as NativeBinding.cs. Rebuild in a
-new attempt from the corrective source checkpoint; do not overwrite attempt1.
+safe assembly-directory DLL search policy as NativeBinding.cs. Separate attempt2
+compiled it successfully; attempt1 remains unchanged failure evidence.
 
 Root authorized the minimum generic_probe_only flag in the existing approved
 Program.cs. Send exactly {"generic_probe":true,"generic_probe_only":true} on
@@ -21,8 +30,43 @@ The ABI owner supplies the separate real generic export DLL and Rust assertions;
 this is not .NET middleware/GC/AOT/package or C++ qualification. No new C# source,
 manual loader/unsafe exception/manifest change. Do not SDK publish/run until root
 assigns the heavy stage. The verified installed private SDK is available offline;
-there is still no published managed pilot artifact and NuGet restore may need
-the separately authorized package source/network stage.
+the attempt2 FDD build output is available, but self-contained publish and actual
+managed execution remain separately authorized stages.
+
+The prepared shared Rust caller is the existing hosted test binary's exact
+selector generic::actual_generic_abi_only_process. It reuses
+humanymous_test_support::process::capture_with_stderr; no new process supervisor,
+manifest/dependency, C# file or unsafe code. After root allocates compilation/run:
+
+```text
+cargo test --locked -p humanymous-dotnet-adapter --test hosted --no-run
+cargo test --locked -p humanymous-dotnet-adapter --test hosted -- --ignored --nocapture --exact generic::actual_generic_abi_only_process --test-threads=1
+```
+
+The supervisor sets HUMANYMOUS_DOTNET_GENERIC_INPUT to a bounded strict JSON file
+and HUMANYMOUS_DOTNET_GENERIC_REPORT_DIR to a new absolute private report directory;
+local profile also requires the explicit root-approved-local allocation marker
+and no forged hosted/ACT variables. JSON fields are source_sha/native_source_sha
+(40hex) and sdk, assembly, native_library, managed_source artifact objects,
+each with absolute path and64hex sha256, plus managed_support containing exactly
+Humanymous.HostPilot.deps.json, Humanymous.HostPilot.runtimeconfig.json and
+Humanymous.Native.dll artifact objects. SDK basename must be dotnet.exe on Windows
+or dotnet on Linux; assembly is Humanymous.HostPilot.dll, source is Program.cs,
+native library is the actual generic humanymous_native_abi_export DLL/SO. The
+supervisor retains actual build provenance; hashes alone do not create it.
+
+Stock OS digest tools verify every original and staged file, sharing one bounded
+parser with the package controller. The caller stages only those exact runtime
+files/native DLL, clears inherited environment and invokes the verified SDK host
+on the prebuilt assembly with only the two startup flags on stdin. No SDK build,
+authority/configuration/Kestrel/listener operation occurs. Artifact admission has
+a60second budget; actual process30seconds/4096bytes per stream. Require actual
+exit0, empty stderr, exactly starting+generic-native-abi frames, actual captured
+PID and the exact single probe receipt. Duplicate/unknown/surplus frames fail.
+Raw logs/status stay in new private files; the owned staging child is removed
+with a checked canonical parent. Public facts explicitly exclude .NET adapter,
+NativeAOT, C++ and full-product qualification. The new Rust helper/parser and
+shared stock-hash pure test are authored/format-checked only, NOT_COMPILED/NOT_RUN.
 
 ### Hosted ordinary actor handoff contract (prepared, not compiled)
 

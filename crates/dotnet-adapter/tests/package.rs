@@ -59,28 +59,9 @@ fn run(command: &mut Command, logs: &Path, stage: &str, timeout: Duration) -> Ve
     result.stdout
 }
 fn digest(path: &Path, logs: &Path, stage: &str) -> String {
-    #[cfg(windows)]
-    let mut command = {
-        let root = std::env::var_os("SystemRoot").expect("actual Windows system root");
-        let mut c = Command::new(PathBuf::from(root).join("System32/certutil.exe"));
-        c.arg("-hashfile").arg(path).arg("SHA256");
-        c
-    };
-    #[cfg(unix)]
-    let mut command = {
-        let mut c = Command::new("/usr/bin/sha256sum");
-        c.arg(path);
-        c
-    };
+    let mut command = support::artifacts::hash_command(path);
     let bytes = run(&mut command, logs, stage, Duration::from_secs(30));
-    let text = String::from_utf8_lossy(&bytes);
-    let hashes: Vec<_> = text
-        .lines()
-        .filter_map(|line| line.split_whitespace().next())
-        .filter(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
-        .collect();
-    assert_eq!(hashes.len(), 1, "one exact SHA256 result required");
-    hashes[0].to_ascii_lowercase()
+    support::artifacts::parse_sha256(&bytes).expect("one exact bounded SHA256 result required")
 }
 fn private_child(parent: &Path, name: &str) -> PathBuf {
     #[cfg(windows)]

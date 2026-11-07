@@ -1,4 +1,6 @@
 //! Explicit allocated real Kestrel/IPC/GC pilot; not in the default unit suite.
+#[path = "hosted/generic.rs"]
+mod generic;
 mod support;
 use humanymous_authority::{
     configuration::Configuration,

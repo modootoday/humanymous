@@ -7,10 +7,13 @@ An explicitly approved three-source C# candidate now supplies LibraryImport/
 opaque SafeHandle binding, ASP.NET middleware and the actual Kestrel pilot.
 The separate Rust export facade is pointer-free and consumes the shared native
 registry and authority. Candidate NuGet project metadata is present. These new
-managed sources are not yet compiled or executed; no managed host tuple is advertised.
+managed sources compiled in the ABI owner's Windows FDD/JIT build after an
+actual marshalling error was corrected; no managed process has executed and
+no managed host tuple is advertised. That build disabled AOT analysis/publishing
+and does not establish NativeAOT compatibility.
 Actual GC stress, NativeAOT linkage, clean package install and product gates are
 NOT_RUN. Do not install this as a qualified Kestrel protection package.
-The current Rust core/export component has 13 pure test passes plus all-target
+The earlier Rust core/export snapshot has 13 pure test passes plus all-target
 check and Clippy; that result does not qualify the managed host.
 
 The middleware must run first, before body readers, response writers and effects.
@@ -22,8 +25,9 @@ Run dotnet commands with adapters/dotnet as the working directory so that the
 SDK resolver finds this exact global.json. Actual host execution requires an
 explicit root allocation. The user authorized local Windows/WSL validation on
 2026-11-07. The benchmark quiet window ended; the next actual SDK/host stage
-requires its separate root allocation. Latest Rust all-target check/Clippy and
-13 pure tests passed; the package and hosted Rust runners are type-checked only.
+requires its separate root allocation. An earlier Rust snapshot passed all-target
+check/Clippy and 13 pure tests. The newer projection/generic caller helpers still
+require their own source-bound compilation/tests; older results do not cover them.
 The facade's Rust runtime is process-lived. Collectible assembly loading and
 explicit native unload/reload are unsupported; the binding rejects collectible
 contexts and does not manually load/free libraries. Zero request diagnostics do

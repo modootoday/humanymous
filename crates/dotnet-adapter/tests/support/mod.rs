@@ -1,4 +1,5 @@
 //! Explicit execution provenance for actual integration tests, never a security token.
+pub mod artifacts;
 pub fn execution_environment() -> &'static str {
     #[cfg(unix)]
     assert_ne!(

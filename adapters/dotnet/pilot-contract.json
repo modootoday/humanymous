@@ -1,8 +1,8 @@
 {
   "schema": "humanymous.dotnet-host-pilot/1",
-  "status": "source-authored-not-compiled",
+  "status": "windows-managed-fdd-jit-built-host-not-run",
   "runnable": false,
-  "reason": "Rust core/export and all-target host/package runners compile; actual managed SDK compilation and host execution remain pending",
+  "reason": "Approved managed sources built on Windows FDD/JIT after marshalling fix; actual host/GC/NativeAOT/package and new Rust helper preflight remain pending",
   "implementationOwner": "crates/dotnet-adapter",
   "abiOwner": "crates/native-abi",
   "runner": "explicit-root-allocation-or-free-standard-github-hosted",
