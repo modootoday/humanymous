@@ -18,10 +18,30 @@ pub enum TerminalFact {
     AllocationReleaseReady,
 }
 
+const REQUIRED: [TerminalFact; 6] = [
+    TerminalFact::SdkSettled,
+    TerminalFact::PopulationEmpty,
+    TerminalFact::RequiredReapsComplete,
+    TerminalFact::ReadersJoined,
+    TerminalFact::StopOperationsSettled,
+    TerminalFact::AllocationReleaseReady,
+];
+
 impl TerminalFact {
     fn bit(self) -> u8 {
-        1 << self as u8
+        match self {
+            Self::SdkSettled => 1,
+            Self::PopulationEmpty => 2,
+            Self::RequiredReapsComplete => 4,
+            Self::ReadersJoined => 8,
+            Self::StopOperationsSettled => 16,
+            Self::AllocationReleaseReady => 32,
+        }
     }
+}
+
+fn required_mask() -> u8 {
+    REQUIRED.iter().fold(0, |mask, fact| mask | fact.bit())
 }
 
 /// Symbolic execution outcome; clean teardown does not imply SDK success.
@@ -66,9 +86,10 @@ impl<Owner> Lifecycle<Owner> {
         }
     }
 
-    /// Borrow retained ownership, including after a failed observation.
-    pub fn owner(&mut self) -> &mut Owner {
-        &mut self.owner
+    /// Inspect retained ownership without allowing replacement through this API.
+    /// Interior-mutability identity changes remain forbidden by native adapters.
+    pub fn owner(&self) -> &Owner {
+        &self.owner
     }
 
     /// Record a separately established terminal obligation.
@@ -82,8 +103,10 @@ impl<Owner> Lifecycle<Owner> {
         self.cleanup_required = true;
     }
 
-    /// Request cleanup from any started state, without consuming ownership.
+    /// Request cleanup without consuming ownership; prior terminal facts expire.
+    /// Repeated requests cannot extend deadlines (owned by the future adapter).
     pub fn require_cleanup(&mut self) {
+        self.facts = 0;
         self.cleanup_required = true;
     }
 
@@ -101,7 +124,7 @@ impl<Owner> Lifecycle<Owner> {
 
     /// Return the SAME owner on every incomplete terminal conjunction.
     pub fn finish(self) -> Result<Terminal<Owner>, Self> {
-        if self.facts != 0b11_1111 {
+        if self.facts != required_mask() {
             return Err(self);
         }
         Ok(Terminal {
@@ -116,15 +139,6 @@ mod tests {
     use super::*;
     use std::{cell::Cell, rc::Rc};
 
-    const FACTS: [TerminalFact; 6] = [
-        TerminalFact::SdkSettled,
-        TerminalFact::PopulationEmpty,
-        TerminalFact::RequiredReapsComplete,
-        TerminalFact::ReadersJoined,
-        TerminalFact::StopOperationsSettled,
-        TerminalFact::AllocationReleaseReady,
-    ];
-
     struct Owner(Rc<Cell<usize>>);
     impl Drop for Owner {
         fn drop(&mut self) {
@@ -134,17 +148,17 @@ mod tests {
 
     #[test]
     fn every_missing_fact_returns_actual_owner_without_dropping_it() {
-        for missing in FACTS {
+        for missing in REQUIRED {
             let drops = Rc::new(Cell::new(0));
             let mut state = Lifecycle::retain(Owner(drops.clone()));
-            for fact in FACTS {
+            for fact in REQUIRED {
                 if fact != missing {
                     state.observe(fact);
                 }
             }
-            state.require_cleanup();
             let mut retained = state.finish().err().expect("missing obligation");
             assert_eq!(drops.get(), 0);
+            retained.invalidate(missing);
             assert!(retained.cleanup_required());
             let _ = retained.owner();
             retained.observe(missing);
@@ -158,14 +172,14 @@ mod tests {
 
     #[test]
     fn all_sixty_four_fact_combinations_require_the_full_conjunction() {
-        for mask in 0_u8..64 {
+        for mask in 0_u8..=required_mask() {
             let mut state = Lifecycle::retain(());
-            for fact in FACTS {
+            for fact in REQUIRED {
                 if mask & fact.bit() != 0 {
                     state.observe(fact);
                 }
             }
-            assert_eq!(state.finish().is_ok(), mask == 63);
+            assert_eq!(state.finish().is_ok(), mask == required_mask());
         }
     }
 
@@ -174,12 +188,21 @@ mod tests {
         let mut state = Lifecycle::retain(String::from("private owner"));
         state.require_cleanup();
         state.require_cleanup();
-        for fact in FACTS {
+        for fact in REQUIRED {
+            state.observe(fact);
+        }
+        state.require_cleanup();
+        let mut state = state
+            .finish()
+            .err()
+            .expect("new cleanup invalidates old facts");
+        for fact in REQUIRED {
             state.observe(fact);
         }
         state.invalidate(TerminalFact::ReadersJoined);
         let mut state = state.finish().err().expect("reader unknown");
-        assert_eq!(state.owner(), "private owner");
+        let inspect: fn(&Lifecycle<String>) -> &String = Lifecycle::owner;
+        assert_eq!(inspect(&state), "private owner");
         state.observe(TerminalFact::ReadersJoined);
         assert!(state.finish().is_ok());
     }
@@ -189,7 +212,7 @@ mod tests {
         let mut state = Lifecycle::retain(());
         state.execution(Execution::Failed);
         state.execution(Execution::Succeeded);
-        for fact in FACTS {
+        for fact in REQUIRED {
             state.observe(fact);
         }
         assert_eq!(state.finish().ok().unwrap().execution, Execution::Failed);

@@ -215,3 +215,74 @@ authority (P1), and abnormal startup transitions (P1). These are requirements ab
 not resolved native results. Root selected systemd as the Linux candidate. Exact
 safe D-Bus/IO/recovery-supervisor APIs and actual host probes remain required before
 implementation acceptance. Windows Job and .NET actor review remain separate.
+
+## v0.3 candidate: immutable Linux validation and D-Bus edge review
+
+Root authorized pure model and read-only inventory code, not a native backend.
+20cdc325 Windows evidence remains historical: 4+2 pure passes. Python found a P1
+mutable owner replacement seam afterwards. The next candidate exposes only
+`owner(&self) -> &Owner`; no mutable replacement accessor exists. Interior
+mutability cannot be a native identity-changing escape hatch. Required facts and
+terminal mask now share one inventory, and the regression has a read-only getter
+function-type assertion. The prior six-test result does not validate this revision.
+
+The fixed `linux_tree_inventory` example accepts no arguments, calls only inspect,
+and emits closed schema/status/enums with backend_qualified=false. No subprocess,
+service, unit or bus request occurs. Exit0 means inventory emitted, never supported.
+Prepare an immutable committed source snapshot with unchanged root graph/lock,
+then separately run all-target check, exactly tree_lifecycle4/linux_tree_probe2,
+and this example on allocated native Linux. Record exact source closure before/
+after, compiler/venue and each footer. Windows cannot qualify Linux cfg. Root
+allocates the target and host; no Docker daemon or privileged launcher is selected.
+
+Proposed NEW Linux-only optional workspace edge (NO manifest edit): exact
+`zbus = "=6.2.1"`, default-features=false, features=["tokio", "proxy"], behind
+an explicit test-support feature. Reuse workspace Tokio1.54.1. Root must inspect
+resolved lock/transitives/MSRV/security and feature unification first; no separate
+zvariant/dbus/C-FFI dependency is proposed. This pin is a review candidate, not a
+compiled or available lock entry. Latest rendered primary documentation identifies
+6.2.1; exact-version URL retrieval failed, so source/package checksum verification
+is required in Root's integration window.
+
+zbus documents client-only proxy/runtime selection and an owned UnixStream builder,
+method timeout and queue limits. Prefer explicit fixed system-bus Unix socket,
+Tokio-bounded connection/authentication and no environment-selected bus address.
+No default-rt/service/object-manager/tracing/unixexec/ibus features are requested.
+No shell, helper process, ambient session bus or authentication prompt fallback.
+See [zbus runtime/features](https://docs.rs/zbus/latest/zbus/),
+[feature inventory](https://docs.rs/crate/zbus/latest/features), and
+[builder](https://docs.rs/zbus/latest/zbus/connection/struct.Builder.html).
+
+First separately authorized implementation would only query org.freedesktop.DBus
+GetNameOwner for org.freedesktop.systemd1, authenticate the system connection,
+and read typed Manager Version/Features without activating a missing manager.
+Pin the unique owner, connection and boot identity; watch NameOwnerChanged and
+fail closed on loss. No StartTransientUnit, RefUnit, StopUnit or Polkit action in
+this read-only step. Exact message flags must forbid auto-start and interactive
+authorization. Noninteractive authorization availability remains Unknown until a
+reviewed nonmutating mechanism exists; version/read success cannot prove it.
+
+Future retained invocation needs typed Manager StartTransientUnit/RefUnit/UnrefUnit,
+Unit InvocationID/ControlGroup/state, JobRemoved correlation and exact stop-job
+ownership. The systemd reference documents these objects; see
+[systemd D-Bus API](https://freedesktop.org/software/systemd/man/latest/org.freedesktop.systemd1.html).
+This is an API inventory, not permission to call them. Prove that a retained unit
+reference plus manager ownership prevents replacement-invocation stop races, or
+return Unsupported: a check InvocationID then StopUnit(name) sequence is not an
+atomic capability by itself. Manager restart/reexec/reconnect behavior needs a
+separate failure proof. Never silently reconnect and adopt a same-named unit.
+
+Remaining D-Bus gates: actual preallocation message byte/depth/FD bounds (queue
+count is not a byte cap); absolute connect/auth/call deadlines and cancellation;
+bounded signal loss detection; borrowed/owned FD lifetimes; async connection and
+reader shutdown; no raw remote errors in diagnostics. Postdecode string limits
+alone cannot establish bounded parser allocation. Retained cleanup supervisor,
+executable-object launch binding, manager/watchdog semantics, native permissions
+and descendant reaping remain unaccepted. No dependency is added to bypass them.
+
+.NET review additionally requires an empty-capable retained cleanup owner BEFORE
+the first fallible OS mutation, not only after a child exists. Every cleanup
+request conservatively invalidates ALL prior terminal facts in the pure model;
+the partial-start regression checks failed finish before fresh observations.
+Native deadlines remain adapter-owned and cannot reset. Terminal cleanup still
+returns failed/Unknown execution separately and never implies success.
