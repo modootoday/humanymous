@@ -346,3 +346,37 @@ fixture, or qualify training/cohort/RNG/activation/product/system-SDK closure.
 Private model-reducer-actual-review-001.json SHA256
 f66eddfde27c0ed587596ec74fcdd21d3e9c9b1b73c9c13ef732ec86a24690cb.
 No compiler, runtime, SDK, service or Docker workload was executed by this audit.
+
+## Browser continuation, retained startup and resource boundary review
+
+Browser7e0c7b01 keeps only live pending exact typed main-frame CURRENT_TAB work
+under the same ticket; open_continued is admission, never commit/content. Its
+source and assertion leaves bind literal Git bytes. Same-route old engine start,
+end, error and open callbacks lack original generation identity. The owner now
+explicitly documents this limitation and adds an unresolved-behavior reproducer;
+it is not an isolation proof or the established cause of the first GUI failure.
+No new actual desktop tests or GUI requalification were observed in this review.
+
+Runtime retained startup review binds six leaves: boxed resources remain the
+same allocation across consuming failure; guard field drops before resources,
+synchronously revoking Authority. NativeProof remains uninhabited and native
+preparation Unsupported; snapshots/retained failures cannot construct Ready.
+Poison fails closed, first loss persists, and pure stop-budget slack is not
+blocking I/O supervision, monitor join, audit flush or service qualification.
+
+Additional session/Watermark/Lab review binds eleven source leaves with explicit
+partial-read scope. Authenticated quota refusal consumes the counter and retains
+browser ACK. The monotonic one-second quota is not scoring or a concurrency gate.
+Watermark reservations consume unique IDs, share pending capacity and cancel on
+failure; TTL is checked on lookup and poison recovery only removes pending data.
+Runtime issuance/trace/auth/audit and periodic physical retention remain separate.
+No new confirmed violation was identified in those reviewed production methods.
+
+Lab receipt2ddd4b4c at b4fdbc38 independently has18 matching private attachments,
+exact28/0/0ignored/0filtered footer and four command exits0. Full before/after
+source2788, registry3172 and config24 records match. Its finite classifier chooses
+one exact pinned source-reported line, refuses ambiguity and projects scalars;
+missing/invalid/capture failures remain unknown. This is not actual browser-cause,
+witness, Docker, prefix or product qualification. Archive Git membership remains
+unverified here. No audit workload executed. Private review hashes are attached
+in baseline.json; the source-bound records are not a global coverage percentage.

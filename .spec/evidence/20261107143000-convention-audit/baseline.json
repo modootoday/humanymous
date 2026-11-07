@@ -504,5 +504,20 @@
     "model_filtered_tests": 17,
     "model_closure_records": 1498,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_browser_runtime_watermark_lab": {
+    "private_review_sha256": {
+      "session-watermark-lab-review-001.json": "8cca2bcfaadad910406d440c99eb12b7239350bd0a3da948dd1aba3336e5b2ce",
+      "browser-continuation-source-review-001.json": "deb9108cda6f9093b390069816d345457502c641e9cf6ee5243a3968d8f25b04",
+      "runtime-retained-startup-source-review-001.json": "87129ac1cec93e6e65b402153a1628254b6ed337886e7d471b4c5f3c94ea4f5b"
+    },
+    "browser_continuation_source_commit": "7e0c7b01833aa8f5c7ce973a081f9341ec1ab183",
+    "browser_same_route_attribution_resolved": false,
+    "browser_gui_requalified": false,
+    "lab_actual_pure_tests": 28,
+    "lab_private_attachments_verified": 18,
+    "runtime_native_preparation_qualified": false,
+    "watermark_runtime_issuance_qualified": false,
+    "new_audit_runtime_workloads": 0
   }
 }
