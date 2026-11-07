@@ -318,19 +318,25 @@ pub fn pins(root: &Path) -> Result<()> {
         }
     }
     let mut reports = Vec::new();
-    for action in actions {
+    let total_actions = actions.len();
+    for (index, action) in actions.into_iter().enumerate() {
         let (name, sha) = action.rsplit_once('@').ok_or("bad action")?;
         let parts: Vec<_> = name.split('/').collect();
-        let commit: Value = serde_json::from_str(&command::text(
-            root,
-            "gh",
-            &[
-                "api",
-                &format!("repos/{}/{}/commits/{sha}", parts[0], parts[1]),
-            ],
-        )?)
+        // These are public upstream resources. Do not attach the repository's
+        // installation token: upstream organization IP rules can reject that
+        // authenticated identity even though the public commit is readable.
+        let body = ureq::get(&format!(
+            "https://api.github.com/repos/{}/{}/commits/{sha}",
+            parts[0], parts[1]
+        ))
+        .header("User-Agent", "humanymous-delivery")
+        .header("Accept", "application/vnd.github+json")
+        .call()
+        .map_err(|e| format!("public action commit lookup {}/{total_actions} failed for {action}: {e}; no authenticated fallback or automatic retry", index + 1))?
+        .body_mut()
+        .read_to_string()
         .map_err(|e| e.to_string())?;
-        require(commit["sha"] == sha, "action commit identity mismatch")?;
+        verify_public_commit(&body, sha)?;
         let suffix = if parts.len() > 2 {
             format!("/{}/", parts[2..].join("/"))
         } else {
@@ -362,6 +368,14 @@ pub fn pins(root: &Path) -> Result<()> {
     println!("{}", json!(reports));
     Ok(())
 }
+
+fn verify_public_commit(body: &str, expected_sha: &str) -> Result<()> {
+    let commit: Value = serde_json::from_str(body).map_err(|e| e.to_string())?;
+    require(
+        commit["sha"] == expected_sha,
+        "action commit identity mismatch",
+    )
+}
 pub fn jobs(raw: &str) -> Result<()> {
     let value: Value = serde_json::from_str(raw).map_err(|e| e.to_string())?;
     let jobs = value.as_object().ok_or("aggregate must be an object")?;
@@ -373,6 +387,19 @@ pub fn jobs(raw: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn public_commit_json_requires_exact_identity() {
+        let sha = "ed142fd0673e97e23eac54620cfb913e5ce36c25";
+        assert!(verify_public_commit(&json!({"sha":sha}).to_string(), sha).is_ok());
+        for body in [
+            "not json".to_owned(),
+            json!({"sha":"moving-tag"}).to_string(),
+            json!({"message":"API rate limit exceeded"}).to_string(),
+            json!({"sha":null}).to_string(),
+        ] {
+            assert!(verify_public_commit(&body, sha).is_err());
+        }
+    }
     #[test]
     fn yaml_boolean_keys_follow_yaml12() {
         assert!(

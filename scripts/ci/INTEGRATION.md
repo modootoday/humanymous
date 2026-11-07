@@ -95,3 +95,11 @@ workspace retry still rejects durable_witness9 nested child summaries despite
 process exit0. Audit producer repair and a new exact-source execution remain
 required. Separate source91f93 native release reports14/14harness67passed,
 errors0,requiredignored1,blocked2; this does not qualify the whole workspace.
+
+First free hosted42347732666/attempt1/bfc9f623 is terminalfailure:22deliverytests
+andpolicy pass, token-authenticated upstream aquasecurity commitlookup HTTP403
+orgIPallowlist. Raw private joblogSHA256
+d190ced6d26602aaea7aa49d7e758c2cf847f148399ec1d6eebe4b75788ca0c3.
+Follow-up public unauthenticated lookup preserves exactSHA+entrypoint assertions,
+HTTPerrorsfailclosed,unique-action denominator and no retries. Corrected source
+is separate from that failed run; root alone starts the next hosted batch.

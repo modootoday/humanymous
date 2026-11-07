@@ -183,6 +183,28 @@ compute/cache/artifact use by this branch run, not a guarantee of zero total
 personal/organization charges or zero third-party inference costs. Hosted
 confirmation of no cache/artifact writes remains pending the first actual run.
 
+First hosted run42347732666/attempt1/source
+bfc9f62335ae41906996c6b01b0ae9e7993feeed completed failure. Delivery22 tests and
+workflow policy passed; action-pins failed on authenticated public aquasecurity
+commit lookup with organization IP allow-list HTTP403. The required lanes stayed
+not_run and ready rejected their skipped outcomes. No successful runtime claim.
+Public artifact API reported0; cache inventory contained3 older entries with
+creation/access before this run, not evidence of new cache writes. This policy
+failure did not exercise Trivy/Buildx/Bun, so their disabled storage behavior is
+still not_run. Root retains the original run/job logs privately.
+
+Follow-up pin contract: use unauthenticated public GitHub commit REST and exact
+SHA-addressed public raw action metadata, no repository installation token.
+GitHub documents public Get-a-commit as authentication-optional:
+https://docs.github.com/en/rest/commits/commits#get-a-commit . This is a public
+resource least-privilege path, not authenticated fallback or an upstream IP-rule
+change. Exact40SHA identity and runs entrypoint checks remain mandatory; HTTP403,
+quota/network failures, invalid JSON, missing/mismatched SHA all fail closed.
+Keep unique-action deduplication, report lookup index/total on failure, no retry
+loop or paid fixed-IP service. Shared-host unauthenticated quota is a stability
+limitation. Local read-only direct public commit+raw metadata lookup succeeded;
+the corrected hosted source still requires its own actual run.
+
 Accepted for implementation by the explicit parallel-completion request on
 2026-11-07 KST. New authored implementation/tests use Rust1.99.1/edition2024.
 The existing upstream action/Jekyll/theme/generated glue and frozen legacy

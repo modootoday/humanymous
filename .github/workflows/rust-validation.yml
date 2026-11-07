@@ -29,8 +29,6 @@ jobs:
     - run: cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- action-pins
-      env:
-        GH_TOKEN: ${{ github.token }}
     - run: 'go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.11
 
         "$(go env GOPATH)/bin/actionlint" -shellcheck=""'

@@ -12,6 +12,17 @@ rel:
 
 ## Scope and order
 
+First actual free-hosted run42347732666 attempt1 bfc9f623 completedfailure:
+22deliverytests/policy passed, action-pins authenticated aquasecurity public
+commit API HTTP403 due orgIPallowlist. Heavy lanes not_run/ready failed asrequired.
+Follow-up removes GH_TOKEN from pin lookup and validates exact public commit
+identity with unauthenticated HTTP, retaining all failure/security gates and
+deduplication; no retry or paidfixedIP. Root confirmed this least-privilege design.
+After no active Cargo and ~32GiB physical available were observed, bounded pure
+policy units use buildjobs1; no localruntime/Docker. Corrected hosted runpending.
+Bounded policy7unitspassed,16unrelatedtestsfiltered explicitly; rustfmt,
+actionlint and diffcheckpassed. Do not call the full23test suite executed here.
+
 Latest authorization supersedes design-only remote restriction: apply free
 standard public hosted validation; root alone integrates/pushes/starts first run.
 Existing workflows now serialize heavy validation, pin Ubuntu24.04, disable
