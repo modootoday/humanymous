@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T19:22:05Z
+updated: 2026-11-07T19:32:44Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -47,6 +47,9 @@ files:
   - {path: frozen-archive-byte-followup.json, sha256: db60b2ea4b618cdcb0ae4420d7239b03716895a6e12ca96fb307e55de062f545, bytes: 1461, store: repo}
   - {path: browser-e70-independent-consumption.json, sha256: 5c1dc2ab11e7dd0dc726196c984e46f15eb420ec7fbb09ddba9cf1f4b387933b, bytes: 1000, store: repo}
   - {path: two-lane-source-audit.json, sha256: d38a6ecb4acd3568fc0a8384bb27a4120fd19620595ed8a1307f8631c01b826a, bytes: 3909, store: repo}
+  - {path: go-facade-local-consumption.json, sha256: bb22f9b95eed2d0ebd241e669aebe864abb39e772be2519d0b931b8618cbc85e, bytes: 1677, store: repo}
+  - {path: go-facade-c858b1dc-binding.json, sha256: 497776ea17fb3a49d90a529ed38fb6ec0cc765e9a954de8a88900a3760710c9a, bytes: 14278, store: repo}
+  - {path: private-root-plan-review.json, sha256: a6bbfc23069673d2f2444b1a70c289d38d3d5352cd16f3f8e540d3ea5f3ac794, bytes: 5078, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up

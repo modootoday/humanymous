@@ -1,0 +1,35 @@
+{
+  "schema": "humanymous.delivery-go-facade-local-consumption/1",
+  "validation_record_sha256": "2d7bfbc9bb3525a2afa8affbd335fdf8066913ac53f8ef37cdc91c113cf71fff",
+  "before_snapshot_sha256": "131b06492127c3ea8bf2b33de3a98f0e1c8222e61eb02123fbf1b5df01c03e7f",
+  "after_snapshot_sha256": "131b06492127c3ea8bf2b33de3a98f0e1c8222e61eb02123fbf1b5df01c03e7f",
+  "raw_evidence_prefix": ".spec.local/root/evidence/20261106194410-rust-migration-local-runs/go-facade-01-",
+  "phase_count": 11,
+  "nonzero_exits": 0,
+  "tests": {
+    "leaf_unit": 10,
+    "leaf_deployment_contract": 1,
+    "facade_default_library": 2,
+    "facade_default_disabled_consumer": 0,
+    "facade_go_library": 2,
+    "facade_go_consumer": 2,
+    "delivery": 110,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "closure": {
+    "selected_files": 3004,
+    "nested_target_files": 2917,
+    "non_target_files": 87,
+    "difference_records": 0,
+    "workflow_rows": 0,
+    "final_policy_sha256": "7e3dda0d86c1ee7456eac5c21c484b191cfa8a81cfd4eda52ac952e95ed110ed",
+    "scope": "facade, Go leaf, runtime actor, Delivery and root Cargo/lock/toolchain; not full transitive/tool attestation; workflows have separate delegated hashes"
+  },
+  "timing_correction": "Initial in-flight drift concern was an inference. Actual BEFORE already includes final policy and AFTER is identical. No rerun justified.",
+  "scope": "Independent consumption of local Windows working-byte validation before atomic commit; not exact committed-source, Unix hosted, real Go host, image, publication or product qualification",
+  "compiler_repeated": false,
+  "exact_commit_qualified": false,
+  "full_product_qualified": false
+}

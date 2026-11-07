@@ -1,0 +1,51 @@
+{
+  "schema": "humanymous.delivery-private-root-review/1",
+  "plan": ".spec/plan/20261107194000-cross-os-runners-user-private-root.plan.md",
+  "plan_sha256": "cd0f23931ddeaa7311a0cd51d94afcbb30004d2dae5f21609a205d4ac406f343",
+  "verdict": "needs-work",
+  "scope": "Read-only design and existing safe bridge review; no directory, ACL, SCM, account or compiler operation",
+  "findings": [
+    {
+      "priority": "P0-decision",
+      "finding": "Freeze one creation-safe ACL/owner rule for the full selected ancestor chain, not only the immediate parent.",
+      "evidence": "Parent rule3 names immediate-parent ownership; rule5 retains ancestors but does not yet specify their owner/ACE decision table. Denying delete-sharing does not itself freeze DACL contents.",
+      "local_scenario": "A non-TCB ancestor owner or WRITE_DAC grant can change path permissions during an attempt even if a held handle preserves an object's identity. A trusted TCB/same-SID ceiling may exclude this, but it must cover the whole selected chain.",
+      "minimum_delta": "Name the trust anchor and required chain. At each policy-covered node require actual SID/SYSTEM/BA ownership and no foreign mutation/WRITE_DAC/WRITE_OWNER/DELETE/DELETE_CHILD/create/write allow grants. Any narrower ancestor exception needs an exact accepted premise; otherwise refuse. Do not silently admit TrustedInstaller or broaden TCB to make an observed layout pass."
+    },
+    {
+      "priority": "P0-decision",
+      "finding": "Turn unresolved ACE cases into a closed table before implementation.",
+      "evidence": "The draft explicitly defers deny/inherit-only/CreatorOwner handling and generic-right ambiguity.",
+      "minimum_delta": "Conservative first profile: reject deny, inherit-only, CreatorOwner, object/callback/conditional/unknown ACEs and unknown flag/mask bits; permit only enumerated read/traverse masks to outsiders, concrete mutation masks only to accepted TCB. If accepting inherited ordinary allow ACEs, evaluate their actual current-object SID/mask and enumerate allowed inheritance flags; never infer access from account names. OI/CI flags do not compensate for foreign WRITE_DAC or DELETE_CHILD."
+    },
+    {
+      "priority": "P1",
+      "finding": "Freeze exact child-handle/close/remove/absence semantics and receipt vocabulary.",
+      "evidence": "CreatedDirectory contains only a locator; std::fs::File Drop does not return a checked native close status. The draft promises retained close errors and actual held handles closed without identifying an existing safe checked-close API.",
+      "minimum_delta": "Choose one ordered sequence with share/access modes and retained failure fields. Distinguish consuming/dropping owned Rust File values, successful remove call, and post-removal absent-name observation. Do not label Drop as an observed CloseHandle success or absence as proof that no other handle exists. Any stronger checked native operation would require its separately reviewed boundary."
+    },
+    {
+      "priority": "P1",
+      "finding": "Before a positive pilot, identify one eligible creation-safe layout and an outer pending-call/cleanup accounting path.",
+      "minimum_delta": "Read-only native owner/ACE/provider/identity observations must establish the selected trust anchor/ancestors; supported eligibility is not inferred from UserProfile, C: or a supervisor-created final parent. Parent must know the bounded suffix/path and original clocks before the actor enters CreateDirectoryW. If actor/kernel-call outcome or child identity is unavailable, retain Unknown rather than manufacture NotCreated/cleanup success; Job0 alone is not root absence."
+    },
+    {
+      "priority": "P2",
+      "finding": "Specify suffix syntax without nonzero-nibble ambiguity.",
+      "minimum_delta": "Use exactly32 ASCII [0-9a-f] characters with the all-zero value rejected, if that is the intended rule; individual zero nibbles should not be accidentally forbidden. Approved entropy remains separate."
+    }
+  ],
+  "accepted_residuals": [
+    "CreateDirectoryW locator-to-open and close-to-path-delete gaps may be accepted only under the explicit creation-safe chain and same-SID/privileged-OS ceiling.",
+    "Existing-target collision remains refusal; no existing ACL repair or blind path deletion.",
+    "Actual ordinary actor create/readback/file write-read/explicit cleanup/absence and outer Job0 remain required; pure source/model success is not that pilot.",
+    "Header storage is distinct from DATA/NativeProof, authority factory and full product readiness."
+  ],
+  "primary_sources": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw",
+    "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw",
+    "https://learn.microsoft.com/en-us/windows/win32/fileio/file-access-rights-constants",
+    "https://learn.microsoft.com/en-us/windows/win32/secauthz/ace-inheritance-rules",
+    "https://doc.rust-lang.org/std/fs/struct.File.html"
+  ]
+}
