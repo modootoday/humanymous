@@ -1861,5 +1861,22 @@
     "lab40": "40exactinventory/actual;24rawhashsize;14913snapshotsbyteequal;3107ZIP/Git/snapshotexact;WindowsMSVC only, GNU3NOTRUN",
     "environment": "Versionstringsequal; aftertoolsomitsenv, fullreadclosureunproven",
     "goal_complete": false
+  },
+  "gnu_journal_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/gnu1f2-actual-review-001.json",
+        "sha256": "d75cb716eabc1b0267740534154f52516c6a01d58542b15c17dce559b483194a",
+        "bytes": 2076
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/journal-protocol-codec-critique-001.json",
+        "sha256": "e9e97d8b735ee62356b201bbb23a741f9b27fda5225ff7a05bf0e890de6ea0ad",
+        "bytes": 3088
+      }
+    ],
+    "gnu": "Source1f2completedpreflight3pureproducerpassed/6filtered;fresh102412Blogbyteequalofficial;Lab40Delivery121separate",
+    "journal": "Sourceonly3plansarithmeticconsistent; conditionaldesign noP0P1 identified; P2closedtransitiongrammarrequestedbeforecode; actualnative/API/installerunqualified",
+    "goal_complete": false
   }
 }

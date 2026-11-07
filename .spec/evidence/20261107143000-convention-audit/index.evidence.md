@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 71c5f5284dc7a6e810927315c4430f60d0c9f7ef8ec6d09559930e08f8f44207, bytes: 103009, store: repo}
+  - {path: baseline.json, sha256: 556a7d23a72baf4c77a4a7f034d52f12c60ddc4cf7b4a24011e7a333172c08f2, bytes: 103872, store: repo}
 ---
 
 # Convention audit baseline
@@ -1494,3 +1494,35 @@ closure is unproven. Full compiler/config/loader closure remains unproven.
 No audit compiler/native/Docker workload was launched. Lab remains sole monitor
 for the newer run42423423776; its outcome is not inferred here. Whole-migration
 qualification and remaining convention findings stay OPEN.
+
+## Independent GNU producer execution and journal protocol critique
+
+Completed GNU preflight job128556526237/run42423423776/attempt1 was fetched
+independently. Its102412-byte log hashes50a04d1db5af37ae5645935bb0eb2ea6dc8ed93c74f4063c525fa9074f45a29a
+and is byte-equal to retained official evidence. All completed job steps succeed.
+Source1f2b9a93 is checked out; three exact browser_proxy producer units pass with
+six other runtime-pilot tests filtered. Separate actual footers include Lab40
+and Delivery121. These are GNU pure producer tests, not whole runtime-pilot or
+browser product success. No product-job watch was duplicated; Lab owns it.
+
+The supervisor journal, separate Platform amendment and bounded codec proposals
+were source-reviewed. Framing4096, caps26, reserve charge14, maximum genesis1404,
+reserve1440, terminal130 and130 total genesis/reserved frames are consistent.
+No concrete P0/P1 was identified at this design scope. Native identity, durable
+ACK, live budget and cleanup remain unavailable from parser DATA; cold restart
+is inert. Installer/genesis, O association and actual native provider remain
+required. The proposed eleven new unsafe scopes are unapproved proposals; the
+existing six-wrapper policy remains unchanged. This is not an ABI/lifetime review
+or implementation/native qualification.
+
+P2 refinement sent to Native and Root before codec implementation: add one CLOSED
+per-attempt transition/commit-adjacency table plus negative DATA tests for
+CreatedHeld before CreatePending, duplicate CreatedHeld, CreatePending after
+Unknown/terminal, Unknown after terminal, and second intent while pending. Current
+kind payloads and partial ordering should not become an ambiguous replay grammar.
+This request concerns claim consistency, not a forged native-authority claim.
+Conditional bounded-design readiness does not close that requested refinement.
+
+No audit compiler/SDK/native/Docker workload ran. Full migration and all remaining
+product/native/consumer gates stay OPEN. Exact source/private hashes are retained
+in baseline.json.
