@@ -40,7 +40,7 @@ receipts qualify their exact inputs, not the final migration candidate.
 | Authority | Source2ca6e4fa plus Network306eedc8 passed22 pure tests/check/strict Clippy/fmt;4632 selected inputs unchanged, receipt14ad4378. First dependency compile failure retainedd3e03749 | Real authenticated native/provider/IPC integration remains required; no key OS read, account or production Ready qualification |
 | Runtime and model | Runtime temporal composition and next deterministic model kernel assigned within existing owners; source preparation only | No readiness/scoring activation or new test success inferred; actual lower-provider contracts and full original parity scope retained |
 | Pages | Public input5341a880 remains a separate prepared candidate; later source-review batches do not constitute rendering | Fresh both-baseurl render, link/browser/AT validation, final-source reconciliation and approved main deployment remain |
-| Dedicated wargame | d6b24b76 authors strict dedicated caller; its policy is included in the90-test component batch | Root exact candidate push/dispatch review, actual generic26 run and full failure/unsupported accounting still required |
+| Dedicated wargame | Exact306eedc8 targeted attacker17/defender9 tests and selected check/strict Clippy passed. Root pushed this literal commit ONCE to codex/wargame-validation; remote SHA matched. Push-triggered CI/Wargame42387564172 is observed IN_PROGRESS | Actual hosted preflight, generic26 Docker result and full failure/unsupported accounting remain pending; no duplicate manual dispatch or product success inferred |
 
 The initial allocation admitted four one-job local pure owners; terminal
 Browser/Delivery slots were returned before Lab/Authority allocation. The user's
