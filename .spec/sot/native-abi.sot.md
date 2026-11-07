@@ -16,7 +16,8 @@ Version0.2. Root authorized the safe Rust ownership foundation and subsequently
 accepted one narrow export exception on2026-11-07: #[unsafe(no_mangle)] only on
 the pointer-free by-value Command->Response entrypoint in a separate tiny export
 crate. Raw-pointer shim, unsafe blocks/functions, dynamic-loader unsafe and
-authored foreign host glue are not authorized. Shared scoring, authority,
+authored foreign host glue are not authorized within this owned slice; separately
+approved managed host glue belongs to the .NET owner. Shared scoring, authority,
 cryptography and policy stay owned
 by their existing crates; this crate must not duplicate their implementations.
 
@@ -156,7 +157,13 @@ records, four sizes, four alignments and seventeen named field offsets. These
 counts are separate from the25pure unit denominator. Partial files or a generated
 header alone never authorize success. Actual dynamic loading and C++ runtime
 behavior stay separate gates. Root alone pushes/dispatches the next candidate;
-source generation and Clang execution occur hosted, with no local heavy install.
+the currently implemented header profile is hosted and no local heavy tool
+installation has run. Later user authorization permits actual local Windows/WSL
+validation under root allocation, but the benchmark quiet window currently
+forbids new execution. A future local header profile must identify the actual
+local runner and cannot spoof GitHub environment variables to bypass the current
+hosted guard. Root's measured execution-policy decision and explicit allocation
+precede new local commands.
 
 ## C++ contract
 
@@ -192,7 +199,9 @@ Actual allocator failure injection remains not_run. These are component units;
 the header example's main program did not execute. Header generation, hosted
 C/C++ compiler/layout execution, actual dynamic ABI, C++ RAII/exception/allocator
 host behavior, cross-OS runtime and full product Docker e2e are not_run.
-No local product process/Docker/browser execution is authorized here.
+Actual local validation was subsequently user-authorized, but this receipt ran
+pure units only. New actual execution awaits the benchmark quiet-window release
+and explicit root allocation; no earlier result is relabeled as a local pilot.
 
 Primary references checked2026-11-07: Rust FFI safety
 https://doc.rust-lang.org/nomicon/ffi.html ; panic limits

@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.native-abi-hosted-attempt/1",
+  "runId": 42355168729,
+  "jobId": 128351926153,
+  "sourceSha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42355168729",
+  "runner": {
+    "os": "windows",
+    "architecture": "x86_64",
+    "imageOS": "win25-vs2026",
+    "imageVersion": "20261103.298.1"
+  },
+  "workspaceBuild": "passed",
+  "nativeCoreAndExportCompiled": true,
+  "workspaceProbe": {
+    "status": "failed",
+    "requiredHarnesses": 89,
+    "executedHarnesses": 15,
+    "passedTests": 55,
+    "failedTests": 0,
+    "rawIgnored": 4,
+    "errors": 1,
+    "coverageComplete": false,
+    "executedTargets": [
+      "attestation_parity",
+      "audit-control-retainer",
+      "audit-witness",
+      "behavior_parity",
+      "checkpoint_parity",
+      "command",
+      "control_operations",
+      "crosscheck_parity",
+      "decisions",
+      "derivation_parity",
+      "durable_witness",
+      "engine_parity",
+      "feature_parity",
+      "h2_parity",
+      "host_process"
+    ]
+  },
+  "executedNativeAbiHarnesses": 0,
+  "nativeAbiTests": "not_run",
+  "headerGeneration": "not_run",
+  "actualCompilerLayout": "not_run",
+  "actualDynamicAbi": "not_run",
+  "qualification": false,
+  "limit": "Windows workspace build succeeded; actor stopped before native ABI harnesses. Local pure25 is a separate receipt."
+}

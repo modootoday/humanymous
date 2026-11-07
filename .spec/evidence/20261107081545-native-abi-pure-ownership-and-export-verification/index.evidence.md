@@ -3,13 +3,14 @@ id: evidence:root/20261107081545
 title: Native ABI pure ownership and export verification
 status: active
 created: 2026-11-07T08:15:45Z
-updated: 2026-11-07T08:37:45Z
+updated: 2026-11-07T09:27:19Z
 rel:
   depends_on: [sot:root/native-abi, plan:root/20261107072500]
 files:
   - {path: summary.json, sha256: a55a59d498914d90c7ba788b663def7b105f390f14f37c71419e7273d5673f49, bytes: 2406, store: repo}
   - {path: hosted-startup-failure.json, sha256: aaef59afbb25b88e38aab3539a46c2129f6e84cb4401aff11582fe991980de59, bytes: 928, store: repo}
   - {path: hosted-813-ubuntu.json, sha256: c9e34a3a2368ccf6bd1dbf105ef4c04c5454a7d5c92d126a7189646ae1fcca0b, bytes: 1446, store: repo}
+  - {path: hosted-813-windows.json, sha256: 616e7f6320c351bbcc924c6e0b29f90b1b50b5f7d93db5a1472c094d474dc4e7, bytes: 1392, store: repo}
 ---
 
 # Native ABI pure ownership and export verification
@@ -59,3 +60,12 @@ No native ABI harness appears in the executed list, so ABI hosted tests remain
 not_run. The attached sanitized projection retains that denominator; private
 bundle20261107083655-native-abi-hosted-ubuntu-attempt-813 retains original decoded
 logs and the parsed workspace summary. This is not a parent-run terminal claim.
+
+## Windows partial execution
+
+The same813source's Windows native job128351926153 also passed workspace build
+but failed the actor step:15of89required harnesses,55passed tests,0failed tests,
+4raw ignored and1error. It stopped at host_process, with no native ABI harness
+executed. The attached Windows projection and private
+bundle20261107090311-native-abi-hosted-windows-attempt-813 preserve its separate
+denominator. Local pure25 and these failed hosted partials are not interchangeable.
