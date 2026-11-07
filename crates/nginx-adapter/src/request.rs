@@ -3,7 +3,7 @@
 
 use base64::{Engine, engine::general_purpose::STANDARD};
 use humanymous_authority::configuration::Peer;
-use humanymous_integrity::adapter::{AdapterProfile, parse_with_profile};
+use humanymous_core::integrity::adapter::{AdapterProfile, parse_with_profile};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::HashSet;

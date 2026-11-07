@@ -3,7 +3,7 @@
 //! memory. ngx bindings and runtime must be built from the same pinned ABI.
 use crate::request::{self, Configuration, Ingress};
 use humanymous_authority::client::{self, BoundResponse, ClientOptions, ExpectedBinding, Verdict};
-use humanymous_integrity::adapter::AdapterProfile;
+use humanymous_core::integrity::adapter::AdapterProfile;
 use ngx::core::Status;
 use ngx::ffi::*;
 use ngx::http::{self, HttpModule, HttpModuleLocationConf, HttpRequestHandler, MergeConfigError};

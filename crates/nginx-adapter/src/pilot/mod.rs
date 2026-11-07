@@ -2,7 +2,7 @@
 mod authority;
 mod origin;
 use humanymous_authority::client::{self, ClientOptions, ExpectedBinding};
-use humanymous_integrity::adapter::AdapterProfile;
+use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_nginx_adapter::request::{Configuration, Ingress, nonce};
 use std::io::{BufReader, Read, Write};
 use std::net::{TcpListener, TcpStream};

@@ -10,8 +10,8 @@ use humanymous_authority::{
     decision::{ApplicationHttp, Authority, DurableAudit, Evidence},
     transport::Listener,
 };
-use humanymous_integrity::adapter::ValidatedRequest;
-use humanymous_signals::report::SessionReport;
+use humanymous_core::integrity::adapter::ValidatedRequest;
+use humanymous_core::signals::report::SessionReport;
 use std::path::Path;
 use std::sync::{
     Arc,
@@ -62,11 +62,17 @@ impl Evidence for Fixture {
             return ApplicationHttp.report(request, raw);
         }
         let file = match path {
-            "/deny" => include_str!("../../../scoring/tests/fixtures/frozen/selenium-hr1.json"),
+            "/deny" => include_str!(
+                "../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json"
+            ),
             "/challenge" => {
-                include_str!("../../../scoring/tests/fixtures/frozen/no-client-hr10.json")
+                include_str!(
+                    "../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json"
+                )
             }
-            _ => include_str!("../../../scoring/tests/fixtures/frozen/human-chrome-allow.json"),
+            _ => include_str!(
+                "../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json"
+            ),
         };
         let value: serde_json::Value =
             serde_json::from_str(file).map_err(|_| Rejection::new(503, "fixture"))?;

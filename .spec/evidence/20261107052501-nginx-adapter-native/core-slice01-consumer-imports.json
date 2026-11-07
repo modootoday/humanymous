@@ -1,0 +1,74 @@
+{
+  "schema": "humanymous.nginx.core-slice01-consumer/1",
+  "base_head": "9670fa01243282899d27b3b4537359b78d9859e3",
+  "assigned_scope": "Rust source imports and relative fixture references only",
+  "files": [
+    {
+      "path": "crates/nginx-adapter/src/request.rs",
+      "sha256": "b4f102e12c027d6404ec71fbc112260d8661529bb028141eef61fb354fcb3f0b",
+      "bytes": 15485
+    },
+    {
+      "path": "crates/nginx-adapter/src/native.rs",
+      "sha256": "a5324b30e23337158e349e78a6c84f4015423a95232985bc5c9da1716c2602ed",
+      "bytes": 24918
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/mod.rs",
+      "sha256": "243070bb47ce5540993a9458db0ebb51193760a57b382ba6220e9f638ef39636",
+      "bytes": 32441
+    },
+    {
+      "path": "crates/nginx-adapter/src/pilot/authority.rs",
+      "sha256": "5dc04f3369813968347782d6f717f666daa5e0c97bd7d53a1a4b112de2e4d765",
+      "bytes": 5165
+    }
+  ],
+  "import_replacements": 5,
+  "remaining_old_context_imports": 0,
+  "fixtures": [
+    {
+      "prior_source": "crates/scoring/tests/fixtures/frozen/human-chrome-allow.json",
+      "destination": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "observed_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "expected_sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+      "actual_sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+      "content_preserved": true,
+      "prior_path_exists": false,
+      "destination_exists": true
+    },
+    {
+      "prior_source": "crates/scoring/tests/fixtures/frozen/no-client-hr10.json",
+      "destination": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "observed_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "expected_sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2",
+      "actual_sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2",
+      "content_preserved": true,
+      "prior_path_exists": false,
+      "destination_exists": true
+    },
+    {
+      "prior_source": "crates/scoring/tests/fixtures/frozen/selenium-hr1.json",
+      "destination": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "observed_path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "expected_sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
+      "actual_sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
+      "content_preserved": true,
+      "prior_path_exists": false,
+      "destination_exists": true
+    }
+  ],
+  "fmt": "passed",
+  "diff_check": "passed",
+  "compiler": "NOT_RUN: root workspace coherence required",
+  "clippy": "NOT_RUN: root workspace coherence required",
+  "native_runtime": "NOT_RUN",
+  "manifest_or_lock_changed": false,
+  "source_paths_moved": false,
+  "behavior_scoring_visibility_changed": false,
+  "live_handles": [],
+  "target_leases": [],
+  "source_ready": true,
+  "qualified": false,
+  "concurrent_root_relocation": "Root moved the corpus during preparation. Old-path hash attempts failed; final actual destination hashes match the recorded preparation map. No source move performed by nginx owner."
+}
