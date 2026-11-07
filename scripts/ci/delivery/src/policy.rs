@@ -165,6 +165,28 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
     }
     if name == "rust-validation.yml" {
         require(
+            doc["env"]["DOCKER_BUILD_RECORD_UPLOAD"] == "false",
+            "automatic Docker build-record artifacts must be disabled",
+        )?;
+        for step in jobs
+            .values()
+            .filter_map(|job| job["steps"].as_array())
+            .flatten()
+        {
+            let action = step["uses"].as_str().unwrap_or("");
+            let disabled = |key: &str| step["with"][key] == false || step["with"][key] == "false";
+            let enabled = |key: &str| step["with"][key] == true || step["with"][key] == "true";
+            require(
+                (!action.starts_with("aquasecurity/trivy-action@") || disabled("cache"))
+                    && (!action.starts_with("docker/setup-buildx-action@")
+                        || disabled("cache-binary"))
+                    && (!action.starts_with("actions/setup-node@")
+                        || disabled("package-manager-cache"))
+                    && (!action.starts_with("oven-sh/setup-bun@") || enabled("no-cache")),
+                format!("implicit action cache writes must be disabled: {action}"),
+            )?;
+        }
+        require(
             strings(&doc["jobs"]["ready"]["needs"])
                 == REQUIRED.iter().map(|id| (*id).into()).collect(),
             "required aggregate coverage changed",
@@ -397,7 +419,7 @@ mod tests {
             .join("../../../.github/workflows/rust-validation.yml");
         let original = yaml(&std::fs::read_to_string(path).unwrap()).unwrap();
         assert!(document("rust-validation.yml", &original).is_ok());
-        for mutation in 0..6 {
+        for mutation in 0..7 {
             let mut changed = original.clone();
             match mutation {
                 0 => changed["jobs"]["ready"]["needs"]
@@ -408,7 +430,8 @@ mod tests {
                 2 => changed["jobs"]["docker"]["steps"] = json!([]),
                 3 => changed["jobs"]["docker"]["steps"][0]["continue-on-error"] = json!(true),
                 4 => changed["jobs"]["native"]["if"] = json!("${{ !cancelled() }}"),
-                _ => changed["jobs"]["native"]["needs"] = json!(["browser"]),
+                5 => changed["jobs"]["native"]["needs"] = json!(["browser"]),
+                _ => changed["env"]["DOCKER_BUILD_RECORD_UPLOAD"] = json!("true"),
             }
             assert!(document("rust-validation.yml", &changed).is_err());
         }

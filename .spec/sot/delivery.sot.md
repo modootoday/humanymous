@@ -152,6 +152,37 @@ This bounds heavy validation to two hosted jobs, separate from the local resourc
 gate. Interactive human/AT/SCM/CEF and physical durability claims still require
 their own actual authority, not a hosted-runner label. No required gate removed.
 
+Final cross-owner policy confirmed by root after all13 owners responded:
+[program-roadmap](program-roadmap.sot.md) owns the single project policy; this
+document owns its delivery implementation contract. Local work is coding,
+formatting, scoped Clippy and resource-bounded pure units, with at most one local
+Cargo task after resource review. Real process/port/IPC/ACL/SCM/browser/CEF/Docker
+and cross-OS execution belongs on public standard hosted runners. Test file names
+alone do not establish purity. Human/AT/IME, physical devices and organizationally
+independent witnesses still need direct evidence in a suitable environment.
+The two-lane limit is workflow-local, not a global mutex for manual workflows.
+Do not start duplicate dispatches. Until an impact classifier is implemented,
+do not remove required gates using path filters. Free hosted compute does not
+include LLM/API inference or imply artifact/cache storage is free. Missing private
+raw recovery remains explicit; old successful evidence never qualifies later
+unexecuted source. Root fixes source closure, pushes the Rust branch and observes
+the first hosted run; owners do not resume local runtime/research workloads.
+
+Pinned-action storage audit correction: trivy-action ed142fd defaults cachetrue
+and passes it to setup-trivy3fb12ec; explicitly set cachefalse for both scans.
+setup-buildx bb05f3f defaults cache-binarytrue; disable both instances. build-push
+53b7df9 defaults automatic build-record artifact upload; workflow environment
+DOCKER_BUILD_RECORD_UPLOAD=false disables it. setup-node2499707 automatic package
+manager cache is explicitly false; setup-bun0c5077e binary cache disabled with
+no-cachetrue. Toolchain683b588 emits a cache key but has no cache action. Findings
+were inspected via official repositories' exact pinned action metadata/README,
+not inferred from top-level upload steps. Pages Ruby bundler cachefalse and
+main-only Pages upload remain: free Rust branch gets no Pages artifact, existing
+main deployment still needs its checked artifact. This is a policy against paid
+compute/cache/artifact use by this branch run, not a guarantee of zero total
+personal/organization charges or zero third-party inference costs. Hosted
+confirmation of no cache/artifact writes remains pending the first actual run.
+
 Accepted for implementation by the explicit parallel-completion request on
 2026-11-07 KST. New authored implementation/tests use Rust1.99.1/edition2024.
 The existing upstream action/Jekyll/theme/generated glue and frozen legacy
