@@ -1,0 +1,164 @@
+{
+  "schema": "humanymous.hosted-go-source-evidence/1",
+  "source_sha": "c3211e27ba941f3f11809e420d07d61ececad623",
+  "run_id": 42375310198,
+  "run_attempt": 1,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42375310198",
+  "venue": "genuine_free_hosted_public_repository_ubuntu_24_04",
+  "preflight": {
+    "job_id": 128411569841,
+    "conclusion": "success",
+    "go_tests": 10,
+    "lab_tests": 20,
+    "delivery_tests": 74,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "unix_actor_check": "passed",
+    "strict_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "product": {
+    "job_id": 128412147497,
+    "conclusion": "success",
+    "summary": {
+      "cleanup_observed": true,
+      "component_status": "passed",
+      "diagnostics": {
+        "failure_count": 0,
+        "failures": [],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "full_product_gate": "not_requested_in_bounded_profile",
+      "full_product_qualified": false,
+      "owner_exit_code": 0,
+      "receipt": {
+        "case_statuses": [
+          {
+            "assertions": 4,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "binary-allow",
+            "index": 0,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "dependency-down",
+            "index": 1,
+            "status": "pass"
+          },
+          {
+            "assertions": 6,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "cancellation",
+            "index": 2,
+            "status": "pass"
+          },
+          {
+            "assertions": 6,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "incomplete-body",
+            "index": 3,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "forged-provenance",
+            "index": 4,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "origin-bypass",
+            "index": 5,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "upgrade",
+            "index": 6,
+            "status": "pass"
+          },
+          {
+            "assertions": 4,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "response-semantics",
+            "index": 7,
+            "status": "pass"
+          }
+        ],
+        "full_product_qualified": false,
+        "private_receipt_schema": "humanymous.go-product-ledger/1",
+        "private_receipt_sha256": "5ab341d113866c367fff963681289978e324891af070496bd05821f8564240a4",
+        "profile": "humanymous.go-gate/bounded-http-8-case/2",
+        "qualified_component": true,
+        "raw_contents_included": false,
+        "run_context": {
+          "authenticated_provenance": false,
+          "hosted_qualification_admitted": true,
+          "job": "product",
+          "kind": "github-hosted-linux",
+          "repository": "modootoday/humanymous",
+          "requires_external_job_verification": true,
+          "run_attempt": 1,
+          "run_id": 42375310198,
+          "workflow_sha": "c3211e27ba941f3f11809e420d07d61ececad623"
+        },
+        "schema": "humanymous.lab-go-public/1",
+        "setup_or_qualification_error_code": null,
+        "source_manifest_sha256": "406eac69f317c702637e4e1adbe05ed64ad83a2df20706e3b35ea57e604dcaa9",
+        "source_sha": "c3211e27ba941f3f11809e420d07d61ececad623",
+        "totals": {
+          "evaluated": 8,
+          "failed": 0,
+          "known_assertions": 40,
+          "not_run": 0,
+          "passed": 8,
+          "scheduled": 8,
+          "unknown_assertion_cases": 0
+        }
+      },
+      "receipt_valid": true,
+      "release_ready": false,
+      "requirement": {
+        "full_product_qualified": false,
+        "kind": "go-component",
+        "satisfied": true,
+        "schema": "humanymous.lab-requirement/1"
+      },
+      "schema": "humanymous.go-delivery-summary/1",
+      "source_changed": false,
+      "source_manifest_sha256": "4d486bb77299062ecacf9fe604c623f7c65bbe0db0711bc54ceadf9ba1f41201",
+      "source_sha": "c3211e27ba941f3f11809e420d07d61ececad623"
+    }
+  },
+  "private_evidence": "evidence:root/20261107130651",
+  "limits": [
+    "Bounded net/http eight-case component only; not full product or release readiness.",
+    "Full runtime/fixture/config/engine/version tuple was not publicly exported or recovered locally; do not substitute the distinct mount-probe image.",
+    "Private original ledger remains represented by its original SHA256; decoded job logs are separate artifacts.",
+    "Preserves earlier source-specific failures without aggregating their counters into this success.",
+    "Collector, browser, generic wargame, sibling frameworks, human and assistive controls require separate execution."
+  ]
+}
