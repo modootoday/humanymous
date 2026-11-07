@@ -412,6 +412,54 @@ tool/env closure remains finite and selected; generated target outputs are outsi
 the selected source roots, not removed through an absolute ancestor filter. All
 above snippets are NOT_RUN; no renewed lease, Stopwatch or compiler has started.
 
+## Accepted core-family consolidation handoff, root integration only
+
+The human accepted the eight-package baseline; root sequences its first seven
+engine-context consolidation into crates/sdk/humanymous-core. model-core-handoff.json
+pins all24current model files, hashes/bytes, proposed per-file destination, dirty
+state, active handles/leases and migration hazards. This is a reviewable mapping,
+not permission for this owner to move files, rename packages or edit common Cargo.
+Current model source is clean and last changed at72888805; no pending model source
+diff needs a separate checkpoint. No compiler handle, marker or target is retained.
+
+Proposed atomic source deltas ONLY after root group freeze:
+
+1. Preserve src/model/{inference,training} contexts and model/mod.rs exports;
+   merge the old model manifest into root-owned core manifest, no helper crate.
+2. Map humanymous_behavior::features and humanymous_signals::report to same-core
+   behavior/signals paths preserving type identity; rewrite four crate::inference
+   references to the model context and scoring's model imports in the same slice.
+3. Keep inference implementation modules private, Runtime State and GoRng state
+   private, DrawSource private and all rng pub(super) helpers/tables restricted to
+   rng. No unsafe/FFI exists here; preserve core forbid(unsafe_code). The public
+   crate must NOT expose every training/diagnostic/activation method via a facade.
+4. Root decides deliberate visibility: inference consumer traits/types need a
+   defined core model contract; training helpers/snapshots can stay crate-restricted
+   or test/explicit offline APIs pending public API review. Narrow pub(crate) only
+   with consumer compilation; do not broaden pub(super) to resolve relocation.
+5. Move test data only in root's atomic mapping. Three RNG include_str paths gain
+   one model nesting level; use CARGO_MANIFEST_DIR-based tests/fixtures/model
+   references rather than fragile parent counts. The inference integration test
+   also needs new crate path and fixture subdirectory. Keep golden JSON, unchanged
+   Go .txt oracle DATA and full BSD LICENSE bytes identical. Root owns aggregate
+   attribution updates before packaging; old source-proof JSON remains immutable.
+6. Dev support currently depends only on serde/serde_json, but accepted platform
+   integration needs its explicit testing capability; prevent platform process/
+   native/GPU code leaking into core normal/WASM graph. Update the Windows evidence
+   runner's literal crates/model/src input path with its owner or source closure
+   will silently miss the new context.
+
+Authored model functions total33unit(5inference+8record+4standardize+4evaluate+
+12RNG), plus1fixture harness with340vectors. This is NOT33executed passes:
+the12RNG remain NOT_RUN and the first run failed in orchestration before Cargo.
+After consolidation test names acquire model:: prefixes and aggregate filtered
+counts change; never reuse the former21filtered expectation as a core denominator.
+Fresh root-scoped fmt/check/strict Clippy, model/scoring parity, focused RNG under
+a new monotonic grant and owner-qualified collector/WASM/workspace/product gates
+remain required. Historical a0eb/e7d/aeefd receipts do not qualify moved source.
+Root must freeze exact paths/source before edits; no moves, branches, synchronization,
+shims, Cargo writes or new workload were performed by this handoff.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.

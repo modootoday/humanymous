@@ -1,0 +1,253 @@
+{
+  "schema": "humanymous.model-core-handoff/1",
+  "status": "CURRENT_PATHS_FROZEN_FOR_ROOT_REVIEW_NO_MOVE",
+  "snapshot_utc": "2026-11-07T20:12:16.2649176+00:00",
+  "observed_shared_head": "e3eba67bdf4aeabf9f8603768c754f14d5c96234",
+  "last_model_source_commit": "728888051b7dacfa3e3181cf71da4fff2f526bd4",
+  "accepted_family": "8 public packages; model responsibility into humanymous-core, root sequences",
+  "current_package": "humanymous-model",
+  "proposed_package": "humanymous-core",
+  "proposed_context": "model",
+  "source_files": [
+    {
+      "path": "crates/model/Cargo.toml",
+      "sha256": "b9cb23e03aff36f9b178496757d071f64aa7d3c40b4eeec561177ad4163b0fbd",
+      "bytes": 412,
+      "proposed_root_destination": "ROOT_MERGES_MANIFEST_NOT_A_STANDALONE_PACKAGE",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/inference/bundle.rs",
+      "sha256": "0c263b5f509ab5e6ef8165f46106247429d546150078cac5500481de7e88c9af",
+      "bytes": 3362,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/inference/bundle.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/inference/mlp.rs",
+      "sha256": "85f980297bdeecf7a74a858fc883d36c3b400cb76cbbcb2b21524a83bf92c254",
+      "bytes": 5208,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/inference/mlp.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/inference/mod.rs",
+      "sha256": "ab3db88975c14310c655d480079332e11c92467215756bfb90a638fda67cb13e",
+      "bytes": 291,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/inference/mod.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/inference/runtime.rs",
+      "sha256": "c0a1f08bb6d9a04e2f32eba8e5da100279d475499a5a44cc99272a7a3fbc7382",
+      "bytes": 9248,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/inference/runtime.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/lib.rs",
+      "sha256": "f576837b5348af278e0b8ba59f022cbf439ec123b7dab0fb43a25bfa160b567b",
+      "bytes": 116,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/mod.rs (root merges exports)",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/evaluate.rs",
+      "sha256": "006812fc42811b4608d108e28eab6ea8f6da8e33caf5b07fa7bf3bc2e860f1d7",
+      "bytes": 6433,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/mod.rs",
+      "sha256": "0f98f8588ac55ea29e3485bf7dc5f737da393efcb38378ce583909d19f53c1f3",
+      "bytes": 139,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/mod.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/record.rs",
+      "sha256": "700e756ef79943c3be4d1c0439aedf4f82f48593b99a5f29c04a678c3f8579e2",
+      "bytes": 19069,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/record.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/initialize.rs",
+      "sha256": "0e7546b98a65b6e790d15f893d116c426c50a51739dbba757861119508d4bbc1",
+      "bytes": 2779,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/initialize.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/INTEGRATION.md",
+      "sha256": "21c4e0cf869c47577141b6115433c823ca669f988f9509fb9b922bfd24268c80",
+      "bytes": 3136,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/INTEGRATION.md",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/LICENSE",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "bytes": 1453,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/LICENSE",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/mod.rs",
+      "sha256": "ba8ce1867b988ca6d80402a4309ee1e9679d09711964942eb28b6ba9dd99f59c",
+      "bytes": 2765,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/mod.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/normal.rs",
+      "sha256": "3ab3ec8041e3ecc9097cf642605753a06810ecc3514c1f1b56a3c71fe3e0f084",
+      "bytes": 1111,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/normal.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/shuffle.rs",
+      "sha256": "5a1efcebb6deafce15ef673335db7c85f735fa5e5815f05d3f6cca00482a3c97",
+      "bytes": 1180,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/shuffle.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/source.rs",
+      "sha256": "dfbe5fe44701446d69b3695b1d9aaa1b3de0379eba97457fac39bf8fe7a06e0c",
+      "bytes": 4167,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/source.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/tables.rs",
+      "sha256": "3c097e0d8a795c0c15519b3c22461ff81a7014b3b2f89e428948009ba4b46487",
+      "bytes": 19187,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/tables.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/rng/tests.rs",
+      "sha256": "38180223c477fd4bd430d0ba93649aa4f4e69eb78cc7fb105a2a16d394f1d450",
+      "bytes": 14968,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/rng/tests.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/src/training/standardize.rs",
+      "sha256": "d5abb55113c70ad65d716c9c9de4cf510a85bd1d1553ab06cc74106b91444904",
+      "bytes": 5714,
+      "proposed_root_destination": "crates/sdk/humanymous-core/src/model/training/standardize.rs",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-normal-seed0.json",
+      "sha256": "1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989",
+      "bytes": 1246,
+      "proposed_root_destination": "crates/sdk/humanymous-core/tests/fixtures/model/go1263-normal-seed0.json",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-normal-source.txt",
+      "sha256": "d8f4450a14b03bd0ec939eb4b127e199d9d78ba3d07c4ad0a65ac493dfa1c62a",
+      "bytes": 6459,
+      "proposed_root_destination": "crates/sdk/humanymous-core/tests/fixtures/model/go1263-normal-source.txt",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-rng-source.txt",
+      "sha256": "e301d938fe5dbe4ef5ff52f31de68d2547c3ab50da5c95bb21c49ea983a817ab",
+      "bytes": 15112,
+      "proposed_root_destination": "crates/sdk/humanymous-core/tests/fixtures/model/go1263-rng-source.txt",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/tests/fixtures/inference.json",
+      "sha256": "5b6764eac0aadcba60ed619126b7174b012e40be6deb8f32bfc7995ba354a9fe",
+      "bytes": 83075,
+      "proposed_root_destination": "crates/sdk/humanymous-core/tests/fixtures/model/inference.json",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    },
+    {
+      "path": "crates/model/tests/inference_parity.rs",
+      "sha256": "a412c4b53f824e4ef9bd140c253a44ada288198f6984656acaa11b13fb8e2aa0",
+      "bytes": 1050,
+      "proposed_root_destination": "crates/sdk/humanymous-core/tests/model_inference_parity.rs (root proposal)",
+      "movement_status": "PROPOSAL_ONLY_NOT_MOVED"
+    }
+  ],
+  "source_file_count": 24,
+  "dirty_model_paths": [],
+  "active_compiler_process_handles": [],
+  "active_target_leases": [],
+  "rng_target_exists": false,
+  "old_rng_lease": "Returned, no active marker or resumed clock",
+  "path_writes": "Only owning plan/evidence for this handoff; model source clean. Root owns moves/manifests/import integration",
+  "normal_dependencies": [
+    "humanymous-behavior",
+    "humanymous-signals",
+    "serde",
+    "serde_json"
+  ],
+  "dev_dependencies": [
+    "humanymous-test-support -> humanymous-platform testing capability, root maps exact feature"
+  ],
+  "unsafe": "No unsafe blocks or FFI in model; preserve core forbid(unsafe_code) and private RNG internals",
+  "visibility": "Keep private inference internals/Runtime State/GoRng state/DrawSource private and rng pub(super) helpers/tables restricted; do not publish training/snapshots as activation/approval API",
+  "crate_root_references": [
+    "src/training/evaluate.rs: crate::inference::Prediction",
+    "src/training/rng/initialize.rs: crate::inference::MlpBundle",
+    "src/training/rng/tests.rs: crate::inference::MlpBundle",
+    "src/inference/mlp.rs test: crate::inference::Runtime"
+  ],
+  "external_imports": [
+    "crates/scoring/src/engine/mod.rs",
+    "crates/scoring/src/derivation/behavior.rs",
+    "crates/scoring/tests/behavior_parity.rs",
+    "crates/model/tests/inference_parity.rs"
+  ],
+  "closure_consumers": [
+    "scripts/ci/windows-native-runner/src/evidence.rs: crates/model/src literal"
+  ],
+  "fixture_hazards": "3rng include_str relative paths acquire an extra model level; prefer manifest-relative tests/fixtures/model paths in the root-owned atomic slice; keep inference fixture contents, Go source data and BSD LICENSE byte-identical",
+  "cross_context_types": [
+    "behavior FeatureVector/FEATURE_DIM/schema_hash/extract",
+    "signals report::BehaviorSummary",
+    "Prediction/Predictor/Runtime/ThresholdProvider/FeatureObserver/ShadowObserver"
+  ],
+  "proofs": [
+    "a0ebc9ae parser/file:13unit+1fixture PASS",
+    "e7d8f9a3 standardize:17library+1fixture PASS",
+    "aeefd20c evaluator:4PASS/17filtered",
+    "72888805 RNG:12authored NOT_RUN;first harness precompiler failure f0e7244a;monotonic fix proposal f481b32d NOT_RUN"
+  ],
+  "expected_model_test_functions": {
+    "inference_unit": 5,
+    "record": 8,
+    "standardize": 4,
+    "evaluate": 4,
+    "rng": 12,
+    "total_authored_model_unit": 33,
+    "inference_fixture_harness": 1,
+    "warning": "Not33 executed passes. After consolidation actual core denominator/filter counts must be observed."
+  },
+  "required_gates": [
+    "Root group freeze and byte/path mapping before any source edit",
+    "Fresh core scoped fmt/check/strict Clippy after atomic imports/module/fixture/visibility changes",
+    "Focused model inference unit+5x68fixture;record8;standardize4;evaluate4",
+    "First actual focused rng12;new bounded monotonic orchestration grant before execution",
+    "Scoring behavior parity and frozen thresholds/verdicts",
+    "Native core/platform testing dev graph and collector/WASM boundary by owning contexts",
+    "Root integration workspace, product Docker and publication gates remain distinct"
+  ],
+  "deferred_scope": [
+    "full legacy29row mapping",
+    "actual Go mixed state and supported-target math parity",
+    "Train/SGD/cohort/AUT/holdout policy",
+    "sink/correction/lifecycle/CLI",
+    "GPU backend qualifications",
+    "root aggregate BSD attribution before packaging"
+  ]
+}

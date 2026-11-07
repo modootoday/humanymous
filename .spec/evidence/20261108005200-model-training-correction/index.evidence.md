@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T19:18:14Z
+updated: 2026-11-07T20:12:19Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -18,6 +18,7 @@ files:
   - {path: gpu-research.json, sha256: 9b04d66b27bced22d9c32f7b218cca431aae9f82971070735323956ff7442af1, bytes: 5186, store: repo}
   - {path: rng-validation-profile.json, sha256: 9ef43265eb2dda0d957c52ba5a0d8abbc4fbe78fdc402d395ee9e4fd82686ec9, bytes: 8074, store: repo}
   - {path: rng-first-attempt.json, sha256: 13a5649a6e29cca6c13e122e206bfb39ea0f3b6ddc3f6eb57177cbfe55de3e67, bytes: 1473, store: repo}
+  - {path: model-core-handoff.json, sha256: 643d8461ebd89fc49565a4d71c6d2f887c735cc64335b562610a6bfdb6a0ced9, bytes: 11818, store: repo}
 ---
 
 # Read-only source inventory
@@ -500,3 +501,19 @@ selected local manifest/Rust input plus13frozen files in BOTH before/after maps.
 No code source changed;72888805 remains frozen,12tests remain NOT_RUN, and the
 failed clock is not resumed. This is a concrete review proposal awaiting a fresh
 grant, not an execution receipt, active target lease or new product script.
+
+## Exact model-to-core path/hash handoff
+
+model-core-handoff.json records24current files under crates/model, all hashes/bytes
+and proposal-only destinations in the accepted humanymous-core model context.
+Last model source commit72888805; model source tree clean,0live compiler/process
+handles and0target leases; failed RNG target remains absent. Only owning plan/
+evidence are edited here. Root exclusively freezes/sequences path, manifest/import,
+module/fixture and branch integration. No compatibility helper package is created.
+
+The plan audits existing private/pub(super)/future pub(crate) boundaries, four
+crate::inference references, behavior/signals cross-context types, scoring consumers,
+manifest-relative fixture hazards, BSD data preservation and the Windows closure
+consumer. Required new tests are separate from historical14/18/4passes and RNG12
+NOT_RUN. Public family acceptance does not establish all APIs public, native/WASM
+compatibility, RNG qualification or completed29row training/correction migration.
