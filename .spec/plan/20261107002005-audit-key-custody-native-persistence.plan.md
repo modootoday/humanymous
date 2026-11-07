@@ -3,7 +3,7 @@ id: plan:root/20261107002005
 title: Audit key custody native persistence
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T06:35:58Z
+updated: 2026-11-07T07:40:50Z
 rel:
   governs: [crates/audit/**]
   depends_on: [sot:root/audit-key-custody]
@@ -13,12 +13,54 @@ rel:
 
 ## Goal
 
+An actual active Codex goal was created at the user's explicit request:
+sealed custody/vault/durable audit/independent witness/recovery/permissions/dual
+control through real product integration, hosted pilots/e2e, strict accounting,
+Specfold evidence and owned commits. Prior checkpoints are not completion of
+this goal. The official chat title is Humanymous · 감사 · 키 보관과 영속성.
+
 Implement the accepted native sealed-custody boundary without changing scoring,
 wire envelope, KDF or shared Cargo ownership. The original scope excluded the
 issuer; the 2026-11-07 follow-up explicitly authorizes operational dual control,
 independent durable witness, rotation, backup retirement and local sinks.
 
 ## Steps
+
+Current accepted coding order under root's registered audit-custody lane071ccef:
+
+1. Implement audit-owned neutral SealedLog to replace duplicated composition-root
+   custody/writer lifetime logic. Runtime owns adoption and preserves public
+   SealedAudit/ExternalWitness APIs; authority owns its local trait implementation.
+2. Implement pure typed witnessed RecoveryPlan/coverage and explicit exclusive
+   WAL missing-checkpoint repair. Product lab consumes it for head-ahead and
+   durable-unwitnessed-tail outage cases, preserving keys/records and zero effects.
+3. Complete prepared-ciphertext destination-bound rotation and retained-control
+   anchor seam requested by runtime R10. Frozen Record fields are not repurposed
+   to carry full LedgerAnchor. Contract/source acceptance precedes execution.
+4. Request an explicitly assigned root local pipeline/isolated target for selected
+   pure units/scoped checks (jobs1/incremental0 under the current canonical policy);
+   real files/process/ACL/crash/witness/product cases run only in root's hosted
+   batch. Record not_run until exact-source observation, including remote
+   42348518353/63f69ae versus later sources. No duplicate dispatch or publication.
+
+Native-security OS secret reader remains Windows owner responsibility; audit
+reuses it when supplied and never adds parallel native secret-reading code.
+
+Source implementation checkpoint: neutral SealedLog/PinnedWitness/zeroized Utf8
+or native Bytes credential input, pure witnessed recovery plan and exclusive WAL
+checkpoint repair are implemented. Root assigned pipelineA/shared target for
+exactly4 pure recovery and2 pure preflight units, sequential jobs1/incremental0/
+testthreads1; all6passed, scoped lib Clippy passed. Initial fixture compilation
+failed E0596 (Tree cache requires mutable binding), executed0tests and is retained
+separately from corrected attempt2. Actual files/process/IPC/crash tests executed0;
+these remain hosted not_run. Start resources free34.92GiB/commit81.23%, within root
+threshold; slot returned immediately after Clippy. No dependency/feature changes.
+Current source-bound evidence: [[evidence:root/20261107073654]].
+
+Next required work remains active: authored hosted tests for shared lifetime,
+missing-witness-before-secret consumption, tail preservation and witness-ahead
+repair; runtime/authority adoption and product-lab actual observation; prepared
+rotation and external retained-control grant. Pure6 do not complete this goal.
 
 1. Record contracts and critique before implementation.
 2. Implement safe native permission validation and lifetime exclusive custody.

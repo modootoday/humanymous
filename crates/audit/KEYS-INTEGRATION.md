@@ -1,5 +1,36 @@
 # Sealed key compatibility integration
 
+## Active product-goal source checkpoint
+
+Neutral `log::{SealedLog,SealedLogOptions,PinnedWitness,UnlockCredential,
+SealedLogError,SealedLogStage}` is implemented in src/log/sealed.rs. It owns
+Custody and Log for one nonextractable lifetime, opens existing keys only and
+refuses a required missing witness before state access or credential take.
+Utf8/Bytes borrows support current runtime private input and the Windows-owned
+native-security secret reader without a parallel reader or lossy conversion.
+No runtime/authority DTO dependency or Cargo/dependency/feature delta.
+
+`storage::{plan_witness_recovery,WitnessRecoveryPlan,WitnessCoverage,TailRecovery,
+AppliedWitnessRecovery}` reuses existing verification/canonical/Merkle code.
+Explicit Wal::recover_witness_checkpoint appends only an authenticated missing
+external head under the existing lifetime lock; complete ambiguous records are
+retained only under explicit PreserveAmbiguousTail. Normal sealed startup does
+not silently repair or admit that tail. RecoveryReceipt exposes performed
+append/persistence versus verification-only and previous torn-byte accounting.
+All exact options, fields and error stages are canonical in the owning SoT's
+implemented source API0.2 table; do not infer execution from these exports.
+
+Root-assigned A/shared-target validation:4pure recovery+2pure preflight units
+passed with jobs1/incremental0/testthreads1; scoped lib Clippy passed. First
+compileE0596 fixture failure (0tests) is preserved separately. Actual filesystem/
+IPC/process/secret backend/lifetime/recovery pilots are hosted not_run, not local
+unit successes. Source evidence:root/20261107073654. Slot returned; goal active.
+Runtime must adopt while preserving public startup wrappers; authority owns its
+local DurableAudit trait impl for SealedLog. Product-lab consumes typed coverage
+and explicit recovery rather than reconstructing verifier/proof algorithms.
+Prepared-ciphertext rotation and retained-action/control-anchor path remain the
+next source slice; old local-only grants never prove external retention.
+
 ## Test-output correction for strict workspace accounting
 
 Production API/behavior is unchanged. New durable_witness/key_backups parents
@@ -127,9 +158,9 @@ Remaining requirements after root-requested safe checkpoint handoff:
    recovery, physical/unknown-copy erasure and storage/power-loss qualification.
 5. Independent latest control/backup/witness pins, initial pending-state incident
    handling, final same-source six-tuple/product Docker/human/AT qualification.
-6. Proposed shared audit-owned Custody+Log lifetime/startup context by moving the
-   existing runtime SealedAudit implementation. Authority must not create a
-   second crypto/startup implementation while this ownership transfer is pending.
+6. Shared audit-owned Custody+Log lifetime/startup context now has implemented
+   source as described above; consumer migration and hosted proof remain pending.
+   Authority must not add a second crypto/startup implementation during adoption.
    Writer/witness signing-identity key rotation remains distinct from the
    implemented passphrase-envelope rotation and is not implemented here.
 

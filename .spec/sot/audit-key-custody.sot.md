@@ -3,7 +3,7 @@ id: sot:root/audit-key-custody
 title: Audit key custody
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T06:35:58Z
+updated: 2026-11-07T07:40:50Z
 verify: [cargo test -p humanymous-audit --locked]
 rel:
   governs: [crates/audit/**]
@@ -13,6 +13,67 @@ rel:
 # Audit key custody
 
 ## Rule
+
+### Product-owned sealed startup and witnessed recovery delta
+
+Audit owns the neutral SealedLog lifetime context: existing Custody plus Log,
+preprovisioned private key/WAL paths and no runtime/authority DTO dependency.
+Options bind owner,node,cadence,allow_new_history,external trusted checkpoint and
+required external-witness policy. Missing required external witness is rejected
+before filesystem opening or consuming the caller's zeroized unlock credential.
+Startup never creates keys, never substitutes inline identity and never releases
+the custody guard while the writer is usable. Runtime preserves its current
+public wrapper API while adopting the shared owner; authority implements its
+own local DurableAudit trait for this audit-owned type, not vice versa.
+
+Witness recovery separates authenticated durable_sequence,witnessed_through,
+authenticated_external_head,local_latest_checkpoint,ambiguous_tail_len,
+fully_witnessed and explicit HMAC/writer/witness verification scope. An external
+signed trusted head and distinct pinned writer/witness keys are mandatory.
+Existing verify_history/canonical/crypto/Merkle algorithms remain the authority.
+RequireCovered rejects complete unwitnessed tail; explicit PreserveAmbiguousTail
+retains it without truncation, old-request retry, fresh keys or fabricated origin
+effects. Root runtime supplies its fresh credential epoch and independent action
+identity; a later distinct append may consistency-extend the retained history.
+
+When the witness persisted a head but local checkpoint append failed, a pure
+RecoveryPlan authenticates the candidate checkpoint against actual records and
+the existing checkpoint chain. An explicit exclusive-WAL recovery method appends
+only that missing checkpoint and syncs before reporting persistence. Old/forked
+heads, missing required signatures/HMAC and unsupported gaps fail closed. Normal
+sealed startup does not silently apply a required checkpoint repair. Complete
+ambiguous records are never removed; existing torn-frame byte recovery accounting
+remains separate. Namespace power-loss uncertainty is not hidden on Windows.
+
+Runtime accepted neutral append/flush owner APIs and rejection-before-consumption.
+Product-lab owner accepted the coverage fields and no-fallback/no-retry recovery
+contract. These are accepted contracts awaiting source/hosted qualification;
+no new local runtime qualification is implied by implementation.
+
+Implemented source API0.2 (pure-unit checked, hosted boundary not_run):
+
+| Type/API | Fields or accepted behavior |
+|---|---|
+| SealedLogOptions | key_directory,wal_directory,owner,node_id,checkpoint_every,allow_new_history,trusted_head,require_external_witness; trusted native options, not a wire DTO |
+| UnlockCredential | Utf8(&mut Zeroizing<String>) or Bytes(&mut Zeroizing<Vec<u8>>); borrow before preflight, consume only at unseal; no new OS reader |
+| PinnedWitness | new(Box<dyn CheckpointWitness>,expected_public,durability),durability(); no seed/transport extraction |
+| SealedLog | open; explicit recover_pinned; append/flush/records/checkpoints/sequence; recovery_coverage/recovery_receipt; custody guard not extractable |
+| SealedLogError | stage() and bounded io kind(); no sensitive raw source chain |
+| TailRecovery | RequireCovered or explicit PreserveAmbiguousTail; never an old-effect retry authorization |
+| WitnessRecoveryPlan | coverage(),history(),needs_checkpoint_append(); candidate verification does not itself persist anything |
+| WitnessCoverage | durable_sequence,witnessed_through,authenticated_external_head,local_latest_checkpoint(before repair),ambiguous_tail_len,fully_witnessed,authentication(HMAC/writer/witness checked) |
+| Wal::recover_witness_checkpoint | mandatory provisioned witness key/trusted head, existing verification; returns AppliedWitnessRecovery only after any missing checkpoint append+sync |
+| AppliedWitnessRecovery | coverage,checkpoint_appended,persistence Option(native strength only when appended),recovered_torn_bytes; no effect acknowledgement |
+
+Normal shared-owner startup rejects a complete unwitnessed tail. Explicit
+recover_pinned validates the external client's exact head before local repair or
+preservation, then reopens through ordinary Log authentication. Cold empty history
+is explicit allow_new_history with existing keys; it has no claimed witnessed
+coverage yet. HMAC32..256bytes matches the existing runtime service contract;
+legacy sealed envelope import remains unchanged. Prototype errors are typed
+WitnessRequired/Options/KeyDirectory/WalDirectory/Custody/Unlock/KeyMaterial/Wal/
+Recovery/Log stages. Authority-local trait adoption and runtime wrapper migration
+remain consumer work until the source checkpoint is accepted.
 
 ### Authorized operational continuation, 2026-11-07
 

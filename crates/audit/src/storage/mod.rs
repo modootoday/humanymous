@@ -12,6 +12,13 @@ pub(crate) use private_state::PrivateState;
 pub mod permissions;
 mod recovery;
 pub use recovery::{RecoveryPolicy, VerifiedHistory, verify_history};
+mod witness_recovery;
+#[cfg(any(unix, windows))]
+pub use witness_recovery::AppliedWitnessRecovery;
+pub use witness_recovery::{
+    RecoveryAuthentication, TailRecovery, WitnessCoverage, WitnessRecoveryPlan,
+    plan_witness_recovery,
+};
 #[cfg(any(unix, windows))]
 mod wal;
 #[cfg(any(unix, windows))]

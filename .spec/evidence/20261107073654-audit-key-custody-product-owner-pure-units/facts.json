@@ -1,0 +1,73 @@
+{
+  "kind": "validated working source; not yet canonical Git",
+  "slot": "returned",
+  "incremental": 0,
+  "actualFilesystemTests": 0,
+  "schema": "humanymous.audit-product-owner-pure-units/1",
+  "actualIPCTests": 0,
+  "testThreads": 1,
+  "environment": "Windows x86_64; Root-assigned A/shared target",
+  "recoveryPurePassed": 4,
+  "scopedLibClippy": "passed",
+  "hostedQualification": "not_run",
+  "initialAttempt": {
+    "log": "recovery-units-attempt1.log",
+    "testsExecuted": 0,
+    "reason": "E0596 mutable Tree fixture binding",
+    "exit": 101
+  },
+  "sourceFiles": [
+    {
+      "sha256": "7d34318ed61d58fedd23889112d549e4c4c20802da4162581e11f9f9247f70fa",
+      "path": "crates/audit/src/log/mod.rs",
+      "bytes": 22807
+    },
+    {
+      "sha256": "211817ddf672de8821d086e0a0a3c6a4aee16dfd0066a39b4e1d256257336899",
+      "path": "crates/audit/src/log/sealed.rs",
+      "bytes": 15376
+    },
+    {
+      "sha256": "f964d7e238744d998d31f4a06c93347db4330aee75b250c4402f1b6de127d542",
+      "path": "crates/audit/src/storage/mod.rs",
+      "bytes": 3920
+    },
+    {
+      "sha256": "e275c85e048d8f24331e1df56cb67caf79d9b5f63ba414497103d3f2af09c568",
+      "path": "crates/audit/src/storage/witness_recovery.rs",
+      "bytes": 7497
+    },
+    {
+      "sha256": "70b6d6e7b029a6057d4c880b3afe58851989fe33aa1821d2066aa78cf5a79bec",
+      "path": "crates/audit/src/storage/witness_recovery/tests.rs",
+      "bytes": 7786
+    }
+  ],
+  "actualProcessTests": 0,
+  "logs": [
+    {
+      "path": "recovery-units-attempt1.log",
+      "sha256": "b0bdf6608330c5966921a6036f6d3b7f47e5433a31fbdbe3800b2f71ed26106b",
+      "bytes": 1154
+    },
+    {
+      "path": "recovery-units-attempt2.log",
+      "sha256": "f44f8d0c047391bc72fbf686fe9ae26a8ac943d2d4f1c3f33223f4b070c59b50",
+      "bytes": 790
+    },
+    {
+      "path": "sealed-preflight-units.log",
+      "sha256": "b4f04b6d9197902d1e97a016dfeb2a6909d47a05ffaf58d4776de213607728dc",
+      "bytes": 468
+    },
+    {
+      "path": "scoped-lib-clippy-attempt1.log",
+      "sha256": "12885b5fff733a8c59353c3b520b129f0bf3bf3b433adb7cfd087ab565cd9ff8",
+      "bytes": 415
+    }
+  ],
+  "preflightPurePassed": 2,
+  "toolchain": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "ignored": 0,
+  "buildJobs": 1
+}

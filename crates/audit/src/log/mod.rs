@@ -1,5 +1,6 @@
 //! Durable per-node sealing. The WAL is the authority; projections are not.
 mod proofs;
+mod sealed;
 mod stamp;
 use crate::{checkpoint::CheckpointWitness, keys::custody::Durability};
 use crate::{
@@ -10,6 +11,9 @@ use crate::{
 };
 use ed25519_dalek::SigningKey;
 pub use proofs::{CheckpointInclusion, InclusionProof};
+pub use sealed::{
+    PinnedWitness, SealedLog, SealedLogError, SealedLogOptions, SealedLogStage, UnlockCredential,
+};
 use std::io;
 
 /// Required persistence strength for a separately supervised witness receipt.
