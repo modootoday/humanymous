@@ -16,6 +16,7 @@ tar = "=0.4.46"
 flate2 = "=1.1.11"
 time = { version = "=0.3.55", features = ["formatting"] }
 humanymous-test-support = { path = "../../../crates/test-support" }
+humanymous-native-security.workspace = true
 
 [lints.rust]
 unsafe_code = "forbid"

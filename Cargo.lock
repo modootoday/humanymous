@@ -2133,6 +2133,7 @@ name = "humanymous-delivery"
 version = "0.1.0"
 dependencies = [
  "flate2",
+ "humanymous-native-security",
  "humanymous-test-support",
  "serde_json",
  "sha2 0.10.9",
