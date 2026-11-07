@@ -308,3 +308,55 @@ Diff checks and residual old-reference search passed. No compiler, unit test,
 Clippy, fmt or CI ran; even scoped Cargo fmt waits for Root to declare manifests
 coherent. No process/target lease is held. Revalidate actual helper APIs, target
 roles and dev-only testing features once Root releases the coherent candidate.
+
+### Final Audit contribution to six-context runtime freeze
+
+Root fixture canon662cf7a2 is accepted without source changes. The attached
+runtime-slice-02-fixtures.json binds the current Audit source checkpoint8d362f49,
+seven data files with exact bytes/SHA256/Git blob/content commit, eight integration
+target proposals and two independent bin-role aliases. Audit is ready to supply
+this disposition to the six-context freeze; it does not approve other owners'
+source or bypass Root's selected Runtime test/403-diagnostic preconditions.
+
+All seven Audit-owned files move, without data replication, to package-local
+tests/fixtures/audit/{checkpoints,keys,merkle,records,verification,
+native-owner-core-f9b0cda3,native-owner-validation}.json. Their bytes remain exact,
+including historical f9 source path/hash strings. No Audit data replica exception
+is requested. Root's ONLY data replicas remain core human-chrome-allow.json and
+collector pilot/fixture.json, with producer authority, exact original commit/path/
+Git blob/copied-byte hash/license, equality check and coordinated parity updates.
+No source copy, public fixture API, helper package or cross-package include.
+
+The eight explicit integration target proposals are audit-checkpoint-parity,
+audit-control-operations, audit-durable-witness, audit-key-backups,
+audit-key-custody, audit-merkle-parity, audit-record-parity and
+audit-verification-parity, rooted in tests/audit/<existing filename>. Root freezes
+these exact aliases before Cargo edits. Move support/child_lifetime.rs with that
+context; preserve or rewrite its path attribute deliberately. Relative JSON
+includes and the CARGO_MANIFEST_DIR/tests/fixtures/records.json anchor must resolve
+to tests/fixtures/audit inside the extracted runtime package. Package inventory
+and clean extracted selected-test compilation are separate mandatory checks.
+
+Propose preserving audit-witness and audit-control-retainer names and their
+CARGO_BIN_EXE strings, with explicit paths to src/audit/bin/<name>.rs if Root
+keeps these targets in runtime. Each bin is a separate Rust crate and needs the
+existing checked service entrypoint available under the curated public Audit
+library context; do not widen private permit/custody constructors to make it
+compile. Root still must assign target/install/required-feature/native-role
+policy. A shared package ID never grants either role the other's credentials,
+retainer/witness authority or sibling native rights. Unsupported/no-op target
+profiles are not successful native pilots.
+
+The RUNTIME-SLICE-02 visibility table above is unchanged: ErasurePermit::issued
+Audit-only, bound_to/Vault::authorizes keys-only, Authorization fields private,
+raw custody/state/lock helpers Audit-only, checked retained-state construction
+control-only and actual owner/proof nesting private. No gateway/authority issuer
+exception is needed. Actual sibling forgery-negative checks remain required.
+
+Remaining source edits are ONLY future Root-frozen work: owning-context crate
+paths/internal native_security imports, visibility narrowing, fixture/path
+attributes, explicit test/bin mappings and Delivery historical-object/new-baseline
+consumer handling. No such edits, Cargo changes, moves, compilers or CI were
+performed for this final disposition. Current source/tests are clean at8d362f49;
+no owned live handles, target leases or path-moving operations. Root alone decides
+freeze after its selected test and403 diagnostic settle, then rechecks exact hashes.

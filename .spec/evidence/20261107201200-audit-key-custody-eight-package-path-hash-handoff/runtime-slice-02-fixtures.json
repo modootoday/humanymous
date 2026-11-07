@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "scope": "Audit owner contribution to six-context RUNTIME-SLICE-02 only",
+  "root_fixture_canon": "662cf7a25bfc12851ce7625c044364946532c823",
+  "current_audit_source": "8d362f497c43cef5c5b9e5694011cd5b0300cba9",
+  "accepted_runtime_contexts": [
+    "gateway",
+    "authority",
+    "audit",
+    "capture",
+    "network",
+    "native_security"
+  ],
+  "destination_package": "crates/sdk/humanymous-runtime",
+  "fixtures": [
+    {
+      "original_path": "crates/audit/tests/fixtures/checkpoints.json",
+      "last_content_commit": "c850883f7daf853b34da2c41195f0a96b2231a66",
+      "git_blob": "a35a35456b9a5ad372e996a71b32642cd63afb2e",
+      "bytes": 461483,
+      "sha256": "a28b057c83ed946d407e05fa4c7766ede4700c737617d27d231d46f0180716ef",
+      "destination_package_relative": "tests/fixtures/audit/checkpoints.json",
+      "ownership": "Move Audit-owned data; no replica",
+      "historical_embedded_paths": "Preserve bytes, including old f9 source commitments; do not normalize or rewrite"
+    },
+    {
+      "original_path": "crates/audit/tests/fixtures/keys.json",
+      "last_content_commit": "09188194b8b29895657029e2de800f728c84db63",
+      "git_blob": "a19918884e4bd81b752b514409bd7ed723c8119d",
+      "bytes": 27325,
+      "sha256": "e21e3326472cbcedd9dcec1764ea52ee9a21cabd79320866eb61c04c8b897e89",
+      "destination_package_relative": "tests/fixtures/audit/keys.json",
+      "ownership": "Move Audit-owned data; no replica",
+      "historical_embedded_paths": "Preserve bytes, including old f9 source commitments; do not normalize or rewrite"
+    },
+    {
+      "original_path": "crates/audit/tests/fixtures/merkle.json",
+      "last_content_commit": "08d64a9af873cdaf26452d9b8d46c49c54adf9a7",
+      "git_blob": "6170d9366121d095f2c81bf00030762494f70708",
+      "bytes": 1859928,
+      "sha256": "c0a755b9264539ebad9a1dc999ccaa77c6e088c4c440762293a97cde7560f067",
+      "destination_package_relative": "tests/fixtures/audit/merkle.json",
+      "ownership": "Move Audit-owned data; no replica",
+      "historical_embedded_paths": "Preserve bytes, including old f9 source commitments; do not normalize or rewrite"
+    },
+    {
+      "original_path": "crates/audit/tests/fixtures/native-owner-core-f9b0cda3.json",
+      "last_content_commit": "99317a5065e6cb2bd1d456678dc0c23124fb73ed",
+      "git_blob": "f28722d0ae05d7eb03e8f49a73f6915e59413560",
+      "bytes": 31893,
+      "sha256": "966fef7d3690d6db5eaa43dee50edaf1a72b46e9d9189587558d09ed347e9cc2",
+      "destination_package_relative": "tests/fixtures/audit/native-owner-core-f9b0cda3.json",
+      "ownership": "Move Audit-owned data; no replica",
+      "historical_embedded_paths": "Preserve bytes, including old f9 source commitments; do not normalize or rewrite"
+    },
+    {
+      "original_path": "crates/audit/tests/fixtures/native-owner-validation.json",
+      "last_content_commit": "99317a5065e6cb2bd1d456678dc0c23124fb73ed",
+      "git_blob": "e080d776f9963737c7d8b981fe3ec9f40d7dd679",
+      "bytes": 6844,
+      "sha256": "5584018093719d6cc9ab59c532301589c2b38d2c8e7a7af80709ce3682cb391d",
+      "destination_package_relative": "tests/fixtures/audit/native-owner-validation.json",
+      "ownership": "Move Audit-owned data; no replica",
+      "historical_embedded_paths": "Preserve bytes, including old f9 source commitments; do not normalize or rewrite"
+    },
+    {
+      "original_path": "crates/audit/tests/fixtures/records.json",
+      "last_content_commit": "c850883f7daf853b34da2c41195f0a96b2231a66",
+      "git_blob": "57bbdc993e21c9a16b47739da7c69488a93a377a",
+      "bytes": 1864396,
+      "sha256": "7175918e0ab3121b62f1ab8cbbd8d9b23b8382353a37273d10f2f95629499cdc",
+      "destination_package_relative": "tests/fixtures/audit/records.json",
+      "ownership": "Move Audit-owned data; no replica",
+      "historical_embedded_paths": "Preserve bytes, including old f9 source commitments; do not normalize or rewrite"
+    },
+    {
+      "original_path": "crates/audit/tests/fixtures/verification.json",
+      "last_content_commit": "c850883f7daf853b34da2c41195f0a96b2231a66",
+      "git_blob": "9128ecd962c7d54d3d993b22c028df0f7269c4e3",
+      "bytes": 1937597,
+      "sha256": "508f619c652d97be515f12a04f517acedc5b5b3ec959f6d2e6de5fad0a119300",
+      "destination_package_relative": "tests/fixtures/audit/verification.json",
+      "ownership": "Move Audit-owned data; no replica",
+      "historical_embedded_paths": "Preserve bytes, including old f9 source commitments; do not normalize or rewrite"
+    }
+  ],
+  "integration_targets": [
+    {
+      "old_test_target": "checkpoint_parity",
+      "proposed_unique_target": "audit-checkpoint-parity",
+      "destination_package_relative": "tests/audit/checkpoint_parity.rs",
+      "status": "Root must freeze exact target aliases before move"
+    },
+    {
+      "old_test_target": "control_operations",
+      "proposed_unique_target": "audit-control-operations",
+      "destination_package_relative": "tests/audit/control_operations.rs",
+      "status": "Root must freeze exact target aliases before move"
+    },
+    {
+      "old_test_target": "durable_witness",
+      "proposed_unique_target": "audit-durable-witness",
+      "destination_package_relative": "tests/audit/durable_witness.rs",
+      "status": "Root must freeze exact target aliases before move"
+    },
+    {
+      "old_test_target": "key_backups",
+      "proposed_unique_target": "audit-key-backups",
+      "destination_package_relative": "tests/audit/key_backups.rs",
+      "status": "Root must freeze exact target aliases before move"
+    },
+    {
+      "old_test_target": "key_custody",
+      "proposed_unique_target": "audit-key-custody",
+      "destination_package_relative": "tests/audit/key_custody.rs",
+      "status": "Root must freeze exact target aliases before move"
+    },
+    {
+      "old_test_target": "merkle_parity",
+      "proposed_unique_target": "audit-merkle-parity",
+      "destination_package_relative": "tests/audit/merkle_parity.rs",
+      "status": "Root must freeze exact target aliases before move"
+    },
+    {
+      "old_test_target": "record_parity",
+      "proposed_unique_target": "audit-record-parity",
+      "destination_package_relative": "tests/audit/record_parity.rs",
+      "status": "Root must freeze exact target aliases before move"
+    },
+    {
+      "old_test_target": "verification_parity",
+      "proposed_unique_target": "audit-verification-parity",
+      "destination_package_relative": "tests/audit/verification_parity.rs",
+      "status": "Root must freeze exact target aliases before move"
+    }
+  ],
+  "bin_targets": [
+    {
+      "old_bin_target": "audit-witness",
+      "proposed_preserved_alias": "audit-witness",
+      "source": "crates/audit/src/bin/audit-witness.rs",
+      "proposed_destination_package_relative": "src/audit/bin/audit-witness.rs",
+      "cargo_env": "CARGO_BIN_EXE_audit-witness",
+      "status": "Explicit Root target/install/feature freeze required; preserve separate native process role"
+    },
+    {
+      "old_bin_target": "audit-control-retainer",
+      "proposed_preserved_alias": "audit-control-retainer",
+      "source": "crates/audit/src/bin/audit-control-retainer.rs",
+      "proposed_destination_package_relative": "src/audit/bin/audit-control-retainer.rs",
+      "cargo_env": "CARGO_BIN_EXE_audit-control-retainer",
+      "status": "Explicit Root target/install/feature freeze required; preserve separate native process role"
+    }
+  ],
+  "visibility_disposition": "Plan20261107200953 RUNTIME-SLICE-02 table; no non-Audit issuer/approval-field constructor exception",
+  "audit_replica_exceptions": 0,
+  "external_data_exceptions": "Root owns only human-chrome-allow.json and collector pilot/fixture.json provenance/equality/coordination; no Audit source or fixture replication requested",
+  "live_owned_handles": [],
+  "live_owned_target_leases": [],
+  "inflight_path_moves": [],
+  "source_edits_this_disposition": 0,
+  "remaining_edits": [
+    "Root-frozen crate::audit path and internal native_security import mapping",
+    "Context-restricted visibility and actual sibling negative compile checks",
+    "All fixture relative/manifest includes and support path attributes",
+    "Explicit context-qualified integration and standalone bin target mapping",
+    "Delivery historical f9 data/seam consumer strategy or new post-move baseline"
+  ],
+  "ready": "Audit disposition and fixture hashes ready; Root waits selected Runtime test plus403 diagnostic and freezes exact slice",
+  "compiler_tests_clippy_ci": "NOT RUN in this disposition"
+}
