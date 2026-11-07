@@ -81,41 +81,49 @@ ships through a package-wide install/all-features accident.
 
 ## Precise34-root mapping and minimal bin linkage
 
-P2 pre-freeze reconciliation: X found that Delivery's
+P2 pre-freeze reconciliation CLOSED AS DESIGN: Root accepted Delivery
+daf541b871c4c5255498e0b7e94fb0f976706ad4 relocation after human confirmation.
+The accepted result is10integration roots/27compiled roots; all33maintenance
+cases remain23integration +10actual owned-filesystem/provider cases in the
+maintenance binary. No pure reclassification or implemented move is implied.
+
+X originally found that Delivery's
 maintenance-identity-proposal.json under evidence:root/20261107052001 relocates
 session_storage and selected_inputs cases into the maintenance bin. This plan's
-baseline maps those as two retained integration targets. Neither topology is
-accepted merely by this draft. The static34input-root census remains factual;
-postmerge counts below are conditional, not fixed freeze acceptance counts.
+baseline mapped those as two retained integration targets. The static34old-input
+root census remains factual; the accepted27compiled-root design replaces the
+baseline29root proposal below. Whole source/resource closure is still not frozen.
 
 | Root choice | Integration roots | Compiled roots | Maintenance qualification case identities |
 | --- | --- | --- | --- |
-| Keep the two current integration targets | 12 | 29 | Root must supply matching unchanged-target profile identities |
-| Accept Delivery's relocation into the owning bin | 10 | 27 | Proposed profile0.2 retains33unique old-to-new cases:23integration and10bin cases |
+| Superseded baseline retaining two integration targets | 12 | 29 | Not selected; no empty targets may preserve this count |
+| ROOT ACCEPTED relocation into the owning bin | 10 | 27 | Profile0.2 mapping retains33unique old-to-new cases:23integration and10bin cases |
 
 The10relocated cases perform real owned filesystem/provider work; they are not
 pure/no-I/O. X verified33old target/test keys against profile0.1,33unique proposed
-identities and eight source hashes/sizes/function lines. Root must explicitly
-choose, then reconcile this prose, tools-linkage-map.json, target aliases/counts,
-source placement, qualified-name inventory and the final profile in one freeze.
+identities and eight source hashes/sizes/function lines. This prose and
+tools-linkage-map.json now adopt Root's choice and exact33case selectors. Root
+must freeze final source placement, compiled target aliases/counts, qualified-name
+inventory and the final profile together before implementation.
 Do not retain empty integration targets, duplicate cases to preserve old counts,
 or alter workload/authority classification. No code/profile/target relocation
-has occurred. Delivery proposal SHA256 observed:
+has occurred. No Cargo/source/path change is authorized before Root freezes the
+complete reconciled input map. Delivery proposal SHA256 observed:
 fb43e083664731eaff32891c8ef587352837be506b550fbbe6f165cba8ad8e54.
 
 tools-linkage-map.json maps EVERYoriginal root: old package/kind/name/source/hash,
 new target alias/source/required feature/lint/disposition. The five retired public
-lib roots map to canonical private contexts with all unit cases retained. New
-baseline compiled roots would be29before the unresolved relocation: one lib,
-15bins,12integration tests and one example. This count reduction is not test loss.
+lib roots map to canonical private contexts with all unit cases retained. The two
+maintenance test-source rows map to bin-owned modules, not independent targets.
+Accepted compiled roots are27: one lib,15bins,10integration tests and one example.
+This count reduction is not test loss.
 All Rust roots live under src, including src/qualification/tests and examples;
 disable automatic discovery and list those explicit targets in Root's manifest.
 
 Exact integration aliases are cli-watchdog-boundary, cli-service-process,
 cli-runtime-service-process, native-command, maintenance-process,
 maintenance-git-coord, maintenance-windows-doctor, maintenance-product-package,
-maintenance-evidence-layout-cli, maintenance-session-storage,
-maintenance-selected-inputs-cli and maintenance-selected-inputs. The example is
+maintenance-evidence-layout-cli and maintenance-selected-inputs-cli. The example is
 cli-service-evidence. Minimal existing feature selectors: service-process uses
 service-pilot; runtime-service-process uses runtime-service-pilot; watchdog uses
 both; native-command uses native-planner; maintenance tests use qualification-
@@ -174,8 +182,8 @@ not new unique coverage. Root must approve unique-case mapping and workload
 accounting before broad test execution. Do not delete cfg(test) cases or infer a
 full native pilot from a duplicate pure/unit result to force old totals.
 
-All12existing integration roots and service_evidence example are named/hashed in
-the census. Proposed aliases are cli-watchdog-boundary, cli-service-process,
+All12old integration roots and service_evidence example are named/hashed in
+the census; two old roots now map to bin-owned modules. The remaining10aliases are cli-watchdog-boundary, cli-service-process,
 cli-runtime-service-process, native-command and maintenance-<original-name>.
 Root freezes exact names and CARGO_BIN_EXE rewires. Do not drop or silently merge
 targets to avoid collisions. Unit tests from retired tool libs move with their

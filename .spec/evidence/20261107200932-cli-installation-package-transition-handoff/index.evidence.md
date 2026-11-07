@@ -3,7 +3,7 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T23:24:48Z
+updated: 2026-11-07T23:27:20Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
@@ -13,7 +13,7 @@ files:
   - {path: runtime-slice02-formatted.json, sha256: 0583ceb99f97c8d2f2ffa2449220df0ab73cca3371cc44a32cc88bc05ab7a48e, bytes: 4763, store: repo}
   - {path: tools-freeze-census.json, sha256: 7e7765d28b232f5760235c715fd7dfe29dc2ca93efed12d12d0f702502e23cce, bytes: 111913, store: repo}
   - {path: tools-source-readers.json, sha256: d6f6e022d7991cad3d4a65da7c87e6ee861c1cca9a2400728ec392db69cc1f12, bytes: 22007, store: repo}
-  - {path: tools-linkage-map.json, sha256: 389e1cf60e0ab98acc41d757cf8398f9ba07083a608ed9e8b07ad32b17b68522, bytes: 53697, store: repo}
+  - {path: tools-linkage-map.json, sha256: 7b8621f9f11059e62a28a5e42e9a53d5cb9875561ef975b475a0c185e9ac2c4a, bytes: 89297, store: repo}
 ---
 
 ## Mission and current ownership
@@ -87,13 +87,14 @@ mutable registry embeds, frozen Core/Collector replicas and remaining dynamic
 repository readers need Root/owner dispositions. Whole34root+resource closure is
 NOT_FROZEN. Root must route this detailed mapping for X review before any move.
 
-X's P2 maintenance identity reconciliation is now explicit in the plan/machine
-map: CLI baseline12integration/29compiled roots versus Delivery's proposed
-10integration/27compiled roots when session_storage and selected_inputs move
-their10real filesystem/provider cases into the maintenance bin. The33unique
-profile cases remain required; they must not be relabeled pure, duplicated or
-replaced with empty target placeholders. Both affected rows are conditional until
-Root chooses and reconciles final source/target/qualified-name/profile counts.
+Root accepted Delivery daf541b8 maintenance relocation after human confirmation.
+Plan/machine map now adopt10integration/27compiled roots, superseding the earlier
+12/29baseline. session_storage and selected_inputs become bin-owned modules, not
+empty integration targets. The exact33old-to-new selectors are recorded:23actual
+integration and10actual filesystem/provider cases in the maintenance binary,
+never pure reclassification or duplicates. This resolves X's P2 identity choice
+as design only; final source/target/profile closure is still unfrozen. No source,
+Cargo or path changes are authorized before Root's complete input-map freeze.
 
 Root-approved lint-isolation amendment d45e600d is now part of this handoff.
 tools-role-map.json records all13absorbed responsibilities: the9workspace roles

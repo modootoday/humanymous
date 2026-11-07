@@ -15,7 +15,9 @@
       "required_features": "runtime-service-pilot,service-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-native-runner",
@@ -28,7 +30,9 @@
       "required_features": "qualification-native-runner",
       "disposition": "retained compiled root",
       "root_lint": "deny; exact2actorallows",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-cef-pilot",
@@ -41,7 +45,9 @@
       "required_features": "qualification-cef-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-runtime-pilot",
@@ -54,7 +60,9 @@
       "required_features": "qualification-runtime-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-lab-runner",
@@ -67,7 +75,9 @@
       "required_features": "qualification-lab-runner",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-pages",
@@ -80,7 +90,9 @@
       "required_features": "",
       "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": false,
+      "new_kind": "lib"
     },
     {
       "old_package": "humanymous-pages",
@@ -93,7 +105,9 @@
       "required_features": "qualification-pages",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-delivery",
@@ -106,7 +120,9 @@
       "required_features": "qualification-delivery",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -119,7 +135,9 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -132,7 +150,9 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -145,7 +165,9 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -158,7 +180,9 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -171,7 +195,9 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -179,12 +205,14 @@
       "old_name": "session_storage",
       "old_source": "skills/agent-maintenance/tests/session_storage.rs",
       "old_source_sha256": "1343a083c917c52661aabf490fbeecc64082c52ac5341591f0445c008a9ce147",
-      "new_target_name": "maintenance-session-storage",
-      "new_source": "src/qualification/tests/maintenance_session_storage.rs",
+      "new_target_name": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/session_storage.rs",
       "required_features": "qualification-maintenance",
-      "disposition": "CONDITIONAL baseline integration; Delivery proposes actual cases in maintenance bin; pending explicit Root choice",
+      "disposition": "old integration target retired; all actual cases relocated into owning maintenance binary, no empty or duplicate target",
       "root_lint": "forbid",
-      "path_status": "NOT_FROZEN: integration alias/source retained as proposal only; remove target if actual case relocation is accepted, never retain empty or duplicate case"
+      "path_status": "Root-accepted design identity; not moved until complete input freeze",
+      "new_compiled_root": false,
+      "new_kind": "bin-owned-test-module"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -197,7 +225,9 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -210,7 +240,9 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -218,12 +250,14 @@
       "old_name": "selected_inputs",
       "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
       "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
-      "new_target_name": "maintenance-selected-inputs",
-      "new_source": "src/qualification/tests/maintenance_selected_inputs.rs",
+      "new_target_name": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/selected_inputs.rs",
       "required_features": "qualification-maintenance",
-      "disposition": "CONDITIONAL baseline integration; Delivery proposes actual cases in maintenance bin; pending explicit Root choice",
+      "disposition": "old integration target retired; all actual cases relocated into owning maintenance binary, no empty or duplicate target",
       "root_lint": "forbid",
-      "path_status": "NOT_FROZEN: integration alias/source retained as proposal only; remove target if actual case relocation is accepted, never retain empty or duplicate case"
+      "path_status": "Root-accepted design identity; not moved until complete input freeze",
+      "new_compiled_root": false,
+      "new_kind": "bin-owned-test-module"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -236,7 +270,9 @@
       "required_features": "",
       "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": false,
+      "new_kind": "lib"
     },
     {
       "old_package": "humanymous-cli",
@@ -249,7 +285,9 @@
       "required_features": "service-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-cli",
@@ -262,7 +300,9 @@
       "required_features": "runtime-service-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-cli",
@@ -275,7 +315,9 @@
       "required_features": "",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-cli",
@@ -288,7 +330,9 @@
       "required_features": "service-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-cli",
@@ -301,7 +345,9 @@
       "required_features": "",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "lib"
     },
     {
       "old_package": "humanymous-cli",
@@ -314,7 +360,9 @@
       "required_features": "",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "example"
     },
     {
       "old_package": "humanymous-docs-review",
@@ -327,7 +375,9 @@
       "required_features": "qualification-docs-review",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-native-cli",
@@ -340,7 +390,9 @@
       "required_features": "native-planner",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-native-cli",
@@ -353,7 +405,9 @@
       "required_features": "native-planner",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "test"
     },
     {
       "old_package": "humanymous-attacker",
@@ -366,7 +420,9 @@
       "required_features": "qualification-report",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-attacker",
@@ -379,7 +435,9 @@
       "required_features": "qualification-attacker",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-attacker",
@@ -392,7 +450,9 @@
       "required_features": "qualification-wargame-verify",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     },
     {
       "old_package": "humanymous-attacker",
@@ -405,7 +465,9 @@
       "required_features": "",
       "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": false,
+      "new_kind": "lib"
     },
     {
       "old_package": "humanymous-defender",
@@ -418,7 +480,9 @@
       "required_features": "",
       "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": false,
+      "new_kind": "lib"
     },
     {
       "old_package": "humanymous-native-cli",
@@ -431,7 +495,9 @@
       "required_features": "",
       "disposition": "canonical private context; former public lib target retired, all unit cases retained by owning binary/test inventory",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": false,
+      "new_kind": "lib"
     },
     {
       "old_package": "humanymous-local-parity",
@@ -444,7 +510,9 @@
       "required_features": "qualification-local-parity",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review"
+      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "new_compiled_root": true,
+      "new_kind": "bin"
     }
   ],
   "literal_source_resource_edges": [
@@ -1161,21 +1229,648 @@
   ],
   "closure_status": "NOT_FROZEN: all34roots mapped;25literal external inputs+10resolvedmanifest expressions require owner disposition; registry embeds and Collector implementation path remain blockers",
   "maintenance_identity_reconciliation": {
-    "status": "PENDING_ROOT_CHOICE",
+    "status": "ROOT_ACCEPTED_DELIVERY_RELOCATION",
+    "decision_source": "Root human-confirmed baseline and explicit acceptance of daf541b871c4c5255498e0b7e94fb0f976706ad4",
     "proposal_path": ".spec/evidence/20261107052001-delivery-followup/maintenance-identity-proposal.json",
     "proposal_sha256": "fb43e083664731eaff32891c8ef587352837be506b550fbbe6f165cba8ad8e54",
-    "keep_integration": {
-      "integration_roots": 12,
-      "compiled_roots": 29
+    "integration_roots": 10,
+    "compiled_roots": 27,
+    "unique_cases": 33,
+    "maintenance_integration_cases": 23,
+    "maintenance_bin_cases": 10,
+    "bin_cases_are_pure": false,
+    "empty_integration_targets_retained": false,
+    "duplicate_cases_added": false,
+    "execution": "owning maintenance binary complete unit discovery/execution with existing library units retained; no ignored/filtered acceptance",
+    "implementation": "DESIGN_ONLY_NO_SOURCE_CARGO_OR_PATH_MOVES"
+  },
+  "maintenance_exact_case_map": [
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "process",
+      "old_test_name": "canonical_roles_do_not_require_retired_persona_pointers",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "old_source_line": 187,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "new_exact_selector": "canonical_roles_do_not_require_retired_persona_pointers",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
     },
-    "relocate_into_maintenance_bin": {
-      "integration_roots": 10,
-      "compiled_roots": 27,
-      "unique_cases": 33,
-      "integration_cases": 23,
-      "bin_cases": 10,
-      "bin_cases_are_pure": false
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "process",
+      "old_test_name": "checks_real_tree_and_rejects_wrong_skill_name",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "old_source_line": 203,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "new_exact_selector": "checks_real_tree_and_rejects_wrong_skill_name",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
     },
-    "requirements": "Root explicitly chooses; atomically reconcile target rows/aliases/source placement/counts/qualified case names/profile; no empty roots, duplicate cases or weakened workload"
-  }
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "process",
+      "old_test_name": "competing_claim_processes_leave_exactly_one_owner",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "old_source_line": 89,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "new_exact_selector": "competing_claim_processes_leave_exactly_one_owner",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "process",
+      "old_test_name": "eval_never_overwrites_existing_output",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "old_source_line": 245,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "new_exact_selector": "eval_never_overwrites_existing_output",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "process",
+      "old_test_name": "legacy_bom_claim_keeps_owner_until_exact_owner_releases",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "old_source_line": 131,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "new_exact_selector": "legacy_bom_claim_keeps_owner_until_exact_owner_releases",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "process",
+      "old_test_name": "missing_routing_rule_is_an_error_not_a_negative_match",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "old_source_line": 238,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "new_exact_selector": "missing_routing_rule_is_an_error_not_a_negative_match",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "process",
+      "old_test_name": "normalize_keeps_mirrors_and_preserves_content",
+      "old_source": "skills/agent-maintenance/tests/process.rs",
+      "old_source_sha256": "89746274ce5e794bdd84e268ec8c420a4f8a2522d9a67095e23210ab8577062f",
+      "old_source_line": 217,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-process",
+      "new_source": "src/qualification/tests/maintenance_process.rs",
+      "new_exact_selector": "normalize_keeps_mirrors_and_preserves_content",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "session_storage",
+      "old_test_name": "coexistence_refuses_mutation_without_creating_lock_or_claim",
+      "old_source": "skills/agent-maintenance/tests/session_storage.rs",
+      "old_source_sha256": "1343a083c917c52661aabf490fbeecc64082c52ac5341591f0445c008a9ce147",
+      "old_source_line": 64,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/session_storage.rs",
+      "new_exact_selector": "maintenance::qualification_tests::session_storage::coexistence_refuses_mutation_without_creating_lock_or_claim",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "session_storage",
+      "old_test_name": "invalid_note_leaves_no_mutation_and_overlap_does_not_take_over",
+      "old_source": "skills/agent-maintenance/tests/session_storage.rs",
+      "old_source_sha256": "1343a083c917c52661aabf490fbeecc64082c52ac5341591f0445c008a9ce147",
+      "old_source_line": 103,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/session_storage.rs",
+      "new_exact_selector": "maintenance::qualification_tests::session_storage::invalid_note_leaves_no_mutation_and_overlap_does_not_take_over",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "session_storage",
+      "old_test_name": "owned_release_preserves_history_and_rejects_foreign_owner",
+      "old_source": "skills/agent-maintenance/tests/session_storage.rs",
+      "old_source_sha256": "1343a083c917c52661aabf490fbeecc64082c52ac5341591f0445c008a9ce147",
+      "old_source_line": 73,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/session_storage.rs",
+      "new_exact_selector": "maintenance::qualification_tests::session_storage::owned_release_preserves_history_and_rejects_foreign_owner",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "session_storage",
+      "old_test_name": "post_intent_board_failure_retains_claim_and_lock_for_recovery",
+      "old_source": "skills/agent-maintenance/tests/session_storage.rs",
+      "old_source_sha256": "1343a083c917c52661aabf490fbeecc64082c52ac5341591f0445c008a9ce147",
+      "old_source_line": 116,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/session_storage.rs",
+      "new_exact_selector": "maintenance::qualification_tests::session_storage::post_intent_board_failure_retains_claim_and_lock_for_recovery",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "product_package",
+      "old_test_name": "developer_bundle_contains_separate_five_case_suite",
+      "old_source": "skills/agent-maintenance/tests/product_package.rs",
+      "old_source_sha256": "fb15b0d1c2318ca02037682ae7ca9ecd0a0383a1a9752f83ff58749b20e354ea",
+      "old_source_line": 12,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-product-package",
+      "new_source": "src/qualification/tests/maintenance_product_package.rs",
+      "new_exact_selector": "developer_bundle_contains_separate_five_case_suite",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "real staged artifact/repository source through actual executable",
+      "preserved_boundary": "product3/developer5 cases, exact staged file hashes/bytes/exclusions, refusal of existing output and unchanged retained receipt"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "product_package",
+      "old_test_name": "product_bundle_contains_paired_suite_and_refuses_existing_output",
+      "old_source": "skills/agent-maintenance/tests/product_package.rs",
+      "old_source_sha256": "fb15b0d1c2318ca02037682ae7ca9ecd0a0383a1a9752f83ff58749b20e354ea",
+      "old_source_line": 7,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-product-package",
+      "new_source": "src/qualification/tests/maintenance_product_package.rs",
+      "new_exact_selector": "product_bundle_contains_paired_suite_and_refuses_existing_output",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "real staged artifact/repository source through actual executable",
+      "preserved_boundary": "product3/developer5 cases, exact staged file hashes/bytes/exclusions, refusal of existing output and unchanged retained receipt"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "git_coord",
+      "old_test_name": "single_literal_owned_path_commits_without_consuming_foreign_staging",
+      "old_source": "skills/agent-maintenance/tests/git_coord.rs",
+      "old_source_sha256": "a024ad0db93492ecba551108d39f17fea2c0ee54f5cb5d91caf19aebf3b77d75",
+      "old_source_line": 77,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-git-coord",
+      "new_source": "src/qualification/tests/maintenance_git_coord.rs",
+      "new_exact_selector": "single_literal_owned_path_commits_without_consuming_foreign_staging",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual isolated Git and maintained legacy PowerShell coordinator process",
+      "preserved_boundary": "real pwsh/git, isolated GIT env/config/hooks/index, one literal owned path, foreign staging and attributed identity; missing source/tool fails"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs",
+      "old_test_name": "actual_files_share_the_aggregate_budget_without_hidden_probes",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
+      "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
+      "old_source_line": 79,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/selected_inputs.rs",
+      "new_exact_selector": "maintenance::qualification_tests::selected_inputs::actual_files_share_the_aggregate_budget_without_hidden_probes",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs",
+      "old_test_name": "binary_and_empty_files_do_not_inherit_canonical_lf_policy",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
+      "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
+      "old_source_line": 47,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/selected_inputs.rs",
+      "new_exact_selector": "maintenance::qualification_tests::selected_inputs::binary_and_empty_files_do_not_inherit_canonical_lf_policy",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs",
+      "old_test_name": "missing_or_directory_inputs_remain_explicit_provider_errors",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
+      "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
+      "old_source_line": 142,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/selected_inputs.rs",
+      "new_exact_selector": "maintenance::qualification_tests::selected_inputs::missing_or_directory_inputs_remain_explicit_provider_errors",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs",
+      "old_test_name": "selected_file_link_is_refused_without_reading_its_target",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
+      "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
+      "old_source_line": 163,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/selected_inputs.rs",
+      "new_exact_selector": "maintenance::qualification_tests::selected_inputs::selected_file_link_is_refused_without_reading_its_target",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs",
+      "old_test_name": "tighter_observation_counts_reject_a_looser_frozen_selection",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
+      "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
+      "old_source_line": 98,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/selected_inputs.rs",
+      "new_exact_selector": "maintenance::qualification_tests::selected_inputs::tighter_observation_counts_reject_a_looser_frozen_selection",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs",
+      "old_test_name": "unknown_selection_is_not_promoted_by_successful_content_reads",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs.rs",
+      "old_source_sha256": "9fcab71ec79da7fdbace9558a224b60cebb87a7437e4c475614f035087f2d6b8",
+      "old_source_line": 66,
+      "new_owner_kind": "owning-private-binary-test-module",
+      "new_target": "humanymous-agent-maintenance",
+      "new_source": "src/qualification/maintenance/qualification_tests/selected_inputs.rs",
+      "new_exact_selector": "maintenance::qualification_tests::selected_inputs::unknown_selection_is_not_promoted_by_successful_content_reads",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual owned filesystem/provider boundary, NOT no-I/O pure qualification",
+      "preserved_boundary": "real file bytes/provider refusal/budgets/links or claims/journal/lock/recovery; no synthetic replacement"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs_cli",
+      "old_test_name": "complete_binary_selection_emits_hashes_without_contents_or_authority",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "old_source_sha256": "2086f49381d5e3828f5b78f842d5ff81a05e6a1382b386afb61aeeda4d750260",
+      "old_source_line": 51,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-selected-inputs-cli",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs_cli.rs",
+      "new_exact_selector": "complete_binary_selection_emits_hashes_without_contents_or_authority",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs_cli",
+      "old_test_name": "invalid_request_diagnostics_do_not_echo_values",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "old_source_sha256": "2086f49381d5e3828f5b78f842d5ff81a05e6a1382b386afb61aeeda4d750260",
+      "old_source_line": 85,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-selected-inputs-cli",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs_cli.rs",
+      "new_exact_selector": "invalid_request_diagnostics_do_not_echo_values",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs_cli",
+      "old_test_name": "missing_selected_file_emits_incomplete_metadata_with_exit_one",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "old_source_sha256": "2086f49381d5e3828f5b78f842d5ff81a05e6a1382b386afb61aeeda4d750260",
+      "old_source_line": 97,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-selected-inputs-cli",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs_cli.rs",
+      "new_exact_selector": "missing_selected_file_emits_incomplete_metadata_with_exit_one",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs_cli",
+      "old_test_name": "oversized_request_is_rejected_before_selection",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "old_source_sha256": "2086f49381d5e3828f5b78f842d5ff81a05e6a1382b386afb61aeeda4d750260",
+      "old_source_line": 136,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-selected-inputs-cli",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs_cli.rs",
+      "new_exact_selector": "oversized_request_is_rejected_before_selection",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs_cli",
+      "old_test_name": "request_directory_or_missing_file_is_rejected",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "old_source_sha256": "2086f49381d5e3828f5b78f842d5ff81a05e6a1382b386afb61aeeda4d750260",
+      "old_source_line": 126,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-selected-inputs-cli",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs_cli.rs",
+      "new_exact_selector": "request_directory_or_missing_file_is_rejected",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "selected_inputs_cli",
+      "old_test_name": "unknown_selection_emits_read_success_but_exit_one",
+      "old_source": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+      "old_source_sha256": "2086f49381d5e3828f5b78f842d5ff81a05e6a1382b386afb61aeeda4d750260",
+      "old_source_line": 114,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-selected-inputs-cli",
+      "new_source": "src/qualification/tests/maintenance_selected_inputs_cli.rs",
+      "new_exact_selector": "unknown_selection_emits_read_success_but_exit_one",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "windows_doctor",
+      "old_test_name": "discovery_does_not_execute_candidates_or_promote_sdk_presence",
+      "old_source": "skills/agent-maintenance/tests/windows_doctor.rs",
+      "old_source_sha256": "779fbf793706966b768849fad7cd511317383b8d9e11854a5b1b9fa3c729372c",
+      "old_source_line": 37,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-windows-doctor",
+      "new_source": "src/qualification/tests/maintenance_windows_doctor.rs",
+      "new_exact_selector": "discovery_does_not_execute_candidates_or_promote_sdk_presence",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "windows_doctor",
+      "old_test_name": "discovery_retains_missing_paths_without_setting_pyo3",
+      "old_source": "skills/agent-maintenance/tests/windows_doctor.rs",
+      "old_source_sha256": "779fbf793706966b768849fad7cd511317383b8d9e11854a5b1b9fa3c729372c",
+      "old_source_line": 77,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-windows-doctor",
+      "new_source": "src/qualification/tests/maintenance_windows_doctor.rs",
+      "new_exact_selector": "discovery_retains_missing_paths_without_setting_pyo3",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "windows_doctor",
+      "old_test_name": "doctor_rejects_arbitrary_probe_arguments",
+      "old_source": "skills/agent-maintenance/tests/windows_doctor.rs",
+      "old_source_sha256": "779fbf793706966b768849fad7cd511317383b8d9e11854a5b1b9fa3c729372c",
+      "old_source_line": 94,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-windows-doctor",
+      "new_source": "src/qualification/tests/maintenance_windows_doctor.rs",
+      "new_exact_selector": "doctor_rejects_arbitrary_probe_arguments",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "evidence_layout_cli",
+      "old_test_name": "active_handle_emits_refused_metadata_with_exit_one",
+      "old_source": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+      "old_source_sha256": "8a797816780c673d8831d6fcc030a81360bf51a7183927f1e5f02f791425f4f6",
+      "old_source_line": 84,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-evidence-layout-cli",
+      "new_source": "src/qualification/tests/maintenance_evidence_layout_cli.rs",
+      "new_exact_selector": "active_handle_emits_refused_metadata_with_exit_one",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "evidence_layout_cli",
+      "old_test_name": "complete_claims_emit_proposal_without_touching_candidate_or_verifying_archives",
+      "old_source": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+      "old_source_sha256": "8a797816780c673d8831d6fcc030a81360bf51a7183927f1e5f02f791425f4f6",
+      "old_source_line": 44,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-evidence-layout-cli",
+      "new_source": "src/qualification/tests/maintenance_evidence_layout_cli.rs",
+      "new_exact_selector": "complete_claims_emit_proposal_without_touching_candidate_or_verifying_archives",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "evidence_layout_cli",
+      "old_test_name": "oversized_or_missing_request_does_not_start_a_plan",
+      "old_source": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+      "old_source_sha256": "8a797816780c673d8831d6fcc030a81360bf51a7183927f1e5f02f791425f4f6",
+      "old_source_line": 105,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-evidence-layout-cli",
+      "new_source": "src/qualification/tests/maintenance_evidence_layout_cli.rs",
+      "new_exact_selector": "oversized_or_missing_request_does_not_start_a_plan",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    },
+    {
+      "old_package": "humanymous-agent-maintenance",
+      "old_target": "evidence_layout_cli",
+      "old_test_name": "unknown_json_fields_are_sanitized_and_exit_two",
+      "old_source": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+      "old_source_sha256": "8a797816780c673d8831d6fcc030a81360bf51a7183927f1e5f02f791425f4f6",
+      "old_source_line": 95,
+      "new_owner_kind": "integration-test",
+      "new_target": "maintenance-evidence-layout-cli",
+      "new_source": "src/qualification/tests/maintenance_evidence_layout_cli.rs",
+      "new_exact_selector": "unknown_json_fields_are_sanitized_and_exit_two",
+      "feature": "qualification-maintenance",
+      "required_case": true,
+      "ignore_allowed": false,
+      "filter_allowed": false,
+      "subprocess_helper": false,
+      "scope": "actual executable boundary",
+      "preserved_boundary": "existing arguments/exits/stdout/stderr and owned filesystem assertions"
+    }
+  ]
 }

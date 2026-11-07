@@ -409,6 +409,13 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Root accepted Delivery daf541b8 maintenance relocation: final Tools design is
+10integration/27compiled roots, with33required unique maintenance cases split
+23integration/10actual owned-filesystem-provider bin cases, not pure. The detailed
+plan/machine linkage map preserve every exact old/new selector and retire the two
+old integration targets without empty/duplicate placeholders. This is design
+reconciliation only; no Cargo/source/path move until complete Root input freeze.
+
 Root accepted Tools15bin names/qualification-* and native-planner spellings,
 defaultoff qualification, default artifact ONLYhumanymous and explicit optional
 native planner. [[plan:root/20261107224511]] and tools-linkage-map.json map34roots
