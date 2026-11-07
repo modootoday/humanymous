@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T06:29:39Z
+updated: 2026-11-07T06:48:49Z
 rel:
   governs: [docs]
 files:
@@ -14,6 +14,7 @@ files:
   - {path: audit-reader-status.json, sha256: 30a69bec28f952ef3e75e6d23853f867499aaa29fc2a9e129d81941bb435ba0f, bytes: 824, store: repo}
   - {path: native-planner-review-status.json, sha256: 8434f3e1b58e85824ccdfe38bee13afa3f7889744a3f57b472e2d29faceb1415, bytes: 807, store: repo}
   - {path: resource-hold-status.json, sha256: 491dcae56b56bf43e2302489e53a7014025618a147c87b013909f026f2d809d3, bytes: 1407, store: repo}
+  - {path: navigation-source-status.json, sha256: 015dca70cd44a0abb0b37058f33d0fef0844ef3f4baee04c55161de6f7259b0c, bytes: 889, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
@@ -154,3 +155,10 @@ the implemented adapter experiment does not resolve them by implication.
 No new complete accessibility, ordinary-human, screen-reader, deployment or
 cross-implementation conformance result is claimed. The current browser check
 observed the homepage and protocol-profile rendering only.
+
+Navigation source guard follow-through: navigation-source-status.json records
+a resource-reviewed, one-Cargo pure-unit check under the finalized local/hosted
+policy. First attempt15pass1fixturefailure retained; after fix16pass0fail and
+lib-only strict Clippy pass. Rebuilt source checker covers88pages and constrained
+menu structure/targets. This supersedes no historical result and is not actual
+Jekyll/rendered-link/browser/AT qualification; those remain not_run for88pages.

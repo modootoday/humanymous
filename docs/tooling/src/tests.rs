@@ -17,6 +17,12 @@ impl Fixture {
         fs::create_dir(&root).unwrap();
         fs::create_dir(root.join("docs")).unwrap();
         fs::create_dir(root.join("site")).unwrap();
+        fs::create_dir_all(root.join("docs/_data/nav")).unwrap();
+        fs::write(
+            root.join("docs/_data/nav/main.yml"),
+            "- {title: Home, url: /}\n",
+        )
+        .unwrap();
         let f = Self(root);
         f.page("index.md", "/", "# Example\n");
         f.html("index.html", "https://humanymous.net/", "<h1>Example</h1>");
@@ -51,10 +57,49 @@ fn valid_source_and_output_are_read_only() {
 }
 
 #[test]
+fn navigation_rejects_misindentation_missing_targets_and_empty_groups() {
+    let f = Fixture::new();
+    let menu = f.0.join("docs/_data/nav/main.yml");
+    fs::write(
+        &menu,
+        "- title: Reference\n  items:\n    - {title: Home, url: /}\n",
+    )
+    .unwrap();
+    assert!(check_source(&f.0.join("docs")).unwrap().errors.is_empty());
+    for text in [
+        "- title: Reference\n  items:\n      - {title: Home, url: /}\n",
+        "- {title: Missing, url: /missing.html}\n",
+        "- title: Reference\n  items:\n",
+        "- title: Reference\n    - {title: Home, url: /}\n",
+        "    - {title: Home, url: /}\n",
+        "- title: Reference\n  items:\n  items:\n",
+        "- {title: Home, url: /}\n\t- {title: Home, url: /}\n",
+    ] {
+        fs::write(&menu, text).unwrap();
+        assert!(
+            check_source(&f.0.join("docs"))
+                .unwrap()
+                .errors
+                .iter()
+                .any(|e| e.starts_with("navigation:")),
+            "{text}"
+        );
+    }
+    fs::remove_file(&menu).unwrap();
+    assert!(
+        check_source(&f.0.join("docs"))
+            .unwrap()
+            .errors
+            .iter()
+            .any(|e| e.contains("navigation:"))
+    );
+}
+
+#[test]
 fn build_input_commitment_covers_navigation_tokens_binary_assets_and_inventory() {
     let f = Fixture::new();
     let root = f.0.join("docs");
-    fs::create_dir(root.join("_data")).unwrap();
+    fs::create_dir_all(root.join("_data")).unwrap();
     fs::create_dir(root.join("_sass")).unwrap();
     fs::create_dir(root.join("assets")).unwrap();
     fs::create_dir(root.join("tooling")).unwrap();

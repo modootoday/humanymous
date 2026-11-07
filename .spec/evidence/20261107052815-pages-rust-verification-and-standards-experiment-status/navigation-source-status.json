@@ -1,0 +1,32 @@
+{
+  "schema": "humanymous.pages-navigation-source-status/1",
+  "source_scope": "working docs/tooling navigation guard; exact committed source identified by checkpoint",
+  "resource_review": {
+    "commit_limit_bytes": 72303525888,
+    "cargo_rustc_observed": 0,
+    "committed_bytes": 57105756160
+  },
+  "cargo_build_jobs": 1,
+  "cargo_incremental": 0,
+  "first_unit_attempt": {
+    "failed": 1,
+    "passed": 15,
+    "reason": "fixture existing _data directory"
+  },
+  "final_unit_attempt": {
+    "failed": 0,
+    "ignored": 0,
+    "passed": 16
+  },
+  "clippy": "passed; package lib only; -D warnings",
+  "source": {
+    "pages": 88,
+    "errors": 0,
+    "navigation_structure_and_targets": "passed constrained authored grammar"
+  },
+  "general_yaml_parser": false,
+  "jekyll_build": "not_run",
+  "rendered_links": "not_run",
+  "browser": "not_run",
+  "assistive_technology": "not_run"
+}

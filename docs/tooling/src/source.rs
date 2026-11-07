@@ -119,5 +119,6 @@ pub(crate) fn load(root: &Path) -> Result<(Vec<Page>, Vec<String>), String> {
     if pages.is_empty() {
         errors.push("no authored reader pages".into());
     }
+    crate::navigation::check(&root, &urls, &mut errors);
     Ok((pages, errors))
 }

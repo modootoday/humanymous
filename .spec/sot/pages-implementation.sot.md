@@ -23,6 +23,12 @@ substance, project-draft maturity and explicit no-submission/no-adoption status.
 Private identifiers, operational secrets and personal traces do not belong in
 the site. AGENTS.md, scripts and review metadata are excluded from output.
 
+The source checker also validates the deliberately constrained authored
+`_data/nav/main.yml` grammar: root flow-map links or named groups with exactly
+indented items, simple unquoted titles and URLs matching authored permalinks.
+Missing menus, malformed indentation, unknown targets and empty groups reject.
+This is a local authoring contract, not a general YAML parser or rendered-theme
+validation; expanding menu syntax requires explicit checker/tests review.
 ### Theme and build authority
 
 Source-review triage uses `humanymous-pages review-delta --root .`, a read-only

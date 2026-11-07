@@ -668,3 +668,15 @@ checker had not detected that structural issue. Current tree is88pages, existing
 source checker errors0; JSON and surface-to-source mappings checked. Historical
 85builds and86source outcomes do not qualify this88page input. No fresh YAML
 render/Jekyll/browser/AT run; hosted actual build remains required.
+
+## Navigation source guard and bounded pure checks
+
+Resource read committed57105756160/limit72303525888 bytes; no cargo/rustc found.
+Under confirmed local pure-unit policy used one Cargo task at a time, buildjobs1
+and incremental0. Added Rust-only constrained authored-menu structure/permalink
+check with no new dependency. Test covers actual six-space regression, absent
+target/menu, empty group, missing/duplicate items, orphan item and tab indent.
+Initial16test run:15pass/1failure (fixture existing _data directory); fixed fixture
+create_dir_all, rerun16pass0fail, scoped lib Clippy-Dwarnings pass. Current rebuilt
+source command88pages/errors0. No Jekyll/Docker/browser/native service execution.
+The new check is not arbitrary YAML or render/AT authority.

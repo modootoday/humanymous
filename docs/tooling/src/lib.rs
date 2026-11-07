@@ -2,6 +2,7 @@
 mod build;
 mod files;
 mod inputs;
+mod navigation;
 mod output;
 pub mod review;
 pub mod snapshot;
