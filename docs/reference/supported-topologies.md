@@ -121,6 +121,13 @@ These developing source boundaries do not add release-qualified host tuples.
 | Apache | Safe lifecycle/replay and opt-in native module source exist. The exact httpd/APR/MPM/compiler/header tuple, pool cleanup, after-fork initialization, reload, cancellation and origin isolation still need native qualification. Source archives and selected header hashes do not prove the installed ABI |
 | Common C/C++ boundary | Source exports the pointer-free by-value `humanymous_native_abi_v1` buffer/lifecycle command boundary over one safe owner. This is not an installed application security SDK. Header generation configuration and Rust units do not prove actual C/C++ layout, dynamic loading, unload, exception or allocator compatibility |
 
+The ASP.NET Core packed-candidate restore configuration maps its experimental
+package identity to an owned feed, with selected SDK dependency prefixes mapped
+to the upstream feed. This is declared restore routing, not a verified restore
+or dependency closure. Its notice preserves the project's and compatibility
+code's license boundaries while explicitly leaving final native dependency
+notices and vulnerability review as release gates.
+
 The Apache candidate separates a safe lifecycle crate from its native module.
 The default native feature set does not build the httpd hooks.
 Default-feature all-target compilation and lint have passed separately from

@@ -1,0 +1,73 @@
+{
+  "observed_utc": "2026-11-07T09:01:57.2768527Z",
+  "run": {
+    "conclusion": null,
+    "head_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+    "id": 42355168729,
+    "status": "in_progress",
+    "updated_at": "2026-11-07T09:00:49Z"
+  },
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 128351571194,
+      "name": "validate / policy",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926068,
+      "name": "validate / docker",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926084,
+      "name": "validate / native (macos-15)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926093,
+      "name": "validate / native (ubuntu-24.04)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128351926153,
+      "name": "validate / native (windows-2025)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128353483559,
+      "name": "validate / browser",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128355522898,
+      "name": "validate / browser-product",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128358355202,
+      "name": "validate / nginx",
+      "status": "completed"
+    },
+    {
+      "conclusion": null,
+      "id": 128359709010,
+      "name": "validate / msrv",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "id": 128359821189,
+      "name": "validate / rust-images",
+      "status": "in_progress"
+    }
+  ],
+  "scope": "Job conclusion observation only; not test-count or changed-source qualification. Product browser is separate from Pages validation."
+}

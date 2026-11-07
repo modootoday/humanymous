@@ -148,6 +148,16 @@ or generally supported installation is implied here.
 
 ## Component container boundary
 
+The current host-pilot contract requires five harness groups: three actual-host
+groups and two framing groups, with no ignored or filtered groups. Its four
+Node/Bun × Express/Hono tuples require 12 distinct result rows and 60 actual
+cases: four production-authority non-ALLOW cases, 28 synthetic-evidence ALLOW
+cases, 16 synthetic-authority negative cases and 12 unavailable-authority cases.
+These are required denominators, not current passing results. Synthetic ALLOW
+exercises the host path without establishing production browser provenance;
+neither these cases nor five passing harness groups qualify an npm package or
+the whole product. Preserve missing rows and unreached cases as incomplete.
+
 The Node pilot image contains pinned Node/Bun hosts, Rust build inputs, generated
 preload glue and compiled host tests plus the actual authority executable. Its
 entrypoint runs the native host test driver; it is not an application runtime

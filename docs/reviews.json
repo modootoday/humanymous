@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/node/host-pilot-contract.json",
+  "sha256": "f4ec52033a8e692b72d6a9bd6befe76825d65cb290a4f2fb72fd160e45538dcb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete required contract: five harness groups/no ignore/filter, four Node/Bun Express/Hono tuples,12rows and60cases split4production-negative/28synthetic-ALLOW/16synthetic-negative/12unavailable. Required counts are not executed outcomes; no package/product or production browser qualification.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/NOTICE",
+  "sha256": "76b799f9bff2551472db88f54d5c3177c1fcdbf4d9daa75d2564f67707f7e24d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete experimental license notice preserving Apache2 project and upstream Go compatibility BSD notices without asserting embedded Go runtime; complete native dependency notices and vulnerability/publication audit remain release gates.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/NuGet.Packed.Config",
+  "sha256": "f4087cc1b2c83e1f75de07e0b75ce692f59e139165d829fdf5903c683a6b89ca",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete packed restore source mappings: owned candidate exact package and upstream Microsoft/System/runtime prefixes, cleared default sources. Routing declaration is not actual restore, dependency closure or package qualification.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "crates/audit/src/storage/witness_recovery/tests.rs",
   "sha256": "70b6d6e7b029a6057d4c880b3afe58851989fe33aa1821d2066aa78cf5a79bec",
   "reviewer": "codex/rust-pages",

@@ -1436,3 +1436,24 @@ comparisons and separates pure fixture definitions from native repair/process
 execution. Requested audit owner label superseded lower KEYS-INTEGRATION current
 headings and prepared-rotation claims; withheld that whole-file metadata receipt.
 No new Cargo/process/network execution; goal remains active.
+
+### Node required host denominator and managed package boundary
+
+Read full new Node host contract and .NET NOTICE/packed restore config. Public
+Node reference requires5harness groups,4runtime/framework tuples,12rows,60actual
+cases with production/synthetic/unavailable distinctions. Counts remain required,
+not observed passes or package/product qualification. Managed topology separates
+restore routing and notices from actual restore/dependency/license audit. Added
+three manual receipts. Audit native test excerpts remain partial/unaccepted.
+
+Exact813 hosted observation now shows nginx job success and Windows job failure;
+saved sanitized job/source status, no inferred case counts or current WIP pass.
+No dispatch/restart; Pages not observed at initial poll, inspect saved snapshot
+for latest job state. No native/compiler/browser execution performed locally.
+
+Scoped evidence check caught dot-segment public JSON attachment hash mismatch:
+that earlier summary was LF-normalized after attachment. Inspected unchanged
+semantic content, normalized owned public summaries to LF before attaching and
+reattached exact bytes. No original command output or immutable raw evidence was
+rewritten. Current hosted snapshot additionally observes msrv128359709010 and
+rust-images128359821189 running; overall still in_progress.
