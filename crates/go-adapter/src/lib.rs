@@ -3,7 +3,8 @@
 pub mod probe;
 mod qualification;
 pub mod scenario;
-use humanymous_runtime::{Rejection, configuration::Configuration};
+/// Shared runtime types; these are re-exports, not adapter-specific copies.
+pub use humanymous_runtime::{Rejection, configuration::Configuration};
 pub use qualification::{CASES, Case, ExpectedTuple, Outcome, QUALIFICATION_PROFILE, Receipt};
 use serde::{Deserialize, Serialize};
 

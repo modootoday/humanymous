@@ -17,6 +17,24 @@ the shared Rust Gate; no authored Go SDK, foreign templates or unsafe ABI glue.
 The integration root accepted this direction on 2026-11-07. No new producer
 profile is needed: the actual Gate observes ingress and alone owns security.
 
+## Public facade migration contract
+
+Root approved optional feature `adapter-go` and public Rust access through
+`humanymous::adapters::go::{Deployment, Host, Configuration, Rejection}`. The
+internal target package is `humanymous-adapter-go`; its ordinary Rust library
+artifact remains unique, with no Go SDK/module/cgo or common native DLL.
+Configuration and Rejection are re-exported from the existing owning runtime,
+without a second implementation or conversion layer.
+
+The current leaf package remains `humanymous-go-adapter` until Root supplies the
+public facade, machine-checked build-product/feature manifest and atomic shared
+Cargo/lock/consumer candidate. Lab owns the public consumer imports and Delivery
+owns current workflow/policy selectors. The leaf export predecessor and its
+external Rust API/host-contract checks do not qualify that future facade.
+Fresh scoped tests, strict Clippy, actual public consumer and hosted Docker Go8
+are required at the renamed source. Preserve original c321 Go8 receipts and raw
+commands as historical exact-source evidence, without relabelling their result.
+
 ## Host contract
 
 net/http, chi, Gin and Echo use standard HTTP handlers but qualify independently.

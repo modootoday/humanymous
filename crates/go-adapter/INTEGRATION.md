@@ -7,13 +7,15 @@ Rust package/crate is `humanymous`, with Go access through
 `humanymous::adapters::go`. The current internal package remains
 `humanymous-go-adapter` until Root's single graph migration. No rename is
 performed by this handoff, and the frozen c321 hosted receipt retains its
-original names. The exact optional feature and build-product manifest must be
-frozen by Root before facade wiring; neither is qualified by this table.
+original names. Root approved optional feature `adapter-go` and exports
+`Deployment`, `Host`, `Configuration`, `Rejection` at that public Go path. Root
+still owns the machine-checked build-product manifest and facade wiring;
+neither is qualified by this table.
 
 | Surface | Exact migration impact and owner |
 | --- | --- |
 | Package and dependencies | Root coordinates the Go leaf package rename, public facade dependency/feature, lab consumer dependency and root Cargo.lock in one graph candidate. Lab consumes the public facade rather than exposing the renamed internal leaf as the public API. No standalone lock exists in test/lab/runtime at this checkpoint |
-| Rust library identifier | No explicit `[lib].name` or crate-type is declared. The internal default identifier changes from `humanymous_go_adapter` to `humanymous_adapter_go`; public lab imports in go/client.rs, gate.rs, mod.rs and receipt.rs move together to `humanymous::adapters::go`. Root must approve the reachable configuration/error types without duplicating their implementation |
+| Rust library identifier | No explicit `[lib].name` or crate-type is declared. The internal default identifier changes from `humanymous_go_adapter` to `humanymous_adapter_go`; public lab imports in go/client.rs, gate.rs, mod.rs and receipt.rs move together to `humanymous::adapters::go`. The leaf's tests/deployment_contract.rs external import must also change in that atomic batch |
 | Build artifact | This package is an ordinary Rust library, not a cdylib/staticlib or executable host module. Its inferred rlib/rmeta target identity changes; Cargo regenerates those dependency artifacts. No Go-facing shared-library filename or exported C symbol is declared here |
 | Consumer commands | `.github/workflows/go-validation.yml` scoped test/Clippy selectors and `scripts/ci/delivery/src/policy.rs` exact command expectations must change atomically. Historical evidence commands remain unchanged |
 | Registry and ABI | `publish=false`; no crates.io publication, Go SDK, cgo binding, Python/Ruby module, Node export or public ABI symbol is renamed by this package change. The bounded HTTP receipt profile/schema and Go host labels are separate contracts, not Cargo names |
@@ -35,6 +37,14 @@ Build-only and pure-test results remain separate from actual host execution.
 Do not change the receipt schema/profile, host labels or prior evidence merely
 to match a Cargo identity. Go remains an HTTP integration, without a Go SDK,
 cgo library, shared-library loader or newly authored foreign implementation.
+
+The authorized source predecessor now publicly re-exports Configuration and
+Rejection from the runtime. External Rust compile-time signatures require the
+same owning types without conversion; one new pure test checks all six host
+families' distinct pooled-context/borrowed-entity premises. These checks are
+authored, not executed: ten existing unit tests plus one new integration test
+need a Root-assigned compiler slot. Direct Rust formatting and scoped Specfold
+passed. This predecessor does not rename the package or qualify the facade.
 
 Current accepted result: Rust Gate Go integration adapter, bounded net/http8,
 source c3211e27ba941f3f11809e420d07d61ececad623, actual hosted run42375310198.
