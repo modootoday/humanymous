@@ -1,0 +1,20 @@
+{
+  "schema": "humanymous.apache.compilation-evidence/0.1",
+  "sourceCommit": "2d66c0df7f5ea4e925a30d2f0b39c05bebd696ad",
+  "sourceArchiveSha256": "bc5415a076c222d39efdaea46cf9f74f728bc2cd898ee789acb1d175dff121df",
+  "sourceInventoryBeforeSha256": "098b57f11ff74abc84f4ad75beec0df33a7c47153ceb07978a5ab047a0916dda",
+  "sourceInventoryAfterSha256": "098b57f11ff74abc84f4ad75beec0df33a7c47153ceb07978a5ab047a0916dda",
+  "runner": "WSL REA-Ubuntu Linux",
+  "rustVersion": "1.99.1",
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "locked": true,
+  "safeTests": {"passed": 12, "failed": 0, "ignored": 0, "filtered": 0, "exit": 0},
+  "safeCheck": {"allTargets": true, "exit": 0},
+  "safeClippy": {"allTargets": true, "denyWarnings": true, "exit": 0},
+  "pilotBinTests": {"passed": 11, "failed": 0, "ignored": 0, "filtered": 0, "exit": 0},
+  "selectedHttpdBuild": "not_run",
+  "nativeRuntimePilot": "not_run",
+  "fullProductSuccess": false
+}
