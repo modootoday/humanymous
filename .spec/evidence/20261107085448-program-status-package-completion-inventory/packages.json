@@ -1,0 +1,394 @@
+{
+  "schema": "humanymous.program-package-status/1",
+  "observed_at": "2026-11-07T08:56:05.2612983Z",
+  "head": "c0f4ef4f185e334c02770d272105534f7a8a06d1",
+  "working_tree_dirty": true,
+  "package_count": 38,
+  "metadata_scope": "Locked offline no-dependency inventory; not a build or execution",
+  "individual_component_passes_are_not_package_completion": true,
+  "hosted_candidate": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "hosted_run": 42355168729,
+  "completion_claim": false,
+  "packages": [
+    {
+      "package": "humanymous-agent-maintenance",
+      "manifest": "skills/agent-maintenance/Cargo.toml",
+      "manifest_sha256": "6bd9cdeb6150f8c8421f89344f2b0e0608216d67b3264a143d62ad4af1c083ca",
+      "owner": "maintenance",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual 11 hosted process/storage/package tests and declared paired evaluation",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-apache-adapter",
+      "manifest": "crates/apache-adapter/Cargo.toml",
+      "manifest_sha256": "306897ca71d128a8ed0684286327496ad65e69a833159c6c1462b7c738ede7e5",
+      "owner": "apache",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual httpd ABI/MPM/lifecycle 45-scenario profile",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-apache-native",
+      "manifest": "crates/apache-adapter/native/Cargo.toml",
+      "manifest_sha256": "201901bb42b6e3cb73e7b89b1c1ecb43de665bf6448685d31764371c6378210a",
+      "owner": "apache",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual httpd ABI/MPM/lifecycle 45-scenario profile",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-attacker",
+      "manifest": "crates/attacker/Cargo.toml",
+      "manifest_sha256": "9d73631194e2f66ec136fce68ed3227107029667b7883ca8ba5136242cf8e55d",
+      "owner": "wargame",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual fixed-source catalog evaluation and ordinary/human/AT controls",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-audit",
+      "manifest": "crates/audit/Cargo.toml",
+      "manifest_sha256": "9aeb75a4d4ba3d68725b23285ff3c499286f2a213dba52b800c425d3ebf01694",
+      "owner": "audit",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Trusted-scope erasure regression and cross-OS custody/recovery",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-authority",
+      "manifest": "crates/authority/Cargo.toml",
+      "manifest_sha256": "9c7a591f43a7db9fbe425e72c2374ef6d7bcceac5bf06217d2b09e8e0f1e5466",
+      "owner": "authority",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual IPC peer identity, replay/scope and privileged separation",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-behavior",
+      "manifest": "crates/behavior/Cargo.toml",
+      "manifest_sha256": "0964230abbca835e7b2815f1b56261743f47336a4162f2dfb95e69cba6e5a9a0",
+      "owner": "integration",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current-source parity and full product/Pass joins",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-browser",
+      "manifest": "crates/browser/Cargo.toml",
+      "manifest_sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1",
+      "owner": "browser",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual CEF/OS controls, containment, IME and accessibility",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-capture",
+      "manifest": "crates/capture/Cargo.toml",
+      "manifest_sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840",
+      "owner": "capture",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Five actual TLS/H2 pilots and runtime-owned transport join",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-cef-bootstrap",
+      "manifest": "crates/browser/native/bootstrap/Cargo.toml",
+      "manifest_sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+      "owner": "browser",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual CEF/OS controls, containment, IME and accessibility",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-cef-desktop",
+      "manifest": "crates/browser/native/desktop/Cargo.toml",
+      "manifest_sha256": "5ef4a7183cfa2a363f58ef073a650372019373f7415ff617f1f605a94a38bd34",
+      "owner": "browser",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual CEF/OS controls, containment, IME and accessibility",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-challenge",
+      "manifest": "crates/challenge/Cargo.toml",
+      "manifest_sha256": "479c807d35cfc2a3f257cfc4183079d2c0b556b46917b76f8e1b52438b867ff7",
+      "owner": "integration",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current-source parity and full product/Pass joins",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-cli",
+      "manifest": "crates/cli/Cargo.toml",
+      "manifest_sha256": "e5bc2a643427f8b87653898535a466ee945701848e941f908b93f1a2c7800e7a",
+      "owner": "cli",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual signed install/service readiness/upgrade/rollback",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-collector",
+      "manifest": "crates/collector/Cargo.toml",
+      "manifest_sha256": "29ecee302df403a6118b3495a322d505e9bbacfc2f73151bd0a2d4b0a04ccab1",
+      "owner": "collector",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual browser session/fresh report join, cookie/stream and human/AT qualification",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-defender",
+      "manifest": "crates/defender/Cargo.toml",
+      "manifest_sha256": "828862fea623f02cf2214c252ea4b2464ba173ac46b102bc9d8f37b817fbfd2e",
+      "owner": "wargame",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual fixed-source catalog evaluation and ordinary/human/AT controls",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-delivery",
+      "manifest": "scripts/ci/delivery/Cargo.toml",
+      "manifest_sha256": "4c03aeba3257c4ecedac64190bb9a00b9504ebc6401edb3aa347dee96f39eb52",
+      "owner": "delivery",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current full matrix and mandatory component/package/security receipts",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-dotnet-adapter",
+      "manifest": "crates/dotnet-adapter/Cargo.toml",
+      "manifest_sha256": "40b5a8ad94eb50621817cb4a261fbd72b3ea7dccd012d70a3120243ed01125ef",
+      "owner": "dotnet",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Managed inventory, SDK, Kestrel/JIT/NativeAOT/GC and clean package install",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-dotnet-adapter-export",
+      "manifest": "crates/dotnet-adapter/export/Cargo.toml",
+      "manifest_sha256": "ed3e0e51be373556712ec28062eb3ca64ae66f0ac89dcd54b1505467c23b26df",
+      "owner": "dotnet",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Managed inventory, SDK, Kestrel/JIT/NativeAOT/GC and clean package install",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-framework-adapter",
+      "manifest": "crates/framework-adapter/Cargo.toml",
+      "manifest_sha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c",
+      "owner": "frameworks",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual Node/Bun/ASGI/WSGI/Rack and clean package installation",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-go-adapter",
+      "manifest": "crates/go-adapter/Cargo.toml",
+      "manifest_sha256": "7f7d9a95f8e9576a0b98e3068f771e2f632f2dfca88bd72b36f7cfcf787939e7",
+      "owner": "go",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual isolated eight-case Go product profile",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-integrity",
+      "manifest": "crates/integrity/Cargo.toml",
+      "manifest_sha256": "2f6608489207d5a75bf615e4c30f851b436aedeea5a33acf73425a20b63e3e24",
+      "owner": "integration",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current-source parity and full product/Pass joins",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-lab-runner",
+      "manifest": "test/lab/runner/Cargo.toml",
+      "manifest_sha256": "1c87569cba75e0585a6018a31fcabd574299a785119cca81b2471e42e32c75c3",
+      "owner": "product-lab",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual isolated Docker topology, Go profile, startup and cleanup",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-model",
+      "manifest": "crates/model/Cargo.toml",
+      "manifest_sha256": "b9cb23e03aff36f9b178496757d071f64aa7d3c40b4eeec561177ad4163b0fbd",
+      "owner": "integration",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current-source parity and full product/Pass joins",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-native-abi",
+      "manifest": "crates/native-abi/Cargo.toml",
+      "manifest_sha256": "5a5670505881cc8443125646db7da0297b201d66f56733ce5394c72a97ee9288",
+      "owner": "native-abi",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Generated header, C11/C++11 layouts and dynamic native calls",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-native-abi-export",
+      "manifest": "crates/native-abi/export/Cargo.toml",
+      "manifest_sha256": "f46ec9c16454615f4e29e4ee0f04634ce74e889f0dc9d7ae710d135958b327dc",
+      "owner": "native-abi",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Generated header, C11/C++11 layouts and dynamic native calls",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-native-cli",
+      "manifest": "crates/native-cli/Cargo.toml",
+      "manifest_sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "owner": "browser",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual CEF/OS controls, containment, IME and accessibility",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-native-security",
+      "manifest": "crates/native-security/Cargo.toml",
+      "manifest_sha256": "4b1dff517ecc7127d4526f3a1474dd51d102ae181b5e80aefa692981fd91ce15",
+      "owner": "native-security",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual OS credentials/ACL/service containment and helper accounting",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-network",
+      "manifest": "crates/network/Cargo.toml",
+      "manifest_sha256": "45427b23f221262aa2bb409fa2678200ed67b360bff29186a2605e1400ae54f8",
+      "owner": "integration",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current-source parity and full product/Pass joins",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-nginx-adapter",
+      "manifest": "crates/nginx-adapter/Cargo.toml",
+      "manifest_sha256": "ba9f8353715a0132022ea0f2a0013f7d4d592920a2f3cb96425fd2abfd1e4cfc",
+      "owner": "nginx",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual native module/authority 35-group contract",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-node-adapter",
+      "manifest": "crates/node-adapter/Cargo.toml",
+      "manifest_sha256": "b1f3221b38e28cb225a8c928786392b113fce5bcdcbc58ebe60ef3c71abff846",
+      "owner": "frameworks",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual Node/Bun/ASGI/WSGI/Rack and clean package installation",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-pages",
+      "manifest": "docs/tooling/Cargo.toml",
+      "manifest_sha256": "d75698e1402d16fdeb8b8ba79a7fd113fc5be041efcbb0717172370bf70e6853",
+      "owner": "pages",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current two-base renders, freshness, browser/AT and approved Pages",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-python-adapter",
+      "manifest": "crates/python-adapter/Cargo.toml",
+      "manifest_sha256": "7266ff2ef1999b988fcaa9c78a243c9ccd676445e4d76c350a85c2dec0c3e606",
+      "owner": "frameworks",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual Node/Bun/ASGI/WSGI/Rack and clean package installation",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-ruby-adapter",
+      "manifest": "crates/ruby-adapter/Cargo.toml",
+      "manifest_sha256": "c3e27988754042b1d494ce15b46fd8853e709b48518de2059632a4852c957932",
+      "owner": "frameworks",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual Node/Bun/ASGI/WSGI/Rack and clean package installation",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-runtime",
+      "manifest": "crates/runtime/Cargo.toml",
+      "manifest_sha256": "276404fdbd0951cc2cf85039104f6f08f06b5341a4db360e2c6b068c84544d56",
+      "owner": "runtime",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual TLS/collector/Pass, management lifecycle and recovery",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-runtime-pilot",
+      "manifest": "test/lab/runtime/Cargo.toml",
+      "manifest_sha256": "ccadf7ef0d8d1aa017ec808a93e0add7708f44f000b52278ecf04e203ba10642",
+      "owner": "product-lab",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual isolated Docker topology, Go profile, startup and cleanup",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-scoring",
+      "manifest": "crates/scoring/Cargo.toml",
+      "manifest_sha256": "22b6220a7d993e35b38d2da965be606518a9071b3fdc3c588c33b29a296d274e",
+      "owner": "integration",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current-source parity and full product/Pass joins",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-signals",
+      "manifest": "crates/signals/Cargo.toml",
+      "manifest_sha256": "9cfd61796e5b60b8aadf2f70545816390436ff0ffbcf7e247a8a086b433ea97e",
+      "owner": "integration",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Current-source parity and full product/Pass joins",
+      "full_product_qualified": false
+    },
+    {
+      "package": "humanymous-test-support",
+      "manifest": "crates/test-support/Cargo.toml",
+      "manifest_sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a",
+      "owner": "native-security",
+      "implementation_status": "not_fully_audited",
+      "qualification_status": "not_complete",
+      "remaining_gate": "Actual OS credentials/ACL/service containment and helper accounting",
+      "full_product_qualified": false
+    }
+  ]
+}

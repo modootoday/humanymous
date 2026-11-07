@@ -11,6 +11,14 @@ rel:
 
 # Overall roadmap and milestones
 
+The 38-package owner and remaining-gate inventory is recorded in
+evidence:root/20261107085448. It inventories the dirty working graph, not an
+immutable verified candidate; component passes do not close a package or the
+program. A separate 4B model smoke crossed the commit guard and its owned
+process was terminated without an API request. Afterward root measured 81.9%
+commit and 35.41 GiB physical free. Further model initialization is held for
+static KV-memory analysis; four bounded Rust verification slots remain allowed.
+
 ## User-authorized concurrency increase: 2026-11-07
 
 The user explicitly requested higher local concurrency. The current ceiling is
