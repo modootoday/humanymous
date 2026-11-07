@@ -1,0 +1,98 @@
+{
+  "schema": "humanymous.pages-standards-boundary-review/1",
+  "observed_at_utc": "2026-11-07T13:18:44.834275+00:00",
+  "pages": [
+    {
+      "path": "docs/standards/draft-v0/reviews/security-privacy.md",
+      "sha256": "4777a75363f5dc295848e9814f47a935e28a5ad9dbeb9f012ab816c6da19cc7e",
+      "full_read": true,
+      "lines": 192
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/terminology.md",
+      "sha256": "d3b6534aa923caf9806b9f35b8fb148665ce9d964050bb1263abcb3ad88e8253",
+      "full_read": true,
+      "lines": 44
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "615acfdd9b5c10a41c7acf5f02b7e1350012395dd41ef59bb2544f5ae77cd737",
+      "full_read": true,
+      "lines": 130
+    },
+    {
+      "path": "docs/standards/draft-v0/protocol/implementation-experiment.md",
+      "sha256": "2cef9add4e1a167ba3e50f014bc78b96e80d94b004af02ef9eee3b478d02777c",
+      "full_read": true,
+      "lines": 228
+    },
+    {
+      "path": "docs/standards/draft-v0/explainer.md",
+      "sha256": "a86d4d3a9d78207f519d79a93015de4178558e29df48a208b1a10a739ad566de",
+      "full_read": true,
+      "lines": 82
+    },
+    {
+      "path": "docs/standards/draft-v0/process/references.md",
+      "sha256": "a317f659d8308d98ad959a342787a58293d14d0f6e83ab84193e11575904769d",
+      "full_read": true,
+      "lines": 64
+    }
+  ],
+  "prior_seven_page_hashes_unchanged": true,
+  "all_thirteen_draft_markdown_pages_read": true,
+  "fixtures_structurally_checked": [
+    {
+      "path": "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
+      "sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3",
+      "cases": 25,
+      "expected": {
+        "true": 5,
+        "false": 20
+      },
+      "unique_ids": true,
+      "exact_input_hashes_match": true,
+      "parser_execution": "NOT_RUN"
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/fixtures/adapter-parser-i18n-v1.json",
+      "sha256": "3a86d0d8c1d1308308a7192aac00a239b19121a4d76cd91e5d85dc948b4a345c",
+      "cases": 10,
+      "expected": {
+        "true": 6,
+        "false": 4
+      },
+      "unique_ids": true,
+      "exact_input_hashes_match": true,
+      "parser_execution": "NOT_RUN"
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/fixtures/adapter-parser-v1.json",
+      "sha256": "b1fc0069ef858ce36cf9cb6810a5852cfed73559a44fc6f2797f50232b11ed92",
+      "cases": 24,
+      "expected": {
+        "true": 4,
+        "false": 20
+      },
+      "unique_ids": true,
+      "exact_input_hashes_match": true,
+      "parser_execution": "NOT_RUN"
+    }
+  ],
+  "semantic_findings": [
+    "Security/privacy/accessibility page labels its review informative and self-authored; external review, full recovery and assistive-technology qualification remain pending.",
+    "Terminology separates authenticated source attribution from truth, natural-person presence, authorization and benign intent.",
+    "Experimental wire keeps OS-peer/bearer framing and nonce refusal distinct from generic wire and durable idempotency.",
+    "Implementation map retains exact historical component checkpoints and no generic conformance. Current-source freshness and newest component evidence still require complete source-group reconciliation.",
+    "Reference inventory preserves dated maturity and operative-policy distinctions; no external reference or venue policy was revalidated in this local audit."
+  ],
+  "docs_modified": false,
+  "new_runtime_or_browser_execution": "NOT_RUN",
+  "external_reference_verification": "NOT_RUN",
+  "full_standards_package_complete": false,
+  "remaining": [
+    "Complete latest implementation source/evidence reconciliation beyond the accepted Python/Ruby groups.",
+    "Validate latest fixed docs build, rendered links and actual keyboard/accessibility boundaries.",
+    "Generic wire/schema selection, independent interpretations, horizontal reviews and submission package remain unfinished."
+  ]
+}
