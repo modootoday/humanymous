@@ -3,11 +3,11 @@ id: evidence:root/20261107164800
 title: Actual Windows controlled watchdog subprocess boundary
 status: active
 created: 2026-11-07T16:48:00Z
-updated: 2026-11-07T16:49:11Z
+updated: 2026-11-07T16:50:36Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
-  - {path: summary.json, sha256: c19c09d6ca3a44763baed19dd1645a2cf9c5860d883db92c4d929d1cb4d5756d, bytes: 3345, store: repo}
+  - {path: summary.json, sha256: f3caba7888c840299ab58124dd8236cd30b59d97953bf30ffc0d37fded19dfc6, bytes: 3247, store: repo}
 ---
 
 One user-authorized actual Windows x86_64-pc-windows-msvc parent invocation passed.
