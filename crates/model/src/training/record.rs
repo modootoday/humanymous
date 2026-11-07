@@ -198,9 +198,7 @@ pub fn read_jsonl(
     let mut line = Vec::new();
     let mut total = 0usize;
     loop {
-        let available = reader
-            .fill_buf()
-            .map_err(|_| RecordError::ReadFailed)?;
+        let available = reader.fill_buf().map_err(|_| RecordError::ReadFailed)?;
         if available.is_empty() {
             if !line.is_empty() {
                 push_line(&line, expected_schema, limits, &mut samples, &mut cohorts)?;
@@ -235,10 +233,14 @@ fn push_line(
     if samples.len() >= limits.records {
         return Err(RecordError::RecordLimit);
     }
-    let record: Record = serde_json::from_slice(line)
-        .map_err(|_| RecordError::InvalidJson)?;
+    let record: Record = serde_json::from_slice(line).map_err(|_| RecordError::InvalidJson)?;
     let sample = record.sample(schema, limits)?;
-    let cohort = sample.record.cohort.as_deref().filter(|value| !value.is_empty()).unwrap_or("default");
+    let cohort = sample
+        .record
+        .cohort
+        .as_deref()
+        .filter(|value| !value.is_empty())
+        .unwrap_or("default");
     if !cohorts.contains(cohort) && cohorts.len() >= limits.cohorts {
         return Err(RecordError::CohortLimit);
     }
@@ -250,7 +252,9 @@ fn push_line(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs::{File, OpenOptions};
     use std::io::{BufReader, Cursor};
+    use std::path::PathBuf;
 
     fn record() -> Record {
         Record {
@@ -269,6 +273,94 @@ mod tests {
             data.push(b'\n');
         }
         data
+    }
+
+    struct OwnedInput(PathBuf);
+
+    impl OwnedInput {
+        fn create(data: &[u8]) -> Self {
+            use std::io::Write;
+            static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+            let sequence = NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            let path = std::env::temp_dir().join(format!(
+                "humanymous-training-record-{}-{sequence}.jsonl",
+                std::process::id()
+            ));
+            let mut file = OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&path)
+                .unwrap();
+            file.write_all(data).unwrap();
+            file.flush().unwrap();
+            Self(path)
+        }
+
+        fn read(&self, limits: Limits) -> Result<Vec<Sample>, RecordError> {
+            let file = File::open(&self.0).unwrap();
+            read_jsonl(BufReader::with_capacity(7, file), &schema_hash(), limits)
+        }
+    }
+
+    impl Drop for OwnedInput {
+        fn drop(&mut self) {
+            std::fs::remove_file(&self.0).unwrap();
+        }
+    }
+
+    #[test]
+    fn actual_file_reader_accepts_rejects_and_preserves_caller_batch_on_error() {
+        let first = record();
+        let mut second = first.clone();
+        second.cohort = Some("other".into());
+        let data = bytes(&[first.clone(), second]);
+        let input = OwnedInput::create(&data);
+        let accepted = input.read(Limits::default()).unwrap();
+        assert_eq!(accepted.len(), 2);
+        assert_eq!(accepted[0].features, extract(&first.behavior));
+        for (limits, expected) in [
+            (
+                Limits {
+                    total_bytes: data.len() - 1,
+                    ..Limits::default()
+                },
+                RecordError::ByteLimit,
+            ),
+            (
+                Limits {
+                    line_bytes: 8,
+                    ..Limits::default()
+                },
+                RecordError::ByteLimit,
+            ),
+            (
+                Limits {
+                    records: 1,
+                    ..Limits::default()
+                },
+                RecordError::RecordLimit,
+            ),
+            (
+                Limits {
+                    cohorts: 1,
+                    ..Limits::default()
+                },
+                RecordError::CohortLimit,
+            ),
+        ] {
+            assert_eq!(input.read(limits).unwrap_err(), expected);
+        }
+        let mut partial = bytes(&[first]);
+        partial.extend_from_slice(b"invalid-sensitive-row\n");
+        let invalid = OwnedInput::create(&partial);
+        let mut caller_batch = accepted;
+        let result = invalid.read(Limits::default());
+        assert_eq!(result.as_ref().unwrap_err(), &RecordError::InvalidJson);
+        if let Ok(replacement) = result {
+            caller_batch = replacement;
+        }
+        assert_eq!(caller_batch.len(), 2);
+        assert_eq!(caller_batch[0].record.ts, Some(42));
     }
 
     #[test]
@@ -294,7 +386,12 @@ mod tests {
             let mut row = record();
             row.source = Some(source.into());
             row.label = label;
-            assert_eq!(row.sample(&schema_hash(), Limits::default()).unwrap().admission, expected);
+            assert_eq!(
+                row.sample(&schema_hash(), Limits::default())
+                    .unwrap()
+                    .admission,
+                expected
+            );
         }
     }
 
@@ -311,7 +408,12 @@ mod tests {
         let mut row = record();
         row.behavior.mouse.mean_curvature = f64::MAX;
         assert!(row.sample(&schema_hash(), limits).is_err());
-        for data in [b"{}".as_slice(), b"{\"label\":0}", b"{\"label\":-1,\"behavior\":{}}", b"not json"] {
+        for data in [
+            b"{}".as_slice(),
+            b"{\"label\":0}",
+            b"{\"label\":-1,\"behavior\":{}}",
+            b"not json",
+        ] {
             assert!(read_jsonl(Cursor::new(data), &schema_hash(), limits).is_err());
         }
     }
@@ -319,13 +421,26 @@ mod tests {
     #[test]
     fn stream_limits_cover_small_buffers_exact_edges_and_blank_lines() {
         let data = bytes(&[record()]);
-        let limits = Limits { line_bytes: data.len(), total_bytes: data.len(), ..Limits::default() };
+        let limits = Limits {
+            line_bytes: data.len(),
+            total_bytes: data.len(),
+            ..Limits::default()
+        };
         let tiny = BufReader::with_capacity(3, Cursor::new(&data));
         assert_eq!(read_jsonl(tiny, &schema_hash(), limits).unwrap().len(), 1);
         for tighter in [
-            Limits { line_bytes: data.len() - 1, ..limits },
-            Limits { total_bytes: data.len() - 1, ..limits },
-            Limits { string_bytes: 1, ..limits },
+            Limits {
+                line_bytes: data.len() - 1,
+                ..limits
+            },
+            Limits {
+                total_bytes: data.len() - 1,
+                ..limits
+            },
+            Limits {
+                string_bytes: 1,
+                ..limits
+            },
         ] {
             assert!(read_jsonl(Cursor::new(&data), &schema_hash(), tighter).is_err());
         }
@@ -334,7 +449,12 @@ mod tests {
         assert!(read_jsonl(Cursor::new(padded), &schema_hash(), limits).is_err());
         let mut no_newline = data;
         no_newline.pop();
-        assert_eq!(read_jsonl(Cursor::new(no_newline), &schema_hash(), limits).unwrap().len(), 1);
+        assert_eq!(
+            read_jsonl(Cursor::new(no_newline), &schema_hash(), limits)
+                .unwrap()
+                .len(),
+            1
+        );
     }
 
     #[test]
@@ -344,10 +464,22 @@ mod tests {
         b.cohort = Some("other".into());
         let data = bytes(&[a, b]);
         for limits in [
-            Limits { records: 1, ..Limits::default() },
-            Limits { cohorts: 1, ..Limits::default() },
-            Limits { records: 100_001, ..Limits::default() },
-            Limits { cohorts: 0, ..Limits::default() },
+            Limits {
+                records: 1,
+                ..Limits::default()
+            },
+            Limits {
+                cohorts: 1,
+                ..Limits::default()
+            },
+            Limits {
+                records: 100_001,
+                ..Limits::default()
+            },
+            Limits {
+                cohorts: 0,
+                ..Limits::default()
+            },
         ] {
             assert!(read_jsonl(Cursor::new(&data), &schema_hash(), limits).is_err());
         }
@@ -373,7 +505,8 @@ mod tests {
             Cursor::new(b"{\"label\":0,\"behavior\":{}}"),
             &schema_hash(),
             Limits::default(),
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(explicit[0].record.label, 0);
         assert_eq!(explicit[0].admission, Admission::Quarantined);
     }
@@ -383,15 +516,23 @@ mod tests {
         let missing: Record = serde_json::from_slice(b"{\"label\":0,\"behavior\":{}}").unwrap();
         let explicit: Record = serde_json::from_slice(
             b"{\"label\":0,\"behavior\":{},\"ts\":0,\"cohort\":\"\",\"source\":\"\"}",
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(missing.ts, None);
         assert_eq!(explicit.ts, Some(0));
         assert_eq!(missing.cohort, None);
         assert_eq!(explicit.cohort.as_deref(), Some(""));
         assert_eq!(missing.source, None);
-        let round_trip: Record = serde_json::from_slice(&serde_json::to_vec(&missing).unwrap()).unwrap();
+        let round_trip: Record =
+            serde_json::from_slice(&serde_json::to_vec(&missing).unwrap()).unwrap();
         assert_eq!(round_trip, missing);
-        assert_eq!(missing.sample(&schema_hash(), Limits::default()).unwrap().admission, Admission::Quarantined);
+        assert_eq!(
+            missing
+                .sample(&schema_hash(), Limits::default())
+                .unwrap()
+                .admission,
+            Admission::Quarantined
+        );
     }
 
     #[test]
@@ -406,8 +547,11 @@ mod tests {
         assert_eq!(sample.features[0], 0.0);
         assert_eq!(sample.features[1], -0.25);
         let error = read_jsonl(
-            Cursor::new(b"sensitive-input-body"), &schema_hash(), Limits::default(),
-        ).unwrap_err();
+            Cursor::new(b"sensitive-input-body"),
+            &schema_hash(),
+            Limits::default(),
+        )
+        .unwrap_err();
         assert_eq!(error, RecordError::InvalidJson);
         assert!(!error.to_string().contains("sensitive-input-body"));
     }

@@ -1,7 +1,7 @@
 {
-  "status": "SOURCE_ONLY_NOT_RUN",
-  "revision": "required-field-source-checkpoint",
-  "tests_authored": 7,
+  "status": "FORMATTED_WITH_ACTUAL_FILE_TEST_NOT_RUN",
+  "revision": "format-fix-and-owned-file-pilot",
+  "tests_authored": 8,
   "tests_executed": 0,
   "files": [
     {
@@ -14,7 +14,7 @@
     },
     {
       "path": "crates/model/src/training/record.rs",
-      "sha256": "0f3165452fcaf6719c95bad94b8c7c7036fe48d448af6f1f9b25de255c4deaf4"
+      "sha256": "700e756ef79943c3be4d1c0439aedf4f82f48593b99a5f29c04a678c3f8579e2"
     }
   ]
 }

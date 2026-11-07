@@ -170,3 +170,52 @@ An actual bounded file-reader pilot is still required after unit qualification;
 its source/venue allocation remains pending, with no product e2e claim from these
 commands. Capture source hashes before/after each authorized run. No global spec
 or private-tree cleanup is proposed; scoped spec is the document gate.
+
+## Allocated C validation of frozen 68898522
+
+Root authorized an immutable archive of commit
+688985225621cb91089514c77437e6e91e49cbd7 in the exclusive
+target/validation-authority slot. Native Windows x86_64-pc-windows-msvc,
+Rust1.99.1, jobs1/incremental0, locked/offline. The initial overbroad whole-sysroot
+census was owner-cancelled before compilation after root clarified scope;
+partial inventory is retained privately and does not prove any closure.
+
+The corrected baseline includes4023 files: complete archived source, resolved
+selected registry source packages, configured-file candidates, six selected native
+tool executables, bin/lib compiler DLLs and selected native target library files.
+Selected package graph contains33 packages; system SDK and system DLLs remain
+unobserved. Before/after4023 hashes had0difference records;18configuration candidate
+presence checks had0differences. Archive SHA256:
+5f6c9bf3eec3d5888d8fe7c287877505eed31f201337632ea0ea2bc5164f00e6.
+Fresh test admission measured82.8807% commit and29.2948GiB free physical memory;
+each subsequent check had its own retained admission record.
+
+| Actual command | Terminal result |
+|---|---|
+| cargo test --locked --offline -p humanymous-model --all-targets --jobs 1 | exit0;12unit passed (7parser +5existing inference),1fixture harness passed;0failed/ignored/filtered |
+| cargo check --locked --offline -p humanymous-model --all-targets --jobs 1 | exit0 |
+| cargo clippy --locked --offline -p humanymous-model --all-targets --jobs 1 -- -D warnings | exit0 |
+| cargo fmt --package humanymous-model -- --check | exit1;training/record.rs layout differences |
+
+The first unexpected failure was preserved and work stopped. Frozen candidate
+bytes were not modified, and no formatter write or subsequent Cargo run occurred.
+All compiler/test processes are terminal and C target was returned before the
+read-only closure comparison. These actual parser results supersede NOT_RUN only
+for the exact frozen source. No training loop, production inference, GPU, model
+download, binary/process pilot or Docker product e2e was executed. Actual
+file-reader pilot and formatting correction/requalification remain open.
+Raw commands, admission, first failure, terminal footers and closure manifests
+remain in the owned private model-training-correction-cwarm evidence directory.
+
+## Formatting correction and actual file pilot candidate
+
+Root authorized a formatting correction to record.rs and one actual file-reader
+test within that same module. Pre-pilot rustfmt delta was verified as whitespace
+and line breaks plus one optional trailing array comma; no behavior tokens changed.
+The first fmt failure above remains historical and is not retroactively green.
+The new owned-tempfile test uses create_new, explicit write/flush/close and actual
+File/BufReader input. It covers accepted input, byte/record/cohort rejection and
+late invalid input leaving a caller's previously accepted batch unchanged.
+This measures local file handling, not OS ACLs, power-loss durability, a training
+process or product e2e. New candidate has8parser tests, pending actual execution;
+expected total is13unit plus1existing fixture harness, subject to actual footer.
