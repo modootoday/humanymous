@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.authority.encoded-key-validation/1",
+  "authority_source": "2ca6e4fa",
+  "observed_head": "5ea99fa9de2397ed03f0f20911f9cdd44884407b",
+  "venue": "local Windows x86_64-pc-windows-msvc",
+  "allocation": "warm exclusive target/validation-authority jobs1 incremental0 locked offline",
+  "admission": {
+    "free_physical_gib": 32.86,
+    "commit_percent": 81
+  },
+  "packages": 96,
+  "inputs": 4631,
+  "changed_inputs": [],
+  "library_command_exit": 101,
+  "tests_executed": 0,
+  "failure": "network E0432 imports signals::{Signal,Source,Verdict} absent in correlation/registry.rs:3 and traffic/consistency.rs:3",
+  "authority_diagnostic": "none observed",
+  "package_check": "NOT_RUN",
+  "clippy": "NOT_RUN",
+  "fmt_precheck_exit": 0,
+  "reservation": "returned terminal; no owned process",
+  "limits": [
+    "22 expected tests were NOT executed",
+    "no native IPC/key store/SCM/account activation",
+    "prior21 proof does not validate encoded-key source fix"
+  ],
+  "raw": [
+    {
+      "name": "keys22-tree.log",
+      "sha256": "8f04ab8ee5e0d7fe35ee5530b63f393d3741d2e68e9e0cbbd0679b7bc60ae90d"
+    },
+    {
+      "name": "keys22-metadata.json",
+      "sha256": "883d7c50b41167d253044dbfca918114794aa30d3b9ed554435eeb00a13227b7"
+    },
+    {
+      "name": "keys22-before.json",
+      "sha256": "9584dbf73c4571bd898f97352a1452e76863b41f9bad95b22ecbf4cd21a9203b"
+    },
+    {
+      "name": "keys22-after-failure.json",
+      "sha256": "94fad0934c3d4534ed1aa220520640acaf3c446aa77d849fc1352bd5e7bcfdfd"
+    },
+    {
+      "name": "keys22-lib.log",
+      "sha256": "d94dfc106c4ca37fea1d2c98250b2a67b38a6de2c86d9b8c99d718113cdb0cf5"
+    }
+  ]
+}

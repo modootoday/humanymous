@@ -825,3 +825,18 @@ proof does not cover this change. Expected22pure tests, compile/Clippy NOT_RUN;
 scoped fmt/diff checks passed. No Cargo/native/runtime allocation assumed and
 Performance target reservations remain honored. Raw encoded-key finding is P2
 ownership debt, not observed exfiltration/log/provider exploit.
+
+## Encoded-key first current-graph validation failure
+
+Root admitted warm validation-authority at commit81percent/free32.86GiB, jobs1/
+inc0/locked/offline. Authority source2ca6e4fa, observed HEAD5ea99fa9 with captured
+96packages/4631source-registry-config-tool inputs, ZERO before/after drift. Library
+command exited101 BEFORE any tests: Network correlation/registry.rs:3 and traffic/
+consistency.rs:3 import absent signals::{Signal,Source,Verdict}. No Authority
+diagnostic observed. Expected22tests remain NOT_RUN, package check/Clippy NOT_RUN;
+fmt precheck passed. Preserve first raw log and closure; public
+encoded-key-first-failure.json binds the exact failure. No native/store/account/
+SCM execution. Reservation returned terminal, no owned process. Root and Network
+owner received the concrete source dependency blocker; no foreign edit or guessed
+export/overlay fallback. Corrected dependency source must be frozen and separately
+revalidated; historical21pure cannot close CA-SECRET-01's validation gate.
