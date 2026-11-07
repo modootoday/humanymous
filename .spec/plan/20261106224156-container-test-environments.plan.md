@@ -3,7 +3,7 @@ id: plan:root/20261106224156
 title: Canonical container test environment rollout
 status: active
 created: 2026-11-06T22:41:56Z
-updated: 2026-11-07T06:22:12Z
+updated: 2026-11-07T07:34:56Z
 rel:
   depends_on: [sot:root/container-test-environments]
 ---
@@ -11,6 +11,16 @@ rel:
 # Container environment research and rollout
 
 ## Rust-only v2 continuation (2026-11-07 KST)
+
+- [x] Active goal established by explicit user instruction: complete Rust Compose product lab, separate browser namespace, actual runtime/witness, egress/recovery/cleanup and hosted evidence. Product-lab lane is dedicated; no completion claim before source/unit/hosted/strict accounting/evidence/owned commits.
+- [x] Docker Compose added as supported deployment/product-test integration (not a language adapter): role wiring, readiness/order, private credentials, hardening, drain, witness recovery, evidence and fail-closed qualification are normative in container SoT.
+- [ ] Integrate nginx35-group owner contract and server-framework-owned Apache hosted pilot with immutable source/image/lock and independent strict denominators; actual composition not_run.
+- [ ] Finish browser-profile witness outage/recovery and owned external-DNS canary controls without weakening B namespaces or counting timeout as denial; audit recovery and collector outage-test seams are coordinated with owners.
+- [x] Author local deny-only DNS plus independent outside canary/positive control and kernel no-route proof; shared DNS-frame pure unit1 passes with exact source hash in evidence:root/20261107074346. Actual DNS/browser/Docker execution remains not_run.
+- [x] Consume audit29ee901 typed recovery coverage with externally supplied pin, RequireCovered and no implicit repair for normal drain; preserve original wargame stdout and owner strict verifier hash/schema/mode/scoped/totals. Generic strict JSON uses shared test-support API; current integration not_run.
+- [ ] Build actual pinned untouched Go fixture31d9f69 with compiler-input approved by root; consume go-adapter Deployment and v2 Receipt qualifier, distinguish origin contacts from application mutations, and keep greeting-only sibling hosts unqualified. Runtime-pilot approved path dependency is authored and frozen; common lock remains root-owned.
+- [ ] Go execution source is not yet authored; this is an implementation remainder, not a missing owner API or approval. The approved dependency, pinned compiler/export recipe and Go-owned response helpers are available. Finish the current coherent B/DNS/public-receipt checkpoint for the immutable candidate first, then implement the actual eight-case process/network path without claiming Go readiness from the dependency edge.
+- [x] Author a small source-bound public wargame receipt projection and canonical JSON contract. It retains all case indices/statuses, rechecks totals/scoped predicate and removes private identities/raw bodies. New projection unit is authored but not_run; hosted strict-byte/public recovery is still required.
 
 - [x] Root accepted two-namespace same-origin browser product contract; source consumes sole collector/pilot/fixture.json contract. Root owns WASM tests/typed Firefox proxy config, runtime supplies21b6c4b external-witness host seam, CI supplies6da9c02 product image.
 - [ ] New F/G Rust forwarders, separate Compose profile, actual injected ServiceHost/witness broker, status/ACK observations, namespace/key/egress negatives and authenticated effect receipts authored but Linux compile/runtime/browser execution not_run. Next hosted batch must run --browser-product in its own fresh evidence bundle. Physical crash, human/AT, producer provenance and browser-profile witness outage/recovery remain incomplete.

@@ -10,6 +10,8 @@ services:
     entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --browser-gate]
     stdin_open: true
     networks: [browser-ingress]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
     volumes: [writer-key:/writer/keys, writer-wal:/writer/wal]
     pids_limit: 128
     mem_limit: 512m
@@ -23,12 +25,18 @@ services:
       context: ${HM_LAB_BUILD_CONTEXT:?immutable source required}
       dockerfile: build/rust/browser-product.Dockerfile
     entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --browser-driver]
-    command: ["${HM_BROWSER_GATE:-127.0.0.1:0}", "${HM_BROWSER_RUNTIME:-127.0.0.1:0}", "${HM_BROWSER_BACKEND:-127.0.0.1:0}"]
+    command: ["${HM_BROWSER_GATE:-127.0.0.1:0}", "${HM_BROWSER_RUNTIME:-127.0.0.1:0}", "${HM_BROWSER_BACKEND:-127.0.0.1:0}", "${HM_BROWSER_DNS_CANARY:-127.0.0.1}", "${HM_BROWSER_DNS_NAME:-missing.invalid}"]
     networks: [browser-ingress]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
     pids_limit: 512
     mem_limit: 2g
     cpus: 2
     tmpfs: !override ["/tmp:rw,noexec,nosuid,size=512m,mode=1777", "/dev/shm:rw,noexec,nosuid,nodev,size=256m"]
+    profiles: [browser-product]
+  dns-canary:
+    extends: {file: compose.rust.yaml, service: outside-canary}
+    command: [fixture, dns-server]
     profiles: [browser-product]
 networks:
   browser-ingress:

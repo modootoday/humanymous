@@ -1,5 +1,8 @@
 //! Bounded, Rust-authored in-container network controls. No product impersonation.
 use crate::docker::Result;
+mod dns;
+#[path = "../../dns_wire.rs"]
+mod dns_wire;
 use serde_json::json;
 use std::{
     fs,
@@ -18,8 +21,26 @@ pub fn owned_ipv4(text: &str) -> Result<Ipv4Addr> {
 fn reachable(address: SocketAddr) -> bool {
     TcpStream::connect_timeout(&address, Duration::from_millis(800)).is_ok()
 }
+fn control_request(stream: &mut TcpStream) -> std::io::Result<bool> {
+    let mut bytes = Vec::new();
+    while bytes.len() < 4096 {
+        let mut buffer = [0; 512];
+        let count = stream.read(&mut buffer)?;
+        if count == 0 {
+            return Ok(false);
+        }
+        bytes.extend_from_slice(&buffer[..count]);
+        if bytes.windows(4).any(|part| part == b"\r\n\r\n") {
+            return Ok(bytes.starts_with(b"GET / HTTP/1.1\r\n"));
+        }
+    }
+    Ok(false)
+}
 pub fn run(args: &[String]) -> Result<()> {
     match args.first().map(String::as_str) {
+        Some("dns-server") => dns::serve(),
+        Some("dns-positive") => dns::positive(),
+        Some("dns-snapshot") => dns::snapshot(),
         Some("serve") => serve(args.get(1).ok_or("fixture label required")?),
         Some("health") => health("127.0.0.1"),
         Some("control") => health("origin"),
@@ -40,9 +61,7 @@ fn serve(label: &str) -> Result<()> {
         let mut stream = incoming?;
         stream.set_read_timeout(Some(Duration::from_secs(1)))?;
         stream.set_write_timeout(Some(Duration::from_secs(1)))?;
-        let mut buffer = [0; 4096];
-        let count = stream.read(&mut buffer).unwrap_or(0);
-        if !buffer[..count].starts_with(b"GET / HTTP/1.1\r\n") {
+        if !control_request(&mut stream).unwrap_or(false) {
             continue;
         }
         let body = format!("{{\"fixture\":\"{label}\"}}");

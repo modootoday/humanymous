@@ -16,6 +16,7 @@ pub struct Docker {
 pub struct Output {
     pub success: bool,
     pub stdout: String,
+    pub stderr: String,
 }
 impl Docker {
     pub fn new(root: &Path) -> Self {
@@ -73,7 +74,7 @@ impl Docker {
         )?;
         let status = captured.status;
         let stdout = String::from_utf8(captured.stdout)?;
-        let stderr = String::from_utf8_lossy(&captured.stderr);
+        let stderr = String::from_utf8_lossy(&captured.stderr).into_owned();
         self.transcript
             .push(json!({"argv":args,"exit":status.code(),"stdout":stdout,"stderr":stderr}));
         if required && !status.success() {
@@ -87,6 +88,7 @@ impl Docker {
         Ok(Output {
             success: status.success(),
             stdout,
+            stderr,
         })
     }
     pub fn duplex(

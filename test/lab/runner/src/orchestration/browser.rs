@@ -5,6 +5,7 @@ use super::{
 };
 use crate::{docker::Result, snapshot};
 use humanymous_audit::checkpoint::service::write_frame;
+use humanymous_test_support::json::decode_strict_json;
 use humanymous_test_support::process::capture_with_stderr;
 use serde_json::{Value, json};
 use std::{
@@ -14,8 +15,9 @@ use std::{
 };
 
 fn frame(receive: &mpsc::Receiver<std::io::Result<Vec<u8>>>, seconds: u64) -> Result<Value> {
-    Ok(serde_json::from_slice(
+    Ok(decode_strict_json(
         &receive.recv_timeout(Duration::from_secs(seconds))??,
+        65536,
     )?)
 }
 fn ip(container: &Value) -> Result<String> {
@@ -50,6 +52,20 @@ fn sign(
     input.flush()?;
     Ok(())
 }
+fn dns_snapshot(lab: &mut Lab, id: &str) -> Result<Value> {
+    Ok(decode_strict_json(
+        lab.docker
+            .call(&[
+                "exec",
+                id,
+                "/usr/local/bin/humanymous-lab-runner",
+                "fixture",
+                "dns-snapshot",
+            ])?
+            .as_bytes(),
+        65536,
+    )?)
+}
 
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
     lab.stage = "browser_config";
@@ -65,6 +81,33 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     )?;
     lab.stage = "browser_gate_build";
     lab.compose(&["build", "browser-gate"], true)?;
+    lab.compose(&["build", "dns-canary"], true)?;
+    lab.compose(
+        &["up", "-d", "--wait", "--wait-timeout", "30", "dns-canary"],
+        true,
+    )?;
+    let dns_canary = lab.inspect("dns-canary")?;
+    let dns_id = dns_canary["Id"].as_str().ok_or("DNS canary ID")?.to_owned();
+    lab.docker.call(&[
+        "exec",
+        &dns_id,
+        "/usr/local/bin/humanymous-lab-runner",
+        "fixture",
+        "dns-positive",
+    ])?;
+    let dns_before = dns_snapshot(lab, &dns_id)?;
+    snapshot::write(&lab.evidence, "browser-dns-canary-before.json", &dns_before)?;
+    lab.case(
+        "browser-dns-positive-control",
+        dns_before["received"] == 1 && dns_before["invalid"] == 0,
+        json!("actual caps0 UID65532 UDP53 query and exact NXDOMAIN response"),
+    )?;
+    let control_image: Value = serde_json::from_str(&lab.docker.call(&[
+        "image",
+        "inspect",
+        dns_canary["Image"].as_str().ok_or("DNS control image")?,
+    ])?)?;
+    snapshot::write(&lab.evidence, "controls-image.json", &control_image[0])?;
     lab.stage = "browser_image_build";
     lab.compose(&["build", "browser-product"], true)?;
     lab.stage = "browser_gate_start";
@@ -120,6 +163,16 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     )?;
     let running_gate = lab.inspect("browser-gate")?;
     lab.environment.extend([
+        ("HM_BROWSER_DNS_CANARY".into(), ip(&dns_canary)?),
+        (
+            "HM_BROWSER_DNS_NAME".into(),
+            format!(
+                "lab-{}.invalid",
+                lab.project
+                    .strip_prefix("hm-rust-lab-")
+                    .ok_or("owned project")?
+            ),
+        ),
         (
             "HM_BROWSER_GATE".into(),
             format!("{}:8080", ip(&running_gate)?),
@@ -148,6 +201,12 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     lab.stage = "browser_actor";
     lab.compose(&["create", "browser-product"], true)?;
     let browser = lab.inspect("browser-product")?;
+    lab.case(
+        "browser-explicit-deny-only-dns",
+        browser["HostConfig"]["Dns"] == json!(["127.0.0.1"])
+            && gate["HostConfig"]["Dns"] == json!(["127.0.0.1"]),
+        json!("no public/default resolver configuration"),
+    )?;
     let image: Value = serde_json::from_str(&lab.docker.call(&[
         "image",
         "inspect",
@@ -187,7 +246,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             }
             match receive.recv_timeout(Duration::from_millis(100)) {
                 Ok(bytes) => {
-                    let value: Value = serde_json::from_slice(&bytes?)?;
+                    let value = decode_strict_json(&bytes?, 65536)?;
                     if !isolated {
                         let running_browser = lab.inspect("browser-product")?;
                         let a = running_gate["NetworkSettings"]["SandboxID"]
@@ -219,8 +278,14 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             .map_err(|_| "browser capture worker failed")?
             .map_err(Into::into)
     })?;
-    let actor: Value = serde_json::from_slice(&browser_result.stdout)?;
+    let actor = decode_strict_json(&browser_result.stdout, 2 * 1024 * 1024)?;
     snapshot::write(&lab.evidence, "browser-actor-report.json", &actor)?;
+    let dns_after = dns_snapshot(lab, &dns_id)?;
+    snapshot::write(&lab.evidence, "browser-dns-canary-after.json", &dns_after)?;
+    let hash = actor["dns_control"]["query_hash"]
+        .as_str()
+        .ok_or("DNS query commitment")?;
+    lab.case("browser-no-external-dns-arrival",dns_after==dns_before&&dns_after["question_hash_counts"].get(hash).is_none()&&actor["dns_policy"]["question_hash_counts"][hash].as_u64().is_some_and(|n|n>0)&&actor["dns_policy"]["forwards"]==0,json!("owned healthy outside canary saw zero new queries; actual libc lookup reached deny-only loopback policy"))?;
     lab.stage = "browser_runtime_drain";
     // Only this trusted Docker control action asks the private actor to drain.
     lab.docker.call(&[
@@ -228,6 +293,12 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         id,
         "/usr/local/bin/humanymous-runtime-pilot",
         "--browser-stop",
+        &serde_json::to_string(
+            broker
+                .head
+                .as_ref()
+                .ok_or("independent external head missing")?,
+        )?,
     ])?;
     let report = loop {
         let value = frame(&receive, 20)?;
@@ -297,7 +368,9 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     lab.case(
         "browser-origin-and-egress-boundaries",
         actor["namespace_controls"].as_object().is_some_and(|m| {
-            const REQUIRED: [&str; 8] = [
+            const REQUIRED: [&str; 10] = [
+                "external_dns_local_policy_refused",
+                "external_dns_udp_no_route",
                 "runtime_loopback_unreachable",
                 "backend_loopback_unreachable",
                 "runtime_bridge_port_unreachable",
@@ -315,6 +388,21 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         .as_array()
         .ok_or("authenticated audit checkpoints missing")?;
     lab.case("browser-audit-matches-independent-head",checkpoints.last()==broker.head.as_ref(),json!("actual runtime WAL authenticated offline; external latest signed head retained by broker"))?;
+    let coverage = &report["witness_coverage"];
+    lab.case(
+        "browser-audit-fully-covered-with-external-pin",
+        coverage["fully_witnessed"] == true
+            && coverage["ambiguous_tail_len"] == 0
+            && coverage["durable_sequence"] == 2
+            && coverage["witnessed_through"] == 2
+            && coverage["authenticated_external_head"]
+                == broker.head.as_ref().ok_or("external coverage pin")?.clone()
+            && coverage["authentication"]["hmac_checked"] == true
+            && coverage["authentication"]["writer_checked"] == true
+            && coverage["authentication"]["witness_checked"] == true
+            && report["checkpoint_repair_performed"] == false,
+        coverage.clone(),
+    )?;
     lab.compose(&["create", "witness-key-denied"], true)?;
     let denied = lab.inspect("witness-key-denied")?;
     let negative = lab.docker.invoke(

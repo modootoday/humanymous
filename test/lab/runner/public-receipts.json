@@ -1,0 +1,16 @@
+{
+  "schema": "humanymous.lab-public-receipts-contract/1",
+  "report_schema": "humanymous.lab-public-receipts/1",
+  "wargame_schema": "humanymous.lab-wargame-public/1",
+  "wargame_report_schema": "humanymous.wargame-network.v2",
+  "verifier_schema": "humanymous.wargame-verification.v1",
+  "verifier_mode": "owned_process_network",
+  "max_cases": 512,
+  "totals_fields": ["scheduled", "evaluated", "errors", "skipped", "unsupported", "expectation_mismatches"],
+  "terminal_statuses": ["evaluated", "error", "skipped", "unsupported"],
+  "case_fields": ["index", "status", "expectation_matches"],
+  "wargame_fields": ["schema", "report_schema", "raw_sha256", "source_sha", "source_manifest_sha256", "verifier", "case_statuses", "raw_contents_included", "full_product_qualified"],
+  "verifier_fields": ["schema", "mode", "internally_consistent", "scoped_passed", "full_product_qualified", "totals"],
+  "raw_contents_included": false,
+  "full_product_qualified": false
+}

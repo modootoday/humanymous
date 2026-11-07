@@ -1,5 +1,7 @@
 //! Contextual Docker pilots; native unsupported targets never report success.
 #[cfg(unix)]
+mod browser_dns;
+#[cfg(unix)]
 mod browser_product;
 #[cfg(unix)]
 mod browser_proxy;
@@ -7,6 +9,9 @@ mod browser_proxy;
 mod browser_result;
 #[cfg(unix)]
 mod client;
+#[cfg(unix)]
+#[path = "../../dns_wire.rs"]
+mod dns_wire;
 #[cfg(unix)]
 mod installation;
 #[cfg(unix)]
@@ -28,7 +33,7 @@ fn main() {
         Some("--browser-gate") => browser_product::gate().expect("owned browser gate"),
         Some("--browser-driver") => browser_product::browser().expect("owned browser runner"),
         Some("--browser-stop") => {
-            std::fs::write("/tmp/browser-pilot-stop", b"stop").expect("owned supervisor stop")
+            browser_product::stop().expect("owned public head/shutdown control")
         }
         Some("--wargame") => wargame::run(),
         Some("--witness-transaction") => {

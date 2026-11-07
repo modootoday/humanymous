@@ -35,7 +35,13 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut docker = Docker::new(&root);
     let mut scans = Vec::new();
     let mut clean = true;
-    for role in ["controls", "runtime", "collector", "witness"] {
+    for role in [
+        "controls",
+        "runtime",
+        "collector",
+        "witness",
+        "browser-product",
+    ] {
         let path = evidence.join(format!("{role}-image.json"));
         if !path.is_file() {
             continue;

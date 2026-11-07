@@ -13,7 +13,7 @@ use humanymous_runtime::{
 };
 use serde_json::json;
 use std::{
-    io::{self, BufReader},
+    io::{self, BufReader, Read, Write},
     net::SocketAddr,
     path::Path,
     time::Duration,
@@ -25,6 +25,8 @@ struct BrowserConfig {
     gate: SocketAddr,
     runtime: SocketAddr,
     backend: SocketAddr,
+    dns_canary: std::net::Ipv4Addr,
+    dns_name: String,
 }
 
 fn hardening() -> Result<serde_json::Value> {
@@ -134,24 +136,54 @@ pub fn gate() -> Result<()> {
         proxy.await??;
         let exit=tokio::time::timeout(Duration::from_secs(10),runtime).await???;
         let wal=humanymous_audit::storage::Wal::open(Path::new("/writer/wal"),Default::default())?;
-        let history=wal.verified_history(humanymous_audit::storage::RecoveryPolicy{node_id:"isolated-node",hmac_key:&installation.hmac,writer_public:&public,witness_public:Some(&witness),trusted_head:None,allow_new:false})?;
+        let mut pin=Vec::new();std::fs::File::open("/tmp/browser-pilot-stop")?.take(16385).read_to_end(&mut pin)?;
+        if pin.len()>16384{return Err("external pin control bound".into());}
+        let external:humanymous_audit::checkpoint::Checkpoint=serde_json::from_slice(&pin)?;
+        let plan=humanymous_audit::storage::plan_witness_recovery(wal.records()?,wal.checkpoints()?,humanymous_audit::storage::RecoveryPolicy{node_id:"isolated-node",hmac_key:&installation.hmac,writer_public:&public,witness_public:Some(&witness),trusted_head:Some(&external),allow_new:false},humanymous_audit::storage::TailRecovery::RequireCovered).map_err(io::Error::other)?;
+        if plan.needs_checkpoint_append(){return Err("normal browser shutdown unexpectedly requires checkpoint repair".into());}
+        let history=plan.history();
         let records:Vec<_>=history.records().iter().map(|record|json!({"seq":record.seq,"event_type":record.event_type,"verdict":record.verdict})).collect();
-        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"full_product_qualified":false}))?;
+        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
         Ok::<(),Box<dyn std::error::Error>>(())
     })
+}
+
+pub fn stop() -> Result<()> {
+    use std::os::unix::fs::OpenOptionsExt;
+    let input = std::env::args()
+        .nth(2)
+        .ok_or("independently pinned public head required")?;
+    if input.len() > 16384 {
+        return Err("external pin control bound".into());
+    }
+    let head: humanymous_audit::checkpoint::Checkpoint = serde_json::from_str(&input)?;
+    let pending = "/tmp/browser-pilot-stop.pending";
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o600)
+        .open(pending)?;
+    file.write_all(&serde_json::to_vec(&head)?)?;
+    file.sync_all()?;
+    drop(file);
+    std::fs::hard_link(pending, "/tmp/browser-pilot-stop")?;
+    std::fs::remove_file(pending)?;
+    Ok(())
 }
 
 pub fn browser() -> Result<()> {
     let hardening = hardening()?;
     // Owned endpoint tuples carry no credentials. No -i avoids Docker EOF detach.
     let args: Vec<_> = std::env::args().skip(2).collect();
-    if args.len() != 3 {
-        return Err("three owned browser endpoint tuples required".into());
+    if args.len() != 5 {
+        return Err("owned browser endpoint/DNS control tuples required".into());
     }
     let config = BrowserConfig {
         gate: args[0].parse()?,
         runtime: args[1].parse()?,
         backend: args[2].parse()?,
+        dns_canary: args[3].parse()?,
+        dns_name: args[4].clone(),
     };
     if !matches!(config.gate.ip(),std::net::IpAddr::V4(ip) if ip.is_private())
         || config.gate.port() != 8080
@@ -167,7 +199,11 @@ pub fn browser() -> Result<()> {
         .build()?;
     executor.block_on(async move {
         let fixture=browser_proxy::fixture();
+        let dns=crate::browser_dns::DenyResolver::start()?;
+        let dns_control=crate::browser_dns::probe(&dns,&config.dns_name,config.dns_canary).await?;
         let mut negatives=serde_json::Map::new();
+        negatives.insert("external_dns_local_policy_refused".into(),json!(true));
+        negatives.insert("external_dns_udp_no_route".into(),json!(true));
         let mut refusals=serde_json::Map::new();
         for (name,address) in [("runtime_loopback_unreachable",config.runtime),("backend_loopback_unreachable",config.backend),("runtime_bridge_port_unreachable",SocketAddr::new(config.gate.ip(),config.runtime.port())),("backend_bridge_port_unreachable",SocketAddr::new(config.gate.ip(),config.backend.port())),("metadata_egress_refused","169.254.169.254:80".parse()?)] {
             let refused=match tokio::time::timeout(Duration::from_millis(300),tokio::net::TcpStream::connect(address)).await {
@@ -219,7 +255,8 @@ pub fn browser() -> Result<()> {
             if !refused {return Err("proxy negative control failed".into());}
         }
         stop.send(true).map_err(|_|io::Error::other("proxy stopped"))?;proxy.await??;
-        println!("{}",json!({"schema":"humanymous.browser-product-actor/1","status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"full_product_qualified":false}));
+        let dns_policy=dns.finish()?;
+        println!("{}",json!({"schema":"humanymous.browser-product-actor/1","status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":dns_policy,"full_product_qualified":false}));
         if !passed {return Err("actual browser runtime pilot failed".into());}
         Ok::<(),Box<dyn std::error::Error>>(())
     })

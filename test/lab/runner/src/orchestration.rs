@@ -45,6 +45,7 @@ fn safe_diagnostics(cases: &[Value]) -> Value {
     json!({"schema":"humanymous.lab-safe-diagnostics/1","failures":failures,"failure_count":failed.len(),"partial":failed.len()>512})
 }
 mod browser;
+mod public_receipts;
 mod witness;
 struct Lab {
     docker: Docker,
@@ -57,22 +58,35 @@ struct Lab {
     stage: &'static str,
     cases: Vec<Value>,
     components: Value,
+    public_receipts: Value,
 }
 impl Lab {
+    fn config_file(&self, relative: &str) -> Result<String> {
+        let context = &self
+            .environment
+            .iter()
+            .find(|(name, _)| name == "HM_LAB_BUILD_CONTEXT")
+            .ok_or("immutable Compose source context required")?
+            .1;
+        Ok(std::path::Path::new(context)
+            .join(relative)
+            .to_string_lossy()
+            .into_owned())
+    }
     fn compose(&mut self, args: &[&str], required: bool) -> Result<crate::docker::Output> {
         let mut command = vec![
             "compose".into(),
             "-p".into(),
             self.project.clone(),
             "-f".into(),
-            "deployments/lab/compose.rust.yaml".into(),
+            self.config_file("deployments/lab/compose.rust.yaml")?,
             "--profile".into(),
             "controls".into(),
         ];
         if !self.topology_only {
             command.extend([
                 "-f".into(),
-                "deployments/lab/compose.rust.witness.yaml".into(),
+                self.config_file("deployments/lab/compose.rust.witness.yaml")?,
                 "--profile".into(),
                 "witness".into(),
             ]);
@@ -80,7 +94,7 @@ impl Lab {
         if self.collector {
             command.extend([
                 "-f".into(),
-                "deployments/lab/compose.rust.collector.yaml".into(),
+                self.config_file("deployments/lab/compose.rust.collector.yaml")?,
                 "--profile".into(),
                 "collector".into(),
             ]);
@@ -88,7 +102,7 @@ impl Lab {
         if self.browser_product {
             command.extend([
                 "-f".into(),
-                "deployments/lab/compose.rust.browser.yaml".into(),
+                self.config_file("deployments/lab/compose.rust.browser.yaml")?,
                 "--profile".into(),
                 "browser-product".into(),
             ]);
@@ -152,6 +166,8 @@ impl Lab {
             container["Config"]["User"] == expected_user
                 && host["ReadonlyRootfs"] == true
                 && host["Privileged"] == false
+                && host["PidMode"] != "host"
+                && host["IpcMode"] != "host"
                 && host["CapDrop"] == json!(["ALL"])
                 && host["SecurityOpt"]
                     .as_array()
@@ -342,8 +358,37 @@ impl Lab {
                 &[],
                 false,
             )?;
-            let report: Value = serde_json::from_str(result.stdout.trim())?;
+            std::fs::write(
+                self.evidence.join("wargame-report.raw.json"),
+                result.stdout.as_bytes(),
+            )?;
+            let report = humanymous_test_support::json::decode_strict_json(
+                result.stdout.as_bytes(),
+                4_194_304,
+            )?;
             snapshot::write(&self.evidence, "wargame-report.json", &report)?;
+            let receipts: Vec<_> = result
+                .stderr
+                .lines()
+                .filter_map(|line| line.strip_prefix("HM-WARGAME-VERIFICATION "))
+                .collect();
+            if receipts.len() != 1 {
+                return Err("exact original-byte wargame verification receipt required".into());
+            }
+            let receipt =
+                humanymous_test_support::json::decode_strict_json(receipts[0].as_bytes(), 65536)?;
+            snapshot::write(&self.evidence, "wargame-byte-verification.json", &receipt)?;
+            self.case("strict-original-byte-wargame-verification",receipt["schema"]=="humanymous.lab-wargame-byte-receipt/1"&&receipt["raw_sha256"]==snapshot::digest(result.stdout.as_bytes())&&receipt["verification"]["schema"]=="humanymous.wargame-verification.v1"&&receipt["verification"]["mode"]=="owned_process_network"&&receipt["verification"]["scoped_passed"]==report["scoped_passed"]&&receipt["verification"]["internally_consistent"]==true&&receipt["verification"]["full_product_qualified"]==false&&receipt["verification"]["totals"]==report["totals"],json!("strict duplicate/unknown-field decoder consumed exact emitted bytes; no unsupported capability promotion"))?;
+            let manifest = std::fs::read(self.evidence.join("source-manifest.json"))?;
+            let source =
+                humanymous_test_support::json::decode_strict_json(&manifest, 4 * 1024 * 1024)?;
+            self.public_receipts["wargame"] = public_receipts::wargame(
+                &receipt,
+                &report,
+                &source,
+                &snapshot::digest(&manifest),
+                result.stdout.as_bytes(),
+            )?;
             self.components["wargame"] = report.clone();
             self.case("actual-owned-wargame",result.success && report["scoped_passed"]==true,json!("19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained"))?;
             self.stage = "witness_component";
@@ -495,6 +540,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         stage: "initialization",
         cases: Vec::new(),
         components: json!({}),
+        public_receipts: json!({"schema":"humanymous.lab-public-receipts/1"}),
     };
     if let Err(error) = lab.execute() {
         let filter = format!("label=com.docker.compose.project={}", lab.project);
@@ -536,7 +582,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         }
     }
     let diagnostics = safe_diagnostics(&lab.cases);
-    let report = json!({"schema":"humanymous.product-lab/2","safe_diagnostics":diagnostics,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    let report = json!({"schema":"humanymous.product-lab/2","safe_diagnostics":diagnostics,"public_receipts":lab.public_receipts,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(
         &lab.evidence,

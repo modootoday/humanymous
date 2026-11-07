@@ -26,6 +26,7 @@
 !skills/agent-maintenance/**/Cargo.lock
 !test/
 !test/lab/
+!test/lab/dns_wire.rs
 !test/lab/runner/
 !test/lab/runner/**/
 !test/lab/runner/**/*.rs

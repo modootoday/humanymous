@@ -2,6 +2,8 @@
 use crate::installation::Installation;
 use humanymous_attacker::network::{self, OwnedLab};
 use humanymous_defender::lab::{LabError, OwnedRuntime, VerifiedSnapshot};
+use sha2::{Digest, Sha256};
+use std::io::Write;
 
 impl OwnedLab for Installation {
     fn spawn(&mut self) -> Result<OwnedRuntime, LabError> {
@@ -23,10 +25,17 @@ pub fn run() {
         }
     };
     report.validate().expect("complete consistent case ledger");
-    println!(
-        "{}",
-        serde_json::to_string(&report).expect("sanitized report serialization")
+    let mut bytes = serde_json::to_vec(&report).expect("sanitized report serialization");
+    bytes.push(b'\n');
+    let verification = humanymous_attacker::verification::verify_bytes(&bytes)
+        .expect("strict original-byte report verification");
+    eprintln!(
+        "HM-WARGAME-VERIFICATION {}",
+        serde_json::json!({"schema":"humanymous.lab-wargame-byte-receipt/1","raw_sha256":format!("{:x}",Sha256::digest(&bytes)),"verification":verification})
     );
+    std::io::stdout()
+        .write_all(&bytes)
+        .expect("actual report output");
     if !report.scoped_passed {
         std::process::exit(1);
     }

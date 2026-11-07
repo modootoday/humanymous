@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T06:22:12Z
+updated: 2026-11-07T07:34:56Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -32,6 +32,115 @@ is unqualified. Headless/WebDriver preferences are interventions, not a human
 baseline. This component lab does not qualify full product e2e or Meari+CEF.
 
 # Container product-test environments
+
+## First-class Docker Compose integration support
+
+Docker Compose is a supported deployment and product-test integration target.
+It composes Humanymous runtime, authority, independent witness and backend with
+nginx, Apache and language adapters; it is not a request-processing language
+adapter. Support scope does not certify an unmeasured topology or authorize an
+actual deployment. Current configuration/source and measured qualification are
+tracked separately. New orchestration and tests are Rust1.99.1/edition2024;
+Compose YAML remains configuration. Linux Docker execution belongs on free
+GitHub standard hosted runners under roadmap/delivery policy, not local Docker.
+
+Canonical configurations are deployments/lab/compose.rust.yaml, its contextual
+witness/browser overlays and topology/sandbox.yaml. The collector component
+overlay remains distinct and network-none. Adapter-owned pilot configurations
+are consumed only through reviewed fixed Rust operations and their explicit
+source-bound contracts; never execute commands read from arbitrary JSON.
+nginx's adapters/nginx/pilot-contract.json declares35 scenario groups, not35
+Rust test-harness tests. Apache implementation and its actual hosted pilot
+contract belong to the server-framework owner. Node/Python/Ruby adapters retain
+their own authority/FFI contracts. Their component successes cannot fill the
+composition's browser, witness or human/AT denominator.
+
+Required integration contract:
+
+1. Bind every role to immutable source inventory, exact root Cargo.lock,
+   built/run image IDs, resolved Compose bytes and explicit protocol/scope.
+   Never silently alter workspace membership or dependency locks inside builds.
+2. Start the backend positive control, then authenticate/unlock witness and
+   audit identity/head state, then start runtime/authority, privately provision
+   scoped adapter credentials, and only then admit ingress/browser requests.
+   Typed private readiness must bind actual endpoint, identity and required
+   capabilities; a running PID, open TCP socket or loaded page is insufficient.
+3. Use bounded Rust health/readiness probes and explicit startup ordering.
+   [Docker startup documentation](https://docs.docker.com/compose/how-tos/startup-order/)
+   distinguishes running from healthy and provides service_healthy and
+   service_completed_successfully conditions. Dependency restart propagation
+   covers explicit Compose restart/update operations. Request-time capability,
+   credential, nonce, audit and witness checks must still fail closed after
+   dependency loss; health state never authorizes a request.
+4. Secrets and credentials travel over trusted inherited/private framed input
+   or explicitly granted private files, never source/image layers, public
+   readiness, environment dumps or secret argv. Verify actual ownership, mode,
+   mount grants, peer identity and credential scope; YAML settings alone are
+   not permission evidence. [Docker secrets documentation](https://docs.docker.com/compose/how-tos/use-secrets/)
+   describes per-service file mounts; that transport does not establish the
+   runtime's required ACL/UID or application authorization semantics.
+5. Keep browser/attacker, trusted Gate/adapter, backend and witness trust
+   boundaries explicit. The B profile separates browser and Gate namespaces;
+   its backend/runtime remain Gate-loopback-only. Default UID65532 and witness
+   UID65533, read-only roots, empty capabilities, no-new-privileges, disjoint
+   key/head mounts, no host Docker socket, no public management/admin/origin
+   ports and denied outward traffic remain mandatory. Management/observer IPC
+   uses its separate authenticated native seam, not an ingress HTTP alias.
+6. Drain adapters/ingress before runtime audit flush and witness shutdown;
+   retain backend access only for already authorized work. Apply bounded
+   private shutdown control and StopBudget, join/reap workers, and acknowledge
+   Stopped only after the actual flush. Preserve timeout/poison/ambiguous state
+   as failure or explicit closed recovery evidence, not graceful success.
+7. Measure witness loss before effect, ambiguous durable tails, same-identity
+   restart and externally pinned head recovery. Never delete an authenticated
+   complete record, reprovision identity, automatically retry a logical effect
+   or label a partially witnessed tail fully attested. Audit-owned recovery
+   policy/receipts and runtime-owned fresh credential epochs govern recovery.
+8. Capture exact case/group inventory, statuses/ACKs, independently observed
+   backend effects and authenticated audit/witness receipts. Preserve failed
+   raw evidence privately; only validated safe_diagnostics and approved
+   summary/log hashes enter artifact-free public CI output. Run owned-project
+   cleanup on success/failure/cancellation and verify containers, networks and
+   volumes removed; labels alone are not cleanup or a scheduled janitor.
+
+The external-DNS profile explicitly configures only a loopback resolver. A
+Rust deny-only UDP53 responder inside the browser namespace records hashed
+owned questions and never forwards them. The actual libc lookup must reach
+that responder and receive no address. An independently healthy Rust DNS
+canary on the separate outside internal network first proves a real query/
+NXDOMAIN response. Browser direct UDP routing to that inspected canary must
+produce an expected no-route/permission error, and the canary's before/after
+query counters must remain unchanged. Local denial, outside counters and
+kernel route observations are separate required receipts. No public DNS is
+probed; timeout, unknown error or inability to bind caps0 UID65532 UDP53 is
+failure/unverified, never a reason to add privileges. Shared bounded wire
+frames live in test/lab/dns_wire.rs, with one implementation for both contexts.
+
+Wargame reports retain their exact emitted bytes and use the owner's shared
+strict decoder/verifier. The wrapper matches raw SHA256, verifier schema/mode,
+scoped status, totals and full-product=false before accepting a byte receipt.
+Generic duplicate-key-safe JSON parsing is shared test-support code; lab does
+not duplicate that visitor. Current source invokes audit-owned
+plan_witness_recovery with mandatory external latest pin and RequireCovered
+for normal browser shutdown, rejects an unexpected repair requirement, and
+checks the returned authentication/coverage separately from deployment claims.
+Resolved Compose files are loaded from the same immutable frozen context as
+the images, rather than rereading mutable working-tree configuration.
+The small public receipt contract is test/lab/runner/public-receipts.json.
+Its wargame projection includes exact source/raw/manifest hashes, verified
+schema/mode/scoped status, all six totals and every contiguous case index with
+terminal status/expectation. It excludes session, installation and process
+identities, raw bodies and free-text reasons. A generated receipt survives a
+later component failure; absence or malformed accounting is not replaced by
+zero success. Recovering this projection does not recover the private raw.
+
+The supported composition is qualified only when all its required actual gates
+pass with complete source/effect/cleanup evidence. Skipped, ignored, unknown,
+unrecovered private raw, component-only or old-source green results cannot
+satisfy it. Current browser B source0fa5c31 is not_run on Linux/hosted; witness
+outage/recovery, external DNS and adapter-composition gates remain active work.
+No paid resource, public deployment, publish, tag or release is authorized by
+this support declaration. Deployment consent remains a separate user action.
 
 ## Remote execution design delta (2026-11-07, not_run)
 
