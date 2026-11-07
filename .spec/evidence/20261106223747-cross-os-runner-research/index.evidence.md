@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: linux-tree-bd62cc3c-summary.json, sha256: e2aec195de03cc7950eb9742acdadb20e060b628565d5c00dbfbb956c050a3b2, bytes: 4218, store: repo}
   - {path: owned-tree-pure-summary.json, sha256: ee7c880877daabfa6e3b33073ff17d91f6b64928ce06076bec9cc9454686c143, bytes: 1876, store: repo}
   - {path: macos-arm64-initial.log, sha256: 05490700b79bff322d867d8ec71f87c98e226399511438e4c1541158cb2da587, bytes: 57321, store: repo}
   - {path: initial-artifacts.json, sha256: 88991429991b63ae1ec7bcda09792d986a137e482b1eded17f12c90158b5df56, bytes: 1277, store: repo}
@@ -56,3 +57,16 @@ all-target check and strict Clippy. Ten source/manifest/lock/toolchain files had
 zero drift. Linux cfg, actual prerequisite inventory, native allocation and
 recovery-supervisor behavior were not executed or qualified. See the registered
 owned-tree-pure-summary.json for exact selectors and raw hashes.
+
+## Immutable Linux owned-tree model and actual read-only inventory
+
+Sourcebd62cc3c native WSL Linux passed all-target check, strict Clippy and exactly
+4lifecycle+2inventory pure tests. The fixed example observed systemd PID1,
+cgroup-v2 mount and system bus socket, while manager/version/auth remained
+not_queried and backend/status unqualified/unsupported. All2346 archive entries
+and12recursive package source trees (494files) had zero path/byte drift. Prior
+workspace metadata offline failure and missing exec PATH remain explicit; only
+scoped cached dependencies were used, with no graph/download change. This is not
+a hosted/service/D-Bus/allocator/containment/recovery qualification. The earlier
+Windows20cdc325 source count wasTEN; an earlier message incorrectly said11 and
+is not silently rewritten. See registered linux-tree-bd62cc3c-summary.json.

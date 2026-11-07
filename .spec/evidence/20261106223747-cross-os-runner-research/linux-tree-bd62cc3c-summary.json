@@ -1,0 +1,130 @@
+{
+  "schema": "humanymous.native-linux-tree-validation/1",
+  "status": "passed-narrow-component",
+  "source_sha": "bd62cc3c960360ac22cda8278781ad5f2bd8c709",
+  "venue": "Linux 6.18.33.2-microsoft-standard-WSL2",
+  "genuine_hosted": false,
+  "source_archive": {
+    "entries": 2346,
+    "before_after_drift": 0,
+    "sha256": "ad0538686df293c9722522103da59841d5b311264942650e127bbe8439487d83"
+  },
+  "recursive_compiled_source": {
+    "packages": 12,
+    "files": 494,
+    "before_after_drift": 0,
+    "inventory_method": "locked offline package-scoped cargo tree plus complete cached registry/local source trees"
+  },
+  "admission": {
+    "free_gib": 32.27,
+    "commit_percent": 80
+  },
+  "tests": [
+    {
+      "selector": "tree_lifecycle::tests",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 19
+    },
+    {
+      "selector": "linux_tree_probe::tests",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 21
+    }
+  ],
+  "all_target_check": "passed",
+  "strict_clippy": "passed with -D warnings",
+  "inventory": {
+    "linux_build": true,
+    "systemd_pid1": "observed",
+    "cgroup_v2_mount": "observed",
+    "system_bus_socket": "observed",
+    "manager_version": "not_queried",
+    "broker_authorization": "not_queried",
+    "status": "unsupported",
+    "native_backend_qualified": false
+  },
+  "execution_environment": "ordinary WSL uid1000; sudo/docker group membership observed; not hostile-child containment",
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "initial_failures": [
+    {
+      "stage": "coordinator metadata spawn",
+      "reason": "cargo missing from inherited WSL exec PATH; fixed explicit native PATH",
+      "cargo_started": false
+    },
+    {
+      "stage": "workspace metadata offline",
+      "exit": 101,
+      "reason": "unrelated accesskit_consumer not cached; switched to scoped offline cargo tree, no graph/download"
+    }
+  ],
+  "earlier_message_correction": "20cdc325 Windows closure was10files, not11; original earlier message retained separately",
+  "native_mutations": false,
+  "services_or_bus_calls": false,
+  "raw": {
+    "archive-source-inventory.json": {
+      "bytes": 457735,
+      "sha256": "2e1aed87da6e8ba958cc794b0b7124a13738c3b2ca6d559eeaf1d6ee9daef9e0"
+    },
+    "check.log": {
+      "bytes": 18069,
+      "sha256": "79d372ef7c5ad96cd1d14e958e16acdcfdf6b1bb1a15be75c38b37adc8fe8a77"
+    },
+    "clippy.log": {
+      "bytes": 193,
+      "sha256": "980656ce97cee3951fa5051dba692bc5aeb3df45f7adba9dd8d0307560754558"
+    },
+    "dependencies-after.json": {
+      "bytes": 46831,
+      "sha256": "0c534cfbbe630adbca43d730355f1ea4b492e23d32b4a1d4a54fe03537423ab9"
+    },
+    "dependencies-before.json": {
+      "bytes": 46831,
+      "sha256": "0c534cfbbe630adbca43d730355f1ea4b492e23d32b4a1d4a54fe03537423ab9"
+    },
+    "dependency-tree.log": {
+      "bytes": 416,
+      "sha256": "75d1d1847944fdb4d10ddf1a1b6c8e5ded741229d7c3c674dd11679f3c225865"
+    },
+    "initial-prerequisite-failure.json": {
+      "bytes": 148,
+      "sha256": "2351f3e078a6f35d82618bc62ecca2622aa20c5d10965527249b14ef5b6ed6a2"
+    },
+    "inventory.log": {
+      "bytes": 706,
+      "sha256": "0be16843cb79948fbd395b9f5ed8530c96d6fd30891c812460a713662bd6c082"
+    },
+    "lifecycle.log": {
+      "bytes": 998,
+      "sha256": "28323e5808020e4ccf9418847f4e1e3b294ec2f54ab773f709e5f433b466412e"
+    },
+    "linux-results.json": {
+      "bytes": 353,
+      "sha256": "d7bebd87b74101d3f1912d924dcf1b549aa23a0d4dfa962ce1399bfbdd0c9198"
+    },
+    "metadata-stderr.log": {
+      "bytes": 133,
+      "sha256": "1d49223609e6690f673e55c7ee18d1fed029b59b4de9a1d48dbe89fb1b970168"
+    },
+    "probe.log": {
+      "bytes": 517,
+      "sha256": "c58cda1714fc7fb6c679c87cddc0333bc67e02e2b481c989a2335c8eaf426e53"
+    },
+    "recipe.json": {
+      "bytes": 4356,
+      "sha256": "55b33ecd2183c756475fec058fe8de67a62975cab11e29232692451b8b005cbe"
+    },
+    "toolchain-config.json": {
+      "bytes": 975,
+      "sha256": "c2b4cec0d7a8a030596a1cb31df550977f5200a359020c0a744d67f3c8ef9b1c"
+    }
+  },
+  "private_directory": ".spec.local/root/evidence/20261107115400-windows-runner-linux-tree-candidate"
+}
