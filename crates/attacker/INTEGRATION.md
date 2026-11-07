@@ -154,6 +154,21 @@ The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
 
+## V0.5 step attribution (validation pending)
+
+The existing network v2 fieldset remains unchanged. Verification now checks each
+step id/role in catalog order: evaluated rows require all steps; failed rows may
+retain an empty or partial prefix. Replay's successful protected request remains
+synthetic_control and its subsequent replay remains attack. Relabelled controls,
+reordered steps and appended observations are rejected even when HTTP/audit totals
+are unchanged. The fixture is a failed unit ledger only. V0.4's25pure results and
+earlier hosted sources do not qualify this follow-up. No dependencies changed.
+
+Lab integration must check the actual serialized bytes with
+humanymous_attacker::verification::verify_bytes and preserve this outcome beside
+the actual source/image/report evidence; a Rust unit fixture is not a hosted round.
+The lab owner has been asked to wire this seam in its owned paths.
+
 ## V0.4 strict report acceptance (pure validated; hosted runtime not_run)
 
 Review found that47499a5's initial v1 Value decoding discarded duplicate keys and

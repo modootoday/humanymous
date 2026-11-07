@@ -119,10 +119,10 @@ mod tests {
             .as_array_mut()
             .unwrap()
             .iter_mut()
-            .find(|row| row["status"] == "error")
+            .find(|row| row["id"] == "missing-client-report")
             .unwrap();
         row["steps"] = serde_json::json!([{
-            "id":"unit-transport-error", "role":"attack", "http_status":null,
+            "id":"protected-request", "role":"attack", "http_status":null,
             "response_verdict":null, "error":"unit-only transport failure"
         }]);
         row["processes"] = serde_json::json!([{
@@ -140,6 +140,50 @@ mod tests {
         assert!(!verification.scoped_passed);
         assert!(!verification.full_product_qualified);
         report
+    }
+
+    #[test]
+    fn network_rejects_relabelled_reordered_and_extra_steps_but_retains_failure_prefixes() {
+        let mut report = network_failure_fixture();
+        let rows = report["rows"].as_array_mut().unwrap();
+        let index = rows
+            .iter()
+            .position(|row| row["id"] == "rit-replay-after-control")
+            .unwrap();
+        // Failed unit ledger only: no process is run and no successful round is claimed.
+        rows[index]["steps"] = serde_json::json!([
+            {"id":"collect-asserted-fixture", "role":"setup", "http_status":200,
+             "response_verdict":null, "error":null},
+            {"id":"protected-request", "role":"synthetic_control", "http_status":200,
+             "response_verdict":null, "error":null},
+            {"id":"replayed-request", "role":"attack", "http_status":null,
+             "response_verdict":null, "error":"unit-only transport failure"}
+        ]);
+        let check = |value: &Value| verify_bytes(&serde_json::to_vec(value).unwrap());
+        assert!(!check(&report).unwrap().scoped_passed);
+        for (field, value) in [("role", "attack"), ("id", "replayed-request")] {
+            let mut changed = report.clone();
+            changed["rows"][index]["steps"][1][field] = value.into();
+            assert!(check(&changed).is_err(), "{field}");
+        }
+        let mut changed = report.clone();
+        changed["rows"][index]["steps"]
+            .as_array_mut()
+            .unwrap()
+            .swap(0, 1);
+        assert!(check(&changed).is_err());
+        let mut changed = report.clone();
+        let steps = changed["rows"][index]["steps"].as_array_mut().unwrap();
+        steps.push(steps[2].clone());
+        assert!(check(&changed).is_err());
+        for length in 0..=3 {
+            let mut prefix = report.clone();
+            prefix["rows"][index]["steps"]
+                .as_array_mut()
+                .unwrap()
+                .truncate(length);
+            assert!(!check(&prefix).unwrap().scoped_passed);
+        }
     }
 
     #[test]
@@ -163,7 +207,7 @@ mod tests {
             .as_array()
             .unwrap()
             .iter()
-            .position(|row| row["status"] == "error")
+            .position(|row| row["id"] == "missing-client-report")
             .unwrap();
         for pointer in [
             String::new(),

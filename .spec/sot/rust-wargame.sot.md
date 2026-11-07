@@ -3,7 +3,7 @@ id: sot:root/rust-wargame
 title: Rust wargame
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-07T06:59:31Z
+updated: 2026-11-07T07:17:45Z
 verify:
   - cargo test --locked -j1 -p humanymous-attacker -p humanymous-defender -- --test-threads=1
 rel:
@@ -160,6 +160,19 @@ classified pure fastchecks are resource-bounded; actual child/network/Docker/
 browser/Cross-OS work moves to standard hosted execution. No local runtime run
 is resumed. No prior green qualifies this source; unavailable participants and
 full product requirements remain explicit until directly measured.
+
+### Step attribution acceptance v0.5
+
+The network verifier compares step identities, ordering and roles against the
+owning catalog, including setup and synthetic controls. Evaluated rows require
+the complete ordered plan; execution errors may preserve any genuine prefix,
+including an empty prefix when installation/session setup failed. Relabelling a
+replay control as an attack, reordering steps or appending steps fails report
+acceptance independently of HTTP status and policy expectations. This strengthens
+evidence attribution without changing frozen detection or the v2 wire fieldset.
+New pure regression fixtures remain failed ledgers, never fabricated successful
+runtime observations. V0.5 validation and fresh source-bound hosted integration
+are pending; v0.4's25pure tests do not qualify the new source.
 
 ### Report decoder acceptance v0.4
 

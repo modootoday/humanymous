@@ -165,6 +165,21 @@ impl NetworkReport {
             {
                 return Err(fail);
             }
+            if let Some(kind) = spec.kind {
+                let plan = cases::step_plan(kind);
+                if row.steps.len() > plan.len()
+                    || (row.status == Status::Evaluated && row.steps.len() != plan.len())
+                    || row
+                        .steps
+                        .iter()
+                        .zip(plan)
+                        .any(|(step, (id, role))| step.id != *id || step.role != *role)
+                {
+                    return Err(LabError(
+                        "network step identity or role differs from catalog",
+                    ));
+                }
+            }
             match row.status {
                 Status::Evaluated => {
                     if row.expectation_matches != Some(cases::matches(&spec, row))

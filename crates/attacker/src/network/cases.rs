@@ -159,6 +159,35 @@ fn expected(
     }
 }
 
+/// Ordered identities and roles are part of the catalog, including controls.
+/// Errors may retain a prefix; evaluated rows must retain the complete plan.
+pub(super) fn step_plan(kind: Kind) -> &'static [(&'static str, &'static str)] {
+    use Kind::*;
+    match kind {
+        MissingSession | AdminSpoof | Tls | H2 | Collector => &[("untrusted-request", "attack")],
+        DuplicateLength => &[("ambiguous-framing", "attack")],
+        Restart => &[("stale-epoch-request", "attack")],
+        MissingReport => &[("protected-request", "attack")],
+        ForgedPass => &[
+            ("collect-asserted-fixture", "attack"),
+            ("protected-request", "attack"),
+        ],
+        Baseline | LongWindow => &[
+            ("collect-asserted-fixture", "setup"),
+            ("protected-request", "synthetic_control"),
+        ],
+        Replay => &[
+            ("collect-asserted-fixture", "setup"),
+            ("protected-request", "synthetic_control"),
+            ("replayed-request", "attack"),
+        ],
+        Selenium | Body | Target | HeaderOrder | Expired | MissingToken | Method => &[
+            ("collect-asserted-fixture", "setup"),
+            ("protected-request", "attack"),
+        ],
+    }
+}
+
 pub(super) fn matches(spec: &Spec, row: &NetworkRow) -> bool {
     let Some(kind) = spec.kind else {
         return false;
@@ -440,6 +469,7 @@ mod tests {
         for case in &cases {
             if let Some(kind) = case.kind {
                 assert!(!expected(kind).0.is_empty());
+                assert_eq!(step_plan(kind).len(), expected(kind).0.len(), "{}", case.id);
                 assert!(case.reason.is_none());
             } else {
                 assert!(case.reason.is_some());

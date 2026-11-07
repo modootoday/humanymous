@@ -3,7 +3,7 @@ id: plan:root/20261106222418
 title: Rust wargame engine simulation
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-07T06:59:31Z
+updated: 2026-11-07T07:17:45Z
 rel:
   governs: [crates/attacker]
   depends_on: [sot:root/rust-wargame]
@@ -17,6 +17,10 @@ Provide a private, owned-lab-only Rust observation simulation using the existing
 verdict engine, with honest unavailable-runtime and human-control accounting.
 
 ## Steps
+
+- [x] V0.5: bind network step identities/order/roles to catalog; preserve error prefixes.
+- [ ] V0.5: root-allocated scoped pure tests/Clippy, then source-bound hosted acceptance.
+- [ ] Link actual hosted serialized network bytes to strict verification evidence via lab owner.
 
 - [x] Claim red-catalog/rust-wargame; inspect test taxonomy and sole Rust engine.
 - [x] Write normative scope, serial persona synthesis and adversarial blockers.
