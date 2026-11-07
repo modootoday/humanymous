@@ -1,54 +1,61 @@
-# Experimental humanymous Node adapter
+# Experimental Rust Node adapter
 
-Thin Express and Hono/Fetch bridge to the single Rust authority. No scoring,
-RIT crypto or administrative API is implemented here. This package is not yet
-release-qualified: the Rust decision service, verified IPC ACL/peer setup and
-full Docker/browser deployment acceptance remain prerequisites.
+Rust Node-API callbacks connect Express and Hono to the single Rust authority.
+No second scoring engine, RIT implementation or public administrative router is
+implemented here. Pinned upstream NAPI CLI generates the CJS/ESM loader and
+declarations. Historical handwritten src/ and test/ files are excluded from the
+archive. New implementation and tests are Rust1.99.1/edition2024.
 
-```js
-import { express as guard } from '@humanymous/node';
-app.use(guard({ installation: 'node-1', tenant: 'site', origin: 'app', revision: 'config-1',
-  routes: ['/checkout'], socketPath: '/run/humanymous/decision.sock',
-  credential: process.env.HUMANYMOUS_ADAPTER_CREDENTIAL }));
-app.use(express.json()); // guard must precede parsers and origin effects
-```
+Qualification is in progress. Windows and isolated Linux component measurements
+are separate from full product acceptance; releaseQualifiedTuples remains empty
+and npm publication is gated. Later source edits await resumed verification.
 
-Mount at root with an exhaustive exact pathname inventory. No subsequent route,
-method, body or identity rewrite may change the authorized request. Unknown and
-reserved routes fail closed. Fetch/Hono use `hono(options, app)` as the outer
-server Fetch handler; normalized Fetch headers/targets cannot establish raw
-client fidelity. Express body methods delegate to a bounded replay after the
-decision. Compressed entity bytes remain compressed. Limits default to 1 MiB
-input and 3 seconds including body and authority call; no upload streaming.
+`createExpressServer(optionsJson, app)` returns an owned HTTP server. Its guard
+runs before the existing app's parsers/effects and rejects unsupported upgrade/
+CONNECT events before application callbacks. Do not add competing server
+listeners or rewrite authorized routing later. `express(optionsJson)` is
+advanced root middleware: install before every parser/effect; independent
+upgrade listeners are outside its coverage.
 
-`localClient` supports pathname Unix sockets and local Windows named pipes only.
-Use independently scoped adapter credentials. The service must validate actual
-peer identity, socket ownership/ACLs and replay state; client headers never grant
-trust. Public application routers never mount or proxy administration.
+`hono(optionsJson, app, streamModule)` returns an outer Fetch handler. Supply the
+real upstream node:stream module. Node Hono uses the upstream Node adapter; Bun
+Hono uses actual Bun.serve. Exact complete body validation precedes app.fetch.
+The original Request's metadata and cancellation are retained with sanitized
+headers and verified body bytes. The latest metadata-cloning edit is not yet
+validated after a resource-priority hold.
 
-ALLOW invokes the application once. DENY returns 403, CHALLENGE returns 409 JSON
-(browser recovery not yet connected), dependency/input errors return 503. The
-reserved `/_humanymous` subtree currently returns 503; it does not serve scripts.
-Configure a separately qualified Rust edge for raw TLS/H2, browser collection,
-challenge recovery, large streaming uploads, WebSocket, gRPC and trailers.
-Response SSE/download streams pass through without rewriting or buffering.
+Strict options JSON requires installation, tenant, origin, revision, endpoint,
+credential, server, routes, timeoutMs and maxBody. server is the actual authority
+peer: Unix kind/uid or Windows kind/sid/pid, where pid is the authority process.
+A trusted supervisor delivers the fresh credential privately. Only restricted
+local filesystem sockets/named pipes are supported; no TCP/admin fallback or
+retry. routes is a complete pathname inventory. Unknown/reserved paths fail
+closed; the reserved /_humanymous subtree currently serves no script or recovery.
 
-`htmlHook({nonce})` returns template markup and a CSP nonce source for explicit
-application integration only. It does not serve a script, alter CSP, rewrite
-HTML or modify cache/signature/compression headers. Application code must supply
-the matching nonce and a qualified browser data-plane deployment.
+maxBody is at most1MiB, timeoutMs at most30seconds, and body/decision ownership
+is process-bounded to64. ALLOW is consumed once and checked for expiry immediately
+before the app call. DENY returns403, CHALLENGE409 JSON, dependency/input
+errors503 no-store. Missing required observations never fabricate an ALLOW.
 
-Runtime dependencies: none. Node >=22 is the install floor, not a promise that
-every version/OS is qualified. The capability descriptor records boundaries;
-release-qualified tuples remain empty pending Rust/Docker/native acceptance.
-`decide` injection is for controlled embedding/conformance; untrusted callers
-must never choose it or the configured identity/IPC credentials.
+Verified Node HTTP1 raw headers retain order/casing. Bun1.3.14's HTTP shim
+lowercases rawHeaders, so Bun Express explicitly uses normalized evidence;
+strict raw-observation routes remain unready. Hono Fetch is normalized. Original
+TLS/H2/H3 and authenticated client capture are unavailable from middleware alone.
+Internal/forwarding trust assertions are removed while app authorization/cookies
+and response Set-Cookie meaning are preserved.
 
-CI interface: `npm ci`, `npm test`, `npm run test:pilot`, `npm run test:bun`,
-`npm run typecheck`, `npm audit --audit-level=low`, `npm pack --dry-run --json`.
-Pack scripts validate ESM/CJS surface and declarations. Publishing requires npm
-OIDC workflow, matching reviewed version and complete migration acceptance.
+Uploads are bounded complete bodies. Upload streaming, request trailers,
+WebSocket, CONNECT and gRPC remain unqualified. App-owned SSE/download response
+streams pass through without HTML rewriting or whole-stream buffering.
+`htmlHook(nonce, scriptPath)` returns explicit template markup and a CSP source;
+it serves no script and does not modify CSP, compression, signatures, ETags,
+Content-Length, caches or HEAD/204/304. Latest HEAD/304 test additions are pending.
+`capabilities()` reports the runtime observation profile and unavailable planes.
 
-The tests use a mock authority and local host pilots; they are not Rust e2e or
-Docker completion evidence. Exact wire requirements are maintained in the
-repository Specfold adapter-service-contract source of truth.
+Build from the checkout with npm ci --ignore-scripts, then npm run build. The
+Rust driver uses exclusive generation ownership and exact upstream CLI3.10.12.
+Generated outputs are ignored under native/. Missing outputs make npm prepack
+fail closed. Native packaging/source/provenance/archive checks still need their
+final run. Node >=22 is an install floor, not an all-version/OS support claim.
+There are no runtime npm dependencies; native platform requirements and release
+receipts remain explicit. No npm publication was performed.

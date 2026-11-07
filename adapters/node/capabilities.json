@@ -2,14 +2,14 @@
   "adapter": "humanymous.node",
   "version": "0.1.0-experimental.1",
   "protocol": "humanymous.adapter/0.1",
-  "status": "experimental-mock-conformance",
-  "profiles": ["node-http1-express-root", "fetch-hono-wrapper"],
+  "status": "experimental-native-component-in-progress",
+  "profiles": ["node-http1-express-owned-server", "bun-express-normalized", "node-hono-fetch", "bun-serve-hono-fetch"],
   "capabilities": {
     "rawClientTls": "unavailable",
     "originalH2": "unavailable",
     "h3": "unavailable",
-    "rawHeaderOrder": "conditional:Node HTTP1 rawHeaders only",
-    "originalRawTarget": "conditional:Node HTTP1 only",
+    "rawHeaderOrder": "conditional:verified Node.js HTTP1 only; Bun 1.3.14 Express is normalized",
+    "originalRawTarget": "conditional:verified Node.js HTTP1 only",
     "completeBody": "conditional:bounded transfer-decoded content-encoded bytes",
     "requestStreaming": "unavailable",
     "responseStreaming": "available:unchanged handler response",
@@ -19,8 +19,8 @@
     "collectorChallenge": "unavailable:reserved namespace fails closed",
     "htmlInsertion": "conditional:explicit application template and CSP nonce",
     "localAdmin": "unavailable:never mounted or proxied",
-    "auditDurability": "conditional:Rust authority integration pending",
-    "authenticatedPeer": "conditional:Rust IPC peer and ACL provisioning pending"
+    "auditDurability": "conditional:shared Rust authority and qualified deployment witness policy",
+    "authenticatedPeer": "conditional:supervisor-provisioned actual Rust authority peer and IPC ACL"
   },
   "releaseQualifiedTuples": []
 }

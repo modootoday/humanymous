@@ -1,0 +1,46 @@
+[package]
+name = "humanymous-node-adapter"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99.1"
+license = "Apache-2.0"
+repository = "https://github.com/modootoday/humanymous"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+host-pilot = []
+
+[dependencies]
+humanymous-integrity = { path = "../integrity" }
+humanymous-authority = { path = "../authority" }
+napi = { version = "=3.16.1", default-features = false, features = ["napi8", "dyn-symbols", "tokio_rt"] }
+napi-derive = "=3.7.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+base64 = "0.22.1"
+sha2 = "0.10.9"
+hex = "0.4.3"
+getrandom = "0.4.3"
+tokio = { version = "1.54.1", features = ["sync", "time", "rt-multi-thread"] }
+
+[build-dependencies]
+napi-build = "=2.6.0"
+
+[dev-dependencies]
+humanymous-native-security = { path = "../native-security" }
+humanymous-audit = { path = "../audit" }
+humanymous-signals = { path = "../signals" }
+
+[target.'cfg(windows)'.dev-dependencies]
+windows-permissions = "=0.2.4"
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"

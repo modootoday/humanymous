@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.node-native-checkpoint/1",
+  "checkpoint_base_sha": "503bc731ef08a14e8fb6399c0d96b0d0f7f2851a",
+  "current_working_source_validated": false,
+  "full_product_qualified": false,
+  "registry_qualified": false,
+  "latest_edits_not_run": ["HEAD/304 fixtures", "Request metadata cloning", "runtime capabilities", "native-only npm metadata", "exclusive generation locking", "final package inspection"],
+  "windows_historical_snapshot": {
+    "node": "24.16.0", "bun": "1.3.14", "os": "windows", "arch": "x64",
+    "groups": 5, "failed": 0, "ignored": 0, "filtered": 0, "cases": 52,
+    "production_authority_non_allow": 4, "synthetic_evidence_allow": 20,
+    "synthetic_origin_effects": 20, "synthetic_audit_records": 20,
+    "negative_body_lifecycle_protocol": 16, "negative_dependency_routes": 12,
+    "private_log_sha256": "b3686cf568172c548f72ac609e633bcef91f06820e59ef24957fd932366b4493"
+  },
+  "linux_historical_snapshot": {
+    "image_id": "sha256:f20dbad10f628cccb55db42a5fb9438b282b54d38b600fc4e3ebbdd961e1b986",
+    "groups": 5, "failed": 0, "ignored": 0, "filtered": 0, "cases": 36,
+    "uid": 65532, "network": "none", "rootfs": "read-only",
+    "capabilities": "all-dropped", "no_new_privileges": true,
+    "memory_bytes": 2147483648, "pids": 256, "cpus": 2,
+    "private_log_sha256": "330bab245663629757179aa7d74239bdecdd3b1856aae039e489807b52bf1001"
+  },
+  "npm_advisory_snapshot": {
+    "known_findings": 0, "dependency_count": 204,
+    "private_log_sha256": "90ced87222417d2e1e139cc7e1262cd90f0964f24814c29bf84d76689a30dc68"
+  },
+  "retained_failures": ["Windows extended canonical path", "Function/Object coercion", "direct Bun native preload", "Bun response lifecycle property", "HTTP message vs TCP EOF", "Bun raw-header casing", "wrong Docker config digest before execution", "intermediate Rust compile/lint errors"],
+  "memory_hold": {"active_owned_processes": 0, "active_owned_containers": 0, "new_heavy_execution": "not_run_until_root_reschedules"},
+  "publication": "not_performed"
+}

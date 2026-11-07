@@ -1,19 +1,30 @@
 {
   "name": "@humanymous/node",
   "version": "0.1.0-experimental.1",
-  "description": "Experimental Node stream and Fetch bridge to the Rust authority",
+  "description": "Experimental Rust Node-API Express and Hono bridge to the shared authority",
   "license": "Apache-2.0",
   "type": "module",
-  "main": "./src/index.cjs",
-  "types": "./src/index.d.cts",
+  "main": "./native/index.cjs",
+  "types": "./native/index.d.cts",
   "exports": {
     ".": {
-      "import": { "types": "./src/index.d.mts", "default": "./src/index.mjs" },
-      "require": { "types": "./src/index.d.cts", "default": "./src/index.cjs" }
+      "import": {
+        "types": "./native/index.d.mts",
+        "default": "./native/index.mjs"
+      },
+      "require": {
+        "types": "./native/index.d.cts",
+        "default": "./native/index.cjs"
+      }
     }
   },
   "files": [
-    "src",
+    "native/index.cjs",
+    "native/index.mjs",
+    "native/index.d.cts",
+    "native/index.d.mts",
+    "native/humanymous-node.*.node",
+    "native/provenance.json",
     "README.md",
     "LICENSE",
     "capabilities.json"
@@ -24,21 +35,26 @@
   "publishConfig": {
     "access": "public"
   },
+  "napi": {
+    "binaryName": "humanymous-node",
+    "targets": ["x86_64-pc-windows-msvc", "x86_64-unknown-linux-gnu"]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/modootoday/humanymous.git",
     "directory": "adapters/node"
   },
   "scripts": {
-    "test": "node --test test/*.test.mjs",
-    "test:bun": "bun test/pilot.mjs",
-    "typecheck": "tsc --noEmit --strict --types node --module nodenext --moduleResolution nodenext test/types.mts test/types.cts",
-    "check:package": "node test/package.mjs",
-    "prepack": "npm run typecheck && npm run check:package",
-    "test:pilot": "node test/pilot.mjs"
+    "build": "cargo run --locked --manifest-path ../../Cargo.toml -p humanymous-node-adapter --bin humanymous-node-package -- build",
+    "test": "cargo test --locked --manifest-path ../../Cargo.toml -p humanymous-node-adapter --lib",
+    "typecheck": "tsc --noEmit --strict --types node --module nodenext --moduleResolution nodenext native/index.d.cts native/index.d.mts",
+    "check:package": "cargo run --locked --manifest-path ../../Cargo.toml -p humanymous-node-adapter --bin humanymous-node-package -- inspect",
+    "prepack": "npm run check:package",
+    "test:pilot": "cargo test --locked --manifest-path ../../Cargo.toml -p humanymous-node-adapter --features host-pilot --test host_process -- --include-ignored --test-threads=1"
   },
   "devDependencies": {
     "@hono/node-server": "2.1.6",
+    "@napi-rs/cli": "3.10.12",
     "@types/node": "26.6.6",
     "ajv": "8.20.0",
     "express": "5.3.0",
