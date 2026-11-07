@@ -1,0 +1,73 @@
+{
+  "schema": "humanymous.coherent-delivery-helper-validation/1",
+  "checkpoint_base": "d6b24b76fca9baafa300dd4c4ec279aa28178942",
+  "checkpoint_sha256": "b9a473ebc0c3e07378bfef619d738839bf54cdac26be715c1298a680b1f308f2",
+  "declared_native_overlays": 6,
+  "test_counts": {
+    "passed": 90,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "commands": {
+    "metadata": 0,
+    "tests": 0,
+    "all_target_check": 0,
+    "strict_clippy": 0,
+    "policy": 0,
+    "fmt": 0,
+    "actionlint": 0,
+    "expected_shipping_rejection": 1
+  },
+  "handles": {
+    "metadata_session": 74092,
+    "metadata_exit": 0,
+    "commands_session": 85250,
+    "commands_exit": 0
+  },
+  "closure": {
+    "source_files": 2697,
+    "registry_packages": 105,
+    "registry_files": 3791,
+    "config_paths": 20,
+    "tool_binaries": 4,
+    "source_differences": 0,
+    "registry_differences": 0,
+    "config_differences": 0,
+    "tool_semantic_differences": 0,
+    "environment_differences": 0,
+    "working_overlay_differences": 0,
+    "registry_scope": "Reachable Windows metadata closure may overapproximate selected features"
+  },
+  "admission": {
+    "committed_percent": 82,
+    "free_physical_gib": 31.631195068359375,
+    "observed_native_cargo_roots": 0,
+    "observed_wsl_cargo_launches": 0,
+    "admitted_compiler_owner": 1,
+    "compiler_observation_scope": "Windows ancestry and WSL command arguments, cross-checked against root allocation"
+  },
+  "covered": [
+    "Canonical regular-file archive writer and owned file/hardlink bytes",
+    "Closed member refusal predicate, type and size projection without raw path echoes",
+    "Actual workspace/lock TOML document reads",
+    "Sole optional browser validator and Delivery rejection/nullable projection",
+    "Dedicated Wargame caller catalog and authorization policy"
+  ],
+  "private_index_sha256": "dd98d45c8c5876143abf96b20da30429fa0b6c4c27157bfbbc771baacb463703",
+  "missing": {
+    "gnu_sparse_allocation_observation": true,
+    "actual_corrected_native_binary_archive": true,
+    "actual_latest_wargame_product": true,
+    "actual_image_build_extraction_scan": true,
+    "authenticated_browser_prefix": true,
+    "full_product_qualification": true,
+    "release_readiness": true
+  },
+  "limitations": [
+    "Windows fixture verifies regular/hardlink bytes; it cannot qualify the Unix sparse-allocation assertion.",
+    "Synthetic owned-file archive is not a production CLI/runtime binary archive.",
+    "Known first tar/gzip stream scope and trusted source-stable window remain; no hostile atomic file attestation or general extraction claim.",
+    "This batch executes no product binaries, Docker, hosted retry, publication or OIDC exchange."
+  ]
+}

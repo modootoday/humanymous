@@ -1,0 +1,56 @@
+{
+  "schema": "humanymous.wargame-targeted-preflight/1",
+  "source_commit": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+  "source_archive_sha256": "8f16c28c2f69d8465ca322404df3fd21e424b4f0fc5a1bea67eb43e89517267f",
+  "venue": "x86_64-pc-windows-msvc",
+  "source_overlays": 0,
+  "test_counts": {
+    "attacker_passed": 17,
+    "filtered": 0,
+    "ignored": 0,
+    "defender_passed": 9,
+    "failed": 0
+  },
+  "commands": {
+    "selected_strict_clippy": 0,
+    "selected_all_target_check": 0,
+    "pure": 0
+  },
+  "selected_packages": [
+    "humanymous-attacker",
+    "humanymous-defender",
+    "humanymous-runtime-pilot",
+    "humanymous-lab-runner"
+  ],
+  "handle": {
+    "target_returned": true,
+    "session": 31158,
+    "terminal_exit": 0
+  },
+  "closure": {
+    "registry_files": 6576,
+    "source_files": 2714,
+    "source_differences": 0,
+    "tool_binaries": 4,
+    "tool_differences": 0,
+    "environment_differences": 0,
+    "config_differences": 0,
+    "config_paths": 20,
+    "registry_packages": 125,
+    "registry_differences": 0
+  },
+  "private_index_sha256": "2fcabd7363c63ddc0970acffc879ba596071d918d6ef3bafd7d93805d5c7e32c",
+  "missing": [
+    "GNU-specific compilation and execution",
+    "Actual strict original-byte 26-case Docker measurement",
+    "Full product qualification",
+    "Actual corrected native binary archive",
+    "Actual image build, notice extraction and CVE scan"
+  ],
+  "limitations": [
+    "Windows source qualification does not qualify Unix cfg paths or product execution.",
+    "Reachable registry metadata closure may overapproximate selected features.",
+    "Delivery helper 90 tests were not repeated.",
+    "No push, dispatch, artifact upload, deployment, registry publication or OIDC exchange."
+  ]
+}

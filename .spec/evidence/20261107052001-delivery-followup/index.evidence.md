@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T14:54:59Z
+updated: 2026-11-07T15:39:21Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -26,6 +26,8 @@ files:
   - {path: native-notice-verifier-validation.json, sha256: 87e637e4bbbe6b88d2e766026ad72b23d5f34b4ae5cc958d6a4564a108aae233, bytes: 2097, store: repo}
   - {path: native-artifact-caller-validation.json, sha256: 52ccd28684bac0cd13146d08311c6ae4687816a04a96885527dc222b06f63045, bytes: 2830, store: repo}
   - {path: native-b09e98cf-summary.json, sha256: 91a0f60a662ab9c1fbf7412134b9079a9f53fc35af5316fa5ffb3344ebf02f40, bytes: 2575, store: repo}
+  - {path: coherent-helper-90-validation.json, sha256: fbca7da38d124df2ec1007765d36177af2c8f93979b426ae710a11b49f70b063, bytes: 2706, store: repo}
+  - {path: wargame-306eedc8-targeted-preflight.json, sha256: fd4bb0d70ec7331eb60ccf7e515bc31b3f736ac8ce692dd60c4aa92915bd411e, bytes: 1804, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -401,3 +403,32 @@ b0bf444993fc77aa22321f95c45fc6a0eda563ea4a13514b11e76b798619e23c.
 No duplicate dispatch or repeat push was performed. An independently identified
 sparse-writer/regular-reader source mismatch is not established as this old run's
 cause; unknown original entry metadata is not reconstructed from an inference.
+
+## Coherent helper, diagnostic and caller validation
+
+coherent-helper-90-validation.json records actual90/0failed/ignored/filtered on
+immutable d6b24b76 plus six native overlays. Check/strict Clippy/policy/fmt/YAML
+passed and shipping rejection1 remained expected. Metadata74092/commands85250
+ended0. Source2697/registry105packages3791files/config20/tool4/environment and all
+six live overlays had zero semantic differences. Private index SHA256 is
+dd98d45c8c5876143abf96b20da30429fa0b6c4c27157bfbbc771baacb463703.
+
+The actual Windows file/hardlink fixture exercises the canonical writer and
+strict member checks; it does not observe Unix sparse allocation or build a
+production native binary archive. The same batch covers real TOML document reads,
+the sole optional Browser validator/consumer and dedicated Wargame caller policy.
+No actual corrected archive, latest generic26 Docker run, image extraction/scan,
+product execution, publication or OIDC exchange occurred in this batch.
+
+## Corrected dependency targeted preflight
+
+wargame-306eedc8-targeted-preflight.json records immutable306eedc8 with no
+working overlays. Actual Windows attacker17/defender9 units passed with zero
+failed/ignored/filtered; selected attacker/defender/runtime-pilot/Lab all-target
+check and strict Clippy ended0. Session31158 ended0 and the exclusive target was
+returned. Source2714/registry125packages6576files/config20/tools4/environment had
+zero differences. Private index SHA256 is
+2fcabd7363c63ddc0970acffc879ba596071d918d6ef3bafd7d93805d5c7e32c.
+This resolves the selected local dependency compile preflight after the Network
+import/docs correction; GNU-specific paths and actual26 Docker measurement remain
+unexecuted. No push/dispatch or release-readiness promotion follows from this proof.

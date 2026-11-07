@@ -923,3 +923,33 @@ passed; new policy tests remain UNRUN. Actual source selection must include the
 owner's current standalone Runtime/Defender/strict decoder graph, not an old
 Go/Browser receipt or historical28 pure tests. No hosted push/dispatch is implied
 by this source checkpoint; root retains the single transaction decision.
+
+Root approved one coherent batch on committedd6b24b76 plus the six native-format/
+document overlays, avoiding separate throwaway86/86 runs. Actual90 passed with
+zero failed/ignored/filtered, check/strict Clippy/policy/fmt/actionlint zero and
+expected shipping rejection1. Metadata74092 and commands85250 ended0; the warm
+target was returned promptly. Admission82percent/31.631GiB; no observed Windows
+Cargo roots or WSL Cargo launches before this one admitted owner. Source2697,
+registry105packages3791files,20 configs,4 tools, environment and six live overlays
+had zero semantic differences. Private index SHA256 is
+dd98d45c8c5876143abf96b20da30429fa0b6c4c27157bfbbc771baacb463703.
+
+This qualifies the Windows pure/owned-file helper slice, including both TOML
+document paths, optional Browser consumer and Wargame policy; it is not a product
+run. Unix sparse-allocation fixture, actual corrected native binary archive,
+latest-source generic26 Docker run and actual image build/extraction/CVE scan
+remain unmet. No compiler handle or target lease remains. Current CI/distribution
+ownership is not exhausted: the lowest ready boundary task is exact-source hosted
+Wargame preflight/product measurement after root's one transaction review, followed
+by GNU/native artifact proof; retained-process/API and full shipping gates persist.
+
+The next corrected immutable candidate306eedc8 passed targeted Windows
+attacker17/defender9 units, selected attacker/defender/runtime-pilot/Lab all-target
+check and strict Clippy. Session31158 ended0; source2714, registry125packages6576
+files, config20, tools4 and environment remained unchanged. Exclusive target and
+admitted slot were returned. Delivery90 was not repeated. Root received the
+literal candidate for its one validation-branch transaction; this local batch
+performed no push or dispatch. GNU cfg paths and actual strict26 Docker receipt,
+corrected native binary archive, image build/notice extraction/CVE scan and full
+shipping qualification remain missing. Public targeted-preflight evidence retains
+these venue boundaries and the immutable private index hash.
