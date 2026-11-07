@@ -35,6 +35,7 @@ pub fn run(options: &Options) -> io::Result<i32> {
         let rows = manifest["harnesses"]
             .as_array()
             .ok_or_else(|| io::Error::other("service manifest absent"))?;
+        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
         for case in &catalog::CASES {
             if !case.implemented_for_target() {
                 report[case.field] =
@@ -48,7 +49,8 @@ pub fn run(options: &Options) -> io::Result<i32> {
             let entry = rows
                 .iter()
                 .find(|row| {
-                    catalog::required_case(row).is_some_and(|found| found.test == case.test)
+                    catalog::required_case(row, &packages)
+                        .is_some_and(|found| found.test == case.test)
                 })
                 .ok_or_else(|| io::Error::other("required native service harness absent"))?;
             let result = execution::run(entry, case, &options.report, &report["source"]);

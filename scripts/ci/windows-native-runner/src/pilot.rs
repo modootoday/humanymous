@@ -124,11 +124,13 @@ pub fn run(options: &Options) -> io::Result<i32> {
             )?;
         }
         report["manifest"] = manifests.clone();
+        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
         harness::execute(
             &manifests["harnesses"],
             &options.report,
             &mut report["coverage"],
             harness::Scope::Native,
+            &packages,
         )?;
         report["skips"] = json!(
             report["coverage"]["harnesses"]

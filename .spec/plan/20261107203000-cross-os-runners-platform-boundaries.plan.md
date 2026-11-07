@@ -160,3 +160,47 @@ encoder call wrapping (6 added/5 removed lines, no token change). Result SHA256
 61ad7eba41026752665ab6050e6dc06396f98b2638ad84bf7b8a5f760ae18733.
 Required-input guard source hash72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c
 remains unchanged. No --all mutation, test/check/Clippy or native process pilot.
+
+## Opaque Cargo package ID defect and source correction
+
+Root observed actual platform ID
+path+file:///C:/workspaces/humanymous/crates/integrations/humanymous-platform#0.1.0.
+The previous contains("#humanymous-platform@") helper guard therefore refused
+the actual moved package. An ID is opaque, not a package-name/suffix grammar.
+This source correction is authorized; no consumer qualification is implied.
+
+harness/packages.rs loads bounded strict Cargo metadata --locked --offline
+--no-deps --format-version1 using the existing shared capture implementation.
+It retains metadata stdout/stderr privately beside the report; verifies source
+snapshot before/after; requires exact current logical workspace_root, unique
+workspace_members-to-packages ID join, local null source, nonempty name/version,
+absolute workspace-contained manifest and target inventory. Five role manifests
+(platform/audit/authority/runtime/CLI) must hash-match source custody; unrelated
+workspace tools are not claimed to be in the narrower native snapshot. No
+registry/path counterfeit can assign one of these roles from its name alone.
+The loader uses the existing legacy capture limits, not a new bounded-settlement
+or lifecycle guarantee. Windows logical root spelling avoids canonicalize's
+verbatim-prefix mismatch with Cargo metadata; no namespace rule is relaxed.
+
+Helper/custody/required-service/native-process classification now joins exact
+artifact package_id against that map and compares resolved name, exact expected
+manifest and exact metadata target name/kind. No substring/rsplit interpretation
+or old-name alias remains in harness, helpers or service catalog. Every role's
+expected manifest is CURRENT source path; future Runtime/CLI moves require Root
+to update that explicit table, not add suffix heuristics. Delivery's separate
+native_archive logic is outside this owner and was routed by Root.
+
+Workspace/pilot/service callers obtain the same-source map before classification;
+supplied artifact manifests cannot supply their own metadata role map. Audit,
+Authority and CLI retain their same exact tests/kind/target/ignored semantics;
+Platform keeps exactly the same helper plus six parent strings, no broad waiver.
+
+Five pure tests authored across package-map2, helper2 and catalog1 selectors:
+actual short platform ID succeeds via metadata, unknown/other-ID/name/manifest/
+kind/target and nonmember deny; duplicate/absent members, registry source,
+empty version and relative manifest refuse; existing Audit/Authority/product
+and CLI service negatives remain. All tests and loader execution NOT_RUN.
+Bare source rustfmt/whitespace/spec checks only; no Cargo/compiler/runtime lease,
+manifest/dependency/unsafe/feature change. Root must allocate scoped tests plus
+runner all-target check/strict Clippy and actual metadata/source join proof.
+Required core source_inputs guard remains unchanged.

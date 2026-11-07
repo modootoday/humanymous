@@ -1,8 +1,11 @@
 //! Explicit subprocess entry points, never ignored product integration cases.
+use super::packages::Packages;
 use serde_json::{Value, json};
-pub(super) fn captured(entry: &Value) -> Option<(&'static str, &'static [&'static str])> {
-    let package = entry["package_id"].as_str()?;
-    if package.contains("#humanymous-audit@") && entry["kind"] == json!(["test"]) {
+pub(super) fn captured(
+    entry: &Value,
+    packages: &Packages,
+) -> Option<(&'static str, &'static [&'static str])> {
+    if packages.matches(entry, "humanymous-audit") && entry["kind"] == json!(["test"]) {
         return match entry["target"].as_str()? {
             "durable_witness" => Some((
                 "child_witness_probe",
@@ -15,7 +18,7 @@ pub(super) fn captured(entry: &Value) -> Option<(&'static str, &'static [&'stati
             _ => None,
         };
     }
-    if package.contains("#humanymous-audit@")
+    if packages.matches(entry, "humanymous-audit")
         && entry["kind"] == json!(["lib"])
         && entry["target"] == "humanymous_audit"
     {
@@ -24,7 +27,7 @@ pub(super) fn captured(entry: &Value) -> Option<(&'static str, &'static [&'stati
             &["storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"],
         ));
     }
-    if package.contains("#humanymous-platform@")
+    if packages.matches(entry, "humanymous-platform")
         && entry["kind"] == json!(["lib"])
         && entry["target"] == "humanymous_platform"
     {
@@ -43,15 +46,18 @@ pub(super) fn captured(entry: &Value) -> Option<(&'static str, &'static [&'stati
     None
 }
 /// Declare an unexecuted privileged product case without granting a helper waiver.
-pub(super) fn external_scope(entry: &Value, output: &str, unix: bool) -> Option<Value> {
+pub(super) fn external_scope(
+    entry: &Value,
+    output: &str,
+    unix: bool,
+    packages: &Packages,
+) -> Option<Value> {
     const PARENT: &str = "unix_other_user_is_denied_by_actual_socket_acl";
     const HELPER: &str = "unix_unprivileged_connect_probe";
     if !unix
         || entry["target"] != "native_process"
         || entry["kind"] != json!(["test"])
-        || !entry["package_id"]
-            .as_str()
-            .is_some_and(|p| p.contains("#humanymous-authority@"))
+        || !packages.matches(entry, "humanymous-authority")
         || !output
             .lines()
             .any(|line| line.starts_with(&format!("test {PARENT} ... ignored")))
@@ -67,41 +73,42 @@ mod tests {
     use super::*;
     #[test]
     fn exact_helper_owners_do_not_include_product_host_pilots() {
-        let support = json!({"package_id":"path+file:///support#humanymous-platform@0.1.0","kind":["lib"],"target":"humanymous_platform"});
-        assert_eq!(captured(&support).unwrap().1.len(), 6);
-        let audit = json!({"package_id":"path+file:///audit#humanymous-audit@0.1.0","kind":["lib"],"target":"humanymous_audit"});
+        let support = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/integrations/humanymous-platform#0.1.0","kind":["lib"],"target":"humanymous_platform"});
+        assert_eq!(captured(&support, &Packages::fixture()).unwrap().1.len(), 6);
+        let audit = json!({"package_id":"opaque-humanymous-audit","kind":["lib"],"target":"humanymous_audit"});
         assert_eq!(
-            captured(&audit).unwrap().0,
+            captured(&audit, &Packages::fixture()).unwrap().0,
             "storage::wal::tests::process_lock_probe"
         );
         let mut wrong = audit;
         wrong["target"] = json!("different_lib");
-        assert!(captured(&wrong).is_none());
+        assert!(captured(&wrong, &Packages::fixture()).is_none());
         for target in ["host_process", "runtime_service_process"] {
-            assert!(captured(&json!({"package_id":"path+file:///node#humanymous-node-adapter@0.1.0","kind":["test"],"target":target})).is_none());
+            assert!(captured(&json!({"package_id":"path+file:///node#humanymous-node-adapter@0.1.0","kind":["test"],"target":target}), &Packages::fixture()).is_none());
         }
     }
     #[test]
     fn ignored_privileged_parent_is_required_and_never_a_verified_helper() {
-        let entry = json!({"package_id":"path+file:///authority#humanymous-authority@0.1.0","kind":["test"],"target":"native_process"});
+        let entry = json!({"package_id":"opaque-humanymous-authority","kind":["test"],"target":"native_process"});
         let log = "test unix_other_user_is_denied_by_actual_socket_acl ... ignored, Docker only\n";
-        let scope = external_scope(&entry, log, true).unwrap();
+        let scope = external_scope(&entry, log, true, &Packages::fixture()).unwrap();
         assert_eq!(scope["ignored_subprocess_helpers"], 0);
         assert_eq!(
             scope["required_not_run"][0],
             "unix_other_user_is_denied_by_actual_socket_acl"
         );
-        assert!(external_scope(&entry, log, false).is_none());
+        assert!(external_scope(&entry, log, false, &Packages::fixture()).is_none());
         assert!(
             external_scope(
                 &entry,
                 "test unix_other_user_is_denied_by_actual_socket_acl ... ok",
-                true
+                true,
+                &Packages::fixture()
             )
             .is_none()
         );
         let mut wrong = entry;
         wrong["package_id"] = json!("path+file:///node#humanymous-node-adapter@0.1.0");
-        assert!(external_scope(&wrong, log, true).is_none());
+        assert!(external_scope(&wrong, log, true, &Packages::fixture()).is_none());
     }
 }

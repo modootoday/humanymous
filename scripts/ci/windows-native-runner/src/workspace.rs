@@ -26,11 +26,13 @@ pub fn run(options: &Options) -> io::Result<i32> {
             return Err(io::Error::other("default full workspace manifest required"));
         }
         report["manifest"] = manifest.clone();
+        let packages = harness::packages::Packages::load(&report["source"], &options.report)?;
         harness::execute(
             &manifest["harnesses"],
             &options.report,
             &mut report["coverage"],
             harness::Scope::Workspace,
+            &packages,
         )?;
         let rows = report["coverage"]["harnesses"]
             .as_array()

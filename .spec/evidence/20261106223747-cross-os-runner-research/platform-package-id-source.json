@@ -1,0 +1,51 @@
+{
+  "schema": "humanymous.platform-package-id-source/1",
+  "state": "Authored source only; tests and metadata loader NOT_RUN",
+  "files": [
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness.rs",
+      "sha256": "4998ba0b46485430397ac4ce4e5d730db2b270bd06d0b3df73bbb0da1c735a92",
+      "bytes": 25354
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/helpers.rs",
+      "sha256": "2197b3f7fae54ba71c4393ea7996217713bfcc5f0ed58dd409584277403ffc89",
+      "bytes": 4982
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/harness/packages.rs",
+      "sha256": "1d7773724f4743c7e3603f2eaf1a33e296f2255b01b2cf2f005aeb73ae4d10dc",
+      "bytes": 11371
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service.rs",
+      "sha256": "0db47f5425af60ecc6c608b1e349e8e38a2583b0cb60afce8eae5bf6d2dce3bf",
+      "bytes": 3923
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/service/catalog.rs",
+      "sha256": "e538e79bc903f83fb23846678cabf25dcb6956cb5c144010f2e93c54bf3017c7",
+      "bytes": 2243
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/workspace.rs",
+      "sha256": "d8ae3b883a73eff1fe95ea35aa7cc9c9f3cc62aa45f6251eeefee92b8e66c60e",
+      "bytes": 3211
+    },
+    {
+      "path": "scripts/ci/windows-native-runner/src/pilot.rs",
+      "sha256": "24dcd6de19e4e0c1a777374f889fc05dd77854f61d9b6c840c034c5ca498314f",
+      "bytes": 7271
+    }
+  ],
+  "required_core_guard_sha256": "72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c",
+  "authored_pure_selectors": [
+    "harness::packages::tests::",
+    "harness::helpers::tests::",
+    "service::catalog::tests::"
+  ],
+  "expected_total_pure_tests": 5,
+  "actual_runs": 0,
+  "actual_metadata_queries": 0,
+  "manifests_changed": 0
+}

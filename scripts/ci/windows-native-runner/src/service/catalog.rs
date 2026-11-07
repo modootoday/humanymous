@@ -36,12 +36,11 @@ pub(crate) static CASES: [Case; 2] = [
         windows_only: true,
     },
 ];
-pub(crate) fn required_case(entry: &Value) -> Option<&'static Case> {
-    if entry["kind"] != json!(["test"])
-        || !entry["package_id"]
-            .as_str()
-            .is_some_and(|p| p.contains("#humanymous-cli@"))
-    {
+pub(crate) fn required_case(
+    entry: &Value,
+    packages: &crate::harness::packages::Packages,
+) -> Option<&'static Case> {
+    if entry["kind"] != json!(["test"]) || !packages.matches(entry, "humanymous-cli") {
         return None;
     }
     CASES.iter().find(|case| entry["target"] == case.target)
@@ -51,12 +50,14 @@ mod tests {
     use super::*;
     #[test]
     fn required_cases_match_exact_owned_package_target_and_test_kind() {
+        let packages = crate::harness::packages::Packages::fixture();
         for case in &CASES {
-            let mut entry = json!({"package_id":"path+file:///owned#humanymous-cli@0.1.0","target":case.target,"kind":["test"]});
-            assert_eq!(required_case(&entry).unwrap().test, case.test);
+            let mut entry =
+                json!({"package_id":"opaque-humanymous-cli","target":case.target,"kind":["test"]});
+            assert_eq!(required_case(&entry, &packages).unwrap().test, case.test);
             entry["package_id"] = json!("path+file:///other#humanymous-cli-extension@0.1.0");
-            assert!(required_case(&entry).is_none());
+            assert!(required_case(&entry, &packages).is_none());
         }
-        assert!(required_case(&json!({"package_id":"path+file:///owned#humanymous-cli@0.1.0","target":"service_process","kind":["bin"]})).is_none());
+        assert!(required_case(&json!({"package_id":"opaque-humanymous-cli","target":"service_process","kind":["bin"]}), &packages).is_none());
     }
 }

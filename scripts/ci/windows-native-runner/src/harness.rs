@@ -5,6 +5,7 @@ use std::{collections::BTreeMap, io, path::Path, process::Command, time::Duratio
 pub(crate) mod build_observation;
 mod collection;
 mod helpers;
+pub(crate) mod packages;
 
 const PACKAGES: [&str; 4] = [
     "humanymous-runtime",
@@ -158,18 +159,26 @@ fn artifacts(messages: &str, test: bool) -> io::Result<Value> {
     }
     Ok(Value::Array(entries.into_values().collect()))
 }
-pub fn execute(
+pub(crate) fn execute(
     manifest: &Value,
     evidence_base: &Path,
     progress: &mut Value,
     scope: Scope,
+    packages: &packages::Packages,
 ) -> io::Result<()> {
     let required = manifest
         .as_array()
         .ok_or_else(|| io::Error::other("test manifest array required"))?
         .len();
     let mut ledger = collection::Ledger::new(required);
-    let result = execute_inner(manifest, evidence_base, progress, scope, &mut ledger);
+    let result = execute_inner(
+        manifest,
+        evidence_base,
+        progress,
+        scope,
+        &mut ledger,
+        packages,
+    );
     if let Err(error) = result {
         ledger.abort();
         ledger.snapshot(progress);
@@ -191,6 +200,7 @@ fn execute_inner(
     progress: &mut Value,
     scope: Scope,
     ledger: &mut collection::Ledger,
+    packages: &packages::Packages,
 ) -> io::Result<()> {
     let entries = manifest
         .as_array()
@@ -249,9 +259,8 @@ fn execute_inner(
             &execution.stderr,
         )?;
         let output = String::from_utf8(execution.stdout).map_err(io::Error::other)?;
-        let package = entry["package_id"].as_str().unwrap_or_default();
         let service_case = if scope == Scope::Native {
-            crate::service::catalog::required_case(entry)
+            crate::service::catalog::required_case(entry, packages)
         } else {
             None
         };
@@ -259,9 +268,9 @@ fn execute_inner(
         let custody = scope == Scope::Workspace
             && entry["target"] == "key_custody"
             && entry["kind"] == json!(["test"])
-            && package.contains("#humanymous-audit@");
+            && packages.matches(entry, "humanymous-audit");
         let captured_helper = if scope == Scope::Workspace {
-            helpers::captured(entry)
+            helpers::captured(entry, packages)
         } else {
             None
         };
@@ -306,7 +315,7 @@ fn execute_inner(
             row["subprocess_helpers"] = json!([helper]);
             row["required_parent_tests"] = json!(parent);
         }
-        if let Some(scope) = helpers::external_scope(entry, &output, cfg!(unix)) {
+        if let Some(scope) = helpers::external_scope(entry, &output, cfg!(unix), packages) {
             for (key, value) in scope.as_object().unwrap() {
                 rows.last_mut().unwrap()[key] = value.clone();
             }
@@ -315,9 +324,9 @@ fn execute_inner(
         progress["harnesses"] = json!(rows);
         let mut required_missing = false;
         if entry["target"] == "native_process" {
-            let required: &[&str] = if package.contains("#humanymous-runtime@") {
+            let required: &[&str] = if packages.matches(entry, "humanymous-runtime") {
                 &["native_binary_session_collection_origin_restart_and_wal_authentication"]
-            } else if package.contains("#humanymous-authority@") {
+            } else if packages.matches(entry, "humanymous-authority") {
                 &[
                     "real_ipc_auth_replay_body_scope_capture_and_restart_epoch",
                     "concurrent_nonce_reservation_and_durable_failure",
@@ -338,11 +347,11 @@ fn execute_inner(
             }
             rows.last_mut().unwrap()["required_native_tests"] = json!(required);
             rows.last_mut().unwrap()["required_native_tests_verified"] = json!(!required_missing);
-            runtime |= package.contains("#humanymous-runtime@")
+            runtime |= packages.matches(entry, "humanymous-runtime")
                 && counts.is_some_and(|c| c[0] > 0)
                 && execution.status.success()
                 && !required_missing;
-            authority |= package.contains("#humanymous-authority@")
+            authority |= packages.matches(entry, "humanymous-authority")
                 && counts.is_some_and(|c| c[0] > 0)
                 && execution.status.success()
                 && !required_missing;
