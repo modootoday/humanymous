@@ -1,0 +1,86 @@
+{
+  "schema": "humanymous.dotnet-protocol-validation/1",
+  "base_source_sha": "0a1bb36ef53cf67a7f8739a2ad470398747235e1",
+  "source_kind": "immutable-base-archive-plus-exact-owned-overlays",
+  "overlays": [
+    {
+      "path": "crates/dotnet-adapter/tests/hosted.rs",
+      "sha256": "ff676b1a37312d58a3ca6dda60b162ce6d7c79c30eb8c5547f445df9b91c8970"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/protocol.rs",
+      "sha256": "b229f2a0737d28615b69e545f0f0b54ba56ea0ac1dc7ac1835ba6c06222a34d3"
+    }
+  ],
+  "whole_current_head_qualified": false,
+  "profile": "debug",
+  "runner": "root-allocated-local-windows-x86_64",
+  "rust": "1.99.1",
+  "build_jobs": 1,
+  "incremental": 0,
+  "source_files": 2369,
+  "source_drift": 0,
+  "dependency_info_files_retained": 219,
+  "third_party_registry_before_after_hashes_captured": false,
+  "guard_initial_failure": "OrderedDictionary/PSCustomObject comparison projected null fields",
+  "guard_correction": "Both retained original snapshots deserialized to identical JSON object schema; exact path/bytes/hash comparison zero differences",
+  "stages": [
+    {
+      "stage": "protocol",
+      "result": {
+        "command": "cargo test --locked -p humanymous-dotnet-adapter --test hosted protocol::tests:: -- --test-threads=1",
+        "exit_code": 0,
+        "elapsed_seconds": 45.29604
+      }
+    },
+    {
+      "stage": "managed-scope",
+      "result": {
+        "command": "cargo test --locked -p humanymous-dotnet-adapter --test managed_scope -- --test-threads=1",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7999946
+      }
+    },
+    {
+      "stage": "check",
+      "result": {
+        "command": "cargo check --locked -p humanymous-dotnet-adapter --all-targets",
+        "exit_code": 0,
+        "elapsed_seconds": 17.7548762
+      }
+    },
+    {
+      "stage": "clippy",
+      "result": {
+        "command": "cargo clippy --locked -p humanymous-dotnet-adapter --all-targets -- -D warnings",
+        "exit_code": 0,
+        "elapsed_seconds": 3.8145092
+      }
+    }
+  ],
+  "tests": {
+    "protocol_passed": 8,
+    "protocol_failed": 0,
+    "protocol_ignored": 0,
+    "protocol_filtered": 5,
+    "managed_scope_passed": 1,
+    "managed_scope_failed": 0,
+    "managed_scope_ignored": 0,
+    "managed_scope_filtered": 0
+  },
+  "helper_sha256": "a1de68d18543ac0b55c056fa06ab58b8b5d32f2556fafa41d444876625a6afd0",
+  "helper_bytes": 7970816,
+  "actual_managed_host_executed": false,
+  "actual_native_actor_executed": false,
+  "sdk_executed": false,
+  "qualified_host_tuples": [],
+  "full_product": false,
+  "remaining": [
+    "Kestrel/JIT",
+    "managed-GC-await",
+    "NativeAOT",
+    "clean-NuGet-install",
+    "shared-actor-and-joined-readers",
+    "independent-authenticated-expiry"
+  ]
+}

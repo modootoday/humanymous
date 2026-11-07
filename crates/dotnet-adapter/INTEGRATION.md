@@ -2,6 +2,64 @@
 
 ## Current approved continuation
 
+### Prebuilt Kestrel preparation, no host execution allocation
+
+Root accepted source-only preparation of a mixed-lineage partial JIT component
+run, provided original successful builds and their compiled inputs remain bound.
+Actual FDD apphost exists in target/validation-abi/managed-pilot-attempt2:
+Humanymous.HostPilot.exe,162816bytes, SHA256
+bd46488274c8b1fd83fa00aadf5c79936440ce90031dcd672cb65ffc4b27683f.
+This hash was observed after the build, not retroactively captured at build time.
+The successful managed attempt2 logs/source manifests and previously committed
+managed DLL/deps/runtimeconfig/Native.dll hashes retain their separate lineage.
+The source2ffa facade DLL remains69b01501; core/export/binding/middleware inputs
+have no Git diff through the committed4f752660 checkpoint. The immutable helper
+remains source07967eae, not the newly authored abort fixture below.
+
+The apphost needs explicit DOTNET_ROOT pointing at verified private10.0.403 SDK
+installation; runtimeconfig requests Microsoft.NETCore.App and
+Microsoft.AspNetCore.App10.0.0, resolving installed10.0.14. Hash the actual
+host/fxr/10.0.14 and both shared runtime trees before allocation. A different
+ordinary actor needs separately verified read/execute access or a protected
+read-only runtime closure; the installing user's private SDK ACL is not proof.
+No NuGet restore/build/publish or package qualification belongs to this stage.
+
+Required process contract: fixed apphost, cleared explicit environment/private
+cwd and temporary paths, no generic probe flag, one known Kestrel child per
+profile, in-process two-worker authority and Rust loopback witness. No SCM or
+authority child. Existing Host::start inherits environment and uses direct-child
+ManagedChild with suppressed stderr/unjoined stdout reader; that is insufficient
+for the proposed qualification. Actual ordinary token/private-parent checks,
+shared native known-child owner, joined bounded readers, absolute180second run
+budget plus reserved cleanup and retained failure ownership must be integrated
+and reviewed before launch. No administrator fallback or general actor waiver.
+
+New source-only fixture holds real authority evidence until an aborted HTTP
+connection releases its native flight, then releases evidence and verifies a
+healthy request adds exactly one contact and no mutation. It compiled
+in the root A mixed-source fixture and is NOT_RUN. Existing handoff delay records request-deadline,
+not expired-result: independent authenticated-response expiry remains uncovered.
+
+Root separately accepted pure protocol preparation: test-only hosted/protocol.rs
+contains strict ordered/PID-bound JSON frames and a bounded nonblocking queue,
+with eight authored pure tests, including closed bounded control queues. No OS
+IO/reader thread or cleanup owner is added;
+EOF is only a protocol fact, never joined-reader/native teardown proof. Source
+passed eight pure tests, the managed scope test, all-target check and strict
+Clippy under root A; evidence:root/20261107121154 binds exact base0a1bb36e and
+two test overlays. No actual host/SDK/actor ran. All2369archived source files match
+before/after,219dependency-info files retained; registry pre/post bytes were not
+captured. The original unlike-row comparison error and corrected JSON comparison
+remain explicit. Root A is returned; no whole-current-HEAD build is claimed.
+The final native-owner pure DTO32c48846/tests b81bfe44 were read-only reviewed
+and accepted for schema/profile freeze: six app roles, separate harness, exact
+runtime inventory, named lineages, app-root relationship, closed environment,
+original parent monotonic authority and distinct cleanup-only reserve context.
+This is not acceptance of an OS backend, actor/cleanup/profile proof or a launch
+allocation. Actual LaunchContext/retained Job and joined-reader integration remains.
+The source-only authority-down fixture also cancels/joins the actual listener
+before a fresh request and checks bounded503 with no contacts/mutations/leaks.
+
 ### Observed helper and separate generic caller
 
 Source07967eae helper compiled, eight pure tests passed and scoped release

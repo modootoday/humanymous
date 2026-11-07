@@ -1,6 +1,9 @@
 //! Explicit allocated real Kestrel/IPC/GC pilot; not in the default unit suite.
 #[path = "hosted/generic.rs"]
 mod generic;
+#[cfg(test)]
+#[path = "hosted/protocol.rs"]
+mod protocol;
 mod support;
 use humanymous_authority::{
     configuration::Configuration,
@@ -107,7 +110,7 @@ impl Evidence for Synthetic {
         request: &humanymous_integrity::adapter::ValidatedRequest,
         _: bool,
     ) -> Result<humanymous_signals::report::SessionReport, humanymous_authority::Rejection> {
-        if request.request_target().1 == "/gc-await" {
+        if matches!(request.request_target().1, "/gc-await" | "/abort-await") {
             self.gc_entered.send(()).expect("pilot GC gate observer");
             self.gc_release
                 .recv_timeout(Duration::from_millis(1500))
@@ -288,6 +291,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             "/challenge",
             "/app-error",
             "/gc-await",
+            "/abort-await",
         ];
         let mut routes = Vec::new();
         for path in paths {
@@ -333,7 +337,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             let _entered = runtime.enter();
             Listener::bind(&serde_json::from_value(value).unwrap()).unwrap()
         };
-        let service = runtime.spawn(listener.serve(authority, 8, 1000, 2000));
+        let mut service = Some(runtime.spawn(listener.serve(authority, 8, 1000, 2000)));
         host.send(json!({"generic_probe":std::env::var_os("HUMANYMOUS_DOTNET_GENERIC_PROBE").is_some(),"configuration":{"installation":"i","tenant":"t","origin":"o","revision":"r","endpoint":endpoint,"credential":credential,"server":server,"routes":paths,"timeoutMs":2000,"maxBody":1024}}));
         let ready = host.frame("ready");
         if let Ok(expected) = std::env::var("HUMANYMOUS_DOTNET_EXPECT_AOT") {
@@ -416,6 +420,49 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             assert_eq!(host.counters()["native_resources"], 0);
             covered.insert("gc-pressure");
             passed += 1;
+            let before_abort = host.counters();
+            let mut pending_abort = socket(port);
+            pending_abort
+                .write_all(b"POST /abort-await HTTP/1.1\r\nHost: example.test\r\nContent-Length: 1\r\nConnection: close\r\n\r\nx")
+                .unwrap();
+            gc_entered_rx
+                .recv_timeout(Duration::from_secs(1))
+                .expect("abort fixture must enter actual authority IPC first");
+            assert_eq!(
+                (host.counters()["native_resources"].as_u64().unwrap() >> 32) & 0xffff,
+                1,
+                "abort must overlap the retained native decision lease"
+            );
+            pending_abort.shutdown(Shutdown::Both).unwrap();
+            drop(pending_abort);
+            // Keep authority evidence blocked until cancellation releases the
+            // native flight, rather than racing an ALLOW against socket teardown.
+            let abort_until = std::time::Instant::now() + Duration::from_secs(1);
+            loop {
+                let observed = host.counters();
+                assert_eq!(observed["contacts"], before_abort["contacts"]);
+                assert_eq!(observed["mutations"], before_abort["mutations"]);
+                if observed["native_resources"] == 0 {
+                    break;
+                }
+                assert!(
+                    std::time::Instant::now() < abort_until,
+                    "aborted IPC retained native resources"
+                );
+                std::thread::sleep(Duration::from_millis(5));
+            }
+            gc_release_tx.send(()).unwrap();
+            // A following request serializes with the released authority work;
+            // its sole contact proves no cancelled completion invoked next.
+            let after_abort = request(port, "POST", "/api", &binary, false);
+            assert!(after_abort.starts_with(b"HTTP/1.1 200"));
+            assert_eq!(body(&after_abort), binary);
+            assert_eq!(
+                host.counters()["contacts"].as_u64().unwrap(),
+                before_abort["contacts"].as_u64().unwrap() + 1
+            );
+            covered.insert("abort-during-authority");
+            passed += 1;
             for (path, status) in [("/deny", 403), ("/challenge", 503)] {
                 let before = host.counters()["contacts"].as_u64().unwrap();
                 let reply = request(port, "POST", path, b"", false);
@@ -426,7 +473,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             covered.insert("deny-challenge");
             for (mode, case) in [
                 ("rewrite", "request-rewrite"),
-                ("expire", "expired-result"),
+                ("expire", "request-deadline"),
                 ("response-started", "response-started"),
             ] {
                 host.send(json!({"operation":"handoff-mode","mode":mode}));
@@ -447,7 +494,11 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
                 let counters = host.counters();
                 assert_eq!(counters["contacts"], before);
                 assert_eq!(counters["native_resources"], 0);
-                covered.insert(case);
+                // This delay exercises the original request deadline, not an
+                // independently expired authenticated authority response.
+                if mode != "expire" {
+                    covered.insert(case);
+                }
                 passed += 1;
             }
             host.send(json!({"operation":"handoff-mode","mode":"normal"}));
@@ -506,6 +557,23 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
             passed += 1;
             last_live_resources = host.counters()["native_resources"].clone();
             assert_eq!(last_live_resources, 0);
+            let stopped_authority = service.take().unwrap();
+            stopped_authority.abort();
+            runtime.block_on(async {
+                let result = stopped_authority.await;
+                assert!(result.unwrap_err().is_cancelled());
+            });
+            let before_down = host.counters();
+            let down_started = std::time::Instant::now();
+            let unavailable = request(port, "POST", "/api", b"x", false);
+            assert!(unavailable.starts_with(b"HTTP/1.1 503"));
+            assert!(down_started.elapsed() < Duration::from_secs(4));
+            let after_down = host.counters();
+            assert_eq!(after_down["contacts"], before_down["contacts"]);
+            assert_eq!(after_down["mutations"], before_down["mutations"]);
+            assert_eq!(after_down["native_resources"], 0);
+            covered.insert("authority-down");
+            passed += 1;
             host.send(json!({"operation":"dispose-host"}));
             let before = host.counters()["contacts"].as_u64().unwrap();
             let after = request(port, "POST", "/api", b"x", false);
@@ -522,10 +590,12 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() {
                 .unwrap()
                 .success()
         );
-        runtime.block_on(async {
-            service.abort();
-            let _ = service.await;
-        });
+        if let Some(service) = service {
+            runtime.block_on(async {
+                service.abort();
+                let _ = service.await;
+            });
+        }
         drop(runtime);
         let contract: Value =
             serde_json::from_str(include_str!("../../../adapters/dotnet/pilot-contract.json"))
