@@ -194,6 +194,18 @@ inventory and exact target-role metadata joins. The two existing Windows actor
 module allowances do not authorize other roots, targets or transitive features.
 These are required migration gates, not evidence that migration has occurred.
 
+The later literal compile-include audit found15 Delivery callsites reading10
+operational JSON contracts outside the Delivery package, including test sites.
+cross-package-contract-census.json records their reader and input hashes. This
+is not a complete compiler input closure. Gateway and historical Audit includes
+were removed separately, but that does not make the remaining package independent.
+Before Tools freeze, Root must resolve ownership of these operational contracts
+and bind the selected extracted tool's compile/test inputs. The Header canonical
+profile is a fixed producer/proof input: replacing its compiled pin with an
+ambient filesystem reader would need explicit contract review, not a mechanical
+path edit. Do not copy the full Audit corpus, add a public fixture API or hide the
+boundary behind a permanent helper package. Historical profiles remain immutable.
+
 # Critique and readiness
 
 The design is accepted; implementation remains needs-work until the atomic freeze,

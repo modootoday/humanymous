@@ -1,0 +1,156 @@
+{
+  "schema": "humanymous.delivery-cross-package-contract-census/1",
+  "state": "read-only-source-observation-needs-Root-ownership-decision",
+  "head_at_observation": "4db101f415b87deeff4ea846c6561f1fd95331d0",
+  "scope": "literal include_str/include_bytes sites in Delivery Rust source, including unit test sites; not complete compiler input closure",
+  "callsite_count": 15,
+  "distinct_input_count": 10,
+  "sites": [
+    {
+      "reader": "scripts/ci/delivery/src/components/maintenance.rs",
+      "reader_sha256": "02d65157e0553f71f15c2ecc601bc09245eed43ee049f0a5dc80f37da80558ee",
+      "line": 8,
+      "include_kind": "str",
+      "target": "skills/agent-maintenance/qualification-contract.json",
+      "target_exists": true,
+      "target_sha256": "714b313c621c5fdf94f41b13feb27d3c8418949801094d0b5dadd796ac36e93d"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/components/node_host.rs",
+      "reader_sha256": "ad8d364417189360927425067f4e07d2e27dfd47528ed0638557ad35aa21f167",
+      "line": 7,
+      "include_kind": "str",
+      "target": "adapters/node/host-pilot-contract.json",
+      "target_exists": true,
+      "target_sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/go_product.rs",
+      "reader_sha256": "5acb965950785f6691ab389b4c066ca0d011486a947af8acc9253704d2322c32",
+      "line": 10,
+      "include_kind": "str",
+      "target": "test/lab/runner/go-public-receipts.json",
+      "target_exists": true,
+      "target_sha256": "1662a9bf2aac5eb32b5b6ade8ff740e1aa8708a5c4dca40f59f57218613fd005"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/go_product.rs",
+      "reader_sha256": "5acb965950785f6691ab389b4c066ca0d011486a947af8acc9253704d2322c32",
+      "line": 16,
+      "include_kind": "str",
+      "target": "adapters/go/pilot-contract.json",
+      "target_exists": true,
+      "target_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/go_product.rs",
+      "reader_sha256": "5acb965950785f6691ab389b4c066ca0d011486a947af8acc9253704d2322c32",
+      "line": 76,
+      "include_kind": "str",
+      "target": "test/lab/runner/safe-diagnostics.json",
+      "target_exists": true,
+      "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+      "reader_sha256": "ea44e5ff8e36096f47130bd2e7496f4d32550cbac27242bff9aa6db5252580b0",
+      "line": 104,
+      "include_kind": "str",
+      "target": "adapters/native/header-proof-profile.json",
+      "target_exists": true,
+      "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/header_proof/admission.rs",
+      "reader_sha256": "a0ba40a16b77f752b3c3f0482436ff9d56281196070ba3f1103f54a32236b00f",
+      "line": 10,
+      "include_kind": "bytes",
+      "target": "adapters/native/header-proof-profile.json",
+      "target_exists": true,
+      "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/header_proof.rs",
+      "reader_sha256": "80f2dc0f5c48f62e26f0204daed6480b4e270ff6fb576207fb53a29633bcd206",
+      "line": 249,
+      "include_kind": "str",
+      "target": "adapters/native/header-proof-profile.json",
+      "target_exists": true,
+      "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "reader_sha256": "bd7135af0585b821b92971477affb21be1d8eb45b36d16b1a21e8c219c8a5f15",
+      "line": 12,
+      "include_kind": "str",
+      "target": "test/lab/runner/safe-diagnostics.json",
+      "target_exists": true,
+      "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "reader_sha256": "bd7135af0585b821b92971477affb21be1d8eb45b36d16b1a21e8c219c8a5f15",
+      "line": 110,
+      "include_kind": "str",
+      "target": "test/lab/runner/browser-outcome-contract.json",
+      "target_exists": true,
+      "target_sha256": "42d5826ccdea564174ff4da03a55d3aa6c205dae4d24f659dad44bc0ffed6b5a"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/lab_receipts.rs",
+      "reader_sha256": "12317742e145d338642161f937d4a2703bd133795204b71329a1e3103cebb4f3",
+      "line": 46,
+      "include_kind": "str",
+      "target": "test/lab/runner/public-receipts.json",
+      "target_exists": true,
+      "target_sha256": "019126f58013dbd5d71b344e8331a31a3bc1036973b2072933ec73216de13d63"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/mount_probe.rs",
+      "reader_sha256": "68efcad46ef10cb3bdaf200ae8ccd649bef96f37577714f623e18557b073a7e8",
+      "line": 11,
+      "include_kind": "str",
+      "target": "test/lab/runner/mount-probe-contract.json",
+      "target_exists": true,
+      "target_sha256": "f091c390f6305efc7b681ea96c9d2b76b6a9f692bd1b91ae500957bb939683ba"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/nginx.rs",
+      "reader_sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536",
+      "line": 8,
+      "include_kind": "str",
+      "target": "adapters/nginx/pilot-contract.json",
+      "target_exists": true,
+      "target_sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/nginx.rs",
+      "reader_sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536",
+      "line": 93,
+      "include_kind": "str",
+      "target": "adapters/nginx/pilot-contract.json",
+      "target_exists": true,
+      "target_sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4"
+    },
+    {
+      "reader": "scripts/ci/delivery/src/policy.rs",
+      "reader_sha256": "8a982b9c160b6ff24bf13e4f84b95954517d23ef2884d3b2abe18bbdc6b678d7",
+      "line": 276,
+      "include_kind": "str",
+      "target": "adapters/native/header-proof-profile.json",
+      "target_exists": true,
+      "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491"
+    }
+  ],
+  "critical_constraint": "Header canonical profile compile-time pin cannot be silently replaced with ambient runtime file admission. Root must preserve exact fixed profile/proof semantics in an explicit package ownership decision.",
+  "required_before_tool_absorption": [
+    "Clean extracted selected tool compile/test must not require files outside package",
+    "No copied full Audit corpus, fixture API or permanent helper crate",
+    "Operational contract ownership and current reader/source pins move atomically under Root",
+    "Historical evidence and source profiles retain exact bytes; any new immutable profile needs explicit versioned review"
+  ],
+  "source_edits_performed": false,
+  "compiler_executed": false,
+  "profile_or_test_requirements_weakened": false,
+  "full_product_qualified": false
+}
