@@ -1,5 +1,5 @@
 use super::{LabError, isolation};
-use humanymous_runtime::configuration::Configuration;
+use humanymous_runtime::gateway::configuration::Configuration;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -54,7 +54,7 @@ fn digest(path: &Path) -> Result<String, LabError> {
 }
 
 pub(super) fn ready_address(config: &Configuration, value: &Value) -> Result<SocketAddr, LabError> {
-    if value["profile"] != humanymous_runtime::service::standalone_profile(config) {
+    if value["profile"] != humanymous_runtime::gateway::service::standalone_profile(config) {
         return Err(LabError("readiness profile mismatch"));
     }
     let address: SocketAddr = value["listen"]
@@ -232,7 +232,7 @@ mod tests {
     #[test]
     fn readiness_is_exact_scope_not_just_a_loopback_string() {
         let config = super::super::config();
-        let profile = humanymous_runtime::service::standalone_profile(&config);
+        let profile = humanymous_runtime::gateway::service::standalone_profile(&config);
         let mut value = serde_json::json!({"listen":"127.0.0.1:9000","profile":profile});
         assert!(ready_address(&config, &value).is_ok());
         value["profile"] = config.readiness();

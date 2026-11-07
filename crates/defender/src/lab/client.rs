@@ -2,7 +2,7 @@ use super::{LabError, OwnedRuntime, Request, now_ms};
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 use humanymous_core::integrity::request::{compute_token, seed};
 use humanymous_core::signals::report::ClientReport;
-use humanymous_runtime::{configuration::Configuration, session::canonical};
+use humanymous_runtime::gateway::{configuration::Configuration, session::canonical};
 use serde::Deserialize;
 use std::{
     io::{Read, Write},

@@ -1,5 +1,5 @@
 use super::LabError;
-use humanymous_audit::{log::Log, record::Record};
+use humanymous_runtime::audit::{log::Log, record::Record};
 use serde::{Deserialize, Serialize};
 
 /// Minimized projection of an authenticated audit record, never raw requests.

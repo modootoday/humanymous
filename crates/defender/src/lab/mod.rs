@@ -5,7 +5,7 @@ mod process;
 mod snapshot;
 
 pub use client::{Response, Session};
-pub use humanymous_runtime::http::Request;
+pub use humanymous_runtime::gateway::http::Request;
 pub use process::{OwnedRuntime, ProcessReceipt};
 pub use snapshot::{AuditEvent, SnapshotDelta, VerifiedSnapshot};
 
@@ -28,7 +28,7 @@ pub(crate) fn now_ms() -> Result<u64, LabError> {
 }
 
 #[cfg(test)]
-fn config() -> humanymous_runtime::configuration::Configuration {
+fn config() -> humanymous_runtime::gateway::configuration::Configuration {
     serde_json::from_value(serde_json::json!({
         "listen":"127.0.0.1:0","origin":"127.0.0.1:8081",
         "scope":{"installation":"owned-lab","tenant":"t","origin":"o","revision":"r1","authority":"owned.test"},

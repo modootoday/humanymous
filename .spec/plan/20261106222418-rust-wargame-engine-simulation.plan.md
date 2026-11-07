@@ -13,6 +13,35 @@ rel:
 
 ## Goal
 
+### RUNTIME-SLICE-02 assigned defender consumers (source only)
+
+No defender/src writer existed in the actual claims inventory. Root's explicit
+grant was recorded by normal own release/reclaim adding only crates/defender/src/**;
+existing attacker loans remain unchanged. Root's dirty defender Cargo.toml was
+preserved and is excluded from this source slice.
+
+First, six old runtime root references now select gateway configuration/service/
+http/session paths. Then one old audit reference now selects runtime::audit.
+Four defender lab files changed; attacker Rust files have no matching references
+and needed no artificial edit. No authority/network/capture/native-security crate
+reference remains in these consumer sources. No alias or new policy was created.
+
+| Changed current path | Source-ready SHA256 |
+| --- | --- |
+| crates/defender/src/lab/process.rs | 0d3948566ac481aee9f1b32ca4733e2b2982a99bb762bed760052260a9a4f16e |
+| crates/defender/src/lab/mod.rs | cd8d10726fcf78b5b53a8b838cc720d50a6681903f3b1e4a5a584b67d32cb404 |
+| crates/defender/src/lab/client.rs | e1f6b48982e33633a783a124084208d2091744f5cb501dba749e5325b78057f9 |
+| crates/defender/src/lab/snapshot.rs | cc0be297ce234b7f3548a0a4a89189920ceec49546b062157d9657a4b702f19f |
+
+These are seven mechanical reference changes, preserving existing exports,
+complete readiness equality, canonical request signing, authenticated Log
+recovery, fixtures, process ownership and behavior. No source path was moved;
+new Runtime sources, all manifests/lock and six-context relocation remain root
+owned. Whitespace and scoped spec checks pass. Formatter/compiler/unit/Clippy/CI
+were not run during transition; no execution target or process handle is owned.
+Historical306 and report L1 proofs remain source-specific. New coherent graph
+qualification requires root allocation; these imports alone do not qualify it.
+
 ### PLATFORM-SLICE-02 assigned decoder consumers (source only)
 
 Root assigned verification/json.rs and report/legacy/mod.rs. Normal own-lane
