@@ -2324,3 +2324,45 @@ mean this branch returns no downloadable Pages artifact or served HTTP evidence.
 Retain actual hosted logs/job outcomes; successful build alone cannot qualify
 source-review freshness, artifact HTTP/IAB or assistive technology. No new run
 or passing result is claimed by this candidate preparation.
+
+### Actual hosted29096 milestone; artifact serving remains open
+
+Run42389773240 attempt1 for exact29096f78 completed SUCCESS. Preflight job
+128454711139 passed Delivery90 and Pages37 tests with0failed/ignored/filtered,
+both strict Clippy steps and workflow policy. Build job128455460102 passed bundle
+install/audit, both validate/package/SECONDarchive checks and source_finish.
+Each baseurl reported88pages/88renderedHTML/165files/errors[].
+
+The hosted GitLF input digest is
+eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb.
+Apex archive f32be7ae3762fd3b3c684778eb06406720980d1941a7264eedc8ca0e48c5d846;
+subpath faff305f210584f4506d7b278e7cfe7c48f245ea5fe6ec162ee92e4290eea2a4.
+The two package/second-consumer report pairs match exactly. Typed source summary
+reports unchanged:true, docs_dirty:false and rust_source_dirty:false. This does
+not establish completed source-review freshness or qualify another checkpoint.
+
+CI primary ledger is commit0ad6c40a and public delivery-followup
+pages-29096f78-summary.json. Pages fully read that193-line receipt and independently
+matched its typed summary, all four roundtrips and both raw job-log hashes.
+Private07051213/render-5341/hosted-29096 retains independent full logs and result
+review; public07052815/hosted-29096-result-consumption.json binds this consumption.
+
+Artifact API returned0; main-only upload/download/serving steps15..21 were skipped,
+and serving_transfer_roundtrip is null. Archive bodies were not retrieved or
+locally rehashed. HTTP/IAB/AT/deployment/full-product qualification remain false.
+No public prose was changed for this milestone, no duplicate run was launched,
+and no local process/target lease is retained.
+
+Next real gate: obtain and restore the exactLF public artifact, then actual
+HTTP/IAB/AT validation. Root queues local render/preview behind CEF and critical
+Windows-native gates; no WSL or local heavy launch is allocated. Preserve the
+remaining unread/changed source inventory and full goal without repeated build
+claims or source-only bookkeeping while awaiting that concrete execution window.
+
+For any later local render, use the separately materialized GitLF source at
+private07051213/render-5341/hosted-29096/source, not the original rawCRLF
+render-5341/source. Require actual input commitment eac51f32 and record the new
+archive commitments. A local rebuild is not a download of the hosted archive;
+do not assume byte equality across renderer environments or build times. Any
+served artifact needs its own actual package/second-restore/HTTP byte evidence,
+and differences from the hosted archive hashes remain explicit.

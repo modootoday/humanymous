@@ -1,0 +1,221 @@
+{
+  "schema": "humanymous.pages-hosted-milestone-consumption/1",
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42389773240",
+  "run_id": 42389773240,
+  "attempt": 1,
+  "candidate": "29096f78ee4aca79fab7d666ae46a5c58830892b",
+  "terminal_conclusion": "success",
+  "ci_primary_commit": "0ad6c40ad5f95528a24038d25467ab0e90521521",
+  "ci_primary_receipt": ".spec/evidence/20261107052001-delivery-followup/pages-29096f78-summary.json",
+  "ci_primary_receipt_sha256": "9ec48b7be63c94f8fd23e71a9708647b640e6c47050bf887020374a58b71ef8f",
+  "primary_receipt_full_read": true,
+  "independent_summary_and_four_roundtrips_match": true,
+  "independent_raw_job_log_hashes_match": true,
+  "preflight": {
+    "delivery": {
+      "passed": 90,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "pages": {
+      "passed": 37,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "strict_clippy": "passed for both owners",
+    "workflow_policy": "passed"
+  },
+  "jobs": [
+    {
+      "id": 128454711139,
+      "name": "preflight",
+      "conclusion": "success"
+    },
+    {
+      "id": 128455460102,
+      "name": "validate / build",
+      "conclusion": "success"
+    }
+  ],
+  "validated_reports": [
+    {
+      "build_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb",
+      "pages": 88,
+      "rendered_html": 88,
+      "errors": []
+    },
+    {
+      "build_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb",
+      "pages": 88,
+      "rendered_html": 88,
+      "errors": []
+    }
+  ],
+  "typed_build_summary": {
+    "assistive_technology_qualified": false,
+    "browser_qualified": false,
+    "deployment_performed": false,
+    "full_product_qualified": false,
+    "packages": {
+      "apex": {
+        "archive_sha256": "f32be7ae3762fd3b3c684778eb06406720980d1941a7264eedc8ca0e48c5d846",
+        "inventory_sha256": "151a63f845122c8f5b230e0d4158f92789933c97189146d18aaadc3ebda3d7b2",
+        "manifest_sha256": "d302329824f2f877d4e04272535b223b4cc95e4086215f3d35ca1b1d49ae08b2",
+        "manifest_source_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb",
+        "owner_archive_check_outcome": "success",
+        "public_files": 165,
+        "status": "observed"
+      },
+      "subpath": {
+        "archive_sha256": "faff305f210584f4506d7b278e7cfe7c48f245ea5fe6ec162ee92e4290eea2a4",
+        "inventory_sha256": "ddfc6b84467123578faa797b3fa8cb9b26ab15957fc4ab193cad529aef34b8f1",
+        "manifest_sha256": "e7e80100fd71708c035d315c5336de208b3f8795ce4185e6df582516a3f9db84",
+        "manifest_source_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb",
+        "owner_archive_check_outcome": "success",
+        "public_files": 165,
+        "status": "observed"
+      }
+    },
+    "schema": "humanymous.pages-build-summary/1",
+    "serving_transfer_roundtrip": null,
+    "source": {
+      "cargo_lock_sha256": "8fe664fe4d58ca61f0d5bb6d357090a78b300ed31c1b611040a1deed7e72583f",
+      "config_sha256": "c0734b7901aceadea297d50cdd39788087c4e3ab659120f32187da182a606f8e",
+      "docs_dirty": false,
+      "docs_git_tree": "3cedb26fc55b3e9577b10f38fdf7edff3c4adf63",
+      "gemfile_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+      "rust_source_dirty": false,
+      "rust_source_manifest_sha256": "fb2a7d32b15318cd0d5942c6af66396848144d82812bf1d87101eb873234f4a4",
+      "source_sha": "29096f78ee4aca79fab7d666ae46a5c58830892b"
+    },
+    "source_unchanged": true,
+    "stages": {
+      "apex": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "archive_apex": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "archive_subpath": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "bundle_audit": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "bundle_install": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "package_apex": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "package_subpath": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "subpath": {
+        "exit_code": 0,
+        "outcome": "success"
+      }
+    },
+    "status": "passed",
+    "validation_scope": "two base URLs; trusted step outcomes only, no mixed log parser"
+  },
+  "public_roundtrips": [
+    {
+      "archive_sha256": "f32be7ae3762fd3b3c684778eb06406720980d1941a7264eedc8ca0e48c5d846",
+      "assistive_technology_qualified": false,
+      "baseurl": "",
+      "browser_qualified": false,
+      "deployment_performed": false,
+      "errors": [],
+      "files": 165,
+      "inventory_sha256": "151a63f845122c8f5b230e0d4158f92789933c97189146d18aaadc3ebda3d7b2",
+      "pages": 88,
+      "rendered_html": 88,
+      "schema": "humanymous.public-pages-roundtrip/1",
+      "source_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb"
+    },
+    {
+      "archive_sha256": "faff305f210584f4506d7b278e7cfe7c48f245ea5fe6ec162ee92e4290eea2a4",
+      "assistive_technology_qualified": false,
+      "baseurl": "/humanymous",
+      "browser_qualified": false,
+      "deployment_performed": false,
+      "errors": [],
+      "files": 165,
+      "inventory_sha256": "ddfc6b84467123578faa797b3fa8cb9b26ab15957fc4ab193cad529aef34b8f1",
+      "pages": 88,
+      "rendered_html": 88,
+      "schema": "humanymous.public-pages-roundtrip/1",
+      "source_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb"
+    },
+    {
+      "archive_sha256": "f32be7ae3762fd3b3c684778eb06406720980d1941a7264eedc8ca0e48c5d846",
+      "assistive_technology_qualified": false,
+      "baseurl": "",
+      "browser_qualified": false,
+      "deployment_performed": false,
+      "errors": [],
+      "files": 165,
+      "inventory_sha256": "151a63f845122c8f5b230e0d4158f92789933c97189146d18aaadc3ebda3d7b2",
+      "pages": 88,
+      "rendered_html": 88,
+      "schema": "humanymous.public-pages-roundtrip/1",
+      "source_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb"
+    },
+    {
+      "archive_sha256": "faff305f210584f4506d7b278e7cfe7c48f245ea5fe6ec162ee92e4290eea2a4",
+      "assistive_technology_qualified": false,
+      "baseurl": "/humanymous",
+      "browser_qualified": false,
+      "deployment_performed": false,
+      "errors": [],
+      "files": 165,
+      "inventory_sha256": "ddfc6b84467123578faa797b3fa8cb9b26ab15957fc4ab193cad529aef34b8f1",
+      "pages": 88,
+      "rendered_html": 88,
+      "schema": "humanymous.public-pages-roundtrip/1",
+      "source_input_sha256": "eac51f32b3de927054af7d6ef2acb7323e3b800a3f3a0c99eb770cd3ae5e34cb"
+    }
+  ],
+  "log_commitments": {
+    "preflight": {
+      "bytes": 82603,
+      "sha256": "35abca0c4c150d48954b7e613a7c7ea8e61bb1fe85e4d14a5daecf2bf9730098"
+    },
+    "build": {
+      "bytes": 83096,
+      "sha256": "efcdd25077450cc278ffe772792857301c587ecc81b8a03c26a64d38c2e9db14"
+    }
+  },
+  "artifacts_total": 0,
+  "main_only_steps_skipped": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "archive_bodies_retrieved": false,
+  "locally_rehashed_archives": false,
+  "http_iab_at_qualified": false,
+  "public_prose_changed": false,
+  "source_review_freshness_accepted": false,
+  "limits": [
+    "This exact Git LF candidate is distinct from the old Windows prepared raw snapshot and its archive identity; five CRLF/LF correspondences and excluded review metadata were retained in candidate review.",
+    "The final archives and manifests were not downloaded; source-bound owner package and second-consumer checks are observed through their public hashes and outcomes.",
+    "Non-main artifact upload/download and serving-transfer gates were skipped; no HTTP, IAB, browser, AT or deployment qualification.",
+    "Source unchanged during this execution does not grant full content-review freshness or full product qualification.",
+    "No duplicate dispatch, deployment, registry publication or OIDC exchange."
+  ]
+}
