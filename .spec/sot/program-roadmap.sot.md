@@ -11,16 +11,32 @@ rel:
 
 # Overall roadmap and milestones
 
-## Current Pages proof and transfer blocker
+## Current integration checkpoint
 
-evidence:root/20261107102326 binds actual GitHub run42363224485 to8624b57c.
-Preflight60 tests, strict Clippy and workflow policy passed. Both in-job base URL
-builds rendered88 pages with no reported errors and source unchanged. However,
-both downloaded generic site artifacts lack .well-known/security.txt. The pinned
-main Pages upload action also excludes dot directories. Artifact usability and
-deployment therefore remain unqualified; a public-site packager and actual
-extracted-archive validation are required. Browser and AT gates remain separate.
-Automatic generic branch uploads are being removed to restore the free profile.
+The following source-bound results supersede the older Pages transfer status.
+They are component evidence, not final integration qualification.
+
+| Area | Actual evidence | Remaining gate |
+| --- | --- | --- |
+| Pages | Run42367274252 at44876534 succeeded: delivery65 and Pages37 tests; both88-page builds and165-file archive consumers passed; zero branch artifacts | Main upload/download roundtrip, browser/AT and deployment are not executed |
+| Go | Run42367272089 at44876534 failed runtime_build after successful explicit actor check/Clippy; eight scenarios NOT_RUN, cleanup true | Typed Docker build diagnosis and actual eight-scenario retry |
+| Apache | Run42367750854 atd65da705 failed the actual45-scenario step after successful unit/check/Clippy steps; ledger cleanup step passed | Case-level diagnosis, supported-MPM behavior fix and actual45-case qualification |
+| Audit | Exactf88e76f4 full suite115 passed; five ignored excluded; focused nine overlap the full suite | Remaining S1 streaming primitives, independent native custody and later production gates |
+| Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identity cases remain CHALLENGE with zero origin; positive TLS ALLOW-to-origin is unqualified |
+| Python | Exact5655b965 all-target check passed, strict Clippy failed; two pure receipt tests NOT_RUN | Immutable d68682e4 check/Clippy/two pure tests allocated; actual controller remains NOT_ACCEPTED |
+| .NET | Exact07967eae release harness compilation, eight selected pure tests and strict Clippy passed | Single context-document drift must be explicitly classified; immutable helper hash and actual managed ABI caller remain pending |
+
+Root released only bounded Python check/Clippy/two pure tests, Lab diagnostic
+implementation and Audit private S1 implementation. Lab may extend the cold
+image-build budget from600 to1200 seconds; scenario, actor and evaluator deadlines
+remain unchanged. No next hosted Go retry is authorized before exact diagnostic
+source and safe CI projection review. No managed caller is allocated merely from
+compilation success. Source drift is never silently relabeled as zero drift.
+
+The older Pages run42363224485 remains historical failure evidence for artifact
+transport: downloaded generic archives omitted .well-known/security.txt. The new
+in-job archive consumers prove serialization checks, not actual main transport.
+Free branches keep automatic artifact uploads disabled.
 
 ## Go component and full-product result ownership
 
