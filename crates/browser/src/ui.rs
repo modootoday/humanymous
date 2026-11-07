@@ -189,8 +189,19 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
                     &[("className", "tab-strip")],
                     vec![
                         element("span", &[("className", "brand")], vec![text("h")]),
-                        crate::tabs_ui::strip(enabled),
-                        navigation_button("tab-new", "New tab", crate::icons::Icon::Plus, enabled),
+                        element(
+                            "div",
+                            &[("className", "tab-workspace")],
+                            vec![
+                                crate::tabs_ui::strip(enabled),
+                                navigation_button(
+                                    "tab-new",
+                                    "New tab",
+                                    crate::icons::Icon::Plus,
+                                    enabled,
+                                ),
+                            ],
+                        ),
                         element(
                             "span",
                             &[("className", "tab-caption")],
@@ -351,18 +362,32 @@ pub fn management_styles() -> &'static str {
 body{margin:0;background:#101620;color:#e8edf7;font-family:system-ui;font-size:14px}
 *{box-sizing:border-box} button,input{font:inherit} [hidden]{display:none!important}
 .browser-shell{display:block;gap:0;width:100vw;height:100vh;position:relative;overflow:hidden}
-.tab-strip{height:__TABS__px;display:flex;align-items:center;gap:10px;padding:0 12px;background:#0d121b}
+.tab-strip{height:__TABS__px;display:flex;align-items:center;gap:6px;padding:0 8px;background:#0d121b}
 .brand{font-size:20px;font-weight:700;color:#6cddca;width:20px;text-align:center}
-.page-tab{height:30px;width:190px;text-align:left;padding:0 14px;border:0;border-radius:8px 8px 0 0;background:#202b3d;color:#f1f5fd}
+.tab-workspace{display:flex;align-items:center;gap:6px;flex:0 1 auto;min-width:0}
+.tab-list{display:flex;align-items:center;gap:2px;overflow:auto;flex:0 1 auto;min-width:0}
+.tab-slot{position:relative;align-items:center;flex:0 0 232px;width:232px;height:32px}
+.page-tab{display:flex;align-items:center;gap:8px;height:32px;width:100%;min-width:0;text-align:left;padding:0 38px 0 12px;border:0;border-radius:9px 9px 0 0;background:#202b3d;color:#f1f5fd;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.page-tab span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.tab-icon{width:16px;min-width:16px;height:16px}.tab-icon svg{width:16px;height:16px}
+.page-tab.compact{justify-content:center;padding:0}
+.page-tab.compact span:not(.tab-icon){display:none}
+.page-tab.compact[aria-selected="true"] .tab-icon{display:none}
 .page-tab[aria-selected="false"]{background:#111b29;color:#9daec6}
-.tab-caption{color:#8d9ab0;font-size:12px;margin-left:auto}
-.window-controls{height:34px;display:flex;gap:0;margin-right:-12px}
+.page-tab[aria-selected="false"]:hover{background:#263246;color:#f1f5fd}
+.tab-caption{flex:1;min-width:0;color:#8d9ab0;font-size:12px;text-align:right;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.window-controls{height:34px;display:flex;flex-shrink:0;gap:0;margin-right:-8px}
 .window-button{width:46px;height:34px;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;color:#d8e7fb}
 .window-button:hover{background:#344259} #window-close:hover{background:#b6293b}
 .nav-button{display:flex;align-items:center;justify-content:center} svg{pointer-events:none;flex-shrink:0}
 .toolbar{height:__BAR__px;display:flex;align-items:center;gap:6px;padding:6px 10px;background:#202b3d;border-bottom:1px solid #344259}
 .nav-button{width:30px;height:30px;padding:0;border:0;border-radius:5px;background:transparent;color:#8592a8;font-size:18px}
 .nav-button.reload{width:30px}
+.nav-button.tab-close{position:absolute;right:4px;top:2px;width:28px;height:28px;border-radius:14px;color:#c6d0df}
+.tab-close svg{width:14px;height:14px}
+.tab-close:hover,#tab-new:hover{background:#3a485e;color:#ffffff}
+#tab-new{flex-shrink:0;border-radius:15px;color:#d9e2ef}
+.page-tab:focus-visible,.tab-close:focus-visible,#tab-new:focus-visible{outline:2px solid #9bbcff;outline-offset:-2px}
 .address{flex:1;min-width:120px;height:34px;padding:5px 12px;border:1px solid #43536e;border-radius:18px;background:#101925;color:#edf3ff}
 .mode-badge{max-width:210px;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:#9fbbc7;white-space:nowrap;padding:0 6px}
 .dock-controls{display:flex;gap:2px;height:32px;padding:2px;background:#101925;border-radius:6px}

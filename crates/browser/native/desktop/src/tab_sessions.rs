@@ -35,6 +35,7 @@ pub struct Sessions {
     children: Rc<WindowLifecycle<CefChild>>,
     inventory: Inventory,
     projected: Vec<View>,
+    projected_width: u32,
     active: Option<usize>,
 }
 pub fn enqueue(state: &Shared, command: Command) -> io::Result<()> {
@@ -96,6 +97,7 @@ impl Sessions {
             children,
             inventory,
             projected: Vec::new(),
+            projected_width: 0,
             active: Some(0),
         })
     }
@@ -342,7 +344,10 @@ impl Sessions {
                 })
             })
             .collect::<io::Result<Vec<_>>>()?;
-        if views != self.projected {
+        let width = document
+            .try_with(|doc| doc.viewport.width)
+            .map_err(io::Error::other)?;
+        if views != self.projected || width != self.projected_width {
             let stamp = document.stamp().map_err(io::Error::other)?;
             document
                 .try_reproject(&stamp, |doc| {
@@ -351,6 +356,7 @@ impl Sessions {
                 })
                 .map_err(io::Error::other)?;
             self.projected = views;
+            self.projected_width = width;
         }
         if self.active != self.model.active() {
             self.active = self.model.active();

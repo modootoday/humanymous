@@ -6,6 +6,15 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Separate user-requested UI-35 source changes place close28x28 inside each tab,
+anchor new-tab after the list and shrink crowded tabs before overflow. Narrow
+inactive tabs keep a document icon while hiding close/title; active close remains.
+Viewport changes trigger retained projection. Chromium primary source informs
+the behavior, but exact pinned156 metrics, feature defaults, animations, DPI and
+native visual/AT parity are unverified. Live8/lifetime64 admission is unchanged.
+New structural geometry/action tests have not yet run; no prior DLL/UI evidence
+qualifies this newer source.
+
 First actual fef controls GUI pilot failed navigation: CtrlT created a second
 CEF browser (IDs1/2) and CtrlTab returned to Version, but Back to newtab accepted
 generation3 then reported load_error-3 without commit/content. Final screenshot

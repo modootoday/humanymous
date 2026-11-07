@@ -4,7 +4,7 @@ use crate::{
     ui::{element, navigation_button, text},
     ui_navigation,
 };
-use meari::domain::Node;
+use meari::domain::{Node, NodeKind, Value};
 use meari_native::infrastructure::document::InteractiveDocument;
 
 /// Source-bound display projection of one actual native tab.
@@ -16,6 +16,30 @@ pub struct View {
     pub title: &'static str,
     /// True only for the active child.
     pub selected: bool,
+}
+fn widths(viewport: u32, views: &[View]) -> Vec<u32> {
+    if views.is_empty() {
+        return Vec::new();
+    }
+    // Reserve brand, new-tab, gaps and fixed caption controls before shrinking tabs.
+    let available = viewport
+        .saturating_sub(228)
+        .saturating_sub(2 * (views.len() as u32 - 1));
+    let equal = (available / views.len() as u32).min(232);
+    if equal >= 52 {
+        return vec![equal; views.len()];
+    }
+    let inactive = available.saturating_sub(52) / (views.len().saturating_sub(1).max(1) as u32);
+    views
+        .iter()
+        .map(|v| {
+            if v.selected {
+                52
+            } else {
+                inactive.clamp(32, 52)
+            }
+        })
+        .collect()
 }
 /// Stable slots avoid rebuilding the shell or losing native input state on switch.
 pub fn strip(enabled: bool) -> Node {
@@ -29,10 +53,11 @@ pub fn strip(enabled: bool) -> Node {
                 "div",
                 &[
                     ("id", &container),
+                    ("className", "tab-slot"),
                     (
                         "style",
                         if id == 0 {
-                            "display:flex;flex:0 0 auto"
+                            "display:flex"
                         } else {
                             "display:none"
                         },
@@ -48,13 +73,34 @@ pub fn strip(enabled: bool) -> Node {
                             ("aria-selected", if id == 0 { "true" } else { "false" }),
                             ("className", "page-tab"),
                         ],
-                        vec![element(
-                            "span",
-                            &[("id", &label)],
-                            vec![text(if enabled { "New tab" } else { "No target" })],
-                        )],
+                        vec![
+                            element(
+                                "span",
+                                &[("className", "tab-icon"), ("aria-hidden", "true")],
+                                vec![crate::icons::node(crate::icons::Icon::Page)],
+                            ),
+                            element(
+                                "span",
+                                &[("id", &label)],
+                                vec![text(if enabled { "New tab" } else { "No target" })],
+                            ),
+                        ],
                     ),
-                    navigation_button(&close, "Close tab", crate::icons::Icon::Close, enabled),
+                    {
+                        let mut button = navigation_button(
+                            &close,
+                            "Close tab",
+                            crate::icons::Icon::Close,
+                            enabled,
+                        );
+                        if let NodeKind::Element { attributes, .. } = &mut button.kind
+                            && let Some(class) =
+                                attributes.iter_mut().find(|a| a.name == "className")
+                        {
+                            class.value = Value::String("nav-button tab-close".into());
+                        }
+                        button
+                    },
                 ],
             )
         })
@@ -64,7 +110,7 @@ pub fn strip(enabled: bool) -> Node {
         &[
             ("role", "tablist"),
             ("aria-label", "Browser tabs"),
-            ("style", "display:flex;overflow:auto;flex:1;min-width:0"),
+            ("className", "tab-list"),
         ],
         children,
     )
@@ -92,19 +138,42 @@ pub fn commands(doc: &InteractiveDocument) -> Vec<(String, Command)> {
 }
 /// Apply selected/name/hidden state without inventing a browser page or history.
 pub fn project(doc: &mut InteractiveDocument, views: &[View]) -> Result<(), String> {
+    let widths = widths(doc.viewport.width, views);
     for id in 0..Tabs::CREATIONS {
         let view = views.iter().find(|view| view.id == id);
+        let width = views
+            .iter()
+            .position(|v| v.id == id)
+            .map(|index| widths[index]);
+        let style = width.map(|width| format!("display:flex;width:{width}px;flex:0 0 {width}px"));
         ui_navigation::attribute(
             doc,
             &format!("tab-slot-{id}"),
             "style",
-            Some(if view.is_some() {
-                "display:flex;flex:0 0 auto"
+            Some(style.as_deref().unwrap_or("display:none")),
+        );
+        let select = format!("tab-select-{id}");
+        let show_close = view.is_some_and(|v| v.selected) || width.is_some_and(|w| w >= 96);
+        ui_navigation::attribute(
+            doc,
+            &format!("tab-close-{id}"),
+            "style",
+            Some(if show_close {
+                "display:flex"
             } else {
                 "display:none"
             }),
         );
-        let select = format!("tab-select-{id}");
+        ui_navigation::attribute(
+            doc,
+            &select,
+            "className",
+            Some(if width.is_some_and(|w| w < 84) {
+                "page-tab compact"
+            } else {
+                "page-tab"
+            }),
+        );
         ui_navigation::attribute(
             doc,
             &select,
@@ -142,6 +211,52 @@ pub fn project(doc: &mut InteractiveDocument, views: &[View]) -> Result<(), Stri
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn bounds(doc: &InteractiveDocument, id: &str) -> (f32, f32, f32, f32) {
+        let id = doc.renderer.document.get_element_by_id(id).unwrap();
+        let node = doc.renderer.document.get_node(id).unwrap();
+        let position = node.absolute_position(0.0, 0.0);
+        let size = node.final_layout().size;
+        (position.x, position.y, size.width, size.height)
+    }
+    #[test]
+    fn close_hit_area_is_inside_tab_and_new_tab_precedes_caption_controls() {
+        for (width, count) in [(1100, 1), (1100, 2), (640, 8)] {
+            let mut doc = InteractiveDocument::new(
+                crate::ui::component_with_window_controls(true),
+                crate::ui::management_styles(),
+                meari_native::domain::Viewport {
+                    width,
+                    height: 720,
+                    dark: true,
+                },
+            )
+            .unwrap();
+            let views: Vec<_> = (0..count)
+                .map(|id| View {
+                    id,
+                    title: "New tab",
+                    selected: id == 0,
+                })
+                .collect();
+            project(&mut doc, &views).unwrap();
+            let (tx, ty, tw, th) = bounds(&doc, "tab-select-0");
+            let (cx, cy, cw, ch) = bounds(&doc, "tab-close-0");
+            assert!(cw >= 28.0 && ch >= 28.0, "close hit target: {cw}x{ch}");
+            assert!(cx >= tx && cy >= ty && cx + cw <= tx + tw && cy + ch <= ty + th);
+            let (nx, _, nw, _) = bounds(&doc, "tab-new");
+            let (wx, _, _, _) = bounds(&doc, "window-minimize");
+            assert!(nx + nw <= wx && nx >= 0.0 && nw >= 28.0);
+            if count <= 2 {
+                let (last_x, _, last_w, _) = bounds(&doc, &format!("tab-select-{}", count - 1));
+                assert!((0.0..=10.0).contains(&(nx - last_x - last_w)));
+            }
+            if count == 8 {
+                assert!(tw < 100.0, "crowded tabs must shrink before scrolling");
+                let (_, _, hidden_width, _) = bounds(&doc, "tab-close-1");
+                assert_eq!(hidden_width, 0.0, "narrow inactive close must be hidden");
+            }
+        }
+    }
     #[test]
     fn selected_tab_names_and_close_actions_reach_native_document() {
         let mut doc = InteractiveDocument::new(

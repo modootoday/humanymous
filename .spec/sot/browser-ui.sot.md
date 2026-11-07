@@ -12,6 +12,32 @@ rel:
 
 # Native browser UI and CEF boundary
 
+UI-35: browser tab geometry places a separately named close button inside the
+trailing edge of each tab, without nested interactive controls. The close hit
+area is at least28x28 DIP inside a32-DIP tab; the title reserves its area. A
+compact new-tab button follows the last tab immediately, before flexible caption
+space and fixed window controls. Tabs first shrink together as the strip fills,
+down to distinct active/inactive minima. Narrow inactive tabs hide their close
+button and title, preserving a fixed decorative document icon; the active close
+action remains visible. Only the tab list overflows after minimum widths cannot
+fit; new-tab and caption controls remain visible and distinct. Active/inactive tabs,
+hover and keyboard focus are visually distinguishable. Preserve source-stable
+IDs, tab roles/selected state, close names, focus, keyboard commands and DPI
+metrics. Structural/document geometry checks do not establish actual native
+visual parity, OS AT behavior or CEF rendering qualification.
+User explicitly requires Chrome many-tab behavior. Chromium's current primary
+sources define shrinkable widths, a larger active minimum and width-dependent
+inactive close visibility. The admitted implementation still caps live children
+at8 and lifetime identities at64: do not raise process limits for appearance.
+Source-level geometry uses232-DIP preferred width,52/32-DIP active/inactive minima
+and a96-DIP inactive close threshold with28-DIP close hit targets. These are this
+shell's explicit metrics, not proven exact pinned-Chrome pixels/feature defaults.
+Reference sources: Chromium chrome/browser/ui/tabs/tab_style.cc and
+chrome/browser/ui/views/tabs/tab.cc at refs/heads/main (reviewed2026-11-07).
+Pinned156 source retrieval and actual side-by-side/DPI/animation/hover parity
+remain open. Tab grouping/pinning/reorder/close-resize animations are not covered
+by the current local tab strip, and exact Chrome UI parity is not yet qualified.
+
 UI-34: a typed history/navigation ticket remains authoritative across CEF's
 OnOpenURLFromTab then OnBeforeBrowse callback chain. Only a live pending exact
 target in the main frame with CURRENT_TAB disposition may continue without a new

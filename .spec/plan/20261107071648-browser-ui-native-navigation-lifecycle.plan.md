@@ -11,6 +11,25 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## User-requested tab control layout (UI-35)
+
+Keep this source delta separate from the navigation continuation correction.
+Place the independent named close action within each tab's trailing area with
+a28-DIP hit target; reserve title space and avoid nested buttons. Remove the
+growing list spacer that pushes new-tab to the window's far side: keep compact
+new-tab immediately after a shrinking/overflowing tab list, before flexible caption
+space and fixed window controls. Retain IDs, selection, native actions and dirty
+address/focus across projection. Review risks: overlap must not steal tab clicks,
+overflow must not hide new-tab or window controls, and focus must remain visible.
+Document/geometry/action regressions qualify structure only; fresh native visual,
+DPI and OS AT observation remain unallocated, separate from compiled source.
+The user then required Chrome's many-tab handling. Shrink widths before overflow,
+preserve the active close, hide narrow inactive close/title and keep its document
+icon. Reproject on viewport width changes as well as tab membership/selection.
+Test1/2/8-tab geometry and narrow inactive actions. Live8/lifetime64 admission
+limits remain separate from visual behavior. Primary Chromium main sources were
+reviewed; exact pinned156 metrics/feature defaults and visual parity remain open.
+
 ## First actual controls GUI failure and bounded continuation correction
 
 The single fef GUI run created two distinct CEF children and observed CtrlT/

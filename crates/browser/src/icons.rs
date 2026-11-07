@@ -14,6 +14,8 @@ pub enum Icon {
     Home,
     /// Add a tab.
     Plus,
+    /// Fixed local document tab identity.
+    Page,
     /// Minimize the window.
     Minimize,
     /// Toggle maximization.
@@ -46,6 +48,7 @@ pub fn node(icon: Icon) -> Node {
         Icon::Reload => "M19 8a8 8 0 1 0 1 7M19 3v5h-5",
         Icon::Home => "M3 11 12 3l9 8M5 10v11h5v-7h4v7h5V10",
         Icon::Plus => "M12 5v14M5 12h14",
+        Icon::Page => "M6 3h8l4 4v14H6ZM14 3v5h4",
         Icon::Minimize => "M5 12h14",
         Icon::Maximize => "M5 5h14v14H5Z",
         Icon::Close => "M6 6l12 12M18 6 6 18",
