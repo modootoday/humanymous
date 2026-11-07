@@ -8,6 +8,7 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
     time::Duration,
 };
+mod authentication;
 
 fn snapshot(path: &Path) -> Vec<(String, super::super::Stamp, Vec<u8>)> {
     let mut names: Vec<_> = fs::read_dir(path)
@@ -65,7 +66,6 @@ pub(in super::super) fn exercise(path: &Path, head: &Checkpoint) {
                 node: "node".into(),
                 witness: None,
                 head: Some(head.clone()),
-                allow_new: false,
             },
         )
         .unwrap();
@@ -110,5 +110,6 @@ pub(in super::super) fn exercise(path: &Path, head: &Checkpoint) {
         drop(crate::storage::Wal::open(path, Default::default()).unwrap());
         drop(Custody::acquire(&key_path, Owner::CurrentUser).unwrap());
     }
+    authentication::refusals(path, &key_path, passphrase, head);
     fs::remove_dir_all(key_path).unwrap();
 }

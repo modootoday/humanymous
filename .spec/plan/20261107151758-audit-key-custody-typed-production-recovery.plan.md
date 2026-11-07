@@ -397,6 +397,10 @@ always refuses. It rejects an empty node and writer/witness equality. No caller
 success flag, transferable diagnostic, file getter or public factory constructs
 the owner. Its policy borrows its own keys transiently during the existing full
 two-pass native scan, never as self-referential fields stored beside moved keys.
+This existing-physical slice has no allow_new option: its transient policy always
+sets allow_new=false and the post-scan gate requires Some(report) with report.ok.
+Diagnostic None is not successful cryptographic authentication. Empty bootstrap
+remains a separate future contract, not a capability of this constructor.
 
 Consuming authenticate(self, original Limits/Control borrows) executes that scan,
 requires successful cryptographic diagnostics, ends all operation readers and
@@ -443,6 +447,19 @@ outer Cargo target recursively. A missing supported venue remains NOT RUN.
 Direct pinned Windows Rust1.99.1 rustfmt parses/formats the authored modules and
 all11 probe sources; inventory/JSON/expected-span checks passed. No compilation,
 Clippy, actual native test, probe or product execution qualifies this source.
+
+Independent X-owner review of1728b3a2 found no P0/P1 blocker for this private
+read-only direction, subject to all actual gates. Its P2 empty-history clarity
+finding is resolved above by removing allow_new and requiring Some(ok). The
+native fixture now authors an explicit positive S1 empty diagnostic(None) versus
+negative actual-owner authentication of that SAME empty history, with no writes
+or successful owner result. Additional real-owner negatives cover foreign node,
+writer/witness alias, a deliberately invalid record HMAC reaching the completed
+diagnostic-failure branch, missing sealed identity refusing creation, and a
+post-auth file mutation refusing finalization without automatic repair. These
+are six additional logical subcases inside the existing ONE ignored controlled
+Rust test, not six separately executed tests; all remain NOT RUN. Fixture-only
+byte mutations and restoration occur outside the owner's read-only operations.
 
 ### Older-source Windows six-case qualification
 

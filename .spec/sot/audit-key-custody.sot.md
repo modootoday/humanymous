@@ -33,6 +33,11 @@ one positive/ten negative actual-type compile probes are authored. Direct fmt/
 source inventory checks only: no current-source compilation, probe, native,
 mutation-attempt or product qualification. Unsupported operational factory stays
 Unsupported; no actual repair, writable owner, Ready or consumer route is added.
+The existing-physical owner has no allow_new setting and requires Some(ok),
+explicitly refusing empty history rather than calling None successful crypto.
+Actual-owner refusal fixtures now include node/HMAC/witness alias/missing sealed
+keys/post-auth mutation and the separate S1-empty-versus-owner-refusal boundary.
+These source-only subcases have not run and create no bootstrap authority.
 
 Exact older8cbc subsequently passed native Windows check/strict Clippy/fmt and
 SIX exact cases in [[evidence:root/20261107162841]]: facade preflight/Unsupported

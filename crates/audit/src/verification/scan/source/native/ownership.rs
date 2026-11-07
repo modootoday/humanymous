@@ -16,7 +16,6 @@ struct Trust {
     node: String,
     witness: Option<[u8; 32]>,
     head: Option<Checkpoint>,
-    allow_new: bool,
 }
 
 struct OpeningOwner {
@@ -77,13 +76,15 @@ impl OpeningOwner {
             writer_public: &writer,
             witness_public: self.trust.witness.as_ref(),
             trusted_head: self.trust.head.as_ref(),
-            allow_new: self.trust.allow_new,
+            // This slice authenticates existing physical history only. Empty
+            // initialization needs its separately accepted bootstrap contract.
+            allow_new: false,
         };
         let source = NativeSource::operation(Arc::clone(&self.files), limits, control)?;
         let diagnostic = crate::verification::scan::inspect(&source, &policy, limits, control)?;
         // Require every operation reader to be gone before moving the owner.
         drop(source.into_files()?);
-        if diagnostic.report.as_ref().is_some_and(|report| !report.ok) {
+        if !diagnostic.report.as_ref().is_some_and(|report| report.ok) {
             return Err(invalid("owned audit authentication failed"));
         }
         control.check()?;
