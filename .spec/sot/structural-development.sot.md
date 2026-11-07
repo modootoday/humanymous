@@ -788,3 +788,50 @@ binary/test discovery. Gateway/Audit/Authority use context-prefixed hyphen alias
 Capture/Network use the accepted underscore aliases. Native role admission must
 join the exact target, kind, source path, features and executable identity after
 this package merge; the shared package ID alone cannot qualify a role.
+## Tools operational resource ownership
+
+CLI qualification owns operational test contracts and immutable compiler profiles;
+they are not adapter runtime authority or an SDK fixture API. During the atomic
+tools slice move each original resource below into the same CLI package as its
+readers. Do not duplicate the canonical contract or read an ambient replacement.
+
+| Current original | CLI package-relative destination |
+| --- | --- |
+| skills/agent-maintenance/qualification-contract.json | qualification/maintenance/qualification-contract.json |
+| adapters/node/host-pilot-contract.json | qualification/adapters/node/host-pilot-contract.json |
+| adapters/go/pilot-contract.json | qualification/adapters/go/pilot-contract.json |
+| adapters/nginx/pilot-contract.json | qualification/adapters/nginx/pilot-contract.json |
+| adapters/native/header-proof-profile.json | qualification/adapters/native/header-proof-profile.json |
+| test/lab/runner/go-public-receipts.json | qualification/lab/go-public-receipts.json |
+| test/lab/runner/public-receipts.json | qualification/lab/public-receipts.json |
+| test/lab/runner/safe-diagnostics.json | qualification/lab/safe-diagnostics.json |
+| test/lab/runner/browser-outcome-contract.json | qualification/lab/browser-outcome-contract.json |
+| test/lab/runner/mount-probe-contract.json | qualification/lab/mount-probe-contract.json |
+
+Freeze exact original bytes, Git objects, hashes and all reader/source-pin paths
+before movement. The Header R3 profile stays compile-time embedded from its owned
+package path with the same bytes and digest; do not replace it with an ambient
+filesystem reader, self-reported profile or relaxed compiler/job/proof contract.
+Any profile-content change needs a separately versioned reviewed qualification.
+Update current operational callers atomically and preserve historical evidence
+paths/digests. This table is the known Delivery census, not a complete tools input
+closure. Audit every remaining tool's includes and manifest-relative inputs.
+
+Existing maintained project registries, agent rules and external deployment
+recipes remain owned in their original contexts. Test parsers use small synthetic
+owned schema fixtures; actual repository verification uses bounded explicit
+repository/source-bound readers, failing closed on missing or changed inputs.
+Do not embed copies of mutable chat registries in a published application.
+Frozen Core/Collector test-data replicas need explicit canonical producer
+commit/path/blob/hash/license provenance and coordinated equality checks, as in
+the Runtime exception; implementation source copies remain forbidden.
+Collector pilot source pins need a reviewed owned digest plus actual source
+binding, never a blind ambient-source fallback or an implementation copy.
+
+Prefer private qualification contexts inside their explicit binary crate roots.
+Do not expose tool libraries through the production CLI library merely to avoid
+rewiring old crate imports. Existing library modules can become owning private
+binary contexts with restricted helpers, without permanent helper packages.
+The full safe-root and approved actor unsafe inventory still applies to each
+binary, test, example and generated boundary. Tools are not frozen or moved by
+this ownership decision; owners must complete exact maps before Root relocation.

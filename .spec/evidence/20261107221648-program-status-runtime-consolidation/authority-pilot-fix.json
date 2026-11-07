@@ -1,0 +1,69 @@
+{
+  "schema": "humanymous.authority-pilot-relocation/1",
+  "dockerfile": "crates/sdk/humanymous-runtime/pilots/authority/Dockerfile",
+  "sha256": "3dec201e655b53c9dbf56a37bf41cf453551d80592400d045fe3873fa02adacf",
+  "checks": [
+    {
+      "command": "build",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "humanymous-runtime",
+        "--no-default-features",
+        "--features",
+        "authority",
+        "--lib",
+        "--test",
+        "authority-decisions",
+        "--test",
+        "authority-local-service",
+        "--test",
+        "authority-native-process",
+        "--no-run"
+      ],
+      "library_selected": true,
+      "integration_targets": [
+        "authority-decisions",
+        "authority-local-service",
+        "authority-native-process"
+      ],
+      "target_metadata_matched": true
+    },
+    {
+      "command": "run",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-runtime",
+        "--no-default-features",
+        "--features",
+        "authority",
+        "--lib",
+        "--test",
+        "authority-decisions",
+        "--test",
+        "authority-local-service",
+        "--test",
+        "authority-native-process",
+        "--",
+        "--nocapture"
+      ],
+      "library_selected": true,
+      "integration_targets": [
+        "authority-decisions",
+        "authority-local-service",
+        "authority-native-process"
+      ],
+      "target_metadata_matched": true
+    }
+  ],
+  "docker_executed": false,
+  "tests_executed": 0,
+  "scope": "Command JSON and exact live Cargo target/feature validation only; actual Docker pilot pending",
+  "orchestration_correction": "Initial unescaped wildcard inspection failed before validation; replaced with literal StartsWith checks"
+}

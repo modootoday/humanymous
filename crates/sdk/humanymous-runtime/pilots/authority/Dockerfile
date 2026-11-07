@@ -8,6 +8,8 @@ COPY scripts/ci/delivery/ ./scripts/ci/delivery/
 COPY skills/agent-maintenance/ ./skills/agent-maintenance/
 COPY test/lab/runner/ ./test/lab/runner/
 COPY test/lab/runtime/ ./test/lab/runtime/
-RUN cargo test --locked -p humanymous-authority --no-run
+# Preserve every authority integration target. No library-only name filter may
+# silently filter the native integration cases; prerequisite library tests also run.
+RUN ["cargo", "test", "--locked", "-p", "humanymous-runtime", "--no-default-features", "--features", "authority", "--lib", "--test", "authority-decisions", "--test", "authority-local-service", "--test", "authority-native-process", "--no-run"]
 ENV CARGO_NET_OFFLINE=true
-CMD ["cargo", "test", "--locked", "--offline", "-p", "humanymous-authority", "--", "--nocapture"]
+CMD ["cargo", "test", "--locked", "--offline", "-p", "humanymous-runtime", "--no-default-features", "--features", "authority", "--lib", "--test", "authority-decisions", "--test", "authority-local-service", "--test", "authority-native-process", "--", "--nocapture"]
