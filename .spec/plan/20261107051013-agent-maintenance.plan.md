@@ -36,6 +36,10 @@ were used as authorized compatibility controls. No common Cargo/lock/toolchain o
 other product/standard SoT edits. Full product e2e is not_run for this maintenance
 slice; native executable tests and deterministic proxy green are component results.
 The incomplete upstream package is a concrete external dependency, not completion.
+Implementation checkpoint9c3b735e759cf060b79a48f71db4ce234a9bd465 is canonical;
+git-binding.json records Git blob/worktree identity and LF checks. Root owns the
+next common workspace/CI transition; the next eval owner requires the complete
+versioned plugin/shared package before the qualified paired suite can resume.
 
 Output contract v1 was added after the exploratory pilot. That change initially
 failed Clippy field_reassign_with_default; the failure is retained privately and

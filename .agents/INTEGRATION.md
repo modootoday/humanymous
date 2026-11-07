@@ -4,6 +4,9 @@ Owner: agents-meta / rust-agents-m11. Accepted scope is roadmap1.2 M11; REA stay
 reference-only. Current implementation is canonical Rust-era AGENTS/rules/skills,
 six `.agents/agents` contracts plus persona pointers, retirement manifest and
 `humanymous-agent-maintenance` under repository `skills/agent-maintenance`.
+Implementation checkpoint: `9c3b735e759cf060b79a48f71db4ce234a9bd465`.
+The five Rust code/test Git blobs match the final tested worktree file objects;
+public git-binding.json distinguishes canonical Git identity from dirty snapshots.
 
 ## Exact root Cargo delta
 
@@ -70,3 +73,16 @@ the original result is preserved and current code emits null on blocked reads.
    global skills. Keep board/claims untouched and coordinate Git under its mutex.
 5. Run whole-program final supply-chain/foreign-source/native/product gates.
    This component is not full M11 or full product completion.
+
+## Handoff frontier
+
+Read AGENTS, `.agents/lessons/HARD-WON.md`, agent-maintenance SoT/plan/evidence,
+then this integration contract. Root owns the proposed common Cargo/CI delta;
+the next eval owner needs the complete versioned modoo plugin/shared package.
+Resume that exact isolated harness task after dependency delivery, not a new REA
+investigation. The Codex chat retains exploratory runtime context, while all
+material contracts/commands/results are in the files above. No scoring changes,
+publication, branch switch, main integration, active mirror removal or user-global
+skill mutation is authorized by this component handoff. The source-specific
+component gates can be rerun with the commands above; full product gates remain
+separate. Release the lane with this checkpoint and preserve the open task list.

@@ -3,7 +3,7 @@ id: evidence:root/20261107051014
 title: Agents M11
 status: active
 created: 2026-11-07T05:10:14Z
-updated: 2026-11-07T05:27:28Z
+updated: 2026-11-07T05:29:24Z
 files:
   - {path: canon-check-final.json, sha256: cee4f685cd8477ae19dcb041c0cebc8ab3e6812e3e4620e362db5f234cee1f73, bytes: 13084, store: repo}
   - {path: canon-check.json, sha256: a5f48476b072f277ec36435a7cc42ca8e1ba20ecd695422bc0a92a0da59fccaa, bytes: 13083, store: repo}
@@ -12,6 +12,7 @@ files:
   - {path: source-manifest-final.json, sha256: bd19b542a6a6acbf453b34a91637bbd04d156bc8833f6b23a91c54b41225695c, bytes: 1149, store: repo}
   - {path: source-manifest.json, sha256: e97bbb98eb5b2e55e805a7876f772f9d3ffcc00220b41b623eebbbf766f1de07, bytes: 1174, store: repo}
   - {path: summary.json, sha256: 4e6cd5c2bb01f894c55c8c2d0c4da3a264c3fbdfee31253e5eca21a6cac04eb7, bytes: 1905, store: repo}
+  - {path: git-binding.json, sha256: af6c5aae847880d763ac0d340d682d4bb9d956ca8be640ac861b8bc5fcef84f9, bytes: 985, store: repo}
 ---
 
 # Agents M11
@@ -55,6 +56,10 @@ the final-source logs are retained as raw files. No failed CLI/dependency result
 was replaced by a success, and no historical source qualification is inferred.
 
 ## How to read it
+
+git-binding.json binds the final tested files to canonical implementation commit
+9c3b735e759cf060b79a48f71db4ce234a9bd465, separately from the earlier dirty-source
+snapshots. Git blob SHA-1 identities are labeled and are not file SHA-256 hashes.
 
 See sot:root/agent-maintenance, plan:root/20261107051013 and
 `.agents/INTEGRATION.md` for contracts, current gates, exact root integration

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "implementation_commit": "9c3b735e759cf060b79a48f71db4ce234a9bd465",
+  "relationship": "canonical Git blobs match the final validated working Rust files",
+  "blob_hash_algorithm": "Git SHA-1 object identity, distinct from file SHA-256",
+  "code_blobs": {
+    "skills/agent-maintenance/src/evaluation.rs": "4616e47ede714f222e8f7bf3f22ea3ea3508dc1a",
+    "skills/agent-maintenance/src/inventory.rs": "040fe1f2d7e804dad3f98c01b1476b26fcf0dcbe",
+    "skills/agent-maintenance/src/main.rs": "47a3e9b8356d1c47e27dfbf7a81fead1d1ee3d26",
+    "skills/agent-maintenance/src/routing.rs": "76bd61c1a68315a00a588b7be2099cd37507ecf3",
+    "skills/agent-maintenance/tests/process.rs": "3f50361364eb1bd6c9111f73fda810587de55d35"
+  },
+  "verification": "git rev-parse COMMIT:PATH matched git hash-object PATH for all five files; scoped git ls-files --eol observed i/lf and w/lf",
+  "scope": "maintenance source only; no whole-product or complete plugin-eval qualification"
+}
