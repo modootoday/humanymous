@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:16:22Z
+updated: 2026-11-07T16:21:14Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -32,6 +32,7 @@ files:
   - {path: wargame-306eedc8-required-boundaries.json, sha256: 6918ae9e80c45db9877dce443dbe260ff9aacad65f92afd0e15fc1d5b4b1fa48, bytes: 6632, store: repo}
   - {path: cef-d2148b0a-summary.json, sha256: 871653c0fb57934505e5ab4cfbe9deeaa7b7e043d86fc2e5c605deb8f448b4ee, bytes: 4008, store: repo}
   - {path: pages-29096f78-summary.json, sha256: 9ec48b7be63c94f8fd23e71a9708647b640e6c47050bf887020374a58b71ef8f, bytes: 7425, store: repo}
+  - {path: registry-environment-observation.json, sha256: c78d67a2add2eac3a74ba5574a1627384da75fa9837de87fe3137a828fd0688c, bytes: 3376, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -508,3 +509,17 @@ Connector and authenticated CLI public summaries matched. Sealed private capture
 index SHA256 is4c72c412103417bb75833b1c33875a5b41a56e43b25dcd6d0b9302550f530711.
 Watch32255 ended0; no execution handle or target lease remains. No repeat push,
 manual dispatch, deployment or OIDC exchange was performed by Delivery.
+
+## Read-only registry environment observations
+
+registry-environment-observation.json records authenticated GET observations of
+all four GitHub registry environments. crates/npm/rubygems/pypi each exist with
+one configured required reviewer and a custom tag-only v* deployment policy;
+prevent_self_review was false. Reviewer identities remain private. These facts
+qualify only GitHub-side configuration at the read window, not registry ownership,
+package bootstrap, trusted-publisher bindings or an actual OIDC exchange.
+All four source prerequisites remain verified=false and no publish permission
+was granted. The release environment required by release.yml was absent from the
+observed complete five-environment collection; no setting was created or edited.
+Sequential API reads are not an atomic cross-service attestation. Private capture
+index SHA256 iseafcecea5357d9c51cf2fd38a1e4d8b7fa7d69e5adcd4958516bc0dd22e9873e.

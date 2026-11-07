@@ -992,3 +992,13 @@ HTTP/browser/AT/deployment/full-review freshness remain unqualified. This is no
 runtime image CVE evidence. Browser typedDTO306 full-gate diagnostic contract was
 separately reviewed against actual bb763c1f branch, without a push or workload;
 CEF remote remains on hold while Browser runs allocated local fef preflight.
+
+Read-only four-registry preparation now has actual GitHub-side evidence:
+crates/npm/rubygems/pypi environments exist with reviewer-count1 and custom tag-v*
+policies. prevent_self_review=false is observed, without disclosing identities.
+The expected release environment is absent in the complete five-environment
+collection. No settings mutations were made. This does not verify registry-side
+publisher/ownership/bootstrap or OIDC exchange; source prerequisite flags remain
+false. Attached public scalars and the sealed private API index preserve that
+partial preparation boundary. Browser306 actual diagnostic remains live under
+one push-triggered run; no generic26 rerun or remote CEF retry was performed.

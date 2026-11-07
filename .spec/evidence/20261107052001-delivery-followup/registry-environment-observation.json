@@ -1,0 +1,94 @@
+{
+  "schema": "humanymous.registry-environment-observation/1",
+  "observed_at_utc": "2026-11-07T16:21:12.8021566Z",
+  "repository": "modootoday/humanymous",
+  "source_commit": "20d573804b4ac946fe3459dbc9d735739726cfe3",
+  "source_inventory_dirty": false,
+  "prerequisite_manifest_sha256": "cb931d293a559d5784cf87d8dcd50b7978bbc22c702bde93839eb79f32a52fb7",
+  "release_workflow_sha256": "a63c1c6050c46341fef0fdab9965cd1e74354309e7f77bcd7003fbe615a70569",
+  "api_read": {
+    "token_exchange_executed": false,
+    "method": "GET",
+    "complete_collection_observed": true,
+    "settings_mutated": false,
+    "authenticated": true,
+    "expected_registry_environments": 4,
+    "environment_collection_total": 5
+  },
+  "registry_environments": [
+    {
+      "required_reviewer_count": 1,
+      "oidc_exchange_executed": false,
+      "deployment_policies": [
+        {
+          "type": "tag",
+          "name": "v*"
+        }
+      ],
+      "present": true,
+      "prevent_self_review": false,
+      "name": "crates",
+      "registry_side_trusted_publisher_verified": false,
+      "custom_branch_policies": true
+    },
+    {
+      "required_reviewer_count": 1,
+      "oidc_exchange_executed": false,
+      "deployment_policies": [
+        {
+          "type": "tag",
+          "name": "v*"
+        }
+      ],
+      "present": true,
+      "prevent_self_review": false,
+      "name": "npm",
+      "registry_side_trusted_publisher_verified": false,
+      "custom_branch_policies": true
+    },
+    {
+      "required_reviewer_count": 1,
+      "oidc_exchange_executed": false,
+      "deployment_policies": [
+        {
+          "type": "tag",
+          "name": "v*"
+        }
+      ],
+      "present": true,
+      "prevent_self_review": false,
+      "name": "rubygems",
+      "registry_side_trusted_publisher_verified": false,
+      "custom_branch_policies": true
+    },
+    {
+      "required_reviewer_count": 1,
+      "oidc_exchange_executed": false,
+      "deployment_policies": [
+        {
+          "type": "tag",
+          "name": "v*"
+        }
+      ],
+      "present": true,
+      "prevent_self_review": false,
+      "name": "pypi",
+      "registry_side_trusted_publisher_verified": false,
+      "custom_branch_policies": true
+    }
+  ],
+  "release_environment": {
+    "source_workflow_requires_name": "release",
+    "protection_configuration_verified": false,
+    "present_in_observed_collection": false
+  },
+  "private_capture_index_sha256": "eafcecea5357d9c51cf2fd38a1e4d8b7fa7d69e5adcd4958516bc0dd22e9873e",
+  "limitations": [
+    "These observations prove only the GitHub environment side at the read window; sequential API reads are not an atomic cross-service attestation.",
+    "Registry ownership, package bootstrap, trusted-publisher repository/workflow/environment configuration and actual OIDC token exchange were not verified.",
+    "Existing registry prerequisites remain verified=false; no direct-publish permission or package readiness was granted.",
+    "The release environment was absent from the observed complete collection; no environment was created or edited.",
+    "Reviewer identities remain private; only configured counts and policy scalars are included.",
+    "No deployment, tag creation, settings mutation, token exchange or registry publication."
+  ]
+}
