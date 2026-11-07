@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T15:26:30Z
+updated: 2026-11-07T16:56:29Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -21,7 +21,7 @@ freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
-Snapshot: 2026-11-07T15:26:30Z. The preceding checkpoint is retained below as
+Snapshot: 2026-11-07T16:56:29Z. The preceding checkpoint is retained below as
 history; its queued/running descriptions are not current status. Component
 receipts qualify their exact inputs, not the final migration candidate.
 
@@ -42,9 +42,9 @@ receipts qualify their exact inputs, not the final migration candidate.
 | Authority | Source2ca6e4fa plus Network306eedc8 passed22 pure tests/check/strict Clippy/fmt;4632 selected inputs unchanged, receipt14ad4378. First dependency compile failure retainedd3e03749 | Real authenticated native/provider/IPC integration remains required; no key OS read, account or production Ready qualification |
 | Runtime temporal | Corrected1dc6eb40 source on404 base plus exact overlay passed9 selected tests/check/strict Clippy/fmt;64 filtered, receipt6af849a9. Both configure-gap and interrupted-frame review regressions included | Private L1 bookkeeping only; production temporal composition/epoch/provenance/provider gates remain. Full1dc Cargo graph was not the tested graph |
 | Model standardization | Exact e7d8f9a3 passed17 library tests plus1 inference fixture, including4 new standardization cases; check/strict Clippy/fmt and1497 selected-input comparison passed, receipt70276560 | RNG, training, remaining evaluation/lifecycle and actual lab remain; no production activation, Go standardization oracle or scoring change inferred |
-| CLI consumer | Exact e34cee8a immutable source passed9 selected pure tests/check/strict Clippy/fmt;15 filtered, receiptb891d1f8. Watchdog source and internal dev edge compiled | Four ignored actual OS watchdog cases, SCM/accounts and native producer association remain unrun; first shared-CWD check retained separately |
+| CLI consumer | Actual Windows receipt91536cce binds source c57cf0c6, consumer fb6f26ed and controller24004321: ONE selected parent passed, FOUR subcases exited0/74/74/74; natural parent exit0, Job assigned before grant, Job empty and original cleanup deadline observed in2018ms. Parent, baked fixture and controller hashes retained | Fixed cooperative component only: runtime completion simulated, kernel-blocked write unproven. Actual SCM/accounts, protected service startup, native producer association and outer-controller fault paths remain open |
 | Legacy report | c5294b5d binds8 selected pure legacy tests/check/strict Clippy/fmt passed on exact e34 base plus owned overlays;2 ignored/17 filtered and2715 source files unchanged | Registry/tool/config closure not measured; CLI execution and actual file publication/Windows-denial pilots remain unrun |
-| Lab diagnostic continuation | b630aec1 binds de0 Lab26 passed plus corrected306 Windows/GNU check/strict Clippy. Original dependency compile failure retained; old/new source bridge explicit, no Lab tests repeated | Actual typed browser diagnostic product retry remains unrun; no GNU unit or full product qualification inferred |
+| Lab diagnostic continuation | Actual306 hosted42390164354 TERMINAL FAILURE: preflight passed; product18 assertions/16 passed/2 failed. Safe DTO observed inventory67/selected1/filtered66/matched, actor exit1 and DNS-finished stage; CI6f290e7d and Lab c57cf0c6 retain results | DNS completion is observed, not the failure cause. Private actor/test body unavailable; no asserted root cause. Closed source-only failure classifier is next; no unchanged retry or full product qualification |
 | Bounded preparation | Source/proof2229d502 binds17 reader/model plus1 accounting and1 opened-file mutation case. Linux actual-file suite6/check/Clippy passed; Windows5/6 failed at symlink creation with OS1314 | Windows link-refusal gate remains unqualified; metadata is not object identity. Finite CLI consumer next; no graph-completeness/cache-authority or speedup claim |
 | Pages | Exact29096 hosted42389773240 TERMINAL SUCCESS; Delivery90/Pages37, check/Clippy/policy, bundle audit, both-baseurl validate/package/SECONDarchive all passed. Each variant88HTML/165files; source unchanged. CI receipt0ad6c40a and Pages7130239b independently agree | Artifacts0/serving transfer null; no HTTP/IAB/AT/deployment/full-freshness qualification. GitLF candidate differs from five old prepared CRLF files; never reuse old raw artifact hashes |
 | Dedicated wargame | Exact306 hosted42387564172 TERMINAL FAILURE. Preflight succeeded; product128448838263 emitted26 scheduled/19 evaluated/7 unsupported/0 errors/skipped/mismatches, all19 expectations true and72 Lab assertions passed | Required-unavailable9/blocked10 keep owner exit2 and full/release false. Raw-body hash is reported but private original body was not retrieved/independently rehashed; no unchanged retry forgreen. Unsupported/provider tasks require implementation |
