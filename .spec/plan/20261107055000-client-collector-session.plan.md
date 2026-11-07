@@ -18,11 +18,11 @@ rel:
 - [x] Pin ACK SHA256/HMAC vector independently checked with .NET.
 - [x] Native collector26/integrity20+legacyparity3 and actualDockerFirefox58 pass;
   host/WASM all-target Clippy pass after owning helper fixes its WASM boundary.
-- [ ] Own browser Fetch Request/Headers/AbortController and a single whole-request
+- [x] Own browser Fetch Request/Headers/AbortController and a single whole-request
   deadline through complete buffered response; same-origin/omit/error/no retry.
-- [ ] Verify real final Request representation and existing app Authorization;
+- [x] Verify real final Request representation and existing app Authorization;
   reject forbidden/reserved headers, cross-origin, streaming and ambiguous paths.
-- [ ] Verify ACK only after complete bounded body, cancellation/drop cleanup and
+- [x] Verify ACK only after complete bounded body, cancellation/drop cleanup and
   reentrancy/concurrency; invalidate on partial body/network/timeout/redirect.
 - [ ] Join real runtime bootstrap/browser profile/ACK and actual owned Docker lab.
 - [ ] Bind actual collector version/epoch/coverage to fresh server-issued context;
@@ -91,3 +91,13 @@ were added. Both logs and a current-source/WASM SHA256 receipt are registered un
 evidence:root/20261106194410 as fetch-transport-bootstrap-cleanup-* artifacts.
 This qualifies the bounded browser component, not a positive real runtime join or
 full product e2e. Source commit and Git-canonical byte proof remain pending.
+
+Source checkpoint667e98f subsequently committed the implementation. Native50,
+scoped WASM all-target Clippy and fmt passed. All14changed Rust source files were
+compared via Git's path-aware clean filter against667e98f blobs; every normalized
+working-source blob matches. Raw CRLF/LF bytes remain separately identified; this
+is not a claim of raw-byte identity. The binding receipt is registered privately
+as fetch-transport-667e98f-git-binding.json. The first three transport tasks are
+therefore complete in browser-component scope; runtime join/full collector and
+product/human/AT tasks remain unchecked. Further actual runtime execution now
+belongs to the accepted standard-hosted validation policy, not routine local work.
