@@ -3,7 +3,7 @@ id: plan:root/20261106222418
 title: Rust wargame engine simulation
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-06T22:24:18Z
+updated: 2026-11-07T05:20:00Z
 rel:
   governs: [crates/attacker]
   depends_on: [sot:root/rust-wargame]
@@ -24,11 +24,37 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 - [x] Test actual engine results, errors, missing coverage and human/ceiling split.
 - [x] Run unit tests, Clippy and a network-none Docker engine pilot twice.
 - [x] Independently verify ledger accounting and identical-seed bytes.
-- [ ] Root owner integrates workspace members and lockfile, then validates actual workspace.
+- [x] Root integrated members/lock; current scoped tests run in actual workspace.
 - [ ] Full Rust Gate/browser/challenge runtime, signed installation binding and
   internal-topology escape negative tests. These block network-runner enablement.
 
 ## Record
+
+## Owned-process continuation (current; not full scope completion)
+
+- [x] Read roadmap1.2/current source; coordinate sequential lane with Compose.
+- [x] Preserve accepted Compose/runtime API, ownership and schema in INTEGRATION.
+- [x] Implement fixed sibling/private-pipe child, namespace/liveness guard,
+  bounded native client and existing canonical/token calls in defender.
+- [x] Implement actual-Log prefix-validating snapshots and attacker OwnedLab.
+- [x] Define19network cases+7unavailable producers and Rust JSON verifier.
+- [x] Scoped19unit/Clippy passed; record working-source private/public checkpoint.
+- [ ] Checkpoint/release to Compose for actual context/image/runner integration.
+- [ ] Reclaim after Compose, fix measured defects, run actual Docker pilot;
+  preserve every failed/retried source result separately.
+- [ ] Verify current code after integration, sanitize/attach summary, validate
+  LF/Git bytes, commit owned paths and hand off unresolved producer requirements.
+
+Compose owns shared custody/config/origin extraction, OwnedLab implementation,
+image and Docker invocation. Runtime owns Pass/browser recovery and remote
+attestation. Human/AT results require actual participants. Root owns Cargo/lock/
+toolchain and global qualification. No component green closes seven unsupported
+rows. Accepted agreement status: APIs implemented; Windows unit19passed; Docker
+network acceptance pending. Common manifest freeze is respected after root's
+direct-edge refresh. Initial --locked refusal, missing Deserialize compile error,
+and unused-import/collapsible-if Clippy failures were observed and corrected.
+
+Historical v0.1 Rust1.88 results below are not current-source qualification.
 
 2026-11-07 Asia/Seoul: isolated snapshot passed 8 unit tests and Clippy with
 warnings denied. Docker build uses Rust 1.88; both identical-seed executions

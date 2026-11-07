@@ -1,4 +1,5 @@
 //! Lab observation replay through the sole detection authority; no HTTP enforcement.
+pub mod lab;
 use humanymous_scoring::{
     engine::{Engine, ScoringError},
     trace::ScoreTrace,

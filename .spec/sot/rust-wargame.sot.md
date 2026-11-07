@@ -3,7 +3,7 @@ id: sot:root/rust-wargame
 title: Rust wargame
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-06T22:24:18Z
+updated: 2026-11-07T05:20:00Z
 verify:
   - cargo test -p humanymous-attacker -p humanymous-defender
 rel:
@@ -15,7 +15,9 @@ rel:
 
 ## Rule
 
-This slice is a deterministic **pure-engine simulation**, not runtime e2e.
+Two separate evidence modes exist: deterministic **pure-engine simulation** and
+the bounded **owned-process network pilot** below. Neither qualifies full Gate,
+browser, Pass, real human/AT, remote installation identity or all-product e2e.
 The attacker crate owns an extensible, versioned catalog of synthetic observations
 and replays the existing frozen Go-oracle fixtures. The defender invokes the
 existing Rust `humanymous_scoring::engine::Engine::score_with_trace` unchanged.
@@ -43,7 +45,7 @@ integration and must remain unsupported here.
 
 ### Isolation and installation binding
 
-The CLI has no target/URL option and neither crate opens sockets. The engine pilot
+The simulation CLI has no target/URL option and opens no sockets. The engine pilot
 runs as an unprivileged read-only Docker container with `network_mode: none`, no
 published ports, no Docker socket and no host mounts. Build dependency downloads
 are outside the execution sandbox. Both packages are `publish = false`; attacker
@@ -57,8 +59,55 @@ any probe it MUST authenticate the target's explicit installation identity using
 a per-installation pinned public key and a fresh signed nonce. A matching string,
 private IP or container hostname alone is insufficient authorization. Identity
 failure, missing identity, route escape, redirect or egress-test failure aborts
-before attacks. The runtime runner is not implemented in this slice; the CLI
-rejects runtime mode. No unauthenticated pseudo-binding API is supplied.
+before attacks. Remote target execution remains unimplemented. No unauthenticated
+pseudo-binding API or arbitrary URL/port option is supplied.
+
+### Owned-process network pilot v0.2
+
+This differs from remotely identifying an existing target. The trusted lab
+supervisor owns preprovisioned sealed custody, configuration, origin, runtime
+child, private startup/readiness pipes and authenticated audit recovery. It may
+send real HTTP to only its own freshly spawned child in the same network-none
+Docker namespace. This is not remote signed identity, a browser run or an
+installation trust decision.
+
+The defender's OwnedRuntime spawns only the fixed sibling humanymous-runtime,
+without a shell or inherited environment. Before spawning, require Linux with
+only loopback interfaces and no non-loopback routes. Validate shared runtime
+configuration, private-pipe readiness profile, exact loopback listener, live
+child executable hash and network namespace. Repeat namespace/liveness checks
+before requests. Bound I/O by size and overall deadline, never follow redirects,
+and expose no caller-provided target, PID, executable or socket attachment API.
+Drop kills and reaps the owned child.
+
+The client calls production session::canonical, seed and compute_token; no
+signer, detection or challenge verifier is copied. Keys/session capabilities have
+no Debug/Serialize surface and are absent from case reports. This is a lab
+client, not a browser bootstrap API.
+
+The attacker owns scheduled cases and complete case/step ledgers. Before/after
+each child case, the lab supplies a snapshot constructed from the authenticated
+audit::Log and independently counted owned origin. Require unchanged chain
+prefix, contiguous sequence and nondecreasing origin count. Read CHALLENGE/DENY
+from actual audit, never infer from HTTP403 alone. Retain every scheduled case
+when setup, transport, audit or expectations fail. Cover fixture ALLOW/DENY,
+zero-motor HR-12 CHALLENGE, missing evidence, forged server Pass, RIT mutations,
+replay/restart and required-capability refusal. Assertions remain synthetic.
+
+Real browser/human, AT, accessible Pass and signed remote identity cases stay
+unsupported until their actual producers/participants exist. Preserve T4 and
+existing HR-12; CHALLENGE is not successful human access. Receipts bind actual
+supervisor/runtime binaries; outer Docker evidence also binds source, image and
+resolved topology. A Rust verifier checks scheduled IDs and observations. Seed
+reproduces ordering, not session entropy, clocks or audit hashes.
+
+Adversarial review: P0 arbitrary targets/host execution are removed; remote
+binding remains unavailable. P1 private readiness is not attestation and full
+product qualification stays false. P1 collect forgery is not Pass success and
+HTTP403 must not hide human CHALLENGE. Missing origin/audit evidence is an error,
+not a successful block. Independent durable witness/cross-network capture remain
+separate gates. Blue reuses production owners, red retains denominators, SRE
+owns cleanup, privacy omits credentials, evaluator preserves human/T4 limits.
 
 ### Design review and residuals
 
@@ -68,8 +117,9 @@ the future internal topology or installation binding; require signed-nonce and
 egress negative pilots before runtime enablement. Privacy: only frozen/synthetic
 reports, no live identifiers. Evaluator: distinguish challenge from human allow,
 retain missing coverage and T4. Adversarial critique: runtime identity and escape
-tests are P0 blockers for enabling any network runner; therefore no network
-runner ships. No motor speed/richness requirement is added.
+tests remain P0 blockers for enabling a remote network runner. The newly scoped
+owned-child pilot has the different trust contract above. No motor speed/richness
+requirement is added.
 
 ## Why
 
@@ -83,6 +133,19 @@ negative CLI options, and human/ceiling distinctions. Run Cargo tests and Clippy
 in a temporary isolated workspace until the root owner integrates membership.
 Run the lab-only Docker engine pilot with no network and retain raw JSON privately.
 Full runtime e2e remains subject to the existing Docker-only authority.
+
+The v0.2 exact exported APIs, JSON fields, exit codes, accepted Compose/runtime
+ownership agreement and implementation/validation state are preserved in
+crates/attacker/INTEGRATION.md. Network schema is humanymous.wargame-network.v2;
+v1 simulation remains compatible except Cargo invocation now specifies --bin.
+No existing scoring, RIT bytes or runtime wire contract changes.
+
+Official [Rust1.99.1 TcpStream](https://doc.rust-lang.org/std/net/struct.TcpStream.html)
+documents bounded connect/read/write calls. Per-call timeouts alone do not bound
+slow-drip total duration, so the client recomputes an overall deadline each I/O.
+Linux [proc documentation](https://docs.kernel.org/filesystems/proc.html) describes
+local process observations; these do not establish remote attestation or
+resistance to a hostile host administrator.
 
 Docker's [none driver](https://docs.docker.com/engine/network/drivers/none/)
 creates only loopback; the [Compose service contract](https://docs.docker.com/reference/compose-file/services/#network_mode)

@@ -121,6 +121,12 @@ pub fn cases(seed: u64) -> Vec<Case> {
             unsupported: true,
         });
     }
+    shuffle(&mut cases, seed);
+    cases
+}
+
+/// One seed-order implementation shared by simulation and owned network cases.
+pub(crate) fn shuffle<T>(cases: &mut [T], seed: u64) {
     // A stable integer mixer orders cases without platform RNG or clock state.
     let mut state = seed;
     for i in (1..cases.len()).rev() {
@@ -131,7 +137,6 @@ pub fn cases(seed: u64) -> Vec<Case> {
         mixed ^= mixed >> 31;
         cases.swap(i, (mixed % (i as u64 + 1)) as usize);
     }
-    cases
 }
 
 #[cfg(test)]

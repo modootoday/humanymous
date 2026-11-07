@@ -1,5 +1,6 @@
 //! Defense-only deterministic observation replay. No sockets or arbitrary targets.
 pub mod catalog;
+pub mod network;
 pub mod report;
 
 /// Run every scheduled case exactly once against the real default engine.

@@ -2,12 +2,12 @@
 use crate::catalog::Case;
 use humanymous_defender::Evaluation;
 use humanymous_signals::report::SessionReport;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeMap;
 
 /// Terminal status for every scheduled attempt.
-#[derive(Debug, Serialize, PartialEq, Eq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum Status {
     /// Real engine produced a verdict (regression may still mismatch).

@@ -1,0 +1,18 @@
+{
+  "schema": "humanymous.wargame-contract-checkpoint.v1",
+  "date_kst": "2026-11-07",
+  "source_scope": "working-tree Rust library and unit checkpoint; immutable Docker build pending",
+  "rust": "1.99.1",
+  "edition": "2024",
+  "os_arch": "Windows x86_64",
+  "unit": {"passed":19,"failed":0,"ignored":0},
+  "clippy_warnings_denied": true,
+  "network_catalog": {"scheduled":26,"implemented_case_programs":19,"unsupported_producers":7,"actually_executed_network_cases":0},
+  "full_product_qualified": false,
+  "human_executed": false,
+  "assistive_technology_executed": false,
+  "execution_boundary": "fixed sibling supervisor-owned child, private pipes, Linux loopback-only namespace",
+  "agreed_owners": {"library":"rust-wargame-network","Docker_fixture_and_context":"Compose","runtime_and_Pass_producers":"runtime","Cargo_lock_toolchain":"root"},
+  "protocol": "humanymous.wargame-network.v2",
+  "remaining": ["Compose OwnedLab integration and actual Docker run","real browser/human/AT","accessible Pass recovery","signed remote identity","full Gate original TLS/H2","safe live audit outage injection","source-bound final qualification"]
+}
