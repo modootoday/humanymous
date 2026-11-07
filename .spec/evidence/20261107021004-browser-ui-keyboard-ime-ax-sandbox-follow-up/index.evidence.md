@@ -3,11 +3,12 @@ id: evidence:root/20261107021004
 title: Browser UI keyboard IME AX sandbox follow-up
 status: active
 created: 2026-11-07T02:10:04Z
-updated: 2026-11-07T02:28:03Z
+updated: 2026-11-07T02:33:12Z
 rel:
   depends_on: [sot:root/browser-ui]
 files:
-  - {path: results.json, sha256: d6349b4ef0bae0611c2423ad194ef3f424fc52c92df99b5d68cfaa35e053999e, bytes: 7069, store: repo}
+  - {path: hanja-keycode-research.json, sha256: 944db48628c9d34a6d38b303ca02695ec3d0d2f87969eaa1fb9c63bba7c2851d, bytes: 1502, store: repo}
+  - {path: results.json, sha256: e7febe4753abb79815702a9ebec2d7f73fa36b7750105229c6c9550be8846d56, bytes: 7236, store: repo}
 ---
 
 # Browser UI keyboard IME AX sandbox follow-up
@@ -76,3 +77,19 @@ source SHA256 map was compared with this evidence and matches. Root artifact
 hashes differ from the source-linked GUI bundle and have separate scope. The new
 remote exact-integration CI is pending; neither that component gate nor native
 Linux stubs establish full browser/IME/AX/sandbox or six-tuple runtime support.
+
+## Hanja keycode research correction
+
+The user confirmed a physical Hanja key. Official Windows VK_HANJA=0x19(25),
+VK_KANJI=0x19 and VK_HANGUL=0x15(21). VK_RCONTROL=0xA3 is distinct; a layout
+shortcut must not be assumed equivalent to the Hanja virtual key. The documented
+computer-use API accepts keysym strings, not raw VK/scan-code arguments. Standard
+Hangul_Hanja (X0xFF34) and Kanji (X0xFF21) were both tried on the owned CEF input
+with native Korean 가 present; both returned unsupported key before delivery.
+This is a tool mapping limitation, not an unknown/nonexistent Hanja key. No native
+raw input helper, direct key-message injection or inferred hardware scan code was
+used. A supported VK0x19 delivery path or an observed physical Hanja event is
+needed to qualify actual candidate display/placement. Candidate remains open.
+The unchanged-source pilot exited0;33 private generated profiles now remain.
+See hanja-keycode-research.json in evidence:root/20261107021004 for primary links
+and the exact unsuccessful aliases. No application source changed.

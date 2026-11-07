@@ -55,7 +55,8 @@
     "candidatePlacement": "attempted but no visible window/form; unqualified",
     "escapeCancellation": "not_run",
     "otherImes": "not_run",
-    "oskHanjaAttempt": "built-in OSK Hanja key observed and clicked; no key-delivery receipt or candidate window; unqualified"
+    "oskHanjaAttempt": "built-in OSK Hanja key observed and clicked; no key-delivery receipt or candidate window; unqualified",
+    "hanjaKeycodeResearch": "VK_HANJA=0x19 confirmed; standard Hangul_Hanja and Kanji keysyms both rejected before delivery by tool; see hanja-keycode-research.json"
   },
   "accessibility": {
     "cefRoleNameValue": "observed",
@@ -91,7 +92,7 @@
     "secondAutomaticReview": "rejected: blocked by policy",
     "deletionExecuted": false,
     "alternativeDeletionAttempt": false,
-    "retainedGeneratedProfiles": 32,
+    "retainedGeneratedProfiles": 33,
     "ownProcessesRemaining": 0,
     "introducedOskRemaining": true,
     "oskCleanup": "UI close action had no confirmed effect; exact introduced PID/start-time stop request returned access denied; no elevation/bypass"

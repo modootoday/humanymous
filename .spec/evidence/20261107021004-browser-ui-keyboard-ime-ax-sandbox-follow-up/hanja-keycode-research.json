@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-07",
+  "sourceCommit": "a924603",
+  "nativeBundleHash": "unchanged; compared with results.json before run",
+  "windowsVirtualKeys": {
+    "VK_HANJA": "0x19 (25)",
+    "VK_KANJI": "0x19 (25), same Windows value",
+    "VK_HANGUL": "0x15 (21)",
+    "VK_RCONTROL": "0xA3, distinct from VK_HANJA"
+  },
+  "sources": [
+    "https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes",
+    "https://learn.microsoft.com/en-us/globalization/input/korean-ime",
+    "https://chromium.googlesource.com/chromium/src/+/refs/tags/146.0.7646.1/third_party/x11proto/keysymdef.h"
+  ],
+  "keysymResearch": {
+    "Hangul_Hanja": "XK_Hangul_Hanja 0xFF34",
+    "Kanji": "XK_Kanji 0xFF21; distinct X keysym despite shared Windows VK"
+  },
+  "toolProbe": {
+    "target": "owned CEF pilot; Tab/F8/physical r/k -> 가",
+    "Hangul_Hanja": "unsupported key: Hangul_Hanja; rejected before delivery",
+    "Kanji": "unsupported key: Kanji; rejected before delivery",
+    "rawVkApi": "not exposed by documented sky PressKeyInput; key:string keysym only",
+    "scanCode": "no hardware scan code inferred or injected",
+    "candidateQualification": false,
+    "pilotExit": 0
+  },
+  "correction": "The key is known and present. Unsupported tool key mapping is not absence of a Windows Hanja key; asking user for an unknown shortcut was premature.",
+  "cleanup": {
+    "cefProcessesRemaining": 0,
+    "retainedProfiles": 33,
+    "deletion": "not retried after prior automatic review rejection"
+  }
+}
