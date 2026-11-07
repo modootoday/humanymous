@@ -1,0 +1,40 @@
+{
+  "schema": "humanymous.sgd-first-format-admission/1",
+  "source": "c9ba2d24a87801341ed1a14ea773424fa4a3f33f",
+  "status": "FIRST_FMT_CHECK_FAILED_APPLY_NOT_RUN_PATH_GUARD_STOPPED",
+  "first_check_exit": "nonzero; exact child numeric exit was not persisted before guard exception",
+  "first_check_terminal": true,
+  "compiler_started": false,
+  "apply_started": false,
+  "final_check_started": false,
+  "source_before_count": 151,
+  "source_current_difference_paths": [],
+  "normalized_rustfmt_diff_paths": [
+    "crates/sdk/humanymous-core/src/model/training/mod.rs",
+    "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs",
+    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs",
+    "crates/sdk/humanymous-core/src/model/training/sgd.rs"
+  ],
+  "guard_failure": "Windows extended-length prefix was not stripped before GetRelativePath; falsely treated owned diffs as foreign; stopped before mutation",
+  "raw_directory": ".spec.local/root/evidence/20261108092000-model-sgd-format",
+  "raw_files": [
+    {
+      "bytes": 25388,
+      "name": "core.before.json",
+      "sha256": "9b7eb5e3a8354f1dcbd381d0b42d102ce1532897f8f48226c2f0684bd226e973"
+    },
+    {
+      "bytes": 52041,
+      "name": "first-check.stdout",
+      "sha256": "159e9f576e943aef1a2fa1d3ff0c55d6a13a150bb4d626166ab19a77ffc1b9c8"
+    },
+    {
+      "bytes": 0,
+      "name": "first-check.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "live_owned_handles": [],
+  "target_leases": [],
+  "next": "Root renewed formatter-only window for whitespace application and check; then fresh source commit before any compiler allocation"
+}

@@ -709,3 +709,19 @@ Next gate: fmt check FIRST, focused12SGD tests including actual-file pilot, full
 Core regression, locked/offline all-target/all-feature check and strict Clippy,
 jobs1/test-threads1 under a fresh exclusive target and monotonic budget. All
 remain pending Performance lease return and Root's explicit execution allocation.
+
+### First formatter-only admission: failure retained, no source mutation
+
+Root allocated one60second formatter-only window for c9ba2d24. The actual cargo
+fmt --package humanymous-core -- --check terminated nonzero and emitted retained
+raw diffs. Before apply, the path guard failed to strip Windows extended-length
+prefixes and falsely classified the owned paths as foreign; orchestration stopped
+without mutation. Read-only normalized inspection identifies exactly the4allocated
+SGD files. A fresh hash comparison against the full Core before manifest finds
+zero differences. No apply/final check, compiler/test/Clippy or target lease exists.
+The child's exact numeric exit was held only in memory and not persisted before
+the guard exception; record nonzero, not an invented exact exit. No first-tuple
+formatting pass is claimed. Raw stdout/stderr and before hashes are pinned by
+sgd-first-format-admission.json. The formatter process was synchronously reaped
+before the guard failed; no retained owned handle. Further formatting needs a
+renewed Root window with prefix normalization and result persistence before guards.
