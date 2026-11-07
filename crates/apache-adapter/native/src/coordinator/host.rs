@@ -68,6 +68,9 @@ struct Operations {
     engine_expected: engine::Expected,
     identity: Option<Value>,
     source_identity: Option<(String, String)>,
+    last_stderr: Option<PathBuf>,
+    pilot_stderr: Vec<u8>,
+    pilot_exits: Option<Value>,
 }
 fn operations(
     bundle: &Path,
@@ -126,6 +129,9 @@ fn operations(
         engine_expected: expected,
         identity: None,
         source_identity: None,
+        last_stderr: None,
+        pilot_stderr: Vec::new(),
+        pilot_exits: None,
     })
 }
 impl Operations {
@@ -156,6 +162,7 @@ impl Operations {
         let stderr = self
             .bundle
             .join(format!("{}-{}-stderr.raw", self.prefix, self.next));
+        self.last_stderr = Some(stderr.clone());
         let output = OpenOptions::new()
             .create_new(true)
             .write(true)
@@ -604,6 +611,9 @@ fn execute(
         &argv(&["start", "--attach", &owned.name]),
         Duration::from_secs(300),
     )?;
+    if let Some(path) = &operations.last_stderr {
+        operations.pilot_stderr = read_bound(path, 1_048_576).unwrap_or_default();
+    }
     operations.preflight()?;
     let state = operations.inspect("container", &owned.name)?;
     ensure(
@@ -618,6 +628,7 @@ fn execute(
             .ok_or("container-exit-missing")?,
     )
     .map_err(|_| "container-exit-bound")?;
+    operations.pilot_exits = Some(json!({"attach":start_exit,"container":exit}));
     *stage = "artifacts";
     let contract = contract()?;
     let mut artifacts = BTreeMap::new();
@@ -818,7 +829,13 @@ pub fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
         summary["sourceCommit"] = source.clone().into();
         summary["sourceManifestSha256"] = manifest.clone().into();
     }
+    summary["caseOutcomes"] = Value::Null;
+    summary["caseDiagnostics"] = Value::Null;
+    summary["processExits"] = json!(operations.pilot_exits);
     if let Ok((expected, report, counts, _)) = &result {
+        // inspect() has already constrained every case field, ID and outcome.
+        summary["caseOutcomes"] = report["cases"].clone();
+        summary["caseDiagnostics"] = super::case_diagnostics(report, &operations.pilot_stderr);
         summary["observedCounts"] =
             json!({"passed":counts.passed,"failed":counts.failed,"not_run":counts.not_run});
         summary["sourceCommit"] = expected.source.clone().into();

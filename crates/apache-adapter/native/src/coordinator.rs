@@ -10,6 +10,84 @@ mod engine;
 mod host;
 
 type Result<T> = std::result::Result<T, &'static str>;
+const CASE_LABELS: &[(&str, &str)] = &[
+    ("binary replay/effect", "binary-replay-effect"),
+    ("concurrent request", "concurrent-request"),
+    ("concurrent worker panic", "concurrent-worker-panic"),
+    ("concurrent body isolation", "concurrent-body-isolation"),
+    (
+        "exact concurrent origin effects",
+        "concurrent-origin-effects",
+    ),
+    ("spoof stripping", "spoof-stripping"),
+    ("actual rejected nested request", "nested-request-rejection"),
+    ("cache graph must fail closed", "cache-graph-rejection"),
+    ("denied origin effect", "denied-origin-effect"),
+    ("cancelled origin effect", "cancelled-origin-effect"),
+    (
+        "authority observed inflight request before reload",
+        "inflight-not-observed",
+    ),
+    (
+        "old generation must not reach origin",
+        "old-generation-origin-effect",
+    ),
+    ("post-reload module request", "post-reload-request"),
+    ("expired origin effect", "expired-origin-effect"),
+    ("production missing capability", "missing-capability"),
+    ("outage origin effect", "outage-origin-effect"),
+    (
+        "new MPM generation not observed",
+        "new-generation-not-observed",
+    ),
+    ("httpd startup failed", "httpd-startup"),
+    ("selected MPM observed", "mpm-selection"),
+    ("cache module graph observed", "cache-module-selection"),
+    ("httpd stop command", "httpd-stop"),
+    ("MPM children required", "mpm-children"),
+    ("graceful reload command", "graceful-reload-command"),
+    ("owned cleanup path", "cleanup-path"),
+];
+pub fn case_failure_label(message: &str) -> &'static str {
+    CASE_LABELS
+        .iter()
+        .find_map(|(text, label)| (*text == message).then_some(*label))
+        .unwrap_or("operation-failed")
+}
+pub fn case_diagnostics(value: &Value, bytes: &[u8]) -> Value {
+    let Ok(c) = contract() else {
+        return Value::Null;
+    };
+    let mut allowed = strings(&c["required_case_ids"]).unwrap_or_default();
+    allowed.extend(strings(&c["allowed_supplementary_case_ids"]).unwrap_or_default());
+    let mut labels = BTreeMap::new();
+    if let Some(cases) = value["cases"].as_array() {
+        for case in cases.iter().take(48) {
+            if let Some(id) = case["id"].as_str()
+                && allowed.contains(id)
+                && case["result"] == "failed"
+            {
+                labels.insert(id.to_owned(), "operation-failed".to_owned());
+            }
+        }
+    }
+    if let Ok(text) = std::str::from_utf8(bytes) {
+        for line in text.lines().take(1000) {
+            let Some(tail) = line.strip_prefix("APACHE_CASE_FAILURE ") else {
+                continue;
+            };
+            let parts: Vec<_> = tail.split_ascii_whitespace().collect();
+            if parts.len() == 2
+                && labels.contains_key(parts[0])
+                && (parts[1] == "operation-failed"
+                    || CASE_LABELS.iter().any(|(_, label)| *label == parts[1]))
+            {
+                labels.insert(parts[0].to_owned(), parts[1].to_owned());
+            }
+        }
+    }
+    serde_json::json!(labels)
+}
 pub struct Expected {
     pub source: String,
     pub manifest: String,
@@ -370,5 +448,30 @@ mod tests {
         assert_eq!(value["sourceLocations"].as_array().unwrap().len(), 1);
         assert!(!value.to_string().contains("never-upload"));
         assert!(!value.to_string().contains("private diagnostic"));
+    }
+    #[test]
+    fn case_diagnostics_bind_failed_inventory_and_never_project_arbitrary_text() {
+        let (mut value, _) = fixture();
+        value["cases"][0]["result"] = "failed".into();
+        value["passed"] = 44.into();
+        value["failed"] = 1.into();
+        let failed = value["cases"][0]["id"].as_str().unwrap().to_owned();
+        let passed = value["cases"][1]["id"].as_str().unwrap().to_owned();
+        value["cases"]
+            .as_array_mut()
+            .unwrap()
+            .push(serde_json::json!({"id":"private/secret","result":"failed"}));
+        let bytes = format!(
+            "secret=private\nAPACHE_CASE_FAILURE {failed} binary-replay-effect\nAPACHE_CASE_FAILURE {failed} private-body\nAPACHE_CASE_FAILURE {passed} spoof-stripping\nAPACHE_CASE_FAILURE private/secret binary-replay-effect\n"
+        );
+        let result = case_diagnostics(&value, bytes.as_bytes());
+        assert_eq!(result[failed.as_str()], "binary-replay-effect");
+        assert_eq!(result.as_object().unwrap().len(), 1);
+        assert!(!result.to_string().contains("private"));
+        assert_eq!(case_failure_label("credential=private"), "operation-failed");
+        assert_eq!(
+            case_failure_label("binary replay/effect"),
+            "binary-replay-effect"
+        );
     }
 }

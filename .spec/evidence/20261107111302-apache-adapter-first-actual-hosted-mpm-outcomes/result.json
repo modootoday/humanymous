@@ -1,0 +1,76 @@
+{
+  "runId": 42366328484,
+  "jobId": 128385068259,
+  "sourceCommit": "8042c6bc457297732332c199f01ca2f80ab3f48a",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42366328484",
+  "units": [
+    {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    }
+  ],
+  "cleanupStep": "success",
+  "receipt": {
+    "artifactHashes": {
+      "abiReceiptSha256": "23d1302f81410f64ae1204d81e1021b0b607cd3ee9dca4f4ece44a0d7011d755",
+      "httpdSha256": "993d51c15331983135e578f629351bb63718147891c0899191a89ad8cada4a1c",
+      "lockSha256": "2d1c19bb8ec21249b291bcb0918daa54f144a295b2bca9e0473a877bed7ce13d",
+      "moduleSha256": "a1ef7034650007643ac0bd949bcbfad0278a4d9bde28f5217ee906d92ceaa708",
+      "probeModuleSha256": "68557b5baa4006775245d7bd1d36aa3840f4ea90478fc0ea8258a7114d9e8801"
+    },
+    "compilerDiagnostics": {
+      "errorCodes": [],
+      "labels": [],
+      "sourceLocations": []
+    },
+    "containerImageCleanupObserved": true,
+    "engine": {
+      "clientPath": "docker",
+      "context": "default",
+      "endpoint": "unix:///var/run/docker.sock",
+      "osType": "linux",
+      "profile": "github-hosted-linux",
+      "serverId": "aeba5083-36f4-4ab3-a6cd-5185eccc7a63",
+      "serverVersion": "28.0.4",
+      "verified": true
+    },
+    "executionContext": "github-hosted",
+    "failure": "attach-command-failed",
+    "fullProductSuccess": false,
+    "imageDigest": "sha256:58b3e657e16e185f9ec14a91c8248b16126862a0e1814a28d1755427019f5332",
+    "lastCommand": {
+      "category": "artifact-copy",
+      "elapsedMs": 50,
+      "exit": 0,
+      "kind": "exited"
+    },
+    "observedCounts": {
+      "failed": 22,
+      "not_run": 0,
+      "passed": 23
+    },
+    "pilotCleanupObserved": false,
+    "requiredScenarioCount": 45,
+    "schema": "humanymous.apache.coordinator/0.1",
+    "sourceCommit": "8042c6bc457297732332c199f01ca2f80ab3f48a",
+    "sourceManifestSha256": "96bdf03710bbaa29cc0eed38523b09796260c4841068a65500a043d3f1debac6",
+    "stage": "report",
+    "status": "failed",
+    "timingsMs": {
+      "artifact-copy": 250,
+      "build": 358581,
+      "create": 50,
+      "git": 1001,
+      "inspect-cleanup": 3203,
+      "run": 4306
+    }
+  }
+}

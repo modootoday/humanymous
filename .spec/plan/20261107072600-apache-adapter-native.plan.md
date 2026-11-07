@@ -164,3 +164,14 @@ Only safe receipt logs are retained publicly; no automatic artifact upload is
 added. CI retains catalog/policy ownership, root retains push/dispatch. Local
 compilation and workload remain deferred under the memory guard. The new source
 and workflow are not yet hosted-qualified.
+
+Actual hosted runs42363960400 and42365027138 preserved selected-httpd build
+failures and observed ledger cleanup. Narrow c_int and typed mode-pattern alias
+fixes retained all predicates/lint levels. Run42366328484/source8042c6bc then
+completed actual production/probe module builds/Clippy and executed all45pairs:
+23passed/22failed/0not_run. Evidence:root/20261107111302 binds source, image and
+five independent artifact hashes; no Apache tuple is qualified. Public totals
+alone do not identify individual failed cases. The follow-up adds only safe
+case/result/static-label projection and actual process exits, retaining the
+closed pilot schema and acceptance denominator, with one new privacy/binding
+pure test. New source awaits allocated or genuine hosted validation.

@@ -260,6 +260,10 @@ fn case(
     test: impl FnOnce() -> Result<(), Error>,
 ) {
     let result = test();
+    if let Err(error) = &result {
+        let label = crate::coordinator::case_failure_label(&error.to_string());
+        eprintln!("APACHE_CASE_FAILURE {mpm}/{name} {label}");
+    }
     cases.push(serde_json::json!({"id":format!("{mpm}/{name}"),"mpm":mpm,"name":name,"result":if result.is_ok(){"passed"}else{"failed"}}));
 }
 fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
@@ -497,7 +501,9 @@ pub fn run() -> Result<(), Error> {
     ensure(version.contains("Apache/2.4.70"), "pinned engine version")?;
     let mut cases = Vec::new();
     for mpm in ["event", "worker", "prefork"] {
-        if suite(mpm, &mut cases).is_err() {
+        if let Err(error) = suite(mpm, &mut cases) {
+            let label = crate::coordinator::case_failure_label(&error.to_string());
+            eprintln!("APACHE_CASE_FAILURE {mpm}/infrastructure {label}");
             cases.push(serde_json::json!({"id":format!("{mpm}/infrastructure"),"mpm":mpm,"name":"suite-infrastructure","result":"failed"}));
         }
         for name in CASES {
