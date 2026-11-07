@@ -255,5 +255,13 @@
     "new_temporal_fixture_execution_qualified": false,
     "runtime_required_signal_readiness_qualified": false,
     "model_status_reconciliation_commit": "c9d40684"
+  },
+  "followup_delta_and_unread": {
+    "private_review_sha256": "05ea527692f88312e64a3c847fe1b7acbc2f20b728b069090666f5de979d2ac0",
+    "checkpoint": "6aa87db1",
+    "new_rust_paths": 53,
+    "selected_foreign_extension_am_paths": 0,
+    "actual_unread_pipe_run_observed": false,
+    "complete_byte_or_language_conformance": false
   }
 }

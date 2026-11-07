@@ -452,3 +452,29 @@ Model's requested status reconciliation is resolved atc9d40684: independently
 reread opening and final acceptance now distinguish the qualified parser from
 remaining kernel/gate/lifecycle design decisions. Historical raw results remain
 separate and complete migration qualification is still not claimed.
+
+### Source-delta and retained unread-pipe follow-up
+
+The immutable delta fromd7c74125 to6aa87db1 has no added/modified tracked paths
+with py/js/mjs/cjs/ps1/sh/cs/go/ts/tsx extensions, and53 newly added Rust paths.
+This bounds the observed delta only; it does not qualify retained foreign code,
+other extensions, ignored files or executable strings. A bounded added-line
+keyword review found controlled Rust fixture spawning and data writes, not a
+new foreign implementation; it is discovery, not exhaustive language proof.
+
+Direct comparison with981d25cf historical correlation/traffic source confirms
+the reviewed threshold structure:3subnets,5sessions,3-by-3fanout,velocity floor8,
+MAD K6/warmup20; traffic engine/UA/subnet counts>1, stable JA4>2 and mixed1.1/2.
+Signal IDs/verdict/confidence/notes were read alongside these branches. This is
+source alignment, not complete executed scoring/byte parity. Go set output uses
+map iteration while Rust BTree values are sorted; do not claim ordered-value
+byte identity from equal set membership or predicates alone.
+
+The authored unread-pipe watchdog parent at2907ee30 uses the shared actual-child
+backing added at7a1e8dee, one bounded controlled prefix per stream and retained
+failed owners for independent outer recovery. It intentionally provides no IO
+worker/EOF/descendant receipt. Spawn/prefix/stop can block; external supervision
+remains required. No actual run was observed, so this does not close LIFETIME01.
+Root was given the exact pending Authority key-retention and bridge UTF16/privacy
+selectors for future allocated frozen-source validation; earlier passes must
+not substitute for those fixes' actual regressions.

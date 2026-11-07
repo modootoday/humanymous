@@ -181,3 +181,8 @@ Temporal network responsibility/trust-scope review covers nine hashed source
 leaves, with shared MAD reuse and explicit unqualified coordinator/address-only
 provenance. New execution/runtime readiness remains OPEN. Model current-status
 wording was corrected by its owner atc9d40684 and independently reread.
+
+Exact d7c74125..6aa87db1 source delta and historical network predicates were
+reviewed; no complete language or ordered-byte parity claim follows. The retained
+unread-pipe watchdog parent is source-only, with actual outer-supervised run open.
+Root has exact remaining SECRET01/BRIDGE-ALLOC01 regression selectors.
