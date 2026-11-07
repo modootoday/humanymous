@@ -54,9 +54,12 @@ impl Pending {
     /// Remaining input/IPC duration; a caller cannot reset the original budget.
     pub fn remaining(&self) -> Result<Duration, Error> {
         let now = humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))?;
+        self.remaining_at(now, Instant::now())
+    }
+    fn remaining_at(&self, now: u64, monotonic: Instant) -> Result<Duration, Error> {
         let remaining = self
             .until
-            .checked_duration_since(Instant::now())
+            .checked_duration_since(monotonic)
             .filter(|d| !d.is_zero());
         if now >= self.deadline || remaining.is_none() {
             return Err(Error("adapter deadline expired"));
@@ -111,6 +114,80 @@ impl Pending {
             return Err(Error("authority result expired"));
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod budget_tests {
+    use super::*;
+
+    #[test]
+    fn repeated_stage_reads_preserve_original_monotonic_deadline() {
+        let start = Instant::now();
+        let pending = Pending {
+            deadline: 5000,
+            until: start + Duration::from_millis(100),
+        };
+        assert_eq!(
+            pending.remaining_at(4900, start).unwrap(),
+            Duration::from_millis(100)
+        );
+        assert_eq!(
+            pending
+                .remaining_at(4910, start + Duration::from_millis(10))
+                .unwrap(),
+            Duration::from_millis(90)
+        );
+        assert_eq!(
+            pending
+                .remaining_at(4990, start + Duration::from_millis(90))
+                .unwrap(),
+            Duration::from_millis(10)
+        );
+    }
+
+    #[test]
+    fn wall_rollback_cannot_extend_the_original_monotonic_budget() {
+        let start = Instant::now();
+        let pending = Pending {
+            deadline: 5000,
+            until: start + Duration::from_millis(100),
+        };
+        assert_eq!(
+            pending
+                .remaining_at(1, start + Duration::from_millis(99))
+                .unwrap(),
+            Duration::from_millis(1)
+        );
+        assert!(
+            pending
+                .remaining_at(1, start + Duration::from_millis(100))
+                .is_err()
+        );
+        assert!(
+            pending
+                .remaining_at(1, start + Duration::from_millis(101))
+                .is_err()
+        );
+    }
+
+    #[test]
+    fn either_original_clock_expiry_refuses_even_if_the_other_has_time() {
+        let start = Instant::now();
+        let pending = Pending {
+            deadline: 5000,
+            until: start + Duration::from_millis(100),
+        };
+        assert!(pending.remaining_at(5000, start).is_err());
+        assert!(
+            pending
+                .remaining_at(4900, start + Duration::from_millis(100))
+                .is_err()
+        );
+        assert_eq!(
+            pending.remaining_at(4999, start).unwrap(),
+            Duration::from_millis(1)
+        );
     }
 }
 

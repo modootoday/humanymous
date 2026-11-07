@@ -10,12 +10,14 @@ fn boundary(e: humanymous_framework_adapter::Error) -> napi::Error {
 pub(crate) fn parse(value: &str) -> napi::Result<Configuration> {
     Configuration::parse(value).map_err(boundary)
 }
+#[cfg(test)]
 pub(crate) fn now() -> napi::Result<u64> {
     humanymous_authority::now_ms().map_err(|_| error("clock unavailable"))
 }
 pub(crate) fn uuid() -> napi::Result<String> {
     humanymous_framework_adapter::uuid().map_err(boundary)
 }
+#[cfg(test)]
 pub(crate) fn encode(
     c: &Configuration,
     o: &mut Observation,

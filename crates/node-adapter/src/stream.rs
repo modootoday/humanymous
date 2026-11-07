@@ -3,6 +3,8 @@ use crate::{
     envelope::{self, Configuration, Observation, error},
     host::*,
 };
+use humanymous_authority::client::{BoundResponse, Verdict};
+use humanymous_framework_adapter::Pending as RequestBudget;
 use napi::{Env, Result, bindgen_prelude::*};
 use std::{
     cell::RefCell,
@@ -24,8 +26,8 @@ struct Pending {
     environment: Option<Lease>,
     source: Option<Lease>,
     bytes: Vec<u8>,
-    observation: Observation,
-    deadline: u64,
+    observation: Arc<Observation>,
+    budget: Arc<RequestBudget>,
 }
 impl Pending {
     fn release(self, env: &Env) -> Result<()> {
@@ -54,6 +56,7 @@ pub(crate) fn express(env: &Env, config: Configuration) -> Result<Function<'stat
         let run = || -> Result<()> {
             let admission =
                 humanymous_framework_adapter::Admission::acquire().map_err(|e| error(e.0))?;
+            let budget = Arc::new(RequestBudget::new(&config).map_err(|e| error(e.0))?);
             if prop::<bool>(&req, "readableEnded")?
                 || req.has_named_property("body")?
                 || prop::<Option<String>>(&req, "readableEncoding")?.is_some()
@@ -71,7 +74,7 @@ pub(crate) fn express(env: &Env, config: Configuration) -> Result<Function<'stat
                 id
             };
             let headers: Object = prop(&req, "headers")?;
-            let observation = Observation {
+            let mut observation = Observation {
                 method: text(&req, "method")?,
                 target: text(&req, "url")?,
                 authority: text(&headers, "host")?,
@@ -84,6 +87,9 @@ pub(crate) fn express(env: &Env, config: Configuration) -> Result<Function<'stat
                 connection: if raw { Some(connection) } else { None },
                 raw,
             };
+            observation
+                .headers
+                .retain(|[name, _]| !envelope::internal(name));
             let pending = Pending {
                 _admission: admission,
                 cancelled: Arc::new(AtomicBool::new(false)),
@@ -95,8 +101,8 @@ pub(crate) fn express(env: &Env, config: Configuration) -> Result<Function<'stat
                 environment: None,
                 source: None,
                 bytes: Vec::new(),
-                observation,
-                deadline: envelope::now()? + config.timeout_ms,
+                observation: Arc::new(observation),
+                budget,
             };
             collect(ctx.env, &req, pending, config.clone())?;
             trace("express:collecting");
@@ -130,6 +136,7 @@ pub(crate) fn fetch(
         let result = (|| -> Result<Unknown> {
             let admission =
                 humanymous_framework_adapter::Admission::acquire().map_err(|e| error(e.0))?;
+            let budget = Arc::new(RequestBudget::new(&config).map_err(|e| error(e.0))?);
             let request: Object = ctx.get(0)?;
             if prop::<bool>(&request, "bodyUsed")? {
                 return Err(error("guard must precede Fetch parsers"));
@@ -168,7 +175,7 @@ pub(crate) fn fetch(
                 }
                 pairs_vec.push([pair[0].clone(), pair[1].clone()]);
             }
-            let observation = Observation {
+            let mut observation = Observation {
                 method: text(&request, "method")?,
                 target: format!("{}{}", text(&url, "pathname")?, text(&url, "search")?),
                 authority: text(&url, "host")?,
@@ -177,6 +184,9 @@ pub(crate) fn fetch(
                 connection: None,
                 raw: false,
             };
+            observation
+                .headers
+                .retain(|[name, _]| !envelope::internal(name));
             let environment = if ctx.length() > 1 {
                 ctx.get::<Option<Object>>(1)?
                     .map(|v| reference(ctx.env, &v))
@@ -195,8 +205,8 @@ pub(crate) fn fetch(
                 environment,
                 source: None,
                 bytes: Vec::new(),
-                observation,
-                deadline: envelope::now()? + config.timeout_ms,
+                observation: Arc::new(observation),
+                budget,
             };
             let streams = streams.get_value(ctx.env)?;
             let readable = callable(&streams, "Readable")?;
@@ -251,7 +261,8 @@ fn collect(
         let overflow = {
             let mut borrow = data_state.borrow_mut();
             if let Some(p) = borrow.as_mut() {
-                if p.bytes.len() + chunk.len() > max {
+                if p.budget.remaining().is_err() || chunk.len() > max.saturating_sub(p.bytes.len())
+                {
                     true
                 } else {
                     p.bytes.extend_from_slice(&chunk);
@@ -314,11 +325,15 @@ fn collect(
             terminate(ctx.env, &timeout_state, 503)
         })?;
     let g = global(env)?;
-    let _: Unknown = call(
-        &g,
-        "setTimeout",
-        FnArgs::from((timer, config.timeout_ms as u32)),
-    )?;
+    let timeout_ms = {
+        let borrow = state.borrow();
+        let pending = borrow
+            .as_ref()
+            .ok_or_else(|| error("request no longer pending"))?;
+        let remaining = pending.budget.remaining().map_err(|e| error(e.0))?;
+        u32::try_from(remaining.as_millis().max(1)).map_err(|_| error("timer budget overflow"))?
+    };
+    let _: Unknown = call(&g, "setTimeout", FnArgs::from((timer, timeout_ms)))?;
     let end_state = state.clone();
     let end =
         env.create_function_from_closure::<(), (), _>("humanymousBodyComplete", move |ctx| {
@@ -332,16 +347,11 @@ fn collect(
             {
                 return finish(ctx.env, pending, 503);
             }
-            let wire = match envelope::encode(
-                &config,
-                &mut pending.observation,
-                &pending.bytes,
-                pending.deadline,
-            ) {
-                Ok(wire) => wire,
-                Err(_) => return finish(ctx.env, pending, 503),
-            };
-            start_decision(ctx.env, pending, config.clone(), wire, cancel_rx.clone())?;
+            if pending.budget.remaining().is_err() {
+                return finish(ctx.env, pending, 503);
+            }
+            let body: Arc<[u8]> = std::mem::take(&mut pending.bytes).into();
+            start_decision(ctx.env, pending, config.clone(), body, cancel_rx.clone())?;
             Ok(())
         })?;
     let _: Unknown = call(source, "once", FnArgs::from(("end".to_owned(), end)))?;
@@ -372,48 +382,122 @@ fn start_decision(
     env: &Env,
     pending: Pending,
     config: Arc<Configuration>,
-    wire: Vec<u8>,
+    body: Arc<[u8]>,
     mut cancellation: tokio::sync::watch::Receiver<bool>,
 ) -> Result<()> {
-    let deadline = pending.deadline;
+    let budget = pending.budget.clone();
+    let observation = pending.observation.clone();
+    let decision_body = body.clone();
     trace("decision:scheduled");
-    let _promise=env.spawn_future_with_callback(async move {
-        if *cancellation.borrow(){return Ok(Err(error("cancelled")));}
-        let future=async {
-            use humanymous_authority::client::{ClientOptions,ExpectedBinding};
-            let parsed=humanymous_integrity::adapter::parse(&wire,envelope::now()?).map_err(error)?;
-            let (origin,revision,_)=parsed.origin_binding();
-            let options=ClientOptions{endpoint:&config.endpoint,credential:config.credential(),server:&config.server,timeout_ms:config.timeout_ms,adapter:humanymous_integrity::adapter::AdapterProfile::Node};
-            let expected=ExpectedBinding{id:parsed.id(),tenant:parsed.tenant(),origin,revision,deadline};
-            humanymous_authority::client::decide(&options,&wire,expected).await.map_err(|_|error("authority unavailable"))
-        };
-        let result=tokio::select!{value=future=>value,_=cancellation.changed()=>Err(error("cancelled"))};
-        Ok(result)
-    },move |env,result| {
-        trace("decision:callback");
-        let expires=result.as_ref().map(|bound|bound.expires()).unwrap_or(0).min(deadline);
-        let status=match result.and_then(|bound|bound.consume().map_err(|_|error("expired decision"))) {Ok(verdict)=>match verdict{humanymous_authority::client::Verdict::Allow=>200,humanymous_authority::client::Verdict::Deny=>403,humanymous_authority::client::Verdict::Challenge=>409},Err(_)=>503};
-        if status==200 && envelope::now()?<expires && !pending.cancelled.load(Ordering::Acquire) {
-            let req=pending.request.get_value(env)?;
-            if let Some(res)=&pending.response && prop::<Option<bool>>(&res.get_value(env)?,"destroyed")?.unwrap_or(false) {return pending.release(env);}
-            if pending.response.is_some() {
-                replay(env,&req,&pending.bytes,&pending.observation.headers)?;
-                if envelope::now()?>=expires||pending.cancelled.load(Ordering::Acquire){return finish(env,pending,503);}
-                if let Some(next)=&pending.next {next.borrow_back(env)?.call(())?;}
-            }else if let (Some(app),Some(resolve))=(&pending.app,&pending.resolve) {
-                let g=global(env)?;let ctor:Function<FnArgs<(Object,Object)>,Unknown>=prop(&g,"Request")?;
-                let mut init=object(env)?;init.set_named_property("method",pending.observation.method.clone())?;init.set_named_property("headers",pending.observation.headers.iter().map(|h|h.to_vec()).collect::<Vec<_>>())?;
-                init.set_named_property("signal",prop::<Object>(&req,"signal")?)?;
-                if !["GET","HEAD"].contains(&pending.observation.method.as_str()){init.set_named_property("body",Buffer::from(pending.bytes.clone()))?;}
-                let authorized=ctor.new_instance(FnArgs::from((req,init)))?.coerce_to_object()?;
-                if prop::<bool>(&prop::<Object>(&req,"signal")?,"aborted")? || envelope::now()?>=expires{return finish(env,pending,503);}
-                let app=app.get_value(env)?;
-                let value:Object=if let Some(environment)=&pending.environment {call(&app,"fetch",FnArgs::from((authorized,environment.get_value(env)?)))?}else{call(&app,"fetch",authorized)?};
-                resolve.borrow_back(env)?.call(value)?;
+    let _promise = env.spawn_future_with_callback(
+        async move {
+            if *cancellation.borrow() {
+                return Ok(Err(error("cancelled")));
             }
-        }else {return finish(env,pending,if status==200 {503}else{status});}
-        pending.release(env)
-    })?;
+            let decision = budget.decide(
+                &config,
+                &observation,
+                &decision_body,
+                humanymous_integrity::adapter::AdapterProfile::Node,
+            );
+            let result = tokio::select! {
+                value = decision => value.map_err(|e| error(e.0)),
+                _ = cancellation.changed() => Err(error("cancelled")),
+            };
+            Ok(result)
+        },
+        move |env, result| {
+            trace("decision:callback");
+            let bound = match result {
+                Ok(bound) => bound,
+                Err(_) => return finish(env, pending, 503),
+            };
+            if bound.verdict() != Verdict::Allow {
+                let status = match bound.consume() {
+                    Ok(Verdict::Deny) => 403,
+                    Ok(Verdict::Challenge) => 409,
+                    _ => 503,
+                };
+                return finish(env, pending, status);
+            }
+            let req = pending.request.get_value(env)?;
+            if let Some(response) = &pending.response {
+                replay(env, &req, &body, &pending.observation.headers)?;
+                let next = pending
+                    .next
+                    .as_ref()
+                    .ok_or_else(|| error("missing origin callback"))?;
+                let next = next.borrow_back(env)?;
+                let response = response.get_value(env)?;
+                if prop::<bool>(&response, "destroyed")? {
+                    return pending.release(env);
+                }
+                if consume_handoff(&pending, bound).is_err() {
+                    return finish(env, pending, 503);
+                }
+                next.call(())?;
+            } else if let (Some(app), Some(resolve)) = (&pending.app, &pending.resolve) {
+                let g = global(env)?;
+                let ctor: Function<FnArgs<(Object, Object)>, Unknown> = prop(&g, "Request")?;
+                let mut init = object(env)?;
+                init.set_named_property("method", pending.observation.method.clone())?;
+                init.set_named_property(
+                    "headers",
+                    pending
+                        .observation
+                        .headers
+                        .iter()
+                        .map(|h| h.to_vec())
+                        .collect::<Vec<_>>(),
+                )?;
+                let signal: Object = prop(&req, "signal")?;
+                init.set_named_property("signal", signal)?;
+                if !["GET", "HEAD"].contains(&pending.observation.method.as_str()) {
+                    init.set_named_property("body", Buffer::from(body.to_vec()))?;
+                }
+                let authorized = ctor
+                    .new_instance(FnArgs::from((req, init)))?
+                    .coerce_to_object()?;
+                let app = app.get_value(env)?;
+                let resolve = resolve.borrow_back(env)?;
+                let value: Object = if let Some(environment) = &pending.environment {
+                    let environment = environment.get_value(env)?;
+                    let fetch: Function<FnArgs<(Object, Object)>, Object> = prop(&app, "fetch")?;
+                    if prop::<bool>(&signal, "aborted")?
+                        || consume_handoff(&pending, bound).is_err()
+                    {
+                        return finish(env, pending, 503);
+                    }
+                    fetch.apply(&app, FnArgs::from((authorized, environment)))?
+                } else {
+                    let fetch: Function<Object, Object> = prop(&app, "fetch")?;
+                    if prop::<bool>(&signal, "aborted")?
+                        || consume_handoff(&pending, bound).is_err()
+                    {
+                        return finish(env, pending, 503);
+                    }
+                    fetch.apply(&app, authorized)?
+                };
+                resolve.call(value)?;
+            } else {
+                return finish(env, pending, 503);
+            }
+            pending.release(env)
+        },
+    )?;
+    Ok(())
+}
+fn consume_handoff(pending: &Pending, bound: BoundResponse) -> Result<()> {
+    if pending.cancelled.load(Ordering::Acquire) {
+        return Err(error("request cancelled"));
+    }
+    pending
+        .budget
+        .check_handoff(bound.expires())
+        .map_err(|e| error(e.0))?;
+    if bound.consume().map_err(|_| error("expired decision"))? != Verdict::Allow {
+        return Err(error("origin requires bound ALLOW"));
+    }
     Ok(())
 }
 fn replay(env: &Env, request: &Object<'_>, body: &[u8], headers: &[[String; 2]]) -> Result<()> {

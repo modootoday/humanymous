@@ -415,8 +415,10 @@ remain NOT_RUN. ASGI's source correction moves the real result and original
 Pending into the owning-loop callback and consumes immediately before app
 invocation after cancellation/one-shot inspection. It retains the permit through
 task completion; queued expiry/cancel and timely controls remain NOT_RUN.
-Node's private wall-only Pending / early copied status remains an open source
-deviation. No current source-only path is qualified shared behavior.
+Node's new source correction reuses original shared Pending and retains the
+opaque result until final VM invocation; check/Clippy, clock negatives and actual
+late/queued/abort controls on those changed bytes remain NOT_RUN. No current
+source-only path is qualified shared behavior.
 The genuine ALLOW must precede the delayed connected callback in the regression;
 an earlier dependency timeout is insufficient. No native epoch atomicity,
 actual controller admission or broader host qualification follows from this fix.
@@ -449,6 +451,41 @@ No tests executed: the two SDK WSGI controls remain Unix-only/unrun. This closes
 the corrected-source Windows compile/link gate, not CA-HANDOFF or task settlement.
 Actual Windows peer/private-parent fixture admission and every required host/
 fault/queued/runtime/package gate remain separate. No WSL/UNC use occurred.
+
+### Lowest-dependency Node clock/final-consume slice
+
+The Node source now starts the common Pending before host metadata/input reads,
+uses remaining time for its input timer and body checks, and calls common decide
+without resetting the IPC timeout. Immutable Arc body/observation/budget values
+cross the Rust worker boundary; N-API leases remain in the VM callback. The actual
+BoundResponse survives scheduling and replay/function/argument preparation.
+After final trusted liveness checks, original Pending plus actual consume gate
+Express next or Fetch.apply without another host lookup/callback in between.
+DENY/CHALLENGE still consume and reject. This is source-only, not executed proof.
+
+Three deterministic shared-Pending units cover repeated stage reads without a
+budget reset, wall rollback bounded by the original monotonic deadline, and
+expiry of either clock while the other has time. Production clock acquisition
+is unchanged; the private arithmetic seam supplies exact clock samples only in
+unit tests. No OS clock change or fake Authority result is introduced.
+
+A Rust-only host-pilot Hono fetch-property probe provides timely and1100ms late
+lookup against an exact1000ms fixture budget. It writes distinct private entry/
+return receipts and returns the original function; the JS timer cannot run while
+the VM getter is blocked. Paired actual cases must establish a genuine audited
+ALLOW before that lookup, both receipts, and origin0/503 late versus origin1/
+binary/cookie-preserving timely. A delay before ALLOW or a failed dependency is
+not the negative. Probe source is prepared; its actual driver/lifecycle profile,
+Node/Bun/Express tuple controls and execution remain pending. It is not exported
+in production and cannot mint a trusted provider or change scoring/ABI names.
+
+Python ASGI's registered-success task ownership is source-implemented and had
+Windows252 compile/link evidence only. Failed task creation/registration/cancel,
+suppressed cancellation and late completion remain cleanup-uncertain. A future
+bounded actual loop fixture must observe permit retention until real terminal
+settlement or retained uncertain ownership, not infer it from cancel/Err/status.
+Windows WSGI still needs the qualified native private-parent/peer fixture; no
+fabricated SID/DACL, arbitrary TEMP fallback or WSL restart fills that dependency.
 
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;

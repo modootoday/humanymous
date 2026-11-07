@@ -3,7 +3,7 @@
 use crate::{envelope::error, host::*, stream};
 use napi::{Env, Result, bindgen_prelude::*};
 use serde::Deserialize;
-use std::io::Read;
+use std::io::{Read, Write};
 mod origin;
 
 #[derive(Deserialize)]
@@ -12,6 +12,17 @@ struct Pilot {
     framework: String,
     package_json: String,
     effect_file: Option<std::path::PathBuf>,
+    #[serde(default)]
+    fetch_handoff_probe: Option<FetchHandoffProbe>,
+    #[serde(default)]
+    handoff_probe_file: Option<std::path::PathBuf>,
+}
+
+#[derive(Clone, Copy, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+enum FetchHandoffProbe {
+    Timely,
+    Late,
 }
 
 pub(crate) fn initialize(_exports: Object<'_>, env: Env) -> Result<()> {
@@ -25,6 +36,13 @@ pub(crate) fn initialize(_exports: Object<'_>, env: Env) -> Result<()> {
         .map_err(|_| error("private pilot input"))?;
     let options: Pilot = serde_json::from_str(&input).map_err(|_| error("pilot configuration"))?;
     let config = crate::envelope::parse(&options.config.to_string())?;
+    if options.fetch_handoff_probe.is_some()
+        && (options.framework != "hono" || config.timeout_ms != 1000)
+    {
+        return Err(error(
+            "handoff probe requires Hono and the exact 1000ms fixture budget",
+        ));
+    }
     let module = builtin(&env, "module")?;
     let require: Function<String, Object> = call(&module, "createRequire", options.package_json)?;
     let server = if options.framework == "express" {
@@ -42,6 +60,15 @@ pub(crate) fn initialize(_exports: Object<'_>, env: Env) -> Result<()> {
         let constructor: Function<(), Unknown> = prop(&module, "Hono")?;
         let app = constructor.new_instance(())?.coerce_to_object()?;
         origin::hono(&env, &app, options.effect_file.clone())?;
+        if let Some(probe) = options.fetch_handoff_probe {
+            install_fetch_probe(
+                &env,
+                &app,
+                probe,
+                options.handoff_probe_file.clone(),
+                options.effect_file.as_deref(),
+            )?;
+        }
         let streams = builtin(&env, "stream")?;
         let handler = stream::fetch(&env, config, app, streams)?;
         let g = global(&env)?;
@@ -99,5 +126,55 @@ pub(crate) fn initialize(_exports: Object<'_>, env: Env) -> Result<()> {
             FnArgs::from((0u32, "127.0.0.1".to_owned())),
         )?;
     }
+    Ok(())
+}
+
+fn install_fetch_probe(
+    env: &Env,
+    app: &Object<'_>,
+    probe: FetchHandoffProbe,
+    receipt: Option<std::path::PathBuf>,
+    effects: Option<&std::path::Path>,
+) -> Result<()> {
+    let receipt = receipt.ok_or_else(|| error("owned handoff probe receipt required"))?;
+    if !receipt.is_absolute()
+        || effects.is_none_or(|path| path.parent() != receipt.parent() || path == receipt)
+    {
+        return Err(error(
+            "handoff and effect receipts require distinct paths in the same owned fixture directory",
+        ));
+    }
+    let original = reference(env, &callable(app, "fetch")?)?;
+    let entered = std::cell::Cell::new(false);
+    let getter =
+        env.create_function_from_closure::<(), Object, _>("pilotFinalFetchLookup", move |ctx| {
+            if entered.replace(true) {
+                return Err(error("handoff probe is single-request only"));
+            }
+            let mut file = std::fs::OpenOptions::new()
+                .create_new(true)
+                .write(true)
+                .open(&receipt)
+                .map_err(|_| error("owned handoff receipt unavailable"))?;
+            writeln!(file, "fetch-lookup-entered")
+                .map_err(|_| error("handoff receipt write failed"))?;
+            if matches!(probe, FetchHandoffProbe::Late) {
+                // Block the actual VM getter after ALLOW; its queued JS timer cannot
+                // prove timely handoff. The original monotonic budget must refuse.
+                std::thread::sleep(std::time::Duration::from_millis(1100));
+            }
+            writeln!(file, "fetch-lookup-returned")
+                .map_err(|_| error("handoff receipt write failed"))?;
+            original.get_value(ctx.env)
+        })?;
+    let mut descriptor = object(env)?;
+    descriptor.set_named_property("get", getter)?;
+    descriptor.set_named_property("configurable", true)?;
+    let object_ctor = callable(&global(env)?, "Object")?;
+    let _: Unknown = call(
+        &object_ctor,
+        "defineProperty",
+        FnArgs::from((*app, "fetch".to_owned(), descriptor)),
+    )?;
     Ok(())
 }

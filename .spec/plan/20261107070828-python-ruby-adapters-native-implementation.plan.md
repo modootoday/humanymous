@@ -653,3 +653,44 @@ success or Windows fixture/peer/provider qualification. Native confirmed current
 user-private-directory API needs a provisioned accepted owner-only parent and
 has no applicable actual receipt; older receipts bind different source. No WSL,
 UNC, interpreter test, extension-module/server/fixture or package run occurred.
+
+### Node original clock and final VM invocation source slice
+
+Implemented source reuse of shared Pending at host entry, remaining input timer/
+append budget and sole common decide; removed the private wall-only deadline and
+full-timeout client reconstruction. Shared immutable Rust body/observation/budget
+are retained across the decision future; actual opaque result remains owned by
+the VM callback. Final liveness, replay, function/argument preparation precede
+Pending.check_handoff and actual consume immediately before Express/Fetch invoke.
+Only test encoder wrappers retain the old explicit deadline helper surface.
+
+Prepared three deterministic common clock units, plus the Rust-only Hono getter
+probe (timely/late,1000ms original budget/1100ms late lookup, bounded private
+entry/return receipt, same-directory distinct effect path). No compilation,
+native SDK/runtime, WSL, Docker, install or common Cargo graph change occurred.
+Next proposed bounded unit scope: shared framework lib units including exactly
+three request::budget_tests controls; Node default lib units and host-pilot
+all-target check/strict Clippy, on one root-allocated frozen native target.
+Actual discovery/counts must be recorded; source test definitions are NOT_RUN.
+
+Concrete actual-host recipe after an accepted retained interactive controller
+and genuine peer/private-parent fixture exist: freeze native addon/upstream
+generated loader and installed Node24.16.x/Hono4.13.16/@hono/node-server2.1.6;
+create retained host while private configuration waits, bind Authority to actual
+actor/PID using existing native owner, and send Hono1000ms private config with
+fetch_handoff_probe="timely" or"late", handoff_probe_file and effect_file distinct
+under that accepted owned directory. Each case has exactly one binary POST,
+one audited real component ALLOW, both getter receipts; require timely origin1
+and preserved body/cookies versus late503/origin0. Observe child exit, both EOFs,
+joined readers and cleanup within one original run/cleanup budget. Existing
+unbounded reader/manual-DACL helpers are not newly qualified by this recipe.
+No actual driver/host case is claimed authored or passed yet. Express/Bun,
+queued-callback and abort controls remain separate and cannot inherit Hono proof.
+
+ASGI next boundary scope remains actual queued-expiry/timely/cancel and completion
+registration/cancel-fault/late-settlement controls with true owning-loop tasks,
+real terminal observations and permit lifetime. Registered success differs from
+uncertain setup or suppressed cancellation; no cancellation/status/refcount-only
+claim closes it. The private-parent/interactive lower-provider dependencies stay
+explicit, and all historical Windows compile/link/runtime receipts retain their
+original source. No bulk package/public-name migration is part of this slice.

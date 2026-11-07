@@ -1,6 +1,6 @@
 # Shared framework consumer contract
 
-Document version:0.3. Status:provider-reviewed draft with CA-HANDOFF-01 open. This is the L0 contract
+Document version:0.4. Status:provider-reviewed draft with CA-HANDOFF-01 open. This is the L0 contract
 for the existing L4 Node/Bun, Python ASGI/WSGI and Ruby Rack consumers. It does
 not introduce a new crate, runtime API, privilege, supported tuple or readiness
 flag. Existing source/path ownership and the original complete adapter/package
@@ -74,23 +74,27 @@ infer an epoch/lease proof from this synchronous check or `verdict()` inspection
 
 ### Current implementation deviations and CA-HANDOFF-01
 
-The lifecycle above is a requirement, not an assertion that all hosts already
-reuse `Pending`. Node currently has a private wall-clock deadline state and
-passes the full configured timeout to its Authority client. Its queued callback
-also converts the bound result to a copied status early. It must adopt the
-original shared monotonic budget and retain the actual result until final VM
-admission. A timer is not proof that a delayed callback ran before expiry, and
-wall-clock rollback must not extend the original request budget.
+Node's source correction now creates the shared `Pending` at host entry before
+input consumption and delegates its sole decision attempt through that same
+budget. Body, observation and budget are shared as immutable Rust data across
+the decision worker and VM callback; no VM values move to that worker. The input
+timer uses remaining time, and body append checks expiry. Replay, function lookup,
+arguments and trusted host liveness precede final original-budget checking and
+actual bound consumption, immediately before Express next/Fetch invocation.
+The result is no longer copied to an early ALLOW status. A delayed VM timer is
+still not handoff proof. Compilation, pure clock negatives and actual late VM
+lookup/queued/abort controls on these changed bytes remain NOT_RUN.
 
 The ASGI source correction retains the result through its tail poll, replay
 construction and queued application helper. The owning-loop callback claims
 the single invocation after checking cancellation, then checks original Pending
 and consumes immediately before calling the application with prepared arguments.
-The permit follows that task through completion. This boundary is application
+Successful completion registration retains the permit with that task; setup or
+cancel failures still have explicit unknown-settlement gates. This boundary is application
 invocation, not a promise that an async application's later effects occur before
 expiry or a native atomic cancellation/epoch gate. Queued expiry/cancel and
-timely invocation controls remain actual-SDK gates. Node's deviation remains
-open; neither path is qualified by the synchronous WSGI/Rack source correction.
+timely invocation controls remain actual-SDK gates. Neither path is qualified
+by the synchronous WSGI/Rack source correction or source ordering alone.
 
 The WSGI/Rack source correction retains the result through replay preparation
 and the last trusted disconnect callback, then checks the original budget and
