@@ -1,0 +1,20 @@
+[package]
+name = "humanymous-dotnet-adapter"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+include = ["src/**", "Cargo.toml", "INTEGRATION.md"]
+
+[dependencies]
+humanymous-authority = { path = "../authority" }
+humanymous-framework-adapter = { path = "../framework-adapter" }
+humanymous-integrity = { path = "../integrity" }
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

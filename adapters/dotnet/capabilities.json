@@ -1,0 +1,30 @@
+{
+  "schema": "humanymous.dotnet-capabilities/1",
+  "adapter": "humanymous.dotnet",
+  "version": "0.1.0-experimental.1",
+  "implementation": "safe-rust-request-core",
+  "installedMiddleware": false,
+  "nativeExports": false,
+  "managedCallbacks": false,
+  "rawTls": false,
+  "originalH2": false,
+  "rawHeaderOrder": false,
+  "requestStreaming": false,
+  "upgrade": false,
+  "challengeRecovery": false,
+  "packagePublished": false,
+  "releaseQualifiedTuples": [],
+  "requiredHostGates": [
+    "kestrel-jit-windows",
+    "kestrel-jit-linux",
+    "nativeaot-windows",
+    "nativeaot-linux",
+    "request-aborted-during-read-and-ipc",
+    "exact-binary-body-replay",
+    "gc-stress-during-native-calls",
+    "dispose-and-process-shutdown",
+    "authority-peer-and-restart",
+    "isolated-docker-origin-effects",
+    "source-bound-package-install"
+  ]
+}
