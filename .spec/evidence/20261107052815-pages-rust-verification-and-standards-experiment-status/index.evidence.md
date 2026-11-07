@@ -16,14 +16,14 @@ files:
   - {path: resource-hold-status.json, sha256: 491dcae56b56bf43e2302489e53a7014025618a147c87b013909f026f2d809d3, bytes: 1407, store: repo}
   - {path: navigation-source-status.json, sha256: 015dca70cd44a0abb0b37058f33d0fef0844ef3f4baee04c55161de6f7259b0c, bytes: 889, store: repo}
   - {path: reader-source-status.json, sha256: 885098b2dfcbb0853ca93028d60084f274edd9f8e1796eae645ffce96f4b5b3a, bytes: 1151, store: repo}
-  - {path: output-checker-attempt.json, sha256: eb234eee5d028f42a4a7e3ad3a19bdca00d31c2c5c27e87f36bbcd18f13d8c8e, bytes: 3009, store: repo}
-  - {path: hosted-63f69ae-status.json, sha256: 66c81ccabb8d11f70fc2227f93b97f5b57246bbe2b8d7ff174bc2ee4887ba343, bytes: 1523, store: repo}
-  - {path: english-authoring-scope-status.json, sha256: 19b7b53753a9a4ba87feb77ca582e3b114700afe75af0615bb9f62297544c72f, bytes: 894, store: repo}
-  - {path: browser-integration-source.json, sha256: c772e25f8e51669e598bd3b4cfac1e48144439dd55504198a6f056d2476b93ed, bytes: 2609, store: repo}
-  - {path: official-reference-editions.json, sha256: d8d9d7105ea875ee938e948ff3810b3f87a7b2f42608ad926766ab6e745aab76, bytes: 1717, store: repo}
-  - {path: hosted-a26d1c3-startup-status.json, sha256: 20c60494b1f018e8b76cb67383f78b9fe146b81cc6d1c58b0871e2dce9e6b1aa, bytes: 1156, store: repo}
-  - {path: hosted-8132117-initial-status.json, sha256: 6f8efcee1480f35d5d5090c0afbc5242b4cb4789f0b991d42a398f8077dce50e, bytes: 1448, store: repo}
-  - {path: hosted-8132117-partial-failures.json, sha256: 18b96b0529229f3431313d271b5303c89c3870a69f509c54115c0216a7a6eeaa, bytes: 1106, store: repo}
+  - {path: output-checker-attempt.json, sha256: f96f5edb316bab4bddb0fd2018afd444ee95762eee2f8c2d3b854a84eb2efd99, bytes: 2926, store: repo}
+  - {path: hosted-63f69ae-status.json, sha256: 2dcbde00710cc195f58a01783d692384b1506b4836b62d90382241859d39078f, bytes: 1484, store: repo}
+  - {path: english-authoring-scope-status.json, sha256: e4ed74e98ed5ad6421007e8a8805cd8ace8ec45337b00bea3885414e919e9de3, bytes: 874, store: repo}
+  - {path: browser-integration-source.json, sha256: d3cb56b3af6fa3d85d87a9e15dba91e011f1e5db5f7d97533b38efc43aa8bda8, bytes: 2543, store: repo}
+  - {path: official-reference-editions.json, sha256: c83d67e9e86ffcde96f79d1c2bd6d6ace0dcd93699551cc845f915eb2e85bf0f, bytes: 1670, store: repo}
+  - {path: hosted-a26d1c3-startup-status.json, sha256: 825fc123073f80d4a0ff3dc7971819aa72fc060d388931add439bcec2f39f530, bytes: 1135, store: repo}
+  - {path: hosted-8132117-initial-status.json, sha256: d9403290699a1dfaac3a17ab115f1d91063fd082eeb0be2e448b159316a3f8d2, bytes: 1406, store: repo}
+  - {path: hosted-8132117-partial-failures.json, sha256: f898bc6e5a01dbe4e2ec2b6e569dd2445a70679d6320ecf4ef526027511e75d7, bytes: 1068, store: repo}
   - {path: browser-dot-segment-verification.json, sha256: c0d9e1fae7db02a3f9921b89acf1f7933cb97bde61d9891fdda6837f2725b461, bytes: 642, store: repo}
   - {path: hosted-8132117-nginx-windows-status.json, sha256: a9ad0f8d4963ea158586f3ccbd18ac33ec4cd10b2c77d248852b2d962c0ec75d, bytes: 1785, store: repo}
   - {path: public-terminology-current-source.json, sha256: 31b63719302fb1cd213cb510e44967390e9e39265632df9ae4f07d5d65e519f4, bytes: 944, store: repo}
