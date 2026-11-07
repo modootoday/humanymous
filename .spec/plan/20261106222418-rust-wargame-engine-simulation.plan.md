@@ -24,7 +24,8 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 - [x] V0.6: actual813/run42355168729 receipt recovered; source/rawhash/26indices/totals checked in evidence083903. Result0evaluated/19errors/7unsupported/scopedfalse.
 - [ ] Repair ServiceHost/defender readiness contract mismatch through the runtime-owned builder and rerun immutable hosted execution.
 - [x] Consume runtime709b0e2 standalone_profile with full equality and core-only/witness/unknown-field/scope rejection fixtures; source-only pending new validation.
-- [ ] Root-allocated27pure checks/scoped Clippy for the readiness fix, then a new coherent hosted candidate.
+- [x] Root-allocated27pure/Clippy passed for743494c1/runtime709b0e2, with ordered captured source indices stable; evidence084733/085126.
+- [ ] New coherent hosted candidate for the readiness repair.
 - [x] Preserve actual candidate a26d1c3/run42354873001 startup_failure with0jobs in evidence081913; no measured case ledger.
 
 - [x] V0.5: bind network step identities/order/roles to catalog; preserve error prefixes.

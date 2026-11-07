@@ -154,7 +154,7 @@ The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
 
-## V0.7 shared service profile (validation pending)
+## V0.7 shared service profile (pure validated; hosted pending)
 
 Defender now expects runtime::service::standalone_profile(&Configuration), the
 runtime owner's exact standalone service envelope, rather than its core-only
@@ -162,8 +162,10 @@ Configuration::readiness(). ServiceHost uses the same owning builder. Full-objec
 equality remains mandatory; no subset/unknown-key acceptance is introduced.
 Pure negative fixtures cover core-only profiles, false witness claims, unknown
 fields and altered scope/listeners. No namespace/image/pipe/isolation or scoring
-checks changed. This repair requires fresh allocated pure checks and hosted
-measurement; the813failed ledger is not evidence that this later source works.
+checks changed. New allocated27pure checks and scoped Clippy passed on the first
+attempt (private084733/public085126), with ordered snapshot/before/after source
+index hashes equal. A fresh hosted measurement remains required; the813failed
+ledger is not evidence that this later source works.
 
 ## Actual813 hosted failure ledger
 

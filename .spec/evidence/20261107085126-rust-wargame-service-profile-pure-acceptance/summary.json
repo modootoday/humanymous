@@ -1,0 +1,17 @@
+{
+  "schema": "humanymous.wargame-profile-pure-acceptance.v1",
+  "consumer_checkpoint": "743494c1",
+  "runtime_checkpoint": "709b0e23036011fb3a58d25a3d67c38e28e603a6",
+  "head_before": "411b69e5ee1510cb93eff70132e1c3d0df509dc6",
+  "head_after": "b6175727cc48aab0a178084c37b8e6b2c20e07d1",
+  "passed": 27,
+  "failed": 0,
+  "ignored": 0,
+  "runtime_filtered": 41,
+  "scoped_all_targets_clippy_passed": true,
+  "ordered_blob_index_sha256": "beac0cc06870ad57770d0b30ef11d031376f0d2b6215a70e944ed4d86b4cb17f",
+  "ordered_path_index_sha256": "2fede12347e12110b53ba54d4cdf8b1271a343c490efdbbae2f40ca44e2dbbe2",
+  "captured_crates_and_root_build_metadata_stable": true,
+  "application_runtime_tests_run": 0,
+  "hosted_repair_verified": false
+}

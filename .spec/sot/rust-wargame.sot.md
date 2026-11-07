@@ -174,6 +174,11 @@ profile mismatch is repaired separately and requires fresh validation. No raw
 private case reasons were recovered, so the individual failure causes are not
 asserted as directly observed. Missing producer/human/AT qualifications stay open.
 
+The743494c1 consumer/runtime709b0e2 repair passed27selected pure checks and scoped
+all-target Clippy under an allocated slot (evidence085126). Captured all-crate and
+root build-metadata bytes stayed equal before/after; Git history changes outside
+that scope are recorded. This does not replace the pending fresh hosted repair.
+
 ### Shared syntax boundary v0.6
 
 Root-approved extraction moves the sole recursive decoded-key visitor to
