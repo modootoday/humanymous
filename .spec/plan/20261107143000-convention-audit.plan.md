@@ -138,3 +138,12 @@ Native CaptureAttempt's corrected public clock sampling and retained ownership
 were source-reviewed at exact private-recorded hashes. The old helper remains
 unqualified for hard cleanup claims; no actual new pure/process test was observed
 here. Actual child/pipe/thread settlement and caller wiring gates stay open.
+
+Windows object bridge source was compared with the exact accepted six-private-
+wrapper exception and pinned descriptor implementation. Initial per-file checksum
+JSON was missing; an erroneous owner message claiming a match was immediately
+corrected and retained. A later actual archive/lock/member comparison proves the
+cached descriptor source bytes, not full supply-chain/native qualification.
+External compile-fail coverage was proposed because the existing wire roundtrip
+test does not exercise that negative API property. No bridge source edits or
+Windows compiler/API/process workload was performed by audit.

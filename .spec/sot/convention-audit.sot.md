@@ -100,6 +100,36 @@ those rows to runtime parity. The integration owner retains program completion.
 
 ## Finding ledger and owner contracts
 
+### Accepted unsafe boundary source follow-up
+
+The new unpublished Windows opened-object bridge was reviewed against the
+explicit accepted migration exception, not a blanket unsafe waiver. The local
+deny policy has exactly six private scoped allowances for the specified query
+and directory-create wrappers. Public APIs expose neither raw handles nor a
+constructor/deserializer for native observations; forgeable wire claims remain
+separately typed. Query buffers are generated initialized POD with checked sizes,
+UTF16 retries/capacity/terminator checks are bounded, and calls borrow the same
+live File. Directory creation allocates its owned path before the native call
+and returns a cleanup obligation before later fallible caller validation.
+
+The descriptor borrow was checked against locally cached windows-permissions
+0.2.4 source, whose opaque repr(C) reference is backed by its native LocalBox.
+The first attempt to verify a per-file .cargo-checksum.json failed because that
+file was absent. The auditor incorrectly messaged a checksum match before
+reading the result, then immediately corrected both owners and retained the
+failure. A separate stronger check subsequently matched the cached crate archive
+SHA256 9e2ccdc3c6bf4d4a094e031b63fadd08d8e42abd259940eb8aa5fdc09d4bf9be to
+Cargo.lock and read its exact descriptor source member to stdout. Member and
+local source both hash to1a921bd8f360bc88f4fef9952628a2cca8bd6d72d05a57c8bf95f9aa3455b48f.
+No files were extracted and no network request was made. This proves that source
+comparison only, not complete supply-chain, FFI or native platform qualification.
+
+The wire roundtrip unit's name/comment about inability to construct a native
+observation does not itself execute an external compile-fail test. An appropriate
+Windows positive/negative compile contract was proposed to its owner; no source
+privacy breach or execution failure is alleged. Actual Windows API, ACL-at-create,
+sharing/substitution, caller custody and retained-failure pilots remain open.
+
 | ID | Priority and actual defect | Owner | State and independent evidence |
 |---|---|---|---|
 | CA-API-01 | P1: public unit Admission could be constructed/dropped without acquisition, undercounting or wrapping ACTIVE | Adapter hosts | Fixed ac7dc4a9; actual six units, positive no-run compilation and original constructor compile-fail, check/strict Clippy; independent saved-manifest re-audit accepted |

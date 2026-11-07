@@ -171,5 +171,17 @@
     "source_direction_accepted": true,
     "actual_pure_or_process_tests_observed": false,
     "finding_closed": false
+  },
+  "followup_windows_bridge_source": {
+    "private_review_sha256": "a09a3a4ef9754dcb554bb7e8960cb728da42a603484bbcf741b0ab551ab9d550",
+    "private_descriptor_archive_proof_sha256": "a63d8515094e53ee54f6f82f0d13132df9e224540178d57b84c960e9291ea80c",
+    "private_unsafe_allowances_observed": 6,
+    "workspace_forbid_relaxed": false,
+    "descriptor_archive_matches_lock": true,
+    "descriptor_member_matches_local_source": true,
+    "initial_missing_checksum_json_error_and_message_correction_preserved": true,
+    "actual_windows_api_qualified": false,
+    "complete_supplychain_qualified": false,
+    "external_compile_fail_candidate": "proposed to owner; current roundtrip unit does not test external construction failure"
   }
 }
