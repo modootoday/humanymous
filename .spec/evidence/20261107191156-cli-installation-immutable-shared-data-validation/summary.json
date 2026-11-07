@@ -1,6 +1,6 @@
 {
   "schema": "humanymous.cli-data-validation/1",
-  "status": "passed-scoped-windows-data-consumer",
+  "status": "hold-missing-local-build-source-closure",
   "source_sha": "f20db16ed32cae78c39057fa35319a142ccc78e3",
   "authority_source": "a898d91a33d19d80a86d0d75444a1a9175fdcaea",
   "runtime_source": "aba7934d4a00cbc4ed9581df8aff401e98e4ec91",
@@ -76,6 +76,10 @@
     "Historical a026 parser source defect was corrected in d795; no qualification is applied to the defective checkpoint.",
     "No service/account/SCM/listener/privilege/native pilot executed; test harness and compiler processes only.",
     "No Ready, native issuer/claim/W, protected unattended-service lifecycle, audit drain/flush or product e2e qualification.",
-    "Selected registry package trees and five compiler tool binaries were hashed; this is not a whole installed toolchain or OS image census."
-  ]
+    "Selected registry package trees and five compiler tool binaries were hashed; this is not a whole installed toolchain or OS image census.",
+    "6674-row equality covers registry, five tools and three common local files; not local reachable Rust sources/package manifests."
+  ],
+  "source_qualified": false,
+  "local_package_source_snapshots": "MISSING before and after; absolute target ancestor excluded local package trees",
+  "correction": "CA-CLI-INPUT-01 withdraws d395a302 qualification; observed command exits remain factual; no retroactive snapshot or rerun"
 }

@@ -409,14 +409,21 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
-Immutable CLI DATA source `f20db16ed32cae78c39057fa35319a142ccc78e3` subsequently
-passed allocated Windows fmt-first, locked/offline all-feature/all-target check,
+CLI DATA source qualification is HOLD: independent CA-CLI-INPUT-01 audit found
+that d395a302's6674-row snapshots excluded all local package trees by matching
+the absolute target ancestor. No local Rust/package-manifest before/after hashes
+exist; archive provenance alone cannot prove actual compiled-source stability.
+The initial qualification claim is withdrawn. No rerun or new lease is allocated.
+
+An archive of `f20db16ed32cae78c39057fa35319a142ccc78e3` was used in observed
+allocated Windows fmt-first, locked/offline all-feature/all-target check,
 pure11 and strict Clippy. Exact test footer:11passed/0failed/0ignored/0measured/
-15filtered. Selected143packages/6674files and17environment variables matched
-before/after. Original600+60s clock finished in114s and the actual target marker
-was removed. See [[evidence:root/20261107191156]]. This qualifies the corrected
-DATA caller source, not the earlier a026 defect, native preparation or a service
-pilot; real hosted service and native producer gates remain open.
+15filtered. The metadata graph selected143packages;6674captured registry/tool/
+common-file rows and17environment variables matched, with missing local source
+coverage as above. Original600+60s clock finished in114s and the actual target marker
+was removed. See [[evidence:root/20261107191156]]. Observed commands do not qualify
+the corrected DATA caller's exact source closure, the earlier a026 defect, native
+preparation or a service pilot; hosted service/native producer gates remain open.
 
 CLI `HostAuthorizationData::into_runtime_data` consumes the same configuration
 and signature-checked DATA through Runtime `service::AuthorizationData::bind`

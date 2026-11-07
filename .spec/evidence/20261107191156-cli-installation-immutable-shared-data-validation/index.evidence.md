@@ -3,15 +3,19 @@ id: evidence:root/20261107191156
 title: CLI installation immutable shared DATA validation
 status: active
 created: 2026-11-07T19:11:56Z
-updated: 2026-11-07T19:13:09Z
+updated: 2026-11-07T19:16:43Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
-  - {path: summary.json, sha256: 6b15ac612efea12f7e028d5236079aa53f50b1305f425417e98f59dfae2ce5bc, bytes: 2841, store: repo}
+  - {path: summary.json, sha256: 1712e9f380c6fa99122a8e0922d937ba56a221ef9c8c0069c34952ab8f8c0ff8, bytes: 3269, store: repo}
 ---
 
-Immutable source `f20db16ed32cae78c39057fa35319a142ccc78e3` passed scoped
-Windows DATA-consumer validation with Rust1.99.1/edition2024. It includes Authority
+Qualification is HOLD after independent audit CA-CLI-INPUT-01 found missing local
+build-source coverage. The initial d395a302 qualification statement is withdrawn;
+actual successful commands and immutable archive provenance remain separate facts.
+
+The archive for `f20db16ed32cae78c39057fa35319a142ccc78e3` was used for scoped
+Windows DATA-consumer commands with Rust1.99.1/edition2024. It includes Authority
 `a898d91a` and Runtime `aba7934d`; no live working-tree files were imported.
 CLI retains exact BASE/service/artifact/cap checks and moves the same configuration
 and checked authorization through Runtime's shared pre-unseal DATA validation.
@@ -24,14 +28,22 @@ error projection and state transitions, without native/service/account/SCM or
 listener execution. The new conversion method is type-checked; this receipt does
 not claim an additional end-to-end signed fixture test of that method.
 
-The selected Windows metadata closure contained143packages. Before/after hashes
-covered6674files from selected local/registry trees, common configuration and
-five compiler-tool binaries, with0difference rows. Seventeen recorded environment
-variables also matched. This is not a census of every installed toolchain or OS
-input. Archive and manifest hashes are in summary.json; raw logs, metadata,
+The selected Windows metadata graph contained143packages. Before/after hashes
+covered6674files with0difference rows, but the absolute-path exclusion of target
+directories also excluded every local package tree because the extracted archive
+itself lives below target. Only registry files, five compiler binaries and three
+common local files were captured. Local Rust source and package manifests were
+NOT captured before/after. Seventeen recorded environment variables matched;
+these facts cannot establish the actual compiled local source's stable closure.
+Archive and manifest hashes are in summary.json; raw logs, metadata,
 environment, admission and split immutable archive are retained privately under
 evidence:root/20261107191209. The original private source.zip hash remains in the
 raw inventory; its three ordered parts reconstruct the same archive.
+Independent audit verified all24attachments and the concatenated archive against
+literal Git f20 bytes. This does not retroactively supply missing extracted-source
+snapshots. No immediate before/after local snapshot exists elsewhere. A future
+allocated run must exclude relative package build directories, assert local
+source/manifest coverage and retain both snapshots. No rerun was allocated here.
 
 The original600s work/60s cleanup clock began before preparation I/O at
 2026-11-07T19:09:33.5899807Z and ended at19:11:27.4833426Z. Initial admission was
