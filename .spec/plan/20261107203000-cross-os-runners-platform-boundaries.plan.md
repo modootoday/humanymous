@@ -152,3 +152,11 @@ raw receipts remain unchanged, with this additive correction only. Root's
 superseding authorization permits staging the one mechanical import replacement.
 Actual after SHAce276fc46c5c134ba056b3e87e820731dd8307ee8e2c909d0544bfd5c8aabbc1.
 No restore/stash/index repair was used. Full graph and new source remain untested.
+
+Root then authorized formatter-only standalone runner correction after metadata
+resolution. cargo fmt --manifest-path scripts/ci/windows-native-runner/Cargo.toml
+-p humanymous-native-runner exited0, changing ONLY controlled.rs qualified grant
+encoder call wrapping (6 added/5 removed lines, no token change). Result SHA256
+61ad7eba41026752665ab6050e6dc06396f98b2638ad84bf7b8a5f760ae18733.
+Required-input guard source hash72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c
+remains unchanged. No --all mutation, test/check/Clippy or native process pilot.
