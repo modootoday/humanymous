@@ -555,3 +555,33 @@ exclusive delivery target. B was returned. Private validation index SHA256 is
 c69a18913c6e137c231dfe1fe949da1f85ff913dfc28e4e1c5518cd4981b3a32.
 These checks qualify caller/policy helpers, not actual browser execution. The
 shared actor mount investigation must precede another Go/browser actual run.
+
+Root accepted a source-only auditable runtime image follow-up. Registry tool
+cargo-auditable 0.7.7 has archive SHA256
+ccdd489bc94d1338cd04389a842e00661300331ec915fb376b4810ef7d480b5d
+and packaged lock SHA256
+6a4241448ccc2fa05f7bb8e83c78081fd9f62c5311f44465027bae90d6700f2f.
+All 47 registry archives in its 48-package lock were downloaded as data and
+verified against their locked SHA256 values; 47 license records were retained.
+No tool install, compilation or Docker execution occurred. The pinned package's
+source encoder and README corroborate URL/path redaction. cargo-audit 0.22.2
+against advisory database 309392b18f6b17022f82c701f300433126901068
+reported zero vulnerabilities and no warnings for this tool lock with no-fetch
+and no-yanked: yanked status was not checked and runtime/image CVEs remain
+unverified. Source edits add compiler-only tool installation and child-scoped
+PATH, keeping product source/lock and image runtime identity unchanged. The new
+source regression has not yet run; a fresh allocation and actual image scan
+are still required. Upstream usage is https://github.com/rust-secure-code/cargo-auditable#usage.
+
+Allocated warm C passed the new 67-test suite but initially failed strict Clippy
+on a needless borrow after extracting the source validator. The failed batch is
+preserved with private index SHA256
+2047cc4f5b418e124a880969ef56fd34bcaa5ad84f48c3a01abc1abc4d8b9c8e.
+Removing that borrow produced a fresh 67-test pass (zero failed/ignored/filtered),
+strict all-target Clippy, current compiled policy and actionlint, all exits zero.
+All 74 delivery/workflow/image/root/embedded-contract inputs remained unchanged.
+The corrected private index is
+1a0a4681fd6913b074f0054ccc177c0c68e466f1da8da91032bb4b60aa4e946e.
+Admission was 81.45 percent committed and 33,307,188 KiB free physical memory;
+jobs one/incremental zero used the exclusive warm delivery target. C was returned.
+No actual tool install, runtime auditable build or image scan was performed.

@@ -2,8 +2,9 @@
 FROM rust:1.99.1-alpine@sha256:44819b27be4c97b0e4d7203bd2e02c4820f97700211b6a37fb4c246a2de59383 AS compiler
 ENV CARGO_BUILD_JOBS=1 CARGO_INCREMENTAL=0
 WORKDIR /source
+RUN cargo install --locked --version 0.7.7 --root /opt/cargo-auditable cargo-auditable
 COPY . .
-RUN cargo build --release --locked -p humanymous-runtime --bin humanymous-runtime
+RUN PATH="/opt/cargo-auditable/bin:${PATH}" cargo auditable build --release --locked -p humanymous-runtime --bin humanymous-runtime
 
 FROM scratch AS runtime-candidate
 ARG HUMANYMOUS_SOURCE_REV

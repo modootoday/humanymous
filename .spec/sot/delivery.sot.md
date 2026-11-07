@@ -1142,3 +1142,18 @@ sole-allowlist startup stage projection. Raw process output stays private.
 Read-only permissions, pinned actions, a bounded job deadline and disabled
 automatic artifacts/cache writes apply. This lane does not establish human,
 assistive-technology, deployment or full-product readiness from partial results.
+
+The runtime image candidate embeds the actual linked Rust dependency inventory
+using cargo-auditable 0.7.7 in its compiler stage. The tool installs with its
+packaged lock into /opt/cargo-auditable, and only the build command extends PATH.
+runtime-build-tool.json records the original registry archive, packaged lock
+hash, upstream source revision and all 47 registry archive checksums in that
+lock, including development/other-platform packages. This is the locked tool
+closure, not a claim that every package is linked into the tool or runtime.
+The metadata encoder records package names, versions, dependency relationships
+and source categories while redacting source URLs and filesystem paths. License
+metadata and a snapshot-bound advisory check remain separate tool provenance;
+they do not establish a current runtime image scan. The runtime source/lock,
+scratch image, nonroot UID, entrypoint and source labels remain unchanged.
+Installation, auditable build and Trivy binary inventory require actual evidence
+before any qualification is asserted. Existing shipping guards stay fail closed.
