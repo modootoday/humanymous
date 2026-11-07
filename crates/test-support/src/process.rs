@@ -7,11 +7,15 @@ use std::{
 };
 
 mod capture_attempt;
+mod controlled_barrier;
 mod direct_pipe;
 mod owned_child;
 pub use capture_attempt::{
     CaptureAttempt, CaptureDeadlines, CaptureIssue, CaptureLimits, CaptureProgress,
     CaptureStartFailure, CapturedDirectChild, RetainedCaptureFailure,
+};
+pub use controlled_barrier::{
+    await_controlled_fixture_grant, encode_unverified_controlled_fixture_grant,
 };
 pub use direct_pipe::{
     ClosedPipeChild, DirectChildProgress, RetainedDirectPipeAttempt, RetainedDirectPipeFailure,

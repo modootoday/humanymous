@@ -528,3 +528,29 @@ terminal release. Existing user authorization for these five ordinary cases
 persists afterward, with fresh commit<85percent, available-memory/disk guards and
 exclusive target admission. No WSL/UNC, foreign kill, native bridge query/create,
 account/SCM/privilege or producer activation is included.
+
+## One shared cooperative barrier API v1.1
+
+CLI requested the same verifier instead of copying nonce/file/PID policy. The
+barrier codec/wait now lives once in test-support process/controlled_barrier.rs:
+await_controlled_fixture_grant(expected_selector:&str)->io::Result<()> and
+encode_unverified_controlled_fixture_grant(child:&Child,selector,nonce)->bytes.
+Encoder takes an actual owned Child, not a caller PID. Typed closed metadata
+schema is unchanged; selector grammar/256byte bound, nonzero lowercase32hex
+nonce, pid,4096byte wire and exact field matches fail closed. Wait samples real
+time after reading against one five-second threshold; local IO may still block.
+
+These APIs expose NO verified producer/Job capability. Controller's independent
+fixed-selector/executable hash/actual Job assignment gates still precede atomic
+publication. Shared wait only synchronizes controlled trusted test code; arbitrary
+or hostile preassignment execution is outside this profile. Existing FIVE parents
+call it FIRST with literal exact selectors. The controller consumes the same codec.
+Two pure codec/boundary cases are authored NOT_RUN. Current fixed controller
+allowlist does NOT yet admit the CLI watchdog binary/selector; that exact consumer
+extension follows provider-five proof and its separate accepted runtime scope.
+
+Initial fmt encountered a transient Windows mapped-file1224 write error, then
+the same owned-source formatting retry passed without foreign termination or
+compiler execution. Source/fmt/spec and accepted nested-lock metadata are ready;
+all new controller/barrier compiler/pure/actual gates remain held for the CEF
+exclusive window. This extraction does not retroactively qualify older hashes.

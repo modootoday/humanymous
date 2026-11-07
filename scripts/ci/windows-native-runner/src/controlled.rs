@@ -205,8 +205,11 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
             return Err(refused());
         }
         let mut file = new_file(&options.work.join("grant.pending"))?;
-        let bytes = serde_json::to_vec(&json!({"schema":"humanymous.controlled-capture-grant/1",
-            "nonce":nonce,"selector":selector,"pid":pid}))?;
+        let bytes = humanymous_test_support::process::encode_unverified_controlled_fixture_grant(
+            &owner.child,
+            &selector,
+            &nonce,
+        )?;
         file.write_all(&bytes)?;
         file.sync_all()?;
         drop(file);
