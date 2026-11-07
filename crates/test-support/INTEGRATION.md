@@ -18,3 +18,9 @@ Eightlocal Windows tests passed, including actual child nonzero exit, bounded
 hang kill/reap, stdout/stderr overflow, concurrent stderr and content-redacted
 Debug. Native Linux/macOS execution remains required. Root/lab can consume the
 existing workspace dependency without changing this crate's dependency closure.
+
+New API: ManagedChild::spawn_duplex(&mut Command) returns guard,ChildStdin,
+ChildStdout with stderr=null; try_wait observes actual status. The typed witness
+client owns frame size/deadline/pipe close and the shared guard owns kill/reap.
+Nineactual local helper tests pass including duplex echo/EOF. This does not give
+interactive I/O an implicit deadline; the protocol owner must enforce one.

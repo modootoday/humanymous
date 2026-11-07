@@ -1,7 +1,7 @@
 //! Bounded native child lifetime and private readiness transport for pilots.
 use std::{
     io::{self, BufRead, BufReader, Read, Write},
-    process::{Child, Command, ExitStatus, Stdio},
+    process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio},
     sync::mpsc,
     time::{Duration, Instant},
 };
@@ -37,7 +37,24 @@ impl ManagedChild {
         if input.len() > 4096 {
             return Err(io::Error::other("private startup input budget exceeded"));
         }
-        let mut child = Self(
+        let mut child = Self::piped(command, stderr)?;
+        let mut stdin = child
+            .0
+            .stdin
+            .take()
+            .ok_or_else(|| io::Error::other("private stdin missing"))?;
+        stdin.write_all(input)?;
+        drop(stdin);
+        Ok(child)
+    }
+    fn piped(command: &mut Command, stderr: bool) -> io::Result<Self> {
+        #[cfg(windows)]
+        {
+            use std::os::windows::process::CommandExt;
+            // Noninteractive pilot processes must not open visible consoles.
+            command.creation_flags(0x08000000);
+        }
+        Ok(Self(
             command
                 .stdin(Stdio::piped())
                 .stdout(Stdio::piped())
@@ -47,15 +64,28 @@ impl ManagedChild {
                     Stdio::null()
                 })
                 .spawn()?,
-        );
-        let mut stdin = child
+        ))
+    }
+    /// Keep private stdin/stdout open for a typed interactive protocol. Caller
+    /// owns framing, per-frame byte/deadline limits and closing these pipes;
+    /// this guard still kills/reaps the direct child. Stderr is suppressed.
+    pub fn spawn_duplex(command: &mut Command) -> io::Result<(Self, ChildStdin, ChildStdout)> {
+        let mut child = Self::piped(command, false)?;
+        let stdin = child
             .0
             .stdin
             .take()
             .ok_or_else(|| io::Error::other("private stdin missing"))?;
-        stdin.write_all(input)?;
-        drop(stdin);
-        Ok(child)
+        let stdout = child
+            .0
+            .stdout
+            .take()
+            .ok_or_else(|| io::Error::other("private stdout missing"))?;
+        Ok((child, stdin, stdout))
+    }
+    /// Observe the actual direct-child status without blocking a frame loop.
+    pub fn try_wait(&mut self) -> io::Result<Option<ExitStatus>> {
+        self.0.try_wait()
     }
 
     /// Read one bounded readiness frame with a deadline. Timeout kills/reaps.
@@ -217,6 +247,14 @@ mod tests {
                 eprintln!("stderr fixture");
             }
             Ok("stderr-flood") => eprintln!("{}", "x".repeat(8192)),
+            Ok("duplex") => {
+                let mut input = String::new();
+                std::io::stdin()
+                    .take(4096)
+                    .read_to_string(&mut input)
+                    .unwrap();
+                println!("{input}");
+            }
             _ => (),
         }
     }
@@ -276,5 +314,17 @@ mod tests {
             )
             .is_err()
         );
+    }
+    #[test]
+    fn duplex_caller_owns_pipes_and_guard_owns_lifetime() {
+        let (mut child, mut input, output) =
+            ManagedChild::spawn_duplex(&mut fixture("duplex")).unwrap();
+        input.write_all(b"owned-native-duplex").unwrap();
+        drop(input);
+        let mut bytes = Vec::new();
+        output.take(4096).read_to_end(&mut bytes).unwrap();
+        assert!(child.wait(Duration::from_secs(5)).unwrap().success());
+        assert!(String::from_utf8_lossy(&bytes).contains("owned-native-duplex"));
+        assert!(child.try_wait().unwrap().unwrap().success());
     }
 }

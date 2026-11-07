@@ -34,3 +34,8 @@ ordinary-profile rejection. That ACL test uses a synthetic SID and proves native
 descriptor transitions, not an actual SCM service account/process. CLI needs its
 own privileged disposable service pilot; Linux/macOS/remote peer remain separate.
 No shared Cargo manifest/lock changes are needed for these APIs.
+
+Follow-up locally tested count10 includes actual state-directory role transition
+and strict custody rejection; protection-bit extraction is common to all roles.
+Grant/revoke now require absolute local fixed-drive paths, matching the installer
+boundary; UNC/verbatim/ambiguous/remote roots are refused before mutation.

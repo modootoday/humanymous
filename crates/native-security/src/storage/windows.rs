@@ -35,6 +35,23 @@ fn denied() -> io::Error {
         "private owner-only Windows DACL required",
     )
 }
+pub(super) fn protected(sd: &SecurityDescriptor) -> io::Result<()> {
+    let sddl = wrappers::ConvertSecurityDescriptorToStringSecurityDescriptor(
+        sd,
+        SecurityInformation::Dacl,
+    )?;
+    let flags = sddl
+        .to_str()
+        .and_then(|text| text.strip_prefix("D:"))
+        .and_then(|text| text.split_once('('))
+        .ok_or_else(denied)?
+        .0;
+    if flags.contains('P') {
+        Ok(())
+    } else {
+        Err(denied())
+    }
+}
 
 /// Verify owner-only protected pipe DACL on the actual transport handle. The
 /// transport must independently establish named-pipe type and peer PID; this
@@ -153,24 +170,7 @@ pub(super) fn verify_grants(
             Err(denied())
         }
         WindowsPrivacy::ProtectedDirectory
-        | WindowsPrivacy::Installation(InstallationObject::Parent) => {
-            let sddl = wrappers::ConvertSecurityDescriptorToStringSecurityDescriptor(
-                sd,
-                SecurityInformation::Dacl,
-            )?;
-            let text = sddl.to_str().ok_or_else(denied)?;
-            // Native DACL-only SDDL flags precede the first ACE; P is the SDK's
-            // SE_DACL_PROTECTED token. Never inspect SID/ACE text for this bit.
-            let flags = text
-                .strip_prefix("D:")
-                .and_then(|s| s.split_once('(').map(|(flags, _)| flags))
-                .ok_or_else(denied)?;
-            if flags.contains('P') {
-                Ok(())
-            } else {
-                Err(denied())
-            }
-        }
+        | WindowsPrivacy::Installation(InstallationObject::Parent) => protected(sd),
         _ => Ok(()),
     }
 }

@@ -1,5 +1,7 @@
 //! Explicit SCM activation grants; never part of ordinary startup or inspection.
-use super::windows::{InstallationObject, WindowsPrivacy, verify_grants, verify_windows_privacy};
+use super::windows::{
+    InstallationObject, WindowsPrivacy, protected, verify_grants, verify_windows_privacy,
+};
 use std::{
     fs::{File, OpenOptions},
     io,
@@ -74,6 +76,16 @@ pub fn resolve_service_sid(name: &str) -> io::Result<String> {
     Ok(text)
 }
 fn opened(path: &Path) -> io::Result<File> {
+    let text = path.to_str().ok_or_else(denied)?;
+    let bytes = text.as_bytes();
+    if !path.is_absolute()
+        || bytes.len() < 3
+        || bytes[1] != b':'
+        || !matches!(bytes[2], b'\\' | b'/')
+    {
+        return Err(denied());
+    }
+    crate::volume::require_fixed(&format!("{}:\\", bytes[0] as char))?;
     OpenOptions::new()
         .access_mode(0x60000)
         .custom_flags(0x02200000)
@@ -118,18 +130,7 @@ pub fn verify_service_access(
         SeObjectType::SE_FILE_OBJECT,
         SecurityInformation::Owner | SecurityInformation::Dacl,
     )?;
-    let text = wrappers::ConvertSecurityDescriptorToStringSecurityDescriptor(
-        &descriptor,
-        SecurityInformation::Dacl,
-    )?;
-    if !text
-        .to_str()
-        .and_then(|s| s.strip_prefix("D:"))
-        .and_then(|s| s.split_once('('))
-        .is_some_and(|(flags, _)| flags.contains('P'))
-    {
-        return Err(denied());
-    }
+    protected(&descriptor)?;
     verify_grants(&descriptor, &owner, policy(role), Some((&service, role)))
 }
 /// Opt-in activation only: require an already private installer-owned object,
@@ -255,5 +256,42 @@ mod tests {
                 .is_ok()
         );
         std::fs::remove_file(path).unwrap();
+    }
+    #[test]
+    fn actual_state_directory_role_is_separate_from_custody() {
+        let path = std::env::temp_dir().join(format!(
+            "humanymous-service-state-acl-{}",
+            std::process::id()
+        ));
+        std::fs::create_dir(&path).unwrap();
+        let identity = crate::process::current_identity().unwrap();
+        let mut file = opened(&path).unwrap();
+        set_dacl(&mut file, &format!("D:P(A;OICI;FA;;;{})", identity.sid())).unwrap();
+        drop(file);
+        grant_service_access(&path, SERVICE, ServiceRole::StateDirectory).unwrap();
+        grant_service_access(&path, SERVICE, ServiceRole::StateDirectory).unwrap();
+        let file = opened(&path).unwrap();
+        assert!(
+            verify_service_access(&file, identity.sid(), SERVICE, ServiceRole::StateDirectory)
+                .is_ok()
+        );
+        assert!(
+            verify_windows_privacy(&file, identity.sid(), WindowsPrivacy::InheritableDirectory)
+                .is_err()
+        );
+        assert!(
+            verify_service_access(&file, identity.sid(), SERVICE, ServiceRole::Executable).is_err()
+        );
+        drop(file);
+        revoke_service_access(&path, SERVICE, ServiceRole::StateDirectory).unwrap();
+        assert!(
+            verify_windows_privacy(
+                &opened(&path).unwrap(),
+                identity.sid(),
+                WindowsPrivacy::InheritableDirectory
+            )
+            .is_ok()
+        );
+        std::fs::remove_dir(path).unwrap();
     }
 }

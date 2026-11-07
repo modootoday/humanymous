@@ -357,3 +357,24 @@ root/20261107051539. Later profile selection/source changes need new local sourc
 execution. Hosted account/job and Linux/macOS execution are not observed yet.
 No push/tag/publish/production or local system-account provisioning is authorized
 for this continuation. Root/CI owner owns exact-source remote orchestration.
+
+## Shared security and process checkpoint delta
+
+Implemented/locally verified after26d9925: service activation grant/revoke accepts
+only explicit absolute local fixed-drive paths; native protected-DACL extraction
+is shared rather than copied. Actual state-directory Modify/inheritance and
+executable RX transition tests both pass and strict custody rejection remains.
+Latest native-security count10. Lab owner requested and accepted
+`ManagedChild::spawn_duplex(&mut Command)->io::Result<(ManagedChild,ChildStdin,
+ChildStdout)>` and `try_wait(&mut self)->io::Result<Option<ExitStatus>>` for a typed
+persistent witness protocol. Caller owns frame bounds/deadlines/pipes; shared
+guard still owns direct-child kill/reap. Same hidden Windows pipe factory is used
+by capture and interactive spawn. Latest test-support count9 includes actual
+native duplex echo/EOF/lifetime, concurrent stderr and overflow/timeout refusals.
+No common Cargo dependency delta; raw-output Debug remains length-only.
+
+CLI owner recorded83397fd/3d1d003 consumes the shared service API and source-bound
+working-file hashes separately. This checkpoint commits those exact shared files
+before root remote execution. Actor/SCM hosted qualification is not a dependency
+of API compile/unit readiness and remains separately incomplete. Authority/lab
+consumers must qualify their actual pipe/witness paths at their own source.
