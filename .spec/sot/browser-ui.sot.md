@@ -624,6 +624,17 @@ with one to six observed routes are not this cancellation case. Raw reports
 retain separate navigation and file-probe schemas; summary schema is not a
 replacement for their detailed verification or native execution evidence.
 
+Cancellation verification must inspect the report, not manufacture joined0. The
+file-probe schema is required for both cases; cancellation requires the explicit
+renderer_file_probes array to be empty under the owned contract. Missing arrays,
+wrong schema and retained renderer observations fail. Its navigation inventory
+must be present, bounded and lossless, start with the initial creation request,
+and contain only that initial generation/route and recognized callbacks. A stale
+multi-route positive inventory cannot become cancellation evidence by changing
+the producer's observed/pass flags. Initial CEF callbacks may race the close
+request; their runtime behavior remains unqualified and must not be masked by
+synthetic zero counts. Protocol regressions are authored, not executed.
+
 UI-30 (accepted source follow-up; native compile/runtime not_run): renderer file
 probe schema2 records an independent owned-process OS token observation when each
 bounded canary message is received. The browser discovers its own descendants and

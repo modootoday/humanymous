@@ -12,6 +12,7 @@
       "joined_renderer_probes_max": 32
     },
     "cancelled": {
+      "renderer_file_probes": 0,
       "test_name": "pilot_process::provisioned_cancellation_rejects_incomplete_probe_after_cleanup",
       "exit_code": 78,
       "observed": 0,

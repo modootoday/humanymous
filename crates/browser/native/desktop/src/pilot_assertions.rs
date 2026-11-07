@@ -30,7 +30,7 @@ fn number(report: &Value, key: &str) -> Result<u64, &'static str> {
         .and_then(Value::as_u64)
         .ok_or("missing or invalid native count")
 }
-fn joined_canaries(report: &Value, schema: u64) -> Result<usize, &'static str> {
+fn probe_inventory(report: &Value, schema: u64) -> Result<&[Value], &'static str> {
     if number(report, "renderer_file_probe_schema")? != schema {
         return Err("unsupported file probe schema");
     }
@@ -41,6 +41,9 @@ fn joined_canaries(report: &Value, schema: u64) -> Result<usize, &'static str> {
     if probes.len() > 32 {
         return Err("native observation budget exceeded");
     }
+    Ok(probes)
+}
+fn joined_canaries(probes: &[Value]) -> Result<usize, &'static str> {
     let mut seen = std::collections::BTreeSet::new();
     let count = probes
         .iter()
@@ -70,6 +73,47 @@ fn joined_canaries(report: &Value, schema: u64) -> Result<usize, &'static str> {
     } else {
         Ok(count)
     }
+}
+fn cancelled_navigation(report: &Value) -> Result<(), &'static str> {
+    let events = report
+        .get("navigation_receipts")
+        .and_then(Value::as_array)
+        .ok_or("cancelled navigation receipts missing")?;
+    if events.is_empty()
+        || events.len() > 128
+        || number(report, "navigation_receipts_dropped")? != 0
+    {
+        return Err("cancelled navigation inventory incomplete");
+    }
+    let initial = &events[0];
+    let generation = number(initial, "generation")?;
+    if generation == 0
+        || initial.get("phase").and_then(Value::as_str) != Some("creation_requested")
+        || initial.get("route").and_then(Value::as_str) != Some(ProbeLedger::ROUTES[0].url())
+    {
+        return Err("cancelled navigation lacks initial creation request");
+    }
+    for event in &events[1..] {
+        if number(event, "generation")? != generation
+            || event.get("route") != initial.get("route")
+            || !matches!(
+                event.get("phase").and_then(Value::as_str),
+                Some(
+                    "committed"
+                        | "load_end"
+                        | "content_observed"
+                        | "revoked"
+                        | "load_error"
+                        | "load_status_rejected"
+                        | "frame_unavailable"
+                        | "source_budget_exceeded"
+                )
+            )
+        {
+            return Err("cancelled navigation contains unexpected transaction");
+        }
+    }
+    Ok(())
 }
 fn ordered_receipts(report: &Value) -> Result<(), &'static str> {
     let events = report
@@ -176,6 +220,7 @@ pub(super) fn verify(
     if observed != number(expected, "observed")? {
         return Err("native probe count differs from case contract");
     }
+    let probes = probe_inventory(report, number(&contract, "renderer_file_probe_schema")?)?;
     let (label, joined) = match case {
         Case::Positive => {
             flag(report, "internal_probe_finished", true)?;
@@ -191,15 +236,16 @@ pub(super) fn verify(
                 return Err("native probe proof incomplete or truncated");
             }
             ordered_receipts(report)?;
-            (
-                "positive",
-                joined_canaries(report, number(&contract, "renderer_file_probe_schema")?)?,
-            )
+            ("positive", joined_canaries(probes)?)
         }
         Case::Cancelled => {
             flag(report, "cancellation_requested", true)?;
             flag(report, "internal_probe_passed", false)?;
-            ("cancelled", 0)
+            if probes.len() as u64 != number(expected, "renderer_file_probes")? {
+                return Err("cancelled report contains unexpected renderer observations");
+            }
+            cancelled_navigation(report)?;
+            ("cancelled", probes.len())
         }
     };
     if !(number(expected, "joined_renderer_probes_min")?
@@ -295,15 +341,42 @@ mod tests {
     }
     #[test]
     fn canceled_protocol_fixture_requires_real_cleanup_and_explicit_cancellation() {
-        let mut report = fixture();
-        report["internal_probe_passed"] = json!(false);
-        report["internal_probe_observed"] = json!(0);
-        report["cancellation_requested"] = json!(true);
+        let mut report = cancelled_fixture();
         assert!(verify(&report, 100, Some(78), Case::Cancelled).is_ok());
         report["internal_probe_observed"] = json!(1);
         assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
         report["internal_probe_observed"] = json!(0);
         report["before_close"] = json!(false);
+        assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
+    }
+    fn cancelled_fixture() -> Value {
+        json!({"host_pid":100,"navigation_schema":2,"renderer_file_probe_schema":2,
+            "internal_probe_requested":true,"internal_probe_passed":false,"internal_probe_observed":0,
+            "cancellation_requested":true,"before_close":true,"host_closed":true,
+            "target_navigation_enabled":false,"navigation_receipts_dropped":0,
+            "renderer_file_probes":[],"navigation_receipts":[
+                {"generation":1,"route":ProbeLedger::ROUTES[0].url(),"phase":"creation_requested"},
+                {"generation":1,"route":ProbeLedger::ROUTES[0].url(),"phase":"revoked"}]})
+    }
+    #[test]
+    fn cancellation_rejects_retained_probes_missing_schema_and_stale_transactions() {
+        let mut report = cancelled_fixture();
+        report["renderer_file_probes"] = fixture()["renderer_file_probes"].clone();
+        assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
+        for key in [
+            "renderer_file_probe_schema",
+            "renderer_file_probes",
+            "navigation_receipts",
+        ] {
+            let mut report = cancelled_fixture();
+            report.as_object_mut().unwrap().remove(key);
+            assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
+        }
+        let mut report = cancelled_fixture();
+        report["renderer_file_probe_schema"] = json!(1);
+        assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
+        let mut report = cancelled_fixture();
+        report["navigation_receipts"] = fixture()["navigation_receipts"].clone();
         assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
     }
 }

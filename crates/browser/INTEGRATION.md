@@ -14,6 +14,14 @@ for subsequent allocation rather than duplicating resource policy here.
 
 ## Pending correlated canary source
 
+Review correction: cancellation no longer emits a literal joined0 without
+checking raw inventory. It requires schema2 and an explicit empty renderer probe
+array, plus lossless navigation receipts confined to the initial transaction.
+Independent cancellation fixtures replace the stale positive fixture; retained
+renderer probes, missing/wrong schema and positive multi-route receipts are
+negative cases. Formatting/spec checks are distinct from execution: these new
+protocol regressions and native cancellation behavior remain not_run.
+
 UI-29/30 adds an independent hosted-report verifier and file-probe schema2.
 Each bounded renderer claim now requests an independently discovered owned-process
 token snapshot at receipt time. The nested PID/renderer/restricted/Untrusted join
