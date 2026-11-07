@@ -1,0 +1,33 @@
+{
+  "browser": "NOT_RUN",
+  "apex": {
+    "error": "missing built target /.well-known/security.txt",
+    "pages": 88,
+    "exit_code": 1,
+    "rendered_html": 88
+  },
+  "manual_source_repair": false,
+  "output_chunks": [
+    "8a723c",
+    "af7e6e"
+  ],
+  "scope": "Actual downloaded extracted site artifacts, separate from passing in-job render",
+  "owner_followup": "CI/root notified; fix and new artifact roundtrip required",
+  "in_job_build": "PASS bothbaseurls88pages88HTML/errors[]",
+  "preview_accepted": false,
+  "run_id": 42363224485,
+  "suspected_cause": "Pinned upload-artifact action.yml confirms include-hidden-files defaultfalse; run source omitted override and both extracted artifacts lack .well-known/security.txt",
+  "source_sha": "8624b57c6ff4c9f8eb3763814659e17520e858b8",
+  "download_command": "gh run download",
+  "assistive_technology": "NOT_RUN",
+  "root_cause_execution_confirmed": true,
+  "subpath": {
+    "error": "missing built target /humanymous/.well-known/security.txt",
+    "pages": 88,
+    "exit_code": 1,
+    "rendered_html": 88
+  },
+  "pinned_action_source": "https://github.com/actions/upload-artifact/blob/ea165f8d65b6e75b540449e92b4886f43607fa02/action.yml",
+  "action_source_output_chunk": "34aa66",
+  "policy_followup": "Root confirms both missingfiles; no branch-upload rerun against current policy, no manual preview patch. Future permitted artifact must preserve public .well-known and pass roundtrip."
+}

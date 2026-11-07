@@ -1,0 +1,13 @@
+{
+  "full_accessibility": false,
+  "reported_defect": "Cancelled report summary hardcoded renderer-probe count0 without validating actual inventory",
+  "fix_commit": "35cca50f0e78277567ad28df39b712d9f7500831",
+  "prior_review_hash": "retained as historical; not refreshed during docs freeze",
+  "compile": "NOT_RUN",
+  "docs_source_frozen": true,
+  "regressions": "NOT_RUN",
+  "scope": "Source review follow-up, separate from frozen Pages candidate",
+  "review": "Read complete prior309line source and complete fix diff; schema/bounded inventory applied both cases, cancelled exactempty array and same-generation navigation checks, independent fixture plus refusal regressions",
+  "fix_diff_chunk": "d56d26",
+  "native_process": "NOT_RUN"
+}

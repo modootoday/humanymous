@@ -1,0 +1,25 @@
+{
+  "log_sha256": "aac0ffd99177c21100a06fde09ea5a50319b9ce06bbcb6f0cd543e8fbec39f00",
+  "browser": "NOT_RUN",
+  "build_state": "in_progress at pages-evidence prepare",
+  "workflow_authorization_lf_policy": "PASS",
+  "subpath": "NOT_RUN",
+  "scope": "Actual hosted delivery preflight only; Pages build not yet complete",
+  "status": "success",
+  "build_job": 128376122323,
+  "apex": "NOT_RUN",
+  "derived_private_log": "hosted-8624b57-preflight.log",
+  "job_id": 128375756057,
+  "unit_tests": {
+    "failed": 0,
+    "ignored": 0,
+    "passed": 60
+  },
+  "source_sha": "8624b57c6ff4c9f8eb3763814659e17520e858b8",
+  "deployment": false,
+  "log_scope": "ANSI-stripped REST job log, not byte-identical original archive",
+  "assistive_technology": "NOT_RUN",
+  "run_id": 42363224485,
+  "all_targets_clippy": "PASS warnings denied",
+  "observation_chunk": "8cf988"
+}

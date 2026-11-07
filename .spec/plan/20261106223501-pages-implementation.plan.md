@@ -1938,3 +1938,27 @@ existing cancellation syntheticfixture leaves positiveprobes/receipts present
 while assertingobserved0 and passes. Reported precise defect+negative regression
 to browserowner. Exactreceipt records limitation rather than qualifying contract0.
 No sourcefix in foreignlane and no Cargo/native execution; publiccontent frozen.
+### Actual8624b57 hosted result and artifact transfer failure
+
+Tracked same live run42363224485 to terminalSUCCESS. Preflight128375756057 actual
+60tests/Clippy/policy pass; build128376122323 frozenbundle/audit and bothbaseurl
+88pages88rendered/errors0, input46c10dd14afe9e549480e92b22175526998a48b262c2bc58a95d86c12e00bd80,
+sourceunchanged with docsGitTree9c25458d67f0c0522e4d61edd526fd18124200d2. Attached
+private ANSIstripped RESTlogs and sanitized initial/preflight/finalstatus; actual
+artifacts downloaded+outcomes inspected, platformZIPdigests not recomputed.
+
+Actual extracted apex/subpath builtcheck eachFAIL missing .well-known/security.txt
+(apex/.well-known/security.txt, subpath/humanymous/.well-known/security.txt targets).
+Pinneduploadartifact action.yml confirms hiddenfalse default; source omitted
+includeoverride. Rootindependentlyconfirmedbothmissing. Injobrenderpass is not
+artifactdeliverypass or previewacceptance. Attached roundtripstatus; no source
+patch to preview. Rootnowrequires no branchuploadrerun against currentpolicy;
+futurepermittedarchive mustpreservepublichidden and passroundtrip. No browser/
+server/AT/deployment. Docsremainfrozen. Computer-use skill read for futurepreview.
+
+Browser35cca50f completefixdiff reviewed against previouslyread309linevalidator:
+actualemptyprobe/schema+boundedlosslesscancelnavigation and independentnegative
+fixtures replace hardcoded0; no compilation/nativeexecution. Attached distinct
+sourcefollowup, kept olddocsreceipt unchanged duringfreeze. Auditaccounting file
+read: raw101 minus oneenvabsent no-ophelper =>100acceptedcases; no public101claim
+found, historicalraw preserved.

@@ -1,0 +1,66 @@
+{
+  "output_chunks": [
+    "f35f3c",
+    "903a91",
+    "365ca4"
+  ],
+  "private_log": "hosted-8624b57-build.log ANSI-stripped REST-derived",
+  "baseurls": [
+    {
+      "errors": [],
+      "rendered_html": 88,
+      "baseurl": "",
+      "pages": 88
+    },
+    {
+      "errors": [],
+      "rendered_html": 88,
+      "baseurl": "/humanymous",
+      "pages": 88
+    }
+  ],
+  "bundle_install": "PASS frozen",
+  "build_input_sha256": "46c10dd14afe9e549480e92b22175526998a48b262c2bc58a95d86c12e00bd80",
+  "source_review_freshness": "incomplete",
+  "docs_git_tree": "9c25458d67f0c0522e4d61edd526fd18124200d2",
+  "deployment_performed": false,
+  "source_unchanged": true,
+  "preflight": {
+    "all_targets_clippy": "PASS",
+    "tests_ignored": 0,
+    "tests_failed": 0,
+    "workflow_policy": "PASS",
+    "tests_passed": 60,
+    "job": 128375756057
+  },
+  "scope": "Actual exact-source hosted Pages dual-baseurl static build",
+  "run_id": 42363224485,
+  "artifact_download": "gh run download success; extracted outcomes inspected; platform archive digests not independently recomputed",
+  "rust_source_manifest_sha256": "1900fd8d09e1e188d774e50c761aaba1f77b6957b4fe93fae37805488d402880",
+  "browser": "NOT_RUN",
+  "bundle_audit": "PASS",
+  "artifacts": [
+    {
+      "kind": "outcomes",
+      "platform_digest": "sha256:6154fa41b1f4725e30f1382b21c5d6b1e098806cf80a350a8949272e40e3bf86",
+      "id": 13570925987
+    },
+    {
+      "kind": "subpath",
+      "platform_digest": "sha256:d59abdcb0ff825d1c0811ead838c8652b3e9c2d3b31b18afcbe32c84da189193",
+      "id": 13570334590
+    },
+    {
+      "kind": "apex",
+      "platform_digest": "sha256:727d5db446c49bbe6330479114ae3515d6143ad9627d490db2ed61f702ffb7c5",
+      "id": 13570289928
+    }
+  ],
+  "later_source_qualified": false,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42363224485",
+  "source_sha": "8624b57c6ff4c9f8eb3763814659e17520e858b8",
+  "conclusion": "success",
+  "status": "completed",
+  "assistive_technology": "NOT_RUN",
+  "build_job": 128376122323
+}
