@@ -14,6 +14,21 @@ rel:
 
 # Rust migration conventions
 
+## Explicit managed host exception: ASP.NET Core
+
+The user explicitly approved exactly three minimal authored C# source files for
+the .NET adapter: ABI binding, ASP.NET middleware and the actual host pilot.
+The adapter owner records their exact paths and enforces this bounded inventory.
+This exception does not move security scoring, cryptography, policy, credential
+minting, request validation or capture authority out of the shared Rust owners.
+No extra executable sources hidden in templates are authorized. All authored
+documentation and comments remain English. Project/package XML is configuration.
+Kestrel/JIT/NativeAOT/GC and actual package installation remain required hosted
+qualification; pure Rust tests and HTTP-origin compatibility do not replace them.
+The Rust ABI exception remains limited to the separately accepted pointer-free
+no_mangle export wrapper; raw pointers, unsafe blocks and dynamic loading need
+their own reviewed decision. Public package publication is still not authorized.
+
 ## Build-cache research and opt-in local edit profile
 
 Two user-requested read-only research agents reviewed Cargo/rustc/sccache/GitHub

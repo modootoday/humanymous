@@ -9,532 +9,599 @@ rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
 ---
 
-# 전체 로드맵과 마일스톤
+# Overall roadmap and milestones
 
-## 2026-11-07 역할 재분리와 완료 gate 타임라인
+## 2026-11-07 role separation and completion-gate timeline
 
-### 낡은 파일 제거의 실행 위치와 선행 조건
+### Where obsolete files are removed and the prerequisites
 
-현재 checkout은codex/rust이며 tracked Go파일336개가 남아 있다. main은 기존
-Go프로젝트를 유지하고 있고 새Rust작업을 사전반영하지 않는다. 낡은파일 제거는
-Rustbranch에서 수행해 삭제된 최종candidate 전체gate를 통과한 뒤main에 반영한다.
-Rust 대체기능/owned제품검증·oracle비교 증거확보→참조/배포inventory퇴역→삭제
-candidate→정리된tree 전체gate→main/Pages확인 순서다. 삭제대상Go의CVE나old
-shippingguard 때문에 실패하는전체CI가 먼저green이어야삭제가능하다는 순환조건은
-두지 않는다. 동시에 대체제품 검증 없는 조기삭제로 실패항목을 감추지도 않는다.
-독립obsolete docs/agent mirror/중복설정은 각owner가 참조검토 후 먼저정리하고,
-Go/oracle/oldimage·vendor환경 최종퇴역은root통합candidate에서 검증한다.
-현재actualRuntime/adapter/CEF/CrossOS 전체자격화가 미완료이므로 최종Go삭제
-날짜를 확정하지 않는다. 사용자요청은 취소/축소되지 않았고완료조건에 유지된다.
+The current checkout is codex/rust, with 336 tracked Go files remaining. main retains
+the existing Go project and does not incorporate the new Rust work in advance. Remove
+obsolete files on the Rust branch, pass all gates on the final deletion candidate,
+and then integrate into main. The order is: secure Rust replacement functionality,
+owned-product verification and oracle-comparison evidence; retire references and the
+deployment inventory; create the deletion candidate; run all gates on the cleaned
+tree; verify main/Pages. Do not create a circular requirement that all CI failing on
+CVEs in Go slated for deletion or old shipping guards must first turn green before
+deletion is allowed. Equally, do not hide failures by deleting before replacement
+product verification. Each owner may first clean up independently obsolete docs,
+agent mirrors and duplicate configuration after reviewing references. Final
+retirement of Go/oracles/old images and vendor environments is verified on the root
+integration candidate. Full actualRuntime/adapter/CEF/CrossOS qualification remains
+incomplete, so no final Go-deletion date is fixed. The user request remains active,
+without cancellation or reduction, as part of the completion conditions.
 
-### 자원 실측에 따른 로컬 검증 동시성 조정
+### Adjusting local verification concurrency from measured resources
 
-사용자의 상향 요청으로 physical63.3GiB/free35.3GiB, commit54.7/67.3GiB(81%),
-logicalCPU32/load39%, C:free184.9GiB를 Windows CIM으로 확인했다. 당시 cargo/
-rustc process는 없었다. 물리메모리보다 commit 여유12.6GiB를 제한 요소로 삼아
-로컬검증을 전역1에서2pipeline으로 상향한다. A는 기존sharedtarget, B는 별도
-target/validation-agents의 가벼운 순수검증으로 각jobs1/incremental0를 유지한다.
-명시적 slot배정만 실행하며 같은target에 두writer를 넣지 않는다. commit88%이상
-또는 physicalfree16GiB미만이면 신규B시작을 보류하고 다음 배정을1로 줄인다.
-CEF/nativeheavy/bindgen중첩과 로컬제품실행은 허가하지 않는다. 강제프로세스종료
-없이 종료시 재측정하며 Git/index와 공통lock변경은 계속 단일writer다.
-dependency/feature manifest는 integrationwindow에서만 변경해 locked검증
-재실패를 줄인다. 이정책은 이전 절의 전역1 표현을 갱신하며18개전용채팅에
-전달했다. A=audit순수복구/키보관, B=maintenance순수검증을 배정했다.
+Following the user's request to raise the limit, Windows CIM measured physical
+memory 63.3GiB/free 35.3GiB, commit 54.7/67.3GiB (81%), 32 logical CPUs/load 39%,
+and C: free 184.9GiB. No cargo/rustc processes were running then. Use the remaining
+12.6GiB of commit capacity, rather than physical memory, as the limiting resource
+and raise local verification from a global 1 to 2 pipelines. A uses the existing
+shared target; B runs lightweight pure verification in the separate
+target/validation-agents, each retaining jobs1/incremental0. Run only explicitly
+assigned slots; never put two writers on the same target. At commit >=88% or
+physical free <16GiB, defer starting a new B and reduce the next allocation to 1.
+CEF/native-heavy/bindgen overlap and local product execution are not authorized.
+Remeasure on completion without forcibly terminating processes. Git/index and
+shared-lock changes retain a single writer. Change dependency/feature manifests
+only within an integration window to reduce repeated locked-verification failures.
+This policy updates the earlier global-1 wording and was sent to 18 dedicated chats.
+A was assigned audit pure recovery/key custody; B, maintenance pure verification.
 
-### Workspace/언어 profile 통합 checkpoint
+### Workspace/language-profile integration checkpoint
 
-공통 workspace는 framework-adapter/python-adapter/ruby-adapter를 명시 등록해
-30members로 통합했다. 기존 lock을 보존하면서 Cargo가 신규17개 dependency
-package와 path graph를 해석했고 authority zeroize edge 및 Node 공유 framework
-소비를 반영했다. offline 첫 검증은 pyo3 cache 부재로 실행 전 실패했으며 online
-해석 뒤 framework cargo check가 통과했다. 신규 package의 CVE/host ABI 검증은
-아직 미완료이며 lock 등록을 공급망 검증 완료로 해석하지 않는다.
+The shared workspace explicitly registered framework-adapter/python-adapter/
+ruby-adapter, integrating 30 members. Cargo retained the existing lock and resolved
+17 new dependency packages and the path graph, incorporating the authority zeroize
+edge and Node's shared-framework consumption. The first offline check failed before
+execution because pyo3 was not cached; framework cargo check passed after online
+resolution. CVE/host-ABI verification of the new packages remains incomplete. Lock
+registration does not mean supply-chain verification is complete.
 
-integrity의 PythonAsgi/PythonWsgi/RubyRack profile은 설치 identity와 exact
-normalized header mode를 결합하고 peer/connection/capture/stream 및 raw 신호
-위조를 거절한다. 기존 Node/nginx와 scoring은 변경하지 않았다. 현재 source의
-locked --lib 순수 검사는 authority10/framework6/integrity22 모두 통과(38passed,
-0failed/ignored/filtered), 세 crate --lib Clippy -D warnings 통과다. 반복 --lib
-CLI 사용 첫 시도는 인자 오류로 테스트0이었으며 수정 명령만 위 분모에 해당한다.
-rustfmt check가 테스트 배치 차이를 찾아 formatter 적용 후 재확인했다.
-Python/Ruby extension build, 실제 IPC/framework/native ABI, 제품 e2e는 not_run이다.
-기존 Pages lock mismatch는 이 통합 전 관측이며 다음 locked 실행으로 별도 확인한다.
+The integrity PythonAsgi/PythonWsgi/RubyRack profiles bind installation identity to
+an exact normalized header mode and reject forged peer/connection/capture/stream
+and raw signals. Existing Node/nginx and scoring were unchanged. Current-source
+locked --lib pure checks passed for authority10/framework6/integrity22 (38 passed,
+0 failed/ignored/filtered); all three crates passed --lib Clippy -D warnings. The
+first CLI attempt repeated --lib and ran 0 tests due to an argument error; only the
+corrected command contributes to those denominators. rustfmt check found test-layout
+differences; formatting was applied and rechecked. Python/Ruby extension builds,
+actual IPC/framework/native ABI and product e2e are not_run. The earlier Pages lock
+mismatch preceded this integration and is checked separately by the next locked run.
 
-후속 Pages 재시도도 lock mismatch로 테스트0이었다. 병렬 CLI manifest의 tokio
-signal feature가 signal-hook-registry1.4.8 해석을 추가 요구했으며 root가 offline
-해석 후 locked offline --lib 재검증을 직접 수행해 Pages22passed/0failed/ignored/
-filtered와 lib Clippy -D warnings 통과를 확인했다. 실제 Pages render/browser는
-여전히 not_run이다. 공유lock 변경이 각 owner manifest와 동시에 움직일 수 있으므로
-root 해석 window 동안 dependency manifest는 동결하고 source 작업만 병렬화한다.
+The subsequent Pages retry also ran 0 tests due to lock mismatch. The parallel CLI
+manifest's tokio signal feature required resolution of signal-hook-registry1.4.8.
+After offline resolution, root directly reran locked offline --lib verification:
+Pages22 passed/0 failed/ignored/filtered and lib Clippy -D warnings passed. Actual
+Pages rendering/browser execution remain not_run. Because shared-lock changes can
+move together with owner manifests, freeze dependency manifests during root's
+resolution window and parallelize source work only.
 
-이 절은 이전 시점의 13채팅/후속 미배정 표현을 갱신한다. 기존13 전용 채팅에
-Apache/C ABI/Go/.NET/raw capture 전용5개를 추가해 root 포함19채팅이다.
-이는 생성/배정 수이며 모든 goal 수락·빌드·제품 완료 수가 아니다.
-071ccef는 명명규칙·THREADS registry·비중복lane를 등록했다.
-agents-meta root 점유는 정상 해제했고 maintenance 담당에 인계했다.
-상세 소유권은 .agents/sessions/THREADS.md와 LANES.md에 따른다.
+This section updates the earlier 13-chat/unassigned-follow-up snapshot. Adding 5
+dedicated Apache/C ABI/Go/.NET/raw-capture chats to the existing 13 yields 19 chats
+including root. This counts creation/assignment, not acceptance of every goal,
+build completion or product completion. 071ccef registered naming rules, the
+THREADS registry and nonoverlapping lanes. Root released agents-meta normally and
+handed it to maintenance. Detailed ownership follows .agents/sessions/THREADS.md
+and LANES.md.
 
-| 단계 | 현재 상태 | 종료 조건 | 담당/병렬성 |
+| Stage | Current status | Exit condition | Owner/parallelism |
 |---|---|---|---|
-| T0 정본·역할 정리 | 규칙/19채팅 배정, 후속claim 확인 중 | 실제 goal·path owner·계약 일치 | root/maintenance |
-| T1 공유 Rust 통합 | 부분 구현; 새 언어 crate/lock 통합 미완료 | shared core 재사용·exact source unit/fmt/Clippy | root + 각 crate owner |
-| T2 보안·서비스 완결 | authority/management/audit API 구현; 실제 운영 미검증 | IPC peer/ACL·secret provider·witness 복구·drain 실제 검증 | runtime/authority/audit/OS/CLI 분리 |
-| T3 producer·adapter | Node/nginx 부분 구현, Python/Ruby 신규source; Apache/C ABI/Go/.NET/capture 착수 | 지원별 실제 framework/OS/ABI, missing-signal 거절 | 언어/서버별 독립 owner |
-| T4 브라우저·제품랩 | CEF/collector/Compose source; full qualification 미통과 | actual Fetch/CEF·격리·egress·DNS·witness·워게임 | browser/root/lab/wargame |
-| T5 Cross-OS·공급망 | policy27unit 통과; native3OS·Docker·browser·Node·advisories 실패 | exact candidate 모든 필수job/분모·CVE처리·archive 검증 | CI 표준hosted 두lane |
-| T6 문서·표준·환경 | Pages/Draft 지속 작성; npm/crates/pypi/rubygems 환경 준비 | 같은 source docs render/link/a11y/skills eval·trust 준비 | Pages 단일writer/maintenance/CI |
-| T7 최종 전환 | 미착수·앞 단계 의존 | 최종candidate 전체gate, 승인된main통합·Pages확인·branch정리 | root Git 직렬 |
+| T0 Canon and roles | Rules/19 chats assigned; follow-up claims being checked | Actual goals, path owners and contracts agree | root/maintenance |
+| T1 Shared Rust integration | Partial implementation; new language crates/lock integration incomplete | Shared-core reuse; exact-source unit/fmt/Clippy | root + each crate owner |
+| T2 Security and service completion | authority/management/audit APIs implemented; actual operations unverified | Actual IPC peer/ACL, secret provider, witness recovery and drain verification | Separate runtime/authority/audit/OS/CLI owners |
+| T3 Producers and adapters | Node/nginx partial; new Python/Ruby source; Apache/C ABI/Go/.NET/capture started | Actual framework/OS/ABI per supported profile; missing-signal rejection | Independent language/server owners |
+| T4 Browser and product lab | CEF/collector/Compose source; full qualification has not passed | Actual Fetch/CEF, isolation, egress, DNS, witness and wargame | browser/root/lab/wargame |
+| T5 Cross-OS and supply chain | 27 policy units passed; native 3 OS/Docker/browser/Node/advisories failed | All required jobs/denominators for exact candidate, CVE disposition and archive review | Two standard-hosted CI lanes |
+| T6 Docs, standards and environments | Pages/Draft writing continues; npm/crates/pypi/rubygems environment preparation | Same-source docs render/link/a11y/skills evaluation and trust preparation | Single Pages writer/maintenance/CI |
+| T7 Final transition | Not started; depends on preceding stages | All final-candidate gates, approved main integration, Pages verification and branch cleanup | Serial root Git operations |
 
-T는 달력 기한/주 수가 아니라 순서와 의존이다. native host glue/unsafe의
-기존 규칙 예외, 실제 AT/IME/human 대조, 외부 registry trust처럼 미결정/미관측인
-항목이 있어 확정 종료일·완료율을 만들지 않는다. source-only/filtered/ignored/
-unknown/blocked를 통과로 계산하지 않는다.
+T denotes order and dependencies, not calendar deadlines or weeks. Unresolved or
+unobserved items include exceptions to existing native host-glue/unsafe rules,
+actual AT/IME/human controls and external registry trust. Do not invent a fixed
+completion date or percentage. Do not count source-only/filtered/ignored/unknown/
+blocked results as passes.
 
 ```mermaid
 flowchart LR
-  T0[현재: 역할·정본 고정] --> T1[공유 Rust 통합]
-  T1 --> T2[IPC·감사·OS·CLI]
-  T1 --> T3[캡처·언어·서버 adapter]
-  T1 --> T4[CEF·collector·Compose]
-  T2 --> T5[동일 SHA Cross-OS·제품 전체 gate]
+  T0[Current: fix roles and canon] --> T1[Shared Rust integration]
+  T1 --> T2[IPC, audit, OS and CLI]
+  T1 --> T3[Capture, language and server adapters]
+  T1 --> T4[CEF, collector and Compose]
+  T2 --> T5[Same-SHA Cross-OS and full-product gates]
   T3 --> T5
   T4 --> T5
-  D[지속: Pages·Draft v0·Skills] --> T6[문서·환경·공급망 종료검토]
-  T5 --> T6 --> T7[최종 main 전환·branch 정리]
+  D[Ongoing: Pages, Draft v0 and Skills] --> T6[Docs, environment and supply-chain closure review]
+  T5 --> T6 --> T7[Final main transition and branch cleanup]
 ```
 
-역할 규칙: 기존 adapter owner는 framework/Node/Python/Ruby만, Apache·C ABI·
-Go Gate 호환성·.NET·capture는 신규 단독owner다. 공용 opaque handle/ABI는
-native-abi 하나만 구현하고 host adapter에 복제하지 않는다. Go는 기존 정본의
-universal HTTP Gate profile을 우선하며 새 Go SDK/producer를 완료로 사칭하지 않는다.
-공유 Cargo/lock/toolchain/integrity/collector는 root, workflow/build inventory는 CI,
-OS credential provider는 native-security owner, CLI는 selector/validation만,
-공개 docs/**는 Pages owner 한 명이다. 다른 담당은 INTEGRATION/spec delta로 전달한다.
+Role rules: the existing adapter owner owns framework/Node/Python/Ruby only.
+Apache, C ABI, Go Gate compatibility, .NET and capture each have a new sole owner.
+Only native-abi implements shared opaque handles/ABI; host adapters do not duplicate
+it. Go prioritizes the existing canonical universal HTTP Gate profile and does not
+claim a new Go SDK/producer is complete. Root owns shared Cargo/lock/toolchain/
+integrity/collector; CI owns workflow/build inventory; native-security owns OS
+credential providers; CLI owns selectors/validation only. One Pages owner writes
+public docs/**. Other owners submit INTEGRATION/spec deltas.
 
-실행 상한은 채팅 수와 별개다. 코딩/정본화는 비중복 경로에서 병렬이며 로컬 Cargo는
-전역1개, hosted heavy는 현재 workflow 두lane 상한을 유지한다. 추가 채팅 생성이
-로컬 빌드 폭주나 유료 인프라 허가가 되지 않는다. 실제 배포/발행/tag/OIDC 교환은
-현재 금지 상태를 유지하며 환경 준비만 수행한다. main 전환은 최종 통합 단계다.
+Execution limits are separate from chat counts. Coding/canon updates run in parallel
+on nonoverlapping paths; local Cargo is globally limited to 1 and hosted-heavy work
+retains the current workflow's two-lane limit. Creating more chats does not authorize
+unbounded local builds or paid infrastructure. Actual deployment/publishing/tagging/
+OIDC exchange remain prohibited; only environment preparation proceeds. The main
+transition belongs to final integration.
 
-실행 관측 갱신: run42348518353/source63f69ae의 Windows native와 browser도
-실패했다. advisories Trivy는 go.mod에서13건(UNKNOWN1/MEDIUM7/HIGH5/CRITICAL0)을
-보고했다. 원본 Cargo audit closure는 미회수이므로 전체 취약점 검증 성공이 아니다.
-MSRV 등 나머지job의 최종 상태는 CI owner가 계속 기록한다. 새source의 진단·제품
-pilot·관리 API 구현을 이 과거 run의 성공/실패 원인으로 소급하지 않는다.
+Execution update: Windows native and browser also failed on
+run42348518353/source63f69ae. Advisories Trivy reported 13 findings in go.mod
+(UNKNOWN1/MEDIUM7/HIGH5/CRITICAL0). The original Cargo audit closure has not been
+recovered, so this is not successful full vulnerability verification. The CI owner
+continues recording final status for MSRV and the remaining jobs. Do not retroactively
+attribute this historical run's successes/failures to new-source diagnostics,
+product pilots or management-API implementation.
 
+## Decision to use free remote verification
 
-## 무료 원격 검증 적용 결정
+### Workflow naming and OIDC environment preparation
 
-### Workflow 명명 및 OIDC 환경 준비
+Naming checkpoint9a41374 uses scripts/ci/workflows.json as the single machine
+catalog. UI names follow CI / ..., Docs / ..., Release / ..., Legacy / ...;
+filenames/job keys/OIDC workflow identities remain stable technical contracts.
+Rust policy checks name/job/concurrency/artifact-identifier drift across the existing
+10 workflows. The delivery SoT is the implementation canon for shared policy;
+operational skills refer to it. github-actions-ops/cut-release guides and checklists
+were aligned with the catalog, Rust verification and product-specific OIDC environment
+names. The existing Rust canon checker observed errors0 and compatibility mirror
+drift92. While chats are active, recursive legacy sync is deferred under current
+AGENTS and retirement contracts; mirrors are not hand-edited. Model-based skill
+evaluation for this wording change remains not_run; earlier evaluation does not
+apply retroactively. Detailed static results are registered in
+workflow-guides-canon-check.json.
 
-명명 checkpoint9a41374는 scripts/ci/workflows.json을 단일 machine catalog로
-사용한다. UI 이름은 CI / ..., Docs / ..., Release / ..., Legacy / ... 형식이며
-파일명/job key/OIDC workflow identity는 안정된 기술 계약으로 보존한다.
-기존10개 workflow의 이름·job·concurrency·artifact 식별자 drift를 Rust policy가
-검사한다. 공통 정책의 구현 정본은 delivery SoT이며 운영 skill은 이를 참조한다.
-github-actions-ops/cut-release 운영 가이드와 체크리스트도 catalog·Rust 검증·
-제품별 OIDC 환경 이름에 맞췄다. 기존 Rust canon checker로 errors0,
-compatibility mirror drift92를 관찰했다. 활성 채팅 중 recursive legacy sync는
-현재 AGENTS와 retirement 계약에 따라 보류하며 mirror를 수동 편집하지 않는다.
-이 문구 변경의 모델 기반 skill eval은 not_run으로 남기고 기존 eval을 소급하지
-않는다. 상세 정적 결과는 workflow-guides-canon-check.json에 등록했다.
+The user approved environment preparation, not deployment. Actual modootoday/specfold
+settings were inspected; npm/crates environments were created in Humanymous and
+readback equivalence verified. Both use required reviewer myso-kr,
+prevent_self_review=false, can_admins_bypass=true, a custom branch policy and only
+tag v*. Each environment had 0 actual deployments when queried. Existing github-pages
+was retained. Environment settings alone do not verify npm/crates.io publisher
+ownership/trust. Workflow package jobs and registry prerequisites refer respectively
+to npm/crates and retain external trust verified=false. No tags, releases, package
+publication or OIDC token exchange are executed. Original comparison evidence is
+registered as oidc-environments-specfold-parity.json in evidence:root/20261106194410.
 
-사용자는 배포가 아닌 환경 준비만 승인했다. modootoday/specfold의 실제 설정을
-조회하고 Humanymous에 npm/crates 환경을 생성해 readback 동등성을 확인했다.
-각 환경은 required reviewer myso-kr, prevent_self_review=false,
-can_admins_bypass=true, custom branch policy, tag v*만 허용으로 대칭 구성됐다.
-각 환경의 실제 deployment 수는 조회 시점0이다. 기존 github-pages는 유지했다.
-환경 설정만으로 npm/crates.io publisher ownership/trust가 검증되지는 않는다.
-워크플로 package job과 registry prerequisite는 각각 npm/crates 이름을 참조하며
-external trust verified=false를 유지한다. 태그·릴리스·패키지 게시·OIDC token
-exchange는 실행하지 않는다. 원본 대조 증거는 evidence:root/20261106194410의
-oidc-environments-specfold-parity.json에 등록했다.
+The user approved using a free remote environment instead of local execution. The
+current gh query confirmed PUBLIC visibility for modootoday/humanymous. The default
+execution target is GitHub-hosted standard Ubuntu24.04 for the public repository;
+paid larger runners, paid dedicated servers and Cloudflare Containers creation are
+excluded. Containers remain only a possible separately paid supplementary verification
+route. Distinguish free public standard-runner compute from artifact/cache storage
+costs. The free route defaults to small sanitized job logs/summaries. Do not upload
+sensitive private Specfold originals or credentials as public artifacts.
 
-사용자가 로컬 대신 비용 없는 원격 환경을 적용하도록 승인했다. 현재 gh 조회로
-modootoday/humanymous의 PUBLIC visibility를 확인했다. 기본 실행 대상은 공개
-저장소의 GitHub-hosted standard Ubuntu24.04이며 유료 larger runner, 자체 유료
-서버 및 Cloudflare Containers 생성은 제외한다. Containers는 별도 유료 보조
-검증 후보로만 남는다. 공개 표준 러너 compute 무료와 artifact/cache 저장 비용은
-구분하고, 무료 경로는 기본적으로 작은 sanitized job log/summary를 사용한다.
-민감한 private Specfold 원본이나 자격증명을 공개 artifact에 올리지 않는다.
+The CI owner implements reuse of existing workflows, duplicate-run cancellation,
+bounded timeouts/build parallelism, sequential heavy Docker checks and collection
+of fixed-source-SHA results. After integrating the 27-member workspace/lock and owner
+source checkpoints, root pushes only the rust branch and observes actual hosted
+execution. Do not claim dirty local files as the source verified remotely. Retain
+existing Docker topology/UID/egress/sandbox/witness gates and distinguish component
+success from full-product completion. Application status remains implementation in
+progress until the first actual free remote-run result is confirmed.
 
-CI owner는 기존 워크플로 재사용, 중복 실행 취소, bounded timeout/build parallelism,
-무거운 Docker 검증 순차 실행 및 고정된 source SHA 결과 수집을 구현한다.
-Root는27member workspace/lock과 각 owner source checkpoint를 통합한 후 rust
-브랜치만 push하고 실제 hosted 실행을 관찰한다. dirty 로컬 파일을 원격 실행의
-검증 소스로 주장하지 않는다. 기존 Docker topology/UID/egress/sandbox/witness
-gate를 유지하고 component 성공과 full-product 완료를 구분한다. 최초 실제
-무료 원격 실행 결과가 확인될 때까지 적용 상태는 implementation in progress다.
-
-근거: https://docs.github.com/en/actions/concepts/billing-and-usage 및
+References: https://docs.github.com/en/actions/concepts/billing-and-usage and
 https://docs.github.com/en/actions/reference/runners/github-hosted-runners .
 
-### 로컬 개발과 hosted 실행의 역할 분리
+### Separating local development from hosted execution
 
-기본 배치는 로컬 코딩·범위별 단위검사와 hosted 실제 런타임 검증으로 나눈다.
-테스트 이름이나 #[test]/--lib만으로 순수 단위검사라고 분류하지 않는다. 실제
-프로세스·포트·IPC·SCM·브라우저·권한 경계·Docker를 요구하면 component/runtime
-검증이며 hosted 대상이다. 로컬은 fmt, 정적 검사, 범위 Clippy와 자원 상한이
-있는 단위검사에 집중하고 Cargo 동시 작업은1개로 제한한다. 기존 메모리 보류를
-무제한 로컬 빌드 허가로 바꾸지 않는다. 필요성이 입증된 로컬 런타임 디버깅은
-별도 자원 배정과 기록을 요구하며 hosted 완료 증거를 대체하지 않는다.
+The default allocation separates local coding/scoped unit checks from hosted actual
+runtime verification. Test names or #[test]/--lib alone do not establish that a check
+is a pure unit test. Requirements for actual processes, ports, IPC, SCM, browsers,
+permission boundaries or Docker make it component/runtime verification, assigned to
+hosted execution. Local work focuses on fmt, static checks, scoped Clippy and
+resource-bounded units, with 1 concurrent Cargo task. Existing memory deferrals do
+not authorize unlimited local builds. Proven needs for local runtime debugging
+require separate resource allocation and records, and do not replace hosted
+completion evidence.
 
-| 구분 | 기본 실행 위치 | 완료 근거 |
+| Category | Default execution location | Completion evidence |
 |---|---|---|
-| 코드·계약·단위·fmt·범위 Clippy | 로컬 | 명시적 package/feature와 실제 분모 |
-| Node/Bun/nginx·실제 IPC·서비스·권한·restart | 표준 OS hosted | OS/arch/features별 actor 결과 |
-| 제품 topology·격리·egress·witness·Firefox WASM | Ubuntu hosted Docker | 기존 Docker 필수 gate와 이미지·소스 해시 |
-| CEF·SCM·설치기 OS 기능 | 지원 OS hosted | capability preflight와 실제 positive/negative |
-| Pages 렌더·링크·browser smoke | hosted | 정확한 소스의 두 baseurl 및 실행 결과 |
-| 사람·실제 AT/IME·기기/화면·물리 장애 | 적합한 별도 실환경 | 직접 증거; hosted label만으로 충족 불가 |
+| Code, contracts, units, fmt and scoped Clippy | Local | Explicit package/features and actual denominators |
+| Node/Bun/nginx, actual IPC, services, permissions and restart | Standard OS hosted | Actor results per OS/arch/features |
+| Product topology, isolation, egress, witness and Firefox WASM | Ubuntu hosted Docker | Existing required Docker gates and image/source hashes |
+| CEF, SCM and installer OS capabilities | Supported OS hosted | Capability preflight and actual positive/negative checks |
+| Pages rendering, links and browser smoke | Hosted | Both baseurls and execution results for exact source |
+| Humans, actual AT/IME, devices/screens and physical faults | Suitable separate real environment | Direct evidence; a hosted label alone is insufficient |
 
-완전 직렬 CI는 독립 영역의 결과까지 막으므로 채택하지 않는다. 구현 checkpoint
-4565026은 공통 policy 이후 두 lane으로 분리한다: A는 native→msrv→quality→
-documentation→pages, B는 docker→browser→images→packages→node→advisories다.
-각 matrix는 max-parallel1, 각 job의 Cargo는 jobs1이며 같은 lane의 이전 실패와
-무관하게 policy 성공·미취소일 때 독립 결과를 계속 수집한다. ready는 항상
-정확한 필수 job 결과를 집계하고 실패·skip·unknown을 성공으로 바꾸지 않는다.
-이는 해당 workflow 내부 heavy 상한2다. 별도 수동 workflow까지 포괄하는 전역
-상한으로 과장하지 않고, 동일 source의 중복 dispatch를 피한다. 공통 concurrency
-group에 모든 job을 넣어 pending job이 대체·유실되는 방식은 사용하지 않는다.
+Fully serial CI would block independent results and is not adopted. Implementation
+checkpoint4565026 splits work into two lanes after shared policy: A is
+native→msrv→quality→documentation→pages; B is
+docker→browser→images→packages→node→advisories. Each matrix uses max-parallel1 and
+each job's Cargo uses jobs1. Independent results continue after earlier failures in
+the same lane if policy passed and execution was not cancelled. ready always
+aggregates exact required-job results and never converts failure/skip/unknown to
+success. This is a heavy-work limit of 2 within that workflow, not a global limit
+covering separate manual workflows. Avoid duplicate dispatches for the same source.
+Do not put all jobs in one shared concurrency group where pending jobs replace or
+lose one another.
 
-변경 영향 기반 선택은 manifest/공통 의존의 전이 closure와 semantic 계약 변경을
-검사할 신뢰 가능한 classifier가 준비된 뒤 도입한다. 현재는 필수 gate를 단순
-paths 필터로 생략하지 않는다. Cargo/lock/toolchain/security/authority/runtime/
-shared test-support 변경과 unknown 입력은 보수적으로 넓게 검증하며, release
-candidate의 전체 필수 OS·product 분모는 계속 요구한다.
+Change-impact selection will be introduced only after a trustworthy classifier can
+check transitive closure of manifests/shared dependencies and semantic contract
+changes. For now, simple paths filters do not skip required gates. Cargo/lock/
+toolchain/security/authority/runtime/shared test-support changes and unknown inputs
+receive conservatively broad verification; release candidates still require the
+full required OS/product denominators.
 
-빌드 재사용은 같은 OS/arch/target/toolchain/lock/profile/features에서만 허용한다.
-nginx native와 standalone pilot, Node host-pilot과 production package처럼 feature
-graph가 다른 산출물을 합치지 않는다. CEF/전체 target/debug+release/Docker를 한
-VM에 중복 축적하지 않고 runner 디스크 실측과 bounded context를 사용한다.
-초기 무료 경로는 remote cache 쓰기와 일반 branch artifact 업로드를 끄고 작은
-allowlisted summary·source/image/lock digest 및 job log를 사용한다. PUBLIC repo
-artifact는 private vault가 아니다. 민감 raw는 업로드하지 않고 별도 승인된
-비공개 회수 경로가 없으면 raw-not-recovered를 명시한다. LLM eval 추론/API비용은
-무료 runner compute와 별개이며 이번 무료 실행 범위에 자동 포함하지 않는다.
+Reuse builds only with matching OS/arch/target/toolchain/lock/profile/features.
+Do not combine artifacts with different feature graphs, such as nginx native and
+standalone pilots, or Node host-pilot and production packages. Do not accumulate
+CEF/all target/debug+release/Docker duplicates on one VM; use measured runner disk
+capacity and bounded contexts. The initial free route disables remote-cache writes
+and ordinary branch artifact uploads, using small allowlisted summaries,
+source/image/lock digests and job logs. PUBLIC repository artifacts are not a private
+vault. Do not upload sensitive raw data; without a separately approved private
+recovery route, explicitly record raw-not-recovered. LLM-evaluation inference/API
+costs are separate from free runner compute and are not automatically included in
+this free-execution scope.
 
-### 최초 무료 hosted 실행의 실제 결과
+### Actual results of the first free hosted runs
 
-후속 run42348518353/attempt1/source63f69ae는 관측 시점 진행 중이다. 공통
-정책 job의27Rust unit·정책·공개 action commit/entrypoint 조회는 실제 통과해
-최초403문제의 수정 효과를 확인했다. Ubuntu/macOS native job은 실패했으며
-이 실행의 공개 로그에는 세부 harness 원인이 없어 과거 Node ignored 원인으로
-추정하지 않는다. Docker는 ownerexit2/errors0의 component-only blocked를
-full-product gate가 거절했다. 구체 assertion 분모가 누락돼 과거71개 결과를
-소급하지 않는다. Windows native와 browser job은 관측 시점 실행 중이다.
-후속 a0ceac3/d31520f는 raw trace 없이 owner 요약/분모를 노출하는 진단 보완이며
-이전63f69ae 실행 결과를 바꾸지 않는다. collector 새 product fixture0ac1403 및
-순수 계약 회귀검사6733128은 다음 source batch이며 실제 product 실행은 not_run이다.
+Follow-up run42348518353/attempt1/source63f69ae was in progress when observed. The
+shared policy job actually passed 27 Rust units, policy checks and public action
+commit/entrypoint queries, confirming the fix for the initial 403 issue.
+Ubuntu/macOS native jobs failed; public logs for this run lacked detailed harness
+causes, so do not infer the earlier Node ignored cause. Docker's full-product gate
+rejected owner exit2/errors0 component-only blocked status. Specific assertion
+denominators were missing; do not retroactively apply the earlier 71 results.
+Windows native and browser jobs were still running when observed. Subsequent
+a0ceac3/d31520f add diagnostics exposing owner summaries/denominators without raw
+traces; they do not change the earlier 63f69ae results. New collector product
+fixture0ac1403 and pure contract regressions6733128 belong to the next source batch;
+actual product execution is not_run.
 
-Run42347732666/attempt1, source bfc9f62335ae41906996c6b01b0ae9e7993feeed는
-terminal failure다. ubuntu24.04에서 delivery Rust22tests와 policy 검사는 통과했다.
-action-pins의 인증된 GitHub API 공개 commit 조회가 aquasecurity 조직 IP 허용
-목록으로403을 반환해 공통 gate가 실패했다. 실제 관찰 job은13개로 policy와
-ready2개 failure, downstream11개 skipped다. 미실행 matrix를 성공 또는 실제
-실행한 tuple로 세지 않는다. 이 실패는 action SHA 불일치나 제품 runtime
-취약점의 증거가 아니다. 원본 job log와 terminal run/jobs/artifacts metadata는
-evidence:root/20261106194410에 보존했다. runtime/component 검증은 not_run이며
-기존 full-product 필수조건을 유지한 source-bound CI 수정 후 새 run으로 재검증한다.
+Run42347732666/attempt1, source bfc9f62335ae41906996c6b01b0ae9e7993feeed,
+ended in terminal failure. On ubuntu24.04, delivery Rust22 tests and policy checks
+passed. action-pins' authenticated GitHub API public-commit query returned 403 due
+to the aquasecurity organization's IP allowlist, failing the shared gate. The 13
+observed jobs were policy and ready (2 failures), and 11 downstream skipped jobs.
+Do not count unexecuted matrices as successful or actually executed tuples. This
+failure is not evidence of action-SHA mismatch or a product-runtime vulnerability.
+Original job logs and terminal run/jobs/artifacts metadata are retained in
+evidence:root/20261106194410. Runtime/component verification is not_run. Reverify in
+a new run after a source-bound CI fix retaining full-product requirements.
 
-버전1.2.0. 2026-11-07 KST 기준13개 프로젝트 채팅의 최신 turn, 기존9개
-인계 기록, 현재 Git/spec/Actions를 대조한 전체 상태·순서·완료 조건의 정본이다.
-실행 체크리스트는 plan:root/20261106235521, 근거는 evidence:root/20261106235519다.
-이번 snapshot은 f32042a 원격 component 검증과 624c1c1 로컬 guard 구현을
-구분한다. native CLI는 실제20번째 workspace member이며11unit/6process가
-통과했다. SDK/framework runtime 지원은 아니다. 전체 목표는 미완료다.
-완료율·완료일은 추정하지 않는다.
+Version1.2.0. This is the canon for overall status, order and completion conditions,
+reconciled against the latest turns of 13 project chats, 9 earlier handovers and
+current Git/spec/Actions as of 2026-11-07 KST. The execution checklist is
+plan:root/20261106235521; evidence is evidence:root/20261106235519. This snapshot
+separates f32042a remote component verification from 624c1c1 local guard
+implementation. Native CLI is the actual 20th workspace member; 11 units/6 processes
+passed. This is not SDK/framework runtime support. The overall goal is incomplete.
+Do not estimate completion percentages or dates.
 
-## 판정과 개발 규약
+## Assessment and development rules
 
-### 모든 채팅의 지속 정본화 의무
+### Every chat must continuously maintain canonical records
 
-각 owner는 구현과 동시에 SoT의 계약/결정/schema/version/error/권한/lifecycle와
-변경 delta, plan의 요구·의존·수용기준·미완료·후속 조치를 갱신한다. 채팅 간
-API 합의는 메시지만으로 끝내지 않고 제안/수용/구현/검증 상태를 영속 기록한다.
-실행 명령/source SHA 또는 dirty manifest/환경/tool·image·artifact digest/
-실제 분모·실패·재시도는 private evidence에 남기고 실패 이력을 보존한다.
-공개 evidence는 민감정보를 제거하여 Specfold attach로 등록하며 LF/Git bytes와
-validated-working-source/canonical-Git-source 해시를 구분한다. checkpoint와
-lane 양도에는 정확한 파일·계약·검증·잔여 한계·실행 명령·다음 owner를 남긴다.
-타 owner 정본은 직접 수정하지 않고 change request로 전달한다. 본 의무는
-root와13개 작업 채팅 모두에 적용되며 문서 갱신은 제품 구현/검증의 대체가 아니다.
+Alongside implementation, each owner updates SoT contracts/decisions/schema/version/
+errors/permissions/lifecycle and change deltas, plus plan requirements/dependencies/
+acceptance criteria/incomplete work/follow-up actions. Cross-chat API agreements
+must persist proposed/accepted/implemented/verified states, rather than end in
+messages alone. Keep execution commands/source SHA or dirty manifest/environment/
+tool/image/artifact digests/actual denominators/failures/retries in private evidence,
+preserving failure history. Sanitize public evidence and register it through
+Specfold attach; distinguish LF/Git bytes and validated-working-source/
+canonical-Git-source hashes. Checkpoints and lane handovers record exact files,
+contracts, checks, remaining limitations, execution commands and next owner. Send
+change requests rather than directly editing another owner's canon. This obligation
+applies to root and all 13 work chats; documentation updates do not replace product
+implementation/verification.
 
-| 상태 | 의미 |
+| Status | Meaning |
 |---|---|
-| 구현·검증 | 지정 source와 하위 범위의 실제 실행 증거가 있음 |
-| 부분 구현 | 코드가 있으나 제품 연결·필수 기능·자격화가 남음 |
-| 진행 중 | 현재 작업/통합/실행 중; 미실행·미커밋 결과를 성공으로 합산하지 않음 |
-| 연구·설계 | 조사·계약 정본화; runtime 지원·배포·표준 채택이 아님 |
-| 미구현·미실행 | 필요한 코드 또는 실제 실행 증거가 없음 |
-| 보류 | 명시된 선행 gate 충족 후에만 실행 |
+| Implemented and verified | Actual execution evidence for the specified source and subscope |
+| Partially implemented | Code exists; product wiring, required features or qualification remain |
+| In progress | Work/integration/execution ongoing; unexecuted/uncommitted results do not count as successes |
+| Research/design | Investigation/canonical contracts; not runtime support, deployment or standards adoption |
+| Unimplemented/not run | Required code or actual execution evidence is absent |
+| Deferred | Execute only after the stated prerequisite gates are met |
 
-채팅 completed는 담당 slice의 인계 상태다. notLoaded는 로딩 상태일 뿐 실패나
-실행 상태가 아니다. 과거 green은 새 source를 보증하지 않는다. source SHA/dirty
-manifest·이미지·환경·실행 분모를 귀속한다. mock,unsupported,ignored helper,
-zero-test harness,tool error,CHALLENGE,실제 human ALLOW를 구분한다.
+Chat completed means a handover state for the assigned slice. notLoaded is only a
+loading state, not failure or execution status. Past green results do not qualify
+new source. Attribute source SHA/dirty manifest, image, environment and execution
+denominator. Distinguish mocks, unsupported cases, ignored helpers, zero-test
+harnesses, tool errors, CHALLENGE and actual human ALLOW.
 
-Rust1.99.1/edition2024,단일 책임·맥락별 모듈화·플랫 나열 금지·humanymous-*
-네이밍·표준 Cargo 구조·중복 구현/코드 파편화 금지·단위/파일럿/e2e 의무를 유지한다.
-신규 저작 구현/테스트는 Rust다. upstream/generated glue와 읽기전용 legacy oracle은
-pin/provenance 및 최종 퇴역 조건으로 따로 관리한다. 새 외국어 구현 허가가 아니다.
+Retain Rust1.99.1/edition2024, single responsibility, context-based modules, no flat
+listing, humanymous-* naming, standard Cargo layout, no duplicate implementation/
+code fragmentation, and required unit/pilot/e2e checks. New authored implementation/
+tests use Rust. Manage upstream/generated glue and read-only legacy oracles
+separately with pin/provenance and final-retirement conditions; this does not
+authorize new implementation in other languages.
 
-scoring freeze,필수 증거 누락 fail-closed,파괴적 제어 dual-control,a11y의
-motor/speed 비요구,owned lab 방어 전용 실험,T4 ceiling을 유지한다. DRM/CDM 부재,
-UA 유사성,접근성 API 사용만으로 자동화 판정을 추가하지 않는다.
+Retain the scoring freeze, fail-closed behavior for missing required evidence,
+dual-control for destructive controls, no motor/speed requirement for a11y,
+defense-only experiments in owned labs and the T4 ceiling. Do not add automation
+verdicts solely for absent DRM/CDM, UA similarity or accessibility-API use.
 
-관리 기능은 local-only/인증된 로컬 peer 원칙이다. forwarded header만으로 원격
-요청에 관리 권한을 주지 않는다. adapter의 보안 삽입·라우트 확장은 기존 서비스의
-정상 header·중복Set-Cookie·body·stream/SSE·라우트 충돌과 장애 동작을 검증해야 한다.
+Management functions remain local-only with authenticated local peers. Forwarded
+headers alone do not grant management authority to remote requests. Adapter security
+insertion/route expansion must verify ordinary headers, duplicate Set-Cookie, body,
+stream/SSE, route conflicts and failure behavior in the existing service.
 
-## 검증된 기준점
+## Verified baselines
 
-| 영역 | 실제 근거 | 남는 제한 |
+| Area | Actual evidence | Remaining limitation |
 |---|---|---|
-| workspace | root19packages,toolchain1.99.1;CEF native2개 포함 | 계획된 SDK/framework/CLI는 실제 등록 전까지 합산 금지 |
-| 원본 이전 inventory | 314행:unit ported54/partial5/pending255,원본804함수 | 과거 단위 inventory;verified runtime parity0,최신 전체 구현률이 아님 |
-| native6tuple | 46e941b/run42334814627 및 후속 f6d2893/run42335890743 성공 | implemented-crate 범위;full_runtime_qualified=false;5f90971 별도 실행 중 |
-| Windows 실제 분모 | 46e941b 및 f6d full-job source에서51/51harness·214passed·쓰기거절 | raw2ignored custody helpers·zero harness 분리;최신 source에 소급 금지 |
-| runtime/CLI Docker process | 실제 origin2/audit4,session/RIT·sealed custody·restart/replay/tamper,doctor/install/dryrun/rollback | bounded fixture;full Gate/browser/Pass/human/AT 아님 |
-| collector | L1-L3 17signal,passive behavior,별도 env/advanced API;pure guard epoch | 최신 local native17/actual Firefox30;guard hooks·bootstrap/session 미완료 |
-| 실제 원본 비교 | behavior16datasets 및 advanced.js 실제 browser report 비교 | test-only unchanged oracle;추가 OS/API error matrix·퇴역 남음 |
-| Meari+CEF UI | 1a7de24 core18/native11·거부1case/4flags;별도96DPI gesture/CEF6readback/close 근거 | 마지막 DPI/max-edge/capture 수정은 unit/build-only;BrowserReady=false |
-| Pages | 52c2c0d 및 후속 f6d full CI의 Ruby3.3.13 apex/subpath build·artifact 성공 | 최신 docs freshness/AT·production Pages deploy 별도 |
-| 전체 delivery | f6d full CI 실패;Windows unit/actor/release build 후 필수 native runner 부재에서 실패 | full native/browser/Docker runner3개,docs freshness,registry/Go shipping 등 gate 남음 |
-| 공급망 | 최근 기록된 Cargo audit587deps/known vulnerabilities0 | ttf-parser 유지보수 경고1;최종 Rust/native/image/배포 closure 재검증 필요 |
+| Workspace | root19 packages, toolchain1.99.1; includes 2 CEF native packages | Do not count planned SDK/framework/CLI before actual registration |
+| Original migration inventory | 314 rows: unit ported54/partial5/pending255; original804 functions | Historical unit inventory; verified runtime parity0, not current overall implementation percentage |
+| Native6tuple | 46e941b/run42334814627 and subsequent f6d2893/run42335890743 passed | Implemented-crate scope; full_runtime_qualified=false; 5f90971 separately running |
+| Actual Windows denominator | 51/51 harnesses, 214 passed and write rejection at 46e941b and f6d full-job source | Separate raw2 ignored custody helpers/zero harnesses; no retroactive application to latest source |
+| Runtime/CLI Docker process | Actual origin2/audit4, session/RIT, sealed custody, restart/replay/tamper, doctor/install/dryrun/rollback | Bounded fixture; not full Gate/browser/Pass/human/AT |
+| Collector | L1-L3 17 signals, passive behavior, separate env/advanced APIs; pure guard epoch | Latest local native17/actual Firefox30; guard hooks/bootstrap/session incomplete |
+| Actual original comparison | behavior16 datasets and actual browser-report comparison with advanced.js | Test-only unchanged oracle; more OS/API-error matrices and retirement remain |
+| Meari+CEF UI | 1a7de24 core18/native11, 1 rejection case/4 flags; separate 96DPI gesture/CEF6 readback/close evidence | Last DPI/max-edge/capture changes unit/build-only; BrowserReady=false |
+| Pages | 52c2c0d and later f6d full-CI Ruby3.3.13 apex/subpath builds/artifacts passed | Latest-doc freshness/AT and production Pages deployment separate |
+| Full delivery | f6d full CI failed: required native runner absent after Windows unit/actor/release build | 3 full native/browser/Docker runners, docs freshness, registry/Go shipping and other gates remain |
+| Supply chain | Latest recorded Cargo audit587 deps/known vulnerabilities0 | 1 ttf-parser maintenance warning; final Rust/native/image/deployment closure needs revalidation |
 
-원시 로그·manifest는 private evidence,공개 요약은 해당 bundle의
-custody-native-remote-results.json,windows-full-actor-results.json,
-advanced-collector-results.json,guard-state-results.json,pages-remote-results.json이다.
-cb5dce7 Linux custody 실패는 보존했다. 공용 exclusive guard 수정 뒤 다른 source의
-성공을 과거 실패의 대체 기록으로 쓰지 않는다. collector256-task 실패/max2와
-같은 이미지의512-task export1pass/max0도 별도 보존하며 sandbox를 해제하지 않았다.
+Raw logs/manifests are private evidence. Public summaries in the corresponding bundle
+are custody-native-remote-results.json, windows-full-actor-results.json,
+advanced-collector-results.json, guard-state-results.json and pages-remote-results.json.
+The cb5dce7 Linux custody failure is retained. After fixing the shared exclusive
+guard, success on another source does not replace that earlier failure record.
+The collector256-task failure/max2 and same-image512-task export1pass/max0 are also
+retained separately; the sandbox was not disabled.
 
-5f90971 collector42338082218은 실제Firefox30/0failed/0ignored 성공이며 산출물을
-다운로드했다. native42338082261은6환경모두성공이며report6개를다운로드했다.
-해당Windows source는각51/51harness·228passed·raw2ignored helpers다.
-CEF42338082212도component범위성공이다. full CI42338082293은별도관측하며 실행 중은성공이아니다.
-이후full CI42338082293은실패로종료됐다. 실제native build/test/release 뒤
-필수native runner 부재를거절했고browser/Docker runner·shipping/registry/docs
-gate도미완료다. component 성공을full product 성공으로바꾸지않는다.
+For 5f90971, collector42338082218 passed actual Firefox30/0 failed/0 ignored and
+artifacts were downloaded. Native42338082261 passed all 6 environments; 6 reports
+were downloaded. Each corresponding Windows source had 51/51 harnesses, 228 passed
+and raw2 ignored helpers. CEF42338082212 also passed within component scope.
+Full CI42338082293 was observed separately; running is not success. Later,
+full CI42338082293 ended in failure: after actual native build/test/release it
+rejected the missing required native runner; browser/Docker runners and shipping/
+registry/docs gates also remain incomplete. Do not convert component success into
+full-product success.
 
-정본화 이후 구체적인 crates/native-cli manifest를 받아 working tree의20번째
-workspace member로등록하고의존성을resolve했다. 새production dependency version은
-없고기존serde/serde_json/junction을재사용한다. locked all-target check가통과했다.
-source862883c와evidence:root/20261107042614를대조했으며root에서도unit11/process6·
-Clippy가통과했다. Cargo/lock의귀속통합을완료한다. 현재workspace20이다.
-이는위5f90971의19package기준점과구분한다. registry publish=false,SDK/framework
-runtime지원은여전히미검증이다. 후속통합근거는roadmap-continuation-results.json이다.
-현재source의manifest write는Windows 전용이고다른OS는dryrun 범위다. Cross-OS
-완료로표시하지않는다. source/manifest/artifact 해시는최종인계기록과대조했다.
-최신native6/collector/CEF요약은integration-5f-remote-results.json,
-native CLI최종Cargo통합은native-cli-integration-results.json에귀속한다.
+After canon reconciliation, the concrete crates/native-cli manifest was received,
+registered as the working tree's 20th workspace member, and its dependencies resolved.
+No new production dependency versions were added; existing serde/serde_json/junction
+are reused. Locked all-target check passed. source862883c and
+evidence:root/20261107042614 were reconciled; root also passed unit11/process6 and
+Clippy. This completes attributed Cargo/lock integration. The workspace is now20,
+separate from the above 5f90971 19-package baseline. registry publish=false;
+SDK/framework runtime support remains unverified. Follow-up integration evidence is
+roadmap-continuation-results.json. Current-source manifest writes are Windows-only;
+other OSes are dryrun scope, not Cross-OS completion. Source/manifest/artifact hashes
+were reconciled with the final handover. Latest native6/collector/CEF summaries are
+attributed to integration-5f-remote-results.json; final native-CLI Cargo integration
+to native-cli-integration-results.json.
 
-## 모든 병렬 채팅의 결과와 후속 책임
+## Outcomes and follow-up responsibilities of all parallel chats
 
-초기9개+후속 runtime/keys/browser3개+REA1개=13개 채팅을 확인했다. root는 이
-13개와 별도로 공통 통합·collector를 수행한다. browser 채팅은 native CLI 인계 뒤
-최신 사용자 승인에 따라 실제 newtab과 chrome:// 개별 지원 확인을 진행 중이다.
-나머지는 마지막 반환 turn이 completed이며 notLoaded를 실행 상태로 해석하지 않는다.
-세부 최신 snapshot은 roadmap-reconciliation-latest.json,이전 인계는 chat-results.json이다.
+The initial9 + follow-up runtime/keys/browser3 + REA1 = 13 chats were checked.
+Root performs shared integration/collector work separately from those 13. After
+native-CLI handover, the browser chat is checking actual newtab and individual
+chrome:// support under the latest user approval. All others returned completed
+on their last turn; notLoaded is not interpreted as execution status. The detailed
+latest snapshot is roadmap-reconciliation-latest.json; earlier handovers are in
+chat-results.json.
 
-| 채팅/작업 | 귀속 결과 | 후속 작업 |
+| Chat/work | Attributed result | Follow-up |
 |---|---|---|
-| Rust 연동 · Node/Bun 어댑터와 서비스 계약 | 6941032,Express/Hono14그룹·Node/Bun mock conformance | Rust-only binding·실제 authority·stream/provenance·npm/OIDC |
-| Rust nginx · 플러그인 어댑터와 계약 검증 | b1e10ae,njs24·실제 nginx/mock authority28 | Rust plugin·실제 peer/ACL/replay/audit·정상 서비스 영향 검증 |
-| Rust CLI · doctor와 안전한 install | fe26b4d,검증·dryrun/install/repeat/rollback;후속 공용 native security | 서명 artifact·서비스 활성화/readiness·OS별 실제 파일럿 |
-| Rust 워게임 · attacker와 defender 격리 실험실 | 671e88a,공유Engine·seed 일치·12예약/8평가/4미지원 | live Gate/Pass/browser·human/AT·origin/audit 효과;HR-12 CHALLENGE 보존 |
-| Rust Compose · 격리 제품랩과 Cloudflare 프로필 | 3b9c306,토폴로지26·실제authority+Node22 및 후속process pilot | full Gate/collector·egress·독립witness·provider 실행 |
-| Rust authority · IPC 인증과 실제 어댑터 연결 | 6f5d83a,UDS/named pipe·peer/scope/replay·공유scoring/audit | typed provenance·stream·admin/RIT 전체 연결 |
-| Windows 러너 · 표준 사용자 네이티브 테스트 | c6a2457/99cf472 기반;후속6tuple·full-job actor 검증 | full native product/service/peer 파일럿·최종 source |
-| Rust CI/CD · Cross-OS와 OIDC 릴리스 | 44e79a4,wiring·docs review 도구;후속Rust helper/CI 수리 | 남은 legacy tooling Rust 이전·runner3·registry trust·실제 release gates |
-| Rust docs · Pages와 공개 Draft v0 | 2d98934,77문서·과거88browser조합/keyboard8;후속remote Pages build | 최신source review·AT·표준 wire/vectors·실제 Pages serving |
-| Rust 런타임 · Core/Gate 세션과 collector | 9ce3190,실제session/ingress/RIT/audit-before-origin;rootsealed startup/Docker 통합 | raw TLS/H2·qualified collector·proxy/admin/Pass |
-| Rust 키 저장 · sealed custody와 vault 영속성 | 5a77605,Windows49/Linux47;root공용guard·WAL 수리/6tuple | rotation운영·독립durable witness·dual-control issuer·backup/erasure |
-| Meari + CEF · Rust 검증 브라우저 UI | 1a7de24 실제UI,7e2d848 SDK/framework 설계;현재CLI 명명·구현 재개 | B2잔여자격화,B3receipt,B6SDK/ABI/framework/CLI실행 |
-| 내장 브라우저 분석 작업 | 512a73f bounded REA 정적 embedding 분석·관련 답변 | 참고 관찰만;Owl 전체복제/클린룸 구현 제외;DRM 일반화 금지 |
+| Rust integration: Node/Bun adapters and service contracts | 6941032, Express/Hono14 groups, Node/Bun mock conformance | Rust-only binding, actual authority, stream/provenance, npm/OIDC |
+| Rust nginx: plugin adapter and contract verification | b1e10ae, njs24, actual nginx/mock authority28 | Rust plugin; actual peer/ACL/replay/audit; ordinary-service impact verification |
+| Rust CLI: doctor and safe install | fe26b4d, validation/dryrun/install/repeat/rollback; subsequent shared native security | Signed artifacts, service activation/readiness, actual pilots per OS |
+| Rust wargame: isolated attacker/defender lab | 671e88a, shared Engine, matching seeds, 12 reserved/8 evaluated/4 unsupported | Live Gate/Pass/browser, human/AT, origin/audit effects; preserve HR-12 CHALLENGE |
+| Rust Compose: isolated product lab and Cloudflare profile | 3b9c306, topology26, actual authority+Node22 and subsequent process pilot | Full Gate/collector, egress, independent witness, provider execution |
+| Rust authority: IPC authentication and actual adapter wiring | 6f5d83a, UDS/named pipe, peer/scope/replay, shared scoring/audit | Typed provenance, stream, complete admin/RIT wiring |
+| Windows runner: standard-user native tests | Based on c6a2457/99cf472; subsequent6tuple/full-job actor verification | Full native product/service/peer pilots, final source |
+| Rust CI/CD: Cross-OS and OIDC releases | 44e79a4, wiring/docs-review tools; subsequent Rust helpers/CI repairs | Migrate remaining legacy tooling to Rust, runner3, registry trust, actual release gates |
+| Rust docs: Pages and public Draft v0 | 2d98934, 77 documents, historical88 browser combinations/keyboard8; subsequent remote Pages build | Latest-source review, AT, standard wire/vectors, actual Pages serving |
+| Rust runtime: Core/Gate sessions and collector | 9ce3190, actual session/ingress/RIT/audit-before-origin; root sealed startup/Docker integration | Raw TLS/H2, qualified collector, proxy/admin/Pass |
+| Rust key storage: sealed custody and vault persistence | 5a77605, Windows49/Linux47; root shared guard/WAL repair/6tuple | Operational rotation, independent durable witness, dual-control issuer, backup/erasure |
+| Meari + CEF: Rust verification-browser UI | 1a7de24 actual UI, 7e2d848 SDK/framework design; CLI naming/implementation now resumed | Remaining B2 qualification, B3 receipt, B6 SDK/ABI/framework/CLI execution |
+| Embedded-browser analysis | 512a73f bounded REA static embedding analysis and related answers | Reference observations only; excludes full Owl cloning/clean-room implementation; no DRM generalization |
 
-SDK 기반4crate(native-core/windows/ffi/plugin)와 후속 Electron main-process
-Node-API·Tauri/winit 후보·generic C ABI consumer·native CLI는 구분한다. browser
-실험용 process-owning DLL을 SDK로 재수출하지 않는다. 명명 보정은
-humanymous-native-cli / humanymous-native init --framework electron이다.
-init/doctor/verify의 실제 구현·membership은 코드와 통합 증거가 생길 때 갱신한다.
-Rust-only 조건상 생성기가 JS/TS 등 외국어 템플릿을 만드는 우회는 허용하지 않는다.
-기존 외부 호스트의 연결 책임과 검증된 packaged OS/arch/runtime 경계를 명시한다.
+Distinguish the 4 SDK foundation crates (native-core/windows/ffi/plugin) from
+subsequent Electron main-process Node-API, Tauri/winit candidates, generic C ABI
+consumer and native CLI. Do not re-export the browser experiment's process-owning
+DLL as an SDK. Corrected naming is humanymous-native-cli /
+humanymous-native init --framework electron. Update actual init/doctor/verify
+implementation/membership when code and integration evidence exist. Rust-only rules
+prohibit a generator workaround emitting JS/TS or other-language templates. State
+existing external hosts' connection responsibilities and the verified packaged
+OS/arch/runtime boundary.
 
-## 검증 이력 타임라인
+## Verification-history timeline
 
-아래 시간은2026-11-07 KST의 실제 귀속 commit 시점이며 CI 완료 시각과 다르다.
+Times below are actual attributed commit times on 2026-11-07 KST, not CI completion
+times.
 
 ```mermaid
 timeline
-  title Humanymous 구현 이력과 현재 기준
-  07시-08시 병렬 기반 : Node/Bun와 nginx 계약 : CLI와 워게임 : authority와 Compose : CI와 Pages
-  09시 후속 통합 : REA bounded 분석 : sealed custody : Core Gate session
-  12시 검증 기반 수리 : custody WAL 잠금 : collector target : Pages Ruby : Windows actor
-  12시51분 수집 확장 : Rust environment API
-  13시12분 고급 관측 : advanced API와 실제 원본 비교
-  13시19분 브라우저 UI : borderless SVG와 resize
-  13시21분 guard 상태 : coverage와 bounded epoch
-  13시23분 native 설계 : SDK framework와 init tooling
-  13시47분 이후 : f32042a native 6환경과 collector CEF 성공 : full CI 실행 중
-  13시56분 이후 : 624c1c1 guard baseline 실제 관측 : native19 Firefox34 로컬 통과
-  14시 이후 현재 : newtab과 개별 chrome URL 구현 진행 : root 전체 로드맵 재정합화
+  title Humanymous implementation history and current baseline
+  07h-08h parallel foundation : Node/Bun and nginx contracts : CLI and wargame : authority and Compose : CI and Pages
+  09h follow-up integration : Bounded REA analysis : sealed custody : Core Gate session
+  12h verification foundation repairs : custody WAL locking : collector target : Pages Ruby : Windows actor
+  12h51 collection expansion : Rust environment API
+  13h12 advanced observations : advanced API and actual-original comparison
+  13h19 browser UI : borderless SVG and resize
+  13h21 guard state : coverage and bounded epoch
+  13h23 native design : SDK framework and init tooling
+  After 13h47 : f32042a native 6 environments and collector CEF passed : full CI running
+  After 13h56 : 624c1c1 actual guard baseline observation : native19 Firefox34 passed locally
+  Current after 14h : newtab and individual chrome URL implementation ongoing : root reconciles overall roadmap
 ```
 
-## 목표 완결 마일스톤
+## Goal-completion milestones
 
-| ID | 범위 | 상태 | 완료 조건/남은 작업 |
+| ID | Scope | Status | Completion conditions/remaining work |
 |---|---|---|---|
-| M0 | branch·Specfold·개발 규약 | 구현 | .spec/.spec.local·귀속·증거 유지,최종 agents정리는M11 |
-| M1 | 순수엔진·모델·Pass | 부분 | 원본 회귀 전수·ML lifecycle·full Pass·실제runtime parity |
-| M2 | network/raw capture | 부분 | TLS ClientHello·ordered headers·HPACK/H2설정/priority·connection/session binding |
-| M3 | audit/keys/state | 부분 | 독립durable witness·rotation운영·dual-control·backup/erasure/sinks |
-| M4 | Core/Gate·authority | bounded runtime | collector/capture/RIT·proxy/settings/abuse/admin 전체 실제 경로 |
-| M5 | Rust collector | baseline까지 부분 | native19/Firefox34 로컬; guard hooks/CDP·fingerprint-ID/ICE·loader/session/RIT/recovery·Pass·API matrix |
-| M6 | 서버 adapters | 부분/연구 | Node/Bun Express/Hono·nginx Rust-only,peer/route/header/body/stream/provenance와실제authority |
-| M7 | 운영 CLI·설치 | provisioning 구현 | signed package→서비스 활성/readiness→업데이트/rollback·native peer 부정 파일럿 |
-| M8 | 제품 Docker 워게임 | 제한된 파일럿 | live Gate/browser/Pass·egress·origin/audit·공격/정상/human/AT 분모 |
-| M9 | 자동화/모바일/provider/표준 | 연구·draft | owned 실행·wire/vectors·상호운용/security/privacy/a11y 검토·국제 제출 준비 |
-| M10 | Cross-OS·OIDC·Pages | scoped검증/wiring | full runner3개·최종source6tuple·registry/package trust·docs freshness·Pages artifact;배포확인은M12 |
-| M11 | Rust-only·공급망·agents/skills | 부분 | foreign-source 전수 disposition·CVE/SBOM/image scan·.agents/rules/skills/agents와사용자skills/eval |
-| M12 | 최종 main만 유지 | 보류 | 최신main 통합candidate→exact SHA/tree전체gate→main갱신→Pages실제배포확인→rust branch제거 |
-| B0/B1 | 브라우저 설계/engine/profile | 설계·부분 | pin/provenance·권한/network/lifecycle 자격화 |
-| B2 | Meari+CEF 실제UI | Windows부분 | full sandbox/input/IME/AX·DPI/crash·OS tuples·Chrome rendering 기능matrix |
-| B3 | 진단/receipt | 미구현 | qualified target/input·collector/session/capture/audit typed join |
-| B4 | 대조 실험 | 미실행 | ordinary Chrome·human/AT·observer on/off·오탐 및 실제효과 |
-| B5 | 도구 배포 | 미구현 | native CVE/SBOM·서명/update/rollback·사용자문서 |
-| B6 | native SDK/framework/CLI | 설계/manifest init 구현 | CLI11unit/6process; 기반4crate·versionedABI/consumer·owned lifecycle/unload·frameworkmatrix·scaffold/doctor/verify |
+| M0 | Branch, Specfold and development rules | Implemented | Maintain .spec/.spec.local, attribution and evidence; final agents cleanup is M11 |
+| M1 | Pure engine, model and Pass | Partial | All original regressions, ML lifecycle, full Pass, actual runtime parity |
+| M2 | Network/raw capture | Partial | TLS ClientHello, ordered headers, HPACK/H2 settings/priority, connection/session binding |
+| M3 | Audit/keys/state | Partial | Independent durable witness, operational rotation, dual-control, backup/erasure/sinks |
+| M4 | Core/Gate and authority | Bounded runtime | All actual collector/capture/RIT, proxy/settings/abuse/admin paths |
+| M5 | Rust collector | Partial through baseline | Local native19/Firefox34; guard hooks/CDP, fingerprint-ID/ICE, loader/session/RIT/recovery, Pass, API matrix |
+| M6 | Server adapters | Partial/research | Node/Bun Express/Hono and nginx Rust-only; peer/route/header/body/stream/provenance and actual authority |
+| M7 | Operational CLI and installation | Provisioning implemented | Signed package→service activation/readiness→update/rollback; native peer negative pilots |
+| M8 | Product Docker wargame | Limited pilot | Live Gate/browser/Pass, egress, origin/audit, attack/ordinary/human/AT denominators |
+| M9 | Automation/mobile/provider/standards | Research/draft | Owned execution, wire/vectors, interoperability/security/privacy/a11y review, international-submission preparation |
+| M10 | Cross-OS, OIDC and Pages | Scoped verification/wiring | 3 full runners, final-source6tuple, registry/package trust, docs freshness, Pages artifact; deployment verification is M12 |
+| M11 | Rust-only, supply chain and agents/skills | Partial | Full foreign-source disposition; CVE/SBOM/image scan; .agents/rules/skills/agents and user skills/eval |
+| M12 | Retain only final main | Deferred | Latest-main integration candidate→all exact-SHA/tree gates→main update→actual Pages deployment verification→rust branch removal |
+| B0/B1 | Browser design/engine/profile | Design/partial | Pin/provenance, permission/network/lifecycle qualification |
+| B2 | Actual Meari+CEF UI | Partial on Windows | Full sandbox/input/IME/AX, DPI/crash, OS tuples, Chrome-rendering capability matrix |
+| B3 | Diagnostics/receipt | Unimplemented | Qualified target/input; typed collector/session/capture/audit join |
+| B4 | Controlled experiments | Not run | Ordinary Chrome, human/AT, observer on/off, false positives and actual effects |
+| B5 | Tool distribution | Unimplemented | Native CVE/SBOM, signing/update/rollback, user docs |
+| B6 | Native SDK/framework/CLI | Design/manifest init implemented | CLI11 units/6 processes; 4 foundation crates, versioned ABI/consumer, owned lifecycle/unload, framework matrix, scaffold/doctor/verify |
 
-## 앞으로의 실행 타임라인
+## Future execution timeline
 
-W는 완료일이 아닌 의존 순서다. 설계 병렬 가능과 작업 배정/실행 완료는 다르다.
+W denotes dependency order, not completion dates. Parallelizable design differs
+from assignment/execution completion.
 
 ```mermaid
 flowchart LR
-  W0[현재 W0<br/>이력 정합화와 최신 SHA CI] --> W1[W1 제품 필수 producer 완성]
-  W1 --> W2[W2 실제 서비스 연결]
-  W2 --> W3[W3 제품 전체 검증]
-  W3 --> W4[W4 배포 후보 검증]
-  W4 --> W5[W5 main 전환과 공개 확인]
-  G[guard·fingerprint·ICE] --> W1
+  W0[Current W0<br/>Reconcile history and latest-SHA CI] --> W1[W1 Complete required product producers]
+  W1 --> W2[W2 Connect actual services]
+  W2 --> W3[W3 Full-product verification]
+  W3 --> W4[W4 Deployment-candidate verification]
+  W4 --> W5[W5 Main transition and public verification]
+  G[guard, fingerprint and ICE] --> W1
   C[raw TLS H2 capture] --> W1
-  A[witness·rotation·dual-control] --> W1
-  B[병렬 브라우저·native SDK·CLI] --> W3
-  D[지속 문서·표준 draft·adapter 계약] --> W4
+  A[witness, rotation and dual-control] --> W1
+  B[Parallel browser, native SDK and CLI] --> W3
+  D[Ongoing docs, standards draft and adapter contracts] --> W4
 ```
 
-| 파동 | 다음 결과 | 병렬 경계 | 통과 증거 |
+| Wave | Next result | Parallel boundary | Passing evidence |
 |---|---|---|---|
-| W0 | 13채팅 재확인,20crate/CLI 통합,guard baseline, f32042a component 성공/fullCI 관측 | root공통Cargo/CI/Git;browser자기lane | source·로그·실행분모,실패보존 |
-| W1 / F01-F02/F10-F11 | guard baseline/observer/forwarding,rawcapture,키 운영;UI/SDK/init 병렬 | collector/network/audit/browser 별도writer,scoring seam직렬 | 실제 producer·누락거절·cleanup/재시작·권한/ABI·API/OS matrix |
-| W2 / F03-F05 | qualified collector/RIT,서버 Rust binding,서비스 활성화 | 계약고정 뒤 adapter/CLI 분리 | 실제authority/origin/audit 효과·stream/header정상성·readiness/rollback |
-| W3 / F06 | full native/browser/Docker Rust runner와live워게임 | lab/CI와도구SDK 경계 분리 | six tuple·제품Docker e2e·human/AT·observer대조·SDK consumer |
-| W4 / F07-F09 | 최종docs·Pages artifact·OIDC/registry·공급망·skills | docs/.agents/packaging분리,후보source고정 | 같은sourcefreshness·archive검토·trust·CVE/SBOM·실제modoo skills eval |
-| W5 / M12 | oracle/Go/폐기물 퇴역,최신main통합candidate검증,main갱신·Pages배포확인·branch제거 | Git전역직렬 | exactcandidate SHA/tree전체gate,실제Pages serving,미완료시branch제거보류 |
+| W0 | Recheck13 chats, integrate20 crates/CLI, guard baseline, f32042a component success/full-CI observation | Root shared Cargo/CI/Git; browser's own lane | Source/logs/execution denominators, retained failures |
+| W1 / F01-F02/F10-F11 | Guard baseline/observer/forwarding, raw capture, key operations; parallel UI/SDK/init | Separate collector/network/audit/browser writers; serial scoring seam | Actual producers, missing-signal rejection, cleanup/restart, permissions/ABI, API/OS matrix |
+| W2 / F03-F05 | Qualified collector/RIT, server Rust binding, service activation | Separate adapter/CLI after contracts freeze | Actual authority/origin/audit effects, stream/header correctness, readiness/rollback |
+| W3 / F06 | Full native/browser/Docker Rust runners and live wargame | Separate lab/CI and tool-SDK boundaries | Six tuples, product Docker e2e, human/AT, observer controls, SDK consumer |
+| W4 / F07-F09 | Final docs, Pages artifact, OIDC/registry, supply chain, skills | Separate docs/.agents/packaging; fixed candidate source | Same-source freshness, archive review, trust, CVE/SBOM, actual modoo skills eval |
+| W5 / M12 | Retire oracle/Go/waste, verify latest-main integration candidate, update main, verify Pages deployment, remove branch | Globally serial Git | All exact-candidate SHA/tree gates, actual Pages serving; defer branch removal if incomplete |
 
-M12의 순환 의존성을 만들지 않는다. Pages는 먼저 후보 artifact를 검증하고,
-main-triggered 실제 deployment는 main 갱신 후 확인한다. 변경될main을 먼저
-candidate에 반영하고 최종gate 뒤 새미검증merge commit을 만들지 않는 전환을
-설계한다. 배포 실패 시 main-only 완료를 주장하거나 복구 branch를 먼저 지우지
-않는다. registry 실제발행·tag는 준비된artifact와해당release운영규약에귀속한다.
+Do not create circular M12 dependencies. First verify the candidate Pages artifact;
+verify actual main-triggered deployment after updating main. Incorporate prospective
+main changes into the candidate first, and design the transition to avoid a new
+unverified merge commit after final gates. On deployment failure, do not claim
+main-only completion or remove the recovery branch first. Actual registry
+publication/tags belong to prepared artifacts and the applicable release rules.
 
-## 연구 backlog의 실행 전환
+## Turning research backlog into execution
 
-| 조사 | 정본 방향 | 필요한 후속 증거 |
+| Investigation | Canonical direction | Required follow-up evidence |
 |---|---|---|
-| 서버 adapter/언어/OS | Node/nginx 서비스 통합 우선;SDK framework와별도 bounded context | Rust binding과지원주장별실행matrix |
-| Computer Use/Grok/Meta/Pickle/crawler/DC IP/API/mobile | actor/egress/authorization/provenance 구분,robots위반추정금지 | bounded eventtracking·owned재현·API/nonbrowser·AT controls |
-| Android Monkey 등 | 모바일 자동화 위협/관측 분리 | owned device OS/driver/실제입력·정상 대조 |
-| DRM/CEF/Electron/desktop-use | capability·license/CDM/build 차이,단독bot규칙금지 | 허용된 capability matrix·observer개입·실제원본브라우저 대조 |
-| Actions/전용runner | native6tuple가능 | GUI/service/browser/remotepeer/full delivery 실행 |
-| Compose/Cloudflare/AWS/Lightsail | 격리 profile/1회성lab | 비용·권한·egress·teardown 및 실제provider실행;현재not_run |
-| 국제 웹 표준 draft v0 | 체계적 작성·검토·등록준비,docs/Pages공개영역 | wire/vectors·상호운용·security/privacy/a11y·기관절차 검토 |
-| crate/native/framework 설계 | humanymous-*·표준Cargo·책임분리·공유엔진재사용 | 실제membership/ABI/OS/frameworkconsumer와의호환성 |
+| Server adapters/languages/OS | Prioritize Node/nginx service integration; bounded context separate from SDK frameworks | Rust binding and execution matrix for each support claim |
+| Computer Use/Grok/Meta/Pickle/crawler/DC IP/API/mobile | Distinguish actor/egress/authorization/provenance; no presumed robots violation | Bounded event tracking, owned reproduction, API/nonbrowser, AT controls |
+| Android Monkey and similar | Separate mobile-automation threats and observations | Owned device OS/driver/actual input and ordinary controls |
+| DRM/CEF/Electron/desktop-use | Capability/license/CDM/build differences; no standalone bot rule | Permitted capability matrix, observer intervention, comparison with actual original browser |
+| Actions/dedicated runners | Native6tuple possible | GUI/service/browser/remote-peer/full-delivery execution |
+| Compose/Cloudflare/AWS/Lightsail | Isolated profiles/labs for 1 execution | Cost/permissions/egress/teardown and actual provider execution; currently not_run |
+| International web-standard draft v0 | Systematic writing/review/registration preparation in public docs/Pages | Wire/vectors, interoperability, security/privacy/a11y, institutional-process review |
+| Crate/native/framework design | humanymous-*, standard Cargo, responsibility separation, shared-engine reuse | Actual membership/ABI/OS/framework-consumer compatibility |
 
-표준 문서는 docs 하위 Pages 서빙 대상이다. 내부spec/private원문은 공개 docs로
-그대로 복제하지 않는다. modootoday Jekyll remote_theme·기존디자인토큰 이식을
-유지하고,작성·빌드·실제배포·표준기관제출/채택을각각구분한다. Cloudflare는
-Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생성을 수행하지 않는다.
+Standards documents are served under docs through Pages. Do not copy internal specs/
+private originals directly into public docs. Retain the modootoday Jekyll remote_theme
+and existing design-token migration. Distinguish authoring, building, actual
+deployment and standards-body submission/adoption. Cloudflare uses cf CLI when no
+Wrangler configuration exists. This reconciliation does not create providers.
 
-## 현재 종료를 막는 gate와 다음 착수
+## Gates currently preventing completion and next work
 
-현재client Session은strict provisionedbootstrap/oneflight/sharedsigner/zeroizing
-keyepoch/clockexpiry/ACK확인후counterprogress를구현했다. Runtimeowner가ACK계약을
-수용했지만serverwire구현은별도다. collector26/integrity20+parity3,actualFirefox58,
-host/WASMClippy와독립.NET ACK벡터가통과했다. 이는actualFetch/completebody/abort/
-serverbootstrap/session/freshcollectorjoin을대체하지않으며전송계획은
-plan:root/20261107055000이다. root/bodycodec1MiB와초기server64KiBbudget도분리한다.
+The current client Session implements strict provisioned bootstrap, oneflight,
+shared signer, zeroizing key epoch, clock expiry and counter progression only after
+ACK confirmation. The runtime owner accepted the ACK contract; server-wire
+implementation is separate. Collector26/integrity20+parity3, actual Firefox58,
+host/WASM Clippy and independent .NET ACK vectors passed. These do not replace
+actual Fetch/complete body/abort/server bootstrap/session/fresh collector join.
+The transport plan is plan:root/20261107055000. Also distinguish root/body-codec1MiB
+from the initial server64KiB budget.
 
-현재explicit probe_cdp_json은legacy console-preview 두관측을actualRust로
-수행하며once-per-collectorcache/status/error/latecallback/stop을검증했다.
-Native19/actualDockerFirefox51/strictWASMClippy는component범위이며CDP종류나
-자동화/humanidentity를보증하지않는다. 기존frozenflag evaluator만재사용한다.
-공통workspace는작업트리27members다.25member시점의delivery/M11tooling은
-rootlock검증(관리7unit4process+delivery16,Clippy)을통과했고이후runtime-pilot과
-nginx-adapter를추가해Windowsdefault cargo check가통과했다. Linuxnative nginx
-실행자격화는아니다. 별도M11lock은private원본보존후제거했으며공통manifest
-귀속/나머지worker최종source통합은아직진행중이다.
+Current explicit probe_cdp_json performs the two legacy console-preview observations
+in actual Rust and verifies once-per-collector cache/status/error/late callback/stop.
+Native19/actual Docker Firefox51/strict WASM Clippy are component scope and do not
+guarantee CDP type or automation/human identity. Only the existing frozen-flag
+evaluator is reused. The shared working-tree workspace has27 members. At25 members,
+delivery/M11 tooling passed root-lock verification (maintenance7 units4 processes +
+delivery16, Clippy). runtime-pilot and nginx-adapter were then added, and Windows
+default cargo check passed. This is not Linux-native nginx execution qualification.
+The separate M11 lock was removed after preserving its private original. Attribution
+of the shared manifest/integration of other workers' final source is still ongoing.
 
-Guard는실제prototype/native baseline과ownedMutationObserver를구현했다.
-directSCRIPT/falsyhm만집계하고대기recorddrain/stop/drop/과대입력/재진입/
-실패disconnect를검증한다. enable_guard_hooks는명시opt-in이며default생성자는
-전역eval/Function을대체하지않는다. directeval lexical변경을API/정본에명시하고
-return/throw/this/newTarget/중첩호출/부분rollback/외부교체보존/복원실패/
-동일realm중복거절도현재51개browsercase에포함된다. defaultguard.reported=false와
-opt-in measuredcoverage를구분하며인간/코드실행attestation으로사용하지않는다.
-Windows컴파일WASM을기존고정Linuximage에readonlymount한component증거로서
-새sourceimagebuild나full제품e2e는아니다. 과거34/40/47분모는각sourceevidence에
-보존하며현재결과와혼합하지않는다.
+Guard implements an actual prototype/native baseline and owned MutationObserver.
+It counts only direct SCRIPT/falsy hm and verifies pending-record drain/stop/drop/
+oversized input/reentrancy/failure disconnect. enable_guard_hooks is explicitly
+opt-in; default constructors do not replace global eval/Function. Direct-eval lexical
+changes are stated in API/canon. Current51 browser cases also cover return/throw/
+this/newTarget/nested calls/partial rollback/preservation of external replacements/
+restoration failure/duplicate rejection in the same realm. Distinguish default
+guard.reported=false from opt-in measured coverage; neither is human/code-execution
+attestation. This is component evidence from Windows-compiled WASM mounted read-only
+into the existing pinned Linux image, not a new-source image build or full-product
+e2e. Historical34/40/47 denominators remain in their source evidence and are not
+mixed with current results.
 
-### Browser request codec 구현 경계
+### Browser request-codec implementation boundary
 
-공유 integrity::request::browser의 Binding/canonical/BindingError/PROTOCOL은
-실제 구현됐다.14field byte-length framing과별도domain,rawbodySHA256,
-canonicalsession/JSsafe숫자/경로/헤더/buffer bound를검증한다.17unit+3legacy
-parity/strictClippy/wasm32check가통과했고고정벡터SHA/HMAC는독립.NET검산과
-일치한다. 이는Fetch실행·bootstrap·freshsession·replay·qualifiedreport나
-제품e2e가아니다. runtime과collector가같은codec를직접소비해야하며canonical은
-applicationcredentials를포함하므로로그/진단/공개증거에노출하지않는다.
-초기cookie-freeprofile과추후route-scopedcookieprepare지원은구분한다.
+Shared integrity::request::browser Binding/canonical/BindingError/PROTOCOL are
+implemented. They verify14-field byte-length framing with a separate domain, raw-body
+SHA256, canonical session/JS-safe numbers/paths/headers/buffer bounds. 17 units +
+3 legacy parity/strict Clippy/wasm32 check passed; fixed-vector SHA/HMAC matched an
+independent .NET calculation. This is not Fetch execution/bootstrap/fresh session/
+replay/qualified reports or product e2e. runtime and collector must directly consume
+the same codec. canonical contains application credentials and must not appear in
+logs/diagnostics/public evidence. Distinguish the initial cookie-free profile from
+future route-scoped cookie-prepare support.
 
-### 공통 adapter parser의 provisioned identity 계약
+### Provisioned-identity contract for the shared adapter parser
 
-공유 integrity parser는 고정 protocol0.1의 검증을 복제하지 않고
-parse_for(bytes,now,ExpectedAdapter)를 제공한다. expected id/version은 인증된
-설치 설정에서만 전달하고 요청 envelope에서 선택하지 않는다. 기존 parse는
-기존 Node identity/version에 고정하여 호환성을 유지한다. 다른 identity를
-명시적으로 설정해도 raw TLS/H2/capture/stream 지원은 생기지 않으며 기존
-필수 필드·중복키·digest·deadline·provenance 거절을 모두 유지한다.
-ValidatedRequest의 identity/header mode/connection ID getter는 관측값이며
-peer 인증·scope/replay·audit 권한을 대신하지 않는다. 잘못된 설정 identity,
-version mismatch 및 non-null capture/stream을 부정 검증한다.
+The shared integrity parser provides parse_for(bytes,now,ExpectedAdapter) without
+duplicating fixed protocol0.1 validation. Pass expected id/version only from
+authenticated installation settings; never select them from the request envelope.
+Existing parse remains fixed to the existing Node identity/version for compatibility.
+Explicitly configuring another identity does not add raw TLS/H2/capture/stream
+support; all existing required-field/duplicate-key/digest/deadline/provenance
+rejections remain. ValidatedRequest identity/header-mode/connection-ID getters are
+observations, not substitutes for peer authentication/scope/replay/audit authority.
+Negative checks cover invalid configured identity, version mismatch and non-null
+capture/stream.
 
-후속 알려진 profile은 parse_with_profile과 AdapterProfile::{Node,Nginx}로
-명시한다. Nginx는 nginx-raw/nginx-normalized만 허용하며 connectionId는 항상
-null이다. normalized는 peer도null, rawHeaderOrder=false다. raw는 파싱된 HTTP
-헤더 순서 관측일 뿐 TLS/H2/capture나 원본 client 인증을 증명하지 않는다.
-기존 parse/parse_for의 관측 vocabulary는 유지한다. 새 profile 검증의 local
-integrity13unit+3legacy parity와 strictClippy가 통과했으나 native nginx plugin과
-authority의 credential/profile 결합은 담당 채팅의 후속 구현이다.
+Subsequent known profiles are explicit through parse_with_profile and
+AdapterProfile::{Node,Nginx}. Nginx accepts only nginx-raw/nginx-normalized;
+connectionId is always null. In normalized mode peer is also null and
+rawHeaderOrder=false. Raw mode observes parsed HTTP-header order only; it does not
+prove TLS/H2/capture or original-client authentication. Existing parse/parse_for
+observation vocabulary is retained. Local integrity13 units +3 legacy parity and
+strict Clippy passed for the new profile checks. Binding native nginx plugin and
+authority credentials/profiles remains follow-up implementation in the owning chat.
 
-1. 전체 rawcapture/qualified collector/Pass/proxy/admin 경로가 없다.
-2. audit d001ee6의witness/control·CLI83397fd의signedservice 경계를실제runtime/
-   OS운영/독립authority에연결하고자격화해야한다. API구현을미구현으로재분류하지않는다.
-3. native/browser/Docker Rust runner구현의제품전체연결·exactsource OS실행과
-   실제human/AT e2e가남았다. 기존component/nativefixture를전체성공으로바꾸지않는다.
-4. 브라우저·native SDK/framework의sandbox/ABI/OS/AT 자격화가 미완료다.
-5. 최신docs review/production Pages·registry·최종scan·Rust-only/agents/skills/eval이 남았다.
-6. 모든요건 전에 Go/oracle을지우거나main병합/branch삭제/publish를완료처리하지않는다.
+1. Full raw-capture/qualified-collector/Pass/proxy/admin paths are absent.
+2. Connect and qualify audit d001ee6 witness/control and CLI83397fd signed-service
+   boundaries with actual runtime/OS operations/independent authority. Do not
+   reclassify implemented APIs as unimplemented.
+3. Full-product wiring of native/browser/Docker Rust runners, exact-source OS
+   execution and actual human/AT e2e remain. Do not convert existing component/native
+   fixtures into full success.
+4. Browser/native SDK/framework sandbox/ABI/OS/AT qualification is incomplete.
+5. Latest-doc review/production Pages, registry, final scans and Rust-only/agents/
+   skills/eval remain.
+6. Do not delete Go/oracles or mark main merge/branch deletion/publication complete
+   before all requirements are met.
 
-다음root구현은fingerprint/ICE와clientfreshsession/transport,공통27member통합이다.
-공통Cargo/lock/toolchain과최종통합은root,CI는지정delivery채팅,나머지는각단일writer다.
-사용자의명시요청으로기존13채팅모두후속을재개했고새표준채팅은만들지않았다.
-기존Pages/draft-v0채팅이전체공개문서와표준지속goal을맡는다. 각채팅의계약/
-이력/실행근거지속정본화의무는7827477에기록됐으며대기R01-R17는rootprivate
-runtime-waiting-contracts.json에owner-reported상태로보존했다.
+Next root implementation covers fingerprint/ICE, client fresh-session/transport and
+shared27-member integration. Root owns common Cargo/lock/toolchain and final
+integration; designated delivery chat owns CI; other areas each have one writer.
+At the user's explicit request all existing13 chats resumed follow-up; no new
+standards chat was created. The existing Pages/draft-v0 chat owns all public docs
+and the ongoing standards goal. 7827477 records every chat's continuous canonical
+contract/history/execution-evidence obligations. Pending R01-R17 are retained as
+owner-reported status in root-private runtime-waiting-contracts.json.
 
-공개 Specfold와private 전체tree상태는분리한다. browserPNG의자동secret-scan미지원
-U2는manualsynthetic시각검토범위와함께보존하며면제하지않는다. 과거profile삭제의
-자동승인거절·미삭제기록도이력으로유지하며새삭제완료로주장하지않는다.
+Distinguish public Specfold from full private-tree status. Preserve U2, the browser
+PNG automatic-secret-scan limitation, alongside its manual synthetic visual-review
+scope; do not waive it. Preserve the historical automatic-approval rejection and
+non-deletion record for profile deletion; do not claim a new completed deletion.
