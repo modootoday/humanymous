@@ -181,7 +181,7 @@ exit0, its starting PID and exactly one generic ABI receipt. That is a C# caller
 only. Header/tool/DLL/source hashes and actual local venue bind each receipt;
 all compilation and managed publish require root's serialized allocation.
 
-The eventual generated header is declarations only, generated from Rust layouts
+The generated header is declarations only, generated from Rust layouts
 by upstream cbindgen with exact tool/artifact provenance. Never author C/C++
 implementation or executable templates here. Host glue must provide move-only
 RAII owners with one context close and buffer free, explicit nonthrowing destructors,
@@ -216,6 +216,13 @@ host behavior, cross-OS runtime and full product Docker e2e are not_run.
 Actual local validation was subsequently user-authorized, but this receipt ran
 pure units only. New actual execution awaits the benchmark quiet-window release
 and explicit root allocation; no earlier result is relabeled as a local pilot.
+
+The later local A allocation produced an actual cbindgen0.29.4 header and built
+the DLL. MSVC C11 and C++14 direct header compilation passed, alongside passive
+x64/export inspection and example strict Clippy. This adds artifact evidence,
+not dynamic-call or layout-equivalence proof. The first framework-dependent JIT
+managed restore passed, but pilot build failed with two SYSLIB1051 aggregate
+marshalling diagnostics. No managed probe ran; failed evidence remains separate.
 
 Primary references checked2026-11-07: Rust FFI safety
 https://doc.rust-lang.org/nomicon/ffi.html ; panic limits
