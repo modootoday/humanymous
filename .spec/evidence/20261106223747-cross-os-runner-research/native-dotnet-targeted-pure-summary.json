@@ -1,0 +1,617 @@
+{
+  "schema": "humanymous.native-dotnet-targeted-pure/1",
+  "base_sha": "35ec950dc87a6f4397b448f627ba37137eb47128",
+  "overlay_index_sha256": "a84b7f6f09be63eed1191fd0aed9ae071b54ba9f0a8f927da522624522c426b2",
+  "overlay_index": {
+    "schema": "humanymous.dotnet-source-preparation/1",
+    "base_source": "35ec950dc87a6f4397b448f627ba37137eb47128",
+    "previous_snapshot": "20261108042000-dotnet-adapter-deadline-integration",
+    "state": "fmt-only-not-compiled-not-run",
+    "overlays": [
+      {
+        "path": "crates/dotnet-adapter/tests/hosted.rs",
+        "sha256": "482cf95b5687e27a5b8b15d3f15c286e3725fdd8b58ff51acaa30e2c74e722c1",
+        "bytes": 27347
+      },
+      {
+        "path": "crates/dotnet-adapter/tests/hosted/protocol.rs",
+        "sha256": "4a87557c3c4da971e0a6b569034f4642a41b963e9efb3ef9cfd930eef0f28551",
+        "bytes": 14974
+      },
+      {
+        "path": "crates/dotnet-adapter/tests/hosted/retained.rs",
+        "sha256": "e064300ff42f8ab8838fa39383d34ab96235b58af3f61be51f1bdcfed3bf9940",
+        "bytes": 11704
+      },
+      {
+        "path": "crates/dotnet-adapter/tests/hosted/http.rs",
+        "sha256": "41ae30d6c8b58f87281fb60fbe859169ce44dba755212e8c18ad7fb4864cbbbf",
+        "bytes": 1934
+      },
+      {
+        "path": ".spec/plan/20261107073000-dotnet-adapter.plan.md",
+        "sha256": "1e243605ec0fd5aefde720951b0ae4044cc6b638d64b29f971a874d3433715b4",
+        "bytes": 40606
+      }
+    ],
+    "native_admission": "Unsupported-before-Command",
+    "actual_host": false
+  },
+  "state": "FAILED_DOTNET_STRICT_CLIPPY",
+  "native_owner_pure_static": "PASSED",
+  "full_product": false,
+  "native_producer": "Unsupported",
+  "actual_child_socket_scm_host_gpu_cases": 0,
+  "admission": {
+    "utc": "2026-11-07T18:48:24.8851972Z",
+    "commit_percent": 68.90600437040115,
+    "physical_available_mib": 33824.0,
+    "disk_free_bytes": 112885444608,
+    "root_joint_admission": true,
+    "foreign_compiler_process_count": 6,
+    "foreign_process_identifiers_and_paths": "private raw attachment only",
+    "exact_target_competing_writer_observed": false
+  },
+  "original_budget": {
+    "run_until": "2026-11-07T18:56:24.9749106Z",
+    "cleanup_until": "2026-11-07T18:57:24.9749106Z",
+    "start_utc": "2026-11-07T18:48:24.9749106Z"
+  },
+  "commands": {
+    "fmt": {
+      "started_utc": "2026-11-07T18:48:27.2084234Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:27.5523782Z"
+    },
+    "tree-workspace": {
+      "started_utc": "2026-11-07T18:48:28.5696261Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:29.0253341Z"
+    },
+    "tree-runner": {
+      "started_utc": "2026-11-07T18:48:30.0333588Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:30.1355203Z"
+    },
+    "interactive-pure": {
+      "started_utc": "2026-11-07T18:48:34.3204018Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:43.68277Z"
+    },
+    "capture-pure": {
+      "started_utc": "2026-11-07T18:48:44.6987634Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:45.0000676Z"
+    },
+    "direct-pure": {
+      "started_utc": "2026-11-07T18:48:46.0133467Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:46.2830169Z"
+    },
+    "barrier-pure": {
+      "started_utc": "2026-11-07T18:48:47.3021667Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:47.5936463Z"
+    },
+    "service-summary-pure": {
+      "started_utc": "2026-11-07T18:48:48.6101075Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:48:59.7639965Z"
+    },
+    "dotnet-protocol-pure": {
+      "started_utc": "2026-11-07T18:49:00.7721077Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:49:42.7401227Z"
+    },
+    "support-check": {
+      "started_utc": "2026-11-07T18:49:43.760748Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:49:46.3091894Z"
+    },
+    "support-clippy": {
+      "started_utc": "2026-11-07T18:49:47.3282264Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:49:48.2676824Z"
+    },
+    "controller-check": {
+      "started_utc": "2026-11-07T18:49:49.2741269Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:49:55.1078768Z"
+    },
+    "controller-clippy": {
+      "started_utc": "2026-11-07T18:49:56.1255124Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:49:57.3607739Z"
+    },
+    "dotnet-check": {
+      "started_utc": "2026-11-07T18:49:58.3687335Z",
+      "exit_code": 0,
+      "terminal_observed_utc": "2026-11-07T18:50:15.0544902Z"
+    },
+    "dotnet-clippy": {
+      "started_utc": "2026-11-07T18:50:16.0791657Z",
+      "exit_code": 101,
+      "terminal_observed_utc": "2026-11-07T18:50:20.3098599Z"
+    }
+  },
+  "pure": {
+    "total_passed": 37,
+    "dotnet_protocol": {
+      "filtered": 13,
+      "passed": 11
+    },
+    "direct_pipe": {
+      "filtered": 54,
+      "passed": 1
+    },
+    "interactive": {
+      "filtered": 45,
+      "passed": 10
+    },
+    "service_summary": {
+      "filtered": 47,
+      "passed": 8
+    },
+    "capture": {
+      "filtered": 50,
+      "passed": 5
+    },
+    "measured": 0,
+    "failed": 0,
+    "barrier": {
+      "filtered": 53,
+      "passed": 2
+    },
+    "ignored": 0
+  },
+  "first_failure": {
+    "source_owner": "dotnet adapter",
+    "exit_code": 101,
+    "reason": "collapsible_if retained.rs266..275 finished pending HTTP worker then if-let take",
+    "retry_performed": false,
+    "stage": "dotnet-clippy"
+  },
+  "closure": {
+    "immediate_before_after_identical": true,
+    "overlay_before_after_exact": true,
+    "counts": {
+      "source_files": 409,
+      "local_roots": 15,
+      "registry_packages": 86,
+      "registry_files": 4359.0,
+      "config_paths": 34,
+      "tool_files": 76.0,
+      "environment_fields": 7
+    },
+    "selected_by": "locked offline normal/build/dev Windows cargo trees, two roots, no all-workspace registry scan"
+  },
+  "test_binary_pins": [
+    {
+      "name": "hosted-96742160f640f469.exe",
+      "sha256": "9fcb73185ddeea24c4d1340cca62fa071ae354cee62a51af0b85aca754934ec1",
+      "bytes": 8359936
+    },
+    {
+      "name": "humanymous_native_runner-fd4e6529edbdccea.exe",
+      "sha256": "3cb0597e0d3bc964a6958c35408029cd88cdf29d598d054ed26d5a1d14b0c260",
+      "bytes": 2778624
+    },
+    {
+      "name": "humanymous_test_support-5a5463700a0b8be0.exe",
+      "sha256": "c9c8b478c97ad17dcc4587c5bdb8955a5f9f08644e46f10f3f270d0d8264c5da",
+      "bytes": 2131968
+    }
+  ],
+  "terminal": {
+    "actual_child_host_scm_gpu_cases": 0,
+    "own_live_gate_count": 0,
+    "retry_performed": false,
+    "failure": "dotnet-clippy failed 101",
+    "utc": "2026-11-07T18:50:21.5024035Z"
+  },
+  "execution_terminal": {
+    "actual_marker_removed": true,
+    "gate_pids_absent": true,
+    "utc": "2026-11-07T18:50:20.3310501Z"
+  },
+  "limits": [
+    "37pure passes do not override the combined .NET strict Clippy failure",
+    "Native owner clock/summary pure-static gates passed only, no actual retained child/IO-thread/EOF or SCM profile",
+    "Readonly getter conservation is clock-ledger proof, not NativeProof",
+    "Source correction of .NET style belongs to its owner; no foreign mutation or hidden retry",
+    "Prior f95 and d460 immutable failures remain separate history",
+    "GPU proposal and OS metadata do not authorize GPU use"
+  ],
+  "attachments": [
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/admission.json",
+      "bytes": 1497,
+      "sha256": "11719a57a1ea6559293fc290eec33a3d292d1b1dbb33eca208d99f97b5efdc38"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/after.json",
+      "bytes": 514204,
+      "sha256": "e2e827df67d67bbf4dd1ac8384ff2f167bef24c5faf1ddf7de5e79aee3357375"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/barrier-pure.admission.json",
+      "bytes": 161,
+      "sha256": "dfa9b67cfbfa631a2e5d679960f71dc7aeaa0652fdd134b755796ce7cd9ee715"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/barrier-pure.process.json",
+      "bytes": 332,
+      "sha256": "83ce5291a52e5cbc6de9d213ca033382a29b3d275c63b2aaab944376b75ba028"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/barrier-pure.stderr.log",
+      "bytes": 225,
+      "sha256": "07dcd0cfa6e699b45f5dea34d612af767ac32691764e28d45e593f49d34a82de"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/barrier-pure.stdout.log",
+      "bytes": 318,
+      "sha256": "423ce00f1529ce975a5e10b8839d1032c783720bfa5c7182db018f453a3b7163"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/base-source.tar",
+      "bytes": 72632320,
+      "sha256": "53bffc916056d2fbf12d348f5e7665395924d12c9f3f7fcae4d5ff6f5ce832ae"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/before.json",
+      "bytes": 514204,
+      "sha256": "e2e827df67d67bbf4dd1ac8384ff2f167bef24c5faf1ddf7de5e79aee3357375"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/capture-pure.admission.json",
+      "bytes": 161,
+      "sha256": "82c2352384dac3cf397a53994a70cfaeb5bd694d0555cf651339ca54fb16370a"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/capture-pure.process.json",
+      "bytes": 329,
+      "sha256": "b8c9d93a3ab6d97e08f7e2da238438410244ad11a72124ccf4b55866db3739ad"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/capture-pure.stderr.log",
+      "bytes": 225,
+      "sha256": "07dcd0cfa6e699b45f5dea34d612af767ac32691764e28d45e593f49d34a82de"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/capture-pure.stdout.log",
+      "bytes": 670,
+      "sha256": "61e502d02fc8ebd9b942640785c208ba4f08de73ad4fdfeab2f9b14e13643fbd"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/closure-comparison.json",
+      "bytes": 69,
+      "sha256": "4b1d9d757f08cb65866dfde0f4df23ed7212596bb3359f35b1a095f8728e2a68"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/closure-counts.json",
+      "bytes": 182,
+      "sha256": "4af630178f4513427544d0c1c10b02a5938f98f2ceea5e5cd4c47ffd06e5268d"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/commands.json",
+      "bytes": 2446,
+      "sha256": "ec0f4b71af103a71c7923c311ada3e70b7f5f897a42902357171baff6d689b2c"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-check.admission.json",
+      "bytes": 160,
+      "sha256": "c92124c91eef5659a9fc6e9993b8d03be12446e035002e4dec727017f512096b"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-check.process.json",
+      "bytes": 295,
+      "sha256": "e726bb807b0d8b51bb40ca929bfbae737447079de5b17024ba53892f0eb1bfc5"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-check.stderr.log",
+      "bytes": 1450,
+      "sha256": "27d2bc333ebf1db0ab7c256ae2aaa73e1571c5ed5a1913f24eff15994f99099c"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-check.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-clippy.admission.json",
+      "bytes": 161,
+      "sha256": "56c100601a2e3224f4da872a997af833b78577903736817f11158403790859d8"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-clippy.process.json",
+      "bytes": 334,
+      "sha256": "dafdab0267965872588d9ac8ee5f1a4741a220a4a21e34aaba56c45160e34223"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-clippy.stderr.log",
+      "bytes": 263,
+      "sha256": "43554a2ad592f0a6d13a010af4a19faefc258b13a85a1dad2dc2c36fca93b12d"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/controller-clippy.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/direct-pure.admission.json",
+      "bytes": 161,
+      "sha256": "03bcdae5f1da930734721c4b6834da3a27758ea0837d2a4879f61e6f9dbd6c45"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/direct-pure.process.json",
+      "bytes": 325,
+      "sha256": "3e1a1dc60df26b0e4ef00151fc67012ca244b1e4bae19f56e5902db9db186e11"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/direct-pure.stderr.log",
+      "bytes": 225,
+      "sha256": "6da186db3503c3950d9b8062b33f2aae03bac2b26b2c1ef87a1c6217c362fc9f"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/direct-pure.stdout.log",
+      "bytes": 203,
+      "sha256": "126589e17c47822dff9b970e4546e8bf3d4b8ff038aeb42d5ed768a012628466"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-check.admission.json",
+      "bytes": 161,
+      "sha256": "78287ebfcad598eb1ee2a228005e4bb2cdea597233e0002b22cdc78b3339aa02"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-check.process.json",
+      "bytes": 264,
+      "sha256": "2eb70cc125a162fba84b917dacd2829b9bd1016bcb93bae2e8b3ac474a3a84d8"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-check.stderr.log",
+      "bytes": 4298,
+      "sha256": "f7ecd4ff8dcb190fbae23040a852b61450905db63fe8ae2cf54172f4518d58ae"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-check.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-clippy.admission.json",
+      "bytes": 161,
+      "sha256": "52527b8e1cacefb21052baf8cb2476c77601324ba7ef308bb5b4e8805b62a81d"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-clippy.process.json",
+      "bytes": 304,
+      "sha256": "b0f31c0912d6bb962d86012bfc3479e0f9471b6801b07d1d2267f6952d1c3236"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-clippy.stderr.log",
+      "bytes": 3463,
+      "sha256": "f807d2aac06dec5b2bc32d80ef52c7b3c7fb9fb8a686c42585667094269de07a"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-clippy.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-protocol-pure.admission.json",
+      "bytes": 161,
+      "sha256": "5d8613c6d8a57ce7a578beb35dc1471dc17e6fc0fbdba559b90ebc96a7fef773"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-protocol-pure.process.json",
+      "bytes": 331,
+      "sha256": "90107d36566b6656dbcf9e3b9e3c46ae2303430c8b83e25af03caf4f1c21fdab"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-protocol-pure.stderr.log",
+      "bytes": 4747,
+      "sha256": "2c3f2164c6a993033d05a2acfe432cdef0c1931db1d81c5b5253bcab38d28c90"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/dotnet-protocol-pure.stdout.log",
+      "bytes": 1014,
+      "sha256": "0994d20e43e0fd11a59cd7784800d8f19b4338124c8b0e359a10a9a82b3020a7"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/execution-terminal.json",
+      "bytes": 110,
+      "sha256": "4cfcea961738ef11ba642af562a63ea2f0fe906cdc6aab5430079915f030bfa9"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/first-failure.json",
+      "bytes": 118,
+      "sha256": "775d873df0eb16a5520cbe34585a0e2d00c0fdcbeac94466781c79f9d5238698"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/fmt.admission.json",
+      "bytes": 161,
+      "sha256": "3d555afbf7a0d2343fe73366ddc0cc96584a2f9dd3398d4664d81ab230a62549"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/fmt.process.json",
+      "bytes": 337,
+      "sha256": "bb22ac565c5541d28ab4a3cd0fd3d1db9d8dcc473ebeeccf6dc6278df5c1f9ee"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/fmt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/fmt.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/interactive-pure.admission.json",
+      "bytes": 160,
+      "sha256": "27bd585fd99089f19f5f7455e65857131b2ec2dea64d218212e3233f172051c6"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/interactive-pure.process.json",
+      "bytes": 325,
+      "sha256": "5062a02bf078d79b67f3ba8ab3e29d87810361703f403dfbfc5c8de355be1e93"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/interactive-pure.stderr.log",
+      "bytes": 730,
+      "sha256": "4ad2e5f509882c4b4ac8360fa20a45816a27c3fb8da466e9b6d6308b4bc9e63f"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/interactive-pure.stdout.log",
+      "bytes": 1066,
+      "sha256": "e5c32f32c0adb5fc542393335189e1081274a95dfa85da3d61746cd9fc2567f0"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/lease-end.json",
+      "bytes": 573,
+      "sha256": "534c935b8caa9b35e27118c1eda3e655884d24c61928d98f5c244f5a772c04a4"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/lease-start.json",
+      "bytes": 510,
+      "sha256": "b00035aa0db290209d6374d6a702245521e9fb50f051d012a5c6007933c1d6f8"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/original-budget.json",
+      "bytes": 153,
+      "sha256": "7ee18f49959d9600e9b62d225ee3e18f3dd2e4a5360ecd3f26f286617b83b95e"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/overlay-after.json",
+      "bytes": 988,
+      "sha256": "402a7c02ba77781e76ef625f035ad4c1e537cff32b583baab81dc1dff5f5f01a"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/overlay-index.json",
+      "bytes": 1233,
+      "sha256": "a84b7f6f09be63eed1191fd0aed9ae071b54ba9f0a8f927da522624522c426b2"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/pre-admission-clarification.json",
+      "bytes": 462,
+      "sha256": "3ce8101b6b048b8291e2b3e99bba0eefe9452d2058b986da0a03e92790dd4eb7"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/selected-inputs.json",
+      "bytes": 10147,
+      "sha256": "83e8b99d1e80b723bb8f33a47bc6bb0cccd2100b4fb769d33a78a467fd5452d7"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/service-summary-pure.admission.json",
+      "bytes": 161,
+      "sha256": "648f571c1ddbfdcddf0331e2a097a4706f4ec871120c97bc5ea43a94fbe428d9"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/service-summary-pure.process.json",
+      "bytes": 340,
+      "sha256": "a49057712f86ffb8da6ec1cb012d8948765422adac820f9673bb139608162c86"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/service-summary-pure.stderr.log",
+      "bytes": 1640,
+      "sha256": "2446a0fdeb4dc6ca645eeea59c7210838d85605a2a41a03b8366023c21a8b704"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/service-summary-pure.stdout.log",
+      "bytes": 889,
+      "sha256": "6b490c0bd71c424de8751532602c3a92bafb664e23626c0642e95d60d2344153"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-check.admission.json",
+      "bytes": 161,
+      "sha256": "67caec4479a7dc10468aca9b4635180c14ca83f5ab2c07fbb4d263bf7eeee7eb"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-check.process.json",
+      "bytes": 262,
+      "sha256": "2dd4bc6a2277a322428cd9a51061e05c30fcc486f99aafae4f0edfd4b667cf28"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-check.stderr.log",
+      "bytes": 422,
+      "sha256": "a6d8400f1987f094ccc885e26ae6de326264a9c31a42e059f8b0eb0e68ccaac0"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-check.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-clippy.admission.json",
+      "bytes": 161,
+      "sha256": "ad8e2737b3fd1753e1631a286a3d56f127ec0b7a8cef77d169d8ecaa7bf09edc"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-clippy.process.json",
+      "bytes": 302,
+      "sha256": "34090d954cd4fd501a60caad824a33e86b0e02de614b8fdcd6dfcd8a56cc2b84"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-clippy.stderr.log",
+      "bytes": 249,
+      "sha256": "c34e83b026929172a4cee8d84d9b01c70122405055aa184c5d9f7a35f38157b9"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/support-clippy.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/terminal.json",
+      "bytes": 188,
+      "sha256": "65de4bf1b14831da6a42d10560da43afb0eb74ef8f141e7bbeb953a71a8f28b8"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/test-binary-pins.json",
+      "bytes": 520,
+      "sha256": "80efedcd0419f3f5a1b4585c05a6b8c9868ff07faeaed4f97344d806178c457b"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-runner.admission.json",
+      "bytes": 161,
+      "sha256": "ec9145c9f4aa17a9a4d5ba4fab454fd335e848510d2511c70335ecb936196438"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-runner.process.json",
+      "bytes": 420,
+      "sha256": "5c4b346f2a66874846e9f62d96978d677d3bc79c0d769beae7db21c58dc5bc48"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-runner.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-runner.stdout.log",
+      "bytes": 1666,
+      "sha256": "d63ef4b8d3feb559dd82b97f832bfcb0544477e939c1cd0dbff82370dd597ef5"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-workspace.admission.json",
+      "bytes": 161,
+      "sha256": "d5e5f2638fd04b1b6a2965374699d685dc45c86c7f15b49d509e0f2cad763178"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-workspace.process.json",
+      "bytes": 432,
+      "sha256": "ece83dfcfd7fd99f3f2c6f36b0bed8eb9e28be4b074fee8fc702a0b08489928f"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-workspace.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".spec.local/root/evidence/20261107185500-windows-runner-native-net-targeted-r3/tree-workspace.stdout.log",
+      "bytes": 8357,
+      "sha256": "b2b492a18860757614f50ce5fdbdb87503273867a8b9b549cf2ae46689b4951f"
+    }
+  ]
+}

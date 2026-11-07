@@ -1050,3 +1050,39 @@ It does not fabricate a Child or claim actual retained-process failure proof.
 Actual partial-worker/startup/blockedIO/descendant-held-EOF custody and the getter
 through real retained failure still require separately allocated native fixtures.
 Only bare fmt/spec/diff ran; independent source review precedes new verification.
+
+## Targeted R3 observed checkpoint: Native static gates green, .NET style fails
+
+Root accepted exact35ec950d plus ONLY five frozen .NET044000 overlays, indexSHA
+a84b7f6f09be63eed1191fd0aed9ae071b54ba9f0a8f927da522624522c426b2.
+All copied hashes/sizes and post-run overlays match. Host derives native original
+clocks and post-HTTP-join checks original run before successful bytes. No producer
+factory/Command fallback or actual Host launch was added.
+
+Initial over-strict admission check refused any foreign compiler before creating
+target/lease/clock. Root clarified bounded distinct-target joint execution under
+the six-pipeline/memory ceiling; no foreign process was touched. Actual R3 began
+ONCE18:48:24.9749106Z, original480s work/540s total; guarded33824MiB/68.906percent.
+Target/native-net-35ec-targeted-r3 actual CreateNew marker/readback was exclusive.
+Complete orchestration preceded clock; actual archive/overlay/tree/hash stayed
+inside it. Bare fmt FIRST and both locked offline Windows normal/build/dev trees
+pass. TARGETED closure:15local roots/409files,86registry packages/4359files,
+config34/recursive76tools/environment7; immediate before/after and all overlays
+identical. The former622package inventory mistake was not repeated.
+
+Separate exact pure footers: interactive10/filter45, capture5/filter50, direct1/
+filter54, barrier2/filter53, service-summary8/filter47, .NET protocol11/filter13.
+All37 pass, zero failed/ignored/measured. Support and standalone runner both
+all-target check/strictClippy exit0; .NET all-target check0. LAST .NET strictClippy
+101 at frozen retained.rs266..275 collapsible_if for finished pending HTTP worker
+plus nested if-let. Stop-first-failure/no hidden retry honored. Foreign .NET style
+fix belongs to its owner. Whole candidate remains FAILED, despite the Native
+pure/static gates passing. Prior immutable f95/d460 failures remain unchanged.
+
+Actual marker removed/all gate PIDs absent18:50:20.331Z; metadata/terminal recorded
+18:50:21.502Z, inside original work horizon, handles0. Registered
+native-dotnet-targeted-pure-summary.json retains78raw attachment hashes and three
+test-binary pins. Foreign process identifiers/paths stay private raw evidence.
+Actual interactive child/IO worker/descendant EOF/Host/SCM/GPU cases remain0.
+Pure ledger retention is not actual retained-child proof; native producer remains
+Unsupported. New .NET style bytes require their own coherent review/validation.

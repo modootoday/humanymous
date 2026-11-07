@@ -1118,3 +1118,12 @@ dependency, shader language/unsafe exceptions and actual workload remain
 unapproved; current GPU execution evidence is0. Cross-cutting CPU/GPU policy
 belongs to Root structural canon, not this component proposal. Existing CPU
 experiments, detection freeze, ABI v1 and native/hosted qualification gaps persist.
+
+Later targeted R3 at immutable35ec950d plus exactly five frozen .NET044000
+overlays observes37 pure passes, support/runner all-target check+strictClippy0 and
+.NET check0. This qualifies the shared interactive API/clock getter and service
+summary only at pure/static scope. Final .NET strictClippy101 collapsible_if keeps
+the combined candidate failed; no hidden retry or changed-source promotion.
+Registered native-dotnet-targeted-pure-summary.json preserves exact closure,
+footers, first failure and terminal lease removal. Actual interactive workers,
+retained partial failure, descendant EOF, provider/Host/SCM/GPU remain unqualified.
