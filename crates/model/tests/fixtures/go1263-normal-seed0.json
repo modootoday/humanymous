@@ -1,0 +1,23 @@
+{
+  "schema": "humanymous.rng-authoritative-vector/1",
+  "status": "RETAINED_UPSTREAM_EXPECTATIONS_NOT_EXECUTED",
+  "upstream_version": "go1.26.3",
+  "source_path": "src/math/rand/regress_test.go",
+  "source_sha256": "bfd84f4881dd8bd1f057ccc4ba989b88194647a2cd791d7e96bb9e3133f0baa7",
+  "source_lines": "304-323",
+  "license": "Copyright 2014 The Go Authors; BSD LICENSE retained with immutable upstream source",
+  "seed_i64_decimal": "0",
+  "operation": "NormFloat64",
+  "reset_before_sequence": true,
+  "sequence_is_mixed_with_shuffle": false,
+  "expected_f64_decimal": [
+    "-0.28158587086436215", "0.570933095808067", "-1.6920196326157044",
+    "0.1996229111693099", "1.9195199291234621", "0.8954838794918353",
+    "0.41457072128813166", "-0.48700161491544713", "-0.1684059662402393",
+    "0.37056410998929545", "1.0156889027029008", "-0.5174422210625114",
+    "-0.5565834214413804", "0.778320596648391", "-1.8970718197702225",
+    "0.5229525761688676", "-1.5515595563231523", "0.0182029289376123",
+    "-0.6820951356608795", "-0.5987943422687668"
+  ],
+  "limitations": "Per-method seed0 source golden only; no execution, mixed normal/shuffle order, warm path, state, tail trace or SGD proof. Decimal strings preserve upstream spellings."
+}

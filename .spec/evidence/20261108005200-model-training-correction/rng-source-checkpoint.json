@@ -1,0 +1,82 @@
+{
+  "schema": "humanymous.rng-source-checkpoint/1",
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "toolchain_contract": "Rust1.99.1 edition2024",
+  "upstream": "Go1.26.3 math/rand NewSource",
+  "tests_authored": 12,
+  "tests_executed": 0,
+  "formatter_executed": false,
+  "compiler_executed": false,
+  "oracle_executed": false,
+  "upstream_expected": "20Int63 seed0 +20NormFloat64 seed0 source goldens; not new oracle receipts",
+  "rust_derived": "607-word reference states, mixed initialization/shuffle and epoch order, injected rejection/tail tapes; no Go-observed midstate",
+  "primitive_draw_budget_ceiling": 1000000,
+  "pending": "fmt/tests/check/Clippy, actual target math parity, external oracle, full training budget and root aggregate license attribution",
+  "source_files": [
+    {
+      "path": "crates/model/src/training/mod.rs",
+      "bytes": 139,
+      "sha256": "0f98f8588ac55ea29e3485bf7dc5f737da393efcb38378ce583909d19f53c1f3"
+    },
+    {
+      "path": "crates/model/src/training/rng/initialize.rs",
+      "bytes": 2779,
+      "sha256": "0e7546b98a65b6e790d15f893d116c426c50a51739dbba757861119508d4bbc1"
+    },
+    {
+      "path": "crates/model/src/training/rng/INTEGRATION.md",
+      "bytes": 3136,
+      "sha256": "21c4e0cf869c47577141b6115433c823ca669f988f9509fb9b922bfd24268c80"
+    },
+    {
+      "path": "crates/model/src/training/rng/LICENSE",
+      "bytes": 1453,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+    },
+    {
+      "path": "crates/model/src/training/rng/mod.rs",
+      "bytes": 2765,
+      "sha256": "ba8ce1867b988ca6d80402a4309ee1e9679d09711964942eb28b6ba9dd99f59c"
+    },
+    {
+      "path": "crates/model/src/training/rng/normal.rs",
+      "bytes": 1111,
+      "sha256": "3ab3ec8041e3ecc9097cf642605753a06810ecc3514c1f1b56a3c71fe3e0f084"
+    },
+    {
+      "path": "crates/model/src/training/rng/shuffle.rs",
+      "bytes": 1180,
+      "sha256": "5a1efcebb6deafce15ef673335db7c85f735fa5e5815f05d3f6cca00482a3c97"
+    },
+    {
+      "path": "crates/model/src/training/rng/source.rs",
+      "bytes": 4167,
+      "sha256": "dfbe5fe44701446d69b3695b1d9aaa1b3de0379eba97457fac39bf8fe7a06e0c"
+    },
+    {
+      "path": "crates/model/src/training/rng/tables.rs",
+      "bytes": 19187,
+      "sha256": "3c097e0d8a795c0c15519b3c22461ff81a7014b3b2f89e428948009ba4b46487"
+    },
+    {
+      "path": "crates/model/src/training/rng/tests.rs",
+      "bytes": 14968,
+      "sha256": "38180223c477fd4bd430d0ba93649aa4f4e69eb78cc7fb105a2a16d394f1d450"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-normal-seed0.json",
+      "bytes": 1246,
+      "sha256": "1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-normal-source.txt",
+      "bytes": 6459,
+      "sha256": "d8f4450a14b03bd0ec939eb4b127e199d9d78ba3d07c4ad0a65ac493dfa1c62a"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-rng-source.txt",
+      "bytes": 15112,
+      "sha256": "e301d938fe5dbe4ef5ff52f31de68d2547c3ab50da5c95bb21c49ea983a817ab"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T17:20:34Z
+updated: 2026-11-07T17:54:58Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -14,6 +14,7 @@ files:
   - {path: evaluate-validation.json, sha256: 4032655a3c889eab255ead8193ae715448d88f7d679bad78efe0fe2a705901bc, bytes: 1002, store: repo}
   - {path: rng-upstream-provenance.json, sha256: d9f8ad32d68017a6613a652f4c776f325c2e2048a1aa6de16e607d2296d60b22, bytes: 1899, store: repo}
   - {path: rng-normal-seed0-upstream.json, sha256: 1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989, bytes: 1246, store: repo}
+  - {path: rng-source-checkpoint.json, sha256: 96387eb06ecb372439d9370bec517fe981b0576df624f5107defc5f4eac95e41, bytes: 3079, store: repo}
 ---
 
 # Read-only source inventory
@@ -388,3 +389,28 @@ fixture. The plan now specifies exact seed/shape/epoch/input/midstate fields,
 unmodified bounded oracle invocations and observability gaps, plus proposed Rust-only
 kernel/reference scope. Root acceptance is needed before RNG implementation or
 fixture/oracle workloads; existing full model scope/freeze remain unchanged.
+
+## User-authorized Rust RNG source and differential tests
+
+The user subsequently authorized Rust RNG implementation with no execution before
+separate allocation. Seven Rust files in training/rng plus module export implement
+single seeded stream, bounded draw state, normal, shuffle and cold/warm helpers.
+All12new tests are NOT_RUN. No Rustfmt, Cargo, Go, model initialization, training,
+inference, download, GPU or process pilot was executed for this candidate.
+
+Static source inspection compared all607cooked and3x128normal table spellings
+against pinned Go1.26.3 (only typed float1 versus1.0 differs). Full BSD LICENSE
+SHA256 remains911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad.
+Unchanged source fixtures are table DATA, never executable Go. Upstream output
+goldens versus Rust-derived reference/state/tape evidence are explicitly separated
+in tests and INTEGRATION.md; no Go-observed midstate values are fabricated.
+The later allocated tests must establish actual results, source closure and math
+platform limits. Root-owned aggregate attribution and full-training budget remain
+integration gates; existing14/18/4pass histories do not qualify this new source.
+
+Owned scoped spec check passed with0errors/0warnings. The public global snapshot
+instead had one P2 error in the browser owner's viewport-source-candidate.json
+attachment inventory; no foreign repair was attempted. This checkpoint claims no
+global green and no formatter/test execution. All kernel/source/fixture hashes
+are registered in rng-source-checkpoint.json; future execution must bind to the
+actual committed candidate and preserve any first failures.

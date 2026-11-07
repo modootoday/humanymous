@@ -24,8 +24,10 @@ fmt/check/strict Clippy. The next authorized source-only slice is evaluation met
 reduction was subsequently qualified at aeefd20c:4reducer tests passed,17prior
 library tests filtered, fmt/check/strict Clippy passed in a separate native target.
 [[evidence:root/20261108005200]] binds exact source/closure and exclusions.
-New crates, manifests, binaries, SGD/RNG and
-lifecycle implementation remain unapproved. Full legacy responsibility
+The user subsequently authorized the pinned Rust RNG kernel and differential
+tests as SOURCE ONLY. training/rng now owns explicit seeded state, bounded normal/
+shuffle, cold/warm initialization helpers and12authored tests, all NOT_RUN.
+New crates, manifests, binaries, SGD and lifecycle remain unapproved. Full legacy responsibility
 remains in scope. No retirement, training-loop, production inference or full runtime
 parity is claimed. Existing pure inference fixture comparison was executed only
 under the explicitly allocated component unit-test grant.
@@ -114,6 +116,36 @@ exact rng/rand/normal algorithm/table source hashes plus cold/warm/epoch-order a
 intermediate state fixtures, or explicitly accept a non-byte-compatible versioned
 format. No Go execution, fixture generation, initialization or RNG implementation
 is granted here. This sequence-proof dependency does not block pure metric counts.
+
+### User-authorized pinned RNG source implementation
+
+The later direct user instruction accepts the L0 contract for Rust implementation
+and differential tests, while explicitly withholding execution until allocation.
+training/rng/{mod,source,normal,shuffle,initialize,tables,tests}.rs plus its LICENSE
+and INTEGRATION record implement only the offline kernel. No formatter/compiler,
+Go oracle, training/inference process or new runtime is executed by this grant.
+
+Preserve Go1.26.3 signed seed modulo/fallback,607/tap273 wrapping state, Int63/
+Uint32/Float64 retry,128entry ziggurat tables with original float widths, internal
+int31n Lemire shuffle and descending in-place epoch permutations. Cold initialization
+consumes27W1+1W2 NormFloat64 calls per hidden row; warm validates/copies without
+draws and leaves the next shuffle on the freshly seeded stream. Shape/schema/
+nonfinite validation precedes draws; requested malformed warm state fails closed
+instead of legacy cold fallback. No public API installs a model or changes scoring.
+
+The finite API supports hidden1..256, samples0..100000 and an explicit primitive
+draw budget1..1000000. This is a bounded kernel profile, not qualification of the
+entire future training sample/epoch maximum. Budget exhaustion is explicit and
+compound methods roll back partial state/output; never silently reseed or fork a
+new stream to continue. Full-training workload budgets remain an integration gate.
+
+License text and original Go copyright notices are preserved; aggregate shared
+attribution updates remain root-owned before packaging. Retained seed0 output
+goldens are upstream expectations. State/order/init transcripts and the slow
+rotation-reference comparisons are Rust-derived, never Go-observed snapshots.
+Shared tables/sampling logic limit reference independence; tail ln/exp/sqrt rounding
+needs actual target evidence. All12new tests, fmt/check/Clippy and oracle comparisons
+remain NOT_RUN. Prior parser/standardization/evaluation receipts remain exact-source.
 
 The accepted first slice uses explicit configurable ceilings of1MiB per physical
 line including its newline,128MiB total bytes including blank lines,100000 parsed

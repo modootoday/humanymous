@@ -155,6 +155,31 @@ bits, normal-tail log/exp supported-target differences and unobserved SGD state
 must remain explicit. Full mixed-stream/SGD parity cannot be declared from these
 vectors alone. No Rust RNG code or new test execution is authored by this proposal.
 
+## Later user-authorized RNG source implementation checkpoint
+
+Direct user authorization now permits the above pinned Rust kernel/differential
+tests, with no execution until a separate allocation. Source paths are
+training/rng/{mod,source,normal,shuffle,initialize,tables,tests}.rs, LICENSE and
+INTEGRATION.md; training/mod.rs exports rng. Existing .txt upstream table data and
+normal JSON fixtures are retained in model/tests/fixtures/go1263-* without executing
+Go. No Cargo/dependency/feature/shared attribution file was changed.
+
+Twelve authored tests include table literal equality, upstream seed0 Int63/normal
+goldens, an independent modular-seed/rotation feedback reference across ring wraps,
+per-primitive mixed stream checks, cold/warm/multi-epoch order comparisons, invalid
+warm shape/schema/nonfinite states, seed modulo, no-draw empty/singleton shuffles,
+atomic budget/size refusal, and injected uniform/normal/shuffle rejection/tail tapes.
+All12are NOT_RUN; no formatter/compiler/kernel/Go execution has occurred. Source
+inspection alone verified607+128+128+128table literals against pinned upstream
+spellings and matching LICENSE hash, not runtime sequence equivalence.
+
+Next allocation must run fmt FIRST, these12 tests, broader model regressions,
+check/strict Clippy and selected closure with first failures preserved. Kernel API
+draw ceiling1000000 is explicit; full sample/epoch training budgets remain future
+integration. Root owns shared third-party attribution before packaging. The full
+29row responsibility, Go mixed-state observability gap, architecture math tails,
+SGD/cohort/time/lifecycle/CLI and production freeze remain unaltered.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.
