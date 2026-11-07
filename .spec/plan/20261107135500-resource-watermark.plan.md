@@ -42,8 +42,12 @@ Foreign dirty files are untouched. Shared Git/index operations were not used.
    with the ten frozen package files at commit
    9b064dbd8942d4fad7f1623da97b6b64c0177a7f. Remaining codecs and original full
    tests are pending. Registration/tree resolution is not compilation or parity.
-5. After explicit local execution allocation only: source-bound V2/V3 gates with
-   distinct target/cache, jobs1/incremental0 and current admission measurements.
+5. Root A16 allocation executed the frozen initial slice at9b064dbd in its exact
+   archive: native Windows fmt/check/strictClippy all0,16 pure tests passed with
+   zero failed/ignored/filtered.3531 before/after files,0 difference records in
+   the documented archive/registry/tool-bin/config closure. Evidence
+   evidence:root/20261107141000 states native toolchain closure limitations.
+   This is initial-slice V2 only; complete codec units and V3 remain pending.
 6. Owner-wired actual HTTP pilot V4 and Docker product scenario V5; retained
    failures and source closure. Root integrates reviewed migration rows serially.
    Legacy removal is root-owned after consumer migration and actual qualification.
@@ -154,5 +158,8 @@ toolchain, production scoring, foreign lane edits, tag/publish/OIDC and Go delet
 Expected verification after allocation: scoped locked package tests, package fmt
 and locked Clippy, independent vectors, real resource/browser/WASM pilot, then
 owner HTTP pilot and Docker product scenario. `spec check` is a document check,
-not a substitute for any of these. Initial design is accepted; execution remains
-unallocated. See crates/watermark/INTEGRATION.md for the concrete source handoff.
+not a substitute for any of these. Initial design is accepted and A16 pure
+component verification passed. Further codec/source slices, dependencies and
+actual pilots remain unallocated. The immutable INTEGRATION.md at the initial
+checkpoint describes its then-unexecuted state; the later A16 evidence supersedes
+that execution status without rewriting the tested source checkpoint.

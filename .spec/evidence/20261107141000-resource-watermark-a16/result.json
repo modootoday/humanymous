@@ -1,0 +1,72 @@
+{
+  "schema": "humanymous.watermark-a16-component/1",
+  "source_commit": "9b064dbd8942d4fad7f1623da97b6b64c0177a7f",
+  "source_archive_sha256": "055b8c86318d4fdb030d87378497c90028deb458088fc8eada253a8fc4087015",
+  "source_archive_bytes": 69294080,
+  "venue": "native Windows x86_64-pc-windows-msvc",
+  "rust": "1.99.1",
+  "controller_pid": 38464,
+  "terminal_session": 65950,
+  "terminal_exit": 0,
+  "target": "target/validation-audit",
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "locked": true,
+  "results": [
+    {
+      "step": "fmt",
+      "command": "cargo fmt -p humanymous-watermark -- --check",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:09:44.021976Z",
+      "ended_utc": "2026-11-07T14:09:44.1232994Z"
+    },
+    {
+      "step": "check",
+      "command": "cargo check --locked --offline -p humanymous-watermark --all-targets --jobs 1",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:09:44.9194167Z",
+      "ended_utc": "2026-11-07T14:09:47.7420487Z"
+    },
+    {
+      "step": "clippy",
+      "command": "cargo clippy --locked --offline -p humanymous-watermark --all-targets --jobs 1 -- -D warnings",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:09:48.9440618Z",
+      "ended_utc": "2026-11-07T14:09:49.4225543Z"
+    },
+    {
+      "step": "tests",
+      "command": "cargo test --locked --offline -p humanymous-watermark --all-targets --jobs 1 -- --test-threads=1",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:09:50.3680676Z",
+      "ended_utc": "2026-11-07T14:09:53.6028176Z"
+    }
+  ],
+  "tests": {
+    "passed": 16,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0
+  },
+  "closure": {
+    "before_files": 3531,
+    "after_files": 3531,
+    "difference_records": 0,
+    "archive_files": 2539,
+    "registry_source_files": 970,
+    "registry_packages": 20,
+    "toolchain_bin_files": 21,
+    "controller_files": 1,
+    "existing_external_config_files": 0,
+    "limits": "Selected toolchain binaries and controller are hashed; complete Windows SDK, linker/system DLLs and host OS files are not snapshotted. No clean shared worktree or whole native toolchain immutability claim."
+  },
+  "admission": {
+    "initial_commit_percent": 82.18887156907331,
+    "initial_free_gib": 30.773075103759766,
+    "each_gate_rechecked": true
+  },
+  "raw_bundle": ".spec.local/root/evidence/20261107141000-resource-watermark-a16/",
+  "qualification": "payload/carrier and bounded ledger pure component only; remaining codecs/original14responsibility parity/resource/HTTP/browser/Docker unqualified"
+}

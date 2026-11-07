@@ -283,6 +283,13 @@ claim erasure of every upstream library's transient HMAC state or caller copies.
 No frame CRC, MIME codec, resource transform, extraction or trace API is shipped
 by this initial slice.
 
+Evidence:root/20261107141000 subsequently verifies the initial source at exact
+commit9b064dbd on native Windows: all-target check, strict Clippy and fmt exit0;
+16 pure units passed with0failed/ignored/filtered. Recorded source/registry/tool-bin
+closure3531files had0difference records. The receipt states excluded native SDK/
+system tool inputs. This is initial component V2, not full fourteen-file parity,
+real resource semantics, authenticated HTTP trace or V3–V5 product qualification.
+
 Ledger uses caller-supplied trusted monotonic Duration instants from one epoch,
 rejects regressions, and stores commit instants without pretending they are
 wall-clock IssuedAt values. Runtime must map monotonic retention and separately
