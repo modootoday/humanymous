@@ -1,0 +1,104 @@
+{
+  "schema": "humanymous.pages-current-render-archive-result/1",
+  "docs_tree": "b403f22dee23ca417329417c234b23f8ef416c4c",
+  "authored_public_content_checkpoint": "cd952ace384327dd796478e1d69d5d3d28b18c3d",
+  "review_ledger_checkpoint": "0f49d2e8d0aea985f01937277da6df732b2560e2",
+  "ruby_image": "ruby:3.3.13-bookworm@sha256:e8bdbcb78ac5610a976012551304271bcd7a5ac43919c1c638ba691279c12b0b",
+  "ruby": "3.3.13 x86_64-linux",
+  "bundler": "2.5.22",
+  "bundle_check_exit": 0,
+  "theme_head": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+  "resource_admission": {
+    "commit_percent": 80.93,
+    "free_physical_gib": 31.48,
+    "server_version": "29.9.2",
+    "engine_os": "linux",
+    "context_verified": true
+  },
+  "limits": {
+    "cpu": 1,
+    "memory_gib": 3,
+    "pids": 256,
+    "user": "1000:1000",
+    "read_only_root": true,
+    "source_theme_bundle_mounts": "read-only",
+    "published_ports": 0
+  },
+  "rechecked_inputs": {
+    "schema": "humanymous.pages-render-input-recheck/1",
+    "observed_at_utc": "2026-11-07T14:26:20.090806+00:00",
+    "frozen_doc_files": 127,
+    "current_and_copy_drift": [],
+    "git_visible_docs_pathset_unchanged": true,
+    "warm_bundle_files": 5680,
+    "warm_bundle_before_after_equal": true,
+    "verifier_bytes_unchanged": true,
+    "theme_head": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+    "theme_worktree_status": "",
+    "limits": "Observed local byte set, not a whole installed compiler/OS environment or independent provenance attestation."
+  },
+  "verifier": {
+    "sha256": "ad04b2d159c4f42d0c5327cebd042c1246f951ea7b6ca0e4f5c3ff8d79b9fed4",
+    "compiled_source": "269607366e4b2e37b47a974595b406b66642caae",
+    "current_source_compile": false
+  },
+  "variants": {
+    "apex": {
+      "jekyll_exit": 0,
+      "theme_strict_exit": 0,
+      "built_exit": 0,
+      "package_exit": 0,
+      "second_archive_check_exit": 0,
+      "pages": 88,
+      "rendered_html": 88,
+      "files": 165,
+      "errors": [],
+      "source_input_sha256": "015cd2fa1dbd13f64c61caff6d473871548cbcf42d864fc1a927d6b6ac8dc332",
+      "archive_sha256": "04d6b3ca292cfec01d2178f403f5b1be84cd76bc8c7ae0d271247359e0ee577e",
+      "inventory_sha256": "26e34f145aad9cc2fa222f4a66ccabd26657683eeccc1e55137394855d7b325d",
+      "actual_http_files": 165,
+      "actual_http_errors": [],
+      "security_txt_sha256": "c378b696d717ca072c7631ab11e0f0d8877d1fdc3c2f8666b493778cec21afea"
+    },
+    "subpath": {
+      "jekyll_exit": 0,
+      "theme_strict_exit": 0,
+      "built_exit": 0,
+      "package_exit": 0,
+      "second_archive_check_exit": 0,
+      "pages": 88,
+      "rendered_html": 88,
+      "files": 165,
+      "errors": [],
+      "source_input_sha256": "015cd2fa1dbd13f64c61caff6d473871548cbcf42d864fc1a927d6b6ac8dc332",
+      "archive_sha256": "f339e4bb5fa3808d508e5fb8514c0f70914c9d3f36591699c8934bac9196846b",
+      "inventory_sha256": "e1951f0157e9c8414bbe6ce3f33f8e76d5b158125aade2b249321e68e9eaedba",
+      "actual_http_files": 165,
+      "actual_http_errors": [],
+      "security_txt_sha256": "c378b696d717ca072c7631ab11e0f0d8877d1fdc3c2f8666b493778cec21afea"
+    }
+  },
+  "build_session_exits": {
+    "start92935": 0,
+    "apex84071": 0,
+    "subpath_strict12303": 0,
+    "archive_checks_b5dfde": 0
+  },
+  "cleanup": {
+    "owned_builder_absence_observed": true,
+    "stop_remove_session93497_exit": 0,
+    "registered_wait_session41223_exit": 0,
+    "container_exit": 137,
+    "oom_killed": false,
+    "container_error": "",
+    "reason": "Explicit docker stop after successful completed builds; sleep PID1 required SIGKILL at10second grace. Container shutdown exit is not a Jekyll or verification command failure. No graceful service/process-tree cleanup claimed."
+  },
+  "first_guard_failure": {
+    "tool_chunk": "4e9105",
+    "reason": "PowerShell empty Ports object property Count yielded null; guard refused before stop. Explicit @(...).Count and actual empty published-port object then verified the zero-port condition. No isolation relaxation."
+  },
+  "full_source_review_freshness": false,
+  "current_verifier_compile": false,
+  "full_product_qualified": false,
+  "deployment_performed": false
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "humanymous.pages-notice-claim-followup/1",
+  "source": "THIRD_PARTY_LICENSES.md",
+  "sha256": "5bfc4ced6b4819672aebb17dc39de588490c1afa9c27a62e9df99bef2cabe1dd",
+  "owner_correction_commit": "66ad33a432319de05eda7236cfc034a8f709dfbe",
+  "reviewed_scope": "Opening28lines fully reread; no whole-file new review claimed.",
+  "finding": "Opening current-distribution and every-artifact inclusion claims replaced by explicit historical Go inventory, current Rust candidate artifact-specific review, known Go-adapted notice and incomplete final dependency inventory. Corrects the reported introductory claim mismatch; no claim that archive contents or full notice obligations have been verified.",
+  "actual_artifact_validation": false,
+  "compliance_certification": false
+}

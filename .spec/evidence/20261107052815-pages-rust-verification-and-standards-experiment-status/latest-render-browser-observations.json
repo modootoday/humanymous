@@ -1,0 +1,85 @@
+{
+  "schema": "humanymous.pages-current-browser-observations/1",
+  "docs_tree": "b403f22dee23ca417329417c234b23f8ef416c4c",
+  "surface": "visible ChatGPT in-app browser",
+  "tab_id": "5",
+  "retained_as_deliverable": true,
+  "served_source": "Only independently second-restored archive outputs; subpath parent contains165 byte-rechecked files in humanymous/ only.",
+  "image": "caddy:2.11.9-alpine@sha256:fc9cbc100585871d18d4e451cca7021785c90a7006087427ae5ceb3e4efe6424",
+  "server_limits": {
+    "cpu": 0.5,
+    "memory_mib": 256,
+    "pids": 64,
+    "user": "1000:1000",
+    "read_only": true,
+    "cap_drop": "ALL",
+    "no_new_privileges": true,
+    "host_binding": "127.0.0.1",
+    "one_variant_at_a_time": true,
+    "observed_max_lease_minutes": 30
+  },
+  "observations": [
+    "Apex home rendered with pinned theme.",
+    "Tab exposed visible skip-link focus; Enter focused mt-content; next Tab reached an actual content link.",
+    "Standards navigation expanded and opened profile; P-01 through P-10 visibly defined as draft profile identifiers rather than priorities.",
+    "Updated implementation-map prose visibly used descriptive names and linked requirement definitions.",
+    "390x844 profile menu opened and keyboard Return collapsed it.",
+    "Subpath home loaded and implementation-status link retained /humanymous prefix.",
+    "Light and dark modes rendered; original dark preference and default viewport restored."
+  ],
+  "mobile_geometry": [
+    {
+      "page": "apex protocol profile",
+      "viewport_width": 390,
+      "client_width": 375,
+      "document_scroll_width": 375
+    },
+    {
+      "page": "subpath home",
+      "viewport_width": 390,
+      "client_width": 375,
+      "document_scroll_width": 375
+    }
+  ],
+  "desktop_css_samples": {
+    "normal_font_size": "16px",
+    "dark": {
+      "body_background": "rgb(10,14,20)",
+      "text": "rgb(228,236,245)",
+      "link": "rgb(53,208,186)",
+      "text_body_contrast": 16.22,
+      "link_body_contrast": 10.02
+    },
+    "light": {
+      "body_background": "rgb(238,241,246)",
+      "text": "rgb(20,32,46)",
+      "link": "rgb(8,105,94)",
+      "text_body_contrast": 14.54,
+      "link_body_contrast": 5.81
+    }
+  },
+  "contrast_scope": "Two selected body/text/link pairs measured from actual computed CSS; not exhaustive contrast, focus, hover or all page/zoom/user-setting validation.",
+  "interaction_failure_retained": "Playwright checkbox locator found no DOM checkbox although native AX mapped theme button to checkbox. Fresh AX and actual DOM BUTTON observed, semantic AX click succeeded; no source or selector policy relaxation.",
+  "screenshot": {
+    "name": "latest-docs-preview.jpg",
+    "sha256": "5fd8253bc2a3d8f711f66b0a8c0d0496ada063da134d36cad3aa144ad2e10436"
+  },
+  "apex_cleanup": {
+    "removed": true,
+    "supervisor_session": 98403,
+    "supervisor_terminal_exit": 0
+  },
+  "subpath_preview": {
+    "url": "http://127.0.0.1:18081/humanymous/",
+    "supervisor_session": 84233,
+    "state": "live-under-observed-bounded-lease",
+    "started_at_utc": "2026-11-07T14:23:05.45322356Z",
+    "cleanup_terminal": null
+  },
+  "search": "NOT_RUN; no search control observed",
+  "full_browser_corpus_qualified": false,
+  "assistive_technology_qualified": false,
+  "wcag_qualified": false,
+  "external_review": false,
+  "deployment_performed": false
+}

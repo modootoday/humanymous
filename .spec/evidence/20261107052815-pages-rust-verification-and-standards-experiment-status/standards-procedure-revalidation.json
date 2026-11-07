@@ -1,0 +1,59 @@
+{
+  "schema": "humanymous.pages-standards-procedure-revalidation/1",
+  "observed_at_utc": "2026-11-07T14:11:31.440874+00:00",
+  "method": "Official publication pages inspected through web tool; no account action, upload, contact or submission performed.",
+  "sources": [
+    {
+      "title": "W3C Process Document",
+      "url": "https://www.w3.org/policies/process/",
+      "dated_url": "https://www.w3.org/policies/process/20250818/",
+      "observed_edition": "18 August 2025",
+      "finding": "Current official page identifies this operative Process and separates editor draft. Matches the dated reference inventory; no project maturity or endorsement follows."
+    },
+    {
+      "title": "I-D Submission tool instructions",
+      "url": "https://datatracker.ietf.org/submit/tool-instructions/",
+      "finding": "Working drafts are time-limited; v3 XML preferred, v2 XML and plain text also accepted. Checks cover notices, required sections, revision and date, with metadata inspection and submitter authentication. Project procedure selects v3 preparation without claiming it is the only accepted format; no submission or adoption evidence."
+    },
+    {
+      "title": "Internet-Drafts",
+      "url": "https://www.ietf.org/participate/ids/",
+      "finding": "Official venue entry and linked draft resources observed; not a project submission receipt."
+    },
+    {
+      "title": "WHATWG Stages",
+      "url": "https://whatwg.org/stages",
+      "finding": "Optional contribution process uses implementer feedback, complete specification/tests and editor merge for a Living Standard change. Progress signals do not promise later-stage support; a project-local draft is not an external stage assignment."
+    },
+    {
+      "title": "Types of documents W3C publishes",
+      "url": "https://www.w3.org/standards/types/",
+      "finding": "Official indexed content distinguishes Community/Business Group reports from W3C standards and formal endorsement. Matches current preparation text."
+    },
+    {
+      "title": "Required content",
+      "url": "https://authors.ietf.org/en/required-content",
+      "finding": "Direct page extraction returned only an analytics image. Official indexed content exposes required notices, expiry and introduction guidance, consistent with the linked preparation step, but this observation is not a complete direct-page review."
+    }
+  ],
+  "local_pages": [
+    {
+      "source": "docs/standards/draft-v0/process/preparation.md",
+      "sha256": "71063292b4a231afa768adf4cc1774ff766356f755733b31c23854f48669d660"
+    },
+    {
+      "source": "docs/standards/draft-v0/process/references.md",
+      "sha256": "a317f659d8308d98ad959a342787a58293d14d0f6e83ab84193e11575904769d"
+    }
+  ],
+  "prose_correction_required_from_observed_procedures": false,
+  "docs_changed": false,
+  "external_review": false,
+  "submission": false,
+  "normative_wire_selected": false,
+  "limits": [
+    "No venue contribution authority or rights clearance determined.",
+    "Only selected procedural sources revalidated; no complete external-reference link audit or legal compliance judgment.",
+    "Generic wire/authentication negotiation and independent interoperability remain unresolved."
+  ]
+}
