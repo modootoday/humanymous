@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.browser-wire-dispatch/1",
+  "run_id": 42423423776,
+  "source": "1f2b9a93d68deb310ffd53f927977a75d807e007",
+  "attempt": 1,
+  "event": "push",
+  "observed_status": "in_progress",
+  "branch": "codex/browser-product-validation",
+  "monitor_owner": "Lab",
+  "update": "normal fast-forward only",
+  "codex_rust_updated": false,
+  "main_updated": false,
+  "published": false,
+  "local_lab_inventory": 40,
+  "local_lab_passed": 40,
+  "local_lab_receipt": "7e56b2798ccf9f8c2adca36c0fe0cd0fb1907fd5",
+  "gnu_producer_expected": 3,
+  "gnu_producer_measured_at_dispatch": false,
+  "scope": "Dispatch observation only; no browser success or specific origin-value class inferred",
+  "private_api_sha256": "671fa67bc29ce5ccfd6c06e9168ded9307ceb3afa1ebc4d942153a691fe2740f",
+  "private_api_bytes": 12793
+}
