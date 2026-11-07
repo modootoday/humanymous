@@ -69,6 +69,8 @@ impl Fixture {
                 assert_eq!(get(&request,"mode")?.as_string().as_deref(),Some("same-origin"));
                 assert_eq!(get(&request,"credentials")?.as_string().as_deref(),Some("omit"));
                 assert_eq!(get(&request,"redirect")?.as_string().as_deref(),Some("error"));
+                assert_eq!(get(&request,"referrer")?.as_string().as_deref(),Some(""));
+                assert_eq!(get(&request,"referrerPolicy")?.as_string().as_deref(),Some("same-origin"));
                 if bootstrap {
                     let reply=serde_json::json!({"protocol":PROTOCOL,"session":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","key":"AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE","counter":0,"expires":io::now(&global)?+60000,"installation":scope.installation,"tenant":scope.tenant,"origin":scope.origin,"revision":scope.revision,"authority":scope.authority});
                     return response(&global,200,&[],reply.to_string().as_bytes(),None);

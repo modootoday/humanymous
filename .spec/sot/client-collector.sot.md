@@ -53,8 +53,21 @@ required; runtime execution of this new source is currently not_run.
 
 BrowserSession owns actual Request/Headers/AbortController and one whole-request
 timer through complete bounded response consumption. Use same-origin,
-credentialsomit, redirecterror, no-store and no-referrer. Initial requests64KiB,
+credentialsomit, redirecterror and no-store. Set the explicit Request referrer to
+the empty string and referrerPolicy to same-origin: suppress Referer while
+preserving the browser-generated same-origin Origin on non-GET/HEAD requests.
+The former no-referrer policy nulls that Origin under the
+[Fetch Origin algorithm](https://fetch.spec.whatwg.org/#origin-header), conflicting
+with the unchanged strict server Origin check. Application-supplied Origin and
+Referer remain forbidden. Existing real-Request/mock-Fetch fixture assertions
+cover the two properties, not actual network headers. An actual browser pilot
+must verify the wire behavior; this source correction alone does not establish
+the cause of any previous product failure. Initial requests64KiB,
 responses1MiB buffered, bootstrap8192bytes; streams/cookies remain unsupported.
+Local correction checks passed: 26 native library tests (zero failures, ignored
+or filtered), locked offline WASM check, WASM all-target strict Clippy and scoped
+format check. These commands do not execute the browser fixture or establish
+wire Origin/Referer behavior; actual browser and Docker product gates are pending.
 Sign final browser method/URL/Content-Type/Authorization and bytes with the shared
 codec. Reject reserved/transport-owned headers and encoded paths. Normalized
 exposed response headers do not establish raw-header provenance. Check ACK only

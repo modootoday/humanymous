@@ -111,7 +111,8 @@ pub(super) fn build(
         ("credentials", "omit"),
         ("redirect", "error"),
         ("cache", "no-store"),
-        ("referrerPolicy", "no-referrer"),
+        ("referrer", ""),
+        ("referrerPolicy", "same-origin"),
     ] {
         set(&options, name, &value.into())?;
     }
