@@ -1,5 +1,7 @@
 //! Owned Docker product-lab coordinator and measured engine/topology controls.
 mod audit;
+#[path = "../../browser_expectations.rs"]
+mod browser_expectations;
 mod docker;
 mod fixture;
 #[path = "../../mount_policy.rs"]

@@ -59,6 +59,7 @@ fn hardening() -> Result<serde_json::Value> {
 pub fn gate() -> Result<()> {
     eprintln!("HM-LAB-ACTOR-STEP actor_hardening");
     let hardening = hardening()?;
+    let expected = crate::browser_expectations::from_fixture(&browser_proxy::fixture())?;
     let input = BufReader::new(io::stdin());
     // One fresh installation per product bundle; credentials are process-private.
     let crate::installation::witnessed::WitnessedInstallation {
@@ -113,7 +114,7 @@ pub fn gate() -> Result<()> {
         if plan.needs_checkpoint_append(){return Err("normal browser shutdown unexpectedly requires checkpoint repair".into());}
         let history=plan.history();
         let records:Vec<_>=history.records().iter().map(|record|json!({"seq":record.seq,"event_type":record.event_type,"verdict":record.verdict})).collect();
-        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
+        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","expected":expected,"stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
         Ok::<(),Box<dyn std::error::Error>>(())
     })
 }
@@ -169,6 +170,7 @@ pub fn browser() -> Result<()> {
         .build()?;
     executor.block_on(async move {
         let fixture=browser_proxy::fixture();
+        let expected=crate::browser_expectations::from_fixture(&fixture)?;
         let dns=crate::browser_dns::DenyResolver::start()?;
         let dns_control=crate::browser_dns::probe(&dns,&config.dns_name,config.dns_canary).await?;
         let mut negatives=serde_json::Map::new();
@@ -226,7 +228,7 @@ pub fn browser() -> Result<()> {
         }
         stop.send(true).map_err(|_|io::Error::other("proxy stopped"))?;proxy.await??;
         let dns_policy=dns.finish()?;
-        println!("{}",json!({"schema":"humanymous.browser-product-actor/1","status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":dns_policy,"full_product_qualified":false}));
+        println!("{}",json!({"schema":"humanymous.browser-product-actor/1","expected":expected,"status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":dns_policy,"full_product_qualified":false}));
         if !passed {return Err("actual browser runtime pilot failed".into());}
         Ok::<(),Box<dyn std::error::Error>>(())
     })

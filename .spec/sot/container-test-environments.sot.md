@@ -411,6 +411,20 @@ behavior before claiming success. Existing hosted run
 42348518353/source63f69ae1 observes earlier source and must not be duplicated
 or cited as this pilot's evidence.
 
+The updated single selected browser test uses fixture.expected.effect_requests
+as its sole request-count authority. Local65537-byte rejection occurs before
+client state.begin, leaves the epoch open and emits no request; it is not
+evidence of server413. Actual65536-byte Fetch plus the original small effect
+produce the fixture-declared pre-collect403/ACK requests. Other known routes
+remain one request each. Actor/runtime declared expectations and independent
+parent comparisons share one pure Lab helper; missing, zero, noninteger,
+unknown fields/routes or counts outside1..32 refuse rather than fall back.
+Derive expected decision records, total audit sequence and witness coverage as
+N CHALLENGE decisions plus one COLLECTED record. Validate actual proxy response
+and request counts against this declaration, not a duplicated literal2 or an
+at-least threshold. This source delta requires a new actual browser run; no
+existing native headers-only413 control or earlier browser source qualifies it.
+
 Purpose: relieve local validation memory pressure while preserving source-bound
 Rust product evidence. This is a design-only delta: no workflow dispatch, image
 publication, account mutation, paid resource or remote pilot was performed.

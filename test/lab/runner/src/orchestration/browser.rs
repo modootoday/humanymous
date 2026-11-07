@@ -69,6 +69,11 @@ fn dns_snapshot(lab: &mut Lab, id: &str) -> Result<Value> {
 
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
     lab.stage = "browser_config";
+    let fixture: Value = decode_strict_json(
+        &std::fs::read(lab.config_file("crates/collector/pilot/fixture.json")?)?,
+        65536,
+    )?;
+    let expected = crate::browser_expectations::from_fixture(&fixture)?;
     let config = lab.compose(&["config", "--format", "json"], true)?.stdout;
     let parsed: Value = serde_json::from_str(&config)?;
     snapshot::write(&lab.evidence, "resolved-compose.json", &parsed)?;
@@ -324,10 +329,12 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     )?;
     lab.case(
         "browser-product-zero-origin-effect",
-        report["origin_effects"] == 0
+        report["origin_effects"] == expected["origin_effects"]
             && report["offline_log_authenticated"] == true
-            && report["audit_sequence"]==2
-            && report["audit_records"]==json!([{"seq":1,"event_type":"runtime.decision","verdict":"CHALLENGE"},{"seq":2,"event_type":"runtime.collect","verdict":"COLLECTED"}]),
+            && report["expected"] == expected
+            && actor["expected"] == expected
+            && report["audit_sequence"] == expected["audit_sequence"]
+            && report["audit_records"] == expected["audit_records"],
         json!({"effects":report["origin_effects"],"sequence":report["audit_sequence"]}),
     )?;
     lab.case(
@@ -335,33 +342,36 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         status.success() && report["stopped"] == true,
         json!("actual audit flush and custody drop before Stopped"),
     )?;
-    let frozen = lab
-        .environment
-        .iter()
-        .find(|(name, _)| name == "HM_LAB_BUILD_CONTEXT")
-        .ok_or("frozen context missing")?;
-    let fixture: Value = serde_json::from_slice(&std::fs::read(
-        std::path::Path::new(&frozen.1).join("crates/collector/pilot/fixture.json"),
-    )?)?;
-    for (key, status, ack) in [
-        ("effect", 403, true),
-        ("collect", 200, true),
-        ("required_collector", 422, false),
-    ] {
+    for (key, response_expected) in expected["responses"]
+        .as_object()
+        .ok_or("fixture response expectations")?
+    {
+        let status = response_expected["status"]
+            .as_u64()
+            .ok_or("fixture response status")?;
+        let ack = response_expected["ack"]
+            .as_bool()
+            .ok_or("fixture response ACK")?;
+        let count = expected["request_counts"][key]
+            .as_u64()
+            .ok_or("fixture response count")?;
         let path = fixture["routes"][key].as_str().ok_or("fixture route")?;
         let response = format!("response:{path}:{status}:ack_{ack}");
         lab.case(
             &format!("browser-response-{key}"),
-            report["proxy_hits"][&response] == 1 && actor["proxy_hits"][&response] == 1,
+            report["proxy_hits"][&response] == count && actor["proxy_hits"][&response] == count,
             json!(response),
         )?;
     }
     for (key, route) in fixture["routes"].as_object().ok_or("fixture routes")? {
         let route = route.as_str().ok_or("fixture path")?;
+        let count = expected["request_counts"][key]
+            .as_u64()
+            .ok_or("unknown fixture request count")?;
         lab.case(
-            &format!("browser-single-request-{key}"),
-            actor["proxy_hits"][route] == 1 && report["proxy_hits"][route] == 1,
-            json!("no automatic retry; closed epoch creates no further effect"),
+            &format!("browser-request-count-{key}"),
+            actor["proxy_hits"][route] == count && report["proxy_hits"][route] == count,
+            json!("exact fixture count; closed epoch creates no further request"),
         )?;
     }
     lab.case(
@@ -399,8 +409,8 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         "browser-audit-fully-covered-with-external-pin",
         coverage["fully_witnessed"] == true
             && coverage["ambiguous_tail_len"] == 0
-            && coverage["durable_sequence"] == 2
-            && coverage["witnessed_through"] == 2
+            && coverage["durable_sequence"] == expected["audit_sequence"]
+            && coverage["witnessed_through"] == expected["audit_sequence"]
             && coverage["authenticated_external_head"]
                 == broker.head.as_ref().ok_or("external coverage pin")?.clone()
             && coverage["authentication"]["hmac_checked"] == true

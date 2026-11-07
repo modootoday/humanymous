@@ -1,6 +1,9 @@
 //! Contextual Docker pilots; native unsupported targets never report success.
 #[cfg(unix)]
 mod browser_dns;
+#[cfg(any(unix, test))]
+#[path = "../../browser_expectations.rs"]
+mod browser_expectations;
 #[cfg(unix)]
 mod browser_product;
 #[cfg(unix)]
