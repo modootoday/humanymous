@@ -26,6 +26,44 @@ the final delivery runner requirements remain unchanged.
 
 ## Rust-only delivery follow-up contract v2
 
+### Later user authorization: local versus hosted measurement
+
+The user subsequently authorized actual local Windows/WSL build, test and
+runtime timing/resource comparison against GitHub hosted execution. This
+supersedes the earlier blanket hosted-only restriction; historical hosted
+results and their source commitments remain unchanged. Root owns the isolated
+committed-source comparison and the measured execution-policy decision.
+
+During the explicitly declared benchmark quiet window, do not start new Cargo,
+native/runtime, Docker or model commands. Existing owned commands finish and
+return their allocated slots; never terminate another owner's processes.
+Coding/documentation may continue under existing lane ownership. A local
+comparison result does not yet exist and no new execution policy is inferred
+from the authorization alone. Common Cargo/locks/toolchain remain root-owned.
+
+The subsequent benchmark instruction selects Windows act.exe and the verified
+Docker Desktop Linux engine: Windows docker.exe with explicit desktop-linux
+context, and ACT's explicit outer DOCKER_HOST
+npipe:////./pipe/dockerDesktopLinuxEngine. Preflight records endpoint, server ID,
+version and OSType. The separate WSL-native engine is not a fallback; WSL-native
+Rust measurements are a separate dataset. Local parity records the canonical
+provider/host and outer-observed engine ID. In-container metadata is not an engine
+or VM attestation; hosted Linux runner identity remains distinct.
+
+The isolated local-parity.yml benchmark uses a separate branch trigger and
+concurrency group, one standard Ubuntu job and the same pinned act24 image in
+both venues. Requested and checked limits are four CPUs, 2 GiB RAM, no additional
+swap, jobs one/incremental zero. Missing/unbounded cgroup limits or GNU time
+metrics fail explicitly. The Rust action bootstraps 1.99.1; the dependency-free
+Rust driver prepares GNU time identically through native apt-get commands and
+records setup durations/package version separately. It materializes exact public
+8132117 workload source without replacing the new control tool, then measures
+collector 26, workspace all-target build and native process one, optionally
+repeating in the same job. Source/code/lock hashes, exits, counts, CPU/RSS and
+context remain explicit; neither cache coldness, hardware equivalence nor
+execution policy is inferred. No artifact upload, publication, OIDC or product
+qualification occurs. Source preparation alone is not a measured comparison.
+
 ### Remote lab design delta, 2026-11-07 KST (not executed)
 
 Initial root resource triage authorized design only. The later explicit user
@@ -954,6 +992,16 @@ zero-filter summary. Both harnesses are attempted independently even when one
 fails. Missing discovery or failed execution retains unknown passed counts.
 These are Runtime process/library component fixtures, not browser, human,
 collector attestation, production ALLOW or full-product qualification.
+
+Actual run 42355168729 at 8132117 reports a successful runtime-candidate build
+and Trivy action, but the scanner reports zero language-specific files and an
+all-dash target table whose legend means not scanned, not clean. This source
+does not establish image CVE coverage. A green scanner exit cannot replace a
+nonempty source/image-bound dependency inventory and its vulnerability result.
+The next candidate must reject missing inventory explicitly and retain the raw
+scanner report hash; shipping-image CVE qualification remains unproven until
+lock/SBOM/source identity and actual scan coverage are measured. The legacy
+core/gate source guard and full-product block remain in force.
 
 Root checkpoint a26d1c3 resolves the common 36-member Cargo graph/lock and the
 standalone scripts/ci/windows-native-runner/Cargo.lock against the shared native

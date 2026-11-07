@@ -15,6 +15,7 @@
     "pypi": {"workflow":"release.yml","environment":"pypi","state":"preparation-only","job_present":false}
   },
   "workflows": [
+    {"file":"local-parity.yml","name":"CI / Local parity","jobs":["compare"],"concurrency":{"group":"local-parity-benchmark","cancel-in-progress":false},"artifacts":[]},
     {"file":"ci.yml","name":"CI / Validate","jobs":["validate"],"concurrency":{"group":"rust-ci-${{ github.ref }}","cancel-in-progress":true},"artifacts":[]},
     {"file":"rust-validation.yml","name":"CI / Rust","jobs":["policy","native","msrv","quality","browser","browser-product","nginx","rust-images","docker","images","packages","node","advisories","documentation","pages","ready"],"concurrency":null,"artifacts":["native-workspace-${{ matrix.os }}-${{ github.sha }}","native-binaries-${{ matrix.os }}-${{ github.sha }}","native-${{ matrix.os }}-${{ github.sha }}","browser-linux-${{ github.sha }}","docker-linux-${{ github.sha }}","validated-crates-${{ github.sha }}","node-native-${{ github.sha }}","advisories-${{ github.sha }}"]},
     {"file":"collector-component.yml","name":"CI / Collector","jobs":["firefox-component"],"concurrency":{"group":"collector-component-${{ github.ref }}","cancel-in-progress":true},"artifacts":["collector-component-${{ github.sha }}"]},

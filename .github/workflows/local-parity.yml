@@ -1,0 +1,50 @@
+# Authored workflow; canon: .spec/sot/delivery.sot.md
+name: CI / Local parity
+'on':
+  push:
+    branches:
+    - codex/local-parity-benchmark
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Exact workload commit (40 lowercase hexadecimal characters)
+        required: true
+        default: 8132117e7bf1445939d7dee9066fcf45ccf0915b
+        type: string
+      passes:
+        description: Initial pass only, or initial plus same-job repeat
+        required: true
+        default: '2'
+        type: choice
+        options: ['1', '2']
+permissions:
+  contents: read
+concurrency:
+  group: local-parity-benchmark
+  cancel-in-progress: false
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    container:
+      image: ghcr.io/catthehacker/ubuntu@sha256:62d572b92f9f32d3427b6d220ad1f9dca9c7b6ffad37d295425037dbff78abaf
+      options: --cpus 4 --memory 2g --memory-swap 2g
+    env:
+      CARGO_BUILD_JOBS: '1'
+      CARGO_INCREMENTAL: '0'
+      HUMANYMOUS_BENCHMARK_SOURCE: ${{ inputs.source_ref || '8132117e7bf1445939d7dee9066fcf45ccf0915b' }}
+      HUMANYMOUS_BENCHMARK_PASSES: ${{ inputs.passes || '2' }}
+      HUMANYMOUS_BENCHMARK_CONTROL_SHA: ${{ github.sha }}
+      HUMANYMOUS_BENCHMARK_IMAGE: ghcr.io/catthehacker/ubuntu@sha256:62d572b92f9f32d3427b6d220ad1f9dca9c7b6ffad37d295425037dbff78abaf
+    steps:
+    - name: Check out benchmark control source
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Prepare GNU time and measure pinned workload source
+      run: cargo run --locked --manifest-path scripts/ci/local-parity/Cargo.toml --

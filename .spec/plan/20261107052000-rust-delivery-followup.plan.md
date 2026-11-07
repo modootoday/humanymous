@@ -319,3 +319,24 @@ process/socket/compiler pilot. Runtime's reviewed counts must still be checked
 against exact hosted discovery and execution; no local pure result establishes
 those process outcomes. Maintenance requires the eleven actual tests rather
 than relying on a successful Cargo exit alone.
+
+The later explicit user direction authorizes actual local Windows/WSL versus
+GitHub timing/resource comparison and supersedes the blanket hosted-only rule.
+Root declared a benchmark quiet window before measuring an isolated committed
+source. This delivery session returned all Cargo slots and stopped its own
+read-only gh watch process (local exit 1, not a remote run conclusion). No
+owned build, runtime, Docker, model or server remains active. Node host Docker
+coordinator source is frozen and untested pending the comparison and a new
+explicit allocation; no local actual pilot or revised policy is claimed.
+
+The later user request adds local-parity.yml, job compare, a separate benchmark
+branch/concurrency group and a dependency-free owned Rust measurement package.
+Control source stays separate from freshly fetched exact public workload
+8132117; the pinned act24 container is common to GitHub and Windows ACT.
+Actual cgroup checks enforce four CPUs/2 GiB/no extra swap; Windows Desktop
+desktop-linux preflight provenance is mandatory locally and WSL Docker is not a
+fallback. GNU time preparation/version/setup durations are separate from the
+three workload measurements. The workflow/catalog/tool passed Rustfmt syntax
+formatting, actionlint and scoped specification checks only. No Cargo compile,
+unit test, ACT/Docker execution or performance comparison is claimed for this
+new package until root admits the single bounded pilot after review.
