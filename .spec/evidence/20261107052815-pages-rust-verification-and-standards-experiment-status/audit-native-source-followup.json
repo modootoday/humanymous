@@ -1,0 +1,46 @@
+{
+  "schema": "humanymous.pages-source-followup/1",
+  "full_read_files": 3,
+  "full_read_lines": 1329,
+  "before_after_exact": true,
+  "reviewed_text_already_lf": true,
+  "reviews": [
+    {
+      "source": "crates/audit/src/verification/scan/source/native.rs",
+      "sha256": "04472a35d78184ba59e796720c36b24a0e6fe582f8af8c3d742d39e562ec4c8e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete555-line source review: private cfg(test) Linuxx86_64 diagnostic backend under quiescent cooperative ownership, ext-family fstatfs magic and statx mount identity. Bounded absolute unaliased path/openat2 no symlink/magiclink; relative payload opens beneath root without crossmount. Permission/identity/mode/size/link/timestamp/mount stamps and named membership checked, not atomic snapshot or hostile write/restore ABA defense. Pins plus Arc-retained guard keep lock through readers; 8KiB position-independent read_at cursor, capturedEOF/shortread/refusal poisoning and cooperative control. Descriptor admission precedes nativeopens; directory entries/segments/bytes bounded, allpins retained. Operational factory remains unavailable elsewhere. Source review only, no actual kernel/filesystem/permissions/cleanup or RSS qualification.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/source/native/tests.rs",
+      "sha256": "1f0fb7fa76795aaf6bedeeaec620e43a360d22d243b4ae8b8aac682c796e45df",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete430-line source review: three ordinary admission/cancellation/pathalias tests plus one ignored allocated ext-family native fixture. Native fixture authors real Wal/Log, two cursors independent offsets and guard retained after source drop; replacement/truncate/regrow/append/sidecar/cancel/rootchange/permission/symlink/hardlink/FIFO/gap/unknown refusals and final-publication mutation. Explicit mtime separation tests observed regrowth, not adversarial ABA. Constructor failure expected to release only owned guards, fixture restores original bytes. These authored assertions not executed by Pages batch; fixture opt-in/path is not genuine OS/host provenance.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/source/native/tests/capacity.rs",
+      "sha256": "a5873c8b86d3c6d0c03784d7672121375e841881179bc9e6e9ff92df52f359db",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete344-line source review: four ignored explicit-allocation capacity cases create reusable single-record/fixedfrontier Wal fixtures using actual shared hashing/crypto, not Log/history Vec. Cases:16384sparse records/history>128MiB, largeUnicode+4096rule/signal arrays, oversized raw hash/signature resource refusal without Report,4096pins/shared reader FD cardinality. Descriptor precondition<=128 and before/after /proc/self/fd idle counts differ from peak opens; source guard survives cursors until final drop. Bounds64GiB/4GiB/10million are fixture profile, not shipped support. No RSS sampler/assertion in this file; external measured RSS/allocator/lifecycle/cleanup receipt remains separate. No tests executed or universal memory guarantee from this review.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "rss_measurement_performed": false,
+  "enclosing_module_test_only": true,
+  "public_prose_changed": false
+}
