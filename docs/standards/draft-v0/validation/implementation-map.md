@@ -29,9 +29,9 @@ pins, Ubuntu 24.04 runner selection and release-note newline handling are
 delivery changes; they add no protocol requirement or interoperability result.
 Hosted execution and absence of historical annotations remain separate gates.
 
-Core and Platform consolidation at `c67d07c0` and `89715c04` changes package
-ownership, not the generic Draft v0 protocol. There are 34 workspace packages plus
-four standalone qualification-tool packages at that checkpoint: 38 maintained
+Core, Platform and Runtime consolidation at `c67d07c0`, `89715c04` and `64f74c7a`
+changes package ownership, not the generic Draft v0 protocol. There are 29 workspace
+packages plus four standalone qualification-tool packages at the Runtime checkpoint: 33 maintained
 packages against an accepted eight-role target. The complete structural totals
 are 45 → 39 → 38 → 33 → 21 → 10 → 8; these are package-count stages, not capability
 or deployment milestones. Core contextual APIs live
@@ -40,10 +40,29 @@ under `crates/sdk/humanymous-core`; Platform's separate optional `testing` and
 Neither a public package role nor a testing feature establishes authenticated
 observations, provider availability, registry publication or conformance.
 
+Runtime now groups `gateway`, `authority`, `audit`, `capture`, `network` and
+`native_security` under `crates/sdk/humanymous-runtime`; its default feature is
+`gateway`, with explicit role features and distinct executable/integration
+targets. Its bounded Windows proof covers 177 selected pure cases from a
+366-case inventory, check, strict Clippy and formatting. Unselected cases,
+native ownership, public ingress and the full browser/product flow remain
+separate gates. An older-source browser run is not proof for this consolidation.
+
+Receipt `8e51e558` adds one positive and ten expected same-crate private-access
+compiler refusals in the actual sibling modules, plus checks on four source-only
+archives and an extracted temporary consumer. The 522 extracted files were
+unchanged and the normal/build dependency tree excluded Platform `testing`.
+Lock files were excluded and normal Cargo package verification was skipped;
+this does not establish registry readiness, native authority or full-suite
+execution. A compile-time privacy check does not mint an observation receipt.
+
 The first pure public-role data parser is implemented at source `2e9934fe`, with
 19 scoped Windows parser tests passing and 79 other library tests filtered out,
-as retained at `e8f71220`. Later test-only
-stronger array controls remain outside that executed source. Its data declarations
+as retained at `e8f71220`. A separate source `be9eec6d` run, retained at `8c8fc504`,
+passed one selected stronger-array-control test with 97 cases filtered out;
+formatting, check and strict Clippy passed. This resolves that test-isolation gap
+without rerunning the 19-case parser subset or the full 98-case library suite.
+Its data declarations
 are caller assertions, not
 actual provider admission, native ownership, replay/freshness verification or a
 Ready producer. This acceptance selects no public listener, endpoint, discovery

@@ -128,6 +128,15 @@ bootstrap. The specific origin or Fetch Metadata predicate responsible remains
 unknown; the status code does not establish its cause or successful browser
 integration. This observation does not qualify the full browser-to-origin flow.
 
+A later [run `42418752735`](https://github.com/modootoday/humanymous/actions/runs/42418752735)
+at source `edc30181` again recorded 16 passing and two failing product assertions.
+Its finite diagnostic was specifically `browser_bootstrap_http_forbidden_origin`,
+identifying an Origin rejection family. The absent, null and other-Origin cases,
+and the more specific comparison branch, remain unobserved. This result does not
+establish a successful bootstrap or qualify later Runtime source `64f74c7a`.
+Further diagnostic source changes are not new browser execution evidence and do
+not authorize relaxing the rejection predicate.
+
 ```console
 cargo test --locked -p humanymous-collector
 cargo build --locked -p humanymous-collector --target wasm32-unknown-unknown --release

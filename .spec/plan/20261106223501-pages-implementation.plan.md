@@ -2548,3 +2548,48 @@ bootstrapHTTP403,16passed/2failed, unknown Origin/FetchMetadata predicate and
 no full browser success or cleanup inference. Evidence07052815/census-parser-
 browser-reconciliation.json records five exact changed path hashes and limits.
 Frozen checker88pages/errors0 and diffcheck pass; no new execution or render.
+
+### Separate stronger-array test execution consumed
+
+Current public status/map now retain8c8fc504's exactbe9eec6d one-test refinement:
+1passed/0failed/0ignored/97filtered from98listed, fmt/check/strictClippy0.
+Only test-isolation gap closes; original2e9934fe19-case history remains immutable,
+without full19/full98 rerun, public ingress/native/Ready or browser qualification.
+Collector889/Labedc finite403 source is not actual browser evidence; separate
+running compile/parser work is not borrowed as success. Evidence07052815/
+array-control-proof-reconciliation.json records three exact changed path hashes.
+Fixed source checker88pages/errors0; no new compiler/build/preview/GHA/publish.
+
+### Current six-context Runtime consolidation documentation
+
+Consumed source64f74c7ac64a8f5380172504bf73a8d03b961afc/evidence07221648:
+29workspace+4standalone=33maintained, final8; runtime280files/4rolebins/
+17explicitintegrationtargets atcrates/sdk/humanymous-runtime. Updated current
+developer/audit commands to explicit role features and prefixed audit targets.
+Public status/map retain Windows alltarget/allfeature check/strictClippy/fmt0 and
+177selected pure0failed/ignored from366inventory, not full366/native/product.
+Prior edc browser execution cannot qualify source64 and is not newly watched.
+
+Evidence07052815/runtime-consolidation-current-docs.json binds final five path
+hashes. The pending stronger-array receipt hashes are a separately captured
+pre-Runtime prose snapshot, not these final path hashes. Historical raw proofs
+remain immutable. Fixed checker88pages/errors0/diffcheckpass; no new build,
+preview/compiler/GHA/publish, and new authored bytes remain unrendered.
+Old-source governs warnings remain owner-routed, not waived by this docs batch.
+
+### Privacy/source-only extraction and new Origin-family observation
+
+Consumed root8e51e558 privacy1positive/10expected same-crate compilerrefusals,
+310selectedinputszerochanges beforetwo documentLFalignments; source-only four
+archives/noverify/excludelock,522extractedfiles0drift, Runtime/consumerstaticgates
+and defaultconsumerpurerun0. Not normalCargoPackageverify/registry/native/full366.
+Current public status/map retain these boundaries rather than declaring release.
+
+New sourceedc30181/run42418752735 receipt8dceaf48 specifically reports bootstrap
+Origin-family forbidden; absence/null/other and specificcomparison branch remain
+unobserved. No older1f87 cause retroclassification, no success, no current64source
+qualificationtransfer, no predicate relaxation or new browserexecution.
+Evidence07052815/privacy-extracted-browser-current-docs.json binds finalsix
+publicpathhashes after all three prepared batches. Earlier ownbatch pathhashes
+remain intermediate workingtree snapshots, not this finalprose state. Frozen
+checker88pages/errors0; no newcompiler/build/preview/GHA/publish, docsUNRENDERED.

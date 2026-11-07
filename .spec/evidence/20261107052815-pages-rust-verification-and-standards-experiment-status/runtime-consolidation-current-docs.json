@@ -1,0 +1,39 @@
+{
+  "schema": "humanymous.pages-runtime-consolidation-reconciliation/1",
+  "source": "64f74c7ac64a8f5380172504bf73a8d03b961afc",
+  "owning_evidence": "evidence:root/20261107221648 summary/file-map/pure",
+  "changed_files": [
+    {
+      "path": "docs/start-here/developer.md",
+      "sha256": "f42b93fbaf9519161eaca3907d8a3d2b7fde0fa41c0b857931562d82ad7750d6",
+      "bytes": 3077
+    },
+    {
+      "path": "docs/how-to/verify-audit-log.md",
+      "sha256": "5d6b057db04fe20a8a39d265e6a5451ea2a497cbce53174c7e8f4eb347093312",
+      "bytes": 6519
+    },
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "38803102a0fdc5106926553750484ac2708916efecefe516c2c185592324c1b0",
+      "bytes": 9020
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "d2614be917393f7ee6b4747958b3a8602026b6612a896b161729db94caa6fa7f",
+      "bytes": 14420
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "39e1aad1f8010a4897f587653be31b3662d42ebab6e9f569a2848db643a51cf4",
+      "bytes": 16346
+    }
+  ],
+  "source_map": "6formerpackages->1; runtime280files/4rolebins/17explicitintegrationtargets;29workspace+4standalone=33maintained/final8",
+  "roles": "crates/sdk/humanymous-runtime contextualgateway(default)/authority/audit/capture/network/native_security; feature native-security with explicitdependencyclosure, not authoritygrant",
+  "proof": "Windowsalltargetallfeaturecheck/strictClippy/fmt0;177selectedpurepassed/0failed/0ignored from366inventory; notfull366/native/e2e",
+  "browser": "Dedicatededc42418752735 remains separate prior-source run; source64 nottestedbyit. No result borrowed, no new watch/dispatch.",
+  "earlier_pending_batch": "array-control-proof-reconciliation.json captures the earlier pre-Runtime working-tree prose hashes, not final Runtime-updated path hashes; actual8c8fc504 one-test proof remains unchanged.",
+  "validation": "Existingimmutablechecker88pages/errors0/diffcheckpass; no new compiler/build/preview/GHA/publish; allnewauthoredbytesunrendered",
+  "warnings": "Oldgovernssourcewarningsremainowner-routed, notwaived"
+}

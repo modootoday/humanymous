@@ -1,0 +1,26 @@
+{
+  "schema": "humanymous.pages-array-control-proof-reconciliation/1",
+  "receipt": "8c8fc504",
+  "source": "be9eec6d6b8e4b7a50b74cae043172af6f47fc9d",
+  "changed_files": [
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "7dfa96f326a8be11af15c62559f50373468ac4bf1b9a6fb239c6c4f40e829ae2",
+      "bytes": 8360
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "c97687269539104d85903957ef8a2f8835e85ac3cc4209b2a62cf8e01dc4acc0",
+      "bytes": 13856
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "12a9004370ba98eef62b05ee89877b8278eab6b5b5311e76f8f7b838c880ba4c",
+      "bytes": 15653
+    }
+  ],
+  "proof": "Actual1passed/0failed/0ignored/97filtered/98listed; fmt/check/strictClippy0,55.69s,leaseclosed; test-isolationgaponly",
+  "history": "Original2e9934fe19caseproofunchanged; no full19/full98rerun or publicingress/native/Ready",
+  "collector": "889/Labedc finite403newsource is not actualbrowser; separatecompile/parser37qualification notconsumed asbrowserproof",
+  "validation": "Fixedchecker88pages/errors0; no new compiler/build/preview/GHA/publish; newproseunrendered"
+}

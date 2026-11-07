@@ -8,6 +8,30 @@
   "changes": [
 {
   "kind": "implementation-evidence",
+  "paths": ["../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
+  "summary": "Record8e51e558 same-crate privacy controls and source-only extracted archive/consumer checks without normalCargoPackage/registry/native/full-suite claims. Record8dceaf48 actual edc30181 bootstrap Origin-family rejection separately, leaving absent/null/other and comparison branch unobserved; no browser success or source64 qualification transfer.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
+  "paths": ["../../start-here/developer.md", "../../how-to/verify-audit-log.md", "../../reference/production-vs-reference.md", "validation/implementation-map.md"],
+  "summary": "Reconcile64f74c7a six-context Runtime package atcrates/sdk/humanymous-runtime:29workspace plus4standalone=33 maintained, target8 unchanged. Update native-security/audit feature and integration-target commands; record selected177 pure cases from366 inventory with Windows static gates, not full366/native/browser/product execution or an older edc run as new-source proof.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
+  "paths": ["../../reference/production-vs-reference.md", "validation/implementation-map.md"],
+  "summary": "Retain the separate8c8fc504 proof atbe9eec6d: one selected stronger-array-control test passed with97filtered plus formatting/check/strictClippy. Close only test-isolation gap, preserving original2e9934fe19-case history; no full19/full98 rerun, actual browser or public-ingress claim.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
   "paths": ["../../start-here/developer.md", "../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
   "summary": "Correct current maintained-package census to34workspace plus4standalone tools=38, initial45, preserving historical workspace-only counts. Record2e9934fe scoped19-test pure DATA parser proof and separate1f87d310 bootstrapHTTP403 product failure without predicate-cause or browser-success claims; later stronger array tests remain unexecuted.",
   "generic_wire_changed": false,

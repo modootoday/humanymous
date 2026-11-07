@@ -80,7 +80,7 @@ permit an oversized or corrupt frame. Preserve the original bytes before repair.
 For reproducible frozen component comparisons, from the repository root run:
 
 ```console
-cargo test --locked -p humanymous-audit --test verification_parity --test checkpoint_parity --test merkle_parity --test record_parity
+cargo test --locked -p humanymous-runtime --no-default-features --features audit --test audit-verification-parity --test audit-checkpoint-parity --test audit-merkle-parity --test audit-record-parity
 ```
 
 These compare the actual Rust components with retained migration vectors. They

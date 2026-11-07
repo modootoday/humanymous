@@ -1,0 +1,46 @@
+{
+  "schema": "humanymous.pages-privacy-extracted-browser-reconciliation/1",
+  "receipts": [
+    "8e51e558 runtime privacy/extracted source-only",
+    "8dceaf48 hosted edc30181 Origin-family rejection"
+  ],
+  "changed_files": [
+    {
+      "path": "docs/start-here/developer.md",
+      "sha256": "f42b93fbaf9519161eaca3907d8a3d2b7fde0fa41c0b857931562d82ad7750d6",
+      "bytes": 3077
+    },
+    {
+      "path": "docs/how-to/verify-audit-log.md",
+      "sha256": "5d6b057db04fe20a8a39d265e6a5451ea2a497cbce53174c7e8f4eb347093312",
+      "bytes": 6519
+    },
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "81f6a4e11a13572c5d2599822230f81917604a3747c2f8015504a3e289ea54a9",
+      "bytes": 9686
+    },
+    {
+      "path": "docs/reference/browser-collector.md",
+      "sha256": "8357437948f62404bf7b28844d05983ce5a6f3557b287c17a9d4451e4b659cd9",
+      "bytes": 10137
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "b9a2f048c08019a5a510fca1e89d6959d1ae63714a313717b6ab0fc846e7e112",
+      "bytes": 14962
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "2f6cb6e08781d15eff6c3c92d39c82d1f1d589c7b9ef621762a7256e6b0827c5",
+      "bytes": 16986
+    }
+  ],
+  "privacy": "1positive+10expectedprivate-accesscompilerrefusals inactualsamecratemodules;310selectedinputszerochanges before2documentLFalignment",
+  "archives": "4SOURCEonlyarchives --no-verify --exclude-lockfile;522extractedfiles0drift; Runtime/tempconsumeralltargetallfeaturecheck/strictClippy0,defaultconsumerpurerun0,normal/buildPlatformtestingabsent",
+  "not_qualified": "NormalCargoPackageverify/registry/native/full366/fullbrowser/product",
+  "browser": "Actualedc30181/run42418752735 diagnosticbrowser_bootstrap_http_forbidden_origin;16passed2failed;absence/null/otherOrigin and specificcomparisonbranch unobserved. No rawactor/header/privateledgerrecovered, noOriginvalue/presenceclaim; no old1f87retroclassification or source64prooftransfer.",
+  "next_lab": "B-onlyfiniteclasssourcework only, no predicate relaxation ornewexecutionclaimed",
+  "snapshot_semantics": "Priorarray-control/runtime-consolidation ownreceipts retain intermediateworkingtreeprosehashes; this captures final6pathhashes afterall3preparedbatches, not oldexecutionqualification.",
+  "validation": "Existingimmutablechecker88pages/errors0; no compiler/build/preview/GHA/publish; newdocsUNRENDERED"
+}

@@ -25,10 +25,10 @@ release is claimed.
 | Documentation | Fixed-source pinned-theme builds, rendered-link checks, archive round trips and representative browser observations exist; complete source review and accessibility qualification remain separate |
 | Standards Draft v0 | Independent developing proposal; no external submission or adoption |
 
-Core consolidation at `c67d07c0` and Platform consolidation at `89715c04` reduce
-the workspace from 41 packages to 34. Four standalone qualification-tool packages
-are separate from that workspace count: the maintained-package total changes
-from 45 to 38. The accepted target is eight public package
+Core consolidation at `c67d07c0`, Platform consolidation at `89715c04` and Runtime
+consolidation at `64f74c7a` reduce the workspace from 41 packages to 29. Four
+standalone qualification-tool packages are separate from that workspace count:
+the maintained-package total changes from 45 to 33. The accepted target is eight public package
 roles; consolidation remains in progress and does not establish registry
 publication or supported deployment tuples. The current package paths are
 `crates/sdk/humanymous-core` and `crates/integrations/humanymous-platform`.
@@ -36,10 +36,33 @@ Platform defaults are empty; `testing` and `windows-object` are independent
 optional features, with the object API additionally restricted to Windows.
 Testing support cannot mint provider authority or readiness.
 
+Runtime's six contexts now share `crates/sdk/humanymous-runtime`: `gateway`
+(the default feature), `authority`, `audit`, `capture`, `network` and
+`native-security`. Four role executables and 17 explicitly declared integration
+targets remain distinct. The bounded Windows checkpoint records all-target,
+all-feature check, strict Clippy and formatting success, plus 177 selected pure
+cases passing with none failed or ignored from a 366-case inventory. It is not
+a full 366-case run, native execution, Docker product result or actual browser
+qualification. A separate browser run on older source cannot qualify this source.
+
+The follow-up receipt `8e51e558` records one positive import and ten expected
+private-access compiler refusals placed inside the actual sibling modules.
+It also records checks of four source-only crate archives: 522 extracted files
+were unchanged, Runtime and a temporary consumer passed all-target/all-feature
+check and strict Clippy, and the default consumer's separate pure run succeeded. The
+normal/build dependency tree did not enable Platform's `testing` feature.
+These archives omitted lock files and skipped Cargo package verification;
+they are not normal `cargo package` verification, registry availability,
+native execution or a full library test result.
+
 A first pure public-role data parser is implemented at source `2e9934fe`.
 Its scoped Windows component run passed 19 parser tests, with 79 other library
 tests filtered out, retained at `e8f71220`;
 later test-only stronger array controls are not covered by that run.
+A separate source `be9eec6d` run passed the one selected stronger-array-control
+test, with 97 library tests filtered out, retained at `8c8fc504`; formatting,
+check and strict Clippy also passed. This closes that test-isolation gap, not a
+rerun of all 19 parser cases or all 98 library cases.
 It describes bounded caller-supplied data rather than a
 public listener, native preparation, provider availability or a Ready producer.
 No public endpoint or registry-ready API is promised by that acceptance. Existing
