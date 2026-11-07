@@ -37,7 +37,7 @@ only an explicit current root grant and resource admission authorize a new run.
 | Apache | Exact b4000944 genuine hosted42374566498/job128409407533 passed45 unique scenarios: event15/worker15/prefork15; pilot/container/image/ledger cleanup passed; CLI exit0/reaped/no force/timeout | Exact Linux component tuple qualified only; fullProductSuccess=false. Earlier b5 35/10 and SIGTERM15 remain historical failure evidence; final composition/current graph remain separate |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identities still CHALLENGE/zero origin; positive TLS ALLOW-to-origin unqualified; epoch gate pure tests do not establish production/native Ready |
 | Native/.NET | Parent-context shared4/runner7 and .NET consumer13/check/Clippy passed on captured inputs; generic managed ABI079 actual once passed independently | Context remains UNVERIFIED syntax/budget data; retained partial-start/duplex source1b2e8bb2 passed12 pure and1 direct-child fixture; independent Authority expiry passed14 pure in689b95d2. Actual ASP.NET IO, native Job/reader convergence and protected owner remain open |
-| Pages | Exact26960736/docs56b1e029 local pinned Jekyll builds and archive consumers passed both88-page/165-file variants; limited actual browser navigation/keyboard observations recorded | Current docs435f5c99/tree060c82bd and later review receipts have no fresh render/browser; main artifact roundtrip/deployment and AT remain open |
+| Pages | Frozen current docs treeb403f22d passed actual pinned Jekyll apex/subpath builds and strict checks:88 pages each; qualified older ad04 verifier built/package/second archive-check passed both165-file variants | Current archive browser checks are in progress using only bounded Caddy. The verifier is older source, not a newly compiled current verifier; main artifact roundtrip/deployment and required AT remain open |
 | Python/Ruby/Node and ABI | Scoped package, contract and selected actual native component receipts exist in owning SoTs | Default/pure tests do not prove required SDK/server/GC/GVL/cross-principal/native ABI matrix; owners retain explicit unqualified cases |
 | Browser product | Genuine hosted42378961845 at49394e38 failed:18 assertions,16 passed,2 failed; owner1, source unchanged, full/release=false | Witness-exchange and browser_actor failures do not identify the original actor cause. Preserve failure; add closed stage diagnostics before another source-bound run; no automatic retry |
 | Watermark | Workspace graph9b064dbd contains39 packages; locked offline graph resolution passed. Exact watermark source passed16 native Windows unit tests, all-target check, strict Clippy and fmt in cc84948d | Payload and bounded volatile ledger only;14 legacy responsibilities are not fully covered. Codecs, actual resource pilot and cross-platform qualification remain open |
@@ -117,6 +117,23 @@ failure. Docker create can fail after the daemon created an object: recovery
 must validate the unique owner label, image ID and stopped state before removal;
 an unknown or foreign object must never be removed. No new helper guarantee or
 actual Docker result is accepted until source review and allocated tests prove it.
+
+Root accepts a diagnostic retained-owner implementation under an independent
+outer host/job supervisor. Original run/cleanup deadlines are observation and
+stop-request thresholds, not universal hard OS-call bounds. Polling may not perform
+blocking wait/join/write; the owner retains the actual child and every worker.
+Only completed joins and observed status may yield a settled result; expiration
+returns the same unsettled owner with sticky failure and descendant coverage
+Unknown. A documented blocking final join under the outer supervisor does not
+become hard-bounded through an is_finished check. Dropping a must-use owner is
+abandonment/Unknown, never settlement. Native owns implementation and consumer
+inventory before allocated tests; existing consumers are not silently upgraded.
+
+The exact internal delivery->test-support manifest/lock edge is registered in
+74c09dd7. Actual locked/offline metadata and depth-one graph resolution passed;
+no external package version changed. This graph check neither compiles the new
+capture API nor qualifies image extraction. Delivery archive regression and Lab
+diagnostic consumer batches retain separate frozen sources and terminal gates.
 
 | Milestone | State | Exit requirement |
 | --- | --- | --- |
