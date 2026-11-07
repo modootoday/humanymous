@@ -9,9 +9,49 @@ use humanymous_authority::{
     transport::Listener,
 };
 use std::{
+    os::unix::fs::MetadataExt,
     sync::mpsc::{Receiver, Sender},
     time::Duration,
 };
+
+// Exact owned, freshly created WAL baseline. Never reopen empty history as new.
+#[derive(Debug, PartialEq)]
+struct AuditFile {
+    name: String,
+    device: u64,
+    inode: u64,
+    owner: u32,
+    mode: u32,
+    bytes: Vec<u8>,
+}
+#[derive(Debug, PartialEq)]
+struct EmptyAudit(Vec<AuditFile>);
+impl EmptyAudit {
+    fn capture(directory: &Directory) -> Self {
+        let mut files = Vec::new();
+        for entry in std::fs::read_dir(&directory.0).unwrap() {
+            let entry = entry.unwrap();
+            let name = entry.file_name().into_string().unwrap();
+            if name == ".audit-writer.lock"
+                || name == "checkpoints.jsonl"
+                || name.starts_with("audit-")
+            {
+                let metadata = std::fs::symlink_metadata(entry.path()).unwrap();
+                assert!(metadata.file_type().is_file());
+                files.push(AuditFile {
+                    name,
+                    device: metadata.dev(),
+                    inode: metadata.ino(),
+                    owner: metadata.uid(),
+                    mode: metadata.mode(),
+                    bytes: std::fs::read(entry.path()).unwrap(),
+                });
+            }
+        }
+        files.sort_by(|left, right| left.name.cmp(&right.name));
+        Self(files)
+    }
+}
 
 pub(super) struct Gate {
     pub entered: Sender<()>,
@@ -42,6 +82,7 @@ pub(super) struct Running {
     pub endpoint: String,
     pub credential: String,
     pub observed: Observations,
+    empty_audit: EmptyAudit,
     runtime: tokio::runtime::Runtime,
     service: tokio::task::JoinHandle<std::io::Result<()>>,
 }
@@ -50,6 +91,12 @@ impl Running {
         let value = configuration(directory, node);
         let config: Configuration = serde_json::from_value(value.clone()).unwrap();
         let observed = Default::default();
+        let audit = audit_log(&directory.0, node, true);
+        let empty_audit = EmptyAudit::capture(directory);
+        assert_eq!(empty_audit.0.len(), 2);
+        assert_eq!(empty_audit.0[0].name, ".audit-writer.lock");
+        assert_eq!(empty_audit.0[1].name, "audit-0000000001.log");
+        assert!(empty_audit.0.iter().all(|file| file.bytes.is_empty()));
         let authority = Authority::new(
             config,
             Default::default(),
@@ -57,7 +104,7 @@ impl Running {
                 evidence: SyntheticEvidence(std::sync::Arc::clone(&observed)),
                 gate,
             }),
-            Box::new(audit_log(&directory.0, node, true)),
+            Box::new(audit),
         )
         .unwrap();
         let credential = authority.credential().to_owned();
@@ -76,6 +123,7 @@ impl Running {
             endpoint: value["endpoint"].as_str().unwrap().into(),
             credential,
             observed,
+            empty_audit,
             runtime,
             service,
         }
@@ -85,6 +133,23 @@ impl Running {
         directory: &Directory,
         node: &str,
     ) -> Vec<humanymous_audit::record::Record> {
+        self.shutdown();
+        audit_log(&directory.0, node, false).records().unwrap()
+    }
+    pub fn finish_empty(self, directory: &Directory) {
+        let before = EmptyAudit::capture(directory);
+        assert_eq!(
+            before, self.empty_audit,
+            "owned empty WAL must remain unchanged"
+        );
+        self.shutdown();
+        assert_eq!(
+            EmptyAudit::capture(directory),
+            before,
+            "shutdown must preserve exact empty WAL files and identities"
+        );
+    }
+    fn shutdown(self) {
         self.service.abort();
         let joined = self.runtime.block_on(self.service);
         assert!(
@@ -92,6 +157,5 @@ impl Running {
             "owned authority listener must join cancellation"
         );
         self.runtime.shutdown_timeout(Duration::from_secs(2));
-        audit_log(&directory.0, node, false).records().unwrap()
     }
 }

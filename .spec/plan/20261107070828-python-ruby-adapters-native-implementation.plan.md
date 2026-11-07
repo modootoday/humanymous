@@ -368,3 +368,20 @@ Expected8Rust groups/28actual cases remain NOT_RUN, not zero successful executed
 cases or compile-only completion. The pending compile-evidence commit had earlier
 stopped on CI owner's Git mutex; no foreign claim was touched and A was used for
 setup/build rather than held for documentation. All evidence is retained.
+
+### Actual immutable Unix WSGI attempt: 6 passed, 2 failed
+
+Later root allocation B admitted the preserved artifacts at79.33% commit and
+33.87GiB free physical memory. Source8eb66811 and dependency manifests stayed
+unchanged. Eight tests executed under UID1000: six passed, two failed, exit101,
+none ignored/filtered. Four successful actual groups emitted10rows/22cases;
+the required14rows/28cases are not satisfied. Summary009 retains exact hashes,
+counts and the original failures. Owned cleanup found no task process; B returned.
+
+Primary-only fixture correction sets the fake socket's required0600 mode while
+retaining actual accepted request-byte proof and withheld-response deadline.
+Incomplete-body verification compares the freshly created owned empty WAL's
+exact files, bytes, device/inode/owner/mode before and after shutdown. It does
+not reopen empty history or change production allow_new=false refusal. Corrected
+source is formatted but not compiled or executed; a new immutable checkpoint
+and explicit renewed allocation remain required.

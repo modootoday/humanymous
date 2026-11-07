@@ -212,11 +212,7 @@ fn incomplete_bodies_never_reach_available_authority_or_origin() {
         assert!(engine.observed.lock().unwrap().is_empty());
         stop(server, port);
         assert!(!directory.0.join("effects.jsonl").exists());
-        assert!(
-            engine
-                .finish(&directory, "python-incomplete-pilot")
-                .is_empty()
-        );
+        engine.finish_empty(&directory);
         println!(
             "{}",
             json!({"framework":framework,"group":"incomplete-body","cases":2,"auditRecords":0,"originEffects":0,"wholeProductQualified":false})
@@ -303,7 +299,7 @@ fn disconnected_client_cannot_reach_origin_after_allow() {
 #[ignore = "mandatory actual hosted Waitress Flask/Django accepted IPC response timeout"]
 fn authority_response_deadline_closes_without_origin() {
     use std::{
-        os::unix::net::UnixListener,
+        os::unix::{fs::PermissionsExt, net::UnixListener},
         sync::{
             Arc,
             atomic::{AtomicBool, Ordering},
@@ -336,6 +332,9 @@ fn authority_response_deadline_closes_without_origin() {
         let directory = Directory::new();
         let endpoint = directory.0.join("stalled.sock");
         let listener = UnixListener::bind(&endpoint).unwrap();
+        // Match the real authority transport's private socket contract before
+        // proving that a request was accepted and its response was withheld.
+        std::fs::set_permissions(&endpoint, std::fs::Permissions::from_mode(0o600)).unwrap();
         listener.set_nonblocking(true).unwrap();
         let stop_flag = Arc::new(AtomicBool::new(false));
         let stop_worker = Arc::clone(&stop_flag);

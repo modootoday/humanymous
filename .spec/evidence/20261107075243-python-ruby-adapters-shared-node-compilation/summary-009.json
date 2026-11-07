@@ -1,0 +1,40 @@
+{
+  "scope": "Actual ordinary-user Unix Waitress Flask/Django component execution",
+  "sourceSha": "8eb66811dbb87a12a9d57e4e0c5048758efc1c4e",
+  "sourceManifestRows": 2202,
+  "sourceManifestBeforeAndAfterSha256": "6d799c81dab161dbe32e27cb435f921256b41d1e9ccaec55996529148128cce3",
+  "dependencyManifestBeforeAndAfterSha256": "a8480efd2b25d487a6b2676de7bba053200a7f69048e733d15175c1207728dfd",
+  "actorUid": 1000,
+  "environment": "WSL REA-Ubuntu, Rust 1.99.1, Python 3.12.3, private venv and prebuilt artifacts",
+  "admission": {"commitPercent": 79.33, "freePhysicalGiB": 33.87},
+  "artifactsSha256": {
+    "nativeFixture": "76041cb5b94d5aa55e384f104f1620ee6cf2ef539fbb8b0d43293397917c84c3",
+    "productionAuthority": "19f260d6224be96702c64e80ecbc21c795f238deb1a5bfb53b3017fef08a729b",
+    "wsgiTestExecutable": "34c8632bcd25e8f2a1bf6a525244bbb6ed9ab8800db5a8ea875a5b019e977e02"
+  },
+  "execution": {
+    "exitCode": 101,
+    "elapsedSeconds": 9.10,
+    "discoveredTests": 8,
+    "passedTests": 6,
+    "failedTests": 2,
+    "ignoredTests": 0,
+    "filteredTests": 0,
+    "completedActualGroups": 4,
+    "passedPureTests": 2,
+    "completedScenarioRows": 10,
+    "completedActualCases": 22,
+    "requiredActualCases": 28,
+    "requiredScenarioRows": 14,
+    "rawLogSha256": "68e6a55b9221dc10f748e825dc9472f6263572a44f596ef07fb16c49fb59cf9c"
+  },
+  "failures": [
+    {"test": "authority_response_deadline_closes_without_origin", "reason": "No actual request acceptance observed before channel timeout; fake socket did not set the shared transport's required 0600 permissions."},
+    {"test": "incomplete_bodies_never_reach_available_authority_or_origin", "reason": "Fixture reopened an intentionally empty audit history with allow_new=false; production correctly rejected it."}
+  ],
+  "ownedCleanup": "Test process exited; task-specific process environment scan returned no matches. Allocation B returned.",
+  "followup": "Primary fixture correction only; no snapshot edits and no rerun of corrected source yet. Exact owned empty WAL bytes and identities must remain unchanged; production empty-history refusal stays intact. Fake peer must accept request bytes and withhold a response before bounded refusal is accepted.",
+  "wholeProductQualified": false,
+  "productionBrowserEvidence": false,
+  "hostedQualification": false
+}

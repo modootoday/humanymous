@@ -15,6 +15,7 @@ files:
   - {path: summary-006.json, sha256: f4397ca167766758ffe5ff19aff3dba7a735c5b188fdf1ba990003261d6c51b8, bytes: 4789, store: repo}
   - {path: summary-007.json, sha256: 76fbd74edc155d3415e82d8f71f45335774d878c66a1c9db9ea6e13b73c273d8, bytes: 2629, store: repo}
   - {path: summary-008.json, sha256: b511ed53a3b304ec13377284924e276beb6a569345d5cc2fe299a60698f0bc57, bytes: 3114, store: repo}
+  - {path: summary-009.json, sha256: ad1a83dfba2d2f953fdfe398fff5cc2b304a11ca949c3339d75b6d9e98e492b4, bytes: 2327, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -130,3 +131,22 @@ Before the actual run, commit87.51% failed the <85% admission requirement. Thus
 expected8Rust groups/28actual cases have no execution counts, and no native
 framework/server import succeeded or failed. A was returned and prepared private
 artifacts preserved for later explicit allocation; this is not actual acceptance.
+
+## First actual WSGI execution: two fixture failures retained
+
+Summary009 records the later allocated ordinary-user execution of the same
+immutable source and prebuilt artifacts. Eight tests ran: six passed, two failed,
+none ignored or filtered, exit101. Four actual groups and two pure tests passed;
+ten completed scenario rows cover22 actual cases, short of the required28cases
+and14rows. Flask and Django both exercised real native imports, Waitress HTTP,
+authority IPC and audit on successful groups. This is component evidence using
+test-only frozen evidence, not production browser or whole-product qualification.
+
+The response-timeout fixture failed to prove actual request acceptance; its
+socket lacked the client's required0600 mode. The incomplete-body fixture
+attempted to reopen empty audit history, which production correctly refuses.
+Primary fixture fixes preserve accepted-request proof and exact owned empty WAL
+bytes and identities without changing production semantics. Corrected source
+has not been executed. Source and dependency manifests were unchanged; artifacts
+passed exact hash checks, task-specific cleanup found no remaining owned process,
+and allocation B was returned. The first failed run remains authoritative history.
