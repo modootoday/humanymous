@@ -393,6 +393,18 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+The next restricted S1 source window opened after Runtime C and .NET D commands
+were terminal. Private fixed-size append frontier and checked proof-range plans
+are authored, with prefix parity, textual leaf domain, overflow/no-mutation,
+disjoint visitation and maximum-u64 descriptor tests. Existing public proof
+signatures remain unchanged; consistency verification uses a fixed scratch
+array and refuses oversized malformed paths. Root-only computation retains one
+memo entry; legacy subtree caching for proof generation remains unbounded and
+does not qualify S2 operational streaming. Formatting and diff checks passed;
+compiler, tests, allocation measurements and fresh source qualification remain
+NOT_RUN pending an explicit bounded workload allocation. Historical115-pass
+proof applies only to sourcef88e76f4, not these new edits.
+
 Partial S1 canonical/NFC sourcef88e76f4 actual allocated Windows verification:
 all-targets check/Clippy plus canonical6/normalization2/record_parity1 pass;
 92 unique canonical vectors and13464 Unicode texts. Renewed A complete audit

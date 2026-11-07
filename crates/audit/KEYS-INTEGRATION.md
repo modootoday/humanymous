@@ -1,5 +1,23 @@
 # Sealed key compatibility integration
 
+## Merkle S1 candidate ready for bounded validation
+
+The next accepted private S1 source slice contains a fixed64-peak append
+frontier, fixed65-range inclusion/consistency plans with file-order visitation,
+and fixed66-hash consistency verification scratch. Public proof APIs remain
+compatible. Six new pure tests cover recursive prefix root parity, exact text
+leaf bytes, overflow refusal without mutation, scan-order range invariants and
+maximum-u64 descriptors without allocating history. Existing Go Merkle fixtures
+remain unchanged and must run against this candidate. Legacy Tree still borrows
+all leaves and memoizes proof subtrees; no operational streaming or128MiB claim.
+Formatting/diff/183-document Specfold checks pass. Cargo check/Clippy/tests are
+NOT_RUN pending root bounded workload allocation; no target/process is held.
+Suggested allocated batch: all-target locked check, all-target Clippy with
+warnings denied, Merkle unit selector and unchanged merkle_parity integration,
+then full audit regression if renewed. Use jobs1/incremental0/thread1 and fresh
+before/after source closure, preserving exact helper/ignored accounting.
+The115-pass proof below is historical for exact sourcef88e76f4.
+
 ## Current partial-S1 canonical code actually validated
 
 Sourcef88e76f4 passed all-target check/Clippy, focused9 Rust tests (92 unique Go

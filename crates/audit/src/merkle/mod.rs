@@ -1,6 +1,8 @@
 //! RFC 6962 domain-separated Merkle commitments over audit record hashes.
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
+mod frontier;
+mod ranges;
 
 /// SHA-256 commitment; fixed width rejects malformed proof nodes at decoding.
 pub type Hash = [u8; 32];
@@ -40,7 +42,20 @@ impl<'a> Tree<'a> {
 
     /// Root of the complete view, including SHA256(empty) for no leaves.
     pub fn root(&mut self) -> Hash {
-        self.subtree(0, self.leaves.len())
+        let key = (0, self.leaves.len());
+        if let Some(root) = self.memo.get(&key) {
+            return *root;
+        }
+        let mut frontier = frontier::Frontier::new();
+        for leaf in self.leaves {
+            frontier
+                .append(leaf)
+                .expect("in-memory leaf count fits u64");
+        }
+        debug_assert_eq!(frontier.count(), self.leaves.len() as u64);
+        let root = frontier.root();
+        self.memo.insert(key, root);
+        root
     }
 
     /// Root of a checked prefix using the same subtree cache; None for a size
@@ -54,8 +69,17 @@ impl<'a> Tree<'a> {
         if index >= self.leaves.len() {
             return None;
         }
-        let mut proof = Vec::new();
-        self.inclusion(index, 0, self.leaves.len(), &mut proof);
+        let plan = ranges::Plan::inclusion(
+            u64::try_from(index).ok()?,
+            u64::try_from(self.leaves.len()).ok()?,
+        )?;
+        let mut proof = vec![[0; 32]; plan.len()];
+        for (index, range) in plan.visits() {
+            proof[index] = self.subtree(
+                usize::try_from(range.start).ok()?,
+                usize::try_from(range.size).ok()?,
+            );
+        }
         Some(proof)
     }
 
@@ -64,8 +88,17 @@ impl<'a> Tree<'a> {
         if old_size == 0 || old_size >= self.leaves.len() {
             return None;
         }
-        let mut proof = Vec::new();
-        self.consistency(old_size, 0, self.leaves.len(), true, &mut proof);
+        let plan = ranges::Plan::consistency(
+            u64::try_from(old_size).ok()?,
+            u64::try_from(self.leaves.len()).ok()?,
+        )?;
+        let mut proof = vec![[0; 32]; plan.len()];
+        for (index, range) in plan.visits() {
+            proof[index] = self.subtree(
+                usize::try_from(range.start).ok()?,
+                usize::try_from(range.size).ok()?,
+            );
+        }
         Some(proof)
     }
 
@@ -85,42 +118,6 @@ impl<'a> Tree<'a> {
         let hash = node_hash(&left, &right);
         self.memo.insert((offset, size), hash);
         hash
-    }
-    fn inclusion(&mut self, index: usize, offset: usize, size: usize, proof: &mut Vec<Hash>) {
-        if size <= 1 {
-            return;
-        }
-        let k = split(size);
-        if index < k {
-            self.inclusion(index, offset, k, proof);
-            proof.push(self.subtree(offset + k, size - k));
-        } else {
-            self.inclusion(index - k, offset + k, size - k, proof);
-            proof.push(self.subtree(offset, k));
-        }
-    }
-    fn consistency(
-        &mut self,
-        old: usize,
-        offset: usize,
-        size: usize,
-        complete: bool,
-        proof: &mut Vec<Hash>,
-    ) {
-        if old == size {
-            if !complete {
-                proof.push(self.subtree(offset, size));
-            }
-            return;
-        }
-        let k = split(size);
-        if old <= k {
-            self.consistency(old, offset, k, complete, proof);
-            proof.push(self.subtree(offset + k, size - k));
-        } else {
-            self.consistency(old - k, offset + k, size - k, false, proof);
-            proof.push(self.subtree(offset, k));
-        }
     }
 }
 
@@ -177,17 +174,21 @@ pub fn verify_consistency(
     old_root: &Hash,
     new_root: &Hash,
 ) -> bool {
-    if old == 0 || old > new {
+    if old == 0 || old > new || proof.len() > 65 {
         return false;
     }
     if old == new {
         return proof.is_empty() && old_root == new_root;
     }
-    let mut path = Vec::with_capacity(proof.len() + 1);
+    let mut path = [[0; 32]; 66];
+    let mut length = 0;
     if old.is_power_of_two() {
-        path.push(*old_root);
+        path[0] = *old_root;
+        length = 1;
     }
-    path.extend_from_slice(proof);
+    path[length..length + proof.len()].copy_from_slice(proof);
+    length += proof.len();
+    let path = &path[..length];
     let Some(&first) = path.first() else {
         return false;
     };
