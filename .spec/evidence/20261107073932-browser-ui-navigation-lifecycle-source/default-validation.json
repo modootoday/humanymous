@@ -1,0 +1,245 @@
+{
+  "scope": "Root-assigned D, default-feature safe component validation",
+  "source_head": "245abeda95d269bb14f22e2980cf494a40e02961",
+  "target": "target/validation-browser",
+  "jobs": 1,
+  "incremental": 0,
+  "browser_units": {
+    "filtered": 0,
+    "ignored": 0,
+    "failed": 0,
+    "passed": 23
+  },
+  "native_cli_units": {
+    "filtered": 7,
+    "ignored": 0,
+    "failed": 0,
+    "passed": 4,
+    "excluded": "Windows storage tests; command process fixtures not selected"
+  },
+  "all_target_check": "passed",
+  "all_target_clippy_warning_denied": "passed",
+  "source_files": 49,
+  "source_hash_mismatches": 0,
+  "source_hashes": [
+    {
+      "sha256": "65b830318da0efb30498ab117c478a66ede3de1eecc9a55a40cc2a4f971402b0",
+      "path": "Cargo.lock"
+    },
+    {
+      "sha256": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac",
+      "path": "Cargo.toml"
+    },
+    {
+      "sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1",
+      "path": "crates/browser\\Cargo.toml"
+    },
+    {
+      "sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+      "path": "crates/browser\\native\\bootstrap\\Cargo.toml"
+    },
+    {
+      "sha256": "bf664f50f20875c849a9f90c2ae466e508be85e6de0d24f8ec5d36d29ad1ca74",
+      "path": "crates/browser\\native\\bootstrap\\src\\lib.rs"
+    },
+    {
+      "sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0",
+      "path": "crates/browser\\native\\bootstrap\\src\\renderer_probe.rs"
+    },
+    {
+      "sha256": "5ef4a7183cfa2a363f58ef073a650372019373f7415ff617f1f605a94a38bd34",
+      "path": "crates/browser\\native\\desktop\\Cargo.toml"
+    },
+    {
+      "sha256": "deefac4840070c3eb49a0054a9c6a1cc16258f32cc1fe222beb40600401b870c",
+      "path": "crates/browser\\native\\desktop\\pilot-contract.json"
+    },
+    {
+      "sha256": "b92a5047f52a8d983b32595b476c92db3cdce7a495329b7645405377938e4264",
+      "path": "crates/browser\\native\\desktop\\src\\browser_controls.rs"
+    },
+    {
+      "sha256": "ece97bd6eb4b92d83774b0bd29cb25db86e23873477f02f8387c59e661988ca4",
+      "path": "crates/browser\\native\\desktop\\src\\child.rs"
+    },
+    {
+      "sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
+      "path": "crates/browser\\native\\desktop\\src\\fixture.rs"
+    },
+    {
+      "sha256": "f45c006aefa0a3e9eded435422c239f939627c9a6b54dbd7749fc36d486d9a1a",
+      "path": "crates/browser\\native\\desktop\\src\\host_report.rs"
+    },
+    {
+      "sha256": "9180d637b34d74b0f4c06bb01ac90fcc4ad11a06aa00983a3007cbb071588a25",
+      "path": "crates/browser\\native\\desktop\\src\\host.rs"
+    },
+    {
+      "sha256": "5143b3ea4acfb82546955815f1c1499493180e10af5c4a21638b30b953854464",
+      "path": "crates/browser\\native\\desktop\\src\\internal_probe.rs"
+    },
+    {
+      "sha256": "509685802513f69c7e1b9113ac22cc5774642db1a3e3e29386c17590a2e731bf",
+      "path": "crates/browser\\native\\desktop\\src\\lib.rs"
+    },
+    {
+      "sha256": "79f77f0528db58de405c38eed65bdf78ea790439164533c13a12abe0993fa837",
+      "path": "crates/browser\\native\\desktop\\src\\local_page.rs"
+    },
+    {
+      "sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+      "path": "crates/browser\\native\\desktop\\src\\measured_input.rs"
+    },
+    {
+      "sha256": "0d99528f596cff0e99c447c68627995873e55c83ce98b3de233a199faa212862",
+      "path": "crates/browser\\native\\desktop\\src\\native.rs"
+    },
+    {
+      "sha256": "3a04a35e58c6c1cb16dce20572dc0f1cd20d4b17ccd2b8e7b7f40915653cf1fc",
+      "path": "crates/browser\\native\\desktop\\src\\navigation.rs"
+    },
+    {
+      "sha256": "c43457e75c46ef5d972c4e0bade7ebce17f2a41bd5af6abfd110b4734dac1bfd",
+      "path": "crates/browser\\native\\desktop\\src\\pilot_assertions.rs"
+    },
+    {
+      "sha256": "6df47121e6f94167932365f8f8587d5529f6ee74df560f3c9d4792c12917986d",
+      "path": "crates/browser\\native\\desktop\\src\\pilot_process.rs"
+    },
+    {
+      "sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
+      "path": "crates/browser\\native\\desktop\\src\\window_frame.rs"
+    },
+    {
+      "sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9",
+      "path": "crates/browser\\native\\shared\\scheme.rs"
+    },
+    {
+      "sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247",
+      "path": "crates/browser\\src\\frame_geometry.rs"
+    },
+    {
+      "sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5",
+      "path": "crates/browser\\src\\icons.rs"
+    },
+    {
+      "sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c",
+      "path": "crates/browser\\src\\input.rs"
+    },
+    {
+      "sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
+      "path": "crates/browser\\src\\internal_urls.rs"
+    },
+    {
+      "sha256": "98f9db6b761c4900d03d1108130e1d59c2f0c1e095ff7481ab5a7b9b21858537",
+      "path": "crates/browser\\src\\lib.rs"
+    },
+    {
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "path": "crates/browser\\src\\lifecycle.rs"
+    },
+    {
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "path": "crates/browser\\src\\main.rs"
+    },
+    {
+      "sha256": "47b70de3dc0891e28d5f401f1019e3c89cc1d122fc2412af1e096781b0aec24d",
+      "path": "crates/browser\\src\\navigation.rs"
+    },
+    {
+      "sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+      "path": "crates/browser\\src\\newtab.rs"
+    },
+    {
+      "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "path": "crates/browser\\src\\policy.rs"
+    },
+    {
+      "sha256": "6739cebff564c09b0af60b60eed99bfb3ed44bbaf95cf0cffd9a63f1c5ba5ff3",
+      "path": "crates/browser\\src\\ui_navigation.rs"
+    },
+    {
+      "sha256": "f54f32164faca9940f9d584e599ab69f885f511c83d8fa59b28fc77a58a22ea0",
+      "path": "crates/browser\\src\\ui.rs"
+    },
+    {
+      "sha256": "c5a772451a389b9bde10ad0378f4cecb316ee756e0044d05f7f8c45d733c0db4",
+      "path": "crates/browser\\src\\viewport.rs"
+    },
+    {
+      "sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+      "path": "crates/browser\\src\\window_chrome.rs"
+    },
+    {
+      "sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "path": "crates/native-cli\\Cargo.toml"
+    },
+    {
+      "sha256": "0c8e593d0d027cdf0b26852eeaf8e29eff51d29bc3ccb5a98c5cae4f99432b48",
+      "path": "crates/native-cli\\src\\arguments.rs"
+    },
+    {
+      "sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+      "path": "crates/native-cli\\src\\lib.rs"
+    },
+    {
+      "sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "path": "crates/native-cli\\src\\main.rs"
+    },
+    {
+      "sha256": "92ee2ad9635a2f297e864316d64152d9aa5ab8de198ef98c0e98fe028bca3239",
+      "path": "crates/native-cli\\src\\manifest.rs"
+    },
+    {
+      "sha256": "92ba13c460f74860751d5959e7fbe4ad7e163f86856475b9e042f7b668cc4d7b",
+      "path": "crates/native-cli\\src\\storage.rs"
+    },
+    {
+      "sha256": "21aca8c7b0efc4c81be93c62a686f475f82afb168c0dfae8f1c86fe30ac430d7",
+      "path": "crates/native-cli\\src\\storage\\windows.rs"
+    },
+    {
+      "sha256": "f009da89234090e20336449cecf9a6c5198b212d2e4b42b6b380c1dd70bf6deb",
+      "path": "crates/native-cli\\src\\storage\\windows\\tests.rs"
+    },
+    {
+      "sha256": "af4483477730588c90df5bba8d2cce770eb78a51872f5931246e8d0f080d84b6",
+      "path": "crates/native-cli\\src\\test_support.rs"
+    },
+    {
+      "sha256": "3bedb8ba4418c75dff24220642b9bbd86a08aec2fb91c4df3b9ad5ba70f17d92",
+      "path": "crates/native-cli\\src\\tests.rs"
+    },
+    {
+      "sha256": "cbb6d07e578998e71b9a8c343a5400efdbc8bbac7ea2143d5ddbd3414640f508",
+      "path": "crates/native-cli\\tests\\command.rs"
+    },
+    {
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+      "path": "rust-toolchain.toml"
+    }
+  ],
+  "resource_before": {
+    "committed_percent": 79,
+    "free_physical_gib": 33.44093704223633
+  },
+  "resource_after": {
+    "committed_percent": 79,
+    "free_physical_gib": 33.66559982299805
+  },
+  "private_receipt_locator": ".spec.local/root/evidence/20261107102826-browser-ui-default-validation",
+  "private_receipt_hashes": {
+    "inventory.log": "3729acf4c7e40ad0eddde12980813073bc4c036f906b65d1ab5d32d0a8dc37e5",
+    "browser-unit.log": "23b470723d7febc59a80df1743cfa63f838ef5dada16f68bac11e3de3592611b",
+    "native-cli-unit.log": "a31b3d1a61a5a48253c2592f0aec4cc6bb9d6de233a64957308d71e264ef1177",
+    "check.log": "7a9d88c12b6285da36bc1632d3a32ef8a2da196e6ba131e5e714c60f02053407",
+    "clippy.log": "c2381caf33041b8bb6cbae46e678ce72eb078699becbb4bad47d4fbd2297ad57",
+    "source-before.json": "56625ae2fe9118500789e959b323874790fe77ef7b7d25ef51850c3d3cb956e8",
+    "source-after.json": "2e77d6a3cb9acdb67b85f6f6983a6819591f8326bf2d4af9a909efb8a9fa995c",
+    "closure.json": "ab9148a65a469ad5e28cfc0197b836e109b742852c5a09122dd9c42527d35f7a"
+  },
+  "cef_protocol_regressions": "not_run: excluded Windows CEF desktop crate",
+  "native_ui_cef_gui_sdk_process_docker": "not_run",
+  "pipeline": "D returned",
+  "full_runtime_qualified": false
+}

@@ -14,6 +14,15 @@ for subsequent allocation rather than duplicating resource policy here.
 
 ## Pending correlated canary source
 
+Root-assigned D follow-up at source HEAD245abeda: browser default pure23/23 and
+native-cli pure argument/manifest4/4 passed. Seven Windows storage tests were
+explicitly filtered, and command process fixtures were not selected. Both default
+packages passed all-target check and Clippy -D warnings with jobs1/incremental0.
+Forty-nine source hashes matched before/after. D was returned immediately. See
+default-validation.json in evidence:root/20261107073932. This did not compile or
+execute native-ui/CEF, the four desktop protocol regressions, actual process/GUI,
+SDK or Docker cases. Those remain not_run; do not add them to the27 pure passes.
+
 Review correction: cancellation no longer emits a literal joined0 without
 checking raw inventory. It requires schema2 and an explicit empty renderer probe
 array, plus lossless navigation receipts confined to the initial transaction.
