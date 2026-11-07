@@ -3,9 +3,9 @@ id: evidence:root/20261107132453
 title: Go adapter hosted eight case qualification c3211e27
 status: active
 created: 2026-11-07T13:24:53Z
-updated: 2026-11-07T13:25:27Z
+updated: 2026-11-07T13:27:35Z
 files:
-  - {path: summary.json, sha256: 0682bf054f9cbfee2c55dc85561d19d402b69043235a1964065b47600dd0ae6b, bytes: 3755, store: repo}
+  - {path: summary.json, sha256: 9b1a56f3d34039bb21191191cc0ebe6372c4f523dfe132dc16a50ce7435b5b21, bytes: 3625, store: repo}
 ---
 
 # Go adapter hosted eight case qualification c3211e27
