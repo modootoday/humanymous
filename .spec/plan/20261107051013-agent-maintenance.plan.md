@@ -17,11 +17,11 @@ rel:
 - [x] Author lane JSON authority and static Markdown/legacy projection drift checks.
 - [x] Author pure product-link/claim/glob admission validators and guarded Rust session storage.
 - [x] Acquire complete pinned upstream56files+license privately; prior missing-shared failure remains preserved.
-- [ ] Complete current-source pure --lib/fmt/scopedClippy under explicitB allocation; preserve failures and after-resource measurement.
+- [x] Complete current-source pure --lib/fmt/all-targetClippy under explicitB allocation:34passed, first failure preserved, hashes/resources recorded.
 - [ ] Wire and execute hosted product bundle/discovery/package tests and actual session ownership/atomicity/interop cases; default writer_mode remains legacy-coexistence until qualification and coordinated switch.
 - [ ] Stage a real upstream plugin suite for product and changed developer guides; coordinate protected auth/allowance and a single source-bound hosted dispatch with CI/root.
 - [ ] Complete actual two-run with/without eval with observed skill reads and meaningful behavior graders; proxy/fixture/source acquisition cannot replace it.
-- [ ] Qualify provider discovery and retirement transition, then root-approved legacy replacement; active mirror sync/delete remains forbidden before its prerequisites.
+- [ ] Qualify fresh provider discovery on the root-authorized canonical-only cleanup candidate; never regenerate removed mirrors. Root performed the generated-copy deletion under the later explicit user instruction.
 
 New evidence is public73348/private73349; old51014/51015 evidence is historical
 and does not qualify this source. Root owns shared Cargo/lock; time dependency
@@ -48,6 +48,47 @@ altering product/scoring or extending the earlier bounded REA investigation.
 ## Record
 
 ### Continuation: transaction safety and input validation
+
+mistral.rs portable CUDA artifact installation is complete: archive and official
+model hashes matched, version command observed mistralrs0.9.5 and serve help
+executed successfully under existing WSL. Model/config/tokenizer artifacts are
+pinned; install receipt and original documentation/license are registered in
+private local-runtime evidence. No model is loaded and no server/API inference
+has run. Root explicitly reserved loading until the current CPU-critical queue
+finishes and an inference slot is assigned. Do not start paid calls, change global
+Codex configuration or treat this setup as hosted harness/product qualification.
+
+The user authorized autonomous no-API-cost local model setup, then explicitly
+replaced the Ollama suggestion with research and use of a lighter Rust-based
+module. Ollama installation/download had not started. Primary-source comparison
+selected mistral.rs v0.9.5 over direct Candle integration and llama-cpp-2 bindings:
+it already exposes Codex-compatible Responses/tool-call APIs and a Rust SDK.
+This is an integration-effort decision, not an unmeasured RAM/VRAM speed claim.
+The existing WSL sees RTX 4070 Ti 12GB; host RAM is about63GiB/free34GiB.
+Pinned CUDA13.0/sm89 artifact and official Qwen3-8B-GGUF Q4_K_M revision/hashes
+are recorded privately under local-runtime. Weights downloaded and matched their
+official LFS hash; runtime installation subsequently completed as recorded above. No global
+Codex configuration change, server-side agent tools or paid model call is used.
+Local setup/inference evidence remains separate from original hosted product and
+isolated upstream harness qualification; actual paired behavior is still open.
+
+Root allocated B after nginx returned it. Current pure batch first failed one
+registry test (32 passed) because CI/CD was misclassified as a repository path;
+the narrow area-name correction and regression fixture produced 34 passed with
+zero failures/ignored/filtered. Fmt, all-target check and all-target Clippy passed.
+Authorized read-only canonical check passed 14 skills/six canonical roles with no
+errors or mirror drift. Before/after hashes and all attempts are private current-*
+evidence. B was returned immediately; no owned validation process remains.
+Hosted mutation/process fixtures, twelve-run actual paired evaluation and fresh
+provider discovery remain NOT_RUN. This is no full-goal completion claim.
+
+Root relayed the user's explicit instruction to prioritize obsolete deletion.
+Root owns tracked generated vendor-copy cleanup while preserving canon and
+separately reviewing settings/hooks/untracked state. Manifest v6 now registers
+canonical skills/rules/agents only, never regenerated mirrors. Provider discovery
+is explicitly pending, as a post-cleanup qualification gate. Rust inventory treats
+absent mirrors as expected and checks only surviving compatibility files for
+unsafe links/drift. No fresh discovery success is inferred from deletion.
 
 Retirement reference inventory now records frozen Go CI mirror sync/diff/verify,
 legacy scripts' persona dependencies, vendor entry-point sync instructions and

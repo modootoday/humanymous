@@ -1,5 +1,13 @@
 # Compatibility transition and final retirement
 
+The latest user instruction prioritizes obsolete generated-copy deletion. Root
+owns the tracked vendor skill/rule/agent/lesson cleanup allowlist, retaining the
+canonical counterparts and separately reviewing settings/hooks/untracked state.
+Provider discovery is a required post-cleanup gate, not an indefinite deletion
+blocker. No mirror regeneration is authorized. Historical prerequisites below
+must be read with this accepted ordering change; actual runtime qualification
+remains unproven until fresh source-bound evidence exists.
+
 Canonical content now lives in `.agents/{rules,skills,agents}`. Root `skills/`
 contains the separate product-user skill and Rust maintenance tools. User-root skills are external read-only inputs;
 do not mass-copy, uninstall or overwrite them. The transition manifest is an

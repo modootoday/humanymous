@@ -20,7 +20,10 @@ pub struct Report {
     pub runtime_qualified: bool,
 }
 
-pub struct Bundle {pub entry:String,pub resources:BTreeMap<String,String>}
+pub struct Bundle {
+    pub entry: String,
+    pub resources: BTreeMap<String, String>,
+}
 
 fn local_target(source: &str, target: &str) -> Result<Option<String>, String> {
     if target.starts_with("https://") || target.starts_with('#') {
@@ -71,7 +74,7 @@ pub fn validate(entry: &str, resources: &BTreeMap<String, String>) -> Report {
     let links = Regex::new(r"\[[^\]]*\]\(([^)\s]+)\)").expect("fixed link pattern");
     let all = std::iter::once(("SKILL.md", entry))
         .chain(resources.iter().map(|(p, t)| (p.as_str(), t.as_str())));
-    let mut graph:BTreeMap<String,Vec<String>>=BTreeMap::new();
+    let mut graph: BTreeMap<String, Vec<String>> = BTreeMap::new();
     for (path, text) in all {
         if text.contains('\r') {
             result.errors.push(format!("CR bytes in {path}"));
@@ -107,10 +110,15 @@ pub fn validate(entry: &str, resources: &BTreeMap<String, String>) -> Report {
             }
         }
     }
-    let mut reachable=BTreeSet::new();let mut pending=vec!["SKILL.md".to_owned()];
-    while let Some(path)=pending.pop() {
-        if !reachable.insert(path.clone()) {continue;}
-        if let Some(targets)=graph.get(&path) {pending.extend(targets.iter().cloned());}
+    let mut reachable = BTreeSet::new();
+    let mut pending = vec!["SKILL.md".to_owned()];
+    while let Some(path) = pending.pop() {
+        if !reachable.insert(path.clone()) {
+            continue;
+        }
+        if let Some(targets) = graph.get(&path) {
+            pending.extend(targets.iter().cloned());
+        }
     }
     for path in resources.keys() {
         if !reachable.contains(path) {
@@ -145,12 +153,17 @@ pub fn load(root: &Path) -> Result<Bundle, Box<dyn std::error::Error>> {
         .into_iter()
         .map(|r| Ok((r.path.clone(), fs::read_to_string(root.join(r.path))?)))
         .collect::<Result<BTreeMap<_, _>, std::io::Error>>()?;
-    if fs::metadata(root.join("SKILL.md"))?.len()>256*1024 {return Err("oversized product entrypoint".into());}
+    if fs::metadata(root.join("SKILL.md"))?.len() > 256 * 1024 {
+        return Err("oversized product entrypoint".into());
+    }
     let entry = fs::read_to_string(root.join("SKILL.md"))?;
-    Ok(Bundle{entry,resources})
+    Ok(Bundle { entry, resources })
 }
 
-pub fn inspect(root:&Path)->Result<Report,Box<dyn std::error::Error>> {let bundle=load(root)?;Ok(validate(&bundle.entry,&bundle.resources))}
+pub fn inspect(root: &Path) -> Result<Report, Box<dyn std::error::Error>> {
+    let bundle = load(root)?;
+    Ok(validate(&bundle.entry, &bundle.resources))
+}
 
 #[cfg(test)]
 mod tests {
@@ -253,7 +266,10 @@ mod tests {
     }
     #[test]
     fn orphan_cycles_do_not_count_as_reachable() {
-        let resources=BTreeMap::from([("references/a.md".into(),"[b](b.md)".into()),("references/b.md".into(),"[a](a.md)".into())]);
-        assert_eq!(validate(HEADER,&resources).errors.len(),2);
+        let resources = BTreeMap::from([
+            ("references/a.md".into(), "[b](b.md)".into()),
+            ("references/b.md".into(), "[a](a.md)".into()),
+        ]);
+        assert_eq!(validate(HEADER, &resources).errors.len(), 2);
     }
 }

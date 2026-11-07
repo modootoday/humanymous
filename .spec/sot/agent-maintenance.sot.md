@@ -21,7 +21,9 @@ hosted gate runs actual `process`, `session_storage` and `product_package` test
 targets on the exact source candidate. Actual upstream paired inference requires
 the pinned full harness, runtime lock, bwrap, approved model/auth/allowance and
 raw trace/source receipts; no pure proxy or accounting fixture substitutes for it.
-All post-B20 source remains unvalidated until the next allocated check.
+The later allocated B batch passed 34 pure tests, fmt, all-target compile and
+Clippy; current-after.json privately binds the tested source. Actual hosted
+mutation/process tests, paired inference and provider discovery remain open.
 
 ## Active goal continuation and product/session delta
 

@@ -64,7 +64,11 @@ fn canonical_roles_do_not_require_retired_persona_pointers() {
     f.canon();
     fs::remove_dir_all(f.0.join(".agents/personas")).unwrap();
     let output = f.run(&["check", f.0.to_str().unwrap()]);
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let result: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(result["canonical_roles"], 6);
     assert_eq!(result["role_pointers"], 0);

@@ -1,7 +1,7 @@
 # AGENTS.md — humanymous
 
 Cross-tool always-on rules (Claude Code · Grok Build · OpenAI Codex · Gemini CLI).
-Vendor stubs (`CLAUDE.md`, `GEMINI.md`) point here. Keep this file **short** — details load on demand.
+This file is the provider-neutral project entry point. Keep it **short** — details load on demand.
 
 ## Mission
 
@@ -56,8 +56,8 @@ Host/loopback `node test/e2e/runner.mjs` or host `node test/gate/e2e.mjs` is **n
 
 ## Skills & agents
 
-- Canon: `.agents/skills/`, `.agents/agents/`, `.agents/rules/`; repository-root `skills/` holds Rust maintenance/evaluation tooling, not another skill definition copy.
-- `.agents/personas/` and generated vendor mirrors are compatibility surfaces pending retirement. Never hand-edit or remove live mirrors. Follow `.agents/retirement/README.md`; legacy sync recursively replaces mirrors and is deferred while sessions are active.
+- Canon: `.agents/skills/`, `.agents/agents/`, `.agents/rules/`; repository-root `skills/SKILL.md` is the separate product-user skill, alongside Rust maintenance/evaluation tooling.
+- `.agents/personas/` and generated vendor mirrors are compatibility surfaces pending retirement. Follow `.agents/retirement/README.md` and its concrete consumer inventory; running chats alone are not an indefinite blocker. Do not run legacy recursive sync. Remove only owner-authorized candidates after consumer migration and required discovery evidence.
 - Verify canon: `cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .`
 - Preserve session coordination scripts until their Rust replacement and compatibility gates are qualified; their use is not permission for new foreign implementation.
 - Workspace Cargo/toolchain and whole roadmap edits belong to root integration. Keep public evidence sanitized and source-bound; observe LF in worktree **and Git blob** bytes.

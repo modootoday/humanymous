@@ -1,27 +1,27 @@
-# Provider matrix (what loads where)
+# Canonical provider inputs and discovery evidence
 
-The table below is a legacy adapter compatibility snapshot, not a current
-cross-provider qualification claim. Canonical Rust-era paths are
-`.agents/{rules,skills,agents}`; user-global skills remain external read-only.
-Observe actual selected paths/hashes in fresh provider evals before retiring any
-mirror. Follow `.agents/retirement/README.md`; legacy recursive sync is deferred
-while active chats depend on old generated paths.
+All providers use one project source: root/nested `AGENTS.md`, `.agents/rules`,
+`.agents/skills`, `.agents/agents` and `.agents/lessons`. Product-user instructions
+live separately in `skills/SKILL.md`. Do not regenerate vendor mirrors or infer
+automatic discovery from this intended layout.
 
-| Asset | Claude Code | Grok Build | OpenAI Codex | Gemini CLI |
-|-------|-------------|------------|--------------|------------|
-| `AGENTS.md` | via `CLAUDE.md` stub / compat | native | native | via `.gemini/settings.json` |
-| Nested `**/AGENTS.md` | yes (when path touched) | yes (root→cwd) | yes | context-dependent |
-| `.agents/skills` | after sync → `.claude/skills` | native + sync | after sync → `.codex/skills` | native `.agents/skills` |
-| Hooks | `.claude/settings.json` | `.grok/hooks/` + Claude compat | `.codex/hooks.json` (trusted project) | limited |
-| Personas | `.claude/agents` (synced) | load as files / subagents | load via skill | load via skill |
-| Lessons | `.claude/lessons` (synced) + `.agents/lessons` | `.agents/lessons` | `.agents/lessons` | `.agents/lessons` |
-| Approval UX | workspace trust | `/hooks-trust` for hooks | lower-risk Auto: `approval_policy=on-request` + `sandbox_mode=workspace-write` | project settings |
-| Commit Co-Authored-By | `Claude <noreply@anthropic.com>` (product default + avatar) | `Grok <grok@x.ai>` (community de-facto; **no avatar** until xAI links email) | `codex <codex@openai.com>` (avatar) / `Codex <noreply@openai.com>` | no vendor default; placeholder until Google ships |
+| Input | Canonical path | Verification boundary |
+|---|---|---|
+| Project rules | root/nested `AGENTS.md` | Actual provider context and selected instructions |
+| Developer skills | `.agents/skills/*/SKILL.md` | Fresh discovery/read traces and paired behavioral evaluation |
+| Review roles | `.agents/agents/*.md` | Read canonical files; perspective does not authorize spawning |
+| Durable lessons | `.agents/lessons` | Preserve history and promote portable lessons through the owning lane |
+| Product skill | `skills/SKILL.md` and references | Isolated product evaluation without internal developer skills |
+| Attribution | `.agents/sessions/COMMIT-CONVENTION.md` | Canonical provider identity; never invent an address |
 
-**Attribution emails:** Claude/Codex are GitHub-linked for profile photos. Grok follows community convention `grok@x.ai` (unlinked as of 2026-07). Official org [`xai-org`](https://github.com/xai-org) — **not** third-party `github.com/grok` / `github.com/xai`. Full registry: `.agents/sessions/COMMIT-CONVENTION.md`.
+Generated vendor skill/rule/agent/lesson copies are being removed by the root
+cleanup owner. Their absence is accepted by the Rust inventory. Optional surviving
+compatibility files are inspected for unsafe links and drift, never recreated.
+Non-generated settings, hooks and untracked local state remain separately owned;
+their presence does not qualify discovery or authorize deletion.
 
-Edit canon under `.agents/` + assigned AGENTS paths; validate with the Rust tool.
-Root coordinates any final legacy adapter sync under the transition policy.
-
-**Claude-only memory is not portable.** After a Claude-heavy session, promote durable
-rules into `.agents/lessons/HARD-WON.md` (skill `survey-provider-history`).
+Fresh provider discovery after cleanup is not yet qualified. Preserve observed
+paths/hashes, runtime versions, denied/missing reads and both behavior arms.
+An explicit file read, declared skill name or static routing match alone cannot
+establish automatic activation or quality improvement. Keep the environment's
+actual trust, sandbox and approval policy; do not change it to force a passing eval.

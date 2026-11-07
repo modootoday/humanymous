@@ -239,9 +239,12 @@ pub fn claim(root: &Path, mut request: Claim) -> Result<Claim, Box<dyn std::erro
     Ok(request)
 }
 
-pub fn claim_request_file(root:&Path,path:&Path)->Result<Claim,Box<dyn std::error::Error>> {
-    let request=Request::parse(&read_text(path,32*1024)?)?;
-    claim(root,request.into_claim(OffsetDateTime::now_utc().format(&Rfc3339)?))
+pub fn claim_request_file(root: &Path, path: &Path) -> Result<Claim, Box<dyn std::error::Error>> {
+    let request = Request::parse(&read_text(path, 32 * 1024)?)?;
+    claim(
+        root,
+        request.into_claim(OffsetDateTime::now_utc().format(&Rfc3339)?),
+    )
 }
 
 pub fn release(

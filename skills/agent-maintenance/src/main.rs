@@ -1,5 +1,7 @@
 //! Read-only canonical agent checks and bounded, sandboxed Codex evaluations.
-use humanymous_agent_maintenance::{evaluation, inventory, language, package, paired, product, routing, sessions};
+use humanymous_agent_maintenance::{
+    evaluation, inventory, language, package, paired, product, routing, sessions,
+};
 
 use std::{env, path::Path, process::ExitCode};
 

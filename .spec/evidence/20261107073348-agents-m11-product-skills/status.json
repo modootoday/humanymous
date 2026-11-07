@@ -1,0 +1,44 @@
+{
+  "schema": "humanymous.agents-m11-evidence-status.v1",
+  "upstream": {
+    "repository": "https://github.com/modootoday/marketplace",
+    "commit": "1c4f32595d9cf3f07a393b8c561b9ab3b7f94981",
+    "plugin_version": "0.3.2",
+    "plugin_files": 56,
+    "registered_files_including_license_and_manifest": 58,
+    "codex_script_sha256": "7430f009e37a556d1a96f512e31e508569297d35dbf1686766e6686fe48cfd3a",
+    "acquisition_qualified": true,
+    "runtime_qualified": false
+  },
+  "historical_B20": {
+    "base_head": "8c4e92f19a6bfe64c06371202431b4a8a25e57ee",
+    "source_binding": "private evidence source-b20.json",
+    "pure_tests_passed": 20,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "qualifies_subsequent_source": false
+  },
+  "source_checkpoint": "057613a",
+  "post_checkpoint_canonical_cleanup_delta": {
+    "source_binding": "private evidence current-after.json",
+    "first_attempt": "32 passed; 1 registry title failure; preserved",
+    "final_pure_passed": 34,
+    "final_pure_failed": 0,
+    "final_pure_ignored": 0,
+    "final_pure_filtered": 0,
+    "all_target_clippy": "passed",
+    "all_target_check": "passed",
+    "fmt": "passed",
+    "canonical_skills": 14,
+    "canonical_roles": 6,
+    "optional_role_pointers": 6,
+    "canonical_errors": 0,
+    "mirror_drift": 0
+  },
+  "hosted_session_and_package_fixtures": "not_run",
+  "product_paired_subject_runs_expected": 12,
+  "product_paired_subject_runs_observed": 0,
+  "fresh_provider_discovery": "not_run",
+  "full_goal_complete": false
+}

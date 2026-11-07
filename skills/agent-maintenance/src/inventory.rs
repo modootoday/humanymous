@@ -155,10 +155,18 @@ pub fn check(root: &Path) -> Result<Report, Box<dyn std::error::Error>> {
         if let Some(relative) = record.path.strip_prefix(".agents/skills/") {
             for vendor in [".codex", ".claude", ".grok", ".gemini"] {
                 let mirror = root.join(vendor).join("skills").join(relative);
-                if !mirror.exists() || fs::read(mirror)? != fs::read(root.join(&record.path))? {
-                    result
-                        .mirror_drift
-                        .push(format!("{vendor}/skills/{relative}"));
+                match fs::symlink_metadata(&mirror) {
+                    Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+                    Ok(meta) if meta.is_file() && !meta.file_type().is_symlink() => {
+                        if fs::read(&mirror)? != fs::read(root.join(&record.path))? {
+                            result
+                                .mirror_drift
+                                .push(format!("{vendor}/skills/{relative}"));
+                        }
+                    }
+                    _ => result
+                        .errors
+                        .push(format!("unsafe compatibility mirror: {}", mirror.display())),
                 }
             }
         }
@@ -195,18 +203,24 @@ pub fn check(root: &Path) -> Result<Report, Box<dyn std::error::Error>> {
             Ok(meta) if meta.is_file() && !meta.file_type().is_symlink() => {
                 result.canonical_roles += 1;
             }
-            _ => result.errors.push(format!("missing/unsafe canonical role: {name}")),
+            _ => result
+                .errors
+                .push(format!("missing/unsafe canonical role: {name}")),
         }
         match fs::symlink_metadata(&pointer) {
             Ok(meta) if meta.is_file() && !meta.file_type().is_symlink() => {
                 if fs::read_to_string(&pointer)?.contains(&format!("../agents/{name}.md")) {
                     result.role_pointers += 1;
                 } else {
-                    result.errors.push(format!("invalid compatibility role pointer: {name}"));
+                    result
+                        .errors
+                        .push(format!("invalid compatibility role pointer: {name}"));
                 }
             }
             Err(error) if error.kind() == io::ErrorKind::NotFound => {}
-            _ => result.errors.push(format!("unsafe compatibility role pointer: {name}")),
+            _ => result
+                .errors
+                .push(format!("unsafe compatibility role pointer: {name}")),
         }
     }
     result.elapsed_micros = started.elapsed().as_micros();

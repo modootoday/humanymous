@@ -15,15 +15,33 @@ pub struct Claim {
     pub status: String,
 }
 
-#[derive(Debug,Deserialize,Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-pub struct Request {pub lane:String,pub provider:String,pub session:String,pub goal:String,pub paths:String}
+pub struct Request {
+    pub lane: String,
+    pub provider: String,
+    pub session: String,
+    pub goal: String,
+    pub paths: String,
+}
 impl Request {
-    pub fn parse(text:&str)->Result<Self,String> {
-        if text.len()>32*1024 {return Err("request exceeds32KiB".into());}
-        serde_json::from_str(text).map_err(|e|e.to_string())
+    pub fn parse(text: &str) -> Result<Self, String> {
+        if text.len() > 32 * 1024 {
+            return Err("request exceeds32KiB".into());
+        }
+        serde_json::from_str(text).map_err(|e| e.to_string())
     }
-    pub fn into_claim(self,since:String)->Claim {Claim{lane:self.lane,provider:self.provider,session:self.session,goal:self.goal,paths:self.paths,since,status:"active".into()}}
+    pub fn into_claim(self, since: String) -> Claim {
+        Claim {
+            lane: self.lane,
+            provider: self.provider,
+            session: self.session,
+            goal: self.goal,
+            paths: self.paths,
+            since,
+            status: "active".into(),
+        }
+    }
 }
 
 pub fn scope(path: &str) -> Result<(), String> {
@@ -291,7 +309,7 @@ mod tests {
     }
     #[test]
     fn case_aliases_overlap_and_request_cannot_supply_ownership_state() {
-        assert!(overlap("Crates/Audit/**","crates/audit/src/lib.rs").unwrap());
+        assert!(overlap("Crates/Audit/**", "crates/audit/src/lib.rs").unwrap());
         assert!(Request::parse(r#"{"lane":"one","provider":"codex","session":"mine","goal":"x","paths":"a","status":"active"}"#).is_err());
     }
 }

@@ -1,5 +1,15 @@
 # Multi-provider agent layout inventory (canon).
-version: 5
+version: 6
+
+authored_source_exceptions:
+  - decision: .spec/sot/rust-migration.sot.md#explicit-managed-host-exception-aspnet-core
+    language: CSharp
+    paths:
+      - adapters/dotnet/src/Humanymous.Native/NativeBinding.cs
+      - adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs
+      - adapters/dotnet/pilot/Program.cs
+    scope: ABI-binding-middleware-host-pilot-only
+    runtime_qualified: false
 
 canon:
   project_rules: AGENTS.md
@@ -12,13 +22,12 @@ canon:
   rules_root: .agents/rules
   skills_root: .agents/skills
   agents_root: .agents/agents
-  personas_root: .agents/personas # compatibility pointers, not duplicate contracts
   workflows_root: .agents/workflows
   evals:
     dataset: .agents/evals/trigger-queries.json
     deterministic_rules: .agents/evals/trigger-rules.json
     runner: skills/agent-maintenance
-    legacy_runner: scripts/agents/eval-skill-triggers.mjs
+    product_suite: .agents/evals/product
   hooks_canon: .agents/hooks
   workflow_runtime: scripts/agents/workflow-runner.mjs
   workflow_schema: .agents/workflows/workflow.schema.json
@@ -26,28 +35,31 @@ canon:
 
 adapters:
   claude:
-    project_rules: [CLAUDE.md]
-    skills: .claude/skills
-    rules: .claude/rules
-    agents: .claude/agents
+    project_rules: [AGENTS.md]
+    skills: .agents/skills
+    rules: .agents/rules
+    agents: .agents/agents
+    discovery_qualified: false
     settings: .claude/settings.json
   grok:
     project_rules: [AGENTS.md]
-    skills: [.agents/skills, .grok/skills]
-    rules: .grok/rules
+    skills: .agents/skills
+    rules: .agents/rules
+    discovery_qualified: false
     hooks: .grok/hooks/project-safety.json
   codex:
     project_rules: [AGENTS.md]
-    skills: .codex/skills
+    skills: .agents/skills
+    discovery_qualified: false
     hooks: .codex/hooks.json
   gemini:
     project_rules: [AGENTS.md]
     settings: .gemini/settings.json
-    skills: [.agents/skills, .gemini/skills]
+    skills: .agents/skills
+    discovery_qualified: false
 
 rules:
   - 00-safety.md
-  - 10-go-conventions.md
   - 10-rust-conventions.md
   - 20-detection-freeze.md
   - 30-docs-diataxis.md
@@ -90,7 +102,7 @@ skills:
   - survey-provider-history
   - coordinate-sessions
 
-personas:
+agents:
   - blue-architect
   - red-attacker
   - sre-ops
@@ -114,5 +126,7 @@ transition:
   policy: .agents/retirement/README.md
   manifest: .agents/retirement/manifest.json
   user_skills: external-read-only
-  generated_mirror_deletion: root-only-after-qualification
+  generated_mirror_deletion: root-owned-cleanup-candidate
+  regenerate_mirrors: false
+  provider_discovery: pending-source-bound-evaluation
   authored_toolchain: Rust-1.99.1-edition-2024

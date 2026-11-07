@@ -1,4 +1,4 @@
-# `.agents/` — multi-provider agent canon (v5)
+# `.agents/` — multi-provider agent canon (v6)
 
 Vendor-neutral source of truth for Claude Code, Grok Build, OpenAI Codex, and Gemini CLI.
 
@@ -39,33 +39,29 @@ run on the approved standard hosted runner with source-bound evidence.
 
 ```text
 cargo test --locked -p humanymous-agent-maintenance --lib
-cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .
-cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- routing .
 ```
 
-The following legacy commands are retained compatibility references. Do not run
-recursive mirror sync; `.agents/retirement/README.md`
-defines the transition. Legacy workflow/hooks/session executables remain explicit
-foreign-tool debt until replacement qualification; no new foreign implementation.
+Actual CLI/filesystem/process checks run on the approved hosted candidate:
 
-```powershell
-pwsh -File scripts/agents/sync-adapters.ps1
-pwsh -File scripts/agents/verify-agents-layout.ps1
+```text
+cargo run --locked -p humanymous-agent-maintenance -- check .
+cargo run --locked -p humanymous-agent-maintenance -- routing .
+cargo test --locked -p humanymous-agent-maintenance --test process
+cargo test --locked -p humanymous-agent-maintenance --test session_storage
+cargo test --locked -p humanymous-agent-maintenance --test product_package
 ```
 
-```bash
-bash scripts/agents/sync-adapters.sh
-bash scripts/agents/verify-agents-layout.sh
-node scripts/agents/workflow-runner.mjs validate
-node scripts/agents/eval-skill-triggers.mjs
-node scripts/agents/workflow-runner.mjs start --workflow feature-loop --objective "..." --provider codex
-```
+Legacy mirror generators and validators are retired operational guidance. Do not
+run or regenerate them. Historical workflow/hooks/session executables remain
+explicit debt until their separately owned replacements are qualified; their
+presence does not authorize new foreign implementation. Follow
+`.agents/retirement/README.md` for the root cleanup candidate and pending discovery.
 
 ## Edit policy
 
-1. Edit **only** `.agents/**`, root/nested `AGENTS.md`, `CLAUDE.md`/`GEMINI.md` stubs if needed.
+1. Edit only the paths assigned to your lane under `.agents/**`, root/nested `AGENTS.md`, and the separate product skill/tooling scope. Do not recreate retired vendor stubs.
 2. Observe drift with the Rust check. Root coordinates consumer migration and final retirement using evidenced dependencies and cleaned-tree gates.
-3. Never hand-edit generated `.claude/skills`, `.grok/skills`, etc.
+3. Do not regenerate vendor skill/rule/agent/lesson mirrors. Root owns their cleanup candidate; preserve separately owned settings/hooks and untracked state.
 
 ## Skills catalog
 
