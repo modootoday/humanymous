@@ -1,0 +1,64 @@
+{
+  "schema": "humanymous.distribution-notice-validation/1",
+  "checkpoint_base": "08823f90148d70581c386c09fec71a4b8e637b0d",
+  "declared_overlays": 7,
+  "tests": {
+    "passed": 80,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "commands": {
+    "delivery_all_target_check": 0,
+    "delivery_strict_clippy": 0,
+    "policy": 0,
+    "actionlint": 0,
+    "fmt": 0,
+    "docs_review_all_target_check": 0,
+    "docs_review_strict_clippy": 0,
+    "expected_shipping_rejection": 1
+  },
+  "closure": {
+    "source_files": 2540,
+    "registry_packages": 105,
+    "registry_files": 3791,
+    "config_paths": 22,
+    "tool_binaries": 4,
+    "source_drift": 0,
+    "registry_drift": 0,
+    "config_drift": 0,
+    "tool_drift": 0,
+    "environment_drift": 0,
+    "working_overlay_drift": 0,
+    "registry_scope": "Union reachable Windows metadata closures; may overapproximate selected features"
+  },
+  "notice": {
+    "source": "crates/audit/LICENSE-Go.txt",
+    "sha256": "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738",
+    "archive_path": "licenses/Go.txt",
+    "image_path": "/usr/share/licenses/humanymous/Go.txt",
+    "actual_in_memory_notice_archive_verified": true,
+    "image_source_copy_verified": true,
+    "actual_component_binary_archive_built": false,
+    "actual_image_built": false
+  },
+  "docs_review_metadata": {
+    "license": "Apache-2.0",
+    "unsafe_code": "forbid",
+    "manifest_before_sha256": "212fa80156a6d2938d1ee7f5bf9b9d46579596aa489aa8a6bb0bf2bb03fffd54",
+    "manifest_after_sha256": "1d4ff94c30e5ac85ebfd82fb08390c5d8e01635e1cb544365eeb5fbfc7c7f6c2",
+    "shared_cargo_changed": false
+  },
+  "admission": {
+    "committed_percent": 82,
+    "free_physical_gib": 30.0870361328125
+  },
+  "private_index_sha256": "9a4a4590a89a05211c01bbf2d7353e4082000e9d81685d0150a73fe3f16c06f0",
+  "full_product_qualified": false,
+  "release_ready": false,
+  "limitations": [
+    "Known adapted Go sort notice only; not complete dependency license compliance.",
+    "No actual binary distribution archive or image contents were verified. Future image build/scan must bind the changed source.",
+    "Shipping rejection remains expected and does not waive candidate qualification."
+  ]
+}

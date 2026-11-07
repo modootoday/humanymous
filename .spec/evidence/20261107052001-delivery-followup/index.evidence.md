@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T13:51:03Z
+updated: 2026-11-07T14:09:58Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -21,6 +21,7 @@ files:
   - {path: mount-c3211e27-summary.json, sha256: ac09e1f630bbed4bae72079c55cfe20fcfd5d8c67c02acd5a6362a34038644a2, bytes: 5296, store: repo}
   - {path: go-c3211e27-summary.json, sha256: c858af3a68fcb2ac12acf04151fd1c32a193c90ec4fd59f3c8652d0075336b16, bytes: 5490, store: repo}
   - {path: cef-ec4f2da0-summary.json, sha256: e219dcffd0361c3fd66676d30b10f4c83b7fc777f4839b7f5f8a696a8e83cb0a, bytes: 10375, store: repo}
+  - {path: distribution-notice-validation.json, sha256: 6e4d2694ff2b144e9ca18d1b326f9335aa300adf314d35a2cfc5800a298b391a, bytes: 2223, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -307,3 +308,22 @@ false upload condition was preserved, then its automatic oracle upload removed.
 Private evidence index SHA256 is
 fc38d1982156314809d8bd149b82565a313825a35760ebe58a8ccc177d14f263.
 C was returned; no image/SDK/Docker/actual child/install/publish/OIDC ran.
+
+## Known Go notice and standalone metadata
+
+distribution-notice-validation.json records allocated D actual80 tests passed
+with no failed/ignored/filtered cases, delivery check/strict Clippy/policy/YAML/
+fmt and separate standalone docs-review check/strict Clippy all zero. The known
+Go notice bytes were actually packaged and read back from a notice-only in-memory
+tar. Source recipe/hash checks cover the candidate final-image COPY; no actual
+binary archive or image contents were built or verified. This is one known
+adapted-source notice, not complete dependency license compliance. The shipping
+guard's negative result remains mandatory and was not bypassed.
+
+Immutable archive08823f90 plus seven declared overlays retained2540 source files,
+105 registry packages/3791 files,22 configuration paths,4 tool binaries and
+relevant environment hashes with zero differences. All live overlay bytes still
+matched. Registry metadata closure can overapproximate selected features. D
+admission82percent committed/30.087GiB free; jobs1/incremental0/locked/offline
+workloads ended and D was returned. Private index SHA256 is
+9a4a4590a89a05211c01bbf2d7353e4082000e9d81685d0150a73fe3f16c06f0.

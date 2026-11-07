@@ -13,6 +13,7 @@ mod lab_receipts;
 mod metrics;
 mod mount_probe;
 mod nginx;
+mod notices;
 mod package;
 mod pages;
 mod pilot;

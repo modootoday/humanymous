@@ -103,6 +103,7 @@ pub fn check(root: &Path) -> Result<()> {
         "runtime source absent",
     )?;
     builder(&dockerfile, &tool)?;
+    crate::notices::image(root, &dockerfile)?;
     let source = source::snapshot(root)?;
     evidence::emit_public_summary(
         "Rust image candidate source inventory",
@@ -130,6 +131,7 @@ pub fn shipping(root: &Path) -> Result<()> {
         &dockerfile,
         &read_json(&root.join("build/rust/runtime-build-tool.json"))?,
     )?;
+    crate::notices::image(root, &dockerfile)?;
     require(
         candidate["source_build_verified"] == true
             && candidate["nonroot_runtime_verified"] == true

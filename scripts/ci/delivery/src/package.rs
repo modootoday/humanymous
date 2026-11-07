@@ -229,6 +229,7 @@ pub fn native_artifacts(root: &Path) -> Result<()> {
     archive
         .append_path_with_name(root.join("LICENSE"), "LICENSE")
         .map_err(|e| e.to_string())?;
+    let notices = crate::notices::append(root, &mut archive)?;
     archive
         .into_inner()
         .map_err(|e| e.to_string())?
@@ -236,7 +237,7 @@ pub fn native_artifacts(root: &Path) -> Result<()> {
         .map_err(|e| e.to_string())?;
     write_json(
         &directory.join(format!("{name}.manifest.json")),
-        &json!({"schema":"humanymous.native-components/1","source":source::snapshot(root)?,"archive_sha256":source::file(&directory.join(&name))?,"full_product_qualified":false,"release_ready":false}),
+        &json!({"schema":"humanymous.native-components/1","source":source::snapshot(root)?,"archive_sha256":source::file(&directory.join(&name))?,"known_distribution_notices":notices,"full_product_qualified":false,"release_ready":false}),
     )
 }
 pub fn node(root: &Path) -> Result<PathBuf> {

@@ -779,3 +779,24 @@ separately. Actual four bootstrap refusals exited78/reapedtrue, with unchanged
 profiles. browser_ready/full_runtime_qualified remainfalse. Public safe summary
 and private capture indexe7294dc8154c2388e3bddf06ae33365624d4b5afb32cf8409af99c92e586aa39
 preserve exact filtered counts and command/child observations. No retry issued.
+
+CA-META-01 identifies missing license/unsafe policy in the independent docs-review
+workspace. Add Apache-2.0 and unsafe_code forbid without changing shared Cargo.
+CA-NOTICE-01 identifies the exact adapted Go audit-sort BSD notice missing from
+native tar/runtime image recipes. Root authorized a narrow fix: known notice
+inventory, same validated bytes in the native archive, final scratch COPY and
+source-bound hash/content regression. Audit owns the original notice; reuse it
+read-only. This is not evidence of a published breach or complete dependency
+compliance. The image recipe change requires future actual image proof at new
+source and never rewrites prior immutable CEF/browser evidence. Bounded helper
+validation completed in allocated D:80passed/0failed/ignored/filtered, delivery
+all-target check/strict Clippy/policy/actionlint/fmt zero and separate-target
+standalone docs-review all-target check/strict Clippy zero. The notice-only
+in-memory tar's actual bytes/hash were verified; no actual component binary tar
+or image was built. Source2540/registry3791files across105packages/config22/tool4
+and relevant environment hashes were unchanged; all seven live overlays matched
+the frozen archive08823f90 plus declared overlay. Admission82percent/30.087GiB;
+locked/offline jobs1/incremental0, D returned immediately after terminal commands.
+Shipping rejection1 remained expected. Private evidence index SHA256 is
+9a4a4590a89a05211c01bbf2d7353e4082000e9d81685d0150a73fe3f16c06f0.
+No image/Docker/publication was authorized or executed.

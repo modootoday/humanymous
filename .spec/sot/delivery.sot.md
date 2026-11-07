@@ -1258,3 +1258,19 @@ publication qualification. The manual historical Go oracle checks out only
 and has no automatic artifact upload or remote cache write. Current Rust agent
 maintenance belongs to current Rust validation, never the historical baseline.
 No final Rust shipping gate depends on successful current-tree Go compilation.
+
+Known adapted-source notices are distribution inputs. The audit sort's exact
+crates/audit/LICENSE-Go.txt bytes and SHA256 are listed in the bounded Rust
+distribution notice inventory. Native component archives include these bytes at
+licenses/Go.txt alongside the root LICENSE, and record the inventory in their
+source-bound manifest. The runtime candidate includes the same file at
+/usr/share/licenses/humanymous/Go.txt. Source validation rejects a missing COPY,
+changed notice hash or inventory identity; an in-memory archive regression
+checks the actual packaged notice bytes. This addresses one known adapted Go
+notice, not complete dependency license compliance. Actual final image contents
+still need source-bound image execution; no publication is inferred.
+
+The standalone docs-review tool declares its Apache-2.0 license and forbids
+unsafe_code explicitly because its independent workspace does not inherit root
+package metadata or lint settings. This metadata change adds no unsafe exception
+and modifies no shared Cargo manifest or lockfile.
