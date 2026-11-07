@@ -512,3 +512,10 @@ local and parsed origin response paths insert status-bound ACK headers. This
 supersedes the earlier in-progress observation of stripping/direct forwarding.
 Source wiring is not an executed or qualified browser profile. Existing verified native exception
 remains public; runtime/collector implementation stays with its owners.
+
+## Browser experiment traceability follow-through
+
+Updated Draft v0 implementation map to link working BrowserSession/BrowserResponse
+transport and explicit runtime profile without closing P-03/P-05/P-07 execution
+gaps. ACK consumption remains distinct from body authentication, ALLOW and origin
+commit. Existing source checker only; build/render/AT remain not_run under hold.
