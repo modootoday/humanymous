@@ -43,8 +43,15 @@ VS2022 setup and adjacent Python SDK files. Optional fixed bounded version probe
 do not establish SDK linkage or Ruby MSVC/mingw ABI compatibility. Its contract is
 `.agents/evals/windows-doctor-contract.md`; three actual CLI tests and separate
 version/process unit tests are authored. No install, WSL, backend switch or global
-environment mutation is authorized by these commands. Current source preparation
-has no compile/runtime gate; previous primitive evidence is not inherited.
+environment mutation is authorized by these commands. Source5c1b9447 subsequently
+passed the separately allocated local Windows gate: four request units, one shared
+clock unit, four doctor units, six selected-input CLI and three doctor CLI actual
+tests. Unit filters were60/63/60 respectively; both integration targets had zero
+failed/ignored/filtered cases. All-target check, strict Clippy and scoped fmt passed.
+Actual fixed tool probes matched expected versions and Python SDK files were
+present; linkage, imports and Ruby ABI remain unqualified. The34-file source
+closure matched before/after. Full29-case integration and hosted qualification
+were not executed; the earlier Windows1314 link-fixture failure remains separate.
 
 Root accepted the future named `audit154715-equal-coverage-120s` profile only for
 the frozen Audit154715 equal-coverage input. Default30seconds and all byte/file

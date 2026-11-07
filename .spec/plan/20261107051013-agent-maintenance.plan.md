@@ -741,3 +741,18 @@ the earlier Windows1314 selected-link fixture failure; do not relabel the full
 integration suite green. No WSL or automatic profile increase. The accepted future
 Audit154715120s named profile awaits exact frozen selection binding and separate
 qualification; current schema continues to reject overrides.
+
+### Allocated native Windows result for source5c1b9447
+
+The root-assigned existing validation-maintenance target completed with jobs1,
+incremental0, offline/locked. Admission observed35.04GiB free and65%commit. Four
+request units, one original-clock regression and four doctor units passed with
+60/63/60 filtered respectively. Exact six selected_inputs_cli and three
+windows_doctor actual cases listed and passed with zero failures/ignored/filtered.
+All-target check, strict Clippy and scoped fmt exited0 on first attempt. The actual
+doctor fixed probes matched all eight expected tool profiles; Python.h and
+python312.lib were present and one proposed PyO3 child setting emitted, while
+complete/link/RubyABI qualification remained false. The34-file selected source
+closure was unchanged; execution HEAD9aa77f9a9f25a8f381d3ebf35f789230aef6205b
+contains the exact authored checkpoint. Target returned terminal with no live
+handles. No WSL, backend change, model pilot or full29-case integration run.

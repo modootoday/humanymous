@@ -1,0 +1,77 @@
+{
+  "schema": "humanymous.bounded-consumers-windows.v1",
+  "source_checkpoint": "5c1b94476a74d3ae5ce72bdf4e96b59463ead334",
+  "execution_head": "9aa77f9a9f25a8f381d3ebf35f789230aef6205b",
+  "venue": "local-windows",
+  "target": "validation-maintenance",
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "locked": true,
+  "admission": {
+    "commit_percent": 65,
+    "free_gib": 35.04
+  },
+  "selected_unit_tests": [
+    {
+      "scope": "request",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 4,
+      "filtered": 60
+    },
+    {
+      "scope": "original-clock",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 1,
+      "filtered": 63
+    },
+    {
+      "scope": "doctor",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 4,
+      "filtered": 60
+    }
+  ],
+  "actual_integration_targets": [
+    {
+      "passed": 6,
+      "ignored": 0,
+      "filtered": 0,
+      "name": "selected_inputs_cli",
+      "listed": 6,
+      "failed": 0
+    },
+    {
+      "passed": 3,
+      "ignored": 0,
+      "filtered": 0,
+      "name": "windows_doctor",
+      "listed": 3,
+      "failed": 0
+    }
+  ],
+  "all_target_check_exit": 0,
+  "strict_clippy_exit": 0,
+  "fmt_exit": 0,
+  "first_failures": 0,
+  "doctor_probe_exit": 0,
+  "tool_version_profiles_observed": 8,
+  "python_sdk_files_present": 2,
+  "pyo3_child_settings": 1,
+  "link_qualified": false,
+  "ruby_abi_qualified": false,
+  "doctor_complete": false,
+  "source_closure_files": 34,
+  "source_difference_records": 0,
+  "full29_integration_run": false,
+  "prior_windows1314_failure_preserved": true,
+  "hosted_qualified": false,
+  "model_pilot_run": false,
+  "full_goal_complete": false,
+  "target_returned": true,
+  "raw_evidence": "evidence:root/20261107073349",
+  "raw_subdirectory": "bounded-consumers-windows"
+}
