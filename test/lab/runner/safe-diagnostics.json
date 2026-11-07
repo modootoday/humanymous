@@ -32,6 +32,8 @@
     "browser_bootstrap_fetch_await",
     "browser_bootstrap_response_status",
     "browser_bootstrap_http_forbidden",
+    "browser_bootstrap_http_forbidden_origin",
+    "browser_bootstrap_http_forbidden_fetch_metadata",
     "browser_bootstrap_http_unsupported",
     "browser_bootstrap_http_client",
     "browser_bootstrap_http_server",

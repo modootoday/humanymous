@@ -10,6 +10,14 @@ const STAGES: &[(&str, &str)] = &[
     ("FetchAwait", "browser_bootstrap_fetch_await"),
     ("ResponseStatus", "browser_bootstrap_response_status"),
     ("HttpForbidden", "browser_bootstrap_http_forbidden"),
+    (
+        "HttpForbiddenOrigin",
+        "browser_bootstrap_http_forbidden_origin",
+    ),
+    (
+        "HttpForbiddenFetchMetadata",
+        "browser_bootstrap_http_forbidden_fetch_metadata",
+    ),
     ("HttpUnsupported", "browser_bootstrap_http_unsupported"),
     ("HttpClient", "browser_bootstrap_http_client"),
     ("HttpServer", "browser_bootstrap_http_server"),
@@ -89,5 +97,31 @@ mod tests {
             classify(&report(&format!("{PREFIX}HttpForbidden"), ""), NAME),
             None
         );
+    }
+
+    #[test]
+    fn forbidden_reasons_cannot_be_forged_by_payload_or_console_replay() {
+        let location = format!("panicked at {PATH}:22:10:");
+        for variant in ["HttpForbiddenOrigin", "HttpForbiddenFetchMetadata"] {
+            for message in [
+                format!("{PREFIX}{variant} PRIVATE"),
+                format!("{PREFIX}{variant}(\"private\")"),
+                format!("{PREFIX}{variant}Extra"),
+                format!("{PREFIX}{variant}\n{PREFIX}HttpForbidden"),
+            ] {
+                let body = format!("{location}\n{message}");
+                assert_eq!(classify(&report(&body, ""), NAME), None);
+            }
+            let message = format!("{PREFIX}{variant}");
+            assert_eq!(
+                classify(&report(&location, &message), NAME),
+                Some("browser_panic_bootstrap")
+            );
+            let wrong_site = format!("panicked at {PATH}:18:5:\n{message}");
+            assert_eq!(
+                classify(&report(&wrong_site, ""), NAME),
+                Some("browser_panic_owned_origin")
+            );
+        }
     }
 }

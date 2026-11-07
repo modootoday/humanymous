@@ -1,0 +1,42 @@
+{
+  "schema": "humanymous.lab-bootstrap-forbidden-reasons/1",
+  "authority": "Root exact403 diagnostic parser delegation",
+  "added_variants": [
+    "HttpForbiddenOrigin",
+    "HttpForbiddenFetchMetadata"
+  ],
+  "added_codes": [
+    "browser_bootstrap_http_forbidden_origin",
+    "browser_bootstrap_http_forbidden_fetch_metadata"
+  ],
+  "existing_19_mappings": "preserved",
+  "parser": "Existing closed owned block/name/c61hash/line22 and adjacent exactprefix plus unitvariant; no raw fields",
+  "dto_fields": 13,
+  "pilot_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+  "tests_authored": [
+    "Existing positive/catalog/uniqueness test now covers21variants",
+    "New payload/unknownsuffix/duplicate/console-replay/wrong-site negative test for both added variants"
+  ],
+  "expected_test_inventory": 37,
+  "actual_test_inventory": null,
+  "validation": {
+    "diff_check": 0,
+    "clippy": "NOTRUN",
+    "hosted": "NOTRUN",
+    "fmt": "direct scoped rustfmt edition2024 exit0",
+    "tests": "NOTRUN",
+    "compiler": "NOTRUN pending Root allocation"
+  },
+  "source_files": [
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site/bootstrap.rs",
+      "sha256": "2e8a844562f936082dae202741293facce70d0e714a44f452e6984fe5109c8af"
+    },
+    {
+      "path": "test/lab/runner/safe-diagnostics.json",
+      "sha256": "258bbd953201f8fddf14ca2921ee5774bed38a5483b6a249651f4adf5d060a48"
+    }
+  ],
+  "root_collector_source": "889eb6f844e2e8fa6663af6c3b25410127f466b3: Root confirms exact two unit variants; source-only, no execution qualification",
+  "historical_1f87": "ActualHTTP403 only; new reason categories must not be retroactively assigned."
+}
