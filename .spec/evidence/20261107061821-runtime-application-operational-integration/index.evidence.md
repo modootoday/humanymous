@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T21:26:40Z
+updated: 2026-11-07T21:36:03Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -20,13 +20,14 @@ files:
   - {path: retained-6c02bd22-validation-summary.json, sha256: 576d484a1958f462cec38fa87cd2d1d7cd8454c675d755ce8ef99709412a184d, bytes: 4898, store: repo}
   - {path: temporal-corrected-validation-summary.json, sha256: 1edb7d11e5b146ab2bc62dfdc3f6d672e780951c18f184054189c09a3f9fbce5, bytes: 6887, store: repo}
   - {path: auth-data-aba7934d-validation-summary.json, sha256: 19dd21b7494aa6c1ee99e1dbf51529b1ad31e2b991310c091adae3b627ed6c7b, bytes: 7533, store: repo}
-  - {path: status.json, sha256: 9d662de9f6b53eeb8d9b638bfafe865cb5e7a10465a2869320a4202b30002fbe, bytes: 6102, store: repo}
-  - {path: source-commitments.json, sha256: 85c25bea44ee4312e69d4e349ec169a7b93f89ed66e628a18add0a29910b96e7, bytes: 13198, store: repo}
   - {path: runtime-package-handoff.json, sha256: 28337112c13d618699e57c8cb04dd9531021c93d70a4140112ac5bf0ee063bd1, bytes: 3743, store: repo}
   - {path: core-slice-01-runtime-consumer-paths.json, sha256: 377b3af4ec09cbbcce319c6e4bdf37e5bf247b0f547a758fd137d7b9d60d4d2c, bytes: 3826, store: repo}
   - {path: runtime-slice-02-context-inventory.json, sha256: e15e3f16d56cc7b3dc54554ae0abc455f396c6eb317185d3982cbf735d42c4a4, bytes: 67946, store: repo}
   - {path: runtime-shipping-behavior-inventory.json, sha256: d9871d04674f0d23050daa8560df2c0125daee205c128a985801ab6335a9da79, bytes: 112421, store: repo}
   - {path: public-role-data-source.json, sha256: 1f389b909e12e8218bb9f2debcb1776d03078a6f5d72cff8dd174dbd354ad252, bytes: 5069, store: repo}
+  - {path: public-role-2e9934fe-validation-summary.json, sha256: 94e2a27600632244610f697c6e86830191ac0963b8bc075e6f5acefa84354f34, bytes: 10045, store: repo}
+  - {path: status.json, sha256: f98486858359bf7d23ad2f430c6b2bceadeecbee7e99175d028d595a7093b19f, bytes: 6283, store: repo}
+  - {path: source-commitments.json, sha256: cdcaae61377a18241fe5064d6864534f44c32bc03ea9adfc5c8b2946cfb1cd2d, bytes: 14987, store: repo}
 ---
 
 # Runtime application operational integration
@@ -34,6 +35,16 @@ files:
 ## What was measured
 
 Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Immutable2e9934fe public-role DATA parser passed Windows fmt FIRST/all-target
+check/strict Clippy and19selected pure cases,0failed/0ignored/79filtered in0.05s.
+Exact98 library inventory and actual selected names matched. Archive join3036
+members and all source/6576 registry/69 tool/18 config/14 environment input hashes
+stayed identical. Target was returned before bookkeeping. Two root/binding
+positional-array negatives have an explicit isolation limitation, with source
+left frozen pending a separate test-only grant; see
+public-role-2e9934fe-validation-summary.json. No native/Ready/public role/product
+qualification or whole98-library execution is inferred.
+
 Immutableaba7934d passed Windows fmt FIRST, all-features/all-targets check and
 strict Clippy. Its exact79-name library inventory matched; six Runtime v2
 checked-DATA consumer cases passed with0failed/0ignored/73filtered in0.11s.

@@ -1,0 +1,253 @@
+{
+  "source": "2e9934fe7c7333559c87d8395a40c40dd787024e",
+  "archive_sha256": "2fbe07faa3a965e4be7e8cc027f85e3ce5002ca9f6bdcf015865cf2fcfe03821",
+  "overlays": [],
+  "archive_file_members": 3036,
+  "archive_manifest_membership_difference_records": 0,
+  "root_build_inputs": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "e07cfe831441579e23910d33aa9018aed581c8606c15099e1074567dec34d892"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "ebf64e8fe8a7470345da03fee5a4be1a8191bde4b78bbc3c1b329ed716114328"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    }
+  ],
+  "venue": "Windows x86_64 Rust1.99.1/edition2024; pure public-role DATA parser only",
+  "scope": "No actual ingress, DNS, connect, TLS/native service, secret broker, W, Ready, image, product or all98-library qualification",
+  "accepted_plan": "plan:root/20261107211302",
+  "jobs": 1,
+  "incremental": false,
+  "locked": true,
+  "offline": true,
+  "admission": {
+    "free_gib": 35.43,
+    "commit_percent": 61.0
+  },
+  "monotonic_clock": "System.Diagnostics.Stopwatch",
+  "work_seconds": 390,
+  "total_cleanup_ceiling_seconds": 450,
+  "actual_elapsed_seconds": 111.22,
+  "fmt_first_exit": 0,
+  "check_exit": 0,
+  "check_seconds": 35.72,
+  "strict_clippy_exit": 0,
+  "strict_clippy_seconds": 5.06,
+  "library_listed": 98,
+  "inventory_exact": true,
+  "actual_session": 54468,
+  "actual_exit": 0,
+  "actual_names_exact": true,
+  "test_names": [
+    "shipping::tests::bounds::authority_is_exact_bounded_ascii_data_without_address_normalization",
+    "shipping::tests::bounds::both_digest_fields_are_exact_lower_hex_external_document_assertions",
+    "shipping::tests::bounds::epoch_requires_exact_lower_hex_and_nonzero_but_proves_no_freshness",
+    "shipping::tests::bounds::every_scope_token_enforces_exact_ascii_length_and_alphabet",
+    "shipping::tests::bounds::generation_requires_positive_safe_integer_without_coercion_or_overflow",
+    "shipping::tests::envelope::both_roles_preserve_immutable_scope_binding_and_original_input",
+    "shipping::tests::envelope::duplicate_decoded_fields_refuse_at_every_object_level",
+    "shipping::tests::envelope::every_required_root_scope_and_binding_field_is_required",
+    "shipping::tests::envelope::original_raw_budget_is_enforced_before_json_parsing",
+    "shipping::tests::envelope::public_errors_are_fixed_redacted_and_have_no_parser_source",
+    "shipping::tests::envelope::role_schema_aliases_and_trailing_documents_are_rejected",
+    "shipping::tests::envelope::scalar_types_and_positional_objects_cannot_bypass_closed_schema",
+    "shipping::tests::envelope::standard_whitespace_and_decoded_escaped_keys_and_tokens_are_valid",
+    "shipping::tests::envelope::unknown_fields_refuse_at_every_object_level",
+    "shipping::tests::providers::both_roles_must_declare_each_of_four_providers",
+    "shipping::tests::providers::bounded_optional_declarations_preserve_order_without_provider_observations",
+    "shipping::tests::providers::duplicate_unknown_and_wrong_type_provider_declarations_refuse",
+    "shipping::tests::providers::repeated_epoch_generation_and_digests_remain_data_not_replay_authority",
+    "shipping::tests::providers::seventh_provider_is_refused_before_decoding_or_collecting_its_value"
+  ],
+  "selector": "shipping::tests::",
+  "passed": 19,
+  "failed": 0,
+  "ignored": 0,
+  "measured": 0,
+  "filtered": 79,
+  "test_seconds": 0.05,
+  "source_files": 3036,
+  "source_drift": 0,
+  "registry_packages": 125,
+  "registry_files": 6576,
+  "registry_drift": 0,
+  "tools_files": 69,
+  "tools_drift": 0,
+  "tools_scope": "Compiler/bin and targetlib plus cargo/rustc/rustfmt shim files; not entire sysroot/OS attestation",
+  "config_candidates": 18,
+  "config_drift": 0,
+  "environment_candidates": 14,
+  "environment_drift": 0,
+  "target_returned_before_bookkeeping": true,
+  "live_target_processes": 0,
+  "first_executed_failure": null,
+  "phase_or_compiler_retry": false,
+  "orchestration_pre_execution_note": "Earlier tool-isolate helper lookup unavailable before any command or pipeline execution; this is the only executed pipeline, with no retries.",
+  "test_isolation_limitation": "Root positional-array negative contains incomplete nested objects; binding positional-array negative uses sorted-value rather than declaration order. They refuse but do not independently isolate map-only behavior. Scope positional negative is grammar-valid; map-only implementation read back. No parser defect observed; separate test-strengthening grant requested, source left frozen.",
+  "whole_library_executed": false,
+  "native_ready_qualified": false,
+  "public_shipping_qualified": false,
+  "product_qualified": false,
+  "raw_artifacts": [
+    {
+      "name": "public-role-2e9934fe-actual-exit.json",
+      "sha256": "44760700abe1af903a70f72fc9ed7cd7250b30cff9aa92047f49ad35595ee950",
+      "bytes": 352
+    },
+    {
+      "name": "public-role-2e9934fe-actual.log",
+      "sha256": "83a08be7913dfab0ca4a2cb345e1fa3244d941f8d98a584bd2a97f74fa5f1f7e",
+      "bytes": 2022
+    },
+    {
+      "name": "public-role-2e9934fe-actual.stderr.log",
+      "sha256": "cca8ef214bfb6d22d8ebe82e34b910e17ab6454f406646fd84c21ca17cdfeab0",
+      "bytes": 220
+    },
+    {
+      "name": "public-role-2e9934fe-archive-join.json",
+      "sha256": "eae2715536e59b8f3ed77589009f6f851a8cecffef390e78a629e8fbd1440292",
+      "bytes": 255
+    },
+    {
+      "name": "public-role-2e9934fe-check-exit.json",
+      "sha256": "233a49b27651f8f72beeade250759f1a8345dfe3ade2aafd4dae5ab724a2b58e",
+      "bytes": 303
+    },
+    {
+      "name": "public-role-2e9934fe-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "public-role-2e9934fe-check.stderr.log",
+      "sha256": "176726e609ca3f2bcd28e0e305d3e718a1e83cc32c54398fab47e3bf876590b9",
+      "bytes": 4989
+    },
+    {
+      "name": "public-role-2e9934fe-clippy-exit.json",
+      "sha256": "1c1cc05999a6dd0c8c0ad6f92ece40a7894bde6f5505227a572f40e6dd774ae5",
+      "bytes": 344
+    },
+    {
+      "name": "public-role-2e9934fe-clippy.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "public-role-2e9934fe-clippy.stderr.log",
+      "sha256": "8d9454e03d8c068bd4b6f404bdd0f26da3e5d245ccc7cdc9891d9e1263a31403",
+      "bytes": 1963
+    },
+    {
+      "name": "public-role-2e9934fe-config-after.json",
+      "sha256": "746f205f3e534ae07fe7c2e0236f187fc9894a3aa76d5d43da6288bc108c1bd3",
+      "bytes": 2544
+    },
+    {
+      "name": "public-role-2e9934fe-config-before.json",
+      "sha256": "746f205f3e534ae07fe7c2e0236f187fc9894a3aa76d5d43da6288bc108c1bd3",
+      "bytes": 2544
+    },
+    {
+      "name": "public-role-2e9934fe-env-after.json",
+      "sha256": "b72d5af9482b372100825c4e8cb7c6f0926424885a26d1cc7db13a158d62be5f",
+      "bytes": 1402
+    },
+    {
+      "name": "public-role-2e9934fe-env-before.json",
+      "sha256": "b72d5af9482b372100825c4e8cb7c6f0926424885a26d1cc7db13a158d62be5f",
+      "bytes": 1402
+    },
+    {
+      "name": "public-role-2e9934fe-fmt-exit.json",
+      "sha256": "52d0e977a8a72f81829ef2ee0696794e366a7dbbfd9a3c2db12f6a9b7eeaba1c",
+      "bytes": 246
+    },
+    {
+      "name": "public-role-2e9934fe-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "public-role-2e9934fe-fmt.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "public-role-2e9934fe-list-exit.json",
+      "sha256": "65044a8b239c6fd5bf407ed7e671b51488a3086986136ead55414e75b8c1fe3d",
+      "bytes": 318
+    },
+    {
+      "name": "public-role-2e9934fe-list.log",
+      "sha256": "81482cde371b2c62d3b3aa57eed52c8c1fbfa916ee1cd8dda8263de95b9562a1",
+      "bytes": 8999
+    },
+    {
+      "name": "public-role-2e9934fe-list.stderr.log",
+      "sha256": "023f77a6b47af261dafd975e52aec9e173ae33ea087381020550efde55ad7791",
+      "bytes": 4663
+    },
+    {
+      "name": "public-role-2e9934fe-metadata-exit.json",
+      "sha256": "950fc09e7aa186d89a7cf1a5dcc6be9e28b4199c8adf5dc227a99ca5307ccaec",
+      "bytes": 341
+    },
+    {
+      "name": "public-role-2e9934fe-metadata.log",
+      "sha256": "7436a2fb88fec43e4db74118878e73369d2e225e312d68748b07ad8aabae8aae",
+      "bytes": 2432556
+    },
+    {
+      "name": "public-role-2e9934fe-metadata.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "public-role-2e9934fe-receipt.json",
+      "sha256": "da3610b250e0e69639d8d813e9f89924839b81fd1419be395f6e45d7a7982c6e",
+      "bytes": 5324
+    },
+    {
+      "name": "public-role-2e9934fe-registry-after.json",
+      "sha256": "6ce37a71b3d9e2aabde9a46a85f7e5437bf30208760cfb407a65512fc01ea792",
+      "bytes": 1492949
+    },
+    {
+      "name": "public-role-2e9934fe-registry-before.json",
+      "sha256": "6ce37a71b3d9e2aabde9a46a85f7e5437bf30208760cfb407a65512fc01ea792",
+      "bytes": 1492949
+    },
+    {
+      "name": "public-role-2e9934fe-source-after.json",
+      "sha256": "58558dac8715078ad22c2bec95ae1eb04404c7e6757752f8b62ee27f1779d2e0",
+      "bytes": 977449
+    },
+    {
+      "name": "public-role-2e9934fe-source-before.json",
+      "sha256": "58558dac8715078ad22c2bec95ae1eb04404c7e6757752f8b62ee27f1779d2e0",
+      "bytes": 977449
+    },
+    {
+      "name": "public-role-2e9934fe-source.json",
+      "sha256": "c66f6fe226163d2801f1696006502301551e86649cc3c00c9d099d0169f02d72",
+      "bytes": 1214
+    },
+    {
+      "name": "public-role-2e9934fe-tools-after.json",
+      "sha256": "aeda2da5cd7cd2f8cea3c0f71ef3efcbe36eff4a752ff27ebea1034842537fdf",
+      "bytes": 16328
+    },
+    {
+      "name": "public-role-2e9934fe-tools-before.json",
+      "sha256": "aeda2da5cd7cd2f8cea3c0f71ef3efcbe36eff4a752ff27ebea1034842537fdf",
+      "bytes": 16328
+    }
+  ]
+}

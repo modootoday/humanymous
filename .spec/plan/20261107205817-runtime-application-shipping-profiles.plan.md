@@ -50,10 +50,23 @@ epoch/digest/generation bounds, required providers/duplicates/types/seventh seed
 fixed redacted errors and repeated assertions without replay authority. Exact
 paths/SHA256 and test names are attached as public-role-data-source.json under
 evidence:root/20261107061821. Source formatting and diff whitespace check passed;
-NO compiler/Clippy/test execution occurred. Authored library inventory is now
-Windows98/Unix102 with unchanged native-process target. Root must freeze source
-and allocate bounded check/Clippy/exact-list/selected19 execution; earlier leaf
-or core/platform proofs do not qualify this parser or integrated graph.
+At source checkpoint2e9934fe, allocated immutable Windows fmt FIRST/all-target
+check/strict Clippy passed; the exact98 library inventory and actual19 selected
+names matched. All19 passed with0failed/0ignored/79filtered in0.05s. Full3036
+archive/snapshot members,6576 registry files,69 selected tools/shims,18 config
+candidates and14 environment hashes stayed unchanged. Stopwatch elapsed111.22s
+within390work/450total; target returned with no live process before bookkeeping.
+See public-role-2e9934fe-validation-summary.json in the owning evidence.
+
+Two positional-array negatives have a known isolation limitation: root input
+also has incomplete nested data and binding input uses sorted-value rather than
+declaration order. They do not independently prove map-only rejection. The scope
+negative is grammar-valid and the map-only implementation was read back; no
+parser defect was observed. Source remained frozen, with a separate test-only
+strengthening grant requested. No hidden executed-phase retry occurred.
+Windows98/Unix102 remain authored inventories, not full-suite execution; actual
+native/public ingress/W/Ready/shipping and the remaining27 behaviors stay open.
+Earlier leaf/core/platform proofs do not qualify the new integrated product.
 
 Read plan:root/20261107205157 and Delivery's shipping-role-source-map.json first.
 The attached runtime-shipping-behavior-inventory.json in
