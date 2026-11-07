@@ -12,6 +12,14 @@ rel:
 
 ## Docker affinity incident rule
 
+The follow-up root-reported pull failure showed that resolving an absolute Docker
+CLI and obtaining engine info does not prove credential-helper readiness. Rule96
+now requires configured helper and required CLI-plugin preflight, child-scoped
+Desktop bundle PATH for direct and SDK clients, no global PATH/credential changes,
+and private preservation of the first failed attempt without credential responses.
+This is a documentation correction from root's observation; no Docker operation
+was executed by this lane.
+
 Root explicitly resumed rule-only work after the user requested Docker usage
 canonicalization. Rule96 and the root AGENTS pointer require explicit Windows
 Docker Desktop selection, endpoint/engine-ID preflight, no automatic WSL-daemon

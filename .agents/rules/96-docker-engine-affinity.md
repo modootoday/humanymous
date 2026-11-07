@@ -10,6 +10,24 @@ the required context is unavailable, stop and report the missing prerequisite.
 Never automatically substitute `wsl docker`, a Unix socket or another context.
 Do not change the user's default context to make a command work.
 
+An absolute `docker.exe` path does not resolve its companion executables. Before
+an allocated pull or SDK operation, verify that the child environment can resolve
+the configured credential helper, including `docker-credential-desktop.exe` when
+Desktop's credential store is selected, and the CLI plugins the workload needs.
+Prepend `C:/Program Files/Docker/Docker/resources/bin` to that child's PATH while
+preserving existing entries. Verify required plugins in the selected Docker CLI's
+plugin search locations; do not assume that the PATH entry installs or resolves
+every plugin. Pass the same scoped environment to `act` or other SDK clients and
+their spawned Docker commands. Do not edit global PATH, credential-store settings
+or credential contents to bypass a missing helper, and do not fall back to WSL.
+
+Successful engine `info` is insufficient toolchain preflight: it may not invoke
+the credential helper that an image pull needs. Root observed an initial pull
+failure because the resolved Windows CLI could not execute
+`docker-credential-desktop` with the original PATH. Preserve that first failure
+privately with command/exit provenance and secret-safe output; do not print helper
+credential responses or treat a later corrected run as the original attempt.
+
 Before an allocated operation, record the executable path, client/server
 versions, context name and endpoint, server engine ID and OSType. Require the
 `desktop-linux` endpoint `npipe:////./pipe/dockerDesktopLinuxEngine`, an OSType
