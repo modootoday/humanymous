@@ -1024,5 +1024,44 @@ or closed epoch never authorizes automatic retry or counter restoration. Native
 controls use the real shared Rust Session and HTTP but synthetic report/audit;
 they do not execute BrowserSession/Fetch or prove browser/human/AT or independent
 witness isolation. Actual ServiceHost response stripping and the existing genuine
-Lab flow remain separate gates. Both new controls are UNCOMPILED/NOT_RUN pending
-Root allocation; TLS ALLOW-to-origin and native service readiness remain open.
+Lab flow remain separate gates. On immutable snapshot
+f8e04e332dde57676a1e6e1095ea8078af83c1b7, allocated Windows all-target check,
+strict Clippy and fmt passed; both exact controls passed with0failed/0ignored/
+59filtered. All2462 snapshot files,125 registry packages/6576 registry files and
+14 ancestor/Cargo-home configuration candidates remained unchanged. This proof
+uses collector fixture SHA256
+87a45f212f2974078fb618c1a55bc92b4e0bafddbc1035907f0162ba84be76e9;
+later Root collector/fixture changes are outside this qualified snapshot.
+TLS ALLOW-to-origin and native service readiness remain open.
+
+### Observed Ready composition proposal — architecture direction only
+
+Root accepted Runtime-owned final Ready composition, not production types or
+qualification. Authority must not consume a RuntimeReadyReceipt or depend on
+Runtime. Native-security/Authority first produce VerifiedObserverPreparation:
+actual native publication/pins, verified W, the same irreversible gate and
+restricted bounded transport. It has NO credential receipt yet. Runtime's
+proposed private prepare_observed consumes this preparation BEFORE any existing
+bind/unseal/writer operation. Requiring an observer credential ACK at this point
+would cycle because the service has not provisioned that credential yet.
+
+One private ObservedStartupOwner retains the preparation, native/W/monitor
+ownership, partial host resources and conserved deadlines. Later Offer/actual
+ACK creates the receipt-bound PreparedObserverSession inside that SAME owner.
+Final activate_observed consumes this owner after actual listener/capture/TLS/
+audit readiness checks, privately constructs RuntimeReadyReceipt, and performs
+complete ServiceReady enqueue plus Active transition under the same gate.
+Neither a public boolean nor an independently supplied Runtime proof is accepted.
+Existing ServiceHost::bind is not a verified TransportPrepared constructor and
+must not be called first to bypass the pre-unseal requirement.
+
+ActivationFailure must retain a noncloneable cleanup owner, failure stage and
+ReadyDelivery fact (NotSubmitted/Partial/Submitted/Unknown), rather than dropping
+or extracting the observer secret, transport, pins, W, monitor or host resources.
+Failure synchronously revokes; explicit bounded close attempts cancellation,
+monitor/worker join and required flush with separate completed/failed/unknown
+facts. Drop grants no async completion. Loss before complete Ready enqueue keeps
+origin admission closed; partial Ready grants no origin/retry/deadline reset.
+Loss after a completed enqueue makes that receipt historical, never a reusable
+live lease. Exact consuming types, native producer and concrete transport
+contracts remain jointly reviewed P0s; this section implements no channel/API.

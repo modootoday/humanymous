@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T12:06:10Z
+updated: 2026-11-07T13:11:20Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -16,8 +16,9 @@ files:
   - {path: tls-fa2db419-first-execution-summary.json, sha256: 46efc65494842b502e90cbdaeb75741a000b5711c473cc10ab7d838d26806596, bytes: 2306, store: repo}
   - {path: tls-1646c482-validation-summary.json, sha256: 8518f2114fa185e3862bdae2d102c0a4012823efc44d385bb17aa7848a79325f, bytes: 3532, store: repo}
   - {path: gate-30d85855-validation-summary.json, sha256: f12504258f1c308c2814fbdb41613b0b4cd916a41baf2da57a5abc4274f15db3, bytes: 3231, store: repo}
-  - {path: status.json, sha256: df936ad91c5692f82cad391fbab702b71324ed91d531c326f0b3106116ebf86f, bytes: 5412, store: repo}
-  - {path: source-commitments.json, sha256: 0543a681b4421a5c7957333dd7adb313196aa30afac5bb332061fe251708de5f, bytes: 9930, store: repo}
+  - {path: http-f8e04e33-validation-summary.json, sha256: cdbe2f3abc502059dd739ab3c4e07c876bc59cdee4f3118029345f74019d51ff, bytes: 5217, store: repo}
+  - {path: status.json, sha256: 3a93bc79f614e3025c598bcb7d077ddf2a1bb121308b9a9d07ea7174dc2ed86a, bytes: 5569, store: repo}
+  - {path: source-commitments.json, sha256: 74509d48045568535e41099f5ea1edbab1b5221f81e206d2d063b8dca8e65c79, bytes: 10622, store: repo}
 ---
 
 # Runtime application operational integration
@@ -25,6 +26,14 @@ files:
 ## What was measured
 
 Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Immutablef8e04e33 passed all-target check/strict Clippy/fmt and two actual native
+TCP/shared-Session controls (59filtered), using original collector fixture87a45f.
+The exact10-field bootstrap,403/200 consumption ACK,422 no-ACK epoch closure,
+65536-byte policy processing and65537 HEADERS-ONLY413 refusal passed. No origin
+connection occurred. Full2462-file snapshot,6576 registry files and14 ancestor
+configuration candidates stayed identical. This does not qualify actual Fetch,
+full-body browser413 delivery, ServiceHost or later collector fixture changes.
+
 Immutable30d85855 with Runtime9ad15bce passed all-target check/strict Clippy and
 seven private cfg(test) epoch-gate cases;52 cases were filtered. All508 recursive
 source paths/hashes stayed identical. This qualifies the native-independent

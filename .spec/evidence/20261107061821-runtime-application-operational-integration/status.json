@@ -24,10 +24,10 @@
     "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
-  "current_source_executed_tests": 7,
-  "current_source_test_count_semantics": "Snapshot30d85855 with Runtime9ad: seven private cfg(test) gate model cases only;52 library cases filtered. Earlier TLS1646/adbnative scopes remain separate historical evidence.",
-  "current_source_tests": "Immutable30d85855: private gate7 passed/0failed/0ignored/52filtered; no actualTLS/nativeServiceHost/SCM/bootstrap or fullRuntime suite executed.",
-  "current_source_clippy": "Snapshot30d85855 Runtime9ad: all-features/all-targets locked offline check and warnings-denied Clippy passed;508-file path/content closure unchanged.",
+  "current_source_executed_tests": 2,
+  "current_source_test_count_semantics": "Latest qualified immutable f8 snapshot only: two real native HTTP controls;59 filtered. Later collector fixture changes are not qualified; earlier gate/TLS/native results retain separate source scopes.",
+  "current_source_tests": "Immutablef8: two shared-Lab native HTTP controls passed,0failed/0ignored/59filtered; not actual BrowserSession/Fetch/ServiceHost/fullRuntime.",
+  "current_source_clippy": "Immutablef8: all-target check/strict Clippy/fmt passed;2462 source files,6576 registry files and14 config candidates unchanged.",
   "actual_browser_join": "not_run",
   "actual_tls_serving": "six actual ordinary loopback TLS cases passed; allow-to-origin remains unqualified",
   "actual_unix_management_operator": "passed scoped ordinary-user native component, not independent deployment",
@@ -116,5 +116,11 @@
     "filtered": 52,
     "summary": "gate-30d85855-validation-summary.json",
     "passed": 7
+  },
+  "http_f8e04e33": {
+    "actual_browser_qualified": false,
+    "filtered": 59,
+    "summary": "http-f8e04e33-validation-summary.json",
+    "passed": 2
   }
 }

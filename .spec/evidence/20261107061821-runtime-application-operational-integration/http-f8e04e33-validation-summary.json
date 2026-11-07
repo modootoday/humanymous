@@ -1,0 +1,165 @@
+{
+  "snapshot_commit": "f8e04e332dde57676a1e6e1095ea8078af83c1b7",
+  "archive_sha256": "de0fa9224f0ecb86dd4f76d261e804abb9faa56a388fc93fb38d9872c61e1ab0",
+  "collector_fixture_sha256": "87a45f212f2974078fb618c1a55bc92b4e0bafddbc1035907f0162ba84be76e9",
+  "scope": "Windows actual owned native TCP plus shared Rust Session; synthetic report and in-memory audit, not BrowserSession/Fetch",
+  "memory_admission": {
+    "free_gib": 32.11,
+    "commit_percent": 80
+  },
+  "jobs": 1,
+  "incremental": false,
+  "locked": true,
+  "offline": true,
+  "check_exit": 0,
+  "check_seconds": 5.72,
+  "clippy_deny_warnings_exit": 0,
+  "clippy_seconds": 4.91,
+  "fmt_check_exit": 0,
+  "library_listed": 61,
+  "library_inventory_exact": true,
+  "actual_session": 39700,
+  "actual_exit": 0,
+  "selector": "tests::browser::contract::",
+  "executed": 2,
+  "passed": 2,
+  "failed": 0,
+  "ignored": 0,
+  "measured": 0,
+  "filtered": 59,
+  "seconds": 0.09,
+  "test_names": [
+    "tests::browser::contract::shared_lab_bootstrap_consumed_ack_and_required_collector_refusal",
+    "tests::browser::contract::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch"
+  ],
+  "bootstrap_exact_fields": 10,
+  "cases": [
+    {
+      "consumed_acks": [
+        403,
+        200
+      ],
+      "client_epoch": "closed",
+      "audit_records": 2,
+      "preconsume_no_ack": 422,
+      "statuses": [
+        200,
+        403,
+        200,
+        422
+      ],
+      "case": "bootstrap-consumption-required-capability",
+      "origin_connections": 0
+    },
+    {
+      "client_epoch": "closed",
+      "oversize_body_transmitted": false,
+      "origin_connections": 0,
+      "oversize_declared_bytes": 65537,
+      "exact_body_status": 403,
+      "audit_records": 1,
+      "exact_body_bytes": 65536,
+      "oversize_ack": false,
+      "exact_body_ack": true,
+      "case": "request-body-boundary",
+      "oversize_status": 413
+    }
+  ],
+  "snapshot_files_compared": 2462,
+  "snapshot_path_content_drift": 0,
+  "registry_packages": 125,
+  "registry_files_compared": 6576,
+  "registry_path_content_drift": 0,
+  "ancestor_config_candidates": 14,
+  "ancestor_config_drift": 0,
+  "ancestor_configs_present": 0,
+  "environment_scope": "Three Cargo overrides explicitly fixed by command; RUST_LOG name observed only, no claim of independently hashed environment values",
+  "owned_runtime_processes_after": 0,
+  "later_collector_fixture_changes_qualified": false,
+  "actual_browser_qualified": false,
+  "full_body_fetch_413_qualified": false,
+  "actual_servicehost_qualified": false,
+  "full_product_qualified": false,
+  "raw_private_artifacts": [
+    {
+      "name": "http-f8e04e33-actual-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "http-f8e04e33-actual.log",
+      "bytes": 538,
+      "sha256": "eeb3a4fbfd762b04da16b7a96ea5598112af953eb16180fc4442b0b41dcf709f"
+    },
+    {
+      "name": "http-f8e04e33-after.json",
+      "bytes": 393018,
+      "sha256": "0d58d7398848dab56cd6f028dcea83329adfb963cb83c3f09bd4159e299ab70f"
+    },
+    {
+      "name": "http-f8e04e33-before.json",
+      "bytes": 393018,
+      "sha256": "0d58d7398848dab56cd6f028dcea83329adfb963cb83c3f09bd4159e299ab70f"
+    },
+    {
+      "name": "http-f8e04e33-build-scope-before.json",
+      "bytes": 2431,
+      "sha256": "4eb1c07f259637d161a7169ff2f2764bbc0843a2a93e9356da2f9b2c73dade86"
+    },
+    {
+      "name": "http-f8e04e33-cargo-metadata.json",
+      "bytes": 2421581,
+      "sha256": "995b5df2efc9237c80e0968767790597fa30a440eefd91ab747e5026ea31570b"
+    },
+    {
+      "name": "http-f8e04e33-check-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "http-f8e04e33-check.log",
+      "bytes": 2023,
+      "sha256": "32611ea5b2599a9b98a562e1f2b531f29bcfb7c5f1be587b81eaa0f990c69a95"
+    },
+    {
+      "name": "http-f8e04e33-clippy-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "http-f8e04e33-clippy.log",
+      "bytes": 2023,
+      "sha256": "94ccb2ebe33928cfa52380fb080f17cc2ecd12b0663637ab501997828f06cd72"
+    },
+    {
+      "name": "http-f8e04e33-closure.json",
+      "bytes": 2273,
+      "sha256": "27482cc95f26bab9714bd21b12aad884e31bdb7868093ea1bff747d62ec72882"
+    },
+    {
+      "name": "http-f8e04e33-fmt-exit.json",
+      "bytes": 15,
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a"
+    },
+    {
+      "name": "http-f8e04e33-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "http-f8e04e33-list.log",
+      "bytes": 7520,
+      "sha256": "199fd71d37e99f54f464e3ade3102cd6f4fbc009875b7e15521f1101a79f90b7"
+    },
+    {
+      "name": "http-f8e04e33-registry-after.json",
+      "bytes": 2075941,
+      "sha256": "631540211a340237c66b4bf6950a52bb3fae5aa5bf604b120350f590fcec7086"
+    },
+    {
+      "name": "http-f8e04e33-registry-before.json",
+      "bytes": 2075941,
+      "sha256": "631540211a340237c66b4bf6950a52bb3fae5aa5bf604b120350f590fcec7086"
+    }
+  ]
+}
