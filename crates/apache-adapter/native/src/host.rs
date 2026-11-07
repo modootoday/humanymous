@@ -83,6 +83,8 @@ struct Context {
 
 // SAFETY: httpd initializes these exports during single-threaded master setup;
 // subsequent callbacks read the fixed index. No Rust references alias mutation.
+/// Export required by httpd's LoadModule directive for the pinned host ABI.
+#[allow(non_upper_case_globals)]
 #[unsafe(no_mangle)]
 pub static mut humanymous_module: module = module {
     version: MODULE_MAGIC_NUMBER_MAJOR as _,

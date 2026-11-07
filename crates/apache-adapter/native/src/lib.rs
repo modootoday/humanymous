@@ -6,6 +6,7 @@ compile_error!("Apache native ABI is qualified only through the Linux hosted pil
 
 #[cfg(all(feature = "httpd", target_os = "linux"))]
 #[allow(unsafe_code)] // Generated declarations only; pinned upstream ABI.
+#[allow(clippy::all)] // Generated upstream layouts; handwritten bridge stays checked.
 #[allow(
     non_camel_case_types,
     non_snake_case,

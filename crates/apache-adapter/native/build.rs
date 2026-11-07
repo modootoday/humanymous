@@ -95,6 +95,7 @@ fn generate() {
     );
     let includes = Arc::new(Mutex::new(std::collections::BTreeSet::new()));
     let mut builder = bindgen::Builder::default()
+        .rust_edition(bindgen::RustEdition::Edition2024)
         .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
         .generate_comments(false)
         .layout_tests(false)

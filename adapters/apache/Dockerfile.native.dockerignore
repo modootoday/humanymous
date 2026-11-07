@@ -1,0 +1,17 @@
+.git
+.spec.local
+.spec
+.agents/sessions
+.claude
+.codex
+.grok
+.gemini
+target
+**/target
+**/node_modules
+**/.env
+**/.env.*
+**/*.key
+**/*.pem
+**/*.pfx
+**/*.p12

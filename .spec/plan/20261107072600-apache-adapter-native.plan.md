@@ -67,3 +67,9 @@ Root's live integration chat remains active (observed via wait_threads snapshot)
 but it has not assigned a Cargo slot or approved native dependency registration.
 User-authorized coordination requests are queued there; no local process/IPC/
 Docker/native build was substituted for the required hosted execution.
+
+An owned Dockerfile.native build candidate now uses checksum-pinned upstream
+release archives and existing repository-pinned Rust/Debian base images. It
+builds all three MPMs and the opt-in native crate, with locked unit/Clippy gates.
+It has not been built and is not yet a pilot entrypoint. Runtime USER is65532;
+lab must provide isolated network-none execution and private provisioning.
