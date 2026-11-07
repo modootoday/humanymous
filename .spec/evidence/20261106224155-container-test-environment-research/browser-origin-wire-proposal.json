@@ -1,0 +1,80 @@
+{
+  "schema": "humanymous.lab-origin-wire-proposal/1",
+  "status": "Root-approved source/tests authored; compiler and hosted NOTRUN",
+  "reason": "edc actual browser_origin403; absent/null/other shape remains unknown",
+  "existing_failure_path": {
+    "actor_dto": "21 fields remain unchanged",
+    "public_dto": "13 fields remain unchanged",
+    "available": "Browser-local B/F proxy_hits inside strict21-field actor before witness assertion",
+    "unavailable": "Gate G proxy_hits/report requires drain after witness assertion, currently unreachable on bootstrap failure"
+  },
+  "minimal_scope": [
+    "test/lab/runtime/src/browser_proxy.rs",
+    "test/lab/browser-wire-contract.json",
+    "test/lab/browser_wire.rs",
+    "test/lab/runner/src/orchestration/browser_actor.rs",
+    "test/lab/runner/safe-diagnostics.json"
+  ],
+  "private_counters": {
+    "partition": "exclusiveOther=aggregateOther-absent-null with checked arithmetic",
+    "presence": "All4 initialized0 on first parsed API request; absentcounterincrements only None, nullcounter only exact null string; empty/other are other",
+    "add": [
+      "wire_origin_absent",
+      "wire_origin_null"
+    ],
+    "preserve": "wire_origin_matched and wire_origin_other aggregate semantics"
+  },
+  "public_refinement": {
+    "fallback": "Retain coarse Origin403 on missing/malformed/overflow/inconsistent/unbound counters; never infer a finer class",
+    "codes": [
+      "browser_bootstrap_origin_browser_proxy_absent",
+      "browser_bootstrap_origin_browser_proxy_null",
+      "browser_bootstrap_origin_browser_proxy_matched",
+      "browser_bootstrap_origin_browser_proxy_other"
+    ],
+    "bind": "Browser proxy session route count1, response:<fixed session>:403:ack_false count1; all4 known origin countersu64 and total1",
+    "gate": "Only exact source-pinned browser_bootstrap_http_forbidden_origin with strict actor shape/inventorymatched/DNSsucceeded/processfailed",
+    "meaning": "Only B/F browser-proxy observation, never G/Runtime header attestation or corrected security verdict"
+  },
+  "tests_proposed": [
+    "Four exact positive origin partitions plus real producer None/null/matched/other/empty classification",
+    "Old actor without new counters cannot refine",
+    "Zero/multiattempt/negative/string/bool/null/missing/overflow/inconsistent aggregate refuse",
+    "Require owned sessionroute and403-noACK; wrong/missing route/status/ACK refuse",
+    "Only source-pinned Origin403 may refine; otherpanic/invalidactor/foreigninventory/DNSfailure remain unchanged",
+    "Strict JSON duplicate rejection and13/21field DTO invariants retained",
+    "No raw header/body/URL string in exported scalar/staticcode"
+  ],
+  "preserve": [
+    "No witness/drain/assertion reordering",
+    "No Runtime/Collector policy or Fetch mode/referrer changes",
+    "No Origin predicate relaxation, no unknown->matched fallback",
+    "No new public fields, no extra fabricated assertions",
+    "No claim G counters are observed"
+  ],
+  "validation": "Direct scoped rustfmt and diffcheck0; tests authored, not executed; expected Lab40 plus Unix-only runtime producer tests need separate actual GNU execution",
+  "canonical_standard": "https://fetch.spec.whatwg.org/#append-a-request-origin-header",
+  "duplicate_handling": "Strict duplicate JSON invalidates actor before any trusted coarse failure can be extracted; never refine. Valid coarse Origin403 with malformed counters remains coarse.",
+  "source_hashes": [
+    {
+      "path": "test/lab/browser-wire-contract.json",
+      "sha256": "42eb19cdbd7ba1cd2b419467ceb6c0d2c2c25da6a9a0140093797a496a56a151"
+    },
+    {
+      "path": "test/lab/browser_wire.rs",
+      "sha256": "24d5b72753a2e5e6fb4eeef4faf3632a6699e77440d101ec831301d9f937767c"
+    },
+    {
+      "path": "test/lab/runtime/src/browser_proxy.rs",
+      "sha256": "4b0d3acb859878463d56ab66a287ffc67d960143bdc5bc71172d49742ed9e1a1"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "sha256": "12c1aac20092b59dda4eece8a2f3e4f2a137820ca7b805c56157fe02518642b6"
+    },
+    {
+      "path": "test/lab/runner/safe-diagnostics.json",
+      "sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8"
+    }
+  ]
+}

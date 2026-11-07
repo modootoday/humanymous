@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T09:54:33Z
+updated: 2026-11-07T22:37:38Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -1074,6 +1074,29 @@ slice separately. Full Rust Gate/TLS/capture, real browser human/a11y controls,
 independent witness key/state, physical crash recovery and provider profiles
 remain release blockers until their own measured evidence lands. No docs/**
 files are edited by this lane.
+
+## Browser-local Origin failure diagnostics
+
+The source-bound bootstrap `browser_origin` rejection may be refined from the
+browser-local proxy's existing private receipt only. Preserve the 13-field public
+outcome and 21-field private actor shape. Keep matched/other aggregate counters;
+add absent/null subsets and initialize all four even when zero. Require checked
+integer partitioning, exactly one owned bootstrap request and one 403 response
+without ACK. Retain all source hash, selected-test, strict JSON, inventory and DNS
+guards. Missing, malformed, inconsistent or overflowing counts cannot refine a
+validated coarse rejection; duplicate JSON invalidates the actor as before.
+
+Only four fixed browser-proxy diagnostic codes may leave the private receipt.
+These observations do not attest Gate/Runtime headers or explain a browser's
+Origin generation. Keep the earlier witness failure, drain, cleanup and assertions
+in their existing order. No raw values, URLs, extra DTO fields, relaxed Origin
+predicate or changed Fetch mode/referrer policy belongs to this diagnostic slice.
+New immutable hosted execution is required before reporting an observed class.
+
+The canonical generation reference is the Fetch Standard's
+[request Origin header algorithm](https://fetch.spec.whatwg.org/#append-a-request-origin-header).
+Historical browser bugs and the observed 403 alone do not establish the cause of
+the current browser's header generation.
 
 ## Official sources, checked 2026-11-07
 

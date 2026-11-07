@@ -1,6 +1,8 @@
 {
   "origin_matched": "wire_origin_matched",
   "origin_other": "wire_origin_other",
+  "origin_absent": "wire_origin_absent",
+  "origin_null": "wire_origin_null",
   "referer_absent": "wire_referer_absent",
   "referer_present": "wire_referer_present"
 }

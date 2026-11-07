@@ -31,10 +31,152 @@ pub fn referers_absent(hits: &Value, expected: &Value) -> bool {
     complete(hits, expected, "referer_absent", "referer_present")
 }
 
+/// Browser-local proxy observations only; not Gate/Runtime header attestation.
+pub fn bootstrap_origin(hits: &Value, fixture: &Value) -> Option<&'static str> {
+    let session = fixture["routes"]["session"].as_str()?;
+    let response = format!("response:{session}:403:ack_false");
+    if session != "/_humanymous/browser/session"
+        || hits.get(session)?.as_u64() != Some(1)
+        || hits.get(response.as_str())?.as_u64() != Some(1)
+    {
+        return None;
+    }
+    for route in fixture["routes"].as_object()?.values() {
+        let route = route.as_str()?;
+        if route != session
+            && hits
+                .get(route)
+                .is_some_and(|count| count.as_u64() != Some(0))
+        {
+            return None;
+        }
+    }
+    let prefix = format!("response:{session}:");
+    if hits.as_object()?.iter().any(|(key, count)| {
+        key.starts_with(&prefix) && key != &response && count.as_u64() != Some(0)
+    }) {
+        return None;
+    }
+    let contract: Value = serde_json::from_str(include_str!("browser-wire-contract.json")).ok()?;
+    let number = |key: &str| hits.get(contract[key].as_str()?)?.as_u64();
+    let matched = number("origin_matched")?;
+    let other = number("origin_other")?;
+    let absent = number("origin_absent")?;
+    let null = number("origin_null")?;
+    if matched.checked_add(other)? != 1 {
+        return None;
+    }
+    let other = other.checked_sub(absent)?.checked_sub(null)?;
+    [
+        (absent, "browser_bootstrap_origin_browser_proxy_absent"),
+        (null, "browser_bootstrap_origin_browser_proxy_null"),
+        (matched, "browser_bootstrap_origin_browser_proxy_matched"),
+        (other, "browser_bootstrap_origin_browser_proxy_other"),
+    ]
+    .into_iter()
+    .find_map(|(count, code)| (count == 1).then_some(code))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use serde_json::json;
+
+    fn origin_hits(matched: u64, other: u64, absent: u64, null: u64) -> Value {
+        json!({"wire_origin_matched":matched,"wire_origin_other":other,
+            "wire_origin_absent":absent,"wire_origin_null":null,
+            "/_humanymous/browser/session":1,
+            "response:/_humanymous/browser/session:403:ack_false":1})
+    }
+
+    #[test]
+    fn one_owned_bootstrap_response_binds_four_finite_browser_proxy_classes() {
+        let fixture = json!({"routes":{"session":"/_humanymous/browser/session"}});
+        let catalog: Value =
+            serde_json::from_str(include_str!("runner/safe-diagnostics.json")).unwrap();
+        for (hits, code) in [
+            (
+                origin_hits(0, 1, 1, 0),
+                "browser_bootstrap_origin_browser_proxy_absent",
+            ),
+            (
+                origin_hits(0, 1, 0, 1),
+                "browser_bootstrap_origin_browser_proxy_null",
+            ),
+            (
+                origin_hits(1, 0, 0, 0),
+                "browser_bootstrap_origin_browser_proxy_matched",
+            ),
+            (
+                origin_hits(0, 1, 0, 0),
+                "browser_bootstrap_origin_browser_proxy_other",
+            ),
+        ] {
+            assert_eq!(bootstrap_origin(&hits, &fixture), Some(code));
+            assert!(
+                catalog["error_codes"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|value| value.as_str() == Some(code))
+            );
+        }
+    }
+
+    #[test]
+    fn unbound_malformed_ambiguous_and_overflowing_origin_counts_cannot_refine() {
+        let fixture = json!({"routes":{"session":"/_humanymous/browser/session"}});
+        for hits in [
+            origin_hits(0, 0, 0, 0),
+            origin_hits(1, 1, 0, 0),
+            origin_hits(0, 1, 1, 1),
+            origin_hits(1, 0, 1, 0),
+            origin_hits(u64::MAX, 1, 0, 0),
+            origin_hits(0, 1, u64::MAX, 1),
+        ] {
+            assert_eq!(bootstrap_origin(&hits, &fixture), None);
+        }
+        for key in [
+            "wire_origin_matched",
+            "wire_origin_other",
+            "wire_origin_absent",
+            "wire_origin_null",
+            "/_humanymous/browser/session",
+            "response:/_humanymous/browser/session:403:ack_false",
+        ] {
+            let mut hits = origin_hits(0, 1, 1, 0);
+            hits.as_object_mut().unwrap().remove(key);
+            assert_eq!(bootstrap_origin(&hits, &fixture), None);
+            for bad in [
+                Value::Null,
+                json!("1"),
+                json!(true),
+                json!(-1),
+                json!(1.5),
+                json!(2),
+            ] {
+                let mut hits = origin_hits(0, 1, 1, 0);
+                hits[key] = bad;
+                assert_eq!(bootstrap_origin(&hits, &fixture), None);
+            }
+        }
+        for fixture in [json!({}), json!({"routes":{"session":"/foreign"}})] {
+            assert_eq!(bootstrap_origin(&origin_hits(0, 1, 1, 0), &fixture), None);
+        }
+        for key in [
+            "response:/_humanymous/browser/session:200:ack_false",
+            "response:/_humanymous/browser/session:403:ack_true",
+        ] {
+            let mut hits = origin_hits(0, 1, 1, 0);
+            hits[key] = json!(1);
+            assert_eq!(bootstrap_origin(&hits, &fixture), None);
+        }
+        let fixture =
+            json!({"routes":{"session":"/_humanymous/browser/session","effect":"/effect"}});
+        let mut hits = origin_hits(0, 1, 1, 0);
+        hits["/effect"] = json!(1);
+        assert_eq!(bootstrap_origin(&hits, &fixture), None);
+    }
 
     #[test]
     fn denominator_follows_the_single_fixture_including_required_refusal() {

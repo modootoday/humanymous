@@ -240,7 +240,7 @@ fn record_wire(receipts: &Receipts, origin: Option<&str>, referer: Option<&str>)
         .ok_or("owned browser origin absent")?;
     let contract: serde_json::Value =
         serde_json::from_str(include_str!("../../browser-wire-contract.json"))?;
-    for key in [
+    let mut keys = vec![
         if origin == Some(expected) {
             "origin_matched"
         } else {
@@ -251,8 +251,29 @@ fn record_wire(receipts: &Receipts, origin: Option<&str>, referer: Option<&str>)
         } else {
             "referer_present"
         },
+    ];
+    match origin {
+        None => keys.push("origin_absent"),
+        Some("null") => keys.push("origin_null"),
+        _ => {}
+    }
+    let mut counts = receipts
+        .0
+        .lock()
+        .map_err(|_| "wire counter lock poisoned")?;
+    for key in [
+        "origin_matched",
+        "origin_other",
+        "origin_absent",
+        "origin_null",
     ] {
-        receipts.hit(contract[key].as_str().ok_or("owned wire counter absent")?);
+        let name = contract[key].as_str().ok_or("owned wire counter absent")?;
+        counts.entry(name.into()).or_default();
+    }
+    for key in keys {
+        let name = contract[key].as_str().ok_or("owned wire counter absent")?;
+        let count = counts.entry(name.into()).or_default();
+        *count = count.checked_add(1).ok_or("wire counter overflow")?;
     }
     Ok(())
 }
@@ -298,6 +319,40 @@ pub async fn serve(
 mod tests {
     use super::*;
     #[test]
+    fn origin_classes_initialize_zeroes_and_never_retain_foreign_values() {
+        for (origin, expected) in [
+            (None, "wire_origin_absent"),
+            (Some("null"), "wire_origin_null"),
+            (Some("http://127.0.0.1:31111"), "wire_origin_matched"),
+            (Some(""), "wire_origin_other"),
+            (Some("NULL"), "wire_origin_other"),
+            (Some("PRIVATE_VALUE"), "wire_origin_other"),
+        ] {
+            let receipts = Receipts::default();
+            record_wire(&receipts, origin, None).unwrap();
+            let counts = receipts.snapshot();
+            for key in [
+                "wire_origin_matched",
+                "wire_origin_other",
+                "wire_origin_absent",
+                "wire_origin_null",
+            ] {
+                assert!(counts.contains_key(key));
+            }
+            assert_eq!(counts[expected], 1);
+            assert_eq!(
+                counts["wire_origin_matched"] + counts["wire_origin_other"],
+                1
+            );
+            assert_eq!(counts["wire_origin_absent"], u64::from(origin.is_none()));
+            assert_eq!(
+                counts["wire_origin_null"],
+                u64::from(origin == Some("null"))
+            );
+            assert!(!serde_json::to_string(&counts).unwrap().contains("PRIVATE"));
+        }
+    }
+    #[test]
     fn wire_observations_count_only_fixed_classes_and_treat_empty_referer_as_present() {
         let receipts = Receipts::default();
         record_wire(&receipts, Some("http://127.0.0.1:31111"), None).unwrap();
@@ -306,7 +361,8 @@ mod tests {
         assert_eq!(
             serde_json::to_value(receipts.snapshot()).unwrap(),
             serde_json::json!({
-                "wire_origin_matched":1,"wire_origin_other":2,"wire_referer_absent":1,"wire_referer_present":2
+                "wire_origin_matched":1,"wire_origin_other":2,"wire_origin_absent":1,
+                "wire_origin_null":1,"wire_referer_absent":1,"wire_referer_present":2
             })
         );
     }

@@ -158,6 +158,12 @@ pub(super) fn from_stdout(
     } else {
         None
     };
+    let failure = match failure {
+        Some("browser_bootstrap_http_forbidden_origin") => {
+            crate::browser_wire::bootstrap_origin(&actor["proxy_hits"], fixture).or(failure)
+        }
+        _ => failure,
+    };
     (value, failure)
 }
 
@@ -220,6 +226,75 @@ mod tests {
             from_stdout(&serde_json::to_vec(&actor).unwrap(), &fixture, &expected).1,
             None
         );
+    }
+
+    #[test]
+    fn origin_wire_refinement_preserves_actor_source_and_failure_gates() {
+        let (mut actor, fixture, expected) = actor();
+        let name = fixture["test_selection"]["exact_name"].as_str().unwrap();
+        actor["test_output"] = json!(format!(
+            "test {name} ... FAIL\n---- {name} output ----\npanicked at crates/collector/src/browser/transport/runtime_pilot.rs:22:10:\nactual runtime bootstrap: HttpForbiddenOrigin\nfailures:\n"
+        ));
+        actor["test_stderr"] = json!("");
+        actor["proxy_hits"] = json!({"wire_origin_matched":0,"wire_origin_other":1,
+            "wire_origin_absent":1,"wire_origin_null":0,"/_humanymous/browser/session":1,
+            "response:/_humanymous/browser/session:403:ack_false":1});
+        let encode = |value: &Value| serde_json::to_vec(value).unwrap();
+        let (public, failure) = from_stdout(&encode(&actor), &fixture, &expected);
+        assert_eq!(
+            failure,
+            Some("browser_bootstrap_origin_browser_proxy_absent")
+        );
+        assert_eq!(actor.as_object().unwrap().len(), 21);
+        assert_eq!(public.as_object().unwrap().len(), 13);
+        assert!(!public.to_string().contains("PRIVATE"));
+        let mut old = actor.clone();
+        old["proxy_hits"]
+            .as_object_mut()
+            .unwrap()
+            .remove("wire_origin_absent");
+        assert_eq!(
+            from_stdout(&encode(&old), &fixture, &expected).1,
+            Some("browser_bootstrap_http_forbidden_origin")
+        );
+        let mut different = actor.clone();
+        different["test_output"] = json!(
+            actor["test_output"]
+                .as_str()
+                .unwrap()
+                .replace("HttpForbiddenOrigin", "HttpForbiddenFetchMetadata")
+        );
+        assert_eq!(
+            from_stdout(&encode(&different), &fixture, &expected).1,
+            Some("browser_bootstrap_http_forbidden_fetch_metadata")
+        );
+        for mutation in 0..3 {
+            let mut bad = actor.clone();
+            match mutation {
+                0 => bad["dns_finish"] = json!("failed"),
+                1 => bad["test_inventory"][66] = json!("foreign::test"),
+                _ => {
+                    bad["test_output"] = json!(
+                        actor["test_output"]
+                            .as_str()
+                            .unwrap()
+                            .replace("runtime_pilot.rs:22:10", "runtime_pilot.rs:023:10")
+                    )
+                }
+            }
+            assert_ne!(
+                from_stdout(&encode(&bad), &fixture, &expected).1,
+                Some("browser_bootstrap_origin_browser_proxy_absent")
+            );
+        }
+        let raw = serde_json::to_string(&actor).unwrap().replacen(
+            "\"wire_origin_absent\":1",
+            "\"wire_origin_absent\":1,\"wire_origin_absent\":0",
+            1,
+        );
+        let (public, failure) = from_stdout(raw.as_bytes(), &fixture, &expected);
+        assert_eq!(public["state"], "invalid");
+        assert_eq!(failure, None);
     }
 
     #[test]
