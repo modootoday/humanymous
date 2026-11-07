@@ -242,14 +242,25 @@
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
+    },
+    {
+      "source": "crates/dotnet-adapter/INTEGRATION.md",
+      "sha256_at_post_read_observation": "14d435eaac51305d8a8f665808deeea6d9d73af75ee65ed473b3ec6a0cd48a8c",
+      "lines": 552,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete552-line chronology fully read across four contiguous chunks. Current accepted pure sharedparentconsumer sourceb482+sixoverlays/6847rows and prior protocolscope0a1bb+twooverlays are compilation/pure only. Genericactualcaller atd143f4f1 and managedattempt2 build retain separate lineages; not Kestrel/GC/AOT/packedqualification. CurrentHost IO requires shared retainednativeJob/ordinaryactor/absolute180s+cleanup and joinedreaders before launch. Historical blockedforeignapproval/localexecutionrestrictions explicitly superseded by later human/rootauthorization, not newpermissionrequests. Artifact/codehash sameness does not reconstruct missing buildtimeinputs; no raw execution independently rerun in Pages.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
     }
   ],
-  "full_read_files": 22,
-  "lines": 4296,
+  "full_read_files": 23,
+  "lines": 4848,
   "post_read_rehash_drift": [],
   "source_receipts_renewed": false,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "full_product_qualified": false,
-  "remaining": "Full current owner INTEGRATION chronology remains from triage gaps; then compare wholecurrentpackage/adapter inventory and existingmatchingreceipts. No actualruntime or sourceacceptance."
+  "remaining": "All23 current triagegap files fully read; source ledger update pending authorized window/finalrehash. Four existing exactmatchingreceipts remain separate prior substantive reviews. Actual host/cleanup/wire/product qualification still open."
 }
