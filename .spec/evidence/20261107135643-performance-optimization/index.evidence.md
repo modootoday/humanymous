@@ -12,7 +12,23 @@ files:
 
 # Build and canonical-function performance evidence
 
-## B1 source-bound library builds
+## Meari shell source-only investigation
+
+The priority UI investigation binds manual candidate
+ce24fe52d5bb80e846f030a08fdcfe547456b9fa and pinned Meari
+1482b746ebc0d867f25d17d01c48c12df888ca6c. Four inspected Browser files match that
+candidate; eight selected file hashes are retained in private
+meari-shell-source-observation.json,1458bytes,
+SHA256e94f6fbe82e0bc99c22295919155b594cb6c599380ba5092c5b1759f5d73a786.
+No stage timing or GPU workload was run. The150-200ms report is a human estimate.
+The performance SoT contains the staged CPU-control/reprojection/GPU design and
+its unqualified dependency/lifetime prerequisites. Specfold store attachment was
+attempted but refused because no files.store is configured; that raw artifact is
+not represented as a registered store attachment. Source hashes and exact receipt
+remain private and available to root; no store configuration or extra public path
+was created outside this owner's grant.
+
+## B1 source-bound library builds (measured)
 
 Four root-allocated native Windows signals library builds actually terminated
 with exit0 and Cargo build-finished success on immutable source

@@ -12,6 +12,17 @@ rel:
 
 ## Bottom-up next admission
 
+Root reprioritized the human-reported Meari shell resize lag as a core UI defect.
+Inspect pinned1482b746 CPU/softbuffer and Browser ce24fe52 dev behavior; preserve
+the150-200ms report as subjective. The SoT now specifies per-stage monotonic
+bounded observations, optimized CPU control, latest-resize coalescing and a true
+Vello/wgpu parent-window path with no CEF texture/readback pseudo-fix. Observed
+upstream GPU render also waits indefinitely on device completion; bounded in-flight
+ownership must be reviewed. Proposed release tuple/API/feature delta needs exact
+upstream manifests, source/pin and root graph decision. Browser owns integration,
+root owns pin/lock, this owner edits only performance specifications/evidence.
+No new GPU/GUI/Cargo/network/install/heavy allocation follows from the design.
+
 Audit154715 supplies a real equal-coverage preparation candidate:3431files/
 657540216bytes, existing registry+tool before phases45.7412591seconds. Root accepts
 an explicit120second cooperative profile ONLY for the future same-input CLI pilot,

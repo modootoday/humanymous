@@ -402,6 +402,155 @@ Official sources reviewed2026-11-08: [Cargo jobs configuration](https://doc.rust
 and [process affinity](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setprocessaffinitymask).
 These document mechanisms, not a measured speedup or the current host topology.
 
+## Priority: Meari shell responsiveness and true GPU presentation
+
+Root assigned this core UI defect ahead of cosmetic work. The human report of
+150-200ms or more during rapid resize is an estimate, not an instrumented sample.
+Browser identifies manual candidate ce24fe52, dev/unoptimized+debuginfo, Meari
+1482b746ebc0d867f25d17d01c48c12df888ca6c. Its manual receipt records25 resize
+readbacks at96DPI, one tab and exit0; it does not establish latency, full content
+visibility, automated input coverage or descendant cleanup. The CEF area was
+reportedly responsive; that does not isolate the cause of shell latency.
+
+### Inspected source and measurement boundaries
+
+Read the actual pinned Cargo checkout, not an assumed current upstream API:
+
+1. Browser desktop host.rs handles resize/DPI by synchronizing owned CEF child
+   geometry before driver dispatch, then dispatches controls. tab_sessions.rs
+   reprojects tabs when views or viewport width change. This retained-source path
+   is a separate unmeasured cost candidate, including the64 lifetime tab slots.
+2. Meari window/handler/event_loop.rs forwards resize/DPI to meari-shell, refreshes
+   the host environment, then updates it. RedrawRequested enters checked_render.
+   Native meari-shell/window.rs changes viewport and requests redraw on resize;
+   its WASM debounce is not the native Windows implementation.
+3. verification/checked_window.rs resolves assets/style/layout, checks context and
+   viewport generations, configures changed nonzero target size, prepares the
+   retained scene, then submits it while the source/context owner is exclusive.
+4. driver.rs, window/mod.rs, preparation and startup owner/context, and checked
+   window signatures fix VelloCpuWindowRenderer. anyrender_vello_cpu0.18.0 selects
+   SoftbufferWindowRenderer with the enabled feature. Its0.9.0 adapter acquires a
+   CPU surface buffer, rasterizes the target, swizzles RGBA into RGB words and
+   calls softbuffer present. This is CPU rendering even if desktop composition
+   later uses a GPU. The separate optional GL path uses synchronous readback;
+   enabling gl is not a true GPU window-presentation fix.
+
+No measured stage durations currently establish which step causes the report.
+The existing log_frame_times feature supplies some softbuffer stage labels, but
+its stderr timings are not a correlated full-path or compositor acknowledgment.
+
+Propose an opt-in fixed-capacity numeric observation sink: at most512 records
+and512KiB, with explicit dropped-record counters, no per-event file/stdout I/O.
+Use process-relative monotonic timestamps, frame/context/viewport generation,
+finite stage/status/backend enums, physical extent, DPI, event/coalesced counts
+and queue depth. Exclude URLs, titles, keys, text, document/source/pixel contents,
+raw handles, paths and cross-process identifiers. Flush only after a bounded pilot;
+instrumentation overflow or missing stages remains explicit, never zero latency.
+
+Measure receive-to-redraw age separately from host/child placement, tab projection,
+retained source preparation, resolve/style/layout, scene encoding, target resize,
+CPU raster, swizzle, surface acquire, submit and present-call time. Start the event
+age clock on actual event receipt; it excludes prior OS queue/input delay unless
+separately observed. Correlate every frame to its latest accepted resize generation.
+Submission/present return is not GPU completion or visible scanout. GPU timestamp
+queries or OS presentation evidence require separately qualified support and
+calibration; unknown visibility is not an invented input-to-photon measurement.
+
+### Minimal reviewable upstream delta
+
+The first actionable predecessor is Browser's viewport-width/full-source tab
+reprojection, not a backend toggle. Add the bounded phase observations there and
+compare the optimized CPU control before interpreting GPU benefit. Separate tab
+model/action-metadata dirtiness from viewport layout. Do not simply remove the
+width guard: tab widths, close visibility, compact class and hit/AX bounds depend
+on viewport width. Any narrow update must preserve retained source ownership,
+generation checks, action paths, selected state, labels and disabled migration.
+Use existing1/multiple/overflow-tab and narrow-width oracles, plus actual DPI,
+tab clicking and accessibility boundaries in the later allocated Windows pilot.
+This predecessor does not replace the required true GPU investigation.
+
+Keep the existing native CEF child HWND and the Meari-owned parent surface. Do not
+texture-copy the CEF page, reparent it into a new renderer, enable offscreen CEF,
+weaken the sandbox or add a CPU readback/upload loop. A minimal candidate keeps
+AnyRender0.14 scene encoding and adds an optional true-window GPU adapter upstream:
+Vello compute rendering into a GPU texture followed by GPU blit/presentation to
+the parent's wgpu surface. The source path must contain no normal-frame CPU pixel
+mapping/readback/swizzle. Software adapters must be reported and excluded from a
+hardware GPU claim. Capability/init failure is explicit; no silent fallback.
+
+Prefer an upstream compile-time renderer alias shared by Application, driver,
+preparation/startup and checked_window over changing only the constructor. A new
+window-gpu feature can retain window compatibility and choose that alias, leaving
+CPU as the explicit control. Existing CPU dependencies may remain linked but must
+not be mistaken for the selected active backend. Generic checked-scene submission
+already accepts impl WindowRenderer; preserve its source/context/viewport checks.
+The new upstream commit must cover all typed ownership paths and diagnostics,
+not mutate Cargo's cached checkout. Root alone selects the new immutable Meari rev
+for both meari and meari-native, changes desktop features and resolves Cargo.lock.
+Browser owns integration, CEF geometry/input and actual GUI qualification.
+
+AnyRender's published compatibility matrix and observed workspace suggest the
+candidate release line anyrender0.14/anyrender_vello0.15/wgpu30/Vello0.11. This is
+a proposal, not a resolved dependency tuple: live crate/source pages returned
+inconsistent0.13/0.14/0.15 versions. Inspect exact release manifests/MSRV/checksums,
+freeze the selected upstream source and qualify Rust1.99.1 before a pin delta.
+Do not copy a latest-version API into the current lock or add an unrelated winit.
+
+The observed upstream main GPU render method performs an indefinite device poll
+after presentation. That is a concrete responsiveness risk, not evidence about
+the current CPU build. A usable candidate must replace that per-frame UI wait
+with reviewed bounded in-flight ownership/completion, retaining GPU resources
+until completion. Merely deleting the wait is insufficient lifetime proof. Start
+with one accepted frame in flight, one latest pending resize and one pending redraw;
+skip superseded work before encoding. A renderer's void render call cannot prove
+success: expose finite acquire/submit/present-requested/skipped/error observations
+bound to the same generation, without relabeling submission as actual display.
+
+### Scheduling, native invariants and acceptance pilot
+
+Coalesce repeated resize requests to the latest physical extent/DPI before the
+next frame and configure only a changed, nonzero target. Preserve close, input,
+focus, IME, accessibility and lifecycle ordering; do not debounce away user input
+or delay native child hit-test geometry behind an obsolete paint. Do not render
+all intermediate sizes or queue unbounded scene/frame copies. The latest scene,
+child rectangle, accessibility bounds and submitted generation must agree.
+
+On minimize/occlusion/zero size suspend acquisition without configuring a zero
+surface; on restore rebuild the target and invalidate stale frame tickets. On
+DPI/multi-monitor changes synchronize physical dimensions, logical layout, CEF
+child placement and AX bounds exactly once per accepted generation. Preserve
+parent/child clipping/z-order, keyboard focus, pointer coordinates, selection,
+IME candidate placement and screen-reader tree semantics. Surface lost/outdated,
+device loss, unsupported adapters and shutdown need explicit finite state/error
+paths; drop the surface before its HWND owner and retain pending GPU resources
+through observed completion. No hard cleanup guarantee from an event-loop timeout.
+
+Before execution root freezes source/binary/profile/backend/driver/display/extent/
+DPI/tab-state and one finite owned resize/input sequence. Compare current CPU dev,
+optimized CPU with the same behavior/settings, then true GPU at the same optimized
+profile. Optimized CPU is a control, not permission to abandon the true GPU path.
+Keep backend and optimization effects separate. Predeclare a bounded120second
+pilot per arm, one warm-up then three alternating CPU/GPU pairs if allocated;
+no opportunistic repetitions or post-result input selection. Separate cold device/
+shader initialization from steady resize and report all failure/dropped events.
+No new GUI/GPU workload, install, network navigation or heavy slot is granted here.
+
+Acceptance requires exact stage counts and per-frame distributions, queue bounds,
+latest-generation final geometry, no retained obsolete resize backlog, and no
+regression in CEF child behavior, DPI/minimize/restore, input/IME/AX, sandbox or
+shutdown. Propose a predeclared p95 receive-to-submit target of two measured
+display-refresh periods, with p99/max and unfinished/skipped work reported; this
+is a proposed engineering target requiring owner acceptance, not a pass result or
+a human accessibility gate. Visible latency remains unknown without independent
+presentation evidence. A GPU checkbox, smoother human impression or faster raster
+alone cannot qualify end-to-end responsiveness or close this performance goal.
+
+Primary research: [AnyRender compatibility](https://github.com/DioxusLabs/anyrender),
+[observed GPU adapter](https://raw.githubusercontent.com/DioxusLabs/anyrender/main/crates/anyrender_vello/src/window_renderer.rs),
+[Vello rendering model](https://docs.rs/vello/latest/vello/),
+[wgpu surface lifetime/configuration](https://docs.rs/wgpu/latest/wgpu/struct.Surface.html).
+Mutable upstream observations require exact source freezing before implementation.
+
 ## Runtime measurement profiles awaiting owner allocation
 
 These are proposed contracts, not executable tests or new deployment claims.
