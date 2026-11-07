@@ -38,3 +38,26 @@ arithmetic returns an error instead of a reassuring liveness result. The caller
 still owns persistence, trusted time and an observer outside the watched process;
 a registry inside a suppressed process cannot independently report its absence.
 This status does not prove request admission, audit completeness or human activity.
+
+## Experimental native status service
+
+The runtime now has source for a separate local observer listener. It accepts
+only `POST /management/v0.1/status`, authenticated with the configured native
+peer and a separately provisioned management credential. Application sessions,
+adapter credentials and browser headers do not grant management access. Keep
+the credential out of public logs and application configuration exports.
+
+The request uses `Host: humanymous.management.local` and exactly
+`Content-Type: application/json`. Its JSON body, bounded to 8192 bytes, must
+match the configured installation, tenant, origin, revision and authority.
+Unknown or duplicate scope fields and duplicate header names reject. Browser
+context headers, including Cookie, Origin, Referer and `Sec-` headers, reject.
+Query variants and mutation routes are not accepted status requests.
+
+The response identifies the observer role and runtime profile, with
+`settings_writable` and `destructive_controls` both false. It is not a heartbeat
+receipt, a management write API or evidence that a deployed service is healthy.
+Source joins application and management listener shutdown before releasing
+service custody; actual native IPC, permissions, cancellation and lock-release
+pilots remain required. The new listener and policy fixtures have not yet been
+executed in the current qualification run.

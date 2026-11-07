@@ -2,6 +2,42 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/runtime/src/service/lifecycle.rs",
+  "sha256": "481d0f14e70bcb5ed66a06d71be0f2438dd3b5165a366291a9ccaad61be8714b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/management/tests.rs",
+  "sha256": "aa86d590d9277d9f2ddd488f363664297839fc2d86f85ad1e1c79c3497a55402",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/management/policy.rs",
+  "sha256": "6e54a9384ec423a7c1698b066af0ec23965a67efaeb44e1d70cdd2c5d46df7fc",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/management/mod.rs",
+  "sha256": "568614e57454cb287da7c70fa15133dfd47cf4d55eed137200822aa5e64f1bfb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md"
+  ]
+},
+{
   "source": "crates/framework-adapter/src/configuration.rs",
   "sha256": "b63e8cc3c8da380e3733933206e086b52b62f264f682e358df23240f6934eab8",
   "reviewer": "codex/rust-pages",
