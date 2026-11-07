@@ -3,7 +3,7 @@ id: sot:root/network-capture
 title: Original TLS and HTTP2 connection capture
 status: active
 created: 2026-11-07T07:25:00Z
-updated: 2026-11-07T07:25:00Z
+updated: 2026-11-07T07:54:03Z
 verify: manual
 rel:
   governs: [crates/capture/**]
@@ -106,5 +106,9 @@ stay unavailable until actual binding and qualification (N01/N06).
 - https://docs.rs/rustls/0.23.46/rustls/server/struct.ServerConnection.html
 - https://docs.rs/httlib-hpack/0.1.3/httlib_hpack/decoder/struct.Decoder.html
 
-All new source and tests are NOT_RUN until recorded otherwise. No current
-capture source is integrated into the runtime, and hosted/product counts are0.
+Default-feature local component gate is recorded in evidence:root/20261107075403:
+root all-targets Clippy with warnings denied passed, followed by21pure units
+passed/0failed/0ignored/0filtered. Five earlier lint diagnostics and their repair
+history remain explicit. hosted-pilot feature compilation,5actual hosted cases,
+runtime request/stream binding and Docker product qualification remain NOT_RUN
+or unimplemented. No capture source is integrated into the runtime yet.

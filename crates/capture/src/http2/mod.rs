@@ -162,10 +162,10 @@ impl Capture {
         if !self.settings_seen && (kind != 4 || flags & 1 != 0) {
             return Err(Error::Malformed);
         }
-        if let Some(block) = &self.block {
-            if kind != 9 || stream != block.stream {
-                return Err(Error::Malformed);
-            }
+        if let Some(block) = &self.block
+            && (kind != 9 || stream != block.stream)
+        {
+            return Err(Error::Malformed);
         }
         match kind {
             4 => {
@@ -177,7 +177,7 @@ impl Capture {
                 }
                 if flags & 1 == 0 {
                     let mut settings = Vec::new();
-                    for pair in self.payload.chunks_exact(6) {
+                    for pair in self.payload.as_chunks::<6>().0 {
                         let id = u16::from_be_bytes([pair[0], pair[1]]);
                         let value = u32::from_be_bytes(
                             pair[2..6].try_into().map_err(|_| Error::Malformed)?,

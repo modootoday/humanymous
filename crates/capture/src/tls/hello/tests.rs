@@ -139,9 +139,11 @@ fn nested_truncation_and_odd_cipher_list_are_not_complete() {
 }
 #[test]
 fn excessive_fragment_records_fail_with_constant_count_budget() {
-    let mut capture = ClientHelloCapture::default();
-    capture.expected = Some(2048);
-    capture.handshake = vec![1, 0, 8, 0];
+    let mut capture = ClientHelloCapture {
+        expected: Some(2048),
+        handshake: vec![1, 0, 8, 0],
+        ..Default::default()
+    };
     for _ in 0..MAX_RECORDS {
         capture.feed(&record(&[0])).unwrap();
     }

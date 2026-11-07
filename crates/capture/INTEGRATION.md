@@ -3,22 +3,26 @@
 Owner: network-capture/rust-network-capture-goal. Design authority:
 sot:root/network-capture. Existing network, integrity, authority and runtime are
 read-only here. Capture is a new transport-lifecycle context, not a fingerprint
-or security-engine fork. All current source/tests are NOT_RUN; hosted/product0.
+or security-engine fork. Root default-feature all-targets Clippy passed, followed
+by21pure lib units passed/0failed/0ignored/0filtered. hosted-pilot compile and its
+5actual cases remain NOT_RUN; runtime binding and product qualification remain0.
 
-Root requested changes (not made by this owner): add crates/capture as workspace
-member and workspace humanymous-capture dependency when needed. Crate manifests
-will use path dependency ../network; reuse existing rustls0.23.46 with
+Root has integrated crates/capture as a workspace member and resolved the
+dependency graph. Add a workspace humanymous-capture dependency when a consumer
+needs it. The crate uses path dependency ../network and existing rustls0.23.46 with
 default-features=false, features=[std,ring,tls12], plus pinned httlib-hpack0.1.3
-for bounded HPACK (new dependency closure requires root review/lock update).
-No unsafe/foreign authored glue is needed. Please allocate the global Cargo
-slot once the source tranche is ready; none is currently being consumed here.
+for bounded HPACK. No unsafe/foreign authored glue is needed. Root owns all
+future dependency/lock windows and execution allocations. This owner is not
+running Cargo; root has returned pipelineA to another owner after validation.
 Source tranche is now authored: strict ClientHello assembly, actual TcpStream/
 rustls owner, complete H2 framing/HPACK per-stream observations and pure fixtures.
 The non-default hosted-pilot feature adds optional pinned rcgen0.14.10 (ring,
 crypto, no default features) to generate transient synthetic credentials in the
 hosted test process; no certificate/private key is checked in or persisted.
-All dependency closure/compilation remains NOT_RUN pending root's workspace/lock
-and Cargo slot. Direct rustfmt has run only against owned source.
+Default-feature compilation/units/Clippy have passed; optional hosted-pilot
+compilation remains NOT_RUN. Direct rustfmt ran only against owned source.
+See evidence:root/20261107075403 for final root output, earlier5lint findings,
+source-hash scope and the separate unexecuted hosted/product denominators.
 
 Runtime seam request: capture owns a same-transport rustls connection and
 produces borrowed connection/stream evidence only after handshake/header-block
@@ -65,7 +69,7 @@ deployment actually terminates the original client; reterminated proxy traffic
 describes the proxy hop. Unit parsing and a successful TLS pilot do not qualify
 request integrity, collector execution, T4/human identity or full product.
 
-## Resume handover (2026-11-07)
+## Historical resume handover (before root local validation)
 
 Mission remains full original TLS/H2 producer, owning runtime binding,
 fail-closed required-plane handling, pure units, actual owned hosted traffic and

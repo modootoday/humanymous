@@ -1,0 +1,82 @@
+{
+  "schema": "humanymous.capture.local-validation/0.1",
+  "observed_at": "2026-11-07T07:54:03Z",
+  "runner": "local Windows x86_64, root-owned pipeline A",
+  "command_source": "root completed command exec-91990196-99ad-4d53-b86d-a1473959508b",
+  "root_confirmation": "final source includes struct-literal fixture fix",
+  "commands": [
+    "cargo clippy --locked --offline -p humanymous-capture --all-targets -- -D warnings",
+    "cargo test --locked --offline -p humanymous-capture --lib -- --test-threads=1"
+  ],
+  "exit_code": 0,
+  "pure_units": {
+    "passed": 21,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "earlier_clippy": {
+    "failed_attempts": 2,
+    "findings": [
+      "collapsible_if at http2 continuation",
+      "manual_as_chunks at SETTINGS",
+      "two collapsible_if at TLS plaintext observation",
+      "field_reassign_with_default in TLS record-budget fixture"
+    ]
+  },
+  "source_binding": "Owned Rust source hashes observed after root validation; root confirmed final fixture. This is not a full-workspace pre/post receipt.",
+  "source_files": [
+    {
+      "path": "crates/capture/src/http2/headers.rs",
+      "bytes": 5002,
+      "sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787"
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "bytes": 14738,
+      "sha256": "bfaac7959c30a13483028b683317befb9594dc70c1f2a64140e13d34e2589b6d"
+    },
+    {
+      "path": "crates/capture/src/http2/tests.rs",
+      "bytes": 10800,
+      "sha256": "13a2222124e6c9e1f3ba700776d6105a7d12d2b5e52d532f9110c570c7fabfae"
+    },
+    {
+      "path": "crates/capture/src/lib.rs",
+      "bytes": 322,
+      "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076"
+    },
+    {
+      "path": "crates/capture/src/tls/hello.rs",
+      "bytes": 7833,
+      "sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153"
+    },
+    {
+      "path": "crates/capture/src/tls/hello/tests.rs",
+      "bytes": 5144,
+      "sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde"
+    },
+    {
+      "path": "crates/capture/src/tls/mod.rs",
+      "bytes": 205,
+      "sha256": "e8453ccdbf191ab1f5030f009e9c1e37976b7530d64a42a959f325152e5c8a0e"
+    },
+    {
+      "path": "crates/capture/src/tls/transport.rs",
+      "bytes": 7580,
+      "sha256": "74d6204465c0964aed97213d94161e98372e9b4b4fa80529f78967248514681b"
+    },
+    {
+      "path": "crates/capture/tests/hosted_transport.rs",
+      "bytes": 8929,
+      "sha256": "0de3c02bd8662bb9470afeb04f105bc3054d09cd1ab5c313b541f388d8db77df"
+    }
+  ],
+  "hosted_feature_compile": "not_run",
+  "hosted_actual": {
+    "authored": 5,
+    "executed": 0
+  },
+  "product_runs": 0,
+  "runtime_binding": "not_implemented"
+}

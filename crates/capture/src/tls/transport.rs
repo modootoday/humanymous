@@ -170,13 +170,12 @@ impl Connection {
     pub fn read_plaintext(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.ensure_live()?;
         let result = rustls::Stream::new(&mut self.tls, &mut self.ingress).read(buf);
-        if let Ok(count) = result {
-            if let Some(h2) = &mut self.h2 {
-                if let Err(error) = h2.feed(&buf[..count]) {
-                    self.failed = true;
-                    return Err(io::Error::other(error));
-                }
-            }
+        if let Ok(count) = result
+            && let Some(h2) = &mut self.h2
+            && let Err(error) = h2.feed(&buf[..count])
+        {
+            self.failed = true;
+            return Err(io::Error::other(error));
         }
         if result.is_err() || matches!(result, Ok(0)) && !buf.is_empty() {
             self.failed = true;
