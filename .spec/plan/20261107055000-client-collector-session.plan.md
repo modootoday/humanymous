@@ -12,6 +12,14 @@ rel:
 
 ## Accepted actual-browser runtime pilot
 
+Native-only runtime_pilot_contract integration test independently checks the
+fixture/WebDriver shared loopback tuples, distinct nonzero ports, proxy mode,
+absence of bypass/extra browser arguments, route uniqueness and the required
+422/noACK/zero-effect expectations. It passed1test/0failed/0ignored/0filtered
+under locked buildjobs1/testthreads1/incremental0. This is static cross-file
+consistency only: configured localhost proxy preferences do not prove real
+browser interception, namespace isolation or actual runtime outcomes.
+
 The separate runtime-pilot feature and crates/collector/pilot/fixture.json define
 one shared lab contract. Read that file rather than copying chat messages: the
 scope is install/tenant/origin/r1 at127.0.0.1:31111; browser proxy is31112.
