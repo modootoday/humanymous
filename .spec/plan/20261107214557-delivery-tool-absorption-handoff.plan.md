@@ -179,6 +179,13 @@ actual approved Native/CEF process profiles; unchanged read-only docs behavior;
 complete advisory lock coverage and the full workflow policy/catalog. Product
 claims still require Docker-only owning e2e and their exact source/image receipts.
 
+Root's accepted structural contract additionally requires an exact unsafe-site
+inventory and coverage of every crate root, including build scripts, examples and
+integration tests. Verify transitive feature isolation, final release executable
+inventory and exact target-role metadata joins. The two existing Windows actor
+module allowances do not authorize other roots, targets or transitive features.
+These are required migration gates, not evidence that migration has occurred.
+
 # Critique and readiness
 
 The design is accepted; implementation remains needs-work until the atomic freeze,

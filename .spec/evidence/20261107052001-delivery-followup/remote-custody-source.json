@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.delivery-remote-custody-source/1",
+  "state": "authored-uncompiled",
+  "source_file": "scripts/ci/delivery/src/remote.rs",
+  "source_sha256": "c241a9e62aeb257735eaed496d7a68b5a296380071a3215e937dfe191e0c3d96",
+  "authorization": "Root scoped terminal receipt custody fix; source/tests before bounded compiler allocation",
+  "contract": {
+    "exact_binding": [
+      "run ID",
+      "source SHA",
+      "attempt",
+      "terminal conclusion",
+      "retained metadata identity",
+      "artifact attempt window"
+    ],
+    "attachments": [
+      "run.json",
+      "summary.json",
+      "artifact-inventory.json",
+      "required run.log",
+      "selected artifact ID ZIP bodies"
+    ],
+    "attachment_checks": [
+      "presence",
+      "regular non-symlink file",
+      "SHA256",
+      "byte size",
+      "generated exact path",
+      "representation"
+    ],
+    "legacy_marker": "preserved and refused without custody schema",
+    "log_representation": "decoded CLI text with diagnostics; not original run ZIP",
+    "artifact_representation": "original artifact API body",
+    "startup_exception": "zero-job startup failure, metadata present, empty inventory, no execution log"
+  },
+  "regression_tests_authored": [
+    "terminal_receipt_rechecks_every_retained_attachment",
+    "terminal_receipt_refuses_foreign_legacy_and_unmeasured_claims",
+    "zero_job_startup_receipt_requires_metadata_and_no_execution_log"
+  ],
+  "compiler_executed": false,
+  "tests_executed": false,
+  "full_product_qualified": false,
+  "old_receipts_rewritten": false
+}

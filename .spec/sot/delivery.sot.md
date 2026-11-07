@@ -1582,3 +1582,21 @@ check the retained file remains unchanged. The two executable roles and current
 path anchors are unchanged; future approved path moves still require their own
 explicit contract update. A metadata join is not compiler/toolchain attestation,
 an actual archive run or whole-product qualification.
+
+### Terminal Actions attachment custody
+
+New terminal captures use actions-terminal-custody/1 and bind retained run JSON,
+summary JSON, artifact inventory, required execution log and each selected artifact
+body by exact generated path, SHA256, byte size and representation. Reuse checks
+the current terminal run ID/source/attempt/conclusion, retained run identity and
+attempt window, summary scope, complete artifact inventory and unique positive
+artifact IDs. Missing, changed, foreign or symlink attachments refuse completion.
+The terminal marker is written only after this validation. A legacy marker without
+these fields is preserved and refused; its existence alone is never completion.
+
+The run log is decoded CLI text including command diagnostics, not the original
+run log ZIP. Artifact bodies are retained API response bytes; metadata is decoded
+JSON. These distinctions remain explicit in each attachment. Zero-job workflow
+startup failure still requires retained metadata and an empty artifact inventory,
+with no execution log. No receipt here authenticates HTTP wire bytes, signs local
+files or qualifies the product; old raw receipts remain unchanged.
