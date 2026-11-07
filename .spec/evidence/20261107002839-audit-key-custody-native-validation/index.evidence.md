@@ -3,7 +3,7 @@ id: evidence:root/20261107002839
 title: Audit key custody native validation
 status: active
 created: 2026-11-07T00:28:39Z
-updated: 2026-11-07T00:28:39Z
+updated: 2026-11-07T03:39:00Z
 files:
   - {path: facts.json, sha256: 9eb4ba8dcd732e15d335f1f84d916dda299e11dc33ee6bf1870975f2b618667f, bytes: 2499, store: repo}
 rel:
@@ -35,3 +35,12 @@ Windows namespace durability remains unconfirmed; current-user/private-directory
 trust does not defend against same-owner or privileged replacement. Production
 erasure authority, permit-aware pending erasure recovery, independent witness,
 rollback/backup handling and runtime/service wiring remain explicit gates.
+
+## Subsequent guard-lifetime repair
+
+Commit d179562 replaces close-only custody/WAL lock ownership with a shared
+explicit-release guard. Historical receipts above qualify only their original
+source. The reproduced duplicate-description failure, same-inode/successor
+regressions, Linux/Windows checks and executed other-UID helper proof are in
+evidence:root/20261106235519/custody-lifetime-results.json and
+plan:root/20261107031001. Exact patched-commit native CI remains pending.

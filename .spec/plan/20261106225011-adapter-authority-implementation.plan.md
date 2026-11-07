@@ -3,7 +3,7 @@ id: plan:root/20261106225011
 title: Adapter authority implementation
 status: active
 created: 2026-11-06T22:50:11Z
-updated: 2026-11-06T22:50:11Z
+updated: 2026-11-07T03:39:00Z
 rel:
   governs: [crates/authority/**]
   depends_on: [sot:root/adapter-authority]
@@ -102,3 +102,12 @@ sessions (root migration and the earlier Node evidence bundle). This authority's
 own raw files are attached and its canonical documents have no outstanding error.
 Do not repair another owner's evidence bundle or describe the global check as
 passing until those owners register their attachments.
+
+## Subsequent guard-lifetime repair
+
+Commit d179562 replaces close-only custody/WAL lock ownership with a shared
+explicit-release guard. Historical receipts above qualify only their original
+source. The reproduced duplicate-description failure, same-inode/successor
+regressions, Linux/Windows checks and executed other-UID helper proof are in
+evidence:root/20261106235519/custody-lifetime-results.json and
+plan:root/20261107031001. Exact patched-commit native CI remains pending.

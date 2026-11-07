@@ -3,7 +3,7 @@ id: plan:root/20261107002005
 title: Audit key custody native persistence
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T00:22:32Z
+updated: 2026-11-07T03:39:00Z
 rel:
   governs: [crates/audit/src/keys/**]
   depends_on: [sot:root/audit-key-custody]
@@ -40,3 +40,12 @@ Sanitized source/execution hashes: [[evidence:root/20261107002839]].
 Owned documents/bundles pass Specfold. Full check has out-of-lane private
 analysis-layout and root evidence-attachment findings; no unrelated paths were
 modified to suppress them. Public files are LF with matching Git-filtered bytes.
+
+## Subsequent guard-lifetime repair
+
+Commit d179562 replaces close-only custody/WAL lock ownership with a shared
+explicit-release guard. Historical receipts above qualify only their original
+source. The reproduced duplicate-description failure, same-inode/successor
+regressions, Linux/Windows checks and executed other-UID helper proof are in
+evidence:root/20261106235519/custody-lifetime-results.json and
+plan:root/20261107031001. Exact patched-commit native CI remains pending.
