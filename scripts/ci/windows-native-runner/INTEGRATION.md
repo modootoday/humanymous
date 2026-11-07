@@ -125,7 +125,9 @@ workspace-component, full_runtime_qualifiedfalse. Only this separate complete
 unit/component scope may exit0/statuspassed; it cannot satisfy native schema1.
 Generic ignored/filtered/failed/missing work fails. Preserve known audit key_custody
 2rawignored helpers only with exact package/target/kind, exact ignored inventory,
-required parent successes, actual nested lock proof and both strict summaries.
+required parent successes and one strict outer summary. The owning parents
+verify bounded child capture, exact static markers, exit status, stderr and state;
+nested child summaries must not escape into the outer result.
 Native4package service-feature still returnsblocked2 with1required service test
 not_run. Parent source snapshot spans all crate source/manifests and the expected
 runner architecture must equal the compiled executable architecture.
@@ -229,3 +231,52 @@ coverage. Those ignored cases are one verified audit helper and three required
 Node product tests; no helper exemption applies to the latter. Separate MSRV
 workspace execution continues independently, so this actor observation does not
 mark every later row globally not_run. Owner raw reports remain not retrieved.
+
+
+Pending source-only accounting follow-up during the root benchmark quiet window:
+Linux authority's ignored privileged parent is explicitly required_not_run in the
+privileged-docker scope; its child probe is declared but contributes zero verified
+helper exemptions. Public projection retains whitelisted native assertion names,
+boolean verification, row indices and indexed failure codes. It drops arbitrary
+private diagnostic strings. Summary accounting uses checked cardinality addition,
+requires exact libtest labels and a finite nonnegative elapsed field, and avoids
+summing untrusted failure counts. Five new pure tests are authored but NOT_RUN;
+format/check/Clippy validation is pending the next root allocation. No compilation
+or runtime process was started for these additions. The validated ae5891d7 source
+remains the committed benchmark candidate. User authorization now permits actual
+local comparison; no account/SCM provisioning profile or provenance bypass is
+inferred from that authorization, and no such local run has occurred here.
+
+
+Pending paired custody capture contract: audit owner is replacing both unbounded
+inherited-stdio child launches with bounded capture, exact static child markers,
+exit/stderr checks and the original state assertions. The runner accepts only the
+exact two ignored helper names, both actual parent successes and one outer final
+summary. An old leaked nested summary is rejected. This changes evidence framing,
+not the required product assertions or ignored-test policy. Historical813 evidence
+keeps its old contract. Updated source/tests are NOT_RUN during the root benchmark
+quiet window; no compiler or runtime validation was started for this follow-up.
+
+
+Pending runner source is paired with audit helper-only checkpoint de33864b:
+60-second/64-KiB bounded child capture, exact newline-framed flushed effect
+markers, original and stronger custody state assertions, unchanged two ignored
+helper names. Runner rejects leaked markers and nested summaries and requires
+both parent successes plus one outer summary. Formatting is now permitted and
+applied; new pure28/check/Clippy remain NOT_RUN under the benchmark allocation
+hold. Historical813 results do not qualify this contract. The goal remains
+blocked on validation allocation and actual SCM lifecycle evidence.
+
+
+Shared Docker affinity source follows rust-migration's Local Docker engine identity
+and cleanup canon. test-support::docker is a pure, dependency-free comparison seam:
+DesktopObservation/ServerIdentity, verify_desktop and verify_sdk, sanitized proof
+projection and static error variants. Desktop context, canonical named-pipe endpoint,
+Linux OS and bounded nonempty private metadata are mandatory. Observed server ID
+and version must exactly match the actual caller-observed Desktop baseline. SDK
+host is explicitly allocated and must match the actual configured host; actual SDK
+server identity must also match. An allocated Unix proxy is a distinct endpoint,
+not renamed as the Desktop named pipe. No IDs/versions are hardcoded as universal
+facts, and equality is not authenticated provenance. Wrappers retain I/O and private
+raw evidence. Lab accepted the typed contract. Four new pure tests are authored,
+not executed; formatting/diff checks only, no Docker/compilation/provider execution.

@@ -306,6 +306,11 @@ fn execute_inner(
             row["subprocess_helpers"] = json!([helper]);
             row["required_parent_tests"] = json!(parent);
         }
+        if let Some(scope) = helpers::external_scope(entry, &output, cfg!(unix)) {
+            for (key, value) in scope.as_object().unwrap() {
+                rows.last_mut().unwrap()[key] = value.clone();
+            }
+        }
         progress["executed_harnesses"] = json!(rows.len());
         progress["harnesses"] = json!(rows);
         let mut required_missing = false;
@@ -407,9 +412,12 @@ fn account_pending(
 ) -> io::Result<usize> {
     let [passed, failed, ignored, measured, filtered] = totals(log)?;
     if !success
-        || passed + required_not_run != discovered
+        || log
+            .lines()
+            .any(|line| line.starts_with("test result: ") && !line.starts_with("test result: ok. "))
+        || passed.checked_add(required_not_run) != Some(discovered)
         || ignored != required_not_run
-        || failed + measured + filtered != 0
+        || [failed, measured, filtered].iter().any(|count| *count != 0)
     {
         return Err(io::Error::other("native manifest tests incomplete/ignored"));
     }
@@ -430,10 +438,39 @@ fn summaries(log: &str) -> io::Result<Vec<[usize; 5]>> {
 }
 fn parse_summary(line: &str) -> io::Result<[usize; 5]> {
     let fields: Vec<_> = line.split_whitespace().collect();
-    if fields.len() < 15 || !matches!(fields[2], "ok." | "FAILED.") {
+    if fields.len() != 17
+        || !matches!(fields[2], "ok." | "FAILED.")
+        || [
+            (0, "test"),
+            (1, "result:"),
+            (4, "passed;"),
+            (6, "failed;"),
+            (8, "ignored;"),
+            (10, "measured;"),
+            (12, "filtered"),
+            (13, "out;"),
+            (14, "finished"),
+            (15, "in"),
+        ]
+        .iter()
+        .any(|(index, text)| fields[*index] != *text)
+        || !fields[16]
+            .strip_suffix('s')
+            .and_then(|elapsed| elapsed.parse::<f64>().ok())
+            .is_some_and(|elapsed| elapsed.is_finite() && elapsed >= 0.0)
+    {
         return Err(io::Error::other("native test summary invalid"));
     }
-    let numbers = [fields[3], fields[5], fields[7], fields[9], fields[11]].map(str::parse::<usize>);
+    let count_fields = [fields[3], fields[5], fields[7], fields[9], fields[11]];
+    if count_fields
+        .iter()
+        .any(|field| !field.bytes().all(|byte| byte.is_ascii_digit()))
+    {
+        return Err(io::Error::other(
+            "native test summary count grammar invalid",
+        ));
+    }
+    let numbers = count_fields.map(str::parse::<usize>);
     let [
         Ok(passed),
         Ok(failed),
@@ -457,6 +494,15 @@ fn custody_account(log: &str, discovered: usize, success: bool) -> io::Result<us
         })
         .collect();
     if !success
+        || log
+            .lines()
+            .any(|line| line.starts_with("test result: ") && !line.starts_with("test result: ok. "))
+        || log.lines().any(|line| {
+            matches!(
+                line,
+                "humanymous-key-lock-refused" | "humanymous-key-pending-synced"
+            )
+        })
         || discovered < 2
         || ignored.len() != 2
         || ignored.iter().copied().collect::<BTreeSet<_>>() != expected
@@ -466,7 +512,6 @@ fn custody_account(log: &str, discovered: usize, success: bool) -> io::Result<us
     for parent in [
         "competing_process_cannot_load_or_create",
         "process_exit_releases_lock_and_rotation_pending_requires_recovery",
-        "child_lock_probe",
     ] {
         if !log
             .lines()
@@ -477,11 +522,7 @@ fn custody_account(log: &str, discovered: usize, success: bool) -> io::Result<us
             ));
         }
     }
-    let counts = summaries(log)?;
-    if counts != vec![[1, 0, 0, 0, discovered - 1], [discovered - 2, 0, 2, 0, 0]] {
-        return Err(io::Error::other("custody nested/final summary differs"));
-    }
-    Ok(discovered - 2)
+    account_pending(log, discovered, success, 2)
 }
 #[cfg(test)]
 mod tests {
@@ -513,17 +554,20 @@ mod tests {
         assert!(account_pending(&format!("{good}\n{good}"), 1, true, 0).is_err());
     }
     #[test]
-    fn custody_helpers_require_exact_parents_nested_proof_and_zero_unknown_skips() {
+    fn custody_helpers_require_exact_parents_single_summary_and_zero_unknown_skips() {
         let nested = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.1s";
         let final_summary = "test result: ok. 2 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.1s";
         let good = format!(
-            "test child_lock_probe ... ok\n{nested}\ntest competing_process_cannot_load_or_create ... ok\ntest process_exit_releases_lock_and_rotation_pending_requires_recovery ... ok\ntest child_lock_probe ... ignored\ntest child_interrupted_writer ... ignored\n{final_summary}"
+            "test competing_process_cannot_load_or_create ... ok\ntest process_exit_releases_lock_and_rotation_pending_requires_recovery ... ok\ntest child_lock_probe ... ignored\ntest child_interrupted_writer ... ignored\n{final_summary}"
         );
         assert_eq!(custody_account(&good, 4, true).unwrap(), 2);
         for bad in [
-            good.replace("test child_lock_probe ... ok\n", ""),
+            good.replace("test child_lock_probe ... ignored\n", ""),
             good.replace("test competing_process_cannot_load_or_create ... ok\n", ""),
-            good.replace("3 filtered out", "2 filtered out"),
+            good.replace("test child_interrupted_writer", "test unknown_helper"),
+            format!("{nested}\n{good}"),
+            format!("humanymous-key-lock-refused\n{good}"),
+            format!("humanymous-key-pending-synced\n{good}"),
             format!("{good}\ntest other ... ignored"),
             format!("{good}\n{final_summary}"),
         ] {
@@ -531,5 +575,32 @@ mod tests {
         }
         assert!(custody_account(&good, 4, false).is_err());
         assert!(account_pending(&good, 4, true, 0).is_err());
+    }
+    #[test]
+    fn extreme_counts_are_rejected_without_arithmetic_overflow() {
+        let log = format!(
+            "test result: ok. {} passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.1s",
+            usize::MAX
+        );
+        assert!(account_pending(&log, 1, true, 1).is_err());
+        let log = format!(
+            "test result: FAILED. 0 passed; {} failed; 0 ignored; 1 measured; 0 filtered out; finished in 0.1s",
+            usize::MAX
+        );
+        assert!(account_pending(&log, 0, true, 0).is_err());
+    }
+    #[test]
+    fn summary_requires_exact_labels_and_finite_elapsed_field() {
+        let good = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.1s";
+        for bad in [
+            good.replace("passed;", "invented;"),
+            good.replace("finished in 0.1s", "finished"),
+            good.replace("0.1s", "NaNs"),
+            format!("{good} extra"),
+        ] {
+            assert!(totals(&bad).is_err());
+        }
+        assert!(account_pending(&good.replace("ok.", "FAILED."), 1, true, 0).is_err());
+        assert!(totals(&good.replace("1 passed;", "+1 passed;")).is_err());
     }
 }

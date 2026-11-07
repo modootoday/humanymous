@@ -33,6 +33,26 @@ pub(super) fn captured(entry: &Value) -> Option<(&'static str, &'static [&'stati
     }
     None
 }
+/// Declare an unexecuted privileged product case without granting a helper waiver.
+pub(super) fn external_scope(entry: &Value, output: &str, unix: bool) -> Option<Value> {
+    const PARENT: &str = "unix_other_user_is_denied_by_actual_socket_acl";
+    const HELPER: &str = "unix_unprivileged_connect_probe";
+    if !unix
+        || entry["target"] != "native_process"
+        || entry["kind"] != json!(["test"])
+        || !entry["package_id"]
+            .as_str()
+            .is_some_and(|p| p.contains("#humanymous-authority@"))
+        || !output
+            .lines()
+            .any(|line| line.starts_with(&format!("test {PARENT} ... ignored")))
+    {
+        return None;
+    }
+    Some(
+        json!({"required_not_run":[PARENT],"required_execution_scope":"privileged-docker","declared_subprocess_helpers":[HELPER],"ignored_subprocess_helpers":0}),
+    )
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -43,5 +63,28 @@ mod tests {
         for target in ["host_process", "runtime_service_process"] {
             assert!(captured(&json!({"package_id":"path+file:///node#humanymous-node-adapter@0.1.0","kind":["test"],"target":target})).is_none());
         }
+    }
+    #[test]
+    fn ignored_privileged_parent_is_required_and_never_a_verified_helper() {
+        let entry = json!({"package_id":"path+file:///authority#humanymous-authority@0.1.0","kind":["test"],"target":"native_process"});
+        let log = "test unix_other_user_is_denied_by_actual_socket_acl ... ignored, Docker only\n";
+        let scope = external_scope(&entry, log, true).unwrap();
+        assert_eq!(scope["ignored_subprocess_helpers"], 0);
+        assert_eq!(
+            scope["required_not_run"][0],
+            "unix_other_user_is_denied_by_actual_socket_acl"
+        );
+        assert!(external_scope(&entry, log, false).is_none());
+        assert!(
+            external_scope(
+                &entry,
+                "test unix_other_user_is_denied_by_actual_socket_acl ... ok",
+                true
+            )
+            .is_none()
+        );
+        let mut wrong = entry;
+        wrong["package_id"] = json!("path+file:///node#humanymous-node-adapter@0.1.0");
+        assert!(external_scope(&wrong, log, true).is_none());
     }
 }

@@ -2,6 +2,7 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, fs, io, path::Path, process::Command};
 mod accounting;
+mod coverage;
 mod failure;
 mod lifecycle;
 pub(crate) mod recovery;
@@ -247,6 +248,7 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     let rows=report["coverage"]["harnesses"].as_array().map(|rows|rows.iter().map(|row|json!({"target":row["target"],"executable_sha256":row["executable_sha256"],"discovered":row["discovered"],"passed":row["passed"],"failed":row["failed"],"validated":row["validated"],"ignored":row["ignored"],"ignored_subprocess_helpers":row["ignored_subprocess_helpers"],"subprocess_helpers":row["subprocess_helpers"],"required_parent_tests":row["required_parent_tests"],"required_not_run":row["required_not_run"],"filtered":row["filtered"],"exit_code":row["exit_code"],"stdout_sha256":row["stdout_sha256"]})).collect::<Vec<_>>()).unwrap_or_default();
     let mut rows = rows;
     for (index, row) in rows.iter_mut().enumerate() {
+        coverage::row(&report["coverage"]["harnesses"][index], row);
         row["unsupported_required_case"] =
             json!(report["coverage"]["harnesses"][index]["unsupported_required_case"].as_bool());
     }
@@ -271,6 +273,7 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     summary["required_harnesses"] = report["coverage"]["required_harnesses"].clone();
     summary["executed_harnesses"] = report["coverage"]["executed_harnesses"].clone();
     summary["coverage_complete"] = report["coverage"]["complete"].clone();
+    summary["failures"] = coverage::failures(&report["coverage"]["failures"]);
     summary["execution_complete"] = json!(report["coverage"]["execution_complete"].as_bool());
     summary["fatal_stop"] = json!(report["coverage"]["fatal_stop"].as_bool());
     summary["recovered_after_missing_final_report"] =
