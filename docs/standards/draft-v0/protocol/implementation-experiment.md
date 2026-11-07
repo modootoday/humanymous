@@ -124,6 +124,24 @@ server identity, body/cancellation ownership, origin isolation and negative-case
 pilots still need source-bound results for each claimed host.
 A request must never select its own trusted profile from an unauthenticated field.
 
+## Private startup and audit composition
+
+The current executable rejects command-line arguments and interactive stdin or
+stdout. It reads an EOF-terminated configuration of at most 65536 bytes and opens
+audit state before binding the listener. Those checks do not authenticate who
+created the redirected handles, prove that they are private pipes or impose a
+startup-read deadline. The supervisor owns provenance, secrecy, timeout and
+cleanup. Readiness includes a private credential and explicitly reports no
+external-parent attestation; it must not be copied into public logs.
+
+Sealed startup uses existing custody through the shared `SealedLog` owner;
+inline audit keys are a separately labeled nonproduction component mode.
+The library accepts a broker-pinned witness, but the current executable passes
+no witness to that seam. A configuration requiring an external witness therefore
+refuses startup in this executable; a JSON field cannot instantiate a trusted
+witness or prove independent custody. Library support and an actually integrated
+supervisor/service deployment remain different qualification boundaries.
+
 The IPC authority rejects routes requiring original TLS, HTTP/2, authenticated
 browser collection or request-integrity planes not provided by that service.
 The separate loopback runtime has session/request-integrity behavior, but that

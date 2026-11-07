@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/src/startup.rs",
+  "sha256": "8084f2ac5dafdc6f389a8debc55b9f7993d46adce47d6f3f8d8bc918d623e35d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete audit composition and two source test definitions: explicit source validation, missing-required-witness refusal before state/unlock, shared sealed custody/nonproduction inline fallback separation, Windows protected-secret reuse/nonWindows refusal, no replacement provisioning. Library injected witness is not current executable integration; no startup/secret execution.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/authority/src/main.rs",
+  "sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete executable composition: noargv/nonterminalhandles, boundedEOF config, audit before listener, fixed worker pool, generated private credential readiness/external_parent_attestedfalse, open_audit witnessNone. Nonterminal checks do not attest private pipes or provide startup read deadline. No service launched.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/authority/src/lib.rs",
+  "sha256": "a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete public module/error/clock root: source-owned static Rejection, finite UTC milliseconds and shared exports. Root exports are not actual service/authentication or conformance evidence.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
   "source": "crates/authority/src/transport/permissions.rs",
   "sha256": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c",
   "reviewer": "codex/rust-pages",

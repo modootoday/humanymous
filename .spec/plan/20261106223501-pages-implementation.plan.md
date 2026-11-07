@@ -1602,3 +1602,14 @@ DACL/PID/privacy and nonblocking enqueue/closure behavior do not prove consumpti
 or effects. Three manual receipts, no native/runtime execution. Checked current
 integration chat: root benchmark still active against isolated813; no Pages
 allocation, quiet window remains respected. No new Cargo/model/Docker commands.
+
+### Executable startup versus library witness seam
+
+Read complete authority startup/main/lib. Wire experiment now records noargv/
+nonterminal checks,64KiB EOF config and auditbeforebind without falsely attesting
+private pipe provenance or startupdeadline. Readiness secret/external_parentfalse
+and supervisor obligations explicit. Library PinnedWitness seam exists, executable
+passesNone so requiredexternalwitness refuses; sourceAPI is not deployedbroker.
+Added three manual receipts; no service/native/compiler execution. Exact813 CI
+still live onlyadvisories128362579030 at observation. Audit owner helperfix now
+committed de33864b uncompiled/unexecuted, no older passing count inherited.
