@@ -1,0 +1,118 @@
+{
+  "schema": "humanymous.sgd-format-second-admission/1",
+  "status": "FORMAT_ONLY_APPLIED_AND_CHECK_PASSED_NEW_SOURCE",
+  "historical_source": "c9ba2d24a87801341ed1a14ea773424fa4a3f33f",
+  "first_failure": "sgd-first-format-admission.json retained unchanged",
+  "raw_directory": ".spec.local/root/evidence/20261108092500-model-sgd-format-second",
+  "result": {
+    "source": "c9ba2d24a87801341ed1a14ea773424fa4a3f33f",
+    "before_count": 151,
+    "after_count": 151,
+    "steps": [
+      {
+        "exit_code": 0,
+        "pid": 68100,
+        "label": "apply",
+        "elapsed_ms": 449.4204,
+        "terminal": true
+      },
+      {
+        "exit_code": 0,
+        "pid": 38584,
+        "label": "final-check",
+        "elapsed_ms": 737.0884,
+        "terminal": true
+      }
+    ],
+    "changed_paths": [
+      "crates/sdk/humanymous-core/src/model/training/mod.rs",
+      "crates/sdk/humanymous-core/src/model/training/sgd.rs",
+      "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs",
+      "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs"
+    ],
+    "foreign_changed_count": 0,
+    "compiler_started": false,
+    "terminal": true,
+    "elapsed_ms": 738.4491,
+    "final_exit": 0
+  },
+  "source_files": [
+    {
+      "sha256": "9998718b575d0844257ca0061ffb4929da863725a3490b91710437c60f50b4e6",
+      "path": "crates/sdk/humanymous-core/src/model/training/mod.rs",
+      "bytes": 346
+    },
+    {
+      "sha256": "d405de3db4da450213712bb109c70cecdc609357bfc2d08662c015ef47c18032",
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd.rs",
+      "bytes": 10339
+    },
+    {
+      "sha256": "56238e0851b7d47f1af977ecc9f5c53a728cfae44ce2242b86c9fe69f64a37c5",
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs",
+      "bytes": 17918
+    },
+    {
+      "sha256": "42fd704f59331f65ab51a9487a4d30b562a48e9a99d81656590bf9da2a5aa1e2",
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs",
+      "bytes": 9573
+    }
+  ],
+  "raw_files": [
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "apply.stderr",
+      "bytes": 0
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "apply.stdout",
+      "bytes": 0
+    },
+    {
+      "sha256": "5f6eccc6018a37ec36ab785c15068422ec198def28cb9f0721e9753d6806fba5",
+      "name": "core.after.json",
+      "bytes": 25388
+    },
+    {
+      "sha256": "9b7eb5e3a8354f1dcbd381d0b42d102ce1532897f8f48226c2f0684bd226e973",
+      "name": "core.before.json",
+      "bytes": 25388
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "final-check.stderr",
+      "bytes": 0
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "final-check.stdout",
+      "bytes": 0
+    },
+    {
+      "sha256": "2e7c7d81da36d353bce4f42cc396b8485ff64aa5b25e7246bd0514e78d06d529",
+      "name": "format-only.diff",
+      "bytes": 49454
+    },
+    {
+      "sha256": "775d373889442a037a74c003482ae68822ddb466a95e068c327a4cfea3379c49",
+      "name": "result.json",
+      "bytes": 824
+    },
+    {
+      "sha256": "681d446c6f25b631d09598643c81e2767d74871fb35590975a414fb2543a3701",
+      "name": "steps.json",
+      "bytes": 261
+    }
+  ],
+  "scope": "Only cargo fmt changed four delegated Rust files; no manual semantic/lint/API change; expect(dead_code) review remains open",
+  "compiler_test_clippy": "NOT_RUN",
+  "live_owned_handles": [],
+  "target_leases": [],
+  "next_commands": [
+    "cargo test --locked --offline -p humanymous-core --lib model::training::sgd --jobs 1 -- --test-threads=1",
+    "cargo test --locked --offline -p humanymous-core --jobs 1 -- --test-threads=1",
+    "cargo check --locked --offline -p humanymous-core --all-targets --all-features --jobs 1",
+    "cargo clippy --locked --offline -p humanymous-core --all-targets --all-features --jobs 1 -- -D warnings"
+  ]
+}

@@ -725,3 +725,21 @@ formatting pass is claimed. Raw stdout/stderr and before hashes are pinned by
 sgd-first-format-admission.json. The formatter process was synchronously reaped
 before the guard failed; no retained owned handle. Further formatting needs a
 renewed Root window with prefix normalization and result persistence before guards.
+
+### Renewed formatter-only admission: new source formatting pass
+
+Root renewed a separate60second window after the retained first failure. Fresh
+Core before/after snapshots each contain151files; only the4delegated SGD paths
+changed, zero foreign differences. Only cargo fmt --package humanymous-core
+modified Rust sources; apply exit0 and subsequent cargo fmt --package
+humanymous-core -- --check exit0. Both handles are terminal/reaped; total monotonic
+window738.4491ms. Raw step exits were persisted before subsequent guards; normalized
+Windows extended-length prefixes correctly. sgd-format-second-admission.json
+pins the new4source hashes, full raw snapshots/logs and exact format diff bytes.
+This is a formatting pass for the NEWsource tuple only, never c9ba2d24. Earlier
+failure/guard evidence stays immutable. No semantic/API/lint-attribute edits were
+made; module-wide expect(dead_code) remains under X review. All12SGD tests, actual
+file pilot, Core regression, compiler check and strict Clippy remain NOT_RUN.
+No retained formatter/compiler handle or target lease. Next command matrix remains
+focused12SGD -> fullCore -> all-target/all-feature check -> strictClippy, jobs1,
+under a NEWsource-bound execution allocation; no such commands ran in this window.

@@ -101,12 +101,18 @@ fn validate(
     limits: TrainLimits,
 ) -> Result<Effective, TrainError> {
     let cap = TrainLimits::default();
-    if limits.samples == 0 || limits.samples > cap.samples
-        || limits.hidden == 0 || limits.hidden > cap.hidden
-        || limits.epochs == 0 || limits.epochs > cap.epochs
-        || limits.updates == 0 || limits.updates > cap.updates
-        || limits.work_units == 0 || limits.work_units > cap.work_units
-        || limits.rng_draws == 0 || limits.rng_draws > cap.rng_draws
+    if limits.samples == 0
+        || limits.samples > cap.samples
+        || limits.hidden == 0
+        || limits.hidden > cap.hidden
+        || limits.epochs == 0
+        || limits.epochs > cap.epochs
+        || limits.updates == 0
+        || limits.updates > cap.updates
+        || limits.work_units == 0
+        || limits.work_units > cap.work_units
+        || limits.rng_draws == 0
+        || limits.rng_draws > cap.rng_draws
     {
         return Err(TrainError::Limit);
     }
@@ -116,17 +122,27 @@ fn validate(
     if !config.learning_rate.is_finite() || config.version.len() > 128 {
         return Err(TrainError::Config);
     }
-    let hidden = if config.hidden <= 0 { 16 } else {
+    let hidden = if config.hidden <= 0 {
+        16
+    } else {
         usize::try_from(config.hidden).map_err(|_| TrainError::Limit)?
     };
     let epochs = config.epochs.max(0) as u64;
-    let lr = if config.learning_rate <= 0.0 { 0.05 } else { config.learning_rate };
+    let lr = if config.learning_rate <= 0.0 {
+        0.05
+    } else {
+        config.learning_rate
+    };
     if hidden > limits.hidden || epochs > limits.epochs || rows.len() > limits.samples {
         return Err(TrainError::Limit);
     }
-    let updates = (rows.len() as u64).checked_mul(epochs).ok_or(TrainError::Limit)?;
-    let units = updates.checked_mul(hidden as u64)
-        .and_then(|v| v.checked_mul(FEATURE_DIM as u64)).ok_or(TrainError::Limit)?;
+    let updates = (rows.len() as u64)
+        .checked_mul(epochs)
+        .ok_or(TrainError::Limit)?;
+    let units = updates
+        .checked_mul(hidden as u64)
+        .and_then(|v| v.checked_mul(FEATURE_DIM as u64))
+        .ok_or(TrainError::Limit)?;
     if updates > limits.updates || units > limits.work_units {
         return Err(TrainError::Limit);
     }
@@ -136,34 +152,61 @@ fn validate(
         return Err(TrainError::Statistics);
     }
     for row in rows {
-        if row.label > 1 { return Err(TrainError::Label); }
-        if row.features.iter().any(|v| !v.is_finite()) { return Err(TrainError::Nonfinite); }
+        if row.label > 1 {
+            return Err(TrainError::Label);
+        }
+        if row.features.iter().any(|v| !v.is_finite()) {
+            return Err(TrainError::Nonfinite);
+        }
     }
     if let Some(base) = base {
-        if base.validate().is_err() || base.hidden != hidden as i64
+        if base.validate().is_err()
+            || base.hidden != hidden as i64
             || base.schema_hash != expected_schema
-            || base.w1.iter().flatten().chain(&base.b1).chain(&base.w2)
-                .chain(&base.mean).chain(&base.std)
-                .chain([&base.b2, &base.cal_a, &base.cal_b]).any(|v| !v.is_finite())
-        { return Err(TrainError::WarmBase); }
+            || base
+                .w1
+                .iter()
+                .flatten()
+                .chain(&base.b1)
+                .chain(&base.w2)
+                .chain(&base.mean)
+                .chain(&base.std)
+                .chain([&base.b2, &base.cal_a, &base.cal_b])
+                .any(|v| !v.is_finite())
+        {
+            return Err(TrainError::WarmBase);
+        }
     }
-    Ok(Effective { hidden, epochs, lr, updates })
+    Ok(Effective {
+        hidden,
+        epochs,
+        lr,
+        updates,
+    })
 }
 
 fn finite(value: f32) -> Result<f32, TrainError> {
-    if value.is_finite() { Ok(value) } else { Err(TrainError::Nonfinite) }
+    if value.is_finite() {
+        Ok(value)
+    } else {
+        Err(TrainError::Nonfinite)
+    }
 }
 
 fn copy_buffer<T: Copy>(values: &[T]) -> Result<Vec<T>, TrainError> {
     let mut result = Vec::new();
-    result.try_reserve_exact(values.len()).map_err(|_| TrainError::Allocation)?;
+    result
+        .try_reserve_exact(values.len())
+        .map_err(|_| TrainError::Allocation)?;
     result.extend_from_slice(values);
     Ok(result)
 }
 
 fn zero_buffer(size: usize) -> Result<Vec<f32>, TrainError> {
     let mut result = Vec::new();
-    result.try_reserve_exact(size).map_err(|_| TrainError::Allocation)?;
+    result
+        .try_reserve_exact(size)
+        .map_err(|_| TrainError::Allocation)?;
     result.resize(size, 0.0);
     Ok(result)
 }
@@ -231,12 +274,16 @@ pub(crate) fn train(
 ) -> Result<TrainingResult, TrainError> {
     let effective = validate(config, rows, statistics, expected_schema, base, limits)?;
     let mut version = String::new();
-    version.try_reserve_exact(config.version.len()).map_err(|_| TrainError::Allocation)?;
+    version
+        .try_reserve_exact(config.version.len())
+        .map_err(|_| TrainError::Allocation)?;
     version.push_str(config.version);
     let mean = copy_buffer(&statistics.mean)?;
     let std = copy_buffer(&statistics.std)?;
     let mut order = Vec::new();
-    order.try_reserve_exact(rows.len()).map_err(|_| TrainError::Allocation)?;
+    order
+        .try_reserve_exact(rows.len())
+        .map_err(|_| TrainError::Allocation)?;
     order.extend(0..rows.len());
     let mut pre = zero_buffer(effective.hidden)?;
     let mut act = zero_buffer(effective.hidden)?;
@@ -247,30 +294,48 @@ pub(crate) fn train(
         for _ in 0..effective.epochs {
             rng.shuffle(&mut order).map_err(rng_error)?;
             for &id in &order {
-                update(&mut weights, rows[id], statistics, effective.lr, &mut pre, &mut act)?;
+                update(
+                    &mut weights,
+                    rows[id],
+                    statistics,
+                    effective.lr,
+                    &mut pre,
+                    &mut act,
+                )?;
                 updates += 1;
             }
         }
     }
     debug_assert_eq!(updates, effective.updates);
     let candidate = MlpBundle {
-        version, schema_hash: schema_hash(), feature_dim: FEATURE_DIM as i64,
-        hidden: effective.hidden as i64, mean, std,
-        w1: weights.w1, b1: weights.b1, w2: weights.w2, b2: weights.b2,
-        cal_a: 1.0, cal_b: 0.0,
+        version,
+        schema_hash: schema_hash(),
+        feature_dim: FEATURE_DIM as i64,
+        hidden: effective.hidden as i64,
+        mean,
+        std,
+        w1: weights.w1,
+        b1: weights.b1,
+        w2: weights.w2,
+        b2: weights.b2,
+        cal_a: 1.0,
+        cal_b: 0.0,
     };
     candidate.validate().map_err(|_| TrainError::WarmBase)?;
     Ok(TrainingResult {
         candidate,
         summary: TrainingSummary {
-            hidden: effective.hidden, epochs: effective.epochs,
-            learning_rate: effective.lr, updates,
-            rng_draws: rng.snapshot().draws, final_order: order,
+            hidden: effective.hidden,
+            epochs: effective.epochs,
+            learning_rate: effective.lr,
+            updates,
+            rng_draws: rng.snapshot().draws,
+            final_order: order,
         },
     })
 }
 
 #[cfg(test)]
-mod tests;
-#[cfg(test)]
 mod pilot;
+#[cfg(test)]
+mod tests;
