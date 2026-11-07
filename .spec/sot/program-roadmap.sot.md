@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T08:44:29Z
+updated: 2026-11-07T12:57:09Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -21,56 +21,63 @@ freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
-The following source-bound results supersede the older Pages transfer status.
-They are component evidence, not final integration qualification.
+Snapshot: 2026-11-07T12:57:09Z. Source-bound component results below do not
+qualify the final integration candidate. Execution allocations are ephemeral;
+only an explicit current root grant and resource admission authorize a new run.
 
-| Area | Actual evidence | Remaining gate |
+| Area | Implemented or observed | Remaining gate and next action |
 | --- | --- | --- |
-| Pages | Run42367274252 at44876534 succeeded: delivery65 and Pages37 tests; both88-page builds and165-file archive consumers passed; zero branch artifacts | Main upload/download roundtrip, browser/AT and deployment are not executed |
-| Go | Run42369171124 at15f63fef passed preflight/build, then all eight actor attempts failed at actor_writer_mount; zero evaluated, eight unknown assertion counts, cleanup true and source unchanged | Exact mount diagnosis and qualified eight-scenario retry; older438/448 build failures remain separate NOT_RUN records |
-| Apache | Run42369797560 at2d66c0df actually ran45:33 passed/12 failed/zero NOT_RUN; event15/15, worker15/15, prefork3/15; container/image cleanup true but pilot cleanup false | Earliest prefork stop/lifetime failure and subsequent refusal cascade; complete45-case and pilot-cleanup qualification |
-| Audit | Exactf88e76f4 full suite115 passed; five ignored excluded; focused nine overlap the full suite | Remaining S1 streaming primitives, independent native custody and later production gates |
-| Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identity cases remain CHALLENGE with zero origin; positive TLS ALLOW-to-origin is unqualified |
-| Python | Exactd68682e4 all-target check and strict Clippy passed; exactly two receipt pure tests passed/two controller definitions filtered;2325-file source manifest unchanged | Actual controller remains NOT_ACCEPTED; ASGI/server pilots not executed; prior5655 failure retained |
-| .NET generic ABI | Helper07967eae/24b782d1 ran actual managed caller once: one passed/zero failed/zero ignored/four filtered,0.62s; child exit zero, two PID-bound frames, empty stderr, fixture removed and input unchanged | Single context-document drift retained explicitly; ASP.NET adapter, NativeAOT, C++ and full product remain unqualified |
+| Workspace | Immutable77ca7d9f Windows `cargo build --workspace --all-targets --locked --offline -j1` exited0 in643.964s;2427 source files before/after, zero differences | Later graph/source is not covered; final Windows/Linux/macOS build/test and package gates remain |
+| Shared CEF test graph | Commit072c8e5a atomically adds Windows-only bootstrap test-support/serde_json dev edges and exactly two lock entries; actual offline and locked Windows graph resolution passed | Owner rejection-test refactor and closed observations require fresh compilation and hosted execution |
+| Capture | Genuine hosted42372114913 at e77b9792 succeeded: five actual fixtures passed, source unchanged and full=false | Serving H2, DNS/origin/witness and full Docker composition remain separate product gates |
+| Audit | Captured319a5992 full140 accepted tests passed; five exact ignored helpers excluded; evidence:root/20261107122437 | New PhaseA4b49e933 scan owner source is unqualified; bounded scoped tests allocated, native producer and operational memory/custody gates remain |
+| CEF | Genuine hosted42372115353 at e77b9792: helper11, strict Clippy, native build and four native protocol tests passed | Bootstrap stage did not yield authoritative execution/count/child-exit evidence; desktop2 NOT_RUN and post-run source closure unknown; fix typed stage/case diagnostics before retry |
+| Mount custody | Baseline42372825588 at b482d5be collected four observations/eight path refusals at actor_mount_mode; cleanup/source binding passed, custody/full/release=false | Exact c3211e27 parent-tree COPY repair has20 pure tests/Clippy and2444-file zero drift; same hosted probe42374587466 currently in progress, require all eight paths accepted |
+| Go | Genuine hosted42369171124 at15f63fef attempted eight actors, all failed at writer mount; zero evaluated and assertion counts unknown | Go8 retry remains held until successful repaired mount probe; older build and startup failures retained |
+| Apache | b5c15f0d genuine hosted42373232097 ran45:35 passed/10 failed, event15/worker15/prefork5; isolated CLI signal15, diagnostic cleanup true but pilot not qualified | b4000944 isolates master/helper groups,25 scoped units/check/Clippy passed; genuine hosted42374566498 currently in progress; require all45 and pilot cleanup |
+| Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identities still CHALLENGE/zero origin; positive TLS ALLOW-to-origin unqualified; epoch gate pure tests do not establish production/native Ready |
+| Native/.NET | Parent-context shared4/runner7 and .NET consumer13/check/Clippy passed on captured inputs; generic managed ABI079 actual once passed independently | Context remains UNVERIFIED syntax/budget data; retained Job partial-start and duplex changes await current tests; actual ASP.NET IO, independent expiry, reader convergence and protected native owner remain open |
+| Pages | Exact26960736/docs56b1e029 local pinned Jekyll builds and archive consumers passed both88-page/165-file variants; limited actual browser navigation/keyboard observations recorded | Current docs9e5ea12e/tree c323055e has newer source reviews only, no fresh render/browser; main artifact roundtrip/deployment and AT remain open |
+| Python/Ruby/Node and ABI | Scoped package, contract and selected actual native component receipts exist in owning SoTs | Default/pure tests do not prove required SDK/server/GC/GVL/cross-principal/native ABI matrix; owners retain explicit unqualified cases |
 
-Pages reference corrections are now26960736/docs tree56b1e029952b5a3b29d4b0d056671bc79110e43b; the older448 hosted build does not validate this newer tree. Source checker reports88 pages/errors zero, while fresh hosted/browser/AT checks remain pending.
+The workspace build and source-closure receipts are attached privately to
+evidence:root/20261106194410. This is an archived-source inventory comparison,
+not a registry/SDK/linker/OS closure attestation. The build predates072c8e5a and
+all later pending source changes. New bootstrap dependencies add no packages or
+versions and confer no runtime qualification.
 
-Go candidate15f63fefb23777eeee52c57f7dbf0dbeffef8f8b ran as genuine hosted run42369171124, preflight job128393523707. The source was normal-fast-forward pushed to the dedicated validation branch and its remote SHA verified. Its terminal result is failure as detailed below. Root separately allocated bounded Audit Merkle, Apache lifecycle/diagnostic and test-support symbolic-model checks; none is a product-e2e result.
+The mount baseline identifies the strict mode predicate, but its actual numeric
+mode was not recovered. Never infer0755. The repair retains distinct role UIDs,
+strict0700 and existing predicates; no privileged initializer or weakened custody
+rule is accepted. A green diagnostic collection is not a green custody policy.
 
-Root released only bounded Python check/Clippy/two pure tests, Lab diagnostic
-implementation and Audit private S1 implementation. Lab may extend the cold
-image-build budget from600 to1200 seconds; scenario, actor and evaluator deadlines
-remain unchanged. No next hosted Go retry is authorized before exact diagnostic
-source and safe CI projection review. No managed caller is allocated merely from
-compilation success. Source drift is never silently relabeled as zero drift.
+The Apache next-run policy boundary explicitly accepts only Lab's product image
+recipe change outside Apache's unchanged recipe and workflow policy inputs;
+it is not an88-input zero-drift claim. Group isolation is a source-supported
+candidate explanation for the historical SIGTERM15, not proof of its old PGID.
 
-The older Pages run42363224485 remains historical failure evidence for artifact
-transport: downloaded generic archives omitted .well-known/security.txt. The new
-in-job archive consumers prove serialization checks, not actual main transport.
-Free branches keep automatic artifact uploads disabled.
+Current bounded grants after the terminal workspace build are Audit PhaseA A and
+Native runner/test-support C. Each requires current resource admission, jobs1,
+incremental0, locked/offline dependencies, immutable source and an exclusive
+target. Native C permits pure tests and the existing direct-child duplex fixture
+only; no SCM/account/SDK/Kestrel mutation. CI image and CEF diagnostics remain
+source-only until separately frozen and allocated. No table grants future runs.
 
-## Next validation ownership and source boundaries
+## Final integration milestone order
 
-Go run42369171124 is terminal failure: preflight128393523707 succeeded and product128393945764 failed. All eight actor attempts failed at actor_writer_mount; zero evaluated, all assertion counts unknown. Cleanup passed and source was unchanged. The stage marker narrows the startup window; it does not identify the exact mount defect. Root retained complete217183-byte decoded logs and safe summary in evidence:root/20261106194410. Apache2d66c0df safe12 and pilot11
-pure tests passed, with scoped check/Clippy and unchanged immutable snapshot;
-its next real SDK/45-case run still requires terminal hosted evidence.
+| Milestone | State | Exit requirement |
+| --- | --- | --- |
+| M1 shared contracts and package structure | In progress | Finish native owner/context/epoch/identity boundaries and source-bound units without weakening security |
+| M2 component runtime qualification | In progress | Complete current-source adapter, CEF and Cross-OS actual pilots; failures/unknown/ignored cases resolved or explicitly outside the approved product contract |
+| M3 composed product e2e | Not qualified | Actual isolated Docker browser/runtime/Authority/audit/origin/witness composition, required adversarial and accessibility checks, exact cleanup and source/image binding |
+| M4 current Pages and Draft v0 | In progress | Complete current-source manual reviews, fresh dual-base builds/archive transport, browser and required AT validation; no unsupported public claims |
+| M5 shared main integration | Held by M1-M4 | Exact final candidate passes all mandatory gates, then normal integration and post-merge verification |
+| M6 main-only and approved Pages | Not started | Verify integrated main and approved serving, then retire authorized obsolete branches/files without losing required evidence |
 
-Audit4f9152fe records nine scoped Merkle tests, including immutable Go66 size
-vectors with2145 inclusion and2080 consistency paths. One foreign context
-document changed in the119-path snapshot; remaining118 paths were unchanged.
-This is not a new full-suite or operational-memory qualification. Native20cdc325
-records four lifecycle plus two inventory tests against TEN unchanged captured
-inputs; the earlier eleven-input report was incorrect. Subsequent owner API
-corrections require fresh validation and do not inherit that result.
+M1-M4 may progress in parallel under separate file ownership. M5 and M6 are
+ordered final gates. Package publication, release tags and OIDC token exchange
+remain outside current authorization. The full Rust migration goal stays active.
 
-The next browser-product diagnostic reuses the existing delivery pilot and Lab
---browser-product --require-full contract. CI owns only a dedicated caller and
-policy/catalog wiring. Owner exit1 or2 stays nonzero; no new green component
-contract, blanket exit waiver, raw artifact upload or synthetic provenance is
-accepted. Actual runtime/collector joining remains required.
-
-The pinned Desktop Ruby/Jekyll phase for fixed26960736/docs56b1e029 has returned: both base URLs passed builds and theme checks with88 HTML/165 public files each, all127 source files unchanged; exact container stopped and removed. Archive consumers and browser remain separately gated. B browser caller validation passed66 delivery tests, strict Clippy, compiled policy and actionlint with50 unchanged captured inputs; source3d3ea659 is committed but dispatch is held for the shared mount probe. Released bounded pipelines now cover Audit/signals, Linux bd62cc3c, Pages archive tooling and Capture edf700bc. No zbus edge, native service backend or server/browser launch is approved by these grants.
 ## Go component and full-product result ownership
 
 The dedicated Go workflow requests bounded Go8 qualification. Lab owns an
