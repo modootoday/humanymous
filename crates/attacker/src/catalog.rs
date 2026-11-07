@@ -1,5 +1,5 @@
 //! Versioned observation scenarios; frozen fixtures remain owned by scoring.
-use humanymous_signals::report::SessionReport;
+use humanymous_core::signals::report::SessionReport;
 use serde_json::{Value, json};
 
 /// A scheduled attempt, including unavailable runtime responsibilities.

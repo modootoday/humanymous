@@ -1,8 +1,8 @@
 //! Complete attempt ledger; unavailable/error outcomes retain their denominators.
 pub mod legacy;
 use crate::catalog::Case;
+use humanymous_core::signals::report::SessionReport;
 use humanymous_defender::Evaluation;
-use humanymous_signals::report::SessionReport;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeMap;

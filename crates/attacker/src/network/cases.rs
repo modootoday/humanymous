@@ -3,8 +3,8 @@ use super::{
     report::{NetworkRow, Step},
 };
 use crate::report::Status;
+use humanymous_core::signals::report::ClientReport;
 use humanymous_defender::lab::{LabError, OwnedRuntime, Request, Session};
-use humanymous_signals::report::ClientReport;
 use serde_json::{Value, json};
 
 #[derive(Clone, Copy)]
@@ -243,17 +243,16 @@ fn fixture(
         report.behavior.duration_s = 60.0;
     }
     if forged {
-        report
-            .signals
-            .get_or_insert_default()
-            .push(humanymous_signals::observation::Signal::new(
+        report.signals.get_or_insert_default().push(
+            humanymous_core::signals::observation::Signal::new(
                 "l7.pass.solved",
                 json!(true),
-                humanymous_signals::observation::Verdict::Ok,
+                humanymous_core::signals::observation::Verdict::Ok,
                 1.0,
-                humanymous_signals::observation::Source::Wasm,
+                humanymous_core::signals::observation::Source::Wasm,
                 "",
-            ));
+            ),
+        );
     }
     Ok(report)
 }

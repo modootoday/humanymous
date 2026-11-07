@@ -13,6 +13,31 @@ rel:
 
 ## Goal
 
+### CORE-SLICE-01 assigned consumer references (source only)
+
+Root explicitly assigned attacker Rust consumer references including catalog and
+network. The existing pass loan was normally released/reclaimed to add exactly
+src/catalog.rs and src/network/cases.rs; report.rs was already owned. Six Rust
+references changed from humanymous_signals to humanymous_core::signals across
+these three files, with rustfmt-only import ordering/line wrapping. No alias,
+behavior, scoring, visibility, manifest or path move changed. Search finds no
+remaining references to the seven old crate identifiers in attacker Rust files.
+
+| Changed current path | Source-ready SHA256 |
+| --- | --- |
+| crates/attacker/src/report.rs | 2ca5cc61265049ef9177f366353de8fce32f996a4c48f247398243fbc07d6689 |
+| crates/attacker/src/catalog.rs | a8dd6e0107fcac207ade26339a116678ff30fc928b421a45a38ceafc1c7df891 |
+| crates/attacker/src/network/cases.rs | 15dafef79ce9dd1dd03e863d0d77e7bab1a1ca0c1e56b3eb5e03e3cf0ac25471 |
+
+Direct fmt check and diff whitespace check pass. An initial transient Windows
+mapped-file write refusal1224 prevented formatting; a later ordinary retry
+succeeded without terminating processes or replacing ownership. No compiler,
+Clippy, tests or CI ran: Root must first declare the shared workspace coherent.
+Root owns manifests/lock and the seven-context relocation. Relative scoring
+fixture include_str paths are unchanged pending the root's concrete fixture
+relocation contract; their bytes and resolution must be checked in integration.
+Historical hosted306 and reportc529 proofs do not qualify this new graph.
+
 ### Eight-package integration handoff (2026-11-08 Asia/Seoul)
 
 Accepted topology baseline v0 is root-owned structural-development. This handoff
