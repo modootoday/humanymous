@@ -181,6 +181,15 @@ report candidate is distinct from the hosted306eedc8 generic26 execution.
 
 ## Why
 
+Actual hosted checkpoint306eedc83801ad153bf8aed68d89a8b1dbb30847/run42387564172
+passed scoped strict-byte validation:26scheduled/19evaluated/7unsupported,
+0errors/skips/expectation mismatches. Evidence154100 independently recovers the
+public receipt, source/raw/Lab-manifest binding and0..25indices. The owning
+runtime-profile repair and shared decoder are exercised at this source. Full
+product remains false and the outer gate blocked; original813failure is retained.
+Private original report bytes are unavailable locally, so the original SHA256
+is CI's independently checked file binding, not a local recomputation claim.
+
 The migration requires replayable red/blue evidence while full Rust Gate is not
 available. Success-only mock numbers would hide missing runtime responsibilities.
 

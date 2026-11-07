@@ -1,0 +1,58 @@
+{
+  "schema": "humanymous.wargame-public-receipt-audit/1",
+  "source_sha": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+  "run_id": 42387564172,
+  "product_job_id": 128448838263,
+  "closed_fields_checked": true,
+  "ordered_indices": "0..25",
+  "case_denominator": 26,
+  "recounted_totals": {
+    "scheduled": 26,
+    "evaluated": 19,
+    "errors": 0,
+    "skipped": 0,
+    "unsupported": 7,
+    "expectation_mismatches": 0
+  },
+  "unsupported_indices": [
+    0,
+    9,
+    10,
+    16,
+    18,
+    20,
+    22
+  ],
+  "non_evaluated_expectations_null": true,
+  "source_matches_external_run": true,
+  "original_report_sha256": "0edae80d11a0ad3d9c4d7baf027ddb1a85f35ea0ad787ad22031461ad4736930",
+  "lab_source_manifest_sha256": "da210fd18a8ff455a05964c9548a07a6f7a1bfbd32ff516fae58d4ae9a8d8cb4",
+  "delivery_source_manifest_sha256": "98d579bfde1190e1e93f12460a2f4102c2962a47335d9421167e680715415084",
+  "ci_independently_hashed_original_and_lab_manifest": true,
+  "local_original_body_recovered": false,
+  "local_original_sha256_recomputed": false,
+  "private_artifact_count": 0,
+  "preflight_test_counts": {
+    "defender": 8,
+    "failed": 0,
+    "delivery": 90,
+    "lab": 26,
+    "ignored": 0,
+    "attacker": 17,
+    "filtered": 0
+  },
+  "lab_assertions": {
+    "failed": 0,
+    "other": 0,
+    "passed": 72,
+    "total": 72
+  },
+  "required_unavailable_count": 9,
+  "full_product_qualified": false,
+  "source_changed_during_execution": false,
+  "images": [
+    "sha256:d4475ceb35a49974137075c48d4000c9ca35ca8054ae7813fbf5a62332d64aa8",
+    "sha256:3abe1f1a279ad3a589e12a2900de4a8cb76a0cac410f108ed3c7bc04f26e5f38"
+  ],
+  "projection_capture": "one complete public JSON line; timestamp/ANSI stripped for extraction; captured API CLI text retained privately"
+}

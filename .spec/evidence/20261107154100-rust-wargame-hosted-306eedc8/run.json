@@ -1,0 +1,27 @@
+{
+  "run_id": 42387564172,
+  "source_sha": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42387564172",
+  "jobs": [
+    {
+      "databaseId": 128448085478,
+      "name": "preflight",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-07T15:41:07Z",
+      "completedAt": "2026-11-07T15:44:12Z",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42387564172/job/128448085478"
+    },
+    {
+      "databaseId": 128448838263,
+      "name": "product",
+      "status": "completed",
+      "conclusion": "failure",
+      "startedAt": "2026-11-07T15:44:15Z",
+      "completedAt": "2026-11-07T15:54:56Z",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42387564172/job/128448838263"
+    }
+  ]
+}
