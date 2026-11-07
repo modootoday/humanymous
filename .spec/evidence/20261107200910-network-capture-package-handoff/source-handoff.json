@@ -1,0 +1,331 @@
+{
+  "schema": "humanymous.network.capture-package-handoff/0.1",
+  "observed_utc": "2026-11-07T20:09:55.1018925Z",
+  "inventory_head": "8affb45aeb4d31330fda8f2e5135043c6b252c05",
+  "qualified_network_checkpoint": "306eedc8",
+  "qualified_network_evidence": "evidence:root/20261107153100",
+  "qualified_capture_execution_source": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+  "qualified_capture_evidence": "evidence:root/20261107122900",
+  "files": [
+    {
+      "path": "crates/capture/Cargo.toml",
+      "sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840",
+      "bytes": 635,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/INTEGRATION.md",
+      "sha256": "b32793888ccd5b8ac17d23a9bed8fffebcac9a5f1c3ff4c986f9934a8fecb298",
+      "bytes": 20165,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/http2/headers.rs",
+      "sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787",
+      "bytes": 5002,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb",
+      "bytes": 16951,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/http2/tests.rs",
+      "sha256": "5b2215880e5d1da0a3968a6745d167586c84fbf8b7d358dd34cc3588d19eb5d6",
+      "bytes": 13954,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/lib.rs",
+      "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076",
+      "bytes": 322,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/tls/hello.rs",
+      "sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153",
+      "bytes": 7833,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/tls/hello/tests.rs",
+      "sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde",
+      "bytes": 5144,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/tls/mod.rs",
+      "sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7",
+      "bytes": 236,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/tls/records.rs",
+      "sha256": "dbfed8c2668fa9cb732883e675d797ac570d55ffc9865239c58610c99a201b81",
+      "bytes": 2491,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/src/tls/transport.rs",
+      "sha256": "a6054eb2b704b7f66a3086da6808f5985eb1748cd62a3b9a4d92e2b60f3357f8",
+      "bytes": 14564,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/capture/tests/hosted_transport.rs",
+      "sha256": "8a549c9985321181693c39dfb7f11077fde1b8615f2334283330a901ee301d4e",
+      "bytes": 15251,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/Cargo.toml",
+      "sha256": "45427b23f221262aa2bb409fa2678200ed67b360bff29186a2605e1400ae54f8",
+      "bytes": 442,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/correlation/config.rs",
+      "sha256": "0c4964306e4f402490672906bdfad4c6456c4f7f4e6a74c2218e9a8b48d9aae6",
+      "bytes": 1960,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/correlation/mod.rs",
+      "sha256": "9860d4f3ef2b53502c03ebd78831f284fa204daf14ca79051cb1cd6e188bbb50",
+      "bytes": 388,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/correlation/registry.rs",
+      "sha256": "f85d04bbcbbec262a538de1af45a9fe424a4826d202563ea519d7c6fd9a836d6",
+      "bytes": 12906,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/correlation/shared.rs",
+      "sha256": "fc7bc53996906fa867c7f0a169eb2774503565eb2116f2627435d9c576b246d9",
+      "bytes": 3213,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/correlation/tests.rs",
+      "sha256": "4429b10fd2852ae6c19a51933f1de712d539e189959838fc686471b6bb70047e",
+      "bytes": 10329,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/correlation/velocity.rs",
+      "sha256": "83cd8aff7030eb548a01bbe0d191cac6d614f23dfd0d2bc46153ba60718bd786",
+      "bytes": 774,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/history/anomaly/config.rs",
+      "sha256": "110c9ac7912759b2cf55ae7eea3f59a4c7ba8214cb6e993e494e4c23e6172552",
+      "bytes": 2349,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/history/anomaly/mod.rs",
+      "sha256": "080187b85860f707ff9885c4a0ad2f443b5bb9b81f4327a3e1f96d62094dd5b6",
+      "bytes": 6574,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/history/anomaly/tests.rs",
+      "sha256": "7a8008c890982b25cac8789901fa094d6ccc904c89c8e1ff1e93e4c12be9f2c7",
+      "bytes": 7906,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/history/mod.rs",
+      "sha256": "92a16e6232be87ebe41645da606e600a8717c19ef991875dc4db82e80806e197",
+      "bytes": 1194,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/history/rate/config.rs",
+      "sha256": "f057982dd32bc389814ddc90bec44664b1d659e3d70be85954e1b045dae294cc",
+      "bytes": 2659,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/history/rate/mod.rs",
+      "sha256": "a1ab797ecf466a8e0eaf14cd2b1c61eaf5ced9a1605a7481296dcd40a7388ee5",
+      "bytes": 8358,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/history/rate/tests.rs",
+      "sha256": "d69355dd3bea7ebcc8e8826dd286956e4a703b1ff1b4cf67c4caaeda39de6788",
+      "bytes": 8781,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/http/headers.rs",
+      "sha256": "afc5ebac8a99902a4e0482653242e4c97ebf98d5f426b663c4f0280a308fd0f8",
+      "bytes": 6761,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/http/mod.rs",
+      "sha256": "72c33358a014143140ca9c71afb8fc1cae9c2ea0153836bf3505e5144f5c4e4e",
+      "bytes": 118,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/http2/mod.rs",
+      "sha256": "f6ddb657dc4d964ad822ced39b69512cb310a2e24e82aef60d714580e90c2781",
+      "bytes": 4384,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/http2/monitor.rs",
+      "sha256": "c817c1f1ef0785ab9b4f83313060b5639df3b6b93ab6abf67ea95bf09e409f46",
+      "bytes": 5999,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/lib.rs",
+      "sha256": "c41921f17de36168339794339bcef3649f72457e7e5e8bc007b1345425479461",
+      "bytes": 223,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/report/assembly.rs",
+      "sha256": "8e1fb60339e6f6cc0f01d5691cd21bd1846fa630612c629efa07a56a0bbeb7c6",
+      "bytes": 11254,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/report/claims.rs",
+      "sha256": "e4d798876767b3233d3806f6cecd22ba4c67b90522f6be99faab8ade6c622ea8",
+      "bytes": 2295,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/report/mod.rs",
+      "sha256": "6505735608b8a39d73ecb9f57a130e9a415b86af7305876450acebd2e50f19b1",
+      "bytes": 1086,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/residual/mod.rs",
+      "sha256": "1e0a4cf5377b553e907bd47e6d52399e7807a8a623afecd7bbfbfcf4858a35b5",
+      "bytes": 3774,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/tcp/mod.rs",
+      "sha256": "966663d089f9e6d6014992a915a3c0aad831ab04a8c54f3bc8c821434dad5abd",
+      "bytes": 4102,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/tls/fingerprint.rs",
+      "sha256": "6c10ab922e86d7f0504508f84497fdb85fb460220870ee582eb48d300e21a192",
+      "bytes": 6891,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/tls/hello.rs",
+      "sha256": "d95a2c3400ab6984a9e8f6bb6b533600febba36b8d4b2cb8756aa18f09e7a10e",
+      "bytes": 5937,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/tls/mod.rs",
+      "sha256": "2e228aa45058301fdba6fa05533884f24fdd7fcfee140487b994d19f9279de02",
+      "bytes": 367,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/src/traffic/consistency.rs",
+      "sha256": "355544de4bbc985e9b2e918661d7bc2a27460d264c6a96dbfe41d3aa82a70951",
+      "bytes": 3895,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/traffic/log.rs",
+      "sha256": "c7e4cfe45e2667e6c993d68f3d0d83273b28cbbb3726c091ecc76b218bcf0a66",
+      "bytes": 5801,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/traffic/mod.rs",
+      "sha256": "11ce467c3dfff1b1ade81f79e4b730d0f25168b60bc854db1355976ac179c7a0",
+      "bytes": 1432,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/traffic/record.rs",
+      "sha256": "117e11e16838f115178f6cc3604392b4f6cea0c918dd462d65a87fc6d52fd187",
+      "bytes": 3463,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/src/traffic/tests.rs",
+      "sha256": "99079f78bba04b46cb3716d9472c77764dd3ffdcd0a2bf55532611a7a4b95d50",
+      "bytes": 5274,
+      "current_source_writer": "network-capture/rust-network-capture-goal"
+    },
+    {
+      "path": "crates/network/tests/fixtures/h2.json",
+      "sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866",
+      "bytes": 44216,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/tests/fixtures/monitor.json",
+      "sha256": "e0c640671f8ebe0cbf47f0ec893ede98255710f5b9eb95448c33b81d6f9f874f",
+      "bytes": 12534269,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/tests/fixtures/reports.json",
+      "sha256": "f4b534f80e214eb4b37f34cacc12aba3c3081aaeb920cf3be242752199fcf06e",
+      "bytes": 4720797,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/tests/fixtures/tls.json",
+      "sha256": "048c7fb450ff33db5a91f1b8f6ddc9e480504b3a767971519b94ccc37c6e9540",
+      "bytes": 556152,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/tests/h2_parity.rs",
+      "sha256": "51600f099b6ff78dfff0d099a9c3574f9373839a2c5f3c558d5932824f8d58cb",
+      "bytes": 650,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/tests/monitor_parity.rs",
+      "sha256": "3e3ce87642eb5c49ff428860e8f5fcbf99dda133b4f50c4b65432971a551a371",
+      "bytes": 908,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/tests/report_parity.rs",
+      "sha256": "9d28088b687b038d18a226951889ecb8d83518b56f3934eb02f7ee6db92008d5",
+      "bytes": 1446,
+      "current_source_writer": "Root or prior network owner; context only"
+    },
+    {
+      "path": "crates/network/tests/tls_parity.rs",
+      "sha256": "32572b1c0a023eda9820aea849211598806f294ba1c3df07dce29cc8ef108153",
+      "bytes": 1747,
+      "current_source_writer": "Root or prior network owner; context only"
+    }
+  ],
+  "owned_dirty_files": [],
+  "live_owned_process_handles": [],
+  "active_target_leases": [],
+  "git_mutex_owned": false,
+  "path_moves_started": false,
+  "ownership_transfer_complete": false,
+  "claim_state": "Retained until Root freezes and sequences this exact slice; no move/rename/manifest/ref operation authorized by this handoff.",
+  "accepted_destination": "humanymous-runtime contextual modules, per Root accepted baseline v0; exact paths pending Root handoff."
+}

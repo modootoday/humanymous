@@ -457,3 +457,16 @@ source/overlay hashes. Each2685file tree stayed unchanged; selected registry2316
 tools50 and configuration18records stayed unchanged. Target returned at terminal.
 Earlier NOT_RUN notes are historical for those source checkpoints, not the final
 corrected L1 candidate. No provider/Runtime/fleet/Docker readiness is promoted.
+
+## Accepted package baseline: prepared exact-path handoff
+
+Following the human's explicit eight-public-package approval, Root alone
+sequences network/capture into the accepted humanymous-runtime context. This
+writer prepared evidence:root/20261107200910:52tracked file hashes,31owned and21
+read-only context files, clean owned source, no live handles/target/Git lease.
+The handoff records overlapping TLS/H2 names, canonical observation exports,
+feature/dependency/visibility and unsafe-boundary hazards, old proof scope and
+required new-path verification. It moves no path or ref and changes no manifest.
+The existing claim remains until Root freezes and explicitly sequences this slice;
+then narrow/release actual transferred paths. Real fleet, same-epoch association,
+Runtime serving and Docker gates remain with their current responsibilities.
