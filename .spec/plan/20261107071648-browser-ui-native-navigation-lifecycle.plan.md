@@ -11,6 +11,27 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## Allocated warm bootstrap compile: interrupted and deferred
+
+Root allocated C for immutable9251376f99dba1fbe36af4bb2908ed5e39dd6047 warm-only
+bootstrap test compilation and synthetic marker3. A clean detached snapshot,
+locked/offline scoped graph and cached CEF SDK/wrapper were inspected. The compile
+showed cold registry dependency compilation despite those cached CEF fingerprints.
+The owning exec session7488 was interrupted on first log observation; it terminated
+with exec1, not a known Cargo diagnostic exit. No download/cef-dll-sys build lines
+were observed. Some dependency artifacts were produced before interruption; no
+retry occurred and no leftover cargo/rustc/cmake/ninja/cl processes were observed.
+
+Marker3, bootstrap runtime, check and Clippy are not_run. Source2459, registry80
+packages/3709files, Git dependency161 and cached SDK941 formed a7270-file inspection
+scope with zero file/config/flag/tool drift. Eighteen Cargo ancestor/home config
+candidates and alternate CARGO_HOME resolution were recorded, plus actual cargo/
+rustc executable hashes. Compiled target cache entirety and MSVC linker identity
+remain unverified. No Python validation helper was copied or executed. C returned;
+bootstrap-warm-925.json in evidence:root/20261107073932 preserves private receipt
+hashes and the exact limited outcome. Another allocation or hosted candidate is
+required; this is not compile success, source-error diagnosis or native readiness.
+
 ## Bootstrap child ownership and accepted closed observations
 
 Root accepted a separate test-only cleanup correction: the existing four-case

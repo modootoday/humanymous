@@ -1,0 +1,115 @@
+{
+  "scope": "Root-assigned C warm-only bootstrap marker validation",
+  "source_sha": "9251376f99dba1fbe36af4bb2908ed5e39dd6047",
+  "status": "deferred_cold_dependency_compile_observed",
+  "controlled_interrupt": true,
+  "exec_session_exit_code": 1,
+  "cargo_exit_code": "unavailable after controlled interruption",
+  "cold_registry_compilations_observed": [
+    "Compiling windows-sys v0.61.2",
+    "Compiling ring v0.17.14",
+    "Compiling rustls-pki-types v1.15.1",
+    "Compiling getrandom v0.2.17",
+    "Compiling untrusted v0.9.0",
+    "Compiling anstyle-wincon v3.0.11",
+    "Compiling httparse v1.10.1",
+    "Compiling anstyle-query v1.1.5",
+    "Compiling bytes v1.12.1",
+    "Compiling log v0.4.35",
+    "Compiling adler2 v2.0.1",
+    "Compiling anstream v1.0.0",
+    "Compiling miniz_oxide v0.9.1",
+    "Compiling rustls v0.23.46",
+    "Compiling http v1.5.0",
+    "Compiling serde v1.0.229",
+    "Compiling rustls-webpki v0.103.16",
+    "Compiling crc32fast v1.5.4",
+    "Compiling aho-corasick v1.1.5",
+    "Compiling regex-syntax v0.8.11",
+    "Compiling unicode-width v0.2.3",
+    "Compiling console v0.16.6",
+    "Compiling regex-automata v0.4.18",
+    "Compiling thiserror v2.0.21",
+    "Compiling clap_builder v4.6.7",
+    "Compiling ureq-proto v0.7.1",
+    "Compiling clap_derive v4.6.7",
+    "Compiling flate2 v1.1.11",
+    "Compiling serde_json v1.0.154",
+    "Compiling webpki-roots v1.0.11",
+    "Compiling thiserror-impl v2.0.21",
+    "Compiling filetime v0.2.29",
+    "Compiling percent-encoding v2.3.2",
+    "Compiling utf8-zero v0.8.1",
+    "Compiling ureq v3.5.1",
+    "Compiling indicatif v0.18.6",
+    "Compiling tar v0.4.46",
+    "Compiling clap v4.6.7"
+  ],
+  "cef_sdk_download_or_wrapper_build_lines_observed": 0,
+  "partial_dependency_cache_artifacts_possible": true,
+  "closure": {
+    "snapshot_source_files": 2459,
+    "registry_packages": 80,
+    "registry_files": 3709,
+    "git_dependency_files": 161,
+    "cached_sdk_files": 941,
+    "total_files": 7270,
+    "cargo_config_candidates": 18,
+    "file_drift": 0,
+    "config_drift": 0,
+    "flag_drift": 0,
+    "compiler_tool_drift": 0,
+    "alternate_cargo_home_resolution_recorded": true,
+    "compiler_tools_hashed": [
+      "cargo",
+      "rustc"
+    ],
+    "limits": [
+      "Compiled target artifact cache not exhaustively hashed",
+      "MSVC linker executable not independently fingerprinted"
+    ]
+  },
+  "pipeline": "C returned",
+  "remaining_owned_build_processes": "none observed after interruption",
+  "synthetic_marker3": "not_run",
+  "runtime_bootstrap": "not_run",
+  "check_clippy": "not_run",
+  "no_run_compile": "interrupted, not qualified",
+  "full_runtime_qualified": false,
+  "private_receipt_locator": ".spec.local/root/evidence/20261107130631-browser-ui-bootstrap-warm",
+  "private_receipt_hashes": {
+    "snapshot.json": {
+      "sha256": "79c50d9622942a2f32efcb852d5fac7543eca7c3cd16aeacfa4fde3d2f0dc291",
+      "bytes": 361
+    },
+    "metadata.json": {
+      "sha256": "93aa5723e71cfd2df8d1a3c2dd771b383d456d774be3303168cf97311558b4cf",
+      "bytes": 2305240
+    },
+    "tree.log": {
+      "sha256": "fc537727ce97eb98b7b5a588864f7e8c873b3c6b08addc08f60358c3e5a72e4b",
+      "bytes": 3265
+    },
+    "closure-before.json": {
+      "sha256": "e00ae94690413fa271ef8dca2999c554ccddc0ab9cd57b1a393ad730a32f5535",
+      "bytes": 1571407
+    },
+    "closure-after.json": {
+      "sha256": "d6c149cbd80cc4b226b242c12d39e0f97575763f1192cc22418c67b8a620e7ca",
+      "bytes": 1570805
+    },
+    "compile-admission.json": {
+      "sha256": "1b1f8e8f4c00335f537cd1835446a369243cc56611717d3c16d3a19dbd504b25",
+      "bytes": 77
+    },
+    "bootstrap-compile.log": {
+      "sha256": "de49c88cbc22ee45b29269446ad2589d7077701c8f6ece60d09b510307abcce7",
+      "bytes": 54996
+    },
+    "result.json": {
+      "sha256": "e50a0a6fb627897f40278d0551a651f54a77343314e3e43c4b9ad5e50c82ef35",
+      "bytes": 2399
+    }
+  },
+  "implementation": "ad-hoc shell inspection and original commands only; no Python helper copied or executed"
+}
