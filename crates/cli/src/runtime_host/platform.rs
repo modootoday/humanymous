@@ -14,9 +14,9 @@ pub(super) fn execute(plan: HostPlan) -> io::Result<()> {
         if plan.mode == HostMode::Native {
             return windows::dispatch(plan);
         }
-        return Err(invalid(
+        Err(invalid(
             "protected Windows service input requires the native SCM dispatcher",
-        ));
+        ))
     }
     #[cfg(not(windows))]
     foreground(plan)

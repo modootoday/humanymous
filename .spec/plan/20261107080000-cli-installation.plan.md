@@ -130,6 +130,36 @@ After stop/deletion the same signed bindings constrain grant revocation. The
 fixture uses actual ServicePlan installation and failure cleanup rather than
 bypassing production installation with a separate SCM implementation.
 
+### Requirement audit after the authored checkpoint
+
+Root later assigned shared A for current frozen CLI with runtime-service-pilot,
+service-pilot, jobs1/incremental0 and locked offline execution. All-target check
+passed; first pure7 was provisional because runtime inputs changed. Owner fixed
+four dependency Clippy diagnostics and froze source; CLI removed one needless
+return. Final pure7 passed0failed/ignored with15actual tests filtered out, and
+all-target Clippy with warnings denied plus direct fmt passed. Final source
+manifests were stable. A was returned; no actual fixture ran. Raw failures and
+working dependency hashes remain in private20261107082344 and bounded summary
+[[evidence:root/20261107082345]]. Runtime WIP is not the immutable8132117 hosted
+source, whose run42355168729 was independently observed live via gh metadata.
+
+Reading the current exact runtime_service_process case confirms that it exercises
+real ServiceHost install/readiness/stop/removal and missing-credential rejection,
+but not real ServiceHost upgrade/rollback. The older generic service_process case
+does exercise manager upgrade/rollback; that different fixture cannot prove the
+same transitions for protected runtime startup. Full goal completion therefore
+requires extending the actual runtime case, not substituting the generic result.
+
+After the frozen checkpoint's compile feedback, add a second signed runtime host
+plan/release sequence under the same owned deployment and exercise upgrade then
+known-predecessor rollback, retaining the highest sequence floor. Independently
+correlate each actual SCM PID/readiness/shutdown/receipt and confirm all retired
+process listeners close. A generation may run again on rollback, so a single
+fixed create-new receipt filename cannot be reused: receipt paths must identify
+the independently observed process instance while preserving bounded names and
+the delegated-parent trust premise. Every instance's cleanup must be separately
+verified. Production persistent custody must remain unaffected by fixture cleanup.
+
 Root reassigned CLI to the genuinely free sot-plan lane, disjoint from the Windows
 runner's release lane. CLI owns release-descriptor verification, immutable service
 generations, native manager adapters and explicit Rust process/service fixtures.

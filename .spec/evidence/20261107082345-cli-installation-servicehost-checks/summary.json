@@ -1,0 +1,24 @@
+{
+  "schema": "humanymous.cli-servicehost-local-pure.v1",
+  "source_kind": "validated-working-source",
+  "cli_base_commit": "7f73604251e983addbb1ef97283959cd6045c6e1",
+  "cli_delta": "remove needless return in runtime_host/platform.rs",
+  "features": ["runtime-service-pilot", "service-pilot"],
+  "pure": {"passed": 7, "failed": 0, "ignored": 0, "filtered_out": 15},
+  "clippy": {"status": "passed", "all_targets": true, "warnings_denied": true},
+  "format": "passed",
+  "preserved_clippy_failures": [
+    {"attempt": 1, "exit_code": 101, "scope": "runtime-owner working source", "diagnostics": 4},
+    {"attempt": 2, "exit_code": 101, "scope": "CLI needless_return", "diagnostics": 1}
+  ],
+  "cli_native_cargo_working_manifest_sha256": "ce7acf122a73178220c7d5c8149f5ed2865c9ea21c4dd18be86dd8dcfdb334f0",
+  "provenance_utility_scope_is_full_dependency_closure": false,
+  "runtime_working_inputs_separately_captured": true,
+  "stable_final_before_after": true,
+  "runtime_dependencies_include_uncommitted_owner_changes": true,
+  "qualifies_hosted_8132117": false,
+  "actual_runtime_service": "not_run",
+  "actual_runtime_upgrade_rollback": "not_run; test expansion required",
+  "local_service_or_account_changes": false,
+  "product_qualified": false
+}
