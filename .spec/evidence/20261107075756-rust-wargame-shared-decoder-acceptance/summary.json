@@ -1,0 +1,20 @@
+{
+  "schema": "humanymous.wargame-pure-acceptance.v2",
+  "consumer_checkpoint": "052c1da",
+  "shared_decoder_checkpoint": "f44b32b",
+  "shared_decoder_git_blob": "9a9a57a53225c54e944ccf8ca7488a58c8609270",
+  "head_before": "a7be85e39ab15c8f6606ff5c3f30ff7536571fb8",
+  "head_after": "0b51b3f12694d849c94179149315b47ef00d0d44",
+  "pure_tests": {"passed": 28, "failed": 0, "ignored": 0, "shared_json_filtered": 9},
+  "attempts": 2,
+  "both_attempts_passed": true,
+  "clippy_all_targets_warnings_denied": true,
+  "snapshot_local_crates": 13,
+  "snapshot_matches_before_hashes": true,
+  "whole_source_graph_stable": false,
+  "source_hashes_changed": 3,
+  "selected_consumer_decoder_lock_stable": true,
+  "application_processes_run": 0,
+  "hosted_strict_byte_verified": false,
+  "full_product_qualified": false
+}

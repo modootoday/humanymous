@@ -19,7 +19,9 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 ## Steps
 
 - [x] V0.6: approved shared decoder consumption; remove duplicate visitor, preserve report budget/errors.
-- [ ] V0.6: root lock integration, common-owner checkpoint, newly allocated pure/Clippy and hosted evidence.
+- [x] V0.6: root lock integration and new allocated28pure/Clippy;13-crate snapshot and3file drift retained in075313/075756.
+- [x] V0.6: shared decoder f44b32b blob matches captured/current source and measured shared2pure checks.
+- [ ] V0.6: immutable hosted strict-byte receipt with safe recovery.
 
 - [x] V0.5: bind network step identities/order/roles to catalog; preserve error prefixes.
 - [x] V0.5: allocated26pure/Clippy passed; evidence073022/073058, dirty dependency scope retained.

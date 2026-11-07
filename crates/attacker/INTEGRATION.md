@@ -167,7 +167,12 @@ the report budget and non-disclosure of invalid input. The attacker manifest is
 frozen after its approved path dependency addition; root owns lock integration.
 The common owner supplies its source checkpoint and separate generic tests.
 This new dependency/source graph is not qualified by v0.5's26pure checks.
-Scoped Cargo and fresh hosted execution remain pending; fmt only has run.
+New allocated checks now passed28pure tests and scoped all-target Clippy
+(evidence075313private/075756public). The13-crate before snapshot and raw hashes
+are retained. Three hashes drifted during checks: audit cfg(test) additions, an
+unselected audit integration test, and runtime documentation. Consumer/decoder/
+lock bytes were stable, but whole-source stability is false. This does not qualify
+an immutable hosted source. Actual hosted strict-byte receipt remains pending.
 
 ## V0.5 step attribution (pure validated; hosted pending)
 

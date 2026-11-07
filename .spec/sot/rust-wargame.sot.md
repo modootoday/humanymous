@@ -170,7 +170,10 @@ messages. The common decoder rejects oversize input before parse and retains
 duplicate-decoded-key, default depth, finite-number and trailing-input rejection.
 Schema/fieldset/replay/qualification remain specific to each consumer. No
 duplicated visitor is kept in attacker. Root integrates the approved dependency
-graph; new scoped checks and source-bound hosted qualification are pending.
+graph. New allocated28pure checks and scoped Clippy passed (evidence075756).
+Actual13-crate snapshot and before/after raw hashes expose3changes outside the
+selected runtime configuration; whole graph was not immutable. Consumer/shared
+decoder/lock remained stable. Source-bound hosted qualification remains pending.
 Historical v0.5 results do not qualify this changed graph.
 
 ### Step attribution acceptance v0.5
