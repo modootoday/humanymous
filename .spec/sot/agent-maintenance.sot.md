@@ -16,6 +16,16 @@ rel:
 
 # Rust agent canon and qualified skill evaluation
 
+## Compatibility coordinator timestamp repair
+
+The root-authorized existing Git coordinator repair preserves both native argv
+arrays and claim instants. ConvertFrom-Json may return a UTC DateTime for an ISO
+Z timestamp; do not stringify that object before parsing. Convert the original
+DateTime or ISO string directly to DateTimeOffset and compare UTC instants.
+Invalid timestamps remain stale/fail-closed. This does not authorize stale
+takeover, foreign claim release, machine timezone changes or wider script edits.
+The isolated Rust single-path regression retains a genuine RFC3339Z claim.
+
 Local pure tests/fmt/Clippy require an explicit root execution slot. The separate
 hosted gate runs actual `process`, `session_storage` and `product_package` test
 targets on the exact source candidate. Actual upstream paired inference requires

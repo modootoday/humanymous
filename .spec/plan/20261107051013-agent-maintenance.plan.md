@@ -12,6 +12,15 @@ rel:
 
 ## Narrow Git coordinator array repair
 
+Allocated B's first single-path actual test at1914976 failed before argv handling:
+the genuine UTCZ claim was treated as stale. The first log/result are retained in
+private73349/git-coord-1914976. Read-only reproduction found parsed DateTime.Kind
+Utc, old string-roundtrip age540.0069 minutes and direct-offset age0.0023 minutes;
+the +00:00 control did not exhibit the error. Root explicitly authorized the
+same-script offset-preserving repair. Invalid timestamp conversion still catches
+to stale; no claim takeover/release or timezone change is introduced. First-source
+test-target check and Clippy passed, but they do not turn the failed run green.
+
 Root transferred only `scripts/agents/git-coord.ps1` into this lane after a
 single-element OnlyPaths failure was independently reproduced. No other active
 claim contained scripts/agents; this lane was released and reclaimed normally

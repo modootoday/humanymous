@@ -49,8 +49,10 @@ function Get-GitOpsClaim {
 function Test-GitOpsStale($claim) {
   if (-not $claim) { return $false }
   try {
-    $since = [datetime]::Parse([string]$claim.since)
-    return ((Get-Date) - $since).TotalMinutes -gt $GitOpsTtlMinutes
+    # ConvertFrom-Json may already produce DateTime(Utc); a string roundtrip
+    # would discard its zone and incorrectly age a fresh UTC claim.
+    $since = [datetimeoffset]$claim.since
+    return ([datetimeoffset]::UtcNow - $since.ToUniversalTime()).TotalMinutes -gt $GitOpsTtlMinutes
   } catch { return $true }
 }
 
