@@ -866,3 +866,16 @@ no active process handles remain. No actual Docker, account, subprocess fixture,
 ACL, SCM or interruption execution occurred in this slot. This supersedes the
 pending pure/check status only, not missing actual qualification. CLI complete
 readiness source2679089e remains a separate unexecuted actual service candidate.
+
+
+Actual ordinary-user local Windows audit evidence is now independently adopted
+from evidence:root/20261107095831 (audit sourcec09d6897,111file closure0drift).
+Three targets pass44 tests: control_operations21/0ignored, durable_witness13/1ignored,
+key_custody10/2ignored. All failed/measured/filtered counts are zero. All three raw
+log hashes were independently checked. The actual custody log contains both named
+parent successes, exactly one outer final summary, and no leaked child markers;
+this confirms the paired current capture framing on Windows. Three raw ignored
+helpers remain excluded from passed counts. This is local ordinary-user native
+qualification for these audit targets only, not hosted/full workspace/SCM/provider/
+actor provisioning or actual sidecar interruption qualification. Raw logs remain
+with the owning audit evidence bundle; the adoption record binds their hashes.

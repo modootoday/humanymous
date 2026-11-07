@@ -1,0 +1,42 @@
+{
+  "schema": "humanymous.windows-audit-evidence-adoption/1",
+  "scope": "three audit integration targets on actual ordinary-user local Windows",
+  "hosted": false,
+  "full_runtime_qualified": false,
+  "audit_source_commit": "c09d6897b3ee3435792a74ffc9e2dae681a50ce7",
+  "audit_evidence_path": ".spec/evidence/20261107095831-audit-key-custody-current-windows-native-validation/facts.json",
+  "audit_facts_sha256": "0eec5a1bf197fcda268399bcf5f20287575e5443dccbeece7e0544f45faaa7c3",
+  "source_manifest_sha256": "fc92f8daa205c6b0c195be4eb200d58c76edfcf98a5a91449688861de844b236",
+  "source_files": 111,
+  "source_drift": 0,
+  "native_passed": 44,
+  "raw_ignored": 3,
+  "ignored_tests_counted_as_passes": 0,
+  "key_custody": {
+    "discovered": 12,
+    "passed": 10,
+    "failed": 0,
+    "ignored": 2,
+    "filtered": 0,
+    "summary_count": 1,
+    "exit_code": 0,
+    "required_parents_verified_in_raw_log": [
+      "competing_process_cannot_load_or_create",
+      "process_exit_releases_lock_and_rotation_pending_requires_recovery"
+    ],
+    "child_markers_absent_from_outer_log": true
+  },
+  "raw_log_hashes_independently_checked": {
+    "control_operations": "5c09701327fabed2f294b967ab297c62af81b25e6e4e99b3d9347a7114c4bb9f",
+    "durable_witness": "94705c7e3a0f680db96fa39a96a139f5edd93385e8d679cc2c096110f0d4b02d",
+    "key_custody": "3ad1493befa02b702f3893cc166eb25b48b712317b574f1fe55a7846568895e5"
+  },
+  "not_qualified": [
+    "GitHub-hosted Windows execution",
+    "full workspace",
+    "SCM service lifecycle",
+    "credential provider",
+    "standard-user actor provisioning",
+    "sidecar crash recovery"
+  ]
+}

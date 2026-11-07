@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-07T09:43:51Z
+updated: 2026-11-07T10:01:42Z
 files:
   - {path: macos-arm64-initial.log, sha256: 05490700b79bff322d867d8ec71f87c98e226399511438e4c1541158cb2da587, bytes: 57321, store: repo}
   - {path: initial-artifacts.json, sha256: 88991429991b63ae1ec7bcda09792d986a137e482b1eded17f12c90158b5df56, bytes: 1277, store: repo}
@@ -38,6 +38,7 @@ files:
   - {path: hosted-8132117-msrv-native-receipts.json, sha256: 3db3294c17acdce231531c05b69fcb496e2394e634f11ebef0a3050f241a7e5b, bytes: 1852, store: repo}
   - {path: hosted-8132117-windows-owner-summary-extracted.json, sha256: 634a64ebf52316942fe61108e7ed4695001874d7b9f1eb4b501c4edfa52b157d, bytes: 20428, store: repo}
   - {path: runner-accounting-docker-pure-summary.json, sha256: 9ee82057857872e19acc69ffb2e74b3d5c35ca5be7611d039f116297279c0a32, bytes: 2604, store: repo}
+  - {path: local-windows-audit-evidence-adoption.json, sha256: 04367fe5390d1dc2fadcbcceea5b3ecbe650d3b6fa85daf9776415bf8043f9af, bytes: 1624, store: repo}
 ---
 
 # Cross OS runner research
