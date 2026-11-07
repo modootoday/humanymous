@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.wargame-terminal-pure-acceptance.v1",
+  "owned_candidate": "284d24cf",
+  "head_before": "648d407a6350f0e82f9a72fef44959caadc2ac6a",
+  "head_after": "a281ffa51a90e9e19391c4aff4de82933856325a",
+  "owned_candidate_bytes_match": true,
+  "whole_dependency_graph_equals_candidate": false,
+  "passed": 28,
+  "failed": 0,
+  "ignored": 0,
+  "filtered": 0,
+  "attempt": 1,
+  "scoped_all_target_strict_clippy": true,
+  "source_path_list_stable": true,
+  "compiled_rust_and_build_metadata_stable": true,
+  "documentation_hashes_changed": 2,
+  "before_blob_index_sha256": "835fabc153b51e77042a893d42c83f803627f3009eedc69d16fd7a4d61d78d02",
+  "path_index_sha256": "0061df95d565ac42602106a6e763b6159487a80fe1366d71a315b9d43b5c0796",
+  "catalog_scheduled": 26,
+  "catalog_unsupported": 7,
+  "actual_product_validation_run": false
+}

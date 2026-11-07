@@ -154,7 +154,7 @@ The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
 
-## V0.8 terminal accounting (validation pending)
+## V0.8 terminal accounting (pure validated; product pending)
 
 The verifier now rejects attempted observations relabelled as skipped and any
 transport failure relabelled as evaluated/mismatched. A failed step ends the
@@ -162,7 +162,11 @@ attempt prefix, requires a nonblank error and cannot claim a response verdict.
 Audit recovery may still fail after complete request observations; that remains
 an error ledger. V2 fieldset/order,26scheduled cases and expected scoring are
 unchanged. Two new pure regression tests use failed synthetic ledgers only.
-Fmt is complete; fresh bounded pure checks/Clippy require root allocation.
+Root-assigned A measured28pure passes and own-package strict all-target Clippy,
+first attempt (private120155/public120401). Owned bytes match284d24cf; the recorded
+graph contains newer audit sources. Before/after Rust/build metadata stayed stable,
+with2unrelated documentation drifts explicitly retained. This is not immutable
+whole284graph or actual product validation. A returned, no Docker/runtime launched.
 
 The accepted coverage audit retains these boundaries:
 

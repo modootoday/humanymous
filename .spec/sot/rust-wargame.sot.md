@@ -177,7 +177,9 @@ seven missing participant/producer cases as unsupported, including ordinary
 human, AT, accessible Pass and coherent T4 controls. Automated browser or frozen
 fixture activity never supplies human/AT participation. New pure negative
 fixtures construct failed ledgers only; no runtime success is manufactured.
-Fresh allocated tests/Clippy and actual product validation remain pending.
+Root-assigned28pure checks and scoped strict Clippy passed on the recorded graph
+(evidence120401). Owned284d24cf bytes match; newer audit dependencies and2doc-only
+drifts are retained explicitly. Actual product validation remains pending.
 
 ### Standalone service readiness v0.7
 

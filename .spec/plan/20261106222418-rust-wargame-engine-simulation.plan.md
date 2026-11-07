@@ -20,7 +20,8 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 
 - [x] Audit accepted attack/ordinary/human/AT scope:19owned programs and7unsupported participant/producer obligations remain visible.
 - [x] V0.8 source: reject transport-as-evaluated, attempted-as-skipped, post-failure steps and response verdicts without completed responses.
-- [ ] V0.8 fresh root-allocated28pure tests/scoped Clippy and source-bound actual validation; no Docker allocation held.
+- [x] V0.8 root-assigned28pure/strictClippy pass;120155private/120401public records actual dependency graph and2doc-only drifts.
+- [ ] V0.8 source-bound actual product validation; no Docker allocation held.
 
 - [x] V0.6: approved shared decoder consumption; remove duplicate visitor, preserve report budget/errors.
 - [x] V0.6: root lock integration and new allocated28pure/Clippy;13-crate snapshot and3file drift retained in075313/075756.
