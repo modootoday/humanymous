@@ -1,6 +1,7 @@
 //! Private local sealed backups with signed, externally pinned inventory.
 //! Retirement removes one named local file; it does not prove physical secure
 //! deletion, removal of filesystem snapshots, or deletion of remote copies.
+mod retained;
 use super::{
     KeyMaterial, LIMIT,
     custody::{Durability, Owner, permissions},

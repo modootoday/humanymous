@@ -3,8 +3,9 @@
 use ed25519_dalek::{Signer, SigningKey};
 use humanymous_audit::{
     control::{
-        Action, Administrators, Approval, ControlAuthority, LedgerAnchor, LedgerBootstrap,
-        Proposal, Scope, target_commitment,
+        Action, Administrators, Approval, ApprovalRequest, ControlAuthority, LedgerAnchor,
+        LedgerBootstrap, NativeAnchorRetainer, Proposal, RetainedActionPermit,
+        RetentionRequirement, Scope, target_commitment,
     },
     keys::{
         KeyMaterial,
@@ -174,6 +175,190 @@ fn write_private(path: &Path, bytes: &[u8]) {
     let mut file = options.open(path).unwrap();
     file.write_all(bytes).unwrap();
     file.sync_all().unwrap();
+}
+
+fn retained(
+    control: &mut ControlAuthority,
+    retainer: &mut NativeAnchorRetainer,
+    proposal: &Proposal,
+) -> RetainedActionPermit {
+    control
+        .authorize_retained_action(
+            ApprovalRequest {
+                proposal,
+                approvals: &approvals(proposal),
+                now: 110,
+            },
+            retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap()
+}
+
+#[test]
+fn retained_retirement_refuses_missing_inventory_foreign_authority_and_expired_grant() {
+    let temp = Temp::new();
+    let path = temp.sub("archive");
+    let control_path = temp.sub("control");
+    let retention_path = temp.sub("retention");
+    let mut store = inventory(&path, BackupBootstrap::New);
+    let mut control = authority(&control_path, LedgerBootstrap::New);
+    let mut retainer = NativeAnchorRetainer::open(
+        &retention_path,
+        owner(&retention_path),
+        scope(),
+        control.public_key(),
+        control.anchor(),
+        true,
+    )
+    .unwrap();
+    let digest = store.create(&sealed(), b"fixture-pass").unwrap().digest;
+    let file = path.join(format!("{digest}.sealed"));
+    let original = fs::read(&file).unwrap();
+    let ledger = path.join("backups.json");
+    let saved = path.join("backups.saved-for-loss");
+    let missing = proposal(&digest, 50);
+    let grant = retained(&mut control, &mut retainer, &missing);
+    fs::rename(&ledger, &saved).unwrap();
+    assert!(store.retire_retained(&control, grant, 110).is_err());
+    fs::rename(&saved, &ledger).unwrap();
+    let missing_control = proposal(&digest, 58);
+    let grant = retained(&mut control, &mut retainer, &missing_control);
+    let control_file = control_path.join("control.json");
+    let control_saved = control_path.join("control.saved-for-retirement-loss");
+    fs::rename(&control_file, &control_saved).unwrap();
+    assert!(store.retire_retained(&control, grant, 110).is_err());
+    fs::rename(&control_saved, &control_file).unwrap();
+    let foreign_archive = temp.sub("foreign-archive");
+    let mut foreign_scope = scope();
+    foreign_scope.node.push_str("-other");
+    let mut other_store = BackupInventory::open(
+        &foreign_archive,
+        owner(&foreign_archive),
+        &[21; 32],
+        foreign_scope,
+        10,
+        BackupBootstrap::New,
+    )
+    .unwrap();
+    other_store.create(&original, b"fixture-pass").unwrap();
+    let cross_scope = proposal(&digest, 59);
+    let grant = retained(&mut control, &mut retainer, &cross_scope);
+    assert!(other_store.retire_retained(&control, grant, 110).is_err());
+    assert_eq!(other_store.list().unwrap()[0].status, BackupStatus::Active);
+    let expired = proposal(&digest, 51);
+    let grant = retained(&mut control, &mut retainer, &expired);
+    assert!(store.retire_retained(&control, grant, 160).is_err());
+    let transplanted = proposal(&digest, 52);
+    let grant = retained(&mut control, &mut retainer, &transplanted);
+    let foreign_path = temp.sub("foreign-control");
+    let mut foreign = ControlAuthority::open(
+        &foreign_path,
+        owner(&foreign_path),
+        &[23; 32],
+        admins(),
+        10,
+        LedgerBootstrap::New,
+    )
+    .unwrap();
+    foreign
+        .consume(&transplanted, &approvals(&transplanted), 110)
+        .unwrap();
+    assert!(store.retire_retained(&foreign, grant, 110).is_err());
+    assert_eq!(fs::read(&file).unwrap(), original);
+    assert_eq!(store.list().unwrap()[0].status, BackupStatus::Active);
+    let approved = proposal(&digest, 53);
+    let grant = retained(&mut control, &mut retainer, &approved);
+    let (receipt, authorization) = store.retire_retained(&control, grant, 110).unwrap();
+    assert_eq!(receipt.digest, digest);
+    assert_eq!(authorization.operation_id, approved.operation_id);
+    assert!(!file.exists());
+    assert!(
+        control
+            .authorize_action(ApprovalRequest {
+                proposal: &approved,
+                approvals: &approvals(&approved),
+                now: 110,
+            })
+            .is_err()
+    );
+    let pin = receipt.anchor;
+    drop(store);
+    let store = inventory(&path, BackupBootstrap::Pinned(&pin));
+    assert!(matches!(&store.list().unwrap()[0].status,
+        BackupStatus::Retired { operation_id } if operation_id == &approved.operation_id));
+}
+
+#[cfg(windows)]
+#[test]
+fn retained_retirement_sharing_fault_requires_fresh_exact_reconciliation() {
+    use std::os::windows::fs::OpenOptionsExt;
+    let temp = Temp::new();
+    let path = temp.sub("archive");
+    let control_path = temp.sub("control");
+    let retention_path = temp.sub("retention");
+    let mut store = inventory(&path, BackupBootstrap::New);
+    let mut control = authority(&control_path, LedgerBootstrap::New);
+    let mut retainer = NativeAnchorRetainer::open(
+        &retention_path,
+        owner(&retention_path),
+        scope(),
+        control.public_key(),
+        control.anchor(),
+        true,
+    )
+    .unwrap();
+    let digest = store.create(&sealed(), b"fixture-pass").unwrap().digest;
+    let file = path.join(format!("{digest}.sealed"));
+    let prior = proposal(&digest, 54);
+    let grant = retained(&mut control, &mut retainer, &prior);
+    let blocker = fs::OpenOptions::new()
+        .read(true)
+        .share_mode(1)
+        .open(&file)
+        .unwrap();
+    assert!(store.retire_retained(&control, grant, 110).is_err());
+    assert!(file.exists());
+    let pin = store.anchor().clone();
+    drop(blocker);
+    drop(store);
+    let mut store = inventory(&path, BackupBootstrap::Pinned(&pin));
+    assert!(matches!(&store.list().unwrap()[0].status,
+        BackupStatus::Retiring { proposal } if proposal == &prior));
+    let fresh = proposal(&digest, 55);
+    let grant = retained(&mut control, &mut retainer, &fresh);
+    let mut wrong_prior = prior.clone();
+    wrong_prior.operation_id = hex::encode([56; 32]);
+    assert!(
+        store
+            .reconcile_retained(&control, &wrong_prior, grant, 110)
+            .is_err()
+    );
+    assert!(file.exists());
+    let mut fresh = proposal(&digest, 57);
+    fresh.issued_at = 200;
+    fresh.expires_at = 260;
+    let grant = control
+        .authorize_retained_action(
+            ApprovalRequest {
+                proposal: &fresh,
+                approvals: &approvals(&fresh),
+                now: 210,
+            },
+            &mut retainer,
+            RetentionRequirement::FileSynced,
+        )
+        .unwrap();
+    let (receipt, authorization) = store
+        .reconcile_retained(&control, &prior, grant, 210)
+        .unwrap();
+    assert_eq!(authorization.operation_id, fresh.operation_id);
+    assert!(!file.exists());
+    let pin = receipt.anchor;
+    drop(store);
+    let store = inventory(&path, BackupBootstrap::Pinned(&pin));
+    assert!(matches!(&store.list().unwrap()[0].status,
+        BackupStatus::Retired { operation_id } if operation_id == &prior.operation_id));
 }
 
 #[test]

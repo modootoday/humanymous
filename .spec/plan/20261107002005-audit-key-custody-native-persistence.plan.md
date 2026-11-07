@@ -102,6 +102,14 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Retained backup bridge authored after accepted design/security critique:
+retire_retained and reconcile_retained require full acknowledgement identity,
+actual inventory/control authentication, exact state and fresh distinct recovery
+approval. Two native tests cover identity/scope/loss/expiry and Windows actual
+unlink-sharing fault plus fresh reconciliation after prior expiry. No ignored
+helper added. Formatting/spec only; compile/native execution NOT_RUN, no slot.
+Evidence:root/20261107101025. Prior44-pass snapshot does not qualify this source.
+
 Root granted retained-backup source slice after the44-pass source checkpoint.
 Design-sot v0.1 is normative in audit-key-custody.sot: additive retained-only
 normal retirement and fresh-approval exact Retiring reconciliation; legacy local

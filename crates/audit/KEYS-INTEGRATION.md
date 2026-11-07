@@ -1,5 +1,19 @@
 # Sealed key compatibility integration
 
+## New unqualified retained backup retirement
+
+BackupInventory::retire_retained(authority,grant,now) requires complete retained
+identity/current-anchor binding and authenticated present native inventory/
+control ledger, then only Active -> Retiring -> local unlink/sync -> Retired.
+reconcile_retained(authority,prior,fresh,now) requires exact Retiring and a different
+fresh operation for the same scope/action/digest; old intent may have expired.
+Final inventory keeps the prior ID; returned control receipt identifies fresh
+reconciliation. Audit before/after correlation must contain both IDs and exact
+scope/digest/inventory anchors. External anchor retention precedes acknowledgement.
+Existing local-only methods retain compatibility and are not retained substitutes.
+Two native tests authored; source only, no compile/execution or inherited44 passes.
+Evidence:root/20261107101025. Remote/physical erasure and unresolved pin gaps remain.
+
 ## Latest actual Windows qualification
 
 At owned source c09d6897, allocated local Windows nonadmin execution passed
