@@ -247,3 +247,24 @@ nor crash/power-loss durability. No training process, GPU/download, production
 inference or Docker product e2e was executed. First parser slice is qualified for
 this exact native component boundary only; the full29-row migration, RNG/kernel,
 gate/time policy and lab lifecycle remain open with independent critique conditions.
+
+## Independent verification locator
+
+Exact raw run directory, retained without rewriting chronological receipts:
+`C:/workspaces/humanymous/.spec.local/root/evidence/20261107150000-model-training-correction-c2/`.
+Within that directory, `results.json` records all four command exit codes and UTC
+start/end timestamps; `test.stdout.txt` contains the13unit and1fixture terminal
+footers and the named actual_file_reader_accepts_rejects_and_preserves_caller_batch_on_error
+pass. `test.stderr.txt` identifies the executed native test binaries. `fmt.stdout.txt`,
+`fmt.stderr.txt`, `check.stderr.txt` and `clippy.stderr.txt` retain their outputs.
+`closure-before.json`, `closure-after.json` and `closure-paths.txt` identify the1493
+hashed files; `config-paths.json`, `selected-packages.json`, `metadata.json` and
+`environment.json` define selected configuration/dependency/source scope.
+`fmt-admission.json`, `test-admission.json`, `check-admission.json` and
+`clippy-admission.json` bind fresh admission observations to each step.
+`source.tar` is the immutable candidate archive; `summary.json` holds the completed
+closure comparison and actual counts. These are verification pointers, not a rerun.
+The original68898522 run remains separately retained in sibling directory
+`20261107144500-model-training-correction-cwarm`, including the first fmt failure
+and owner-cancelled overbroad preflight census. No immutable receipts were edited
+to reconcile current SoT status.

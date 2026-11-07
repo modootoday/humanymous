@@ -11,13 +11,19 @@ rel:
 
 # Model training and correction migration
 
-Document version 0.1.1. Root accepted existing-package placement, lab-only lifecycle,
+Document version 0.1.2. Root accepted existing-package placement, lab-only lifecycle,
 weak-label quarantine, single-buffer loading and fail-closed cohort support.
 Only the first source slice (training/record.rs, training/mod.rs and minimal lib.rs
-export with module tests) is authorized. Compilation and pilots remain unallocated.
+export with module tests) is implemented and qualified at immutable source
+a0ebc9ae4da4c52020f6e39bb614d1e14d4e0b2e: fmt,13unit+1fixture, all-target check
+and strict Clippy passed, including the actual owned-file parser pilot. Evidence:
+[[evidence:root/20261107140000]]. This supersedes the initial source-only status
+for this bounded native component only; it does not qualify the full migration.
 New crates, manifests, binaries and subsequent kernel/lifecycle implementation
 remain unapproved. Full legacy responsibility
-remains in scope. No retirement, training, inference or runtime parity is claimed.
+remains in scope. No retirement, training-loop, production inference or full runtime
+parity is claimed. Existing pure inference fixture comparison was executed only
+under the explicitly allocated component unit-test grant.
 
 ## Scope and existing boundary
 
@@ -171,8 +177,14 @@ bounded asynchronous collection, exact-byte staging and callback isolation are
 required. DPO: aggregate traces require retention/access controls. Evaluator:
 source inspection and historical fixtures are not new runtime proof.
 
-Self-critique verdict: needs-work before implementation. Root must accept module
-placement, offline bounds, RNG compatibility strategy, required-cohort/time policy,
-weak-label quarantine and lab-only lifecycle API. Independent adversarial review
-is still pending. No scoring delta is proposed. Final baseline mapping and Go
+Current verdict: the bounded parser slice was accepted by root, independently
+reviewed without a new source blocker, implemented and qualified as described
+above. Module placement, parser bounds, provenance quarantine and lab-only lifecycle
+direction are accepted; this is not blanket acceptance of later lifecycle APIs.
+Independent critique found kernel/gate/lifecycle needs-work: RNG sequence parity,
+independently required cohorts and bot support, time/anchor leakage policy and
+exact lifecycle approval/identity contracts remain decisions before those slices
+can be implemented. No independent review is pending for the already qualified
+parser source; subsequent-slice design acceptance and implementation review remain
+open. No scoring delta is proposed. Final baseline mapping and Go
 retirement belong exclusively to root after source-bound qualification.
