@@ -1,0 +1,53 @@
+{
+  "schema": "humanymous.pages-structural-handoff/1",
+  "status": "prepared snapshot; docs lane retained until root freezes this slice",
+  "mission": "Preserve public docs, source-bound evidence and Pages verifier contracts during the accepted eight-public-package baseline. Root alone sequences moves and graph integration.",
+  "source_commit": "8affb45aeb4d31330fda8f2e5135043c6b252c05",
+  "docs_tree": "cf58e0129d95c33cdfcebf6e85f5471b5911a85b",
+  "inventory": {
+    "private_evidence": "evidence:root/20261107051213 structural-handoff-inventory.json",
+    "sha256": "775e9243663dc676b82fe345cb8e0cd240612937f4fcc4c0266460caba86129e",
+    "rows": 131,
+    "scope": "All127 tracked docs paths, Pages/standards SoTs, owning Pages plan and public evidence index. Each row has exact worktree SHA256/bytes and immutable HEAD Git blob ID; snapshot precedes this handoff attachment/plan edit.",
+    "dirty_paths_at_capture": []
+  },
+  "done": [
+    "394ed549: actual two-baseurl fresh builds, archive restoration, bounded browser accessibility review; no full AT/WCAG or product claim",
+    "992fbf01: accepted public facade/local CI prose reconciliation; this newer prose has not been rendered",
+    "cea32730: exact owned preview container removal observed, retained stop/remove receipts; preview expired, no restart"
+  ],
+  "owned_live_resources": {
+    "compiler_or_process_or_target_lease": "none",
+    "preview_or_docker_lease": "none; old supervisor17945 no longer retrievable and exact container absent",
+    "historical_private_target": ".spec.local/pgp2696/target-pages; immutable old checker identity is historical evidence, not a live compiler lease or current-source rebuild"
+  },
+  "handoff_paths": {
+    "current_tooling": "docs/tooling/Cargo.toml and docs/tooling/src/**",
+    "accepted_destination_responsibility": "Pages tooling becomes a CLI context/target under the accepted humanymous-cli package. Root supplies the exact path/hash freeze and final target interface; no independent move performed.",
+    "public_source": "docs/** except tooling remains authored user docs; do not mix private evidence into the public site.",
+    "root_owned_consumers": ["Cargo.toml", "Cargo.lock", ".github/workflows/pages-validation.yml", ".github/workflows/pages-build.yml", ".github/workflows/pages.yml", "scripts/ci/**"]
+  },
+  "hazards": [
+    "Current humanymous-pages manifest directly depends on ../../crates/integrity; vectors/mod.rs uses humanymous_integrity::adapter::{AdapterProfile,parse_with_profile}. Root core consolidation must preserve exact parser/vector semantics and translate the dependency/import atomically.",
+    "Keep private modules and pub(super) webdriver helpers context-restricted after the library merge. Existing browser/package/review/snapshot/vectors exports are tool APIs, not authority or readiness constructors; do not make internals public solely to satisfy sibling access.",
+    "Keep inherited unsafe policy and approved native boundaries; no new unsafe exception or foreign script/template implementation. Windows junction dev dependency must remain target-scoped; do not leak native/browser dependencies into core/WASM profiles.",
+    "CI calls cargo -p humanymous-pages for tests/clippy/source/validate/package/archive-check and expects existing JSON reports/CLI modes. Root and Delivery owner must translate all callers and artifact paths atomically with the target move, without a speculative compatibility crate.",
+    "Pages build input digest deliberately excludes tooling/scripts/private/cache inputs. Authored docs LF bytes, pinned theme/Gemfile.lock, public allowlist and archive source commitments must retain their distinct meanings; a moved checker requires its own identity, not reuse of old binary qualification.",
+    "Newer public prose at992fbf01 is unrendered. Historical56ea5267/c8a56de5 previews and archives remain source-bound; namespace/unit/CI checks never establish production Pages, full product parity or AT/WCAG."
+  ],
+  "next_actions": [
+    "Root supplies exact CLI-context slice freeze and immutable path/hash handoff before any move; recapture hashes if owned inputs change.",
+    "Coordinate root manifest/lock graph and Delivery workflow callers; preserve binary mode/report contracts or document an accepted interface migration.",
+    "After the structural move, run allocated scoped tests/fmt/strictClippy against the new exact target, re-run source checks and vector fixtures, then fresh two-baseurl rendered link/archive/source-unchanged checks before claiming preview parity."
+  ],
+  "current_verify_commands_to_translate": [
+    "cargo test --locked -p humanymous-pages --lib -j1",
+    "cargo clippy --locked -p humanymous-pages --all-targets -j1 -- -D warnings",
+    "cargo run --locked -p humanymous-pages -- source --source docs",
+    "cargo run --locked -p humanymous-pages -- validate --source docs --destination <dedicated absolute path> --baseurl <empty or /humanymous>",
+    "Existing package then independent archive-check into a second fresh restoration for each baseurl; no old checker binary as moved-source compile proof."
+  ],
+  "files_to_read_first": ["AGENTS.md", "docs/AGENTS.md", ".agents/lessons/HARD-WON.md", ".spec/sot/structural-development.sot.md", ".spec/sot/pages-implementation.sot.md", ".spec/plan/20261106223501-pages-implementation.plan.md", "docs/tooling/src/inputs.rs", "docs/tooling/src/package.rs"],
+  "out_of_scope": "No scoring changes, path/package moves, ref switching/synchronization, new crate/shim, publishing or main merge performed or independently authorized by this handoff. Root owns integration sequencing.",
+  "residual_risks": "No actual screen-reader task or complete WCAG result; full source-review/final candidate/production Pages parity remain open. Native process and Docker product qualification cannot be replaced by docs checks."
+}

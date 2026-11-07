@@ -2474,3 +2474,43 @@ no supervisor exit code is invented. Evidence07052815/accessibility-preview-clea
 records actual removal. Preview is no longer live; no lease extension/restart.
 The new user approval gate blocks package/path/topology refactoring; none is in
 flight in this docs lane, and no new crate, branch or compatibility shim was made.
+
+### Prepared Pages slice handoff for accepted eight-package baseline
+
+The user accepted baseline v0; root still owns exact path/graph sequencing.
+Prepared evidence07052815/structural-pages-handoff.json and private07051213/
+structural-handoff-inventory.json at source8affb45a/docstreecf58e012. Inventory
+SHA256775e9243663dc676b82fe345cb8e0cd240612937f4fcc4c0266460caba86129e
+records131 exact paths with worktree SHA256 and immutable Git blob IDs; no dirty
+owned paths at capture. This handoff/plan update follows that immutable snapshot.
+
+No compiler/process/target/preview lease remains. Pages tooling belongs to the
+accepted CLI context, but no path/package move or new shim has been performed.
+Root must freeze the exact slice and atomically translate integrity parser imports,
+restricted visibility, Cargo graph, CI target calls and artifact/report contracts.
+Required allocated scoped tests/fmt/Clippy, source/vector checks and fresh render/
+archive qualification are listed in the handoff. Historical source-bound evidence,
+unrendered992fbf01 prose and pending AT/product/production Pages gates are explicit.
+This is preparation, not lane transfer: docs ownership remains until root freezes
+the specific slice; no provider switch or overlapping writer is introduced.
+
+### CORE-SLICE-01 assigned consumer edit ready
+
+Root explicitly assigned only docs/tooling/src/vectors/mod.rs. Refreshed/narrowed
+the existing docs lane; changed its single integrity parser use path to
+humanymous_core::integrity::adapter, preserving imported types and all behavior,
+scoring and visibility. No manifest/lock/path relocation or extra source edit.
+Evidence07052815/core-slice-01-pages-consumer.json records exact before/after
+SHA256 and source head. One-line diff/check passed. No compiler/Clippy/full CI
+run: root must first declare the workspace coherent. The earlier structural
+inventory remains a historical pre-edit snapshot, not this new consumer hash.
+
+### CORE-SLICE-01 consumer integration now durable
+
+Root committed the exact assigned Pages use path and owning Cargo dependency in
+c67d07c0114bd04793410f82f7182de7bfa6df2c, with followup binding1e2b4b38.
+Observed worktree hash still0c280759d66fedc8bd36b623af3d9240e615354f5d6105c2a96bf995c396e009
+and no source diff. The earlier pending-source-commit condition is superseded;
+do not re-commit those bytes. Own plan/evidence WIP remains separately owned.
+No Pages compiler/Clippy/full CI run is inferred from core162/Clippy or collector
+WASM proof; per-owner execution still requires a bounded root allocation.

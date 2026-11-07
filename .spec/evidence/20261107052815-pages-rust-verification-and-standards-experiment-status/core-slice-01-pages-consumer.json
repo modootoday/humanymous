@@ -1,0 +1,17 @@
+{
+  "schema": "humanymous.pages-core-consumer-edit/1",
+  "slice": "CORE-SLICE-01",
+  "source_head_before_edit": "2d7be3f614820b23e0fb816de173ac9e7cd6cd69",
+  "path": "docs/tooling/src/vectors/mod.rs",
+  "before_worktree_sha256": "79d372168b7998b9f76747dcefcaf495c1756e30e856fd90cc381e9c401f64f1",
+  "after_worktree_sha256": "0c280759d66fedc8bd36b623af3d9240e615354f5d6105c2a96bf995c396e009",
+  "change": "One use path: humanymous_integrity::adapter::{AdapterProfile,parse_with_profile} -> humanymous_core::integrity::adapter::{AdapterProfile,parse_with_profile}.",
+  "other_matching_context_references": "none in the assigned file",
+  "behavior_scoring_visibility_changes": false,
+  "manifest_lock_path_move_changes": false,
+  "validation": "Exact one-line diff and git diff --check passed. Compiler/Clippy/full CI deliberately not run while root integrates the workspace.",
+  "ready": "Durable in root integration c67d07c0114bd04793410f82f7182de7bfa6df2c; unchanged after hash verified. No source commit remains pending; Pages consumer is not compile-qualified.",
+  "root_binding_followup": "1e2b4b38",
+  "root_integration_scope": "Root committed the assigned Pages use path and its Cargo dependency with seven-context core integration. Core162/Clippy and collectorWASM results do not qualify Pages consumers. No new compiler job was run by this owner.",
+  "ownership": "Refreshed/narrowed existing docs lane under codex/pages-current-runtime to the assigned consumer file and own spec/evidence paths. Prior structural handoff remains a historical pre-edit snapshot, not the new consumer hash."
+}
