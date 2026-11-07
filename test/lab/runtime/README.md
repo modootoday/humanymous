@@ -27,3 +27,9 @@ Pass recovery, assistive technology, independent witness or independent origin
 bypass isolation. This process profile must not satisfy the full product e2e
 gate while those requirements remain absent. Governed by
 `sot:root/rust-migration` and `sot:root/runtime-application`.
+
+
+The same isolated driver now executes the real humanymous CLI binary on Linux
+for doctor, no-write dry-run, install/repeat/rollback, digest mismatch and mutated
+managed-file refusal. These are synthetic local provisioning checks. Service
+activation, signed release provenance and Windows GUI/AT are not qualified.

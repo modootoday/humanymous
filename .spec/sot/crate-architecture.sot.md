@@ -206,3 +206,16 @@ only with an accepted consumer/target/publication reason.
 - R10 https://doc.rust-lang.org/reference/linkage.html ; https://doc.rust-lang.org/reference/items/external-blocks.html#abi
 - R11 https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#local-paths-in-published-crates
 - R12 https://doc.rust-lang.org/cargo/reference/publishing.html ; https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+## Accepted native security implementation boundary
+
+Following the runtime/browser additions, the workspace has16context packages.
+The additional humanymous-native-security package owns the actual native token,
+volume and handle privacy implementation shared by audit/custody/CLI. It is not
+a forwarding-only core or a missing server implementation. Audit storage's thin
+reexport preserves its namespace with one implementation; CLI depends on the
+native boundary without depending on audit cryptography. Windows dependencies
+are target-scoped; the pure WASM libraries retain their existing dependency
+boundary. This is the consumer/dependency reason required above, not a Rust
+standard mandating a new crate. All package publish flags remain false.

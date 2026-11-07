@@ -13,6 +13,11 @@ path = "src/main.rs"
 
 [dependencies]
 sha2.workspace = true
+humanymous-native-security.workspace = true
 
 [lints]
 workspace = true
+
+[target.'cfg(windows)'.dev-dependencies]
+windows-permissions = "=0.2.4"
+junction = { version = "=2.1.0", default-features = false }

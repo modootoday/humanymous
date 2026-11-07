@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T01:00:28Z
+updated: 2026-11-07T01:31:39Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -17,6 +17,8 @@ files:
   - {path: native-helper-accounting-results.json, sha256: 189d57be76038bca7199f48e20b70ba95d64a0a0594a6036e86ccad52bf4c64a, bytes: 1177, store: repo}
   - {path: sealed-runtime-six-native-results.json, sha256: ad8f67b3f606dbd5e1164a384b8adc31d7967f949d66db3cd65930d3ad4b4d12, bytes: 4446, store: repo}
   - {path: native-storage-privacy-results.json, sha256: ce6443eb7b79ba8864dd15617fe8453c61faef354755d246a7f5eb7685ed485c, bytes: 3547, store: repo}
+  - {path: native-privacy-six-tuple-results.json, sha256: 6197075b330c3e4ef3f7f567d063d562dcd78028741d739fcfe6283a5275a714, bytes: 3137, store: repo}
+  - {path: native-cli-security-results.json, sha256: 96f4b010b85a8c041794067db135816d048ee686cbb7079c96c6a6451fdb8078, bytes: 6112, store: repo}
 ---
 
 # Program status

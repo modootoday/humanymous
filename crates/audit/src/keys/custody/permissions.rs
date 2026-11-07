@@ -108,9 +108,9 @@ fn check(file: &File, owner: &Owner, directory: bool) -> io::Result<()> {
     }
     #[cfg(windows)]
     {
-        use crate::storage::permissions::{WindowsPrivacy, windows_owner_only};
+        use crate::storage::permissions::{WindowsPrivacy, verify_windows_privacy};
         let Owner::WindowsSid(sid) = owner;
-        windows_owner_only(
+        verify_windows_privacy(
             file,
             sid,
             if directory {

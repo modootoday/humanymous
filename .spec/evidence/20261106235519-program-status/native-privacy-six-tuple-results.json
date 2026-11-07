@@ -1,0 +1,92 @@
+{
+  "schema": "humanymous.native-privacy-summary/1",
+  "run_id": 42321651595,
+  "source_sha": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+  "conclusion": "success",
+  "full_runtime_qualified": false,
+  "later_cli_native_security_refactor_excluded": true,
+  "reports": [
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "arm64"
+      },
+      "source_sha": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "42b05cb267d8f37b9746b463ddfbe99888be44a83ae4f7be7ef89c1e30469a32",
+      "report_sha256": "772c1966520e1074f0b81f5afa1b8add3d85a9fda698f2f57c70bc203cc386a7"
+    },
+    {
+      "expected": {
+        "os": "linux",
+        "arch": "x64"
+      },
+      "source_sha": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "42b05cb267d8f37b9746b463ddfbe99888be44a83ae4f7be7ef89c1e30469a32",
+      "report_sha256": "05423fd93da6ee590c515faeba6a6530c5ff4b6888dae4b8cdcb8b79e0ac48e5"
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "arm64"
+      },
+      "source_sha": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "42b05cb267d8f37b9746b463ddfbe99888be44a83ae4f7be7ef89c1e30469a32",
+      "report_sha256": "7fab227831179238a7706a4445b76c24aa92921e23b411d17a1568660db8b417"
+    },
+    {
+      "expected": {
+        "os": "macos",
+        "arch": "x64"
+      },
+      "source_sha": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "42b05cb267d8f37b9746b463ddfbe99888be44a83ae4f7be7ef89c1e30469a32",
+      "report_sha256": "67937d833ec98a1b28779deab146ee43e2b60863401f1178ec2f7ce4ee29de49"
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "arm64"
+      },
+      "source_sha": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "42b05cb267d8f37b9746b463ddfbe99888be44a83ae4f7be7ef89c1e30469a32",
+      "report_sha256": "64e0e0b3cffee5ef02550fab9a3274c3eb0847481dd5c1d8baae9dfef9ce90be",
+      "coverage": {
+        "required_harnesses": 46,
+        "executed_harnesses": 46,
+        "passed_tests": 183,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    },
+    {
+      "expected": {
+        "os": "windows",
+        "arch": "x64"
+      },
+      "source_sha": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "cargo_lock_sha256": "42b05cb267d8f37b9746b463ddfbe99888be44a83ae4f7be7ef89c1e30469a32",
+      "report_sha256": "cfb01c713f9f6d52e45ea144c118b7acbf781e966036b0cc67ba51adb52e5a7c",
+      "coverage": {
+        "required_harnesses": 46,
+        "executed_harnesses": 46,
+        "passed_tests": 183,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[package]
+name = "humanymous-native-security"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[target.'cfg(windows)'.dependencies]
+windows-permissions = "=0.2.4"
+winsafe = { version = "=0.0.29", features = ["kernel", "advapi"] }
+
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1.1", features = ["process"] }
+
+[lints]
+workspace = true

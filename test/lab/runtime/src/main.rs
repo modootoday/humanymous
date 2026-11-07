@@ -2,6 +2,7 @@
 mod client;
 mod origin;
 mod process;
+mod provisioning;
 use client::*;
 use humanymous_audit::{
     log::{Config, Log},
@@ -15,6 +16,7 @@ fn main() {
     let directory = std::path::PathBuf::from(format!("/tmp/runtime-pilot-{}", std::process::id()));
     fs::create_dir(&directory).unwrap();
     fs::set_permissions(&directory, fs::Permissions::from_mode(0o700)).unwrap();
+    provisioning::run(&directory);
     let key_directory = directory.join("custody");
     fs::create_dir(&key_directory).unwrap();
     fs::set_permissions(&key_directory, fs::Permissions::from_mode(0o700)).unwrap();
@@ -139,6 +141,8 @@ fn main() {
     let result: Value = json!({"schema":"humanymous.runtime-process-pilot/1","status":"passed","origin_effects":2,"audit_records":sequence,
         "scope":"real binary/session/RIT/durable audit/owned loopback origin","full_runtime_qualified":false,"browser_or_human_executed":false,
         "checks":["private startup","sealed custody wrong password","missing custody no replacement","lifetime custody exclusion","tampered custody no replacement","collect","valid origin","duplicate cookies","credentials stripped","replay","body mutation","counter not consumed on bad signature","missing session","unsupported TLS","reserved admin","ambiguous framing","missing report","authenticated audit recovery","minimized audit","restart invalidates session"],
+        "cli_binary_executed":true,"cli_security_platform":"linux",
+        "cli_binary_checks":["doctor","dry-run no writes","install","repeat","rollback","digest refusal","mutation refuses rollback"],
         "not_qualified":["browser collector","TLS/H2 capture","Pass recovery","assistive technology","independent origin isolation","independent witness"]});
     println!("{result}");
     fs::remove_dir_all(directory).unwrap();

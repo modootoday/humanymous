@@ -1,0 +1,121 @@
+{
+  "audit_records": 4,
+  "browser_or_human_executed": false,
+  "checks": [
+    "private startup",
+    "sealed custody wrong password",
+    "missing custody no replacement",
+    "lifetime custody exclusion",
+    "tampered custody no replacement",
+    "collect",
+    "valid origin",
+    "duplicate cookies",
+    "credentials stripped",
+    "replay",
+    "body mutation",
+    "counter not consumed on bad signature",
+    "missing session",
+    "unsupported TLS",
+    "reserved admin",
+    "ambiguous framing",
+    "missing report",
+    "authenticated audit recovery",
+    "minimized audit",
+    "restart invalidates session"
+  ],
+  "cli_binary_checks": [
+    "doctor",
+    "dry-run no writes",
+    "install",
+    "repeat",
+    "rollback",
+    "digest refusal",
+    "mutation refuses rollback"
+  ],
+  "cli_binary_executed": true,
+  "cli_security_platform": "linux",
+  "full_runtime_qualified": false,
+  "not_qualified": [
+    "browser collector",
+    "TLS/H2 capture",
+    "Pass recovery",
+    "assistive technology",
+    "independent origin isolation",
+    "independent witness"
+  ],
+  "origin_effects": 2,
+  "schema": "humanymous.runtime-process-pilot/1",
+  "scope": "real binary/session/RIT/durable audit/owned loopback origin",
+  "status": "passed",
+  "observed_at": "2026-11-07T01:31:38.831471+00:00",
+  "base_commit": "5ea39fff04177cd69fc5ccba90f7dbbd17dfb46d",
+  "dirty_snapshot": true,
+  "root_workspace_members": 16,
+  "windows_tests": {
+    "cli": 6,
+    "native_security": 6,
+    "workspace_all_targets_exit": 0,
+    "ignored_subprocess_helpers": 2
+  },
+  "cli_additional_assertions": [
+    "unwritable private parent refused"
+  ],
+  "clippy_warnings_denied": "passed",
+  "eight_pure_libraries_wasm": "passed",
+  "cli_audit_dependency": false,
+  "embedded_powershell_in_crate_rs": 0,
+  "no_authored_unsafe_block_in_new_crate": true,
+  "image_id": "sha256:00eb1a586bcd9b282455c64c1dbf4e362de9be9796bd93d2c75651a63afb5537",
+  "image_source_manifest_sha256": "b27fae80e68976f8693dee915ac7bb84fca4829c120d96a5f2c06f997882b7b8",
+  "advisories": {
+    "known_vulnerabilities": 0,
+    "database_commit": "309392b18f6b17022f82c701f300433126901068",
+    "unmaintained": [
+      {
+        "package": "ttf-parser",
+        "version": "0.25.1",
+        "advisory": "RUSTSEC-2026-0192"
+      }
+    ]
+  },
+  "source_hashes": {
+    "Cargo.toml": "8422ccfcc371571a63e479b85261857d2370efb51cd4e8221a81213b384e13c5",
+    "Cargo.lock": "d29906eeb7d17e09b5aa47b7ae0d9ba8cc25df9f750d7b95df8f70ebaed2e69e",
+    "crates/audit/Cargo.toml": "6939a51e6030bc785a7d10acfbd31f2f8d3b54377b77f8681ca1cbf5e080bbb2",
+    "crates/audit/src/storage/permissions.rs": "ec1bd4b017f609c4eebb2d431bf47ac9605a15824928bc43b09ddc433ac0a02a",
+    "crates/audit/src/keys/custody/permissions.rs": "eb6d1ebbba405285ff28b40e38f3b1bace9bc223248e17dfc3ccaa6e7aa20b62",
+    "crates/authority/src/transport/permissions.rs": "95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c",
+    "crates/native-security/src/lib.rs": "72b4616da895650e08dd595cfb542ccb0bb26780a64104e368d857374c066a1b",
+    "crates/native-security/src/process/mod.rs": "efe7784a4b5d3f878923fd66e1235bc719a3116471e7d6ce692c62ebb54becbe",
+    "crates/native-security/src/process/windows.rs": "b1cc96d1eb54eca3b30b13e2a2d517e0757905a41afe0d3437385a99ba5d47bd",
+    "crates/native-security/src/storage/mod.rs": "b6a64518f83dc9160d66226f0632dce8321ac36c2326a985e22fc43c21facddb",
+    "crates/native-security/src/storage/windows.rs": "b07974fb28a5c56cdff410bcf2709c3b04020b9494cac0b81229350641f2bd8c",
+    "crates/native-security/src/volume/mod.rs": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+    "crates/cli/src/lib.rs": "4b7e54551070cd3bed9d022080837e75769d8ad9b8e8f8df0a89b6515603c375",
+    "crates/cli/src/main.rs": "3184ee4821ca3ee1c96ff67ea5fd2ec80a58c919d464bf38ccc3010e5540d469",
+    "crates/cli/src/installation/mod.rs": "9170a7f38e9c049726deb2218a613d874a104a5619cd5a821765acc3765c5aec",
+    "crates/cli/src/installation/tests.rs": "414c465508cee047dddf2f2ab367b196ad2d0c5bfe0e831c31920755eaeda650",
+    "crates/cli/src/installation/permissions/mod.rs": "1146b023471c11870764da6a100c89f46abc2df201285cc5f891615dab0f0434",
+    "crates/cli/src/installation/permissions/windows.rs": "50eb903dc102500c00083ec67182c1e29237bc4e1566618dbfec13fec2af8181",
+    "test/lab/runtime/src/client.rs": "a025959e257e2f1b10658e944e6eaf0f456ef58f85b1c1d61ee4f53b4009e289",
+    "test/lab/runtime/src/main.rs": "817b5970c28a0f4a2cc119be1b7a3e82099d4d390f12ad811282c2b634411697",
+    "test/lab/runtime/src/origin.rs": "8f3b942972bb67322459de2d889c7d7af3bba23eddd70d5365f31c38aeac147d",
+    "test/lab/runtime/src/process.rs": "588e194c87925b97d6d8bbac4391c7543b000a0e8bed4ef9af029e3c8dda464f",
+    "test/lab/runtime/src/provisioning.rs": "8f8d69b98d0ae9ba36b8c44a9b58f6c083fa37a780fbbc70489653edee7efd4a",
+    "crates/native-security/Cargo.toml": "c119a4d812c7d00d3e1b1e5de44e33ead8c5398d7a7ecf1bf117d98017965345",
+    "crates/cli/Cargo.toml": "56680a3aa74defda2778d8deff65f649d76fc42e8f1fb8bce896e04eae6253fc",
+    "test/lab/runtime/Cargo.toml": "cced77e5aa98f86661dd79ea6497357934b25f39b0cb3f97607f510ee5083ac5",
+    "test/lab/runtime/Cargo.lock": "cb51d3a57af34ccc373470fd517a2627f255f9e86363d20c4dcccb9a045df6b5",
+    "build/rust/runtime-pilot.Dockerfile": "1f16548de63bcf6ff3009d1799df2505a60d8bbd3c6cbef4b1e601b8fcd4a6a7"
+  },
+  "log_hashes": {
+    "native-cli-workspace-tests-final.log": "69ad8c1a5f8896e878aecaf473540891f3aa7670653b96471e57a83b775555a9",
+    "native-cli-clippy-final.log": "e70fea8e6f9f0ee20516be8864cceb3d858bc19c43c30704536ac5e0b5758a7a",
+    "native-cli-wasm-final.log": "5a3df8949e3ff2edec03240b3d5778c767bd91beef666643015aba689056bd23",
+    "native-cli-normal-tree.log": "1ed301a0473d6e7a3aa47368292f20c72c97d8bce9bc7d9f7baec0ccd974d4fd",
+    "native-cli-docker-pilot-final.log": "c779f59570c7a126168d2661a12374ba75835b42b76f54d49ba6198f0d5816be",
+    "native-cli-image-build-final.log": "48b6beffbcf29acbbae8d1b7b46d6f8c1e5d9ae63b155744200dafb8292d5550"
+  },
+  "exact_new_sha_native_six_tuple": "pending",
+  "service_activation": false
+}

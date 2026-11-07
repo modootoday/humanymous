@@ -356,6 +356,7 @@ dependencies = [
  "getrandom",
  "hex",
  "hmac 0.12.1",
+ "humanymous-native-security",
  "humanymous-signals",
  "rustix",
  "scrypt",
@@ -365,7 +366,6 @@ dependencies = [
  "subtle",
  "time",
  "unicode-normalization",
- "windows-permissions",
  "zeroize",
 ]
 
@@ -424,6 +424,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "humanymous-native-security"
+version = "0.1.0"
+dependencies = [
+ "rustix",
+ "windows-permissions",
+ "winsafe",
+]
+
+[[package]]
 name = "humanymous-network"
 version = "0.1.0"
 dependencies = [
@@ -465,6 +474,7 @@ dependencies = [
  "humanymous-integrity",
  "humanymous-runtime",
  "serde_json",
+ "sha2 0.10.9",
 ]
 
 [[package]]
@@ -951,6 +961,12 @@ checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
  "windows-link",
 ]
+
+[[package]]
+name = "winsafe"
+version = "0.0.29"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9ef0ffc427f045c0cc9ebffd6f4f91153dcd2a1547b5c3c29ee3f541e16e95c6"
 
 [[package]]
 name = "zeroize"

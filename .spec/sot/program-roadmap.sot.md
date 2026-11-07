@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T00:58:36Z
+updated: 2026-11-07T01:32:33Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion]
@@ -56,7 +56,7 @@ Cargo 통합이 추가됐다. 각 채팅이 남긴 당시의 'root 통합 필요
 
 ## 현재 구현 근거의 범위
 
-- 기존13개 Cargo packages에 runtime/browser2개를 통합 중이며, edition2024, 사용자 승인 core MSRV/toolchain1.99.1,
+- root workspace는 native-security까지16개 Cargo packages이며, edition2024, 사용자 승인 core MSRV/toolchain1.99.1,
   shared unsafe forbid. 이전1.88 실행 기록은 당시의 이력으로 보존한다.
 - migration inventory314행: unit-parity ported54 / partial5 / pending255,
   verified_runtime_parity0. 원본 테스트 함수804개. 파일 수는 전체 완료율이 아니다.
@@ -85,7 +85,7 @@ Cargo 통합이 추가됐다. 각 채팅이 남긴 당시의 'root 통합 필요
 | M4 | Core/Gate·local authority | 제한된 runtime 구현 | session/collector/RIT/capture,proxy/settings/abuse/local admin·dual control |
 | M5 | browser/WASM data plane | 부분 구현 | 실제 loader/collector/Pass/RIT/recovery,ordinary browser·AT controls;M2-M4 |
 | M6 | 서버 adapter 생태계 | 부분 구현+확장 연구 | typed provenance/stream 규약,Node Rust-only,nginx 실제authority,외부auth·HTTP-origin tuples;M4-M5 |
-| M7 | CLI·설치 | provisioning slice 구현 | 서명 artifact 설치→서비스 실제 활성/readiness→반복/rollback native pilots;M4 |
+| M7 | CLI·설치 | native Rust provisioning·Docker binary pilot 구현 | 서명 artifact 설치→서비스 실제 활성/readiness→반복/rollback native pilots;M4 |
 | M8 | 공격/방어·Docker lab | 제한된 검증 | live Gate/browser/Pass·egress isolation·human/AT와 실제효과 분모;M4-M6 |
 | M9 | 자동화·모바일·표준·provider | 연구/공개 draft 작성 | proposal wire/vectors/review 및 허용된 owned pilots;provider는 not_run |
 | M10 | Cross-OS·CI/OIDC·Pages | native6tuple 및 wiring 구현 | 최종SHA runtime6tuple,실제runner3개,registry,갱신 docs·실제배포;M4-M8 |
@@ -288,3 +288,27 @@ Sealed startup 통합 a8a3b66의 원격 run42320683394는 native6tuple 모두 su
 Windows는 raw ignored2와 helper2를 보존했다. 정확한 근거는
 sealed-runtime-six-native-results.json이다. 이번 native ACL 후속 patch에는
 소급하지 않으며 새 SHA 실행이 필요하다.
+
+
+## Native CLI 및 공용 OS 보안 경계 후속 통합
+
+humanymous-native-security에 실제 Windows token/volume/handle 정책과 Unix
+geteuid를 모았다. audit storage는 같은 구현을 재수출하며 CLI가 audit crypto를
+의존하지 않는다. CLI는 installation/{permissions,tests}로 맥락을 분리했고
+crate 내 PowerShell 구현 및 Unix id subprocess를 제거했다. Installer의
+SYSTEM/Administrators 예외는 strict audit/custody 프로필에서 계속 거절된다.
+impersonated/elevated/enabled-admin 토큰,unknown/non-fixed volume,foreign ACL과
+부족한 owner 권한은 거절한다. Unix doctor는 unwritable mode0500parent도
+거절하며 권한을 고치거나 probe write를 하지 않는다.
+
+Windows CLI6/native-security6,최종 workspace/all-target tests·Clippy-Dwarnings·fmt,
+순수8library WASM 검사가 통과했다. Linux network-none/UID65532 Docker에서
+실제 CLI의 doctor,dry-run 무변경,설치/반복/rollback,digest·변조·owner-write
+거절을 확인했고 실제 runtime origin2/audit4파일럿도 유지됐다. Cargo advisory는
+알려진 취약점0이며 기존 ttf-parser 유지보수 경고1은 남는다. 근거는
+native-cli-security-results.json과 private 실행 로그/source manifest다.
+
+직전5ea39ff는 원격 run42321651595의6tuple이 모두 success다. 근거
+native-privacy-six-tuple-results.json은 이 SHA에만 귀속한다. 신규 CLI/native
+crate 변경은 별도 exact-SHA 실행이 필요하며 서비스 활성화·서명 provenance,
+실제 browser/capture/AT·full product e2e,배포 및 main 통합은 여전히 남아 있다.

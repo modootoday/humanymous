@@ -22,9 +22,10 @@ caller-controlled parent, a regular non-linked artifact, its expected digest and
 explicit acknowledgement that local management binding and IPC ACLs of the artifact
 were independently verified. This acknowledgement is a deployment precondition,
 not proof of runtime conformance. Windows UNC, device paths and non-fixed drives are rejected before filesystem reads. Unix mounts are an operator-controlled local-filesystem prerequisite; the portable implementation cannot prove mount locality. No default server configuration is invented.
-Windows requires Windows PowerShell/.NET Framework for read-only local drive and ACL inspection without module loading; unavailable
-inspection fails closed. Linux/macOS require parent owner matching the process and mode with no group/other
-access. Windows requires protected DACL with allow entries restricted to current
+Windows uses the shared native-security crate for read-only token, drive and
+handle/DACL inspection; no PowerShell/.NET helper or shell fallback is used.
+Unknown native queries and impersonated threads fail closed. Linux/macOS require parent owner matching the process and mode0700(owner read/write/execute,
+no group/other access). Windows requires protected DACL with allow entries restricted to current
 user, SYSTEM and Administrators; elevated tokens are refused. Other OSes fail closed.
 
 Dry-run performs reads and prerequisite diagnostics only: no mkdir, write, lock,
@@ -56,3 +57,26 @@ Official implementation references: [Rust filesystem race guidance](https://doc.
 [Get-Acl](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-acl?view=powershell-7.4),
 [ACL inheritance rules](https://learn.microsoft.com/dotnet/api/System.Security.AccessControl.FileSystemAccessRule).
 
+
+
+## Native implementation follow-through
+
+humanymous-cli owns installation orchestration and explicit transactional files.
+Its installation/permissions context delegates native facts and role-specific
+DACL semantics to humanymous-native-security. Installer SYSTEM/Administrators
+exceptions do not apply to audit/custody profiles. Parent owner full self/child
+rights and protected DACL remain mandatory. Null/empty/unknown/deny ACE forms
+are refused. GetDriveType proves only its native fixed classification, not
+hardware identity. The actual process token must not be elevated or have enabled
+administrator authority; an impersonated thread is unsupported. Unix geteuid
+replaces the id subprocess. There is no authored shell source in crate runtime
+or tests. A supplied artifact still is not executed or registered as a service.
+The Docker process lab also invokes the actual CLI for doctor, dry-run snapshots,
+install/repeat/rollback, digest mismatch and mutation refusal; this remains a
+bounded Linux non-root provisioning pilot, not a service-install qualification.
+
+
+Doctor also rejects a Unix parent with owner read/execute but no write permission
+rather than reporting an install prerequisite that cannot be met. It checks
+mode0700without performing a probe write; read-only mounts/quota/power-loss and
+concurrent same-owner actors remain independent operational premises.

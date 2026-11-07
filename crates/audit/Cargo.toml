@@ -34,9 +34,10 @@ zeroize.workspace = true
 rustix = { version = "1.1", features = ["process", "fs"] }
 
 [target.'cfg(windows)'.dependencies]
-windows-permissions = "=0.2.4"
+humanymous-native-security.workspace = true
 
 [target.'cfg(windows)'.dev-dependencies]
+windows-permissions = "=0.2.4"
 junction = { version = "=2.1.0", default-features = false }
 
 [lints]

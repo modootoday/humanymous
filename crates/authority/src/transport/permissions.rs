@@ -49,7 +49,7 @@ pub fn private_directory(path: &Path, peer: &Peer) -> io::Result<()> {
             .read(true)
             .custom_flags(0x02200000)
             .open(path)?; // BACKUP_SEMANTICS | OPEN_REPARSE_POINT
-        humanymous_audit::storage::permissions::windows_owner_only(
+        humanymous_audit::storage::permissions::verify_windows_privacy(
             &file,
             sid,
             humanymous_audit::storage::permissions::WindowsPrivacy::ProtectedDirectory,
