@@ -33,7 +33,14 @@ pub fn canonical(input: CanonicalInput<'_>) -> String {
             .get(name)
             .map(String::as_str)
             .unwrap_or_default();
-        result.push_str(&value.split_whitespace().collect::<Vec<_>>().join(" "));
+        let mut words = value.split_whitespace();
+        if let Some(first) = words.next() {
+            result.push_str(first);
+            for word in words {
+                result.push(' ');
+                result.push_str(word);
+            }
+        }
         result.push('\n');
     }
     result.push_str("cookie:");
@@ -52,26 +59,4 @@ pub fn lower_header_map(input: &BTreeMap<String, String>) -> BTreeMap<String, St
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn sorts_case_variants_before_collapsing_and_ignores_unsigned_headers() {
-        let headers = BTreeMap::from([
-            ("User-Agent".into(), "discarded".into()),
-            ("user-agent".into(), "  browser\t\u{85}\u{a0}  1 ".into()),
-            ("x-other".into(), "unsigned".into()),
-        ]);
-        let headers = lower_header_map(&headers);
-        let value = canonical(CanonicalInput {
-            headers: &headers,
-            cookie_id: "sid",
-            body: b"",
-        });
-        assert!(value.starts_with("user-agent:browser 1\nsec-ch-ua:\n"));
-        assert!(!value.contains("unsigned"));
-        assert!(
-            value.ends_with("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-        );
-    }
-}
+mod tests;

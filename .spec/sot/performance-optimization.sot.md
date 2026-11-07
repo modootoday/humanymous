@@ -3,9 +3,10 @@ id: sot:root/performance-optimization
 title: Reproducible build and runtime performance optimization
 status: draft
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:08:00Z
+updated: 2026-11-07T14:16:44Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
+  governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
 ---
 
 # Reproducible build and runtime performance optimization
@@ -23,7 +24,8 @@ storage and workflow critical paths; and Runtime, Authority, Audit and collector
 allocations, RSS, throughput, latency, cancellation, bounded I/O and cleanup.
 Root owns shared Cargo/lock/toolchain changes and execution admission. Product and
 delivery owners implement proposed patches in their claimed contexts. This owner
-has only explicitly claimed performance specification/plan/evidence paths.
+initially held only specification/plan/evidence paths; root later delegated the
+three exact Integrity source paths governed above, with no wider crate grant.
 
 Detection weights, thresholds, predicates and verdict bands remain frozen. Keep
 fail-closed decisions, audit durability, cryptographic/canonical bytes, dual
@@ -92,7 +94,7 @@ source-specific checks because a transport cache reports a hit.
 | ID | Experiment and current status | Acceptance boundary |
 |---|---|---|
 | B1 | Four native signals builds completed on immutable9b064dbd; initial15fresh/8rebuilt, repeats23fresh/0rebuilt | Project-quiet/external-load-observed; no controlled A/B/cold-cache claim; [[evidence:root/20261107135643]] |
-| R1 | Root accepted review of streaming signed-header whitespace emission; implementation/measurement pending | Preserve Unicode split_whitespace, signed-header order/newlines, cookie/body hash and all token bytes; owner patch plus matched comparison |
+| R1 | Root delegated three exact source paths; streaming implementation, regression tests and fixed Rust benchmark prepared, not compiled | Preserve Unicode split_whitespace, signed-header order/newlines, cookie/body hash and all token bytes; owner review and allocated actual verification/measurement remain required |
 | B2 | Archive fetch/preparation measurement and eligible-job restore proposal; research only | Current policy-job cache does not populate other runner filesystems; owner approves any exact policy expansion |
 | B3 | Package/version/feature/target duplicate compilation and invalidation; research only | Prove equivalent gates and actual dependency features before eliminating any build |
 | B4 | Profile/debug/codegen/linker/incremental/sccache; research only | Separate developer and CI profiles; matched compile and actual executable regressions; no inferred universal speedup |
@@ -113,6 +115,15 @@ combining UTF-8, case collisions and raw body bytes. Decode fixtures/build maps
 outside timed batches; consume outputs through black_box. Removal of explicit
 temporary constructions is source evidence, not an observed allocation count.
 Do not introduce unsafe global allocator instrumentation to manufacture counts.
+Root's later narrow handoff permits this owner to change only canonical.rs,
+canonical/tests.rs and examples/canonical_performance.rs. The example uses the
+fixed81 independent request fixtures plus6 synthetic cases, prevalidates exact
+canonical/token bytes, then warms both implementations16 corpus iterations and
+runs5 alternating AB/BA pairs of256 corpus iterations per variant. Preparation
+is outside timing. A120second deadline covers warmup and paired work, with a
+check per corpus iteration; fixed bounded fixtures constrain each iteration.
+Output includes per-batch time, operation/byte counts and fixture/output digests,
+never raw header or key data. This source contract is not executed evidence.
 
 Runtime's current single accept loop owns mutable Sessions and durable audit.
 Parallel workers would change ownership/ordering and need an accepted architecture

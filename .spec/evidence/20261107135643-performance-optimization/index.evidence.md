@@ -3,11 +3,11 @@ id: evidence:root/20261107135643
 title: Performance readiness and four source-bound library builds
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:08:00Z
+updated: 2026-11-07T14:16:44Z
 rel:
   depends_on: [sot:root/performance-optimization, plan:root/20261107135643]
 files:
-  - {path: baseline.json, sha256: 2df18357be45268386d5804def721096434713af6b2917f3f3bb3570bc9e5286, bytes: 5490, store: repo}
+  - {path: baseline.json, sha256: 050222e45bf8fad49391e0afe26280d694247e0b74d8602572dfc3167bb81e2f, bytes: 5512, store: repo}
 ---
 
 # Performance readiness and four source-bound library builds
@@ -62,6 +62,11 @@ the unchanged compatibility protocol and verified actual provider/session.
 Root subsequently narrowed public evidence authority to this exact index and
 baseline.json; the owner released/reclaimed its own lane and reverified identity.
 No new lane mutator, global writer-mode change or product-code grant resulted.
+Root later separately delegated exactly canonical.rs, canonical/tests.rs and
+examples/canonical_performance.rs under Integrity. Streaming normalization,
+regression tests and a fixed Rust-only benchmark are now prepared and formatted.
+No compiler/test/benchmark execution for R1 has occurred during the Pages window.
+This source checkpoint does not change the four B1 execution observations above.
 
 The controlling SoT retains build and runtime scope, exact-byte regression
 requirements, security invariants, resource admission and Docker product gates.

@@ -3,7 +3,7 @@ id: plan:root/20261107135643
 title: Performance research and source-bound optimization execution
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:08:00Z
+updated: 2026-11-07T14:16:44Z
 rel:
   depends_on: [sot:root/performance-optimization]
 ---
@@ -28,9 +28,12 @@ No broad keyword claim, global writer-mode flip or new lane implementation.
 Chat registry checkpoint957bb97 alone was not ownership. New lane coexistence
 draft08823f90 still requires root review and is not operational authority.
 
-Read-only research found R1; root accepted source review and retains shared
-Integrity implementation ownership. No product patch or benchmark code is owned
-here. Source SHA5ffa253022e1a7f7a64f9ab2a95f664ba40f4e23 was observed, not granted
+Read-only research found R1; root later delegated exactly
+crates/integrity/src/request/canonical.rs, its test-only canonical/tests.rs and
+examples/canonical_performance.rs. The actual claim was extended through normal
+owned release/reclaim and reread with the same provider/session. Root avoids
+those paths until return. No whole-crate or shared graph ownership follows.
+Source SHA5ffa253022e1a7f7a64f9ab2a95f664ba40f4e23 was observed, not granted
 as an execution baseline; root must choose the post-graph immutable SHA.
 
 ## First actual measurement request and completed allocation
@@ -90,6 +93,16 @@ repeats23fresh/0rebuilt. Cargo footer5.55/0.18/0.16/0.18seconds. Source2539files
 and config/tool observations remained unchanged. See exact evidence for limits.
 The compiler slot/target was returned after four terminal commands. Preserve
 initial archive syntax failure and discarded timezone-mixed duration arithmetic.
+
+R1 source and scoped rustfmt preparation are complete. The original case-map
+test moved unchanged to the exact test-only module; two differential tests cover
+all Unicode whitespace scalars, missing/empty fields, non-whitespace scalars,
+long/combining text, raw cookie framing, body binding and token-counter rejection.
+The benchmark prevalidates81 frozen request vectors plus6 synthetic cases and
+retains its pre-optimization Rust oracle only in test/example code. Tests and
+benchmark compilation/execution remain NOT_RUN during the Pages exclusive window.
+Root must review the frozen checkpoint and allocate actual scoped test/Clippy,
+example build and function measurement commands before they start.
 
 R1 measurements, tests and Docker/product workloads remain NOT_RUN. No measured
 optimization improvement or full-product completion is claimed. Observed Cargo

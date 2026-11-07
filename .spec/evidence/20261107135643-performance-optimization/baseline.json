@@ -25,7 +25,7 @@
     "compilation_performed": true
   },
   "r1_owner": "root-integration",
-  "r1_status": "source_review_accepted_implementation_pending",
+  "r1_status": "root_delegated_exact_three_paths_implementation_prepared_uncompiled",
   "r1_fixtures": [
     {
       "path": "crates/integrity/tests/fixtures/request.json",
