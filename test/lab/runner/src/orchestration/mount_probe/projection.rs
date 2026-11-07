@@ -228,18 +228,43 @@ mod tests {
         assert_eq!(partial["totals"]["unobserved"], 1);
     }
     #[test]
-    fn diagnostic_target_is_runtime_ancestor_with_one_unchanged_copy_recipe() {
+    fn diagnostic_target_is_runtime_ancestor_with_one_owned_parent_tree_recipe() {
         let recipe = include_str!("../../../../../../deployments/lab/images/product.Dockerfile");
         assert!(recipe.contains("FROM custody-layout AS runtime"));
         let copies: Vec<_> = recipe
             .lines()
             .filter(|line| line.starts_with("COPY --from=custody-directories "))
             .collect();
-        assert_eq!(copies.len(), 4);
-        for line in copies {
-            assert!(line.contains("--chmod=0700 /empty/"));
-        }
+        assert_eq!(
+            copies,
+            vec![
+                "COPY --from=custody-directories --chown=65533:65533 /empty/witness/ /witness/",
+                "COPY --from=custody-directories --chown=65532:65532 /empty/writer/ /writer/"
+            ]
+        );
         let contract = contract().unwrap();
+        let chmod: Vec<String> = serde_json::from_str(
+            recipe
+                .lines()
+                .find_map(|line| {
+                    line.strip_prefix("RUN ")
+                        .filter(|v| v.starts_with("[\"chmod\""))
+                })
+                .unwrap(),
+        )
+        .unwrap();
+        assert_eq!(chmod[1], "0700");
+        let mut expected: Vec<_> = contract["roles"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .flat_map(|role| role["paths"].as_array().unwrap())
+            .map(|path| format!("/empty{}", path["path"].as_str().unwrap()))
+            .collect();
+        let mut actual = chmod[2..].to_vec();
+        actual.sort();
+        expected.sort();
+        assert_eq!(actual, expected);
         let codes: Value =
             serde_json::from_str(include_str!("../../../safe-diagnostics.json")).unwrap();
         for code in contract["refusal_codes"].as_array().unwrap() {

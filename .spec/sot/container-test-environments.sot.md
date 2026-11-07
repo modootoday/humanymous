@@ -164,6 +164,18 @@ kernel status reads to65536bytes and reject overflow/invalid encoding. Parent
 directory facts are private nonpolicy observations only; do not create a new
 permission gate from them. Retain OS error numbers privately when available.
 
+Hosted baseline42372825588/sourceb482d5be measured all four role/surface
+observations and all eight paths as actor_mount_mode refusals, both in the
+image and fresh named volumes. Lookup, directory, non-symlink and expected
+UID predicates passed; exact numeric mode remains private. Collection and
+cleanup succeeded, custody/full qualification did not. Evidence-backed repair
+uses source0700 child directories inside /empty/writer and /empty/witness,
+then copies each role parent tree with the existing role ownership. Preserve
+child entries instead of relying on the metadata of an empty source root.
+The runtime and probe share this single custody-layout ancestor and unchanged
+predicate. Require the same actual four observations/eight policy boundaries
+to accept before attempting Go8 or the browser product again.
+
 Save the initial eight-row NOT_RUN inventory before any fetch/compiler/image
 operation. Setup failures retain the unexecuted denominator. After a case,
 independently inspect backend liveness, then await controlled actor exit and

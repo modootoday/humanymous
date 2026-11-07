@@ -1,0 +1,158 @@
+{
+  "schema": "humanymous.mount-probe-source-evidence/1",
+  "classification": "collection_complete_policy_refused",
+  "source_sha": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697",
+  "run_id": 42372825588,
+  "run_attempt": 1,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42372825588",
+  "preflight": {
+    "job_id": 128404275983,
+    "conclusion": "success",
+    "lab_tests": {
+      "passed": 20,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "delivery_tests": {
+      "passed": 74,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "unix_actor_check": "passed",
+    "all_target_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "probe": {
+    "job_id": 128404776474,
+    "conclusion": "success",
+    "summary": {
+      "cleanup_observed": true,
+      "collection_status": "complete",
+      "custody_policy_qualified": false,
+      "diagnostics": {
+        "failure_count": 0,
+        "failures": [],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "full_product_qualified": false,
+      "owner_exit_code": 0,
+      "private_image_inspection_sha256": "0008c26f2af0921baeb2e296eef65443c7423cbbecfea528c693aae4e98b97a8",
+      "receipt": {
+        "full_product_qualified": false,
+        "image_sha256": "sha256:478a80220628efbd29e3c20a6d6cbbbd4f4c719dff2c2067a6b6c9bc320523a7",
+        "observations": [
+          {
+            "paths": [
+              {
+                "code": "actor_mount_mode",
+                "id": "writer_keys",
+                "status": "observed_refusal"
+              },
+              {
+                "code": "actor_mount_mode",
+                "id": "writer_wal",
+                "status": "observed_refusal"
+              }
+            ],
+            "role": "writer",
+            "status": "observed_refusal",
+            "surface": "image"
+          },
+          {
+            "paths": [
+              {
+                "code": "actor_mount_mode",
+                "id": "witness_keys",
+                "status": "observed_refusal"
+              },
+              {
+                "code": "actor_mount_mode",
+                "id": "witness_head",
+                "status": "observed_refusal"
+              }
+            ],
+            "role": "witness",
+            "status": "observed_refusal",
+            "surface": "image"
+          },
+          {
+            "paths": [
+              {
+                "code": "actor_mount_mode",
+                "id": "writer_keys",
+                "status": "observed_refusal"
+              },
+              {
+                "code": "actor_mount_mode",
+                "id": "writer_wal",
+                "status": "observed_refusal"
+              }
+            ],
+            "role": "writer",
+            "status": "observed_refusal",
+            "surface": "fresh-volume"
+          },
+          {
+            "paths": [
+              {
+                "code": "actor_mount_mode",
+                "id": "witness_keys",
+                "status": "observed_refusal"
+              },
+              {
+                "code": "actor_mount_mode",
+                "id": "witness_head",
+                "status": "observed_refusal"
+              }
+            ],
+            "role": "witness",
+            "status": "observed_refusal",
+            "surface": "fresh-volume"
+          }
+        ],
+        "observations_complete": true,
+        "private_receipt_sha256": "a81f6805e877d654ef78e111488c4f787a0dfaf20601e16af6fdbe1194d0b4f4",
+        "raw_contents_included": false,
+        "recipe_sha256": "4e0954b69058288dc76e659041056f68298119a46140901fadb8b3ea5a5ce9a9",
+        "run_context": {
+          "authenticated_provenance": false,
+          "hosted_qualification_admitted": true,
+          "job": "probe",
+          "kind": "github-hosted-linux",
+          "repository": "modootoday/humanymous",
+          "requires_external_job_verification": true,
+          "run_attempt": 1,
+          "run_id": 42372825588,
+          "workflow_sha": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697"
+        },
+        "schema": "humanymous.lab-mount-probe-public/1",
+        "source_manifest_sha256": "9715f61b30c54a6eb313066de51f1a222f567818c8ca68053b1c0057521e97cc",
+        "source_sha": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697",
+        "totals": {
+          "observed": 4,
+          "observed_accept": 0,
+          "observed_refusal": 4,
+          "scheduled": 4,
+          "unobserved": 0
+        }
+      },
+      "receipt_valid": true,
+      "release_ready": false,
+      "requirement": {
+        "full_product_qualified": false,
+        "kind": "scoped",
+        "satisfied": true,
+        "schema": "humanymous.lab-requirement/1"
+      },
+      "schema": "humanymous.mount-delivery-summary/1",
+      "source_changed": false,
+      "source_manifest_sha256": "bfbcf6ee54cdd646248704d5b76409756ca14b4c8bbb2273453e0b9969cc3307",
+      "source_sha": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697"
+    }
+  },
+  "interpretation": "Four complete diagnostic observations; all eight directory paths refuse the unchanged mode&0777==0700 predicate. Earlier predicates accepted. Exact numeric mode unavailable publicly. This is not custody or product qualification.",
+  "full_product_qualified": false
+}
