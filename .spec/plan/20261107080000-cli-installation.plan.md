@@ -189,6 +189,13 @@ New check/Clippy/pure execution remains NOT_RUN since d9/A was returned. Direct
 rustfmt first encountered transient Windows mapped-file error1224; one bounded
 retry and subsequent rustfmt --check/diff check passed. No process was killed,
 no compiler overlap was started and no raw failure was relabeled as a pass.
+The publication fix is now attributed checkpoint6d1c9be692efdf4bdcf57a921675577542b0f2f5.
+Root assigned A again for that source plus1fa. Check/pure7/Clippy all returned0,
+but native-security inputs changed during the window and audit changes were
+present. Preserve the observations as provisional working closure in
+[[evidence:root/20261107084047]], with private raw inputs20261107084046. CLI/common
+Cargo inventory and three captured runtime hashes stayed stable; no full graph,
+clean candidate or hosted8132117 claim follows. A was returned; no rerun loop.
 
 Root reassigned CLI to the genuinely free sot-plan lane, disjoint from the Windows
 runner's release lane. CLI owns release-descriptor verification, immutable service

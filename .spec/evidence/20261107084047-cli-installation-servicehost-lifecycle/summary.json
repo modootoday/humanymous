@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.cli-servicehost-provisional.v1",
+  "cli_commit": "6d1c9be692efdf4bdcf57a921675577542b0f2f5",
+  "runtime_lifecycle_test_commit": "1fa5cfb70a1d85a4557e7d09c1922cb00e32c47d",
+  "qualification": "provisional-working-dependency-closure",
+  "features": ["runtime-service-pilot", "service-pilot"],
+  "all_target_check_exit": 0,
+  "pure": {"passed": 7, "failed": 0, "ignored": 0, "filtered_out": 15},
+  "all_target_clippy_warnings_denied_exit": 0,
+  "format": "passed",
+  "cli_native_cargo_manifest_before": "29ab18881c41ef8a7e1b92f2308c1b4eaf7db4f21f4e15e8efb283fcc4bb1589",
+  "cli_native_cargo_manifest_after": "4fba7a93d054f05dffd22e554b02517cfe8407396e491c600e7eb185d5375bef",
+  "observed_changed_inventory_paths": [
+    "crates/native-security/src/storage/mod.rs",
+    "crates/native-security/src/storage/private_directory.rs"
+  ],
+  "audit_custody_vault_working_changes_present_after": true,
+  "captured_runtime_source_hashes_stable": true,
+  "cli_and_common_cargo_inventory_stable": true,
+  "source_utility_is_full_dependency_closure": false,
+  "qualifies_clean_full_candidate": false,
+  "qualifies_hosted_8132117": false,
+  "actual_runtime_service": "not_run",
+  "actual_runtime_upgrade_rollback": "not_run",
+  "local_service_or_account_changes": false,
+  "product_qualified": false
+}
