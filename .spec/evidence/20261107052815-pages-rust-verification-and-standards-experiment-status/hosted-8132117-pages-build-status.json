@@ -1,0 +1,29 @@
+{
+  "run": 42355168729,
+  "source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "pages_job": {
+    "authored_pages_per_mode": 88,
+    "id": 128361401308,
+    "errors_per_mode": 0,
+    "conclusion": "success",
+    "baseurls": [
+      "",
+      "/humanymous"
+    ],
+    "build_input_sha256": "d8a1f57a1468fe8275c40f51ff12e7497c46d193e4a1aeb453b26827a020f93a",
+    "artifact_upload": "skipped",
+    "theme": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+    "rendered_html_per_mode": 88
+  },
+  "documentation_job": {
+    "reported_missing_limit": 10,
+    "id": 128361293298,
+    "cause": "review inventory differs from governed source",
+    "conclusion": "failure"
+  },
+  "scope": "Exact earlier source only; later docs and normalized corpus unqualified. Build/static link and HTML checks are separate from actual browser and assistive technology.",
+  "actual_pages_browser": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "current_preview": "unavailable",
+  "overall_run": "not asserted terminal"
+}

@@ -64,6 +64,13 @@ pure planning fixtures for these distinctions. Reading or passing those fixtures
 does not execute filesystem repair, interrupted sync, process restart or an
 independent witness deployment; measure those boundaries separately.
 
+When a native test starts a helper process, preserve its bounded output and
+observed completion separately from the parent harness. Inherited helper output
+can contain another test summary; a successful child exit alone does not prove
+which assertions ran. Require the declared helper contract, timeout, exit and
+reaping evidence before accepting the parent's coverage. Ignored helper entries
+remain visible in raw counts rather than becoming additional passing tests.
+
 A terminal JSON value without its newline is uncommitted even if its JSON is
 valid. Recovery may discard that final incomplete frame; malformed
 newline-terminated frames still fail. The configured frame bound includes the

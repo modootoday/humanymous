@@ -1512,3 +1512,27 @@ without logical scope, and same-subject foreign-scope negatives preserving both
 ciphertexts before exact-scope recovery. New native regression remains unexecuted
 at this reviewed checkpoint; no older hosted result promoted. Partial module
 inspection does not renew a whole-file receipt. No benchmark-prohibited commands.
+
+### Native custody helper review and actual hosted Pages start
+
+Read complete key_custody native test source and Unix custody duplicate-description
+test. Added two manual receipts, explicitly retaining unexecuted scope. Found
+Command.status helper parents with inherited output/no timeout; reported exact
+names to audit owner, no helper waiver or actual native test execution. How-to
+now requires bounded separate child output/completion/exit/reaping rather than
+accepting extra summaries or exit0 as assertion coverage.
+
+Exact813 documentation128361293298 failed review inventory; fetched/saved ANSI-
+stripped log with first10 missing entries and exit1, attached privately. This
+historical candidate predates later receipts. Pages128361401308 now actually
+in_progress: upstream Ruby install/audit succeeded, apex validate active and
+subpath pending at first observation. No new source or render/browser pass inferred.
+
+Subsequent exact-job observation: Pages128361401308 completed SUCCESS. Retrieved
+log proves both apex/subpath builds: upstream checker88, Rust pages88 and
+rendered_html88/errors0 per mode, identical build_input d8a1f57a1468. Themeba2b23f
+verified. Upload skipped; no downloadable preview, actual Pages browser or AT
+run. Saved private ANSI-stripped log and sanitized public summary. This source813
+checkpoint includes later static denominator coverage than63f, but predates all
+newer docs and normalized25corpus; never promote to current acceptance. Separate
+documentation job remains failed inventory, complete CI conclusion not inferred.

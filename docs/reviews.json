@@ -2,6 +2,26 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/keys/custody/tests.rs",
+  "sha256": "21fe2804a8896ed0bd8d2d4f2a97380a19c18a151c958f53f69faaf46fa8c68a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete Unix duplicate-description regression definition: stable lock inode, first guard drop while duplicate survives, successor exclusivity and no accidental unlock when old duplicate closes. Native filesystem behavior is defined, not executed here; no Windows/service-principal implication.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md",
+    "docs/reference/security-audit.md"
+  ]
+},
+{
+  "source": "crates/audit/tests/key_custody.rs",
+  "sha256": "9429cc93175f3c6e3da92027a1c588f940f45d12f6a1eca9b41526ce7a816e9f",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete native test source: sealed snapshot/rotation, corrupt/pending refusal, foreign owner/DACL/reparse/Unix links, tombstone preservation, process-exit recovery and sharing failure. Reported two Command.status parents with inherited output/unbounded wait to owner; ignored helpers are not passing cases and no hosted execution inferred.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md",
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "adapters/node/host-pilot-contract.json",
   "sha256": "f4ec52033a8e692b72d6a9bd6befe76825d65cb290a4f2fb72fd160e45538dcb",
   "reviewer": "codex/rust-pages",
