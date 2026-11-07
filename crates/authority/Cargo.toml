@@ -19,6 +19,7 @@ sha2.workspace = true
 hex.workspace = true
 subtle.workspace = true
 getrandom.workspace = true
+zeroize.workspace = true
 tokio = { version = "1.54.1", features = ["rt-multi-thread", "net", "io-util", "time", "sync", "macros"] }
 
 [target.'cfg(unix)'.dependencies]

@@ -242,3 +242,17 @@ peer checks, IPC and scoring are unchanged. Python/Ruby runtime validation is
 NOT_RUN pending the standard hosted delivery gates. Prior component passes apply
 only to their recorded source. Shared execution policy is defined by
 sot:root/program-roadmap and sot:root/delivery, not duplicated here.
+
+## Shared private credential ownership
+
+Credential owns Zeroizing<String>; generated entropy uses Zeroizing<[u8;32]>.
+from_private_provisioning consumes Zeroizing<String> without cloning and accepts
+exactly64 lowercase hex ASCII bytes, the existing generated grammar. It rejects
+noncanonical casing, whitespace, controls and length errors with a static code.
+Exact Bearer scheme and existing constant-time fixed-length comparison remain.
+No Debug/Serialize/Clone is added. Representation validation does not prove
+entropy, supervisor identity, role/scope separation or fresh restart epochs.
+Management must use independently provisioned credentials, never adapter/session
+credentials. Caller-owned request/wire copies are outside this type's erasure
+guarantee. Runtime owns integration and actual hosted qualification; no inline
+key startup or physical-memory erasure claim follows from Zeroizing ownership.

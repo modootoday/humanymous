@@ -165,3 +165,14 @@ Direct rustfmt edition2024 and owned diff whitespace check passed. Public-only
 spec check:0 errors,2 other-owner warnings (binary scan and missing verify).
 Cargo compile/unit execution NOT_RUN: no assigned Cargo slot. Actual hosted
 profile/native runtime evidence remains pending; old green is not reused.
+
+## Shared credential injection slice
+
+User active goal and runtime integration request require a single shared bearer
+primitive. New actual authority-ipc lane claimed own authority scope, independent
+of runtime. Added Zeroizing private injection constructor and entropy ownership,
+canonical grammar refusal tests and exact Bearer negative cases. Own manifest
+uses existing workspace zeroize; root alone must update shared lock package
+dependency edge. Direct rustfmt/owned diff check passed. Cargo/unit/hosted tests
+NOT_RUN pending root lock and single-Cargo-slot allocation. Source is not yet
+qualified; prior component green is historical only.
