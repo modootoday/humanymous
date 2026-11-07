@@ -290,7 +290,17 @@ Bytes; unsupported platforms reject without plaintext/inline fallback. Controlle
 parent/broker/owned hosted lab may select the inherited mode. The caller must
 verify parent ownership/provenance externally: JSON, nonterminal stdio or an
 arbitrary Read is not attestation. No argv/env/plaintext file fallback is added.
-Raw config and unlock buffers are zeroizing; readiness never serializes them.
+The binary's owned raw config and unlock buffers are zeroizing; readiness never
+serializes them. Inline component hmac_key_hex/signing_seed_hex fields are
+Zeroizing<String> from deserialization, including when source/witness/private-
+directory preflight refuses before consuming them. Successful inline handoff
+moves those wrappers directly, without nested wrappers or encoded-string clones.
+This is CA-SECRET-01 encoded-key drop ownership remediation, not production
+promotion of inline keys. Caller-retained original JSON, serde intermediates,
+transport/provider/allocator/kernel copies have separate lifetimes; field types
+do NOT prove their erasure or universal RAM erasure. Audit remains Deserialize
+only, without Debug/Serialize. JSON string fields are unchanged; direct Rust
+struct constructors must supply Zeroizing<String> instead of String.
 Readiness labels inherited transport as external-provenance-required, reports
 external_parent_attested=false, and never equates it with OS-store attestation.
 

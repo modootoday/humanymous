@@ -85,8 +85,8 @@ pub fn open_audit(
     }
     private_directory(&audit.directory, peer)
         .map_err(|_| "audit directory is not private and canonical")?;
-    let encoded_key = Zeroizing::new(std::mem::take(&mut audit.hmac_key_hex));
-    let encoded_seed = Zeroizing::new(std::mem::take(&mut audit.signing_seed_hex));
+    let encoded_key = std::mem::take(&mut audit.hmac_key_hex);
+    let encoded_seed = std::mem::take(&mut audit.signing_seed_hex);
     let key = Zeroizing::new(hex::decode(encoded_key.as_str()).map_err(|_| "invalid audit key")?);
     let seed =
         Zeroizing::new(hex::decode(encoded_seed.as_str()).map_err(|_| "invalid audit seed")?);
@@ -151,6 +151,45 @@ mod tests {
         }
     }
 
+    #[test]
+    fn inline_preflight_refusal_retains_zeroizing_keys_for_later_owned_handoff() {
+        let input = Zeroizing::new(
+            json!({"directory":"nonexistent-inline-wal","node_id":"fixture",
+                "allow_new":false,"trusted_head":null,"require_external_witness":true,
+                "hmac_key_hex":"aa".repeat(32),"signing_seed_hex":"bb".repeat(32)})
+            .to_string(),
+        );
+        let mut audit: Audit = serde_json::from_str(input.as_str()).unwrap();
+        #[cfg(unix)]
+        let peer = Peer::Unix { uid: 0 };
+        #[cfg(windows)]
+        let peer = Peer::Windows {
+            sid: "S-1-5-18".into(),
+            pid: 1,
+        };
+        assert_eq!(
+            open_audit(&mut audit, &peer, None).err(),
+            Some("invalid audit source")
+        );
+        // Static ownership is part of the regression: retained encoded fields
+        // must already be zeroizing, without consuming them on preflight error.
+        let key: &Zeroizing<String> = &audit.hmac_key_hex;
+        let seed: &Zeroizing<String> = &audit.signing_seed_hex;
+        assert_eq!(key.as_str(), "aa".repeat(32));
+        assert_eq!(seed.as_str(), "bb".repeat(32));
+        audit.require_external_witness = false;
+        assert!(audit.validate_source().is_ok());
+        let key_allocation = audit.hmac_key_hex.as_ptr();
+        let seed_allocation = audit.signing_seed_hex.as_ptr();
+        let key: Zeroizing<String> = std::mem::take(&mut audit.hmac_key_hex);
+        let seed: Zeroizing<String> = std::mem::take(&mut audit.signing_seed_hex);
+        assert_eq!(key.as_ptr(), key_allocation);
+        assert_eq!(seed.as_ptr(), seed_allocation);
+        assert!(audit.hmac_key_hex.is_empty());
+        assert!(audit.signing_seed_hex.is_empty());
+        // This does not inspect freed memory or claim provider/transport copies
+        // are erased. The caller's original JSON is a separate owned buffer.
+    }
     #[test]
     fn missing_witness_does_not_consume_unlock_or_open_state() {
         let mut audit: Audit = serde_json::from_value(sealed()).unwrap();

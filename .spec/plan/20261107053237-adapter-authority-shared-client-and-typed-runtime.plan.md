@@ -802,3 +802,26 @@ has NO test constructor. Runtime confirmed sole ownership of its generic R and
 AuthorityGuard enum; no reverse edge or second production gate. Actual receipt/
 bounded transport/native monitor/atomic kernel effects/private Ready remain absent.
 The21pure result is not production startup, actual native or hosted qualification.
+
+## CA-SECRET-01 encoded inline-key lifetime source remediation
+
+Root approved narrow source fix after independent audit triage. Audit configuration
+hmac_key_hex/signing_seed_hex now own Zeroizing<String> from deserialization;
+startup directly takes those wrappers after unchanged source/witness/private-dir
+preflight, rather than creating nested wrappers. Retention before preconditions
+still preserves the actual source and refuses mixed/required-witness inline mode.
+No inline production promotion, secret reader/provider action or new dependency.
+Audit remains Deserialize only, no Debug/Serialize. Public JSON string fields stay
+compatible. Direct Rust field constructors must use Zeroizing<String>; repository
+Rust search found consumers via JSON fixtures (.NET/Apache and authority tests),
+no external direct Authority Audit literal/field mutation requiring foreign edits.
+
+One authored regression covers invalid inline required-witness preflight, retained
+zeroizing field types/bytes and subsequent same-allocation wrapper move with empty
+default fields. No freed-memory inspection, native store read or RAM-erasure claim.
+Caller original JSON, serde intermediates and transport/provider/allocator/kernel
+copies remain separate lifetimes, explicitly recorded in owning SoT. Earlier21pure
+proof does not cover this change. Expected22pure tests, compile/Clippy NOT_RUN;
+scoped fmt/diff checks passed. No Cargo/native/runtime allocation assumed and
+Performance target reservations remain honored. Raw encoded-key finding is P2
+ownership debt, not observed exfiltration/log/provider exploit.

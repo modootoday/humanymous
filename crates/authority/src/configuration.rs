@@ -115,12 +115,12 @@ pub struct Audit {
     pub directory: PathBuf,
     /// Stable audit node ID.
     pub node_id: String,
-    /// Stable independent HMAC key, 32..256 bytes lower hex.
+    /// Inline component key, zeroizing from deserialization, 32..256 bytes lower hex.
     #[serde(default)]
-    pub hmac_key_hex: String,
-    /// Stable 32-byte Ed25519 seed, lower hex.
+    pub hmac_key_hex: zeroize::Zeroizing<String>,
+    /// Inline component seed, zeroizing from deserialization, 32 bytes lower hex.
     #[serde(default)]
-    pub signing_seed_hex: String,
+    pub signing_seed_hex: zeroize::Zeroizing<String>,
     /// Existing sealed custody. Mutually exclusive with inline component keys.
     #[serde(default)]
     pub keys: Option<SealedKeys>,
