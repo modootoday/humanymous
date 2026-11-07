@@ -1,0 +1,50 @@
+{
+  "schema": "humanymous.go-component-verification/1",
+  "observed_at": "2026-11-07T08:38:26.2792380Z",
+  "source_checkpoint": "c9595626ba355c62c0bca2359666fb23f5b80a96",
+  "runner": "local-windows-rust-pure-unit",
+  "toolchain": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "allocation": {
+    "free_physical_gib": 33.51,
+    "commit_percent": 81,
+    "slot": "A",
+    "target": "target",
+    "jobs": 1,
+    "incremental": 0
+  },
+  "unit": {
+    "command": "cargo test --locked -p humanymous-go-adapter --lib -- --test-threads=1",
+    "session_id": 15168,
+    "exit_code": 0,
+    "passed": 10,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0,
+    "cargo_elapsed_seconds": 11.71
+  },
+  "clippy": {
+    "command": "cargo clippy --locked -p humanymous-go-adapter --all-targets -- -D warnings",
+    "exit_code": 0,
+    "cargo_elapsed_seconds": 5.1
+  },
+  "source_subset_files": 216,
+  "concurrent_changes": [],
+  "source_hash_scope": "Enumerated source subset excludes newly transitive capture/challenge; not complete immutable workspace proof",
+  "unchanged_hashes": {
+    "Cargo.lock": "9b96ab7ac2bc6a3f474c3f2b586c05d087e6cbaecc0f50e7b28eda2b392c58d3",
+    "Cargo.toml": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac",
+    "crates/go-adapter/Cargo.toml": "7f7d9a95f8e9576a0b98e3068f771e2f632f2dfca88bd72b36f7cfcf787939e7",
+    "crates/go-adapter/src/lib.rs": "61d8d5bb1b6ce5830d341a35133113ba885206124c57cefae1707931ed390b82",
+    "crates/go-adapter/src/probe.rs": "efef4c891f432df88bdae1fb711039fd2c44f9e4ca9922ec22ffd861b6c5c771",
+    "crates/go-adapter/src/qualification.rs": "4fc4bc1bef26d25f3953b9bbe567bef8be6c44b9e7ca2a034f87acb59fe7e42f",
+    "crates/go-adapter/src/scenario.rs": "0ab7e7e900aeda979ec4e3c3867a3ce54d38861cd7e2209df3a52c449850895d",
+    "crates/go-adapter/src/scenario/tests.rs": "69c5674d7859a01a53ef0a853b8794bb07a3c531204f2454767ed804e3064128",
+    "rust-toolchain.toml": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+  },
+  "actual_go_host": "NOT_RUN",
+  "hosted_docker": "NOT_RUN",
+  "product_e2e": "NOT_RUN",
+  "release_qualified_tuples": [],
+  "scope": "component only"
+}

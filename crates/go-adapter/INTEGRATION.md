@@ -102,3 +102,12 @@ pre-handoff plus observation past deadline; bypass needs both kernel-denied
 paths, with neither case claiming an HTTP response. Four new tests bring the
 total to ten; previous six-test source and older three-test result remain
 separate. No manifest changes; freeze source until assigned validation/failure.
+
+Current validation: c959562 passed all ten pure units and scoped all-target
+Clippy-Dwarnings on root-assigned A, default target/jobs1/incremental0. A returned.
+Evidence:root/20261107083740 records exact owned/graph hashes and zero drift in
+the216-file source subset; newly transitive capture/challenge source was omitted,
+so it is not a full immutable compiled closure. Keep this source frozen for
+the lab's actual8case integration; only actual failures justify changes/reruns.
+Remaining: actual hosted fixture/process/namespace/contact/eight-case evidence,
+not further pure-test allocation. The8132117 run predates evaluatorc959562.

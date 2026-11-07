@@ -105,6 +105,11 @@ actual runner, stable owned source hashes and one concurrent runtime test-file
 change in the enumerated208-file subset. It is not whole-workspace qualification.
 That result predates the probe module's three added tests; the six-unit source
 requires its own assigned-slot verification and cannot inherit the older pass.
+Later source c959562, including the lab-requested evaluator, passed all ten pure
+units and locked all-target Clippy on explicit A. Evidence:root/20261107083740
+records zero drift in216 enumerated files and exact graph/owned hashes, while
+retaining the limitation that newly transitive capture/challenge source was not
+in the snapshot. It does not establish a complete immutable compiled closure.
 Direct Rust formatting and scoped spec check passed with zero errors/warnings.
 Hosted external fixture execution, actual Go versions, image digests, isolation
 witness and product e2e are NOT_RUN. No host tuple is advertised as qualified.
