@@ -835,3 +835,32 @@ binary contexts with restricted helpers, without permanent helper packages.
 The full safe-root and approved actor unsafe inventory still applies to each
 binary, test, example and generated boundary. Tools are not frozen or moved by
 this ownership decision; owners must complete exact maps before Root relocation.
+## Accepted tools target naming decisions
+
+Root accepts the existing15 binary names and qualification-* feature spellings
+in plan:root/20261107224511, with qualification features default off. Keep
+humanymous at src/main.rs. Other composition roots use standard
+src/bin/<role>/main.rs; implementation trees use src/qualification/<role>/mod.rs,
+while non-Rust resources remain package-relative qualification/*. The native
+planner uses native-planner. Default release inventory contains only humanymous;
+humanymous-native requires a separately selected native-planner artifact. Every
+qualification and service fixture binary is excluded from production releases.
+This is a source/feature decision, not release execution or publication approval.
+
+Shared attacker/defender implementation has one canonical physical tree at
+src/qualification/lab_support/{attacker,defender}/mod.rs. Relevant binary roots may
+link those same in-package files without copying implementations or exporting
+them from the production library. Per-binary minimal module linkage, lint and
+capability visibility require review before the tools freeze. Public modules in
+a binary crate are not a production library API, but their helper visibility and
+role reachability still must not expand native authority or approved unsafe.
+
+Former external integration tests that only inspect private tool algorithms may
+move into their owning binary's test modules. Black-box executable tests remain
+integration targets with real CARGO_BIN_EXE bindings. Review and version the
+maintenance qualification profile accordingly: map every old target and test name
+to an exact new owner/selector, preserve the complete expected case set and all
+required executable boundaries, and reject missing, duplicate or unknown names.
+Do not include a former library root in each integration target and multiply all
+cfg(test) cases, add a public fixture API, or lower counts to hide the split.
+No target/source movement is authorized until this final identity map is frozen.
