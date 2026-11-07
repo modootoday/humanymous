@@ -726,3 +726,30 @@ independently of normal workspace success. Test targets with duplicate former
 names need unique context-qualified targets and exact CARGO_BIN_EXE updates;
 process tests retain actual executable identity and helper-role restrictions.
 A new package ID must never grant every binary its siblings' native privileges.
+## CLI qualification executable lint isolation
+
+Root accepts preserving the four existing standalone qualification executable
+names as explicit CLI package binary targets during the tools consolidation.
+Disable automatic binary discovery; each qualification target requires its own
+explicit non-default qualification feature. Release commands select production
+binary names and production features explicitly, never all-features by default.
+Package identity alone cannot satisfy a native helper or qualification role.
+
+The workspace unsafe_code=forbid rule remains unchanged. For this one package,
+a local lint table may use unsafe_code=deny, missing_docs=warn and Clippy all=warn
+instead of inherited workspace lints. This is an explicit lint-isolation
+exception for the existing Windows native-runner actor implementation only.
+Every production library/binary crate root and every other safe qualification
+binary root must declare forbid(unsafe_code). The isolated native-runner binary
+uses deny and retains only the two existing approved Windows actor module allows
+(actor.rs and actor/scm.rs). No other unsafe implementation or allow site is
+admitted. Shared safe contexts remain forbidden; do not move actor code into the
+platform testing context or link it into a production CLI root.
+
+The atomic tools slice requires an exact target/feature/native-role matrix,
+production and qualification compile controls, forbidden-unsafe negative probes,
+release inventory exclusions and source checks for the exact two allow sites.
+Preserve self-reexecution dispatch, executable identity, root-directory discovery,
+original source-bound parity workload and isolated-lock advisory coverage through
+explicit rewiring. This decision is not proof of executable isolation or release
+qualification; those tests must pass on the consolidated implementation.
