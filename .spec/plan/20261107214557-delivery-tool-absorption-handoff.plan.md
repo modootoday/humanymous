@@ -254,7 +254,7 @@ mean13 executables. These are source candidates/references, not observed Cargo
 targets or semantic unsafe-operation review. Root must bind the final explicit
 binary/feature/test matrix, production transitive graph and release inventory.
 
-## Maintenance0.2 identity proposal in Root review queue
+## Root-accepted Maintenance0.2 identity map; implementation frozen
 
 maintenance-identity-proposal.json maps all33 original (target,test-name) pairs
 one-to-one to proposed exact new owners/selectors. It uses the accepted
@@ -274,10 +274,10 @@ qualification resources stay unchanged. No profile or source is implemented.
 | selected_inputs |6| owning private binary test module; actual owned filesystem/provider boundaries, not no-I/O pure tests |
 | session_storage |4| owning private binary test module; actual claims/journal/lock/recovery fixtures, not no-I/O pure tests |
 
-The proposal retains23 integration cases and10 owning-bin cases, exactly33 and
-no helper/ignore waiver. Root must explicitly accept moving the10 owned-filesystem
-cases under its private-algorithm ownership decision; they must not be relabeled
-pure or replaced by synthetic data. The tighter-selection case exercises direct
+Root accepted23 integration cases and10 owning-bin cases, exactly33 and
+no helper/ignore waiver. The10 owned-filesystem/provider cases remain actual
+boundary observations; they must not be relabeled pure or replaced by synthetic
+data. The tighter-selection case exercises direct
 API limits that the existing selected-input CLI request cannot express, so blindly
 turning every case into an existing CLI call would lose behavior. Product cases
 can use the already implemented stage-eval route without a new fixture API.
@@ -289,7 +289,14 @@ the external Git/PowerShell boundary and explicit repository/source admission.
 Remove old manifest-ancestry assumptions and cross-package script includes without
 copying mutable source into a published package. Missing providers, symlink
 privileges, source, tools or cleanup remain required failures. Final Root/M11/CLI
-matrix review and actual discovery/execution precede any Tools freeze or move.
+identity-map review and freeze precede source movement. Actual post-move discovery
+and execution are separate required qualification, never inferred from old counts.
+
+The CLI owner is reconciling its prose/machine map to10 total integration roots
+and27 compiled roots if this accepted layout is implemented. The previous12/29
+proposal must not survive as empty targets or duplicate test bodies. This is
+accepted identity design, not source/path/Cargo movement or an actual test pass.
+Node diagnostic source changes remain deferred until the Tools identity freeze.
 
 # Critique and readiness
 

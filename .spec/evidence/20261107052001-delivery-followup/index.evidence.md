@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T23:22:00Z
+updated: 2026-11-07T23:27:23Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -87,7 +87,7 @@ files:
   - {path: encoding-views.json, sha256: 264a508299f2ebf367a7c42decaa6a3ebfe1f33916b3a70155c43e6866ca104a, bytes: 86921, store: repo}
   - {path: encoding-erratum.json, sha256: c472cda38f65f3ec5e570dd44ea9d64eb0672f0a242e36c03e63ae19ef1d4da8, bytes: 1528, store: repo}
   - {path: .gitattributes, sha256: 6e886a39d7a275d5d300b982ff5ef5d630bbeabe6ac8209026c7a704f021b92c, bytes: 170, store: repo}
-  - {path: maintenance-identity-proposal.json, sha256: fb43e083664731eaff32891c8ef587352837be506b550fbbe6f165cba8ad8e54, bytes: 45776, store: repo}
+  - {path: maintenance-identity-proposal.json, sha256: 4b60949a2171c3c490667bc94dfc41d55c84734ba6f18a795863e2ecade7f6e6, bytes: 48435, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
