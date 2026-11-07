@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-07T20:12:35.3253771+00:00",
+  "repository_head": "a65dac2feebdd0666c78707ccb99d0e17b868e3a",
+  "audit_source_commit": "99317a5065e6cb2bd1d456678dc0c23124fb73ed",
+  "package": "humanymous-audit",
+  "current_path": "crates/audit",
+  "accepted_target_package": "humanymous-runtime",
+  "accepted_parent": "crates/sdk",
+  "destination_submodule": "audit (Root defines exact path and atomic scope)",
+  "package_files": 109,
+  "existing_canon_files": 5,
+  "manifest_files": 114,
+  "manifest_sha256": "7cf4bf356bd686bf9e95be02f65c3820d631c1646a9657097943a52e9af9350e",
+  "owned_source_dirty": 0,
+  "owned_process_handles": [],
+  "owned_target_leases": [],
+  "owned_path_moves": [],
+  "ready_for_root_slice_freeze": true,
+  "ownership_transfer": "Not yet; Root must name/freeze exact slice",
+  "historical_proofs": "Retain exact original sources; no qualification transfers to moved code",
+  "publication_or_main_merge_authorized": false
+}
