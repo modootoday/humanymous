@@ -10,6 +10,17 @@ rel:
 
 # Agent maintenance
 
+## CA-GOV-01 detection-freeze pointer correction
+
+The read-only convention auditor identified historical-only Go path references
+in rule20. Inspected current Rust registry/embedded JSON, observation confidence
+calculation, scoring Policy serde fields and promotion module. Rule20 now names
+those Rust owners and stable public ChallengeAt/DenyAt names; old Go paths are
+explicitly read-only historical oracles. Byte-identical public IDs and existing
+structural/golden/attack gates remain required. No product source, registry,
+default, value, predicate or scoring configuration was changed; no scoring breach
+or new test pass is alleged. This is a narrow documentation debt correction.
+
 ## Convention and performance chat registration
 
 Root further narrowed the performance public subtree to exact index.evidence.md
