@@ -28,13 +28,13 @@ dual-control and missing-required fail-closed remain invariant.
 | R04 | Actual browser Fetch/one-flight/ACK/body/abort lifecycle | root collector + runtime server | Pure client validated by root; actual join pending; actual browser and human/keyboard/AT separate |
 | R05 | Shared response-head/framing and fidelity | runtime | Partial source for ACK strip/reframe, HEAD/204/304 and partial-write close; latest validation NOT_RUN; full framing/stream work remains |
 | R06 | Explicit bounded response streaming | runtime;R05 | Source native bounded stream wired; pure/hosted incremental fixtures NOT_RUN, actual backpressure/abort/drain negatives pending; browser ACK stream separate |
-| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Read-only view and pure CAS candidate source authored NOT_RUN; store/audit/apply/replay incomplete, writes refused |
+| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Native TrustedSnapshot/journal/committed apply and restore source implemented; pure settings4 pass at709b0e2; hosted durable restore NOT_RUN; operator writes still refused |
 | R08 | Bounded session/global abuse admission | runtime | Source global/session/capacity/serialized concurrency implemented; pure and hosted429fixtures NOT_RUN; no client-fingerprint identity authority |
 | R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Shared native transport qualified in its scope; runtime observer handler source implemented NOT_RUN; native IPC/peer/credential/RBAC/CSRF/scope negatives pending |
 | R10 | Signed destructive controls and state effects | audit issuer + runtime | Audit primitives implemented; runtime join pending; exact two-party/one-use/target/expiry/restart/failure tests |
 | R11 | Accessible Pass recovery + shared Engine fusion | runtime; shared challenge/root browser | Not implemented; no motor/speed gates or confirmed-human training; real input/AT separate |
 | R12 | External witness library injection + deployment transport | audit/runtime/Compose | Audit client/service verified in component scope; runtime typed injection source implemented21b6c4b NOT_RUN; independent deployment remains unqualified |
-| R13 | Actual TLS/H1 original capture | runtime + narrowly approved network paths | Not implemented or claimed yet; full observation+successful handshake+connection binding; private synthetic lab |
+| R13 | Actual TLS/H1 original capture | runtime + narrowly approved network paths | Joined PendingHandshake/complete-request owner source WIP NOT_RUN; serving/engine/post-audit liveness and hosted pilot pending; no rawTLS readiness claim |
 | R14 | Complete H2 frame/HPACK/per-stream capture and server | runtime/network;R13+binding | Required follow-up; no H1-to-H2/fullM2 success inference |
 | R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Source implemented, NOT_RUN; real lifecycle/failure/lock-release tests pending, synchronous I/O limits explicit |
 | R16 | Actual CLI/system-service connection | CLI/runtime;R15+boot credential provider | Pending; signed descriptor/artifact/nonce, actual OS lifecycle, no unattended claim before credentials |
@@ -478,3 +478,43 @@ no subset fallback or duplicated expected JSON. Root graph6500ec23 resolves the
 approved38member dependency window; this owner ran no Cargo. Exact813 run is live
 and remains separate from this source fix. Operational Rust source will freeze
 for root-assigned compile/pure validation after this checkpoint.
+Frozen709b0e2 local checkpoint: Root allocated pipeline A; locked all-features
+all-targets no-run and Clippy passed; scoped pure27passed/0failed/0ignored.
+Recursive454-file Rust/manifests/root Cargo+lock+toolchain closure stayed identical.
+No native/process/socket/IPC/browser execution. Private captured outputs/manifests
+are registered under evidence:root/20261107061820. A returned immediately.
+Root lifted own source freeze afterwards, keeping manifests and Cargo frozen.
+
+R13 next consumer source: tls::CapturedRequest now owns PendingHandshake and an
+explicit cancel-and-join blocking worker, reuses the strict complete http::read
+parser and retains original Connection evidence with the exact Request. Response
+writer also consumes and joins. Only absent/http1.1 ALPN; no H2 or NativeStream
+consumer, no required.raw_tls readiness transition. Source NOT_RUN. Capture owner
+is providing check_h1_idle for actual same-socket FIN/RST/trailing-data observation
+after audit; remaining() alone is insufficient. Actual hosted worker-cancel,
+request-body/evidence and origin effects remain required. No manifest edits.
+
+R13 consumer wiring WIP: ServiceHost::bind_tls carries injected ServerConfig
+through management/listener lifecycle, with native buffered/H1-only validation
+before custody opens. Same Application joins original Connection ClientHello to
+shared network report/Engine, uses actual negotiated ALPN metadata, and checks
+same-owner idle before decision/post-audit/post-origin-connect. Request and RIT
+lifetimes bound origin response reads; no fallback/retry. TLS readiness is owned
+transport capability, never product qualification. Plaintext rawTLS and all
+collector/H2 prerequisites remain refused. Source NOT_RUN; capture check_h1_idle
+is now present in its owner's WIP. No Cargo or manifests changed in this slice.
+Execution policy steering: user authorized actual local Windows/WSL validation
+for measured comparison with GitHub, superseding the earlier hosted-only blanket.
+Root opened a benchmark quiet window: this owner has no retained slot or running
+Cargo/native/runtime/model/Docker command and will start none until allocation.
+Source/docs may continue; shared manifests/lock/toolchain remain Root-owned.
+The new pure tls configuration rejection fixture changes provisional library
+inventory to46 Unix/43 Windows, plus native_process1; CI owner notified. These
+counts must be verified from exact-source --list, never inferred as executed.
+R17 qualification-contract.json now supplies exact common43/Unix-extra3 library
+names and native_process1 to CI owner, with per-OS expected counts, all-features,
+locked, zeroignored/filtered and both-targets-required semantics. Source data is
+provisional until exact-source --list agrees; no adaptive expected denominator.
+Capture check_h1_idle source checkpoint is committed by its owner. Runtime
+consumer will checkpoint source NOT_RUN during Root benchmark quiet window;
+actual TLS fixture still needs approved dev-dependency graph window.

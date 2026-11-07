@@ -9,6 +9,7 @@ pub(super) async fn run(
     listener: TcpListener,
     management: Management,
     mut external: watch::Receiver<Option<ShutdownRequest>>,
+    tls: Option<std::sync::Arc<rustls::ServerConfig>>,
 ) -> io::Result<()> {
     let initial = *external.borrow();
     let (control, internal) = watch::channel(initial);
@@ -16,7 +17,13 @@ pub(super) async fn run(
     let app_control = control.clone();
     let app_shutdown = internal.clone();
     let app = async move {
-        let result = application.serve_until(listener, app_shutdown).await;
+        let result = if let Some(tls) = tls {
+            application
+                .serve_tls_until(listener, tls, app_shutdown)
+                .await
+        } else {
+            application.serve_until(listener, app_shutdown).await
+        };
         if app_control.borrow().is_none() {
             let _ = app_control.send(Some(fallback));
         }

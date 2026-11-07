@@ -8,6 +8,7 @@ pub mod service;
 pub mod session;
 pub mod settings;
 pub mod startup;
+pub mod tls;
 
 pub use humanymous_authority::Rejection;
 

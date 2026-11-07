@@ -67,11 +67,12 @@ pub struct ServiceHost {
     readiness: Readiness,
     management: Option<Management>,
     settings: Option<SettingsStore>,
+    tls: Option<Arc<rustls::ServerConfig>>,
 }
 impl ServiceHost {
     /// Authenticate existing credentials before exposing a ready listener.
     pub async fn bind(configuration: Configuration) -> io::Result<Self> {
-        Self::bind_inner(configuration, None, None, None, None).await
+        Self::bind_inner(configuration, None, None, None, None, None).await
     }
 
     /// Consume a pinned external client. No witness failure permits fallback.
@@ -79,7 +80,7 @@ impl ServiceHost {
         configuration: Configuration,
         witness: ExternalWitness,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, Some(witness), None, None, None).await
+        Self::bind_inner(configuration, Some(witness), None, None, None, None).await
     }
 
     /// Bind a separately authorized native management service in the same custody
@@ -89,7 +90,7 @@ impl ServiceHost {
         witness: Option<ExternalWitness>,
         policy: ManagementPolicy,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, witness, Some(policy), None, None).await
+        Self::bind_inner(configuration, witness, Some(policy), None, None, None).await
     }
 
     /// Explicit operator recovery with an independently pinned head and witness.
@@ -100,7 +101,15 @@ impl ServiceHost {
         tail: humanymous_audit::storage::TailRecovery,
         management: Option<ManagementPolicy>,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, Some(witness), management, Some(tail), None).await
+        Self::bind_inner(
+            configuration,
+            Some(witness),
+            management,
+            Some(tail),
+            None,
+            None,
+        )
+        .await
     }
 
     /// Restore or explicitly provision witnessed private operational state before
@@ -117,6 +126,7 @@ impl ServiceHost {
             management,
             None,
             Some(settings),
+            None,
         )
         .await
     }
@@ -136,6 +146,28 @@ impl ServiceHost {
             management,
             Some(tail),
             Some(settings),
+            None,
+        )
+        .await
+    }
+
+    /// Explicit native buffered TLS/H1 ingress with the same custody lifetime.
+    /// Server keys/configuration arrive from the trusted installation owner.
+    pub async fn bind_tls(
+        configuration: Configuration,
+        witness: Option<ExternalWitness>,
+        management: Option<ManagementPolicy>,
+        recovery: Option<humanymous_audit::storage::TailRecovery>,
+        settings: Option<SettingsPolicy>,
+        tls: Arc<rustls::ServerConfig>,
+    ) -> io::Result<Self> {
+        Self::bind_inner(
+            configuration,
+            witness,
+            management,
+            recovery,
+            settings,
+            Some(tls),
         )
         .await
     }
@@ -146,10 +178,14 @@ impl ServiceHost {
         management_policy: Option<ManagementPolicy>,
         recovery: Option<humanymous_audit::storage::TailRecovery>,
         settings_policy: Option<SettingsPolicy>,
+        tls: Option<Arc<rustls::ServerConfig>>,
     ) -> io::Result<Self> {
         configuration
             .validate()
             .map_err(|_| io::Error::other("configuration invalid"))?;
+        if let Some(tls) = &tls {
+            crate::tls::validate_configuration(&configuration, tls)?;
+        }
         let witness_durability = witness.as_ref().map(ExternalWitness::durability_name);
         let mut sealed = match (witness, recovery) {
             (Some(witness), Some(tail)) => {
@@ -180,13 +216,16 @@ impl ServiceHost {
         }));
         let audit = Arc::new(Mutex::new(sealed));
         let listener = TcpListener::bind(configuration.listen).await?;
-        let profile = readiness::profile(
+        let mut profile = readiness::profile(
             &configuration,
             witness_durability,
             recovery,
             management_policy.is_some(),
             settings.as_ref().map(|store| store.snapshot().revision()),
         );
+        if tls.is_some() {
+            readiness::tls_h1(&mut profile, &configuration);
+        }
         let management = management_policy
             .map(|policy| Management::bind(policy, &configuration, profile.clone()))
             .transpose()?;
@@ -196,6 +235,9 @@ impl ServiceHost {
             Box::new(SharedAudit(audit.clone())),
         )
         .map_err(|_| io::Error::other("application startup"))?;
+        if let Some(tls) = &tls {
+            application.validate_tls_h1(tls)?;
+        }
         let readiness = Readiness {
             listen: listener.local_addr()?,
             profile,
@@ -207,6 +249,7 @@ impl ServiceHost {
             readiness,
             management,
             settings,
+            tls,
         })
     }
     /// No raw credentials or audit material are included.
@@ -243,7 +286,18 @@ impl ServiceHost {
         shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> Result<ExitReport, ExitFailure> {
         let drained = if let Some(management) = self.management {
-            lifecycle::run(&mut self.application, self.listener, management, shutdown).await
+            lifecycle::run(
+                &mut self.application,
+                self.listener,
+                management,
+                shutdown,
+                self.tls,
+            )
+            .await
+        } else if let Some(tls) = self.tls {
+            self.application
+                .serve_tls_until(self.listener, tls, shutdown)
+                .await
         } else {
             self.application.serve_until(self.listener, shutdown).await
         };

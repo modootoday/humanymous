@@ -7,6 +7,21 @@ use serde_json::{Value, json};
 pub fn standalone_profile(config: &Configuration) -> Value {
     profile(config, None, None, false, None)
 }
+pub(super) fn tls_h1(profile: &mut Value, config: &Configuration) {
+    profile["profile"] = json!("experimental-loopback-tls-h1");
+    profile["raw_tls"] = json!(true);
+    profile["routes"] = json!(
+        config
+            .routes
+            .iter()
+            .map(|route| json!({
+                "method":route.method,"path":route.path,
+                "ready":!route.required.original_h2 && !route.required.collector,
+                "rit_profile":route.rit_profile,"response_profile":route.response_profile
+            }))
+            .collect::<Vec<_>>()
+    );
+}
 pub(super) fn profile(
     config: &Configuration,
     witness: Option<&str>,
@@ -41,5 +56,20 @@ mod tests {
         assert_ne!(expected, managed);
         assert_eq!(managed["product_qualified"], false);
         assert_eq!(managed["audit_witness_independence_qualified"], false);
+        let mut config = config;
+        config.routes[0].required.raw_tls = true;
+        let mut captured = standalone_profile(&config);
+        assert_eq!(captured["routes"][0]["ready"], false);
+        tls_h1(&mut captured, &config);
+        assert_eq!(captured["routes"][0]["ready"], true);
+        assert_eq!(captured["raw_tls"], true);
+        assert_eq!(captured["product_qualified"], false);
+        config.routes[0].required.collector = true;
+        tls_h1(&mut captured, &config);
+        assert_eq!(captured["routes"][0]["ready"], false);
+        config.routes[0].required.collector = false;
+        config.routes[0].required.original_h2 = true;
+        tls_h1(&mut captured, &config);
+        assert_eq!(captured["routes"][0]["ready"], false);
     }
 }

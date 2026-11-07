@@ -16,7 +16,10 @@
     "joined-listener-drain-before-flush",
     "bounded-complete-response-chunk-decoding",
     "authenticated-session-resource-window",
-    "explicit-native-bounded-streaming"
+    "explicit-native-bounded-streaming",
+    "native-witnessed-settings-store-and-committed-apply",
+    "shared-full-readiness-builder",
+    "tls-h1-joined-ingress-consumer-WIP"
   ],
   "authored_native_fixture_test_functions": 2,
   "current_source_executed_tests": 0,
@@ -32,7 +35,7 @@
     "existing_unrelated_binary_warnings": 1
   },
   "required_collector": "422-unqualified",
-  "raw_tls_h2": "absent-required-routes-422",
+  "raw_tls_h2": "tls-h1-consumer-WIP-not-run; plaintext-rawTLS-and-all-H2-required-routes-422",
   "native_0_1_binding": "unchanged",
   "scoring_changed": false,
   "product_qualified": false,
@@ -42,5 +45,18 @@
   "new_pure_budget_management_framing_fixture_functions": 6,
   "new_hosted_only_unix_lifecycle_fixture_functions": 2,
   "new_pure_stream_profile_fixture_functions": 5,
-  "new_hosted_only_stream_and_quota_tcp_fixture_functions": 2
+  "new_hosted_only_stream_and_quota_tcp_fixture_functions": 2,
+  "historical_local_709b0e2": {
+    "runtime_commit": "709b0e23036011fb3a58d25a3d67c38e28e603a6",
+    "checkout_head_at_start": "bfab3fd77d688dcd7d9ba439cbe7162f1b110e96",
+    "all_features_all_targets_locked_no_run": "passed",
+    "all_features_all_targets_clippy_deny_warnings": "passed",
+    "approved_pure_tests_passed": 27,
+    "failed": 0,
+    "ignored": 0,
+    "recursive_source_manifest_files": 454,
+    "source_closure_unchanged": true,
+    "actual_native_process_socket_ipc_browser_tests": "not_run",
+    "qualification": "Windows compile and scoped pure only; not current TLS WIP"
+  }
 }

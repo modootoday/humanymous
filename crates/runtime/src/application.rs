@@ -21,6 +21,7 @@ use tokio::{
     net::{TcpListener, TcpStream},
     time::{Instant, timeout_at},
 };
+mod tls;
 
 /// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
 pub enum Decision {
@@ -87,6 +88,16 @@ impl Application {
         req: &Request,
         clock: impl Fn() -> Result<u64, Rejection>,
         ack: &mut Option<Ack>,
+    ) -> Result<Decision, Rejection> {
+        self.decide_observed(req, clock, ack, None)
+    }
+
+    fn decide_observed(
+        &mut self,
+        req: &Request,
+        clock: impl Fn() -> Result<u64, Rejection>,
+        ack: &mut Option<Ack>,
+        tls: Option<&humanymous_capture::tls::Connection>,
     ) -> Result<Decision, Rejection> {
         let now = clock()?;
         self.sessions.observe(now)?;
@@ -156,7 +167,10 @@ impl Application {
             if route.rit_profile != profile {
                 return Err(Rejection::new(409, "route_integrity_profile"));
             }
-            if route.required.raw_tls || route.required.original_h2 || route.required.collector {
+            if route.required.raw_tls && tls.and_then(|owner| owner.client_hello()).is_none()
+                || route.required.original_h2
+                || route.required.collector
+            {
                 return Err(Rejection::new(422, "required_capability"));
             }
         }
@@ -209,10 +223,19 @@ impl Application {
                 client: self.sessions.report(id),
                 network: build(&Observation {
                     header,
+                    hello: tls.and_then(|owner| owner.client_hello()).cloned(),
                     ..Default::default()
                 }),
                 ..Default::default()
             };
+            if let Some(tls) = tls {
+                // The shared report's offered ALPN default is not negotiation.
+                report.network.negotiated_alpn = match tls.negotiated_alpn() {
+                    Some(b"http/1.1") => "http/1.1".into(),
+                    None => String::new(),
+                    _ => return Err(Rejection::new(422, "tls_application_protocol")),
+                };
+            }
             report
                 .network
                 .signals

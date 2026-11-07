@@ -556,3 +556,37 @@ Configuration::readiness remains a capability/configuration view, not the full
 host manifest. Expected profile construction is not listener/producer attestation.
 Source813 Docker receipt26=0evaluation/19errors remains unchanged; readiness-field
 mismatch is a source-proven incompatibility, not a recovered raw failure cause.
+R13 joined ingress ownership: runtime::tls::CapturedRequest consumes a shared
+PendingHandshake, receives exactly one bounded complete HTTP/1.1 request using
+the existing http::read parser, and retains that same Connection with the request.
+Only absent or negotiated http/1.1 ALPN is accepted; H2 is unsupported here.
+All blocking TLS reads/writes execute on an owned worker. Future cancellation
+revokes its same socket and synchronously joins before releasing the owner;
+normal completion joins before returning observations or reporting a write.
+The absolute capture lifetime includes queue time and is never reset. A dropped
+consumer or failed response has no retry path. This component does not enable
+required.raw_tls or establish remote liveness after synchronous audit. Actual
+same-owner idle checks, request evidence/engine join, ServiceHost TLS profile,
+origin dispatch and hosted cancellation pilots remain mandatory before serving
+claims. External process watchdog remains responsible for ultimate shutdown.
+R13 TLS/H1 consumer extension: ServiceHost::bind_tls explicitly receives the
+trusted ServerConfig and optional existing management/recovery/settings policies.
+It rejects browser or NativeStream routes and non-H1 ALPN before opening custody.
+The same serialized Application consumes the exact CapturedRequest, obtains
+ClientHello only from its retained Connection, and passes it to the shared
+network report/unchanged Engine. Actual negotiated ALPN replaces the report's
+offered-default metadata. check_h1_idle is required before decision, after durable
+audit and after origin connect immediately before sending application bytes.
+Expiry/controller checks remain independent; upstream read uses the minimum
+RIT/connection deadline. The native TLS profile advertises raw-TLS capability
+only for this injected transport; product_qualified remains false and required
+collector/H2 remain fail-closed. Plaintext profile still refuses raw-TLS routes.
+This source contract needs hosted TLS/body/abort/cancel/drain/origin evidence;
+configuration readiness must not be reported as actual runtime qualification.
+R17 native component inventory: crates/runtime/qualification-contract.json is the
+single owner-maintained data contract for required library/integration targets,
+features, exact common/Unix-only case names and per-OS counts. CI must compare
+exact-source --list inventory against it, attempt both targets even if one fails,
+and retain zero ignored/filtered requirements. Source-authored inventory is not
+execution evidence and mismatches fail rather than adapting expected coverage.
+This inventory does not grant full product/browser/human/TLS qualification.

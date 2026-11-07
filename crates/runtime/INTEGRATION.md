@@ -401,3 +401,28 @@ no subset fallback or duplicated expected JSON. Root graph6500ec23 resolves the
 approved38member dependency window; this owner ran no Cargo. Exact813 run is live
 and remains separate from this source fix. Operational Rust source will freeze
 for root-assigned compile/pure validation after this checkpoint.
+TLS/H1 consumer source WIP (NOT_RUN): `ServiceHost::bind_tls` accepts trusted
+`Arc<rustls::ServerConfig>` plus existing optional custody policies, validates
+native buffered/H1 scope before opening state, and joins its listener through
+the same service shutdown path. `tls::CapturedRequest` owns PendingHandshake,
+complete shared HTTP parser and exact Connection; worker cancellation revokes
+and synchronously joins, including future drop. Original ClientHello enters the
+shared network report/unchanged Engine, negotiated ALPN is actual metadata.
+`check_h1_idle` before decision/post-audit/post-connect refuses observed closure
+or trailing/pending input before origin bytes. This is point-in-time liveness,
+not a guarantee against a later FIN. All collector/H2 prerequisites stay refused.
+TLS serving is native buffered only; no browser/TLS, H2 or NativeStream claim.
+Actual hosted handshake/body/origin, cancellation, post-audit abort and service
+drain qualification remain required. No local actual OS/network test executed.
+
+Historical frozen709b0e2 validation: Root-allocated A passed locked all-features
+all-targets no-run, all-targets Clippy with warnings denied and27 scoped pure
+units (0failed/0ignored). Recursive454-file before/after closure was identical,
+SHA256fee08397a7379570b5f3efc08cab75cd4bb610c829d369e0831b58f75449765b.
+This predates the TLS consumer WIP and is not its compile/test evidence.
+`qualification-contract.json` owns required native component test inventories:
+43 common library cases plus3 Unix cases, and native_process1. CI must verify
+exact names/counts with exact-source --list and independently attempt both
+harnesses; ignored/filtered/missing cases fail. This is source-authored inventory,
+not executed coverage or full product/human/TLS qualification. CI consumes this
+single data source so owner test additions cannot silently drift hardcoded totals.
