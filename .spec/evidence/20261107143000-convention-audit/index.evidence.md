@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 54c407b1d08c4580872015eceb39ec7b7af3e08e430f11ee05918d367637777c, bytes: 57157, store: repo}
+  - {path: baseline.json, sha256: 591efd141efeab098551a819fa93345602372ece9dcaa324abc0c17ad696d11a, bytes: 58774, store: repo}
 ---
 
 # Convention audit baseline
@@ -728,3 +728,25 @@ private ledger and individual image/fixture/configuration/engine tuple values
 remain unrecovered; its fb609b3e hash is public-bound. Whole product/release gates
 stay false. No audit dispatch/retry/duplicate watch or runtime work occurred.
 Exact private review hash is in baseline.json. Complete migration audit stays OPEN.
+
+## ASGI Drop contract correction and topology confirmation gate
+
+CA-ASGI-DROP-01 P2 confirms a source-comment overclaim: GuardDrop says no blocking
+wait, but takes stdMutex::lock, calls Python::attach and invokes the event-loop
+method. Pinned [PyO3 0.30.1 Python documentation](https://docs.rs/pyo3/0.30.1/pyo3/marker/struct.Python.html#method.attach)
+explicitly permits blocking GIL acquisition and panics for unavailable interpreter
+states. No actual new hang/shutdown failure was observed. Current-path comment/
+SoT correction is requested; an absence of explicit join does not prove bounded
+cleanup. try_attach is not a deadline/nonblocking guarantee. Existing registered
+Done/Future controls do not cover GuardDrop under GIL contention or interpreter/
+stopped-loop/failed-schedule teardown. Runtime cleanup design and actual admitted
+controls remain under the original budget/retained-uncertainty/independent-supervisor
+contract; global CA-HANDOFF and CA-LIFETIME remain OPEN. No runtime API swap,
+unsafe/dependency/script or SDK execution was requested or performed.
+
+Root relayed the user's explicit confirmation gate before package/path redesign
+and all-branch synchronization. The proposed package graph is unaccepted. Audit
+has no path move, package/import rename, structural worktree/branch, push/refsync,
+new crate or speculative shim in flight and adopts no new topology. Existing
+owned-path audit/prose follow-through continues. Exact source review hash is in
+baseline.json; this gate does not cancel or complete the full migration audit.

@@ -167,6 +167,15 @@
       "observed_hosted_bypass": false,
       "release_or_green_job_bypass_claim": false,
       "private_review_sha256": "fdd4456bc840cee14af909d0c69dd2d7c0890345dcc67bb00b42f78fcbc8d492"
+    },
+    {
+      "id": "CA-ASGI-DROP-01",
+      "priority": "P2",
+      "owner": "Framework adapters/root",
+      "state": "CONFIRMED source comment overclaim; current-path prose/SoT correction requested; GIL/loop teardown and broad lifetime/handoff gates OPEN",
+      "trigger": "GuardDrop states no blocking wait, but stdMutex::lock/Pythonattach and loopmethod invocation can block orpanic",
+      "actual_hang_or_shutdown_failure_observed": false,
+      "private_review_sha256": "f6eb3d45f523e8b318ab5972e30aed2130e506fb89450713242e57e33ea42893"
     }
   ],
   "evidence_references": {
@@ -1093,6 +1102,18 @@
     "private_ledger_sha256": "fb609b3e6720b13b6e9050216d5a72b474c4a4b552e18cea28d13d6af9de8d9e",
     "scope": "BoundedLinuxDocker nethttp/publicfacade only, not private tuple reconstruction/originalZIPbytes/fulltransitiveclosure/futureconsolidatedgraph/fullproduct/release",
     "new_audit_watch_dispatch_retry_or_workload": 0,
+    "goal_complete": false
+  },
+  "followup_asgi_drop_contract_and_topology_gate": {
+    "private_review": "asgi-drop-contract-review-001.json",
+    "private_review_sha256": "f6eb3d45f523e8b318ab5972e30aed2130e506fb89450713242e57e33ea42893",
+    "primary_source": "https://docs.rs/pyo3/0.30.1/pyo3/marker/struct.Python.html#method.attach",
+    "source_fact": "GuardDrop uses stdMutexlock thenPythonattach/GIL and loopcall; absence of explicitjoin does not prove nonblocking cleanup",
+    "minimum_correction": "Truthful source/SoT scope only; independent originalbudget/supervision/retaineduncertainty design remains separate, no blind tryattach substitution",
+    "future_controls": "ContendedGIL/interpretershutdown/stoppedloop/failedschedule actualteardown, not existingDone/Future3 controls",
+    "user_confirmation_gate": "Root relayed explicit userconfirmation required before package/path restructuring and allbranchsync; proposed graph unaccepted, no adoption by audit",
+    "inflight_structure_or_ref_mutations": 0,
+    "new_unsafe_deps_shim_or_SDKrun": 0,
     "goal_complete": false
   }
 }
