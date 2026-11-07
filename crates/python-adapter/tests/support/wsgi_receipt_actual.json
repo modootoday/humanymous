@@ -1,0 +1,129 @@
+{
+  "schema": "humanymous.wsgi-safe-receipt-fixture/1",
+  "sourceSha": "7842b6a875f1a77b8e88d2d9f31808d2089cebce",
+  "originalRawLogSha256": "ef5a96aa9cff7a040c2384674065657aec879d6b78fb85763e73b849bd1e1039",
+  "evidence": "evidence:root/20261107075243 summary010",
+  "scope": "Allowlisted historical scenario data only; not a new execution receipt",
+  "rows": [
+    {
+      "auditRecords": 1,
+      "cases": 5,
+      "framework": "flask",
+      "group": "synthetic-engine-allow-and-invalid",
+      "negativeCases": 4,
+      "originEffects": 1,
+      "productionBrowserEvidence": false,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 1,
+      "cases": 5,
+      "framework": "django",
+      "group": "synthetic-engine-allow-and-invalid",
+      "negativeCases": 4,
+      "originEffects": 1,
+      "productionBrowserEvidence": false,
+      "wholeProductQualified": false
+    },
+    {
+      "cases": 1,
+      "framework": "flask",
+      "group": "authority-response-timeout",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    },
+    {
+      "cases": 1,
+      "framework": "django",
+      "group": "authority-response-timeout",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    },
+    {
+      "cases": 3,
+      "framework": "flask",
+      "group": "dependency-down-and-routes",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    },
+    {
+      "cases": 3,
+      "framework": "django",
+      "group": "dependency-down-and-routes",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 1,
+      "cases": 1,
+      "disconnected": false,
+      "framework": "flask",
+      "group": "disconnect-before-handoff",
+      "originEffects": 1,
+      "productionBrowserEvidence": false,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 1,
+      "cases": 1,
+      "disconnected": true,
+      "framework": "flask",
+      "group": "disconnect-before-handoff",
+      "originEffects": 0,
+      "productionBrowserEvidence": false,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 1,
+      "cases": 1,
+      "disconnected": false,
+      "framework": "django",
+      "group": "disconnect-before-handoff",
+      "originEffects": 1,
+      "productionBrowserEvidence": false,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 1,
+      "cases": 1,
+      "disconnected": true,
+      "framework": "django",
+      "group": "disconnect-before-handoff",
+      "originEffects": 0,
+      "productionBrowserEvidence": false,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 0,
+      "cases": 2,
+      "framework": "flask",
+      "group": "incomplete-body",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 0,
+      "cases": 2,
+      "framework": "django",
+      "group": "incomplete-body",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 1,
+      "cases": 1,
+      "framework": "flask",
+      "group": "production-authority-nonallow",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    },
+    {
+      "auditRecords": 1,
+      "cases": 1,
+      "framework": "django",
+      "group": "production-authority-nonallow",
+      "originEffects": 0,
+      "wholeProductQualified": false
+    }
+  ]
+}

@@ -440,3 +440,15 @@ Moved the exclusive target expression into each of three run-step env maps.
 Direct actionlint returned0 with no diagnostics. No controller ran and the
 NOT_ACCEPTED guard is unchanged. Formatting passed; source checkpoint and an
 explicit allocated Unix compile/parser-only verification remain next steps.
+
+### Receipt parser positive history and mutation coverage
+
+Added an allowlisted fixture of the actual7842b6a8 fourteen scenario rows,
+extracted from the retained summary010 run with original log hash/provenance.
+Only framework/group/case/audit/effect/qualification/control fields are included;
+no private raw log or credential is copied. Fixture SHA256 is
+35a6cf047068deaf0c33db08181662e85ddc15f1142f6fb17cd27994132d21e1.
+The existing two pure parser tests now cover positive acceptance plus duplicate/
+missing rows and changed audit, effect and negative-case values. Definitions
+are formatted but remain unexecuted pending explicit allocation. This fixture
+is historical test data, not a new actual execution receipt or controller proof.

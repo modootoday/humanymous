@@ -85,6 +85,40 @@ mod tests {
     #[test]
     fn an_exit_summary_cannot_replace_missing_or_duplicate_scenarios() {
         let summary = "test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;";
+        let fixture: Value =
+            serde_json::from_str(include_str!("wsgi_receipt_actual.json")).unwrap();
+        assert_eq!(
+            fixture["sourceSha"],
+            "7842b6a875f1a77b8e88d2d9f31808d2089cebce"
+        );
+        let rows = fixture["rows"].as_array().unwrap();
+        let transcript = |rows: &[Value]| {
+            format!(
+                "{}\n{summary}",
+                rows.iter()
+                    .map(Value::to_string)
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            )
+        };
+        assert!(validate(&transcript(rows)).is_ok());
+        let mut duplicate = rows.clone();
+        duplicate.push(rows[0].clone());
+        assert!(validate(&transcript(&duplicate)).is_err());
+        assert!(validate(&transcript(&rows[..rows.len() - 1])).is_err());
+        for (group, field) in [
+            ("incomplete-body", "auditRecords"),
+            ("production-authority-nonallow", "originEffects"),
+            ("synthetic-engine-allow-and-invalid", "negativeCases"),
+        ] {
+            let mut changed = rows.clone();
+            let row = changed
+                .iter_mut()
+                .find(|row| row["group"] == group)
+                .unwrap();
+            row[field] = serde_json::json!(99);
+            assert!(validate(&transcript(&changed)).is_err());
+        }
         assert!(validate(summary).is_err());
         assert!(validate(&format!("{summary}\n{summary}")).is_err());
         assert!(
