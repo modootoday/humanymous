@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.pages-go-public-status-review/1",
   "source_evidence": ".spec/evidence/20261107132453-go-adapter-hosted-eight-case-qualification-c3211e27/summary.json",
-  "source_evidence_sha256": "0682bf054f9cbfee2c55dc85561d19d402b69043235a1964065b47600dd0ae6b",
+  "source_evidence_sha256": "9b1a56f3d34039bb21191191cc0ebe6372c4f523dfe132dc16a50ce7435b5b21",
   "source_commit": "c3211e27ba941f3f11809e420d07d61ececad623",
   "workflow_run": 42375310198,
   "recomputed_cases": 8,
@@ -18,5 +18,13 @@
   "docs_modified": true,
   "new_execution_by_pages": "NOT_RUN",
   "external_job_verification": "Root independently verified exact job; Pages reviewed owner public summary, not raw hosted log",
-  "new_build_or_browser": "NOT_RUN"
+  "new_build_or_browser": "NOT_RUN",
+  "original_observed_evidence_sha256": "0682bf054f9cbfee2c55dc85561d19d402b69043235a1964065b47600dd0ae6b",
+  "line_ending_normalization": {
+    "observed_change": "Owner normalized mixed CRLF lines plus final LF to LF",
+    "current_bytes_expanded_with_original_line_ending_pattern_match_original_hash": true,
+    "semantic_counts_rechecked": true,
+    "initial_uniform_crlf_assumption_failed": true,
+    "original_observation_retained": true
+  }
 }
