@@ -79,6 +79,14 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Accepted follow-up policy is linked through program-roadmap and delivery SoTs,
+not reimplemented here. CLI's existing FakeManager/Probe and ACL/temp-file tests
+are hosted component checks, not pure local fastchecks. No new local runtime,
+service, browser, Docker, broad private-spec scan or heavy research is authorized
+by this policy update. Current-source native positive service and six tuples
+remain not_run; root owns source closure, dispatch and collection of the first
+hosted results. Preserve required gates and historical source-bound results.
+
 CLI code/API checkpoint83397fd5d7289a326b890aa547a8f9e1a04fe03f is committed.
 Public acceptance summary: [[evidence:root/20261107053001]]. All17CLI source/Cargo
 inputs matched canonical Git bytes; tested27-input manifest retained the exact

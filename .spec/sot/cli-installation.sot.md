@@ -12,6 +12,29 @@ rel:
 
 # Contract
 
+## Accepted execution-policy reference
+
+The single execution-policy canon is [[sot:root/program-roadmap]]; workflow
+implementation and evidence rules are [[sot:root/delivery]]. CLI does not define
+a separate scheduler, quota, artifact-retention or impact-classification policy.
+Local CLI work is source editing, fmt, bounded scoped Clippy and genuinely pure
+signature/schema/parser/state-decision unit checks under the common Cargo limit.
+Actual filesystem permission/ACL, process/port/IPC, service-manager and native OS
+tests run on the appropriate public standard hosted runner, with capability and
+ordinary-actor prerequisites proved rather than inferred from its label.
+
+Existing service state-machine tests use a FakeManager plus real loopback Probe,
+temporary files and Windows role ACLs. They are hosted component tests despite
+their Rust unit-harness location; default whole-package tests are not a pure
+local fastcheck. The positive native-service case, protected credentials/runtime
+ServiceHost connection and six-tuple qualification remain not_run/unqualified
+until current-source hosted execution supplies actual evidence. Earlier Windows
+results retain their original source hashes and do not qualify later changes.
+Only sanitized CLI summaries/logs/hashes may be recovered publicly; missing
+required private raw evidence must be disclosed. Human/AT/IME and other special
+environment evidence cannot be replaced by a hosted service fixture. Required
+gates remain in force while impact classification is unfinished.
+
 ## Signed service deployment v1
 
 New service-* commands verify a detached strict Ed25519 signature over
