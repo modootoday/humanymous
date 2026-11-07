@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T14:01:31Z
+updated: 2026-11-07T14:03:16Z
 rel:
   governs: [docs]
 files:
@@ -95,12 +95,12 @@ files:
   - {path: current-source-review-triage.json, sha256: c5df14264cb7dffa402d97538095c85b3f6739b7f397ef0b5d8341e130a076a9, bytes: 12280, store: repo}
   - {path: go-c321-public-status-review.json, sha256: 04fa5c575c53434acded3f10664f6b70894da3e3f2e9b4d320c481bada7fd302, bytes: 1548, store: repo}
   - {path: current-cli-partial-source-review.json, sha256: 24bb129478a139c24ebaa01536ccd7c70ddaaef559e1b2c5243f9a2c0c9628c1, bytes: 17211, store: repo}
-  - {path: current-cli-review-preparation.json, sha256: cdcea512824d073ce94e3cd2096dbe9112091fc00eb8dd8301206d364313a7d3, bytes: 18401, store: repo}
   - {path: current-apache-partial-source-review.json, sha256: 56b454d65aca03714564ab0f8b4c0782d077c76b8deab34db8671d9d18c04ab6, bytes: 16949, store: repo}
   - {path: current-apache-review-preparation.json, sha256: a19b5c3d5672af510823a9c2375516f76fe55e3bbe78dd2ddf0f82eb4678022b, bytes: 16167, store: repo}
   - {path: current-dotnet-review-preparation.json, sha256: fb837de1dfe94bc93e2ecd0aba72fdc574d64ed027910b5e20728eb8fb20813c, bytes: 19199, store: repo}
   - {path: current-dotnet-partial-source-review.json, sha256: 9c332ddd1e1038c6d169ac4bfe22ddfe0cb77cadd4bec39517f6bec0faeb2c21, bytes: 19862, store: repo}
   - {path: dotnet-review-acceptance.json, sha256: c49b506f16c0314ebe280084dfed1178bc4be4590c9018a6b5da2d2b1d2f2216, bytes: 18738, store: repo}
+  - {path: current-cli-review-preparation.json, sha256: 79b68a442102df9abe904c5654a727c37622f73235e52bf3b500abc07e045601, bytes: 19572, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status

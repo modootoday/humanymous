@@ -3,7 +3,7 @@
   "observed_at_utc": "2026-11-07T13:37:33.938526+00:00",
   "current_package_inventory": 27,
   "new_full_reads": 19,
-  "new_full_read_lines": 4018,
+  "new_full_read_lines": 4019,
   "existing_matching_receipts": [
     {
       "source": "crates/cli/src/release.rs",
@@ -167,10 +167,10 @@
     },
     {
       "source": "crates/cli/src/runtime_host/control.rs",
-      "sha256": "a4d468a884aa24621ef1a0a755b97f46b1fb91137aa72944109a8ec8f5c53d83",
+      "sha256": "c9cf54c2ad318eb1f5852bbad6640146fbe73368011ed284e27afae6c68ed160",
       "lines": 427,
       "reviewer": "codex/rust-pages",
-      "notes": "Complete current427-line watchdog fully reread after a concurrent51-line expiry-check addition was detected while preparing the first report. deliver_stop validates/delivers outside lock/completes without extending original deadline; validate_stopped_at/stopped_at reject expiry before or during delivery. Two new pure tests cover errors, expiry and duplicate delivery. Separate expiry path still synchronously prints stderr before exit74; no unconditional hard-deadline guarantee. No execution in Pages.",
+      "notes": "428-line supervisor fully reread after hard-expiry stderr fix. Original startup/stop watchdog deadline remains armed across final stdout/SCM status delivery, delivery outside short state locks, completion only after successful delivery and rechecked drain/flush/current deadline. Hard-expiry branch now directly process::exit(74), with no preceding synchronous stderr/logging operation. This removes the specific full-pipe/stderr-lock stall from the terminal branch; does not independently qualify process::exit under arbitrary OS scheduling, poisoned native runtime, SCM or descendants. Thread creation/condvar/state pure tests source reviewed, no new execution by Pages.",
       "pages": [
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
@@ -270,6 +270,17 @@
   "docs_modified": false,
   "new_execution": "NOT_RUN",
   "full_product_qualified": false,
-  "remaining": "Owner reviewing blocking watchdog stderr expiry path; rehash and fully reread any follow-up before receipt acceptance. Current package source coverage does not qualify runtime/installer or complete compiled dependency graph.",
-  "preparation_correction": "Initial prepared note mentioned376-line read while bytes advanced to427; not committed or accepted. Fully reread all427 lines before finalizing this report."
+  "remaining": "Prepared source-only reviews await a narrow ledger window and exact rehash. Previously identified stderr-before-exit operation is removed in the fully reread428-line control.rs. Actual process/service/watchdog/SCM and blocked-output termination qualification remains separate; whole-workspace freshness not established.",
+  "preparation_correction": "Initial prepared note mentioned376-line read while bytes advanced to427; not committed or accepted. Fully reread all427 lines before finalizing this report.",
+  "hard_expiry_followup_reread": {
+    "source": "crates/cli/src/runtime_host/control.rs",
+    "prior_preparation": {
+      "sha256": "a4d468a884aa24621ef1a0a755b97f46b1fb91137aa72944109a8ec8f5c53d83",
+      "notes": "Complete current427-line watchdog fully reread after a concurrent51-line expiry-check addition was detected while preparing the first report. deliver_stop validates/delivers outside lock/completes without extending original deadline; validate_stopped_at/stopped_at reject expiry before or during delivery. Two new pure tests cover errors, expiry and duplicate delivery. Separate expiry path still synchronously prints stderr before exit74; no unconditional hard-deadline guarantee. No execution in Pages."
+    },
+    "current_sha256": "c9cf54c2ad318eb1f5852bbad6640146fbe73368011ed284e27afae6c68ed160",
+    "lines": 428,
+    "new_execution": false
+  },
+  "post_reread_candidate_drift": []
 }
