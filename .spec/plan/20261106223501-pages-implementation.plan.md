@@ -2038,3 +2038,13 @@ Added two complete source receipts and retained earlier reviewed pure policy
 receipt after exact hash check. No bulk renewal. Source checker88/errors0; no
 new rendered, source-freshness, browser or AT pass. Changed docs require a new
 immutable candidate and subsequent actual verification; no old build reused.
+
+### Correct canonical review inventory placement
+
+Actual post-candidate review-delta failed invalid/duplicate review entry. No
+duplicate existed: two earlier own CI receipts lay outside canonical governed
+roots. Preserved historical values/source-ledger hash in separate evidence,
+removed only those two entries, without broadening scope or renewing digests.
+Corrected retry reached snapshot but failed HEAD/source inventory drift. Both
+failures retained; source checker88/errors0 is not complete freshness. Request
+a fixed detached candidate for read-only delta rather than retry moving primary.

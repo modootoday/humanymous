@@ -1,0 +1,22 @@
+{
+  "scope": "Actual post-reconciliation freshness triage and canonical ledger repair",
+  "first_attempt": {
+    "duplicates_found": 0,
+    "exit": 1,
+    "cause": "Two earlier CI receipts were outside canonical governed roots",
+    "error": "invalid or duplicate authored review entry"
+  },
+  "correction": "Relocate historical CI receipts to ci-historical-source-receipts.json; remove only those2 from product-source ledger; no verifier weakening or digest renewal",
+  "second_attempt": {
+    "exit": 1,
+    "output_chunk": "23f473",
+    "error": "HEAD or source inventory changed during snapshot; retry explicitly"
+  },
+  "source_checker": {
+    "pages": 88,
+    "errors": 0
+  },
+  "full_freshness_qualified": false,
+  "next_required": "Run existing read-only delta against an explicitly fixed candidate, then manually review changed/added sources",
+  "deployment_performed": false
+}

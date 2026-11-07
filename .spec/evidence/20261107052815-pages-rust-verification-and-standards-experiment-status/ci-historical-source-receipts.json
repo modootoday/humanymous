@@ -1,0 +1,28 @@
+{
+  "scope": "Historical manually reviewed CI receipts relocated outside canonical product-source review inventory",
+  "prior_docs_commit": "21a9f0b6",
+  "prior_ledger_sha256": "f00cdd4b1d334886d6d6ee560cfdcd16339a139ce6ac86ac8bae6940afbbf57b",
+  "reason": "CI workflow/tool sources are outside governed Cargo/crates/adapters/web/build inventory; retaining them in docs/reviews.json makes inventory invalid",
+  "receipt_hashes_are_historical": true,
+  "current_source_approval": false,
+  "reviews": [
+    {
+      "source": ".github/workflows/pages-validation.yml",
+      "sha256": "af20f6b1ca2b7e55311832d268c1b75df41e374c4bc7afcbcd61ef9862f312d0",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read complete source: build-only hostedPages exactsha/docsGitTree+clean/hash beforeafter, trusted stepoutcomes with unknownexitnull, safe summary and separate browser/AT/product/deploymentfalse; caller contentread and dedicatedbranch/workflowdispatch without OIDC/deploy. Source review only, not compiled/policyvalidated or actualhosted execution.",
+      "pages": [
+        "docs/INTEGRATION.md"
+      ]
+    },
+    {
+      "source": "scripts/ci/delivery/src/pages.rs",
+      "sha256": "2ddf4ccb128451f9b09461a120f6ca798872715fe02989850e22082ae9582c34",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read complete source: build-only hostedPages exactsha/docsGitTree+clean/hash beforeafter, trusted stepoutcomes with unknownexitnull, safe summary and separate browser/AT/product/deploymentfalse; caller contentread and dedicatedbranch/workflowdispatch without OIDC/deploy. Source review only, not compiled/policyvalidated or actualhosted execution.",
+      "pages": [
+        "docs/INTEGRATION.md"
+      ]
+    }
+  ]
+}
