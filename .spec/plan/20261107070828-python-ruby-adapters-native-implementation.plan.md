@@ -162,3 +162,17 @@ through upstream RubyGems/Digest APIs; clean production require rejects fixture
 feature flags. Source only, no Cargo graph change. Its compilation/actual packaging
 remain NOT_RUN; next requested B queue separates Python package-tool and Ruby
 default Rust-driver checks from Ruby native ABI/build prerequisites.
+
+Checkpoint de9cb405 records the scoped Python successes and uncompiled Ruby
+packaging driver. Root approved a future graph window for Python's existing
+native-security/audit/signals dev path dependencies and pilot-only Waitress3.0.2
+with hash-bound provenance. The window remains closed until assigned builders
+return; no manifest/recipe/lock mutation has been made. Package checks are queued
+after that integration rather than starting against the old graph.
+
+Extracted Node's frozen-report test evidence and identical audit-log construction
+to framework-adapter/tests/support/authority.rs for upcoming Python harness reuse.
+Only test targets include this source; no synthetic evidence enters exports or
+the production authority. Node's assertions/counts remain unchanged. This new
+extraction is formatted, but compilation and actual runtime regression are
+NOT_RUN; earlier Node checks do not cover these later bytes.

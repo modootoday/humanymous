@@ -4,31 +4,10 @@ use serde_json::{Value, json};
 #[path = "support/http.rs"]
 mod http;
 
-// Synthetic browser evidence exists only in this test target. It never enters
-// native exports, the production authority executable, or adapter wire fields.
-struct Observed {
-    headers: Vec<[String; 2]>,
-    mode: String,
-}
-type Observations = std::sync::Arc<std::sync::Mutex<Vec<Observed>>>;
-struct SyntheticEvidence(Observations);
-impl humanymous_authority::decision::Evidence for SyntheticEvidence {
-    fn report(
-        &mut self,
-        request: &humanymous_integrity::adapter::ValidatedRequest,
-        _: bool,
-    ) -> Result<humanymous_signals::report::SessionReport, humanymous_authority::Rejection> {
-        self.0.lock().unwrap().push(Observed {
-            headers: request.headers().to_vec(),
-            mode: request.header_mode().to_owned(),
-        });
-        let fixture: Value = serde_json::from_str(include_str!(
-            "../../scoring/tests/fixtures/frozen/human-chrome-allow.json"
-        ))
-        .unwrap();
-        Ok(serde_json::from_value(fixture["report"].clone()).unwrap())
-    }
-}
+// Test-only fixture shared with other real framework hosts, never native exports.
+#[path = "../../framework-adapter/tests/support/authority.rs"]
+mod authority_fixture;
+use authority_fixture::{SyntheticEvidence, audit_log};
 use std::{
     io::{BufRead, BufReader, Read, Write},
     net::{Shutdown, TcpStream},
@@ -277,10 +256,6 @@ fn actual_authority_decisions_are_enforced_before_origin() {
 #[test]
 #[ignore = "explicit real Node/Bun compatibility with synthetic evidence in the real Rust engine and audit, not production browser qualification"]
 fn actual_framework_allow_preserves_binary_body_and_headers() {
-    use humanymous_audit::{
-        log::{Config, Log},
-        storage::{Wal, WalOptions},
-    };
     use humanymous_authority::{
         configuration::Configuration, decision::Authority, transport::Listener,
     };
@@ -319,19 +294,7 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
             };
             let config_value = service_config(&directory, &endpoint, peer, "node-synthetic-pilot");
             let config: Configuration = serde_json::from_value(config_value.clone()).unwrap();
-            let log = Log::open(
-                Wal::open(&directory.0, WalOptions::default()).unwrap(),
-                Config {
-                    node_id: "node-synthetic-pilot".into(),
-                    hmac_key: vec![0xaa; 32],
-                    signing_seed: [0xbb; 32],
-                    checkpoint_every: 1,
-                    witness: None,
-                },
-                None,
-                true,
-            )
-            .unwrap();
+            let log = audit_log(&directory.0, "node-synthetic-pilot", true);
             let observed = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
             let authority = Authority::new(
                 config,
@@ -498,19 +461,7 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
             drop(host);
             service.abort();
             runtime.shutdown_timeout(Duration::from_secs(2));
-            let log = Log::open(
-                Wal::open(&directory.0, WalOptions::default()).unwrap(),
-                Config {
-                    node_id: "node-synthetic-pilot".into(),
-                    hmac_key: vec![0xaa; 32],
-                    signing_seed: [0xbb; 32],
-                    checkpoint_every: 1,
-                    witness: None,
-                },
-                None,
-                false,
-            )
-            .unwrap();
+            let log = audit_log(&directory.0, "node-synthetic-pilot", false);
             assert_eq!(log.records().unwrap().len(), 7);
             println!(
                 "{}",
