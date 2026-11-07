@@ -98,6 +98,20 @@ implementation, and a hosted-runner label does not establish actual assistive
 technology or independent organizational custody.
 
 Retain failed attempts when a rerun passes and bind both to their exact sources.
+A suite report also needs a frozen expected inventory and an execution ledger.
+Record expected, started, completed, passed, failed and not-run cases separately;
+an early runner failure leaves later cases not run, even when every assertion
+that actually executed passed. Compilation and test discovery do not count as
+execution. Required host/process cases cannot become passing coverage by being
+ignored, removed from the denominator or relabeled as helper tests.
+
+A current-source claim identifies the complete relevant source and dependency
+closure, not just the top-level manifest, lockfile or selected changed files.
+When only a subset was hashed or inputs changed during validation, report the
+limited scope and retain the component result without claiming an immutable
+integrated candidate. Link separate build, execution and coverage outcomes;
+one successful stage does not erase a later failure.
+
 A skipped job is not a passing case. Distinguish a test assertion failure from
 an environment, authorization or dependency failure without discarding either.
 If raw evidence was not retained or cannot be retrieved, record that limitation;

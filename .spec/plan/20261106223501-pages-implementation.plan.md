@@ -1316,3 +1316,13 @@ narrow P-07/P-08 properties without turning replay into authorization or a
 streaming protocol. Actual pool/socket/authority-to-origin hooks remain unverified.
 Source88/errors0; full freshness still fails remaining inventory. Native host.rs
 was only partially read and therefore receives no whole-file receipt.
+
+### Standards evidence completeness clarification
+
+Conformance reporting now separates frozen expected inventory from started,
+completed, passing, failing and not-run cases; compilation/discovery and ignored
+required host groups cannot substitute for execution. Current-source integrated
+claims need relevant source/dependency closure, while subset-hash component
+results retain explicit limits. Preparation binds rendered documents and reports
+to the same candidate. Updated existing editorial change-manifest row; no generic
+wire selection, new product execution contract or external submission.

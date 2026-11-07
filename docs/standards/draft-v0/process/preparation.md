@@ -35,6 +35,10 @@ specific interoperability problem.
 6. Freeze a dated source revision and render the public Pages document. Validate
    links, anchors, status/version, navigation, accessibility, sensitive-data
    exclusion and both apex and repository-subpath URLs.
+   Bind the document and validation reports to the same candidate, recording
+   relevant dependency inputs and any dirty-source commitments. Keep expected
+   versus executed cases visible, including cases not reached after a runner
+   failure. A successful earlier build cannot qualify changed documents.
 7. Prepare the venue-specific submission package. If preparing an IETF draft,
    use the RFCXML version 3 XML document format, required boilerplate and
    formatting and editorial checks (often called nits checks),

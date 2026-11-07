@@ -8,8 +8,8 @@
   "changes": [
     {
       "kind": "editorial",
-      "paths": ["validation/conformance.md"],
-      "summary": "Clarify comparable evidence records and distinguish synthetic decisions, origin effects, skipped execution, retained raw evidence and human/assistive review.",
+      "paths": ["validation/conformance.md", "process/preparation.md"],
+      "summary": "Clarify comparable evidence records, frozen expected-versus-executed inventories, relevant source closure and same-candidate document validation; distinguish synthetic decisions, origin effects, skipped execution, retained raw evidence and human/assistive review.",
       "normative_semantics_changed": false,
       "generic_wire_changed": false
     },
