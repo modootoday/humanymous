@@ -1,0 +1,306 @@
+{
+  "schema": "humanymous.hosted-generic-source-evidence/1",
+  "classification": "catalog_scoped_pass_full_gate_refused",
+  "source_sha": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+  "run_id": 42387564172,
+  "run_attempt": 1,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42387564172",
+  "preflight": {
+    "job_id": 128448085478,
+    "conclusion": "success",
+    "attacker_tests": 17,
+    "defender_tests": 8,
+    "lab_tests": 26,
+    "delivery_tests": 90,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "unix_actor_check": "passed",
+    "selected_all_target_strict_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "product": {
+    "job_id": 128448838263,
+    "conclusion": "failure",
+    "summary": {
+      "canonical_git_tree_sha256": "39d438c7197f6ad7a3347c4dd6f7087643567d1d5239cfb27ebcf0951a5603c2",
+      "cases": [
+        {
+          "evidence": "private source-bound owning report",
+          "id": "attack-catalog",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "gate",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "pass",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "swarm",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "deployment",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "human-control",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "raw-tls-h2",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "audit-restart",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "origin-isolation",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "documentation-examples",
+          "status": "blocked"
+        }
+      ],
+      "components": [
+        {
+          "assertions": {
+            "failed": 0,
+            "other": 0,
+            "passed": 72,
+            "total": 72
+          },
+          "exit_code": 2,
+          "full_product_qualified": false,
+          "owner": "lab-runner",
+          "public_receipt": {
+            "case_statuses": [
+              {
+                "expectation_matches": null,
+                "index": 0,
+                "status": "unsupported"
+              },
+              {
+                "expectation_matches": true,
+                "index": 1,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 2,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 3,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 4,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 5,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 6,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 7,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 8,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": null,
+                "index": 9,
+                "status": "unsupported"
+              },
+              {
+                "expectation_matches": null,
+                "index": 10,
+                "status": "unsupported"
+              },
+              {
+                "expectation_matches": true,
+                "index": 11,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 12,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 13,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 14,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 15,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": null,
+                "index": 16,
+                "status": "unsupported"
+              },
+              {
+                "expectation_matches": true,
+                "index": 17,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": null,
+                "index": 18,
+                "status": "unsupported"
+              },
+              {
+                "expectation_matches": true,
+                "index": 19,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": null,
+                "index": 20,
+                "status": "unsupported"
+              },
+              {
+                "expectation_matches": true,
+                "index": 21,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": null,
+                "index": 22,
+                "status": "unsupported"
+              },
+              {
+                "expectation_matches": true,
+                "index": 23,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 24,
+                "status": "evaluated"
+              },
+              {
+                "expectation_matches": true,
+                "index": 25,
+                "status": "evaluated"
+              }
+            ],
+            "full_product_qualified": false,
+            "raw_contents_included": false,
+            "raw_sha256": "0edae80d11a0ad3d9c4d7baf027ddb1a85f35ea0ad787ad22031461ad4736930",
+            "report_schema": "humanymous.wargame-network.v2",
+            "schema": "humanymous.lab-wargame-public/1",
+            "source_manifest_sha256": "da210fd18a8ff455a05964c9548a07a6f7a1bfbd32ff516fae58d4ae9a8d8cb4",
+            "source_sha": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+            "verifier": {
+              "full_product_qualified": false,
+              "internally_consistent": true,
+              "mode": "owned_process_network",
+              "schema": "humanymous.wargame-verification.v1",
+              "scoped_passed": true,
+              "totals": {
+                "errors": 0,
+                "evaluated": 19,
+                "expectation_mismatches": 0,
+                "scheduled": 26,
+                "skipped": 0,
+                "unsupported": 7
+              }
+            }
+          },
+          "qualification": null,
+          "required_unavailable_count": 9,
+          "safe_diagnostics": {
+            "failure_count": 0,
+            "failures": [],
+            "partial": false,
+            "schema": "humanymous.lab-safe-diagnostics/1"
+          },
+          "schema": "humanymous.product-lab/2",
+          "status": null
+        }
+      ],
+      "documentation_review_sha256": "7b389d583a00cfada2818093737daa192f04a36dfd31558397208371e2b3b80c",
+      "errors": 0,
+      "full_product_qualified": false,
+      "images": [
+        "sha256:d4475ceb35a49974137075c48d4000c9ca35ca8054ae7813fbf5a62332d64aa8",
+        "sha256:3abe1f1a279ad3a589e12a2900de4a8cb76a0cac410f108ed3c7bc04f26e5f38"
+      ],
+      "isolation": "docker",
+      "kind": "docker",
+      "private_report_sha256": "760bf0364507e658bb111455e0d41f7346a0cc1484a4203f22748b8378bb7f95",
+      "qualification": "component-only",
+      "release_ready": false,
+      "runtime": "rust",
+      "schema": 1,
+      "skips": null,
+      "source_changed_during_execution": false,
+      "source_manifest_sha256": "98d579bfde1190e1e93f12460a2f4102c2962a47335d9421167e680715415084",
+      "source_sha": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+      "status": "blocked"
+    }
+  },
+  "independent_public_audit": {
+    "counts": {
+      "scheduled": 26,
+      "evaluated": 19,
+      "errors": 0,
+      "skipped": 0,
+      "unsupported": 7,
+      "expectation_mismatches": 0
+    },
+    "case_indexes_exact": true,
+    "source_exact": true,
+    "original_private_raw_recovered": false,
+    "local_original_raw_rehash": false,
+    "closed_fields_match_frozen_contract": true,
+    "canonical_owner_proof_commit": "8149d64125fc6fed67e8677c796018dd275b7244",
+    "canonical_owner_evidence": "evidence:root/20261107154100"
+  },
+  "canonical_owner_evidence": "evidence:root/20261107154100",
+  "canonical_owner_commit": "8149d64125fc6fed67e8677c796018dd275b7244",
+  "private_evidence": "evidence:root/20261107155810",
+  "scope": [
+    "The current26-case catalog has19evaluated/0errors/0skipped/7unsupported/0expectation mismatches; all72Labassertions pass.",
+    "Full-required ownerexit2 and failedouterjob remain red;9required capabilities are unavailable, full/release false.",
+    "Original813 failure remains26scheduled/0evaluated/19errors/7unsupported at its original source; this is a distinct later execution.",
+    "Actual original-byte hash comparison occurs inside the source-reviewed Lab caller and Delivery consumer. Original private body is not recovered locally, and no local raw rehash is claimed.",
+    "Genericprofile does not execute the browser actor DTO or substitute for Go8, browser/human/assistive controls or full product qualification."
+  ]
+}

@@ -73,11 +73,19 @@
       "result": "failed_after_entered_dns_finish",
       "facts": "Preflight10Go/22Lab/81delivery pass; product18assertions16pass2fail. Last entered-stage actor_browser_dns_finish; exact actor/test/DNS-finish outcome unknown. Full/release false.",
       "evidence": "hosted-browser-bb763c1f-failure.json"
+    },
+    {
+      "source": "306eedc83801ad153bf8aed68d89a8b1dbb30847",
+      "run": 42387564172,
+      "profile": "generic_wargame",
+      "result": "catalog_scoped_pass_full_gate_refused",
+      "facts": "26scheduled/19evaluated/0errors/0skipped/7unsupported/0mismatch; Lab72/72assertions pass. Ownerfull-required exit2, outerfailure/fullfalse retained. Original private body unavailable locally.",
+      "evidence": "hosted-generic-306eedc8-scoped.json"
     }
   ],
   "unmeasured": [
-    "Generic813 readiness-contract remediation needs its own later generic Docker/wargame run; Go8 does not execute that26-case catalog.",
-    "Typed browser actor outcome has Windows26-unit and Win/GNU compile-only proof in typed-browser-outcome-de0-306-checks.json; actual browser diagnostic of this DTO is not yet executed.",
+    "Generic813 remediation is measured in distinctrun42387564172/source306:19evaluated/0errors/7unsupported/scopedtrue. This is a26-case scoped catalog result, not full product qualification.",
+    "Typed browser actor outcome has Windows26 units on de0 and genuine hostedLinux26 preflight plus Win/GNU compile proof on306; actual browser actor DTO execution remains NOT_RUN.",
     "No row establishes full product or release qualification."
   ]
 }
