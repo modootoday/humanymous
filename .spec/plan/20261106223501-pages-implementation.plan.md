@@ -1929,3 +1929,12 @@ Exactnewtab+5diagnostics/slashless,4096/controlbound and strictnewtabaction scop
 singleaddress align publicallowlist; trustedsubresources not navigation/external
 or fileproxy. Parser tests not actualCEF/network/AT. No publiccontent changes,
 sourcechecker88errors0/scopedSpec0errors0warnings. Wholefreshness still incomplete.
+### Cancelled native report denominator defect
+
+Read complete309line pilot_assertions in two bounded outputs. Positive checks
+PID/schema/ordered7content/load200/parent/resize/zeroDropped/joinedrestrictedcanary.
+Cancelled branch hardcodes joined0 and doesnotinspect actualrendererprobe/schema;
+existing cancellation syntheticfixture leaves positiveprobes/receipts present
+while assertingobserved0 and passes. Reported precise defect+negative regression
+to browserowner. Exactreceipt records limitation rather than qualifying contract0.
+No sourcefix in foreignlane and no Cargo/native execution; publiccontent frozen.

@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/window_frame.rs",
+  "sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete294line scopedWin32chrome: ownparent style/readback, minimize/maximize vs lifecycleclose, focusvalidated drag/capture and release/scale/focusloss, DPIpuregeometry, boundedcursorlabels/windowrectobservations. No globalhooks/foreigncontrol or actual nativepointer/keyboard/AX qualification; sourcecursorunit not liveOS behavior.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/src/pilot_assertions.rs",
+  "sha256": "d88b418564f35ba83bf20a51bc3cfdfb3ec97f851c6d215f3a49b945c0f4b8ed",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete309line report verifier+synthetic tests: positive PID/schema/ordered7receipt/load200/content/drop0/parent/resize/restrictedcanary joins and safeprojection. Found cancelledbranch hardcodesjoined0 without actualprobeinventory/schema checks; positivefixture retainingprobes accepted after observed0flip. Reported owner, contract0 NOT qualified. Parser/source tests not native execution or independent implementation.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/src/internal_urls.rs",
   "sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
   "reviewer": "codex/rust-pages",
