@@ -12,7 +12,21 @@ files:
 
 # Build and canonical-function performance evidence
 
-## Meari shell source-only investigation
+## Project-wide GPU research status
+
+The performance SoT records tagged primary-source compatibility candidates,
+ranked workload eligibility, proposed CPU/GPU crossover accounting and explicit
+device/memory/parity/lifecycle prerequisites. Root supplied initial RTX4070Ti /
+DriverVersion32.0.16.1088 identification; this owner performed no GPU discovery,
+context creation, load, benchmark or driver/SDK installation. No usable memory,
+hardware-backend tuple, batch threshold, speedup or product compatibility is
+qualified. Existing CPU studies remain unchanged. Current product MLP source has
+27-feature CPU inference; historical Candle/Burn and selected mistral.rs research
+are distinct dependency tuples, not an implemented backend switch. Final policy
+and any dependency/pin decision remain with root. Exact links and retrieval gaps
+are in the SoT; no new private runtime attachment or synthetic test pass exists.
+
+## Meari shell source-only investigation (source receipt)
 
 The priority UI investigation binds manual candidate
 ce24fe52d5bb80e846f030a08fdcfe547456b9fa and pinned Meari

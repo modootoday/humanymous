@@ -551,6 +551,207 @@ Primary research: [AnyRender compatibility](https://github.com/DioxusLabs/anyren
 [wgpu surface lifetime/configuration](https://docs.rs/wgpu/latest/wgpu/struct.Surface.html).
 Mutable upstream observations require exact source freezing before implementation.
 
+## Project-wide GPU eligibility and crossover research
+
+This is a performance proposal for root's structural policy, not a new backend,
+dependency, model activation, shader or execution grant. Preserve Rust1.99.1,
+detection freeze and all existing CPU experiments unchanged. Installing a driver
+does not accelerate ordinary rustc, linking, Jekyll, hashing preparation or I/O.
+Experimental compiler offload is a separate unsupported qualification track.
+
+Initial hardware evidence supplied by root identifies RTX4070Ti and Windows
+DriverVersion32.0.16.1088 only. It proves neither a usable hardware adapter/context,
+API feature support nor an allocation budget. Do not infer usable memory from
+Win32 AdapterRAM or marketing capacity. No GPU context, benchmark or install was
+performed by this performance owner.
+
+### Ranked candidates and CPU controls
+
+| Priority | Workload and interface boundary | Eligibility, control and missing evidence |
+|---|---|---|
+| P0 | Meari parent-window presentation | Direct GPU target is relevant; first qualify UI38 retained-source resize/layout and optimized CPU control. Preserve native CEF child, AX/input and bounded frame ownership. Existing1482CPU path and proposed GPU wait issue are detailed above; no measured crossover yet. |
+| P1 | Offline LLM prefill/decode in the isolated maintenance evaluation | Large tensor work is a candidate after the existing CPU study finishes unchanged. Keep exact weights/tokenizer/template/dtype/context/batch and local-only semantics; compare TTFT, steady decode and complete task quality separately. CPU binary is not GPU-capable merely because the host has NVIDIA hardware. |
+| P2 | Offline batched model standardization/training/evaluation | First define supported tensor shapes and non-serving acceptance. Keep optimized scalar/CPU SIMD controls, finite input/cohort caps and RNG/numeric contracts. Transfer and queue costs can dominate small batches; no batch threshold is measured. |
+| P3 | Product MLP single-request inference | Current source uses27 f32 features, ordered f32 accumulation and f64 sigmoid, and defaults to abstention without a model. A GPU change needs exact semantic/threshold parity and actual deadline benefit, not tensor-library availability. CPU remains the control; no serving/model/scoring change is authorized. |
+| P3 | Image/watermark carrier batches or large offline transforms | Only a demonstrated dense, bounded owner-defined kernel is eligible. Preserve exact carrier/codec bytes and standards oracles; no generic GPU claim for PNG/WASM/HTTP. Owner contract and hotspot evidence are missing. |
+| Exclude now | Integrity, Audit canonical bytes/MAC/WAL, Gate decisions, IPC, collector events, filesystem preparation | Small/control/ordered work, secrets, durability and canonical parity favor existing CPU/OS paths until a measured hotspot and explicit contract justify change. A faster kernel cannot replace fsync, peer identity, cancellation or enforcement. |
+| Separate research | Compiler/kernel offload | Rust-GPU and documented NVPTX workflows require separate compiler/tooling qualification; no nightly, generated foreign kernels, new shader authoring or unsafe exception is permitted by this study. |
+
+CPU SIMD is not automatic permission to use target-cpu=native in distributable
+binaries. Distinguish safe runtime-detected ISA dispatch and portable fallback
+from an ISA-specific artifact. Preserve arithmetic/byte contracts and run the same
+regressions; optimized builds, vectorization and multithreading are independent
+experimental factors. Do not use an unoptimized CPU baseline to justify GPU default.
+
+### Candidate compatibility matrix, not product support
+
+Each row requires exact OS/architecture, crate/features/driver/runtime/device and
+actual workload qualification. Backend compilation is not runtime availability.
+
+| Platform / vendor family | Candidate route | Required qualification / exclusions |
+|---|---|---|
+| Windows x86_64, NVIDIA/AMD/Intel | wgpu DX12 or Vulkan for graphics/compute | Query real adapter class, device/surface capabilities, dtype/storage limits and bounded memory; no vendor-name whitelist as proof. Current RTX inventory has no runtime proof. |
+| Windows x86_64, NVIDIA tensor inference | Reviewed mistral.rs/Candle CUDA build | CUDA-feature executable and its precise runtime/driver/SM/kernel tuple required. Existing official CPU executable and --cpu study stay unchanged; no AMD/Intel CUDA assumption. |
+| Windows arm64 | Candidate wgpu Windows backend | Feature/driver/toolchain and actual native binary/provider proof missing; do not inherit x86_64 qualification. |
+| Native Linux x86_64/aarch64, NVIDIA/AMD/Intel | Vulkan wgpu; vendor-qualified tensor backend separately | Device/render-node permissions, real driver and exact kernel/dtype required. CUDA is NVIDIA-specific; other runtimes are independent candidates, not interchangeable flags. |
+| macOS arm64 Apple Silicon | Metal wgpu; separately qualified Candle/mistral Metal | Real adapter and compute support, shared-memory residency and exact feature/model tuple required. Shared memory is not unlimited or automatically zero-copy. |
+| macOS x86_64 | Candidate Metal on supported hardware/OS | Device and dtype limits must be measured; Apple Silicon qualification does not transfer. No automatic CUDA or portability-layer assumption. |
+| Android/iOS | Upstream Vulkan/Metal possibilities | Product host, toolchain, lifecycle/thermal and device matrix are unqualified; not a distribution promise. |
+| Browser WASM | WebGPU if browser/device capabilities permit | Separate permission/secure-context/browser/backend qualification. WebGL/GLES availability does not establish Vello compute or tensor compatibility. No collector GPU requirement or accessibility gate. |
+| Headless, CI, Docker, VM, remote desktop or WSL | Explicit supported compute device or CPU | Surface availability, software adapters and passthrough differ. WARP/lavapipe/SwiftShader/NOOP are not hardware speed evidence. WSL remains stopped/not allocated; container GPU product qualification needs separately admitted passthrough/topology. |
+
+Tagged wgpu30.0.1 enables DX12/Metal/Vulkan/GLES/WebGPU through explicit features.
+Its package declares Rust1.87 while the workspace declares1.93; neither proves
+the selected dependency closure under1.99.1. Its NOOP backend performs no compute.
+Adapter power preference is a request, not measured residency or performance;
+request and observed device class/backend must be distinct. Cpu is software;
+VirtualGpu/Other remain unknown hardware backing without explicit provenance.
+Require-hardware must refuse unsupported, software or unknown qualification.
+
+Tensor candidates must not silently unify incompatible release lines. Inspected
+Candle0.9.1 exposes CPU/CUDA/Metal; mistral.rs0.9.5 instead pins Candle0.11 at
+66a8cf184a5a519671454066b1b9efd446ec9f5c and declares Rust1.94. Its CUDA/Metal and
+CPU acceleration features are distinct build choices. Inspected Burn0.18 uses
+wgpu25 and optional fusion/autotuning, not the proposed Meari wgpu30 context.
+These are comparison candidates, not selected dependencies. Latest hardware docs
+cannot prove a historical binary's features or minimum supported GPU. Record
+unretrieved tagged files rather than substituting a mutable current API.
+
+### Proposed interface and measured selection rule
+
+Keep domain algorithms/records separate from device discovery, backend resource
+ownership and scheduling. An owner-reviewed adapter proposal would accept a finite
+workload descriptor (shape/count/dtype/input bytes/output budget/deadline/parity
+class), a requested CpuOnly/Auto/RequireHardware policy and an opaque resource
+lease. Return bounded result/status, requested versus actual backend/device class,
+effective limits, failure/fallback reason and source/model identity. Do not expose
+raw GPU handles, driver context, shaders or device-specific buffers across domains.
+Surface rendering and tensor execution have separate adapters and lifecycles.
+
+CpuOnly must avoid GPU initialization. Auto may prefer qualified hardware only
+for a workload/device/profile with measured end-to-end benefit and budget/parity
+headroom; otherwise use CPU with a finite reason. RequireHardware refuses rather
+than silently running CPU/software. Do not change an active experiment's backend
+mid-pair. After device loss, fallback is a fresh explicit state transition with
+owner validation; never replay external effects, use a stale frame/prediction or
+turn missing GPU evidence into an accepted security decision. Root owns final
+cross-cutting policy names/defaults and activation.
+
+Compare total completed work, not kernel duration alone:
+
+T_gpu = amortized initialization + packing + upload + queue wait + kernel +
+download + synchronization + validation; T_cpu includes the same useful work and
+its CPU scheduling. On UMA the transfer term may change, but mapping/copies/cache
+coherency and shared bandwidth remain measurable costs. Benchmark cold start and
+steady residency separately. Rendering should stay on GPU through presentation;
+tensor results requiring CPU enforcement include their actual readback cost.
+
+A crossover threshold is keyed by exact device/backend/driver/model/shape/dtype/
+residency/concurrency/profile, with uncertainty and expiry on changed inputs. No
+universal batch size or GPU-first default is established. A future finite sweep
+may propose batches1/8/64/512/4096 only within the owning input limits, matched
+fixed data and randomized/predeclared arm order. Report latency distributions,
+throughput, bytes transferred, queue occupancy and memory peaks; include waiting
+to form batches so throughput cannot hide a request-deadline regression. Serving
+admission may choose CPU for an urgent request even above an offline throughput
+crossover. Actual energy/thermal observations are optional evidence, never inferred.
+
+### Memory, parity and bounded lifecycle
+
+Budget weights, compiled pipelines, activations, KV/cache state, staging buffers,
+surface textures, copies and in-flight work separately. Query current qualified
+local/nonlocal process budgets where supported; unavailable telemetry remains
+unknown. UMA uses host memory pressure too: avoid treating CPU and GPU budgets
+as independent extra capacity or double-counting the same physical allocation.
+No guessed VRAM budget, automatic spill, unified-memory migration or unbounded
+device-layer remapping. Keep host guards and explicit per-task memory/queue caps.
+Meari/CEF/model allocations may compete on the same physical device.
+
+Numeric acceptance must precede acceleration. Parallel reduction order, fused
+operations, dtype conversion, quantization and exp/sqrt behavior can change NaN,
+Inf, rounding and threshold-adjacent results. Keep frozen bytes exact for crypto,
+canonical/RNG/codecs; define authorized tolerances only for a non-serving numerical
+contract, including all failures/abstentions and unchanged decision boundaries.
+GPU ML serving requires separate proof/approval even if offline error is small.
+LLM equal weights do not imply identical tokens across backends; hold tokenizer,
+chat template, sampling/greedy settings and denominator fixed and evaluate quality
+separately from speed. Do not relabel unreliable local judging as a benefit result.
+
+Use a finite admitted queue and explicit buffer/resource owner through actual GPU
+completion. Cancellation before submission can discard pending work; a cancelled
+future or timeout after submission does not prove device work stopped. Retain
+permits/buffers until observed completion or a qualified device-loss/teardown path;
+do not reuse allocations while work may survive. Bound frame/batch counts, startup,
+polling/retry and shutdown policy; no UI-thread indefinite wait. Device lost/OOM,
+unsupported kernels, stale generations and missing output are explicit terminal
+or retained-uncertainty states, with no automatic unsafe result promotion.
+Clearing host buffers is not proof that driver/device copies of secrets are erased.
+
+### Qualification roadmap and policy critique criteria
+
+1. Finish unchanged CPU studies and UI38 pure/retained-document checks; preserve
+   all first failures. Root structural policy defines selection/fallback names.
+2. Qualify exact discovery and backend lifetimes on a separately allocated native
+   venue. Pure policy tests cover missing/software/unknown adapters, limits, overflow,
+   stale input, device loss and CpuOnly/require refusal; mocks stay separate.
+3. Meari optimized CPU and true GPU Windows pilots follow the earlier fixed-input
+   matrix, including native CEF child/DPI/minimize/IME/AX/input and actual cleanup.
+4. After CPU LLM evaluation completes, propose an isolated exact-feature GPU tuple
+   and then finite cold/warm quality/TTFT/decode/end-to-end comparisons. Batch
+   compute experiments follow owner shape/parity contracts; no serving activation.
+5. Promote only source-bound real hardware tuples with measured benefit and all
+   regression gates. Product integration still requires Docker-only actual e2e,
+   with GPU topology if claimed, plus required native host/UI qualification.
+
+Reviewed root's actual structural GPU policy draft v0 after it became available.
+Its workload priorities, separate presentation/compute/venue interfaces, CPU
+reference, qualified-auto and require refusal, no indefinite UI wait, stable
+toolchain and bottom-up real-pilot requirements align with this research. No
+implemented policy or GPU qualification follows from that source review.
+
+Concrete clarifications proposed to root, before implementation:
+
+- P1: distinguish request cancellation/terminal reporting from actual submitted
+  device-work settlement. A timeout may finish the caller while the device owner
+  remains RetainedUncertain with permits/buffers held; a backend without a qualified
+  completion/teardown path cannot claim cancellation reclaimed its capacity.
+- P1: define hardware classification for Require-GPU explicitly. Cpu/software and
+  NOOP refuse; VirtualGpu/Other require verified hardware backing rather than
+  vendor string or requested power preference. Unknown capability/memory inputs
+  cannot be converted into a qualified device tuple by successful enumeration.
+- P1: separate logical memory ledgers from physical admission. Recording CPU RAM,
+  VRAM and UMA separately must not add UMA bytes to host free memory or double-count
+  shared pages. Use a finite joint host/device budget and fresh actual residency
+  observations, with unknown telemetry and concurrent consumers explicit.
+- P2: state that crossover eligibility expires on driver/backend/model/shape/dtype/
+  residency/concurrency changes. A cached threshold or offline throughput gain
+  cannot override a current request deadline, device loss or admission guard.
+- P2: attach source/version/feature evidence per exact backend tuple. A compatible
+  package MSRV is not a complete transitive/native SDK proof, and the experimental
+  offload guide is not a stable-workspace build acceleration implementation.
+
+These are policy-design clarifications, not observed runtime defects or an extra
+approval gate. Root retains structural policy ownership. No GPU runtime,
+crossover, compatibility expansion or selection-speedup is proven.
+
+Primary source ledger reviewed2026-11-08:
+
+- [wgpu30.0.1 package/features](https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/wgpu/Cargo.toml),
+  [workspace](https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/Cargo.toml),
+  [adapter requests/types](https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/wgpu-types/src/adapter.rs).
+- [Candle0.9.1 devices](https://raw.githubusercontent.com/huggingface/candle/0.9.1/candle-core/src/device.rs);
+  the requested exact66a8cf Candle device source was not retrieved.
+- [mistral.rs0.9.5 workspace](https://raw.githubusercontent.com/EricLBuehler/mistral.rs/v0.9.5/Cargo.toml)
+  and [feature definitions](https://raw.githubusercontent.com/EricLBuehler/mistral.rs/v0.9.5/mistralrs-core/Cargo.toml).
+- [Burn0.18 workspace](https://raw.githubusercontent.com/tracel-ai/burn/v0.18.0/Cargo.toml)
+  and [wgpu backend](https://raw.githubusercontent.com/tracel-ai/burn/v0.18.0/crates/burn-wgpu/Cargo.toml).
+- [DXGI current process memory budget](https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_4/nf-dxgi1_4-idxgiadapter3-queryvideomemoryinfo),
+  [D3D12 UMA properties](https://learn.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_feature_data_architecture1)
+  and [NVIDIA transfer guidance](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#data-transfer-between-host-and-device).
+- [Rust-GPU mutable toolchain](https://raw.githubusercontent.com/Rust-GPU/rust-gpu/main/rust-toolchain.toml)
+  requests nightly2026-08-15; [documented NVPTX workflow](https://doc.rust-lang.org/rustc/platform-support/nvptx64-nvidia-cuda.html)
+  also uses nightly components. Neither is approved for this stable workspace.
+
 ## Runtime measurement profiles awaiting owner allocation
 
 These are proposed contracts, not executable tests or new deployment claims.

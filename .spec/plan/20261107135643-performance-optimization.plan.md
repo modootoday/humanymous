@@ -12,6 +12,20 @@ rel:
 
 ## Bottom-up next admission
 
+The user expanded GPU research project-wide. Keep prior build/cache/runtime goals
+and unchanged CPU studies. The SoT now ranks Meari presentation, isolated LLM and
+offline batch work, separates small production MLP and ordered/security/I/O paths,
+and proposes a conditional platform/vendor/backend matrix and measured crossover
+contract. Root owns final structural policy. Exact tagged wgpu/Candle/Burn/mistral
+sources, software-adapter refusal, UMA budgets, parity and resource lifetime gates
+are recorded. No new backend, model, dependency, pin, GPU load, shader, driver/SDK
+install, unsafe exception or compiler/toolchain switch is authorized. Root's
+initial RTX4070Ti/driver identity is not usable memory or runtime qualification.
+The structural GPU policy draft v0 was subsequently reviewed; concrete device-work
+settlement, unknown adapter, UMA budget and stale crossover clarifications were
+routed to root and recorded in the SoT. GPU numerical thresholds and every compatibility tuple
+remain unmeasured; future execution needs an exact owner-reviewed allocation.
+
 Root reprioritized the human-reported Meari shell resize lag as a core UI defect.
 Inspect pinned1482b746 CPU/softbuffer and Browser ce24fe52 dev behavior; preserve
 the150-200ms report as subjective. The SoT now specifies per-stage monotonic
