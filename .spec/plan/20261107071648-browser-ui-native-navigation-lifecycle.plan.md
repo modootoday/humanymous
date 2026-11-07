@@ -11,6 +11,24 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## Diagnostic CEF execution: native build and protocol passed, bootstrap failed
+
+Run42372115353/job128402202007 executed exact source
+e77b9792b5c31db25e008c0b4a6f42ae7ac969da. Runner11 and Clippy passed; native
+build exited0 with bounded diagnostics untruncated. The existing native-feature
+test binary executed all four declared synthetic protocol tests:4 passed,
+0 failed/ignored,13 filtered. This validates the report regressions in that
+source, not CEF initialization or actual desktop behavior.
+
+The next bootstrap-rejection stage failed. Its child exit, executed-case receipt
+and private log were not projected, so the case's execution and cause remain
+unknown. Desktop2 was not reached. source_changed=null because post-execution
+closure was not reached; do not claim an unchanged runtime source. Artifacts0,
+upload skipped. The safe report/source/log hashes are retained in
+cef-run-42372115353.json in evidence:root/20261107073932; private report and native
+log bodies were not recovered. CI owns safe typed bootstrap-stage diagnostics;
+root owns any subsequent execution. The older0a1 failure cause remains unknown.
+
 ## First actual CEF execution: failed before protocol tests
 
 Dedicated run42370958371/job128398793332 executed exact source

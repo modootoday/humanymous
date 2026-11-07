@@ -1,0 +1,52 @@
+{
+  "source_sha": "e77b9792b5c31db25e008c0b4a6f42ae7ac969da",
+  "run_id": 42372115353,
+  "job_id": 128402202007,
+  "workflow": ".github/workflows/cef-native-component.yml",
+  "platform": "standard hosted Windows x64",
+  "status": "failed",
+  "runner_units": {"passed": 11, "failed": 0, "ignored": 0, "filtered": 0},
+  "runner_clippy": "passed",
+  "native_build": {
+    "status": "passed",
+    "exit_code": 0,
+    "recognized_diagnostic_count": 0,
+    "private_log_bytes": 420312,
+    "private_log_sha256": "0f38fa48b08cf7b5ed7a5ce7b89e28f572c99ab2285cf6d1f7f3e040c6e1aee6",
+    "diagnostic_read_truncated": false,
+    "private_log_body_recovered": false
+  },
+  "native_feature_test_binary": "compiled and executed for declared synthetic protocol tests",
+  "protocol_preflight": {
+    "required": 4,
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 13,
+    "classification": "synthetic_report_protocol",
+    "initializes_cef": false,
+    "starts_processes": false
+  },
+  "bootstrap_rejection": {
+    "stage": "attempted and failed",
+    "qualified": false,
+    "case_executed": null,
+    "child_exit_code": null,
+    "private_log_body_recovered": false,
+    "root_cause": "unknown; cannot distinguish feature compilation, linking, child startup or test assertion from available receipt"
+  },
+  "desktop_process2": "not_run",
+  "source_changed": null,
+  "post_execution_source_closure": "not reached",
+  "source_manifest_sha256": "8d92d937cde265dfcc6ce3bc9a116b0e9f125bc0cebdd80a1cc316eefcde2133",
+  "private_report_sha256": "d8d03084a50e5f0b535db41ebf675388945858f6df0f8e3be53e5d233eaea1e8",
+  "private_report_body_recovered": false,
+  "artifact_count": 0,
+  "upload_step": "skipped",
+  "observation_source": "completed GitHub job metadata, safe JSON stdout projection, helper test summary and artifacts API",
+  "old_0a1_native_build_failure_cause": "still unknown; not retroactively resolved by this build success",
+  "browser_ready": false,
+  "gui_ime_ax_full_sandbox": "unqualified",
+  "rerun_started_by_browser_owner": false,
+  "next_action": "CI owner adds safe typed bootstrap-stage exit/diagnostic projection before root decides subsequent execution"
+}

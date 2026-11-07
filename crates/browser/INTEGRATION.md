@@ -1,5 +1,15 @@
 # Browser native integration
 
+## Actual Windows CEF checkpoint
+
+Exacte77 run42372115353 passed native build and all four synthetic desktop
+protocol tests (0 failed/ignored,13 filtered), following runner11/Clippy success.
+Bootstrap-rejection then failed without a recoverable child-exit/case receipt;
+desktop2 was not reached. Post-execution source closure is unknown, not unchanged.
+See cef-run-42372115353.json in evidence:root/20261107073932. These results do not
+qualify actual CEF child lifecycle, keyboard/IME/candidates, AX or full sandbox.
+Earlier source-only and not_run entries below retain their historical scope.
+
 ## Current execution authorization
 
 The user subsequently authorized actual local Windows/WSL validation to compare
