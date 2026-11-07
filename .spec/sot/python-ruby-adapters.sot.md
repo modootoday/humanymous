@@ -441,6 +441,15 @@ not successful qualification. Supported-loop/task-factory admission and bounded
 fault-injection controls must observe actual task settlement and permit lifetime;
 no source-only cancellation request closes that obligation.
 
+Windows compile/link receipt summary016 binds exact252ad259 to CPython3.12.10,
+Rust1.99.1/MSVC and PyO3 0.30.1: all-target host-pilot check/strict Clippy and
+lib-test SDK linkage passed; source2742/SDK2614/selected registry5639/config1/
+selected tool7 ledgers were unchanged. One actual linked executable is preserved.
+No tests executed: the two SDK WSGI controls remain Unix-only/unrun. This closes
+the corrected-source Windows compile/link gate, not CA-HANDOFF or task settlement.
+Actual Windows peer/private-parent fixture admission and every required host/
+fault/queued/runtime/package gate remain separate. No WSL/UNC use occurred.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

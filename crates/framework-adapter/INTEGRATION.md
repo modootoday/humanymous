@@ -38,3 +38,14 @@ receipts do not qualify changed inputs or the complete host/package goal.
 The Python controller/ASGI actual refusal remains NOT_ACCEPTED pending its
 reviewed native lifetime provider. Other lower-provider/service gaps are not
 filled by pure models or metadata. No release-qualified tuple is asserted here.
+
+Exact252ad259 now passed the allocated Windows MSVC CPython3.12.10 Python
+host-pilot all-target check, strict Clippy and lib-test SDK linkage (summary016).
+The linked artifact and source/SDK/selected dependency/config/tool ledgers are
+preserved. This executes zero tests: the two actual WSGI controls use a Unix-only
+Authority fixture and are excluded on Windows, not passed. Actual delayed/fault/
+queued callbacks and a genuine Windows peer/private-directory fixture remain
+open. Native's current user-private-directory initializer requires an already
+accepted owner-only parent and has no applicable actual receipt for this API;
+older directory receipts cannot qualify it. No WSL restart or native provider
+activation was used for this compile/link gate.

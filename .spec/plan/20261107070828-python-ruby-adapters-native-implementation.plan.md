@@ -641,3 +641,15 @@ request is recorded as successful cleanup. User-directed WSL release took effect
 after the first batch/closure reads completed; no live owned WSL handle remained.
 The corrected SDK retry is deferred to a later explicit venue allocation; source
 work continues without pausing the full goal or starting another WSL command.
+
+Root allocated the corrected252 Windows-native compile/link gate after Browser
+returned its exclusive slot. Fresh66%commit/34.33GiB, jobs1/inc0/offline/locked,
+real CPython3.12.10/MSVC SDK. Check42.75s/strictClippy4.03s/lib-test link41.10s
+passed; full bounded invocation123.08s, PTY17557 terminal0, target returned.
+Summary016 binds preserved binary and unchanged source2742/SDK2614/selected
+registry5639/config1/tool7 ledgers, plus zero source file-set differences.
+Actual tests0; Unix-only WSGI controls2 remain NOT_RUN, with no selector-zero
+success or Windows fixture/peer/provider qualification. Native confirmed current
+user-private-directory API needs a provisioned accepted owner-only parent and
+has no applicable actual receipt; older receipts bind different source. No WSL,
+UNC, interpreter test, extension-module/server/fixture or package run occurred.

@@ -1,0 +1,30 @@
+{
+  "scope":"Allocated Windows MSVC CPython compile and SDK linkage only",
+  "sourceSha":"252ad25914908ecf5be035dffeee00a3dd8ca196",
+  "archiveSha256":"e3655c69740400cfbf87834a6bd909e0add4f48d3c2124b3de3a29422066dd19",
+  "archiveBytes":71157760,
+  "environment":"Windows native; Rust1.99.1 x86_64-pc-windows-msvc; VS2022 BuildTools MSVC14.44.35207; CPython3.12.10/PyO3 0.30.1; existing node-native/build target; locked/offline/jobs1/incremental0",
+  "admission":{"commitPercent":66,"freePhysicalGiB":34.33},
+  "supervision":{"requestedOverallDeadlineSeconds":300,"terminalElapsedSeconds":123.0783037,"ownedPtyHandle":17557,"exitCode":0,"deadlineTerminationNeeded":false},
+  "commands":[
+    {"phase":"all-targets-host-pilot-check","exitCode":0,"elapsedSeconds":42.75},
+    {"phase":"all-targets-host-pilot-strict-clippy","exitCode":0,"elapsedSeconds":4.03},
+    {"phase":"host-pilot-lib-test-no-run-json","exitCode":0,"elapsedSeconds":41.10}
+  ],
+  "linkedArtifact":{"target":"humanymous_python lib test executable","count":1,"sha256":"657b364e336856a1bbefbe20f49bc8e3fbd7680e1a1a0ba2e8e63078eef8bea2","privateCopyVerified":true},
+  "sourceClosure":{"rows":2742,"beforeAndAfterSha256":"f40861a69eeea88c652638069b98d4f4a606310831c94b26c3dffe4872e69b36","currentFileCount":2742,"fileSetDifferenceRecords":0},
+  "sdkClosure":{"rows":2614,"beforeAndAfterSha256":"769ff5c51cacf8efc1e59ecf5ad5b8cd0e472d8079f24c39d07a08ab628005fe","scope":"Python executable/DLL/import library/headers and standard-library files; site-packages and pycache excluded"},
+  "selectedRegistryClosure":{"rows":5639,"beforeAndAfterSha256":"0737dcfa8293d14ec3db4cc2bae726b1d0980b86feac533f9597cd839d867702","scope":"Selected Python host-pilot Windows normal/build/dev package source directories, not the whole registry/cache"},
+  "configurationClosure":{"rows":1,"beforeAndAfterSha256":"86a7417fbe2747635c4635e6a92b7720a39834e0c6aa8058b7ce0ec702e1bdb4","missingPathsRecordedPrivately":true},
+  "selectedToolClosure":{"rows":7,"beforeAndAfterSha256":"94ebf71fa710eef54fd324ebc32f49a4c2af49ccc51234ab11d1bbe6a9dbf72c","scope":"cargo/rustc/clippy-driver and selected MSVC cl/link/c1xx/c2 binaries; not a complete Windows SDK provenance claim"},
+  "closureExitCode":0,
+  "privateRawLogSha256":"d1c7eac5bb5693572dfe9c0099f1e911f97e6e9bc6c2688e3fa0d6e1ecfbca24",
+  "privateRawLogBytes":11359,
+  "actualTestsExecuted":0,
+  "requiredWsgiControls":{"count":2,"status":"NOT_RUN","reason":"Current actual SDK fixture is Unix-only and excluded by cfg on Windows; no zero-selected-tests pass is claimed."},
+  "earlierFailureRetained":"summary015 preserves the frozen800b E0277 first failure and zero executed tests.",
+  "ownedCleanup":"PTY terminal0; exclusive target returned; linked executable preserved privately; no SDK test/server/controller/native fixture executed and no WSL/UNC use.",
+  "limits":"Corrected Python WSGI/ASGI and task-owner source compiled/linted and linked to the real Windows CPython SDK. No runtime import, actual callback/fault/queued control, Windows peer/private-directory fixture, extension-module, package or production qualification follows. Ruby native and Node remain separate.",
+  "caHandoffClosed":false,
+  "wholeProductQualified":false
+}
