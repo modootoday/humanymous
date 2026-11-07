@@ -2,6 +2,96 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/capture/Cargo.toml",
+  "sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840",
+  "reviewer": "codex/rust-pages",
+  "notes": "Pinned rustls/ring/tls12 and HPACK, optional rcgen only for hosted pilot. Manifest is not installed dependency or runtime proof.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/tls/records.rs",
+  "sha256": "dbfed8c2668fa9cb732883e675d797ac570d55ffc9865239c58610c99a201b81",
+  "reviewer": "codex/rust-pages",
+  "notes": "79 lines fully read. Constant-state TLS record boundary limits socket reads to current header/payload; tests enumerate fragmentation, zero-length record and incomplete prefix. Not TLS semantic validation or traffic execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/tls/hello.rs",
+  "sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153",
+  "reviewer": "codex/rust-pages",
+  "notes": "227 lines fully read in contiguous chunks. Sticky errors, bounded64KiB hello/18KiB records/128records; validates nested vectors/duplicate extensions and exact first-hello record completion before existing parser. Framing finish is not cryptographic handshake success or original-client hop authenticity.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/tls/hello/tests.rs",
+  "sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde",
+  "reviewer": "codex/rust-pages",
+  "notes": "151 lines fully read. Synthetic fragmentation/order/opaque ALPN, duplicate/malformed extensions, every truncated prefix, sticky errors and record budget. Source assertions do not establish actual TLS traffic or new test execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/http2/headers.rs",
+  "sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787",
+  "reviewer": "codex/rust-pages",
+  "notes": "131 lines fully read. Span validation per HPACK representation before decoder; bounded128 fields/64KiB accounting, lower-case token names, control/edge-whitespace rejection, pseudo-header order/uniqueness and prohibited connection fields. Requires four pseudo headers and rejects CONNECT. Decoding ordered headers not HTTP2 stream lifecycle, origin integrity or independent parser proof.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/http2/mod.rs",
+  "sha256": "fae2d480b57ce772a3e539743e6d938e556b7ccfd872fcebfc109f3cadce58cb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current467 lines fully reread. Adds InputState HeadersPending/Receiving/Ended/Reset and fixed-size StreamMetadata with completed unpadded DATA count and decoded trailer count. Counts only complete frames/blocks, reset retains metadata but removes request; terminal errors remove all availability. Ended is not Content-Length agreement, body digest, semantic validation or application authorization. finish at a clean frame boundary does not synthesize END_STREAM. Existing framing/HPACK/budget behavior retained.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/src/http2/tests.rs",
+  "sha256": "5b2215880e5d1da0a3968a6745d167586c84fbf8b7d358dd34cc3588d19eb5d6",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current417 lines fully reread. Three new pure metadata tests cover unpadded DATA counts, stream isolation, incomplete HEADERS/DATA withholding, completed trailers, reset diagnostics and terminal invalidation. Prior319-line corpus retained. Source fixtures, no new execution in this review.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/tests/hosted_transport.rs",
+  "sha256": "8a549c9985321181693c39dfb7f11077fde1b8615f2334283330a901ee301d4e",
+  "reviewer": "codex/rust-pages",
+  "notes": "406 lines fully read in contiguous chunks. Five ignored hosted-labeled socket groups with synthetic ephemeral certificates and owned loopback peers. H1 includes happy idle plus five tail refusal subcases; H2 continuation correct/wrong stream, invalid TLS, cancellation has four pre/during/post handshake/drop subcases. Threads joined on happy paths; source assertions and environment labels do not prove actual hosted execution, global panic-safe worker containment, durable audit or origin effects. No run performed.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/capture/INTEGRATION.md",
+  "sha256": "b32793888ccd5b8ac17d23a9bed8fffebcac9a5f1c3ff4c986f9934a8fecb298",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current250 lines fully reread. Latest reported hosted e77b9792/run42372114913 five cases supersede historical NOT_RUN prose; pure27 edf700bc and full e77 closure remain distinct because signals wire differs. These chronology statements were read, not independently rerun here; actual receipt inspection remains separate. No runtime serving/audit-origin/H2 product/Docker qualification inferred.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/python-adapter/INTEGRATION.md",
   "sha256": "3769a14ca8ae15bbf5375aaaaf97fa32d9c30a12a77bfbd754d093a2228383ef",
   "reviewer": "codex/rust-pages",
@@ -3047,23 +3137,21 @@
 },
 {
   "source": "crates/capture/src/tls/transport.rs",
-  "sha256": "74d6204465c0964aed97213d94161e98372e9b4b4fa80529f78967248514681b",
+  "sha256": "a6054eb2b704b7f66a3086da6808f5985eb1748cd62a3b9a4d92e2b60f3357f8",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete capture composition/TLS transport ownership module: actual consumed socket and rustls handshake, bounded lifetime/early-data/HRR refusal, borrowed hello and stream observations, actual negotiated ALPN, failure/expiry/revocation, explicit cancellation versus handle Drop, owner socket shutdown. Public topology and privacy references distinguish original versus proxy hop, parser versus qualified ingress, and transient decrypted header sensitivity. No actual TLS/socket/hosted/product execution performed or inferred.",
+  "notes": "Complete current398 lines fully reread. New h2_stream_metadata delegates only through same live TLS owner and negotiated-H2 capture. No standalone metadata adoption, body contents/digest or serving-stack validation. Original revocation/deadline/H1 point-in-time idle checks retained; runtime still owns worker join and effects.",
   "pages": [
     "docs/reference/supported-topologies.md",
-    "docs/reference/data-processing-inventory.md",
     "docs/standards/draft-v0/validation/implementation-map.md"
   ]
 },
 {
   "source": "crates/capture/src/tls/mod.rs",
-  "sha256": "e8453ccdbf191ab1f5030f009e9c1e37976b7530d64a42a959f325152e5c8a0e",
+  "sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete capture composition/TLS transport ownership module: actual consumed socket and rustls handshake, bounded lifetime/early-data/HRR refusal, borrowed hello and stream observations, actual negotiated ALPN, failure/expiry/revocation, explicit cancellation versus handle Drop, owner socket shutdown. Public topology and privacy references distinguish original versus proxy hop, parser versus qualified ingress, and transient decrypted header sensitivity. No actual TLS/socket/hosted/product execution performed or inferred.",
+  "notes": "Exports strict hello assembler and same-transport PendingHandshake/Connection/revocation owner; module declarations not full integration evidence.",
   "pages": [
     "docs/reference/supported-topologies.md",
-    "docs/reference/data-processing-inventory.md",
     "docs/standards/draft-v0/validation/implementation-map.md"
   ]
 },
@@ -3071,10 +3159,9 @@
   "source": "crates/capture/src/lib.rs",
   "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete capture composition/TLS transport ownership module: actual consumed socket and rustls handshake, bounded lifetime/early-data/HRR refusal, borrowed hello and stream observations, actual negotiated ALPN, failure/expiry/revocation, explicit cancellation versus handle Drop, owner socket shutdown. Public topology and privacy references distinguish original versus proxy hop, parser versus qualified ingress, and transient decrypted header sensitivity. No actual TLS/socket/hosted/product execution performed or inferred.",
+  "notes": "Capture described as transient original-hop evidence, not human attestation; exports TLS/H2 contexts only.",
   "pages": [
     "docs/reference/supported-topologies.md",
-    "docs/reference/data-processing-inventory.md",
     "docs/standards/draft-v0/validation/implementation-map.md"
   ]
 },

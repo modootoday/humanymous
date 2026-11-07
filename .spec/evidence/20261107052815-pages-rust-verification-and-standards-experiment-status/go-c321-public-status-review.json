@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.pages-go-public-status-review/1",
+  "source_evidence": ".spec/evidence/20261107132453-go-adapter-hosted-eight-case-qualification-c3211e27/summary.json",
+  "source_evidence_sha256": "0682bf054f9cbfee2c55dc85561d19d402b69043235a1964065b47600dd0ae6b",
+  "source_commit": "c3211e27ba941f3f11809e420d07d61ececad623",
+  "workflow_run": 42375310198,
+  "recomputed_cases": 8,
+  "recomputed_known_assertions": 40,
+  "cleanup_observed": true,
+  "owner_exit_code": 0,
+  "full_product_qualified": false,
+  "release_ready": false,
+  "earlier_failure_evidence": ".spec/evidence/20261106224155-container-test-environment-research/hosted-go-15f63fef-failure.json",
+  "earlier_failure_sha256": "34335e8e6e2b77c972a96befc5eda8af5ac701c3165e97eab8a5982d5d783328",
+  "earlier_evaluated": 0,
+  "earlier_failed_attempts": 8,
+  "earlier_unknown_assertion_cases": 8,
+  "docs_modified": true,
+  "new_execution_by_pages": "NOT_RUN",
+  "external_job_verification": "Root independently verified exact job; Pages reviewed owner public summary, not raw hosted log",
+  "new_build_or_browser": "NOT_RUN"
+}

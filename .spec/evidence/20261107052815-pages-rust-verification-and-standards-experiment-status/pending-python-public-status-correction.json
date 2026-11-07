@@ -1,0 +1,25 @@
+{
+  "schema": "humanymous.pages-pending-python-status-correction/1",
+  "state": "Applied in narrow authorized editorial window; no new build",
+  "page": "docs/reference/supported-topologies.md",
+  "stale_statement": "WSGI executable harness unimplemented, server dependency unprovisioned and zero executed cases",
+  "reviewed_public_evidence": [
+    {
+      "path": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/summary-010.json",
+      "sha256": "add5762fcb709a466af4976002d41bc46399f798d36539c7c44c3091606b39ec",
+      "source": "7842b6a875f1a77b8e88d2d9f31808d2089cebce"
+    },
+    {
+      "path": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/summary-013.json",
+      "sha256": "1cf7b1c41eb5208d7d90ec90a7529163e6f7ffafed8feb042311862297b6eb3c",
+      "source": "d68682e4530d666fbb6b93e281ac565d23f3ed3b"
+    }
+  ],
+  "reviewed_source_evidence": ".spec/evidence/20261107052815-pages-rust-verification-and-standards-experiment-status/python-ruby-review-acceptance.json",
+  "proposed_replacement": "A separate WSGI server harness and native factory have source-bound component evidence. At7842b6a8, an ordinary UID1000 WSL run used a private Waitress/Flask/Django environment and passed eight tests, including six actual groups/14rows/28cases. That historical result does not qualify the later shared WSGI/ASGI refactor. At d68682e4, all-target check/Clippy and two receipt-parser tests passed; two controller entries were filtered, no server/framework/package executed, and shared lifecycle remained NOT_ACCEPTED. ASGI42 planned cases, current WSGI28 execution, hosted qualification, production-wheel install and Windows support remain separate pending gates. Idle incomplete-body closure is not a total upload-time guarantee.",
+  "docs_modified": true,
+  "new_execution": "NOT_RUN",
+  "raw_execution_logs_rechecked_here": false,
+  "basis": "Owner public source-bound summaries and fully read contracts, not independent rerun or raw-log reconstruction",
+  "full_product_qualified": false
+}

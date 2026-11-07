@@ -11,6 +11,24 @@
   "paths": [
     "../../reference/supported-topologies.md"
   ],
+  "summary": "Record source c3211e27 hosted eight-case Rust Gate integration for Go HTTP origins:8 evaluated/passed and40known assertions with observed cleanup. Preserve prior15f63fef setup failure; no browser, later-source, framework-wide or full-product qualification.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false
+},
+{
+  "kind": "implementation-evidence",
+  "paths": [
+    "../../reference/supported-topologies.md"
+  ],
+  "summary": "Correct stale WSGI harness and zero-execution wording: distinguish historical7842b6a8 local28-case component success from d68682e4 compile/Clippy and two receipt tests. Keep current refactor, ASGI, hosted, wheel and Windows execution gates pending.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false
+},
+{
+  "kind": "implementation-evidence",
+  "paths": [
+    "../../reference/supported-topologies.md"
+  ],
   "summary": "Record exact b4000944 hosted Apache component qualification: 45 distinct cases passed across event, worker and prefork, with observed pilot and container/image cleanup. Preserve the earlier b5c15f0d 35/10 failure; no later-source, Windows or full-product qualification.",
   "generic_wire_changed": false,
   "full_product_qualified": false

@@ -114,7 +114,7 @@ These developing source boundaries do not add release-qualified host tuples.
 
 | Candidate | Current boundary and remaining qualification |
 | --- | --- |
-| Go HTTP origin | Uses the existing Rust Gate; there is no new Go SDK or provisioned Go adapter producer. An untouched external `net/http` fixture and bounded HTTP cases are selected but unexecuted. chi, Gin, Echo, Fiber and fasthttp each require separate host evidence; proxy compatibility does not establish in-process middleware or pooled-buffer safety |
+| Go HTTP origin | Rust Gate integration for Go HTTP origins uses the existing Rust Gate, without a new Go SDK or provisioned Go adapter producer. One source-bound eight-case hosted component run passed as described below. chi, Gin, Echo, Fiber and fasthttp each require separate host evidence; proxy compatibility does not establish in-process middleware or pooled-buffer safety |
 | Python WSGI/ASGI | Rust-native `humanymous_python.Wsgi(app, options_json)` and `Asgi(app, options_json)` are candidate interfaces. No wheel or runtime tuple is qualified. WSGI needs the actual server's raw target and input deadline; ASGI needs its declared HTTP/1/raw-path boundary. Candidate package Python-version metadata does not establish CPython ABI, free-threaded, subinterpreter or framework support |
 | Ruby Rack | Rust extension source exposes `Humanymous.wrap(app, options_json)`. Registration at the outer application boundary needs actual raw target, content length, authority and a server-enforced input deadline. The intended precompiled gem targets one exact Ruby minor ABI; platform tags do not establish installed gem, Rack/Sinatra/Rails, GC/GVL or ABI compatibility. No runtime tuple is qualified |
 | ASP.NET Core | Safe Rust request-lifecycle and managed shim source now exist with a normalized producer profile. Actual middleware/PInvoke execution, NativeAOT, GC/abort ownership and NuGet installation remain unqualified; the generic native ABI is not itself that managed binding |
@@ -205,6 +205,21 @@ and pidfd-based normal signals. Its isolated prefork CLI observation exited and
 reaped successfully without timeout, truncated output or forced cleanup. These
 observations do not establish general CLI or arbitrary process-tree containment.
 
+For Rust Gate integration for Go HTTP origins, source `c3211e27` passed the
+bounded eight-case profile in [hosted run 42375310198](https://github.com/modootoday/humanymous/actions/runs/42375310198).
+All eight ordered cases were evaluated and passed, with 40 known assertions,
+zero failed or not-run cases and no unknown assertion counts. The owner exited
+successfully, cleanup was observed and the source inventory remained unchanged.
+The cases cover binary ALLOW, dependency failure, cancellation, incomplete body,
+forged provenance, origin bypass, upgrade refusal and response semantics. This is
+component qualification; full-product and release readiness remain false. It does
+not qualify later source changes, browser provenance or every Go framework.
+
+The earlier source `15f63fef`, [run 42369171124](https://github.com/modootoday/humanymous/actions/runs/42369171124),
+remains failed evidence. Eight actor attempts failed at writer-mount setup before
+semantic evaluation; assertion counts were unknown. The later success does not
+rewrite that failure or turn those earlier attempts into measured passing cases.
+
 The Go candidate's synthetic trusted-session cases cannot attest browser or
 human activity. Origin contact counts and observed application mutations are
 different denominators: a successful transport contact alone does not prove a
@@ -218,13 +233,21 @@ Those cases are not an actual network server, production authority, successful
 authenticated ALLOW, installed wheel, response-streaming or cancellation-race
 qualification. Empty qualified tuples remain the current support declaration.
 
-A separate WSGI server contract selects a native factory and a candidate server,
-but still records an unimplemented executable harness, an unprovisioned server
-dependency and zero executed cases. That planned network boundary is not supplied by
-the seven framework-object cases or by a default crate build.
-A separate hashed Waitress requirement now declares a candidate install input;
-its presence is not an observed installation, a complete dependency closure or
-execution of the missing server harness.
+A separate WSGI server harness and native factory have historical component
+evidence. At source `7842b6a8`, an ordinary UID1000 WSL run used a private
+Waitress/Flask/Django environment and passed eight tests: six actual groups
+covering 14 rows and 28 cases, plus two framing tests. The earlier failed run is
+retained. This is local component evidence with test-only frozen inputs, not
+hosted qualification, production browser provenance or an installed wheel.
+
+That result does not qualify the later shared WSGI/ASGI refactor. At source
+`d68682e4`, all-target check and strict Clippy passed, followed by two receipt-parser
+tests; two controller definitions were filtered. No new server, framework import
+or package installation ran. The current controller still refuses execution
+until its shared owned-lifetime contract is accepted. Current WSGI 28-case and
+ASGI 42-case execution, hosted qualification, production-wheel clean installation
+and Windows support remain separate pending gates. The historical incomplete-body
+case measures idle closure, not a total upload deadline against a progressing body.
 
 The current Ruby native-callable contract requires eight cases in four groups:
 five liveness negatives and three dependency-unavailable framework-object cases.
