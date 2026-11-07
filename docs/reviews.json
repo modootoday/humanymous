@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/apache-adapter/INTEGRATION.md",
+  "sha256": "88727f17f1d6b23375d21b17611b145215dc236b7e50a7626dfc3a6c7e1d1278",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete corrected registration metadata and85316 actual default-graph summary. Nine safe tests and native default all-target check/Clippy passed; empty features exclude httpd/bindgen/pilot. Selected-feature build and45 hosted cases remain not_run. Before/after hashes cover selected inputs, not full immutable integrated source closure.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "crates/audit/src/keys/custody/rotation.rs",
   "sha256": "40dd00e3fb6b8f47699aba701097c3c0ff850d10d265eeb3770d0f3423ae627f",
   "reviewer": "codex/rust-pages",

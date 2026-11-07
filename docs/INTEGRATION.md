@@ -3,9 +3,14 @@
 Owner: docs / pages-current-runtime. Scope includes public standards drafts and
 standards-governance. No external submission or publication is authorized.
 
-## Root workspace delta requested
+## Workspace integration
 
-Add `docs/tooling` to workspace.members. Package/binary `humanymous-pages` uses
+`docs/tooling` is now a registered member of the shared workspace and lock.
+The package is compiled and its pure checks have executed as recorded below.
+The following dependency description records the integrated package contract;
+it is not an outstanding request to add another member or lockfile.
+
+Package/binary `humanymous-pages` uses
 workspace version/edition/rust-version/license/repository and lints. Direct
 dependencies reuse workspace serde, serde_json and sha2; add exact compatible
 `pulldown-cmark = "0.13.6"`, `scraper = "0.29.0"`, `regex = "1.12"`,
@@ -21,15 +26,15 @@ These vectors do not establish Draft v0 conformance or independent interoperabil
 ## CI replacement contract
 
 Approved integration window added direct dependency `ureq = "=3.5.1"`, already
-present in the shared lock for delivery. Root coordinates the new package edge.
-The Rust-only hosted browser pilot will use W3C WebDriver structured HTTP
+present in the shared lock for delivery. Root integrated that package edge.
+The Rust-only browser implementation uses W3C WebDriver structured HTTP
 commands, with no authored JavaScript or execute-script payloads. It requires
 an independently started local upstream driver and a current static site server;
 neither is launched by pure library tests. Browser/session deletion failures
 must fail the report. Keyboard skip focus and measured CSS/geometry checks do
 not establish screen-reader, contrast, zoom or full WCAG qualification.
 
-Prepared command contract after that dependency/module integration:
+Implemented command contract for hosted execution:
 
 ```text
 humanymous-pages browser --source docs --site ABSOLUTE --baseurl /humanymous --webdriver http://127.0.0.1:4444/ --base http://127.0.0.1:8080/humanymous/

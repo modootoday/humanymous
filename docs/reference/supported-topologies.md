@@ -122,7 +122,10 @@ These developing source boundaries do not add release-qualified host tuples.
 | Common C/C++ boundary | Source exports the pointer-free by-value `humanymous_native_abi_v1` buffer/lifecycle command boundary over one safe owner. This is not an installed application security SDK. Header generation configuration and Rust units do not prove actual C/C++ layout, dynamic loading, unload, exception or allocator compatibility |
 
 The Apache candidate separates a safe lifecycle crate from its native module.
-The default native feature set does not build the httpd hooks. The opt-in
+The default native feature set does not build the httpd hooks.
+Default-feature all-target compilation and lint have passed separately from
+the nine safe lifecycle/replay tests; those checks do not build the server hooks.
+The opt-in
 generator accepts only `x86_64-unknown-linux-gnu`, requires explicit absolute
 include roots and the exact libclang library, checks selected header hashes,
 and records the observed include closure and generated bindings digest.
