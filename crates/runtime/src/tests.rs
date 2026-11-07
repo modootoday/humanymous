@@ -2,6 +2,7 @@
 mod browser;
 #[cfg(unix)]
 mod service;
+mod settings;
 mod stream;
 use crate::{
     application::{Application, Decision},

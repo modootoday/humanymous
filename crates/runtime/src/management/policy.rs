@@ -20,7 +20,7 @@ pub struct ManagementPolicy {
 }
 
 /// Exact installation binding; no prefix matching or inferred tenant authority.
-#[derive(Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct ManagementScope {
     /// Provisioned installation.

@@ -511,3 +511,17 @@ response byte has started, close without a second response. Deadline/abort/drop
 still invalidates the client epoch if no complete ACK response can be delivered.
 A503 ACK proves counter consumption only; an origin already dispatched may have
 acted. Never infer zero effects or automatically retry from that ACK.
+R07 typed CAS candidate model: OperationalSnapshot serializes fixed struct fields
+in order protocol,scope,node,revision,settings with protocol
+humanymous.operational/0.1. Scope reuses the exact five-field ManagementScope;
+node is the configured audit node. Revision is an integer0..MAX_SAFE_INTEGER.
+Snapshot decoding is bounded16KiB, strict unknown-field rejection, exact current
+scope/node/policy revision and the shared resource-settings validator. A candidate
+requires exact parent revision and checked revision+1; no scope mutation can be
+smuggled through desired settings. Commitment is lowercase SHA256 of UTF8 domain
+humanymous/runtime/operational-state/0.1 followed by one NUL byte then exact compact
+serde struct JSON bytes. PreparedSettings is not Deserialize/Clone and freezes
+those bytes plus parent/new commitments; it is a candidate, never an action permit
+or durable commit receipt. Actual private store, authenticated journal commit,
+apply/session invalidation and crash recovery remain required before exposing
+writes. No scoring fields, secret credentials or implicit policy migration exist.

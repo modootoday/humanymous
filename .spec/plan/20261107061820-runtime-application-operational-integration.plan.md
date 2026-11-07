@@ -28,7 +28,7 @@ dual-control and missing-required fail-closed remain invariant.
 | R04 | Actual browser Fetch/one-flight/ACK/body/abort lifecycle | root collector + runtime server | Pure client validated by root; actual join pending; actual browser and human/keyboard/AT separate |
 | R05 | Shared response-head/framing and fidelity | runtime | Partial source for ACK strip/reframe, HEAD/204/304 and partial-write close; latest validation NOT_RUN; full framing/stream work remains |
 | R06 | Explicit bounded response streaming | runtime;R05 | Source native bounded stream wired; pure/hosted incremental fixtures NOT_RUN, actual backpressure/abort/drain negatives pending; browser ACK stream separate |
-| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Not implemented; scoring writes refused; read-only until durable apply/replay exists |
+| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Read-only view and pure CAS candidate source authored NOT_RUN; store/audit/apply/replay incomplete, writes refused |
 | R08 | Bounded session/global abuse admission | runtime | Source global/session/capacity/serialized concurrency implemented; pure and hosted429fixtures NOT_RUN; no client-fingerprint identity authority |
 | R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Shared native transport qualified in its scope; runtime observer handler source implemented NOT_RUN; native IPC/peer/credential/RBAC/CSRF/scope negatives pending |
 | R10 | Signed destructive controls and state effects | audit issuer + runtime | Audit primitives implemented; runtime join pending; exact two-party/one-use/target/expiry/restart/failure tests |
@@ -380,3 +380,29 @@ and asserts the effect count remains1 rather than claiming zero effects. Client
 report/audit are explicit fixtures; not actual browser/durable product evidence.
 New fixture execution and current compile/Clippy remain NOT_RUN. No local native
 process/Cargo execution; no origin retry or partial-response second write.
+R07 typed CAS candidate model: OperationalSnapshot serializes fixed struct fields
+in order protocol,scope,node,revision,settings with protocol
+humanymous.operational/0.1. Scope reuses the exact five-field ManagementScope;
+node is the configured audit node. Revision is an integer0..MAX_SAFE_INTEGER.
+Snapshot decoding is bounded16KiB, strict unknown-field rejection, exact current
+scope/node/policy revision and the shared resource-settings validator. A candidate
+requires exact parent revision and checked revision+1; no scope mutation can be
+smuggled through desired settings. Commitment is lowercase SHA256 of UTF8 domain
+humanymous/runtime/operational-state/0.1 followed by one NUL byte then exact compact
+serde struct JSON bytes. PreparedSettings is not Deserialize/Clone and freezes
+those bytes plus parent/new commitments; it is a candidate, never an action permit
+or durable commit receipt. Actual private store, authenticated journal commit,
+apply/session invalidation and crash recovery remain required before exposing
+writes. No scoring fields, secret credentials or implicit policy migration exist.
+R07 pure scoped OperationalSnapshot/PreparedSettings candidate source is authored.
+Persisted payload decoding requires exact compact canonical bytes and16KiB budget;
+CAS validates parent, exact scope/node, resource settings and safe revision bounds.
+Two pure fixtures cover canonical bytes/independent SHA256 vector, frozen candidate,
+stale parent, scope mutation, forbidden scoring fields, noncanonical input and
+revision exhaustion. The initial commitment vector is
+ a022446c62c485f1cc18cf7a51c7f32dc7a753c68a39a105fe3484c57b61e867
+(system SHA256 calculation, not a passed Rust test). All new execution NOT_RUN.
+Candidates grant no effects. Read-only settings endpoints remain unchanged;
+actual snapshot store/audit commit/apply/session invalidation/restart recovery
+must still be wired. Audit has proposed TrustedSnapshot native API; canonical
+source checkpoint and qualification are awaited before adoption claims.

@@ -348,3 +348,15 @@ and asserts the effect count remains1 rather than claiming zero effects. Client
 report/audit are explicit fixtures; not actual browser/durable product evidence.
 New fixture execution and current compile/Clippy remain NOT_RUN. No local native
 process/Cargo execution; no origin retry or partial-response second write.
+R07 pure scoped OperationalSnapshot/PreparedSettings candidate source is authored.
+Persisted payload decoding requires exact compact canonical bytes and16KiB budget;
+CAS validates parent, exact scope/node, resource settings and safe revision bounds.
+Two pure fixtures cover canonical bytes/independent SHA256 vector, frozen candidate,
+stale parent, scope mutation, forbidden scoring fields, noncanonical input and
+revision exhaustion. The initial commitment vector is
+ a022446c62c485f1cc18cf7a51c7f32dc7a753c68a39a105fe3484c57b61e867
+(system SHA256 calculation, not a passed Rust test). All new execution NOT_RUN.
+Candidates grant no effects. Read-only settings endpoints remain unchanged;
+actual snapshot store/audit commit/apply/session invalidation/restart recovery
+must still be wired. Audit has proposed TrustedSnapshot native API; canonical
+source checkpoint and qualification are awaited before adoption claims.

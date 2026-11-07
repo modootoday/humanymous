@@ -6,6 +6,7 @@ pub mod http;
 pub mod management;
 pub mod service;
 pub mod session;
+pub mod settings;
 pub mod startup;
 
 pub use humanymous_authority::Rejection;
