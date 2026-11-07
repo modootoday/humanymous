@@ -1809,5 +1809,34 @@
     "source_identity": "ArchiveVCSbd16668 for4;Runtime dirtytrue, identitybyexactarchivehashes notcleansourcecommitclaim",
     "pilot": "02d8aedf exactRuntime/authority/lib+3integrationJSONargv metadatajoinverified; scopedsourcefixed, Dockerunrun, old77e8archive notpromoted",
     "goal_complete": false
+  },
+  "followup_cli848_full_source_join_and_optional_design": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\cli848-actual-review-001.json",
+        "sha256": "1fbc0ea030dd3656ac0c4427bf44585499f2c02685aadeb87a12f20f427d1587",
+        "bytes": 9368
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\cli848-source-archive-join-001.json",
+        "sha256": "6758f43a422aff4e41a2e4ab875cf7f82d316afb0b6eb52eb41cb64f72bddc23",
+        "bytes": 937
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\cli848-readscope-review-001.json",
+        "sha256": "6fa2fc31ec96e3ea1952d476d7a5f0cc86414d024d318e06aff3e2544dc4f159",
+        "bytes": 2282
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\runtime-optional-deps-contract-critique-001.json",
+        "sha256": "5b61b796fd9ccf13c37f5de1cc3ee25703dfa923b9aff0c495157643cb7a6e26",
+        "bytes": 1614
+      }
+    ],
+    "cli": "34rawverified/copied;3partsrejoined9b95archive3089members exact8e51Git;546selectedlocal/rootfiles471Rust exactallsource/canonical/before/currentfrozenjoin",
+    "actual": "11selectedhistoricalnames=inventory=actual/15filtered;8phases0;7278beforeafter+17envbyteequal;108.189swork128.766scleanupwithinoriginalpair",
+    "scope": "Native-security-onlyRuntimefeature/noGatewayAPI; unconditionalnormaldeps stillincludeirrelevantTLS/Tokio untiloptionalization. No service/native/product orfullOS/config/loaderreadclaim; old6674HOLD retained",
+    "optionalization": "abad5c83 source/plancritique noP0P1 found; conditionalreadyboundeddesign, P2requireexplicitdev-isolatednormalconsumer/APIabsence/featurekeyrows so devunificationcannotmaskoptionalnormaledges",
+    "goal_complete": false
   }
 }

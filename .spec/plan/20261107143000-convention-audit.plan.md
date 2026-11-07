@@ -1668,3 +1668,41 @@ filter drops integration cases; prerequisite library tests are explicitly extra.
 Actual Docker execution remains OPEN. The older Runtime77e8 archive still has the
 pre-fix Dockerfile and is not retroactively promoted by this source correction.
 Exact private hashes are bound in baseline.json; full migration remains OPEN.
+## CLI848 immutable consumer proof and optional-dependency critique
+
+Independent review verifies/copies34 CLI848 raw records. Three source archive
+parts rejoin to9b95adaf; all3089 ZIP members match exact8e51 Git blob identities.
+Independently derived five local package roots plus root Cargo/toolchain files
+contain546 tracked files, including471 Rust. These exactly match canonical-join
+path inventory, before-input SHA256 and current frozen source files, with no
+missing or mismatched records. This correct scope does not promote the old6674
+HOLD receipt or its defective source exclusion.
+
+The eleven historical expected names equal the selected --list names and actual
+passes, with15 filtered and zero failed/ignored. This is selected inventory11,
+not full CLI library inventory26. Eight phase receipts exit0: exact17-file fmt,
+normal tree, metadata, normal/all-feature all-target checks, strict Clippy, list
+and pure11. Before/after7278 inputs are byte-identical:543local+6666registry+3root+
+66toolchain. Seventeen environment variables are byte-identical; recorded Rust
+flag/wrapper overrides are empty. Original elapsed work108.189seconds and cleanup
+128.766seconds remain within the390/450 pair, with terminal/returned marker
+receipt. No native service/account/listener/provider/Ready/product pilot ran.
+Selected inputs are not complete OS/loader/config-lookup read attestation.
+
+The normal Runtime feature row is native-security only, Gateway absent; this
+does not remove its still-unconditional TLS/Tokio/HPACK dependencies. Root's
+abad5c83 optionalization design was reviewed against actual context imports,
+ancestor cfg, pilots and the twelve analytical context closures. No concrete
+P0/P1 omission or authority widening was confirmed. Preserve context defaults,
+versions/source/checksum/subfeatures/target tables and dev-only fixtures. Conditional
+design readiness requires explicit dev-isolated normal-library/consumer rows,
+absent-context API negatives and exact public feature keys alongside separate
+all-target/dev-unified rows. Otherwise dev Rcgen/Platform/Collector or another
+Gateway consumer can mask a missing normal optional edge. This mechanism follows
+[Cargo feature unification](https://doc.rust-lang.org/cargo/reference/features.html#feature-resolver-version-2).
+The existing31.03s all-target observation is not a cold benchmark or speedup ratio.
+
+No graph/source/compiler workload was launched by audit. Optional wiring and
+performance benefit remain unimplemented/unmeasured at this review; full Runtime,
+whole-consumer/native/Docker and remaining migration gates stay OPEN. Exact private
+hashes are in baseline.json.
