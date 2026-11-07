@@ -17,6 +17,17 @@ failed at missing qualification.json. It did not run host_process groups before
 that gate; summary004 in evidence:root/20261107075243 preserves the distinction.
 No qualification receipt has been invented from loader success.
 
+Rust CLI install-test ARCHIVE adds a separate clean npm archive gate. Explicit
+allocated pilot opt-in is required. It reads at most100MiB, copies those exact
+hashed bytes to a fresh target/node-native/install directory, and invokes npm
+offline with lifecycle scripts/audit/funding/lockfile disabled. It verifies the
+installed package identity/exports, loads installed generated CJS/ESM under both
+Node/Bun (four cases), then resolves the package through Node --require/--import
+with closed stdin (two cases, no authored JS). All six require actual production
+feature receipts. Success emits archive SHA256 and component-only install status;
+it does not establish generation lineage, frameworks, or whole-product support.
+The source has not compiled or executed; staging inspection is not clean install.
+
 Current followup consumes framework-adapter shared config/envelope/entropy and
 process admission. NAPI error/host lifecycle remain here. Common schema adds only
 optional syncInputDeadlineEnforced=false; original Node required fields remain.

@@ -4,6 +4,8 @@
   "protocol": "humanymous.adapter/0.1",
   "status": "experimental-native-component-in-progress",
   "productionNativeRequirements": {"hostPilotEnabled": false, "actualCapabilityReceiptRequired": true},
+  "cleanInstallGateRequired": true,
+  "cleanInstallImports": {"runtimeLoaderImports": 4, "nodePublicExportLoads": 2},
   "profiles": ["node-http1-express-owned-server", "bun-express-normalized", "node-hono-fetch", "bun-serve-hono-fetch"],
   "capabilities": {
     "rawClientTls": "unavailable",

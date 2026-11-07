@@ -1,6 +1,8 @@
 //! Native package build/inspection driver. Invokes pinned upstream generation;
 //! never generates authored foreign-language application code or evaluates JS.
 use sha2::{Digest, Sha256};
+#[path = "humanymous-node-package/install.rs"]
+mod install;
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -11,6 +13,9 @@ fn run(program: &str, args: &[&str], cwd: &Path) -> Result<(), String> {
     let status = Command::new(program)
         .args(args)
         .current_dir(cwd)
+        .stdin(Stdio::null())
+        .env_remove("NODE_OPTIONS")
+        .env_remove("BUN_OPTIONS")
         .env_remove("NAPI_RS_NATIVE_LIBRARY_PATH")
         .env_remove("NAPI_RS_FORCE_WASI")
         .status()
@@ -20,15 +25,16 @@ fn run(program: &str, args: &[&str], cwd: &Path) -> Result<(), String> {
     }
     Ok(())
 }
-fn production_import(runtime: &str, loader: &str, package: &Path) -> Result<(), String> {
+fn production_import(runtime: &str, arguments: &[&str], package: &Path) -> Result<(), String> {
     let output = Command::new(runtime)
-        .arg(loader)
+        .args(arguments)
         .current_dir(package)
         .stdin(Stdio::null())
         .env("HUMANYMOUS_NODE_PRODUCTION_LOAD_REQUIRED", "1")
         .env("HUMANYMOUS_NATIVE_CAPABILITY_RECEIPT", "1")
         .env_remove("HUMANYMOUS_NODE_HOST_PILOT")
         .env_remove("NODE_OPTIONS")
+        .env_remove("NODE_PATH")
         .env_remove("BUN_OPTIONS")
         .env_remove("NAPI_RS_NATIVE_LIBRARY_PATH")
         .env_remove("NAPI_RS_FORCE_WASI")
@@ -36,7 +42,7 @@ fn production_import(runtime: &str, loader: &str, package: &Path) -> Result<(), 
         .map_err(|e| e.to_string())?;
     if !output.status.success() {
         return Err(format!(
-            "production native import failed: {runtime}/{loader}: {}",
+            "production native import failed: {runtime}/{arguments:?}: {}",
             output.status
         ));
     }
@@ -76,7 +82,9 @@ fn root() -> PathBuf {
         .to_owned()
 }
 fn main() -> Result<(), String> {
-    let command = std::env::args().nth(1).ok_or("build | inspect")?;
+    let command = std::env::args()
+        .nth(1)
+        .ok_or("build | inspect | install-test ARCHIVE | run-host-tests")?;
     let root = root();
     let package = root.join("adapters/node");
     let _generation_lock = if ["build", "inspect"].contains(&command.as_str()) {
@@ -96,6 +104,12 @@ fn main() -> Result<(), String> {
         None
     };
     match command.as_str() {
+        "install-test" => {
+            let archive = std::env::args_os()
+                .nth(2)
+                .ok_or("install-test requires a native npm archive")?;
+            install::execute(Path::new(&archive))?;
+        }
         "run-host-tests" => {
             let directory = root.join("target/debug/deps");
             let mut tests = fs::read_dir(&directory)
@@ -238,7 +252,7 @@ fn inspect(package: &Path) -> Result<(), String> {
     )?;
     for runtime in ["node", "bun"] {
         for loader in ["native/index.cjs", "native/index.mjs"] {
-            production_import(runtime, loader, package)?;
+            production_import(runtime, &[loader], package)?;
         }
     }
     let manifest = serde_json::json!({"generator":"@napi-rs/cli","version":"3.10.12","authoredSource":"Rust1.99.1/edition2024","qualification":"component-only","productionFeatures":[],"package_manifest_sha256":hex::encode(Sha256::digest(fs::read(package.join("package.json")).map_err(|e|e.to_string())?)),"files":records});

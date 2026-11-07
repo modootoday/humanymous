@@ -211,6 +211,14 @@ duplicate, non-boolean and oversized receipt values cannot qualify a package.
 Successful loader exit alone does not establish this property. No authored JS
 wrapper is introduced; native feature/import gates remain separate from actual
 framework/authority and full-product qualification.
+Node clean-install acceptance is a separate Rust CLI install-test ARCHIVE gate:
+copy bounded tarball bytes to a fresh owned directory, retain their SHA256, invoke
+upstream npm offline with lifecycle scripts disabled, and verify installed package
+identity/exports. Import installed generated CJS/ESM under Node/Bun, then resolve
+the public package through Node --require and --import with closed stdin. Every
+load must supply the unique production capability receipt. These six imports
+prove neither generation lineage nor actual framework/authority behavior. No
+authored JS entrypoint, installation hook or publishing action is permitted.
 Ruby has an explicit read-only native capability receipt environment mode for
 upstream ruby --require, without an authored Ruby script. Empty qualified tuples
 remain explicit; code feature detection is not ABI/runtime qualification.

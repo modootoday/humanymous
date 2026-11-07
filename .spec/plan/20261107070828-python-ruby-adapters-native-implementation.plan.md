@@ -256,3 +256,14 @@ Missing/duplicate/non-boolean/oversized rows fail closed. Two pure regression
 definitions cover receipt ambiguity and feature types. No authored JS, graph or
 scoring mutation. New compile/import/unit gates remain NOT_RUN during quiet.
 Receipt size checks are post-capture, not a streaming memory-bound claim.
+
+Remaining npm archive-install path was missing: staging inspection alone cannot
+qualify distributed package resolution. Added Rust install-test ARCHIVE command,
+with bounded exact-byte archive copy/hash, fresh directory and offline npm with
+lifecycle scripts disabled. Installed identity/exports are required; four actual
+Node/Bun CJS/ESM loads and two Node public package resolutions all enforce unique
+production capability receipts. Native loader override/search paths are cleared,
+stdin is closed, and no foreign-language source is authored. The installer is a
+separate cohesive binary support module. No graph or scoring edit. Compilation,
+actual install/import and package lineage remain NOT_RUN during the active quiet
+window; no new Cargo/native/runtime/Docker command was started.
