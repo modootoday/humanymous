@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.delivery-platform-format/1",
+  "state": "formatted-uncompiled",
+  "source_checkpoint": "f1a1a4ab55347348ce69c96ac8c654501fbd775f",
+  "command": "cargo fmt -p humanymous-delivery",
+  "exit_code": 0,
+  "changed_files": [
+    {
+      "path": "scripts/ci/delivery/src/header_proof.rs",
+      "before_sha256": "cf698e721d175aff22b40661c704d57af80818c07021d30adff9c70c51a37128",
+      "after_sha256": "80f2dc0f5c48f62e26f0204daed6480b4e270ff6fb576207fb53a29633bcd206",
+      "delta": "Only wrap of existing strict JSON decode expression and map_err indentation; 3 additions and 2 deletions"
+    }
+  ],
+  "functional_change": false,
+  "manifest_or_lock_edits": false,
+  "global_fmt_executed": false,
+  "compiler_executed": false,
+  "tests_executed": false,
+  "clippy_executed": false,
+  "first_failure": {
+    "owner": "Root",
+    "scope": "Prior global format check reported expected long namespace wrap at header_proof.rs line140",
+    "rewritten_or_reclassified": false,
+    "independent_original_log_recovered": false
+  },
+  "previous_114_receipt_applies_to_platform_graph": false,
+  "next_gate": "Await Root coherent-graph exact-source bounded Delivery validation",
+  "full_product_qualified": false,
+  "release_ready": false
+}
