@@ -11,6 +11,11 @@
   "runner_listen": "127.0.0.1:31111",
   "browser_proxy_listen": "127.0.0.1:31112",
   "gate_frontend_port": 8080,
+  "test_selection": {
+    "exact_name": "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
+    "selected": 1,
+    "component_tests_filtered": 66
+  },
   "routes": {
     "session": "/_humanymous/browser/session",
     "collect": "/_humanymous/browser/collect",

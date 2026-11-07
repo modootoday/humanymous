@@ -65,4 +65,10 @@ fn owned_runtime_fixture_and_webdriver_proxy_cannot_drift_independently() {
     assert_eq!(fixture["expected"]["required_collector_status"], 422);
     assert_eq!(fixture["expected"]["required_collector_ack"], false);
     assert_eq!(fixture["expected"]["origin_effects"], 0);
+    assert_eq!(fixture["test_selection"]["selected"], 1);
+    assert_eq!(fixture["test_selection"]["component_tests_filtered"], 66);
+    assert_eq!(
+        fixture["test_selection"]["exact_name"],
+        "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed"
+    );
 }

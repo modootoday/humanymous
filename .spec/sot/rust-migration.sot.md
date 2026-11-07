@@ -16,6 +16,22 @@ rel:
 
 ## Thirty-six-member hosted-candidate integration
 
+Candidate a26d1c3 was pushed and produced run42354873001, which terminated at
+workflow startup with zero jobs/tests: the reusable policy requested actions:read
+above the caller's permission ceiling. Minimal fix8132117 grants only read access
+on validation call jobs and adds a caller-ceiling regression. New exact-source
+run42355168729 started successfully; policy48tests/pins/static checks passed and
+native Ubuntu/Docker jobs began. Other jobs and full-product results remain
+pending. No package publication or source-substituting rerun was performed.
+
+Review also found a root-owned fixture omission in8132117: browser-product reads
+test_selection but the committed collector fixture lacked that field. The next
+source checkpoint adds exact selected test/1selected/66filtered declarations and
+a pure cross-file contract assertion (1passed plus scoped Clippy). It does not
+execute the browser test. Do not cancel the running813candidate or retrospectively
+attribute unobserved failures to this known omission; preserve its actual first
+failure and run the corrected fixture on a subsequent immutable candidate.
+
 The root workspace now explicitly includes the owned capture producer and the
 pointer-free native ABI export crate. Their manifests and Rust sources are
 tracked before the shared graph is published. The shared lock includes approved
