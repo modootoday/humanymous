@@ -320,7 +320,8 @@ mod tests {
             });
             let valid = serde_json::to_vec(&request).unwrap();
             assert!(
-                humanymous_core::integrity::adapter::parse_with_profile(&valid, 1000, selected).is_ok()
+                humanymous_core::integrity::adapter::parse_with_profile(&valid, 1000, selected)
+                    .is_ok()
             );
             request["adapter"]["id"] = "humanymous.node".into();
             assert!(

@@ -1202,3 +1202,14 @@ review, not compile/privacy-test success or an approval to weaken native boundar
 - crates/authority/src/transport/mod.rs SHA256 d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8
 - crates/authority/src/transport/windows.rs SHA256 196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86
 - crates/authority/src/transport/unix.rs SHA256 cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623
+
+## Root scoped formatter correction (2026-11-08)
+
+Reproduced cargo fmt -p humanymous-authority -- --check exit1 at configuration.rs
+line320 after CORE-SLICE-01 import expansion. Applied cargo fmt -p
+humanymous-authority; exact diff only wraps .is_ok() onto the next line in that
+assertion. Selected fmt recheck exit0. Only source changed: configuration.rs.
+SHA256 before 42f675ac4b4063de4866160140adaae06105ba2156b8bd2f5444c0ac7d27b146; after c9fe7141ce862968d2a923a64556795e326866bb96d14c6471c3eb7aa3664a05.
+No unit/compiler/Clippy rerun for this whitespace-only correction; prior evidence
+retains its original source identity, not silently promoted. No global formatting,
+manifest/path move, behavior or visibility change. Root owns global fmt integration.
