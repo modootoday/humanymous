@@ -18,7 +18,7 @@ pub struct Configuration {
     pub endpoint: String,
     credential: Zeroizing<String>,
     /// Expected actual authority OS identity/process.
-    pub server: humanymous_authority::configuration::Peer,
+    pub server: humanymous_runtime::authority::configuration::Peer,
     /// Complete exact protected pathname inventory.
     pub routes: Vec<String>,
     /// Complete input/decision/handoff budget, milliseconds.

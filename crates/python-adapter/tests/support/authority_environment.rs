@@ -33,7 +33,7 @@ impl Drop for Directory {
 }
 pub(crate) fn configuration(directory: &Directory, node: &str) -> Value {
     json!({"adapter":"python-wsgi","endpoint":directory.0.join("authority.sock"),
-        "peer":{"kind":"unix","uid":humanymous_native_security::process::current_uid()},
+        "peer":{"kind":"unix","uid":humanymous_runtime::native_security::process::current_uid()},
         "scope":{"installation":"i","tenant":"t","origin":"o","revision":"r","authority":"example.test"},
         "routes":[{"method":"POST","path":"/api","required":{"raw_tls":false,"original_h2":false,"raw_header_order":false,"collector":false,"rit":false}}],
         "audit":{"directory":directory.0,"node_id":node,"hmac_key_hex":"aa".repeat(32),"signing_seed_hex":"bb".repeat(32),"allow_new":true,"trusted_head":null},

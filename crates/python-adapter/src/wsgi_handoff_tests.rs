@@ -86,7 +86,7 @@ fn scenario(late: bool) {
         wsgi_authority::Running::start(&directory, "wsgi-final-consume", None, "python-wsgi");
     let config = serde_json::json!({"installation":"i","tenant":"t","origin":"o","revision":"r",
         "endpoint":engine.endpoint,"credential":engine.credential,
-        "server":{"kind":"unix","uid":humanymous_native_security::process::current_uid()},
+        "server":{"kind":"unix","uid":humanymous_runtime::native_security::process::current_uid()},
         "routes":["/api"],"timeoutMs":2000,"maxBody":8,"syncInputDeadlineEnforced":true})
     .to_string();
     let callbacks = Arc::new(AtomicUsize::new(0));

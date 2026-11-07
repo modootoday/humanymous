@@ -1,5 +1,5 @@
 //! Shared host-test evidence and audit fixture; never part of a native library.
-use humanymous_audit::{
+use humanymous_runtime::audit::{
     log::{Config, Log},
     storage::{Wal, WalOptions},
 };
@@ -14,12 +14,12 @@ pub struct Observed {
 }
 pub type Observations = Arc<Mutex<Vec<Observed>>>;
 pub struct SyntheticEvidence(pub Observations);
-impl humanymous_authority::decision::Evidence for SyntheticEvidence {
+impl humanymous_runtime::authority::decision::Evidence for SyntheticEvidence {
     fn report(
         &mut self,
         request: &humanymous_core::integrity::adapter::ValidatedRequest,
         _: bool,
-    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_authority::Rejection>
+    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_runtime::authority::Rejection>
     {
         self.0.lock().unwrap().push(Observed {
             headers: request.headers().to_vec(),

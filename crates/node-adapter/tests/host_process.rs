@@ -123,7 +123,7 @@ impl Directory {
         let path = std::env::temp_dir().join(format!(
             "humanymous-node-{}-{}",
             std::process::id(),
-            humanymous_authority::now_ms().unwrap()
+            humanymous_runtime::authority::now_ms().unwrap()
         ));
         std::fs::create_dir(&path).unwrap();
         #[cfg(unix)]
@@ -138,7 +138,7 @@ impl Directory {
                 constants::{SeObjectType, SecurityInformation},
                 wrappers,
             };
-            let identity = humanymous_native_security::process::current_identity().unwrap();
+            let identity = humanymous_runtime::native_security::process::current_identity().unwrap();
             let sid = identity.sid();
             let owner: LocalBox<Sid> = sid.parse().unwrap();
             let sd: LocalBox<SecurityDescriptor> =
@@ -188,7 +188,7 @@ fn actual_authority_decisions_are_enforced_before_origin() {
                     std::process::id(),
                     node.id()
                 ),
-                json!({"kind":"windows","sid":humanymous_native_security::process::current_identity().unwrap().sid(),"pid":node.id()}),
+                json!({"kind":"windows","sid":humanymous_runtime::native_security::process::current_identity().unwrap().sid(),"pid":node.id()}),
             );
             #[cfg(unix)]
             let (endpoint, peer) = (
@@ -198,7 +198,7 @@ fn actual_authority_decisions_are_enforced_before_origin() {
                     .to_str()
                     .unwrap()
                     .to_owned(),
-                json!({"kind":"unix","uid":humanymous_native_security::process::current_uid()}),
+                json!({"kind":"unix","uid":humanymous_runtime::native_security::process::current_uid()}),
             );
             let config = service_config(&directory, &endpoint, peer, "node-host-pilot");
             let mut authority = Host(
@@ -218,10 +218,10 @@ fn actual_authority_decisions_are_enforced_before_origin() {
                 .unwrap();
             let ready: Value = serde_json::from_str(&read_line(&mut authority.0)).unwrap();
             #[cfg(windows)]
-            let server = json!({"kind":"windows","sid":humanymous_native_security::process::current_identity().unwrap().sid(),"pid":authority.0.id()});
+            let server = json!({"kind":"windows","sid":humanymous_runtime::native_security::process::current_identity().unwrap().sid(),"pid":authority.0.id()});
             #[cfg(unix)]
             let server =
-                json!({"kind":"unix","uid":humanymous_native_security::process::current_uid()});
+                json!({"kind":"unix","uid":humanymous_runtime::native_security::process::current_uid()});
             let effect_file = directory.0.join("effects.log");
             let (_node, port) = configure_host(
                 node,
@@ -256,7 +256,7 @@ fn actual_authority_decisions_are_enforced_before_origin() {
 #[test]
 #[ignore = "explicit real Node/Bun compatibility with synthetic evidence in the real Rust engine and audit, not production browser qualification"]
 fn actual_framework_allow_preserves_binary_body_and_headers() {
-    use humanymous_authority::{
+    use humanymous_runtime::authority::{
         configuration::Configuration, decision::Authority, transport::Listener,
     };
     for runtime_name in ["node", "bun"] {
@@ -265,7 +265,7 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
             let child = spawn_host(runtime_name);
             #[cfg(windows)]
             let (endpoint, peer, server) = {
-                let sid = humanymous_native_security::process::current_identity()
+                let sid = humanymous_runtime::native_security::process::current_identity()
                     .unwrap()
                     .sid()
                     .to_owned();
@@ -281,7 +281,7 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
             };
             #[cfg(unix)]
             let (endpoint, peer, server) = {
-                let uid = humanymous_native_security::process::current_uid();
+                let uid = humanymous_runtime::native_security::process::current_uid();
                 (
                     directory
                         .0

@@ -1,0 +1,115 @@
+{
+  "schema": "humanymous.runtime-consumer-handoff/1",
+  "slice": "RUNTIME-SLICE-02",
+  "beforeSourceCommit": "5a52dfab41eaa75769cd950af418225cbba3c177",
+  "owner": "codex/rust-python-ruby-native",
+  "status": "source-only-awaiting-root-allocation",
+  "runtimePrefixReplacedFirst": true,
+  "fileCount": 14,
+  "files": [
+    {
+      "path": "crates/ruby-adapter/src/native.rs",
+      "beforeGitBlobSha1": "c7aa070712e6d6a1548f4bca2a763ec5e4c4041d",
+      "beforeWorktreeSha256": "abc67367ebeebabcb602e5f61f9e6f5d4bf304e51e0f2c2e822da97793e8b97d",
+      "afterWorktreeSha256": "1c33c6ecbb80bf28e9ff80407f2ad4d6d318af3f46e0c146ee6e44b6caa989af",
+      "afterBytes": 9254
+    },
+    {
+      "path": "crates/framework-adapter/tests/support/authority.rs",
+      "beforeGitBlobSha1": "77b72abb6efc01d1dede0ae6d9d9a312ba6e2529",
+      "beforeWorktreeSha256": "fc9bd1d6c18bf9732f628c9d315b69190d638a1e8ac2d4a0c2f67e5315765076",
+      "afterWorktreeSha256": "e1a2bf6525c1787c3be892d573f32b62e0441eb5a5509771d3f177f19c2c389c",
+      "afterBytes": 1570
+    },
+    {
+      "path": "crates/node-adapter/tests/host_process.rs",
+      "beforeGitBlobSha1": "1764740ed32432549cb61f4086c78f701700cf92",
+      "beforeWorktreeSha256": "e620113ac93c3d9d81cc4812655ddc8654fc7fda620dd0cc8cdfbb9bf3bd9275",
+      "afterWorktreeSha256": "f3f2eab22941b83fad8f29a614eff4266e483f767f87fb504afae319b548d9f3",
+      "afterBytes": 23383
+    },
+    {
+      "path": "crates/framework-adapter/src/configuration.rs",
+      "beforeGitBlobSha1": "aafb11180e5a751a8daf2901bd6f323e4b7c84cc",
+      "beforeWorktreeSha256": "b63e8cc3c8da380e3733933206e086b52b62f264f682e358df23240f6934eab8",
+      "afterWorktreeSha256": "1852379a049e35c17026cbe4da2f20459b4a8aac0d07237b47fb0128e984945b",
+      "afterBytes": 5248
+    },
+    {
+      "path": "crates/framework-adapter/src/request.rs",
+      "beforeGitBlobSha1": "ea7e50a79dcdac8e214b9cdc8ea5cc1ea7aca544",
+      "beforeWorktreeSha256": "af29dd8ba54e3820e610114b1d2500a901d3b2c2dac25da9c3988b5e11757213",
+      "afterWorktreeSha256": "dd16097f2d3d9a378852515a8b48390cf341aa6be9465aab9fcf69ef1b289e25",
+      "afterBytes": 11784
+    },
+    {
+      "path": "crates/node-adapter/src/envelope.rs",
+      "beforeGitBlobSha1": "0d39c2d4538a06dad4e0f4d54272429caece9d2e",
+      "beforeWorktreeSha256": "abb838369bcd29edeab5b34d0ea79f0fea9062dd19e91167e2c75ce365b12135",
+      "afterWorktreeSha256": "180bbde33a6fc3e55a338a5e8306f4d50b08c61953e8a34f6167d329a6d4b7d7",
+      "afterBytes": 3386
+    },
+    {
+      "path": "crates/python-adapter/tests/support/authority_environment.rs",
+      "beforeGitBlobSha1": "28deae6ed421183334e8a7179f37de04c00ca449",
+      "beforeWorktreeSha256": "edc1994a7e5b7c3c9b696fd7180d8e454622f5c63136ddca23a0b212ced10b57",
+      "afterWorktreeSha256": "ea1152a1d5676d9e710f446d9fe6e5f4a97ea851867ae2ed43195ec4314082f3",
+      "afterBytes": 1702
+    },
+    {
+      "path": "crates/node-adapter/src/stream.rs",
+      "beforeGitBlobSha1": "187aa347168cf1d17a2edb9b6ee40177b6d11660",
+      "beforeWorktreeSha256": "9b32baf4826b3c2c346f6631b5472e6ec15c5b0b93f4458df159101cebc9edca",
+      "afterWorktreeSha256": "e40d19859ffa9a48b86c9a896f954dbaf3bdb750e7470c0c71f3ab9495d738ae",
+      "afterBytes": 23692
+    },
+    {
+      "path": "crates/python-adapter/src/asgi.rs",
+      "beforeGitBlobSha1": "a30a359fe8b917b85331f9dd408d728c57502d7c",
+      "beforeWorktreeSha256": "9c4b4e264972c67e5c17513a49abd09d2e5615ad44aaffe4bd8b75f3cb083091",
+      "afterWorktreeSha256": "761b919210839db20c407cf514dde83a1ca24e48141c340cde20c8aa6714f15c",
+      "afterBytes": 10912
+    },
+    {
+      "path": "crates/python-adapter/src/async_call.rs",
+      "beforeGitBlobSha1": "716bef75b88e5785d57b84e843a4bffd736c2cd5",
+      "beforeWorktreeSha256": "2dc5da5298eecceba9c206f2bc4ac90d71dcc0ee391c0938d9dc552bf2a17fa0",
+      "afterWorktreeSha256": "f4bb9b55f515fedbb42d4929e50f90c4313b70f458e3a677e56643805229d408",
+      "afterBytes": 9226
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_authority.rs",
+      "beforeGitBlobSha1": "959707b68c1e40a6e744aa83af4c8db0d62f346e",
+      "beforeWorktreeSha256": "9b5046b955b6a101916a72c67044b1250a3d94d4c3d39ff33dc0cc1b748b070d",
+      "afterWorktreeSha256": "7b6c176dbab0221d9de65e18cfcffb4f8c6cc148f0b000d309471231a5db6552",
+      "afterBytes": 5550
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_host.rs",
+      "beforeGitBlobSha1": "8ffd08c2995a13f513ce304d3ab15905b04149f3",
+      "beforeWorktreeSha256": "bd9191c887570111be639546a7a5b21e1b5f42661dd2604688c802950b811a51",
+      "afterWorktreeSha256": "6040b9fefc64a74555b83d0654cfb3475a66c723352b20d09838a97c037c9d16",
+      "afterBytes": 6084
+    },
+    {
+      "path": "crates/python-adapter/src/wsgi.rs",
+      "beforeGitBlobSha1": "4b381d61ee7f0d7241b3b0cd46e71b42842f5742",
+      "beforeWorktreeSha256": "be30c2ab4705e82d88d5ab54c0dbe5fcb32f3fa65ae88f5b6a2572ddc8bfa917",
+      "afterWorktreeSha256": "9da0ce68a0cabb74b37688f8c543d391d882013f6dc3a70ce4efa390bf1597e4",
+      "afterBytes": 6990
+    },
+    {
+      "path": "crates/python-adapter/src/wsgi_handoff_tests.rs",
+      "beforeGitBlobSha1": "73e10bcfa652cb17985b80f9fa4c6d00f045b20c",
+      "beforeWorktreeSha256": "7ad131ab13b46fa2017ccc9b6c31bdb0e264b6ab6b88fe1e75e453fa3d4787b1",
+      "afterWorktreeSha256": "6740721838bb1cedcf51428e1f15e1cee05cae0dd3f084c71cacd3b43f8f9622",
+      "afterBytes": 6361
+    }
+  ],
+  "manifestsEdited": false,
+  "pathsMoved": false,
+  "behaviorAuthorityOrUnsafeChanged": false,
+  "compilerTestsClippyOrRuntimeExecuted": false,
+  "activeOwnedHandles": [],
+  "activeOwnedTargetLeases": []
+}

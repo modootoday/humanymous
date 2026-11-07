@@ -129,7 +129,7 @@ pub(super) fn host(
             .expect("actual provisioned server process required"),
     );
     let options = json!({"installation":"i","tenant":"t","origin":"o","revision":"r", "endpoint":endpoint,"credential":credential,
-        "server":{"kind":"unix","uid":humanymous_native_security::process::current_uid()},"routes":["/api"],"timeoutMs":1000,"maxBody":1024,"syncInputDeadlineEnforced":!asgi});
+        "server":{"kind":"unix","uid":humanymous_runtime::native_security::process::current_uid()},"routes":["/api"],"timeoutMs":1000,"maxBody":1024,"syncInputDeadlineEnforced":!asgi});
     child.0.stdin.take().unwrap().write_all(&serde_json::to_vec(&json!({"framework":framework,"configuration":options.to_string(),"effect_file":directory.0.join("effects.jsonl")})).unwrap()).unwrap();
     let began = Instant::now();
     loop {

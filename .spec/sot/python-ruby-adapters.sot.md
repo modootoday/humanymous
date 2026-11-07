@@ -801,3 +801,17 @@ introduced. This checkpoint is source-only. Compiler, unit tests, Clippy, CI and
 Cargo formatting await Root's coherent allocation; no runtime completion or cleanup
 qualification follows from these substitutions. No owned execution handle or
 target lease is active. The four consumer files freeze after handoff.
+#### RUNTIME-SLICE-02: authorized runtime consumer references
+
+Root authorized mechanical references in fourteen owned Rust source/test files.
+Existing runtime prefixes were replaced first, then authority, audit, capture,
+network and native_security package prefixes mapped to their Runtime contexts.
+Actual matches cover authority, audit and native_security; the other prefixes
+have no matches in these owned sources. Exact before/after hashes and paths are
+recorded in runtime-consumer-handoff-002.json in the shared evidence bundle.
+No behavior, scoring, authority decision or unsafe boundary changed. No aliases
+or compatibility shims were added. Root retains all manifests, feature selection,
+lockfile and six-context destination files. Source-only verification does not
+qualify an actual host. Compiler, tests, Clippy and formatting are not run pending
+Root allocation. No owned execution handle or target lease is active; consumer
+files freeze after source handoff. Historical runtime receipts remain unchanged.

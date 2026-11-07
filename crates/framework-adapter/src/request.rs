@@ -1,6 +1,6 @@
 use crate::{Configuration, Error};
 use base64::{Engine, engine::general_purpose::STANDARD};
-use humanymous_authority::client::{self, BoundResponse, ClientOptions, ExpectedBinding};
+use humanymous_runtime::authority::client::{self, BoundResponse, ClientOptions, ExpectedBinding};
 use humanymous_core::integrity::adapter::{AdapterProfile, parse_with_profile};
 use sha2::{Digest, Sha256};
 use std::time::{Duration, Instant};
@@ -44,7 +44,7 @@ impl Pending {
     /// Start one bounded wall-clock and monotonic budget.
     pub fn new(c: &Configuration) -> Result<Self, Error> {
         Ok(Self {
-            deadline: humanymous_authority::now_ms()
+            deadline: humanymous_runtime::authority::now_ms()
                 .map_err(|_| Error("clock unavailable"))?
                 .checked_add(c.timeout_ms)
                 .ok_or(Error("deadline overflow"))?,
@@ -53,7 +53,7 @@ impl Pending {
     }
     /// Remaining input/IPC duration; a caller cannot reset the original budget.
     pub fn remaining(&self) -> Result<Duration, Error> {
-        let now = humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))?;
+        let now = humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))?;
         self.remaining_at(now, Instant::now())
     }
     fn remaining_at(&self, now: u64, monotonic: Instant) -> Result<Duration, Error> {
@@ -79,7 +79,7 @@ impl Pending {
         let wire = encode(c, o, body, self.deadline, profile)?;
         let parsed = parse_with_profile(
             &wire,
-            humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))?,
+            humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))?,
             profile,
         )
         .map_err(|_| Error("invalid framework request"))?;
@@ -110,7 +110,7 @@ impl Pending {
     /// Final host handoff liveness check, in addition to BoundResponse::consume.
     pub fn check_handoff(&self, expires: u64) -> Result<(), Error> {
         self.remaining()?;
-        if humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))? >= expires {
+        if humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))? >= expires {
             return Err(Error("authority result expired"));
         }
         Ok(())
@@ -248,7 +248,7 @@ pub fn encode(
         .map_err(|_|Error("envelope encoding unavailable"))?;
     parse_with_profile(
         &wire,
-        humanymous_authority::now_ms().map_err(|_| Error("clock unavailable"))?,
+        humanymous_runtime::authority::now_ms().map_err(|_| Error("clock unavailable"))?,
         profile,
     )
     .map_err(|_| Error("invalid framework request"))?;
@@ -284,7 +284,7 @@ mod tests {
             AdapterProfile::DotnetAspNetCore,
             AdapterProfile::Node,
         ] {
-            let now = humanymous_authority::now_ms().unwrap();
+            let now = humanymous_runtime::authority::now_ms().unwrap();
             let wire = encode(&c, &observation(), &[0, 255], now + 1000, profile).unwrap();
             let r = parse_with_profile(&wire, now, profile).unwrap();
             assert_eq!(r.body(), [0, 255]);
@@ -306,7 +306,7 @@ mod tests {
     #[test]
     fn forged_raw_peer_and_expired_or_incomplete_body_reject() {
         let c = Configuration::parse(&crate::configuration::fixture().to_string()).unwrap();
-        let now = humanymous_authority::now_ms().unwrap();
+        let now = humanymous_runtime::authority::now_ms().unwrap();
         let mut o = observation();
         o.raw = true;
         assert!(encode(&c, &o, &[0, 255], now + 1000, AdapterProfile::PythonAsgi).is_err());

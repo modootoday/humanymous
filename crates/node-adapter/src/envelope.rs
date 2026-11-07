@@ -12,7 +12,7 @@ pub(crate) fn parse(value: &str) -> napi::Result<Configuration> {
 }
 #[cfg(test)]
 pub(crate) fn now() -> napi::Result<u64> {
-    humanymous_authority::now_ms().map_err(|_| error("clock unavailable"))
+    humanymous_runtime::authority::now_ms().map_err(|_| error("clock unavailable"))
 }
 pub(crate) fn uuid() -> napi::Result<String> {
     humanymous_framework_adapter::uuid().map_err(boundary)

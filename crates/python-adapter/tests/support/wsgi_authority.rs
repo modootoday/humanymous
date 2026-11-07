@@ -3,7 +3,7 @@ use super::{
     authority_fixture::{Observations, SyntheticEvidence, audit_log},
     wsgi_host::{Directory, configuration},
 };
-use humanymous_authority::{
+use humanymous_runtime::authority::{
     configuration::Configuration,
     decision::{Authority, Evidence},
     transport::Listener,
@@ -66,7 +66,7 @@ impl Evidence for GatedEvidence {
         &mut self,
         request: &humanymous_core::integrity::adapter::ValidatedRequest,
         raw: bool,
-    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_authority::Rejection>
+    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_runtime::authority::Rejection>
     {
         if let Some(gate) = self.gate.take() {
             gate.entered
@@ -134,7 +134,7 @@ impl Running {
         self,
         directory: &Directory,
         node: &str,
-    ) -> Vec<humanymous_audit::record::Record> {
+    ) -> Vec<humanymous_runtime::audit::record::Record> {
         self.shutdown();
         audit_log(&directory.0, node, false).records().unwrap()
     }

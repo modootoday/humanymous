@@ -7,6 +7,7 @@ updated: 2026-11-07T10:15:19Z
 rel:
   governs: [crates/node-adapter]
 files:
+  - {path: runtime-consumer-handoff-002.json, sha256: ac5cd52ecec2bf55036fe7e67459178ea79229800017f47516cf65baf241c9d0, bytes: 5633, store: repo}
   - {path: platform-consumer-handoff-002.json, sha256: 7099068521d6e7766d58e5f459643383f68e3b8f3a341438b0c0631b05011017, bytes: 1998, store: repo}
   - {path: summary-001.json, sha256: 09ba1cdf3e041fbbf16f6ff1546e49a4261a55a3bae2e8c187fd6f21524f89d9, bytes: 1306, store: repo}
   - {path: summary-002.json, sha256: cf779ccd005511ab728655fcb2f185eec98368ece59cf722a4d59390ce1055cf, bytes: 1839, store: repo}
