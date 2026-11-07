@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 50,
-      "macos": 50,
-      "windows": 46
+      "linux": 55,
+      "macos": 55,
+      "windows": 51
     },
     "common_test_names": [
       "configuration::audit::tests::inline_keys_and_unknown_sources_are_rejected",
@@ -57,6 +57,11 @@
       "tests::signed_method_target_body_scope_policy_and_deadline_cannot_change",
       "tests::stream::native_stream_delivers_first_event_before_origin_is_allowed_to_finish",
       "tests::streaming_requires_explicit_native_profile_and_preserves_browser_complete_body_contract",
+      "tests::tls::actual_tls_coalesced_request_is_refused_before_audit_or_origin",
+      "tests::tls::actual_tls_h1_request_is_audited_before_origin_and_acknowledged",
+      "tests::tls::actual_tls_partial_body_is_refused_before_audit_or_origin",
+      "tests::tls::cancelling_actual_tls_handshake_joins_worker_and_closes_owned_socket",
+      "tests::tls::observation::actual_client_hello_and_negotiated_alpn_share_the_request_owner",
       "tls::tests::configuration_refuses_profiles_without_a_tls_h1_consumer"
     ],
     "unix_extra_test_names": [

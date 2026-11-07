@@ -4,6 +4,7 @@ mod browser;
 mod service;
 mod settings;
 mod stream;
+mod tls;
 use crate::{
     application::{Application, Decision},
     configuration::Configuration,
