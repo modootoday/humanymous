@@ -18,6 +18,60 @@ It does not assert that all depicted modules or production edges are qualified.
 
 ## Naming and responsibility
 
+### Adapter package taxonomy
+
+In response to the user's naming clarification, root accepts category-first
+`humanymous-adapter-<context>` as the target Rust package convention. The current
+suffix-style packages are valid Cargo names, but do not express this project's
+chosen family grouping. This is a migration decision, NOT a claim that the live
+workspace has already been renamed.
+
+The user's subsequent clarification fixes the PUBLIC consumer identity as
+humanymous across languages. The adapter-prefixed names below are INTERNAL
+implementation packages; they are not separate public imports/products.
+The public Rust facade and host/package/artifact contracts are governed by
+[[sot:root/adapter-artifact-abi]]. Existing host-specific names are transitional
+until that coordinated migration, not permanent compatibility exceptions.
+
+| Current package | Target package |
+| --- | --- |
+| humanymous-apache-adapter | humanymous-adapter-apache |
+| humanymous-apache-native | humanymous-adapter-apache-native |
+| humanymous-dotnet-adapter | humanymous-adapter-dotnet |
+| humanymous-dotnet-adapter-export | humanymous-adapter-dotnet-export |
+| humanymous-framework-adapter | humanymous-adapter-framework |
+| humanymous-go-adapter | humanymous-adapter-go |
+| humanymous-nginx-adapter | humanymous-adapter-nginx |
+| humanymous-node-adapter | humanymous-adapter-node |
+| humanymous-python-adapter | humanymous-adapter-python |
+| humanymous-ruby-adapter | humanymous-adapter-ruby |
+
+Default Rust library identifiers follow Cargo's hyphen-to-underscore conversion,
+for example `humanymous_adapter_node`. Explicit host-facing library/module/ABI
+names such as Python/Ruby imports or native DLL/module names require a separate
+mapped contract; renaming the Cargo package alone must not silently break them.
+Shared native ABI/security providers retain their own bounded-context identity;
+they are not renamed as host adapters merely because adapters consume them.
+
+Root coordinates one source/graph migration after active source-bound runs settle:
+package/dependency keys, Rust imports, root and standalone locks, commands/workflow
+policy, artifact/package recipes, current docs and owner path claims must agree.
+Context-grouped crate paths are assessed with that change; no directory move or
+foreign write permission follows from this naming decision alone. Every actual
+crate retains Cargo.toml and standard src/tests layout. Existing evidence commands,
+raw payloads, hashes and original source identities remain historical facts.
+
+Owners continue current names until the coordinated migration; independent partial
+renames would break shared resolution. Verify the new graph, selected adapter
+units/build/lints and affected real host artifact imports before promoting it.
+No alias, publication, OIDC binding or scoring/security change is inferred.
+
+Cargo specifies name syntax and inferred target names, not the position of the
+word adapter: [manifest name](https://doc.rust-lang.org/cargo/reference/manifest.html#the-name-field)
+and [library targets](https://doc.rust-lang.org/cargo/reference/cargo-targets.html#library).
+
+### Chat responsibility titles
+
 Every project chat uses exactly `Humanymous · {L0|L1|L2|L3|L4|L5|X} · {English responsibility}`.
 X denotes cross-cutting integration/governance/measurement, not a runtime layer.
 A title identifies the primary role; modules may span adjacent layers. Stable chat
