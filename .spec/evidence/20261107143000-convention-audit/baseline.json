@@ -1910,5 +1910,24 @@
     "bytes": 1452,
     "state": "P2source-designrefinementCLOSED;codeand12testsNOT_RUN;nativeandproductOPEN",
     "goal_complete": false
+  },
+  "native_selector_actual_review": {
+    "source": "e7969a870a5a65e5db63204c2b30a8f90510cc52",
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/native-selector-actual-review-001.json",
+        "sha256": "4d8ce57ed6317c7d297de4ebd06aac100038c379e483c27392925c41fdf28476",
+        "bytes": 5765
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/native-selector-archive-source-join-001.json",
+        "sha256": "d10e128825a3094749c038ceaad01a804e392cf7ae44d7c0c1e3ad7edbc482ff",
+        "bytes": 177
+      }
+    ],
+    "actual": "Exactselected1passed/60filtered;44rawhashsize;8phase0;binaryfd2864matches",
+    "source_join": "3117tar/Git/before/currentextracted0issues;3143sourceclosureincludes26nonSource;5594registry+9envsnapshotsbyteequal",
+    "scope": "Runnerfmt/checkClippy +Platformalltargetallfeaturecheck only; noPlatformfmtClippy/nativefixture/Trivy/full61/productclaim",
+    "goal_complete": false
   }
 }

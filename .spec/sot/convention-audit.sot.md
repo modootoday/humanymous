@@ -2544,3 +2544,32 @@ budget, cleanup or Ready can be manufactured from replay DATA. The separate
 Platform amendment, actual installer/genesis/provider/native8 and full product
 qualification remain OPEN. Earlier critique and initial source hashes remain
 retained rather than being overwritten by the fix.
+
+## Independent native selector regression evidence review
+
+Sourcee7969a87 selector receipt was independently joined through44 hash/size
+verified raw files, copied privately. All3117 regular tar members match the exact
+Git tree, selected before-input hashes and current extracted source bytes, with
+zero issues. The tar global PAX header is metadata, not a source member. Source
+closure3143 comprises3117 Git files plus26 tool/shim/archive inputs. Registry5594
+and selected parent environment9 before/after snapshots are byte-equal. This is
+not a complete compiler/config/loader/child-environment read attestation.
+
+Exact selected inventory equals actual one selector contract test, passed with
+60 filtered; no complete61-test inventory is inferred. Eight phases exit0. The
+executed binary name/path matches stderr and retained target bytes2951168/SHA256
+fd2864faa24932bd9e4bbc59dbb4244f183b88b129b7143e2cb97267fa95cf90.
+Runner package fmt/check/strict Clippy passed; Platform all-target/all-feature
+check compiled the controlled fixture. This receipt does not establish Platform
+fmt/Clippy or execute any controlled parent/helper. Actual Trivy, journal/provider,
+native8 and whole product remain NOT_RUN.
+
+Retained metadata records97.9200141s through cleanup within original390/450s,
+owned processes terminal and lease removed; full process-lineage supervision is
+not independently established. Preparation parse failure preceded workload and
+remains recorded; no overlay or workload retry is promoted. Current registry
+bytes were not comprehensively rehashed by audit. No new workload was launched.
+
+This is a source-bound pure selector regression/compile result only. Earlier
+Native authority/lifetime/archive loading findings and whole migration gates
+remain OPEN. Exact private review and archive-join hashes are in baseline.json.
