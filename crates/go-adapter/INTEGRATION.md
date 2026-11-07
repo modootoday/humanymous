@@ -4,9 +4,11 @@ Register crates/go-adapter as a workspace member and update Cargo.lock under the
 root Cargo slot. Dependencies reuse runtime and serde workspace declarations.
 No Go producer profile, new authority transport or unsafe/foreign glue is needed.
 
-Source currently uncompiled. Please assign the one local Cargo slot for locked
-pure units, package fmt and scoped Clippy. Actual processes, Go HTTP hosts and
-Docker product verification must run on standard free hosted runners.
+Current source passed three locked pure units and scoped all-target Clippy on
+the explicitly assigned B target/node-native/build, jobs1/incremental0. B was
+returned. Evidence:root/20261107075922 retains the exact scope and one concurrent
+runtime test-file drift; it is not an immutable full-workspace result. Actual
+processes, Go HTTP hosts and Docker product verification remain hosted-only.
 
 Root integration commands after registration (not executed by this owner yet):
 
@@ -43,7 +45,7 @@ Public docs delta for docs owner: distinguish net/http/chi/Gin/Echo from pooled
 Fiber/fasthttp; universal Gate deployment does not imply native method-set,
 ResponseWriter/hijack/cancellation compatibility. No native Go support claim.
 
-## Handover: execution authorization gate
+## Historical handover: execution authorization gate
 
 Mission remains complete Go HTTP Gate integration, all named host contracts,
 owned unit/lint results and actual hosted pilot/product evidence. No detection,
@@ -55,7 +57,7 @@ English-only authored prose, direct Rust formatting, LF worktree/index and scope
 Specfold check. Root reported two units for the older307e9cc source; that is not
 evidence for the current three-test corpus. Native SDK/foreign glue is absent.
 
-Blocked: no explicit current Cargo slot for this owner and no live Go-specific
+At that checkpoint: no explicit Cargo slot for this owner and no live Go-specific
 hosted execution handle/result. Root and lab chat activity alone does not prove
 a Go compiler/test job is running. Local Cargo and actual local processes/Docker
 remain unauthorized. The runtime pilot now declares the Go path dependency;
@@ -75,3 +77,8 @@ Read first: .spec/sot/go-adapter.sot.md, owned timestamp plan,
 adapters/go/pilot-contract.json and compiler-input.json. Reclaim adapter-go before
 writing after handover; use the global git mutex for any attributed owned commit.
 No changes outside the claimed lane or common Cargo/lock/toolchain are authorized.
+
+User resumed work and root assigned B: current3units and all-target Clippy passed,
+slot returned. This resolves the pure-check allocation gap, not actual Go hosted
+execution. Continue with product-lab's real composition and independent witness;
+no local server/process/Docker execution or root-only dispatch is authorized here.

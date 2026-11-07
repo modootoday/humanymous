@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.go-component-verification/1",
+  "observed_at": "2026-11-07T07:59:22.3179678Z",
+  "source_checkpoint": "ddda9246a0b2bc5b69900f34205e27cfbdb75590",
+  "runner": "local-windows-rust-pure-unit",
+  "toolchain": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "target_directory": "target/node-native/build",
+  "build_jobs": 1,
+  "incremental": false,
+  "resource_guard": {"free_physical_gib":34.02,"commit_percent":83},
+  "unit": {"command":"cargo test --locked -p humanymous-go-adapter --lib -- --test-threads=1","session_id":94776,"exit_code":0,"passed":3,"failed":0,"ignored":0,"measured":0,"filtered":0,"cargo_elapsed_seconds":38.72},
+  "clippy": {"command":"cargo clippy --locked -p humanymous-go-adapter --all-targets -- -D warnings","exit_code":0,"cargo_elapsed_seconds":6.28},
+  "source_subset_files":208,
+  "concurrent_changes":["crates/runtime/src/tests/browser.rs"],
+  "source_hash_scope":"owned and enumerated shared dependency subset, not an immutable whole-workspace closure",
+  "unchanged_hashes": {
+    "crates/go-adapter/src/lib.rs":"63b8f1432a0287b61d9f5c6e3f327ad71173076ef72da5a7420df22ae7b57d79",
+    "crates/go-adapter/src/qualification.rs":"5efd070f89d053c77692209fc45976cdfd41442abde7701da3bb5f7cd5a037da",
+    "crates/go-adapter/Cargo.toml":"7f7d9a95f8e9576a0b98e3068f771e2f632f2dfca88bd72b36f7cfcf787939e7",
+    "Cargo.lock":"06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996"
+  },
+  "actual_go_host": "NOT_RUN",
+  "hosted_docker": "NOT_RUN",
+  "product_e2e": "NOT_RUN",
+  "release_qualified_tuples": [],
+  "scope": "component only"
+}
