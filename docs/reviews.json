@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/log/proofs.rs",
+  "sha256": "06626d02195e4be65e21697a50e6aabc44cd8a44258a64d515d2b0cd6d399fa8",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete proof structures and generation/verification: ASCII record-hash leaves, supplied-root bare path, exact persisted-checkpoint membership, signature/size/path with optional witness and independent root authentication for consistency. Public continuity guide does not infer record body/HMAC validation, independent witness or pre-ingestion completeness from a Merkle path/current unsigned tip. No proof or WAL runtime test executed.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md"
+  ]
+},
+{
+  "source": "crates/audit/src/log/stamp.rs",
+  "sha256": "58df780df2834749bd55961e662774008b7a89d0f2cb1f4753cd00fcc1514fd5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full missing-field stamping using bounded UUIDv7 millisecond range and OS entropy, local RFC3339 time and compatibility version; existing ID/time/version are retained. Public audit reference separates local field completion from authentication of remote event time/producer and complete ingestion. No event emitted or clock-dependent test run.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/audit/src/sink.rs",
   "sha256": "b66c13c42de4dc527dd0fc6c48fd95d9d4d101b0abe1bda96ae61bf05495c137",
   "reviewer": "codex/rust-pages",

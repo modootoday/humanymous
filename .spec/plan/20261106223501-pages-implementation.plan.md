@@ -828,3 +828,11 @@ map full buffered history+finalcheckpoint verification, exact exportbytes receip
 4MiB persisted bound, authenticated-caller promotion and lockguard lifetime to
 public audit reference. No remote delivery/WORM/redaction/constant-memory or
 platform execution implied. No sink writes, locks, repairs or processes run.
+
+## Exact inclusion proof and stamping review
+
+Read complete proofs/stamp modules and pinned two manual receipts. Public guide
+records ASCII recordhash leaves, bare path versus exact persisted signed-head
+proof, optional witness and separate body/HMAC chain checks. Stamping fills only
+missing values and does not authenticate supplied time/producer. Larger log
+composition remains a separate unfinished source review; no proof/runtime run.

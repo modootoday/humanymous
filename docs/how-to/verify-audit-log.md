@@ -49,3 +49,18 @@ unavailable durable storage. Verify the claimed commitment scope; a valid proof
 does not establish that an event was benign or that no event was omitted before
 ingestion. Record tool/artifact identity and residual limits.
 See [security evidence](../reference/security-audit.md).
+
+## Select the exact proof boundary
+
+The log's inclusion leaves are ASCII record-hash text bytes, not decoded digest
+bytes or record JSON. Preserve that byte layer when checking paths. A bare
+`InclusionProof::verify` validates a supplied path against a supplied root; it
+does not authenticate that root or inspect the record body/HMAC.
+
+`checkpointed_inclusion` exports a proof only for an exact checkpoint in the
+log's persisted authenticated chain. `CheckpointInclusion::verify` checks the
+writer signature, optional required witness signature, size and Merkle path.
+Provision trusted keys independently; selecting no witness checks only the
+writer. Recompute and verify the record/chain layers separately when claiming
+that a particular record body is committed. An unsigned current tip or a path
+at a not-yet-checkpointed prefix is not an independently retained signed anchor.

@@ -124,3 +124,12 @@ require actual regression evidence. An I/O
 failure can leave staged or committed bytes and is not proof that nothing changed.
 Inputs must already be minimized/pseudonymized; the sink does not redact raw
 personal data, provide WORM media or remove previously exported copies.
+
+## Event metadata provenance
+
+Record stamping fills a missing event ID from local time and OS entropy, a
+missing timestamp from the local clock and a missing event version from the
+compatibility default. Existing supplied values are retained. This operation
+does not authenticate a remote claimed event time, validate producer identity
+or prove ingestion completeness. Preserve the actual producer and observation
+boundary before interpreting a sealed event as evidence.
