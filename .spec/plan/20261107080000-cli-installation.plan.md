@@ -244,6 +244,27 @@ attached privately as20261107085000. Lightweight fmt and scoped Specfold passed
 under the explicit quiet-window exception. These do not substitute for the
 newest pending Cargo or actual OS service gates.
 
+### Executable CI path audit
+
+Current workflow/delivery source inspection found that rust-validation invokes
+delivery pilot native, whose Windows actor selection is standard-user, not
+standard-user-service. The implemented service catalog's two required cases and
+13-fact runtime receipt therefore need a distinct hosted invocation. This exact
+wiring gap was routed to the delivery owner and acknowledged as queued, not done.
+The dedicated component must preserve owner exit2/blocked when its other global
+runtime obligations remain missing, while independently verifying both service
+cases, source/run and controller cleanup. No blanket exit2 allowance or global
+passed status may replace that evidence. Local-act environment emulation cannot
+authorize local SCM/account provisioning under this goal's explicit prohibition.
+
+Authoritative GitHub API polling now reports run42355168729 for exact8132117e7bf1445939d7dee9066fcf45ccf0915b
+terminal failure. Bounded Windows job128351926153 failed-log output reports
+15executed harnesses out of89required,55passed tests and1execution error; zero
+failed tests does not imply a successful complete run. This older source cannot
+qualify CLI2679089e. No complete raw artifact was downloaded here: root/CI retain
+full recovery ownership, and bounded observations remain in the tool transcript.
+Run: https://github.com/modootoday/humanymous/actions/runs/42355168729
+
 Root reassigned CLI to the genuinely free sot-plan lane, disjoint from the Windows
 runner's release lane. CLI owns release-descriptor verification, immutable service
 generations, native manager adapters and explicit Rust process/service fixtures.
