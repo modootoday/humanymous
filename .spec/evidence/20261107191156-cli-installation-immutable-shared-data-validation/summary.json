@@ -1,0 +1,81 @@
+{
+  "schema": "humanymous.cli-data-validation/1",
+  "status": "passed-scoped-windows-data-consumer",
+  "source_sha": "f20db16ed32cae78c39057fa35319a142ccc78e3",
+  "authority_source": "a898d91a33d19d80a86d0d75444a1a9175fdcaea",
+  "runtime_source": "aba7934d4a00cbc4ed9581df8aff401e98e4ec91",
+  "source_archive_sha256": "c3ba6d55df7b2a0a62efa214127ef97959b458206161475e0d33f7206f49c4d9",
+  "venue": "local Windows x86_64-pc-windows-msvc",
+  "toolchain": "Rust 1.99.1 edition 2024",
+  "features": "humanymous-cli all-features",
+  "build_jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "steps": [
+    {
+      "name": "fmt",
+      "exit": 0
+    },
+    {
+      "name": "metadata",
+      "exit": 0
+    },
+    {
+      "name": "check",
+      "exit": 0
+    },
+    {
+      "name": "list",
+      "exit": 0
+    },
+    {
+      "name": "pure11",
+      "exit": 0
+    },
+    {
+      "name": "clippy",
+      "exit": 0
+    }
+  ],
+  "tests": {
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 15,
+    "inventory": 11
+  },
+  "clock": {
+    "source": "f20db16ed32cae78c39057fa35319a142ccc78e3",
+    "start_utc": "2026-11-08T04:09:33.5899807+09:00",
+    "work_deadline_utc": "2026-11-08T04:19:33.5899807+09:00",
+    "cleanup_deadline_utc": "2026-11-08T04:20:33.5899807+09:00"
+  },
+  "ended_utc": "2026-11-08T04:11:27.4833426+09:00",
+  "selected_packages": 143,
+  "before_files": 6674,
+  "after_files": 6674,
+  "source_difference_rows": 0,
+  "source_manifest_sha256": "95485cb16b6cd16f770c06872d04f68d4185de17529a55bd1d2f3c1a1a22818d",
+  "environment_variables": 17,
+  "environment_manifest_sha256": "d7192319f88536666497ea6d7c4da63926626b8c4e6640005ec1446019820ee9",
+  "environment_unchanged": true,
+  "initial_free_gib": 33.53401184082031,
+  "initial_commit_percent": 67,
+  "lease_removed": true,
+  "owned_handles_terminal": true,
+  "target_returned": true,
+  "raw_receipt": "evidence:root/20261107191209",
+  "raw_inventory_sha256": "8c4b364ff256c5801ba0cd47d8722e6156e33540edb6075ff691cb6d7790f954",
+  "actual_service_validation": "NOT_RUN",
+  "native_preparation": "Unsupported",
+  "product_qualified": false,
+  "limitations": [
+    "DATA conversion type-checked; selected tests exercise pure document/state/input boundaries, not an independent cryptographic interoperability oracle.",
+    "Historical a026 parser source defect was corrected in d795; no qualification is applied to the defective checkpoint.",
+    "No service/account/SCM/listener/privilege/native pilot executed; test harness and compiler processes only.",
+    "No Ready, native issuer/claim/W, protected unattended-service lifecycle, audit drain/flush or product e2e qualification.",
+    "Selected registry package trees and five compiler tool binaries were hashed; this is not a whole installed toolchain or OS image census."
+  ]
+}

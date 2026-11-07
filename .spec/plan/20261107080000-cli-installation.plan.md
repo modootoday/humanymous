@@ -409,15 +409,25 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Immutable CLI DATA source `f20db16ed32cae78c39057fa35319a142ccc78e3` subsequently
+passed allocated Windows fmt-first, locked/offline all-feature/all-target check,
+pure11 and strict Clippy. Exact test footer:11passed/0failed/0ignored/0measured/
+15filtered. Selected143packages/6674files and17environment variables matched
+before/after. Original600+60s clock finished in114s and the actual target marker
+was removed. See [[evidence:root/20261107191156]]. This qualifies the corrected
+DATA caller source, not the earlier a026 defect, native preparation or a service
+pilot; real hosted service and native producer gates remain open.
+
 CLI `HostAuthorizationData::into_runtime_data` consumes the same configuration
 and signature-checked DATA through Runtime `service::AuthorizationData::bind`
 (owner checkpoint `aba7934d4a00cbc4ed9581df8aff401e98e4ec91`). It preserves the
 BASE plan separately and propagates Runtime's static refusal. Runtime owns
 configuration validation, exact scope, empty-secret and required-W configuration
 checks; CLI owns exact BASE/service/artifact/cap binding. This is pure DATA
-composition, not a witness, native preparation or ServiceHost start. Compilation,
-selected pure tests and strict Clippy for this caller remain NOT_RUN pending the
-root's bounded immutable-source allocation. No service/account mutation occurred.
+composition, not a witness, native preparation or ServiceHost start. At authoring,
+compilation, selected pure tests and strict Clippy were NOT_RUN; the subsequent
+allocated receipt above records their actual result. No service/account mutation
+occurred.
 
 Accepted follow-up policy is linked through program-roadmap and delivery SoTs,
 not reimplemented here. CLI's existing FakeManager/Probe and ACL/temp-file tests
