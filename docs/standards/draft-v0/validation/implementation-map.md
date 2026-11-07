@@ -62,7 +62,9 @@ producer loop uses constructed envelopes and the shared client, not real ASGI,
 WSGI, Rack, httpd or Kestrel server callbacks. Its sealed-startup fixture checks
 same-parent custody locking and key continuity, not independent witness custody.
 
-Apache's safe request/replay component contributes a narrower P-07/P-08 subset:
+Apache's safe request/replay component contributes a narrower subset of
+[before-effect body verification](../protocol/profile.md#p-07-complete-body-verification-before-effects)
+and [streaming lifecycle requirements](../protocol/profile.md#p-08-streaming-integrity-lifecycle):
 exact-length bounded input, original-budget checks and cancellation-aware replay.
 It does not authorize a request, specify streaming integrity or establish that
 native server hooks run before every side effect. Generated ABI-input receipts
@@ -112,7 +114,10 @@ The Firefox component suite at canonical source `667e98f` passed 66 cases,
 including browser API tests with a synthetic Fetch fixture. Native TCP fixtures
 at runtime source `adb8e3ed` separately exercised the shared client/server model.
 Neither result establishes the positive browser-to-runtime-to-origin join or
-qualifies later changes. The P-03, P-05 and P-07 deployment evidence gaps remain. The
+qualifies later changes. Deployment evidence gaps remain for
+[request binding](../protocol/profile.md#p-03-request-and-decision-binding),
+[idempotent delivery](../protocol/profile.md#p-05-idempotent-delivery) and
+[before-effect body verification](../protocol/profile.md#p-07-complete-body-verification-before-effects). The
 [browser API reference](../../../reference/browser-collector.md#browser-transport-follow-through-under-source-review)
 records the current bounds and cancellation semantics. This implementation
 experiment does not freeze a generic Draft v0 browser wire profile. An ACK

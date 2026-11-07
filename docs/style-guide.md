@@ -17,6 +17,10 @@ Use neutral language about visitors. Explain observations and outcomes without
 assigning intent. Publish synthetic examples only; omit secrets, private traces,
 personal information and internal specification identifiers.
 
+Name a requirement before using its identifier, define the identifier's scope,
+and link to its reader-facing definition. Prefer descriptive names in prose.
+Keep internal priority codes and work-tracking labels out of public guidance.
+
 Keep each page's title, stable permalink and review date explicit. Link to a
 reader page rather than a private source record. Review links, navigation,
 keyboard access, light/dark contrast and narrow screens. Validation tools check

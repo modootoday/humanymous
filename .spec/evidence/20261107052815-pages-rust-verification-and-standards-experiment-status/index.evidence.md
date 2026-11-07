@@ -250,3 +250,18 @@ reader-source-status.json records the later reader-control guard:17pure lib test
 strict lib Clippy and88page source/nav checks pass under one-Cargo resource policy.
 Unicode/CRLF acceptance and control-byte refusals are scoped source checks; full
 review freshness and Jekyll/rendered-link/browser/AT results remain unqualified.
+
+Reader terminology follow-through: all 88 authored reader Markdown pages were
+scanned for bare P-0, internal SoT-number, TODO and FIXME markers; no matches
+were found. Defined P-01 through P-10 profile requirement identifiers remain.
+The implementation map now names and links the requirements in its two prose
+references, and the public style guide requires names, scope and definitions
+before identifiers. This is an editorial change, not a policy change.
+
+The existing fixed-source Pages executable (SHA-256
+`ad04b2d159c4f42d0c5327cebd042c1246f951ea7b6ca0e4f5c3ff8d79b9fed4`)
+ran source validation after the change: 88 pages, zero errors, terminal exit 0.
+Both edited public files contain LF bytes only; scoped diff whitespace checks
+passed. This does not renew Rust-source freshness, run Jekyll, inspect generated
+HTML or establish accessibility. Updated build/browser work awaits the shared
+execution allocation; the earlier fixed-tree preview is not this revision.
