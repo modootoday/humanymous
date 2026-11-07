@@ -13,6 +13,35 @@ rel:
 
 ## 2026-11-07 역할 재분리와 완료 gate 타임라인
 
+### 낡은 파일 제거의 실행 위치와 선행 조건
+
+현재 checkout은codex/rust이며 tracked Go파일336개가 남아 있다. main은 기존
+Go프로젝트를 유지하고 있고 새Rust작업을 사전반영하지 않는다. 낡은파일 제거는
+Rustbranch에서 수행해 삭제된 최종candidate 전체gate를 통과한 뒤main에 반영한다.
+Rust 대체기능/owned제품검증·oracle비교 증거확보→참조/배포inventory퇴역→삭제
+candidate→정리된tree 전체gate→main/Pages확인 순서다. 삭제대상Go의CVE나old
+shippingguard 때문에 실패하는전체CI가 먼저green이어야삭제가능하다는 순환조건은
+두지 않는다. 동시에 대체제품 검증 없는 조기삭제로 실패항목을 감추지도 않는다.
+독립obsolete docs/agent mirror/중복설정은 각owner가 참조검토 후 먼저정리하고,
+Go/oracle/oldimage·vendor환경 최종퇴역은root통합candidate에서 검증한다.
+현재actualRuntime/adapter/CEF/CrossOS 전체자격화가 미완료이므로 최종Go삭제
+날짜를 확정하지 않는다. 사용자요청은 취소/축소되지 않았고완료조건에 유지된다.
+
+### 자원 실측에 따른 로컬 검증 동시성 조정
+
+사용자의 상향 요청으로 physical63.3GiB/free35.3GiB, commit54.7/67.3GiB(81%),
+logicalCPU32/load39%, C:free184.9GiB를 Windows CIM으로 확인했다. 당시 cargo/
+rustc process는 없었다. 물리메모리보다 commit 여유12.6GiB를 제한 요소로 삼아
+로컬검증을 전역1에서2pipeline으로 상향한다. A는 기존sharedtarget, B는 별도
+target/validation-agents의 가벼운 순수검증으로 각jobs1/incremental0를 유지한다.
+명시적 slot배정만 실행하며 같은target에 두writer를 넣지 않는다. commit88%이상
+또는 physicalfree16GiB미만이면 신규B시작을 보류하고 다음 배정을1로 줄인다.
+CEF/nativeheavy/bindgen중첩과 로컬제품실행은 허가하지 않는다. 강제프로세스종료
+없이 종료시 재측정하며 Git/index와 공통lock변경은 계속 단일writer다.
+dependency/feature manifest는 integrationwindow에서만 변경해 locked검증
+재실패를 줄인다. 이정책은 이전 절의 전역1 표현을 갱신하며18개전용채팅에
+전달했다. A=audit순수복구/키보관, B=maintenance순수검증을 배정했다.
+
 ### Workspace/언어 profile 통합 checkpoint
 
 공통 workspace는 framework-adapter/python-adapter/ruby-adapter를 명시 등록해

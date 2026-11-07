@@ -1,5 +1,20 @@
 [workspace]
-members = ["crates/attacker", "crates/audit", "crates/authority", "crates/behavior", "crates/browser", "crates/browser/native/bootstrap", "crates/browser/native/desktop", "crates/challenge", "crates/cli", "crates/collector", "crates/defender", "crates/framework-adapter", "crates/integrity", "crates/model", "crates/native-cli", "crates/native-security", "crates/network", "crates/nginx-adapter", "crates/node-adapter", "crates/python-adapter", "crates/ruby-adapter", "crates/runtime", "crates/scoring", "crates/signals", "crates/test-support", "docs/tooling", "scripts/ci/delivery", "skills/agent-maintenance", "test/lab/runner", "test/lab/runtime"]
+members = [
+  # Shared security and service contexts.
+  "crates/audit", "crates/authority", "crates/behavior", "crates/challenge",
+  "crates/collector", "crates/integrity", "crates/model", "crates/network",
+  "crates/runtime", "crates/scoring", "crates/signals",
+  # Native host and framework boundaries.
+  "crates/apache-adapter", "crates/dotnet-adapter", "crates/framework-adapter",
+  "crates/go-adapter", "crates/native-abi", "crates/nginx-adapter",
+  "crates/node-adapter", "crates/python-adapter", "crates/ruby-adapter",
+  # Desktop and native operating-system integration.
+  "crates/browser", "crates/browser/native/bootstrap", "crates/browser/native/desktop",
+  "crates/cli", "crates/native-cli", "crates/native-security",
+  # Qualification, delivery and authoring tools.
+  "crates/attacker", "crates/defender", "crates/test-support", "docs/tooling",
+  "scripts/ci/delivery", "skills/agent-maintenance", "test/lab/runner", "test/lab/runtime",
+]
 resolver = "3"
 
 [workspace.package]
@@ -39,3 +54,10 @@ missing_docs = "warn"
 
 [workspace.lints.clippy]
 all = "warn"
+
+# Opt-in local edit loop. CI/default/release profiles retain their own settings.
+# CARGO_INCREMENTAL=0 overrides this profile; unset it or explicitly choose 1.
+[profile.local-edit]
+inherits = "dev"
+debug = "line-tables-only"
+incremental = true

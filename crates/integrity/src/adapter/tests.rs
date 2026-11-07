@@ -25,6 +25,16 @@ fn language_profiles_reject_cross_mode_identity_and_invented_capture() {
             "humanymous.ruby",
             "rack-normalized",
         ),
+        (
+            AdapterProfile::Apache,
+            "humanymous.apache",
+            "apache-normalized",
+        ),
+        (
+            AdapterProfile::DotnetAspNetCore,
+            "humanymous.dotnet",
+            "aspnetcore-normalized",
+        ),
     ];
     for (profile, id, mode) in profiles {
         let mut value = request();
@@ -46,6 +56,8 @@ fn language_profiles_reject_cross_mode_identity_and_invented_capture() {
             AdapterProfile::PythonAsgi,
             AdapterProfile::PythonWsgi,
             AdapterProfile::RubyRack,
+            AdapterProfile::Apache,
+            AdapterProfile::DotnetAspNetCore,
         ] {
             assert_eq!(check(&value, selected).is_ok(), selected == profile);
         }

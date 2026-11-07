@@ -15,6 +15,10 @@ pub enum AdapterProfile {
     PythonWsgi,
     /// Rack normalized server observations; never original TLS/H2/header capture.
     RubyRack,
+    /// Apache normalized request observations; no original network capture.
+    Apache,
+    /// ASP.NET Core normalized observations; no original network capture.
+    DotnetAspNetCore,
 }
 
 impl AdapterProfile {
@@ -26,6 +30,8 @@ impl AdapterProfile {
                 Self::Nginx => "humanymous.nginx",
                 Self::PythonAsgi | Self::PythonWsgi => "humanymous.python",
                 Self::RubyRack => "humanymous.ruby",
+                Self::Apache => "humanymous.apache",
+                Self::DotnetAspNetCore => "humanymous.dotnet",
             },
             version: "0.1.0-experimental.1",
         }
@@ -37,7 +43,9 @@ impl AdapterProfile {
             (Self::Node, "fetch-normalized") | (Self::Nginx, "nginx-normalized") => Ok(false),
             (Self::PythonAsgi, "asgi-normalized")
             | (Self::PythonWsgi, "wsgi-normalized")
-            | (Self::RubyRack, "rack-normalized") => Ok(false),
+            | (Self::RubyRack, "rack-normalized")
+            | (Self::Apache, "apache-normalized")
+            | (Self::DotnetAspNetCore, "aspnetcore-normalized") => Ok(false),
             _ => Err("invalid header provenance"),
         }
     }

@@ -14,7 +14,74 @@ rel:
 
 # Rust migration conventions
 
+## Build-cache research and opt-in local edit profile
+
+Two user-requested read-only research agents reviewed Cargo/rustc/sccache/GitHub
+primary documentation against this workspace. No speedup is inferred from a
+cache being enabled. Cargo build tuples include OS/arch/target, rustc, lock,
+profile, features, rustflags and native linker/tool/ABI inputs. Preserve fixed
+target directories, serialize dependency-manifest changes in root integration
+windows and measure wall time plus compiler-artifact fresh/compiled counts.
+Cargo timings HTML is private diagnostic evidence, not a stable JSON interface.
+Sources: https://doc.rust-lang.org/cargo/reference/build-cache.html and
+https://doc.rust-lang.org/cargo/reference/external-tools.html and
+https://doc.rust-lang.org/cargo/reference/timings.html .
+
+Cargo.toml adds only an opt-in local-edit profile (inherits dev, line-tables-only
+debug, incremental=true); CI/default/release settings are unchanged. Explicit
+CARGO_INCREMENTAL=0 overrides the profile, so the measured invocation uses1.
+The native ABI safe core's first profile build took Cargo2.37s. An intervening
+owner source change invalidated the initial warm attempt, which is excluded.
+Three subsequent top-level-source-hash-stable no-run builds took317/301/239ms external wall
+time; latest15pure tests passed in this profile. This proves profile execution
+and warm reuse, not improvement over default, clean-cold or edited-source A/B.
+Recorded evidence is private local-edit-stable-warm.json and initial attempts.
+That snapshot covers top-level src files only, not nested test modules or the
+complete dependency/toolchain graph; it is not an immutable full-unit receipt.
+Do not cargo-clean active targets or change production panic/LTO/codegen settings
+without measurements. Source: https://doc.rust-lang.org/cargo/reference/profiles.html .
+
+sccache/alternate linkers remain candidates, not installed defaults. Rust sccache
+requires incremental disabled and cannot cache final linker invocations for
+binary/dynamic/proc-macro crates. Two modes must be compared separately, with
+bounded cache size/peak memory: incremental local-edit versus nonincremental
+local shared library cache. No authored foreign scripts/glue are introduced.
+Source: https://github.com/mozilla/sccache/blob/main/docs/Rust.md .
+
+GitHub cache REST readback found max_cache_size_gb10, retention7days and usage
+99,674,146bytes/3entries. Official billing defines a separate10GiB per-repository
+cache allowance, distinct from artifact/Packages storage. CI owner is assigned a
+narrow public crates.io archive-only pilot: no wholeCargoHome/target/index/private
+git/spec/credentials; <=1GiB archive input; quota<=10 verified before save, else
+no-cache fallback; trusted branch push saves and PR restore-only. Pin restore/save
+actions separately. Existing remote-cache-off policy changes only for this
+explicit exception; no cap/billing setting is raised. Cache hits never replace
+source/test/hash qualification and actual hosted benefit remains not_run.
+Sources: https://docs.github.com/en/billing/concepts/product-billing/github-actions
+and https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching .
+
 ## Shared language integration checkpoint 5b9b85c
+
+Subsequent workspace integration explicitly adds Apache, .NET, Go Gate
+compatibility and native ABI safe-core contexts (34members). Apache and .NET
+normalized producer profiles bind provisioned identity/mode and reject invented
+raw/peer/capture fields, reusing the shared integrity/authority/framework chain.
+Root's locked pure batch measured Apache6/authority11/.NET7/framework6/Go2/
+integrity22/nativeABI14 passed (68 total, no failed/ignored/filtered). Initial
+.NET ambiguous-empty assertion failed compilation; its owner fixed it. Initial
+strict Clippy found nested-if warnings in .NET and Apache; owners corrected them.
+Later runtime streaming WIP produced dependency dead-code warnings; full strict
+Clippy closure is pending final wired source rather than suppressed warnings.
+Native-security's new safe Windows credential reader graph compiled; secret::
+pure3 passed with10filtered, without accessing any actual credential store.
+
+The integration owner accepts a separate minimal Rust ABI export wrapper with
+only the unsafe(no_mangle) export attribute exception, pointer-free by-value
+integer/initialized fixed-size structs. Core remains unsafe-forbid; unsafe
+blocks/functions/raw pointers and authored foreign glue are not authorized by
+this decision. Native-abi owner records exact checks/panic/poison/thread/symbol
+limits and implements the wrapper separately. Actual ABI/hosted validation stays
+required. No C/C++/.NET integration is declared complete by safe-core unit passes.
 
 The thirty-member workspace includes framework/Python/Ruby. Provisioned Python
 ASGI/WSGI and Ruby Rack profiles reuse the integrity parser, bind exact identity
