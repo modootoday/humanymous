@@ -241,3 +241,58 @@ remain separately scheduled heavyweight work. Six lightweight grants do not
 authorize them, shared target writes, new cache directories, dependency fetching,
 publication or extra hosted runs. Git writes remain globally serialized.
 
+## CPU placement and supplementary Windows validation
+
+The user explicitly accepts supplementary actual Windows tests on this terminal.
+Local bounded process, pipe, filesystem and IPC component tests may complement
+standard-runner qualification. Native capture parents precede CLI watchdog
+consumers; each uses exact source, a separate bounded outer supervisor, owned
+cleanup, one controlled case at a time and the existing memory admission guard.
+This does not grant accounts, SCM installation, privilege elevation or production
+provider authority. Final Cross-OS and product requirements remain unchanged.
+
+Observed Intel Core i9-14900K topology is24 cores/32 logical processors. Sampled
+Cargo/Clippy processes all exposed affinity maskFFFFFFFF, permitting all32 logical
+processors; the observed busy logical CPUs therefore do not establish an affinity
+restriction. Logical CPU numbering alone does not identify physical siblings or
+performance/efficiency classes. Single-threaded compiler/test sections cannot be
+made parallel merely by migrating or pinning their threads.
+
+Keep scheduler-default affinity for current owners. Performance may design a
+same-source jobs1/jobs2 or task-local affinity comparison, with actual topology,
+duration, CPU and memory observations, before any wider rollout. Existing six
+pipeline admission and one-job defaults remain until a measured profile change is
+accepted. Never change another owner's running process affinity or the system
+power policy to make utilization graphs appear uniform.
+
+Primary references: [Cargo build jobs](https://doc.rust-lang.org/cargo/reference/config.html#buildjobs)
+and [Windows process affinity](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setprocessaffinitymask).
+
+## Windows-first local environment
+
+The user requests native Windows development and stopping the unused WSL
+distribution runtime to recover resources, not uninstalling WSL or deleting data.
+All current REA-Ubuntu owners released compiler/SDK/hash-read handles before root
+terminated that distribution. No new WSL launch is admitted by default. The
+docker-desktop distribution remains running because the observed desktop-linux
+daemon uses kernel6.18.33.2-microsoft-standard-WSL2; distro termination does not
+prove all virtualization memory has been released.
+
+Verified native inventory: Rust1.99.1 MSVC plus wasm32 target, CPython3.12.10 with
+Python.h and python312.lib, Node24.16.0, Ruby3.3.12 mingw-ucrt, VS2022 Build Tools,
+bundled CMake3.31.6-msvc6, Ninja1.12.1 and Docker client/server29.9.2. Root added
+the three existing verified CMake/Ninja/Docker binary directories to user PATH and
+checked their commands. winget1.29.380 is available; redundant standalone packages
+were not installed over the existing VS tools. Existing sessions may need explicit
+paths or environment refresh. Ruby's MinGW/UCRT versus Rust MSVC compatibility
+remains an unqualified native SDK tuple, not solved by a PATH change.
+
+Use native Windows for supported local Rust/component tests, and the Windows
+Docker CLI with explicit desktop-linux context for eligible Linux user-space
+container tests. Container profiles require pinned inputs and bounded resources.
+Linux native filesystem/kernel/provider tests, Windows OS boundaries, macOS and
+actual GUI/AT requirements retain their specific native/hosted gates. A Linux
+container does not establish all GitHub runner, kernel or Cross-OS equivalence.
+Docker backend switching, WSL feature removal, cache deletion and foreign daemon
+termination are not part of this environment setup.
+
