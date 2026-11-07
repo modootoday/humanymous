@@ -434,6 +434,13 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Exact4b49 immutable archive first-attempt allocated A check/strict Clippy and21
+unique Rust tests pass:scan7/82filtered, framing13/76filtered, Go verifier parity1/
+0filtered with840 rows.2434 full snapshot files/hash/inventory unchanged, primary
+edits excluded. Evidence125819/raw125610 with archive identity. Session64423
+terminal/A returned. No code fix, extra suite, native/Phase-B/complete-S1 or memory
+qualification. The prior authored-only Phase-A statements are historical.
+
 Private Phase-A core now uses sealed per-segment Source, separate sidecar reader,
 shared raw framing/preflight before owned decode, finite byte/value/profile
 guards and absolute cancellation/deadline polls through final source checks.

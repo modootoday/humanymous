@@ -1,0 +1,56 @@
+{
+  "source": "4b49e933b496b569867a4909fdce556a66cb7a20",
+  "sourceMode": "immutable git archive, primary changes excluded",
+  "passed": 21,
+  "harnesses": [
+    {
+      "name": "scan",
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 82,
+      "outerSummaries": 1
+    },
+    {
+      "name": "framing",
+      "passed": 13,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 76,
+      "outerSummaries": 1
+    },
+    {
+      "name": "verification-parity",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 0,
+      "outerSummaries": 1
+    }
+  ],
+  "failed": 0,
+  "ignoredExecuted": 0,
+  "sourceFiles": 2434,
+  "sourceHashDriftIndicators": 0,
+  "pathInventoryDrift": 0,
+  "goVerifierRows": 840,
+  "scope": "private Phase-A/scoped compatibility only; not complete S1/native identity/crypto pass/production/memory",
+  "session": "64423 terminal exit0; A returned",
+  "attempt": "first attempt, no source correction",
+  "archiveIdentity": {
+    "source": "4b49e933b496b569867a4909fdce556a66cb7a20",
+    "archiveSha256": "3e52b73fdfddcb8c5ad9c954b4101256636245524f635b486177943feee2d329",
+    "archiveBytes": 67809280,
+    "scope": "immutable git archive, primary dirty or later commits excluded"
+  },
+  "archiveDisposition": {
+    "archive": "source-4b49.tar",
+    "bytes": 67809280,
+    "specAttachmentLimit": 4194304,
+    "attachmentExitCode": 2,
+    "disposition": "Archive retained as private reproducible local input, not attached; git source SHA and archive SHA256 in attached source-identity.json. No files.store configuration or external upload. Remaining small logs/manifests attached."
+  }
+}

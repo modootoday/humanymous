@@ -1,6 +1,17 @@
 # Sealed key compatibility integration
 
-## Private Phase-A scanner source, not executed
+## Latest isolated Phase-A qualification
+
+Exact4b49 immutable git archive passed first-attempt locked/offline all-target
+check/strict Clippy and21 unique Rust tests:scan7/82filtered, framing13/76filtered,
+Go verifier parity1/0filtered+840 rows. Full2434 snapshot file hashes and inventory
+unchanged; primary edits excluded. Evidence125819/private125610 includes archive
+identity and originals; the archive itself is local input, over the4MiB attachment
+cap, with hash/disposition attached. Session64423 terminal/A returned, no code fix.
+This qualifies private metadata/component behavior, not native Source identity,
+Phase B, complete S1, full audit/package current source, product or memory bounds.
+
+## Historical Phase-A source before scoped execution
 
 Sealed per-segment/sidecar Source and bounded raw Frames now compose metadata
 checks with exact physical pin, transcript digests, resource guards and final

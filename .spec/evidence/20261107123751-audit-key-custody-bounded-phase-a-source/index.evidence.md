@@ -13,6 +13,12 @@ rel:
 
 ## What was measured
 
+Subsequent first-attempt isolated execution at exact4b49 passed check/strict
+Clippy and21 focused Rust tests, [[evidence:root/20261107125819]]. All seven new
+Phase-A tests ran;2434 snapshot paths have zero hash/inventory drift. NOT_RUN
+below describes initial source authorship only. Native/Phase-B/complete-S1 and
+memory limitations remain unchanged.
+
 Source-only accepted private S1 Phase-A core. No Cargo workload/allocation;
 compilation, Clippy and execution NOT_RUN. Seven new pure tests are authored,
 including the deadline poll test. Formatting/diff only. The scanner is currently
