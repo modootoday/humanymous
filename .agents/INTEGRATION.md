@@ -167,8 +167,11 @@ qualified by these component receipts. Target and owned children returned termin
 
 ## Adapter package convention impact handoff
 
-The accepted `humanymous-adapter-<context>` target is a project convention; Cargo
-does not mandate adapter word order. Only root's single coordinated migration may
+The accepted `humanymous-adapter-<context>` target is an INTERNAL Rust package
+convention; it is not the public consumer identity. Cargo does not mandate adapter
+word order. The superseding user decision makes public usage `humanymous` across
+the Rust facade, npm, Python import, Ruby require and native product loader, with
+case-adapted `Humanymous` for .NET. Only root's single coordinated migration may
 change the ten mapped graph names, source imports, lock/workflows/artifacts/docs
 and claims. Current in-flight names and historical command/hash receipts stay as
 recorded until that migration; no independent rename occurred here.
@@ -183,6 +186,37 @@ Python module or Ruby extension name. Therefore this owner's current tool wiring
 requires no adapter-package rename. Root/adapter owners must still explicitly map
 their native exports/module compatibility; native ABI/security providers are not
 mechanically included. Historical evidence and inventory paths are retained.
+
+Bounded read-only manifest/entrypoint inspection records the following current
+names as LEGACY, not accepted future public branding or namespace ownership:
+
+| Surface | Observed legacy identity | Public target / required mapping |
+| --- | --- | --- |
+| npm | `@humanymous/node` | `humanymous`; package exports and all consumer examples/install checks move atomically |
+| Python | distribution `humanymous-python-adapter`, module and `[lib].name` `humanymous_python` | distribution/import `humanymous`; map maturin/module/native entrypoint together |
+| Ruby | candidate gem `humanymous-ruby-adapter`, require/native init `humanymous_ruby` | gem/require `humanymous`; map package file and host init together |
+| .NET | candidate `Humanymous.Native.Experimental`, loader `humanymous_dotnet_adapter_export` | public `Humanymous` and unified product loader, with explicit native packaging/ABI mapping |
+| Native | Cargo export package `humanymous-native-abi-export` implies raw artifact basename `humanymous_native_abi_export`; entrypoint `humanymous_native_abi_v1` | public product loader basename `humanymous`; meaningful versioned ABI entrypoint may remain |
+| Rust facade | no public facade established by this maintenance-owner inspection | public facade `humanymous`; internal adapter crates remain independently organized |
+
+The native filename inference above is manifest-derived, not a new artifact run.
+Python's host-required `PyInit_humanymous` and Ruby's `Init_humanymous` must agree
+with the new import/require basename when implemented; platform suffixes and
+Python ABI tags remain legitimate loader exceptions. Internal raw Cargo outputs
+may be mapped during packaging, but implementation/language suffixes must not
+survive as public product branding. The existing `humanymous_*_v1` C ABI symbols
+can retain meaningful contract names. Native/Ruby/Python init/export compatibility
+requires adapter-owner validation rather than a textual package rename.
+
+Proposed atomic move: root first fixes facade, native isolation/version/ownership
+and compatibility canon; then one coordinated graph/source/lock/packaging/loader/
+workflow/docs transition updates all current names and clean-consumer fixtures.
+Host/ABI/architecture variants belong in isolated paths and a verified manifest.
+Two different DLL implementations must never land at one `humanymous.dll` path;
+the manifest must choose one compatible host variant and reject collision or
+ambiguous ownership. Package registry availability/publisher authority is still
+unverified; no namespace reservation/publication is claimed. Historical receipts,
+raw commands and hashes stay unchanged and are explicitly labeled legacy.
 
 ## Evidence materialization follow-through
 
