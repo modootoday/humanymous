@@ -127,6 +127,20 @@ bind source, run, job and conclusion; log transport is not a signed attestation.
 
 ## Record
 
+Transport source is now authored in scripts/ci/delivery/src/header_proof.rs and
+header_proof/codec.rs, test-only until production admission and private IO are
+wired. It consumes limits from the owner's canonical header-proof-profile.json,
+buffers 16 original byte arrays, uses canonical bounded base64, strict JSON and
+fixed ID/order/sequence/total/length/hash checks, and requires one manifest-bound
+completion. Empty files retain one explicit empty chunk. All-payload admission
+runs before the begin frame is constructed; receivers call admission again only
+after complete decoding. Four pure tests are authored for independent vectors,
+binary/empty/multichunk round trips and hostile/truncated/mutated protocol data.
+They have NOT been compiled or run. This core is not an exporter command, a
+privacy validator, a fresh-private-directory provider or a hosted receipt.
+Production typed tuple/profile/source admission, compiler identity capture,
+official run/job binding, private reconstruction and workflow integration remain.
+
 2026-11-07: Draft only. Header dispatch remains held by integration owner. Native
 ABI R1 readiness failed before container start due to Docker local-log settings;
 R2 started with compress=false but first `command -v clang` exited 127 without a

@@ -7,6 +7,9 @@ mod dependency_summary;
 mod docker_source;
 mod evidence;
 mod go_product;
+// Transport core is test-only until its profile admission and private IO are wired.
+#[cfg(test)]
+mod header_proof;
 mod image_candidates;
 mod image_scan;
 mod lab_diagnostics;
