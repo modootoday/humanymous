@@ -145,7 +145,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
 | CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync e34cee8a and ASGI queued 800b9679 source direction accepted; owner accepted additional task-setup ownership gap. First SDK check failed101 before host tests. Corrected compilation, actual host controls, Node and task settlement remain OPEN |
 | CA-EVIDENCE-01 | P2: four model evidence JSON files omitted from their canonical attachment inventory | Model | CLOSED scoped inventory at faae5ced; index-only correction preserves JSON payloads, independently verified actual Git archive attachments and public248-document check0 |
-| CA-EVIDENCE-02 | P2: nine public attachment index hash/size entries differ from actual Git payload bytes | Pages/M11 | Immutable e511d294 archive audit checked494 inline rows: nine mismatches. M11 one resolved and independently verified at bda10042; Pages eight remain OPEN |
+| CA-EVIDENCE-02 | P2: nine public attachment index hash/size entries differ from actual Git payload bytes | Pages/M11 | CLOSED scoped metadata: M11 bda10042 plus Pages9691b638 index-only corrections. Independent Pages Git archive125 inline rows match; all eight original payloads unchanged |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -886,3 +886,31 @@ public-only Spec248 documents passed0errors/0warnings. CA-EVIDENCE01 is closed
 only for the model inventory; CA-EVIDENCE02 remains open for eight Pages rows.
 Neither metadata correction reclassifies raw logs, execution outcomes or product
 qualification. Runtime/host regression gates remain separate and incomplete.
+
+### Metadata closure, real Python SDK compilation and naming decision
+
+Pages9691b638 changed only its index. Independent streaming of that immutable
+Git archive verified all125 inline repo attachment rows; all eight previously
+mismatched payloads retain their original e511 Git hashes/lengths. Combined with
+the prior M11 correction, CA-EVIDENCE02 is closed for those nine metadata rows.
+No execution facts, raw originals or product qualification were renewed.
+
+Python receipt58c92cf8 qualifies check/strict Clippy/lib-test no-run linkage at
+exact252ad259 on real Windows MSVC/CPython. Independent review verified the raw
+log hash/size and three successful completion footers, terminal batch/closure0,
+linked executable SHA256 and saved before/after inventories:2742source,2614SDK,
+5639selected registry,1config and7selected tools. Original tar hash matched;
+streaming all2742 source members matched both saved SHA256 and actual canonical
+Git blob SHA1 without extraction. This is not a complete OS/SDK supply-chain
+claim. Actual tests executed0; the two Unix-only WSGI controls were not selected
+on Windows, and queued ASGI/fault/task-settlement remain OPEN. HANDOFF01 remains
+open; compilation/linking alone does not qualify runtime import or callback use.
+
+The user-selected adapter family target is humanymous-adapter-<context>, per
+the explicit ten-package map in structural-development. Current suffix names
+remain transitional, valid Cargo identities until root coordinates graph,
+imports, locks, workflows, artifacts, current docs and owner claims together.
+Host ABI/library/module names require explicit compatibility mapping and actual
+host-import verification. Shared native ABI/security providers are not host
+adapters by association. This audit owns no package or ABI implementation;
+historical commands, payloads, source identities and hashes remain unchanged.

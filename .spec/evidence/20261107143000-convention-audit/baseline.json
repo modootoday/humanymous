@@ -416,5 +416,17 @@
     "closure_actual_git_rows_checked": 7,
     "public_spec_errors": 0,
     "global_green": false
+  },
+  "followup_pages_closure_python_compile": {
+    "private_review_sha256": {
+      "pages-canonical-closure-review-001.json": "8dd9374984c342c20e43d4eececba0b2e9b3265a79f28322d1c2d25a3ec52398",
+      "python-windows-compile-review-001.json": "3f967105fb9418cd9bedd6c59aa3ec458c8d162456c81a205644036a2f2ee071"
+    },
+    "evidence02_scoped_closed": true,
+    "pages_actual_git_rows_verified": 125,
+    "python_source_archive_and_git_blob_members_verified": 2742,
+    "python_actual_tests": 0,
+    "handoff_closed": false,
+    "adapter_naming": "Target humanymous-adapter-<context>; root-coordinated graph migration only; historical evidence unchanged"
   }
 }

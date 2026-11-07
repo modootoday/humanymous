@@ -272,3 +272,10 @@ M11 bda10042 correction and model faae5ced inventory fix independently verified
 against7actual Git attachment rows, publicSpec248docs0errors0warnings. Close
 CA-EVIDENCE01 scoped inventory; retainPages8OPEN, first archive helper failure,
 format coverage limits and unchanged execution qualification. No new runtime run.
+
+Pages9691b638 actualGit125rows verified; original8payloads unchanged and index-only
+fix closes CA-EVIDENCE02 with M11. Python252ad actualWindows SDK check/Clippy/link
+receipt independently re-audited through2742tar+Gitblob source comparisons and
+saved5closuregroups; actualtests0 keeps HANDOFFOPEN. User adapter-family target
+recorded as coordinated-root migration gate, no unilateralrename/historical
+evidence changes. No audit compiler/native/WSL/UNC/Docker workload.
