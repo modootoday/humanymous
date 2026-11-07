@@ -5,25 +5,31 @@ type Fields = Vec<(Vec<u8>, Vec<u8>)>;
 
 pub(super) fn decode(
     decoder: &mut httlib_hpack::Decoder<'static>,
-    mut bytes: Vec<u8>,
+    bytes: Vec<u8>,
     trailers: bool,
 ) -> Result<Fields, Error> {
     let mut fields = Vec::new();
     let mut total = 0usize;
     let mut pseudo = BTreeSet::new();
     let mut regular = false;
-    while !bytes.is_empty() {
+    let mut remaining = bytes.as_slice();
+    while !remaining.is_empty() {
         // The dependency enforces the maximum table size. Updates are legal
         // only before the first header representation, not midway through it.
-        if bytes[0] & 0xe0 == 0x20 && !fields.is_empty() {
+        if remaining[0] & 0xe0 == 0x20 && !fields.is_empty() {
             return Err(Error::Malformed);
         }
-        let before = bytes.len();
+        // Validate every encoded integer and string span before entering the
+        // dependency, whose truncated continuation paths may index unchecked.
+        // Give it exactly one representation, independent of Vec capacity.
+        let length = representation(remaining)?;
+        let mut encoded = remaining[..length].to_vec();
+        remaining = &remaining[length..];
         let mut one = Vec::with_capacity(1);
         decoder
-            .decode_exact(&mut bytes, &mut one)
+            .decode_exact(&mut encoded, &mut one)
             .map_err(|_| Error::Malformed)?;
-        if bytes.len() >= before {
+        if !encoded.is_empty() {
             return Err(Error::Malformed);
         }
         for (name, value, _) in one {
@@ -82,4 +88,44 @@ pub(super) fn decode(
         }
     }
     Ok(fields)
+}
+
+fn integer(bytes: &[u8], prefix: u8) -> Result<(usize, usize), Error> {
+    let mask = (1u8 << prefix) - 1;
+    let mut value = usize::from(*bytes.first().ok_or(Error::Malformed)? & mask);
+    if value < usize::from(mask) {
+        return Ok((value, 1));
+    }
+    for index in 1..5 {
+        let byte = *bytes.get(index).ok_or(Error::Malformed)?;
+        value = value
+            .checked_add(usize::from(byte & 0x7f) << (7 * (index - 1)))
+            .ok_or(Error::Malformed)?;
+        if byte & 0x80 == 0 {
+            return Ok((value, index + 1));
+        }
+    }
+    Err(Error::Malformed)
+}
+fn string(bytes: &[u8]) -> Result<usize, Error> {
+    let (length, prefix) = integer(bytes, 7)?;
+    let total = length.checked_add(prefix).ok_or(Error::Malformed)?;
+    bytes.get(..total).ok_or(Error::Malformed)?;
+    Ok(total)
+}
+fn representation(bytes: &[u8]) -> Result<usize, Error> {
+    let first = *bytes.first().ok_or(Error::Malformed)?;
+    if first & 0x80 != 0 {
+        return integer(bytes, 7).map(|(_, used)| used);
+    }
+    if first & 0xe0 == 0x20 {
+        return integer(bytes, 5).map(|(_, used)| used);
+    }
+    let prefix = if first & 0x40 != 0 { 6 } else { 4 };
+    let (name, mut used) = integer(bytes, prefix)?;
+    if name == 0 {
+        used += string(bytes.get(used..).ok_or(Error::Malformed)?)?;
+    }
+    used += string(bytes.get(used..).ok_or(Error::Malformed)?)?;
+    Ok(used)
 }

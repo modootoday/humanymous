@@ -37,6 +37,15 @@ No public mark_verified(bool), deserialization or caller-provided receipt. Rejec
 early data and HelloRetryRequest for this first profile unless a separately tested
 second-ClientHello policy is implemented. Ephemeral borrowed evidence is scoped to
 that owner; it is not a cross-process attestation or human identity.
+A supervisor cancellation handle may only revoke/shutdown its same socket; it
+cannot read/write bytes or mint observations. Revocation immediately removes
+evidence availability. Owner drop closes the socket even if that handle survives.
+The synchronous owner requires a supervised joined blocking worker when used by
+an asynchronous service, with its absolute lifetime and explicit cancellation;
+it must not become an untracked detached runtime task.
+Borrowed observations are snapshots, not reusable allow tickets. The runtime
+must recheck cancellation/deadline before origin effects and bind each request
+to its actual connection/stream; copying a parsed hello never copies authority.
 
 N04. For h2, validate the complete client preface, first non-ACK SETTINGS,
 ordered settings including duplicate IDs, first connection WINDOW_UPDATE and
@@ -48,6 +57,9 @@ These are resource/profile limits, not detection thresholds. Larger legal peers
 may be refused by this explicit bounded profile.
 
 N05. One HPACK decoding context follows connection order, including trailers.
+Prevalidate exact integer and string spans for each representation before calling
+the pinned decoder; its upstream truncated-integer paths cannot be trusted as a
+framing validator. Feed exactly one representation per bounded decode call.
 Decode bytes before normalization, preserve duplicate regular names and pseudo
 order per stream. Validate unique known request pseudo fields before regular
 fields, lowercase token names, forbidden connection headers, valid TE and bounded

@@ -1,0 +1,74 @@
+{
+  "schema": "humanymous.capture.source-checkpoint/0.1",
+  "source_base": "ab4e8ee",
+  "source_state": "follow-up-worktree",
+  "observed_at": "2026-11-07T07:38:10Z",
+  "authored_pure_units": 18,
+  "executed_pure_units": 0,
+  "authored_hosted_cases": 5,
+  "executed_hosted_cases": 0,
+  "product_runs": 0,
+  "compilation": "not_run",
+  "clippy": "not_run",
+  "format": "direct-rustfmt-passed",
+  "spec": "scoped-public-0-errors-0-warnings",
+  "workspace_lock": "root-integration-pending",
+  "runtime_binding": "not_implemented",
+  "files": [
+    {
+      "path": "crates/capture/Cargo.toml",
+      "bytes": 635,
+      "sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840"
+    },
+    {
+      "path": "crates/capture/INTEGRATION.md",
+      "bytes": 4554,
+      "sha256": "ee67407fbfd08f9fea8aea9498e949929f8e79dd757caa681e00e40e70be61da"
+    },
+    {
+      "path": "crates/capture/src/http2/headers.rs",
+      "bytes": 5002,
+      "sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787"
+    },
+    {
+      "path": "crates/capture/src/http2/mod.rs",
+      "bytes": 14616,
+      "sha256": "f09e2b497daf424376c3eae40b63c2031778678342677401779a361383dcc57c"
+    },
+    {
+      "path": "crates/capture/src/http2/tests.rs",
+      "bytes": 9773,
+      "sha256": "7521b9a1f36e7f0e78a170a017c30fc3ab991b0a9c9c9d56cfa7097447cd3bc0"
+    },
+    {
+      "path": "crates/capture/src/lib.rs",
+      "bytes": 322,
+      "sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076"
+    },
+    {
+      "path": "crates/capture/src/tls/hello.rs",
+      "bytes": 7833,
+      "sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153"
+    },
+    {
+      "path": "crates/capture/src/tls/hello/tests.rs",
+      "bytes": 2945,
+      "sha256": "74f58b13f22bfb2084e49f9f6df32a64ed04d2cf8758f39650755b67a8bec7e8"
+    },
+    {
+      "path": "crates/capture/src/tls/mod.rs",
+      "bytes": 205,
+      "sha256": "e8453ccdbf191ab1f5030f009e9c1e37976b7530d64a42a959f325152e5c8a0e"
+    },
+    {
+      "path": "crates/capture/src/tls/transport.rs",
+      "bytes": 7628,
+      "sha256": "3ec9a200de23571d517bf43a131e6596094c66d020ae638ea78ef2fa91ab5a45"
+    },
+    {
+      "path": "crates/capture/tests/hosted_transport.rs",
+      "bytes": 8929,
+      "sha256": "0de3c02bd8662bb9470afeb04f105bc3054d09cd1ab5c313b541f388d8db77df"
+    }
+  ]
+}

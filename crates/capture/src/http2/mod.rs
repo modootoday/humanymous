@@ -71,6 +71,7 @@ pub struct Capture {
     max_stream: u32,
     block: Option<Block>,
     decoder: httlib_hpack::Decoder<'static>,
+    monitor: humanymous_network::http2::FrameMonitor,
     failed: Option<Error>,
 }
 impl Default for Capture {
@@ -88,6 +89,7 @@ impl Default for Capture {
             max_stream: 0,
             block: None,
             decoder: httlib_hpack::Decoder::with_dynamic_size(4096),
+            monitor: humanymous_network::http2::FrameMonitor::default(),
             failed: None,
         }
     }
@@ -98,6 +100,7 @@ impl Capture {
         if let Some(error) = self.failed {
             return Err(error);
         }
+        self.monitor.feed(input);
         let result = self.feed_inner(input);
         if let Err(error) = result {
             self.failed = Some(error);
@@ -355,6 +358,11 @@ impl Capture {
             return None;
         }
         self.streams.get(&stream)?.request.as_ref()
+    }
+    /// Existing frozen frame-monitor output; this context never changes its
+    /// predicates or derives an additional score. Consumers use the signal once.
+    pub fn abuse(&self) -> Option<&'static str> {
+        self.monitor.abuse()
     }
     /// Reject partial EOF. This does not assert that request bodies completed.
     pub fn finish(&mut self) -> Result<(), Error> {

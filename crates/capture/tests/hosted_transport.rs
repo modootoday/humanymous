@@ -222,3 +222,29 @@ fn actual_invalid_tls_never_creates_an_owner() {
     socket.shutdown(std::net::Shutdown::Write).unwrap();
     server.join().unwrap();
 }
+
+#[test]
+#[ignore = "hosted-only actual supervisor cancellation pilot"]
+fn actual_supervisor_cancellation_revokes_the_connection_epoch() {
+    hosted();
+    let (server, config) = configs(b"http/1.1");
+    let listener = listener();
+    let addr = listener.local_addr().unwrap();
+    let (send, receive) = std::sync::mpsc::sync_channel(1);
+    let server = thread::spawn(move || {
+        let mut conn = Connection::accept(accept(&listener), server, BUDGET).unwrap();
+        let mut first = [0];
+        assert_eq!(conn.read_plaintext(&mut first).unwrap(), 1);
+        send.send(conn.cancellation().unwrap()).unwrap();
+        assert!(conn.read_plaintext(&mut first).is_err());
+        assert!(conn.client_hello().is_none());
+        assert!(conn.negotiated_alpn().is_none());
+        assert!(conn.write_plaintext(b"late").is_err());
+    });
+    let mut client = client(addr, config);
+    client.write_all(b"x").unwrap();
+    client.flush().unwrap();
+    let cancellation = receive.recv_timeout(BUDGET).unwrap();
+    cancellation.cancel().unwrap();
+    server.join().unwrap();
+}

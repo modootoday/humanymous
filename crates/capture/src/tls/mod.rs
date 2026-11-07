@@ -2,4 +2,4 @@
 mod hello;
 mod transport;
 pub use hello::{CaptureError, ClientHelloCapture};
-pub use transport::Connection;
+pub use transport::{Cancellation, Connection};

@@ -3,12 +3,31 @@ use humanymous_network::tls::ClientHello;
 use rustls::{HandshakeKind, ServerConfig, ServerConnection};
 use std::{
     io::{self, Read, Write},
-    net::TcpStream,
-    sync::Arc,
+    net::{Shutdown, TcpStream},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
     time::{Duration, Instant},
 };
 
 const HANDSHAKE_BYTES: usize = 262_144;
+
+/// Revocation-only supervisor handle for one connection. No raw transport or
+/// observation constructor is exposed. Dropping this handle alone does not
+/// cancel; the owner always shuts down its socket when dropped.
+pub struct Cancellation {
+    stream: TcpStream,
+    cancelled: Arc<AtomicBool>,
+}
+impl Cancellation {
+    /// Immediately revoke evidence and wake blocked socket I/O. A shutdown
+    /// error does not restore evidence availability or permit another epoch.
+    pub fn cancel(&self) -> io::Result<()> {
+        self.cancelled.store(true, Ordering::Release);
+        self.stream.shutdown(Shutdown::Both)
+    }
+}
 
 struct Ingress {
     stream: TcpStream,
@@ -57,6 +76,7 @@ pub struct Connection {
     hello: ClientHello,
     h2: Option<crate::http2::Capture>,
     failed: bool,
+    cancelled: Arc<AtomicBool>,
 }
 impl Connection {
     /// Complete an actual bounded TLS handshake on the consumed socket. The
@@ -100,13 +120,17 @@ impl Connection {
             hello,
             h2,
             failed: false,
+            cancelled: Arc::new(AtomicBool::new(false)),
         })
     }
 
     /// Borrow the complete hello from this successfully handshaken owner. Any
     /// observed terminal I/O failure or elapsed lifetime removes availability.
     pub fn client_hello(&self) -> Option<&ClientHello> {
-        (!self.failed && self.ingress.remaining().is_ok()).then_some(&self.hello)
+        (!self.failed
+            && !self.cancelled.load(Ordering::Acquire)
+            && self.ingress.remaining().is_ok())
+        .then_some(&self.hello)
     }
 
     /// Actual negotiated protocol, distinct from ClientHello's offered ALPN.
@@ -120,6 +144,24 @@ impl Connection {
     pub fn h2_request(&self, stream: u32) -> Option<&crate::http2::Request> {
         self.client_hello()?;
         self.h2.as_ref()?.request(stream)
+    }
+
+    /// Existing frozen connection frame-monitor observation, if H2 is active.
+    /// Remains available after failure for audit, never as an allow capability.
+    pub fn h2_abuse(&self) -> Option<&'static str> {
+        self.h2.as_ref()?.abuse()
+    }
+
+    /// Mint a revocation-only handle for a supervised joined worker. It grants
+    /// no ability to inject capture bytes or access application plaintext.
+    pub fn cancellation(&self) -> io::Result<Cancellation> {
+        if self.client_hello().is_none() {
+            return Err(io::Error::other("capture unavailable"));
+        }
+        Ok(Cancellation {
+            stream: self.ingress.stream.try_clone()?,
+            cancelled: Arc::clone(&self.cancelled),
+        })
     }
 
     /// Read decrypted ingress before framework normalization. This method is
@@ -136,7 +178,7 @@ impl Connection {
                 }
             }
         }
-        if result.as_ref().is_err() || matches!(result, Ok(0)) && !buf.is_empty() {
+        if result.is_err() || matches!(result, Ok(0)) && !buf.is_empty() {
             self.failed = true;
         }
         result
@@ -159,5 +201,12 @@ impl Connection {
             return Err(io::Error::other(CaptureError::Truncated));
         }
         Ok(())
+    }
+}
+
+impl Drop for Connection {
+    fn drop(&mut self) {
+        self.cancelled.store(true, Ordering::Release);
+        let _ = self.ingress.stream.shutdown(Shutdown::Both);
     }
 }

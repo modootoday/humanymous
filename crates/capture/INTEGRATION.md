@@ -28,6 +28,25 @@ handshake attestation or deserialized capture envelope is proposed. Existing
 plain HTTP1 listener and adapter0.1 must retain422 for required TLS/H2. Their
 current unconditional rejection is correct until actual integration; replacing
 it with trust in forwarded headers/capability bits is prohibited.
+Exact report seam: network::report::build currently renders negotiated_alpn from
+the first offered ClientHello name. Connection::negotiated_alpn returns rustls'
+actual negotiation. Do not conflate these in a capture-qualified response; the
+runtime/network owner should coordinate that output field while preserving all
+existing frozen heuristic predicates (which inspect offered protocols).
+The initial actual socket owner is synchronous. Tokio integration requires a
+supervised joined blocking worker, absolute lifetime<=30seconds, and use of its
+revocation-only Cancellation handle; no detached spawn_blocking task. The handle
+atomically revokes evidence before shutting down the same socket, and owner Drop
+shuts it down even when a supervisor handle survives. A native async serving
+loop/profile remains an explicit owning-runtime integration task.
+
+Post-checkpoint review (after ab4e8ee): every HPACK representation now receives
+safe integer/string-span validation before the pinned decoder and is decoded
+alone. Upstream decoder truncated integer paths may index past their input;
+calling it directly on an unvalidated block is prohibited. Regression fixtures
+cover each incomplete integer/literal family. The shared network FrameMonitor
+is reused unchanged; Connection::h2_abuse exposes its frozen audit signal even
+after a terminal capture refusal, never as an allow capability.
 
 Hosted request: free standard GitHub runner must execute an owned Rust TLS/h2
 client/server pilot with synthetic credential fixture. Delivery/product-lab own
@@ -36,9 +55,10 @@ push, local socket or Docker work will be performed here.
 Authored invocation: cargo test --locked -p humanymous-capture
 --features hosted-pilot --test hosted_transport -- --ignored --test-threads=1.
 The actual tests assert GITHUB_ACTIONS=true and RUNNER_ENVIRONMENT=github-hosted
-before opening a socket. Four denominators: actual TLS/H1 without H2 claim,
+before opening a socket. Five denominators: actual TLS/H1 without H2 claim,
 actual TLS/H2 continuation/order/stream association, actual wrong-continuation
-terminal refusal, actual invalid TLS refusal. These are component tests only.
+terminal refusal, actual invalid TLS refusal, and actual supervisor cancellation
+revocation. These are component tests only.
 
 Public docs delta for Pages owner: this is original-hop capture only when the
 deployment actually terminates the original client; reterminated proxy traffic

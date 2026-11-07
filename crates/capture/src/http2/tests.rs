@@ -164,6 +164,29 @@ fn header_malformations_and_midblock_table_update_refuse() {
         assert!(capture.request(1).is_none());
     }
 }
+
+#[test]
+fn truncated_hpack_integer_and_literal_spans_refuse_without_dependency_panic() {
+    for encoded in [
+        vec![0xff],
+        vec![0xff, 0x80],
+        vec![0x3f],
+        vec![0x40],
+        vec![0x40, 0xff],
+        vec![0x40, 1, b'x'],
+        vec![0x40, 1, b'x', 0x7f],
+        vec![0xff, 0x80, 0x80, 0x80, 0x80],
+        vec![0, 1, b'x', 0x81, 0],
+    ] {
+        let mut capture = Capture::default();
+        capture.feed(&prefix()).unwrap();
+        assert_eq!(
+            capture.feed(&frame(1, 4, 1, &encoded)),
+            Err(Error::Malformed)
+        );
+        assert!(capture.request(1).is_none());
+    }
+}
 #[test]
 fn dynamic_table_update_at_start_and_trailers_preserve_decoder_sync() {
     let mut capture = Capture::default();
@@ -228,4 +251,36 @@ fn fixed_frame_header_block_and_decoded_header_budgets_refuse() {
         block.extend(literal(b"x", b"v"));
     }
     assert_eq!(capture.feed(&frame(1, 4, 1, &block)), Err(Error::Budget));
+}
+
+#[test]
+fn stream_and_connection_frame_budgets_are_lifetime_limits() {
+    let mut capture = Capture::default();
+    capture.feed(&prefix()).unwrap();
+    for stream in (1..=255).step_by(2) {
+        capture.feed(&frame(1, 5, stream, &headers())).unwrap();
+    }
+    assert_eq!(
+        capture.feed(&frame(1, 5, 257, &headers())),
+        Err(Error::Budget)
+    );
+    assert!(capture.request(1).is_none());
+    let mut capture = Capture::default();
+    capture.feed(&prefix()).unwrap();
+    for _ in 1..4096 {
+        capture.feed(&frame(0xff, 0, 0, &[])).unwrap();
+    }
+    assert_eq!(capture.feed(&frame(0xff, 0, 0, &[])), Err(Error::Budget));
+}
+
+#[test]
+fn frozen_monitor_is_reused_without_forking_its_thresholds() {
+    let mut capture = Capture::default();
+    capture.feed(&prefix()).unwrap();
+    for stream in (1..=31).step_by(2) {
+        capture.feed(&frame(1, 4, stream, &headers())).unwrap();
+        assert_eq!(capture.abuse(), None);
+        capture.feed(&frame(3, 0, stream, &[0; 4])).unwrap();
+    }
+    assert_eq!(capture.abuse(), Some("l5.h2dos.rapid_reset"));
 }
