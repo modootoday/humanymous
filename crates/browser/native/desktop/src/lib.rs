@@ -80,14 +80,21 @@ fn run(sandbox_info: *mut u8) -> Result<(), Box<dyn std::error::Error>> {
     {
         return Err("sandbox-required CEF initialization failed".into());
     }
-    local_page::register()?;
+    if let Err(error) = local_page::register() {
+        cef::shutdown();
+        return Err(error.into());
+    }
     let outcome = host::run();
-    // No shutdown while a browser remains live: host::run only succeeds after
-    // actual on_before_close, and errors are fail-stop for this experimental DLL.
+    // Shutdown only after actual child/parent cleanup. Probe failure is distinct
+    // from uncertain cleanup and must still shut down CEF before returning failure.
     match outcome {
-        Ok(()) => {
+        Ok(closed) => {
             cef::shutdown();
-            Ok(())
+            if closed.probe_passed == Some(false) {
+                Err("native internal probe incomplete or failed".into())
+            } else {
+                Ok(())
+            }
         }
         Err(error) => {
             eprintln!("incomplete native cleanup: {error}");

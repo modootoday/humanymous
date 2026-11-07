@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.native-cli.cfg-source-fix.v1",
+  "ownership": "browser-ui owns scaffold consumer crates/native-cli; operational crates/cli is separate",
+  "source": {
+    "path": "crates/native-cli/src/lib.rs",
+    "before_canonical_sha256": "727de2499f0b3beaa0084a4375ae14c39915482e08bb1ed7c73bcf2f3dfbb1d5",
+    "working_sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+    "canonical_lf_sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+    "change": "library test_support cfg(test) -> cfg(all(test, windows))"
+  },
+  "library_consumer": "cfg(windows) storage/windows.rs -> storage/windows/tests.rs",
+  "integration_consumer": "tests/command.rs retains its separate path-based helper module",
+  "preserved_hosted_failure": {
+    "run": 42348518353,
+    "source": "63f69ae",
+    "clippy_exit": 101,
+    "dead_code_findings": 3,
+    "raw_sha256_verified": "5b76ed6d55ccce5aa13c067ecd992c5b01ba69e32ea00cf52d2983203e55511a"
+  },
+  "rustfmt_exit": 0,
+  "new_linux_clippy": "not_run; hosted source closure required",
+  "new_native_cli_units": "not_run",
+  "new_native_cli_process_tests": "not_run",
+  "cargo_during_root_graph_window": false,
+  "tests_or_gates_removed": false,
+  "warning_suppression_added": false
+}

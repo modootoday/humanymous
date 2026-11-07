@@ -5,7 +5,7 @@ pub mod arguments;
 pub mod manifest;
 pub mod storage;
 
-#[cfg(test)]
+#[cfg(all(test, windows))]
 mod test_support;
 #[cfg(test)]
 mod tests;

@@ -1,0 +1,201 @@
+{
+  "schema": "humanymous.browser.navigation-pure-checks.v1",
+  "at": "2026-11-07T07:43:09Z",
+  "goal_status": "active",
+  "source": {
+    "schema": "humanymous.browser.navigation-source.v2",
+    "base_git_head": "5ddba46dc8508349a4b98f4a8d7fceec417dd9d5",
+    "files": {
+      "crates/browser/src/frame_geometry.rs": {
+        "working_sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247",
+        "canonical_lf_sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247",
+        "lines": 157
+      },
+      "crates/browser/src/icons.rs": {
+        "working_sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5",
+        "canonical_lf_sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5",
+        "lines": 69
+      },
+      "crates/browser/src/input.rs": {
+        "working_sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c",
+        "canonical_lf_sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c",
+        "lines": 86
+      },
+      "crates/browser/src/internal_urls.rs": {
+        "working_sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
+        "canonical_lf_sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
+        "lines": 263
+      },
+      "crates/browser/src/lib.rs": {
+        "working_sha256": "98f9db6b761c4900d03d1108130e1d59c2f0c1e095ff7481ab5a7b9b21858537",
+        "canonical_lf_sha256": "98f9db6b761c4900d03d1108130e1d59c2f0c1e095ff7481ab5a7b9b21858537",
+        "lines": 28
+      },
+      "crates/browser/src/lifecycle.rs": {
+        "working_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+        "canonical_lf_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+        "lines": 194
+      },
+      "crates/browser/src/main.rs": {
+        "working_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+        "canonical_lf_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+        "lines": 24
+      },
+      "crates/browser/src/navigation.rs": {
+        "working_sha256": "47b70de3dc0891e28d5f401f1019e3c89cc1d122fc2412af1e096781b0aec24d",
+        "canonical_lf_sha256": "47b70de3dc0891e28d5f401f1019e3c89cc1d122fc2412af1e096781b0aec24d",
+        "lines": 268
+      },
+      "crates/browser/src/newtab.rs": {
+        "working_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+        "canonical_lf_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+        "lines": 300
+      },
+      "crates/browser/src/policy.rs": {
+        "working_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+        "canonical_lf_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+        "lines": 123
+      },
+      "crates/browser/src/ui.rs": {
+        "working_sha256": "f54f32164faca9940f9d584e599ab69f885f511c83d8fa59b28fc77a58a22ea0",
+        "canonical_lf_sha256": "f54f32164faca9940f9d584e599ab69f885f511c83d8fa59b28fc77a58a22ea0",
+        "lines": 575
+      },
+      "crates/browser/src/ui_navigation.rs": {
+        "working_sha256": "6739cebff564c09b0af60b60eed99bfb3ed44bbaf95cf0cffd9a63f1c5ba5ff3",
+        "canonical_lf_sha256": "6739cebff564c09b0af60b60eed99bfb3ed44bbaf95cf0cffd9a63f1c5ba5ff3",
+        "lines": 165
+      },
+      "crates/browser/src/viewport.rs": {
+        "working_sha256": "c5a772451a389b9bde10ad0378f4cecb316ee756e0044d05f7f8c45d733c0db4",
+        "canonical_lf_sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329",
+        "lines": 122
+      },
+      "crates/browser/src/window_chrome.rs": {
+        "working_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+        "canonical_lf_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+        "lines": 223
+      },
+      "crates/browser/native/shared/scheme.rs": {
+        "working_sha256": "9ebe5d5d1976d69ae95553941470851bf818792f0779418a7407762cca0e6759",
+        "canonical_lf_sha256": "9ebe5d5d1976d69ae95553941470851bf818792f0779418a7407762cca0e6759",
+        "lines": 14
+      },
+      "crates/browser/native/bootstrap/src/lib.rs": {
+        "working_sha256": "bf664f50f20875c849a9f90c2ae466e508be85e6de0d24f8ec5d36d29ad1ca74",
+        "canonical_lf_sha256": "bf664f50f20875c849a9f90c2ae466e508be85e6de0d24f8ec5d36d29ad1ca74",
+        "lines": 160
+      },
+      "crates/browser/native/bootstrap/src/renderer_probe.rs": {
+        "working_sha256": "4caba694ac7a756a43ed7ec2aa214ed87e564f0b1df449263241cacdbc8a69ef",
+        "canonical_lf_sha256": "4caba694ac7a756a43ed7ec2aa214ed87e564f0b1df449263241cacdbc8a69ef",
+        "lines": 60
+      },
+      "crates/browser/native/desktop/src/browser_controls.rs": {
+        "working_sha256": "b92a5047f52a8d983b32595b476c92db3cdce7a495329b7645405377938e4264",
+        "canonical_lf_sha256": "b92a5047f52a8d983b32595b476c92db3cdce7a495329b7645405377938e4264",
+        "lines": 145
+      },
+      "crates/browser/native/desktop/src/child.rs": {
+        "working_sha256": "45fc3eecf004b70b96256727b6eb7b86cd8888fe82a515620d8c6f1b3165a5e1",
+        "canonical_lf_sha256": "45fc3eecf004b70b96256727b6eb7b86cd8888fe82a515620d8c6f1b3165a5e1",
+        "lines": 406
+      },
+      "crates/browser/native/desktop/src/fixture.rs": {
+        "working_sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
+        "canonical_lf_sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
+        "lines": 138
+      },
+      "crates/browser/native/desktop/src/host.rs": {
+        "working_sha256": "6d2c8812e0b3dfc730ee099e92e2043c703eb680f632a9ffc3fc1a6462481756",
+        "canonical_lf_sha256": "6d2c8812e0b3dfc730ee099e92e2043c703eb680f632a9ffc3fc1a6462481756",
+        "lines": 555
+      },
+      "crates/browser/native/desktop/src/host_report.rs": {
+        "working_sha256": "51372badb1c475e07c8572a0ff8828467a3f31ff85b139cd1039ce34ecebafe4",
+        "canonical_lf_sha256": "51372badb1c475e07c8572a0ff8828467a3f31ff85b139cd1039ce34ecebafe4",
+        "lines": 93
+      },
+      "crates/browser/native/desktop/src/internal_probe.rs": {
+        "working_sha256": "5143b3ea4acfb82546955815f1c1499493180e10af5c4a21638b30b953854464",
+        "canonical_lf_sha256": "5143b3ea4acfb82546955815f1c1499493180e10af5c4a21638b30b953854464",
+        "lines": 95
+      },
+      "crates/browser/native/desktop/src/lib.rs": {
+        "working_sha256": "2c9a8d76e665bf338c076fbf5f7ba7fa843c190b9773deee9bb1ad2b06be1bd3",
+        "canonical_lf_sha256": "2c9a8d76e665bf338c076fbf5f7ba7fa843c190b9773deee9bb1ad2b06be1bd3",
+        "lines": 104
+      },
+      "crates/browser/native/desktop/src/local_page.rs": {
+        "working_sha256": "533cbe654c5a2988f531f31214d4a1ba383addede21c416516c41fca10a7fbe4",
+        "canonical_lf_sha256": "533cbe654c5a2988f531f31214d4a1ba383addede21c416516c41fca10a7fbe4",
+        "lines": 134
+      },
+      "crates/browser/native/desktop/src/measured_input.rs": {
+        "working_sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+        "canonical_lf_sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+        "lines": 214
+      },
+      "crates/browser/native/desktop/src/native.rs": {
+        "working_sha256": "d724d7995d2030ae6edda9f9f76dc0857ccb949d49891f5f2748cce4632e514d",
+        "canonical_lf_sha256": "735787f42e631d0c79d1ecbc685ba7badf5533003d0dee109fb8aeebcfb62f2b",
+        "lines": 522
+      },
+      "crates/browser/native/desktop/src/navigation.rs": {
+        "working_sha256": "3a04a35e58c6c1cb16dce20572dc0f1cd20d4b17ccd2b8e7b7f40915653cf1fc",
+        "canonical_lf_sha256": "3a04a35e58c6c1cb16dce20572dc0f1cd20d4b17ccd2b8e7b7f40915653cf1fc",
+        "lines": 361
+      },
+      "crates/browser/native/desktop/src/window_frame.rs": {
+        "working_sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
+        "canonical_lf_sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
+        "lines": 294
+      }
+    },
+    "compilation_scope": "default feature core only; native adapter compilation not_run"
+  },
+  "root_assignment": "A/shared target, jobs1/incremental0; slot returned after result",
+  "commands": [
+    {
+      "command": "cargo test --locked -p humanymous-browser --no-default-features --lib",
+      "passed": 23,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0,
+      "exit": 0
+    },
+    {
+      "command": "cargo clippy --locked -p humanymous-browser --no-default-features --lib --tests -- -D warnings",
+      "exit": 0
+    }
+  ],
+  "preserved_first_attempt": {
+    "unit_passed": 23,
+    "clippy_exit": 101,
+    "clippy_findings": [
+      "missing documentation on Outcome::Content.identity"
+    ],
+    "source_sha256": "d343ad86c8c839cd4269a624b1814e96c31f78f9ae815af997c7905bfa8f536b",
+    "correction": "field rustdoc only; both 23-unit test suite and same-scope Clippy rerun successfully on final source"
+  },
+  "native_compile": "not_run",
+  "native_runtime": "not_run",
+  "gui_ime_at_gpu_dpi": "not_run",
+  "native_artifacts": null,
+  "full_sandbox_qualified": false,
+  "browser_ready": false,
+  "private_receipt_sha256": {
+    "clippy-final.log": "d70a2f8f0b6f47488dc79150ad40c9b9bd8c6884e1cef06cb393ed7362c4704c",
+    "clippy-first.log": "6afcc41119b54cf220e65147fa40852384f911eb801ec06d81ec92efbeb857e9",
+    "fmt.log": "2095d5302e465922147e220c0389f7a923ea0c1509a23097f04b3c220798aef8",
+    "resources-after-final.json": "11a8b30ec055216944efead8cf8a7378007aed35114acf276195a25c80a1b980",
+    "resources-after.json": "9d825939dde5b97c3815ef6ff47652b65b54c6b3d8e372d59b3b69dad02e3603",
+    "resources-before.json": "907acf93ff2fbdef688651f81d7da4c881f482948dd257d6bb3920f04704c5d3",
+    "source-final.json": "7da75032e31805c58bdfd73b19d052217fcf6740675aee3285fa96e51161bb97",
+    "source.json": "d343ad86c8c839cd4269a624b1814e96c31f78f9ae815af997c7905bfa8f536b",
+    "spec.log": "ab60f3a2b358d3e2553e4770ecbea87463d9b7a1e3540c21b133825c130a22e2",
+    "unit-final.log": "60ad75179971a61bf93bc3ef015e544c22ea76cc5fa49c78dfd6916f29126f2a",
+    "unit-first.log": "8bd9434a90e29cbb006a6ebd3982aa95ba815d7a9c0105e2ed916a5dc6ed15e3",
+    "whitespace.log": "2095d5302e465922147e220c0389f7a923ea0c1509a23097f04b3c220798aef8"
+  }
+}

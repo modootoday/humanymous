@@ -84,7 +84,7 @@ impl Route {
 
 /// Reject all variants except fixed route addresses and their slashless spelling.
 pub fn classify(address: &str) -> Result<Route, &'static str> {
-    if address.len() > 4096 || address.chars().any(char::is_control) {
+    if !bounded(address) {
         return Err("invalid address bounds");
     }
     if address == NEW_TAB_URL || address == "humanymous://newtab" {
@@ -101,6 +101,9 @@ pub fn classify(address: &str) -> Result<Route, &'static str> {
 /// Resolve a form/link action only when its caller separately verifies current
 /// main-frame newtab origin and a user gesture. Never dispatch arbitrary schemes.
 pub fn newtab_action(address: &str) -> Result<Route, &'static str> {
+    if !bounded(address) {
+        return Err("invalid newtab action bounds");
+    }
     let url = Url::parse(address).map_err(|_| "invalid newtab action")?;
     if url.scheme() != "humanymous"
         || url.host_str() != Some("newtab")
@@ -108,7 +111,6 @@ pub fn newtab_action(address: &str) -> Result<Route, &'static str> {
         || url.password().is_some()
         || url.port().is_some()
         || url.fragment().is_some()
-        || address.len() > 4096
     {
         return Err("invalid newtab action authority");
     }
@@ -120,15 +122,21 @@ pub fn newtab_action(address: &str) -> Result<Route, &'static str> {
     if url.path() != "/open/" || !address.starts_with("humanymous://newtab/open/?") {
         return Err("unknown newtab action");
     }
-    let pairs: Vec<_> = url.query_pairs().collect();
-    if pairs.len() != 1 || pairs[0].0 != "address" {
+    let mut pairs = url.query_pairs();
+    let Some((key, value)) = pairs.next() else {
+        return Err("one address field required");
+    };
+    if key != "address" || pairs.next().is_some() {
         return Err("one address field required");
     }
-    classify(&pairs[0].1)
+    classify(&value)
 }
 
 /// Trusted WebUI assets are subresources only, scoped to an admitted main page.
 pub fn resource_allowed(address: &str, navigation: bool, current: Option<Route>) -> bool {
+    if !bounded(address) {
+        return false;
+    }
     if navigation {
         return classify(address).is_ok();
     }
@@ -138,9 +146,7 @@ pub fn resource_allowed(address: &str, navigation: bool, current: Option<Route>)
     let Ok(url) = Url::parse(address) else {
         return false;
     };
-    if address.len() > 4096
-        || address.chars().any(char::is_control)
-        || url.scheme() != "chrome"
+    if url.scheme() != "chrome"
         || !url.username().is_empty()
         || url.password().is_some()
         || url.port().is_some()
@@ -155,9 +161,29 @@ pub fn resource_allowed(address: &str, navigation: bool, current: Option<Route>)
     matches!(url.host_str(), Some("resources" | "theme")) || url.host_str() == Some(page_host)
 }
 
+fn bounded(address: &str) -> bool {
+    address.len() <= 4096 && !address.chars().any(char::is_control)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn bounds_and_control_characters_are_rejected_on_every_entry_point() {
+        for address in [
+            format!("humanymous://newtab/open/?address={}", "x".repeat(4096)),
+            "humanymous://newtab/open/?address=chrome://gpu\n".into(),
+            "chrome://resources/js/\tcr.js".into(),
+        ] {
+            assert!(classify(&address).is_err());
+            assert!(newtab_action(&address).is_err());
+            assert!(!resource_allowed(
+                &address,
+                false,
+                Some(Route::Internal(InternalPage::Gpu))
+            ));
+        }
+    }
     #[test]
     fn typed_routes_never_admit_privileged_aliases_or_credentials() {
         for page in InternalPage::ALL {

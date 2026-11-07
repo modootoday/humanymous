@@ -1,13 +1,15 @@
 # Browser native integration
 
-Owner: misc / rust-browser-newtab. The Meari management UI is integrated.
+Owner: browser-ui / rust-browser-native-lifecycle. The Meari management UI is integrated.
 Two actual Windows CEF native prototype packages are implemented below; shared
 workspace membership/lock integration is root-owned and now present in the shared checkout.
-BrowserReady=false; external target browsing is disabled.
+BrowserReady=false; external target browsing is disabled. Current0.6 lifecycle
+source has pure-unit evidence only; the older native GUI evidence does not qualify
+this changed native adapter.
 
 ## Current canonical UI and SDK scope
 
-Canonical browser/UI requirements are `.spec/sot/browser-ui.sot.md` version0.5
+Canonical browser/UI requirements are `.spec/sot/browser-ui.sot.md` version0.6
 and `.spec/sot/chromium-lab-browser.sot.md` version0.4. Native embedding SDK/DLL
 scope is accepted in `.spec/sot/native-embedding.sot.md` and
 `.spec/plan/20261107041001-native-embedding-and-browser-ui-window-chrome.plan.md`.
@@ -41,7 +43,7 @@ mandatory CEF sandbox unchanged. No profile deletion was retried; generated
 synthetic profiles remain private. The older sections below are historical
 qualification steps, not newer-layout or SDK completion claims.
 
-## Current newtab/internal URL checkpoint
+## Previous bounded native newtab/internal URL checkpoint
 
 Implemented: default actual CEF owner document humanymous://newtab/, Rust Meari IR
 and upstream html5ever serialization, script-free CSP, real GET form and links.
@@ -108,6 +110,33 @@ browser-specific boundaries are browser-ui0.5.1, Accepted execution policy linka
 Current newtab hosted qualification and interactive IME/AT/DPI/GPU/Chrome exceptions
 remain not_run; old local receipts are source-bound history. This documentation
 change starts no build/runtime/dispatch, removes no gate and uploads no private raw.
+
+## Active navigation/input lifecycle slice
+
+Goal active; plan:root/20261107071648 and UI-25..27 govern source in progress.
+Pure navigation tickets/terminal outcomes and ordered probe ledger now own the
+state rules; native wrappers perform CEF calls/serialization. Native task refusal,
+missing frame, source/load failure, revocation and closed callbacks cannot remain
+an accepted request or complete a newer captured ticket. Same-URL LoadHandler
+attribution remains a documented limit, not a unique navigation ID claim.
+
+Report revision2 adds navigation_schema, internal_probe_requested/finished/
+observed/passed and navigation_receipts_dropped. A requested safe-page probe must
+observe the ordered7 documents, zero receipt loss and cleanup; incomplete/failed
+probe returns nonzero after report preservation. Finished includes abort, so
+finish/exit0 alone is not passing evidence. A positive probe and combined
+--native-cancel-before-created/--native-internal-probe negative lifecycle case
+require actual source-bound hosted execution by the CI/native-runner owners.
+The old586ff95/2d3119c local native results do not validate this changed source.
+
+URL bounds are checked before parsing/decoding; owner query parsing retains only
+one field. The pure IME confirmation guard now resets canceled composition on
+IME disable/focus loss, without using timing or motor predicates. Native keyboard,
+IME candidates and AT qualification remain not_run for this slice. No Cargo or
+local runtime was started before root slot assignment. Root subsequently assigned
+A/shared-target: final default pure23/23 and same-scope Clippy pass, with first
+Clippy missing-field-rustdoc failure preserved and corrected rerun. Slot returned. Shared manifests/lock,
+workflow/hosted dispatch and product-lab/runtime/collector sources are not touched.
 
 ## Exact root delta
 

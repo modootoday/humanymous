@@ -3,7 +3,7 @@ id: sot:root/browser-ui
 title: Native browser UI and CEF boundary
 status: active
 created: 2026-11-07T00:20:14Z
-updated: 2026-11-07T06:32:40Z
+updated: 2026-11-07T07:16:48Z
 verify: [manual]
 rel:
   governs: [crates/browser/**]
@@ -14,7 +14,7 @@ rel:
 
 ## Rule
 
-Version 0.5.1. The browser-first shell and research contract below supersede the initial management dashboard.
+Version 0.6.0. The browser-first shell and research contract below supersede the initial management dashboard.
 Authored application and tests are Rust; construct typed Meari IR directly, without
 TSX, HTML application source, JavaScript or embedded script strings. Pin Meari
 1482b746ebc0d867f25d17d01c48c12df888ca6c (0.2.0, MIT OR Apache-2.0), Rust 1.99.1.
@@ -494,3 +494,92 @@ sources or hosted jobs. No runtime/build/dispatch was started for this policy
 record. Public collection and missing private-original handling defer to the
 central delivery contract; browser diagnostic paths/device data stay out of
 public artifacts. Required native gates are not removed by path heuristics.
+
+
+## Navigation lifecycle and probe closure contract
+
+UI-25 (accepted implementation slice, native execution not_run): one pure Rust
+navigation authority owns bounded64 generation tickets, current request,
+observed commit and explicit terminal outcome. A ticket binds generation and an
+exact typed local route. New requests supersede pending tickets; revoke is
+irreversible and precedes child cleanup. A rejected UI task, absent main frame,
+load failure, content mismatch, source budget exhaustion and probe timeout are
+explicit failures, not accepted requests left pending. Stale captured task/source
+tickets, closed/revoked callbacks and post-terminal completions cannot mutate a
+new transaction. Last actually observed committed address is separate from a
+newly requested/failed address. Native wrappers own OS/CEF calls and serialization;
+they must not fork the pure transition rules.
+
+UI-26: --native-internal-probe requires ordered newtab, five admitted diagnostics
+and return-to-newtab observations. Every step has its own captured ticket and
+bounded deadline; the initial document is also bounded. Independent terminal
+failures are collected across all seven steps; malformed order, reused/superseded
+tickets abort rather than manufacturing a pass. Process cleanup success alone
+cannot satisfy the probe: requested but incomplete/failed probe returns nonzero
+after retaining the report and cleanup receipts. Probe completion/result/count and
+receipt truncation are explicit report fields. Receipt capacity remains bounded;
+dropped observations are counted, never silently treated as full provenance.
+
+UI-27: address length/control bounds precede URL parsing and query decoding.
+Owner actions accept exactly one address field, without allocating an arbitrary
+query-pair vector. IME disable/focus loss cancels retained composition with a
+confirmation barrier so canceled composition neither navigates nor permanently
+prevents later deliberate Enter. Native keyboard/IME/AX proof remains a separate
+hosted/suitable-environment gate.
+
+Review limitations: CEF LoadHandler does not supply the host request ticket.
+Route-matched load-start/end callbacks cannot fully distinguish an older same-URL
+navigation from a newer one. Captured UI tasks/source visitors are generation
+checked; this is not unique engine-navigation attribution or BrowserReady.
+Full sandbox, external browsing, IME/AT/GPU qualification remain unchanged/closed.
+All new source/results require their own source-bound hosted execution; previous
+586ff95 native receipts cannot validate this slice.
+
+
+Navigation report revision2 is additive to the prior receipt payload: fields
+navigation_schema=2, navigation_receipts_dropped:u64, internal_probe_requested:bool,
+internal_probe_finished:bool, internal_probe_observed:usize and
+internal_probe_passed:bool. finished includes abort and is not success; passed
+requires all7 positive ordered observations and zero dropped receipts. New terminal
+receipt phases task_rejected and frame_unavailable retain code0/bytes0/identityfalse.
+A required-probe runner must require schema2/requested/finished/observed7/passed,
+zero receipt loss and real cleanup receipts; missing fields from an older report
+are unknown, not implicit pass. No required gate may use exit0 alone.
+
+
+OnBeforeBrowse only continues the exact pending host target. An out-of-order
+browser callback cannot create a replacement renderer transaction. Renderer
+links must carry a current-main-frame admitted source and user gesture; they are
+canceled and redispatched through the typed host queue. Programmatic cross-route
+redirects and implicit renderer reload without a host ticket stay denied. This
+centralizes transaction ownership while retaining the same-URL callback limit.
+
+
+Probe qualification failure is distinct from uncertain cleanup. The native host
+returns a clean-exit token only after actual child before-close and parent-closed
+receipts. Desktop then shuts CEF down before returning a failed probe result.
+Uncertain cleanup retains the existing process-owning fail-stop boundary; this
+is not an embeddable SDK ABI. Scheme-factory registration failure occurs before
+browser creation and shuts initialized CEF down before reporting the error.
+
+
+The measured fixed local tuple previously returned main-frame status200 on every
+admitted route. Revision2 requires that status before positive source inspection;
+other statuses terminate as load_status_rejected (code=observed status), distinct
+from CEF load_error codes. Terminal failures project a fixed safe native notice;
+raw URL/error text is not echoed. This stricter tuple gate needs hosted replay.
+
+
+Revision2 also records superseded and revoked for an outstanding old ticket,
+without attributing those events to its replacement. Request budget refusal
+leaves the prior transaction intact; supersession is recorded only after a new
+request is accepted. Repeated revoke is idempotent. Receipt loss remains explicit
+and disqualifies the requested probe even when its in-memory ledger completed.
+
+
+Native child revocation atomically revokes navigation authority under the same
+owned mutex. Deferred focus/observer tasks, input/IME actions, process-result and
+renderer-canary callbacks refuse revoked/closed authority; late diagnostic results
+are not appended after revocation. Close itself remains permitted while stopping
+until actual before-close, and does not become a focus/observer grant. No global
+hooks or third-party window/process inspection is introduced.

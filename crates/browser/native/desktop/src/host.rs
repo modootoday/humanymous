@@ -408,7 +408,11 @@ impl ApplicationHandler for Pilot {
     }
 }
 
-pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+// Only constructed after both native child and parent cleanup receipts.
+pub(super) struct CleanExit {
+    pub probe_passed: Option<bool>,
+}
+pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
     let pilot_seconds = std::env::args()
         .find_map(|arg| {
             arg.strip_prefix("--native-pilot-seconds=")
@@ -440,12 +444,20 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .map_err(|error| io::Error::other(format!("{error:?}")))?;
     // Joined on success, error and unwind before this DLL can unload.
     let _close_deadline = CloseDeadline::start(driver.wake_handle(), pilot_seconds);
+    let internal_probe_requested = std::env::args().any(|a| a == "--native-internal-probe");
     let state = Arc::new(Mutex::new(State {
+        navigation: crate::navigation::State {
+            probe: internal_probe_requested
+                .then(humanymous_browser::navigation::ProbeLedger::default),
+            ..Default::default()
+        },
         process_info_status: "not_run",
         ..Default::default()
     }));
     let report = Rc::new(RefCell::new(Report {
         host_pid: std::process::id(),
+        navigation_schema: 2,
+        internal_probe_requested,
         ime_candidate_placement: "not_run",
         ..Default::default()
     }));
@@ -473,56 +485,13 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         failure: failure.clone(),
     })?;
     {
-        let mut report = report.borrow_mut();
-        if let Ok(state) = state.lock() {
-            report.navigation_receipts = state.navigation.receipts.clone();
-            report.cef_key_events = state.key_events;
-            report.cef_editable_key_events = state.editable_key_events;
-            report.cef_focus_events = state.focus_events;
-            report.renderer_file_probes = state.file_probes.clone();
-            report.ime_setup = state.ime_setup.clone();
-            report.ime_candidate_request = state.ime_candidate_request.clone();
-            report.measured_hanja = state.measured_hanja.clone();
-            report.hanja_key_events = state.hanja_key_events;
-            if report.ime_candidate_request.is_some() {
-                report.ime_candidate_placement = "request_attempted_unqualified";
-            }
-            if !report.measured_hanja.is_empty() {
-                report.ime_candidate_placement =
-                    "measured_key_attempted_external_visual_verification_required";
-            }
-        }
-        report.cef_child_created = state
+        let state = state
             .lock()
-            .map_err(|_| io::Error::other("state poisoned"))?
-            .created;
-        report.before_close = state
-            .lock()
-            .map_err(|_| io::Error::other("state poisoned"))?
-            .closed;
-        report.host_closed = runtime.borrow().document().lifecycle() == HostLifecycle::Closed;
-        report.late_created_after_cancel = state
-            .lock()
-            .map_err(|_| io::Error::other("state poisoned"))?
-            .late_created_after_cancel;
-        report.process_roles = state
-            .lock()
-            .map_err(|_| io::Error::other("state poisoned"))?
-            .process_roles
-            .clone();
-        report.process_info_status = state
-            .lock()
-            .map_err(|_| io::Error::other("state poisoned"))?
-            .process_info_status;
-        let renderers: Vec<_> = report
-            .process_tokens
-            .iter()
-            .filter(|p| p.role.as_deref() == Some("renderer"))
-            .collect();
-        report.renderer_restricted_token_observed = !renderers.is_empty()
-            && renderers
-                .iter()
-                .all(|t| t.restricted && t.integrity_rid == 0);
+            .map_err(|_| io::Error::other("state poisoned"))?;
+        report.borrow_mut().observe_state(
+            &state,
+            runtime.borrow().document().lifecycle() == HostLifecycle::Closed,
+        );
     }
     let output = std::env::current_exe()?
         .parent()
@@ -535,7 +504,12 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     if !report.borrow().before_close || !report.borrow().host_closed {
         return Err("native cleanup receipt incomplete".into());
     }
-    Ok(())
+    Ok(CleanExit {
+        probe_passed: report
+            .borrow()
+            .internal_probe_requested
+            .then_some(report.borrow().internal_probe_passed),
+    })
 }
 
 #[cfg(test)]

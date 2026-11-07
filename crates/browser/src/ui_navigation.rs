@@ -120,55 +120,12 @@ pub fn notice(doc: &mut InteractiveDocument, message: &str) {
     }
 }
 
-/// Composition/candidate-confirm Enter barrier for the focused native address.
-#[derive(Default)]
-pub struct ImeGuard {
-    composing: bool,
-    confirmation: bool,
-}
-impl ImeGuard {
-    /// Remember active composition even if its empty preedit precedes Enter.
-    pub fn preedit(&mut self, active: bool) {
-        self.composing = active;
-        self.confirmation |= active;
-    }
-    /// A commit may arrive before its confirming Enter key event.
-    pub fn commit(&mut self) {
-        self.composing = false;
-        self.confirmation = true;
-    }
-    /// Refuse repeats, unfocused keys and composition/candidate-confirm Enter.
-    pub fn enter(&mut self, focused: bool, repeat: bool) -> bool {
-        if !focused || repeat {
-            return false;
-        }
-        if self.composing || self.confirmation {
-            self.confirmation = false;
-            return false;
-        }
-        true
-    }
-    /// A later ordinary non-Enter key is no longer the commit confirmation.
-    pub fn ordinary_key(&mut self) {
-        self.confirmation = false;
-    }
-}
+/// Pure composition guard; retained here as a compatible public re-export.
+pub use crate::input::ImeGuard;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn ime_confirmation_repeats_and_foreign_focus_do_not_navigate() {
-        let mut guard = ImeGuard::default();
-        assert!(!guard.enter(false, false));
-        assert!(!guard.enter(true, true));
-        guard.preedit(true);
-        assert!(!guard.enter(true, false));
-        guard.preedit(false);
-        guard.commit();
-        assert!(!guard.enter(true, false));
-        assert!(guard.enter(true, false));
-    }
     #[test]
     fn go_and_commit_are_distinct_real_document_operations() {
         let mut doc = InteractiveDocument::new(

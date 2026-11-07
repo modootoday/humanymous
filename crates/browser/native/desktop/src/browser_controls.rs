@@ -24,6 +24,7 @@ pub struct Controls {
 }
 impl Controls {
     pub fn new(document: NativeDocumentHandle, state: Shared) -> Self {
+        let probe_enabled = std::env::args().any(|a| a == "--native-internal-probe");
         Self {
             document,
             state,
@@ -31,15 +32,14 @@ impl Controls {
             ime: ImeGuard::default(),
             committed: 0,
             notice: None,
-            probe: std::env::args()
-                .any(|a| a == "--native-internal-probe")
-                .then(probe::Probe::default),
+            probe: probe_enabled.then(probe::Probe::default),
         }
     }
     pub fn event(&mut self, event: &WindowEvent) -> io::Result<()> {
         match event {
             WindowEvent::Ime(Ime::Preedit(text, _)) => self.ime.preedit(!text.is_empty()),
             WindowEvent::Ime(Ime::Commit(_)) => self.ime.commit(),
+            WindowEvent::Ime(Ime::Disabled) | WindowEvent::Focused(false) => self.ime.cancel(),
             WindowEvent::KeyboardInput { event, .. } if event.state == ElementState::Pressed => {
                 if event.logical_key == Key::Named(NamedKey::Enter) {
                     let focused = self
@@ -74,7 +74,7 @@ impl Controls {
             }
             (
                 state.browser.clone(),
-                state.navigation.committed.map(|(_, r)| r),
+                state.navigation.committed().map(|(_, r)| r),
             )
         };
         let (route, reload) = match intent {
@@ -117,7 +117,7 @@ impl Controls {
                 .state
                 .lock()
                 .map_err(|_| io::Error::other("state poisoned"))?;
-            (state.navigation.committed, state.navigation.notice)
+            (state.navigation.committed(), state.navigation.notice)
         };
         if let Some((generation, route)) = committed
             && generation != self.committed

@@ -28,6 +28,15 @@ pub struct State {
     pub measured_hanja: Vec<String>,
     pub hanja_key_events: usize,
 }
+impl State {
+    pub fn is_live(&self) -> bool {
+        !self.revoked && !self.closed
+    }
+    pub fn revoke(&mut self) {
+        self.revoked = true;
+        self.navigation.revoke();
+    }
+}
 pub type Shared = Arc<Mutex<State>>;
 
 #[derive(Clone, serde::Serialize)]
@@ -48,16 +57,16 @@ wrap_dev_tools_message_observer! {
     struct ProcessObserver { state: Shared, }
     impl DevToolsMessageObserver {
         fn on_dev_tools_method_result(&self, _browser: Option<&mut Browser>, message_id: i32, success: i32, result: Option<&[u8]>) {
-            if message_id != 7 { return; }
+            if message_id != 7 || !self.state.lock().is_ok_and(|s|s.is_live()) { return; }
             if success != 1 {
-                if let Ok(mut state) = self.state.lock() { state.process_info_status = "unsupported_or_failed"; }
+                if let Ok(mut state) = self.state.lock() && state.is_live() { state.process_info_status = "unsupported_or_failed"; }
                 return;
             }
             let Some(bytes) = result.filter(|b| b.len() <= 65536) else { return; };
             #[derive(serde::Deserialize)] struct Info { #[serde(rename="processInfo")] processes: Vec<ProcessRole> }
             if let Ok(info) = serde_json::from_slice::<Info>(bytes)
                 && info.processes.len() <= 64 && info.processes.iter().all(|p| p.kind.len() <= 64)
-                && let Ok(mut state) = self.state.lock() {
+                && let Ok(mut state) = self.state.lock() && state.is_live() {
                 state.process_roles = info.processes; state.process_info_status = "observed";
             }
         }
@@ -67,6 +76,7 @@ wrap_task! {
     struct BrowserAction { browser: Browser, close: bool, state: Shared, }
     impl Task {
         fn execute(&self) {
+            if !self.state.lock().is_ok_and(|s|!s.closed && (self.close || !s.revoked)) { return; }
             eprintln!("native: CEF UI action close={}", self.close);
             let Some(host) = self.browser.host() else { return; };
             if self.close { host.close_browser(1); eprintln!("native: CEF close request delivered"); }
@@ -76,11 +86,11 @@ wrap_task! {
                 if std::env::args().any(|a| a == "--native-korean-ime") {
                     let outcome = crate::native::prepare_korean_ime(&self.browser)
                         .map_or_else(|error| error.to_string(), |_| "open_requested_not_qualified".into());
-                    if let Ok(mut state) = self.state.lock() { state.ime_setup = Some(outcome); }
+                    if let Ok(mut state) = self.state.lock() && state.is_live() { state.ime_setup = Some(outcome); }
                 }
                 let mut observer = ProcessObserver::new(self.state.clone());
                 let registration = host.add_dev_tools_message_observer(Some(&mut observer));
-                if let Ok(mut state) = self.state.lock() { state.observer = registration; }
+                if let Ok(mut state) = self.state.lock() && state.is_live() { state.observer = registration; }
                 host.execute_dev_tools_method(7, Some(&CefString::from("SystemInfo.getProcessInfo")), None);
             }
         }
@@ -109,11 +119,12 @@ wrap_client! {
             if source != ProcessId::RENDERER { return 0; }
             let Some(message) = message else { return 0; };
             if CefString::from(&message.name()).to_string() != "humanymous.sandbox.v1" { return 0; }
+            if !self.state.lock().is_ok_and(|s|s.is_live()) { return 1; }
             let Some(args) = message.argument_list().filter(|a| a.size() == 3) else { return 1; };
             if (0..3).any(|i| args.get_type(i) != ValueType::INT) { return 1; }
             let pid = args.int(0);
             if pid <= 0 { return 1; }
-            if let Ok(mut state) = self.state.lock()
+            if let Ok(mut state) = self.state.lock() && state.is_live()
                 && state.file_probes.len() < 32 && !state.file_probes.iter().any(|p| p.pid == pid as u32) {
                 state.file_probes.push(FileProbe { pid: pid as u32, read_os_error: args.int(1), create_os_error: args.int(2) });
             }
@@ -147,6 +158,7 @@ wrap_keyboard_handler! {
     struct InputEvidence { state: Shared, }
     impl KeyboardHandler {
         fn on_pre_key_event(&self, _browser: Option<&mut Browser>, event: Option<&KeyEvent>, _os_event: Option<&mut cef::sys::MSG>, _shortcut: Option<&mut i32>) -> i32 {
+            if !self.state.lock().is_ok_and(|s|s.is_live()) { return 1; }
             if event.is_some_and(|e| e.windows_key_code == 0x79 && e.type_ == KeyEventType::RAWKEYDOWN)
                 && std::env::args().any(|a| a == "--native-measured-hanja")
                 && std::env::args().any(|a| a == "--native-korean-ime") {
@@ -154,7 +166,7 @@ wrap_keyboard_handler! {
                 if let Some(browser) = _browser.as_ref() {
                     let result = crate::measured_input::replay_hanja(browser, event.map_or(0, |e| e.modifiers)).unwrap_or_else(|e| e.to_string());
                     eprintln!("native: measured Hanja {result}");
-                    if let Ok(mut state) = self.state.lock() { state.measured_hanja.push(result); }
+                    if let Ok(mut state) = self.state.lock() && state.is_live() { state.measured_hanja.push(result); }
                 }
                 return 1;
             }
@@ -162,7 +174,7 @@ wrap_keyboard_handler! {
                 && std::env::args().any(|a| a == "--native-korean-ime")
                 && let Some(browser) = _browser.as_ref() {
                 let outcome = crate::native::request_ime_candidates(browser).unwrap_or_else(|error| error.to_string());
-                if let Ok(mut state) = self.state.lock() { state.ime_candidate_request = Some(outcome); }
+                if let Ok(mut state) = self.state.lock() && state.is_live() { state.ime_candidate_request = Some(outcome); }
                 return 1;
             }
             if event.is_some_and(|e| e.windows_key_code == 0x77 && e.type_ == KeyEventType::RAWKEYDOWN)
@@ -170,10 +182,10 @@ wrap_keyboard_handler! {
                 && let Some(browser) = _browser {
                 let outcome = crate::native::prepare_korean_ime(browser)
                     .map_or_else(|error| error.to_string(), |_| "focused_context_open_requested_not_qualified".into());
-                if let Ok(mut state) = self.state.lock() { state.ime_setup = Some(outcome); }
+                if let Ok(mut state) = self.state.lock() && state.is_live() { state.ime_setup = Some(outcome); }
                 return 1;
             }
-            if let Ok(mut state) = self.state.lock() {
+            if let Ok(mut state) = self.state.lock() && state.is_live() {
                 state.hanja_key_events += usize::from(event.is_some_and(|e| e.windows_key_code == 0x19));
                 state.key_events += 1;
                 state.editable_key_events += usize::from(event.is_some_and(|e| e.focus_on_editable_field != 0));
@@ -186,7 +198,7 @@ wrap_focus_handler! {
     struct FocusEvidence { state: Shared, }
     impl FocusHandler {
         fn on_got_focus(&self, _browser: Option<&mut Browser>) {
-            if let Ok(mut state) = self.state.lock() { state.focus_events += 1; }
+            if let Ok(mut state) = self.state.lock() && state.is_live() { state.focus_events += 1; }
         }
     }
 }
@@ -245,6 +257,7 @@ wrap_life_span_handler! {
                 state.browser = None;
                 state.observer = None;
                 state.closed = true;
+                state.revoke();
                 if let Some(signal) = &state.signal { signal.notify(); }
             }
         }
@@ -350,7 +363,7 @@ impl NativeChild for CefChild {
     type Error = io::Error;
     fn parent_lost(&mut self) {
         if let Ok(mut state) = self.state.lock() {
-            state.revoked = true;
+            state.revoke();
         }
     }
     fn begin_cleanup(
@@ -367,7 +380,7 @@ impl NativeChild for CefChild {
                 .state
                 .lock()
                 .map_err(|_| io::Error::other("child state poisoned"))?;
-            state.revoked = true;
+            state.revoke();
             if state.closed {
                 return Ok(CleanupProgress::Complete);
             }
