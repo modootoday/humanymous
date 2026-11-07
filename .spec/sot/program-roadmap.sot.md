@@ -33,7 +33,7 @@ only an explicit current root grant and resource admission authorize a new run.
 | Audit | Captured319a5992 full140 accepted tests passed; five exact ignored helpers excluded; evidence:root/20261107122437 | PhaseA4b49e933 passed21 scoped Rust tests plus Go840 in856ba6c1; PhaseB source is being authored. Native producer and operational memory/custody gates remain |
 | CEF | Genuine hosted42372115353 at e77b9792: helper11, strict Clippy, native build and four native protocol tests passed | Bootstrap stage did not yield authoritative execution/count/child-exit evidence; desktop2 NOT_RUN and post-run source closure unknown; fix typed stage/case diagnostics before retry |
 | Mount custody | Baseline b482 had eight mode refusals. Repaired exact c3211e27 hosted42374587466 passed: four ordered observations/eight accepted paths, owner0/receipt valid/source unchanged/cleanup true | This clears the mount prerequisite for one exact c321 Go8 retry; custody/full/release remain false, not a product qualification |
-| Go | Genuine hosted42369171124 at15f63fef attempted eight actors, all failed at writer mount; zero evaluated and assertion counts unknown | Repaired mount prerequisite passed; root granted one exact c3211e27 Go8 retry, genuine hosted42375310198 is in progress. Older failures remain retained |
+| Rust Gate integration for Go origins | Genuine hosted42375310198 at exact c3211e27 passed all8 ordered evaluated cases and40 known assertions; failed/not_run/unknown0, owner0/receipt valid/source unchanged/cleanup true | Bounded net/http component only; full/release=false. Other Go framework/SDK tuples remain unqualified. Older15f writer-mount failures retained |
 | Apache | Exact b4000944 genuine hosted42374566498/job128409407533 passed45 unique scenarios: event15/worker15/prefork15; pilot/container/image/ledger cleanup passed; CLI exit0/reaped/no force/timeout | Exact Linux component tuple qualified only; fullProductSuccess=false. Earlier b5 35/10 and SIGTERM15 remain historical failure evidence; final composition/current graph remain separate |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identities still CHALLENGE/zero origin; positive TLS ALLOW-to-origin unqualified; epoch gate pure tests do not establish production/native Ready |
 | Native/.NET | Parent-context shared4/runner7 and .NET consumer13/check/Clippy passed on captured inputs; generic managed ABI079 actual once passed independently | Context remains UNVERIFIED syntax/budget data; retained partial-start/duplex source1b2e8bb2 passed12 pure and1 direct-child fixture; independent Authority expiry passed14 pure in689b95d2. Actual ASP.NET IO, native Job/reader convergence and protected owner remain open |
@@ -885,3 +885,14 @@ Distinguish public Specfold from full private-tree status. Preserve U2, the brow
 PNG automatic-secret-scan limitation, alongside its manual synthetic visual-review
 scope; do not waive it. Preserve the historical automatic-approval rejection and
 non-deletion record for profile deletion; do not claim a new completed deletion.
+
+## Go core retirement versus Rust integration adapter
+
+The user explicitly reaffirmed the distinction on2026-11-07: the historical Go
+product core is a retirement target; the requested Go-origin integration adapter
+is Rust-authored and remains in scope. humanymous-go-adapter consumes the shared
+Rust Gate rather than maintaining a Go detector, SDK or duplicate authority.
+The bounded eight-case result proves only its declared component contract, not
+all six Go host families or complete Go framework execution. Do not substitute
+the preceding mount-probe image digest for the runtime image tuple when that
+tuple is absent from the safe public receipt. Preserve this evidence limit.
