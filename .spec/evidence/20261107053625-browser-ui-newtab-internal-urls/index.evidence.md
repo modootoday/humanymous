@@ -3,7 +3,7 @@ id: evidence:root/20261107053625
 title: Real newtab and measured CEF internal URLs
 status: active
 created: 2026-11-07T05:36:25Z
-updated: 2026-11-07T05:40:34Z
+updated: 2026-11-07T05:44:10Z
 rel:
   depends_on: [sot:root/browser-ui, sot:root/chromium-lab-browser, plan:root/20261107050329]
 files:
@@ -70,5 +70,11 @@ Primary source review: [pinned CEF WebUI tests](https://github.com/chromiumembed
 
 Public scoped Specfold check (`--no-local`) passes0errors/0warnings. A check
 including private discovery was stopped after more than2minutes without a
-result; it is not a pass. All41 bounded private raw attachments independently
+result; it is not a pass. All42 bounded private raw attachments independently
 match their SHA-256 and byte-size manifest.
+
+Canonical verification at implementation commit586ff95 finds0mismatches across
+all30 browser Rust/manifests. The20625-byte results.json canonical Git blob equals
+its registered SHA-256 c33a6fb9af2f1aca871663930e1f506b1cbf46d62c5f91eb2c07c5e31896a691.
+Implementation commit has4D1 change-note advisories; linked change:root/20261107054410
+records the delta for all governing historical plans and migration SoT.
