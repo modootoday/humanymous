@@ -1564,3 +1564,21 @@ preflight jobs. The only step exceptions remain the two existing exact approved
 public crate archive cache operations with literal boolean true. Their action,
 job, path, key and conditional guards stay unchanged; no job-level exception or
 new failure-tolerant validation scope is introduced.
+
+### Opaque Cargo identity in native build receipts
+
+Native archive receipt admission treats Cargo package IDs as opaque exact keys.
+Before the selected release build, retain bounded strict JSON from locked offline
+Cargo metadata for the same workspace/source window. Join each executable's ID
+to exactly one metadata package and exactly one workspace member. Require the
+existing two package names, workspace version, explicit local source, approved
+manifest and entrypoint paths, bin target and release profile. Do not infer a
+package name/version from ID separators, directory spelling or a substring.
+
+Metadata must identify the same workspace and target directory; duplicate or
+missing joins, foreign source/paths, ambiguous targets and changed source refuse
+the archive. Bind the metadata bytes actually decoded into the build receipt and
+check the retained file remains unchanged. The two executable roles and current
+path anchors are unchanged; future approved path moves still require their own
+explicit contract update. A metadata join is not compiler/toolchain attestation,
+an actual archive run or whole-product qualification.

@@ -1,0 +1,77 @@
+{
+  "schema": "humanymous.delivery-native-package-id-source/1",
+  "state": "authored-uncompiled",
+  "authorization": "Root opaque Cargo ID audit and bounded metadata join correction",
+  "source_file": "scripts/ci/delivery/src/components/native_archive.rs",
+  "source_sha256": "10c12f3bbd47c372e32f23db245802ebb920500765eec1180dd0991dcffc8cf5",
+  "affected_predicate": "Package name/version inferred from a package_id suffix",
+  "replacement": {
+    "id_semantics": "Opaque exact equality only",
+    "metadata_command": [
+      "cargo",
+      "metadata",
+      "--offline",
+      "--locked",
+      "--no-deps",
+      "--format-version",
+      "1"
+    ],
+    "metadata_timeout_seconds": 30,
+    "metadata_byte_limit": 16777216,
+    "joins": "Exactly one metadata package and exactly one workspace member for each emitted executable ID",
+    "required_identity": [
+      "workspace root and target directory",
+      "two existing package names and workspace version",
+      "explicit local source",
+      "existing approved manifest and src/main.rs paths",
+      "exact single declared bin target",
+      "existing artifact path and release profile",
+      "one final successful build-finished and two unique executables"
+    ],
+    "retained_metadata_hash_bound": true,
+    "decoded_metadata_file_rechecked": true,
+    "role_admission_broadened": false,
+    "approved_path_anchors_changed": false
+  },
+  "audit": {
+    "other_production_cargo_id_grammar_assumptions_in_delivery_found": 0,
+    "non_cargo_separators_excluded": [
+      "Action commit pins in policy",
+      "OCI/download locator normalization in supply"
+    ],
+    "foreign_native_runner_owned_by_native": true,
+    "old_ci_failure_reclassified": false
+  },
+  "read_only_metadata_probe": {
+    "exit_code": 0,
+    "workspace_members": 34,
+    "packages": 34,
+    "selected_package_names": [
+      "humanymous-runtime",
+      "humanymous-core",
+      "humanymous-platform",
+      "humanymous-cli"
+    ],
+    "stdout_sha256": "cae01d888c8c5bd1f8ec6649c64c815792cab7e021cb7750b11ac8e9178b2afd",
+    "raw_local_ids_retained_privately": true,
+    "immutable_graph_closure_proven": false,
+    "compiler_executed": false
+  },
+  "tests": {
+    "new_tests": 2,
+    "expected_total": 116,
+    "total_verified": false,
+    "cases": [
+      "Both legacy-style and version-only/opaque IDs accepted only via exact metadata join",
+      "14 missing, ambiguous, foreign, version, source, path and target metadata mutations rejected",
+      "Existing executable path/profile/final-success/duplicate tests preserved"
+    ]
+  },
+  "format_executed": true,
+  "cargo_tests_executed": false,
+  "clippy_executed": false,
+  "prior_114_result_applies_to_this_source": false,
+  "actual_native_release_build_executed": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}
