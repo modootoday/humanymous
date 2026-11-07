@@ -1920,3 +1920,12 @@ Processlocalfalseinit+registrarreturn1 differs from allprocessattestation. Pure
 minimumdockgeometry, not actualOS eventdelivery/DPI/CEF/AT resize. Publiccontent
 unchanged. Sourcechecker88errors0/scopedSpec0errors0warnings; no currentbuild or
 nativeexecution inferred from reviewed algorithms.
+### Native input/public modules/internal URL inventory
+
+Read complete86line inputguard, browser libroot and263line internal_urls in bounded
+sections. Three exactreceipts added. PureIME confirmations/repeat/focus no motor/
+timing predicate, featuregated UI/module availability separate native readiness.
+Exactnewtab+5diagnostics/slashless,4096/controlbound and strictnewtabaction scope/
+singleaddress align publicallowlist; trustedsubresources not navigation/external
+or fileproxy. Parser tests not actualCEF/network/AT. No publiccontent changes,
+sourcechecker88errors0/scopedSpec0errors0warnings. Wholefreshness still incomplete.

@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/src/internal_urls.rs",
+  "sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete263line URLpolicy: exactnewtab+5diagnostics/slashless only,4096/controlbound, singleaddress newtabaction with callerorigin/gesturepremise, privilegedalias/credential/path/query rejection and admittedinternalpage chrome resources/theme subresource scope. No externalbrowsing/proxy or actualCEF/network/AT qualification inferred from parser.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/lib.rs",
+  "sha256": "98f9db6b761c4900d03d1108130e1d59c2f0c1e095ff7481ab5a7b9b21858537",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete browserpublicmoduleroot: forbidunsafe, pure lifecycle/policy/viewport/framegeometry/internalurls/navigation/input always, UI/icons/window/newtab/uinavigation gatednative-ui. Publicmodule availability not executable native readiness or OS support.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/input.rs",
+  "sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete86line pure IME guard: composing/confirmation barrier, commit/preeditordering, focus/repeat do not consume confirmation, cancel and ordinarykey transitions; no timing/motorpredicate. Source tests not actualOS keydelivery/IMEcandidate/AT behavior. Publicnativecontrols description remains consistent.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/src/icons.rs",
   "sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5",
   "reviewer": "codex/rust-pages",
