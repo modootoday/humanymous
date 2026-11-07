@@ -13,6 +13,17 @@ rel:
 
 # Browser collector migration
 
+## Current native component revalidation
+
+After the Python graph window, root reran the current collector library's 26
+pure tests and the runtime fixture contract's one pure test: all passed with
+zero failures, ignored or filtered cases. All-target host Clippy with warnings
+denied passed. The 108-file selected collector/integrity/signals/behavior/model
+source and root build-metadata inventory remained unchanged before/after.
+Private commands, logs, manifests and summary are attached under
+evidence:root/20261106194410. This selected closure excludes unrelated packages
+and does not execute WASM, actual Fetch, browser, IPC or full product behavior.
+
 ## Isolated actual-runtime pilot contract
 
 The fixture explicitly declares test_selection.exact_name, selected=1 and
