@@ -303,9 +303,9 @@ The standalone binary has no witness broker transport, so requiring a witness
 there currently refuses before listening. Inline legacy keys remain explicitly
 inline-component-nonproduction. This is not production sealed qualification.
 
-## Draft bootstrap v0.1 — authenticated one-use observer provisioning
+## Draft bootstrap v0.2 — authenticated one-use observer provisioning
 
-Version0.1.0-draft. Channel/security status: DRAFT, NOT ACCEPTED, NOT IMPLEMENTED.
+Version0.2.0-draft. Channel implementation status: DRAFT, NOT IMPLEMENTED.
 Topology is selected by root471058e9 in the Rust migration SoT; R2 launcher
 architecture and R3 loss semantics are also accepted as recorded below. Native-
 security critique, CLI/runtime lifecycle agreement and root contract review are
@@ -371,15 +371,17 @@ P must establish a native-authenticated protected trust record: installation,
 service/observer roles, allowed principals/artifacts, purposes and epoch policy.
 Each actor validates it INDEPENDENTLY through native-security; JSON/hash/path or
 arbitrary Read/Write is not attestation. Expected instances come from verified
-native manager/owned-launch handles, not the incoming frame. A fresh independent
-256-bit one-use capability is provisioned for the exact instance pair and binding,
-separate from observer/session/audit credentials. It cannot be delivered over the
-same unverified channel whose trust it is supposed to establish.
+native manager/owned-launch handles, not the incoming frame. Root accepted PUBLIC
+signed targeted authorization in place of the initial shared-secret Hello. The
+signed record is not a bearer credential: both actual native instance/principal
+proofs remain mandatory. A grant cannot supply its own trusted publisher key.
 
-Initial production source proposal is per-role OS-protected grant storage plus a
-native-authenticated publisher. Existing read_service_secret is read-only and does
-NOT implement cross-role publication. The exact authorized issuer, publication and
-discovery backend is an UNRESOLVED P0: no callback/nonce/private flag fills it. If
+The concrete candidate is WindowsScmSignedGrantV1 in plan:root/20261107103828:
+explicit new-install publisher key in P's actual WinCred account, protected native
+installation/SCM-owner trust root, and a public signed record targeting retained
+actual S/O instances. Existing read_service_secret is read-only and does NOT
+implement this publisher. Architecture acceptance does not implement or qualify
+the actual issuer, publication, discovery, key persistence or native proof. If
 that backend or required native proof is absent, refuse BEFORE unseal, secret
 transfer, writer/listener activation or public readiness. Same-user fixtures cannot
 qualify the missing production source. No initial key or witness auto-provisioning.
@@ -478,20 +480,32 @@ wait. Service unlock and witness authentication remain separate shared primitive
 ### B04. Secret frames, phases and distinct budgets
 
 Use shared native transport internally, not application HTTP DTOs that currently
-clone non-zeroizing Authorization strings. Proposed control frame: ASCII HMBP0001
+clone non-zeroizing Authorization strings. Root accepted a NEW explicit protocol
+version/domain with no legacy fallback. Proposed exact wire selection for review:
+protocol humanymous.observer-bootstrap/0.2, signature domain
+humanymous.observer-bootstrap.signed-grant/1, control magic ASCII HMBP0002
 (8bytes), phase byte, zero flags byte, u16 BE metadata length, exact UTF-8 strict
 JSON metadata, then only the phase's fixed secret slot. Metadata<=3072bytes;
 frame<=4096; aggregate STARTUP bytes<=32768. Reject lengths before allocation,
 duplicate/unknown/missing fields, extra bytes, phase changes and schema ambiguity.
-No compression, redirects, fallback or EOF-as-message-framing. Hello carries a
-fixed64lowerhex capability; Offer a separate fixed64lowerhex observer credential.
-No response echoes them or hashes a potentially weak supplied secret. Fresh
+No compression, redirects, fallback or EOF-as-message-framing. Reject HMBP0001,
+legacy capability Hello, unknown versions/domains and any mixed schema. Hello
+carries the bounded PUBLIC signed targeted authorization plus exact native-bound
+metadata; it has NO secret slot. Offer alone carries a fixed64lowerhex observer
+credential. Exact canonical signed-record encoding remains subject to native-owner
+review; these proposed identifiers are not independently qualified wire formats.
+No response echoes the credential or hashes a potentially weak supplied secret. Fresh
 observer credentials are generated internally with the shared CSPRNG primitive.
 Owned buffers zeroize on ALL exits; no physical-memory/kernel/allocator guarantee.
 Errors/logs/readiness/argv/env/files never include raw secret or parser input.
 
 Startup order:
-1. S Hello -> O: native pins and exact grant/binding; no observer credential yet.
+0. S/O TransportPrepared: SCM_RUNNING means native process/discovery readiness
+   ONLY. AppReady, ingress, unseal and writer remain false; independent absolute
+   startup watchdog and Stop handler are armed. Existing application-Ready
+   publisher MUST NOT run early. Doctor/status/installation preserve this
+   distinction. P pins both actual instances and publishes targeted authorization.
+1. S Hello -> O: native pins and exact signed public grant/binding; no credential.
 2. O Challenge -> S: fresh nonce and separately verified witness capability binding.
 3. S validates required witness BEFORE writer open/unseal; opens shared SealedLog,
    binds DISABLED pending management listener and records typed preparation event.
@@ -518,7 +532,7 @@ individually bounded; their traffic does not reset startup or authorization cloc
 
 ### B05. Consumption, audit, ambiguity and lifetime/stop table
 
-O atomically consumes the matching grant after actual S/capability/binding checks,
+O atomically consumes the matching grant after actual S/signature/binding checks,
 before Offer. S consumes its sender grant after verified O Challenge, before Offer.
 An unrelated invalid native peer cannot burn another grant. After reservation,
 any bad phase/scope/nonce, timeout, cancellation, entropy or audit error burns that
@@ -598,6 +612,16 @@ CLI/native-security feedback, not final approval.
 P0 R1: Native-security must settle actual noncircular protected grant issuer,
 publication/discovery, process pin/TokenUser/peer PID primitives and supported ACL
 profile. None is implemented by old Peer/NativePeer or the read-only store API.
+Root accepted signed public targeted authorization and distinct TransportPrepared
+architecture only; native primitive probe preparation is authorized, not complete
+R1/channel implementation. Remaining P0 gates: actual cross-SID primary TokenUser
+query/retained handles without SeDebug/admin fallback; actual create-new SCM/root
+owner binding and existing-key no-reset; typed authenticated P acceptance without
+management authority; process-wide one-claim, rollback and conserved deadlines;
+actual loaded-artifact binding; atomic release/epoch gate; and explicit unattended
+restart/republication. Transient P's private WinCred must not be assumed available
+after logout/restart. No implicit renew, replacement key or universal TTL policy.
+Linux and macOS require separate backends and remain unqualified by this candidate.
 R2 architecture accepted by root: two SCM-owned own-process O/S roles under
 distinct service principals, with W supervised by O. The new observer-host command,
 native implementation and actual SCM qualification remain unimplemented; no local

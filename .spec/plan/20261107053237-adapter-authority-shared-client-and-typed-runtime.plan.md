@@ -538,3 +538,36 @@ from BOTH live roles without making P management peer; one-use burn across repea
 context constructors/process-wide concurrency; trusted clock/rollback and conserved
 absolute startup deadline; independent W key/capability/lifetime proof before
 unseal. Sent critique to native owner/root. No R1 channel implementation follows.
+
+## Root signed-grant and TransportPrepared architecture decisions
+
+Root accepted signed PUBLIC targeted authorization as the replacement for initial
+shared-secret Hello, requiring a NEW explicit protocol version/domain and no
+fallback. Observer management credential remains secret; BOTH actual native
+instance proofs remain mandatory. Root also accepted TransportPrepared:
+SCM_RUNNING is native process/discovery readiness ONLY, while AppReady/ingress/
+unseal/writer remain false, independent absolute startup watchdog and Stop handler
+armed. Existing Running/publicReady publisher cannot be reused early; all status,
+doctor and installation consumers must preserve these separate facts.
+
+Authority updated its draft to v0.2 with proposed exact protocol
+humanymous.observer-bootstrap/0.2, domain
+humanymous.observer-bootstrap.signed-grant/1 and magic HMBP0002. These exact bytes
+and canonical signed-record encoding require review; architecture acceptance is
+not wire-format qualification. Reject legacy HMBP0001/bearer Hello/mixed version
+and no fallback. Native opaque grant types remain the proof boundary.
+
+Remaining P0s are explicit: actual cross-SID primary TokenUser/retained handle
+query rights without SeDebug/admin fallback; create-new installation actual
+SCM/root-owner binding and existing-key no-reset; authenticated typed P acceptance
+without management authority; process-wide one-claim/clock rollback/conserved
+absolute deadline; actual loaded-artifact binding; atomic release/epoch gate;
+concrete unattended restart/republication policy. P's account-private WinCred
+availability after logout/restart is NOT assumed. Linux/macOS backends remain
+required/open. No universal24hour policy or implicit renewal accepted.
+
+Authorization now covers SPEC and native primitive probe preparation only.
+Native-security owns reviewed safe primitive/API/feature gap reporting; no local
+SCM/account mutation, channel implementation, manifest edge or new execution was
+started by this authority checkpoint. Existing Windows IPC13 receipt remains
+local component proof and does not qualify this new production architecture.
