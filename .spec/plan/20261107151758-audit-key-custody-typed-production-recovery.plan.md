@@ -388,6 +388,25 @@ do not grant writes to Runtime/Authority/native-security/CLI/Lab paths.
 
 ## Record
 
+### Docker prerequisite refusal and standard-runner handoff
+
+Root explicitly resumed a15-minute Docker-only window for frozenf9b, no WSL or
+pull/install/foreign container changes. The existing image inventory offered no
+Rust image identity; pinned Ubuntu62d572b9 under admittedUID1000 had no rustc/
+cargo in PATH or checked canonical locations. Stop before filesystem admission,
+compiler or tests. The shell probe exited0 but the toolchain prerequisite FAILED.
+One new owned2CPU/4GiB/network-none/read-only/cap-drop/no-new-privileges container
+was observed terminal, removed and absent afterward. No volume/target acquired;
+local window returned. Evidence [[evidence:root/20261107165921]], raw164818.
+
+Delivery received and acknowledged the exact frozen source,193 input manifest,
+67 package roster,13 selectors and12 planned compiler-attempt contract plus
+actualext-family/statx/openat2/private modes and strict counts. Its existing
+standardLinux build-only component/caller contract owns workflow/runner changes;
+Root owns push/dispatch. No remote run, current qualification, semantic reuse
+from unrelated components or private-bundle upload is inferred. All full-goal
+native/repair/witness/consumer/capacity/product gates remain open.
+
 ### Actual private owner-type slice (source only)
 
 OpeningOwner now owns the retained NativeFiles, actual non-Clone KeyMaterial,

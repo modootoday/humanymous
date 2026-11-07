@@ -38,6 +38,12 @@ explicitly refusing empty history rather than calling None successful crypto.
 Actual-owner refusal fixtures now include node/HMAC/witness alias/missing sealed
 keys/post-auth mutation and the separate S1-empty-versus-owner-refusal boundary.
 These source-only subcases have not run and create no bootstrap authority.
+Root's later bounded Docker attempt onf9b stopped BEFORE compiler/tests because
+the existing pinned Ubuntu image had no admitted Rust toolchain. The owned
+2CPU/4GiB preflight container was terminal/removed and the window returned;
+[[evidence:root/20261107165921]]. Filesystem capability was not probed, not
+declared unsupported. Delivery acknowledged the concrete standard-Linux
+build-only handoff; no hosted dispatch or current native/type qualification yet.
 
 Exact older8cbc subsequently passed native Windows check/strict Clippy/fmt and
 SIX exact cases in [[evidence:root/20261107162841]]: facade preflight/Unsupported

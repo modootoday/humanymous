@@ -1,0 +1,19 @@
+{
+  "source": "f9b0cda3680c3b6d612cac8ace22e237812ed3cb",
+  "status": "PREREQUISITE_UNAVAILABLE",
+  "toolchain": "No trusted Rust 1.99.1 image identified; existing Ubuntu candidate lacks admitted rustc/cargo",
+  "selected_tests_executed": 0,
+  "selected_tests_required": 13,
+  "compiler_probes_executed": 0,
+  "compiler_probes_planned": 12,
+  "filesystem_admission": "NOT RUN",
+  "owned_container_removed": true,
+  "local_window_returned": true,
+  "target_acquired": false,
+  "image_pulls": 0,
+  "dependency_installs": 0,
+  "wsl_commands": 0,
+  "foreign_containers_changed": false,
+  "ci_handoff_acknowledged": true,
+  "remote_dispatch": false
+}
