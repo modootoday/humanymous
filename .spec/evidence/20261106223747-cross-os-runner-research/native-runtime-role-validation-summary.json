@@ -1,0 +1,387 @@
+{
+  "schema": "humanymous.native-runtime-role-validation/1",
+  "state": "SIX_ROLE_TESTS_FMT_CHECK_CLIPPY_PASSED",
+  "source_sha": "64f74c7ac64a8f5380172504bf73a8d03b961afc",
+  "source_archive_sha256": "c9fce9b071a5553f40db0bd7a39ae52c90fba76586ba28bbe0079953b86f54ab",
+  "overlays": 0,
+  "tool_session": 22048,
+  "actual_terminal_exit": 0,
+  "target": "target/native-runtime-role-v0",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "work_seconds": 390,
+  "cleanup_seconds": 450,
+  "elapsed_seconds": 98.289045,
+  "actual_tests": [
+    {
+      "inventory": 3,
+      "filtered": 58,
+      "failed": 0,
+      "prefix": "harness::packages::tests::",
+      "passed": 3,
+      "measured": 0,
+      "ignored": 0
+    },
+    {
+      "inventory": 2,
+      "filtered": 59,
+      "failed": 0,
+      "prefix": "harness::helpers::tests::",
+      "passed": 2,
+      "measured": 0,
+      "ignored": 0
+    },
+    {
+      "inventory": 1,
+      "filtered": 60,
+      "failed": 0,
+      "prefix": "service::catalog::tests::",
+      "passed": 1,
+      "measured": 0,
+      "ignored": 0
+    }
+  ],
+  "phases": [
+    {
+      "name": "fmt",
+      "exit": 0,
+      "elapsed_seconds": 20.6745059
+    },
+    {
+      "name": "tree",
+      "exit": 0,
+      "elapsed_seconds": 21.4205025
+    },
+    {
+      "name": "packages-inventory",
+      "exit": 0,
+      "elapsed_seconds": 72.4059089
+    },
+    {
+      "name": "helpers-inventory",
+      "exit": 0,
+      "elapsed_seconds": 73.1739973
+    },
+    {
+      "name": "catalog-inventory",
+      "exit": 0,
+      "elapsed_seconds": 73.941803
+    },
+    {
+      "name": "packages-tests",
+      "exit": 0,
+      "elapsed_seconds": 74.6822087
+    },
+    {
+      "name": "helpers-tests",
+      "exit": 0,
+      "elapsed_seconds": 75.394224
+    },
+    {
+      "name": "catalog-tests",
+      "exit": 0,
+      "elapsed_seconds": 76.057172
+    },
+    {
+      "name": "check",
+      "exit": 0,
+      "elapsed_seconds": 95.4391597
+    },
+    {
+      "name": "clippy",
+      "exit": 0,
+      "elapsed_seconds": 97.108994
+    }
+  ],
+  "source_closure": {
+    "scope": "Full extracted immutable archive, archive tar, resolved toolchain bin subtree, tool shims and present user Cargo configuration; archive local configuration included",
+    "selected_files": 3109,
+    "byte_equal": true
+  },
+  "registry_closure": {
+    "method": "Locked offline Windows normal/build/dev standalone runner tree and registry source intersection",
+    "selected_files": 5594,
+    "byte_equal": true
+  },
+  "environment_closure": {
+    "equal": true,
+    "selected_keys": 9
+  },
+  "binary": {
+    "bytes": 2950144,
+    "selection": "Same exact Cargo test executable in all three test stderr receipts",
+    "name": "humanymous_native_runner-1bca78b6d56f58c1.exe",
+    "sha256": "6fc1b555f7122b0816e557a908fe1992ab259a5fb0876da2cbc699f54b873d34"
+  },
+  "cleanup": {
+    "lease_removed": true,
+    "all_owned_terminal": true,
+    "within_original_cleanup": true
+  },
+  "limitations": [
+    "Pure metadata role fixtures only; production Packages::load and actual repository/source association NOT_RUN",
+    "Standalone runner compile/role tests do not qualify actual native parents or whole Runtime graph",
+    "No native storage/token/account/SCM/provider/GUI/privileged venue/journal/Ready pilot",
+    "Previous five-ID and twelve-model receipts remain separate historical source proofs",
+    "No edits, overlays, retries or runtime feature authority changes during validation"
+  ],
+  "raw_attachments": [
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-inventory-end.json",
+      "sha256": "cac45f02179b791dc84d0bc44eeccc941f050c20e5cd7acbbb0d04cd9e2c0d8d",
+      "bytes": 91
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-inventory-start.json",
+      "sha256": "279ba6046ee8824af29cc26c86b42a2a532dd7433e1de2f149d640451abaa120",
+      "bytes": 248
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-inventory.stderr",
+      "sha256": "f3991123111c71d92538c0911d923dd4604d2b88020621921b2e96860ba613a5",
+      "bytes": 222
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-inventory.stdout",
+      "sha256": "61c7615f6c0afb1477057a8fd283b2b35e33add1a76397cc60d3767976b469b8",
+      "bytes": 115
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-tests-end.json",
+      "sha256": "d64d9468f981b68ceb262a6e4817cf02c038cf452e0da5dcd810e940db669821",
+      "bytes": 87
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-tests-start.json",
+      "sha256": "ab859a625e45e2ab32d3b5956db6b8eb8189df26e48df6e6113b358a64daaf28",
+      "bytes": 258
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-tests.stderr",
+      "sha256": "1e28542050951950cc2ef9351d2066314476209a18c99cd9b6836012834df105",
+      "bytes": 222
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/catalog-tests.stdout",
+      "sha256": "acb9063a56543410a7a942339798775b8e05b9f3c66931c0fcf561dc2563283a",
+      "bytes": 212
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/check-end.json",
+      "sha256": "687f250c9d103b53d2fb8fd45ca9896dc53f8f18031ef89982ea93ee27b7a26c",
+      "bytes": 80
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/check-start.json",
+      "sha256": "78c077202e1c48175be51f19232b6f321c2fc1802e71aac6f1918202dffc104e",
+      "bytes": 211
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/check.stderr",
+      "sha256": "08e53b9abc6002dd25bfbade1f81913f19c67e651906d12a4bb034f9c419236d",
+      "bytes": 3284
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/clippy-end.json",
+      "sha256": "f25f09f04251062652719b31b89a91eeac83dda35e8723802635db81fff4161e",
+      "bytes": 80
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/clippy-start.json",
+      "sha256": "57ce9447b6b60abdb0d6f2d1ce81128155a20c816897ab9d1eb3d210a64710f3",
+      "bytes": 251
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/clippy.stderr",
+      "sha256": "9c4fb1ebcffa42d0118d7e097c402e1e3d054165e5c2417023885df4988bcfd1",
+      "bytes": 256
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/environment-after.json",
+      "sha256": "128827411f246e872d4162b84d09e731c747ad676fdf68b49450f303ef31308a",
+      "bytes": 2684
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/environment-before.json",
+      "sha256": "128827411f246e872d4162b84d09e731c747ad676fdf68b49450f303ef31308a",
+      "bytes": 2684
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/fmt-end.json",
+      "sha256": "9052cc8ee139a582a4c0a349a9b60faddd78b5e598a62c58b9c773245bc80fa8",
+      "bytes": 78
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/fmt-start.json",
+      "sha256": "6aab457dea961f0a7b2a265ab419d3e08587757d6f56b40feffd9d41fe13f39b",
+      "bytes": 223
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/fmt.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/fmt.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-inventory-end.json",
+      "sha256": "ce70a4bb7935ac33f86a97c68ee8e9b603833b95ff9e0e22c5ebf28503534c96",
+      "bytes": 92
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-inventory-start.json",
+      "sha256": "c97b392c75643413ff09ddb293f65809a0c41b3406533941daa550e57976d60c",
+      "bytes": 248
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-inventory.stderr",
+      "sha256": "845e03f34f1e4daa84450a50ca4fdf1cf9e77c5ba798f000a7d6e500dc42a546",
+      "bytes": 222
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-inventory.stdout",
+      "sha256": "91989f36e6483a4ea81ff3ce9eda563d3a40f39c95bd6c41ddf5080de61445b7",
+      "bytes": 206
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-tests-end.json",
+      "sha256": "348de24e641cf986ff8ea6bfaba06805d288f3a7e74b6e845e13b4144538130d",
+      "bytes": 87
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-tests-start.json",
+      "sha256": "3b2b6677abc4d34c43658c7daef21824b190ed5d6705f25d7afe705bd583b79b",
+      "bytes": 258
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-tests.stderr",
+      "sha256": "1e28542050951950cc2ef9351d2066314476209a18c99cd9b6836012834df105",
+      "bytes": 222
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/helpers-tests.stdout",
+      "sha256": "d1a806099e0525456f5bda2030390aee12fe0136f8d12e2a1a33d94ac4943d9c",
+      "bytes": 309
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/metadata.json",
+      "sha256": "3e5165a402e76583f52ab3fd76f5cb79580b5cb6b7141a7e69d006c4e7bc7ad4",
+      "bytes": 3157
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-inventory-end.json",
+      "sha256": "86390fffb98fd856b9eed1408ef1077a6980741d1840d7e6870e364b3d5df69e",
+      "bytes": 93
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-inventory-start.json",
+      "sha256": "f673b914b68ccaa3090f4650912a53eb475a37b6a4c77ae9737809ceeb91334f",
+      "bytes": 249
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-inventory.stderr",
+      "sha256": "887654e130d9300f89435e0e570fa07f942586f44d3adfa7eb7187eff5e83f55",
+      "bytes": 3908
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-inventory.stdout",
+      "sha256": "2c0af79e1a8ec828c89e60858b04779b01803ffcc77295c0a057974894c7c566",
+      "bytes": 321
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-tests-end.json",
+      "sha256": "2027add68b5623e4335c32a601e6026d788ac0e57bcce855521812edd17a47dc",
+      "bytes": 89
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-tests-start.json",
+      "sha256": "c108765c4b291937ff3be4ef4b3e775f91aef62f198cef78766b3b3d710f611b",
+      "bytes": 258
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-tests.stderr",
+      "sha256": "845e03f34f1e4daa84450a50ca4fdf1cf9e77c5ba798f000a7d6e500dc42a546",
+      "bytes": 222
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/packages-tests.stdout",
+      "sha256": "a9fbd87a33ec2f51d0aea55e44bea4ab25e9ab93a1468a2cf7f3c62dd67a6a52",
+      "bytes": 430
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/registry-after.json",
+      "sha256": "853b203cef9245f7fed2c140e3bf1273235fd20bac7d72f07ea8f64a3ca674cd",
+      "bytes": 1078583
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/registry-before.json",
+      "sha256": "853b203cef9245f7fed2c140e3bf1273235fd20bac7d72f07ea8f64a3ca674cd",
+      "bytes": 1078583
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/selected-tests.json",
+      "sha256": "b94f53371c77c87a9585361c33680a7d1e5ddc9948d63ff3ddad155fe2a21746",
+      "bytes": 920
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/source-after.json",
+      "sha256": "60c89b827c0b4a85a72bd1ea1c68756c4bf4cde65b01bcfa77a1bc2fe740b170",
+      "bytes": 761903
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/source-before.json",
+      "sha256": "60c89b827c0b4a85a72bd1ea1c68756c4bf4cde65b01bcfa77a1bc2fe740b170",
+      "bytes": 761903
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/source-tuple.json",
+      "sha256": "cabdb954a22f0669290edb9e4babcd18b065a4784234c94684098522ef8ab037",
+      "bytes": 287
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/source.tar",
+      "sha256": "c9fce9b071a5553f40db0bd7a39ae52c90fba76586ba28bbe0079953b86f54ab",
+      "bytes": 75048960
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/tree-end.json",
+      "sha256": "62f4914b398d2126797abcdf7ad6a4938bb8f71a55c1e467cbbd2ad6cfd85d36",
+      "bytes": 79
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/tree-start.json",
+      "sha256": "f7981d9c15c3b05d218bc08ca0fd20b486888550c8d04a481338d3f1da13df89",
+      "bytes": 336
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/tree.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0/tree.stdout",
+      "sha256": "2bb8790a0f2a712317d70734985626ca35ae185210b414e7180cfe96bdb167cf",
+      "bytes": 4389
+    },
+    {
+      "path": ".spec.local/root/evidence/20261108065000-windows-runner-runtime-role-v0-clock.json",
+      "sha256": "1ea4f24fc950bce656c9b19d1c5cee6beb72d7937e460e4b106122eebf07a7fa",
+      "bytes": 179
+    }
+  ]
+}

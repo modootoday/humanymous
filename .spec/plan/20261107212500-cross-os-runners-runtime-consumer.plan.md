@@ -80,3 +80,24 @@ metadata/libtest census, new six pure identities, source-guard selectors,
 runner all-target check/strict Clippy and scoped fmt before consumer qualification.
 Native actual parents, privileged Docker and journal/provider/Ready gates stay
 open; no historical receipts rewritten, no accounting relaxation or CI dispatch.
+
+## Immutable64 bounded role validation
+
+Root allocated exact64f74c7ac64a8f5380172504bf73a8d03b961afc archive, no overlays,
+fresh target/native-runtime-role-v0, jobs1/incremental0/locked/offline, ORIGINAL
+390s work/450s total. Actual tool22048 terminal0 at98.29s, all processes terminal
+and own marker removed within original horizon; target returned cache only.
+Fmt FIRST0; three inventories EXACT3/2/1 before any selected tests; actual role
+suite6 passed, zero failed/ignored/measured, filtered58/59/60 respectively.
+Then standalone runner all-target check0/strict Clippy0. No source fix/retry.
+
+Archive/source/tool/config3109 files and selected registry5594 files plus nine
+environment keys were byte-identical before/after. Public
+native-runtime-role-validation-summary.json pins51 raw attachments, archive SHA
+c9fce9b071a5553f40db0bd7a39ae52c90fba76586ba28bbe0079953b86f54ab and exact
+runner test executable1bca78b6d56f58c1 hash from all three Cargo test stderr logs.
+The same-package sibling/wrong-kind/src-path/duplicate-role negatives executed
+as pure fixture tests. Production Packages::load and actual repository/source
+association remain NOT_RUN; native parents/privileged OS venues, whole Runtime
+qualification, real journal/ACK/root/Ready proof are not established. Earlier
+five-ID and twelve-model source-specific receipts remain separate history.
