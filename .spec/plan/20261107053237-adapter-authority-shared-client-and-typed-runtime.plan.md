@@ -1213,3 +1213,98 @@ SHA256 before 42f675ac4b4063de4866160140adaae06105ba2156b8bd2f5444c0ac7d27b146; 
 No unit/compiler/Clippy rerun for this whitespace-only correction; prior evidence
 retains its original source identity, not silently promoted. No global formatting,
 manifest/path move, behavior or visibility change. Root owns global fmt integration.
+
+## RUNTIME-SLICE-02 final Authority handoff after fixture canon662cf7a2
+
+Readiness: Authority inventory complete for Root's six-context slice. Last current-
+path source checkpoint5b7ded8c; all33current package files hashed below (manifest
+read-only Root-owned). Source clean, no pending Authority source edits, compiler,
+process or target lease. No freeze/move/manifest/import edit or new run authorized
+by this disposition. Root waits for selected Runtime test and403diagnostic source
+settlement; this is NOT an attestation of the other five owners' source readiness.
+
+Own DATA fixtures: authorization-v2-minimal.json c3119b20fdf1b40cc6e99ac9e8efef6b84da8ac5c35bbdeb6588fcb47f720786
+and authorization-v2-maximum.json d4aa80ca126c101ee61cd18e78928f9beaa185b2330f1fb8f44dbaefc08e8dbc
+currently under crates/authority/tests/fixtures. Move frozen files once under the
+new package's context-qualified tests/fixtures/authority directory (exact Root path
+map), and rewrite both includes in startup/authorization/tests.rs to that actual
+location. No copy, normalization, independent oracle or public fixture API claim.
+Gateway fixture reuse must be same-package and stay DATA-only.
+
+External core DATA input: decisions.rs currently includes
+../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json.
+This outside-package include MUST disappear in the atomic runtime slice. Root's
+explicit DATA-only replica exception permits one context-qualified local fixture;
+producer remains core. Record original source commit/path, canonical Git blob,
+raw copied-byte SHA256, destination and license (Apache-2.0 project provenance)
+in runtime fixture provenance manifest, independently verify producer/replica raw
+equality and canonical Git identity, and coordinate future changes with core owner.
+Root pre-move raw snapshots govern frozen worktree equality; do not normalize the
+preexisting CRLF or mistake raw-vs-Git-LF comparison for migration drift. Collector
+pilot DATA replica belongs to gateway owner, not Authority source authorization.
+
+Concrete target map to Root for reservation: current tests decisions.rs,
+local_service.rs and native_process.rs require unique runtime target names
+respectively authority-decisions, authority-local-service, authority-native-process;
+shared tests/support/mod.rs must remain authority-qualified and not accidentally
+become a fourth test target. src/main.rs is the current auto-bin humanymous-authority.
+Retain that already context-qualified bin name as an explicit runtime target, unless
+Root assigns a different literal alias and updates both CARGO_BIN_EXE references
+in native_process.rs atomically. Update all integration/support/bin library imports
+from humanymous_authority to humanymous_runtime::authority. No forwarding crate or
+outside-package fixture path. Root owns actual Cargo target registration.
+
+Pending source-only migration work (Root freeze/assignment required): internal
+crate:: paths -> crate::authority; audit/network accepted sibling context imports;
+platform native_security dependency identity; bin and integration test public paths;
+local owned-fixture includes/core-replica include; target aliases/2bin-env references
+if renamed. No such edits done here. Seven old pub(crate) declarations remain only
+pub(in crate::authority) or narrower; private NativeProof EMPTY, private proof/owner/
+checked fields and observer-only state::Owner/model stay nested. No constructor or
+native helper-role access exception is approved. Public scope/configuration/expected
+identity types remain exact DATA; zeroizing secret ownership unchanged. Same package
+ID never confers sibling binary principal/store/handle/Ready authority.
+
+Acceptance checks still required after coherent Root slice and explicit allocation:
+clean extracted runtime package contains all selected fixtures and compiles selected
+context-qualified tests/bins without workspace-external includes; exact target/bin
+inventory, sibling negative privacy checks, unit/check/fmt/strictClippy and downstream
+consumer identities from prior disposition. Actual OS peer/ACL/private inherited-pipe/
+sealed lifecycle pilots use the real selected bin; privileged/helper/ignored cases
+are separately reported. Old37pure/old native receipts stay historical-source-bound.
+No fresh native issuer/Ready/hosted/Docker completion is claimed. Root common graph,
+other five owners and403diagnostic remain independent prerequisites.
+
+- crates/authority/Cargo.toml SHA256 66f2c101adbf9aed9598fccbfcc1590b9cf7c51c2463498625846eeea14e204a
+- crates/authority/Dockerfile.pilot SHA256 8e6bf4b189b65916db2d32b7763ded0635ce6243984fecd149e67624bb3aa8ad
+- crates/authority/INTEGRATION.md SHA256 590ecb2275228b036296c55b6fcf7798e97c5bf3301ea46559970bf57167db89
+- crates/authority/src/client.rs SHA256 fae9140530b41d8b608fc6dcc24b7d09ab7de3acfed735579c2074042edf222c
+- crates/authority/src/configuration.rs SHA256 c9fe7141ce862968d2a923a64556795e326866bb96d14c6471c3eb7aa3664a05
+- crates/authority/src/credentials.rs SHA256 d7e84bf9ad7b4853bfb12ad92990b222d7de24a0c9428d10cc22447667c3b170
+- crates/authority/src/decision.rs SHA256 437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c
+- crates/authority/src/lib.rs SHA256 a7bba64ad263fe03d65d5eda16c319c2c8a7ea294f97f9b0dcdd7382358381db
+- crates/authority/src/main.rs SHA256 a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e
+- crates/authority/src/protocol.rs SHA256 745ab89800e26457b469e11e8733874cce816203db3cd725f372f37805aae78c
+- crates/authority/src/protocol/framing.rs SHA256 e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6
+- crates/authority/src/startup.rs SHA256 102bcce5c8c756debfe8ef6528dddf258e50e24aaeaeb182fd07886e3f15c15c
+- crates/authority/src/startup/authorization.rs SHA256 27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e
+- crates/authority/src/startup/authorization/binding.rs SHA256 11c75c147958e0a7dca0ac256ad49850118426752677571eb4c6794c813043a0
+- crates/authority/src/startup/authorization/codec.rs SHA256 643a7ab7ce0382db3802da166a62454b682a2d6669378bd434348b756f7ac744
+- crates/authority/src/startup/authorization/hello.rs SHA256 afea0f98f52a3b4c6c078353f26a994cee7e31cbb1e3f34e1cc4817be66b3448
+- crates/authority/src/startup/authorization/tests.rs SHA256 6ae4f2984eab99efef916104ab05e1562b71aa49e4aa280bd766420e1d653444
+- crates/authority/src/startup/authorization/tests/fixture.rs SHA256 fa6c441f2ef9814e4fce16d1ef5901cf3ba1300a991c370b034006f4d80a8818
+- crates/authority/src/startup/authorization/verification.rs SHA256 6d3872e7e8f14a81f40c99d3dbfd4f49e02cdc2b989c4aee4de01e5196f9883b
+- crates/authority/src/startup/observer.rs SHA256 c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806
+- crates/authority/src/startup/observer/state.rs SHA256 3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21
+- crates/authority/src/startup/observer/tests.rs SHA256 c10d765a30a29df908135ef074e7f5a41682b82fc57517fd00a4b9e35593e470
+- crates/authority/src/transport/mod.rs SHA256 d4a784f314e6a8564b17c9b7619112ff1768039bd3a3ba4a629c6aa24ca31cf8
+- crates/authority/src/transport/permissions.rs SHA256 95c35164fae9abaa48caa60a844f1ea1efba4de774b60e7a1eeb78b4679f747c
+- crates/authority/src/transport/service.rs SHA256 1e7faf4a2f7d89a642c2f59f5ab7467b07cda381c2cdcfcf74ae0e71f93ba86a
+- crates/authority/src/transport/unix.rs SHA256 cb3e23e96673b4e47eb0ec8124757860f562398c7ff9444683e480beb92d2623
+- crates/authority/src/transport/windows.rs SHA256 196f1f501cfb3ce8ba224171b8b7ba628331c646b17eff9a6f5c8965216f5a86
+- crates/authority/tests/decisions.rs SHA256 0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b
+- crates/authority/tests/fixtures/authorization-v2-maximum.json SHA256 d4aa80ca126c101ee61cd18e78928f9beaa185b2330f1fb8f44dbaefc08e8dbc
+- crates/authority/tests/fixtures/authorization-v2-minimal.json SHA256 c3119b20fdf1b40cc6e99ac9e8efef6b84da8ac5c35bbdeb6588fcb47f720786
+- crates/authority/tests/local_service.rs SHA256 0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442
+- crates/authority/tests/native_process.rs SHA256 fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03
+- crates/authority/tests/support/mod.rs SHA256 34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820
