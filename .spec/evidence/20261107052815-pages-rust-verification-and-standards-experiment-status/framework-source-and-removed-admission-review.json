@@ -1,0 +1,87 @@
+{
+  "schema": "humanymous.pages-framework-source-review/1",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/framework-adapter/Cargo.toml",
+      "lines": 23,
+      "sha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c",
+      "current_sha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete23-line manifest: shared authority/integrity parser and native client, reused Tokio/serialization/hash/random/zeroizing dependencies; unpublished. Does not install a host SDK or provide another scoring/IPC/crypto implementation.",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/INTEGRATION.md",
+      "lines": 23,
+      "sha256": "2ebae95059f9379e6422eb7ff93ccad32d274eee6b79d6227e6564c0f6e336e0",
+      "current_sha256": "2ebae95059f9379e6422eb7ff93ccad32d274eee6b79d6227e6564c0f6e336e0",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete23-line owner chronology: normalized producer identities, Node configuration/projection/admission migration and six pure source cases. Historical NOT_RUN and pending workspace registration are not current execution receipts; actual host/regression qualification needs exact-source evidence.",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/src/lib.rs",
+      "lines": 86,
+      "sha256": "e71a1ecbcbd7501a5ecba6df279692e2e1900934bae82c5db2654554e69ff8e0",
+      "current_sha256": "e71a1ecbcbd7501a5ecba6df279692e2e1900934bae82c5db2654554e69ff8e0",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete86-line shared API/admission: process-wide atomic64-owner bound held by RAII Admission, no eviction or behavior scoring; strict explicit decimal body-length validation rejects empty/noncanonical/overbudget values. Pure fixtures check capacity restoration and length edges, not native host execution.",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/src/request.rs",
+      "lines": 243,
+      "sha256": "75fcc4aa930becdabd48d323a816756e1a87f18670b3900fa7d6ff6cd6476be3",
+      "current_sha256": "75fcc4aa930becdabd48d323a816756e1a87f18670b3900fa7d6ff6cd6476be3",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete243-line normalized Observation/Pending owner: one original wall/monotonic deadline, shared profile parser and authenticated authority client, final expiry check. Exact selected producer identity, internal trust header removal, complete body layer/length/SHA/Base64, no rawTLS/H2/capture/stream claims. Normalized binary/cross-profile/forgery tests are synthetic; host must still consume bound response and honor cancellation at original handler handoff.",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/tests/support/authority.rs",
+      "lines": 49,
+      "sha256": "cb850848febd45e968a1e033781201690d80382f993b448d101810501c133d6b",
+      "current_sha256": "cb850848febd45e968a1e033781201690d80382f993b448d101810501c133d6b",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete49-line test-only SyntheticEvidence returns frozen known human-allow fixture, records declared header mode and creates known-key unwitnessed audit log. Not shipped evidence production, independent witness or ordinary-human success.",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "full_read_files": 5,
+  "lines": 424,
+  "execution": "NOT_RUN",
+  "removed_receipt": {
+    "source": "crates/node-adapter/src/admission.rs",
+    "sha256": "8650bee55940004e616a844b9a9a79bca01f31facae8c14b27478b77f8a253da",
+    "reviewer": "codex/rust-pages",
+    "notes": "Read process-wide atomic 64-owner budget, refusal at exhaustion and RAII permit decrement, plus source unit case. Topology reference identifies a resource ownership limit rather than an abuse score, interaction-speed or motor-richness requirement. Did not execute this unit or infer cancellation/origin-effect qualification from permit release.",
+    "pages": [
+      "docs/reference/node-adapter.md"
+    ]
+  },
+  "removal_commit": "2b2d3ccfa4c5e96d1e42473ebf82f9c919bb4a67",
+  "replacement": "crates/framework-adapter/src/lib.rs::Admission",
+  "current_consumer": "crates/node-adapter/src/stream.rs owns shared Admission through pending body/decision lifetime",
+  "disposition": "Retire deleted path receipt after exact tree/history/replacement source review; do not attribute earlier Node tests to the shared refactor. No new execution or latest whole-tree acceptance."
+}

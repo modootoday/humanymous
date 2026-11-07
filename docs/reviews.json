@@ -2,6 +2,134 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/framework-adapter/Cargo.toml",
+  "sha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete23-line manifest: shared authority/integrity parser and native client, reused Tokio/serialization/hash/random/zeroizing dependencies; unpublished. Does not install a host SDK or provide another scoring/IPC/crypto implementation.",
+  "pages": [
+    "docs/reference/node-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/framework-adapter/INTEGRATION.md",
+  "sha256": "2ebae95059f9379e6422eb7ff93ccad32d274eee6b79d6227e6564c0f6e336e0",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete23-line owner chronology: normalized producer identities, Node configuration/projection/admission migration and six pure source cases. Historical NOT_RUN and pending workspace registration are not current execution receipts; actual host/regression qualification needs exact-source evidence.",
+  "pages": [
+    "docs/reference/node-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/framework-adapter/src/lib.rs",
+  "sha256": "e71a1ecbcbd7501a5ecba6df279692e2e1900934bae82c5db2654554e69ff8e0",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete86-line shared API/admission: process-wide atomic64-owner bound held by RAII Admission, no eviction or behavior scoring; strict explicit decimal body-length validation rejects empty/noncanonical/overbudget values. Pure fixtures check capacity restoration and length edges, not native host execution.",
+  "pages": [
+    "docs/reference/node-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/framework-adapter/src/request.rs",
+  "sha256": "75fcc4aa930becdabd48d323a816756e1a87f18670b3900fa7d6ff6cd6476be3",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete243-line normalized Observation/Pending owner: one original wall/monotonic deadline, shared profile parser and authenticated authority client, final expiry check. Exact selected producer identity, internal trust header removal, complete body layer/length/SHA/Base64, no rawTLS/H2/capture/stream claims. Normalized binary/cross-profile/forgery tests are synthetic; host must still consume bound response and honor cancellation at original handler handoff.",
+  "pages": [
+    "docs/reference/node-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/framework-adapter/tests/support/authority.rs",
+  "sha256": "cb850848febd45e968a1e033781201690d80382f993b448d101810501c133d6b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete49-line test-only SyntheticEvidence returns frozen known human-allow fixture, records declared header mode and creates known-key unwitnessed audit log. Not shipped evidence production, independent witness or ordinary-human success.",
+  "pages": [
+    "docs/reference/node-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/INTEGRATION.md",
+  "sha256": "3359f7ea4b8ecacbeea251550158b2065e5b3e3a85ba5b599078870945e7702d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current100-line chronology read after29b882a7: explicit optional environment/advanced/CDP/hooks and compatibility limits, committed Fetch transport with historical66-versus65/first PID failure distinctions, real runtime join still missing. Desktop reproduction commands require allocation/actual engine identity. Narrative is not a new execution receipt.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/INTEGRATION.md",
+  "sha256": "f50a9476b023bda06e4b2e74466f90877e9e75ed4336608ba1326ad8712b7dd0",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "States exact813 hosted35 and local14 first, then documents shared parser/client/features and retains historical7unit/27workspace/NOT_RUN sections. No source2696 runtime claim; lower pending-client/NOT_RUN language is historical and cannot override exact source-bound receipt. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/src/bin/package.rs",
+  "sha256": "5b4c2ebdd8f2a04c7540525b9e57431c5f2be110e34d746e86b7df590b56fb7e",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Package writer only admits Linux x86_64 GNU, accepts four artifact/output paths, hashes bounded files, runs engine -V, validates exact manifest and creates a new output file. Not installer, signer or publish action. Engine command is trusted build input; output is collected before8KiB stderr check, not a hostile-command streaming output bound. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/src/package.rs",
+  "sha256": "140dc60c0606a578742ce100c1acd634dbedfb8668bcc10cb0ab6719bebc1301",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Manifest0.1 denies unknown/duplicate fields through typed serde; bounds32KiB parsing, checks pinned tuple/source/configure flags, keeps signed/load-qualified false; matches module/engine/lock and streams bounded artifact hashes; four negative/roundtrip tests. Trusted directories must resist replacement. Same-length in-place changes/TOCTOU are not secure-installer protection; configure substring checks alone are not native load proof. Tests are source observations here, not newly executed. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/src/pilot/authority.rs",
+  "sha256": "a3e3d9e9463c17b469be772192a6bbda5abafb83485381a9a8cede68df016bca",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Actual authority Listener/Authority and WAL are used with a test-only Evidence provider selecting frozen ALLOW/DENY/CHALLENGE reports; /production uses ApplicationHttp; delayed and audit-failure fixture controls are explicit. Generated fixture audit keys and no witness, same-user transport and task abortion do not qualify sealed ServiceHost, independent custody, real browser provenance or cross-user matrix. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/src/pilot/mod.rs",
+  "sha256": "d570abcf18502f376dfc1ccc7e89dfbbc9a7420d5661bf4a54be48d28b703c37",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "808-line driver requires bound source and owned Docker/nonroot; loads actual nginx, tests ACL/negative framing, JSON plus4keepalive challenges, bodies/headers/HEAD204/SSE cancellation,32-request accounting, real IPC/replay/UID/audit/outage, production executable reload and same-WAL restart, and package/source/hash binding before exact35 success. Production ApplicationHttp case permits403 or409; executable reload requires409. Concurrency only requires admitted>0 and total32, not fixed16/16. Same-WAL checkpoint is locally anchored, startup uses inline legacy audit keys via private pipes, not sealed custody. No full product/AT/load qualification. Raw813 per-case metrics unavailable. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/src/pilot/origin.rs",
+  "sha256": "e01ddcf5ad2e14e9eb3c05d4b308c87f5edb76013326a4a5bf987775a8661790",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Owned loopback synthetic origin records complete request receipt and audit count before responding; repeated cookies/headers and SSE fixtures; actual EOF/reset counter after downstream cancellation; bounded HTTP1 response parser supports reused challenge connection. Receipt counter is not business commit. Detached listener/handler threads are harness-local until process exit, not a general graceful-join service guarantee. No trailers or arbitrary streaming/backpressure qualification; test response parser is not production ingress. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/nginx-adapter/src/report.rs",
+  "sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Report0.2 producer checks exact unique required names, rejects missing/unknown/duplicate groups, then assigns id/name/result passed after all earlier assertions; validates lowercase source IDs; three pure negatives/count tests. completed_groups is producer framing, not an untrusted consumer validator. Does not execute cases or independently validate source/image; shared contract and CI/lab consumers are outside this assigned source group. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/collector/Cargo.toml",
   "sha256": "29ecee302df403a6118b3495a322d505e9bbacfc2f73151bd0a2d4b0a04ccab1",
   "reviewer": "/root/collector_freshness_review subagent (not Pages)",
@@ -2889,9 +3017,9 @@
 },
 {
   "source": "crates/nginx-adapter/Cargo.toml",
-  "sha256": "bb7ac8adeae10d3938dd29d9bce1250c0030385e8b51be140499771c1e7b127c",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read complete rlib/cdylib manifest, empty default features, optional Linux pinned ngx SDK, export-modules/native and pilot separation, shared authority/integrity reuse and safe-code lints with native ABI exception in composition root. Public reference distinguishes library units from actual nginx ABI/platform/feature qualification. No dependency build or advisory result claimed.",
+  "sha256": "ba9f8353715a0132022ea0f2a0013f7d4d592920a2f3cb96425fd2abfd1e4cfc",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Experimental unpublished rlib/cdylib; default empty features; Linux-only optional pinned ngx, export-modules/native, pilot audit/signals and separate package binary. Cargo features/default pure checks do not load nginx; no portable native tuple, signed package or independent implementation. Pages reviewed the source-owner report; no new native execution.",
   "pages": [
     "docs/reference/nginx-adapter.md"
   ]
@@ -2917,9 +3045,9 @@
 },
 {
   "source": "adapters/nginx/Dockerfile.native",
-  "sha256": "f4d2b28dc72ad4f1bc38b23ca8487f9c22dc567a1d725092212bae3a28ba1981",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read full pinned Rust/Debian and checksum-pinned nginx build, same source/build flags, locked Cargo unit/native/pilot/Clippy/authority steps and nonroot final pilot entrypoint. Image guide now identifies lab-only engine/module/pilot/authority contents rather than a production runtime. Source instructions are not proof any step ran or the current image passed.",
+  "sha256": "43601ec07795d039ba2e49bc95ac8db9798233a47d3995d01240014a61c8cd99",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Pins Rust/base images, nginx source and configure ABI; saves native .so before standalone pilot/package feature builds; builds actual authority and writes provenance into a non-root lab image. Build recipe and successful historical813 build are not execution of fixed2696 or proof every apt package is immutable; final stage is a test lab, not a minimal production image. Pages reviewed the source-owner report; no new native execution.",
   "pages": [
     "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
@@ -2927,19 +3055,19 @@
 },
 {
   "source": "adapters/nginx/Dockerfile.native.dockerignore",
-  "sha256": "4a109d1ca1629ed40f3cce38e3554caa99df5bb08e3ab5f02afb81b26cc53051",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read deny-by-default build context with explicit workspace source/manifests and current member inputs, excluding target and .build-cache. Context filtering is distinct from final image-content or secret-exclusion verification; image guide requires artifact inspection. No Docker build claimed.",
+  "sha256": "3ef3d62c8273e286062254bbbbf6f857de3c1fea8b730a3b07b28f8be7318a1a",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Allowlist includes workspace manifests, crates and selected tooling/lab contexts plus pilot-contract; excludes targets/build-cache. The context still includes broad crates/** and selected tools. Context exclusions alone do not prove final artifact contents, secret absence or execution containment. Pages reviewed the source-owner report; no new native execution.",
   "pages": [
-    "docs/reference/nginx-adapter.md",
-    "docs/how-to/verify-the-image.md"
+    "docs/how-to/verify-the-image.md",
+    "docs/reference/nginx-adapter.md"
   ]
 },
 {
   "source": "adapters/nginx/compose.yaml",
-  "sha256": "1d8fa6a07c535688832a7eb0ca051c8a4c5d7c080dcff739ceca77d688e5f509",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read actual lab image target, network none, UID65532, read-only root, 128MiB tmpfs, all capabilities dropped, no-new-privileges, process128 and memory1GiB limits. Image guide distinguishes requested configuration from effective runtime isolation evidence. No Compose execution claimed.",
+  "sha256": "27485d7795f9ad4c2be8dcab53f34a02a462f72974c70dffaf9dce137f767900",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Source-bound image/revision/manifest variables; non-root65532, network none, read-only root,128MiB tmpfs, dropped capabilities, no-new-privileges, pids128 and1GiB memory. Declarative controls require actual engine/container evidence; does not itself select Docker Desktop or qualify WSL/native equivalence. Pages reviewed the source-owner report; no new native execution.",
   "pages": [
     "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
@@ -2947,31 +3075,32 @@
 },
 {
   "source": "adapters/nginx/INTEGRATION.md",
-  "sha256": "be236990154088b51816b2dc37f08dcd1cbe05a3f4a525d967958076e3fbd0d0",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read owner integration evidence boundaries: explicit nginx profile/shared consume, historical exact source/module commitments, synthetic-only positive ALLOW, production409 and reload503, remaining witness/cross-user/backpressure/full product gaps. Topology reference preserves those distinctions and does not qualify newer JSON/timer bytes.",
+  "sha256": "11e1949b7b41ad49a90f97250b6862e7a1b578b5983c5ae6480f3cdf1a29690d",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Introduces exact813 hosted35 checkpoint and shared profile/client references, but retains old27-member/7unit/16c status-only evidence and old NOT_RUN text. Integration prose is historical reporting, not a new run. Current top and historical tail must not be merged into one denominator. Pages reviewed the source-owner report; no new native execution.",
   "pages": [
-    "docs/reference/nginx-adapter.md",
-    "docs/how-to/verify-the-image.md"
+    "docs/reference/nginx-adapter.md"
   ]
 },
 {
   "source": "adapters/nginx/README.md",
-  "sha256": "2097578eb630eb695e8310f60beafcfdae23e84b0c864e89c7d3ab260cec958a",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read complete native module guidance including private supervisor provisioning, server-level guard, bounded uploads, trusted nginx configuration, no post-auth rewrite/retry/cache, historical35groups and legacy mock exclusion. Public topology/image references state experimental Linux scope, lab image purpose, synthetic ALLOW and outstanding current-source/human/AT qualification.",
+  "sha256": "63a349204895367e2817b83d75b6b6b61b9655635ac032f118727f8d138c93d5",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Documents Linux HTTP1 native bounds, private provisioning, required source/image env, proxy configuration, exact813 success, unsigned package and synthetic ALLOW limits. Explicit Docker commands do not select Windows Desktop context; last16/16 load numbers belong to older measured evidence and are not recovered813 per-case values. No production tuple. Pages reviewed the source-owner report; no new native execution.",
   "pages": [
     "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
   ]
 },
     {
-      "source": "crates/nginx-adapter/src/lib.rs",
-      "sha256": "b037239dfc33dd41c3e9a79ecf85b0453d6554c9e0ed922c236952c4ee20c5f3",
-      "reviewer": "codex/rust-pages",
-      "notes": "Read full composition root: safe request projection export and feature/target-gated native nginx ABI, with explicit non-Linux refusal. Public topology reference now acknowledges existing experimental Linux module rather than claiming absence. Native source excerpts and owner results distinguish historical synthetic ALLOW pilots from unvalidated JSON/timer follow-through. This row does not approve full native.rs, ABI safety or current deployment execution; those need separate review/evidence.",
-      "pages": ["docs/reference/nginx-adapter.md"]
-    },
+  "source": "crates/nginx-adapter/src/lib.rs",
+  "sha256": "2a2a11e4d441114b3441b7062bf0cf2d41d9b0b5d52609b125e3fe494d20f469",
+  "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+  "notes": "Exports pure package/report/request modules; scopes unsafe allowance to Linux native module and compile-errors native on non-Linux. This11-line module wiring does not review native.rs callback safety or qualify Linux ABI. Native/request implementations are outside this14-file batch. Pages reviewed the source-owner report; no new native execution.",
+  "pages": [
+    "docs/reference/nginx-adapter.md"
+  ]
+},
     {
       "source": "crates/node-adapter/src/stream.rs",
       "sha256": "d342b9328b9fe718f81158e3e9bdb87f45f3f8467445b5e65c80571c4cd13be3",
@@ -3014,13 +3143,7 @@
       "notes": "Read all exported Rust Node-API wrappers and capabilities JSON. Public topology reference distinguishes owned Express server versus advanced root middleware, Hono stream-module dependency, explicit template-only HTML, normalized Bun/Fetch evidence and empty releaseQualifiedTuples. Delegation to implementation modules is not independent execution proof. Source/prose review only; current native host, packaging and authority/origin execution remains unqualified.",
       "pages": ["docs/reference/node-adapter.md", "docs/start-here/integrator.md"]
     },
-    {
-      "source": "crates/node-adapter/src/admission.rs",
-      "sha256": "8650bee55940004e616a844b9a9a79bca01f31facae8c14b27478b77f8a253da",
-      "reviewer": "codex/rust-pages",
-      "notes": "Read process-wide atomic 64-owner budget, refusal at exhaustion and RAII permit decrement, plus source unit case. Topology reference identifies a resource ownership limit rather than an abuse score, interaction-speed or motor-richness requirement. Did not execute this unit or infer cancellation/origin-effect qualification from permit release.",
-      "pages": ["docs/reference/node-adapter.md"]
-    },
+
     {
       "source": "crates/native-cli/Cargo.toml",
       "sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",

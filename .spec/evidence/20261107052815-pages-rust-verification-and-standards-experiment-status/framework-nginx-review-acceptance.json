@@ -1,0 +1,198 @@
+{
+  "schema": "humanymous.pages-specific-review-acceptance/1",
+  "accepted": [
+    {
+      "source": "crates/framework-adapter/Cargo.toml",
+      "sha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/INTEGRATION.md",
+      "sha256": "2ebae95059f9379e6422eb7ff93ccad32d274eee6b79d6227e6564c0f6e336e0",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/src/lib.rs",
+      "sha256": "e71a1ecbcbd7501a5ecba6df279692e2e1900934bae82c5db2654554e69ff8e0",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/src/request.rs",
+      "sha256": "75fcc4aa930becdabd48d323a816756e1a87f18670b3900fa7d6ff6cd6476be3",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/framework-adapter/tests/support/authority.rs",
+      "sha256": "cb850848febd45e968a1e033781201690d80382f993b448d101810501c133d6b",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/node-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/INTEGRATION.md",
+      "sha256": "3359f7ea4b8ecacbeea251550158b2065e5b3e3a85ba5b599078870945e7702d",
+      "reviewer": "codex/rust-pages",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "adapters/nginx/Dockerfile.native",
+      "sha256": "43601ec07795d039ba2e49bc95ac8db9798233a47d3995d01240014a61c8cd99",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/how-to/verify-the-image.md"
+      ]
+    },
+    {
+      "source": "adapters/nginx/Dockerfile.native.dockerignore",
+      "sha256": "3ef3d62c8273e286062254bbbbf6f857de3c1fea8b730a3b07b28f8be7318a1a",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/how-to/verify-the-image.md",
+        "docs/reference/nginx-adapter.md"
+      ]
+    },
+    {
+      "source": "adapters/nginx/INTEGRATION.md",
+      "sha256": "11e1949b7b41ad49a90f97250b6862e7a1b578b5983c5ae6480f3cdf1a29690d",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md"
+      ]
+    },
+    {
+      "source": "adapters/nginx/README.md",
+      "sha256": "63a349204895367e2817b83d75b6b6b61b9655635ac032f118727f8d138c93d5",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/how-to/verify-the-image.md"
+      ]
+    },
+    {
+      "source": "adapters/nginx/compose.yaml",
+      "sha256": "27485d7795f9ad4c2be8dcab53f34a02a462f72974c70dffaf9dce137f767900",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/how-to/verify-the-image.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/Cargo.toml",
+      "sha256": "ba9f8353715a0132022ea0f2a0013f7d4d592920a2f3cb96425fd2abfd1e4cfc",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/src/lib.rs",
+      "sha256": "2a2a11e4d441114b3441b7062bf0cf2d41d9b0b5d52609b125e3fe494d20f469",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/INTEGRATION.md",
+      "sha256": "f50a9476b023bda06e4b2e74466f90877e9e75ed4336608ba1326ad8712b7dd0",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/src/bin/package.rs",
+      "sha256": "5b4c2ebdd8f2a04c7540525b9e57431c5f2be110e34d746e86b7df590b56fb7e",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/how-to/verify-the-image.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/src/package.rs",
+      "sha256": "140dc60c0606a578742ce100c1acd634dbedfb8668bcc10cb0ab6719bebc1301",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/how-to/verify-the-image.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/src/pilot/authority.rs",
+      "sha256": "a3e3d9e9463c17b469be772192a6bbda5abafb83485381a9a8cede68df016bca",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/src/pilot/mod.rs",
+      "sha256": "d570abcf18502f376dfc1ccc7e89dfbbc9a7420d5661bf4a54be48d28b703c37",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/src/pilot/origin.rs",
+      "sha256": "e01ddcf5ad2e14e9eb3c05d4b308c87f5edb76013326a4a5bf987775a8661790",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/nginx-adapter/src/report.rs",
+      "sha256": "f84266df39dc10ba8e670cc66fc5606b4682d38288013d15655ba3c7ef2dfcd1",
+      "reviewer": "Codex nginx owner, chat01a1b2f5-ea98-7023-b7af-ad527b820084; source-owner review, not independent review",
+      "pages": [
+        "docs/reference/nginx-adapter.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "accepted_count": 20,
+  "rejected": [],
+  "retired_receipt": {
+    "source": "crates/node-adapter/src/admission.rs",
+    "sha256": "8650bee55940004e616a844b9a9a79bca01f31facae8c14b27478b77f8a253da",
+    "reviewer": "codex/rust-pages",
+    "notes": "Read process-wide atomic 64-owner budget, refusal at exhaustion and RAII permit decrement, plus source unit case. Topology reference identifies a resource ownership limit rather than an abuse score, interaction-speed or motor-richness requirement. Did not execute this unit or infer cancellation/origin-effect qualification from permit release.",
+    "pages": [
+      "docs/reference/node-adapter.md"
+    ]
+  },
+  "retirement_commit": "2b2d3ccfa4c5e96d1e42473ebf82f9c919bb4a67",
+  "replacement": "crates/framework-adapter/src/lib.rs::Admission",
+  "nginx_owner_report_sha256": "7015cbc9b9aff4e55b8e4599593e85c2e32843d70e13d7c14b9e46cc5133d6d9",
+  "nginx_historical_pilot_source_diff": "git diff8132117..26960736 for pilot/report/contract empty; this is source identity comparison, not new execution",
+  "new_execution": "NOT_RUN",
+  "latest_whole_tree_accepted": false,
+  "prior_preview_covers_new_docs": false
+}

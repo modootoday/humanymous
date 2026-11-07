@@ -7,6 +7,16 @@
   "generic_wire_selected": false,
   "changes": [
 {
+      "kind": "implementation-evidence",
+      "paths": [
+            "../../reference/nginx-adapter.md"
+      ],
+      "summary": "Separate older status-only35 results from the exact8132117 hosted35 scenario-group execution, including JSON/keepalive and SSE upstream-closure assertions. Distinguish producer group checks, strict consumer obligations and missing exported package-manifest identity; no later-source or full-product qualification.",
+      "generic_wire_changed": false,
+      "latest_source_execution_qualified": false,
+      "full_product_qualified": false
+},
+{
       "kind": "implementation-correction",
       "paths": [
             "../../reference/supported-topologies.md",

@@ -34,10 +34,14 @@ rewrite and origin bypass, disable proxy retry/cache, and apply the declared
 buffering and upstream-control-header restrictions before claiming deployment
 isolation or unchanged handler-owned streaming.
 
-DENY maps to 403. Working source returns a no-store 409 JSON
+DENY maps to 403. Source returns a no-store 409 JSON
 `challenge_unavailable` response for CHALLENGE; that is not an accessible
-recovery service. The JSON/timer follow-through has not been qualified by the
-historical 35-group Compose result. Historical positive ALLOW pilots used
+recovery service. The older status-only 35-group result does not cover the later
+JSON/timer changes. A separate hosted Linux Docker run at source `8132117`
+passed 35 scenario groups, including the JSON response, repeated keepalive
+challenges and an SSE cancellation case that observed upstream closure.
+Those component observations do not qualify later source or dependency changes.
+Historical positive ALLOW pilots used
 explicit test-only synthetic evidence; the actual production application-HTTP
 profile's 409/no-origin observation does not prove a successful human flow.
 Independent witness, cross-user isolation, sustained backpressure and full
@@ -60,6 +64,12 @@ counts. Per-case private diagnostics must not be copied wholesale into public
 summaries. The report remains a component result with
 `full_product_qualified: false`; trusted synthetic ALLOW and process cleanup do
 not establish a complete browser, independent custody or production deployment.
+
+The producer's completed-group check validates its own exact group-name set;
+it is not an independent validator of an incoming untrusted report. The recovered
+`8132117` summary names source, module, engine, lock and image identities, but
+does not export a package-manifest hash or full private case diagnostics.
+Do not fill those evidence gaps with the package writer's declared checks.
 
 ### nginx provisioning and request projection
 
