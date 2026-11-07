@@ -2,15 +2,18 @@
 
 ## Coordinated adapter-family naming handoff
 
-The accepted target package name is `humanymous-adapter-go`; the current package
-remains `humanymous-go-adapter` until Root's single graph migration. This is a
-project naming convention, not a Cargo syntax requirement. No rename is performed
-by this handoff, and the frozen c321 hosted receipt retains its original names.
+The accepted internal target package name is `humanymous-adapter-go`; the public
+Rust package/crate is `humanymous`, with Go access through
+`humanymous::adapters::go`. The current internal package remains
+`humanymous-go-adapter` until Root's single graph migration. No rename is
+performed by this handoff, and the frozen c321 hosted receipt retains its
+original names. The exact optional feature and build-product manifest must be
+frozen by Root before facade wiring; neither is qualified by this table.
 
 | Surface | Exact migration impact and owner |
 | --- | --- |
-| Package and dependencies | `crates/go-adapter/Cargo.toml` package name and `test/lab/runtime/Cargo.toml` dependency key change together under Root/lab coordination; root Cargo.lock package/dependency entries must resolve the new identity. No standalone lock exists in test/lab/runtime at this checkpoint |
-| Rust library identifier | No explicit `[lib].name` or crate-type is declared. The default identifier changes from `humanymous_go_adapter` to `humanymous_adapter_go`; lab imports in go/client.rs, gate.rs, mod.rs and receipt.rs must change together |
+| Package and dependencies | Root coordinates the Go leaf package rename, public facade dependency/feature, lab consumer dependency and root Cargo.lock in one graph candidate. Lab consumes the public facade rather than exposing the renamed internal leaf as the public API. No standalone lock exists in test/lab/runtime at this checkpoint |
+| Rust library identifier | No explicit `[lib].name` or crate-type is declared. The internal default identifier changes from `humanymous_go_adapter` to `humanymous_adapter_go`; public lab imports in go/client.rs, gate.rs, mod.rs and receipt.rs move together to `humanymous::adapters::go`. Root must approve the reachable configuration/error types without duplicating their implementation |
 | Build artifact | This package is an ordinary Rust library, not a cdylib/staticlib or executable host module. Its inferred rlib/rmeta target identity changes; Cargo regenerates those dependency artifacts. No Go-facing shared-library filename or exported C symbol is declared here |
 | Consumer commands | `.github/workflows/go-validation.yml` scoped test/Clippy selectors and `scripts/ci/delivery/src/policy.rs` exact command expectations must change atomically. Historical evidence commands remain unchanged |
 | Registry and ABI | `publish=false`; no crates.io publication, Go SDK, cgo binding, Python/Ruby module, Node export or public ABI symbol is renamed by this package change. The bounded HTTP receipt profile/schema and Go host labels are separate contracts, not Cargo names |
@@ -23,6 +26,15 @@ and affected actual runtime host integration before promoting a renamed tuple.
 The prior c321/42375310198 result is historical source-bound evidence, not proof
 that a future renamed artifact already passed. Root owns common graph/lock;
 product-lab owns consumer imports, CI owns workflow/policy and M11 owns registry.
+
+Requalification must exercise a real consumer of the public facade and the
+actual hosted Docker eight-case runner at the renamed candidate. Retain the
+exact new source, selected feature profile, artifact/image and independent
+fixture/configuration/engine bindings, case/check counts, owner exit and cleanup.
+Build-only and pure-test results remain separate from actual host execution.
+Do not change the receipt schema/profile, host labels or prior evidence merely
+to match a Cargo identity. Go remains an HTTP integration, without a Go SDK,
+cgo library, shared-library loader or newly authored foreign implementation.
 
 Current accepted result: Rust Gate Go integration adapter, bounded net/http8,
 source c3211e27ba941f3f11809e420d07d61ececad623, actual hosted run42375310198.
