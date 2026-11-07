@@ -1,0 +1,57 @@
+{
+  "schema": "humanymous.pages-source-followup/1",
+  "full_read_files": 4,
+  "full_read_lines": 634,
+  "before_after_exact": true,
+  "reviewed_text_already_lf": true,
+  "reviews": [
+    {
+      "source": "crates/audit/src/storage/framing.rs",
+      "sha256": "0fd543e7651a482a1f9b9af717d272ed97e8a3f4ed985d742ef084f34247c8b4",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete116-line source review: production JSONL decode collects all owned values from shared FrameCursor, skips committed empty lines and deserializes unchanged frame bytes. Only explicitly allowed unterminated final frame recoverable; malformed committed JSON fails. Cursor FileTooLarge maps to historical InvalidData. Frame bound is not total history memory bound. Lexical preflight module cfg(test) only, outside production decoder. Four authored tests include CRLF/blank/torn offsets, malformed frames/bounds and unknown huge numeric literals skipped by Record decoder; no new execution claim.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/storage/framing/cursor.rs",
+      "sha256": "b8a4929245b696c2f3659d4a84201a988976248d45d2277e0b5132c299ce1f46",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete186-line source review: borrowed one-frame cursor with checked max-frame allocation/offset, LF commitment, strips LF and one precedingCR from content, retains blank frames for caller. Every read/resource/allocation failure poisons cursor against resume; torn-tail success only at actual EOF with explicit permission. Complete-byte offset includes raw terminators. This is framing, not JSON/crypto/source-identity validation or whole-history memory limit. Four authored fragmentation/oversize/readerfailure/offsetoverflow tests source-read only; no native fixture or executed result.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/storage/framing/preflight.rs",
+      "sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete207-line source review: private cfg(test) allocation-free lexical budget scanner, fixed64container stack, checked decoded string-byte count including keys/escapes/surrogate pairs, independent per-array counts and totalvalue/depth limits. Numeric literals skipped lexically without f64 conversion. Malformed delimiters/escapes and semantic types still require existing serde decoder; success is not JSON validity, authenticated data or operational scanner readiness. No production admission/wiring or execution claim.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/storage/framing/preflight/tests.rs",
+      "sha256": "8fd30354a11a7523e9b240458fb398446dbbdef5f936ed909aa9171638f5b6d2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete125-line source review of five authored tests: escaped/literalUTF8 and surrogate string-budget boundaries, independent arrays/values/depth64 refusal, unknown oversized numeric literals versus real Record decoder, checked count overflow, 92record+180checkpoint transformed fixture values versus owned Value count oracle. Same serde-generated JSON and fixture includes are not independent wire/decoder implementations. Raw fixture corpora not reread here and tests not executed by Pages; private cfg(test) boundary retained.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/validation/conformance.md"
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "fixture_corpus_independently_reviewed": false,
+  "public_prose_changed": false,
+  "consumer_boundary_check": "verification/mod.rs first30lines independently confirms scan/incremental cfg(test); complete consumer not accepted by this batch"
+}

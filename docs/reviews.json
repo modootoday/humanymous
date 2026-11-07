@@ -2,6 +2,39 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/storage/framing/cursor.rs",
+  "sha256": "b8a4929245b696c2f3659d4a84201a988976248d45d2277e0b5132c299ce1f46",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete186-line source review: borrowed one-frame cursor with checked max-frame allocation/offset, LF commitment, strips LF and one precedingCR from content, retains blank frames for caller. Every read/resource/allocation failure poisons cursor against resume; torn-tail success only at actual EOF with explicit permission. Complete-byte offset includes raw terminators. This is framing, not JSON/crypto/source-identity validation or whole-history memory limit. Four authored fragmentation/oversize/readerfailure/offsetoverflow tests source-read only; no native fixture or executed result.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/framing/preflight.rs",
+  "sha256": "9dd635813de491a48b701d8f69d0fdb618bdbaa846c91314f8ee0e574182fbd0",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete207-line source review: private cfg(test) allocation-free lexical budget scanner, fixed64container stack, checked decoded string-byte count including keys/escapes/surrogate pairs, independent per-array counts and totalvalue/depth limits. Numeric literals skipped lexically without f64 conversion. Malformed delimiters/escapes and semantic types still require existing serde decoder; success is not JSON validity, authenticated data or operational scanner readiness. No production admission/wiring or execution claim.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/framing/preflight/tests.rs",
+  "sha256": "8fd30354a11a7523e9b240458fb398446dbbdef5f936ed909aa9171638f5b6d2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete125-line source review of five authored tests: escaped/literalUTF8 and surrogate string-budget boundaries, independent arrays/values/depth64 refusal, unknown oversized numeric literals versus real Record decoder, checked count overflow, 92record+180checkpoint transformed fixture values versus owned Value count oracle. Same serde-generated JSON and fixture includes are not independent wire/decoder implementations. Raw fixture corpora not reread here and tests not executed by Pages; private cfg(test) boundary retained.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
   "source": "crates/audit/src/merkle/frontier.rs",
   "sha256": "5ac5436a73c470f0756fedf90839c1f213fa9a6aa4a1d2d50d5f394c961efa32",
   "reviewer": "codex/rust-pages",
@@ -3743,11 +3776,13 @@
 },
 {
   "source": "crates/audit/src/storage/framing.rs",
-  "sha256": "362d8fc7a1ba1007584cb98e6d05a16af355463375482da616dcb2dead5caf2c",
+  "sha256": "0fd543e7651a482a1f9b9af717d272ed97e8a3f4ed985d742ef084f34247c8b4",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete storage composition/recover_segment and bounded JSONL decoder with source fixtures. Complete newline is commit boundary even for valid JSON; final torn frame alone is eligible for explicit repair, framed corruption/oversize still fail. Repair truncates and syncs regular file, does not acquire exclusive trusted directory ownership or authenticate history. Public continuity guide records byte preservation and exact repaired count. Source read only; no new storage/runtime test executed.",
+  "notes": "Complete116-line source review: production JSONL decode collects all owned values from shared FrameCursor, skips committed empty lines and deserializes unchanged frame bytes. Only explicitly allowed unterminated final frame recoverable; malformed committed JSON fails. Cursor FileTooLarge maps to historical InvalidData. Frame bound is not total history memory bound. Lexical preflight module cfg(test) only, outside production decoder. Four authored tests include CRLF/blank/torn offsets, malformed frames/bounds and unknown huge numeric literals skipped by Record decoder; no new execution claim.",
   "pages": [
-    "docs/how-to/verify-audit-log.md"
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
   ]
 },
 {

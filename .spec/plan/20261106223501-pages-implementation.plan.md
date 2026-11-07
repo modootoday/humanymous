@@ -2236,3 +2236,34 @@ reads across25proposed owners plus one removed-source disposition. Proposed page
 associations are not accepted review. Later source changes need reconciliation;
 old2696build/preview does not qualify503e5949. Docs refrozen after source88/0 and
 scopedSpec313/0/0. Full source freshness and whole goal remain incomplete.
+
+### L5 reconciliation and next rendered-input milestone
+
+The accepted bottom-up role is recorded in structural-development and
+plan:root/20261107151000. Pages consumes source-bound lower-layer results and
+keeps pure, real-boundary, host and product qualification separate. Public
+conformance guidance now distinguishes executed working bytes, canonical LF
+and Git blobs without selecting generic wire or changing normative requirements.
+
+Latest public-prose milestone5341a880/docs6ce198590e38ba40f1f6ecd18036eccee4d92d1d
+has127 frozen source files in the private07051213 bundle's render-5341/source.
+Current public inputs and all frozen copies rechecked unchanged; later review
+metadata is excluded from output. Theme/config/tokens/lock retain prior pins.
+This candidate has source88/errors0 but no new Jekyll/rendered-link/browser result.
+It awaits an allocated renderer window; no Docker/Ruby/Cargo restart was made.
+
+The later actual build in c88c8e74 applies to docs treeb403f22d and public-input
+digest015cd2fa, not this milestone. Both baseurls yielded88HTML/165files with
+archive round trips, exact-file HTTP checks and representative visible IAB
+observations. Its bounded Caddy lease84233 has ended, supervisor exit0 and exact
+owned container absent. Do not advertise that old loopback URL as live.
+
+Lower-source review batches preserve exact hashes, full-read scope and missing
+execution: watermark18, watchdog2, audit canonical4, Merkle/checkpoint7 and
+framing4. The preflight scanner remains cfg(test), and helper or fixture tests
+are not promoted to product/native proof. At a37e744a, fast working-byte triage
+observed799files/589matching receipts/93added/117changed/0removed or missing;
+that is historical triage, not current acceptance or a canonical/index proof.
+Public evidence07052815 retains detailed batch notes, failures and limits.
+Full freshness, new rendered links, complete accessibility/AT and generic wire,
+independent interoperability and external review/submission gates remain open.
