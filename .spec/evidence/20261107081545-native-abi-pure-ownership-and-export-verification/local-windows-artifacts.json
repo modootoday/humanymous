@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.native-abi-local-artifacts/0.1",
+  "runner": "local-windows-x86_64",
+  "rootAllocation": "A",
+  "cbindgen": "0.29.4",
+  "cbindgenSourceSha256": "2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20",
+  "headerSha256": "1b96ad497c7c17f4fcd032b08080d783a0bbfa31287e20c9821195776709d10a",
+  "dllSha256": "2475d0497cb5e7a6b20c1ca17d6c3da39f9bba6ec455659e09d22bd8724a249d",
+  "headerBytes": 4600,
+  "headerCompile": {
+    "c11": "passed",
+    "nonemptyObjects": 2,
+    "cpp14": "passed"
+  },
+  "dllInspection": "passive-x64-export-observed",
+  "clippy": "local-example-deny-warnings-passed",
+  "sourceFilesUnchanged": true,
+  "dynamicCall": "not_run",
+  "cpp11": "not_run",
+  "layoutEquivalence": "not_run",
+  "cppCaller": "not_run",
+  "raiiExceptions": "not_run",
+  "productE2e": "not_run",
+  "initialVsEnvironmentQuoting": "failed-before-compiler-corrected",
+  "securityDecision": false,
+  "productSuccess": false
+}

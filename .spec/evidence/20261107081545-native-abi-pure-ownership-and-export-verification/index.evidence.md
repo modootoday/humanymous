@@ -3,7 +3,7 @@ id: evidence:root/20261107081545
 title: Native ABI pure ownership and export verification
 status: active
 created: 2026-11-07T08:15:45Z
-updated: 2026-11-07T09:27:19Z
+updated: 2026-11-07T10:50:42Z
 rel:
   depends_on: [sot:root/native-abi, plan:root/20261107072500]
 files:
@@ -11,6 +11,7 @@ files:
   - {path: hosted-startup-failure.json, sha256: aaef59afbb25b88e38aab3539a46c2129f6e84cb4401aff11582fe991980de59, bytes: 928, store: repo}
   - {path: hosted-813-ubuntu.json, sha256: c9e34a3a2368ccf6bd1dbf105ef4c04c5454a7d5c92d126a7189646ae1fcca0b, bytes: 1446, store: repo}
   - {path: hosted-813-windows.json, sha256: 616e7f6320c351bbcc924c6e0b29f90b1b50b5f7d93db5a1472c094d474dc4e7, bytes: 1392, store: repo}
+  - {path: local-windows-artifacts.json, sha256: 3367f38ac7c4df6e82988b9ef1b5911c4f422b6eb3d473d9cd8ed482ca30bf38, bytes: 978, store: repo}
 ---
 
 # Native ABI pure ownership and export verification
@@ -38,6 +39,17 @@ RAII/exception behavior, cross-OS runtime or product e2e. Parser fixtures are
 synthetic compiler diagnostic text only. Header generation and hosted Clang layout
 execution remain separate gates; approved managed generic-DLL loading will be
 reported separately from the .NET facade and middleware profile.
+
+## Separate local Windows artifact execution
+
+The attached local-windows-artifacts.json records a later A allocation: pinned
+cbindgen0.29.4 generated a4600byte header, and real MSVC C11/C++14 compilation
+produced two objects. The native DLL built; passive inspection observed x64 and
+the expected export. Example strict Clippy and formatting passed. Twenty captured
+source files stayed unchanged across the stage. This is a worktree hash-bound
+local receipt, distinct from the25unit denominator and genuine hosted layout gate.
+Dynamic calls, C++11, layout equality, C/C++ callers, RAII and exceptions remain
+not_run. Private raw bundle20261107104057 retains tool/source/artifact identities.
 
 ## Separate hosted startup failure
 

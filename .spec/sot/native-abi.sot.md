@@ -167,6 +167,20 @@ precede new local commands.
 
 ## C++ contract
 
+ABI-14: The separately authorized local Windows x64 profile uses the explicit
+`--local-msvc` example, absolute tool/input paths and a fresh output directory.
+It compiles the actual upstream-generated header directly with MSVC `/TC
+/std:c11` and `/TP /std:c++14`, requiring successful nonempty object outputs.
+No handwritten C/C++ caller or loader is introduced. Passive dumpbin output is
+artifact inspection, not a dynamic call or layout-equivalence assertion. This
+profile never qualifies C++11, C/C++ callers, RAII or exception behavior, and
+does not bypass the separate genuine hosted Clang C11/C++11 layout gate.
+Actual generic DLL calls reuse the .NET owner's existing approved Program.cs
+`generic_probe_only` path: a bounded owner launcher must verify actual child
+exit0, its starting PID and exactly one generic ABI receipt. That is a C# caller
+only. Header/tool/DLL/source hashes and actual local venue bind each receipt;
+all compilation and managed publish require root's serialized allocation.
+
 The eventual generated header is declarations only, generated from Rust layouts
 by upstream cbindgen with exact tool/artifact provenance. Never author C/C++
 implementation or executable templates here. Host glue must provide move-only
