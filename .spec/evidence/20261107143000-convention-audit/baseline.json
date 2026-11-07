@@ -248,5 +248,12 @@
     "source_direction_accepted": true,
     "actual_new_tests_observed": false,
     "production_recovery_qualified": false
+  },
+  "followup_network_responsibility": {
+    "private_review_sha256": "1d1508290de43a6f65d075493d41cdb60a612a7cc97d90b4db8bcfb9110b708a",
+    "reviewed_source_leaves": 9,
+    "new_temporal_fixture_execution_qualified": false,
+    "runtime_required_signal_readiness_qualified": false,
+    "model_status_reconciliation_commit": "c9d40684"
   }
 }

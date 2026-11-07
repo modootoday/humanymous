@@ -427,3 +427,28 @@ availability, identity or a recovery permit. New facade and controlled-route tes
 are authored; their execution was not independently observed. Capacity/FD/RSS,
 unsupported-platform execution and S2 typed production recovery remain OPEN.
 Narrow source-direction acceptance cannot close the complete audit/migration.
+
+### Temporal network responsibility and documentation re-audit
+
+Nine exact-hashed working-tree source leaves were independently reviewed across
+network history clock, correlation and traffic. Registry owns local distinct
+sets, fanout, resource accounting and accepted time; Population reuses the single
+generic anomaly core. Unqualified coordinator replies feed only new/velocity
+observations, not load-bearing local subnet/session Stats. Missing/degraded and
+CoordinatorReportedUnqualified scopes remain explicit. The narrow standard HMAC
+construction has an accepted owner-plan contract and requires known-answer tests;
+source review is not cryptographic or executed parity qualification.
+
+Traffic owns bounded64-record session history and copied snapshots. TLS backfill
+is explicitly AddressOnly, never verified connection-epoch provenance. The pure
+consistency checker returns Insufficient or UnqualifiedHistory; reviewed disabled
+permutation/header-order/alpn predicates are not emitted. No new source blocker
+was found within these responsibilities. Full original predicate/byte parity,
+all new temporal fixtures, runtime producer wiring and real coordinator/epoch
+qualification remain OPEN. These source reads cannot establish required-signal
+readiness or a global SRP/security pass.
+
+Model's requested status reconciliation is resolved atc9d40684: independently
+reread opening and final acceptance now distinguish the qualified parser from
+remaining kernel/gate/lifecycle design decisions. Historical raw results remain
+separate and complete migration qualification is still not claimed.
