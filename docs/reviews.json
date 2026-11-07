@@ -2,6 +2,26 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/storage/witness_recovery.rs",
+  "sha256": "e275c85e048d8f24331e1df56cb67caf79d9b5f63ba414497103d3f2af09c568",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete pure planning and explicit Wal recovery implementation: distinct external witness/pin, no provisioning, candidate missing checkpoint, require-covered versus preserve-ambiguous complete tail, exact append and actual persistence/torn-byte receipt. Planning is not disk repair or effect replay. No tests or native mutation executed.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md",
+    "docs/reference/security-audit.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/wal.rs",
+  "sha256": "a5477e4deaba6ce856a96c0bbd8f039ce373411561b86585c070d1e55e1f4598",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete WAL and native test definitions: lifetime cooperative writer lock, terminal framing repair at open, exact contiguous segments,16MiB rotation threshold and4MiB framed limit, sync/poison behavior, whole-memory reads and separate crypto verification. Directory privacy is caller-owned and rotation is not disk quota; no native test run.",
+  "pages": [
+    "docs/how-to/verify-audit-log.md",
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/apache-adapter/INTEGRATION.md",
   "sha256": "88727f17f1d6b23375d21b17611b145215dc236b7e50a7626dfc3a6c7e1d1278",
   "reviewer": "codex/rust-pages",

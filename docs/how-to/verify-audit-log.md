@@ -43,6 +43,20 @@ without conflicting checkpoints or an external pin. Do not infer first install
 from missing files. Verification protects rollback only through the trusted head;
 it cannot prove that an unanchored tail was never deleted.
 
+`plan_witness_recovery` is a read-only planner, requiring a distinct witness
+identity and independently retained latest head. Its candidate history may include
+a missing local checkpoint, so inspect `needs_checkpoint_append` before claiming
+that disk already contains it. `RequireCovered` rejects a complete unwitnessed
+tail; `PreserveAmbiguousTail` keeps those authenticated records without claiming
+their effects are known or acknowledged. Neither option removes complete records.
+
+`Wal::recover_witness_checkpoint` is the separate mutating operation under the
+WAL's lifetime writer lock. It can append the exact authenticated external head;
+it does not fabricate or re-sign a checkpoint. Retain the performed-append flag,
+actual persistence strength, ambiguous-tail count and prior torn-byte count.
+Verification-only recovery has no new persistence receipt. These outcomes do
+not authorize replaying application effects or resetting an external anchor.
+
 A terminal JSON value without its newline is uncommitted even if its JSON is
 valid. Recovery may discard that final incomplete frame; malformed
 newline-terminated frames still fail. The configured frame bound includes the

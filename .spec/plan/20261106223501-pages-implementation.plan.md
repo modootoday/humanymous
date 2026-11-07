@@ -1410,3 +1410,14 @@ receipt now that obsolete registration blocker is removed. Public topology names
 native-default check/lint separate from9safe tests and unbuilt actual hooks.
 Exact813 run still in_progress: nginx128358355202 newly running, Windows active,
 product browser failed, Pages/documentation not observed. No current render pass.
+
+### Witness planner versus performed WAL repair
+
+Read complete witness_recovery and WAL implementations. How-to distinguishes
+candidate planned checkpoint from disk append, require-covered versus explicit
+ambiguous-tail preservation, unchanged complete records, exact external head,
+performed persistence/torn-byte receipt and no effect retry. Security reference
+states16MiB rotation threshold is not segment maximum/total disk quota,4MiB
+newline-inclusive frame bound and whole-memory history reads. Two manual receipts;
+no native/test/compiler execution. Exact813 Windows/nginx confirmed live, no Pages
+job yet. Test-file excerpts were not accepted as a whole-file review receipt.

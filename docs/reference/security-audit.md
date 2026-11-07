@@ -184,6 +184,13 @@ boundary before interpreting a sealed event as evidence.
 
 ## Sealed writer lifetime and explicit recovery
 
+The WAL defaults to a 16-MiB rotation threshold and a 4-MiB framed-value limit,
+including its newline. Rotation occurs before a later append after the threshold
+has been reached; it is not a total disk quota or a promise that every segment
+is at most 16 MiB. Record/history reads collect complete parsed values in memory.
+The caller must provision private directory ownership and storage capacity;
+cooperative writer locking does not protect against a hostile directory owner.
+
 `SealedLog` owns existing key custody and the WAL/witness writer for one service
 lifetime. It does not expose mutable custody or a mutable inner log. Required
 external-witness refusal precedes state access and credential consumption;
