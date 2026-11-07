@@ -156,15 +156,63 @@
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
       ]
+    },
+    {
+      "source": "crates/cli/src/service/mod.rs",
+      "sha256_at_post_read_observation": "7edd0fad1c4f3651212b60d7c851e05853edde0471da0c21d7f963cd336ab010",
+      "lines": 366,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete366-line service state machine fully read. Explicit activate, exact signed artifact/private root, create-new lock/pending marker; install repeat verifies native state+diagnostic. Upgrade higher than retained floor, stages immutable generation then unregisters old/activates new; ordinary activation/persistence failure attempts prior restore, failures preserve pending. Rollback known predecessor preserves floor; removal verifies owned generations first. No power-loss/crash-atomic recovery, anti-rollback external anchor or actual native qualification. Doctor registration/running/loopback diagnostic not management authorization.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/service/storage.rs",
+      "sha256_at_post_read_observation": "ebea0785d60f51ca347608d313a214f3b841bbd90ff76015f9cbe5a250a10c2e",
+      "lines": 320,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete320-line generation/storage helpers fully read. Signed generation/state revalidation, <=14retired, sequence uniqueness/service consistency, private root/files, exact declarative definitions, shared ACL grants/revokes. State writes create-new deployment.next+sync then rename, pending+lock fail closed; no directory fsync or generalized recovery backend. Lock Drop removal is best effort. Filesystem path validation/reads not an independent race-free ownership proof. No arbitrary file/adopted service erasure.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/service/backend.rs",
+      "sha256_at_post_read_observation": "0e819678da2f00d3eb9109869e112e359377fd4f70fd6609bc31481e85ca5680",
+      "lines": 312,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete312-line OS manager adapter fully read. Shell-free fixed systemctl/launchctl argument arrays; escaped unit/XML definitions. Unix command10s direct-child polling with16KiB retained stdout, reader joined without separate EOF deadline; inherited descendant pipe can outlive child deadline. wait_ready5s is a loop bound, individual manager calls/exchanges can extend wall time; diagnostic read timeouts per operation not total adversarial slow-progress bound. Native service identity and actual usable manager still require execution. Loopback challenge not authenticated control.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/service/backend/windows.rs",
+      "sha256_at_post_read_observation": "243ca32336fbd76736fd5935573309e1fa96fcb3351b688aaaddf8776d5675e8",
+      "lines": 140,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete140-line Windows SCM implementation fully read. OnDemand OWN_PROCESS virtual account with resolvedSID and observed config fingerprint. Verify compares observed state to owned saved identity/account/type/startmode; no external provenance attestation. Stop polls6s, delete pollsabsence5s; stopped status not by itself drain/flush/business-effect proof. Registration failure deletion attempted; no privilege escalation/user creation. No actual SCM execution performed.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
     }
   ],
-  "full_read_files": 13,
-  "lines": 2113,
+  "full_read_files": 17,
+  "lines": 3251,
   "post_read_rehash_drift": [],
   "pre_read_snapshot": "not captured; must not claim before/after immutable full-read closure",
   "source_receipts_renewed": false,
   "docs_modified": false,
   "new_execution": "NOT_RUN",
   "full_product_qualified": false,
-  "remaining": "Service/storage/native backend, evidence example and actual process tests remain unread in this batch. No current ledger acceptance until complete relevant source and final rehash."
+  "remaining": "Evidence example and runtime_service_process test remain from current17-gap list; service unit/native process and release/installation existing receipts need final current hash comparison before package acceptance. No current ledger acceptance."
 }
