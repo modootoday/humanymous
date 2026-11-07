@@ -93,7 +93,7 @@ pub(super) fn source_snapshot() -> io::Result<Value> {
         "crates/browser/native/desktop/Cargo.toml",
         "crates/browser/native/desktop/pilot-contract.json",
         "crates/browser/Cargo.toml",
-        "crates/test-support/Cargo.toml",
+        "crates/integrations/humanymous-platform/Cargo.toml",
     ] {
         files.insert(file.to_owned(), digest(Path::new(file))?);
     }
@@ -102,7 +102,7 @@ pub(super) fn source_snapshot() -> io::Result<Value> {
         "crates/browser/native/desktop/src",
         "crates/browser/native/shared",
         "crates/browser/src",
-        "crates/test-support/src",
+        "crates/integrations/humanymous-platform/src",
         "scripts/ci/cef-pilot/src",
     ] {
         snapshot_directory(Path::new(directory), &mut files)?;
