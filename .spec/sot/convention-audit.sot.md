@@ -142,7 +142,8 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-LIFETIME-01 | P1 contract gap: shared process capture has no retained reader joins or proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Independently confirmed source constraints; owner design/fix and actual adversarial process pilot OPEN; no observed hang claimed |
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | Fixed-source reviewed at 3a0ba182; fresh boundary/doctest/native qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retain ordinary String key fields outside Zeroizing ownership | Authority | Source fix independently reviewed at 2ca6e4fa; scoped compilation/regressions OPEN; no exfiltration/log/provider leak alleged |
-| CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize-checked history capacities can exceed the Vec isize byte layout bound and reach a capacity-overflow panic | Network/root | Confirmed source counterexample; owner notified, layout validation and allocation-free regression OPEN; no large allocation or actual panic run |
+| CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize-checked history capacities can exceed the Vec isize byte layout bound and reach a capacity-overflow panic | Network/root | Source fix e1ed50ce independently reviewed; actual constructor regressions/checks OPEN; no large allocation or actual panic run |
+| CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack run a potentially slow liveness callback after their last deadline check and early bound-response consumption | Framework adapters/root | Source-confirmed; retain bound result through host preparation and revalidate after callback; owner fix and late-connected/no-origin regression OPEN; no SDK exploit run |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -560,3 +561,38 @@ require universal allocator-failure recovery, new production caps or policy
 changes. Source fix, meaningful allocated test receipt and independent re-audit
 remain OPEN. References: [Vec capacity](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.with_capacity),
 [Layout](https://doc.rust-lang.org/std/alloc/struct.Layout.html#method.array).
+
+### Corrected layout and new framework handoff follow-up
+
+HISTORY-LAYOUT01 source correction e1ed50ce uses Layout::array for anomaly's
+limit/actual window and rate's immutable hit capacity. Two constructor-only
+boundary tests reject the first invalid layout and accept the maximum valid
+configuration without constructing a Detector/Limiter or huge sample vector.
+Independent source re-audit accepts the correction. Current72 authored tests
+(58temporal plus14existing) remain NOT_RUN; the earlier MAD12 is not this proof.
+
+Framework consumer contract e123bdbf was checked against actual shared and host
+sources. HANDOFF01 affects WSGI/Rack: bound.consume precedes replay construction,
+then Pending.check_handoff precedes the trusted server liveness callback, and
+origin invocation follows a connected result with no final expiry recheck.
+A slow but valid connected callback can cross the remaining original budget.
+Authority's consume-time monotonic expiry was already spent before these host
+calls. This is a source-contract defect, not an observed SDK exploit/test pass.
+
+Required correction retains the actual bound result through host preparation
+and liveness, then checks the same original budget and consumes the result at
+actual origin admission. Peeking verdict is not consuming authority. Add a late
+connected/no-origin regression and a timely connected control, with actual host
+qualification kept separate. Node currently has its own wall-deadline Pending
+and JS timer rather than the advertised shared Pending; reconcile that deviation
+and final monotonic handoff, without assuming a timer callback ran promptly.
+ASGI's scheduled host invocation also needs an explicit actual admission point.
+No API/source rewrite or SDK/process execution was performed by audit.
+
+Independent S2 design critique of61bb6b4c remains needs-work: freeze ambiguous-
+tail versus writable/Ready transitions, SAME original Control/Limits binding
+through scan-to-repair, control-only bootstrap crash/restart compatibility and
+write-phase/rotation descriptor admission. These are unresolved draft contracts,
+not allegations of existing production S2 code. Whole-owner/per-operation,
+virtual-versus-physical and raw-signature-text directions were accepted narrowly.
+The owner and root received concrete cases; no implementation grant is inferred.

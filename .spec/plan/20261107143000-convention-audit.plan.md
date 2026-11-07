@@ -202,3 +202,8 @@ New source-confirmed CA-HISTORY-LAYOUT01: anomaly/rate acceptedusize products
 can exceed Vec's isize layout bound before infallible capacity allocation. Sole
 Network owner/root notified; config-layout refusal and allocation-free constructor
 regression required. No huge allocation, compiler or panic workload was run.
+
+Layout sourcefix e1ed50ce independently accepted; actual72 tests remain NOT_RUN.
+New CA-HANDOFF01 source finding sent soleowner/root with late-connected/no-origin
+regression and final bound-consumption contract. S2 independent draft critique
+retains explicit ambiguous-tail/deadline/bootstrap/write-ledger design gaps.

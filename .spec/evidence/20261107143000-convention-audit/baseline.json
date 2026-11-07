@@ -127,9 +127,17 @@
       "id": "CA-HISTORY-LAYOUT-01",
       "owner": "network/root",
       "priority": "P2",
-      "state": "source-confirmed invalid allocator layout; owner fix and allocation-free regression OPEN",
+      "state": "fixed-source e1ed50ce independently reviewed; actual allocation-free regressions and scoped checks OPEN",
       "private_review_sha256": "1d3d6ec6ca1c010043e8864f59089e8c6bf856236bb77b53fe74afc851d62352",
       "actual_large_allocation_or_panic_observed": false
+    },
+    {
+      "id": "CA-HANDOFF-01",
+      "owner": "framework-adapters/root",
+      "priority": "P1",
+      "state": "source-confirmed final handoff ordering gap; owner fix and actual regression OPEN",
+      "private_review_sha256": "47839559782753f117035e93b04fdda1b915796b56572fde34bf45cbe53559cc",
+      "actual_sdk_exploit_or_test_observed": false
     }
   ],
   "evidence_references": {
@@ -289,5 +297,10 @@
     "delivery_actual_new_run_qualified": false,
     "ci_remote_settings_qualified": false,
     "lab_actual_new_units_or_product_qualified": false
+  },
+  "followup_s2_contract": {
+    "private_review_sha256": "767b4e04dfb0058f32a32bd3b80f04897a1d86691901a3f90e6e38ddd1e1e161",
+    "verdict": "needs-work",
+    "implementation_or_production_grant": false
   }
 }
