@@ -587,3 +587,27 @@ kernel promise follows. Legacy capture debt and CLI0/74/native bridge/producer/
 service/privileged/hosted gates remain open. This checkpoint unlocks Root review
 of the exact next consumer/controller extension; it does not grant that extension
 or any new runtime automatically.
+
+## Accepted closed CLI consumer profile v1.3
+
+After the five-provider receipt, Root accepted one additional fixed profile in
+the SAME controller: cli-watchdog maps only to literal
+final_delivery_watchdog_with_retained_unread_pipes and
+watchdog_boundary-<16lowerhexCargoHash>.exe with independently expected SHA256.
+The five capture mappings remain fixed; profile artifact names cannot cross.
+No arbitrary selector/argv/PID, native call, manifest or lifecycle owner is added.
+Two new pure mapping/name-negative cases are authored before qualification.
+
+CLI owns the ONE actual parent invocation, with FOUR distinct0/74 subcase outcomes
+counted separately from native provider5. Parent original8s/12s starts BEFORE its
+shared barrier; outer original10s/15s remains independent, with no renewal. Native
+L2 builds/freezes/hands off the controller and does not duplicate CLI execution.
+Native5 evidence remains historical to its exact old controller hash.
+
+CLI sourcec57cf0c6 bakes a separate service-fixture executable path, unlike the
+native helpers' current_exe. CLI pins BOTH parent and fixture hashes and retains
+an explicit artifact-write lease on the actual baked fixture path until runtime
+terminal; copying only the parent is insufficient. Root was notified. This is
+trusted component source/artifact closure, not producer or loaded-image attestation.
+Actual CLI gate remains NOT_RUN until controller checks/build/hash handoff plus
+fresh resource admission. SCM/accounts/privileges/native producer remain excluded.

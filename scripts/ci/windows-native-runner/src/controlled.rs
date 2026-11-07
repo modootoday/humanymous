@@ -1,4 +1,4 @@
-//! Fixed cooperative capture parents, independently owned by a real Windows Job.
+//! Fixed cooperative capture/CLI parents, independently owned by a real Windows Job.
 //! No arbitrary/untrusted launch guarantee, account/SCM operation or privilege.
 use crate::actor::ControlledFixtureJob;
 use serde_json::json;
@@ -25,6 +25,33 @@ const CASES: &[(&str, &str)] = &[
         "retained_stop_request_preserves_observed_exit_zero",
     ),
 ];
+struct Profile {
+    selector: String,
+    executable_prefix: &'static str,
+}
+fn profile(case: &str) -> Option<Profile> {
+    if case == "cli-watchdog" {
+        return Some(Profile {
+            selector: "final_delivery_watchdog_with_retained_unread_pipes".into(),
+            executable_prefix: "watchdog_boundary-",
+        });
+    }
+    let (_, name) = CASES.iter().find(|(id, _)| *id == case)?;
+    Some(Profile {
+        selector: format!("process::capture_attempt::actual_tests::{name}"),
+        executable_prefix: "humanymous_test_support-",
+    })
+}
+fn executable_name(name: &str, profile: &Profile) -> bool {
+    name.strip_prefix(profile.executable_prefix)
+        .and_then(|tail| tail.strip_suffix(".exe"))
+        .is_some_and(|hash| {
+            hash.len() == 16
+                && hash
+                    .bytes()
+                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+        })
+}
 // Preserve unresolved native owners until the controller's OS boundary exits.
 // Job Drop requests kill-on-close; it never manufactures convergence evidence.
 thread_local! {
@@ -57,7 +84,7 @@ fn options(mut args: impl Iterator<Item = String>) -> io::Result<Options> {
     };
     if !result.exe.is_absolute()
         || !result.work.is_absolute()
-        || !CASES.iter().any(|(case, _)| *case == result.case)
+        || profile(&result.case).is_none()
         || result.digest.len() != 64
         || !result
             .digest
@@ -71,7 +98,7 @@ fn options(mut args: impl Iterator<Item = String>) -> io::Result<Options> {
         .file_name()
         .and_then(|n| n.to_str())
         .ok_or_else(refused)?;
-    if !name.starts_with("humanymous_test_support-") || !name.ends_with(".exe") {
+    if !executable_name(name, &profile(&result.case).ok_or_else(refused)?) {
         return Err(refused());
     }
     Ok(result)
@@ -159,14 +186,7 @@ pub(crate) fn run(args: impl Iterator<Item = String>) -> io::Result<i32> {
     if format!("{:x}", hasher.finalize()) != options.digest {
         return Err(refused());
     }
-    let selector = format!(
-        "process::capture_attempt::actual_tests::{}",
-        CASES
-            .iter()
-            .find(|(case, _)| *case == options.case)
-            .ok_or_else(refused)?
-            .1
-    );
+    let selector = profile(&options.case).ok_or_else(refused)?.selector;
     fs::create_dir(&options.work)?;
     let stdout = new_file(&options.work.join("parent.stdout.log"))?;
     let stderr = new_file(&options.work.join("parent.stderr.log"))?;
@@ -294,7 +314,7 @@ mod tests {
     fn fixed_parent_requires_absolute_executable_digest_and_new_work_locator() {
         let valid = [
             "--test-exe",
-            r"C:\fixture\humanymous_test_support-0123.exe",
+            r"C:\fixture\humanymous_test_support-0123456789abcdef.exe",
             "--expected-sha256",
             &"a".repeat(64),
             "--case",
@@ -314,5 +334,41 @@ mod tests {
             r"C:\private\new-case",
         ];
         assert!(options(invalid.into_iter().map(str::to_owned)).is_err());
+    }
+    #[test]
+    fn cli_profile_has_one_literal_selector_and_specific_artifact_prefix() {
+        let cli = profile("cli-watchdog").unwrap();
+        assert_eq!(
+            cli.selector,
+            "final_delivery_watchdog_with_retained_unread_pipes"
+        );
+        assert_eq!(cli.executable_prefix, "watchdog_boundary-");
+        assert!(profile("CLI-watchdog").is_none());
+        assert!(profile("cli-watchdog-extra").is_none());
+        assert_eq!(
+            profile("normal").unwrap().selector,
+            "process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins"
+        );
+    }
+    #[test]
+    fn executable_hash_names_cannot_cross_profiles_or_escape_fixed_shape() {
+        let cli = profile("cli-watchdog").unwrap();
+        assert!(executable_name(
+            "watchdog_boundary-0123456789abcdef.exe",
+            &cli
+        ));
+        for name in [
+            "humanymous_test_support-0123456789abcdef.exe",
+            "watchdog_boundary-0123.exe",
+            "watchdog_boundary-0123456789ABCDEF.exe",
+            "watchdog_boundary-0123456789abcdef.exe.extra",
+            "watchdog_boundary-0123456789abcdef.dll",
+        ] {
+            assert!(!executable_name(name, &cli));
+        }
+        assert!(!executable_name(
+            "watchdog_boundary-0123456789abcdef.exe",
+            &profile("normal").unwrap()
+        ));
     }
 }
