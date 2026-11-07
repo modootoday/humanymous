@@ -1,0 +1,28 @@
+{
+  "scope": "Read-only review inventory comparison on independent clean fixed source",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "docs_tree": "c434ddf5a968f5e7d25c445eb0ca86c207c152e4",
+  "clone": {
+    "first_chunk": "4ca728",
+    "first": "checkout failed because Windows destination path too long",
+    "primary_branch_switched": false,
+    "retry_chunk": "41ee3d",
+    "retry": "Fresh short private clone succeeded, no overwrite or deletion of failed checkout"
+  },
+  "delta": {
+    "byte_identical": 347,
+    "changed": 97,
+    "output_chunk": "781dac",
+    "exit": 0,
+    "added": 226,
+    "raw_sha256": "4cf877f888484d02bd9eb706b713cdf9e73ef7947648e82feec02eb37281042a",
+    "removed": 1,
+    "dirty": false
+  },
+  "verifier_executable_sha256": "c9bcc0cebc384ac0fa100485e6a8a076dcbf6d1a7564b1ca884987db3f7145ef",
+  "removed_source": "crates/node-adapter/src/admission.rs",
+  "source_review_accepted": false,
+  "complete_freshness_qualified": false,
+  "meaning": "Comparison completed; 323 changed/new sources need substantive manual triage, plus removed-source disposition. Byte equality is not prose approval.",
+  "new_build_browser_or_at": "NOT_RUN"
+}

@@ -2048,3 +2048,15 @@ removed only those two entries, without broadening scope or renewing digests.
 Corrected retry reached snapshot but failed HEAD/source inventory drift. Both
 failures retained; source checker88/errors0 is not complete freshness. Request
 a fixed detached candidate for read-only delta rather than retry moving primary.
+
+### Fixed-candidate review inventory completed
+
+Root approved read-only fixed-source comparison. First clean clone checkout
+failed Windows long-path handling; retained failure and used a fresh short private
+clone at literal0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08 under Git mutex, without
+primary branch switch or code execution. Clone clean/docs treec434ddf5. Actual
+existing review-delta exited0:347 byte-identical,97 changed,226 added,1 removed.
+Raw14951-byte delta attached privately with exact hash; public count/limit summary
+attached separately. This is an actionable inventory, not accepted reviews or
+complete freshness.323 changed/new sources and removed admission source require
+manual disposition. No bulk renewal, new build, browser or AT result inferred.
