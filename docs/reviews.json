@@ -2,6 +2,13 @@
   "schema": 1,
   "reviews": [
     {
+      "source": "crates/nginx-adapter/src/lib.rs",
+      "sha256": "b037239dfc33dd41c3e9a79ecf85b0453d6554c9e0ed922c236952c4ee20c5f3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read full composition root: safe request projection export and feature/target-gated native nginx ABI, with explicit non-Linux refusal. Public topology reference now acknowledges existing experimental Linux module rather than claiming absence. Native source excerpts and owner results distinguish historical synthetic ALLOW pilots from unvalidated JSON/timer follow-through. This row does not approve full native.rs, ABI safety or current deployment execution; those need separate review/evidence.",
+      "pages": ["docs/reference/supported-topologies.md"]
+    },
+    {
       "source": "crates/node-adapter/src/stream.rs",
       "sha256": "d342b9328b9fe718f81158e3e9bdb87f45f3f8467445b5e65c80571c4cd13be3",
       "reviewer": "codex/rust-pages",
@@ -2598,13 +2605,13 @@
     {
       "id": "nginx-adapter",
       "sources": [
-        "build/gate.Dockerfile"
+        "crates/nginx-adapter/src/lib.rs"
       ],
       "pages": [
-        "docs/how-to/verify-the-image.md"
+        "docs/reference/supported-topologies.md"
       ],
       "reviewer": "codex/rust-pages",
-      "notes": "No nginx Rust module is present or qualified in the reviewed source inventory. Existing Go edge image is not that module; reader image page requires exact candidate provenance and deployment evidence.",
+      "notes": "The experimental Linux nginx module exists; topology reference separates SDK/native ABI, trusted operator configuration, synthetic historical ALLOW pilots and unvalidated JSON/timer follow-through. Required Docker deployment check remains an execution obligation, not a passing current-source claim. Full native source/ABI review and platform/witness/backpressure/human qualification remain pending.",
       "checks": [
         "docker/deployment"
       ]

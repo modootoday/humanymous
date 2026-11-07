@@ -170,3 +170,34 @@ loader import success and provenance hashes do not establish release-qualified
 OS/architecture/runtime tuples. A source-bound qualification receipt and actual
 authority/origin, archive and platform gates remain required; no npm publication
 or generally supported installation is implied here.
+
+## Experimental native nginx component
+
+A Rust nginx module now exists for an initial Linux HTTP/1.1 profile. It uses
+an upstream nginx C engine through the pinned ngx-rust SDK; it is not a Rust
+replacement for the engine. Default library unit tests do not qualify the native
+ABI, nginx binary/build flags or a deployed configuration.
+
+The `humanymous_guard` directive consumes supervisor-provisioned private
+configuration. The authority must independently select the nginx producer
+profile. The ingress projection binds an exact method/path inventory, Host,
+complete body and scope, then reuses the shared authority client. A generic
+parser accepting nginx envelopes is not proof of native module execution.
+
+The declared profile bounds complete uploads to 1 MiB. Non-HTTP/1.1 requests,
+file-backed/incomplete bodies, transfer-coded uploads, trailers, upgrades and
+gRPC are outside its support. Internal/forwarding assertions are sanitized;
+original TLS/H2 capture, HTML/CSP insertion and response-body filtering are not
+provided. Operator configuration remains trusted: prevent post-authorization
+rewrite and origin bypass, disable proxy retry/cache, and apply the declared
+buffering and upstream-control-header restrictions before claiming deployment
+isolation or unchanged handler-owned streaming.
+
+DENY maps to 403. Working source returns a no-store 409 JSON
+`challenge_unavailable` response for CHALLENGE; that is not an accessible
+recovery service. The JSON/timer follow-through has not been qualified by the
+historical 35-group Compose result. Historical positive ALLOW pilots used
+explicit test-only synthetic evidence; the actual production application-HTTP
+profile's 409/no-origin observation does not prove a successful human flow.
+Independent witness, cross-user isolation, sustained backpressure and full
+browser/human/assistive-technology qualification remain separate outstanding gates.

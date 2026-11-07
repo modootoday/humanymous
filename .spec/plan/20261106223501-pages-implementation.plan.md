@@ -603,3 +603,11 @@ public topology page. Verified surface pages are included in both source rows.
 The name is a required check, not evidence of execution. CI42347732666 policy
 failed and Pages/documentation were skipped; ready was still running at query.
 Failed logs were not yet available while run remained live. No result inferred.
+
+## Native nginx public boundary reconciliation
+
+Read owner integration/README, full composition root, request projection and
+native CHALLENGE/timer excerpts. Replaced obsolete module-absent surface with
+existing Linux experimental module; documented actual-vs-synthetic/historical
+results and pending JSON/timer qualification. One narrowly scoped lib source
+receipt does not approve native ABI or whole module. Docker gate retained.
