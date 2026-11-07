@@ -1203,3 +1203,29 @@ private Owner is behind the private state module and native_preparation returns
 Unsupported; diagnostic phase DATA cannot construct that capability. No additional
 current defect was confirmed in this bounded review. No Runtime move, visibility
 change or native/Ready qualification is implied. Exact hashes are in baseline.json.
+
+## Independent9586 browser failure join and finite diagnostic review
+
+A fresh read of completed GitHub browser-product job128516030159/run42407744891
+matches the saved decoded log exactly:51176 characters/51178 UTF8 bytes. This is
+decoded text, not original archive bytes. Six fresh step summaries match shared
+name/number/status/conclusion fields; wrapper-omitted timestamps are not full
+metadata equality. The one typed browser-product receipt semantically matches the
+saved projection at9586f7e4:18 assertions/16 passed/2 failed,9 required unavailable,
+actor inventory67/selected1/filtered66. DNS succeeded, while source-prefix authentication,
+parser-summary matching and selected-test success were false. The pinned bootstrap call returned Err;
+its internal operation/status is unknown. Original private ledger/actor streams
+and image-role mapping remain unrecovered. This does not establish original e70
+cause. No new watch, retry or execution occurred.
+
+New Collector source16e1c26b and parserd5c46903 use19 field-free private variants
+while public errors remain generic. Abort/Timer ownership remains in place.
+The parser requires the pinned pilot location and owned failure block, recognizes
+only an adjacent exact unit variant and refuses unknown/payload/duplicate/unbound
+messages. It classifies diagnostics, never product success. Selected nine-file
+source review found no additional concrete defect. Seven raw attachments match;
+207 selected local inputs are byte-identical before/after actual WASM check and
+strict Clippy success. These are type/lint results:0 WASM tests and no actual
+Docker run. New-source browser/collector/product qualification remains OPEN; no
+historical failed run is repaired retroactively. Exact private hashes are bound
+in baseline.json. Audit launched no compiler or product workload.
