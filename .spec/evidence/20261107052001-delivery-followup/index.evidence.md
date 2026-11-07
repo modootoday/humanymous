@@ -3,12 +3,12 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T10:25:01Z
+updated: 2026-11-07T10:25:47Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
   - {path: hosted-8132117-summary.json, sha256: 92b51d1914a16305b845afa92d2cf4073076b58eb72d961bf8aa4b695d42b17f, bytes: 7453, store: repo}
-  - {path: apache-workflow-review.json, sha256: 3592c027bfb5a633dde637f6c5c7a6a5390c322039da852f03626bb01b62ae6c, bytes: 974, store: repo}
+  - {path: apache-workflow-review.json, sha256: 822d27f101456cd6888327410ae3fe97c38d4376e7c140f5c25ba07d73781c9a, bytes: 945, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
