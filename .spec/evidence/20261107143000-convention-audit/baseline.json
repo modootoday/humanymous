@@ -192,7 +192,7 @@
       "id": "CA-ROOT-JOURNAL-01",
       "priority": "P1",
       "owner": "Native/root",
-      "state": "OPEN design completeness:9c17705f addresses original replay loss; bounded saturation/no-eviction requirement and qualification remain pending",
+      "state": "CLOSED scoped prospective contract omission at75458697: no-clobber/capacity/clock/tombstone rules now explicit; actual model/journal/auth/ancestry/native qualification remains OPEN",
       "trigger": "Reused nonce/locator may overwrite an earlier Planned/Unknown attempt, allowing later NotCreated to erase prior cleanup custody",
       "required_delta": "Atomic create-new unique attempt or active/Unknown slot refusal; ACK binds anchor selector nonce owner original clock pair; never overwrite/evict Unknown or resolve it from later NotCreated; collision/replay/crash model negatives",
       "private_review_sha256": "376db7075e3d2749fc35d5890feea629b6c087756fcd870ec02401b6b158f7e2"
@@ -201,7 +201,7 @@
       "id": "CA-CARGO-ID-01",
       "priority": "P2",
       "owner": "Native/Delivery/root",
-      "state": "OPEN qualification; source corrections9fcc013d/057befe3 reviewed; actual production loader and owning receipt audit pending",
+      "state": "OPEN production qualification; Native five fixture passes independently verified, source9fcc013d/057befe3 reviewed; production loader NOT_RUN and Delivery actual regression pending review",
       "trigger": "Cargo package IDs are opaque; valid Platform path package uses version-only fragment and fails old name-suffix predicate",
       "actual_false_positive_observed": false,
       "historic_9586_cause_established": false,
@@ -1562,5 +1562,29 @@
     "spec": "281documents/0errors/0warnings --no-local after Root86e9240e registers branch-sync",
     "goal_complete": false,
     "final_spec_validation": "282documents/0errors/0warnings --no-local; concurrent document count increased from prior281"
+  },
+  "followup_journal_contract_closure_and_native_id_fixtures": {
+    "reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\native-no-clobber-amendment-review-002.json",
+        "sha256": "401ed5cce3963d953ab632e06cdea99da8220d7ff2f7af11e496ff76cc1659cc",
+        "bytes": 1036
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\native-opaque-id-actual-review-001.json",
+        "sha256": "f4e03b584d4c818c8fbbd18b9bf1356b9478a62dab435ff09768229114cf0a23",
+        "bytes": 2722
+      }
+    ],
+    "journal": "75458697 closes scoped prospective contract omission, all actual journal/native gates remain open; twelve proposed tests NOT_RUN",
+    "native_id": "50rawattachments match/copies; five actual fixtures exactinventory;105currentselectedhashes match; binary matchesd6d7db44; productionPackages::load NOT_RUN; Delivery actual not reviewed",
+    "goal_complete": false
+  },
+  "followup_collector_403_finite_source": {
+    "private_review": ".spec.local/root/evidence/20261107143000-convention-audit/collector-403-finite-source-review-001.json",
+    "sha256": "6bb3d8fa1e3740d4bc1cddf02e1da10f2e33345f6361f9d644dff6b7c017a630",
+    "source": "889eb6f8",
+    "verdict": "source-only ready; no additional P0/P1; actual WASM/browser qualification remains pending",
+    "goal_complete": false
   }
 }

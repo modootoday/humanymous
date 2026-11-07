@@ -1384,3 +1384,36 @@ After Root86e9240e registers branch-sync evidence, public spec validation is
 281 documents, zero errors and zero warnings (--no-local). This is not a new
 full-local specification pass. Private hashes are bound in baseline.json;
 full migration, lifetime/handoff and actual product gates remain OPEN.
+## Journal contract omission closure and Native ID fixture verification
+
+Native75458697 now adds finite attempt/namespace/tombstone/byte/pending-operation
+capacity, checked counters/generation and refusal before native mutation, without
+Unknown/tombstone eviction or TTL purge. Re-audit confirms the original
+CA-ROOT-JOURNAL-01 prospective contract omission is CLOSED at design scope.
+The twelve exact private cfg(test) model selectors are proposed, NOT_RUN; symbolic
+history/cost/namespace facts cannot become ACK/native authority. Actual durable
+journal storage, broker authentication, ancestry mutation admission, model code
+and native create/cleanup remain OPEN. Earlier capacity-review001 stays historical;
+review002 and the exact reviewed plan snapshot preserve the correction.
+
+Native opaque-ID regression evidence is now independently verified:50 raw
+attachments match hashes/sizes and are copied; actual2+2+1 passes equal all five
+selected inventory names, with58/58/59 filtered respectively and no failures or
+ignored cases. Check, strict Clippy and scoped fmt receipts exit0. The105 selected
+source/tool records match current hashes; source and registry2079 before/after
+manifests are byte-identical, as is environment projection. Exact test executable
+hash/size matches the receipt. This is pure fixture qualification; production
+Packages::load is NOT_RUN, Delivery actual regression remains unreviewed, and
+CA-CARGO-ID-01/full consumer/native/lifetime qualification remain OPEN.
+## Collector finite403 source review
+
+Bounded source review of889eb6f8 confirms exact two static Runtime rejection
+bodies map only to field-free internal diagnostics. The403 body read reuses the
+original timer/abort owner and checks256 retained Rust bytes before resize/copy;
+this is not a JavaScript/network allocation bound. Unknown/extra/oversized/read
+failures stay generic; public connect errors, request policy and authorization
+predicates are unchanged. Reader cancellation and Timer/Abort Drop remain owned.
+Four authored fixture modes in the existing WASM case are not execution proof.
+No P0/P1 was confirmed in this source slice. Actual WASM/compiler/browser/product
+qualification remains with Root; no old403 cause is retrospectively inferred.
+Private source hashes and review are bound in baseline.json.
