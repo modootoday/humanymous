@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-07T03:56:02Z
+updated: 2026-11-07T04:10:34Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -30,6 +30,19 @@ connection/battery, locale/display/memory and existing wire defaults. Preserve
 frozen server interpretation, no permission prompts or raw device identifiers.
 DRM absence alone is not a new blocking rule. Source advanced.js fingerprint-ID
 and WebRTC ICE/session correlation remain distinct required responsibilities.
+
+Implement collectAdvanced as an explicit async advanced_json API, using shared
+Advanced and preserving connectionRtt=-1/batteryLevel=-1 plus original optional
+defaults. probed means the attempt ran, not that every optional surface exists.
+Do not merge it into qualified session reports implicitly. Optional API absence
+and rejection keep original per-surface defaults; malformed/oversized returned
+data and cleanup/timer infrastructure failure reject the probe. Use800ms for
+formerly unbounded media/battery/GPU-info/memory operations as well as EME/GPU;
+memory timeout is not an observed exception and must not set measureMemThrows.
+No arbitrary sites, license requests, device IDs/labels, voice names, permission
+prompts or local addresses are collected. Audio sample rate uses an unplayed
+context and awaits close; voice waiting adds/removes its own native Promise
+resolver listener and never replaces onvoiceschanged. Each stage owns cleanup.
 
 ## First-party environment probe extension
 

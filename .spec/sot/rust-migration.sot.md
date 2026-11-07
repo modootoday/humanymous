@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T03:56:02Z
+updated: 2026-11-07T04:10:34Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -20,7 +20,12 @@ metadata. Its standalone measured API does not qualify snapshot/session transpor
 Evidence: evidence:root/20261106235519/environment-collector-results.json.
 Its subsequent asynchronous prerequisite shares one timer owner and distinguishes
 fulfilled undefined, rejection and timeout; no duplicated per-probe timeout logic.
-Advanced field collection remains unimplemented until its own acceptance tests pass.
+Advanced field collection now implements collectAdvanced through an explicit
+Rust async API; native13 and actual isolated Firefox30 pass. Shared timer and
+WebGL acquisition prevent duplicate implementations while preserving each old
+probe's fallback scope. Guard, fingerprint-ID/ICE producers, distribution and
+qualified snapshot/session transport remain required; bounded API tests are not
+whole-runtime parity. Advanced capability absence is never a new hard rule.
 
 ## Collector implementation delta c3389b6
 

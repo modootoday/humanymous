@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T03:48:54Z
+updated: 2026-11-07T04:10:34Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui]
@@ -252,6 +252,14 @@ privacy getter 오류·256UTF16 예산을 검증했다. snapshot/session으로 �
 통합하지 않았으며 guard/advanced·배포·RIT·human/AT는 남는다. 정제 근거는
 environment-collector-results.json이다. Pages 원격 성공·산출물과 여전히
 미구현인 browser 파일럿 실패는 pages-remote-results.json에 별도 기록한다.
+
+후속 advanced_json은 collectAdvanced의 기기 집계·voice·EME/GPU·WebGL/audio·
+connection/battery·locale/display/memory를 Rust로 구현했다. native13 및 actual
+Docker Firefox30(advanced12case,변경하지 않은 원본 함수와의 실제 report 비교)
+통과다. 추가 OS/API error matrix,guard·fingerprint-ID/ICE·session 통합은 남는다.
+256-task 실패와 pids.events max2를 보존하고 동일 이미지의512-task에서는
+actual export1pass/max0을 확인했다. 브라우저 sandbox·UID·network 정책을
+완화하지 않았으며 full_runtime_qualified=false를 유지한다.
 
 ac560ff의 전체 run42329288896는 failure이며 component green으로 대체하지 않는다.
 정제 분류는 cef-remote-results.json,원시 로그는 private evidence에 등록했다.

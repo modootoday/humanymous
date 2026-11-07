@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T03:50:00Z
+updated: 2026-11-07T04:10:34Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -82,6 +82,13 @@ unchanged existing JS reducer oracles from a test-only Docker image. Workflow
 path coverage includes those oracle files. Release WASM excludes cfg(test) oracle
 imports. This exception is migration evidence, not a new foreign-language product
 implementation; final oracle retirement remains mandatory.
+
+The later advanced collector delta adds unchanged advanced.js as a third
+test-only legacy oracle. Actual Firefox30 includes comparison of the shared
+Advanced report against that original function on the owned browser; it does
+not prove parity across all APIs/OSes or integrate a qualified session. Production
+WASM excludes every cfg(test) oracle import. The component lab512-task limit is
+supported by retained256-limit pids.events/crash evidence, not sandbox disablement.
 
 The root workspace now registers the Windows bootstrap and desktop CEF packages.
 scripts/ci/cef-pilot is an independently locked Rust CI tool: build actual DLLs,

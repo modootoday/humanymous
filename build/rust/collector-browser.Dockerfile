@@ -8,6 +8,7 @@ COPY Cargo.toml Cargo.lock ./
 COPY crates/ ./crates/
 # Existing modules are read-only differential oracles in this test-only image.
 COPY web/js/features/mouse.js web/js/features/keystroke.js ./web/js/features/
+COPY web/js/advanced.js ./web/js/
 RUN cargo test -p humanymous-collector --target wasm32-unknown-unknown --locked --no-run && find target/wasm32-unknown-unknown/debug/deps -name 'humanymous_collector-*.wasm' -exec cp '{}' /usr/local/lib/collector-tests.wasm ';'
 ENV HOME=/tmp/collector-home GECKODRIVER=/usr/local/bin/geckodriver WASM_BINDGEN_USE_BROWSER=1 WASM_BINDGEN_TEST_ONLY_WEB=1 WASM_BINDGEN_TEST_TIMEOUT=90
 USER 65532:65532

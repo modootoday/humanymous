@@ -23,6 +23,14 @@ pub async fn environment_json() -> Result<String, wasm_bindgen::JsValue> {
         .map_err(|_| wasm_bindgen::JsValue::from_str("environment serialization failed"))
 }
 
+/// Attempt optional advanced observations; this is not a qualified session report.
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn advanced_json() -> Result<String, wasm_bindgen::JsValue> {
+    serde_json::to_string(&browser::advanced::probe().await?)
+        .map_err(|_| wasm_bindgen::JsValue::from_str("advanced serialization failed"))
+}
+
 /// An explicit collection epoch owning passive event listeners and bounded buffers.
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]

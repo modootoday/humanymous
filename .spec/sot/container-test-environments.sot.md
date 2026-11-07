@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T03:30:26Z
+updated: 2026-11-07T04:10:34Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -11,6 +11,14 @@ rel:
 ---
 
 ## Rust collector component lab delta c3389b6
+
+Collector advanced probes use a512-task cgroup budget. At256, the isolated
+full advanced export failed with thread-spawn EAGAIN/content-process SIGSEGV and
+the same container's pids.events recorded max2; media/capability/profile alone
+passed with max0. Preserve those failed receipts. Raising this finite resource
+budget changes no UID, read-only mount, network-none, cap-drop, no-new-privileges
+or browser sandbox setting. A successful retry must record its own exact image,
+compose source and executed test count; it is not retroactive success at256.
 
 compose.collector.yaml and collector-browser.Dockerfile execute actual Rust WASM
 component tests in Firefox ESR with pinned wasm-bindgen/geckodriver tooling.
