@@ -1291,5 +1291,21 @@
     "native_actual_tests": "NOT_RUN per owner",
     "audit_workloads": 0,
     "goal_complete": false
+  },
+  "followup_platform_two_context_preparation": {
+    "private_review": "platform-two-context-preparation-review-001.json",
+    "private_review_sha256": "ea1f174a70eff3df5e2462a6eb557243e00d1159599fa9a94467de8e4e80395d",
+    "scope": "Bounded current source and proposed plan review; no move or compiler qualification",
+    "reviewed_files": 13,
+    "confirmed_new_blockers": [],
+    "unsafe_allow_scopes": 6,
+    "worker_owner_scope_occurrences": 9,
+    "crate_json_paths": 2,
+    "concrete_seams": "Exactcontextvisibility/unsafe6-only/testingforbid; independentlyisolated4featureclosures; controlled/harness executable+selector+grant/package/target6parents atomicremap",
+    "remaining": "Rootfreezefinalmap/ownerhandoff, positive/negativeAPIfeaturecompiler, newsourceboundnativeprocesspilots",
+    "legacy_lifetime_open": true,
+    "audit_workloads": 0,
+    "implementation_moves": 0,
+    "goal_complete": false
   }
 }

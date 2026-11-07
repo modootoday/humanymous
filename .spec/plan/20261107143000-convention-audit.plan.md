@@ -1149,3 +1149,24 @@ mutation. Source review found the identified boundary addressed. Owner confirms
 these tests/check/Clippy are NOT_RUN pending Root allocation. CA-NATIVE-SOURCE-01
 therefore remains OPEN, source-ready only; old receipts remain unchanged. Audit
 ran no compiler/native/product workload. Full migration remains OPEN.
+
+## Platform two-context preparation review
+
+Bounded review of13 source/manifest/plan records confirms concrete migration
+seams in the proposed windows_object/testing split. Two crate::json references
+need testing context paths; Worker and eight methods must retain the exact shared
+process owner scope. Six bridge function-local unsafe exceptions must not expand;
+testing must independently forbid unsafe while the package permits only those
+existing bridge wrappers. Controlled executable prefixes, exact selectors and
+grant strings plus helper package/target and six parent-test identities must move
+atomically, without wildcard admission. The preparation plan covers these seams.
+No additional concrete blocker was confirmed in this source review.
+
+Default/testing/windows-object/joint dependency/API closures require independent
+isolated qualification, including absent bridge APIs on non-Windows and private
+observation fields inaccessible from testing. Workspace all-features is not
+isolated-default proof. Root still owns freeze/map/ownership and implementation;
+no move or compiler happened in this audit. Actual process/native grants and the
+existing legacy lifetime finding remain separate and OPEN. Exact selected hashes
+are in baseline.json's private review. This is preparation, not Platform or full
+migration qualification; native source-custody P2 also awaits actual regression proof.
