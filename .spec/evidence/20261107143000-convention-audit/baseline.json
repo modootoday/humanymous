@@ -143,7 +143,7 @@
       "id": "CA-SERVICE-FOOTER-01",
       "owner": "native-windows",
       "priority": "P2",
-      "state": "d460a7eb source and actual7pure tests including exact FAILED footer regression independently verified; combined runner strictClippy101 and adeb3a73 run-ID correction/current8thcase gates OPEN",
+      "state": "CLOSED scoped: R3 actual8 service tests including FAILED-footer/recomputed-hash and canonical run-ID regression, Native check/strictClippy0; R4c separate fmt/.NET strictClippy0 with zero repeated tests. Global lifetime/native host/product OPEN",
       "trigger": "FAILED footer with one passed and zero failed, supplied stdout hash recomputed",
       "actual_false_hosted_outcome_observed": false,
       "private_review_sha256": "9433936403099bb5d7ed75cdab1f94f2b816578f385ad3f963a43e42bed69667"
@@ -773,5 +773,62 @@
     "goal_complete": false,
     "first_facade_proposal_ready": true,
     "first_facade_actual_qualified": false
+  },
+  "followup_actions_native_and_facade": {
+    "private_review_sha256": {
+      "native-abi-header-29-actual-review-002.json": "da731b3b395eed533e680bfcdc76350a152b284f3352fcf36109405383f17a48",
+      "facade-candidate-and-header-frontend-source-review-001.json": "59190517ac6c0ab3f9c89529041275d29bf16fb3d8adad227f443d57c45439f0",
+      "header-config-scope-followup-002.json": "9b6af4428b466b9487ed0dfc95925e9946eb09c6bb9376a3d063a310e8a69fea",
+      "actions-annotation-35-group-audit-002.json": "49bfc82511e6272ab7be3b952a44185abf35de3e93db8feab86790df81b4b2b7",
+      "native-dotnet-targeted-r3-review-002.json": "54862740158e4c38bc2e6499cc64c2549375879e83ebd7a416f73858c228fdba",
+      "dotnet-minimal-r4c-review-001.json": "c8b98ce05362746fa9d7059d0b10f369573bf3df3dd082da0281d991ba5ead78"
+    },
+    "actions": {
+      "generic_checks": 326,
+      "checks": 1207,
+      "annotations": 1886,
+      "suites": 393,
+      "runs": 393,
+      "state": "Read-only census and current-source matrix; generic failures and git-cliff89 need run/log/source-owner proof; no new dispatch or historical deletion",
+      "exact_groups": 35,
+      "generic_buckets": 45,
+      "generic_annotations": 327,
+      "internal_join_mismatches": 0
+    },
+    "native_header": {
+      "breakdown": "16 core/6 exports/7 header",
+      "source": "394ed5498961c618f7b70ff023fa0069bc9af082",
+      "rustup_proxies": 2,
+      "scope": "Cargo.lock differs from earlier leaf only by existing Delivery dependency; not compiler/registry closure or dynamic ABI",
+      "selected_workspace_inputs": 15,
+      "actual_pure": 29
+    },
+    "native_r3": {
+      "source_leaves": 409,
+      "base_archive_members": 2875,
+      "attachments": 78,
+      "breakdown": "10 interactive/5 capture/1 direct/2 barrier/8 service/11 managed protocol",
+      "native_strict_clippy": 0,
+      "actual_host": 0,
+      "dotnet_strict_clippy": 101,
+      "actual_pure": 37
+    },
+    "dotnet_r4c": {
+      "failed_preparations_preserved": 2,
+      "tests_repeated": 0,
+      "attachments": 34,
+      "source_plan_inputs": 410,
+      "scope": "Same verified R3 base; retained.rs let-chain style and plan overlays changed; original budget retained, marker removed, PIDs absent",
+      "fmt": 0,
+      "strict_clippy": 0
+    },
+    "header_config": {
+      "state": "SOURCE CORRECTED: explicit nine checked override names, checked_overrides_present false, other_environment_overrides_measured false; broad unknown claim removed",
+      "qualification": "Pending frontend actual proof",
+      "priority": "P2"
+    },
+    "facade": "Five candidate source files reviewed, no confirmed P0/P1; authored profile/consumer tests not executed by audit, effective Cargo graph and artifact identity OPEN",
+    "original_rejected_reviews": "Header001 lock mismatch, Actions001 incorrect grouping and R3review001 missing two new overlay leaves preserved, superseded only by named later records",
+    "full_goal_complete": false
   }
 }

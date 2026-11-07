@@ -1426,3 +1426,37 @@ not implementation, backend or hardware qualification. Exact backend/caps/data/
 shader-language/dependency/recovery decisions and pure/actual pilots remain OPEN.
 No GPU identity/performance observation becomes human or native authority evidence.
 CPU experiments, scoring freeze and accessibility constraints remain unchanged.
+
+## Actions census and native qualification addenda
+
+Independent read-only Actions census joins393 runs/suites,1207 checks and1886
+annotations into35 exact groups with no internal count/join mismatch. Generic
+exit1/101 accounts for327 annotations/326 checks in45 workflow/check/exit buckets.
+These and89 git-cliff annotations require run/log/source-owner cause and repair
+proof; old age, renamed actions, cancellation or source pin updates alone do not
+close them. The initial OrderedDictionary grouping error is preserved; corrected
+review002 is authoritative. No dispatch, deletion or audit compiler/GPU run occurred.
+
+Header actual29 pure tests (16core/6export/7header), check/strictClippy0 are bound
+by11 attachments and17 unchanged snapshot rows:15 workspace inputs match394ed549
+plus two rustup proxies. The earlier leaf lock mismatch is the existing Delivery
+native-security dependency; compiler/registry closure and dynamic ABI stay OPEN.
+The two new argv tests now have actual pure proof. Header frontend P2 overclaim
+is source-corrected to nine explicit checked override names and unmeasured other
+overrides; current frontend actual qualification remains OPEN.
+
+Native R3 binds78 attachments,2875 base Git archive members,409 selected execution
+leaves and five overlays. Actual pure counts10/5/1/2/8/11 total37, not filtered
+counts. Capture getter's fifth case and service's eighth case now ran. Native
+check/strictClippy0 closes CA-SERVICE-FOOTER-01 only in this component scope;
+.NET strictClippy101 is retained. R4c separately binds34 attachments/410 source
+and plan inputs, unchanged before/after, fmt0 and .NET strictClippy0, zero repeated
+tests. Only retained.rs style and plan overlays differ from R3; R4/R4b precompiler
+failures remain recorded. Original budget, removed marker and absent PIDs are
+recorded. No actual child/host/SCM/GPU case or global lifetime proof is inferred.
+
+Five public facade candidate files received bounded source review with no
+confirmed P0/P1; actual effective Cargo graph, artifact and consumer gates remain
+OPEN. Historical Go8 receipts are not inherited. Private exact review hashes are
+in baseline.json. CLI actual regression, CA-HANDOFF, CA-LIFETIME, native/Ready,
+full Docker product proof and the complete migration audit remain OPEN.
