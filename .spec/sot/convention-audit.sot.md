@@ -1351,3 +1351,60 @@ proves neither absence of executable foreign strings/templates nor worktree,
 untracked, generated, runtime or semantic conformance. Immutable original baseline
 counts remain unchanged. Private source hashes are in baseline.json; no compiler,
 SDK/native, Docker or runtime workload was executed and the full goal stays active.
+## CLI exact-input defect and bounded header byte profile
+
+CA-CLI-INPUT-01 is a confirmed P1 committed build-blocking refactor splice in
+a026bfc6 input.rs, not an observed runtime exploit. configuration referenced
+undefined bytes/has_witness; nonsecret_configuration discarded its supplied bytes,
+reread a file and referenced undefined source/witness. This also contradicted the
+advertised pure exact-input binding seam. Owner d79560e1 restores one bounded
+filesystem read in the wrapper, pure supplied-byte parsing and checks before
+external-witness/SecretSource acquisition. The reviewed leaf matches its literal
+Git blob. A meaningful authored regression uses an invalid NUL path with valid
+supplied bytes, rejects modified bytes with zero secret calls and permits exactly
+one secret read after valid checks. Source correction is accepted; actual exact-
+source compilation, regression, Clippy and fmt verification remain OPEN.
+
+Delivery bd2e4469 header transport is cfg(test)-only. The reviewed core buffers
+16 original files, admits the complete bundle before begin, enforces fixed IDs,
+order/sequence/size/hash and a manifest-bound end, and uses canonical bounded
+base64. Four authored tests are NOTRUN. Production typed profile/context admission,
+private fixed-path IO, official run/job binding and full retained proof are absent.
+
+Independent R3 re-audit verifies48 indexed private attachments with zero hash/size
+mismatches and reads all79 C/337 C++ layout lines plus157byte compiler version.
+Only these exact public system/ABI AST/layout/version/target bytes are accepted as
+a finite privacy candidate under approved header1b96ad49, image93887947,
+compilerf560497b/version0593cf88/target1c7da408 and C e3a3fd24/C++757dfc42.
+Unknown tuples/output still refuse; no generic AST wildcard is accepted. Actual
+C11/C++11 commands exit0; the container exits137, not graceful0. Missing owner scope
+and source snapshots mean this is not a16-file hosted receipt. Dispatch,
+publication, native dynamic ABI and product qualification do not follow. Private
+hashes are in baseline.json; no new audit compiler/runtime workload was executed.
+## Actual service-footer regression and combined first failure
+
+Receipt adeb3a73 retains the frozen d460a7eb native/managed pure attempt with one
+declared .NET protocol overlay. Independent re-audit verifies all60 indexed raw
+attachments, all2858 base archive regular members against literal Git blobs,
+all767 selected source rows with exactly the declared base/overlay distinction,
+and all three preserved executables. Immediate before/after JSON is byte-equal;
+counts are independently checked:767source,622registry packages/32055files,
+34configuration,76tool files and7environment flags. The overbroad whole-lock
+registry preparation and cost are retained, not recommended as future scope.
+
+Actual footers are10interactive/4capture/1direct/2barrier/7service-summary/
+11managed-protocol, each zero failed/ignored/measured. Filtered counts44/50/53/52/47/13 remain separate by invocation; their sum is not
+an additional test count.
+CA-SERVICE-FOOTER-01 now has actual passing proof for the exact FAILED-footer
+with success-counts/recomputed-hash regression on frozen d460a7eb. This does not
+qualify later source or the full runner: strict runner Clippy101 stops at cmp_owned
+after support strictClippy0 and runnercheck0; .NET all-target check/strictClippy
+are NOT_STARTED. No retry or actual child/host/SCM case ran.
+
+Owner adeb3a73 replaces allocated string comparison with a positive canonical
+ASCII-decimal JSON-string parser and an eighth authored test. Numeric JSON,+7,
+07,0,whitespace and overflow refuse; this source fix is not executed by the prior
+seven-test run. Original480second work/60second cleanup horizons and actual
+terminal/marker absence are retained. Metadata session-active inference is not
+an actual process observation. Global lifetime and product qualification remain
+OPEN. The private review hash is in baseline.json; no new audit workload ran.

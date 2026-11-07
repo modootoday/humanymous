@@ -143,10 +143,20 @@
       "id": "CA-SERVICE-FOOTER-01",
       "owner": "native-windows",
       "priority": "P2",
-      "state": "source corrected d460a7eb; meaningful authored negative retained; actual regression verification OPEN",
+      "state": "d460a7eb source and actual7pure tests including exact FAILED footer regression independently verified; combined runner strictClippy101 and adeb3a73 run-ID correction/current8thcase gates OPEN",
       "trigger": "FAILED footer with one passed and zero failed, supplied stdout hash recomputed",
       "actual_false_hosted_outcome_observed": false,
       "private_review_sha256": "9433936403099bb5d7ed75cdab1f94f2b816578f385ad3f963a43e42bed69667"
+    },
+    {
+      "id": "CA-CLI-INPUT-01",
+      "owner": "cli",
+      "priority": "P1",
+      "priority_scope": "Committed build-blocking source defect, not observed runtime exploit",
+      "state": "a026bfc6 refactor splice confirmed; d79560e1 source correction accepted; exact-source check and regression OPEN",
+      "source_file": "crates/cli/src/runtime_host/input.rs",
+      "private_review_sha256": "c20c9597cd58b76eafdfa49cd760a23ed319a889aed4bfdf3b12d7daaa03b4fd",
+      "actual_compilation_executed_by_auditor": false
     }
   ],
   "evidence_references": {
@@ -673,6 +683,56 @@
     "foreign_extension_AM_paths": 0,
     "selected_text_git_blob_CR_paths": 0,
     "original_baseline_replaced": false,
+    "new_audit_compiler_runtime_workloads": 0
+  },
+  "followup_cli_input_and_header_profile": {
+    "private_review_sha256": {
+      "cli-authorization-input-splice-review-001.json": "eec07c81f5a5038b31b402b5c106e0eb6868ca3016e4295c5debf966f239477b",
+      "cli-authorization-input-splice-review-002.json": "c20c9597cd58b76eafdfa49cd760a23ed319a889aed4bfdf3b12d7daaa03b4fd",
+      "header-transport-and-r3-byte-profile-review-001.json": "146fadb04c2ad1721a4271850387ee2af1f17fab8ac9fd6954479f5d1eb2685f"
+    },
+    "cli_source_corrected": true,
+    "cli_actual_regression_verified": false,
+    "header_transport_test_only": true,
+    "header_transport_authored_tests": 4,
+    "header_transport_actual_tests": 0,
+    "R3_indexed_attachments": 48,
+    "R3_attachment_mismatches": 0,
+    "R3_actual_C11_exit": 0,
+    "R3_actual_CPP11_exit": 0,
+    "R3_container_exit": 137,
+    "exact_observed_public_layout_byte_profile_accepted": true,
+    "generic_AST_grammar_accepted": false,
+    "complete16file_hosted_receipt": false,
+    "dispatch_or_publication_authorized": false,
+    "native_ABI_qualified": false,
+    "new_audit_compiler_runtime_workloads": 0
+  },
+  "followup_native_dotnet_combined_actual": {
+    "private_review": "native-dotnet-combined-first-failure-review-001.json",
+    "private_review_sha256": "9c7a6262c645912f969db6c1f84bc87e15f1856ce1c309bf92704a284cafe7ce",
+    "executed_source": "d460a7ebbf9ba4777347049ec4cc514ecaa3d82b",
+    "declared_dotnet_overlays": 1,
+    "archive_regular_git_matched_members": 2858,
+    "selected_source_rows": 767,
+    "indexed_attachments": 60,
+    "attachment_mismatches": 0,
+    "preserved_binaries": 3,
+    "binary_mismatches": 0,
+    "pure_actual_tests": 35,
+    "service_summary_actual_tests": 7,
+    "FAILED_footer_regression_passed": true,
+    "runner_strict_clippy_exit": 101,
+    "dotnet_alltarget_gates": "NOT_STARTED",
+    "new_run_id_source_fix_actual_tests": 0,
+    "source_ledger_byte_equal": true,
+    "registry_entries": 622,
+    "registry_files": 32055,
+    "tool_files": 76,
+    "preparation_overbroad_scope_retained": true,
+    "actual_child_host_SCM_cases": 0,
+    "global_lifetime_closed": false,
+    "whole_product_qualified": false,
     "new_audit_compiler_runtime_workloads": 0
   }
 }
