@@ -3,9 +3,10 @@ id: sot:root/native-embedding
 title: Opt-in native SDK and DLL embedding
 status: active
 created: 2026-11-07T04:10:00Z
-updated: 2026-11-07T04:21:39Z
+updated: 2026-11-07T04:35:44Z
 verify: manual
 rel:
+  governs: [crates/native-cli/**]
   depends_on: [sot:root/rust-migration, sot:root/chromium-lab-browser, sot:root/browser-ui]
 ---
 
@@ -13,7 +14,7 @@ rel:
 
 ## Rule
 
-Version 0.2.0. User-approved extension of the laboratory browser's observation
+Version 0.3.0. User-approved extension of the laboratory browser's observation
 model into developer-integrated native desktop applications. This is an accepted
 design, not implemented SDK support or evidence of automation blocking. Rust-only,
 detection freeze, accessibility and mandatory sandbox boundaries remain binding.
@@ -100,7 +101,8 @@ Current browser IME/native-child evidence does not satisfy these SDK gates.
 ## Framework adapters and create tooling
 
 SDK-09: Separate the framework-independent foundation from opt-in thin adapters.
-All names below are planned packages, not existing crates or support promises.
+Framework adapter names below are planned packages, not support promises. The
+native CLI is separately implemented only to the bounded manifest scope below.
 Framework adapters reuse SDK-01..08 and never fork scoring, audit, crypto or an
 engine. Host language does not change the observation/enforcement distinction.
 
@@ -110,7 +112,7 @@ engine. Host language does not change the observation/enforcement distinction.
 | humanymous-native-tauri | Rust backend plugin and explicit scoped capabilities | candidate/not_run |
 | humanymous-native-winit | Rust owned-window/event-loop adapter, reusable by Meari consumers | candidate/not_run |
 | .NET/WPF/WinUI, Qt, Flutter consumers | Versioned native-ffi C ABI, host-owned binding/lifecycle glue | candidate/not_run |
-| create-humanymous-native | Rust integration planning/scaffolding CLI | planned/not_run |
+| humanymous-native-cli (bin humanymous-native) | Rust integration planning/scaffolding CLI | first implementation slice below; adapters not_run |
 
 SDK-10: Electron loads a separately versioned Rust-authored .node addon through
 Node-API; the generic C ABI DLL is not itself require-able as a Node addon. The
@@ -148,7 +150,7 @@ thread-safe-function callbacks/workers and separately report cleanup. Do not cla
 that catch_unwind contains arbitrary native memory faults. Main-process compromise
 and malicious in-process code remain trust limits. Unload needs cleanup receipts.
 
-SDK-13: Proposed create-humanymous-native accepts an explicit framework and target
+SDK-13: The humanymous-native init command accepts an explicit framework and target
 and defaults to a read-only dry-run plan. Outputs are versioned integration/
 capability manifest, bounded configuration, Rust scaffolding and human-readable
 host-side requirements. Do not emit JS/TS/C++/C#/Dart application code, embedded
@@ -161,7 +163,7 @@ No dependency pin is invented before implementation research and tests.
 
 SDK-14: Scaffolding never silently modifies existing projects, runs package-manager
 lifecycle hooks, downloads/executes binaries, enables telemetry, imports profiles,
-changes security settings or attaches to processes. A future write operation must
+changes security settings or attaches to processes. An explicit write operation must
 show exact bounded destinations and changes, stay inside the explicitly selected
 workspace, reject traversal/reparse escapes and refuse overwrites. Creation must
 fail atomically without leaving a partial ready-looking integration. Deterministic
@@ -176,8 +178,9 @@ process-owning CEF pilot ->07/10/11. P1 stable ABI mistaken for universal suppor
 ->12. P1 create generator laundering authored foreign scripts as Rust ->13/14.
 P1 destructive project mutation/install hooks ->14. Blue/SRE lifecycle and privacy
 checks ->10/12/14; evaluator hook/provenance and support-matrix boundaries ->09/11/12.
-All framework runtime and CLI execution tests are not_run; current browser native
-window evidence is not promoted to framework compatibility evidence.
+All framework runtime tests are not_run; bounded native CLI component execution
+is recorded below and does not establish SDK/framework compatibility. Current
+browser native window evidence is not promoted to framework compatibility evidence.
 
 ## Primary references for framework design
 
@@ -189,3 +192,72 @@ Checked2026-11-07 KST; these are upstream API facts, not executed compatibility 
 - Node-API ABI stability limits: https://nodejs.org/api/n-api.html
 - Tauri Rust plugin/capability lifecycle: https://v2.tauri.app/develop/plugins/
 - Flutter foreign-function boundary (candidate only): https://docs.flutter.dev/interop/bind-native-code
+
+
+## Convention-aligned native CLI implementation slice
+
+SDK-15: Package name is humanymous-native-cli, executable humanymous-native,
+initial command init. No create-prefixed alias or second implementation. Future
+commands doctor/verify are reserved design only, not accepted silently. Source
+lives in crates/native-cli with workspace conventions and forbid(unsafe_code).
+
+SDK-16: The first independently useful tool emits one deterministic versioned
+JSON integration manifest. It does not need the still-unimplemented SDK crates:
+framework/target/runtime selection, generator version, planned adapter, requested
+observe-only/sandbox-required policy and unavailable capability/qualification
+states are declarative. init defaults to stdout dry-run; --dry-run and --write
+conflict. Require --framework; refuse duplicate/unknown options and unknown
+framework/target names. Bound argument sizes; refuse option-looking tokens as
+values so --dry-run cannot be swallowed as a version and bypass mode conflict. No personal data, timestamps,
+credentials or automatic machine/process/profile inventory enters the manifest.
+No Rust scaffold with nonexistent SDK imports or foreign-language glue is emitted.
+
+SDK-17: --write requires an explicit existing absolute --workspace and publishes
+one new direct-child JSON basename (default humanymous-native.json). Refuse path
+separators, traversal, alternate streams, DOS device names, existing targets and
+non-JSON output names. Initial write support is Windows local drive directories
+only; other OSes retain dry-run and explicitly refuse write. Reject every reparse
+ancestor and hold opened directory handles without delete-sharing through the
+operation, so ancestors cannot be renamed/replaced during path-based writes.
+Read-capable ancestor handles are required; access0 metadata handles did not
+prevent rename in the actual test. Reject network/substituted drive aliases after
+pinning, and deny write/delete sharing on the temporary file.
+Create a fresh same-directory temporary file with create_new, write/sync complete
+bounded bytes, publish using atomic hard_link (no replacement), then remove only
+the owned temporary link. No fallback to overwrite/copy on unsupported filesystem.
+
+SDK-18: Atomic publication means the destination is absent or a complete manifest;
+it is not a power-loss/directory-durability guarantee. Preserve explicit cleanup
+status after publication and identify recoverable temporary names on failure.
+No output ever asserts adapter installation, engine/sandbox qualification or
+active protection. OS/platform write support and SDK/framework support are
+independent. Workspace ancestors and entries must be trusted/non-mutating during the operation,
+especially the pathname-based temporary cleanup after closing its handle;
+this tool is not a defense against a malicious same-identity writer replacing
+entries or mutating file contents. It never grants authority to a preexisting manifest. Tests include
+concurrent no-clobber publication, static junction refusal, failure cleanup and
+byte-identical dry-run/write manifests. Full host integration remains not_run.
+
+SDK-15..18 supersede the previous create-tool name and allow manifest planning
+before the core/FFI gates. Actual SDK, framework adapters and multi-file Rust
+scaffolding still require their own implementation slices; no readiness inference.
+
+
+## Implemented CLI frontier and critique reflected
+
+Evidence:root/20261107042614 establishes Windows x86_64 native-cli init only:
+11 unit and6 actual executable tests, deterministic dry-run for6 framework plans,
+explicit complete manifest publication, repeated-write byte preservation and mode
+conflict refusal with zero output. Release build/fmt/Clippy pass. The manifest
+continues to say not_implemented/qualified=false for every adapter. Root registered
+the tool as workspace member20; no foundation SDK/adapter package was added.
+
+P1 option tokens swallowed as runtime versions -> bounded value parser plus actual
+CLI conflict test. P1 metadata-only ancestor handles allowed rename -> read-capable
+handles plus real Windows rename denial test. P1 postpublication cleanup ambiguity
+-> separate receipt and real delete-sharing failure test. P1 same-user pathname
+cleanup races/crash durability -> explicit trusted non-mutating workspace premise
+and durability non-coverage, not fictional handle-bound erasure. Root static path/
+junction checks and concurrent no-clobber publication are tested. Network/SUBST
+mapping rejection is not an actual mapped-drive experiment; non-Windows compile/
+execution, crash/power-loss, full SDK/DLL/framework consumption remain unverified.

@@ -3,7 +3,7 @@ id: plan:root/20261107041001
 title: Native embedding SDK and borderless SVG browser shell
 status: active
 created: 2026-11-07T04:10:01Z
-updated: 2026-11-07T04:21:39Z
+updated: 2026-11-07T04:35:44Z
 rel:
   governs: [crates/browser/**]
   depends_on: [sot:root/native-embedding, sot:root/browser-ui, sot:root/chromium-lab-browser]
@@ -80,7 +80,7 @@ roadmap integration belongs to the root session. No detection scoring changed.
 ## Framework adapter and create-tool extension
 
 User requested reuse in Electron and other framework environments. Native-embedding
-version0.2 SDK-09..14 makes thin framework crates and a separate Rust create CLI
+version0.2 SDK-09..14 makes thin framework crates and a separate Rust native CLI
 canonical design scope. The four foundation crates remain prerequisites; framework
 packages/CLI have not been created. No runtime support or automation blocking is
 added by this documentation delta, and browser evidence is not reused as proof.
@@ -97,11 +97,11 @@ added by this documentation delta, and browser evidence is not reused as proof.
   Node environment teardown and dev/packaged target-tuple validation.
 - [ ] Qualify Tauri/winit separately; .NET/Qt/Flutter remain candidates until actual
   foreign consumer/packaging/lifetime boundaries can be tested within Rust-only rules.
-- [ ] Implement Rust create CLI with deterministic dry-run, path containment, no
+- [ ] Implement Rust native CLI with deterministic dry-run, path containment, no
   overwrite/install hooks, unqualified-target markers and versioned manifest checks.
 
 Working names are not registry availability claims. Proposed invocation is
-`create-humanymous-native --framework electron --dry-run`; no such executable was
+`humanymous-native init --framework electron --dry-run`; no such executable was
 built or run. Source/API research supports the design, not SDK compatibility.
 Shared workspace registration and roadmap remain coordinated root work. Future
 implementation must resolve external consumer glue without quietly adding authored
@@ -113,3 +113,19 @@ and revocation),12 (native handle/event-loop/Node cleanup and ASAR/packaging) an
 (atomic bounded writes). One read-only review covered blue/red/SRE/privacy/evaluator
 views; no independent runtime tests were performed or implied. Documentation-only
 extension: scoped spec check passes; framework crates/CLI remain unimplemented.
+
+
+## Native CLI naming and implementation delta
+
+User accepted humanymous-native-cli / humanymous-native / init naming and requested
+implementation. SDK-15..18 and plan:root/20261107042614 supersede the old create
+binary name and allow a manifest-only tool before SDK runtime prerequisites.
+The old statement that no executable was built is historical to the design delta;
+current execution/coverage belongs to the new implementation plan and evidence.
+
+
+Current native CLI slice is implemented in crates/native-cli under
+plan:root/20261107042614 and evidence:root/20261107042614. The tool is now runnable
+as humanymous-native init; earlier no-executable statements above describe the
+previous design stage. Only Windows manifest creation/portable planning source
+are delivered; the framework adapters and actual SDK support remain not_run.

@@ -1,0 +1,182 @@
+{
+  "schema": "native-cli-init-evidence/1",
+  "recorded_at": "2026-11-07T04:35:44Z",
+  "scope": "Windows x86_64 native CLI component only; no SDK/framework runtime or product e2e",
+  "names": {
+    "package": "humanymous-native-cli",
+    "binary": "humanymous-native",
+    "command": "init"
+  },
+  "checks": {
+    "unit_tests": {
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    "actual_cli_process_tests": {
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy_warnings_denied": "pass",
+    "cargo_fmt": "pass",
+    "locked_release_build": "pass"
+  },
+  "native_release_pilot": {
+    "os": "Microsoft Windows NT 10.0.26200.0",
+    "qualified": false,
+    "conflict_exit": 2,
+    "dry_run_workspace_files": 0,
+    "workspace_files": [
+      "humanymous-native.json"
+    ],
+    "repeat_exit": 2,
+    "write_exit": 0,
+    "manifest_sha256": "44a663b163506e5a57741c4821eca637215d355cc461aa891a8d7fbf2194c8ac",
+    "conflict_workspace_files": 0,
+    "framework_dry_runs": [
+      {
+        "framework": "electron",
+        "exit": 0
+      },
+      {
+        "framework": "tauri",
+        "exit": 0
+      },
+      {
+        "framework": "winit",
+        "exit": 0
+      },
+      {
+        "framework": "dotnet",
+        "exit": 0
+      },
+      {
+        "framework": "qt",
+        "exit": 0
+      },
+      {
+        "framework": "flutter",
+        "exit": 0
+      }
+    ],
+    "architecture": "AMD64"
+  },
+  "boundary_coverage": [
+    "bounded strict option parsing and mode conflicts",
+    "deterministic honest manifest for6framework plans",
+    "dryrun without filesystem inspection/writes",
+    "explicit single JSON write and exact manifest equality",
+    "existing target preserved byte-for-byte",
+    "two competing writers exactly one publication",
+    "prepublication failure leaves no destination and cleans temp",
+    "real delete-sharing failure reports published/cleanup_incomplete separately",
+    "static workspace junction and existing output junction refusal",
+    "read-capable ancestor handle prevents actual directory rename",
+    "actual CLI option-value swallowing regression exit2/no files"
+  ],
+  "artifact": {
+    "path": "private humanymous-native.exe",
+    "sha256": "684000e002ec0a66ed0d818af4c11a2d8c96eaae6fcef6cdc5a08e9e9a37f69a",
+    "bytes": 263168
+  },
+  "source_files": {
+    "crates/native-cli/Cargo.toml": {
+      "sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "bytes": 442
+    },
+    "crates/native-cli/src/arguments.rs": {
+      "sha256": "0c8e593d0d027cdf0b26852eeaf8e29eff51d29bc3ccb5a98c5cae4f99432b48",
+      "bytes": 6480
+    },
+    "crates/native-cli/src/lib.rs": {
+      "sha256": "727de2499f0b3beaa0084a4375ae14c39915482e08bb1ed7c73bcf2f3dfbb1d5",
+      "bytes": 221
+    },
+    "crates/native-cli/src/main.rs": {
+      "sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "bytes": 2423
+    },
+    "crates/native-cli/src/manifest.rs": {
+      "sha256": "92ee2ad9635a2f297e864316d64152d9aa5ab8de198ef98c0e98fe028bca3239",
+      "bytes": 3438
+    },
+    "crates/native-cli/src/storage.rs": {
+      "sha256": "92ba13c460f74860751d5959e7fbe4ad7e163f86856475b9e042f7b668cc4d7b",
+      "bytes": 1726
+    },
+    "crates/native-cli/src/tests.rs": {
+      "sha256": "3bedb8ba4418c75dff24220642b9bbd86a08aec2fb91c4df3b9ad5ba70f17d92",
+      "bytes": 4079
+    },
+    "crates/native-cli/src/test_support.rs": {
+      "sha256": "a62fe4c9c2d231cea2e6b0ae26e33fe3b01a905e1fca3fa968facf21df8dfc35",
+      "bytes": 1180
+    },
+    "crates/native-cli/tests/command.rs": {
+      "sha256": "cbb6d07e578998e71b9a8c343a5400efdbc8bbac7ea2143d5ddbd3414640f508",
+      "bytes": 4880
+    },
+    "crates/native-cli/src/storage/windows.rs": {
+      "sha256": "21aca8c7b0efc4c81be93c62a686f475f82afb168c0dfae8f1c86fe30ac430d7",
+      "bytes": 5579
+    },
+    "crates/native-cli/src/storage/windows/tests.rs": {
+      "sha256": "f009da89234090e20336449cecf9a6c5198b212d2e4b42b6b380c1dd70bf6deb",
+      "bytes": 5013
+    }
+  },
+  "workspace_manifests_at_validation": {
+    "Cargo.toml": {
+      "sha256": "31fecc234e7d9fc3f452ac62db7d4d7d6f8fe45a7aad0de9da3cc56ff43b5bac",
+      "bytes": 1775
+    },
+    "Cargo.lock": {
+      "sha256": "e3102190c13cd4a2d59ebbcb4b833f66cac9b6fc8687864e50c7a30cb2c979c4",
+      "bytes": 148186
+    },
+    "rust-toolchain.toml": {
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+      "bytes": 123
+    }
+  },
+  "constraints": {
+    "authored_code": "Rust",
+    "unsafe_code": "forbid",
+    "new_production_dependencies": false,
+    "scoring_changed": false,
+    "sandbox_requirement_weakened": false,
+    "adapter_readiness": false,
+    "installs_or_network_activity": false,
+    "emitted_code_templates": false
+  },
+  "private_raw_root": ".spec.local/root/evidence/20261107042615-native-cli",
+  "raw_records": [
+    "tests.log",
+    "tests-first.log",
+    "tests-second.log",
+    "clippy.log",
+    "fmt.log",
+    "build-release.log",
+    "pilot-results-final.json",
+    "final-write-report.json",
+    "final-conflict-stderr.log"
+  ],
+  "critique_fixes": [
+    "metadata-only access0 handles did not pin directory rename in initial unit run; read-capable handles now pass real rename denial",
+    "option-looking runtime value could swallow --dry-run; strict value extraction plus actual executable regression now pass"
+  ],
+  "not_verified": [
+    "all actual native SDK/core/FFI/plugin lifecycles",
+    "Electron Node-API addon/consumer/packaging/sandbox or automation blocking",
+    "Tauri/winit/.NET/Qt/Flutter consumers",
+    "non-Windows compilation/execution/write implementation",
+    "actual network/SUBST drive mapping experiment",
+    "power-loss/directory-durability or hostile same-identity workspace mutation",
+    "multi-file Rust scaffolding/doctor/verify commands",
+    "full product Docker e2e"
+  ],
+  "cleanup_premise": "Workspace entries trusted/non-mutating while operating; post-close temporary cleanup is path-based, not handle-bound erasure.",
+  "publication_semantics": "Destination absent or complete no-clobber JSON; temp links can remain on crash/cleanup failure; readiness always false.",
+  "raw_path_note": "Historical pilot stdout records the original42614 workspace location before private evidence directory was renamed to42615 to give its index a distinct canonical ID."
+}
