@@ -1033,5 +1033,23 @@
     "a19_owner_receipt": "94d6249fce7a75cd0525b349f21b76d015c09071",
     "new_audit_workload": 0,
     "goal_complete": false
+  },
+  "followup_abi_role_consolidation": {
+    "private_review": "abi-consolidation-boundary-review-001.json",
+    "private_review_sha256": "46b65607cc8271d1da8699b92a3cfb694d2b225894206b47032aff1a3c110713",
+    "reviewed_source_files": 8,
+    "new_confirmed_defects": [],
+    "scope": "Safe registry/boundary/command/wire and tinyexport owner source; registry/command testfixtures not exhaustively rereviewed",
+    "responsibility": "Pure ownership foundation vs C export/nativeartifact boundary; no authority/OSsupervisor",
+    "preserve": [
+      "one serialized library-lifetime registry and unique ABI symbol perlinkimage",
+      "monotonic processnamespace/contextbufferownership/zeroizingdrop/rangebounds/errorzeroing",
+      "sticky unwind poison/revoke; noreset, noabort/nativefault containment claim",
+      "forbidunsafe safe module plus exactno_mangle-onlyexportexception"
+    ],
+    "root_decisions": "Final package/module/features/targets/artifact graph and accepted migration ownership remain Root-owned; no automaticcrate-count rewrite",
+    "remaining": "Newgraph/typeidentity/features/artifact and dynamicload/wrongABI/unload/OSarchitecture/C++ qualification, fresh receipts, no old29inheritance",
+    "new_audit_workload": 0,
+    "goal_complete": false
   }
 }

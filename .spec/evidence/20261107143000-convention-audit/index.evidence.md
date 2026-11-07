@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 9eaf155ae5ac7a98a8859855924dbeab11a6b1758c984730abe14582d4412092, bytes: 53067, store: repo}
+  - {path: baseline.json, sha256: 2242d69df6d42dd1439b42b69853738437568c7c3d0aa6a470408202357a9c15, bytes: 54340, store: repo}
 ---
 
 # Convention audit baseline
@@ -661,3 +661,24 @@ remain implementation gates. No mutation or actual root creation occurred.
 Exact private reviews are in baseline.json. Delivery94d6249f separately publishes
 the already independently consumed focused a19 regression. Complete audit remains
 OPEN; source consistency cannot substitute for native or product execution.
+
+## ABI responsibility boundary during role consolidation
+
+Bounded source review of eight native-abi foundation/export files finds no new
+confirmed defect. The safe in-memory Registry/Boundary/Command/Wire responsibility
+is separate from the tiny pointer-free C export and native artifact owner; neither
+implements authority, OS supervision or worker settlement. Root chooses the final
+package/module graph on those responsibilities, not crate count alone.
+
+Any absorption must preserve shared type identity, one serialized library-lifetime
+registry, unique exported symbol per link image, monotonically nonreused handle
+namespace, exact buffer ownership and checked/zeroed responses. Preserve zeroizing
+ownership and sticky unwind poison/revocation without reset. Abort/native faults,
+reentry/signal/post-fork and unloading with live state remain unsupported. Keep
+safe-module forbid-unsafe and the exact no_mangle-only export exception; moving
+source grants no new pointer/loader/unsafe permission. Actual new-graph features,
+targets, artifacts, dynamic loading/wrong ABI/unload and OS/architecture/C++ gates
+remain OPEN. Prior29 pure cases do not qualify a future graph. Registry/command
+test fixtures were not exhaustively rereviewed and no workload was started.
+Exact source hashes and scope are retained in the private review bound by baseline.
+Complete migration qualification remains OPEN.
