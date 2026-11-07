@@ -155,3 +155,19 @@ integration coverage is not implied by the expanded33-case source inventory.
 Named120s profile binding, actual archive bytes/safe read-back, OS identity,
 independent owner/terminal facts, hosted/provider evaluation and M11 completion
 remain separate open gates. No cleanup authority is requested by this source.
+
+### Actual bounded Windows qualification
+
+Source577e1940 ran without overlays in a unique immutable Git-archive workspace
+outside `.spec.local`, using the separately allocated absolute target
+`C:/workspaces/humanymous/target/maintenance-evidence-plan-577e1940`. The create-new
+lease bound source/workspace/target to codex/rust-agents-m11. Actual library listing
+was73 and all73 passed with zero failures/ignored/filtered. PlannerCLI4 plus shared
+selectedCLI6 and doctorCLI3 passed with the same zero exclusions. All-target check,
+strict Clippy and scoped fmt exited0 on first attempt, within the360-second budget
+(about41.4seconds). All42 archived inputs matched the source freeze and before/after
+hashes. Terminal status and original lease bytes were retained, then the owned
+marker was removed and target returned. Raw evidence is evidence:root/20261107172013.
+This qualifies the metadata-only planner component, not archive contents/read-back,
+OS/ownership/terminal assertion proof, retirement authority, full33 integration,
+named120s binding, provider inference or the full M11 goal.

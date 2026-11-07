@@ -87,6 +87,15 @@ eight integration targets; previous29-case coverage is not inherited. Proposed
 Windows allocation and remaining archive/read-back/OS/owner gates are explicit in
 the evidence-layout contract. No mutator or independent proof provider is included.
 
+Source577e1940 subsequently passed its separately allocated immutable-archive
+Windows gate: exact73 library units and planner/shared CLI4+6+3, zero failures,
+ignored or filtered, all-target check/strict Clippy/fmt0. The unique absolute
+physical target and create-new owner/source/workspace lease were retained in the
+receipt; original marker bytes preserved before terminal removal. All42 selected
+archive inputs matched the source freeze and before/after snapshots. Raw results
+are evidence:root/20261107172013. This remains a metadata-only component result;
+actual archive/read-back/OS/independent authority and full33 integration stay open.
+
 ## Draft new-lane coexistence v0.3
 
 Root requested a minimal Rust-only coexistence design for convention-audit and

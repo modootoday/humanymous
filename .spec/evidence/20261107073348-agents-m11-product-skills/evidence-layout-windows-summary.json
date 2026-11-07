@@ -1,0 +1,77 @@
+{
+  "schema": "humanymous.evidence-layout-windows.v1",
+  "source_checkpoint": "577e1940c7568b140bb640e2a50aef0730a349cb",
+  "source_workspace_kind": "immutable git archive outside .spec.local; no overlays",
+  "source_archive_sha256": "d97c4d11311b76b0b840d54fcb73d50fb57d58b70899a788db86b97d12b374d1",
+  "source_freeze_sha256": "7b5ffdc3ac7b92bae9609e9e256aa9d7ab46cc44ca5883881f1df2c7164da1ee",
+  "venue": "local-windows",
+  "physical_target": "C:/workspaces/humanymous/target/maintenance-evidence-plan-577e1940",
+  "provider": "codex",
+  "session": "rust-agents-m11",
+  "lease_id": "dd902103-222c-4ad3-8ccf-0cd83566f0c7",
+  "lease_create_new": true,
+  "lease_removed_after_terminal": true,
+  "budget_seconds": 360,
+  "cleanup_budget_seconds": 60,
+  "elapsed_seconds": 41.3939795,
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "locked": true,
+  "library": {
+    "failed": 0,
+    "ignored": 0,
+    "passed": 73,
+    "listed": 73,
+    "filtered": 0
+  },
+  "actual_cli": [
+    {
+      "failed": 0,
+      "filtered": 0,
+      "passed": 4,
+      "ignored": 0,
+      "target": "evidence_layout_cli"
+    },
+    {
+      "failed": 0,
+      "filtered": 0,
+      "passed": 6,
+      "ignored": 0,
+      "target": "selected_inputs_cli"
+    },
+    {
+      "failed": 0,
+      "filtered": 0,
+      "passed": 3,
+      "ignored": 0,
+      "target": "windows_doctor"
+    }
+  ],
+  "check_exit": 0,
+  "strict_clippy_exit": 0,
+  "fmt_exit": 0,
+  "first_failures": 0,
+  "source_closure_files": 42,
+  "source_freeze_differences": 0,
+  "source_before_after_differences": 0,
+  "target_returned": true,
+  "live_processes": 0,
+  "full33_integration_run": false,
+  "actual_archive_readback_qualified": false,
+  "retirement_authorized": false,
+  "provider_evaluation_run": false,
+  "named120_profile_bound": false,
+  "full_m11_complete": false,
+  "raw_evidence": "evidence:root/20261107172013",
+  "attachment_registration": {
+    "first_attempt": "repo registration rejected original71720960-byte archive above4194304 limit",
+    "original_archive_preserved": true,
+    "compressed_bytes": 6376528,
+    "registered_compressed_parts": 3,
+    "part_size_limit_bytes": 3145728,
+    "manifest": "source-archive-parts.json",
+    "first_failure_raw": "attach-result.json",
+    "archive_readback_qualification_claimed": false
+  }
+}

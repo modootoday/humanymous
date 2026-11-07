@@ -785,3 +785,14 @@ Windows allocation uses only the existing target, complete library exact listing
 (expected73), plannerCLI4 and shared-capture regressions9, check/Clippy/fmt. Actual
 archive bytes/safe read-back, OS identity, independent owner/terminal verification,
 named120profile binding, provider evaluation and full M11 remain open.
+
+The explicit planner577e1940 Windows allocation completed in about41.4seconds
+under its360s+60s retained-cleanup budget. Immutable Git-archive workspace had no
+overlays; exact42 inputs matched the source freeze and before/after. Fresh absolute
+maintenance-evidence-plan-577e1940 target and create-new source/workspace/owner
+lease were used. Actual library listing73 and full73 passed; actual CLI4+6+3 passed,
+all with zero failures/ignored/filtered. Check/strictClippy/fmt0 first attempt.
+Marker originals/terminal facts retained; marker removed only after terminal and
+owner-ID verification, target returned. Source/binaries remain preserved. Raw
+evidence:root/20261107172013 does not establish archive byte/read-back or independent
+authority qualification, the broader33-case integration suite or full M11.

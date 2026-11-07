@@ -97,14 +97,16 @@ release, followed by the next owner's distinct acquisition. Unknown aliases,
 junctions or unresolved physical identity defer admission; a spelling difference
 does not establish separate storage. Do not infer ownership from an idle chat.
 
-On2026-11-08 root reported a possible logical validation-native label collision
-between Native fault-run allocation and Browser warm-target use. Browser was
-terminal/returned when reported; actual physical write overlap was not proven.
-Both owners were asked for absolute target and lease identities. Keep that incident
-pending until owner evidence resolves it; preserve original sources, binaries and
-receipts. No foreign process kill, lease release, global scan or overwritten
-incident evidence follows from this report. This prospective rule does not rewrite
-the scope or recorded identities of earlier executions.
+On2026-11-08 Native confirmed the exact same physical target had overlapping
+Native fault-run and Browser warm-target reservations without a target lease;
+Cargo reported waiting for the build-directory file lock. Root records this as
+a confirmed allocation/ownership collision, not merely a logical label ambiguity.
+Concurrent byte writes or corruption are not established. Native R1 remains
+NOT_QUALIFIED_COLLIDED with zero actual fault cases and its original deadline
+unrenewed; R2 needs a separate fresh physical target and marker. Preserve original
+sources, binaries and receipts. No foreign process kill, lease release, global
+scan or overwritten incident evidence follows. This rule does not rewrite the
+scope or recorded identities of earlier executions.
 
 Root's later guard observation reached88.2594% host commit while initial WSL
 runtime/Python compilation overlapped an Apache Docker build. The exact owned

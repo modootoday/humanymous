@@ -233,4 +233,9 @@ scratch unpacking outside `.spec.local`, with canonical private manifests/raw lo
 and verified compressed parts retained. Retirement requires exact owner, terminal
 consumer handles and byte-verified archives/read-back before explicit disposition.
 No broad private-tree census, baseline change, active-source move or cleanup was
-performed. The bounded planner/mutator remains unimplemented and unqualified.
+performed. The metadata-only planner at577e1940 passed the immutable-archive
+Windows component gate: full library73 and actual CLI4+6+3, check/Clippy/fmt0,
+unchanged42-input closure. Raw evidence:root/20261107172013 binds the unique physical
+target/create-new lease and terminal return. Supplied assertions never become
+independent proof or retirement authority. Archive/read-back/OS/owner qualification
+and the mutator remain unimplemented/unqualified; full33 integration remains open.
