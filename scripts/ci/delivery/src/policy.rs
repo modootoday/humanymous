@@ -236,7 +236,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                     && jobs[job]["steps"].as_array().is_some_and(|steps| {
                         steps.iter().any(|step| {
                             step["uses"]
-                                == "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+                                == "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
                                 && step["with"]["ref"] == "${{ github.sha }}"
                                 && step["with"]["persist-credentials"] == false
                         })
@@ -373,7 +373,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             require(
                 jobs[job]["steps"].as_array().is_some_and(|steps| {
                     steps.iter().any(|step| {
-                        step["uses"] == "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+                        step["uses"] == "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
                             && step["with"]["ref"] == "${{ github.sha }}"
                             && step["with"]["persist-credentials"] == false
                     })
@@ -1505,7 +1505,7 @@ mod tests {
             assert!(!pinned(action));
         }
         assert!(pinned(
-            "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+            "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
         ));
     }
     #[test]

@@ -26,7 +26,7 @@ jobs:
     runs-on: windows-2025
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
@@ -39,7 +39,7 @@ jobs:
         run: cargo clippy --manifest-path scripts/ci/cef-pilot/Cargo.toml --all-targets --locked -- -D warnings
       - name: Execute provisioned bootstrap and two desktop process pilots
         run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- target/cef-native-evidence
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always() && vars.CI_COMPONENT_ARTIFACTS == 'true'
         with:
           name: cef-native-component-${{ github.sha }}

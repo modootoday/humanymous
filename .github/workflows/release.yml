@@ -16,10 +16,10 @@ jobs:
       actions: read
     uses: ./.github/workflows/rust-validation.yml
   readiness:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -29,7 +29,7 @@ jobs:
     - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
       with:
         node-version: '24'
-    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+    - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       with:
         name: node-native-${{ github.sha }}
         path: .
@@ -41,7 +41,7 @@ jobs:
       count: ${{ steps.waves.outputs.count }}
   images:
     needs: readiness
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     strategy:
       fail-fast: false
@@ -50,7 +50,7 @@ jobs:
         - name: runtime
           dockerfile: build/rust/runtime-candidate.Dockerfile
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
     - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
@@ -61,15 +61,15 @@ jobs:
     - name: Bind exact source manifest
       id: image-source
       run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-scan prepare
-    - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130
+    - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1
     - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
-    - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+    - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - id: meta
-      uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051
+      uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302
       with:
         images: ghcr.io/${{ github.repository_owner }}/humanymous-${{ matrix.name }}
         flavor: 'latest=true
@@ -107,7 +107,7 @@ jobs:
         echo -n \"${{ steps.build.outputs.digest }}\" > \"${{ runner.temp }}/digests/${{ matrix.name }}\"\
         \n"
     - name: Upload digest artifact
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: digest-${{ matrix.name }}
         path: ${{ runner.temp }}/digests/${{ matrix.name }}
@@ -119,11 +119,11 @@ jobs:
       id-token: write
     environment: release
   images-ok:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: images
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -132,20 +132,20 @@ jobs:
         toolchain: 1.99.1
     - uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac
     - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
-    - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+    - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Download digests
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       with:
         path: digests
         pattern: digest-*
         merge-multiple: true
     - name: Verify exact digest, both platforms, source, SBOM and OIDC signature
       run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- verify-images
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: always()
       with:
         name: image-verification-${{ github.sha }}
@@ -155,7 +155,7 @@ jobs:
       contents: read
       packages: read
   gh-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
     - images
     - images-ok
@@ -164,47 +164,48 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         fetch-depth: 0
         persist-credentials: false
-    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+    - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       with:
         pattern: native-binaries-*
         path: release-assets
         merge-multiple: true
     - name: Generate release notes (git-cliff)
       id: notes
-      uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5
+      uses: orhun/git-cliff-action@a9a95522b26fe6403f7bb24031f21fb573d0f5ff
       with:
+        version: v2.13.1
         config: cliff.toml
         args: --latest --strip header
       env:
         OUTPUT: RELEASE_NOTES.md
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Create GitHub release
-      uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3
       with:
-        body: ${{ steps.notes.outputs.content }}
+        body_path: RELEASE_NOTES.md
         files: release-assets/*
         fail_on_unmatched_files: true
     environment: release
   crates:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 0
     - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
       with:
         toolchain: 1.99.1
-    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+    - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       with:
         name: validated-crates-${{ github.sha }}
         path: target
-    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+    - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       with:
         name: node-native-${{ github.sha }}
         path: .
@@ -270,10 +271,10 @@ jobs:
       contents: read
       id-token: write
   npm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 0

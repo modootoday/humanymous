@@ -220,7 +220,7 @@ fn config(root: &Path, dir: &Path) -> Result<String> {
         };
         rows.push(json!({"path":text,"sha256":hash}));
     }
-    let record = json!({"schema":"humanymous.header-private-config/1","jobs":1,"incremental":0,"unknown_overrides_present":false,"files":rows});
+    let record = json!({"schema":"humanymous.header-private-config/1","jobs":1,"incremental":0,"checked_override_names":forbidden,"checked_overrides_present":false,"other_environment_overrides_measured":false,"files":rows});
     write_json(&dir.join("header-private-config.json"), &record)?;
     Ok(source::sha(
         &serde_json::to_vec(&record).map_err(|_| "header config encoding failed")?,
@@ -242,7 +242,7 @@ pub(crate) fn parent(path: &Path) -> Result<()> {
 pub(crate) fn plan(root: &Path, sha: &str) -> Result<()> {
     require(
         source::head(root)? == sha,
-        "header source plan compile-time checkout mismatch",
+        "header source plan runtime checkout mismatch",
     )?;
     let expected = Expected::source(root, sha)?;
     let snapshot = source::snapshot(root)?;

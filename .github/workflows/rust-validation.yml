@@ -24,7 +24,7 @@ jobs:
       contents: read
       actions: read
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -69,7 +69,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -101,7 +101,7 @@ jobs:
       run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os == 'windows-2025' && 'windows' || matrix.os == 'macos-15' && 'macos' || 'linux' }} ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
     - name: Preserve native workspace accounting
       if: ${{ !cancelled() && github.ref == 'refs/heads/main' && steps.native_build.outcome == 'success' }}
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: native-workspace-${{ matrix.os }}-${{ github.sha }}
         path: target/runner-probe/report.json
@@ -110,14 +110,14 @@ jobs:
     - run: cargo build --workspace --bins --release --locked
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot native
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- native-artifacts
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: startsWith(github.ref, 'refs/tags/v')
       with:
         name: native-binaries-${{ matrix.os }}-${{ github.sha }}
         path: target/delivery-artifacts/
         if-no-files-found: error
         retention-days: 1
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: native-${{ matrix.os }}-${{ github.sha }}
         retention-days: 1
@@ -138,7 +138,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -155,7 +155,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -177,7 +177,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -191,7 +191,7 @@ jobs:
         package-manager-cache: false
     - run: cargo build --locked --target wasm32-unknown-unknown -p humanymous-collector --release
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: browser-linux-${{ github.sha }}
         retention-days: 1
@@ -203,7 +203,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 75
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -214,7 +214,7 @@ jobs:
       with:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot docker
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: docker-linux-${{ github.sha }}
         retention-days: 1
@@ -227,7 +227,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -241,7 +241,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -255,7 +255,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -303,7 +303,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -341,7 +341,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -349,7 +349,7 @@ jobs:
       with:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- package
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: startsWith(github.ref, 'refs/tags/v')
       with:
         name: validated-crates-${{ github.sha }}
@@ -364,7 +364,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -384,7 +384,7 @@ jobs:
     - name: Verify native package qualification and archive
       if: ${{ !cancelled() }}
       run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- node
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: always() && startsWith(github.ref, 'refs/tags/v')
       with:
         name: node-native-${{ github.sha }}
@@ -400,7 +400,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -418,7 +418,7 @@ jobs:
         severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
         ignore-unfixed: false
         skip-dirs: .git,.spec.local,target,scripts/ci/docs-review/target
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: advisories-${{ github.sha }}
         retention-days: 1
@@ -431,7 +431,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -447,7 +447,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         persist-credentials: false
         fetch-depth: 1

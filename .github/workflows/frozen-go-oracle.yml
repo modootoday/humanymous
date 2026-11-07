@@ -16,10 +16,10 @@ concurrency:
 jobs:
   go:
     name: build + unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
           persist-credentials: false
@@ -68,8 +68,9 @@ jobs:
       # time (release.yml generates the release notes from it). Full history is needed to
       # render commit sections.
       - name: changelog config check (git-cliff)
-        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4
+        uses: orhun/git-cliff-action@a9a95522b26fe6403f7bb24031f21fb573d0f5ff # v4
         with:
+          version: v2.13.1
           config: cliff.toml
           args: --context
       # Current Rust maintenance is validated by rust-validation.yml, not this
@@ -81,11 +82,11 @@ jobs:
     name: compact independent-kernel smoke
     # Heavy Docker job: PR + manual only, not every push to main (Actions minute budget).
     if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: go
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
           persist-credentials: false
@@ -166,14 +167,14 @@ jobs:
     # PR + manual only, not every push to main. Rule 60 keeps the identical local
     # Docker stack (scripts/e2e-docker.*) as the authority for work on main.
     if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: go
     timeout-minutes: 35
     env:
       COMPOSE_ANSI: never
       BUILDKIT_PROGRESS: plain
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
           persist-credentials: false

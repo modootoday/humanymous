@@ -38,7 +38,7 @@ jobs:
       HUMANYMOUS_BENCHMARK_IMAGE: ghcr.io/catthehacker/ubuntu@sha256:62d572b92f9f32d3427b6d220ad1f9dca9c7b6ffad37d295425037dbff78abaf
     steps:
     - name: Check out benchmark control source
-      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         ref: ${{ github.sha }}
         persist-credentials: false

@@ -35,7 +35,7 @@ jobs:
           - {runner: macos-15-intel, os: macos, arch: x64}
           - {runner: macos-15, os: macos, arch: arm64}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
@@ -46,7 +46,7 @@ jobs:
         run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- --configure-toolchain
       - name: Observe native tuple and execute implemented workspace tests
         run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os }} ${{ matrix.arch }}
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always() && vars.CI_COMPONENT_ARTIFACTS == 'true'
         with:
           name: probe-${{ matrix.os }}-${{ matrix.arch }}-${{ github.sha }}

@@ -28,7 +28,7 @@ pub(super) fn decode(text: &str, cap: usize) -> Result<Vec<u8>> {
         "proof base64 bound refused",
     )?;
     let mut out = Vec::new();
-    for part in text.as_bytes().chunks_exact(4) {
+    for part in text.as_bytes().as_chunks::<4>().0 {
         let mut values = [0u8; 4];
         for (index, byte) in part.iter().enumerate() {
             values[index] = if *byte == b'=' {

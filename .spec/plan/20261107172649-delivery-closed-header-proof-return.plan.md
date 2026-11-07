@@ -163,7 +163,7 @@ size approval, owner29 tests/strict Clippy and actual hosted/receiver followthro
 remain required before any full header proof claim.
 
 Read-only preparation commands are also authored: header-proof-plan EXPECTED_SHA
-checks the compiled checkout identity, compares actual working source metadata to
+checks the runtime checkout identity, compares actual working source metadata to
 raw canonical Git blobs, and reports exact serialized snapshot bytes/counts/hash
 without creating a hosted context; header-proof-parent ABS_PARENT invokes the
 shared native held-parent verifier without creating or repairing directories.
