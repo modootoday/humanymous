@@ -80,6 +80,21 @@ cleanup. Keep the benchmark quiet window until root allocates execution.
 
 ## Go bounded HTTP actual composition
 
+The sole public projection uses humanymous.lab-go-public/1 and the
+test/lab/runner/go-public-receipts.json field/status contract, emitted at
+lab-report.json/public_receipts/go and go-public-receipt.json. Preserve all8
+owner IDs/indices and terminal pass/fail/not_run statuses; recompute counts,
+retain known evaluator assertions through teardown errors and mark unknown
+assertions null. The original evaluator stdout is saved before drain. A cleanup
+or drain error remains case failure even when semantic evaluation passed.
+Only static Go-owned semantic codes or lab-owned infrastructure codes may leave
+private records. No body/detail/configuration/actor observation/raw path is copied.
+Bind exact source/manifest/original-private-ledger SHA256 and explicit run context.
+Reject unknown status/schema, duplicate IDs, changed original bytes or false
+qualification. Local act cannot receive an attributed real hosted run ID;
+environment metadata remains conventional and requires independent actual
+GitHub run/job/source/image verification. No signed attestation is claimed.
+
 The --go-product profile consumes adapters/go/pilot-contract.json and the
 Go-owned typed Deployment, scenario evaluator and Receipt qualifier. It uses
 test/lab/go-configuration.json as the complete parent/actor configuration

@@ -59,6 +59,29 @@ user-authorized image cleanup; this lab does not perform prune. Existing lab
 project cleanup remains separate and must recheck engine identity before down.
 Never broaden image cleanup to containers, volumes, builder cache or system prune.
 
+The sole public Go receipt is lab-report.json/public_receipts/go, also saved as
+go-public-receipt.json. Its schema is humanymous.lab-go-public/1 and its field,
+status and count contract is test/lab/runner/go-public-receipts.json. CI consumes
+this projection rather than parsing private semantic observations. It requires
+all8 static owner IDs/indices, pass/fail/not_run, evaluated/assertions-known,
+bounded assertion counts or explicit null, source/manifest hashes, actual run
+context and the original private Go ledger receipt SHA256. No detail, body,
+configuration, actor observation, arbitrary error text or raw path is copied.
+Semantic error codes come from the Go-owned16-code pilot contract; infrastructure
+codes come from the lab's safe-diagnostics enum. Unknown infrastructure failure
+text maps to execution_failed; unknown semantic/terminal schemas fail closed.
+
+Public counts retain setup NOT_RUN rows and post-evaluation teardown failures.
+The original evaluator stdout is saved before drain, and errors retain known
+evaluation counts without upgrading their case to pass. Unknown assertion
+counts remain null, never fabricated zero. A qualifying component requires8
+passed/evaluated cases and the actual owner qualifier in genuine hosted context;
+full_product_qualified remainsfalse. Local act refuses hosted admission, discards
+emulated run IDs and cannot mint a hosted receipt. Run metadata is conventional
+provenance only: the root reviewer independently verifies real GitHub run/job/
+source/image receipts. The new projection pure negative test is authored/NOT_RUN
+until root allocates its compile; no actual Go8 result is inferred from source.
+
 The Go bounded HTTP profile has an actual Rust Docker caller:
 `cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --go-product --require-full`.
 Use a fresh bundle, separately from browser/collector/topology-only profiles.

@@ -127,6 +127,10 @@ fn evaluate(lab: &mut Lab, observation: &Value) -> Result<Value> {
         true,
         &serde_json::to_vec(observation)?,
     )?;
+    fs::write(
+        lab.evidence.join("go-case-evaluation.raw.json"),
+        output.stdout.as_bytes(),
+    )?;
     Ok(decode_strict_json(output.stdout.as_bytes(), 65536)?)
 }
 fn dns_snapshot(lab: &mut Lab, id: &str) -> Result<Value> {
@@ -583,6 +587,34 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         snapshot::write(&lab.evidence, "go-product-report.json", &report)?;
         lab.components["go_product"] = report;
     }
+    let projection = (|| -> Result<Value> {
+        let raw = fs::read(lab.evidence.join("go-product-report.json"))?;
+        let source_raw = fs::read(lab.evidence.join("source-manifest.json"))?;
+        let source = decode_strict_json(&source_raw, 16 * 1024 * 1024)?;
+        super::go_public::project(
+            &lab.components["go_product"],
+            &raw,
+            &source,
+            &snapshot::digest(&source_raw),
+            &super::go_public::run_context()?,
+        )
+    })();
+    match projection {
+        Ok(value) => {
+            snapshot::write(&lab.evidence, "go-public-receipt.json", &value)?;
+            lab.public_receipts["go"] = value;
+        }
+        Err(error) => {
+            if result.is_ok() {
+                return Err(error);
+            }
+            snapshot::write(
+                &lab.evidence,
+                "go-public-projection-failure.private.json",
+                &json!({"detail":error.to_string(),"original_execution_error_preserved":true}),
+            )?;
+        }
+    }
     result
 }
 fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> {
@@ -638,8 +670,20 @@ fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> 
         let cleanup = child.cleanup();
         let item = match (result, cleanup) {
             (Ok(result), Ok(())) => result,
-            (result, cleanup) => {
-                json!({"case":id,"status":"error","error_code":child.stage,"detail":result.err().map(|e|e.to_string()),"cleanup_error":cleanup.err().map(|e|e.to_string()),"full_product_qualified":false})
+            (Ok(mut result), Err(error)) => {
+                result["status"] = json!("error");
+                result["error_code"] = json!("cleanup_failed");
+                result["cleanup_error"] = json!(error.to_string());
+                result
+            }
+            (Err(error), cleanup) => {
+                let path = child.evidence.join("go-case-evaluation.raw.json");
+                let evaluation = if path.is_file() {
+                    decode_strict_json(&fs::read(path)?, 65536)?
+                } else {
+                    Value::Null
+                };
+                json!({"case":id,"status":"error","error_code":child.stage,"evaluation":evaluation,"detail":error.to_string(),"cleanup_error":cleanup.err().map(|e|e.to_string()),"full_product_qualified":false})
             }
         };
         snapshot::write(
@@ -654,7 +698,9 @@ fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> 
         )?;
         ledger[index] = item;
     }
-    let passed = ledger.iter().all(|v| v["evaluation"]["status"] == "passed");
+    let passed = ledger
+        .iter()
+        .all(|v| v["status"] != "error" && v["evaluation"]["status"] == "passed");
     let mut qualification =
         json!({"status":"not_run","reason":"complete successful measured ledger required"});
     if passed {

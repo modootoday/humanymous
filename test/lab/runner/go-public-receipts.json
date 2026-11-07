@@ -1,0 +1,23 @@
+{
+  "schema": "humanymous.lab-go-public-contract/1",
+  "public_schema": "humanymous.lab-go-public/1",
+  "private_report_schema": "humanymous.go-product-ledger/1",
+  "evaluation_schema": "humanymous.go-case-evaluation/1",
+  "qualification_schema": "humanymous.go-lab-qualification/1",
+  "scheduled": 8,
+  "status_enum": ["pass", "fail", "not_run"],
+  "max_assertions_per_case": 128,
+  "public_fields": ["schema", "profile", "private_receipt_schema", "private_receipt_sha256", "source_sha", "source_manifest_sha256", "run_context", "case_statuses", "totals", "setup_or_qualification_error_code", "qualified_component", "raw_contents_included", "full_product_qualified"],
+  "case_fields": ["index", "id", "status", "evaluated", "assertions", "assertions_known", "error_code"],
+  "totals_fields": ["scheduled", "passed", "failed", "not_run", "evaluated", "known_assertions", "unknown_assertion_cases"],
+  "hosted_context_fields": ["kind", "hosted_qualification_admitted", "repository", "run_id", "run_attempt", "job", "workflow_sha", "authenticated_provenance", "requires_external_job_verification"],
+  "local_context_fields": ["kind", "hosted_qualification_admitted", "run_id", "run_attempt", "authenticated_provenance", "requires_external_job_verification"],
+  "case_inventory_contract": "adapters/go/pilot-contract.json",
+  "semantic_error_codes_field": "evaluation_error_codes",
+  "infrastructure_error_contract": "test/lab/runner/safe-diagnostics.json",
+  "unknown_assertions": "null; never infer zero for an attempted but unmeasured case",
+  "assertion_scope": "Go-owned scenario evaluator checks only; topology, build and cleanup checks remain separate owning lab assertions",
+  "private_receipt_sha256_scope": "original private go-product-report.json bytes; not raw HTTP observation bytes",
+  "raw_contents_included": false,
+  "full_product_qualified": false
+}
