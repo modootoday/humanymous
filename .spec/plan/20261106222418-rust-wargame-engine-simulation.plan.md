@@ -15,6 +15,38 @@ rel:
 
 ### CORE-SLICE-01 assigned consumer references (source only)
 
+Root later supplied the actual fixture destination:
+crates/sdk/humanymous-core/tests/scoring/fixtures/**. Updated eight include_str
+references across catalog.rs and network/cases.rs without copying fixtures.
+Current source hashes after fmt: catalog.rs
+f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7;
+network/cases.rs
+52ded3c3a94ba24caff7a5c81ab893516a4b063b45bea90eddccf186f7f04a8d.
+
+The initial cross-representation equality check found different bytes between
+canonical306 Git blobs and moved CRLF worktree fixtures. It did NOT demonstrate
+migration drift: the pre-move worktree was already CRLF. The initial inference
+that root must restore LF was incorrect and is withdrawn. Human-chrome-allow is
+5524canonical Git bytes versus5742pre/post worktree bytes; CR counts for the six
+consumed fixtures are218/140/120/209/224/202. No fixture normalization is authorized.
+
+Independent follow-up reads root's retained private20261108054000-core-consolidation/
+file-map.before.json: all six consumed files match their PRE-MOVE rawSHA256 and
+byte lengths, with0differences. Separately, filtered Git hashes match original306
+blobs for all six. Preserve both provenance representations without conflating
+them; no fixture was edited or copied by this consumer. Root reports all26moved
+non-Rust files stable; this consumer independently checked its six-file subset.
+Direct fmt and whitespace checks pass; no consumer compiler/Clippy/tests ran.
+
+| Consumed frozen filename | Pre/post bytes | Equal raw SHA256 |
+| --- | --- | --- |
+| human-chrome-allow.json | 5742 | dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963 |
+| go-http-client.json | 3549 | 5fd5941b45ee6a43a113a91c132f5928a93bdaedc5f1fb447e13e3eca11a0725 |
+| no-client-hr10.json | 3066 | 87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2 |
+| ua-tls-h2-hr2.json | 5367 | 3a8474c8e3de9dd33d56a470ec79a20743b184699401c6311720f2af38be2236 |
+| selenium-hr1.json | 5789 | 368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418 |
+| bot-webdriver-cdp-hr9.json | 5209 | 04eb9bd2a02d70ea1dd7796c8128ef03b2cc10f41bcafb97d91c61873ef264b2 |
+
 Root explicitly assigned attacker Rust consumer references including catalog and
 network. The existing pass loan was normally released/reclaimed to add exactly
 src/catalog.rs and src/network/cases.rs; report.rs was already owned. Six Rust

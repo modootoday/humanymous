@@ -230,9 +230,11 @@ fn fixture(
     forged: bool,
 ) -> Result<ClientReport, LabError> {
     let raw = if selenium {
-        include_str!("../../../scoring/tests/fixtures/frozen/selenium-hr1.json")
+        include_str!("../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json")
     } else {
-        include_str!("../../../scoring/tests/fixtures/frozen/human-chrome-allow.json")
+        include_str!(
+            "../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json"
+        )
     };
     let value: Value = serde_json::from_str(raw).map_err(|_| LabError("frozen fixture JSON"))?;
     let mut report: ClientReport = serde_json::from_value(value["report"]["client"].clone())

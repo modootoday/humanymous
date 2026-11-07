@@ -18,7 +18,8 @@ pub struct Case {
     pub unsupported: bool,
 }
 
-const HUMAN: &str = include_str!("../../scoring/tests/fixtures/frozen/human-chrome-allow.json");
+const HUMAN: &str =
+    include_str!("../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json");
 
 fn replay(id: &str, tier: &'static str, class: &'static str, raw: &str) -> Case {
     let input = (|| {
@@ -45,31 +46,41 @@ pub fn cases(seed: u64) -> Vec<Case> {
             "go-http-client",
             "T0",
             "attack",
-            include_str!("../../scoring/tests/fixtures/frozen/go-http-client.json"),
+            include_str!(
+                "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json"
+            ),
         ),
         replay(
             "missing-client",
             "T0",
             "attack",
-            include_str!("../../scoring/tests/fixtures/frozen/no-client-hr10.json"),
+            include_str!(
+                "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json"
+            ),
         ),
         replay(
             "ua-tls-h2-mismatch",
             "T0",
             "attack",
-            include_str!("../../scoring/tests/fixtures/frozen/ua-tls-h2-hr2.json"),
+            include_str!(
+                "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json"
+            ),
         ),
         replay(
             "selenium-artifact",
             "T1",
             "attack",
-            include_str!("../../scoring/tests/fixtures/frozen/selenium-hr1.json"),
+            include_str!(
+                "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json"
+            ),
         ),
         replay(
             "webdriver-cdp",
             "T1",
             "attack",
-            include_str!("../../scoring/tests/fixtures/frozen/bot-webdriver-cdp-hr9.json"),
+            include_str!(
+                "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json"
+            ),
         ),
         replay("coherent-observation-ceiling", "T4", "ceiling", HUMAN),
     ];
