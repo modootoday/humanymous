@@ -231,14 +231,25 @@
       "pages": [
         "docs/reference/supported-topologies.md"
       ]
+    },
+    {
+      "source": "crates/dotnet-adapter/tests/package.rs",
+      "sha256_at_post_read_observation": "94df34555ccc08e147fdc825f77755ac061ad77129df22822801bff7343fd1a0",
+      "lines": 485,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "485-line ignored SDK/package orchestration fully read in contiguous chunks. Root-selected canonicalpaths/native/harness/provenance, initialcleanHEAD/lock/digests and exactSDK10.0.403. Pack into privatefeed; separate clean caches/builds for fourJIT/AOT source/packed modes; packedconsumer lacks sourceproject and restorednative bytes mustmatch withoutmanualinjection. Stage logs/status retained, directchildcapture deadlines not descendantcleanupqualification. Sourceclean rechecked but no complete registry/sysroot/compilerinput or before/afterHEAD immutableclosure. Restoration may generate lockfile; declarations not reproduciblebuild proof. Exactlytwo authorityprofiles each and missingcontractcases retained; publicsummary then host_contract_complete assertion, cleanupnull/componentfalse/fullfalse/publicationfalse. Earlyfailedstages stop latercases; no actualSDK/package/host execution here.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
     }
   ],
-  "full_read_files": 21,
-  "lines": 3811,
+  "full_read_files": 22,
+  "lines": 4296,
   "post_read_rehash_drift": [],
   "source_receipts_renewed": false,
   "new_execution": "NOT_RUN",
   "docs_modified": false,
   "full_product_qualified": false,
-  "remaining": "Full owner chronology and package orchestration test remain; then compare wholepackage/current authoredfiles and existingmatchingreceipts. No actualruntime or sourceacceptance."
+  "remaining": "Full current owner INTEGRATION chronology remains from triage gaps; then compare wholecurrentpackage/adapter inventory and existingmatchingreceipts. No actualruntime or sourceacceptance."
 }
