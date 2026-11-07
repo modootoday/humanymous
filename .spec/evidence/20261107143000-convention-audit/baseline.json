@@ -187,6 +187,25 @@
       "existing_debt": "Productionunicode/registry include data omitted by extensionfilter",
       "actual_changed_binary_observed": false,
       "private_review_sha256": "d29b4b07d85b6e75f3126e45b2f732ac7fc15e15b0c332245b690df3f004b50d"
+    },
+    {
+      "id": "CA-ROOT-JOURNAL-01",
+      "priority": "P1",
+      "owner": "Native/root",
+      "state": "OPEN prospective design gate; Root accepts mandatory amendment, implementation not granted",
+      "trigger": "Reused nonce/locator may overwrite an earlier Planned/Unknown attempt, allowing later NotCreated to erase prior cleanup custody",
+      "required_delta": "Atomic create-new unique attempt or active/Unknown slot refusal; ACK binds anchor selector nonce owner original clock pair; never overwrite/evict Unknown or resolve it from later NotCreated; collision/replay/crash model negatives",
+      "private_review_sha256": "376db7075e3d2749fc35d5890feea629b6c087756fcd870ec02401b6b158f7e2"
+    },
+    {
+      "id": "CA-CARGO-ID-01",
+      "priority": "P2",
+      "owner": "Native/Delivery/root",
+      "state": "OPEN qualification; source corrections9fcc013d/057befe3 reviewed; actual production loader and owning receipt audit pending",
+      "trigger": "Cargo package IDs are opaque; valid Platform path package uses version-only fragment and fails old name-suffix predicate",
+      "actual_false_positive_observed": false,
+      "historic_9586_cause_established": false,
+      "private_review_sha256": "04d3ef3bb00e61e607450e33cb97d64a757ad99f84121621d9330e4be24ce048"
     }
   ],
   "evidence_references": {
@@ -1486,6 +1505,32 @@
     "earlier_partial_review_remaining_requirement": "These9specificAPIabsence/control cases were later executed; earlier partial record kepthistorical",
     "remaining": "Finalatomiccandidate/nativeprocess/provider/packagingprofiles/wholegraph andfullproduct gates",
     "audit_workloads": 0,
+    "goal_complete": false
+  },
+  "followup_priority_contracts_opaque_ids_and_hosted_failures": {
+    "private_reviews": [
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\priority-data-native-root-critique-001.json",
+        "sha256": "376db7075e3d2749fc35d5890feea629b6c087756fcd870ec02401b6b158f7e2",
+        "bytes": 6020
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\opaque-cargo-id-source-correction-review-001.json",
+        "sha256": "04d3ef3bb00e61e607450e33cb97d64a757ad99f84121621d9330e4be24ce048",
+        "bytes": 3566
+      },
+      {
+        "path": ".spec.local\\root\\evidence\\20261107143000-convention-audit\\9586-windows-node-independent-failure-review-001.json",
+        "sha256": "6cd26103c48dd3ed180211f89ad3e2ffc4f11b3a2abab179ad5f3dd7ed59f96c",
+        "bytes": 1809
+      }
+    ],
+    "root_decision": "Root accepted mandatory Native unique-attempt/no-clobber amendment; pure model/test proposal only. No durable ACK/native factory grant.",
+    "data": "Pure DATA parser source reviewed at2e9934fe; no concrete P0/P1. All27 legacy behaviors remain required. be9eec6d strengthens map-only rejection test controls; actual receipt not independently reviewed here.",
+    "native": "CA-ROOT-JOURNAL-01 P1 remains OPEN until canonical amendment and qualification. Existing owner/ancestor mutation admission remains conditional; current venue Unsupported.",
+    "cargo": "Root-origin opaque Cargo ID mismatch confirmed against actual Platform metadata;9fcc013d/057befe3 source corrections reviewed. Owner reports five Native fixture passes; actual receipt not independently audited and production loader not run.",
+    "hosted": "9586 Windows/Node fresh decoded logs match saved bytes,19/12 shared step fields,23/3 typed reports. Windows CEF succeeds; later workspace actor reaches40m timeout. Node host-tests exit1; missing downstream receipt is secondary. Original assertions unrecovered; no causal attribution to lifetime/handoff or later opaque-ID issue.",
+    "census": "Root corrected census:34 workspace plus4 standalone manifests=38 total current; initial41 workspace plus4=45 total. Four standalone tools route to CLI qualification; target8 unchanged. These are Root-reported counts, not an independent full census.",
     "goal_complete": false
   }
 }

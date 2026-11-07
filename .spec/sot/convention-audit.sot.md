@@ -2051,3 +2051,40 @@ members. This does not qualify all features/profiles/tests, native execution or
 registry/publication readiness. No broader atomic candidate/full graph/product
 pass is inferred. Exact raw/source hashes are bound through baseline.json. Audit
 ran no compiler, native query or product workload; remaining global gates stay OPEN.
+## Priority contracts, opaque Cargo IDs and retained hosted failures
+
+The DATA-only public-role contract and production parser at2e9934fe have no
+confirmed P0/P1 in this bounded source review. First-four provider declarations
+are mandatory; no declaration proves availability, binding authenticity or Ready.
+All27 legacy behaviors remain required. be9eec6d strengthens the map-only test
+with valid positional derived controls; its actual execution is not verified here.
+
+CA-ROOT-JOURNAL-01 is a prospective P1 design gate: attempt A can create then
+crash unopened; attempt B using the same permitted nonce/locator can overwrite
+A's journal record, then report NotCreated on collision. Stable ancestry alone
+does not preserve A's Unknown obligation. Require atomic create-new attempt
+records or refusal of active/Unknown slots, ACK bound to anchor/selector/nonce/
+owner/original deadlines, no Unknown eviction or resolution by later NotCreated,
+and collision/replay/crash model negatives. Root accepts this required amendment
+and permits only a pure model/test proposal. No durable ACK/native factory grant
+follows. Ordinary ancestor-owner mutation admission remains unresolved; existing
+DenyDelete reasoning alone does not qualify a venue or add TrustedInstaller TCB.
+
+CA-CARGO-ID-01 is a Root-origin P2 qualification gap. Actual Platform metadata
+confirms that valid opaque Cargo IDs fail the previous name-suffix predicate.
+Native9fcc013d and Delivery057befe3 source corrections join metadata identity,
+membership, manifest and target roles. Five Native fixture passes are owner
+reported, not independently audited here; production loader execution remains
+unrun. No historic9586 failure cause is inferred from this later finding.
+
+Independent fresh9586 Windows/Node decoded logs equal saved bytes; common step
+fields match19/12 and typed report multisets23/3. Windows CEF succeeds; the later
+workspace actor reaches the40-minute job timeout. Node host-tests exits1; a
+missing downstream qualification receipt is secondary. Original assertions and
+terminal cleanup details remain unrecovered. No lifetime/handoff causality or
+whole-product success is established. Private review hashes are in baseline.json.
+
+Root corrects the manifest census to34 workspace plus4 standalone,38 total
+current; initial41 workspace plus4,45 total. All four standalones route to CLI
+qualification and the target remains8 packages. These counts are Root-reported;
+the immutable audit baseline is unchanged. Full migration/global gates stay OPEN.
