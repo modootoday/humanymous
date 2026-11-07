@@ -10,6 +10,17 @@ rel:
 
 # Agent maintenance
 
+## Observed temporary legacy report loan
+
+After the reporting owner supplied an actual acquisition receipt, the live pass
+claim was independently re-read as codex/session rust-report-migration. LANES
+now lists exactly six approved attacker report/wire/bin paths plus the existing
+named Wargame SoT and plan, eight paths total. No evidence bundle is included
+until separately named. THREADS distinguishes this compatibility loan from the
+Challenge/Pass protocol, whose source remains root-owned/separately delegated.
+The audit red-catalog loan is unchanged. No foreign claim was edited, no mode
+flipped, and no workload or report parity result is inferred from registration.
+
 ## Observed bounded audit loan and performance source handoff
 
 Root authorized a temporary free red-catalog loan solely to convention audit.

@@ -42,6 +42,12 @@ with exactly five convention spec/evidence scopes in LANES; no red/product code,
 rules, Pages, graph or Cargo workload rights follow. Both are temporary existing
 compatibility loans, not qualification of the draft Rust-only protocol.
 
+Temporary reporting coordination: pass is held by codex/rust-report-migration for
+the eight exact report/source/spec paths listed in LANES, verified from the live
+claim. This does not grant Challenge/Pass ownership, broader attacker files or an
+unnamed evidence bundle. Root retains Challenge ownership and separate delegation;
+the convention audit loan is unaffected.
+
 Local validation has at most four root-assigned pipelines A/B/C/D, jobs1/incremental0 and distinct targets, never same-target overlap or implicit permission to start. Admit only at commit<85% and free physical>20GiB. At commit>=88% or free physical<16GiB defer new compilation and automatically reduce subsequent allocations. Native Docker/CEF/SDK heavy builds are exclusive against other cold compilation streams; four slots do not prove concurrent cold capacity. Warm unit/bounded process overlap needs explicit budget admission. Deferred heavy builds wait for all other cold streams to become terminal and admission guards to pass. Preserve caches; no WSL shutdown, global cache drop, Docker pruning or foreign kills for admission. GPU inference remains separately allocated. Resource measurements and manifest windows follow program-roadmap/delivery and rule94.
 
 Supported Windows/WSL compilation and ordinary process/IPC/fixture tests may run locally by root allocation. Selected Linux pre-push checks may use the same YAML in Windows Desktop act under rule96. GitHub retains unavailable OS/architecture and SCM/account profiles, event/permission semantics, genuine hosted contracts and the final matrix. Preserve actual venue and source-bound evidence; never relabel local as hosted. Rule94 records the measured basis and its limits. User-authorized model smoke remains separately bounded and does not qualify full paired evaluation. No publication or paid infrastructure is authorized. Only explicitly accepted bounded language/unsafe exceptions in controlling SoTs apply.

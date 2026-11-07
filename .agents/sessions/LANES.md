@@ -56,6 +56,24 @@ codex/rust-convention-audit for `.spec/sot/convention-audit.sot.md`,
 The actual claim was re-read after normal owner acquisition. The lane's usual
 red-code responsibility is not granted: no product/red code, rules, Pages, graph
 or Cargo workload permission follows from this document/evidence loan.
+Temporary root-approved report loan: pass is held by codex/rust-report-migration
+for exactly these eight paths, independently re-read from the actual claim:
+
+- `crates/attacker/src/report.rs`
+- `crates/attacker/src/report/legacy/mod.rs`
+- `crates/attacker/src/report/legacy/aggregate.rs`
+- `crates/attacker/src/report/legacy/html.rs`
+- `crates/attacker/src/report/legacy/tests.rs`
+- `crates/attacker/src/bin/humanymous-report.rs`
+- `.spec/sot/rust-wargame.sot.md`
+- `.spec/plan/20261106222418-rust-wargame-engine-simulation.plan.md`
+
+This is legacy-report migration only. The pass lane name grants no Challenge/Pass
+protocol or `crates/challenge/**` ownership; root retains that context and any
+separate delegation. No evidence bundle or broader attacker path is included.
+Evidence requires a separately named exact grant. The convention audit's
+red-catalog loan remains unchanged and disjoint. Normal exact-owner handover and
+separate workload allocation still apply; no force or foreign release is allowed.
 The future convention-audit/performance Rust-only protocol remains draft.
 
 Execution slots are separate from work lanes: root assigns at most four local
