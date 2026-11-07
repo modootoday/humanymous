@@ -343,3 +343,9 @@ Private captured CLI stdout (not original HTTP response bytes) is attached under
 evidence:root/20261107061820; sanitized exact-source summary is attached under
 public evidence:root/20261107061821. Other failed native probe details remain
 unrecovered; no success is inferred. No rerun/dispatch occurred.
+R06 adds one pure in-memory AsyncRead/AsyncWrite flow-control fixture: stalled or
+broken downstream after the head must stop further origin consumption within a
+bounded read-ahead window rather than buffer the1MiB origin. The model uses no
+sockets/OS processes and does not qualify actual network abort/drain behavior.
+New fixture execution remains NOT_RUN. Actual deployed resource monitoring,
+malformed socket, force-stop and independent custody/witness pilots remain open.

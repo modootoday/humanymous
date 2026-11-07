@@ -41,6 +41,6 @@
   "private_history": "evidence:root/20261107061820",
   "new_pure_budget_management_framing_fixture_functions": 6,
   "new_hosted_only_unix_lifecycle_fixture_functions": 2,
-  "new_pure_stream_profile_fixture_functions": 4,
+  "new_pure_stream_profile_fixture_functions": 5,
   "new_hosted_only_stream_and_quota_tcp_fixture_functions": 2
 }

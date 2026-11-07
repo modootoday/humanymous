@@ -173,6 +173,99 @@ async fn chunk(output: &mut (impl AsyncWrite + Unpin), bytes: &[u8]) -> Result<(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::{
+        pin::Pin,
+        sync::{
+            Arc,
+            atomic::{AtomicUsize, Ordering},
+        },
+        task::{Context, Poll},
+    };
+    use tokio::io::ReadBuf;
+    struct CountedInput {
+        bytes: Vec<u8>,
+        position: usize,
+        count: Arc<AtomicUsize>,
+    }
+    impl AsyncRead for CountedInput {
+        fn poll_read(
+            self: Pin<&mut Self>,
+            _: &mut Context<'_>,
+            buffer: &mut ReadBuf<'_>,
+        ) -> Poll<std::io::Result<()>> {
+            let this = self.get_mut();
+            let count = buffer.remaining().min(this.bytes.len() - this.position);
+            buffer.put_slice(&this.bytes[this.position..this.position + count]);
+            this.position += count;
+            this.count.fetch_add(count, Ordering::SeqCst);
+            Poll::Ready(Ok(()))
+        }
+    }
+    struct LimitedOutput {
+        bytes: Vec<u8>,
+        limit: usize,
+        fail: bool,
+    }
+    impl AsyncWrite for LimitedOutput {
+        fn poll_write(
+            self: Pin<&mut Self>,
+            _: &mut Context<'_>,
+            bytes: &[u8],
+        ) -> Poll<std::io::Result<usize>> {
+            let this = self.get_mut();
+            if this.bytes.len() == this.limit {
+                return if this.fail {
+                    Poll::Ready(Err(std::io::ErrorKind::BrokenPipe.into()))
+                } else {
+                    Poll::Pending
+                };
+            }
+            let count = bytes.len().min(this.limit - this.bytes.len());
+            this.bytes.extend_from_slice(&bytes[..count]);
+            Poll::Ready(Ok(count))
+        }
+        fn poll_flush(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<std::io::Result<()>> {
+            Poll::Ready(Ok(()))
+        }
+        fn poll_shutdown(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<std::io::Result<()>> {
+            Poll::Ready(Ok(()))
+        }
+    }
+
+    /// In-memory flow-control model; actual socket abort/drain remains hosted.
+    #[tokio::test]
+    async fn downstream_backpressure_or_abort_does_not_buffer_the_whole_origin() {
+        for fail in [false, true] {
+            let head = format!("HTTP/1.1 200 OK\r\nContent-Length: {MAX_STREAM_BODY}\r\n\r\n");
+            let mut bytes = head.as_bytes().to_vec();
+            bytes.resize(bytes.len() + MAX_STREAM_BODY, b'x');
+            let count = Arc::new(AtomicUsize::new(0));
+            let mut input = CountedInput {
+                bytes,
+                position: 0,
+                count: count.clone(),
+            };
+            let mut output = LimitedOutput {
+                bytes: Vec::new(),
+                limit: head.len() + 64,
+                fail,
+            };
+            let mut started = false;
+            let result = tokio::time::timeout(
+                std::time::Duration::from_millis(10),
+                forward(&mut input, &mut output, false, &mut started),
+            )
+            .await;
+            if fail {
+                assert!(result.unwrap().is_err());
+            } else {
+                assert!(result.is_err());
+            }
+            assert!(started);
+            assert!(count.load(Ordering::SeqCst) <= 32768);
+            assert!(!output.bytes.ends_with(b"0\r\n\r\n"));
+        }
+    }
     #[tokio::test]
     async fn complete_chunk_stream_reframes_and_strips_forged_gateway_fields() {
         let mut input=&b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Type: text/event-stream\r\nX-Humanymous-Ack: forged\r\n\r\n2\r\nhe\r\n3\r\nllo\r\n0\r\n\r\n"[..];
