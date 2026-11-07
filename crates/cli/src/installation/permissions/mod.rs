@@ -9,7 +9,7 @@ mod windows;
 pub(super) use humanymous_native_security::storage::InstallationObject;
 #[cfg(windows)]
 pub(super) use windows::private as private_windows;
-pub(super) fn plain(path: &Path) -> std::io::Result<()> {
+pub(crate) fn plain(path: &Path) -> std::io::Result<()> {
     #[cfg(windows)]
     {
         let drive = match path.components().next() {
@@ -51,7 +51,7 @@ pub(super) fn plain(path: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
-pub(super) fn private_parent(path: &Path) -> std::io::Result<()> {
+pub(crate) fn private_parent(path: &Path) -> std::io::Result<()> {
     if !fs::metadata(path)?.is_dir() {
         return Err(err("parent must exist"));
     }
@@ -68,6 +68,26 @@ pub(super) fn private_parent(path: &Path) -> std::io::Result<()> {
     private_windows(path, InstallationObject::Parent)?;
     #[cfg(not(any(unix, windows)))]
     return Err(err("unsupported OS permission boundary"));
+    Ok(())
+}
+
+pub(crate) fn private_file(path: &Path) -> std::io::Result<()> {
+    plain(path)?;
+    if !fs::symlink_metadata(path)?.is_file() {
+        return Err(err("private regular file required"));
+    }
+    #[cfg(windows)]
+    private_windows(path, InstallationObject::File)?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::MetadataExt;
+        let metadata = fs::symlink_metadata(path)?;
+        if metadata.uid() != humanymous_native_security::process::current_uid()
+            || metadata.mode() & 0o777 != 0o600
+        {
+            return Err(err("private owner-only managed file required"));
+        }
+    }
     Ok(())
 }
 

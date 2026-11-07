@@ -1,9 +1,13 @@
 //! Local provisioning command composition root.
 use humanymous_cli::Plan;
+mod commands;
 
 fn run() -> Result<(), Box<dyn std::error::Error>> {
     let mut args = std::env::args().skip(1);
     let command = args.next().ok_or("usage: humanymous doctor|install|rollback --artifact PATH --destination PATH --sha256 DIGEST --local-management-verified [--dry-run]")?;
+    if command.starts_with("service-") {
+        return commands::service(&command, args.collect());
+    }
     if !["doctor", "install", "rollback"].contains(&command.as_str()) {
         return Err("unknown command".into());
     }

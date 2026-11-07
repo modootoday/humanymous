@@ -6,14 +6,30 @@ rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 publish = false
+autobins = false
+
+[features]
+service-pilot = []
 
 [[bin]]
 name = "humanymous"
 path = "src/main.rs"
 
+[[bin]]
+name = "humanymous-service-fixture"
+path = "src/bin/service_fixture.rs"
+required-features = ["service-pilot"]
+
 [dependencies]
 sha2.workspace = true
 humanymous-native-security.workspace = true
+ed25519-dalek.workspace = true
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows-service = "=0.8.1"
 
 [lints]
 workspace = true

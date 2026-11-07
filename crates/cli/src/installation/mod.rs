@@ -6,7 +6,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-mod permissions;
+pub(crate) mod permissions;
 #[cfg(windows)]
 use permissions::{InstallationObject, private_windows};
 use permissions::{plain, private_parent};
@@ -17,6 +17,7 @@ pub struct Plan {
     destination: PathBuf,
     bytes: Vec<u8>,
     receipt: String,
+    artifact_name: &'static str,
 }
 
 fn err(message: impl Into<String>) -> std::io::Error {
@@ -56,20 +57,66 @@ impl Plan {
         if expected.len() != 64 || digest != expected {
             return Err(err("artifact SHA-256 mismatch"));
         }
-        let plan = Self {
-            destination: destination.to_owned(),
-            bytes,
-            receipt: format!(
-                "humanymous-provision-v1\nsha256={digest}\nlocal-management=operator-verified\nservice=none\n"
-            ),
-        };
+        let plan = Self::prepared(bytes, destination, expected)?;
         if destination.exists() {
             plan.verify()?;
         }
         Ok(plan)
     }
 
+    pub(crate) fn prepared(
+        bytes: Vec<u8>,
+        destination: &Path,
+        expected: &str,
+    ) -> std::io::Result<Self> {
+        Self::prepared_named(bytes, destination, expected, "artifact", true)
+    }
+
+    pub(crate) fn prepared_service(
+        bytes: Vec<u8>,
+        destination: &Path,
+        expected: &str,
+    ) -> std::io::Result<Self> {
+        Self::prepared_named(bytes, destination, expected, service_artifact_name(), false)
+    }
+
+    fn prepared_named(
+        bytes: Vec<u8>,
+        destination: &Path,
+        expected: &str,
+        artifact_name: &'static str,
+        local_verified: bool,
+    ) -> std::io::Result<Self> {
+        plain(destination)?;
+        private_parent(destination.parent().ok_or_else(|| err("parent required"))?)?;
+        let digest = format!("{:x}", Sha256::digest(&bytes));
+        if digest != expected || bytes.is_empty() {
+            return Err(err("artifact SHA-256 mismatch"));
+        }
+        Ok(Self {
+            artifact_name,
+            destination: destination.to_owned(),
+            bytes,
+            receipt: format!(
+                "humanymous-provision-v1\nsha256={digest}\nlocal-management={}\nservice=none\n",
+                if local_verified {
+                    "operator-verified"
+                } else {
+                    "not-runtime-qualified"
+                }
+            ),
+        })
+    }
+
     fn verify(&self) -> std::io::Result<()> {
+        self.verify_service(None)
+    }
+
+    pub(crate) fn verify_service(&self, service_sid: Option<&str>) -> std::io::Result<()> {
+        #[cfg(not(windows))]
+        if service_sid.is_some() {
+            return Err(err("Windows service SID on non-Windows target"));
+        }
         plain(&self.destination)?;
         #[cfg(windows)]
         private_windows(&self.destination, InstallationObject::Directory)?;
@@ -81,20 +128,35 @@ impl Plan {
         names.sort();
         if names
             != [
-                std::ffi::OsString::from("artifact"),
+                std::ffi::OsString::from(self.artifact_name),
                 std::ffi::OsString::from("receipt"),
             ]
         {
             return Err(err("unmanaged or partial destination"));
         }
         for (name, bytes) in [
-            ("artifact", self.bytes.as_slice()),
+            (self.artifact_name, self.bytes.as_slice()),
             ("receipt", self.receipt.as_bytes()),
         ] {
             let path = self.destination.join(name);
             plain(&path)?;
             #[cfg(windows)]
-            private_windows(&path, InstallationObject::File)?;
+            if name == self.artifact_name && service_sid.is_some() {
+                use std::os::windows::fs::OpenOptionsExt;
+                let file = fs::OpenOptions::new()
+                    .read(true)
+                    .custom_flags(0x00200000)
+                    .open(&path)?;
+                let owner = humanymous_native_security::process::current_identity()?;
+                humanymous_native_security::storage::verify_service_access(
+                    &file,
+                    owner.sid(),
+                    service_sid.unwrap_or(""),
+                    humanymous_native_security::storage::ServiceRole::Executable,
+                )?;
+            } else {
+                private_windows(&path, InstallationObject::File)?;
+            }
             if !fs::symlink_metadata(&path)?.is_file() || fs::read(path)? != bytes {
                 return Err(err("managed file changed"));
             }
@@ -148,7 +210,7 @@ impl Plan {
         let mut created = Vec::new();
         let result = (|| {
             for (name, bytes) in [
-                ("artifact", self.bytes.as_slice()),
+                (self.artifact_name, self.bytes.as_slice()),
                 ("receipt", self.receipt.as_bytes()),
             ] {
                 let path = self.destination.join(name);
@@ -157,7 +219,11 @@ impl Plan {
                 #[cfg(unix)]
                 {
                     use std::os::unix::fs::OpenOptionsExt;
-                    options.mode(if name == "artifact" { 0o700 } else { 0o600 });
+                    options.mode(if name == self.artifact_name {
+                        0o700
+                    } else {
+                        0o600
+                    });
                 }
                 let mut file = options.open(&path)?;
                 created.push(path);
@@ -185,10 +251,18 @@ impl Plan {
         )?;
         self.verify()?;
         fs::remove_file(self.destination.join("receipt"))?;
-        fs::remove_file(self.destination.join("artifact"))?;
+        fs::remove_file(self.destination.join(self.artifact_name))?;
         fs::remove_dir(&self.destination)
     }
 }
 
+pub(crate) fn service_artifact_name() -> &'static str {
+    if cfg!(windows) {
+        "artifact.exe"
+    } else {
+        "artifact"
+    }
+}
+
 #[cfg(test)]
-mod tests;
+pub(crate) mod tests;

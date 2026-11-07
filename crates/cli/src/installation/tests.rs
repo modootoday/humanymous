@@ -11,9 +11,9 @@ fn doctor_refuses_parent_without_owner_write_permission() {
     assert!(!fixture.0.join("installed").exists());
 }
 static NEXT_FIXTURE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
-struct Fixture(PathBuf);
+pub(crate) struct Fixture(pub(crate) PathBuf);
 impl Fixture {
-    fn new() -> Self {
+    pub(crate) fn new() -> Self {
         // macOS temp paths can traverse /var -> /private/var. Resolve the
         // trusted OS fixture root, keeping product symlink rejection intact.
         #[cfg(unix)]
