@@ -1,3 +1,4 @@
+use super::records::RecordBoundary;
 use super::{CaptureError, ClientHelloCapture};
 use humanymous_network::tls::ClientHello;
 use rustls::{HandshakeKind, ServerConfig, ServerConnection};
@@ -40,6 +41,7 @@ struct Ingress {
     bytes: usize,
     capture: Option<ClientHelloCapture>,
     cancelled: Arc<AtomicBool>,
+    records: RecordBoundary,
 }
 impl Ingress {
     fn remaining(&self) -> io::Result<Duration> {
@@ -62,12 +64,22 @@ impl Ingress {
             cancelled: Arc::clone(&self.cancelled),
         })
     }
+
+    fn revoke(&self) {
+        self.cancelled.store(true, Ordering::Release);
+        let _ = self.stream.shutdown(Shutdown::Both);
+    }
 }
 impl Read for Ingress {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.stream.set_read_timeout(Some(self.remaining()?))?;
-        let count = self.stream.read(buf)?;
+        // Keep later records in the kernel until rustls consumes the current
+        // record's plaintext. The idle probe must not miss a ciphertext tail
+        // already hidden in the TLS library's private deframer buffer.
+        let limit = self.records.read_limit(buf.len());
+        let count = self.stream.read(&mut buf[..limit])?;
         self.remaining()?;
+        self.records.feed(&buf[..count]);
         if let Some(capture) = &mut self.capture {
             self.bytes = self
                 .bytes
@@ -94,8 +106,7 @@ impl Write for Ingress {
 
 impl Drop for Ingress {
     fn drop(&mut self) {
-        self.cancelled.store(true, Ordering::Release);
-        let _ = self.stream.shutdown(Shutdown::Both);
+        self.revoke();
     }
 }
 
@@ -122,6 +133,7 @@ impl PendingHandshake {
             bytes: 0,
             capture: Some(ClientHelloCapture::default()),
             cancelled: Arc::new(AtomicBool::new(false)),
+            records: RecordBoundary::default(),
         };
         ingress.stream.set_nonblocking(false)?;
         let mut config = (*config).clone();
@@ -197,8 +209,8 @@ impl Connection {
         PendingHandshake::new(stream, config, budget)?.accept()
     }
 
-    /// Recheck the original epoch after audit and before an origin effect.
-    /// This is a liveness snapshot, not a reusable authorization ticket.
+    /// Check the original deadline/revocation state, not newly arrived peer
+    /// closure. H1 origin dispatch also requires [`Self::check_h1_idle`].
     pub fn remaining(&self) -> io::Result<Duration> {
         if self.failed {
             return Err(io::Error::new(
@@ -207,6 +219,79 @@ impl Connection {
             ));
         }
         self.ingress.remaining()
+    }
+
+    /// Observe the same socket immediately before a single-request H1 origin
+    /// effect. Refuse buffered plaintext, partial/pending TLS input, FIN and
+    /// socket errors; never block waiting to decrypt post-handshake controls.
+    /// Any refusal revokes and shuts down the epoch. H2 is unsupported here.
+    /// Success is a point-in-time idle observation, not protection against a
+    /// disconnect immediately after return. Runtime must still own cancellation,
+    /// request/body binding, audit ordering and joined worker lifetime.
+    pub fn check_h1_idle(&mut self) -> io::Result<()> {
+        let result = self.check_h1_idle_inner();
+        if result.is_err() {
+            self.failed = true;
+            self.ingress.revoke();
+        }
+        result
+    }
+
+    fn check_h1_idle_inner(&mut self) -> io::Result<()> {
+        self.remaining()?;
+        if !matches!(self.tls.alpn_protocol(), None | Some(b"http/1.1")) {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "idle probe requires TLS/H1",
+            ));
+        }
+        let mut byte = [0];
+        match self.tls.reader().read(&mut byte) {
+            Err(error) if error.kind() == io::ErrorKind::WouldBlock => {}
+            Err(error) => return Err(error),
+            Ok(0) => {
+                return Err(io::Error::new(
+                    io::ErrorKind::UnexpectedEof,
+                    "TLS peer closed",
+                ));
+            }
+            Ok(_) => {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    "trailing TLS plaintext",
+                ));
+            }
+        }
+        if !self.ingress.records.is_idle() {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "partial TLS record",
+            ));
+        }
+        if let Some(error) = self.ingress.stream.take_error()? {
+            return Err(error);
+        }
+        self.ingress.stream.set_nonblocking(true)?;
+        let observed = self.ingress.stream.peek(&mut byte);
+        let restored = self.ingress.stream.set_nonblocking(false);
+        restored?;
+        match observed {
+            Err(error) if error.kind() == io::ErrorKind::WouldBlock => {}
+            Err(error) => return Err(error),
+            Ok(0) => {
+                return Err(io::Error::new(
+                    io::ErrorKind::UnexpectedEof,
+                    "TCP peer closed",
+                ));
+            }
+            Ok(_) => {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    "pending TLS input",
+                ));
+            }
+        }
+        self.remaining().map(|_| ())
     }
 
     /// Borrow the complete hello from this successfully handshaken owner. Any

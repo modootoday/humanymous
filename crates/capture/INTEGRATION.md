@@ -73,6 +73,37 @@ request integrity, collector execution, T4/human identity or full product.
 
 ## Pending-handshake runtime slice (user-authorized continuation)
 
+### Post-audit H1 observation delta (new source, not yet validated)
+
+Runtime accepted Connection::check_h1_idle(&mut self)->io::Result<()> for the
+bounded single-request H1 profile. Call before decision, after durable audit and
+after an async origin connect immediately before its first write. remaining()
+only checks local deadline/revocation; it cannot detect newly arrived FIN/RST.
+The probe checks the rustls plaintext reader, record boundary, socket SO_ERROR
+and nonblocking peek on its private owned socket. Blocking mode is restored;
+then deadline/revocation are rechecked. Any EOF/error, buffered plaintext, partial
+record or queued ciphertext revokes and shuts down the epoch. H2/NativeStream
+are unsupported. Pending TLS controls are refused rather than synchronously
+decrypting them. No raw socket is exposed to runtime.
+
+Ingress reads now stop at each TLS header/payload boundary, preventing a next
+partial encrypted record from hiding in rustls' private deframer when application
+plaintext becomes available. The pinned rustls0.23.46 wants_read implementation
+stops reads while plaintext remains buffered. Two pure tests cover record
+fragmentation/boundary accounting. The first of the same five hosted tests now
+includes happy idle observation plus FIN, close_notify, buffered extra plaintext,
+new ciphertext and coalesced partial-record refusal subcases. Those byte barriers
+are component fixtures, not an actual durable-audit or origin-effect witness.
+Controlled native RST injection is not claimed by those fixtures.
+
+This remains a point-in-time observation: a peer can disconnect immediately after
+return. Runtime must retain controller/cancellation/deadline checks and worker
+join, and must not claim race-free origin cancellation from a peek. Runtime has
+source-authored its consumer and will call this API; no serving/readiness or
+qualified raw-TLS transition follows until the actual seam/product tests pass.
+Fresh source24pure/5hosted fixtures are NOT_RUN; the earlier22unit/feature compile
+receipt is historical for this delta. No manifest change or Cargo run here.
+
 Runtime owner accepted the pending-owner contract. New source exposes
 PendingHandshake::new(TcpStream,Arc<rustls::ServerConfig>,Duration),
 pending.cancellation(), pending.remaining() and pending.accept()->Connection.

@@ -96,6 +96,82 @@ fn wire(stream: u32) -> Vec<u8> {
     .concat()
 }
 
+#[derive(Clone, Copy)]
+enum H1Tail {
+    Fin,
+    CloseNotify,
+    BufferedPlaintext,
+    PendingCiphertext,
+    PartialRecord,
+}
+
+fn h1_idle_refusal(tail: H1Tail) {
+    const REQUEST: &[u8] =
+        b"POST /effect HTTP/1.1\r\nHost: capture.invalid\r\nContent-Length: 3\r\n\r\nabc";
+    let (server, config) = configs(b"http/1.1");
+    let listener = listener();
+    let addr = listener.local_addr().unwrap();
+    let (consumed, read_complete) = std::sync::mpsc::sync_channel(1);
+    let (changed, observe_change) = std::sync::mpsc::sync_channel(1);
+    let server = thread::spawn(move || {
+        let mut conn = Connection::accept(accept(&listener), server, BUDGET).unwrap();
+        let mut request = vec![0; REQUEST.len()];
+        let mut used = 0;
+        while used < request.len() {
+            let count = conn.read_plaintext(&mut request[used..]).unwrap();
+            assert!(count > 0);
+            used += count;
+        }
+        assert_eq!(request, REQUEST);
+        // This is a component barrier, not a durable-audit or origin witness.
+        consumed.send(()).unwrap();
+        observe_change.recv_timeout(BUDGET).unwrap();
+        let error = conn.check_h1_idle().unwrap_err();
+        match tail {
+            H1Tail::Fin => assert_eq!(error.kind(), io::ErrorKind::UnexpectedEof),
+            H1Tail::BufferedPlaintext => {
+                assert!(error.to_string().contains("trailing TLS plaintext"))
+            }
+            _ => assert!(error.to_string().contains("pending TLS input")),
+        }
+        assert!(conn.client_hello().is_none());
+        assert!(conn.remaining().is_err());
+        assert!(conn.write_plaintext(b"late").is_err());
+    });
+    let mut client = client(addr, config);
+    while client.conn.is_handshaking() {
+        client.conn.complete_io(&mut client.sock).unwrap();
+    }
+    let mut plaintext = REQUEST.to_vec();
+    if matches!(tail, H1Tail::BufferedPlaintext) {
+        plaintext.push(b'x');
+    }
+    client.conn.writer().write_all(&plaintext).unwrap();
+    let mut encrypted = Vec::new();
+    while client.conn.wants_write() {
+        client.conn.write_tls(&mut encrypted).unwrap();
+    }
+    if matches!(tail, H1Tail::PartialRecord) {
+        encrypted.extend([23, 3, 3, 0, 16, 0]);
+    }
+    client.sock.write_all(&encrypted).unwrap();
+    read_complete.recv_timeout(BUDGET).unwrap();
+    match tail {
+        H1Tail::Fin => client.sock.shutdown(std::net::Shutdown::Write).unwrap(),
+        H1Tail::CloseNotify => {
+            client.conn.send_close_notify();
+            client.flush().unwrap();
+        }
+        H1Tail::PendingCiphertext => {
+            client.write_all(b"x").unwrap();
+            client.flush().unwrap();
+        }
+        H1Tail::BufferedPlaintext | H1Tail::PartialRecord => {}
+    }
+    changed.send(()).unwrap();
+    server.join().unwrap();
+}
+
 #[test]
 #[ignore = "hosted-only actual TCP/TLS component pilot"]
 fn actual_tls_h1_never_claims_h2() {
@@ -120,6 +196,7 @@ fn actual_tls_h1_never_claims_h2() {
             count += conn.read_plaintext(&mut bytes[count..]).unwrap();
         }
         assert_eq!(&bytes, b"ping");
+        conn.check_h1_idle().unwrap();
         conn.write_plaintext(b"pong").unwrap();
     });
     let mut client = client(addr, config);
@@ -129,6 +206,15 @@ fn actual_tls_h1_never_claims_h2() {
     client.read_exact(&mut reply).unwrap();
     assert_eq!(&reply, b"pong");
     server.join().unwrap();
+    for tail in [
+        H1Tail::Fin,
+        H1Tail::CloseNotify,
+        H1Tail::BufferedPlaintext,
+        H1Tail::PendingCiphertext,
+        H1Tail::PartialRecord,
+    ] {
+        h1_idle_refusal(tail);
+    }
 }
 
 #[test]

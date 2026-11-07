@@ -85,6 +85,19 @@ this slice. H1 TLS success cannot qualify H2.
 
 ## Verification and evidence
 
+N07. The bounded single-request TLS/H1 consumer must call check_h1_idle after
+durable audit and immediately before an origin effect. remaining() alone checks
+only deadline/revocation, not peer state. The same owner checks its rustls reader,
+TLS record boundary, SO_ERROR and a nonblocking socket peek, restoring blocking
+mode before returning. EOF, reset/error, buffered plaintext, partial record or
+any pending ciphertext invalidates and shuts down the epoch. Pending TLS control
+records are conservatively unsupported here; the probe never blocks to decrypt
+them or publishes their contents. H2/stream use is refused. Transport reads are
+capped at each TLS record header/payload boundary, so queued next-record input
+cannot hide inside rustls after an application read. This is a point-in-time
+observation, not proof against a disconnect immediately after it returns.
+Runtime retains its own cancel/controller/deadline checks and worker join.
+
 Pure Rust units cover every split point, record fragmentation, truncated nested
 lengths, memory budgets, terminal failure, stream/continuation confusion, HPACK
 dynamic state and malformed pseudo fields. Run locked scoped units, fmt, Clippy
