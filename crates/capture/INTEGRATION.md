@@ -1,5 +1,13 @@
 # Capture integration requests and qualification
 
+Latest measured checkpoint: immutable edf700bc passed27pure lib units with zero
+failed/ignored/filtered, hosted-feature all-targets Clippy and compile-only
+hosted_transport on Root-allocated local Windows B. Evidence:root/20261107120400
+binds all2350archived source files unchanged plus executable/log hashes. Registry
+trees were not separately snapshotted. This supersedes the pure/compile NOT_RUN
+status below only. Actual5hosted cases, H1 socket behavior, runtime serving and
+Docker product validation remain open; no socket fixture ran in this allocation.
+
 Current frontier: PendingHandshake cancellation custody is implemented and
 runtime80b38ee consumes capture137e633c's H1 idle probe. Changed record reads,
 probe cases and the new H2 stream metadata are NOT_RUN (27 pure authored;

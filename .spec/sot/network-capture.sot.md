@@ -3,7 +3,7 @@ id: sot:root/network-capture
 title: Original TLS and HTTP2 connection capture
 status: active
 created: 2026-11-07T07:25:00Z
-updated: 2026-11-07T11:50:00Z
+updated: 2026-11-07T12:04:00Z
 verify: manual
 rel:
   governs: [crates/capture/**]
@@ -170,3 +170,11 @@ The user's later local Windows/WSL comparison authorization supersedes earlier
 blanket hosted-only policy; fixture hosted guards remain unchanged and must not
 be spoofed. Local Docker execution must follow Root's explicit Desktop engine
 allocation and the canonical Docker-only product validation workflow.
+
+Evidence:root/20261107120400 qualifies immutable edf700bc selected components:
+27pure passed with zero failed/ignored/filtered, hosted-feature all-targets Clippy
+passed, hosted_transport compiled without execution. All2350archived source files
+were unchanged before/after, including the full internal recursive closure and
+root build context. Registry trees were not separately snapshotted. This
+supersedes the current27 NOT_RUN note for pure/compile gates only; actual5hosted,
+H1 socket probe behavior, runtime serving and Docker full product remain open.
