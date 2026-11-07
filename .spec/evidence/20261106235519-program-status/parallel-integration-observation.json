@@ -1,0 +1,119 @@
+{
+  "schema": "humanymous.integration-observation/1",
+  "observed_at": "2026-11-07T00:29:41.385412+00:00",
+  "base_commit": "48880dcec885e75dad4ce805c5c9ef4683e4caa5",
+  "worktree_dirty": true,
+  "source_hashes": {
+    "Cargo.toml": "baa1f2f9ce0f39939f9ae24a4ebcdc9651dfa3a62ed0b6cc50a204ce02ea1cce",
+    "Cargo.lock": "9d876e5121873181c941b7e556a68db48122f9a6a3fdb11450b694bed50b4add",
+    "crates/audit/Cargo.toml": "52ac3c637361610ffc5769118b33f4708bdc5b2b7b00942eb032eebf90b5382f",
+    "crates/runtime/src/application.rs": "49ecfe5ddc0ad81e1412a3daf7bbdea867b13f484ad985b1150d2e62d4bf2a5c",
+    "crates/runtime/src/configuration.rs": "f0a6b6881502464f770484ec29d0dfe18a54750dc73c98aeaeced06864b832b0",
+    "crates/runtime/src/http.rs": "77a8d635bd1757ef127567c4a752400d5f3b0e5138aee9373309912b7f148891",
+    "crates/runtime/src/lib.rs": "cdcff402a22a9731f97425d9dd9f9d6aea01c822db35255efaff0125b704950e",
+    "crates/runtime/src/main.rs": "45fed19c88bdd636f0a57ccca8cb1b846b0fb0852f058e7a0fdc77a7ed2f0619",
+    "crates/runtime/src/session.rs": "14b395f39f85fdc24a7cbd4db8f4b4606098b8778770ad32e92670aff87cf379",
+    "crates/runtime/src/tests.rs": "a3e2f57c4e3e7813269b8b93844eaaac52c288628353e75fefc415d9739835f8",
+    "crates/browser/src/lib.rs": "b84e63353e3aaf2aaa2d9d998fe863b99ad68f4dca3a61598edc80fbe075774c",
+    "crates/browser/src/lifecycle.rs": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+    "crates/browser/src/main.rs": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+    "crates/browser/src/policy.rs": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+    "crates/browser/src/ui.rs": "e1b068a838b765a1af68069818c50ca69a915533c3b95adfb14622694c1151b1",
+    "crates/audit/src/keys/custody.rs": "218d7a67d2e9898cd548d589068b48bdf5490717e477584d40e4890b98f9a9e0",
+    "crates/audit/src/keys/mod.rs": "830d1154eb89f3d9d3d6a972b7e38fe7992cd88f2ca3ec1d66deb110a3107cf6",
+    "crates/audit/src/keys/vault.rs": "b10eea3032e36fde5d9fb41acfed73402482109589297ffdd052f2d710bc4351",
+    "crates/audit/src/keys/custody/permissions.rs": "cda0428942563a5de7b20a3a05e7b242a2831da702e3c8a306ff8a5805b33502"
+  },
+  "scope": "in-progress parallel-source observation, not final qualification",
+  "check_workspace": "passed",
+  "browser_native_ui_tests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "custody_parent_tests": {
+    "passed": 6,
+    "ignored_helpers": 2
+  },
+  "workspace_tests": {
+    "exit_code": 1,
+    "runtime_passed": 8,
+    "runtime_failed": 3,
+    "failures": [
+      "audit_is_minimized_and_failure_poison_is_permanent",
+      "replay_and_collect_cross_session_cannot_gain_origin_ticket",
+      "real_tcp_audit_before_origin_and_negative_counter_zero"
+    ]
+  },
+  "audit": {
+    "database": {
+      "advisory-count": 1422,
+      "last-commit": "309392b18f6b17022f82c701f300433126901068",
+      "last-updated": "2026-11-06T16:34:32+01:00"
+    },
+    "lockfile": {
+      "dependency-count": 527
+    },
+    "settings": {
+      "target_arch": [],
+      "target_os": [],
+      "severity": null,
+      "ignore": [],
+      "informational_warnings": [
+        "unmaintained",
+        "unsound",
+        "notice"
+      ]
+    },
+    "vulnerabilities": {
+      "found": false,
+      "count": 0,
+      "list": []
+    },
+    "warnings": {
+      "unmaintained": [
+        {
+          "kind": "unmaintained",
+          "package": {
+            "name": "ttf-parser",
+            "version": "0.25.1",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "checksum": "d2df906b07856748fa3f6e0ad0cbaa047052d4a7dd609e231c4f72cee8c36f31",
+            "replace": null
+          },
+          "advisory": {
+            "id": "RUSTSEC-2026-0192",
+            "package": "ttf-parser",
+            "title": "`ttf-parser` is unmaintained",
+            "description": "The author of `ttf-parser` has stated that the crate is unmaintained and will not receive further fixes (see the referenced issue).\n\n## Alternative(s)\n\n- [`skrifa`](https://crates.io/crates/skrifa), an actively maintained TrueType and OpenType font parsing crate, part of the Google Fonts \"oxidize\" (`fontations`) project.",
+            "date": "2026-06-28",
+            "aliases": [],
+            "related": [],
+            "collection": "crates",
+            "categories": [],
+            "keywords": [],
+            "cvss": null,
+            "informational": "unmaintained",
+            "references": [],
+            "source": null,
+            "url": "https://github.com/harfbuzz/ttf-parser/issues/217",
+            "withdrawn": null,
+            "license": "CC0-1.0",
+            "expect-deleted": false
+          },
+          "affected": null,
+          "versions": {
+            "patched": [],
+            "unaffected": []
+          }
+        }
+      ]
+    }
+  },
+  "test_log_sha256": "3a6877bcd771c66ce80a95a09566581f758cb43c8ff7a53496bc9164c0c961f2",
+  "remaining": [
+    "runtime test corrections by source owner",
+    "actual CEF integration/sandbox",
+    "Docker product qualification",
+    "ttf-parser unmaintained dependency replacement/review"
+  ]
+}
