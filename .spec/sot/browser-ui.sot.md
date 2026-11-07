@@ -614,6 +614,16 @@ paths, device text or captured stderr. Protocol tests with synthetic reports are
 not native browser executions. Reuse the shared test-support process supervisor;
 new dependency edges wait for root's approved graph window.
 
+The sole expected hosted summary/count contract is
+crates/browser/native/desktop/pilot-contract.json. Both native verification and
+CI receipt accounting consume this owned data. Summary schema1 binds two exact
+test names: positive has seven observed routes and one to32 joined renderer
+probes; creation-time cancellation has zero observed routes and zero joined
+probes. Host cancellation prevents subsequent control/probe polling. Reports
+with one to six observed routes are not this cancellation case. Raw reports
+retain separate navigation and file-probe schemas; summary schema is not a
+replacement for their detailed verification or native execution evidence.
+
 UI-30 (accepted source follow-up; native compile/runtime not_run): renderer file
 probe schema2 records an independent owned-process OS token observation when each
 bounded canary message is received. The browser discovers its own descendants and

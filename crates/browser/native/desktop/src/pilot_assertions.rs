@@ -10,6 +10,7 @@ pub(super) enum Case {
 }
 #[derive(Debug, serde::Serialize)]
 pub(super) struct Summary {
+    summary_schema: u64,
     case: &'static str,
     host_pid: u32,
     observed: usize,
@@ -29,8 +30,8 @@ fn number(report: &Value, key: &str) -> Result<u64, &'static str> {
         .and_then(Value::as_u64)
         .ok_or("missing or invalid native count")
 }
-fn joined_canaries(report: &Value) -> Result<usize, &'static str> {
-    if number(report, "renderer_file_probe_schema")? != 2 {
+fn joined_canaries(report: &Value, schema: u64) -> Result<usize, &'static str> {
+    if number(report, "renderer_file_probe_schema")? != schema {
         return Err("unsupported file probe schema");
     }
     let probes = report
@@ -151,10 +152,20 @@ pub(super) fn verify(
     exit: Option<i32>,
     case: Case,
 ) -> Result<Summary, &'static str> {
+    let contract: Value = serde_json::from_str(include_str!("../pilot-contract.json"))
+        .map_err(|_| "native pilot contract invalid")?;
+    let label = match case {
+        Case::Positive => "positive",
+        Case::Cancelled => "cancelled",
+    };
+    let expected = &contract["cases"][label];
+    if exit.map(i64::from) != expected["exit_code"].as_i64() {
+        return Err("native process exit differs from case contract");
+    }
     if pid == 0 || number(report, "host_pid")? != u64::from(pid) {
         return Err("native report belongs to another process");
     }
-    if number(report, "navigation_schema")? != 2 {
+    if number(report, "navigation_schema")? != number(&contract, "navigation_schema")? {
         return Err("native report revision unsupported");
     }
     flag(report, "internal_probe_requested", true)?;
@@ -162,14 +173,11 @@ pub(super) fn verify(
     flag(report, "host_closed", true)?;
     flag(report, "target_navigation_enabled", false)?;
     let observed = number(report, "internal_probe_observed")?;
-    if observed > ProbeLedger::ROUTES.len() as u64 {
-        return Err("native probe count out of bounds");
+    if observed != number(expected, "observed")? {
+        return Err("native probe count differs from case contract");
     }
     let (label, joined) = match case {
         Case::Positive => {
-            if exit != Some(0) {
-                return Err("positive native process did not exit successfully");
-            }
             flag(report, "internal_probe_finished", true)?;
             flag(report, "cancellation_requested", false)?;
             flag(report, "internal_probe_passed", true)?;
@@ -183,21 +191,25 @@ pub(super) fn verify(
                 return Err("native probe proof incomplete or truncated");
             }
             ordered_receipts(report)?;
-            ("positive", joined_canaries(report)?)
+            (
+                "positive",
+                joined_canaries(report, number(&contract, "renderer_file_probe_schema")?)?,
+            )
         }
         Case::Cancelled => {
-            if exit != Some(78) {
-                return Err("canceled native process exit classification mismatch");
-            }
             flag(report, "cancellation_requested", true)?;
             flag(report, "internal_probe_passed", false)?;
-            if observed >= ProbeLedger::ROUTES.len() as u64 {
-                return Err("canceled probe was not incomplete");
-            }
             ("cancelled", 0)
         }
     };
+    if !(number(expected, "joined_renderer_probes_min")?
+        ..=number(expected, "joined_renderer_probes_max")?)
+        .contains(&(joined as u64))
+    {
+        return Err("native canary count differs from case contract");
+    }
     Ok(Summary {
+        summary_schema: number(&contract, "summary_schema")?,
         case: label,
         host_pid: pid,
         observed: observed as usize,
@@ -288,6 +300,9 @@ mod tests {
         report["internal_probe_observed"] = json!(0);
         report["cancellation_requested"] = json!(true);
         assert!(verify(&report, 100, Some(78), Case::Cancelled).is_ok());
+        report["internal_probe_observed"] = json!(1);
+        assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
+        report["internal_probe_observed"] = json!(0);
         report["before_close"] = json!(false);
         assert!(verify(&report, 100, Some(78), Case::Cancelled).is_err());
     }

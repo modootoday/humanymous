@@ -1,0 +1,22 @@
+{
+  "summary_schema": 1,
+  "navigation_schema": 2,
+  "renderer_file_probe_schema": 2,
+  "required_test_count": 2,
+  "cases": {
+    "positive": {
+      "test_name": "pilot_process::provisioned_positive_internal_routes_and_cleanup",
+      "exit_code": 0,
+      "observed": 7,
+      "joined_renderer_probes_min": 1,
+      "joined_renderer_probes_max": 32
+    },
+    "cancelled": {
+      "test_name": "pilot_process::provisioned_cancellation_rejects_incomplete_probe_after_cleanup",
+      "exit_code": 78,
+      "observed": 0,
+      "joined_renderer_probes_min": 0,
+      "joined_renderer_probes_max": 0
+    }
+  }
+}
