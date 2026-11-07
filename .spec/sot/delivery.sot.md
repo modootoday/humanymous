@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T02:06:22Z
+updated: 2026-11-07T02:26:16Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -20,10 +20,26 @@ Rust WASM tests in the network-none, non-root Docker Firefox component lab.
 It uploads image metadata and test output by source SHA and publishes no package
 or image. This independent component check does not replace any existing native,
 browser or Docker full-delivery gate. Remote run42327415870 was started; its
-conclusion remains pending at this observation. Full-runtime qualification and
+conclusion subsequently succeeded with3actual browser tests; the downloaded
+source-bound artifacts are recorded with the program evidence. Full-runtime qualification and
 the final delivery runner requirements remain unchanged.
 
 # Rust delivery and Pages contracts
+
+## Native CEF component integration
+
+The root workspace now registers the Windows bootstrap and desktop CEF packages.
+scripts/ci/cef-pilot is an independently locked Rust CI tool: build actual DLLs,
+verify the exact pinned upstream manifest source, provision only generated Cargo
+artifacts and execute the mandatory native-pilot-tests rejection case explicitly.
+The default unit harness does not ignore this case; the provisioned case belongs
+to a separate required component gate with exact one-pass/zero-ignore accounting.
+No general ignore exception is added to the standard-user verifier.
+
+cef-native-component.yml runs this Windows x64 component gate with read-only
+permissions and pinned actions; it neither publishes nor replaces full native,
+GUI/sandbox/IME/AX or Docker product qualification. Other native tuples remain
+unqualified for the CEF product UI even if their platform stub compiles.
 
 ## Rule
 

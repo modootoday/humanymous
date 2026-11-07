@@ -1,0 +1,96 @@
+{
+  "schema": "humanymous.collector-remote/1",
+  "source_sha": "c3389b6f8ca80fefd492321626ad5edfaadcb244",
+  "native_run": 42327415663,
+  "native_conclusion": "success",
+  "browser_run": 42327415870,
+  "browser_conclusion": "success",
+  "browser_passed": 3,
+  "browser_failed": 0,
+  "browser_ignored": 0,
+  "browser_log_sha256": "bf2ee904ee2c5d5a00c59f503ff12e0c4a3715fd5b69e0b1f8523a06bb5f77a1",
+  "full_runtime_qualified": false,
+  "later_native_cef_root_integration_excluded": true,
+  "reports": [
+    {
+      "tuple": {
+        "os": "linux",
+        "arch": "arm64"
+      },
+      "source_sha": "c3389b6f8ca80fefd492321626ad5edfaadcb244",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "report_sha256": "681f2bbd163a40185484368c6ba9fc10ba9bd7a64ff3a0ba02c9c8545f59286b",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "linux",
+        "arch": "x64"
+      },
+      "source_sha": "c3389b6f8ca80fefd492321626ad5edfaadcb244",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "report_sha256": "e27ad74ad8fea73b91f9176d150cde8f1ffb782edc90ecc5002c81907f980b95",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "macos",
+        "arch": "arm64"
+      },
+      "source_sha": "c3389b6f8ca80fefd492321626ad5edfaadcb244",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "report_sha256": "52c91e1a8c66603c2bf269080f77c51cb0381f21fc0c029c9bd988014053186a",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "macos",
+        "arch": "x64"
+      },
+      "source_sha": "c3389b6f8ca80fefd492321626ad5edfaadcb244",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "report_sha256": "918cef2cf540b7150e13110966d6b79f9c5ea4daf3b1a4e3a5130d09897fe7b3",
+      "test_exit_code": 0
+    },
+    {
+      "tuple": {
+        "os": "windows",
+        "arch": "arm64"
+      },
+      "source_sha": "c3389b6f8ca80fefd492321626ad5edfaadcb244",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "report_sha256": "52736708f00e7fcab7ac2f4000242ecb3822d55b2e222de6e7b40d5f1b0306b5",
+      "coverage": {
+        "required_harnesses": 48,
+        "executed_harnesses": 48,
+        "passed_tests": 193,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    },
+    {
+      "tuple": {
+        "os": "windows",
+        "arch": "x64"
+      },
+      "source_sha": "c3389b6f8ca80fefd492321626ad5edfaadcb244",
+      "status": "passed",
+      "full_runtime_qualified": false,
+      "report_sha256": "310e306f0a3da84b4cb2b68b8dc0effe173bf4fec8336d0ddcfe8ce0a5157fed",
+      "coverage": {
+        "required_harnesses": 48,
+        "executed_harnesses": 48,
+        "passed_tests": 193,
+        "ignored_tests": 2,
+        "ignored_helpers": 2,
+        "workspace_write_denied": true
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T01:59:36Z
+updated: 2026-11-07T02:26:16Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui]
@@ -11,8 +11,8 @@ rel:
 
 # 전체 로드맵과 마일스톤
 
-버전 0.3.0. 2026-11-07 KST 기준 프로젝트 채팅 이력, HEAD43044be,
-원격 Actions 산출물, 정본 spec 및 미커밋 collector 작업을 대조했다.
+버전 0.4.0. 2026-11-07 KST 기준 프로젝트 채팅 이력, collector c3389b6,
+원격 Actions 산출물, 정본 spec 및 native CEF 통합 작업을 대조했다.
 이 문서는 현재 상태·우선순위·종료 조건의 정본이다. 실행 체크리스트는
 plan:root/20261106235521, 정제 근거는 evidence:root/20261106235519다.
 과거 결과는 해당 evidence와 Git 이력에 보존한다. 전체 목표는 아직 미완료다.
@@ -48,21 +48,23 @@ Cross-Lang은 대상 서비스와 상호운용하는 계약이며 새 JS/njs 제
 
 | 항목 | 실제 근거와 범위 | 남는 제한 |
 |---|---|---|
-| 공통 Rust | MSRV/toolchain1.99.1, edition2024, native-security까지 커밋된 root16 packages | collector를 포함한 dirty root17 packages는 별도 검증 대상;CEF native2개 통합 대기 |
+| 공통 Rust | MSRV/toolchain1.99.1, edition2024,collector까지 커밋된 root17 packages;native CEF2개 root 통합 진행 | root19 membership의 Windows DLL/workspace·Clippy·WASM9 검증 관찰;동시 dirty browser source는 최종 SHA 자격화가 아님 |
 | 순수 엔진 이전 | 기존 inventory314행 중 ported54/partial5/pending255, 원본 함수804개 | 과거 단위 이전 inventory이며 최신 전체 재집계·runtime parity 증거가 아님;verified_runtime_parity0 |
-| native CI | c063ccd, run42324939140, Linux/macOS/Windows x64·ARM64 모두 성공 | implemented-crate-native-tests;full_runtime_qualified=false;43044be와 dirty collector 제외 |
-| Windows 분모 | 각47/47 required harness,187passed,workspace 쓰기 거부 | raw ignored2/helper2를 보존;일반 skip 성공 처리 금지 |
+| native CI | c3389b6, run42327415663, Linux/macOS/Windows x64·ARM64 모두 성공 | implemented-crate-native-tests;full_runtime_qualified=false;후속 native CEF root 통합 제외 |
+| Windows 분모 | 각48/48 required harness,193passed,workspace 쓰기 거부 | raw ignored2/helper2를 보존;일반 skip 성공 처리 금지 |
 | 실제 runtime 프로세스 | network-none,UID65532,read-only,cap-drop ALL;origin2/audit4,재시작·replay·변조·sealed custody 부정 시험 | typed fixture이며 실제 browser/human/AT 또는 full Gate가 아님 |
 | CLI provisioning | 실제 binary doctor/dry-run/install/repeat/rollback,digest·변조·mode0500parent 거절 | 서비스 활성화·서명 package 설치·제품 readiness는 미완료 |
 | CEF Windows 파일럿 | 43044be: 실제 Meari child 부착·resize/focus·정상/late-cancel 종료,UIA Unicode 값;core9/native4,보안 완화4종 거절 | 별도 source-linked native workspace;BrowserReady=false,전체 sandbox·IME·AX 미자격화 |
 | Rust collector | L1-L3 17signal 순수 evaluator,실제 WASM API 경계;native6·Docker 실제 Firefox3·workspace/WASM Clippy 통과 | source manifest 귀속;transport/L4/guard 등 미완료,제품 전체 자격화 아님 |
 | 공급망 | 최근 Cargo audit 알려진 취약점0 | ttf-parser0.25.1 RUSTSEC-2026-0192 유지보수 경고1;최종 closure 재스캔 필요 |
 
-native6tuple 원본 report6개를 내려받아 SHA/status/범위를 대조했다. 정제 요약은
-native-cli-six-tuple-results.json이다. [실제 Actions run](https://github.com/modootoday/humanymous/actions/runs/42324939140).
-CEF 근거는 evidence:root/20261107012426이며 브라우저 프로세스의 일부 제한 토큰
-관찰을 전체 sandbox 증명으로 바꾸지 않는다. 새 browser native bootstrap은
-Windows2개 별도 Cargo package이므로 root16/dirty17 수와 중복 합산하지 않는다.
+native6tuple 원본 report6개를 내려받아 SHA/status/범위를 대조했다. 최신 정제
+요약은 collector-remote-results.json이며 같은 c3389b6의 actual browser3개
+component CI도 성공했다. [native run](https://github.com/modootoday/humanymous/actions/runs/42327415663),
+[browser run](https://github.com/modootoday/humanymous/actions/runs/42327415870).
+CEF 초기 근거는 evidence:root/20261107012426이며 브라우저 프로세스의 일부 제한
+토큰 관찰을 전체 sandbox 증명으로 바꾸지 않는다. native2개는 root19 안에
+합산하며 독립 CI helper package를 제품 crate 수에 추가하지 않는다.
 
 ## 전체 마일스톤과 완료 조건
 
@@ -83,7 +85,7 @@ Windows2개 별도 Cargo package이므로 root16/dirty17 수와 중복 합산하
 | M12 | Go/폐기물 제거·main만 유지 | 보류 | 원본 oracle 퇴역 조건 충족→최신 main 통합→exact final tree 전체 gate→공유 main만 유지 | 모든 필수 gate |
 | B0 | 검증 브라우저 설계 | 연구 완료 | Meari UI·CEF 확정;새 관찰/권한 계약은 계속 spec-first | M0 |
 | B1 | engine/profile/control 기반 | 부분 구현 | CEF pin·bootstrap·합성 profile 기반;권한·network·lifecycle 상세 자격화 | B0 |
-| B2 | Meari+CEF 실제 내장 | Windows bounded pilot 구현 | native workspace 통합;renderer 파일 거부·utility sandbox·keyboard·IME 후보창·screenreader/AX·DPI·crash·6tuple | B1 |
+| B2 | Meari+CEF 실제 내장 | Windows child·키보드·한글 입력·bounded file-denial pilot 구현 | native 통합 remote 검증;전체 utility/process/network sandbox·IME 후보창·screenreader/AX·DPI·crash·6tuple | B1 |
 | B3 | 진단·server receipt 연결 | 미구현 | qualified target navigation/input,collector/session/capture/audit를 typed 관찰로 연결 | B2,M4-M5 |
 | B4 | browser/mobile/AI/AT 비교 | 미실행 | ordinary Chrome 및 실제 인간/AT 대조군,관찰 개입 표시,origin/audit 효과와 오탐 측정 | B3,M8 |
 | B5 | 도구 패키지·업데이트·문서 | 미구현 | 서명·native CVE/SBOM·업데이트/rollback,Pages 사용자 문서·native distribution | B2-B4,M10-M11 |
@@ -144,7 +146,7 @@ cf CLI를 사용한다. 실제 provider 환경 생성은 이 문서 정리에서
 |---|---|---|---|
 | W0 | 기존 결과·현재 상태 정합화 | 이번 정본 갱신 | c0636tuple 산출물,43044be browser 근거,dirty collector 구분 |
 | W1-A / F11 | collector L1-L3 실제 browser 검증 완료→L4/env/guard/advanced와 generated bootstrap | crates/collector 소유자 | native6/browser3·실제 오류 전파/iframe cleanup 통과;필수 runtime 경로는 미완료 시422 유지 |
-| W1-B / F10 | CEF native workspace 통합·sandbox/input/AX 자격화 | browser 경로 단일 writer;공통Cargo root | pinned artifacts,실제 OS 권한 거부·IME/AT·lifecycle·native tuples |
+| W1-B / F10 | CEF native workspace 통합 진행·sandbox/input/AX 자격화 | browser 경로 단일 writer;공통Cargo root | 실제 DLL/explicit rejection pilot 통과;최종 browser commit과 native tuples·IME/AT는 별도 |
 | W1-C / F01-F02 | raw capture·session binding·witness/rotation | network와 audit 별도 owner;공유 scoring seam 직렬 | 실제 raw provenance·재시작/동시성/tamper·독립 witness |
 | W2 / F03-F05 | collector/RIT application,adapter Rust-only·stream,서비스 설치 | 계약 고정 후 adapter/CLI 경로 분리 | 실제 authority/origin/audit 효과,서비스 readiness·rollback·peer 거절 |
 | W3 / F06 | full native/browser/Docker runners와 live wargame | lab·CI 구분,공유 설정 직렬 | 제품 Docker e2e,공격/정상·human/AT,최종 source six tuple |
@@ -170,20 +172,34 @@ flowchart TD
 ## 완결을 막는 현재 gate
 
 1. 실제 raw capture·collector/session/RIT·Pass·proxy/admin 전체 경로가 없다.
-2. CEF BrowserReady=false;native2개 root 통합,전체 sandbox/IME/AX/6tuple가 남았다.
+2. CEF BrowserReady=false;native2개 root 통합의 원격 검증,전체 sandbox/IME 후보창/AX/6tuple가 남았다.
 3. 독립 durable witness·rotation·dual-control 운영과 signed service install이 남았다.
 4. full delivery runner3개와 live Gate/browser/human/AT 제품 e2e가 없다.
 5. 최신 source docs review/Pages,registry trust,최종 scans·Rust-only/skills 정리가 남았다.
 6. M12는 위 필수 gate 이후에만 진행한다. 기존 Go/oracle 제거·main 병합·branch
    삭제·publish를 현 상태에서 완료 처리하지 않는다.
 
-CEF 프로필21개는 비공개 생성 cache로 남아 있다. 자동 승인 검토가 bulk recursive
-삭제를 `blocked by policy`로 거절했고 우회하지 않았다. 프로세스/창 종료와
+CEF 프로필31개는 비공개 생성 cache로 남아 있다. 사용자 삭제 승인 이후에도
+자동 승인 검토가 path-validated recursive 삭제를 `blocked by policy`로 거절했고
+실행·우회하지 않았다. 프로세스/창 종료와
 디스크 삭제는 별개다. 공개하지 않으며 삭제 완료라고 표시하지 않는다.
 공개/scoped spec 검증과 기존 private 전체-tree 오류 역시 구분해 보고한다.
 
 후속 collector 근거는 evidence:root/20261106235519/collector-results.json이다.
 read-only/network-none/UID65532 Docker에서 actual browser3개가 통과했고 별도
-collector-component workflow를 추가했다. remote 실행은 아직 별도 확인 대상이다.
+collector-component workflow를 추가했다. c3389b6 remote 실행도 실제3개 통과했다.
 Firefox가 user namespace 생성 EPERM을 보고했으므로 전체 sandbox를 증명하지
 않는다. 제한을 완화하거나 Chromium runner의 no-sandbox 경로를 사용하지 않았다.
+
+native CEF root 통합은 Rust scripts/ci/cef-pilot과 Windows x64 component CI를
+추가한다. 기본 harness의 ignored 허용 확대 없이 native-pilot-tests 기능을
+명시 실행하며 실제4종 보안 완화 거절을1passed/0ignored로 확인했다. helper
+unit3개·Clippy와 기존 CI policy9개도 통과했다. native GUI/IME/AX 상세 후속은
+browser 채팅의 최종 source/evidence에 귀속하며 이 component gate가 대체하지 않는다.
+
+browser 후속 a924603과 evidence:root/20261107021004의 source hash를 root에서
+대조했다. 최종 source native7/0ignored 및 Clippy,실제DLL+명시거부1case/4flags를
+별도 root 출력 경로에서 검증했다. 한글 incremental edit/BackSpace/확정,
+UIA 값 동작 및 renderer canary read/create denied5는 해당 browser 파일럿의
+증거이며 후보창·full AX·전체 sandbox는 계속 미검증이다. root 통합 정제 근거는
+cef-root-integration-results.json이다. stage/CI의 exact SHA 결과는 별도 필요하다.

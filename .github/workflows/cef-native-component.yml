@@ -1,0 +1,44 @@
+name: Rust CEF native component
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/rust, main]
+    paths:
+      - 'crates/browser/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'scripts/ci/cef-pilot/**'
+      - '.github/workflows/cef-native-component.yml'
+  pull_request:
+    paths:
+      - 'crates/browser/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'scripts/ci/cef-pilot/**'
+      - '.github/workflows/cef-native-component.yml'
+permissions:
+  contents: read
+jobs:
+  windows-x64:
+    runs-on: windows-2025
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: 1.99.1
+          components: rustfmt, clippy
+      - name: Validate Rust provisioning runner
+        run: cargo test --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked
+      - name: Lint Rust provisioning runner
+        run: cargo clippy --manifest-path scripts/ci/cef-pilot/Cargo.toml --all-targets --locked -- -D warnings
+      - name: Build actual DLLs and execute explicit provisioned rejection pilot
+        run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- target/cef-native-evidence
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: cef-native-component-${{ github.sha }}
+          path: target/cef-native-evidence/
+          if-no-files-found: error

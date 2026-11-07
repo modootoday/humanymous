@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T02:06:22Z
+updated: 2026-11-07T02:26:16Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -23,6 +23,14 @@ Native6 and actual isolated Docker Firefox3 tests pass in the recorded manifest.
 The partial report does not complete L4/environment/guard/advanced/session/RIT
 or full browser/product parity. See sot:root/client-collector and
 evidence:root/20261106235519/collector-results.json. Detection freeze is unchanged.
+
+Subsequent native integration registers humanymous-cef-bootstrap and
+humanymous-cef-desktop, bringing root membership to19. The Windows native FFI
+boundary retains local reviewed unsafe allowances under deny; shared core keeps
+forbid. All publish flags remain false. Non-Windows empty native crates do not
+establish cross-platform browser implementation. The independently locked Rust
+scripts/ci/cef-pilot tool explicitly validates provisioned negative cases and
+never substitutes them for GUI/human/AT or full sandbox evidence.
 
 ## Rule
 
