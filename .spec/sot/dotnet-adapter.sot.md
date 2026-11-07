@@ -17,11 +17,14 @@ rel:
 Fixture follow-up: the three hosted.rs include_str paths now use the actual
 ../../sdk/humanymous-core/tests/scoring/fixtures/frozen destination. Source SHA256
 is fac6460b9a30a97e0e6df12495ef9721eaf7d99b69b6a357ab994eff334a8a47.
-Raw moved-file bytes initially FAILED comparison against9670fa01's original Git
-blobs for bot-webdriver-cdp-hr9/go-http-client/human-chrome-allow: each contains
-CRLF and a different raw Git blob hash. Root received the exact original/moved
-hashes; fixtures remain root-owned and untouched by this consumer. Do not claim
-byte-preserving migration until root restores/verifies the canonical bytes.
+Raw moved-file bytes differ from9670fa01's canonical Git blobs for
+bot-webdriver-cdp-hr9/go-http-client/human-chrome-allow because the existing
+worktree bytes contain CRLF. This initial cross-representation comparison does
+NOT establish migration drift. Root subsequently verified all26 moved non-Rust
+files against file-map.before.json raw SHA256, with zero differences. This owner
+also verified each of these three new paths' normalized git hash-object equals
+its original Git blob. Preserve original raw bytes; no repair/normalization is
+required or authorized here. Fixtures remain root-owned and untouched.
 This is an import-path-only source correction; no compilation was started.
 
 Root assigned only mechanical Rust context paths: src/lib.rs now imports
