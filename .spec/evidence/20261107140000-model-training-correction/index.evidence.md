@@ -219,3 +219,31 @@ late invalid input leaving a caller's previously accepted batch unchanged.
 This measures local file handling, not OS ACLs, power-loss durability, a training
 process or product e2e. New candidate has8parser tests, pending actual execution;
 expected total is13unit plus1existing fixture harness, subject to actual footer.
+
+## Corrected candidate qualification
+
+Immutable source a0ebc9ae4da4c52020f6e39bb614d1e14d4e0b2e was tested in the
+root-renewed C target/validation-authority allocation on native Windows
+x86_64-pc-windows-msvc, Rust1.99.1, jobs1/incremental0, locked/offline.
+Fmt FIRST exited0, all-target tests exited0 with13unit passed (8parser including
+the actual file-reader pilot,5existing inference) plus1inference fixture harness;
+0failed/ignored/filtered. All-target check and strict Clippy both exited0.
+All execution handles are terminal. C was returned before read-only closure work.
+
+Minimal selected closure contains1493 files spanning model/transitive path packages,
+resolved selected registry sources, root Cargo/lock/toolchain, six selected native
+executables, compiler DLLs and declared native target libraries.33selected packages;
+18configuration candidates. Before/after1493 hashes had0difference records and
+configuration presence had0differences. Source archive SHA256 is
+a7b332ec8d72b95ffe5bc0acde92b26227ab840d5b6427100fe3c0ab71ac7ebd.
+Raw commands, fresh admissions, exact footers and manifests remain in the owned
+private model-training-correction-c2 evidence directory; sanitized terminal facts
+are in record-validation.json. The first68898522 fmt failure remains retained.
+
+The actual pilot used owned create_new temporary files and File/BufReader, verified
+acceptance, total/line byte limits, record/cohort limits and late invalid row
+rejection without replacing an existing caller batch. It claims neither OS ACLs
+nor crash/power-loss durability. No training process, GPU/download, production
+inference or Docker product e2e was executed. First parser slice is qualified for
+this exact native component boundary only; the full29-row migration, RNG/kernel,
+gate/time policy and lab lifecycle remain open with independent critique conditions.

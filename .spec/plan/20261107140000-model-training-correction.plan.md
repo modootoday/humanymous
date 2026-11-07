@@ -14,6 +14,12 @@ Root authorized only the source record slice: training/record.rs, training/mod.r
 minimal lib.rs export and module tests. This source is prepared; all execution,
 kernel and subsequent lifecycle slices remain unallocated. No manifest changes.
 
+Subsequent root allocations qualified the corrected first slice at exact source
+a0ebc9ae4da4c52020f6e39bb614d1e14d4e0b2e: fmt,13unit+1fixture, all-target check
+and strict Clippy passed, including an actual owned-file parser test. First-source
+68898522 fmt failure remains historical. This supersedes the execution-pending
+statement only for that parser slice; kernel/lifecycle remain unallocated.
+
 1. Accept contracts and independent critique: module placement, RNG parity strategy,
    bounds, required cohorts, temporal ties, weak-label quarantine and lab lifecycle.
 2. Preserve immutable baseline and existing inference fixture provenance. Link each

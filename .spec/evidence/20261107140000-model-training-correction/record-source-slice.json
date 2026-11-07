@@ -1,8 +1,8 @@
 {
-  "status": "FORMATTED_WITH_ACTUAL_FILE_TEST_NOT_RUN",
+  "status": "NATIVE_COMPONENT_AND_ACTUAL_FILE_PILOT_PASS",
   "revision": "format-fix-and-owned-file-pilot",
   "tests_authored": 8,
-  "tests_executed": 0,
+  "tests_executed": 8,
   "files": [
     {
       "path": "crates/model/src/lib.rs",
