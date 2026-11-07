@@ -207,6 +207,52 @@ the corrected hosted source still requires its own actual run.
 
 ### Workflow identity convention
 
+NuGet preparation candidate for the subsequent C/C++/C# adapter scope:
+catalog publisher_candidates.nuget records research-only/release.yml and proposed
+environmentnuget, with environment_created/job_present/verified/package_readyfalse
+and package_idnull. It is neither a provisioned GitHub environment nor a fifth
+ready registry. Actual four registry prerequisites remain separate. Typed policy
+rejects a provisioned/verified/publishing claim while this candidate state holds.
+No NuGet job/action/token permission is added; root decides environment setup.
+
+[Official NuGet trusted publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing)
+binds account/active-organization policy ownership, repository owner/name,
+workflow filename and optional environment. Package glob/scopes distinguish
+new-package versus new-version authority. Exchange yields a one-hour API key;
+some policies await identity activation. Our proposed protected nuget environment
+and exact account/package scope remain unconfigured/unverified; no exchange or
+upload test is authorized. Any future login action must be pinned/reviewed.
+
+C/C++ headers/native artifacts and CMake/pkg-config/vcpkg/Conan distribution are
+separate ABI/package contracts, not one language-wide OIDC publisher. .NET package
+identity does not prove a C# host adapter works. Adapter owners must establish
+actual Rust native ABI, provenance/generated glue, framework execution and archive
+contents before a package gate can qualify them. No duplicate core or fictitious
+language support is introduced by this CI candidate.
+
+Lab diagnostic and product browser consumer source: single owned
+test/lab/runner/safe-diagnostics.json defines the vocabulary/limits. Present
+malformed diagnostics add an execution error; only reconstructed typed rows are
+public, never raw detail. Legacy absent diagnostics staynull. `pilot browser`
+selects --collector; `pilot browser-product` selects only --browser-product,
+uses a fresh bundle and recognizes the dedicated image digest. Full browser
+requirements remain identical/strict. New required-job DAG wiring awaits root
+coordination; actual product browser execution remainsnot_run for this source.
+
+Go adapter delivery distinction (subsequent explicit user scope): a future Go
+framework adapter is a separate module responsibility, not maintenance of frozen
+Go product/scoring source. [Official module publishing](https://go.dev/doc/modules/publishing)
+uses VCS semantic-version tags and discovery by Go tooling; published versions
+must not be rewritten. [Module reference](https://go.dev/ref/mod) defines proxy/
+checksum verification, module-path major versions and subdirectory tag prefixes.
+Adapter owner must first finalize module path, generated/allowed glue provenance,
+actual framework/native qualification and source closure. No module name or tag
+is declared ready here. Module publication has no RubyGems/PyPI-style OIDC upload
+job: do not create a Go environment, registry prerequisite or fake trusted
+publisher. Optional OIDC artifact attestation/OCI delivery is a distinct future
+contract. No tag, proxy indexing, module release, token exchange or deployment
+was performed/authorized. Existing frozen Go shipping guards remain intact.
+
 `scripts/ci/workflows.json` (humanymous.workflow-catalog/1) is the single machine
 catalog for exact filenames, UI names, stable job keys, concurrency and uploaded
 artifact identities. Category/title display syntax is `CI / ...`, `Docs / ...`,
@@ -245,12 +291,47 @@ builds the static runtime-pilot Rust driver. Final image copies exactly one
 collector WASM artifact, reviewed webdriver JSON and the driver, runs UID65532
 and enters --browser-driver. Wildcard ambiguity/missing output fails Docker COPY.
 The original collector component image and denominator remain unchanged.
-Owner Compose supplies namespace-isolated --browser-gate and private stdin
-tuple; its browser/HTTP/witness assertions are owned by the lab producer.
+Owner Compose supplies namespace-isolated --browser-gate and owned nonsecret
+endpoint/DNS arguments; witness credentials remain on private RPC channels.
+Its browser/HTTP/witness assertions are owned by the lab producer.
 All compilation/image size/14GB headroom/browser/sandbox/runtime connection
 checks remain not_run. No local Docker build or browser execution was performed.
 
 ### Artifact-free diagnostics
+
+Approved hosted connection delta after the original63f69ae run: laneB now runs
+docker→browser(component)→browser-product→nginx→rust-images(candidate)→images
+(legacyshippingguard)→packages→node→advisories. Every new job uses standard
+Ubuntu24.04, direct policy-success dependency, bounded timeout and no artifact/
+cache writes. LaneA remains independent; all new jobs join strict ready/catalog.
+Separate fresh VMs avoid retaining both component/product browser build layers
+within one14GB runner. No unsupported step is treated as passed/skipped success.
+
+Nginx consumer uses the owner's single adapters/nginx/pilot-contract.json.
+Fixed Rust Docker argv supplies source revision/working manifest and a reserved
+unique project/image. Capture build/run privately, verify image identity before/
+after and own cleanup even on failure, reject source drift. Process exit0 plus
+exact unique35scenario groups, source/lock/module/engine identities and zero
+failed/ignored/not_run qualify only this component. A failed process with no
+report retains unknown counts, never fabricated35passes or zeroerrors. Scenario
+groups are not Rust harness tests or a human/full-product claim. No contract
+string is executed, no generic container/resource cleanup is used.
+
+Runtime image candidate has its own Dockerfile/strict context and typed inventory
+at build/rust/image-candidates.json. It builds the actual humanymous-runtime
+binary with pinned Rust/musl compiler, scratch/nonroot, private inherited pipes
+and no baked secrets/state/default listener. Owner confirms main has no external
+witness broker injection and requires supplied private custody/WAL state.
+role runtime-private-pipes is not core/gate parity; all qualification flagsfalse,
+qualified_platforms[] remain. A separate build/Trivy candidate job produces
+future actual build/CVE evidence; original Go source guard and shipping mapping
+stay unchanged. No publish/push image/tag/token exchange is enabled.
+
+Root allocated the local Cargo slot:37pure delivery unit tests and strict scoped
+Clippy passed with jobs1/incremental0, staticpolicy/actionlint passed; slot was
+returned immediately. No new local actual process/container/browser ran. All
+new hosted connections/candidate builds/cleanup behavior remainnot_run until a
+new root-controlled source closure/run. Current63f69ae evidence is separate.
 
 Component summary adds scoped assertion total/passed/failed/other and required-
 unavailable count from the owning report, preserving existing schema/status/

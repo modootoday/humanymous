@@ -1,12 +1,15 @@
 {
   "schema": "humanymous.workflow-catalog/1",
+  "publisher_candidates": {
+    "nuget": {"state":"research-only","repository":"modootoday/humanymous","workflow":"release.yml","environment_candidate":"nuget","environment_created":false,"job_present":false,"verified":false,"package_ready":false,"package_id":null}
+  },
   "planned_publishers": {
     "rubygems": {"workflow":"release.yml","environment":"rubygems","state":"preparation-only","job_present":false},
     "pypi": {"workflow":"release.yml","environment":"pypi","state":"preparation-only","job_present":false}
   },
   "workflows": [
     {"file":"ci.yml","name":"CI / Validate","jobs":["validate"],"concurrency":{"group":"rust-ci-${{ github.ref }}","cancel-in-progress":true},"artifacts":[]},
-    {"file":"rust-validation.yml","name":"CI / Rust","jobs":["policy","native","msrv","quality","browser","docker","images","packages","node","advisories","documentation","pages","ready"],"concurrency":null,"artifacts":["native-workspace-${{ matrix.os }}-${{ github.sha }}","native-binaries-${{ matrix.os }}-${{ github.sha }}","native-${{ matrix.os }}-${{ github.sha }}","browser-linux-${{ github.sha }}","docker-linux-${{ github.sha }}","validated-crates-${{ github.sha }}","node-native-${{ github.sha }}","advisories-${{ github.sha }}"]},
+    {"file":"rust-validation.yml","name":"CI / Rust","jobs":["policy","native","msrv","quality","browser","browser-product","nginx","rust-images","docker","images","packages","node","advisories","documentation","pages","ready"],"concurrency":null,"artifacts":["native-workspace-${{ matrix.os }}-${{ github.sha }}","native-binaries-${{ matrix.os }}-${{ github.sha }}","native-${{ matrix.os }}-${{ github.sha }}","browser-linux-${{ github.sha }}","docker-linux-${{ github.sha }}","validated-crates-${{ github.sha }}","node-native-${{ github.sha }}","advisories-${{ github.sha }}"]},
     {"file":"collector-component.yml","name":"CI / Collector","jobs":["firefox-component"],"concurrency":{"group":"collector-component-${{ github.ref }}","cancel-in-progress":true},"artifacts":["collector-component-${{ github.sha }}"]},
     {"file":"cef-native-component.yml","name":"CI / CEF","jobs":["windows-x64"],"concurrency":{"group":"cef-component-${{ github.ref }}","cancel-in-progress":true},"artifacts":["cef-native-component-${{ github.sha }}"]},
     {"file":"cross-os-probe.yml","name":"CI / Cross OS","jobs":["native"],"concurrency":{"group":"cross-os-probe-${{ github.ref }}","cancel-in-progress":true},"artifacts":["probe-${{ matrix.os }}-${{ matrix.arch }}-${{ github.sha }}"]},

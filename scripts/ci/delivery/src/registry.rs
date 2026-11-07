@@ -171,6 +171,33 @@ pub fn validate_preparations(records: &Value, planned: &Value, release: &Value) 
     }
     Ok(())
 }
+pub fn validate_candidates(candidates: &Value, release: &Value) -> Result<()> {
+    require(
+        candidates
+            .as_object()
+            .is_some_and(|entries| entries.len() == 1),
+        "unknown publisher candidate",
+    )?;
+    let record = &candidates["nuget"];
+    require(
+        record["state"] == "research-only"
+            && record["repository"] == "modootoday/humanymous"
+            && record["workflow"] == "release.yml"
+            && record["environment_candidate"] == "nuget"
+            && record["environment_created"] == false
+            && record["job_present"] == false
+            && record["verified"] == false
+            && record["package_ready"] == false
+            && record["package_id"].is_null(),
+        "NuGet candidate must not claim a provisioned environment, package or publisher",
+    )?;
+    require(
+        release["jobs"]
+            .as_object()
+            .is_some_and(|jobs| !jobs.contains_key("nuget")),
+        "research-only NuGet candidate cannot publish",
+    )
+}
 pub fn readiness(root: &Path) -> Result<()> {
     let data = package::metadata(root)?;
     let mut failures = Vec::new();
@@ -427,6 +454,7 @@ mod tests {
     }
     #[test]
     fn registry_products_require_distinct_exact_environments() {
+        assert!(trust_binding("go", &serde_json::json!({"workflow":"release.yml","repository":"modootoday/humanymous","environment":"go"})).is_err());
         for (registry, environment) in [
             ("crates_io", "crates"),
             ("npm", "npm"),
@@ -468,6 +496,27 @@ mod tests {
             actual_job["jobs"][registry] = serde_json::json!({"permissions":{"id-token":"write"}});
             assert!(validate_preparations(&records, planned, &actual_job).is_err());
         }
+    }
+    #[test]
+    fn nuget_candidate_cannot_claim_environment_or_publication() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let catalog = read_json(&root.join("scripts/ci/workflows.json")).unwrap();
+        let candidate = &catalog["publisher_candidates"];
+        let release = serde_json::json!({"jobs":{}});
+        assert!(validate_candidates(candidate, &release).is_ok());
+        for field in [
+            "environment_created",
+            "verified",
+            "package_ready",
+            "job_present",
+        ] {
+            let mut changed = candidate.clone();
+            changed["nuget"][field] = serde_json::json!(true);
+            assert!(validate_candidates(&changed, &release).is_err());
+        }
+        let mut publisher = release.clone();
+        publisher["jobs"]["nuget"] = serde_json::json!({});
+        assert!(validate_candidates(candidate, &publisher).is_err());
     }
     #[test]
     fn immutable_resume_requires_matching_name_version_and_archive_checksum() {

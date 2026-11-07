@@ -9,6 +9,9 @@ const REQUIRED: &[&str] = &[
     "msrv",
     "quality",
     "browser",
+    "browser-product",
+    "nginx",
+    "rust-images",
     "docker",
     "images",
     "packages",
@@ -204,6 +207,9 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         for (id, required) in [
             ("native", "pilot native"),
             ("browser", "pilot browser"),
+            ("browser-product", "pilot browser-product"),
+            ("nginx", " -- nginx"),
+            ("rust-images", "image-candidates"),
             ("docker", "pilot docker"),
             ("packages", " -- package"),
             ("node", " -- node"),
@@ -285,6 +291,14 @@ pub fn check(root: &Path) -> Result<()> {
     crate::registry::validate_preparations(
         &crate::read_json(&root.join("scripts/ci/registry-prerequisites.json"))?,
         &inventory["planned_publishers"],
+        &docs
+            .iter()
+            .find(|(file, _)| file == "release.yml")
+            .ok_or("release workflow missing")?
+            .1,
+    )?;
+    crate::registry::validate_candidates(
+        &inventory["publisher_candidates"],
         &docs
             .iter()
             .find(|(file, _)| file == "release.yml")

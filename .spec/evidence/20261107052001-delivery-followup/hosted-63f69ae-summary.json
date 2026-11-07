@@ -1,0 +1,167 @@
+{
+  "attempt": 1,
+  "conclusion": "failure",
+  "full_product_qualified": false,
+  "jobs": [
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "id": 128331427839,
+      "name": "validate / policy",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128331427839"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot docker"
+      ],
+      "id": 128331815962,
+      "name": "validate / docker",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128331815962"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "id": 128331815997,
+      "name": "validate / native (windows-2025)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128331815997"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "id": 128331816044,
+      "name": "validate / native (ubuntu-24.04)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128331816044"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Execute every workspace harness through the native Rust actor"
+      ],
+      "id": 128331816073,
+      "name": "validate / native (macos-15)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128331816073"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot browser"
+      ],
+      "id": 128333839777,
+      "name": "validate / browser",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128333839777"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "id": 128335513118,
+      "name": "validate / images (gate)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128335513118"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "id": 128335513150,
+      "name": "validate / images (core)",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128335513150"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- package"
+      ],
+      "id": 128336069054,
+      "name": "validate / packages",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128336069054"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- node"
+      ],
+      "id": 128336314257,
+      "name": "validate / node",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128336314257"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "id": 128337057339,
+      "name": "validate / advisories",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128337057339"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "id": 128338631933,
+      "name": "validate / msrv",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128338631933"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo clippy --workspace --all-targets --locked -- -D warnings"
+      ],
+      "id": 128339683887,
+      "name": "validate / quality",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128339683887"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/docs-review/Cargo.toml -- ."
+      ],
+      "id": 128340062976,
+      "name": "validate / documentation",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128340062976"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "id": 128340160348,
+      "name": "validate / pages / build",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128340160348"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- jobs"
+      ],
+      "id": 128340609906,
+      "name": "validate / ready",
+      "status": "completed",
+      "url": "https://github.com/modootoday/humanymous/actions/runs/42348518353/job/128340609906"
+    }
+  ],
+  "run_id": "42348518353",
+  "schema": "humanymous.actions-observation/2",
+  "source_bound": true,
+  "source_sha": "63f69ae9de703939b7b9091e2f215b12bea265de",
+  "status": "completed",
+  "terminal": true
+}

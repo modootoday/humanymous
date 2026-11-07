@@ -1,0 +1,20 @@
+{
+  "schema": "humanymous.rust-image-candidates/1",
+  "legacy_shipping_guard": ["build/core.Dockerfile", "build/gate.Dockerfile"],
+  "candidates": [
+    {
+      "role": "runtime-private-pipes",
+      "package": "humanymous-runtime",
+      "binary": "humanymous-runtime",
+      "dockerfile": "build/rust/runtime-candidate.Dockerfile",
+      "entrypoint": ["/usr/local/bin/humanymous-runtime"],
+      "full_product_qualified": false,
+      "qualified_platforms": [],
+      "source_build_verified": false,
+      "nonroot_runtime_verified": false,
+      "image_cve_scan_verified": false,
+      "external_witness_binary_injection": false,
+      "legacy_core_gate_replacement": false
+    }
+  ]
+}

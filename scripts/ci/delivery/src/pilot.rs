@@ -14,7 +14,7 @@ pub fn required(kind: &str) -> Result<&'static [&'static str]> {
             "storage-failure-closed",
             "documentation-examples",
         ]),
-        "browser" => Ok(&[
+        "browser" | "browser-product" => Ok(&[
             "collector-parity",
             "challenge-keyboard",
             "challenge-assistive",
@@ -157,8 +157,8 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
                 "--evidence",
                 dir.to_str().ok_or("non-UTF8 evidence directory")?,
             ];
-            if kind == "browser" {
-                args.push("--collector");
+            if let Some(profile) = lab_profile(kind) {
+                args.push(profile);
             }
             args.push("--require-full");
             let code = command::log(root, "cargo", &args, &dir.join("lab-owner.log"))?;
@@ -205,6 +205,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
             .filter(|component| {
                 component["status"] == "failed"
                     || component["report"]["status"] == "failed"
+                    || crate::lab_diagnostics::validate(&component["report"]).is_err()
                     || component["exit_code"]
                         .as_i64()
                         .is_some_and(|code| code != 0 && code != 2)
@@ -239,6 +240,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
     for filename in [
         "runtime-image.json",
         "collector-image.json",
+        "browser-product-image.json",
         "controls-image.json",
     ] {
         let path = dir.join(filename);
@@ -262,6 +264,13 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
     evidence::emit_public_summary(&format!("Source-bound {kind} pilot"), &summary)?;
     println!("pilot evidence: {}", destination.display());
     validate(&report, kind, head, &review)
+}
+fn lab_profile(kind: &str) -> Option<&'static str> {
+    match kind {
+        "browser" => Some("--collector"),
+        "browser-product" => Some("--browser-product"),
+        _ => None,
+    }
 }
 fn public_summary(report: &Value) -> Value {
     let mut summary = json!({});
@@ -308,11 +317,22 @@ fn component_summary(component: &Value) -> Value {
     json!({"owner":component["owner"],"exit_code":component["exit_code"],
         "status":report["status"],"qualification":report["qualification"],
         "schema":report["schema"],"full_product_qualified":report["full_product_qualified"],
-        "assertions":counts,"required_unavailable_count":report["required_unavailable"].as_array().map(Vec::len)})
+        "assertions":counts,"required_unavailable_count":report["required_unavailable"].as_array().map(Vec::len),
+        "safe_diagnostics":crate::lab_diagnostics::public(report)})
 }
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn product_browser_and_component_profiles_are_separate() {
+        assert_eq!(lab_profile("browser"), Some("--collector"));
+        assert_eq!(lab_profile("browser-product"), Some("--browser-product"));
+        assert_eq!(lab_profile("docker"), None);
+        assert_eq!(
+            required("browser").unwrap(),
+            required("browser-product").unwrap()
+        );
+    }
     #[test]
     fn component_and_stale_reports_cannot_pass() {
         for qualification in ["component-only", "unsupported", ""] {

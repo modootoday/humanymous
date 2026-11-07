@@ -12,6 +12,56 @@ rel:
 
 ## Scope and order
 
+Terminal secondhosted42348518353 attempt1 source63f69ae:16jobs3success(policy/
+MSRV/Pages),13failure,0skip. WholelogSHA256
+5c03079b00af0704ec0387b82b27fc7e4178cd838a1737eb6f300863252d0e3c,
+publicsanitizedsummaryattached to evidence20261107052001, rawprivateindexregistered.
+Artifacts0/cache3unchangedold entries; no paidstoragewriteobserved forthisrun,
+not account-widebillingproof. Unrecovered native/lab reports and Cargoauditraw
+stayunknown. New37testsource/B/nginx/candidate jobs not part of this result.
+
+Root approved B-browser/nginx required fresh jobs and separate runtimecandidate
+without oldcore/gatemappingreplacement. Implemented both+rust-images in laneB,
+REQUIRED/ready/catalog in sync, no paid storage/publish/token permissions added.
+Nginx fixedRust coordinator/source+imagebinding/alwaysownedcleanup and35group
+validator authored; actualcommandsnot_run. Runtimecandidate realbinary/musl/
+nonroot sourceinventory allflagsfalse; originalGoguardremains. RootCargoallocated
+37pureunits/strictClippy/staticpolicy passed; slotreturned towargame. Actual
+container/browser/SCM tests not executed locally. Foreignsinglecontracts require
+lab0fa5c31 and finalnginxproducercheckpoint before remote source closure.
+DNSsharedcodec onefile test/lab/dns_wire.rs allowlisted for newbrowserdriver only.
+
+NuGet official research+typedcandidate source added, no real environment/job/
+permission. Candidate exactrepo/release.yml/envnuget/unconfiguredfalse metadata
+is distinct from4registryprerequisites. Newnegativefixtures reject asserted
+environment/publisher/package readiness/job. Rootcreationdecision and adapter
+ABI/archive metadata pending. Code/puretests authored, rootslot requested.
+Lab0fa5c31 supplied single21codeJSON and BCLI; safeconsumer reconstructs only
+typeddiagnostics, component/product flags nevercombined, dedicatedimagehash
+recognized. Sourcecommit/selectedpurecheck stillpending, no runtime execution.
+
+Additional Go adapter user scope: document official module VCS-tag/proxy/checksum
+delivery separately from registry OIDC. No Go environment/publisher/job created;
+unknown registry remains rejected. Adapter owner resolves Rust-only/generated
+glue and real framework boundary. Actual tags/modulepublish/tokenexchange remain
+forbidden. Frozen Go product shippingguard is unchanged.
+
+Explicit user requested an active owned goal: get_goal returnednull; create_goal
+setactive for freehosted2lanes/source/raw/CVE/package/fourregistry/catalog,
+terminal observation42348518353, safe diagnostics and verified Rustshipping
+image transition without deployment. No owned localruntime/process active.
+Current coding slice consumes single lab safe-diagnostics.json in a separate
+Rustmodule with fixed-schema/enum/count/ASCII-ID/partial validation and no raw
+detail copy. New puretests authored; rootCargo1slot requested, checksnot_run.
+Malformed present diagnostics increment CIerrors and cannot qualify fullsuccess.
+Absent diagnostics from older owner reports remainunknown/null, not invented.
+
+Owner seams requested: B productbrowser freshVM requiredgate; nginxactual35case
+nativepilot; separateSCMpositive+aftergrantnegative+restoreproof owner contract.
+RootDAGconfirmation/sourceclosure pending; no newdispatch/localDocker and no
+required gate removed. Go shippingguard remains while real Rustimage roles
+andfunctionalqualification are established with runtime/root owners.
+
 RubyGems/PyPI extension: official pending-publisher paths verified read-only;
 null package names and unconfigured/unready/unverified/disallowed flags retained.
 Add exact product environment bindings and separate catalogplannedpublisher

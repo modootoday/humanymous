@@ -523,7 +523,7 @@ pub fn audit_closure(root: &Path) -> Result<()> {
                 continue;
             }
         };
-        reports.push(json!({"lockfile":lock,"sha256":lock_before,"sha256_after":lock_after,"source_changed":lock_before!=lock_after,"exit_code":code,"database":report["database"],"vulnerabilities":report["vulnerabilities"],"warnings":report["warnings"]}));
+        reports.push(json!({"lockfile":lock,"sha256":lock_before,"sha256_after":lock_after,"source_changed":lock_before!=lock_after,"exit_code":code,"dependency_count":report["lockfile"]["dependency-count"],"database":report["database"],"vulnerabilities":report["vulnerabilities"],"warnings":report["warnings"]}));
         if code != 0 || report["vulnerabilities"]["found"] != false || lock_before != lock_after {
             blocked.push(lock.to_string());
         }
@@ -532,6 +532,10 @@ pub fn audit_closure(root: &Path) -> Result<()> {
     write_json(&out.join("advisory-closure.json"), &summary)?;
     write_json(&raw.join("advisory-closure.json"), &summary)?;
     evidence::register(&raw, "Rust dependency closure scan")?;
+    evidence::emit_public_summary(
+        "Source-bound Cargo audit closure",
+        &crate::dependency_summary::format(&summary),
+    )?;
     require(
         blocked.is_empty(),
         format!("dependency scans failed: {blocked:?}"),

@@ -1,6 +1,10 @@
 //! Source-bound delivery validation. No authored script-language implementation.
 mod command;
+mod dependency_summary;
 mod evidence;
+mod image_candidates;
+mod lab_diagnostics;
+mod nginx;
 mod package;
 mod pilot;
 mod policy;
@@ -65,6 +69,7 @@ fn run() -> Result<()> {
         "jobs" => policy::jobs(&std::env::var("NEEDS_JSON").map_err(|e| e.to_string())?),
         "package" => package::check(&root),
         "image-sources" => package::image_sources(&root),
+        "image-candidates" => image_candidates::check(&root),
         "native-artifacts" => package::native_artifacts(&root),
         "node" => package::node(&root).map(|_| ()),
         "readiness" => registry::readiness(&root),
@@ -79,7 +84,9 @@ fn run() -> Result<()> {
         "register-evidence" => evidence::register(Path::new(argument(1)?), argument(2)?),
         "verify-images" => supply::verify_images(&root),
         "probe" => workspace::run(&root,argument(1)?,argument(2)?),
-        _ => Err("usage: humanymous-delivery policy|action-pins|jobs|package|image-sources|native-artifacts|node|readiness|release|crate-waves|publish-wave N|publish-npm|pilot native|browser|docker|snapshot|observe-run ID SHA OUTPUT|audit-closure".into()),
+        "nginx-report" => evidence::emit_public_summary("Source-bound nginx scenario groups", &nginx::validate(&read_json(Path::new(argument(1)?))?, argument(2)?, argument(3)?, argument(4)?)?),
+        "nginx" => nginx::run(&root),
+        _ => Err("usage: humanymous-delivery policy|action-pins|jobs|package|image-sources|native-artifacts|node|readiness|release|crate-waves|publish-wave N|publish-npm|pilot native|browser|browser-product|docker|snapshot|observe-run ID SHA OUTPUT|audit-closure".into()),
     }
 }
 fn main() {
