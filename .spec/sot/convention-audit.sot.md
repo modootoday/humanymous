@@ -2023,3 +2023,31 @@ Final candidate, isolated feature/API negatives, bridge positive/doctest and new
 source-bound process/native/provider/package/whole-graph gates remain OPEN.
 Legacy lifetime/handoff findings remain OPEN. Audit moved no code and ran no
 compiler/process pilot. Exact private hashes are in baseline.json.
+
+## Platform privacy, isolated API and normal package proof
+
+Additional independent review preserves25 privacy/doc and76 API/package raw files.
+The same-crate positive control succeeds; observation construction fails E0451
+for its three private fields, and Worker reachability fails E0603 at the private
+capture_attempt parent. The latter is parent-boundary proof, not isolated helper
+modifier sensitivity. All three probe sources/argv match;36 selected source/rlib/
+compiler inputs are byte-identical before/after and current hashes match. The
+initial precompiler PowerShell collection failure remains separate. Windows docs
+show one public positive and one compile-fail pass; no native query executes.
+Bridge query/create/tests bytes match their pre-move hashes.
+
+The requested isolated feature API proof is now present:four coherent Windows
+positive cases and five forbidden imports, each exit101 with one E0432 and no
+other compiler error. Each consumer has its own workspace/lock, disables defaults
+and runs locked/offline. The cases deny testing/windows_object with no feature,
+Windows under testing, testing under Windows and Windows API on WASM with the
+Windows feature. The last is cross-compilation, not OS runtime; a coherent WASM
+platform type check exists separately. Earlier partial review001's pending API
+requirement is historical and is satisfied by these later exact cases.
+
+Normal Cargo package verification actually builds the default library. Its saved
+archive matches the recorded SHA/51592bytes and contains33 distinct regular
+members. This does not qualify all features/profiles/tests, native execution or
+registry/publication readiness. No broader atomic candidate/full graph/product
+pass is inferred. Exact raw/source hashes are bound through baseline.json. Audit
+ran no compiler, native query or product workload; remaining global gates stay OPEN.

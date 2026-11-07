@@ -1453,5 +1453,39 @@
     "remaining": "Finalsource/isolatedfeatureAPInegative/bridgepositive/docs and sourceboundactualprocess/native/provider/package/wholegraph gates",
     "audit_workloads": 0,
     "goal_complete": false
+  },
+  "followup_platform_privacy_docs_and_api_package": {
+    "private_review_sha256": {
+      "platform-privacy-and-windows-doc-review-001.json": "a28b0080497084217a51cfeb00a0a95bc21ab77a19802c1e28eda5dce32205fe",
+      "platform-feature-api-and-package-review-001.json": "f121f39121e9a169728550034cfd3f7266efd0afb408d11df3735bf77cc812c1"
+    },
+    "copied_privacy_raw_files": 25,
+    "copied_api_package_raw_files": 76,
+    "samecrate_control_exit": 0,
+    "observation_exit": 1,
+    "observation_error": "E0451 threeprivatefields",
+    "worker_exit": 1,
+    "worker_error": "E0603 privatecapture_attempt parent, not isolatedmodifierproof",
+    "selected_privacy_inputs": 36,
+    "before_after_byte_equal": true,
+    "current_selected_drift": 0,
+    "windows_doc_positive": 1,
+    "windows_doc_compilefail": 1,
+    "native_queries_executed": 0,
+    "bridge_query_create_tests_premove_hash_equal": true,
+    "api_isolated_cases": 9,
+    "positive_controls": 4,
+    "negative_exit101_e0432": 5,
+    "all_locked_offline_defaultfeaturesfalse": true,
+    "wasm_scope": "Crosscompileonly withpositiveplatformtypecheck, noOSruntime",
+    "package_archive_sha256": "164bf1a4320f1baa83b1e0fac08d439728d9510569e7472ac5f00ace62d85166",
+    "package_archive_bytes": 51592,
+    "package_unique_regular_files": 33,
+    "package_verified": "Actual defaultlibrary normalCargo package verified; not allfeatures/profiles/tests/registrypublication",
+    "first_privacy_attempt": "PrecompilerPSunwrappedcollection error preservedseparate; no sourcechange",
+    "earlier_partial_review_remaining_requirement": "These9specificAPIabsence/control cases were later executed; earlier partial record kepthistorical",
+    "remaining": "Finalatomiccandidate/nativeprocess/provider/packagingprofiles/wholegraph andfullproduct gates",
+    "audit_workloads": 0,
+    "goal_complete": false
   }
 }
