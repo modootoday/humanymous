@@ -29,6 +29,11 @@ sha2.workspace = true
 hex.workspace = true
 serde_json.workspace = true
 
+[dev-dependencies]
+humanymous-native-security = { path = "../native-security" }
+humanymous-audit = { path = "../audit" }
+humanymous-signals = { path = "../signals" }
+
 [lints]
 workspace = true
 

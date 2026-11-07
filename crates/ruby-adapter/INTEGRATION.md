@@ -45,4 +45,6 @@ ownership. Build selects six declarative metadata members and retains upstream
 RubyGems/Digest archive SHA256 receipt. Install uses --local/--ignore-dependencies
 in a fresh GEM_HOME/GEM_PATH then requires production and rejects fixture bits.
 No publish command or authored Ruby script exists. The default Rust driver does
-not enable Magnus; its compilation cannot qualify Ruby ABI. All execution NOT_RUN.
+not enable Magnus; its compilation cannot qualify Ruby ABI. Default all-targets
+Rust-driver check/Clippy passed as recorded in evidence:root/20261107075243
+summary003. No tests, Ruby native build/import or package execution ran.

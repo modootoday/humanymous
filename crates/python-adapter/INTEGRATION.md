@@ -19,7 +19,9 @@ Synthetic ALLOW stays distinct from production browser evidence.
 Native all-targets host-pilot check002 and final Clippy002 passed against the
 source recorded in evidence:root/20261107075243 summary002. The initial check001
 and Clippy001 failures are retained. No tests or native imports executed.
-Package-tool compilation, contextvars/cancellation/GIL, fidelity, server read
+Package-tool all-targets check/Clippy also passed in summary003 after the approved
+three dev path dependencies were integrated; no tests/imports/install executed.
+Contextvars/cancellation/GIL, fidelity, server read
 deadline, actual frameworks, clean install, Unix/Windows IPC/ABI and closure audit
 remain NOT_RUN. No previous Node success is attributed to this source.
 
@@ -30,7 +32,7 @@ Candidate direct pins are pilot-requirements.txt; retain hosted closure/audit.
 Rust wheel driver build/inspect prints hash/member/tag receipt with generation
 provenance=false and whole/runtime qualification=false. Clean install/import and
 input-source lineage remain mandatory. Initial Rustfmt syntax typo was corrected;
-package-tool compiler validation has not run here.
+package-tool compiler validation is recorded in summary003.
 Root-approved host isolation: PyO3/async deps optional behind native;
 extension-module/host-pilot/package-tool all enable native. Default0tests do not
 qualify anything; mandatory shared6pure plus native compilation and actual host
@@ -46,8 +48,17 @@ disconnect receive across the authority decision/handoff. These cancellation
 paths are NOT_RUN. host-pilot pilot_wsgi exposes an upstream --call factory for
 real Flask/Django servers with native binary views/cookies/effect receipts. Private
 input uses a configuration JSON STRING, not a permissive parsed-map re-encoding.
-Waitress3.0.2 pilot provisioning and existing native-security/audit/signals dev
-path dependencies are approved for the next root-controlled graph window, which
-is not open yet. Neither manifests nor the pilot recipe have been changed.
-Its candidate
+The approved graph window added existing native-security/audit/signals dev path
+dependencies; root resolved the lock with zero new external packages. Separate
+waitress-requirement.txt pins the official3.0.2 wheel SHA256 for hosted-only
+installation. No package has been installed or executed. Its candidate
 profile must enable channel_request_lookahead and bounded server input deadlines.
+
+New Unix-only tests/wsgi_server.rs contains three ignored actual HTTP groups,
+ten planned cases across Flask/Django: production authority non-ALLOW with exact
+audit count/no effect, real-engine synthetic ALLOW with binary/two-cookie/effect
+hash/audit checks, and dependency-down/unknown/reserved rejection. It reuses the
+shared test-only Evidence/audit fixture. This Unix source was excluded by local
+Windows/package-tool cfg and remains NOT_COMPILED/NOT_RUN. Timeout, body-abort,
+pre-handoff disconnect and live-authority oversized/upgrade cases still need
+implementation; server-pilot-contract keeps complete harness=false.

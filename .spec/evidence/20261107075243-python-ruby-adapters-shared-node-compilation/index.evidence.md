@@ -3,12 +3,13 @@ id: evidence:root/20261107075243
 title: Python Ruby adapters shared Node compilation
 status: active
 created: 2026-11-07T07:52:43Z
-updated: 2026-11-07T08:28:03Z
+updated: 2026-11-07T08:54:46Z
 rel:
   governs: [crates/node-adapter]
 files:
   - {path: summary-001.json, sha256: 09ba1cdf3e041fbbf16f6ff1546e49a4261a55a3bae2e8c187fd6f21524f89d9, bytes: 1306, store: repo}
   - {path: summary-002.json, sha256: cf779ccd005511ab728655fcb2f185eec98368ece59cf722a4d59390ce1055cf, bytes: 1839, store: repo}
+  - {path: summary-003.json, sha256: b4b9498c9d6693ffa948a1fd10a3fa5ca85d87f6a1b0e21dfa7d3298c0145958, bytes: 3905, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -57,3 +58,14 @@ is observation metadata, not a claimed immutable whole-tree execution snapshot.
 No test/import/product/host process ran. In particular the required-feature
 Python package-tool binary was excluded from this host-pilot build and remains
 unverified. Ruby native and its new package driver are separate unfinished gates.
+
+## Package drivers and shared Node fixture follow-through
+
+Summary003 records six successful root-assigned B commands after the approved
+graph window: Python package-tool all-targets check/Clippy, default Ruby Rust
+driver all-targets check/Clippy, and Node host-pilot all-targets check/Clippy after
+test fixture extraction. Selected184 source/common files changed0; excluded
+transitive crates are named, so no full-graph stability claim. No tests, native
+imports, frameworks or installers ran. Ruby default does not enable Magnus.
+New Python Unix WSGI source was excluded by platform and feature cfg and has no
+compile/runtime evidence from these Windows commands.

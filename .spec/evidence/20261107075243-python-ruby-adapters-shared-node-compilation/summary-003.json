@@ -1,0 +1,145 @@
+{
+  "schema": "humanymous.adapter-compilation/1",
+  "scope": "Windows native Python package-tool, default Ruby Rust driver, Node host-pilot compilation and lint only",
+  "headObservedAfterCommands": "c34c3e9193508e6b12dbdf9bc7aaf2310c6bcf6b",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_TARGET_DIR": "target/node-native/build"
+  },
+  "sourceMonitoring": {
+    "beforeManifestSha256": "c8e53ca29923b8ad5398f15b3be790d877bdf97e401ba4491eb870e313c9aae9",
+    "afterManifestSha256": "c8e53ca29923b8ad5398f15b3be790d877bdf97e401ba4491eb870e313c9aae9",
+    "directories": [
+      "crates/framework-adapter",
+      "crates/node-adapter",
+      "crates/python-adapter",
+      "crates/ruby-adapter",
+      "crates/authority",
+      "crates/integrity",
+      "crates/audit",
+      "crates/native-security",
+      "crates/signals"
+    ],
+    "excludedTransitiveExamples": [
+      "crates/scoring",
+      "crates/behavior",
+      "crates/model",
+      "crates/network"
+    ],
+    "commonFiles": [
+      "Cargo.toml",
+      "Cargo.lock",
+      "rust-toolchain.toml"
+    ],
+    "wholeDependencyGraphMonitored": false,
+    "changedFiles": 0,
+    "limitation": "HEAD is observation metadata, not an immutable whole-worktree execution snapshot",
+    "enumeratedFiles": 184
+  },
+  "cargoLockSha256": "65b830318da0efb30498ab117c478a66ede3de1eecc9a55a40cc2a4f971402b0",
+  "commands": [
+    {
+      "argv": [
+        "cargo",
+        "check",
+        "--locked",
+        "-p",
+        "humanymous-python-adapter",
+        "--all-targets",
+        "--features",
+        "package-tool"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 2.45,
+      "rawLogSha256": "9cea507a31ca1d22867e8f8ef9946ad55dae48e91b75c17e0cf7c8815ff19262"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-python-adapter",
+        "--all-targets",
+        "--features",
+        "package-tool",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 3.34,
+      "rawLogSha256": "3d7a266b822063e5bb54487dc3f87821514d69ff706ea2773c165e752c5bc932"
+    },
+    {
+      "argv": [
+        "cargo",
+        "check",
+        "--locked",
+        "-p",
+        "humanymous-ruby-adapter",
+        "--all-targets"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 1.71,
+      "rawLogSha256": "23dcb6621420a027da4aabd4d733ee354a7c6d9bb2550b5b8a8f90f6f12a5378"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-ruby-adapter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 3.06,
+      "rawLogSha256": "e3e377958604559a3800022b4e353fc526cfe76eb72f31b310ec535ff63988fa"
+    },
+    {
+      "argv": [
+        "cargo",
+        "check",
+        "--locked",
+        "-p",
+        "humanymous-node-adapter",
+        "--all-targets",
+        "--features",
+        "host-pilot"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 2.23,
+      "rawLogSha256": "7a63aa366229c2b672ce60d5fb075f72563379a605094bd8889ddf1aa2ad8c56"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-node-adapter",
+        "--all-targets",
+        "--features",
+        "host-pilot",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 3.56,
+      "rawLogSha256": "269ba29fbda99697f6be14369bbcd858712996d2f6be7a4052445b5a10fc7a3b"
+    }
+  ],
+  "unitExecutionStatus": "not_run",
+  "actualRuntimeStatus": "not_run",
+  "packageInstallStatus": "not_run",
+  "rubyNativeAbiStatus": "not_run",
+  "pythonUnixWsgiServerHarnessStatus": "new source excluded by feature and platform cfg; not compiled or run",
+  "releaseQualifiedTuples": [],
+  "wholeProductQualified": false
+}

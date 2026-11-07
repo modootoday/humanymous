@@ -176,3 +176,23 @@ Only test targets include this source; no synthetic evidence enters exports or
 the production authority. Node's assertions/counts remain unchanged. This new
 extraction is formatted, but compilation and actual runtime regression are
 NOT_RUN; earlier Node checks do not cover these later bytes.
+
+Root opened the graph window: approved three Python dev path dependencies and
+separate Waitress3.0.2 wheel-hash recipe were added, then frozen immediately.
+Root resolved Cargo.lock with zero new external packages and closed the window.
+No worker lock/common manifest edit occurred.
+
+Explicit B target/node-native/build jobs1/incremental0 passed all six commands:
+Python package-tool check2.45s/Clippy3.34s; Ruby default Rust-driver
+check1.71s/Clippy3.06s; Node host-pilot check2.23s/Clippy3.56s after fixture
+extraction. Admission stayed33GiB free/81.x% commit. Selected184 source/common
+files changed0; transitive scoring/behavior/model/network were not monitored.
+Summary003 keeps exact commands/log/manifest hashes. No tests/imports/actual
+runtime/install. B returned immediately, no owned Cargo/session remains.
+
+New Unix host-pilot WSGI target authors production authority exact-audit non-ALLOW,
+synthetic real-engine binary/cookie/effect/audit ALLOW, and dependency-down/unknown/
+reserved actual HTTP groups: three ignored groups/ten planned cases, plus two
+reused HTTP framing pure definitions. Source was excluded by local Windows and
+package-tool cfg, so NOT_COMPILED/NOT_RUN. Remaining timeout, abort, disconnect
+and live-authority invalid cases keep complete server-pilot harness=false.

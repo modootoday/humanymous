@@ -1,0 +1,4 @@
+# Hosted WSGI fixture only; install separately from framework candidate pins.
+# Official PyPI 3.0.2 py3-none-any wheel, queried 2026-11-07.
+# Use pip --require-hashes --only-binary=:all: -r this file.
+waitress==3.0.2 --hash=sha256:c56d67fd6e87c2ee598b76abdd4e96cfad1f24cacdea5078d382b1f9d7b5ed2e
