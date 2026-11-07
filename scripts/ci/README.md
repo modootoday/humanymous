@@ -1,5 +1,7 @@
 # Rust delivery validation
 
+**Diátaxis quadrant:** Reference. **Audience:** CI maintainers.
+
 The reusable rust-validation.yml is the unprivileged PR/main/tag authority.
 Workflow UI names use CI /, Docs /, Release / and Legacy / categories. The single
 [workflow catalog](workflows.json) fixes technical file/job, concurrency and
@@ -54,6 +56,31 @@ and images. A changed source, missing report/case, unknown failure, component-on
 result or blocked owner exit rejects the full gate. Target/delivery-evidence
 receives a sanitized summary; raw actor identity/paths/traces remain private.
 
+Dedicated callers isolate one boundary without changing the full release gate:
+
+| Workflow | Owning invocation and scope |
+|---|---|
+| `component-validation.yml` | `native-component capture` runs the exact five hosted transport cases. Manual `header` uses the existing cbindgen and C11/C++11 layout verifier; dynamic ABI remains separate. |
+| `go-validation.yml` | `go-product` consumes the exact eight-case bounded Go requirement. |
+| `browser-product-validation.yml` | `pilot browser-product` retains the full requirement and its nonzero failure/blocked exit. |
+| `mount-probe-validation.yml` | `mount-probe` collects four fixed custody mount observations. Complete refusals are diagnostic data, never custody or product qualification. |
+| `cef-native-component.yml` | The standalone Rust provisioner separates helper tests, native compilation, synthetic protocol, bootstrap rejection and desktop processes. GUI/AT readiness remains separate. |
+
+These execution commands require their genuine supported hosted context and clean
+exact workflow source. Ordinary validation branches do not write remote caches or
+upload artifacts. Existing collector/CEF/cross-OS artifact opt-ins stay disabled
+for this profile. Safe logs retain source/run accounting, counts and evidence
+hashes; original private child transcripts are not recoverable merely from a
+successful job or an emitted hash. CEF compiler projection excludes rendered
+messages and unreviewed paths, and marks missing/unknown/truncated data explicitly.
+
+`image-scan prepare|verify` binds the candidate image to source labels and typed
+Trivy results. A successful empty scan is `not_scanned`; the actual runtime
+binary must have an observed dependency inventory. The compiler-stage
+cargo-auditable tool is pinned in `build/rust/runtime-build-tool.json`. Source
+metadata and tool checksum checks alone do not qualify an installed tool,
+runtime image, CVE scan or replacement for the legacy shipping images.
+
 `observe-run ID EXACT_SHA PRIVATE_OUTPUT` records only that run/source, waits for
 no unrelated result, and downloads its own terminal logs/artifacts. Later source
 success never replaces an earlier failure. `register-evidence BUNDLE TITLE`
@@ -71,12 +98,15 @@ node/native-host-process, not a legacy JavaScript test script.
 Pages uses `cargo run --locked -p humanymous-pages -- validate --source docs
 --destination ABS --baseurl VALUE` for apex and /humanymous. Its checked artifact
 is deployed only after the complete same-source Rust authority passes.
+Each generated variant also passes the owning `package` and a second fresh
+`archive-check`. Main transfers the verified `artifact.tar`, then validates the
+downloaded archive before deployment readiness. Branch checks keep uploads off.
 
 ## Publishing boundary
 
 Publication subcommands are implemented gates, not permission to publish.
 Registry prerequisites remain explicitly unverified. External proof must bind
-repository, release.yml, product environment (crates or npm) and canonical evidence
+repository, release.yml, product environment (crates, npm, rubygems or pypi) and canonical evidence
 digest. No long-lived registry token fallback is allowed. crates dependency
 waves include versioned normal/build/dev paths and reauthenticate per wave.
 Existing immutable versions are skipped only if registry name/version/checksum

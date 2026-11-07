@@ -154,3 +154,37 @@ scanner errors and modified findings block. Raw JSON remains private and safe
 output retains only hashes/counts/status and explicit unknown completeness.
 This gate does not add embedded inventory to the binary or establish shipping
 qualification. Its 58 pure tests and Clippy are separate from actual scanning.
+
+## Bounded callers and immutable observations
+
+Checkpoint b482d5be consumes the sole mount-probe contract without re-evaluating
+custody facts. Original ledger/source/recipe/image inspection hashes, exact
+hosted context, four ordered observations and unique successful cleanup are
+mandatory. Observed refusal can complete collection only; custody/full/release
+qualification stays false. Its allocated delivery 74/Clippy/policy/actionlint
+proof has unchanged 88-input closure. The moved hosted-context helper preserves
+the Go consumer's existing fields. Actual Docker observations are separate.
+
+Checkpoint e77b9792 adds the closed capture/header caller and CEF Cargo JSON safe
+projection. Allocated delivery 69 and standalone CEF 11 helpers/Clippy passed;
+these helper counts do not qualify SDK or native process execution. The original
+CEF run 42370958371 at 0a1bb36e failed native-build exit 101 after helper 6 passed;
+protocol 4/bootstrap 1/process 2 were not reached and compiler cause is unknown.
+New source diagnostics never reinterpret that original private transcript.
+
+Actual capture run 42372114913 at e77b9792 has two successful jobs, zero artifacts,
+five actual transport cases passed with zero failed/ignored/filtered and unchanged
+source. Its attached safe summary retains emitted child-log hashes; original
+private test log bodies were not retrieved. Full Gate/browser/AT qualification
+does not follow from this capture result.
+
+Actual Go run 42369171124 at 15f63fef attempted all eight actor starts and failed
+at actor_writer_mount with zero evaluated cases and unknown assertion counts.
+Cleanup succeeded. The stage-entry marker is not an exact operation/root cause;
+earlier eight-NOT_RUN image build failures remain distinct historical evidence.
+
+Checkpoint ae5c3a67 pins cargo-auditable 0.7.7 and its 47 checksum-verified locked
+registry archives in the image compiler stage. Delivery 67 and strict Clippy
+passed after a preserved initial needless-borrow failure. No tool installation,
+auditable runtime image build or actual scan was established by that source
+checkpoint; all candidate shipping qualification flags remain false.
