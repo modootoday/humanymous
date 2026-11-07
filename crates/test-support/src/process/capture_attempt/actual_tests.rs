@@ -133,7 +133,10 @@ fn retained_stop_request_preserves_observed_exit_zero() {
         }
         thread::sleep(Duration::from_millis(5));
     }
-    let observed_zero_before_request = owner.status.is_some_and(|status| status.code() == Some(0));
+    let observed_zero_before_request = owner
+        .child
+        .status()
+        .is_some_and(|status| status.code() == Some(0));
     let stop_result = owner.request_stop();
     let result = settle(owner);
     assert_joined(&result);

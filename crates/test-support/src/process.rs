@@ -7,9 +7,14 @@ use std::{
 };
 
 mod capture_attempt;
+mod direct_pipe;
+mod owned_child;
 pub use capture_attempt::{
     CaptureAttempt, CaptureDeadlines, CaptureIssue, CaptureLimits, CaptureProgress,
     CaptureStartFailure, CapturedDirectChild, RetainedCaptureFailure,
+};
+pub use direct_pipe::{
+    ClosedPipeChild, DirectChildProgress, RetainedDirectPipeAttempt, RetainedDirectPipeFailure,
 };
 
 fn piped_child(command: &mut Command, stderr: bool) -> io::Result<Child> {

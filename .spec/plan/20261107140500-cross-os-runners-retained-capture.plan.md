@@ -430,3 +430,36 @@ marker fails the intended parent case. Closing parent pipe handles after child
 exit is an actual local handle-close fact, NOT daemon/service/Job cleanup proof.
 Public result ownership and Drop limitations remain explicit; no new dependencies,
 unsafe, process creation path or automatic account/SCM authority is proposed.
+
+## Approved common backing source checkpoint v0.8
+
+Root approved the v0.7 SOURCE refactor after the five-parent source was frozen in
+1e05b7ba0cd8a160443dfab45a81c5f2c34ea784. Actual source now has ONE private
+process/owned_child.rs OwnedDirectChild holding Child/PID/status/stop/errors and
+the original deadline ledger. CaptureAttempt and the separate direct_pipe.rs
+RetainedDirectPipeAttempt both compose that owner and the same piped_child factory.
+No new dependency, manifest, unsafe or actual execution is introduced.
+
+The published direct-pipe API is start(&mut Command,CaptureDeadlines)->io::Result,
+close_input(), poll(), request_stop(), read_stdout_prefix()/read_stderr_prefix()
+and settle_closing_pipes(). No fallible setup follows successful spawn in that
+profile. Prefixes are once per stream,1..256bytes, bounded read_exact without any
+background reader/draining; synchronous reads/stop/release still require outer
+supervision. Prefix error marks failure while retaining the borrowed owner and
+remaining endpoints. Only complete exact match records prefix observation.
+
+DirectChildProgress getters report actual status, sticky issues, retained endpoint
+booleans and prefix observations. Settled result is named ClosedPipeChild with
+PRIVATE fields and getters pid/status/released_pipe_ends/prefixes_observed/issues.
+It is distinct from captured output and reports std-owned endpoint release ONLY,
+not native CloseHandle acknowledgement, EOF, IO worker joins or tree cleanup.
+Pending exit returns RetainedDirectPipeFailure::into_owner with same actual Child
+and held pipes. No raw handle, Child getter or caller-PID constructor is exposed.
+
+One new PURE prefix budget test is authored; the existing four pure clock/cap
+tests and FIVE ignored actual parents are preserved with the stop-classification
+parent updated to the same private backing. CLI owner was notified of exact API
+and pressure-entry-versus-exit observations; its consumer and devdependency remain
+separate owner/Root work. No old pure14 or five-parent source hash qualifies this
+refactor. All new static/pure/actual direct-pipe and capture regression gates are
+NOT_RUN pending an explicit Root allocation. No automatic retry is authorized.

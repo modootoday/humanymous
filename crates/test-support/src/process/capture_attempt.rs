@@ -5,13 +5,14 @@
 //! explicitly settle them; abandoning an owner is Unknown, never cleanup proof.
 use std::{
     io::{self, Read, Write},
-    process::{Child, Command, ExitStatus},
+    process::{Command, ExitStatus},
     sync::mpsc::{self, Receiver, TryRecvError},
     thread::{self, JoinHandle},
     time::Instant,
 };
 
 mod worker;
+use super::owned_child::OwnedDirectChild;
 use worker::Worker;
 
 /// One pair of absolute original deadlines, with no relative-time renewal.
@@ -35,7 +36,11 @@ impl CaptureDeadlines {
         })
     }
 
-    fn observe(
+    pub(super) fn accepts_start(&self) -> bool {
+        Instant::now() < self.run
+    }
+
+    pub(super) fn observe(
         &mut self,
         now: Instant,
         completed: bool,
@@ -187,14 +192,10 @@ impl RetainedCaptureFailure {
 /// settlement; safe Rust cannot enforce linear consumption of this must_use owner.
 #[must_use]
 pub struct CaptureAttempt {
-    child: Child,
-    pid: u32,
-    status: Option<ExitStatus>,
+    child: OwnedDirectChild,
     input: Option<Worker<()>>,
     stdout: Option<Worker<Vec<u8>>>,
     stderr: Option<Worker<Vec<u8>>>,
-    deadlines: CaptureDeadlines,
-    issues: Vec<CaptureIssue>,
     #[cfg(test)]
     writer_observation: std::sync::Arc<std::sync::atomic::AtomicU8>,
 }
@@ -230,21 +231,18 @@ impl CaptureAttempt {
         deadlines: CaptureDeadlines,
         input_limit: usize,
     ) -> Result<Self, CaptureStartFailure> {
-        if input.len() > input_limit || Instant::now() >= deadlines.run {
+        if input.len() > input_limit {
             return Err(CaptureStartFailure::NotStarted(io::Error::other(
                 "capture input or original run budget refused",
             )));
         }
-        let child = super::piped_child(command, true).map_err(CaptureStartFailure::NotStarted)?;
+        let child =
+            OwnedDirectChild::spawn(command, deadlines).map_err(CaptureStartFailure::NotStarted)?;
         let mut owner = Self {
-            pid: child.id(),
             child,
-            status: None,
             input: None,
             stdout: None,
             stderr: None,
-            deadlines,
-            issues: Vec::new(),
             #[cfg(test)]
             writer_observation: std::sync::Arc::new(std::sync::atomic::AtomicU8::new(0)),
         };
@@ -259,15 +257,15 @@ impl CaptureAttempt {
     }
 
     fn start_workers(&mut self, input: Vec<u8>, limits: CaptureLimits) -> io::Result<()> {
-        let stdout = self.child.stdout.take().ok_or_else(missing_pipe)?;
+        let stdout = self.child.take_stdout().ok_or_else(missing_pipe)?;
         self.stdout = Some(Worker::start("capture-stdout", move || {
             read_capped(stdout, limits.stdout)
         })?);
-        let stderr = self.child.stderr.take().ok_or_else(missing_pipe)?;
+        let stderr = self.child.take_stderr().ok_or_else(missing_pipe)?;
         self.stderr = Some(Worker::start("capture-stderr", move || {
             read_capped(stderr, limits.stderr)
         })?);
-        let mut stdin = self.child.stdin.take().ok_or_else(missing_pipe)?;
+        let mut stdin = self.child.take_input().ok_or_else(missing_pipe)?;
         #[cfg(test)]
         let observation = self.writer_observation.clone();
         self.input = Some(Worker::start("capture-stdin", move || {
@@ -282,27 +280,14 @@ impl CaptureAttempt {
     }
 
     fn record(&mut self, issue: CaptureIssue) {
-        if !self.issues.contains(&issue) {
-            self.issues.push(issue);
-        }
+        self.child.record(issue);
     }
 
     /// Observe child status and worker channels only. No wait/join/write/kill,
     /// blocking mutex, automatic stop or fresh deadline is performed here. The
     /// observation clock is sampled internally AFTER gathering the actual facts.
     pub fn poll(&mut self) -> CaptureProgress {
-        if self.status.is_none() {
-            match self.child.try_wait() {
-                Ok(Some(status)) => {
-                    if !status.success() {
-                        self.record(CaptureIssue::UnsuccessfulExit);
-                    }
-                    self.status = Some(status);
-                }
-                Ok(None) => (),
-                Err(_) => self.record(CaptureIssue::ChildObservationFailed),
-            }
-        }
+        self.child.poll_child();
         if let Some(worker) = &mut self.input {
             worker.poll();
             if worker.failed() {
@@ -321,28 +306,19 @@ impl CaptureAttempt {
                 self.record(CaptureIssue::StderrFailed);
             }
         }
-        let completed = self.status.is_some()
+        let completed = self.child.status().is_some()
             && self.input.as_ref().is_some_and(Worker::succeeded)
             && self.stdout.as_ref().is_some_and(Worker::succeeded)
             && self.stderr.as_ref().is_some_and(Worker::succeeded);
-        self.observe_deadlines(Instant::now(), completed);
+        self.observe_deadlines(completed);
         self.progress()
     }
 
-    fn observe_deadlines(&mut self, now: Instant, completed: bool) {
-        let settled = self.status.is_some()
+    fn observe_deadlines(&mut self, completed: bool) {
+        let settled = self.child.status().is_some()
             && self.workers_joined()
-            && self.child.stdin.is_none()
-            && self.child.stdout.is_none()
-            && self.child.stderr.is_none();
-        for issue in self
-            .deadlines
-            .observe(now, completed, settled)
-            .into_iter()
-            .flatten()
-        {
-            self.record(issue);
-        }
+            && self.child.retained_pipes() == [false; 3];
+        self.child.observe_completion(completed, settled);
     }
 
     fn workers_joined(&self) -> bool {
@@ -353,12 +329,12 @@ impl CaptureAttempt {
 
     fn progress(&self) -> CaptureProgress {
         CaptureProgress {
-            direct_child_exited: self.status.is_some(),
+            direct_child_exited: self.child.status().is_some(),
             input_completed: self.input.as_ref().is_some_and(Worker::succeeded),
             output_eof: self.stdout.as_ref().is_some_and(Worker::succeeded)
                 && self.stderr.as_ref().is_some_and(Worker::succeeded),
             workers_joined: self.workers_joined(),
-            issues: self.issues.clone(),
+            issues: self.child.issues().to_vec(),
         }
     }
 
@@ -366,15 +342,7 @@ impl CaptureAttempt {
     /// block: invoke only under independent supervision. This is NOT exit/reap,
     /// reader settlement or descendant termination. Error retains this borrowed owner.
     pub fn request_stop(&mut self) -> io::Result<()> {
-        self.record(CaptureIssue::ForcedStop);
-        if self.status.is_some() {
-            return Ok(());
-        }
-        if let Err(error) = self.child.kill() {
-            self.record(CaptureIssue::StopFailed);
-            return Err(error);
-        }
-        Ok(())
+        self.child.request_stop()
     }
 
     /// Final joins may block even after is_finished; caller MUST keep independent
@@ -383,7 +351,7 @@ impl CaptureAttempt {
     /// Successful settlement returns actual joined facts, possibly failed execution.
     pub fn settle_joined(mut self) -> Result<CapturedDirectChild, RetainedCaptureFailure> {
         self.poll();
-        let ready = self.status.is_some()
+        let ready = self.child.status().is_some()
             && self.input.as_ref().is_none_or(Worker::join_ready)
             && self.stdout.as_ref().is_none_or(Worker::join_ready)
             && self.stderr.as_ref().is_none_or(Worker::join_ready);
@@ -398,7 +366,7 @@ impl CaptureAttempt {
         if panicked {
             self.record(CaptureIssue::WorkerPanicked);
         }
-        let status = match self.status {
+        let status = match self.child.status() {
             Some(status) => status,
             None => {
                 return Err(RetainedCaptureFailure {
@@ -408,9 +376,7 @@ impl CaptureAttempt {
         };
         // Partial setup remains a failed execution. Pipes without workers are
         // closed only after the actual child is observed exited, never as EOF proof.
-        drop(self.child.stdin.take());
-        drop(self.child.stdout.take());
-        drop(self.child.stderr.take());
+        let _closed_pipe_ends = self.child.close_pipes_after_exit();
         self.poll();
         let io_workers_started = u8::from(self.input.is_some())
             + u8::from(self.stdout.is_some())
@@ -419,7 +385,7 @@ impl CaptureAttempt {
             + u8::from(self.stdout.as_ref().is_some_and(Worker::joined))
             + u8::from(self.stderr.as_ref().is_some_and(Worker::joined));
         Ok(CapturedDirectChild {
-            pid: self.pid,
+            pid: self.child.pid(),
             status,
             stdout: self
                 .stdout
@@ -429,7 +395,7 @@ impl CaptureAttempt {
                 .stderr
                 .and_then(Worker::into_output)
                 .unwrap_or_default(),
-            issues: self.issues,
+            issues: self.child.issues().to_vec(),
             io_workers_started,
             io_workers_joined,
         })
