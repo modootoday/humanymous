@@ -77,3 +77,29 @@ with the .NET middleware/facade profile or C++ qualification.
 Public docs delta for docs owner: safe ownership foundation is being implemented;
 C/C++ integration remains unqualified/not_run. Do not advertise native SDK,
 human detection, callback/worker cleanup, allocator compatibility or ready bindings.
+
+## Accepted-family migration handoff, 2026-11-08
+
+The accepted eight-public-package baseline assigns safe/export native ABI roles
+to humanymous-adapters. Root alone freezes the concrete slice and changes paths,
+package graph, role features and refs. No relocation or speculative shim is made
+here. The owning plan records the exact current-path handoff and hazards.
+
+Later actual pure validation is29 passed, zero failed/ignored/filtered, with
+locked offline all-target check and strict Clippy passing. Evidence:root/20261107183956
+retains the source/config/proxy snapshot and explicit unresolved registry/resolved
+compiler prehash limits. This supersedes the earlier pending29 note, without
+rewriting the historical25-case result. No local compiler main ran in that slot.
+
+Hosted source9586f7e4/job128509489237 subsequently reports header generation and
+owning C11/C++11 conformance exit0, execution_passed=true and source_changed=false.
+The actual step failed at compiler identity admission; original16-file proof was
+not exported/reconstructed. Evidence:root/20261107214000 retains captured API body
+and separately ANSI-stripped derivatives. This is source-reported hosted semantic
+execution, not a complete independently reconstructed header proof. The general
+native job versus standalone header-profile route mismatch also remains pending.
+
+No compiler, native process, Docker container or target lease is held by this
+owner. Native ABI current implementation paths were clean before this handoff
+metadata update. Current-path safety and historical source-specific evidence
+must survive the Root-controlled integration.

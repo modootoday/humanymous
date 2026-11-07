@@ -2,7 +2,7 @@
 use serde_json::{Value, json};
 use std::io;
 pub(super) fn contract() -> io::Result<Value> {
-    humanymous_test_support::json::decode_strict_json(
+    humanymous_platform::testing::json::decode_strict_json(
         include_bytes!("../../../../crates/browser/native/desktop/pilot-contract.json"),
         1024 * 1024,
     )

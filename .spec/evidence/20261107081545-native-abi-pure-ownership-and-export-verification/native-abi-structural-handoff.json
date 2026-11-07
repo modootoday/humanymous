@@ -1,0 +1,128 @@
+{
+  "schema": "humanymous.native-abi-structural-handoff/1",
+  "preparedUtc": "2026-11-07T20:10:56.1973534Z",
+  "acceptedFamily": "eight-public-package baseline v0",
+  "rootAssignedDestinationPackage": "humanymous-adapters",
+  "concreteDestinationPathsAssigned": false,
+  "rootOwnsGraphPathsAndRefs": true,
+  "trackedImplementationFiles": [
+    {
+      "path": "adapters/native/cbindgen.toml",
+      "bytes": 754,
+      "sha256": "25f85d539e0e4647fb13a822fbe2fb0483d259741fce73b1775b19aa7334d086"
+    },
+    {
+      "path": "adapters/native/header-proof-profile.json",
+      "bytes": 3954,
+      "sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491"
+    },
+    {
+      "path": "adapters/native/pilot-contract.json",
+      "bytes": 2568,
+      "sha256": "9fac5dba8116e1666527bdb10119c23de682d87b6bd24621e72d962742683050"
+    },
+    {
+      "path": "crates/native-abi/Cargo.toml",
+      "bytes": 257,
+      "sha256": "5a5670505881cc8443125646db7da0297b201d66f56733ce5394c72a97ee9288"
+    },
+    {
+      "path": "crates/native-abi/export/Cargo.toml",
+      "bytes": 378,
+      "sha256": "f46ec9c16454615f4e29e4ee0f04634ce74e889f0dc9d7ae710d135958b327dc"
+    },
+    {
+      "path": "crates/native-abi/export/examples/header_conformance.rs",
+      "bytes": 19960,
+      "sha256": "b3fb9815653bcfc35de0af2e4d1e1795851457561d7116bb8ed00c515bdada0e"
+    },
+    {
+      "path": "crates/native-abi/export/examples/local_msvc.rs",
+      "bytes": 4262,
+      "sha256": "68d6c105edee241d0ea86afdfbffed4ec8f8ad41cd3a1598f9a314e8dd8d833f"
+    },
+    {
+      "path": "crates/native-abi/export/src/lib.rs",
+      "bytes": 9547,
+      "sha256": "13c6180cab314fbfbff1791fae4496990f6c208f3fed6d5f7385ea734c966080"
+    },
+    {
+      "path": "crates/native-abi/INTEGRATION.md",
+      "bytes": 6897,
+      "sha256": "d1728a1b4f5c7654616477926702401f5860c08f95688312961c34bfb09bbf2b"
+    },
+    {
+      "path": "crates/native-abi/src/boundary.rs",
+      "bytes": 3513,
+      "sha256": "333d994cfd9d2398529b50bc866c642fa73ea0f5e02508f15ef6032f58660919"
+    },
+    {
+      "path": "crates/native-abi/src/command.rs",
+      "bytes": 9023,
+      "sha256": "527859d9e5f85ed5f3e3bf7df989047c49e2cc4484c4fe361f21a05bdbfc1efb"
+    },
+    {
+      "path": "crates/native-abi/src/lib.rs",
+      "bytes": 490,
+      "sha256": "17df48a73db67b636d943ee04eeadfa3171d4a9a3eda03ddca9a79fddb044c6d"
+    },
+    {
+      "path": "crates/native-abi/src/registry.rs",
+      "bytes": 6618,
+      "sha256": "447926b6fdc1f83e57b25a422c515b107def22f468749657ea03cb638c5ceac7"
+    },
+    {
+      "path": "crates/native-abi/src/registry/tests.rs",
+      "bytes": 6185,
+      "sha256": "2cf744c7f98ab036392bd1aed31322730e1b65ab3a19636312f4f34e78394bfd"
+    },
+    {
+      "path": "crates/native-abi/src/wire.rs",
+      "bytes": 4303,
+      "sha256": "74d5e37c452aa3fd18367bcfda893c9eb0859aa60d210c944e19b2043deb76e5"
+    }
+  ],
+  "fileCount": 15,
+  "preparationDirtyFiles": [
+    "crates/native-abi/INTEGRATION.md",
+    ".spec/plan/20261107072500-native-abi.plan.md",
+    ".spec/evidence/20261107081545-native-abi-pure-ownership-and-export-verification/index.evidence.md",
+    ".spec/evidence/20261107081545-native-abi-pure-ownership-and-export-verification/native-abi-structural-handoff.json"
+  ],
+  "ownedRuntimeLeases": [],
+  "ownedCompilerProcesses": [],
+  "ownedContainers": [],
+  "laneRetainedPendingRootFreeze": true,
+  "beforePreparationImplementationClean": true,
+  "wholeTreeCleanClaimed": false,
+  "pathMovePerformed": false,
+  "packageRenamePerformed": false,
+  "refSyncPerformed": false,
+  "publicationAuthorized": false,
+  "historicalEvidenceRebound": false,
+  "verification": {
+    "pureIgnored": 0,
+    "pureFailed": 0,
+    "hostedJob": 128509489237,
+    "hostedStepExit": 1,
+    "strictClippyExit": 0,
+    "purePassed": 29,
+    "hostedOriginalProofReconstructed": false,
+    "hostedError": "header actual compiler profile refused",
+    "hostedReportedSemanticExit": 0,
+    "hostedSource": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+    "hostedPrivateReceipt": "evidence:root/20261107214000",
+    "privatePureReceipt": "evidence:root/20261107183956",
+    "checkExit": 0,
+    "pureFiltered": 0
+  },
+  "requiredTestsAfterIntegration": [
+    "Mapped core16/export6/header-example7 pure units",
+    "Locked all-target check and strict Clippy, scoped fmt",
+    "Target/default-feature and single-role export audit",
+    ".NET ownership bridge and symbol/artifact caller qualification",
+    "Pinned cbindgen generated header and genuine hosted C11/C++11 layout gate",
+    "Strict original16-file reconstruction under held verified private parent",
+    "Independent C++ RAII/exception/allocator and Docker product gates remain separate"
+  ]
+}

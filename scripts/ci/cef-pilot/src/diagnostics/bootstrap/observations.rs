@@ -1,5 +1,5 @@
 //! Typed fields from the sole owning bootstrap marker contract.
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 
 fn fields(value: &Value, names: &Value) -> Option<()> {

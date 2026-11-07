@@ -1,5 +1,5 @@
 //! Closed Cargo diagnostics; rendered text and unreviewed locations stay private.
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{fs, io::Read, path::Path};

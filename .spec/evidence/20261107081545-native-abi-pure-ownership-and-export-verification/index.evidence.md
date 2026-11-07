@@ -7,6 +7,7 @@ updated: 2026-11-07T11:36:42Z
 rel:
   depends_on: [sot:root/native-abi, plan:root/20261107072500]
 files:
+  - {path: native-abi-structural-handoff.json, sha256: 0b1cbffc19064c5f8abaae5165e6dc53c09025868588b280969ebff2c1ab07de, bytes: 4722, store: repo}
   - {path: pure-header-preparation-29.json, sha256: 8b20bbb824f9697dc5313dc3dfe3a62b679bb2c51e50d19af5c2bc71f4876310, bytes: 2269, store: repo}
   - {path: summary.json, sha256: a55a59d498914d90c7ba788b663def7b105f390f14f37c71419e7273d5673f49, bytes: 2406, store: repo}
   - {path: hosted-startup-failure.json, sha256: aaef59afbb25b88e38aab3539a46c2129f6e84cb4401aff11582fe991980de59, bytes: 928, store: repo}
@@ -115,3 +116,10 @@ denominator. Local pure25 and these failed hosted partials are not interchangeab
 The separate29-case receipt records actual local tests/check/strict Clippy and
 explicit tool/dependency provenance limits. Original25-case, failed hosted and
 local artifact/caller receipts are unchanged. Hosted C11/C++11 remains pending.
+
+## Accepted-family handoff preparation
+
+The structural handoff attachment freezes15 current implementation/configuration
+files and records owner-local dirty metadata and empty execution leases. Root
+alone assigns final paths and integration order; no prior proof is rebound to
+future moved source. The owning plan records visibility, unsafe and consumer hazards.
