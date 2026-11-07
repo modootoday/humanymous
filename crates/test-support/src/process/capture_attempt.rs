@@ -23,6 +23,9 @@ pub struct CaptureDeadlines {
     cleanup_met: bool,
 }
 impl CaptureDeadlines {
+    pub(super) fn original_deadlines(&self) -> (Instant, Instant) {
+        (self.run, self.cleanup)
+    }
     pub(super) fn run_until(&self) -> Instant {
         self.run
     }

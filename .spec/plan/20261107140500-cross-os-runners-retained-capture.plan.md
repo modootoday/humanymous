@@ -1029,3 +1029,24 @@ hint literally, which would change the wire type. An eighth summary pure case
 rejects numeric JSON, plus sign, leading zero, zero, whitespace and overflow.
 Only bare fmt/spec/diff ran after this fix. New explicit allocation is required;
 35 pure passes do not retroactively make the failed combined batch green.
+
+## Original-deadline owner getter: Root-accepted P1 source fix
+
+The frozen .NET retained Host review found independently supplied run_until and
+cleanup_until could extend L4 cleanup polling despite Native's sticky expiry.
+Root explicitly accepted a narrow DATA getter: private CaptureDeadlines original
+pair -> private OwnedDirectChild forward -> public
+InteractiveAttempt::original_deadlines(&self) -> (Instant,Instant). The exact
+stored original instants are copied, never sampled/rebased/renewed; no authority,
+FFI, dependency or process ownership change. RetainedInteractiveFailure already
+returns the same boxed owner, so its getter follows that same child ledger.
+
+.NET must derive Host horizons from owner.original_deadlines() and remove free
+caller Instant parameters. Stage8s ceilings may only shorten remaining original
+run time, including HTTP connect/read/write and GC waits; original cleanup stays
+unchanged through all errors. One new pure ledger retention/recovery regression
+plus existing conservation assertions is authored NOT_RUN (capture pure4 ->5).
+It does not fabricate a Child or claim actual retained-process failure proof.
+Actual partial-worker/startup/blockedIO/descendant-held-EOF custody and the getter
+through real retained failure still require separately allocated native fixtures.
+Only bare fmt/spec/diff ran; independent source review precedes new verification.

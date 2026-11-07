@@ -254,6 +254,12 @@ impl InteractiveAttempt {
     pub fn pid(&self) -> u32 {
         self.child.pid()
     }
+    /// Exact original run/cleanup instants stored by the SAME retained child
+    /// owner. Consumers must derive stage/cleanup horizons from this pair rather
+    /// than supply replacement instants. No rebasing, renewal or native authority.
+    pub fn original_deadlines(&self) -> (Instant, Instant) {
+        self.child.original_deadlines()
+    }
     /// One opaque startup up to65536bytes. UTF8/framing/accepted-peer checks are
     /// the consumer's responsibility. Boxed input has no excess Vec capacity.
     pub fn try_startup(&mut self, bytes: Box<[u8]>) -> EnqueueResult {

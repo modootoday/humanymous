@@ -30,6 +30,9 @@ impl OwnedDirectChild {
     pub(super) fn pid(&self) -> u32 {
         self.pid
     }
+    pub(super) fn original_deadlines(&self) -> (Instant, Instant) {
+        self.deadlines.original_deadlines()
+    }
     pub(super) fn status(&self) -> Option<ExitStatus> {
         self.status
     }

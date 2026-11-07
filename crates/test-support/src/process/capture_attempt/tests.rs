@@ -21,6 +21,7 @@ fn original_thresholds_are_conserved_and_late_completion_is_not_renewed() {
     );
     assert_eq!(deadlines.run, run);
     assert_eq!(deadlines.cleanup, cleanup);
+    assert_eq!(deadlines.original_deadlines(), (run, cleanup));
     assert!(CaptureDeadlines::from_original(cleanup, run).is_err());
 }
 
@@ -64,4 +65,27 @@ fn allocation_caps_and_exact_eof_fail_closed_without_starting_a_process() {
     assert!(CaptureLimits::new(4096, 4096).is_ok());
     assert_eq!(read_capped(&b"abc"[..], 3).unwrap(), b"abc");
     assert!(read_capped(&b"abcd"[..], 3).is_err());
+}
+#[test]
+fn retained_clock_ledger_keeps_original_pair_after_failure_and_recovery() {
+    let start = Instant::now();
+    let original = (
+        start + Duration::from_secs(1),
+        start + Duration::from_secs(2),
+    );
+    let mut ledger = CaptureDeadlines::from_original(original.0, original.1).unwrap();
+    assert_eq!(ledger.original_deadlines(), original);
+    assert_eq!(
+        ledger.observe(original.1, false, false),
+        [
+            Some(CaptureIssue::RunExpired),
+            Some(CaptureIssue::CleanupExpired)
+        ]
+    );
+    // Pure clock custody only: no forged Child/native owner or process test.
+    let retained = Box::new(ledger);
+    assert_eq!(retained.original_deadlines(), original);
+    let mut recovered = *retained;
+    recovered.observe(original.1 + Duration::from_secs(1), true, true);
+    assert_eq!(recovered.original_deadlines(), original);
 }
