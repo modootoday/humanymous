@@ -25,6 +25,13 @@ These vectors do not establish Draft v0 conformance or independent interoperabil
 
 ## CI replacement contract
 
+Pending quiet-window follow-through: vector profile selection now also names
+Python ASGI/WSGI, Ruby Rack, Apache and ASP.NET Core. A separate fixed25-case
+corpus and one regression test are authored. This delta has not been compiled,
+linted or executed; earlier26lib+1CLI receipts do not qualify it. The original24
+and separate10-case internationalization corpora are unchanged. No dependency
+or common manifest/lock delta is required.
+
 Approved integration window added direct dependency `ureq = "=3.5.1"`, already
 present in the shared lock for delivery. Root integrated that package edge.
 The Rust-only browser implementation uses W3C WebDriver structured HTTP

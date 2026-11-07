@@ -7,6 +7,13 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "experimental-validation",
+      "paths": ["validation/vectors.md", "validation/fixtures/adapter-normalized-profiles-v1.json"],
+      "summary": "Author a separate25-case normalized producer-profile corpus with fixed expectations; extended runner compilation and execution remain pending.",
+      "generic_wire_changed": false,
+      "execution_qualified": false
+    },
+    {
       "kind": "implementation-evidence",
       "paths": ["reviews/security-privacy.md"],
       "summary": "Document current vault tombstone guessability, cross-scope linkage and retained shredded identifiers separately from proposed protocol erasure semantics.",

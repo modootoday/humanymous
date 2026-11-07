@@ -80,6 +80,11 @@ fn evaluate(corpus: Corpus, fixture_sha256: String) -> Result<VectorReport, Stri
         let profile = match case.profile.as_str() {
             "node" => AdapterProfile::Node,
             "nginx" => AdapterProfile::Nginx,
+            "python-asgi" => AdapterProfile::PythonAsgi,
+            "python-wsgi" => AdapterProfile::PythonWsgi,
+            "ruby-rack" => AdapterProfile::RubyRack,
+            "apache" => AdapterProfile::Apache,
+            "aspnetcore" => AdapterProfile::DotnetAspNetCore,
             _ => return Err(format!("{}: unknown trusted parser profile", case.id)),
         };
         let accepted = parse_with_profile(&bytes, corpus.now_ms, profile).is_ok();
@@ -124,6 +129,18 @@ fn export_corpus(path: &Path, corpus: &Corpus) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn normalized_host_profiles_use_fixed_positive_and_negative_bytes() {
+        let corpus: Corpus = serde_json::from_str(include_str!(
+            "../../../standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json"
+        ))
+        .unwrap();
+        assert_eq!(corpus.cases.len(), 25);
+        let report = evaluate(corpus, "test".into()).unwrap();
+        assert!(report.errors.is_empty(), "{:?}", report.errors);
+        assert_eq!((report.accepted, report.rejected), (5, 20));
+        assert!(!report.draft_v0_conformance);
+    }
     #[test]
     fn binary_and_unicode_corpus_preserves_distinct_commitment_bytes() {
         let corpus = i18n::corpus();

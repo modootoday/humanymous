@@ -1479,3 +1479,16 @@ not priorities or standards-assigned IDs. Themeba2b23f and tokens unchanged;
 recorded current hashes in sanitized source-audit evidence. This is authored
 source review only, not current render/link/browser/accessibility qualification.
 No Cargo/native/runtime/model/Docker commands during benchmark quiet window.
+
+### Normalized producer exact-byte corpus follow-through
+
+Reviewed actual profile enum/mode contract and existing fixture runner. Added five
+trusted selectors reusing the shared parser, a separate fixed25-case corpus and
+one Rust regression assertion: each profile valid plus wrongmode/identity/raworder/
+peer rejections, expected5accept20reject. Original24 and i18n10 untouched. Authored
+fixture bytes/digests independently from runtime outcomes; no expectation auto-
+refresh. Public vectors/change manifest/INTEGRATION explicitly say new source
+uncompiled/unexecuted and prior26+1 receipts do not qualify it. No dependency or
+root manifest delta. Quiet window prohibits compilation/runtime; request bounded
+verification only after root allocation. Pure source-text JSON/diff/spec inspection
+is the current evidence; full objective remains active.

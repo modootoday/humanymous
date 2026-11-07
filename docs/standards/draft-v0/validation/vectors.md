@@ -32,14 +32,30 @@ and rejected inputs, mismatches and the complete fixture digest. Acceptance is
 not an ALLOW verdict, authenticated peer, durable audit or origin invocation.
 `draft_v0_conformance` remains false even when all expectations match.
 
-The fixed corpus and its runner currently select only the Node and nginx
+The original and internationalization corpora select only the Node and nginx
 profiles. The [producer-profile table](../protocol/implementation-experiment.md#producer-profiles-and-service-readiness)
 also lists newer Python ASGI/WSGI, Ruby Rack, Apache and ASP.NET Core parser
-contracts, but those are not covered by these fixed fixture sets. Their source
+contracts, but those are not covered by those two fixture sets. Their source
 unit tests are a separate evidence layer; neither adding a profile enum nor
 passing this unchanged corpus establishes cross-host compatibility. Expanding
 the corpus requires separately reviewed exact bytes and expected results, not
 renaming an existing passing profile or regenerating its acceptance record.
+
+## Normalized host profile corpus awaiting execution
+
+A separate [normalized-profile corpus](fixtures/adapter-normalized-profiles-v1.json)
+contains 25 authored cases for Python ASGI/WSGI, Ruby Rack, Apache and ASP.NET
+Core. Each profile has one expected acceptance and four expected rejections:
+the wrong observation mode, the wrong producer identity, fabricated raw header
+order and an unsupported claimed peer. Inputs have fixed exact bytes and digests;
+the expected total is five acceptances and 20 rejections.
+
+The runner source now selects those trusted profiles explicitly through the
+shared parser. This extension and its regression test have not yet been compiled
+or executed. The expected counts are not measured results. After validating a
+current build, run the read-only `vectors --fixtures` command with this separate
+file; do not replace or regenerate either earlier corpus. This adds no independent
+implementation, native-host qualification or generic Draft v0 wire semantics.
 
 | Cases | Boundary |
 | --- | --- |
