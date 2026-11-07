@@ -1,0 +1,241 @@
+{
+  "schema": "humanymous.delivery-hosted-partial/1",
+  "run_id": 42415763189,
+  "source_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a",
+  "attempt": 1,
+  "run_terminal": false,
+  "scope": "four terminal jobs only; full run still has required active or queued jobs",
+  "jobs": [
+    {
+      "id": 128533798156,
+      "name": "validate / native (windows-2025)",
+      "official_binding": {
+        "run_id": 42415763189,
+        "run_attempt": 1,
+        "head_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a"
+      },
+      "status": "completed",
+      "conclusion": "cancelled",
+      "started_at": "2026-11-07T22:00:26Z",
+      "completed_at": "2026-11-07T22:40:40Z",
+      "failed_steps": [
+        "Execute independent runtime library and process harnesses"
+      ],
+      "cancelled_steps": [
+        "Execute provisioned Windows CEF component cases"
+      ],
+      "skipped_steps": [
+        "Execute five owned TLS and H2 capture cases",
+        "Verify generated C11 and C++11 header layouts",
+        "Execute every workspace harness through the native Rust actor",
+        "Preserve native workspace accounting",
+        "Run cargo build --workspace --bins --release --locked",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot native",
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- native-artifacts",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 3,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "native-windows-job-metadata.api-decoded.json",
+          "sha256": "8e8002420c5128db5d28eff1bec0055914a2dd70338e082bbed3a80b967f0438",
+          "bytes": 4627,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "native-windows-job.allowed-api-decoded.log",
+          "sha256": "b1d622be054b649b8607e625efac3f432a3f7fe78d207f10fed9b29be902ba6c",
+          "bytes": 165835,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "native-windows-annotations.api-decoded.json",
+          "sha256": "8a668701b982cb6a9d41ad709190690eab84626bf3be1409611c7383a81e3bb6",
+          "bytes": 917,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        }
+      ]
+    },
+    {
+      "id": 128549922684,
+      "name": "validate / images (core)",
+      "official_binding": {
+        "run_id": 42415763189,
+        "run_attempt": 1,
+        "head_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a"
+      },
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-07T22:34:29Z",
+      "completed_at": "2026-11-07T22:35:58Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a",
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "images-core-job-metadata.api-decoded.json",
+          "sha256": "eda5cc8a69c851c9250c7714a86024e4e9795b5c68d4d1a0a4b583e228408f16",
+          "bytes": 2918,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "images-core-job.allowed-api-decoded.log",
+          "sha256": "93863e00dc199c62ded693f27c71427d796a1cb6c7aecd92a44d3982887bc149",
+          "bytes": 63990,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "images-core-annotations.api-decoded.json",
+          "sha256": "6d765a46101852e85f521c2d1d25a81e05f12d292b389502aad9a161e08dd49b",
+          "bytes": 306,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        }
+      ]
+    },
+    {
+      "id": 128549922686,
+      "name": "validate / images (gate)",
+      "official_binding": {
+        "run_id": 42415763189,
+        "run_attempt": 1,
+        "head_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a"
+      },
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-07T22:36:00Z",
+      "completed_at": "2026-11-07T22:37:43Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a",
+        "Run aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "images-gate-job-metadata.api-decoded.json",
+          "sha256": "be071983fbaba6594772239f36ce37f5335d0e625dae9a4f73394ca839dcf24b",
+          "bytes": 2918,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "images-gate-job.allowed-api-decoded.log",
+          "sha256": "a31412aac6319136a394b05e8a8501cabdd15c7528451feaf98dcc4969f75c86",
+          "bytes": 63993,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "images-gate-annotations.api-decoded.json",
+          "sha256": "6d765a46101852e85f521c2d1d25a81e05f12d292b389502aad9a161e08dd49b",
+          "bytes": 306,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        }
+      ]
+    },
+    {
+      "id": 128550692193,
+      "name": "validate / packages",
+      "official_binding": {
+        "run_id": 42415763189,
+        "run_attempt": 1,
+        "head_sha": "1f87d310492b2bf23f62395c97b90e766af5f84a"
+      },
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-07T22:37:46Z",
+      "completed_at": "2026-11-07T22:38:54Z",
+      "failed_steps": [
+        "Run cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- package"
+      ],
+      "cancelled_steps": [],
+      "skipped_steps": [
+        "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      ],
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      },
+      "retained_files": [
+        {
+          "file": "packages-job-metadata.api-decoded.json",
+          "sha256": "4a9a3dceda2e5283666153f625d171bd3c88b5b14cf39603e34e364419a7d164",
+          "bytes": 2265,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "packages-job.allowed-api-decoded.log",
+          "sha256": "60394f8ac909be9896ace2629003df8b9cc83d93a0a0d6970f9b68e18e4347b0",
+          "bytes": 49251,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        },
+        {
+          "file": "packages-annotations.api-decoded.json",
+          "sha256": "6dc73afc3d6eff20f06031b2371b9ef52af099d34a11b77e64f112cf1cf409db",
+          "bytes": 306,
+          "representation": "gh API stdout decoded and serialized UTF-8 text, not original run ZIP"
+        }
+      ]
+    }
+  ],
+  "windows": {
+    "timeout_annotation": "The job has exceeded the maximum execution time of 40m0s",
+    "cancelled_step": "Execute provisioned Windows CEF component cases",
+    "maintenance_passed": 33,
+    "runtime_library": {
+      "discovered": 79,
+      "expected": 79,
+      "passed": 79,
+      "validated": true
+    },
+    "runtime_process": {
+      "discovered": 1,
+      "expected": 1,
+      "passed": null,
+      "validated": false,
+      "exit_code": 101,
+      "failed_test_count": null
+    },
+    "preceding_component_sources_unchanged": true,
+    "cef_terminal_report_recovered": false,
+    "cef_passed": null,
+    "workspace_actor_executed": false,
+    "release_build_and_native_artifacts_executed": false,
+    "contrast": "Old9586 CEF success then workspace cancellation is a separate immutable execution; no result transferred"
+  },
+  "legacy_images": {
+    "both_first_guard": "retired Go shipping input remains: build/core.Dockerfile",
+    "actual_image_build_executed": false,
+    "actual_trivy_scan_executed": false,
+    "gate_specific_build_or_cve_failure_observed": false
+  },
+  "packages": {
+    "first_guard": "publish=false: no publishable packages; registry readiness remains blocked",
+    "archive_or_publication_qualification": false,
+    "publication_attempted": false
+  },
+  "private_child_report_originals_recovered": false,
+  "full_product_qualified": false,
+  "shipping_qualified": false
+}
