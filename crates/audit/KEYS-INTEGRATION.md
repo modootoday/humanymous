@@ -1,6 +1,17 @@
 # Sealed key compatibility integration
 
-## Incremental diagnostic source awaiting validation
+## Latest incremental diagnostic qualification
+
+Exact14f3fbdd passed first-attempt all-target locked check/strict Clippy and11
+unique Rust tests:verification7 (75filtered), verifier parity1/Go840, canonical
+parity1/92 and checkpoint parity2/180 (integration filters0). All six new priority,
+native Scope and resource tests ran.128-path source hash/inventory unchanged.
+Evidence121521/raw121350, session65593 terminal/A returned. No source fix needed.
+Repeated840 rows are not1680unique cases or extra Rust tests. This supersedes
+NOT_RUN below for focused scope only; native inspector/complete S1/full audit/
+production S2/S3/product e2e and128MiB/RSS remain incomplete.
+
+## Historical incremental diagnostic source before focused qualification
 
 Shared record/base-checkpoint checks now back the sequential verifier and bounded
 hash/signature entrypoints. Private test-compiled accumulator keeps first

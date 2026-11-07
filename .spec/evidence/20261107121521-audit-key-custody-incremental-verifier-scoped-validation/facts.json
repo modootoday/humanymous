@@ -1,0 +1,25 @@
+{
+  "candidate": "14f3fbdd65d3cee099680455d2392e1fa0a7e402",
+  "passed": 11,
+  "verificationUnitPassed": 7,
+  "verificationParityPassed": 1,
+  "recordParityPassed": 1,
+  "checkpointParityPassed": 2,
+  "failed": 0,
+  "ignoredExecuted": 0,
+  "filteredByHarness": [
+    75,
+    0,
+    0,
+    0
+  ],
+  "harnesses": 4,
+  "sourceFiles": 128,
+  "sourceHashDriftIndicators": 0,
+  "pathInventoryDrift": 0,
+  "verifierFixtureRows": 840,
+  "canonicalFixtureRows": 92,
+  "checkpointFixtureRows": 180,
+  "scope": "focused verifier/canonical/signature compatibility and priority only, not full audit/native/production/S1 capacity",
+  "session": "65593 terminal exit0; A batch returned"
+}

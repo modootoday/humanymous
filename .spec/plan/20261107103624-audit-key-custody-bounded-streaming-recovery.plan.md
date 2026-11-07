@@ -400,6 +400,13 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Exact14f3fbdd first-attempt allocated A check/strict Clippy and11 unique Rust tests
+actually pass:verification7/75filtered, Go verifier1/840rows, record1/92rows and
+checkpoint2/180rows, integration filters0. Six new priority/scope/resource tests
+ran.128-path hash and inventory closure unchanged; session65593 terminal/A
+returned. Evidence121521/raw121350. Repeated840 differential/parity rows are not
+1680unique cases. No full audit/native/production/complete-S1/memory claim.
+
 Private incremental diagnostic source now factors record/base-checkpoint rules
 for reuse by the existing sequential verifier and bounded callers. Bounded
 canonical hash/signature entrypoints share existing emitters. Test-only priority

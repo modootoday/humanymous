@@ -13,6 +13,12 @@ rel:
 
 ## What was measured
 
+Subsequent allocated execution passed first-attempt check/strict Clippy and11
+focused Rust tests, [[evidence:root/20261107121521]]. All six authored tests,
+Go840 wire/native Scope differential and92/180 canonical/signature parity ran.
+128-path closure unchanged. NOT_RUN below describes source creation, not the
+later focused run. Actual native/EOF/production and memory gates remain open.
+
 Source-only accepted private S1 differential validation work; no Cargo workload
 while A is assigned to Wargame. Compilation, Clippy and tests NOT_RUN. Formatting
 and diff checks only. Existing Report rules are factored into shared record and
