@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 7015b47caccdd78e1f5ab10b968b5c20e248115a6e07b2224c8473c923e9be8d, bytes: 35743, store: repo}
+  - {path: baseline.json, sha256: f7a5e896dd06110d67dd4a326144e8bf37daf4b43d90d7b027972abdd006cb28, bytes: 38203, store: repo}
 ---
 
 # Convention audit baseline
@@ -400,3 +400,53 @@ seven-test run. Original480second work/60second cleanup horizons and actual
 terminal/marker absence are retained. Metadata session-active inference is not
 an actual process observation. Global lifetime and product qualification remain
 OPEN. The private review hash is in baseline.json; no new audit workload ran.
+## External Go8, actual authorization kernel and GPU critique
+
+Connected GitHub read-only verification confirms run42375310198, attempt1/push,
+headc3211e27 and both completed-success jobs128411569841/128412147497. The sole
+remote typed summary equals the canonical public summary semantically: ordered
+8cases, checks4/5/6/6/5/5/5/4,40total,0failed/not-run/unknown. Actual preflight
+footers are Go10/Lab20/Delivery74 with0failed/ignored/filtered. Exact decoded tool
+logs preserve their leading UFEFF and final LF; a BOM-stripping ReadAllText count
+was disproven by full string equality and did not rewrite the original captures.
+These are decoded UTF8 captures, not claimed ZIP/CLI-byte equivalence. Public
+projection omits individual image/fixture/configuration/engine values, so no
+independent private-tuple reconstruction or later-facade qualification is claimed.
+
+Authoritya898d91a final37tests/0failed/ignored/filtered,check/Clippy/fmt0 are bound
+by28 matching indexed raw attachments, four tested overlay leaves matching Git,
+and the preserved executable. All4731retained selected input files independently
+rehash unchanged now; this later observation is distinct from immediate derived
+after summaries, not a second complete saved after manifest.96packages/17env
+records remain scoped. Initial36, repair1one/36filtered and final37 are separate.
+R1false timezone guard and NOT_RETAINED wrong-root fmt stderr remain limitations.
+Fixed min/max literal vectors and all permitted remainder classes satisfy the two
+named component gaps, not external crypto interoperability or native/Ready/hosted.
+
+GPU draft review002 against7a6cf6b3 required three P1 policy deltas; root2ad0d6a7
+incorporates all three. Followup003 is READY only as research/acceptance policy.
+Native76afb76f resource proposal preserves SubmittingUnknown, retained queues/
+workers/quotas, same-budget safe fallback and explicit implementation gaps.
+Primary research references are [W3C WebGPU2026-09-15](https://www.w3.org/TR/2026/CRD-webgpu-20260915/),
+[wgpu30.0.1](https://docs.rs/wgpu/30.0.1/wgpu/), and
+[Vulkan-Docs v1.4.351](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/v1.4.351/chapters/devsandqueues.adoc).
+API loss/poll semantics do not establish valid output, VRAM erasure or host-worker
+joins. Capability/software/physical and OS/architecture/vendor matrices remain
+candidate-only; no dependency, shader, unsafe, driver, device or GPU work was run.
+The initial preconditions001 captured a concurrent source publication race and
+is not a completed new-draft review. Actual002 and exact-policy003 supersede it.
+
+Deadline getter35ec950d forwards the SAME retained child's stored instant pair;
+its new Box clock-ledger test is pure and NOTRUN. Prior actual4capture tests do
+not cover the fifth authored case. Header private argvf0c48ae0 observes the same
+Command before execution with CreateNew bounded metadata; its two new tests are
+also NOTRUN and do not expand public payload IDs. All private review hashes are
+in baseline.json; global lifetime, CA-HANDOFF and the complete audit remain OPEN.
+First public facade proposal review is READY for the bounded library-only source
+slice: empty defaults, explicit dep: adapter-go vocabulary, unchanged full Go
+namespace/shared types, closed rust-library profile and separate default-off/on
+consumer gates. No concrete P0/P1 collision or authority defect is confirmed.
+Actual effective Cargo feature closure/artifact identity remains a later gate;
+the supported-entrypoint allowlist is not native attestation or direct-Cargo
+prevention. New source, common graph, later atomic imports/renames and actual
+qualification remain Root-owned. Historical Go8/e70 evidence is not inherited.

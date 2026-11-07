@@ -1408,3 +1408,21 @@ seven-test run. Original480second work/60second cleanup horizons and actual
 terminal/marker absence are retained. Metadata session-active inference is not
 an actual process observation. Global lifetime and product qualification remain
 OPEN. The private review hash is in baseline.json; no new audit workload ran.
+## Source-bound qualification and GPU policy acceptance
+
+Independent external verification confirms frozen c3211e27 Go net/http8/40 checks;
+current9591bc2a exports and the future public facade inherit no execution result.
+Authoritya898d91a closes the two scoped golden-vector/remainder test gaps with
+actual37 pure tests and check/Clippy/fmt0. This is DATA-kernel qualification only:
+NativeProof, native acceptance, Ready, actual hosted roles and product remain OPEN.
+The original-deadline getter35ec950d is source-accepted, not actual child proof.
+
+GPU review follows [[sot:root/structural-development]]. Root2ad0d6a7 incorporates
+all three audit P1 policy deltas: original job/deadlines/device epochs and single
+commit through fallback; closed bounded uploads excluding secrets and no VRAM
+erasure inference; shared CPU final authority with advisory GPU output until an
+accepted parity contract. The policy is READY for research/acceptance requirements,
+not implementation, backend or hardware qualification. Exact backend/caps/data/
+shader-language/dependency/recovery decisions and pure/actual pilots remain OPEN.
+No GPU identity/performance observation becomes human or native authority evidence.
+CPU experiments, scoring freeze and accessibility constraints remain unchanged.

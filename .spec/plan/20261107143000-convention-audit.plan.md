@@ -675,3 +675,16 @@ seven-test run. Original480second work/60second cleanup horizons and actual
 terminal/marker absence are retained. Metadata session-active inference is not
 an actual process observation. Global lifetime and product qualification remain
 OPEN. The private review hash is in baseline.json; no new audit workload ran.
+## Go, public authorization and GPU follow-through
+
+Completed independent checks: official c321 Go run/job metadata and sole typed
+summary8cases/40checks; exact a898 authorization fixtures,37tests and scoped gates;
+root2ad GPU policy incorporation of three audit P1 design deltas. Source-bound
+limits and private hashes are retained in [[evidence:root/20261107143000]].
+
+Remaining: current public Go facade and sibling-host pilots; actual native/Ready/
+hosted authorization; new deadline-getter/.NET consumer compilation and custody;
+GPU exact backend/resource/recovery/data admission, pure race/parity tests and
+separately admitted actual hardware/product pilots. Review new owner proposals
+against the accepted root policy before any implementation decision. No GPU load,
+new backend/dependency/shader/unsafe/driver change or CPU experiment switch was run.
