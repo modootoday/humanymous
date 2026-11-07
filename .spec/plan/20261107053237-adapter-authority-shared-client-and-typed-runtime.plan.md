@@ -870,3 +870,38 @@ status conversion; sent precise call sites to sole L4 writer, no foreign edits.
 Required late-connect/queued expiry and cancellation tests must observe NO origin
 invocation. Native same-gate effect authority remains missing, not filled by this
 protocol0.1 contract. Owning SoT refined; no Rust behavior change/new API/workload.
+
+## Root-assigned missing public publisher authorization kernel predecessor
+
+Root assigned a concrete parallel R1 predecessor, not another blocker report.
+Applied design-sot/panel requirements and inspected native draft1ee9095d, Runtime
+R1 and actual crypto APIs. Authority has no direct dalek/base64 edge; Audit verify
+is checkpoint-specific/private. Proposed Root integration of existing workspace
+Ed25519/base64 only, no new external version or foreign API reuse. No graph edit.
+
+Frozen draft Authority SoT SHA256
+93c2c3373afba12744f9474344352e42159e17a9c11e349dec579f549a4103b6 adds
+exact kernel v2: I-signed explicit P delegation and pair-bound P Prepared/Commit,
+new per-kind domains/version, strict binary fields, complete-record commitments,
+actual P/S/O claims, nonce/key/artifact/BASE-plan/expiry binding, no cursor fallback.
+Maximum artifacts468/786/275; hex would overflow earlier Hello budget, so proposed
+NEW /0.3 HMBP0003 authorization/2 compact canonical base64url Hello includes ALL3
+records inside2771bytes/3072cap. Independent arithmetic performed, not Rust codec
+execution or golden-vector qualification. Earlier /1 and /0.2 remain historical
+proposals, not downgrade fallbacks. Windows SID profile is explicit; other actual
+OS principal/provider backends remain required OPEN work.
+
+Proposed Rust parsed data versus SignatureCheckedAuthorization are PUBLIC DATA
+only, never NativeProof/Ready/healthy/management capability. Native owns original
+protected I trust/P delegation/store, actual retained instances/cross-SID rights,
+process-wide one-claim, independent W and cancel/join/close evidence. Clock data
+is not a trusted clock proof. Signed acceptance mask is a publisher assertion,
+not actual native ACK proof. Restart/no-key-reset/uncertain-Commit/expiry and
+stable kill/control identity separation are explicit. Actual hosted ephemeral
+P/S/O/provider/reboot/W/integration/product gates remain distinct.
+
+Independent native/runtime/CLI adversarial critique requested on the exact frozen
+hash; Root acceptance must precede implementation. No Rust codec, key, account,
+SCM/elevation, native workload, shared Cargo/lock change or production activation
+was performed. Next smallest accepted slice is bounded pure codec+strict signature
+verification with golden/mutation vectors, then actual native/provider admission.

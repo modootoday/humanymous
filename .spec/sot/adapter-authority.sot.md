@@ -806,3 +806,248 @@ P1 R4: Exact Rust constructors, native support matrix and proposed timer/TTL lim
 need final review. No P0/P1 finding is resolved merely by listing it here. Final
 native-security adversarial verdict and root contract acceptance precede channel
 implementation; there is no runtime/SCM qualification from this draft.
+
+## Draft public publisher authorization kernel v2
+
+Version2-draft; NOT ACCEPTED, NOT IMPLEMENTED. Root assigned this concrete
+parallel predecessor before full native/provider admission. It replaces neither
+NativeProof nor actual issuer/store/SCM/W evidence. Earlier /1 Prepared/Commit
+and /0.2 Hello formats are historical PROPOSALS, not fallback choices for v2.
+This first exact record profile uses Windows binary SIDs. Linux/macOS actual
+principal/provider encodings remain required OPEN backends, not emulated by
+packing a UID or login identity into this Windows profile. Portable pure parsing
+of these bytes does not qualify Windows or another OS admission.
+Freeze this exact byte contract through independent native/runtime/CLI critique
+and root acceptance BEFORE Rust codec/signature implementation.
+
+### Scope, ownership and graph
+
+Authority owns bounded PUBLIC record parsing, canonical encoding, strict signature
+verification and data-binding comparisons. Native-security owns original protected
+installer root, delegated publisher identity/store, retained actual S/O/P instances,
+endpoint ACL, atomic claim custody and owned monitor/close evidence. Audit owns
+independent W key/continuity; native/broker owns its actual instance/lifetime.
+Runtime owns actual prepared resources/private Ready composition. No reverse edge,
+DTO authority, public activate(bool), generic identity callback or production key
+creation. Pure successful verification MUST NOT construct NativeProof, either
+observer phase type, Ready, management authorization or native healthy capability.
+
+Smallest Rust slice: startup::authorization::{codec, binding, verification} with
+bounded byte readers and public-data structs. No issuer signing API or service
+process. Proposed types: ParsedDelegation, ParsedPrepared, ParsedCommit and
+SignatureCheckedAuthorization. Parsed records are untrusted data. The latter
+means ONLY strict signatures plus explicit data-binding checks succeeded against
+caller-supplied ExpectedAuthorizationData; that context is also NOT native proof.
+No conversion/trait implementation into startup::observer proof-bearing types.
+No signing seeds, secret callbacks, Debug/serde of native owners or public raw
+native handle getters. Public-data field access is not an admission grant.
+
+Proposed API, not yet accepted code:
+- parse_bundle(delegation:&[u8], prepared:&[u8], commit:&[u8]) -> bounded parsed data;
+- verify_bundle(parsed, expected:&ExpectedAuthorizationData, now_ms:u64)
+  -> Result<SignatureCheckedAuthorization, AuthorizationError>;
+- explicit expected data includes original installer verification key, exact
+  selected delegation commitment, configured scope/install epoch/audiences,
+  expected actual-instance projections, grant/credential epochs and policy limits.
+  Neither a record public key nor this caller data can establish native trust.
+
+Reuse existing workspace ed25519-dalek3.0.0 strict verify_strict, sha2 and existing
+hex/base64 implementations; no new cryptographic primitive or external version.
+Authority currently has sha2/hex but NO direct dalek/base64 edges. Root must approve
+and integrate the existing workspace edges before implementation; do NOT repurpose
+Audit checkpoint signatures as arbitrary grant verification. Smallest first kernel
+may omit Hello text encoding until its existing-base64 edge is available. No
+Cargo/lock/native-owner source edit is authorized by this draft.
+
+### Common binary and signature rules
+
+All integers unsigned big-endian; exact fixed byte widths; no varints, floats,
+normalization, implicit default, trailing bytes or alternate field ordering.
+Record artifact = exact magic8 + body_length:u16 + body + Ed25519 signature64.
+Signature message = exact ASCII per-kind domain + ONE NUL + body_length:u32BE
++ exact body. Strict Ed25519 verification uses the expected original I key for
+Delegation, and the exact I-authorized P key for Prepared/Commit. Reject weak or
+noncanonical keys/signatures. No caller verifier callback or record-selected
+algorithm. All unknown versions/purpose/flags/record kinds refuse before promotion.
+
+Canonical names: u8 byte length1..64, exact existing owned ASCII service-name
+namespace, pairwise distinct P/S/O. Canonical binary Windows SID: u8 length8..68,
+revision1, subauthority count0..15 and exact length8+4*count, exact bytes. Native
+projection must match actual queried primary TokenUser, never configured account
+or pipe owner alone. Reject PID0 and creationFILETIME0; equality against retained
+instances remains mandatory outside this codec. Digests/keys32, epochs16, nonce/
+grant/delegation identifiers32; fresh nonzero CSPRNG identifiers are an issuer
+obligation, not entropy proof from observing bytes.
+
+### Installer delegation record
+
+Magic HMBGD002. Domain humanymous.observer-bootstrap.authorization/2/delegation.
+Body EXACT order (maximum394bytes; artifact468bytes):
+1. version:u16=2; installation_epoch16; bootstrap_scope_commitment32;
+2. original_installer_principal_commitment32; installer_key_fingerprint32;
+3. publisher_SID(length+bytes); publisher_service_name(length+bytes);
+4. publisher_public_key32; publisher_installed_artifact_digest32;
+5. service_observer_audience_policy_commitment32; delegation_id32;
+6. not_before_ms:u64; not_after_ms:u64; purpose:u8=1(ObserverStatus); flags:u8=0.
+
+I is the ORIGINAL installation/controller trust anchor; P is a distinct finite
+service principal. Native-protected original root/SCM-owner/delegation record must
+select the expected I key and EXACT current delegation commitment independently
+of this packet. I authorizes P's exact service SID/name/key/artifact and exact S/O
+audience policy; P cannot self-sign a replacement delegation, broaden audiences,
+reset an existing key or learn its trust anchor from its own record. No automatic
+key creation on missing/read failure; no interactive-current-user or machine-wide
+secret fallback. Initial I key/publisher observation and unattended P store access
+are STILL native provisioning/probe requirements, not implemented by certificates.
+
+### Pair preparation record
+
+Magic HMBGP002. Domain humanymous.observer-bootstrap.authorization/2/prepared.
+Body EXACT order (maximum712bytes; artifact786bytes):
+1. version:u16=2; delegation_artifact_commitment32;
+2. bootstrap_scope_commitment32; bootstrap_installation_commitment32;
+   publisher_key_fingerprint32; grant_id32; publisher_instance_commitment32;
+3. publisher_PID:u32; publisher_creation_FILETIME:u64; publisher_epoch16;
+4. service_epoch16; observer_epoch16; credential_epoch16;
+5. service_name(length+bytes); observer_name(length+bytes);
+6. service_SID(length+bytes); observer_SID(length+bytes);
+7. service_PID:u32+creation_FILETIME:u64; observer_PID:u32+creation_FILETIME:u64;
+8. service_BASE_plan_digest32; observer_BASE_plan_digest32;
+   service_installed_artifact_digest32; observer_installed_artifact_digest32;
+9. issued_ms:u64; not_after_ms:u64; startup_cap_ms:u32;
+10. purpose:u8=1; flags:u8=0.
+
+Names/SIDs/artifacts/base-plan digests MUST match the I-delegated pair commitment
+and native/configured expected data. Instance fields must match actual retained
+P/S/O projections; claims alone are not those projections. Installed artifact
+binding is launch-file custody under the separately accepted trusted-OS/parent
+premise, NOT loaded-memory attestation. BASE plan means EXACT installer-protected
+base plan. LaunchTicket/cursor, combined plan digest and role_plan fallback are
+NOT accepted or encoded by this kernel. Their absence cannot be patched with a
+legacy digest or mutable unsigned launch metadata.
+
+### Pair commit record
+
+Magic HMBGC002. Domain humanymous.observer-bootstrap.authorization/2/commit.
+Body EXACT order (201bytes; artifact275bytes):
+1. version:u16=2; delegation_artifact_commitment32; grant_id32;
+2. prepared_artifact_commitment32; publisher_key_fingerprint32;
+3. service_epoch16; observer_epoch16; credential_epoch16;
+4. commit_issued_ms:u64; not_after_ms:u64; startup_cap_ms:u32;
+5. purpose:u8=1; flags:u8=0; native_acceptance_mask:u8=3.
+
+Repeated identities/epochs/delegation/key/grant match exactly. Commit expiry/cap
+must equal Prepared, never extend it; commit_issued is >= Prepared issued and
+< expiry. The signed mask is a P ASSERTION, not proof that native S/O ACK actually
+occurred. Native publisher must retain and authenticate both actual acceptance
+owners before committing. Prepared alone, cross-grant/delegation Commit, changed
+key/epochs, partial Commit or wrong record kind never permits secret release.
+
+### Exact commitment encoders
+
+Each hash is SHA256(exact ASCII domain + ONE NUL + exact bytes below):
+- /2/key: raw Ed25519 public key32 (used for I and P fingerprints).
+- /2/delegation-record and /2/prepared-record: COMPLETE corresponding artifact,
+  including magic, length and signature, with exact parse-to-EOF.
+- /2/installer-principal: canonical SID(length+bytes) then installation_epoch16.
+- /2/scope: installation, tenant, origin, revision, application_authority, each
+  u32BE UTF8 length plus exact already-validated bytes, no normalization.
+- /2/installation: scope32 + I key fingerprint32 + installation_epoch16 + exact
+  S name(length+bytes) + O name(length+bytes).
+- /2/pair-policy: role1(S) + S name/SID(length+bytes) + S artifact32 + S BASE plan32,
+  then role2(O) + corresponding O fields. No optional fields or reordered tuple.
+- /2/publisher-instance: P SID(length+bytes) + PID:u32 + creation:u64 + P epoch16.
+- /2/role-instance: role1 or2 + canonical SID + PID:u32 + creation:u64 + role epoch16
+  + exact BASE plan32. Used by Hello sender/receiver pins, not native attestation.
+
+Every /2/... above is prefixed in FULL by
+humanymous.observer-bootstrap.authorization (for example
+humanymous.observer-bootstrap.authorization/2/pair-policy). Scope/installation
+commitments are BOOTSTRAP POLICY bindings and NEVER replace stable kill/control/
+retained-intent installation/node identities or reset persistent controls.
+
+### New explicit wire profile and limits
+
+Propose protocol humanymous.observer-bootstrap/0.3, control HMBP0003, grant.format
+humanymous.observer-bootstrap.authorization/2. No /0.2/HMBP0002, /1, mixed record,
+hex-profile or prior shared-secret Hello fallback. This is an explicit new format
+proposal; earlier names were not an implemented compatibility obligation.
+
+Hello retains EXACT closed ordered fields: protocol, phase(hello),
+purpose(observer-status), bootstrap_scope, grant_id, service_epoch, observer_epoch,
+credential_epoch, sender_pin, receiver_pin, hello_nonce, grant. Existing four
+commitment/ID strings are64lowerhex; three epochs/hello_nonce32lowerhex. Grant
+has EXACT order format, delegation, prepared, commit. ALL THREE complete artifacts
+are canonical UNPADDED BASE64URL (RFC4648 URL alphabet, no '=' or whitespace,
+strict canonical re-encode equality including unused trailing bits). This replaces
+hex because the complete delegation MUST also fit inside Hello, never a side file
+or unbounded attachment. Binary caps468/786/275 -> encoded caps624/1048/367.
+Independent compact ASCII maximum =2039artifact chars +100grant syntax +632other
+metadata =2771bytes. Enforce received metadata<=3072 BEFORE JSON parse/decode,
+frame<=4096, aggregate startup<=32768. Strict unknown/duplicate/missing/type and
+canonical key order/no whitespace/escapes. Final encoded size is checked, not
+inferred from arithmetic. Offer ONLY has64lowerhex secret bytes; all other phases
+zero. Binary record parsing also checks per-kind size BEFORE allocation and exact
+EOF. No truncation or giant declared-size allocation.
+
+### Lifetimes, one claim and cross-SID rights
+
+Pure verification compares signed times/caps against explicit expected policy and
+now_ms DATA; it does not certify that caller clock/native manager is trusted.
+Require not_before <= issued <= commit_issued < not_after <= delegation expiry,
+and commit_issued <= now_ms < not_after for the explicit reference-time check.
+Require a positive cap within an explicitly configured protocol/policy bound, no default
+lease. Native owner separately conserves the minimum original local monotonic
+startup deadline and signed wall remainder, detects rollback and never renews via
+frame/retry/ACK. Key/delegation/pair/instance changes require fresh explicit native
+transaction. No old record/cursor resurrection or private-key reset on restart.
+
+One-claim reservation is NATIVE-owned atomic create-new+retained-lock per actual
+role process instance, NOT per grant ID or new Rust context. Codec/signature success
+has NO consumption power. Prepared/native pair verification -> reserve process
+slots -> actual native P acceptance -> immutable signed Commit -> actual S/O
+publication verification. Cancellation/error before Commit burns; after Commit
+unknown publication stays ambiguous, no automatic reissue/retry. Old roles must
+be stopped/observed before explicit fresh pair/grant, without erasure/counter reset.
+A private finite model may test ordering, but cannot create native slot evidence.
+
+Cross-SID minimum native queries: PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE|
+READ_CONTROL; primary TOKEN_QUERY|READ_CONTROL under actual P/S/O tokens, not
+fixture controller I/T. No SeDebug/admin/current-user fallback, DUP/VM/terminate/
+WRITE_DAC permission to peer. P native-manager start/stop/query is exact S/O only.
+Both O-owned bootstrap and S-owned management use exact owner/client-specific pipe
+rights excluding FILE_CREATE_PIPE_INSTANCE/GENERIC_WRITE, reject remote/default/
+extra-instance access. Existing file bridge/cooperative Job proofs do not establish
+these rights, actual primary TokenUser, original installation owner or W independence.
+
+### Verification, critique and promotion gates
+
+L1 first kernel: fixed golden bytes/domain/signatures/commitments for min/max names
+and SIDs; independently derived lengths; strict malformed/weak/noncanonical
+signature tests; every bound field mutation; wrong I/P key/delegation/pair/scope/
+role/artifact/BASE plan/instance/nonce/epoch/expiry, Prepared-as-Commit, mixed old
+formats and partial/extra bytes. Hello strict base64url/JSON/size/predecode tests;
+expiry equality/rollback/reference policy; private one-claim model races and no
+public native/Ready conversions. Seeds in deterministic fixtures ONLY, no issuer
+key API. Locked scoped tests/check/Clippy/fmt require resource allocation.
+
+L2 genuine hosted ephemeral P/S/O roles: original protected I delegation, actual
+cross-SID token/process handles and rights negatives, exact launch-file custody,
+provider/store/key absence and cold service/reboot persistence, authenticated
+acceptance/Commit uncertainty, claim marker/concurrent constructor/restart/replay,
+wrong principal/PID/creation and endpoint squatting/remote negatives, actual W
+identity/lifetime, bounded monitor cancel/join+flush and retained cleanup facts.
+No local accounts/SCM/elevation/provider read is authorized by this design.
+L3 Runtime/CLI/.NET composition must consume those ACTUAL owners before unseal,
+then receipt/Ready/failure ownership on SAME gate. L5 product Docker remains
+separate. No pure codec/signature pass is full R1/native/Ready/hosted qualification.
+
+Single-author panel: Blue separates data from native ownership; Red rejects
+self-issued delegation/record substitution and per-grant claim bypass; SRE retains
+absolute clocks/uncertain Commit/cleanup and original key; DPO treats public SID/
+instance data as pseudonymous/private raw evidence, never anonymous public logs;
+Evaluator keeps signatures, actual native proof and product gates separate.
+Independent native/runtime/CLI adversarial critique and ROOT acceptance are still
+REQUIRED. P0 exact native trust/delegation/provision/clock/rights/W/consumption and
+Ready producer remain OPEN. P1 existing dalek/base64 graph edges, golden vectors
+and exact namespace compatibility require review before implementation.
