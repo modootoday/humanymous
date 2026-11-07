@@ -903,3 +903,14 @@ process or worker thread and are NOT_COMPILED/NOT_RUN. Only bare rustfmt and
 diff/spec checks have run. New source/API must be frozen and reviewed by .NET/X
 before a new explicit Cargo/actual slot. Full actual negative matrix, partial
 thread creation, blocked kernel IO, descendants and hosted producer remain open.
+
+Independent .NET and X bounded source reviews of d264101b found no confirmed
+P0/P1 transport blocker. One API wording clarification: prior failure in offer
+means prior INPUT failure. Other stream/child issues remain sticky observations
+and do not implicitly cancel accepted writes; L4 must explicitly cancel_input
+on protocol failure and retain/settle the owner. Successful L4 profiles require
+all three workers, accepted==written, successful input drain, per-stream actual
+EOF after draining retained chunks, actual joins/status and separate native Job
+facts. A partial-start/error receipt can establish cleanup only, never successful
+execution or Ready. Current status remains NOT_COMPILED/NOT_RUN pending Root's
+next slot; Browser owns the current heavyweight window.

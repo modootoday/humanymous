@@ -65,7 +65,7 @@ pub enum EnqueueResult {
     Full(Box<[u8]>),
     /// Input explicitly closed; ownership not transferred.
     Closed(Box<[u8]>),
-    /// Wrong order/size, expired run budget, prior failure or writer unavailable.
+    /// Wrong order/size, expired run budget, prior input failure or writer unavailable.
     Failed(Box<[u8]>),
 }
 struct Input {
@@ -259,7 +259,9 @@ impl InteractiveAttempt {
     pub fn try_startup(&mut self, bytes: Box<[u8]>) -> EnqueueResult {
         self.offer(bytes, true)
     }
-    /// FIFO controls up to1024bytes,64pending, after startup acceptance.
+    /// FIFO controls up to1024bytes,64pending, after startup acceptance. Other
+    /// stream/child issues do not automatically cancel accepted input; consumers
+    /// must inspect poll issues and explicitly cancel_input on protocol failure.
     pub fn try_control(&mut self, bytes: Box<[u8]>) -> EnqueueResult {
         self.offer(bytes, false)
     }
