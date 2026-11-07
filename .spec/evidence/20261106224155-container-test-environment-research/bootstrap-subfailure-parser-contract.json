@@ -1,0 +1,68 @@
+{
+  "schema": "humanymous.lab-bootstrap-subfailure-contract/1",
+  "authority": "Root exact Collector contract delegation; private unit Failure enum",
+  "source_pin": {
+    "sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+    "line": 22,
+    "unchanged": true,
+    "path": "crates/collector/src/browser/transport/runtime_pilot.rs"
+  },
+  "grammar": "Within exactly one closed owned selected-test failure block: validated pinned panic location line22, immediately followed by trimmed exact actual runtime bootstrap: <Variant>",
+  "variants": [
+    "TimeoutProfile",
+    "Origin",
+    "AbortController",
+    "Request",
+    "Timer",
+    "FetchCall",
+    "FetchAwait",
+    "ResponseStatus",
+    "HttpForbidden",
+    "HttpUnsupported",
+    "HttpClient",
+    "HttpServer",
+    "HttpOther",
+    "Body",
+    "TimerCancel",
+    "Abort",
+    "Clock",
+    "SessionScope",
+    "SessionReply"
+  ],
+  "output": "One fixed browser_bootstrap_<snake_case> static code; no raw text or DTO changes",
+  "refusal": [
+    "Unknown variant",
+    "Payload appended to unit variant",
+    "Nonadjacent message",
+    "Duplicate messages",
+    "Malformed prefix",
+    "Foreign/duplicate/truncated block",
+    "Hash or location drift"
+  ],
+  "compatibility": "Historical absent subfailure message retains location-only browser_panic_bootstrap; replay-only messages cannot refine",
+  "tests_authored": [
+    "19positive variant/canonical catalog cases and uniqueness",
+    "8negative message forms, replay-only and missing-location cases",
+    "Existing pinned-source/hash/location/framing tests retained"
+  ],
+  "validation": {
+    "docker": "NOT RUN: new immutable candidate after old full run terminal",
+    "compiler": "NOT RUN: awaits Root coherent workspace and allocation",
+    "fmt": "PASS: direct rustfmt --edition 2024 on both Rust files; git diff --check passed; no compiler invoked",
+    "clippy": "NOT RUN"
+  },
+  "files": [
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "sha256": "18861670874c8b463c776b873b147c41bdea6199ea8658c7c423b91b9f7dd3f3"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site/bootstrap.rs",
+      "sha256": "254618528d8739962fc39a29107f0dfdeac85c7d3fec648c52fbe6141fb4e58c"
+    },
+    {
+      "path": "test/lab/runner/safe-diagnostics.json",
+      "sha256": "816132ab7dc5fd6c5ad4769addce555b37178850baf42a126fca60f39bdf97c0"
+    }
+  ]
+}

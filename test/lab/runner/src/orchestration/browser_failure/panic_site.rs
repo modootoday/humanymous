@@ -1,4 +1,5 @@
 //! Source-bound private panic locations become fixed diagnostic codes only.
+mod bootstrap;
 const SOURCE: &[u8] =
     include_bytes!("../../../../../../crates/collector/src/browser/transport/runtime_pilot.rs");
 const SOURCE_SHA256: &str = "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064";
@@ -165,7 +166,8 @@ fn from_source(output: &str, name: &str, source: &[u8]) -> Option<&'static str> 
     let mut found = None;
     // The pinned headless runner reprints the console channel after the test
     // summary. Only the selected test's closed failure block is authoritative.
-    for line in failure_block(output, name)?.into_iter().map(str::trim) {
+    let block = failure_block(output, name)?;
+    for (index, line) in block.iter().map(|line| line.trim()).enumerate() {
         if !line.starts_with("panicked at ") {
             continue;
         }
@@ -177,7 +179,11 @@ fn from_source(output: &str, name: &str, source: &[u8]) -> Option<&'static str> 
         if column > text.lines().nth(line_number - 1)?.len() || found.is_some() {
             return None;
         }
-        found = Some(*code);
+        found = Some(if line_number == 22 {
+            bootstrap::refine(&block, index)?
+        } else {
+            *code
+        });
     }
     found
 }
@@ -191,7 +197,7 @@ mod tests {
     use super::*;
     use std::collections::HashSet;
 
-    fn report(body: &str, console: &str) -> String {
+    pub(super) fn report(body: &str, console: &str) -> String {
         let body = body
             .lines()
             .map(|line| format!("        {line}\n"))
