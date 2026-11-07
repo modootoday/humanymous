@@ -2,6 +2,28 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/verification/scan/tests.rs",
+  "sha256": "01a4eead39294d040c4a34ad8beb1f5c283e0a8d1299dbd56eda37909387dbc9",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete427-line source review: seven authored tests cover native-facade admission/cancel/platform refusal while operationalfactory staysUnsupported, metadata-only noncrypto seq99/emptyhash acceptance, rawCRLF/torn/sidecarpresencetranscripts, no crosssegment tornjoin, exact physicalpin/node/progression, bounded frame/value/byte refusal with poisoned retries/nonEOFfinish, invalidprofile before sourceaccess and changed/cancelledfinalmetadata. Fixture Source clones in-memory Cursor buffers, exposes configurable membership/epoch transitions; not actual OS snapshot/ownership or independent implementation. No tests executed by Pages batch; cfg(test) source only.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
+  "source": "crates/audit/src/verification/scan/tests/crypto.rs",
+  "sha256": "03eb7df7ff1dc46eaae5d8854ba43890d168a8a815feb27c7035a54aa7cfe09b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete342-line source review: eight authored tests compare two-pass diagnostics to sequential shared verifier, sparse65record/13checkpoint powerboundaries with unsigned tail, record-before-base-before-witness error priority/prefixScope versus Work, untruncated malformed raw hash/signature links, whitespace/sidecar changes between passes, checkpoint beyondEOF, missing witnessanchor, explicitnewempty reportNone, final cancellation/resource refusal with no Report. Synthetic three-record histories/sharedhash/Tree/Ed25519 and in-memory Source are not independent wire/crypto or actual native boundary. No new execution proof, production scanner or trusted-state promotion.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/validation/conformance.md"
+  ]
+},
+{
   "source": "crates/audit/src/verification/scan/source/native.rs",
   "sha256": "04472a35d78184ba59e796720c36b24a0e6fe582f8af8c3d742d39e562ec4c8e",
   "reviewer": "codex/rust-pages",
