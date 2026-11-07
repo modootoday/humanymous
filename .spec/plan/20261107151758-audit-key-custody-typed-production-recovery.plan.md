@@ -116,6 +116,13 @@ positive controls, reason-specific diagnostics and complete mutation observer
 above are required to exclude that false green. This refinement is a draft
 verification contract, not independent approval or an implementation grant.
 
+Independent X-owner review of immutable15174100 found no new P0/P1 blocker in
+this narrow verification-contract refinement. The reviewer confirmed the
+positive controls, diagnostic reasons, original monotonic clock and complete
+mutation observer requirements. This accepts the source contract only: actual
+VerifiedScan, borrow/clock/provider proof and production/execution grants remain
+absent; the reviewer ran no workload.
+
 ### 2. Preserve physical versus external candidate provenance
 
 Ordinary startup requires exact trusted Checkpoint equality in PHYSICAL decoded
