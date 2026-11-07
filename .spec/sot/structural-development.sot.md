@@ -18,7 +18,130 @@ It does not assert that all depicted modules or production edges are qualified.
 
 ## Naming and responsibility
 
-### Adapter package taxonomy
+### Public package family redesign: confirmation-gated draft v0
+
+The user requests a small public family anchored by humanymous,
+humanymous-core and humanymous-cli, with no permanently private implementation
+packages. This supersedes treating every current adapter/domain crate as a
+required final package. Internal modules and fields still need restricted Rust
+visibility; public package status never makes every implementation API public.
+
+The user's latest instruction is an explicit gate: explain the concrete design
+and receive confirmation BEFORE package/path consolidation and all-branch
+synchronization. Existing work continues within current paths. Do not move
+directories, rename manifests/imports, widen public APIs or synchronize validation
+refs as if this draft were accepted. The earlier requested fast-forward of
+codex/rust to9586f7e4 occurred before this gate; its CI result remains tied to that
+source. Main integration still requires the final migration gates.
+
+Read-only research found41 workspace packages, all currently publish=false,
+22 binary targets and10 cdylib-bearing packages. These are not41 deployed
+products. The current facade's declared normal/build local dependency closure,
+including optional/target declarations, spans15 packages. A facade re-export
+cannot make unpublished path-only dependencies registry-ready. Do not solve this
+by flipping41 publish flags. Publication remains separately unauthorized.
+
+The recommended review target is EIGHT intentionally public packages. Six is a
+more aggressive alternative with greater native/WASM/SDK feature coupling; three
+would erase useful safety and platform boundaries. Neither a smaller count nor
+faster builds is established without the required measurements and role audit.
+
+| Target package | Current package responsibilities absorbed | Current count |
+| --- | --- | --- |
+| humanymous | Curated SDK facade and supported build-profile API | 1 |
+| humanymous-core | signals, behavior, model, scoring, integrity, challenge, watermark as contextual modules | 7 |
+| humanymous-runtime | runtime, authority, audit, capture, network, safe native-security policy | 6 |
+| humanymous-platform | approved windows-object-bridge and reusable process/test support, with explicit testing capability | 2 |
+| humanymous-collector | Browser/WASM collection and its target-specific dependency graph | 1 |
+| humanymous-adapters | Apache safe/native, .NET safe/export, framework, Go, nginx, Node, Python, Ruby, native-abi safe/export | 12 |
+| humanymous-cli | CLI/native-cli, attacker/defender, maintenance, Delivery, Pages tooling, lab runner/runtime pilot modules and targets | 9 |
+| humanymous-browser | Browser model, CEF bootstrap and desktop roles | 3 |
+
+The mapping covers41 packages exactly. Every survivor needs a deliberate public
+API or application/distribution purpose and registry-compatible dependency plan;
+there are no hidden permanent helper packages. Temporary publication-disabled
+flags remain release guards during design/verification. A necessary additional
+public loader/ABI package requires an explained design amendment, not an ad-hoc
+private crate or weakened unsafe policy.
+
+Proposed context parents are crates/sdk for facade/core/runtime,
+crates/integrations for platform/collector/adapters, and crates/apps for CLI/browser.
+Every manifest-bearing leaf directory matches its branded package name. Within
+each package use src/<context>/... with standard Cargo targets. This is the
+project convention, not a Cargo-mandated directory naming rule. Rust identifiers,
+installed executable names, host init/export symbols and staged artifacts remain
+separate contracts: humanymous-cli may install the humanymous command.
+
+#### Required acceptance conditions
+
+1. Keep core safe and browser-independent; preserve its forbid(unsafe_code)
+   boundary. Preserve the approved platform/export unsafe scopes explicitly.
+   Do not broaden exceptions or move unsafe code into core for a count target.
+2. Audit every pub(crate) constructor/custody field during merging. Convert to
+   private or context-restricted access so newly sibling modules cannot mint
+   authority, native proof, handles, Ready or ownership from caller data.
+   Public testing features are consumer-selectable build options, never trusted
+   capabilities; no testing feature may enable a proof/readiness bypass.
+3. One Cargo package has one library target. Adapters and browser helper library
+   roles therefore need exact separate build profiles/target directories,
+   symbols, staging and loader proof. No universal all-features host product is
+   admitted. If role compatibility fails, amend the public package split first.
+4. Preserve WASM versus native/Tokio/SDK dependency separation, directed package
+   dependencies and one owning implementation. No source copies or path includes
+   reaching outside a published package substitute for consolidation.
+5. Curate the public API. Current whole-leaf facade exports include lab probe,
+   scenario and qualification machinery; do not automatically turn all such
+   internals into permanent SDK compatibility commitments.
+6. Public release graphs must model Cargo's normal/build/optional/target and
+   development-edge publication rules accurately. Versionless dev edges and
+   versioned dev edges differ; an over-broad current graph check is a research
+   finding, not authority to bypass release verification.
+7. Browser's pinned Git-only upstream dependencies need an actual public registry
+   fallback or explicitly accepted public distribution strategy. No registry
+   availability or namespace ownership is inferred from source visibility.
+8. Fewer Cargo packages do not mean all service roles become one process or all
+   fixture binaries become installed products. Preserve role identity, witness
+   independence, artifact allowlists, exact native symbols and signed bindings.
+   Explicitly declare installation targets and required features; keep fixture
+   and pilot targets outside the default installed command set.
+
+#### Migration and chat control after confirmation
+
+Root owns the common workspace/lock/toolchain, final41-to8 path/module/API matrix
+and atomic commits. Current domain owners retain responsibility for their source
+and tests inside the destination modules; a new package is not a shared writer
+lane. Freeze an exact path/hash handoff before Root moves a group. Pause writers
+only on that group, return or explicitly retain its live target/process leases,
+and never relocate an active compiler/CEF/Docker/preview input tree.
+
+Move safe engine first, then runtime/platform contracts, developer tools, adapters
+by qualified role, and browser last. Each slice updates imports, manifests,
+fixtures, locks, CLI/workflow selectors, source inventories, packaging recipes,
+licenses and public docs together. Preserve original historical evidence. Run
+scoped unit/type/visibility/negative-feature tests, clean extracted-package
+consumer checks, Cross-OS and actual native/browser/Docker gates as applicable.
+Benchmark clean/incremental duration and memory rather than infer improvement.
+
+Only after design confirmation does Root consolidate/synchronize work branches
+under the Git mutex. In-flight validation sources stay immutable; each new
+candidate gets an explicit source and its own receipt. No broad force-push,
+foreign uncommitted staging, or premature main merge is part of this draft.
+
+Primary comparisons: [Meari workspace at1482b746](https://github.com/modootoday/meari/blob/1482b746ebc0d867f25d17d01c48c12df888ca6c/Cargo.toml)
+and [Specfold workspace at5333fd17](https://github.com/modootoday/specfold/blob/5333fd17d77b5f22992fce8da1a04729bcacd910/Cargo.toml).
+Meari has13 members including demo/xtask publication exclusions; Specfold has2
+packages and deliberately distinct directory/package/command identities. Their
+useful naming patterns do not override the user's no-private-package decision.
+See [Cargo publication dependencies](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#local-paths-in-published-crates),
+[Cargo targets](https://doc.rust-lang.org/cargo/reference/cargo-targets.html#library)
+and [Cargo features](https://doc.rust-lang.org/cargo/reference/features.html#feature-unification).
+
+### Interim adapter package taxonomy
+
+The following table governs the current incremental naming transition only.
+Upon confirmation of the public family redesign above, its many separate adapter
+package targets are superseded by the accepted package/module matrix. It must
+not be interpreted as a second competing final architecture.
 
 In response to the user's naming clarification, root accepts category-first
 `humanymous-adapter-<context>` as the target Rust package convention. The current
