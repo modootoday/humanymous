@@ -410,3 +410,77 @@ results remain component comparison, not a deployment/storage/witness-isolation
 pilot. No audit-source receipt rows were silently renewed from this narrower
 public-interface review; the remaining audit package inventory still needs its
 own full-file substantive acceptance.
+
+## Candidate retry/effect semantics and memory-priority interruption
+
+Applied design-sot and adversarial-critique; loaded five personas and the
+design-panel workflow. Existing read-only wire/boundary reviewers covered
+blue/evaluator and red/SRE/privacy in parallel, then reviewed the authored text.
+No product code or protocol behavior changed. The candidate defines immutable
+operation versus attempt identity, atomic logical accounting/state or specified
+fail-closed recovery, pre-origin durable claim, one execution incarnation,
+indeterminate outcome after ambiguity, authenticated historical status and
+revocation/retention/antirollback blockers. All high findings and attempt-poisoning
+clarification became requirements/cases. HTTP success/consumption ACK is not
+business-commit proof. Revocation linearization and concrete wire remain blockers.
+
+The synthesized document is proposed, not an accepted execution contract or
+implemented generic profile. Product implementation requires approval of the
+concrete contract; the present scope only authors a reviewable candidate.
+Public navigation/conformance/change records distinguish this semantic proposal
+from the unchanged experimental adapter nonce refusal and collector progress ACK.
+
+Root relayed the user's memory-investigation priority before any new heavy run.
+Held all new cargo/rustc/build/browser/Docker/spec-global/agent execution.
+Both read-only reviewers are completed. At that interruption source was uncommitted and
+new86-page tree has NOT been built or rendered; previous85-page input hashes
+cannot validate this draft. Preserve this boundary until root reassigns resources.
+Owned preview container13c757ecb314... (humanymous-pages-preview, localhost8766,
+Ruby WEBrick, readonly prior artifact, session65121) was inspected running and
+reported normal-stop-safe to root; no process was killed or restarted. No new
+build/test container is active from this docs turn. Goal stays active.
+
+## Light source reconciliation during resource hold
+
+Re-read root live status: memory investigation/remote validation selection still
+in progress; no heavy-resource reassignment received. Continued only read-only
+source inspection and owned docs/canonical edits. Authority checkpoint e346834
+and INTEGRATION contract now expose actual shared decide/BoundResponse and
+LocalHandler/serve_handler_until. Public origin contract documents native peer
+verification, provisioned profile and exact request binding, consumed-response
+liveness plus caller-owned at-most-once dispatch. Move-only response is not
+business-effect proof. Shared handlers do not grant runtime administration;
+explicit successful drain differs from cancellation/drop/timeout and required
+consumer custody/flush lifecycle remains separate. Runtime still reserves
+application Authorization in the reviewed source; no credential-preservation
+exception was silently removed. These new edits remain unbuilt while the hold
+continues and do not qualify any source receipt or deployed tuple.
+
+Used only the already-built humanymous-pages.exe source command (no Cargo,
+rustc, Jekyll, browser, Docker or global spec invocation) for a small read-only
+source check:86pages/errors0. Captured output separately. This does not satisfy
+actual-build freshness, rendered links/layout/accessibility or product gates;
+resource hold and the uncommitted reviewable draft remain in effect.
+
+## Network observation versus capture review during hold
+
+Read current network Observation/build assembly, HeaderInfo provenance flags,
+TLS prefix parser, HTTP2 Fingerprint/FrameMonitor and compatibility test source.
+Two material distinctions added to the public topology reference: successful
+legacy-tolerant prefix parsing is not strict complete-handshake capture; the
+compatibility negotiated_alpn field currently uses the first offered ALPN.
+Report types/source labels and operator classifications do not authenticate
+supplied observations. Header reliability and ingress-owned reassembly/binding
+remain explicit. No scoring predicate or network implementation was changed.
+Existing network receipt entries were not bulk-renewed from partial reads;
+network fixture tests were inspected, not newly executed during resource hold.
+New86-page tree is still unbuilt/render-unverified. Heavy execution remains held.
+
+Coordinator resource reassignment received: no new local build; one project-wide
+heavy slot, with runtime/collector source integration first and Pages rendering
+only after source freeze in sequential validation. No paid cloud provisioning,
+shared REA/WSL termination, new research agents or broad private-spec scans.
+Source-only reviewable checkpoint is permitted; it is not render or release
+acceptance. Existing source checker passes86pages; narrowly scoped no-local
+canonical check and diff whitespace check pass. Preserve not_run for new-tree
+actual build/render/accessibility and retain the full persistent goal.

@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T06:08:52Z
+updated: 2026-11-07T06:20:33Z
 rel:
   governs: [docs]
 files:
@@ -12,6 +12,7 @@ files:
   - {path: i18n-status.json, sha256: f627ae8f812217a396d97f1cba9ef83952b2e3b92b8788142d5cc3dde46a5ee3, bytes: 831, store: repo}
   - {path: cli-review-status.json, sha256: ad116a0ae6e7725205d4146bc40681db6e3531d53738347c2b4eb10684265d70, bytes: 1313, store: repo}
   - {path: audit-reader-status.json, sha256: 30a69bec28f952ef3e75e6d23853f867499aaa29fc2a9e129d81941bb435ba0f, bytes: 824, store: repo}
+  - {path: resource-hold-status.json, sha256: 48b80fcd41629c4d985380ca9a3351c3d18e87764be51d5af7140644884ca68b, bytes: 999, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
@@ -37,6 +38,22 @@ lock was synchronized, all 11 tests, strict Clippy, source checks and 24 vectors
 passed again. No dependency or lock changes were made by the Pages owner.
 
 ## How to read it
+
+During the coordinator's memory-related heavy-execution hold, current native
+authority client/handler/drain interfaces were reconciled in public prose and
+the proposed retry/effect lifecycle was authored. The existing compiled source
+checker reports86pages/errors0, with executable identity in resource-hold-status.
+No new compilation, Jekyll build, browser execution or global spec check was used.
+The new tree's actual build and rendered accessibility remain not_run. Earlier
+85-page build/input commitments do not cover this new86-page draft.
+
+Further light source inspection identified tolerant TLS-prefix parsing and the
+first-offered ALPN compatibility field as distinct from complete capture and
+negotiated protocol evidence. The topology page now records those distinctions,
+HTTP2 passive observer limits and capture-owner reliability duties. Existing
+compiled source checking again reports86pages/errors0 after the edit; no network
+test, compiler, actual build or browser was launched. The rendered gate remains
+open and no network source receipt was renewed from partial source inspection.
 
 Audit public-interface reconciliation now distinguishes omitted HMAC, zero
 checkpoint/witness coverage, native scope omitted from compatibility JSON, and

@@ -1,0 +1,18 @@
+{
+  "scope": "read-only source validation while heavy execution is held",
+  "reader_pages": 86,
+  "source_errors": 0,
+  "checker": "existing compiled humanymous-pages source command",
+  "checker_sha256": "2e31ad639f7c2ff67fe6389dde13ef97be4e48a3c44f04d435b20022a0d8c3c7",
+  "new_compilation_or_dependency_resolution": false,
+  "new_jekyll_or_browser_execution": false,
+  "new_tree_actual_build": "not_run",
+  "new_tree_rendered_accessibility": "not_run",
+  "retry_effect_contract": "proposed unimplemented candidate",
+  "native_authority_client_documentation": "reconciled against current committed interface; not full runtime qualification",
+  "network_observation_documentation": "distinguishes tolerant prefix parsing, capture-owner provenance and first-offered ALPN compatibility semantics",
+  "network_component_tests_during_hold": "not_run",
+  "generic_wire_frozen": false,
+  "resource_reassignment": "pending coordinator direction",
+  "production_publication_or_external_submission": false
+}

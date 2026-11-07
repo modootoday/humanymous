@@ -91,6 +91,12 @@ trace identifier MUST NOT itself establish authoritative identity.
 Retransmission MUST NOT duplicate budget consumption, audit commitment
 or an origin side effect. A cached decision MUST retain its original binding.
 
+The [candidate retry/effect lifecycle](retry-effects.md) defines proposed
+operation states, ambiguous outcomes and observable cases. It proposes at most
+one authorized dispatch attempt, not general exactly-once business execution.
+It remains unimplemented and does not freeze generic wire encoding or replace
+the experimental adapter's duplicate-nonce refusal.
+
 The following illustrates relationships only. It is not a normative encoding:
 
 ```json

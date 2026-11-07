@@ -7,6 +7,14 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "candidate-protocol-semantics",
+      "paths": ["protocol/profile.md", "protocol/retry-effects.md", "validation/conformance.md"],
+      "summary": "Propose durable logical-operation states, a single dispatch incarnation, ambiguous-outcome refusal and authenticated historical status. No existing runtime behavior is changed.",
+      "normative_semantics_changed": true,
+      "proposal_implemented": false,
+      "generic_wire_selected": false
+    },
+    {
       "kind": "experimental-validation",
       "paths": ["validation/vectors.md", "validation/fixtures/adapter-parser-i18n-v1.json"],
       "summary": "Add a separate exact-byte internationalization and binary-body corpus; retain the original fixture unchanged.",

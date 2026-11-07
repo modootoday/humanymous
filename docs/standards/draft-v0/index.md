@@ -26,6 +26,7 @@ identify all computer-use automation or prevent all abuse.
 | --- | --- |
 | [Explainer](explainer.md) | User problem, deployment scenarios, alternatives and open questions |
 | [Protocol profile](protocol/profile.md) | Proposed requirements, actors and message model |
+| [Retry and origin effects](protocol/retry-effects.md) | Candidate durable states and fail-closed treatment of uncertain effects; not implemented |
 | [Security, privacy and accessibility](reviews/security-privacy.md) | Trust boundaries, data handling and human recovery |
 | [Conformance and validation](validation/conformance.md) | Evidence required before an interoperability claim |
 | [Standardization preparation](process/preparation.md) | Venue selection, contribution review and submission gates |

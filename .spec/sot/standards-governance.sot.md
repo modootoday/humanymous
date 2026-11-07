@@ -16,6 +16,55 @@ rel:
 Version 0.2.0. Accepted authoring/preparation rules, not external standards
 adoption or proof that the proposed technical profile is complete.
 
+### Proposed retry/effect semantics — reviewable candidate, not execution authority
+
+Brief: Generic P05 lacks crash/attempt/accounting semantics. Specify a durable
+operation lifecycle without changing current runtime/adapter behavior, scoring,
+wire encoding or credentials. Full origin semantics and business deduplication
+remain separate. Existing experimental nonce refusal and collector ACK are not
+implementations of this candidate. No external submission or product rollout.
+
+The candidate public retry-effects page defines an immutable authenticated logical
+operation reference separately from attempt/query identity and freshness.
+Credential/policy/process changes cannot reset dispatch eligibility. Stored
+commitments bind final request/origin/action; altered references reject before
+disclosure. Atomic budget+logical audit+state or an explicit recovery protocol
+must precede any durable dispatch claim; a claim precedes all origin bytes.
+Lost persistence acknowledgements are ambiguous, not proof of absence. Once
+claimed, crash/lease/failover/response loss cannot reopen dispatch. Terminal
+completed/indeterminate/rejected observations never issue a fresh ALLOW.
+No hidden outbound retry/redirect or automatic fresh operation ID recovery.
+
+Critique reflected: one authoritative cross-worker claimant, no lease-expiry
+takeover, once-only logical accounting plus complete bounded attempt telemetry,
+auth/status privacy, no refund of uncertain reservation, and revocation/expiry/
+antirollback prerequisites for retirement. Fresh transport auth cannot make an
+expired logical operation admissible. Live state cannot be evicted. Retained
+hashes are not anonymity. Accessible read-only status/reconciliation must not
+silently issue another business action or require motor speed.
+
+Panel used blue/evaluator and red/SRE/privacy lenses under the design-panel
+workflow; ranked blockers became the requirements above. Synthesis is a concrete
+proposal for review, not approval to implement new behavior. Concrete encoding,
+lifetime/revocation and antirollback mechanism, independent crash-cut vectors,
+consumer integration and human/AT evidence remain acceptance blockers. Overall
+verdict needs-work for implementation/wire freeze; safe to publish as a clearly
+labeled unimplemented candidate. Approval is required before treating it as an
+accepted product execution contract; no new implementation is performed here.
+
+Second critique reflected: dispatch ownership belongs to a single execution
+incarnation; a restarted identity cannot resume its claim. Authenticated recovery
+may persist indeterminate observations without dispatch authority. Original
+deadline/current authorization/capability enforcement is required at a defined
+pre-origin boundary; concurrent revocation ordering/fencing remains a blocker.
+Paused-then-expired/revoked claims send no bytes and remain consumed. Forged ACK
+rejection is a separate case from authorized historical completed status.
+Attempt-level incompatible refusal cannot mutate the original operation into
+Rejected. Completed means authenticated observed outcome under a defined origin
+contract, not HTTP-status business-commit proof. Indeterminate reconciliation
+must authenticate against the original operation and cannot release the claim.
+These remaining critique findings are reflected in the public candidate cases.
+
 ### Continuous source reconciliation and experiment boundary
 
 The docs session owns Pages and standards together. Review actual Rust sources,

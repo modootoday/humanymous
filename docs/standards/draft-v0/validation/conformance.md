@@ -35,6 +35,9 @@ Each row links to a named candidate requirement in the proposed profile.
 The `P` identifiers refer to that profile, not test priority or external approval.
 
 The [implementation map](implementation-map.md) records current partial coverage.
+The [candidate retry/effect lifecycle](../protocol/retry-effects.md) adds proposed
+crash-cut, concurrency, status and retention cases. They are acceptance
+obligations, not an executed corpus or implemented generic wire.
 [Synthetic parser vectors](vectors.md) exercise an existing experimental protocol;
 they are not the complete corpus required for the generic Draft v0 profile.
 
@@ -76,6 +79,7 @@ without a corresponding authorized reproducible experiment.
 | Gate | State |
 | --- | --- |
 | Public v0 problem and requirements model | Authored; review in progress |
+| Retry/effect lifecycle semantics | Proposed; concrete wire, durable implementation and crash-cut evidence pending |
 | Experimental adapter parser bytes/vectors | Authored; single shared implementation, separate from Draft v0 wire |
 | Exact schema and canonical wire vectors | Pending |
 | Independent implementations and interoperability | Pending |

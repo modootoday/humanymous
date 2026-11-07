@@ -33,6 +33,43 @@ integrity, original TLS and HTTP/2 planes. The loopback runtime's session/integr
 implementation must not be attributed to that IPC profile. See
 [configuration](cli-config-policy.md) and [implementation mapping](../standards/draft-v0/validation/implementation-map.md).
 
+## Native local decision client
+
+The shared Rust `humanymous_authority::client::decide` API uses a provisioned
+Node/nginx parser profile and independently supplied outstanding-request binding.
+It checks the actual local server UID or Windows SID/process identity before
+sending the scoped bearer. An envelope's declared peer is an application
+observation, not proof of that IPC server identity. The client has no TCP fallback,
+redirect or automatic retry.
+
+The returned `BoundResponse` is not Clone. `consume(self)` rechecks wall-clock
+rollback, authority expiry and the monotonic budget. Inspecting `verdict()` alone
+does not perform that consumption check or invoke the application. The host must
+consume the response, recheck cancellation/deadline at its dispatch boundary and
+invoke only the originally bound handler at most once. A Rust move-only response
+does not itself prove that an arbitrary application performs one business effect.
+Non-200 service responses and malformed, mismatched or expired replies become
+client errors rather than application ALLOW.
+
+## Local handlers and shutdown
+
+The shared local transport also provides `LocalHandler`, `LocalContext` and
+`LocalResponse` for separately authorized consumers. Actual OS peer context,
+bounded framing and cancellation do not grant administration authority. A
+management consumer still needs its own listener, credential, exact routes,
+Origin/CSRF/scope checks and audit/control issuers. The decision binary continues
+to refuse administration routes; generic handler availability is not completed
+runtime management integration.
+
+`serve_handler_until` explicitly stops acceptance, cancels tracked connections
+and waits for admission-owning workers. Its successful return acknowledges that
+drain; a timeout is incomplete shutdown. Dropping the serving future requests
+cancellation without acknowledging drain. Detached work must retain its context
+and admission ownership until it ends. The consuming runtime must keep custody
+and state alive while such workers remain and finish its required audit flush
+before reporting graceful shutdown. These transport components do not establish
+complete product lifecycle qualification.
+
 Keep method, target/query semantics, duplicate header meaning and exact body
 representation intact. Complete-body integrity finishes before any origin
 effect. Bound buffering and timeouts; do not retry non-idempotent requests after
