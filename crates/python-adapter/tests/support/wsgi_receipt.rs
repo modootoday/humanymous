@@ -1,4 +1,5 @@
 //! Strict accounting for the sole actual WSGI harness, independent of exit code.
+use humanymous_test_support::json::decode_strict_json;
 use serde_json::Value;
 use std::collections::BTreeSet;
 
@@ -34,7 +35,7 @@ pub(super) fn validate(raw: &str) -> Result<(), String> {
     let mut rows = BTreeSet::new();
     let mut cases = 0;
     for line in raw.lines().filter(|line| line.contains('{')) {
-        let row: Value = serde_json::from_str(&line[line.find('{').unwrap()..])
+        let row = decode_strict_json(line[line.find('{').unwrap()..].as_bytes(), 8192)
             .map_err(|_| "invalid WSGI scenario receipt")?;
         let framework = row["framework"].as_str().ok_or("missing framework")?;
         if !["flask", "django"].contains(&framework) || row["wholeProductQualified"] != false {
@@ -63,6 +64,19 @@ pub(super) fn validate(raw: &str) -> Result<(), String> {
             }
             _ => return Err("unexpected WSGI scenario group".into()),
         };
+        let fields = row.as_object().ok_or("scenario object required")?;
+        if fields.keys().any(|key| match key.as_str() {
+            "framework" | "group" | "cases" | "originEffects" | "wholeProductQualified" => false,
+            "auditRecords" => audit.is_none(),
+            "negativeCases" => group != "synthetic-engine-allow-and-invalid",
+            "productionBrowserEvidence" => {
+                control.is_none() && group != "synthetic-engine-allow-and-invalid"
+            }
+            "disconnected" => control.is_none(),
+            _ => true,
+        }) {
+            return Err("unexpected WSGI scenario field".into());
+        }
         if row["cases"] != expected_cases
             || row["originEffects"] != effects
             || audit.is_some_and(|count| row["auditRecords"] != count)
@@ -102,6 +116,14 @@ mod tests {
             )
         };
         assert!(validate(&transcript(rows)).is_ok());
+        let valid = transcript(rows);
+        assert!(validate(&valid.replacen("\"cases\":5", "\"cases\":99,\"cases\":5", 1)).is_err());
+        assert!(
+            validate(&valid.replacen("\"cases\":5", "\"ca\\u0073es\":99,\"cases\":5", 1)).is_err()
+        );
+        let mut unknown = rows.clone();
+        unknown[0]["unexpected"] = serde_json::json!(true);
+        assert!(validate(&transcript(&unknown)).is_err());
         let mut duplicate = rows.clone();
         duplicate.push(rows[0].clone());
         assert!(validate(&transcript(&duplicate)).is_err());

@@ -452,3 +452,11 @@ The existing two pure parser tests now cover positive acceptance plus duplicate/
 missing rows and changed audit, effect and negative-case values. Definitions
 are formatted but remain unexecuted pending explicit allocation. This fixture
 is historical test data, not a new actual execution receipt or controller proof.
+
+The next parser review found that ordinary Value decoding overwrites duplicate
+JSON keys. Scenario rows now reuse test-support's bounded decode_strict_json
+syntax boundary (8192bytes/row), including escaped decoded-key uniqueness,
+and reject fields not allowed for that exact scenario group. Existing positive/
+mutation test definitions add duplicate literal/escaped keys and unknown fields.
+No new parser or manifest dependency was introduced. Formatting passes; the
+same two pure tests still await an explicit immutable Unix allocation.
