@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.pages-shared-wire-followup-review/1",
+  "reviews": [
+    {
+      "source": "crates/framework-adapter/src/lib.rs",
+      "sha256": "e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3",
+      "lines": 105,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "105-line complete source reread. Admission now private-field nonclone guard constructed only by successful64slot atomic acquire; external code cannot manufacture unit guard and underflow ACTIVE via Drop. Release restores one slot, no eviction. Strict decimal explicit length parser unchanged. compile_fail/no_run doctests and pure admission test are source declarations, not executed by Pages. This is shared permit API hardening, not changed detection or new host qualification.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/signals/src/wire/mod.rs",
+      "sha256": "cdfc6ec3d955e9a0a7730c2a7d4cba2f2472a63590249ccf99d4e93544fe6c5a",
+      "lines": 217,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "217-line complete source reread. New quote_json_go_to writes exact HTML/control/line-separator Go string escaping to an IO sink, immediately returns partial sink failure; caller must not commit partial bytes. Existing allocating encoder delegates to it. Unicode15 simple lowercase/printability and float32 representations retain separate frozen model semantics. Source tests cover all valid scalar values against prior JSON escaping and partial-sink failure; Pages did not rerun them. This is scoped project compatibility, not generic JSON canonicalization or independent Draftv0 interoperable wire.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/INTEGRATION.md",
+      "sha256": "c15481a7530d2656bedd37f9c9ed934159dd4ac733e77a3553a9923e85bf49e1",
+      "lines": 570,
+      "full_read": false,
+      "review_basis": "Previously full-read552-line exact suffix/prefix composition plus18-line insertion fully read and exact byte comparison; no other changes.",
+      "prior_sha256": "14d435eaac51305d8a8f665808deeea6d9d73af75ee65ed473b3ec6a0cd48a8c",
+      "new_read_lines": 18,
+      "reviewer": "codex/rust-pages",
+      "notes": "Added chronology reiterates held-byte binding is uncompiled/unrun pure claims. Exact native producer check remainsUnsupported and must fail before Command; protected path/hash/label evidence does not bypass admission. Hosted-only actualHostIO and original budgets remain required. Historical supported-source chronology unchanged, no managed/runtime/package success promoted.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    }
+  ],
+  "source_review_only": true,
+  "receipt_renewal": false,
+  "actual_execution": false,
+  "post_read_recheck_drift": []
+}

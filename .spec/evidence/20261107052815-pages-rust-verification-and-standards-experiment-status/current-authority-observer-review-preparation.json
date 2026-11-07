@@ -1,0 +1,84 @@
+{
+  "schema": "humanymous.pages-authority-observer-review-preparation/1",
+  "reviews": [
+    {
+      "source": "crates/authority/src/startup/observer.rs",
+      "sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806",
+      "lines": 110,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Uninhabited private NativeProof even in tests prevents production preparation/session/failure construction; native_preparation Unsupported only. Restricted effect_gate diagnostics cannot activate. cancel consumes unique guard, retains revoked Authority owner and explicit NotSubmittedReady; no native/transport/credential receipt producer or async cleanup proof.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/authority/src/startup/observer/state.rs",
+      "sha256": "3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21",
+      "lines": 149,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "One private ArcMutex epoch owner, restricted diagnostic clones, firstloss cause/time immutable and terminal revoke on loss or ownerdrop. Poison snapshot fails closed. Close deadline min(original,firstloss+drain) checked overflow. Model advance constructors/transitions only cfg(test); no production Active constructor/effect gate. Mutex snapshot is not permission followed by asynchronous origin effect.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/authority/src/startup/observer/tests.rs",
+      "sha256": "c10d765a30a29df908135ef074e7f5a41682b82fc57517fd00a4b9e35593e470",
+      "lines": 111,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Seven internal pure state model tests cover unsupported producer, strict writer-offer-receipt-ready order, no skip, firstloss/cancel/drop revocation, closebudget conservation and model race. Cannot construct NativeProof or productionsession; no actual OS/IPC/SCM/monitor/effect acceptance. Source reviewed only, not rerun.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/authority/src/startup.rs",
+      "sha256": "0db86632a3e3d881eaab5d06e69f5af0dca5abb88d80da2329f1dec063e46034",
+      "lines": 175,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "open_audit validates explicit inline or sealed source before listener. Required external witness absent refuses before unlock; trusted broker must supplyPinnedWitness, JSON cannot mint. Unixcurrentuser/WindowsSID private dirs, inheritedpassphrase vs Windowsnative store; nonWindows storeunsupported nofallback. Inline zeroizing hex parse and shared WAL/Log; does not become attested parent or independent witness. Tests source-only.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/authority/src/client.rs",
+      "sha256": "0e7c0d7ede66b79ce018143df79ea9f15a053c14a333ae7328f38e03b72fcd4c",
+      "lines": 306,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Singleowned nonClone decision checks expected protocol/nonce/tenant/origin/revision/deadline, actual native server profile, credentialgrammar and one full connect/write/read Tokio budget. BoundResponse consume checks rollback, authorityexpiry independently and originalmonotonicdeadline; host still owns liveness/final boundroute/handoff. No retry/TCPfallback/management grant. Rejection/verdict distinct, challenge doesnot implement recovery. Framing/expiry tests source-reviewed only.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    },
+    {
+      "source": "crates/authority/INTEGRATION.md",
+      "sha256": "c30e968d7df24a28bf28bc5dcf799ed9c571325b9b6f6fda1c8b777d74ccc02d",
+      "lines": 287,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete287line current interface/chronology read. Distinguish old15/14 and25/22/native evidence, exact813Linux named30pass/2ignored, and latestfecdb4d1 Windows21pure incl7internalmodel/checkClippy. Later observer nativeproducer/transport/monitor/effects/Ready remainUnsupported or unimplemented. Historical omitted witness/OSstore/privilegedparent/fullproduct not silentlydischarged. Public21receipt read, raw logs not independently inspected this turn.",
+      "pages": [
+        "docs/standards/draft-v0/validation/implementation-map.md",
+        "docs/reference/on-call-quick-reference.md"
+      ]
+    }
+  ],
+  "full_read_files": 6,
+  "full_read_lines": 1138,
+  "post_read_recheck_drift": [],
+  "source_review_only": true,
+  "receipt_renewal": false,
+  "actual_execution": false,
+  "limits": "Current source review and owner public result inspection, not independent raw execution or latest whole-workspace freshness. Production native observer seam stays Unsupported."
+}

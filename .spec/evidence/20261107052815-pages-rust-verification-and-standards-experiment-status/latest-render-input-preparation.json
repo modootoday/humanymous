@@ -1,0 +1,23 @@
+{
+  "schema": "humanymous.pages-frozen-render-inputs/1",
+  "status": "source-copied-and-rechecked-build-not-started",
+  "source_head_at_copy": "66ad33a432319de05eda7236cfc034a8f709dfbe",
+  "docs_tree_at_copy": "b403f22dee23ca417329417c234b23f8ef416c4c",
+  "copied_tracked_docs_files": 127,
+  "source_drift": [],
+  "theme_head": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+  "gemfile_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+  "config_sha256": "c0734b7901aceadea297d50cdd39788087c4e3ab659120f32187da182a606f8e",
+  "tokens_sha256": "7cf4cba051b9dceea298f24ed46b4c95305c1965b71e4122bc46b6d2330288ff",
+  "ruby_image": "ruby:3.3.13-bookworm@sha256:e8bdbcb78ac5610a976012551304271bcd7a5ac43919c1c638ba691279c12b0b",
+  "caddy_image": "caddy:2.11.9-alpine@sha256:fc9cbc100585871d18d4e451cca7021785c90a7006087427ae5ceb3e4efe6424",
+  "actual_build": false,
+  "actual_browser": false,
+  "source_review_complete": false,
+  "limits": "Tracked docs working bytes copied and double-rechecked; not immutable entire repository/dependency/OS closure. Theme HEAD and verifier bytes checked, full warm gem directory remains to be bound at actual execution.",
+  "existing_verifier": {
+    "sha256": "ad04b2d159c4f42d0c5327cebd042c1246f951ea7b6ca0e4f5c3ff8d79b9fed4",
+    "compiled_source": "269607366e4b2e37b47a974595b406b66642caae",
+    "current_source_compile": false
+  }
+}
