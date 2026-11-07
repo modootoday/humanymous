@@ -163,8 +163,17 @@ validity, filter behavior and origin isolation still require the native pilot.
 Its current pilot contract requires 45 named scenario/MPM pairs across event,
 worker and prefork, with separate failed and not-run totals and observed cleanup.
 The contract contains no executed results or qualified artifact identities.
-An additional coordinator and strict receipt validator are authored but remain
-uncompiled and unexecuted at this checkpoint. They require all 45 distinct case
+The coordinator and receipt validator have experimental execution evidence.
+At source `b5c15f0d`, [hosted run 42373232097](https://github.com/modootoday/humanymous/actions/runs/42373232097)
+recorded 45 distinct scenario/MPM rows: 35 passed and 10 failed, with none not run.
+Event and worker each passed 15; prefork passed five and failed ten. The report
+remained failed and pilot cleanup was not established, although separate
+container/image cleanup was observed. These partial historical results do not
+qualify later source changes, all 45 cases, independent custody or the complete
+product. The later retry is a separate source checkpoint whose outcome is not
+established by these observations.
+
+The coordinator and validator require all 45 distinct case
 IDs, recompute outcome totals and compare the expected source, image and artifact
 digests. Successful parsing is not a passing pilot: process exit, all required
 cases and cleanup must also satisfy the contract. Unverified report counts remain
@@ -176,7 +185,7 @@ source now separates hosted Linux from Windows Desktop engine profiles. The
 Windows path selects the explicit Desktop client and `desktop-linux` context,
 checks its named-pipe endpoint plus the provisioned server ID/version and Linux
 OS type, and records engine identity. Hosted Linux requires a Unix endpoint.
-These authored checks still need actual execution evidence; a context label or
+Do not transfer hosted results to the Windows Desktop profile. A context label or
 successful identity comparison alone does not establish containment or cleanup.
 Local execution needs verified engine provenance before
 its results can be compared with a hosted runner.
@@ -186,7 +195,7 @@ received requests before writing an echo response; this is not a business-commit
 witness or production browser provenance. The reload source now retains an
 owned request-worker guard that joins on early return as well as explicit
 completion, with bounded connect/read/write operations. Actual failure-path
-execution and complete process containment remain unverified; the pilot's name
+qualification and complete process containment remain open; the pilot's name
 and cleanup flag do not establish them.
 
 The Go candidate's synthetic trusted-session cases cannot attest browser or

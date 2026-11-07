@@ -9,6 +9,16 @@
 {
       "kind": "implementation-evidence",
       "paths": [
+            "../../reference/supported-topologies.md"
+      ],
+      "summary": "Replace blanket uncompiled/unexecuted Apache coordinator wording with exact b5c15f0d/run42373232097 historical45 rows:35 passed/10 failed and pilot cleanup not established despite separate container/image cleanup. Keep later retries and Windows Desktop profile separate; no full45-case or product qualification.",
+      "generic_wire_changed": false,
+      "all_required_cases_qualified": false,
+      "full_product_qualified": false
+},
+{
+      "kind": "implementation-evidence",
+      "paths": [
             "../../reference/node-adapter.md"
       ],
       "summary": "Clarify Node package-driver child-process timeout/output responsibility and installation-floor versus development-tool version requirements. Source-only review receipts do not establish current host-case or package qualification.",

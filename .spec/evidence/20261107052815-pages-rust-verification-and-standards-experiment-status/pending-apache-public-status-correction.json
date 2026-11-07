@@ -1,6 +1,6 @@
 {
   "schema": "humanymous.pages-pending-status-correction/1",
-  "state": "Prepared only; docs frozen and unchanged",
+  "state": "Applied to docs source in the explicitly released narrow editorial window; new build not run",
   "page": "docs/reference/supported-topologies.md",
   "stale_statement": "An additional coordinator and strict receipt validator are authored but remain uncompiled and unexecuted at this checkpoint.",
   "evidence_source": ".spec/evidence/20261107124614-apache-adapter-hosted-prefork-process-group-observation/result.json",
@@ -29,6 +29,8 @@
   "status": "failed",
   "proposed_replacement": "The coordinator and receipt validator have source-bound experimental execution. At source b5c15f0, hosted run42373232097 recorded45 distinct scenario/MPM rows:35passed and10failed, with no not-run rows. Event and worker each passed15; prefork passed5 and failed10. The report remained failed and pilot cleanup was not established, although separate container/image cleanup was observed. These historical partial results do not qualify later changes, all45cases, independent custody or the complete product.",
   "new_execution": "NOT_RUN",
-  "docs_modified": false,
-  "full_product_qualified": false
+  "docs_modified": true,
+  "full_product_qualified": false,
+  "source_review_receipts_renewed": false,
+  "later_retry_outcome_included": false
 }
