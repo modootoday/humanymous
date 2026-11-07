@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T10:56:05Z
+updated: 2026-11-07T11:00:39Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -11,7 +11,7 @@ files:
   - {path: rust-runner-v2/lab-report.json, sha256: 75012d28bd66998abacf3d43efb84d58eefb31d69a226bee3b2ab09628eb801d, bytes: 4365, store: repo}
   - {path: rust-runner-v3/lab-report.json, sha256: 607ca8a93d15717ac91756405783c5a2bf192e1ed564592c5b07970e3409d6d9, bytes: 48532, store: repo}
   - {path: rust-runner-v3/witness-report.json, sha256: c9e9914dd4150aaceed3485d49d55cb4ae1efcedef6c8fb6f28a9d66eb60d64f, bytes: 3042, store: repo}
-  - {path: hosted-go-438a3fee-failure.json, sha256: 8c0c1b8ea5fa104134f9e60008f186a2981097815c08d7a51e031e2861ea5436, bytes: 5280, store: repo}
+  - {path: hosted-go-438a3fee-failure.json, sha256: 1398c81f8eb44eebaec83d76f7060ba9833a99c6a702d5bb65757bfcdfa763da, bytes: 5954, store: repo}
 ---
 
 # Container test environment research

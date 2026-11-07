@@ -170,5 +170,17 @@
     }
   },
   "cause_scope": "runtime_build; exact internal build/compiler cause unavailable in the safe projection",
+  "same_source_unix_reproduction": {
+    "source_sha": "438a3feea0ea2f5e305aa6e3816dc7b60a069bd6",
+    "source_archive_sha256": "678e2a0befc6721fb11c43ad99e5bc6cb7139d5a2de3033e10d1b940e0a67da5",
+    "rust_version": "1.99.1",
+    "target": "x86_64-unknown-linux-gnu",
+    "cargo_check_all_targets_exit": 0,
+    "strict_clippy_all_targets_exit": 101,
+    "diagnostics": [{"code":"deprecated","file":"test/lab/runtime/src/go/relay.rs","line":74,"column":35}],
+    "tracked_files": 2257,
+    "source_drift": 0,
+    "scope": "Concrete strict-Clippy blocker reproduced from the exact source; original private Docker build step unavailable. Not actual Go scenario evidence."
+  },
   "full_product_qualified": false
 }

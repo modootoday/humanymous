@@ -71,7 +71,7 @@ pub async fn serve(
             joined=tasks.join_next(),if !tasks.is_empty()=>{if joined.is_some_and(|r|r.is_err()){return Err(io::Error::other("relay worker failed"));}}
             accepted=listener.accept()=>{
                 let (socket,_)=accepted?;
-                contacts.accepted.fetch_update(Ordering::AcqRel,Ordering::Acquire,|n|n.checked_add(1)).map_err(|_|io::Error::other("contact count exhausted"))?;
+                contacts.accepted.try_update(Ordering::AcqRel,Ordering::Acquire,|n|n.checked_add(1)).map_err(|_|io::Error::other("contact count exhausted"))?;
                 let Ok(permit)=limit.clone().try_acquire_owned()else{contacts.failed.fetch_add(1,Ordering::AcqRel);continue;};
                 let counts=contacts.clone();
                 tasks.spawn(async move {
