@@ -1,0 +1,131 @@
+{
+  "schema": "humanymous.delivery-shipping-role-map/1",
+  "state": "source-assessment-needs-work",
+  "observed_head": "cdcfa16e8db6cb7da6c5e67f27d276e9491c84a5",
+  "whole_workspace_commit_closure_proven": false,
+  "source_inputs": [
+    {
+      "path": "build/core.Dockerfile",
+      "sha256": "21c178708a3757df14569078898199be64d907499a8a1b388f249cb571d4fe8f"
+    },
+    {
+      "path": "build/gate.Dockerfile",
+      "sha256": "5e66d0b83be2d4b186ab919e3f181f16704d8dbf25615fbbf950d2f8a2b3511c"
+    },
+    {
+      "path": "build/rust/runtime-candidate.Dockerfile",
+      "sha256": "c523788efc6a3b2ff7508909763ea168cee555fcec7ab1ac02085586308816bd"
+    },
+    {
+      "path": "deployments/compose/defenders.yaml",
+      "sha256": "e926e16061f2d6e93b33d47bdfdc78b1bf828dbf8fa580db37a15c9d669ba65c"
+    },
+    {
+      "path": "deployments/compose.release.yaml",
+      "sha256": "4fec68fdafbdca09557caeeff3b06253916a718667a3aa29ffd644adf605258b"
+    },
+    {
+      "path": "crates/runtime/src/main.rs",
+      "sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797"
+    },
+    {
+      "path": "crates/runtime/src/configuration.rs",
+      "sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e"
+    },
+    {
+      "path": "crates/runtime/src/service/readiness.rs",
+      "sha256": "588e2973865ad469d46a9bb9faeab13c5f95b2d9cb989e1022977d27ccb40fc5"
+    },
+    {
+      "path": "crates/cli/src/main.rs",
+      "sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b"
+    },
+    {
+      "path": "crates/cli/src/runtime_host/platform.rs",
+      "sha256": "fb611870c133341cd0beaffe8101ae9b3af9f97ecefce88027e271b6f577d25c"
+    },
+    {
+      "path": "crates/authority/src/main.rs",
+      "sha256": "a2a840729953cc668e47af80871b73a8815bd2ab9269940457408da826d22c9e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/lib.rs",
+      "sha256": "e234b7aac64e287b2bde79faaa01c99e05e546f42cb4723ce53fe7c787bf1513"
+    },
+    {
+      "path": ".github/workflows/rust-validation.yml",
+      "sha256": "12d4086ae5d2405eb71d7405a281ab36e38414d3a6584c41b5ba85cbed23c3f5"
+    }
+  ],
+  "roles": [
+    {
+      "id": "image.core.demo",
+      "existing": "Public TLS detection/demo plus browser assets",
+      "candidate": "Pure SDK Core library or private-runtime component",
+      "equivalence_verified": false,
+      "dependency": "Runtime and Browser composition contract, or explicit Root role retirement and positive replacement required gate"
+    },
+    {
+      "id": "image.gate.edge",
+      "existing": "Public reverse proxy with separate admin, origin, certificates, custody, probes and drain",
+      "candidate": "Private loopback Runtime plus CLI lifecycle primitives",
+      "equivalence_verified": false,
+      "dependency": "Runtime public-ingress/origin/admin contract and CLI container configuration/custody/signal lifecycle"
+    },
+    {
+      "id": "image.runtime.private",
+      "existing": "Actual private-pipe runtime candidate",
+      "equivalence_verified": false,
+      "dependency": "Retained complete inventory and current-source image/runtime qualification; no Core/Gate alias"
+    }
+  ],
+  "legacy_hosted_jobs": {
+    "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+    "run_id": 42407744891,
+    "attempt": 1,
+    "jobs": [
+      {
+        "id": 128524097837,
+        "role": "core",
+        "conclusion": "failure",
+        "failure_annotations": 1
+      },
+      {
+        "id": 128524097799,
+        "role": "gate",
+        "conclusion": "failure",
+        "failure_annotations": 1
+      }
+    ],
+    "first_failure": "retired Go shipping input remains: build/core.Dockerfile",
+    "docker_build_executed": false,
+    "trivy_executed": false,
+    "gate_specific_docker_failure_observed": false,
+    "original_log_archive_recovered": false,
+    "decoded_logs_and_metadata_retained_privately": true
+  },
+  "decision": {
+    "docker_replacement_authored": false,
+    "go_files_deleted": false,
+    "required_jobs_weakened": false,
+    "oracle_981d_preserved_git_only": true,
+    "owner_implementation_dependency_required": true
+  },
+  "review": {
+    "independent_panel": false,
+    "lenses": [
+      "blue",
+      "red",
+      "SRE",
+      "DPO",
+      "evaluator"
+    ],
+    "verdict": "needs-work"
+  },
+  "compiler_executed": false,
+  "container_executed": false,
+  "new_hosted_dispatch": false,
+  "shipping_qualified": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}
