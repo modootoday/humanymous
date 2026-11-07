@@ -159,3 +159,26 @@ be rewritten to the new package names or packaged as public runtime artifacts.
 
 Handoff ready for Root's exact slice freeze; source ownership has not yet moved.
 No unrelated code edit or local workload was performed to prepare this packet.
+
+### CORE-SLICE-01 authorized consumer delta
+
+After the pre-core packet commit368a7960, Root explicitly assigned only
+crates/audit/src/** consumer imports for CORE-SLICE-01. The Audit lane is narrowed
+to source plus own canon/evidence; all manifests/lock and structural moves stay
+Root-owned. Four use paths change humanymous_signals to humanymous_core::signals:
+checkpoint/mod.rs, checkpoint/signing.rs, checkpoint/signing/tests.rs and
+record/mod.rs. There were no matches for the other six assigned core contexts.
+
+Attached core-slice-01.json supplies exact before/after hashes for these four
+paths. Each has ONE replacement, and reversing that replacement reconstructs the
+pre-core SHA256 exactly. No body, visibility, scoring, manifest, fixture, path,
+binary, reference or history change is included. These four after-hashes supersede
+only their entries in the original114-input pre-core snapshot; that historical
+manifest is deliberately not rewritten. No alias or remaining old Rust core
+crate reference was found under Audit src after the edit.
+
+Direct pinned Windows Rust1.99.1 rustfmt --check and diff checks passed. No
+compiler, Clippy or tests ran: Root must declare the workspace coherent first.
+No target/process lease, ref operation or structural move is held. Existing
+immutable hosted/source-specific work is untouched; this source-only import
+delta does not inherit any historical qualification.

@@ -1,6 +1,6 @@
 //! Signed tree heads cover both linear-chain and RFC 6962 Merkle commitments.
 use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
-use humanymous_signals::wire::decode::null_default;
+use humanymous_core::signals::wire::decode::null_default;
 use serde::{Deserialize, Serialize};
 mod signing;
 mod witness;

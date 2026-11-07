@@ -1,6 +1,6 @@
 //! Shared fixed-order encoder with checked count-and-replay allocation.
 use super::Checkpoint;
-use humanymous_signals::wire::quote_json_go_to;
+use humanymous_core::signals::wire::quote_json_go_to;
 use std::io::{self, Write};
 
 fn budget() -> io::Error {

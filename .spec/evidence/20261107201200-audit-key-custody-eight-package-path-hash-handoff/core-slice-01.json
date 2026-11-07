@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "slice": "CORE-SLICE-01",
+  "parent_handoff_commit": "368a79609e597558edb1b364f230994284f5e65a",
+  "source_paths": 4,
+  "occurrences": 4,
+  "changes": [
+    {
+      "path": "crates/audit/src/checkpoint/mod.rs",
+      "before_sha256": "a9d755ba55f59f42266dbccfa68bc0351c166f3c959ddb1346a2734215930192",
+      "before_git_blob": "f33157ee159d47c41ae3a5b653786c51da23ac0b",
+      "after_bytes": 4642,
+      "after_sha256": "ed75c03c275b144d3aeeea7192b35a23bf30f36b497aeb6ee828fe768524700e",
+      "replacement": "humanymous_signals -> humanymous_core::signals",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/src/checkpoint/signing.rs",
+      "before_sha256": "9b531c737aba7464c7e39be092dbccd94fd104ba10cac4095c6426a988d43bfa",
+      "before_git_blob": "de043d02ad30c8c76be32e7e044f71c582b9afe0",
+      "after_bytes": 2133,
+      "after_sha256": "8634ce7444478e1bb89e39d915db9685d0dfdb646382fd4bf41d92ec74848628",
+      "replacement": "humanymous_signals -> humanymous_core::signals",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/src/checkpoint/signing/tests.rs",
+      "before_sha256": "172908dd57a8f5e05abf9f2e1bc65f33594f61fc129119def134074885857c33",
+      "before_git_blob": "e5a3bbbe1447de02e6d7291c00737f2424e5e2c3",
+      "after_bytes": 3019,
+      "after_sha256": "db86fa502ba86d962e6be0771981db664e16e782cc6bae147bf851912ca6d3c9",
+      "replacement": "humanymous_signals -> humanymous_core::signals",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    },
+    {
+      "path": "crates/audit/src/record/mod.rs",
+      "before_sha256": "38a44d44980de0c247f38972b34334fef5a2807817d85c1f0ff710dcfac11f5a",
+      "before_git_blob": "182eb5a57b93fef51d30b05f062daa12978fc7c3",
+      "after_bytes": 7457,
+      "after_sha256": "d3287a2f21ef0628a366c5cae128b0cb53877bca099900a9f3e862449069654c",
+      "replacement": "humanymous_signals -> humanymous_core::signals",
+      "occurrences": 1,
+      "reverse_replacement_matches_before": true
+    }
+  ],
+  "behavior_or_visibility_changes": false,
+  "manifest_or_lock_or_path_changes": false,
+  "compiler": "NOT RUN: awaiting Root coherent workspace",
+  "clippy": "NOT RUN: awaiting Root coherent workspace",
+  "tests": "NOT RUN: awaiting Root coherent workspace",
+  "other_six_core_context_references": "NONE FOUND",
+  "snapshot_note": "Supersedes only these four source entries in pre-core114-input handoff; other original entries remain historical snapshot"
+}

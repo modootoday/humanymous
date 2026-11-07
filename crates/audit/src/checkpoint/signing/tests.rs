@@ -1,5 +1,5 @@
 use super::*;
-use humanymous_signals::wire::quote_json_go;
+use humanymous_core::signals::wire::quote_json_go;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
