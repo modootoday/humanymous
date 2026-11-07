@@ -11,7 +11,26 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
-## Next native candidate and required execution
+## First actual CEF execution: failed before protocol tests
+
+Dedicated run42370958371/job128398793332 executed exact source
+0a1bb36ef53cf67a7f8739a2ad470398747235e1. The53 candidate inputs matched the
+frozen checkpoint. Six standalone runner tests and runner Clippy passed. Actual
+native-build stopped with child exit101 and wrapper exit1; no native-feature
+test binary, protocol4, bootstrap1 or desktop2 qualification followed. Upload was
+skipped and artifacts API returned0. Native-build.log and report body were not
+recovered, so the root cause remains unknown. See cef-run-42370958371.json in
+evidence:root/20261107073932. Preserve this failure; do not rerun the opaque
+candidate unchanged or infer a compiler/SDK/network source fix from exit101.
+CI owns bounded safe build diagnostics before a root-owned subsequent execution.
+
+Read-only review found no new CEF calls in the production813-to0a1 delta; new
+protocol modules are cfg(test) and were not the initial native-build execution.
+This does not establish API correctness. Creation/cancellation can race callbacks
+and the strict empty-inventory check must expose unexpected observations. Owned
+OS token snapshots can fail or miss transient processes; absent joins stay unknown.
+
+## Frozen first native candidate and required execution
 
 The next candidate combines browser cancellation verifier35cca50f, exact protocol
 inventory3d52eec0, shared captured-PID ownership and the existing CI-owned

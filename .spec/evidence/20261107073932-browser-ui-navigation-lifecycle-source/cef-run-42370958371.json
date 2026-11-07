@@ -1,0 +1,33 @@
+{
+  "source_sha": "0a1bb36ef53cf67a7f8739a2ad470398747235e1",
+  "run_id": 42370958371,
+  "job_id": 128398793332,
+  "workflow": ".github/workflows/cef-native-component.yml",
+  "platform": "standard hosted Windows x64",
+  "status": "failed",
+  "candidate_source_input_count": 53,
+  "candidate_input_differences_from_ca87e58f": 0,
+  "runner_units": {"passed": 6, "failed": 0, "ignored": 0, "filtered": 0},
+  "runner_clippy": "passed",
+  "native_build": {
+    "status": "failed",
+    "child_exit_code": 101,
+    "wrapper_exit_code": 1,
+    "log_pointer_observed": "target/cef-native-evidence/native-build.log",
+    "native_build_log_recovered": false,
+    "report_body_recovered": false,
+    "root_cause": "unknown; exit101 does not distinguish compiler, SDK, network or toolchain failures"
+  },
+  "native_feature_test_binary": "not_run",
+  "synthetic_protocol4": "not_run",
+  "bootstrap1": "not_run",
+  "actual_desktop_process2": "not_run",
+  "artifact_count": 0,
+  "upload_step": "skipped",
+  "observation_source": "completed GitHub job metadata, job log and artifacts API",
+  "raw_private_native_diagnostics": "unrecovered under no-upload profile",
+  "browser_ready": false,
+  "gui_ime_ax_full_product": "unqualified",
+  "rerun_started_by_browser_owner": false,
+  "next_action": "CI owner adds bounded safe diagnostic projection or root allocates separate reproduction; preserve this opaque failure and do not assume a source fix"
+}
