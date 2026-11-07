@@ -112,6 +112,60 @@ parent File alone is not complete ancestry/identity-root proof. Same-SID hostile
 code and privileged OS/administrator replacement remain outside this narrow
 ordinary-user component guarantee; no protection against them is claimed.
 
+## Concrete preliminary layout and minimal Unsupported cases
+
+Root supplied private private-root-layout-readonly.json, schema
+humanymous.private-root-readonly-layout/1, observed 2026-11-07T19:33:19Z,
+SHA256 6d8dbb8c6c44db39acc9982b8aa79ce63719ebb212071d99c38b514547e2ab35.
+Get-Acl recorded binary descriptors and raw ACEs with mutations0. The following
+table omits SID values and the local profile name. It is a candidate analysis,
+NOT held bridge identity, actual ordinary-token association, fixed-provider
+qualification or eligible-layout proof. No account-name lookup extends the TCB.
+SY means SYSTEM, BA means BUILTIN Administrators; OI/CI/IO mean object/container
+inheritance/inherit-only. All recorded ACE types are AccessAllowed.
+
+| Level | Observed owner and exact ACE mask/flags classes | Candidate decision before any mutation |
+| --- | --- | --- |
+| Volume root C:/ | Owner is a service SID outside proposed actual-user/SY/BA set. Authenticated Users: 0x00000004, no flags; 0xE0010000, OI+CI+IO. SY/BA: 0x001F01FF, OI+CI. Users: 0x001200A9, OI+CI. Capability SID: 0x001000A1, no flags. | Unsupported under full-chain narrow profile: owner outside TCB, outsider add-subdirectory right, and IO/generic ACE. No inference that peer creation alone permits replacing the selected descendant. |
+| C:/Users | Owner SY. Everyone: 0xA0000000, OI+CI+IO; 0x001200A9, no flags. SY/BA: 0x001F01FF, OI+CI. Users: 0x001200A9, no flags; 0xA0000000, OI+CI+IO. Capability SID: 0x00100021, no flags. | Unsupported under first-profile IO refusal even though current-object outsider masks are read/traverse classes. Protected child creation does not authorize silently ignoring ancestor IO rules. |
+| Local user-profile directory | Owner BA. SY/BA and one local-account SID: 0x001F01FF, OI+CI. Capability SID: 0x00100020, no flags. DACL protected. | Immediate-parent ACL candidate only IF the local-account SID is independently equal to the actual ordinary TokenUser; otherwise foreign full-control refusal. Capability traverse-only grant needs an explicitly accepted read-only rule. Full-chain decision remains Unsupported because of the two ancestors above. |
+
+For review, the smallest exact first-profile classifier could accept ONLY
+AccessAllowed ACEs, flags none/OI/CI/OI+CI, with trusted actual-user/SY/BA masks
+from an explicitly closed set (initial full-control candidate 0x001F01FF), and
+outsider masks from the observed closed read-only set
+{0x001200A9,0x001000A1,0x00100021,0x00100020}. This is a PROPOSAL, not accepted
+effective-access policy: unfamiliar mask combinations refuse rather than being
+normalized into an allow. Deny, IO, CreatorOwner, unknown ACE types/flags,
+generic rights, null/empty DACL and missing identity all refuse. The proposed
+set does not accept this observed full chain and must not be relaxed after a
+pilot simply to obtain success. No current object needs ACL repair.
+
+Minimal independently sufficient Unsupported cases are: unapproved ancestor
+owner at C:/; IO ACE at C:/Users; local-account SID unequal to actual TokenUser
+at the immediate parent; or failure to acquire/revalidate any required held
+non-reparse identity with the accepted sharing profile. One counterexample is
+enough; later checks cannot turn an earlier refusal into eligibility.
+
+Decision still needed: retain a full chain to an admitted volume-root anchor
+(which currently refuses), or separately review a stronger pre-admitted held
+anchor with explicit replacement exclusion above it. Starting at the user-profile
+path without that admission is not an alternative proof. Exact read-only open
+access/share flags, guard acquisition order, identity reopen comparisons, and
+supervisor custody of the planned locator BEFORE mutation remain unresolved.
+The supervisor must distinguish planned locator from created-object identity;
+neither a preannounced name nor CreatedDirectory proves the latter.
+
+Cleanup must freeze the sequence: revalidate while child and parent guards are
+held; require known-empty root and known child identity; close the child only
+under the accepted replacement-exclusion premise; remove the exact locator;
+observe final absence while retaining parent guards. Close/remove/absence error
+or expired original clock retains the same obligation, known IDs and original
+pair as Unknown. A missing child handle/ID remains CreatedUnopened and cannot
+enter that path-removal sequence. No existing bridge operation closes the atomic
+create/open ID gap or provides handle-bound deletion. These are acceptance gates,
+not grants to mutate or begin the separately allocated hosted pilot; actual0.
+
 ## Fresh create, readback and retained failure states
 
 Prevalidate exact suffix, parent profile, bounded descriptor and original clocks
