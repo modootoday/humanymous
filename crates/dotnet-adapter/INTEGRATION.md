@@ -2,6 +2,30 @@
 
 ## Current approved continuation
 
+### Shared parent-context consumer, pure validation complete
+
+Test-only hosted/launch.rs consumes the native owner's exact shared
+parent_context API4629133c through the existing test-support dependency. There is
+no wire/manifest validator fork or new dependency edge. UnverifiedHostLaunch
+retains syntax and one budget mapping only; it cannot create Command/OS IO or
+authorize a parent, file, token, Job, readiness or cleanup. Cleanup-only contexts
+never become workloads; sequential profiles borrow the original stage deadline.
+
+Evidence:root/20261107124134 records four consumer, eight protocol and one managed
+scope test passes plus all-target check/strict Clippy. Source is b482d5be plus six
+exact overlays. All6847source/registry/config rows and recorded flags matched;
+219dependency-info files and immutable helper89837f0c are retained. No OS fixture,
+SDK or host ran, and no new stderr pipe helper was included. Root D returned.
+
+The agreed additive pipe shape is (ManagedChild, ChildStdin, ChildStdout,
+ChildStderr), with one direct-child owner and single transfers of every pipe.
+The native owner authors that safe API. Actual Host IO rewire still needs its
+handoff and accepted retained Job/account plus bounded joined-worker contract.
+Private startup is a separate one-shot64KiB envelope after actual PID binding;
+parent-context wire never carries authority credentials. Later controls stay
+closed typed1024byte messages and64queued items. No pipe/Drop/EOF implies joined
+workers or native containment proof, and no actual execution allocation is held.
+
 ### Prebuilt Kestrel preparation, no host execution allocation
 
 Root accepted source-only preparation of a mixed-lineage partial JIT component

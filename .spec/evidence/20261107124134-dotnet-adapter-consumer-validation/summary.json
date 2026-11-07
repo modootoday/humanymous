@@ -1,0 +1,116 @@
+{
+  "schema": "humanymous.dotnet-parent-consumer-validation/1",
+  "base_source_sha": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697",
+  "source_kind": "immutable-base-archive-plus-six-exact-overlays",
+  "overlays": [
+    {
+      "path": "crates/test-support/src/lib.rs",
+      "sha256": "c452fc623e9ab67d11745d6b3866c49283957796347f7173cf27365d4b795bac"
+    },
+    {
+      "path": "crates/test-support/src/parent_context.rs",
+      "sha256": "4629133c9666faaf73bad2cc8accfeb150f07fca690025a63314be0a7236d6aa"
+    },
+    {
+      "path": "crates/test-support/src/parent_context/tests.rs",
+      "sha256": "fa436a2a5c77d1bbbc4a363e2d1cdb4146dadd680fef0766c359e15cd6dc6608"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted.rs",
+      "sha256": "8b590c6e65470b068244becda1042bb177de00e8075ddd660ff7581c8cafc861"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/launch.rs",
+      "sha256": "a6399d2626597cad22f449afb5668b9e80b262561ca268b90fecf76af0782de7"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/protocol.rs",
+      "sha256": "b229f2a0737d28615b69e545f0f0b54ba56ea0ac1dc7ac1835ba6c06222a34d3"
+    }
+  ],
+  "profile": "debug",
+  "runner": "root-allocated-local-windows-x86_64",
+  "rust": "1.99.1",
+  "jobs": 1,
+  "incremental": 0,
+  "whole_current_head_qualified": false,
+  "stages": [
+    {
+      "stage": "consumer",
+      "result": {
+        "command": "cargo test --locked -p humanymous-dotnet-adapter --test hosted launch::tests:: -- --test-threads=1",
+        "exit_code": 0,
+        "elapsed_seconds": 45.8928502
+      }
+    },
+    {
+      "stage": "protocol",
+      "result": {
+        "command": "cargo test --locked -p humanymous-dotnet-adapter --test hosted protocol::tests:: -- --test-threads=1",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3946946
+      }
+    },
+    {
+      "stage": "managed-scope",
+      "result": {
+        "command": "cargo test --locked -p humanymous-dotnet-adapter --test managed_scope -- --test-threads=1",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6363167
+      }
+    },
+    {
+      "stage": "check",
+      "result": {
+        "command": "cargo check --locked -p humanymous-dotnet-adapter --all-targets",
+        "exit_code": 0,
+        "elapsed_seconds": 17.7162158
+      }
+    },
+    {
+      "stage": "clippy",
+      "result": {
+        "command": "cargo clippy --locked -p humanymous-dotnet-adapter --all-targets -- -D warnings",
+        "exit_code": 0,
+        "elapsed_seconds": 4.1343104
+      }
+    }
+  ],
+  "tests": {
+    "consumer_passed": 4,
+    "consumer_failed": 0,
+    "consumer_ignored": 0,
+    "consumer_filtered": 13,
+    "protocol_passed": 8,
+    "protocol_failed": 0,
+    "protocol_ignored": 0,
+    "protocol_filtered": 9,
+    "managed_scope_passed": 1,
+    "managed_scope_failed": 0,
+    "managed_scope_ignored": 0,
+    "managed_scope_filtered": 0
+  },
+  "inputs": {
+    "inputs_before": 6847,
+    "inputs_after": 6847,
+    "source_files": 2418,
+    "registry_packages": 89,
+    "registry_files": 4417,
+    "config_candidates": 12,
+    "drift": 0,
+    "flags_drift": 0,
+    "dependency_info_files": 219,
+    "helper_sha256": "89837f0cedf24b2386b7824e250bbaa6ebeefa339c65391d894df035477e38f3",
+    "helper_bytes": 8199168,
+    "actual_host_run": false
+  },
+  "shared_api_sha256": "4629133c9666faaf73bad2cc8accfeb150f07fca690025a63314be0a7236d6aa",
+  "shared_api_tests_sha256": "fa436a2a5c77d1bbbc4a363e2d1cdb4146dadd680fef0766c359e15cd6dc6608",
+  "shared_unit_tests_executed_in_this_run": false,
+  "native_pipe_helper_included": false,
+  "actual_os_fixture_executed": false,
+  "actual_sdk_executed": false,
+  "actual_managed_host_executed": false,
+  "qualified_host_tuples": [],
+  "full_product": false
+}

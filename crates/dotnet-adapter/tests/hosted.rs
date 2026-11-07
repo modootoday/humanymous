@@ -2,6 +2,9 @@
 #[path = "hosted/generic.rs"]
 mod generic;
 #[cfg(test)]
+#[path = "hosted/launch.rs"]
+mod launch;
+#[cfg(test)]
 #[path = "hosted/protocol.rs"]
 mod protocol;
 mod support;
