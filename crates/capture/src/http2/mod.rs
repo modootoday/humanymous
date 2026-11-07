@@ -206,6 +206,9 @@ impl Capture {
                 if increment == 0 {
                     return Err(Error::Malformed);
                 }
+                if stream != 0 && stream > self.max_stream {
+                    return Err(Error::Malformed);
+                }
                 if stream == 0 && !self.window_seen {
                     self.fingerprint.window_update = increment;
                     self.window_seen = true;

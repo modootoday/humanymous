@@ -13,6 +13,69 @@ fn record(bytes: &[u8]) -> Vec<u8> {
     result.extend(bytes);
     result
 }
+fn with_extensions(extensions: &[(u16, Vec<u8>)]) -> Vec<u8> {
+    let mut bytes = Vec::new();
+    for (kind, data) in extensions {
+        bytes.extend(kind.to_be_bytes());
+        bytes.extend((data.len() as u16).to_be_bytes());
+        bytes.extend(data);
+    }
+    let mut handshake = hello();
+    handshake.extend((bytes.len() as u16).to_be_bytes());
+    handshake.extend(bytes);
+    let length = handshake.len() - 4;
+    handshake[1..4].copy_from_slice(&[(length >> 16) as u8, (length >> 8) as u8, length as u8]);
+    handshake
+}
+
+#[test]
+fn complete_extension_vectors_retain_wire_order_and_opaque_alpn() {
+    let mut sni = vec![0, 18, 0, 0, 15];
+    sni.extend(b"capture.invalid");
+    let handshake = with_extensions(&[
+        (43, vec![4, 3, 4, 0x7a, 0x7a]),
+        (
+            16,
+            vec![
+                0, 12, 2, b'h', b'2', 8, b'h', b't', b't', b'p', b'/', b'1', b'.', b'1',
+            ],
+        ),
+        (10, vec![0, 4, 0x11, 0xec, 0, 0x1d]),
+        (13, vec![0, 4, 4, 3, 8, 4]),
+        (11, vec![1, 0]),
+        (0, sni),
+        (0xaaaa, vec![]),
+    ]);
+    let mut capture = ClientHelloCapture::default();
+    for byte in record(&handshake) {
+        capture.feed(&[byte]).unwrap();
+    }
+    let observed = capture.finish().unwrap();
+    assert_eq!(observed.extensions, [43, 16, 10, 13, 11, 0, 0xaaaa]);
+    assert_eq!(observed.supported_versions, [0x0304, 0x7a7a]);
+    assert_eq!(observed.curves, [0x11ec, 0x001d]);
+    assert_eq!(observed.signature_algorithms, [0x0403, 0x0804]);
+    assert_eq!(observed.alpn, [b"h2".to_vec(), b"http/1.1".to_vec()]);
+    assert!(observed.sni_present);
+}
+
+#[test]
+fn duplicate_extensions_odd_vectors_and_empty_alpn_names_refuse() {
+    for extensions in [
+        vec![(0xaaaa, vec![]), (0xaaaa, vec![])],
+        vec![(10, vec![0, 3, 0, 1, 0])],
+        vec![(43, vec![3, 3, 4, 0])],
+        vec![(16, vec![0, 1, 0])],
+        vec![(16, vec![0, 3, 2, b'h'])],
+        vec![(11, vec![1, 0, 0])],
+    ] {
+        let mut capture = ClientHelloCapture::default();
+        assert_eq!(
+            capture.feed(&record(&with_extensions(&extensions))),
+            Err(CaptureError::Malformed)
+        );
+    }
+}
 #[test]
 fn every_chunk_and_record_split_preserves_the_same_hello() {
     let handshake = hello();

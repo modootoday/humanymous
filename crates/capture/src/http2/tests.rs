@@ -187,6 +187,38 @@ fn truncated_hpack_integer_and_literal_spans_refuse_without_dependency_panic() {
         assert!(capture.request(1).is_none());
     }
 }
+
+#[test]
+fn bounded_hostile_compression_corpus_never_publishes_partial_requests() {
+    for seed in 0u32..4096 {
+        let mut state = seed.wrapping_add(1);
+        let mut bytes = Vec::new();
+        for _ in 0..seed as usize % 65 {
+            state ^= state << 13;
+            state ^= state >> 17;
+            state ^= state << 5;
+            bytes.push(state as u8);
+        }
+        let mut capture = Capture::default();
+        capture.feed(&prefix()).unwrap();
+        if capture.feed(&frame(1, 4, 1, &bytes)).is_err() {
+            assert!(
+                capture.request(1).is_none(),
+                "partial request from seed {seed}"
+            );
+        } else {
+            let request = capture.request(1).unwrap();
+            assert_eq!(
+                request
+                    .fields()
+                    .iter()
+                    .filter(|(name, _)| name.starts_with(b":"))
+                    .count(),
+                4
+            );
+        }
+    }
+}
 #[test]
 fn dynamic_table_update_at_start_and_trailers_preserve_decoder_sync() {
     let mut capture = Capture::default();
@@ -220,6 +252,7 @@ fn malformed_framing_and_every_truncated_prefix_refuse() {
         frame(4, 0, 1, &[]),
         frame(4, 1, 0, &[0; 6]),
         frame(8, 0, 0, &[0; 4]),
+        frame(8, 0, 3, &[0, 0, 0, 1]),
         frame(2, 0, 1, &[0, 0, 0, 1, 1]),
         frame(1, 4, 2, &headers()),
         frame(5, 0, 1, &[]),
