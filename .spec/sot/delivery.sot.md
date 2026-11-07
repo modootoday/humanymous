@@ -1316,3 +1316,45 @@ native-artifacts invocation without the owning build receipt explicitly records
 binary_build_source_receipt_verified=false; current HEAD alone is insufficient
 proof of a preexisting binary's build source. Even a bound archive is not full
 runtime, image, dependency-license or release qualification.
+
+Native archive writing explicitly disables sparse representation and symlink
+following, matching the unchanged strict regular-member reader. The tar builder
+default may emit GNU sparse entries from ordinary sparse input files; this is a
+source format-contract incompatibility, not proof of the old hosted refusal's
+cause. An owned temporary-file fixture uses actual append_path_with_name for a
+sparse input and its hardlink, plus both notices. Unix checks an observed sparse
+allocation; Windows validates regular/hardlink bytes without claiming GNU sparse
+coverage. No production binaries are executed by this fixture.
+
+Archive refusal projection separates duplicate, nonregular, size, hash, missing
+and unexpected-member states. Only four fixed member classes, finite entry-type
+labels and numeric expected/observed sizes may be public; arbitrary paths/link
+targets remain excluded. Safe actual build/hash facts are retained before later
+packaging fails. Current-head labels alone never become binary provenance.
+
+TOML workspace/lock documents use toml::from_str, not Value FromStr, including
+release-version reading and optional public archive-cache planning. Real-file
+regressions must exercise these production read paths independently of network,
+cache upload or publication. Quota, trust, context and version rules are unchanged.
+
+Optional safe_diagnostics.browser_actor is rebuilt only by the Lab-owned shared
+test/lab/browser_outcome.rs public_outcome validator and its sole JSON contract.
+Delivery does not duplicate the scalar or invariant rules. A missing optional
+object preserves legacy diagnostics; an invalid present object rejects the whole
+projection. Nonobserved values remain null and cannot become zero or success.
+The prefix-authentication and full-product flags remain false. Consumer tests
+must distinguish accepted optional rebuilding from private extra-field rejection
+and retain no arbitrary paths, test output or private raw bodies.
+
+CI / Wargame is a dedicated two-job standard Ubuntu caller on the fixed
+codex/wargame-validation branch or manual dispatch. Read-only preflight tests the
+current attacker/defender libraries, Lab and Delivery, compiles the Unix actor and
+runs selected strict Clippy/policy before the existing pilot docker command.
+It adds no new Rust report protocol, scoring or alternate receipt interpretation.
+The existing generic Lab full requirement, original raw-byte hash binding,
+independent Lab manifest and all26 indexed statuses/totals remain authoritative.
+Unsupported/skipped/error denominators are preserved; a valid scoped receipt
+does not turn required full-product failure into success. Browser/native callers
+are not broadened. Automatic artifacts/cache writes, OIDC and publication remain
+absent. Fresh exact-source hosted preflight is mandatory before the actual Docker
+measurement; historic pure tests cannot qualify a newer dependency graph.

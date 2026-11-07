@@ -878,3 +878,48 @@ f74f9b26e1ef238cc7b60251bc64fd9a4b2926ecd989b4f1574d7ca095ba789b.
 No actual release binaries, native binary archive, Docker or product process ran.
 Caller/helper source is ready for a literal committed-candidate review; no
 branch push or hosted dispatch has been performed for this archive profile.
+
+The sole approved normal new-branch push sent literalb09 to the dedicated native
+artifact branch; run42383033991 then completed with fresh hosted preflight83 and
+actual release Cargo exit0, but refused native archive membership. Source stayed
+unchanged and artifacts0; the combined old error does not reveal exact member,
+entry type or predicate. Public/private terminal evidence is committed7b7d5f98.
+No repeat push/dispatch is authorized by that consumed delegation.
+
+Source inspection independently confirmed tar0.4.46 sparse-default writing can
+conflict with the strict regular reader. Root approved sparse(false) plus strict
+typed refusal diagnostics and early safe build-receipt projection; no reader
+condition is weakened. The next owned-file fixture uses real file metadata,
+set_len/seek, a hardlink and append_path_with_name. Local Windows coverage must
+remain regular/hardlink-only; Unix additionally asserts a real sparse allocation.
+Old b09 cause remains unknown even if a corrected candidate later succeeds.
+
+Two other production document paths had the same confirmed TOML API bug: release
+workspace version and optional archive-cache Cargo.lock parsing. Their narrow
+document API fixes and real-file tests are independent of network/cache writes
+or publication. With the owned-file writer fixture, expected total86 tests are
+NOT_RUN pending a fresh frozen source review/allocation. Browser's newly approved
+optional outcome object is a separate future consumer checkpoint; wait for the
+single Lab validator rather than duplicate it or delay independent archive work.
+
+Lab delivered the single optional browser outcome implementation and froze final
+helper36b40be2 with contract42d5826c (the earlier ae6 prototype was never compiled
+or qualified). Delivery source imports the owner function via a Rust module path,
+validates the optional contract pointer and copies only its rebuilt value. Invalid
+optional data rejects the entire diagnostic projection, legacy absence is kept,
+and one consumer test plus the two shared owner test functions cover nulls,
+private extra fields and forbidden qualification promotion. No Cargo edge or
+runtime execution was added. This separate consumer checkpoint remains UNRUN;
+the native-format86 frozen copy deliberately excludes all these new inputs.
+
+Root resolved the generic26 caller choice to one dedicated wargame-validation.yml
+(CI / Wargame), not a broadened Browser caller. Two standard Ubuntu jobs retain
+read-only permissions, jobs1/incremental0 and no artifacts/cache writes/OIDC.
+Scoped current-owner preflight gates literal existing pilot docker; all full
+requirements and strict original-byte26 receipt logic are reused. The catalog
+and shared policy add the caller atomically with a negative test for profile
+substitution, preflight/owner bypass and privilege expansion. Static actionlint
+passed; new policy tests remain UNRUN. Actual source selection must include the
+owner's current standalone Runtime/Defender/strict decoder graph, not an old
+Go/Browser receipt or historical28 pure tests. No hosted push/dispatch is implied
+by this source checkpoint; root retains the single transaction decision.

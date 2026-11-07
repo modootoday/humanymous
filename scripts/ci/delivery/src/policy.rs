@@ -262,11 +262,13 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
     if matches!(
         name,
         "go-validation.yml"
+            | "wargame-validation.yml"
             | "browser-product-validation.yml"
             | "mount-probe-validation.yml"
             | "image-validation.yml"
     ) {
         let browser = name == "browser-product-validation.yml";
+        let wargame = name == "wargame-validation.yml";
         let mount = name == "mount-probe-validation.yml";
         let image = name == "image-validation.yml";
         let product = if image {
@@ -282,6 +284,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             "codex/mount-probe-validation"
         } else if browser {
             "codex/browser-product-validation"
+        } else if wargame {
+            "codex/wargame-validation"
         } else {
             "codex/go-validation"
         };
@@ -291,6 +295,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             "cargo run --locked -p humanymous-delivery -- mount-probe"
         } else if browser {
             "cargo run --locked -p humanymous-delivery -- pilot browser-product"
+        } else if wargame {
+            "cargo run --locked -p humanymous-delivery -- pilot docker"
         } else {
             "cargo run --locked -p humanymous-delivery -- go-product"
         };
@@ -335,6 +341,15 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 "cargo clippy --locked -p humanymous-delivery --all-targets -j1 -- -D warnings",
                 "cargo run --locked -p humanymous-delivery -- policy",
             ]
+        } else if wargame {
+            vec![
+                "cargo test --locked -p humanymous-attacker -p humanymous-defender --lib -j1",
+                "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1",
+                "cargo test --locked -p humanymous-delivery -j1",
+                "cargo check --locked -p humanymous-runtime-pilot --all-targets -j1",
+                "cargo clippy --locked -p humanymous-attacker -p humanymous-defender -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings",
+                "cargo run --locked -p humanymous-delivery -- policy",
+            ]
         } else {
             vec![
                 "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1",
@@ -348,7 +363,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 "cargo run --locked -p humanymous-delivery -- policy",
             ]
         };
-        if !mount && !image {
+        if !mount && !image && !wargame {
             commands.push("cargo test --locked -p humanymous-go-adapter --lib -j1");
         }
         for command in commands {
@@ -1137,6 +1152,29 @@ mod tests {
                 _ => changed["jobs"]["product"]["timeout-minutes"] = Value::Null,
             }
             assert!(document("browser-product-validation.yml", &changed).is_err());
+        }
+    }
+    #[test]
+    fn wargame_caller_cannot_substitute_profile_or_bypass_current_owners() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "wargame-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("wargame-validation.yml", &original).is_ok());
+        for mutation in 0..5 {
+            let mut changed = original.clone();
+            match mutation {
+                0 => changed["jobs"]["product"]["needs"] = json!([]),
+                1 => changed["jobs"]["product"]["steps"][2]["run"] = json!("cargo run --locked -p humanymous-delivery -- pilot browser-product"),
+                2 => changed["jobs"]["product"]["continue-on-error"] = json!(true),
+                3 => changed["jobs"]["preflight"]["steps"].as_array_mut().unwrap().retain(|step|
+                    step["run"] != "cargo test --locked -p humanymous-attacker -p humanymous-defender --lib -j1"),
+                _ => changed["permissions"]["id-token"] = json!("write"),
+            }
+            assert!(document("wargame-validation.yml", &changed).is_err());
         }
     }
     #[test]

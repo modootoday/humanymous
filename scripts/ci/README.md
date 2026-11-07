@@ -61,6 +61,7 @@ Dedicated callers isolate one boundary without changing the full release gate:
 | Workflow | Owning invocation and scope |
 |---|---|
 | `component-validation.yml` | `capture` runs five hosted transport cases; `header` checks cbindgen/C11/C++11 layouts. The dedicated native-artifact branch selects `archive`: build two release binaries, bind Cargo JSON/source/hash receipts, package and inspect actual archive contents without executing the binaries. |
+| `wargame-validation.yml` | Scoped current-owner preflight followed by the existing generic Docker full gate. Preserve the strict original-byte 26-case receipt, independent raw/manifest hashes and unsupported counts; a receipt is not full-product success. |
 | `go-validation.yml` | `go-product` consumes the exact eight-case bounded Go requirement. |
 | `browser-product-validation.yml` | `pilot browser-product` retains the full requirement and its nonzero failure/blocked exit. |
 | `mount-probe-validation.yml` | `mount-probe` collects four fixed custody mount observations. Complete refusals are diagnostic data, never custody or product qualification. |
