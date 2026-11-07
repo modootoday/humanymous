@@ -2,7 +2,7 @@
 use super::Lab;
 use crate::{docker::Result, snapshot};
 use serde_json::json;
-fn classify(logs: &str) -> Option<&'static str> {
+pub(super) fn classify(logs: &str) -> Option<&'static str> {
     logs.lines()
         .filter_map(
             |line| match line.trim().strip_prefix("HM-LAB-ACTOR-STEP ")? {
@@ -21,6 +21,16 @@ fn classify(logs: &str) -> Option<&'static str> {
                 "actor_writer_keys" => Some("actor_writer_keys"),
                 "actor_writer_identity" => Some("actor_writer_identity"),
                 "actor_witness_bootstrap" => Some("actor_witness_bootstrap"),
+                "actor_browser_hardening" => Some("actor_browser_hardening"),
+                "actor_browser_config" => Some("actor_browser_config"),
+                "actor_browser_dns_bind" => Some("actor_browser_dns_bind"),
+                "actor_browser_dns_probe" => Some("actor_browser_dns_probe"),
+                "actor_browser_namespace" => Some("actor_browser_namespace"),
+                "actor_browser_proxy" => Some("actor_browser_proxy"),
+                "actor_browser_inventory" => Some("actor_browser_inventory"),
+                "actor_browser_test" => Some("actor_browser_test"),
+                "actor_browser_negative_proxy" => Some("actor_browser_negative_proxy"),
+                "actor_browser_dns_finish" => Some("actor_browser_dns_finish"),
                 _ => None,
             },
         )
@@ -80,10 +90,24 @@ mod tests {
             "actor_writer_keys",
             "actor_writer_identity",
             "actor_witness_bootstrap",
+            "actor_browser_hardening",
+            "actor_browser_config",
+            "actor_browser_dns_bind",
+            "actor_browser_dns_probe",
+            "actor_browser_namespace",
+            "actor_browser_proxy",
+            "actor_browser_inventory",
+            "actor_browser_test",
+            "actor_browser_negative_proxy",
+            "actor_browser_dns_finish",
         ] {
             assert_eq!(
                 super::classify(&format!("HM-LAB-ACTOR-STEP {stage}")),
                 Some(stage)
+            );
+            assert_eq!(
+                super::classify(&format!("HM-LAB-ACTOR-STEP {stage} private payload")),
+                None
             );
             assert!(
                 contract["error_codes"]

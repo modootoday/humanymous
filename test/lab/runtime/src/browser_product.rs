@@ -143,7 +143,9 @@ pub fn stop() -> Result<()> {
 }
 
 pub fn browser() -> Result<()> {
+    eprintln!("HM-LAB-ACTOR-STEP actor_browser_hardening");
     let hardening = hardening()?;
+    eprintln!("HM-LAB-ACTOR-STEP actor_browser_config");
     // Owned endpoint tuples carry no credentials. No -i avoids Docker EOF detach.
     let args: Vec<_> = std::env::args().skip(2).collect();
     if args.len() != 5 {
@@ -171,8 +173,11 @@ pub fn browser() -> Result<()> {
     executor.block_on(async move {
         let fixture=browser_proxy::fixture();
         let expected=crate::browser_expectations::from_fixture(&fixture)?;
+        eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_bind");
         let dns=crate::browser_dns::DenyResolver::start()?;
+        eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_probe");
         let dns_control=crate::browser_dns::probe(&dns,&config.dns_name,config.dns_canary).await?;
+        eprintln!("HM-LAB-ACTOR-STEP actor_browser_namespace");
         let mut negatives=serde_json::Map::new();
         negatives.insert("external_dns_local_policy_refused".into(),json!(true));
         negatives.insert("external_dns_udp_no_route".into(),json!(true));
@@ -191,6 +196,7 @@ pub fn browser() -> Result<()> {
         let no_default=!routes.lines().skip(1).any(|line|line.split_whitespace().nth(1)==Some("00000000"));
         negatives.insert("no_default_ipv4_route".into(),json!(no_default));
         if !no_default {return Err("external default route present".into());}
+        eprintln!("HM-LAB-ACTOR-STEP actor_browser_proxy");
         let listener=TcpListener::bind(fixture["browser_proxy_listen"].as_str().ok_or("proxy fixture listen")?).await?;
         let receipts=Receipts::default();let (stop,receiver)=watch::channel(false);
         let proxy=tokio::spawn(browser_proxy::serve(listener,ProxyConfig{listen:"127.0.0.1:31112".parse()?,upstream:config.gate,browser:true},receiver,receipts.clone()));
@@ -198,6 +204,7 @@ pub fn browser() -> Result<()> {
         let declared_filtered=fixture["test_selection"]["component_tests_filtered"].as_u64().ok_or("fixture filtered count")? as usize;
         if fixture["test_selection"]["selected"]!=1 {return Err("one fixture-selected test required".into());}
         let result=tokio::task::spawn_blocking(move || {
+            eprintln!("HM-LAB-ACTOR-STEP actor_browser_inventory");
             let mut listing=std::process::Command::new("wasm-bindgen-test-runner");
             listing.args(["/usr/local/lib/collector-product-tests.wasm","--list"]);
             let inventory=humanymous_test_support::process::capture_with_stderr(&mut listing,b"",Duration::from_secs(10),128*1024)?;
@@ -205,6 +212,7 @@ pub fn browser() -> Result<()> {
             let names:Vec<String>=String::from_utf8(inventory.stdout).map_err(io::Error::other)?.lines().filter_map(|line|line.trim().strip_suffix(": test").map(str::to_owned)).collect();
             if names.iter().filter(|name|**name==expected_name).count()!=1 || names.len()!=declared_filtered+1 || names.iter().collect::<std::collections::HashSet<_>>().len()!=names.len(){return Err(io::Error::other("exact declared product test inventory required"));}
             let name=expected_name;
+            eprintln!("HM-LAB-ACTOR-STEP actor_browser_test");
             let mut command=std::process::Command::new("wasm-bindgen-test-runner");
             command.args(["/usr/local/lib/collector-product-tests.wasm","--exact",&name])
                 .env("WASM_BINDGEN_TEST_ADDRESS","127.0.0.1:31111")
@@ -216,6 +224,7 @@ pub fn browser() -> Result<()> {
         let (result,name,inventory)=result?;
         let output=String::from_utf8(result.stdout)?;
         let passed=result.status.success() && crate::browser_result::completed(&output,&name,inventory.len()-1);
+        eprintln!("HM-LAB-ACTOR-STEP actor_browser_negative_proxy");
         for (name,request) in [("foreign_proxy_authority_refused",b"GET http://169.254.169.254/ HTTP/1.1\r\nHost: 169.254.169.254\r\n\r\n".as_slice()),("unknown_proxy_api_refused",b"POST http://127.0.0.1:31111/_humanymous/forbidden HTTP/1.1\r\nHost: 127.0.0.1:31111\r\nContent-Length: 0\r\n\r\n".as_slice())] {
             use tokio::io::{AsyncReadExt,AsyncWriteExt};
             let mut socket=tokio::net::TcpStream::connect("127.0.0.1:31112").await?;
@@ -227,6 +236,7 @@ pub fn browser() -> Result<()> {
             if !refused {return Err("proxy negative control failed".into());}
         }
         stop.send(true).map_err(|_|io::Error::other("proxy stopped"))?;proxy.await??;
+        eprintln!("HM-LAB-ACTOR-STEP actor_browser_dns_finish");
         let dns_policy=dns.finish()?;
         println!("{}",json!({"schema":"humanymous.browser-product-actor/1","expected":expected,"status":if passed{"passed"}else{"failed"},"test_output":output,"test_stderr":String::from_utf8_lossy(&result.stderr),"test_inventory":inventory,"selected_test":name,"declared_selected":1,"declared_filtered":inventory.len()-1,"summary_verified":passed,"proxy_hits":receipts.snapshot(),"namespace_controls":negatives,"connection_refusals":refusals,"hardening":hardening,"dns_control":dns_control,"dns_policy":dns_policy,"full_product_qualified":false}));
         if !passed {return Err("actual browser runtime pilot failed".into());}

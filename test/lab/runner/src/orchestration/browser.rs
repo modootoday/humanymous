@@ -279,15 +279,31 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
                 Err(error) => return Err(error.into()),
             }
         }
+        let captured = handle.join().map_err(|_| "browser capture worker failed")?;
+        // Preserve the actor's entered stage before a missing witness exchange
+        // can terminate the run. Raw output remains in the private bundle.
+        match &captured {
+            Ok(result) => {
+                if let Some(stage) =
+                    super::startup_failure::classify(&String::from_utf8_lossy(&result.stderr))
+                {
+                    lab.stage = stage;
+                }
+            }
+            Err(error) => {
+                lab.stage = if error.kind() == std::io::ErrorKind::TimedOut {
+                    "browser_capture_deadline"
+                } else {
+                    "browser_capture_failure"
+                };
+            }
+        }
         lab.case(
             "browser-actual-witness-exchange",
             isolated && broker.transactions > 1,
             json!(broker.transactions),
         )?;
-        handle
-            .join()
-            .map_err(|_| "browser capture worker failed")?
-            .map_err(Into::into)
+        captured.map_err(Into::into)
     })?;
     let actor = decode_strict_json(&browser_result.stdout, 2 * 1024 * 1024)?;
     snapshot::write(&lab.evidence, "browser-actor-report.json", &actor)?;

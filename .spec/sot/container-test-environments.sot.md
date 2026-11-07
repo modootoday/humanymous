@@ -194,6 +194,20 @@ factory verifies actual writer mount UID65532, mode0700, directory/non-symlink
 before key initialization. The original813 browser-product failure remains
 pre-writer-identity/unknown; added markers cannot retroactively explain it.
 
+The browser-driver capture must be joined and its closed static entered-stage
+marker classified before a missing witness-exchange assertion can return.
+Preserve original bounded stdout/stderr/exit privately. Emit fixed markers for
+browser hardening, endpoint configuration, DNS bind/probe, namespace controls,
+proxy setup, WASM inventory/test capture, proxy negatives and DNS finish. These
+markers establish the last entered stage, not an exact failing operation or
+proof that a browser request occurred. Classify transport TimedOut separately
+from other capture errors without interpreting absence as a witness defect.
+Only complete known lines may enter the existing public error_code vocabulary;
+unknown lines, appended payloads and raw browser output remain private. Preserve
+the existing witness assertion, failure exit and full-product refusal. The
+delivery consumer embeds this vocabulary, so its regression proof must be
+renewed for changed contract bytes without borrowing an earlier test count.
+
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
 pass. evidence:root/20261107083259 preserves the decoded public log and derived
