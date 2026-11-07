@@ -138,3 +138,30 @@ Read-only coordination history is preserved above from user-authorized existing
 chats. No lane steal/force/fake claim, other-owner edit, branch switch, push,
 main/tag/publish or scoring change. New code/tests are Rust only. Future state
 changes update the accepted/implemented/verified distinctions and evidence here.
+
+## Python/Ruby configuration follow-up (2026-11-07)
+
+Root assigned configuration.rs only plus this plan and authority SoT, on free
+release lane rust-authority-profile-config; runtime confirmed no file overlap.
+Exact PythonAsgi/PythonWsgi/RubyRack contract comes from Python/Ruby adapter owner
+and integrity implementation remains root-owned. Narrow serde/readiness source
+adds explicit normalized profiles and removes nginx inference from non-Node.
+No runtime/build test was run for this delta; hosted source-bound validation
+remains required. Existing 25/22 results do not qualify this changed source.
+
+Explicit user follow-through request created an active goal on this authority
+chat: authenticated IPC, UID/SID/PID verification, typed authority/runtime
+contracts and all producer profiles through source-bound hosted qualification.
+A pure provisioning test now distinguishes the exact five config names from
+producer IDs and wire mode strings. Execution remains NOT_RUN awaiting the
+root-owned integrity enum and assigned single Cargo slot. No owned process or
+container remains running. Existing runtime lane stays independent.
+
+Root integrity enum is now present with the accepted exact IDs/modes. Windows
+owner yielded release normally; authority reclaimed only its three paths. Added
+a second pure test: each normalized producer enables only its own readiness key,
+and each required TLS/H2/raw-header/collector/RIT plane makes it unavailable.
+Direct rustfmt edition2024 and owned diff whitespace check passed. Public-only
+spec check:0 errors,2 other-owner warnings (binary scan and missing verify).
+Cargo compile/unit execution NOT_RUN: no assigned Cargo slot. Actual hosted
+profile/native runtime evidence remains pending; old green is not reused.

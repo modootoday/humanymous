@@ -39,6 +39,9 @@ fn adapter_profile<'de, D: serde::Deserializer<'de>>(d: D) -> Result<AdapterProf
     match String::deserialize(d)?.as_str() {
         "node" => Ok(AdapterProfile::Node),
         "nginx" => Ok(AdapterProfile::Nginx),
+        "python-asgi" => Ok(AdapterProfile::PythonAsgi),
+        "python-wsgi" => Ok(AdapterProfile::PythonWsgi),
+        "ruby-rack" => Ok(AdapterProfile::RubyRack),
         _ => Err(serde::de::Error::custom("unsupported provisioned adapter")),
     }
 }
@@ -127,11 +130,12 @@ fn identity(s: &str) -> bool {
             .all(|b| b.is_ascii_alphanumeric() || b"._:-".contains(&b))
 }
 impl Configuration {
-    /// Honest readiness inventory for the only executable observation profile.
+    /// Provisioned observation capabilities; this does not qualify an adapter runtime.
     /// This contains no keys, credentials or client observations. A bound IPC
     /// listener does not imply routes requiring absent planes are ready.
     pub fn capability_manifest(&self) -> serde_json::Value {
         let node = self.adapter == AdapterProfile::Node;
+        let nginx = self.adapter == AdapterProfile::Nginx;
         let routes: Vec<_> = self
             .routes
             .iter()
@@ -140,12 +144,15 @@ impl Configuration {
                 let available = !r.raw_tls && !r.original_h2 && !r.collector && !r.rit;
                 serde_json::json!({"method": route.method, "path": route.path,
                 "node_raw": node && available, "fetch_normalized": node && available && !r.raw_header_order,
-                "nginx_raw": !node && available,"nginx_normalized":!node && available && !r.raw_header_order})
+                "nginx_raw": nginx && available,"nginx_normalized":nginx && available && !r.raw_header_order,
+                "asgi_normalized": self.adapter == AdapterProfile::PythonAsgi && available && !r.raw_header_order,
+                "wsgi_normalized": self.adapter == AdapterProfile::PythonWsgi && available && !r.raw_header_order,
+                "rack_normalized": self.adapter == AdapterProfile::RubyRack && available && !r.raw_header_order})
             })
             .collect();
         serde_json::json!({"id":"application-http", "revision":self.scope.revision,
             "raw_tls":false, "original_h2":false, "collector":false, "rit":false,
-            "complete_body":true, "raw_header_order":"node-raw-only", "routes":routes,
+            "complete_body":true, "raw_header_order":"node-raw-or-nginx-raw-only", "routes":routes,
             "administration":false, "browser_recovery":false,
             "adapter":self.adapter.expected().id,"adapter_version":self.adapter.expected().version})
     }
@@ -221,4 +228,75 @@ pub fn valid_sid(sid: &str) -> bool {
         && sid[6..].split('-').all(|n| {
             !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit()) && n.parse::<u32>().is_ok()
         })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn provisioning_selects_exact_profile_and_rejects_wire_names() {
+        for (name, expected) in [
+            ("node", AdapterProfile::Node),
+            ("nginx", AdapterProfile::Nginx),
+            ("python-asgi", AdapterProfile::PythonAsgi),
+            ("python-wsgi", AdapterProfile::PythonWsgi),
+            ("ruby-rack", AdapterProfile::RubyRack),
+        ] {
+            let value = serde_json::Value::String(name.into());
+            assert_eq!(adapter_profile(value).unwrap(), expected);
+        }
+        for name in ["python", "ruby", "humanymous.python", "asgi-normalized", ""] {
+            assert!(adapter_profile(serde_json::Value::String(name.into())).is_err());
+        }
+    }
+
+    #[test]
+    fn normalized_readiness_never_inherits_another_profile_or_missing_plane() {
+        for (profile, ready) in [
+            ("python-asgi", "asgi_normalized"),
+            ("python-wsgi", "wsgi_normalized"),
+            ("ruby-rack", "rack_normalized"),
+        ] {
+            let value = serde_json::json!({
+                "adapter":profile,"endpoint":"unused",
+                "scope":{"installation":"i","tenant":"t","origin":"o","revision":"r","authority":"owned.test"},
+                "peer":{"kind":"unix","uid":1},
+                "routes":[{"method":"POST","path":"/api","required":{
+                    "raw_tls":false,"original_h2":false,"raw_header_order":false,"collector":false,"rit":false}}],
+                "audit":{"directory":"unused","node_id":"test","hmac_key_hex":"",
+                    "signing_seed_hex":"","allow_new":false,"trusted_head":null},
+                "capacity":1,"replay_capacity":1,"rate_per_second":1,"timeout_ms":1,"clock_skew_ms":0
+            });
+            for missing in [
+                None,
+                Some("raw_tls"),
+                Some("original_h2"),
+                Some("raw_header_order"),
+                Some("collector"),
+                Some("rit"),
+            ] {
+                let mut configured = value.clone();
+                if let Some(required) = missing {
+                    configured["routes"][0]["required"][required] = true.into();
+                }
+                let config: Configuration = serde_json::from_value(configured).unwrap();
+                let manifest = config.capability_manifest();
+                for mode in [
+                    "node_raw",
+                    "fetch_normalized",
+                    "nginx_raw",
+                    "nginx_normalized",
+                    "asgi_normalized",
+                    "wsgi_normalized",
+                    "rack_normalized",
+                ] {
+                    assert_eq!(
+                        manifest["routes"][0][mode],
+                        mode == ready && missing.is_none()
+                    );
+                }
+            }
+        }
+    }
 }

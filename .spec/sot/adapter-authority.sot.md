@@ -224,3 +224,21 @@ checks and trusted-supervisor path-race premises remain unchanged. Stricter
 rejection of empty/unsupported ACE forms must be tested and documented; this is
 not a new detection rule. Current approved toolchain/MSRV is1.99.1; prior1.88 execution records remain
 historical context.
+
+## Python and Ruby provisioned profiles (2026-11-07)
+
+The shared integrity profile canon additionally provisions PythonAsgi with
+humanymous.python / asgi-normalized / config python-asgi, PythonWsgi with
+humanymous.python / wsgi-normalized / config python-wsgi, and RubyRack with
+humanymous.ruby / rack-normalized / config ruby-rack. Version is
+0.1.0-experimental.1. Configuration names select policy independently of wire
+contents. Unknown names reject. Existing omitted configuration remains Node.
+Readiness uses explicit profile equality, including nginx; normalized routes
+requiring raw header order are unavailable. TLS, original H2, collector and RIT
+requirements remain unavailable. ASGI preserves ordered duplicate pairs without
+original casing claims; WSGI/Rack CGI maps lose order and duplicates. This
+configuration inventory is not adapter runtime qualification. Client API, native
+peer checks, IPC and scoring are unchanged. Python/Ruby runtime validation is
+NOT_RUN pending the standard hosted delivery gates. Prior component passes apply
+only to their recorded source. Shared execution policy is defined by
+sot:root/program-roadmap and sot:root/delivery, not duplicated here.
