@@ -880,3 +880,27 @@ Run dev/all-target checks separately so unification cannot hide a missing normal
 edge. Compare external version/source/checksum identities and retain failures.
 Unix execution and matched cold/warm performance measurements remain separate;
 reduced dependency closure is not evidence of measured speedup.
+## Accepted maintenance identity reconciliation
+
+Root accepts the Delivery daf541 proposal as reconciled by CLI7b5edfad and
+Delivery99ec7b80 and independently reviewed at d00ba197. Preserve every one of
+the33 original qualification profile0.1 case identities:23 remain integration
+cases and10 move into the owning maintenance binary. The latter exercise real
+owned-filesystem/provider behavior and must never be classified as pure no-I/O
+tests. The final Tools target map has27 compiled roots:1 library,15 binaries,
+10 integration targets and1 example. Two former maintenance integration roots
+become private binary modules; do not preserve empty targets or duplicate cases.
+
+Profile0.2 must bind the exact old-to-new target, source, selector, feature and
+execution boundary for all33 cases. Existing stage-eval black-box assertions and
+real CARGO_BIN_EXE boundaries remain. These33 cases do not include every legacy
+library unit test: the complete per-role unit inventory and canonical source
+mapping are separately required. Design reconciliation closes only the recorded
+identity mismatch, not the complete Tools input freeze or any actual execution.
+
+The remaining expanded reader census must distinguish already accepted ownership
+from unresolved dispositions. Collector implementation source must not be copied
+into the CLI package. Its diagnostic source contract needs an owned digest/data
+profile plus bounded actual-source verification tied to the same checkout/build;
+missing or changed source cannot produce a refined diagnostic. Exact caller and
+snapshot-binding design remains pending owner review before implementation.
