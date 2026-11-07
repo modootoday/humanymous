@@ -388,6 +388,62 @@ do not grant writes to Runtime/Authority/native-security/CLI/Lab paths.
 
 ## Record
 
+### Actual private owner-type slice (source only)
+
+OpeningOwner now owns the retained NativeFiles, actual non-Clone KeyMaterial,
+actual Custody guard and owned node/witness/physical-head policy. Its private
+existing constructor loads only an already sealed identity; the create closure
+always refuses. It rejects an empty node and writer/witness equality. No caller
+success flag, transferable diagnostic, file getter or public factory constructs
+the owner. Its policy borrows its own keys transiently during the existing full
+two-pass native scan, never as self-referential fields stored beside moved keys.
+
+Consuming authenticate(self, original Limits/Control borrows) executes that scan,
+requires successful cryptographic diagnostics, ends all operation readers and
+moves the SAME whole owner into actual VerifiedScan. Consuming finalize(self)
+accepts no replacement arguments, checks the original Control, repeats complete
+authentication with those bounds and compares diagnostics/work before returning
+an actual private ReadOnlyOwner. That result retains files, material and custody;
+it has no append/checkpoint/Ready/Clone/Deserialize or repair interface. This is
+a read-only ordinary physical-pin slice, not OperationalOwner, ambiguous-tail
+resolution, virtual-candidate recovery, durable receipt or production S2.
+
+The original Control has a private test-compiled monotonic ManualClock seam;
+checked nanosecond advancement can only move forward, including overflow refusal.
+The default remains Instant-based. One new all-platform clock unit is authored.
+The existing ignored controlled-native case now provisions fixture keys outside
+the WAL directory, loads them through actual Custody and exercises actual owner
+authentication/finalization, retained WAL/key locks, post-auth ORIGINAL cancel
+and expiry while a fresh Control stays healthy, and unchanged bytes, object
+stamps and membership for both WAL/key directories. Those assertions are NOT RUN.
+The current finalizer contains no writable native calls. Unchanged snapshots
+are not a complete mutation-attempt observer or proof for future writable repair;
+that stronger gate remains open for every real write/bootstrap/repair action.
+
+Actual-type compile probes live under native/ownership/probes: one positive and
+ten negatives, with exact expected error codes and primary-span text in cases.json.
+They are intentionally not normal Cargo modules. An explicitly allocated Linux
+validation must inject ONE fixture as ownership/contract_probe.rs into a frozen
+copy of this actual crate, append a test-only allow(dead_code) contract_probe
+module declaration to the copied ownership.rs, then run locked/offline Cargo
+test --lib --no-run with JSON diagnostics. No replacement owner definitions,
+public visibility changes or dependency edges are permitted. Record the exact
+two-file overlay and each fixture hash. All probes import the actual parent
+types and methods, so privacy/import failures cannot qualify them.
+
+Require the positive fixture to compile first and again after all negatives.
+For each negative require unsuccessful Cargo exit, the manifest error code and
+a primary span in contract_probe.rs containing the recorded source text; every
+error-level diagnostic must be an expected probe error, with no unrelated crate,
+privacy, import or dependency failure. Preserve actual argv/stdout/stderr/exit
+and source/tool/config closure for each phase. These are compile checks, not
+11 executed Rust tests. Never inject probes into the shared checkout or use the
+outer Cargo target recursively. A missing supported venue remains NOT RUN.
+
+Direct pinned Windows Rust1.99.1 rustfmt parses/formats the authored modules and
+all11 probe sources; inventory/JSON/expected-span checks passed. No compilation,
+Clippy, actual native test, probe or product execution qualifies this source.
+
 ### Older-source Windows six-case qualification
 
 Exact frozen8cbc passed ordinary-user Windows Rust1.99.1 check/strict Clippy,

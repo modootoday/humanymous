@@ -1,0 +1,18 @@
+{
+  "module": "verification::scan::source::native::ownership::contract_probe",
+  "injected_path": "crates/audit/src/verification/scan/source/native/ownership/contract_probe.rs",
+  "owner_module": "crates/audit/src/verification/scan/source/native/ownership.rs",
+  "positive": "positive.rs",
+  "negative": [
+    {"file": "limits_lifetime.rs", "code": "E0515", "primary_contains": "owner.authenticate(&limits, control)"},
+    {"file": "control_lifetime.rs", "code": "E0515", "primary_contains": "owner.authenticate(limits, &control)"},
+    {"file": "opening_moved.rs", "code": "E0382", "primary_contains": "let _second = owner.authenticate(limits, control)"},
+    {"file": "verified_moved.rs", "code": "E0382", "primary_contains": "let _second = verified.finalize()"},
+    {"file": "replacement_bounds.rs", "code": "E0061", "primary_contains": "verified.finalize(limits, control)"},
+    {"file": "readonly_append.rs", "code": "E0599", "primary_contains": "owner.append("},
+    {"file": "readonly_checkpoint.rs", "code": "E0599", "primary_contains": "owner.checkpoint()"},
+    {"file": "readonly_ready.rs", "code": "E0599", "primary_contains": "owner.ready()"},
+    {"file": "verified_clone.rs", "code": "E0599", "primary_contains": "verified.clone()"},
+    {"file": "verified_deserialize.rs", "code": "E0277", "primary_contains": "requires_deserialize::<VerifiedScan<'op, 'cancel>>()"}
+  ]
+}

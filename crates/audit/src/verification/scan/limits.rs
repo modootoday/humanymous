@@ -1,7 +1,7 @@
 use crate::storage::framing::preflight;
 use std::{
     io,
-    sync::atomic::{AtomicBool, Ordering},
+    sync::atomic::{AtomicBool, AtomicU64, Ordering},
     time::{Duration, Instant},
 };
 
@@ -67,7 +67,30 @@ impl Limits {
 
 pub(super) struct Control<'a> {
     cancelled: &'a AtomicBool,
-    deadline: Instant,
+    deadline: Deadline<'a>,
+}
+enum Deadline<'a> {
+    System(Instant),
+    Fixture { clock: &'a ManualClock, end: u64 },
+}
+// Test-compiled only, like this entire scanner. The fixture clock can only
+// advance; it is borrowed by the original Control and cannot replace it later.
+#[derive(Default)]
+pub(super) struct ManualClock(AtomicU64);
+impl ManualClock {
+    pub fn new() -> Self {
+        Self(AtomicU64::new(0))
+    }
+    pub fn advance(&self, elapsed: Duration) -> io::Result<()> {
+        let ticks =
+            u64::try_from(elapsed.as_nanos()).map_err(|_| invalid("fixture clock overflow"))?;
+        self.0
+            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |now| {
+                now.checked_add(ticks)
+            })
+            .map(|_| ())
+            .map_err(|_| invalid("fixture clock overflow"))
+    }
 }
 impl<'a> Control<'a> {
     pub fn new(cancelled: &'a AtomicBool, timeout: Duration) -> io::Result<Self> {
@@ -79,7 +102,27 @@ impl<'a> Control<'a> {
             .ok_or_else(|| invalid("scan deadline overflow"))?;
         Ok(Self {
             cancelled,
-            deadline,
+            deadline: Deadline::System(deadline),
+        })
+    }
+    pub fn with_clock(
+        cancelled: &'a AtomicBool,
+        timeout: Duration,
+        clock: &'a ManualClock,
+    ) -> io::Result<Self> {
+        let ticks =
+            u64::try_from(timeout.as_nanos()).map_err(|_| invalid("fixture deadline overflow"))?;
+        if ticks == 0 {
+            return Err(invalid("zero scan deadline"));
+        }
+        let end = clock
+            .0
+            .load(Ordering::Acquire)
+            .checked_add(ticks)
+            .ok_or_else(|| invalid("fixture deadline overflow"))?;
+        Ok(Self {
+            cancelled,
+            deadline: Deadline::Fixture { clock, end },
         })
     }
     pub fn check(&self) -> io::Result<()> {
@@ -89,7 +132,11 @@ impl<'a> Control<'a> {
                 "audit scan cancelled",
             ));
         }
-        if Instant::now() >= self.deadline {
+        let expired = match &self.deadline {
+            Deadline::System(end) => Instant::now() >= *end,
+            Deadline::Fixture { clock, end } => clock.0.load(Ordering::Acquire) >= *end,
+        };
+        if expired {
             return Err(io::Error::new(
                 io::ErrorKind::TimedOut,
                 "audit scan deadline exceeded",
@@ -114,8 +161,20 @@ mod tests {
         let cancel = AtomicBool::new(false);
         let control = Control {
             cancelled: &cancel,
-            deadline: Instant::now(),
+            deadline: Deadline::System(Instant::now()),
         };
+        assert_eq!(control.check().unwrap_err().kind(), io::ErrorKind::TimedOut);
+    }
+    #[test]
+    fn original_manual_clock_advances_without_replacing_control() {
+        let cancel = AtomicBool::new(false);
+        let clock = ManualClock::new();
+        let control = Control::with_clock(&cancel, Duration::from_nanos(2), &clock).unwrap();
+        clock.advance(Duration::from_nanos(1)).unwrap();
+        assert!(control.check().is_ok());
+        clock.advance(Duration::from_nanos(1)).unwrap();
+        assert_eq!(control.check().unwrap_err().kind(), io::ErrorKind::TimedOut);
+        assert!(clock.advance(Duration::MAX).is_err());
         assert_eq!(control.check().unwrap_err().kind(), io::ErrorKind::TimedOut);
     }
 }

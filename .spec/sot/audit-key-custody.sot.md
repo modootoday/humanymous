@@ -24,6 +24,16 @@ Rust tool files and44 absent config candidates unchanged. Session36565 terminal0
 A/WSL use returned. No NativeFiles/VerifiedScan/operational owner is produced. Production
 authority, repair/clock/type-native proof and all prior gates remain incomplete.
 
+The accepted actual private owner-type source now consumes OpeningOwner into
+VerifiedScan while owning NativeFiles, KeyMaterial and Custody and borrowing only
+the original external Limits/Control. Its no-argument consuming finalizer repeats
+complete authentication under those SAME bounds and yields only ReadOnlyOwner.
+A private forward-only clock seam, actual-owner native fixture assertions and
+one positive/ten negative actual-type compile probes are authored. Direct fmt/
+source inventory checks only: no current-source compilation, probe, native,
+mutation-attempt or product qualification. Unsupported operational factory stays
+Unsupported; no actual repair, writable owner, Ready or consumer route is added.
+
 Exact older8cbc subsequently passed native Windows check/strict Clippy/fmt and
 SIX exact cases in [[evidence:root/20261107162841]]: facade preflight/Unsupported
 plus five pure transitions, each1pass/102filtered.195 selected source files,

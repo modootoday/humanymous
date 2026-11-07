@@ -195,6 +195,7 @@ fn controlled_native_inspection_cursor_lifetime_and_replacement() {
     drop(second);
     drop(Wal::open(&dir, WalOptions::default()).unwrap());
     retained_resources_outlive_opening_bounds(&dir, &policy);
+    ownership::tests::exercise(&dir, &head);
     let source = NativeSource::open(&dir, &limits, &control, admission()).unwrap();
     let mut reader = source.segment(1).unwrap();
     fs::rename(dir.join(segment_name(1)), dir.join("replaced-original")).unwrap();

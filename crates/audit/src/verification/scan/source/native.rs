@@ -25,6 +25,7 @@ use std::{
 const SIDECAR: &str = "checkpoints.jsonl";
 const LOCK: &str = ".audit-writer.lock";
 const BUFFER: usize = 8192;
+mod ownership;
 
 type Admission = crate::verification::scan::NativeBudget;
 
