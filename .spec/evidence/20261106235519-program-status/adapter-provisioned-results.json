@@ -1,0 +1,26 @@
+{
+  "schema": "humanymous.adapter-provisioned-identity/1",
+  "parent": "61cb215c03348b08d44355a673b0fe3e3fca52f9",
+  "integrityUnitPassed": 12,
+  "legacyParityPassed": 3,
+  "authorityUnitPassed": 3,
+  "clippy": "passed",
+  "defaultParser": "Node-only unchanged",
+  "explicitApi": "parse_for(bytes, now_ms, ExpectedAdapter { id, version })",
+  "headerModes": [
+    "node-raw",
+    "fetch-normalized"
+  ],
+  "nginxNativeProfileImplemented": false,
+  "fullProductQualified": false,
+  "source": [
+    {
+      "sha256": "41d7ad4ef17b28476828e4fe76cb95b9c49b0e86d10f8a00a8e206d4cc3b825a",
+      "path": "crates/integrity/src/adapter/mod.rs"
+    },
+    {
+      "sha256": "dba5af791144e35feb0075f439f5ea5328b121bcc03da2d62485d66190b1eea9",
+      "path": "crates/integrity/src/adapter/tests.rs"
+    }
+  ]
+}

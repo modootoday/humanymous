@@ -6,6 +6,16 @@ use base64::{Engine, engine::general_purpose::STANDARD};
 use sha2::{Digest, Sha256};
 use wire::Request;
 
+/// Exact adapter identity provisioned by the authority, never selected from
+/// untrusted envelope contents. This grants no additional protocol capability.
+#[derive(Clone, Copy, Debug)]
+pub struct ExpectedAdapter<'a> {
+    /// Exact provisioned producer identifier.
+    pub id: &'a str,
+    /// Exact supported producer version, without wildcard matching.
+    pub version: &'a str,
+}
+
 /// Schema-checked, complete request bytes. Credential scope, real IPC peer,
 /// route inventory, replay and durable audit must still be checked by authority.
 pub struct ValidatedRequest {
@@ -13,6 +23,18 @@ pub struct ValidatedRequest {
     body: Vec<u8>,
 }
 impl ValidatedRequest {
+    /// Envelope identity; authentication and provisioned scope remain required.
+    pub fn adapter_identity(&self) -> (&str, &str) {
+        (&self.request.adapter.id, &self.request.adapter.version)
+    }
+    /// Validated observation mode, not proof of original client provenance.
+    pub fn header_mode(&self) -> &str {
+        &self.request.header_mode
+    }
+    /// Adapter-claimed connection UUID, not an authenticated transport binding.
+    pub fn connection_id(&self) -> Option<&str> {
+        self.request.connection_id.0.as_deref()
+    }
     /// Adapter-generated UUIDv4 nonce; not client trace identity.
     pub fn id(&self) -> &str {
         &self.request.id
@@ -56,6 +78,27 @@ impl ValidatedRequest {
 /// derived fixed-schema visitors reject duplicate keys, including escaped keys.
 /// Static errors cannot disclose bearer credentials, cookies or body contents.
 pub fn parse(bytes: &[u8], now_ms: u64) -> Result<ValidatedRequest, &'static str> {
+    parse_for(
+        bytes,
+        now_ms,
+        ExpectedAdapter {
+            id: "humanymous.node",
+            version: "0.1.0-experimental.1",
+        },
+    )
+}
+
+/// Validate protocol0.1 against an explicitly provisioned adapter. Callers must
+/// not construct `expected` from the request being validated. All existing body,
+/// provenance and unsupported capture/stream restrictions remain in effect.
+pub fn parse_for(
+    bytes: &[u8],
+    now_ms: u64,
+    expected: ExpectedAdapter<'_>,
+) -> Result<ValidatedRequest, &'static str> {
+    if !identity(expected.id) || !identity(expected.version) {
+        return Err("invalid provisioned adapter identity");
+    }
     if bytes.len() > 1_600_000 {
         return Err("adapter envelope exceeds limit");
     }
@@ -63,8 +106,8 @@ pub fn parse(bytes: &[u8], now_ms: u64) -> Result<ValidatedRequest, &'static str
         serde_json::from_slice(bytes).map_err(|_| "invalid adapter JSON schema")?;
     let r = &request;
     if r.protocol != "humanymous.adapter/0.1"
-        || r.adapter.id != "humanymous.node"
-        || r.adapter.version != "0.1.0-experimental.1"
+        || r.adapter.id != expected.id
+        || r.adapter.version != expected.version
     {
         return Err("unsupported adapter protocol or version");
     }

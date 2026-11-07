@@ -220,6 +220,18 @@ Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생
 
 ## 현재 종료를 막는 gate와 다음 착수
 
+### 공통 adapter parser의 provisioned identity 계약
+
+공유 integrity parser는 고정 protocol0.1의 검증을 복제하지 않고
+parse_for(bytes,now,ExpectedAdapter)를 제공한다. expected id/version은 인증된
+설치 설정에서만 전달하고 요청 envelope에서 선택하지 않는다. 기존 parse는
+기존 Node identity/version에 고정하여 호환성을 유지한다. 다른 identity를
+명시적으로 설정해도 raw TLS/H2/capture/stream 지원은 생기지 않으며 기존
+필수 필드·중복키·digest·deadline·provenance 거절을 모두 유지한다.
+ValidatedRequest의 identity/header mode/connection ID getter는 관측값이며
+peer 인증·scope/replay·audit 권한을 대신하지 않는다. 잘못된 설정 identity,
+version mismatch 및 non-null capture/stream을 부정 검증한다.
+
 후속 guard baseline은실제prototype/native관측을BrowserCollector에연결했다.
 local native19/actualFirefox34과WASM/Clippy통과이며reported=false를유지한다.
 이는startup pristine증명이나hooks완료가아니다. MutationObserver·forwarding·

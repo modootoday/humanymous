@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T05:05:16Z
+updated: 2026-11-07T05:07:47Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -47,6 +47,7 @@ files:
   - {path: guard-baseline-results.json, sha256: 877d74e9709fde603f15fb53636903763e21e64ca9f5fe92c177add94dda8cd7, bytes: 7766, store: repo}
   - {path: roadmap-refresh-results.json, sha256: a7e49ff0d0257230a42ec8ec7e1c8a2d427fa14968d4462898801370c4809595, bytes: 3751, store: repo}
   - {path: parallel-followup-dispatch.json, sha256: 272fad34a2b4b5d27efc38ea51bdbfb713718b9b9ee87c95503a7f04164d14ba, bytes: 10601, store: repo}
+  - {path: adapter-provisioned-results.json, sha256: 6aa64cb9fa0659d0a865863ed7ef318568b89426df0a6d954d576a0fbad2c219, bytes: 798, store: repo}
 ---
 
 # Program status

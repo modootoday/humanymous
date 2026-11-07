@@ -6,6 +6,57 @@ fn request() -> Value {
 fn accepts(v: &Value) -> bool {
     parse(&serde_json::to_vec(v).unwrap(), 1000).is_ok()
 }
+
+#[test]
+fn provisioned_identity_is_exact_and_legacy_parser_stays_node_only() {
+    let mut value = request();
+    value["adapter"]["id"] = json!("humanymous.nginx");
+    let bytes = serde_json::to_vec(&value).unwrap();
+    assert!(parse(&bytes, 1000).is_err());
+    let expected = ExpectedAdapter {
+        id: "humanymous.nginx",
+        version: "0.1.0-experimental.1",
+    };
+    let parsed = parse_for(&bytes, 1000, expected).unwrap();
+    assert_eq!(parsed.adapter_identity(), (expected.id, expected.version));
+    assert_eq!(parsed.header_mode(), "node-raw");
+    assert_eq!(
+        parsed.connection_id(),
+        Some("01234567-89ab-4cde-8fab-0123456789ab")
+    );
+    for invalid in [
+        ExpectedAdapter {
+            id: expected.id,
+            version: "0.2",
+        },
+        ExpectedAdapter {
+            id: "",
+            version: expected.version,
+        },
+        ExpectedAdapter {
+            id: "untrusted/adapter",
+            version: expected.version,
+        },
+        ExpectedAdapter {
+            id: expected.id,
+            version: "",
+        },
+    ] {
+        assert!(parse_for(&bytes, 1000, invalid).is_err());
+    }
+    for (field, replacement) in [
+        ("capture", json!({})),
+        ("stream", json!({})),
+        ("deadline", json!(1000)),
+        ("headerMode", json!("nginx-raw")),
+    ] {
+        let mut invalid = value.clone();
+        invalid[field] = replacement;
+        assert!(parse_for(&serde_json::to_vec(&invalid).unwrap(), 1000, expected).is_err());
+    }
+    value["body"]["sha256"] = json!("0".repeat(64));
+    assert!(parse_for(&serde_json::to_vec(&value).unwrap(), 1000, expected).is_err());
+}
 #[test]
 fn preserves_order_and_verifies_exact_entity_bytes() {
     let parsed = parse(&serde_json::to_vec(&request()).unwrap(), 1000).unwrap();
