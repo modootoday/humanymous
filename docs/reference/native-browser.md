@@ -24,6 +24,14 @@ distinguish accepted navigation, load completion and observed content identity.
 An internal sandbox page is diagnostic information, not a complete OS sandbox
 attestation. Raw diagnostic paths/device data belong in private evidence.
 
+Native controls submit address/home/reload intents through the local route
+allowlist. Address Enter handling consults the IME guard, address focus and key
+repeat; focus loss or disabled IME cancels composition state. The controls stop
+dispatching after revocation/closure and project address changes from committed
+navigation generations. These source checks are separate from actual keyboard
+delivery, candidate-window placement, screen-reader announcements and proof that
+a requested CEF page completed loading.
+
 Sandboxing remains required. Do not add security-disabling flags to make a
 prototype or test pass. Native source, CEF distribution, OS/architecture and
 packaged artifact identity all matter. Specific desktop/DPI observations must

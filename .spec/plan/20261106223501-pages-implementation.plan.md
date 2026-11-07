@@ -1801,3 +1801,13 @@ cancelled feature-enabled cases, fresh dedicated absolute bundles, reportabsence
 renderer probe bounds are contract expectations, not measured results. Direct
 child reaping doesnotattest descendant cleanup; no current native execution or
 AT coverage inferred. Sourcechecker88errors0, scopedSpecfold0errors0warnings.
+### Witness lifetime correction and native controls review
+
+Audit54fe5b8b fixed reported childfixture lifetime. Read full ChildLifetime and
+changed witness wiring/stalled200ms handshake excerpts; retained whole old
+witness receipt stale rather than bulkrefreshing. Publicreference now describes
+60s absolutedirectchild lifetime, timeoutErr vs expectedreject, no perexchange/
+production/descendant proof and unexecuted newregression. Full helper receipt.
+Read complete145line browser_controls and added receipt/publicdescription for
+IME focus/repeatguard, revoke/close, allowlist and committedprojection; no actual
+keydelivery, candidate/AT or CEFload qualification inferred.

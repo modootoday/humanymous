@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/native/desktop/src/browser_controls.rs",
+  "sha256": "b92a5047f52a8d983b32595b476c92db3cdce7a495329b7645405377938e4264",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete145line Controls: native document address/home/reload intents, IME focus/repeat guard, allowlisted dispatch, revoked/closed refusal, bounded4096cursor, committed generation projection and notices. Not actual keydelivery, IMEcandidate, AT speech or CEF load completion evidence.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/audit/tests/support/child_lifetime.rs",
+  "sha256": "b8ebca68dab9e9ba5f6c8f43494ca64f203d564f53bd77df9b965b2af0d5f881",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete ChildLifetime: ManagedChild duplex, independent60s absolute watcher without child lock held over pipeIO, timeout flag causes wait Err rather than expected nonzero exit, Drop cancel/join/stop owned directchild. Not perexchange/production or descendant timeout proof; authored stalledhandshake test not executed here.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/browser/native/desktop/src/pilot_process.rs",
   "sha256": "6df47121e6f94167932365f8f8587d5529f6ee74df560f3c9d4792c12917986d",
   "reviewer": "codex/rust-pages",
