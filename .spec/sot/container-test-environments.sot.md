@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-06T23:10:00Z
+updated: 2026-11-07T02:06:22Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]

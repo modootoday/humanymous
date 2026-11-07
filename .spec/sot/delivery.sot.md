@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-06T22:06:50Z
+updated: 2026-11-07T02:06:22Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"

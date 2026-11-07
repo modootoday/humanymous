@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-06T22:15:36Z
+updated: 2026-11-07T02:06:22Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
