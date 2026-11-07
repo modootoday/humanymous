@@ -212,10 +212,10 @@ impl Request {
 impl Drop for Request {
     fn drop(&mut self) {
         // A forked child must not lock or mutate the parent's copied mutex.
-        if self.child.process().is_ok() {
-            if let Ok(mut state) = self.child.0.state.lock() {
-                state.active -= 1;
-            }
+        if self.child.process().is_ok()
+            && let Ok(mut state) = self.child.0.state.lock()
+        {
+            state.active -= 1;
         }
     }
 }
