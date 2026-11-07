@@ -3,9 +3,14 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T14:00:00Z
+updated: 2026-11-07T16:22:02Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
+files:
+  - {path: record-source-slice.json, sha256: 93798404b482f7f79002f41742455237fde0d468c6e2bf4ded2fead72b7cf20b, bytes: 606, store: repo}
+  - {path: record-validation.json, sha256: 1c4817263edad015048eb6aebf98baba803f8b7ebb720508ffb75a78cd2629d3, bytes: 1076, store: repo}
+  - {path: source-inventory.json, sha256: f2680379e9ecede8a520bfc1d58052623f21cd3795634c302e091c0aa90c0d33, bytes: 16297, store: repo}
+  - {path: standardize-validation.json, sha256: 244809da8e82543a06c16a80a952bd06610c23e1a3540acfcfaff7357e795b53, bytes: 1089, store: repo}
 ---
 
 # Read-only source inventory
@@ -330,3 +335,15 @@ were checked byte-identical across relocation; raw run paths, hashes and creatio
 timestamps remain intact. No CLI document or global private tree was edited.
 The intermediate ID-only commit aeefd20c failed scoped spec (I1/S2/L1) and is
 preserved in history; this relocation corrects that failure without rewriting it.
+
+### Global P2 attachment inventory correction
+
+Independent review subsequently reproduced the exact four P2 errors only with
+public GLOBAL `spec check --no-local --json --limit 20`: the four adjacent JSON
+files were not listed in frontmatter files. Earlier scoped zero results did not
+cover that attachment inventory gate. `spec attach` now registers exact path,
+SHA256 and byte length for each file. All four JSON files were verified unchanged
+before/after registration; only this index was modified. The subsequent global
+public check exited0 over248documents with0errors/0warnings, and the directory
+scoped check also exited0. This is not a claim about the full private global tree,
+model execution or new evaluator test results. Historical failures remain intact.
