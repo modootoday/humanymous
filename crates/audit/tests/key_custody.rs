@@ -158,7 +158,9 @@ fn child_lock_probe() {
         );
         use std::io::Write;
         let mut stdout = std::io::stdout().lock();
-        stdout.write_all(b"\nhumanymous-key-lock-refused\n").unwrap();
+        stdout
+            .write_all(b"\nhumanymous-key-lock-refused\n")
+            .unwrap();
         stdout.flush().unwrap();
     }
 }
@@ -304,7 +306,9 @@ fn child_interrupted_writer() {
         file.write_all(&sealed).unwrap();
         file.sync_all().unwrap();
         let mut stdout = std::io::stdout().lock();
-        stdout.write_all(b"\nhumanymous-key-pending-synced\n").unwrap();
+        stdout
+            .write_all(b"\nhumanymous-key-pending-synced\n")
+            .unwrap();
         stdout.flush().unwrap();
         // Deliberately bypass destructors, releasing OS locks by process exit.
         std::process::exit(0);
