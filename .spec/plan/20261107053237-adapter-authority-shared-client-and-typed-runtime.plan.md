@@ -176,3 +176,11 @@ uses existing workspace zeroize; root alone must update shared lock package
 dependency edge. Direct rustfmt/owned diff check passed. Cargo/unit/hosted tests
 NOT_RUN pending root lock and single-Cargo-slot allocation. Source is not yet
 qualified; prior component green is historical only.
+
+Integration handover now pins historical25/22 results to e346834 and explicitly
+excludes later source. New profiles and Zeroizing injection API are documented;
+removed stale whoami fixture claim. Credential borrowing does not enforce once
+delivery; supervisor owns count and epoch. Current runtime management Handler
+now consumes shared LocalHandler/serve_handler_until with generated independent
+credential; injected credential integration and actual hosted results remain open.
+No Cargo slot/lock edge yet at this observation. Formatting/diff passed.

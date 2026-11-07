@@ -28,7 +28,8 @@ impl Credential {
         }
         Ok(Self(value))
     }
-    /// Deliver exactly once through the supervisor's private readiness pipe.
+    /// Borrow for delivery through the supervisor's private readiness pipe.
+    /// The supervisor owns delivery count, secrecy and epoch lifecycle.
     pub fn expose_for_provisioning(&self) -> &str {
         &self.0
     }

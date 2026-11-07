@@ -9,15 +9,18 @@ The old nginx mock projection is not this native contract.
 
 ## Current follow-up shared interfaces
 
-Accepted by the existing Node/nginx/runtime chats; implemented working source
-passes Windows25 scoped tests, release LocalHandler3, Linux network-none Docker22
+Historical checkpoint e346834, accepted by Node/nginx/runtime, passed
+Windows25 scoped tests, release LocalHandler3, Linux network-none Docker22
 and explicit other-UID parent1. Linux default2helper ignores are not successes.
 Scoped check/Clippy/format pass. Source-bound evidence is in public Specfold
-evidence20261107053239; canonical checkpoint proof is registered after commit.
+evidence20261107053239 with canonical source proof. These results do not qualify
+the later Python/Ruby profile or private-credential changes; their Cargo and
+hosted execution remains NOT_RUN until source-bound results are retained.
 This is component qualification; runtime admin/RIT and full product remain open.
 All new code/tests use Rust1.99.1/edition2024; no authored foreign-language glue.
 
-Startup JSON adds optional `"adapter":"node"|"nginx"` (omitted means Node).
+Startup JSON accepts `node`, `nginx`, `python-asgi`, `python-wsgi`, `ruby-rack`
+in the optional `adapter` field (omitted means Node).
 Configuration.adapter is the shared integrity::adapter::AdapterProfile. It is
 credential scope, never selected from wire contents. Native nginx identity is
 humanymous.nginx/0.1.0-experimental.1 and headerMode nginx-raw/nginx-normalized;
@@ -171,6 +174,22 @@ and requires owner-only protected DACLs. Custody uses the same implementation
 with a distinct child-inheritance policy. Unknown ACE types, null/empty DACLs and
 foreign owners/grants fail closed. No repository unsafe block or production
 ACL mutation was added. Native fixtures now provision descriptors through the
-safe Windows dependency; whoami.exe is used only to obtain the test token SID.
+safe Windows dependency and current_identity().sid() for the test token SID.
 Existing Unix ancestor checks remain. Exact new SHA remote qualification is
 required; older passing native reports do not cover these changes.
+
+## Private credential injection and normalized producers
+
+Credential::from_private_provisioning(Zeroizing<String>) -> Result<Credential,Rejection>
+consumes exactly64 lowercase hex bytes. Shared storage and generation buffers
+are zeroizing; borrowed/wire copies are caller-owned. No Debug/Clone/Serialize.
+Management requires an independent epoch and scope; grammar is not entropy or
+role validation. Runtime reuses the shared authenticator; injection integration
+and actual management hosted validation are still its owned work.
+
+PythonAsgi/PythonWsgi use humanymous.python; RubyRack uses humanymous.ruby, all
+version0.1.0-experimental.1. Modes are asgi-normalized/wsgi-normalized/rack-normalized.
+Readiness keys asgi_normalized/wsgi_normalized/rack_normalized are exact-profile
+only and false whenever required raw TLS/H2/header order/collector/RIT is absent.
+ASGI ordered duplicate pairs do not claim original casing; CGI map order and
+duplicate loss remain explicit. Native client/server peer checks are unchanged.
