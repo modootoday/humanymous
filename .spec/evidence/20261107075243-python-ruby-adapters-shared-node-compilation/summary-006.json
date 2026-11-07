@@ -1,0 +1,164 @@
+{
+  "schema": "humanymous.adapter-compilation/1",
+  "scope": "assigned Windows Ruby default pure tests and Ruby/Node scoped compile and lint",
+  "sourceHeadObservedBefore": "e2ae64b0e5554f2d5f540eb9789fbf12fcb37c33",
+  "sourceHeadObservedAfter": "ccb5e2598adf837991ee289eef064269d8634ea4",
+  "environment": {
+    "CARGO_TARGET_DIR": "target/node-native/build",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0"
+  },
+  "ownedSourceSha256": {
+    "crates/ruby-adapter/src/worker.rs": "6a72de650b258e29ca797b9d16a7c72f40ae6d093a1209eb04e850e6cecf0c05",
+    "crates/node-adapter/src/lib.rs": "6042f74648c07fb81e7bde4b687208424dc9b8f363af80a70b068beaacd0e9f7",
+    "crates/node-adapter/src/pilot.rs": "d50ab261e0a83ea7e8b6d9b3623a0eea75f789c7210bdf0464a5dc6194885e04",
+    "crates/node-adapter/src/bin/humanymous-node-package.rs": "8d8848e22153d9658dcea820dec2c3862e268400d3ebbdde6e851c952301b001",
+    "crates/node-adapter/src/bin/humanymous-node-package/install.rs": "cc21f5e0713607e81c5912c166b7ccb7acac2d9621caa0a91b07a2b33c51115b"
+  },
+  "sourceMonitoring": {
+    "packages": [
+      "humanymous-audit",
+      "humanymous-authority",
+      "humanymous-behavior",
+      "humanymous-framework-adapter",
+      "humanymous-integrity",
+      "humanymous-model",
+      "humanymous-native-security",
+      "humanymous-network",
+      "humanymous-node-adapter",
+      "humanymous-ruby-adapter",
+      "humanymous-scoring",
+      "humanymous-signals",
+      "humanymous-test-support"
+    ],
+    "fullClosureStable": false,
+    "deletedFiles": 0,
+    "qualification": "observed passes with moving shared dependency closure; not immutable whole-graph qualification",
+    "addedFiles": 0,
+    "beforeManifestSha256": "232c443ada00c0a949e75788e77088d03c65787506b51f3863fa85f86c61a71d",
+    "afterManifestSha256": "52b686634b0ef75745528301155b2cd81cd44c048bcf50977a2f8d22be0f2d83",
+    "enumeratedFilesBefore": 252,
+    "ownedSourceChangedDuringCommands": false,
+    "enumeratedFilesAfter": 252,
+    "changedFiles": [
+      "crates/audit/src/keys/custody/erasure.rs",
+      "crates/audit/KEYS-INTEGRATION.md"
+    ]
+  },
+  "commands": [
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "humanymous-ruby-adapter",
+        "--lib",
+        "--bins",
+        "--",
+        "--test-threads=1"
+      ],
+      "exitCode": 0,
+      "cargoReportedBuildSeconds": 5.2,
+      "rawLogSha256": "37be3c752caf151bc778b9c5b5687735df07d64c5b685efa14912ebcc1a74202"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-ruby-adapter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 0,
+      "cargoReportedBuildSeconds": 1.64,
+      "rawLogSha256": "45142a849714adf45b2f35734fe22513c36637019d8d7a3eccbdb2729579ed38"
+    },
+    {
+      "argv": [
+        "cargo",
+        "check",
+        "--locked",
+        "-p",
+        "humanymous-node-adapter",
+        "--all-targets"
+      ],
+      "exitCode": 0,
+      "cargoReportedBuildSeconds": 2.36,
+      "rawLogSha256": "630a118d4e590c89b75fc59c9f3a397d80a65a3912d3d4fb51511760e82b5d56"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-node-adapter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 0,
+      "cargoReportedBuildSeconds": 2.33,
+      "rawLogSha256": "e4ec5d3d958d18541b4580c12f0ffdbcc8ded015d8085c8c8b4d21bd63f3f5d9"
+    },
+    {
+      "argv": [
+        "cargo",
+        "check",
+        "--locked",
+        "-p",
+        "humanymous-node-adapter",
+        "--all-targets",
+        "--features",
+        "host-pilot"
+      ],
+      "exitCode": 0,
+      "cargoReportedBuildSeconds": 0.95,
+      "rawLogSha256": "df91303b825b2c932f9aeea4ed38d43b327e65c71c886b433c374b9429502354"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-node-adapter",
+        "--all-targets",
+        "--features",
+        "host-pilot",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 0,
+      "cargoReportedBuildSeconds": 0.96,
+      "rawLogSha256": "68c23c4d4a14c17618d4f5e4565c8d576b9c0fa295721e53bd8712526229fa5f"
+    }
+  ],
+  "rubyPureCounts": {
+    "lib": {
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 2
+    },
+    "packageDriver": {
+      "failed": 0,
+      "filtered": 0,
+      "ignored": 0,
+      "passed": 2
+    }
+  },
+  "nodePureTestExecution": "not_run",
+  "rubyNativeAbi": "not_run",
+  "actualNativeImportsInstallFrameworks": "not_run",
+  "pythonUnixWsgi": "not_compiled-platform-excluded",
+  "releaseQualifiedTuples": [],
+  "wholeProductQualified": false
+}

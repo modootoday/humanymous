@@ -318,3 +318,18 @@ summary005 records changed1 and fullClosureStable=false. Owned Rust did not chan
 during commands. Native Ruby, real frameworks/install and Unix WSGI are NOT_RUN.
 After returning B, moved the unchanged Drop impl before the tests (order only,
 no suppression); scoped format/diff pass. Fixed source retry awaits allocation.
+
+Root reallocated B for the order-only fix and remaining Node checks. All six
+assigned commands exited0: Ruby4pure (zero failures/ignores/filters; build5.20s),
+Ruby all-targets Clippy1.64s, Node default check2.36s/Clippy2.33s and host-pilot
+check0.95s/Clippy0.96s. Admission stayed34GiB free/roughly80% commit. Own Rust
+remained frozen and no warning was suppressed. All commands were completed,
+including independent Node checks, then B returned; session98963 terminal0.
+
+New recursive before/after inventory covers13packages/252files, including added/
+deleted detection. Added0/deleted0; TWO paths changed: audit/src/keys/custody/
+erasure.rs and audit/KEYS-INTEGRATION.md. Summary006 binds exact own source, logs
+and manifests, and marks fullClosureStable=false. Observed passes are not final
+immutable graph qualification. No retry loop on moving dependencies. Native Ruby,
+Node parser execution/import/install/framework and Unix WSGI compile remain
+separate NOT_RUN gates; Windows cfg-excluded source is never called compiled.

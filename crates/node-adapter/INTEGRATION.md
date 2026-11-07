@@ -16,8 +16,11 @@ Rust package inspector loads generated CJS/ESM under Node/Bun with closed stdin,
 fixture/loader overrides cleared, and requires one actual Rust capability receipt
 with exact false. Old binaries that ignore the mode and emit no receipt reject.
 Two pure receipt-validation definitions cover absent/duplicate/invalid/oversized
-and non-boolean states. New initializer/package code is NOT_COMPILED/NOT_RUN;
-earlier compilation receipts do not cover these bytes. Actual child timeout and
+and non-boolean states. Summary006 records default and host-pilot all-targets
+check/Clippy success for this initializer/package code. Shared audit source moved
+during the batch, so full immutable-closure qualification is not established.
+Node parser units, actual native imports and framework cases remain NOT_RUN.
+Actual child timeout and
 stream memory supervision remain the invoking runner's responsibility; accepted
 receipt sizes are checked after capture, not claimed as streaming bounds.
 
@@ -35,7 +38,9 @@ Node/Bun (four cases), then resolves the package through Node --require/--import
 with closed stdin (two cases, no authored JS). All six require actual production
 feature receipts. Success emits archive SHA256 and component-only install status;
 it does not establish generation lineage, frameworks, or whole-product support.
-The source has not compiled or executed; staging inspection is not clean install.
+The source passed the summary006 Windows compilation/lint gates, with the shared
+closure limitation above. Actual installation/import has not executed; staging
+inspection is not clean install.
 
 Current followup consumes framework-adapter shared config/envelope/entropy and
 process admission. NAPI error/host lifecycle remain here. Common schema adds only

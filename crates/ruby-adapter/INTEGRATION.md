@@ -66,6 +66,11 @@ The unchanged Drop impl was moved before tests without suppression. This order
 fix awaits retry. A conservatively tracked test-support Docker file changed
 during the batch, so full-closure stability is not claimed. Exact source/log
 hashes are in evidence:root/20261107075243 summary005; native probes remain NOT_RUN.
+Retry summary006 records all four pure cases passing again and all-targets
+Clippy passing without suppression after the order-only fix. The conservative
+13-package/252-file ledger then observed audit erasure source and integration-doc
+changes, so these are observed passes on a moving shared closure rather than an
+immutable final qualification. No Ruby native feature or framework was executed.
 
 Local Windows/WSL actual execution is now user-authorized under root allocation;
 the active benchmark quiet window still permits no new build/runtime command.
