@@ -55,10 +55,12 @@ probing an unrelated deployment.
 
 Simulation report comparison is semantic JSON comparison against a fresh replay:
 object ordering and equivalent integer/float representations are not canonical
-byte commitments. The current Value-based simulation decode is not a strict
-duplicate-key wire validator. Network reports use typed decoding from original
-bytes for their declared fields, but this report checker is not the strict
-experimental adapter parser or a generic Draft v0 canonicalization test.
+byte commitments. Working source now rejects duplicate decoded object keys at
+every depth before replay/schema checks, including escaped aliases and dynamic
+maps. Network report DTOs reject unknown fields; simulation compares the complete
+current replay fieldset. These source changes still await their own validation.
+They do not turn the checker into the experimental adapter parser, JCS validator
+or a generic Draft v0 canonicalization test.
 Retain the original report and its hash alongside any normalized summary.
 
 Network ledger validation recomputes the catalog order, expected statuses/effects,

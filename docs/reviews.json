@@ -2,6 +2,15 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/attacker/src/verification/json.rs",
+  "sha256": "adddc643d22438dc7ee178443a25635c279dab6639c107d78e54531a49bf8320",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete report-specific recursive Serde visitor and source tests. It rejects duplicate decoded keys before insertion at every object depth, including escaped aliases, arrays and dynamic maps; finite JSON values and original u64 representation are retained. Public reference labels semantic structure guard, not JCS/byte equality or cryptographic report authenticity; tests were read, not executed in this docs review.",
+  "pages": [
+    "docs/reference/red-team-catalog.md"
+  ]
+},
+{
   "source": "crates/audit/src/keys/backups.rs",
   "sha256": "2be069378e0bdae9dc0260e6bcdacdc2c399185dbf807a800da46fb2fbbbfd86",
   "reviewer": "codex/rust-pages",
@@ -85,9 +94,9 @@
 },
 {
   "source": "crates/attacker/src/network/report.rs",
-  "sha256": "b07d214b495cad3ddc198bddd2266592941f8ab1ec6c7da799c42753e997b852",
+  "sha256": "a271fe8c39621ee5ffdc2ecda4aa7b7339d39575aae98f0a76fc1f4e6127edb6",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full typed network row/step/totals/report and validator. Reviewed exact shuffled catalog, status/effect expectations, nonoverlapping audit sequences, process-receipt continuity, audited runtime.decision counts and scoped pass recomputation with false participant/full-product flags. Public catalog distinguishes internal consistency and hex/identity checks from reopening/authenticating original WAL or attesting binaries; actual supervisor and audit-reader evidence remains required.",
+  "notes": "Reviewed strict unknown-field annotations on Step, NetworkRow, NetworkTotals and NetworkReport against previously read complete validator. Accounting/catalog/identity/sequence semantics remain as before. Public catalog records structural rejection as working source, not an executed result or authenticated original WAL/binary/participant proof.",
   "pages": [
     "docs/reference/red-team-catalog.md"
   ]
@@ -121,18 +130,18 @@
 },
 {
   "source": "crates/attacker/src/verification.rs",
-  "sha256": "948742d14baeba7f01fc9f535e3e20051869f09082a03e47e1df5742fa62b692",
+  "sha256": "66374e198689421514d6a477fd7d77804476821a560778c44e52d09ac9cf5434",
   "reviewer": "codex/rust-pages",
-  "notes": "Read entire bounded verify_bytes and semantic recursive equality, exact integer comparison then float compatibility, current-source simulation replay and original-byte typed network decode delegation plus source tests. Public catalog explicitly excludes canonical-byte and strict simulation duplicate-key validation, keeps original report hashes, and distinguishes internal consistency from measured external execution. Deeper network validation and actual changed-source tests remain separate.",
+  "notes": "Read v0.4 verifier after prior full review: duplicate-decoded-key prepass precedes simulation replay or original typed network decode; new negative tests cover nested/escaped/dynamic duplicates and unknown DTO fields. Public catalog supersedes former lossy-v1 limitation with working strict structure while retaining semantic numeric/order compatibility, current-engine scope and no byte/JCS/authentic-execution claim. Owner validation pending; historical63f69 does not qualify these bytes.",
   "pages": [
     "docs/reference/red-team-catalog.md"
   ]
 },
 {
   "source": "crates/attacker/INTEGRATION.md",
-  "sha256": "573f1207baba3297db6f6bfe46ffd4fd722b4735828e6f55ea7d5e76808c45b2",
+  "sha256": "10ebf312f77e1209de052d03560f62b5c25f64d2b943341a91db1b77067c5535",
   "reviewer": "codex/rust-pages",
-  "notes": "Read current ownership/API/report/exit contract and historical immutable network results versus later uncompiled v0.3 boundary/parser/verifier edits. Public catalog separates scoped acceptance, audited verdicts, actual participant flags and unsupported controls. Historical source and lost/failed evidence cannot retrospectively qualify current code; root hosted policy is canonical and no local runtime dispatched.",
+  "notes": "Reviewed v0.4 change against previous full integration source: strict decoded-key visitor, closed network DTOs, semantic JSON compatibility and explicit current-source/pending validation. Public catalog preserves original-source and ledger authenticity boundaries and does not apply prior hosted results to this follow-through.",
   "pages": [
     "docs/reference/red-team-catalog.md"
   ]
