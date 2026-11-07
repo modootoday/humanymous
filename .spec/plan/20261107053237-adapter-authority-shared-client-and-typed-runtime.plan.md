@@ -905,3 +905,29 @@ hash; Root acceptance must precede implementation. No Rust codec, key, account,
 SCM/elevation, native workload, shared Cargo/lock change or production activation
 was performed. Next smallest accepted slice is bounded pure codec+strict signature
 verification with golden/mutation vectors, then actual native/provider admission.
+
+## Independent authorization v2 critique reflected and amended freeze
+
+Native/CLI/Runtime independently critiqued frozen93c2c337. Reflected P0 I/P
+Ed25519 public-key inequality (otherwise P could sign I delegation), mandatory
+pairwise P/S/O SID and PID nonalias plus I/P principal distinction. All FOUR
+principal SIDs distinct remains a PROPOSAL pending installer/backend/Root review,
+not accepted policy or an implicit extra codec condition. Added closed bounded
+ExpectedAuthorizationData and exact equality matrix covering EVERY signed field,
+including original I SID commitment/P artifact/BASE plans and pair/time bindings.
+No caller data becomes issuer/store/elevation/native proof.
+
+Native actual grammar independently checked: humanymous-lab- prefix15 plus1..48
+lowercase ASCII/digit/hyphen tail means16..63 total, correcting an independent
+reviewer's62 arithmetic and replacing earlier conservative64 bound. Final valid
+max bodies393/710/201, artifacts467/784/275, base64url623/1046/367, completeHello
+2768bytes. Explicit nonzero epochs/grant/delegation/nonce parse rejection remains
+separate from CSPRNG/one-claim proof. Checked time/cap equality/reference expiry
+and canonical base64 unused-low-bit mutations are now explicit.
+
+Amended exact SoT SHA256
+09bc9d5506613dc9837b918fbe7e9fbd479db2a2b1b5e66400be446499149a19
+sent to root/native/runtime/CLI for delta verification. All actual native/store/
+W/claim/transport/Ready and other-OS provider gates remain OPEN. No Rust codec,
+Cargo edge, private key/provider read or workload. Root must accept final packet
+contract and existing-version graph edges before first pure implementation.

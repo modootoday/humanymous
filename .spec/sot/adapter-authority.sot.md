@@ -870,19 +870,85 @@ Delegation, and the exact I-authorized P key for Prepared/Commit. Reject weak or
 noncanonical keys/signatures. No caller verifier callback or record-selected
 algorithm. All unknown versions/purpose/flags/record kinds refuse before promotion.
 
-Canonical names: u8 byte length1..64, exact existing owned ASCII service-name
-namespace, pairwise distinct P/S/O. Canonical binary Windows SID: u8 length8..68,
+Canonical names: u8 byte length16..63, EXACT native-security owned grammar:
+ASCII humanymous-lab- followed by a nonempty tail of at most48 lowercase ASCII
+letters, digits or hyphens. Reuse that accepted grammar, never general ASCII or
+case folding; valid maximum-name vectors use63bytes, NOT64. P/S/O names differ.
+Canonical binary Windows SID: u8 length8..68,
 revision1, subauthority count0..15 and exact length8+4*count, exact bytes. Native
 projection must match actual queried primary TokenUser, never configured account
 or pipe owner alone. Reject PID0 and creationFILETIME0; equality against retained
 instances remains mandatory outside this codec. Digests/keys32, epochs16, nonce/
 grant/delegation identifiers32; fresh nonzero CSPRNG identifiers are an issuer
 obligation, not entropy proof from observing bytes.
+Pure parsing/binding MUST reject all-zero installation/P/S/O/credential epochs,
+grant/delegation IDs and Hello nonce. Nonzero bytes still do NOT prove CSPRNG
+freshness, uniqueness, native identity or actual one-claim consumption.
+The mandatory v2 comparisons require pairwise DISTINCT P/S/O principal SIDs and
+I SID != P SID, not merely different service names. ExpectedAuthorizationData
+must contain the original protected installer's canonical SID as well as P/S/O
+projections so pure binding checks can reject same-SID/different-name cases.
+I's commitment must match that SID and installation epoch. Native admission must
+independently enforce those actual-principal inequalities against the protected
+original installer record and retained role tokens; expected caller data is not
+proof. Additional I SID != S/O SID (all FOUR distinct) remains an explicit
+PROPOSAL pending native installer/backend applicability and Root review; it is
+NOT accepted production policy or an implicit extra codec admission condition.
+No implementation may silently waive mandatory P/S/O or I/P separation, or
+claim this data comparison proves issuer store/elevation authorization.
+I and P Ed25519 verification keys MUST also differ byte-for-byte, with distinct
+recomputed key fingerprints: reusing I's private key as P's key would let P sign
+delegations despite the stated issuer separation. Pairwise distinct P/S/O live
+PIDs are required even if caller-supplied creation times differ; their full actual
+instance projections must match the retained native owners. I is the original
+installer identity record, not a requirement that its old process remain alive.
+
+### Closed expected-data schema and equality matrix
+
+ExpectedAuthorizationData is a closed bounded Rust DATA struct, not a trust
+constructor or a wire-selected policy. Proposed exact members:
+- installer: public_key32, canonical_SID(8..68), installation_epoch16,
+  selected_delegation_artifact_commitment32, delegation_id32,
+  delegation_not_before_ms:u64, delegation_not_after_ms:u64;
+- publisher: owned_name(16..63), canonical_SID, public_key32, artifact_digest32,
+  actual_PID:u32, actual_creation_FILETIME:u64, publisher_epoch16;
+- service and observer: fixed role1/2, owned_name, canonical_SID, actual_PID,
+  actual_creation_FILETIME, role_epoch16, BASE_plan_digest32, artifact_digest32;
+- scope: installation/tenant/origin/revision, each1..128 ASCII alphanumeric or
+  ._:-, plus application_authority1..1024 printable ASCII excluding @/#? and
+  backslash, EXACT existing Authority scope grammar, no case normalization;
+- attempt: grant_id32, credential_epoch16, startup_cap_ms:u32,
+  earliest_issued_ms:u64, latest_not_after_ms:u64.
+
+Validate lengths, namespace/SID/profile inequalities, nonzero IDs/epochs and time
+intervals BEFORE hashing/allocating variable data. No arbitrary extra fields,
+unbounded expected-scope string or JSON-derived native context. Reference now_ms
+is the separate explicit DATA argument, not an implicit trusted current clock.
+
+| Signed field group | Required data comparison/check |
+|---|---|
+| version/magic/kind/domain/purpose/flags/mask | Exact protocol constants, including Commit mask3; mask remains an assertion |
+| I key fingerprint/principal/install epoch | Recompute from expected I key/SID/epoch; exact equality and I/P separation |
+| Delegation record selection/ID/window | Complete artifact hash equals selected expected commitment; exact ID/window |
+| P key/name/SID/artifact | Exact expected publisher fields; verify P signatures only under that delegated key |
+| scope/installation/pair policy commitments | Recompute all exact bounded expected fields, including both BASE plans/artifacts |
+| delegation links in Prepared and Commit | Both equal the SAME complete verified Delegation artifact commitment |
+| P instance commitment/PID/creation/epoch | Recompute commitment plus exact expected actual-instance projections |
+| S/O names/SIDs/PIDs/creation/epochs/plans/artifacts | Exact expected role fields, pairwise names/SIDs/PIDs distinct |
+| grant/credential epoch | Exact expected nonzero attempt data; never selected from incoming records |
+| Prepared artifact link | Hash COMPLETE exact Prepared artifact including signature; exact Commit equality |
+| delegation validity | Exact selected window, not_before < not_after; bounds every attempt time |
+| Prepared/Commit times and cap | Signed ordering/reference checks below, earliest_issued <= issued and not_after <= latest_not_after; both caps equal exact positive expected cap |
+| Hello repeated fields/pins | Match verified record data plus exact recomputed role-instance commitments; nonzero Hello nonce |
+
+No signed security field is ignored. A mismatch returns static typed error, not
+partial success with an omitted policy comparison. Golden mutation tests cover
+each row independently; native projection checks remain separate actual evidence.
 
 ### Installer delegation record
 
 Magic HMBGD002. Domain humanymous.observer-bootstrap.authorization/2/delegation.
-Body EXACT order (maximum394bytes; artifact468bytes):
+Body EXACT order (maximum393bytes; artifact467bytes):
 1. version:u16=2; installation_epoch16; bootstrap_scope_commitment32;
 2. original_installer_principal_commitment32; installer_key_fingerprint32;
 3. publisher_SID(length+bytes); publisher_service_name(length+bytes);
@@ -903,7 +969,7 @@ are STILL native provisioning/probe requirements, not implemented by certificate
 ### Pair preparation record
 
 Magic HMBGP002. Domain humanymous.observer-bootstrap.authorization/2/prepared.
-Body EXACT order (maximum712bytes; artifact786bytes):
+Body EXACT order (maximum710bytes; artifact784bytes):
 1. version:u16=2; delegation_artifact_commitment32;
 2. bootstrap_scope_commitment32; bootstrap_installation_commitment32;
    publisher_key_fingerprint32; grant_id32; publisher_instance_commitment32;
@@ -979,11 +1045,15 @@ credential_epoch, sender_pin, receiver_pin, hello_nonce, grant. Existing four
 commitment/ID strings are64lowerhex; three epochs/hello_nonce32lowerhex. Grant
 has EXACT order format, delegation, prepared, commit. ALL THREE complete artifacts
 are canonical UNPADDED BASE64URL (RFC4648 URL alphabet, no '=' or whitespace,
-strict canonical re-encode equality including unused trailing bits). This replaces
+strict canonical re-encode equality including unused trailing bits). At maximum
+sizes Delegation/Commit final symbols have two unused low bits; Prepared has four.
+Mutating any unused bit MUST refuse even when a permissive decoder yields the
+same bytes. Cover every length remainder, not only these maximum-size vectors.
+This replaces
 hex because the complete delegation MUST also fit inside Hello, never a side file
-or unbounded attachment. Binary caps468/786/275 -> encoded caps624/1048/367.
-Independent compact ASCII maximum =2039artifact chars +100grant syntax +632other
-metadata =2771bytes. Enforce received metadata<=3072 BEFORE JSON parse/decode,
+or unbounded attachment. Binary caps467/784/275 -> encoded caps623/1046/367.
+Independent compact ASCII maximum =2036artifact chars +100grant syntax +632other
+metadata =2768bytes. Enforce received metadata<=3072 BEFORE JSON parse/decode,
 frame<=4096, aggregate startup<=32768. Strict unknown/duplicate/missing/type and
 canonical key order/no whitespace/escapes. Final encoded size is checked, not
 inferred from arithmetic. Offer ONLY has64lowerhex secret bytes; all other phases
@@ -997,7 +1067,13 @@ now_ms DATA; it does not certify that caller clock/native manager is trusted.
 Require not_before <= issued <= commit_issued < not_after <= delegation expiry,
 and commit_issued <= now_ms < not_after for the explicit reference-time check.
 Require a positive cap within an explicitly configured protocol/policy bound, no default
-lease. Native owner separately conserves the minimum original local monotonic
+lease.
+All time arithmetic is checked: reject reversed intervals or overflow BEFORE
+subtraction/conversion; require cap <= checked(not_after-issued) and exact
+Prepared/Commit cap equality. Reference now==expiry refuses. No wrapping or
+saturating arithmetic may turn invalid/expired data into accepted authorization.
+The expected maximum cap must itself be explicit/positive, never a default lease.
+Native owner separately conserves the minimum original local monotonic
 startup deadline and signed wall remainder, detects rollback and never renews via
 frame/retry/ACK. Key/delegation/pair/instance changes require fresh explicit native
 transaction. No old record/cursor resurrection or private-key reset on restart.
