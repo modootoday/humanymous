@@ -182,3 +182,102 @@ compiler, Clippy or tests ran: Root must declare the workspace coherent first.
 No target/process lease, ref operation or structural move is held. Existing
 immutable hosted/source-specific work is untouched; this source-only import
 delta does not inherit any historical qualification.
+
+### RUNTIME-SLICE-02 Audit owner disposition (read-only)
+
+Reviewed Audit src checkpoint f322091cc257bdff344d9a6343c76ddb8885b73f with clean
+owned source. The accepted runtime children are gateway/authority/audit/capture/
+network/native_security; gateway retains the former runtime application child.
+No source/import/manifest/visibility/path change or compiler was performed for
+this disposition. Platform lower-cluster qualification must precede this move.
+The current graph/manifests remain Root-owned and are not qualified by this review.
+
+| Exact surface | Required post-merge disposition | Legitimate caller / concrete reason |
+| --- | --- | --- |
+| keys/vault.rs ErasurePermit::issued | pub(in crate::audit), not crate-wide | control/ledger.rs erase/resume_erasure and keys/custody/erasure.rs retained execution/recovery both mint only after their existing checked durable flow; no gateway/authority direct construction exception |
+| ErasurePermit::bound_to and Vault::authorizes | pub(in crate::audit::keys) or equivalent narrower keys visibility | vault.rs and sibling keys/custody.rs consume these; private-to-vault would break real custody checks, runtime-wide visibility is unnecessary |
+| control/policy.rs Authorization.proposal/digest/administrators | Private fields in policy; retain public read-only accessors | Only Administrators::authorize constructs them in policy.rs. ledger.rs consumes digest()/administrators() getters; no direct-field consumer exception was found |
+| Custody dir/owner/_lock/poisoned; ready/read/exists/commit internals | Keep existing private fields/methods | Public acquire and authenticated load/recovery entrypoints retain their validation and lifetime lock; never replace these with a sibling builder/Default/from-data constructor |
+| keys/custody::permissions and its directory/create/existing/file/directory_file helpers | pub(in crate::audit) maximum | Used by multiple Audit subcontexts; gateway/authority must not obtain a raw custody file construction path |
+| storage::PrivateState and open/open_bounded/read/pending/committed/commit/promote_pending | pub(in crate::audit) maximum | Shared Audit ledger/snapshot/backups persistence, not a new arbitrary sibling state writer |
+| storage::ExclusiveFile, acquire and test-only duplicate_description | pub(in crate::audit) maximum; preserve cfg gates | Native/custody/witness storage shares it; testing capability in platform must not become permission to construct an Audit ownership proof |
+| RetainedControlState::checked | Preserve control-only parent scope, equivalent pub(in crate::audit::control) | control/ledger.rs constructs after authenticated state/exact pin checks. A returned state is observation, not an effect grant or healthy lease |
+| ActionPermit and RetainedActionPermit fields | Keep private to control/operations.rs | Only checked local consumption and exact independent retention construct these; do not add constructors, Clone, Deserialize or public test builders |
+| Checkpoint::verify_signature_bounded, record/framing/merkle internal helpers | Audit context or narrower | They are shared Audit algorithms, not sibling proof constructors; preserve one implementation and fixed signing/wire bytes |
+| NativeSource/NativeFiles/OpeningOwner/VerifiedScan/ReadOnlyOwner and Source seal | Keep current private nesting plus ancestor cfg(test)/Linux-x86_64 gates | No sibling access exception. Original bounds, actual same-owned files/keys and non-Ready read-only result remain mandatory; public testing features do not grant capabilities |
+
+There is NO required exception that lets gateway, authority, capture, network or
+native_security construct ErasurePermit or mutate Authorization approval fields.
+Leaving issued or those fields pub(crate) after the merge would create new sibling
+construction reach that did not exist across the old packages. Narrow before the
+first moved compile. The signature-stage Authorization is not a durable effect
+grant; do not overstate field privacy as proof of native effect enforcement.
+
+The public checked storage::permissions WindowsPrivacy/verify_windows_privacy
+re-export has a real existing Authority transport caller. Map its implementation
+to crate::native_security::storage or an explicitly curated safe public path;
+do not solve the import by widening custody::permissions. Keep the approved
+Windows object bridge unsafe implementation in platform. No additional helper
+package or forwarding-only module is required by Audit.
+
+Old Audit-local crate::control/checkpoint/keys/storage/log/record/verification/
+merkle references must become crate::audit::<context> references, preserving
+deeper module parents. Old external humanymous_native_security becomes the
+accepted native_security context. Already migrated humanymous_core::signals
+remains external core. Qualify Authorization names by context: Audit control's
+signature result, Authority startup's SignatureCheckedAuthorization and gateway
+session Authorization are distinct types, not candidates for root-level aliases.
+
+### Runtime move blockers and required test identities
+
+1. Resolve the two independent service targets audit-witness and
+   audit-control-retainer BEFORE moving src/bin: runtime package consolidation
+   must preserve separate processes, credential stores, exact external anchors
+   and lock lifetimes. Root must state target/install/required-feature placement;
+   no in-process replacement or automatic default-install promotion. Update
+   CARGO_BIN_EXE_audit-witness and CARGO_BIN_EXE_audit-control-retainer consumers
+   atomically with the actual target map.
+2. Frozen JSON fixtures records/checkpoints/verification/keys/merkle and UI probe
+   files move only with their owning tests or get new package-local includes.
+   Preserve bytes. Historical f9 baseline193/99317 seam/probe selectors stay
+   immutable; Delivery's old-path source-check/include_bytes consumer needs its
+   explicit historical-object strategy or a NEW post-move baseline before those
+   paths disappear. A compiler success under an unrelated new tree is not old
+   f9 qualification.
+3. Add actual merged-context compile checks before declaring the new privacy
+   boundary preserved: a gateway/authority sibling cannot call issued, construct
+   Authorization fields, construct RetainedControlState/permits, or build native
+   proof/Ready from data. Use actual moved types and positive legal Audit issuer
+   controls. Expected privacy diagnostics are the invariant for THESE access
+   checks; they are not substitutes for the separate lifetime/move/signature
+   probes, where privacy-only failures remain invalid evidence.
+
+Concrete existing identities to preserve/discover under the moved context:
+
+- Library control::policy::tests: two_independent_signatures_bind_every_operation_field;
+  missing_duplicate_unknown_and_invalid_approvals_fail_closed;
+  exact_time_bounds_and_canonical_ids_are_required;
+  aliases_and_weak_keys_cannot_form_quorum.
+- control_operations integration target:
+  exact_subject_scope_erasure_is_durable_and_cannot_authorize_another_subject;
+  pending_erasure_rejects_same_subject_permit_from_foreign_scope;
+  retained_erasure_rejects_scope_and_recovers_only_with_fresh_exact_approval;
+  durable_consumption_rejects_replay_and_whole_file_rollback;
+  external_retention_failure_spends_nonce_without_issuing_effect_grant;
+  retention_service_real_child_persists_restarts_and_rejects_stale_pin;
+  sealed_owner_retains_both_locks_and_repairs_only_missing_external_checkpoint.
+- durable_witness integration target:
+  typed_client_rejects_forged_or_mismatched_receipts_and_poisoned_cache;
+  restart_pins_latest_head_and_refuses_disk_rollback_or_missing_state;
+  witness_process_lifetime_and_interrupted_recovery.
+- key_custody integration target: competing_process_cannot_load_or_create;
+  process_exit_releases_lock_and_rotation_pending_requires_recovery.
+- key_backups integration target:
+  retained_retirement_refuses_missing_inventory_foreign_authority_and_expired_grant;
+  crash_reconcile_preserves_consumed_authorization.
+
+These are required identities, not newly executed tests. Discover actual moved
+names/targets before selection and require nonzero exact discovery. Native child
+cases need real hosted OS/process tests; helper ignores/zero-test binaries and
+the separate prerequisite fixture gate do not count as semantic passes. Retain
+the original13-case/12-compiler-attempt obligations and every broader gate above.
