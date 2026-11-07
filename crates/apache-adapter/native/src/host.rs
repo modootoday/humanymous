@@ -2,11 +2,11 @@
 //! serialization are ABI premises, not conclusions from null checks.
 use crate::ffi::*;
 use humanymous_apache_adapter::{Cancellation, Child, Mpm, ReadMode, Replay};
-use humanymous_authority::client::{BoundResponse, Verdict};
 use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_framework_adapter::{
     Admission, Configuration, Observation, Pending, body_length, internal_header,
 };
+use humanymous_runtime::authority::client::{BoundResponse, Verdict};
 use std::ffi::{CStr, c_char, c_int, c_void};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::path::{Path, PathBuf};
@@ -350,14 +350,14 @@ extern "C" fn register(_: *mut apr_pool_t) {
 }
 
 fn read_configuration(path: &Path) -> Result<Configuration, ()> {
-    use humanymous_authority::configuration::Peer;
+    use humanymous_runtime::authority::configuration::Peer;
     use std::io::Read;
     use std::os::unix::fs::{MetadataExt, PermissionsExt};
     let uid = rustix::process::geteuid().as_raw();
     if path.canonicalize().map_err(|_| ())? != path {
         return Err(());
     }
-    humanymous_authority::transport::private_directory(
+    humanymous_runtime::authority::transport::private_directory(
         path.parent().ok_or(())?,
         &Peer::Unix { uid },
     )
