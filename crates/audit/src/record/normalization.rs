@@ -4,10 +4,18 @@ use unicode_normalization::{
     is_nfkc_quick,
 };
 
-pub(super) fn nfc(value: &str) -> String {
-    let mut safe = String::with_capacity(value.len());
-    let mut count = 0;
-    for character in value.chars() {
+struct StreamSafe<'a> {
+    chars: std::str::Chars<'a>,
+    count: usize,
+    pending: Option<char>,
+}
+impl Iterator for StreamSafe<'_> {
+    type Item = char;
+    fn next(&mut self) -> Option<char> {
+        if let Some(character) = self.pending.take() {
+            return Some(character);
+        }
+        let character = self.chars.next()?;
         let (mut leading, mut trailing, mut starter) = (0, 0, false);
         decompose_compatible(character, |part| {
             // Go's stream-safe policy also counts backwards-combining zero-CCC
@@ -24,23 +32,41 @@ pub(super) fn nfc(value: &str) -> String {
                 trailing = 0;
             }
         });
-        if count + leading > 30 {
-            safe.push('\u{34f}');
-            count = 0;
+        let joiner = self.count + leading > 30;
+        if joiner {
+            self.count = 0;
         }
-        count = if leading > 0 {
-            count + leading
+        self.count = if leading > 0 {
+            self.count + leading
         } else {
             trailing
         };
-        safe.push(character);
+        if joiner {
+            self.pending = Some(character);
+            Some('\u{34f}')
+        } else {
+            Some(character)
+        }
     }
-    safe.nfc().collect()
+}
+
+/// The same Go stream-safe Unicode15 transform without collecting an intermediate
+/// safe string. Each independent traversal starts with fresh normalization state.
+pub(super) fn nfc_chars(value: &str) -> impl Iterator<Item = char> + '_ {
+    StreamSafe {
+        chars: value.chars(),
+        count: 0,
+        pending: None,
+    }
+    .nfc()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn nfc(value: &str) -> String {
+        nfc_chars(value).collect()
+    }
     #[test]
     fn unicode_data_and_stream_safe_boundary_are_frozen() {
         assert_eq!(unicode_normalization::UNICODE_VERSION, (15, 0, 0));

@@ -19,6 +19,11 @@ production recovery/proof path. It additionally proposes complete verification
 before any torn-tail repair. Resource profile, bounded proof-rescan strategy and
 consumer cursor APIs remain review gates; this pointer authorizes no code or
 new current-source qualification. Current110-case Windows evidence stays frozen.
+After independent review of43cad32e, root accepted S1 private/read-only primitives
+ONLY, with mandatory count-and-replay canonical framing, separate compatibility
+error/scope accumulation and preserved unsigned-proof semantics. These conditions
+are recorded in the plan before code. No production S2/S3 recovery mutation or
+consumer promotion, new dependency/manifest edit or validation workload is implied.
 
 ### Retained local backup retirement delta v0.1
 

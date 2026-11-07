@@ -1,5 +1,16 @@
 # Sealed key compatibility integration
 
+## Unqualified S1 canonical core after restricted review acceptance
+
+Shared count-and-replay field emission now backs canonical_bytes and record_hash;
+hashing uses a fixed8KiB buffered sink instead of full canonical payload storage.
+Go stream-safe NFC is an iterator and arrays emit without joined payload Strings.
+Five pure regressions plus unchanged92-record/13k+ Unicode vectors await actual
+compilation/execution. No measured memory-bound or whole-S1 completion claim.
+Frame/compatibility verifier/frontier/native inspection and S2/S3 remain pending.
+The complete110-pass Windows checkpoint below is historical, not this source.
+Evidence:root/20261107110902; plan103624 holds independent review requirements.
+
 ## Latest complete audit package Windows qualification
 
 Owned source174e5f21 (including retained backup aa655e7b and WAL helper d7045fee)

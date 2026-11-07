@@ -1,4 +1,5 @@
-use super::{Record, normalization::nfc};
+mod encoder;
+use super::Record;
 use hmac::{Hmac, Mac};
 use sha2::{Digest, Sha256};
 use subtle::ConstantTimeEq;
@@ -30,17 +31,6 @@ pub fn verify_record_mac(hash: &str, encoded: &str, key: &[u8]) -> bool {
         .is_ok_and(|expected| bool::from(expected.as_bytes().ct_eq(encoded.as_bytes())))
 }
 
-fn field(out: &mut Vec<u8>, key: &str, value: &str) {
-    out.extend_from_slice(&(key.len() as u32).to_be_bytes());
-    out.extend_from_slice(key.as_bytes());
-    out.extend_from_slice(&(value.len() as u32).to_be_bytes());
-    out.extend_from_slice(value.as_bytes());
-}
-fn scalar(out: &mut Vec<u8>, key: &str, value: &str) {
-    if !value.is_empty() {
-        field(out, key, &nfc(value));
-    }
-}
 fn confidence(value: f64) -> String {
     if value.is_nan() {
         "NaN".into()
@@ -58,90 +48,30 @@ fn confidence(value: f64) -> String {
 /// untouched. Empty scalars are omitted; canonical array fields always exist.
 pub fn canonical_bytes(record: &Record) -> Vec<u8> {
     let mut out = Vec::new();
-    scalar(&mut out, "event_id", &record.event_id);
-    field(&mut out, "seq", &(record.seq as i64).to_string());
-    for (key, value) in [
-        ("node_id", &record.node_id),
-        ("ts", &record.ts),
-        ("event_type", &record.event_type),
-        ("event_version", &record.event_version),
-        ("actor.kind", &record.actor.kind),
-        ("actor.id", &record.actor.id_pseudonym),
-        ("tenant_id", &record.tenant_id),
-        ("session_pseudonym", &record.session_pseudonym),
-        ("request_id", &record.request_id),
-        ("correlation_id", &record.correlation_id),
-        ("host", &record.host),
-        ("route_class", &record.route_class),
-        ("verdict", &record.verdict),
-    ] {
-        scalar(&mut out, key, value);
-    }
-    field(&mut out, "risk_score", &record.risk_score.to_string());
-    let mut rules = record.triggered_rules.clone().unwrap_or_default();
-    rules.sort();
-    // The frozen source normalizes scalar strings and signal IDs, but not the
-    // rule array or verdict element strings. Preserve those exact bytes.
-    field(
-        &mut out,
-        "triggered_rules",
-        &format!("[{}]", rules.join(",")),
-    );
-    let mut signals = record
-        .top_signals
-        .as_deref()
-        .unwrap_or_default()
-        .iter()
-        .collect::<Vec<_>>();
-    super::ordering::sort_signals(&mut signals);
-    let parts = signals
-        .into_iter()
-        .map(|signal| {
-            format!(
-                "{}|{}|{}",
-                nfc(&signal.id),
-                signal.verdict,
-                confidence(signal.conf)
-            )
-        })
-        .collect::<Vec<_>>();
-    field(&mut out, "top_signals", &format!("[{}]", parts.join(",")));
-    for (key, value) in [
-        ("enforcement_action", &record.enforcement_action),
-        ("enforcement_mode", &record.enforcement_mode),
-        ("fail_mode", &record.fail_mode),
-        ("fail_reason", &record.fail_reason),
-    ] {
-        scalar(&mut out, key, value);
-    }
-    field(&mut out, "latency_us", &record.latency_us.to_string());
-    if let Some(upstream) = &record.upstream {
-        field(&mut out, "upstream.status", &upstream.status.to_string());
-        scalar(&mut out, "upstream.error_class", &upstream.error_class);
-    }
-    if let Some(tls) = &record.tls {
-        for (key, value) in [
-            ("tls.ja4", &tls.ja4_pseudonym),
-            ("tls.h2fp", &tls.h2fp_pseudonym),
-            ("tls.sni", &tls.sni_pseudonym),
-        ] {
-            scalar(&mut out, key, value);
-        }
-    }
-    for (key, value) in [
-        ("config_version", &record.config_version),
-        ("key_id", &record.key_id),
-        ("data_class", &record.data_class),
-    ] {
-        scalar(&mut out, key, value);
-    }
+    encoder::write_record(record, &mut out, encoder::Limits::compatibility())
+        .expect("canonical field byte lengths must fit u32");
     out
 }
 
 /// Hex SHA256(canonical semantic body || exact previous-hash text).
 pub fn record_hash(record: &Record, previous_hash: &str) -> String {
     let mut digest = Sha256::new();
-    digest.update(canonical_bytes(record));
+    struct HashSink<'a>(&'a mut Sha256);
+    impl std::io::Write for HashSink<'_> {
+        fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+            self.0.update(bytes);
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+    {
+        let mut sink = std::io::BufWriter::with_capacity(8192, HashSink(&mut digest));
+        encoder::write_record(record, &mut sink, encoder::Limits::compatibility())
+            .expect("canonical field byte lengths must fit u32");
+        std::io::Write::flush(&mut sink).expect("in-memory hash sink is infallible");
+    }
     digest.update(previous_hash.as_bytes());
     hex::encode(digest.finalize())
 }

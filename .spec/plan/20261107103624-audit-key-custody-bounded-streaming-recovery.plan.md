@@ -13,11 +13,13 @@ rel:
 
 ## Goal
 
-Design v0.1, proposed only. Root requested bounded streaming recovery before
-remote sink transport. No implementation, dependency change or new validation
-workload is authorized by this draft. Current code174e5f21 and110-case Windows
-evidence102348 remain frozen. Root and independent security review must accept
-the concrete implementation slice and resource profile first.
+Design v0.1. Root accepted S1 ONLY after independent read-only review of43cad32e
+by /root/audit_streaming_review (agent01a1b5a8-1a31-7751-866d-98658edaa63a).
+No P0 was found in that private read-only boundary; full design remains needs-work.
+Review conditions below are normative before S1 implementation. S2/S3, production
+recovery/authority mutation, measured128MiB guarantees and new validation workloads
+remain unapproved. Current174e5f21/110-case evidence stays historical exact-source
+qualification, not proof of future S1 code. No dependency/manifest changes.
 
 Read current framing.rs, wal.rs, recovery.rs, witness_recovery.rs,
 verification/mod.rs, log/mod.rs, log/proofs.rs, merkle/mod.rs and record canonical
@@ -89,6 +91,14 @@ signal-ID behavior, ordering helper and fixed confidence formatting. Normalize
 through a shared Go stream-safe Unicode15 iterator with bounded pending state;
 no unbounded safe-string-then-collect chain remains in the bounded path. Golden
 Unicode/canonical vectors must prove byte identity before using it for authority.
+
+Review condition: field framing writes u32 big-endian UTF-8 byte length BEFORE
+payload. Use checked count-and-replay of the SAME deterministic bounded emitter
+for normalized fields and joined arrays, enforcing limits in BOTH passes.
+Never buffer full normalized fields/array joins merely to learn their lengths.
+Preserve original-empty omission, original-ID Go ordering, raw rule/verdict bytes
+and the historical seq as i64 wire representation. Overflow refuses the bounded
+operation; a count/emit disagreement is an error, not a different hash.
 
 Checkpoint signing bytes use the same frozen JSON ordering/escaping with a
 bounded message buffer checked while encoding, before crypto allocation. The
@@ -172,6 +182,15 @@ and Merkle roots. Keep first base-checkpoint and first witness failures separate
 finish all record checks and prioritize base failure before witness failure,
 matching frozen verification behavior. Checked counters prevent overflow.
 
+Review condition: keep a separate COMPATIBILITY accumulator for error priority
+and historical Scope snapshots, distinct from actual interleaved work counters.
+Records-first failures carry only preceding valid records and zero checkpoint
+successes. Base checkpoint failures carry all valid records plus preceding base
+successes. Witness failure follows complete successful base verification, carrying
+ALL base checkpoint successes but only preceding witness successes. A later bad
+record/base checkpoint overrides an earlier observed witness failure. Differential
+multi-failure fixtures must prove both Report wire fields and native Scope.
+
 Factor reusable record/checkpoint validation primitives so offline and streaming
 paths share canonical/HMAC/signature/error rules. Do not reimplement field rules
 or call the old Vec-returning verifier inside the bounded path. Phase A and B
@@ -197,8 +216,13 @@ retain only ordered path hashes. Sort disjoint sibling ranges by file position,
 compute one range frontier at a time and restore canonical proof order using
 the bounded range descriptors; keep a separate full-history verifier frontier.
 Authenticate through the exact requested source
-snapshot before returning any proof. Check outputs against expected signed roots
-with existing proof verifiers before publication or witness use. Corruption,
+snapshot before returning any proof. Preserve existing unsigned current/prefix
+inclusion and current-tip consistency APIs: verify against authenticated scanned
+prefix/current frontier roots WITHOUT claiming signed coverage or auto-signing
+an ambiguous tail. Checkpointed inclusion additionally requires exact PHYSICAL
+checkpoint membership, signature checks and size binding; a virtual recovery
+candidate or same-size caller replacement is not membership. Verify outputs with
+existing proof verifiers before publication or witness use. Corruption,
 resource/cancel failure returns no partial proof or checkpoint. No dependencies.
 
 This costs O(history) I/O per proof and may refuse on the trusted scan budget;
@@ -369,5 +393,15 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
-Design only. No source, dependency, scoring or runtime behavior change; no new
-validation process. Root and independent native/security review requested.
+Restricted S1 implementation began with shared canonical/NFC core: same field
+emitter counts/replays bytes, compatibility Vec wrapper and buffered hash sink,
+no full normalized/joined payload buffers. Five pure tests authored including92
+frozen canonical vectors. Compilation/execution NOT_RUN, no slot; all remaining
+S1 primitives and capacity proof remain pending. Evidence:root/20261107110902.
+
+Independent review verdict: S1 narrowly acceptable; full design needs-work.
+The unsigned-proof P1 blocks S2 integration, not private frontier/range primitives.
+Count-and-replay framing and compatibility-scope P2 conditions are mandatory for
+S1 code. Root explicitly accepted that restricted S1 implementation after these
+conditions were incorporated. No S2/S3 or workload allocation follows. Native
+production review remains required before consumer promotion; no scoring change.
