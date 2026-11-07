@@ -1,4 +1,5 @@
 //! Provision and execute the explicit native CEF rejection pilot, never GUI qualification.
+mod desktop;
 mod provisioning;
 use serde_json::json;
 use std::{
@@ -38,13 +39,22 @@ fn verified_case(log: &str) -> bool {
         && summaries[0].starts_with("test result: ok. 1 passed; 0 failed; 0 ignored;")
 }
 
-fn run(output: &Path) -> io::Result<serde_json::Value> {
+fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
     if !cfg!(all(windows, target_arch = "x86_64")) {
         return Err(io::Error::other(
             "Windows x64 native pilot required; other tuples are unsupported",
         ));
     }
+    if std::env::var("GITHUB_ACTIONS").as_deref() != Ok("true")
+        || std::env::var("RUNNER_ENVIRONMENT").as_deref() != Ok("github-hosted")
+    {
+        return Err(io::Error::other(
+            "standard hosted runner required for actual native pilot",
+        ));
+    }
     let source = provisioning::source_snapshot()?;
+    report["source"] = source.clone();
+    report["stage"] = "native-build".into();
     let tool_path = provisioning::tool_path()?;
     logged(
         Command::new("cargo").env("PATH", &tool_path).args([
@@ -58,6 +68,7 @@ fn run(output: &Path) -> io::Result<serde_json::Value> {
         &output.join("native-build.log"),
     )?;
     let bundle = provisioning::prepare()?;
+    report["stage"] = "bootstrap-rejection".into();
     let log = output.join("native-negative-pilot.log");
     logged(
         Command::new("cargo")
@@ -82,6 +93,45 @@ fn run(output: &Path) -> io::Result<serde_json::Value> {
             "required provisioned case was not executed exactly once without ignore",
         ));
     }
+    report["passed_tests"] = 1.into();
+    report["bootstrap_ignored_tests"] = 0.into();
+    report["rejected_override_cases"] = 4.into();
+    report["bootstrap_rejection_passed"] = true.into();
+    report["stage"] = "desktop-bundles".into();
+    let private = output
+        .canonicalize()?
+        .parent()
+        .ok_or_else(|| io::Error::other("private bundle parent absent"))?
+        .join("cef-native-private");
+    fs::create_dir(&private)?;
+    let positive = provisioning::fresh_bundle(&bundle, &private, "cef-positive")?;
+    let cancelled = provisioning::fresh_bundle(&bundle, &private, "cef-cancelled")?;
+    report["stage"] = "desktop-process-tests".into();
+    let desktop_log = output.join("desktop-process-pilot.log");
+    logged(
+        Command::new("cargo")
+            .env("PATH", &tool_path)
+            .env("HUMANYMOUS_CEF_POSITIVE_BUNDLE", positive)
+            .env("HUMANYMOUS_CEF_CANCELLED_BUNDLE", cancelled)
+            .args([
+                "test",
+                "--locked",
+                "-p",
+                "humanymous-cef-desktop",
+                "--lib",
+                "--features",
+                "native-pilot-tests",
+                "pilot_process::",
+                "--",
+                "--test-threads=1",
+                "--nocapture",
+            ]),
+        &desktop_log,
+    )?;
+    report["desktop_cases"] = desktop::verify(&fs::read_to_string(&desktop_log)?)?;
+    report["passed_tests"] = 3.into();
+    report["desktop_passed_tests"] = 2.into();
+    report["ignored_tests"] = 0.into();
     if source["files"] != provisioning::source_snapshot()?["files"] {
         return Err(io::Error::other("native source changed during build/pilot"));
     }
@@ -98,12 +148,10 @@ fn run(output: &Path) -> io::Result<serde_json::Value> {
             provisioning::digest(&bundle.join(name))?.into(),
         );
     }
-    Ok(
-        json!({"status":"passed", "source":source, "scope":"Windows DLL build and explicit security-override rejection pilot", "required_test":CASE,
-        "passed_tests":1, "ignored_tests":0, "rejected_override_cases":4, "artifacts":hashes,
-        "browser_ready":false, "full_runtime_qualified":false,
-        "gui_keyboard_ime_ax":"not tested by this runner", "sandbox_policy":"not qualified by rejecting flags"}),
-    )
+    report["artifacts"] = hashes.into();
+    report["status"] = "passed".into();
+    report["stage"] = "complete".into();
+    Ok(())
 }
 
 fn main() -> io::Result<()> {
@@ -122,17 +170,18 @@ fn main() -> io::Result<()> {
     }
     let output = Path::new(&output);
     fs::create_dir_all(output)?;
-    match run(output) {
-        Ok(report) => fs::write(
+    let mut report = json!({"status":"failed","scope":"bootstrap rejection and two provisioned desktop process cases","required_test":CASE,"passed_tests":0,"ignored_tests":null,"desktop_passed_tests":null,"bootstrap_rejection_passed":false,"required_override_cases":4,"rejected_override_cases":null,"stage":"source-preflight","browser_ready":false,"full_runtime_qualified":false,"gui_keyboard_ime_ax":"not qualified by these bounded probes","descendant_cleanup_attested":false});
+    match run(output, &mut report) {
+        Ok(()) => fs::write(
             output.join("report.json"),
             serde_json::to_vec_pretty(&report)?,
         ),
         Err(error) => {
+            report["status"] = "failed".into();
+            report["error_code"] = "native_pilot_failed".into();
             fs::write(
                 output.join("report.json"),
-                serde_json::to_vec_pretty(
-                    &json!({"status":"failed", "error":error.to_string(), "full_runtime_qualified":false, "browser_ready":false}),
-                )?,
+                serde_json::to_vec_pretty(&report)?,
             )?;
             Err(error)
         }

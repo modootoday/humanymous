@@ -880,6 +880,46 @@ and no write/OIDC permission is added. Static policy checks this caller ceiling
 as well as the callee permission. The failed source must never be rerun or
 reported as executed product coverage; a corrected new source needs a new run.
 
+Terminal evidence capture distinguishes this exact zero-job startup failure
+from execution failure. Only completed/startup_failure with zero jobs and zero
+artifacts may record execution_log_status=not-created-workflow-startup and a
+null log hash. Other terminal runs require execution jobs and captured logs;
+missing logs never become a successful or complete execution claim. A startup
+failure that unexpectedly has jobs/artifacts is rejected as inconsistent.
+
+Public summaries use one compact JSON log record and flush stdout before
+subsequent failure diagnostics. The GitHub step summary retains pretty JSON.
+This removes the multiline boundary that split the observed receipt in merged
+job logs. Remote transport atomicity is not assumed, and hosted verification of
+the new emission remains required. No additional report fields are exposed and
+the original private raw-byte digest remains separate.
+
+The next native lane runs the maintenance process/storage/package component
+tests independently after a successful workspace build, and Windows additionally
+runs the existing CEF provisioning coordinator. Failure of either does not hide
+the subsequent whole-workspace actor's required coverage accounting. The actor
+still fails for missing Node runtime groups; these are never classified helpers.
+The maintenance component denominator is eleven actual owner tests, not its
+pure unit inventory. Its hosted execution remains pending for this new source.
+
+CEF provisioning creates distinct fresh positive/cancelled bundles outside the
+safe report directory, copies only pinned runtime inputs and invokes the desktop
+native-pilot-tests library target. The browser owner's pilot-contract.json is
+the sole name/count/schema authority; both required cases and exact two-test
+summary must pass. Source hashes recursively include native/shared/scheme.rs,
+browser source, test-support source and their manifests/toolchain/locks. A failed
+desktop stage preserves an already measured bootstrap result without inventing
+unknown desktop counts. Public artifacts contain only report.json, never runtime
+bundles, profiles, native-report.json or captured process output. Full browser,
+IME, accessibility and descendant cleanup qualification remain false/unknown.
+
+The existing native-workspace artifact now retains only the owning formatter's
+sanitized report.json for one day after a successful build, including failed
+actor execution. Raw actor/private reports are not included. Browser-product
+build context permits only the additional exact Go configuration and contract
+JSON files required by the lab owner's new compile-time runtime inputs; this is
+source preparation, not execution or qualification of a Go profile.
+
 Root checkpoint a26d1c3 resolves the common 36-member Cargo graph/lock and the
 standalone scripts/ci/windows-native-runner/Cargo.lock against the shared native
 APIs. The runner lock is under this delivery governing scope but remains an

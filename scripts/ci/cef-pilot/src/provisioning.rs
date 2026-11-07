@@ -6,6 +6,28 @@ use std::{
     path::{Path, PathBuf},
     process::Command,
 };
+mod bundles;
+pub(super) use bundles::fresh_bundle;
+
+fn snapshot_directory(
+    directory: &Path,
+    files: &mut std::collections::BTreeMap<String, String>,
+) -> io::Result<()> {
+    for entry in fs::read_dir(directory)? {
+        let entry = entry?;
+        let kind = entry.file_type()?;
+        if kind.is_symlink() {
+            return Err(io::Error::other("linked source input rejected"));
+        }
+        if kind.is_dir() {
+            snapshot_directory(&entry.path(), files)?;
+        } else if kind.is_file() {
+            let path = entry.path();
+            files.insert(path.to_string_lossy().replace('\\', "/"), digest(&path)?);
+        }
+    }
+    Ok(())
+}
 
 fn metadata() -> io::Result<Value> {
     let result = Command::new("cargo")
@@ -64,27 +86,26 @@ pub(super) fn source_snapshot() -> io::Result<Value> {
     for file in [
         "Cargo.toml",
         "Cargo.lock",
+        "rust-toolchain.toml",
         "scripts/ci/cef-pilot/Cargo.toml",
         "scripts/ci/cef-pilot/Cargo.lock",
         "crates/browser/native/bootstrap/Cargo.toml",
         "crates/browser/native/desktop/Cargo.toml",
+        "crates/browser/native/desktop/pilot-contract.json",
+        "crates/browser/Cargo.toml",
+        "crates/test-support/Cargo.toml",
     ] {
         files.insert(file.to_owned(), digest(Path::new(file))?);
     }
     for directory in [
         "crates/browser/native/bootstrap/src",
         "crates/browser/native/desktop/src",
+        "crates/browser/native/shared",
+        "crates/browser/src",
+        "crates/test-support/src",
         "scripts/ci/cef-pilot/src",
     ] {
-        for entry in fs::read_dir(directory)? {
-            let entry = entry?;
-            if entry.file_type()?.is_file()
-                && entry.path().extension().is_some_and(|ext| ext == "rs")
-            {
-                let path = entry.path();
-                files.insert(path.to_string_lossy().replace('\\', "/"), digest(&path)?);
-            }
-        }
+        snapshot_directory(Path::new(directory), &mut files)?;
     }
     Ok(serde_json::json!({"commit":sha,"dirty":dirty,"files":files}))
 }

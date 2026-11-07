@@ -37,12 +37,12 @@ jobs:
         run: cargo test --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked
       - name: Lint Rust provisioning runner
         run: cargo clippy --manifest-path scripts/ci/cef-pilot/Cargo.toml --all-targets --locked -- -D warnings
-      - name: Build actual DLLs and execute explicit provisioned rejection pilot
+      - name: Execute provisioned bootstrap and two desktop process pilots
         run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- target/cef-native-evidence
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always() && vars.CI_COMPONENT_ARTIFACTS == 'true'
         with:
           name: cef-native-component-${{ github.sha }}
-          path: target/cef-native-evidence/
+          path: target/cef-native-evidence/report.json
           if-no-files-found: error
           retention-days: 1

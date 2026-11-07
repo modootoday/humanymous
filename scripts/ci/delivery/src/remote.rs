@@ -64,24 +64,30 @@ pub fn observe(root: &Path, id: &str, sha: &str, directory: &Path) -> Result<()>
     if !terminal {
         return Ok(());
     }
-    require(
-        command::log(
-            root,
-            "gh",
-            &[
-                "run",
-                "view",
-                id,
-                "--repo",
-                "modootoday/humanymous",
-                "--attempt",
-                &attempt_text,
-                "--log",
-            ],
-            &directory.join("run.log"),
-        )? == 0,
-        "terminal log retrieval failed",
-    )?;
+    let logs_required = execution_logs_required(&run)?;
+    let log_hash = if logs_required {
+        require(
+            command::log(
+                root,
+                "gh",
+                &[
+                    "run",
+                    "view",
+                    id,
+                    "--repo",
+                    "modootoday/humanymous",
+                    "--attempt",
+                    &attempt_text,
+                    "--log",
+                ],
+                &directory.join("run.log"),
+            )? == 0,
+            "terminal log retrieval failed",
+        )?;
+        Some(source::file(&directory.join("run.log"))?)
+    } else {
+        None
+    };
     let artifacts = directory.join("artifacts");
     std::fs::create_dir_all(&artifacts).map_err(|e| e.to_string())?;
     let endpoint = format!("repos/modootoday/humanymous/actions/runs/{id}/artifacts?per_page=100");
@@ -93,6 +99,10 @@ pub fn observe(root: &Path, id: &str, sha: &str, directory: &Path) -> Result<()>
     require(
         inventory["total_count"].as_u64() == Some(entries.len() as u64),
         "artifact inventory requires pagination; refusing incomplete capture",
+    )?;
+    require(
+        logs_required || entries.is_empty(),
+        "zero-job startup failure unexpectedly has artifacts",
     )?;
     write_json(&directory.join("artifact-inventory.json"), &inventory)?;
     let mut captured_artifacts = Vec::new();
@@ -111,8 +121,28 @@ pub fn observe(root: &Path, id: &str, sha: &str, directory: &Path) -> Result<()>
     }
     write_json(
         &marker,
-        &json!({"run_id":id,"attempt":attempt,"source_sha":sha,"log_sha256":source::file(&directory.join("run.log"))?,"artifacts":captured_artifacts,"conclusion":run["conclusion"]}),
+        &json!({"run_id":id,"attempt":attempt,"source_sha":sha,"log_sha256":log_hash,"execution_log_status":if logs_required {"captured"} else {"not-created-workflow-startup"},"artifacts":captured_artifacts,"conclusion":run["conclusion"]}),
     )
+}
+
+fn execution_logs_required(run: &Value) -> Result<bool> {
+    require(
+        run["status"] == "completed",
+        "log disposition requires terminal run",
+    )?;
+    let jobs = run["jobs"].as_array().ok_or("run jobs absent")?;
+    if run["conclusion"] == "startup_failure" {
+        require(
+            jobs.is_empty(),
+            "startup failure unexpectedly has execution jobs",
+        )?;
+        return Ok(false);
+    }
+    require(
+        !jobs.is_empty(),
+        "terminal execution jobs missing; logs cannot be waived",
+    )?;
+    Ok(true)
 }
 
 fn artifact_in_attempt(artifact: &Value, run: &Value) -> Result<bool> {
@@ -136,6 +166,41 @@ fn artifact_in_attempt(artifact: &Value, run: &Value) -> Result<bool> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn only_zero_job_startup_failure_has_no_execution_log() {
+        assert!(
+            !execution_logs_required(
+                &json!({"status":"completed","conclusion":"startup_failure","jobs":[]})
+            )
+            .unwrap()
+        );
+        for conclusion in ["success", "failure", "cancelled", ""] {
+            assert!(
+                execution_logs_required(
+                    &json!({"status":"completed","conclusion":conclusion,"jobs":[]})
+                )
+                .is_err()
+            );
+            assert!(
+                execution_logs_required(
+                    &json!({"status":"completed","conclusion":conclusion,"jobs":[{}]})
+                )
+                .unwrap()
+            );
+        }
+        assert!(
+            execution_logs_required(
+                &json!({"status":"in_progress","conclusion":"startup_failure","jobs":[]})
+            )
+            .is_err()
+        );
+        assert!(
+            execution_logs_required(
+                &json!({"status":"completed","conclusion":"startup_failure","jobs":[{}]})
+            )
+            .is_err()
+        );
+    }
     #[test]
     fn artifacts_are_bound_to_attempt_window_and_source() {
         let run = json!({"databaseId":7,"headSha":"abc","startedAt":"2026-11-07T01:00:00Z","updatedAt":"2026-11-07T02:00:00Z"});

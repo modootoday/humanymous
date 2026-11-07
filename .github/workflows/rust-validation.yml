@@ -79,15 +79,23 @@ jobs:
     - name: Configure Windows native build tools
       if: runner.os == 'Windows'
       run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- --configure-toolchain
-    - run: cargo build --workspace --all-targets --locked
+    - id: native_build
+      run: cargo build --workspace --all-targets --locked
+    - name: Execute maintenance process and storage component tests
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-agent-maintenance --test process --test session_storage --test product_package
+    - name: Execute provisioned Windows CEF component cases
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' && runner.os == 'Windows' }}
+      run: cargo run --locked --manifest-path scripts/ci/cef-pilot/Cargo.toml -- target/cef-native-evidence
     - name: Execute every workspace harness through the native Rust actor
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os == 'windows-2025' && 'windows' || matrix.os == 'macos-15' && 'macos' || 'linux' }} ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
     - name: Preserve native workspace accounting
-      if: always() && startsWith(github.ref, 'refs/tags/v')
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: native-workspace-${{ matrix.os }}-${{ github.sha }}
-        path: target/runner-probe/
+        path: target/runner-probe/report.json
         if-no-files-found: error
         retention-days: 1
     - run: cargo build --workspace --bins --release --locked

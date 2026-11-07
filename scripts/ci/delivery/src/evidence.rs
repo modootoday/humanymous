@@ -12,7 +12,13 @@ pub fn emit_public_summary(title: &str, summary: &serde_json::Value) -> Result<(
         "plain summary title required",
     )?;
     let text = serde_json::to_string_pretty(summary).map_err(|e| e.to_string())?;
-    println!("{text}");
+    // Keep the public log record on one line: GitHub merges stderr asynchronously.
+    // Pretty multiline output let a subsequent failure message split a receipt.
+    println!(
+        "{}",
+        serde_json::to_string(summary).map_err(|e| e.to_string())?
+    );
+    std::io::stdout().flush().map_err(|e| e.to_string())?;
     if let Some(path) = std::env::var_os("GITHUB_STEP_SUMMARY") {
         let mut output = fs::OpenOptions::new()
             .create(true)

@@ -17,6 +17,7 @@
 !skills/agent-maintenance/**
 !test/
 !test/lab/
+!test/lab/go-configuration.json
 !test/lab/dns_wire.rs
 !test/lab/runner/
 !test/lab/runner/**
@@ -25,6 +26,9 @@
 !scripts/
 !scripts/ci/
 !scripts/ci/**
+!adapters/
+!adapters/go/
+!adapters/go/pilot-contract.json
 **/target/
 **/node_modules/
 **/__pycache__/
