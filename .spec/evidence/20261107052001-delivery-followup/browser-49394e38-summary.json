@@ -1,0 +1,141 @@
+{
+  "schema": "humanymous.browser-hosted-evidence/1",
+  "run_id": 42378961845,
+  "attempt": 1,
+  "source_sha": "49394e382f7a710c41907d6ec873b4a84638a149",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs_total": 2,
+  "artifacts_total": 0,
+  "preflight": {
+    "job_id": 128422327954,
+    "conclusion": "success",
+    "go_units": {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "lab_units": {
+      "passed": 22,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "delivery_units": {
+      "passed": 76,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "unix_runtime_actor_check": "passed",
+    "selected_strict_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "product": {
+    "job_id": 128422993968,
+    "conclusion": "failure",
+    "safe_delivery_summary": {
+      "canonical_git_tree_sha256": "eedb24837473a6d62dac5c50d3bcd0babff6d0b1f4e9a193d4f5f4b931f86fe2",
+      "cases": [
+        {
+          "evidence": "private source-bound owning report",
+          "id": "collector-parity",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "challenge-keyboard",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "challenge-assistive",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "missing-signals-closed",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "human-control",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "coherent-browser-ceiling",
+          "status": "blocked"
+        },
+        {
+          "evidence": "private source-bound owning report",
+          "id": "documentation-examples",
+          "status": "blocked"
+        }
+      ],
+      "components": [
+        {
+          "assertions": {
+            "failed": 2,
+            "other": 0,
+            "passed": 16,
+            "total": 18
+          },
+          "exit_code": 1,
+          "full_product_qualified": false,
+          "owner": "lab-runner",
+          "public_receipt": null,
+          "qualification": null,
+          "required_unavailable_count": 9,
+          "safe_diagnostics": {
+            "failure_count": 2,
+            "failures": [
+              {
+                "case_id": "browser-actual-witness-exchange",
+                "error_code": "assertion_failed",
+                "status": "failed"
+              },
+              {
+                "case_id": "execution",
+                "error_code": "browser_actor",
+                "status": "failed"
+              }
+            ],
+            "partial": false,
+            "schema": "humanymous.lab-safe-diagnostics/1"
+          },
+          "schema": "humanymous.product-lab/2",
+          "status": null
+        }
+      ],
+      "documentation_review_sha256": "64bae49ccb1066b50872f6921f02828f80a506685e0342a1ae5de08e9b63c135",
+      "errors": 1,
+      "full_product_qualified": false,
+      "images": [
+        "sha256:35fa5d2393b9fe66e5b16047db5d1681d55e59c6d8f9f6026edcf2f3617ff421",
+        "sha256:946b94360b8a038379ed933ddf49b59c5109b7e61a60ad8cdf76f0feb93fea37",
+        "sha256:3e52922153d1391637d9822a29e5e37a4afa5ef055836ba1a01690c31d690ab9"
+      ],
+      "isolation": "docker",
+      "kind": "browser-product",
+      "private_report_sha256": "e0f9c5e5599eecada2e3cf3ec91e0cf6cbcbc8c02e261e0b59b90915a41982b6",
+      "qualification": "component-only",
+      "release_ready": false,
+      "runtime": "rust",
+      "schema": 1,
+      "skips": null,
+      "source_changed_during_execution": false,
+      "source_manifest_sha256": "8627b960b2f17a83f75a3c888af1286b39d63103543359130ab188cc20e60103",
+      "source_sha": "49394e382f7a710c41907d6ec873b4a84638a149",
+      "status": "failed"
+    }
+  },
+  "capture_index_sha256": "62d691b3fc9dd03e362725c4cbe143aa762d07c40c058d169e5aa1ede225b8c4",
+  "limitations": [
+    "Actual Docker owner execution failed with 18 known assertions:16passed/2failed. This is not full-product qualification.",
+    "Public diagnostic codes identify witness-exchange assertion failure and browser_actor execution failure; exact failing operation/root cause remains unknown.",
+    "No raw private actor process output or original owner report body was retrieved. Its emitted report hash differs from the normalized REST/decoded connector capture index.",
+    "Seven public required cases remain blocked; required_unavailable_count is9 and skips is null. Missing counts are not inferred as zero."
+  ]
+}

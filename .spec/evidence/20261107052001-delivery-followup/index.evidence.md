@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T14:09:58Z
+updated: 2026-11-07T14:11:53Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -22,6 +22,7 @@ files:
   - {path: go-c3211e27-summary.json, sha256: c858af3a68fcb2ac12acf04151fd1c32a193c90ec4fd59f3c8652d0075336b16, bytes: 5490, store: repo}
   - {path: cef-ec4f2da0-summary.json, sha256: e219dcffd0361c3fd66676d30b10f4c83b7fc777f4839b7f5f8a696a8e83cb0a, bytes: 10375, store: repo}
   - {path: distribution-notice-validation.json, sha256: 6e4d2694ff2b144e9ca18d1b326f9335aa300adf314d35a2cfc5800a298b391a, bytes: 2223, store: repo}
+  - {path: browser-49394e38-summary.json, sha256: 87348a9cbf4bf927e78a81c6ed6ad894e31e6e4ad745e7a90d5bb506f35f53af, bytes: 4770, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -327,3 +328,19 @@ matched. Registry metadata closure can overapproximate selected features. D
 admission82percent committed/30.087GiB free; jobs1/incremental0/locked/offline
 workloads ended and D was returned. Private index SHA256 is
 9a4a4590a89a05211c01bbf2d7353e4082000e9d81685d0150a73fe3f16c06f0.
+
+## Actual browser diagnostic failure at fixed493
+
+browser-49394e38-summary.json records terminal failed run42378961845 at literal
+49394e38, successful preflight Go10/lab22/delivery76 and zero artifacts. Actual
+Docker execution completed18 known assertions:16passed/2failed, with owning
+exit1. Safe codes identify browser-actual-witness-exchange/assertion_failed and
+execution/browser_actor; they do not establish the exact failing operation or
+root cause. Seven named required cases remain blocked, required_unavailable_count
+is9 and skips remains null. Source stayed unchanged; full-product/release flags
+remain false. Original private actor output and owner report bodies were not
+retrieved. Emitted private report SHA256 is
+e0f9c5e5599eecada2e3cf3ec91e0cf6cbcbc8c02e261e0b59b90915a41982b6.
+Normalized REST/decoded connector capture index SHA256 is
+62d691b3fc9dd03e362725c4cbe143aa762d07c40c058d169e5aa1ede225b8c4.
+No repeat execution or threshold/required-case waiver was performed.
