@@ -37,12 +37,20 @@ internal static class Program
         string? input = await Console.In.ReadLineAsync();
         if (input is null || input.Length > 65_536) return 65;
         using var startup = JsonDocument.Parse(input);
-        if (startup.RootElement.TryGetProperty("generic_probe", out var genericProbe) && genericProbe.GetBoolean())
+        if (startup.RootElement.ValueKind != JsonValueKind.Object) return 65;
+        var startupFields = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var property in startup.RootElement.EnumerateObject())
+            if (!startupFields.Add(property.Name) || property.Name is not ("generic_probe" or "generic_probe_only" or "configuration")) return 65;
+        bool probe = startup.RootElement.TryGetProperty("generic_probe", out var genericProbe) && genericProbe.GetBoolean();
+        bool probeOnly = startup.RootElement.TryGetProperty("generic_probe_only", out var genericProbeOnly) && genericProbeOnly.GetBoolean();
+        if (probeOnly && (!probe || startup.RootElement.TryGetProperty("configuration", out _))) return 66;
+        if (probe)
         {
             GenericAbi.Probe();
             Emit(json => { json.WriteString("kind", "generic-native-abi"); json.WriteNumber("passed", 1);
                 json.WriteString("case", "pointer-free-roundtrip-and-negative-ownership"); });
         }
+        if (probeOnly) return 0;
         using var host = new HumanymousHost(startup.RootElement.GetProperty("configuration").GetRawText());
         HumanymousMiddleware.BeforeHandoff = async context =>
         {

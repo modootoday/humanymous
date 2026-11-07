@@ -12,6 +12,18 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Approved generic ABI-only startup flag (2026-11-07)
+
+Root explicitly requested a minimal startup continuation in the existing approved
+Program.cs only. generic_probe_only=true requires generic_probe=true and refuses
+configuration; after GenericAbi.Probe actually succeeds and its existing receipt
+is emitted, the process returns0 before constructing HumanymousHost or Kestrel.
+Startup must be an object with unique known control fields; malformed/unknown/
+duplicate fields and wrong boolean types fail closed. Probe exceptions propagate
+to nonzero exit; a skipped probe cannot produce the success receipt. This new
+managed source is NOT_COMPILED/NOT_RUN. Rust ABI owner retains actual assertions;
+no fourth C# file, manual loader, unsafe exception or manifest change is added.
+
 ## Narrow hosted component continuation (2026-11-07)
 
 Root and CI explicitly excluded dotnet-validation.yml from e2e-infra and assigned

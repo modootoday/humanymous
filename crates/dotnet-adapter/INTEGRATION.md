@@ -2,6 +2,21 @@
 
 ## Current approved continuation
 
+### Separate ABI-only managed startup, source not yet compiled/run
+
+Root authorized the minimum generic_probe_only flag in the existing approved
+Program.cs. Send exactly {"generic_probe":true,"generic_probe_only":true} on
+private stdin, with no configuration. Startup rejects duplicate/unknown fields,
+wrong types and generic-only without probe. Actual GenericAbi.Probe must succeed
+and emit the existing generic-native-abi receipt before return0; no HumanymousHost
+or Kestrel construction occurs. Any probe exception/nonzero exit remains failure.
+The ABI owner supplies the separate real generic export DLL and Rust assertions;
+this is not .NET middleware/GC/AOT/package or C++ qualification. No new C# source,
+manual loader/unsafe exception/manifest change. Do not SDK publish/run until root
+assigns the heavy stage. The verified installed private SDK is available offline;
+there is still no published managed pilot artifact and NuGet restore may need
+the separately authorized package source/network stage.
+
 ### Hosted ordinary actor handoff contract (prepared, not compiled)
 
 Root assigned dotnet-validation.yml after CI explicitly excluded that literal
