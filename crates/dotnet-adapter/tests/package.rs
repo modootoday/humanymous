@@ -66,7 +66,7 @@ fn digest(path: &Path, logs: &Path, stage: &str) -> String {
 fn private_child(parent: &Path, name: &str) -> PathBuf {
     #[cfg(windows)]
     {
-        humanymous_native_security::storage::create_user_private_directory(parent, name)
+        humanymous_runtime::native_security::storage::create_user_private_directory(parent, name)
             .expect("ordinary actor and verified private parent required")
     }
     #[cfg(unix)]

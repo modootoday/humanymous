@@ -1,6 +1,6 @@
 //! Pointer-free host composition over the shared native allocation registry.
 use crate::{Cancellation, HostState, Request};
-use humanymous_authority::client::Verdict;
+use humanymous_runtime::authority::client::Verdict;
 use humanymous_framework_adapter::{Configuration, Error, Observation, internal_header};
 use humanymous_native_abi::{Boundary, Command, Reply, Response, Status, Version};
 use serde::Deserialize;

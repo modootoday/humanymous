@@ -6,7 +6,7 @@
 
 pub mod bridge;
 
-use humanymous_authority::client::{BoundResponse, Verdict};
+use humanymous_runtime::authority::client::{BoundResponse, Verdict};
 use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_framework_adapter::{
     Admission, Configuration, Error, Observation, Pending, internal_header,

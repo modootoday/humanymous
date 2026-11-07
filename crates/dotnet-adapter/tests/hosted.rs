@@ -13,7 +13,7 @@ mod protocol;
 mod retained;
 mod support;
 use http::Socket;
-use humanymous_authority::{
+use humanymous_runtime::authority::{
     configuration::Configuration,
     decision::{ApplicationHttp, Authority, DurableAudit, Evidence},
     transport::Listener,
@@ -38,7 +38,7 @@ impl Evidence for Synthetic {
         &mut self,
         request: &humanymous_core::integrity::adapter::ValidatedRequest,
         _: bool,
-    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_authority::Rejection>
+    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_runtime::authority::Rejection>
     {
         if matches!(request.request_target().1, "/gc-await" | "/abort-await") {
             self.gc_entered
@@ -70,7 +70,7 @@ struct CountingAudit {
     counts: Arc<Mutex<std::collections::BTreeMap<String, u64>>>,
 }
 impl DurableAudit for CountingAudit {
-    fn append(&mut self, record: humanymous_audit::record::Record) -> std::io::Result<()> {
+    fn append(&mut self, record: humanymous_runtime::audit::record::Record) -> std::io::Result<()> {
         let verdict = record.verdict.clone();
         self.inner.append(record)?;
         *self.counts.lock().unwrap().entry(verdict).or_default() += 1;
@@ -190,7 +190,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             let profile = if synthetic { "synthetic" } else { "production" };
             #[cfg(windows)]
             let directory =
-                humanymous_native_security::storage::create_user_private_directory(&root, profile)
+                humanymous_runtime::native_security::storage::create_user_private_directory(&root, profile)
                     .expect("ordinary actor and verified private parent required");
             #[cfg(unix)]
             let directory = {
@@ -209,7 +209,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             );
             #[cfg(windows)]
             let (endpoint, peer, server) = {
-                let sid = humanymous_native_security::process::current_identity()
+                let sid = humanymous_runtime::native_security::process::current_identity()
                     .unwrap()
                     .sid()
                     .to_owned();
@@ -225,7 +225,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             };
             #[cfg(unix)]
             let (endpoint, peer, server) = {
-                let uid = humanymous_native_security::process::current_uid();
+                let uid = humanymous_runtime::native_security::process::current_uid();
                 (
                     directory
                         .join("decision.sock")
@@ -260,7 +260,7 @@ fn actual_kestrel_engine_audit_body_gc_and_shutdown() -> Result<(), Box<Host>> {
             let mut config: Configuration = serde_json::from_value(value.clone()).unwrap();
             config.validate().unwrap();
             let log =
-                humanymous_authority::startup::open_audit(&mut config.audit, &config.peer, None)
+                humanymous_runtime::authority::startup::open_audit(&mut config.audit, &config.peer, None)
                     .unwrap();
             let counts = Arc::new(Mutex::new(std::collections::BTreeMap::new()));
             let (gc_entered_tx, gc_entered_rx) = mpsc::sync_channel(1);

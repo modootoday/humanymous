@@ -12,6 +12,20 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## RUNTIME-SLICE-02 consumer source handoff
+
+The pre-edit search found no old humanymous_runtime root in this adapter's Rust
+sources/tests, so no gateway prefix was inserted. Eleven references in five
+owned files now use humanymous_runtime::authority, ::audit or ::native_security:
+src/lib.rs, src/bridge.rs, tests/hosted.rs, tests/package.rs and
+tests/support/mod.rs. No old authority/audit/capture/network/native-security
+crate identifier remains. No aliases, role/package-ID qualification predicates,
+counts, behavior, visibility, scoring, unsafe or ABI semantics changed.
+Exact paths/SHA256/bytes are retained in private20261108054000 handoff.
+Root owns manifests, features, lock and runtime relocation. Diff/spec checks only;
+fmt/compiler/tests/Clippy/CI await coherent graph allocation. Historical immutable
+hosted receipts remain bound to their original source and selectors.
+
 ## PLATFORM-SLICE-02 test consumer source handoff
 
 Root assigned four mechanical test imports from humanymous_test_support to

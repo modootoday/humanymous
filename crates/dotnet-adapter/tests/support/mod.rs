@@ -3,7 +3,7 @@ pub mod artifacts;
 pub fn execution_environment() -> &'static str {
     #[cfg(unix)]
     assert_ne!(
-        humanymous_native_security::process::current_uid(),
+        humanymous_runtime::native_security::process::current_uid(),
         0,
         "ordinary non-root .NET actor required"
     );
