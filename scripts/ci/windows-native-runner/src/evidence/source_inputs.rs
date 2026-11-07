@@ -81,6 +81,13 @@ mod tests {
         let mut original = BTreeMap::new();
         collect(root, &mut original).unwrap();
         assert_eq!(original.len(), 4);
+        // Absolute fixture keys exercise the real verifier without changing cwd.
+        let absolute: BTreeMap<_, _> = original
+            .iter()
+            .map(|(path, hash)| (root.join(path).to_string_lossy().into_owned(), hash.clone()))
+            .collect();
+        let snapshot = serde_json::json!({"files": absolute});
+        super::super::verify_snapshot(&snapshot).unwrap();
         assert!(
             !original
                 .keys()
@@ -92,7 +99,9 @@ mod tests {
             collect(root, &mut changed).unwrap();
             assert_ne!(original[relative], changed[relative]);
             assert_ne!(original, changed);
+            assert!(super::super::verify_snapshot(&snapshot).is_err());
             fs::write(root.join(relative), b"original").unwrap();
+            super::super::verify_snapshot(&snapshot).unwrap();
         }
     }
 

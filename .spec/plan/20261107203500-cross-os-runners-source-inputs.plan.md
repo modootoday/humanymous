@@ -25,7 +25,9 @@ snapshot; no extension omission becomes success. Other source, cleanliness,
 Git-byte and evidence controls are unchanged. No manifest/dependency change.
 
 Two Rust tests authored: independently mutate each required input and verify
-the recorded digest AND complete map change, with nested unrelated manifest
+the recorded digest AND complete map change, and require the actual
+verify_snapshot to reject the old snapshot for each mutation (absolute fixture
+keys, no process cwd change), then accept restored bytes; nested unrelated manifest
 included and build/private fixture manifests excluded; independently remove each
 required input and require inventory refusal. They use existing fixture custody.
 Tests are NOT_RUN pending Root's compiler/test allocation. Bare rustfmt and
