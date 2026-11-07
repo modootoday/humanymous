@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.go-actor-compiler-evidence/1",
+  "source_sha": "0ce4d82bc385f94cc7153ae3ad43ee5f49935f94",
+  "archive_sha256": "b0eb83d12603e9150e53eb2a0b9cd50999d035e2fdede293a74dbde99f960011",
+  "archive_bytes": 66447360,
+  "source_files": 2288,
+  "source_drift": 0,
+  "rust_version": "1.99.1",
+  "target": "x86_64-unknown-linux-gnu",
+  "ordinary_uid": 1000,
+  "jobs": 1,
+  "incremental": false,
+  "locked": true,
+  "offline": true,
+  "cargo_check_all_targets_exit": 0,
+  "strict_clippy_all_targets_exit": 0,
+  "private_result_sha256": "91e8c06ea56121d73de7313fe398f0b6dd5fda99e2c9add82e59a2a2e399917f",
+  "docker_executed": false,
+  "go_scenarios_evaluated": 0,
+  "full_product_qualified": false
+}
