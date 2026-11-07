@@ -140,6 +140,31 @@ segment gaps, sidecar truncation and changed source identities refuse.
 Phase A scans all bounded frames for parse/node/metadata/progression and exact
 trusted-head presence, retaining scalar counters and first errors only. It also
 records the last incomplete record offset as a PLAN, never mutating the source.
+
+Presence has explicit provenance, resolving a design contradiction with existing
+plan_witness_recovery. Normal open requires the actual local checkpoint chain to
+contain the exact trusted head. Explicit witnessed recovery may instead hold ONE
+virtual final external checkpoint when the physical latest head is strictly
+earlier (or absent), allow_new=false and the independently authenticated external
+head is the exact configured pin. It must extend the physical latest signature
+chain, not skip unknown signed intermediate checkpoints. A same-size different
+head, external head behind local state or an unavailable witness identity refuses.
+The virtual candidate is joined to the actual records and checked by the SAME
+node/progression/writer/signature-chain/linear/Merkle/witness rules as the existing
+candidate Vec algorithm. No candidate may justify skipping complete physical
+bytes or an invalid/truncated sidecar. The external tree size cannot exceed the
+complete authenticated record count.
+
+Keep PhysicalHead and VerifiedExternalCandidate facts distinct, including
+physical latest checkpoint and pending append. Candidate-history authentication
+may satisfy the planner's exact-pin check, but it is NOT an on-disk checkpoint,
+completed repair or persisted coverage receipt. Only exact append+sync success
+promotes that provenance and changes the source epoch; uncertainty remains
+unavailable. RequireCovered/PreserveAmbiguousTail use the independently covered
+sequence and preserve all complete trailing records, with no signing or replay.
+This mirrors existing bounded-object WitnessRecoveryPlan semantics without
+materializing full records/checkpoints. Legacy candidate Report counts remain
+compatible; new receipts separately disclose physical versus virtual work.
 Phase B streams record authentication and Merkle frontier construction. Use at
 most64 hash slots plus one current record and previous linear hash. A second
 checkpoint cursor joins strictly increasing tree sizes to exact prefix linear
@@ -225,6 +250,10 @@ or automatic continuation. Do not promise power-loss atomicity on Windows.
 - Truncation/corruption before/at/after trusted head; terminal incomplete versus
   complete bad frame; sidecar failure after a repairable record tail; foreign key/
   node/root/signature, missing/older external head, complete ambiguous tail.
+- Physical-versus-virtual checkpoint provenance: exact missing final external
+  checkpoint, absent physical chain, skipped intermediate signature refusal,
+  same-size fork, external head beyond records, append/sync failure and cancelled
+  repair. A candidate count never establishes persisted coverage before success.
 - Actual ordinary-user file fault/cancel/change/restart and both repair boundaries;
   no owner/effect callback before EOF or after resource/fault/cancel refusal.
 - Proof range/address/count overflow, source change between passes and budget/
