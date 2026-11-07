@@ -1,92 +1,98 @@
 [
   {
     "git_blob": "48b19f210a27cd7fd01a26293648b7f13e1d773e",
+    "sha256": "d9b9cd5ccee654cfd4457f1265abc614414bde7e47bea9f015fd39fcb9b2920d",
     "path": "crates/runtime/Cargo.toml",
-    "bytes": 858,
-    "sha256": "d9b9cd5ccee654cfd4457f1265abc614414bde7e47bea9f015fd39fcb9b2920d"
+    "bytes": 858
   },
   {
-    "git_blob": "008870620fb4089a42fca78fee2d78334125ec63",
+    "git_blob": "dcefd421da03b25b5a1b316db38301109ecd5537",
+    "sha256": "9255512a290a8748fa60c9f9d16f07c8ff0391e833ca50fd54dd4d0067e20bfd",
     "path": "crates/runtime/INTEGRATION.md",
-    "bytes": 15501,
-    "sha256": "e35b1b77e9b970a9997e4514e8e93c93ab9641e3537629937fa83dc58f997ff0"
+    "bytes": 16235
   },
   {
-    "git_blob": "d3d6d7e058683113a378108f9479d12905da8b86",
+    "git_blob": "596f1a1a4e1ae70123a2a372b25dc4121e125cc5",
+    "sha256": "9546f5c0f28ec6ed9499e7abc2d37704f143d837a06581ab4dbad6bbe97b2ee8",
     "path": "crates/runtime/src/application.rs",
-    "bytes": 20457,
-    "sha256": "17870da07734d39446416ecefcf50937933684bf95d3697b3f2088b1f1867c35"
+    "bytes": 21532
   },
   {
     "git_blob": "b9a66a27daa7ede603c8877bc68fca671b3fef7e",
+    "sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe",
     "path": "crates/runtime/src/browser.rs",
-    "bytes": 4263,
-    "sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe"
+    "bytes": 4263
   },
   {
     "git_blob": "9e1307ee5a92ecf31792a698494f7db1d11c04e3",
+    "sha256": "a95ff5e349aa0c4eeef8aac07caec82db859528ecd55b21bfb21aff3807bf7d4",
     "path": "crates/runtime/src/configuration.rs",
-    "bytes": 6501,
-    "sha256": "a95ff5e349aa0c4eeef8aac07caec82db859528ecd55b21bfb21aff3807bf7d4"
+    "bytes": 6501
   },
   {
     "git_blob": "e8629587e9420d73e09acb7a57d9bc974f7fd50f",
+    "sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f",
     "path": "crates/runtime/src/configuration/audit.rs",
-    "bytes": 1826,
-    "sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f"
+    "bytes": 1826
   },
   {
     "git_blob": "6b396099617a2703eda67a69cabe591948ae3e4d",
+    "sha256": "41c992e3df35610a170df937ab4fb6379600f05fac182f3162c8bf0e889e63bc",
     "path": "crates/runtime/src/http.rs",
-    "bytes": 13706,
-    "sha256": "41c992e3df35610a170df937ab4fb6379600f05fac182f3162c8bf0e889e63bc"
+    "bytes": 13706
   },
   {
     "git_blob": "e6ff216693cc05070d81dc1b4e9e7129b4a360a0",
+    "sha256": "7e82d06a529f23a3899a465c185ca2f56d27e4a1cd3575a822c0895b70a31d79",
     "path": "crates/runtime/src/lib.rs",
-    "bytes": 272,
-    "sha256": "7e82d06a529f23a3899a465c185ca2f56d27e4a1cd3575a822c0895b70a31d79"
+    "bytes": 272
   },
   {
     "git_blob": "5c666019319e3ad890f8f0b2df7171c171414c26",
+    "sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797",
     "path": "crates/runtime/src/main.rs",
-    "bytes": 1606,
-    "sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797"
+    "bytes": 1606
   },
   {
-    "git_blob": "5f627e6272be5def0480dd1eb71b77cd21bb75f3",
+    "git_blob": "05fa08d0ecdd4bd09264a3e825125bf5e1942b7e",
+    "sha256": "be0b467ea5ea95f4220c199047ae46725e45c64b7fbcae2b7d00bef18cf306c2",
     "path": "crates/runtime/src/service.rs",
-    "bytes": 5554,
-    "sha256": "88f26c6cb6ec697b9d517f05a10328788ff715d2823267f8a4a7d20e0033d828"
+    "bytes": 5334
+  },
+  {
+    "git_blob": "9287cc229c1e61cab580eb5f359c530066468aa7",
+    "sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb",
+    "path": "crates/runtime/src/service/shutdown.rs",
+    "bytes": 3054
   },
   {
     "git_blob": "04206ddcd21fb4029759cecea080d56399ecea08",
+    "sha256": "4a59bc68b538fa5b450df3d775f320d00e2ac0621b21f71b5d9de10ef9bc0316",
     "path": "crates/runtime/src/session.rs",
-    "bytes": 13593,
-    "sha256": "4a59bc68b538fa5b450df3d775f320d00e2ac0621b21f71b5d9de10ef9bc0316"
+    "bytes": 13593
   },
   {
     "git_blob": "69c62d9e6fd3e365e871838bcba4d46d1d4b6ece",
+    "sha256": "ce3b7567a0f1d2881f27bffc3200d661212d8be5826b92f964dff8deca596839",
     "path": "crates/runtime/src/startup.rs",
-    "bytes": 4703,
-    "sha256": "ce3b7567a0f1d2881f27bffc3200d661212d8be5826b92f964dff8deca596839"
+    "bytes": 4703
   },
   {
     "git_blob": "b2f112cf3ac1679d54afc6a0734e0777ab365bbf",
+    "sha256": "a082e0abbad17a38e882ad8e35ff5710e4ba1acaff97463dcb9bdc8741f60cc3",
     "path": "crates/runtime/src/tests.rs",
-    "bytes": 21624,
-    "sha256": "a082e0abbad17a38e882ad8e35ff5710e4ba1acaff97463dcb9bdc8741f60cc3"
+    "bytes": 21624
   },
   {
     "git_blob": "c0c843d92acc5b5f194c22e2cd455acb8962c7f7",
+    "sha256": "ce37ae40ecc057f44c524e87a072cbbcb51f70ca0b5b2486ddc739968ed10645",
     "path": "crates/runtime/src/tests/browser.rs",
-    "bytes": 10780,
-    "sha256": "ce37ae40ecc057f44c524e87a072cbbcb51f70ca0b5b2486ddc739968ed10645"
+    "bytes": 10780
   },
   {
     "git_blob": "d4cabc6def5fc52c5695489da83d0f1d1bd8a6f5",
+    "sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac",
     "path": "crates/runtime/tests/native_process.rs",
-    "bytes": 11795,
-    "sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac"
+    "bytes": 11795
   }
 ]

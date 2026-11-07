@@ -315,11 +315,17 @@ impl Application {
             }
             let until = Instant::now() + Duration::from_millis(self.config.timeout_ms);
             if !admission.admit() {
-                let _ = timeout_at(
+                if write_or_stop(
+                    &mut stream,
+                    429,
+                    b"{\"error\":\"admission\"}",
                     until,
-                    http::write(&mut stream, 429, b"{\"error\":\"admission\"}"),
+                    &mut shutdown,
                 )
-                .await;
+                .await?
+                {
+                    return Ok(());
+                }
                 continue;
             }
             let mut response_started = false;
@@ -363,7 +369,9 @@ impl Application {
                 }
                 let body = serde_json::to_vec(&serde_json::json!({"error":error.code}))
                     .unwrap_or_default();
-                let _ = timeout_at(until, http::write(&mut stream, error.status, &body)).await;
+                if write_or_stop(&mut stream, error.status, &body, until, &mut shutdown).await? {
+                    return Ok(());
+                }
             }
         }
     }
@@ -466,6 +474,32 @@ impl Application {
                     .await
                     .map_err(|_| Rejection::new(503, "response_write"))
             }
+        }
+    }
+}
+
+/// An unconsumed local reply owns no origin effect and can stop immediately.
+/// Dropping a partially written response closes this request's connection.
+async fn write_or_stop(
+    stream: &mut TcpStream,
+    status: u16,
+    body: &[u8],
+    until: Instant,
+    shutdown: &mut tokio::sync::watch::Receiver<Option<crate::service::ShutdownRequest>>,
+) -> std::io::Result<bool> {
+    if shutdown.borrow().is_some() {
+        return Ok(true);
+    }
+    let pending = timeout_at(until, http::write(stream, status, body));
+    tokio::pin!(pending);
+    loop {
+        tokio::select! {
+            biased;
+            changed = shutdown.changed() => {
+                changed.map_err(|_| std::io::Error::other("shutdown controller closed"))?;
+                if shutdown.borrow().is_some() { return Ok(true); }
+            }
+            _ = &mut pending => return Ok(false),
         }
     }
 }

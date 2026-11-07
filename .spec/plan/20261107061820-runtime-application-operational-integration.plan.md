@@ -135,3 +135,27 @@ policy. Readiness records injection and required durability, while independence
 qualification remains false pending deployment evidence. Injection itself is not
 independence evidence. New missing-injection refusal test is authored, NOT_RUN;
 all new source compilation/runtime/witness integration tests are NOT_RUN.
+R15 lifecycle budget follow-through: service::StopBudget validates nonzero drain,
+nonzero supervisor reserve and nonzero manager deadline, checked addition and
+strict drain+reserve < manager deadline; drain retains existing1..30000ms bound.
+It returns the existing ShutdownRequest for wire/API compatibility. This is a
+configuration relationship, not a timer able to interrupt synchronous fsync or
+witness I/O. CLI/broker must enforce the manager deadline and supervise actual
+blocking work/process reaping. ExitReport success explicitly records drained and
+audit_flushed only after those events complete. Closed controller, drain deadline,
+audit flush failure and force-kill remain failures, never synthesized Stopped.
+Admission429 and pre-response error writes must observe shutdown and drop pending
+I/O immediately; they cannot extend a short drain to the ordinary connection
+budget. Critique: equality/overflow budgets are rejected; positive typed fields
+must not imply physical I/O preemption; partial response cancellation closes the
+connection and never retries origin. Existing ShutdownRequest::new remains a
+bounded component API without an OS supervisor-budget qualification claim.
+- Explicit user goal set active for all R01-R17 on2026-11-07. Goal is incomplete;
+  owned process/container count0. Next source tranches are lifecycle budgets and
+  actual local management/dual-control joins, with external owners for neutral
+  sealed audit startup, OS-protected unattended credentials, collector provenance
+  and hosted product orchestration. No source-only checkpoint completes the goal.
+- Lifecycle budget source and one pure unit fixture authored; compile/test NOT_RUN
+  pending root's global Cargo slot. Added success fields drained/audit_flushed;
+  unconsumed429/error writes now cancel on observed stop. Shared runtime APIs stay
+  compatible. Current hosted42348518353/63f69ae cannot qualify these later edits.

@@ -10,28 +10,11 @@ use std::{
     io::{self, Read},
     net::SocketAddr,
     sync::{Arc, Mutex},
-    time::Duration,
 };
 use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
-
-/// Validated bounded drain request; no OS handle or credential crosses this API.
-#[derive(Clone, Copy)]
-pub struct ShutdownRequest {
-    drain_ms: u64,
-}
-impl ShutdownRequest {
-    /// Bound the asynchronous drain to at most thirty seconds.
-    pub fn new(drain_ms: u64) -> io::Result<Self> {
-        if !(1..=30_000).contains(&drain_ms) {
-            return Err(io::Error::other("shutdown drain budget"));
-        }
-        Ok(Self { drain_ms })
-    }
-    pub(crate) fn drain_timeout(self) -> Duration {
-        Duration::from_millis(self.drain_ms)
-    }
-}
+mod shutdown;
+pub use shutdown::{ShutdownRequest, StopBudget};
 
 /// Read one private document. Validating the opened input's provenance is the
 /// caller's responsibility; this helper does not certify an arbitrary file.
@@ -69,9 +52,14 @@ pub struct Readiness {
 }
 
 /// Complete shutdown evidence, returned only after request work and audit flush.
+#[derive(Serialize)]
 pub struct ExitReport {
     /// True means all owned asynchronous request work ended before flush.
     pub stopped: bool,
+    /// All owned asynchronous request work ended before the audit flush.
+    pub drained: bool,
+    /// The final synchronous audit flush actually returned success.
+    pub audit_flushed: bool,
 }
 
 /// Holds sealed custody through listener work and the final synchronous flush.
@@ -150,6 +138,10 @@ impl ServiceHost {
             .lock()
             .map_err(|_| io::Error::other("audit poisoned"))?
             .flush()?;
-        Ok(ExitReport { stopped: true })
+        Ok(ExitReport {
+            stopped: true,
+            drained: true,
+            audit_flushed: true,
+        })
     }
 }

@@ -235,3 +235,12 @@ policy. Readiness records injection and required durability, while independence
 qualification remains false pending deployment evidence. Injection itself is not
 independence evidence. New missing-injection refusal test is authored, NOT_RUN;
 all new source compilation/runtime/witness integration tests are NOT_RUN.
+- Explicit user goal set active for all R01-R17 on2026-11-07. Goal is incomplete;
+  owned process/container count0. Next source tranches are lifecycle budgets and
+  actual local management/dual-control joins, with external owners for neutral
+  sealed audit startup, OS-protected unattended credentials, collector provenance
+  and hosted product orchestration. No source-only checkpoint completes the goal.
+- Lifecycle budget source and one pure unit fixture authored; compile/test NOT_RUN
+  pending root's global Cargo slot. Added success fields drained/audit_flushed;
+  unconsumed429/error writes now cancel on observed stop. Shared runtime APIs stay
+  compatible. Current hosted42348518353/63f69ae cannot qualify these later edits.
