@@ -1,0 +1,52 @@
+{
+  "schema": "humanymous.hosted-msrv-native-receipts/1",
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "job_id": 128359709010,
+  "job_conclusion": "success",
+  "os": "linux",
+  "full_runtime_qualified": false,
+  "log_representation": "GitHub connector decoded text re-encoded as UTF-8; not asserted byte-identical HTTP raw",
+  "decoded_log_sha256": "fdd0b9b0bd84be19c16d9608e28bd6c3b5d4356d95e7ab11a14f40e15906a6e2",
+  "decoded_log_bytes": 202088,
+  "authority_native_process": {
+    "passed": 7,
+    "failed": 0,
+    "ignored": 2,
+    "measured": 0,
+    "filtered": 0,
+    "actual_required_normal_receipts": [
+      "real_ipc_auth_replay_body_scope_capture_and_restart_epoch",
+      "concurrent_nonce_reservation_and_durable_failure",
+      "normalized_producers_are_bound_by_native_authority_credentials",
+      "sealed_startup_retains_custody_and_reuses_existing_identity"
+    ],
+    "required_privileged_not_run": [
+      "unix_other_user_is_denied_by_actual_socket_acl"
+    ],
+    "declared_child_helper_not_run": [
+      "unix_unprivileged_connect_probe"
+    ],
+    "verified_helper_exemptions": 0
+  },
+  "runtime_native_process": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0,
+    "actual_receipt": "native_binary_session_collection_origin_restart_and_wal_authentication"
+  },
+  "test_support_limits": [
+    "Older subprocess_fixture reports ordinary no-op success; newer explicit ignored fixture and actual captured PID test were not in this source."
+  ],
+  "not_proven": [
+    "Windows actor behavior",
+    "SCM lifecycle",
+    "WinCred custody",
+    "new Captured.pid assertion",
+    "new ordinary-user directory factory",
+    "new sidecar interruption recovery"
+  ],
+  "owner_reports": "not retrieved; job log provides the scoped named receipts above"
+}

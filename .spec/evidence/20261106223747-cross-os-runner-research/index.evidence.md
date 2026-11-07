@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-07T09:02:29Z
+updated: 2026-11-07T09:09:37Z
 files:
   - {path: macos-arm64-initial.log, sha256: 05490700b79bff322d867d8ec71f87c98e226399511438e4c1541158cb2da587, bytes: 57321, store: repo}
   - {path: initial-artifacts.json, sha256: 88991429991b63ae1ec7bcda09792d986a137e482b1eded17f12c90158b5df56, bytes: 1277, store: repo}
@@ -35,6 +35,7 @@ files:
   - {path: runner-continuation-pure-summary.json, sha256: 1caaf91841da9069264243125df57b158c8f37fb6c96b666f5f5122400dbdfe4, bytes: 1605, store: repo}
   - {path: hosted-8132117-native-failure-summary.json, sha256: 6a36c2b10e3eaca21d97c51a085bded8a4155fec2d0c8a12ef81cd5180c85f83, bytes: 2356, store: repo}
   - {path: runner-sidecar-pure-summary.json, sha256: 5ca96505311cf983f88451b9618fe76fcbbc69293bc1bb59217783c2c8f18f9a, bytes: 1142, store: repo}
+  - {path: hosted-8132117-msrv-native-receipts.json, sha256: 3db3294c17acdce231531c05b69fcb496e2394e634f11ebef0a3050f241a7e5b, bytes: 1852, store: repo}
 ---
 
 # Cross OS runner research

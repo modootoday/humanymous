@@ -789,3 +789,16 @@ coverage. Those ignored cases are one verified audit helper and three required
 Node product tests; no helper exemption applies to the latter. Separate MSRV
 workspace execution continues independently, so this actor observation does not
 mark every later row globally not_run. Owner raw reports remain not retrieved.
+
+
+Retrieved hosted8132117 MSRV job128359709010 completed successfully. Its decoded
+job log proves Linux authority native_process7pass/0failed/2ignored/0filtered and
+runtime native_process1pass/0failed/0ignored/0filtered, including the four named
+normal authority assertions and the runtime native binary session assertion. The
+ignored Linux privileged parent remains required_not_run; its ignored probe is
+not a verified helper exemption. This separate execution supersedes any inference
+that all rows after the failed workspace actor remained globally not_run. It does
+not qualify Windows, SCM, credentials or later-source PID/directory/recovery code.
+The private202088-byte UTF-8 decoded transcript SHA256 is
+fdd0b9b0bd84be19c16d9608e28bd6c3b5d4356d95e7ab11a14f40e15906a6e2;
+HTTP raw byte identity and uncollected owner reports are not claimed.
