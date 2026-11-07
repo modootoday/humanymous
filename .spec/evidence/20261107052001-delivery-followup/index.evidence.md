@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T20:38:51Z
+updated: 2026-11-07T20:42:23Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -57,6 +57,8 @@ files:
   - {path: header-core-local-validation.json, sha256: 20d745e1b35fdb4318b17bfed46b8000ff5cbcd78ee0a5f8609df7c72a660288, bytes: 1629, store: repo}
   - {path: hosted-9586-partial-jobs.json, sha256: 635eb71a56ed65f12487594c9cc892f778ad6a8cf9dc186ec56fd355878aec50, bytes: 5406, store: repo}
   - {path: literal-failure-settings-source.json, sha256: 1cc44de11d8f8fa27fe888c0419267f9cecba53aa0b6d1a16191779aed50c42c, bytes: 1707, store: repo}
+  - {path: literal-failure-settings-validation.json, sha256: 61af15a02b74e595fe7b3402113f298faa8f09f4e5a8f22b8a0a8834704c0127, bytes: 1869, store: repo}
+  - {path: hosted-9586-nginx-success.json, sha256: 95b152766be2f64726dfd634f499fcddb66577d8b32e22b7083d9d8e6f73c432, bytes: 2162, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up

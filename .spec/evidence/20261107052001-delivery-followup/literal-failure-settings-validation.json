@@ -1,0 +1,67 @@
+{
+  "schema": "humanymous.delivery-literal-failure-validation/1",
+  "source_sha": "d5c46903b2122b82143e4974c660a2f3f6c14c1b",
+  "policy_checkpoint": "d03fe20fccf119c25f51321fd769840563e9c222",
+  "policy_sha256": "8d785c98cc98707d15815080c68d27fec5b46937d60013d724bad74659c26e36",
+  "inventory": 114,
+  "tests": {
+    "passed": 114,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "phase_exit_codes": {
+    "inventory": 0,
+    "tests": 0,
+    "all_targets_check": 0,
+    "strict_clippy_all_targets": 0,
+    "fmt": 0,
+    "policy": 0
+  },
+  "bounded_execution": {
+    "jobs": 1,
+    "incremental": false,
+    "offline": true,
+    "locked": true,
+    "stop_first_failure": true,
+    "retries": 0,
+    "elapsed_seconds": 18.3811679,
+    "work_budget_seconds": 390,
+    "cleanup_budget_seconds": 450
+  },
+  "before_after": {
+    "selected_source": {
+      "files": 2114,
+      "differences": 0,
+      "scope": "Git-listed tracked and untracked nonignored files excluding Spec, targets and Git internals"
+    },
+    "registry_archives": {
+      "files": 1122,
+      "differences": 0
+    },
+    "effective_tools": {
+      "names": [
+        "cargo",
+        "rustc",
+        "rustfmt",
+        "clippy-driver"
+      ],
+      "differences": 0
+    },
+    "configs": {
+      "differences": 0
+    },
+    "selected_environment": {
+      "differences": 0
+    },
+    "extracted_registry_sources_measured": false,
+    "full_transitive_read_closure_proven": false
+  },
+  "binary_sha256": "e612ba3e7c67ebf2d246a5c1eae9bec31b3d7cfc6d7174aa0faaef6a4f80ddcc",
+  "private_evidence_index_sha256": "1a7c7fa5c7025c27e531174f748b9dd4b8fb41324dc942e39214b4958d731ea5",
+  "scope": "Local Delivery unit and workflow-policy qualification only",
+  "hosted_run_requalified": false,
+  "header_actual_producer_executed": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}

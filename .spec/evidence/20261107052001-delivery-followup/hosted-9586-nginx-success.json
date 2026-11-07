@@ -1,0 +1,51 @@
+{
+  "schema": "humanymous.delivery-nginx-hosted-consumption/1",
+  "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "run_id": 42407744891,
+  "attempt": 1,
+  "job_id": 128520713483,
+  "job_conclusion": "success",
+  "annotations": {
+    "failure": 0,
+    "warning": 0,
+    "notice": 0
+  },
+  "source_reported": {
+    "cargo_lock_sha256": "940281a7595a7044284aee03a10b9e31306a5ad06c3c19143d98d131c92bfd39",
+    "cleanup_exit_code": 0,
+    "failure_stage": null,
+    "full_product_qualified": false,
+    "image_id": "sha256:0b7da3bfcb55266a8722c91381e557f91418a7ecca279b1d03728d21e9818c1e",
+    "report": {
+      "cargo_lock_sha256": "940281a7595a7044284aee03a10b9e31306a5ad06c3c19143d98d131c92bfd39",
+      "denominator": "scenario groups in one Rust pilot process, not Rust test-harness tests; HEAD-and-204 includes two HTTP behaviors; concurrent-service group accounts 32 requests",
+      "engine_sha256": "cb091c80cc10a6f63e8f6941af76f34a630641670617d147a28bc6fc6ec01ce7",
+      "failed": 0,
+      "full_product_qualified": false,
+      "ignored": 0,
+      "module_sha256": "32fa004ef3641b6c5ad77d8a4897d7d95713bd85fd813f1ae306f755ebb4821d",
+      "not_run": 0,
+      "passed": 35,
+      "scenario_groups": 35,
+      "schema": "humanymous.nginx.component-summary/1",
+      "source_manifest": "24decdffd6f5273d5af75d1a1337ec54ba734632fc1441d46f0e9a27c2605f56",
+      "source_revision": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+      "status": "passed"
+    },
+    "required_scenario_groups": 35,
+    "schema": "humanymous.nginx.execution-summary/1",
+    "source_changed_during_execution": false,
+    "source_manifest": "24decdffd6f5273d5af75d1a1337ec54ba734632fc1441d46f0e9a27c2605f56",
+    "source_revision": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+    "status": "passed"
+  },
+  "raw_accounting": {
+    "retained_job_log": "Connector-decoded text, not an original log archive",
+    "retained_metadata": "GitHub API decoded job and annotation JSON",
+    "original_private_owner_report_recovered": false,
+    "private_raw_contents_included": false
+  },
+  "overall_run_terminal": false,
+  "full_product_qualified": false,
+  "release_ready": false
+}
