@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/browser/src/icons.rs",
+  "sha256": "23923076a98a15504a218cc8a3094bfabdccb22c010e9f6bf8f8d87511cc76b5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete69line fixed8symbol decorative aria-hidden SVG builder, no untrustedmarkup/scripts/font/remoteassets. Parentbutton suppliesAXname; iconsource not actualnativeAX/focus/contrast/AT qualification.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/frame_geometry.rs",
+  "sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete157line pureframegeometry:5DIP perimeter, finite/inbounds hit/DPI48..768,8edges, trustedvalidoriginalrect resizing with DPI640x480minimum/16384physicalbound and saturatingdeltas. Source tests not actualOS pointer/DPI/CEFviewport or accessible resize qualification.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/native/shared/scheme.rs",
+  "sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete process-local scheme flag, falseinitialstate, exactregistrar return1 and STANDARD/SECURE/DISPLAY_ISOLATED options. Missing/rejected remainsfalse; shared source doesnotattest all processes or actual CEF/network/sandbox acceptance.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/native/desktop/src/navigation.rs",
   "sha256": "3a04a35e58c6c1cb16dce20572dc0f1cd20d4b17ccd2b8e7b7f40915653cf1fc",
   "reviewer": "codex/rust-pages",

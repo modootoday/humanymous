@@ -1912,3 +1912,11 @@ allowlist/ticket/request/commit/load200/structuralcontent/error/timeout separate
 refusal. Substring identity not fullrender/security/AT proof. Currentpublictext
 already consistent, no contentedit during frozenbuild. Sourcechecker88errors0,
 scopedSpec0/0. Remainingfreshness still requires all unreviewed/changed inventory.
+### Shared scheme and pure frame geometry
+
+Read complete sharedscheme and157line frame_geometry; exactreceipts added.
+Processlocalfalseinit+registrarreturn1 differs from allprocessattestation. Pure
+5DIP/DPI48..768 hit/resize logic assumes validoriginalrect and tests knownedges/
+minimumdockgeometry, not actualOS eventdelivery/DPI/CEF/AT resize. Publiccontent
+unchanged. Sourcechecker88errors0/scopedSpec0errors0warnings; no currentbuild or
+nativeexecution inferred from reviewed algorithms.
