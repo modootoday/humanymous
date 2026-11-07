@@ -405,6 +405,18 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         )?;
     }
     lab.case(
+        "browser-wire-owned-origin-at-both-proxies",
+        crate::browser_wire::origins_match(&actor["proxy_hits"], &expected)
+            && crate::browser_wire::origins_match(&report["proxy_hits"], &expected),
+        json!("all expected API requests carry the exact owned Origin; no other observation"),
+    )?;
+    lab.case(
+        "browser-wire-no-referer-at-both-proxies",
+        crate::browser_wire::referers_absent(&actor["proxy_hits"], &expected)
+            && crate::browser_wire::referers_absent(&report["proxy_hits"], &expected),
+        json!("all expected API requests omit Referer; no raw values projected"),
+    )?;
+    lab.case(
         "browser-assets-use-owned-proxy",
         actor["proxy_hits"]["assets"]
             .as_u64()

@@ -181,6 +181,9 @@ fn encode(request: &http::Request) -> Vec<u8> {
 
 async fn exchange(socket: &mut TcpStream, config: &ProxyConfig, receipts: &Receipts) -> Result<()> {
     let (frame, api) = request(socket, config.browser).await?;
+    if api {
+        record_wire(receipts, frame.header("origin"), frame.header("referer"))?;
+    }
     let upstream = if api {
         config.upstream
     } else {
@@ -230,6 +233,30 @@ async fn exchange(socket: &mut TcpStream, config: &ProxyConfig, receipts: &Recei
     Ok(())
 }
 
+fn record_wire(receipts: &Receipts, origin: Option<&str>, referer: Option<&str>) -> Result<()> {
+    let fixture = fixture();
+    let expected = fixture["browser_origin"]
+        .as_str()
+        .ok_or("owned browser origin absent")?;
+    let contract: serde_json::Value =
+        serde_json::from_str(include_str!("../../browser-wire-contract.json"))?;
+    for key in [
+        if origin == Some(expected) {
+            "origin_matched"
+        } else {
+            "origin_other"
+        },
+        if referer.is_none() {
+            "referer_absent"
+        } else {
+            "referer_present"
+        },
+    ] {
+        receipts.hit(contract[key].as_str().ok_or("owned wire counter absent")?);
+    }
+    Ok(())
+}
+
 pub async fn serve(
     listener: TcpListener,
     config: ProxyConfig,
@@ -270,6 +297,19 @@ pub async fn serve(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn wire_observations_count_only_fixed_classes_and_treat_empty_referer_as_present() {
+        let receipts = Receipts::default();
+        record_wire(&receipts, Some("http://127.0.0.1:31111"), None).unwrap();
+        record_wire(&receipts, Some("null"), Some("PRIVATE_URL")).unwrap();
+        record_wire(&receipts, None, Some("")).unwrap();
+        assert_eq!(
+            serde_json::to_value(receipts.snapshot()).unwrap(),
+            serde_json::json!({
+                "wire_origin_matched":1,"wire_origin_other":2,"wire_referer_absent":1,"wire_referer_present":2
+            })
+        );
+    }
     #[test]
     fn owned_authority_and_api_dispatch_cannot_be_retargeted() {
         assert_eq!(

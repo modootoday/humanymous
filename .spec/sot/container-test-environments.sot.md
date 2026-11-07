@@ -319,6 +319,29 @@ fixture, scoring, time budgets and full refusal remain unchanged. Record
 source-qualified unit/check/Clippy/fmt and Delivery consumer proof before one
 separately coordinated Docker-hosted diagnostic candidate; no unchanged retry.
 
+For the distinct repaired candidate, both owned HTTP proxies record API request
+header observations using only four fixed counter keys in the sole
+test/lab/browser-wire-contract.json. Compare Origin exactly with the existing
+browser_origin fixture; missing or different Origin increments the other
+counter. Any Referer header, including an empty value, increments present;
+otherwise increment absent. Record after strict owned API parsing, without
+rewriting or logging either header. Negative foreign/unknown API controls do
+not enter this denominator. Counters describe observed attempts, not completed
+responses or authenticated effects; all existing response, witness and
+zero-origin assertions remain required independently.
+
+The parent adds two assertions requiring matching Origin and absent Referer at
+BOTH proxies for the checked sum of existing expected.request_counts, with no
+opposing observations. Missing good counters, malformed values and overflow
+fail closed. Expected totals derive from the sole unchanged collector fixture,
+never hardcoded five/two. No new actor or13-field public DTO fields, raw header
+projection, request rewrite or production policy change is permitted. Pure
+counter tampering tests, actor compilation/Clippy and actual Docker wire
+observations qualify this separate source. The pre-fix e70 run measures neither
+these counters nor the repaired source; successful repair cannot prove its
+original assertion retrospectively. Privacy/red/operations/evaluator critique
+is reflected in finite keys, opposing-count refusal and independent effect gates.
+
 Source8132117 run42355168729's actual Docker receipt reports26 scheduled,
 0evaluated/19errors/7unsupported. It is internally consistent but not a scoped
 pass. evidence:root/20261107083259 preserves the decoded public log and derived

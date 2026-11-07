@@ -222,6 +222,8 @@ mod tests {
             "test/lab/mount_policy.rs",
             "test/lab/browser_expectations.rs",
             "test/lab/browser_outcome.rs",
+            "test/lab/browser_wire.rs",
+            "test/lab/browser-wire-contract.json",
             "test/lab/runner/browser-outcome-contract.json",
             "test/lab/runner/src/orchestration/browser_failure.rs",
             "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",

@@ -4,6 +4,8 @@ mod audit;
 mod browser_expectations;
 #[path = "../../browser_outcome.rs"]
 mod browser_outcome;
+#[path = "../../browser_wire.rs"]
+mod browser_wire;
 mod docker;
 mod fixture;
 #[path = "../../mount_policy.rs"]
