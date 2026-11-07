@@ -159,3 +159,16 @@ Queued, all NOT_RUN: locked native build/strict Clippy; Rust pilot Clippy;
 Compose35 with JSON and cancellation/cleanup; canonical authoritye346834 runtime;
 new source/image/artifact receipts. Root allocates the one heavy slot or remote
 runner before execution. Source freeze precedes Windows/full product reruns.
+
+## Hosted-policy consultation (no execution)
+
+nginx agrees with local bounded unit/fmt/Clippy, actual runtime hosted, an early
+cheap gate and proposed2hosted lanes with strict required-result aggregation.
+Root/CI own the common final DAG; this plan adds no parallel policy implementation.
+Counterexamples sent to root: Windows default tests do not load Linux ABI;
+native/pilot feature union can link nginx symbols into the wrong binary;
+Linux-only artifact matching ignores libc/configure incompatibility; public raw
+uploads are not made private by later local retrieval. Shared core/contracts
+affect nginx, Node-only lifecycle can be independent, semantic SoT edits cannot
+be blindly skipped. Independent witness/AT/remote-peer exceptions stay explicit.
+No test/research/cloud run, source deletion or gate removal was performed.
