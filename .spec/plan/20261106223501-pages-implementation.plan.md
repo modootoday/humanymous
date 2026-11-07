@@ -1099,3 +1099,20 @@ fixtures; closing/drop does not establish erasure of copies. Added exact manual
 receipts for three fully read source modules only; did not bulk-approve the H2
 parser or other partially read sources. Existing source check88/errors0. No
 socket/hosted/browser/product execution or full freshness pass inferred.
+
+### Native host candidate metadata review
+
+Read complete Go README/compiler-input/eight-case pilot contract/fixture build
+recipe, .NET README/capabilities/21case fourtuple pilot contract, and native
+cbindgen configuration. Public topology reference now separates Go HTTP Gate
+compatibility from an in-process SDK, safe .NET request core from managed host
+binding, and generic pointer-free native export from installed C/C++ security
+integration. Contact/mutation and narrow HEAD/cookie versus response lifecycle
+limits remain explicit. Selected external compiler metadata is not independently
+authenticated or executed by this review.
+
+Added eight exact manual receipts for the fully read inputs only. Existing source
+check88/errors0. Actual CI-owned freshness verifier still exits1: new missing
+first10 begin Apache safety/contract/upstream lock, Go upstream fixtures, native/
+nginx contracts and Python package inputs. This is partial reviewed inventory
+progress, not a full freshness pass. No Cargo/process/compiler/hosted pilot run.

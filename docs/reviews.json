@@ -2,6 +2,78 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/dotnet/pilot-contract.json",
+  "sha256": "cbdc9225b5e94191dad7a64af4afeb355044bfc299e6406d4d5ebb21c3848b2a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete runnable-false 21-case four-tuple managed host contract with source/artifact lineage, cancellation/body/GC/disposal/authority/response/package cases and exact accounting. Synthetic decisions and contact counts cannot stand in for authenticated ALLOW or application mutations; all actual managed host gates remain unexecuted.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/capabilities.json",
+  "sha256": "1006becdeacbc0fc3a92135b722b0a998a3fc9d5ba7dc3f5aca9ebc329874122",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full capability declaration: safe request core, no installed middleware/native host exports/managed callbacks, absent original network and streaming/upgrade/recovery planes, unpublished package and empty qualified tuples. Required host gates are obligations, not execution receipts.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/README.md",
+  "sha256": "5881aef81b0a401de0b7879cd80b42a183def40e9f5d2a2cde8e23f3b9390294",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete ASP.NET candidate scope: safe Rust request core only; managed middleware, PInvoke/NativeAOT, GC stress and package installation remain absent or unqualified. Existing Rust Gate HTTP origin compatibility cannot substitute for that managed binding.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/native/cbindgen.toml",
+  "sha256": "25f85d539e0e4647fb13a822fbe2fb0483d259741fce73b1775b19aa7334d086",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete C/C++ header generator input: LF, exact versioned type renames, selected exports and layout-related generation choices. Configuration alone does not prove generated header contents, native layouts, dynamic loading, C++ exceptions, allocator or host lifecycle behavior.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/go/Dockerfile.fixture",
+  "sha256": "9125c5cabaf8da0beb1dd9c998024f12e815724f0383bed50ea36472a7b64b17",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full pinned upstream Go fixture compile/export recipe: untouched external checkout as context, local fixed compiler selection and read-only modules, output binary export only. Recipe selection is not a measured build, dependency closure, signature or isolated runtime qualification.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/go/pilot-contract.json",
+  "sha256": "619d78ccf264cae95704164047f116ffc9b55625d7ad7d5778116426fbfcfac2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete eight-case synthetic trusted-session Gate contract, exact route-specific required planes and external Go backend/witness composition. Preserved contacts versus application mutations, pre-handoff cancellation only, narrow HEAD/cookie probe and unexecuted source/toolchain/topology lineage; not a native SDK or browser/human attestation.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/go/compiler-input.json",
+  "sha256": "da8def87ad378210069bd9b6464be9e2319d5eb09dc519e0b61236ea34a3d829",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete selected compiler-input metadata: exact upstream fixture/compiler image/platform and local-toolchain build selection, source/dependency closure and actual compiler/binary evidence still required. This review does not independently authenticate external metadata, image signatures or execute the compiler.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/go/README.md",
+  "sha256": "46ec7bf58c5af5ef8fc6d3a0d682a85c14ca128436cf931b33f702e82fefa24d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete Go HTTP origin boundary: existing Rust Gate, no new Go SDK or producer profile, per-framework and pooled-context qualification separate, no qualified tuples or executed hosted/product fixtures.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "crates/capture/src/tls/transport.rs",
   "sha256": "74d6204465c0964aed97213d94161e98372e9b4b4fa80529f78967248514681b",
   "reviewer": "codex/rust-pages",

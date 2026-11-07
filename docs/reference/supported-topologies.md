@@ -107,3 +107,20 @@ See [provisioning and request projection](nginx-adapter.md#nginx-provisioning-an
 ### nginx dispatch and resource limits
 
 See [dispatch and resource limits](nginx-adapter.md#nginx-dispatch-and-resource-limits).
+
+## Other native host candidates
+
+These developing source boundaries do not add release-qualified host tuples.
+
+| Candidate | Current boundary and remaining qualification |
+| --- | --- |
+| Go HTTP origin | Uses the existing Rust Gate; there is no new Go SDK or provisioned Go adapter producer. An untouched external `net/http` fixture and bounded HTTP cases are selected but unexecuted. chi, Gin, Echo, Fiber and fasthttp each require separate host evidence; proxy compatibility does not establish in-process middleware or pooled-buffer safety |
+| ASP.NET Core | A safe Rust request-lifecycle core and normalized producer profile exist. Managed middleware registration, PInvoke binding, NativeAOT, GC/abort ownership and NuGet installation remain unqualified; the generic native ABI is not itself that managed binding |
+| Common C/C++ boundary | Source exports the pointer-free by-value `humanymous_native_abi_v1` buffer/lifecycle command boundary over one safe owner. This is not an installed application security SDK. Header generation configuration and Rust units do not prove actual C/C++ layout, dynamic loading, unload, exception or allocator compatibility |
+
+The Go candidate's synthetic trusted-session cases cannot attest browser or
+human activity. Origin contact counts and observed application mutations are
+different denominators: a successful transport contact alone does not prove a
+business effect. A narrow HEAD/duplicate-cookie probe does not qualify 204/304,
+streaming or post-origin rollback. Preserve failed and unexecuted cases when
+evaluating each selected fixture and compiler input.
