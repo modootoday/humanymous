@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.pages-source-followup/1",
+  "full_read_files": 3,
+  "full_read_lines": 788,
+  "before_after_exact": true,
+  "reviewed_text_already_lf": true,
+  "reviews": [
+    {
+      "source": "crates/audit/src/storage/mod.rs",
+      "sha256": "a03b885e3af62cee8ac9d226e971cfc9cf60362741dcdfd899c1140c01d0b448",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete121-line source review: native private-state/lock/snapshot/Wal exports gated Unix/Windows, Windows permissions separate. recover_segment rejects nonregular entry but assumes trusted exclusively owned directory; no lock acquired here or hostile-owner TOCTOU defense. Reads complete owned records, terminal-only torn frame truncation+file sync and explicit truncated-byte accounting; JSON alone not chain authentication. One authored temp-file repair/reopen test source-read, no new filesystem execution or power-loss proof.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/storage/private_state.rs",
+      "sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete149-line source review: private absolute-path lowercase/hyphen namespace1..64, configured nonzero byte cap<=4MiB, custody permissions checks and lifetime ExclusiveFile. Reads refuse oversize including growth, pending blocks ordinary read/commit; create-new pending/write+sync then rename, failures poison instance until authenticated reopen. promote_pending requires caller authentication, does not authenticate payload itself. Unix directorysync versus Windows FileSyncedNamespaceUnconfirmed explicitly distinct; bytes not encrypted/sanitized by this helper. Dependencies/native facts not independently qualified by this source read.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/storage/wal.rs",
+      "sha256": "04205cea054359747bae2fb9c82832f050bb6f38059b1f596b408a0978b2a656",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete518-line source review: single native writer lock; open creates directory, validates contiguous ten-digit segments and checkpoint framing, repairs only terminal torn record before separate cryptographic verified_history. Defaults rotate16MiB/maxframe4MiB; rotation occurs before next append once prior size>=threshold, not hard segment byte cap. serde_json allocates full frame before max-frame refusal; records/checkpoints collect whole history. Disk-operation failures poison instance; encode/size refusal precedes finish and does not poison. Unix new files request0600 but existing permissions/inodes retained (including0644fixture), caller owns trusted restrictive directory; no hostile-owner race defense. Sync boundary not Windows namespace powerloss proof. Seven authored test functions inclUnix-specific modes/lockdup and ignored childhelper; parent checks explicit helper marker/summary/exit/stderr, not just childexit. No new test/native ownership or installed deployment qualification.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "permissions_and_lock_providers_independently_qualified_by_this_batch": false,
+  "public_prose_changed": false
+}

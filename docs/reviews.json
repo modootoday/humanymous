@@ -3165,12 +3165,13 @@
 },
 {
   "source": "crates/audit/src/storage/wal.rs",
-  "sha256": "a5477e4deaba6ce856a96c0bbd8f039ce373411561b86585c070d1e55e1f4598",
+  "sha256": "04205cea054359747bae2fb9c82832f050bb6f38059b1f596b408a0978b2a656",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete WAL and native test definitions: lifetime cooperative writer lock, terminal framing repair at open, exact contiguous segments,16MiB rotation threshold and4MiB framed limit, sync/poison behavior, whole-memory reads and separate crypto verification. Directory privacy is caller-owned and rotation is not disk quota; no native test run.",
+  "notes": "Complete518-line source review: single native writer lock; open creates directory, validates contiguous ten-digit segments and checkpoint framing, repairs only terminal torn record before separate cryptographic verified_history. Defaults rotate16MiB/maxframe4MiB; rotation occurs before next append once prior size>=threshold, not hard segment byte cap. serde_json allocates full frame before max-frame refusal; records/checkpoints collect whole history. Disk-operation failures poison instance; encode/size refusal precedes finish and does not poison. Unix new files request0600 but existing permissions/inodes retained (including0644fixture), caller owns trusted restrictive directory; no hostile-owner race defense. Sync boundary not Windows namespace powerloss proof. Seven authored test functions inclUnix-specific modes/lockdup and ignored childhelper; parent checks explicit helper marker/summary/exit/stderr, not just childexit. No new test/native ownership or installed deployment qualification.",
   "pages": [
+    "docs/reference/security-audit.md",
     "docs/how-to/verify-audit-log.md",
-    "docs/reference/security-audit.md"
+    "docs/standards/draft-v0/reviews/security-privacy.md"
   ]
 },
 {
@@ -3767,11 +3768,13 @@
 },
 {
   "source": "crates/audit/src/storage/mod.rs",
-  "sha256": "f964d7e238744d998d31f4a06c93347db4330aee75b250c4402f1b6de127d542",
+  "sha256": "a03b885e3af62cee8ac9d226e971cfc9cf60362741dcdfd899c1140c01d0b448",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete storage composition/recover_segment and bounded JSONL decoder with source fixtures. Complete newline is commit boundary even for valid JSON; final torn frame alone is eligible for explicit repair, framed corruption/oversize still fail. Repair truncates and syncs regular file, does not acquire exclusive trusted directory ownership or authenticate history. Public continuity guide records byte preservation and exact repaired count. Source read only; no new storage/runtime test executed.",
+  "notes": "Complete121-line source review: native private-state/lock/snapshot/Wal exports gated Unix/Windows, Windows permissions separate. recover_segment rejects nonregular entry but assumes trusted exclusively owned directory; no lock acquired here or hostile-owner TOCTOU defense. Reads complete owned records, terminal-only torn frame truncation+file sync and explicit truncated-byte accounting; JSON alone not chain authentication. One authored temp-file repair/reopen test source-read, no new filesystem execution or power-loss proof.",
   "pages": [
-    "docs/how-to/verify-audit-log.md"
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/reviews/security-privacy.md"
   ]
 },
 {
@@ -3882,11 +3885,13 @@
 },
 {
   "source": "crates/audit/src/storage/private_state.rs",
-  "sha256": "dff83a4a68cabbda890624a3fbb4d31ba5b4e12546a3ef2b4329fc385ccf650b",
+  "sha256": "73a91cafbd1ab600b25cd141a1a80a1cc401f92872825707d0ec6b96033dfd21",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full4MiB private state namespace, owner checks, persistent exclusive lock, bounded read, pending refusal, poisoned staged sync/rename and authenticated-caller promotion boundary. Public audit reference separates physical persistence helper from each consumer signature/fresh-pin validation, complete file bound from constant memory and I/O failure from no writes. No state repaired or modified.",
+  "notes": "Complete149-line source review: private absolute-path lowercase/hyphen namespace1..64, configured nonzero byte cap<=4MiB, custody permissions checks and lifetime ExclusiveFile. Reads refuse oversize including growth, pending blocks ordinary read/commit; create-new pending/write+sync then rename, failures poison instance until authenticated reopen. promote_pending requires caller authentication, does not authenticate payload itself. Unix directorysync versus Windows FileSyncedNamespaceUnconfirmed explicitly distinct; bytes not encrypted/sanitized by this helper. Dependencies/native facts not independently qualified by this source read.",
   "pages": [
-    "docs/reference/security-audit.md"
+    "docs/reference/security-audit.md",
+    "docs/how-to/verify-audit-log.md",
+    "docs/standards/draft-v0/reviews/security-privacy.md"
   ]
 },
 {
