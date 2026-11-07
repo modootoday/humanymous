@@ -221,6 +221,18 @@ async fn normalized_producers_are_bound_by_native_authority_credentials() {
             "rack-normalized",
             "asgi-normalized",
         ),
+        (
+            "apache",
+            AdapterProfile::Apache,
+            "apache-normalized",
+            "aspnetcore-normalized",
+        ),
+        (
+            "aspnetcore",
+            AdapterProfile::DotnetAspNetCore,
+            "aspnetcore-normalized",
+            "apache-normalized",
+        ),
     ] {
         let d = Directory::new();
         let mut c = config_value(&d);

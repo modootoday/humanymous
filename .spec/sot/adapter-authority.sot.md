@@ -256,3 +256,15 @@ Management must use independently provisioned credentials, never adapter/session
 credentials. Caller-owned request/wire copies are outside this type's erasure
 guarantee. Runtime owns integration and actual hosted qualification; no inline
 key startup or physical-memory erasure claim follows from Zeroizing ownership.
+
+## Apache and ASP.NET Core provisioned profiles
+
+Root-owned integrity canon adds Apache and DotnetAspNetCore. Trusted configuration
+names apache and aspnetcore bind respectively humanymous.apache/apache-normalized
+and humanymous.dotnet/aspnetcore-normalized, version0.1.0-experimental.1. Exact
+normalized readiness keys apache_normalized and aspnetcore_normalized never imply
+raw TLS/H2/header ordering/collector/RIT. Peer, connection, capture and stream
+remain null at this wire profile. Config selection is independent of wire ID or
+mode; mixed identity/mode rejects. Go continues the existing HTTP Gate profile;
+no new Go producer is inferred. Implementation source does not qualify actual
+Apache MPM/hooks or ASP.NET host behavior. New source execution is NOT_RUN.

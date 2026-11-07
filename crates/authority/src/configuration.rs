@@ -42,6 +42,8 @@ fn adapter_profile<'de, D: serde::Deserializer<'de>>(d: D) -> Result<AdapterProf
         "python-asgi" => Ok(AdapterProfile::PythonAsgi),
         "python-wsgi" => Ok(AdapterProfile::PythonWsgi),
         "ruby-rack" => Ok(AdapterProfile::RubyRack),
+        "apache" => Ok(AdapterProfile::Apache),
+        "aspnetcore" => Ok(AdapterProfile::DotnetAspNetCore),
         _ => Err(serde::de::Error::custom("unsupported provisioned adapter")),
     }
 }
@@ -147,7 +149,9 @@ impl Configuration {
                 "nginx_raw": nginx && available,"nginx_normalized":nginx && available && !r.raw_header_order,
                 "asgi_normalized": self.adapter == AdapterProfile::PythonAsgi && available && !r.raw_header_order,
                 "wsgi_normalized": self.adapter == AdapterProfile::PythonWsgi && available && !r.raw_header_order,
-                "rack_normalized": self.adapter == AdapterProfile::RubyRack && available && !r.raw_header_order})
+                "rack_normalized": self.adapter == AdapterProfile::RubyRack && available && !r.raw_header_order,
+                "apache_normalized": self.adapter == AdapterProfile::Apache && available && !r.raw_header_order,
+                "aspnetcore_normalized": self.adapter == AdapterProfile::DotnetAspNetCore && available && !r.raw_header_order})
             })
             .collect();
         serde_json::json!({"id":"application-http", "revision":self.scope.revision,
@@ -233,6 +237,51 @@ pub fn valid_sid(sid: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use sha2::Digest;
+
+    #[test]
+    fn provisioned_server_profiles_reject_mixed_wire_identity_and_mode() {
+        for (name, id, mode) in [
+            ("apache", "humanymous.apache", "apache-normalized"),
+            ("aspnetcore", "humanymous.dotnet", "aspnetcore-normalized"),
+        ] {
+            let selected = adapter_profile(serde_json::Value::String(name.into())).unwrap();
+            let mut request = serde_json::json!({
+                "protocol":"humanymous.adapter/0.1","id":"01234567-89ab-4cde-8fab-0123456789ab",
+                "tenant":"t","origin":"o","revision":"r","deadline":2000,"method":"POST",
+                "target":"/api","authority":"owned.test","peer":null,
+                "headers":[["host","owned.test"],["content-length","3"]],"headerMode":mode,
+                "body":{"layer":"transfer-decoded-content-encoded","complete":true,"length":3,
+                    "sha256":hex::encode(sha2::Sha256::digest(b"abc")),"base64":"YWJj"},
+                "capabilities":{"rawTls":false,"originalH2":false,"rawHeaderOrder":false,"completeBody":true},
+                "stream":null,"capture":null,"connectionId":null,
+                "adapter":{"id":id,"version":"0.1.0-experimental.1","installation":"i"}
+            });
+            let valid = serde_json::to_vec(&request).unwrap();
+            assert!(
+                humanymous_integrity::adapter::parse_with_profile(&valid, 1000, selected).is_ok()
+            );
+            request["adapter"]["id"] = "humanymous.node".into();
+            assert!(
+                humanymous_integrity::adapter::parse_with_profile(
+                    &serde_json::to_vec(&request).unwrap(),
+                    1000,
+                    selected
+                )
+                .is_err()
+            );
+            request["adapter"]["id"] = id.into();
+            request["headerMode"] = "asgi-normalized".into();
+            assert!(
+                humanymous_integrity::adapter::parse_with_profile(
+                    &serde_json::to_vec(&request).unwrap(),
+                    1000,
+                    selected
+                )
+                .is_err()
+            );
+        }
+    }
 
     #[test]
     fn provisioning_selects_exact_profile_and_rejects_wire_names() {
@@ -242,11 +291,23 @@ mod tests {
             ("python-asgi", AdapterProfile::PythonAsgi),
             ("python-wsgi", AdapterProfile::PythonWsgi),
             ("ruby-rack", AdapterProfile::RubyRack),
+            ("apache", AdapterProfile::Apache),
+            ("aspnetcore", AdapterProfile::DotnetAspNetCore),
         ] {
             let value = serde_json::Value::String(name.into());
             assert_eq!(adapter_profile(value).unwrap(), expected);
         }
-        for name in ["python", "ruby", "humanymous.python", "asgi-normalized", ""] {
+        for name in [
+            "python",
+            "ruby",
+            "humanymous.python",
+            "asgi-normalized",
+            "humanymous.apache",
+            "apache-normalized",
+            "dotnet",
+            "aspnetcore-normalized",
+            "",
+        ] {
             assert!(adapter_profile(serde_json::Value::String(name.into())).is_err());
         }
     }
@@ -257,6 +318,8 @@ mod tests {
             ("python-asgi", "asgi_normalized"),
             ("python-wsgi", "wsgi_normalized"),
             ("ruby-rack", "rack_normalized"),
+            ("apache", "apache_normalized"),
+            ("aspnetcore", "aspnetcore_normalized"),
         ] {
             let value = serde_json::json!({
                 "adapter":profile,"endpoint":"unused",
@@ -290,6 +353,8 @@ mod tests {
                     "asgi_normalized",
                     "wsgi_normalized",
                     "rack_normalized",
+                    "apache_normalized",
+                    "aspnetcore_normalized",
                 ] {
                     assert_eq!(
                         manifest["routes"][0][mode],

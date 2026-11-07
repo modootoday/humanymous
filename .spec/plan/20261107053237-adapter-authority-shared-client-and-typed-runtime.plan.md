@@ -218,3 +218,15 @@ Drop, including startup timeout and malformed readiness. No extra process is
 started to verify this locally. Direct rustfmt and whitespace check passed; this
 changed integration fixture is NOT_RUN and not covered by the pure-lib result.
 Audit confirms shared sealed startup owner is being authored, not yet available.
+
+## Explicit Apache/ASP.NET Core delta
+
+Root assigned exact profile names after shared enum landed; actual disk variants
+verified. Config/readiness now includes apache/aspnetcore with all absent-plane
+refusals and seven-profile isolation. Added one pure test for config-selected
+wire identity/mode binding; existing hosted native test now has five normalized
+producer iterations (still one test, NOT_RUN). Native client/IPC/scoring unchanged.
+Direct rustfmt and owned whitespace checks passed. Cargo is allocated to wargame
+and no command was started. Earlier authority10pure result does not cover this
+changed configuration or new test; revalidation required. No blanket producer
+inference or new Go producer was added.

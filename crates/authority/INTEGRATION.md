@@ -203,3 +203,10 @@ source at observation; execution HEAD d3d5a839fb2621b0316ed1629e86aa861f0c5bae.
 Raw console was tool-output only, not recovered as a file. This supersedes the
 pure-library NOT_RUN statement for those exact inputs only. Native process/IPC,
 new producer host pilots and the later startup child-guard change remain NOT_RUN.
+
+Apache/ASP.NET Core source additionally accepts config apache/aspnetcore, binding
+Apache/DotnetAspNetCore to humanymous.apache/apache-normalized and
+humanymous.dotnet/aspnetcore-normalized at0.1.0-experimental.1. Exact readiness
+keys apache_normalized/aspnetcore_normalized are normalized-only. Configuration
+changed after the authority10pure record: new compile/unit/native execution is
+NOT_RUN; original host ABI/MPM/framework qualification belongs to host owners.
