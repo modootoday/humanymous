@@ -1191,3 +1191,20 @@ Added six fully read build/binding/middleware input receipts. Did not approve
 partially read or concurrently changed pilot Program.cs. Existing source88/0.
 Full freshness still fails for remaining Apache, native, host pilot and other
 source inventory. No managed build, library loading, network or Cargo executed.
+
+### New exact hosted startup failure and vector profile gap
+
+Root pushed exacta26d1c3f08b365ca93545c6a51343095868edb45; independently queried
+new run42354873001. It is terminal startup_failure at08:17:51Z with no jobs,
+no check runs and therefore no workflow tests. gh reports workflow-file issue;
+Root reports nested policy actions:read exceeds caller actions:none. No check
+annotations were available to independently recover that detailed cause. This
+is distinct from old63f69ae dual88 pass and does not execute current rendering,
+freshness/browser/AT. No duplicate push/dispatch. Browser base44a4755 is an
+ancestor of pushed source, but the dot-segment refusal is still local WIP.
+
+Read current vector runner and published corpus documentation. Runner selects
+only Node/nginx; fixed24+10synthetic fixtures do not cover newer Python/Ruby/
+Apache/.NET profile declarations. Public vectors page now makes that gap explicit
+and requires separately reviewed exact inputs/expectations before expansion.
+No fixture, expected acceptance, parser, source policy or detection rule changed.

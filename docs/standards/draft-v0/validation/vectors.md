@@ -32,6 +32,15 @@ and rejected inputs, mismatches and the complete fixture digest. Acceptance is
 not an ALLOW verdict, authenticated peer, durable audit or origin invocation.
 `draft_v0_conformance` remains false even when all expectations match.
 
+The fixed corpus and its runner currently select only the Node and nginx
+profiles. The [producer-profile table](../protocol/implementation-experiment.md#producer-profiles-and-service-readiness)
+also lists newer Python ASGI/WSGI, Ruby Rack, Apache and ASP.NET Core parser
+contracts, but those are not covered by these fixed fixture sets. Their source
+unit tests are a separate evidence layer; neither adding a profile enum nor
+passing this unchanged corpus establishes cross-host compatibility. Expanding
+the corpus requires separately reviewed exact bytes and expected results, not
+renaming an existing passing profile or regenerating its acceptance record.
+
 | Cases | Boundary |
 | --- | --- |
 | Node raw / Fetch normalized | Two positive parser profiles with declared observation loss |

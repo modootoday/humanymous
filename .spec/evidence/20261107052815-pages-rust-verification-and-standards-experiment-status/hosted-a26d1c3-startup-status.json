@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "run_id": 42354873001,
+  "source_sha": "a26d1c3f08b365ca93545c6a51343095868edb45",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42354873001",
+  "status": "completed",
+  "conclusion": "startup_failure",
+  "created_utc": "2026-11-07T08:17:51Z",
+  "updated_utc": "2026-11-07T08:17:51Z",
+  "observed_workflow_jobs": 0,
+  "observed_check_runs": 0,
+  "workflow_tests_executed": 0,
+  "expected_test_denominator": "not evaluated; all required validation unrun",
+  "pages_build": "NOT_RUN",
+  "source_freshness": "NOT_RUN",
+  "pages_browser": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "cause_reported_by_root": "nested policy actions:read exceeds caller ci actions:none permission ceiling",
+  "cause_attribution": "Root coordinator report; gh run view independently reports workflow file issue and startup_failure. Check-run API returned no annotations.",
+  "distinct_from": "historical42348518353/63f69ae dual88 build pass with overall failure",
+  "scope_limit": "No local WIP or earlier component pass is qualified by this startup failure. Browser dot-segment fix remains working-source only."
+}
