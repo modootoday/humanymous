@@ -243,7 +243,34 @@ seven-pure/static evidence does not qualify this later delta. Root next-slot
 request was updated before any allocation; no Cargo/process is owned.
 Source evidence: [[evidence:root/20261107081215]].
 
-### Current completion audit against inspected sources
+### Current completion audit after Windows source qualification
+
+Inspected current source afterc09d6897 and evidence95831. This supersedes the
+historical matrix below only where actual source/evidence proves progress.
+
+| Requirement | Current authoritative evidence | Remaining completion proof |
+|---|---|---|
+| Shared custody/writer lifetime and permissions | Current audit owner/restart/lock/Windows ACL/reparse/rename tests pass; runtime and authority adopt SealedLog | Full consumer lifecycle and deployment proof |
+| Witness-before-secret preflight | Current pure2 pass before I/O/credential consumption | Actual ServiceHost/native secret-reader refusal |
+| Independent witness | Current actual service child restart/rollback and absolute lifetime/stalled handshake pass | Product requests and independently provisioned account/storage/mount isolation |
+| Witness recovery | Current pure4 and actual missing-head/ambiguous-tail native cases pass | Product crash/outage/no-origin-effect observations |
+| Dual control and retained anchors | Current actual signed service/retained intent/expired intent/live ledger loss cases pass | Independent actor rights and destructive runtime admission/effect connection |
+| Settings and permanent kill | TrustedSnapshot native case passes; ServiceHost bind_with_operator and settings source exist; KillStatus typed assessment exists | Exact consumer CAS/WAL/restart evidence; kill admission/mutation remains unwired and destructive_controls=false |
+| Destination-bound rotation | Current candidate substitution/stale source/interrupted recovery cases pass | Operator/product workflow and remaining OS tuples |
+| Erasure | Current retained erasure/fresh exact recovery/foreign-scope refusal and persistent tombstone cases pass | Product/admin connection, backup residual/deployment proof; physical/unknown-copy erasure remains unestablished |
+| Backup retirement | Historical key_backups evidence; source still uses local ControlAuthority consumption/membership | Current backup suite, independently retained capability bridge and product/operator connection |
+| Sink | Current actual verified local sink restart/tamper case passes | Remote delivery/retry/receipt transport and production export connection |
+| Recovery resource bounds and signing identity rotation | Current whole-history WAL/Tree source | Streaming authenticated recovery and writer/witness identity transition remain unimplemented; passphrase rotation is distinct |
+| Final verification | Current all-target check/Clippy, pure10 and native44, rawignored3 excluded;111-file closure zero drift | Full current audit suite, strict actor receipt, remaining OS/protected profiles, Docker product e2e and deployment qualification |
+
+Resource-only operator settings now have a separate source path; observer
+settings remain nonwritable and destructive endpoints remain unavailable. The
+older blanket observer-only conclusion below is historical. Root's measured
+hybrid policy governs execution venue; current44 is ordinary-user Windows
+component evidence, not hosted/full-workspace/product proof. Source is frozen
+for the integration candidate. No new workload slot is held.
+
+### Historical completion audit after snapshot introduction
 
 This is an open-requirement audit, not a reduction of the active product goal.
 The current checkout was inspected after7dba59d; old component results remain
