@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T22:16:29Z
+updated: 2026-11-07T22:17:39Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -74,7 +74,7 @@ files:
   - {path: hosted-1f87-docker.json, sha256: 574d0e5bfb33dee1bb711d82fadb0705bb8bfc9b16fd39eb838f6f514b5f23f3, bytes: 2608, store: repo}
   - {path: remote-custody-source.json, sha256: 07e57c6ee60cfb71e41cc9d0b1244cc3e5b828a4a9f8a6839576df0871913a12, bytes: 1619, store: repo}
   - {path: hosted-1f87-macos-browser.json, sha256: 1a5fbd70fe171ba54c010083b794e6b59b51c418e6a96f10a8dec997f74db392, bytes: 8000, store: repo}
-  - {path: runtime-consumers-source.json, sha256: 280c4e4824891ecd36053a08c4d631482784e4f2edd33d7cb03d1add3246a1e8, bytes: 4859, store: repo}
+  - {path: runtime-consumers-source.json, sha256: 1163fabff6961f1e133504d3abc12019cc85cb1dc12dde44d5bbba10c0569fb6, bytes: 5171, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up

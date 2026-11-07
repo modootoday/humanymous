@@ -53,7 +53,7 @@
     },
     {
       "path": "build/rust/custody-check.Dockerfile",
-      "sha256": "b9f257b34222086b1d4261c7187b40247a6714d7f3d08135be199806e44c12c5"
+      "sha256": "43514dca939bce144f9e05428775f24f2a3d9c7e5a18691d5ad93527e10d2603"
     },
     {
       "path": "build/rust/runtime-candidate.Dockerfile",
@@ -82,7 +82,7 @@
     "Cross-package compile includes removed for Gateway contract and historical Audit fixture; synthetic unit schema inputs only",
     "Root expanded grant: current component workflow and exact policy command selectors",
     "Candidate build explicitly gateway; Authority build explicitly authority bin; notice inventory/source paths moved",
-    "Custody library body retained once with two original context-scoped lab entrypoints; prefixed integration targets",
+    "Custody library body retained once; Docker ENTRYPOINT directly selects audit:: on the Rust test binary. Authority native integration entrypoint unchanged; prefixed integration targets",
     "Existing source-oracle helper fixture/output paths moved; no Go/oracle execution or historical artifact change"
   ],
   "historical_paths_preserved": [
@@ -102,5 +102,6 @@
   "new_regressions_authored": [
     "gateway_filter_requires_complete_inventory_and_exact_selected_names",
     "consolidated_runtime_package_cannot_grant_another_binary_role"
-  ]
+  ],
+  "correction": "Initial committed generated shell wrappers in6276fa97 were not executed and are removed by the follow-up; no foreign shim or script remains. Former unused authority-tests copy is not reproduced as a misleading role alias."
 }
