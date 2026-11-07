@@ -16,6 +16,22 @@ source is not adoption, implementation conformance or endorsement. The generic
 transport/authentication profile has not selected its complete normative
 dependency set.
 
+## Checked editions and document status
+
+The following editions were checked against their official publication pages on
+2026-11-07. Dated links identify the reviewed text; the latest-version links
+above or below still need rechecking before an actual submission. This table
+does not select a complete normative dependency set for this project draft.
+
+| Reviewed edition | Published status | Use and limit |
+| --- | --- | --- |
+| [RFC 8174, May 2017](https://www.rfc-editor.org/info/rfc8174/) | Best Current Practice, part of BCP 14 | Uppercase requirement terminology; does not approve this project's candidate requirements |
+| [Trace Context, 23 November 2021](https://www.w3.org/TR/2021/REC-trace-context-1-20211123/) | W3C Recommendation | Trace propagation; not authenticated decision authority |
+| [WCAG 2.2, 12 December 2024](https://www.w3.org/TR/2024/REC-WCAG22-20241212/) | W3C Recommendation | Accessibility review and conformance requirements; selected keyboard checks do not establish page or process conformance |
+| [Privacy Principles, 15 May 2025](https://www.w3.org/TR/2025/STMT-privacy-principles-20250515/) | W3C Statement on the Note track | Horizontal privacy principles; not implementation certification or a Recommendation-track protocol |
+| [WebDriver, 2 July 2026](https://www.w3.org/TR/2026/WD-webdriver2-20260702/) | W3C Working Draft | Browser measurement interface reference; not evidence of human presence or an adopted dependency for the proposed wire profile |
+| [W3C Process, 18 August 2025](https://www.w3.org/policies/process/20250818/) | Operative Process identified by the current official page | Venue procedures; editor drafts and an individual project's preparation do not replace them |
+
 ## Existing standards considered as building blocks
 
 | Source | Relevant boundary |

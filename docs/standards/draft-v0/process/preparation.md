@@ -45,6 +45,13 @@ specific interoperability problem.
 
 ## Choose the relevant venue
 
+Keep a dependency record with each reviewed source's title, dated edition,
+publication status, stable URL, selected sections and intended normative or
+informative role. Use the [checked reference editions](references.md#checked-editions-and-document-status)
+as review inputs, then recheck operative venue rules and unresolved wire choices
+before freezing a submission package. Referencing an external Recommendation
+does not give this project draft the same maturity or endorsement.
+
 | Venue | Applicable preparation |
 | --- | --- |
 | IETF | HTTP protocol profile: individual Internet-Draft, relevant community discussion, possible working-group adoption and later standards-process review |

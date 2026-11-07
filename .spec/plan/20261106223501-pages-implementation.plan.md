@@ -1116,3 +1116,18 @@ check88/errors0. Actual CI-owned freshness verifier still exits1: new missing
 first10 begin Apache safety/contract/upstream lock, Go upstream fixtures, native/
 nginx contracts and Python package inputs. This is partial reviewed inventory
 progress, not a full freshness pass. No Cargo/process/compiler/hosted pilot run.
+
+### Official reference editions and accessibility claim scope
+
+Opened official RFC Editor/W3C publication pages, latest aliases and dated editions
+for RFC8174, Trace Context2021-11-23, WCAG2.2 2024-12-12, Privacy Principles
+2025-05-15, WebDriver WD2026-07-02 and operative W3C Process2025-08-18. Recorded
+status/date/stable URLs in public sanitized evidence, not copied full sources.
+
+Reference inventory now distinguishes Recommendation, Note-track Statement,
+Working Draft and operative procedure. Submission preparation records edition,
+status, selected sections and normative/informative role without selecting a
+complete Draft v0 dependency set. Accessibility review cites WCAG2.2 whole-page,
+responsive-variation and complete-process conformance scope; a keyboard probe
+cannot establish A/AA/AAA. No project certification, external submission/rights
+clearance or actual browser result is inferred. Existing source88/errors0.

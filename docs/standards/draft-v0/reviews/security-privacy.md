@@ -104,6 +104,13 @@ Recovery must explain the outcome, preserve safe user progress and avoid an
 unredeemable challenge loop. Screen-reader and keyboard testing must be measured
 in actual supported browsers; a written accessibility intention is insufficient.
 
+The [WCAG 2.2 conformance requirements](https://www.w3.org/TR/2024/REC-WCAG22-20241212/#conformance-reqs)
+apply to whole pages and complete multi-page processes, including relevant
+responsive variations. A passed title, skip-link or focus probe is evidence for
+that measured boundary; it cannot establish an A, AA or AAA claim for the page,
+the site or an entire recovery process. Preserve the untested criteria and
+assistive-technology cases alongside any automated results.
+
 ### Evidence to retain for an access review
 
 The following are review cases, not additional normative protocol requirements.

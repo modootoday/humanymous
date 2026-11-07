@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "checked_utc": "2026-11-07T08:02:19.3659910Z",
+  "method": "Official primary publication pages opened and status/edition headings inspected",
+  "entries": [
+    {
+      "title": "RFC8174",
+      "date": "2017-05",
+      "status": "Best Current Practice / BCP14",
+      "url": "https://www.rfc-editor.org/info/rfc8174/"
+    },
+    {
+      "title": "Trace Context",
+      "date": "2021-11-23",
+      "status": "W3C Recommendation",
+      "url": "https://www.w3.org/TR/2021/REC-trace-context-1-20211123/"
+    },
+    {
+      "title": "WCAG2.2",
+      "date": "2024-12-12",
+      "status": "W3C Recommendation",
+      "url": "https://www.w3.org/TR/2024/REC-WCAG22-20241212/"
+    },
+    {
+      "title": "Privacy Principles",
+      "date": "2025-05-15",
+      "status": "W3C Statement / Note track",
+      "url": "https://www.w3.org/TR/2025/STMT-privacy-principles-20250515/"
+    },
+    {
+      "title": "WebDriver",
+      "date": "2026-07-02",
+      "status": "W3C Working Draft",
+      "url": "https://www.w3.org/TR/2026/WD-webdriver2-20260702/"
+    },
+    {
+      "title": "W3C Process",
+      "date": "2025-08-18",
+      "status": "operative Process identified by official latest page",
+      "url": "https://www.w3.org/policies/process/20250818/"
+    }
+  ],
+  "wcag_scope": "whole pages and complete processes; partial keyboard component probes do not establish A/AA/AAA",
+  "draft_v0_normative_dependency_set": "not frozen",
+  "submission": "NOT_PERFORMED",
+  "browser_execution": "NOT_RUN",
+  "scope_limit": "Reference edition and status review only; no standards adoption, project certification, rights clearance or product conformance inferred."
+}
