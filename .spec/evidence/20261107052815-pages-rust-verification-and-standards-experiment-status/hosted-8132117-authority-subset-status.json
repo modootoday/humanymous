@@ -1,0 +1,24 @@
+{
+  "scope": "Inspected source-bound authority subset, not later corpus or whole-product qualification",
+  "source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run": 42355168729,
+  "job": 128359709010,
+  "job_conclusion": "success",
+  "passed": 30,
+  "failed": 0,
+  "ignored": 2,
+  "filtered": 0,
+  "harnesses": {
+    "native_process": 7,
+    "lib": 13,
+    "decisions": 7,
+    "local_service": 3,
+    "main": 0
+  },
+  "required_not_run": "unix_other_user_is_denied_by_actual_socket_acl",
+  "ignored_helper": "unix_unprivileged_connect_probe",
+  "inspected_extract_sha256": "7e61ce8722f8810fb4136d71a505d25d62047a9d575c9d2e946856d5aafe414c",
+  "new_normalized25_corpus": "NOT_RUN",
+  "actual_language_server_qualification": false,
+  "strict_workspace_qualified": false
+}

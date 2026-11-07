@@ -1642,3 +1642,13 @@ Clarified unavailable planes may be present in valid config, manifestfalse and
 request422 do not mean startuprejectsconfig or listenerprovesreadiness. Config-
 projected capability declaration is not actual end-to-end probe or hosttuple proof.
 No behavior/dependency/test execution; quiet window preserved.
+
+### Actual Linux authority subset, separate from new public corpus
+
+Read owner's complete named public receipt and actual derived private harness
+extract; independently matched extractSHA7e61ce87. Verified exactjobMSRV128359709010
+success/source813. Authority30passed=lib13+decisions7+local3+native7,main0;2ignored
+are requiredprivilegedparent andhelper, not successes. Map now records controlled
+sealedstartup/normalizedbinding/genericcancel/drain evidence with exactjoblink,
+retaining actualframework/ABI/independentcustody/fullworkspace gaps. Later25case
+corpus unexecuted. Saved sanitized ownsummary; no new compiler/runtime execution.

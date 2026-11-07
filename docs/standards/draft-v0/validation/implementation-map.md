@@ -34,6 +34,17 @@ The [wire experiment](../protocol/implementation-experiment.md) and
 from the unresolved generic profile. Reuse of one shared Rust parser is good
 implementation consistency, but is not independent interpretation evidence.
 
+At source `8132117`, the [Linux MSRV job](https://github.com/modootoday/humanymous/actions/runs/42355168729/job/128359709010)
+recorded an authority subset of 30
+passing tests and two ignored entries: a required privileged other-user case
+and its helper. Named results cover response binding, normalized producer
+selection, controlled-parent sealed startup, native capacity and generic
+cancellation/drain. This is authority component evidence, not actual Python,
+Ruby, Apache or ASP.NET Core server/ABI qualification, independent custody or
+complete workspace coverage. Later source changes and the separately authored
+[25-case normalized corpus](vectors.md#normalized-host-profile-corpus-awaiting-execution)
+need fresh execution; the ignored required case remains outstanding.
+
 Apache's safe request/replay component contributes a narrower P-07/P-08 subset:
 exact-length bounded input, original-budget checks and cancellation-aware replay.
 It does not authorize a request, specify streaming integrity or establish that
