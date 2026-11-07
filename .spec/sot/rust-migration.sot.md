@@ -14,6 +14,20 @@ rel:
 
 # Rust migration conventions
 
+## Explicit forwarding hook receipt
+
+BrowserCollector.enable_guard_hooks explicitly opts into global eval/Function
+Proxy replacement and its direct-eval lexical compatibility delta. Default
+construction does not replace globals. JS-owned managed closures preserve
+retained proxy calls after stop/drop. Counter observation forwards opaque caller
+arguments without authoring/storing script source. Current references alone are
+restored, external replacements and descriptor changes preserved. One active
+owner per realm in this WASM module avoids stale nested restoration. Actual
+Firefox47/0/0 and strictWASMClippy pass, including partial rollback, identical
+throw/return/receiver/newTarget, reentrancy and failed restoration. Default guard
+remains partial; explicit hook coverage can report measured dynamic coverage,
+never human/code attestation or qualified collector/session/transport readiness.
+
 ## Owned observer implementation receipt
 
 Collector's shared guard Epoch now receives actual MutationObserver script-node

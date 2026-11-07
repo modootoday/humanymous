@@ -241,6 +241,9 @@ mod tests {
     #[wasm_bindgen_test]
     fn malformed_delivery_invalidates_snapshot_but_still_detaches() {
         let mut baseline = super::super::Baseline::capture().unwrap();
+        let global: JsValue = js_sys::global().into();
+        let original_eval = get(&global, "eval").unwrap();
+        baseline.enable_hooks().unwrap();
         let callback = baseline
             .observer
             .as_ref()
@@ -259,6 +262,7 @@ mod tests {
         assert!(baseline.snapshot().is_err());
         assert!(baseline.stop().is_err());
         assert!(!baseline.observer.as_ref().unwrap().active.get());
+        assert_eq!(get(&global, "eval").unwrap(), original_eval);
     }
 
     #[wasm_bindgen_test]

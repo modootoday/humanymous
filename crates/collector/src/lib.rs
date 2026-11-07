@@ -43,6 +43,12 @@ pub struct BrowserCollector {
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]
 impl BrowserCollector {
+    /// Explicitly replace realm eval/Function references with owned forwarding
+    /// proxies. This changes direct-eval lexical semantics; never enable as an
+    /// implicit compatibility-preserving operation. Does not attest human use.
+    pub fn enable_guard_hooks(&mut self) -> Result<(), wasm_bindgen::JsValue> {
+        self.guard.enable_hooks()
+    }
     /// Register passive listeners in the current browser document.
     #[wasm_bindgen::prelude::wasm_bindgen(constructor)]
     pub fn new() -> Result<BrowserCollector, wasm_bindgen::JsValue> {

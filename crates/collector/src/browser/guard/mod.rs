@@ -1,4 +1,5 @@
 //! Measured partial guard baseline with owned script observation; no eval replacement.
+mod forwarding;
 mod observer;
 use super::reflection::{call, get};
 use crate::guard::{Epoch, NativeBaseline, PrototypeCounts, native_source_marker};
@@ -14,6 +15,7 @@ pub(crate) struct Baseline {
     epoch: Rc<RefCell<Epoch>>,
     fault: Rc<Cell<bool>>,
     observer: Option<observer::Observer>,
+    hooks: Option<forwarding::Hooks>,
     initial: PrototypeCounts,
     stopped: bool,
 }
@@ -49,6 +51,7 @@ impl Baseline {
             epoch: Rc::new(RefCell::new(Epoch::new(initial, observed))),
             fault: Rc::new(Cell::new(false)),
             observer: None,
+            hooks: None,
             initial,
             stopped: false,
         })
@@ -56,6 +59,11 @@ impl Baseline {
     pub(crate) fn snapshot(&self) -> Result<Guard, JsValue> {
         if self.fault.get() {
             return Err(JsValue::from_str("guard observer invalid"));
+        }
+        if !self.stopped
+            && let Some(hooks) = &self.hooks
+        {
+            hooks.check()?;
         }
         let current = if self.stopped {
             self.initial
@@ -70,16 +78,45 @@ impl Baseline {
     }
     pub(crate) fn stop(&mut self) -> Result<(), JsValue> {
         if !self.stopped {
-            if let Some(observer) = &mut self.observer {
-                observer.stop(&self.epoch)?;
-            }
-            self.epoch
-                .try_borrow_mut()
-                .map_err(|_| JsValue::from_str("guard epoch busy"))?
-                .stop(counts(&self.global)?)
-                .map_err(JsValue::from_str)?;
+            let coverage = self.hooks.as_ref().map_or(Ok(()), forwarding::Hooks::check);
+            let observer = self
+                .observer
+                .as_mut()
+                .map_or(Ok(()), |owner| owner.stop(&self.epoch));
+            let hooks = self.hooks.as_mut().map_or(Ok(()), forwarding::Hooks::stop);
+            let frozen = counts(&self.global).and_then(|current| {
+                self.epoch
+                    .try_borrow_mut()
+                    .map_err(|_| JsValue::from_str("guard epoch busy"))?
+                    .stop(current)
+                    .map(|_| ())
+                    .map_err(JsValue::from_str)
+            });
             self.stopped = true;
+            let result = coverage.and(observer).and(hooks).and(frozen);
+            if result.is_err() {
+                self.fault.set(true);
+            }
+            return result;
         }
+        if self.fault.get() {
+            Err(JsValue::from_str("guard epoch invalid"))
+        } else {
+            Ok(())
+        }
+    }
+    pub(crate) fn enable_hooks(&mut self) -> Result<(), JsValue> {
+        if self.stopped || self.fault.get() {
+            return Err(JsValue::from_str("guard epoch inactive"));
+        }
+        if let Some(hooks) = &self.hooks {
+            return hooks.check();
+        }
+        self.hooks = Some(forwarding::Hooks::install(
+            &self.global,
+            self.epoch.clone(),
+            self.fault.clone(),
+        )?);
         Ok(())
     }
 }

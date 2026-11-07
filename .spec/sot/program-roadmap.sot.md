@@ -233,6 +233,13 @@ Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생
 
 ## 현재 종료를 막는 gate와 다음 착수
 
+후속 enable_guard_hooks는명시opt-in Proxyforwarding을구현했다. default생성자는
+전역eval/Function을대체하지않으며directeval lexical변경을API/정본에명시한다.
+actualFirefox47/0/0과WASM strictClippy로반환/예외/this/newTarget/중첩호출/
+부분rollback/ownreference복원/외부교체보존/복원실패/동일realm중복거절을검증했다.
+명시opt-in에서측정coverage가보고돼도인간/코드실행attestation이나qualified
+collector가아니다. CDP/fingerprint/ICE/bootstrap/session/transport와제품e2e는남았다.
+
 Guard의 owned MutationObserver는실제document childList/subtree에연결됐고
 directSCRIPT/falsyhm만집계한다. 대기recorddrain/stop/drop/과대입력/잘못된
 record/재진입/실패disconnect를실제Firefox40/0/0으로검증했다. native19와

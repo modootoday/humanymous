@@ -74,6 +74,22 @@ Forwarding caller-owned opaque arguments is distinct from authoring/executing a
 JS source string in Rust. No new eval/Function source strings, scoring rule or
 unsupported complete-CDP-detection claim is authorized by this design.
 
+Forwarding hooks are an explicit enable_guard_hooks opt-in, never implicit in
+BrowserCollector construction. A realm must expose writable own data eval and
+Function plus Proxy/FinalizationRegistry. Proxy apply and construct count only
+event kinds, immediately forward opaque arguments/this/newTarget and propagate
+the exact return/throw. No source string is authored or stored. JS-owned managed
+WASM closures remain alive for externally retained proxy references; disabling
+stops counts but retained proxies still forward. Restore only a property whose
+current own data value is the installed proxy, preserving current descriptor
+flags; never overwrite a replacement/accessor/deletion by another owner. Roll
+back partial installation. Full dynamic coverage is a client observation, not
+proof of pristine intrinsics, human identity, code attestation or protected route
+readiness. Explicit opt-in accepts the direct-eval lexical compatibility delta.
+Within this WASM module, overlapping hook activation in the same realm is
+rejected (bounded64 active realms) to avoid nesting and restoring stale proxies.
+Other independently injected modules remain outside this ownership guarantee.
+
 Checked2026-11-07: [direct-eval identity rule](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-function-calls-runtime-semantics-evaluation),
 [Proxy internal call/construct rules](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-proxy-object-internal-methods-and-internal-slots).
 
@@ -212,8 +228,10 @@ is added. Browser metadata remains client-asserted and tamperable at the T4 ceil
 
 The stateless detect_json produces L1-L3 partial ClientReport only. Its behavior
 remains at unmeasured defaults. BrowserCollector explicitly adds measured
-behavior; environment.probed remains false, advanced/guard are unmeasured and
-sessionId is not minted. Environment/guard/advanced probes, generated bootstrap/distribution,
+behavior and measured guard baseline/script observation; environment.probed
+remains false and advanced is not automatically joined. Explicit forwarding hooks
+are opt-in and sessionId is not minted. Environment/advanced probes are standalone;
+generated bootstrap/distribution,
 collector/RIT transport and recovery are mandatory later slices. Runtime routes
 requiring a qualified collector stay fail-closed; an exported JSON function or
 WASM compile is not an authenticated collector or human ALLOW.

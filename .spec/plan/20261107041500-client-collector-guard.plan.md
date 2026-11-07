@@ -17,8 +17,11 @@ rel:
 - [x] Implement owned MutationObserver with exact direct-node/marker semantics;
   native19 and actualDockerFirefox40 pass, including pending drain, stop/drop,
   malformed/oversized input, reentrancy and failed-disconnect inert callback.
-- [ ] Implement explicit forwarding hooks, preserving return/throw/this/construction and documenting direct-eval change.
-- [ ] Test partial setup, reentrancy, stop/drop, own-reference-only restoration and callback lifetime.
+- [x] Implement explicit opt-in forwarding proxies preserving return/throw/this/
+  newTarget, with direct-eval lexical change documented and no automatic activation.
+- [x] Test partial setup rollback, nested forwarding, stop/drop, external replacements,
+  current descriptor flags, failed restoration, retained managed callbacks and
+  rejected overlapping same-realm activation; actualFirefox47/0/0.
 - [ ] Port bounded active CDP probes without claiming universal automation identity.
 - [ ] Verify actual browser application/lifecycle tests and full collector bootstrap ordering.
 - [ ] Integrate qualified report with snapshot/session/RIT and actual Docker product e2e.
