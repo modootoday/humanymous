@@ -36,7 +36,10 @@ start from a free slot or same-target overlap. Admit only at commit<85% and free
 physical>20GiB; at commit>=88% or free physical<16GiB defer new compilation and
 automatically reduce subsequent allocations. No CEF/native-heavy/bindgen overlap
 or termination of foreign processes. Root's program-roadmap/delivery canon owns
-resource measurements, manifest windows and hosted runtime boundaries; see rule94.
+resource measurements and manifest windows; rule94 defines measured hybrid venue
+selection. Supported local process/IPC/fixture checks still need allocation;
+Windows Desktop act follows rule96. Required GitHub profiles and final matrix
+remain distinct, and the measured2GiB profile is not a universal workload budget.
 GPU inference still needs its separate bounded allocation. Lane ownership is not
 permission to bypass execution allocations.
 

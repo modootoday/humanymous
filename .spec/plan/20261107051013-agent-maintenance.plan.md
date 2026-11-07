@@ -10,6 +10,23 @@ rel:
 
 # Agent maintenance
 
+## Measured hybrid execution policy
+
+Root ended the benchmark quiet window and directed rule94/local policy updates
+from `evidence:root/20261107092034`. Its inspected comparison.json records control
+d610ab4/workload8132117, six matched passing pairs, initial build100.332s/157.570s,
+native process17.536s/31.047s, collector40.546s/35.410s and repeated build3.572s/6.022s
+(local/GitHub). The matching pinned image,4CPU quota,2GiB limit,UID0 and Rust/lock
+identity do not establish VM equivalence or fully cold caches; nproc differed32/4.
+
+Rule94 and local execution paragraphs now allow allocated supported Windows/WSL
+compilation and ordinary process/IPC/fixture tests, selected same-YAML Windows
+Desktop act pre-push checks under rule96, and preserve GitHub-specific profiles,
+event/permission semantics, genuine hosted contracts and final matrix. Four
+root-assigned slots and existing admission/backoff guards remain. The measured
+2GiB container profile is not a general SDK/CEF/model limit. No model or compilation
+slot was allocated to this lane by the policy update; no runtime result is inferred.
+
 ## Single maintenance runtime inventory
 
 The delivery owner requested one JSON authority to prevent repeated hardcoded

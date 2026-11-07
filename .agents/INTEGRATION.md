@@ -1,7 +1,8 @@
 # M11 agent-maintenance integration
 
 Owner: agents-meta / rust-agents-m11. REA remains reference-only. Current code
-checkpoint is `59c80426`; earlier `1714b27` and `9c3b735` records remain historical.
+checkpoint is `2899a89c`; the36pure result remains bound to `59c80426`, and earlier
+`1714b27` and `9c3b735` records remain historical.
 Shared Cargo/lock/toolchain and final candidate integration belong to root.
 
 ## Current source and evidence
@@ -29,7 +30,9 @@ or freeRAM<16GiB. GPU inference remains separately allocated. The pure command i
 cargo test --locked -p humanymous-agent-maintenance --lib
 ```
 
-Actual filesystem/process tests require the approved hosted source candidate:
+Actual filesystem/process tests may run on a supported Windows/WSL host after
+root allocation; exact source, actual discovery and result receipts are required.
+Required hosted profiles and the final matrix remain GitHub gates under rule94:
 
 ```text
 cargo test --locked -p humanymous-agent-maintenance --test process --test session_storage --test product_package
