@@ -8,7 +8,9 @@ The pre-probe source passed three locked pure units and scoped all-target Clippy
 the explicitly assigned B target/node-native/build, jobs1/incremental0. B was
 returned. Evidence:root/20261107075922 retains the exact scope and one concurrent
 runtime test-file drift; it is not an immutable full-workspace result. Actual
-processes, Go HTTP hosts and Docker product verification remain hosted-only.
+execution follows Root's latest user-authorized admission policy. The current
+benchmark quiet window forbids new workload commands, while this goal still
+requires actual hosted Go eight-case evidence.
 
 Commands used for that source, to rerun after later changes in an assigned slot:
 
@@ -60,7 +62,7 @@ evidence for the current three-test corpus. Native SDK/foreign glue is absent.
 At that checkpoint: no explicit Cargo slot for this owner and no live Go-specific
 hosted execution handle/result. Root and lab chat activity alone does not prove
 a Go compiler/test job is running. Local Cargo and actual local processes/Docker
-remain unauthorized. The runtime pilot now declares the Go path dependency;
+were unauthorized at that checkpoint. The runtime pilot now declares the Go path dependency;
 its Go execution path and source-bound result still need implementation/validation.
 Do not count an unexecuted recipe or synthetic receipt as pilot completion.
 
@@ -81,7 +83,9 @@ No changes outside the claimed lane or common Cargo/lock/toolchain are authorize
 User resumed work and root assigned B: current3units and all-target Clippy passed,
 slot returned. This resolves the pure-check allocation gap, not actual Go hosted
 execution. Continue with product-lab's real composition and independent witness;
-no local server/process/Docker execution or root-only dispatch is authorized here.
+that earlier allocation did not authorize local server/process/Docker execution
+or root-only dispatch. The later user authorization update below supersedes
+the blanket local restriction without granting a slot during the quiet window.
 
 The new public probe module takes an already-decoded outer response. binary_dump
 checks the pinned dumped request's exact method/target/entity; head_cookies checks
@@ -111,3 +115,20 @@ so it is not a full immutable compiled closure. Keep this source frozen for
 the lab's actual8case integration; only actual failures justify changes/reruns.
 Remaining: actual hosted fixture/process/namespace/contact/eight-case evidence,
 not further pure-test allocation. The8132117 run predates evaluatorc959562.
+
+Execution authorization update: user permits actual local Windows/WSL comparison
+against GitHub, replacing the earlier blanket hosted-only rule. Root's benchmark
+quiet window currently forbids new Cargo/native/runtime/model/Docker commands;
+this owner holds no live command or slot. Follow root's measured admission policy
+after the quiet window. The Go goal still needs actual hosted eight-case proof;
+local comparative results must never be labelled hosted or inherit hosted=true.
+Lab caller fixes are checkpoint0836bbee; read its INTEGRATION before dispatch.
+
+Local Docker canon: when root admits a local comparison, use
+C:/Program Files/Docker/Docker/resources/bin/docker.exe with explicit
+--context desktop-linux. Preflight and retain context/endpoint/server ID/version/
+OSType; do not fall back to WSL Docker when PATH is missing. Act's SDK must target
+that Desktop engine via explicit DOCKER_HOST. WSL native Rust is a different
+execution profile and does not identify its Docker engine as Desktop. Hosted
+Linux jobs are distinct. None of these local observations replaces actual
+hosted Go qualification; strict Go hosted-context rejection remains unchanged.
