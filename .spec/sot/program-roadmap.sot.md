@@ -24,7 +24,7 @@ They are component evidence, not final integration qualification.
 | Audit | Exactf88e76f4 full suite115 passed; five ignored excluded; focused nine overlap the full suite | Remaining S1 streaming primitives, independent native custody and later production gates |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identity cases remain CHALLENGE with zero origin; positive TLS ALLOW-to-origin is unqualified |
 | Python | Exactd68682e4 all-target check and strict Clippy passed; exactly two receipt pure tests passed/two controller definitions filtered;2325-file source manifest unchanged | Actual controller remains NOT_ACCEPTED; ASGI/server pilots not executed; prior5655 failure retained |
-| .NET | Exact07967eae release harness compilation, eight selected pure tests and strict Clippy passed | Single context-document drift must be explicitly classified; immutable helper hash and actual managed ABI caller remain pending |
+| .NET generic ABI | Helper07967eae/24b782d1 ran actual managed caller once: one passed/zero failed/zero ignored/four filtered,0.62s; child exit zero, two PID-bound frames, empty stderr, fixture removed and input unchanged | Single context-document drift retained explicitly; ASP.NET adapter, NativeAOT, C++ and full product remain unqualified |
 
 Pages reference corrections are now26960736/docs tree56b1e029952b5a3b29d4b0d056671bc79110e43b; the older448 hosted build does not validate this newer tree. Source checker reports88 pages/errors zero, while fresh hosted/browser/AT checks remain pending.
 

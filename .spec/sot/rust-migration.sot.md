@@ -97,6 +97,17 @@ native process discovery while application readiness, ingress, unseal and writer
 activation remain false. The startup watchdog and native stop handler stay armed;
 no existing public-Ready receipt can stand in for this preparation state.
 
+The Windows architecture additionally permits a third, finite one-shot publisher
+service P, separate from persistent service S and observer O. The initial
+installer/controller I is not silently the stable publisher principal. Protected
+installation ownership and original native SCM configuration must bind the
+publisher principal, loaded artifact and original public key; a grant cannot
+establish its own trust root or reset an existing issuer. Service dependencies
+must not form a cycle while P waits for S/O acknowledgement. Actual unattended
+service-key availability across restart/reboot remains a qualification gate;
+interactive installer credentials and machine-wide secret fallback do not prove
+it. This is architecture direction only, not approval to mutate local SCM,
+create accounts or ship the unresolved issuer/channel implementation.
 These are design choices, not R1 qualification or channel implementation approval.
 Actual cross-principal primary-token/process-handle access, protected issuer and
 installation ownership, process-wide single claim, clock/deadline composition,
