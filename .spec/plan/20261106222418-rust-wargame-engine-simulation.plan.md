@@ -18,6 +18,11 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 
 ## Steps
 
+- [x] V0.9: root accepted exact four legacy report baseline rows and six source paths, one module wire and auto-bin; SoT records compatibility/honesty/bounds/atomic-output contract before code.
+- [x] V0.9: implement legacy import/aggregate/deterministic escaped bounded HTML and thin CLI, using existing dependencies only.
+- [x] V0.9: allocated Windows pure parity/security/accounting8pass/0fail/2ignored/17filtered; package all-target check/strict Clippy/fmt pass, evidence154600. Basee34cee8a plus eight overlays;2715source files0differences, no registry/tool/config closure claim.
+- [ ] V0.9: execute the compiled CLI unit and actual CLI publication/Windows replacement/failure qualification under a new bounded allocation. Native ignored cases remain NOT_RUN.
+
 - [x] Audit accepted attack/ordinary/human/AT scope:19owned programs and7unsupported participant/producer obligations remain visible.
 - [x] V0.8 source: reject transport-as-evaluated, attempted-as-skipped, post-failure steps and response verdicts without completed responses.
 - [x] V0.8 root-assigned28pure/strictClippy pass;120155private/120401public records actual dependency graph and2doc-only drifts.

@@ -1,0 +1,68 @@
+{
+  "schema": "humanymous.legacy-report-l1/1",
+  "base_sha": "e34cee8abb670188cbcdec5965a5574b345b1750",
+  "source_zip_sha256": "8d03578faa8c7bf8c2b02751bf79c2fbcb83c1e78832b6443c501d6bf84f296e",
+  "overlays": [
+    {
+      "path": "crates/attacker/src/report.rs",
+      "sha256": "c387c7c00155107eea711d2fd45041672649e8ed3da9d5bb1f6454c06cc74562"
+    },
+    {
+      "path": "crates/attacker/src/report/legacy/mod.rs",
+      "sha256": "76f3c7921834a658254c1a8013cdcb8149868a885784d2faf1bd8d08a11eb40d"
+    },
+    {
+      "path": "crates/attacker/src/report/legacy/aggregate.rs",
+      "sha256": "7db9a4094bca3ba2742078e7962a2bd8adb88a9b3683449adc03295c9fc6660b"
+    },
+    {
+      "path": "crates/attacker/src/report/legacy/html.rs",
+      "sha256": "ebde9669e4d44ba70d0562f52d2b89c4b412e3d2c1512d34058b46d140d5a720"
+    },
+    {
+      "path": "crates/attacker/src/report/legacy/tests.rs",
+      "sha256": "922ed14d182f320b14382514c1f38f705261ae4ef6801b9563ebcd312fd4045e"
+    },
+    {
+      "path": "crates/attacker/src/bin/humanymous-report.rs",
+      "sha256": "a23096cd699f82384fabddfe1e79dae7ca2cc601452635569bcb0a0d8836d199"
+    },
+    {
+      "path": ".spec/sot/rust-wargame.sot.md",
+      "sha256": "c7042d2b6accee7518eba5227c28867b23fa813e0fe7e413be4eb45241895cc2"
+    },
+    {
+      "path": ".spec/plan/20261106222418-rust-wargame-engine-simulation.plan.md",
+      "sha256": "f7afe004b0cdebb22f2a1084cec68232838a94fcc32587b94688c57f0eaf195a"
+    }
+  ],
+  "venue": "Windows local pure component",
+  "rust": "1.99.1",
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "locked": true,
+  "test_counts": {
+    "failed": 0,
+    "passed": 8,
+    "filtered": 17,
+    "ignored": 2
+  },
+  "fmt_exit": 0,
+  "check_exit": 0,
+  "clippy_exit": 0,
+  "session_exit": 0,
+  "expected_source_files": 2715,
+  "actual_source_files": 2715,
+  "source_difference_records": 0,
+  "live_overlay_drift": 0,
+  "cli_unit_executed": false,
+  "native_file_pilots_executed": false,
+  "registry_tool_config_closure_measured": false,
+  "full_product_qualified": false,
+  "log_sha256": {
+    "test": "25e4bfbcee1587940a7796f2e181d201cc910a71ccc4cebbfe477aedd49be15a",
+    "check": "bdf880bfc4ba449d990915c616542f20b330b4b66072cb92da80be871e0bfb44",
+    "clippy": "2d6022d8831e48f8782523fdc90eaca4cdc752d70f9fcef31d441c9b2fe8e363"
+  }
+}

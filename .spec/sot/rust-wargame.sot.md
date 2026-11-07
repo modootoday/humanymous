@@ -121,6 +121,64 @@ tests remain P0 blockers for enabling a remote network runner. The newly scoped
 owned-child pilot has the different trust contract above. No motor speed/richness
 requirement is added.
 
+### Legacy observation report v0.9
+
+Root accepted four missing baseline file rows as a separate legacy reporting
+context inside attacker. This imports observations; it does not run attacks,
+score reports or qualify human/AT/product execution. Existing26-case native
+catalog and its follow-up remain independent.
+
+| Frozen Go baseline | Rust replacement |
+|---|---|
+| cmd/report/main.go | crates/attacker/src/bin/humanymous-report.rs |
+| internal/report/aggregate.go | crates/attacker/src/report/legacy/mod.rs and aggregate.rs |
+| internal/report/html.go | crates/attacker/src/report/legacy/html.rs |
+| internal/report/report_test.go | crates/attacker/src/report/legacy/tests.rs |
+
+One pub mod legacy declaration in report.rs exposes this context; root explicitly
+approved Cargo's automatic discovery of the new humanymous-report binary. No
+manifest/lock/dependency changes. All new code/comments/tests remain Rust/English.
+
+Keep legacy array Record keys: profile,label,run,verdict,riskScore,hardRuleFired,
+outcome,top,skipped,reason,error. Preserve missing/null defaults and discard
+unknown fields as Go. The intentional compatibility tightening is rejection of
+duplicate decoded keys through the sole shared bounded JSON decoder. Malformed
+types, nonfinite numbers and aggregation overflow fail with static diagnostics.
+Group by first eligible label occurrence, bot iff label starts with bot:.
+Legacy botTPR counts DENY+CHALLENGE over eligible bots; humanFPR counts only DENY
+over eligible declared-human rows. Keep mean risk and verdict/rule/top occurrence
+counts; sort maps deterministically and top counts descending then IDs ascending.
+The old fixture has four metric rows and one additional skipped camoufox row.
+
+Expose scheduled, eligible, error, skipped and missing-label accounting separately;
+retain legacy metric denominators exactly. Count error flags even on skipped rows
+separately where necessary. Unsupported is not encoded by this schema: null/
+not_encoded, never inferred zero or guessed from reason. Human CHALLENGE is not
+ALLOW. Missing populations and incomplete/unrecorded coverage cannot yield a
+product-green banner or a verified-human FPR claim.
+
+Bounds: input8MiB,50000rows, each decoded string4096bytes, top vector128entries,
+caption4096bytes, path4096bytes, rendered output16MiB. Render entirely before
+publication. Escape every dynamic HTML text value, use no scripts/external assets,
+and never emit raw error/reason values. Output uses bounded32collision retries,
+create_new-owned temporary, write/sync-before-native-rename, and cleanup of only
+that newly created temporary. Never delete a destination or foreign collision
+file to make rename succeed. Windows replacement/share-denial behavior and actual
+filesystem publication still need allocated native qualification; source alone
+does not establish crash durability or all filesystem semantics.
+
+Serial blue/red/SRE/privacy/evaluator critique reflected: reuse shared decoder;
+retain failed denominators; reject key ambiguity and HTML injection; bound heap/
+output; preserve old output before commit failures; redact free-form diagnostics;
+label declared-human metrics and unknown unsupported coverage honestly. Pure
+parity/rejection/escaping/determinism tests precede an allocated actual CLI file
+pilot. The later allocated Windows L1 gate passed8selected pure tests, with2native
+tests ignored and17other library tests filtered. All-target package check and
+strict Clippy passed; the CLI test was compiled, not executed. Evidence154600
+binds basee34cee8a plus exact overlays and2715source files with0differences.
+Registry/tool/config closure and real file publication remain unmeasured. This
+report candidate is distinct from the hosted306eedc8 generic26 execution.
+
 ## Why
 
 The migration requires replayable red/blue evidence while full Rust Gate is not
