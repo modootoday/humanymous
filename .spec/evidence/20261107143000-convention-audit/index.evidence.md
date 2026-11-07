@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 588846e4d913dedd4a8d1b2a86fbc655fd69fc97671d9f0ed6ef4b2864b725c9, bytes: 67540, store: repo}
+  - {path: baseline.json, sha256: 72f814eff63e1af6eb3b1830b47a09b94f438c8b7c7f4f0087c348e84f29ecdd, bytes: 68903, store: repo}
 ---
 
 # Convention audit baseline
@@ -886,3 +886,28 @@ and old-snapshot refusal in native/workspace modes, and fail closed on missing
 required roots/files. Native must obtain Root's workload allocation. Audit changed
 no implementation or scoring and launched no compiler/pilot. Owner fix, actual
 regression proof and independent closure remain OPEN; old receipts keep their scope.
+
+## Core consumer/package review and native source-ready follow-up
+
+Independent review binds19 retained artifacts of Root's consumer/package receipt.
+Actual collector26 and network72 tests pass, with zero failed/ignored/filtered;
+264 selected local input records are byte-identical before/after. This is not
+registry/toolchain custody. The source-only crate contains150 distinct regular
+files with exact retained extraction hashes, no missing/duplicate/nonregular
+entry, and unchanged extracted before/after manifests. The isolated default
+library consumer imports all seven contexts and actually runs successfully.
+The full Cargo package attempt failed101 because the offline registry lacks the
+versioned test-support dev dependency. Source-only no-verify/exclude-lock success
+does not replace full package tests or registry readiness. Source archive includes
+project LICENSE/NOTICE, full Go BSD notices for RNG and fixtures and provenance;
+actual binary/final-image and complete dependency-notice gates remain OPEN.
+
+Native source fix f05906da recursively collects nested manifests and explicitly
+requires the three omitted Core inputs. Unconditional collection covers both
+modes; supplied snapshots now also require these keys. Three authored regressions
+cover each mutation with actual-verifier refusal/restoration, each missing disk
+input and each missing snapshot key, using an explicit fixture root without cwd
+mutation. Source review found the identified boundary addressed. Owner confirms
+these tests/check/Clippy are NOT_RUN pending Root allocation. CA-NATIVE-SOURCE-01
+therefore remains OPEN, source-ready only; old receipts remain unchanged. Audit
+ran no compiler/native/product workload. Full migration remains OPEN.
