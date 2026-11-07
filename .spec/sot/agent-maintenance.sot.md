@@ -5,16 +5,87 @@ status: active
 created: 2026-11-07T05:10:13Z
 updated: 2026-11-07T05:10:13Z
 verify:
-  - cargo test --locked --manifest-path skills/agent-maintenance/Cargo.toml
+  - cargo test --locked -p humanymous-agent-maintenance --lib
   - cargo clippy --locked --manifest-path skills/agent-maintenance/Cargo.toml --all-targets -- -D warnings
   - cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .
   - cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- routing .
 rel:
-  governs: [AGENTS.md, .agents/rules/**, .agents/skills/**, .agents/agents/**, .agents/personas/**, skills/**]
+  governs: [AGENTS.md, .agents/rules/**, .agents/skills/**, .agents/agents/**, .agents/personas/**, .agents/evals/**, .agents/retirement/**, .agents/sessions/LANES.md, .agents/sessions/lanes.json, .agents/sessions/THREADS.md, skills/**]
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap]
 ---
 
 # Rust agent canon and qualified skill evaluation
+
+Local pure tests/fmt/Clippy require an explicit root execution slot. The separate
+hosted gate runs actual `process`, `session_storage` and `product_package` test
+targets on the exact source candidate. Actual upstream paired inference requires
+the pinned full harness, runtime lock, bwrap, approved model/auth/allowance and
+raw trace/source receipts; no pure proxy or accounting fixture substitutes for it.
+All post-B20 source remains unvalidated until the next allocated check.
+
+## Active goal continuation and product/session delta
+
+The earlier blocked goal was cleared by the user; get_goal returned null. On the
+explicit continuation request a new active goal retains the full development
+tooling/product-skill/actual-evaluation scope, not a narrower success condition.
+Root071ccef transferred metadata ownership after normal lane release. THREADS
+now reflects the four confirmed titles for Node/Python/Ruby, OS credentials and
+Windows, Compose/browser lab and Go HTTP Gate compatibility. Root remains the
+sole whole-roadmap/common-Cargo integration owner. No source from REA is reused.
+
+`skills/SKILL.md` with name humanymous and four focused references is the
+product-user installation/operation/adapter skill, separate from the internal
+`.agents/skills` catalog and the maintenance executable. The user skill follows
+actual CLI/parser and adapter contracts, never invents --help/--version, published
+packages, framework support, unsigned trust or service qualification. Its pure
+structural validator reuses metadata parsing and checks inline local links,
+missing/escaping resources, orphan files and bounded UTF-8/LF content. That proves
+bundle structure only, not model usefulness, installation or discovery.
+
+The lane machine authority is `.agents/sessions/lanes.json` schema1, containing
+25lane IDs, kinds and primary_paths. LANES.md and existing PS/bash literal lists
+are compatibility projections; the Rust lane-check compares exact sets without
+executing the scripts. Duplicate/unknown fields, IDs, versions or malformed scopes
+refuse. Primary contexts are not permission to overwrite any live declared path.
+
+`writer_mode=legacy-coexistence` is the production default. Rust session mutations
+refuse until the explicitly coordinated `rust-exclusive` rollout has qualified
+all shared writers. Read-only list preserves the legacy claim JSON wire fields
+lane/provider/session/goal/paths/since/status, strict duplicate handling and BOM
+compatibility. Pure admission checks lane occupancy and glob-language scope
+intersection across different lane names; stale age never grants takeover.
+One glob has max256bytes/4096intersection states; an admission has at most128
+claims/8192pattern comparisons, with exhaustion an error. Repository relative
+scope grammar rejects traversal, controls, ambiguous path syntax and inline
+exception notes rather than silently widening their authorization.
+
+The Rust storage adapter uses create_new for the global tool lock and claim,
+owner-bound release, a durable intent/result JSONL journal, preserved ACTIVE
+handover tail and same-directory board replacement. Post-intent I/O failure
+retains the coordination lock/ambiguous state for explicit recovery; no automatic
+stale cleanup or force flag. It assumes a trusted repository directory and an
+exclusive writer rollout, not protection from hostile same-user directory races
+or mixed legacy writers. Actual file/process interop is hosted-only and not_run
+until a source-bound hosted result exists. Linked-worktree git-ops remains
+unsupported by this adapter, never guessed from `.git` text.
+
+The complete public upstream skill-factory0.3.2 package was acquired at
+modootoday/marketplace commit1c4f32595d9cf3f07a393b8c561b9ab3b7f94981:56files,
+362404bytes plus root license, including previously missing shared modules.
+The eval script is still the catalog's39695-byte SHA2567430f009e37a556d1a96f512e31e508569297d35dbf1686766e6686fe48cfd3a.
+Original source stays private; canary fixtures are inert and are not selected for
+execution. Historical startup failure remains intact. Acquisition resolves that
+old dependency, but is not a successful harness run, model eval or credential grant.
+Hosted exact-runtime lock, auth/usage authorization, two-run paired cases,
+observed discovery/read, strict accounting and private evidence recovery remain open.
+
+Execution policy is referenced from program-roadmap/delivery, not redefined here.
+Root explicitly allocated B at target/validation-agents, jobs1/incremental0 for
+pure --lib/scoped Clippy only after its lock window. Resource precheck was
+free physical34.81GiB/commit81%; actual process/file mutator suites are excluded.
+The final measured results must be recorded separately from earlier7unit/4process
+or any old remote green. Dependency/feature/manifest changes are queued for root's
+integration window; no further manifest change proceeds on idle-slot assumptions.
 
 ## Workflow convention guide delta
 

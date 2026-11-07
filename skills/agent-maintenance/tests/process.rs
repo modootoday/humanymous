@@ -59,6 +59,18 @@ impl Drop for Fixture {
 }
 
 #[test]
+fn canonical_roles_do_not_require_retired_persona_pointers() {
+    let f = Fixture::new();
+    f.canon();
+    fs::remove_dir_all(f.0.join(".agents/personas")).unwrap();
+    let output = f.run(&["check", f.0.to_str().unwrap()]);
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    let result: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(result["canonical_roles"], 6);
+    assert_eq!(result["role_pointers"], 0);
+}
+
+#[test]
 fn checks_real_tree_and_rejects_wrong_skill_name() {
     let f = Fixture::new();
     f.canon();

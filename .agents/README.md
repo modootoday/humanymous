@@ -33,16 +33,18 @@ The runner records phases, time budgets, retries, approvals, artifacts, and an a
 
 ## Commands
 
-Current Rust canon checks (1.99.1 / edition 2024):
+Rust 1.99.1 / edition 2024 checks require the root-assigned local Cargo slot.
+Local validation runs pure library tests; filesystem/process integration tests
+run on the approved standard hosted runner with source-bound evidence.
 
 ```text
-cargo test --locked --manifest-path skills/agent-maintenance/Cargo.toml
+cargo test --locked -p humanymous-agent-maintenance --lib
 cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .
 cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- routing .
 ```
 
 The following legacy commands are retained compatibility references. Do not run
-recursive mirror sync while chats are active; `.agents/retirement/README.md`
+recursive mirror sync; `.agents/retirement/README.md`
 defines the transition. Legacy workflow/hooks/session executables remain explicit
 foreign-tool debt until replacement qualification; no new foreign implementation.
 
@@ -62,7 +64,7 @@ node scripts/agents/workflow-runner.mjs start --workflow feature-loop --objectiv
 ## Edit policy
 
 1. Edit **only** `.agents/**`, root/nested `AGENTS.md`, `CLAUDE.md`/`GEMINI.md` stubs if needed.
-2. Observe drift with the Rust check. Root coordinates final compatibility sync/retirement after active sessions and gates permit it.
+2. Observe drift with the Rust check. Root coordinates consumer migration and final retirement using evidenced dependencies and cleaned-tree gates.
 3. Never hand-edit generated `.claude/skills`, `.grok/skills`, etc.
 
 ## Skills catalog

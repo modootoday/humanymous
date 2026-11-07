@@ -39,16 +39,33 @@ this repository.
 
 ### Git writes (always serial + attributed)
 
+Every external native command must have its exit code checked immediately.
+PowerShell's `$ErrorActionPreference` alone does not guarantee that a nonzero
+native exit stops a block. After a successful claim, read the actual
+`.agents/sessions/claims/git-ops.json` and require both provider and session to
+match this transaction before staging or committing. A prior free observation
+or a successful preflight is not ownership. Claim failure stops the transaction;
+never continue to add/commit/release, and never release a foreign claim.
+
 Even if work lanes differ, only one agent may own git mutations:
 
 ```powershell
 pwsh -File scripts/agents/git-coord.ps1 preflight
+if ($LASTEXITCODE -ne 0) { throw 'Git preflight failed' }
 pwsh -File scripts/agents/git-coord.ps1 claim -Provider <provider> -Session "<id>"
+if ($LASTEXITCODE -ne 0) { throw 'Git claim failed' }
+$transactionClaim = Get-Content -Raw .agents/sessions/claims/git-ops.json | ConvertFrom-Json
+if ($transactionClaim.provider -ne '<provider>' -or $transactionClaim.session -ne '<id>') {
+  throw 'Git claim owner mismatch'
+}
 git add <only-your-paths>
+if ($LASTEXITCODE -ne 0) { throw 'Git staging failed' }
 pwsh -File scripts/agents/git-coord.ps1 commit -Provider <provider> `
   -Subject "feat(scope): summary" -Body "why…"
+if ($LASTEXITCODE -ne 0) { throw 'Git commit failed; inspect the owned transaction' }
 # or: bash scripts/agents/git-commit.sh <provider> "feat(scope): summary" "body"
 pwsh -File scripts/agents/git-coord.ps1 release -Note "commit <sha>"
+if ($LASTEXITCODE -ne 0) { throw 'Git release failed' }
 ```
 
 - **Required trailer:** vendor GitHub-linked `Co-Authored-By` (avatar-capable), e.g.

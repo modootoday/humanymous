@@ -1,6 +1,6 @@
 # Chat names, goals and execution ownership
 
-Project chat titles use `Humanymous · <영역> · <책임>`.
+Project chat titles use `Humanymous · <area> · <responsibility>`.
 Use one stable bounded-context area and a short responsibility, not an instruction,
 path, transient status, priority or full goal. Keep the project name's spelling.
 Server adapters use a language-neutral responsibility as their coverage expands.
@@ -25,8 +25,21 @@ claim, release only your own claim, check availability, then claim the new lane.
 No force release, alternative alias or lane rename may hide an occupied path.
 `git-ops` remains the single global index/HEAD/remote mutex.
 
-Local work is coding, bounded pure units, fmt and scoped Clippy. Coordinate one
-local Cargo task at a time. Actual process/IPC/SCM/browser/Docker/Cross-OS tests use
+Check every native command's exit code immediately. A failed Git claim ends the
+transaction before staging, committing or releasing. After acquisition, verify
+the stored provider and session against this transaction; preflight/free checks
+are not ownership. `$ErrorActionPreference` alone does not propagate every native
+failure. Never release a claim belonging to another provider or session.
+
+Local work is coding, bounded pure units, fmt and scoped Clippy. Root may assign
+at most two local pipelines: A for the approved shared target, B for an approved
+lightweight isolated target. Both use build jobs1 and incremental0; an idle slot
+is not authorization to start. Do not overlap targets or run CEF/native-heavy/
+bindgen together. At commit>=88% or free physical memory<16GiB, defer new B work
+and reduce the next allocation to one; never kill another owner's processes.
+The single execution-policy canon remains program-roadmap/delivery SoTs, including
+resource measurements and the root lock-integration window for manifest changes.
+Actual process/IPC/SCM/browser/Docker/Cross-OS tests use
 the standard free hosted lanes; do not substitute mocks or silently skip required
 work. Unknown/ignored/filtered/failed/unrecovered evidence stays explicit.
 

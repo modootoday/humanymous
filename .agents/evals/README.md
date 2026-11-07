@@ -14,8 +14,10 @@ must not invoke implementation. Both arms use identical behavioral graders;
 claimed skill names are not proof of an observed skill read.
 
 The modoo.today `codex-plugin-eval` is the required separate upstream plugin
-measurement path. The supplied script imports shared plugin files not included
-in its catalog bundle. Retain its exact hash, provision bwrap without weakening
+measurement path. The original catalog bundle omitted shared imports. The full
+package is now acquired at pinned commit
+`1c4f32595d9cf3f07a393b8c561b9ab3b7f94981` in private evidence; acquisition
+is not a runtime result. Retain its exact hash, provision bwrap without weakening
 isolation, and report dependency failure separately. Do not fill missing harness
 imports with ad-hoc mocks or claim a standalone Windows CLI pilot is that suite.
 
@@ -25,3 +27,10 @@ compute a positive delta, tune the skill to the sandbox error, rerun around the
 policy or classify missing answers as quality failures. A final qualified rerun
 needs complete plugin provenance, two runs per arm for all three cases, recorded
 model/runtime/usage, actual discovery/read evidence and a valid sandbox boundary.
+
+The separate `product/` suite evaluates the product-user skill with two positive
+cases and one negative, two runs per arm. The Rust `paired-check RESULT_JSON`
+command checks its twelve-run denominator and complete behavioral grading against
+the pinned upstream result shape. It refuses a delta for partial/missing/null or
+contaminated results. This accounting never establishes source/runtime provenance
+on its own, and synthetic unit fixtures are not model evaluation evidence.

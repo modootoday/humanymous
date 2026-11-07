@@ -79,8 +79,9 @@ the original result is preserved and current code emits null on blocked reads.
 3. Obtain complete upstream eval package and run two positive/one near miss,
    twice per arm under bwrap with bounded authorized allowance and runtime lock.
    Require actual discovery/read plus behavioral results, not claimed invocation.
-4. After current chats release their old paths, qualify fresh provider discovery
-   and only then remove manifest-listed obsolete mirrors. Never bulk-delete user
+4. Inventory exact mirror consumers, migrate evidenced dependencies and qualify
+   fresh provider discovery before removing manifest-listed obsolete mirrors.
+   Active chats alone are not an indefinite blocker. Never bulk-delete user
    global skills. Keep board/claims untouched and coordinate Git under its mutex.
 5. Run whole-program final supply-chain/foreign-source/native/product gates.
    This component is not full M11 or full product completion.
@@ -89,8 +90,10 @@ the original result is preserved and current code emits null on blocked reads.
 
 Read AGENTS, `.agents/lessons/HARD-WON.md`, agent-maintenance SoT/plan/evidence,
 then this integration contract. Root owns the proposed common Cargo/CI delta;
-the next eval owner needs the complete versioned modoo plugin/shared package.
-Resume that exact isolated harness task after dependency delivery, not a new REA
+the complete modoo plugin/shared package is now pinned and privately acquired at
+commit `1c4f32595d9cf3f07a393b8c561b9ab3b7f94981`. Runtime lock, hosted
+model/auth/allowance and actual paired discovery/behavior evidence remain open.
+Resume that exact isolated harness task, not a new REA
 investigation. The Codex chat retains exploratory runtime context, while all
 material contracts/commands/results are in the files above. No scoring changes,
 publication, branch switch, main integration, active mirror removal or user-global

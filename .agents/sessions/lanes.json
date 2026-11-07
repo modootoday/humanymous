@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "writer_mode": "legacy-coexistence",
+  "lanes": [
+    {"id":"detection-core","kind":"legacy","primary_paths":["internal/signals/**","internal/scoring/**","internal/network/**","internal/collector/**","internal/detect/**","cmd/wasm/**","cmd/server/**"]},
+    {"id":"gate-edge","kind":"legacy","primary_paths":["internal/gate/**","internal/audit/**","cmd/gate/**"]},
+    {"id":"pass","kind":"legacy","primary_paths":["internal/pass/**","web/pass.html","test/redteam/pass_*"]},
+    {"id":"red-catalog","kind":"legacy","primary_paths":["test/redteam/**","test/e2e/**","deployments/bots/**"]},
+    {"id":"e2e-infra","kind":"legacy","primary_paths":["deployments/compose*","scripts/e2e*","scripts/assert-*","Makefile",".github/workflows/**"]},
+    {"id":"docs","kind":"shared","primary_paths":["docs/**"]},
+    {"id":"agents-meta","kind":"shared","primary_paths":["AGENTS.md",".agents/**","skills/**"]},
+    {"id":"sot-plan","kind":"legacy","primary_paths":["sots/**","plan/**"]},
+    {"id":"release","kind":"shared","primary_paths":[".github/workflows/release.yml","cliff.toml"]},
+    {"id":"git-ops","kind":"coordination","primary_paths":[".git/**"]},
+    {"id":"misc","kind":"shared","primary_paths":[]},
+    {"id":"authority-ipc","kind":"rust","primary_paths":["crates/authority/**"]},
+    {"id":"audit-custody","kind":"rust","primary_paths":["crates/audit/**"]},
+    {"id":"native-cli","kind":"rust","primary_paths":["crates/cli/**"]},
+    {"id":"native-windows","kind":"rust","primary_paths":["scripts/ci/windows-native-runner/**","crates/test-support/**","crates/native-security/**"]},
+    {"id":"browser-ui","kind":"rust","primary_paths":["crates/browser/**"]},
+    {"id":"product-lab","kind":"rust","primary_paths":["test/lab/**"]},
+    {"id":"adapter-hosts","kind":"rust","primary_paths":["crates/framework-adapter/**","crates/node-adapter/**","crates/python-adapter/**","crates/ruby-adapter/**","adapters/node/**","adapters/python/**","adapters/ruby/**"]},
+    {"id":"adapter-nginx","kind":"rust","primary_paths":["crates/nginx-adapter/**","adapters/nginx/**"]},
+    {"id":"project-coordination","kind":"coordination","primary_paths":[".agents/rules/94-chat-coordination.md",".agents/sessions/THREADS.md"]},
+    {"id":"adapter-apache","kind":"rust","primary_paths":["crates/apache-adapter/**","adapters/apache/**"]},
+    {"id":"native-abi","kind":"rust","primary_paths":["crates/native-abi/**","adapters/native/**"]},
+    {"id":"adapter-go","kind":"rust","primary_paths":["crates/go-adapter/**","adapters/go/**"]},
+    {"id":"adapter-dotnet","kind":"rust","primary_paths":["crates/dotnet-adapter/**","adapters/dotnet/**"]},
+    {"id":"network-capture","kind":"rust","primary_paths":["crates/capture/**"]}
+  ]
+}

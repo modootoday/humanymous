@@ -1,9 +1,10 @@
-# Repository maintenance tools
+# Product skill and repository maintenance tools
 
-Canonical agent skills are `.agents/skills/*/SKILL.md`; do not copy them into
-this directory or a user's global skill directory. `agent-maintenance/` is a
-standalone Rust 1.99.1/edition 2024 Cargo tool, with its own lockfile and no root
-workspace changes. It checks canonical paths, LF bytes, descriptions, duplicate
+`SKILL.md` plus `references/` is the product-user skill for installation,
+operation and supported adapters. Internal developer skills remain
+`.agents/skills/*/SKILL.md`; do not copy them into the product skill or a user's
+global directory. `agent-maintenance/` is a Rust 1.99.1/edition 2024 Cargo tool
+integrated into the root workspace. It checks canonical paths, LF bytes, descriptions, duplicate
 names, hard-constraint markers and observes compatibility mirror drift read-only.
 
 User-scoped skills (for example the operator's `.agents/skills` directory) are

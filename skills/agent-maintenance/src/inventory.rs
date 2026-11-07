@@ -17,6 +17,7 @@ pub struct Report {
     pub errors: Vec<String>,
     pub mirror_drift: Vec<String>,
     pub role_pointers: usize,
+    pub canonical_roles: usize,
     pub elapsed_micros: u128,
 }
 
@@ -27,13 +28,21 @@ pub fn description(text: &str) -> Result<(String, String), String> {
         .ok_or("missing LF frontmatter")?
         .0;
     let mut name = None;
+    let mut description_seen = false;
     let mut desc = String::new();
     let mut folded = false;
     for line in front.lines() {
         if let Some(value) = line.strip_prefix("name:") {
+            if name.is_some() {
+                return Err("duplicate name".into());
+            }
             name = Some(value.trim().to_owned());
         }
         if let Some(value) = line.strip_prefix("description:") {
+            if description_seen {
+                return Err("duplicate description".into());
+            }
+            description_seen = true;
             folded = value.trim() == ">" || value.trim() == "|";
             if !folded {
                 desc = value.trim().trim_matches('"').to_owned();
@@ -50,13 +59,20 @@ pub fn description(text: &str) -> Result<(String, String), String> {
         }
     }
     let name = name.filter(|n| !n.is_empty()).ok_or("missing name")?;
+    if name.len() > 64
+        || !name
+            .bytes()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == b'-')
+    {
+        return Err("name must be lowercase ASCII/digits/hyphens, at most64bytes".into());
+    }
     if desc.is_empty() || desc.chars().count() > 1024 {
         return Err("description must contain 1..1024 characters".into());
     }
     Ok((name, desc))
 }
 
-fn files(
+pub(crate) fn files(
     root: &Path,
     base: &Path,
     records: &mut Vec<FileRecord>,
@@ -74,6 +90,10 @@ fn files(
         if kind.is_dir() {
             files(root, &path, records, errors)?;
         } else if kind.is_file() {
+            if entry.metadata()?.len() > 2 * 1024 * 1024 {
+                errors.push(format!("oversized canonical file: {}", path.display()));
+                continue;
+            }
             let data = fs::read(&path)?;
             let relative = path
                 .strip_prefix(root)
@@ -171,12 +191,22 @@ pub fn check(root: &Path) -> Result<Report, Box<dyn std::error::Error>> {
     ] {
         let canonical = root.join(".agents/agents").join(format!("{name}.md"));
         let pointer = root.join(".agents/personas").join(format!("{name}.md"));
-        if !canonical.is_file()
-            || !fs::read_to_string(pointer)?.contains(&format!("../agents/{name}.md"))
-        {
-            result.errors.push(format!("invalid role pointer: {name}"));
-        } else {
-            result.role_pointers += 1;
+        match fs::symlink_metadata(&canonical) {
+            Ok(meta) if meta.is_file() && !meta.file_type().is_symlink() => {
+                result.canonical_roles += 1;
+            }
+            _ => result.errors.push(format!("missing/unsafe canonical role: {name}")),
+        }
+        match fs::symlink_metadata(&pointer) {
+            Ok(meta) if meta.is_file() && !meta.file_type().is_symlink() => {
+                if fs::read_to_string(&pointer)?.contains(&format!("../agents/{name}.md")) {
+                    result.role_pointers += 1;
+                } else {
+                    result.errors.push(format!("invalid compatibility role pointer: {name}"));
+                }
+            }
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+            _ => result.errors.push(format!("unsafe compatibility role pointer: {name}")),
         }
     }
     result.elapsed_micros = started.elapsed().as_micros();

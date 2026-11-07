@@ -1,5 +1,12 @@
 # Work lanes (parallelism catalog)
 
+Machine authority for lane IDs and primary contexts is `lanes.json` (schema1).
+The Markdown tables and existing PS/bash allowlists are compatibility projections;
+the Rust maintenance drift check must compare all three. Primary paths describe
+contexts, not a grant to overwrite another active owner's declared paths. Unknown
+or duplicate catalog data fails closed. Legacy labels remain until coordinated
+release/reclaim, never an automatic alias around an occupied context.
+
 ## Rust migration bounded contexts (2026-11-07)
 
 These formal lanes supplement legacy lanes above. Existing owners migrate by normal release/claim; never force another owner or alias overlapping paths. Every owner also claims its own named SoT/plan/evidence. Shared Cargo/lock/toolchain remain root-owned. Machine catalog consolidation is assigned to agent-maintenance; legacy script literals are compatibility data only.
@@ -8,9 +15,9 @@ These formal lanes supplement legacy lanes above. Existing owners migrate by nor
 |---|---|
 | authority-ipc | crates/authority/** |
 | audit-custody | crates/audit/** |
-| native-cli | crates/cli/** (confirm actual CLI crate before claim) |
+| native-cli | crates/cli/**; operational CLI only, excludes crates/native-cli/** |
 | native-windows | scripts/ci/windows-native-runner/**, crates/test-support/**, crates/native-security/** |
-| browser-ui | crates/browser/** |
+| browser-ui | crates/browser/** and crates/native-cli/**; browser scaffold and consumer have one owner |
 | product-lab | test/lab/** |
 | adapter-hosts | crates/framework-adapter/**, crates/node-adapter/**, crates/python-adapter/**, crates/ruby-adapter/**, adapters/node/**, adapters/python/**, adapters/ruby/** |
 | adapter-nginx | crates/nginx-adapter/**, adapters/nginx/** |
@@ -22,6 +29,13 @@ These formal lanes supplement legacy lanes above. Existing owners migrate by nor
 | network-capture | crates/capture/**; existing crates/network/** read-only |
 
 Native-security OS credential provider belongs to native-windows; CLI only selects/validates typed references, runtime consumes shared protected input. No duplicate OS secret reader. Cross-context API changes require explicit owner agreement. Scoring seams stay frozen.
+
+Execution slots are separate from work lanes: root assigns local A/shared-target
+and B/lightweight-isolated-target, maximum2, jobs1/incremental0 each. No automatic
+start from an available slot or same-target overlap. Root's program-roadmap and
+delivery policy owns resource guards (commit88%/free physical16GiB), manifest lock
+windows and the hosted-only runtime boundary; see rule94. Lane ownership is not
+permission to bypass those allocations.
 
 
 A **lane** is a coarse ownership slice. Agents claim one primary lane per session
