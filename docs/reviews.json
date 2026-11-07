@@ -2,6 +2,60 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
+  "sha256": "38db3d6ffc07f27d2f2e0e1f0bd4df3fcecaf83ebe3f05ae846b6eaee08c3f37",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete middleware ordering/body-to-EOF/cancellation/pooled-input/replay/final handoff and original-stream restore source. Source maps DENY403 and other non-ALLOW503 with no challenge recovery. Catch also covers selected downstream exceptions, so503/abort does not prove no prior app call/effect. Actual timing, callbacks, buffers and host lifecycle remain unexecuted.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs",
+  "sha256": "94d7777ece5291705a7b6a502f5b2b6c7ae122572b99c63fc66474609c9edbc7",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete current managed native ABI declarations, 64-bit little-endian layout guards, Cdecl LibraryImport to dotnet-specific symbol, opaque context SafeHandle leases, bounded inline copies, private configuration, awaited Task.Run decision ownership, replay and final handoff/disposal. Public source reference does not infer actual marshalling/GC/dispose/loader execution or erasure of managed copies.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+  "sha256": "c27cae14d99da6709453c8f555d6275ce937972b1076c2ff18cc94de3c28140a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full net10.0 Web SDK candidate host project with direct project reference versus exact experimental packed-adapter selection. AOT-compatible flags and selecting package mode do not execute GC, actual loader or clean package qualification.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
+  "sha256": "c860777e40544f819974bb1885522610636e23e73ec2f8a0f58c532863d80e4b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full candidate net10.0 library/package metadata, generated interop unsafe allowance, AOT compatibility declaration and conditional native artifact/RID pack path. Package target checks supplied file existence/RID, not source/artifact hash authenticity; actual compile, install and layout/loader proof remain required.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/global.json",
+  "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full selected SDK10.0.403 pin with roll-forward disabled and no prerelease. Version selection is not installed SDK execution or a qualified JIT/NativeAOT tuple.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/dotnet/Directory.Build.props",
+  "sha256": "b9fdbb6cb0e46fd6abb8f0fda4967821f128c85a2bc10ef59bbd6bc2384eeaa7",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete managed build configuration: dedicated target output paths, deterministic setting and requested package-lock generation. These settings do not prove actual restore closure, reproducibility or native package lineage.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "adapters/go/upstream-fixtures.json",
   "sha256": "d541a37ca284fb00294bb8efe96500db2dd4e54aa997d4d47f96a772d8e7ace2",
   "reviewer": "codex/rust-pages",
@@ -65,27 +119,27 @@
 },
 {
   "source": "adapters/dotnet/pilot-contract.json",
-  "sha256": "cbdc9225b5e94191dad7a64af4afeb355044bfc299e6406d4d5ebb21c3848b2a",
+  "sha256": "adb9185307169d533c3d35928832ae09bae9c6412f47af7454fb1f261266beb1",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete runnable-false 21-case four-tuple managed host contract with source/artifact lineage, cancellation/body/GC/disposal/authority/response/package cases and exact accounting. Synthetic decisions and contact counts cannot stand in for authenticated ALLOW or application mutations; all actual managed host gates remain unexecuted.",
+  "notes": "Re-read complete updated authored-not-compiled21-case/fourtuple host contract and lineage/accounting requirements. Source is no longer absent, but root graph, compilation and actual hosted managed qualification remain pending. Generic optional ABI probe is not middleware/C++ proof; contact, mutation, cancellation, GC and clean-install gates remain separate.",
   "pages": [
     "docs/reference/supported-topologies.md"
   ]
 },
 {
   "source": "adapters/dotnet/capabilities.json",
-  "sha256": "1006becdeacbc0fc3a92135b722b0a998a3fc9d5ba7dc3f5aca9ebc329874122",
+  "sha256": "78c458157f8cce068f055996a1089f0f4ec43e28cf7be42e532bf1013498e90b",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full capability declaration: safe request core, no installed middleware/native host exports/managed callbacks, absent original network and streaming/upgrade/recovery planes, unpublished package and empty qualified tuples. Required host gates are obligations, not execution receipts.",
+  "notes": "Re-read complete updated source-versus-execution capability fields: managed/native facade authored-not-compiled, middleware/package configuration present, installed/export/runtime qualification still false and tuples empty. Public reference preserves implementation state independently from actual host evidence.",
   "pages": [
     "docs/reference/supported-topologies.md"
   ]
 },
 {
   "source": "adapters/dotnet/README.md",
-  "sha256": "5881aef81b0a401de0b7879cd80b42a183def40e9f5d2a2cde8e23f3b9390294",
+  "sha256": "2dd0c2146785d494f4ebd2c5a3a0a21854e33334bdb108ad8eb4e1b3651e8403",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete ASP.NET candidate scope: safe Rust request core only; managed middleware, PInvoke/NativeAOT, GC stress and package installation remain absent or unqualified. Existing Rust Gate HTTP origin compatibility cannot substitute for that managed binding.",
+  "notes": "Re-read full current updated candidate README after managed-source approval: LibraryImport/opaque SafeHandle shim, middleware and Kestrel pilot source now exist but remain uncompiled/unexecuted. Public topology follows actual source without qualifying GC/NativeAOT/package or confusing generic ABI with the separate dotnet binding.",
   "pages": [
     "docs/reference/supported-topologies.md"
   ]

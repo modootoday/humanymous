@@ -1173,3 +1173,21 @@ without assuming an installed/configured ABI, after-fork/pool/MPM/reload or orig
 qualification. Added three exact manual metadata receipts; held stale Apache/
 native pilot blocker records for owning-session correction. Metadata selection
 is not independent external verification or execution. Existing source88/errors0.
+
+### Managed bridge source and revised metadata reconciliation
+
+Read full NativeBinding.cs/HumanymousMiddleware.cs, SDK pin, build props and both
+managed project files. Public topology now names current HumanymousHost and
+InvokeAsync/LibraryImport follow-through, bounded by-value transfer/SafeHandle
+ownership, complete input/replay/final handoff and source-only loader/GC limits.
+Source maps DENY403 and other non-ALLOW including CHALLENGE503. Catch also covers
+selected downstream failures, so503/abort cannot establish no prior app effect.
+Package file/RID existence is not an artifact-hash or lineage proof.
+
+Owning .NET chat confirmed source metadata corrected and GC/control fixture work
+now tracked/join-bounded; no actual managed run occurred. Re-read the updated
+README/capability/21case contract before surgically renewing those three receipts.
+Added six fully read build/binding/middleware input receipts. Did not approve
+partially read or concurrently changed pilot Program.cs. Existing source88/0.
+Full freshness still fails for remaining Apache, native, host pilot and other
+source inventory. No managed build, library loading, network or Cargo executed.
