@@ -51,8 +51,10 @@ outer native supervision. A forced-stop recovery can never pass the fixture.
 RECOVERY preserves ownership only while the parent test process remains alive;
 its exit is not child termination or cleanup proof. The external controller must
 retain independent recovery authority, and an unresolved owner remains Unknown.
-Shared API freeze/review and the root-owned test-support devdependency remain
-pending. The ignored test is actual authored source, not executed evidence. This
+Root approved the exact existing-workspace test-support devdependency in the CLI
+manifest, now wired without version/external/feature changes. Shared API provider
+qualification and allocated consumer compile/execution remain pending. The
+ignored test is actual authored source, not executed evidence. This
 source is authored/NOT_RUN; fmt/diff checks alone do not qualify subprocess behavior.
 
 ### Active goal continuation

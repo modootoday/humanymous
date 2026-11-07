@@ -41,6 +41,9 @@ windows-service = "=0.8.1"
 [lints]
 workspace = true
 
+[dev-dependencies]
+humanymous-test-support.workspace = true
+
 [target.'cfg(windows)'.dev-dependencies]
 windows-permissions = "=0.2.4"
 junction = { version = "=2.1.0", default-features = false }
