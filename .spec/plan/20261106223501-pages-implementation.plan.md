@@ -2099,3 +2099,15 @@ Reported root for next narrow reconciliation window; frozen public docs unchange
 No this-chat Cargo/native/browser/AT execution; configuration excerpts are partial
 and do not earn a full receipt. Existing published component evidence is exact
 source evidence, not full generic Draft v0 wire conformance.
+
+### Fixed Runtime configuration and HTTP manual batch
+
+Read configuration208/browser119/http280/audit configuration46 completely,653lines.
+All four new inventory source hashes match owner adb8 execution commitments and
+current primary bytes. Identified missing public session quota default/range,
+optional exact browser origin and per-route integrity/response profile defaults
+and invalid combination in cli-config-policy. Existing gate-origin follow-up
+remains pending narrow window. Strict framing/authorization reconstruction and
+status-bound ACK model do not establish arbitrary HTTP compatibility, native
+peer identity from Fetch metadata, real browser/human/AT or effect receipts.
+Recorded substantive per-file notes; frozen public ledger/content untouched.

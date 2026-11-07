@@ -1,0 +1,73 @@
+{
+  "scope": "Manual complete fixed Runtime configuration and HTTP boundary review",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "reviewed_files": 4,
+  "lines": 653,
+  "reviews": [
+    {
+      "source": "crates/runtime/src/configuration.rs",
+      "lines": 208,
+      "sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e",
+      "current_primary_sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e",
+      "matches_owner_execution_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete208-line strict trusted configuration: loopback source/origin, exact scope/routes, native_full/buffered defaults, default session quota100, optional exact http origin browser policy, browser+native_stream refusal and readiness separate from qualification. Full source review supersedes prior partial excerpts only; no actual transport proof.",
+      "pages": [
+        "docs/reference/cli-config-policy.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/browser.rs",
+      "lines": 119,
+      "sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe",
+      "current_primary_sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe",
+      "matches_owner_execution_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete119-line explicit protocol classifier, no User-Agent inference, cookie refusal and exact same-origin Fetch metadata. Bootstrap secrets zeroizing/non-Debug; one consumed-request ACK signer binds original token/counter/bucket/response status. Fetch metadata is not native peer identity or human evidence; ACK is not an effect witness.",
+      "pages": [
+        "docs/reference/cli-config-policy.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/http.rs",
+      "lines": 280,
+      "sha256": "cee415ae755a5c4df8cecb0aaaaccbc4b9dc220e7f78cd77fc81afab6fb0680e",
+      "current_primary_sha256": "cee415ae755a5c4df8cecb0aaaaccbc4b9dc220e7f78cd77fc81afab6fb0680e",
+      "matches_owner_execution_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete280-line bounded single request HTTP/1.1 parser, canonical decimal, duplicate header refusal, ASCII/framing/target validation,64KiB body/16KiB head, complete-body read without waiting EOF. Origin builder strips gateway fields and native runtime authorization while browser profile preserves application authorization. Caller owns overall deadline; no arbitrary HTTP compatibility or provenance claim.",
+      "pages": [
+        "docs/reference/cli-config-policy.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/configuration/audit.rs",
+      "lines": 46,
+      "sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f",
+      "current_primary_sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f",
+      "matches_owner_execution_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete46-line strict existing sealed custody startup schema: private inherited zeroizing passphrase, separate allow_new history flag and optional trusted head/witness requirement. Inline keys/unknown sources reject; runtime does not initialize missing custody. Source deserialization tests do not prove independent secret provisioning.",
+      "pages": [
+        "docs/reference/cli-config-policy.md",
+        "docs/reference/gate-origin-contract.md"
+      ]
+    }
+  ],
+  "this_chat_execution": "NOT_RUN",
+  "pending_public_fields": [
+    "session_rate_per_second defaults100, bounds1..10000",
+    "optional browser.origin exact http://scope.authority",
+    "route rit_profile native_full default versus browser_auth_only",
+    "route response_profile buffered default versus native_stream; browser combination refused"
+  ],
+  "public_ledger": "Frozen candidate unchanged; source-bound follow-up reported",
+  "qualification": "Explicit source profile is not generic wire selection, actual Fetch/human/AT or independent deployment proof"
+}
