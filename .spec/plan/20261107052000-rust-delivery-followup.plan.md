@@ -340,3 +340,28 @@ three workload measurements. The workflow/catalog/tool passed Rustfmt syntax
 formatting, actionlint and scoped specification checks only. No Cargo compile,
 unit test, ACT/Docker execution or performance comparison is claimed for this
 new package until root admits the single bounded pilot after review.
+
+The paired local/GitHub benchmark subsequently completed both six-record
+datasets successfully. Independent review matched control bytes, workload,
+lock, toolchain, counts and resource limits. Local exposed 32 CPUs versus four
+on GitHub despite equal four-CPU quotas. Initial workspace builds followed the
+collector build and are not cold full builds. Raw child logs were not recovered
+from removed containers; their reported hashes are not independent body checks.
+
+The next source-only CI slice replaces stale maintenance eleven-case constants
+with the owner thirteen-case JSON inventory and Runtime constants with its
+per-platform owner inventory. Every target receives exact-name discovery and
+separate execution even after another target fails. The Node/Bun actual fixture
+uses its owner contract and invocation-labelled cleanup; package trust remains
+separate. Rustfmt, actionlint and scoped Specfold checks passed. This slice has
+not yet been compiled or executed; a new bounded allocation is pending.
+
+Root then allocated C with exclusive target validation-ci-delivery, one Cargo
+job and incremental compilation disabled. Admission measured 79 percent commit
+and 35,296,160 KiB free physical memory. Final validation passed 55 pure tests
+with zero failed/ignored/filtered and strict all-target Clippy. The first attempt
+passed with one unused-import warning; that log remains preserved, the import
+was removed, and the final tests and Clippy passed without warnings. The final
+owner-contract/source SHA256 ledger was unchanged. Private registered evidence
+is 20261107095612-delivery-owner-contracts; C was returned. No actual container,
+process, filesystem or SCM profile ran, and no package qualification was created.

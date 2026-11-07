@@ -1,0 +1,255 @@
+{
+  "schema": "humanymous.delivery-hosted-summary/1",
+  "run_id": 42355168729,
+  "attempt": 1,
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "status": "completed",
+  "conclusion": "failure",
+  "updated_at": "2026-11-07T09:24:11Z",
+  "jobs_total": 19,
+  "job_conclusions": {
+    "success": 5,
+    "failure": 14,
+    "skipped": 0
+  },
+  "artifacts_total": 0,
+  "jobs": [
+    {
+      "id": 128351571194,
+      "name": "validate / policy",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128351926068,
+      "name": "validate / docker",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128351926084,
+      "name": "validate / native (macos-15)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128351926093,
+      "name": "validate / native (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128351926153,
+      "name": "validate / native (windows-2025)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128353483559,
+      "name": "validate / browser",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128355522898,
+      "name": "validate / browser-product",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128358355202,
+      "name": "validate / nginx",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128359709010,
+      "name": "validate / msrv",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128359821189,
+      "name": "validate / rust-images",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128360847587,
+      "name": "validate / quality",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128360953683,
+      "name": "validate / images (gate)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128360953728,
+      "name": "validate / images (core)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128361293298,
+      "name": "validate / documentation",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128361401308,
+      "name": "validate / pages / build",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128361465721,
+      "name": "validate / packages",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128361689495,
+      "name": "validate / node",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128362579030,
+      "name": "validate / advisories",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128364674797,
+      "name": "validate / ready",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "nginx": {
+    "passed": 35,
+    "failed": 0,
+    "not_run": 0,
+    "cleanup_exit_code": 0,
+    "image_id": "sha256:49cd270fab32122033cd630add92f8c5bb67e328f34e65558a6df808ec1657ab",
+    "module_sha256": "a911735564a23f646e2d7242d6a68f3b37a5622f860221b9ec19e92ab8f74845",
+    "source_manifest_sha256": "20b56673e627209beb263f100071793effb8122cfe5467ae9bb9b6a6ee00770f",
+    "full_product_qualified": false
+  },
+  "runtime_image_candidate": {
+    "source_build_job_passed": true,
+    "config_digest": "sha256:717d482cf97a4b02c120d8de7fec86896264b0bf2ed129890d65eb4ad826e0f9",
+    "manifest_digest": "sha256:571a7b3cc2b50cd05e96d483c1d63b8ae6ca3724724981660ed405e6b1f14e34",
+    "trivy_action_passed": true,
+    "language_specific_files": 0,
+    "scan_target_table": "not-scanned",
+    "cve_coverage_verified": false,
+    "nonroot_runtime_verified": false,
+    "legacy_core_gate_replacement": false
+  },
+  "source_cargo_audit": {
+    "reports": [
+      {
+        "dependency_count": 670,
+        "exit_code": 0,
+        "lockfile": "Cargo.lock",
+        "sha256": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+        "sha256_after": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+        "source_changed": false,
+        "status": null,
+        "vulnerabilities_found": false,
+        "vulnerability_count": 0,
+        "vulnerability_ids": [],
+        "warning_count": 1,
+        "warning_ids": [
+          "RUSTSEC-2026-0192"
+        ]
+      },
+      {
+        "dependency_count": 22,
+        "exit_code": 0,
+        "lockfile": "scripts/ci/cef-pilot/Cargo.lock",
+        "sha256": "0f40bccbd17701e663634be802247a98ea4d2b77ee2f3bbe9013b0a1f4201151",
+        "sha256_after": "0f40bccbd17701e663634be802247a98ea4d2b77ee2f3bbe9013b0a1f4201151",
+        "source_changed": false,
+        "status": null,
+        "vulnerabilities_found": false,
+        "vulnerability_count": 0,
+        "vulnerability_ids": [],
+        "warning_count": 0,
+        "warning_ids": []
+      },
+      {
+        "dependency_count": 22,
+        "exit_code": 0,
+        "lockfile": "scripts/ci/docs-review/Cargo.lock",
+        "sha256": "601ced582328ad50175b10d7de9850aee6495cd0ad25be5465e33c94b007fdba",
+        "sha256_after": "601ced582328ad50175b10d7de9850aee6495cd0ad25be5465e33c94b007fdba",
+        "source_changed": false,
+        "status": null,
+        "vulnerabilities_found": false,
+        "vulnerability_count": 0,
+        "vulnerability_ids": [],
+        "warning_count": 0,
+        "warning_ids": []
+      },
+      {
+        "dependency_count": 43,
+        "exit_code": 0,
+        "lockfile": "scripts/ci/windows-native-runner/Cargo.lock",
+        "sha256": "0634eeef1c1fce9544d967f05ecd6b0f3e60588e576a2b6d7a680790d1d24c67",
+        "sha256_after": "0634eeef1c1fce9544d967f05ecd6b0f3e60588e576a2b6d7a680790d1d24c67",
+        "source_changed": false,
+        "status": null,
+        "vulnerabilities_found": false,
+        "vulnerability_count": 0,
+        "vulnerability_ids": [],
+        "warning_count": 0,
+        "warning_ids": []
+      }
+    ],
+    "blocked": [],
+    "scope": "source lockfile dependency audit; not an image SBOM binding"
+  },
+  "root_filesystem_scan": {
+    "findings": 13,
+    "unknown": 1,
+    "low": 0,
+    "medium": 7,
+    "high": 5,
+    "critical": 0,
+    "ecosystem": "frozen Go dependencies"
+  },
+  "wargame": {
+    "scheduled": 26,
+    "evaluated": 0,
+    "errors": 19,
+    "unsupported": 7,
+    "skipped": 0,
+    "expectation_mismatches": 0,
+    "internally_consistent": true,
+    "scoped_passed": false,
+    "raw_sha256": "6af47402f4036613d25e7043a98d1ee4f244b2c000af5cd9a46734fa6f947fcc",
+    "raw_body_retrieved": false
+  },
+  "evidence": {
+    "private_bundle": ".spec.local/root/evidence/20261107082400-delivery-caller-fix",
+    "capture_kinds": [
+      "captured CLI log text",
+      "GitHub connector decoded job log text",
+      "GitHub REST JSON text"
+    ],
+    "captured_job_logs": 19,
+    "whole_run_log_sha256": null,
+    "individual_capture_file_hashes_registered": true,
+    "private_capture_index_sha256": "8606d896814ab69dcb9f18766d6b11df1fdb09dc6a930a810d6e61392e49c540",
+    "raw_private_owner_reports_retrieved": false
+  },
+  "full_product_qualified": false,
+  "release_ready": false,
+  "deployment_performed": false,
+  "note": "Later source and benchmark controls are separate; successful component jobs do not replace failed required jobs or absent CVE coverage."
+}

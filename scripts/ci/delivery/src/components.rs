@@ -2,6 +2,8 @@
 use crate::{Result, command, evidence, require, source, write_json};
 use serde_json::{Value, json};
 use std::path::Path;
+mod maintenance;
+mod node_host;
 mod runtime;
 
 const CAPTURE_CASES: [&str; 5] = [
@@ -76,44 +78,6 @@ fn capture(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
     report["test_counts"] = capture_counts(
         &std::fs::read_to_string(dir.join("capture-tests.log")).map_err(|e| e.to_string())?,
     )?;
-    Ok(())
-}
-fn maintenance_counts(text: &str) -> Result<Value> {
-    let summaries: Vec<_> = text
-        .lines()
-        .filter(|line| line.starts_with("test result:"))
-        .collect();
-    require(summaries.len()==3 && [5,2,4].iter().all(|count| summaries.iter().filter(|line|line.starts_with(&format!("test result: ok. {count} passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;"))).count()==1),"maintenance exact eleven-case accounting missing")?;
-    Ok(
-        json!({"required":11,"passed":11,"failed":0,"ignored":0,"filtered":0,"harnesses":3,"per_harness_passed_sorted":[2,4,5]}),
-    )
-}
-fn maintenance(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
-    report["stage"] = json!("maintenance-tests");
-    let log = dir.join("maintenance-tests.log");
-    let code = command::json_log(
-        root,
-        "cargo",
-        &[
-            "test",
-            "--locked",
-            "-p",
-            "humanymous-agent-maintenance",
-            "--test",
-            "process",
-            "--test",
-            "session_storage",
-            "--test",
-            "product_package",
-            "--",
-            "--test-threads=1",
-        ],
-        &log,
-    )?;
-    report["commands"]["maintenance-tests"] = json!({"exit_code":code,"stdout_sha256":source::file(&log)?,"stderr_sha256":source::file(&log.with_extension("stderr.log"))?});
-    require(code == 0, "maintenance component execution failed")?;
-    report["test_counts"] =
-        maintenance_counts(&std::fs::read_to_string(log).map_err(|e| e.to_string())?)?;
     Ok(())
 }
 fn header(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
@@ -268,13 +232,17 @@ fn header(root: &Path, dir: &Path, report: &mut Value) -> Result<()> {
 }
 pub fn run(root: &Path, kind: &str) -> Result<()> {
     require(
-        matches!(kind, "capture" | "header" | "maintenance" | "runtime"),
+        matches!(
+            kind,
+            "capture" | "header" | "maintenance" | "runtime" | "node-host"
+        ),
         "unknown hosted component",
     )?;
     require(
         (matches!(kind, "maintenance" | "runtime")
             || cfg!(all(target_os = "linux", target_arch = "x86_64")))
             && std::env::var("GITHUB_ACTIONS").as_deref() == Ok("true")
+            && std::env::var_os("ACT").is_none()
             && std::env::var("RUNNER_ENVIRONMENT").as_deref() == Ok("github-hosted"),
         "component requires its supported standard hosted runner",
     )?;
@@ -289,8 +257,9 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
     let mut report = json!({"schema":"humanymous.hosted-component/1","component":kind,"source_sha":before["source_sha"],"source_manifest_sha256":before["manifest_sha256"],"cargo_lock_sha256":source::file(&root.join("Cargo.lock"))?,"toolchain_sha256":source::file(&root.join("rust-toolchain.toml"))?,"runner_os":std::env::consts::OS,"runner_arch":std::env::consts::ARCH,"runner_image":std::env::var("ImageVersion").ok(),"status":"failed","stage":"preflight","commands":{},"test_counts":null,"full_product_qualified":false});
     let result = match kind {
         "capture" => capture(root, &dir, &mut report),
-        "maintenance" => maintenance(root, &dir, &mut report),
+        "maintenance" => maintenance::run(root, &dir, &mut report),
         "runtime" => runtime::run(root, &dir, &mut report),
+        "node-host" => node_host::run(root, &dir, &mut report),
         _ => header(root, &dir, &mut report),
     };
     let after = source::snapshot(root)?;
@@ -310,14 +279,6 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn maintenance_requires_three_complete_harnesses_and_eleven_tests() {
-        let log=[5,2,4].map(|count|format!("test result: ok. {count} passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;\n")).concat();
-        assert!(maintenance_counts(&log).is_ok());
-        assert!(maintenance_counts(&log.replace("5 passed", "0 passed")).is_err());
-        assert!(maintenance_counts(&log.replace("0 ignored", "1 ignored")).is_err());
-        assert!(maintenance_counts(&format!("{log}{log}")).is_err());
-    }
     #[test]
     fn capture_requires_all_five_actual_tests_without_ignore_or_extra_summary() {
         let cases = CAPTURE_CASES

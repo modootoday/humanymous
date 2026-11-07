@@ -1038,3 +1038,18 @@ status. It preserves a valid receipt when surrounding full-product gates fail.
 Missing receipts remain unknown; malformed present receipts fail the gate.
 No raw body or actor identity enters the public projection, and scoped evidence
 never becomes full-product qualification.
+
+Independent Runtime and maintenance profiles consume their owning JSON
+qualification inventories. Exact-source discovery must equal the complete
+reviewed name set and execution must report the same nonzero count with no
+failed, ignored, measured or filtered tests. All required targets are attempted
+independently. No copied fixed count is the qualification authority. Contract
+hashes accompany the bounded public counts; local parser tests do not establish
+actual process, filesystem or hosted outcomes.
+
+The Node host profile consumes the owning host-pilot contract and runs its
+actual Node/Bun fixture independently of package qualification. Each container
+has an invocation-specific name and ownership label. Cleanup removes only an
+inspected exact image and invocation label, then requires a successful empty
+exact-name inventory. Component evidence cannot create a native package trust
+receipt or full-product qualification.

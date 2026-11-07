@@ -239,7 +239,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                             run.contains("cargo run --locked")
                                 && run.contains("scripts/ci/delivery/Cargo.toml")
                                 && run.contains(required)
-                        }) && step.get("if").is_none()
+                        }) && (step.get("if").is_none()
+                            || (id == "node" && step["if"] == "${{ !cancelled() }}"))
                     })
                 }),
                 format!("required Rust authority step missing/conditional: {id}"),
