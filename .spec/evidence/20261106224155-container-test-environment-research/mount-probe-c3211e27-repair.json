@@ -1,0 +1,168 @@
+{
+  "schema": "humanymous.mount-probe-source-evidence/1",
+  "classification": "collection_complete_directory_predicates_accepted",
+  "source_sha": "c3211e27ba941f3f11809e420d07d61ececad623",
+  "run_id": 42374587466,
+  "run_attempt": 1,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42374587466",
+  "preflight": {
+    "job_id": 128409467170,
+    "conclusion": "success",
+    "lab_tests": {
+      "passed": 20,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "delivery_tests": {
+      "passed": 74,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "unix_actor_check": "passed",
+    "all_target_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "probe": {
+    "job_id": 128410019703,
+    "conclusion": "success",
+    "summary": {
+      "cleanup_observed": true,
+      "collection_status": "complete",
+      "custody_policy_qualified": false,
+      "diagnostics": {
+        "failure_count": 0,
+        "failures": [],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "full_product_qualified": false,
+      "owner_exit_code": 0,
+      "private_image_inspection_sha256": "008c07222e67d726bbf2873ba913f15c532b8e90196610b74482bd59f2296923",
+      "receipt": {
+        "full_product_qualified": false,
+        "image_sha256": "sha256:8ed55c6d9a53ab48ae5a4967f419619fe4fc560a49720a233c169a87e44dda3b",
+        "observations": [
+          {
+            "paths": [
+              {
+                "code": null,
+                "id": "writer_keys",
+                "status": "observed_accept"
+              },
+              {
+                "code": null,
+                "id": "writer_wal",
+                "status": "observed_accept"
+              }
+            ],
+            "role": "writer",
+            "status": "observed_accept",
+            "surface": "image"
+          },
+          {
+            "paths": [
+              {
+                "code": null,
+                "id": "witness_keys",
+                "status": "observed_accept"
+              },
+              {
+                "code": null,
+                "id": "witness_head",
+                "status": "observed_accept"
+              }
+            ],
+            "role": "witness",
+            "status": "observed_accept",
+            "surface": "image"
+          },
+          {
+            "paths": [
+              {
+                "code": null,
+                "id": "writer_keys",
+                "status": "observed_accept"
+              },
+              {
+                "code": null,
+                "id": "writer_wal",
+                "status": "observed_accept"
+              }
+            ],
+            "role": "writer",
+            "status": "observed_accept",
+            "surface": "fresh-volume"
+          },
+          {
+            "paths": [
+              {
+                "code": null,
+                "id": "witness_keys",
+                "status": "observed_accept"
+              },
+              {
+                "code": null,
+                "id": "witness_head",
+                "status": "observed_accept"
+              }
+            ],
+            "role": "witness",
+            "status": "observed_accept",
+            "surface": "fresh-volume"
+          }
+        ],
+        "observations_complete": true,
+        "private_receipt_sha256": "6f3d212e560b318bcc3cad830b28a0351b0d42e669f907633dfcd4b642bd1a60",
+        "raw_contents_included": false,
+        "recipe_sha256": "b37a448b1b05e020a17e5c41699a2ae981cbcb18be81b194e093d2cb2ab84d9b",
+        "run_context": {
+          "authenticated_provenance": false,
+          "hosted_qualification_admitted": true,
+          "job": "probe",
+          "kind": "github-hosted-linux",
+          "repository": "modootoday/humanymous",
+          "requires_external_job_verification": true,
+          "run_attempt": 1,
+          "run_id": 42374587466,
+          "workflow_sha": "c3211e27ba941f3f11809e420d07d61ececad623"
+        },
+        "schema": "humanymous.lab-mount-probe-public/1",
+        "source_manifest_sha256": "406eac69f317c702637e4e1adbe05ed64ad83a2df20706e3b35ea57e604dcaa9",
+        "source_sha": "c3211e27ba941f3f11809e420d07d61ececad623",
+        "totals": {
+          "observed": 4,
+          "observed_accept": 4,
+          "observed_refusal": 0,
+          "scheduled": 4,
+          "unobserved": 0
+        }
+      },
+      "receipt_valid": true,
+      "release_ready": false,
+      "requirement": {
+        "full_product_qualified": false,
+        "kind": "scoped",
+        "satisfied": true,
+        "schema": "humanymous.lab-requirement/1"
+      },
+      "schema": "humanymous.mount-delivery-summary/1",
+      "source_changed": false,
+      "source_manifest_sha256": "4d486bb77299062ecacf9fe604c623f7c65bbe0db0711bc54ceadf9ba1f41201",
+      "source_sha": "c3211e27ba941f3f11809e420d07d61ececad623"
+    }
+  },
+  "comparison": {
+    "baseline_source": "b482d5beaa2ffd5c1b30fb63e5c56ab7c4824697",
+    "baseline_run_id": 42372825588,
+    "baseline_directory_accepts": 0,
+    "baseline_directory_mode_refusals": 8,
+    "repaired_directory_accepts": 8,
+    "repaired_directory_refusals": 0,
+    "predicate_changed": false,
+    "privileged_initializer_added": false
+  },
+  "interpretation": "Same four role/surface observations and eight paths accept the unchanged directory predicate after parent-tree image copying. This proves directory metadata only; no full custody, Go scenario or browser qualification. Numeric raw modes and original private ledger/inspection bytes were not uploaded or recovered locally.",
+  "full_product_qualified": false
+}
