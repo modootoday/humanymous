@@ -1,0 +1,88 @@
+{
+  "date": "2026-11-07",
+  "tuple": "x86_64-pc-windows-msvc",
+  "rust": "1.99.1",
+  "meariRevision": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+  "cefRsRevision": "224a785c7b41758b51821cbb7395ea57ba493a63",
+  "cefCrate": "156.3.0+156.0.15",
+  "cefFeatures": [
+    "sandbox"
+  ],
+  "cefArchive": "cef_binary_156.0.15+gcf671c0+chromium-156.0.8078.80_windows64_minimal.tar.bz2",
+  "cefUpstreamArchiveSha1": "b690e035689ee20ba9d2500ac8953815bc7ed46a",
+  "tests": {
+    "failed": 0,
+    "passed": 9,
+    "kind": "actual-workspace-native-document-and-pure-library",
+    "ignored": 0
+  },
+  "clippy": "passed -D warnings",
+  "format": "passed",
+  "nativePilot": {
+    "coordinatePanelSwitch": "observed",
+    "osScreenReader": "not_run",
+    "addressFocusAndTyping": "observed",
+    "osImeCandidatePlacement": "not_run",
+    "keyboardTabRight": "observed",
+    "nativeDpi": "not_run",
+    "canonicalFonts": "absent-host-font-fallback",
+    "indexedUiaClick": "tool-error-no-cached-bounds",
+    "window": "observed",
+    "uiaNames": "observed",
+    "close": "observed zero remaining windows after asynchronous close"
+  },
+  "cefSourceCheck": "passed with sandbox feature; native build prerequisites corrected",
+  "cefAttach": "not_implemented",
+  "cefRuntimeSandbox": "not_run",
+  "dockerProductE2e": "not_run",
+  "browserReady": false,
+  "source": [
+    {
+      "path": "crates/browser/src/lib.rs",
+      "sha256": "b84e63353e3aaf2aaa2d9d998fe863b99ad68f4dca3a61598edc80fbe075774c",
+      "bytes": 182
+    },
+    {
+      "path": "crates/browser/src/lifecycle.rs",
+      "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "bytes": 6140
+    },
+    {
+      "path": "crates/browser/src/main.rs",
+      "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "bytes": 931
+    },
+    {
+      "path": "crates/browser/src/policy.rs",
+      "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "bytes": 4042
+    },
+    {
+      "path": "crates/browser/src/ui.rs",
+      "sha256": "1fc083412d87f6ffacea8eb17e601ae93a8765cf896059e7f1eb4da4d98ed35f",
+      "bytes": 11958
+    }
+  ],
+  "nativeArtifactFiles": [
+    {
+      "name": "libcef.dll",
+      "sha256": "07168eacd81bc09ab9ab895d39bc1a80913b09c844f0b5a4730f5f89a71133f5",
+      "bytes": 294315008
+    },
+    {
+      "name": "bootstrap.exe",
+      "sha256": "b57540187320e9ca520da23180259a1f706b4e96ebc448ba3ce45fc222ecd73c",
+      "bytes": 4313088
+    },
+    {
+      "name": "bootstrapc.exe",
+      "sha256": "f3992741bc06d43cafc568aefcc80b2c740121d9adf0eda19a314e1a72699ded",
+      "bytes": 4316160
+    },
+    {
+      "name": "chrome_elf.dll",
+      "sha256": "0b58d312d8486c6ae24be9e022bebdee6554de02a53f74dcda56aa089db8a648",
+      "bytes": 2827264
+    }
+  ]
+}
