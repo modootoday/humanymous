@@ -18,8 +18,9 @@ review instead of copying commands from an earlier Go release.
 5. Keep administration local, authenticated and separate from adapter credentials.
 6. Require a release manifest and deployment pilot for your exact combination before rollout.
 
-Node/Bun middleware and nginx integration are migration targets, not current
-support promises. Middleware behind a CDN cannot reconstruct the original
+The Rust Node-API bridge now has experimental Express/Hono interfaces; its
+release-qualified platform list is still empty. Node/Bun and nginx integration
+are not general support promises. Middleware behind a CDN cannot reconstruct the original
 client TLS handshake. Review [topology boundaries](../reference/supported-topologies.md)
 and the [origin contract](../reference/gate-origin-contract.md).
 

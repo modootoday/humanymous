@@ -52,3 +52,38 @@ this compatibility behavior as a newly qualified observation.
 The current runtime's missing original TLS/HTTP/2 capability remains a readiness
 limit. See [implementation status](production-vs-reference.md) and the
 [origin contract](gate-origin-contract.md) before selecting a deployment profile.
+
+## Experimental Rust Node-API framework bridge
+
+Current source exposes the following interfaces. Release qualification is still
+in progress: `capabilities()` reports an empty `releaseQualifiedTuples` list.
+Earlier component runs do not qualify later source changes or every Node/Bun,
+OS, architecture and framework combination.
+
+| Interface | Integration boundary |
+| --- | --- |
+| `createExpressServer(optionsJson, app)` | Owns the HTTP server around an existing Express app; enforcement precedes app parsers/effects and unsupported upgrade/CONNECT events reject |
+| `express(optionsJson)` | Advanced root middleware, installed before every parser/effect; independently installed upgrade listeners are outside its coverage |
+| `hono(optionsJson, app, streamModule)` | Outer Fetch handler; requires the real upstream `node:stream` module and validates the bounded complete request before calling the app |
+| `htmlHook(nonce, scriptPath)` | Explicit template markup and CSP source only; serves no collector script and performs no automatic response or CSP rewriting |
+| `capabilities()` | JSON description of available observations and lifecycle limits; not a deployment qualification receipt |
+
+Do not add competing server listeners or mutate protected routing after binding.
+Options select a complete route inventory and an independently provisioned local
+IPC authority peer and credential. There is no TCP or administrative fallback.
+The bridge delegates decisions to the shared authority; it does not add another
+scoring engine or inherit the loopback runtime's browser request-integrity API.
+
+Node HTTP/1 raw observations retain declared order/casing. The Bun HTTP shim uses
+normalized evidence, and Hono Fetch observations are normalized; neither can be
+promoted into strict raw-header or original TLS/HTTP2 evidence. Missing required
+planes prevent readiness. Complete request bodies are bounded to 1 MiB, with
+64 process-wide body/decision owners; these are resource limits, not interaction
+speed or motor-richness requirements.
+
+Application-owned response streams are distinct from authenticated upload
+streaming. WebSocket, CONNECT, gRPC and request trailers remain unqualified.
+Application credentials/cookies and response cookie meaning belong to this
+adapter's preservation contract; do not confuse it with the separately selected
+cookie-free runtime browser profile. Actual source-bound authority/origin,
+packaging and platform pilots remain required before rollout.

@@ -554,3 +554,12 @@ new compilation). It exited 1: HEAD or source inventory changed during snapshot;
 retry explicitly. No receipt was refreshed and no review acceptance inferred.
 The next full delta must follow a source-closure checkpoint; repeated captures
 while owners mutate HEAD/inventory would not prove the requested freshness.
+
+## Node-API public surface reconciliation
+
+Read node-adapter lib/admission and owner integration/README. Documented actual
+Express server vs middleware, Hono stream-module dependency, template-only HTML,
+capabilities and empty qualified tuples in topology reference. Clarified existing
+integrator prose from migration target alone to experimental source interfaces.
+No source receipt renewed or native/browser test claimed; current-source platform,
+packaging and real authority/origin qualification remain outstanding.
