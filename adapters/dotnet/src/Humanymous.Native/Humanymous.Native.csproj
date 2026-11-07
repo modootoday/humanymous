@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsAotCompatible>true</IsAotCompatible>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageId>Humanymous.Native.Experimental</PackageId>
+    <Version>0.1.0-experimental.1</Version>
+    <Authors>Humanymous contributors</Authors>
+    <Description>Experimental ASP.NET Core integration consuming the shared Rust authority.</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/modootoday/humanymous</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup>
+  <ItemGroup Condition="'$(NativeArtifact)' != ''">
+    <None Include="$(NativeArtifact)" Pack="true" PackagePath="runtimes/$(NativeRid)/native/" />
+  </ItemGroup>
+  <Target Name="RequireNativeArtifact" BeforeTargets="GenerateNuspec">
+    <Error Condition="'$(NativeArtifact)' == '' Or !Exists('$(NativeArtifact)') Or '$(NativeRid)' == ''" Text="A source-bound native artifact and exact RID are required for a candidate package." />
+  </Target>
+</Project>

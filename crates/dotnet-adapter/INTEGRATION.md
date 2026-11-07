@@ -1,5 +1,33 @@
 # Integration requests
 
+## Current approved continuation
+
+The human approved exactly three managed binding/middleware/pilot sources and
+reactivated this goal. Root confirmed the exception. The prior blocked handover
+below is historical; it is not a current permission requirement. Exact source
+paths and the automated inventory gate are in sot:root/dotnet-adapter.
+
+Native ABI owner approved/provided validate_context, buffer_bytes and public
+Version::validate. The safe bridge uses these through one Boundary/Registry.
+Its namespace100..108 owns .NET request composition only. Generic handle/error/
+buffer/version ownership is unchanged. Replay copies precede the final native
+expiry/host/route check; no lock spans IPC and no managed address is retained.
+
+Requested root graph delta (not yet applied): core native-abi path dependency,
+serde/serde_json/tokio workspace dependencies; hosted test dev-dependencies audit,
+signals, native-security and test-support; separate export workspace member with
+core/native-abi/tokio dependencies, cdylib+rlib and deny unsafe except the single
+unmangled pointer-free attribute. No new external version is needed. Local dotnet
+is unavailable; actual managed build/GC/Kestrel/NativeAOT/package work is hosted.
+
+The three managed source candidates and XML project/package metadata are authored
+but NOT_RUN. A candidate NuGet pack requires an explicit existing native artifact
+and RID, and never publishes. Production authority negative outcomes and frozen
+synthetic evidence in the real engine/audit for compatibility ALLOW must remain
+separate profiles. Do not call these browser/capture qualification.
+
+## Historical pre-approval requests and handover
+
 Root owns Cargo workspace and lock. Register humanymous-dotnet-adapter with
 framework-adapter, authority and integrity path dependencies and serde_json dev
 dependency. No new third-party dependency is requested.

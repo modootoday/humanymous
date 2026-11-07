@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsAotCompatible>true</IsAotCompatible>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(UsePackedAdapter)' != 'true'">
+    <ProjectReference Include="../src/Humanymous.Native/Humanymous.Native.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UsePackedAdapter)' == 'true'">
+    <PackageReference Include="Humanymous.Native.Experimental" Version="0.1.0-experimental.1" />
+  </ItemGroup>
+</Project>

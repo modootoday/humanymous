@@ -4,6 +4,8 @@
 //! not an installed Kestrel middleware or a qualified P/Invoke export.
 #![forbid(unsafe_code)]
 
+pub mod bridge;
+
 use humanymous_authority::client::{BoundResponse, Verdict};
 use humanymous_framework_adapter::{
     Admission, Configuration, Error, Observation, Pending, internal_header,

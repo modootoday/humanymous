@@ -1,8 +1,8 @@
 {
   "schema": "humanymous.dotnet-host-pilot/1",
-  "status": "not-implemented",
+  "status": "source-authored-not-compiled",
   "runnable": false,
-  "reason": "Reviewed managed host glue and native export mechanism are not approved or implemented",
+  "reason": "Three managed sources and pointer-free facade are authored; root graph registration, compilation and hosted execution are pending",
   "implementationOwner": "crates/dotnet-adapter",
   "abiOwner": "crates/native-abi",
   "runner": "free-standard-github-hosted-only",

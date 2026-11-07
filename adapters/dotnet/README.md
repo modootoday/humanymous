@@ -3,9 +3,21 @@
 The Rust request core lives in crates/dotnet-adapter. It owns bounded binary body
 copies, EOF sealing, cancellation and one authenticated authority handoff.
 
-ASP.NET Core middleware registration, PInvoke exports, NativeAOT linkage, managed
-GC stress and NuGet packaging are not implemented or qualified. No managed host
-tuple is advertised. Do not install this as a Kestrel protection package.
+An explicitly approved three-source C# candidate now supplies LibraryImport/
+opaque SafeHandle binding, ASP.NET middleware and the actual Kestrel pilot.
+The separate Rust export facade is pointer-free and consumes the shared native
+registry and authority. Candidate NuGet project metadata is present. These new
+sources are not yet compiled or executed; no managed host tuple is advertised.
+Actual GC stress, NativeAOT linkage, clean package install and product gates are
+NOT_RUN. Do not install this as a qualified Kestrel protection package.
+
+The middleware must run first, before body readers, response writers and effects.
+Complete bounded bytes are copied before one Rust authority decision. Replay is
+copied before the final expiry and unchanged-route check, then next runs once.
+No reverse managed callback or foreign pointer is retained. The candidate uses
+the pinned .NET SDK in global.json and sends private configuration through stdin.
+Run dotnet commands with adapters/dotnet as the working directory so that the
+SDK resolver finds this exact global.json. No local host execution is authorized.
 
 The shared Rust Gate can cover HTTP origins only under its separately qualified
 deployment topology. It does not establish this adapter's host compatibility.

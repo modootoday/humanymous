@@ -12,6 +12,58 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Approved managed binding continuation (2026-11-07)
+
+The human explicitly approved the minimum C# binding, middleware and actual-host
+pilot exception in this chat and root confirmed exactly three authored sources:
+adapters/dotnet/src/Humanymous.Native/NativeBinding.cs,
+adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs and
+adapters/dotnet/pilot/Program.cs. No fourth authored C# file, executable foreign
+template or copied security engine is approved. Project/XML/package configuration
+is configuration only. managed_scope.rs automatically verifies the exact source
+inventory and rejects symlinks. Compiler-generated LibraryImport glue is upstream
+generated output in target/dotnet, not an additional authored source. All comments
+and documentation remain English. The prior blocker below is historical.
+
+Bridge owns one shared native-abi Boundary/Registry instance, not a new generic
+allocator. The native facade's only Rust exception is its pointer-free by-value
+unmangled C export attribute; raw pointers/unsafe blocks/dynamic-loader code are
+absent. Fixed Command/Response88/48bytes use exact ABI1/0 on64bit little-endian
+Windows/Linux. .NET LibraryImport uses Cdecl and fixed integer fields, no arrays,
+delegates, pointers or managed references. SafeHandle owns opaque context IDs;
+DangerousAddRef leases span every synchronous call and the entire scheduled
+Task.Run decision, including scheduling delay. No reverse callback is used.
+
+Custom operations100..108 configure, begin, append, EOF, decide, cancel, final
+handoff, classify trust headers via the shared function, and copy replay. Generic
+operations1..7 reuse the registry. Generic CLOSE also cancels/drops owned children
+and their buffers. PANIC/POISONED/Mutex poison revokes all bridge resources and
+never resets the boundary. Context IDs are never reused. Library instances have
+independent domains; handles cannot cross them. Rust-only Ticket/Completion also
+carry an unforgeable per-Bridge Arc identity to reject cross-bridge completion.
+
+Native DECIDE takes the request out of the global lock, then runs the shared
+authority future on one Rust runtime. Cancellation is observed on a5ms timer and
+drops the actual IPC future; timer latency is scheduler-dependent, not a realtime
+guarantee. The original deadline remains mandatory. A replay copy is read into
+private managed bytes before final HANDOFF rechecks authority expiry, deadline,
+host abort/response-start/upgrade, method/raw target/host/headers and the exact
+PathBase/Path/QueryString triple. This catches routing rewrites that leave
+IHttpRequestFeature.RawTarget unchanged. No await occurs between final validation
+and installing the owned replay and invoking the app. Admission is not an ALLOW.
+
+The host installs first, before Body/BodyReader consumers or response/effect
+middleware. It strips forwarded/capture authority header names only by querying
+the Rust classifier, reads actual EOF, clears rented arrays, and restores the
+original stream on completion. DENY maps403; CHALLENGE maps503 without pretending
+to implement recovery. Missing dependency/abort/error refuses origin. No signals,
+policy, scores, credentials or cryptographic decisions are minted by C#.
+
+Candidate source exists; all new bridge/export/managed compilation, actual host,
+GC, package, NativeAOT and product results remain NOT_RUN until recorded.
+Native Registry limits16contexts/64buffers/8MiB initialized bytes apply in addition
+to shared framework admission64 and body1MiB; no concurrency eviction is used.
+
 Version0.1 is a safe Rust request core, not installed ASP.NET middleware.
 PInvoke, NativeAOT, actual Kestrel, GC stress and package qualification are not_run.
 No release-qualified tuple or NuGet package is advertised. Native ABI ownership
@@ -68,15 +120,14 @@ No parallel application delegate may run before this linearization point.
 
 ## Managed host and ABI gate
 
-New authored C#/F#/VB glue and unsafe C ABI are not authorized by the Rust-only
-requirement. Do not embed scripts or generate foreign templates to evade it.
-The safe Rust core is independent progress; a PInvoke registration package still
-requires an explicit minimal-source exception or a separately qualified Rust
-Gate HTTP-origin topology. NativeAOT direct and dynamic linkage, architecture,
+Outside the exact three-source C# exception above, new foreign host glue remains
+disallowed. Do not embed scripts or generate foreign templates to evade it.
+The core remains safe Rust; the separate native facade permits only its reviewed
+pointer-free unmangled export attribute. NativeAOT direct and dynamic linkage, architecture,
 calling convention, fixed-width status/length types and loader paths need exact
 tuple qualification. No callbacks or managed references are retained here.
 
-A future approved binding must use SafeHandle-style deterministic disposal,
+The approved binding must use SafeHandle-style deterministic disposal,
 retain managed delegates for the full callback lifetime if any, avoid async
 borrows of pinned pooled arrays, keep HttpContext on its request execution path,
 and never allow native access after release. Finalizer fallback is cleanup only,
@@ -112,3 +163,8 @@ denominators are retained. No local process/Docker substitute is authorized.
 - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/use-http-context?view=aspnetcore-10.0
 - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/request-response?view=aspnetcore-10.0
 - https://devblogs.microsoft.com/dotnet/re-reading-asp-net-core-request-bodies-with-enablebuffering/
+- https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json
+
+SDK pin researched2026-11-07: official channel metadata reports SDK10.0.403 and
+runtime10.0.14. global.json disables roll-forward/prerelease. This is version
+provenance, not a vulnerability-clean or executed-artifact statement.
