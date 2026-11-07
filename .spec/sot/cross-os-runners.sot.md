@@ -445,3 +445,9 @@ New hosted SCM source and features remain separately unqualified. Localtool5unit
 checks only descriptor composition/guard/parser/redaction, not account/SCM API
 mutation. A controller must execute standard-user-service and after-grant failure
 cleanup at the exact committed source before any native service result is claimed.
+
+WASM compatibility correction: test-support::process is native-only through
+cfg(not(target_arch="wasm32")); pure JSON contract assertions remain WASM-usable.
+Root observed drop_non_drop from unsupported wasm ChildStdin. Restricting the OS
+module fixes the boundary instead of relaxing any lint. Scoped wasm32 all-target
+Clippy and native9tests passed; root owns full integrity/collector rerun.

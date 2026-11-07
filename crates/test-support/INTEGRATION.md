@@ -24,3 +24,8 @@ ChildStdout with stderr=null; try_wait observes actual status. The typed witness
 client owns frame size/deadline/pipe close and the shared guard owns kill/reap.
 Nineactual local helper tests pass including duplex echo/EOF. This does not give
 interactive I/O an implicit deadline; the protocol owner must enforce one.
+
+WASM boundary: process is cfg(not(target_arch="wasm32")); the JSON assertion
+library remains available to WASM. OS child APIs cannot be invoked on that target.
+This fixes target-specific drop_non_drop without allowing lints or pretending an
+OS actor exists. wasm32-unknown-unknown all-target Clippy and host9tests passed.

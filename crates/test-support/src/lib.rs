@@ -2,6 +2,7 @@
 //! Runtime crates use this only as a dev-dependency.
 use serde_json::{Number, Value};
 
+#[cfg(not(target_arch = "wasm32"))]
 pub mod process;
 
 fn numbers_equal(first: &Number, second: &Number) -> bool {
