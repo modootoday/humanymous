@@ -1208,3 +1208,38 @@ only Node/nginx; fixed24+10synthetic fixtures do not cover newer Python/Ruby/
 Apache/.NET profile declarations. Public vectors page now makes that gap explicit
 and requires separately reviewed exact inputs/expectations before expansion.
 No fixture, expected acceptance, parser, source policy or detection rule changed.
+
+### Ruby native feature/package scope and actual corrected workflow start
+
+Read full Ruby README/package metadata/three-case framework-object contract,
+crate feature manifest and complete tiny lib composition. Public topology now
+records wrap entrypoint, server-owned raw target/deadline, exact Ruby minor ABI,
+package/GC/GVL limits and distinction between default stub compile and explicit
+native/installed require. Added five exact manual receipts; no Ruby/native/gem/
+framework process executed. Existing source checker88/errors0.
+
+Root pushed exact8132117e7bf1445939d7dee9066fcf45ccf0915b. Independently observed
+run42355168729 with policy success, live Docker job128351926068 and Linux native
+job128351926093, queued macOS/Windows jobs. API run status was queued despite
+active child jobs; preserve observed values without inventing a full denominator.
+Pages job not yet observed, not skipped/passed. This is a genuine live workflow
+observation, distinct from previous terminal a26d1c3 startup failure. No duplicate
+push/dispatch. Current Ruby prose and browser dot-segment code differ from813
+and are not qualified by it. Wait for actual job/results, not plan assertions.
+
+### Candidate image roles and configured ABI review
+
+Read full Apache native Dockerfile/context exclusions and product-browser
+Dockerfile/context exclusions. Image guide now distinguishes Apache candidate/
+pilot modules, configured header/compiler/MPM evidence and explicit SSL/H2-off
+build from an installed/qualified server. Product browser artifacts and driver
+are distinct from collector, CEF/native UI, human/AT and Pages reader validation.
+Mutable package-manager closure and actual versions/image identities remain
+separate from selected base/archive pins. Added four exact manual receipts;
+no image build, container, compiler or browser execution here. Source88/errors0.
+
+Re-polled live exact8132117 run42355168729: policy remains success, Docker/Linux
+native jobs are still in progress and macOS/Windows queued. No Pages job observed
+yet; no terminal success/failure inferred and no duplicate dispatch. Current
+Ruby/image prose, manual receipts and frozen browser dot-segment fix are later
+working-source changes and are not qualified by this running SHA.

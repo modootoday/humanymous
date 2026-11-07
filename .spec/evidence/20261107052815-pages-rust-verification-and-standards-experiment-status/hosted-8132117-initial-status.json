@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-07T08:25:31.7603416Z",
+  "run_id": 42355168729,
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42355168729",
+  "run_api_status": "queued at observed snapshot",
+  "conclusion": "not terminal",
+  "jobs_observed": [
+    {
+      "status": "completed",
+      "id": 128351571194,
+      "conclusion": "success",
+      "name": "validate / policy"
+    },
+    {
+      "status": "in_progress",
+      "id": 128351926068,
+      "name": "validate / docker"
+    },
+    {
+      "status": "in_progress",
+      "id": 128351926093,
+      "name": "validate / native (ubuntu-24.04)"
+    },
+    {
+      "status": "queued",
+      "id": 128351926084,
+      "name": "validate / native (macos-15)"
+    },
+    {
+      "status": "queued",
+      "id": 128351926153,
+      "name": "validate / native (windows-2025)"
+    }
+  ],
+  "pages_job": "not yet observed; not classified skipped or passed",
+  "expected_full_job_denominator": "not inferred from partial creation snapshot",
+  "working_source_delta": "Ruby documentation row and WebDriver dot-segment fix differ from exact813 source; not covered",
+  "previous_startup_failure": "42354873001/a26d1c3 preserved separately",
+  "browser_keyboard": "NOT_RUN",
+  "scope_limit": "Live exact-source observation only; no whole workflow/build/host/AT success inferred."
+}

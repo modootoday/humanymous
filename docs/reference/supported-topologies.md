@@ -116,6 +116,7 @@ These developing source boundaries do not add release-qualified host tuples.
 | --- | --- |
 | Go HTTP origin | Uses the existing Rust Gate; there is no new Go SDK or provisioned Go adapter producer. An untouched external `net/http` fixture and bounded HTTP cases are selected but unexecuted. chi, Gin, Echo, Fiber and fasthttp each require separate host evidence; proxy compatibility does not establish in-process middleware or pooled-buffer safety |
 | Python WSGI/ASGI | Rust-native `humanymous_python.Wsgi(app, options_json)` and `Asgi(app, options_json)` are candidate interfaces. No wheel or runtime tuple is qualified. WSGI needs the actual server's raw target and input deadline; ASGI needs its declared HTTP/1/raw-path boundary. Candidate package Python-version metadata does not establish CPython ABI, free-threaded, subinterpreter or framework support |
+| Ruby Rack | Rust extension source exposes `Humanymous.wrap(app, options_json)`. Registration at the outer application boundary needs actual raw target, content length, authority and a server-enforced input deadline. The intended precompiled gem targets one exact Ruby minor ABI; platform tags do not establish installed gem, Rack/Sinatra/Rails, GC/GVL or ABI compatibility. No runtime tuple is qualified |
 | ASP.NET Core | Safe Rust request-lifecycle and managed shim source now exist with a normalized producer profile. Actual middleware/PInvoke execution, NativeAOT, GC/abort ownership and NuGet installation remain unqualified; the generic native ABI is not itself that managed binding |
 | Apache | Safe lifecycle/replay and opt-in native module source exist. The exact httpd/APR/MPM/compiler/header tuple, pool cleanup, after-fork initialization, reload, cancellation and origin isolation still need native qualification. Source archives and selected header hashes do not prove the installed ABI |
 | Common C/C++ boundary | Source exports the pointer-free by-value `humanymous_native_abi_v1` buffer/lifecycle command boundary over one safe owner. This is not an installed application security SDK. Header generation configuration and Rust units do not prove actual C/C++ layout, dynamic loading, unload, exception or allocator compatibility |
@@ -132,6 +133,13 @@ cases for dependency-unavailable behavior and trusted-server lifespan forwarding
 Those cases are not an actual network server, production authority, successful
 authenticated ALLOW, installed wheel, response-streaming or cancellation-race
 qualification. Empty qualified tuples remain the current support declaration.
+
+The Ruby host contract selects three dependency-unavailable framework-object
+smoke cases. Those are not an actual server, successful production authority
+path, installed gem, GC-compaction or GVL/cancellation qualification. Its native
+extension is feature-gated: a default crate check can exclude the extension and
+cannot replace an explicit native build and installed `require` test. Candidate
+gem metadata is not a verified registry name, publisher or multi-Ruby loader.
 
 ### Managed source follow-through
 

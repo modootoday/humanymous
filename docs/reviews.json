@@ -2,6 +2,87 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "build/rust/browser-product.Dockerfile.dockerignore",
+  "sha256": "5e0990d76142924cc9921068dc96912cb32591ddc47e0452afd6984b1228c2aa",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete default-deny product-browser build context with exact Cargo/crate/feature oracle/tooling/lab/script inclusions and source/cache/credential exclusions. Pages tooling inclusion supports workspace metadata, not rendered docs or current keyboard evidence. Actual context/image inspection remains a separate execution gate.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "build/rust/browser-product.Dockerfile",
+  "sha256": "68f765005f4e363387ece02d39b836b515814c93987efcc62433cc8519b54148",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete product browser fixture stages: selected Firefox/geckodriver/rust-WASM tools, collector test no-run artifact, separate runtime pilot driver, wildcard fail behavior, non-root final entrypoint. Public guide separates product browser, collector, native UI, human/AT and Pages reader validation; pinned selected inputs and compiled artifacts are not actual execution or full dependency closure.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "adapters/apache/Dockerfile.native.dockerignore",
+  "sha256": "f109462bbf68fda6bb0facea92828ae8ac3885fbcebe0f28ea9e3de2bca58b18",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full Apache context exclusions for Git/spec/private evidence/vendor mirrors, build caches, node modules, environment and key formats. Exclusion intent is not evidence of actual sent context, final image contents or effective permissions/isolation.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "adapters/apache/Dockerfile.native",
+  "sha256": "c25ebeb4e069af5a6914d5ea8ca82240a272d4985549da0ea5f2eed888f7da9a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete hosted upstream httpd/APR/bindgen build and candidate/pilot stages: pinned archive/base inputs, mutable apt closure, SSL/H2 disabled, event default/shared MPM builds, normal and test-probe modules, separate runner entrypoints and non-root final user. Public image guide distinguishes recipe/module presence from actual configured ABI, MPM/lifecycle/isolation qualification; no build or external pin verification performed.",
+  "pages": [
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "crates/ruby-adapter/src/lib.rs",
+  "sha256": "258dc02e837d40abee09ff3d7b587a3d2e35c565293ef591a788cfc4f2fc0aa5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete crate composition: only cfg(native) includes native callback module. Public topology explicitly distinguishes default stub compile from required actual native feature and installed extension checks. No native callback/parser/host source approval is inferred from this tiny composition module.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/ruby-adapter/Cargo.toml",
+  "sha256": "c3e27988754042b1d494ce15b46fd8853e709b48518de2059632a4852c957932",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete optional Magnus/native/package-tool/host-pilot manifest. Native dependency and callback module are feature-gated; default crate compilation may omit the extension, and cannot qualify Ruby ABI or installed require. Shared framework/authority/integrity remain security owners.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/ruby/pilot-contract.json",
+  "sha256": "952085638ec2fc801dbe32d12db682ef352847203cc4bda14e0673f7c9f7c6f3",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete three-group dependency-unavailable Rack/Sinatra/Rails native callback smoke contract, selected dependency metadata and source/runtime/ABI/closure lineage. No actual server, authenticated successful authority path, installed gem, streaming, GC compaction, GVL race or Windows peer qualification is covered; selected hashes were not independently revalidated here.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/ruby/package.json",
+  "sha256": "f2f73893e9c1bdab86d46279a12b26804462298531f6bdb4e778eb209b41a96f",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete experimental gem metadata: candidate unverified name/publisher, require name, empty tuples and absent source-gem/multi-Ruby ABI support. These declarations are not actual RubyGems archive generation, publication or installed ABI proof.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "adapters/ruby/README.md",
+  "sha256": "c2018265ab0a7a42330b5fe57bbe225f40d70c57f536888e034558acd9b73d4b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete Rust Rack wrap entrypoint and server-owned raw target/content length/authority/input-deadline requirements. Candidate exact-minor precompiled gem, clean native require, GC/GVL/frameworks and original planes remain unqualified; no handwritten Ruby loader/build hooks or publication implied.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
   "sha256": "38db3d6ffc07f27d2f2e0e1f0bd4df3fcecaf83ebe3f05ae846b6eaee08c3f37",
   "reviewer": "codex/rust-pages",
