@@ -302,3 +302,311 @@ unlock; broker injection uses startup::open_audit(...,Option<PinnedWitness>).
 The standalone binary has no witness broker transport, so requiring a witness
 there currently refuses before listening. Inline legacy keys remain explicitly
 inline-component-nonproduction. This is not production sealed qualification.
+
+## Draft bootstrap v0.1 — authenticated one-use observer provisioning
+
+Version0.1.0-draft. Channel/security status: DRAFT, NOT ACCEPTED, NOT IMPLEMENTED.
+Topology is selected by root471058e9 in the Rust migration SoT; R2 launcher
+architecture and R3 loss semantics are also accepted as recorded below. Native-
+security critique, CLI/runtime lifecycle agreement and root contract review are
+implementation gates. No scoring, decision bands, browser session, unseal-secret
+handoff, writable settings, erasure, kill or ban capability is added.
+
+### B01. Concrete process architecture and ownership
+
+Root selected three roles and two persistent MAIN identities: transient authorized
+provisioner P; persistent observer O that IS the bootstrap receiver/broker AND the
+actual management client; independent service host S that SENDS its fresh observer
+credential. Broker!=observer forwarding is Unsupported. ManagementPolicy pins
+actual O, never P's short-lived PID, S or a purported observer field in an envelope.
+
+Root has APPROVED the initial Windows launcher architecture: P configures two exact owned
+SCM own-process service roles. SCM launches S using the protected service-host
+entry and O using new Rust `humanymous observer-host --plan PATH --plan-sha256 DIGEST`.
+O has its own observer virtual-service principal, distinct from S. The plan is
+bounded nonsecret protected metadata; its hash does not prove issuer authority.
+No observer-host command, second SCM implementation or grant publisher exists by declaration.
+Root approval does not authorize actual local SCM/account mutation or qualify runtime.
+The ordinary fixture instead uses retained supervisor-owned child handles under
+ordinary principals. It is not genuine SCM or cross-principal qualification.
+
+| Actor | Expected native identity/launcher | Ownership and stop authority |
+|---|---|---|
+| P | Authorized transient installer/controller with verified installation scope | Establishes protected trust/role/epoch configuration; never receives management authority or becomes a persistent peer |
+| O | Proposed independent observer SCM role; actual principal, PID, retained native instance and approved artifact | Owns receiver, client credential, authenticated liveness channel and witness supervision through final service flush |
+| S | Independent SCM own-process service; actual principal, PID, retained native instance and protected launch artifact | Owns sealed writer, fresh server credential, pending/active management listener, public ingress and activation/revocation; SCM owns process lifetime |
+| W | Distinct witness producer, supervised by O with retained actual child instance and independently pinned key | Subordinate native child, not a third MAIN role or an alias for O; remains usable until writer flush; no organizational-independence claim |
+
+Rejected alternatives: installer as long-lived observer; a separate broker ACK
+forwarded to another observer; arbitrary callback sink(service,id,&str); secret-
+only reconnect/PID rebinding. An external short-lived status client to a separate
+O would need its own authorized request contract, not forwarded observer credentials.
+Initial v0.1 assumes no hot rebind or implicit renewal. Replacement/restart needs
+fresh authorization, instance binding, grant/credential epoch and policy decision.
+
+### B02. Native proof and noncircular trust prerequisite
+
+Both ends verify actual native PRINCIPAL + PID + PROCESS INSTANCE from the accepted
+connection against retained expected native pins. Windows requires actual peer
+TokenUser SID evidence (and explicit service-role identity where distinct), not a
+claim that the existing DACL queried that token. Unix requires UID and peer PID;
+unavailable PID/instance proof is Unsupported, not UID-only success. PID reuse is
+resisted with a retained native process handle/pidfd or reviewed equivalent, never
+by reopening an arbitrary numeric PID. Native manager discovery must match exact
+owned service, installed artifact and protected launch policy before pinning.
+Verify before any secret read/write and again before activation/privileged effect.
+
+Legacy Peer/NativePeer are insufficient: Unix retains UID only, Windows PID only.
+Current UDS0700/0600 and same-SID protected pipe policy are NOT controller/service
+cross-principal delegation. Native-security must provide exact owner/allowed-peer
+policy for BOTH bootstrap O-owned/S-accessible and management S-owned/O-accessible
+endpoints. No world/group/default grants, ACL repair during verification, remote
+UNC/TCP fallback or impersonation privilege is inferred. Failure to obtain peer
+TokenUser/process query rights must refuse, not substitute a configured SID string.
+Connection-time credentials do not attest ongoing writers or absence of delegated
+handles. Same-principal hostile code/handle delegation and privileged OS compromise
+remain explicit ceilings; challenges do not solve them.
+
+P must establish a native-authenticated protected trust record: installation,
+service/observer roles, allowed principals/artifacts, purposes and epoch policy.
+Each actor validates it INDEPENDENTLY through native-security; JSON/hash/path or
+arbitrary Read/Write is not attestation. Expected instances come from verified
+native manager/owned-launch handles, not the incoming frame. A fresh independent
+256-bit one-use capability is provisioned for the exact instance pair and binding,
+separate from observer/session/audit credentials. It cannot be delivered over the
+same unverified channel whose trust it is supposed to establish.
+
+Initial production source proposal is per-role OS-protected grant storage plus a
+native-authenticated publisher. Existing read_service_secret is read-only and does
+NOT implement cross-role publication. The exact authorized issuer, publication and
+discovery backend is an UNRESOLVED P0: no callback/nonce/private flag fills it. If
+that backend or required native proof is absent, refuse BEFORE unseal, secret
+transfer, writer/listener activation or public readiness. Same-user fixtures cannot
+qualify the missing production source. No initial key or witness auto-provisioning.
+
+### B03. Exact trusted binding and typed API proposal
+
+Immutable binding fields: version; installation, tenant, origin, revision and
+application authority; exact service name, observer role and credential ID;
+purpose=observer-status; service/observer native-instance epochs; fresh credential
+epoch and grant ID; sender=S and receiver=O native pin IDs; bootstrap expiry,
+credential-lease expiry and trusted budget policy. Broker==observer is actual
+verified equality, never a third wire PID. Expected scope is provisioned, not
+inferred. Service/selector grammar reuses native-security's exact owned namespace;
+existing application scope limits stay unchanged. Grant/credential epochs and
+challenge nonces are CSPRNG-fresh. Native-instance epochs must be tied to actual
+retained instance evidence, not self-asserted random text.
+
+Proposed authority::bootstrap API (not existing code or frozen signatures):
+
+```rust
+// Native-security owns the private constructors and actual provenance checks.
+struct VerifiedServiceGrant;
+struct VerifiedObserverGrant;
+struct VerifiedProcessInstance;
+struct VerifiedWitnessCapability;
+struct ObserverWitnessLease;
+struct VerifiedManagementEndpoint;
+struct SharedSealedAudit;
+struct RuntimeActivationEvidence;
+struct VerifiedServiceStopReceipt;
+// Authority owns validated scope, protocol and secret/lifetime guards.
+struct BootstrapBinding;
+struct ServiceBootstrapSender;
+struct AuthenticatedObserver;
+struct ObserverBootstrapReceiver;
+struct PendingObserverListener;       // S owns fresh credential and disabled listener.
+struct ServiceProvisionedObserver;    // S owns server lease; O receipt is not Ready.
+struct ObserverProvisionedClient;     // O owns received client credential; ACK sent.
+struct ServiceObserverLease;
+struct ObserverClientLease;
+struct ObserverCredentialReceipt;
+struct ServiceReadyReceipt;
+struct LifecycleFacts; // Cause, drain, flush, join/reap and native-exit facts stay separate.
+enum ObserverCloseOutcome { Closed, Unknown } // unknown cleanup maps to exit74.
+
+ServiceBootstrapSender::connect(binding: BootstrapBinding,
+    grant: VerifiedServiceGrant, cancellation: Cancellation)
+    -> Future<Result<AuthenticatedObserver, BootstrapError>>;
+ObserverBootstrapReceiver::bind(binding: BootstrapBinding,
+    grant: VerifiedObserverGrant) -> Result<Self, BootstrapError>;
+ObserverBootstrapReceiver::receive_once(self, witness: ObserverWitnessLease,
+    cancellation: Cancellation)
+    -> Future<Result<ObserverProvisionedClient, BootstrapError>>;
+AuthenticatedObserver::observer_identity(&self) -> &VerifiedProcessInstance;
+AuthenticatedObserver::witness(&self) -> &VerifiedWitnessCapability;
+PendingObserverListener::bind(&authenticated,
+    management_endpoint: VerifiedManagementEndpoint)
+    -> Result<Self, BootstrapError>;
+AuthenticatedObserver::provision_once(self, pending: PendingObserverListener,
+    sealed_audit: SharedSealedAudit, witness: VerifiedWitnessCapability,
+    cancellation: Cancellation)
+    -> Future<Result<ServiceProvisionedObserver, BootstrapError>>;
+ServiceProvisionedObserver::observer_receipt(&self) -> &ObserverCredentialReceipt;
+ServiceProvisionedObserver::announce_ready(self,
+    runtime_activation_evidence: RuntimeActivationEvidence)
+    -> Future<Result<ServiceObserverLease, BootstrapError>>;
+ObserverProvisionedClient::wait_service_ready(self, cancellation: Cancellation)
+    -> Future<Result<ObserverClientLease, BootstrapError>>;
+ServiceObserverLease::revoked(&self) -> Future<()>;
+ObserverClientLease::request_status(&mut self) -> Future<Result<Status, Error>>;
+ObserverClientLease::await_service_stop(&mut self, stop_budget: StopBudget)
+    -> Future<Result<VerifiedServiceStopReceipt, LifecycleFacts>>;
+ObserverClientLease::close_after_service_stop(self,
+    stopped: VerifiedServiceStopReceipt, stop_budget: StopBudget)
+    -> Future<ObserverCloseOutcome>;
+```
+
+Grants, credentials and leases are non-Clone/non-Debug/non-Serialize with private
+provenance constructors; no raw stream/credential-store escape is public. S's
+PendingObserverListener creates its own fresh Credential and carries native bound-
+listener evidence for the SAME scope/O instance, not a caller's success bool. O
+never owns S's writer/server credential lease. Runtime must define the real
+activation-evidence constructor; observer ACK cannot construct ServiceReady.
+O transfers actual W lifetime ownership into receive_once; it remains retained by
+client/receiver state through final writer flush. Wire witness references do not
+mint VerifiedWitnessCapability: S independently obtains that proof through the
+native/audit path. Witness pin/key/lease IDs are distinct binding fields.
+observer-status confers NO service-management mutation, permanent kill or erasure.
+await_service_stop only observes, and close_after_service_stop closes O's OWN
+resources after verified flush/native stop. Normal S stop requires a SEPARATE
+verified native-manager/service-lifecycle authorization, not this credential or
+an arbitrary stop flag. Closing O's liveness is loss/failure, not authorized S stop.
+receive_once sends O's receipt BEFORE wait_service_ready. No readiness circular
+wait. Service unlock and witness authentication remain separate shared primitives.
+
+### B04. Secret frames, phases and distinct budgets
+
+Use shared native transport internally, not application HTTP DTOs that currently
+clone non-zeroizing Authorization strings. Proposed control frame: ASCII HMBP0001
+(8bytes), phase byte, zero flags byte, u16 BE metadata length, exact UTF-8 strict
+JSON metadata, then only the phase's fixed secret slot. Metadata<=3072bytes;
+frame<=4096; aggregate STARTUP bytes<=32768. Reject lengths before allocation,
+duplicate/unknown/missing fields, extra bytes, phase changes and schema ambiguity.
+No compression, redirects, fallback or EOF-as-message-framing. Hello carries a
+fixed64lowerhex capability; Offer a separate fixed64lowerhex observer credential.
+No response echoes them or hashes a potentially weak supplied secret. Fresh
+observer credentials are generated internally with the shared CSPRNG primitive.
+Owned buffers zeroize on ALL exits; no physical-memory/kernel/allocator guarantee.
+Errors/logs/readiness/argv/env/files never include raw secret or parser input.
+
+Startup order:
+1. S Hello -> O: native pins and exact grant/binding; no observer credential yet.
+2. O Challenge -> S: fresh nonce and separately verified witness capability binding.
+3. S validates required witness BEFORE writer open/unseal; opens shared SealedLog,
+   binds DISABLED pending management listener and records typed preparation event.
+4. S Offer -> O: fresh observer credential, exact scope/epochs/both challenge nonces.
+5. O CredentialReceived -> S: actual intended observer owns client credential.
+   This ACK is sent before public readiness and proves neither S activation nor W.
+6. S rechecks native/liveness/deadlines/witness, durably commits typed control event,
+   validates actual runtime listeners/capabilities and activates; S ServiceReady -> O.
+7. O uses only the purpose-scoped management API after actual S ServiceReady.
+
+One absolute STARTUP deadline, proposed<=30seconds, covers admission, accept/
+connect, all startup I/O, ACK and Ready. It is never extended by a frame. Persistent
+observer PROCESS lifetime is distinct from startup. Proposed credential lease TTL
+must be explicitly configured by trusted policy; NO universal24hour cap/default
+or renewal/restart policy is accepted. Omit/unknown policy refuses production
+activation. No in-place renewal/rebind is assumed. Authenticated liveness
+round trips have separately bounded deadlines/rate and strict epoch/sequence;
+they do not renew grants or extend lease TTL. Stop/drain/flush/join use existing
+StopBudget, not the startup timer. Every budget checks monotonic expiry and wall
+rollback. One pending grant/one active observer epoch; bounded queue/frame/rate,
+no detached worker outside cancellation/admission ownership. Flush/kernel enqueue
+is not application ACK or completed stop. Liveness/stop frames are secret-free,
+individually bounded; their traffic does not reset startup or authorization clocks.
+
+### B05. Consumption, audit, ambiguity and lifetime/stop table
+
+O atomically consumes the matching grant after actual S/capability/binding checks,
+before Offer. S consumes its sender grant after verified O Challenge, before Offer.
+An unrelated invalid native peer cannot burn another grant. After reservation,
+any bad phase/scope/nonce, timeout, cancellation, entropy or audit error burns that
+attempt. No retry/replay/cache/durable-record resurrection. A new explicit attempt
+requires fresh authorized grant/credential epoch/nonces and valid current pins.
+Missing required witness remains fail-closed before unseal; W Ready key/node data
+is continuity content only, not actual peer identity/deadline/independence evidence.
+S pins actual W and its independently authorized public key using shared audit/
+native primitives. No reader, signer or witness transport is forked in bootstrap.
+
+Preparation/activation records use audit-owned typed minimized operational events,
+not fabricated SessionReport/score decisions. Audit failure prevents activation.
+Crash after append is an ambiguous consumed attempt, not instructions to replay.
+No exactly-once distributed delivery claim. Lost ACK/Ready leaves uncertainty;
+close the authenticated liveness channel and burn/revoke rather than resend.
+S owns server credential/listener revocation; O owns client credential/receiver/
+witness lifetime. Loss is detected by authenticated channel, actual process pin or
+hard expiry, not instantaneous omniscience. Secret possession never authorizes
+new-PID reconnect. Observer receipt is not service readiness or witness liveness.
+
+| Phase | O owns/does | S owns/does | Required conclusion |
+|---|---|---|---|
+| Trust/native discovery | Verify protected role/grant, actual S, receiver and W | Verify protected role/grant, actual O and separate W capability | Missing native source/proof is Unsupported before unseal |
+| Offer/receipt | Own zeroizing client credential; ACK exact receipt immediately | Own sealed writer and disabled pending server credential/listener | ACK before public Ready; no broker forwarding |
+| Activate/live | Retain receiver/client/W; await Ready; maintain authenticated liveness | Commit audit, activate actual listeners, announce Ready, pin O in management | Separate O receipt and S readiness; no silent renew/rebind |
+| Separately authorized S stop | Observe S stop; retain W and supervision | Verify independent native-manager lifecycle authority, revoke admission, drain and flush | observer-status grants no stop authority |
+| Observer loss/epoch expiry | Preserve actual cause and unknown scope | Irreversibly revoke readiness/admission/volatile contexts, cancel/join and flush while W usable | Failed epoch even if cleanup succeeds; no silently degraded writer |
+| Final flush | Verify actual S flush outcome, not EOF/own ACK | Freeze further writes; authenticate FlushComplete after successful shared flush | W remains alive through this point |
+| Final cleanup | Observe actual S flush and SCM instance stop, then stop/cancel/join/reap OWN W/workers | Close writer/custody only after own workers/flush obligations; SCM owns S lifecycle | Stopped only with evidence for each actor |
+| Timeout/peer death/unknown worker | Bound waits and preserve cause/unknown scope; no false graceful report | Fail closed; do not reuse token or assert flush without completion | Unknown/74, explicit controller recovery; never fake Stopped |
+
+SCM S is not an owned disposable child. A separate verified native-manager lifecycle
+authorization is required to request its stop; the observer lease only observes.
+O cannot call Child::kill on a numeric SCM PID. Ordinary fixture
+owned children are a distinct permitted kill/reap scope. O must not stop W merely
+because bootstrap EOF or its own client is closing while S could still flush.
+Unexpected O/W death can make flush fail; that is Unknown, not graceful success.
+A bounded timeout cannot prove that a blocking worker returned. LifecycleFacts and
+cleanup evidence must retain that uncertainty; Drop is not proof of join/reap.
+
+Root accepted the first-loss semantics in runtime-application.sot.md, section
+observer/broker-loss v0.1. One shared irreversible epoch gate synchronizes origin
+connect/write acceptance against revocation: no check-then-await race and no lock
+held over await or fsync. No new origin effect may begin after revocation
+linearizes; prior partial effects remain unknown, without retry, replay or counter
+reset. epoch_expired, observer_lost and witness_lost remain distinct causes.
+W availability and bounded cancellation/join must be established before secret
+read; a cached Ready receipt cannot replace current witness proof or an independent
+watchdog. An unreturned worker remains Unknown/74, never Stopped.
+
+### B06. Wiring, verification matrix and review blockers
+
+Authority owns protocol/framing/state/leases and shared transport extensions.
+Native-security owns verified role/grant issuance, both process-instance proofs,
+manager discovery and exact cross-principal access. CLI owns new observer-host/
+launcher/controller supervision. Runtime owns S readiness/loss/flush integration.
+Audit owns typed events and W protocol. Promoting native-security from Windows-only
+to shared dependency may require root's manifest/feature window; no manifest or
+new cryptographic implementation is authorized by this draft.
+
+| Gate | Required proof | Non-coverage |
+|---|---|---|
+| Pure state/codec | Exact schemas/bindings/direction, concurrent one-use/replay, partial/oversize frames, all transition cancels, separate deadlines/TTL, ACK-before-Ready, audit refusal/restart | Mock proof/duplex I/O is not native identity |
+| Actual native pair | Both UID/SID/PID/instance, wrong principal/PID/instance, reuse, endpoint owner/ACL/link replacement, missing provider, backpressure/lost ACK, bounded cleanup | Unsupported tuples stay Unsupported; no same-UID-only success |
+| Ordinary owned fixture | Real O/S/W children, retained actual handles, authenticated witness before writer bind, Offer/receipt before Ready, status request, flush-before-W-stop | No SCM/account mutation or production OS-store attestation |
+| Genuine hosted SCM | Actual distinct O/S service roles, authorized protected grant publication/discovery, native proof, install/upgrade/rollback/replay/stop/remove, independently restored controller rights | ACT/job labels/inherited Write do not qualify |
+| Failure/lifetime | Missing O/ACK/W, wrong scope/purpose, death during each phase, lost Ready/flush ack, blocked worker, restart/same PID replacement, no old-secret reconnect | Timeout/74 is not Stopped or closed custody proof |
+| Product/evidence | Owned Docker Core/Gate/observer/W topology; exact source/OS/engine/run and per-case denominators/raw hashes; no secret leaks | Native components, ignored/skipped/mock or unreturned raw are separate |
+
+Critique reflected so far: topology/API inversion corrected (S sender/server lease,
+O receiver/client lease); same-UID/PID text limitations explicit; cross-principal
+transport gap explicit; finite delivery is not exactly-once; separate startup,
+lease/liveness and drain budgets; ACK-before-Ready; W identity independent of ACK;
+SCM lifetime not owned-child termination. These requirements reflect actual early
+CLI/native-security feedback, not final approval.
+
+P0 R1: Native-security must settle actual noncircular protected grant issuer,
+publication/discovery, process pin/TokenUser/peer PID primitives and supported ACL
+profile. None is implemented by old Peer/NativePeer or the read-only store API.
+R2 architecture accepted by root: two SCM-owned own-process O/S roles under
+distinct service principals, with W supervised by O. The new observer-host command,
+native implementation and actual SCM qualification remain unimplemented; no local
+SCM/account mutation follows from architecture acceptance.
+P0 R3 implementation: root accepted irreversible first-loss semantics, but actual
+typed activation-evidence constructors, atomic admission gate, witness lifetime,
+typed events and bounded cancellation/join/Unknown74 still require implementation
+and independent review. Semantic acceptance is not native qualification.
+P1 R4: Exact Rust constructors, native support matrix and proposed timer/TTL limits
+need final review. No P0/P1 finding is resolved merely by listing it here. Final
+native-security adversarial verdict and root contract acceptance precede channel
+implementation; there is no runtime/SCM qualification from this draft.

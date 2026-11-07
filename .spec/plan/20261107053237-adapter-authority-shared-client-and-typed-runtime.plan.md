@@ -424,3 +424,63 @@ identity and results without relabelling. No automatic WSL fallback is allowed.
 Future local Docker needs context endpoint/server ID/version/OSType preflight and
 an allocated window. Hosted Linux runner Docker remains a separate profile.
 No Docker command was started during this quiet window.
+
+## Current-source audit revalidation and bootstrap review checkpoint
+
+The resumed authority owner verified its existing authority-ipc claim and current
+AGENTS/rule94. No idle slot is treated as an allocation. Root was asked for the
+current local/hosted execution assignment; no Cargo, IPC, SCM or Docker execution
+was started by this checkpoint. This is source review, not a passing gate.
+
+The historical hosted baseline remains source8132117, run42355168729 attempt1:
+Linux authority30passed/2ignored; whole run19jobs,5success/14failure. Windows/macOS
+actor steps did not reach sealed/native authority harnesses. No new hosted
+candidate or authority job was allocated in this owner at this checkpoint.
+
+Compared with8132117, current audit production changes include control ledger,
+policy, retention and new state/retained-backup/erasure modules; custody now binds
+pending erasure recovery to trusted Scope, and vault uses that shared predicate.
+Authority startup does not call recovery/retirement control operations. They are
+compiled dependencies and require fixed-source compile/Clippy plus audit-owner
+control/recovery/retirement tests; authority startup alone cannot qualify them.
+The WAL delta is inside its tests: bounded actual child capture, explicit ignored
+helper invocation and required refusal marker. It requires audit-owned parent
+execution; an ignored/no-op helper is not a standalone passing case. Cargo.toml
+and Cargo.lock also differ from8132117, so a fresh complete dependency closure
+must be captured before and after validation; unchanged authority Rust files do
+not make the current graph identical to the historical passing graph.
+
+Required authority revalidation on the frozen current graph: locked compile and
+all-target no-run, pure library tests, scoped fmt/Clippy; then allocated actual
+native sealed startup, wrong unlock/missing witness refusal, custody exclusion and
+release, restart key-byte identity, native peer/credential/replay/body/capacity and
+normalized producer IPC cases. Keep actual OS results separate. Windows/macOS
+sealed IPC, protected OS-store unlock, independent remote Windows denial and the
+isolated Docker UID parent/probe remain NOT_RUN here. Whole product Docker e2e,
+SCM cross-principal bootstrap and actual graceful sealed S flush/stop remain
+separate unqualified gates. Forced child kill/reap is not graceful sealed flush.
+
+Bootstrap draft now reflects root-approved R2 two own-process SCM roles under
+distinct service principals and accepted R3 irreversible first-loss semantics.
+observer-status grants no service stop or management mutation; independently
+verified native lifecycle authority is required. O retains W through actual S
+flush/instance-stop proof before its own cleanup. No universal24hour lease default
+or renewal policy is accepted. Native R1 noncircular grant publisher/discovery,
+both process-instance/principal pins and cross-SID access remain P0 pending an
+exact native-security backend and independent review. Typed activation/admission
+and bounded join implementation remain unqualified. No secret channel source,
+manifest change or local account/SCM mutation is authorized by this draft alone.
+
+Root subsequently reserved local slot C: target/validation-authority, jobs1,
+incremental0, start ONLY after explicit root manifest-window-closed notification.
+Allowed: all-target compile/no-run, reviewed pure13 library tests and Clippy.
+Excluded: actual network/process IPC, account/SCM/privileged profiles. Reviewed
+pure inventory: configuration3, credentials2, client3, protocol1, transport2,
+startup2. Framing uses byte slices; missing-witness startup refuses before secret
+or filesystem activation. This reservation is not an execution result. A later
+actual IPC/hosted candidate allocation remains required.
+CLI independently reviewed draft SHA256
+b1e9cd5d51b8e37e26350ec00b37690b9f477299fd167a9088e7be4e3b685f14:
+no remaining topology/permission objection in these corrections; overall verdict
+still needs-work for R1 backend and actual typed bounded R3 implementation/tests.
+This is consumer alignment, not channel implementation approval or native proof.
