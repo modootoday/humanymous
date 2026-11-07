@@ -117,6 +117,28 @@ pub fn verify_sdk(
     configured_host: Option<&str>,
     queried_server: &ServerIdentity<'_>,
 ) -> Result<AffinityProof, AffinityError> {
+    allocated_connection(expected, allocated_host, configured_host, queried_server)?;
+    Ok(AffinityProof { sdk: true })
+}
+
+/// Compare an explicitly allocated CLI proxy without claiming an SDK query.
+/// The caller must query through the CLI connection it actually configured.
+pub fn verify_allocated_cli(
+    expected: &DesktopObservation<'_>,
+    allocated_host: &str,
+    configured_host: Option<&str>,
+    queried_server: &ServerIdentity<'_>,
+) -> Result<AffinityProof, AffinityError> {
+    allocated_connection(expected, allocated_host, configured_host, queried_server)?;
+    Ok(AffinityProof { sdk: false })
+}
+
+fn allocated_connection(
+    expected: &DesktopObservation<'_>,
+    allocated_host: &str,
+    configured_host: Option<&str>,
+    queried_server: &ServerIdentity<'_>,
+) -> Result<(), AffinityError> {
     desktop(expected)?;
     if !metadata(allocated_host, 2048) {
         return Err(AffinityError::MissingExplicitSdkHost);
@@ -127,8 +149,7 @@ pub fn verify_sdk(
     if configured != allocated_host {
         return Err(AffinityError::UnexpectedSdkHost);
     }
-    same_server(&expected.server, queried_server)?;
-    Ok(AffinityProof { sdk: true })
+    same_server(&expected.server, queried_server)
 }
 
 #[cfg(test)]
@@ -144,6 +165,18 @@ mod tests {
                 os_type: "linux",
             },
         }
+    }
+    #[test]
+    fn allocated_cli_proxy_does_not_claim_sdk_observation() {
+        let expected = baseline();
+        let host = "unix:///var/run/docker.sock";
+        let proof = verify_allocated_cli(&expected, host, Some(host), &expected.server).unwrap();
+        assert_eq!(proof.summary()["sdk_connection"], false);
+        assert_eq!(proof.summary()["engine_identity_matches"], true);
+        assert!(verify_allocated_cli(&expected, host, None, &expected.server).is_err());
+        let mut foreign = expected.server;
+        foreign.server_id = "other-engine";
+        assert!(verify_allocated_cli(&expected, host, Some(host), &foreign).is_err());
     }
     #[test]
     fn identical_observations_produce_only_sanitized_binding_facts() {
