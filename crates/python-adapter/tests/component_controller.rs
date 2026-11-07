@@ -303,8 +303,8 @@ impl Controller {
         receipt::discovery(
             std::str::from_utf8(&discovery.stdout).map_err(|_| "discovery encoding")?,
         )?;
-        // The harness owns its host/authority children; the controller additionally
-        // records and cleans this known Linux process group on bounded failure.
+        // This path is blocked by require_safe_lifecycle until the shared
+        // owned-lifetime contract is reviewed; observations do not authorize signals.
         let mut command = Command::new(&harness);
         command
             .args(["--include-ignored", "--test-threads=1", "--nocapture"])
@@ -351,7 +351,8 @@ impl Controller {
 
 #[test]
 #[ignore = "explicit standard hosted Python component coordinator"]
-fn coordinate() {
+fn coordinate() -> Result<()> {
+    component_process::require_safe_lifecycle()?;
     let mut controller = Controller::new().expect("fresh owned controller");
     controller.persist().unwrap();
     let result = controller.execute();
@@ -370,6 +371,7 @@ fn coordinate() {
         result.is_ok() && cleaned.is_ok(),
         "Python component failed; safe counts and private diagnostics retained"
     );
+    Ok(())
 }
 
 #[test]

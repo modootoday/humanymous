@@ -293,6 +293,16 @@ arbitrary process-tree containment. Controller/policy/hosted execution remains
 NOT_RUN until separate compiled and actual receipts exist; the earlier local
 28-case receipt does not qualify newly authored controller code.
 
+Root static review rejected the draft's check-then-signal group cleanup: the
+direct leader may already be reaped, so procfs UID/group/task-marker observations
+do not atomically exclude identifier reuse. Source checkpoint535f879f is
+NOT_ACCEPTED and was never executed. Primary code removes raw group signals;
+the coordinator unconditionally refuses before provisioning or actual execution.
+Cleanup observations cannot return qualification success. Execution requires
+the separately reviewed shared owned-lifetime contract from test-support/native
+security owners; no duplicate ad hoc containment may replace that contract.
+Receipt/provenance pure verification remains a separate possible work item.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

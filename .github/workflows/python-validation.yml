@@ -1,4 +1,5 @@
 # Component evidence only. Private diagnostics stay on the ephemeral runner.
+# NOT_ACCEPTED: coordinate refuses until a shared owned-lifetime API is reviewed.
 name: CI / Python component
 'on':
   push:

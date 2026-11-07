@@ -414,3 +414,12 @@ after returning B. Required follow-up: static review, immutable checkpoint,
 allocated Unix check/Clippy/parser tests, source fixes if needed, then root-only
 reviewed branch push and genuine hosted controller execution. No new source is
 qualified by the earlier source7842b6a8 result.
+
+Root review rejected the draft's procfs-check-then-group-signal lifetime proof
+after source-only checkpoint535f879f; no controller was executed. The direct
+leader can already be reaped before signaling, leaving an identifier-reuse
+race. Primary code removes raw signals and unconditionally refuses coordinate
+before setup/runtime; cleanup observations remain NOT_ACCEPTED. Reuse the
+shared test-support/native-security owner's reviewed lifetime API before any
+controller execution. Static receipt/provenance pure work can remain separate.
+The existing immutable WSGI28-case success is unchanged. No new workload runs.

@@ -9,7 +9,7 @@
   "executableHarnessImplemented": true,
   "harnessSource": "crates/python-adapter/tests/wsgi_server.rs",
   "hostedControllerSource": "crates/python-adapter/tests/component_controller.rs",
-  "hostedControllerStatus": "authored-not-compiled-or-executed",
+  "hostedControllerStatus": "NOT_ACCEPTED-shared-atomic-owned-lifetime-contract-required",
   "hostedWorkflow": "python-validation.yml",
   "hostedAutomaticArtifacts": [],
   "harnessPlatform": "unix and host-pilot only; Windows not covered",
