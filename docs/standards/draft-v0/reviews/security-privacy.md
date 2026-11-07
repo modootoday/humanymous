@@ -39,6 +39,14 @@ can cross unintended trust boundaries. Service identity, restrictive permissions
 remote-client rejection where needed, authorization and sensitive-operation
 dual control remain separate requirements.
 
+The current runtime [observer status experiment](../../../reference/on-call-quick-reference.md#experimental-native-status-service)
+adds separate local credentials, exact peer/scope checks and explicit refusal of
+browser context headers. These are source controls, not evidence of effective
+endpoint permissions or resistance to application-side SSRF. Its read-only role
+does not exercise approval or destructive-operation authorization. Retain actual
+cross-principal, credential-confusion, scope-replay, browser-header and listener
+shutdown cases before describing this boundary as qualified.
+
 Sources: [Windows pipe security](https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights),
 [Unix sockets](https://www.man7.org/linux/man-pages/man7/unix.7.html),
 [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/).

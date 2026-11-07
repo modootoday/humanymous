@@ -26,13 +26,28 @@ qualify a changed binary.
 | [Decisions and errors (P-06)](../protocol/profile.md#p-06-decisions-and-errors) | Typed service errors are distinct from verdicts; unsupported inputs fail closed | Independent error compatibility and complete negotiated-version behavior |
 | [Before-effect integrity (P-07)](../protocol/profile.md#p-07-complete-body-verification-before-effects) | Complete-body parser validation and bounded runtime audit-before-origin path exist | Full qualified collector-to-origin flow, origin-bypass isolation and actual human controls |
 | [Streaming lifecycle (P-08)](../protocol/profile.md#p-08-streaming-integrity-lifecycle) | Experimental adapter capture/stream fields remain null; arbitrary upload/upgrade integrity is unsupported | A separately specified streaming protocol and cancellation/backpressure/side-effect evidence |
-| [Containment (P-09)](../protocol/profile.md#p-09-decision-containment-and-revalidation) | Decision response has a strict small field set; public namespaces do not authorize administration | Full operational management, independent dual approval and final-route mutation pilots |
+| [Containment (P-09)](../protocol/profile.md#p-09-decision-containment-and-revalidation) | Decision response has a strict small field set; public namespaces do not authorize administration; runtime source adds a separate native observer status listener | Actual listener/peer/permissions and shutdown pilots, operational writes, independent dual approval and final-route mutation pilots |
 | [Visible loss (P-10)](../protocol/profile.md#p-10-audit-independence-and-visible-loss) | Bounded buffers, authenticated WAL/log, local export and witness components exist; native verification scope distinguishes omitted HMAC and absent anchors | Generic loss/quality wire model, qualified sink/process-isolation evidence and unsampled full denominators; component proof scope does not establish pre-ingestion completeness |
 
 The [wire experiment](../protocol/implementation-experiment.md) and
 [parser vectors](vectors.md) document concrete existing interfaces separately
 from the unresolved generic profile. Reuse of one shared Rust parser is good
 implementation consistency, but is not independent interpretation evidence.
+
+The Node bridge now shares configuration, envelope projection and admission
+with the native framework adapters. Their producer profiles still declare
+different observation losses; shared implementation does not qualify each host
+or establish interoperability between independent implementations. Earlier
+component results do not cover this refactor. The
+[Node reference](../../../reference/node-adapter.md) records the current interface
+and optional host declarations.
+
+The runtime's new management source exposes observer status only, with separate
+native-peer and credential checks and an exact installation scope. It does not
+implement writable settings or destructive controls. Its current policy fixtures
+and native listener lifecycle remain unexecuted; the
+[operations reference](../../../reference/on-call-quick-reference.md#experimental-native-status-service)
+describes the source contract without treating it as deployment qualification.
 
 Working browser transport source now declares `BrowserSession`/`BrowserResponse`
 and an explicitly selected cookie-free runtime profile. It adds same-origin
