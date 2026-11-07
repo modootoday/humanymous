@@ -16,7 +16,7 @@ release is claimed.
 | --- | --- |
 | Rust libraries | Shared detection, integrity, audit and state components exist; unit comparisons are narrower than deployed parity |
 | HTTP runtime | Experimental loopback HTTP/1.1 with bounded complete requests, sessions, request integrity and durable audit before origin dispatch |
-| Artifact provisioning | `humanymous doctor`, `install` and `rollback` validate/manage an explicit local artifact; they do not activate a service |
+| Artifact and service provisioning | Original `doctor`, `install`, `rollback` manage an explicit artifact; separate signed `service-*` commands implement owned lab-service lifecycle with full runtime qualification still false |
 | Native integration CLI | `humanymous-native init` emits an unqualified framework plan; explicit manifest writing currently requires Windows |
 | Browser collector | Rust/WASM browser reads, passive behavior and separate environment/advanced APIs exist; authenticated runtime integration and recovery remain incomplete |
 | Laboratory browser | Windows Meari/CEF prototype has actual native rendering and window controls; full browser readiness, external navigation and SDK qualification remain separate |

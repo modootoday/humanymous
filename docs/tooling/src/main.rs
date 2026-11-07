@@ -6,13 +6,21 @@ fn run() -> Result<(), String> {
     let mode = arguments
         .next()
         .ok_or("expected source, built or validate")?;
-    if mode == "snapshot" {
+    if matches!(mode.as_str(), "snapshot" | "review-delta") {
         if arguments.next().as_deref() != Some("--root") {
-            return Err("snapshot requires --root".into());
+            return Err(format!("{mode} requires --root"));
         }
         let root = PathBuf::from(arguments.next().ok_or("missing snapshot root")?);
         if arguments.next().is_some() {
             return Err("unexpected snapshot argument".into());
+        }
+        if mode == "review-delta" {
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&humanymous_pages::review::delta(&root)?)
+                    .map_err(|e| e.to_string())?
+            );
+            return Ok(());
         }
         println!(
             "{}",

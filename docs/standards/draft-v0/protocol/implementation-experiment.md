@@ -59,10 +59,13 @@ does not establish lossless arbitrary origin-header byte fidelity.
 ## Producer profiles and service readiness
 
 The Node parser supports raw Node headers or Fetch-normalized observations.
-Explicitly selected nginx parser modes exist as shared parser APIs. The reviewed
-authority entry point still uses the Node parser selection; parser availability
-alone does not establish executable nginx authority integration. A request must
-never select its own trusted profile from an unauthenticated field.
+The current authority configuration selects `adapter: "node"` or
+`adapter: "nginx"` independently from request contents; omission defaults to
+Node. The authority passes that provisioned selection to the shared parser.
+This replaces the earlier Node-only service selection in the working source.
+It does not by itself qualify an nginx deployment: actual native IPC, server
+identity, origin isolation and negative-case pilots need source-bound results.
+A request must never select its own trusted profile from an unauthenticated field.
 
 The IPC authority rejects routes requiring original TLS, HTTP/2, authenticated
 browser collection or request-integrity planes not provided by that service.

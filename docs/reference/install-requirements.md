@@ -8,8 +8,8 @@ reviewed: 2026-11-07
 
 **Diátaxis quadrant:** Reference. **Audience:** prospective operators.
 
-The local provisioning CLI is implemented; a signed, activated and qualified
-full-service installation is not. Build from the reviewed source with Rust
+Local artifact provisioning and an explicit signed lab-service lifecycle are
+implemented. A qualified full-product service installation is not. Build from the reviewed source with Rust
 1.99.1 and its locked dependencies. No published binary availability is implied.
 
 `humanymous doctor` validates an explicit regular artifact, absolute destination,
@@ -23,7 +23,45 @@ Existing private user-owned parents are required. Unix pilots require a non-root
 user and owner-private directory permissions. Windows checks actual native
 identity, fixed-drive/reparse boundaries and the installer access-control policy;
 it refuses elevated/administrator contexts rather than repairing permissions.
-There is no privilege escalation or service-registration option.
+Those original provisioning commands do not register a service or escalate
+privilege. The separate signed service commands have the boundary below.
+
+## Signed laboratory service lifecycle
+
+`service-plan`, `service-install`, `service-upgrade`, `service-doctor`,
+`service-rollback` and `service-remove` operate only on owned
+`humanymous-lab-` service names. Planning and dry-run do not write, lock, probe
+the readiness endpoint or change native service state. Mutation requires
+`--activate`; it never creates a user, elevates privilege or enables autostart.
+See [command options](cli-config-policy.md#provisioning-and-signed-service-commands).
+
+An offline strict Ed25519 signature covers `humanymous.release.v1` followed by
+a NUL byte and the exact descriptor UTF-8 bytes. Whitespace changes the signed
+input. The descriptor is limited to 16,384 bytes and binds version, positive
+sequence, native OS/architecture, artifact digest, service name, argument tokens
+and numeric loopback diagnostic address/response. Unknown or duplicate fields,
+wrong target, invalid signatures and artifact mismatches fail. Keep credentials
+out of descriptors and argument tokens. A valid signature does not establish
+trusted key distribution, release provenance, revocation or deployment safety.
+
+The implementation uses immutable managed generations, a private deployment
+record, a create-new lock and a pending-operation record. Upgrade must exceed
+the local highest accepted sequence. Explicit rollback restores only the known
+signed predecessor and retains that sequence floor. Unknown service state or
+mutated files block removal. Pending records and stale locks require operator
+investigation; crash-atomic recovery and power-loss durability are not claimed.
+
+| Backend in source | Qualification boundary |
+| --- | --- |
+| Linux systemd user runtime registration | Needs an actual usable user manager and source-bound native lifecycle pilot |
+| macOS user launchd registration | Needs an actual user domain and source-bound native lifecycle pilot |
+| Windows demand-start virtual service account | Needs explicitly delegated service-manager authority in a disposable test context; ordinary refusal tests do not prove positive lifecycle |
+
+No positive complete service lifecycle is claimed here for all three backends.
+Native registration and a matching loopback diagnostic remain distinct from
+private runtime startup, protected custody, authenticated management/IPC,
+graceful drain and full deployment qualification. The current HTTP runtime is
+not silently service-compatible. Preserve failed, blocked and ignored pilots.
 
 A releasable installer needs an exact OS/architecture/runtime matrix, verified
 artifact provenance and a doctor report for topology and capability readiness.

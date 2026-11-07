@@ -39,6 +39,21 @@ Dependency audit and protected production deployment remain separate gates.
 
 ## Current boundaries
 
+`cargo run --locked -p humanymous-pages -- review-delta --root .` compares
+the existing authored receipt with a stable source snapshot and reports added,
+removed and exact-working-byte changes. It never writes receipts or accepts a
+review. Snapshot schema 2 separately reports index paths missing from the
+working tree; a file disappearing/reappearing during capture fails the run.
+Canonical LF or index-byte equality never substitutes for exact working-byte
+comparison against the receipt. This command is author triage, not the CI
+docs-review gate and not a release qualification.
+
+Successful `validate` reports `build_input_sha256` only after checking the same
+local source-input commitment before and after the actual build and checks.
+Configuration, navigation, Sass tokens and binary assets are included. Tooling,
+review metadata, installed dependencies and known Jekyll/Sass caches are excluded.
+`source`/`built` alone do not emit this commitment or claim a fresh build.
+
 Source review is read-only in CI and must be renewed by the author for actual
 governed changes. It does not qualify native/browser/Docker examples by itself.
 Runtime, collector, CLI and browser public claims are being checked against their

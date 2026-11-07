@@ -25,6 +25,19 @@ the site. AGENTS.md, scripts and review metadata are excluded from output.
 
 ### Theme and build authority
 
+Source-review triage uses `humanymous-pages review-delta --root .`, a read-only
+comparison with docs/reviews.json. Snapshot schema2 preserves exact working,
+canonical LF and Git index byte identities and separately reports index-listed
+files missing from the working tree. Missing paths are rechecked for races.
+Triage uses Git-visible governed paths and is not a replacement for the CI
+filesystem inventory or substantive authored review. It cannot renew receipts.
+Real-build validation commits exact local input paths and bytes before and
+after Jekyll/theme/output checking. It includes navigation, configuration,
+Sass tokens and binary assets; verifier/tooling, review metadata, installed
+dependencies and known build caches are excluded. Changes refuse success.
+Successful validate output reports build_input_sha256. It binds local inputs,
+not all external dependency bytes or product release qualification.
+
 `docs/_config.yml` uses remote_theme pinned to
 `modootoday/jekyll-theme-modootoday@ba2b23f0e1639f92ccefbb882f43092bfe5b16b7`,
 verified against v1.5.0. Preserve CNAME humanymous.net, apex url and empty

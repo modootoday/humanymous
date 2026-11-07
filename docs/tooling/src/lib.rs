@@ -1,7 +1,9 @@
 //! Read-only validation of authored Markdown and rendered Pages artifacts.
 mod build;
 mod files;
+mod inputs;
 mod output;
+pub mod review;
 pub mod snapshot;
 mod source;
 pub mod vectors;
@@ -12,6 +14,9 @@ use std::path::Path;
 /// A bounded validation result; successful documents are not runtime acceptance.
 #[derive(Debug, Serialize)]
 pub struct Report {
+    /// Exact local build inputs, only when validated unchanged across a real build.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub build_input_sha256: Option<String>,
     /// Number of authored reader pages examined.
     pub pages: usize,
     /// Every observed validation failure, without writing replacement content.
@@ -22,6 +27,7 @@ pub struct Report {
 pub fn check_source(root: &Path) -> Result<Report, String> {
     let (pages, errors) = source::load(root)?;
     Ok(Report {
+        build_input_sha256: None,
         pages: pages.len(),
         errors,
     })

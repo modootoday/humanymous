@@ -15,6 +15,15 @@ resize behavior. Its overall browser readiness remains false; a rendered page
 or native component test does not qualify external navigation, observation
 receipts, automation attribution or enforcement.
 
+The current prototype has a script-free, app-owned `humanymous://newtab/`
+document and a narrow internal diagnostic allowlist: `chrome://version/`,
+`chrome://gpu/`, `chrome://credits/`, `chrome://license/` and
+`chrome://sandbox/`. Arbitrary external browsing is denied. Admission to that
+allowlist does not prove every engine page is available: native reports must
+distinguish accepted navigation, load completion and observed content identity.
+An internal sandbox page is diagnostic information, not a complete OS sandbox
+attestation. Raw diagnostic paths/device data belong in private evidence.
+
 Sandboxing remains required. Do not add security-disabling flags to make a
 prototype or test pass. Native source, CEF distribution, OS/architecture and
 packaged artifact identity all matter. Specific desktop/DPI observations must

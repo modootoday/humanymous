@@ -49,6 +49,34 @@ fn valid_source_and_output_are_read_only() {
     assert!(f.errors("").is_empty());
     assert_eq!(fs::read(path).unwrap(), before);
 }
+
+#[test]
+fn build_input_commitment_covers_navigation_tokens_binary_assets_and_inventory() {
+    let f = Fixture::new();
+    let root = f.0.join("docs");
+    fs::create_dir(root.join("_data")).unwrap();
+    fs::create_dir(root.join("_sass")).unwrap();
+    fs::create_dir(root.join("assets")).unwrap();
+    fs::create_dir(root.join("tooling")).unwrap();
+    let initial = crate::inputs::digest(&root).unwrap();
+    fs::write(root.join("tooling/ignored.rs"), "private verifier").unwrap();
+    assert_eq!(initial, crate::inputs::digest(&root).unwrap());
+    let mut previous = initial;
+    for (path, bytes) in [
+        ("_data/nav.yml", b"navigation".as_slice()),
+        ("_sass/tokens.scss", b"tokens".as_slice()),
+        ("assets/image.png", b"\x89PNG\r\n\0".as_slice()),
+        ("assets/reviews.json", b"published nested asset".as_slice()),
+        ("added.md", b"new reader page".as_slice()),
+    ] {
+        fs::write(root.join(path), bytes).unwrap();
+        let current = crate::inputs::digest(&root).unwrap();
+        assert_ne!(previous, current, "{path}");
+        previous = current;
+    }
+    fs::remove_file(root.join("added.md")).unwrap();
+    assert_ne!(previous, crate::inputs::digest(&root).unwrap());
+}
 #[test]
 fn missing_escaping_reference_links_and_images_fail() {
     let f = Fixture::new();

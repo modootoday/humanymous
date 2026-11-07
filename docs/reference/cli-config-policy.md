@@ -13,9 +13,33 @@ a qualified production installation by its presence alone.
 
 | Executable | Implemented interface | Boundary |
 | --- | --- | --- |
-| `humanymous` | `doctor`, `install`, `rollback`; `--artifact`, `--destination`, `--sha256`, `--local-management-verified`, optional `--dry-run` | Local artifact provisioning; no elevation, service registration, activation or release-signature verification |
+| `humanymous` | Provisioning `doctor`, `install`, `rollback`; separate signed `service-*` commands below | Explicit local provisioning or owned lab-service lifecycle; no elevation or full product qualification |
 | `humanymous-native` | `init --framework`, optional `--target`, `--runtime-version`, `--workspace`, `--output`, `--dry-run` or `--write`; `--help`, `--version` | Integration manifest planning, not an implemented framework SDK; `doctor` and `verify` are not current commands |
 | `humanymous-runtime` | Bounded JSON startup document on inherited stdin, then one JSON readiness line on stdout | Experimental loopback HTTP/1.1; no public management listener |
+
+## Provisioning and signed service commands
+
+The original `doctor`, `install` and `rollback` commands require `--artifact`,
+`--destination`, `--sha256` and `--local-management-verified`; `--dry-run` is
+optional. These commands manage one artifact and receipt, without registering
+or starting a service. Their digest check is separate from release signing.
+
+The signed service interface uses an independently pinned public key and exact
+descriptor bytes. It is an owned laboratory lifecycle, not a qualified Core/Gate
+installer. See [installation boundaries](install-requirements.md).
+
+| Command | Required options and behavior |
+| --- | --- |
+| `service-plan` | `--manifest`, `--signature`, `--trust-key`, `--artifact`, `--destination`; read-only, rejects `--activate` |
+| `service-install`, `service-upgrade` | Same five options; `--activate` is required for mutation; `--dry-run` describes the plan without mutation |
+| `service-doctor` | Only `--destination` and `--trust-key`; queries actual native manager and loopback diagnostic readiness; rejects activation/dry-run flags |
+| `service-rollback`, `service-remove` | Only destination/key plus `--activate` for mutation or `--dry-run` for a read-only plan |
+
+`--activate` and `--dry-run` are mutually exclusive. Unknown or duplicate options
+fail. Signature and trust key are lowercase hexadecimal strings, respectively
+128 and 64 characters. No service command fetches a trust key from the network.
+Successful service diagnostics retain `product_qualified: false`; a ready
+fixture is not authenticated runtime, recovery or management qualification.
 
 ## Runtime startup and limits
 

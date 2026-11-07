@@ -3,11 +3,12 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T05:36:57Z
+updated: 2026-11-07T05:53:04Z
 rel:
   governs: [docs]
 files:
   - {path: status.json, sha256: 08db59f7c4b992ab7fa8d7a2ee859002c5b31270629f85a38a5cf0864c397d34, bytes: 866, store: repo}
+  - {path: freshness-status.json, sha256: 82ebeec598747454d06f4c67ddf286161a688dd65d13da045e66f7f284940e24, bytes: 1600, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
@@ -33,6 +34,31 @@ lock was synchronized, all 11 tests, strict Clippy, source checks and 24 vectors
 passed again. No dependency or lock changes were made by the Pages owner.
 
 ## How to read it
+
+Subsequent local-input freshness builds passed for the same 85 pages and both
+baseurls, reporting the same exact input commitment
+`8df2f91fe3c572c97a2a55560feb0d7d0f5f67a3d75c599eff80cc1175ad4881`.
+Navigation/configuration/Sass/binary assets are included. Installed dependencies
+and verifier metadata are outside that commitment; external provenance remains
+separate. Fourteen Rust tests and strict Clippy passed before final report-only
+receipt-hash metadata was added. That metadata rerun encountered renewed shared
+lock drift; after synchronization, 14 tests and strict Clippy passed again in
+separate confirmed logs. The failed locked runs remain retained.
+
+Read-only review triage observed247added/65changed/136byte-identical/0removed
+Git-visible governed sources against the old receipt. It did not accept review
+or renew a receipt. The updated command page was observed in the in-app browser:
+Tab exposed a visibly focused skip link, Enter moved focus to main content,
+next Tab reached a breadcrumb, and Enter expanded/collapsed Reference navigation.
+This is one desktop manual observation, not full Pages, screen-reader or product
+recovery qualification. The structured freshness-status attachment retains scope.
+
+The later successful triage binds the exact baseline receipt digest and observed
+dirty source revision, and finds256added sources rather than the earlier247.
+Both results remain historical observations of a changing repository. The final
+input-exclusion correction includes nested public assets with metadata-like
+names; all14tests/strictClippy and both actual builds passed afterward with the
+same local input commitment. No receipt was renewed by that result.
 
 Private raw build/test logs are retained in the current Pages verification
 bundle. Earlier failed invocations remain retained rather than overwritten as

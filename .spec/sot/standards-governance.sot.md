@@ -149,6 +149,14 @@ maturity and implementability gates prevent project research being overstated.
 
 ## Verification
 
+Horizontal self-review records observable keyboard/focus, actual screen-reader,
+sparse/slow-user, motion/zoom, recovery-loop and machine-client outcomes with
+source/tuple and explicit passed/failed/blocked/not_run states. These are
+informative review cases, not new generic wire requirements. Pages rendering
+does not qualify the product challenge. Internationalization vectors must state
+reject/preserve/named-normalization behavior and exact commitment preimages;
+visual equivalence is not byte equivalence. Generic wire remains unfrozen.
+
 Official-source read-only standards research completed. Current state is
 authoring/preparation design only. Public draft content, rendered Pages checks,
 wire conformance, external review and actual submission are separate gates.

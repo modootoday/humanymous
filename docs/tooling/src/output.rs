@@ -178,6 +178,7 @@ pub(crate) fn check(root: &Path, site: &Path, baseurl: &str) -> Result<Report, S
     errors.sort();
     errors.dedup();
     Ok(Report {
+        build_input_sha256: None,
         pages: pages.len(),
         errors,
     })

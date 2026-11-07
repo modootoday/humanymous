@@ -71,6 +71,29 @@ Recovery must explain the outcome, preserve safe user progress and avoid an
 unredeemable challenge loop. Screen-reader and keyboard testing must be measured
 in actual supported browsers; a written accessibility intention is insufficient.
 
+### Evidence to retain for an access review
+
+The following are review cases, not additional normative protocol requirements.
+Record the browser/OS and assistive-technology versions, source/artifact identity,
+input mode, expected result, observed result and evidence location for each case.
+Separate `passed`, `failed`, `blocked` and `not_run`; absence of a failure is not
+a pass. Retain a failed first attempt even if a later revision succeeds.
+
+| Review case | Observable result needed |
+| --- | --- |
+| Keyboard navigation | All necessary actions reachable in meaningful order, visible focus, no trap, and focus restored after dialogs or recovery |
+| Status announcement | A screen reader announces errors, progress and completion with enough context; a DOM role alone is insufficient |
+| Sparse or slow interaction | The same legitimate task can finish without a motor-richness threshold, typing-speed minimum or unextendable short deadline |
+| Reduced motion and zoom | User preferences and enlarged content preserve instructions, controls, focus and recovery without clipped essential content |
+| Recovery loop | Safe progress is preserved where possible, a retry has a defined result, and repeated failure offers a usable alternative |
+| Machine client | API/webhook/streaming clients receive the documented protocol outcome rather than injected browser challenge markup |
+
+Documentation navigation and contrast checks assess these Pages, not the
+product challenge or its recovery. A headless browser component run, simulated
+assistive API or automated accessibility scan does not replace an actual
+assistive-technology task. The current project has no completed full recovery
+qualification to infer from this checklist.
+
 ## Internationalization
 
 Define exact byte/Unicode normalization boundaries before hashing or signing.
@@ -78,6 +101,12 @@ Include decomposed/composed characters, non-Latin text, right-to-left content,
 Unicode paths and internationalized host names in vectors. Locale-dependent
 number/time formatting must not change canonical bytes. Display text and machine
 identifiers have different normalization and escaping responsibilities.
+
+For each such vector, state whether the input is rejected, preserved byte for
+byte or normalized under a named rule before commitment. Include the exact
+preimage and expected digest/signature where applicable; visually identical
+rendering is not byte equality. Do not silently assign the experimental
+adapter parser's behavior to the unresolved generic wire profile.
 
 ## Review status
 

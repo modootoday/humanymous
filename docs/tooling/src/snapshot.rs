@@ -36,6 +36,8 @@ pub struct Snapshot {
     pub dirty: bool,
     /// Every current tracked or nonignored source under the governed roots.
     pub files: Vec<FileIdentity>,
+    /// Index-listed paths absent from the working tree throughout capture.
+    pub missing_working_files: Vec<String>,
     /// Always false: inventory is not substantive review acceptance.
     pub documentation_review_accepted: bool,
 }
@@ -134,10 +136,18 @@ pub fn capture(root: &Path) -> Result<Snapshot, String> {
         }
     }
     let mut files = Vec::new();
+    let mut missing = Vec::new();
     for raw in paths.split(|&b| b == 0).filter(|p| !p.is_empty()) {
         let source = String::from_utf8(raw.to_vec()).map_err(|e| e.to_string())?;
         let path = root.join(&source);
-        let metadata = fs::symlink_metadata(&path).map_err(|e| format!("{source}: {e}"))?;
+        let metadata = match fs::symlink_metadata(&path) {
+            Ok(metadata) => metadata,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                missing.push(source);
+                continue;
+            }
+            Err(error) => return Err(format!("{source}: {error}")),
+        };
         if !metadata.is_file() || metadata.file_type().is_symlink() {
             return Err(format!("not a regular source file: {source}"));
         }
@@ -161,6 +171,13 @@ pub fn capture(root: &Path) -> Result<Snapshot, String> {
             != file.working_sha256
         {
             return Err(format!("source changed during snapshot: {}", file.source));
+        }
+    }
+    for source in &missing {
+        if !matches!(fs::symlink_metadata(root.join(source)), Err(error)
+            if error.kind() == std::io::ErrorKind::NotFound)
+        {
+            return Err(format!("missing source changed during snapshot: {source}"));
         }
     }
     if git(&root, &["rev-parse", "HEAD"])? != head
@@ -188,19 +205,73 @@ pub fn capture(root: &Path) -> Result<Snapshot, String> {
         return Err("HEAD or source inventory changed during snapshot; retry explicitly".into());
     }
     Ok(Snapshot {
-        schema: 1,
+        schema: 2,
         source_sha: String::from_utf8(head)
             .map_err(|e| e.to_string())?
             .trim()
             .into(),
         dirty: !git(&root, &["status", "--porcelain=v1", "-z"])?.is_empty(),
         files,
+        missing_working_files: missing,
         documentation_review_accepted: false,
     })
 }
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn deleted_index_file_is_reported_without_hiding_other_working_sources() {
+        use std::{
+            fs,
+            process::Command,
+            time::{SystemTime, UNIX_EPOCH},
+        };
+        let root = std::env::temp_dir().join(format!(
+            "pages-snapshot-test-{}-{}",
+            std::process::id(),
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        fs::create_dir(&root).unwrap();
+        let run = |args: &[&str]| {
+            assert!(
+                Command::new("git")
+                    .args(args)
+                    .current_dir(&root)
+                    .output()
+                    .unwrap()
+                    .status
+                    .success()
+            );
+        };
+        run(&["init", "--quiet"]);
+        fs::write(root.join("Cargo.toml"), "fixture\n").unwrap();
+        fs::write(root.join("Cargo.lock"), "fixture lock\n").unwrap();
+        run(&["add", "Cargo.toml", "Cargo.lock"]);
+        run(&[
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "-c",
+            "commit.gpgsign=false",
+            "commit",
+            "--quiet",
+            "-m",
+            "fixture",
+        ]);
+        fs::remove_file(root.join("Cargo.lock")).unwrap();
+        let result = super::capture(&root).unwrap();
+        assert_eq!(result.schema, 2);
+        assert_eq!(result.missing_working_files, ["Cargo.lock"]);
+        assert_eq!(result.files.len(), 1);
+        assert_eq!(result.files[0].source, "Cargo.toml");
+        assert!(!result.documentation_review_accepted);
+        fs::remove_dir_all(root).unwrap();
+    }
+
     #[test]
     fn binary_and_lf_digest_distinction_is_not_a_review_approval() {
         let (lf, policy) = super::canonical(b"alpha\r\nbeta\r\n", Some(b"auto"));

@@ -32,6 +32,7 @@ fn execute(program: &str, args: &[&str], cwd: &Path) -> Result<(), String> {
 pub(crate) fn validate(root: &Path, destination: &Path, baseurl: &str) -> Result<Report, String> {
     crate::output::validate_baseurl(baseurl)?;
     let root = root.canonicalize().map_err(|e| e.to_string())?;
+    let input_digest = crate::inputs::digest(&root)?;
     if !destination.is_absolute()
         || destination
             .components()
@@ -125,5 +126,10 @@ pub(crate) fn validate(root: &Path, destination: &Path, baseurl: &str) -> Result
         ],
         &root,
     )?;
-    check_output(&root, Path::new(destination), baseurl)
+    let mut result = check_output(&root, Path::new(destination), baseurl)?;
+    if crate::inputs::digest(&root)? != input_digest {
+        return Err("authored build inputs changed during validation; retry explicitly".into());
+    }
+    result.build_input_sha256 = Some(input_digest);
+    Ok(result)
 }

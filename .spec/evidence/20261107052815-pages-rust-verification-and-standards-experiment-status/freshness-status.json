@@ -1,0 +1,30 @@
+{
+  "scope": "subsequent Pages local-input freshness and source-review triage",
+  "reader_pages": 85,
+  "baseurls_checked": ["", "/humanymous"],
+  "build_input_sha256": "8df2f91fe3c572c97a2a55560feb0d7d0f5f67a3d75c599eff80cc1175ad4881",
+  "input_commitment_matches_between_builds": true,
+  "upstream_theme_and_rust_output_checks": "passed",
+  "rust_tests_before_final_report_metadata_addition": {"passed": 14, "failed": 0, "ignored": 0},
+  "strict_clippy_before_final_report_metadata_addition": "passed",
+  "source_review_triage": {"added": 247, "changed": 65, "byte_identical": 136, "removed": 0},
+  "subsequent_source_review_triage": {
+    "source_sha": "f3c8ea2072783141f38e96f95864acc2bb1a963f",
+    "dirty": true,
+    "receipt_sha256": "3ee2a2a97e89a398ec4865effe973b25ad98bf8b40e041b45a1e69bfcb04b4f6",
+    "added": 256, "changed": 65, "byte_identical": 136, "removed": 0
+  },
+  "source_review_receipt_renewed": false,
+  "manual_in_app_browser_observation": [
+    "updated command page rendered",
+    "Tab reveals visible skip-link focus",
+    "Enter moves focus to main content",
+    "next Tab reaches a breadcrumb link",
+    "Reference menu expands and collapses with Enter"
+  ],
+  "manual_observation_scope": "one desktop page in the in-app browser; not an automated Rust suite or full accessibility conformance",
+  "actual_screen_reader_and_full_recovery": "not_run",
+  "final_report_metadata_retest": "14 tests and strict Clippy passed after shared lock synchronization; initial failures retained",
+  "generic_wire_frozen": false,
+  "external_submission_or_production_deployment": false
+}

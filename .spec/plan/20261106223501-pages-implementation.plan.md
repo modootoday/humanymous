@@ -294,3 +294,44 @@ binary-secret-scan warning for the browser owner's PNG. No runtime/source-review
 hashes were refreshed to conceal parallel code changes. Current-source review,
 full browser/keyboard qualification and generic standards-wire decisions remain
 open; the persistent goal remains active.
+
+## Subsequent source review triage and freshness
+
+Added Rust read-only review-delta, without receipt generation/renewal. Actual
+stable capture at 3d1d003 dirty tree found247added/65changed/136exact-byte-identical
+governed Git-visible sources and0removed. The first attempt exposed deleted
+index paths not being represented; snapshot schema2 now retains missing-working
+paths and checks they remain missing. An isolated real-Git regression test covers
+that case. Triage remains separate from CI's filesystem inventory and release gate.
+
+The actual authority now provisions Node/nginx profile selection; corrected the
+earlier Node-only statement without claiming nginx deployment qualification.
+Reviewed CLI signed service source and canonical contract, then updated command,
+installation and status pages. Native browser newtab/internal allowlist limits
+are public. Horizontal review now names observable cases and outcome evidence,
+without treating Pages checks as product challenge/AT qualification.
+
+Added before/after exact local build-input commitment covering config/nav/Sass/
+assets as well as prose. Changed inputs refuse a successful validation; pure
+source/built checks cannot emit a fresh-build commitment. This is a local-source
+binding, not complete external dependency provenance. Fourteen package tests
+and strict all-target Clippy pass; fresh actual dual-baseurl builds follow.
+
+Actual follow-through: both85-page builds passed with identical exact local
+inputSHA256 8df2f91fe3c572c97a2a55560feb0d7d0f5f67a3d75c599eff80cc1175ad4881.
+In-app manual keyboard observation on the command page showed visible skip-link
+focus, Enter movement into main, next-Tab breadcrumb access and Enter menu
+expand/collapse. This is scoped desktop evidence, not full product/Pages AT
+qualification. A later report-only baseline-receipt hash/schema addition hit
+common lock drift; after synchronization, all14tests and strictClippy passed
+again with separate confirmed logs. Official W3C Process, WEBBOTAUTH charter
+index and RFC9421 were re-read; no process-maturity claim changed.
+
+Final triage report explicitly binds baseline receipt SHA256
+3ee2a2a97e89a398ec4865effe973b25ad98bf8b40e041b45a1e69bfcb04b4f6.
+At f3c8ea2 dirty tree it found256added/65changed/136identical/0removed; the
+earlier247added result is retained as historical. No review acceptance follows.
+One intervening capture failed OS error2 with no report; explicit retry succeeded.
+Input exclusions are scoped to root-relative metadata/cache paths, so a nested
+published asset named reviews.json is still committed. The expanded regression
+test, all14tests and strictClippy passed after that correction.
