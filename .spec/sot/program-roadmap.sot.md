@@ -11,6 +11,72 @@ rel:
 
 # 전체 로드맵과 마일스톤
 
+## 무료 원격 검증 적용 결정
+
+사용자가 로컬 대신 비용 없는 원격 환경을 적용하도록 승인했다. 현재 gh 조회로
+modootoday/humanymous의 PUBLIC visibility를 확인했다. 기본 실행 대상은 공개
+저장소의 GitHub-hosted standard Ubuntu24.04이며 유료 larger runner, 자체 유료
+서버 및 Cloudflare Containers 생성은 제외한다. Containers는 별도 유료 보조
+검증 후보로만 남는다. 공개 표준 러너 compute 무료와 artifact/cache 저장 비용은
+구분하고, 무료 경로는 기본적으로 작은 sanitized job log/summary를 사용한다.
+민감한 private Specfold 원본이나 자격증명을 공개 artifact에 올리지 않는다.
+
+CI owner는 기존 워크플로 재사용, 중복 실행 취소, bounded timeout/build parallelism,
+무거운 Docker 검증 순차 실행 및 고정된 source SHA 결과 수집을 구현한다.
+Root는27member workspace/lock과 각 owner source checkpoint를 통합한 후 rust
+브랜치만 push하고 실제 hosted 실행을 관찰한다. dirty 로컬 파일을 원격 실행의
+검증 소스로 주장하지 않는다. 기존 Docker topology/UID/egress/sandbox/witness
+gate를 유지하고 component 성공과 full-product 완료를 구분한다. 최초 실제
+무료 원격 실행 결과가 확인될 때까지 적용 상태는 implementation in progress다.
+
+근거: https://docs.github.com/en/actions/concepts/billing-and-usage 및
+https://docs.github.com/en/actions/reference/runners/github-hosted-runners .
+
+### 로컬 개발과 hosted 실행의 역할 분리
+
+기본 배치는 로컬 코딩·범위별 단위검사와 hosted 실제 런타임 검증으로 나눈다.
+테스트 이름이나 #[test]/--lib만으로 순수 단위검사라고 분류하지 않는다. 실제
+프로세스·포트·IPC·SCM·브라우저·권한 경계·Docker를 요구하면 component/runtime
+검증이며 hosted 대상이다. 로컬은 fmt, 정적 검사, 범위 Clippy와 자원 상한이
+있는 단위검사에 집중하고 Cargo 동시 작업은1개로 제한한다. 기존 메모리 보류를
+무제한 로컬 빌드 허가로 바꾸지 않는다. 필요성이 입증된 로컬 런타임 디버깅은
+별도 자원 배정과 기록을 요구하며 hosted 완료 증거를 대체하지 않는다.
+
+| 구분 | 기본 실행 위치 | 완료 근거 |
+|---|---|---|
+| 코드·계약·단위·fmt·범위 Clippy | 로컬 | 명시적 package/feature와 실제 분모 |
+| Node/Bun/nginx·실제 IPC·서비스·권한·restart | 표준 OS hosted | OS/arch/features별 actor 결과 |
+| 제품 topology·격리·egress·witness·Firefox WASM | Ubuntu hosted Docker | 기존 Docker 필수 gate와 이미지·소스 해시 |
+| CEF·SCM·설치기 OS 기능 | 지원 OS hosted | capability preflight와 실제 positive/negative |
+| Pages 렌더·링크·browser smoke | hosted | 정확한 소스의 두 baseurl 및 실행 결과 |
+| 사람·실제 AT/IME·기기/화면·물리 장애 | 적합한 별도 실환경 | 직접 증거; hosted label만으로 충족 불가 |
+
+완전 직렬 CI는 독립 영역의 결과까지 막으므로 채택하지 않는다. 구현 checkpoint
+4565026은 공통 policy 이후 두 lane으로 분리한다: A는 native→msrv→quality→
+documentation→pages, B는 docker→browser→images→packages→node→advisories다.
+각 matrix는 max-parallel1, 각 job의 Cargo는 jobs1이며 같은 lane의 이전 실패와
+무관하게 policy 성공·미취소일 때 독립 결과를 계속 수집한다. ready는 항상
+정확한 필수 job 결과를 집계하고 실패·skip·unknown을 성공으로 바꾸지 않는다.
+이는 해당 workflow 내부 heavy 상한2다. 별도 수동 workflow까지 포괄하는 전역
+상한으로 과장하지 않고, 동일 source의 중복 dispatch를 피한다. 공통 concurrency
+group에 모든 job을 넣어 pending job이 대체·유실되는 방식은 사용하지 않는다.
+
+변경 영향 기반 선택은 manifest/공통 의존의 전이 closure와 semantic 계약 변경을
+검사할 신뢰 가능한 classifier가 준비된 뒤 도입한다. 현재는 필수 gate를 단순
+paths 필터로 생략하지 않는다. Cargo/lock/toolchain/security/authority/runtime/
+shared test-support 변경과 unknown 입력은 보수적으로 넓게 검증하며, release
+candidate의 전체 필수 OS·product 분모는 계속 요구한다.
+
+빌드 재사용은 같은 OS/arch/target/toolchain/lock/profile/features에서만 허용한다.
+nginx native와 standalone pilot, Node host-pilot과 production package처럼 feature
+graph가 다른 산출물을 합치지 않는다. CEF/전체 target/debug+release/Docker를 한
+VM에 중복 축적하지 않고 runner 디스크 실측과 bounded context를 사용한다.
+초기 무료 경로는 remote cache 쓰기와 일반 branch artifact 업로드를 끄고 작은
+allowlisted summary·source/image/lock digest 및 job log를 사용한다. PUBLIC repo
+artifact는 private vault가 아니다. 민감 raw는 업로드하지 않고 별도 승인된
+비공개 회수 경로가 없으면 raw-not-recovered를 명시한다. LLM eval 추론/API비용은
+무료 runner compute와 별개이며 이번 무료 실행 범위에 자동 포함하지 않는다.
+
 버전1.2.0. 2026-11-07 KST 기준13개 프로젝트 채팅의 최신 turn, 기존9개
 인계 기록, 현재 Git/spec/Actions를 대조한 전체 상태·순서·완료 조건의 정본이다.
 실행 체크리스트는 plan:root/20261106235521, 근거는 evidence:root/20261106235519다.
