@@ -1,0 +1,213 @@
+{
+  "source": "aba7934d4a00cbc4ed9581df8aff401e98e4ec91",
+  "archive_sha256": "42267d5dcc5cf8afcf0072fe26d76c0d831dc5bc46c6ee3fb43ed15fa12f4d22",
+  "overlays": [],
+  "authority_kernel": "a898d91a33d19d80a86d0d75444a1a9175fdcaea",
+  "venue": "Windows x86_64 Rust 1.99.1; native-independent Runtime DATA consumer only",
+  "scope": "Immutable source archive; no native producer, listener, secret read, custody unseal, W transport, Ready, SCM or product qualification",
+  "jobs": 1,
+  "incremental": false,
+  "locked": true,
+  "offline": true,
+  "memory_admission": {
+    "free_gib": 33.3,
+    "commit_percent": 68.0
+  },
+  "work_budget_seconds": 480,
+  "cleanup_budget_seconds": 60,
+  "actual_elapsed_seconds": 123.38,
+  "fmt_first_exit": 0,
+  "check_exit": 0,
+  "check_seconds": 35.5,
+  "strict_clippy_exit": 0,
+  "strict_clippy_seconds": 5.58,
+  "library_listed": 79,
+  "exact_inventory": true,
+  "actual_session": 99631,
+  "actual_exit": 0,
+  "selector": "service::authorization::tests::",
+  "passed": 6,
+  "failed": 0,
+  "ignored": 0,
+  "measured": 0,
+  "filtered": 73,
+  "test_seconds": 0.11,
+  "test_names": [
+    "service::authorization::tests::successful_data_binding_cannot_open_native_preparation",
+    "service::authorization::tests::checked_fixture_retains_same_configuration_and_public_data",
+    "service::authorization::tests::pre_admission_secret_is_rejected_without_unseal",
+    "service::authorization::tests::valid_signatures_cannot_bypass_invalid_runtime_route_configuration",
+    "service::authorization::tests::observer_data_profile_refuses_writer_only_configuration",
+    "service::authorization::tests::every_scope_component_and_authority_case_or_port_mismatch_refuses"
+  ],
+  "source_files": 2886,
+  "source_path_hash_drift": 0,
+  "registry_packages": 125,
+  "registry_files": 6576,
+  "registry_path_hash_drift": 0,
+  "compiler_and_targetlib_files": 66,
+  "compiler_and_targetlib_drift": 0,
+  "ancestor_config_candidates": 14,
+  "ancestor_config_drift": 0,
+  "selected_environment_candidates": 14,
+  "selected_environment_drift": 0,
+  "target_returned_before_bookkeeping": true,
+  "live_target_processes": 0,
+  "pre_execution_hook_rejection": "Initial combined orchestration blocked before execution; marker removal split into separate literal-path cleanup. No pipeline or compiler retried.",
+  "pipeline_retry": false,
+  "whole_runtime_suite_executed": false,
+  "actual_native_ready_qualified": false,
+  "product_qualified": false,
+  "raw_artifacts": [
+    {
+      "bytes": 366,
+      "sha256": "e2f2b9ae611be3465430687559bfaf7a3aacc9744c6fbd93afd4e772a8934f07",
+      "name": "auth-data-aba7934d-actual-exit.json"
+    },
+    {
+      "bytes": 723,
+      "sha256": "95a61c8398658487b6d1be8d62c7e102c511c4c6eb1466497db711aa4d2bad3f",
+      "name": "auth-data-aba7934d-actual.log"
+    },
+    {
+      "bytes": 219,
+      "sha256": "fa34ee859fefff64a76bc36b7f35d7c539338fb5ca88ecd8c03cbf0be4580ab0",
+      "name": "auth-data-aba7934d-actual.stderr.log"
+    },
+    {
+      "bytes": 303,
+      "sha256": "cc1c8d40bad16a05593157045d1a5014d13426a72ff443c9ea364050849bcb2d",
+      "name": "auth-data-aba7934d-check-exit.json"
+    },
+    {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "auth-data-aba7934d-check.log"
+    },
+    {
+      "bytes": 4902,
+      "sha256": "0dd8098c4be7246918abb79164cc07a1cb0543934de6ae9ddd66c1fbe1aee6b3",
+      "name": "auth-data-aba7934d-check.stderr.log"
+    },
+    {
+      "bytes": 344,
+      "sha256": "54053ee1843da2b611461a1e7a3c82ec52ef3a90edd821f092eea207f221e72d",
+      "name": "auth-data-aba7934d-clippy-exit.json"
+    },
+    {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "auth-data-aba7934d-clippy.log"
+    },
+    {
+      "bytes": 1876,
+      "sha256": "b1f5e53b92a45b7a196c42eed947ea3c5cc2740c22ad35f158d7c61d49a9eb83",
+      "name": "auth-data-aba7934d-clippy.stderr.log"
+    },
+    {
+      "bytes": 1678,
+      "sha256": "1069dd656f5a7f2b3c25591b891b096b9a394ac09cede3193958fb0fcad00030",
+      "name": "auth-data-aba7934d-config-after.json"
+    },
+    {
+      "bytes": 1678,
+      "sha256": "1069dd656f5a7f2b3c25591b891b096b9a394ac09cede3193958fb0fcad00030",
+      "name": "auth-data-aba7934d-config-before.json"
+    },
+    {
+      "bytes": 1402,
+      "sha256": "3fd6d6a71a7dceddcfd6548d5fdf1fcc4d5fe144e0123719d27d78d369714997",
+      "name": "auth-data-aba7934d-env-after.json"
+    },
+    {
+      "bytes": 1402,
+      "sha256": "3fd6d6a71a7dceddcfd6548d5fdf1fcc4d5fe144e0123719d27d78d369714997",
+      "name": "auth-data-aba7934d-env-before.json"
+    },
+    {
+      "bytes": 245,
+      "sha256": "f94e5926b36ca8cea44de8f08f93b57d7a6ddc49d57c913919ee48c30b2a9edd",
+      "name": "auth-data-aba7934d-fmt-exit.json"
+    },
+    {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "auth-data-aba7934d-fmt.log"
+    },
+    {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "auth-data-aba7934d-fmt.stderr.log"
+    },
+    {
+      "bytes": 320,
+      "sha256": "9c5931365401c059cd10b1bc80146e1e48fb5d08d587c5885d538fcca1a5b03b",
+      "name": "auth-data-aba7934d-list-exit.json"
+    },
+    {
+      "bytes": 7207,
+      "sha256": "78a0daf74c88cd0a3a754c9405e211a50ea6cf5a497d919d76659c1a2ec3d3ca",
+      "name": "auth-data-aba7934d-list.log"
+    },
+    {
+      "bytes": 4575,
+      "sha256": "acf95e1c56dd6db44505fb80095d0bedaa96880ec668791b2a6217502aba6a14",
+      "name": "auth-data-aba7934d-list.stderr.log"
+    },
+    {
+      "bytes": 341,
+      "sha256": "a22cd3e22392c5f801fb86e3a491a867cd411d0db048ddd66d9265cf1014e724",
+      "name": "auth-data-aba7934d-metadata-exit.json"
+    },
+    {
+      "bytes": 2420048,
+      "sha256": "563ec5d8eb3d402eb59afb534b4f3cbff8e9f5b351be34f82605941d20c88168",
+      "name": "auth-data-aba7934d-metadata.log"
+    },
+    {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "auth-data-aba7934d-metadata.stderr.log"
+    },
+    {
+      "bytes": 3354,
+      "sha256": "452575a1f63f3ece84b0e5462032f8f10505ea2cdbfd4c62d68ae78b8cd4bc98",
+      "name": "auth-data-aba7934d-receipt.json"
+    },
+    {
+      "bytes": 1492949,
+      "sha256": "6ce37a71b3d9e2aabde9a46a85f7e5437bf30208760cfb407a65512fc01ea792",
+      "name": "auth-data-aba7934d-registry-after.json"
+    },
+    {
+      "bytes": 1492949,
+      "sha256": "6ce37a71b3d9e2aabde9a46a85f7e5437bf30208760cfb407a65512fc01ea792",
+      "name": "auth-data-aba7934d-registry-before.json"
+    },
+    {
+      "bytes": 687403,
+      "sha256": "4884e26e1fe66e39f1620854903f210dc2f354096591658c988cd9b170b65f02",
+      "name": "auth-data-aba7934d-source-after.json"
+    },
+    {
+      "bytes": 687403,
+      "sha256": "4884e26e1fe66e39f1620854903f210dc2f354096591658c988cd9b170b65f02",
+      "name": "auth-data-aba7934d-source-before.json"
+    },
+    {
+      "bytes": 1064,
+      "sha256": "94cdbd658693918653e655711c4ad60de94e2528e1bbd041fd3dafa9b3da0b53",
+      "name": "auth-data-aba7934d-source.json"
+    },
+    {
+      "bytes": 15876,
+      "sha256": "ab32bf5a1d67d6d48bcac3af714c81f0d4acff6b541035f83e53721b832b5ef0",
+      "name": "auth-data-aba7934d-tools-after.json"
+    },
+    {
+      "bytes": 15876,
+      "sha256": "ab32bf5a1d67d6d48bcac3af714c81f0d4acff6b541035f83e53721b832b5ef0",
+      "name": "auth-data-aba7934d-tools-before.json"
+    }
+  ]
+}

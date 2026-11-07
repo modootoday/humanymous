@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T15:47:31Z
+updated: 2026-11-07T19:14:37Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -19,8 +19,9 @@ files:
   - {path: http-f8e04e33-validation-summary.json, sha256: cdbe2f3abc502059dd739ab3c4e07c876bc59cdee4f3118029345f74019d51ff, bytes: 5217, store: repo}
   - {path: retained-6c02bd22-validation-summary.json, sha256: 576d484a1958f462cec38fa87cd2d1d7cd8454c675d755ce8ef99709412a184d, bytes: 4898, store: repo}
   - {path: temporal-corrected-validation-summary.json, sha256: 1edb7d11e5b146ab2bc62dfdc3f6d672e780951c18f184054189c09a3f9fbce5, bytes: 6887, store: repo}
-  - {path: status.json, sha256: b33ec2bf6cb2b651f94326edb62a3a33174d7527e3a2c17e31c507f60ee82106, bytes: 5929, store: repo}
-  - {path: source-commitments.json, sha256: cf1266bea9962fb2c0c30f5209785030738a2e052a29cd745802ae5583368adb, bytes: 12736, store: repo}
+  - {path: auth-data-aba7934d-validation-summary.json, sha256: 19dd21b7494aa6c1ee99e1dbf51529b1ad31e2b991310c091adae3b627ed6c7b, bytes: 7533, store: repo}
+  - {path: status.json, sha256: 9d662de9f6b53eeb8d9b638bfafe865cb5e7a10465a2869320a4202b30002fbe, bytes: 6102, store: repo}
+  - {path: source-commitments.json, sha256: 85c25bea44ee4312e69d4e349ec169a7b93f89ed66e628a18add0a29910b96e7, bytes: 13198, store: repo}
 ---
 
 # Runtime application operational integration
@@ -28,6 +29,17 @@ files:
 ## What was measured
 
 Contracts R01-R17 and remaining work are recorded in plan:root/20261107061820.
+Immutableaba7934d passed Windows fmt FIRST, all-features/all-targets check and
+strict Clippy. Its exact79-name library inventory matched; six Runtime v2
+checked-DATA consumer cases passed with0failed/0ignored/73filtered in0.11s.
+All2886 source files,6576 selected registry files,66 compiler/target-lib files,
+14 config candidates and14 selected environment hashes stayed unchanged. The
+exclusive target was returned with no live target process before bookkeeping.
+No native preparation, secret release, listener, W transport, Ready or product
+qualification follows. See auth-data-aba7934d-validation-summary.json. The initial
+combined orchestration was rejected before execution by an automatic safety hook;
+literal marker cleanup was separated, with no executed phase/compiler retry.
+
 Corrected temporal L1 consumer source1dc6eb40 passed fmt FIRST/check/strict Clippy
 and nine selected units (64filtered) on404 base plus exact87f86d07 overlay, not
 the entire1dc workspace graph. Original404 was unexecuted; independent-review

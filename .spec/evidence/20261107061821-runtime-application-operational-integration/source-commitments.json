@@ -1,11 +1,5 @@
 [
   {
-    "path": "crates/runtime/browser-http-contract.json",
-    "bytes": 2655,
-    "sha256": "d0ff620b7ed65d77858dd14484845413ca1072ffb36838dee0e12c3326a2d7cc",
-    "git_blob": "27e64ce072d51ec04a44f2650798dd00b36281c6"
-  },
-  {
     "path": "crates/runtime/Cargo.toml",
     "bytes": 1139,
     "sha256": "c51afb41efd90a1402608d57da6a01942e2d35845a7ca6819c22ee4b364a23ed",
@@ -18,10 +12,16 @@
     "git_blob": "b8b9dc38446ffc0ee3b5fb8cdddf47b6489968dc"
   },
   {
+    "path": "crates/runtime/browser-http-contract.json",
+    "bytes": 2655,
+    "sha256": "d0ff620b7ed65d77858dd14484845413ca1072ffb36838dee0e12c3326a2d7cc",
+    "git_blob": "27e64ce072d51ec04a44f2650798dd00b36281c6"
+  },
+  {
     "path": "crates/runtime/qualification-contract.json",
-    "bytes": 8188,
-    "sha256": "e2177bc2525776c10a58fbf05a15a3242a286b24b6de3139c0cca8d7156ea7d8",
-    "git_blob": "2236dcc4fd3c5db10687ca485ea7170e7d10388b"
+    "bytes": 8779,
+    "sha256": "a6ea56aa021d29a58b73e4f5506c973956036ad5f23a67d116d03063294ac628",
+    "git_blob": "65543b675a96ae421a3a8cb976db6f1030445d21"
   },
   {
     "path": "crates/runtime/src/application.rs",
@@ -169,9 +169,21 @@
   },
   {
     "path": "crates/runtime/src/service.rs",
-    "bytes": 13668,
-    "sha256": "d7b11c21e7054922ea27ea3d9146855d6a415f11e453ad30baf6cd2d711f5db5",
-    "git_blob": "f516ca30801d1ae24fcd25021ce1bb6923423392"
+    "bytes": 13755,
+    "sha256": "227755d6a91b2e758b7473ca891449b6eec3aa7b6ca0a251f5bc2045ef75cd13",
+    "git_blob": "b4861eec4875a76caed9233030b7e38ee00c6721"
+  },
+  {
+    "path": "crates/runtime/src/service/authorization.rs",
+    "bytes": 2926,
+    "sha256": "e4c0f7e255e00a1cab76fb10271991761207aab77437cb77ab6ab059dff94085",
+    "git_blob": "e23f35e54dbd67a71c3ee57452dd1c334a380775"
+  },
+  {
+    "path": "crates/runtime/src/service/authorization/tests.rs",
+    "bytes": 6492,
+    "sha256": "7837748f7fb6573df6efbd6cae300805d3eae7b68b8610f0e76b2b9aa4c8aa3f",
+    "git_blob": "2256e91ed8abf9eb8f32158da9274591101418d7"
   },
   {
     "path": "crates/runtime/src/service/epoch.rs",

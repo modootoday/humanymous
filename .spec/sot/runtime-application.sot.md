@@ -1061,10 +1061,16 @@ Six authored pure consumer tests use Authority's published minimal signed JSON
 fixture through parse_bundle/verify_bundle. They cover exact ownership retention,
 each scope mismatch including authority case/port, invalid Runtime routes,
 premature secret input, missing required-W configuration, and continued native
-Unsupported after successful DATA binding. These are unexecuted until an allocated
-immutable-source check/strict-Clippy/test run; Authority's37 pure passes are not
-Runtime consumer or native/product proof. Authored inventory becomes Windows79
-and Unix83 library tests; native-process inventory is unchanged.
+Unsupported after successful DATA binding. On immutable source archiveaba7934d,
+allocated Windows fmt FIRST/check/strict Clippy passed. The exact79-name inventory
+matched; all six selected consumers passed with0failed/0ignored/73filtered.
+All2886 source files,6576 registry files,66 compiler/target-lib files,14 ancestor
+config candidates and14 selected environment hashes remained unchanged. The
+exclusive target was returned with no live target processes before bookkeeping.
+Authority's37 pure passes are not Runtime consumer or native/product proof.
+Windows79/Unix83 remains authored library inventory, not a full-suite execution;
+native-process inventory is unchanged. See evidence:root/20261107061821 and
+auth-data-aba7934d-validation-summary.json for source-bound details.
 
 ### Observed Ready composition proposal — architecture direction only
 

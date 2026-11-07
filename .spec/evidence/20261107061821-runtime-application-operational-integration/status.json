@@ -24,10 +24,10 @@
     "stable-kill-target-and-typed-intent-effect-assessment-WIP-no-effect"
   ],
   "authored_native_fixture_test_functions": 2,
-  "current_source_executed_tests": 9,
-  "current_source_test_count_semantics": "Latest qualified404base+seven-file87f86d overlay (Runtime1dc correction): nine temporal L1 consumer units;64filtered. Not whole1dc workspace graph or production/provider-I/O qualification.",
-  "current_source_tests": "Temporal corrected source: nine private consumer bookkeeping tests passed,0failed/0ignored/64filtered incltwo Network-review regressions. Original404 not executed.",
-  "current_source_clippy": "Frozen corrected overlay: fmt FIRST/check/strictClippy passed;2703source/6576registry/14config/66compiler-targetlib/14selectedenv unchanged.",
+  "current_source_executed_tests": 6,
+  "current_source_test_count_semantics": "Latest qualified immutable aba7934d archive: six Runtime v2 checked-DATA consumer units;73filtered. Not whole Runtime suite, native provider, Ready or product qualification.",
+  "current_source_tests": "Six Runtime checked-DATA consumer tests passed;0failed/0ignored/73filtered. Exact Windows library inventory79; Unix83 authored, not run.",
+  "current_source_clippy": "Immutable aba7934d fmt FIRST/check/strictClippy passed;2886source/6576registry/14config/66compiler-targetlib/14selectedenv unchanged.",
   "actual_browser_join": "not_run",
   "actual_tls_serving": "six actual ordinary loopback TLS cases passed; allow-to-origin remains unqualified",
   "actual_unix_management_operator": "passed scoped ordinary-user native component, not independent deployment",
@@ -134,5 +134,12 @@
     "summary": "temporal-corrected-validation-summary.json",
     "filtered": 64,
     "passed": 9
+  },
+  "auth_data_aba7934d": {
+    "source": "aba7934d4a00cbc4ed9581df8aff401e98e4ec91",
+    "summary": "auth-data-aba7934d-validation-summary.json",
+    "passed": 6,
+    "filtered": 73,
+    "production_activation": false
   }
 }
