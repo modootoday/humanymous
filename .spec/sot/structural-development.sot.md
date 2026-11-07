@@ -59,7 +59,7 @@ are not filesystem write grants. No new crate or source reorganization is implie
 | Humanymous · L5 · Wargame and Report Validation | 01a1b2f5-ec55-7c91-863d-f539c70417be | Pure legacy report/renderer/CLI, strict catalog contracts then actual generic26 evaluation; preserve unsupported denominators. |
 | Humanymous · X · Performance and Build Optimization | 01a1b645-0e76-75b0-b509-fd8e7719fc51 | Measure the touched layer, bound preparation overhead and research cache policy; no production source writes without an exact handoff. |
 | Humanymous · X · Conventions and Architecture Audit | 01a1b645-0bdc-7a53-b759-57c1eb998336 | Independent risk-prioritized layer/contract audit, batch nonblocking review, no duplicate source edits or fabricated qualification. |
-| Humanymous · X · Developer Tooling and Coordination | 01a1b34e-f9e9-77d3-b883-0cc4d76763a4 | Own Rust tooling, claims/title/role registry and concise rules; preserve global Git mutex and existing compatibility mode. |
+| Humanymous · X · Developer Tooling and Bounded Preparation | 01a1b34e-f9e9-77d3-b883-0cc4d76763a4 | Own Rust tooling, bounded selected-input preparation, claims/title/role registry and concise rules; preserve global Git mutex and existing compatibility mode. |
 | Humanymous · L5 · Pages and Public Draft v0 | 01a1b2da-2656-7a23-a60b-08a681b23117 | Consume actual source-bound layer receipts, publish maturity limits, batch render/AT checks at public-input milestones. |
 
 All23 app rename operations succeeded, and a fresh live inventory matched all23
@@ -172,6 +172,13 @@ and measured preparation bottlenecks are in the linked plans. Mandatory product
 and real native tests are retained, not replaced with more unit counts.
 
 ## Continuous responsibility rotation
+
+On 2026-11-08 (Asia/Seoul), the developer tooling chat retained its coordination
+obligations and accepted bounded selected-input preparation implementation. Its
+previous title was `Humanymous · X · Developer Tooling and Coordination`; the new
+title in the responsibility table was applied and independently verified in the
+live inventory. Other owners' incomplete gates remain assigned, rather than
+being treated as exhausted merely because their last chat turn ended.
 
 Root monitors source checkpoints, terminal execution receipts and remaining
 acceptance gates across all project chats. An idle chat, a completed assistant
