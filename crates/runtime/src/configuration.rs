@@ -1,7 +1,7 @@
 //! Trusted installation scope and an exact, capability-aware route inventory.
 use crate::Rejection;
 use humanymous_authority::configuration::{Peer, Required, Scope};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 mod audit;
 pub use audit::{Audit, SealedKeys};
@@ -30,6 +30,28 @@ pub struct Configuration {
     pub timeout_ms: u64,
     /// Global accepted connections per second.
     pub rate_per_second: u32,
+    /// Explicit browser contract; absent preserves native-only configuration.
+    #[serde(default)]
+    pub browser: Option<BrowserPolicy>,
+}
+
+/// Distinct integrity contracts. A browser subset never claims full wire binding.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RitProfile {
+    /// Legacy native whole-header contract, unchanged by browser support.
+    #[default]
+    NativeFull,
+    /// Browser-controllable subset with no automatic application cookies.
+    BrowserAuthOnly,
+}
+
+/// Exact same-origin boundary for the initial cookie-free browser contract.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct BrowserPolicy {
+    /// Exact serialized origin, currently http:// plus configured authority.
+    pub origin: String,
 }
 
 /// One exact route and its honest evidence prerequisites.
@@ -42,6 +64,9 @@ pub struct Route {
     pub path: String,
     /// Missing required planes reject before origin.
     pub required: Required,
+    /// Explicit profile opt-in; old route documents remain native-only.
+    #[serde(default)]
+    pub rit_profile: RitProfile,
 }
 
 /// Only bounded complete HTTP request methods have an implementation.
@@ -104,12 +129,20 @@ impl Configuration {
             return Err(bad);
         }
         let mut seen = std::collections::BTreeSet::new();
+        if self
+            .browser
+            .as_ref()
+            .is_some_and(|policy| policy.origin != format!("http://{}", self.scope.authority))
+        {
+            return Err(bad);
+        }
         for route in &self.routes {
             if !method(&route.method)
                 || !target(&route.path)
                 || route.path.contains('?')
                 || humanymous_authority::configuration::reserved(&route.path)
                 || !route.required.rit
+                || (route.rit_profile == RitProfile::BrowserAuthOnly && self.browser.is_none())
                 || !seen.insert((&route.method, &route.path))
             {
                 return Err(bad);
@@ -126,13 +159,15 @@ impl Configuration {
             .map(|r| {
                 serde_json::json!({
                     "method":r.method,"path":r.path,
-                    "ready":!r.required.raw_tls && !r.required.original_h2 && !r.required.collector
+                    "ready":!r.required.raw_tls && !r.required.original_h2 && !r.required.collector,
+                    "rit_profile":r.rit_profile
                 })
             })
             .collect();
         serde_json::json!({"profile":"experimental-loopback-http1", "raw_tls":false,
             "original_h2":false,"raw_header_order":true,"rit":true,
             "client_asserted_report_ingestion":true,"browser_collector":false,
+            "browser_session":self.browser.is_some(),"browser_cookie_credentials":false,
             "browser_recovery":false,"administration":false,"product_qualified":false,
             "revision":self.scope.revision,"routes":routes})
     }

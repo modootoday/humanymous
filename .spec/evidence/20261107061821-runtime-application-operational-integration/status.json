@@ -1,0 +1,22 @@
+{
+  "scope": "runtime-browser-profile-source-checkpoint",
+  "implemented_source": ["explicit-browser-profile", "cookie-free-same-origin-session", "shared-browser-RIT", "shared-counter-ACK", "server-bound-empty-report-sessionId", "origin-reserved-header-stripping"],
+  "authored_native_fixture_test_functions": 2,
+  "current_source_executed_tests": 0,
+  "current_source_tests": "not_run",
+  "current_source_clippy": "not_run",
+  "actual_browser_join": "not_run",
+  "actual_docker_product": "not_run",
+  "human_keyboard_AT": "not_run",
+  "intermediate_production_check": "passed-before-final-edits-not-attributed-to-current-source",
+  "formatter": "passed",
+  "public_spec": {"errors": 0, "existing_unrelated_binary_warnings": 1},
+  "required_collector": "422-unqualified",
+  "raw_tls_h2": "absent-required-routes-422",
+  "native_0_1_binding": "unchanged",
+  "scoring_changed": false,
+  "product_qualified": false,
+  "remaining": "plan:root/20261107061820-R01-R17",
+  "validation_policy": "program-roadmap-and-delivery-single-canon",
+  "private_history": "evidence:root/20261107061820"
+}

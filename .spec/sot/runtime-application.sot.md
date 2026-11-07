@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-07T00:20:25Z
+updated: 2026-11-07T06:18:20Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/runtime/**]
@@ -13,6 +13,242 @@ rel:
 # Runtime application and session owner
 
 ## Rule
+
+### Operational follow-through v0.3: accepted contracts, not qualification
+
+This section supersedes v0.1 only for explicitly selected new profiles. Existing
+native whole-header RIT remains byte-identical. Accepted means implementation is
+authorized; implemented, source-validated, actual browser and whole-product gates
+remain separate. Follow-through is tracked in plan:root/20261107061820.
+
+Runtime owns application/session, ingress-to-origin enforcement, recovery and
+management handlers. Root owns shared Cargo/lock/toolchain, collector and the
+shared integrity browser codec. Authority owns authenticated native IPC and
+adapter wire contracts; audit owns cryptography, durable control permits,
+custody, witness and storage. Reuse these owners, never copy their algorithms.
+
+#### Browser binding and capability boundaries
+
+Browser Fetch cannot predict forbidden Host/Content-Length/header order. Add an
+explicit `humanymous.browser/0.1` profile rather than weakening native0.1. Its
+route configuration must opt in; existing routes default to native. Store the
+profile in the issued session and reject unknown/mixed/profile-mismatched input.
+Signature validity does not qualify original TLS/H2, code execution, collector
+coverage or a human. Required absent planes remain422, including collector until
+the separate fresh-provenance contract and actual integration qualify it.
+
+Configuration adds optional `browser:{origin:string}` and each route adds
+`rit_profile` with values `native_full` (default) or `browser_auth_only`.
+The initial plaintext listener accepts only origin=`http://` plus exact configured
+authority, without trailing slash/path/query. Browser routes require the explicit
+browser configuration; this does not expand loopback bind scope.
+
+Use `humanymous_integrity::request::browser::{Binding, canonical, PROTOCOL,
+MAX_SAFE_INTEGER}` from root commit53abb0b and ACK API from fabed20. Binding has
+exact fields installation,tenant,origin_identity,revision,authority,session,
+method,target,counter,bucket,deadline,content_type,application_authorization,
+body:&[u8]. Canonical bytes start `humanymous.browser/0.1\n`; fourteen fields
+follow as decimal UTF-8 byte length, colon, value, newline. The last field is
+lowercase SHA256 of the exact buffered body, not a reserialized object. The final
+newline is mandatory; no additional field or empty line exists. The shared codec
+owns validation, formatting and hashes; consumers call it directly.
+
+Counter/bucket/deadline are canonical decimals within JavaScript's exact integer
+domain0..9007199254740991; request counter begins1. Scope IDs are bounded128,
+authority1024, canonical32-byte base64url session43, target8192. Content-Type
+and explicit application Authorization are final Request values with only outer
+ASCII space/tab trimmed; internal spaces are preserved and CTL/non-ASCII values
+reject. Limits are1024/8192 respectively. The shared codec's body ceiling1MiB
+does not raise this runtime profile's64KiB ingress ceiling. GET/HEAD have no body.
+The runtime may accept missing Content-Length only for explicit browser GET/HEAD
+with zero body; TE, duplicate framing and ambiguity still reject.
+
+POST `/_humanymous/browser/session` accepts an empty JSON object, exact configured
+Host/Origin and same-origin Fetch Metadata. It returns exactly ten JSON fields:
+protocol,session,key,counter(0),expires,installation,tenant,origin,revision,
+authority. Scope is server provisioned, expiry bounded and keys fresh; no arbitrary
+client identity or public administration authority is minted. Browser control
+and protected requests carry X-Humanymous-Protocol, X-Humanymous-Session,
+X-Humanymous-Counter, X-Humanymous-Bucket, X-Humanymous-Deadline,
+X-Humanymous-Token. Application Authorization is separate and preserved to origin.
+The unique bootstrap route selects the protocol before credentials exist: its
+protocol marker may be absent, but if present must equal the browser protocol.
+Bootstrap rejects Authorization and X-Humanymous-Session fields. This matches
+root's actual BrowserSession::connect content-type/empty-object request.
+
+Initial browser credential support is explicitly cookie-free / explicit
+Authorization-only (including unauthenticated application routes where allowed).
+Reject every observed Cookie field. Clients use credentials=omit. A bootstrap at
+the reserved path cannot observe cookies scoped to a protected application path;
+it must not pretend to bind them. Per-target prepare or trusted application
+identity binding for HttpOnly/path-scoped cookies is a mandatory later contract,
+not removed from the overall objective. No global-cookie-digest shortcut exists.
+
+Bootstrap/collect/mutating requests require exact configured non-null Origin.
+Same-origin GET/HEAD may omit Origin only with an authenticated browser-profile
+session and same-origin Fetch Metadata. Whenever supplied, null/mismatching
+Origin rejects. Metadata requires site=same-origin, mode=same-origin,dest=empty.
+Clients construct the final Request with mode=same-origin,credentials=omit,
+redirect=error, explicit buffered bytes and no automatic retry. Unknown
+normalization/encoded-path/stream profiles remain unsupported, never downgraded.
+
+Use shared seed(session_key,last_counter) and compute_token/verify over the
+browser canonical bytes. Runtime checks exact next counter, current ten-second
+bucket plus/minus1, deadline>now and <=session expiry and <=now+configured timeout
+(1..30000ms). Reserve counter before downstream work, never resurrect after
+error. Clock rollback poisons the epoch; restart invalidates every session.
+Client owns at most one in-flight request; uncertain outcome invalidates keys.
+
+#### Counter acknowledgement
+
+Only after consuming RIT may the gateway add X-Humanymous-Protocol=the browser
+protocol, X-Humanymous-Counter=n and X-Humanymous-Ack. Use shared
+`browser::acknowledgement(key,request_token,n,bucket,status)`; verification uses
+`verify_acknowledgement` with the same fields and presented MAC. The shared
+implementation signs `humanymous.browser/0.1/ack\n` plus length-prefixed request
+MAC/newline and decimal actual HTTP status/newline, using seed(key,n) then the
+unchanged compute_token with n and bucket. Do not duplicate the implementation.
+
+Strip all origin-supplied x-humanymous-* response fields and emit gateway-owned
+values only. ACK binds consumption and actual status, not ALLOW, response body,
+collector, capture or human identity. Post-consumption4xx/5xx may carry ACK;
+pre-consumption rejection never does. An audit-poisoned epoch stays fail-closed
+even if an ACK proves its counter was spent. Client advances only after complete
+bounded body reception and a valid request-token/n/bucket/status-bound ACK.
+Missing/invalid ACK, timeout, abort, drop, redirect or body/Fetch failure invalidates
+the client epoch without guessing counter state or retrying. Initial browser
+responses are buffered; streaming browser ACK is a separate unsupported profile.
+
+#### Collection and adapter join
+
+For the new browser collect route only, an omitted/empty ClientReport.sessionId
+is assigned from the already authenticated session capability. A nonempty
+mismatching ID rejects403 after consuming the signed attempt. The request MAC
+still covers the original received bytes, not the server projection. Native0.1
+retains strict exact report/session matching. This lets root's BrowserSession
+keep capabilities private while sending actual snapshot_json output. It does
+not authenticate producer execution or qualify required.collector.
+
+A fresh collection receipt must distinguish server-issued epoch binding and
+server-observed receive time/consumed counter from client-asserted version,
+collection epoch and measured coverage. Root owns its collector envelope and
+actual Rust/WASM lifecycle. Default partial guard/advanced observations do not
+become complete merely because they were signed. Until that accepted contract is
+implemented and exercised, required.collector stays422. Native/report assertions
+remain distinct from actual transport observations and VerifiedRitProfile.
+
+Adapter0.1 strips reserved integrity headers and has null-only capture/stream
+fields. Therefore its required.rit remains422. A future adapter0.2 or trusted
+in-process join must bind a one-use runtime-owned receipt to authenticated adapter
+credential epoch/peer, installation/tenant/origin/revision, request nonce,
+connection/optional H2 stream, exact method/target/authority, ordered sanitized
+headers and complete-body digest. IPC booleans never create evidence authority.
+Runtime is the sole session/replay owner; authority keeps its own envelope nonce.
+
+#### Proxy and recovery
+
+One response-head parser must serve buffered and explicitly bounded streaming
+profiles. Preserve duplicate Set-Cookie, application Authorization, entity bytes,
+status, headers and HEAD/204/304 semantics. Reject ambiguous CL/TE, duplicate
+framing, malformed chunks/CRLF/terminal framing, unsupported coding/trailers,
+upgrades and over-budget frames. Strip hop-by-hop and nominated fields and rebuild
+only required framing. Track response_started before any client write: after a
+partial response, close sockets on error; never append a new JSON503 response.
+Complete request integrity and durable audit precede the first origin byte.
+Response streaming does not authorize request streaming, retries or failover.
+Explicit byte/lifetime budgets and backpressure are required; SSE must flush
+before origin close. Failure after dispatch can have an origin effect and is not
+reported as a zero-effect rejected precondition.
+
+Pass recovery owns scene/instance/session/nonce/expiry/replay state and uses the
+shared challenge proof-of-work/attestation primitives and frozen Engine. Porting
+the legacy realEventOK motor-count/path-length/timing/coalescing gates is forbidden
+by current accessibility constraints. Do not add its soft timing signals under
+scoring freeze, train on scene success as confirmed human, or claim a puzzle is
+human attestation. Only the server may mint l7.pass.solved after exact scoped
+instance, crypto, required attestation and durable audit; consume atomically.
+The shared Engine may upgrade only the existing score-based CHALLENGE path,
+never DENY or hard-rule CHALLENGE. Missing stable observed identity is not
+replaced with a client fingerprint/header for an identity-budget claim.
+
+#### Management, settings, service and witness
+
+Management consumes authority e346834/e8ddb4c shared transport. Use
+Listener::bind_ipc(endpoint,&Peer), LocalHandler::handle(LocalRequest,LocalContext),
+LocalResponse::json and explicit serve_handler_until(handler,Limits,shutdown,
+drain_timeout_ms). Request includes method,target,ordered headers,authorization,
+body; context.peer is actual OS identity and context.check returns trusted Unix
+millis only while cancellation/monotonic/rollback conditions pass. Recheck after
+durable work and immediately before effect. Separate listener/credentials,
+route/RBAC/Origin/CSRF/scope policies are mandatory; session/adapter credentials
+never administer. Bounded JSON65KiB only; no handler-owned socket or forwarding.
+
+Explicit until stops accepts, globally cancels, aborts/joins tracked connections
+and waits for all admission-owning contexts/workers. TimedOut is incomplete
+shutdown, not graceful success; drop alone gives no drain acknowledgement.
+Runtime creates no detached worker escape, retains custody through all work,
+and reports graceful Stopped only after drain and durable flush.
+
+Audit d001ee6/5528d74 supplies ControlAuthority and non-Clone/non-deserializable
+ActionPermit, scoped Proposal/Approval/Administrators, durable one-use ledger and
+subject-bound erasure permits. Two distinct pinned signatures must bind exact
+scope/action/target/expiry; permit.execute consumes ownership and rechecks before
+effect. Never trust approver names from a body. Permanent bans/kill/erasure remain
+dual-control. rotate_approved currently approves the current ciphertext generation,
+not a particular new secret/prepared ciphertext: it is not full destination/body-
+bound rotation. Require a future prepared-candidate flow or reject that profile.
+
+Operational settings must be typed/bounded, parent-revision CAS, audit-before-
+apply, persisted/restored and invalidate old sessions. Frozen scoring/rule/weight/
+threshold/band changes are not exposed by this write API. Without durable state,
+support only read-only settings and validated restart configuration. Prefer
+authenticated audit events as authoritative operational state over pretending
+two separate stores are atomic. Partial persistence or ambiguous effects poison
+the epoch and need explicit recovery. Stable-identity abuse/ban claims require
+an actual producer; global/session admission429 is not fingerprint flood defense.
+
+ServiceHost is an OS-independent lifecycle owner. CLI owns SCM/system-manager
+signals, signed descriptor/artifact/generation verification and credential broker;
+runtime owns bounded configuration decoding, native private-state checks, sealed
+startup, listeners, typed readiness and stop/drain/flush outcome. Accept an owned
+private reader/validated opened handle, never secret argv/env or raw numeric
+handle reconstruction. Preserve existing argv0/private stdin/stdout supervision.
+Readiness separates listener-bound, route capability, audit/witness state,
+non-secret policy commitment and product_qualified=false. Stop accepts, prohibit
+new origin dispatch after observed stop, drain, flush and report actual outcome.
+Synchronous Read/fsync/witness I/O cannot be made hard-bounded by a watch channel;
+trusted broker owns actual I/O deadlines and child reaping. Uninterruptible I/O
+or drain errors never become successful Stopped; already sent effects are
+irreversible. Unattended restart remains unqualified without a boot credential
+provider. Do not reuse installer privilege admission as service execution auth.
+
+Inject trusted CheckpointWitness and required WitnessDurability into the library
+and call audit Log::open_with_external_witness. Reuse audit WitnessServiceClient
+codec; broker owns peer authentication, actual deadlines and process lifetime.
+Missing configured transport refuses required-witness startup, never writer-only
+fallback. Same-user/co-located service is not independently qualified authority.
+Shared audit-owned Log+Custody lifetime owner and streaming-memory-bounded restart
+remain audit follow-ups; do not copy runtime SealedAudit into another crate.
+
+Future native capture ownership is narrowly authorized after claim and binding
+agreement: network/src/capture/**, one lib export and producer tests only. Leave
+existing tolerant parser/scoring/report heuristics unchanged. Qualify actual TLS
+only after bounded complete ClientHello observation plus successful handshake on
+the same connection epoch. H2 requires original SETTINGS/WU/PRIORITY and complete
+HEADERS/CONTINUATION/HPACK ordering with per-stream association before framework
+normalization. Partial/error/absent capture stays absent; H1 success is not fullH2.
+Use owned synthetic lab credentials, no personal keys or third-party probes.
+
+Browser data errors:400malformed,401session,403Origin/binding/token,
+409profile/revision/replay,422required absent plane,429admission,
+503clock/audit/state. Management authentication has its own non-discoverable
+allowlist/status policy; it does not inherit data-plane authority.
+
+Review reflected: red P0 browser forbidden headers, scoped-cookie gap, missing
+Origin/CL GET, mixed profiles and ACK ambiguity; blue one owner per primitive;
+SRE partial writes/drain/custody and synchronous I/O; DPO no raw audit or secret
+canonical diagnostics; evaluator no component/fixture/CHALLENGE-to-human success.
+Verdict: accepted for implementation; full product qualification still blocked.
 
 Version 0.1 is an experimental native loopback HTTP/1.1 application owner, not
 full Core/Gate parity. Configuration arrives over private inherited stdin;

@@ -1,7 +1,8 @@
 //! One composition owner: session, observed network, frozen engine and audit.
 use crate::{
     Rejection,
-    configuration::Configuration,
+    browser::{self, Ack},
+    configuration::{Configuration, RitProfile},
     http::{self, Request},
     session::Sessions,
 };
@@ -67,17 +68,52 @@ impl Application {
         req: &Request,
         clock: impl Fn() -> Result<u64, Rejection>,
     ) -> Result<Decision, Rejection> {
+        let mut ack = None;
+        self.decide_request(req, clock, &mut ack)
+    }
+
+    fn decide_request(
+        &mut self,
+        req: &Request,
+        clock: impl Fn() -> Result<u64, Rejection>,
+        ack: &mut Option<Ack>,
+    ) -> Result<Decision, Rejection> {
         let now = clock()?;
         self.sessions.observe(now)?;
         if req.header("host") != Some(self.config.scope.authority.as_str()) {
             return Err(Rejection::new(403, "authority"));
         }
         let path = req.target.split('?').next().unwrap_or("");
+        if path == "/_humanymous/browser/session" {
+            if req.method != "POST"
+                || req.target != path
+                || req.header("content-type") != Some("application/json")
+                || req.header("authorization").is_some()
+                || req.header("x-humanymous-session").is_some()
+                || req
+                    .header("x-humanymous-protocol")
+                    .is_some_and(|value| value != humanymous_integrity::request::browser::PROTOCOL)
+                || !serde_json::from_slice::<serde_json::Value>(&req.body)
+                    .ok()
+                    .and_then(|value| value.as_object().map(serde_json::Map::is_empty))
+                    .unwrap_or(false)
+            {
+                return Err(Rejection::new(400, "browser_bootstrap"));
+            }
+            browser::validate(&self.config, req)?;
+            let issued = self.sessions.issue_browser(&self.config, now)?;
+            return Ok(Decision::Local(
+                200,
+                serde_json::to_vec(&issued).map_err(|_| Rejection::new(503, "serialization"))?,
+            ));
+        }
+        let profile = browser::profile(req)?;
         if path == "/_humanymous/session" {
             if req.method != "POST"
                 || req.target != path
                 || !req.body.is_empty()
                 || req.header("authorization").is_some()
+                || profile != RitProfile::NativeFull
             {
                 return Err(Rejection::new(400, "session_request"));
             }
@@ -87,11 +123,13 @@ impl Application {
                 serde_json::to_vec(&issued).map_err(|_| Rejection::new(503, "serialization"))?,
             ));
         }
-        let collect = path == "/_humanymous/collect";
+        let collect = path == "/_humanymous/collect" || path == "/_humanymous/browser/collect";
         if collect {
             if req.method != "POST"
                 || req.target != path
                 || req.header("content-type") != Some("application/json")
+                || (path == "/_humanymous/browser/collect")
+                    != (profile == RitProfile::BrowserAuthOnly)
             {
                 return Err(Rejection::new(400, "collect_request"));
             }
@@ -105,15 +143,22 @@ impl Application {
                 .iter()
                 .find(|r| r.method == req.method && r.path == path)
                 .ok_or(Rejection::new(409, "route_inventory"))?;
+            if route.rit_profile != profile {
+                return Err(Rejection::new(409, "route_integrity_profile"));
+            }
             if route.required.raw_tls || route.required.original_h2 || route.required.collector {
                 return Err(Rejection::new(422, "required_capability"));
             }
         }
-        let authorized = self.sessions.authorize(&self.config, req, now)?;
+        let mut authorized = self.sessions.authorize(&self.config, req, now)?;
+        *ack = authorized.ack.take();
         let id = &authorized.session;
         let deadline = authorized.deadline;
         let (verdict, risk, rule) = if collect {
-            self.sessions.collect(id, &req.body)?;
+            match authorized.profile {
+                RitProfile::NativeFull => self.sessions.collect(id, &req.body)?,
+                RitProfile::BrowserAuthOnly => self.sessions.collect_browser(id, &req.body)?,
+            }
             ("COLLECTED".to_owned(), 0.0, String::new())
         } else {
             let mut header = HeaderInfo {
@@ -257,8 +302,16 @@ impl Application {
                 .await;
                 continue;
             }
-            let result = timeout_at(until, self.connection(&mut stream, until)).await;
+            let mut response_started = false;
+            let result = timeout_at(
+                until,
+                self.connection(&mut stream, until, &mut response_started),
+            )
+            .await;
             if let Ok(Err(error)) = result {
+                if response_started {
+                    continue;
+                }
                 let body = serde_json::to_vec(&serde_json::json!({"error":error.code}))
                     .unwrap_or_default();
                 let _ = timeout_at(until, http::write(&mut stream, error.status, &body)).await;
@@ -270,17 +323,43 @@ impl Application {
         &mut self,
         stream: &mut TcpStream,
         connection_until: Instant,
+        response_started: &mut bool,
     ) -> Result<(), Rejection> {
         let request = http::read(stream).await?;
         connected(stream)?;
-        let decision = self.decide(&request, humanymous_authority::now_ms)?;
+        let mut ack = None;
+        let decision = match self.decide_request(&request, humanymous_authority::now_ms, &mut ack) {
+            Ok(decision) => decision,
+            Err(error) => {
+                let extra = ack
+                    .as_ref()
+                    .map(|ack| ack.headers(error.status))
+                    .transpose()?
+                    .unwrap_or_default();
+                let body = serde_json::to_vec(&serde_json::json!({"error":error.code}))
+                    .map_err(|_| Rejection::new(503, "serialization"))?;
+                *response_started = true;
+                return http::write_headers(stream, error.status, &body, &extra)
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"));
+            }
+        };
         if Instant::now() >= connection_until {
             return Err(Rejection::new(503, "connection_deadline"));
         }
         match decision {
-            Decision::Local(status, body) => http::write(stream, status, &body)
-                .await
-                .map_err(|_| Rejection::new(503, "response_write")),
+            Decision::Local(status, body) => {
+                let body = zeroize::Zeroizing::new(body);
+                let extra = ack
+                    .as_ref()
+                    .map(|ack| ack.headers(status))
+                    .transpose()?
+                    .unwrap_or_default();
+                *response_started = true;
+                http::write_headers(stream, status, &body, &extra)
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))
+            }
             Decision::Origin { deadline } => {
                 connected(stream)?;
                 self.check_deadline(deadline, humanymous_authority::now_ms())?;
@@ -311,11 +390,17 @@ impl Application {
                         .read_to_end(&mut response)
                         .await
                         .map_err(|_| Rejection::new(503, "origin_read"))?;
-                    http::response(&response, request.method == "HEAD")?;
-                    Ok::<_, Rejection>(response)
+                    http::Response::parse(&response, request.method == "HEAD")
                 })
                 .await
                 .map_err(|_| Rejection::new(503, "origin_timeout"))??;
+                let extra = ack
+                    .as_ref()
+                    .map(|ack| ack.headers(response.status))
+                    .transpose()?
+                    .unwrap_or_default();
+                let response = response.encode(&extra)?;
+                *response_started = true;
                 stream
                     .write_all(&response)
                     .await

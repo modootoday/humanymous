@@ -1,5 +1,9 @@
 //! Volatile bounded sessions and request-bound rotating integrity tokens.
-use crate::{Rejection, configuration::Configuration, http::Request};
+use crate::{
+    Rejection, browser,
+    configuration::{Configuration, RitProfile},
+    http::Request,
+};
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 use humanymous_integrity::request::{self, CanonicalInput, VerifyParams};
 use humanymous_signals::report::ClientReport;
@@ -17,6 +21,9 @@ pub struct Authorization {
     pub deadline: u64,
     /// Already consumed rotating counter.
     pub counter: u64,
+    /// Exact consumed integrity contract, separate from transport provenance.
+    pub profile: RitProfile,
+    pub(crate) ack: Option<browser::Ack>,
 }
 
 /// Private provisioning reply; never audit or log its serialized bytes.
@@ -37,6 +44,7 @@ struct Session {
     counter: u64,
     expires: u64,
     report: Option<ClientReport>,
+    profile: RitProfile,
 }
 
 /// Application binding layered over the unchanged shared canonical protocol.
@@ -113,6 +121,15 @@ impl Sessions {
 
     /// Random capability plus independent secret; no caller-chosen session IDs.
     pub fn issue(&mut self, config: &Configuration, now: u64) -> Result<Issued, Rejection> {
+        self.issue_profile(config, now, RitProfile::NativeFull)
+    }
+
+    fn issue_profile(
+        &mut self,
+        config: &Configuration,
+        now: u64,
+        profile: RitProfile,
+    ) -> Result<Issued, Rejection> {
         self.observe(now)?;
         if self.entries.len() >= config.session_capacity {
             return Err(Rejection::new(429, "session_capacity"));
@@ -140,9 +157,41 @@ impl Sessions {
                 counter: 0,
                 expires: issued.expires,
                 report: None,
+                profile,
             },
         );
         Ok(issued)
+    }
+
+    /// Provision only the explicitly configured browser contract. Caller first
+    /// validates the actual request's Origin, metadata and cookie-free boundary.
+    pub(crate) fn issue_browser(
+        &mut self,
+        config: &Configuration,
+        now: u64,
+    ) -> Result<browser::Bootstrap, Rejection> {
+        if config.browser.is_none() {
+            return Err(Rejection::new(422, "browser_profile_unavailable"));
+        }
+        if now
+            .checked_add(config.session_ttl_ms)
+            .is_none_or(|value| value > request::browser::MAX_SAFE_INTEGER)
+        {
+            return Err(Rejection::new(503, "browser_expiry"));
+        }
+        let issued = self.issue_profile(config, now, RitProfile::BrowserAuthOnly)?;
+        Ok(browser::Bootstrap {
+            protocol: request::browser::PROTOCOL,
+            session: Zeroizing::new(issued.session),
+            key: Zeroizing::new(issued.key),
+            counter: issued.counter,
+            expires: issued.expires,
+            installation: config.scope.installation.clone(),
+            tenant: config.scope.tenant.clone(),
+            origin: config.scope.origin.clone(),
+            revision: config.scope.revision.clone(),
+            authority: config.scope.authority.clone(),
+        })
     }
 
     /// Validate and consume exactly the next token before downstream work.
@@ -153,15 +202,33 @@ impl Sessions {
         now: u64,
     ) -> Result<Authorization, Rejection> {
         self.observe(now)?;
-        let id = req
-            .header("authorization")
-            .and_then(|s| s.strip_prefix("Bearer "))
-            .filter(|s| s.len() == 43)
-            .ok_or(Rejection::new(401, "session"))?;
+        let profile = browser::profile(req)?;
+        if profile == RitProfile::BrowserAuthOnly {
+            browser::validate(config, req)?;
+            if req
+                .header("authorization")
+                .and_then(|v| v.strip_prefix("Bearer "))
+                .and_then(|id| self.entries.get(id))
+                .is_some_and(|session| session.profile == RitProfile::NativeFull)
+            {
+                return Err(Rejection::new(409, "mixed_integrity_profile"));
+            }
+        }
+        let id = match profile {
+            RitProfile::NativeFull => req
+                .header("authorization")
+                .and_then(|s| s.strip_prefix("Bearer ")),
+            RitProfile::BrowserAuthOnly => req.header("x-humanymous-session"),
+        }
+        .filter(|s| s.len() == 43)
+        .ok_or(Rejection::new(401, "session"))?;
         let session = self
             .entries
             .get_mut(id)
             .ok_or(Rejection::new(401, "session"))?;
+        if session.profile != profile {
+            return Err(Rejection::new(409, "integrity_profile"));
+        }
         let deadline = req.number("x-humanymous-deadline")?;
         if now >= deadline || deadline > session.expires || deadline - now > config.timeout_ms {
             return Err(Rejection::new(403, "deadline"));
@@ -171,7 +238,31 @@ impl Sessions {
         if session.counter == u64::MAX {
             return Err(Rejection::new(403, "counter_exhausted"));
         }
-        let canonical = canonical(config, req, id, deadline);
+        if profile == RitProfile::BrowserAuthOnly && counter != session.counter + 1 {
+            return Err(Rejection::new(409, "counter_replay_or_gap"));
+        }
+        let canonical = match profile {
+            RitProfile::NativeFull => canonical(config, req, id, deadline),
+            RitProfile::BrowserAuthOnly => {
+                request::browser::canonical(&request::browser::Binding {
+                    installation: &config.scope.installation,
+                    tenant: &config.scope.tenant,
+                    origin_identity: &config.scope.origin,
+                    revision: &config.scope.revision,
+                    authority: &config.scope.authority,
+                    session: id,
+                    method: &req.method,
+                    target: &req.target,
+                    counter,
+                    bucket,
+                    deadline,
+                    content_type: req.header("content-type").unwrap_or(""),
+                    application_authorization: req.header("authorization").unwrap_or(""),
+                    body: &req.body,
+                })
+                .map_err(|_| Rejection::new(400, "browser_binding"))?
+            }
+        };
         let signal = request::verify(VerifyParams {
             session_key: session.key.as_ref(),
             last_n: session.counter,
@@ -186,21 +277,41 @@ impl Sessions {
             return Err(Rejection::new(403, "request_integrity"));
         }
         session.counter = counter;
+        let ack = (profile == RitProfile::BrowserAuthOnly)
+            .then(|| browser::Ack::new(&session.key, req, counter, bucket));
         Ok(Authorization {
             session: id.into(),
             rit: signal,
             deadline,
             counter,
+            profile,
+            ack,
         })
     }
 
     /// Store only a session-bound client report; this does not prove browser collection.
     pub fn collect(&mut self, id: &str, body: &[u8]) -> Result<(), Rejection> {
-        let mut report: ClientReport =
+        let report: ClientReport =
             serde_json::from_slice(body).map_err(|_| Rejection::new(400, "client_report"))?;
         if report.session_id != id {
             return Err(Rejection::new(403, "report_session"));
         }
+        self.store_report(id, report)
+    }
+
+    /// Browser report projection is bound by the authenticated transport session,
+    /// never by a caller-selected subject. Native matching remains unchanged.
+    pub(crate) fn collect_browser(&mut self, id: &str, body: &[u8]) -> Result<(), Rejection> {
+        let mut report: ClientReport =
+            serde_json::from_slice(body).map_err(|_| Rejection::new(400, "client_report"))?;
+        if !report.session_id.is_empty() && report.session_id != id {
+            return Err(Rejection::new(403, "report_session"));
+        }
+        report.session_id = id.to_owned();
+        self.store_report(id, report)
+    }
+
+    fn store_report(&mut self, id: &str, mut report: ClientReport) -> Result<(), Rejection> {
         // Registry metadata and scores are server-owned even when observations
         // are asserted by a client. No network/server signals cross this seam.
         let mut seen = std::collections::HashSet::new();

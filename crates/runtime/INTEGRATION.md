@@ -1,5 +1,85 @@
 # Runtime integration request
 
+## Current follow-through v0.3 (source/contract work, validation held)
+
+Owner gate-edge/rust-runtime-followthrough normally claimed after authority
+e346834/e8ddb4c and audit5528d74 released. Current normative contracts live in
+runtime-application.sot.md and plan:root/20261107061820 (R01-R17). Historical native
+slice results below remain historical; none qualifies this follow-through.
+
+Current validation policy is the single program-roadmap/delivery canon: local
+coding/fmt/bounded pure unit with Cargo concurrency1; actual process/port/IPC/
+ACL/SCM/browser/Docker/CrossOS uses free standard hosted runners. No new local
+runtime/browser/Docker/global-private scan is permitted. This chat has no running
+owned process/container/session. Interactive human/AT/physical/independent
+authority evidence cannot be inferred from a hosted label.
+The earlier --locked baseline at1ee2c928 exited1 before tests because the shared
+lock needed update; actual tests0, retained as failure. Do not bypass --locked.
+
+Accepted shared browser API is integrity::request::browser::{Binding,canonical,
+PROTOCOL,MAX_SAFE_INTEGER,acknowledgement,verify_acknowledgement}; root commits
+53abb0b/fabed20 and client667e98f. Consumers import them, never copy bytes/crypto. Actual field,
+error, lifetime, profile and ACK contracts are in owning SoT v0.3. Server profile
+source is implemented; actual browser wire join is NOT_RUN. Initial profile rejects every Cookie,
+preserves application Authorization and explicitly opts routes into browser RIT.
+Required collector/TLS/H2 stay422 until actual evidence qualifies each plane.
+
+Authority transport exact API: Listener::bind_ipc(endpoint,&Peer),
+serve_handler_until(handler,Limits,shutdown_future,drain_timeout_ms). Handler
+gets owned LocalRequest{method,target,headers,authorization,body} and actual
+LocalContext{peer()/check()/remaining()}; returns bounded LocalResponse::json.
+It owns no socket. Use context.check after durable work and before effects.
+Explicit until/flush completion is required for graceful Stopped; drop/timeout
+is not success. Runtime management credentials/allowlist/RBAC remain separate.
+
+Audit supplies ControlAuthority/ActionPermit and CheckpointWitness/
+WitnessServiceClient/Log::open_with_external_witness/flush. Use the real shared
+issuer and transport, not synthetic booleans or a copied SealedAudit owner.
+Shared audit-owned sealed Log+Custody lifetime owner is a later audit task.
+rotate_approved currently binds the old ciphertext generation only, not a new
+secret/destination; full destination-bound management rotation is unsupported.
+
+Pending Cargo delta: add runtime dev-dependency
+`humanymous-collector = { path = "../collector" }` to exercise the actual shared
+client Session/ACK state machine against native TCP, not a copied algorithm.
+This reuses an existing workspace package/version; root must refresh runtime's
+Cargo.lock dependency list before --locked tests (root reports this is done).
+No production dependency added.
+New dependency/membership/feature requirements
+will be recorded here before implementation; only root changes shared manifests
+and lock. Collector/integrity remain root-owned. Native capture expansion is
+narrowly authorized in future but not yet claimed/edited. All R01-R17 remaining
+requirements and external ownership are tracked in the plan, including cookie
+compatibility, typed adapter0.2 receipts, full H2, Pass, actual service credential
+provider and whole-product human/AT/Docker gates. Product readiness remains false.
+
+Source checkpoint entrypoints for hosted verification:
+
+```
+cargo test -p humanymous-runtime --locked --lib tests::browser
+cargo test -p humanymous-runtime --locked
+cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings
+```
+
+The browser module contains two authored fixture tests using the real
+collector::session::Session against runtime native TCP/shared ACK and a separate
+origin counter. Latest source execution is NOT_RUN. It checks bootstrap10fields,
+no bootstrap ACK, CHALLENGE+ACK progress without origin, empty-sessionId report
+projection, fixture ALLOW audit-before-origin, original application Authorization,
+duplicate Set-Cookie, forged origin ACK stripping, replay and Cookie refusal.
+Native helpers remain synthetic controls, not ordinary browser/human/AT success.
+Root's actual BrowserSession API can connect to the new reserved bootstrap and
+fetch collect/protected with matching exact origin/authority and caller scope.
+required.collector remains422 pending fresh provenance, and there is no public
+admin, servicehost, Pass or TLS/H2 support in this checkpoint. R15 and R05/R06
+remaining work continue in later commits; this is not whole-plan completion.
+
+Intermediate production-only cargo check passed before final report/test edits;
+it is not validation of final bytes. Formatter and public-only spec check are
+the only checks bound to this source checkpoint. No new local runtime/Docker/
+browser execution was performed. Free hosted join/negative pilots belong to
+CI/Compose/root; no paid resources are requested or created.
+
 Owner: detection-core / rust-runtime-next. Status: source implemented and runtime
 package integrated; full workspace/CI/Docker qualification belongs to root. No further source changes are
 planned unless validation finds a defect.
