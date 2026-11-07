@@ -1504,3 +1504,36 @@ immediate snapshots. Actual command success and archive identity remain facts.
 Future root-admitted validation requires relative exclusions and mandatory local
 manifest/source coverage checks; no backdated evidence or new run was authorized.
 Private exact Runtime review hash is in baseline.json. Complete audit stays OPEN.
+
+## Corrected CLI closure, legacy limits and actual product failure
+
+CA-CLI-INPUT-01 is CLOSED only for the corrected f20 source regression. Durable
+cf64468c records a distinct approved-cache run, not fresh compilation: actual11
+passed/0failed/ignored/15filtered and fmtFIRST/check/strictClippy0. Thirty indexed
+raw attachments match. All7239 snapshot rows are unchanged; local504/root3 join
+all507 independently selected Git ZIP members with no missing/unexpected/hash
+mismatch, including16 local manifests,434 Rust files and the exact input parser.
+Registry6666/tool66 and17 environment records stay separate. Cleanup removed the
+new lease and returned the target. Prior6674-row receipt remains HOLD unchanged;
+no backdated snapshot repairs it. Native/service/Ready/signed-CLI-end-to-end and
+product gates remain OPEN. Exact private reviews and durable followup are bound.
+
+Native61b544b5 corrects the legacy process Integration opening: byte limits and
+best-effort observations do not prove bounded settlement or joined workers.
+Blocking startup/write/wait/Drop and detached reader gaps remain explicit.
+Bounded literal inventory finds29 references in15 Rust files across runner,
+audit, .NET, Browser and Python callers; this is not an exhaustive alias/cfg/
+callgraph or proof those paths are product execution. Global CA-LIFETIME stays
+OPEN; additive retained APIs do not retroactively qualify these legacy callers.
+
+Facade1734b535 sibling matrix is source-only READY after comparing declared APIs
+and manifests; Python private constructors and Ruby absent public Rust API remain
+admission decisions. No wiring, effective SDK graph, loader or runtime was tested.
+
+Independent e70/42402268161 retained failure review matches all12 attachments
+and public/connector summary. Preflight Go10/Lab31/Delivery95 passed, but actual
+Docker product FAILED18assertions/16passed/2failed with9required unavailable.
+Actor67inventory/1selected/66filtered does not identify its assertion/panic site.
+Original private report/actor streams/full cleanup and three image roles remain
+unrecovered; future framing/transport fixes do not retroactively prove the cause.
+Complete migration audit and full product qualification remain OPEN.

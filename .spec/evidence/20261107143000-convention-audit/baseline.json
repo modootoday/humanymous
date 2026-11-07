@@ -153,7 +153,7 @@
       "owner": "cli",
       "priority": "P1",
       "priority_scope": "Committed build-blocking source defect, not observed runtime exploit",
-      "state": "d795 source correction accepted; f20 actual pure11/check/Clippy/fmt0 verified, but selected snapshot omitted all local crate sources/manifests: exact executed local source closure HOLD; owner/root notified",
+      "state": "CLOSED scoped: corrected distinct f20 run/cf64468c, actual11/15filtered plus fmt/check/strictClippy0 and7239 unchanged rows including16local manifests/434.rs/507Gitjoined local-root leaves. Old6674receipt remainsHOLD; native/service/Ready/product OPEN",
       "source_file": "crates/cli/src/runtime_host/input.rs",
       "private_review_sha256": "c20c9597cd58b76eafdfa49cd760a23ed319a889aed4bfdf3b12d7daaa03b4fd",
       "actual_compilation_executed_by_auditor": false
@@ -895,5 +895,45 @@
     "cli_state": "Verified public HOLD/source_qualified=false; owner confirms no other immediate source snapshot; absolute target ancestor regex excluded all16localpackage trees",
     "cli_required_next": "Future root-admitted run needs relative path exclusions and mandatory local manifests/source coverage assertion; no retrospective evidence or current allocation",
     "complete_goal": false
+  },
+  "followup_corrected_cli_legacy_and_product_failure": {
+    "private_review_sha256": {
+      "facade-sibling-matrix-source-review-001.json": "215e6697f40b6b009869fb36a6ff521d5a1471328517c7d9ff18bfc2c2313196",
+      "legacy-process-claims-and-consumer-inventory-001.json": "c424c4bde6a6c3690acb83f179d4c88850caa3bce1f8f1f15735cd5858adc26e",
+      "browser-e70-retained-failure-review-001.json": "a13c2dbf30d702db4ee7174eb9545273b7d997464ebf145abaca83cf554b9794",
+      "cli-corrected-f20-source-closure-review-002.json": "bd7b255dd91d458fb17844863526984649b78a742d1adc1757178530d899a47d",
+      "cli-corrected-f20-durable-followup-003.json": "4f18f6a203d371af68ed9d74952251c0f195d6825ac2044418f3370be2c3e0d5"
+    },
+    "cli_receipt": "cf64468ce0d2d9ff22fc615b8ec5250d1ea3065d",
+    "cli_raw_attachments": 30,
+    "cli_raw_mismatches": 0,
+    "cli_local_root_expected_from_zip": 507,
+    "cli_missing_unexpected_archivehash_mismatches": 0,
+    "cli_actual_pure": 11,
+    "cli_filtered": 15,
+    "cli_total_unchanged_snapshot_rows": 7239,
+    "cli_cache": "Approved cache hits, not a fresh compiler run; distinct corrected workspace, newclock/lease removed",
+    "prior_cli": "6674row HOLD never retroactively repaired",
+    "legacy_docs_fix": "61b544b5be6e204451f81f6b5ef8e0cfd13a8245",
+    "legacy_doc_scope": "Opening best-effort/byte-bound claims now acknowledge blocking/unjoined work; CA-LIFETIME remainsOPEN",
+    "legacy_literal_inventory": {
+      "complete_callgraph": false,
+      "files": 15,
+      "reference_rows": 29
+    },
+    "facade_proposal": "1734b535 source-only matrix READY, no confirmedP0P1; no API wiring orSDKqualification",
+    "e70": {
+      "product": "FAILED18assertions/16passed/2failed,9requiredunavailable",
+      "assertion_or_original_private_report_verified": false,
+      "public_connector_semantic_equal": true,
+      "preflight": "Go10/Lab31/Delivery95",
+      "hash_mismatches": 0,
+      "attachments": 12,
+      "run": 42402268161,
+      "full_product_qualified": false,
+      "actor": "67inventory/1selected/66filtered"
+    },
+    "new_audit_workload": 0,
+    "goal_complete": false
   }
 }
