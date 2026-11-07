@@ -13,6 +13,77 @@ rel:
 
 ## Goal
 
+### Eight-package integration handoff (2026-11-08 Asia/Seoul)
+
+Accepted topology baseline v0 is root-owned structural-development. This handoff
+does not choose a destination package, expand visibility, authorize a move or
+qualify the future graph. Read checkpoint8affb45aeb4d31330fda8f2e5135043c6b252c05:
+the six owned Rust files below and owning SoT/plan were clean before this
+handoff-only plan edit. Report source commitc5294b5d and generic receipt proof
+8149d641 are preserved. There are no live compiler/process handles or target
+leases; validation-authority was returned at terminal. No move is in flight.
+
+The pass/rust-report-migration loan grants these six source files, the owning
+SoT/plan and its exact named report/hosted evidence bundles. It grants no broad
+attacker/defender directory, manifest, fixture, test-support, runtime, CI or lab
+path. Root must freeze and transfer the specific source slice before moving it.
+
+| Owned source path | Exact current SHA256 |
+| --- | --- |
+| crates/attacker/src/report.rs | c387c7c00155107eea711d2fd45041672649e8ed3da9d5bb1f6454c06cc74562 |
+| crates/attacker/src/report/legacy/mod.rs | 76f3c7921834a658254c1a8013cdcb8149868a885784d2faf1bd8d08a11eb40d |
+| crates/attacker/src/report/legacy/aggregate.rs | 7db9a4094bca3ba2742078e7962a2bd8adb88a9b3683449adc03295c9fc6660b |
+| crates/attacker/src/report/legacy/html.rs | ebde9669e4d44ba70d0562f52d2b89c4b412e3d2c1512d34058b46d140d5a720 |
+| crates/attacker/src/report/legacy/tests.rs | 922ed14d182f320b14382514c1f38f705261ae4ef6801b9563ebcd312fd4045e |
+| crates/attacker/src/bin/humanymous-report.rs | a23096cd699f82384fabddfe1e79dae7ca2cc601452635569bcb0a0d8836d199 |
+
+Read-only manifest anchors, not write grants: attacker Cargo.toml SHA256
+9d73631194e2f66ec136fce68ed3227107029667b7883ca8ba5136242cf8e55d;
+defender Cargo.toml SHA256
+828862fea623f02cf2214c252ea4b2464ba173ac46b102bc9d8f37b817fbfd2e.
+
+Integration hazards and consumer obligations:
+
+- Both existing packages are publish=false. The accepted family must absorb
+  responsibilities rather than publish these historical helper packages. Root
+  decides final placement and feature/API admission; no speculative shim follows.
+- Pure legacy decode/aggregate/render currently share a package with filesystem
+  publication and process/network labs. Preserve their boundary when selecting
+  features/targets: the report CLI is a maintenance tool, not scoring authority,
+  and OwnedLab/OwnedRuntime are owned-deployment test capabilities, not a remote
+  attacker or production-installation API. Keep WASM collector free of native
+  process/file lab dependencies.
+- Existing public Rust structs/modules support lab/tool consumers. Public package
+  status is not permission to expose every module. Record intentionally omits
+  Debug/Serialize for raw reason/error; keep redaction, closed strict JSON and
+  unknown unsupported accounting. No unsafe block is present in this owned slice;
+  do not move platform/FFI exceptions into it or broaden their permissions.
+- Attacker depends on defender/test-support/signals/serde/serde_json. Defender
+  reaches runtime/scoring/Integrity/audit and crypto dependencies. Consolidation
+  must avoid a core-to-runtime/tool dependency cycle and reuse the sole strict
+  decoder and sole frozen scoring engine. Check Rust visibility after merging;
+  pub(crate) shuffle/catalog helpers must not silently become public contracts.
+- catalog.rs and network/cases.rs use relative include_str scoring fixture paths.
+  The lab runtime consumes attacker network/verification APIs; CI and the lab own
+  the public receipt contract and independent file hashes. Preserve fixture raw
+  bytes, seed42 ordering, schemas/exit codes and source/image binding across moves.
+  Those paths belong to their owners and require explicit root handoffs.
+
+Required acceptance after a root-directed move: scoped locked pure tests,
+fmt/check/strict all-target Clippy on the new package/features, correct fixture
+resolution and negative strict-byte/accounting tests; execute the report CLI unit
+that was only compiled. Report8pure/2ignored/17filtered is historical evidence154600,
+not proof of the new graph. Actual CLI publication, 32-collision retention and
+Windows sharing-denial tests remain unrun and need a bounded native allocation.
+The generic26 receipt at source306eedc8 is a completed historical scoped proof
+(19evaluated/7unsupported/0errors/skips/mismatches), not qualification of a moved
+graph. CI/lab must bind any required post-move actual run to its new source and
+preserve full-product blocked status until missing capabilities are qualified.
+
+Lowest ready unmet task remains the bounded report CLI/native file boundary
+qualification, unless root first freezes this slice for integration. No current
+path move, new workload, branch change, push or graph edit is requested here.
+
 Provide a private, owned-lab-only Rust observation simulation using the existing
 verdict engine, with honest unavailable-runtime and human-control accounting.
 
