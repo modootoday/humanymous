@@ -1835,3 +1835,8 @@ helper, correcting the private live review's imprecise10-direct wording.
 Frozen atomic map/consumer/CI/lock closure, old/new test identity comparison,
 whole-workspace and clean-package qualification and actual browser/native/full
 Docker product gates remain OPEN. Audit ran no new compiler or product workload.
+
+Final Root attachment is fixed by1e2b4b38 at canonical LF SHA recorded in
+baseline.json (28407bytes). The initial87d hash was a CRLF representation of
+the authored summary, not moved-fixture drift. Only the final attached hash is
+accepted; original input bytes and historical observations remain unchanged.

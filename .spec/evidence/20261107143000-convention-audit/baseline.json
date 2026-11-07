@@ -1237,7 +1237,8 @@
       "later_root_commit": "c67d07c0114bd04793410f82f7182de7bfa6df2c",
       "core_tracked_files": 143,
       "qualification": "Root receipt explicitly leaves fullworkspace/extractedpackage/CrossOS/actualbrowser/Docker/native/main integration false",
-      "receipt_observation": "Reread after concurrent serialization edit;13 raw hash/size matches. Historical first87d89c3a observation not presented as current file hash."
+      "receipt_observation": "Final canonical LF attachment28407bytes; initial87d hash was authoredsummary CRLF worktree representation, not fixture/input drift. Only finaldf8 attachment accepted.",
+      "attachment_commit": "1e2b4b38c3778eeefd6424ca1b43f1deb4b0209f"
     }
   }
 }

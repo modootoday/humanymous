@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: e11f9a03054b656f257be4a22bc6454d8dabb67b7657bad7264e0da9553f264e, bytes: 66014, store: repo}
+  - {path: baseline.json, sha256: aec1d0683f6d5729146f4c0e148ab6ec4df67ebdc69fd90b4ecf58b0607b62d9, bytes: 66110, store: repo}
 ---
 
 # Convention audit baseline
@@ -859,3 +859,8 @@ helper, correcting the private live review's imprecise10-direct wording.
 Frozen atomic map/consumer/CI/lock closure, old/new test identity comparison,
 whole-workspace and clean-package qualification and actual browser/native/full
 Docker product gates remain OPEN. Audit ran no new compiler or product workload.
+
+Final Root attachment is fixed by1e2b4b38 at canonical LF SHA recorded in
+baseline.json (28407bytes). The initial87d hash was a CRLF representation of
+the authored summary, not moved-fixture drift. Only the final attached hash is
+accepted; original input bytes and historical observations remain unchanged.
