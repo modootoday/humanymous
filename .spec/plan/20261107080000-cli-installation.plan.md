@@ -244,6 +244,18 @@ attached privately as20261107085000. Lightweight fmt and scoped Specfold passed
 under the explicit quiet-window exception. These do not substitute for the
 newest pending Cargo or actual OS service gates.
 
+### Current-source scoped validation
+
+Root subsequently allocated B for latest CLI2679089e without the old quiet wait.
+Locked offline all-target check, reviewed runtime_host:: pure subset and all-target
+warnings-denied Clippy passed. Exact pure accounting is7passed/0failed/0ignored,
+15filtered. Before/after recursive closure366files/119nodes stayed
+98ff05fd62908b076b5ec3af2aa13690bef2bdffb0e90c40c4aa950b1a2cb58d.
+[[evidence:root/20261107100600]] records canonical mismatches and the distinction
+between stable working bytes and clean single-revision qualification. B returned;
+actual hosted service lifecycle and production observer/witness producers remain
+open. No local SCM/account change or deployment occurred.
+
 ### Executable CI path audit
 
 Current workflow/delivery source inspection found that rust-validation invokes
