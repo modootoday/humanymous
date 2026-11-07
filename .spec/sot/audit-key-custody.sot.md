@@ -12,6 +12,15 @@ rel:
 
 # Audit key custody
 
+Next accepted S1 slice is a private test-compiled inspect_native composition
+facade using one owning NativeSource and SAME policy/Limits/Control plus typed
+resource-only NativeBudget. It is now authored with one new platform-neutral
+preflight/unsupported test and controlled happy-path wiring, but NOT RUN or
+compiler-qualified. Previous3d325 proof below is exact historical qualification.
+Unavailable open_native factory remains Unsupported; no production route or
+ownership/authority token emerges. Capacity/full S1 and S2 production recovery
+design/consumer/proof/repair gates remain required after this facade slice.
+
 Linux retained-source admission follows [[plan:root/20261107135332]]. Root
 accepted the diagnostic-only quiescent cooperative-writer/trusted-namespace
 premise, dedicated WAL directory, same-held-FD statx mount ID (Unsupported if

@@ -26,29 +26,17 @@ const SIDECAR: &str = "checkpoints.jsonl";
 const LOCK: &str = ".audit-writer.lock";
 const BUFFER: usize = 8192;
 
-struct Admission {
-    max_entries: usize,
-    max_handles: usize,
-    other_handles: usize,
-}
-impl Admission {
-    fn check(&self, segments: usize) -> io::Result<()> {
-        let peak = segments
-            .checked_add(7)
-            .and_then(|value| value.checked_add(self.other_handles))
-            .ok_or_else(|| resource("native descriptor budget overflow"))?;
-        if segments > 4096
-            || self.max_entries == 0
-            || self.max_entries > 4100
-            || self.max_handles == 0
-            || self.max_handles == usize::MAX
-            || self.other_handles == usize::MAX
-            || peak > self.max_handles
-        {
-            return Err(resource("native source descriptor admission refused"));
-        }
-        Ok(())
-    }
+type Admission = crate::verification::scan::NativeBudget;
+
+pub(super) fn inspect_native(
+    path: &Path,
+    policy: &crate::storage::RecoveryPolicy<'_>,
+    limits: &Limits,
+    control: &Control<'_>,
+    budget: Admission,
+) -> io::Result<crate::verification::scan::Diagnostic> {
+    let source = NativeSource::open(path, limits, control, budget)?;
+    crate::verification::scan::inspect(&source, policy, limits, control)
 }
 
 #[derive(Clone, Copy)]

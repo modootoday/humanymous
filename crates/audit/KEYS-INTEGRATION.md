@@ -1,5 +1,17 @@
 # Sealed key compatibility integration
 
+## Pending private native diagnostic facade
+
+Root accepted test-compiled inspect_native with SAME policy/Limits/Control and
+typed resource-only NativeBudget. Source now composes sole native constructor
+and existing complete two-pass inspect without exposing guard/File/identity or
+healthy owner. Original Admission math moved to one validator. One new all-platform
+preflight/Unsupported case and controlled native happy-path facade wiring are
+authored UNRUN/uncompiled; owned rustfmt0. Existing unavailable open_native still
+Unsupported on all OSes. Historical3d325 proof below does not qualify new facade.
+Next gate proposed seven exact tests plus check/strict Clippy/unsupported-platform
+coverage when allocated; no workload/production/S2 authority implied.
+
 ## Latest isolated Linux retained Source qualification
 
 Exact3d325 native GNU Rust1.99.1 fmt/all-target check/strict Clippy and SIX

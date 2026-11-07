@@ -156,7 +156,6 @@ fn controlled_native_inspection_cursor_lifetime_and_replacement() {
         max_handles: 64,
         other_handles: 16,
     };
-    let source = NativeSource::open(&dir, &limits, &control, admission()).unwrap();
     let public = ed25519_dalek::SigningKey::from_bytes(&[7; 32])
         .verifying_key()
         .to_bytes();
@@ -169,10 +168,12 @@ fn controlled_native_inspection_cursor_lifetime_and_replacement() {
         allow_new: false,
     };
     let diagnostic =
-        crate::verification::scan::inspect(&source, &policy, &limits, &control).unwrap();
+        crate::verification::scan::inspect_native(&dir, &policy, &limits, &control, admission())
+            .unwrap();
     assert!(diagnostic.report.unwrap().ok);
     assert_eq!(diagnostic.work.record_successes, 2);
     assert_eq!(diagnostic.work.base_successes, 2);
+    let source = NativeSource::open(&dir, &limits, &control, admission()).unwrap();
     let raw = fs::read(dir.join(segment_name(1))).unwrap();
     let mut first = source.segment(1).unwrap();
     let mut second = source.segment(1).unwrap();

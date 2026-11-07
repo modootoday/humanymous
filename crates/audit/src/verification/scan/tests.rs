@@ -21,6 +21,52 @@ use std::{
 };
 mod crypto;
 
+#[test]
+fn native_facade_refuses_profiles_cancellation_and_unsupported_platforms() {
+    let cancel = AtomicBool::new(false);
+    let control = Control::new(&cancel, Duration::from_secs(30)).unwrap();
+    let limits = limits();
+    let budget = || super::NativeBudget {
+        max_entries: 16,
+        max_handles: 64,
+        other_handles: 16,
+    };
+    let refused = super::NativeBudget {
+        max_handles: 1,
+        ..budget()
+    };
+    let path = Path::new("unprovisioned-audit-source");
+    assert_eq!(
+        super::inspect_native(path, &policy(None), &limits, &control, refused)
+            .err()
+            .unwrap()
+            .kind(),
+        io::ErrorKind::FileTooLarge
+    );
+    cancel.store(true, Ordering::Release);
+    assert_eq!(
+        super::inspect_native(path, &policy(None), &limits, &control, budget())
+            .err()
+            .unwrap()
+            .kind(),
+        io::ErrorKind::Interrupted
+    );
+    cancel.store(false, Ordering::Release);
+    let error = super::inspect_native(path, &policy(None), &limits, &control, budget())
+        .err()
+        .unwrap()
+        .kind();
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    assert_eq!(error, io::ErrorKind::InvalidData);
+    #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+    assert_eq!(error, io::ErrorKind::Unsupported);
+    // The existing unavailable factory is not promoted by this test-only facade.
+    assert_eq!(
+        source::open_native(path).err().unwrap().kind(),
+        io::ErrorKind::Unsupported
+    );
+}
+
 struct Fixture {
     segments: Vec<Vec<u8>>,
     sidecar: Option<Vec<u8>>,

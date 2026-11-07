@@ -29,6 +29,37 @@ metadata failure preserved [[evidence:root/20261107143416]]; package-scoped offl
 tree retry succeeded without source/network/dependency change. Production route
 remains Unsupported, and capacity/full-S1/S2/S3 are not qualified by six tests.
 
+## Accepted next private diagnostic facade: source-only
+
+Root accepted a test-compiled inspect_native(path, SAME RecoveryPolicy/Limits/
+absolute Control, typed NativeBudget) -> Diagnostic. It is now authored: private
+scan alias routes through source dispatch to the sole NativeSource constructor
+and existing complete two-pass inspect. Guard/root/pins/native readers/identity
+never escape. NativeBudget is only a finite trusted resource reservation, with
+the original Admission math MOVED to one owning validator rather than copied.
+Unsupported platforms validate profile/control then return Unsupported without
+opening files. Existing uninhabited open_native factory STILL returns Unsupported
+on all platforms; no operational/public/Runtime/CLI/authority promotion occurs.
+
+One new platform-independent facade unit case covers descriptor refusal,
+cancellation, Linux unaliased-absolute-path refusal versus unsupported-platform
+refusal, and unchanged unavailable factory. Existing controlled Linux case now
+passes its signed two-pass happy path through this facade; raw module-private
+constructor remains for reader/lock/fault tests. Existing three native units,
+two Unix mode tests and15 subcases within one ignored controlled test preserved.
+New facade source is UNQUALIFIED; old3d325/six-case proof is historical exact source.
+Owned rustfmt returned0; no compiler/Clippy/test workload for this new slice yet.
+Next proposed allocation: check/strict Clippy plus SEVEN selected Rust tests
+(prior six and new facade unit), explicit --ignored controlled case, and separate
+unsupported-platform coverage. No workload is implied by source acceptance.
+
+Capacity fixture SOURCE preparation is accepted separately; actual FD/RSS runs
+need another allocation and cannot prove universal128MiB from finite cases.
+After facade qualification, S2 production recovery design must cover typed owner,
+unsigned versus physical-checkpoint proof roots, error/Scope compatibility,
+repair-after-authentication, append/rotation and consumer migration. The goal
+does not end at this private diagnostic facade.
+
 ## Source slice as authored (before allocated validation)
 
 The private test-compiled Linux x86_64 backend now lives under
