@@ -214,7 +214,11 @@ pub(crate) fn attribute(doc: &mut InteractiveDocument, id: &str, name: &str, val
                 if let Some(value) = value {
                     attributes.push(meari::domain::Attribute {
                         name: name.into(),
-                        value: Value::String(value.into()),
+                        value: if name == "disabled" {
+                            Value::Bool(true)
+                        } else {
+                            Value::String(value.into())
+                        },
                     });
                 }
             } else {

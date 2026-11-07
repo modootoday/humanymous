@@ -24,11 +24,31 @@ pub(crate) fn commit(doc: &mut InteractiveDocument) -> Result<(), String> {
         })
         .map(|element| element.path.clone())
         .collect();
-    for changed in doc
+    let mut changed_paths: std::collections::BTreeSet<_> = doc
         .session
         .disabled_paths
         .symmetric_difference(&next.disabled_paths)
-    {
+        .cloned()
+        .collect();
+    let markup = meari_native::application::markup::build(&doc.source, &next)?;
+    let disabled = |element: &meari_native::application::markup::Element| {
+        element.attributes.contains_key("disabled")
+            || element
+                .attributes
+                .get("aria-disabled")
+                .is_some_and(|value| value == "true")
+    };
+    for before in doc.elements() {
+        let after = markup
+            .elements
+            .iter()
+            .find(|after| after.path == before.path)
+            .ok_or("shell action identity changed")?;
+        if disabled(before) != disabled(after) {
+            changed_paths.insert(before.path.clone());
+        }
+    }
+    for changed in &changed_paths {
         if !allowed.contains(changed)
             || doc.session.widgets.values().any(|widget| {
                 widget.root == *changed
