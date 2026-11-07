@@ -11,6 +11,13 @@ fn classify(logs: &str) -> Option<&'static str> {
                 "actor_root_probe_unknown" => Some("actor_root_probe_unknown"),
                 "actor_installation" => Some("actor_installation"),
                 "actor_writer_mount" => Some("actor_writer_mount"),
+                "actor_mount_missing" => Some("actor_mount_missing"),
+                "actor_mount_lookup_denied" => Some("actor_mount_lookup_denied"),
+                "actor_mount_lookup_other" => Some("actor_mount_lookup_other"),
+                "actor_mount_symlink" => Some("actor_mount_symlink"),
+                "actor_mount_not_directory" => Some("actor_mount_not_directory"),
+                "actor_mount_owner" => Some("actor_mount_owner"),
+                "actor_mount_mode" => Some("actor_mount_mode"),
                 "actor_writer_keys" => Some("actor_writer_keys"),
                 "actor_writer_identity" => Some("actor_writer_identity"),
                 "actor_witness_bootstrap" => Some("actor_witness_bootstrap"),
@@ -63,10 +70,21 @@ mod tests {
             "actor_root_probe_unknown",
             "actor_installation",
             "actor_writer_mount",
+            "actor_mount_missing",
+            "actor_mount_lookup_denied",
+            "actor_mount_lookup_other",
+            "actor_mount_symlink",
+            "actor_mount_not_directory",
+            "actor_mount_owner",
+            "actor_mount_mode",
             "actor_writer_keys",
             "actor_writer_identity",
             "actor_witness_bootstrap",
         ] {
+            assert_eq!(
+                super::classify(&format!("HM-LAB-ACTOR-STEP {stage}")),
+                Some(stage)
+            );
             assert!(
                 contract["error_codes"]
                     .as_array()

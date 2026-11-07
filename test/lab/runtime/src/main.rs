@@ -16,6 +16,9 @@ mod dns_wire;
 mod go;
 #[cfg(unix)]
 mod installation;
+#[cfg(any(unix, test))]
+#[path = "../../mount_policy.rs"]
+mod mount_policy;
 #[cfg(unix)]
 mod origin;
 #[cfg(unix)]

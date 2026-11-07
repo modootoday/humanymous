@@ -145,6 +145,25 @@ ordinary Docker control remains600seconds and private-input commands30seconds.
 Select the image budget only at explicit Compose build/buildx build call sites.
 Actor, scenario, witness, runtime and evaluator deadlines are unchanged.
 
+The --mount-probe profile is diagnostic observation, never product qualification.
+First measure the unchanged empty-directory COPY recipe: custody-layout is the
+exact ancestor of runtime and the only owner of that recipe. Build only this
+small target. Observe fixed writer/witness roles both in the image and with
+fresh project-owned named volumes, network none, nonroot, read-only, cap-drop
+and no-new-privileges. No arbitrary role/path, foreign volume or privileged
+initialization is allowed. One shared Rust predicate retains directory,
+non-symlink, expected UID and mode&0777==0700 checks. Public refusal codes are
+closed; actual UID/GID/mode/type/error facts remain private with source/image/
+recipe binding. OBSERVED_REFUSAL is a complete diagnostic observation, never
+a passing custody policy. Missing/invalid observations or failed cleanup exit
+nonzero. Do not change the COPY recipe or policy before actual provenance is
+measured. Preserve8 attempted actor failures and unknown assertions separately
+from earlier8NOT_RUN build failures.
+Metadata observation processes have their own30second capture budget. Bound
+kernel status reads to65536bytes and reject overflow/invalid encoding. Parent
+directory facts are private nonpolicy observations only; do not create a new
+permission gate from them. Retain OS error numbers privately when available.
+
 Save the initial eight-row NOT_RUN inventory before any fetch/compiler/image
 operation. Setup failures retain the unexecuted denominator. After a case,
 independently inspect backend liveness, then await controlled actor exit and

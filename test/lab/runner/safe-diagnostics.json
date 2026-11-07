@@ -14,6 +14,9 @@
     "assertion_failed", "execution_failed", "cleanup_failed",
     "go_fixture", "go_case", "actor_hardening", "actor_root_probe_eacces",
     "actor_root_probe_unknown", "actor_installation", "actor_writer_mount",
-    "actor_writer_keys", "actor_writer_identity", "actor_witness_bootstrap"
+    "actor_writer_keys", "actor_writer_identity", "actor_witness_bootstrap",
+    "actor_mount_missing", "actor_mount_lookup_denied", "actor_mount_lookup_other",
+    "actor_mount_symlink", "actor_mount_not_directory", "actor_mount_owner", "actor_mount_mode",
+    "mount_probe_config", "mount_probe_build", "mount_probe_observation", "mount_probe_projection"
   ]
 }

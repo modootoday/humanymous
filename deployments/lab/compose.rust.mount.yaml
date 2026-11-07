@@ -1,0 +1,22 @@
+# Diagnostic only: exact runtime custody ancestor, no actor or network service.
+services:
+  mount-writer-image:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/custody-layout:${HM_LAB_IMAGE_TAG:?owned tag required}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:?immutable source required}
+      dockerfile: deployments/lab/images/product.Dockerfile
+      target: custody-layout
+    network_mode: none
+    command: [fixture, mount-provenance, writer]
+    profiles: [mount-probe]
+  mount-witness-image:
+    extends: {service: mount-writer-image}
+    user: "65533:65533"
+    command: [fixture, mount-provenance, witness]
+  mount-writer-volume:
+    extends: {service: mount-writer-image}
+    volumes: [writer-key:/writer/keys, writer-wal:/writer/wal]
+  mount-witness-volume:
+    extends: {service: mount-witness-image}
+    volumes: [witness-key:/witness/keys, witness-head:/witness/head]

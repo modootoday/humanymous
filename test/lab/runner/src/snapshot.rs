@@ -219,6 +219,9 @@ mod tests {
             "Cargo.lock",
             "crates/runtime/src/main.rs",
             "test/lab/runner/Cargo.toml",
+            "test/lab/mount_policy.rs",
+            "test/lab/runner/mount-probe-contract.json",
+            "deployments/lab/compose.rust.mount.yaml",
             "deployments/lab/images/product.Dockerfile",
         ] {
             assert!(allowed(path));

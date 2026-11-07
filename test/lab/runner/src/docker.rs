@@ -13,6 +13,7 @@ enum CommandBudget {
     Control,
     Input,
     ImageBuild,
+    Observation,
 }
 impl CommandBudget {
     fn seconds(self) -> u64 {
@@ -20,6 +21,7 @@ impl CommandBudget {
             Self::Control => 600,
             Self::Input => 30,
             Self::ImageBuild => 1200,
+            Self::Observation => 30,
         }
     }
 }
@@ -211,6 +213,9 @@ impl Docker {
     ) -> Result<Output> {
         self.invoke_budget(args, environment, required, b"", CommandBudget::ImageBuild)
     }
+    pub fn invoke_observation(&mut self, args: &[String]) -> Result<Output> {
+        self.invoke_budget(args, &[], true, b"", CommandBudget::Observation)
+    }
     fn invoke_budget(
         &mut self,
         args: &[String],
@@ -321,6 +326,7 @@ mod failure_tests {
         assert_eq!(super::CommandBudget::Control.seconds(), 600);
         assert_eq!(super::CommandBudget::Input.seconds(), 30);
         assert_eq!(super::CommandBudget::ImageBuild.seconds(), 1200);
+        assert_eq!(super::CommandBudget::Observation.seconds(), 30);
         assert_eq!(FailureKind::output(false, false), Some(FailureKind::Exit));
         assert_eq!(FailureKind::output(true, false), Some(FailureKind::Capture));
         assert_eq!(FailureKind::output(true, true), None);

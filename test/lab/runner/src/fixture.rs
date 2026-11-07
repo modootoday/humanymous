@@ -3,6 +3,7 @@ use crate::docker::Result;
 mod dns;
 #[path = "../../dns_wire.rs"]
 mod dns_wire;
+mod mount;
 use serde_json::json;
 use std::{
     fs,
@@ -38,6 +39,7 @@ fn control_request(stream: &mut TcpStream) -> std::io::Result<bool> {
 }
 pub fn run(args: &[String]) -> Result<()> {
     match args.first().map(String::as_str) {
+        Some("mount-provenance") if args.len() == 2 => mount::run(&args[1]),
         Some("dns-server") => dns::serve(),
         Some("dns-positive") => dns::positive(),
         Some("dns-snapshot") => dns::snapshot(),

@@ -27,17 +27,13 @@ pub fn fresh(
     eprintln!("HM-LAB-ACTOR-STEP actor_installation");
     let mut installation = Installation::new(false)?;
     eprintln!("HM-LAB-ACTOR-STEP actor_writer_mount");
-    use std::os::unix::fs::MetadataExt;
-    let mounted = std::fs::symlink_metadata("/writer/keys")?;
+    let mounted = crate::mount_policy::Facts::observe(Path::new("/writer/keys"));
     eprintln!(
         "HM-LAB-ACTOR-MOUNT {}",
-        json!({"schema":"humanymous.writer-key-mount/1","uid":mounted.uid(),"mode":mounted.mode()&0o777,"directory":mounted.is_dir(),"symlink":mounted.file_type().is_symlink()})
+        json!({"schema":"humanymous.writer-key-mount/1","lookup":format!("{:?}",mounted.lookup),"uid":mounted.uid,"gid":mounted.gid,"mode":mounted.mode.map(|v|v&0o777),"directory":mounted.directory,"symlink":mounted.symlink,"os_error":mounted.os_error})
     );
-    if !mounted.is_dir()
-        || mounted.file_type().is_symlink()
-        || mounted.uid() != 65532
-        || mounted.mode() & 0o777 != 0o700
-    {
+    if let Some(reason) = mounted.refusal(65532) {
+        eprintln!("HM-LAB-ACTOR-STEP {}", reason.code());
         return Err("actual mounted writer key directory refused".into());
     }
     eprintln!("HM-LAB-ACTOR-STEP actor_writer_keys");

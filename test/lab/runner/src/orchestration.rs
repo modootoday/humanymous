@@ -48,6 +48,7 @@ mod browser;
 mod go;
 mod go_fixture;
 mod go_public;
+mod mount_probe;
 mod public_receipts;
 mod requirement;
 mod startup_failure;
@@ -61,6 +62,7 @@ struct Lab {
     topology_only: bool,
     browser_product: bool,
     go_product: bool,
+    mount_probe: bool,
     go_component_verified: bool,
     stage: &'static str,
     cases: Vec<Value>,
@@ -122,6 +124,14 @@ impl Lab {
                 "go-product".into(),
             ]);
         }
+        if self.mount_probe {
+            command.extend([
+                "-f".into(),
+                self.config_file("deployments/lab/compose.rust.mount.yaml")?,
+                "--profile".into(),
+                "mount-probe".into(),
+            ]);
+        }
         command.extend(args.iter().map(|s| (*s).to_owned()));
         Ok(command)
     }
@@ -172,27 +182,35 @@ impl Lab {
             &container,
         )?;
         let host = &container["HostConfig"];
-        let mounts_allowed =
-            if service.starts_with("witness-") || matches!(service, "browser-gate" | "go-gate") {
-                let destinations: &[&str] =
-                    if matches!(service, "witness-writer" | "browser-gate" | "go-gate") {
-                        &["/writer/keys", "/writer/wal"]
-                    } else if service == "witness-key-denied" {
-                        &["/witness/keys"]
-                    } else {
-                        &["/witness/keys", "/witness/head"]
-                    };
-                container["Mounts"].as_array().is_some_and(|mounts| {
-                    mounts.len() == destinations.len()
-                        && mounts.iter().all(|m| {
-                            m["Type"] == "volume"
-                                && destinations.contains(&m["Destination"].as_str().unwrap_or(""))
-                        })
-                })
+        let mounts_allowed = if service.starts_with("witness-")
+            || matches!(
+                service,
+                "browser-gate" | "go-gate" | "mount-writer-volume" | "mount-witness-volume"
+            ) {
+            let destinations: &[&str] = if matches!(
+                service,
+                "witness-writer" | "browser-gate" | "go-gate" | "mount-writer-volume"
+            ) {
+                &["/writer/keys", "/writer/wal"]
+            } else if service == "witness-key-denied" {
+                &["/witness/keys"]
             } else {
-                container["Mounts"] == json!([])
+                &["/witness/keys", "/witness/head"]
             };
-        let expected_user = if service == "witness-transaction" {
+            container["Mounts"].as_array().is_some_and(|mounts| {
+                mounts.len() == destinations.len()
+                    && mounts.iter().all(|m| {
+                        m["Type"] == "volume"
+                            && destinations.contains(&m["Destination"].as_str().unwrap_or(""))
+                    })
+            })
+        } else {
+            container["Mounts"] == json!([])
+        };
+        let expected_user = if matches!(
+            service,
+            "witness-transaction" | "mount-witness-image" | "mount-witness-volume"
+        ) {
             "65533:65533"
         } else {
             "65532:65532"
@@ -217,6 +235,9 @@ impl Lab {
         Ok(container)
     }
     fn execute(&mut self) -> Result<()> {
+        if self.mount_probe {
+            return mount_probe::run(self);
+        }
         if self.go_product {
             return go::run(self);
         }
@@ -521,6 +542,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut topology_only = false;
     let mut browser_product = false;
     let mut go_product = false;
+    let mut mount_probe = false;
     let mut full = false;
     let mut require_go_component = false;
     let mut index = 0;
@@ -535,6 +557,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--collector" => collector = true,
             "--browser-product" => browser_product = true,
             "--go-product" => go_product = true,
+            "--mount-probe" => mount_probe = true,
             "--topology-only" => topology_only = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
@@ -543,6 +566,16 @@ pub fn run(args: &[String]) -> Result<i32> {
         index += 1;
     }
     let evidence = evidence.ok_or("--evidence required")?.canonicalize()?;
+    if mount_probe
+        && (collector
+            || topology_only
+            || browser_product
+            || go_product
+            || full
+            || require_go_component)
+    {
+        return Err("mount probe requires its own diagnostic-only fresh profile".into());
+    }
     if browser_product && (collector || topology_only) {
         return Err("browser product requires a separate fresh bundle/profile".into());
     }
@@ -589,6 +622,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         topology_only,
         browser_product,
         go_product,
+        mount_probe,
         go_component_verified: false,
         stage: "initialization",
         cases: Vec::new(),
@@ -623,7 +657,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
     let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
-    let mut evidence_types = if browser_product || go_product {
+    let mut evidence_types = if browser_product || go_product || mount_probe {
         vec![]
     } else {
         vec!["topology-control"]
@@ -634,6 +668,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         ("independent_witness", "independent-witness-component"),
         ("collector", "collector-component"),
         ("go_product", "actual-go-gate-bounded-http"),
+        ("mount_probe", "custody-layout-mount-diagnostic"),
         (
             "browser_product",
             "same-origin-browser-runtime-isolated-pilot",

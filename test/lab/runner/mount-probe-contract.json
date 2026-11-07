@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.lab-mount-probe-contract/1",
+  "report_schema": "humanymous.lab-mount-probe-public/1",
+  "private_schema": "humanymous.lab-mount-probe-ledger/1",
+  "observation_schema": "humanymous.lab-mount-observation/1",
+  "cli_flag": "--mount-probe",
+  "build_target": "custody-layout",
+  "scheduled": 4,
+  "roles": [
+    {"name":"writer","uid":65532,"paths":[{"id":"writer_keys","path":"/writer/keys","volume":"writer-key"},{"id":"writer_wal","path":"/writer/wal","volume":"writer-wal"}]},
+    {"name":"witness","uid":65533,"paths":[{"id":"witness_keys","path":"/witness/keys","volume":"witness-key"},{"id":"witness_head","path":"/witness/head","volume":"witness-head"}]}
+  ],
+  "cases": [
+    {"role":"writer","surface":"image","service":"mount-writer-image"},
+    {"role":"witness","surface":"image","service":"mount-witness-image"},
+    {"role":"writer","surface":"fresh-volume","service":"mount-writer-volume"},
+    {"role":"witness","surface":"fresh-volume","service":"mount-witness-volume"}
+  ],
+  "public_fields": ["schema","source_sha","source_manifest_sha256","recipe_sha256","image_sha256","private_receipt_sha256","run_context","observations","totals","observations_complete","raw_contents_included","full_product_qualified"],
+  "observation_fields": ["role","surface","status","paths"],
+  "path_fields": ["id","status","code"],
+  "totals_fields": ["scheduled","observed","observed_accept","observed_refusal","unobserved"],
+  "terminal_statuses": ["observed_accept","observed_refusal","not_observed"],
+  "refusal_codes": ["actor_mount_missing","actor_mount_lookup_denied","actor_mount_lookup_other","actor_mount_symlink","actor_mount_not_directory","actor_mount_owner","actor_mount_mode"],
+  "qualification": "diagnostic observation only; observed refusal is never passing custody policy",
+  "full_product_qualified": false
+}

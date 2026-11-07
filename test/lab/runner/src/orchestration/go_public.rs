@@ -59,7 +59,7 @@ pub(super) fn run_context() -> Result<Value> {
         |name| std::env::var(name).ok(),
     )
 }
-fn public_context(context: &Value) -> Result<Value> {
+pub(super) fn public_context(context: &Value) -> Result<Value> {
     if context["authenticated_provenance"] != false
         || context["requires_external_job_verification"] != true
     {
