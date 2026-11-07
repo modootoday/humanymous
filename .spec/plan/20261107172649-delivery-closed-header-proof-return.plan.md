@@ -128,6 +128,52 @@ bind source, run, job and conclusion; log transport is not a signed attestation.
 
 ## Record
 
+Producer and receiver frontends are now connected in source. The owner compiler
+identity/actual argv sidecars are consumed without exporting their private raw
+paths; Delivery independently reads the compiler bytes. Tool/config observation
+precedes the single original source-after snapshot. Pure preparation follows,
+admitting the full bundle before creating any chunk. The public component report
+separates execution_passed from retention-incomplete; a prepared proof is not yet
+an independently received proof. Generation status uses header-generation exit,
+not the cbindgen version probe, with an authored regression case.
+
+The receiver accepts bounded retained job logs plus separately captured official
+run/job JSON. It requires matching source/run/attempt/header job, successful
+terminal states and standard Ubuntu24 hosted metadata. Supplied JSON still needs
+trusted out-of-band official capture; it is not authenticated merely by parsing.
+Raw API log and metadata hashes are distinct from the canonical manifest digest.
+All decoded original files are validated before native-private reconstruction.
+No caller-provided arbitrary path table or partial proof obtains completion.
+
+The existing workflow now routes header to its separate exact pinned compiler
+container job; service/capture/archive roles remain separate. Explicit manual
+input selects the role; branch defaults apply to push. The catalog and policy
+guard are updated atomically for four closed jobs/roles and reject relaxed image,
+container options, preflight dependency and success masking. The container root
+filesystem is writable for checkout/toolchain; only the token permission is
+contents:read. One trigger push OR one manual dispatch is allowed by integration
+sequencing, never push plus a duplicate manual run.
+
+All new Rust remains UNCOMPILED/NOT_RUN. Existing native-security manifest/lock
+edge is now committed by root0954deb8; metadata success is not code qualification.
+Expected full Delivery unit count is107 (hypothesis), including the new source,
+admission, transport, timestamp, supplied-metadata and generator-status checks.
+Actual private-provider failure/success pilots, exact candidate serialized count/
+size approval, owner29 tests/strict Clippy and actual hosted/receiver followthrough
+remain required before any full header proof claim.
+
+Read-only preparation commands are also authored: header-proof-plan EXPECTED_SHA
+checks the compiled checkout identity, compares actual working source metadata to
+raw canonical Git blobs, and reports exact serialized snapshot bytes/counts/hash
+without creating a hosted context; header-proof-parent ABS_PARENT invokes the
+shared native held-parent verifier without creating or repairing directories.
+Its result is an observation during that check, not a retained future lease.
+PowerShell ACL planning observed UserProfile protected/canonical, while .codex
+and the project evidence parent were not protected. This does not qualify any
+parent against the native backend: actual ordinary identity/inheritable DACL
+checks still must run before the costly hosted attempt. No SCM, account or ACL
+mutation was performed by this planning inventory.
+
 Integration subsequently accepted the genuine standard Ubuntu24 hosted job with
 the exact R3 compiler-image container, preserving Debian18 compiler identity and
 no image-attestation claim. Typed admission, a raw Git-blob expectation builder,

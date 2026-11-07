@@ -7,8 +7,6 @@ mod dependency_summary;
 mod docker_source;
 mod evidence;
 mod go_product;
-// Transport core is test-only until its profile admission and private IO are wired.
-#[cfg(test)]
 mod header_proof;
 mod image_candidates;
 mod image_scan;
@@ -104,6 +102,9 @@ fn run() -> Result<()> {
         "audit-closure" => package::audit_closure(&root),
         "audit-source-check" => { println!("{}", audit_source::check(&root, argument(1)?)?); Ok(()) },
         "service-component" => service_component::run(&root),
+        "header-proof-parent" => header_proof::parent(Path::new(argument(1)?)),
+        "header-proof-plan" => header_proof::plan(&root,argument(1)?),
+        "header-proof-receive" => header_proof::receive(&root,Path::new(argument(1)?),Path::new(argument(2)?),Path::new(argument(3)?),Path::new(argument(4)?)),
         "archive-cache" => archive_cache::run(&root),
         "register-evidence" => evidence::register(Path::new(argument(1)?), argument(2)?),
         "verify-images" => supply::verify_images(&root),

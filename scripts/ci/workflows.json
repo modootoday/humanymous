@@ -18,7 +18,7 @@
     {"file":"wargame-validation.yml","name":"CI / Wargame","jobs":["preflight","product"],"concurrency":{"group":"wargame-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"image-validation.yml","name":"CI / Images","jobs":["preflight","image"],"concurrency":{"group":"image-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"mount-probe-validation.yml","name":"CI / Mount diagnostic","jobs":["preflight","probe"],"concurrency":{"group":"mount-probe-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
-    {"file":"component-validation.yml","name":"CI / Native components","jobs":["preflight","component","service"],"concurrency":{"group":"native-component-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
+    {"file":"component-validation.yml","name":"CI / Native components","jobs":["preflight","component","service","header"],"concurrency":{"group":"native-component-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"browser-product-validation.yml","name":"CI / Browser product diagnostic","jobs":["preflight","product"],"concurrency":{"group":"browser-product-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"python-validation.yml","name":"CI / Python component","jobs":["component"],"concurrency":{"group":"python-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"go-validation.yml","name":"CI / Go component","jobs":["preflight","product"],"concurrency":{"group":"go-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},

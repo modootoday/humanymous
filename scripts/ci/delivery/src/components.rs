@@ -279,19 +279,58 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
         "archive" => native_archive::run(root, &dir, &mut report, &before),
         _ => header(root, &dir, &mut report),
     };
+    let proof_observation = if kind == "header" && result.is_ok() {
+        match crate::header_proof::observe(root, &dir) {
+            Ok(value) => {
+                report["header"]["proof_observation"] = value;
+                Ok(())
+            }
+            Err(error) => Err(error),
+        }
+    } else {
+        Ok(())
+    };
     let after = source::snapshot(root)?;
     write_json(&dir.join("source-after.json"), &after)?;
     let changed = before["source_sha"] != after["source_sha"]
         || before["manifest_sha256"] != after["manifest_sha256"];
     report["source_changed"] = json!(changed);
-    if result.is_ok() && !changed {
+    let prepared = if kind == "header" {
+        if result.is_ok() && !changed && proof_observation.is_ok() {
+            crate::header_proof::prepare(root, &dir, &report).map(Some)
+        } else {
+            Err("header retained proof prerequisites incomplete".into())
+        }
+    } else {
+        Ok(None)
+    };
+    if kind == "header" {
+        report["execution_passed"] = json!(result.is_ok() && !changed);
+        report["proof_return"] = match &prepared {
+            Ok(Some(value)) => value.summary.clone(),
+            _ => json!({"state":"retention-incomplete","payload_exported":false}),
+        };
+    }
+    if result.is_ok() && !changed && prepared.is_ok() {
         report["status"] = json!("passed");
     }
     write_json(&dir.join("component.json"), &report)?;
     evidence::register(&dir, "Source-bound hosted component")?;
     evidence::emit_public_summary("Source-bound hosted component", &report)?;
     result?;
-    require(!changed, "component source changed during execution")
+    require(!changed, "component source changed during execution")?;
+    proof_observation?;
+    if let Some(proof) = prepared? {
+        use std::io::Write;
+        let mut stdout = std::io::stdout().lock();
+        stdout
+            .write_all(proof.frames.as_bytes())
+            .map_err(|_| "header proof stdout write failed")?;
+        stdout
+            .flush()
+            .map_err(|_| "header proof stdout flush failed")?;
+    }
+    Ok(())
 }
 #[cfg(test)]
 mod tests {

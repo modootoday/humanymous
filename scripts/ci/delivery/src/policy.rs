@@ -206,15 +206,18 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 && doc["on"]["push"]["branches"]
                     == json!([
                         "codex/native-component-validation",
-                        "codex/native-artifact-validation"
+                        "codex/native-artifact-validation",
+                        "codex/service-component-validation",
+                        "codex/header-component-validation"
                     ])
                 && input["type"] == "choice"
                 && input["default"] == "capture"
                 && input["required"] == true
-                && input["options"] == json!(["capture", "header", "archive"])
-                && jobs.len() == 2
+                && input["options"] == json!(["capture", "header", "archive", "service"])
+                && jobs.len() == 4
                 && jobs["component"]["needs"] == "preflight"
-                && jobs["component"].get("if").is_none()
+                && jobs["component"]["if"]
+                    == "${{ inputs.component != 'service' && inputs.component != 'header' && (github.event_name != 'push' || (github.ref != 'refs/heads/codex/service-component-validation' && github.ref != 'refs/heads/codex/header-component-validation')) }}"
                 && jobs["component"].get("continue-on-error").is_none()
                 && jobs["preflight"]["timeout-minutes"] == 25
                 && jobs["component"]["timeout-minutes"] == 35
@@ -222,9 +225,14 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                     == "${{ inputs.component || (github.ref == 'refs/heads/codex/native-artifact-validation' && 'archive') || 'capture' }}",
             "native caller must retain closed targets and bounded preflight",
         )?;
-        for job in ["preflight", "component"] {
+        for job in ["preflight", "component", "service", "header"] {
             require(
-                jobs[job]["runs-on"] == "ubuntu-24.04"
+                jobs[job]["runs-on"]
+                    == if job == "service" {
+                        "windows-2025"
+                    } else {
+                        "ubuntu-24.04"
+                    }
                     && jobs[job]["steps"].as_array().is_some_and(|steps| {
                         steps.iter().any(|step| {
                             step["uses"]
@@ -236,6 +244,47 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 "native caller requires exact-source hosted checkout",
             )?;
         }
+        for (job, condition, minutes, command) in [
+            (
+                "service",
+                "${{ inputs.component == 'service' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/service-component-validation') }}",
+                40,
+                "cargo run --locked -p humanymous-delivery -- service-component",
+            ),
+            (
+                "header",
+                "${{ inputs.component == 'header' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/header-component-validation') }}",
+                35,
+                "cargo run --locked -p humanymous-delivery -- native-component header",
+            ),
+        ] {
+            require(
+                jobs[job]["needs"] == "preflight"
+                    && jobs[job]["if"] == condition
+                    && jobs[job]["timeout-minutes"] == minutes
+                    && jobs[job].get("continue-on-error").is_none()
+                    && jobs[job]["steps"].as_array().is_some_and(|steps| {
+                        steps.iter().any(|step| {
+                            step["run"] == command
+                                && step.get("if").is_none()
+                                && step.get("continue-on-error").is_none()
+                        })
+                    }),
+                "closed header/service caller or failure propagation changed",
+            )?;
+        }
+        let profile: Value = serde_json::from_str(include_str!(
+            "../../../../adapters/native/header-proof-profile.json"
+        ))
+        .map_err(|_| "header canonical profile invalid")?;
+        require(
+            jobs["header"]["container"]["image"] == profile["image"]
+                && jobs["header"]["container"]["options"]
+                    == "--cpus 1 --memory 2g --pids-limit 256 --cap-drop ALL --security-opt no-new-privileges"
+                && jobs["component"].get("container").is_none()
+                && jobs["service"].get("container").is_none(),
+            "header declared compiler venue must remain exact and isolated from other profiles",
+        )?;
         let preflight = jobs["preflight"]["steps"]
             .as_array()
             .ok_or("native preflight absent")?;
@@ -1100,7 +1149,7 @@ mod tests {
             .unwrap()
             .1;
         assert!(document("component-validation.yml", &original).is_ok());
-        for mutation in 0..6 {
+        for mutation in 0..10 {
             let mut changed = original.clone();
             match mutation {
                 0 => {
@@ -1118,9 +1167,17 @@ mod tests {
                 }
                 3 => changed["jobs"]["component"]["needs"] = json!([]),
                 4 => changed["jobs"]["component"]["continue-on-error"] = json!(true),
-                _ => {
+                5 => {
                     changed["jobs"]["component"]["env"]["HUMANYMOUS_NATIVE_COMPONENT"] =
                         json!("${{ inputs.component || 'capture' }}")
+                }
+                6 => changed["jobs"]["header"]["container"]["image"] = json!("ubuntu:latest"),
+                7 => changed["jobs"]["header"]["needs"] = json!([]),
+                8 => changed["jobs"]["header"]["container"]["options"] = json!("--privileged"),
+                _ => {
+                    changed["jobs"]["service"]["steps"][2]["run"] = json!(
+                        "cargo run --locked -p humanymous-delivery -- service-component || true"
+                    )
                 }
             }
             assert!(document("component-validation.yml", &changed).is_err());

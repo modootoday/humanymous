@@ -116,6 +116,10 @@ mod tests {
             assert_eq!(extract(log.as_bytes(), &limits).unwrap(), body);
         }
         assert_eq!(extract(body.as_bytes(), &limits).unwrap(), body);
+        assert_eq!(
+            extract(body.replace('\n', "\r\n").as_bytes(), &limits).unwrap(),
+            body
+        );
         for stamp in [
             "2026-02-29T17:06:36Z",
             "2026-11-07T24:06:36Z",

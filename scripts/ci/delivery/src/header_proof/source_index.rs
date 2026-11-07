@@ -11,7 +11,7 @@ fn public_path(path: &str) -> bool {
         && source::SCOPES.iter().any(|scope| {
             path == *scope
                 || path
-                    .strip_prefix(scope)
+                    .strip_prefix(*scope)
                     .is_some_and(|rest| rest.starts_with('/'))
         })
 }
@@ -55,11 +55,19 @@ fn inventory(text: &str) -> Result<BTreeMap<String, (String, u64)>> {
 impl Expected {
     pub(super) fn git(root: &Path, sha: &str, run: u64, attempt: u64, job: &str) -> Result<Self> {
         require(
-            crate::lab_receipts::digest(&serde_json::Value::String(sha.into()), 40)
-                && run > 0
-                && attempt > 0
-                && job == "header",
-            "header expected Git/run identity refused",
+            run > 0 && attempt > 0 && job == "header",
+            "header expected run identity refused",
+        )?;
+        let mut expected = Self::source(root, sha)?;
+        expected.run_id = run;
+        expected.run_attempt = attempt;
+        expected.job_name = job.into();
+        Ok(expected)
+    }
+    pub(super) fn source(root: &Path, sha: &str) -> Result<Self> {
+        require(
+            crate::lab_receipts::digest(&serde_json::Value::String(sha.into()), 40),
+            "header expected source identity refused",
         )?;
         let mut args = vec!["ls-tree", "-r", "-l", "--full-tree", sha, "--"];
         args.extend_from_slice(source::SCOPES);
@@ -89,9 +97,9 @@ impl Expected {
         }
         Ok(Self {
             source_sha: sha.into(),
-            run_id: run,
-            run_attempt: attempt,
-            job_name: job.into(),
+            run_id: 0,
+            run_attempt: 0,
+            job_name: String::new(),
             canonical_tree_sha256: source::sha(canonical.as_bytes()),
             inputs,
         })

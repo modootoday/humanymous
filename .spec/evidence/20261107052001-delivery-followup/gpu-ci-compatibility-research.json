@@ -1,0 +1,98 @@
+{
+  "schema": "humanymous.delivery-gpu-ci-research/1",
+  "observed_at_utc": "2026-11-07T18:32:36Z",
+  "status": "research-only",
+  "gpu_acquired": false,
+  "gpu_workload_executed": false,
+  "driver_or_sdk_installed": false,
+  "dependency_added": false,
+  "workflow_enabled": false,
+  "existing_cpu_experiments_changed": false,
+  "official_sources": [
+    {
+      "url": "https://docs.github.com/en/billing/reference/actions-runner-pricing",
+      "facts": [
+        "GPU larger Linux four-core: USD0.052/min; Windows four-core: USD0.102/min.",
+        "Each job rounds to whole minutes; larger runners are billed for public repositories and require eligible organization plans.",
+        "macOS M2 Pro larger rate: USD0.102/min."
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/larger-runners",
+      "facts": [
+        "GPU larger specifications list Tesla T4, 16GB VRAM, four CPUs, 28GB RAM, 176GB SSD for Ubuntu and Windows.",
+        "macOS xlarge arm64 M2 advertises eight GPU acceleration cores. This does not qualify our existing standard macOS jobs."
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "facts": [
+        "Standard public hosted runners are free; their table specifies CPU/RAM/storage/architecture, not a tested GPU execution receipt."
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/billing/concepts/product-billing/github-actions",
+      "facts": [
+        "Current documentation lists self-hosted Actions usage as free; separately owned hardware/provider/energy/driver costs are not covered by that statement."
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/README.md",
+      "facts": [
+        "Versioned research reference for Vulkan/Metal/D3D12/OpenGL native and WebGPU/WebGL2 web backend availability; not a selected dependency or MSRV qualification."
+      ]
+    },
+    {
+      "url": "https://docs.rs/wgpu/30.0.1/wgpu/type.RequestAdapterOptions.html",
+      "facts": [
+        "force_fallback_adapter selects a fallback, generally software implementation."
+      ]
+    },
+    {
+      "url": "https://docs.rs/wgpu/30.0.1/wgpu/enum.DeviceType.html",
+      "facts": [
+        "DeviceType distinguishes CPU/software, integrated, discrete, virtual and unknown. Reported type alone is not hardware attestation."
+      ]
+    },
+    {
+      "url": "https://docs.mesa3d.org/drivers/llvmpipe.html",
+      "facts": [
+        "LLVMpipe is a CPU software rasterizer; a graphics API pass on it does not prove physical GPU acceleration."
+      ]
+    }
+  ],
+  "repository_observation": {
+    "paths_checked": [
+      "Cargo.toml",
+      "Cargo.lock",
+      "scripts/ci/delivery/Cargo.toml"
+    ],
+    "case_sensitive_search_terms": [
+      "wgpu",
+      "cuda",
+      "cudarc"
+    ],
+    "matches": 0,
+    "meaning": "Narrow current manifest/lock inventory only; not proof that no GPU-related API exists anywhere."
+  },
+  "proposed_ci_classes": [
+    "required-cpu-baseline",
+    "optional-accelerator-compile-only",
+    "actual-software-adapter-component",
+    "actual-physical-or-declared-virtual-gpu-component",
+    "full-source-bound-product-e2e"
+  ],
+  "required_evidence": [
+    "Exact source, feature, image/OS/architecture and Rust/toolchain/driver/runtime identity",
+    "Adapter classification/vendor/device and private raw observation; no public serial/UUID or credentials",
+    "Actual requested limits, transfer/staging/queue/allocation/readback time, cold/warm distinction and bounded RAM/VRAM",
+    "CPU/GPU numeric and verdict parity, edge cases and frozen detection configuration",
+    "Original work/cleanup deadlines, bounded queues, device-loss/cancel/fallback outcomes and terminal resource evidence"
+  ],
+  "remaining_gaps": [
+    "No repository GPU backend choice, optional feature contract, driver/image pin or Rust1.99.1 compatibility proof.",
+    "No approved shader/foreign-code/unsafe exception; no baseline CUDA dependency or paid runner acquisition.",
+    "No actual hardware/software adapter enumeration or GPU execution measurement in this work.",
+    "Root owns cross-cutting CPU/GPU policy; this delivery proposal does not alter scoring or existing CPU experiments."
+  ]
+}

@@ -5,8 +5,10 @@ use serde_json::{Value, json};
 mod actions_log;
 mod admission;
 mod codec;
+mod frontend;
 mod private_io;
 mod source_index;
+pub(crate) use frontend::{observe, parent, plan, prepare, receive};
 
 const PREFIX: &str = "HUMANYMOUS_HEADER_PROOF_V1 ";
 const FILES: usize = 16;

@@ -39,6 +39,11 @@ fn directory(path: &Path) -> Result<File> {
     }
     Ok(file)
 }
+pub(super) fn check_parent(path: &Path) -> Result<()> {
+    require(path.is_absolute(), "private proof parent must be absolute")?;
+    let _held = directory(path)?;
+    Ok(())
+}
 fn verify(file: &File, is_directory: bool) -> Result<()> {
     #[cfg(windows)]
     {

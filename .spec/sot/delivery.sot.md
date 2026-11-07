@@ -26,6 +26,75 @@ the final delivery runner requirements remain unchanged.
 
 ## Rust-only delivery follow-up contract v2
 
+### GPU CI compatibility research (proposal only)
+
+Keep the required CPU build/test baseline independent of CUDA. This delivery
+proposal changes no backend, model, detection predicate, dependency or workflow.
+Root owns cross-cutting policy; new GPU implementation and any shader/unsafe
+exception require a separately reviewed decision. Existing CPU experiments
+finish unchanged. Current primary-source research is attached as
+gpu-ci-compatibility-research.json; no GPU workload or provisioning occurred.
+
+GitHub's current GPU larger-runner table lists an Ubuntu/Windows Tesla T4
+configuration with16GB VRAM/4 CPUs/28GB RAM/176GB SSD. Its current rates are
+USD0.052/min Linux and0.102/min Windows, rounded per job; larger runners are paid
+even for public repositories. Standard public hosted jobs remain the CPU
+baseline and supply no physical-GPU qualification merely from an OS label.
+[Specifications](https://docs.github.com/en/actions/reference/runners/larger-runners),
+[pricing](https://docs.github.com/en/billing/reference/actions-runner-pricing),
+[standard runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+Self-hosted Actions usage is currently listed as free by GitHub; independently
+owned host/cloud/driver/energy costs remain outside that statement.
+[Billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions).
+
+| Candidate CI venue | Compatibility to investigate | Evidence boundary |
+| --- | --- | --- |
+| Existing Linux/Windows x64/arm64 standard jobs | CPU baseline; optional feature compilation | Does not prove actual accelerator execution |
+| Windows x64/arm64 owned GPU host | D3D12/Vulkan and exact supported driver/vendor tuple | Native adapter/driver observation and actual workload required; no CUDA baseline |
+| Linux x64/arm64 owned GPU host | Vulkan or separately approved vendor compute backend | Host driver plus container userspace/runtime must be bound independently |
+| macOS Intel/Apple silicon | Metal where actually exposed by the selected venue | CPU architecture alone is insufficient; advertised xlarge GPU hardware is a separate paid venue |
+| Browser/WASM | WebGPU or fallback graphics API where genuinely available | Browser/backend/device and actual workload receipts; no inference from headless success |
+| Software graphics adapter | Deterministic API/component coverage | Never counted as physical GPU performance or require-GPU success |
+
+The backend rows are investigation targets, not project support declarations.
+The versioned [wgpu30.0.1 reference](https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/README.md)
+documents native Vulkan/Metal/D3D12/OpenGL and web WebGPU/WebGL2 routes; this
+research selects no package version. Its
+[adapter categories](https://docs.rs/wgpu/30.0.1/wgpu/enum.DeviceType.html)
+distinguish CPU/software, integrated, discrete, virtual and unknown; reported
+categories are not hardware attestation. An explicit fallback request generally
+selects software according to its
+[request contract](https://docs.rs/wgpu/30.0.1/wgpu/type.RequestAdapterOptions.html).
+[LLVMpipe](https://docs.mesa3d.org/drivers/llvmpipe.html) is a CPU software rasterizer.
+
+Proposed gate ordering: required CPU baseline, optional accelerator feature
+compile, actual software-adapter component, separately allocated real/virtual
+GPU pilot, then relevant product e2e. Compile-only/software/mock/unsupported cases
+never satisfy require-GPU. Prefer CPU for unqualified/small/latency-sensitive
+work; auto selection needs measured end-to-end benefit including upload,
+staging, queue, execution, readback and synchronization. Require-GPU refuses
+missing/unknown/software adapters. CPU retry after device loss is eligible only
+for pure, uncommitted work within the original budget; no duplicated business
+effect or renewed deadline may be hidden as fallback. These are proposals for
+root synthesis, not an implemented scheduler.
+
+Require-GPU is an operator execution requirement, never a scoring or Pass/
+CHALLENGE verdict. Adapter availability, vendor and rendering speed introduce no
+new detection tell or accessibility requirement. Public diagnostics should omit
+serials/UUIDs/user traces; privately retained adapter observations need an
+explicit bounded projection before publication.
+
+Parity must preserve frozen verdicts and boundary behavior; floating reduction
+order, precision/FMA, NaN/overflow, batch shape and random seeds need explicit
+tests rather than a silent tolerance that moves a verdict. Bound queue depth,
+RAM/VRAM, transfers, contention, cancellation and retained cleanup; Drop/device
+destruction is not evidence that GPU work finished. Reproducibility records must
+separate immutable source/image/toolchain from mutable host driver/device state.
+Do not assume a driver/kernel/model cache, reuse a CPU-only artifact as GPU
+qualification, broaden automatic uploads, or provision paid resources from this
+research. Actual CPU/GPU parity, device-loss and private-data handling pilots
+remain absent.
+
 ### Standalone hosted service component (source prepared; not executed)
 
 The existing component-validation caller gains the closed service choice and

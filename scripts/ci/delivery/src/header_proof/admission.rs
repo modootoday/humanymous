@@ -211,12 +211,18 @@ impl Profile {
     pub(super) fn paths(&self) -> &[String] {
         &self.paths
     }
+    pub(super) fn value(&self) -> &Value {
+        &self.value
+    }
+    pub(super) fn sha256(&self) -> &str {
+        &self.sha256
+    }
     pub(super) fn limits(&self) -> Result<Limits> {
         Limits::profile(&self.value)
     }
 }
 
-fn snapshot(bytes: &[u8], expected: &Expected, cap: usize) -> Result<()> {
+pub(super) fn snapshot(bytes: &[u8], expected: &Expected, cap: usize) -> Result<()> {
     let value = strict(bytes, cap)?;
     fields(
         &value,
@@ -314,9 +320,9 @@ pub(super) fn validate(bundle: &Bundle, profile: &Profile, expected: &Expected) 
                     .split('/')
                     .any(|part| matches!(part, ".spec.local" | ".git"))
                 && source::SCOPES.iter().any(|scope| {
-                    path == scope
+                    path.as_str() == *scope
                         || path
-                            .strip_prefix(scope)
+                            .strip_prefix(*scope)
                             .is_some_and(|rest| rest.starts_with('/'))
                 })
                 && crate::lab_receipts::digest(&Value::String(input.git_object_id.clone()), 40)

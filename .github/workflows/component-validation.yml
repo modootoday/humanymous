@@ -2,7 +2,7 @@
 name: CI / Native components
 'on':
   push:
-    branches: [codex/native-component-validation, codex/native-artifact-validation, codex/service-component-validation]
+    branches: [codex/native-component-validation, codex/native-artifact-validation, codex/service-component-validation, codex/header-component-validation]
   workflow_dispatch:
     inputs:
       component:
@@ -48,7 +48,7 @@ jobs:
       run: cargo run --locked -p humanymous-delivery -- policy
   component:
     needs: preflight
-    if: ${{ inputs.component != 'service' && github.ref != 'refs/heads/codex/service-component-validation' }}
+    if: ${{ inputs.component != 'service' && inputs.component != 'header' && (github.event_name != 'push' || (github.ref != 'refs/heads/codex/service-component-validation' && github.ref != 'refs/heads/codex/header-component-validation')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
@@ -66,7 +66,7 @@ jobs:
       run: cargo run --locked -p humanymous-delivery -- native-component "$HUMANYMOUS_NATIVE_COMPONENT"
   service:
     needs: preflight
-    if: ${{ inputs.component == 'service' || github.ref == 'refs/heads/codex/service-component-validation' }}
+    if: ${{ inputs.component == 'service' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/service-component-validation') }}
     runs-on: windows-2025
     timeout-minutes: 40
     steps:
@@ -80,3 +80,22 @@ jobs:
         toolchain: 1.99.1
     - name: Execute hosted service component and no-launch cleanup observation
       run: cargo run --locked -p humanymous-delivery -- service-component
+  header:
+    needs: preflight
+    if: ${{ inputs.component == 'header' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/header-component-validation') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    container:
+      image: docker.io/silkeh/clang@sha256:9388794775d1393c16b6897b4775b6d3e29459319de0bfafec59a20262e1fa68
+      options: --cpus 1 --memory 2g --pids-limit 256 --cap-drop ALL --security-opt no-new-privileges
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Validate generated header and return closed original-byte proof
+      run: cargo run --locked -p humanymous-delivery -- native-component header
