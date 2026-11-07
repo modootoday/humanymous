@@ -68,6 +68,9 @@ fn run() -> io::Result<i32> {
     if mode == "controlled-capture" {
         return controlled::run(args);
     }
+    if mode == "summarize-service" {
+        return service::summary::run(args);
+    }
     let options = options(&mut args, mode != "summarize")?;
     let result = match mode.as_str() {
         "native" => pilot::run(&options),

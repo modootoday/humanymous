@@ -936,3 +936,45 @@ or hidden target reuse. Actual blocked IO/partial workers/descendant EOF and nat
 producer/admitted host launch remain open. The next accepted launch owner design
 must hold actual native admission/custody rather than convert Authority DATA or
 an arbitrary Command/PID/hash into a host permission.
+
+## Service-component owner summary source contract
+
+Delivery explicitly requested the owner seam for its future
+scripts/ci/delivery/src/service_component.rs caller. New read-only CLI command
+summarize-service takes EXACT six flag/value pairs: --source ABS_RAW_REPORT,
+--report NEW_ABS_PUBLIC_OUTPUT, --actor-case normal|after-grant,
+--expected-source-sha LOWERHEX40_OR64, --expected-run-id POSITIVE_CANONICAL_U64,
+--observed-exit-code 2|1. No dependency/common-graph change or second13fact policy.
+The observed process code and expected SHA/run are caller-supplied DATA; the
+Delivery owner must obtain those from its actual retained process and original
+source closure. Summary validation cannot manufacture actual native authority.
+
+Report input is regular/non-symlink and bounded16MiB before strict duplicate-key
+JSON decoding; derived service/runtime-service list-stdout/list-stderr/stdout/
+stderr inputs are individually bounded1MiB. Public output is create-new, typed
+whitelisted JSON+LF, including raw-report/source-manifest/log hashes and exact
+SHA/run/case/code; it excludes SID, paths, SCM SDDL and error traces. Hashes bind
+consumed records, not native custody or original-clock proof.
+
+Normal requires observed2, statusblocked/component-only/full-runtimefalse,
+errors/skips0, both exact catalog rows and matching inventory/footer/hash, actual
+reported non-admin actor SID matching outer generated SID, natural childcode2,
+assigned Job-empty observation, account/scratch deletion and SCM restoration.
+Runtime stdout passes the SOLE existing receipt::validate with expected SHA/run,
+then must equal its already-whitelisted report receipt; no copied13fact list.
+No product/fullR1/producer upgrade follows even from all2cases+13facts.
+
+After-grant requires observed1/statusfailed/errors1 and the exact injected-error
+record, no case rows/logs or child launch, EXPLICIT null childexit/Job fields,
+account/scratch deletion and SCM rights3/single-generated-SID restoration plus
+original descriptor digest. Missing/null/false differ; no nonexistent child/Job
+is promoted into Job0 evidence. Raw legacy actor's1200s-run then renewed5s cleanup
+and Drop fallback remain limitations, not new retained-clock qualification.
+
+Six pure supplied-record tests cover both profiles, private-data sanitization,
+missing cleanup/bindings, every canonical runtime fact, log/inventory/footer
+agreement and closed CLI arguments. They are NOT_COMPILED/NOT_RUN. Only bare
+fmt/spec/diff checks ran. The preexisting foreign-dirty receipt.rs was read/reused
+and stayed at unchanged hash a24d1ca965d724589a3a5613af38747d1d4295448173fb65e1629f640ebb44df.
+Source review/freeze and a new explicit pure/hosted allocation precede execution;
+no local SCM/account or workflow dispatch is authorized by this summary seam.

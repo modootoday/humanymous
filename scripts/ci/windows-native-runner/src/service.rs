@@ -2,6 +2,7 @@
 pub(crate) mod catalog;
 mod execution;
 pub(crate) mod receipt;
+pub(crate) mod summary;
 use crate::{Options, evidence, harness};
 use serde_json::json;
 use std::{fs, io, path::Path};
