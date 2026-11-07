@@ -5,6 +5,9 @@ mod evidence;
 mod fixture;
 mod harness;
 mod pilot;
+#[cfg(test)]
+#[path = "actor/prebuilt.rs"]
+mod prebuilt;
 mod service;
 mod workspace;
 use std::{io, path::PathBuf};

@@ -338,3 +338,18 @@ validation-agents-native; jobs1/incremental0. C returned. No actual actor, accou
 SCM or process-native profile was run. ACT denial and WAL helper tests are now
 pure-qualified; actual changed WAL parent and service lifecycle remain distinct
 native/hosted gates. No .NET workload source changed during this validation.
+
+## Prebuilt .NET pure contract checkpoint
+
+Root and .NET accepted only the syntax/profile contract: fixed six app roles,
+separate pinned harness, exact336 runtime files under512/192MiB/64MiB ceilings,
+named managed/native/harness lineages, original d9bd observation versus new
+normalized files-only manifest, fixed environment and shared original budget.
+Seven cfg(test)-only cases passed with all-target check and strict Clippy;
+51captured source inputs and32registry packages/2079files had zero drift.
+Actual artifacts, actor access, profile, Job/reader cleanup and Kestrel remain
+unqualified. The parent native monotonic watchdog remains authoritative; wire
+mapping is not a complete transit/rollback proof. CleanupOnlyContext permits
+only the original positive reserve and has no workload launch context. No OS
+mode or native operation is wired by this checkpoint. See owned prebuilt plan
+and registered dotnet-prebuilt-pure-summary.json for exact source/raw evidence.

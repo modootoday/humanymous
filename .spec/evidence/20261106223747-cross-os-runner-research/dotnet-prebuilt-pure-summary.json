@@ -1,0 +1,81 @@
+{
+  "schema": "humanymous.dotnet-prebuilt-pure-validation/1",
+  "status": "passed",
+  "venue": "native Windows",
+  "atomic_head_captured": false,
+  "source_files": 51,
+  "source_before_after_drift": 0,
+  "registry_packages": 32,
+  "registry_files": 2079,
+  "registry_before_after_drift": 0,
+  "source_sha256": {
+    "scripts/ci/windows-native-runner/src/actor/prebuilt.rs": "32c488460520e5a0cacf824ddde0f8a0abf7e74932744283b568a4a5bee0020e",
+    "scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs": "b81bfe446ea31db14ecdef37fb42d497832dbc96f931ecab1f0b0303d3f3f5e9",
+    "scripts/ci/windows-native-runner/src/main.rs": "26149b4f77a03ab75539902d63929e560b1830dc49ad4be3d5e07b503887825a"
+  },
+  "selector": "cargo test --locked --offline --manifest-path scripts/ci/windows-native-runner/Cargo.toml prebuilt::tests -- --test-threads=1",
+  "tests": {
+    "passed": 7,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 30
+  },
+  "all_target_check": "passed",
+  "all_target_clippy": "passed with -D warnings",
+  "admission": {
+    "free_gib": 32.56,
+    "commit_percent": 80
+  },
+  "jobs": 1,
+  "incremental": false,
+  "target": "target/validation-agents-native",
+  "os_launch_wired": false,
+  "actual_file_validation": false,
+  "account_acl_job_or_profile_mutation": false,
+  "actual_kestrel_executed": false,
+  "native_backend_qualified": false,
+  "cleanup_elapsed_boundaries_ms": [
+    180000,
+    180001,
+    239999,
+    240000
+  ],
+  "residuals": [
+    "Actual original-parent monotonic watchdog remains authoritative; wire mapping alone cannot prove transit/rollback",
+    "Actual retained Job/account/reader/native artifact/profile outcomes remain unimplemented",
+    "Global compiler environment fingerprints not captured; exact source closure is not complete build/cache key"
+  ],
+  "pre_freeze_failure": "Test module path formatting failure corrected before batch; no failed Rust test hidden",
+  "raw": {
+    "after.json": {
+      "sha256": "aade07bd981181d1572e9cf7e98566779cba29276465986d022f29cd45664b75",
+      "bytes": 225474
+    },
+    "before.json": {
+      "sha256": "aade07bd981181d1572e9cf7e98566779cba29276465986d022f29cd45664b75",
+      "bytes": 225474
+    },
+    "check.log": {
+      "sha256": "339a68f95313b096f07f9764adadeb9a02a0f2ab0b28f591560075b0dc0da97f",
+      "bytes": 268
+    },
+    "clippy.log": {
+      "sha256": "b31bf81b8a3cf1d538199a46e1730b9cd27870d5092c61ce4ca58f0994b0c748",
+      "bytes": 177
+    },
+    "results.json": {
+      "sha256": "21779496087ff6fef9a871c12f2aa2849b39371bae53ee6ed6894d51a9aa44a6",
+      "bytes": 176
+    },
+    "tests.log": {
+      "sha256": "4e70241555d6bb6d319359750f24c91624a83ba6c5bd110bc4d21dfb0f33d394",
+      "bytes": 1148
+    },
+    "tree.log": {
+      "sha256": "98eea2cb7ccdf4b07c8aa0c2f6a41e9c7d1b9a57db3b5c27cc98f19f3e1b7385",
+      "bytes": 1221
+    }
+  },
+  "private_directory": ".spec.local/root/evidence/20261107121500-windows-runner-dotnet-prebuilt-pure"
+}

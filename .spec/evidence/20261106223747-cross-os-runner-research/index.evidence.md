@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: dotnet-prebuilt-pure-summary.json, sha256: 5e92ee2cfc0a849a70f1ffe9c8b90cf3b042973484f21db1de92516cda15cc33, bytes: 2965, store: repo}
   - {path: linux-tree-bd62cc3c-summary.json, sha256: e2aec195de03cc7950eb9742acdadb20e060b628565d5c00dbfbb956c050a3b2, bytes: 4218, store: repo}
   - {path: owned-tree-pure-summary.json, sha256: ee7c880877daabfa6e3b33073ff17d91f6b64928ce06076bec9cc9454686c143, bytes: 1876, store: repo}
   - {path: macos-arm64-initial.log, sha256: 05490700b79bff322d867d8ec71f87c98e226399511438e4c1541158cb2da587, bytes: 57321, store: repo}
@@ -70,3 +71,13 @@ scoped cached dependencies were used, with no graph/download change. This is not
 a hosted/service/D-Bus/allocator/containment/recovery qualification. The earlier
 Windows20cdc325 source count wasTEN; an earlier message incorrectly said11 and
 is not silently rewritten. See registered linux-tree-bd62cc3c-summary.json.
+
+## Prebuilt .NET contract pure validation
+
+Seven cfg(test)-only runner prebuilt cases pass, all-target check and strict
+Clippy pass on Windows. Fifty-one source/manifest/toolchain inputs and32cached
+registry packages/2079files had zero before/after drift. No actual ACL fixture,
+account, Job, profile, staging or Kestrel operation ran. Original cleanup-only
+budget boundaries180000/180001/239999/240000ms are covered; actual native parent
+watchdog/ownership remain mandatory. Wire mapping is not full transit/rollback
+proof. See dotnet-prebuilt-pure-summary.json for exact hashes, raw and scope.
