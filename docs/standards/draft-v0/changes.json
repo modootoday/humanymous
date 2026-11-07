@@ -7,6 +7,26 @@
   "generic_wire_selected": false,
   "changes": [
 {
+  "kind": "editorial-clarification",
+  "paths": [
+    "validation/conformance.md",
+    "process/revision-history.md"
+  ],
+  "summary": "Distinguish exact executed source bytes, canonical LF text and Git blob identity, and separate pure-module, component-contract, real-host and deployment evidence. Clarify reporting without changing normative requirements or weakening relevant input coverage.",
+  "generic_wire_changed": false,
+  "new_conformance_requirements": false
+},
+{
+  "kind": "implementation-evidence",
+  "paths": [
+    "../../reference/production-vs-reference.md",
+    "../../reference/browser-collector.md"
+  ],
+  "summary": "Record Pass component37/27 and separate unchanged Go16 results with runtime and human-recovery limits. Record failed hosted browser attempts49394e3 and bb763c1, each16/2 assertions, without inferring successful WASM execution, cause, cleanup or browser-to-origin qualification.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false
+},
+{
   "kind": "implementation-evidence",
   "paths": [
     "../../reference/supported-topologies.md"

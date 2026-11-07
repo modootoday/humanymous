@@ -1,0 +1,40 @@
+{
+  "schema": "humanymous.pages-evidence-byte-identity/1",
+  "baseline": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+  "observations": [
+    {
+      "source": "internal/pass/pass.go",
+      "baseline_git_blob": "1b12f166187ff5911bf91ca7930b0111addeab46",
+      "git_lf_sha256": "ca6700adeaa5e193d3384ee1149e624d043ecbac9ee4f60c8159a605a47526c5",
+      "executed_crlf_copy_sha256": "5ef9cc9ca7a9e75bc9283356010a83ee91106684116ede7da3bd2a0e85213bc3",
+      "explicit_lf_to_crlf_correspondence_verified": true
+    },
+    {
+      "source": "internal/pass/pass_test.go",
+      "baseline_git_blob": "977285986672920c21d944d7cd9c268623210d7c",
+      "git_lf_sha256": "c61dea21167c421bcd507958204932be25e120591409aeb20ac25e80eef0946b",
+      "executed_crlf_copy_sha256": "ffa6eb08b00f553ba8eef046d0420c6a664a43598ba4c8b98e30806f4a45e5d4",
+      "explicit_lf_to_crlf_correspondence_verified": true
+    },
+    {
+      "source": "internal/pass/wargame_axis_pass_r322_test.go",
+      "baseline_git_blob": "6436b648d78b7926dd57ab0a5f0dc793b0fb5eeb",
+      "git_lf_sha256": "d5be3273fe701ab50670e1d5c2e7e489da97e5f157e83f4ba282667c29bd4b3f",
+      "executed_crlf_copy_sha256": "2d96078904b8d384ba680730713eed8831df33d5b45c3002e1352ed562f0b89c",
+      "explicit_lf_to_crlf_correspondence_verified": true
+    }
+  ],
+  "correction": "An attempted direct raw-Git SHA equality assertion failed. The recorded executed copies are CRLF, while stored Git text is LF; all three Git blob identities and explicit LF-to-CRLF correspondences match. No source files normalized or rewritten by this check.",
+  "public_changes": [
+    "docs/standards/draft-v0/validation/conformance.md",
+    "docs/standards/draft-v0/process/revision-history.md",
+    "docs/standards/draft-v0/changes.json"
+  ],
+  "source_validation": {
+    "pages": 88,
+    "errors": 0,
+    "verifier": "existing fixed-source executable; no new compiler or renderer run"
+  },
+  "new_render_required": true,
+  "normative_wire_changed": false
+}

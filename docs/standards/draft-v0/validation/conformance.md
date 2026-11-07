@@ -112,6 +112,21 @@ limited scope and retain the component result without claiming an immutable
 integrated candidate. Link separate build, execution and coverage outcomes;
 one successful stage does not erase a later failure.
 
+Name the byte representation of every source commitment. Exact executed working
+bytes, canonical LF text and the stored Git blob are different observations.
+For example, a CRLF checkout can have the same Git blob identity as an LF
+checkout while their executed-file SHA-256 values differ. Record any explicit
+normalization and verify its correspondence; do not silently replace an
+executed-byte commitment with a canonical one. Binary inputs remain byte-exact.
+
+Build evidence from the tested boundary upward: pure module, component contract,
+real host integration and complete deployment. Each layer names its actual
+inputs and observations. Passing a lower layer supports that boundary only;
+shared helpers, simulated runtime completion and ignored process tests do not
+supply the missing higher-layer execution. This reporting structure does not
+require unrelated workspace or toolchain documentation to be hashed for a
+pure-module claim, and does not waive relevant dependency or build inputs.
+
 A skipped job is not a passing case. Distinguish a test assertion failure from
 an environment, authorization or dependency failure without discarding either.
 If raw evidence was not retained or cannot be retrieved, record that limitation;

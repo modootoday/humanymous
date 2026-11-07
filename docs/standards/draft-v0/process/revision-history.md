@@ -19,6 +19,7 @@ is distinct from an Internet-Draft submission revision such as `-00`.
 | --- | --- | --- |
 | Initial authored draft | Problem, actors, provenance and candidate requirements | Incomplete generic model, not a complete wire profile |
 | Public terminology clarification | Named P-01 through P-10 headings, defined profile identifiers, individual validation links and informative review scope | Editorial clarity; no detection-policy or candidate requirement semantics changed |
+| Evidence identity and validation layers | Distinct executed bytes, canonical LF and Git blobs; pure-module, contract, real-host and deployment observations | Informative reporting clarification; no new wire encoding or conformance requirement |
 | Current implementation reconciliation | Experimental adapter wire, implementation map, exact-byte parser corpus and current runtime/collector/CLI boundaries | Documents concrete implementation separately; does not select a generic Draft v0 encoding |
 | Internationalization byte cases | Separate ten-case corpus for binary bodies, distinct Unicode body commitments and target/header boundaries | Original 24-case fixture unchanged; no generic normalization or transport-fidelity claim |
 | Candidate retry/effect lifecycle | Durable logical-operation states, one dispatch incarnation, historical status and ambiguous-result refusal | Proposed semantics added to the developing requirements model; not implemented or frozen wire, with lifetime/revocation/fencing acceptance still open |
