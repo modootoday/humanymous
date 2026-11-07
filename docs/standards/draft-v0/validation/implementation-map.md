@@ -27,7 +27,7 @@ qualify a changed binary.
 | [Before-effect integrity (P-07)](../protocol/profile.md#p-07-complete-body-verification-before-effects) | Complete-body parser validation and bounded runtime audit-before-origin path exist | Full qualified collector-to-origin flow, origin-bypass isolation and actual human controls |
 | [Streaming lifecycle (P-08)](../protocol/profile.md#p-08-streaming-integrity-lifecycle) | Experimental adapter capture/stream fields remain null; arbitrary upload/upgrade integrity is unsupported | A separately specified streaming protocol and cancellation/backpressure/side-effect evidence |
 | [Containment (P-09)](../protocol/profile.md#p-09-decision-containment-and-revalidation) | Decision response has a strict small field set; public namespaces do not authorize administration | Full operational management, independent dual approval and final-route mutation pilots |
-| [Visible loss (P-10)](../protocol/profile.md#p-10-audit-independence-and-visible-loss) | Bounded buffers and durable audit components exist | Generic loss/quality wire model, sink failure/cardinality tests and unsampled full denominators |
+| [Visible loss (P-10)](../protocol/profile.md#p-10-audit-independence-and-visible-loss) | Bounded buffers, authenticated WAL/log, local export and witness components exist; native verification scope distinguishes omitted HMAC and absent anchors | Generic loss/quality wire model, qualified sink/process-isolation evidence and unsampled full denominators; component proof scope does not establish pre-ingestion completeness |
 
 The [wire experiment](../protocol/implementation-experiment.md) and
 [parser vectors](vectors.md) document concrete existing interfaces separately

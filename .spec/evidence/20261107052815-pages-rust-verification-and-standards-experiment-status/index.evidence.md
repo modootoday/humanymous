@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T06:04:06Z
+updated: 2026-11-07T06:08:52Z
 rel:
   governs: [docs]
 files:
@@ -11,6 +11,7 @@ files:
   - {path: freshness-status.json, sha256: 82ebeec598747454d06f4c67ddf286161a688dd65d13da045e66f7f284940e24, bytes: 1600, store: repo}
   - {path: i18n-status.json, sha256: f627ae8f812217a396d97f1cba9ef83952b2e3b92b8788142d5cc3dde46a5ee3, bytes: 831, store: repo}
   - {path: cli-review-status.json, sha256: ad116a0ae6e7725205d4146bc40681db6e3531d53738347c2b4eb10684265d70, bytes: 1313, store: repo}
+  - {path: audit-reader-status.json, sha256: 30a69bec28f952ef3e75e6d23853f867499aaa29fc2a9e129d81941bb435ba0f, bytes: 824, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
@@ -36,6 +37,16 @@ lock was synchronized, all 11 tests, strict Clippy, source checks and 24 vectors
 passed again. No dependency or lock changes were made by the Pages owner.
 
 ## How to read it
+
+Audit public-interface reconciliation now distinguishes omitted HMAC, zero
+checkpoint/witness coverage, native scope omitted from compatibility JSON, and
+terminal-frame repair from read-only verification. The documented four frozen
+parity targets ran5tests with no failures/skips/filters. This does not renew the
+whole audit package receipt or prove process isolation, pre-ingestion completeness,
+remote export or product qualification. Selected source hashes were observed
+after these runs; no atomic full-workspace capture is inferred from that list.
+The85-page dual-baseurl strict/theme/output builds pass with equal inputSHA256
+`104a800c2d52aeae12c5d3a6a98aa4d151bf99feaa2a64523dbd39f0462600df`.
 
 A subsequent substantive review manually renews18CLI source entries and two
 capability mappings. All18files were read against the command/installation/status

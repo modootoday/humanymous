@@ -389,3 +389,24 @@ Read-only post-renewal triage binds LF receiptSHA
 154identical/244added/65changed/0removed at89271d5dirty; no CLI path remains in
 added/changed lists. Both85-page strict/Rust build checks pass with equal
 inputSHA2c2122b9935e47362ed9b840017b8a9697605330cf95a4be8888fe5cd19e2c27.
+
+## Audit component and evidence-scope reconciliation
+
+Read actual audit verification/native Scope and compatibility serialization,
+checkpoint signing, record canonicalization, custody durability, WAL recovery,
+Log external-witness API, local sink and supervised witness client/process.
+Updated security audit reference and continuity how-to with actual APIs and
+limits. OK plus hmac-unchecked is valid compatibility output; native scope is
+serde-skipped. No-checkpoint success does not establish anchoring. recover_segment
+terminal=true can truncate/sync and is not read-only or an ownership lock.
+Record normalization differs from checkpoint fixed-order non-NFC signing bytes;
+neither selects generic wire or request-body normalization. Local sink receipt
+is not remote/WORM delivery or sanitization. Witness broker/peer/isolation and
+Windows namespace durability remain explicit. Standards P10 mapping links these
+partial components without asserting complete observation denominators.
+
+Executed the exact documented4parity integration targets against frozen vectors;
+results remain component comparison, not a deployment/storage/witness-isolation
+pilot. No audit-source receipt rows were silently renewed from this narrower
+public-interface review; the remaining audit package inventory still needs its
+own full-file substantive acceptance.

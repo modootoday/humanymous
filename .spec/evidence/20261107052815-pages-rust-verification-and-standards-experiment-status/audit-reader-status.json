@@ -1,0 +1,14 @@
+{
+  "scope": "audit public-interface and verification-scope documentation reconciliation",
+  "component_targets_executed": ["verification_parity", "checkpoint_parity", "merkle_parity", "record_parity"],
+  "component_tests": {"passed": 5, "failed": 0, "ignored": 0, "filtered": 0},
+  "read_only_verification_distinguished_from_terminal_repair": true,
+  "native_scope_preserved_separately_from_compatibility_json": true,
+  "audit_package_full_source_review_receipt_renewed": false,
+  "reader_pages": 85,
+  "baseurls_checked": ["", "/humanymous"],
+  "build_input_sha256": "104a800c2d52aeae12c5d3a6a98aa4d151bf99feaa2a64523dbd39f0462600df",
+  "strict_theme_and_rust_output_checks": "passed",
+  "full_witness_process_isolation_or_storage_outage_pilot": "not_run",
+  "independent_security_audit_or_product_certification": false
+}

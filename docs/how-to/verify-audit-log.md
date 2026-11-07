@@ -12,6 +12,38 @@ Rust audit CLI usage is not release-qualified. Prepare synthetic records with
 known canonical bytes, roots and inclusion/consistency expectations. Retain
 valid historical vectors as migration comparison evidence.
 
+1. Preserve the original artifact and its byte digest. Use synthetic fixtures or
+   a separately controlled copy for recovery experiments; do not edit evidence
+   merely to make it parse.
+2. Provision the expected writer key, required witness key, owning node and
+   external trusted head independently of the history being checked. Reading a
+   key or head from that same untrusted history does not create an external anchor.
+3. Choose the required checks explicitly. `verification::verify` checks supplied
+   records/checkpoints; `verify_with_witness` additionally checks supplied witness
+   signatures. Require nonzero checkpoint/witness coverage when the claim needs
+   those anchors. An empty HMAC key leaves that layer unchecked.
+4. Retain the native verification scope along with the compatibility JSON result.
+   `Report.scope` is not serialized into that JSON, and `OK: true` can coexist
+   with `hmac-unchecked`. Record exactly which layers passed or were omitted.
+5. Exercise failure cases below and retain every failure, recovery change and
+   unexecuted case. Name the source, platform, filesystem policy and fixture bytes.
+
+`storage::recover_segment(..., terminal: true, ...)` is a repair operation: it
+can truncate an incomplete terminal frame and sync the modified file. It is not
+a read-only verification function and does not acquire exclusive directory
+ownership itself. Parsing recovered frames alone does not authenticate their
+chain. Keep repair, authenticated replay and independent-head verification as
+separate steps and report the number of truncated bytes.
+
+For reproducible frozen component comparisons, from the repository root run:
+
+```console
+cargo test --locked -p humanymous-audit --test verification_parity --test checkpoint_parity --test merkle_parity --test record_parity
+```
+
+These compare the actual Rust components with retained migration vectors. They
+do not run a complete service, witness-process isolation or storage-outage pilot.
+
 Test tampering, malformed proof lengths, truncated storage, restart/replay and
 unavailable durable storage. Verify the claimed commitment scope; a valid proof
 does not establish that an event was benign or that no event was omitted before
