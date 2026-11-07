@@ -1,0 +1,19 @@
+{
+  "schema": "humanymous.browser-product-dispatch/1",
+  "run_id": 42425474990,
+  "attempt": 1,
+  "source": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+  "observed_status": "in_progress",
+  "observed_conclusion": null,
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42425474990",
+  "ref": "codex/browser-product-validation",
+  "previous_source": "1f2b9a93d68deb310ffd53f927977a75d807e007",
+  "mutation": "non-forced fast-forward only; main and codex/rust remote unchanged",
+  "includes": [
+    "c3c2a6e6 Docker audit-witness selector fix",
+    "5d68cd39 Runtime optional dependency activation"
+  ],
+  "sole_monitor": "product-lab chat01a1b30d-4736-7281-a54f-5cb3a5fa4fe4",
+  "qualification": "Dispatch observation only; no terminal product result claimed",
+  "private_evidence": "evidence:root/20261108054000/browser-5d68-dispatch"
+}

@@ -7,6 +7,7 @@ updated: 2026-11-07T22:16:48Z
 rel:
   depends_on: [sot:root/structural-development, sot:root/program-roadmap, evidence:root/20261107205600]
 files:
+  - {path: browser-5d68-dispatch.json, sha256: 000f72a878c02a93aa352f2c7a9562823b7d7c0dcadc7cf3290f5251d01aa273, bytes: 851, store: repo}
   - {path: runtime-dependencies.json, sha256: 96a5adbd95470c7aa6279556ba361d1ba8330bdde3c4391d563c00d4cdbab17e, bytes: 7908, store: repo}
   - {path: browser-wire-dispatch.json, sha256: 57d40f539e47fd98f701ac033f89cc1cf4df2287cfd4e358287d74cf1fe8e4d9, bytes: 817, store: repo}
   - {path: authority-pilot-fix.json, sha256: 367a6c252055d33043e258558a69a514a80e81a61973b3bb0e016cea3d078c32, bytes: 1845, store: repo}
