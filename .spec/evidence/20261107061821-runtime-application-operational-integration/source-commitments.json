@@ -7,9 +7,9 @@
   },
   {
     "path": "crates/runtime/INTEGRATION.md",
-    "bytes": 34504,
-    "sha256": "e58624e93f3dc4f0946f462dd4d7d901872c61f3ea41cc0d1d88af00785785d0",
-    "git_blob": "1dbaf9494fc5d190ad468df3e55a777d002098b2"
+    "bytes": 36740,
+    "sha256": "89d56da2df5f31133809ac4ef80ac18e80bddeca719e9bda38405fc2d2ed2893",
+    "git_blob": "b8b9dc38446ffc0ee3b5fb8cdddf47b6489968dc"
   },
   {
     "path": "crates/runtime/qualification-contract.json",

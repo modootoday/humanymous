@@ -28,15 +28,15 @@ dual-control and missing-required fail-closed remain invariant.
 | R04 | Actual browser Fetch/one-flight/ACK/body/abort lifecycle | root collector + runtime server | Pure client validated by root; actual join pending; actual browser and human/keyboard/AT separate |
 | R05 | Shared response-head/framing and fidelity | runtime | Buffered/stream head parsing and bounded chunk/EOF source wired; HTTP10 pure passedadb8e3ed; actual current-source fidelity/failure matrix pending |
 | R06 | Explicit bounded response streaming | runtime;R05 | Native stream wired; in-memory stream4 plus profile pure passedadb8e3ed; actual current-source backpressure/abort/drain pending; browser ACK stream separate |
-| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Native store/journal/operator compiled atadb8e3ed; settings4 plus operator-role pure passed; actual Unix IPC/crash matrix pending; default hosts read-only |
+| R07 | Operational settings/state CAS/restore | runtime; audit lifecycle | Actual Unix IPC/witnessed CAS/capacity32/session invalidation/restart passed immutable27675561; native failure/crash matrix still pending; default hosts read-only |
 | R08 | Bounded session/global abuse admission | runtime | Source global/session/capacity/serialized concurrency implemented; quota2 pure passed709b0e2; actual429/capacity fixtures pending; no client-fingerprint identity authority |
-| R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Management4 pure passedadb8e3ed; actual current-source IPC/peer/credential/RBAC/CSRF/scope and shutdown negatives pending |
+| R09 | Actual separate local management handler | authority transport + runtime; e346834/e8ddb4c | Management4 pure plus actual Unix observer/operator IPC/drain passed; Windows native management integration and new production process-epoch bootstrap profile remain pending |
 | R10 | Signed destructive controls and state effects | audit issuer + runtime | Typed target/assessment compiled and2pure passedadb8e3ed; controller owner/admission/effect unwired; actual two-party/one-use/target/restart/failure gates pending |
 | R11 | Accessible Pass recovery + shared Engine fusion | runtime; shared challenge/root browser | Not implemented; no motor/speed gates or confirmed-human training; real input/AT separate |
-| R12 | External witness library injection + deployment transport | audit/runtime/Compose | Audit client/service verified in component scope; runtime typed injection source implemented21b6c4b NOT_RUN; independent deployment remains unqualified |
+| R12 | External witness library injection + deployment transport | audit/runtime/Compose | Actual same-process durable witness injection/settings restore passed Unix; bounded authenticated production broker and independent deployment remain unqualified |
 | R13 | Actual TLS/H1 original capture | runtime + narrowly approved network paths | Joined worker/Application/ServiceHost compiledadb8e3ed and TLS-profile pure passed; native buffered capability only; actual TLS pilot pending, no product qualification |
 | R14 | Complete H2 frame/HPACK/per-stream capture and server | runtime/network;R13+binding | Required follow-up; no H1-to-H2/fullM2 success inference |
-| R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Readiness/budget/outcome pure passedadb8e3ed; actual current-source lifecycle/failure/lock-release pending; synchronous I/O limits explicit |
+| R15 | ServiceHost private input/readiness/stop/drain/flush | runtime; CLI/shared until/audit flush | Native process plus Unix management drain/controller loss/custody release passed; new observer-loss atomic gate/production protected provider still pending; synchronous I/O limits explicit |
 | R16 | Actual CLI/system-service connection | CLI/runtime;R15+boot credential provider | Pending; signed descriptor/artifact/nonce, actual OS lifecycle, no unattended claim before credentials |
 | R17 | Full source-bound product qualification | root/Compose/wargame/delivery/runtime | Pending; Docker full topology + actual effect/audit + ordinary human ALLOW/keyboard/AT; component results separate |
 
@@ -574,3 +574,20 @@ lock/toolchain/checkeddependencyLIBsources unchanged, not fullworkspaceidentity.
 Private logs/manifests and public local-adb8e3ed-validation-summary attached.
 C returned immediately. Control-owner feature draft parked privately before
 freezing; actual controller wiring follows only after assigned validation stage.
+
+Current actual component proof: allocated nonadmin Windows46+1 and immutable
+ordinary-UID WSL27675561 Unix50+1 allPASS0failed/ignored/filtered with exactcase
+inventories. Each476source before/after matched; rawprivate and sanitizedpublic
+native-adb8e3ed-validation-summary attached. Unix source newly proves operator
+IPC/witnessedCAS/capacity/sessioninvalid/restart and existing custody/drain cases;
+production independent witness/observer/SCM, actual TLS/H2/browser/human/AT and
+full Docker product remain open. RuntimeRustunchanged; no heldvalidationprocess.
+
+Root accepted R2 two independently SCM-owned S/O roles/distinct principals with
+O=broker and ownedWchild, and R3 irreversible atomic observer-loss semantics.
+OwnSoT667 records exactadmission/acceptedwork/deadline/finalflush rules and
+separateobserver-status vs native-manager stop authorization. R1 concrete native
+protectedgrantpublisher/discovery/processpins/crossSIDaccess and actualtyped
+activation remain P0; no secretchannel code approval. Finite24h/no-renewal is a
+proposal, not an accepted universaldefault. Runtime independently reviewed primary
+Microsoft process/SCM/DPAPI/pipe boundaries and sent required deltas to owners.

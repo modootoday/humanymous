@@ -1,6 +1,41 @@
 # Runtime integration request
 
-## Current follow-through v0.3 (source/contract work, validation held)
+## Current qualification and integration frontier
+
+Frozen Rust source adb8e3ed passed allocated ordinary-user native component gates:
+Windows library46 plus native_process1; immutable WSL snapshot27675561 library50
+plus native_process1. Each exact inventory matched qualification-contract.json;
+failed/ignored/filtered counts were0. Both actual gates preserved476-file source
+snapshots without drift. Earlier Windows all-targets compile/Clippy and31 reviewed
+pure cases are separately recorded; that earlier broad snapshot had two foreign/
+test changes and is not whole-workspace qualification.
+
+These gates cover pure models and actual loopback/process fixtures, plus Unix
+management IPC, witnessed resource CAS/capacity/session invalidation/restart and
+drain. The signer in those Unix fixtures is a real same-process durable component,
+not independent deployment evidence. Actual TLS/H2 serving, browser/collector/
+human/AT, protected production observer/broker, genuine hosted SCM and Docker
+product integration remain required. Full product qualification is false.
+
+Current execution policy is Root-allocated hybrid Windows/WSL/hosted validation,
+not the obsolete hosted-only restriction below. Docker product e2e still uses
+the canonical topology; local Docker defaults to Windows desktop-linux. No
+unallocated Cargo/native workload or manifest/lock/toolchain edit is authorized.
+
+Runtime now uses the shared audit SealedLog custody owner and typed external
+witness injection. Resource operator writes are separately authenticated and
+witnessed; ordinary hosts remain read-only. Audit supplies destination-bound
+prepared rotation and retained control/storage primitives; Runtime does not yet
+dispatch destructive rotation/erasure/kill/ban effects. Typed KillTarget/KillStatus
+are validated data/assessment source, not an enabled control issuer or lease.
+The production CLI still lacks the authenticated bounded observer/witness broker;
+typed pipe clients or these standalone fixtures do not fill that gap.
+
+The following checkpoint chronology preserves earlier source and validation
+states. Its old restrictions, pending dependency notes and unsupported shared API
+descriptions are historical, superseded by this section and the owning current SoT.
+
+## Historical follow-through v0.3 source checkpoint
 
 Owner gate-edge/rust-runtime-followthrough normally claimed after authority
 e346834/e8ddb4c and audit5528d74 released. Current normative contracts live in

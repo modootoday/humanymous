@@ -663,3 +663,215 @@ freshness lease. Actual ServiceHost admission/issuer serialization and effect
 consumer are still required; source assessment alone enables no kill endpoint.
 The runtime.kill.* event namespace is reserved for permanent effect history; an
 unknown event/version in this namespace refuses rather than becoming absence.
+
+### Observer/broker-loss v0.1 — semantics accepted, typed API pending
+
+Root accepted R2 architecture and R3 loss semantics, not full channel/native
+backend/typed API acceptance, implementation or qualification. This delta
+answers plan:root/20261107102000 lifecycle step8 under topology471058e9: transient
+provisioner P, persistent observer O=bootstrap broker/receiver, independent native
+service S. Authority owns shared exchange/lifetime types; native-security owns
+actual principal/process-instance proof; CLI owns native manager integration and
+observer supervision. Runtime owns readiness, admission, effects and work drain.
+The initial Windows launcher is two independently SCM-owned own-process roles,
+S and O, under distinct service principals. P is transient; W is O's owned
+subordinate witness child. No local SCM/account mutation follows from this design.
+Required missing observer/witness is operational fail-closed, not a new detection
+signal or scoring verdict. No automatic permanent kill, erasure, ban, custody
+reset or human-presence inference occurs. Existing standalone fixtures do not
+qualify this required-observer profile. R1 protected publisher/discovery/process
+pins/cross-SID access and R3 typed activation/revocation still need shared-owner
+review before code; the broader R01-R17 goal remains unchanged.
+
+**Identity and activation.** A service epoch begins Starting with readiness and
+application-effect admission false. Only Authority/native-security-produced
+actual observer instance/purpose/scope/epoch evidence may install its lifetime
+revocation source; PID text, paths, environment, a JSON boolean or token
+possession cannot. Broker=observer must be verified equality. One-use bootstrap
+ACK proves exact credential acceptance by O before public ServiceReady; it is
+not a continuing lifetime lease, witness availability or service readiness.
+Management may be bound passively before ACK if needed for its exact offer, but
+no management mutation/application effect is enabled before authenticated ACK,
+required witness and final epoch/liveness checks all succeed. Authority must
+freeze one shared phase order; Runtime must not invent a parallel ACK protocol.
+
+A one-shot configuration/receipt channel's expected closure is not itself
+observer death. A separately typed persistent lifetime channel or actual bound
+process-instance handle must define ongoing loss. Lost authenticated lifetime
+channel, signaled actual instance death, invalid epoch or expiry of an explicitly
+authenticated machine lease revokes the epoch. Human inactivity, motor richness,
+request pace or keyboard speed never does. If leases are used, their initial TTL
+and expiry/restart policy must be accepted by shared owners and Root. Ordinary
+traffic/ACK receipt does not implicitly renew. Authority proposes finite TTL/no
+renewal (cap24hours proposed), not a Root-accepted universal default. Expiry has
+its own epoch_expired reason, distinct from observed process death. No implicit
+new epoch, rebind or stop-deadline extension occurs.
+
+**Atomic revocation and effects.** The service owns one epoch admission gate.
+Its initial Ready transition and first Revoked transition are serialized with
+application-effect commit, independent of async task polling. Revocation records
+first-loss monotonic time/cause, disables future live readiness and new ingress/
+management authority, and notifies all owned work exactly once. Starting,
+Revoked, Quiescing and Draining cannot issue application-effect permits. No
+reconnect, duplicate message or late ACK can restore Ready in that epoch.
+Subsequent status reports use this state; already delivered Ready receipts remain
+historical observations and cannot be recalled or treated as lifetime leases.
+
+First origin connection initiation and first application-byte acceptance must
+serialize against the same gate. A check followed by an async connect/write
+outside the gate is insufficient. The proposed implementation performs the
+bounded nonblocking initiation/try_write under the gate and records the actual
+result there; never hold the gate over await, fsync, witness I/O or an unbounded
+syscall. WouldBlock commits no first application byte: await readiness outside,
+then reacquire and recheck. If revocation linearizes first, do not initiate the
+connection or accept a first origin byte. If the kernel accepted bytes first,
+classify OriginStarted-before-loss even if delivery/response occurs later. A
+transport attempt already initiated may complete after loss; cancel it before
+application bytes. No claim of instant remote-death detection, zero later packet
+delivery or rollback of a prior effect is made. Shared future H2/TLS origin
+writers must enforce an equivalent commit boundary, not reuse a cached permit.
+
+**Accepted-work rules.** Logical admission closes atomically; accept loops then
+close listeners. Kernel-queued or already accepted connections still recheck the
+gate. Revoke the observer's volatile management credential/contexts and session
+epoch; retain production custody and audit history. Independent authenticated
+native-manager stop remains possible. observer-status grants no management
+mutation, permanent kill or erasure. ObserverClientLease stop/close can close its
+own exact-epoch resources but cannot authorize graceful S stop: normal S stop
+needs separately verified native-manager/service-lifecycle authority or a
+separately accepted typed stop grant. O retains W/lease through actual S flush/
+stop proof. Closing O/liveness alone follows failed/unknown loss handling.
+Do not transfer observer authority to an
+installer, replacement process or new connection. No hot rebind is in this slice.
+
+| Work at revocation | Required disposition |
+|---|---|
+| Bootstrap/ACK incomplete | Never publish Ready; revoke fresh credentials; cancel/join startup I/O; fail or report unknown |
+| Parsed or RIT-consumed, no effect committed | Cancel before origin; do not restore counters or retry; best-effort bounded actual-status consumption ACK does not imply ALLOW or zero effects |
+| Audited ALLOW, no first origin byte | No origin dispatch; retain the actual decision and record cancellation separately rather than rewrite scoring |
+| Origin partially submitted | Cancel further upstream writes and join ownership; effects may already exist; never classify zero-effect or retry |
+| Complete request submitted before loss | Bounded response/read/cleanup may finish; no new request/dispatch or upstream retry; actual response status is not service health |
+| Response already started / native stream | Complete only within existing/drain byte and time bounds or close; never append a second503 after partial output |
+| Resource/admin command before durable staging | Discard/reject under revoked context; never apply later from the queue |
+| Resource staging or retained grant consumed | Preserve ambiguity and poison/fail closed; restore only authenticated committed resource state; destructive intent without covered effect stays Pending and needs explicit fresh approved recovery, never generic replay |
+
+**Deadlines and finalization.** Let t0 be the first revocation time. Work's
+absolute deadline is at most min(original request/connection deadline,
+t0+configured loss-drain budget). Service drain uses min(existing stop deadline,
+t0+loss-drain budget); repeated stop/loss/renewal cannot reset either. Preserve
+StopBudget's strict drain+final-audit reserve<actual native-manager deadline.
+Normal authorized stop keeps O/witness usable through returned final flush. O
+must not terminate S as an owned child: S remains independently manager-owned.
+
+On loss, cancel and join every accepted request/TLS/IPC/control worker; dropping
+a future or forgetting a blocking reader is not drain. Keep available witness
+handles until actual final audit attempt. A direct independent witness may still
+work after O exits; if O's loss breaks required witness I/O, report that fact and
+never fall back to writer-only success or stale Ready/Signed caches. Final flush
+must return and satisfy required durable/external coverage to be completed.
+Synchronous unreturned I/O still needs CLI/native manager's independent watchdog;
+forced exit74 is unproven drain/flush, not success. O may reap only its own
+children after the service result, or after explicitly declaring deadline failure.
+No persistent production keys/state are erased as observer cleanup.
+
+Observer loss is a failed service epoch even if some drain/flush facts are
+completed. Outcome must retain cause=observer_lost and separate completed/failed/
+unknown facts for accepted-work drain and final required audit/witness flush;
+never turn this path into graceful Stopped solely from listener closure, exit0,
+ACK text or a successful local fsync. If loss happens after an already completed
+normal service stop, preserve that historical service result and separately fail
+observer/combined lifecycle evidence. Operational lifecycle audit uses a distinct
+runtime.lifecycle.observer_lost/v1 event with nonsecret epoch/reason metadata;
+never place transient loss in the permanent runtime.kill.* namespace. Audit
+failure cannot reopen admission or hide unknown effects. No secrets/raw native
+identifiers go into public receipts. The exact additive outcome/schema/API is a
+shared-owner review item, not permission to silently break current consumers.
+
+**Typed wiring and verification.** Authority must provide an unforgeable
+observer-instance/epoch acceptance plus continuing revocation source with owned
+cancel/join and bounded I/O; Runtime consumes it rather than duplicating OS/ACL
+checks. All management contexts/effect gates share that epoch. Native-security
+must independently validate noncircular protected trust, process replacement
+and same-PID reuse defenses. Exact constructors, bootstrap order and finite
+lease/restart policy need final review. The two-SCM-role architecture and atomic
+fail-closed loss semantics themselves are already Root-accepted.
+
+Pure tests cover irreversible phases, first-loss deadline minima, no implicit
+renewal, separate causes/facts and no destructive action on loss. Actual ordinary
+owned-process fixtures must kill/close the real verified O at bootstrap, before
+ACK/Ready, during audit, between gate checks/first write, during partial body,
+response/stream and admin staging; observe actual independent origin byte/effect
+counters, durable audit/retained state and worker/child termination. A scheduling
+barrier is not effect or native identity evidence. Distinguish no-effect,
+possible-effect, committed and unknown. Run independent genuine hosted SCM/
+protected actor cases and each OS profile; ordinary WSL/Windows success is not
+hosted attestation. Full Core/Gate/observer/witness product remains Docker-only
+with canonical topology/source/actor/denominator evidence. Existing47/51 native
+case gates do not cover this new profile.
+
+**Critique reflected; verdict needs-work.** Single-author persona checklist,
+not independent panel approval: Blue requires shared typed boundary and one
+atomic effect gate; Red forbids stale ACK/PID reuse/check-then-await races; SRE
+requires nonextending bounds, independent manager ownership and honest unknown
+flush; privacy forbids secret/identifier leakage or loss-triggered crypto-shred;
+evaluation separates native, hosted and product scopes. P0 blockers are the
+shared authenticated lifetime/expiry provider, atomic origin commit gate and
+bounded cancel/join witness/startup exchanges. Current Application's pre-write
+watch check followed by async write_all is not this stronger atomic contract.
+P1 blockers are accepted additive outcome fields, final phase order and actual
+race/SCM/OS qualification. Root accepted R2/R3 semantics; R1 native backend and
+typed activation/API review remain pending. None is accepted as a production
+residual or implementation waiver.
+The independent startup watchdog begins before any protected reader, unseal,
+witness or ACK operation and spans public readiness publication. Its absolute
+deadline is no later than the minimum shared handshake and actual native startup
+manager bound; retries cannot restart it. An expected one-shot EOF is not a
+substitute for that watchdog or for a continuing authenticated lifetime source.
+
+**R1 native backend acceptance review (pending, no implementation approval).**
+Runtime requires the native-security-owned publisher to create protected role
+trust and fresh pair-bound grant material for the actual retained S/O instances.
+A read-only keyring lookup, caller-supplied Read/Write or a callback returning a
+nonce is not publication/provenance. Publication must specify issuer authority,
+exact protected storage/atomic consumption, discovery, expiry, both process pins,
+minimal cross-role process/token/pipe rights and cancel/join ownership. Consumers
+receive private-constructor verified grant/instance types, never PID/path/handle
+integers reconstructed from frames. P stays transient and never becomes the
+management peer. No missing-store reset, privilege escalation or ACL repair is
+an authentication fallback.
+
+Primary-source critique adds the following requirements before accepting R1:
+
+- SCM's QueryServiceStatusEx PID can be invalid in START_PENDING/STOP_PENDING and
+  is invalid when stopped. Define usable pre-secret instance discovery without
+  waiting for RuntimeReady that itself depends on the authenticated pair. Any
+  distinction between native-host running and public RuntimeReady needs explicit
+  Root/CLI acceptance and must not be inferred as application readiness.
+  [Microsoft QueryServiceStatusEx](https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-queryservicestatusex).
+- Cross-principal retained process handles need an explicit supported rights
+  profile for query/token/liveness. Do not assume another service's default
+  process DACL permits access, request PROCESS_ALL_ACCESS or silently enable debug
+  privilege. Missing rights remain Unsupported/refused.
+  [Microsoft process security](https://learn.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights).
+- CRYPTPROTECT_LOCAL_MACHINE is machine-bound, not recipient-role encryption:
+  any local user obtaining the blob can decrypt it. A proposed use must prove
+  exact protected storage/recipient ACL/publisher integrity and its limits; the
+  flag alone cannot construct a verified role grant.
+  [Microsoft CryptProtectData](https://learn.microsoft.com/en-us/windows/win32/api/dpapi/nf-dpapi-cryptprotectdata).
+- Named-pipe default access and broad generic-write grants are insufficient.
+  FILE_GENERIC_WRITE includes create-instance permission; define exact owner and
+  individual allowed client rights for both O-owned bootstrap and S-owned
+  management endpoints. Neither Everyone/anonymous defaults nor same-SID-only
+  transport qualifies the new distinct-principal profile.
+  [Microsoft named-pipe rights](https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights).
+
+| Profile | Current R1 disposition | Required producer work |
+|---|---|---|
+| Windows distinct-principal S/O SCM roles | Architecture accepted; new protected publisher/instance/access backend not accepted or qualified | Actual issuer/publication, noncircular discovery, retained handles/TokenUser and explicit cross-SID endpoint/process rights |
+| Linux/WSL production roles | Existing ordinary native component results do not qualify R1 | Native-security must define actual protected unattended publisher, service discovery/process pins and cross-principal transport; no UID-only substitute |
+| macOS production roles | No R1 acceptance or qualification inferred | Native-security-owned protected producer and actual domain/instance/transport profile; unavailable capabilities remain Unsupported |
+
+This matrix deliberately grants no production support from the current ordinary
+Windows47/WSL51 fixtures. Native-security must supply the exact backend/API and
+supported OS matrix, independently critiqued before channel code. The remaining
+P0 is a concrete producer gap, not permission to write a synthetic grant factory.
