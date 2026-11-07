@@ -189,10 +189,14 @@ passed after a preserved initial needless-borrow failure. No tool installation,
 auditable runtime image build or actual scan was established by that source
 checkpoint; all candidate shipping qualification flags remain false.
 
-## Pending category-first adapter package migration
+## Pending internal adapter and unified public identity migration
 
-Target-only handoff for structural-development.sot.md's ten-package map. Current
-names and frozen-source invocations remain until one root-coordinated migration;
+Target-only handoff for structural-development.sot.md's ten-package map and the
+user's superseding public identity decision. humanymous-adapter-* identifies
+internal Rust packages. Public Rust, npm, Python, Ruby and native loader usage
+targets humanymous, with Humanymous for .NET conventions. Current public names
+below are legacy inventory, not names to retain as the desired public interface.
+Current source and frozen invocations remain until one root-coordinated migration;
 this note changes no package, directory, workflow, ABI or registry permission.
 
 | Delivery-owned seam | Required coordinated update or preserved contract |
@@ -201,7 +205,7 @@ this note changes no package, directory, workflow, ABI or registry permission.
 | scripts/ci/delivery/src/package.rs::node | Cargo -p humanymous-node-adapter becomes humanymous-adapter-node. The explicit humanymous-node-package binary selector is a separate identity and does not change automatically. |
 | Delivery Cargo.toml and Rust imports | Delivery directly depends on test-support, not host-adapter packages; bounded searches found no host-adapter Rust use/import or explicit lib name in this crate. Preserve the shared native ABI/security provider identities. |
 | Dynamic crate metadata, waves and archives | package.rs and registry.rs derive package names, dependencies and name-version.crate identities from Cargo metadata. Regenerate and source-bind validation manifests after migration; old crate/archive receipts do not qualify renamed packages. publish=false and all ownership/trust/readiness guards remain. |
-| Registry-facing identities | @humanymous/node, package/provenance JSON, node-native-SHA and validated-crates-SHA artifact names, release.yml and crates/npm/rubygems/pypi environment bindings are separate contracts. A Rust package taxonomy change does not authorize changing them or publishing. |
+| Registry-facing identities | Legacy npm @humanymous/node must be mapped to public humanymous together with package/provenance JSON and owner loaders. Registry ownership/bootstrap for that target is unverified. CI artifact names, release.yml and crates/npm/rubygems/pypi environment bindings remain separate technical contracts requiring an explicit map if changed; naming authorizes no publication. |
 | Native runtime archive and image | Explicit humanymous CLI/runtime binaries, known notice paths and runtime image role are not host-adapter package identities; no mechanical rename follows. |
 
 Foreign-owned coordination: apache-validation.yml contains apache-adapter and
@@ -210,13 +214,31 @@ component-controller selectors; route both to their owners. Do not edit those
 excluded workflow paths in this lane. Root owns the common graph/lock/toolchain;
 standalone manifest/lock consumers and Lab image recipes need their own mapping.
 
-Node currently has no explicit lib.name, so a package rename changes its default
-Rust library identifier and cdylib basename from humanymous_node_adapter to
-humanymous_adapter_node. The Node owner must map native build/copy/provenance and
-loader compatibility; Delivery calls its packaging tool rather than guessing a
-new .node filename. Dotnet export likewise has a default library name and needs
-its owner's DLL/managed-loader mapping. Python and Ruby explicitly name their
-libraries humanymous_python and humanymous_ruby; keep host import/module names
-separate from the Cargo package rename. No ABI symbol or loader compatibility is
-claimed by this bounded source review. Historical command strings, raw payloads,
-source identities and evidence hashes are never rewritten for the new taxonomy.
+Node currently has no explicit lib.name, so a package-only rename would produce
+the default humanymous_adapter_node library identifier/basename. That default is
+not the public loader target. Delivery calls the owner's packaging tool rather
+than inventing a filename. Dotnet export also needs its owner's explicit native
+basename and managed-loader map; its current LibraryImport refers to legacy
+humanymous_dotnet_adapter_export while the managed namespace is already Humanymous.
+
+| Legacy public/build surface observed | Proposed atomic target and owner seam |
+| --- | --- |
+| Node package @humanymous/node, binaryName humanymous-node, native/humanymous-node.*.node | Public npm/import name humanymous and public native basename humanymous. Node owner maps generated loaders, package files, platform manifest, provenance and installation destination with Delivery's npm pack/check/publish consumers. The host-required .node extension is retained. |
+| Python explicit lib.name and pymodule humanymous_python | Public import and extension basename humanymous, with its corresponding CPython initialization symbol. Python owner maps Rust/PyO3 export, package builder, installation metadata and actual host tests together. |
+| Ruby explicit lib.name humanymous_ruby | Public require and extension basename humanymous, with its corresponding Ruby initialization symbol. Ruby owner maps export, gem/install paths and actual host tests together. |
+| .NET LibraryImport humanymous_dotnet_adapter_export | Public product identity Humanymous and mapped native basename humanymous; .NET owner and root map loader, destination and versioned ABI descriptor. No new C# surface is implied by this handoff. |
+| Cargo metadata currently used for internal package waves | Root supplies the public Rust humanymous facade and its dependency/publication policy separately from the ten internal adapter package renames. No namespace ownership or ready package is asserted. |
+
+Platform extensions and required host registration symbols are explicit host
+constraints, not permission to keep language suffixes as the public brand.
+Meaningful versioned humanymous_*_v1 ABI entry points may remain only under the
+root-owned compatibility map. A common basename must not place different DLLs in
+one destination: installation paths and manifests must bind host/OS/architecture,
+ABI version, source/artifact digest and owner, rejecting conflicts and incompatible
+loads. Root's new ABI/facade canon sets these gates before implementation; this
+handoff does not merge implementations or claim compatibility. Do not mechanically
+set every lib.name to humanymous in a shared target directory: retain unique
+internal outputs or explicitly isolate build/staging paths before mapping the
+public basename, so native outputs cannot overwrite one another before packaging.
+Historical command
+strings, raw payloads, source identities and hashes remain unchanged.
