@@ -50,3 +50,14 @@ database found no matching known advisory in the scanned dependency set.
 Required boundaries include missing evidence, origin bypass, local management,
 replay, audit storage failure and destructive-action approval. Report sensitive
 findings through [security disclosure](security-disclosure.md).
+
+## Witness process entrypoint
+
+The `audit-witness` binary delegates to the shared private stdin/stdout witness
+service on native Unix/Windows builds. It opens no public network listener and
+reports service failure with a nonzero exit. Its nonnative stub has no witness
+service capability. Binary existence or a zero-test harness does not prove the
+service ran, durable signatures were produced or witness custody was independent.
+The supervisor still owns pipe provenance, native deadlines, process identity,
+key/head isolation and reaping. See [administrative role boundaries](rbac-separation-of-duties.md)
+for approval consumption versus actual operational effects.

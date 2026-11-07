@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/control/mod.rs",
+  "sha256": "54b6f53e1363971a5fbec6e953e56e0db8cd5a71a5104b701c3cdc1dd3297562",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete export boundary separating pure policy Authorization, durable ControlAuthority ledger and single-owner ActionPermit/ApprovalRequest. Public role reference documents these as library primitives, not installed runtime administrative endpoints or completed dual-control pilots.",
+  "pages": [
+    "docs/reference/rbac-separation-of-duties.md"
+  ]
+},
+{
+  "source": "crates/audit/src/control/operations.rs",
+  "sha256": "ccd0ae75ed25f835efa9b921c364f7ef5fdf7832d9e1c1a37a4e2c474672067b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete immutable approval request, private noncloneable/nondeserializable permit, durable authority consumption delegation and execute scope/action/target/issued-expiry validation before FnOnce callback. Public role reference separates consumption receipt from callback state/effect completion and requires trusted observer time and actual runtime/restart evidence. No operation or destructive action executed.",
+  "pages": [
+    "docs/reference/rbac-separation-of-duties.md"
+  ]
+},
+{
+  "source": "crates/audit/src/bin/audit-witness.rs",
+  "sha256": "143b7c6fd620704d737cc2d6610ec305a10e35a4ffff0aba792f99dcdc1caa4d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete native Unix/Windows inherited-stdio service delegate, generic error/nonzero exit and nonnative no-service stub. Public audit reference does not infer witness service, independent custody or signatures from binary existence/zero-test harness; shared protocol and supervisor pipe/identity/deadline/reaping remain separate. No child process launched.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/attacker/src/network/report.rs",
   "sha256": "b07d214b495cad3ddc198bddd2266592941f8ab1ec6c7da799c42753e997b852",
   "reviewer": "codex/rust-pages",

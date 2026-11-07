@@ -731,3 +731,13 @@ cover catalog/effect/status/accounting and original supervisor/audit-reader
 projection boundary. Clarified report checks do not reopen original WAL/keys or
 attest binary hashes; self-consistent supplied ledger is insufficient. No local
 network/process run and no inference that historical Docker qualifies new source.
+
+## Typed control permit and witness entrypoint review
+
+Read applicable audit custody canon and full control exports/operations plus
+witness entrypoint. Public role/audit references separate signed durable approval
+consumption from callback effect completion and native stdio entrypoint from
+independent custody. Three manual source hashes recorded; policy/ledger/service
+internals remain pending. No erasure/admin/witness process or runtime executed.
+Hosted42348518353 Linux native failed while Docker/macOS remained live; exact
+cause not yet collected, not treated as Pages failure or later source evidence.
