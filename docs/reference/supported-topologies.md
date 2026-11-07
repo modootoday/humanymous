@@ -115,3 +115,37 @@ The application must provide an appropriate nonce, serve the intended script
 and insert both outputs into the same eligible application-owned response.
 A generated tag for a reserved path does not make that path available through
 the adapter. Template insertion is not evidence of authenticated collection.
+
+### Node request ownership and outcomes
+
+The Express guard refuses an already-ended request, an existing `body` property,
+text-decoded input or a non-HTTP/1 request. Install it before every parser and
+effect. After complete-body verification and a bound, unexpired ALLOW, it replays
+the buffered bytes through request body methods/events while retaining the
+original request for other events. Compatibility with custom request mutation
+still requires an actual application pilot.
+
+The Hono wrapper refuses an already-used body or aborted signal and constructs
+an authorized Request from the original with sanitized headers, verified body
+bytes and the original signal. That source path is separate from proof that
+every host preserves metadata and cancellation correctly. Neither path streams
+an unverified upload to the application.
+
+| Outcome before the application call | Adapter response |
+| --- | --- |
+| Bound, unexpired ALLOW | Invoke the application; its own status and response stream remain application-owned |
+| DENY | 403 JSON verdict |
+| CHALLENGE | 409 JSON verdict; no injected challenge HTML or implemented recovery service |
+| Input, body, capacity, dependency or decision failure | 503 JSON error |
+
+Adapter-generated JSON responses request `Cache-Control: no-store`. The owned
+Express server separately rejects upgrade/CONNECT with an empty no-store 503
+response. These mappings are implementation-specific, not generic Draft v0
+status assignments. A 503 is not a DENY verdict.
+
+Source checks cancellation and decision expiry before entering the application
+and consumes the bound decision once. It does not implement business-operation
+idempotency or retract an application effect after dispatch. Response streaming
+remains handler-owned; permit release is not proof that a download completed,
+a client received it or a side effect was rolled back. Actual abort/race/timeout
+and accessible recovery outcomes remain execution gates.

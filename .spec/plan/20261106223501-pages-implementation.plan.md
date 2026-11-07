@@ -578,3 +578,10 @@ Read all envelope/template/server source. Added exact option bounds, independent
 authority scope, zero-body semantics, request commitment and explicit nonce/script/
 CSP ownership. Manually reviewed three LF source hashes; no host/native execution
 claimed and downstream host/stream/packaging remain separate pending reviews.
+
+## Node body and host lifecycle review
+
+Read all stream.rs/host.rs. Added pre-parser refusal, bounded replay/Request
+reconstruction, no-store status mapping, handler-owned response streaming and
+post-dispatch cancellation/effect limits. Pinned two manually reviewed source
+hashes without claiming race freedom, host compatibility or actual AT/recovery.

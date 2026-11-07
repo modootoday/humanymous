@@ -2,6 +2,20 @@
   "schema": 1,
   "reviews": [
     {
+      "source": "crates/node-adapter/src/stream.rs",
+      "sha256": "d342b9328b9fe718f81158e3e9bdb87f45f3f8467445b5e65c80571c4cd13be3",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read full Express/Fetch collection, admission, body bounds, event cancellation/deadline, shared authority client binding/consumption, dispatch checks and Express bounded replay. Public reference distinguishes pre-parser ownership, complete-body verification, Hono Request reconstruction, status mapping, handler-owned response streams and post-dispatch effect limits. Source inspection does not prove host metadata compatibility, race freedom, timer/listener lifecycle, actual origin-once behavior or accessible recovery; current-source execution remains required.",
+      "pages": ["docs/reference/supported-topologies.md"]
+    },
+    {
+      "source": "crates/node-adapter/src/host.rs",
+      "sha256": "9f0c54928271bb02be0e363840168f590ed2b078709e5f5a2da5c8eb10e3326e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read safe host property/call helpers, no-store JSON response construction, DENY403/CHALLENGE409/error mapping, headersSent refusal, RAII object references and raw header pair conversion. Public reference identifies JSON rather than challenge HTML, separates dependency error from DENY and does not equate reference release with request/response completion or cryptographic erasure. No actual Node/Bun host run claimed.",
+      "pages": ["docs/reference/supported-topologies.md"]
+    },
+    {
       "source": "crates/node-adapter/src/envelope.rs",
       "sha256": "ed171ef7118fefda9b028bf183ab678aa0b123ad8a35c3f89295d779e8b996ce",
       "reviewer": "codex/rust-pages",
