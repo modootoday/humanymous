@@ -1085,3 +1085,14 @@ Exact changed source SHA256 inventory:
 - crates/authority/src/decision.rs : before 5a11711204f4a15b57c8704fa7862baa7e6e4f2ff6fbf5f2b0128c9d7a01ce38 ; after 437bfbe1dcc43c09726090f0c4551ff2aed3d511c8636266a4656a6d434de94c
 - crates/authority/tests/decisions.rs : before 3a0f2a2894e1fd32532936110b78b6187ff09ff722eec9597b4cbe829ad2b06d ; after 5b22d6aae4106d85e445f881a7c3681bde45d38cc5ea59497c3c593a13527859
 - crates/authority/tests/native_process.rs : before bbd6fdfa9c93e3ab2198fc922f8d81d9466c44e3636d6634b7eed6b56ca8f507 ; after fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03
+
+### CORE-SLICE-01 actual fixture destination correction
+
+Updated only crates/authority/tests/decisions.rs include_str to
+../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json.
+Original HEAD fixture Git blob cbf3e6c6b40d9ecb241238953947c9f669e7f86a
+equals moved Git-filtered blob, but initial RAW moved blob d2cb01465e63f786e6659320cecccf7fa76e1e16
+DIFFERS (218CR bytes). Reported Root-owned moved-file LF normalization; no fixture
+copy or edit performed by Authority. Raw equality remains unverified until correction.
+Consumer SHA256 before 5b22d6aae4106d85e445f881a7c3681bde45d38cc5ea59497c3c593a13527859; after 0f35937c190f11a5a05fa438cd6a8b1f9a347686e64a0c83f2736d16005a902b.
+Root manifest dirty preserved. No compiler/tests/Clippy executed.

@@ -30,7 +30,7 @@ struct Fixture;
 impl Evidence for Fixture {
     fn report(&mut self, _: &ValidatedRequest, _: bool) -> Result<SessionReport, Rejection> {
         let fixture: serde_json::Value = serde_json::from_str(include_str!(
-            "../../scoring/tests/fixtures/frozen/human-chrome-allow.json"
+            "../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json"
         ))
         .unwrap();
         Ok(serde_json::from_value(fixture["report"].clone()).unwrap())
