@@ -1,0 +1,149 @@
+{
+  "scope": "Allocated actual Desktop Linux Ruby/Jekyll build only",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "docs_tree": "56b1e029952b5a3b29d4b0d056671bc79110e43b",
+  "docker": {
+    "server_version": "29.9.2",
+    "context": "desktop-linux",
+    "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "server_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+    "credential_store": "desktop",
+    "scoped_path_corrected": true,
+    "os": "linux",
+    "helper": "C:/Program Files/Docker/Docker/resources/bin/docker-credential-desktop.exe",
+    "executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe"
+  },
+  "admission": {
+    "available_gib": 32.88,
+    "commit_percent": 80,
+    "free_physical_gib": 32.91,
+    "utc": "2026-11-07T11:47:19.8309608Z"
+  },
+  "image": "ruby:3.3.13-bookworm@sha256:e8bdbcb78ac5610a976012551304271bcd7a5ac43919c1c638ba691279c12b0b",
+  "image_actual": "amd64/linux exact RepoDigest observed",
+  "builder": {
+    "hard_lifetime_seconds": 1200,
+    "pids_limit": 256,
+    "actor": "1000:1000",
+    "memory_gib": 3,
+    "peak_observation": "356.6MiB/3GiB,5PIDs at one observed point; not a measured peak",
+    "memory_swap_gib": 3,
+    "started": "2026-11-07T11:50:39.236060624Z",
+    "source_and_theme_mount_rw": false,
+    "cid": "07bfad8e92309f6b864bc7f5c62d3869c7270aed259b485502bad3d91b75166e",
+    "cpu_limit": 1,
+    "ports_published": 0,
+    "readonly_root": true
+  },
+  "prerequisites": {
+    "advisory_commit": "516ea4757d5eec778c49af8371c23309c4b70f42",
+    "rubygems": "3.5.22",
+    "advisory_result": "No vulnerabilities found",
+    "bundle_check": "PASS",
+    "openssl_development_header": "present",
+    "ruby": "3.3.13 x86_64-linux",
+    "bundler": "2.5.22",
+    "theme_head": "ba2b23f0e1639f92ccefbb882f43092bfe5b16b7",
+    "compiler": "Debian gcc12.2.0",
+    "frozen_bundle": "PASS,44 gems/8 Gemfile dependencies"
+  },
+  "source": {
+    "jekyll_disk_cache_disabled": true,
+    "gemfile_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+    "tracked_and_hidden_inventory_count": 127,
+    "git_dirty": false,
+    "before_after_manifest_sha256": "19dc284b0c0f2bad093add485d42b7d026d8bd09f1c77044cd346832b0bb8f13",
+    "files": 127,
+    "drift": 0
+  },
+  "outputs": {
+    "subpath": {
+      "baseurl": "/humanymous",
+      "theme_pages": 88,
+      "theme_strict_exit": 0,
+      "jekyll_exit": 0,
+      "files": 165,
+      "html_files": 88
+    },
+    "apex": {
+      "theme_pages": 88,
+      "jekyll_exit": 0,
+      "theme_strict_exit": 0,
+      "files": 165,
+      "html_files": 88
+    },
+    "both_security_txt_sha256": "edd7ec133b0b02f9759892c0b5da152048f052c52ca1640704b899eeb07088d3"
+  },
+  "ancillary_first_failure": {
+    "dependencies_or_policy_relaxed": false,
+    "tool_chunk": "1a4db7",
+    "command": "bundle _2.5.22_ exec bundle-audit check --help",
+    "resolution": "Top-level help and installed CLI confirm --database option; actual check used separate writable task database and passed",
+    "exit": 1,
+    "message": "No such file or directory: --help"
+  },
+  "cleanup": {
+    "observed_exit": 143,
+    "all_build_client_sessions": "8508/89037/43939 terminal",
+    "stop_exit": 0,
+    "exact_cid_absent_from_ps_all": true,
+    "reason": "Explicit stop after completed builds, observed by wait registered before stop",
+    "wait_session": 73029,
+    "global_prune_or_foreign_stop": false,
+    "heavy_allocation": "RETURNED to root"
+  },
+  "rust_pages_verifier": {
+    "executable_sha256": "c9bcc0cebc384ac0fa100485e6a8a076dcbf6d1a7564b1ca884987db3f7145ef",
+    "complete_current_source_dependency_closure": "UNKNOWN",
+    "historical_identity": "known",
+    "new_compile": "NOT_RUN",
+    "archive_consumption": "NOT_RUN; requires separate coherent-source bounded compile/verification"
+  },
+  "logs": [
+    {
+      "name": "ruby-pull.log",
+      "bytes": 429,
+      "sha256": "c5c5604ac9fbbaacba7643107db21a756975f90dca6fb09ae31e51cb0e720c47"
+    },
+    {
+      "name": "bundler-install.log",
+      "bytes": 56,
+      "sha256": "a7938974b83d4316e1004b56782d01f31018e1e67261e0511abaf5cc182583e8"
+    },
+    {
+      "name": "bundle-install.log",
+      "bytes": 2892,
+      "sha256": "e177a8aef91e856257660752e3fecb6977be44f837cc78e5064e5c337e695e71"
+    },
+    {
+      "name": "bundle-audit.log",
+      "bytes": 3289,
+      "sha256": "822aa77febdd16a045c8b465abd11213175475d0830341bf3504c6892ded1ce8"
+    },
+    {
+      "name": "build-apex.log",
+      "bytes": 347,
+      "sha256": "da26f110fccc2f47587400583ffc9f309472888f3531ee6cdd206aec2e916a02"
+    },
+    {
+      "name": "theme-apex.log",
+      "bytes": 36,
+      "sha256": "5fa4261f6cc30ba5ce7f1dc70b720562f968b72343cc07239b4f3787a83586c3"
+    },
+    {
+      "name": "build-subpath.log",
+      "bytes": 349,
+      "sha256": "060afb68409bf63e34b0510bc1122c4a5140c730c2464d830973d013cb3aa5b5"
+    },
+    {
+      "name": "theme-subpath.log",
+      "bytes": 36,
+      "sha256": "5fa4261f6cc30ba5ce7f1dc70b720562f968b72343cc07239b4f3787a83586c3"
+    }
+  ],
+  "scope_limits": [
+    "Theme checker passes are not current Rust built/link/archive checks",
+    "No Caddy/server/browser/AT/deployment or full source freshness qualification",
+    "Historical Windows native Ruby dependency failures remain separate; this is Linux container build evidence"
+  ]
+}

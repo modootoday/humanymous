@@ -1,0 +1,41 @@
+{
+  "schema": "humanymous.local-pages-verification/1",
+  "source_commit": "269607366e4b2e37b47a974595b406b66642caae",
+  "docs_tree": "56b1e029952b5a3b29d4b0d056671bc79110e43b",
+  "build_finished_success": true,
+  "compiler_input_files": 7691,
+  "compiler_input_drift": 0,
+  "compiler_capture_scope": "Tracked fixed-clone files, reachable Cargo package directory files, Rust sysroot bin/lib and present Cargo configuration files. This records local inputs; it does not attest all Windows SDK, linker, environment or operating-system inputs.",
+  "executable_sha256": "ad04b2d159c4f42d0c5327cebd042c1246f951ea7b6ca0e4f5c3ff8d79b9fed4",
+  "apex": {
+    "archive_sha256": "5ffe10e4b8722850ef5a8f88fe6837546e96f4fd895a5578cb3e45d7d95e60fb",
+    "assistive_technology_qualified": false,
+    "baseurl": "",
+    "browser_qualified": false,
+    "deployment_performed": false,
+    "errors": [],
+    "files": 165,
+    "inventory_sha256": "a6aee5921472764fd90fe16dbc45e4f67a011206a6f4bb99bf9cb87eafd13771",
+    "pages": 88,
+    "rendered_html": 88,
+    "schema": "humanymous.public-pages-roundtrip/1",
+    "source_input_sha256": "2aab812e7b2b27e15e269a89769d580b4b6457e6c4469d3bcd58b1f7e1e55d0a"
+  },
+  "subpath": {
+    "archive_sha256": "01e90f4c124fc4a3d55ec11d088dadd1666e5135e288cfe5ff1e3a6cbd652c50",
+    "assistive_technology_qualified": false,
+    "baseurl": "/humanymous",
+    "browser_qualified": false,
+    "deployment_performed": false,
+    "errors": [],
+    "files": 165,
+    "inventory_sha256": "f61720869d5ed1517d3db505642935adf2d67268bdbf64b4f1e5618d45de34bf",
+    "pages": 88,
+    "rendered_html": 88,
+    "schema": "humanymous.public-pages-roundtrip/1",
+    "source_input_sha256": "2aab812e7b2b27e15e269a89769d580b4b6457e6c4469d3bcd58b1f7e1e55d0a"
+  },
+  "browser_qualified": false,
+  "assistive_technology_qualified": false,
+  "deployed": false
+}
