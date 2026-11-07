@@ -206,7 +206,7 @@ pub fn image_sources(root: &Path) -> Result<()> {
     for path in ["build/core.Dockerfile", "build/gate.Dockerfile"] {
         let text = fs::read_to_string(root.join(path)).map_err(|e| e.to_string())?;
         require(
-            !text.contains("golang:") && !text.contains("go build"),
+            !text.contains("golang:") && !crate::docker_source::has_go_build(&text),
             format!("Go shipping image still present: {path}"),
         )?;
         require(

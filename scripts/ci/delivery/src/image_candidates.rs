@@ -56,7 +56,7 @@ pub fn check(root: &Path) -> Result<()> {
             )
             && dockerfile.contains("USER 65532:65532")
             && dockerfile.contains("ENTRYPOINT [\"/usr/local/bin/humanymous-runtime\"]")
-            && !dockerfile.contains("go build")
+            && !crate::docker_source::has_go_build(&dockerfile)
             && !dockerfile.contains("golang:"),
         "candidate source/binary build contract mismatch",
     )?;

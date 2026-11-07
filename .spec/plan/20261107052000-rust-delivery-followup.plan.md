@@ -12,6 +12,15 @@ rel:
 
 ## Scope and order
 
+After47a6720, actualstaticcandidateCLI exposed a substringfalsepositive:
+go-build token appeared inside cargo-build text. SharedlexicalDockerchecker
+fixes it without removing Go source/baseimageguard. RootBisolatedtarget
+target/validation-agents allocation passed38pureunits(0ignored/filtered),
+strictClippy/staticcandidate/staticpolicy; guardcommit81/free~35.5GiB, jobs1/
+incremental0. Slot returned immediately. Imagebuild/runtime/CVEstillnot_run.
+No newCargo/dependency/manifest edits. Commandmetrics/publicarchivecache next
+authorized slice, actualcacheeffectivenessnot_run; duplicateCargo notremoved.
+
 Terminal secondhosted42348518353 attempt1 source63f69ae:16jobs3success(policy/
 MSRV/Pages),13failure,0skip. WholelogSHA256
 5c03079b00af0704ec0387b82b27fc7e4178cd838a1737eb6f300863252d0e3c,

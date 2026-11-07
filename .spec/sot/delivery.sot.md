@@ -299,6 +299,16 @@ checks remain not_run. No local Docker build or browser execution was performed.
 
 ### Artifact-free diagnostics
 
+Candidate preflight regression and correction: the original substring check
+`contains("go build")` also matched `cargo build`. Actual static candidate CLI
+exposed this after47a6720; it was not an image-build/runtime failure. Shared
+docker_source token detection now separates cargo from go/go.exe/absolute Go
+commands, handles intervening flags and ignores full-line comments. Original
+Go compiler/base-image refusal and legacy source paths remain mandatory.
+Allocated isolated target validation passed38pureunits/strictClippy plus actual
+staticcandidate/policy commands; no image/runtime execution. Preserve the earlier
+failed preflight rather than relabeling it as successful or weakening Go guard.
+
 Approved hosted connection delta after the original63f69ae run: laneB now runs
 docker→browser(component)→browser-product→nginx→rust-images(candidate)→images
 (legacyshippingguard)→packages→node→advisories. Every new job uses standard

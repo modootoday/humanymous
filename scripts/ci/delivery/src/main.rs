@@ -1,6 +1,7 @@
 //! Source-bound delivery validation. No authored script-language implementation.
 mod command;
 mod dependency_summary;
+mod docker_source;
 mod evidence;
 mod image_candidates;
 mod lab_diagnostics;
