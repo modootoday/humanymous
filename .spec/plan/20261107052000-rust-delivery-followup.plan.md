@@ -1069,3 +1069,12 @@ observed filesystem prerequisites, original overall deadline/cleanup and source
 closure. No Audit execution, push, repair, Ready or full-product claim has been
 made by Delivery. Read the owner-frozen preparation before implementing its
 closed component; common Cargo/lock/toolchain remain root-owned.
+
+Audit source gate implementation is now prepared in audit_source.rs with a
+baseline/prepared check-only entrypoint and pure negative cases. Exact f9 HEAD,
+193 input byte commitments, candidate Git-bound catalog/seams and full checkout
+delta are required; later test-support process/barrier edits cannot enter the
+projected compile tree. Tests, check and Clippy have NOT been run for this new
+source; no compiler/target allocation is assumed. Workflow assembly, prerequisite
+receipt consumption, original overall clock, semantic selectors and UI execution
+remain unfinished and must not be represented as an executed Audit component.

@@ -43,12 +43,13 @@ Exactly 16 fixed file IDs in fixed order map to these filenames:
 
 - `native-abi-v1.h`;
 - `header-compiler/scope.txt`;
-- each `header-compiler/c/` and `header-compiler/cpp/`: `version.txt`,
-  `version-stderr.txt`, `target.txt`, `target-stderr.txt`, `stdout.txt`, `stderr.txt`;
+- flat files in `header-compiler/`, each with prefix `c-` and `cpp-`:
+  `version.txt`, `version-stderr.txt`, `target.txt`, `target-stderr.txt`,
+  `stdout.txt`, `stderr.txt` (for example `c-version.txt`, `cpp-stdout.txt`);
 - `source-before.json` and `source-after.json`.
 
-The exact owner filenames must be confirmed against the recipe before coding;
-the fixed ID table is the sole output-path authority. Empty stderr files retain
+The owner confirmed this flat filename table; the fixed ID table is the sole
+output-path authority. Empty stderr files retain
 length zero and the SHA256 of empty bytes. Optional cbindgen version original
 would require a separately versioned 17-file profile; the initial profile instead
 retains typed actual version `cbindgen 0.29.4`, exit 0 and executable hash.
@@ -78,8 +79,12 @@ independently reviewed public-source grammar; hash mismatch never permits an
 arbitrary comment dump. Rehash the original before copy/mount; preserve it.
 
 Compiler AST grammar admits only individually reviewed record names/types/fields
-and numeric layout syntax. Bounds: 512 lines/64 KiB, 256 bytes per line, 32 records,
-depth eight, integers at most 65536. Required four HumanymousNative V1 records and
+and numeric layout syntax. Bounds: 512 lines/64 KiB, 256 bytes per line, depth eight,
+integers at most 65536. The initial proposed 32-record cap was disproven by the
+R3 Debian18 observation: C has 10 root records, C++ has 34. A candidate finite
+Debian18 profile therefore needs an explicit 34-root-record cap and reviewed
+exact auxiliary table; this correction does not admit the profile automatically.
+Required four HumanymousNative V1 records and
 17 fields remain checked by the owner. The existing layout parser skips unknown
 lines and therefore is not a privacy validator. Extra builtin/system records
 require actual observation and a finite reviewed table, never a name wildcard.
@@ -98,8 +103,11 @@ projection schema needs owner equivalence review; it cannot be called original.
 Use one versioned fixed-profile envelope bound to exact source/run/job/OS/arch,
 runner image, Rust/Cargo/lock/config, owner/recipe hashes and a closed environment
 whitelist. Do not dump environment or tool installation logs. Fixed commands
-and successful exits retain their typed argv recipe; an argv template is not an
-original argv capture and must be labelled accordingly. Both clang executables
+and successful exits retain their typed argv recipe plus exact original argv
+digest. The owner accepts this template with the exact header-path placeholder
+mapped through a fixed schema to file ID/canonical root-relative path, while the
+actual argv remains private. A template is not an original argv capture and must
+be labelled accordingly. Both clang executables
 need resolved path plus SHA256 before/after for a full compiler identity claim.
 
 Manifest entries have fixed file ID, raw length and raw SHA256. Deterministic
@@ -124,16 +132,39 @@ ABI R1 readiness failed before container start due to Docker local-log settings;
 R2 started with compress=false but first `command -v clang` exited 127 without a
 path in that exact image environment. Neither attempt observed compiler output
 or compiled the header. Their raw receipts remain separate and do not establish
-exhaustive filesystem absence or hosted qualification. Native ABI owner is now
-coordinating a user-requested compiler-bearing venue; Delivery will not pull,
-install, launch or assume that allocation.
+exhaustive filesystem absence or hosted qualification. Native ABI owner then
+completed an independently allocated R3 pinned compiler-image measurement with
+the unchanged approved header: C11/C++11 compile exits zero, C stdout2443 bytes/
+79 lines/10 root records, C++ stdout12430 bytes/337 lines/34 root records, all
+compiler stderr empty. Clang18.1.8 resolves to the same binary for C/C++ and its
+before/after digest matches. The original profile report is privately retained
+in 20261108-native-abi-clang-fixed-header-r3; Delivery read that report but has not
+independently rehashed all command originals or promoted its raw output public.
+Known /usr/include paths, unnamed records, unions and nested anonymous names
+need a finite reviewed table; the earlier struct-only proposal is insufficient.
+The ABI owner accepts an even narrower exact-byte privacy profile as a candidate:
+bind approved header SHA, actual resolved compiler SHA/metadata/target, exact
+Debian image and system-header closure, and C/C++ output digests respectively
+`e3a3fd24fa31257890b787dce3a83c3f14f152377c6ccd46f93844967a190bec` and
+`757dfc4219187e9b568d7cad1ed76de8f597096f4bae358302566d127f4442a3`.
+Integration/X must independently approve the public byte profile before source
+admission. Exact matching avoids an extensible AST syntax wildcard; every unknown
+Ubuntu/tool/header tuple still refuses retention. Owner semantic four-record/
+17-field checks remain mandatory. R3 generated neither owner scope nor source
+snapshots, so it is not an existing 16-file hosted receipt and none is fabricated.
+Its canonical private bundle is now 20261107173322-native-abi-clang-fixed-header-r3;
+the earlier noncanonical path was moved by its owner with raw bytes preserved.
+Container fixture stopped with137 and owned removal/absence was observed by the
+owner; this is not graceful exit0. No hosted owner example ran and no Delivery
+execution allocation follows from this supplementary grammar measurement.
 
 Panel perspectives were applied in this chat without delegation: blue retains
 one owner recipe; red rejects path/chunk/unknown-output smuggling; SRE requires
 bounded retention and terminal cleanup accounting; DPO excludes private originals
 outside the closed public set; evaluator separates execution, proof completeness
 and full-product readiness. Adversarial critique verdict: needs-work. P1 blockers
-before implementation/dispatch acceptance are the unobserved auxiliary AST table,
-exact owner filename table, source-count measurement, compiler identity receipt
-and argv-template agreement. These are mandatory contract requirements above;
+before implementation/dispatch acceptance are the reviewed auxiliary AST table,
+source-count measurement and compiler identity receipt. Owner filename and typed
+argv-template agreement were subsequently received and incorporated above. These
+are mandatory contract requirements;
 no wildcard or weaker execution-only dispatch resolves them.
