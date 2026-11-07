@@ -12,9 +12,14 @@ use humanymous_authority::{
 use humanymous_integrity::adapter::ValidatedRequest;
 use humanymous_signals::report::SessionReport;
 use std::path::Path;
+use std::sync::{
+    Arc,
+    atomic::{AtomicUsize, Ordering},
+};
 
 pub struct Service {
     pub credential: String,
+    pub pending: Arc<AtomicUsize>,
     task: tokio::task::JoinHandle<std::io::Result<()>>,
 }
 impl Service {
@@ -28,7 +33,9 @@ impl Drop for Service {
         self.task.abort();
     }
 }
-struct Frozen;
+struct Frozen {
+    pending: Arc<AtomicUsize>,
+}
 impl Evidence for Frozen {
     fn report(
         &mut self,
@@ -43,6 +50,7 @@ impl Evidence for Frozen {
             std::thread::sleep(std::time::Duration::from_millis(1200));
         }
         if path == "/cancel" {
+            self.pending.fetch_add(1, Ordering::Release);
             std::thread::sleep(std::time::Duration::from_millis(200));
         }
         let fixture = match path {
@@ -88,9 +96,21 @@ pub async fn start(base: &Path) -> Result<Service, super::Error> {
         true,
     )?;
     let listener = Listener::bind(&config)?;
-    let authority = Authority::new(config, Default::default(), Box::new(Frozen), Box::new(log))
-        .map_err(|_| "authority startup")?;
+    let pending = Arc::new(AtomicUsize::new(0));
+    let authority = Authority::new(
+        config,
+        Default::default(),
+        Box::new(Frozen {
+            pending: pending.clone(),
+        }),
+        Box::new(log),
+    )
+    .map_err(|_| "authority startup")?;
     let credential = authority.credential().to_owned();
     let task = tokio::spawn(listener.serve(authority, 16, 1000, 1800));
-    Ok(Service { credential, task })
+    Ok(Service {
+        credential,
+        task,
+        pending,
+    })
 }

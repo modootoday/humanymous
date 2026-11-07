@@ -97,3 +97,14 @@ the workspace member and updates lock; no native Cargo invocation occurred here.
 Build source now exports its generated ABI receipt, and the pilot's source SHA
 and source-manifest SHA are embedded at compile time. Actual inspected image ID
 is supplied by the trusted hosted runner and must match its external receipt.
+
+## Registered default graph verification
+
+Root completed member/lock registration and assigned isolated D. Evidence
+evidence:root/20261107085316 records9safe passes and native DEFAULT all-target
+check/Clippy pass, with exact before/after source and graph hashes unchanged.
+No httpd/bindgen/pilot feature or actual process/IPC/network/Docker was run.
+The manifest remains frozen. Selected native compilation and actual45scenario
+execution remain mandatory. Docs review found a detached-worker early-return
+gap in graceful reload; RequestWorker now joins on every exit with bounded
+connect/read/write. That pilot fix remains unexecuted and has no cleanup proof.

@@ -26,6 +26,23 @@ struct Process {
     config: Configuration,
 }
 static PROCESS: OnceLock<Process> = OnceLock::new();
+fn running(process: &Process) -> Result<(), ()> {
+    let mut state = 0;
+    let mut generation = 0;
+    // SAFETY: public MPM queries write only these initialized output integers.
+    if unsafe { ap_mpm_query(AP_MPMQ_MPM_STATE as _, &mut state) } != 0
+        || unsafe { ap_mpm_query(AP_MPMQ_GENERATION as _, &mut generation) } != 0
+        || state != AP_MPMQ_RUNNING as _
+        || u64::try_from(generation)
+            .ok()
+            .and_then(|value| value.checked_add(1))
+            != Some(process.generation)
+    {
+        let _ = process.child.shutdown();
+        return Err(());
+    }
+    Ok(())
+}
 // The HTTP/1 connection socket remains host-owned for this synchronous input
 // callback. No pointer is sent to Tokio or retained after guard returns.
 struct SocketDeadline {
@@ -447,6 +464,7 @@ extern "C" fn cleanup_context(value: *mut c_void) -> apr_status_t {
 extern "C" fn guard(request: *mut request_rec) -> c_int {
     boundary(|| {
         let process = PROCESS.get().ok_or(())?;
+        running(process)?;
         let original = unsafe { observation(request)? };
         // SAFETY: the host promises a live request. Avoid holding a Rust
         // reference across native calls that can mutate its allocation.
@@ -471,6 +489,11 @@ extern "C" fn guard(request: *mut request_rec) -> c_int {
         }
         // Cache quick handlers are outside this initial module's supported graph.
         if unsafe { !ap_find_linked_module(c"mod_cache.c".as_ptr()).is_null() } {
+            return Err(());
+        }
+        // The initial pinned tuple is plain HTTP/1. TLS close-notify handling
+        // needs its own filter-aware cancellation contract and actual pilot.
+        if unsafe { !ap_find_linked_module(c"mod_ssl.c".as_ptr()).is_null() } {
             return Err(());
         }
         let mut length = None;
@@ -611,6 +634,7 @@ extern "C" fn quick(request: *mut request_rec, lookup: c_int) -> c_int {
 }
 extern "C" fn final_check(request: *mut request_rec) -> c_int {
     boundary(|| {
+        running(PROCESS.get().ok_or(())?)?;
         let current = unsafe { observation(request)? };
         // SAFETY: current HTTP/1 callback owns the live connection. APR probes
         // receive EOF without blocking or consuming application bytes.

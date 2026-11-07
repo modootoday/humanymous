@@ -35,7 +35,13 @@ The safe request owner is !Send/!Sync, enforcing host-thread replay affinity.
 A separate idempotent cancellation signal can be retained by pool cleanup while
 authority work is pending. Cancellation retains admission until request drop;
 it cannot revive work or mint an authorization. Native cleanup registration is
-still unimplemented and must be measured separately from these pure contracts.
+authored but unexecuted and must be measured separately from these pure contracts.
+Initial source rejects loaded mod_ssl as well as mod_cache: its plain HTTP/1
+socket EOF probe does not establish TLS close-notify cancellation coverage.
+MPM state and generation are queried again before handoff; stopping revokes the
+safe child owner on the request thread, avoiding mutex use in a signal callback.
+The graceful pilot must observe authority work in flight before requesting
+reload, deny that old-generation origin effect, and then exercise a new child.
 Subrequests and internal redirects do not inherit authorization; initial native
 coverage rejects them until separately qualified. Cache quick handlers and
 request rewrites must not bypass guard or change an authorized request binding.
@@ -79,8 +85,11 @@ https://httpd.apache.org/docs/2.4/developer/modguide.html.
 Bounded body replay supports READBYTES, GETLINE and SPECULATIVE semantics without
 copying the complete body or releasing admission. It remains an input mechanism,
 never a grant. Actual filter installation must follow consumed authority ALLOW.
-Nine pure tests are authored; only the earlier six have a root-reported pass.
-The new three replay tests have not run. Root owns the current Clippy rerun.
+Nine pure tests and safe all-target Clippy passed in root-assigned A. A later
+root-assigned D repeated9pure passes and verified the registered native package's
+DEFAULT all-target check/Clippy without headers or bindgen. Exact source/graph
+receipts are evidence:root/20261107082159 and evidence:root/20261107085316.
+Selected httpd compilation and the45hosted scenarios have not run.
 Native source inputs are pinned in adapters/apache/upstream-lock.json using
 official release checksum pages and observed peeled Git tags. Configured header
 closure, builder/clang identity and actual source-bound hosted results are absent.

@@ -1,0 +1,30 @@
+{
+  "schema": "humanymous.apache.default-graph/0.1",
+  "pipeline": "root-assigned-D",
+  "target": "target/validation-native",
+  "rustupToolchain": "1.99.1",
+  "cargoBuildJobs": 1,
+  "cargoIncremental": 0,
+  "commands": [
+    {"argv": ["cargo", "test", "--locked", "-p", "humanymous-apache-adapter", "--lib"], "exit": 0, "passed": 9, "failed": 0, "ignored": 0, "filtered": 0},
+    {"argv": ["cargo", "check", "--locked", "-p", "humanymous-apache-native", "--all-targets"], "exit": 0},
+    {"argv": ["cargo", "clippy", "--locked", "-p", "humanymous-apache-native", "--all-targets", "--", "-D", "warnings"], "exit": 0}
+  ],
+  "resources": {"before": {"freePhysicalGiB": 33.14, "commitPercent": 81}, "after": {"freePhysicalGiB": 33.09, "commitPercent": 81}},
+  "sourceHashesBeforeEqualAfter": true,
+  "sources": {
+    "Cargo.toml": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac",
+    "Cargo.lock": "65b830318da0efb30498ab117c478a66ede3de1eecc9a55a40cc2a4f971402b0",
+    "rust-toolchain.toml": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+    "crates/apache-adapter/Cargo.toml": "306897ca71d128a8ed0684286327496ad65e69a833159c6c1462b7c738ede7e5",
+    "crates/apache-adapter/src/lib.rs": "7f7affa01afb9072fa07751246ae050c56f7e936b2fa5f24c87dff47e3a14489",
+    "crates/apache-adapter/src/lifecycle.rs": "679641423e4fd5f70abfdefb1e9699c887e8bf658d193c0dcda275cf2006618f",
+    "crates/apache-adapter/src/replay.rs": "95c76e737a78202b8e093c5261cc0c0030b6b4a8cf828eeafb2a5e6b5c7a9b8c",
+    "crates/apache-adapter/native/Cargo.toml": "201901bb42b6e3cb73e7b89b1c1ecb43de665bf6448685d31764371c6378210a",
+    "crates/apache-adapter/native/build.rs": "e2ae3b6c36baa5bc8c5145840a7896c0e42a2cf187f35123378a3e2ae0f23298",
+    "crates/apache-adapter/native/src/lib.rs": "08a7a963a30bc8efb198b2a8dcf0e65dd0b151908c4ed58761f6ae20c0f931d4"
+  },
+  "nativeFeatureExecuted": false,
+  "hostedScenarios": {"required": 45, "status": "not_run"},
+  "fullProductSuccess": false
+}

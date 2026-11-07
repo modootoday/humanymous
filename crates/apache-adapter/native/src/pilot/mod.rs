@@ -45,6 +45,26 @@ struct Server {
     config: std::path::PathBuf,
     stopped: bool,
 }
+struct RequestWorker(Option<std::thread::JoinHandle<Result<u16, &'static str>>>);
+impl RequestWorker {
+    fn join(&mut self) -> Result<u16, Error> {
+        self.0
+            .take()
+            .ok_or("request worker already joined")?
+            .join()
+            .map_err(|_| "inflight worker panic")?
+            .map_err(Into::into)
+    }
+}
+impl Drop for RequestWorker {
+    fn drop(&mut self) {
+        // Every early return waits for the owned worker before server/authority
+        // resources can be torn down. Connect/read/write each have fixed bounds.
+        if let Some(worker) = self.0.take() {
+            let _ = worker.join();
+        }
+    }
+}
 impl Server {
     fn children(&self) -> Result<Vec<u32>, Error> {
         let pid = self.child.id();
@@ -125,7 +145,10 @@ fn request(
     body: &[u8],
     extra: &str,
 ) -> Result<(u16, Vec<u8>, String), Error> {
-    let mut stream = TcpStream::connect(("127.0.0.1", port))?;
+    let mut stream = TcpStream::connect_timeout(
+        &std::net::SocketAddr::from(([127, 0, 0, 1], port)),
+        Duration::from_secs(1),
+    )?;
     stream.set_read_timeout(Some(Duration::from_secs(3)))?;
     stream.set_write_timeout(Some(Duration::from_secs(3)))?;
     write!(
@@ -354,7 +377,26 @@ fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
         )
     });
     case(cases, mpm, "graceful-reload", || {
+        let pending = service.pending.load(Ordering::Acquire);
+        let before = origin.count.load(Ordering::Acquire);
+        let mut active = RequestWorker(Some(std::thread::spawn(move || {
+            request(port, "/cancel", b"", "")
+                .map(|reply| reply.0)
+                .map_err(|_| "inflight response")
+        })));
+        let until = Instant::now() + Duration::from_millis(150);
+        while service.pending.load(Ordering::Acquire) == pending && Instant::now() < until {
+            std::thread::sleep(Duration::from_millis(2));
+        }
+        ensure(
+            service.pending.load(Ordering::Acquire) > pending,
+            "authority observed inflight request before reload",
+        )?;
         server.reload()?;
+        ensure(
+            active.join()? == 503 && origin.count.load(Ordering::Acquire) == before,
+            "old generation must not reach origin",
+        )?;
         let (status, body, _) = request(port, "/echo", b"new-generation", "")?;
         ensure(
             status == 200 && body == b"new-generation",
