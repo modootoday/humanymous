@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T14:52:10Z
+updated: 2026-11-07T15:06:38Z
 rel:
   governs: [docs]
 files:
@@ -104,7 +104,6 @@ files:
   - {path: standards-procedure-revalidation.json, sha256: 87573d5e5d30a48d20da6e43d5dbacddc689506cd6a3f11f0dc70cf0293c53ee, bytes: 3217, store: repo}
   - {path: notice-claim-owner-correction-review.json, sha256: d6aae370271ec503ea07d0755fb48150da5775457b4d9579a6c268ef055c943a, bytes: 785, store: repo}
   - {path: latest-render-build-and-archive-result.json, sha256: f46ae53834d66a5eaa135be500372906033446709a05312cf90002df731e3bf3, bytes: 4147, store: repo}
-  - {path: latest-render-browser-observations.json, sha256: affc6d478d6b848f7235e1b7a0d75369a060dd9f4135352400160297f330ad28, bytes: 3351, store: repo}
   - {path: current-cli-review-preparation.json, sha256: 3f71929a0c471ffda627b2d8000832338469ab5b0545d34c16f22b4c01c21ea9, bytes: 23185, store: repo}
   - {path: current-apache-review-preparation.json, sha256: f0f4f5eba135af27f8a5723eb2b5fd6ec1ccb74f842af6941472ce2a2b979e5b, bytes: 16279, store: repo}
   - {path: current-authority-observer-review-preparation.json, sha256: 60a774ec234ea31ab08a1d89ae560bc8bf8bcc7bf72e55fc069aec2a58fdf944, bytes: 5429, store: repo}
@@ -114,6 +113,9 @@ files:
   - {path: browser493-execution-status-review.json, sha256: f0fd367cd03c804295ba2e5d958751cd7373fa55cca58f800715b263680fbfcd, bytes: 3350, store: repo}
   - {path: current-watermark-source-review.json, sha256: e6ad0d17292aba3789c8f7d9f80d375945503dd311a99788d6ad824a2074fb95, bytes: 13098, store: repo}
   - {path: watermark-review-acceptance.json, sha256: bc7d762e9ba4865e614189d92f03b5183172067dc17871b40f568284eb525edb, bytes: 12706, store: repo}
+  - {path: browserbb-execution-status-review.json, sha256: a64f0b49c1ced02e00140a4c1753a60dc109562227e3bedeccb98d58df48d076, bytes: 3594, store: repo}
+  - {path: watermark-c29-followup.json, sha256: a197ca451385b4dca7133cc292064e282431d48376822d3948360ea3d0e5ddd8, bytes: 648, store: repo}
+  - {path: latest-render-browser-observations.json, sha256: b5c7873fd93a310ecdece72f893047d001e3540c7b397c17abcbd2d2590a7108, bytes: 3427, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status

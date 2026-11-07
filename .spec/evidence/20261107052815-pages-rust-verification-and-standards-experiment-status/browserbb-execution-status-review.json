@@ -1,0 +1,109 @@
+{
+  "schema": "humanymous.pages-browser-execution-review/1",
+  "source": "bb763c1f0f3b838b0ff5213936e0ec37b62a22b0",
+  "run_id": 42381878489,
+  "raw_log_bytes": 46097,
+  "raw_log_sha256": "13e628e7abd84d8f5a16a56c0c6bcfcd1f3c12e92476e826c1eca3eaf37dfa42",
+  "summary_matches_saved_connector_result": true,
+  "summary": {
+    "canonical_git_tree_sha256": "29589d2c99318a7f3c69b7cd7e0390d01754bde83476f1803477e5a963edd053",
+    "cases": [
+      {
+        "evidence": "private source-bound owning report",
+        "id": "collector-parity",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "challenge-keyboard",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "challenge-assistive",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "missing-signals-closed",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "human-control",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "coherent-browser-ceiling",
+        "status": "blocked"
+      },
+      {
+        "evidence": "private source-bound owning report",
+        "id": "documentation-examples",
+        "status": "blocked"
+      }
+    ],
+    "components": [
+      {
+        "assertions": {
+          "failed": 2,
+          "other": 0,
+          "passed": 16,
+          "total": 18
+        },
+        "exit_code": 1,
+        "full_product_qualified": false,
+        "owner": "lab-runner",
+        "public_receipt": null,
+        "qualification": null,
+        "required_unavailable_count": 9,
+        "safe_diagnostics": {
+          "failure_count": 2,
+          "failures": [
+            {
+              "case_id": "browser-actual-witness-exchange",
+              "error_code": "assertion_failed",
+              "status": "failed"
+            },
+            {
+              "case_id": "execution",
+              "error_code": "actor_browser_dns_finish",
+              "status": "failed"
+            }
+          ],
+          "partial": false,
+          "schema": "humanymous.lab-safe-diagnostics/1"
+        },
+        "schema": "humanymous.product-lab/2",
+        "status": null
+      }
+    ],
+    "documentation_review_sha256": "6b9c9df9221bb4e189d6f267f404892cdd455bdc405f859ae022c037a0e01e6f",
+    "errors": 1,
+    "full_product_qualified": false,
+    "images": [
+      "sha256:093e95707522ae32a187431334dc43d293a660390b9f5237a5c2c1b103769365",
+      "sha256:586c06061395deb51d487caf5e46f036409b3ec4a459466fca9fdd1b6d2f01b0",
+      "sha256:6985fc87c6d3a05c143fb6f75eb5f4a15e3ac5673e0efdb7b26cfa9d68e87af4"
+    ],
+    "isolation": "docker",
+    "kind": "browser-product",
+    "private_report_sha256": "f34e276c9c454056ec73c425f226cae156d6c5d03c6bddcc077d6a1e1d27aeb3",
+    "qualification": "component-only",
+    "release_ready": false,
+    "runtime": "rust",
+    "schema": 1,
+    "skips": null,
+    "source_changed_during_execution": false,
+    "source_manifest_sha256": "127b4e4ec5ccc43f9977d5cba6480567a581bf402c9f5d802c928802eac155d1",
+    "source_sha": "bb763c1f0f3b838b0ff5213936e0ec37b62a22b0",
+    "status": "failed"
+  },
+  "limits": [
+    "Original private actor report not independently recovered.",
+    "DNS finalization marker records entry only; no successful completion, WASM execution, root cause or cleanup qualification."
+  ],
+  "public_prose_changed": true,
+  "new_render_required": true
+}

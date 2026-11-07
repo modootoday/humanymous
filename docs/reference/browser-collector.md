@@ -98,6 +98,17 @@ insert status-bound ACK headers. Native TCP fixtures at runtime source
 or qualify collector provenance. Neither those native fixtures nor the historical
 Firefox component suite establishes a qualified browser-to-origin flow.
 
+Two subsequent hosted product attempts failed:
+[run `42378961845`](https://github.com/modootoday/humanymous/actions/runs/42378961845)
+at source `49394e3` and
+[run `42381878489`](https://github.com/modootoday/humanymous/actions/runs/42381878489)
+at source `bb763c1`. Each recorded 16 passing and two failing assertions out of
+18, nine unavailable required component checks and seven blocked product checks.
+Skipped-case counts and cleanup outcomes were not established by those summaries.
+The latter attempt recorded entry into DNS finalization; this establishes neither
+completion of that operation, successful WASM execution nor the failure's cause.
+Neither attempt qualifies the browser-to-origin flow.
+
 ```console
 cargo test --locked -p humanymous-collector
 cargo build --locked -p humanymous-collector --target wasm32-unknown-unknown --release

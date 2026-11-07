@@ -36,6 +36,15 @@ a supported-platform matrix or proof of full-product parity. Native browser
 process tests and framework deployment pilots need their own execution evidence;
 a documentation preview does not exercise them.
 
+The pure Pass challenge implementation at source `ae57c13` has a recorded
+Windows component run with 37 passing Rust tests: 35 library tests, including
+27 Pass tests, and two existing attestation/proof-of-work vector tests.
+Separately, all 16 unchanged Go baseline tests passed at source `981d25c`.
+These results do not supply independent Pass seed/challenge vectors or qualify
+runtime issuance, authenticated instances, single use, replay protection or
+assistive-technology behavior. The public alignment puzzle is deliberately
+derivable; solving it is not proof of humanity and requires no motor-speed test.
+
 Hosted [run `42355168729`](https://github.com/modootoday/humanymous/actions/runs/42355168729)
 targets source `8132117`, which precedes that local integration checkpoint.
 It completed with failure: five of 19 jobs succeeded, including both-baseurl

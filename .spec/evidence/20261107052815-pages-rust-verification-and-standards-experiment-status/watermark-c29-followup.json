@@ -1,0 +1,15 @@
+{
+  "schema": "humanymous.pages-watermark-followup/1",
+  "qualified_source": "2eb2069a7851324b90311d54ffe663d8eb9f75cf",
+  "reviewed_files_compared": 18,
+  "hash_differences": 0,
+  "native_windows_tests": {
+    "passed": 29,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "evidence": "evidence:root/20261107144843",
+  "first_failure_retained": "27f1d1d1ffe39e9cfb2d80671f4d45c0335d9701 Clippy101; tests not run",
+  "limits": "Earlier review notes describe their review-time state. This subsequent result qualifies low-level pure components only; full14 legacy parity, PNG/WASM, HTTP/runtime and browser behavior remain unqualified."
+}

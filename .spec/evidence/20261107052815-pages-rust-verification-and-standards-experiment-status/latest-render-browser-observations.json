@@ -72,9 +72,11 @@
   "subpath_preview": {
     "url": "http://127.0.0.1:18081/humanymous/",
     "supervisor_session": 84233,
-    "state": "live-under-observed-bounded-lease",
+    "state": "lease-expired-container-removed",
     "started_at_utc": "2026-11-07T14:23:05.45322356Z",
-    "cleanup_terminal": null
+    "cleanup_terminal": 0,
+    "exact_owned_container_absent": true,
+    "final_container_exit_code": null
   },
   "search": "NOT_RUN; no search control observed",
   "full_browser_corpus_qualified": false,
