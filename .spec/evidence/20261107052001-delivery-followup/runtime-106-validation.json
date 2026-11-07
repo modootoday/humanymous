@@ -1,0 +1,80 @@
+{
+  "schema": "humanymous.delivery-runtime-validation/1",
+  "source_sha": "1061819ada99db1407b6dbdc55c4e64bafdb0157",
+  "source_kind": "immutable Git archive, no overlays",
+  "archive_sha256": "1f9f913ca545bd45bfaa424267283d3ef37596c6cf6bcce04a5c72b350bd8ab4",
+  "runner_exit_code": 0,
+  "phases": [
+    {
+      "name": "fmt",
+      "exit_code": 0
+    },
+    {
+      "name": "check",
+      "exit_code": 0
+    },
+    {
+      "name": "clippy",
+      "exit_code": 0
+    },
+    {
+      "name": "inventory",
+      "exit_code": 0
+    },
+    {
+      "name": "tests",
+      "exit_code": 0
+    },
+    {
+      "name": "policy",
+      "exit_code": 0
+    }
+  ],
+  "tests": {
+    "inventory_count": 121,
+    "passed": 121,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "exact_inventory_execution_names_equal": true
+  },
+  "binary_sha256": "73c9d4d9a04a4db5c38fc70440c465f99281b5cc3c3a28a937ee4614f87578f4",
+  "closure": {
+    "source_files": 3084,
+    "source_file_differences": 0,
+    "registry_archives": 1122,
+    "registry_archive_differences": 0,
+    "tool_files": 4,
+    "tool_differences": 0,
+    "config_inputs": 7,
+    "config_differences": 0,
+    "environment_differences": 0,
+    "extracted_registry_sources_measured": false,
+    "whole_transitive_read_closure_verified": false
+  },
+  "terminal": {
+    "target_closed": true,
+    "owned_child_processes_remaining": 0,
+    "elapsed_seconds": 72.2373058,
+    "runner_complete": true
+  },
+  "process_closure": {
+    "live_processes": [],
+    "target_lease_present": false,
+    "checked_pids": [
+      25604,
+      40620,
+      67888,
+      44500,
+      58384,
+      70664,
+      64796
+    ]
+  },
+  "private_index_sha256": "7f5ec47583577a000076dca2c5d55178b1ec2581c33471d0c730373e08163f21",
+  "previous_first_failure": "runtime-64-first-failure.json remains immutable; this is a separate authorized source validation",
+  "scope": "Delivery pure units and policy only; not actual native archive/receiver reconstruction/Docker/current whole Runtime qualification",
+  "full_runtime_qualified": false,
+  "full_product_qualified": false,
+  "shipping_qualified": false
+}
