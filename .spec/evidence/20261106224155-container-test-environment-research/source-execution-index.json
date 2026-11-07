@@ -89,6 +89,14 @@
       "result": "failed_process_exit1_dns_succeeded",
       "facts": "18assertions16pass2fail. Typed13fields observed: inventory67/selected1/filtered66 matched, processfalse/exit1/summaryfalse/testfalse, DNSfinishsucceeded. Exact tool/test failure cause unknown; fullfalse.",
       "evidence": "hosted-browser-306eedc8-failure.json"
+    },
+    {
+      "evidence": "hosted-browser-b4fdbc38-failure-join.json",
+      "source": "b4fdbc38f234f0df2777f0c6dce01540cbf26fcf",
+      "result": "failed",
+      "profile": "browser_product",
+      "run": 42394466559,
+      "facts": "18assertions16pass2fail. Finite selected_test_failed; DNS succeeded, inventory67/1/66 matched, process exit1. Exact underlying assertion unknown; canonical CI dcfe454d."
     }
   ],
   "unmeasured": [

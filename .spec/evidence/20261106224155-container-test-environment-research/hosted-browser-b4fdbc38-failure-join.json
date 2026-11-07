@@ -1,0 +1,28 @@
+{
+  "schema": "humanymous.hosted-browser-source-evidence-join/1",
+  "source_sha": "b4fdbc38f234f0df2777f0c6dce01540cbf26fcf",
+  "run_id": 42394466559,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42394466559",
+  "canonical_commit": "dcfe454d",
+  "canonical_path": ".spec/evidence/20261107052001-delivery-followup/browser-b4fdbc38-summary.json",
+  "canonical_sha256": "2df1fb4260dddc3dc6af002d55c85f154b2fd23d115f627a24927fabf2482a14",
+  "preflight": "Go10/Lab28/Delivery90 all pass",
+  "product": "18 assertions/16 passed/2 failed/9 required unavailable",
+  "execution_error": "browser_selected_test_failed",
+  "other_failure": "browser-actual-witness-exchange/assertion_failed",
+  "dns_finish": "succeeded",
+  "process_success": false,
+  "exit_code": 1,
+  "inventory": {
+    "filtered": 66,
+    "matched": true,
+    "selected": 1,
+    "total": 67
+  },
+  "original_actor_or_test_streams_retrieved": false,
+  "underlying_assertion_cause_verified": false,
+  "source_changed": false,
+  "full_product_qualified": false,
+  "release_qualified": false,
+  "note": "Same canonical CI-owned actual run, not another execution or independent raw-body rehash. Historical 306 and b4 pure checks remain separate."
+}
