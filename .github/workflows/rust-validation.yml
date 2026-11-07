@@ -40,8 +40,22 @@ jobs:
     - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
       with:
         python-version: '3.12'
+    - name: Configure Windows native build tools
+      if: runner.os == 'Windows'
+      run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- --configure-toolchain
     - run: cargo build --workspace --all-targets --locked
     - run: cargo test --workspace --all-targets --locked
+      if: runner.os != 'Windows'
+    - name: Execute every Windows harness as a standard user
+      if: runner.os == 'Windows'
+      run: python scripts/ci/runner-probe/probe.py --os windows --arch x64 --report target/native-standard-user/report.json
+    - name: Preserve Windows standard-user accounting
+      if: always() && runner.os == 'Windows'
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: native-standard-user-${{ matrix.os }}-${{ github.sha }}
+        path: target/native-standard-user/
+        if-no-files-found: error
     - run: cargo build --workspace --bins --release --locked
     - run: python scripts/ci/delivery.py pilot native
     - run: python scripts/ci/delivery.py native-artifacts

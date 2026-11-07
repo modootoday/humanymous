@@ -1,0 +1,26 @@
+{
+  "schema": "humanymous.windows-native-wiring/1",
+  "observed_at": "2026-11-07T03:41:32.8757330Z",
+  "parent_commit": "402a5c5c8fbc55c8ea279602c98b56600aabc4e6",
+  "scope": "full validation wiring reuses existing complete standard-user harness runner",
+  "changes": [
+    "Shared Rust CEF configure-toolchain before Windows builds",
+    "Unix all-target cargo test unchanged",
+    "Windows probe enumerates all Cargo test executables then executes isolated standard-user token",
+    "Upload Windows raw accounting even on failure"
+  ],
+  "checks": {
+    "delivery_tests": 9,
+    "delivery_policy": "passed",
+    "probe_accounting_tests": 5,
+    "spec": "71documents0errors0warnings",
+    "actionlint": "passed"
+  },
+  "limits": {
+    "native_delivery_pilot": "still mandatory and missing",
+    "cli_security_conditions": "unchanged",
+    "legacy_probe_rust_migration": "remaining",
+    "exact_source_remote": "pending",
+    "full_runtime_qualified": false
+  }
+}

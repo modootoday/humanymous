@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T03:47:00Z
+updated: 2026-11-07T03:50:00Z
 verify:
   - python scripts/ci/delivery.py policy
   - python -m unittest discover -s scripts/ci -p "test_*.py"
@@ -51,6 +51,18 @@ Sources: [pinned builder inventory](https://raw.githubusercontent.com/ruby/setup
 [Ruby supported downloads](https://www.ruby-lang.org/en/downloads/).
 
 ## Native CEF component integration
+
+Full validation's Windows native leg uses the same complete standard-user probe
+as the implemented-crate matrix, after the shared Rust CEF toolchain setup.
+Compile the locked all-target workspace under the runner, enumerate every Cargo
+test executable, then execute and verify every harness under the isolated
+non-admin token with read-only workspace. Upload raw accounting even on failure.
+Do not run CLI install tests as administrator or allow ordinary ignored tests.
+The Unix native legs retain ordinary locked workspace tests. Native process
+and release pilots still follow these checks and remain mandatory; the scoped
+probe report never becomes a full native-delivery qualification. Reusing the
+existing legacy probe adds no new Python/PowerShell implementation; replacing
+its orchestration with Rust remains a tracked migration responsibility.
 
 The later cb5dce7 native run42332170496 failed Linux x64 on custody reacquisition
 while its other5tuples and browser component passed. Preserve that failure; a
