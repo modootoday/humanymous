@@ -1,0 +1,12 @@
+{
+  "schema": "humanymous.pages-browser-owner-reconciliation/1",
+  "source": "bb763c1f0f3b838b0ff5213936e0ec37b62a22b0",
+  "run_id": 42381878489,
+  "owner_receipt": ".spec/evidence/20261106224155-container-test-environment-research/hosted-browser-bb763c1f-failure.json",
+  "owner_receipt_sha256": "3710c8beda4ec6141c03dd1d39ce7503bb779bdeb48b38f67444dd2ee2fa69a4",
+  "owner_summary_matches_independently_retrieved_product_summary": true,
+  "owner_receipt_full_read": true,
+  "public_clarification": "A diagnostic marker alone does not authenticate its emitting process; no operation completion, WASM success, failure cause or cleanup inferred.",
+  "new_render_required": true,
+  "execution_performed": false
+}

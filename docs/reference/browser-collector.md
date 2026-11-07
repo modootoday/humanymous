@@ -105,8 +105,9 @@ at source `49394e3` and
 at source `bb763c1`. Each recorded 16 passing and two failing assertions out of
 18, nine unavailable required component checks and seven blocked product checks.
 Skipped-case counts and cleanup outcomes were not established by those summaries.
-The latter attempt recorded entry into DNS finalization; this establishes neither
-completion of that operation, successful WASM execution nor the failure's cause.
+The latter attempt's diagnostic named a DNS-finalization checkpoint. The marker
+alone does not authenticate its emitting process or establish completion of that
+operation, successful WASM execution or the failure's cause.
 Neither attempt qualifies the browser-to-origin flow.
 
 ```console
