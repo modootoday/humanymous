@@ -1,12 +1,12 @@
 //! Offline checks expose their verification scope; unanchored hashes alone are
 //! not independent authentication of the writer's history.
-use crate::{
-    checkpoint::Checkpoint,
-    merkle::Tree,
-    record::{Record, record_hash, verify_record_mac},
-};
+use crate::{checkpoint::Checkpoint, merkle::Tree, record::Record};
 use serde::Serialize;
-use subtle::ConstantTimeEq;
+mod checks;
+// S1 diagnostic accumulation remains private and test-compiled until the
+// read-only scanner owns complete EOF, resource and source-identity checks.
+#[cfg(test)]
+mod incremental;
 
 /// Stable mismatch classes returned by the historical offline verifier.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -43,7 +43,8 @@ pub enum Mismatch {
     NodeMissing,
 }
 
-/// Actual work performed, kept separately from the compatibility wire report.
+/// Successful-prefix coverage of the compatibility verifier. Interleaved scan
+/// work must be counted separately, without changing this historical scope.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Scope {
     /// Number of content/linkage checked records.
@@ -86,6 +87,24 @@ impl Report {
             scope,
         }
     }
+
+    fn success(scope: Scope) -> Self {
+        Self {
+            ok: true,
+            class: if scope.hmac_checked {
+                Mismatch::Ok
+            } else {
+                Mismatch::HmacUnchecked
+            },
+            at_seq: 0,
+            detail: if scope.hmac_checked {
+                String::new()
+            } else {
+                "hmac layer skipped (no key); hash chain and STH signatures verified".into()
+            },
+            scope,
+        }
+    }
 }
 
 /// Verify content, sequence, linkage, optional HMAC and every supplied writer
@@ -108,35 +127,13 @@ pub fn verify(
     let mut previous = "";
     let mut expected = 1_u64;
     for record in records {
-        if record.seq != expected {
-            return Report::failure(
-                Mismatch::SequenceGap,
-                record.seq,
-                format!("expected seq {expected}"),
-                scope,
-            );
+        if let Some(failure) =
+            checks::record(record, expected, previous, hmac_key, usize::MAX, usize::MAX)
+                .expect("compatibility canonical fields fit address space")
+        {
+            return failure.report(scope);
         }
         expected = expected.wrapping_add(1);
-        if record.prev_hash != previous {
-            return Report::failure(
-                Mismatch::LinkageBreak,
-                record.seq,
-                "prev_hash does not match chain head",
-                scope,
-            );
-        }
-        let wanted = record_hash(record, previous);
-        if !bool::from(wanted.as_bytes().ct_eq(record.record_hash.as_bytes())) {
-            return Report::failure(
-                Mismatch::HashBreak,
-                record.seq,
-                "record content was altered",
-                scope,
-            );
-        }
-        if scope.hmac_checked && !verify_record_mac(&record.record_hash, &record.hmac, hmac_key) {
-            return Report::failure(Mismatch::HmacInvalid, record.seq, "hmac invalid", scope);
-        }
         previous = &record.record_hash;
         scope.records += 1;
     }
@@ -147,20 +144,6 @@ pub fn verify(
     let mut tree = Tree::new(&leaves);
     let mut previous_signature = "";
     for checkpoint in checkpoints {
-        let bad = |detail| {
-            Report::failure(
-                Mismatch::CheckpointMismatch,
-                checkpoint.tree_size,
-                detail,
-                scope,
-            )
-        };
-        if !public.is_some_and(|key| checkpoint.verify_writer(key)) {
-            return bad("checkpoint signature invalid");
-        }
-        if checkpoint.prev_checkpoint_hash != previous_signature {
-            return bad("checkpoint chain broken");
-        }
         let index = usize::try_from(checkpoint.tree_size).ok();
         let root = index.and_then(|size| {
             if size == 0 {
@@ -169,39 +152,22 @@ pub fn verify(
                 records.get(size - 1).map(|r| r.record_hash.as_str())
             }
         });
-        if root != Some(checkpoint.root.as_str()) {
-            return bad("checkpoint root does not match records (truncation/rollback)");
-        }
-        if !checkpoint.merkle_root.is_empty() {
-            let Some(root) = index.and_then(|size| tree.root_at(size)) else {
-                return bad("checkpoint merkle root: fewer records than tree size");
-            };
-            if hex::encode(root) != checkpoint.merkle_root {
-                return bad(
-                    "checkpoint merkle root does not match records (STH committed a different leaf set)",
-                );
-            }
+        if let Some(failure) = checks::checkpoint(
+            checkpoint,
+            previous_signature,
+            root,
+            || index.and_then(|size| tree.root_at(size)),
+            public,
+            usize::MAX,
+        )
+        .expect("compatibility checkpoint signing bytes fit address space")
+        {
+            return failure.report(scope);
         }
         previous_signature = &checkpoint.sig;
         scope.checkpoints += 1;
     }
-    if scope.hmac_checked {
-        Report {
-            ok: true,
-            class: Mismatch::Ok,
-            at_seq: 0,
-            detail: String::new(),
-            scope,
-        }
-    } else {
-        Report {
-            ok: true,
-            class: Mismatch::HmacUnchecked,
-            at_seq: 0,
-            detail: "hmac layer skipped (no key); hash chain and STH signatures verified".into(),
-            scope,
-        }
-    }
+    Report::success(scope)
 }
 
 /// Require all supplied witness signatures after the base verification succeeds.
@@ -219,12 +185,7 @@ pub fn verify_with_witness(
     }
     for checkpoint in checkpoints {
         if !checkpoint.verify_witness(witness_public) {
-            return Report::failure(
-                Mismatch::WitnessInvalid,
-                checkpoint.tree_size,
-                "witness co-signature missing or invalid",
-                report.scope,
-            );
+            return checks::Failure::witness(checkpoint.tree_size).report(report.scope);
         }
         report.scope.witnessed_checkpoints += 1;
     }
@@ -234,7 +195,7 @@ pub fn verify_with_witness(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::record::record_mac;
+    use crate::record::{record_hash, record_mac};
     fn sealed() -> Record {
         let mut r = Record {
             seq: 1,

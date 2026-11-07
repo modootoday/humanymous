@@ -2,6 +2,7 @@
 mod canonical;
 mod normalization;
 mod ordering;
+pub(crate) use canonical::record_hash_bounded;
 pub use canonical::{EmptyMacKey, record_mac, verify_record_mac};
 pub use canonical::{canonical_bytes, record_hash};
 use humanymous_signals::wire::decode::{null_default, nullable_vec};

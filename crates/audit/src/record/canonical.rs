@@ -55,6 +55,16 @@ pub fn canonical_bytes(record: &Record) -> Vec<u8> {
 
 /// Hex SHA256(canonical semantic body || exact previous-hash text).
 pub fn record_hash(record: &Record, previous_hash: &str) -> String {
+    record_hash_bounded(record, previous_hash, usize::MAX, usize::MAX)
+        .expect("canonical field byte lengths must fit u32")
+}
+
+pub(crate) fn record_hash_bounded(
+    record: &Record,
+    previous_hash: &str,
+    bytes: usize,
+    items: usize,
+) -> std::io::Result<String> {
     let mut digest = Sha256::new();
     struct HashSink<'a>(&'a mut Sha256);
     impl std::io::Write for HashSink<'_> {
@@ -68,12 +78,11 @@ pub fn record_hash(record: &Record, previous_hash: &str) -> String {
     }
     {
         let mut sink = std::io::BufWriter::with_capacity(8192, HashSink(&mut digest));
-        encoder::write_record(record, &mut sink, encoder::Limits::compatibility())
-            .expect("canonical field byte lengths must fit u32");
-        std::io::Write::flush(&mut sink).expect("in-memory hash sink is infallible");
+        encoder::write_record(record, &mut sink, encoder::Limits { bytes, items })?;
+        std::io::Write::flush(&mut sink)?;
     }
     digest.update(previous_hash.as_bytes());
-    hex::encode(digest.finalize())
+    Ok(hex::encode(digest.finalize()))
 }
 
 #[cfg(test)]

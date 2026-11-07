@@ -400,6 +400,16 @@ Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
 
+Private incremental diagnostic source now factors record/base-checkpoint rules
+for reuse by the existing sequential verifier and bounded callers. Bounded
+canonical hash/signature entrypoints share existing emitters. Test-only priority
+accumulation keeps compatibility prefix scope separate from attempted/successful
+interleaved work; counter exhaustion poisons finalization. Six tests authored,
+including840 frozen Go Report rows and sequential native Scope differential.
+The fixture driver retains full history solely as a test oracle, not a bounded
+scanner. Compile/Clippy/execution NOT_RUN, evidence120913. Actual Phase-A metadata,
+frontier join, EOF/source checks and native inspector still remain requirements.
+
 Allocated A atc26a5b53 plus depth:usize correction and shared signals56a2 actually
 passed combined all-target check/strict Clippy and26 unique Rust tests:wire6,
 framing13, checkpoint5, Go parity2. Intentional filters6/63/71/0. Frozen92/180

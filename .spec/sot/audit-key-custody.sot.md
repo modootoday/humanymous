@@ -29,6 +29,11 @@ consumer promotion, new dependency/manifest edit or validation workload is impli
 ### Qualification boundary and remaining product obligations
 
 Qualification is exact-source and scope-specific. The latest source checkpoint
+for incremental diagnostic checking is unqualified: shared checks, bounded
+hash/signature entrypoints and test-only compatibility/work accumulator are
+authored in [[evidence:root/20261107120913]]. Compile/Clippy/tests NOT_RUN;
+no actual native/EOF/source verification or production consumer is wired.
+The preceding qualified source
 c26a5b53 plus explicit depth:usize correction and shared signals56a2 passed
 scoped check/Clippy and26 focused Rust tests in
 [[evidence:root/20261107120052]]. The125-path closure had zero drift. Full current

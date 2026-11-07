@@ -65,17 +65,28 @@ impl Checkpoint {
     }
 
     fn verify_signature(&self, public: &[u8; 32], encoded: &str) -> bool {
+        self.verify_signature_bounded(public, encoded, usize::MAX)
+            .unwrap_or(false)
+    }
+
+    pub(crate) fn verify_signature_bounded(
+        &self,
+        public: &[u8; 32],
+        encoded: &str,
+        limit: usize,
+    ) -> std::io::Result<bool> {
         let Ok(key) = VerifyingKey::from_bytes(public) else {
-            return false;
+            return Ok(false);
         };
         let mut bytes = [0; 64];
         if hex::decode_to_slice(encoded, &mut bytes).is_err() {
-            return false;
+            return Ok(false);
         }
         let Ok(signature) = Signature::from_slice(&bytes) else {
-            return false;
+            return Ok(false);
         };
-        key.verify_strict(&self.signing_bytes(), &signature).is_ok()
+        let message = signing::bounded(self, limit)?;
+        Ok(key.verify_strict(&message, &signature).is_ok())
     }
 }
 

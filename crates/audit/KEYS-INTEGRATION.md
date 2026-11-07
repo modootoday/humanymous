@@ -1,5 +1,17 @@
 # Sealed key compatibility integration
 
+## Incremental diagnostic source awaiting validation
+
+Shared record/base-checkpoint checks now back the sequential verifier and bounded
+hash/signature entrypoints. Private test-compiled accumulator keeps first
+record/base/witness failures, compatibility prefix Scope and actual work apart.
+Six authored tests include840 frozen Go reports plus native Scope and adversarial
+interleaving/overflow cases. NOT_RUN check/Clippy/tests; formatting/diff only.
+Evidence120913. The fixture driver is a full-history oracle, not a production
+scanner. Phase-A metadata/frontier/source/EOF/native inspection remain unwired.
+No allocation/workload held, no S2/S3/product/memory claim. Qualification below is
+historical exact30d source and does not qualify these new verification changes.
+
 ## Latest focused frame and checkpoint qualification
 
 Sourcec26a5b53 plus depth:usize correction and root signals56a2 passed combined
