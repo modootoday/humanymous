@@ -1,0 +1,98 @@
+{
+  "schema": "humanymous.pages-capture-partial-review/1",
+  "fixed_commit": "269607366e4b2e37b47a974595b406b66642caae",
+  "full_read_files": 8,
+  "lines": 1016,
+  "reviews": [
+    {
+      "source": "crates/capture/Cargo.toml",
+      "fixed_sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840",
+      "lines": 24,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Pinned rustls/ring/tls12 and HPACK, optional rcgen only for hosted pilot. Manifest is not installed dependency or runtime proof.",
+      "current_sha256": "79ccbcf61bc2e294fa9d8cd0bd5fb3a4447ff1a43ff931468826e136b6dd7840",
+      "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/src/lib.rs",
+      "fixed_sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076",
+      "lines": 7,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Capture described as transient original-hop evidence, not human attestation; exports TLS/H2 contexts only.",
+      "current_sha256": "1be7a2932d2c03bbe7d2a0bb875d5e1885066198c96e99579cb19056e5cb0076",
+      "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/src/tls/mod.rs",
+      "fixed_sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7",
+      "lines": 6,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Exports strict hello assembler and same-transport PendingHandshake/Connection/revocation owner; module declarations not full integration evidence.",
+      "current_sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7",
+      "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/src/tls/transport.rs",
+      "fixed_sha256": "435c75011b37f920b816a742bf004b1d9f8e2196ac480321a48895ddc9741f66",
+      "lines": 391,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "391 lines fully read in contiguous chunks. Pending socket owner before any TLS I/O, one original<=30s lifetime, prehandshake revocation handle, blocking I/O with remaining timeout, same rustls owner after handshake. Early data disabled and HRR refused. Cancellation atomically revokes before shutdown; handle Drop alone not cancellation. H1 idle probe rejects pending ciphertext/plaintext/partial record/EOF, point-in-time only; no disconnect-after-return guarantee. Borrowed hello/stream observations require live owner; ALPN negotiated separate from offered. Runtime owns request/body/audit ordering and worker join. No runtime execution performed.",
+      "current_sha256": "a6054eb2b704b7f66a3086da6808f5985eb1748cd62a3b9a4d92e2b60f3357f8",
+      "current_matches_fixed": false
+    },
+    {
+      "source": "crates/capture/src/tls/records.rs",
+      "fixed_sha256": "dbfed8c2668fa9cb732883e675d797ac570d55ffc9865239c58610c99a201b81",
+      "lines": 79,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "79 lines fully read. Constant-state TLS record boundary limits socket reads to current header/payload; tests enumerate fragmentation, zero-length record and incomplete prefix. Not TLS semantic validation or traffic execution.",
+      "current_sha256": "dbfed8c2668fa9cb732883e675d797ac570d55ffc9865239c58610c99a201b81",
+      "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/src/tls/hello.rs",
+      "fixed_sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153",
+      "lines": 227,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "227 lines fully read in contiguous chunks. Sticky errors, bounded64KiB hello/18KiB records/128records; validates nested vectors/duplicate extensions and exact first-hello record completion before existing parser. Framing finish is not cryptographic handshake success or original-client hop authenticity.",
+      "current_sha256": "e20fb89e1636e98fc40d848a4d30057cd2f8b4700e3ea503f048a6f74e742153",
+      "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/src/tls/hello/tests.rs",
+      "fixed_sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde",
+      "lines": 151,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "151 lines fully read. Synthetic fragmentation/order/opaque ALPN, duplicate/malformed extensions, every truncated prefix, sticky errors and record budget. Source assertions do not establish actual TLS traffic or new test execution.",
+      "current_sha256": "3aad04c845160fdca4bd93f653750d04de4788cbb1386c024630f4696ce10cde",
+      "current_matches_fixed": true
+    },
+    {
+      "source": "crates/capture/src/http2/headers.rs",
+      "fixed_sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787",
+      "lines": 131,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "131 lines fully read. Span validation per HPACK representation before decoder; bounded128 fields/64KiB accounting, lower-case token names, control/edge-whitespace rejection, pseudo-header order/uniqueness and prohibited connection fields. Requires four pseudo headers and rejects CONNECT. Decoding ordered headers not HTTP2 stream lifecycle, origin integrity or independent parser proof.",
+      "current_sha256": "ccd549374bd05c591d9bf81f915abe86942738775bf30519250978e01bc79787",
+      "current_matches_fixed": true
+    }
+  ],
+  "remaining_unread": [
+    "crates/capture/INTEGRATION.md",
+    "crates/capture/src/http2/mod.rs",
+    "crates/capture/src/http2/tests.rs",
+    "crates/capture/tests/hosted_transport.rs"
+  ],
+  "source_receipts_renewed": false,
+  "new_execution": "NOT_RUN",
+  "docs_modified": false,
+  "full_product_qualified": false
+}
