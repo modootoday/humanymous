@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: f3503dd17a993993166e3010d524456d9af6c11df68caf90d1e8a0609df929ec, bytes: 29245, store: repo}
+  - {path: baseline.json, sha256: 04a60530c14e0b9fe0a334eb29057ed093046720723af768b5fcbd827b5ba3b1, bytes: 31513, store: repo}
 ---
 
 # Convention audit baseline
@@ -267,3 +267,43 @@ and Py reference destruction outside Rust locks are required. Registrationfailur
 custom task/cancellation and abandoned-loop settlement remain unknown. No audit
 compiler/runtime workload was executed. All private review hashes are retained
 in baseline.json; no broader goal or product completion follows.
+## Expanded producer trace and service footer correction
+
+Private signal-provenance-matrix-007.json retains143 registry rows and86
+source-reviewed pure producer rows: the earlier21 plus5TCP,25network report,
+18client probe derivation and17behavior derivation rows. Each added row preserves
+literal source line/function/hash and authored fixture attribution; behavior
+fixtures contain320 cases with a fixed predictor where supplied. Source::Wasm/Js
+metadata does not authenticate human or collector provenance. Default model
+abstention, separate privacy/promotion/enforcement consumers, unavailable historical
+SoT tables and unknown actual per-ID execution remain explicit. These counts are
+not semantic coverage or no-folklore closure; frozen scoring was not changed.
+
+CA-SERVICE-FOOTER-01 is a confirmed P2 supplied-record validation gap: the general
+footer parser accepts FAILED syntax, and counts plus a recomputed supplied hash
+could pass the original summary verifier. Owner d460a7eb uses a shared successful
+single-footer helper in both service execution and summary. The seventh authored
+summary test retains the FAILED/one-pass/zero-fail trigger with updated hash and
+requires refusal. Source correction is independently accepted; actual regression
+execution remains OPEN. Selected execution identity is explicitly catalog,
+inventory and caller invocation data, not independently established from
+interleaved nocapture text. Component-only supplied cleanup records grant no
+native authority, original-clock, full runtime or product qualification.
+
+Python2e3f5053 registered Done strongly retains State and is preallocated before
+final consume/application call. Exact task identity and terminal done are checked,
+identity is rechecked before taking owners, and Python calls/reference destruction,
+permit release and result delivery occur outside the Rust state lock. Three
+ignored, host-pilot-gated real-Future controls are authored but NOTRUN. Registration
+failure, custom factories, suppressed cancellation and abandoned-loop settlement
+remain unknown; retained admission cycles are not cleanup success or full ASGI.
+
+Node summary018 records frozen4f3283f1 host-pilot check0 followed by strict
+Clippy101 for two app borrows; allocated fmt was NOTRUN. Independent raw hashes
+match, all2815 regular archive members match both source ledger and literal Git
+blobs, and immediate ledgers are byte-equal: source2815/registry5059/configuration15
+including missing records/selected tools4. This is not full MSVC/SDK provenance.
+No unit or actual host cases ran. The later app-borrow correction is source-only
+and not covered by that failed run. CA-HANDOFF and global CA-LIFETIME remain OPEN.
+Private hashes are retained in baseline.json; no audit compiler/runtime workload
+was executed and the full migration audit remains active.

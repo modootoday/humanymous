@@ -138,6 +138,15 @@
       "state": "sync source correction e34cee8a independently accepted; actual late-connected/timely controls, SDK compilation and queued Node/ASGI corrections OPEN",
       "private_review_sha256": "47839559782753f117035e93b04fdda1b915796b56572fde34bf45cbe53559cc",
       "actual_sdk_exploit_or_test_observed": false
+    },
+    {
+      "id": "CA-SERVICE-FOOTER-01",
+      "owner": "native-windows",
+      "priority": "P2",
+      "state": "source corrected d460a7eb; meaningful authored negative retained; actual regression verification OPEN",
+      "trigger": "FAILED footer with one passed and zero failed, supplied stdout hash recomputed",
+      "actual_false_hosted_outcome_observed": false,
+      "private_review_sha256": "9433936403099bb5d7ed75cdab1f94f2b816578f385ad3f963a43e42bed69667"
     }
   ],
   "evidence_references": {
@@ -605,6 +614,36 @@
     "interactive_actual_pure_passes": 17,
     "interactive_strict_clippy_exit": 101,
     "interactive_actual_child_cases": 0,
+    "CA_HANDOFF_closed": false,
+    "global_lifetime_closed": false,
+    "new_audit_runtime_workloads": 0
+  },
+  "followup_signal_map_service_footer_asgi_node": {
+    "private_review_sha256": {
+      "signal-provenance-matrix-004.json": "e435b02d737205ff40435deb34dc816fbfae2f3a908bf32e7665c3a2432e485f",
+      "signal-provenance-matrix-005.json": "33646f7bbff0c172d9c32153865809fcc13aaaa62008e262390f25b9acb897bc",
+      "signal-provenance-matrix-006.json": "bf42e709b0d9808d44b190f84f60092945a6a7ed819409fcac3c11f2c51a88b1",
+      "signal-provenance-matrix-007.json": "e22fd16a7a706c3323544e3d39389be343afb27ba6aeadf3852aada0787d9c6c",
+      "service-component-summary-source-review-001.json": "7071ee5cb977aba0977a261e0c19c5576d43fe1702974313705a1fee572f2bc4",
+      "service-component-summary-source-review-002.json": "9433936403099bb5d7ed75cdab1f94f2b816578f385ad3f963a43e42bed69667",
+      "node-check-asgi-completion-review-001.json": "bc16d00147c02a5fdb47f413ed2f2c899d350005b1b1fdcd60b612151167dfff",
+      "node-4f3283-complete-archive-review-001.json": "12c98c35ab57bc336007972810318936bab21fca7820b892577cee90c12886ee"
+    },
+    "signal_provenance_rows": 143,
+    "reviewed_pure_producer_rows": 86,
+    "new_behavior_rows": 17,
+    "authored_behavior_fixture_cases": 320,
+    "all_signal_semantic_trace_complete": false,
+    "actual_per_ID_attribution_complete": false,
+    "service_footer_source_corrected": true,
+    "service_footer_actual_regression_executed": false,
+    "python_registered_completion_source_reviewed": true,
+    "python_completion_controls_authored": 3,
+    "python_completion_controls_executed": 0,
+    "node_frozen_check_exit": 0,
+    "node_frozen_strict_clippy_exit": 101,
+    "node_archive_git_and_ledger_members": 2815,
+    "node_actual_host_cases": 0,
     "CA_HANDOFF_closed": false,
     "global_lifetime_closed": false,
     "new_audit_runtime_workloads": 0
