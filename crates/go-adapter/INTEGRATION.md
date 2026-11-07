@@ -1,6 +1,27 @@
 # Root integration
 
-## Current GO-FACADE-01 committed local validation
+## Current renamed public-consumer hosted qualification
+
+The bounded Go facade/internal-package migration is qualified at source
+a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb, genuine hosted run42406688473.
+Root performed one normal trigger push; this owner monitored that sole handle
+to terminal success. Fresh Linux preflight passed leaf10+integration1, facade
+default2/enabled2+consumer2 (4 distinct tests/6 executions), lab34 and Delivery110,
+actual Unix actor compile, scoped strict Clippy, admissions and workflow policy.
+
+Actual public-consuming isolated Docker runtime passed all8 cases/40 checks,
+with0failed/not-run/unknown, owner0, valid receipt, source unchanged and cleanup
+observed. Bounded go-component requirement is satisfied. Evidence:root/20261107194718
+binds source/manifests/private ledger digest; raw decoded logs/API metadata are
+private evidence:root/20261107193426. Both job annotations and Node20/Node24 warning
+counts are0 for this run. Full product/release remain false; this is not Go SDK,
+other Go frameworks, full artifact-feature reuse or transitive/tool qualification.
+Individual private runtime tuple values and the original remote ledger were not
+exported/recovered; never describe this as public reconstruction of every tuple.
+Historical c321/42375310198 evidence remains unchanged. No rerun, live owner
+process, target/hosted lease or Git claim is retained after this evidence update.
+
+## Historical GO-FACADE-01 committed local validation
 
 Atomic commit c858b1dc40d60c2d22f10411531a8b72b70aea63 completed the public
 humanymous / internal humanymous-adapter-go graph and Lab public imports.

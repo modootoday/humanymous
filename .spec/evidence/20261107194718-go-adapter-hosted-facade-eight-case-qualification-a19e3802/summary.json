@@ -1,0 +1,228 @@
+{
+  "schema": "humanymous.go-facade-hosted-evidence/1",
+  "source": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb",
+  "run_id": 42406688473,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42406688473",
+  "trigger": "push",
+  "run_attempt": 1,
+  "public_package": "humanymous",
+  "internal_package": "humanymous-adapter-go",
+  "feature": "adapter-go",
+  "public_namespace": "humanymous::adapters::go",
+  "venue": "github-hosted-ubuntu-24.04-linux-x86_64-isolated-docker",
+  "preflight": {
+    "job_id": 128505794191,
+    "conclusion": "success",
+    "leaf_lib_passed": 10,
+    "leaf_integration_passed": 1,
+    "facade_default_lib_passed": 2,
+    "facade_enabled_lib_passed": 2,
+    "facade_enabled_consumer_passed": 2,
+    "facade_distinct_tests": 4,
+    "facade_test_executions": 6,
+    "lab_passed": 34,
+    "delivery_passed": 110,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "unix_actor_compile": "passed",
+    "default_facade_clippy": "passed",
+    "enabled_facade_clippy": "passed",
+    "selected_unix_clippy": "passed",
+    "workflow_policy": "passed"
+  },
+  "product": {
+    "job_id": 128506646728,
+    "conclusion": "success",
+    "delivery_safe_summary": {
+      "cleanup_observed": true,
+      "component_status": "passed",
+      "diagnostics": {
+        "failure_count": 0,
+        "failures": [],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "full_product_gate": "not_requested_in_bounded_profile",
+      "full_product_qualified": false,
+      "owner_exit_code": 0,
+      "receipt": {
+        "case_statuses": [
+          {
+            "assertions": 4,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "binary-allow",
+            "index": 0,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "dependency-down",
+            "index": 1,
+            "status": "pass"
+          },
+          {
+            "assertions": 6,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "cancellation",
+            "index": 2,
+            "status": "pass"
+          },
+          {
+            "assertions": 6,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "incomplete-body",
+            "index": 3,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "forged-provenance",
+            "index": 4,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "origin-bypass",
+            "index": 5,
+            "status": "pass"
+          },
+          {
+            "assertions": 5,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "upgrade",
+            "index": 6,
+            "status": "pass"
+          },
+          {
+            "assertions": 4,
+            "assertions_known": true,
+            "error_code": null,
+            "evaluated": true,
+            "id": "response-semantics",
+            "index": 7,
+            "status": "pass"
+          }
+        ],
+        "full_product_qualified": false,
+        "private_receipt_schema": "humanymous.go-product-ledger/1",
+        "private_receipt_sha256": "fb609b3e6720b13b6e9050216d5a72b474c4a4b552e18cea28d13d6af9de8d9e",
+        "profile": "humanymous.go-gate/bounded-http-8-case/2",
+        "qualified_component": true,
+        "raw_contents_included": false,
+        "run_context": {
+          "authenticated_provenance": false,
+          "hosted_qualification_admitted": true,
+          "job": "product",
+          "kind": "github-hosted-linux",
+          "repository": "modootoday/humanymous",
+          "requires_external_job_verification": true,
+          "run_attempt": 1,
+          "run_id": 42406688473,
+          "workflow_sha": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb"
+        },
+        "schema": "humanymous.lab-go-public/1",
+        "setup_or_qualification_error_code": null,
+        "source_manifest_sha256": "f4895c2508332ac440e8b92bde53bb20a5fab96bee272d7e0433ae3573190497",
+        "source_sha": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb",
+        "totals": {
+          "evaluated": 8,
+          "failed": 0,
+          "known_assertions": 40,
+          "not_run": 0,
+          "passed": 8,
+          "scheduled": 8,
+          "unknown_assertion_cases": 0
+        }
+      },
+      "receipt_valid": true,
+      "release_ready": false,
+      "requirement": {
+        "full_product_qualified": false,
+        "kind": "go-component",
+        "satisfied": true,
+        "schema": "humanymous.lab-requirement/1"
+      },
+      "schema": "humanymous.go-delivery-summary/1",
+      "source_changed": false,
+      "source_manifest_sha256": "c7691fe949379e93b16892afe69d9f2f4c268985ebce7977a440563beddbb6a9",
+      "source_sha": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb"
+    }
+  },
+  "annotations": {
+    "preflight": 0,
+    "product": 0,
+    "workflow_warning_lines": 0,
+    "node20_node24_runtime_warning_lines": 0,
+    "scope": "only this exact run; earlier warning history unchanged"
+  },
+  "raw_evidence": "evidence:root/20261107193426",
+  "raw_files": [
+    {
+      "name": "annotations-128505794191.api-decoded.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "annotations-128506646728.api-decoded.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "delivery-safe-summary.json",
+      "bytes": 3625,
+      "sha256": "426d33e27ba8a9f7f16365e69f38f037a7d2bd52e9f8a44828db92d4aacfb466"
+    },
+    {
+      "name": "job-128505794191.api-decoded.json",
+      "bytes": 4289,
+      "sha256": "71bdbb894490c80b874d691883612e1c46c0473a93e9d3315cdfe7cbf0d5b5a1"
+    },
+    {
+      "name": "job-128506646728.api-decoded.json",
+      "bytes": 2016,
+      "sha256": "b943a379de2aa443a7f09376ab967ab37c2a6cf1633f8a435f5ee05ad9e38a9e"
+    },
+    {
+      "name": "preflight.connector-decoded.log",
+      "bytes": 104678,
+      "sha256": "3523b94c04d85152b424197dc2a7293b43dd13ddd90de78fecfe144a9e2860ed"
+    },
+    {
+      "name": "product.connector-decoded.log",
+      "bytes": 50831,
+      "sha256": "a3f115d34513c3595997b9b38cdc48dc70d4f6c05104d6d11db40ace8f52952e"
+    },
+    {
+      "name": "run.api-decoded.json",
+      "bytes": 5222,
+      "sha256": "0bef64284ec98830c241d4574bee0cbf42383484811538ffa561c3d2c0a64e78"
+    }
+  ],
+  "limits": [
+    "Bounded net/http Gate integration, not a native Go SDK or full product/release.",
+    "Private ledger verified the actual source/image/fixture/configuration/engine tuple internally; individual private values were not exported in this public projection.",
+    "The original remote private ledger is not recovered here; its SHA256 is bound by the safe receipt.",
+    "Retained connector/API decoded logs and JSON are not original GitHub log archives.",
+    "Public consumer/pure tests and actual hosted Docker execution remain distinct evidence.",
+    "No full transitive/tool/read-closure or complete effective Cargo artifact-feature reuse attestation is claimed.",
+    "Historical c321/42375310198 proof remains unchanged and separate."
+  ]
+}

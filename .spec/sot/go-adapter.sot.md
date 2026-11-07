@@ -39,11 +39,19 @@ Local Windows leaf10+integration1 and scoped strict Clippy passed, alongside
 facade component tests and Delivery checks. Evidence:root/20261107192637 records
 the exact counts and limits:3004 snapshot records are2917 old target outputs
 plus87 non-target files, not a full transitive/tool/read closure. The Windows
-actor check excludes Unix Go code; actual Linux compilation and fresh hosted
-Docker Go8 are still required at the renamed source.
+actor check excludes Unix Go code; that local result did not establish actual
+Linux compilation or fresh hosted Docker Go8 at the renamed source.
 Fresh scoped tests, strict Clippy, actual public consumer and hosted Docker Go8
-are required at the renamed source. Preserve original c321 Go8 receipts and raw
-commands as historical exact-source evidence, without relabelling their result.
+now passed at renamed source a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb in genuine
+hosted run42406688473. Linux preflight passed leaf10+integration1, facade2+2+2,
+lab34, Delivery110, actual Unix actor compilation and scoped strict Clippy/policy.
+Actual isolated Docker evaluated/passed8 with40 checks,0failed/not-run/unknown,
+owner0, valid receipt, unchanged source and observed cleanup. Evidence:root/20261107194718
+records this bounded public-consumer qualification, raw limits and0 current
+annotations/Node20/Node24 warnings. The private ledger validates the actual tuple,
+but its individual runtime values are not exported here; full product/release
+remain false. Preserve original c321 Go8 receipts and raw commands as historical
+exact-source evidence, without relabelling their result.
 
 ## Host contract
 
