@@ -398,3 +398,58 @@ build. Rustfmt, actionlint and scoped Specfold checks passed. New-helper compile
 unit outcomes and both actual Pages builds remain unrun until root pushes this
 literal checkpoint to the dedicated branch. Local admission deferrals are not
 test failures. Original 58-test image-gate evidence remains a separate source.
+
+Root pushed literal Pages checkpoint 8624b57 only to codex/pages-validation.
+Run 42363224485 preflight job 128375756057 completed successfully: the connected
+job log independently shows 60 passed, zero failed/ignored/filtered, all-target
+Clippy and workflow policy success. Actual build job 128376122323 then passed
+frozen bundle installation and audit and began apex validation. No final Pages
+success or deployment is claimed from this intermediate observation.
+
+The next source-only dedicated Go caller consumes the lab c15e1e34 projection
+and Go c959562 evaluator contract. Its preflight runs current Go units (ten
+expected), lab units (thirteen including the shared DNS test), delivery units
+(sixty-three expected), selected Unix Clippy and policy. New Go consumer units
+and policy regressions are authored, not executed. Actual Go execution uses
+the sole owning fixed profile and preserves nonzero full-gate results after
+safe receipt and cleanup evidence. Rustfmt/actionlint passed; root alone may
+push its immutable candidate. The Pages remote source remains unchanged.
+
+Root assigned three literal workflow files to Apache, .NET and framework
+owners. The e2e-infra claim was normally released and reclaimed with exactly
+apache-validation.yml, dotnet-validation.yml and python-validation.yml excluded;
+delivery code and shared catalog/policy remain owned here. Handoffs were
+acknowledged before owner writes. No foreign file or generated mirror was edited.
+
+Pages run 42363224485 subsequently completed successfully with source unchanged
+and both base builds/audit/install exit zero. Its automatic uploads violated
+the free-branch profile rule missed in the initial review. Historical public
+artifact IDs are 13570925987 (outcomes), 13570334590 (subpath) and 13570289928
+(apex), retained one day. Independent downloaded-site checks by the Pages owner
+and root failed because both generic archives omitted .well-known/security.txt;
+job success is not archive usability or deployment readiness. The pinned Pages
+upload action also excludes dot paths internally. No private bundle was uploaded.
+Safe terminal evidence is attached in pages-8624b57-summary.json; its private
+captured-log/index hash is 7d03276b9c15610afe4411a15d2cb26723dea1bec4406b13299a3b812010e872.
+New source gates Pages generic uploads to main, removes Go automatic uploads
+and adds exact-condition regression coverage. Main packaging/roundtrip repair
+belongs to the Pages owner and remains required before deployment.
+
+Root's authoritative 8f8f5e07 decision supersedes the earlier always-red
+standalone Go draft: the lab owns --require-go-component and a typed satisfied
+bounded requirement. CI must require that owner mode, exact eight-case receipt,
+cleanup, unchanged source and exit zero. The separate --require-full gate stays
+mandatory and nonzero until the whole product qualifies. CI never accepts exit
+two as bounded success. Current new delivery suite has sixty-four expected
+tests; these Go/policy changes remain uncompiled until genuine hosted preflight.
+
+Lab checkpoint 99dc5606 delivered the final bounded CLI and four-field typed
+requirement contract. Root then allocated C for a warm local consumer check.
+Fresh admission measured 79 percent commit and 35,587,176 KiB free physical
+memory. All 64 delivery pure tests and strict all-target Clippy passed on the
+first attempt, with unchanged complete delivery/workflow/owner-contract input
+hashes. Private registered evidence is
+20261107103309-delivery-go-bounded-verification, index SHA256
+d381358cf50bf6add05aac3b98130a2117b50ffd12623dbc2d71d9c8645bae5e.
+C was returned; actual Go, containers, process and SCM profiles were not run.
+Genuine hosted Go/lab preflight and the actual bounded component remain pending.

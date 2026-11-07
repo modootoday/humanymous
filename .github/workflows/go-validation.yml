@@ -1,0 +1,59 @@
+# Dedicated owned-deployment Go evidence; no publication or deployment.
+name: CI / Go component
+'on':
+  push:
+    branches: [codex/go-validation]
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: go-validation-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CARGO_BUILD_JOBS: '1'
+  CARGO_INCREMENTAL: '0'
+  DOCKER_BUILD_RECORD_UPLOAD: 'false'
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      id: toolchain
+      with:
+        toolchain: 1.99.1
+    - name: Execute current Go owner units
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-go-adapter --lib -j1
+    - name: Execute current lab owner units
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1
+    - name: Execute current delivery receipt units
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-delivery -j1
+    - name: Compile and lint all selected Unix targets
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-delivery --all-targets -j1 -- -D warnings
+    - name: Verify current workflow policy
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- policy
+  product:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Execute actual owned Go eight-case profile
+      run: cargo run --locked -p humanymous-delivery -- go-product

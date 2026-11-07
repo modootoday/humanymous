@@ -2,7 +2,7 @@
 use crate::{Result, require};
 use serde_json::{Value, json};
 
-fn fields(value: &Value, names: &Value) -> Result<()> {
+pub(crate) fn fields(value: &Value, names: &Value) -> Result<()> {
     let object = value.as_object().ok_or("receipt object absent")?;
     let names = names.as_array().ok_or("receipt field contract absent")?;
     require(
@@ -13,7 +13,7 @@ fn fields(value: &Value, names: &Value) -> Result<()> {
         "receipt fields mismatch",
     )
 }
-fn digest(value: &Value, size: usize) -> bool {
+pub(crate) fn digest(value: &Value, size: usize) -> bool {
     value.as_str().is_some_and(|s| {
         s.len() == size
             && s.bytes()

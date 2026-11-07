@@ -5,6 +5,7 @@ mod components;
 mod dependency_summary;
 mod docker_source;
 mod evidence;
+mod go_product;
 mod image_candidates;
 mod image_scan;
 mod lab_diagnostics;
@@ -80,6 +81,7 @@ fn run() -> Result<()> {
         "image-candidates" => image_candidates::check(&root),
         "image-scan" => image_scan::run(&root, argument(1)?),
         "pages-evidence" => pages::run(&root, argument(1)?),
+        "go-product" => go_product::run(&root),
         "native-artifacts" => package::native_artifacts(&root),
         "node" => package::node(&root).map(|_| ()),
         "readiness" => registry::readiness(&root),

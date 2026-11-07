@@ -1,0 +1,92 @@
+{
+  "schema": "humanymous.pages-hosted-evidence/1",
+  "run_id": 42363224485,
+  "source": {
+    "source_sha": "8624b57c6ff4c9f8eb3763814659e17520e858b8",
+    "docs_dirty": false,
+    "rust_source_dirty": false,
+    "rust_source_manifest_sha256": "1900fd8d09e1e188d774e50c761aaba1f77b6957b4fe93fae37805488d402880",
+    "docs_git_tree": "9c25458d67f0c0522e4d61edd526fd18124200d2",
+    "config_sha256": "c0734b7901aceadea297d50cdd39788087c4e3ab659120f32187da182a606f8e",
+    "gemfile_lock_sha256": "d4d5118a455859f15e92a43c0b12029dc6fdb94c5845ceb213d43a5f31ea51b0",
+    "cargo_lock_sha256": "65b830318da0efb30498ab117c478a66ede3de1eecc9a55a40cc2a4f971402b0"
+  },
+  "conclusion": "success",
+  "preflight": {
+    "job_id": 128375756057,
+    "passed": 60,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "clippy": "passed",
+    "workflow_policy": "passed",
+    "policy_scope": "does not establish free-branch automatic-upload rule coverage"
+  },
+  "build": {
+    "job_id": 128376122323,
+    "source_unchanged": true,
+    "stages": {
+      "apex": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "bundle_audit": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "bundle_install": {
+        "exit_code": 0,
+        "outcome": "success"
+      },
+      "subpath": {
+        "exit_code": 0,
+        "outcome": "success"
+      }
+    },
+    "apex_and_subpath_validation": "passed"
+  },
+  "artifacts": [
+    {
+      "id": 13570925987,
+      "name": "pages-outcomes-8624b57c6ff4c9f8eb3763814659e17520e858b8",
+      "size_in_bytes": 1181,
+      "expires_at": "2026-11-08T10:20:27Z"
+    },
+    {
+      "id": 13570334590,
+      "name": "pages-subpath-8624b57c6ff4c9f8eb3763814659e17520e858b8",
+      "size_in_bytes": 518133,
+      "expires_at": "2026-11-08T10:20:30Z"
+    },
+    {
+      "id": 13570289928,
+      "name": "pages-apex-8624b57c6ff4c9f8eb3763814659e17520e858b8",
+      "size_in_bytes": 515201,
+      "expires_at": "2026-11-08T10:20:28Z"
+    }
+  ],
+  "artifact_roundtrip": {
+    "status": "failed in independent Pages-owner and root checks",
+    "apex_missing": [
+      ".well-known/security.txt"
+    ],
+    "subpath_missing": [
+      ".well-known/security.txt"
+    ],
+    "usable_site_archive_qualified": false
+  },
+  "automatic_branch_upload_policy": {
+    "status": "missed in initial review; correction and regression pending validation",
+    "private_bundle_uploaded": false,
+    "retention_days": 1
+  },
+  "evidence": {
+    "capture_kind": "saved GitHub connector decoded log text and JSON; not HTTP wire bytes",
+    "private_capture_index_sha256": "7d03276b9c15610afe4411a15d2cb26723dea1bec4406b13299a3b812010e872",
+    "individual_captures_registered": true
+  },
+  "browser_qualified": false,
+  "assistive_technology_qualified": false,
+  "full_product_qualified": false,
+  "deployment_performed": false
+}

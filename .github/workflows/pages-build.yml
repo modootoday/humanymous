@@ -48,21 +48,21 @@ jobs:
         HUMANYMOUS_PAGES_APEX: ${{ steps.apex.outcome }}
         HUMANYMOUS_PAGES_SUBPATH: ${{ steps.subpath.outcome }}
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      if: ${{ always() && steps.source_prepare.outcome == 'success' }}
+      if: ${{ always() && github.ref == 'refs/heads/main' && steps.source_prepare.outcome == 'success' }}
       with:
         name: pages-outcomes-${{ github.sha }}
         path: target/delivery-pages/*.json
         retention-days: 1
         if-no-files-found: error
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      if: ${{ always() && steps.apex.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
+      if: ${{ always() && github.ref == 'refs/heads/main' && steps.apex.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
       with:
         name: pages-apex-${{ github.sha }}
         path: ${{ runner.temp }}/pages-apex
         retention-days: 1
         if-no-files-found: error
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      if: ${{ always() && steps.subpath.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
+      if: ${{ always() && github.ref == 'refs/heads/main' && steps.subpath.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
       with:
         name: pages-subpath-${{ github.sha }}
         path: ${{ runner.temp }}/pages-subpath

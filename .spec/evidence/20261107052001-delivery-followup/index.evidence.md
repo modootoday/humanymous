@@ -3,12 +3,13 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T10:25:47Z
+updated: 2026-11-07T10:28:43Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
   - {path: hosted-8132117-summary.json, sha256: 92b51d1914a16305b845afa92d2cf4073076b58eb72d961bf8aa4b695d42b17f, bytes: 7453, store: repo}
   - {path: apache-workflow-review.json, sha256: 822d27f101456cd6888327410ae3fe97c38d4376e7c140f5c25ba07d73781c9a, bytes: 945, store: repo}
+  - {path: pages-8624b57-summary.json, sha256: 68c72b8bf92dd11e7acd0f10c68d2779f5abaee2b08ce3e8f1427777e72c4079, bytes: 2857, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -172,3 +173,16 @@ C was returned and no actual component pilot ran. Actionlint and owned scoped
 Specfold checks passed. The full pre-commit Specfold check encountered a foreign
 Pages attachment registration error and binary-secret-scan warning; it is not
 reported as globally passing.
+
+## Later bounded Go and free-branch policy
+
+Root-allocated C passed 64 delivery pure tests and all-target Clippy with warnings
+denied after the lab's 99dc5606 bounded-mode contract landed. All test counts had
+zero failed, ignored or filtered; source/workflow/owner-contract hashes remained
+unchanged. Admission was 79 percent commit and 35,587,176 KiB free physical
+memory. C was returned. Private evidence
+20261107103309-delivery-go-bounded-verification has registered index SHA256
+d381358cf50bf6add05aac3b98130a2117b50ffd12623dbc2d71d9c8645bae5e.
+This proves parser/policy units and compilation, not actual Go8 or Docker/SCM.
+The attached Pages terminal summary distinguishes real build success from the
+historical automatic-upload policy miss and failed downloaded-site roundtrip.

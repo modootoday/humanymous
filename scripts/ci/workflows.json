@@ -15,6 +15,7 @@
     "pypi": {"workflow":"release.yml","environment":"pypi","state":"preparation-only","job_present":false}
   },
   "workflows": [
+    {"file":"go-validation.yml","name":"CI / Go component","jobs":["preflight","product"],"concurrency":{"group":"go-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"apache-validation.yml","name":"CI / Apache component","jobs":["component"],"concurrency":{"group":"apache-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"local-parity.yml","name":"CI / Local parity","jobs":["compare"],"concurrency":{"group":"local-parity-benchmark","cancel-in-progress":false},"artifacts":[]},
     {"file":"ci.yml","name":"CI / Validate","jobs":["validate"],"concurrency":{"group":"rust-ci-${{ github.ref }}","cancel-in-progress":true},"artifacts":[]},

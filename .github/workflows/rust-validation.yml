@@ -100,7 +100,7 @@ jobs:
       if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os == 'windows-2025' && 'windows' || matrix.os == 'macos-15' && 'macos' || 'linux' }} ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
     - name: Preserve native workspace accounting
-      if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+      if: ${{ !cancelled() && github.ref == 'refs/heads/main' && steps.native_build.outcome == 'success' }}
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: native-workspace-${{ matrix.os }}-${{ github.sha }}

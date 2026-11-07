@@ -952,8 +952,9 @@ bundles, profiles, native-report.json or captured process output. Full browser,
 IME, accessibility and descendant cleanup qualification remain false/unknown.
 
 The existing native-workspace artifact now retains only the owning formatter's
-sanitized report.json for one day after a successful build, including failed
-actor execution. Raw actor/private reports are not included. Browser-product
+sanitized report.json for one day on main after a successful build, including
+failed actor execution. Free-branch automatic uploads are disabled. Raw
+actor/private reports are not included. Browser-product
 build context permits only the additional exact Go configuration and contract
 JSON files required by the lab owner's new compile-time runtime inputs; this is
 source preparation, not execution or qualification of a Go profile.
@@ -1076,8 +1077,10 @@ independent after installation; their failures cannot be hidden by artifacts.
 Before/after provenance binds clean docs and Rust builder/delivery input bytes,
 docs Git tree, configuration and lock hashes. Trusted step outcomes are emitted
 without parsing inherited mixed subprocess stdout; unknown exits remain null.
-Only successful corresponding generated sites with unchanged source are
-uploaded for one day. Safe source/outcome JSON survives build failures. Browser,
+Only successful corresponding generated sites with unchanged source on main
+are eligible for one-day uploads; free branch uploads are disabled. Site archive
+usability additionally requires the owned packaging/roundtrip check. Safe
+source/outcome JSON remains in allowlisted job logs after build failures. Browser,
 assistive-technology and whole-product qualification remain false.
 
 The dedicated caller first runs the exact-source delivery unit suite,
@@ -1086,3 +1089,21 @@ standard hosted Ubuntu 24.04. All preflight commands are independently attempted
 after toolchain setup; any failure blocks the dependent Pages build. This
 hosted preflight may establish new-helper validation when local capacity is
 unavailable, but authoring and static checks alone never establish its success.
+
+The dedicated Go component caller is isolated to codex/go-validation pushes
+and workflow_dispatch with read-only permissions. Exact-source Ubuntu preflight
+runs Go owner units, all lab owner units including shared DNS, delivery receipt
+units, selected all-target Clippy and workflow policy before actual execution.
+CI invokes only the owning lab's --go-product --require-go-component profile in a fresh
+private bundle. Its sole go-public-receipts.json vocabulary governs the eight
+ordered case IDs, assertion knowledge, safe errors, totals and public fields.
+CI independently hashes the original private Go ledger and source manifest,
+checks this run's metadata and recomputes public accounting without redoing
+HTTP semantics. Unattempted cases are known zero assertions; attempted but
+unmeasured cases retain null. Only the safe projection and hashes enter job logs;
+automatic branch uploads remain disabled. The owning cleanup case must be
+observed and the lab's typed go-component requirement must be satisfied with
+exit zero. The lab owns all bounded success predicates. Its existing
+--require-full mode remains a mandatory separate final gate with nonzero exit
+until full product readiness; exit two is never accepted as component success.
+Component qualification and environment metadata are not authenticated provenance.
