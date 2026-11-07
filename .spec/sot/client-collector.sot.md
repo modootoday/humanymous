@@ -386,3 +386,24 @@ Registry/compiler/SDK inputs and additions outside that list were not captured.
 The first post-test fmt failure and final corrected-byte rerun are retained in
 evidence:root/20261106194410. Actual browser/product execution of this extension
 is NOT_RUN; prior66 component tests do not qualify these new cases.
+
+## Finite bootstrap HTTP403 diagnostics
+
+The source-bound1f87 browser pilot observed HTTP403 without distinguishing the
+runtime origin and fetch-metadata predicates. Collector may refine this failed
+bootstrap only by reading at most256 response bytes under the original timer
+and abort owner, matching exactly the static Runtime JSON bodies for
+browser_origin or browser_fetch_metadata. Emit field-free HttpForbiddenOrigin
+or HttpForbiddenFetchMetadata internally. Every other representation, unknown
+code, additional field, malformed/oversized body or failed body read remains
+HttpForbidden. These are untrusted diagnostic classifications, not authenticated
+server provenance or authorization. No raw body/header/foreign error is retained
+in the diagnostic, and public connect errors remain generic.
+
+No retry, deadline renewal, request-policy change, predicate relaxation, new
+endpoint or error-body API is part of this slice. Exact matching deliberately
+keeps alternate JSON representations generic. The existing WASM fixture case
+adds both exact positive bodies, an additional-sensitive-field negative and an
+oversized-body negative without adding test names. Source formatting is checked;
+actual WASM tests/browser/product execution for these new bytes remains pending.
+The historical1f87 HTTP403 must not be retrospectively assigned either category.

@@ -12,6 +12,8 @@ pub(super) enum Failure {
     FetchAwait,
     ResponseStatus,
     HttpForbidden,
+    HttpForbiddenOrigin,
+    HttpForbiddenFetchMetadata,
     HttpUnsupported,
     HttpClient,
     HttpServer,
@@ -31,6 +33,16 @@ fn rejected(status: u16) -> Failure {
         400..=499 => Failure::HttpClient,
         500..=599 => Failure::HttpServer,
         _ => Failure::HttpOther,
+    }
+}
+
+// Accept only the two exact static response bodies emitted by Runtime. Foreign
+// content, alternate JSON representations and oversized bodies stay generic.
+fn forbidden_body(bytes: &[u8]) -> Failure {
+    match bytes {
+        br#"{"error":"browser_origin"}"# => Failure::HttpForbiddenOrigin,
+        br#"{"error":"browser_fetch_metadata"}"# => Failure::HttpForbiddenFetchMetadata,
+        _ => Failure::HttpForbidden,
     }
 }
 
@@ -63,6 +75,15 @@ pub(super) async fn connect(
         .map_err(|_| Failure::FetchAwait)?;
     let status = io::status(&response).map_err(|_| Failure::ResponseStatus)?;
     if !(200..=299).contains(&status) {
+        if status == 403 {
+            // Keep the original timer and abort owner; diagnostics never retry
+            // a rejected request or turn an untrusted body into authority.
+            let failure = match io::body(&response, &timer, 256).await {
+                Ok(bytes) => forbidden_body(&bytes),
+                Err(_) => Failure::HttpForbidden,
+            };
+            return Err(failure);
+        }
         return Err(rejected(status));
     }
     let bytes = io::body(&response, &timer, 8192)

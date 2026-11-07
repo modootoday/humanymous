@@ -72,6 +72,15 @@ impl Fixture {
                 assert_eq!(get(&request,"referrer")?.as_string().as_deref(),Some(""));
                 assert_eq!(get(&request,"referrerPolicy")?.as_string().as_deref(),Some("same-origin"));
                 if bootstrap {
+                    if (15..=18).contains(&mode) {
+                        let body: &[u8] = match mode {
+                            15 => br#"{"error":"browser_origin"}"#,
+                            16 => br#"{"error":"browser_fetch_metadata"}"#,
+                            17 => br#"{"error":"browser_origin","secret":"sensitive-bootstrap-fixture"}"#,
+                            _ => &[b'x'; 257],
+                        };
+                        return response(&global,403,&[],body,None);
+                    }
                     if (9..=11).contains(&mode) {
                         let status=match mode {9=>403,10=>422,_=>503};
                         return response(&global,status,&[],b"sensitive-bootstrap-fixture",None);
@@ -365,6 +374,10 @@ async fn real_same_origin_fetch_to_missing_owned_route_cannot_create_a_session()
         (12, bootstrap::Failure::SessionReply),
         (13, bootstrap::Failure::SessionScope),
         (14, bootstrap::Failure::FetchAwait),
+        (15, bootstrap::Failure::HttpForbiddenOrigin),
+        (16, bootstrap::Failure::HttpForbiddenFetchMetadata),
+        (17, bootstrap::Failure::HttpForbidden),
+        (18, bootstrap::Failure::HttpForbidden),
     ] {
         let fixture = Fixture::new();
         fixture.mode.set(mode);
