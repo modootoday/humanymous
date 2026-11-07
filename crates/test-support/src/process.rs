@@ -11,6 +11,9 @@ pub struct ManagedChild(Child);
 
 /// Bounded process output. Callers must not publish credential-bearing output.
 pub struct Captured {
+    /// Actual direct-child OS PID captured immediately after spawn. This does not
+    /// identify descendants, authorize a caller or prevent PID reuse after exit.
+    pub pid: u32,
     /// Observed OS exit status, never a shell's guessed exit value.
     pub status: ExitStatus,
     /// Complete stdout, limited to the caller's declared byte budget.
@@ -206,6 +209,7 @@ fn capture_streams(
 ) -> io::Result<Captured> {
     let until = Instant::now() + timeout;
     let mut child = ManagedChild::spawn_with_stderr(command, input, stderr)?;
+    let pid = child.id();
     let stdout = reader(
         child
             .0
@@ -227,6 +231,7 @@ fn capture_streams(
         None => Vec::new(),
     };
     Ok(Captured {
+        pid,
         status,
         stdout,
         stderr,
@@ -237,6 +242,7 @@ fn capture_streams(
 mod tests {
     use super::*;
     #[test]
+    #[ignore = "subprocess entry point; owning parent tests verify execution"]
     fn subprocess_fixture() {
         match std::env::var("HUMANYMOUS_SUPPORT_FIXTURE").as_deref() {
             Ok("hang") => std::thread::sleep(Duration::from_secs(5)),
@@ -247,6 +253,7 @@ mod tests {
                 eprintln!("stderr fixture");
             }
             Ok("stderr-flood") => eprintln!("{}", "x".repeat(8192)),
+            Ok("identity") => println!("\nchild-pid:{}", std::process::id()),
             Ok("duplex") => {
                 let mut input = String::new();
                 std::io::stdin()
@@ -264,6 +271,7 @@ mod tests {
             .args([
                 "--exact",
                 "process::tests::subprocess_fixture",
+                "--ignored",
                 "--nocapture",
             ])
             .env("HUMANYMOUS_SUPPORT_FIXTURE", mode);
@@ -283,6 +291,23 @@ mod tests {
                 .status
                 .success()
         );
+    }
+    #[test]
+    fn captured_pid_matches_the_actual_direct_child_not_the_parent() {
+        let output =
+            capture_with_stderr(&mut fixture("identity"), b"", Duration::from_secs(5), 4096)
+                .unwrap();
+        assert!(output.status.success());
+        assert!(output.stderr.is_empty());
+        let text = std::str::from_utf8(&output.stdout).unwrap();
+        let observed = text
+            .lines()
+            .find_map(|line| line.strip_prefix("child-pid:"))
+            .unwrap()
+            .parse::<u32>()
+            .unwrap();
+        assert_eq!(output.pid, observed);
+        assert_ne!(output.pid, std::process::id());
     }
     #[test]
     fn timeout_is_failure_and_child_is_reaped() {

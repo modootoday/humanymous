@@ -58,14 +58,32 @@ pub fn create_service_private_subdirectory(
 ) -> io::Result<PathBuf> {
     child_component(child)?;
     let service = actual_service_sid(service_name)?;
+    create_under_private_parent(parent, child, &service)
+}
+
+/// Create a new private child for an actual ordinary user beneath an already
+/// protected, inheritable current-owner parent. No ambient TEMP or ACL repair.
+pub fn create_user_private_directory(parent: &Path, child: &str) -> io::Result<PathBuf> {
+    child_component(child)?;
+    let identity = crate::process::current_identity()?;
+    if !identity.installer_allowed() {
+        return Err(io::Error::new(
+            io::ErrorKind::PermissionDenied,
+            "ordinary private directory actor required",
+        ));
+    }
+    create_under_private_parent(parent, child, identity.sid())
+}
+
+fn create_under_private_parent(parent: &Path, child: &str, service: &str) -> io::Result<PathBuf> {
     let parent_handle = inspect_parent(parent)?;
-    verify_windows_privacy(&parent_handle, &service, WindowsPrivacy::ProtectedDirectory)?;
+    verify_windows_privacy(&parent_handle, service, WindowsPrivacy::ProtectedDirectory)?;
     verify_windows_privacy(
         &parent_handle,
-        &service,
+        service,
         WindowsPrivacy::InheritableDirectory,
     )?;
-    create_child(parent, child, &service)
+    create_child(parent, child, service)
 }
 
 fn actual_service_sid(service_name: &str) -> io::Result<String> {

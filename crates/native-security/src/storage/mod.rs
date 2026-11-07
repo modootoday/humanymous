@@ -12,6 +12,7 @@ mod service;
 #[cfg(windows)]
 pub use private_directory::{
     create_service_private_directory, create_service_private_subdirectory,
+    create_user_private_directory,
 };
 #[cfg(windows)]
 pub use service::{
