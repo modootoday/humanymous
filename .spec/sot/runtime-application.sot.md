@@ -525,3 +525,25 @@ those bytes plus parent/new commitments; it is a candidate, never an action perm
 or durable commit receipt. Actual private store, authenticated journal commit,
 apply/session invalidation and crash recovery remain required before exposing
 writes. No scoring fields, secret credentials or implicit policy migration exist.
+R07 durable pipeline: SettingsStore owns audit TrustedSnapshot(namespace
+runtime-settings,max64KiB) and stores a canonical semantic envelope with committed
+and candidate OperationalSnapshots. Native .pending is a separate interrupted
+atomic replacement. A dedicated runtime.settings.commit/v1 event uses request_id
+settings:<canonical revision>, correlation_id exact candidate commitment,
+tenant_id and config_version exact provisioned scope; audit stamps node/sequence.
+The authenticated journal must start0 and advance contiguously, with canonical
+32-byte hex commitments, exact tenant/node/policy binding. No values are hidden
+in reason/risk fields. CreateNew is explicit and only when file+journal absent.
+Pipeline: stage candidate+parent durably, audit commit, finalize private envelope,
+then issue nonserializable CommittedSettings. Errors after staging poison the
+owner; no retry or successful receipt. The actual caller must poison the serving
+epoch on an ambiguous failure. Startup selects only the WAL-committed snapshot:
+finalize audited candidate or discard only an uncommitted semantic candidate
+whose parent still matches WAL. Missing/mismatched/rolled-back state refuses.
+Explicit native pending recovery validates both typed envelopes/current-or-parent
+journal binding, promotes exact inspected bytes under lock, then runs the same
+semantic recovery. Default requires native pending absent. Policy requests native
+durability explicitly; file-sync never implies directory durability. This source
+uses authenticated SealedAudit records and a shared native store, not arbitrary
+HTTP evidence. Operator route/apply/session invalidation/hosted failure pilots
+remain separate required joins, with all writes refused until wired.

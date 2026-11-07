@@ -10,9 +10,11 @@ use sha2::{Digest, Sha256};
 
 const PROTOCOL: &str = "humanymous.operational/0.1";
 const DOMAIN: &[u8] = b"humanymous/runtime/operational-state/0.1\0";
+mod store;
+pub use store::{CommittedSettings, SettingsBootstrap, SettingsPolicy, SettingsStore};
 
 /// Strict nonsecret persisted payload. Loading it alone does not prove a commit.
-#[derive(Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct OperationalSnapshot {
     protocol: String,
@@ -55,6 +57,9 @@ impl OperationalSnapshot {
             return Err(Rejection::new(409, "settings_snapshot_binding"));
         }
         self.settings.validate()
+    }
+    pub(crate) fn validate_binding(&self, config: &Configuration) -> Result<(), Rejection> {
+        self.validate(config)
     }
     /// Immutable semantic revision, independent from the frozen scoring policy.
     pub fn revision(&self) -> u64 {

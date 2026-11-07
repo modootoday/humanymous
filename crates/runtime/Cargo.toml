@@ -10,6 +10,8 @@ publish = false
 [dependencies]
 humanymous-authority = { path = "../authority" }
 humanymous-audit = { path = "../audit" }
+humanymous-capture = { path = "../capture" }
+humanymous-challenge = { path = "../challenge" }
 humanymous-integrity = { path = "../integrity" }
 humanymous-network = { path = "../network" }
 humanymous-scoring = { path = "../scoring" }
@@ -22,6 +24,7 @@ base64.workspace = true
 getrandom.workspace = true
 zeroize.workspace = true
 socket2 = "0.6.5"
+rustls = { version = "=0.23.46", default-features = false, features = ["std", "ring", "tls12"] }
 tokio = { version = "1.54.1", features = ["rt-multi-thread", "net", "io-util", "time", "sync", "macros"] }
 
 [dev-dependencies]

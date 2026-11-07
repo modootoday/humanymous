@@ -32,7 +32,7 @@ fn configuration(origin: std::net::SocketAddr) -> Configuration {
         "owner":if cfg!(windows){json!({"kind":"windows","sid":"S-1-5-21-1","pid":1})}else{json!({"kind":"unix","uid":0})},
         "session_capacity":16,"session_ttl_ms":60_000,"timeout_ms":1000,"rate_per_second":1000})).unwrap()
 }
-fn config() -> Configuration {
+pub(crate) fn config() -> Configuration {
     configuration("127.0.0.1:32123".parse().unwrap())
 }
 #[test]

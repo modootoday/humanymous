@@ -35,6 +35,9 @@ impl ExternalWitness {
 /// Audit and its custody guard share one lifetime; neither is extractable.
 pub struct SealedAudit {
     log: SealedLog,
+    scope: crate::management::ManagementScope,
+    node: String,
+    external_witness: bool,
 }
 impl humanymous_authority::decision::DurableAudit for SealedAudit {
     fn append(&mut self, record: humanymous_audit::record::Record) -> std::io::Result<()> {
@@ -42,6 +45,27 @@ impl humanymous_authority::decision::DurableAudit for SealedAudit {
     }
 }
 impl SealedAudit {
+    pub(crate) fn witnessed_through(&self) -> std::io::Result<Option<u64>> {
+        if !self.external_witness {
+            return Ok(None);
+        }
+        Ok(Some(
+            self.log
+                .checkpoints()?
+                .last()
+                .map_or(0, |checkpoint| checkpoint.tree_size),
+        ))
+    }
+    pub(crate) fn sequence(&self) -> u64 {
+        self.log.sequence()
+    }
+    pub(crate) fn matches_config(&self, config: &Configuration) -> bool {
+        self.scope == crate::management::ManagementScope::from_scope(&config.scope)
+            && self.node == config.audit.node_id
+    }
+    pub(crate) fn records(&self) -> std::io::Result<Vec<humanymous_audit::record::Record>> {
+        self.log.records()
+    }
     /// Flush before reporting a completed service shutdown; custody stays held.
     pub fn flush(&mut self) -> std::io::Result<()> {
         self.log.flush()
@@ -91,14 +115,7 @@ fn open_audit_inner(
         .map_err(|_| "audit directory is not private")?;
     humanymous_authority::transport::private_directory(&config.audit.keys.directory, &config.owner)
         .map_err(|_| "custody directory is not private")?;
-    let owner = match &config.owner {
-        #[cfg(unix)]
-        Peer::Unix { .. } => Owner::CurrentUser,
-        #[cfg(windows)]
-        Peer::Windows { sid, .. } => Owner::WindowsSid(sid.clone()),
-        #[allow(unreachable_patterns)]
-        _ => return Err("custody platform mismatch"),
-    };
+    let owner = native_owner(&config.owner)?;
     let options = SealedLogOptions {
         key_directory: config.audit.keys.directory.clone(),
         wal_directory: config.audit.directory.clone(),
@@ -109,6 +126,7 @@ fn open_audit_inner(
         trusted_head: config.audit.trusted_head.clone(),
         require_external_witness: config.audit.require_external_witness,
     };
+    let external_witness = witness.is_some();
     let witness = witness.map(|witness| witness.pinned);
     let unlock = UnlockCredential::Utf8(&mut config.audit.keys.passphrase);
     let log = match (witness, recovery) {
@@ -117,5 +135,21 @@ fn open_audit_inner(
         (None, Some(_)) => return Err("recovery requires external witness"),
     }
     .map_err(|_| "audit authenticated recovery")?;
-    Ok(SealedAudit { log })
+    Ok(SealedAudit {
+        log,
+        scope: crate::management::ManagementScope::from_scope(&config.scope),
+        node: config.audit.node_id.clone(),
+        external_witness,
+    })
+}
+
+pub(crate) fn native_owner(peer: &Peer) -> Result<Owner, &'static str> {
+    match peer {
+        #[cfg(unix)]
+        Peer::Unix { .. } => Ok(Owner::CurrentUser),
+        #[cfg(windows)]
+        Peer::Windows { sid, .. } => Ok(Owner::WindowsSid(sid.clone())),
+        #[allow(unreachable_patterns)]
+        _ => Err("custody platform mismatch"),
+    }
 }

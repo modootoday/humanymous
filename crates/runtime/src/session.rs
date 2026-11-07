@@ -374,4 +374,11 @@ impl Sessions {
     pub fn poison(&mut self) {
         self.poisoned = true;
     }
+    pub(crate) fn invalidate_all(&mut self) -> Result<(), Rejection> {
+        if self.poisoned {
+            return Err(Rejection::new(503, "session_epoch"));
+        }
+        self.entries.clear();
+        Ok(())
+    }
 }

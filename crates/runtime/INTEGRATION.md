@@ -360,3 +360,36 @@ Candidates grant no effects. Read-only settings endpoints remain unchanged;
 actual snapshot store/audit commit/apply/session invalidation/restart recovery
 must still be wired. Audit has proposed TrustedSnapshot native API; canonical
 source checkpoint and qualification are awaited before adoption claims.
+R07 source now uses actual audit TrustedSnapshot7dba59d:64KiB canonical semantic
+envelope, explicit CreateNew/Existing, exact inspected native.pending recovery,
+authenticated contiguous journal, candidate/WAL/finalize and opaque committed
+receipt. Application consumes it to change resource fields only and clear live
+sessions without reviving a poisoned clock/audit epoch. Shared global admission
+rebuilds its resource limiter after a committed rate change. ServiceHost settings
+bind restores before listener readiness and holds the native lock through drain/
+flush. Operator HTTP/IPC mutation command path remains read-only until separately
+wired; actual failure must poison the serving epoch. External-witness provenance
+and current verified checkpoint coverage are mandatory; journal append flushes
+before grant, and unwitnessed recovery-tail settings events refuse startup.
+
+Two pure crash/journal fixtures and one hosted-only actual snapshot/WAL/custody/
+same-process durable signer fixture are authored NOT_RUN. The latter stages and
+commits, invalidates an old session, retains the signer's actual head through
+writer restart, and restores revision1/resource values with no event replay. This
+is not independent process/OS/organization qualification. A temporary shared
+Witness key-holder derives only the synthetic writer public key; it never signs
+or grants. The distinct durable signer performs actual signatures and fsync.
+
+CLI d9ad5c7 observed runtime library dependency compile and Clippy PASS after4
+runtime diagnostics were fixed. Its final9file manifest before/after is identical
+SHA256d183d10df0f7b8297bb2a0251c87f95dc5b413c38cbf47ee18c58fafbd83642c.
+No runtime unit/native test executed there. After the source freeze was released,
+only hosted Unix fixture canonicalization changed among those9files; later root-
+approved capture/challenge/rustls manifest edges are separate graph work. Do not
+promote that dependency result to latest whole-runtime all-target qualification.
+
+Root approved the manifest window: capture/challenge path edges and exact
+rustls0.23.46 std/ring/tls12(defaultfalse) were written and frozen; root owns lock
+resolution. No Cargo command, push or dispatch from this owner. Source8132117
+actual run42355168729 is separate from these worktree changes. Its predecessor
+42354873001/a26d startup_failure with0jobs/0tests remains a failed attempt.

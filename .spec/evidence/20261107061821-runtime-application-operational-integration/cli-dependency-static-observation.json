@@ -1,0 +1,21 @@
+{
+  "scope": "runtime-library-as-CLI-dependency-only",
+  "producer_commit": "d9ad5c740cc546f32a29a1b9a46a43cf11c6a591",
+  "producer_private_evidence": "evidence:root/20261107082344",
+  "producer_public_evidence": "evidence:root/20261107082345",
+  "dependency_manifest_sha256": "d183d10df0f7b8297bb2a0251c87f95dc5b413c38cbf47ee18c58fafbd83642c",
+  "dependency_manifest_bytes": 1545,
+  "before_after_equal": true,
+  "clippy_result": "passed",
+  "runtime_unit_tests_executed": 0,
+  "runtime_actual_files_processes_executed": 0,
+  "producer_CLI_pure_tests": 7,
+  "prior_dependency_clippy_diagnostics": 4,
+  "provisional_attempts_retained": true,
+  "subsequent_changes": [
+    "hosted Unix fixture canonicalization",
+    "approved capture/challenge/rustls manifest edges"
+  ],
+  "current_whole_runtime_qualification": "not_run",
+  "hosted_source_813_qualification": false
+}

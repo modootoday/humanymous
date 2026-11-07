@@ -60,6 +60,16 @@ impl Application {
     pub fn readiness(&self) -> serde_json::Value {
         self.config.readiness()
     }
+    /// Consume one durably committed resource change in this serialized owner.
+    /// Frozen scoring is untouched and a poisoned epoch cannot be revived.
+    pub fn apply_committed_settings(
+        &mut self,
+        settings: crate::settings::CommittedSettings,
+    ) -> Result<(), Rejection> {
+        settings.snapshot().validate_binding(&self.config)?;
+        self.sessions.invalidate_all()?;
+        settings.apply(&mut self.config)
+    }
 
     /// Decide synchronously. A returned Origin may be consumed only by the same
     /// application request, after rechecking deadline and connection liveness.
@@ -301,6 +311,7 @@ impl Application {
             return Err(std::io::Error::other("loopback only"));
         }
         let mut admission = Admission::new(self.config.rate_per_second);
+        let mut admission_rate = self.config.rate_per_second;
         loop {
             if shutdown.borrow().is_some() {
                 return Ok(());
@@ -317,6 +328,10 @@ impl Application {
                 continue;
             }
             let until = Instant::now() + Duration::from_millis(self.config.timeout_ms);
+            if admission_rate != self.config.rate_per_second {
+                admission_rate = self.config.rate_per_second;
+                admission = Admission::new(admission_rate);
+            }
             if !admission.admit() {
                 if write_or_stop(
                     &mut stream,

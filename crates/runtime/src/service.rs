@@ -3,6 +3,7 @@ use crate::{
     application::Application,
     configuration::Configuration,
     management::{Management, ManagementPolicy},
+    settings::{SettingsPolicy, SettingsStore},
     startup::{ExternalWitness, SealedAudit},
 };
 use humanymous_authority::decision::DurableAudit;
@@ -36,7 +37,7 @@ pub fn read_configuration(input: impl Read) -> io::Result<Configuration> {
     Ok(configuration)
 }
 
-struct SharedAudit(Arc<Mutex<SealedAudit>>);
+pub(crate) struct SharedAudit(pub(crate) Arc<Mutex<SealedAudit>>);
 impl DurableAudit for SharedAudit {
     fn append(&mut self, record: humanymous_audit::record::Record) -> io::Result<()> {
         self.0
@@ -63,11 +64,12 @@ pub struct ServiceHost {
     audit: Arc<Mutex<SealedAudit>>,
     readiness: Readiness,
     management: Option<Management>,
+    settings: Option<SettingsStore>,
 }
 impl ServiceHost {
     /// Authenticate existing credentials before exposing a ready listener.
     pub async fn bind(configuration: Configuration) -> io::Result<Self> {
-        Self::bind_inner(configuration, None, None, None).await
+        Self::bind_inner(configuration, None, None, None, None).await
     }
 
     /// Consume a pinned external client. No witness failure permits fallback.
@@ -75,7 +77,7 @@ impl ServiceHost {
         configuration: Configuration,
         witness: ExternalWitness,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, Some(witness), None, None).await
+        Self::bind_inner(configuration, Some(witness), None, None, None).await
     }
 
     /// Bind a separately authorized native management service in the same custody
@@ -85,7 +87,7 @@ impl ServiceHost {
         witness: Option<ExternalWitness>,
         policy: ManagementPolicy,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, witness, Some(policy), None).await
+        Self::bind_inner(configuration, witness, Some(policy), None, None).await
     }
 
     /// Explicit operator recovery with an independently pinned head and witness.
@@ -96,7 +98,44 @@ impl ServiceHost {
         tail: humanymous_audit::storage::TailRecovery,
         management: Option<ManagementPolicy>,
     ) -> io::Result<Self> {
-        Self::bind_inner(configuration, Some(witness), management, Some(tail)).await
+        Self::bind_inner(configuration, Some(witness), management, Some(tail), None).await
+    }
+
+    /// Restore or explicitly provision witnessed private operational state before
+    /// listener readiness. Management writes remain separately authorized.
+    pub async fn bind_with_settings(
+        configuration: Configuration,
+        witness: ExternalWitness,
+        management: Option<ManagementPolicy>,
+        settings: SettingsPolicy,
+    ) -> io::Result<Self> {
+        Self::bind_inner(
+            configuration,
+            Some(witness),
+            management,
+            None,
+            Some(settings),
+        )
+        .await
+    }
+
+    /// Combine explicit witnessed WAL recovery with authenticated settings
+    /// recovery. Unwitnessed operational commits remain refused.
+    pub async fn bind_recovered_with_settings(
+        configuration: Configuration,
+        witness: ExternalWitness,
+        tail: humanymous_audit::storage::TailRecovery,
+        management: Option<ManagementPolicy>,
+        settings: SettingsPolicy,
+    ) -> io::Result<Self> {
+        Self::bind_inner(
+            configuration,
+            Some(witness),
+            management,
+            Some(tail),
+            Some(settings),
+        )
+        .await
     }
 
     async fn bind_inner(
@@ -104,12 +143,13 @@ impl ServiceHost {
         witness: Option<ExternalWitness>,
         management_policy: Option<ManagementPolicy>,
         recovery: Option<humanymous_audit::storage::TailRecovery>,
+        settings_policy: Option<SettingsPolicy>,
     ) -> io::Result<Self> {
         configuration
             .validate()
             .map_err(|_| io::Error::other("configuration invalid"))?;
         let witness_durability = witness.as_ref().map(ExternalWitness::durability_name);
-        let sealed = match (witness, recovery) {
+        let mut sealed = match (witness, recovery) {
             (Some(witness), Some(tail)) => {
                 crate::startup::recover_audit_with_witness(&mut configuration, witness, tail)
             }
@@ -120,6 +160,17 @@ impl ServiceHost {
             (None, Some(_)) => return Err(io::Error::other("recovery requires external witness")),
         }
         .map_err(io::Error::other)?;
+        let settings = if let Some(policy) = settings_policy {
+            let owner =
+                crate::startup::native_owner(&configuration.owner).map_err(io::Error::other)?;
+            let store = SettingsStore::open(policy, owner, &configuration, &mut sealed)?;
+            store
+                .restore_configuration(&mut configuration)
+                .map_err(|_| io::Error::other("operational restore failed"))?;
+            Some(store)
+        } else {
+            None
+        };
         let recovery=sealed.recovery_coverage().map(|coverage|serde_json::json!({
             "durable_sequence":coverage.durable_sequence,"witnessed_through":coverage.witnessed_through,
             "ambiguous_tail_len":coverage.ambiguous_tail_len,"fully_witnessed":coverage.fully_witnessed,
@@ -134,6 +185,8 @@ impl ServiceHost {
         profile["audit_startup_recovery"] = serde_json::json!(recovery);
         profile["administration"] = serde_json::json!(management_policy.is_some());
         profile["administration_writable"] = serde_json::json!(false);
+        profile["operational_revision"] =
+            serde_json::json!(settings.as_ref().map(|store| store.snapshot().revision()));
         let management = management_policy
             .map(|policy| Management::bind(policy, &configuration, profile.clone()))
             .transpose()?;
@@ -153,11 +206,18 @@ impl ServiceHost {
             audit,
             readiness,
             management,
+            settings,
         })
     }
     /// No raw credentials or audit material are included.
     pub fn readiness(&self) -> &Readiness {
         &self.readiness
+    }
+    /// Authenticated persisted operational revision, absent when not configured.
+    pub fn operational_revision(&self) -> Option<u64> {
+        self.settings
+            .as_ref()
+            .map(|store| store.snapshot().revision())
     }
 
     /// Separate management capability for the trusted broker's private channel.
