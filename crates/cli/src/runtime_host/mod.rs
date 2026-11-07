@@ -20,7 +20,9 @@ use humanymous_runtime::{
     service::{ServiceHost, ShutdownRequest},
     startup::ExternalWitness,
 };
-pub use input::{NativeSecrets, SecretSource, read_plan};
+pub use input::{
+    HostAuthorizationData, NativeSecrets, SecretSource, bind_authorization_data, read_plan,
+};
 use plan::invalid;
 pub use plan::{HostMode, HostPlan, ObserverPlan, StopPlan};
 use serde::Serialize;

@@ -24,6 +24,23 @@ release artifact provenance and privileged/service registration remain open.
 
 ## Service follow-through (2026-11-07 KST)
 
+### Accepted L1 kernel and CLI content-binding consumer
+
+Root69ccf7fc approved and linked existing dalek/base64 Authority edges plus lock.
+Authority778ef36b and its scope-projection follow-up own all packet encoding and
+signature/binding verification. CLI now consumes the checked DATA without a codec
+fork: exact raw BASE plan/configuration digest, service name/artifact, startup cap
+and all retained scope fields are compared before retaining preflight DATA.
+Legacy observer credential_id is refused rather than mapped into a fresh lease.
+One synthetic pure projection test covers whitespace/raw-byte changes, cap,
+scope, service/artifact/BASE-digest changes, budgets and the legacy selector.
+It does not construct a signature-checked or native capability. Shared public
+golden bundle/expected data is requested for the real positive consumer test.
+No native admission, secret read, socket, local SCM or account action occurs.
+Kernel/provider qualification and actual ServiceHost retention still precede
+production startup; the current Unsupported producer was not bypassed. Consumer
+source is authored/NOT_RUN pending explicit bounded validation allocation.
+
 ### Authored watchdog subprocess boundary fixture
 
 Follow-up after immutable792a2fab/acc77d2c: the opt-in existing service-fixture

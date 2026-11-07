@@ -71,6 +71,22 @@ this component. Earlier scoped compile/pure/Clippy alone never implied it.
 Observer management e6dd38d uses the existing authenticated native transport and
 independent Credential; it is not exposed through browser/application routes.
 
+The accepted public authorization L1 kernel is consumed through
+bind_authorization_data: exact bounded BASE-plan bytes and nonsecret configuration
+bytes bind to shared SignatureCheckedAuthorization service name, artifact,
+BASE-plan digest, exact configured startup cap and the retained checked scope.
+All five application-scope fields must match the parsed configuration; the BASE
+plan pins that configuration digest. Whitespace/content substitutions therefore
+reject even if JSON meaning is unchanged. The original schema's observer
+credential_id cannot be treated as a v2 lease and rejects in this data profile.
+HostAuthorizationData retains immutable preflight projections only. It opens no
+file, reads no secret, reserves no native claim and cannot create preparation,
+Ready or ServiceHost. Protected original issuer/role/process/W ownership remains
+the separate mandatory producer gate before unseal. The production startup path
+continues to fail closed while that producer is Unsupported. This new consumer
+slice is authored/NOT_RUN until its own source-bound gates and shared golden
+packet comparison execute; synthetic projection units are not signature proof.
+
 This tranche is authored/NOT_RUN until root grants bounded pure-unit Cargo and
 current-source hosted native-process/service validation. Prior fixture checks
 and remote42348518353/63f69ae do not qualify the new source.
