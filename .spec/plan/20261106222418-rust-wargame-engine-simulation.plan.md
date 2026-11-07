@@ -3,7 +3,7 @@ id: plan:root/20261106222418
 title: Rust wargame engine simulation
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-07T05:20:00Z
+updated: 2026-11-07T06:19:27Z
 rel:
   governs: [crates/attacker]
   depends_on: [sot:root/rust-wargame]
@@ -39,8 +39,13 @@ verdict engine, with honest unavailable-runtime and human-control accounting.
 - [x] Implement actual-Log prefix-validating snapshots and attacker OwnedLab.
 - [x] Define19network cases+7unavailable producers and Rust JSON verifier.
 - [x] Scoped19unit/Clippy passed; record working-source private/public checkpoint.
-- [ ] Checkpoint/release to Compose for actual context/image/runner integration.
-- [ ] Reclaim after Compose, fix measured defects, run actual Docker pilot;
+- [x] Checkpoint1ee2c92/release to Compose for actual context/image integration.
+- [x] Actual54017 source:26scheduled19evaluated7unsupported, no errors/mismatches;
+  independent Rust verifier passed, strict full request exit2.
+- [x] Compose60627 source:71outer assertions, same19/7matrix, cleanup/strict2;
+  component witness proof remains separate from runtime fusion and human/AT.
+- [x] Reclaim after Compose and author final guard/replay source corrections.
+- [ ] Validate current source and run a new actual Docker/collector/audit pilot;
   preserve every failed/retried source result separately.
 - [ ] Verify current code after integration, sanitize/attach summary, validate
   LF/Git bytes, commit owned paths and hand off unresolved producer requirements.
@@ -49,10 +54,72 @@ Compose owns shared custody/config/origin extraction, OwnedLab implementation,
 image and Docker invocation. Runtime owns Pass/browser recovery and remote
 attestation. Human/AT results require actual participants. Root owns Cargo/lock/
 toolchain and global qualification. No component green closes seven unsupported
-rows. Accepted agreement status: APIs implemented; Windows unit19passed; Docker
-network acceptance pending. Common manifest freeze is respected after root's
+rows. Accepted status: checkpoint Windows unit19passed and source-bound Docker
+network19/7 passed. Current v0.3 source is not yet compiled. Common manifest freeze is respected after root's
 direct-edge refresh. Initial --locked refusal, missing Deserialize compile error,
 and unused-import/collapsible-if Clippy failures were observed and corrected.
+
+## Current memory-priority handover and source delta
+
+### Hosted validation policy — accepted, single common canon
+
+Root received all13owner opinions and confirmed the user's policy. The sole
+policy authority is [[sot:root/program-roadmap]]; the execution/DAG implementation
+contract is [[sot:root/delivery]]. The prior worker proposal is superseded,
+including suggested native matrix parallelism. No independent policy or workflow
+implementation is maintained here; no required gate is removed.
+
+Wargame local scope: coding/fmt, limited Clippy and explicitly classified pure
+Engine/replay/ledger/CLI tests under common resource allocation. --lib alone does
+not establish purity. Actual OwnedRuntime spawn, TCP/IPC/UID/permissions, custody/
+WAL/restart, origin/audit/egress, Docker and browser/OS qualification belong to
+standard hosted execution. Human/AT/IME/hardware and independent-organization
+witness proof require direct evidence, never a runner label. All7unavailable
+rows and full-product=false remain.
+
+Current v0.3 is uncompiled; its two authored tests have not run. Root integrates
+source closure before rust-branch push and first hosted observation. Prior green
+remains source-specific. No duplicate dispatch, private raw public upload, paid
+provisioning or source/gate deletion is authorized here. Missing required raw
+recovery stays explicit and cannot silently qualify the associated gate.
+
+Root explicitly excludes this v0.3 draft from the first hosted candidate that
+contains runtime67c1818. After root's first-candidate Git transaction completes,
+the wargame owner may create a separate path-scoped not_run checkpoint. Its code
+must be tested only as a later source/batch after runtime/CI results are collected.
+Do not assign the first run's SHA, results or artifact identities to this draft.
+
+Root reported first push transaction complete at
+bfc9f62335ae41906996c6b01b0ae9e7993feeed, hosted run42347732666/attempt1
+on Ubuntu24.04 policy in progress. That source excludes v0.3. Root authorized a
+separate source-only not_run checkpoint after releasing the Git mutex; no local
+pure-unit rerun is required before handing this draft to later hosted validation.
+This owner does not push or dispatch while root observes the first run.
+
+Root relayed the user's memory-pressure instruction: no new cargo/rustc/build,
+browser, Docker, spec-global or agents until resource scheduling changes. No own
+active PID/container/session requires retention; previous helper/build commands
+and engine-pilot containers exited. A terminated helper executable remains only
+as a file in OS temp. Never kill another chat, the desktop apps or all WSL.
+
+Compose released red-catalog; rust-wargame-final-boundaries reclaimed only its
+declared paths. Peer deployments/lab,test/lab,container SoT/plan/evidence remain
+unmodified. Source writes permitted by root added strict IPv4 evidence-header
+validation, fallible reader spawning, combined error retention and Rust v1 replay
+verification. Two new tests plus strengthened route negatives are authored but
+unrun. Local owned-source fmt completed after the accepted policy change;
+scoped tests/Clippy, LF/Git bytes, hosted Docker/collector and fresh
+image/Cargo/secret scans are pending. Do not attribute checkpoint19unit or old
+Docker successes to this dirty source. No current-source completion is claimed.
+
+Failure lineage supplied by Compose:54017 success artifacts remain intact.
+55200 first witness setup failure lost its dirty source graph after an accidental
+same-folder retry; remaining failure report/transcript/image are55537 failure-*.
+55200 now identifies a separate empty-attach retry failure.60036 retains a later
+EOF/timeout failure.60627 is a distinct new successful source snapshot. Later
+host report/parser edits are unvalidated. Do not overwrite or retroactively
+qualify any of these records. See deployments/lab/INTEGRATION.md for exact owner
+contracts. Further heavy execution awaits root, not elapsed-time approval.
 
 Historical v0.1 Rust1.88 results below are not current-source qualification.
 

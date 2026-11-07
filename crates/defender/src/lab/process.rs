@@ -142,24 +142,27 @@ impl OwnedRuntime {
             .take()
             .ok_or(LabError("private readiness pipe"))?;
         let (tx, rx) = mpsc::sync_channel(1);
-        std::thread::spawn(move || {
-            let result = (|| {
-                input
-                    .write_all(&bytes)
-                    .map_err(|_| LabError("private configuration write"))?;
-                drop(input);
-                let mut line = Vec::new();
-                BufReader::new(output)
-                    .take(16385)
-                    .read_until(b'\n', &mut line)
-                    .map_err(|_| LabError("readiness read"))?;
-                if line.len() > 16384 || !line.ends_with(b"\n") {
-                    return Err(LabError("readiness framing"));
-                }
-                serde_json::from_slice::<Value>(&line).map_err(|_| LabError("readiness JSON"))
-            })();
-            let _ = tx.send(result);
-        });
+        std::thread::Builder::new()
+            .name("owned-runtime-readiness".into())
+            .spawn(move || {
+                let result = (|| {
+                    input
+                        .write_all(&bytes)
+                        .map_err(|_| LabError("private configuration write"))?;
+                    drop(input);
+                    let mut line = Vec::new();
+                    BufReader::new(output)
+                        .take(16385)
+                        .read_until(b'\n', &mut line)
+                        .map_err(|_| LabError("readiness read"))?;
+                    if line.len() > 16384 || !line.ends_with(b"\n") {
+                        return Err(LabError("readiness framing"));
+                    }
+                    serde_json::from_slice::<Value>(&line).map_err(|_| LabError("readiness JSON"))
+                })();
+                let _ = tx.send(result);
+            })
+            .map_err(|_| LabError("readiness reader unavailable"))?;
         let ready = rx
             .recv_timeout(Duration::from_secs(10))
             .map_err(|_| LabError("readiness deadline"))??;

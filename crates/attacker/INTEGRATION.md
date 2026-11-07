@@ -1,4 +1,4 @@
-# Wargame integration contract v0.2
+# Wargame integration contract v0.3
 
 2026-11-07: attacker/defender are actual root workspace members. This supersedes
 the old membership request. Packages remain publish=false, excluded from normal
@@ -13,7 +13,9 @@ test/lab/runtime, deployments/lab, image/runner integration. Root owns shared
 Cargo/lock/toolchain. Direction: test/lab/runtime -> attacker -> defender ->
 existing runtime/integrity/audit/scoring. No reverse testlab dependency or forked
 verdict/RIT implementation exists. Agreement is accepted; library implementation
-and Windows unit checks exist; Docker context integration is pending.
+and Windows unit checks exist. Source1ee2c92's Docker context integration passed
+19evaluated/7unsupported with no errors/mismatches. The current source-only v0.3
+follow-up below is not yet compiled or requalified.
 
 Defender added runtime/integrity/audit path dependencies and serde_json, base64,
 zeroize, sha2 from the existing closure. Root refreshed the lock. No additional
@@ -81,13 +83,72 @@ Verifier exit0: internally consistent scoped pass. Exit2: consistent failed
 acceptance or --require-full while unqualified. Exit1: inconsistent/malformed
 report or I/O. Pure simulation remains v1 JSON and is never network evidence.
 
+## V0.3 boundary/verifier delta (implemented, validation pending)
+
+`humanymous_attacker::verification::verify_bytes(&[u8])` returns Verification,
+schema humanymous.wargame-verification.v1, with internally_consistent, mode,
+scoped_passed, full_product_qualified and totals. The CLI handles both simulation
+v1 and network v2. V1 re-executes the existing pure Engine/catalog and compares
+every report field, accepting equivalent integer/float JSON numbers with exact
+integer comparison where available. This is current-source replay, not automatic
+historical-source equivalence. V2 validates actual measured records without
+manufacturing network execution. Mode distinguishes both paths. Unknown schemas,
+malformed/oversize JSON and inconsistent contents return safe static LabError.
+No dependency, RIT protocol or network v2 schema changes. The existing Python
+verifier is an unused prototype pending owner-led retirement; this Rust path
+does not execute it.
+
+Final source rejects absent/malformed IPv4 route headers, returns typed startup
+reader resource errors rather than panicking, and retains simultaneous execution
+and audit-snapshot errors. Replay/tampering and missing-route tests are authored,
+not yet executed. Local formatting completed after the accepted policy change;
+Cargo tests/Clippy, hosted Docker/collector/audit and Git byte closure remain
+pending. Only source and
+canon writes occurred after reclaiming red-catalog; peer paths are untouched.
+
+## Accepted measurement follow-through
+
+Compose's54017 immutable success remains intact:33orchestration assertions,
+runtime origin2/audit4, network26scheduled/19evaluated/7unsupported,
+errors0/mismatches0. Rust verifier independently accepted that raw network JSON;
+--require-full returned2. Audit observed ALLOW2/CHALLENGE3/DENY1, including
+legitimate controls; these are not an attack bypass rate.
+
+Compose implemented origin-contact counting before validation and actual setup
+failure reporting as19errors+7unsupported.60627's fresh source passed71outer
+assertions plus the same complete network matrix, with verified cleanup/strict2
+and separate UID/volume witness component. Runtime-binary sidecar fusion and
+human/AT remain absent. Subsequent host parser/report edits and current library
+source are not qualified by60627.55200's first failed witness attempt lost its
+original dirty source graph during retry-path reuse; other failure artifacts are
+archived in55537. The intact54017 success is unaffected.60036 preserves a later
+witness timeout failure.60627 does not retrospectively qualify prior failures.
+Compose's INTEGRATION records the exact paths and component limits.
+
 ## Open requirements and next owner
 
-Compose implements OwnedLab using shared custody/config/origin context and runs
-the contextual Docker image. No network success is claimed before this step.
-After Compose releases red-catalog, wargame corrects measured defects and records
-source-bound private raw and sanitized public evidence. All7unsupported rows
+Compose implemented OwnedLab using shared custody/config/origin context. After
+source closure, wargame must run the current final source on standard hosted
+execution through the same Rust Docker runner, collector and fresh audits, then
+attach private raw
+and sanitized public evidence. All7unsupported rows
 remain open: real human/browser, AT, accessible Pass, remote signed identity,
 T4 real browser, full Gate original TLS/H2, safe live audit-outage injection.
 Preserve existing HR-12 CHALLENGE. Independent durable witness is a separate
 qualification even if its component binary becomes available.
+
+Execution policy is authoritative only in `.spec/sot/program-roadmap.sot.md` and
+`.spec/sot/delivery.sot.md`. Local work is coding/fmt and resource-bounded pure
+fastchecks; actual child/port/IPC/permissions/browser/Docker/Cross-OS gates are
+hosted. This owner does not dispatch duplicate jobs, waive missing private raw
+recovery or infer real human/AT from a runner label. V0.3 remains uncompiled and
+unqualified until fresh source-bound results exist.
+
+Candidate boundary: root excludes this v0.3 draft from its first hosted candidate
+containing runtime67c1818. This source will be a later owned not_run checkpoint
+after that first Git transaction. First-run results do not qualify this draft;
+root collects runtime/CI outcomes before a next-batch push. No worker dispatch,
+local runtime or Docker execution is authorized by the checkpoint.
+The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
+run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
+checkpoint remains not_run and must be qualified under its own subsequent SHA.

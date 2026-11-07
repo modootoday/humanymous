@@ -3,9 +3,9 @@ id: sot:root/rust-wargame
 title: Rust wargame
 status: active
 created: 2026-11-06T22:24:18Z
-updated: 2026-11-07T05:20:00Z
+updated: 2026-11-07T06:19:27Z
 verify:
-  - cargo test -p humanymous-attacker -p humanymous-defender
+  - cargo test --locked -p humanymous-attacker -p humanymous-defender
 rel:
   governs: [crates/attacker, crates/defender, test/rust-wargame]
   depends_on: [sot:root/rust-migration]
@@ -134,11 +134,31 @@ in a temporary isolated workspace until the root owner integrates membership.
 Run the lab-only Docker engine pilot with no network and retain raw JSON privately.
 Full runtime e2e remains subject to the existing Docker-only authority.
 
-The v0.2 exact exported APIs, JSON fields, exit codes, accepted Compose/runtime
+The v0.3 exact exported APIs, JSON fields, exit codes, accepted Compose/runtime
 ownership agreement and implementation/validation state are preserved in
 crates/attacker/INTEGRATION.md. Network schema is humanymous.wargame-network.v2;
 v1 simulation remains compatible except Cargo invocation now specifies --bin.
 No existing scoring, RIT bytes or runtime wire contract changes.
+
+V0.3 also exports verification::verify_bytes: v1 input is checked by actually
+replaying the current pure Engine/catalog, v2 by validating the actual measured
+ledger. Verifier output retains its v1 schema and adds explicit mode. Equivalent
+integer/float JSON numbers are accepted without discarding exact integer
+comparisons. Unknown schema, malformed/oversize input and source-replay mismatch
+fail closed with safe errors. Remote/product qualification cannot be enabled by
+this verifier. Historical reports are not automatically claims about a changed
+engine. The old Python helper is not invoked; retirement belongs to its owner.
+
+Isolation evidence requires the complete IPv4 route header as well as no routes;
+empty or malformed evidence is not no-egress proof. Startup reader allocation
+failure is a typed error that drops/reaps the already-owned child. Concurrent
+execution and audit-snapshot failures are both preserved in the error reason.
+These source-only additions are uncompiled/unqualified. Execution policy is
+defined only by [[sot:root/program-roadmap]] and [[sot:root/delivery]]: local
+classified pure fastchecks are resource-bounded; actual child/network/Docker/
+browser/Cross-OS work moves to standard hosted execution. No local runtime run
+is resumed. No prior green qualifies this source; unavailable participants and
+full product requirements remain explicit until directly measured.
 
 Official [Rust1.99.1 TcpStream](https://doc.rust-lang.org/std/net/struct.TcpStream.html)
 documents bounded connect/read/write calls. Per-call timeouts alone do not bound

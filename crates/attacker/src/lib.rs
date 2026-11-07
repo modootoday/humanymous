@@ -2,6 +2,7 @@
 pub mod catalog;
 pub mod network;
 pub mod report;
+pub mod verification;
 
 /// Run every scheduled case exactly once against the real default engine.
 pub fn run(seed: u64) -> report::RunReport {

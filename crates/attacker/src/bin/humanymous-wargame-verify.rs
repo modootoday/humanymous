@@ -1,5 +1,5 @@
-//! Rust-only network ledger verifier. Full-product acceptance remains separate.
-use humanymous_attacker::network::NetworkReport;
+//! Rust-only replay/network ledger verifier. Product acceptance remains separate.
+use humanymous_attacker::verification::verify_bytes;
 use std::{io::Read, path::PathBuf, process::ExitCode};
 
 fn arguments(args: impl Iterator<Item = String>) -> Result<(PathBuf, bool), &'static str> {
@@ -21,12 +21,8 @@ fn run() -> Result<bool, Box<dyn std::error::Error>> {
     if bytes.len() > 4_194_304 {
         return Err(std::io::Error::other("report size budget").into());
     }
-    let report: NetworkReport = serde_json::from_slice(&bytes)?;
-    report.validate()?;
-    println!(
-        "{}",
-        serde_json::json!({"schema":"humanymous.wargame-verification.v1","internally_consistent":true,"scoped_passed":report.scoped_passed,"full_product_qualified":report.full_product_qualified,"totals":report.totals})
-    );
+    let report = verify_bytes(&bytes)?;
+    println!("{}", serde_json::to_string(&report)?);
     Ok(report.scoped_passed && (!full || report.full_product_qualified))
 }
 fn main() -> ExitCode {

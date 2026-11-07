@@ -414,9 +414,14 @@ pub(super) fn execute(lab: &mut impl OwnedLab, spec: Spec) -> NetworkRow {
             row.status = Status::Evaluated;
             row.expectation_matches = Some(matches(&spec, &row));
         }
-        (Err(error), delta) => {
+        (Err(error), Err(snapshot_error)) => {
+            row.reason = Some(format!(
+                "execution: {error}; audit snapshot: {snapshot_error}"
+            ));
+        }
+        (Err(error), Ok(delta)) => {
             row.reason = Some(error.to_string());
-            row.effects = delta.ok();
+            row.effects = Some(delta);
         }
         (Ok(()), Err(error)) => row.reason = Some(error.to_string()),
     }

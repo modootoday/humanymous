@@ -14,7 +14,30 @@ fn interfaces(text: &str) -> Result<(), LabError> {
 }
 #[cfg(any(target_os = "linux", test))]
 fn routes(v4: &str, v6: &str) -> Result<(), LabError> {
-    if v4.lines().skip(1).any(|line| !line.trim().is_empty())
+    let mut ipv4 = v4.lines();
+    let header: Vec<_> = ipv4
+        .next()
+        .ok_or(LabError("IPv4 route evidence missing"))?
+        .split_whitespace()
+        .collect();
+    if header
+        != [
+            "Iface",
+            "Destination",
+            "Gateway",
+            "Flags",
+            "RefCnt",
+            "Use",
+            "Metric",
+            "Mask",
+            "MTU",
+            "Window",
+            "IRTT",
+        ]
+    {
+        return Err(LabError("IPv4 route evidence malformed"));
+    }
+    if ipv4.any(|line| !line.trim().is_empty())
         || v6.lines().any(|line| {
             line.split_whitespace()
                 .last()
@@ -74,9 +97,19 @@ mod tests {
     }
     #[test]
     fn external_routes_are_not_isolation() {
-        assert!(routes("Iface Destination Gateway\n", "0000 0000 lo\n").is_ok());
-        assert!(routes("Iface Destination Gateway\neth0 00000000 00000000", "").is_err());
-        assert!(routes("Iface Destination Gateway\n", "0000 0000 eth0\n").is_err());
+        let header = "Iface Destination Gateway Flags RefCnt Use Metric Mask MTU Window IRTT\n";
+        assert!(routes(header, "0000 0000 lo\n").is_ok());
+        assert!(routes(&format!("{header}eth0 00000000 00000000"), "").is_err());
+        assert!(routes(header, "0000 0000 eth0\n").is_err());
+        for missing in [
+            "",
+            "\n",
+            "Iface\n",
+            "Iface Destination Gateway\n",
+            "unknown\n",
+        ] {
+            assert!(routes(missing, "").is_err());
+        }
     }
     #[test]
     #[cfg(not(target_os = "linux"))]
