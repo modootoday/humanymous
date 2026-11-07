@@ -2006,3 +2006,13 @@ drain and trusted-head restart. Same-process witness is not independent deployme
 Frozen implementation-map/on-call prose still says these fixtures unexecuted.
 Recorded precise follow-up without changing frozen public content or renewing
 receipts from execution counts. TLS/H2/browser/AT/full-product remain unqualified.
+
+### CI public archive consumer source review
+
+Read in-progress workflow and provenance consumer. Owner CLI/schema and separate
+fresh restore trees align; main serving upload and deployment needs preserve
+failed-job refusal. Reported two source defects: diagnostic tar upload lacked
+archive-check success guard, and outcomes were uploaded before final transfer
+summary rewrite. First guard is now observed changed to archive success (package
+is its prerequisite); terminal outcome-upload ordering remains unverified.
+No CI compile or actual complete-site archive execution inferred from source.

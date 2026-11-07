@@ -1,0 +1,34 @@
+{
+  "scope": "Source-only review of in-progress CI archive consumer; no execution qualification",
+  "files": [
+    ".github/workflows/pages-build.yml",
+    ".github/workflows/pages-validation.yml",
+    ".github/workflows/pages.yml",
+    "scripts/ci/delivery/src/pages.rs"
+  ],
+  "aligned": [
+    "Owner package/archive-check CLI and manifest schema",
+    "Fresh package and consumer restore destinations",
+    "Source_finish success before serving upload",
+    "Transfer archive-check failure propagates through build job and deployment needs"
+  ],
+  "findings": [
+    {
+      "issue": "Diagnostic apex/subpath uploads used built success plus unchanged source without archive success",
+      "requested": "Require matching package/archive step success before tar upload",
+      "state": "Observed working source now requires corresponding archive-check success; package success is a prerequisite; execution pending"
+    },
+    {
+      "issue": "Outcome summary uploaded before serving transfer and final summary rewrite",
+      "requested": "Upload outcomes after terminal transfer finish so downloaded report includes actual transfer outcome",
+      "state": "Reported to CI owner; fix not yet verified"
+    }
+  ],
+  "not_claimed": [
+    "Compiled consumer",
+    "Actual complete 88-page archive roundtrip",
+    "Browser",
+    "Assistive technology",
+    "Deployment"
+  ]
+}
