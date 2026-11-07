@@ -529,3 +529,17 @@ Summary013 preserves this limited success; summaries011/012 failures stay.
 Root acknowledged terminal0 and forbids ASGI actual until shared lifetime review.
 Independent owned source/spec work may continue, but these results do not qualify
 actual ASGI42, refactored WSGI28, hosted execution or package/native Ruby gates.
+
+### CA-API-01 shared admission ownership correction
+
+Independent review found public unit-struct Admission could be constructed and
+dropped by safe external Rust without acquire, corrupting the private ACTIVE
+count and its64-guard bound. Source inspection confirmed current Node/Python/
+Ruby consumers use this guard. Make the guard's unit payload private and let
+successful acquire be the only constructor; preserve64, RAII and policy behavior.
+Add external compile-fail rustdoc regression for the original direct-constructor
+expression, a positive external no-run acquisition control, and strengthen the
+existing slot-reuse unit while63 guards remain. Expected scoped counts are
+6existing unit tests and2rustdoc compile cases, not SDK/framework host execution.
+No remote HTTP exploitation, scoring change or audit edit is alleged. Source
+changes remain unverified until root allocates scoped units/doctest/Clippy.

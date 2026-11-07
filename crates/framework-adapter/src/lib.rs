@@ -16,7 +16,22 @@ impl std::fmt::Display for Error {
 impl std::error::Error for Error {}
 static ACTIVE: AtomicUsize = AtomicUsize::new(0);
 /// Process-wide body/decision admission; hold until origin handoff or rejection.
-pub struct Admission;
+///
+/// Only a successful acquisition can create a guard:
+///
+/// ```no_run
+/// use humanymous_framework_adapter::Admission;
+/// let permit = Admission::acquire().expect("capacity available");
+/// drop(permit);
+/// ```
+///
+/// ```compile_fail
+/// use humanymous_framework_adapter::Admission;
+/// drop(Admission);
+/// ```
+pub struct Admission {
+    _permit: (),
+}
 impl Admission {
     /// Refuse overload before allocating a complete body.
     pub fn acquire() -> Result<Self, Error> {
@@ -24,7 +39,7 @@ impl Admission {
             .try_update(Ordering::AcqRel, Ordering::Acquire, |n| {
                 (n < 64).then_some(n + 1)
             })
-            .map(|_| Self)
+            .map(|_| Self { _permit: () })
             .map_err(|_| Error("adapter capacity unavailable"))
     }
 }
@@ -57,8 +72,12 @@ mod tests {
     use super::*;
     #[test]
     fn admission_is_bounded_and_restored_without_eviction() {
-        let permits: Vec<_> = (0..64).map(|_| Admission::acquire().unwrap()).collect();
+        let mut permits: Vec<_> = (0..64).map(|_| Admission::acquire().unwrap()).collect();
         assert!(Admission::acquire().is_err());
+        drop(permits.pop().unwrap());
+        let replacement = Admission::acquire().unwrap();
+        assert!(Admission::acquire().is_err());
+        drop(replacement);
         drop(permits);
         let permit = Admission::acquire().unwrap();
         drop(permit);

@@ -360,6 +360,18 @@ Filtered definitions are blocked controller/cleanup entry points, not server
 case waivers. Source2325-file hashes stayed unchanged. No new actual framework,
 package, hosted or lifecycle result is inferred; NOT_ACCEPTED remains unchanged.
 
+CA-API-01: the shared process-wide admission guard must be constructible only
+after a successful acquire. Its payload/constructor is private; safe external
+Rust must not manufacture a value and run Drop without owning an increment.
+The bound remains64 and each owned guard releases exactly its acquired slot.
+An external compile-fail rustdoc example rejects direct construction and an
+external positive no-run example checks the supported acquisition API; the scoped
+unit retains the full-capacity refusal and verifies one dropped guard releases
+one reusable slot while the other63 guards remain owned. This repairs a public
+Rust API ownership invariant shared by Node/Python/Ruby; no remote HTTP exploit,
+score change, threshold change or new signal is claimed. Actual scoped unit,
+doctest and Clippy receipts are required before marking the correction verified.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;
