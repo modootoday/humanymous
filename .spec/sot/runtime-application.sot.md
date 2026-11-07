@@ -494,3 +494,11 @@ head and TailRecovery choice; no implicit history/key provisioning, effect retry
 or tail erasure. Actual recovery coverage/ambiguous tail is reported separately
 and does not qualify full witnessed product state. Audit shared pure6/Clippy
 results are producer scope only; runtime adoption compile/hosted tests are pending.
+R15 failure accounting: attempt the final audit flush after all owned listener
+work has ended even if drain returned an error. Never convert either failure to
+Stopped. service::ExitFailure reports bounded Drain/AuditFlush/DrainAndAuditFlush
+stage and independently observed drained/audit_flushed facts, without raw paths
+or secret-bearing source chains. ServiceHost::run_report returns that typed
+outcome; existing run preserves io::Result compatibility by wrapping ExitFailure.
+Synchronous flush remains supervisor-bounded, not watch-preemptible. An unreturned
+flush/force-stop is unknown/incomplete, not an inferred successful flush.

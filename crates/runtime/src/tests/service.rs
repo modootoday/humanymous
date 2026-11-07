@@ -2,7 +2,7 @@
 use super::*;
 use crate::{
     management::{ManagementPolicy, ManagementScope},
-    service::{ServiceHost, StopBudget},
+    service::{ExitStage, ServiceHost, StopBudget},
 };
 use humanymous_audit::keys::{
     KeyMaterial,
@@ -10,7 +10,6 @@ use humanymous_audit::keys::{
 };
 use humanymous_authority::{configuration::Peer, credentials::Credential};
 use std::{
-    io,
     os::unix::fs::{DirBuilderExt, MetadataExt},
     path::PathBuf,
 };
@@ -148,7 +147,8 @@ async fn unix_closed_shutdown_controller_cannot_report_stopped() {
     let host = ServiceHost::bind(fixture.configuration()).await.unwrap();
     let (sender, receiver) = tokio::sync::watch::channel(None);
     drop(sender);
-    let outcome: io::Result<_> = host.run(receiver).await;
-    assert!(outcome.is_err());
+    let failure = host.run_report(receiver).await.err().unwrap();
+    assert_eq!(failure.stage, ExitStage::Drain);
+    assert!(!failure.drained && failure.audit_flushed);
     assert!(Custody::acquire(&fixture.0.join("keys"), Owner::CurrentUser).is_ok());
 }

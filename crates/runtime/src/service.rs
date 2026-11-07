@@ -15,7 +15,9 @@ use std::{
 use tokio::{net::TcpListener, sync::watch};
 use zeroize::Zeroizing;
 mod lifecycle;
+mod outcome;
 mod shutdown;
+pub use outcome::{ExitFailure, ExitReport, ExitStage};
 pub use shutdown::{ShutdownRequest, StopBudget};
 
 /// Read one private document. Validating the opened input's provenance is the
@@ -51,17 +53,6 @@ pub struct Readiness {
     pub listen: SocketAddr,
     /// Existing capability manifest; absent producers remain unavailable.
     pub profile: serde_json::Value,
-}
-
-/// Complete shutdown evidence, returned only after request work and audit flush.
-#[derive(Serialize)]
-pub struct ExitReport {
-    /// True means all owned asynchronous request work ended before flush.
-    pub stopped: bool,
-    /// All owned asynchronous request work ended before the audit flush.
-    pub drained: bool,
-    /// The final synchronous audit flush actually returned success.
-    pub audit_flushed: bool,
 }
 
 /// Holds sealed custody through listener work and the final synchronous flush.
@@ -179,24 +170,28 @@ impl ServiceHost {
 
     /// A closed controller or incomplete drain is an error, never Stopped.
     pub async fn run(
-        mut self,
+        self,
         shutdown: watch::Receiver<Option<ShutdownRequest>>,
     ) -> io::Result<ExitReport> {
-        if let Some(management) = self.management {
-            lifecycle::run(&mut self.application, self.listener, management, shutdown).await?;
+        self.run_report(shutdown).await.map_err(io::Error::other)
+    }
+
+    /// Preserve both shutdown phases. A flush is attempted after failed drain,
+    /// but neither failure can be reported as a successful Stopped transition.
+    pub async fn run_report(
+        mut self,
+        shutdown: watch::Receiver<Option<ShutdownRequest>>,
+    ) -> Result<ExitReport, ExitFailure> {
+        let drained = if let Some(management) = self.management {
+            lifecycle::run(&mut self.application, self.listener, management, shutdown).await
         } else {
-            self.application
-                .serve_until(self.listener, shutdown)
-                .await?;
-        }
-        self.audit
+            self.application.serve_until(self.listener, shutdown).await
+        };
+        let flushed = self
+            .audit
             .lock()
-            .map_err(|_| io::Error::other("audit poisoned"))?
-            .flush()?;
-        Ok(ExitReport {
-            stopped: true,
-            drained: true,
-            audit_flushed: true,
-        })
+            .map_err(|_| io::Error::other("audit poisoned"))
+            .and_then(|mut audit| audit.flush());
+        outcome::finish(drained, flushed)
     }
 }

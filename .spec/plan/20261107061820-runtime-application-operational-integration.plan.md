@@ -349,3 +349,17 @@ bounded read-ahead window rather than buffer the1MiB origin. The model uses no
 sockets/OS processes and does not qualify actual network abort/drain behavior.
 New fixture execution remains NOT_RUN. Actual deployed resource monitoring,
 malformed socket, force-stop and independent custody/witness pilots remain open.
+R15 failure accounting: attempt the final audit flush after all owned listener
+work has ended even if drain returned an error. Never convert either failure to
+Stopped. service::ExitFailure reports bounded Drain/AuditFlush/DrainAndAuditFlush
+stage and independently observed drained/audit_flushed facts, without raw paths
+or secret-bearing source chains. ServiceHost::run_report returns that typed
+outcome; existing run preserves io::Result compatibility by wrapping ExitFailure.
+Synchronous flush remains supervisor-bounded, not watch-preemptible. An unreturned
+flush/force-stop is unknown/incomplete, not an inferred successful flush.
+R15 run_report source now attempts final flush after returned drain failure and
+returns typed bounded ExitFailure phase/facts; existing run keeps io::Result.
+A pure phase/leak fixture covers all returned error combinations. Hosted Unix
+controller-close fixture asserts actual drain failure plus successful final flush,
+not Stopped. Both remain NOT_RUN. Blocking flush/unknown supervisor force-stop
+cannot produce a receipt. No current-source Cargo/runtime/process execution.

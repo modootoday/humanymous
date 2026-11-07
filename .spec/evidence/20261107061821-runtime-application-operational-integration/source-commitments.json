@@ -1,158 +1,164 @@
 [
   {
     "path": "crates/runtime/Cargo.toml",
+    "bytes": 858,
     "sha256": "d9b9cd5ccee654cfd4457f1265abc614414bde7e47bea9f015fd39fcb9b2920d",
-    "git_blob": "48b19f210a27cd7fd01a26293648b7f13e1d773e",
-    "bytes": 858
+    "git_blob": "48b19f210a27cd7fd01a26293648b7f13e1d773e"
   },
   {
     "path": "crates/runtime/INTEGRATION.md",
-    "sha256": "6169bd6a3efbbe1cd9b4ed7df07fdc9a7e2a9197f3701ce174455d94f246ab80",
-    "git_blob": "76436f17518668a9a5bb87c199ecb17d8b46f548",
-    "bytes": 23255
+    "bytes": 23730,
+    "sha256": "442fa1551b59ac3b7bc7e02b93d665aa465164fe6da6c2eed1c129a94fcbf7c5",
+    "git_blob": "e5b980aae5612bc6bdee93f2501e71e7339d2894"
   },
   {
     "path": "crates/runtime/src/application.rs",
+    "bytes": 22524,
     "sha256": "78d5ff8dfe4d2f84606b2a8230bcc76f725cbef2ea2ca554d7303ecdef896925",
-    "git_blob": "e1f0856d1c22a39bfba6ddcd0c59fce911a370e2",
-    "bytes": 22524
+    "git_blob": "e1f0856d1c22a39bfba6ddcd0c59fce911a370e2"
   },
   {
     "path": "crates/runtime/src/browser.rs",
+    "bytes": 4263,
     "sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe",
-    "git_blob": "b9a66a27daa7ede603c8877bc68fca671b3fef7e",
-    "bytes": 4263
+    "git_blob": "b9a66a27daa7ede603c8877bc68fca671b3fef7e"
   },
   {
     "path": "crates/runtime/src/configuration.rs",
+    "bytes": 7857,
     "sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e",
-    "git_blob": "1f111eb7ba6de9b321a3fdb1483fd6527d463aa0",
-    "bytes": 7857
+    "git_blob": "1f111eb7ba6de9b321a3fdb1483fd6527d463aa0"
   },
   {
     "path": "crates/runtime/src/configuration/audit.rs",
+    "bytes": 1826,
     "sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f",
-    "git_blob": "e8629587e9420d73e09acb7a57d9bc974f7fd50f",
-    "bytes": 1826
+    "git_blob": "e8629587e9420d73e09acb7a57d9bc974f7fd50f"
   },
   {
     "path": "crates/runtime/src/configuration/operational.rs",
+    "bytes": 2147,
     "sha256": "aa0a21fda1ed2bb760f34ecda727516e76220a630cff16c5bb116af5d92e7650",
-    "git_blob": "5e993aea928c076d61327bebfd9ec17eb0f197e1",
-    "bytes": 2147
+    "git_blob": "5e993aea928c076d61327bebfd9ec17eb0f197e1"
   },
   {
     "path": "crates/runtime/src/http.rs",
+    "bytes": 9920,
     "sha256": "cee415ae755a5c4df8cecb0aaaaccbc4b9dc220e7f78cd77fc81afab6fb0680e",
-    "git_blob": "a7b6e5bd478d9cada3c5f2f55f8288a807801fd2",
-    "bytes": 9920
+    "git_blob": "a7b6e5bd478d9cada3c5f2f55f8288a807801fd2"
   },
   {
     "path": "crates/runtime/src/http/origin_response.rs",
+    "bytes": 11184,
     "sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39",
-    "git_blob": "2dcb53efdda1dd4ced35dd31d5a8c13d3359dc81",
-    "bytes": 11184
+    "git_blob": "2dcb53efdda1dd4ced35dd31d5a8c13d3359dc81"
   },
   {
     "path": "crates/runtime/src/http/stream.rs",
+    "bytes": 11417,
     "sha256": "02444bb5a9212b3976d3a60eb7dc03eb0802e902a889f252017e41e278dac56b",
-    "git_blob": "ca8555cc085ab89d9af082b53d9ef6d8b3557ae0",
-    "bytes": 11417
+    "git_blob": "ca8555cc085ab89d9af082b53d9ef6d8b3557ae0"
   },
   {
     "path": "crates/runtime/src/lib.rs",
+    "bytes": 292,
     "sha256": "efef6a731e7e21ba32000b4840cff1a96d8c2acdd214062f29d5ffdbcda0a3b5",
-    "git_blob": "008e326c2a6ebb5dafd8ba8769225bd8c9f87447",
-    "bytes": 292
+    "git_blob": "008e326c2a6ebb5dafd8ba8769225bd8c9f87447"
   },
   {
     "path": "crates/runtime/src/main.rs",
+    "bytes": 1606,
     "sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797",
-    "git_blob": "5c666019319e3ad890f8f0b2df7171c171414c26",
-    "bytes": 1606
+    "git_blob": "5c666019319e3ad890f8f0b2df7171c171414c26"
   },
   {
     "path": "crates/runtime/src/management/mod.rs",
+    "bytes": 4048,
     "sha256": "47d9cc39390ba796dc1260a0e7628f28ae306085f8c8e791a35a98ba73f6dcb2",
-    "git_blob": "0898490759355edcce4d7bef57c4a09a4ce8fded",
-    "bytes": 4048
+    "git_blob": "0898490759355edcce4d7bef57c4a09a4ce8fded"
   },
   {
     "path": "crates/runtime/src/management/policy.rs",
+    "bytes": 3360,
     "sha256": "73adc8ea7754f4c8ac045dcf294c3f5b57c29edfef07279ca0f9dad98f85630d",
-    "git_blob": "0d5cb14da9b0a73a8d785d8b76726e3447e71946",
-    "bytes": 3360
+    "git_blob": "0d5cb14da9b0a73a8d785d8b76726e3447e71946"
   },
   {
     "path": "crates/runtime/src/management/tests.rs",
+    "bytes": 3890,
     "sha256": "42d39a5e4a1e8ec9e5d8c7fdb137846a316221658bab92be9465cdf2b27487ac",
-    "git_blob": "1aecb65663786f28a7cdf4200521430bfcda3df5",
-    "bytes": 3890
+    "git_blob": "1aecb65663786f28a7cdf4200521430bfcda3df5"
   },
   {
     "path": "crates/runtime/src/service.rs",
-    "sha256": "e054069de80d1e76a893d59f3e68da2b47baeaf50d4b4e375c879ae6a3120edb",
-    "git_blob": "3cba4b3c2c8967b3bf460023bc38f63a5b37260f",
-    "bytes": 8031
+    "bytes": 8005,
+    "sha256": "d752bc013d6517e9a4b508deeaefb526f41902a750d2fde44a65fc6299c9eed9",
+    "git_blob": "d1b432918c7fbb6f774110e70f88ae603538e649"
   },
   {
     "path": "crates/runtime/src/service/lifecycle.rs",
+    "bytes": 2031,
     "sha256": "481d0f14e70bcb5ed66a06d71be0f2438dd3b5165a366291a9ccaad61be8714b",
-    "git_blob": "7b97d5e4f298ea6c1f6836ad3e19d77476b8de26",
-    "bytes": 2031
+    "git_blob": "7b97d5e4f298ea6c1f6836ad3e19d77476b8de26"
+  },
+  {
+    "path": "crates/runtime/src/service/outcome.rs",
+    "bytes": 3279,
+    "sha256": "6418a93d8cdf3fcf199096eb08bd810d2c6dc519df654ba35bc7d5c6273c3569",
+    "git_blob": "5d1ea3cb2cdf2eff5157d5892949a895c62b3be9"
   },
   {
     "path": "crates/runtime/src/service/shutdown.rs",
+    "bytes": 3054,
     "sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb",
-    "git_blob": "9287cc229c1e61cab580eb5f359c530066468aa7",
-    "bytes": 3054
+    "git_blob": "9287cc229c1e61cab580eb5f359c530066468aa7"
   },
   {
     "path": "crates/runtime/src/session.rs",
+    "bytes": 14168,
     "sha256": "e0c271cebe83eadec406510022536bc1d57813df791acec9a2ff456611993dfd",
-    "git_blob": "d11199fd9916e3dc0b0e727b09cfa079c6c444aa",
-    "bytes": 14168
+    "git_blob": "d11199fd9916e3dc0b0e727b09cfa079c6c444aa"
   },
   {
     "path": "crates/runtime/src/session/admission.rs",
+    "bytes": 1850,
     "sha256": "275f5162e56e490dc9889b1091935e3185c4a7f78cc3281bde0af1ba84f0263e",
-    "git_blob": "66255bfa47d45e4962821acdf477794519d2e595",
-    "bytes": 1850
+    "git_blob": "66255bfa47d45e4962821acdf477794519d2e595"
   },
   {
     "path": "crates/runtime/src/startup.rs",
+    "bytes": 4875,
     "sha256": "793da25d0cfa59748116fe6fedd008fc6f4715a678ff3c0953f22f930200efc7",
-    "git_blob": "f8ea66bbf4caf3bb03e2d53ea780671f3a0d9d8b",
-    "bytes": 4875
+    "git_blob": "f8ea66bbf4caf3bb03e2d53ea780671f3a0d9d8b"
   },
   {
     "path": "crates/runtime/src/tests.rs",
+    "bytes": 23835,
     "sha256": "4141c2172b7bf7edfd29c64e8f67346333d36bfcf226b2862910649504dee612",
-    "git_blob": "fa2636870ae44131a67d50328d2db2d3f97b0377",
-    "bytes": 23835
+    "git_blob": "fa2636870ae44131a67d50328d2db2d3f97b0377"
   },
   {
     "path": "crates/runtime/src/tests/browser.rs",
+    "bytes": 13392,
     "sha256": "a35825abc04ab0498d3486d6ae0b7f1eb162c9f32123b5fda38c1d13bc55214d",
-    "git_blob": "dbffb46828fa4d6ebb236b23f9f2566812bce1fd",
-    "bytes": 13392
+    "git_blob": "dbffb46828fa4d6ebb236b23f9f2566812bce1fd"
   },
   {
     "path": "crates/runtime/src/tests/service.rs",
-    "sha256": "e4c8171babf87c63e273d5a226d15f79b83f98f16c49d9028b05277e7b2d6f39",
-    "git_blob": "c9ea2666c3f9f98bc403f3f63495f6e4a2ac6ccb",
-    "bytes": 5717
+    "bytes": 5801,
+    "sha256": "797a0daaca65eacca6642a4acc3411048dce5933aae1c53d2457333cde581212",
+    "git_blob": "c0bccdff80bc76260102ebfa8a24578eb1d360dc"
   },
   {
     "path": "crates/runtime/src/tests/stream.rs",
+    "bytes": 2902,
     "sha256": "1768559c0ce1f6704efc038ba779436d6329be97b41ba74bb4a174b1d354e346",
-    "git_blob": "ed742bccefb5718d47f3f6e8c207ab10725f3079",
-    "bytes": 2902
+    "git_blob": "ed742bccefb5718d47f3f6e8c207ab10725f3079"
   },
   {
     "path": "crates/runtime/tests/native_process.rs",
+    "bytes": 11795,
     "sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac",
-    "git_blob": "d4cabc6def5fc52c5695489da83d0f1d1bd8a6f5",
-    "bytes": 11795
+    "git_blob": "d4cabc6def5fc52c5695489da83d0f1d1bd8a6f5"
   }
 ]
