@@ -74,6 +74,38 @@ loss separately. CHALLENGE is not a successful human ALLOW. Do not omit errors
 from detection denominators or present named-provider blocking as measured
 without a corresponding authorized reproducible experiment.
 
+## Evidence record boundaries
+
+This is informative reporting guidance, not a selected generic wire schema or
+an additional conformance class. A comparable result record identifies:
+
+| Record group | Information needed to interpret the result |
+| --- | --- |
+| Claim | Requirement IDs, conformance class, exact claimed capability and explicit exclusions |
+| Source and artifact | Source revision, dirty-source commitments if applicable, executable/image/package hashes and build-input identity |
+| Execution | Exact run/job/attempt, command, OS/architecture, host/framework/browser versions and configured producer profile |
+| Observation provenance | Actual production input versus test-only synthetic evidence, asserted versus authenticated observations, and any unavailable required plane |
+| Outcomes | Attempts, verdicts, execution errors, skips, cancellations and observation loss, with the denominator and collection boundary stated |
+| Origin effects | Observed application invocations and side effects, ambiguous outcomes and the mechanism used to observe them; not inferred from a decision ACK |
+| Review and retention | Expected/observed result per case, evidence location/hash, reviewer scope and public-safe summary versus restricted raw evidence |
+
+Separate parser acceptance, native host loading, actual authority decisions,
+origin effects and human/assistive-technology outcomes. A synthetic ALLOW can
+exercise an origin path without proving a production browser observation would
+receive ALLOW. A CHALLENGE response does not show that recovery was available
+or that a person completed it. Shared helper use does not establish independent
+implementation, and a hosted-runner label does not establish actual assistive
+technology or independent organizational custody.
+
+Retain failed attempts when a rerun passes and bind both to their exact sources.
+A skipped job is not a passing case. Distinguish a test assertion failure from
+an environment, authorization or dependency failure without discarding either.
+If raw evidence was not retained or cannot be retrieved, record that limitation;
+a hash alone does not allow its content or asserted result to be inspected.
+Public artifacts contain synthetic or reviewed sanitized data, never operational
+credentials or private visitor traces. Pages rendering/link/access checks describe
+the documentation artifact, not product protocol or recovery conformance.
+
 ## Current status
 
 | Gate | State |

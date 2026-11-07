@@ -622,3 +622,10 @@ No rerun/dispatch or cross-owner code edit. Reported root. Corrected obsolete
 Node-only/unconditional-Authorization integration notes against current authority
 configuration and runtime source. Public release table now distinguishes existing
 Rust adapters and historical Pages builds from current-source qualification.
+
+## Comparable conformance evidence guidance
+
+Compared profile, conformance, preparation and reference pages. Added informative
+result-record groups and explicit synthetic/production, ACK/origin, skip/failure,
+raw-retention and hosted/AT distinctions. No new conformance class, generic wire
+schema or normative requirement introduced; change manifest marks editorial.

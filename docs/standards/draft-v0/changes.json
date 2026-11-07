@@ -7,6 +7,13 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "editorial",
+      "paths": ["validation/conformance.md"],
+      "summary": "Clarify comparable evidence records and distinguish synthetic decisions, origin effects, skipped execution, retained raw evidence and human/assistive review.",
+      "normative_semantics_changed": false,
+      "generic_wire_changed": false
+    },
+    {
       "kind": "implementation-evidence",
       "paths": ["validation/implementation-map.md", "reviews/security-privacy.md"],
       "summary": "Record working browser transport and selected runtime profile boundaries, ACK limits and outstanding negative execution and recovery review.",
