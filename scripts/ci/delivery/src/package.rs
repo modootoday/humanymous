@@ -235,9 +235,10 @@ pub fn native_artifacts(root: &Path) -> Result<()> {
         .map_err(|e| e.to_string())?
         .finish()
         .map_err(|e| e.to_string())?;
+    let notice_verification = crate::notices::verify_archive(&directory.join(&name))?;
     write_json(
         &directory.join(format!("{name}.manifest.json")),
-        &json!({"schema":"humanymous.native-components/1","source":source::snapshot(root)?,"archive_sha256":source::file(&directory.join(&name))?,"known_distribution_notices":notices,"full_product_qualified":false,"release_ready":false}),
+        &json!({"schema":"humanymous.native-components/1","source":source::snapshot(root)?,"archive_sha256":source::file(&directory.join(&name))?,"known_distribution_notices":notices,"known_notice_verification":notice_verification,"full_product_qualified":false,"release_ready":false}),
     )
 }
 pub fn node(root: &Path) -> Result<PathBuf> {

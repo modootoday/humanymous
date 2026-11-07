@@ -800,3 +800,38 @@ locked/offline jobs1/incremental0, D returned immediately after terminal command
 Shipping rejection1 remained expected. Private evidence index SHA256 is
 9a4a4590a89a05211c01bbf2d7353e4082000e9d81685d0150a73fe3f16c06f0.
 No image/Docker/publication was authorized or executed.
+
+Next source preparation adds actual finished-native-tar notice verification,
+with one missing/duplicate/symlink/oversize/changed-byte regression (expected81,
+not run). Root approved the delivery normal path dependency on existing shared
+test-support; root alone updates the common lock after the Pages heavy window.
+No Cargo, metadata, Docker or process execution is authorized during that window.
+
+The existing image caller's actual notice extraction is accepted source scope,
+but shared capture_with_stderr does not prove bounded kill/reap/join: blocking
+wait and discarded reader handles must remain explicit limitations. Native owner
+interface coordination is pending; do not wire it as a bounded supervisor.
+The proposed extractor independently verifies unique ownership, pinned image ID
+and stopped state even after create failure, keeps copy/check and cleanup results
+separate, never starts the image, and reuses the known notice hash. Runtime image
+proof must use this changed source and include actual byte extraction plus scan.
+The exact proposed hosted commands build only the real CLI/runtime release bins,
+run existing native-artifacts with reread verification, then the unchanged
+runtime auditable Docker build/Trivy/typed scan gate. A two-job sequential budget
+of preflight35/image35 minutes is proposed, not an observed timing or execution.
+
+Root committed the approved manifest/lock dependency edge atomically at74c09dd7.
+Allocated D then tested immutable74c09dd7 archive5541aa39 plus three declared
+notice/archive/package overlays, including Lab's f6b25da1 embedded diagnostic
+contract. Actual81 passed with zero failed/ignored/filtered; all-target check,
+strict Clippy, policy, fmt and actionlint passed. Expected shipping rejection1
+was preserved. Session26589 ended0; metadata3208 ended0; D returned promptly.
+Fullsource2582/registry105packages3791files/config20/tool4/relevant environment
+and liveoverlay3 had zero semantic differences. Admission80percent/31.478GiB;
+locked/offline jobs1/incremental0 used exclusive warm validation-ci-delivery.
+Private index SHA256 is
+e0ff3c422c169701a158c2ed55b7411ecc8f5134e880f0aee2ad2be55efc635f.
+Only notice fixture gzip/tar bytes were exercised; actual native binary archive,
+image, process supervision and full-runtime qualification remain NOT_RUN. The
+verifier checks the known notice in the first tar/gzip stream and consumes its
+footer, not arbitrary trailing/concatenated archive integrity or safe extraction.

@@ -1274,3 +1274,25 @@ The standalone docs-review tool declares its Apache-2.0 license and forbids
 unsafe_code explicitly because its independent workspace does not inherit root
 package metadata or lint settings. This metadata change adds no unsafe exception
 and modifies no shared Cargo manifest or lockfile.
+
+The native archive preparation additionally rereads the completed gzip/tar and
+requires exactly one bounded regular licenses/Go.txt entry with the known
+source hash; missing, duplicate, symlink, oversized or changed entries fail.
+This verifier is preparation until an actual archive with the real CLI/runtime
+binaries has been built and inspected at the same source.
+Its scope is the known notice in the first tar/gzip stream of that owned output;
+gzip footer CRC/length is consumed, but trailing or concatenated streams and
+general safe extraction are not qualified by this verifier.
+
+Final image notice extraction must bind the exact inspected image ID, use only
+an owned stopped container and never start its entrypoint. A unique private
+destination must reject missing, symlink, nonregular, oversized or changed data.
+Create failure may still leave an owned daemon container, so cleanup requires
+independent exact owner-label/image/stopped-state verification before removal;
+never remove an unverified name. Primary copy/check failure and cleanup outcome
+are separate, and missing observations stay unknown. Public output permits only
+fixed status, hash and size. Current shared capture_with_stderr is not a hard
+cleanup-deadline or joined-reader proof: stop uses blocking wait and reader
+handles are not retained. No extraction implementation may infer reap/join or
+successful cleanup from Drop or a deadline label. Actual process wiring awaits
+an accepted supervision contract and the root-owned dependency lock handshake.

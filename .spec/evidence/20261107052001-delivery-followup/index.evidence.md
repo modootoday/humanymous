@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T14:11:53Z
+updated: 2026-11-07T14:22:28Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -23,6 +23,7 @@ files:
   - {path: cef-ec4f2da0-summary.json, sha256: e219dcffd0361c3fd66676d30b10f4c83b7fc777f4839b7f5f8a696a8e83cb0a, bytes: 10375, store: repo}
   - {path: distribution-notice-validation.json, sha256: 6e4d2694ff2b144e9ca18d1b326f9335aa300adf314d35a2cfc5800a298b391a, bytes: 2223, store: repo}
   - {path: browser-49394e38-summary.json, sha256: 87348a9cbf4bf927e78a81c6ed6ad894e31e6e4ad745e7a90d5bb506f35f53af, bytes: 4770, store: repo}
+  - {path: native-notice-verifier-validation.json, sha256: 87e637e4bbbe6b88d2e766026ad72b23d5f34b4ae5cc958d6a4564a108aae233, bytes: 2097, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -344,3 +345,21 @@ e0f9c5e5599eecada2e3cf3ec91e0cf6cbcbc8c02e261e0b59b90915a41982b6.
 Normalized REST/decoded connector capture index SHA256 is
 62d691b3fc9dd03e362725c4cbe143aa762d07c40c058d169e5aa1ede225b8c4.
 No repeat execution or threshold/required-case waiver was performed.
+
+## Actual archive-verifier helper validation
+
+native-notice-verifier-validation.json records allocated D81/0failed/ignored/
+filtered, all-target check/strict Clippy/policy/fmt/actionlint zero and expected
+shipping rejection1. Metadata3208 and command session26589 both ended0. The
+immutable74c09dd7 archive plus three declared overlays includes the newly locked
+shared support dependency and Lab f6b25da1 diagnostic contract. Fullsource2582,
+registry105packages3791files,20 configs,4 tools, relevant environment and three
+live overlays had zero semantic differences. The private index SHA256 is
+e0ff3c422c169701a158c2ed55b7411ecc8f5134e880f0aee2ad2be55efc635f.
+
+The new test checks actual compressed notice-only fixtures, including changed
+bytes, missing/duplicate/nonregular/oversized entries and CRC/truncation errors.
+Its scope is the known notice in the first tar/gzip stream of owned output;
+general extraction or trailing/concatenated stream integrity is not claimed.
+Actual CLI/runtime binary archive, final-image extraction/scan and process helper
+cleanup qualification remain NOT_RUN. D returned; no Docker/SDK/binary execution.

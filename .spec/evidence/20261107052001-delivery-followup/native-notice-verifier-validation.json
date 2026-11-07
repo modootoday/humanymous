@@ -1,0 +1,61 @@
+{
+  "schema": "humanymous.native-notice-verifier-validation/1",
+  "checkpoint_base": "74c09dd731565eeb5b916b0165df0e5e26256fc6",
+  "declared_overlays": 3,
+  "archive_sha256": "5541aa39e2ab35dbded8f39ce9d52029ea9ed0408bdebb83619ddc9639f6d7bb",
+  "embedded_lab_contract_sha256": "f6b25da1da0564bd7a88ad8e74a00225b2895dbafc1e7f9e8c0a0a93e77a3fcd",
+  "test_counts": {
+    "passed": 81,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "commands": {
+    "metadata": 0,
+    "tests": 0,
+    "all_target_check": 0,
+    "strict_clippy": 0,
+    "policy": 0,
+    "fmt": 0,
+    "actionlint": 0,
+    "expected_shipping_rejection": 1
+  },
+  "actual_handles": {
+    "metadata_session": 3208,
+    "metadata_exit": 0,
+    "commands_session": 26589,
+    "commands_exit": 0
+  },
+  "closure": {
+    "source_files": 2582,
+    "registry_packages": 105,
+    "registry_files": 3791,
+    "config_paths": 20,
+    "tool_binaries": 4,
+    "source_differences": 0,
+    "registry_differences": 0,
+    "config_differences": 0,
+    "tool_semantic_differences": 0,
+    "environment_differences": 0,
+    "live_overlay_differences": 0,
+    "registry_scope": "Reachable Windows metadata closure may overapproximate selected features"
+  },
+  "admission": {
+    "committed_percent": 80,
+    "free_physical_gib": 31.478252410888672
+  },
+  "private_index_sha256": "e0ff3c422c169701a158c2ed55b7411ecc8f5134e880f0aee2ad2be55efc635f",
+  "scope": {
+    "compressed_notice_only_fixture": true,
+    "actual_component_binary_archive": false,
+    "actual_image": false,
+    "actual_process_supervision": false,
+    "full_product_qualified": false,
+    "release_ready": false
+  },
+  "limitations": [
+    "Known notice in first tar/gzip stream of an owned finished archive only; not all trailing/concatenated stream integrity or general safe extraction.",
+    "Actual CLI/runtime binary archive, final-image extraction and image CVE scan remain not run on this changed source.",
+    "Shared support dependency and current embedded diagnostic contract were recompiled; no process helper cleanup/deadline qualification is implied."
+  ]
+}

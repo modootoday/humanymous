@@ -3,10 +3,20 @@ use crate::{Result, read_json, require, source};
 use serde_json::{Value, json};
 use std::{io::Write, path::Path};
 
+mod archive;
+pub use archive::verify as verify_archive;
+
 const SOURCE: &str = "crates/audit/LICENSE-Go.txt";
 const HASH: &str = "84ed4f9bae702363a97e52bf76c97cdb809b699254f26670c77080b71a5d7738";
 const ARCHIVE: &str = "licenses/Go.txt";
 const IMAGE: &str = "/usr/share/licenses/humanymous/Go.txt";
+
+fn verify_bytes(bytes: &[u8]) -> Result<()> {
+    require(
+        !bytes.is_empty() && bytes.len() <= 32 * 1024 && source::sha(bytes) == HASH,
+        "known Go notice bytes missing, oversized or changed",
+    )
+}
 
 pub fn inventory(root: &Path) -> Result<Value> {
     let inventory = read_json(&root.join("build/rust/distribution-notices.json"))?;
@@ -36,10 +46,7 @@ pub fn image(root: &Path, dockerfile: &str) -> Result<()> {
 pub fn append<W: Write>(root: &Path, archive: &mut tar::Builder<W>) -> Result<Value> {
     let inventory = inventory(root)?;
     let bytes = std::fs::read(root.join(SOURCE)).map_err(|e| e.to_string())?;
-    require(
-        source::sha(&bytes) == HASH,
-        "Go notice bytes changed before packaging",
-    )?;
+    verify_bytes(&bytes)?;
     let mut header = tar::Header::new_gnu();
     header.set_size(bytes.len() as u64);
     header.set_mode(0o644);
