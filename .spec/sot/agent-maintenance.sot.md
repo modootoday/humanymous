@@ -67,6 +67,17 @@ the frozen Audit154715 equal-coverage input. Default30seconds and all byte/file
 caps remain. Profile execution is unavailable until exact selection binding and
 qualification; the strict current request rejects limit/profile overrides.
 
+## Bounded evidence layout contract
+
+Root authorized a bounded evidence-layout remediation contract at
+`.agents/evals/evidence-layout-contract.md`. Future immutable unpacked copies use
+unique TEMP/declared scratch outside the private canonical document tree; original
+logs/manifests/compressed archives remain private canonical evidence. Exact owner,
+terminal consumer handles, preserved historical paths and byte-verified archive
+read-back are mandatory before any separately authorized retirement. Canonical
+public attachment metadata must match committed Git bytes. No broad census,
+baseline relaxation, foreign active-source move or cleanup is implemented here.
+
 ## Draft new-lane coexistence v0.3
 
 Root requested a minimal Rust-only coexistence design for convention-audit and

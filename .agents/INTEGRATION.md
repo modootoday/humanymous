@@ -153,3 +153,42 @@ before changing writer_mode. No force takeover or stale-lock deletion is implied
 Root owns final foreign-source/supply-chain/product gates and main integration.
 No scoring changes, publication, paid calls, global user configuration mutation
 or another lane's edits are authorized by this component contract.
+
+## Qualified bounded consumers and remaining gates
+
+Source5c1b9447 adds strict selected-input JSON/metadata CLI and Windows doctor.
+Qualification/correction checkpointc13eb782 records64 library units and9 actual
+CLI cases passing, all-target check/Clippy/fmt green, and unchanged36-file selected
+closure. Initial title-test63/1 failure and CRLF projection/index mismatch remain
+registered; bda10042 corrected the first canonical attachment metadata. Prior
+Windows1314 link fixture failure remains separate. The full29 integration cases,
+SDK linking/imports, Ruby ABI, hosted and actual paired-model results are not
+qualified by these component receipts. Target and owned children returned terminal.
+
+## Adapter package convention impact handoff
+
+The accepted `humanymous-adapter-<context>` target is a project convention; Cargo
+does not mandate adapter word order. Only root's single coordinated migration may
+change the ten mapped graph names, source imports, lock/workflows/artifacts/docs
+and claims. Current in-flight names and historical command/hash receipts stay as
+recorded until that migration; no independent rename occurred here.
+
+Bounded inspection of this tool's manifest, Rust source, integration tests and
+owned evaluation contracts found no dependency/import of the ten renamed adapter
+packages. This package remains `humanymous-agent-maintenance`; it has no explicit
+`[lib].name`, its inferred library import is `humanymous_agent_maintenance`, and
+its default binary and `CARGO_BIN_EXE_humanymous-agent-maintenance` invocation keys
+remain unchanged. It exposes no native adapter artifact or registry-facing ABI,
+Python module or Ruby extension name. Therefore this owner's current tool wiring
+requires no adapter-package rename. Root/adapter owners must still explicitly map
+their native exports/module compatibility; native ABI/security providers are not
+mechanically included. Historical evidence and inventory paths are retained.
+
+## Evidence materialization follow-through
+
+`.agents/evals/evidence-layout-contract.md` defines future unique TEMP/declared
+scratch unpacking outside `.spec.local`, with canonical private manifests/raw logs
+and verified compressed parts retained. Retirement requires exact owner, terminal
+consumer handles and byte-verified archives/read-back before explicit disposition.
+No broad private-tree census, baseline change, active-source move or cleanup was
+performed. The bounded planner/mutator remains unimplemented and unqualified.
