@@ -154,6 +154,21 @@ The first hosted source is bfc9f62335ae41906996c6b01b0ae9e7993feeed,
 run42347732666/attempt1 (root-reported in progress). The later v0.3 source-only
 checkpoint remains not_run and must be qualified under its own subsequent SHA.
 
+## V0.6 shared syntax decoder (validation pending)
+
+Under the approved root dependency window, the sole decoded-key visitor and its
+generic negative tests moved to humanymous-test-support::json. Attacker consumes
+decode_strict_json(bytes,4194304) through its report-specific LabError wrapper;
+TooLarge/Invalid retain the existing safe report messages. The duplicate size
+guard in verify_bytes is removed; the shared decoder checks the caller's budget
+before parsing. Schema selection, typed deny_unknown_fields and actual replay
+remain owned here. No second visitor is retained. A wrapper regression covers
+the report budget and non-disclosure of invalid input. The attacker manifest is
+frozen after its approved path dependency addition; root owns lock integration.
+The common owner supplies its source checkpoint and separate generic tests.
+This new dependency/source graph is not qualified by v0.5's26pure checks.
+Scoped Cargo and fresh hosted execution remain pending; fmt only has run.
+
 ## V0.5 step attribution (pure validated; hosted pending)
 
 The existing network v2 fieldset remains unchanged. Verification now checks each

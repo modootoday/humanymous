@@ -57,9 +57,6 @@ fn equivalent(left: &Value, right: &Value) -> bool {
 /// object keys and unknown fields fail; whitespace/key order and equivalent
 /// JSON numeric spellings are not a canonical-byte or signature proof.
 pub fn verify_bytes(bytes: &[u8]) -> Result<Verification, LabError> {
-    if bytes.len() > 4_194_304 {
-        return Err(LabError("report size budget"));
-    }
     let value = json::decode(bytes)?;
     let (mode, scoped_passed, full_product_qualified, totals) = match value["schema"].as_str() {
         Some("humanymous.wargame.v1") => {

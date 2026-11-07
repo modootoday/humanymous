@@ -161,6 +161,18 @@ browser/Cross-OS work moves to standard hosted execution. No local runtime run
 is resumed. No prior green qualifies this source; unavailable participants and
 full product requirements remain explicit until directly measured.
 
+### Shared syntax boundary v0.6
+
+Root-approved extraction moves the sole recursive decoded-key visitor to
+humanymous-test-support::json::decode_strict_json(bytes,max_bytes). Attacker uses
+one report adapter with its unchanged4194304-byte budget and safe LabError
+messages. The common decoder rejects oversize input before parse and retains
+duplicate-decoded-key, default depth, finite-number and trailing-input rejection.
+Schema/fieldset/replay/qualification remain specific to each consumer. No
+duplicated visitor is kept in attacker. Root integrates the approved dependency
+graph; new scoped checks and source-bound hosted qualification are pending.
+Historical v0.5 results do not qualify this changed graph.
+
 ### Step attribution acceptance v0.5
 
 The network verifier compares step identities, ordering and roles against the
