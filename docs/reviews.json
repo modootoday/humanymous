@@ -2,6 +2,34 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/runtime/src/tests/service/settings_operator.rs",
+  "sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete198-line Unix-only fixture and matched owner source commitment: actual native peer IPC, distinct observer/operator credentials, witnessed CAS/replay refusal, session invalidation/capacity32, graceful drain and trusted-head restart. Owner exact-source Unix execution passed; signer/storage remain same-process fixture, not independently deployed witness or Windows service proof.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/browser/native/desktop/src/native.rs",
+  "sha256": "0d99528f596cff0e99c447c68627995873e55c83ce98b3de233a199faa212862",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete522-line scoped Win32 inspection: parent geometry/DPI/child resize and destruction, focus and metadata-only IME snapshot, existing Korean layout opt-in, candidate request without visibility proof, same-image descendant token inspection and bounded command-line role extraction. Point-in-time ancestry is not process lifetime/cleanup evidence. No native execution, IME placement, human/AT or complete sandbox qualification inferred.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/policy.rs",
+  "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete123line puretrustedconfig ownedHTTPS-origin policy: exact URLorigin/port, no credentials/control/oversize, originonlyconfig, all6targetpermissions false. This generic candidate doesnotenable externalnative navigation or prove CEFrequesthandler enforcement, nativeOS sandbox or actualbrowser security.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
   "source": "crates/browser/native/desktop/src/window_frame.rs",
   "sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
   "reviewer": "codex/rust-pages",

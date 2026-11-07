@@ -61,9 +61,11 @@ the operational snapshot/revision; `operator_available` reports separately wheth
 an operator was provisioned. The observer credential remains read-only. These
 responses are not heartbeat receipts or evidence of a healthy deployed service.
 Source joins application and management listener shutdown before releasing
-service custody; actual native IPC, permissions, cancellation and lock-release
-pilots remain required. The new listener and policy fixtures have not yet been
-executed in the current qualification run.
+service custody. An ordinary-user Unix component run exercised native IPC,
+observer/operator credential separation and graceful drain before custody release.
+These Unix-only lifecycle cases were not compiled in the Windows component run.
+Protected Windows service operation, broader cancellation/permission cases and
+deployment-specific lock-release evidence remain separate qualification gates.
 
 ## Experimental resource operator
 
@@ -71,7 +73,8 @@ New library source exposes `ServiceHost::bind_with_operator`, requiring a
 management policy, a different operator credential, durable settings and an
 external witness. Missing prerequisites or reused observer/operator credentials
 refuse startup. The current standalone runtime entrypoint does not provision
-this role. This is authored, unexecuted source, not a qualified operating procedure.
+this role. A Unix component fixture has executed; this does not establish a
+qualified deployment or operating procedure.
 
 On the native management endpoint, the operator accepts only
 `POST /management/v0.1/settings/commit`. Its strict JSON carries `scope`,
@@ -95,5 +98,12 @@ earlier business effects. Cancellation, deadlines and stop state are rechecked.
 An ambiguous post-staging failure poisons the serving epoch and returns an
 unknown-outcome error. A timeout or 503 does not prove the change was absent;
 inspect the authenticated persisted revision before any recovery decision.
-Automatic mutation retry is not provided. Native crash/cancellation/permission,
-restart and independent witness/custody qualification remain outstanding.
+Automatic mutation retry is not provided.
+
+At a frozen runtime source revision, the Unix component fixture observed a
+witnessed compare-and-swap update, stale-revision refusal, old-session invalidation,
+the updated capacity limit, graceful drain and trusted-head restart restoring the
+persisted revision. Its actual signer and durable witness storage ran in the same
+process; this is not independent witness deployment. Broader crash/cancellation/
+permission, protected Windows service and independent witness/custody qualification
+remain outstanding. These results do not qualify TLS, browser or full-product use.

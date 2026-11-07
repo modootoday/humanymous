@@ -2026,3 +2026,15 @@ descendant token/image inspection and bounded role-only retention are separated
 from real execution. Ancestry snapshot is not lifetime/cleanup proof. Existing
 native-browser wording remains conservative. No compile/native/IME/AT result
 inferred; no frozen public ledger update. Source-only evidence attached.
+
+### Narrow public reconciliation released
+
+Root released implementation-map/on-call and manually reviewed receipts before
+next Pages candidate. Reconciled actual Runtime Windows46+1/Unix50+1 and Audit
+Windows110, with ignored5/two zero-test exclusions, point-in-time exact sources
+and same-process witness limits. Removed stale unexecuted operator wording,
+retained Windows service/TLS/browser/AT/independent witness/full-product gates.
+Added two complete source receipts and retained earlier reviewed pure policy
+receipt after exact hash check. No bulk renewal. Source checker88/errors0; no
+new rendered, source-freshness, browser or AT pass. Changed docs require a new
+immutable candidate and subsequent actual verification; no old build reused.

@@ -1,0 +1,28 @@
+{
+  "scope": "Narrow root-released public reconciliation before next Pages candidate",
+  "runtime_source": "adb8e3ed12b762a8a0236f80249515a6504b9973",
+  "runtime_evidence_sha256": "843b633f147dd6a44a6a70609c47a82111ec8f4db7fa3965262fa4f2a24e2ba4",
+  "audit_source": "174e5f21364084a3ae0aac18d5d5983672a6d929",
+  "audit_evidence": ".spec/evidence/20261107102348-audit-key-custody-full-windows-validation-observations/facts.json",
+  "audit_evidence_sha256": "2b9e55797d949ceeefa22c7f715a9da937722c7aff7f9cf71908434d02d2b347",
+  "public_pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md",
+    "docs/standards/draft-v0/changes.json"
+  ],
+  "manual_receipts": [
+    "198-line Unix operator fixture",
+    "522-line Win32 inspection",
+    "prior123-line pure browser policy receipt, current hash rechecked"
+  ],
+  "source_checker": {
+    "errors": 0,
+    "pages": 88
+  },
+  "freshness": "Earlier concurrent-source snapshot failure remains failure; no complete freshness pass",
+  "new_rendered_build": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "deployment_performed": false,
+  "qualification_limit": "Exact-source component observations only; no generic wire, actual TLS/browser/AT, independently deployed witness or full product qualification"
+}

@@ -81,10 +81,28 @@ The runtime management source exposes observer status/settings reads and an
 optional separately credentialed resource operator, with native-peer and exact
 installation-scope checks. The operator's source stages and journals resource-only
 CAS changes and invalidates volatile sessions; it does not change scoring or add
-destructive controls. The new operator's policy and native lifecycle fixtures
-remain unexecuted; the
+destructive controls. A Unix component fixture has exercised native IPC,
+credential separation, witnessed CAS, stale-revision refusal, session invalidation,
+capacity and trusted-head restart. Its durable witness is a same-process fixture,
+not an independent deployment; these Unix-only lifecycle cases do not establish
+Windows service qualification. The
 [operations reference](../../../reference/on-call-quick-reference.md#experimental-native-status-service)
-describes the source contract without treating it as deployment qualification.
+separates those observations from the remaining deployment and full-product gates.
+
+At runtime source `adb8e3ed`, ordinary-user component runs passed 46 library cases
+plus one native-process case on Windows, and 50 library cases plus one
+native-process case on Unix, with no failed, ignored or filtered cases. The
+inventories include pure models and owned loopback/IPC/custody/process fixtures;
+they are not 47 or 51 independent deployed product flows. The four additional
+Unix cases do not establish Windows management or service behavior.
+
+At audit source `174e5f21`, the Windows all-targets package run passed 110 cases
+with zero failures. Five explicitly ignored child helpers and two zero-test
+binaries were excluded from that count; the required parent cases passed.
+This mixes pure, filesystem, parity and native-child components. It does not
+establish a genuine hosted OS matrix, independent witness/retainer deployment,
+production audit-before-apply or full-product qualification. These frozen results
+do not automatically qualify later source changes or the generic Draft v0 wire.
 
 Working browser transport source now declares `BrowserSession`/`BrowserResponse`
 and an explicitly selected cookie-free runtime profile. It adds same-origin

@@ -7,6 +7,14 @@
   "generic_wire_selected": false,
   "changes": [
     {
+      "kind": "implementation-evidence",
+      "paths": ["validation/implementation-map.md"],
+      "summary": "Record exact-source Runtime Windows47/Unix51 and Audit Windows110 component observations, preserving ignored helpers, zero-test exclusions, same-process witness and unqualified deployment boundaries. The Unix resource-operator fixture supersedes its earlier unexecuted status.",
+      "generic_wire_changed": false,
+      "full_product_qualified": false,
+      "independent_witness_deployment_qualified": false
+    },
+    {
       "kind": "experimental-validation-result",
       "paths": ["validation/vectors.md", "validation/implementation-map.md"],
       "summary": "Windows component execution passes27 library tests and all-target check/Clippy; fixed24/10/25 parser corpora match expectations, with5 accepts and20 rejections in the new normalized corpus. This supersedes its earlier pending-execution status without changing fixture bytes.",
