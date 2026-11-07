@@ -66,11 +66,15 @@ mandatory shared security decisions, not CLI JSON validation shortcuts.
    across synchronous input, witness and ACK operations through publication.
    Observer readiness must distinguish receiver bound, bootstrap received and
    service ready; receiver existence alone proves none of the later phases.
-7. For normal observer stop, an authenticated authorized stop request is sent to
-   the service; observer retains witness/client availability until actual service
+7. Normal service stop requires separately verified native-manager/service-
+   lifecycle authorization or a separately accepted typed stop grant. The
+   observer-status credential grants no service-management mutation, permanent
+   kill or erasure. A client lease close releases only that client lease; it
+   cannot authorize normal service stop. The observer retains witness/client availability until actual service
    drain and final audit flush are proven. Native SCM owns service lifetime; the
    observer may not terminate it as though it were a spawned disposable child.
-   Then observer cancels and joins its own I/O workers, closes its clients and
+   Closing observer/liveness before this proof follows failed/unknown loss
+   semantics, never graceful authorized stop. Then observer cancels and joins its own I/O workers, closes its clients and
    stops/reaps only children it actually owns, within independent native bounds.
 8. Lost observer, broken ACK, service failure or unfinished I/O produces failed or
    unknown completion, never graceful success. Root accepted runtime's first-loss
@@ -99,7 +103,7 @@ cover these new requirements. Authored code/tests are Rust1.99.1/edition2024.
 | Failure and cancellation | Missing observer/ACK/witness; wrong scope/purpose; replay; peer exits during exchange; blocked read/write; drain/flush failure; stop during startup; cancellation joins or nonzero unknown timeout | Actual bounded process tests, separate cause/outcome and cleanup facts |
 | Genuine hosted SCM | Independent virtual-service sender and ordinary observer process; actual peer evidence; install/upgrade/rollback/replay/stop/remove; full readiness manifest; secret/state cleanup | Disposable real hosted actor with externally bound source/run and restored controller delegation; local ACT labels insufficient |
 | Restart and process replacement | Fresh authorized observer epoch and service binding; old token/ACK/instance rejected; same-PID reuse denied; no custody reset | Actual instance evidence, not mocked PID strings |
-| Observer/service shutdown | Witness usable through actual final audit flush; service controlled through authenticated stop/native manager; own workers joined; owned children reaped; no foreign termination | Distinct service and observer exit facts; no successful report inferred from loopback closure |
+| Observer/service shutdown | Witness usable through actual final audit flush; service stop has separate verified manager authorization or accepted stop grant; status credential cannot stop service; own workers joined; owned children reaped; no foreign termination | Distinct service and observer exit facts; lease/liveness close is loss, not authorized graceful stop |
 | Linux/macOS | Actual protected unattended provider, user-manager/domain and ordinary principals, same protocol/lifetime invariants | Each real OS profile independently qualified; Unsupported never counted as pass |
 | Product integration | Real Core/Gate protected input, authenticated observer management and independent witness through final flush | Docker-only product e2e; a native component or fixture does not replace this gate |
 | Evidence | Immutable source/run/actor binding; required and executed denominator; private raw hashes; sanitized public facts; controller/account/SCM/scratch cleanup | No blanket exit2 acceptance, global pass or ignored-test credit |
