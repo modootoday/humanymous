@@ -10,6 +10,32 @@ rel:
 
 # Client session and transport
 
+## Accepted actual-browser runtime pilot
+
+The separate runtime-pilot feature and crates/collector/pilot/fixture.json define
+one shared lab contract. Read that file rather than copying chat messages: the
+scope is install/tenant/origin/r1 at127.0.0.1:31111; browser proxy is31112.
+POST/effect before report must return403CHALLENGE with a valid consumed ACK;
+actual unmodified BrowserCollector report ingestion returns200 with valid ACK.
+POST/requires-collector requires unqualified fresh provenance and returns422
+before consumption, without ACK; the client must close and never retry.
+The separate lab coordinator proves actual proxy hits, isolated browser/gate
+namespaces, inaccessible backend loopback, no egress and real witness/audit
+outcomes. Same-namespace component results cannot replace these product gates.
+Typed WebDriver JSON configures only a manual owned HTTP proxy and Firefox's
+localhost proxy preference; it never disables sandbox. Existing66component tests
+keep their default configuration. Select the dedicated actual-runtime test by
+its full name; do not run the missing-owned-route negative in this live profile.
+Current product pilot source and fixture are authored, not yet executed. Initial
+cargo fmt was blocked by a concurrently added lab tokio.workspace reference;
+root added the already-used Tokio1.54.1 workspace declaration, without upgrading
+dependencies. Preserve this failure as integration lineage, not a test failure.
+After the manifest correction, scoped WASM all-target Clippy with runtime-pilot
+enabled passed under buildjobs1/incremental0. This compiles the new feature test
+and embedded fixture, but does not execute HTTP/browser/runtime code. The lab
+coordinator must separately observe required-capability422 with no ACK; the
+client's closed/error result alone cannot distinguish that from network failure.
+
 - [x] Accept exact scope/bootstrap/one-flight/clock/expiry/invalidation contract.
 - [x] Accept shared response ACK with runtime owner; bind actual status and consumed
   counter to pending request MAC. ACK is not ALLOW/body/collector attestation.

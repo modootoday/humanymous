@@ -1,0 +1,29 @@
+{
+  "schema": "humanymous.browser-runtime-pilot/1",
+  "scope": {
+    "installation": "install",
+    "tenant": "tenant",
+    "origin": "origin",
+    "revision": "r1",
+    "authority": "127.0.0.1:31111"
+  },
+  "browser_origin": "http://127.0.0.1:31111",
+  "runner_listen": "127.0.0.1:31111",
+  "browser_proxy_listen": "127.0.0.1:31112",
+  "gate_frontend_port": 8080,
+  "routes": {
+    "session": "/_humanymous/browser/session",
+    "collect": "/_humanymous/browser/collect",
+    "effect": "/effect",
+    "required_collector": "/requires-collector"
+  },
+  "expected": {
+    "before_report_status": 403,
+    "before_report_verdict": "CHALLENGE",
+    "collect_status": 200,
+    "required_collector_status": 422,
+    "required_collector_ack": false,
+    "origin_effects": 0
+  },
+  "qualification": "actual browser HTTP session join; full product requires independent isolation and witness receipts"
+}

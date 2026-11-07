@@ -13,6 +13,23 @@ rel:
 
 # Browser collector migration
 
+## Isolated actual-runtime pilot contract
+
+The non-default runtime-pilot feature consumes pilot/fixture.json as the one
+machine-readable scope/path/status contract and pilot/webdriver.json as typed
+WebDriver configuration. Actual browser requests use BrowserSession and an
+unmodified BrowserCollector report; no synthetic Fetch or benign-report rewrite
+qualifies this profile. Browser/gate namespaces are separate; a lab-owned strict
+HTTP proxy preserves the browser-visible origin while forwarding only the owned
+API inventory to the actual loopback runtime. The proxy is not original client
+TLS/H2/header provenance. Its actual hit counters and backend/egress isolation
+must be independently measured by the lab, not inferred from a configured pref.
+Missing required fresh collector capability remains a pre-consumption422 without
+ACK and closes the client epoch. This is distinct from accepted client-asserted
+report ingestion200. The feature test alone does not prove the full product,
+witness independence, human/AT support, cookies or streaming. Those gates remain
+required; runtime execution of this new source is currently not_run.
+
 ## Owned Fetch transport contract
 
 BrowserSession owns actual Request/Headers/AbortController and one whole-request

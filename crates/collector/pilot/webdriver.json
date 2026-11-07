@@ -1,0 +1,12 @@
+{
+  "proxy": {
+    "proxyType": "manual",
+    "httpProxy": "127.0.0.1:31112",
+    "noProxy": []
+  },
+  "moz:firefoxOptions": {
+    "prefs": {
+      "network.proxy.allow_hijacking_localhost": true
+    }
+  }
+}

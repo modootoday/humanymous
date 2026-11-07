@@ -1,6 +1,8 @@
 //! Same-origin buffered Fetch owner; no cookie/stream or qualified-producer claim.
 mod io;
 mod request;
+#[cfg(all(test, feature = "runtime-pilot"))]
+mod runtime_pilot;
 #[cfg(test)]
 mod tests;
 use super::{

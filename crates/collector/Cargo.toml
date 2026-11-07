@@ -10,6 +10,10 @@ publish = false
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[features]
+# Requires the separate, namespace-isolated owned runtime lab; never default.
+runtime-pilot = []
+
 [dependencies]
 humanymous-signals.workspace = true
 serde_json.workspace = true

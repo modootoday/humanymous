@@ -14,6 +14,19 @@ rel:
 
 # Rust migration conventions
 
+## Actual-runtime browser pilot follow-through
+
+Collector's non-default runtime-pilot test consumes one fixture.json scope/route
+contract and typed WebDriver configuration. A real Fetch/report/ACK sequence is
+paired with separately measured browser/gate namespace isolation, origin bypass
+denial, no egress and external witness checks owned by the Rust lab. Actual
+headless observations are not rewritten into a benign/human report. Required
+fresh collector capability stays422/noACK. Scoped WASM all-target Clippy passed;
+new actual runtime/browser execution is not_run. The existing component profile
+and its66browser results are separate, not proof of this new product profile.
+Common Tokio declaration reuses1.54.1 and the lab's existing shared test-support;
+the temporary manifest/lock coordination failures are retained in the owner plans.
+
 ## Bounded Fetch transport checkpoint
 
 Commit667e98f adds the Rust BrowserSession Fetch owner, final Request URL/header/body
