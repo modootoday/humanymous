@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/control/policy.rs",
+  "sha256": "c4e3048fba8b7bd9f0888af14309916f2f05727669079c309e719f38a505eb94",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full domain-separated scope/action/target/operation/time signing and digest policy,2..128 distinct nonweak keys, bounded TTL, strict verification of all supplied approvals, immutable Authorization, policy fingerprint and source negative tests. Public role reference distinguishes key quorum from actual independent people, UTC seconds from other protocol units and consumer-owned target schema. No signature test or destructive operation executed in this review.",
+  "pages": [
+    "docs/reference/rbac-separation-of-duties.md"
+  ]
+},
+{
+  "source": "crates/audit/src/control/ledger.rs",
+  "sha256": "571785ab74696adc44d10b45813e8fd97f173247fd4dd09b36985c278659d2e5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full signed private spent ledger authentication, exact external bootstrap pin, policy fingerprint, capacity/no-eviction, clock poisoning and durable consumption, subject-bound issuance/resume, consumed membership and explicit pending transition recovery. Public reference records external-anchor freshness, ambiguous persistence, trusted-clock restart limits, unchanged exact-subject/window recovery and approval versus operational effect. No file repair, erasure or process pilot executed.",
+  "pages": [
+    "docs/reference/rbac-separation-of-duties.md"
+  ]
+},
+{
   "source": "crates/audit/src/control/mod.rs",
   "sha256": "54b6f53e1363971a5fbec6e953e56e0db8cd5a71a5104b701c3cdc1dd3297562",
   "reviewer": "codex/rust-pages",

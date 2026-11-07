@@ -751,3 +751,13 @@ and CRLF accepted. Resource58363494400/72303525888 bytes and no cargo/rustc obse
 oneCargo/jobs1/incremental0.17libtests0failed, scoped strict Clippy and rebuilt
 88page source/nav checks passed. No Jekyll/browser/native service run. This is not
 full visual-spoofing, accessibility or whole-source-review qualification.
+
+## Signed policy and spent-ledger review
+
+Read all policy/ledger source and policy test cases. Two exact manual receipts
+map key/identity quorum, signedtarget/time, externalpin/noeviction, ambiguous
+persistence and exact-subject recovery to public roles. Added trusted-clock and
+actual human-independence boundaries without claiming operational qualification.
+No destructive action/test/process run. Wargame owner reports upcoming strict
+duplicate/unknown-field follow-through; await actual source before refreshing its
+existing semantic-parser limitations/receipts, not treating intent as code.

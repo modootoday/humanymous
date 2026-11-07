@@ -36,3 +36,34 @@ no effects. Do not present this primitive as an installed administrative router,
 exactly-once business operation or complete crash-recovery service. Trusted time,
 independent administrator provisioning, external latest anchors and actual runtime
 peer/restart/dual-control pilots remain separate consumer responsibilities.
+
+## Policy and durable ledger scope
+
+The current policy provisions 2–128 distinct administrator identities with
+separate nonweak Ed25519 keys. Aliases sharing a key cannot form quorum. Every
+supplied approval is checked; an unknown, duplicate or invalid extra is not
+ignored after two valid signatures. Distinct provisioned keys do not by
+themselves establish two independent human operators or organizations.
+
+Signatures bind the exact installation/node, action, target commitment, operation
+ID and issued/expiry times. The configured lifetime is bounded to one day and
+may be shorter. Trusted UTC seconds are required here; do not substitute request
+claims or the millisecond time units of another protocol. Target bytes and any
+object/generation schema remain the consuming operation's responsibility.
+
+The signed consumed-operation ledger has an explicit finite capacity and does
+not evict spent IDs to accept new destructive operations. Existing-state reopen
+requires the exact independently retained latest anchor; a signed local file
+alone does not establish freshness against directory rollback. Preserve the new
+anchor outside that local state before acknowledging the operational effect.
+Storage failure can leave an ambiguous committed or staged transition; it does
+not authorize resetting the ledger or replaying an operation blindly.
+
+Clock regression poisons the current issuer. Successful consumption records its
+time durably, while rejected observations do not independently advance a durable
+trusted clock. Provisioning across restart and latest-anchor delivery still need
+operational evidence. Explicit erasure recovery is limited to the same consumed
+proposal and subject, with valid approval signatures and time window checked
+again; it cannot approve a new subject or bypass expiry. A blocked recovery is
+an incident to resolve under the owning policy, not permission to discard spent
+state, widen scope or fabricate approval.
