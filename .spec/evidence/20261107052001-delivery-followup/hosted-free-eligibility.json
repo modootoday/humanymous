@@ -1,0 +1,67 @@
+{
+  "schema": "humanymous.delivery-hosted-free-eligibility/1",
+  "observed_at": "2026-11-07T21:06:36Z",
+  "repository": {
+    "full_name": "modootoday/humanymous",
+    "visibility": "public",
+    "private": false,
+    "archived": false,
+    "disabled": false
+  },
+  "run": {
+    "id": 42407744891,
+    "attempt": 1,
+    "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+    "terminal": false,
+    "observed_jobs": 15,
+    "started_job_runner_group": "GitHub Actions",
+    "observed_labels": [
+      "ubuntu-24.04",
+      "windows-2025",
+      "macos-15"
+    ],
+    "nonstandard_observed_jobs": 0,
+    "maximum_active_jobs_observed": 2,
+    "currently_active_jobs": 2
+  },
+  "eligibility": {
+    "observed_standard_runner_compute_free_eligibility_verified": true,
+    "scope": "Current public repository plus the 15 observed standard hosted jobs and official runner/billing documentation; not future jobs or an account-wide invoice",
+    "larger_runner_used_in_observed_jobs": false,
+    "billing_invoice_verified": false,
+    "account_storage_costs_verified": false,
+    "global_concurrency_bound_verified": false,
+    "terminal_two_lane_accounting_verified": false
+  },
+  "cache": {
+    "configured_max_cache_size_gb": 10,
+    "configured_max_retention_days": 7,
+    "active_size_bytes": 99674146,
+    "active_count": 3,
+    "read_only_api_capture": true,
+    "no_setting_changed": true,
+    "no_cache_deleted": true,
+    "current_usage_is_not_accrued_billing": true
+  },
+  "artifacts": {
+    "run_artifact_count": 0,
+    "scope": "Artifacts available for this in-progress run at observation; not account-wide storage or original ephemeral private child reports"
+  },
+  "sources": [
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "supports": "The three observed labels are standard public-repository runner labels"
+    },
+    {
+      "url": "https://docs.github.com/en/billing/concepts/product-billing/github-actions",
+      "supports": "Public standard hosted compute remains free; larger runners and storage have distinct billing rules"
+    }
+  ],
+  "raw_accounting": {
+    "retained_privately": "Decoded GitHub repository, storage-limit, retention-limit, cache-usage, run-artifact, run and job API responses plus parsed overlap snapshot4",
+    "official_page_archives_recovered": false,
+    "original_ephemeral_private_reports_recovered": false
+  },
+  "full_product_qualified": false,
+  "release_ready": false
+}
