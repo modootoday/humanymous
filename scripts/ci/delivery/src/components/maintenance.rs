@@ -37,7 +37,8 @@ fn inventory(owner: &Value) -> Result<Vec<(String, BTreeSet<String>)>> {
             .ok_or("maintenance target name absent")?;
         require(
             target["kind"] == "test"
-                && matches!(name, "process" | "session_storage" | "product_package")
+                && !name.is_empty()
+                && name.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
                 && targets.insert(name.to_owned()),
             "maintenance target invalid or duplicate",
         )?;
@@ -61,7 +62,8 @@ fn inventory(owner: &Value) -> Result<Vec<(String, BTreeSet<String>)>> {
         result.push((name.to_owned(), names));
     }
     require(
-        targets.len() == 3
+        !targets.is_empty()
+            && targets.len() <= 16
             && owner["expected_total"].as_u64()
                 == Some(result.iter().map(|(_, names)| names.len() as u64).sum()),
         "maintenance aggregate inventory mismatch",
@@ -137,7 +139,7 @@ mod tests {
     #[test]
     fn owner_inventory_rejects_duplicates_and_inconsistent_totals() {
         let owner = contract().unwrap();
-        assert_eq!(inventory(&owner).unwrap().len(), 3);
+        assert!(!inventory(&owner).unwrap().is_empty());
         let mut invalid = owner.clone();
         invalid["expected_total"] = json!(0);
         assert!(inventory(&invalid).is_err());

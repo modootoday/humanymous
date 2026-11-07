@@ -144,3 +144,13 @@ producer inputs. The root chat owns its single push/dispatch. New required
 process profiles, language hosts and Pages browser checks remain pending until
 their actual owner invocation and source-bound hosted evidence are integrated;
 default library tests and unsupported profiles cannot substitute for those runs.
+
+Runtime candidate scanning now prepares an exact clean-source manifest before
+build, binds it into the image label, and verifies typed Trivy 0.70.0 JSON
+against the observed local image ID and both source labels. The required
+rustbinary package inventory must describe the actual runtime entrypoint;
+empty scans and Cargo.lock-only results remain not_scanned. Vulnerabilities,
+scanner errors and modified findings block. Raw JSON remains private and safe
+output retains only hashes/counts/status and explicit unknown completeness.
+This gate does not add embedded inventory to the binary or establish shipping
+qualification. Its 58 pure tests and Clippy are separate from actual scanning.

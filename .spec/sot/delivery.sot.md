@@ -1003,6 +1003,19 @@ scanner report hash; shipping-image CVE qualification remains unproven until
 lock/SBOM/source identity and actual scan coverage are measured. The legacy
 core/gate source guard and full-product block remain in force.
 
+The image coverage gate prepares a clean exact-source manifest before building
+and binds it into the candidate image label. Trivy 0.70.0 JSON, all packages and
+all severities are required; explicit scanner failure remains failure. The
+verified local image ID and scanned image metadata must agree with both source
+labels. Only a nonempty rustbinary inventory for the shipped runtime entrypoint
+is observed binary coverage. Cargo.lock-only results and empty result tables
+remain not_scanned. Suppressed/modified findings, malformed records and absent
+reports fail closed. The safe summary exposes counts, hashes and explicit
+unknown completeness, never raw vulnerability descriptions or package payloads.
+Observed-inventory cleanliness is not proof of complete dependency inventory,
+shipping equivalence or whole-product readiness. Source references are Trivy's
+v0.70.0 Rust coverage documentation and JSON report/types declarations.
+
 Root checkpoint a26d1c3 resolves the common 36-member Cargo graph/lock and the
 standalone scripts/ci/windows-native-runner/Cargo.lock against the shared native
 APIs. The runner lock is under this delivery governing scope but remains an

@@ -6,6 +6,7 @@ mod dependency_summary;
 mod docker_source;
 mod evidence;
 mod image_candidates;
+mod image_scan;
 mod lab_diagnostics;
 mod lab_receipts;
 mod metrics;
@@ -76,6 +77,7 @@ fn run() -> Result<()> {
         "package" => package::check(&root),
         "image-sources" => package::image_sources(&root),
         "image-candidates" => image_candidates::check(&root),
+        "image-scan" => image_scan::run(&root, argument(1)?),
         "native-artifacts" => package::native_artifacts(&root),
         "node" => package::node(&root).map(|_| ()),
         "readiness" => registry::readiness(&root),

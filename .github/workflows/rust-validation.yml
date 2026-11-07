@@ -266,21 +266,37 @@ jobs:
       with:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-candidates
+    - id: runtime_scan_prepare
+      run: cargo run --locked -p humanymous-delivery -- image-scan prepare
     - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+      id: runtime_image_build
       with:
         context: .
         file: build/rust/runtime-candidate.Dockerfile
-        build-args: HUMANYMOUS_SOURCE_REV=${{ github.sha }}
+        build-args: |
+          HUMANYMOUS_SOURCE_REV=${{ github.sha }}
+          HUMANYMOUS_SOURCE_MANIFEST=${{ steps.runtime_scan_prepare.outputs.source-manifest-sha256 }}
         push: false
         load: true
         tags: humanymous-runtime-candidate:validation
     - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+      id: runtime_image_scan
       with:
         cache: 'false'
         image-ref: humanymous-runtime-candidate:validation
+        version: v0.70.0
+        format: json
+        output: target/delivery-image-scan/trivy.json
+        list-all-pkgs: 'true'
+        scanners: vuln
         exit-code: '1'
         severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
         ignore-unfixed: false
+    - name: Verify nonempty binary inventory and exact image scan
+      if: ${{ !cancelled() && steps.runtime_image_build.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- image-scan verify
+      env:
+        HUMANYMOUS_TRIVY_OUTCOME: ${{ steps.runtime_image_scan.outcome }}
   images:
     needs: [policy, rust-images]
     if: ${{ !cancelled() && needs.policy.result == 'success' }}

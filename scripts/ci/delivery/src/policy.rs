@@ -184,6 +184,34 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         }
     }
     if name == "rust-validation.yml" {
+        let image_steps = jobs["rust-images"]["steps"]
+            .as_array()
+            .ok_or("image steps absent")?;
+        let scan = image_steps
+            .iter()
+            .find(|step| step["id"] == "runtime_image_scan")
+            .ok_or("required typed image scan absent")?;
+        require(
+            scan["with"]["version"] == "v0.70.0"
+                && scan["with"]["format"] == "json"
+                && scan["with"]["output"] == "target/delivery-image-scan/trivy.json"
+                && scan["with"]["list-all-pkgs"] == "true"
+                && scan["with"]["scanners"] == "vuln"
+                && scan["with"]["severity"] == "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+                && scan["with"]["ignore-unfixed"] == false
+                && scan["with"]["exit-code"] == "1",
+            "image scan coverage or vulnerability policy weakened",
+        )?;
+        require(
+            image_steps.iter().any(|step| {
+                step["run"] == "cargo run --locked -p humanymous-delivery -- image-scan verify"
+                    && step["if"]
+                        == "${{ !cancelled() && steps.runtime_image_build.outcome == 'success' }}"
+                    && step["env"]["HUMANYMOUS_TRIVY_OUTCOME"]
+                        == "${{ steps.runtime_image_scan.outcome }}"
+            }),
+            "image scan failure/coverage accounting missing",
+        )?;
         require(
             doc["env"]["DOCKER_BUILD_RECORD_UPLOAD"] == "false",
             "automatic Docker build-record artifacts must be disabled",
@@ -533,6 +561,44 @@ pub fn jobs(raw: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn image_inventory_cannot_be_empty_or_failure_accounting_skipped() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "rust-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("rust-validation.yml", &original).is_ok());
+        for mutation in 0..3 {
+            let mut changed = original.clone();
+            let steps = changed["jobs"]["rust-images"]["steps"]
+                .as_array_mut()
+                .unwrap();
+            if mutation == 2 {
+                let verify = steps
+                    .iter_mut()
+                    .find(|step| {
+                        step["run"]
+                            == "cargo run --locked -p humanymous-delivery -- image-scan verify"
+                    })
+                    .unwrap();
+                verify["if"] = json!("${{ success() }}");
+            } else {
+                let scan = steps
+                    .iter_mut()
+                    .find(|step| step["id"] == "runtime_image_scan")
+                    .unwrap();
+                scan["with"][if mutation == 0 {
+                    "list-all-pkgs"
+                } else {
+                    "format"
+                }] = json!(if mutation == 0 { "false" } else { "table" });
+            }
+            assert!(document("rust-validation.yml", &changed).is_err());
+        }
+    }
     #[test]
     fn optional_public_cache_cannot_widen_paths_or_hide_validation_failures() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");

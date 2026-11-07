@@ -7,8 +7,10 @@ RUN cargo build --release --locked -p humanymous-runtime --bin humanymous-runtim
 
 FROM scratch AS runtime-candidate
 ARG HUMANYMOUS_SOURCE_REV
+ARG HUMANYMOUS_SOURCE_MANIFEST
 LABEL org.opencontainers.image.source="https://github.com/modootoday/humanymous" \
       org.opencontainers.image.revision=$HUMANYMOUS_SOURCE_REV \
+      org.humanymous.source-manifest-sha256=$HUMANYMOUS_SOURCE_MANIFEST \
       org.humanymous.qualification="candidate-component" \
       org.humanymous.role="runtime-private-pipes"
 COPY --from=compiler /source/target/release/humanymous-runtime /usr/local/bin/humanymous-runtime

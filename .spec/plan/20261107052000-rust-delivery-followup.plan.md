@@ -365,3 +365,14 @@ was removed, and the final tests and Clippy passed without warnings. The final
 owner-contract/source SHA256 ledger was unchanged. Private registered evidence
 is 20261107095612-delivery-owner-contracts; C was returned. No actual container,
 process, filesystem or SCM profile ran, and no package qualification was created.
+
+The separate typed-image coverage slice passed 58 delivery pure tests and strict
+all-target Clippy on root-allocated D, jobs one/incremental off. Admission was
+82 percent commit and 33,416,516 KiB free physical memory. Before/after source
+and owner-contract byte hashes matched; the maintenance consumer now derives
+all four owner-listed integration targets and fourteen expected cases. No
+container or actual image scan ran. Private evidence
+20261107100516-delivery-image-coverage has registered index SHA256
+f86b3c79f13c4877a806c47c46e03c9a21f714acc3081513babc7a851365a56d.
+D was returned. The ordinary Rust candidate remains unqualified and is expected
+to fail the new binary-inventory requirement until reviewed inventory exists.
