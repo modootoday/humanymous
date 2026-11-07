@@ -3,7 +3,7 @@ id: evidence:root/20261107075243
 title: Python Ruby adapters shared Node compilation
 status: active
 created: 2026-11-07T07:52:43Z
-updated: 2026-11-07T09:49:21Z
+updated: 2026-11-07T10:15:19Z
 rel:
   governs: [crates/node-adapter]
 files:
@@ -13,6 +13,8 @@ files:
   - {path: summary-004.json, sha256: fa91c3441f1618771c7b8f34404347728e053cdc7b79202901771230e6c8abfc, bytes: 1194, store: repo}
   - {path: summary-005.json, sha256: 781917464064e470b1b1b88e6c1c7a8e3fc5a7505d4e9fa0a01a19bb15c257e5, bytes: 2887, store: repo}
   - {path: summary-006.json, sha256: f4397ca167766758ffe5ff19aff3dba7a735c5b188fdf1ba990003261d6c51b8, bytes: 4789, store: repo}
+  - {path: summary-007.json, sha256: 76fbd74edc155d3415e82d8f71f45335774d878c66a1c9db9ea6e13b73c273d8, bytes: 2629, store: repo}
+  - {path: summary-008.json, sha256: b511ed53a3b304ec13377284924e276beb6a569345d5cc2fe299a60698f0bc57, bytes: 3114, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -104,3 +106,27 @@ passes do not establish immutable whole-graph qualification. The earlier failed
 Clippy attempt remains retained in summary005. No native Ruby, Node runtime/
 installer/framework, or Unix Python WSGI execution occurred; Node pure parser
 definitions were compiled by all-targets but not executed.
+
+## First Unix WSGI type check on an immutable snapshot
+
+Summary007 records WSL REA-Ubuntu native Rust check21.81s and Clippy2.22s against
+source8eb66811dbb87a12a9d57e4e0c5048758efc1c4e. Intended source hashes matched
+the primary and the whole snapshot's2202 regular-file rows were unchanged.
+Coordinator-provided archive identity is explicitly attributed. Rust1.99.1 and
+Python3.12.3/dev tooling were observed. No test executable was linked, no test or
+native module/framework imported, no server/installer/Docker executed. This is
+the first genuine Unix-branch type-check result, distinct from earlier Windows
+cfg-excluded checks and all remaining actual28-case acceptance.
+
+## Prepared WSGI artifacts; execution denied before launch
+
+Summary008 records ordinary UID1000 private setup and three successful builds:
+native fixture extension, production authority, and WSGI test executable. Exact
+artifact/source/dependency hashes and setup versions are retained. The source
+manifest here is Linux UTF-8/LF output, distinguished from the retained redirected
+manifest representation in summary007. Prior setup transport failures are not
+discarded. No global package changes or snapshot edits occurred.
+Before the actual run, commit87.51% failed the <85% admission requirement. Thus
+expected8Rust groups/28actual cases have no execution counts, and no native
+framework/server import succeeded or failed. A was returned and prepared private
+artifacts preserved for later explicit allocation; this is not actual acceptance.

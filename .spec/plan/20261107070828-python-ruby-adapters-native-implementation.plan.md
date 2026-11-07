@@ -333,3 +333,38 @@ and manifests, and marks fullClosureStable=false. Observed passes are not final
 immutable graph qualification. No retry loop on moving dependencies. Native Ruby,
 Node parser execution/import/install/framework and Unix WSGI compile remain
 separate NOT_RUN gates; Windows cfg-excluded source is never called compiled.
+
+Root allocated separate WSL B for the first Unix WSGI check/Clippy, native Rust
+only (no Docker/import/server/installer). Immutable source8eb66811dbb87a12a9d57e4e0c5048758efc1c4e
+at the coordinator-provided snapshot contained all8intended inputs, matching the
+primary source hashes. Rust1.99.1/Python3.12.3/dev tooling preflight succeeded.
+Exact allocated PATH/target, jobs1/incremental0 and PYO3_PYTHON=/usr/bin/python3
+were used. Test-target cargo check passed21.81s; Clippy-Dwarnings passed2.22s.
+All2202 regular-file snapshot rows had identical before/after manifest SHA256
+fa01c01bbe853a366a4e22dbc97e54f58747974881f82794820fddca9c4e9e39.
+No snapshot edit. Archive hash f38f9017f5feaf12dc5f31e4c595cd6de5c871063f16e6cd647fd3342321472d
+is attributed to the coordinator, not falsely claimed independently recomputed.
+Summary007 retains exact commands/log/tool/source scopes. B returned, session35075
+terminal0; no owned active process. This closes first Unix type-check scope,
+not executable linking, tests, native-module/framework import, package or runtime.
+
+Root next allocated A actual WSGI28 on the same snapshot. Ordinary UID1000 setup
+created a private venv with hash-enforced Waitress3.0.2 and frozen Flask3.1.3/
+Django6.1.3; exact transitive versions, pip inspection and file manifest retained.
+No global/system package changes. Inline Windows/WSL quoting first expanded the
+task path incorrectly (/venv permission denial); a separate stdin inspection
+encountered CRLF. Failures were retained; LF private CLI orchestration corrected
+the transport, without editing implementation or snapshot source.
+Native extension build passed21.62s, authority11.64s and test executable4.73s.
+Exact three artifact hashes and unchanged Linux-format source inventory are in
+summary008. Executables were copied to private task bin/ and hashes matched;
+venv/module/bin state is retained for reuse, not a reason to rebuild.
+
+Actual launch resource admission failed at87.50794% commit/free28.468GiB, above
+the strict <85% start threshold. The run script/test listing/server was never
+started. A returned immediately; build session43788 terminal0, no owned active
+child. Root recognized the stop and holds new starts until resources recover.
+Expected8Rust groups/28actual cases remain NOT_RUN, not zero successful executed
+cases or compile-only completion. The pending compile-evidence commit had earlier
+stopped on CI owner's Git mutex; no foreign claim was touched and A was used for
+setup/build rather than held for documentation. All evidence is retained.

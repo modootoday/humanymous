@@ -254,8 +254,11 @@ Live-authority invalid requests must preserve the original effect/audit counts.
 Incomplete input must close within the separately configured server deadline.
 Existing object smoke counts do not include these unrun HTTP-server cases.
 adapters/python/server-pilot-contract.json preserves this mandatory gate with
-harnessSourceImplemented=true but executableHarnessImplemented=false pending the first
-Unix compile, and executedCases=0. Eight groups must execute with zero ignored/
+harnessSourceImplemented=true and a successful Unix check/Clippy against source
+8eb66811 recorded in summary007. Summary008 later records a linked test executable,
+native fixture extension and private dependency setup; executedCases remains0
+because resource admission denied launch. No prepared artifact is runtime proof.
+Eight groups must execute with zero ignored/
 filtered cases. No source/object-smoke result qualifies actual runtime or Windows
 ABI/IPC; no server group is silently skipped green.
 

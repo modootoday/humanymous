@@ -61,8 +61,23 @@ effect hash/audit; live-authority unknown/reserved/oversize/upgrade; dependency
 down; partial-body abort/input deadline; accepted IPC response timeout; and gated
 ALLOW disconnect with a matched connected control. Host lifecycle and authority
 orchestration live in separate support modules; Evidence/audit reuse is shared.
-All new Unix source remains NOT_COMPILED/NOT_RUN. Eight Rust groups must pass
-without ignores/filters; source completeness is not executable qualification.
+Summary007 records the first Unix check/Clippy success for this target on the
+immutable8eb66811 source snapshot. All eight intended primary source inputs
+matched;2202 regular-file hashes were identical before/after. CPython3.12.3 dev
+tooling was available. This type-checks the actual Unix branches but does not
+build/link a test executable or run any test, module import, server or installer.
+Eight Rust groups must still execute without ignores/filters; type-checking is
+not executable/runtime qualification.
+Summary008 subsequently records a UID1000 private venv (Waitress3.0.2 with wheel
+hash enforced, Flask3.1.3/Django6.1.3), native fixture extension, authority and test
+executable builds. No global packages changed. Initial orchestration quoting/
+line-ending failures were retained; LF private orchestration resolved them.
+Source regular-file inventory stayed unchanged after builds, and installed
+dependency versions/metadata/file hashes were retained. Executables were copied
+beside the private module so shared target rebuilds cannot replace those bytes.
+Actual execution was denied before launch at87.51% system commit (admission must
+be below85%); no test/server/import result follows. Prepared artifacts can be
+reused after explicit allocation and hash/resource verification, without rebuild.
 The incomplete-body timeout case measures idle closure. It does not establish
 a total network upload deadline against a continuously progressing slow body.
 

@@ -1,0 +1,76 @@
+{
+  "schema": "humanymous.adapter-compilation/1",
+  "scope": "first Unix Python WSGI host-pilot type check and Clippy only",
+  "executionSurface": "WSL REA-Ubuntu native Rust; not Docker or GitHub hosted",
+  "sourceSha": "8eb66811dbb87a12a9d57e4e0c5048758efc1c4e",
+  "sourceArchiveSha256ReportedByCoordinator": "f38f9017f5feaf12dc5f31e4c595cd6de5c871063f16e6cd647fd3342321472d",
+  "sourceArchiveHashIndependentlyRecomputed": false,
+  "immutableSnapshotEdited": false,
+  "intendedPrimaryInputsMatched": 8,
+  "tools": {
+    "pythonDevTooling": "python3-config includes and embed ldflags available",
+    "python": "3.12.3",
+    "rustc": "1.99.1 (58cf8f9c3 2026-10-13)",
+    "pythonExecutable": "/usr/bin/python3"
+  },
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/smile/humanymous-validation-targets/python-native",
+    "PYO3_PYTHON": "/usr/bin/python3",
+    "CARGO_BUILD_JOBS": "1",
+    "PATH": "/home/smile/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "CARGO_INCREMENTAL": "0"
+  },
+  "sourceMonitoring": {
+    "scope": "all regular files in coordinator-provided immutable snapshot; not an independent reconstruction of the archive",
+    "beforeManifestSha256": "fa01c01bbe853a366a4e22dbc97e54f58747974881f82794820fddca9c4e9e39",
+    "regularFileManifestUnchanged": true,
+    "regularFileRows": 2202,
+    "afterManifestSha256": "fa01c01bbe853a366a4e22dbc97e54f58747974881f82794820fddca9c4e9e39"
+  },
+  "preflightLogSha256": "81600d708c93a98c3e197aabc07162540a0a5ce72c01046a5805fd12c1de338c",
+  "commands": [
+    {
+      "cargoReportedSeconds": 21.81,
+      "rawLogSha256": "62d09d176c54e20278e71de6ce40d8a738fba9fcf9d965a588f75f04506f5e5c",
+      "argv": [
+        "cargo",
+        "check",
+        "--locked",
+        "-p",
+        "humanymous-python-adapter",
+        "--features",
+        "host-pilot",
+        "--test",
+        "wsgi_server"
+      ],
+      "exitCode": 0
+    },
+    {
+      "cargoReportedSeconds": 2.22,
+      "rawLogSha256": "48462e317f404217d3908d789e39109bc6e2897b42533786a596b1bfaa3b7aef",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "humanymous-python-adapter",
+        "--features",
+        "host-pilot",
+        "--test",
+        "wsgi_server",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "pythonWsgiHarnessTypeChecked": true,
+  "testExecutableBuilt": false,
+  "testExecution": "not_run",
+  "nativeModuleOrFrameworkImport": "not_run",
+  "serverOrPackageInstall": "not_run",
+  "dockerExecution": "not_run",
+  "releaseQualifiedTuples": [],
+  "wholeProductQualified": false
+}
