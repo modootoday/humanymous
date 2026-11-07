@@ -11,7 +11,7 @@ rel:
 
 # Audit key custody Linux retained source admission
 
-Version0.5. Root accepted the narrow prospective Unix WAL creation fix and the
+Version0.6. Root accepted the narrow prospective Unix WAL creation fix and the
 Linux diagnostic premises below; validation requires a new explicit A grant.
 Native producer implementation follows a separate concrete source-slice freeze.
 No dependency change or production route is authorized. Phase-B qualification
@@ -55,6 +55,25 @@ unsupported-platform coverage. No workload is implied by source acceptance.
 
 Capacity fixture SOURCE preparation is accepted separately; actual FD/RSS runs
 need another allocation and cannot prove universal128MiB from finite cases.
+Four Linux-only explicitly ignored capacity tests are now authored, UNRUN and
+uncompiled, under native/tests/capacity.rs. Their writer reuses ONE Record,
+existing Wal/canonical hash/HMAC/Checkpoint signing and fixed Frontier, retaining
+only latest checkpoint/scalar links; it does not use Log/history collections.
+Profiles:16384 records with16KiB raw rule body and sparse1024 cadence, on-disk
+record bytes>128MiB; one3MB combining-string Record with4096 rules/4096 signals;
+two near-frame-limit malformed raw hash/signature chains with required signing
+resource refusal/no partial Diagnostic;4096 segment pins plus sidecar and
+measured idle descriptor delta N+P+4, reader FD sharing and final release.
+The descriptor observer includes its own FD in before/after, so its subtraction
+cancels; it does not observe peak N+P+6 temporary opens. Other-handle reservation
+128 is asserted against the controlled process before source open, not inferred
+available capacity. Invalid/unsupported/missing venue must fail these tests.
+Generator/inspection/teardown RSS must be observed externally in the EXACT test
+process, not inferred from disk bytes or Cargo memory. No RSS observation or
+capacity claim has run. Four new capacity exclusions are separate from the one
+controlled-native case and historical five subprocess helpers; ignored cases
+are not successful tests. Native facade8025 source remains separately frozen;
+earlier3d325 proof does not cover compiling or running these new capacity tests.
 After facade qualification, S2 production recovery design must cover typed owner,
 unsigned versus physical-checkpoint proof roots, error/Scope compatibility,
 repair-after-authentication, append/rotation and consumer migration. The goal

@@ -20,6 +20,11 @@ compiler-qualified. Previous3d325 proof below is exact historical qualification.
 Unavailable open_native factory remains Unsupported; no production route or
 ownership/authority token emerges. Capacity/full S1 and S2 production recovery
 design/consumer/proof/repair gates remain required after this facade slice.
+Accepted capacity fixture SOURCE now adds four explicitly ignored Linux cases:
+large sparse history, large Unicode/arrays, raw-link resource refusal and4096
+retained pins/reader FD sharing. A bounded existing-primitive writer avoids Log's
+history collections. All four are UNRUN/uncompiled; no RSS/FD peak or128MiB
+guarantee is established. Their exclusions are separate from historical helpers.
 
 Linux retained-source admission follows [[plan:root/20261107135332]]. Root
 accepted the diagnostic-only quiescent cooperative-writer/trusted-namespace
