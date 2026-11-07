@@ -64,7 +64,12 @@ impl Start {
             // before the application call. Cancellation after this boundary
             // cancels the task, rather than pretending invocation never began.
             let permit = if let Some(admission) = admission {
-                if admission.bound.consume().map_err(failure)? != Verdict::Allow {
+                if admission
+                    .bound
+                    .consume()
+                    .map_err(|_| failure("authority result expired"))?
+                    != Verdict::Allow
+                {
                     return Err(failure("origin requires bound ALLOW"));
                 }
                 Some(admission.permit)

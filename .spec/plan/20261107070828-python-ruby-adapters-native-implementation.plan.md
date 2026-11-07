@@ -621,3 +621,11 @@ x64-mingw-ucrt while the inventoried Rust toolchain is MSVC. Rack actual remains
 unavailable until an existing compatible venue is established without installing
 or changing the graph. Root receives the exact checkpoint and one bounded
 Python-only command proposal; no all-host qualification follows.
+
+Allocated frozen800b9679 Python SDK batch failed at the first all-target check
+with E0277: Rejection has no Display, so the new final-consume error conversion
+was invalid. Strict Clippy and both actual controls did not execute. Summary015
+preserves first failure, source2732/SDK1462/selected-registry4867/config11 stable
+closures and terminal101/closure0; target returned. Replaced that conversion
+with fixed expiry messages in WSGI/ASGI and the analogous uncompiled Rack path.
+No retry or broader SDK/provider activation follows from the correction.

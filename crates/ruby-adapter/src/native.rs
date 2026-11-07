@@ -178,7 +178,11 @@ fn call(ruby: &Ruby, wrapper: Value, original: RHash) -> Result<Value, Error> {
     pending
         .check_handoff(expires)
         .map_err(|e| failure(ruby, e))?;
-    if bound.consume().map_err(|e| failure(ruby, e))? != Verdict::Allow {
+    if bound
+        .consume()
+        .map_err(|_| failure(ruby, "authority result expired"))?
+        != Verdict::Allow
+    {
         return reject(ruby, 503);
     }
     app.funcall(call, (env,))

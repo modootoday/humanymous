@@ -150,7 +150,11 @@ impl Wsgi {
         }
         // Host callbacks and argument preparation precede the final admission.
         pending.check_handoff(expires).map_err(failure)?;
-        if bound.consume().map_err(failure)? != Verdict::Allow {
+        if bound
+            .consume()
+            .map_err(|_| failure("authority result expired"))?
+            != Verdict::Allow
+        {
             return reject(py, &start_response, 503);
         }
         self.app.bind(py).call(&args, None).map(Bound::unbind)
