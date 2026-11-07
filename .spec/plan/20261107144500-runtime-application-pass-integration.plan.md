@@ -3,7 +3,7 @@ id: plan:root/20261107144500
 title: Draft Runtime Pass ownership and integration gap map
 status: draft
 created: 2026-11-07T14:45:00Z
-updated: 2026-11-07T14:45:00Z
+updated: 2026-11-07T14:51:24Z
 rel:
   depends_on: [sot:root/runtime-application, sot:root/pass-protocol, sot:root/rust-migration, plan:root/20261107143100]
 ---
@@ -116,6 +116,10 @@ consumption and audit before a server completion observation. Proposed signed
 instance context includes explicit domain/version, scope/session-epoch binding,
 fresh nonce/checked instance, issue/expiry/difficulty and eligible request context.
 It is PUBLIC authorization metadata, not a secret answer or human attestation.
+The eligible context itself stays PRIVATE: no app Authorization, body, raw
+serialization or unkeyed low-entropy request hash may enter the public token.
+Use a fresh opaque context ID backed by private state, or a separately reviewed
+keyed purpose commitment. A plain SHA256 of a password/body is not privacy.
 The concrete shared HMAC encoder/key/domain API must be jointly accepted; do not
 reuse the client-known RIT key, ambiguous delimiter joins, wall-clock-only proof
 or the pure attestation helper as an undeclared new wire protocol. HMAC verification
@@ -222,3 +226,97 @@ commitments only. Evaluator:37 pure challenge tests and proposed source checks d
 not qualify handlers, browser/AT or product. Adversarial verdict NEEDS-WORK:
 P0 policy/provenance/TTL/identity/replay/recovery choices above block reachable
 implementation. No blocker is waived as a production residual by this draft.
+
+## Independent Authority review v0.2
+
+Authority reviewed exact v0.1 SHA256
+6dc16e80be7358333097a70d0f5ca6972de1f441b7b495989c6a4f4b9f42db65 and returned
+NEEDS-WORK before wire. The following requirements incorporate all six findings;
+this revision is not an accepted protocol or implementation approval.
+
+### One absolute lifetime, pending explicit policy acceptance
+
+PassPolicy must supply ONE explicit finite instance TTL; no implicit60-second or
+20-bucket default is selected here. Retain issue wall time, checked wall expiry
+and local monotonic deadline. Refuse when wall_now>=expiry OR mono_now>=deadline;
+the pure challenge Fresh check is an ADDITIONAL AND condition, never an alternative
+lifetime that extends acceptance. Preserve backward-clock failure separately.
+The effective bound is also no later than session and required observer lifetime.
+Root must freeze the numerical TTL/caps and public expiry fields before wire.
+
+PoW, attestation, failed/malformed solve, status polling, a new RIT counter or
+bucket movement cannot renew the instance or its recovery artifact. Server-key
+epoch or session-epoch change invalidates ALL related instance/crypto/completion/
+recovery artifacts; no cached token survives restart. Explicit new-instance
+issuance uses a fresh ID/nonce and the accepted quota, not a renewal of the old
+instance. Expiry is not a wrong answer and never creates a speed-derived signal.
+
+### Proposed exact consumption/outcome table for review
+
+This table proposes NEW explicit Runtime route behavior, not legacy wire parity.
+All four actions are authenticated POST. Browser ACK is present only after valid
+RIT consumption and binds actual status; NativeFull gains no browser ACK.
+
+| Condition/action | Proposed HTTP | RIT consumed / browser ACK | Instance/tries/quota disposition |
+|---|---|---|---|
+| Outer or narrower accepted body/predecode resource limit |413|No / none|No victim state, tries or nonce mutation |
+| Unsupported required producer/profile or missing trusted budget identity |422|No / none|No substitute fingerprint/session quota; unavailable before issue |
+| Invalid MAC/session/scope/epoch or conflicting request counter |Existing403/409|No / none|Cannot burn another session's nonce, tries or budget |
+| Valid RIT, then malformed/unknown/duplicate semantic JSON |400|Yes / valid400 ACK|No new instance/crypto/recovery; no wrong-answer try; debit only accepted endpoint resource quota |
+| Valid RIT, endpoint issuance/attempt resource cap |429|Yes / valid429 ACK|No instance created/replaced; fresh nonce cannot reset quota |
+| new with no eligible server CHALLENGE, or stale/wrong/already-consumed instance |409|Yes / valid409 ACK|No trust or receipt refresh; no nonce/try mutation on an unrelated instance |
+| new accepted |200|Yes / valid200 ACK|Stage fresh instance, audit, then commit publication; replace previous instance only at accepted transition |
+| pow/attest accepted |200|Yes / valid200 ACK|Audit before marking exact instance crypto evidence; original expiry unchanged |
+| pow/attest invalid proof |422|Yes / valid422 ACK|No crypto promotion or TTL reset; no solve wrong-answer try; accepted endpoint quota still applies |
+| solve wrong alignment for exact live instance |422|Yes / valid422 ACK|One accepted wrong-answer try, audited; no replay reservation or trust; cap policy pending |
+| Any post-consumption instance expiry |410|Yes / valid410 ACK|Expired, not wrong answer; no renewal, event penalty or new artifact |
+| solve valid under all accepted requirements |200|Yes / valid200 ACK|Atomic Pending reservation, audit/witness, then one-use completion/recovery commit |
+| Post-consumption audit/witness/cancel/loss/unknown append |503 if no response started|Yes / best-effort valid503 ACK|Retain Pending/burned/quarantined state; missing ACK closes client, never reusable rollback |
+| Success response/ACK lost after commit |No invented delivery status|Counter and instance remain consumed|No reissued ticket, automatic solve retry or regenerated quota; client invalidates ambiguity |
+
+Exact410/422 schemas, solve cap, quota charging and semantic/predecode division
+still need Root/Authority acceptance. This table does not add detection rules.
+Authentication checks precede instance ownership changes; signed nonce/instance
+verification precedes decrementing that instance's try count. Body/decoder limits
+are resource failures, not secret answer or timing oracles.
+
+### Atomic reservation and distinct replay properties
+
+After validation but BEFORE any authoritative append, reserve instance redemption,
+accepted replay identity and recovery slot together as Pending under the one
+serialized owner/epoch. No second solve/new issue can steal, release or duplicate
+that reservation. Append/witness/cancel uncertainty, loss or ACK delivery failure
+retains consumed or quarantined ownership, never rollback to reusable state.
+No valid-prefix local fsync substitutes for required independent witness coverage.
+
+One-use HMAC instance redemption prevents exact instance/token replay. It is not
+the legacy cross-instance quantized motor-trace heuristic. Distinct valid
+instances with empty or regular switch/AT traces MUST NOT be hard-denied for
+sharing that motor representation. Copying cryptographic artifacts to a different
+nonce/session/instance is rejected by binding. Cross-instance behavioral replay
+and perturbation residuals must remain separately described; Root must explicitly
+dispose the legacy trace-gate behavior before any replacement is reachable.
+
+Recovery reservation/consumption must be one transaction with the matching fresh
+request RIT, current Engine decision, same live epoch/effect gate and required
+audit. Method/target/body/content-type/app Authorization/scope binding stays
+private/keyed. A current DENY or hard promotion cannot be upgraded. A partial/
+submitted origin request remains a possible effect after loss; no automatic
+origin replay, receipt reissue or renewed recovery deadline is permitted.
+
+### Accessible scene requirements, owner still to be designated
+
+Browser owner independently required semantic names/roles/states/values and
+usable bounds; complete keyboard-only and switch/AT operation; predictable focus
+entry, visible focus/traversal/restoration and status/error announcements. Already
+aligned zero-motion completion must work. IME composition/confirmation must not
+accidentally submit or navigate. No minimum event count, motor richness, speed,
+pointer-only operation or timeout advantage may determine eligibility.
+
+Record native input, accessibility action and programmatic-change provenance
+separately; DOM trusted flags/synthetic receipts do not qualify human or AT use.
+Root must designate the Rust Pass scene owner and host accessibility/focus adapter
+owner. The browser lane can supply CEF/Meari integration observations, not assumed
+ownership of a new web scene. Actual OS keyboard/screen-reader checks are distinct
+from pure challenge and Docker HTTP topology qualification. No UI was implemented
+or workload launched by this review.
