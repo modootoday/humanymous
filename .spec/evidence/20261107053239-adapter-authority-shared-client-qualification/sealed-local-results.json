@@ -1,0 +1,43 @@
+{
+  "schema": "humanymous.authority.sealed-local-result/1",
+  "authority_source": "40d0bdd",
+  "head_before": "27d5bbc6c147a0cff210a7fa76bf7e2c8580ff85",
+  "head_after": "66ed85c4be39ce2c6496d5b056ecae2fb4fa1c00",
+  "unit": {
+    "passed": 13,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "exit": 0
+  },
+  "test_compile": {
+    "exit": 0,
+    "executed": false,
+    "harnesses": [
+      "lib",
+      "main",
+      "decisions",
+      "local_service",
+      "native_process"
+    ]
+  },
+  "clippy": {
+    "all_targets": true,
+    "deny_warnings": true,
+    "exit": 0
+  },
+  "authority_source_stable": true,
+  "combined_immutable_graph_qualified": false,
+  "concurrent_audit_changed_paths": [
+    "crates/audit\\tests\\control_operations.rs",
+    "crates/audit\\src\\keys\\custody.rs",
+    "crates/audit\\src\\keys\\custody\\rotation.rs"
+  ],
+  "raw_results_sha256": "9f2ec104134f70d2e966786165dc2f53588b406ee249b6fad93ee86e101b82a7",
+  "raw_recovered": true,
+  "actual_ipc": "not_run",
+  "hosted_current_source": "not_run",
+  "previous_hosted_source": "63f69ae",
+  "previous_hosted_run": "42348518353",
+  "previous_hosted_result": "failed_not_applicable"
+}

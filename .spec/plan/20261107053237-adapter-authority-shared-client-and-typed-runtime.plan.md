@@ -266,3 +266,17 @@ The fixture ends child processes by kill+wait and proves ownership release; it
 does not claim graceful service shutdown/flush acknowledgement. Existing explicit
 serve_handler_until drain tests remain separate. Root slot queue still owns
 local compile allocation and hosted source dispatch; no duplicate run started.
+
+## Root-assigned A local verification
+
+Actual locked lib13passed/0failed/ignored/filtered; all five lib/bin/integration
+harnesses compiled with --tests --no-run, never executed. All-target Clippy
+-Dwarnings passed, all exits0, jobs1/incremental0. Raw logs recovered and attached
+with before109input hashes/results under private evidence20261107053238.
+Authority source40d0bdd stable. Three audit inputs changed concurrently across
+commands (control_operations/custody/rotation), so combined immutable graph is
+NOT qualified. Retain exact before/after hashes and HEAD27d5bbc to66ed85c rather
+than retroactively assigning results to latest source. Root notified; A returned
+immediately. Native IPC/custody/process tests remain NOT_RUN, latest hosted result
+42348518353/63f69ae failed and does not cover these changes. Public sanitized
+sealed-local-results.json records this distinction.
