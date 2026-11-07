@@ -1,0 +1,83 @@
+{
+  "source": "fef69a926ef5caa1e7f5e8fa811db242a38624fa",
+  "venue": "local Windows x64 MSVC immutable Git archive",
+  "target": "existing validation-native",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "stages": [
+    {
+      "command": "cargo check --locked --offline -p humanymous-cef-bootstrap -p humanymous-cef-desktop --all-targets",
+      "exit": 0,
+      "reported_duration": "3m09s"
+    },
+    {
+      "command": "cargo build --locked --offline -p humanymous-cef-bootstrap -p humanymous-cef-desktop",
+      "exit": 0,
+      "reported_duration": "4m04s"
+    },
+    {
+      "command": "cargo clippy --locked --offline -p humanymous-cef-desktop --features native-pilot-tests --all-targets -- -D warnings",
+      "exit": 0,
+      "reported_duration": "3.41s"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "humanymous_cef_bootstrap.dll",
+      "bytes": 287744,
+      "sha256": "60e80c8724be9165f8045ec1d6d3556ef887bf38c9cb6dce6ed16f30685f4980"
+    },
+    {
+      "name": "humanymous_cef_desktop.dll",
+      "bytes": 58548736,
+      "sha256": "56df65a0b1e3545389b2d45eb70a9bea245108b2ef10b424a50474bb501a9341"
+    }
+  ],
+  "closure": {
+    "not_exhaustive": [
+      "registry",
+      "toolchain",
+      "all SDK headers/libraries",
+      "ancestor Cargo configuration"
+    ],
+    "scope": "browser sources/manifests/contracts and archived Cargo manifests/root graph; SDK archive.json/libcef.dll/bootstrap.exe",
+    "source_files": 87,
+    "source_difference_records": 0,
+    "fixed_sdk_inputs": 3,
+    "after_sha256": "689e1abd0568b3fe0bbec14e73fc1efa760f87daf61a8a7fa93b704bae3d45ea",
+    "sdk_difference_records": 0,
+    "before_sha256": "689e1abd0568b3fe0bbec14e73fc1efa760f87daf61a8a7fa93b704bae3d45ea"
+  },
+  "supervision": {
+    "observed_total_seconds_approx": 443,
+    "known_owned_pids_remaining": 0,
+    "work_stop_seconds": 570,
+    "reservation": "returned",
+    "deadline_expired": false,
+    "overall_limit_seconds": 600,
+    "timeout_path_exercised": false
+  },
+  "logs": [
+    {
+      "stage": "check",
+      "sha256": "ea0e2c384aa6d80b285ff03ee0be924e6e265b5bbea757212f952e3328dae20c"
+    },
+    {
+      "stage": "build",
+      "sha256": "c95e7ff28b06aa0fc660e499e441a21c7c4794f4077b8621d50c9e538592a037"
+    },
+    {
+      "stage": "clippy",
+      "sha256": "3256b88fa7f7dbfa67d2af57cbeb7167a72e98475f0d9b9a1c6427f3161a86a1"
+    }
+  ],
+  "test_execution": "not_run",
+  "gui_execution": "not_run",
+  "ime_candidates": "not_run",
+  "os_screen_reader": "not_run",
+  "full_sandbox": "unqualified",
+  "browser_ready": false,
+  "timing_is_not_a_hosted_comparison": true
+}

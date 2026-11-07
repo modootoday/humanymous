@@ -13,6 +13,15 @@ rel:
 
 ## Actual bounded Windows CEF gate passed
 
+Latest fef69a92 local native preflight passed bootstrap+desktop all-target check,
+production build and desktop native-pilot-tests all-target strict Clippy. Actual
+durations are3m09,4m04 and3.41s; the supervised batch finished about443s within600.
+No timeout branch was exercised. The87-file source/manifest and three fixed SDK
+input closures were unchanged. Both built DLL hashes and the earlier actual
+d214 failure are retained; this new success does not diagnose unrecovered raw
+compiler text or promote old runtime counts. Actual GUI/process/keyboard/IME/AT,
+full sandbox and descendant termination remain separate gates. No GUI launched.
+
 New actual run42388354925/job128450452895 at d2148b0a failed native build101 after
 runner14/helper-Clippy success. Safe diagnostics identify E0599 at native
 browser_controls.rs:76; rendered compiler text and the private build-log body

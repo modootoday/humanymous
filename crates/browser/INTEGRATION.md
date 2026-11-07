@@ -6,10 +6,18 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+Exact fef69a92 local Windows preflight passed bootstrap+desktop all-target check,
+production DLL build and desktop native-pilot-tests all-target strict Clippy.
+The owned sequential batch completed in about443s under its600s bound. All87
+declared source/manifest inputs and three fixed SDK inputs were unchanged.
+controls-native-preflight.json records exact DLL hashes and the actual stages.
+No CEF application/process test, GUI, native keyboard, IME candidate or OS screen
+reader was run in this compilation batch. BrowserReady remains false.
+
 Actual d2148b0a run42388354925 failed native build101 after runner14/helper-Clippy
 success, with E0599 at browser_controls.rs:76. Protocol/bootstrap/desktop stages
 were unreached. The pinned winit0.31.0-beta.3 API provides meta_key(), replacing
-the unsupported super_key() source call. Corrected native compilation is pending;
+the unsupported super_key() source call. Corrected compilation passed in fef above;
 the original private compiler body is unrecovered. See the delivery-owned
 cef-d2148b0a-summary.json and controls-cef-meta-key-candidate.json receipts.
 
@@ -61,7 +69,8 @@ cef-run-42377685195 JSON files in evidence:root/20261107073932. Private report/l
 bodies remain unrecovered. The desktop producer/consumer checks passed, including
 the positive seven-route requirement, but no fresh manual GUI/IME/AX observation,
 full sandbox, descendant or Chrome-parity claim follows. BrowserReady=false.
-New native-feature strict Clippy also remains unexecuted.
+That hosted run did not execute native-feature strict Clippy; fef above now
+covers the later local desktop-feature lint gate.
 
 ### Historical e77 and pre-ec4 source checkpoint
 
