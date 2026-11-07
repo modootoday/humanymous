@@ -32,6 +32,11 @@ Formatting and scoped document checks only; compile/native tests are NOT_RUN.
 
 ## How to read it
 
+Independent implementation review after aa655e7b found no new P0/P1 and judged
+the exact gates ready for validation. It confirmed actual inventory/pending/
+anchor checks, complete retention identity, both ledger memberships and unchanged
+lifecycle reuse. This is read-only source review, not compile or native evidence.
+
 Earlier evidence95831's44 native passes do not qualify this later source.
 Legacy retire/reconcile/resume APIs remain local-only compatibility; production
 administration must dispatch retained-only methods. Callers must witness intent,
