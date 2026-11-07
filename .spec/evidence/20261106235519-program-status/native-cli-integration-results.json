@@ -1,0 +1,41 @@
+{
+  "schema": "humanymous.native-cli-integration/1",
+  "observed_at": "2026-11-07T04:40:18.4620805Z",
+  "owner_source_commit": "862883c",
+  "workspace_members": 20,
+  "package": "humanymous-native-cli",
+  "binary": "humanymous-native",
+  "workspace_tuple": {
+    "Cargo.toml": {
+      "sha256": "31fecc234e7d9fc3f452ac62db7d4d7d6f8fe45a7aad0de9da3cc56ff43b5bac",
+      "bytes": 1775
+    },
+    "Cargo.lock": {
+      "sha256": "e3102190c13cd4a2d59ebbcb4b833f66cac9b6fc8687864e50c7a30cb2c979c4",
+      "bytes": 148186
+    },
+    "rust-toolchain.toml": {
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+      "bytes": 123
+    }
+  },
+  "source_hashes_verified": true,
+  "release_artifact_sha256": "684000e002ec0a66ed0d818af4c11a2d8c96eaae6fcef6cdc5a08e9e9a37f69a",
+  "root_checks": {
+    "warnings_denied_clippy": "passed",
+    "ignored": 0,
+    "actual_process_passed": 6,
+    "unit_passed": 11,
+    "locked_all_target_build": "passed"
+  },
+  "owner_evidence": "evidence:root/20261107042614",
+  "limits": {
+    "scaffolding_doctor_verify_sdk": "pending",
+    "other_os": "dryrun design; native execution pending exact-source CI",
+    "write_scope": "Windows only, trusted local workspace, atomic noclobber single JSON; no crash durability claim",
+    "published": false,
+    "adapter_runtime": "not_implemented",
+    "full_runtime_qualified": false,
+    "capabilities_available": []
+  }
+}

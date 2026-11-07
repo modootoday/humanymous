@@ -3,7 +3,7 @@ id: sot:root/rust-migration
 title: Rust migration conventions
 status: active
 created: 2026-11-06T19:40:11Z
-updated: 2026-11-07T04:20:51Z
+updated: 2026-11-07T04:39:37Z
 verify:
   - cargo fmt --all -- --check
   - cargo clippy --workspace --all-targets -- -D warnings
@@ -14,12 +14,22 @@ rel:
 
 # Rust migration conventions
 
+Native CLI862883c is integrated as workspace member20: package
+humanymous-native-cli, binary humanymous-native, init subcommand. Reuse existing
+serde/serde_json/junction versions; publish=false and Rust1.99.1 remain. The owned
+source/manifest hashes match evidence:root/20261107042614; root independently ran
+locked11unit+6actual-process tests and Clippy. Windows explicit no-clobber JSON
+publication and all-framework dryrun planning do not implement or qualify SDK
+adapters. Other-OS writes, multi-file Rust scaffolding, doctor/verify and SDK/ABI
+consumers remain later work. No generated foreign glue or installer hooks.
+
 Browser1a7de24 adds a borderless Rust SVG/Meari shell and native resize/cursor
 handling, plus accepted opt-in native SDK design. Final core18/native11 and
 explicit rejection case1/flags4 are source-scoped; native96DPI gestures/readbacks
 belong to the separate prior GUI source manifest. Later max-edge/DPI/capture fixes
 are unit/build-only. Planned native SDK crates are not workspace packages yet;
-root remains19. No sandbox, navigation, Chrome parity, SDK ABI or full AT claim.
+that slice retained19; the later native CLI raises this to20. No sandbox,
+navigation, Chrome parity, SDK ABI or full AT claim.
 
 The guard migration starts with a pure bounded epoch/state API and four native
 tests. It accepts event kinds/baseline counts only, refuses precision overflow,

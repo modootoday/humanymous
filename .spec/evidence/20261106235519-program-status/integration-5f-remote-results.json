@@ -1,0 +1,92 @@
+{
+  "schema": "humanymous.integration-six-tuple/1",
+  "observed_at": "2026-11-07T04:38:22.4368521Z",
+  "source_sha": "5f909713a553b7490565574f97ae04e26a61181a",
+  "native_run": 42338082261,
+  "native_status": "success",
+  "tuples": [
+    {
+      "report_sha256": "156f9b8fe7ffae6977305d630a240e8c52668194dd010a8fae02105e1b72e6ab",
+      "windows_passed": null,
+      "status": "passed",
+      "windows_required_harnesses": null,
+      "raw_ignored_helpers": null,
+      "windows_executed_harnesses": null,
+      "full_runtime_qualified": false,
+      "scope": "implemented-crate-native-tests",
+      "os": "linux",
+      "arch": "arm64"
+    },
+    {
+      "report_sha256": "278e22f6605e727350118b82e392fbaf8b45f82ce93c953809df91b385afcdc3",
+      "windows_passed": null,
+      "status": "passed",
+      "windows_required_harnesses": null,
+      "raw_ignored_helpers": null,
+      "windows_executed_harnesses": null,
+      "full_runtime_qualified": false,
+      "scope": "implemented-crate-native-tests",
+      "os": "linux",
+      "arch": "x64"
+    },
+    {
+      "report_sha256": "16d2434b676036c35d880a0b137c96b1cee7dfb49827852e01005b7d17588067",
+      "windows_passed": null,
+      "status": "passed",
+      "windows_required_harnesses": null,
+      "raw_ignored_helpers": null,
+      "windows_executed_harnesses": null,
+      "full_runtime_qualified": false,
+      "scope": "implemented-crate-native-tests",
+      "os": "macos",
+      "arch": "arm64"
+    },
+    {
+      "report_sha256": "385caeab40642587c62ec4d03524000582eaef9f154544e2264ba7992c0d1a9b",
+      "windows_passed": null,
+      "status": "passed",
+      "windows_required_harnesses": null,
+      "raw_ignored_helpers": null,
+      "windows_executed_harnesses": null,
+      "full_runtime_qualified": false,
+      "scope": "implemented-crate-native-tests",
+      "os": "macos",
+      "arch": "x64"
+    },
+    {
+      "report_sha256": "62e1dbceef344eeadaf2d53513e5bd6da498035e192a4569d64f4536a34ba987",
+      "windows_passed": 228,
+      "status": "passed",
+      "windows_required_harnesses": 51,
+      "raw_ignored_helpers": 2,
+      "windows_executed_harnesses": 51,
+      "full_runtime_qualified": false,
+      "scope": "implemented-crate-native-tests",
+      "os": "windows",
+      "arch": "arm64"
+    },
+    {
+      "report_sha256": "aae2300df90971e8984502b2a7825148710719858653175e5f76ea659834e807",
+      "windows_passed": 228,
+      "status": "passed",
+      "windows_required_harnesses": 51,
+      "raw_ignored_helpers": 2,
+      "windows_executed_harnesses": 51,
+      "full_runtime_qualified": false,
+      "scope": "implemented-crate-native-tests",
+      "os": "windows",
+      "arch": "x64"
+    }
+  ],
+  "collector_run": 42338082218,
+  "collector_status": "success",
+  "actual_browser_passed": 30,
+  "cef_run": 42338082212,
+  "cef_status": "success",
+  "limits": {
+    "full_browser_sandbox_or_human_at": "not established",
+    "new_native_cli": "not present at tested source",
+    "full_runtime_qualified": false,
+    "full_ci": "separate mandatory gate; last observed in progress"
+  }
+}

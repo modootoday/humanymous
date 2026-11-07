@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:33:34Z
+updated: 2026-11-07T04:39:37Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -71,17 +71,21 @@ cb5dce7 Linux custody 실패는 보존했다. 공용 exclusive guard 수정 뒤 
 같은 이미지의512-task export1pass/max0도 별도 보존하며 sandbox를 해제하지 않았다.
 
 5f90971 collector42338082218은 실제Firefox30/0failed/0ignored 성공이며 산출물을
-다운로드했다. native42338082261은Linux/macOS4환경 성공·Windows2환경 실행 중이다.
+다운로드했다. native42338082261은6환경모두성공이며report6개를다운로드했다.
+해당Windows source는각51/51harness·228passed·raw2ignored helpers다.
 CEF42338082212도component범위성공이다. full CI42338082293은별도관측하며 실행 중은성공이아니다.
 
 정본화 이후 구체적인 crates/native-cli manifest를 받아 working tree의20번째
 workspace member로등록하고의존성을resolve했다. 새production dependency version은
 없고기존serde/serde_json/junction을재사용한다. locked all-target check가통과했다.
-source owner는기능·단위·파일럿검증을계속진행중이며Cargo귀속은source인계후에한다.
+source862883c와evidence:root/20261107042614를대조했으며root에서도unit11/process6·
+Clippy가통과했다. Cargo/lock의귀속통합을완료한다. 현재workspace20이다.
 이는위5f90971의19package기준점과구분한다. registry publish=false,SDK/framework
 runtime지원은여전히미검증이다. 후속통합근거는roadmap-continuation-results.json이다.
 현재source의manifest write는Windows 전용이고다른OS는dryrun 범위다. Cross-OS
-완료로표시하지않으며source변경/owner최종인계후다시대조한다.
+완료로표시하지않는다. source/manifest/artifact 해시는최종인계기록과대조했다.
+최신native6/collector/CEF요약은integration-5f-remote-results.json,
+native CLI최종Cargo통합은native-cli-integration-results.json에귀속한다.
 
 ## 모든 병렬 채팅의 결과와 후속 책임
 

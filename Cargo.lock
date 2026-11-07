@@ -1835,6 +1835,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "humanymous-native-cli"
+version = "0.1.0"
+dependencies = [
+ "junction",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "humanymous-native-security"
 version = "0.1.0"
 dependencies = [
