@@ -17,15 +17,16 @@ pub struct SyntheticEvidence(pub Observations);
 impl humanymous_authority::decision::Evidence for SyntheticEvidence {
     fn report(
         &mut self,
-        request: &humanymous_integrity::adapter::ValidatedRequest,
+        request: &humanymous_core::integrity::adapter::ValidatedRequest,
         _: bool,
-    ) -> Result<humanymous_signals::report::SessionReport, humanymous_authority::Rejection> {
+    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_authority::Rejection>
+    {
         self.0.lock().unwrap().push(Observed {
             headers: request.headers().to_vec(),
             mode: request.header_mode().to_owned(),
         });
         let fixture: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../scoring/tests/fixtures/frozen/human-chrome-allow.json"
+            "../../../sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json"
         ))
         .unwrap();
         Ok(serde_json::from_value(fixture["report"].clone()).unwrap())

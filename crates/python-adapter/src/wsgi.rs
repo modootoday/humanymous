@@ -1,9 +1,9 @@
 use crate::failure;
 use humanymous_authority::client::Verdict;
+use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_framework_adapter::{
     Admission, Configuration, Observation, Pending, body_length, internal_header,
 };
-use humanymous_integrity::adapter::AdapterProfile;
 use pyo3::{
     prelude::*,
     types::{PyBytes, PyDict, PyList, PyTuple},

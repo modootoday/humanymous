@@ -64,9 +64,10 @@ struct GatedEvidence {
 impl Evidence for GatedEvidence {
     fn report(
         &mut self,
-        request: &humanymous_integrity::adapter::ValidatedRequest,
+        request: &humanymous_core::integrity::adapter::ValidatedRequest,
         raw: bool,
-    ) -> Result<humanymous_signals::report::SessionReport, humanymous_authority::Rejection> {
+    ) -> Result<humanymous_core::signals::report::SessionReport, humanymous_authority::Rejection>
+    {
         if let Some(gate) = self.gate.take() {
             gate.entered
                 .send(())

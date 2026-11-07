@@ -562,6 +562,96 @@ fixture/tool exports. No root Cargo/features/deps, leaf API or runtime changed.
 Registry availability, current namespace and historical SDK checks do not qualify
 the proposed profiles. Independent critique and root acceptance precede wiring.
 
+### Eight-package baseline: exact owner handoff
+
+The user confirmed structural-development baseline v0 on2026-11-08. Framework,
+Node, Python and Ruby responsibilities move into the intentionally public
+humanymous-adapters package only through root's sequenced slice. This supersedes
+treating the earlier per-context Cargo package candidates as required permanent
+packages. It does not make all internal modules/constructors public or qualify a
+host role. No independent move, rename, manifest change or ref synchronization
+is authorized by this owner handoff; root must first freeze this specific group.
+
+Snapshot adapter-migration-handoff-001.json in evidence:root/20261107075243 binds
+baseline commitd6da3e9c9d0b7709d184fe122729329545057c78 to87 tracked files using
+relative paths, byte sizes, exact worktree SHA256 and canonical Git blob SHA1.
+Counts: framework7, Node16, Python24, Ruby9, node assets18, Python assets8, Ruby
+assets4, Python workflow1. Moving roots were clean at capture; active owned
+compiler/process handles and target leases were empty. Historical immutable
+materializations/targets, raw evidence, ignored native outputs and node_modules/
+SDK caches are excluded and must not be pruned or relabelled as moved proof.
+The handoff metadata/this SoT update are outside those moving roots. It is a
+snapshot, not a live freeze: any subsequent edit to the87 inputs requires a new
+versioned hash handoff, never silent reuse or overwrite of this receipt.
+
+Root must resolve these hazards in its exact destination/path/API matrix:
+
+- One library target must keep distinct Node/Python/Ruby/core/.NET host-role
+  artifacts and entrypoints through separate admitted feature/build/staging
+  profiles. Current leaf native/host-pilot/package-tool features have different
+  meanings; merging them under one undifferentiated native switch could activate
+  both Python and Ruby or ship fixture exports. No all-features host product.
+- Preserve module/context-restricted custody. Admission's private permit and
+  actual Authority bound-result ownership cannot become sibling-constructible.
+  Keep Configuration/error types in their original contexts rather than flatten
+  same-named framework/runtime configs. Python's private Rust constructors and
+  Ruby's private binding API need curated visibility, not blanket pub(crate).
+- Node N-API, PyO3 and Magnus build/init/SDK boundaries and reviewed unsafe macro/
+  export scopes must survive module moves; do not broaden unsafe into safe core.
+  Generated CJS/ESM/init/export/header identities need final artifact tests, not
+  namespace inference. Python extension and embedded products remain separate.
+- Packaging drivers currently assume CARGO_MANIFEST_DIR.parent().parent() is the
+  repository root. Nested branded paths invalidate that assumption. Update owned
+  package recipes/manifest paths, explicit library/bin targets, relative shared
+  fixture/include_str paths, pilot discovery and Python workflow Cargo selectors
+  together. Root decides whether packaging tool targets belong in adapters or CLI;
+  they must not become default installed product commands by accident.
+- Replace external context imports only against accepted core/runtime/platform
+  APIs; reuse one canonical implementation. Test-only frozen evidence and process
+  helpers need explicit testing capability and real provider contracts, with no
+  readiness bypass. Private parent/peer/interactive ownership is still unqualified
+  for the pending actual Node/Windows WSGI pilots; no DACL/TEMP/PID workaround.
+
+Required slice tests: scoped fmt/check/strict Clippy; shared original-clock and
+admission/forged-constructor controls; Node pure and actual VM late/queued/abort/
+body/cookie cases; Python SDK linkage plus3 registered-completion controls and
+separate WSGI/ASGI/GuardDrop teardown cases; Ruby native ABI/GC/compaction/GVL/
+worker settlement and real framework cases. Validate unknown/incompatible/fixture
+features, exact type/visibility identity, extracted-package consumers and final
+restored npm/wheel/gem imports for each role/tuple. No zero-selected, ignored or
+old-source result counts as migrated proof. Preserve summaries010/014/016/017/018
+and every original source/failed denominator; current pending SDK/runtime work
+is not closed by this handoff. Root owns common graph/locks and final Cross-OS/
+Docker/product gates. No publication or main integration authorization follows.
+
+#### CORE-SLICE-01: separately authorized consumer references
+
+Root subsequently assigned exactly the four current adapter Rust source/test
+trees for mechanical core consumer edits, superseding the no-import-change hold
+for this slice only. Eight files had integrity/signals references; none had the
+other five old core crate references. They now use humanymous_core::integrity or
+humanymous_core::signals, with no behavior, weights, visibility, SDK/API or path
+move. Root alone edits all Cargo manifests/lock and relocates the seven contexts;
+its concurrently dirty adapter Cargo manifests are foreign and excluded here.
+
+core-consumer-handoff-001.json records exact eight before/after source hashes.
+The earlier87-file snapshot is historical before these assigned edits and root's
+manifest updates; it is NOT the current move freeze. The shared fixture include
+now points to the actual sdk/humanymous-core/tests/scoring/fixtures path. Canonical
+filtered Git blobcbf3e6c6 matches the original. The raw moved worktree blobd2cb0146
+has preexisting CRLF: failed raw-versus-normalized equality is not migration
+drift. Root separately verified all26 moved non-Rust rawSHA256 against its
+pre-move worktree map, differences0. No byte restoration/normalization is required
+or performed; both observations remain distinct provenance. The include remains
+a temporary current-tree path, not a permanent published-package escape.
+
+Direct pinned rustfmt and whitespace/reference scans pass. No old qualified core
+crate references remain in these four Rust trees. No Cargo build, Clippy, units,
+CI or runtime was launched while root's workspace integration is incomplete.
+Compiler/actual-host/SDK gates remain pending explicit coherent-source allocation;
+no original receipt is promoted to the new core graph. Root must reconcile
+manifests, dependency visibility/type identity and fixtures before that gate.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

@@ -1,7 +1,7 @@
 use crate::{Configuration, Error};
 use base64::{Engine, engine::general_purpose::STANDARD};
 use humanymous_authority::client::{self, BoundResponse, ClientOptions, ExpectedBinding};
-use humanymous_integrity::adapter::{AdapterProfile, parse_with_profile};
+use humanymous_core::integrity::adapter::{AdapterProfile, parse_with_profile};
 use sha2::{Digest, Sha256};
 use std::time::{Duration, Instant};
 

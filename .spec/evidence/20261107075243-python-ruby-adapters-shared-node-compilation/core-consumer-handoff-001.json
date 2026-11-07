@@ -1,0 +1,91 @@
+{
+  "schema": "humanymous.core-consumer-handoff/1",
+  "slice": "CORE-SLICE-01",
+  "owner": "codex/rust-python-ruby-native",
+  "status": "source-only-awaiting-root-coherence",
+  "beforeSourceCommit": "d6da3e9c9d0b7709d184fe122729329545057c78",
+  "fileCount": 8,
+  "contextsRequalified": [
+    "integrity",
+    "signals"
+  ],
+  "otherFiveContextsHaveNoMatchingRustReferences": true,
+  "manifestsEditedByThisOwner": false,
+  "pathsMoved": false,
+  "behaviorOrVisibilityChanged": false,
+  "compilerClippyOrCiExecuted": false,
+  "activeOwnedHandles": [],
+  "activeOwnedTargetLeases": [],
+  "fixture": {
+    "oldPath": "crates/scoring/tests/fixtures/frozen/human-chrome-allow.json",
+    "newPath": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+    "oldCanonicalBlob": "cbf3e6c6b40d9ecb241238953947c9f669e7f86a",
+    "initialMovedWorktreeBlob": "d2cb01465e63f786e6659320cecccf7fa76e1e16",
+    "initialMovedCrBytes": 218,
+    "logicalLinesIdentical": true,
+    "byteEquality": "Canonical filtered Git blob matches original; preexisting raw CRLF is a separate representation, not migration drift",
+    "foreignFixtureEdited": false,
+    "canonicalFilteredMovedBlob": "cbf3e6c6b40d9ecb241238953947c9f669e7f86a",
+    "movedRawSha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+    "rootRawPrePostEvidence": "Root reports file-map.before.json verification: all26 moved non-Rust rawSHA256 unchanged, differences0",
+    "restorationOrNormalizationRequired": false
+  },
+  "files": [
+    {
+      "path": "crates/framework-adapter/src/request.rs",
+      "beforeGitBlobSha1": "806e8a6e57fa7f4f28c0587278456c80eb082b76",
+      "beforeWorktreeSha256": "dcfb2c85a197eb0b6afe819ddb9e478d4a3fa266a7cbcdfd2bd96349e4c4fa89",
+      "afterWorktreeSha256": "af29dd8ba54e3820e610114b1d2500a901d3b2c2dac25da9c3988b5e11757213",
+      "afterBytes": 11712
+    },
+    {
+      "path": "crates/framework-adapter/tests/support/authority.rs",
+      "beforeGitBlobSha1": "6c9e8c856cdd376bcbc219c97f1c06a33aec31d5",
+      "beforeWorktreeSha256": "cb850848febd45e968a1e033781201690d80382f993b448d101810501c133d6b",
+      "afterWorktreeSha256": "fc9bd1d6c18bf9732f628c9d315b69190d638a1e8ac2d4a0c2f67e5315765076",
+      "afterBytes": 1543
+    },
+    {
+      "path": "crates/node-adapter/src/envelope.rs",
+      "beforeGitBlobSha1": "103a500696cd3db1b6953f3421607d13d6202290",
+      "beforeWorktreeSha256": "9b8d3c3aa4dadd8d4b8a15347419535f926c1ae4bee03abf54ed43264000fccf",
+      "afterWorktreeSha256": "abb838369bcd29edeab5b34d0ea79f0fea9062dd19e91167e2c75ce365b12135",
+      "afterBytes": 3377
+    },
+    {
+      "path": "crates/node-adapter/src/stream.rs",
+      "beforeGitBlobSha1": "f4fdf8ff421cf2265770f716633925bd856baaa9",
+      "beforeWorktreeSha256": "42a49560164d370b92a5164d2ec2231c29b6f41229a2533c4560f1ecd9860258",
+      "afterWorktreeSha256": "9b32baf4826b3c2c346f6631b5472e6ec15c5b0b93f4458df159101cebc9edca",
+      "afterBytes": 23683
+    },
+    {
+      "path": "crates/python-adapter/src/wsgi.rs",
+      "beforeGitBlobSha1": "f1df9720f95035ac83fcc6e11c56926fa18a2fd7",
+      "beforeWorktreeSha256": "2dfa5c7e4c8c0d3543738338d5e9ae27868d86d3ce797e0f9f8386d28600bd2f",
+      "afterWorktreeSha256": "be30c2ab4705e82d88d5ab54c0dbe5fcb32f3fa65ae88f5b6a2572ddc8bfa917",
+      "afterBytes": 6981
+    },
+    {
+      "path": "crates/python-adapter/src/asgi.rs",
+      "beforeGitBlobSha1": "aecc2c4e32299e707b75b780048b6b365c494808",
+      "beforeWorktreeSha256": "e9ddcd8d2c6e2e83eb224193a5a0d32aeb2f31d1e7192a0337e29eb3fb23bae1",
+      "afterWorktreeSha256": "9c4b4e264972c67e5c17513a49abd09d2e5615ad44aaffe4bd8b75f3cb083091",
+      "afterBytes": 10903
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_authority.rs",
+      "beforeGitBlobSha1": "083d284ea712fd53364a63e9c108d7a5b3fe3807",
+      "beforeWorktreeSha256": "f0e85bdedb469f2e40a919bb51b27923a3c721597e8a2f49cfb680e25c49a3ab",
+      "afterWorktreeSha256": "9b5046b955b6a101916a72c67044b1250a3d94d4c3d39ff33dc0cc1b748b070d",
+      "afterBytes": 5523
+    },
+    {
+      "path": "crates/ruby-adapter/src/native.rs",
+      "beforeGitBlobSha1": "eece6995eb309dda836184d3c55d158ba96921f4",
+      "beforeWorktreeSha256": "7eedb4dac155a7b7544a4168c67fadf10db4778112fc717071e40c0e9cbfef4d",
+      "afterWorktreeSha256": "abc67367ebeebabcb602e5f61f9e6f5d4bf304e51e0f2c2e822da97793e8b97d",
+      "afterBytes": 9245
+    }
+  ]
+}

@@ -1,0 +1,556 @@
+{
+  "schema": "humanymous.adapter-migration-handoff/1",
+  "status": "snapshot-not-move-authorization",
+  "sourceCommit": "d6da3e9c9d0b7709d184fe122729329545057c78",
+  "workspace": "C:/workspaces/humanymous",
+  "provider": "codex",
+  "session": "rust-python-ruby-native",
+  "targetPackage": "humanymous-adapters",
+  "rootSliceFreeze": "NOT_RECEIVED",
+  "trackedFilesOnly": true,
+  "roots": [
+    "crates/framework-adapter",
+    "crates/node-adapter",
+    "crates/python-adapter",
+    "crates/ruby-adapter",
+    "adapters/node",
+    "adapters/python",
+    "adapters/ruby",
+    ".github/workflows/python-validation.yml"
+  ],
+  "fileCount": 87,
+  "dirtyAtCapture": [],
+  "activeCompilerOrProcessHandles": [],
+  "activeTargetLeases": [],
+  "excluded": [
+    "gitignored node_modules and SDK caches",
+    "gitignored generated native payloads and target outputs",
+    "private raw evidence and immutable historical source materializations",
+    "handoff metadata and owning SoT updates outside the moving roots"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/python-validation.yml",
+      "gitBlobSha1": "93023e1d010044153f939c740c09555a91e909a4",
+      "bytes": 1941,
+      "worktreeSha256": "7bbd8ee8c72befa1c3a4b763554417647f60b52cae99033550c8d998206d8acd"
+    },
+    {
+      "path": "adapters/node/.gitignore",
+      "gitBlobSha1": "17ced0d29f6b637fa90f9585329d8f68d72f6af4",
+      "bytes": 28,
+      "worktreeSha256": "f0ce22fbe64e18e3231d9b1e0e8d40a6d031f3e3a4dcd041773132608f94c93c"
+    },
+    {
+      "path": "adapters/node/Dockerfile.pilot",
+      "gitBlobSha1": "fbb44878c21f9c46b2bf736dcd58ab74b660cd00",
+      "bytes": 2092,
+      "worktreeSha256": "8c0e4de9f7b39249199ce68945c0c1a2c978257411072ec20aa515aae1aaef58"
+    },
+    {
+      "path": "adapters/node/Dockerfile.pilot.dockerignore",
+      "gitBlobSha1": "63b6d194f8df6209848f6b330763e1486e0c0c41",
+      "bytes": 525,
+      "worktreeSha256": "bf3c5fe2dc0a7039edef1e188051037ac34409187d58c46128455dd6e723c124"
+    },
+    {
+      "path": "adapters/node/LICENSE",
+      "gitBlobSha1": "6003040460732f9754e2a6b3b94aa0395dcf6cd5",
+      "bytes": 11555,
+      "worktreeSha256": "6f2c88afbe6cf499b8721ccafa44324e2385f2832131b0741fe33af70ab0babe"
+    },
+    {
+      "path": "adapters/node/README.md",
+      "gitBlobSha1": "bb8b3c0fd3abc3775df9ef32056c470c53d257ab",
+      "bytes": 3911,
+      "worktreeSha256": "03ca875d121b76061e80afe6fc7e9e20ada33ea844998f3849d826843e51e7fc"
+    },
+    {
+      "path": "adapters/node/capabilities.json",
+      "gitBlobSha1": "09b3124905d83681ff09c6d7dededd1a6017715a",
+      "bytes": 1516,
+      "worktreeSha256": "e30b2a2ea43644b7e0c1c6d89a8c75ee5f8263d996e7f3cebacd87f457e6815c"
+    },
+    {
+      "path": "adapters/node/host-pilot-contract.json",
+      "gitBlobSha1": "d8bd11cf7601a65654b293eef478ad5e45a9bfad",
+      "bytes": 1970,
+      "worktreeSha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875"
+    },
+    {
+      "path": "adapters/node/package-lock.json",
+      "gitBlobSha1": "bd370b71df76737a46028244cc172d1ae8b25652",
+      "bytes": 109322,
+      "worktreeSha256": "7d6740944840e34947cea72ea84231c70c47a6cbf8b2a10050970513a5a674cf"
+    },
+    {
+      "path": "adapters/node/package.json",
+      "gitBlobSha1": "f951712fbe5f9409a7b0bb75e07e79c5bac58fc1",
+      "bytes": 2093,
+      "worktreeSha256": "d584969e4879562c7a48b59e1091e0e54bb66dcf906b2976907d45dbf865a77d"
+    },
+    {
+      "path": "adapters/node/src/index.cjs",
+      "gitBlobSha1": "5eb3790b79a9cbfe5e509e6db25a284e4ac94d3b",
+      "bytes": 11670,
+      "worktreeSha256": "9039b26e0eb867715b3a5a28a4119552e1bf5f25aa169efdf61024f9d572e7c9"
+    },
+    {
+      "path": "adapters/node/src/index.d.cts",
+      "gitBlobSha1": "e6aafcd18569076e074fb4341f3b8cea8d117597",
+      "bytes": 1925,
+      "worktreeSha256": "4d15cc2bc349ef52181555475b49bdbb7cb49e2bda72687b7907ff326e2f77bc"
+    },
+    {
+      "path": "adapters/node/src/index.d.mts",
+      "gitBlobSha1": "147a587727684767ef2c1d3bf544c2c587813ee5",
+      "bytes": 29,
+      "worktreeSha256": "367b9e4e891801071f84072950f452e70bb63372ab988d06479cfb0d2e848983"
+    },
+    {
+      "path": "adapters/node/src/index.mjs",
+      "gitBlobSha1": "3d7271b20f67ec7adf1acb023bca9ddb72711f27",
+      "bytes": 115,
+      "worktreeSha256": "940331bb0246ba144ccca0c5d7c8c3098b9b8a2b67efe9cca2e0c0e04d50245a"
+    },
+    {
+      "path": "adapters/node/test/conformance.test.mjs",
+      "gitBlobSha1": "b86aa96519c98eddc6adaf017b4609edeb731d15",
+      "bytes": 10665,
+      "worktreeSha256": "5b97faa75808105cf40b3e20c1a1167e82589323600a217e54c5fbd07dddb51d"
+    },
+    {
+      "path": "adapters/node/test/package.mjs",
+      "gitBlobSha1": "3884f668754d1a3f200e3688d2065d5b9099697b",
+      "bytes": 362,
+      "worktreeSha256": "f79ae947e11347722b6b582d7b7cfed7b9b8356cc227e1c8d3880ff4b6701bad"
+    },
+    {
+      "path": "adapters/node/test/pilot.mjs",
+      "gitBlobSha1": "01c6290a598ef57044b6dee0f5f383c7debf3b8b",
+      "bytes": 2123,
+      "worktreeSha256": "0cb661374edbd9fbac31c22c11c296133da28fb3c17f89df0cf8b588f5255029"
+    },
+    {
+      "path": "adapters/node/test/types.cts",
+      "gitBlobSha1": "94c8ef54ea3fcf7e0f0871f7a953bb4966be35a9",
+      "bytes": 184,
+      "worktreeSha256": "4aabba7f2c17ddbb45bb67be3f60993bb6544e0d41cb8565e7b4756efdb5269a"
+    },
+    {
+      "path": "adapters/node/test/types.mts",
+      "gitBlobSha1": "89700a574afe7e0e998ef2491392c848c870bb42",
+      "bytes": 326,
+      "worktreeSha256": "978f2b170c06fc23ebc604b146a3647dfac1a30945f2856baaa96b4e88410e7f"
+    },
+    {
+      "path": "adapters/python/README.md",
+      "gitBlobSha1": "3d370186f974d887633db510170ecb2b2374e2c3",
+      "bytes": 1550,
+      "worktreeSha256": "ced756144c7d1daa59cfd9110df1ffe32ecbe5e17bb0af146debf46543d5da55"
+    },
+    {
+      "path": "adapters/python/asgi-server-pilot-contract.json",
+      "gitBlobSha1": "f7b2d569071bfb6eed86fd77b7cf5389eb1d1aea",
+      "bytes": 2730,
+      "worktreeSha256": "75b7b5d77702d38d04943810caf373bafd66bd3dedb02c375add714bfda00483"
+    },
+    {
+      "path": "adapters/python/pilot-contract.json",
+      "gitBlobSha1": "c5968d4369a3f2778a723f65e505176fd5f40674",
+      "bytes": 2447,
+      "worktreeSha256": "6e28056e27311f6962b7f7772c86e1c3208f951621834d2792275a5d6e8f9b3d"
+    },
+    {
+      "path": "adapters/python/pilot-requirements.txt",
+      "gitBlobSha1": "401d6dece2f9d83702cc26b3bf53c5449e55b1a8",
+      "bytes": 220,
+      "worktreeSha256": "23957003f5062260519728bbbd65d5daf3595e452f81ece84cfb3227cce6d46b"
+    },
+    {
+      "path": "adapters/python/pyproject.toml",
+      "gitBlobSha1": "31e07b8b9d78e11532f2eff33259a43afa9fa682",
+      "bytes": 715,
+      "worktreeSha256": "c0677234def685d21c4540f41e505d12d071d62e3c1bd165dc9eb4147202b265"
+    },
+    {
+      "path": "adapters/python/server-pilot-contract.json",
+      "gitBlobSha1": "f9ca8d3e9146efb305451252f8e4a4fc3eb6c114",
+      "bytes": 4972,
+      "worktreeSha256": "34304fa5b1ba38bbf68196b3dd36ac2f03f2a6339820e8af05e30106b494f07d"
+    },
+    {
+      "path": "adapters/python/uvicorn-requirement.txt",
+      "gitBlobSha1": "49ae4766e30ad524639b56f1ee0732e1ff5282fb",
+      "bytes": 512,
+      "worktreeSha256": "83de60f2e4dada27dc82eef238e455e400a919c9a9ed967f8bab26d9551bc24b"
+    },
+    {
+      "path": "adapters/python/waitress-requirement.txt",
+      "gitBlobSha1": "6bb8740666ac023895759eca3ff3272656bb3cd9",
+      "bytes": 300,
+      "worktreeSha256": "172356c34e37fb2695252aa29c7f22c9fcf895d425bffbb72844c567c517a237"
+    },
+    {
+      "path": "adapters/ruby/README.md",
+      "gitBlobSha1": "7aa9b1af817f5c3525c7ffde0948637060c1428e",
+      "bytes": 1278,
+      "worktreeSha256": "c2018265ab0a7a42330b5fe57bbe225f40d70c57f536888e034558acd9b73d4b"
+    },
+    {
+      "path": "adapters/ruby/host-pilot-contract.json",
+      "gitBlobSha1": "bb22badb33c55ff6f06e24132ea5fd2ea61fe068",
+      "bytes": 1255,
+      "worktreeSha256": "1edd3f31e58bf54625d8d1cce15a3d919a1c9041aabde7d13eba8837d2526521"
+    },
+    {
+      "path": "adapters/ruby/package.json",
+      "gitBlobSha1": "364087c3f89ee998f8b14e825c48ced9afa39a9a",
+      "bytes": 493,
+      "worktreeSha256": "f2f73893e9c1bdab86d46279a12b26804462298531f6bdb4e778eb209b41a96f"
+    },
+    {
+      "path": "adapters/ruby/pilot-contract.json",
+      "gitBlobSha1": "383c83c37c1e04de3b0012a34bc0da41c3fd0aaf",
+      "bytes": 2072,
+      "worktreeSha256": "952085638ec2fc801dbe32d12db682ef352847203cc4bda14e0673f7c9f7c6f3"
+    },
+    {
+      "path": "crates/framework-adapter/CONSUMER-CONTRACT.md",
+      "gitBlobSha1": "653eac0c1c187f52f4cb5c9acc979e5bbacd8094",
+      "bytes": 18858,
+      "worktreeSha256": "0c1d24a2e5548a4c06574470c97ab911664ecd238ff9b91746e78166ef0f7e8a"
+    },
+    {
+      "path": "crates/framework-adapter/Cargo.toml",
+      "gitBlobSha1": "f8e8658c7023ec434953f3d727571ef503dc33ad",
+      "bytes": 530,
+      "worktreeSha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c"
+    },
+    {
+      "path": "crates/framework-adapter/INTEGRATION.md",
+      "gitBlobSha1": "3e18800ad7dcb0dc0903826a0d68209778b42667",
+      "bytes": 24021,
+      "worktreeSha256": "aa2ffb5a7bd05b9e82d00f06b5cedb446ad4bc19f7d5ed4e4d75430f309c29c8"
+    },
+    {
+      "path": "crates/framework-adapter/src/configuration.rs",
+      "gitBlobSha1": "aafb11180e5a751a8daf2901bd6f323e4b7c84cc",
+      "bytes": 5239,
+      "worktreeSha256": "b63e8cc3c8da380e3733933206e086b52b62f264f682e358df23240f6934eab8"
+    },
+    {
+      "path": "crates/framework-adapter/src/lib.rs",
+      "gitBlobSha1": "ebd407862b5de391d8c88a3abc3fd32a04d52d50",
+      "bytes": 3250,
+      "worktreeSha256": "e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3"
+    },
+    {
+      "path": "crates/framework-adapter/src/request.rs",
+      "gitBlobSha1": "806e8a6e57fa7f4f28c0587278456c80eb082b76",
+      "bytes": 11706,
+      "worktreeSha256": "dcfb2c85a197eb0b6afe819ddb9e478d4a3fa266a7cbcdfd2bd96349e4c4fa89"
+    },
+    {
+      "path": "crates/framework-adapter/tests/support/authority.rs",
+      "gitBlobSha1": "6c9e8c856cdd376bcbc219c97f1c06a33aec31d5",
+      "bytes": 1507,
+      "worktreeSha256": "cb850848febd45e968a1e033781201690d80382f993b448d101810501c133d6b"
+    },
+    {
+      "path": "crates/node-adapter/Cargo.toml",
+      "gitBlobSha1": "a79061d7e1fcd00b7e880bbb17fe512266bcc24b",
+      "bytes": 1134,
+      "worktreeSha256": "b1f3221b38e28cb225a8c928786392b113fce5bcdcbc58ebe60ef3c71abff846"
+    },
+    {
+      "path": "crates/node-adapter/INTEGRATION.md",
+      "gitBlobSha1": "3a9980a9a53b1fdf24ebb6b055267c85b057aeec",
+      "bytes": 7346,
+      "worktreeSha256": "c4572ce66064fe091f5a4839d2d37ae1befd7176288fdeebda5b1b0cafac0846"
+    },
+    {
+      "path": "crates/node-adapter/build.rs",
+      "gitBlobSha1": "7b8f1faabb7bb9d841fa7a8c00b6a189a9883a7a",
+      "bytes": 107,
+      "worktreeSha256": "1f57ae6df404deec338aa9e64c9e4d42beba866ef8f9615470b89acef10d05c9"
+    },
+    {
+      "path": "crates/node-adapter/src/bin/humanymous-node-package.rs",
+      "gitBlobSha1": "14a90df25835f9b449a4f34905ad404b36607929",
+      "bytes": 11361,
+      "worktreeSha256": "8d8848e22153d9658dcea820dec2c3862e268400d3ebbdde6e851c952301b001"
+    },
+    {
+      "path": "crates/node-adapter/src/bin/humanymous-node-package/install.rs",
+      "gitBlobSha1": "4b24763f8d1de4a485723a4b5a0d7e2be83f3a9a",
+      "bytes": 3416,
+      "worktreeSha256": "cc21f5e0713607e81c5912c166b7ccb7acac2d9621caa0a91b07a2b33c51115b"
+    },
+    {
+      "path": "crates/node-adapter/src/envelope.rs",
+      "gitBlobSha1": "103a500696cd3db1b6953f3421607d13d6202290",
+      "bytes": 3365,
+      "worktreeSha256": "9b8d3c3aa4dadd8d4b8a15347419535f926c1ae4bee03abf54ed43264000fccf"
+    },
+    {
+      "path": "crates/node-adapter/src/host.rs",
+      "gitBlobSha1": "6a34803c74ddfa2489574cfec97c8401965cf1ad",
+      "bytes": 4350,
+      "worktreeSha256": "9f0c54928271bb02be0e363840168f590ed2b078709e5f5a2da5c8eb10e3326e"
+    },
+    {
+      "path": "crates/node-adapter/src/lib.rs",
+      "gitBlobSha1": "6e4d480f8abc0d00287acea1236f8689439462a5",
+      "bytes": 3132,
+      "worktreeSha256": "6042f74648c07fb81e7bde4b687208424dc9b8f363af80a70b068beaacd0e9f7"
+    },
+    {
+      "path": "crates/node-adapter/src/pilot.rs",
+      "gitBlobSha1": "50d5f53d4b2a573f9923e9382db2b8f4310f3846",
+      "bytes": 7631,
+      "worktreeSha256": "1f0d2100744d91ed1d3f1a994fbc8f6a3668ea0556b20285e933728d38fbbae8"
+    },
+    {
+      "path": "crates/node-adapter/src/pilot/origin.rs",
+      "gitBlobSha1": "84208db8ab9642c4fef7a466aef43332f14379e7",
+      "bytes": 11991,
+      "worktreeSha256": "e1b0e73e4c1d4d4ac953d13fe03929dcef0110712c0e502497dceaa00489c319"
+    },
+    {
+      "path": "crates/node-adapter/src/server.rs",
+      "gitBlobSha1": "ef83cda94af7e61e15c0bca86b29a0ab5cc16af4",
+      "bytes": 2543,
+      "worktreeSha256": "ada95aaeb40f6e01f5ba008119aadad3b025911c2de43b96b13b43b20a5edf51"
+    },
+    {
+      "path": "crates/node-adapter/src/stream.rs",
+      "gitBlobSha1": "f4fdf8ff421cf2265770f716633925bd856baaa9",
+      "bytes": 23677,
+      "worktreeSha256": "42a49560164d370b92a5164d2ec2231c29b6f41229a2533c4560f1ecd9860258"
+    },
+    {
+      "path": "crates/node-adapter/src/template.rs",
+      "gitBlobSha1": "7c42afb839402e403c2aadec31ba9c0f9d7530d1",
+      "bytes": 1916,
+      "worktreeSha256": "7b9b542fbe81a359dabd7668b694ace35a40919594494263658a68c9cc3f6d2e"
+    },
+    {
+      "path": "crates/node-adapter/tests/host_process.rs",
+      "gitBlobSha1": "1764740ed32432549cb61f4086c78f701700cf92",
+      "bytes": 23302,
+      "worktreeSha256": "e620113ac93c3d9d81cc4812655ddc8654fc7fda620dd0cc8cdfbb9bf3bd9275"
+    },
+    {
+      "path": "crates/node-adapter/tests/support/http.rs",
+      "gitBlobSha1": "21fe2d041b2a5b039efd35a3fc7f7db3fbc701ae",
+      "bytes": 4240,
+      "worktreeSha256": "0cd896b0ec01729259da3f316be282bbaccf466bce89115c51a7bc74d35f765f"
+    },
+    {
+      "path": "crates/node-adapter/tools/source_receipt.rs",
+      "gitBlobSha1": "4ca7deda64fad18ab2bc49973a95f978dfaedd4e",
+      "bytes": 1544,
+      "worktreeSha256": "c6f6ca2c19f3aff8a6638937bc8e015f361e3264790e4a6fb35ee6d16be16d58"
+    },
+    {
+      "path": "crates/python-adapter/Cargo.toml",
+      "gitBlobSha1": "9e03efdfb7371857b50940372642dfd03b8babe9",
+      "bytes": 1228,
+      "worktreeSha256": "9162e99c6636204fe6b7febaf1a96cdf3dbf1aa0cecc7fd5efdbeef41d1aac71"
+    },
+    {
+      "path": "crates/python-adapter/INTEGRATION.md",
+      "gitBlobSha1": "7992837eb27abdfa1a4b203c4eafe805db19edf3",
+      "bytes": 10101,
+      "worktreeSha256": "3769a14ca8ae15bbf5375aaaaf97fa32d9c30a12a77bfbd754d093a2228383ef"
+    },
+    {
+      "path": "crates/python-adapter/src/asgi.rs",
+      "gitBlobSha1": "aecc2c4e32299e707b75b780048b6b365c494808",
+      "bytes": 10897,
+      "worktreeSha256": "e9ddcd8d2c6e2e83eb224193a5a0d32aeb2f31d1e7192a0337e29eb3fb23bae1"
+    },
+    {
+      "path": "crates/python-adapter/src/async_call.rs",
+      "gitBlobSha1": "716bef75b88e5785d57b84e843a4bffd736c2cd5",
+      "bytes": 9217,
+      "worktreeSha256": "2dc5da5298eecceba9c206f2bc4ac90d71dcc0ee391c0938d9dc552bf2a17fa0"
+    },
+    {
+      "path": "crates/python-adapter/src/async_call/completion_tests.rs",
+      "gitBlobSha1": "77fe9e57bb9b50ebe6f5a58793c8f61914686dd1",
+      "bytes": 3687,
+      "worktreeSha256": "0031a1d974fbafb21fb827a587addfe1903b688c362e1e73430d0c431d98f7dc"
+    },
+    {
+      "path": "crates/python-adapter/src/bin/humanymous-python-package.rs",
+      "gitBlobSha1": "0e80e452ce4e7001e972581659fd3819e3b2eb65",
+      "bytes": 10463,
+      "worktreeSha256": "0b6a8d92343bde8550f20870f6c2d6f924ba13f1a00a1d929596e0c1157533c5"
+    },
+    {
+      "path": "crates/python-adapter/src/hosted.rs",
+      "gitBlobSha1": "8688821a5213e694fae35de160ce81d26ef9012f",
+      "bytes": 11837,
+      "worktreeSha256": "2a1a1df10f6f2596a41e486e6fa8811c8bf5e51fb9dfd3b7795b8f395b15f77e"
+    },
+    {
+      "path": "crates/python-adapter/src/lib.rs",
+      "gitBlobSha1": "4f16c4cffc1f2fb6a28a20d5e17c430bea7b9e83",
+      "bytes": 1851,
+      "worktreeSha256": "7a3754ef9545b39072ba1b38ae33041a793a909d4c44a7f8052f91e3483aa326"
+    },
+    {
+      "path": "crates/python-adapter/src/pilot.rs",
+      "gitBlobSha1": "d7873e7a071630f0556bc83a61b2546f5eacdd15",
+      "bytes": 5911,
+      "worktreeSha256": "5f67c286ee834b9ddf8b33e951fd137e9ec4cc892689d4332800925320db0777"
+    },
+    {
+      "path": "crates/python-adapter/src/pilot_asgi.rs",
+      "gitBlobSha1": "5124fd5f2030384c8e5ec0a5c28a41dc08d519dd",
+      "bytes": 5043,
+      "worktreeSha256": "4e8fa39fc083e5df8c690f3a2fea2dcdd044cb548ba3a51b8ec03cff25ff436d"
+    },
+    {
+      "path": "crates/python-adapter/src/wsgi.rs",
+      "gitBlobSha1": "f1df9720f95035ac83fcc6e11c56926fa18a2fd7",
+      "bytes": 6975,
+      "worktreeSha256": "2dfa5c7e4c8c0d3543738338d5e9ae27868d86d3ce797e0f9f8386d28600bd2f"
+    },
+    {
+      "path": "crates/python-adapter/src/wsgi_handoff_tests.rs",
+      "gitBlobSha1": "73e10bcfa652cb17985b80f9fa4c6d00f045b20c",
+      "bytes": 6352,
+      "worktreeSha256": "7ad131ab13b46fa2017ccc9b6c31bdb0e264b6ab6b88fe1e75e453fa3d4787b1"
+    },
+    {
+      "path": "crates/python-adapter/tests/asgi_server.rs",
+      "gitBlobSha1": "f080acb530249c0d8541269db783ccbe8b373114",
+      "bytes": 2371,
+      "worktreeSha256": "47b73211c233d08d3c31fbf6d8303ed03000ae38ab2b11e8fa14bc80c017cdf7"
+    },
+    {
+      "path": "crates/python-adapter/tests/component_controller.rs",
+      "gitBlobSha1": "42e5f6d20c28d3b1c490141969298001c294d2bf",
+      "bytes": 14173,
+      "worktreeSha256": "4ab16775f6cf4081485d8c5251cacd2f4a77c1d2d84eede544254f42bc992f6e"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/authority_environment.rs",
+      "gitBlobSha1": "28deae6ed421183334e8a7179f37de04c00ca449",
+      "bytes": 1693,
+      "worktreeSha256": "edc1994a7e5b7c3c9b696fd7180d8e454622f5c63136ddca23a0b212ced10b57"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_files.rs",
+      "gitBlobSha1": "bbf47e93c14ce9fb9e10810d4fa7cb91b6adfb5d",
+      "bytes": 4366,
+      "worktreeSha256": "9743800f6636d5741bd75d86045246c639b35fa4c98b1dd6d4a13efd7d366edd"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_lifecycle.rs",
+      "gitBlobSha1": "db2a6c1f1a4d1f29f42d3f408d7ec21c21dafa9a",
+      "bytes": 236,
+      "worktreeSha256": "5839d24ac3246523878c28f9e4174142c77ad53fa979ea42d366e00c4c41f5ad"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/component_process.rs",
+      "gitBlobSha1": "48639357e5c2959eb275da9bb56d675b87f60bb8",
+      "bytes": 1376,
+      "worktreeSha256": "2aa1be700f39bfbf0ca2b35abc4f298b98686ad30e3249c2bf0b4b0c0ecef9d7"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/framework_server_cases.rs",
+      "gitBlobSha1": "cf0c34862dd5dd45a6a93f93a45b6e9b843d3849",
+      "bytes": 16844,
+      "worktreeSha256": "ea9d542c228cabf614487fd1d5650994efc850802bb15b5d6031b5accdc9b93d"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_authority.rs",
+      "gitBlobSha1": "083d284ea712fd53364a63e9c108d7a5b3fe3807",
+      "bytes": 5507,
+      "worktreeSha256": "f0e85bdedb469f2e40a919bb51b27923a3c721597e8a2f49cfb680e25c49a3ab"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_host.rs",
+      "gitBlobSha1": "ed9449a74c95272b4fdda55faf43bd7a518f773d",
+      "bytes": 6070,
+      "worktreeSha256": "b5a70bada4596b6d1625cd280d779f838ff174636026e98f840cf31711606f26"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_receipt.rs",
+      "gitBlobSha1": "0522f75336a9d02da00c0519ace05086aae606a0",
+      "bytes": 6952,
+      "worktreeSha256": "93f3fe41df8e77025da319dfefa089668e2e4fb645e2a49c2df56dbcb7cfab45"
+    },
+    {
+      "path": "crates/python-adapter/tests/support/wsgi_receipt_actual.json",
+      "gitBlobSha1": "69022f5952b4d64d76871df80aef802035f3eabf",
+      "bytes": 3377,
+      "worktreeSha256": "35a6cf047068deaf0c33db08181662e85ddc15f1142f6fb17cd27994132d21e1"
+    },
+    {
+      "path": "crates/python-adapter/tests/wsgi_server.rs",
+      "gitBlobSha1": "bf082165ad9b1483b6cd49fc7164ef73bd707bf3",
+      "bytes": 2263,
+      "worktreeSha256": "edda82821667c0ddfc5a8ee52754d614a5c6b8ee297847ce6d5e917df4bbcbd3"
+    },
+    {
+      "path": "crates/ruby-adapter/Cargo.toml",
+      "gitBlobSha1": "99a36aa21df2008ad4a1a5508a2f26d5b00b86d7",
+      "bytes": 705,
+      "worktreeSha256": "c3e27988754042b1d494ce15b46fd8853e709b48518de2059632a4852c957932"
+    },
+    {
+      "path": "crates/ruby-adapter/INTEGRATION.md",
+      "gitBlobSha1": "d5f227093e9b58e2cfaff81c50eaec987263025c",
+      "bytes": 5342,
+      "worktreeSha256": "526fb402cc9d808236255db23155fd31fc5c28ef15589cb5d8cf324a15547eb9"
+    },
+    {
+      "path": "crates/ruby-adapter/src/bin/humanymous-ruby-package.rs",
+      "gitBlobSha1": "efbaf27d5d5e982ad37650d14a95d91ac165c051",
+      "bytes": 8803,
+      "worktreeSha256": "2ad3ceabff49d9fe58afee78b5f873ebe9a46bacc26f5ef9e237e9c943cb9051"
+    },
+    {
+      "path": "crates/ruby-adapter/src/hosted.rs",
+      "gitBlobSha1": "1350d253aaff417f3d2f907e3a48bafe72aff932",
+      "bytes": 5603,
+      "worktreeSha256": "8b9be5b125f84633febebf30383ec8732a41697dc9f8eab1ff4bd922c9d38758"
+    },
+    {
+      "path": "crates/ruby-adapter/src/lib.rs",
+      "gitBlobSha1": "81e536f0a19fd869ef82d4fb0c52515956d16219",
+      "bytes": 246,
+      "worktreeSha256": "ed0e443b2d517797b0d2d68dc4850d5d9c987caedc12dc49db64dad73e85f4da"
+    },
+    {
+      "path": "crates/ruby-adapter/src/native.rs",
+      "gitBlobSha1": "eece6995eb309dda836184d3c55d158ba96921f4",
+      "bytes": 9239,
+      "worktreeSha256": "7eedb4dac155a7b7544a4168c67fadf10db4778112fc717071e40c0e9cbfef4d"
+    },
+    {
+      "path": "crates/ruby-adapter/src/native/liveness.rs",
+      "gitBlobSha1": "da2ba3232631e2e28214a100d0d5190be49eee04",
+      "bytes": 748,
+      "worktreeSha256": "a108e0914dc320811573538be75a260009091db4706a82c9aa6d9c8251b9232f"
+    },
+    {
+      "path": "crates/ruby-adapter/src/package.rs",
+      "gitBlobSha1": "8d7f66ffafc6aadc29bb394aad8f5478857b41ad",
+      "bytes": 5776,
+      "worktreeSha256": "207aab9ce9ed3f4de058b272f42ede78836cb07b4783b9c1542dac7dca8d4b77"
+    },
+    {
+      "path": "crates/ruby-adapter/src/worker.rs",
+      "gitBlobSha1": "a913617659b65840c25c3411489d27e8f80033f3",
+      "bytes": 2177,
+      "worktreeSha256": "6a72de650b258e29ca797b9d16a7c72f40ae6d093a1209eb04e850e6cecf0c05"
+    }
+  ],
+  "stateScope": "This owner and the listed moving roots only, not other project sessions"
+}

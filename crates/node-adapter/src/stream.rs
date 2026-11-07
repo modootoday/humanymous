@@ -398,7 +398,7 @@ fn start_decision(
                 &config,
                 &observation,
                 &decision_body,
-                humanymous_integrity::adapter::AdapterProfile::Node,
+                humanymous_core::integrity::adapter::AdapterProfile::Node,
             );
             let result = tokio::select! {
                 value = decision => value.map_err(|e| error(e.0)),

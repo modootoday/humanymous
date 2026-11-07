@@ -30,7 +30,7 @@ pub(crate) fn encode(
         o,
         body,
         deadline,
-        humanymous_integrity::adapter::AdapterProfile::Node,
+        humanymous_core::integrity::adapter::AdapterProfile::Node,
     )
     .map_err(boundary)
 }
@@ -65,7 +65,7 @@ mod tests {
     fn exact_body_and_sanitization() {
         let mut o = observation();
         let wire = encode(&config(), &mut o, &[0, 255], now().unwrap() + 1000).unwrap();
-        let parsed = humanymous_integrity::adapter::parse(&wire, now().unwrap()).unwrap();
+        let parsed = humanymous_core::integrity::adapter::parse(&wire, now().unwrap()).unwrap();
         assert_eq!(parsed.body(), [0, 255]);
         assert_eq!(
             parsed.headers(),
