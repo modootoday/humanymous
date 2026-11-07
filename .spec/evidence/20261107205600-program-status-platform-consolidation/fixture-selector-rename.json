@@ -1,0 +1,10 @@
+{
+  "path": "crates/integrations/humanymous-platform/src/testing/process/controlled_barrier/actual_tests.rs",
+  "before_sha256": "56c14c637f0b0eda9f749f4d0bc017e615b8f30e3d178999e682c32c0d230811",
+  "after_sha256": "9ac5d788e3173865bd23e6cd64a452f9f63d3c124522a47cda83ee4e5da1470e",
+  "renamed_occurrences": 2,
+  "new_selector": "parent_remains_running_until_original_outer_deadline",
+  "old_selector_not_exported": true,
+  "case_id_unchanged": "outer-live-timeout",
+  "scope": "Mechanical static test function and grant-string rename; native execution not performed"
+}

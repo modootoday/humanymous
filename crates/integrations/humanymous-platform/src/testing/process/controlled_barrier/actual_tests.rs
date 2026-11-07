@@ -22,9 +22,9 @@ fn missing_grant_refuses_before_workload() {
 
 #[test]
 #[ignore = "controlled live-parent timeout probe; must be owned by outer Job"]
-fn live_parent_waits_for_original_outer_deadline() {
+fn parent_remains_running_until_original_outer_deadline() {
     await_controlled_fixture_grant(
-        "testing::process::controlled_barrier::actual_tests::live_parent_waits_for_original_outer_deadline",
+        "testing::process::controlled_barrier::actual_tests::parent_remains_running_until_original_outer_deadline",
     )
     .expect("controlled outer grant required");
     marker(CONTROLLED_LIVE_PARENT_MARKER);
