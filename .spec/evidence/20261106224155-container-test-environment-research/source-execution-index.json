@@ -65,11 +65,19 @@
       "result": "failed_after_startup",
       "facts": "Preflight10Go/22Lab/76delivery pass; product18assertions16pass2fail: witness-exchange and browser_actor. Exact early actor root cause unknown; full/release false.",
       "evidence": "hosted-browser-49394e38-failure.json"
+    },
+    {
+      "source": "bb763c1f0f3b838b0ff5213936e0ec37b62a22b0",
+      "run": 42381878489,
+      "profile": "browser_product_diagnostic",
+      "result": "failed_after_entered_dns_finish",
+      "facts": "Preflight10Go/22Lab/81delivery pass; product18assertions16pass2fail. Last entered-stage actor_browser_dns_finish; exact actor/test/DNS-finish outcome unknown. Full/release false.",
+      "evidence": "hosted-browser-bb763c1f-failure.json"
     }
   ],
   "unmeasured": [
     "Generic813 readiness-contract remediation needs its own later generic Docker/wargame run; Go8 does not execute that26-case catalog.",
-    "a6d875aa browser entered-stage diagnostics have separate source/compiler proof; actual execution not yet performed.",
+    "Next typed browser actor outcome projection is design/source work; no actual execution yet.",
     "No row establishes full product or release qualification."
   ]
 }
