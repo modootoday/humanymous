@@ -1,0 +1,92 @@
+{
+  "schema": "humanymous.pages-browser493-execution-review/1",
+  "observed_at_utc": "2026-11-07T14:45:14.998667+00:00",
+  "source_sha": "49394e382f7a710c41907d6ec873b4a84638a149",
+  "run_id": 42378961845,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42378961845",
+  "jobs_rechecked_via_github_connector": [
+    {
+      "id": 128422327954,
+      "name": "preflight",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128422993968,
+      "name": "product",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "artifact_query_returned": 0,
+  "decoded_product_job_log": {
+    "bytes": 45078,
+    "sha256": "c4ecd45bb188e31de00b4e9b5b91836fa5042be56c4e3789256f12332e9f8f19",
+    "single_typed_delivery_summary": true,
+    "matches_both_owner_public_projections": true,
+    "exit1_footer_observed": true,
+    "scope": "Full decoded public job log captured; not the original private actor report or private process output."
+  },
+  "reported_assertions": {
+    "failed": 2,
+    "other": 0,
+    "passed": 16,
+    "total": 18
+  },
+  "assertion_arithmetic_rechecked": true,
+  "complete_assertion_inventory_available": false,
+  "typed_failure_diagnostics": {
+    "failure_count": 2,
+    "failures": [
+      {
+        "case_id": "browser-actual-witness-exchange",
+        "error_code": "assertion_failed",
+        "status": "failed"
+      },
+      {
+        "case_id": "execution",
+        "error_code": "browser_actor",
+        "status": "failed"
+      }
+    ],
+    "partial": false,
+    "schema": "humanymous.lab-safe-diagnostics/1"
+  },
+  "required_unavailable_count": 9,
+  "public_required_cases_blocked": 7,
+  "skips": null,
+  "owner_exit": 1,
+  "source_changed_during_execution_reported": false,
+  "full_product_qualified": false,
+  "release_ready": false,
+  "cleanup_independently_qualified": false,
+  "original_private_owner_report_recovered": false,
+  "root_cause_established": false,
+  "owner_projection_sources": [
+    {
+      "source": ".spec/evidence/20261106224155-container-test-environment-research/hosted-browser-49394e38-failure.json",
+      "sha256": "29b801a801695f99f868a8794efa987245add55a20c2a21c3ff8495fef2bb8c3"
+    },
+    {
+      "source": ".spec/evidence/20261107052001-delivery-followup/browser-49394e38-summary.json",
+      "sha256": "87348a9cbf4bf927e78a81c6ed6ad894e31e6e4ad745e7a90d5bb506f35f53af"
+    }
+  ],
+  "reader_page_comparison": {
+    "pages": [
+      "docs/reference/browser-collector.md",
+      "docs/reference/production-vs-reference.md",
+      "docs/standards/draft-v0/validation/implementation-map.md"
+    ],
+    "current_qualified_positive_join_claim": false,
+    "current_limit_consistent": true,
+    "historical_attempt_entry_not_yet_added": true,
+    "later_diagnostic_candidate_not_qualified_by_this_result": true
+  },
+  "limits": [
+    "Counts are the one validated public summary; the original18 individual assertion records are unavailable and were not reconstructed.",
+    "Seven public required cases and nine unavailable items are distinct inventories; missing skips/cleanup counts are not zero.",
+    "No inference that witness implementation, DNS, Firefox, Fetch or another particular operation caused failure.",
+    "Actual newer candidate execution, ordinary human and assistive-technology acceptance remain separate."
+  ]
+}
