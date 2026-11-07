@@ -2380,6 +2380,7 @@ dependencies = [
  "humanymous-network",
  "humanymous-scoring",
  "humanymous-signals",
+ "rcgen",
  "rustls",
  "serde",
  "serde_json",

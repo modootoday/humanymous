@@ -89,6 +89,23 @@ credential grants no stop mutation: service-lifecycle authorization remains
 separate and witness availability must persist through actual final service
 flush. No universal 24-hour lease default or renewal policy is accepted.
 
+R1 architecture review selects signed public, instance-targeted authorization
+instead of the initial shared-secret Hello, under a new explicit protocol/domain
+version with no fallback. The later service observer credential remains secret.
+Windows gains a distinct TransportPrepared design phase: SCM_RUNNING permits
+native process discovery while application readiness, ingress, unseal and writer
+activation remain false. The startup watchdog and native stop handler stay armed;
+no existing public-Ready receipt can stand in for this preparation state.
+
+These are design choices, not R1 qualification or channel implementation approval.
+Actual cross-principal primary-token/process-handle access, protected issuer and
+installation ownership, process-wide single claim, clock/deadline composition,
+loaded-artifact binding and atomic release/revocation remain required. Transient
+publisher credentials do not imply unattended restart/republication support;
+that lifecycle needs an explicit verified provider. Linux/macOS provider work and
+genuine hosted native probes remain open; local SCM/account mutation is not
+authorized by this decision.
+
 ## Narrow test dependency integration
 
 The Windows Pages reparse fixture uses the already locked junction2.1.0 crate
@@ -97,6 +114,12 @@ privilege. Python's hosted test controller reuses the existing workspace
 humanymous-test-support dev dependency. The root lock update adds only these two
 package dependency edges; it upgrades no external version. Actual locked target
 resolution is required: metadata --no-deps alone does not prove lock coherence.
+
+Runtime's actual TLS/H1 fixture additionally reuses the already locked
+rcgen0.14.10 dev dependency with default features disabled and crypto/ring
+enabled, matching Capture's existing profile. This adds one Runtime dependency
+edge only; it upgrades no package and grants no production certificate authority
+or R1 bootstrap capability. New fixture source requires its own actual proof.
 
 ## Local Docker engine identity and cleanup
 
