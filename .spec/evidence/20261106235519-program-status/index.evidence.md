@@ -3,7 +3,7 @@ id: evidence:root/20261106235519
 title: Program status
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T04:19:21Z
+updated: 2026-11-07T04:25:02Z
 files:
   - {path: chat-results.json, sha256: bf392885a8b6f34b1e1c79c3a1075f3f8dcc14882f2ec7985cec111b11dc7191, bytes: 10192, store: repo}
   - {path: provenance.md, sha256: f53ca5515f63fdd7ae466385c38b293ff9773541d41846d248074472bad350d1, bytes: 965, store: repo}
@@ -39,6 +39,7 @@ files:
   - {path: custody-native-remote-results.json, sha256: 7de42cca21c81a5ea9af5a9ad031391948e06a25f9d57c99efe76a42f6134250, bytes: 2876, store: repo}
   - {path: guard-state-results.json, sha256: 7de222f10289010580bc20da88c8da42e70706d30ffa08e7a1f12b338f12abb9, bytes: 7092, store: repo}
   - {path: windows-full-actor-results.json, sha256: 4eb374ad4b59fa439f36764ccc77ac57b89cb828ca0a148a09a77319b9535b9e, bytes: 562, store: repo}
+  - {path: roadmap-reconciliation-latest.json, sha256: 8341d7394b51876e146a6da7645d9e0f6e4c0e8e65796a4bf8f99cdfb1b2459a, bytes: 14267, store: repo}
 ---
 
 # Program status
