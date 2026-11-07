@@ -2,6 +2,13 @@
 
 ## Current approved continuation
 
+Quiet ended by explicit root instruction. Reclaimed adapter-dotnet; allocated A
+validated latest all-target check/Clippy and core12/export1pure, all passed with
+zero failures/ignored and259recursive source/configuration inputs unchanged.
+Raw evidence094127/public094251. A returned immediately. The new package/support/
+fixture source is now type-checked; no managed SDK/scope execution/actual host is
+implied. SDK/Kestrel/GC/AOT/package still await their separately assigned stage.
+
 Root6500ec23 closed the approved graph window with38workspace members and the
 shared lock, including this export crate. The owned manifests now match that
 approved graph. Explicit local A validation passed core12/export1pure and both
@@ -48,7 +55,7 @@ core/native-abi/tokio dependencies, cdylib+rlib and deny unsafe except the singl
 unmangled pointer-free attribute. No new external version is needed. Local dotnet
 was unavailable at the earlier checkpoint. Actual managed build/GC/Kestrel/
 NativeAOT/package work may use root-allocated local Windows/WSL or a standard
-hosted job under the updated root policy. Benchmark quiet remains active.
+hosted job under the updated root policy. Benchmark quiet has ended.
 
 The new ignored sdk_package_and_real_host_matrix test accepts these absolute
 supervisor inputs: HUMANYMOUS_DOTNET_SOURCE_ROOT (clean committed checkout),
@@ -63,7 +70,7 @@ artifact must be built from the recorded source; checks do not create provenance
 Local execution additionally uses HUMANYMOUS_DOTNET_LOCAL_ALLOCATION=
 root-approved-local after root actually allocates execution. This marker is not
 permission. No recursive Cargo, GitHub spoofing or workflow dispatch occurs.
-The orchestrator is format-checked source only, not yet type-checked/executed.
+The orchestrator passes Rust all-target check/Clippy but has not executed.
 
 The three managed source candidates and XML project/package metadata are authored
 but NOT_RUN. A candidate NuGet pack requires an explicit existing native artifact

@@ -12,6 +12,18 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Allocated revalidation after quiet ended (2026-11-07T09:42Z)
+
+Root explicitly ended the benchmark quiet window, resumed this work and
+allocated A with the default target, jobs1/incremental0 for Rust validation only.
+The latest package/support/host fixture source type-checks and passes all-target
+Clippy. Core12/export1pure tests pass,0failed/ignored/measured/filtered;259selected
+recursive source/configuration hashes are unchanged before/after. A was returned.
+Evidence: evidence:root/20261107094251; private raw evidence:root/20261107094127.
+No managed scope test execution, SDK build, Kestrel/GC/NativeAOT/package install
+or product pilot is implied. These actual stages require the next explicit root
+allocation. Earlier quiet/blocker records below describe their recorded time.
+
 ## Execution authorization update (2026-11-07)
 
 The human authorized actual local Windows/WSL timing/resource comparisons,

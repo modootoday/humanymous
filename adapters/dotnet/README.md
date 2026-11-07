@@ -21,7 +21,9 @@ the pinned .NET SDK in global.json and sends private configuration through stdin
 Run dotnet commands with adapters/dotnet as the working directory so that the
 SDK resolver finds this exact global.json. Actual host execution requires an
 explicit root allocation. The user authorized local Windows/WSL validation on
-2026-11-07; the active benchmark quiet window still forbids new runtime commands.
+2026-11-07. The benchmark quiet window ended; the next actual SDK/host stage
+requires its separate root allocation. Latest Rust all-target check/Clippy and
+13 pure tests passed; the package and hosted Rust runners are type-checked only.
 The facade's Rust runtime is process-lived. Collectible assembly loading and
 explicit native unload/reload are unsupported; the binding rejects collectible
 contexts and does not manually load/free libraries. Zero request diagnostics do
