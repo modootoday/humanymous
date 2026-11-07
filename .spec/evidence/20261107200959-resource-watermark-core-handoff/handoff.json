@@ -1,0 +1,144 @@
+{
+  "schema": "humanymous.watermark-core-structural-handoff/1",
+  "observed_utc": "2026-11-07T20:09:59Z",
+  "source_commit": "2eb2069a7851324b90311d54ffe663d8eb9f75cf",
+  "qualification_receipt_commit": "9ba8e308c2d3f3accb41b0de07a8ade0fb527e19",
+  "package_files": 18,
+  "rust_files": 16,
+  "source": [
+    {
+      "path": "crates/watermark/Cargo.toml",
+      "sha256": "8973eddacca47b27eacad070d8efbe09b1846c1e01f47d707ef5e94eed3fd8f9",
+      "bytes": 324,
+      "root_destination": "root disposition: leaf manifest retired after graph integration; INTEGRATION history preserved, not an executable module"
+    },
+    {
+      "path": "crates/watermark/INTEGRATION.md",
+      "sha256": "4a6864958ba7cbd8da7ee372cb76da59e3630893e36e4abbc1d00f9e9d044235",
+      "bytes": 7617,
+      "root_destination": "root disposition: leaf manifest retired after graph integration; INTEGRATION history preserved, not an executable module"
+    },
+    {
+      "path": "crates/watermark/src/codec.rs",
+      "sha256": "a818fdc1ebd2abd69f424f2e440433dabf96d6d0fc72a8fa0bcf256a6ed95da4",
+      "bytes": 381,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/codec.rs"
+    },
+    {
+      "path": "crates/watermark/src/codec/base32.rs",
+      "sha256": "5d2450a13e03d716ec0b506020a8106e540e0c010a0e52054fc2f2bdb4e6b97e",
+      "bytes": 3133,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/codec/base32.rs"
+    },
+    {
+      "path": "crates/watermark/src/codec/binary.rs",
+      "sha256": "2b5334ec68a5188e8415254b0d4fbff901c6146172e750131c6d9245cc38ccc0",
+      "bytes": 2064,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/codec/binary.rs"
+    },
+    {
+      "path": "crates/watermark/src/codec/mime.rs",
+      "sha256": "7647c94c29d82225e061c7a5c770e1fad535f3f394cf7589db48340708ce3c38",
+      "bytes": 5797,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/codec/mime.rs"
+    },
+    {
+      "path": "crates/watermark/src/codec/text.rs",
+      "sha256": "95d8d45ac421faa6dc8200be3f25019dfdd0832fe998d64601513621624182ff",
+      "bytes": 3813,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/codec/text.rs"
+    },
+    {
+      "path": "crates/watermark/src/codec/text/tests.rs",
+      "sha256": "fa86a19ac88acb872ff44d1bbf24345f7d7bb5956dacdbc1b7d4df89c114d201",
+      "bytes": 2087,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs"
+    },
+    {
+      "path": "crates/watermark/src/error.rs",
+      "sha256": "89e7282543ab5ce239f192a747ed34421e0187d2c2a6466cf6f318688a3a59bd",
+      "bytes": 2843,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/error.rs"
+    },
+    {
+      "path": "crates/watermark/src/frame.rs",
+      "sha256": "77919c59dad834044da5bd9a5f4e265cdab6f0b72280d77ce2526ea2fcb5ceb5",
+      "bytes": 5225,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/frame.rs"
+    },
+    {
+      "path": "crates/watermark/src/frame/tests.rs",
+      "sha256": "92a24c4d4e4d8112f5ed1a0ba6cc78a112277dc4fcb602f866e02cf6fad89c0b",
+      "bytes": 2638,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/frame/tests.rs"
+    },
+    {
+      "path": "crates/watermark/src/ledger.rs",
+      "sha256": "4acf4a486f4a87dfef7169908e289cac1c2c44c3dad3bbee9864a8b5a9898362",
+      "bytes": 6542,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/ledger.rs"
+    },
+    {
+      "path": "crates/watermark/src/ledger/reservation.rs",
+      "sha256": "82c3ced22094bfecb9abda7eff994984d569c2ce9511102339e4c12b3b5d3ed4",
+      "bytes": 2911,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/ledger/reservation.rs"
+    },
+    {
+      "path": "crates/watermark/src/ledger/state.rs",
+      "sha256": "e361e06324aeaaae3e4a0e4f856666d2bf758d39ad59292081398b610498726b",
+      "bytes": 1384,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/ledger/state.rs"
+    },
+    {
+      "path": "crates/watermark/src/ledger/tests.rs",
+      "sha256": "048726f52c4ff465b4b30f3ebbdffc557bcc56c1182d0efa863a702bb5a4153b",
+      "bytes": 8502,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs"
+    },
+    {
+      "path": "crates/watermark/src/lib.rs",
+      "sha256": "56e17457fab81afb3e3125d3e41839a70e47ddbe6c9918df1b35d63118adb73e",
+      "bytes": 411,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/mod.rs"
+    },
+    {
+      "path": "crates/watermark/src/payload.rs",
+      "sha256": "082ee65ab93908236f3a6db13a495cfc4649e5797e43a6f699b55e2ace20eb73",
+      "bytes": 4863,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/payload.rs"
+    },
+    {
+      "path": "crates/watermark/src/payload/tests.rs",
+      "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76",
+      "bytes": 4696,
+      "root_destination": "crates/sdk/humanymous-core/src/watermark/payload/tests.rs"
+    }
+  ],
+  "dirty_package_files": [],
+  "matching_qualified_source_files": 18,
+  "active_handles": [],
+  "target_leases": [],
+  "current_writer_claim": "spec handoff only; misc/rust-resource-watermark-structural-handoff",
+  "destination": "crates/sdk/humanymous-core/src/watermark",
+  "moves_performed": 0,
+  "graph_changes": 0,
+  "unsafe": "none in watermark; retain core forbid(unsafe_code)",
+  "dependencies": [
+    "hmac0.12.1",
+    "sha20.10.9",
+    "subtle2.6.1",
+    "zeroize1.9.1"
+  ],
+  "fixture_include_dependencies": "No include!/include_bytes!/include_str!/path attributes/CARGO_MANIFEST_DIR/BIN_EXE; child test modules are relative; test data literals are Rust bytes, no external fixture files",
+  "consumer_search": "Only root workspace membership and current leaf package manifest match humanymous-watermark/crates/watermark in Cargo.toml and Rust search; no current Rust consumer found",
+  "visibility_hazards": [
+    "Rewrite crate::Error and crate::frame imports to watermark context; do not accidentally use core root Error/frame",
+    "Replace frame pub(crate) helper visibility with context-restricted scope after merge; Budget/Candidates/scan and Limits input/output must not widen to all core siblings",
+    "Preserve private Ledger.inner/Record fields and ledger-only State/Slot/Reservation::new; no sibling proof/record construction",
+    "Keep base32 private to codec context; no new public facade export or compatibility shim inferred"
+  ],
+  "completed": "Native Windows29units plus fmt/alltargetcheck/strictClippy at exact2eb source",
+  "missing": "WASM validator/codec, PNG metadata/LSB/alpha/resource/cancellation, validated issuance/trace, actualresource/file/HTTP/Docker gates",
+  "root_only": "Atomic7context move/import/manifest/lock/workspace integration and branch sync; no package rename/move by this owner"
+}

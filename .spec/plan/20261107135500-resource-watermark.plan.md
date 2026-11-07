@@ -12,6 +12,21 @@ rel:
 
 ## Mission and current authority
 
+### Accepted eight-package baseline handoff (2026-11-08 KST)
+
+The human accepted the public package baseline in structural-development.
+Watermark now targets the contextual module
+crates/sdk/humanymous-core/src/watermark under root's atomic seven-context move;
+the earlier distinct leaf-package choice remains historical implementation
+provenance, not the final package topology. No independent move/manifest/import/
+branch/worktree/sync is authorized. Evidence:root/20261107200959 binds all18
+current package files (16Rust), exact2eb source/C29proof, zero package dirty files,
+no active handle/lease, relative fixtures and the visibility/import hazards.
+Frame helpers must remain watermark-context restricted; Ledger custody must stay
+ledger-private. Root owns graph and post-move allocations; old29passes do not
+qualify consolidation. All original missing codecs and actual-boundary/product
+gates survive. Current writer claim is own spec handoff only, not new core paths.
+
 Complete all fourteen legacy watermark responsibilities in Rust, unit and actual
 resource pilots, with source-bound evidence. The persistent goal remains active.
 Initial authority was read-only investigation plus this named SoT/plan/evidence
