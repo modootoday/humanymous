@@ -1,0 +1,102 @@
+{
+  "scope": "targeted component/native process tests; not product e2e",
+  "wholeWorkspaceRerunStatus": "pending runner owner; previous failures preserved",
+  "dependenciesDelta": "none",
+  "runnerContractCommit": "16c9e89",
+  "productionApiDelta": "none",
+  "schema": "humanymous.audit-helper-accounting/1",
+  "cases": [
+    {
+      "target": "durable_witness",
+      "parent": "witness_process_lifetime_and_interrupted_recovery",
+      "markers": [
+        "AUDIT_WITNESS_LOCKED_OK",
+        "AUDIT_WITNESS_INTERRUPTED_STAGED_OK"
+      ],
+      "linuxPassed": 11,
+      "helper": "child_witness_probe",
+      "windowsPassed": 12
+    },
+    {
+      "target": "key_backups",
+      "parent": "crash_reconcile_preserves_consumed_authorization",
+      "markers": [
+        "AUDIT_BACKUP_RETIREMENT_PIN_STAGED_OK"
+      ],
+      "linuxPassed": 7,
+      "helper": "child_retire_without_pin_acknowledgement",
+      "windowsPassed": 8
+    }
+  ],
+  "sourceBinding": "validated working bytes; canonical Git equality recorded after commit",
+  "capture": {
+    "stderrCaptured": true,
+    "requiredExit": 0,
+    "implementation": "humanymous_test_support::process::capture_with_stderr",
+    "stdoutLimitBytes": 65536,
+    "timeoutSeconds": 60,
+    "requiredStderrBytes": 0
+  },
+  "sourceFiles": [
+    {
+      "bytes": 26326,
+      "path": "crates/audit/tests/durable_witness.rs",
+      "sha256": "2c065583d9d8aeb46d48db2d38fe1e22b962b5afdf74a7571e995614efb8fd17"
+    },
+    {
+      "bytes": 16850,
+      "path": "crates/audit/tests/key_backups.rs",
+      "sha256": "c49d1eae8c4716137eec977019b4eed002618ece70819f9ec426e508002b4535"
+    }
+  ],
+  "accounting": [
+    {
+      "os": "windows",
+      "outerSummaries": 1,
+      "target": "durable_witness",
+      "passed": 12,
+      "failed": 0,
+      "stdoutSHA256": "4f5b01b9591080117426a5a3db886e415daf3317b694f6b61864409b81913864",
+      "rawIgnored": 1,
+      "filtered": 0,
+      "requiredParentPassed": true,
+      "childMarkersNotLeaked": true
+    },
+    {
+      "os": "windows",
+      "outerSummaries": 1,
+      "target": "key_backups",
+      "passed": 8,
+      "failed": 0,
+      "stdoutSHA256": "dc93c2b936758f4e3a7b55f25bf675ab510b0489af8ecc602f0776841a16d9b5",
+      "rawIgnored": 1,
+      "filtered": 0,
+      "requiredParentPassed": true,
+      "childMarkersNotLeaked": true
+    },
+    {
+      "os": "linux",
+      "outerSummaries": 1,
+      "target": "durable_witness",
+      "passed": 11,
+      "failed": 0,
+      "stdoutSHA256": "9288c8c181b98e1e800ee5e8b7cc4a8dba653428c8af38c903591ca1ebf02878",
+      "rawIgnored": 1,
+      "filtered": 0,
+      "requiredParentPassed": true,
+      "childMarkersNotLeaked": true
+    },
+    {
+      "os": "linux",
+      "outerSummaries": 1,
+      "target": "key_backups",
+      "passed": 7,
+      "failed": 0,
+      "stdoutSHA256": "0d214ce28469fd24b7a3b22d9416d24a1fec3964bbbe99c8cef0c3f64fa33b7c",
+      "rawIgnored": 1,
+      "filtered": 0,
+      "requiredParentPassed": true,
+      "childMarkersNotLeaked": true
+    }
+  ]
+}

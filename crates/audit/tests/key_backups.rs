@@ -406,6 +406,12 @@ fn child_retire_without_pin_acknowledgement() {
         &root.join("external-control-pin.json"),
         &serde_json::to_vec(control.anchor()).unwrap(),
     );
+    std::io::Write::write_all(
+        &mut std::io::stdout(),
+        b"AUDIT_BACKUP_RETIREMENT_PIN_STAGED_OK\n",
+    )
+    .unwrap();
+    std::io::Write::flush(&mut std::io::stdout()).unwrap();
     std::process::exit(0);
 }
 
@@ -422,16 +428,27 @@ fn crash_reconcile_preserves_consumed_authorization() {
         &serde_json::to_vec(&pin).unwrap(),
     );
     drop(store);
-    let status = Command::new(std::env::current_exe().unwrap())
-        .args([
-            "--exact",
-            "child_retire_without_pin_acknowledgement",
-            "--ignored",
-        ])
-        .env("HUMANYMOUS_BACKUP_CHILD", &temp.0)
-        .status()
-        .unwrap();
-    assert!(status.success());
+    let child = humanymous_test_support::process::capture_with_stderr(
+        Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "child_retire_without_pin_acknowledgement",
+                "--ignored",
+            ])
+            .env("HUMANYMOUS_BACKUP_CHILD", &temp.0),
+        b"",
+        std::time::Duration::from_secs(60),
+        64 * 1024,
+    )
+    .unwrap();
+    assert!(child.status.success());
+    assert!(child.stderr.is_empty());
+    assert!(
+        child
+            .stdout
+            .windows(b"AUDIT_BACKUP_RETIREMENT_PIN_STAGED_OK\n".len())
+            .any(|w| w == b"AUDIT_BACKUP_RETIREMENT_PIN_STAGED_OK\n")
+    );
     let control_pin: LedgerAnchor =
         serde_json::from_slice(&fs::read(temp.0.join("external-control-pin.json")).unwrap())
             .unwrap();

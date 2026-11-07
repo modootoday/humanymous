@@ -3,7 +3,7 @@ id: plan:root/20261107002005
 title: Audit key custody native persistence
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T03:39:00Z
+updated: 2026-11-07T06:15:14Z
 rel:
   governs: [crates/audit/**]
   depends_on: [sot:root/audit-key-custody]
@@ -97,3 +97,22 @@ preserved separately; root resolved shared lock without audit dependency changes
 Current precise API, commands, files-first and residual handoff are in
 crates/audit/KEYS-INTEGRATION.md. Next owner: authority common IPC/client, then
 runtime; audit retains the explicitly listed follow-up requirements.
+
+## Strict helper-output correction
+
+Windows runner rejected the later workspace probe despite child exit0 because
+durable_witness inherited a second libtest summary. That failure and the
+subsequent narrow-contract probe failure remain in the runner owner's private
+evidence20261107051539. Authority completed and released its gate-edge checkpoint
+e346834 before this source edit; audit claimed only these two test sources/docs.
+
+Corrected both newly added helper parents with existing bounded test-support
+capture (60seconds/64KiB), actual child completion markers, exit0/stderr0 and
+the original signed-state/recovery checks. Windows witness12/backup8 and Linux11/7
+passed; each outer stdout has one summary and excludes child transcripts/markers.
+The exact helper/parent/ignored-count contract is canonical in the SoT and
+[[evidence:root/20261107061214]], accepted by runner owner in16c9e89.
+No runtime/authority/public production API or dependency delta. Next: runner
+owner reruns whole workspace against correction commit; audit then releases
+gate-edge to runtime. Remaining M3 requirements above are unchanged, not closed
+by this test-only correction.

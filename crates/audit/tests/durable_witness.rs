@@ -597,12 +597,21 @@ fn child_witness_probe() {
     );
     if mode == "locked" {
         assert!(matches!(opened, Err(e) if e.kind() == std::io::ErrorKind::WouldBlock));
+        std::io::Write::write_all(&mut std::io::stdout(), b"AUDIT_WITNESS_LOCKED_OK\n").unwrap();
+        std::io::Write::flush(&mut std::io::stdout()).unwrap();
     } else {
+        assert_eq!(mode, "interrupted");
         let mut witness = opened.unwrap();
         witness
             .counter_sign(&checkpoint(&leaves()[..1]), &[])
             .unwrap();
         fs::copy(path.join("witness.json"), path.join("witness.pending")).unwrap();
+        std::io::Write::write_all(
+            &mut std::io::stdout(),
+            b"AUDIT_WITNESS_INTERRUPTED_STAGED_OK\n",
+        )
+        .unwrap();
+        std::io::Write::flush(&mut std::io::stdout()).unwrap();
         // Bypass Drop: OS releases the process lock; pending remains explicit.
         std::process::exit(0);
     }
@@ -613,16 +622,36 @@ fn witness_process_lifetime_and_interrupted_recovery() {
     let temp = Temp::new();
     let witness = temp.open(WitnessBootstrap::CreateNew).unwrap();
     let child = |mode| {
-        Command::new(std::env::current_exe().unwrap())
-            .args(["--exact", "child_witness_probe", "--ignored"])
-            .env("HUMANYMOUS_WITNESS_PROBE", &temp.0)
-            .env("HUMANYMOUS_WITNESS_MODE", mode)
-            .status()
-            .unwrap()
+        humanymous_test_support::process::capture_with_stderr(
+            Command::new(std::env::current_exe().unwrap())
+                .args(["--exact", "child_witness_probe", "--ignored"])
+                .env("HUMANYMOUS_WITNESS_PROBE", &temp.0)
+                .env("HUMANYMOUS_WITNESS_MODE", mode),
+            b"",
+            std::time::Duration::from_secs(60),
+            64 * 1024,
+        )
+        .unwrap()
     };
-    assert!(child("locked").success());
+    let locked = child("locked");
+    assert!(locked.status.success());
+    assert!(locked.stderr.is_empty());
+    assert!(
+        locked
+            .stdout
+            .windows(b"AUDIT_WITNESS_LOCKED_OK\n".len())
+            .any(|w| w == b"AUDIT_WITNESS_LOCKED_OK\n")
+    );
     drop(witness);
-    assert!(child("interrupted").success());
+    let interrupted = child("interrupted");
+    assert!(interrupted.status.success());
+    assert!(interrupted.stderr.is_empty());
+    assert!(
+        interrupted
+            .stdout
+            .windows(b"AUDIT_WITNESS_INTERRUPTED_STAGED_OK\n".len())
+            .any(|w| w == b"AUDIT_WITNESS_INTERRUPTED_STAGED_OK\n")
+    );
     let reference = Witness::from_seed(&SEED, writer().verifying_key().to_bytes(), "node".into());
     let mut first = checkpoint(&leaves()[..1]);
     first.witness_sig = reference.counter_sign(&first, &[]).unwrap();

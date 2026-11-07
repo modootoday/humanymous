@@ -3,7 +3,7 @@ id: sot:root/audit-key-custody
 title: Audit key custody
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T05:20:00Z
+updated: 2026-11-07T06:15:14Z
 verify: [cargo test -p humanymous-audit --locked]
 rel:
   governs: [crates/audit/**]
@@ -183,6 +183,28 @@ do not replace Docker product e2e or independent witness/admin qualification.
 ## Why
 
 ## Verification
+
+### Native helper accounting contract, version 0.1
+
+Self-executed libtest children never inherit parent stdout/stderr. Parents use
+the existing bounded test-support capture API (60seconds,64KiB), require OS
+exit0, empty stderr and a static completion marker emitted/flushed only after
+actual child assertions/state effects. Parent checks authenticated storage and
+recovery separately; exit0 or a marker alone is not success. Child transcripts
+remain captured inside the parent, so each outer harness emits exactly one
+libtest summary. Unknown ignored tests or extra summaries still fail accounting.
+
+| Native audit test target | Exact ignored entrypoint | Required real parent |
+|---|---|---|
+| durable_witness | child_witness_probe | witness_process_lifetime_and_interrupted_recovery |
+| key_backups | child_retire_without_pin_acknowledgement | crash_reconcile_preserves_consumed_authorization |
+
+Each target has exactly one raw ignored helper, excluded from pass counts only
+when the exact parent actually passes, exit0/filtered0/fail0 hold and discovered
+equals passed+1. Existing key_custody's two separately documented helpers retain
+their existing narrow contract; total raw ignored remains4, never four successes.
+The Windows runner owner accepted these exact names and conditions in16c9e89;
+its pre-correction nested-summary failures remain evidence, not retroactive green.
 
 Native tests exercise restart identity, vault/tombstone persistence, rotation,
 parallel-process lock refusal, permission/alias rejection and interrupted pending

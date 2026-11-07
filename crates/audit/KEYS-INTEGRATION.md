@@ -1,5 +1,26 @@
 # Sealed key compatibility integration
 
+## Test-output correction for strict workspace accounting
+
+Production API/behavior is unchanged. New durable_witness/key_backups parents
+now use existing test-support capture_with_stderr with60second/64KiB bounds;
+child transcripts never inherit outer stdout/stderr. Parents require exit0,
+empty stderr, a flushed static child completion marker and their original actual
+signed-state/lock/crash/recovery assertions. Each harness emits one summary.
+
+Exact narrow raw ignored contracts: durable_witness/child_witness_probe requires
+witness_process_lifetime_and_interrupted_recovery to pass; key_backups/
+child_retire_without_pin_acknowledgement requires
+crash_reconcile_preserves_consumed_authorization to pass. Each has raw ignored1,
+filtered0/fail0 and discovered=passed+1. Existing key_custody2 remain separate;
+raw4 overall are never passed tests. Windows runner16c9e89 implements the narrow
+accounting contract; its pre-correction failures remain unchanged evidence.
+Current correction validation: Windows witness12/backup8 and Linux11/7 pass,
+each stdout has exactly one summary and no leaked child completion marker.
+Targeted Clippy/formatting pass. Evidence:root/20261107061214 records source-bound
+contract/hashes; the runner owner must rerun actual workspace against the new
+canonical correction commit before changing the previous failed probe status.
+
 ## Current operational checkpoint and serial handoff (2026-11-07)
 
 Owner rust-audit-operations. New audit dependencies: none. No shared Cargo,
