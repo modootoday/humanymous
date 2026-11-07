@@ -9,6 +9,7 @@ use std::io;
 
 #[derive(Default)]
 pub struct State {
+    pub controls: humanymous_browser::history::Controls,
     pub transaction: Navigation,
     pub notice: Option<&'static str>,
     pub receipts: Vec<Receipt>,
@@ -85,6 +86,7 @@ impl State {
             return false;
         }
         let (phase, identity, notice) = match outcome {
+            Outcome::Stopped => ("stopped", false, Some("Loading stopped")),
             Outcome::TaskRejected => (
                 "task_rejected",
                 false,
@@ -187,6 +189,11 @@ pub fn handler(state: Shared) -> LoadHandler {
 wrap_load_handler! {
     struct Loads { state:Shared, }
     impl LoadHandler {
+        fn on_loading_state_change(&self,_browser:Option<&mut Browser>,loading:i32,back:i32,forward:i32) {
+            if let Ok(mut state)=self.state.lock() && state.is_live() {
+                state.navigation.controls=humanymous_browser::history::Controls {back:back==1,forward:forward==1,loading:loading==1};
+            }
+        }
         fn on_load_start(&self,_browser:Option<&mut Browser>,frame:Option<&mut Frame>,_transition:TransitionType) {
             let Some(frame)=frame.filter(|f|f.is_main()==1) else { return; };
             let Ok(route)=internal_urls::classify(&CefString::from(&frame.url()).to_string()) else { return; };

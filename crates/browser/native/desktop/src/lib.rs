@@ -4,6 +4,7 @@
 mod browser_controls;
 mod child;
 mod fixture;
+mod history;
 mod host;
 mod local_page;
 mod measured_input;

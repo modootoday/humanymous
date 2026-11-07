@@ -20,6 +20,8 @@ impl Ticket {
 /// Terminal observations are separate from request acceptance and commit.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Outcome {
+    /// The user explicitly stopped this transaction.
+    Stopped,
     /// Native UI dispatcher refused the task.
     TaskRejected,
     /// The task ran without a usable main frame.
@@ -175,6 +177,18 @@ impl ProbeLedger {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn stop_rejects_late_commit_and_content_without_revoking_future_requests() {
+        let mut navigation = Navigation::default();
+        let ticket = navigation.begin(Route::NewTab).unwrap();
+        assert!(navigation.finish(ticket, Outcome::Stopped));
+        assert!(!navigation.permits_browse(Route::NewTab));
+        assert!(!navigation.observe_commit(ticket));
+        assert!(!navigation.finish(ticket, Outcome::Content { identity: true }));
+        let next = navigation.begin(Route::NewTab).unwrap();
+        assert_ne!(next, ticket);
+        assert!(navigation.observe_commit(next));
+    }
     #[test]
     fn supersession_revoke_and_terminal_failure_reject_captured_work() {
         let mut navigation = Navigation::default();

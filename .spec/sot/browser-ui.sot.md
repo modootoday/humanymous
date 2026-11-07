@@ -660,6 +660,22 @@ file denials count. This does not attest PID lifetime identity, all processes or
 full sandbox policy. Navigation schema2 is unchanged. Historical periodic token
 snapshots are not retroactively replaced by this new observation contract.
 
+UI-32 (accepted browser-controls expansion): Back and Forward operate on actual
+CEF navigation entries, never an application-invented history. Before dispatch,
+the complete bounded entry snapshot must identify one current entry and an
+adjacent allowlisted route. Stale snapshots, missing entries, busy transactions,
+revocation and unsupported routes deny traversal. The target receives a fresh
+navigation ticket before CEF go_back/go_forward; existing request/resource guards
+remain authoritative. CEF loading callbacks supply history availability and
+loading state; request acceptance alone is not completion. Stop cancels pending
+authority before stop_load so delayed callbacks cannot finish stopped work.
+Named controls expose disabled state to keyboard and accessibility clients.
+Home, Reload and address submission retain typed local routing and IME guards.
+Multi-tab, external navigation, downloads, persistence and Chrome parity remain
+separate gates; implemented controls do not imply BrowserReady. Pure snapshot and
+document-action tests, native-feature compilation and an actual fresh-bundle
+Back/Forward/Reload/Stop pilot are distinct required evidence.
+
 UI-31 (root-accepted test-only bootstrap follow-up): the four fixed security
 override cases retain exit78 and unchanged synthetic-profile predicates. Their
 direct children use the shared ManagedChild owner for wait/stop/Drop cleanup;

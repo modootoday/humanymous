@@ -20,6 +20,7 @@ pub struct Controls {
     ime: ImeGuard,
     committed: u64,
     notice: Option<&'static str>,
+    controls: Option<humanymous_browser::history::Controls>,
     probe: Option<probe::Probe>,
 }
 impl Controls {
@@ -32,6 +33,7 @@ impl Controls {
             ime: ImeGuard::default(),
             committed: 0,
             notice: None,
+            controls: None,
             probe: probe_enabled.then(probe::Probe::default),
         }
     }
@@ -77,10 +79,24 @@ impl Controls {
                 state.navigation.committed().map(|(_, r)| r),
             )
         };
+        if matches!(intent, Intent::Back | Intent::Forward | Intent::Stop) {
+            if let Some(browser) = browser {
+                let action = match intent {
+                    Intent::Back => crate::history::Action::Back,
+                    Intent::Forward => crate::history::Action::Forward,
+                    _ => crate::history::Action::Stop,
+                };
+                crate::history::queue(browser, self.state.clone(), action)?;
+            }
+            return Ok(());
+        }
         let (route, reload) = match intent {
             Intent::Home => (Ok(Route::NewTab), false),
             Intent::Open(address) => (internal_urls::classify(&address), false),
             Intent::Reload => (current.ok_or("No committed local page"), true),
+            Intent::Back | Intent::Forward | Intent::Stop => {
+                unreachable!("history dispatched above")
+            }
         };
         match (route, browser) {
             (Ok(route), Some(browser)) => {
@@ -112,13 +128,34 @@ impl Controls {
         if let Some(probe) = &mut self.probe {
             probe.tick(&self.state)?;
         }
-        let (committed, notice) = {
+        let (committed, notice, controls) = {
             let state = self
                 .state
                 .lock()
                 .map_err(|_| io::Error::other("state poisoned"))?;
-            (state.navigation.committed(), state.navigation.notice)
+            let mut controls = state.navigation.controls;
+            controls.loading |= state.navigation.transaction.pending().is_some();
+            controls.back &= !controls.loading;
+            controls.forward &= !controls.loading;
+            (
+                state.navigation.committed(),
+                state
+                    .navigation
+                    .notice
+                    .or(controls.loading.then_some("Loading local page")),
+                controls,
+            )
         };
+        if self.controls != Some(controls) {
+            let stamp = self.document.stamp().map_err(io::Error::other)?;
+            self.document
+                .try_reproject(&stamp, |doc| {
+                    ui_navigation::controls(doc, controls);
+                    Ok::<_, io::Error>(())
+                })
+                .map_err(io::Error::other)?;
+            self.controls = Some(controls);
+        }
         if let Some((generation, route)) = committed
             && generation != self.committed
         {

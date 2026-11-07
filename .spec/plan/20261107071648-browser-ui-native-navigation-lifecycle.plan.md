@@ -13,6 +13,17 @@ rel:
 
 ## Actual bounded Windows CEF gate passed
 
+Current user-requested UI-32 expansion: implement actual CEF Back/Forward entry
+traversal, loading/availability projection and Stop, retaining local-only guards,
+sandbox and current IME confirmation policy. Review findings incorporated before
+code: do not simulate history with load_url; reject stale or malformed entry
+snapshots; issue a fresh typed ticket before traversal; cancel pending authority
+on Stop; project disabled state for keyboard/AT as well as pointer use. Future
+multi-tab and external browsing require their own lifecycle/security design.
+Source changes do not inherit the older ec4 native pass. Required gates are pure
+entry/document tests, scoped native compilation/Clippy and actual fresh-bundle
+history/Stop observations. All are pending for this expansion until recorded.
+
 Dedicated run42377685195/job128418538461 completed successfully at exact
 ec4f2da09a78ffa3ae7661661fc1d54b921f534b. Actual results are runner14/Clippy,
 native build0, desktop synthetic protocol4/13filtered, bootstrap synthetic

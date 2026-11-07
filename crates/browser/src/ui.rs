@@ -222,8 +222,13 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
                     "div",
                     &[("className", "toolbar")],
                     vec![
-                        disabled_button("←", "Back unavailable"),
-                        disabled_button("→", "Forward unavailable"),
+                        navigation_button("nav-back", "Back", crate::icons::Icon::Back, false),
+                        navigation_button(
+                            "nav-forward",
+                            "Forward",
+                            crate::icons::Icon::Forward,
+                            false,
+                        ),
                         navigation_button(
                             "nav-home",
                             "New tab page",
@@ -235,6 +240,12 @@ pub fn component_with_window_controls(enabled: bool) -> Component {
                             "Reload local page",
                             crate::icons::Icon::Reload,
                             enabled,
+                        ),
+                        navigation_button(
+                            "nav-stop",
+                            "Stop loading",
+                            crate::icons::Icon::Close,
+                            false,
                         ),
                         element(
                             "Input",

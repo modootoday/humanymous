@@ -24,5 +24,7 @@ pub mod ui_navigation;
 /// Pure navigation tickets and strict diagnostic-probe accounting.
 pub mod navigation;
 
+/// Bounded actual-engine history snapshot validation.
+pub mod history;
 /// Pure native address composition and confirmation policy.
 pub mod input;
