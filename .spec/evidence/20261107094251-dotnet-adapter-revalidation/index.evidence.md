@@ -7,7 +7,7 @@ updated: 2026-11-07T09:42:51Z
 rel:
   depends_on: [sot:root/dotnet-adapter, plan:root/20261107073000]
 files:
-  - {path: summary.json, sha256: 863fa7fc88ad1e326146b40941b99af501a5ad30ea84508d81dc38777a2d61e6, bytes: 5705, store: repo}
+  - {path: summary.json, sha256: dbcd6177cf6f1a1daae6898bd8a50f104fc43abbfd194c65d23690c1d39a3a77, bytes: 5539, store: repo}
 ---
 
 Latest source after20544bf6 passes both packages all-target check/Clippy and
