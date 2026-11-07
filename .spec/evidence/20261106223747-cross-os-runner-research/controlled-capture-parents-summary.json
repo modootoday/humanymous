@@ -1,0 +1,387 @@
+{
+  "schema": "humanymous.controlled-capture-parents-validation/1",
+  "status": "passed-fixed-cooperative-windows-component",
+  "base_sha": "5cd2cdc94e9337cc4af4056fa3e601412ce55f29",
+  "controller_ancestor": "ea024229beebd6de655a70adcee4ef2a51a9845b",
+  "venue": "actual local Windows x86_64-pc-windows-msvc",
+  "toolchain": "Rust 1.99.1 edition2024",
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "locked": true,
+  "binary_sha256": {
+    "controller": "4194b0f048a48118a0b09904656a6ff15047cfb7267a6bc14f7ebd3d4adee404",
+    "parent": "6da49449830cfc769315e0b0e15a725ba08156146a590c80ea7814ce54892a0d"
+  },
+  "outer_budgets_ms": {
+    "cleanup": 15000,
+    "run": 10000
+  },
+  "admission": {
+    "compile": {
+      "commit_percent": 67,
+      "physical_available_mib": 34693,
+      "disk_free_bytes": 128189120512,
+      "utc": "2026-11-07T16:24:00.7702357Z"
+    },
+    "maximum_observed_commit_percent": 67,
+    "min_available_physical_mib": 34693,
+    "each_actual_case_recorded": true,
+    "min_disk_free_bytes": 127544438784
+  },
+  "pure_results": [
+    {
+      "filtered": 40,
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "selector": "process::controlled_barrier::tests",
+      "measured": 0
+    },
+    {
+      "filtered": 38,
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "selector": "controlled::tests",
+      "measured": 0
+    }
+  ],
+  "actual_parent_results": [
+    {
+      "actual_parent_exit_code": 0,
+      "actual_io_worker_assertions": {
+        "joined": 3,
+        "started": 3
+      },
+      "cleanup_within_original_deadline": true,
+      "filtered": 41,
+      "ignored": 0,
+      "passed": 1,
+      "case": "normal",
+      "job_assigned_before_grant": true,
+      "actual_parent_exit_observed": true,
+      "actual_job_empty_observed": true,
+      "measured": 0,
+      "selector": "process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins",
+      "elapsed_ms": 162,
+      "failed": 0
+    },
+    {
+      "actual_parent_exit_code": 0,
+      "actual_io_worker_assertions": {
+        "joined": 3,
+        "started": 3
+      },
+      "cleanup_within_original_deadline": true,
+      "filtered": 41,
+      "ignored": 0,
+      "passed": 1,
+      "case": "pending-input",
+      "job_assigned_before_grant": true,
+      "actual_parent_exit_observed": true,
+      "actual_job_empty_observed": true,
+      "measured": 0,
+      "selector": "process::capture_attempt::actual_tests::retained_synthetic_pending_stdin_expires_original_run",
+      "elapsed_ms": 1035,
+      "failed": 0
+    },
+    {
+      "actual_parent_exit_code": 0,
+      "actual_io_worker_assertions": {
+        "joined": 3,
+        "started": 3
+      },
+      "cleanup_within_original_deadline": true,
+      "filtered": 41,
+      "ignored": 0,
+      "passed": 1,
+      "case": "stdout-cap",
+      "job_assigned_before_grant": true,
+      "actual_parent_exit_observed": true,
+      "actual_job_empty_observed": true,
+      "measured": 0,
+      "selector": "process::capture_attempt::actual_tests::retained_stdout_cap_is_sticky",
+      "elapsed_ms": 42,
+      "failed": 0
+    },
+    {
+      "actual_parent_exit_code": 0,
+      "actual_io_worker_assertions": {
+        "joined": 3,
+        "started": 3
+      },
+      "cleanup_within_original_deadline": true,
+      "filtered": 41,
+      "ignored": 0,
+      "passed": 1,
+      "case": "stderr-cap",
+      "job_assigned_before_grant": true,
+      "actual_parent_exit_observed": true,
+      "actual_job_empty_observed": true,
+      "measured": 0,
+      "selector": "process::capture_attempt::actual_tests::retained_stderr_cap_is_sticky",
+      "elapsed_ms": 44,
+      "failed": 0
+    },
+    {
+      "actual_parent_exit_code": 0,
+      "actual_io_worker_assertions": {
+        "joined": 3,
+        "started": 3
+      },
+      "cleanup_within_original_deadline": true,
+      "filtered": 41,
+      "ignored": 0,
+      "passed": 1,
+      "case": "stop-after-zero",
+      "job_assigned_before_grant": true,
+      "actual_parent_exit_observed": true,
+      "actual_job_empty_observed": true,
+      "measured": 0,
+      "selector": "process::capture_attempt::actual_tests::retained_stop_request_preserves_observed_exit_zero",
+      "elapsed_ms": 44,
+      "failed": 0
+    }
+  ],
+  "actual_parent_passed": 5,
+  "actual_parent_failed": 0,
+  "nested_helpers_added_to_denominator": 0,
+  "pending_input": {
+    "production_payload_support": false,
+    "kernel_blocked_certainty": false,
+    "writer_operation_returned": true,
+    "writer_entered_pending_observed": true,
+    "synthetic_bytes": 8388608,
+    "actual_inner_child_exit_code": 1,
+    "joined_io_workers": 3
+  },
+  "stop_after_zero": "Stop request classification after already observed inner exit0; not an OS kill producing exit0",
+  "checks": {
+    "controller_build": 0,
+    "both_strict_clippy": 0,
+    "both_fmt_first": 0,
+    "standalone_locked_offline_metadata": 0,
+    "both_all_targets_check": 0
+  },
+  "closure": {
+    "runtime_binary_differences": 0,
+    "config_presence_absence_entries": 24,
+    "limits": "Selected input bytes, not entire OS/MSVC/SDK image or hostile-provider attestation",
+    "runtime_source_differences": 0,
+    "compiler_selected_differences": 0,
+    "registry_packages": 31,
+    "selected_tool_files": 76,
+    "registry_files": 2042,
+    "environment_hash_entries": 7,
+    "selected_source_files": 109
+  },
+  "qualification_command_failures": [],
+  "receipt_preparation_failure_preserved": true,
+  "unknown_cleanup": 0,
+  "live_owned_process_handles": 0,
+  "compiler_reservation": "returned before actual cases",
+  "actual_supervisor_lease": "ended after five actual parent exit and Job-empty observations",
+  "remaining": [
+    "Outer live-parent run-timeout/termination, missing-grant and unassigned failure paths were not fault-injected.",
+    "Fixed trusted cooperative fixture profile; preassignment startup and blocking kernel calls are not universally bounded.",
+    "No native producer identity promotion, bridge same-handle/ACL/WTR, secret or hosted service qualification.",
+    "No CLI watchdog0/74, SCM/accounts/privilege changes, Docker/GUI or hostile full-tree qualification.",
+    "Legacy ManagedChild/capture consumers remain unchanged; their lifetime claim debt is not closed globally."
+  ],
+  "producer_identity": "Unsupported",
+  "raw": {
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/source-preparation.json": {
+      "sha256": "d52931b0d840589433df6abf680407011c79133330266a2daf1dcf20dc3dbe10",
+      "bytes": 1431
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/compile-admission.json": {
+      "sha256": "3a89aa69ff67d8d9cc58232d215b000052948e15081547e8eb76402ec54f74e8",
+      "bytes": 142
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/compile-before.json": {
+      "sha256": "6bda456a9b6df3d48d254ac3926c355aa00393257a948ba8d158d5a0c003a9a4",
+      "bytes": 238034
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/compile-after.json": {
+      "sha256": "6bda456a9b6df3d48d254ac3926c355aa00393257a948ba8d158d5a0c003a9a4",
+      "bytes": 238034
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/compile-results.json": {
+      "sha256": "0d1b39717c30aeffb0e520d9d203308fecb5a19061114b2993ca3b499a9d7de9",
+      "bytes": 378
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/shared-fmt-first.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/runner-fmt-first.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/selected-tree.log": {
+      "sha256": "46f2bdf2d54a072ee41977fa9c8a376a6793d4b9617018ca315553e550ea98c4",
+      "bytes": 1703
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/barrier-pure.log": {
+      "sha256": "9b2b1264c982cfb2a68a6af6f423db0c234f4fc8e5df3aefde5bed2b6390f9df",
+      "bytes": 18792
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/controller-pure.log": {
+      "sha256": "55bdbde2570beb4c40b9e9e43146d9bcb1f471715c75e59b76f4142f0ab9a264",
+      "bytes": 1344
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/runner-check.log": {
+      "sha256": "9b777e06e687b52a7a8a088349e70f822bccaafad38f93f8f46ab769ce4bce0a",
+      "bytes": 891
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/runner-clippy.log": {
+      "sha256": "a4cda2e80b928924301ee52390a5bbbedb633fee182593d1c8fbf3b68b3e5de6",
+      "bytes": 261
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/shared-check.log": {
+      "sha256": "501c037f811bb21bcac8968a8c8c174a8b74074c94f02324052ae124d53a66e1",
+      "bytes": 247
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/shared-clippy.log": {
+      "sha256": "d5641e26b85a14ed20dc3a2697412eada8753e1a14a50b867f976f17acebe46a",
+      "bytes": 247
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/controller-build.log": {
+      "sha256": "4093d8a976ee5512e1d45529a82cc888e460a6a40af5ff642f0717002741b423",
+      "bytes": 44244
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/binaries.json": {
+      "sha256": "3810338e5c1674da1c85624e36ac5127f403b97c40e5a3c59e11216e436667fc",
+      "bytes": 543
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/runtime-results.json": {
+      "sha256": "0cd2672fd4ad25f4d54c2f5fcf80580b163831129d4175686ab3b6b753726cc0",
+      "bytes": 4524
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/receipt-preparation-failure.json": {
+      "sha256": "1de1c8e61272e824fe0f09783405c5cafaedc047cbfb28128054373df01b0f05",
+      "bytes": 153
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/normal-admission.json": {
+      "sha256": "2b09535ed93a6f9b5163573b4514ff3becbe4766b39ecd6e4a697b6a39fbc93b",
+      "bytes": 163
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/normal-controller.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/normal/outer-result.json": {
+      "sha256": "721735fd2a30229705c271ec4875f6c3d29d679799146751124cc8fae459781f",
+      "bytes": 1110
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/normal/parent.stdout.log": {
+      "sha256": "28f382a738a188ae586101e305aa3449a333352f2d084cbaae6e6d2ca8e9fa14",
+      "bytes": 212
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/normal/parent.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/normal/grant.json": {
+      "sha256": "7d63ef4d8c9f2b73e53f152dfc3dc8aaaf775a317162fd8a16f7b94f1179d5de",
+      "bytes": 205
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/pending-input-admission.json": {
+      "sha256": "18f52f5478d6e8d566937b3c31f4176d874f1bbaed49248269272412959e35c4",
+      "bytes": 170
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/pending-input-controller.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/pending-input/outer-result.json": {
+      "sha256": "3724b59d65df22ce51f465f926da03e861645345286d770f3044fe8ac279c051",
+      "bytes": 1125
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/pending-input/parent.stdout.log": {
+      "sha256": "9600391f0aaadd460f77fe62e901368edd8becec98fa0d3f289ab0a6e43293b1",
+      "bytes": 219
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/pending-input/parent.stderr.log": {
+      "sha256": "e12046d5bde7f15acee1cdd5245cf758950ffad50e7febc935aa118334d774a9",
+      "bytes": 221
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/pending-input/grant.json": {
+      "sha256": "6dc23cc211df62010559452a54fffe98550f9d8e03e59de5e324d15098af3c9c",
+      "bytes": 212
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stdout-cap-admission.json": {
+      "sha256": "570fe3c4e1eb0829b5cc9d74f85c5d540f8593381b0de50a513a8537cac0d96a",
+      "bytes": 167
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stdout-cap-controller.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stdout-cap/outer-result.json": {
+      "sha256": "bba5316d361ac380afbbd8d429a5f0ed5156d04537d6dddc4843e093b5a4235e",
+      "bytes": 1096
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stdout-cap/parent.stdout.log": {
+      "sha256": "1d2d990df1eb62ad37298bdd4d061e9dcb9daa40f4fddbeca1d2cd0c5c92137f",
+      "bytes": 195
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stdout-cap/parent.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stdout-cap/grant.json": {
+      "sha256": "60af0f02eb142d42976a5bfcf15cfd6c8d053788186d06bb47da9eae12ad1ed2",
+      "bytes": 188
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stderr-cap-admission.json": {
+      "sha256": "c99d0c93ed80c10dd482d917d28df30665d1578e8647d7a6240f49957a0a1ffc",
+      "bytes": 167
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stderr-cap-controller.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stderr-cap/outer-result.json": {
+      "sha256": "0e6d57e56c3690ffff14267a48540a8f7612eb51e653a9380926974b70226275",
+      "bytes": 1095
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stderr-cap/parent.stdout.log": {
+      "sha256": "7e6b3256a3d6af6a9c2ccdcacba8f4c3850dda3162f60a501c868bad7d06d7fb",
+      "bytes": 195
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stderr-cap/parent.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stderr-cap/grant.json": {
+      "sha256": "194bb40cedf0c1ac16fac621dca46867b05e18553e63c427a6d80c59c22a7608",
+      "bytes": 188
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stop-after-zero-admission.json": {
+      "sha256": "1655932738024c7407ff5862d49daf6efd710e79559f16a05602dab63d6b4121",
+      "bytes": 172
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stop-after-zero-controller.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stop-after-zero/outer-result.json": {
+      "sha256": "47328dda6b467d906e41e2471a168ede5a974bba0efc65d2bf3ee9f103260a71",
+      "bytes": 1122
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stop-after-zero/parent.stdout.log": {
+      "sha256": "6c3f075a475a3f695c4f522e5054b46068b9d9fed1b1ab146f576b0fe3683f16",
+      "bytes": 216
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stop-after-zero/parent.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107163000-windows-runner-controlled-parents/stop-after-zero/grant.json": {
+      "sha256": "6207616ba3e1c075ff8ee243b1179767f3f1aa1f8b4b03f611f07481d2e11ea9",
+      "bytes": 209
+    }
+  }
+}

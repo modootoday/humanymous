@@ -554,3 +554,36 @@ the same owned-source formatting retry passed without foreign termination or
 compiler execution. Source/fmt/spec and accepted nested-lock metadata are ready;
 all new controller/barrier compiler/pure/actual gates remain held for the CEF
 exclusive window. This extraction does not retroactively qualify older hashes.
+
+## Actual-five terminal checkpoint v1.2
+
+After Browser's exclusive window returned, Root released the existing grant on
+immutable5cd2cdc9/controllerea024229. Fmt-first, barrier pure2 (40filtered),
+controller pure2 (38filtered), both package all-target check/strict Clippy and
+controller build all passed. No qualification command failed. Selected input
+closure109source/31registry2042files/76tools/config/flags stayed equal. Both
+executables were copied and hash-pinned before returning the compiler reservation.
+
+Five actual cases ran ONE AT A TIME with fresh commit<85percent, recorded
+physical availability>20GiB and disk>20GiB guards. Every outer controller exited0,
+every selected parent reported1passed/0failed/0ignored/0measured/41filtered,
+actual natural parent exit0 and Job-empty were observed under original10s/15s,
+and the private actual-join result passed3started/3joined assertions. Pending
+input8MiB is the private SYNTHETIC seam; raw observation records writer-entered/
+pending/returned and inner exit1. Stop-after-zero is a request classification,
+not a claim of forcing an OS exit0. Helpers are not extra parent test counts.
+
+All five real Job assignments preceded cooperative grant publication. Runtime
+source and copied-binary hashes remained equal. The actual supervisor lease ended
+with unknown cleanup0 and no retained live owner; private work/log/grant files
+remain intentional evidence. The48-attachment receipt preserves compile and each
+runtime admission, statuses, outer budgets and actual native cleanup facts.
+An initial receipt-path concatenation mistake was preserved and corrected without
+any rerun or change to raw test output.
+
+Outer live-parent timeout, missing-grant and unassigned-failure paths were NOT
+fault-injected. No arbitrary hostile process/full-tree or universally bounded
+kernel promise follows. Legacy capture debt and CLI0/74/native bridge/producer/
+service/privileged/hosted gates remain open. This checkpoint unlocks Root review
+of the exact next consumer/controller extension; it does not grant that extension
+or any new runtime automatically.

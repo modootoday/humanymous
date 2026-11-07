@@ -1078,3 +1078,15 @@ versus-RAM admission clarification. This qualifies ONLY the new L1/static bytes:
 FIVE actual capture parents, direct-pipe consumer0/74, actual provider queries,
 ACL-at-create/WTR/producer association and privileged/hosted gates remain unrun.
 No source-only status or pure success upgrades native producer authority.
+
+The later immutable5cd2cdc9 actual local Windows gate qualifies the FIVE controlled
+capture-parent cases under the separately owned cooperative Job controller:
+normal, synthetic pending input/original expiry, stdout/stderr caps and sticky
+stop-after-observed-exit0. Each observed actual parent exit0 plus Job-empty and
+original10s/15s cleanup; IO worker joins were actual3/3. See registered
+controlled-capture-parents-summary.json for exact selectors, binary hashes,
+resource guards and zero selected/runtime source drift. This is genuine L2
+evidence for that fixed cooperative component profile, not arbitrary hostile
+containment, an outer hung-parent fault injection or universal syscall deadlines.
+Legacy helper debt, CLI consumer0/74, native bridge/producer and hosted service
+gates remain separate; producer identity remains Unsupported.

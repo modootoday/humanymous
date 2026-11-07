@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: controlled-capture-parents-summary.json, sha256: f4c85272e4880f5d971cde18d1e48b328f48fd94099926f8d879384ff4fbd398, bytes: 16844, store: repo}
   - {path: common-owner-pure-summary.json, sha256: df3a4a83bddb3614cc43679b71139c669bba89e56d3c99a52eebb0065be7c726, bytes: 6119, store: repo}
   - {path: binding-capture-bridge-pure-summary.json, sha256: 08d40be7f3270adbc06521a5c9d0381eec8d9a73a75a1d0cc6d48fdb684f2afa, bytes: 7401, store: repo}
   - {path: actor-context-carrier-summary.json, sha256: b80b4a5d0c772b707322d1ff312cef0b267a0ce9fabf9340c22cc91c1c0dbaf2, bytes: 4066, store: repo}
@@ -159,3 +160,32 @@ observation is not historical proof. Exact doctest compiler error output is not
 captured beyond the passing compile_fail result and positive import control.
 No native query/create, actual parent, account/Job/SCM/Docker/GUI or consumer pilot
 ran. Producer identity stays Unsupported. See common-owner-pure-summary.json.
+
+## Actual local Windows controlled capture parents
+
+Immutable5cd2cdc9 (controllerea024229) passes barrier2/controller2 pure cases,
+both packages check/strict Clippy/fmt-first, and controller build. FIVE actual
+parent cases then pass sequentially, each1passed/0failed/0ignored/0measured/
+41filtered: normal stdout/stderr, synthetic pending input plus original expiry,
+stdout cap, stderr cap and stop-request classification after observed inner exit0.
+Nested helper invocations are not added to the five-parent denominator.
+
+Each real held parent was assigned to the controller's own kill-on-close Windows
+Job BEFORE its cooperative grant. Actual natural parent exit0, Job ActiveProcesses0
+and cleanup within original10s/15s were observed in all five. All started IO
+workers actually joined (3/3 assertions); pending input records8MiB SYNTHETIC,
+entered/pending/write-returned and actual inner exit1, not kernel-block certainty
+or public payload support. Five controller elapsed values were162/1035/42/44/44ms.
+Physical availability and disk space were separately captured before compile and
+every case. Selected109source,31registry/2042files,76tools and config/flags had
+zero compile differences; runtime source and copied binaries also stayed equal.
+Compiler reservation returned before runtime; supervisor lease ended after all
+five actual exit/Job-empty facts. Unknown cleanup and remaining owned handles0.
+
+Scope is fixed trusted cooperative tests, not arbitrary/hostile launch, universally
+bounded kernel calls or generic full-tree qualification. Outer live-parent timeout,
+missing-grant and unassigned-failure branches were not fault-injected. Legacy
+capture consumers' lifetime debt remains open. No CLI0/74, bridge native query/
+ACL-create/WTR, producer, account/SCM/privilege, Docker/GUI or hosted service gate
+ran. The registered controlled-capture-parents-summary.json binds48private attachments;
+receipt assembly's path-grouping error was preserved separately without reruns.
