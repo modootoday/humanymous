@@ -3,8 +3,9 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T06:12:23Z
+updated: 2026-11-07T09:06:05Z
 files:
+  - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
   - {path: provenance.md, sha256: 881be44b70ea201eaa97ab25f0d4ab5b0bacb8580fb5368d65d8dc7cfc8ce108, bytes: 884, store: repo}
   - {path: rust-runner-v2/lab-report.json, sha256: 75012d28bd66998abacf3d43efb84d58eefb31d69a226bee3b2ab09628eb801d, bytes: 4365, store: repo}
@@ -15,6 +16,27 @@ files:
 # Container test environment research
 
 ## What was measured
+
+### Source8132117 hosted failures and subsequent source
+
+hosted-8132117-failures.json records actual run42355168729, its Docker and
+collector prerequisite failures and its separate browser-product startup
+failure. It copies only public counts, fixed diagnostics, source/image/report
+hashes and the strict 26-index wargame receipt. Wargame26 means0 evaluated,
+19 errors and7 unsupported; internal consistency is not a scoped success.
+Collector execution was not established because the common prerequisite failed.
+Browser-product failed before first writer identity:7 assertions passed/1 failed,
+specific startup operation unknown. Private originals remain unrecovered;
+decoded logs and derived projections live in evidence:root/20261107083259.
+
+Later Go caller source411b69e5 and proof/startup source0836bbee are separate.
+Scoped Windows orchestration units10/Clippy passed against the recorded632-file
+fingerprint with0 drift, before final small diagnostic/IPv6 additions. Original
+needless_borrow failure and corrected logs are retained in
+evidence:root/20261107090102. Unix actors and actual Go8 Docker behavior remain
+NOT_RUN. No earlier19-evaluated result or native units fill these missing gates.
+
+### Historical component measurements
 
 Rust-only continuation is separate from the historical v1 Python/Node record
 below. Rust checkpoint4f89ec3 passed25 topology controls. Private source54017

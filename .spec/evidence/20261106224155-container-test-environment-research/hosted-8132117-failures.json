@@ -1,0 +1,439 @@
+{
+  "schema": "humanymous.product-lab-hosted-failures/1",
+  "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "run_url": "https://github.com/modootoday/humanymous/actions/runs/42355168729",
+  "delivery_source_manifest_sha256": "20b56673e627209beb263f100071793effb8122cfe5467ae9bb9b6a6ee00770f",
+  "full_product_qualified": false,
+  "release_ready": false,
+  "jobs": [
+    {
+      "job_id": 128351926068,
+      "kind": "docker",
+      "status": "failed",
+      "images": [
+        "sha256:6e090be2e6c18b17eac7ad3ac0a25ac7b627779ef1940c21fa7b572d045b9a9f"
+      ],
+      "private_report_sha256": "6c434bddaf17f85ce70998405cc34ced537063d5d0862ab92727b771eb99fce0",
+      "private_report_recovered": false,
+      "assertions": {
+        "failed": 2,
+        "other": 0,
+        "passed": 33,
+        "total": 35
+      },
+      "safe_diagnostics": {
+        "failure_count": 2,
+        "failures": [
+          {
+            "case_id": "actual-owned-wargame",
+            "error_code": "assertion_failed",
+            "status": "failed"
+          },
+          {
+            "case_id": "execution",
+            "error_code": "wargame_process",
+            "status": "failed"
+          }
+        ],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "wargame_public_receipt": {
+        "case_statuses": [
+          {
+            "expectation_matches": null,
+            "index": 0,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 1,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 2,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 3,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 4,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 5,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 6,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 7,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 8,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 9,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 10,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 11,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 12,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 13,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 14,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 15,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 16,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 17,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 18,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 19,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 20,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 21,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 22,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 23,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 24,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 25,
+            "status": "error"
+          }
+        ],
+        "full_product_qualified": false,
+        "raw_contents_included": false,
+        "raw_sha256": "6af47402f4036613d25e7043a98d1ee4f244b2c000af5cd9a46734fa6f947fcc",
+        "report_schema": "humanymous.wargame-network.v2",
+        "schema": "humanymous.lab-wargame-public/1",
+        "source_manifest_sha256": "eb5eb569b3eec4886592f377f4945fe5478b676fca418ed42ad61705c616a2d4",
+        "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+        "verifier": {
+          "full_product_qualified": false,
+          "internally_consistent": true,
+          "mode": "owned_process_network",
+          "schema": "humanymous.wargame-verification.v1",
+          "scoped_passed": false,
+          "totals": {
+            "errors": 19,
+            "evaluated": 0,
+            "expectation_mismatches": 0,
+            "scheduled": 26,
+            "skipped": 0,
+            "unsupported": 7
+          }
+        }
+      }
+    },
+    {
+      "job_id": 128353483559,
+      "kind": "browser",
+      "status": "failed",
+      "images": [
+        "sha256:78750cb2e47c2e4d4e6856962bf3f4c58de8201dfa74d9ad09639afb33b40d90"
+      ],
+      "private_report_sha256": "fb5e21a9057e8309b8d43a6c0f64f16d3e31b85448741e2ec632b8b5a158e0a0",
+      "private_report_recovered": false,
+      "assertions": {
+        "failed": 2,
+        "other": 0,
+        "passed": 33,
+        "total": 35
+      },
+      "safe_diagnostics": {
+        "failure_count": 2,
+        "failures": [
+          {
+            "case_id": "actual-owned-wargame",
+            "error_code": "assertion_failed",
+            "status": "failed"
+          },
+          {
+            "case_id": "execution",
+            "error_code": "wargame_process",
+            "status": "failed"
+          }
+        ],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "wargame_public_receipt": {
+        "case_statuses": [
+          {
+            "expectation_matches": null,
+            "index": 0,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 1,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 2,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 3,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 4,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 5,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 6,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 7,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 8,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 9,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 10,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 11,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 12,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 13,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 14,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 15,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 16,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 17,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 18,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 19,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 20,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 21,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 22,
+            "status": "unsupported"
+          },
+          {
+            "expectation_matches": null,
+            "index": 23,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 24,
+            "status": "error"
+          },
+          {
+            "expectation_matches": null,
+            "index": 25,
+            "status": "error"
+          }
+        ],
+        "full_product_qualified": false,
+        "raw_contents_included": false,
+        "raw_sha256": "6af47402f4036613d25e7043a98d1ee4f244b2c000af5cd9a46734fa6f947fcc",
+        "report_schema": "humanymous.wargame-network.v2",
+        "schema": "humanymous.lab-wargame-public/1",
+        "source_manifest_sha256": "eb5eb569b3eec4886592f377f4945fe5478b676fca418ed42ad61705c616a2d4",
+        "source_sha": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+        "verifier": {
+          "full_product_qualified": false,
+          "internally_consistent": true,
+          "mode": "owned_process_network",
+          "schema": "humanymous.wargame-verification.v1",
+          "scoped_passed": false,
+          "totals": {
+            "errors": 19,
+            "evaluated": 0,
+            "expectation_mismatches": 0,
+            "scheduled": 26,
+            "skipped": 0,
+            "unsupported": 7
+          }
+        }
+      }
+    },
+    {
+      "job_id": 128355522898,
+      "kind": "browser-product",
+      "status": "failed",
+      "images": [
+        "sha256:d63baf94c7483229f95ccf38d39d3633bbff9846a097d301a89e14108e107e18",
+        "sha256:5a75eafc22a114f69b0c3fd794f7879aabde7e69d468d79b009bb6585d955a19"
+      ],
+      "private_report_sha256": "443294dbd73043ecde0363e3f58d923362be2af0e9f4131254e8b034cef079c1",
+      "private_report_recovered": false,
+      "assertions": {
+        "failed": 1,
+        "other": 0,
+        "passed": 7,
+        "total": 8
+      },
+      "safe_diagnostics": {
+        "failure_count": 1,
+        "failures": [
+          {
+            "case_id": "execution",
+            "error_code": "browser_gate_start",
+            "status": "failed"
+          }
+        ],
+        "partial": false,
+        "schema": "humanymous.lab-safe-diagnostics/1"
+      },
+      "wargame_public_receipt": null
+    }
+  ],
+  "interpretation": {
+    "docker_and_collector_prerequisite": "common wargame failed before collector execution; actual browser component tests are not established",
+    "browser_product": "failed before first writer identity; specific hardening/installation/mounted-key operation unknown",
+    "wargame": "26 scheduled, zero evaluated,19 errors,7 unsupported; internally consistent, scoped false",
+    "cleanup_closure": "not exposed separately by these public receipts",
+    "historical_results_reused": false,
+    "later_source_qualified_by_this_run": false
+  },
+  "private_evidence": "evidence:root/20261107083259",
+  "subsequent_source": {
+    "go_caller_checkpoint": "411b69e5ee1510cb93eff70132e1c3d0df509dc6",
+    "proof_and_startup_checkpoint": "0836bbee09645eb2c92195fa89c1c895c05d0d99",
+    "unix_and_docker_execution": "NOT_RUN",
+    "scoped_windows_units": 10,
+    "scoped_windows_clippy": "passed before final small IPv6/status metadata additions; see source-bound fingerprint",
+    "source_fingerprint_sha256": "72067d08fb8a363dfd445edfc57144e510248828950aba5fa1ad76e69ccc1ded",
+    "source_fingerprint_files": 632,
+    "source_drift": 0,
+    "private_evidence": "evidence:root/20261107090102"
+  }
+}
