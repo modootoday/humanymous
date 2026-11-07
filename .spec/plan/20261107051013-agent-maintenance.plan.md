@@ -857,3 +857,70 @@ repository embeds. Private maintenance binary/module/root and role-feature mappi
 is proposed for Root review only; no production library export, extra package,
 manifest/source edit or move occurred. Whole13-tool closure still needs the other
 twelve owner maps and Root/Delivery's complete asset/role/lint union before freeze.
+
+### Tools mutable-input reader decision proposal
+
+Source inspection checkpoint:27f6070207e6b77dda3834e34fb416ac0c746e21.
+Locations below are current skills/agent-maintenance-relative paths, not proposed
+CLI paths. This is an M11 proposal for Root's complete Tools table, not an adopted
+reader contract or evidence that current readers already enforce every check.
+No source, Cargo, implementation, moves or compiler/model execution is authorized.
+
+| Current site and original canonical owner | Current semantic need | Proposed unit fixture versus actual reader; refusal |
+| --- | --- | --- |
+| src/inventory.rs:116 check; .agents/skills, rules, agents and root AGENTS.md; agents-meta canon | Inventory hashes/LF/frontmatter, unique skill/path names, required project invariants and six role documents | Synthetic tiny tree/frontmatter units; explicit bounded repo reader for exact selected canonical files. Missing required tree/document, duplicate/name mismatch, CR, unsafe path or changed digest prevents successful qualification |
+| src/inventory.rs:155,200 compatibility branches; vendor skill mirrors and .agents/personas pointers, retirement owners | Observe drift and optional compatibility pointers without rewriting producers | Synthetic equal/drift/missing/pointer cases; actual request enumerates optional observed paths. Absent optional path is recorded absent, never regenerated; present unsafe/mismatched entry is an error/drift result, never a canonical replacement |
+| src/routing.rs:35 evaluate; .agents/evals/trigger-rules.json and trigger-queries.json; agents-meta eval owner | Deterministic regex proxy and expected trigger rows, not model activation | Synthetic rules/queries units; actual reader requires both pinned explicit inputs. Missing/changed/malformed/empty input or unknown skill refuses; row mismatch fails proxy result and never becomes model qualification |
+| src/sessions/catalog.rs:125 inspect and141 repository test; lanes.json, LANES.md and scripts/agents/session-board.ps1/.sh; agents-meta lane canon plus existing compatibility producers | Exact lane-ID projection parity and writer-mode schema | Synthetic minimal JSON/Markdown and inert parser text snippets, never runnable foreign templates. Actual reader reads four explicit pinned originals as data; missing, malformed, duplicate IDs or projection mismatch fails. No compiled repository snapshots or script execution |
+| src/sessions/registry.rs:62 inspect and70 test; .agents/sessions/THREADS.md; agents-meta registry owner, per-session updates | Stable thread identifiers and title/path rules | Synthetic invented IDs/titles for units; explicit source-bound actual THREADS reader. Missing/mismatched digest or invalid/duplicate ID/title refuses; never publish an embedded mutable chat registry |
+| src/language.rs:171 tests; main.rs:35 language-check; .agents/evals/language-preservation.json and caller SOURCE (tests use THREADS.md); agents-meta preservation owner and SOURCE owner | Preserve exact registered historical lines while classifying new language findings | Synthetic Unicode/exact-line records for units; explicit SOURCE plus preservation JSON with independent path/hash entries. Missing/changed input, malformed records, unmatched preservation or new forbidden finding fails; do not normalize historical text |
+| src/product.rs:134 load and174 test embeds; skills/SKILL.md and references; product-user skill owner | Product bundle entrypoint/reference graph validation | Synthetic small bundle units; actual explicit skill-root request enumerates entrypoint and finite reference closure. Missing/unsafe reference, unreferenced resource, size/parse/hash failure refuses; maintenance target tree excluded |
+| src/package.rs:67 plan_developer and98 stage; .agents/skills, .agents/evals/product or developer, root LICENSE, product skills; original agents-meta/product/license owners | Deliberately requested fresh experimental skill package, not canonical registry replication | Synthetic package units; actual exact source-file manifest selected before staging, include LICENSE and all selected eval docs. Changed/missing source or output collision refuses; retain partial output with failed receipt. No silent package assets, source implementation copy or live canon writer |
+| src/local_eval.rs:117 catalog,246 run,269 case reads; two developer SKILL.md files or product entry/four references, plus eight named case prompt.md and graders/behavior.md pairs; eval/skill owners | Fixed catalog and prompt/rubric provenance for approved local model study | Synthetic finite catalog/case units; actual source-bound explicit reader records every raw byte hash before any model request. Missing/changed case/catalog refuses study start; future model execution needs its separate resource/run authorization |
+| src/evaluation.rs:128 run,188 copy; implement-sot-slice/SKILL.md and caller suite/CLI; agents-meta skill/eval owner, CLI owner | Historical isolated hosted treatment staging | Synthetic trace/grading units; actual selected skill/suite/CLI inputs each source/hash-bound before fresh sandbox staging. Missing/changed input or unsupported sandbox refuses; this proposal grants no hosted retry or foreign executable template |
+| tests/git_coord.rs:89 original script include; scripts/agents/git-coord.ps1; agents-meta compatibility producer | Actual isolated Git attribution/index ownership behavior | Pure result/argument fixtures need no script. Actual native compatibility test receives pinned original external script, verifies bytes then copies only that original into its fresh isolated fixture. No re-authored foreign template, implementation surrogate, live Git mutation or embedded script in distributed CLI |
+| src/sessions/storage.rs:37 layout,45 catalog,51 claims,72 list; external .agents/sessions/lanes.json and claims/*.json; lane canon and individual claim owners | Read current bounded ownership state, deliberately mutable rather than commit-frozen claims | Synthetic claim/catalog units; explicit live-state mode binds root identity, pinned catalog and finite observed claim set/hashes. No claims is valid; missing required directory/catalog, unknown entry, filename/lane mismatch, over128 claims or changed observation is refusal/incomplete, not permission to claim |
+| src/sessions/storage.rs:108 lock,133 event,158 board,215 claim,250 release; .session-tool.lock, events.jsonl, ACTIVE.md, claims and Git state; same live owners | Existing exclusive-writer rollout and durable owner-attributed mutation | Synthetic state transitions only during relocation. Not a read-only verification action. Keep separate explicit writer authorization/migration gate, exact owner matching, create-new lock, writer-mode and post-failure retained state; foreign/live writers must not be exercised to qualify new paths |
+| src/inventory.rs:257 normalize; listed canon trees and old maintenance paths | Historical trusted-checkout compatibility writer | Not an automatic relocation reader or encoding repair authority. Synthetic normalization units only; any actual invocation requires separately authorized exact owned metadata paths, preservation and canonical-byte receipt under rule91. Exclude raw logs, immutable fixtures, operational profiles and foreign owners |
+
+#### Proposed shared read-only request and trust boundary
+
+Root should adopt one explicit request shape for actual repository verification:
+schema/operation; absolute concrete repo root; immutable source commit or declared
+live-state mode; finite normalized repo-relative input entries with owner, required
+or optional-presence policy, exact byte length and SHA256; aggregate limits and
+receipt destination. Reject absolute child paths, dot/parent traversal, duplicate
+or case-colliding names and wildcards. No CWD, manifest-parent, HOME, registry,
+package asset or vendor mirror fallback. A commit string alone does not prove
+worktree identity: bind every selected byte to the declared source manifest.
+
+Proposed default envelope is the existing selected-input observation budget:
+5000 files,64 roots,2GiB aggregate actual bytes,512MiB per file,30s cooperative
+command clock; reader-specific tighter limits remain (session catalog256KiB,
+claim64KiB/count128, local eval input64KiB, product entry256KiB, inventory file2MiB,
+staged package512files/8MiB). These are ceilings, not permission to recursively
+scan arbitrary trees. Root must freeze exact per-role finite sets before moving.
+Do not inherit the separately named Audit extended-time profile implicitly.
+
+Inspect root and all selected ancestors for symlink/reparse escape, require
+regular files, and ensure resolved identity stays within the selected root.
+Read with actual byte caps and a shared deadline; hash the same bytes parsed,
+not a later reopen. Retain before/after identity or immutable extracted-source
+closure; race/change/unsupported identity checks produce incomplete/refused
+qualification. Existing trusted-checkout checks are not hostile-directory race
+resistance; if safe no-follow identity cannot be established on a platform,
+report unsupported rather than claim OS authority or silently weaken checks.
+
+Missing required files, unexpected selected closure changes, hash/length/source
+mismatch, schema/UTF-8 failure, path trust failure or budget exhaustion must yield
+non-success plus structured per-input evidence. Optional absence is permitted
+only when declared in the request and recorded; an expected-present optional
+file cannot disappear silently. Live claims cannot be frozen to an old commit:
+record a bounded observation window and refuse writer authorization from a stale
+or inconsistent snapshot. Runtime-qualified/release-qualified remain false.
+
+No mutable registry, deploy recipe or skill tree is compiled into the published
+CLI. Parser fixtures are deliberately synthetic and non-authoritative. Actual
+compatibility producer scripts remain external originals with exact provenance;
+reading them for projection parity is distinct from separately gated isolated
+native execution. Root still owns adoption, final13-context closure and all moves.
