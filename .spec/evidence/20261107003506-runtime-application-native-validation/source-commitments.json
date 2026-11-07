@@ -1,0 +1,62 @@
+[
+  {
+    "path": "crates/runtime/Cargo.toml",
+    "sha256": "c4634fab9ce594b88e774f8f0f64a1def3468bd69e6588341cfa94db5a8bb4dd",
+    "bytes": 789,
+    "git_blob": "242fe55e93512b235203b2401969fd210beebafd"
+  },
+  {
+    "path": "crates/runtime/INTEGRATION.md",
+    "sha256": "12a1a2713c638b8ca0fdee85f93f366835a82bb97c8ce5d2393464806f6c5927",
+    "bytes": 6994,
+    "git_blob": "e86cd80ccccf7a2abad291ada2827c8e1f12ca6b"
+  },
+  {
+    "path": "crates/runtime/src/application.rs",
+    "sha256": "69238710617f531f920872ef0e31abc81074167620d6b325dd49f3927d4f6084",
+    "bytes": 14346,
+    "git_blob": "3a99f01f8ff6262cf9a5861c5e44a5afd3dc6fee"
+  },
+  {
+    "path": "crates/runtime/src/configuration.rs",
+    "sha256": "f0a6b6881502464f770484ec29d0dfe18a54750dc73c98aeaeced06864b832b0",
+    "bytes": 5056,
+    "git_blob": "07942042d5d2b7587e15da908f182d3c721b2a6d"
+  },
+  {
+    "path": "crates/runtime/src/http.rs",
+    "sha256": "77a8d635bd1757ef127567c4a752400d5f3b0e5138aee9373309912b7f148891",
+    "bytes": 10064,
+    "git_blob": "90d7d2f43742480b501c52f238695ee7817dee3e"
+  },
+  {
+    "path": "crates/runtime/src/lib.rs",
+    "sha256": "cdcff402a22a9731f97425d9dd9f9d6aea01c822db35255efaff0125b704950e",
+    "bytes": 221,
+    "git_blob": "c231a53ed2e92e6d57f099557caa2d68c7e46875"
+  },
+  {
+    "path": "crates/runtime/src/main.rs",
+    "sha256": "4fb92328ab51700b09b795047042589ef893b75ee16150af657cd1f9e4074553",
+    "bytes": 3025,
+    "git_blob": "193464f3b2beff668a2a6b52f80d55cc6f56ee17"
+  },
+  {
+    "path": "crates/runtime/src/session.rs",
+    "sha256": "f73a0d14fe20b7bc0791936a037a8354e65148359fa77053d1546c15f4b7d0c8",
+    "bytes": 9009,
+    "git_blob": "832787a560234c474c997db92d435b5f0d892b69"
+  },
+  {
+    "path": "crates/runtime/src/tests.rs",
+    "sha256": "acbeb04d0130b14669eb31aa0dd2707ba59b43fac60c8e218ab7d6a410d4036f",
+    "bytes": 21131,
+    "git_blob": "8b189f5535ab125f774b692c95e50ff6b71d63ad"
+  },
+  {
+    "path": "crates/runtime/tests/native_process.rs",
+    "sha256": "798bf2e84df9a1c0497ad00b3d18572fbda235bf94763b9d33a2ff37cc14fe4c",
+    "bytes": 11003,
+    "git_blob": "68f7cae2eaef8faceff5d87dcb2b7e7a348f2ffc"
+  }
+]

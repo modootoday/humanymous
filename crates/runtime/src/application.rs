@@ -1,0 +1,343 @@
+//! One composition owner: session, observed network, frozen engine and audit.
+use crate::{
+    Rejection,
+    configuration::Configuration,
+    http::{self, Request},
+    session::Sessions,
+};
+use humanymous_audit::record::Record;
+use humanymous_authority::{decision::DurableAudit, transport::Admission};
+use humanymous_network::{
+    http::HeaderInfo,
+    report::{Observation, build},
+};
+use humanymous_scoring::engine::Engine;
+use humanymous_signals::report::SessionReport;
+use sha2::{Digest, Sha256};
+use std::time::Duration;
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::{TcpListener, TcpStream},
+    time::{Instant, timeout_at},
+};
+
+/// Internal result: ALLOW is a one-use origin dispatch, never a reusable ticket.
+pub enum Decision {
+    /// Bounded local response; CHALLENGE has no recovery in this profile.
+    Local(u16, Vec<u8>),
+    /// Audited request allowed for this exact request until its deadline.
+    Origin {
+        /// UTC deadline in milliseconds.
+        deadline: u64,
+    },
+}
+
+/// Serialized bounded-context owner; a single accept loop owns this value.
+pub struct Application {
+    config: Configuration,
+    sessions: Sessions,
+    engine: Engine,
+    audit: Box<dyn DurableAudit>,
+}
+impl Application {
+    /// Compose existing services without changing policy or deriving new tells.
+    pub fn new(
+        config: Configuration,
+        engine: Engine,
+        audit: Box<dyn DurableAudit>,
+    ) -> Result<Self, Rejection> {
+        config.validate()?;
+        Ok(Self {
+            config,
+            sessions: Sessions::new(),
+            engine,
+            audit,
+        })
+    }
+
+    /// Exact readiness manifest; no session secrets or raw client observations.
+    pub fn readiness(&self) -> serde_json::Value {
+        self.config.readiness()
+    }
+
+    /// Decide synchronously. A returned Origin may be consumed only by the same
+    /// application request, after rechecking deadline and connection liveness.
+    pub fn decide(
+        &mut self,
+        req: &Request,
+        clock: impl Fn() -> Result<u64, Rejection>,
+    ) -> Result<Decision, Rejection> {
+        let now = clock()?;
+        self.sessions.observe(now)?;
+        if req.header("host") != Some(self.config.scope.authority.as_str()) {
+            return Err(Rejection::new(403, "authority"));
+        }
+        let path = req.target.split('?').next().unwrap_or("");
+        if path == "/_humanymous/session" {
+            if req.method != "POST"
+                || req.target != path
+                || !req.body.is_empty()
+                || req.header("authorization").is_some()
+            {
+                return Err(Rejection::new(400, "session_request"));
+            }
+            let issued = self.sessions.issue(&self.config, now)?;
+            return Ok(Decision::Local(
+                200,
+                serde_json::to_vec(&issued).map_err(|_| Rejection::new(503, "serialization"))?,
+            ));
+        }
+        let collect = path == "/_humanymous/collect";
+        if collect {
+            if req.method != "POST"
+                || req.target != path
+                || req.header("content-type") != Some("application/json")
+            {
+                return Err(Rejection::new(400, "collect_request"));
+            }
+        } else {
+            if humanymous_authority::configuration::reserved(path) {
+                return Err(Rejection::new(403, "reserved_route"));
+            }
+            let route = self
+                .config
+                .routes
+                .iter()
+                .find(|r| r.method == req.method && r.path == path)
+                .ok_or(Rejection::new(409, "route_inventory"))?;
+            if route.required.raw_tls || route.required.original_h2 || route.required.collector {
+                return Err(Rejection::new(422, "required_capability"));
+            }
+        }
+        let authorized = self.sessions.authorize(&self.config, req, now)?;
+        let id = &authorized.session;
+        let deadline = authorized.deadline;
+        let (verdict, risk, rule) = if collect {
+            self.sessions.collect(id, &req.body)?;
+            ("COLLECTED".to_owned(), 0.0, String::new())
+        } else {
+            let mut header = HeaderInfo {
+                method: req.method.clone(),
+                version: "11".into(),
+                names: req.headers.iter().map(|(n, _)| n.clone()).collect(),
+                order_reliable: true,
+                casing_reliable: true,
+                user_agent: req.header("user-agent").unwrap_or("").into(),
+                accept_language: req.header("accept-language").unwrap_or("").into(),
+                accept_encoding: req.header("accept-encoding").unwrap_or("").into(),
+                has_cookie: req.header("cookie").is_some(),
+                has_referer: req.header("referer").is_some(),
+                ..Default::default()
+            };
+            // Forwarding claims remain observed header claims, not transport identity.
+            header.via = req.header("via").unwrap_or("").into();
+            header.x_cache = req.header("x-cache").unwrap_or("").into();
+            header.x_squid_error = req.header("x-squid-error").unwrap_or("").into();
+            header.x_blue_coat_via = req.header("x-bluecoat-via").unwrap_or("").into();
+            header.x_forwarded_for = req.header("x-forwarded-for").unwrap_or("").into();
+            header.forwarded = req.header("forwarded").unwrap_or("").into();
+            header.cf_connecting_ip = req.header("cf-connecting-ip").unwrap_or("").into();
+            header.true_client_ip = req.header("true-client-ip").unwrap_or("").into();
+            header.x_client_ip = req.header("x-client-ip").unwrap_or("").into();
+            header.x_original_forwarded_for =
+                req.header("x-original-forwarded-for").unwrap_or("").into();
+            header.cookie_names = req
+                .header("cookie")
+                .unwrap_or("")
+                .split(';')
+                .filter_map(|pair| pair.trim().split_once('=').map(|(name, _)| name.to_owned()))
+                .collect();
+            let mut report = SessionReport {
+                client: self.sessions.report(id),
+                network: build(&Observation {
+                    header,
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            report
+                .network
+                .signals
+                .get_or_insert_default()
+                .push(authorized.rit);
+            let score = self
+                .engine
+                .score(&mut report)
+                .map_err(|_| Rejection::new(503, "scoring"))?;
+            if !matches!(score.verdict.as_str(), "ALLOW" | "DENY" | "CHALLENGE") {
+                return Err(Rejection::new(503, "verdict"));
+            }
+            (score.verdict, score.risk_score, score.hard_rule_fired)
+        };
+        self.check_deadline(deadline, clock())?;
+        // Commitment binds all observed body/header bytes, including unsigned fields,
+        // without writing those values or a usable capability to the WAL.
+        let mut hash = Sha256::new();
+        for value in [&req.method, &req.target] {
+            hash.update((value.len() as u64).to_be_bytes());
+            hash.update(value.as_bytes());
+        }
+        for (name, value) in &req.headers {
+            for field in [name, value] {
+                hash.update((field.len() as u64).to_be_bytes());
+                hash.update(field.as_bytes());
+            }
+        }
+        hash.update(&req.body);
+        let request_id = hex::encode(Sha256::digest(
+            format!("{id}:{}", authorized.counter).as_bytes(),
+        ));
+        let record = Record {
+            event_type: if collect {
+                "runtime.collect"
+            } else {
+                "runtime.decision"
+            }
+            .into(),
+            tenant_id: self.config.scope.tenant.clone(),
+            request_id,
+            correlation_id: hex::encode(hash.finalize()),
+            config_version: self.config.scope.revision.clone(),
+            verdict: verdict.clone(),
+            risk_score: risk as i64,
+            enforcement_action: if collect { "collect" } else { &verdict }.into(),
+            enforcement_mode: "enforce".into(),
+            fail_mode: "fail_closed".into(),
+            triggered_rules: (!rule.is_empty()).then(|| vec![rule]),
+            ..Default::default()
+        };
+        if self.audit.append(record).is_err() {
+            self.sessions.poison();
+            return Err(Rejection::new(503, "durable_audit"));
+        }
+        self.check_deadline(deadline, clock())?;
+        if verdict == "ALLOW" {
+            Ok(Decision::Origin { deadline })
+        } else {
+            Ok(Decision::Local(
+                if collect { 200 } else { 403 },
+                serde_json::to_vec(&serde_json::json!({"verdict":verdict}))
+                    .map_err(|_| Rejection::new(503, "serialization"))?,
+            ))
+        }
+    }
+
+    fn check_deadline(
+        &mut self,
+        deadline: u64,
+        time: Result<u64, Rejection>,
+    ) -> Result<(), Rejection> {
+        let now = time?;
+        self.sessions.observe(now)?;
+        if now >= deadline {
+            return Err(Rejection::new(503, "deadline"));
+        }
+        Ok(())
+    }
+
+    /// Serve one request per connection, serialized to bound allocations and
+    /// session/audit races. Slow clients can cause denial of service; this is an
+    /// experimental loopback pilot, not a production throughput claim.
+    pub async fn serve(mut self, listener: TcpListener) -> std::io::Result<()> {
+        if !listener.local_addr()?.ip().is_loopback() {
+            return Err(std::io::Error::other("loopback only"));
+        }
+        let mut admission = Admission::new(self.config.rate_per_second);
+        loop {
+            let (mut stream, peer) = listener.accept().await?;
+            if !peer.ip().is_loopback() {
+                continue;
+            }
+            let until = Instant::now() + Duration::from_millis(self.config.timeout_ms);
+            if !admission.admit() {
+                let _ = timeout_at(
+                    until,
+                    http::write(&mut stream, 429, b"{\"error\":\"admission\"}"),
+                )
+                .await;
+                continue;
+            }
+            let result = timeout_at(until, self.connection(&mut stream, until)).await;
+            if let Ok(Err(error)) = result {
+                let body = serde_json::to_vec(&serde_json::json!({"error":error.code}))
+                    .unwrap_or_default();
+                let _ = timeout_at(until, http::write(&mut stream, error.status, &body)).await;
+            }
+        }
+    }
+
+    async fn connection(
+        &mut self,
+        stream: &mut TcpStream,
+        connection_until: Instant,
+    ) -> Result<(), Rejection> {
+        let request = http::read(stream).await?;
+        connected(stream)?;
+        let decision = self.decide(&request, humanymous_authority::now_ms)?;
+        if Instant::now() >= connection_until {
+            return Err(Rejection::new(503, "connection_deadline"));
+        }
+        match decision {
+            Decision::Local(status, body) => http::write(stream, status, &body)
+                .await
+                .map_err(|_| Rejection::new(503, "response_write")),
+            Decision::Origin { deadline } => {
+                connected(stream)?;
+                self.check_deadline(deadline, humanymous_authority::now_ms())?;
+                let remaining = deadline
+                    .checked_sub(humanymous_authority::now_ms()?)
+                    .filter(|v| *v > 0)
+                    .ok_or(Rejection::new(503, "deadline"))?;
+                let until = connection_until.min(Instant::now() + Duration::from_millis(remaining));
+                let origin = self.config.origin;
+                let bytes = http::origin_request(&request, &self.config.scope.authority);
+                let response = timeout_at(until, async {
+                    let mut upstream = TcpStream::connect(origin)
+                        .await
+                        .map_err(|_| Rejection::new(503, "origin_connect"))?;
+                    // Cancellation/expiry before the first origin byte has no effect.
+                    connected(stream)?;
+                    self.check_deadline(deadline, humanymous_authority::now_ms())?;
+                    if Instant::now() >= connection_until {
+                        return Err(Rejection::new(503, "connection_deadline"));
+                    }
+                    upstream
+                        .write_all(&bytes)
+                        .await
+                        .map_err(|_| Rejection::new(503, "origin_write"))?;
+                    let mut response = Vec::new();
+                    upstream
+                        .take((http::MAX_BODY + 16_385) as u64)
+                        .read_to_end(&mut response)
+                        .await
+                        .map_err(|_| Rejection::new(503, "origin_read"))?;
+                    http::response(&response, request.method == "HEAD")?;
+                    Ok::<_, Rejection>(response)
+                })
+                .await
+                .map_err(|_| Rejection::new(503, "origin_timeout"))??;
+                stream
+                    .write_all(&response)
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))?;
+                stream
+                    .shutdown()
+                    .await
+                    .map_err(|_| Rejection::new(503, "response_write"))
+            }
+        }
+    }
+}
+
+fn connected(stream: &TcpStream) -> Result<(), Rejection> {
+    // Bypass readiness caching: a synchronous durable append may have blocked
+    // the task before Tokio could poll a newly arrived FIN/RST. The upstream
+    // safe socket API performs MSG_PEEK on the actual nonblocking socket.
+    let mut byte = [std::mem::MaybeUninit::uninit(); 1];
+    match socket2::SockRef::from(stream).peek(&mut byte) {
+        Ok(0) => Err(Rejection::new(400, "client_closed")),
+        Ok(_) => Err(Rejection::new(400, "trailing_frame")),
+        Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => Ok(()),
+        Err(_) => Err(Rejection::new(400, "client_read")),
+    }
+}
