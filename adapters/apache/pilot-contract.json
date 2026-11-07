@@ -1,0 +1,17 @@
+{
+  "schema": "humanymous.apache.pilot/0.1",
+  "implemented": false,
+  "status": "not_run",
+  "fullProductSuccess": false,
+  "execution": "free-github-hosted-docker-only",
+  "sourceCommit": null,
+  "lockSha256": null,
+  "moduleSha256": null,
+  "imageDigest": null,
+  "requiredIdentity": ["httpdVersion", "aprVersion", "mpm", "architecture", "libc", "rustVersion"],
+  "requiredGroups": ["event", "worker", "prefork", "binary-body-replay", "authority-outage", "deadline-expiry", "request-cancellation", "graceful-reload", "subrequest-rejection", "internal-redirect-rejection", "cache-bypass-denial", "spoofed-provenance", "origin-witness-denial"],
+  "cleanupRequired": true,
+  "cleanupObserved": false,
+  "results": [],
+  "limitations": ["native-ABI-approval-pending", "module-not-implemented", "shared-profile-pending", "hosted-pilot-not-run"]
+}
