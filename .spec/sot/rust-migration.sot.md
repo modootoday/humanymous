@@ -45,6 +45,40 @@ container is the measured Linux parity profile only, not a universal SDK/model
 budget. The comparison quiet window ended after both runs; ordinary allocated
 work resumes. Docker Desktop affinity and cleanup scope below remain mandatory.
 
+Four slots are a ceiling, not permission to overlap cold compilation with a
+heavy native Docker/CEF/SDK build. The actual Apache Desktop attempt concurrent
+with initial Linux targets reached88.2594% host commit; its verified owned build
+was terminated, coordinator cleanup and separate ledger cleanup succeeded, and
+all45 scenarios remained NOT_RUN. Schedule the next heavy build only after other
+cold compilation streams are terminal and normal admission passes. Reuse valid
+build caches; never reclaim capacity by killing foreign processes, shutting down
+shared WSL, dropping global caches or pruning without explicit authorization.
+Warm bounded tests still need explicit allocation and admission. Physical free
+memory does not supersede the host commit guard.
+
+## Production observer bootstrap topology decision
+
+The initial production profile has three roles and two persistent identities:
+the authorized transient provisioner, a long-lived observer that is also the
+bootstrap broker/receiver, and the independent service host. A separate broker
+delegating to another observer is outside this initial profile. A broker ACK
+cannot be reclassified as observer provisioning or external attestation.
+
+Management policy must pin the actual authenticated observer native principal,
+process instance and epoch, never the installer's short-lived PID. The observer
+owns its channel and witness lifetime through final audit flush before explicit
+stop/cancel/join/reap. Service lifetime remains independently owned. No existing
+CLI command or typed pipe helper is assumed to implement this process topology.
+CLI must add an explicit Rust observer lifecycle after the Authority contract is
+accepted. Missing observer/witness continues to fail closed.
+
+This decision selects topology only. Authority owns the exact versioned channel
+contract; native-security independently reviews noncircular protected trust
+provisioning, both native identities, process-reuse/epoch binding, one-use
+freshness, bounded I/O/deadline/acknowledgement and recovery/cleanup. Their exact
+contract and implementation gates remain pending; this decision is not runtime
+qualification and changes no detection policy.
+
 ## Local Docker engine identity and cleanup
 
 The user's 2026-11-07 correction establishes Windows Docker Desktop's
