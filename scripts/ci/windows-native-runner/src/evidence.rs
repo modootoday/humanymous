@@ -74,12 +74,8 @@ pub fn source(workspace: bool) -> io::Result<Value> {
         "crates/native-security/src",
         "crates/test-support/src",
         "crates/audit/src",
-        "crates/integrity/src",
+        "crates/sdk/humanymous-core/src",
         "crates/network/src",
-        "crates/signals/src",
-        "crates/scoring/src",
-        "crates/behavior/src",
-        "crates/model/src",
         "scripts/ci/windows-native-runner",
     ];
     if workspace {
