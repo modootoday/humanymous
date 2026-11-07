@@ -126,6 +126,8 @@ conformance only, not actual dynamic loading, calling-convention execution,
 C++ RAII/exception behavior, allocator interoperability or full product success.
 
 ABI-12: Typed host facades reuse Registry::validate_context and buffer_bytes.
+They reuse the public Version::validate for exact common negotiation instead of
+copying major/minor/size/reserved rules into each host namespace.
 The latter returns an owner-checked immutable Rust borrow only, with no detached
 allocation or new allocator domain. Rust lifetimes prevent free/mutation while
 the view is live. A host-specific facade may compose its request state with the

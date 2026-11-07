@@ -17,6 +17,7 @@ fn negotiation_rejects_without_allocating_a_handle() {
             ..Version::default()
         },
     ] {
+        assert_eq!(version.validate(), Err(Status::VERSION));
         assert_eq!(r.open(version), Err(Status::VERSION));
     }
     for version in [
@@ -33,6 +34,7 @@ fn negotiation_rejects_without_allocating_a_handle() {
             ..Version::default()
         },
     ] {
+        assert_eq!(version.validate(), Err(Status::ARGUMENT));
         assert_eq!(r.open(version), Err(Status::ARGUMENT));
     }
     assert_eq!(open(&mut r), 1);

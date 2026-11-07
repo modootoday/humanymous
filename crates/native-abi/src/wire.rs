@@ -24,7 +24,11 @@ impl Default for Version {
     }
 }
 impl Version {
-    pub(crate) fn validate(self) -> Result<(), Status> {
+    /// Validate the shared exact version, structure size and reserved field.
+    ///
+    /// Typed host extension namespaces reuse this check instead of copying
+    /// negotiation rules. It does not validate operation-specific payloads.
+    pub fn validate(self) -> Result<(), Status> {
         if self.major != 1 || self.minor != 0 {
             return Err(Status::VERSION);
         }
