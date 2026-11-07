@@ -300,3 +300,9 @@ profile source accepted, actual4cases/dualartifactpin/outerfailure gates pending
 Latest usermapping3962278c: managedhumanymous.dll versus nativehumanymous-native,
 NuGethumanymous/C#Humanymous; earliercase-onlylayout superseded. No unilateral
 rename, execution or publication; full migration qualification remains open.
+
+Actual CLI91536cce parent1/subcases4 now independently accepted at frozen scope:
+24rawattachments,3artifact hashes, original manifests, outerJobfacts and2767ZIP
+Gitblobs verified. Simulatedruntime/endpointrelease do not qualify actualservice/
+EOF/joins/SCM/product; globalLIFETIME staysOPEN. Authority replay/deadline/audit
+review binds5unchanged leaves without newdefect or wholeauthoritypass. No newrun.

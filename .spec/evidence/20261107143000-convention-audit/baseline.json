@@ -464,5 +464,18 @@
     "managed_assembly": "humanymous.dll",
     "native_ffi_stem": "humanymous-native",
     "actual_rename_or_host_qualified": false
+  },
+  "followup_cli_actual_and_authority_replay": {
+    "private_review_sha256": {
+      "cli-watchdog-actual-four-review-001.json": "b57337a88e8e8cda26eab413d09dffb4305a07418fef90686a67b593f031b7dc",
+      "authority-replay-source-review-002.json": "f75e894c60a7fb1cc882dda8f4d5c48420845e9e7f53febcd2a40f0390ce250a"
+    },
+    "actual_cli_parent_tests": 1,
+    "actual_ordered_cli_subcases": 4,
+    "source_zip_git_blob_members_verified": 2767,
+    "authority_source_leaves_rehashed_unchanged": 5,
+    "global_lifetime_closed": false,
+    "real_service_or_product_qualified": false,
+    "new_audit_runtime_workloads": 0
   }
 }

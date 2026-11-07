@@ -139,7 +139,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-GOV-01 | P2: detection-freeze pointers named only historical Go owners | M11 | Source correction accepted f191ee8c; Rust owners/fields and stable serde IDs named; no policy edits |
 | CA-LF-01 | P2: browser native.rs worktree had 522 CRLF pairs despite LF blob | Browser | CLOSED; owner normalized to exact original LF blob, independently rehashed; no semantic/runtime inference |
 | CA-LF-02 | P2: Windows runner receipt.rs worktree had 90 CRLF pairs despite LF blob | Native Windows | CLOSED; worktree equals original LF blob, independently rehashed; no semantic/runtime inference |
-| CA-LIFETIME-01 | P1 contract gap: legacy shared process capture lacks retained reader joins and a proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Actual ccd83927 five fixed cooperative Windows parents independently verified for new retained owner; legacy consumers, CLI cases, outer failure controls and broader OS/tree guarantees remain OPEN |
+| CA-LIFETIME-01 | P1 contract gap: legacy shared process capture lacks retained reader joins and a proven single end-to-end hard deadline | Native Windows/test-support, coordinated by root | Actual ccd83927 five retained parents and 91536cce one CLI parent/four fixed outcomes independently verified; legacy consumers, real service/flush, outer fault controls and broader OS/tree guarantees remain OPEN |
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CLOSED scoped preallocation/UTF16 invariant: 3a0ba182 source plus 3200a5a1 actual boundary/doctest receipts independently checked; broader native provider qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
@@ -1011,3 +1011,31 @@ Python/Ruby/Node initialization remain their explicit contracts. Role/target/ABI
 paths, trusted resolver, domain leases and unload restrictions still apply.
 This is a target mapping; no source rename, package ownership, actual loader
 compatibility or publication is qualified by the naming contract.
+
+### Actual CLI watchdog and Authority replay follow-up
+
+CLI91536cce at c57cf0c6 with controller24004321 now supersedes NOT_RUN for its
+fixed Windows consumer. Independent review verified24 private attachments, the
+exact1passed/0failed/0ignored/0filtered parent footer and four ordered raw JSON
+outcomes0/74/74/74. Three preserved executable hashes and original before/after
+artifact manifests match. Outer reports confirm assignment before grant, natural
+parent exit0, actual Job empty and original cleanup with no unknown/error. Source
+ZIP SHA256 matches; all2767 regular entries match canonical Git blob SHA1 without
+extraction or missing/extra/duplicate members. This is not registry/SDK closure.
+
+The four cases observe writer entry and three released endpoints, with simulated
+runtime completion explicit. They prove neither a particular kernel-blocked
+write nor pipe EOF, reader joins/native close, real service audit flush/drain,
+SCM/producer identity or product success. CA-LIFETIME01 remains OPEN for legacy
+callers, outer fault paths and those wider contracts. No forced-stop recovery
+was counted as a successful subcase; parent and subcase denominators stay separate.
+
+Additional Authority source review binds five unchanged leaves. Exact peer/token,
+scope/revision/route/capability checks precede serialized nonce reservation;
+live cache capacity refuses rather than evicting live entries. Subsequent errors
+do not undo consumed nonces. Clock rollback and durable audit failure poison the
+epoch; original deadline checks surround durable work. The client response is
+exactly bound and consumed once with monotonic/wall expiry checks. Shared parser
+deadline>now guards the client's subtraction. No new violation was confirmed in
+these production methods; targeted config/parser reads are not full-module or
+whole security/runtime qualification. No new audit workload was executed.
