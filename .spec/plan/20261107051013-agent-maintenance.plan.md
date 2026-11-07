@@ -924,3 +924,18 @@ CLI. Parser fixtures are deliberately synthetic and non-authoritative. Actual
 compatibility producer scripts remain external originals with exact provenance;
 reading them for projection parity is distinct from separately gated isolated
 native execution. Root still owns adoption, final13-context closure and all moves.
+
+#### Root adoption of mutable-reader design
+
+Root accepted the design in244f5427: explicit-root finite source-manifest reads
+are separate from live observations; synthetic fixtures are non-authoritative;
+hashes cover the same bytes parsed; absence is explicit; ambient/vendor fallback
+is forbidden; path/race/unsupported checks fail closed. A claims snapshot grants
+no writer authority. Existing limits are ceilings, not scan authorization, and
+never loosen a tighter reader cap.
+
+Integration must reuse existing selected-input readers where their behavior
+matches these requirements. Do not introduce a generalized framework or generic
+wrappers. This adoption changes design status only: no implementation, source,
+Cargo, path move or execution is authorized here. Root's complete13-context union
+and final integration freeze remain pending.
