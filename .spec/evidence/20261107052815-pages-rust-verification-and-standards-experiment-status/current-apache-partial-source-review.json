@@ -1,0 +1,238 @@
+{
+  "schema": "humanymous.pages-apache-partial-review/1",
+  "source_observation": "cd952ace384327dd796478e1d69d5d3d28b18c3d",
+  "reviews": [
+    {
+      "source": "crates/apache-adapter/Cargo.toml",
+      "sha256_at_post_read_observation": "306897ca71d128a8ed0684286327496ad65e69a833159c6c1462b7c738ede7e5",
+      "bytes": 282,
+      "lines": 15,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Safe lifecycle/replay manifest forbids unsafe; dependencies and target declaration do not qualify a native ABI or host tuple.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "adapters/apache/pilot-contract.json",
+      "sha256_at_post_read_observation": "7b178710f158de772173091fd32e14631eb1cbc91646bc1147051d99abb11e9b",
+      "bytes": 5226,
+      "lines": 177,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "45 named scenario/MPM pairs and b400 source-bound hosted result reference. Template artifact fields, cleanup false and empty results are not an actual failed or passed execution receipt. Missing report, unknown cases and cleanup failures must fail completion.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "adapters/apache/ABI-SAFETY.md",
+      "sha256_at_post_read_observation": "38f31c71b29ba7ba7e7a8f42779c1f99353a17a24b9bcb32996f141ba46afee5",
+      "bytes": 6503,
+      "lines": 78,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Host safety premises require live aligned pointers, pool/callback lifetimes, post-fork initialization and independent MPM capabilities. catch_unwind does not catch abort/OOM/SIGKILL. pidfd pinning before reap and exclusive owned child/actual process-group checks replace numeric signal fallback. No broad installed ABI proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "adapters/apache/upstream-lock.json",
+      "sha256_at_post_read_observation": "dc4f977fe1cd935a4282e7ffba7a5c47d281c8e531538e3199f0c5d4e1a8ff97",
+      "bytes": 1852,
+      "lines": 38,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Pinned Apache/APR/APU archives and selected direct headers plus bindgen version. Null historical builder/clang/include-closure fields do not attest actual installed inputs; generated build receipt remains separate.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/INTEGRATION.md",
+      "sha256_at_post_read_observation": "b98379480480bcff94dd0f4826546213f0909f887dc5042349be52513d4c2565",
+      "bytes": 4856,
+      "lines": 71,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Reviewed complete chronology: b400 45-case success supersedes narrower historical 23/22,33/12,35/10 outcomes at their own sources only. CLI diagnostic remains separate. No later-source, TLS/H2 or full-product promotion.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "adapters/apache/coordinator-contract.json",
+      "sha256_at_post_read_observation": "4f0fba11f6e10fb63f8e2d2d24003ef42ce1b4c88cc4db12cb020b29a984ee59",
+      "bytes": 4677,
+      "lines": 30,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Current b400 bound success declaration and strict counts/hash/cleanup report policy. CLI diagnostic not case46. Raw output and engine identities private; allowlisted public diagnostics. Execution allocation and engine/label ownership required, no global cache or volume erasure.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "adapters/apache/Dockerfile.native",
+      "sha256_at_post_read_observation": "178b2901519a1bf647ea73ae5272cf379a07ee59411a167798971f93f78c04b6",
+      "bytes": 4048,
+      "lines": 61,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Pinned builder/runtime and upstream archives; installs production and separate probe modules, builds pilot, nonroot runtime, SSL/H2 disabled. apt package repositories and dependency closure not pinned by archive hashes. Opening no-success-yet comment is historical and conflicts with b400 result; owner correction requested, no inference that current build reran.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/lib.rs",
+      "sha256_at_post_read_observation": "2d43dfe00f870b8a544ec329f263a857f6d1d5161bf8a449ceae4c335a7a3363",
+      "bytes": 858,
+      "lines": 23,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Linux httpd feature gate; generated declarations and reviewed host boundary are explicit unsafe exceptions, default checks omit hooks. Include of generated bindings is not runtime ABI evidence.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/bin/pilot.rs",
+      "sha256_at_post_read_observation": "e020f7670bcd1f1fd0207ba43809a338ab2d5ba551b1eaf1899314163309204e",
+      "bytes": 824,
+      "lines": 29,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Dispatches coordinate/cleanup or Linux pilot; unsupported args/non-Linux path fail. Error text static; executable source is not hosted execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/src/lib.rs",
+      "sha256_at_post_read_observation": "3f9cf51493ea40b9cf663dfbccb61a944bf25585e2508e059a1e299005e4e24d",
+      "bytes": 205,
+      "lines": 5,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Safe owner exports Child/Request/Cancellation/MPM and Replay/ReadMode; no native pointer or authority API exported by this facade.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/diagnostic.rs",
+      "sha256_at_post_read_observation": "2ad5f9e6985e5f09dd92316b1323c5bb2c350be96b71694a5756eda4bb2a266b",
+      "bytes": 7636,
+      "lines": 195,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Fresh isolated prefork master with nested-probe effect witness; private PID file must match reserved unreaped child before legacy CLI stop. Helper owned pidfd, 2s poll and 64KiB per-stream read bounds; files can exceed limits between polls, so not a hard disk byte quota. Actual cleanup/forced flag and raw-private vs allowlisted-code output separate. Success is not public CLI qualification or required case46.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/authority.rs",
+      "sha256_at_post_read_observation": "a7c3cacb5ccb75f9d0fa5c479c16c81dde48dd0678f313009a1eb0e9626b56b8",
+      "bytes": 4358,
+      "lines": 116,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Real shared authority/IPC/WAL, but report provider uses frozen synthetic evidence except /production ApplicationHttp. /slow and /cancel block fixture worker for deliberate timing. stop aborts and awaits task; Drop requests abort only. Same-process no witness fixture is not independent custody or collector-origin product evidence.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/pilot/origin.rs",
+      "sha256_at_post_read_observation": "34408581bcbc7f896edf48fe0c6931bf468e4e6439329d8fe33669fb6d672823",
+      "bytes": 3142,
+      "lines": 95,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Owned loopback synchronous witness counts only after exact bounded body read; rejects duplicate length, bounds header64KiB/body1MiB, reports sanitized-header spoof flag. 2s socket read/write timeouts are per-operation not whole-request wall deadline. Drop joins owned thread; this is synthetic origin component, not deployed product or arbitrary app rollback.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/coordinator/engine.rs",
+      "sha256_at_post_read_observation": "7093accee95b3d3d0df94ea2d49f10d4aadc3922bb737214fe856a9aac899911",
+      "bytes": 4072,
+      "lines": 110,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Pure engine identity validation distinguishes Windows desktop named-pipe/context+expected ID/version from hosted Unix engine. Client path alone insufficient. Hosted identity observed not externally attested; tests declared not rerun.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/src/lifecycle.rs",
+      "sha256_at_post_read_observation": "f65ccd8df1937b0699c57359f3601542c3ed0cf54d5fba4c3a712cd76880a795",
+      "bytes": 12434,
+      "lines": 367,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Current PID checked before inherited mutex access, generation/initial-request/capacity admission before body, maximum1MiB/original<=30s deadline. Exact-length finish requires actual host EOF call; no authorization granted. Detached cancellation and shutdown revoke completed body. !Send/!Sync request retains permit until drop; forked drop avoids parent state. MPM identify requires independent matching capabilities; source tests not executed by Pages.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/host.rs",
+      "sha256_at_post_read_observation": "59b19ff84c6286fc5e6ca80f608a2cdf4172818fdcaec06f22699d7d1581e6ab",
+      "bytes": 30489,
+      "lines": 825,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "825-line native bridge fully read in contiguous bounded chunks. Explicit host-pointer/pool/thread premises; child config private same-UID NOFOLLOW/0600 and dedicated server, known queried MPMs, no pre-fork runtime. Strict HTTP1/single length/no TE-Upgrade-trailer-Expect/cache/SSL, lowercased sanitized headers no raw provenance. Socket timeout reset to remaining original Pending budget for each blocking body read then restored; exact decoded body copied. Per-request current-thread runtime decides; ALLOW retained for final route/header/URI/liveness checks and one consume before handler. Point-in-time EOF probe not future-disconnect guarantee. Pool cleanup cancellation/context and !Send replay remain host callback/serialization premises. Production and pilot-probes feature paths separate; no current actual native execution by Pages.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/apache-adapter/native/src/coordinator.rs",
+      "sha256_at_post_read_observation": "3a8572f403a6f2aed1d9de064c5eb5d8c56b18c97d25cf642d4185c0a4f60a95",
+      "bytes": 26613,
+      "lines": 677,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "677-line strict receipt/parser/projection and unit source fully read. <=1MiB canonical compact JSON serialization check rejects duplicate/extra encoding; exact fields and independently supplied source/manifest/image/5artifact hashes checked. All45 unique required IDs, only failed infrastructure supplementary, recomputed counts; unknown/notrun/cleanupfalse/nonzero cannot pass. Apache engine version substring is observation, not full version/ABI closure. CLI typed role/exit/signal/bytes/reap/cleanup consistency separate; private raw hex decoded into private carriers, public fixed AH codes/allowlisted labels. Unit fixture success is constructed source, not an actual pilot rerun.",
+      "pages": [
+        "docs/reference/supported-topologies.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "full_read_files": 17,
+  "full_read_lines": 2912,
+  "source_review_only": true,
+  "receipt_renewal": false,
+  "actual_execution": false,
+  "limitations": [
+    "Post-read identities only; no initial pre-read snapshot or immutable compiler/dependency closure claimed.",
+    "Remaining native host, coordinator and pilot implementation files are not accepted by this partial review.",
+    "Historical b400 runtime result stays bound to its exact source and tuple, not current bytes."
+  ],
+  "post_read_recheck_drift": []
+}
