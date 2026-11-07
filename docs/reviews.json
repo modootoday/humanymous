@@ -2,6 +2,82 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/apache-adapter/native/src/lib.rs",
+  "sha256": "08a7a963a30bc8efb198b2a8dcf0e65dd0b151908c4ed58761f6ae20c0f931d4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete feature-gated native module root: generated ABI and handwritten host scopes explicitly permit unsafe under Linux httpd, non-Linux httpd compilation rejected. Default module build does not execute host hooks.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/src/lib.rs",
+  "sha256": "7f7affa01afb9072fa07751246ae050c56f7e936b2fa5f24c87dff47e3a14489",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete safe public exports for Child, Request, Cancellation, Mpm, Error, Replay and ReadMode. Opening ABI-not-implemented comment is stale relative to separate authored native module; no native qualification inferred.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/src/lifecycle.rs",
+  "sha256": "679641423e4fd5f70abfdefb1e9699c887e8bf658d193c0dcda275cf2006618f",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete lifecycle and six test definitions: same PID/generation, initial request, bounded capacity, maximum1MiB, original budget up to30s, exact completion, cancellation/shutdown invalidation and admission held to Drop. Definitions were inspected, not rerun; real fork/pool/socket behavior remains hosted qualification.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/src/replay.rs",
+  "sha256": "95c76e737a78202b8e093c5261cc0c0030b6b4a8cf828eeafb2a5e6b5c7a9b8c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete replay and three test definitions: retained request admission, complete-body liveness, bounded byte/line/speculative reads, zero-read and EOF behavior. Replay is not authorization; actual native authority consumption and cleanup hooks remain separate.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/Cargo.toml",
+  "sha256": "306897ca71d128a8ed0684286327496ad65e69a833159c6c1462b7c738ede7e5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete safe lifecycle manifest: unpublished workspace package, unsafe forbidden, no runtime dependencies. Public topology distinguishes safe lifecycle units from native server qualification.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/native/Cargo.toml",
+  "sha256": "201901bb42b6e3cb73e7b89b1c1ecb43de665bf6448685d31764371c6378210a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete native feature/dependency graph: empty defaults, opt-in httpd, independent pilot binary, pilot-probes enabling httpd, cdylib/rlib and Linux rustix edge. Default checks do not establish real hooks or hosted execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/native/build.rs",
+  "sha256": "e2ae3b6c36baa5bc8c5145840a7896c0e42a2cf187f35123378a3e2ae0f23298",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete generator: exact Linux target, explicit absolute include/libclang paths, selected pinned header hashes, actual loaded-library observation, include closure and binding digests. Receipt concerns build inputs, not installed ABI compatibility or module/request execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/apache-adapter/native/src/bin/pilot.rs",
+  "sha256": "2befd744667d15e4994c9b4ed20ee94e814f50b9bc00f918cd1b574409f067d6",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete pilot entrypoint: Linux run delegates to separate pilot module, other targets/error exit failure. No execution or full delegated-module review claimed.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "build/rust/runtime-candidate.Dockerfile.dockerignore",
   "sha256": "abcdf9a1ae79709db96c234e276ec0aac8cd9a9f2ff6c3e17a649559f7b96888",
   "reviewer": "codex/rust-pages",

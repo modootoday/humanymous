@@ -34,6 +34,13 @@ The [wire experiment](../protocol/implementation-experiment.md) and
 from the unresolved generic profile. Reuse of one shared Rust parser is good
 implementation consistency, but is not independent interpretation evidence.
 
+Apache's safe request/replay component contributes a narrower P-07/P-08 subset:
+exact-length bounded input, original-budget checks and cancellation-aware replay.
+It does not authorize a request, specify streaming integrity or establish that
+native server hooks run before every side effect. Generated ABI-input receipts
+and default builds are separate from real httpd module execution. See the
+[native host boundaries](../../../reference/supported-topologies.md#other-native-host-candidates).
+
 The Node bridge now shares configuration, envelope projection and admission
 with the native framework adapters. Their producer profiles still declare
 different observation losses; shared implementation does not qualify each host

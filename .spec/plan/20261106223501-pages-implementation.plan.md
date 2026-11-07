@@ -1290,3 +1290,29 @@ Public implementation status now distinguishes 38-member inventory, separate
 Go10/maintenance36/Pages26 component counts, two unexecuted CEF process tests,
 and earlier hosted813 source failures from later local integration. No release,
 full-product pass, current render or preview acceptance is claimed.
+
+### Apache native build-input review and live hosted observation
+
+Read complete safe/native Cargo manifests, ABI generator and pilot entrypoint;
+added four manual source receipts. Topology reference now distinguishes empty
+native defaults, explicit httpd/pilot/probe features, exact target/libclang/header
+closure checks and ABI-input receipt from actual loading/request qualification.
+Apache integration metadata remains stale about registration, so it was not
+accepted as reviewed. Full review verifier still fails missing inventory; no
+bulk refresh, actual compiler/process or browser execution performed.
+
+Re-polled hosted42355168729/source8132117: policy passed; Docker, Ubuntu, macOS
+and browser failed; Windows128351926153 and browser-product128355522898 were
+confirmed in_progress. Overall in_progress, not terminal; no later source
+qualification inferred and no duplicate dispatch.
+
+### Apache lifecycle and Draft requirement mapping
+
+Read complete native module root, safe exports, lifecycle and replay including
+nine test definitions; no tests rerun. Added four exact receipts. Public topology
+records PID/generation/admission and original deadline, exact bounded completion,
+revocation and retained replay admission. Draft informative map links these
+narrow P-07/P-08 properties without turning replay into authorization or a
+streaming protocol. Actual pool/socket/authority-to-origin hooks remain unverified.
+Source88/errors0; full freshness still fails remaining inventory. Native host.rs
+was only partially read and therefore receives no whole-file receipt.

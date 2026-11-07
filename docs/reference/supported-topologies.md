@@ -121,6 +121,24 @@ These developing source boundaries do not add release-qualified host tuples.
 | Apache | Safe lifecycle/replay and opt-in native module source exist. The exact httpd/APR/MPM/compiler/header tuple, pool cleanup, after-fork initialization, reload, cancellation and origin isolation still need native qualification. Source archives and selected header hashes do not prove the installed ABI |
 | Common C/C++ boundary | Source exports the pointer-free by-value `humanymous_native_abi_v1` buffer/lifecycle command boundary over one safe owner. This is not an installed application security SDK. Header generation configuration and Rust units do not prove actual C/C++ layout, dynamic loading, unload, exception or allocator compatibility |
 
+The Apache candidate separates a safe lifecycle crate from its native module.
+The default native feature set does not build the httpd hooks. The opt-in
+generator accepts only `x86_64-unknown-linux-gnu`, requires explicit absolute
+include roots and the exact libclang library, checks selected header hashes,
+and records the observed include closure and generated bindings digest.
+That build receipt is evidence about ABI inputs, not successful module loading
+or request enforcement. The separate `pilot` executable and `pilot-probes`
+hooks must not be confused with the production module's behavior.
+
+The safe Apache request owner requires the current child PID and generation,
+an initial request, bounded admission and an original budget of at most 30
+seconds. It copies at most 1 MiB and exposes the body only after exact-length
+completion. Cleanup cancellation and child shutdown invalidate even completed
+input. Replay retains admission, checks liveness on each read and supports
+bounded byte, line and speculative reads; replay itself grants no authorization.
+These source-level properties do not prove that httpd invokes cleanup, enforces
+socket deadlines or consumes the bound authority response before origin effects.
+
 The Go candidate's synthetic trusted-session cases cannot attest browser or
 human activity. Origin contact counts and observed application mutations are
 different denominators: a successful transport contact alone does not prove a
