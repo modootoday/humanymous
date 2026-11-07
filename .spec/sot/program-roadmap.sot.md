@@ -233,6 +233,13 @@ Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생
 
 ## 현재 종료를 막는 gate와 다음 착수
 
+현재client Session은strict provisionedbootstrap/oneflight/sharedsigner/zeroizing
+keyepoch/clockexpiry/ACK확인후counterprogress를구현했다. Runtimeowner가ACK계약을
+수용했지만serverwire구현은별도다. collector26/integrity20+parity3,actualFirefox58,
+host/WASMClippy와독립.NET ACK벡터가통과했다. 이는actualFetch/completebody/abort/
+serverbootstrap/session/freshcollectorjoin을대체하지않으며전송계획은
+plan:root/20261107055000이다. root/bodycodec1MiB와초기server64KiBbudget도분리한다.
+
 현재explicit probe_cdp_json은legacy console-preview 두관측을actualRust로
 수행하며once-per-collectorcache/status/error/latecallback/stop을검증했다.
 Native19/actualDockerFirefox51/strictWASMClippy는component범위이며CDP종류나

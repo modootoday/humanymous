@@ -1,0 +1,326 @@
+{
+  "schema": "humanymous.client-session/1",
+  "parent": "c146defccb4c5ba622a4c5a31c5c2b013f482980",
+  "implemented": [
+    "strict10fieldbootstrap",
+    "exactprovisionedscope",
+    "oneflight",
+    "sharedrequestcodec",
+    "clockexpiryrollback",
+    "zeroizingownedkeyIDtoken",
+    "authenticatedcounterACK",
+    "invalidACKorambiguityclosesepoch"
+  ],
+  "nativeTests": {
+    "ignored": 0,
+    "legacyParity": 3,
+    "collector": 26,
+    "failed": 0,
+    "integrity": 20
+  },
+  "actualFirefox": {
+    "passed": 58,
+    "newSessionCases": 7,
+    "ignored": 0,
+    "failed": 0
+  },
+  "clippy": {
+    "wasmAllTargets": "passed after owner0f9abd8 confines process helper to native; prior failure retained",
+    "hostAllTargets": "passed"
+  },
+  "ack": {
+    "verifier": "independent .NET HMACSHA256 synthetickey32ones, counter1,bucket9,status200",
+    "vectorSha256": "f2b7005370c6bc779abe03d0044ac7e52537383ed85ac51c3af499413fe90c5b",
+    "meaning": "counterprogress only; notALLOW/body/collectorattestation",
+    "status": "runtime-owner accepted, server not implemented",
+    "vectorMAC": "OOdSOlV17YY6x0gF37ZIL3SVSumfO6xPoa3XpGZLcS4"
+  },
+  "actualFetchImplemented": false,
+  "actualRuntimeSessionJoin": false,
+  "fullCollectorQualified": false,
+  "cookieProfileSupported": false,
+  "codecRequestMaxBytes": 1048576,
+  "initialRuntimeRequestMaxBytes": 65536,
+  "wasmSha256": "ac4545ab53abc4d333b50f07cdc74e093a4282cf77b1bf369846a262bc5d730f",
+  "image": "sha256:d070050fb9790a600588514c5f242be05606983e6e291713b8d5ea2d88080ddd",
+  "execution": "source-built WASM read-only mounted in existing pinned networknone UID65532 Firefox container; fresh image/product e2e not qualified",
+  "sourceScope": "validated working bytes, common27membermanifest and lock remain separate integration changes",
+  "source": [
+    {
+      "sha256": "883cb2ac3eed57d08786923a5290e2ca7773a038cac7595adfffcf5524d2052d",
+      "path": "crates/collector\\Cargo.toml"
+    },
+    {
+      "sha256": "8eb4138907d6b4bf0a5402c3d433aeee701685a9dd4a9dfbeca09b9608dbb71e",
+      "path": "crates/collector\\INTEGRATION.md"
+    },
+    {
+      "sha256": "2f6608489207d5a75bf615e4c30f851b436aedeea5a33acf73425a20b63e3e24",
+      "path": "crates/integrity\\Cargo.toml"
+    },
+    {
+      "sha256": "e8c1f61b6a5c1b0a2a88a0aff6a6adcf2892fa49f1d541c58b6a72fcc5c65f7a",
+      "path": "crates/integrity\\tests\\verification_parity.rs"
+    },
+    {
+      "sha256": "470d9c40e1d68c82ff478cd684698e1fcb139da570b5fd6d4a67a88811a6ac7f",
+      "path": "crates/integrity\\tests\\resource_parity.rs"
+    },
+    {
+      "sha256": "453a9815fc4de7901599a50b2dcbd94e73c853ad4ed9d24b955f4f18a97d3a26",
+      "path": "crates/integrity\\tests\\request_parity.rs"
+    },
+    {
+      "sha256": "2d512b6df4c04de32fce0391838e68a1829793b5ab89216b457ba2251ad5c18c",
+      "path": "crates/collector\\src\\session\\wire.rs"
+    },
+    {
+      "sha256": "1e436f5f1031997bd367626e126b73f6d37a78a0ea253e7962569b00e4bb838d",
+      "path": "crates/collector\\src\\session\\tests.rs"
+    },
+    {
+      "sha256": "f055fe565fdb76c22588e7d4ea62b56d7ff2259fb3154df1d4593f0b18b04dc7",
+      "path": "crates/collector\\src\\session\\mod.rs"
+    },
+    {
+      "sha256": "3560931a5da5b0acda8e1f6cee6a1176a4735df2f751e7055942a84608f20ef8",
+      "path": "crates/collector\\src\\lib.rs"
+    },
+    {
+      "sha256": "d623988f446c2d11fce701c9b070f06771f8a10ba3cc264dec794906928908ff",
+      "path": "crates/integrity\\tests\\fixtures\\verification.json"
+    },
+    {
+      "sha256": "6d6d27e642bcf4ce1ac45b3dbe57f9787170f50526a532285486100463c0e7df",
+      "path": "crates/integrity\\tests\\fixtures\\resource.json"
+    },
+    {
+      "sha256": "6ee2be626741c3168b03a9da9948545c5d831aa0d6a8a805368112f630cbde58",
+      "path": "crates/integrity\\tests\\fixtures\\request.json"
+    },
+    {
+      "sha256": "9b197bf8b6716d0388f9b9625d65616b177deaba446cc877f22f592a4a141bbf",
+      "path": "crates/integrity\\src\\lib.rs"
+    },
+    {
+      "sha256": "7d683a1c51c4893f3efb08aa37e23de76d5936c2ca7122e1065bbf993dcab7c0",
+      "path": "crates/collector\\src\\guard\\tests.rs"
+    },
+    {
+      "sha256": "cb8ceb08c61cf2fcce4a123b0188e78dc7a92ae1a3fc484ae959c42a4d8b4301",
+      "path": "crates/collector\\src\\guard\\native.rs"
+    },
+    {
+      "sha256": "026be3a2a58e9d10c60882cd1b6c15210df3a9cc3570b15104c4ff352bd24bce",
+      "path": "crates/collector\\src\\guard\\mod.rs"
+    },
+    {
+      "sha256": "e8687e4be4dad979741fd582faeb0d097bda4572fbaf236763753ff836243db9",
+      "path": "crates/integrity\\src\\adapter\\wire.rs"
+    },
+    {
+      "sha256": "ccad57be6d531b02962655189289f86a87875ea48d594f47ddf40471c66e6033",
+      "path": "crates/integrity\\src\\resource\\mod.rs"
+    },
+    {
+      "sha256": "34876029b3d963f0383fbfc824a7aefc5b7448a265e9c6dcf8b2f64a99f3da03",
+      "path": "crates/integrity\\src\\adapter\\tests.rs"
+    },
+    {
+      "sha256": "237882a3a758c576e1281c548c3c435d6678bb8b8851c8b46db5ca8583acbfa9",
+      "path": "crates/integrity\\src\\adapter\\profile.rs"
+    },
+    {
+      "sha256": "8a44c59f88a2888b05ff5c1c38b8d34c3fee0c429ce1aa394dc7c1e1f210dd22",
+      "path": "crates/integrity\\src\\adapter\\mod.rs"
+    },
+    {
+      "sha256": "4f4e62064ca22f5a6390fdff8db9b1241a353efd7dc04f488e75cfd48ec880d2",
+      "path": "crates/collector\\src\\detection\\tests.rs"
+    },
+    {
+      "sha256": "d567f867f24ffa067622dd72db7d5e35daff9ef0101b82a55bdd9729e96b324a",
+      "path": "crates/collector\\src\\detection\\static_client.rs"
+    },
+    {
+      "sha256": "e8c3262b6f0a96b0ff0eb3786b9e26d142ba4c535b9089dc81d586511f598c0c",
+      "path": "crates/collector\\src\\detection\\snapshot.rs"
+    },
+    {
+      "sha256": "58f4dc31b0d0f52fe5c6491ae4dfd916609793267a57825fc9b2f82e403519c3",
+      "path": "crates/collector\\src\\detection\\mod.rs"
+    },
+    {
+      "sha256": "22dede93a5b7ca07ce7250b4f09cf202e2a4cbf0ed510396a5acca47e844482d",
+      "path": "crates/collector\\src\\detection\\integrity.rs"
+    },
+    {
+      "sha256": "688e6851e14bf570c229360721aa5956882f8f4ef0964d544e1c6b7ec6fe468e",
+      "path": "crates/collector\\src\\detection\\fingerprint.rs"
+    },
+    {
+      "sha256": "6b097215fd0d622295caffcd64a99f9b00c1d6093730ae5eeebae3a6e126e4ab",
+      "path": "crates/integrity\\src\\request\\verification.rs"
+    },
+    {
+      "sha256": "1bfe035bca056a73107c4b549538309a2d16a44dbbae2d2a7fc43447e50e25af",
+      "path": "crates/collector\\src\\behavior\\tests.rs"
+    },
+    {
+      "sha256": "e7962488aac1bed6d7452c8b56327480fff486816094001a7d30fa93be452e9b",
+      "path": "crates/integrity\\src\\request\\token.rs"
+    },
+    {
+      "sha256": "369eaed99785b14d2d7b4bf4e328de67ef4f60f7be9970b02476699516f0d0b8",
+      "path": "crates/integrity\\src\\request\\rotation.rs"
+    },
+    {
+      "sha256": "2cac6164e323cd21fa26a59ab94450c9e912e8050c71f2999f52cb3806a15a9e",
+      "path": "crates/integrity\\src\\request\\mod.rs"
+    },
+    {
+      "sha256": "70439a4a0050edb85db942d797ad8801a47f39f058081647467b5994a58f0990",
+      "path": "crates/integrity\\src\\request\\canonical.rs"
+    },
+    {
+      "sha256": "a4f06c0949685a5f802e454273e02426dd9bfc32528902a128504b6bb5e0fbad",
+      "path": "crates/collector\\src\\behavior\\statistics.rs"
+    },
+    {
+      "sha256": "8c4610d77106354314a9f2fee98bdfdbf7cc02ea9222905839b6d9250e475788",
+      "path": "crates/collector\\src\\behavior\\pointer.rs"
+    },
+    {
+      "sha256": "90606313dfcb9b84984455907ef1e73ea23511e05548c6ffb972df49577f971d",
+      "path": "crates/collector\\src\\behavior\\oracle_tests.rs"
+    },
+    {
+      "sha256": "d4b1b3636dc280248762e96c7082d297b7640972184134ba61d6838f8a38b058",
+      "path": "crates/collector\\src\\behavior\\mod.rs"
+    },
+    {
+      "sha256": "8458e89a25b6f2c44ca28b4a3fd1f5e123076947c5d852653c1ebd1f9d0f79e7",
+      "path": "crates/collector\\src\\behavior\\keyboard.rs"
+    },
+    {
+      "sha256": "7cb14b5e27fe202cb36df637c99cb55418ff42898b44a4e6610c55549c95ac82",
+      "path": "crates/collector\\src\\behavior\\cadence.rs"
+    },
+    {
+      "sha256": "999784e0cc5e025825fe92f780fe4434da9c7585ea4db3a2f3cbe7f2ddb4b63a",
+      "path": "crates/collector\\src\\browser\\resources\\timer.rs"
+    },
+    {
+      "sha256": "4ff01e154b9aca46b14208c07fca8a510b0591795bb6e2c1e4cb90e67df142ed",
+      "path": "crates/collector\\src\\browser\\environment\\tests.rs"
+    },
+    {
+      "sha256": "490b3a29051c074ccce1ec6e6fb186e9e6836a2af9b4edfdea1784367d3d4e39",
+      "path": "crates/collector\\src\\browser\\environment\\resources.rs"
+    },
+    {
+      "sha256": "d7d5040f43486e0ed1de274a1b2d15e6d3126ec7d8534af96e3975575a829a09",
+      "path": "crates/collector\\src\\browser\\environment\\mod.rs"
+    },
+    {
+      "sha256": "c6fa32bc79ac5e06d7bb3f9fb1da67e07700f8836e13df6e00d6dbb4037f72a4",
+      "path": "crates/collector\\src\\browser\\cdp.rs"
+    },
+    {
+      "sha256": "05538973262b4a8659b50c48bf70484ea0cc8bb7eaa6890b659c6ccce8726787",
+      "path": "crates/integrity\\src\\request\\browser\\validation.rs"
+    },
+    {
+      "sha256": "1ac1de1836b06d97d7eed26f39873e7dfd9213d0b794044fb1a93359809479d5",
+      "path": "crates/integrity\\src\\request\\browser\\tests.rs"
+    },
+    {
+      "sha256": "17fead28f0653d0284d7ff19ea0137cfff25c427c6e426ae591148d92616aaab",
+      "path": "crates/integrity\\src\\request\\browser\\mod.rs"
+    },
+    {
+      "sha256": "20526674e2a0e3f0267c5baa23837a9d378bbfa9db16a4ded1946151b1730b7a",
+      "path": "crates/integrity\\src\\request\\browser\\ack.rs"
+    },
+    {
+      "sha256": "667ba2b5fc4625ac4677cfcc6554556a84dc5ef75f7f3959bd066666a0fee9a8",
+      "path": "crates/collector\\src\\browser\\resources\\timer\\tests.rs"
+    },
+    {
+      "sha256": "201fe2eea9a7ff80d2670aebd1681d6ff24a5d2e55ba20865f081cdc4d27c43c",
+      "path": "crates/collector\\src\\browser\\resources\\mod.rs"
+    },
+    {
+      "sha256": "04ae46a0e04c62d34ce28ec4ee0f1bad792bfcc3fe2a0fd0f0f7e2b7493055b2",
+      "path": "crates/collector\\src\\browser\\reflection.rs"
+    },
+    {
+      "sha256": "66a2b17ec4dd8c3900be000d2318a2675525ccd287d5fe502c748b2e7e7cbf6d",
+      "path": "crates/collector\\src\\browser\\mod.rs"
+    },
+    {
+      "sha256": "b311dde0396222340759de1eda95b2198c11f3d0f29c430e1e99d17d3d1ee3b3",
+      "path": "crates/collector\\src\\browser\\integrity.rs"
+    },
+    {
+      "sha256": "dd9edc09fb75734625aaaa8ae41596c6a791b993ad108992f7436d1ca2fd6d47",
+      "path": "crates/collector\\src\\browser\\cdp\\tests.rs"
+    },
+    {
+      "sha256": "70c4d058af681f507c9b23d34cdaeeb35f6671dd7c9f23ebfb2908dc49ac2f49",
+      "path": "crates/collector\\src\\browser\\behavior.rs"
+    },
+    {
+      "sha256": "cb39f96c7dfeabccbe9ee5e3113728f1260c58b32ebe23e190b68c46d2c68616",
+      "path": "crates/integrity\\src\\request\\browser\\ack\\tests.rs"
+    },
+    {
+      "sha256": "3e460e3c7d5b64f187965a9854c4f6553965190e2cc3b7694e6b0f1d034e0f7b",
+      "path": "crates/collector\\src\\browser\\guard\\tests.rs"
+    },
+    {
+      "sha256": "3c4d05600899f91bfdead62f8b8084dd099bd33f66dcc84df3dcf794c1485a37",
+      "path": "crates/collector\\src\\browser\\guard\\observer.rs"
+    },
+    {
+      "sha256": "d6a24159c678a56576d0f264b2f3bf5dbbfb93801b66c500fafbf7d0e9bb951b",
+      "path": "crates/collector\\src\\browser\\guard\\mod.rs"
+    },
+    {
+      "sha256": "63c5bd20be88545b968af3aa82a39bc262f19c38b639910b7cae9da3e81fef05",
+      "path": "crates/collector\\src\\browser\\guard\\forwarding.rs"
+    },
+    {
+      "sha256": "75a5b507e2e0ea4ab0fb2a0ffa384686a70200d73c9b4890877041d75cafe54f",
+      "path": "crates/collector\\src\\browser\\advanced\\tests.rs"
+    },
+    {
+      "sha256": "827570c0d3dbc37ff9e3fb5d7e29886a4f1b0a661e65af1fe34bf084e87a3316",
+      "path": "crates/collector\\src\\browser\\guard\\forwarding\\tests.rs"
+    },
+    {
+      "sha256": "1f4479d1f424af71cfdc8c7212241da48344bf2a4281226bc0ec81907046de9d",
+      "path": "crates/collector\\src\\browser\\advanced\\profile.rs"
+    },
+    {
+      "sha256": "3567367f0ed899e7767fdc071a2eea07c58e50b15e85d0dacb7e90191433ecf3",
+      "path": "crates/collector\\src\\browser\\advanced\\mod.rs"
+    },
+    {
+      "sha256": "1a2244d7a32695541828d0604a2e55505813f6ba44f9f9b3874e622690921722",
+      "path": "crates/collector\\src\\browser\\advanced\\media.rs"
+    },
+    {
+      "sha256": "5a9b4e08892e67e364c2d0626bb2e7e4f09bdd9566cd200578bc96cc09575d36",
+      "path": "crates/collector\\src\\browser\\fingerprint.rs"
+    },
+    {
+      "sha256": "52cd663185cc892351a22d76be4dccc50ad3ae556a599b29d09c0cbca5e5802b",
+      "path": "crates/collector\\src\\browser\\advanced\\capabilities.rs"
+    },
+    {
+      "sha256": "1fb1c1ecaae3c617be81deb7d04b05f7678cba48ccecde57e7299c32ac939440",
+      "path": "crates/collector\\src\\browser\\behavior\\tests.rs"
+    }
+  ]
+}

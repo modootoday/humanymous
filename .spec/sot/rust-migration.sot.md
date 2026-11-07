@@ -14,6 +14,20 @@ rel:
 
 # Rust migration conventions
 
+## Client session and consumption ACK
+
+The actual Rust collector Session state parses exact provisioned bootstrap,
+uses the shared browser request codec and seed(key,lastcounter), reserves only
+one flight, and advances only on authenticated consumed-counter acknowledgement.
+Rollback/expiry/invalid ACK/ambiguity close and zeroize the owned key epoch.
+The shared ACK domain is browser0.1/ack, request token plus actual status, then
+existing compute_token(seed(key,n),text,n,bucket), with exact bounded inputs and
+constant-time verification. Runtime owner accepted this contract; ACK means
+counter progress only, never ALLOW/body/collector attestation. Native collector26,
+integrity20+legacyparity3 and actualFirefox58 pass; ACK vector independently
+matches .NET SHA256/HMAC. Actual Fetch/complete-body cancellation and runtime
+wire/session/fresh collector join remain mandatory unfinished integration.
+
 ## Explicit console-preview acquisition
 
 BrowserCollector.probe_cdp_json ports Error.stack/console.debug and prototype

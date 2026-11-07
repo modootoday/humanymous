@@ -13,6 +13,32 @@ rel:
 
 # Browser collector migration
 
+## Browser session transport implementation contract
+
+The browser_auth_only client consumes an exact provisioned Scope, never trusting
+bootstrap to choose installation/tenant/origin/revision/authority. Strict JSON
+bootstrap has protocol/session/key/counter/expires and all5 scope fields, no
+duplicates/unknown fields, at most8192 bytes, canonical32byte base64url key and
+session, initialcounter0, futureJSsafe expiry. Key/ID/token buffers zeroize on
+drop/invalidation. Request signing reuses shared integrity browser codec and
+seed(key,lastcounter); only one flight is allowed. Rollback/expiry, ambiguous
+network/body failure, timeout/abort/drop/redirect invalidate rather than retry or
+guess counter. Invalid input before a flight does not consume a counter.
+
+Response acknowledgement was accepted by the runtime owner: only a
+consumed counter receives protocol/counter/MAC headers, bound to pending token,
+counter/bucket and observed status. Response status alone is not consumption
+proof. Initial profile uses same-origin/credentialsomit/redirecterror and bounded
+buffered bodies; cookies, streams and fresh collector provenance stay separate
+required follow-ups, not silently claimed supported.
+ACK bytes are humanymous.browser/0.1/ack newline, decimal byte-length/colon/
+pending request token/newline, decimal actual status/newline, signed using
+compute_token(seed(sessionkey,n),bytes,n,bucket). Gateway strips all origin
+x-humanymous-* response headers and issues ACK only after consumption, including
+consumed4xx/5xx. ACK establishes progress only, not ALLOW/response-body/collector
+attestation. Client advances only after bounded complete body plus valid ACK;
+an ACK cannot make body failure/abort/drop/timeout safe to retry.
+
 ## Explicit bounded console-preview observation
 
 An explicit once-per-collector probe ports the legacy Error.stack getter with

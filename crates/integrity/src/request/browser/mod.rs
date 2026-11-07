@@ -1,7 +1,9 @@
 //! Browser-controllable request binding; no transport or producer qualification.
+mod ack;
 #[cfg(test)]
 mod tests;
 mod validation;
+pub use ack::{acknowledgement, verify_acknowledgement};
 
 use sha2::{Digest, Sha256};
 use std::fmt::Write;
@@ -59,6 +61,8 @@ pub enum BindingError {
     Header,
     /// Buffered body exceeds the bounded profile.
     Body,
+    /// Malformed consumption acknowledgement inputs.
+    Acknowledgement,
 }
 
 impl std::fmt::Display for BindingError {
@@ -70,6 +74,7 @@ impl std::fmt::Display for BindingError {
             Self::Integer => "invalid browser binding integer",
             Self::Header => "invalid browser binding header",
             Self::Body => "browser binding body exceeds limit",
+            Self::Acknowledgement => "invalid browser acknowledgement",
         })
     }
 }
