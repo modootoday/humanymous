@@ -6,13 +6,18 @@ created: 2026-11-07T13:56:43Z
 updated: 2026-11-07T15:10:19Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery, sot:root/structural-development]
-  governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
+  governs: [crates/sdk/humanymous-core/src/integrity/request/canonical.rs, crates/sdk/humanymous-core/src/integrity/request/canonical/tests.rs, crates/sdk/humanymous-core/examples/integrity_canonical_performance.rs]
 ---
 
 # Reproducible build and runtime performance optimization
 
 Document version: 0.1.0. This is a measurement and acceptance contract, not a
 claim of measured improvement or permission to execute a workload.
+
+Current governs paths follow root's Core relocation c67d07c0. Historical R1 source
+paths, Cargo package names, command argv, hashes and evidence below identify their
+original revisions and remain unchanged. This reference correction grants no
+production-source ownership and does not qualify the relocated implementation.
 
 ## Problem and scope
 
