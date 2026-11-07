@@ -12,6 +12,12 @@ rel:
 
 ## Scope and order
 
+Urgent mirror cleanup consumer fix: replace frozen-go-oracle sync/mirror-diff/
+shellverification and obsoleteNodeagent tests with canonical Rustmaintenance
+check/compile. Retain unrelatedNodeattackassertion. Rootdeletesverifiedmirrors,
+thisslice edits no Go product/settings/hooks. Staticactionlint/diffcheck apply;
+newactuallegacyworkflowexecution remainsnot_run.
+
 After47a6720, actualstaticcandidateCLI exposed a substringfalsepositive:
 go-build token appeared inside cargo-build text. SharedlexicalDockerchecker
 fixes it without removing Go source/baseimageguard. RootBisolatedtarget

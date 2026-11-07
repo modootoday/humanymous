@@ -76,14 +76,16 @@ jobs:
         with:
           config: cliff.toml
           args: --context
-      # Multi-provider agent layout (AGENTS.md + .agents skills/personas).
-      # Sync adapters so Claude/Codex/Gemini/Grok skill trees match the canon.
-      - name: agent layout sync + verify
-        run: |
-          bash scripts/agents/sync-adapters.sh
-          git diff --exit-code -- .claude .grok .gemini .codex/skills .codex/hooks.json
-          bash scripts/agents/verify-agents-layout.sh
-          node --test scripts/agents/workflow-runner.test.mjs scripts/agents/hooks/pre-tool-guard.test.mjs scripts/assert-attack.test.mjs
+      # Canonical maintenance never regenerates retired vendor compatibility trees.
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: 1.99.1
+      - name: Check canonical agent inventory
+        run: cargo run --locked -p humanymous-agent-maintenance -- check .
+      - name: Compile canonical maintenance targets
+        run: cargo check --locked -p humanymous-agent-maintenance --all-targets
+      - name: Retain frozen attack assertion contract
+        run: node --test scripts/assert-attack.test.mjs
 
   external-input-kernel-smoke:
     name: compact independent-kernel smoke

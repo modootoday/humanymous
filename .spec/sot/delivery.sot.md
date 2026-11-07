@@ -207,6 +207,14 @@ the corrected hosted source still requires its own actual run.
 
 ### Workflow identity convention
 
+Explicit obsolete-cleanup delta: frozen-go-oracle.yml no longer invokes legacy
+agent adapter synchronization, vendor mirror diff or shell layout verification.
+It uses pinned Rust1.99.1 canonical agent-maintenance check and compile targets.
+The unrelated frozen attack assertion test remains; legacy Node agent/hook tests
+are no longer maintenance authority. No vendor trees are regenerated. Root owns
+verified mirror deletion and canonical rule changes; Go/oracle product paths,
+settings/hooks and immutable history are not deleted by this delivery change.
+
 NuGet preparation candidate for the subsequent C/C++/C# adapter scope:
 catalog publisher_candidates.nuget records research-only/release.yml and proposed
 environmentnuget, with environment_created/job_present/verified/package_readyfalse
