@@ -173,8 +173,23 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
             } else {
                 Value::Null
             };
+            let manifest_hash = if dir.join("source-manifest.json").is_file() {
+                source::file(&dir.join("source-manifest.json"))?
+            } else {
+                String::new()
+            };
+            let raw_binding = report["public_receipts"].get("wargame").is_none()
+                || source::file(&dir.join("wargame-report.raw.json"))
+                    .is_ok_and(|hash| report["public_receipts"]["wargame"]["raw_sha256"] == hash);
+            let receipt_valid =
+                raw_binding && crate::lab_receipts::validate(&report, head, &manifest_hash).is_ok();
+            let public_receipt = if raw_binding {
+                crate::lab_receipts::public(&report, head, &manifest_hash)
+            } else {
+                json!({"status":"rejected","error_code":"invalid_lab_public_receipt"})
+            };
             components.push(
-                json!({"owner":"lab-runner","exit_code":code,"report":report,"source":manifest}),
+                json!({"owner":"lab-runner","exit_code":code,"report":report,"source":manifest,"public_receipt":public_receipt,"public_receipt_valid":receipt_valid}),
             );
         } else {
             components.push(json!({"owner":"lab-runner","status":"blocked","reason":"owning Rust Docker orchestration not delivered"}));
@@ -206,6 +221,7 @@ pub fn run(root: &Path, kind: &str) -> Result<()> {
                 component["status"] == "failed"
                     || component["report"]["status"] == "failed"
                     || crate::lab_diagnostics::validate(&component["report"]).is_err()
+                    || component["public_receipt_valid"] == false
                     || component["exit_code"]
                         .as_i64()
                         .is_some_and(|code| code != 0 && code != 2)
@@ -318,7 +334,8 @@ fn component_summary(component: &Value) -> Value {
         "status":report["status"],"qualification":report["qualification"],
         "schema":report["schema"],"full_product_qualified":report["full_product_qualified"],
         "assertions":counts,"required_unavailable_count":report["required_unavailable"].as_array().map(Vec::len),
-        "safe_diagnostics":crate::lab_diagnostics::public(report)})
+        "safe_diagnostics":crate::lab_diagnostics::public(report),
+        "public_receipt":component.get("public_receipt").cloned().unwrap_or(Value::Null)})
 }
 #[cfg(test)]
 mod tests {

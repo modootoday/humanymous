@@ -868,3 +868,32 @@ zero or count the nested child summary as an additional parent test. Any unknown
 helper, missing parent/child proof, malformed extra summary or ordinary ignored
 unit fails the gate. All other harnesses retain strict one-summary/zero-ignore
 accounting. This does not skip tests or qualify full product runtime.
+
+## Bounded public archive transport and measurement
+
+The later explicitly authorized cache pilot is an exception to the earlier
+no-cache default, limited to checksum-verified public crates.io `.crate` archives.
+It never restores compiled targets, Cargo source/index trees, Git dependencies,
+private evidence, credentials, or trust decisions. The exact OS/architecture,
+Rust 1.99.1 and committed root lock identify the transport key. Pull requests
+restore only; only trusted repository pushes on main or codex/rust may save.
+Read-only live repository quota, usage and retention checks must verify at most
+10 GB configured capacity, seven days retention and at most 1 GiB selected
+archives before a save. Unknown state falls back to uncached validation. No
+quota change, remote compiler cache, gate waiver or measured cache hit is implied.
+
+Cargo command observations use monotonic wall time and allowlisted command
+kinds, success/exit accounting and hashed inputs. Raw arguments and timing HTML
+remain private. Resolved features, effective configuration/linker, native ABI
+and isolated dependency identities remain explicit unknown dimensions;
+reuse_key_complete and linked_artifact_reuse_qualified remain false. Measurements
+do not justify deleting builds until equivalent actual execution is established.
+
+The sole lab public-receipts contract governs the CI projection. The current
+required owned-deployment wargame ledger has exactly 26 ordered unique indexes.
+CI validates source and raw/manifest digests, exact field allowlists, terminal
+statuses, expectation nullability and independently recomputed totals/scoped
+status. It preserves a valid receipt when surrounding full-product gates fail.
+Missing receipts remain unknown; malformed present receipts fail the gate.
+No raw body or actor identity enters the public projection, and scoped evidence
+never becomes full-product qualification.

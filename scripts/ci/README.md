@@ -5,6 +5,9 @@ Workflow UI names use CI /, Docs /, Release / and Legacy / categories. The singl
 [workflow catalog](workflows.json) fixes technical file/job, concurrency and
 artifact identities; Rust policy rejects unknown workflows or naming drift.
 Filenames/job keys are stable API contracts, distinct from UI labels.
+The frozen-go-ci.yml.txt and frozen-go-release.yml.txt files are immutable
+historical snapshots, not executable workflows or regeneration consumers.
+Workflow discovery reads registered YAML files in .github/workflows only.
 RubyGems/PyPI entries are preparation-only planned publishers, not publishing
 jobs. Package names and external publisher proof are pending; all readiness,
 trust and direct-publish flags remain false. GitHub environment creation alone

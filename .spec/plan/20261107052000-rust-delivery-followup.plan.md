@@ -274,3 +274,14 @@ full product qualification and real OIDC publication are separate outcomes.
 This plan stays active until its owned work and necessary actual verification
 are finished; external/product dependencies remain named, never set green by
 missing-runner placeholders. No main merge, tag, push or publish is authorized.
+# Bounded source freeze: archive transport, metrics and public receipts
+
+The explicitly authorized optional public crate archive pilot and Cargo command
+measurement are implemented in source. They preserve all validation gates and
+make no cache-hit or artifact-reuse claim. The lab receipt consumer now follows
+the sole producer contract, checks the exact 26-case ledger and retains safe
+receipts even on a surrounding failed pilot. The allocated lightweight slot
+passed 47 pure delivery tests, strict all-target Clippy and actual static policy;
+actionlint and scoped specification checks also passed. A new source-bound
+hosted run remains pending; run 42348518353 belongs exclusively to
+63f69ae9de703939b7b9091e2f215b12bea265de and cannot validate these changes.

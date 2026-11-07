@@ -11,18 +11,34 @@ env:
   CARGO_BUILD_JOBS: '1'
   CARGO_INCREMENTAL: '0'
   DOCKER_BUILD_RECORD_UPLOAD: 'false'
-# No cache writes: artifact/cache billing has not been verified for this account.
+  HUMANYMOUS_CARGO_TIMINGS: '1'
+# Only checksum-verified public .crate archives may use the bounded cache pilot.
+# Compiled artifacts, Cargo index/Git state and all raw evidence remain excluded.
 # Two heavy lanes after policy. Failed checks remain failed while their lane
 # continues collecting independent results; cancellation stops both lanes.
 jobs:
   policy:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       with:
         persist-credentials: false
         fetch-depth: 1
+    - name: Restore public crate archives (optional)
+      id: public_crates_restore
+      if: ${{ github.repository == 'modootoday/humanymous' && hashFiles('Cargo.lock') != '' }}
+      continue-on-error: true
+      uses: actions/cache/restore@9255dc7a253b0ccc959486e2bca901246202afeb
+      with:
+        path: ~/.cargo/registry/cache/index.crates.io-*/*.crate
+        key: public-crates-v1-${{ runner.os }}-${{ runner.arch }}-rust1.99.1-${{ hashFiles('Cargo.lock') }}
+        enableCrossOsArchive: false
+        fail-on-cache-miss: false
+        lookup-only: false
     - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
       with:
         toolchain: 1.99.1
@@ -32,6 +48,21 @@ jobs:
     - run: 'go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.11
 
         "$(go env GOPATH)/bin/actionlint" -shellcheck=""'
+    - name: Verify public archive checksums and free quota
+      id: public_crates_plan
+      run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- archive-cache
+      env:
+        GH_TOKEN: ${{ github.token }}
+        HUMANYMOUS_ARCHIVE_CACHE_HIT: ${{ steps.public_crates_restore.outputs.cache-hit }}
+    - name: Save verified public crate archives (optional)
+      id: public_crates_save
+      if: ${{ success() && github.repository == 'modootoday/humanymous' && github.event_name == 'push' && (github.ref == 'refs/heads/codex/rust' || github.ref == 'refs/heads/main') && steps.public_crates_plan.outputs.save_allowed == 'true' && steps.public_crates_restore.outputs.cache-hit != 'true' }}
+      continue-on-error: true
+      uses: actions/cache/save@9255dc7a253b0ccc959486e2bca901246202afeb
+      with:
+        path: ${{ steps.public_crates_plan.outputs.archive_paths }}
+        key: public-crates-v1-${{ runner.os }}-${{ runner.arch }}-rust1.99.1-${{ hashFiles('Cargo.lock') }}
+        enableCrossOsArchive: false
   native:
     needs: policy
     if: ${{ !cancelled() && needs.policy.result == 'success' }}

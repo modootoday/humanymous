@@ -1,5 +1,12 @@
 {
   "schema": "humanymous.workflow-catalog/1",
+  "public_crate_archive_cache": {
+    "schema":"humanymous.public-crate-cache-policy/1",
+    "key":"public-crates-v1-${{ runner.os }}-${{ runner.arch }}-rust1.99.1-${{ hashFiles('Cargo.lock') }}",
+    "restore_path":"~/.cargo/registry/cache/index.crates.io-*/*.crate",
+    "max_archive_bytes":1073741824,"max_repository_cache_gb":10,"max_retention_days":7,
+    "compiled_artifacts_allowed":false
+  },
   "publisher_candidates": {
     "nuget": {"state":"research-only","repository":"modootoday/humanymous","workflow":"release.yml","environment_candidate":"nuget","environment_created":false,"job_present":false,"verified":false,"package_ready":false,"package_id":null}
   },

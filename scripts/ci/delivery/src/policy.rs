@@ -142,11 +142,18 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         for step in job["steps"].as_array().into_iter().flatten() {
             registry_env(&step["env"])?;
             require(
-                step["continue-on-error"] != true,
+                step["continue-on-error"] != true
+                    || crate::archive_cache::policy::approved_step(name, id, step),
                 "validation step failure may not be tolerated",
             )?;
             if let Some(action) = step["uses"].as_str() {
                 require(pinned(action), format!("unpinned action {action}"))?;
+                if name == "rust-validation.yml" && action.starts_with("actions/cache") {
+                    require(
+                        crate::archive_cache::policy::approved_step(name, id, step),
+                        "public archive cache boundary violated",
+                    )?;
+                }
             }
             for key in ["NODE_AUTH_TOKEN", "CARGO_REGISTRY_TOKEN", "NPM_TOKEN"] {
                 if let Some(value) = step["env"][key].as_str() {
@@ -288,6 +295,14 @@ pub fn check(root: &Path) -> Result<()> {
     let docs = workflows(root)?;
     let inventory = crate::read_json(&root.join("scripts/ci/workflows.json"))?;
     catalog(&inventory, &docs)?;
+    crate::archive_cache::policy::validate(
+        &inventory["public_crate_archive_cache"],
+        &docs
+            .iter()
+            .find(|(file, _)| file == "rust-validation.yml")
+            .ok_or("Rust validation workflow missing")?
+            .1,
+    )?;
     crate::registry::validate_preparations(
         &crate::read_json(&root.join("scripts/ci/registry-prerequisites.json"))?,
         &inventory["planned_publishers"],
@@ -507,6 +522,31 @@ pub fn jobs(raw: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn optional_public_cache_cannot_widen_paths_or_hide_validation_failures() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "rust-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("rust-validation.yml", &original).is_ok());
+        for mutation in 0..3 {
+            let mut changed = original.clone();
+            let steps = changed["jobs"]["policy"]["steps"].as_array_mut().unwrap();
+            let restore = steps
+                .iter_mut()
+                .find(|step| step["id"] == "public_crates_restore")
+                .unwrap();
+            match mutation {
+                0 => restore["with"]["path"] = json!("~/.cargo"),
+                1 => restore["with"]["restore-keys"] = json!("public-crates"),
+                _ => restore["if"] = json!("${{ always() }}"),
+            }
+            assert!(document("rust-validation.yml", &changed).is_err());
+        }
+    }
     #[test]
     fn workflow_catalog_rejects_unknown_duplicate_and_drifted_identities() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");

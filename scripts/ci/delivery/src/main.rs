@@ -1,10 +1,13 @@
 //! Source-bound delivery validation. No authored script-language implementation.
+mod archive_cache;
 mod command;
 mod dependency_summary;
 mod docker_source;
 mod evidence;
 mod image_candidates;
 mod lab_diagnostics;
+mod lab_receipts;
+mod metrics;
 mod nginx;
 mod package;
 mod pilot;
@@ -82,6 +85,7 @@ fn run() -> Result<()> {
         "snapshot" => { println!("{}", source::snapshot(&root)?); Ok(()) },
         "observe-run" => remote::observe(&root, argument(1)?, argument(2)?, Path::new(argument(3)?)),
         "audit-closure" => package::audit_closure(&root),
+        "archive-cache" => archive_cache::run(&root),
         "register-evidence" => evidence::register(Path::new(argument(1)?), argument(2)?),
         "verify-images" => supply::verify_images(&root),
         "probe" => workspace::run(&root,argument(1)?,argument(2)?),
