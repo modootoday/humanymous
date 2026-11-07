@@ -39,3 +39,8 @@ precision is retained. Consumers own schema/unknown-field/replay verification an
 their byte budgets. Attacker removed its original visitor in052c1da; lab uses the
 same API rather than a second visitor. New shared two pure tests are not yet run;
 root lock/slot integration is required. The old9process tests do not qualify this API.
+
+Subsequent canonicalf44b32b sharedJSON pure2 passed (0failed/ignored,9filtered) and
+all-target warnings-denied Clippy passed. No process test was executed in this
+selection. Post-run owned source bytes match canonical Git blobs; exact counts,
+hashes and private-log registration are in the cross-os runner evidence bundle.

@@ -1,0 +1,162 @@
+{
+  "schema": "humanymous.shared-native-pure-unit-summary/1",
+  "qualification": "pure-unit-only",
+  "full_runtime_qualified": false,
+  "source_commit": "f44b32ba1e62fdba098f935546a7922fd9fda3b8",
+  "observation_head": "893760f6af4e3b963b69f7398d44ca10bf81ebea",
+  "canonical_comparison": "post-execution owned source byte comparison",
+  "source_files": [
+    {
+      "path": "crates/native-security/Cargo.toml",
+      "canonical_git_blob": "44bb8756b7c42bc7dc904a3722618688fae528f0",
+      "validated_worktree_git_blob": "44bb8756b7c42bc7dc904a3722618688fae528f0",
+      "matches_canonical": true,
+      "sha256": "4b1dff517ecc7127d4526f3a1474dd51d102ae181b5e80aefa692981fd91ce15"
+    },
+    {
+      "path": "crates/native-security/src/lib.rs",
+      "canonical_git_blob": "dcf6dda648e1bfa5f9310729174656510b070616",
+      "validated_worktree_git_blob": "dcf6dda648e1bfa5f9310729174656510b070616",
+      "matches_canonical": true,
+      "sha256": "c6ce48bdcc12e9ff440285ddf0d3bf17b231d1fc24b7872f22bace8e8afdd7d0"
+    },
+    {
+      "path": "crates/native-security/src/process/mod.rs",
+      "canonical_git_blob": "1cfbb06bee817653c3453d85e2f7745661299316",
+      "validated_worktree_git_blob": "1cfbb06bee817653c3453d85e2f7745661299316",
+      "matches_canonical": true,
+      "sha256": "04e51540d0b09d6dc7a51cd59b49f39271075d6999cdc6bc6de2595bf55a52aa"
+    },
+    {
+      "path": "crates/native-security/src/process/windows.rs",
+      "canonical_git_blob": "982564046b93b4786389f9b8c54edbd852227b80",
+      "validated_worktree_git_blob": "982564046b93b4786389f9b8c54edbd852227b80",
+      "matches_canonical": true,
+      "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b"
+    },
+    {
+      "path": "crates/native-security/src/secret/mod.rs",
+      "canonical_git_blob": "5d1e80b7b6b047ecc4a823ce6044a1aa8c7c06ac",
+      "validated_worktree_git_blob": "5d1e80b7b6b047ecc4a823ce6044a1aa8c7c06ac",
+      "matches_canonical": true,
+      "sha256": "eb7ba77665bb51bcb217a34dbf0309bf2c45ef28131c97003c17e7d28541c4c0"
+    },
+    {
+      "path": "crates/native-security/src/secret/pilot.rs",
+      "canonical_git_blob": "2f1ded4182cf25264130c9f9831f2f7b0f1c21b2",
+      "validated_worktree_git_blob": "2f1ded4182cf25264130c9f9831f2f7b0f1c21b2",
+      "matches_canonical": true,
+      "sha256": "99703482931610e1690671ed4b7e690cb9a9897e0d4bd4cccfb2f28ebc942942"
+    },
+    {
+      "path": "crates/native-security/src/secret/reference.rs",
+      "canonical_git_blob": "301fbd4e7264d35e162d90c3288753f66c767812",
+      "validated_worktree_git_blob": "301fbd4e7264d35e162d90c3288753f66c767812",
+      "matches_canonical": true,
+      "sha256": "772fad2c0d89dbe57745f29fe8863e2d896ab1ea24d7008df50e5ca49856a06e"
+    },
+    {
+      "path": "crates/native-security/src/secret/windows.rs",
+      "canonical_git_blob": "60439d461175927a4737326a262c87b7dd993fa5",
+      "validated_worktree_git_blob": "60439d461175927a4737326a262c87b7dd993fa5",
+      "matches_canonical": true,
+      "sha256": "ea9ae767ae62ef1137743dcd131bf877b03c0d078138ee9a7e086e2c9e209273"
+    },
+    {
+      "path": "crates/native-security/src/storage/mod.rs",
+      "canonical_git_blob": "dbd7284afe9555561288dd579c4ae124196af952",
+      "validated_worktree_git_blob": "dbd7284afe9555561288dd579c4ae124196af952",
+      "matches_canonical": true,
+      "sha256": "a318c1b0dba0ccca911dbc7e0444e49f65aac5ba947c2a5ff1353fcae003ec84"
+    },
+    {
+      "path": "crates/native-security/src/storage/private_directory.rs",
+      "canonical_git_blob": "42fc7f5ad60b6ae79c58e5bbb578cad43a4b356b",
+      "validated_worktree_git_blob": "42fc7f5ad60b6ae79c58e5bbb578cad43a4b356b",
+      "matches_canonical": true,
+      "sha256": "bc99ca4bd6b608d8ac992cf2d38a46d1c3c7074230888d3e2e336e2d113a2c89"
+    },
+    {
+      "path": "crates/native-security/src/storage/service.rs",
+      "canonical_git_blob": "79cc0e5bffa114bd0b2974fa8d32fa36d8434ccd",
+      "validated_worktree_git_blob": "79cc0e5bffa114bd0b2974fa8d32fa36d8434ccd",
+      "matches_canonical": true,
+      "sha256": "e0dd437ed236cf3ac23f89556694c31b7ac7f64dec7be75eea002769b25c1220"
+    },
+    {
+      "path": "crates/native-security/src/storage/windows.rs",
+      "canonical_git_blob": "ac920cbd8ff135c4a256843de3f5d04781e2c9fb",
+      "validated_worktree_git_blob": "ac920cbd8ff135c4a256843de3f5d04781e2c9fb",
+      "matches_canonical": true,
+      "sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f"
+    },
+    {
+      "path": "crates/native-security/src/volume/mod.rs",
+      "canonical_git_blob": "2a73a7dd805aeb2f8306622540c5b94f52d5beea",
+      "validated_worktree_git_blob": "2a73a7dd805aeb2f8306622540c5b94f52d5beea",
+      "matches_canonical": true,
+      "sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956"
+    },
+    {
+      "path": "crates/test-support/Cargo.toml",
+      "canonical_git_blob": "d8c9382eb94e217ba7255f2c85418304cc3d17b6",
+      "validated_worktree_git_blob": "d8c9382eb94e217ba7255f2c85418304cc3d17b6",
+      "matches_canonical": true,
+      "sha256": "4c32f111eabe757c5492a0a7eee6f151c7c3074a3b78d5e8a9818f65570d843a"
+    },
+    {
+      "path": "crates/test-support/src/json.rs",
+      "canonical_git_blob": "9a9a57a53225c54e944ccf8ca7488a58c8609270",
+      "validated_worktree_git_blob": "9a9a57a53225c54e944ccf8ca7488a58c8609270",
+      "matches_canonical": true,
+      "sha256": "16e47a333700e2b084e81f7012c1d5d523695a59b1454d21f5db8157beaa9656"
+    },
+    {
+      "path": "crates/test-support/src/lib.rs",
+      "canonical_git_blob": "15a4082c8258b4dca7c8f336431a1184fdd8e4a6",
+      "validated_worktree_git_blob": "15a4082c8258b4dca7c8f336431a1184fdd8e4a6",
+      "matches_canonical": true,
+      "sha256": "99767c00aa8ee9924839a0201a38507f32a7c7552c7a525aca6ac1bc1864aa68"
+    },
+    {
+      "path": "crates/test-support/src/process.rs",
+      "canonical_git_blob": "a61b9b9712151b95a20c045b23a54f7160655eec",
+      "validated_worktree_git_blob": "a61b9b9712151b95a20c045b23a54f7160655eec",
+      "matches_canonical": true,
+      "sha256": "dd0333c783a27ad37880a6b9537ee6efa479df2bc404b0b59aa23455eb68a8e6"
+    }
+  ],
+  "build_jobs": 1,
+  "incremental": false,
+  "observed_guard": {
+    "commit_percent": 83.1,
+    "free_physical_gib": 34.15
+  },
+  "tests": [
+    {
+      "filtered_outside_scope": 11,
+      "failed": 0,
+      "ignored": 0,
+      "passed": 4,
+      "scope": "secret with credential-pilot"
+    },
+    {
+      "filtered_outside_scope": 14,
+      "failed": 0,
+      "ignored": 0,
+      "passed": 1,
+      "scope": "private directory component validation"
+    },
+    {
+      "filtered_outside_scope": 9,
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2,
+      "scope": "strict JSON"
+    }
+  ],
+  "scoped_feature_all_target_clippy": "passed",
+  "actual_os_acl_secret_process_tests": "not_run",
+  "hosted_fixture_lifecycle": "not_run",
+  "raw_logs": "registered private evidence:root/20261107051539"
+}

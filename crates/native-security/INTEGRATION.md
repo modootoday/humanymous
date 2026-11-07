@@ -85,3 +85,9 @@ writer; an exclusive disposable context is an explicit premise. Drop cleanup is
 best effort only; finish observes absence or returns failure. Production default
 does not enable this feature and the production reader remains read-only. All
 new fixture mutation and subdirectory behavior still requires actual hosted proof.
+
+Canonical shared sourcef44b32b subsequently passed four secret/fixture syntax-size-
+metadata pure tests and one directory-component pure test plus feature-inclusive
+all-target warnings-denied Clippy. Eleven/fourteen filtered counts are separate
+invocations, not extra passed coverage. No WinCred, ACL mutation, directory creation
+or service process was executed. Actual hosted lifecycle remains not_run.

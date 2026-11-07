@@ -687,3 +687,17 @@ input_key_complete=false/cache_reuse_proven=false. No prebuild is removed. Exist
 commands request private --timings HTML; raw JSON/sidecar stay private and HTML
 retrieval is not claimed. Public output permits counters/known labels/digests only.
 New pure2metrics tests and actual hosted fresh/timing observation remain not_run.
+
+Subsequent root-assigned A validation at canonical shared sourcef44b32b passed:
+native-security credential-pilot secret4 (11filtered), private-child component1
+(14filtered), test-support strictJSON2 (9filtered), all0failed/0ignored. Filtered
+counts are per invocation, not additive unique-test coverage. Feature-inclusive
+all-target native-security/test-support Clippy denied warnings and passed. No
+actual OS secret/ACL/filesystem/process test ran. Before starting, resource guard
+observed34.15GiB physical free/83.1% commit; jobs1/incremental0. Slot returned.
+Post-execution17 owned Rust/manifest files exactly matched f44b32b Git blobs;
+SHA256/individual blob comparisons and counts are attached in
+shared-native-f44b32b-pure-summary.json. This comparison is scoped post-execution,
+not an atomic snapshot of all concurrent project edits. Four raw test/Clippy logs
+are registered in private evidence20261107051539. Actual hosted fixture/CrossOS
+verification and standalone runner fallback/metrics validation remain not_run.
