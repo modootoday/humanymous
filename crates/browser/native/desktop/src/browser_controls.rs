@@ -29,6 +29,7 @@ impl Controls {
     pub fn bind(&mut self, state: Shared) {
         self.state = state;
         self.ime = ImeGuard::default();
+        self.modifiers = ModifiersState::default();
         self.committed = 0;
         self.notice = None;
         self.controls = None;

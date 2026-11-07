@@ -1,0 +1,60 @@
+{
+  "source_checkpoint": "ce05c45e6ce62f2bbff980ad2664d1bf49bf4597",
+  "graph_commit": "173008f0789303bef4a37d7ef45555f0b959c333",
+  "overlay_paths": [
+    "Cargo.lock",
+    "crates/cli/Cargo.toml"
+  ],
+  "venue": "local Windows x64 immutable Git archive",
+  "features": "default",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "tests": {
+    "passed": 30,
+    "filtered": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  "check_exit": 0,
+  "strict_clippy_exit": 0,
+  "rustfmt_exit": 0,
+  "closure": {
+    "exclusions": [
+      "exhaustive registry hashes",
+      "toolchain binaries",
+      "native SDK"
+    ],
+    "before_sha256": "2351c7cc4ad83deeee7a8a702ed2cafb4f60de66249e814f70fcea6a3a13b20b",
+    "difference_records": 0,
+    "scope": "browser Rust/manifests/contracts and all archived Cargo manifests/root graph",
+    "files": 86,
+    "after_sha256": "2351c7cc4ad83deeee7a8a702ed2cafb4f60de66249e814f70fcea6a3a13b20b"
+  },
+  "first_attempt": {
+    "correction": "root committed the approved internal CLI test-support graph edge; immutable retry includes both manifest and lock",
+    "stage": "locked workspace resolution",
+    "retained_log_sha256": "04afebd2a3c09e45a2e8821ec8918967628c7d4b3235dffdb6091b8e4264c622",
+    "exit_code": 101,
+    "tests_executed": 0
+  },
+  "logs": {
+    "check_sha256": "e640192ee019ff18425b0b9b95c3dc8c668da043e8d421312eeb60665773f165",
+    "test_sha256": "c2100fe08c1cf514a2e5442545311e6b7cfcd5318e94dbe81c80dd40facdca68",
+    "clippy_sha256": "00d57cfba4fceb3efa222bcd5b0199084225e78170dafe6b36e1d01e63cdf971"
+  },
+  "not_qualified": [
+    "native-ui scene tests",
+    "CEF native compilation and Clippy",
+    "actual Back/Forward/Stop",
+    "actual multi-tab creation/switch/close",
+    "real keyboard and IME candidates",
+    "OS screen reader",
+    "full sandbox policy",
+    "Chrome parity"
+  ],
+  "browser_ready": false,
+  "live_owned_handles": 0,
+  "compiler_reservation": "returned"
+}

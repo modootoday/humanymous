@@ -32,7 +32,7 @@ pub fn strip(enabled: bool) -> Node {
                     (
                         "style",
                         if id == 0 {
-                            "display:flex"
+                            "display:flex;flex:0 0 auto"
                         } else {
                             "display:none"
                         },
@@ -64,7 +64,7 @@ pub fn strip(enabled: bool) -> Node {
         &[
             ("role", "tablist"),
             ("aria-label", "Browser tabs"),
-            ("style", "display:flex;overflow:hidden"),
+            ("style", "display:flex;overflow:auto;flex:1;min-width:0"),
         ],
         children,
     )
@@ -99,7 +99,7 @@ pub fn project(doc: &mut InteractiveDocument, views: &[View]) {
             &format!("tab-slot-{id}"),
             "style",
             Some(if view.is_some() {
-                "display:flex"
+                "display:flex;flex:0 0 auto"
             } else {
                 "display:none"
             }),

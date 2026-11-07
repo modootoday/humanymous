@@ -13,6 +13,17 @@ rel:
 
 ## Actual bounded Windows CEF gate passed
 
+UI-32/33 pure validation passed on browser source ce05c45e with the literal
+173008f0 graph overlay (Cargo.lock and CLI Cargo.toml):30 passed, zero failed,
+ignored or filtered; default all-target check, strict Clippy and frozen-source
+formatter passed. The86-file declared browser/manifest closure had zero change
+records. The first live-worktree attempt exited101 before compilation because
+the approved CLI dependency edge required lock reconciliation; it remains in
+controls-default-validation.json, evidence:root/20261107073932. No lock flag was
+weakened. Native-ui scene, CEF build/Clippy and actual history/tab/keyboard/IME/AT
+gates remain unexecuted for this newer source. Subsequent UI-only tab overflow and
+native modifier-reset changes do not inherit native qualification from ec4.
+
 Current user-requested UI-32 expansion: implement actual CEF Back/Forward entry
 traversal, loading/availability projection and Stop, retaining local-only guards,
 sandbox and current IME confirmation policy. Review findings incorporated before

@@ -361,6 +361,7 @@ body{margin:0;background:#101620;color:#e8edf7;font-family:system-ui;font-size:1
 .tab-strip{height:__TABS__px;display:flex;align-items:center;gap:10px;padding:0 12px;background:#0d121b}
 .brand{font-size:20px;font-weight:700;color:#6cddca;width:20px;text-align:center}
 .page-tab{height:30px;width:190px;text-align:left;padding:0 14px;border:0;border-radius:8px 8px 0 0;background:#202b3d;color:#f1f5fd}
+.page-tab[aria-selected="false"]{background:#111b29;color:#9daec6}
 .tab-caption{color:#8d9ab0;font-size:12px;margin-left:auto}
 .window-controls{height:34px;display:flex;gap:0;margin-right:-12px}
 .window-button{width:46px;height:34px;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;color:#d8e7fb}

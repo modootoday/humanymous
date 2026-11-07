@@ -8,6 +8,11 @@ owns the Meari/CEF integration. CI owns the existing provisioning runner.
 
 ## Current evidence boundary
 
+Newer UI-32/33 history/tab/shortcut source ce05c45e passed30 default pure tests,
+default check/strict Clippy and formatter with explicit173008f0 graph overlay.
+It has not passed native-ui scene, CEF compilation or an actual multi-tab pilot.
+The old single-child ec4 results below do not qualify the new lifecycle source.
+
 Windows x64 sourceec4 passed native compilation, desktop synthetic protocol4,
 bootstrap synthetic marker3, actual bootstrap1 and actual desktop2, after runner14/
 Clippy success. Four refusal children exited78 with observed reaping and unchanged

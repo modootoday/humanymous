@@ -15,6 +15,12 @@ no document load is pending. Button disabled state is projected to both source
 and rendered native documents. Pure/document/native/actual GUI gates for this
 new slice are pending; the earlier executable preview does not contain it.
 
+Default pure validation subsequently passed30 tests, all-target check and strict
+Clippy at ce05c45e with the explicit173008f0 graph overlay; frozen-source formatter
+passed and86 declared files were unchanged. This does not execute native-ui or
+CEF. controls-default-validation.json preserves the first locked101 failure and
+corrected immutable run in evidence:root/20261107073932.
+
 UI-33 additionally authors distinct CEF children for tab add/close/switch and
 shared native shortcut commands from Meari and active CEF focus. Tab IDs never
 reuse; closing children retain capacity through before-close and lifecycle poll.
