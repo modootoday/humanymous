@@ -3,7 +3,7 @@ id: change:root/20261107054410
 title: Browser UI real newtab implementation and bounded native evidence
 status: active
 created: 2026-11-07T05:44:10Z
-updated: 2026-11-07T05:44:10Z
+updated: 2026-11-07T06:32:40Z
 rel:
   depends_on: [plan:root/20261107002014, plan:root/20261107033358, plan:root/20261107041001, sot:root/rust-migration, plan:root/20261107050329]
 ---
@@ -53,3 +53,12 @@ SHA-256 c33a6fb9af2f1aca871663930e1f506b1cbf46d62c5f91eb2c07c5e31896a691,
 identical to registered attachment bytes. Inherited CRLF working bytes are
 separately retained in the validated-source receipt. No screenshot/device data,
 profile deletion or third-party probing is part of this checkpoint.
+
+
+## Accepted execution policy linkage
+
+Follow the single policy in sot:root/program-roadmap and sot:root/delivery;
+browser-specific boundaries are browser-ui0.5.1, Accepted execution policy linkage.
+Current newtab hosted qualification and interactive IME/AT/DPI/GPU/Chrome exceptions
+remain not_run; old local receipts are source-bound history. This documentation
+change starts no build/runtime/dispatch, removes no gate and uploads no private raw.

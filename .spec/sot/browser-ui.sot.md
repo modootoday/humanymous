@@ -3,7 +3,7 @@ id: sot:root/browser-ui
 title: Native browser UI and CEF boundary
 status: active
 created: 2026-11-07T00:20:14Z
-updated: 2026-11-07T05:36:25Z
+updated: 2026-11-07T06:32:40Z
 verify: [manual]
 rel:
   governs: [crates/browser/**]
@@ -14,7 +14,7 @@ rel:
 
 ## Rule
 
-Version 0.5.0. The browser-first shell and research contract below supersede the initial management dashboard.
+Version 0.5.1. The browser-first shell and research contract below supersede the initial management dashboard.
 Authored application and tests are Rust; construct typed Meari IR directly, without
 TSX, HTML application source, JavaScript or embedded script strings. Pin Meari
 1482b746ebc0d867f25d17d01c48c12df888ca6c (0.2.0, MIT OR Apache-2.0), Rust 1.99.1.
@@ -470,3 +470,27 @@ Primary pinned source review: CEF cf671c0 tests/ceftests/webui_unittest.cc and
 include/cef_download_handler.h; Chromium156.0.8078.80 chrome_urls_handler.cc,
 browser_about_handler.cc and ui/navigator/browser_navigator.cc. Source registration,
 policy admission, observed page content and full product support remain distinct.
+
+
+## Accepted execution policy linkage
+
+Execution policy is owned by sot:root/program-roadmap and implemented by
+sot:root/delivery. Browser UI version0.5.1 records only its boundary, not another
+scheduler/concurrency/cache/artifact policy.
+
+Local checks cover source/fmt and resource-bounded pure URL-policy/lifecycle/
+geometry units or scoped Clippy under the central Cargo limit. Meari native-ui
+compilation is not assumed lightweight. Actual CEF initialization, HWND child
+attachment, process/token/canary/IPC and shutdown probes use the approved hosted
+runtime path. Interactive desktop input, Korean IME candidates, OS AT/UIA bounds,
+physical GPU, mixed DPI/multi-monitor and actual Chrome comparison require direct
+suitable-environment evidence; a hosted label or unsupported/skipped test is not
+qualification. Full sandbox/BrowserReady/external-navigation gates stay closed
+until their required premises are established.
+
+The current newtab checkpoint has not_run hosted qualification under this policy.
+Earlier source-bound local receipts remain historical; they do not qualify new
+sources or hosted jobs. No runtime/build/dispatch was started for this policy
+record. Public collection and missing private-original handling defer to the
+central delivery contract; browser diagnostic paths/device data stay out of
+public artifacts. Required native gates are not removed by path heuristics.

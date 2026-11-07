@@ -3,7 +3,7 @@ id: plan:root/20261107050329
 title: Real newtab and measured CEF internal URL support
 status: active
 created: 2026-11-07T05:03:29Z
-updated: 2026-11-07T05:36:25Z
+updated: 2026-11-07T06:32:40Z
 rel:
   governs: [crates/browser/**]
   depends_on: [sot:root/browser-ui, sot:root/chromium-lab-browser]
@@ -62,3 +62,12 @@ contract. It does not complete the broader browser or SDK program.
 | 5 | B3 real collector/session/ingress receipts, B4 owned controls/AT/failure streams and actual pinned Chrome comparisons | Owning adapters/collector plus browser; no third-party probing/scoring change |
 | 6 | B5 signed clean-machine install/update/CVE/SBOM and native tuple distribution | Root/delivery/native runner; exact artifact hashes and standard-user runners |
 | 7 | Four native SDK crates, stable DLL ABI, framework adapters and Rust scaffolding CLI | Separate native-embedding plan; root serial workspace integration; current bootstrap is process-owning, not in-process SDK |
+
+
+## Accepted execution policy linkage
+
+Follow the single policy in sot:root/program-roadmap and sot:root/delivery;
+browser-specific boundaries are browser-ui0.5.1, Accepted execution policy linkage.
+Current newtab hosted qualification and interactive IME/AT/DPI/GPU/Chrome exceptions
+remain not_run; old local receipts are source-bound history. This documentation
+change starts no build/runtime/dispatch, removes no gate and uploads no private raw.

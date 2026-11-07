@@ -99,6 +99,16 @@ or foreign-overlay screenshot is published.
    plan. Existing process-owning RunBrowserDesktop must not be reused as an
    in-process SDK ABI. No same-name create package or unsolicited workspace member.
 
+
+
+## Accepted execution policy linkage
+
+Follow the single policy in sot:root/program-roadmap and sot:root/delivery;
+browser-specific boundaries are browser-ui0.5.1, Accepted execution policy linkage.
+Current newtab hosted qualification and interactive IME/AT/DPI/GPU/Chrome exceptions
+remain not_run; old local receipts are source-bound history. This documentation
+change starts no build/runtime/dispatch, removes no gate and uploads no private raw.
+
 ## Exact root delta
 
 Root has added `crates/browser/native/bootstrap` and `crates/browser/native/desktop` to
