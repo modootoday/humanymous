@@ -3,7 +3,7 @@ use crate::{
     docker::{Docker, Result},
     snapshot,
 };
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::process::capture_with_stderr;
 use serde_json::{Value, json};
 use std::{fs, path::PathBuf, process::Command, time::Duration};
 const SCANNER: &str =

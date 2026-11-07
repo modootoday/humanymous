@@ -207,7 +207,7 @@ pub fn browser() -> Result<()> {
             eprintln!("HM-LAB-ACTOR-STEP actor_browser_inventory");
             let mut listing=std::process::Command::new("wasm-bindgen-test-runner");
             listing.args(["/usr/local/lib/collector-product-tests.wasm","--list"]);
-            let inventory=humanymous_test_support::process::capture_with_stderr(&mut listing,b"",Duration::from_secs(10),128*1024)?;
+            let inventory=humanymous_platform::testing::process::capture_with_stderr(&mut listing,b"",Duration::from_secs(10),128*1024)?;
             if !inventory.status.success(){return Err(io::Error::other("WASM test inventory failed"));}
             let names:Vec<String>=String::from_utf8(inventory.stdout).map_err(io::Error::other)?.lines().filter_map(|line|line.trim().strip_suffix(": test").map(str::to_owned)).collect();
             if names.iter().filter(|name|**name==expected_name).count()!=1 || names.len()!=declared_filtered+1 || names.iter().collect::<std::collections::HashSet<_>>().len()!=names.len(){return Err(io::Error::other("exact declared product test inventory required"));}
@@ -218,7 +218,7 @@ pub fn browser() -> Result<()> {
                 .env("WASM_BINDGEN_TEST_ADDRESS","127.0.0.1:31111")
                 .env("WASM_BINDGEN_TEST_WEBDRIVER_JSON","/usr/local/lib/browser-pilot-webdriver.json")
                 .env_remove("NO_HEADLESS");
-            let captured=humanymous_test_support::process::capture_with_stderr(&mut command,b"",Duration::from_secs(120),1024*1024)?;
+            let captured=humanymous_platform::testing::process::capture_with_stderr(&mut command,b"",Duration::from_secs(120),1024*1024)?;
             Ok::<_,io::Error>((captured,name,names))
         }).await?;
         let (result,name,inventory)=result?;

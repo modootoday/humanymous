@@ -4,7 +4,7 @@ use crate::{
     mount_policy::{Facts, Lookup},
     snapshot,
 };
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 pub(super) fn contract() -> Result<Value> {
     Ok(serde_json::from_str(include_str!(

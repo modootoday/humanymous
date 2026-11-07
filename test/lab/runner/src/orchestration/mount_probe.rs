@@ -1,7 +1,7 @@
 //! Owned Docker I/O for diagnostic custody observations; never a product gate.
 use super::Lab;
 use crate::{docker::Result, snapshot};
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 use std::fs;
 mod projection;

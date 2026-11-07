@@ -18,14 +18,14 @@ fn deployment(value: serde_json::Value) -> Result<Configuration> {
 }
 
 fn configuration_value(value: serde_json::Value, forged: bool) -> Result<serde_json::Value> {
-    let mut expected = humanymous_test_support::json::decode_strict_json(
+    let mut expected = humanymous_platform::testing::json::decode_strict_json(
         include_bytes!("../../../go-configuration.json"),
         65536,
     )?;
     expected["origin"] = value["origin"].clone();
     expected["audit"]["keys"]["passphrase"] = value["audit"]["keys"]["passphrase"].clone();
     let mut value = expected;
-    let contract = humanymous_test_support::json::decode_strict_json(
+    let contract = humanymous_platform::testing::json::decode_strict_json(
         include_bytes!("../../../../../adapters/go/pilot-contract.json"),
         65536,
     )?;

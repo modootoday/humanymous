@@ -1,6 +1,6 @@
 //! Sole Go public projection: terminal accounting only, no semantic probe clone.
 use crate::{docker::Result, snapshot};
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 fn hex(value: &str, length: usize) -> bool {
     value.len() == length

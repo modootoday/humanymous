@@ -1,6 +1,6 @@
 //! Untouched upstream binary with shared bounded child ownership and byte relay.
 use super::{Result, relay};
-use humanymous_test_support::process::ManagedChild;
+use humanymous_platform::testing::process::ManagedChild;
 use serde_json::json;
 use std::{
     net::{Ipv4Addr, SocketAddr, TcpStream},
@@ -11,7 +11,7 @@ use std::{
 use tokio::{net::TcpListener, sync::watch};
 
 pub fn run() -> Result<()> {
-    let contract = humanymous_test_support::json::decode_strict_json(
+    let contract = humanymous_platform::testing::json::decode_strict_json(
         include_bytes!("../../../../../adapters/go/pilot-contract.json"),
         65536,
     )?;

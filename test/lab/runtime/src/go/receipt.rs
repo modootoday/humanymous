@@ -11,7 +11,7 @@ fn text<'a>(value: &'a Value, key: &str) -> Result<&'a str> {
 pub fn qualify() -> Result<()> {
     let mut bytes = Vec::new();
     std::io::Read::read_to_end(&mut io::Read::take(io::stdin(), 1_048_577), &mut bytes)?;
-    let value = humanymous_test_support::json::decode_strict_json(&bytes, 1_048_576)?;
+    let value = humanymous_platform::testing::json::decode_strict_json(&bytes, 1_048_576)?;
     let receipt: Receipt = serde_json::from_value(value["receipt"].clone())?;
     let expected = &value["expected"];
     let tuple = ExpectedTuple {
@@ -39,7 +39,7 @@ pub fn qualify() -> Result<()> {
 pub fn evaluate() -> Result<()> {
     let mut bytes = Vec::new();
     std::io::Read::read_to_end(&mut io::Read::take(io::stdin(), 1_048_577), &mut bytes)?;
-    let value = humanymous_test_support::json::decode_strict_json(&bytes, 1_048_576)?;
+    let value = humanymous_platform::testing::json::decode_strict_json(&bytes, 1_048_576)?;
     let observation: humanymous::adapters::go::scenario::CaseObservation =
         serde_json::from_value(value)?;
     let result = match humanymous::adapters::go::scenario::evaluate(&observation) {

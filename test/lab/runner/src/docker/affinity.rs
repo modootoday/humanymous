@@ -1,6 +1,6 @@
 //! Actual CLI observations are private; shared test-support owns comparisons.
 use super::{Docker, Result, actual_hosted_linux};
-use humanymous_test_support::{
+use humanymous_platform::testing::{
     docker::{DesktopObservation, ServerIdentity, verify_allocated_cli, verify_desktop},
     json::decode_strict_json,
     process::capture_with_stderr,

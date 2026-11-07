@@ -61,7 +61,7 @@ pub fn fresh(
     )?;
     eprintln!("HM-LAB-ACTOR-STEP actor_witness_bootstrap");
     let bytes = service::read_frame(&mut input)?.ok_or("missing witness readiness")?;
-    let intro = humanymous_test_support::json::decode_strict_json(&bytes, 65536)?;
+    let intro = humanymous_platform::testing::json::decode_strict_json(&bytes, 65536)?;
     let witness_public: [u8; 32] = serde_json::from_value(intro["witness_public"].clone())?;
     let client = WitnessServiceClient::from_ready(
         input,

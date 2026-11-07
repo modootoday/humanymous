@@ -1,0 +1,107 @@
+{
+  "schema": "humanymous.lab-platform-consumer-slice/1",
+  "authorization": "Root PLATFORM-SLICE-02 exact two Lab Rust consumer roots",
+  "change": "humanymous_test_support::suffix to humanymous_platform::testing::suffix; windows_object_bridge prefix replacement if present",
+  "files": [
+    {
+      "path": "test/lab/runtime/src/browser_product.rs",
+      "before_sha256": "8deab130d6a690367661a13357eda485bfa192778eb210c7ca2da3174fac70a8",
+      "after_sha256": "21f595d313639d0611842f76ec6bf9a6124eda5c18cd4bf9b2f334574f58f861"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration.rs",
+      "before_sha256": "f2b06f52c1cb505c8cba5f5be34603af33da7b77d48401e9144c6598f2718036",
+      "after_sha256": "896eaf779e5333041df462dff7b1a58b8428fb611db4224ba876d9e95b18feca"
+    },
+    {
+      "path": "test/lab/runner/src/docker/affinity.rs",
+      "before_sha256": "cace5dd96a41ee90c87057efda300b061fba1401e0261712e3251ad781831b9d",
+      "after_sha256": "d8a2549b9ed47331eaac9a7f026cdc8ab7f3f98d7a3233d6099ff3025242eca5"
+    },
+    {
+      "path": "test/lab/runtime/src/installation/witnessed.rs",
+      "before_sha256": "94bd3ad7354cc1a622892222a9590e7b15696be782b34de594015d59a2fc06a3",
+      "after_sha256": "e497defa4ffc65d38148a3a52dd0ed0b3d949e7ba6b41e2fad00c1ff242f9ae9"
+    },
+    {
+      "path": "test/lab/runtime/src/go/client.rs",
+      "before_sha256": "c0b9c74a6ee37176cdf3dc25ec5b75234c495fbd9488683e52b52d9653e81da3",
+      "after_sha256": "18e027368abdd02035eba5ab41c0f0d9ba1c5987403af48a27959f3ae6fc9124"
+    },
+    {
+      "path": "test/lab/runner/src/audit.rs",
+      "before_sha256": "25cd65788a1267af5fc23c4b7a2aafa53a0241ba6766b6fc939232d6aa54e462",
+      "after_sha256": "f70b2c18b7f3e7baf00fadc47f34c3037802a0de0b51231aa4fc70f6b2ac812d"
+    },
+    {
+      "path": "test/lab/runtime/src/go/backend.rs",
+      "before_sha256": "a829e0f8521a6a7e3e3e49cc22990afbda41be7068a5ab36f18ad110286d0ac5",
+      "after_sha256": "a6d4aae4b45e10d88d69b50d331c05f2bcb54b189ccf32c0816c0d0a3bfd35bc"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser.rs",
+      "before_sha256": "c15b2b1e211102f80df7b38d699735eb481e6e5f723bd0f72c304aed32589cd7",
+      "after_sha256": "1fd30c3f8973af61105e55e79a0f15628a4118f0673b8165f2da01ceecf78e9b"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "before_sha256": "ddfc939fe41efdaab84bab2c60eb9b06729f92c946cc0f58fe21c85e07303a85",
+      "after_sha256": "60106c595a4f3f93f2a2054f661f0e91cf2f04ec32d278261beb3505405e662c"
+    },
+    {
+      "path": "test/lab/runtime/src/go/mod.rs",
+      "before_sha256": "8a86b4f045183a147fae1d8c054e8ef2756db3a868e209a09a6391ac7c10867b",
+      "after_sha256": "0cc2fe4c19e8477d0a503d8df976b2b4c1dbb0b502a306d3a617a921ea280082"
+    },
+    {
+      "path": "test/lab/runtime/src/go/receipt.rs",
+      "before_sha256": "8d14ec1e36f85b9d1c0e58caba8c3db86f884d747c7f8a85046f0d7cb6b2fb47",
+      "after_sha256": "0572f1cb4293c7f37bd2a88a6cbc2b5d5ad7951e1c392512173f390f232d6378"
+    },
+    {
+      "path": "test/lab/runner/src/docker.rs",
+      "before_sha256": "567322d73b66e265af645a6682141513827dcdbdea51c2089adf42dd3d2a78ba",
+      "after_sha256": "edda404a591745078d7eaaf6a0c5aa833d20c51b57f8170dbc4940bda347ba9a"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go.rs",
+      "before_sha256": "a090465b9b88db843cbb649f93b6c52d72bd3c3dab4db8aba4ae563f1de75562",
+      "after_sha256": "378dd2934342b882dffafaa4427458c32eba9a8ca8ca7035aae59fa7fca878e6"
+    },
+    {
+      "path": "test/lab/runtime/src/go/gate.rs",
+      "before_sha256": "e9d3df1492055d8bd45bc985aa725bc85fc8a41555033aee3e7a09f0cee2c8a4",
+      "after_sha256": "570823f3b22732c2af5ef81e7fb451cdecb539b06d8099a7bae715e6be231ca1"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_fixture.rs",
+      "before_sha256": "1396673fdace8c72a9957dfef13af30adbf6514cf0e2b99306a116a68f17a2c5",
+      "after_sha256": "8b7d94877245b524c81c9164e47ab20d0187b63b94d94cb361d33605328f2560"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_public.rs",
+      "before_sha256": "0eb4aef2b6427a50f0da944a8293365bb32f154d6374d1a7097f282a7202923c",
+      "after_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/mount_probe.rs",
+      "before_sha256": "8234e2da1f9d3e31cc6bad0a511e24eaa06f1dc79783331736308625685e3237",
+      "after_sha256": "e485c01e2095e9f36f254dbc037bfc354c36a13891efffb02298401ad23bbe45"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "before_sha256": "f6ef28ce2cb40da41e537a23454a11e4547b581baac5bde93b57fe4a9ee833d9",
+      "after_sha256": "c1ab8645b3655f9a16d15b6fb97cc0f5a97de7f5f7bc9e7c1307dc34566a4a42"
+    }
+  ],
+  "file_count": 18,
+  "manifests_changed": false,
+  "moves": false,
+  "behavior_changed": false,
+  "compiler_run": false,
+  "reason": "Root coherent workspace allocation gate",
+  "bootstrap_parser_changed": false,
+  "dto_fields": 13,
+  "source_pin": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+  "validation": "Source-only diff inspection; no compiler/tests/Clippy/fmt/CI"
+}

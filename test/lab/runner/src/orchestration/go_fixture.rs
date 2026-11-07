@@ -4,7 +4,7 @@ use crate::{
     docker::Result,
     snapshot::{self, Snapshot},
 };
-use humanymous_test_support::{json::decode_strict_json, process::capture_with_stderr};
+use humanymous_platform::testing::{json::decode_strict_json, process::capture_with_stderr};
 use serde_json::{Value, json};
 use std::{fs, path::Path, process::Command, time::Duration};
 

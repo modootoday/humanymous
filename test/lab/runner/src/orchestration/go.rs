@@ -8,7 +8,7 @@ use crate::{
     snapshot,
 };
 use humanymous_audit::checkpoint::service::write_frame;
-use humanymous_test_support::{json::decode_strict_json, process::capture_with_stderr};
+use humanymous_platform::testing::{json::decode_strict_json, process::capture_with_stderr};
 use serde_json::{Value, json};
 use std::{
     fs,

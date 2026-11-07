@@ -1,6 +1,6 @@
 //! Extract only reviewed scalar observations from the original private actor JSON.
 use crate::browser_outcome::public_outcome;
-use humanymous_test_support::json::decode_strict_json;
+use humanymous_platform::testing::json::decode_strict_json;
 use serde_json::{Value, json};
 use std::collections::HashSet;
 

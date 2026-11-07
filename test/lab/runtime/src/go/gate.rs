@@ -71,7 +71,7 @@ pub fn run() -> Result<()> {
         frontend.await??;origin.await??;
         let exit=tokio::time::timeout(Duration::from_secs(10),runtime).await???;
         let mut pin=Vec::new();std::fs::File::open("/tmp/browser-pilot-stop")?.take(16385).read_to_end(&mut pin)?;
-        let pin=humanymous_test_support::json::decode_strict_json(&pin,16384)?;
+        let pin=humanymous_platform::testing::json::decode_strict_json(&pin,16384)?;
         let external=serde_json::from_value(pin)?;
         let wal=Wal::open(Path::new("/writer/wal"),Default::default())?;
         let plan=plan_witness_recovery(wal.records()?,wal.checkpoints()?,RecoveryPolicy{node_id:"isolated-node",hmac_key:&installation.hmac,writer_public:&writer_public,witness_public:Some(&witness_public),trusted_head:Some(&external),allow_new:false},TailRecovery::RequireCovered).map_err(io::Error::other)?;
@@ -93,7 +93,7 @@ fn configuration_digest(value: &serde_json::Value) -> Result<String> {
 }
 pub fn count() -> Result<()> {
     let bytes = std::fs::read("/tmp/go-contacts.json")?;
-    let value = humanymous_test_support::json::decode_strict_json(&bytes, 16384)?;
+    let value = humanymous_platform::testing::json::decode_strict_json(&bytes, 16384)?;
     println!("{value}");
     Ok(())
 }

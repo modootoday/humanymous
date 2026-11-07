@@ -5,8 +5,8 @@ use super::{
 };
 use crate::{docker::Result, snapshot};
 use humanymous_audit::checkpoint::service::write_frame;
-use humanymous_test_support::json::decode_strict_json;
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::json::decode_strict_json;
+use humanymous_platform::testing::process::capture_with_stderr;
 use serde_json::{Value, json};
 use std::{
     io::Write,

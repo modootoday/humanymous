@@ -114,7 +114,7 @@ pub fn run() -> Result<()> {
         if observed.status != 200 {
             return Err("Go native session bootstrap rejected".into());
         }
-        let issued = humanymous_test_support::json::decode_strict_json(observed.entity, 65536)?;
+        let issued = humanymous_platform::testing::json::decode_strict_json(observed.entity, 65536)?;
         let mut collect =
             crate::client::request("/_humanymous/collect", crate::client::report(&issued));
         crate::client::sign(&typed, &mut collect, &issued, 1);

@@ -1,5 +1,5 @@
 //! Bounded subprocess transport; never invokes a shell or arbitrary script.
-use humanymous_test_support::process::{ManagedChild, capture_with_stderr};
+use humanymous_platform::testing::process::{ManagedChild, capture_with_stderr};
 use serde_json::{Value, json};
 use std::{
     path::{Path, PathBuf},

@@ -424,7 +424,7 @@ impl Lab {
                 self.evidence.join("wargame-report.raw.json"),
                 result.stdout.as_bytes(),
             )?;
-            let report = humanymous_test_support::json::decode_strict_json(
+            let report = humanymous_platform::testing::json::decode_strict_json(
                 result.stdout.as_bytes(),
                 4_194_304,
             )?;
@@ -438,12 +438,12 @@ impl Lab {
                 return Err("exact original-byte wargame verification receipt required".into());
             }
             let receipt =
-                humanymous_test_support::json::decode_strict_json(receipts[0].as_bytes(), 65536)?;
+                humanymous_platform::testing::json::decode_strict_json(receipts[0].as_bytes(), 65536)?;
             snapshot::write(&self.evidence, "wargame-byte-verification.json", &receipt)?;
             self.case("strict-original-byte-wargame-verification",receipt["schema"]=="humanymous.lab-wargame-byte-receipt/1"&&receipt["raw_sha256"]==snapshot::digest(result.stdout.as_bytes())&&receipt["verification"]["schema"]=="humanymous.wargame-verification.v1"&&receipt["verification"]["mode"]=="owned_process_network"&&receipt["verification"]["scoped_passed"]==report["scoped_passed"]&&receipt["verification"]["internally_consistent"]==true&&receipt["verification"]["full_product_qualified"]==false&&receipt["verification"]["totals"]==report["totals"],json!("strict duplicate/unknown-field decoder consumed exact emitted bytes; no unsupported capability promotion"))?;
             let manifest = std::fs::read(self.evidence.join("source-manifest.json"))?;
             let source =
-                humanymous_test_support::json::decode_strict_json(&manifest, 4 * 1024 * 1024)?;
+                humanymous_platform::testing::json::decode_strict_json(&manifest, 4 * 1024 * 1024)?;
             self.public_receipts["wargame"] = public_receipts::wargame(
                 &receipt,
                 &report,
