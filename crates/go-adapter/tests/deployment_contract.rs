@@ -4,10 +4,10 @@ use humanymous_adapter_go::{Configuration, Deployment, Host, Rejection};
 // Keep both directions tied to the owning runtime types without conversion.
 const _: fn(
     Host,
-    humanymous_runtime::configuration::Configuration,
+    humanymous_runtime::gateway::configuration::Configuration,
 ) -> Result<Deployment, Rejection> = Deployment::new;
 const _: fn(Deployment) -> Configuration = Deployment::into_configuration;
-const _: fn(Host, Configuration) -> Result<Deployment, humanymous_runtime::Rejection> =
+const _: fn(Host, Configuration) -> Result<Deployment, humanymous_runtime::gateway::Rejection> =
     Deployment::new;
 
 #[test]

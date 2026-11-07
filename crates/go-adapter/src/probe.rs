@@ -11,9 +11,9 @@ pub fn binary_dump(
     expected_entity: &[u8],
 ) -> bool {
     if status != 200
-        || response_body.len() > humanymous_runtime::http::MAX_BODY
-        || !humanymous_runtime::configuration::method(method)
-        || !humanymous_runtime::configuration::target(target)
+        || response_body.len() > humanymous_runtime::gateway::http::MAX_BODY
+        || !humanymous_runtime::gateway::configuration::method(method)
+        || !humanymous_runtime::gateway::configuration::target(target)
     {
         return false;
     }
@@ -101,7 +101,7 @@ mod tests {
     #[test]
     fn incomplete_and_oversized_fixture_responses_cannot_verify() {
         assert!(!binary_dump(200, b"partial", "POST", "/dump/request", b""));
-        let response = dump(&vec![0; humanymous_runtime::http::MAX_BODY]);
+        let response = dump(&vec![0; humanymous_runtime::gateway::http::MAX_BODY]);
         assert!(!binary_dump(
             200,
             &response,
