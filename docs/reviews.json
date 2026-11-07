@@ -2,6 +2,186 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/watermark/Cargo.toml",
+  "sha256": "8973eddacca47b27eacad070d8efbe09b1846c1e01f47d707ef5e94eed3fd8f9",
+  "reviewer": "codex/rust-pages",
+  "notes": "Workspace metadata/lints and existing hmac/sha2/subtle/zeroize only; nonpublishable library, no format validator dependency or runtime wiring declared.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/INTEGRATION.md",
+  "sha256": "4a6864958ba7cbd8da7ee372cb76da59e3630893e36e4abbc1d00f9e9d044235",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete115-line chronology: root-accepted reconstructed baseline and source-only responsibilities; exact9b064 A16 payload/ledger16pure pass separate from newer frame/MIME/text/opaque source. First27f1 D29 check/fmt pass then Clippy101; tests NOT_RUN. Corrected29authored cases not qualified. PNG/WASM, grammar validation, resource/browser/HTTP/trace and full14legacy parity remain open. Ownerpublic receipts read, not new rawexecution verification.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/codec/base32.rs",
+  "sha256": "5d2450a13e03d716ec0b506020a8106e540e0c010a0e52054fc2f2bdb4e6b97e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Bounded uppercase padded RFC4648 bytecodec, not cryptography. Strictgroup/padding/alphabet bounds; deliberately tolerates nonzero unusedtailbits for historicaldecoder compatibility. Encodingcanonicalzeros and laterCRCcheck separate; not a canonical generic protocol wire. Independent fixed vectors and invalidpadding tests source-read only.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/codec/binary.rs",
+  "sha256": "2b5334ec68a5188e8415254b0d4fbff901c6146172e750131c6d9245cc38ccc0",
+  "reviewer": "codex/rust-pages",
+  "notes": "Explicit opaque-source append preservesprefix and bounds source+expandedoutput; caller must qualify trailingbyte semantics, no fallbackforunknownMIME/signedstructuredformats. Recovery delegates allframe scan and distinctcarrierambiguity. Tests are pure byte fixtures, not actual executable/signature compatibility.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/codec/mime.rs",
+  "sha256": "7647c94c29d82225e061c7a5c770e1fad535f3f394cf7589db48340708ce3c38",
+  "reviewer": "codex/rust-pages",
+  "notes": "Bounded256byte ASCII MIME syntax with tokens/quotedparameters, CRLF/NUL rejection, optionalSP/HTAB and casefolded exactfamily/suffix selection. It does not validate resourcebody/parameter meaning or registry/semantic truth. UnknowntypesUnsupported, PNG/WASM are pending identifiers; never automaticbinaryfallback. Two source-read grammar/family tests, no content pilot.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/codec/text/tests.rs",
+  "sha256": "fa86a19ac88acb872ff44d1bbf24345f7d7bb5956dacdbc1b7d4df89c114d201",
+  "reviewer": "codex/rust-pages",
+  "notes": "Three source-read tests cover scalar/objectJSON+SVG/JS prefix/recovery, partialtrailinggroup, invalid-before-valid/mixedambiguity and caps/NUL/nonUTF8 refusals. These are byte-level fixtures, not parse/render/exportedWASM/resource/browser execution; latest29-test candidate remains unqualified.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/codec/text.rs",
+  "sha256": "95d8d45ac421faa6dc8200be3f25019dfdd0832fe998d64601513621624182ff",
+  "reviewer": "codex/rust-pages",
+  "notes": "Low-level UTF8/noNUL/bounded prefix-preserving transform: JSON trailingSP/HTAB afternewline, markup/blockcomments with base32CRCframes. Inputsyntax/format semantics deliberately not parsed; caller validation required. Recovery accepts historicalbytes, shares outermarker+framebudget, distinctcarriersfail and complete8bit trailinggroups viaas_chunks ignorepartialgroup. Boundedbytes do not supply runtimecancellation, HTTP no-store or authenticatedissuance.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/codec.rs",
+  "sha256": "a818fdc1ebd2abd69f424f2e440433dabf96d6d0fc72a8fa0bcf256a6ed95da4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Low-level modules only; sourcegrammar validation and encode-commit-response composition remain external. Privatebase32; PNG/WASM dispatch entries do not add actual codecs.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/error.rs",
+  "sha256": "89e7282543ab5ce239f192a747ed34421e0187d2c2a6466cf6f318688a3a59bd",
+  "reviewer": "codex/rust-pages",
+  "notes": "Closed typed failure classes with non_exhaustive future enum, static display no keys/identifiers/body. Resource/no-frame/ambiguity failures are not policy verdicts.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/frame/tests.rs",
+  "sha256": "92a24c4d4e4d8112f5ed1a0ba6cc78a112277dc4fcb602f866e02cf6fad89c0b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Five source-read tests: independent CRC/exactbytes, damaged-before-valid, duplicate/distinctcarrier, size/truncation/configuration and repeatedvalidcandidatebudget exhaustion. No parser/run pilot was rerun here.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/frame.rs",
+  "sha256": "77919c59dad834044da5bd9a5f4e265cdab6f0b72280d77ce2526ea2fcb5ceb5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Explicit input<=32MiB/output<=33MiB/carrier<=65535bytes/candidates<=64. HMWM/u16length/IEEECRC32 envelope and bounded all-marker scan; equal carriers dedup, distinct carriersAmbiguous, budget exhaustion errors even after a valid candidate. Generic frame carrier must later be strictparsed/MACchecked; CRC is not authenticity or error correction. Limits are component admission, not total process memory/latency SLA or cancellation proof.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/ledger/reservation.rs",
+  "sha256": "82c3ced22094bfecb9abda7eff994984d569c2ce9511102339e4c12b3b5d3ed4",
+  "reviewer": "codex/rust-pages",
+  "notes": "NonClone linear guard owns reserved ID/capacity. Commit validates payload/metadata/ID/trustedclock/TTL and records once; it cannot prove encoding happened or MAC/frame correctness, so composition must encode then commit before response. Explicitcancel/Drop/unwind delete only ownpending slot without IDreuse. Poisonrecovery only for deletion, not lookup/attribution. No OS cancellation/join or durableeffect acknowledgment.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/ledger/state.rs",
+  "sha256": "e361e06324aeaaae3e4a0e4f856666d2bf758d39ad59292081398b610498726b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Private HashMap state with u64nonwrapping allocationcounter and trustedlatest Duration; regression refuses. Bounded retainedslot scan expires pending and committed only when age>configuredTTL. Poison not recovered for attribution; no periodicservice, wallclock or nativecustody exists here.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/ledger/tests.rs",
+  "sha256": "048726f52c4ff465b4b30f3ebbdffc557bcc56c1182d0efa863a702bb5a4153b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Ten source-read pure invariants cover bounds/capacity/pendinginvisibility/nonreuse, exactTTL/GC, late/mismatched/invalidmetadata commit, clockregression, IDexhaustion, sharedclones/concurrent IDs, unwind and poisonedrefusal. Synthetic logicaltimes/threadmodels are not load/retention/durableHTTP proof.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/ledger.rs",
+  "sha256": "4acf4a486f4a87dfef7169908e289cac1c2c44c3dad3bbee9864a8b5a9898362",
+  "reviewer": "codex/rust-pages",
+  "notes": "Private shared ArcMutex volatile capacity1..65536 includes pending+committed, explicitnonzero TTL no universalmaximum. Trusted nondecreasing runtime Duration epoch; never derives walltime or identity. IDs1..u32MAX never recycled; fullcapacity refuses without liveeviction. Lookup exposes privileged cloned record, still requires MAC/auth/audit. Exact TTL age remainslive, periodic runtimeGC needed for physicalretention during inactivity; returnedclones/callerallocations outsidecap. No durabletrace, scoring or erasure authority.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/lib.rs",
+  "sha256": "56e17457fab81afb3e3125d3e41839a70e47ddbe6c9918df1b35d63118adb73e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Public payload/frame/ledger/codec boundaries, private errors; documentation says legacyforensics identifies issuance, never human/verdict. No high-level resource Apply/Trace facade or production integration.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/payload/tests.rs",
+  "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76",
+  "reviewer": "codex/rust-pages",
+  "notes": "Six source-read tests cover literal preimage/byteorder, RFC4231 primitive vector, wrongkey/context/tag, explicit ID-not-MAC-bound limitation, strict/legacy suffix and key/identifier/NUL limits. Library/fixture tests not executed by Pages; passing primitive vector would not prove original14format parity.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/watermark/src/payload.rs",
+  "sha256": "082ee65ab93908236f3a6db13a495cfc4649e5797e43a6f699b55e2ace20eb73",
+  "reviewer": "codex/rust-pages",
+  "notes": "Exact14byte carrier u32bigendianID+10byteHMACSHA256 tag over session NUL asset NUL u64bigendianbucket. ID omitted fromMAC; newissuance rejectsID0/NUL/>1024byteidentifiers, does not reject empty identifiers. Owned key nonempty<=4096 zeroizing/noDebugClone, no minimum entropy guarantee or transient-copy erasure. Strictsplit length14 and explicit legacy suffix tolerance separate. Legacyverification allowsNULcontext for compatibility; ledger/trustedcontext and operatorauth remain necessary, not naturalperson attribution.",
+  "pages": [
+    "docs/reference/production-vs-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/apache-adapter/native/src/pilot/diagnostic.rs",
   "sha256": "2ad5f9e6985e5f09dd92316b1323c5bb2c350be96b71694a5756eda4bb2a266b",
   "reviewer": "codex/rust-pages",
