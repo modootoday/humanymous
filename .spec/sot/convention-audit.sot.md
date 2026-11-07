@@ -1992,3 +1992,34 @@ compiler/OS read custody; Delivery measures registry archives, not extracted
 registry source bytes. Neither qualifies full product/release or repairs9586/e70
 failures. Platform source movement and remaining whole migration gates stay OPEN.
 Exact selected source and raw hashes are bound through baseline.json.
+
+## Platform live migration review and corrected CEF source roots
+
+The accepted Platform split is now present in the evolving worktree. Review
+confirms empty defaults, explicit testing opt-in, Windows target/feature gates,
+testing forbid-unsafe, six existing function-local bridge unsafe exceptions and
+nine exact Worker process-owner scopes. All mapped destinations from the28-file
+before map exist. This is not a final frozen/committed candidate assertion.
+
+Copied27 raw records preserve the observed evidence independently. The actual
+unit artifact enables default/testing only:inventory55,41 pure passes,14 filtered,
+zero failed/ignored. The14 are seven controlled capture/barrier cases, six legacy
+process parents and one subprocess entrypoint. Exact should-panic suffix handling
+restores inventory identity; no Windows bridge tests occur in that harness. Core
+on the new dev graph separately passes162 with zero failed/ignored/filtered.
+Selected179 before/after records are byte-identical. Default-Windows and
+windows-object-WASM tree texts contain only the root; other feature trees retain
+their expected families. The initial malformed joint-tree invocation and corrected
+observation remain separate. No whole feature/API/native success follows.
+
+Audit identified two stale CEF source-snapshot roots during the move. Owning
+source correction5a3ac4b2 replaces them with Platform Cargo/src roots; exact diff
+and current source hash are verified. Historical Delivery baseline fixture paths
+remain intentionally unchanged. Initial private review001 caught a concurrent
+fix while assembling its TODO text; preserved002 corrects that observation and
+binds the final source state. Source-only path correction does not requalify CEF.
+
+Final candidate, isolated feature/API negatives, bridge positive/doctest and new
+source-bound process/native/provider/package/whole-graph gates remain OPEN.
+Legacy lifetime/handoff findings remain OPEN. Audit moved no code and ran no
+compiler/process pilot. Exact private hashes are in baseline.json.

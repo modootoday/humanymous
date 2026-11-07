@@ -1423,5 +1423,35 @@
     "new_confirmed_defects": [],
     "audit_workloads": 0,
     "goal_complete": false
+  },
+  "followup_platform_live_boundaries_and_components": {
+    "private_review": "platform-live-boundary-and-component-review-002.json",
+    "private_review_sha256": "7c43d5fec6bc3d4880998de59990633f25c6adf4dcd11c8cafcd4901c30afd7b",
+    "copied_private_raw_files": 27,
+    "old_map_files": 28,
+    "missing_destinations": 0,
+    "scope": "EvolvingRootPlatformslice, not atomiccandidate qualification",
+    "actual_harness_features": [
+      "default",
+      "testing"
+    ],
+    "inventory": 55,
+    "pure_passed": 41,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 14,
+    "filtered_scope": "7controlledcapture/barrier+6legacyprocessparents+1subprocessentry",
+    "bridge_tests_in_harness": 0,
+    "core_newgraph_passed": 162,
+    "core_failed_ignored_filtered": 0,
+    "selected_inputs": 179,
+    "before_after_byte_equal": true,
+    "boundaries": "defaultempty/windowscfgoptional/testingforbid/exact6unsafeallows/Worker9contextscopes verified",
+    "cef_source_todo": "Fixed5a3ac4b2f0f568d241d649f7bcf975bb28d69559 exact2snapshotroots; noCEFpilot qualification",
+    "prior_observation_correction": "001staleTODOtext racedwith5a3; preserved,002currentcorrectedstatus",
+    "initial_joint_tree": "Unexpectedargument invocation preserved separate from correctedjointtree",
+    "remaining": "Finalsource/isolatedfeatureAPInegative/bridgepositive/docs and sourceboundactualprocess/native/provider/package/wholegraph gates",
+    "audit_workloads": 0,
+    "goal_complete": false
   }
 }
