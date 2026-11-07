@@ -3,7 +3,7 @@ id: sot:root/performance-optimization
 title: Reproducible build and runtime performance optimization
 status: draft
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:16:44Z
+updated: 2026-11-07T14:28:30Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
   governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
@@ -94,7 +94,7 @@ source-specific checks because a transport cache reports a hit.
 | ID | Experiment and current status | Acceptance boundary |
 |---|---|---|
 | B1 | Four native signals builds completed on immutable9b064dbd; initial15fresh/8rebuilt, repeats23fresh/0rebuilt | Project-quiet/external-load-observed; no controlled A/B/cold-cache claim; [[evidence:root/20261107135643]] |
-| R1 | Root delegated three exact source paths; streaming implementation, regression tests and fixed Rust benchmark prepared, not compiled | Preserve Unicode split_whitespace, signed-header order/newlines, cookie/body hash and all token bytes; owner review and allocated actual verification/measurement remain required |
+| R1 | Native c4786b67 all-target tests27passed plus check/strict Clippy/fmt; independent source review accepted | Request81/verifier27vectors retained; source2563 and selected registry1041files unchanged; actual function comparison and product-runtime qualification remain pending |
 | B2 | Archive fetch/preparation measurement and eligible-job restore proposal; research only | Current policy-job cache does not populate other runner filesystems; owner approves any exact policy expansion |
 | B3 | Package/version/feature/target duplicate compilation and invalidation; research only | Prove equivalent gates and actual dependency features before eliminating any build |
 | B4 | Profile/debug/codegen/linker/incremental/sccache; research only | Separate developer and CI profiles; matched compile and actual executable regressions; no inferred universal speedup |
@@ -124,6 +124,13 @@ is outside timing. A120second deadline covers warmup and paired work, with a
 check per corpus iteration; fixed bounded fixtures constrain each iteration.
 Output includes per-batch time, operation/byte counts and fixture/output digests,
 never raw header or key data. This source contract is not executed evidence.
+Independent read-only review of c4786b67 found no semantic blocker in the three
+delegated paths. Its acceptance is source-only. The120second check is explicitly
+a cooperative timed-work budget after preparation, not a hard whole-process
+deadline. A separately qualified outer lifecycle controller and root allocation
+are required before actual benchmark execution. Five hot in-process pairs are
+not independent process repetitions or cold runs. Keep these distinctions in
+any result schema interpretation and conclusion.
 
 Runtime's current single accept loop owns mutable Sessions and durable audit.
 Parallel workers would change ownership/ordering and need an accepted architecture

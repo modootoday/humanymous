@@ -3,7 +3,7 @@ id: plan:root/20261107135643
 title: Performance research and source-bound optimization execution
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:16:44Z
+updated: 2026-11-07T14:28:30Z
 rel:
   depends_on: [sot:root/performance-optimization]
 ---
@@ -99,11 +99,41 @@ test moved unchanged to the exact test-only module; two differential tests cover
 all Unicode whitespace scalars, missing/empty fields, non-whitespace scalars,
 long/combining text, raw cookie framing, body binding and token-counter rejection.
 The benchmark prevalidates81 frozen request vectors plus6 synthetic cases and
-retains its pre-optimization Rust oracle only in test/example code. Tests and
-benchmark compilation/execution remain NOT_RUN during the Pages exclusive window.
-Root must review the frozen checkpoint and allocate actual scoped test/Clippy,
-example build and function measurement commands before they start.
+retains its pre-optimization Rust oracle only in test/example code. At that source
+checkpoint, tests and benchmark compilation/execution were NOT_RUN during the
+Pages window. The later B allocation completed scoped tests/check/Clippy/fmt;
+release example build and actual function measurement still need allocation.
 
-R1 measurements, tests and Docker/product workloads remain NOT_RUN. No measured
+R1 function measurements and Docker/product workloads remain NOT_RUN. No measured
 optimization improvement or full-product completion is claimed. Observed Cargo
 freshness is distinct from a compiler-cache or archive transport hit.
+
+## R1 allocated verification preparation
+
+Root assigned B for immutable c4786b675f75c4d8b679cf4308e37cdbfadd4cab,
+existing target/validation-authority, jobs1/incremental0 and locked/offline
+Integrity all-target tests, check and strict Clippy plus scoped fmt. Release
+compilation and benchmark execution are excluded from that allocation. The
+extracted source manifest contains2563 files; full hashes are retained privately.
+Independent source review accepted the transform and measurement limits, without
+running tests. Its required outer benchmark lifecycle bound remains unresolved.
+
+An initial full user Cargo registry content census was started for before-state
+capture and remained live across bounded handle polls. This scope is broader
+than the actual crate dependency closure; retain that first attempt and do not
+restart or infer completion from a polling timeout. Root directed subsequent
+registry evidence toward the actual resolved closure. After the census finishes,
+derive selected package/archive/index paths from actual build evidence and compare
+those exact before/after records with explicit file counts and difference counts.
+Do not claim the entire shared registry unchanged from a selected subset.
+
+The census handle actually terminated0 with55842files. B then completed27 tests
+(24library+1request/81vectors+1resource+1verifier/27vectors), all-target check,
+strict Clippy and scoped fmt. The example test harness ran0 tests and did not run
+benchmark main. Source2563files and selected30external-package registry closure
+1041files compared before/after with0 differences. Config18/env3/tool3 records
+were equal; clippy plugin hashes are after-only and full artifact reuse authority
+remains false. Raw footers/manifests and the source-review caveats are recorded
+in the public baseline/index. B target/compiler reservation was returned promptly.
+Root reserved the next cold window for native Audit; no release build or benchmark
+starts before its terminal result and a new exact allocation.

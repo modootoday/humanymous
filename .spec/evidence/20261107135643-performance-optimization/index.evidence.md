@@ -3,11 +3,11 @@ id: evidence:root/20261107135643
 title: Performance readiness and four source-bound library builds
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T14:16:44Z
+updated: 2026-11-07T14:28:30Z
 rel:
   depends_on: [sot:root/performance-optimization, plan:root/20261107135643]
 files:
-  - {path: baseline.json, sha256: 050222e45bf8fad49391e0afe26280d694247e0b74d8602572dfc3167bb81e2f, bytes: 5512, store: repo}
+  - {path: baseline.json, sha256: 054fa64f7b8c376ced905e6cfa8567f0a03c111842a12970f9f4630bdd8676a4, bytes: 7527, store: repo}
 ---
 
 # Performance readiness and four source-bound library builds
@@ -64,9 +64,35 @@ baseline.json; the owner released/reclaimed its own lane and reverified identity
 No new lane mutator, global writer-mode change or product-code grant resulted.
 Root later separately delegated exactly canonical.rs, canonical/tests.rs and
 examples/canonical_performance.rs under Integrity. Streaming normalization,
-regression tests and a fixed Rust-only benchmark are now prepared and formatted.
-No compiler/test/benchmark execution for R1 has occurred during the Pages window.
-This source checkpoint does not change the four B1 execution observations above.
+regression tests and a fixed Rust-only benchmark were prepared and formatted
+without compiling during the Pages window. The later B allocation executed
+Integrity all-target tests, check and strict Clippy on immutable c4786b67.
+
+## R1 native functional verification
+
+All commands actually terminated0. Tests passed24 library cases, one request
+parity harness containing81 vectors, one resource parity harness, and one verifier
+parity harness containing27 vectors:27 tests total, not108. The example's test
+harness ran0 tests; its benchmark main was not executed. Failed/ignored/measured/
+filtered counts were all0. Cargo rounded footers were6.06seconds for tests,
+3.12seconds for check and1.56seconds for strict Clippy. Scoped fmt also passed.
+
+Source closure compared2563 files before/after with0 difference records.
+Cargo artifact identities selected30 external packages plus3 workspace packages;
+the selected registry package source/archive/index/config closure compared1041
+files before/after with0 differences. The initial broader55842file registry
+census is retained, but no unchanged-whole-registry claim follows. Eighteen Cargo
+config candidates, three inherited environment keys and three observed tool hashes
+were equal. Clippy plugin/driver hashes were captured after-only, without claiming
+before-byte equality or complete artifact reuse authority.
+
+The private R1 verification manifest lists18 files with SHA256
+2cc4339684a26a5a49c87474e4b5abe179dc80a9fac2c969f4cf57374c61c8c1.
+Independent read-only source review found no narrow semantic blocker. Its
+measurement caveats remain: hot in-process pairs are not independent process
+repetitions, and the internal120second threshold is cooperative after preparation.
+Release compilation, actual function A/B execution and product-runtime validation
+remain not run. No optimization speedup or allocation count is claimed.
 
 The controlling SoT retains build and runtime scope, exact-byte regression
 requirements, security invariants, resource admission and Docker product gates.
