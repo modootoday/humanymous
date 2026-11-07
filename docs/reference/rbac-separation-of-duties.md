@@ -39,6 +39,16 @@ peer/restart/dual-control pilots remain separate consumer responsibilities.
 
 ## Policy and durable ledger scope
 
+For independently retained approval, `authorize_retained_action` first checks
+the retainer's exact scope, public identity and latest anchor, consumes approval
+locally, then retains and validates the signed successor before returning a
+`RetainedActionPermit`. This type is distinct from the local `ActionPermit`.
+A failure after consumption leaves the nonce spent and issues no grant; it does
+not authorize reissuing approval or retrying a possibly ambiguous effect.
+The consuming callback still owns durable audit-before-apply and operational
+recovery. See [control-anchor retention](security-audit.md#control-anchor-retention-boundary)
+for the private service and independence assumptions.
+
 The current policy provisions 2–128 distinct administrator identities with
 separate nonweak Ed25519 keys. Aliases sharing a key cannot form quorum. Every
 supplied approval is checked; an unknown, duplicate or invalid extra is not

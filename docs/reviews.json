@@ -2,6 +2,36 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/bin/audit-control-retainer.rs",
+  "sha256": "b728c1807b7b6360c9c11024df9a5db8de30946c34de784eb35b7d8b174cf77d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete native private stdin/stdout entrypoint and bounded static error/nonzero exit; nonnative stub supplies no service capability. Binary existence is not live execution or independent retention.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/reference/rbac-separation-of-duties.md"
+  ]
+},
+{
+  "source": "crates/audit/src/control/retention.rs",
+  "sha256": "fe555ca9ab526e897b631775f1d895eb7d8a021960775e10cf65b6d640f0969b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete retention types, exact signed successor and scope/public pin checks, explicit revision-zero provision, pending promotion and persistence policy plus three pure test definitions. Acknowledgement does not observe peer sync or independent OS/storage custody; no tests rerun.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/reference/rbac-separation-of-duties.md"
+  ]
+},
+{
+  "source": "crates/audit/src/control/retention_service.rs",
+  "sha256": "9ba1ff93ce143ffef9a2ab5939190629d7ecbab1d4c0c4d1dbac85794eac807d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete private service/client and three test definitions: strict config and State/Retain/Shutdown frames, exact Ready/current/successor checks, poisoned unknown/stale outcome, no signing seed or reset. Broker owns deadlines/authentication/reaping; Stopped is not process-exit proof.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/reference/rbac-separation-of-duties.md"
+  ]
+},
+{
   "source": "adapters/python/waitress-requirement.txt",
   "sha256": "32ac3c99b1bedee0c11481c0c481a985b8260496cd65ff56d08d8d1690193791",
   "reviewer": "codex/rust-pages",

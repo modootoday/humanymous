@@ -98,6 +98,28 @@ release. Separate process execution, OS-account/key/head isolation, inaccessible
 mounts and independent retained anchors need deployment evidence; shared-host
 parent or privileged compromise is not excluded by this protocol.
 
+## Control-anchor retention boundary
+
+`NativeAnchorRetainer` stores the original authority-signed control anchor under
+a lifetime lock. Provisioning is explicit at revision zero; reopening requires
+the exact independently supplied latest pin. A retained successor must verify
+under the provisioned key and advance exactly one revision. Pending recovery
+requires the exact committed and pending anchors, scope and authority identity;
+opening a directory does not authorize discarding pending state or resetting it.
+
+`audit-control-retainer` delegates to a private-pipe service with State, Retain
+and Shutdown commands. Its configuration contains the verification key, scope
+and external pin, with no authority signing seed. The verified client rejects
+unexpected or stale acknowledgements and poisons the connection after unknown
+outcomes. The supervisor owns live peer authentication, I/O deadlines, process
+exit/reaping and independent account/storage provisioning. A signed anchor or a
+separate process name does not prove those boundaries. Retention is also distinct
+from protected-action completion and from the audit-log witness protocol.
+
+The reported persistence strength remains explicit: Windows namespace uncertainty
+cannot satisfy `RetentionRequirement::FileAndDirectory`. A receipt authenticates
+the exact acknowledgement; it does not independently observe the peer's sync.
+
 ## Local export and shared persistence scope
 
 `DurableSink` requires independently provisioned node, HMAC and writer identity,

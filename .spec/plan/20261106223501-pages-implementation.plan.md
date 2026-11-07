@@ -1352,3 +1352,14 @@ Reviewed separate hashed Waitress requirement as authored install input only;
 public topology distinguishes pin from actual provisioned server/dependency
 closure. Native ABI pilot metadata still names obsolete registration blocker;
 requested owning chat reconciliation and withheld stale-metadata receipt.
+
+### Control-anchor retention source reconciliation
+
+Read full retention primitive, service/client and native entrypoint plus complete
+operations API. Security/RBAC references now distinguish local ActionPermit from
+RetainedActionPermit, exact current/successor pins, explicit provisioning/recovery,
+poisoned unknown outcomes, consumed nonce on post-consumption failure, persistence
+strength and independently provisioned broker/OS/storage requirements. Receipt
+is not effect completion or independent sync observation. Added three exact manual
+receipts; no tests/native process run. Root's four-slot allocation received;
+no Pages compiler allocation, no self-assigned build or shared manifest changes.
