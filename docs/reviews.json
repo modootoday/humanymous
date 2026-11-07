@@ -2,6 +2,24 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "adapters/ruby/host-pilot-contract.json",
+  "sha256": "1edd3f31e58bf54625d8d1cce15a3d919a1c9041aabde7d13eba8837d2526521",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete native callable contract:4groups/8cases including5liveness negatives plus3framework dependency-down cases, separate4default pure tests, native compiledfalse/executed0, required disconnect callback and package/HTTP/product false. Counts are requirements, not actual passes.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/ruby-adapter/src/native/liveness.rs",
+  "sha256": "a108e0914dc320811573538be75a260009091db4706a82c9aa6d9c8251b9232f",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete trusted server callback adapter: required humanymous.client_disconnected call, exactfalse connected/exacttrue disconnected, missing/call error/nonboolean failure. Reviewed call-site excerpts before processing, authority wait and finalhandoff; no actual Ruby server/GC/GVL/disconnect execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
   "source": "crates/audit/src/keys/custody/tests.rs",
   "sha256": "21fe2804a8896ed0bd8d2d4f2a97380a19c18a151c958f53f69faaf46fa8c68a",
   "reviewer": "codex/rust-pages",

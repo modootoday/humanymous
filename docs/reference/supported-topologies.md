@@ -193,12 +193,22 @@ A separate hashed Waitress requirement now declares a candidate install input;
 its presence is not an observed installation, a complete dependency closure or
 execution of the missing server harness.
 
-The Ruby host contract selects three dependency-unavailable framework-object
-smoke cases. Those are not an actual server, successful production authority
-path, installed gem, GC-compaction or GVL/cancellation qualification. Its native
+The current Ruby native-callable contract requires eight cases in four groups:
+five liveness negatives and three dependency-unavailable framework-object cases.
+Its four default pure Rust cases are separate. The contract records zero native
+executions; required counts are not passing results. These are not an actual
+server, successful production authority path, installed gem, GC-compaction or
+GVL/cancellation qualification. Its native
 extension is feature-gated: a default crate check can exclude the extension and
 cannot replace an explicit native build and installed `require` test. Candidate
 gem metadata is not a verified registry name, publisher or multi-Ruby loader.
+
+The native source requires the trusted server environment callback
+`humanymous.client_disconnected`. Only exact Ruby `false` means connected and
+exact `true` means disconnected; missing, failing or nonboolean callbacks do not
+grant admission. The source checks before processing, during authority waiting
+and before the application handoff. A synthetic callback does not qualify a real
+server's disconnect detection, input deadline or cancellation/GC/GVL behavior.
 
 ### Managed source follow-through
 

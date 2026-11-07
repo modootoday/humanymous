@@ -1536,3 +1536,14 @@ run. Saved private ANSI-stripped log and sanitized public summary. This source81
 checkpoint includes later static denominator coverage than63f, but predates all
 newer docs and normalized25corpus; never promote to current acceptance. Separate
 documentation job remains failed inventory, complete CI conclusion not inferred.
+
+### Ruby native liveness contract reconciliation
+
+Read complete new Ruby host contract and liveness callback module, plus exact
+native call-site excerpts. Updated topology from earlier3framework-only cases
+to required4groups/8native cases (5liveness+3dependency-down), separate4pure and
+native executed0. Exactfalse/true callback semantics and missing/nonboolean/call
+failure refuse admission; real server callback/deadline/GC/GVL remain unqualified.
+Two manual receipts; native.rs/hosted.rs excerpts do not renew whole-file reviews.
+Audit owner accepted earlier custody-helper issue; fix pending, no current-source
+execution claimed. Continued source-only work during benchmark quiet window.
