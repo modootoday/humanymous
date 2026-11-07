@@ -13,6 +13,19 @@ rel:
 
 # Browser collector migration
 
+## Owned script observer
+
+Observe document childList/subtree changes with an owned MutationObserver.
+Count only directly added nodes with tagName SCRIPT and falsy dataset.hm,
+matching legacy marker semantics. Never inspect script text/URL/arguments or
+descendants. The shared guard Epoch owns counts and coverage. Script coverage
+alone keeps reported=false until eval and Function coverage really exist.
+Bound each delivery to4096 records/16384 nodes; malformed acquisition, overflow
+or reentrancy invalidates this guard acquisition. Explicit stop drains pending
+records before disabling/disconnecting, then freezes. Drop disables/disconnects;
+failed disconnect retains an inert callback rather than dropping a reachable
+WASM closure. No script execution or global eval/Function replacement here.
+
 ## Guard coverage and compatibility
 
 BrowserCollector now acquires real Object/Array own-property counts and captured

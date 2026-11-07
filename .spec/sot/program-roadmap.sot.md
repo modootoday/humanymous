@@ -220,6 +220,13 @@ Wrangler config 없는 경우cf CLI를사용한다. 이번 정리는 provider생
 
 ## 현재 종료를 막는 gate와 다음 착수
 
+Guard의 owned MutationObserver는실제document childList/subtree에연결됐고
+directSCRIPT/falsyhm만집계한다. 대기recorddrain/stop/drop/과대입력/잘못된
+record/재진입/실패disconnect를실제Firefox40/0/0으로검증했다. native19와
+WASM strictClippy도통과했다. Windows컴파일WASM을기존고정Linuximage에
+readonlymount한component증거로서새sourceimagebuild나full제품e2e는아니다.
+eval/Function미설치로guard.reported=false유지;forwarding/CDP/session필수잔여다.
+
 ### Browser request codec 구현 경계
 
 공유 integrity::request::browser의 Binding/canonical/BindingError/PROTOCOL은

@@ -106,3 +106,79 @@ fn native_marker_matches_legacy_browser_regexp_on_character_boundaries() {
         );
     }
 }
+
+fn script(document: &JsValue, marker: Option<&str>) -> JsValue {
+    let script = call(document, "createElement", &["script".into()]).unwrap();
+    // Inert MIME type and no content/src: observe structure without running code.
+    set(&script, "type", &"application/octet-stream".into());
+    if let Some(marker) = marker {
+        set(&get(&script, "dataset").unwrap(), "hm", &marker.into());
+    }
+    script
+}
+
+#[wasm_bindgen_test(async)]
+async fn actual_mutations_count_only_direct_unmarked_scripts_and_stop_drains() {
+    let global: JsValue = js_sys::global().into();
+    let document = get(&global, "document").unwrap();
+    let body = get(&document, "body").unwrap();
+    let mut baseline = Baseline::capture().unwrap();
+    let container = call(&document, "createElement", &["div".into()]).unwrap();
+    // A detached descendant is not independently added to an observed target.
+    call(&container, "appendChild", &[script(&document, None)]).unwrap();
+    call(&body, "appendChild", std::slice::from_ref(&container)).unwrap();
+    let mut nodes = vec![container];
+    for marker in [None, Some(""), Some("owned")] {
+        let node = script(&document, marker);
+        call(&body, "appendChild", std::slice::from_ref(&node)).unwrap();
+        nodes.push(node);
+    }
+    wasm_bindgen_futures::JsFuture::from(js_sys::Promise::resolve(&JsValue::UNDEFINED))
+        .await
+        .unwrap();
+    assert_eq!(baseline.snapshot().unwrap().script_injected, 2);
+    assert!(!baseline.snapshot().unwrap().reported);
+    let pending = script(&document, None);
+    call(&body, "appendChild", std::slice::from_ref(&pending)).unwrap();
+    nodes.push(pending);
+    baseline.stop().unwrap();
+    assert_eq!(baseline.snapshot().unwrap().script_injected, 3);
+    let frozen = baseline.snapshot().unwrap();
+    let after = script(&document, None);
+    call(&body, "appendChild", std::slice::from_ref(&after)).unwrap();
+    nodes.push(after);
+    wasm_bindgen_futures::JsFuture::from(js_sys::Promise::resolve(&JsValue::UNDEFINED))
+        .await
+        .unwrap();
+    baseline.stop().unwrap();
+    assert_eq!(baseline.snapshot().unwrap(), frozen);
+    for node in nodes {
+        call(&body, "removeChild", &[node]).unwrap();
+    }
+}
+
+#[wasm_bindgen_test(async)]
+async fn dropped_guard_detaches_and_failed_registration_is_rejected() {
+    let global: JsValue = js_sys::global().into();
+    let document = get(&global, "document").unwrap();
+    let body = get(&document, "body").unwrap();
+    let baseline = Baseline::capture().unwrap();
+    let epoch = baseline.epoch.clone();
+    let initial = baseline.initial;
+    drop(baseline);
+    let node = script(&document, None);
+    call(&body, "appendChild", std::slice::from_ref(&node)).unwrap();
+    wasm_bindgen_futures::JsFuture::from(js_sys::Promise::resolve(&JsValue::UNDEFINED))
+        .await
+        .unwrap();
+    assert_eq!(epoch.borrow().snapshot(initial).unwrap().script_injected, 0);
+    call(&body, "removeChild", &[node]).unwrap();
+    let fake: JsValue = Object::new().into();
+    set(
+        &fake,
+        "MutationObserver",
+        &get(&global, "MutationObserver").unwrap(),
+    );
+    set(&fake, "document", &Object::new().into());
+    assert!(observer::Observer::start(&fake, epoch, Rc::new(Cell::new(false))).is_err());
+}

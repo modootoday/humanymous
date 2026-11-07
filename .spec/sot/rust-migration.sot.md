@@ -14,6 +14,15 @@ rel:
 
 # Rust migration conventions
 
+## Owned observer implementation receipt
+
+Collector's shared guard Epoch now receives actual MutationObserver script-node
+events, with bounded acquisition, queued-record drain, frozen stop/drop and inert
+callback retention on disconnect failure. Current native19/actualFirefox40 and
+WASM strictClippy pass; eval/Function coverage stays absent and reported=false.
+Browser execution mounted the source-built WASM read-only into an existing
+pinned container image; fresh image build and full product e2e remain separate.
+
 ## Provisioned adapter validation integration
 
 Browser request binding0.1 is a separate domain, not native RIT compatibility

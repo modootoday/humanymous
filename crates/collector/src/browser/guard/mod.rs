@@ -1,18 +1,31 @@
-//! Measured partial guard baseline; no eval replacement or mutation observer yet.
+//! Measured partial guard baseline with owned script observation; no eval replacement.
+mod observer;
 use super::reflection::{call, get};
 use crate::guard::{Epoch, NativeBaseline, PrototypeCounts, native_source_marker};
 use humanymous_signals::report::Guard;
+use std::{
+    cell::{Cell, RefCell},
+    rc::Rc,
+};
 use wasm_bindgen::{JsCast, JsValue};
 
 pub(crate) struct Baseline {
     global: JsValue,
-    epoch: Epoch,
+    epoch: Rc<RefCell<Epoch>>,
+    fault: Rc<Cell<bool>>,
+    observer: Option<observer::Observer>,
     initial: PrototypeCounts,
     stopped: bool,
 }
 impl Baseline {
     pub(crate) fn capture() -> Result<Self, JsValue> {
-        Self::capture_with(js_sys::global().into())
+        let mut baseline = Self::capture_with(js_sys::global().into())?;
+        baseline.observer = Some(observer::Observer::start(
+            &baseline.global,
+            baseline.epoch.clone(),
+            baseline.fault.clone(),
+        )?);
+        Ok(baseline)
     }
     fn capture_with(global: JsValue) -> Result<Self, JsValue> {
         let initial = counts(&global)?;
@@ -33,27 +46,46 @@ impl Baseline {
         };
         Ok(Self {
             global,
-            epoch: Epoch::new(initial, observed),
+            epoch: Rc::new(RefCell::new(Epoch::new(initial, observed))),
+            fault: Rc::new(Cell::new(false)),
+            observer: None,
             initial,
             stopped: false,
         })
     }
     pub(crate) fn snapshot(&self) -> Result<Guard, JsValue> {
+        if self.fault.get() {
+            return Err(JsValue::from_str("guard observer invalid"));
+        }
         let current = if self.stopped {
             self.initial
         } else {
             counts(&self.global)?
         };
-        self.epoch.snapshot(current).map_err(JsValue::from_str)
+        self.epoch
+            .try_borrow()
+            .map_err(|_| JsValue::from_str("guard epoch busy"))?
+            .snapshot(current)
+            .map_err(JsValue::from_str)
     }
     pub(crate) fn stop(&mut self) -> Result<(), JsValue> {
         if !self.stopped {
+            if let Some(observer) = &mut self.observer {
+                observer.stop(&self.epoch)?;
+            }
             self.epoch
+                .try_borrow_mut()
+                .map_err(|_| JsValue::from_str("guard epoch busy"))?
                 .stop(counts(&self.global)?)
                 .map_err(JsValue::from_str)?;
             self.stopped = true;
         }
         Ok(())
+    }
+}
+impl Drop for Baseline {
+    fn drop(&mut self) {
+        let _ = self.stop();
     }
 }
 fn native(to_string: &js_sys::Function, value: &JsValue) -> Result<bool, JsValue> {
