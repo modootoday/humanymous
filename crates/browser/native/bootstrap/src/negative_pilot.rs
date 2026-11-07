@@ -1,5 +1,5 @@
 //! Test-only refusal pilot; shared ownership bounds and reaps each direct child.
-use humanymous_test_support::process::ManagedChild;
+use humanymous_platform::testing::process::ManagedChild;
 use serde_json::{Value, json};
 use std::{
     collections::BTreeSet,

@@ -1,7 +1,7 @@
 //! Provisioned hosted-only CEF cases behind the explicit native pilot feature.
 //! The shared supervisor reaps only its direct child; descendant cleanup is not attested.
 use crate::pilot_assertions::{self, Case};
-use humanymous_test_support::process::capture_with_stderr;
+use humanymous_platform::testing::process::capture_with_stderr;
 use std::{fs, io::Read, path::PathBuf, process::Command, time::Duration};
 
 fn execute(case: Case, variable: &str) -> Result<(), &'static str> {

@@ -33,9 +33,18 @@ files:
   - {path: viewport-source-candidate.json, sha256: 68cd63b809798ceb681544a41b1409b60a331d97d1425ed5f97b9c0cecd73030, bytes: 2660, store: repo}
   - {path: gpu-boundary-research.json, sha256: 27221b26387ea3a29f5fcd6955447fcbb115688d883c42c510c356e131f848e4, bytes: 4048, store: repo}
   - {path: structural-v0-handoff.json, sha256: 896ec6839f95f59535144540624f4813cf703ef5e49af2917cc41712e489a7d3, bytes: 21738, store: repo}
+  - {path: platform-slice-02-consumers.json, sha256: f85e4eeb261f832d6632387a530d579343fb2935216b37a5b42dad32db38762e, bytes: 1654, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
+
+## PLATFORM-SLICE-02 source-only consumer delegation
+
+Two native Rust imports now use humanymous_platform::testing with exact suffixes
+preserved. platform-slice-02-consumers.json binds old/new hashes and zero remaining
+legacy references in scoped Rust consumers. Root owns all moves/manifests/lock;
+this delegate changed none. Cargo formatting/compile/tests/Clippy/CI/native CEF
+execution remain not_run during the transient graph. No qualification is promoted.
 
 ## Accepted baseline v0 current-path handoff
 

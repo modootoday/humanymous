@@ -1,0 +1,35 @@
+{
+  "slice": "PLATFORM-SLICE-02",
+  "source_base": "7e6e9638b13e7b70a62d1afee17ec3af67ab6284",
+  "scope": "Browser native Rust consumer imports only",
+  "files": [
+    {
+      "path": "crates/browser/native/bootstrap/src/negative_pilot.rs",
+      "before_git_blob": "9e3dd248ea13a28fc2b37d0d98bbf686ed54333c",
+      "before_working_sha256_reconstructed_by_exact_inverse": "614230683c879f900ebe2151d447a6ad4d1a612b4f27aac4775a65047f4504e2",
+      "after_sha256": "833e68f4f9025530df377f4fc3468a1ee00b86e25dbc8c57b12da0b7a9680448",
+      "worktree_lf": true
+    },
+    {
+      "path": "crates/browser/native/desktop/src/pilot_process.rs",
+      "before_git_blob": "6d36546bd1f3975ad90a4ed8c9662f6ca2f7931a",
+      "before_working_sha256_reconstructed_by_exact_inverse": "6df47121e6f94167932365f8f8587d5529f6ee74df560f3c9d4792c12917986d",
+      "after_sha256": "3303103b75edd533d61c74bc807adfed925c113fa0ae42f6535e3bf02741ac8f",
+      "worktree_lf": true
+    }
+  ],
+  "replacement": "humanymous_test_support::<suffix> -> humanymous_platform::testing::<suffix>",
+  "windows_object_bridge_matches": 0,
+  "native_cli_matches": 0,
+  "legacy_rust_references_remaining": 0,
+  "files_moved": false,
+  "manifest_edits": false,
+  "behavior_authority_unsafe_changes": false,
+  "compiler": "not_run_root_allocation_required",
+  "unit_tests": "not_run",
+  "clippy": "not_run",
+  "cargo_fmt": "not_run_transition_graph",
+  "native_or_cef_process": "not_run",
+  "required_next": "Root resolves dependency category/features/lock and coherent source, then allocated scoped fmt/tests/check/Clippy/native qualification",
+  "historical_proofs": "remain old-source-specific"
+}

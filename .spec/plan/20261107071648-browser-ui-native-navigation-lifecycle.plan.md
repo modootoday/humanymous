@@ -11,6 +11,22 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## PLATFORM-SLICE-02 delegated Browser consumer imports
+
+Root authorizes only two current-path Rust consumer substitutions:
+bootstrap/src/negative_pilot.rs uses humanymous_platform::testing::process::ManagedChild;
+desktop/src/pilot_process.rs uses humanymous_platform::testing::process::capture_with_stderr.
+Suffixes and behavior are unchanged. There are no matching Rust references to
+humanymous_windows_object_bridge or legacy package references in native-cli.
+platform-slice-02-consumers.json binds the two before Git blobs/reconstructed
+working SHA256 and after LF SHA256 against7e6e9638. Remaining old Rust references
+in the scoped paths are zero. No helper alias, manifest/path move, authority or
+unsafe change was authored. Root alone owns the28 frozen moves, dependency
+categories/features, lock and coherent graph. No compiler, unit/Clippy, global
+formatter, CI or actual CEF/process execution occurred. Scoped Cargo formatting
+and source-bound checks wait for root's coherent allocation; previous results
+do not qualify the new import/dependency boundary.
+
 ## Accepted public-family baseline v0: Browser-last handoff
 
 The human confirmed the eight-public-package baseline in structural-development.
