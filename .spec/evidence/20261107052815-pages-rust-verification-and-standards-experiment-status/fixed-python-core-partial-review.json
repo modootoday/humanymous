@@ -1,0 +1,68 @@
+{
+  "schema": "humanymous.pages-source-review-batch/1",
+  "fixed_commit": "269607366e4b2e37b47a974595b406b66642caae",
+  "scope": "Python partial batch: six fully read files only; not all26 Python task files",
+  "files": [
+    {
+      "path": "crates/python-adapter/INTEGRATION.md",
+      "fixed_sha256": "aa5cdc2b03f24878937d99292c54a0dcbd0fdaf6154ae8223d3bee9bbe4d4285",
+      "fixed_lines": 137,
+      "full_read": true,
+      "notes": "Historical WSGI7842b6a8 actual8 tests/28 cases is distinct from later5655b965 all-target check and failed receipt-parser Clippy; ASGI, wheel install and hosted runtime remain separate. Narrative chronology is not a fresh execution receipt.",
+      "current_sha256_at_observation": "3769a14ca8ae15bbf5375aaaaf97fa32d9c30a12a77bfbd754d093a2228383ef",
+      "current_bytes_match_fixed": false
+    },
+    {
+      "path": "adapters/python/server-pilot-contract.json",
+      "fixed_sha256": "7cf2def1030dfc13f58604a9fea65b791d1f45cdee1cb00e656507121810f138",
+      "fixed_lines": 58,
+      "full_read": true,
+      "notes": "Historical WSGI counts bind7842b6a8 only. Current refactor runtime NOT_RUN and controller NOT_ACCEPTED; Unix-only, idle incomplete-body timeout not total slow-drip deadline. Required counts and artifact bindings are obligations, not current qualification.",
+      "current_sha256_at_observation": "34304fa5b1ba38bbf68196b3dd36ac2f03f2a6339820e8af05e30106b494f07d",
+      "current_bytes_match_fixed": false
+    },
+    {
+      "path": "crates/python-adapter/src/async_call.rs",
+      "fixed_sha256": "2720d361e1c083fa5ff1f95e45fdd3f61b40679ecc1963acbcdca4e564e65b30",
+      "fixed_lines": 181,
+      "full_read": true,
+      "notes": "Copied context and owning-loop call_soon_threadsafe schedule callback/task. Rust Drop marks cancelled and schedules task.cancel, discarding scheduling errors; it does not await cancellation acknowledgement or prove task termination/cleanup. No runtime execution in this review.",
+      "current_sha256_at_observation": "2720d361e1c083fa5ff1f95e45fdd3f61b40679ecc1963acbcdca4e564e65b30",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/src/wsgi.rs",
+      "fixed_sha256": "ab0e363d4c4e833ca92cbce8b5eb8f3afca65f65bfcf87a2d67c0a2dc40c8ac4",
+      "fixed_lines": 184,
+      "full_read": true,
+      "notes": "Requires declared enforced synchronous input deadline and trusted disconnect callback. Normalized WSGI headers/body replay; GIL detached only for authority IPC. Pending checks around blocking input do not themselves preempt a blocked read. Final bound ALLOW, deadline and disconnect check precede app call; app iterable lifecycle is downstream-owned.",
+      "current_sha256_at_observation": "ab0e363d4c4e833ca92cbce8b5eb8f3afca65f65bfcf87a2d67c0a2dc40c8ac4",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/src/asgi.rs",
+      "fixed_sha256": "fa719805a40c6106cc85a916ac17feb0e1690e9df976679f5b78cec27f702cc1",
+      "fixed_lines": 276,
+      "full_read": true,
+      "notes": "HTTP1 only with original raw_path/query, normalized headers, bounded complete body and original pending timeout. One receive future retained across authority/handoff and passed downstream after replay; lifespan transparently bypasses HTTP decision. Source does not establish actual framework cancellation/context/cleanup behavior.",
+      "current_sha256_at_observation": "fa719805a40c6106cc85a916ac17feb0e1690e9df976679f5b78cec27f702cc1",
+      "current_bytes_match_fixed": true
+    },
+    {
+      "path": "crates/python-adapter/src/bin/humanymous-python-package.rs",
+      "fixed_sha256": "0b6a8d92343bde8550f20870f6c2d6f924ba13f1a00a1d929596e0c1157533c5",
+      "fixed_lines": 274,
+      "full_read": true,
+      "notes": "Maturin1.16.0 version string and locked release command; inspect bounds archive bytes100MiB/member count128/individual claimed size and requires one native extension plus compatible tag. Filename tags and hashes do not attest generation provenance. Inspection uses embedded interpreter; install-test invokes external pip then imports through embedded interpreter after major/minor string comparison. External command status/output have no local timeout; output capture and descendant containment are not bounded here. No package/install/import execution performed.",
+      "current_sha256_at_observation": "0b6a8d92343bde8550f20870f6c2d6f924ba13f1a00a1d929596e0c1157533c5",
+      "current_bytes_match_fixed": true
+    }
+  ],
+  "full_read_files": 6,
+  "full_read_lines": 1110,
+  "new_execution": "NOT_RUN",
+  "docs_modified": false,
+  "source_review_receipts_renewed": false,
+  "runtime_or_release_qualification": false,
+  "current_source_acceptance": "not accepted by this partial batch; recheck current hashes and complete remaining source first"
+}
