@@ -1,0 +1,75 @@
+{
+  "schema": "humanymous.performance-readiness/0.1",
+  "observed_date": "2026-11-07",
+  "status": "identity_and_source_inspection_only",
+  "benchmark_status": "NOT_RUN",
+  "execution_allocated": false,
+  "baseline_source_selected": false,
+  "source_sha_observed_not_allocated": "5ffa253022e1a7f7a64f9ab2a95f664ba40f4e23",
+  "workload_result": null,
+  "speedup": null,
+  "allocation_count": null,
+  "runtime_throughput": null,
+  "full_product_qualified": false,
+  "native_tool_identity": {
+    "cargo_version": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "cargo_sha256": "aa5b8980be3681899fde765ba47e2ed361463ae9dd8ee7cd1963c18d23743a0f",
+    "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "rustc_sha256": "ba03e3ba03a73d9fef19ab3659140f94b43615ec1d587fe9befc9aed3bd5aa72",
+    "host": "x86_64-pc-windows-msvc",
+    "llvm": "23.1.1",
+    "version_query_exit_codes": [0, 0],
+    "external_linker_sdk_identity": "not_observed",
+    "compilation_performed": false
+  },
+  "r1_owner": "root-integration",
+  "r1_status": "source_review_accepted_implementation_pending",
+  "r1_fixtures": [
+    {
+      "path": "crates/integrity/tests/fixtures/request.json",
+      "sha256": "6ee2be626741c3168b03a9da9948545c5d831aa0d6a8a805368112f630cbde58",
+      "cases_declared_in_current_test_source": 81,
+      "tests_executed_here": false
+    },
+    {
+      "path": "crates/integrity/tests/fixtures/verification.json",
+      "sha256": "d623988f446c2d11fce701c9b070f06771f8a10ba3cc264dec794906928908ff",
+      "cases_declared_in_current_test_source": 27,
+      "tests_executed_here": false
+    }
+  ],
+  "prior_comparison_hash_verification": {
+    "evidence_id": "evidence:root/20261107092034",
+    "files_checked": 4,
+    "mismatches": 0,
+    "new_workload_execution": false,
+    "fully_cold_cache_proven": false,
+    "general_speedup_claimed": false
+  },
+  "proposed_b1": {
+    "package": "humanymous-signals",
+    "kind": "library_build",
+    "runs": 4,
+    "initial_cache_label": "existing_target_possible_invalidation",
+    "target_candidate_only": "target/validation-authority",
+    "target_ownership_allocated": false,
+    "jobs": 1,
+    "incremental": 0,
+    "proposed_budget_seconds": 300,
+    "freshness": "not_observed",
+    "root_source_graph_window": "pending",
+    "resource_admission": "not_performed",
+    "qualified_controller": "not_assigned"
+  },
+  "pending": [
+    "root accepts full measurement contract",
+    "root selects immutable source and confirms exact target ownership",
+    "root assigns quiet window and bounded controller",
+    "actual four build observations",
+    "R1 owner implementation and regression checks",
+    "matched before/after function measurements",
+    "separate actual product runtime and security qualification",
+    "remaining build and runtime research experiments"
+  ]
+}
