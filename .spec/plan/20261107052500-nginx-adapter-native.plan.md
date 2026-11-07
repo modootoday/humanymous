@@ -260,3 +260,16 @@ with the user's message authorization. A was allocated to root and B to Node,
 then Python; nginx has not started an unassigned Cargo pipeline. The last hosted
 run42348518353 completed failed at63f69ae and does not qualify current source.
 Actual current native build/authority/JSON/SSE/package execution remains NOT_RUN.
+
+## Allocated latest pure verification
+
+Root explicitly assigned B after Go returned it, target/node-native/build,
+jobs1/incremental0, with actual native/bindgen/IPC/Docker excluded. Resource guard
+passed. Actual locked default library tests passed14/failed0/ignored0/filtered0;
+package-feature binary check and library/package binary Clippy-Dwarnings passed.
+Captured source/manifests/lock/toolchain hashes were unchanged before/after;
+capture covers nginx, authority, integrity, signals, audit and root inputs, not
+all transitive source. Raw latest-pure logs and snapshots were privately attached;
+sanitized latest-pure-verification.json is in evidence:root/20261107052501.
+B was immediately returned to root. Current hosted nginx35/native/pilot checks
+are still NOT_RUN; root frozen-source dispatch remains a required external step.
