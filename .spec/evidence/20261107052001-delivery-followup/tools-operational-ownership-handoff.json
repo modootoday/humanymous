@@ -1,0 +1,1735 @@
+{
+  "schema": "humanymous.delivery-tools-ownership-handoff/1",
+  "state": "read-only-source-handoff-no-movement",
+  "authorization": "Root02d8 operational ownership decision and all13 tool profile map request",
+  "head_at_observation": "fec6d339e566c24a12d4183775a83613d8057c5e",
+  "profile_count": 13,
+  "rust_source_files": 246,
+  "include_sites": 61,
+  "literal_include_sites": 51,
+  "manifest_concat_include_sites": 10,
+  "distinct_include_targets": 35,
+  "source_roots": 34,
+  "profiles": [
+    {
+      "package": "humanymous-cli",
+      "manifest": "crates/cli/Cargo.toml",
+      "manifest_sha256": "d89248233341f580b50f2a8f82b1673548fc439f13f685c2fe7a707f1f90aca8",
+      "rust_source_files": 27,
+      "features": {
+        "service-pilot": [],
+        "runtime-service": [
+          "humanymous-runtime/gateway",
+          "humanymous-runtime/authority",
+          "dep:tokio",
+          "dep:zeroize"
+        ],
+        "runtime-service-pilot": [
+          "runtime-service",
+          "humanymous-runtime/credential-pilot",
+          "humanymous-runtime/audit"
+        ]
+      },
+      "explicit_bins": [
+        {
+          "name": "humanymous",
+          "path": "src/main.rs"
+        },
+        {
+          "name": "humanymous-service-fixture",
+          "path": "src/bin/service_fixture.rs",
+          "required-features": [
+            "service-pilot"
+          ]
+        }
+      ],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": false,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "crates/cli/examples/service_evidence.rs",
+          "kind": "example",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/cli/src/bin/service_fixture.rs",
+          "kind": "binary-candidate",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/cli/src/lib.rs",
+          "kind": "library",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/cli/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/cli/tests/runtime_service_process.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/cli/tests/service_process.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/cli/tests/watchdog_boundary.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-native-cli",
+      "manifest": "crates/native-cli/Cargo.toml",
+      "manifest_sha256": "e0e8c95251785368d6f029ee6432c45d00896b79cae4a674e2d876af28ec9350",
+      "rust_source_files": 10,
+      "features": {},
+      "explicit_bins": [
+        {
+          "name": "humanymous-native",
+          "path": "src/main.rs"
+        }
+      ],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "crates/native-cli/src/lib.rs",
+          "kind": "library",
+          "explicit_forbid_unsafe": true
+        },
+        {
+          "path": "crates/native-cli/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/native-cli/tests/command.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-attacker",
+      "manifest": "crates/attacker/Cargo.toml",
+      "manifest_sha256": "a462f4aa1564d09ceb95ae79799fd6086e01471baa45a3be9e72f6de6a0400a9",
+      "rust_source_files": 15,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "crates/attacker/src/bin/humanymous-report.rs",
+          "kind": "binary-candidate",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/attacker/src/bin/humanymous-wargame-verify.rs",
+          "kind": "binary-candidate",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/attacker/src/lib.rs",
+          "kind": "library",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "crates/attacker/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-defender",
+      "manifest": "crates/defender/Cargo.toml",
+      "manifest_sha256": "3903e1c973ecd434df2196a91030b5a02f8ead585d070d8392b4186d44a54cd7",
+      "rust_source_files": 6,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "crates/defender/src/lib.rs",
+          "kind": "library",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-pages",
+      "manifest": "docs/tooling/Cargo.toml",
+      "manifest_sha256": "46e13ba0fe36715d873a323a2edbfc9e5e568c6b5726d9dd37a6409790d0f835",
+      "rust_source_files": 20,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "docs/tooling/src/lib.rs",
+          "kind": "library",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "docs/tooling/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-delivery",
+      "manifest": "scripts/ci/delivery/Cargo.toml",
+      "manifest_sha256": "fd094675d3dacbaf0c29da072fc9462fb9988d665b67669b98aec7702b48c72b",
+      "rust_source_files": 46,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "scripts/ci/delivery/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "manifest": "skills/agent-maintenance/Cargo.toml",
+      "manifest_sha256": "6bd9cdeb6150f8c8421f89344f2b0e0608216d67b3264a143d62ad4af1c083ca",
+      "rust_source_files": 36,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "skills/agent-maintenance/src/lib.rs",
+          "kind": "library",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/evidence_layout_cli.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/git_coord.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/process.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/product_package.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/selected_inputs.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/selected_inputs_cli.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/session_storage.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        },
+        {
+          "path": "skills/agent-maintenance/tests/windows_doctor.rs",
+          "kind": "test",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-lab-runner",
+      "manifest": "test/lab/runner/Cargo.toml",
+      "manifest_sha256": "6829b9d2e12803ce77d082392c4b8f99be9025f3428bd9c9b6e7353b1244d731",
+      "rust_source_files": 24,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "test/lab/runner/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-runtime-pilot",
+      "manifest": "test/lab/runtime/Cargo.toml",
+      "manifest_sha256": "b5d6dbf0394a6bdaad2e48c73397e9c2a486df7a41a014a6ac6f5af900cebf32",
+      "rust_source_files": 22,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "test/lab/runtime/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-cef-pilot",
+      "manifest": "scripts/ci/cef-pilot/Cargo.toml",
+      "manifest_sha256": "1dc5243ef268a1739f46c8d1b139e6e43153edcac19b55ad63bb93baf7399e17",
+      "rust_source_files": 8,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "scripts/ci/cef-pilot/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-native-runner",
+      "manifest": "scripts/ci/windows-native-runner/Cargo.toml",
+      "manifest_sha256": "dbe2ee4552255fc7cde9322b72dbf8104b5f4a47d47acdc285db86c8c75f6ce0",
+      "rust_source_files": 30,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "scripts/ci/windows-native-runner/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-docs-review",
+      "manifest": "scripts/ci/docs-review/Cargo.toml",
+      "manifest_sha256": "1d4ff94c30e5ac85ebfd82fb08390c5d8e01635e1cb544365eeb5fbfc7c7f6c2",
+      "rust_source_files": 1,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "scripts/ci/docs-review/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": false
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    },
+    {
+      "package": "humanymous-local-parity",
+      "manifest": "scripts/ci/local-parity/Cargo.toml",
+      "manifest_sha256": "d663079312863591e965544107a121cbeb83443e961e3d48caf80c2c6ae1f0e3",
+      "rust_source_files": 1,
+      "features": {},
+      "explicit_bins": [],
+      "explicit_tests": [],
+      "explicit_examples": [],
+      "auto_discovery": {
+        "autobins": true,
+        "autotests": true,
+        "autoexamples": true,
+        "autobenches": true
+      },
+      "source_root_candidates": [
+        {
+          "path": "scripts/ci/local-parity/src/main.rs",
+          "kind": "binary",
+          "explicit_forbid_unsafe": true
+        }
+      ],
+      "source_root_census_is_cargo_execution_inventory": false
+    }
+  ],
+  "known_operational_resources": [
+    {
+      "original": "skills/agent-maintenance/qualification-contract.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "2b58af2507210705f3c0d60b5f4b263fbb30ad6d",
+      "sha256": "714b313c621c5fdf94f41b13feb27d3c8418949801094d0b5dadd796ac36e93d",
+      "bytes": 3787,
+      "cli_relative_destination": "qualification/maintenance/qualification-contract.json",
+      "repository_destination": "crates/cli/qualification/maintenance/qualification-contract.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/components/maintenance.rs",
+          "line": 8,
+          "kind": "str",
+          "form": "literal",
+          "target": "skills/agent-maintenance/qualification-contract.json",
+          "target_exists": true,
+          "target_sha256": "714b313c621c5fdf94f41b13feb27d3c8418949801094d0b5dadd796ac36e93d",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/maintenance/qualification-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/maintenance/qualification-contract.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": ".agents/INTEGRATION.md",
+          "line": 56,
+          "original": "skills/agent-maintenance/qualification-contract.json",
+          "new_repository_resource": "crates/cli/qualification/maintenance/qualification-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": ".agents/evals/eight-package-maintenance-handoff.md",
+          "line": 122,
+          "original": "skills/agent-maintenance/qualification-contract.json",
+          "new_repository_resource": "crates/cli/qualification/maintenance/qualification-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": ".agents/evals/eight-package-maintenance-handoff.md",
+          "line": 156,
+          "original": "skills/agent-maintenance/qualification-contract.json",
+          "new_repository_resource": "crates/cli/qualification/maintenance/qualification-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/components/maintenance.rs",
+          "line": 9,
+          "original": "skills/agent-maintenance/qualification-contract.json",
+          "new_repository_resource": "crates/cli/qualification/maintenance/qualification-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/components/maintenance.rs",
+          "line": 77,
+          "original": "skills/agent-maintenance/qualification-contract.json",
+          "new_repository_resource": "crates/cli/qualification/maintenance/qualification-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "adapters/node/host-pilot-contract.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "d8bd11cf7601a65654b293eef478ad5e45a9bfad",
+      "sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
+      "bytes": 1970,
+      "cli_relative_destination": "qualification/adapters/node/host-pilot-contract.json",
+      "repository_destination": "crates/cli/qualification/adapters/node/host-pilot-contract.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/components/node_host.rs",
+          "line": 7,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/node/host-pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/node/host-pilot-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/node/host-pilot-contract.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "docs/reviews.json",
+          "line": 3286,
+          "original": "adapters/node/host-pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/node/host-pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/components/node_host.rs",
+          "line": 8,
+          "original": "adapters/node/host-pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/node/host-pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "adapters/go/pilot-contract.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "9a0ba8fbe5d526843cd023417c75428d078180bc",
+      "sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+      "bytes": 7379,
+      "cli_relative_destination": "qualification/adapters/go/pilot-contract.json",
+      "repository_destination": "crates/cli/qualification/adapters/go/pilot-contract.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/go_product.rs",
+          "line": 16,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/go/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/go/pilot-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/go/pilot-contract.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 102,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/go/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/go/pilot-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/go/pilot-contract.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 247,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/go/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/go/pilot-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/go/pilot-contract.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 288,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/go/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/go/pilot-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/go/pilot-contract.json\"))"
+        },
+        {
+          "package": "humanymous-runtime-pilot",
+          "reader": "test/lab/runtime/src/go/backend.rs",
+          "line": 15,
+          "kind": "bytes",
+          "form": "literal",
+          "target": "adapters/go/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/go/pilot-contract.json",
+          "new_compile_expression": "include_bytes!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/go/pilot-contract.json\"))"
+        },
+        {
+          "package": "humanymous-runtime-pilot",
+          "reader": "test/lab/runtime/src/go/mod.rs",
+          "line": 29,
+          "kind": "bytes",
+          "form": "literal",
+          "target": "adapters/go/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "4348139d103ae859680ab59ac222420785646d882921296b7327dc5ff9c2537f",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/go/pilot-contract.json",
+          "new_compile_expression": "include_bytes!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/go/pilot-contract.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "build/rust/browser-product.Dockerfile.dockerignore",
+          "line": 31,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "crates/go-adapter/INTEGRATION.md",
+          "line": 215,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "deployments/lab/INTEGRATION.md",
+          "line": 94,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "deployments/lab/images/product.Dockerfile.dockerignore",
+          "line": 33,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "docs/reviews.json",
+          "line": 3869,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "test/lab/runner/go-public-receipts.json",
+          "line": 20,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "test/lab/runner/src/orchestration/go.rs",
+          "line": 551,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "test/lab/runner/src/orchestration/go_fixture.rs",
+          "line": 36,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 103,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 248,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 289,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "test/lab/runner/src/snapshot.rs",
+          "line": 156,
+          "original": "adapters/go/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/go/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "adapters/nginx/pilot-contract.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "9fece6de6bdeca2fb9832606fa6f19afce7d3752",
+      "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+      "bytes": 4030,
+      "cli_relative_destination": "qualification/adapters/nginx/pilot-contract.json",
+      "repository_destination": "crates/cli/qualification/adapters/nginx/pilot-contract.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/nginx.rs",
+          "line": 8,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/nginx/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/nginx/pilot-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/nginx/pilot-contract.json\"))"
+        },
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/nginx.rs",
+          "line": 93,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/nginx/pilot-contract.json",
+          "target_exists": true,
+          "target_sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/nginx/pilot-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/nginx/pilot-contract.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "adapters/nginx/Dockerfile.native.dockerignore",
+          "line": 13,
+          "original": "adapters/nginx/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/nginx/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "docs/reviews.json",
+          "line": 3817,
+          "original": "adapters/nginx/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/nginx/pilot-contract.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/nginx.rs",
+          "line": 9,
+          "original": "adapters/nginx/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/nginx/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/nginx.rs",
+          "line": 94,
+          "original": "adapters/nginx/pilot-contract.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/nginx/pilot-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "adapters/native/header-proof-profile.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "14804aae3e7e0db4b5f0fb465caa5506423cd912",
+      "sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+      "bytes": 3954,
+      "cli_relative_destination": "qualification/adapters/native/header-proof-profile.json",
+      "repository_destination": "crates/cli/qualification/adapters/native/header-proof-profile.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/header_proof.rs",
+          "line": 249,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/native/header-proof-profile.json",
+          "target_exists": true,
+          "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/native/header-proof-profile.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/native/header-proof-profile.json\"))"
+        },
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+          "line": 104,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/native/header-proof-profile.json",
+          "target_exists": true,
+          "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/native/header-proof-profile.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/native/header-proof-profile.json\"))"
+        },
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/header_proof/admission.rs",
+          "line": 10,
+          "kind": "bytes",
+          "form": "literal",
+          "target": "adapters/native/header-proof-profile.json",
+          "target_exists": true,
+          "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/native/header-proof-profile.json",
+          "new_compile_expression": "include_bytes!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/native/header-proof-profile.json\"))"
+        },
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/policy.rs",
+          "line": 276,
+          "kind": "str",
+          "form": "literal",
+          "target": "adapters/native/header-proof-profile.json",
+          "target_exists": true,
+          "target_sha256": "003ccb02d54e35262afe1fcf023757ce6b057b0f08f7b388f282374c41e0b491",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/adapters/native/header-proof-profile.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/adapters/native/header-proof-profile.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "scripts/ci/delivery/src/header_proof.rs",
+          "line": 250,
+          "original": "adapters/native/header-proof-profile.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/native/header-proof-profile.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+          "line": 105,
+          "original": "adapters/native/header-proof-profile.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/native/header-proof-profile.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/policy.rs",
+          "line": 277,
+          "original": "adapters/native/header-proof-profile.json",
+          "new_repository_resource": "crates/cli/qualification/adapters/native/header-proof-profile.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "test/lab/runner/go-public-receipts.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "ac64baaedf0c616e5b98458977f6df57c34a0de5",
+      "sha256": "1662a9bf2aac5eb32b5b6ade8ff740e1aa8708a5c4dca40f59f57218613fd005",
+      "bytes": 2142,
+      "cli_relative_destination": "qualification/lab/go-public-receipts.json",
+      "repository_destination": "crates/cli/qualification/lab/go-public-receipts.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/go_product.rs",
+          "line": 10,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/go-public-receipts.json",
+          "target_exists": true,
+          "target_sha256": "1662a9bf2aac5eb32b5b6ade8ff740e1aa8708a5c4dca40f59f57218613fd005",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/go-public-receipts.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/go-public-receipts.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 101,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/go-public-receipts.json",
+          "target_exists": true,
+          "target_sha256": "1662a9bf2aac5eb32b5b6ade8ff740e1aa8708a5c4dca40f59f57218613fd005",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/go-public-receipts.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/go-public-receipts.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "deployments/lab/INTEGRATION.md",
+          "line": 64,
+          "original": "test/lab/runner/go-public-receipts.json",
+          "new_repository_resource": "crates/cli/qualification/lab/go-public-receipts.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/go_product.rs",
+          "line": 11,
+          "original": "test/lab/runner/go-public-receipts.json",
+          "new_repository_resource": "crates/cli/qualification/lab/go-public-receipts.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "test/lab/runner/public-receipts.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "c002246a4115cce2983629cedc6cc6f06944f07a",
+      "sha256": "019126f58013dbd5d71b344e8331a31a3bc1036973b2072933ec73216de13d63",
+      "bytes": 967,
+      "cli_relative_destination": "qualification/lab/public-receipts.json",
+      "repository_destination": "crates/cli/qualification/lab/public-receipts.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/lab_receipts.rs",
+          "line": 46,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/public-receipts.json",
+          "target_exists": true,
+          "target_sha256": "019126f58013dbd5d71b344e8331a31a3bc1036973b2072933ec73216de13d63",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/public-receipts.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/public-receipts.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/public_receipts.rs",
+          "line": 11,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/public-receipts.json",
+          "target_exists": true,
+          "target_sha256": "019126f58013dbd5d71b344e8331a31a3bc1036973b2072933ec73216de13d63",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/public-receipts.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/public-receipts.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "scripts/ci/INTEGRATION.md",
+          "line": 128,
+          "original": "test/lab/runner/public-receipts.json",
+          "new_repository_resource": "crates/cli/qualification/lab/public-receipts.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/lab_receipts.rs",
+          "line": 47,
+          "original": "test/lab/runner/public-receipts.json",
+          "new_repository_resource": "crates/cli/qualification/lab/public-receipts.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "test/lab/runner/safe-diagnostics.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "c86b3f01ebad245d2eef46deab7fed307f0f8c3f",
+      "sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+      "bytes": 4216,
+      "cli_relative_destination": "qualification/lab/safe-diagnostics.json",
+      "repository_destination": "crates/cli/qualification/lab/safe-diagnostics.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/go_product.rs",
+          "line": 76,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        },
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/lab_diagnostics.rs",
+          "line": 12,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration.rs",
+          "line": 14,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+          "line": 219,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/browser_failure/panic_site/bootstrap.rs",
+          "line": 59,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/go_public.rs",
+          "line": 105,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+          "line": 269,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/startup_failure.rs",
+          "line": 80,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/safe-diagnostics.json",
+          "target_exists": true,
+          "target_sha256": "250b8232268ed11368e58129c381b28b2e18681e4154ac2144dcd936d8415ee8",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/safe-diagnostics.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/safe-diagnostics.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "deployments/lab/INTEGRATION.md",
+          "line": 184,
+          "original": "test/lab/runner/safe-diagnostics.json",
+          "new_repository_resource": "crates/cli/qualification/lab/safe-diagnostics.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "test/lab/runner/go-public-receipts.json",
+          "line": 22,
+          "original": "test/lab/runner/safe-diagnostics.json",
+          "new_repository_resource": "crates/cli/qualification/lab/safe-diagnostics.json",
+          "classification": "literal operational/documentation path reference; semantic owner review required"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/go_product.rs",
+          "line": 77,
+          "original": "test/lab/runner/safe-diagnostics.json",
+          "new_repository_resource": "crates/cli/qualification/lab/safe-diagnostics.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "scripts/ci/delivery/src/lab_diagnostics.rs",
+          "line": 13,
+          "original": "test/lab/runner/safe-diagnostics.json",
+          "new_repository_resource": "crates/cli/qualification/lab/safe-diagnostics.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "test/lab/runner/browser-outcome-contract.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "dce4ad08973fd1a7ccb23b46f5948e0ddca96e0b",
+      "sha256": "42d5826ccdea564174ff4da03a55d3aa6c205dae4d24f659dad44bc0ffed6b5a",
+      "bytes": 1615,
+      "cli_relative_destination": "qualification/lab/browser-outcome-contract.json",
+      "repository_destination": "crates/cli/qualification/lab/browser-outcome-contract.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/lab_diagnostics.rs",
+          "line": 110,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/browser-outcome-contract.json",
+          "target_exists": true,
+          "target_sha256": "42d5826ccdea564174ff4da03a55d3aa6c205dae4d24f659dad44bc0ffed6b5a",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/browser-outcome-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/browser-outcome-contract.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/browser_actor.rs",
+          "line": 19,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/browser-outcome-contract.json",
+          "target_exists": true,
+          "target_sha256": "42d5826ccdea564174ff4da03a55d3aa6c205dae4d24f659dad44bc0ffed6b5a",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/browser-outcome-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/browser-outcome-contract.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "scripts/ci/delivery/src/lab_diagnostics.rs",
+          "line": 111,
+          "original": "test/lab/runner/browser-outcome-contract.json",
+          "new_repository_resource": "crates/cli/qualification/lab/browser-outcome-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "test/lab/runner/src/snapshot.rs",
+          "line": 227,
+          "original": "test/lab/runner/browser-outcome-contract.json",
+          "new_repository_resource": "crates/cli/qualification/lab/browser-outcome-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    },
+    {
+      "original": "test/lab/runner/mount-probe-contract.json",
+      "source_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "a834840ba3de4c7b10c80b0d83453f1e60604b84",
+      "sha256": "f091c390f6305efc7b681ea96c9d2b76b6a9f692bd1b91ae500957bb939683ba",
+      "bytes": 1852,
+      "cli_relative_destination": "qualification/lab/mount-probe-contract.json",
+      "repository_destination": "crates/cli/qualification/lab/mount-probe-contract.json",
+      "all_observed_include_sites": [
+        {
+          "package": "humanymous-delivery",
+          "reader": "scripts/ci/delivery/src/mount_probe.rs",
+          "line": 11,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/mount-probe-contract.json",
+          "target_exists": true,
+          "target_sha256": "f091c390f6305efc7b681ea96c9d2b76b6a9f692bd1b91ae500957bb939683ba",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/mount-probe-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/mount-probe-contract.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/fixture/mount.rs",
+          "line": 11,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/mount-probe-contract.json",
+          "target_exists": true,
+          "target_sha256": "f091c390f6305efc7b681ea96c9d2b76b6a9f692bd1b91ae500957bb939683ba",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/mount-probe-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/mount-probe-contract.json\"))"
+        },
+        {
+          "package": "humanymous-lab-runner",
+          "reader": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+          "line": 10,
+          "kind": "str",
+          "form": "literal",
+          "target": "test/lab/runner/mount-probe-contract.json",
+          "target_exists": true,
+          "target_sha256": "f091c390f6305efc7b681ea96c9d2b76b6a9f692bd1b91ae500957bb939683ba",
+          "disposition": "move original to approved CLI operational path",
+          "cli_resource_path": "qualification/lab/mount-probe-contract.json",
+          "new_compile_expression": "include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/qualification/lab/mount-probe-contract.json\"))"
+        }
+      ],
+      "literal_current_references": [
+        {
+          "reader": "scripts/ci/delivery/src/mount_probe.rs",
+          "line": 12,
+          "original": "test/lab/runner/mount-probe-contract.json",
+          "new_repository_resource": "crates/cli/qualification/lab/mount-probe-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        },
+        {
+          "reader": "test/lab/runner/src/snapshot.rs",
+          "line": 230,
+          "original": "test/lab/runner/mount-probe-contract.json",
+          "new_repository_resource": "crates/cli/qualification/lab/mount-probe-contract.json",
+          "classification": "Rust literal reader/source-pin path; review include continuation versus runtime reader"
+        }
+      ],
+      "content_change_authorized": false,
+      "same_digest_after_move_required": true
+    }
+  ],
+  "remaining_include_sites": [
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/catalog.rs",
+      "line": 22,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "target_exists": true,
+      "target_sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "cbf3e6c6b40d9ecb241238953947c9f669e7f86a",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/catalog.rs",
+      "line": 49,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+      "target_exists": true,
+      "target_sha256": "5fd5941b45ee6a43a113a91c132f5928a93bdaedc5f1fb447e13e3eca11a0725",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "f20c1f1d1866d75d1f7257871e447ffd8d9ba45d",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/catalog.rs",
+      "line": 57,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+      "target_exists": true,
+      "target_sha256": "87538d48a61fb2f4f99321e9c168b01264501b61bfec077073ec70da0c224ee2",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "94cc781a766606605e4853f75961ccc705c57cf2",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/catalog.rs",
+      "line": 65,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+      "target_exists": true,
+      "target_sha256": "3a8474c8e3de9dd33d56a470ec79a20743b184699401c6311720f2af38be2236",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "a26284cb2a7c4b4e76b19e51368f501b7751d078",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/catalog.rs",
+      "line": 73,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "target_exists": true,
+      "target_sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "2c72dbd4c2555f2b403ad97d93cee6f13acb7de5",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/catalog.rs",
+      "line": 81,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+      "target_exists": true,
+      "target_sha256": "04eb9bd2a02d70ea1dd7796c8128ef03b2cc10f41bcafb97d91c61873ef264b2",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "a12da1052ecc9a5bf82968ccf28700ce872e05b0",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/network/cases.rs",
+      "line": 233,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+      "target_exists": true,
+      "target_sha256": "368253a8ef8f58bb580d7318e41dd00e2152194ddb276086963bf225bc2a9418",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "2c72dbd4c2555f2b403ad97d93cee6f13acb7de5",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-attacker",
+      "reader": "crates/attacker/src/network/cases.rs",
+      "line": 235,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+      "target_exists": true,
+      "target_sha256": "dbd103e638f27095c68f9a7b5be447b2df74600a6ce9deb5ed5377b83ac2e963",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "cbf3e6c6b40d9ecb241238953947c9f669e7f86a",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-pages",
+      "reader": "docs/tooling/src/vectors/mod.rs",
+      "line": 134,
+      "kind": "str",
+      "form": "literal",
+      "target": "docs/standards/draft-v0/validation/fixtures/adapter-normalized-profiles-v1.json",
+      "target_exists": true,
+      "target_sha256": "63991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3",
+      "disposition": "Root decision required for remaining input",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "03637069ffa6b2b436922f4f197f00dcfa501cb6"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/language.rs",
+      "line": 173,
+      "kind": "str",
+      "form": "literal",
+      "target": ".agents/evals/language-preservation.json",
+      "target_exists": true,
+      "target_sha256": "4b4314e94f1862b10bdb7e59e47966e5eb5032a821dc402a11e5f58517fab406",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "16d7bef3da7dc32ed3471f95a0f75c6d8f938537"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/language.rs",
+      "line": 179,
+      "kind": "str",
+      "form": "literal",
+      "target": ".agents/sessions/THREADS.md",
+      "target_exists": true,
+      "target_sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "62f8b94c2461abc4f6de768daff62b6a63fa0c9b"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/language.rs",
+      "line": 193,
+      "kind": "str",
+      "form": "literal",
+      "target": ".agents/sessions/THREADS.md",
+      "target_exists": true,
+      "target_sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "62f8b94c2461abc4f6de768daff62b6a63fa0c9b"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/product.rs",
+      "line": 174,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": "skills/SKILL.md",
+      "target_exists": true,
+      "target_sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "51ab71a8af9bf580a59e5ad551d142d5b70cdffa"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/product.rs",
+      "line": 178,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": "skills/references/installation.md",
+      "target_exists": true,
+      "target_sha256": "d61688100b9c0db630306ab0f9a27fd490b8ac1780131f88352fb13379e68c6d",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "a38c842de21447e1692b56361881864049fccf3c"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/product.rs",
+      "line": 186,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": "skills/references/operations.md",
+      "target_exists": true,
+      "target_sha256": "015642b84019e645684372330547d24b487eef9882b372cf8eee5054b5ef100c",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "51a3e5bf4312274d8e8c1887848bf03195086f8b"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/product.rs",
+      "line": 194,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": "skills/references/adapters.md",
+      "target_exists": true,
+      "target_sha256": "6e2cc2ad417c8d441df6a8ccac9f891c464b89554b7dfc2e21629d3572ee366d",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "51a96e67235a5a0940c9dff50e1d0001e43b7638"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/product.rs",
+      "line": 202,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": "skills/references/qualification.md",
+      "target_exists": true,
+      "target_sha256": "85ba9bf8901016fc4bb970de693e15d71825ceb1a961e44ee5964b0e5f5e7eff",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "40e8ec43a96fbbc88285896183dd4a3a27bd5418"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 142,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": ".agents/sessions/lanes.json",
+      "target_exists": true,
+      "target_sha256": "78c8790146ffc26fd69bf35684b826a78cc88a064f3e070f2b15a72a852261d7",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "2cd97637153aaf170abf8869eaea17bfeb22dcc6"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 149,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": ".agents/sessions/LANES.md",
+      "target_exists": true,
+      "target_sha256": "b9f7d292a34c3cb0c1aedc9567fd64197cd9b13544b4dd5ed442aaf9b00c9b50",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "9f52a89ab182e804d2e230096052d62056ea94c1"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 153,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": "scripts/agents/session-board.ps1",
+      "target_exists": true,
+      "target_sha256": "093e01174eb444249f9c1ea05f992e66fade9cc8693fd75225a278071c501304",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "65e3a4420777abdafdce6a01d50d50f929cdcf29"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "line": 157,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": "scripts/agents/session-board.sh",
+      "target_exists": true,
+      "target_sha256": "6abeff6d9fe14364aec3025e24d89de948848d5066a7ca2fc199830e88b7e058",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "2a7cd2864cc17572165e02936588ade43739cf35"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/src/sessions/registry.rs",
+      "line": 73,
+      "kind": "str",
+      "form": "manifest-dir-concat",
+      "target": ".agents/sessions/THREADS.md",
+      "target_exists": true,
+      "target_sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "62f8b94c2461abc4f6de768daff62b6a63fa0c9b"
+    },
+    {
+      "package": "humanymous-agent-maintenance",
+      "reader": "skills/agent-maintenance/tests/git_coord.rs",
+      "line": 89,
+      "kind": "str",
+      "form": "literal",
+      "target": "scripts/agents/git-coord.ps1",
+      "target_exists": true,
+      "target_sha256": "4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "d918a0ab6ab35013363d627664ed94d5b71e90fe"
+    },
+    {
+      "package": "humanymous-lab-runner",
+      "reader": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "line": 175,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/collector/pilot/fixture.json",
+      "target_exists": true,
+      "target_sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "d16085a7e8888aa16395a2306bf2fe3a565b08f8",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-lab-runner",
+      "reader": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "line": 4,
+      "kind": "bytes",
+      "form": "literal",
+      "target": "crates/collector/src/browser/transport/runtime_pilot.rs",
+      "target_exists": true,
+      "target_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+      "disposition": "implementation copy forbidden; replace source embedding only with reviewed owned digest and actual same-source binding",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "0cb5adc5bed3a20c9099b43bd7e181339855e07b"
+    },
+    {
+      "package": "humanymous-lab-runner",
+      "reader": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "line": 232,
+      "kind": "str",
+      "form": "literal",
+      "target": "deployments/lab/images/product.Dockerfile",
+      "target_exists": true,
+      "target_sha256": "b37a448b1b05e020a17e5c41699a2ae981cbcb18be81b194e093d2cb2ab84d9b",
+      "disposition": "keep canonical mutable registry/rule/recipe at original owner; small synthetic schema fixtures plus bounded explicit repository readers",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "70fe2efbce4450325af628a22b350067a3731d55"
+    },
+    {
+      "package": "humanymous-runtime-pilot",
+      "reader": "test/lab/runtime/src/browser_proxy.rs",
+      "line": 19,
+      "kind": "str",
+      "form": "literal",
+      "target": "crates/collector/pilot/fixture.json",
+      "target_exists": true,
+      "target_sha256": "4fc199ce5d589303991273b10f775caaebaa954dc18efdb4f8c92486b0fea578",
+      "disposition": "data-only owned replica requires producer commit/path/blob/hash/license plus coordinated equality; exact destination pending Root",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "d16085a7e8888aa16395a2306bf2fe3a565b08f8",
+      "license": "Apache-2.0; preserve producer provenance and original frozen-data lineage",
+      "license_record": "LICENSE"
+    },
+    {
+      "package": "humanymous-runtime-pilot",
+      "reader": "test/lab/runtime/src/browser_proxy.rs",
+      "line": 242,
+      "kind": "str",
+      "form": "literal",
+      "target": "test/lab/browser-wire-contract.json",
+      "target_exists": true,
+      "target_sha256": "42eb19cdbd7ba1cd2b419467ceb6c0d2c2c25da6a9a0140093797a496a56a151",
+      "disposition": "Root decision required for remaining input",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "3bc4646d064108f9eed6a0ad9e0c9e6721586b51"
+    },
+    {
+      "package": "humanymous-runtime-pilot",
+      "reader": "test/lab/runtime/src/go/mod.rs",
+      "line": 22,
+      "kind": "bytes",
+      "form": "literal",
+      "target": "test/lab/go-configuration.json",
+      "target_exists": true,
+      "target_sha256": "bc85c6380b1369fd43ea5ce75f1ea591e53d6315b32f1e5946711cbb5a026ff8",
+      "disposition": "Root decision required for remaining input",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "178b9b1eb0568bbda73a6c4298890085d2265254"
+    },
+    {
+      "package": "humanymous-cef-pilot",
+      "reader": "scripts/ci/cef-pilot/src/desktop.rs",
+      "line": 6,
+      "kind": "bytes",
+      "form": "literal",
+      "target": "crates/browser/native/desktop/pilot-contract.json",
+      "target_exists": true,
+      "target_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "disposition": "Root decision required for remaining input",
+      "producer_commit": "fec6d339e566c24a12d4183775a83613d8057c5e",
+      "git_blob": "4a134d4f7b613c4bd182c95a3062b2677028d1fc"
+    }
+  ],
+  "private_source_census_sha256": "96a3021561d77ea167783d41b3b444568ce37638eb12221f58c1006e91494146",
+  "private_source_census": ".spec.local/root/evidence/20261107225300-delivery-tools-ownership-handoff/source-census.json",
+  "compiler_executed": false,
+  "source_or_resource_moved": false,
+  "test_inventory_executed": false,
+  "clean_package_closure_verified": false,
+  "qualification_granted": false,
+  "unresolved": [
+    "Root assigns exact private binary context layouts and non-default required feature vectors for all production and qualification roles",
+    "Maintenance qualification0.1 embeds old package/features and exact8integrationtargets; after consolidation require explicit reviewed target/feature identity delta, not an alias or count weakening",
+    "Additional fixture and operational resources beyond the10known need Root ownership/destination decisions",
+    "Exact source-pin/path readers and callers above must move atomically; Headerprofile bytes/digest/proof preserved and new candidate path approval remains required",
+    "Every root/test/example/bench/build script must satisfy final safe lint policy; exact unsafe operation and expanded-module review remain Native owner responsibility",
+    "Current source-root candidates and lexical includes are not actual Cargo target/compiled/generated/transitive closure",
+    "Explicit production release inventory and transitive feature graph must exclude qualification binaries; publish=false does not become registry readiness",
+    "LocalParity8132117 original controller/workload evidence remains immutable and cannot qualify current graph"
+  ],
+  "source_tail_recheck": {
+    "rust_files_checked": 246,
+    "changed": [],
+    "meaning": "static source recheck only, not executed compiler closure"
+  },
+  "observed_common_inputs": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "f711884eee0c5b2561380c18da583cd1124745d42ea64a6033f9ad6e07fdf696"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "5d3e1453ab8c3cdba1d22443effc045740e629153784d0c3b4ac62b7231cbf00"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    },
+    {
+      "path": ".spec/sot/structural-development.sot.md",
+      "sha256": "5e0fff211f091b8d85bfd5a0a410529ab232ec6623ef6e287be1ce47e06901bb"
+    }
+  ]
+}

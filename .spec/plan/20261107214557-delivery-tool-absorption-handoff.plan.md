@@ -206,6 +206,45 @@ ambient filesystem reader would need explicit contract review, not a mechanical
 path edit. Do not copy the full Audit corpus, add a public fixture API or hide the
 boundary behind a permanent helper package. Historical profiles remain immutable.
 
+## Root operational ownership decision and all13 map
+
+Root02d8aedf accepted the ten-original operational resource table in structural
+SoT. Move those originals into CLI qualification resources at the atomic stage;
+preserve their frozen original byte/Git/hash bindings. In particular, Header R3
+stays same-byte compile embedded from the owning CLI package. Each mapped reader
+can use the exact package-relative compile expression recorded in
+tools-operational-ownership-handoff.json independently of its final private module
+layout. This is an accepted ownership direction, not an executed relocation.
+
+The expanded source map observes all13 responsibilities,246 Rust source files,
+34 root candidates and61 compile includes:51 literal and10 manifest-concat,
+covering35 distinct inputs. It records manifests/features/current target roots,
+the ten originals' Git objects and hashes, observed callers/source-pin references
+and remaining include classifications. These are static source observations,
+not Cargo execution inventories or complete generated/transitive closure.
+
+Remaining ownership decisions include CEF desktop's pilot contract, Lab browser
+wire and Go configuration data, and the public Docs normalized-profile corpus.
+Core's six frozen cases and Collector's pilot fixture need the accepted data-only
+replica provenance/equality process and explicit destinations. Collector's Rust
+implementation currently embedded by Lab panic-site classification must not be
+copied: the replacement needs a reviewed owned digest and actual same-source
+binding. Mutable .agents records/rules, agent scripts, skills documentation and
+the product Docker recipe stay at their original owners; parser units use small
+synthetic fixtures and live checks use bounded explicit repository readers.
+
+Maintenance qualification0.1 hard-codes its former package, empty feature vector
+and eight integration targets/33 cases. CLI target/feature consolidation therefore
+requires an explicit reviewed owner-contract delta; do not retain a misleading
+package alias or simply lower the inventory. More generally, current integration
+tests import former tool libraries. Private binary contexts cannot be exposed
+through the production CLI library just to preserve those imports. Root must fix
+the new test ownership/target matrix before source movement: including private
+implementation modules directly in integration roots can duplicate their cfg(test)
+unit inventories, while regrouping tests changes harness identity. Require exact
+discovery and all semantic/process obligations under the reviewed new profile,
+without silently filtering unknown cases or transferring old test counts.
+
 # Critique and readiness
 
 The design is accepted; implementation remains needs-work until the atomic freeze,
