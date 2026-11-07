@@ -237,3 +237,13 @@ failure during rustfmt was transient and an immediate retry succeeded.
 Hosted run42348518353 was inspected live but targets63f69ae, so cannot qualify
 d3d5a83 or this follow-up. Root's Cargo allocation and new hosted source remain
 external dependencies. No duplicate workflow or local actual runtime launched.
+
+## Strict consumer field inventory
+
+At product-lab request, pilot-contract.json now declares allowed_report_fields
+and required_case_fields(id/name/result). Consumers reject unknown top-level
+fields and decoded duplicate keys; they must not call producer completed_groups
+or rewrite status/result. Extra per-case diagnostic details remain private and
+are not blindly copied to public summaries. Source/image binding retains the
+owner assertion semantics. No report schema version or35-group change. This is
+a contract-only addition; current runtime qualification remains NOT_RUN.

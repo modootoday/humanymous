@@ -3,6 +3,15 @@
   "report_schema": "humanymous.nginx.pilot/0.2",
   "qualification": "component nginx+actual authority library; trusted synthetic ALLOW fixture",
   "full_product_qualified": false,
+  "allowed_report_fields": [
+    "schema", "status", "qualification", "source_revision", "source_manifest",
+    "nginx", "module_sha256", "engine_sha256", "cargo_lock_sha256",
+    "package_manifest_sha256", "signed_release", "uid", "production_profile_status",
+    "cases", "group_count", "passed", "failed", "ignored", "not_run",
+    "full_product_qualified", "unsupported", "remaining"
+  ],
+  "required_case_fields": ["id", "name", "result"],
+  "case_detail_policy": "Additional case fields are owner-produced private diagnostic detail. Consumers validate common metadata without rewriting it; semantic assertions are bound by source and immutable image identity. Never copy arbitrary case details to public summaries.",
   "denominator": "scenario groups in one Rust pilot process, not Rust test-harness tests; HEAD-and-204 includes two HTTP behaviors; concurrent-service group accounts 32 requests",
   "required_groups": [
     "nginx-startup-private-credential-ACL",
@@ -31,6 +40,7 @@
     "Never execute arbitrary contract strings: use fixed Rust Docker subcommands with a validated owned project and source-bound local image tag.",
     "Build source_revision must equal the exact checkout commit; source_manifest and cargo_lock_sha256 must equal the owner's frozen input hashes.",
     "Success requires process exit0, exactly one report JSON object, unique complete required group IDs, result=passed on each, zero failed/ignored/not_run, and full_product_qualified=false.",
+    "Reject duplicate JSON fields after escape decoding and top-level fields outside allowed_report_fields. Each case requires id/name/result, name=id, and result=passed. Consumers must never call producer completed_groups or synthesize passing results.",
     "Record the built/run image ID and verify it remains unchanged; a mutable tag or a previous green report alone is insufficient.",
     "Cleanup runs even after build/run/report failure, removes only the unique owned project, and its failure cannot become passed.",
     "Public output is sanitized summary/static diagnostics/hash only; no credential readiness, cookies, request bodies or private IPC traces.",
