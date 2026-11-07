@@ -121,6 +121,18 @@ fn ordered_receipts(report: &Value) -> Result<(), &'static str> {
         let Some(commit) = commit else {
             return Err("native content lacks commit receipt");
         };
+        let expected_request = if previous == 0 {
+            "creation_requested"
+        } else {
+            "request_accepted"
+        };
+        if !events[..commit].iter().any(|candidate| {
+            candidate.get("generation").and_then(Value::as_u64) == Some(generation)
+                && candidate.get("route").and_then(Value::as_str) == Some(route.url())
+                && candidate.get("phase").and_then(Value::as_str) == Some(expected_request)
+        }) {
+            return Err("native commit lacks matching request receipt");
+        }
         if !events[commit + 1..index].iter().any(|candidate| {
             candidate.get("generation").and_then(Value::as_u64) == Some(generation)
                 && candidate.get("route").and_then(Value::as_str) == Some(route.url())
@@ -159,6 +171,7 @@ pub(super) fn verify(
                 return Err("positive native process did not exit successfully");
             }
             flag(report, "internal_probe_finished", true)?;
+            flag(report, "cancellation_requested", false)?;
             flag(report, "internal_probe_passed", true)?;
             flag(report, "cef_child_created", true)?;
             flag(report, "actual_parent_matched", true)?;
@@ -200,6 +213,12 @@ mod tests {
     fn fixture() -> Value {
         let mut events = Vec::new();
         for (index, route) in ProbeLedger::ROUTES.into_iter().enumerate() {
+            let request = if index == 0 {
+                "creation_requested"
+            } else {
+                "request_accepted"
+            };
+            events.push(json!({"generation":index+1,"route":route.url(),"phase":request}));
             for phase in ["committed", "load_end", "content_observed"] {
                 events.push(json!({"generation":index+1,"route":route.url(),"phase":phase,"code":200,"identity":true,"bytes":100}));
             }
@@ -250,7 +269,16 @@ mod tests {
         report["navigation_receipts"][0]["phase"] = json!("load_error");
         assert!(verify(&report, 100, Some(0), Case::Positive).is_err());
         let mut report = fixture();
-        report["navigation_receipts"][2]["identity"] = json!(false);
+        report["navigation_receipts"][3]["identity"] = json!(false);
+        assert!(verify(&report, 100, Some(0), Case::Positive).is_err());
+        let mut report = fixture();
+        report["navigation_receipts"]
+            .as_array_mut()
+            .unwrap()
+            .remove(0);
+        assert!(verify(&report, 100, Some(0), Case::Positive).is_err());
+        let mut report = fixture();
+        report["cancellation_requested"] = json!(true);
         assert!(verify(&report, 100, Some(0), Case::Positive).is_err());
     }
     #[test]

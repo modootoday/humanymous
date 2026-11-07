@@ -601,7 +601,11 @@ bound; this new native delta needs its own hosted compile and actual probe.
 UI-29 (accepted verification-source slice): the hosted consumer must independently
 validate the launched OS PID, exit classification, report revision, current
 request flags and actual ordered commit/load/content receipts, not only the
-producer's passed boolean. Positive evidence requires at least one renderer
+producer's passed boolean.
+For each successful route, its generation and route must have a matching request
+receipt before commit: creation_requested for the initial page, request_accepted
+for later pages. A positive report must explicitly deny cancellation.
+Positive evidence requires at least one renderer
 canary joined by PID to an owned restricted/Untrusted renderer OS observation;
 missing joins are unknown/failure. Canceled-probe negative requires exit78,
 cancellation requested, incomplete probe and actual child/parent cleanup. Public
