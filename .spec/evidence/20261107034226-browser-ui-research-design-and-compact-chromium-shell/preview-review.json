@@ -1,0 +1,16 @@
+{
+  "artifact": "native-preview.png",
+  "sha256": "16af87c7c10d8947ff02b77d09a79ca2fc99b29e44dddc02d2884c36ee2de15d",
+  "bytes": 47789,
+  "retention": "private, original bytes preserved",
+  "private_locator": ".spec.local/root/evidence/20261107034226-browser-ui-preview/native-preview.png",
+  "review_method": "manual visual inspection of the exact hash-matched original",
+  "observed_content": "generated synthetic CEF input fixture and owned browser controls; no personal page or unrelated desktop content observed",
+  "automatic_image_secret_scan": "not performed; Specfold U2 skips binary attachments",
+  "configured_external_attachment_store": false,
+  "resolution": "remove binary from public attachment bundle while retaining original privately and registering textual review metadata",
+  "scan_policy_changed": false,
+  "historical_results_changed": false,
+  "native_runtime_replayed": false,
+  "limitation": "Visual review is not exhaustive pixel or metadata secret detection and does not qualify browser runtime behavior"
+}
