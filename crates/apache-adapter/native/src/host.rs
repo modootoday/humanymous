@@ -27,12 +27,12 @@ struct Process {
 }
 static PROCESS: OnceLock<Process> = OnceLock::new();
 fn running(process: &Process) -> Result<(), ()> {
-    let mut state = 0;
-    let mut generation = 0;
+    let mut state: c_int = 0;
+    let mut generation: c_int = 0;
     // SAFETY: public MPM queries write only these initialized output integers.
-    if unsafe { ap_mpm_query(AP_MPMQ_MPM_STATE as _, &mut state) } != 0
-        || unsafe { ap_mpm_query(AP_MPMQ_GENERATION as _, &mut generation) } != 0
-        || state != AP_MPMQ_RUNNING as _
+    if unsafe { ap_mpm_query(AP_MPMQ_MPM_STATE as c_int, &mut state) } != 0
+        || unsafe { ap_mpm_query(AP_MPMQ_GENERATION as c_int, &mut generation) } != 0
+        || state != AP_MPMQ_RUNNING as c_int
         || u64::try_from(generation)
             .ok()
             .and_then(|value| value.checked_add(1))

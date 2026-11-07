@@ -67,6 +67,7 @@ struct Operations {
     docker_prefix: Vec<String>,
     engine_expected: engine::Expected,
     identity: Option<Value>,
+    source_identity: Option<(String, String)>,
 }
 fn operations(
     bundle: &Path,
@@ -124,6 +125,7 @@ fn operations(
         docker_prefix: flags,
         engine_expected: expected,
         identity: None,
+        source_identity: None,
     })
 }
 impl Operations {
@@ -510,6 +512,7 @@ fn execute(
             "hosted-source-sha-mismatch",
         )?;
     }
+    operations.source_identity = Some((source.clone(), manifest.clone()));
     *stage = "build";
     operations.docker(
         &argv(&[
@@ -811,6 +814,10 @@ pub fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
         stage
     };
     let mut summary = json!({"schema":"humanymous.apache.coordinator/0.1","executionContext":if hosted{"github-hosted"}else{"owned-local"},"engine":operations.identity,"status":"failed","stage":reported_stage,"failure":failure,"lastCommand":last,"timingsMs":operations.timings,"compilerDiagnostics":operations.diagnostics,"requiredScenarioCount":45,"observedCounts":null,"sourceCommit":null,"sourceManifestSha256":null,"imageDigest":owned.image,"artifactHashes":null,"pilotCleanupObserved":false,"containerImageCleanupObserved":cleanup.is_ok()&&owned.cleaned,"fullProductSuccess":false});
+    if let Some((source, manifest)) = &operations.source_identity {
+        summary["sourceCommit"] = source.clone().into();
+        summary["sourceManifestSha256"] = manifest.clone().into();
+    }
     if let Ok((expected, report, counts, _)) = &result {
         summary["observedCounts"] =
             json!({"passed":counts.passed,"failed":counts.failed,"not_run":counts.not_run});
