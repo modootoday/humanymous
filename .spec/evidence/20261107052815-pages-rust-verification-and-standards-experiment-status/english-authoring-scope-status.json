@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-07T07:46:35.8064477Z",
+  "scope": [
+    "docs/**",
+    "Pages and standards owned SoTs/plans",
+    "owned pages/standards public evidence authored md/json",
+    "owned pages/standards private evidence authored md/json"
+  ],
+  "authored_korean_prose_matches": 0,
+  "docs_pages_han_hiragana_katakana_matches": 0,
+  "preserved_multilingual_fixture_locations": [
+    "docs/tooling/src/tests.rs Unicode controls acceptance fixture",
+    "docs/tooling/src/vectors/i18n.rs Unicode target fixture",
+    "docs/tooling/src/vectors/i18n.rs Unicode header fixture"
+  ],
+  "fixture_bytes_changed": false,
+  "immutable_raw_logs_changed": false,
+  "new_browser_comments_and_integration_language": "English",
+  "scope_limit": "Language scan only; not source freshness, compile, rendering, accessibility or all-language semantic certification."
+}

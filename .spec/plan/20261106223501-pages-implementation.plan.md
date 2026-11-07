@@ -1022,3 +1022,39 @@ Documentation job128340062976 failed before examples07:28:12Z: review inventory
 missing governed files (first10 shown, total unknown). Do not convert this into
 Pages build failure or waive freshness. Saved both job logs privately (ANSI
 stripped), attached to own private bundle, public sanitized status separate.
+
+### Approved browser dependency integration window
+
+Root explicitly opened window for ureq3.5.1 direct edge and lib/CLI wiring.
+Added only own package dependency, pub mod browser and main browser dispatch.
+Notified root graph change complete and froze manifest; common lock remains
+root-owned. Rustfmt/diff-check pass. Pending actual compile:26lib pure tests
+(existing22+4browser),1bin CLI pure test, scoped lib/bin Clippy. No Cargo/browser
+started pending root-assigned slot; actual hosted boundary remains unexecuted.
+
+### Global English authoring convention audit
+
+Root relayed direct user requirement: all authored project documentation and
+source comments are English, including internal specs/plans/summaries. Scanned
+owned docs, Pages/standards SoTs and plans, and scoped public/private authored
+md/json summaries. No Korean narrative found. Three Korean occurrences belong
+to immutable multilingual Rust test/vector inputs; preserved their exact bytes.
+Additional Han/Hiragana/Katakana scan of docs/current Pages/standards SoTs and
+current plan found no narrative matches. Raw logs/quotes were not translated or
+hash-rewritten. New browser source, comments and integration notes are English.
+This is a language audit only, not overall freshness or browser qualification.
+
+### Explicit unexecuted browser accounting
+
+Browser report now separates expected, performed, passed, failed and not_run.
+After the tool's total budget expires, remaining cases are unexecuted rather
+than fabricated measured failures; any missing case prevents passing. Existing
+report-closure fixture covers this distinction. Setup errors emit a structured
+failed component report with unknown expected/not_run denominators and no
+accepted measurements; cleanup remains NOT_MEASURED instead of assumed success.
+Source-input stability is rechecked after final served-artifact verification.
+All new code still pending compilation; no Cargo or browser launched.
+
+Root requested a short git queue reservation for the English convention commit.
+No git transaction held here; new git claims deferred until explicit release.
+Own source work continues and no foreign index or lock is changed.
