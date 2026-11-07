@@ -688,3 +688,32 @@ Artifacts were zero. Attached cef-e77b9792-summary.json retains source/report/lo
 hashes; original private bodies remain unretrieved. Private decoded capture index
 SHA256 is 4a577123ae6fc2d093db8b43a517aebc4835e0e99f67113b31af9f2039c231cb.
 This later progress does not explain the original 0a1bb36e native-build failure.
+
+Root approved stage-wide CEF command diagnostics and the browser owner's fixed
+bootstrap child marker direction. The runner source reuses its bounded Cargo
+JSON reader for every existing Cargo stage, with observed-status/exit and log
+hashes. Bootstrap uses --lib/--show-output and exact-case/single-footer/exit
+consistency for pass/fail accounting; unknown evidence keeps executed null.
+Two new pure tests are authored (expected CEF13), and warning saturation cannot
+hide a later compiler error. No dependency or native predicate was changed in
+the runner. The owning nested-child contract and root dev-edge remain pending;
+their fields will be consumed only after the owner freezes the reviewed schema.
+Image76 and this stage extension remain uncompiled pending allocated validation.
+
+Allocated offline B validated the image caller with delivery76 unfiltered tests,
+all-target check, strict Clippy, compiled policy and actionlint. The first pass
+covered repository/home config only; an expanded ancestor-config pass detected
+one concurrent Runtime qualification-contract update and is retained as mixed
+source, not accepted. After Runtime held f8e04e33 bytes, a fresh full pass had
+all commands exit zero, zero failed/ignored/filtered and unchanged 81 source
+inputs, 3791 registry source files, eight ancestor/home config paths, relevant
+environment hashes and cargo/rustc binaries. Registry scope is 105 reachable
+locked platform-metadata packages and may overapproximate selected features;
+secret-shaped environment values were omitted. Runtime contract SHA256 is
+a65e59548ebffdc0b9cffc03bda5960ba45d9bc4c714bc0bb2bb63898c201a06.
+Admission was 80.38 percent committed and 33,551,616 KiB free physical memory;
+locked/offline jobs one/incremental zero used the exclusive warm delivery target.
+B was returned after the first complete closure pass. Private index SHA256 is
+66df78336aa6291500cf6c4cfe0e647f0af4b6f9e5e793659169d901ff8cb898.
+CEF source was excluded and its stage extension is still uncompiled. No registry
+pull, Docker image build, tool install, scan, push or token exchange occurred.

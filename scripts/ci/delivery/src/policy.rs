@@ -213,19 +213,33 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
     }
     if matches!(
         name,
-        "go-validation.yml" | "browser-product-validation.yml" | "mount-probe-validation.yml"
+        "go-validation.yml"
+            | "browser-product-validation.yml"
+            | "mount-probe-validation.yml"
+            | "image-validation.yml"
     ) {
         let browser = name == "browser-product-validation.yml";
         let mount = name == "mount-probe-validation.yml";
-        let product = if mount { "probe" } else { "product" };
-        let branch = if mount {
+        let image = name == "image-validation.yml";
+        let product = if image {
+            "image"
+        } else if mount {
+            "probe"
+        } else {
+            "product"
+        };
+        let branch = if image {
+            "codex/image-validation"
+        } else if mount {
             "codex/mount-probe-validation"
         } else if browser {
             "codex/browser-product-validation"
         } else {
             "codex/go-validation"
         };
-        let product_command = if mount {
+        let product_command = if image {
+            "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-candidates"
+        } else if mount {
             "cargo run --locked -p humanymous-delivery -- mount-probe"
         } else if browser {
             "cargo run --locked -p humanymous-delivery -- pilot browser-product"
@@ -242,7 +256,14 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 && jobs["preflight"]["runs-on"] == "ubuntu-24.04"
                 && jobs[product]["runs-on"] == "ubuntu-24.04"
                 && jobs["preflight"]["timeout-minutes"] == 25
-                && jobs[product]["timeout-minutes"] == if mount { 45 } else { 60 },
+                && jobs[product]["timeout-minutes"]
+                    == if image {
+                        35
+                    } else if mount {
+                        45
+                    } else {
+                        60
+                    },
             "product entrypoint must stay bounded hosted and preflight gated",
         )?;
         for job in ["preflight", product] {
@@ -260,18 +281,26 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         let preflight = jobs["preflight"]["steps"]
             .as_array()
             .ok_or("Go preflight steps absent")?;
-        let mut commands = vec![
-            "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1",
-            "cargo test --locked -p humanymous-delivery -j1",
-            "cargo check --locked -p humanymous-runtime-pilot --all-targets -j1",
-            if mount {
-                "cargo clippy --locked -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
-            } else {
-                "cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
-            },
-            "cargo run --locked -p humanymous-delivery -- policy",
-        ];
-        if !mount {
+        let mut commands = if image {
+            vec![
+                "cargo test --locked -p humanymous-delivery -j1",
+                "cargo clippy --locked -p humanymous-delivery --all-targets -j1 -- -D warnings",
+                "cargo run --locked -p humanymous-delivery -- policy",
+            ]
+        } else {
+            vec![
+                "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1",
+                "cargo test --locked -p humanymous-delivery -j1",
+                "cargo check --locked -p humanymous-runtime-pilot --all-targets -j1",
+                if mount {
+                    "cargo clippy --locked -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
+                } else {
+                    "cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
+                },
+                "cargo run --locked -p humanymous-delivery -- policy",
+            ]
+        };
+        if !mount && !image {
             commands.push("cargo test --locked -p humanymous-go-adapter --lib -j1");
         }
         for command in commands {
@@ -458,10 +487,25 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             }
         }
     }
-    if name == "rust-validation.yml" {
-        let image_steps = jobs["rust-images"]["steps"]
+    if matches!(name, "rust-validation.yml" | "image-validation.yml") {
+        let image_steps = jobs[if name == "image-validation.yml" {
+            "image"
+        } else {
+            "rust-images"
+        }]["steps"]
             .as_array()
             .ok_or("image steps absent")?;
+        let build = image_steps
+            .iter()
+            .find(|step| step["id"] == "runtime_image_build")
+            .ok_or("required image build absent")?;
+        require(
+            build["with"]["push"] == false
+                && build["with"]["load"] == true
+                && build["with"]["file"] == "build/rust/runtime-candidate.Dockerfile"
+                && build["with"]["tags"] == "humanymous-runtime-candidate:validation",
+            "validation image build must remain local and source bounded",
+        )?;
         let scan = image_steps
             .iter()
             .find(|step| step["id"] == "runtime_image_scan")
@@ -509,6 +553,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 format!("implicit action cache writes must be disabled: {action}"),
             )?;
         }
+    }
+    if name == "rust-validation.yml" {
         require(
             strings(&doc["jobs"]["ready"]["needs"])
                 == REQUIRED.iter().map(|id| (*id).into()).collect(),
@@ -605,6 +651,23 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
     }
     Ok(())
 }
+fn image_parity(docs: &[(String, Value)]) -> Result<()> {
+    let full = &docs
+        .iter()
+        .find(|(name, _)| name == "rust-validation.yml")
+        .ok_or("full image workflow absent")?
+        .1["jobs"]["rust-images"]["steps"];
+    let dedicated = &docs
+        .iter()
+        .find(|(name, _)| name == "image-validation.yml")
+        .ok_or("dedicated image workflow absent")?
+        .1["jobs"]["image"]["steps"];
+    let suffix = full.as_array().and_then(|steps| steps.get(3..));
+    require(
+        suffix.is_some() && suffix == dedicated.as_array().and_then(|steps| steps.get(3..)),
+        "dedicated image build/scan steps must match full validation",
+    )
+}
 pub fn check(root: &Path) -> Result<()> {
     let docs = workflows(root)?;
     let inventory = crate::read_json(&root.join("scripts/ci/workflows.json"))?;
@@ -637,6 +700,7 @@ pub fn check(root: &Path) -> Result<()> {
     for (name, doc) in &docs {
         document(name, doc)?;
     }
+    image_parity(&docs)?;
     // Only newly authored Rust/workflow sources are owned here; legacy oracles
     // remain distinct. Enforce actual bytes, not a post-hash newline rewrite.
     let paths = command::text(
@@ -845,6 +909,7 @@ mod tests {
             "browser-product-validation.yml",
             "component-validation.yml",
             "mount-probe-validation.yml",
+            "image-validation.yml",
             "apache-validation.yml",
             "python-validation.yml",
             "dotnet-validation.yml",
@@ -864,6 +929,52 @@ mod tests {
             "collector-component.yml",
             Some("always() && vars.CI_COMPONENT_ARTIFACTS == 'true'")
         ));
+    }
+    #[test]
+    fn image_caller_cannot_publish_or_weaken_inventory_accounting() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "image-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("image-validation.yml", &original).is_ok());
+        for mutation in 0..4 {
+            let mut changed = original.clone();
+            let steps = changed["jobs"]["image"]["steps"].as_array_mut().unwrap();
+            match mutation {
+                0 => {
+                    steps
+                        .iter_mut()
+                        .find(|step| step["id"] == "runtime_image_build")
+                        .unwrap()["with"]["push"] = json!(true)
+                }
+                1 => {
+                    steps
+                        .iter_mut()
+                        .find(|step| step["id"] == "runtime_image_scan")
+                        .unwrap()["with"]["list-all-pkgs"] = json!("false")
+                }
+                2 => steps.last_mut().unwrap()["if"] = json!("${{ success() }}"),
+                _ => changed["jobs"]["image"]["needs"] = json!([]),
+            }
+            assert!(document("image-validation.yml", &changed).is_err());
+        }
+    }
+    #[test]
+    fn dedicated_image_steps_cannot_drift_from_full_validation() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let mut docs = workflows(&root).unwrap();
+        assert!(image_parity(&docs).is_ok());
+        let image = &mut docs
+            .iter_mut()
+            .find(|(file, _)| file == "image-validation.yml")
+            .unwrap()
+            .1;
+        image["jobs"]["image"]["steps"][5]["with"]["build-args"] =
+            json!("HUMANYMOUS_SOURCE_REV=wrong");
+        assert!(image_parity(&docs).is_err());
     }
     #[test]
     fn mount_diagnostic_cannot_bypass_preflight_or_mask_failure() {

@@ -1185,6 +1185,16 @@ Source drift is null when the existing final source check was not reached.
 Protocol fixtures, bootstrap rejection and actual process cases stay separate,
 and no diagnostic implies browser, GUI, AT or whole-runtime qualification.
 
+Subsequent protocol/bootstrap/process Cargo commands use the same bounded
+diagnostic projection and retain whether an actual command status was observed.
+Bootstrap execution counts require one exact expected case line, one consistent
+harness footer and a matching command exit. Missing, duplicated, ignored,
+truncated or inconsistent receipts keep execution counts null. Compiler errors
+are retained ahead of warning saturation within the fixed output limit.
+Captured bootstrap output uses --show-output to preserve the exact named result
+line. Nested bootstrap child facts belong to the owning fixed-case contract;
+the runner never infers them from a cargo exit or assertion message.
+
 The dedicated mount diagnostic consumes only the lab's mount-probe contract and
 existing scoped CLI. CI independently binds this hosted run, source manifest,
 original private ledger, product recipe and observed image inspection. It checks
@@ -1197,3 +1207,14 @@ policy, whole product and release qualification remain false in every outcome.
 Missing/invalid observations keep collection incomplete. The original null-image
 receipt remains valid when no image or observation exists. The read-only bounded
 Ubuntu caller has no automatic uploads, remote cache writes or OIDC.
+
+The dedicated image caller uses read-only exact-source Ubuntu preflight and
+the existing runtime image build/scan steps. Policy requires its build/scan
+suffix to equal the full validation job, preserving the same typed Rust gate.
+Both paths forbid pushing images, require a local loaded candidate and retain
+all-package/all-severity Trivy JSON with no scanner or inventory waiver. Failure
+projection still runs after a failed scanner when the image build succeeded.
+The caller adds no scanner parser, package publication or qualification state.
+Automatic artifacts, remote cache writes and OIDC remain disabled. Actual tool
+installation, binary inventory and scan evidence require a separately admitted
+hosted execution; source/helper success alone leaves the candidate unqualified.

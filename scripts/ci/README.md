@@ -64,6 +64,7 @@ Dedicated callers isolate one boundary without changing the full release gate:
 | `go-validation.yml` | `go-product` consumes the exact eight-case bounded Go requirement. |
 | `browser-product-validation.yml` | `pilot browser-product` retains the full requirement and its nonzero failure/blocked exit. |
 | `mount-probe-validation.yml` | `mount-probe` collects four fixed custody mount observations. Complete refusals are diagnostic data, never custody or product qualification. |
+| `image-validation.yml` | Reuses the full workflow's candidate build and typed image scan. Empty inventory, scanner failures and vulnerabilities remain failures. |
 | `cef-native-component.yml` | The standalone Rust provisioner separates helper tests, native compilation, synthetic protocol, bootstrap rejection and desktop processes. GUI/AT readiness remains separate. |
 
 These execution commands require their genuine supported hosted context and clean
