@@ -1,5 +1,26 @@
 # Sealed key compatibility integration
 
+## Shared checkpoint sink candidate, not executed
+
+Root signals quote_json_go_to56a2 backs one fixed-order checkpoint emitter.
+Checked count-and-replay allocates one exact message Vec after limit admission;
+legacy signing_bytes uses compatibility maximum. Fixed64-byte signature hex
+decode replaces arbitrary decoded Vec. Three tests authored, including180 frozen
+messages/exact budget boundaries and sink/overflow failure; existing Go180 actual
+signature parity must qualify this source and root escaping change together.
+Evidence115514; compile/Clippy/tests NOT_RUN. No bounded production or memory claim.
+
+## Private lexical preflight source, not executed
+
+Accepted S1 scanner delta preserves unknown numeric magnitudes (e.g1e400)
+without serde feature changes. Fixed64-container stack and checked counters;
+no JSON tree/number conversion. String bytes include keys; values exclude keys;
+array items are per-container. Existing decoder alone decides syntax/schema.
+Five preflight tests plus one decoder-compatibility regression authored NOT_RUN,
+including92 record/180 checkpoint count-oracle cases. Test-compiled only until
+the read-only bounded consumer wires policy. Evidence115240; no production or
+memory qualification and no build process held.
+
 ## Next private S1 frame cursor candidate, not executed
 
 Shared borrowed-frame cursor now backs legacy decode. One reusable frame Vec,

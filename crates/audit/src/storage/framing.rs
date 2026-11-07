@@ -2,6 +2,10 @@ use serde::de::DeserializeOwned;
 use std::io::{self, BufRead};
 mod cursor;
 use cursor::FrameCursor;
+// Private S1 primitive awaiting the read-only bounded inspection consumer.
+// Keep it outside production decoding until that profile is explicitly wired.
+#[cfg(test)]
+mod preflight;
 
 /// Successfully framed values and the byte offset safe for append recovery.
 pub(super) struct Frames<T> {
@@ -84,5 +88,19 @@ mod tests {
         let clean = read(b"", 3, false).unwrap();
         assert!(!clean.torn_tail);
         assert_eq!(clean.complete_bytes, 0);
+    }
+
+    #[test]
+    fn ignored_unknown_numbers_do_not_require_machine_numeric_representation() {
+        // The semantic decoder skips unknown fields lexically. A resource
+        // preflight must not introduce f64 conversion for those fields.
+        for number in ["1e400", "-1e400", "184467440737095516160000000000"] {
+            let bytes = format!("{{\"unknown\":{number}}}\n");
+            let decoded = decode::<crate::record::Record>(bytes.as_bytes(), 256, false).unwrap();
+            assert_eq!(decoded.values, vec![crate::record::Record::default()]);
+            assert_eq!(decoded.complete_bytes, bytes.len() as u64);
+            assert!(!decoded.torn_tail);
+        }
+        assert!(serde_json::from_str::<serde_json::Value>(r#"{"unknown":1e400}"#).is_err());
     }
 }

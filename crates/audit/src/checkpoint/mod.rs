@@ -1,7 +1,8 @@
 //! Signed tree heads cover both linear-chain and RFC 6962 Merkle commitments.
 use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
-use humanymous_signals::wire::{decode::null_default, quote_json_go};
+use humanymous_signals::wire::decode::null_default;
 use serde::{Deserialize, Serialize};
+mod signing;
 mod witness;
 pub use witness::{Witness, WitnessError};
 #[cfg(any(unix, windows))]
@@ -41,7 +42,8 @@ impl Checkpoint {
     /// Fixed-order Go JSON bytes, including its HTML/U+2028/U+2029 escaping.
     /// These strings are not NFC-normalized by the checkpoint wire contract.
     pub fn signing_bytes(&self) -> Vec<u8> {
-        format!("{{\"node_id\":{},\"tree_size\":{},\"root\":{},\"merkle_root\":{},\"prev_checkpoint_hash\":{}}}",quote_json_go(&self.node_id),self.tree_size,quote_json_go(&self.root),quote_json_go(&self.merkle_root),quote_json_go(&self.prev_checkpoint_hash)).into_bytes()
+        signing::bounded(self, usize::MAX)
+            .expect("in-memory checkpoint signing bytes fit address space")
     }
 
     /// Seal the writer commitment and discard any now-stale witness signature.
@@ -66,9 +68,10 @@ impl Checkpoint {
         let Ok(key) = VerifyingKey::from_bytes(public) else {
             return false;
         };
-        let Ok(bytes) = hex::decode(encoded) else {
+        let mut bytes = [0; 64];
+        if hex::decode_to_slice(encoded, &mut bytes).is_err() {
             return false;
-        };
+        }
         let Ok(signature) = Signature::from_slice(&bytes) else {
             return false;
         };

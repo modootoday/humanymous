@@ -75,12 +75,19 @@ input cannot select its own limits. No unbounded fallback or skipped outcome.
 
 Frame length alone does not bound owned serde allocation: many empty/default
 objects can amplify Vec element storage. Before owned Record/Checkpoint decode,
-a bounded serde visitor preflights depth, decoded strings, element counts and
-total JSON values without building Value trees. It then uses EXISTING Record/
-Checkpoint decoders; fixed schema arrays and fields receive their preflight
-budgets BEFORE owned decoding. Resource refusal is distinct from a wire/report
-pass, and never truncates a value to fit. Account parser scratch, decoded fields/
-Vec capacities, normalization, signing messages and hash buffers.
+a bounded lexical structural scanner preflights depth, decoded string bytes,
+per-array element counts and total JSON values without building Value trees.
+Root accepted this implementation delta after identifying that deserialize_any
+would convert unknown numeric literals such as1e400 which existing IgnoredAny
+decodes lexically. No serde feature/dependency change is accepted. Map keys count
+toward string bytes, not value count; container depth uses a fixed64-slot stack.
+The scanner performs no schema, numeric-range or complete JSON validation and
+cannot establish authenticated EOF. EXISTING Record/Checkpoint decoders must
+accept the exact same admitted bytes AFTER resource preflight. Fixed schema
+arrays and fields receive budgets BEFORE owned decoding. Resource refusal is
+distinct from a wire/report pass, and never truncates a value to fit. Account
+parser scratch, decoded fields/Vec capacities, normalization, signing messages
+and hash buffers.
 
 Use a shared sink-based canonical encoder in BOTH compatibility and streaming
 paths, not a copied hash algorithm. Vec-returning compatibility wrappers collect
@@ -392,6 +399,23 @@ refactoring. Residual same-owner modification and O(history) proof I/O are expli
 Independent critique may add blocking findings; none is waived by this draft.
 
 ## Record
+
+Shared checkpoint count-and-replay source now uses root's signals escaping sink
+56a2acdb, with finite byte-limited message assembly and compatibility Vec wrapper.
+Signature decoding uses fixed64-byte storage. Three tests authored including180
+frozen checkpoint messages/budget boundaries and partial sink/overflow refusal;
+unchanged180-case checkpoint signature parity remains required. NOT_RUN, no
+workload allocation or memory/production guarantee. Evidence115514.
+
+Lexical preflight source follows the accepted numeric-compatibility delta:
+fixed64-container stack, no heap/number conversion, checked counters for string
+bytes, per-array elements and values. Five pure tests authored including decoded
+UTF8/escape/surrogate counts, independent arrays/depth/overflow, unknown huge
+numbers and92 record/180 checkpoint fixture count parity against an independent
+owned Value oracle. One additional framing test pins original unknown-number
+decoder behavior. Preflight is test-compiled only until an accepted read-only
+bounded inspection consumer wires resource policy before owned decode. No
+production path claims it yet. Compile/execution NOT_RUN, evidence115240.
 
 Private frame cursor source authored next under restricted S1 permission:
 one borrowed newline frame, checked frame/offset bounds, capped growth requests,
