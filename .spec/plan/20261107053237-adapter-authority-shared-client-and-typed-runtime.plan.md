@@ -586,3 +586,19 @@ admitted state transition. Native owner still must freeze exact domain separator
 length, canonical field order/encoding/numeric rules, signature/fingerprint bytes
 and duplicate rejection. Domain naming is not signed-byte contract completion.
 No implementation or new execution in this source-only review correction.
+
+## Independent native v0.2 review
+
+Read exact native R1 plan SHA256
+93d73d7d7003e8f27ab3382c85721835bedaa2301c9ff63f52c5ad4365e8675d.
+P's separate native-authenticated nonsecret acceptance listener and Prepared /
+both claims / signed Commit phases now address earlier acceptance-path ambiguity
+at design level. OS-backed actual-instance claim marker addresses repeat-context
+burn bypass in the specification; conserved monotonic/wall budgets and typed W
+prerequisite are explicit. None of this is actual native proof or code approval.
+Added required seam: both signed Prepared and Commit records plus linkage and
+encoding fit the SINGLE Hello3072metadata cap; distinct signed record-kind/domain
+prevents Prepared-as-Commit, wrong-kind and cross-grant substitution. Exact format,
+actual native rights/owner/image/time and unattended publisher policy remain open.
+Post-Commit uncertainty must not be called revocation or trigger automatic retry.
+Critique sent to native owner/root; no implementation or execution started.

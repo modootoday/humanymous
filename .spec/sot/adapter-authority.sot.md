@@ -498,6 +498,10 @@ The COMPLETE signed public authorization, including every claim, signature and
 its encoding overhead, MUST fit INSIDE Hello's3072byte metadata cap. There is no
 separate grant slot, unbounded file attachment or continuation bypass. Validate
 declared lengths before allocation and before releasing any observer credential.
+For the native v0.2 Prepared/Commit proposal, this means BOTH signed records,
+their linkage and encoding together inside that single cap, not3072 per record.
+Prepared and Commit must have unambiguous signed record-kind/domain separation;
+Prepared alone, wrong-kind or cross-grant Commit cannot authorize secret release.
 
 | Phase | Metadata cap | Secret slot bytes |
 |---|---|---|
