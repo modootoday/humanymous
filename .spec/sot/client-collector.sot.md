@@ -425,3 +425,20 @@ Firefox ESR exhibits that bug. Empty-referrer causality remains a hypothesis.
 Lab may classify only finite browser-local proxy observations with exact owned
 request/source bindings; a browser-local observation is not a downstream Runtime
 header attestation. Raw header values and arbitrary response text stay private.
+## Source5d68 actual browser Origin-null observation
+
+Run42425474990 attempt1/product job128563546997 terminated with failure after
+actual image build and browser execution. The owning public report records18
+assertions/16passed/2failed, actor inventory67/matched with1selected/66filtered,
+DNS succeeded and process exit1. The finite execution label is
+browser_bootstrap_origin_browser_proxy_null. This establishes the browser-proxy
+B observation only; it is not G/Runtime header attestation or authenticated source
+provenance. Full product qualification and release readiness remain false.
+
+The earlier empty-referrer/same-origin-policy choice was intended to preserve
+Origin while suppressing Referer; source/mock property checks did not prove that
+wire behavior. Actual B null now narrows the failure, but empty-referrer causality
+remains unproven. Do not accept null Origin, derive authorization from Referer,
+set application Origin/Referer headers, change request mode to bypass admission,
+or weaken server policy. A separately reviewed client-only origin-root referrer
+experiment is under consideration; no source fix or successful rerun is implied.
