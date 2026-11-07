@@ -1,5 +1,5 @@
 {
-  "schema": "humanymous.session-coexistence-acceptance/0.1",
+  "schema": "humanymous.session-coexistence-acceptance/0.2",
   "status": "draft vectors; no executable regression run",
   "operational_mutator_ready": false,
   "cases": [
@@ -19,6 +19,11 @@
     {"id":"unsafe-storage","input":"claim/catalog link or oversized/unknown entry","expected":"deny without ignoring entry"},
     {"id":"preserve-legacy","input":"successful accepted root-mediated new grant/release","expected":"legacy claim bytes/catalog writer mode/ACTIVE bytes unchanged"},
     {"id":"invalid-timestamp","input":"invalid or unparseable claim instant","expected":"deny; never stale takeover"},
-    {"id":"lock-after-intent","input":"durable intent succeeds then claim/receipt write fails","expected":"retain fail-closed recovery; no success report"}
+    {"id":"lock-after-intent","input":"durable intent succeeds then claim/receipt write fails","expected":"retain fail-closed recovery; no success report"},
+    {"id":"composite-new-plan","input":".spec/plan/20261107-convention-audit-performance-optimization.plan.md matches both old keyword globs","expected":"deny actual overlap; replace wildcard policy with exact filenames"},
+    {"id":"composite-root-plan","input":".spec/plan/20261107-performance-optimization-program-roadmap.plan.md matches old performance and root scopes","expected":"deny overlap; do not infer separation from different keywords"},
+    {"id":"composite-evidence","input":".spec/evidence/20261107-convention-audit-performance-optimization/index.evidence.md matches both old keyword globs","expected":"deny overlap; require exact nonoverlapping bundle roots"},
+    {"id":"root-evidence-overlap","input":".spec/evidence/20261107-performance-optimization-program-status/index.evidence.md matches old performance and root scopes","expected":"deny overlap; preserve root ownership"},
+    {"id":"nested-exact-evidence","input":"one grant has exact bundle/** and another has exact bundle/nested/**","expected":"deny ancestor overlap despite exact basename selection"}
   ]
 }

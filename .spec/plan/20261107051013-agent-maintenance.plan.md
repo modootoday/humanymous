@@ -12,6 +12,21 @@ rel:
 
 ## Convention and performance chat registration
 
+Root temporarily lent the free existing project-coordination lane solely to
+performance via unmodified PS protocol. Subsequent literal claim inspection found
+codex/rust-performance-baseline with exact named SoT, plan20261107135643 and matching
+public/private evidence bundle roots. No force, foreign release, catalog mode
+flip or new Rust mutator was used by this lane. The observed temporary role is
+recorded in LANES/THREADS; no product/agent metadata or benchmark source grant.
+
+Both new owners independently found the v0.1 keyword-glob overlap: composite
+convention/performance plan names and performance/program-roadmap or program-status
+names intersect. Draft v0.2 requires root-reviewed exact filenames/directory roots
+and unchanged conservative intersection, not keyword wildcards. Five adversarial
+vectors expand the draft matrix to22. These remain authored acceptance vectors,
+not executed Rust regressions. Root was notified immediately; no overlap solver
+weakening or false automatic-claim readiness is introduced.
+
 Root chose design before mutation: no mode flip, no foreign allowlist additions.
 Draft v0.1 in the owned eval directory specifies closed two-lane policy, explicit
 canonical/legacy projection split, Unknown legacy scope denial and root-mediated

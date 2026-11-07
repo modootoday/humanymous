@@ -1,4 +1,4 @@
-# New-lane coexistence design v0.1
+# New-lane coexistence design v0.2
 
 Status: draft for root review; no mutator or operational catalog change.
 
@@ -23,23 +23,34 @@ lane's kind or silently ignore projection drift. The existing schema1 binary doe
 not implement this contract and cannot be advertised as claim-ready for it.
 
 Proposed NewLanePolicy is a closed enum with exactly ConventionAudit and
-Performance. Each maps to four positive scope patterns: its exact named SoT,
-named plan glob, named public evidence subtree and named private evidence subtree.
+Performance. Each maps to a root-reviewed ExactRoots value: its exact named SoT,
+exact plan filename, exact public bundle root and exact private bundle root.
 Reject prefixes, case aliases, parent/root escapes, added code paths and broader
-wildcards. The five-field Request remains lane/provider/session/goal/paths; the
+wildcards. No wildcard is allowed within any selected filename or bundle root;
+only a terminal /** for contents of an exact evidence directory is permitted.
+The four scopes must also be disjoint from each other and every admitted owner
+scope under the unchanged overlap solver; names alone do not prove separation.
+The five-field Request remains lane/provider/session/goal/paths; the
 requested set must equal the policy's bounded set, not merely intersect it.
 
-ConventionAudit scopes:
-- .spec/sot/convention-audit.sot.md
-- .spec/plan/*convention-audit*.plan.md
-- .spec/evidence/*convention-audit*/**
-- .spec.local/root/evidence/*convention-audit*/**
+The original v0.1 keyword plan/evidence globs are rejected: a composite basename
+can contain both convention-audit and performance-optimization or another owner's
+program-roadmap/program-status keyword. This is an actual glob intersection,
+not a reason to relax the solver. Ancestor/nested evidence roots also conflict.
 
-Performance scopes:
+ConventionAudit's exact plan/bundle roots remain unassigned until previewed and
+root-reviewed; no example wildcard grants ownership. The separately accepted
+temporary legacy Performance loan has these observed exact scopes:
 - .spec/sot/performance-optimization.sot.md
-- .spec/plan/*performance-optimization*.plan.md
-- .spec/evidence/*performance-optimization*/**
-- .spec.local/root/evidence/*performance-optimization*/**
+- .spec/plan/20261107135643-performance-optimization.plan.md
+- .spec/evidence/20261107135643-performance-optimization/**
+- .spec.local/root/evidence/20261107135643-performance-optimization/**
+
+That claim is project-coordination/codex/rust-performance-baseline, acquired by
+the performance owner using the unmodified existing PS compatibility protocol.
+It is not a CatalogV2/Rust mutator result. No .agents metadata, product code or
+benchmark source path is included; later target/code scope requires a separate
+root assignment. The global catalog/mode and legacy25 remain unchanged.
 
 ## Literal legacy scope handling
 
@@ -114,6 +125,8 @@ Blue architecture: isolate policy/schema and never expand product ownership.
 Red review P0: a new private lock cannot serialize old writers; the barrier and
 ongoing arbitration are mandatory, otherwise block. SRE P1: ACTIVE projection
 rewrites can hide new rows; do not use that board as grant authority or mutate it.
+Independent convention/performance P1: substring glob namespaces overlap; exact
+root-reviewed filenames/directories plus conservative intersection are mandatory.
 Evaluator P1: catalog acceptance and a read command are not successful claims;
 require actual terminal receipts. Compliance: retain only coordination identities
 and hashes; never ingest secrets or unrelated user-global configuration. These

@@ -30,6 +30,16 @@ These formal lanes supplement legacy lanes above. Existing owners migrate by nor
 
 Native-security OS credential provider belongs to native-windows; CLI only selects/validates typed references, runtime consumes shared protected input. No duplicate OS secret reader. Cross-context API changes require explicit owner agreement. Scoring seams stay frozen.
 
+Temporary root-approved compatibility loan: project-coordination is held by
+codex/rust-performance-baseline for `.spec/sot/performance-optimization.sot.md`,
+`.spec/plan/20261107135643-performance-optimization.plan.md`,
+`.spec/evidence/20261107135643-performance-optimization/**` and the matching
+`.spec.local/root/evidence/20261107135643-performance-optimization/**` only.
+This observed claim overrides the usual metadata role for this session; it grants
+no .agents/rules/THREADS, product code, graph or unassigned benchmark path. Use
+normal exact-owner handover/release; never take over this lane from its owner.
+The future convention-audit/performance Rust-only protocol remains draft.
+
 Execution slots are separate from work lanes: root assigns at most four local
 pipelines A/B/C/D with distinct targets, jobs1/incremental0 each. No automatic
 start from a free slot or same-target overlap. Admit only at commit<85% and free

@@ -16,7 +16,7 @@ rel:
 
 # Rust agent canon and qualified skill evaluation
 
-## Draft new-lane coexistence v0.1
+## Draft new-lane coexistence v0.2
 
 Root requested a minimal Rust-only coexistence design for convention-audit and
 performance without a global writer-mode flip or foreign script extensions.
