@@ -20,6 +20,14 @@ runtime capability, then strips it before forwarding. A separate upstream
 application `Authorization` profile is unsupported. Do not place this slice
 over an arbitrary existing application and assume its authentication survives.
 
+Working source adds a separately selected `browser_auth_only` profile that
+rejects ambient cookies and preserves application Authorization in the origin
+request builder. Its response path inserts a consumed-counter ACK bound to the
+actual local or origin response status. These branches have not been built or
+executed in the current review, so they are not a qualified credential-preservation
+or browser integration guarantee. The existing native-profile exception above
+remains applicable to the verified slice.
+
 It accepts bounded complete HTTP/1.1 requests, with 64 KiB request and origin
 response body limits and a 16 KiB header bound. Transfer-encoded/chunked requests,
 upgrades, duplicate request headers and encoded/dot-segment paths are unsupported.

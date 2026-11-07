@@ -68,6 +68,30 @@ events. An acknowledgement proves counter progress, not ALLOW, response-body
 integrity or qualified collector provenance. Cookie-free transport, runtime
 integration and accessible recovery remain separate work.
 
+### Browser transport follow-through under source review
+
+The current working source additionally declares WASM `BrowserSession` and
+`BrowserResponse` exports. This follow-through is uncommitted and has not been
+built or executed in the present resource-limited review. The pure `Session`
+state API above remains separate from this browser I/O owner.
+
+| Working-source interface | Declared responsibility, not a qualification result |
+| --- | --- |
+| `BrowserSession.connect(scope_json, timeout_ms)` | Same-origin bootstrap against independently provisioned scope, with an 8 KiB response bound |
+| `fetch(method, target, headers_json, body)` | One buffered signed Fetch operation using cookie omission, redirect refusal and no automatic retry; request body bound 64 KiB |
+| `close()`, `is_closed()` | Explicit invalidation/abort and local epoch status; ignoring or garbage-collecting a JavaScript Promise alone is not cancellation |
+| `BrowserResponse.status`, `headers_json()`, `bytes()` | Buffered status, normalized exposed headers and copied body bytes after complete-body/ACK processing; not a streaming Response or raw header capture |
+
+The client source's response-body bound is 1 MiB, while the current runtime's
+origin-response bound is 64 KiB. One does not enlarge the other's support.
+Runtime source is also adding an explicit cookie-free `browser_auth_only`
+profile, bootstrap and consumed-counter ACK owner. The working origin-request
+builder preserves application Authorization for this profile, and local/origin
+response paths insert status-bound ACK headers. These changes still require
+source-bound execution validation. Do not treat new type declarations, source tests or
+policy intent as a working browser-to-origin flow. Existing component results
+do not qualify these changed sources.
+
 ```console
 cargo test --locked -p humanymous-collector
 cargo build --locked -p humanymous-collector --target wasm32-unknown-unknown --release

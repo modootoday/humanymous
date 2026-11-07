@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T06:24:19Z
+updated: 2026-11-07T06:29:39Z
 rel:
   governs: [docs]
 files:
@@ -12,8 +12,8 @@ files:
   - {path: i18n-status.json, sha256: f627ae8f812217a396d97f1cba9ef83952b2e3b92b8788142d5cc3dde46a5ee3, bytes: 831, store: repo}
   - {path: cli-review-status.json, sha256: ad116a0ae6e7725205d4146bc40681db6e3531d53738347c2b4eb10684265d70, bytes: 1313, store: repo}
   - {path: audit-reader-status.json, sha256: 30a69bec28f952ef3e75e6d23853f867499aaa29fc2a9e129d81941bb435ba0f, bytes: 824, store: repo}
-  - {path: resource-hold-status.json, sha256: 48b80fcd41629c4d985380ca9a3351c3d18e87764be51d5af7140644884ca68b, bytes: 999, store: repo}
   - {path: native-planner-review-status.json, sha256: 8434f3e1b58e85824ccdfe38bee13afa3f7889744a3f57b472e2d29faceb1415, bytes: 807, store: repo}
+  - {path: resource-hold-status.json, sha256: 491dcae56b56bf43e2302489e53a7014025618a147c87b013909f026f2d809d3, bytes: 1407, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status
@@ -39,6 +39,16 @@ lock was synchronized, all 11 tests, strict Clippy, source checks and 24 vectors
 passed again. No dependency or lock changes were made by the Pages owner.
 
 ## How to read it
+
+P0 browser/runtime source follow-through is now documented separately from the
+pure collector Session. Working declarations add BrowserSession/BrowserResponse
+and explicit runtime browser policy/bootstrap/ACK handling, but no changed-source
+build/pilot was run under the hold. Latest working source preserves Authorization
+for BrowserAuthOnly and inserts status-bound ACK headers into local and parsed
+origin responses. This supersedes an earlier in-progress observation; credential
+preservation and counter-ACK integration remain execution-unqualified. New source
+types/policy intent are not a working flow. The lightweight existing source
+checker reports86pages/errors0; build/render/AT remain not_run.
 
 Native-planner source/prose review covers all11package files and manually
 authored per-file receipt reasoning with observed LF source hashes. It corrects

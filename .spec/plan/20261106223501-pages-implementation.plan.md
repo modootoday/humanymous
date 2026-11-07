@@ -498,3 +498,17 @@ Also documented exit3: publication succeeded but temporary cleanup is incomplete
 nonzero exit does not prove no writes. Receipt fields and no power-loss/directory
 durability guarantee are explicit. Existing no-clobber and framework-unqualified
 claims remain aligned with source. No new native process/test/build ran.
+
+## P0 working browser/runtime source follow-through
+
+Read current uncommitted collector transport exports/connect/fetch/close,
+request/io/Flight ownership and runtime BrowserPolicy/RitProfile/bootstrap/Ack
+source. Public reference now separates pure Session from working BrowserSession/
+BrowserResponse I/O declarations, request64KiB/clientresponse1MiB/runtime64KiB
+limits, cookie omission and explicit close semantics. No changed-source test or
+build is claimed. Runtime config/application browser branches are being written,
+and the latest origin builder now preserves Authorization for BrowserAuthOnly;
+local and parsed origin response paths insert status-bound ACK headers. This
+supersedes the earlier in-progress observation of stripping/direct forwarding.
+Source wiring is not an executed or qualified browser profile. Existing verified native exception
+remains public; runtime/collector implementation stays with its owners.

@@ -12,6 +12,8 @@
   "native_authority_client_documentation": "reconciled against current committed interface; not full runtime qualification",
   "network_observation_documentation": "distinguishes tolerant prefix parsing, capture-owner provenance and first-offered ALPN compatibility semantics",
   "network_component_tests_during_hold": "not_run",
+  "browser_runtime_followthrough": "working BrowserSession/BrowserResponse and explicit runtime browser profile source under review; changed-source builds and join pilots not_run",
+  "browser_profile_authorization_and_ack_join": "working source now preserves Authorization for BrowserAuthOnly and inserts status-bound ACK into local/origin responses; changed-source build and integration execution not_run",
   "generic_wire_frozen": false,
   "resource_reassignment": "pending coordinator direction",
   "production_publication_or_external_submission": false
