@@ -1559,3 +1559,14 @@ reject but decoder does not await EOF/prove absent later bytes; caller closes,
 responses require close while requests accept close/keep-alive, deadline owned
 by caller. Added one manual receipt for complete decoder only, not partial parent
 protocol/configuration modules. No implementation/scoring/generic wire changed.
+
+### Bound local responses versus application outcomes
+
+Read complete authority client/protocol modules, test definitions and manifest.
+Experimental wire reference now names exact outgoing/pending and reply bindings,
+HTTP200-only acceptance, authority-shortened expiry, wall rollback/monotonic and
+single-owner consumption, inspection versus final liveness, no automatic retry
+or portable signed decision claim. Service statuses are distinct from shared
+client non200-to503 authority_status and per-host mappings. Updated existing
+change-manifest summary and added three manual receipts; no tests/IPC executed.
+No scoring/generic wire or root manifest changes; quiet window preserved.

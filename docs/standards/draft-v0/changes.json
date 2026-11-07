@@ -58,7 +58,7 @@
     {
       "kind": "implementation-evidence",
       "paths": ["protocol/implementation-experiment.md", "validation/implementation-map.md", "validation/vectors.md", "validation/fixtures/adapter-parser-v1.json"],
-      "summary": "Describe the existing experimental adapter parser and service boundaries separately from generic Draft v0 conformance.",
+      "summary": "Describe the existing experimental adapter parser, exact local framing, bound-response consumption and service-versus-client error mapping separately from generic Draft v0 conformance.",
       "generic_wire_changed": false,
       "independent_interoperability_claimed": false
     },

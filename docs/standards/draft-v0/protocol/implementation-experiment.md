@@ -115,6 +115,20 @@ revision, expiry and verdict, without arbitrary mutations or management data.
 Whether an application invokes the bound handler exactly once requires actual
 adapter/origin observation. Do not retry an ambiguous origin effect.
 
+The shared client independently validates the outgoing envelope against its
+provisioned profile and pending id/tenant/origin/revision/deadline. It authenticates
+the native server and accepts only HTTP 200 with the exact response binding,
+known verdict and an expiry after receipt but no later than the request deadline.
+The authority may shorten that expiry. Unknown, missing or duplicate reply fields
+reject rather than creating a usable decision.
+
+The returned `BoundResponse` has single-owner consumption and checks wall-clock
+rollback, authority expiry and a monotonic deadline. Inspection of its verdict
+is not consumption or a final host-liveness check. Dropping the client future
+closes its IPC without automatic retry; this does not retract a previously
+performed origin effect. Native peer checks and private credentials are transport
+assumptions, not a standalone signed portable decision token.
+
 | Failure family | Current service status |
 | --- | --- |
 | Malformed envelope/framing | 400; body/capability parser diagnostics may map to 422 |
@@ -128,3 +142,7 @@ adapter/origin observation. Do not retry an ambiguous origin effect.
 Errors are not ALLOW/CHALLENGE/DENY verdicts. Exact implementation status/error
 behavior is version-bound and is not automatically a Draft v0 rule. The
 [synthetic parser vectors](../validation/vectors.md) test a narrower boundary.
+The table describes service responses. The shared client converts a non-200
+service response into its own 503 `authority_status` failure; individual host
+adapters then apply their documented response mapping. Do not assume that a
+service's 401, 409 or 429 is forwarded unchanged to an application client.

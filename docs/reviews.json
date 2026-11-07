@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/authority/src/client.rs",
+  "sha256": "703fbc7e4bafbc0aa7e21b8ef5cf320070548cf51e19e2fcc53f779235a4622e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete client and three regression definitions: provisioned-profile outgoing parse, exact pending binding, private credential/native peer transport, bounded one-shot exchange, HTTP200-only reply, expiry/rollback/monotonic validation, noncloneable consume, non200 collapsed503 and no retry. No origin completion or actual IPC execution inferred.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/authority/src/protocol.rs",
+  "sha256": "745ab89800e26457b469e11e8733874cce816203db3cd725f372f37805aae78c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete shared local protocol and framing regression: exact legacydecision route, common read_local endpoint separately authorized, requiredHost/boundedAuthorization, responseclose/65536bytes, static bounded error body/no reflection. Source tests inspect buffered extras/truncation only, not futurebyte absence; no execution performed.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/authority/Cargo.toml",
+  "sha256": "9c7a591f43a7db9fbe425e72c2374ef6d7bcceac5bf06217d2b09e8e0f1e5466",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete unpublished authority manifest with shared integrity/audit/scoring/signals/network owners and declared async/native platform edges. Dependency graph is source declaration, not compiled service/OS tuple or immutable integrated closure.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
   "source": "crates/authority/src/protocol/framing.rs",
   "sha256": "e6ba9fddfafc23d09b82202e1e0a15909d1a439508283e221a55c82ac3f45ce6",
   "reviewer": "codex/rust-pages",
