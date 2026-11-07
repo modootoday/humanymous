@@ -1,0 +1,172 @@
+{
+  "schema": "humanymous.runtime-extracted-package/1",
+  "scope": "Windows extracted-package compile and pure consumer only; not registry publication or normal cargo package verification",
+  "archive_production_flags": [
+    "--locked",
+    "--offline",
+    "--allow-dirty",
+    "--no-verify",
+    "--exclude-lockfile"
+  ],
+  "archives": [
+    {
+      "name": "humanymous-core",
+      "archive_sha256": "4a752d59798d7ed7e29f3d90f39e91339721b921a3646894217a1d7e1deb14d5",
+      "bytes": 414772,
+      "members": 150
+    },
+    {
+      "name": "humanymous-platform",
+      "archive_sha256": "f31d8eb4f06bb11ebb336104d5057c85b0c8218b31cc30d132cf9c44cefd4462",
+      "bytes": 50170,
+      "members": 32
+    },
+    {
+      "name": "humanymous-runtime",
+      "archive_sha256": "77e8d0cc358a8f7f3740fb192680868b4667b7e396d87a38da55e7a80e88ee56",
+      "bytes": 1056166,
+      "members": 282
+    },
+    {
+      "name": "humanymous-collector",
+      "archive_sha256": "db00b702650befd4d9c838eb786a4186c84eab1a96c9b3bc9ae23230db2f6ca4",
+      "bytes": 62195,
+      "members": 58
+    }
+  ],
+  "temporary_validation_workspace": true,
+  "maintained_package_census_unchanged": true,
+  "local_patches": "Core, Platform and Collector resolve from their extracted crate archives; no source-repository path dependencies",
+  "extracted_source_files": 522,
+  "extracted_source_difference_records": 0,
+  "runtime_and_consumer_all_targets_all_features_check_exit": 0,
+  "runtime_and_consumer_strict_clippy_exit": 0,
+  "default_consumer_pure_run_exit": 0,
+  "normal_build_tree_platform_testing_absent": true,
+  "runtime_tests_executed": 0,
+  "native_effects_executed": 0,
+  "full_registry_toolchain_read_closure_attested": false,
+  "normal_package_verification": false,
+  "publication": false,
+  "retained_observations": [
+    "Runtime package metadata warning: description absent",
+    "Initial temporary consumer unused-import warning retained; consumer source adjusted to reference actual public types before strict Clippy, without changing extracted packages"
+  ],
+  "raw": [
+    {
+      "private_file": "archives.json",
+      "sha256": "1dc292c9855be07d5f72f32e1d65fdc5e959412f49c6671ee301e0f13e82c453",
+      "bytes": 692
+    },
+    {
+      "private_file": "package.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "package.stderr",
+      "sha256": "c6cf9092d03fdbcafcac2417c7dc7eca1af8850ce30c28c73217c0e32afe987b",
+      "bytes": 603
+    },
+    {
+      "private_file": "collector-package.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "collector-package.stderr",
+      "sha256": "98a7a2f5da70a7c73b6276be7a516607ebdb23fc27e9ae29baff4222bc501281",
+      "bytes": 285
+    },
+    {
+      "private_file": "extracted.before.json",
+      "sha256": "66465a72f475781b63bd6e5c4807e37c7a913d5dd99bb6e2680e4ea6b0883120",
+      "bytes": 94829
+    },
+    {
+      "private_file": "extracted.after.json",
+      "sha256": "66465a72f475781b63bd6e5c4807e37c7a913d5dd99bb6e2680e4ea6b0883120",
+      "bytes": 94829
+    },
+    {
+      "private_file": "extracted.final.json",
+      "sha256": "66465a72f475781b63bd6e5c4807e37c7a913d5dd99bb6e2680e4ea6b0883120",
+      "bytes": 94829
+    },
+    {
+      "private_file": "resolve.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "resolve.stderr",
+      "sha256": "c41a13d6a3989aa50a5270a04fb1350a79398d6c99a3f832e36d8042b1ec47c7",
+      "bytes": 281
+    },
+    {
+      "private_file": "extracted-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "extracted-check.stderr",
+      "sha256": "818bf48dfa9dc4a88d587b6afa0531eb1e08d5b57b1310c65afacf4cecf00ce5",
+      "bytes": 4754
+    },
+    {
+      "private_file": "extracted-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "extracted-clippy.stderr",
+      "sha256": "2d29805ba273cc54f35f11daace9265233f14f9d8b969175124bda0004d71dc6",
+      "bytes": 409
+    },
+    {
+      "private_file": "consumer-run.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "consumer-run.stderr",
+      "sha256": "cff275180cff1e3bd9ca9b1a035cdfecb394ff567306ba8a02ca3b7e3ffae0e2",
+      "bytes": 3421
+    },
+    {
+      "private_file": "consumer-normal-tree.txt",
+      "sha256": "46e34b7ced4f7387d0d98015c0eded55c1fa2e62e6cdbb0c9ed9abd6f7017f29",
+      "bytes": 42311
+    },
+    {
+      "private_file": "consumer-tree.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "private_file": "Cargo.toml",
+      "sha256": "92df345fe16d44b044fa0b9c2250052b986913b70e226b38000c3b91ca66332b",
+      "bytes": 314
+    },
+    {
+      "private_file": "Cargo.lock",
+      "sha256": "a9274a933c9b321bc178599bad85bf8a10489009a128c2936d95d61dced931fa",
+      "bytes": 37054
+    },
+    {
+      "private_file": "consumer.initial.rs",
+      "sha256": "c2acbb1c79421a7c6d18c43b0237df6f31197dd011a50774bed42663024a76e8",
+      "bytes": 515
+    },
+    {
+      "private_file": "consumer/Cargo.toml",
+      "sha256": "c5800e7f6673064a1682b4db6741d2b3ad04830226a80225cc5cf219f2b774a5",
+      "bytes": 220
+    },
+    {
+      "private_file": "consumer/src/main.rs",
+      "sha256": "46893a777b3c549b3e0cab9091895668d09efe5da593038fbf43e41efa54be4a",
+      "bytes": 684
+    }
+  ]
+}

@@ -407,3 +407,21 @@ adds both exact positive bodies, an additional-sensitive-field negative and an
 oversized-body negative without adding test names. Source formatting is checked;
 actual WASM tests/browser/product execution for these new bytes remains pending.
 The historical1f87 HTTP403 must not be retrospectively assigned either category.
+## Origin rejection investigation boundary
+
+The source-bound edc30181 hosted pilot refined the failed bootstrap diagnostic to
+HttpForbiddenOrigin. This distinguishes the Runtime origin rejection family,
+not absence versus null versus a different Origin value, and not authenticated
+header provenance. Keep strict origin equality and Fetch Metadata predicates.
+Do not switch request mode to cors or accept Referer as fallback to make it pass.
+
+The [Fetch Origin algorithm](https://fetch.spec.whatwg.org/#append-a-request-origin-header)
+describes Origin generation for non-GET/HEAD requests, including referrer-policy
+conditions outside cors mode. This normative algorithm does not establish the
+actual wire headers observed in this deployment. The historical
+[Mozilla bug1605305](https://bugzilla.mozilla.org/show_bug.cgi?id=1605305) concerns
+Origin/referrer interaction and is closed; it is not evidence that the current
+Firefox ESR exhibits that bug. Empty-referrer causality remains a hypothesis.
+Lab may classify only finite browser-local proxy observations with exact owned
+request/source bindings; a browser-local observation is not a downstream Runtime
+header attestation. Raw header values and arbitrary response text stay private.
