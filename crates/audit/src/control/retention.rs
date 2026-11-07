@@ -194,6 +194,53 @@ impl NativeAnchorRetainer {
     }
 }
 
+impl ControlAnchorRetainer for NativeAnchorRetainer {
+    fn scope(&self) -> &Scope {
+        &self.scope
+    }
+    fn authority_public(&self) -> [u8; 32] {
+        self.public
+    }
+    fn current(&mut self) -> io::Result<LedgerAnchor> {
+        let bytes = self.store.read()?.ok_or_else(invalid)?;
+        let saved: Snapshot = serde_json::from_slice(&bytes).map_err(|_| invalid())?;
+        if saved.scope != self.scope
+            || saved.authority_public != self.public
+            || saved.anchor != self.anchor
+            || !saved.anchor.verify(&self.public)
+        {
+            return Err(invalid());
+        }
+        Ok(saved.anchor)
+    }
+    fn retain(
+        &mut self,
+        previous: &LedgerAnchor,
+        next: &LedgerAnchor,
+    ) -> io::Result<RetainedControlAnchor> {
+        if self.current()? != *previous {
+            return Err(invalid());
+        }
+        transition(&self.public, previous, next)?;
+        let snapshot = Snapshot {
+            scope: self.scope.clone(),
+            authority_public: self.public,
+            anchor: next.clone(),
+        };
+        let durability = self
+            .store
+            .commit(&serde_json::to_vec(&snapshot).map_err(|_| invalid())?)?;
+        self.anchor = next.clone();
+        RetainedControlAnchor::from_acknowledgement(
+            self.scope.clone(),
+            self.public,
+            next,
+            next.clone(),
+            durability,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -280,51 +327,5 @@ mod tests {
                 .accepts(Durability::FileSyncedNamespaceUnconfirmed)
         );
         assert!(RetentionRequirement::FileAndDirectory.accepts(Durability::FileAndDirectory));
-    }
-}
-impl ControlAnchorRetainer for NativeAnchorRetainer {
-    fn scope(&self) -> &Scope {
-        &self.scope
-    }
-    fn authority_public(&self) -> [u8; 32] {
-        self.public
-    }
-    fn current(&mut self) -> io::Result<LedgerAnchor> {
-        let bytes = self.store.read()?.ok_or_else(invalid)?;
-        let saved: Snapshot = serde_json::from_slice(&bytes).map_err(|_| invalid())?;
-        if saved.scope != self.scope
-            || saved.authority_public != self.public
-            || saved.anchor != self.anchor
-            || !saved.anchor.verify(&self.public)
-        {
-            return Err(invalid());
-        }
-        Ok(saved.anchor)
-    }
-    fn retain(
-        &mut self,
-        previous: &LedgerAnchor,
-        next: &LedgerAnchor,
-    ) -> io::Result<RetainedControlAnchor> {
-        if self.current()? != *previous {
-            return Err(invalid());
-        }
-        transition(&self.public, previous, next)?;
-        let snapshot = Snapshot {
-            scope: self.scope.clone(),
-            authority_public: self.public,
-            anchor: next.clone(),
-        };
-        let durability = self
-            .store
-            .commit(&serde_json::to_vec(&snapshot).map_err(|_| invalid())?)?;
-        self.anchor = next.clone();
-        RetainedControlAnchor::from_acknowledgement(
-            self.scope.clone(),
-            self.public,
-            next,
-            next.clone(),
-            durability,
-        )
     }
 }

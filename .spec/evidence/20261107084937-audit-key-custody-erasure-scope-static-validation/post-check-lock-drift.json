@@ -1,0 +1,11 @@
+{
+  "schema": "humanymous.audit-post-validation-drift/1",
+  "phase": "after B returned, before evidence commit",
+  "path": "Cargo.lock",
+  "testedSha256": "9b96ab7ac2bc6a3f474c3f2b586c05d087e6cbaecc0f50e7b28eda2b392c58d3",
+  "currentWorktreeSha256": "65b830318da0efb30498ab117c478a66ede3de1eecc9a55a40cc2a4f971402b0",
+  "observedDiff": "humanymous-python-adapter adds existing audit/native-security/signals dependency edges",
+  "newGraphRevalidation": "not_run",
+  "auditRustSourceDrift": 0,
+  "action": "preserve original exact-lock results; no root lock edit, no Cargo restart"
+}

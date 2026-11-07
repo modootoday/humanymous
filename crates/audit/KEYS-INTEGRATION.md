@@ -1,6 +1,6 @@
 # Sealed key compatibility integration
 
-## New unqualified erasure recovery scope correction
+## Pending erasure recovery scope correction
 
 After the fixed8132117 candidate, source inspection found pending erasure recovery
 checked the permit's subject but had no trusted installation/node scope input.
@@ -11,10 +11,22 @@ Historical envelopes do not encode logical scope; service configuration must
 provide it, never request JSON. Own Windows recovery callers were updated.
 One new normal hosted-only test uses two genuinely signed authorities/scopes for
 the same subject, verifies rejection preserves committed/pending bytes, then
-checks exact-scope tombstone recovery. It has not compiled or executed yet.
+checks exact-scope tombstone recovery. Root-assigned B checks passed seven pure
+units, all-target checking/Clippy and integration --no-run compile/link. First
+Clippy found items_after_test_module; the implementation was reordered without
+suppression, then Clippy and the final seven pure tests passed. Recursive107-file
+closure has only that declared source reorder, with root/lock/deps unchanged.
+The new native regression has not executed. Evidence:root/20261107084937.
 The preceding8132117 native successes do not qualify this later correction.
 
 ## Latest actual hosted subset, source 8132117
+
+The same fixed source also produced macos-15/aarch64 control_operations16passed
+and durable_witness11passed/rawignored1 with validated rows. Its workspace actor
+stopped at the same host_process ignored-accounting failure after15of88harnesses.
+Evidence:root/20261107084427 retains separate source/count/raw-byte-hash facts;
+this is another OS observation of the same tests, not additional unique tests.
+Neither OS subset qualifies the newer a04603e1 scope correction above.
 
 Fixed candidate8132117 includes audit20b57d2 unchanged. Ubuntu's full locked
 workspace/all-target build passed. Actual control_operations16passed with

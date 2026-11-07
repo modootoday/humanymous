@@ -1,0 +1,45 @@
+{
+  "schema": "humanymous.audit-erasure-scope-static-validation/1",
+  "scopeFixCommit": "a04603e1",
+  "postFixChange": "retention.rs item ordering only; final tested source hash listed",
+  "slot": "B target/validation-agents returned",
+  "jobs": 1,
+  "incremental": 0,
+  "testThreads": 1,
+  "recursiveFiles": 107,
+  "unexpectedRecursiveDrift": 0,
+  "declaredReorder": [
+    {
+      "path": "crates/audit\\src\\control\\retention.rs",
+      "sha256": "fe555ca9ab526e897b631775f1d895eb7d8a021960775e10cf65b6d640f0969b",
+      "unchanged": false
+    }
+  ],
+  "closureBeforeSha256": "178cc181c22f6cbc66513da7c2db0c811019942a729260e63617f6b757ebafd5",
+  "closureFinalSha256": "68214a186b9ab2576bab93e1126bbf3f227e09f29b5523fef46a91227b49d29a",
+  "exactFinalPureFilters": [
+    "control::retention::tests",
+    "control::retention_service::tests",
+    "keys::custody::rotation::tests"
+  ],
+  "pureFinalPassed": 7,
+  "pureFinalFailed": 0,
+  "pureFinalIgnored": 0,
+  "initialPurePassed": 7,
+  "uniquePureTests": 7,
+  "allTargetsCheck": "passed before declared reorder",
+  "clippyAttempt1": {
+    "exit": 101,
+    "reason": "items_after_test_module",
+    "testsExecuted": 0
+  },
+  "clippyAllTargetsFinal": "passed attempt2; no allow suppression",
+  "integrationCompileLinkOnly": "passed final --no-run",
+  "actualNativeTestsExecuted": 0,
+  "newScopeRegressionExecuted": false,
+  "hostedOldCandidate": "8132117 results do not qualify scope fix",
+  "freeGiBBefore": 32.44,
+  "commitPercentBefore": 82,
+  "freeGiBAfter": 32.46,
+  "commitPercentAfter": 83
+}

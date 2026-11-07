@@ -100,6 +100,23 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
 
 ## Record
 
+Root-assigned B validation for a04603e1 passed seven selected pure units,
+all-target cargo check and integration --no-run compile/link. First all-target
+Clippy rejected the retention test-module/item order; the failure and initial
+closed107-file source set were preserved. Existing implementation/test blocks
+were reordered without allow suppression or behavior changes, then all-target
+Clippy and the final seven pure units passed. Only this declared reorder drifted
+the recursive closure; manifests/lock/toolchain/deps matched. B returned promptly.
+New foreign-scope native regression remains unexecuted, not an inherited813pass.
+Evidence: [[evidence:root/20261107084937]]. No local actual-file/process execution.
+
+After B return, precommit observation found root Cargo.lock had acquired three
+Python-adapter dependency edges; code in the validated recursive audit closure
+was unchanged. The passed results remain tied to original lock9b96ab7a... and
+new worktree lock65b83031... revalidation is not_run. A separate attached delta
+preserves both exact hashes. No audit manifest/lock edit, Cargo restart, stage
+or foreign rollback occurred; root owns graph closure and next allocation.
+
 New static security finding after8132117: recover_erasure_pending had no trusted
 Scope input, and validate_update checked only subject commitment. Normal vault
 mutation checked scope, but this lower-level pending recovery could accept a
@@ -111,7 +128,16 @@ This is a code-inspection finding, not a claimed reproduced hosted exploit.
 New compilation/execution remain not_run, and8132117 results remain historical.
 Evidence: [[evidence:root/20261107084148]]. No push or new dispatch was performed.
 
-### Exact Ubuntu hosted subset, not whole-product completion
+### Exact hosted OS subsets, not whole-product completion
+
+The same fixed8132117 candidate later completed macOS/aarch64 job128351926084.
+Its exact actor summary also reports control_operations16pass and
+durable_witness11pass/rawignored1, all corresponding rows validated; it stopped
+at the same host_process unknownignored3 with15of88coverage. These are separate
+OS observations, not54 unique tests. Source/count/raw-hash facts and missing
+private-original limitations are in [[evidence:root/20261107084427]]. Neither
+platform result qualifies the later a04603e1 scope correction. Windows remains
+in progress at this observation; no full cross-OS or product result is inferred.
 
 Actual source8132117e7bf1445939d7dee9066fcf45ccf0915b contains audit20b57d2
 unchanged. Run42355168729 native Ubuntujob128351926093 built all locked workspace
