@@ -1,0 +1,39 @@
+{
+  "schema": "humanymous.windows-runner-pure-validation/1",
+  "status": "passed",
+  "scope": "standalone-runner-pure-component",
+  "full_runtime_qualified": false,
+  "source_commit": null,
+  "source_manifest_sha256": "a94f096639c5e19e8d87b34dfb588c85511f7883aee73ce0bde784b6f623dab3",
+  "source_files": 40,
+  "source_drift": 0,
+  "tests": {
+    "passed": 21,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 1,
+    "excluded": "public_summary_excludes_identity_credentials_and_raw_traces"
+  },
+  "all_target_check": "passed",
+  "all_target_clippy": "passed",
+  "jobs": 1,
+  "incremental": false,
+  "actual_process_acl_scm_credentials": "not_run",
+  "initial_attempts": [
+    "compile failed: initialization recorder visibility; corrected",
+    "Clippy failed: collapsible_if; corrected"
+  ],
+  "runtime_receipt_required_facts": 13,
+  "limitations": [
+    "Parent recovery of coverage sidecar is not wired; absent final report may lose public partial counts.",
+    "Hosted lifecycle and ordinary user directory execution remain not_run."
+  ],
+  "raw_logs": {
+    "pure-tests.log": "c2e9d969d1574ed921fe788899aad1aa3faa989ba97772633c62bd0a0c370f6a",
+    "pure-tests-retry.log": "3146d49e591604dd88fba847ac4efa89b2dc70cec79623218edcdb5cecf6cf7f",
+    "check.log": "d4fe615911a2b86a5ba3576a06974b4c4d77b2597c0f2de94d7d8ac7d1dda8f3",
+    "clippy.log": "d3415f19994ec43c322961209e3604f6149b8ad0fa79bb1004e017a8bbada5b8",
+    "final-pure.log": "ce12e6fc11e0e45565c2a86cca063c414948950f7748f51b2438630d0ec31f1b",
+    "final-clippy.log": "6e1ccf3746a675bd4367a92493d1258d1f8d21c7af1ab5110e583db4d760d240"
+  }
+}

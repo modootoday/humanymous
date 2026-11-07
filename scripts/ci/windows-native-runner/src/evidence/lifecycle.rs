@@ -24,15 +24,27 @@ pub(super) fn project(report: &Value, summary: &mut Value) {
         let hash = sha256(&scm["original_descriptor_sha256"]);
         summary["scm_delegation"] = json!({"rights":scm["rights"].as_u64(),"single_generated_sid":scm["single_generated_sid"].as_bool(),"restored":scm["restored"].as_bool(),"original_descriptor_sha256":hash});
     }
-    if let Some(service) = report.get("service_execution") {
-        summary["service_execution"] = json!({"exit_code":service["exit_code"].as_i64(),"passed":service["passed"].as_u64(),"failed":service["failed"].as_u64(),"ignored":service["ignored"].as_u64(),"measured":service["measured"].as_u64(),"nonselected_tests":service["nonselected_tests"].as_u64()});
-        summary["service_execution"]["test"] = match service["test"].as_str() {
-            Some("native_service_install_upgrade_rollback_and_remove") => {
-                json!("native_service_install_upgrade_rollback_and_remove")
+    for case in &crate::service::catalog::CASES {
+        if let Some(service) = report.get(case.field) {
+            summary[case.field] = json!({"exit_code":service["exit_code"].as_i64(),"passed":service["passed"].as_u64(),"failed":service["failed"].as_u64(),"ignored":service["ignored"].as_u64(),"measured":service["measured"].as_u64(),"nonselected_tests":service["nonselected_tests"].as_u64(),"discovered":service["discovered"].as_u64(),"validated":service["validated"].as_bool(),"stdout_sha256":sha256(&service["stdout_sha256"])});
+            summary[case.field]["test"] = if service["test"] == case.test {
+                json!(case.test)
+            } else {
+                Value::Null
+            };
+            summary[case.field]["status"] = match service["status"].as_str() {
+                Some("unsupported") => json!("unsupported"),
+                Some("failed") => json!("failed"),
+                _ => Value::Null,
+            };
+            if let Some(receipt) = service.get("runtime_receipt") {
+                let mut facts = json!({"verified":receipt["verified"].as_bool(),"run_id":receipt["run_id"].as_u64(),"product_qualified":receipt["product_qualified"].as_bool()});
+                for key in crate::service::receipt::FACTS {
+                    facts[key] = json!(receipt[key].as_bool());
+                }
+                summary[case.field]["runtime_receipt"] = facts;
             }
-            _ => Value::Null,
-        };
-        summary["service_execution"]["stdout_sha256"] = json!(sha256(&service["stdout_sha256"]));
+        }
     }
 }
 

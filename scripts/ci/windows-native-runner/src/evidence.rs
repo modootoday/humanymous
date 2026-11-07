@@ -2,7 +2,9 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, fs, io, path::Path, process::Command};
 mod accounting;
+mod failure;
 mod lifecycle;
+pub(crate) use failure::record as record_initial_failure;
 
 pub fn digest(path: &Path) -> io::Result<String> {
     Ok(format!("{:x}", Sha256::digest(fs::read(path)?)))
@@ -242,6 +244,11 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
         return Err(io::Error::other("scoped native input report required"));
     }
     let rows=report["coverage"]["harnesses"].as_array().map(|rows|rows.iter().map(|row|json!({"target":row["target"],"executable_sha256":row["executable_sha256"],"discovered":row["discovered"],"passed":row["passed"],"failed":row["failed"],"validated":row["validated"],"ignored":row["ignored"],"ignored_subprocess_helpers":row["ignored_subprocess_helpers"],"subprocess_helpers":row["subprocess_helpers"],"required_parent_tests":row["required_parent_tests"],"required_not_run":row["required_not_run"],"filtered":row["filtered"],"exit_code":row["exit_code"],"stdout_sha256":row["stdout_sha256"]})).collect::<Vec<_>>()).unwrap_or_default();
+    let mut rows = rows;
+    for (index, row) in rows.iter_mut().enumerate() {
+        row["unsupported_required_case"] =
+            json!(report["coverage"]["harnesses"][index]["unsupported_required_case"].as_bool());
+    }
     let passed = accounting::observed_total(&rows, "passed")?;
     let ignored = accounting::observed_total(&rows, "ignored")?;
     let zero = rows.iter().filter(|r| r["discovered"] == 0).count();
@@ -257,11 +264,17 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
         })
         .count();
     summary["unknown_count_harnesses"] = json!(unknown_counts);
-    summary["counts_complete"] = json!(unknown_counts == 0);
+    summary["counts_complete"] =
+        json!(unknown_counts == 0 && report["coverage"]["execution_complete"] == true);
     summary["failed_tests"] = json!(failed);
     summary["required_harnesses"] = report["coverage"]["required_harnesses"].clone();
     summary["executed_harnesses"] = report["coverage"]["executed_harnesses"].clone();
     summary["coverage_complete"] = report["coverage"]["complete"].clone();
+    summary["execution_complete"] = json!(report["coverage"]["execution_complete"].as_bool());
+    summary["fatal_stop"] = json!(report["coverage"]["fatal_stop"].as_bool());
+    if report["initialization_failure"]["reported"] == true {
+        summary["initialization_failure"] = json!({"reported":true,"os_error_code":report["initialization_failure"]["os_error_code"].as_i64()});
+    }
     if workspace {
         if report["status"] == "passed" {
             accounting::workspace_pass(&report)?;
@@ -273,6 +286,10 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
     }
     summary["runner_provenance"] = report["source"]["github"].clone();
     lifecycle::project(&report, &mut summary);
+    if report["manifest"].get("build_observation").is_some() {
+        summary["build_observation"] =
+            crate::harness::build_observation::project(&report["manifest"]["build_observation"]);
+    }
     summary["source_manifest_sha256"] = json!(format!(
         "{:x}",
         Sha256::digest(serde_json::to_vec(&report["source"]["files"])?)

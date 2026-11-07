@@ -1,9 +1,10 @@
 //! Opt-in disposable native manager pilot; never executes on a local workstation.
+pub(crate) mod catalog;
+mod execution;
+pub(crate) mod receipt;
 use crate::{Options, evidence, harness};
-use humanymous_test_support::process::capture_with_stderr;
 use serde_json::json;
-use sha2::{Digest, Sha256};
-use std::{fs, io, path::Path, process::Command, time::Duration};
+use std::{fs, io, path::Path};
 
 pub fn run(options: &Options) -> io::Result<i32> {
     if !evidence::disposable_host() {
@@ -22,58 +23,52 @@ pub fn run(options: &Options) -> io::Result<i32> {
     let result = (|| -> io::Result<()> {
         let manifest = match &options.manifest {
             Some(path) => serde_json::from_slice(&fs::read(path)?)?,
-            None => harness::prepare(&options.report, &options.binaries, harness::Scope::Native)?,
+            None => harness::prepare(
+                &options.report,
+                &options.binaries,
+                harness::Scope::Native,
+                &report["source"],
+            )?,
         };
-        let entry = manifest["harnesses"]
-            .as_array()
-            .and_then(|rows| {
-                rows.iter().find(|r| {
-                    r["target"] == "service_process"
-                        && r["package_id"]
-                            .as_str()
-                            .is_some_and(|id| id.contains("humanymous-cli"))
-                })
-            })
-            .ok_or_else(|| io::Error::other("CLI native service harness absent"))?;
-        let executable = Path::new(
-            entry["executable"]
-                .as_str()
-                .ok_or_else(|| io::Error::other("service executable absent"))?,
-        );
-        if evidence::digest(executable)? != entry["sha256"] {
-            return Err(io::Error::other("service executable digest mismatch"));
-        }
-        let output = capture_with_stderr(
-            Command::new(executable)
-                .args([
-                    "--ignored",
-                    "--exact",
-                    "native_service_install_upgrade_rollback_and_remove",
-                    "--nocapture",
-                ])
-                .env("HUMANYMOUS_DISPOSABLE_SERVICE_ACTOR", "1"),
-            b"",
-            Duration::from_secs(180),
-            1024 * 1024,
-        )?;
-        fs::write(
-            options.report.with_extension("service-stdout.log"),
-            &output.stdout,
-        )?;
-        fs::write(
-            options.report.with_extension("service-stderr.log"),
-            &output.stderr,
-        )?;
-        let text = std::str::from_utf8(&output.stdout).map_err(io::Error::other)?;
-        let totals = harness::totals(text)?;
         report["manifest"] = manifest.clone();
-        report["service_execution"] = json!({"test":"native_service_install_upgrade_rollback_and_remove","exit_code":output.status.code(),"passed":totals[0],"failed":totals[1],"ignored":totals[2],"measured":totals[3],"nonselected_tests":totals[4],"stdout_sha256":format!("{:x}",Sha256::digest(&output.stdout))});
-        if !output.status.success() || totals[0..4] != [1, 0, 0, 0] {
-            return Err(io::Error::other(
-                "required actual native service lifecycle did not pass",
-            ));
+        let rows = manifest["harnesses"]
+            .as_array()
+            .ok_or_else(|| io::Error::other("service manifest absent"))?;
+        for case in &catalog::CASES {
+            if !case.implemented_for_target() {
+                report[case.field] =
+                    json!({"test":case.test,"status":"unsupported","validated":false});
+                report["missing_required_cases"]
+                    .as_array_mut()
+                    .unwrap()
+                    .push(json!(case.id));
+                continue;
+            }
+            let entry = rows
+                .iter()
+                .find(|row| {
+                    catalog::required_case(row).is_some_and(|found| found.test == case.test)
+                })
+                .ok_or_else(|| io::Error::other("required native service harness absent"))?;
+            let result = execution::run(entry, case, &options.report, &report["source"]);
+            report[case.field] = match result {
+                Ok(row) => row,
+                Err(error) => {
+                    report[case.field] =
+                        json!({"test":case.test,"validated":false,"status":"failed"});
+                    return Err(error);
+                }
+            };
+            if report[case.field]["validated"] != true {
+                return Err(io::Error::other(
+                    "required actual native service pilot did not pass",
+                ));
+            }
+            report["cases"]
+                .as_array_mut()
+                .unwrap()
+                .push(json!({"id":case.id,"status":"passed"}));
         }
-        report["cases"] = json!([{"id":"native-service-lifecycle","status":"passed","evidence":"actual signed fixture install/repeat/upgrade/rollback/remove through native service manager"}]);
         evidence::verify_snapshot(&report["source"])?;
         Ok(())
     })();

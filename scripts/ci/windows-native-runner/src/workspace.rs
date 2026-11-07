@@ -19,6 +19,7 @@ pub fn run(options: &Options) -> io::Result<i32> {
                 &options.report,
                 &options.binaries,
                 harness::Scope::Workspace,
+                &report["source"],
             )?,
         };
         if manifest["scope"] != "workspace-default-features" {

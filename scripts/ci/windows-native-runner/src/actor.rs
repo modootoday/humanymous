@@ -316,6 +316,7 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
         } else {
             harness::Scope::Native
         },
+        &source,
     )?;
     evidence::verify_snapshot(&source)?;
     let mut nonce = [0u8; 16];
@@ -440,10 +441,13 @@ pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
                 }
             }
             if service {
-                for stream in ["service-stdout.log", "service-stderr.log"] {
-                    let path = report.with_extension(stream);
-                    if path.is_file() {
-                        fs::copy(path, options.report.with_extension(stream))?;
+                for case in &crate::service::catalog::CASES {
+                    for stream in ["list-stdout", "list-stderr", "stdout", "stderr"] {
+                        let extension = format!("{}-{stream}.log", case.log_prefix);
+                        let path = report.with_extension(&extension);
+                        if path.is_file() {
+                            fs::copy(path, options.report.with_extension(extension))?;
+                        }
                     }
                 }
             }

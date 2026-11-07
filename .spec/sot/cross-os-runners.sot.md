@@ -701,3 +701,71 @@ shared-native-f44b32b-pure-summary.json. This comparison is scoped post-executio
 not an atomic snapshot of all concurrent project edits. Four raw test/Clippy logs
 are registered in private evidence20261107051539. Actual hosted fixture/CrossOS
 verification and standalone runner fallback/metrics validation remain not_run.
+
+New authoritative root update: sourcea26d1c3f08b365ca93545c6a51343095868edb45 was
+pushed to codex/rust; run42354873001 terminated at workflow startup with0jobs and
+0tests. Nested policy actions:read exceeded caller actions:none. CI owner fixes
+the caller permission contract; root alone pushes/dispatches the next source.
+This is not old63f69ae's workspace failure, nor execution evidence for local dirty
+runner hooks. Native/shared sourcef44b32b is included but actual lifecycle remains
+not_run. The separate startup observation is attached; no execution report was
+generated when no job started. Future Go/.NET/Apache profiles stay unqualified.
+
+CLI actual runtime service contract is now canonical7f73604251e983addbb1ef97283959cd6045c6e1:
+integration target runtime_service_process, exact ignored test
+native_runtime_service_lifecycle_and_missing_credential_fail_closed. Runner source
+adds this as a distinct required case alongside generic service_process, enabling
+both approved service-pilot/runtime-service-pilot features. Default native does not
+run these privileged cases; ignored required cases are not helpers. The runtime
+case is Windows-implemented; other-target source explicitly reports unsupported
+required work. The generic pilot's qualification is not promoted to actual runtime.
+
+Selected execution verifies exact package/target/kind, executable digest, enumerated
+test inventory, one selected pass, zero failed/ignored/measured and filtered count
+equal discovered-1. Runtime final JSON is one strict64KiB line bound to exact source
+and run ID with nine required independently observed facts: missing credential
+fail-closed, actual principal, readiness, graceful stop, stopped host exit, credential
+and state cleanup, receipt binding and SCM registration removal. Missing/duplicate/
+wrong-source/run/false facts fail. Raw service PID remains private. The parent CLI
+test independently correlates native SCM PID/status, nonce/executable and service
+receipt; metadata alone is not process provenance. Nonsecret controller run/source
+environment is input only to the ordinary test, not assumed inherited by SCM.
+Two case-specific execution fields and logs are preserved and whitelisted; overall
+component remains blocked2 for other missing native requirements. New catalog1 and
+receipt2 pure tests plus runner evidence7/metrics2 await the assigned slot.
+
+Browser owner requested Captured.pid. Shared process helper now captures actual
+direct-child ID before wait and omits it from Debug. A new hosted-only process test
+binds the child self-reported PID and distinguishes the parent. This is not caller
+authorization, descendant containment or protection from PID reuse after exit.
+No actual process test ran locally. This change is afterf44b32b and is not covered
+by its shared pure validation. Existing no-op subprocess entry point accounting
+was raised to root for explicit helper-contract review; no product-ignore exception
+is introduced while that review is pending.
+
+Fixed source8132117e7bf1445939d7dee9066fcf45ccf0915b run42355168729 is in progress;
+observed policy success and Windows job128351926153 queued. This supersedesa26d
+startup failure only for subsequent execution, not historical results. Root alone
+pushes; no new candidate is pushed during the run. Local dirty runner hooks/PID
+changes are outside this source and remain unqualified by it.
+
+
+The runner continuation checkpoint distinguishes execution_complete from successful
+coverage. Completed child stdout with invalid strict accounting records an indexed
+failure and permits later harness receipts; identity, enumeration, spawn, capture,
+containment or persistence failures stop collection. Native named-case receipts are
+retained before aggregate accounting rejection. Ignored Node product tests remain
+required, never helpers. Only the exact shared subprocess helper with all six
+parent tests can be accounted separately. Coverage sidecars are written after each
+completed child; parent recovery when the final report is absent is not wired yet.
+
+The runtime service receipt now requires thirteen true facts, including actual
+upgrade, rollback, replay floor and complete readiness manifest verification. The
+older nine-fact receipt cannot qualify this contract. Actual hosted execution is
+not_run for this source. Root-assigned D validation passed 21 pure tests, zero
+failed/ignored and one excluded filesystem/ACL fixture, plus all-target check and
+Clippy with warnings denied. Forty source/manifest/lock/toolchain files had zero
+final-run drift. Initial visibility and Clippy failures were corrected and retained
+in private logs. These checks do not qualify process, directory, WinCred or SCM
+behavior. Shared ordinary-user directory dependency compilation was independently
+observed by the .NET owner; actual initializer execution remains not_run.

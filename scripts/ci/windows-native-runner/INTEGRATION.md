@@ -154,3 +154,58 @@ deletion plus SCM restored=true remain required. Positive returns2/statusblocked
 when its service component passes but other native requirements remain missing;
 it requires actual child exit2, job empty and cleanup/restore evidence. These two
 cases must use separate report paths and be consumed as separate evidence.
+
+Initialization failure after option parsing preserves a new failed report only
+when no report exists. Source and harness denominators remain null/unknown, never
+zero-pass success; existing raw reports are not overwritten. Public projection
+keeps only typed initialization facts and an optional OS error number.
+
+Build observations are separate from execution denominators. Each existing Cargo
+prepare command records compiler-artifact event counts (dependencies included),
+fresh/rebuilt/unknown and cargo_child_elapsed_ms. Parent input fingerprints include
+recorded source files, root/runner locks, declared toolchain, OS/architecture/ABI,
+profile/features and hashed flag/override inputs. Actual compiler version and all
+Cargo configuration inputs are not proven; input_key_complete/cache_reuse_proven
+remain false. No prebuild/discovery command is removed. Raw Cargo JSON and a build
+observation sidecar remain private; --timings HTML is private and retrieval is
+not claimed. Public summaries whitelist labels/counters/digests, never raw flags or
+paths. These new observations and initialization fallback await pure/hosted checks.
+
+Actual runtime service hook (new source, not yet hosted): native prepare enables
+both humanymous-cli/service-pilot and humanymous-cli/runtime-service-pilot. Service
+mode executes generic service_process plus runtime_service_process exact ignored
+native_runtime_service_lifecycle_and_missing_credential_fail_closed. The latter
+requires Windows; other-target source reports unsupported work explicitly. Default
+native retains both required-not-run entries. These are product pilots, not helpers.
+
+Runtime controller inputs to the selected test are nonsecret
+HUMANYMOUS_SERVICE_PILOT_RUN_ID/HUMANYMOUS_SERVICE_PILOT_SOURCE_SHA from the verified
+snapshot. The test authenticates its signed bootstrap and independently checks
+SCM PID/status/nonce/executable/receipt. It emits one leading-newline JSON record:
+schema humanymous.runtime-service-pilot/1, case native-runtime-service-lifecycle-and-
+missing-credential, exact source/run and product_qualified=false. Nine facts in
+service/receipt.rs must all be true; duplicate/missing/false/unbound records fail.
+Output counts remain selected1 with discovered-1 filtered and exit0. Summary adds
+runtime_service_execution beside the unchanged generic service_execution field;
+raw PID/path/error data is not projected. Both logs are copied before actor cleanup.
+
+
+The runner continuation checkpoint distinguishes execution_complete from successful
+coverage. Completed child stdout with invalid strict accounting records an indexed
+failure and permits later harness receipts; identity, enumeration, spawn, capture,
+containment or persistence failures stop collection. Native named-case receipts are
+retained before aggregate accounting rejection. Ignored Node product tests remain
+required, never helpers. Only the exact shared subprocess helper with all six
+parent tests can be accounted separately. Coverage sidecars are written after each
+completed child; parent recovery when the final report is absent is not wired yet.
+
+The runtime service receipt now requires thirteen true facts, including actual
+upgrade, rollback, replay floor and complete readiness manifest verification. The
+older nine-fact receipt cannot qualify this contract. Actual hosted execution is
+not_run for this source. Root-assigned D validation passed 21 pure tests, zero
+failed/ignored and one excluded filesystem/ACL fixture, plus all-target check and
+Clippy with warnings denied. Forty source/manifest/lock/toolchain files had zero
+final-run drift. Initial visibility and Clippy failures were corrected and retained
+in private logs. These checks do not qualify process, directory, WinCred or SCM
+behavior. Shared ordinary-user directory dependency compilation was independently
+observed by the .NET owner; actual initializer execution remains not_run.

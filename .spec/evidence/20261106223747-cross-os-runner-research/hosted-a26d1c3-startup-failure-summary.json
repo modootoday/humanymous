@@ -1,0 +1,18 @@
+{
+  "schema": "humanymous.hosted-job-observation/1",
+  "run_id": 42354873001,
+  "source_sha": "a26d1c3f08b365ca93545c6a51343095868edb45",
+  "observation_source": "authoritative root coordination update",
+  "status": "terminal-startup-failure",
+  "jobs": 0,
+  "tests": 0,
+  "failure_kind": "nested-workflow-permission-ceiling",
+  "nested_permission": "actions:read",
+  "caller_permission_ceiling": "actions:none",
+  "native_execution": "not_run",
+  "service_fixture_execution": "not_run",
+  "raw_execution_reports": "not-generated; no job started",
+  "followup_run": null,
+  "local_wip_qualified_by_this_run": false,
+  "full_runtime_qualified": false
+}

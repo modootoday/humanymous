@@ -60,7 +60,7 @@ fn run() -> io::Result<i32> {
         .next()
         .ok_or_else(|| io::Error::other("native|standard-user|service|summarize required"))?;
     let options = options(&mut args, mode != "summarize")?;
-    match mode.as_str() {
+    let result = match mode.as_str() {
         "native" => pilot::run(&options),
         "service" => service::run(&options),
         "summarize" => {
@@ -81,7 +81,13 @@ fn run() -> io::Result<i32> {
         "standard-user-workspace" => actor::run(&options, actor::Workload::Workspace),
         "workspace" => workspace::run(&options),
         _ => Err(io::Error::other("unsupported native runner mode")),
+    };
+    if let Err(error) = &result
+        && evidence::record_initial_failure(&options.report, &mode, error).is_err()
+    {
+        eprintln!("initial failure report could not be preserved");
     }
+    result
 }
 fn main() {
     match run() {

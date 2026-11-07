@@ -2,6 +2,9 @@ use crate::evidence;
 use humanymous_test_support::process::capture_with_stderr;
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, io, path::Path, process::Command, time::Duration};
+pub(crate) mod build_observation;
+mod collection;
+mod helpers;
 
 const PACKAGES: [&str; 4] = [
     "humanymous-runtime",
@@ -14,11 +17,18 @@ pub enum Scope {
     Native,
     Workspace,
 }
-pub fn prepare(evidence_base: &Path, binaries: &Path, scope: Scope) -> io::Result<Value> {
+pub fn prepare(
+    evidence_base: &Path,
+    binaries: &Path,
+    scope: Scope,
+    source: &Value,
+) -> io::Result<Value> {
     let release = binaries.file_name() == Some(std::ffi::OsStr::new("release"));
+    let mut observation = json!({"input_key":build_observation::input_key(source,release,scope==Scope::Native)?,"commands":[],"html_timings_retrieved":false});
     let mut build = Command::new("cargo");
     build.args(["build", "--locked", "--bins", "--message-format=json"]);
-    build.args(["--features", "humanymous-cli/service-pilot"]);
+    build.arg("--timings");
+    build.args(["--features", &crate::service::catalog::FEATURES.join(",")]);
     if release {
         build.arg("--release");
     }
@@ -30,27 +40,38 @@ pub fn prepare(evidence_base: &Path, binaries: &Path, scope: Scope) -> io::Resul
         build.args(["-p", package]);
     }
     let products = if scope == Scope::Native {
-        Some(capture_with_stderr(
-            &mut build,
-            b"",
-            Duration::from_secs(600),
-            16 * 1024 * 1024,
-        )?)
-    } else {
-        None
-    };
-    if let Some(products) = &products {
+        let started = std::time::Instant::now();
+        let result =
+            capture_with_stderr(&mut build, b"", Duration::from_secs(600), 16 * 1024 * 1024)?;
+        let elapsed = started.elapsed();
         std::fs::write(
             evidence_base.with_extension("build-stderr.log"),
-            &products.stderr,
+            &result.stderr,
         )?;
         std::fs::write(
             evidence_base.with_extension("build-messages.jsonl"),
-            &products.stdout,
+            &result.stdout,
         )?;
-        if !products.status.success() {
-            return Err(io::Error::other("native product compilation failed"));
-        }
+        observation["commands"]
+            .as_array_mut()
+            .unwrap()
+            .push(build_observation::events(
+                std::str::from_utf8(&result.stdout).map_err(io::Error::other)?,
+                "product-binaries",
+                elapsed,
+            )?);
+        evidence::write(
+            &evidence_base.with_extension("build-observation.json"),
+            &observation,
+        )?;
+        Some(result)
+    } else {
+        None
+    };
+    if let Some(products) = &products
+        && !products.status.success()
+    {
+        return Err(io::Error::other("native product compilation failed"));
     }
     let mut command = Command::new("cargo");
     command.args([
@@ -59,9 +80,10 @@ pub fn prepare(evidence_base: &Path, binaries: &Path, scope: Scope) -> io::Resul
         "--all-targets",
         "--no-run",
         "--message-format=json",
+        "--timings",
     ]);
     if scope == Scope::Native {
-        command.args(["--features", "humanymous-cli/service-pilot"]);
+        command.args(["--features", &crate::service::catalog::FEATURES.join(",")]);
     }
     if release {
         command.arg("--release");
@@ -73,12 +95,14 @@ pub fn prepare(evidence_base: &Path, binaries: &Path, scope: Scope) -> io::Resul
             command.args(["-p", package]);
         }
     }
+    let started = std::time::Instant::now();
     let output = capture_with_stderr(
         &mut command,
         b"",
         Duration::from_secs(600),
         16 * 1024 * 1024,
     )?;
+    let elapsed = started.elapsed();
     std::fs::write(
         evidence_base.with_extension("tests-stderr.log"),
         &output.stderr,
@@ -86,6 +110,18 @@ pub fn prepare(evidence_base: &Path, binaries: &Path, scope: Scope) -> io::Resul
     std::fs::write(
         evidence_base.with_extension("tests-messages.jsonl"),
         &output.stdout,
+    )?;
+    observation["commands"]
+        .as_array_mut()
+        .unwrap()
+        .push(build_observation::events(
+            std::str::from_utf8(&output.stdout).map_err(io::Error::other)?,
+            "test-discovery",
+            elapsed,
+        )?);
+    evidence::write(
+        &evidence_base.with_extension("build-observation.json"),
+        &observation,
     )?;
     if !output.status.success() {
         return Err(io::Error::other("native pilot compilation failed"));
@@ -102,7 +138,7 @@ pub fn prepare(evidence_base: &Path, binaries: &Path, scope: Scope) -> io::Resul
         true,
     )?;
     Ok(
-        json!({"products":products,"harnesses":harnesses,"profile":if release{"release"}else{"debug"},"scope":if scope==Scope::Workspace{"workspace-default-features"}else{"native-service-feature"}}),
+        json!({"products":products,"harnesses":harnesses,"build_observation":observation,"profile":if release{"release"}else{"debug"},"scope":if scope==Scope::Workspace{"workspace-default-features"}else{"native-service-feature"}}),
     )
 }
 fn artifacts(messages: &str, test: bool) -> io::Result<Value> {
@@ -128,6 +164,34 @@ pub fn execute(
     progress: &mut Value,
     scope: Scope,
 ) -> io::Result<()> {
+    let required = manifest
+        .as_array()
+        .ok_or_else(|| io::Error::other("test manifest array required"))?
+        .len();
+    let mut ledger = collection::Ledger::new(required);
+    let result = execute_inner(manifest, evidence_base, progress, scope, &mut ledger);
+    if let Err(error) = result {
+        ledger.abort();
+        ledger.snapshot(progress);
+        let _ = save_progress(evidence_base, progress);
+        return Err(error);
+    }
+    let result = ledger.finish(progress);
+    save_progress(evidence_base, progress)?;
+    result
+}
+fn save_progress(base: &Path, progress: &Value) -> io::Result<()> {
+    let pending = base.with_extension("coverage.pending.json");
+    evidence::write(&pending, progress)?;
+    std::fs::rename(pending, base.with_extension("coverage.json"))
+}
+fn execute_inner(
+    manifest: &Value,
+    evidence_base: &Path,
+    progress: &mut Value,
+    scope: Scope,
+    ledger: &mut collection::Ledger,
+) -> io::Result<()> {
     let entries = manifest
         .as_array()
         .ok_or_else(|| io::Error::other("test manifest array required"))?;
@@ -139,6 +203,7 @@ pub fn execute(
     let mut runtime = false;
     let mut authority = false;
     for (index, entry) in entries.iter().enumerate() {
+        progress["active_harness"] = json!({"index":index,"target":entry["target"]});
         let path = Path::new(
             entry["executable"]
                 .as_str()
@@ -185,34 +250,25 @@ pub fn execute(
         )?;
         let output = String::from_utf8(execution.stdout).map_err(io::Error::other)?;
         let package = entry["package_id"].as_str().unwrap_or_default();
-        let service = scope == Scope::Native
-            && entry["target"] == "service_process"
-            && package.contains("humanymous-cli");
+        let service_case = if scope == Scope::Native {
+            crate::service::catalog::required_case(entry)
+        } else {
+            None
+        };
+        let service = service_case.is_some();
         let custody = scope == Scope::Workspace
             && entry["target"] == "key_custody"
             && entry["kind"] == json!(["test"])
             && package.contains("#humanymous-audit@");
-        let captured_helper = if scope == Scope::Workspace
-            && entry["kind"] == json!(["test"])
-            && package.contains("#humanymous-audit@")
-        {
-            match entry["target"].as_str() {
-                Some("durable_witness") => Some((
-                    "child_witness_probe",
-                    "witness_process_lifetime_and_interrupted_recovery",
-                )),
-                Some("key_backups") => Some((
-                    "child_retire_without_pin_acknowledgement",
-                    "crash_reconcile_preserves_consumed_authorization",
-                )),
-                _ => None,
-            }
+        let captured_helper = if scope == Scope::Workspace {
+            helpers::captured(entry)
         } else {
             None
         };
-        let required_service = "native_service_install_upgrade_rollback_and_remove";
-        let pending = usize::from(service);
-        if service
+        let required_service = service_case.map_or("", |case| case.test);
+        let service_implemented = service_case.is_some_and(|case| case.implemented_for_target());
+        let pending = usize::from(service_implemented);
+        if service_implemented
             && !output
                 .lines()
                 .any(|line| line.starts_with(&format!("test {required_service} ... ignored")))
@@ -241,22 +297,27 @@ pub fn execute(
                 "process_exit_releases_lock_and_rotation_pending_requires_recovery"
             ]);
         }
+        if service && !service_implemented {
+            rows.last_mut().unwrap()["unsupported_required_case"] = json!(true);
+        }
         if let Some((helper, parent)) = captured_helper {
             let row = rows.last_mut().unwrap();
             row["ignored_subprocess_helpers"] = json!(usize::from(accounting.is_ok()));
             row["subprocess_helpers"] = json!([helper]);
-            row["required_parent_tests"] = json!([parent]);
+            row["required_parent_tests"] = json!(parent);
         }
         progress["executed_harnesses"] = json!(rows.len());
         progress["harnesses"] = json!(rows);
-        let passed = accounting.map_err(|error|io::Error::other(format!("harness {index} target={} exit={:?} discovered={count}: {error}; inspect report-stem.harness-{index}-run-stdout.log",entry["target"],execution.status.code())))?;
+        let mut required_missing = false;
         if entry["target"] == "native_process" {
-            let required: &[&str] = if package.contains("humanymous-runtime") {
+            let required: &[&str] = if package.contains("#humanymous-runtime@") {
                 &["native_binary_session_collection_origin_restart_and_wal_authentication"]
-            } else if package.contains("humanymous-authority") {
+            } else if package.contains("#humanymous-authority@") {
                 &[
                     "real_ipc_auth_replay_body_scope_capture_and_restart_epoch",
                     "concurrent_nonce_reservation_and_durable_failure",
+                    "normalized_producers_are_bound_by_native_authority_credentials",
+                    "sealed_startup_retains_custody_and_reuses_existing_identity",
                 ]
             } else {
                 &[]
@@ -267,19 +328,47 @@ pub fn execute(
                         .lines()
                         .any(|line| line == format!("test {name} ... ok"))
                 {
-                    return Err(io::Error::other("required actual-process assertion absent"));
+                    required_missing = true;
                 }
             }
-            runtime |= package.contains("humanymous-runtime") && passed > 0;
-            authority |= package.contains("humanymous-authority") && passed > 0;
+            rows.last_mut().unwrap()["required_native_tests"] = json!(required);
+            rows.last_mut().unwrap()["required_native_tests_verified"] = json!(!required_missing);
+            runtime |= package.contains("#humanymous-runtime@")
+                && counts.is_some_and(|c| c[0] > 0)
+                && execution.status.success()
+                && !required_missing;
+            authority |= package.contains("#humanymous-authority@")
+                && counts.is_some_and(|c| c[0] > 0)
+                && execution.status.success()
+                && !required_missing;
         }
+        match accounting {
+            Ok(_) => {}
+            Err(error) => {
+                rows.last_mut().unwrap()["accounting_error"] = json!(error.to_string());
+                ledger.completed(index, &entry["target"], Some("coverage-accounting"));
+                progress["harnesses"] = json!(rows);
+                ledger.snapshot(progress);
+                save_progress(evidence_base, progress)?;
+                continue;
+            }
+        };
+        if required_missing {
+            rows.last_mut().unwrap()["validated"] = json!(false);
+        }
+        ledger.completed(
+            index,
+            &entry["target"],
+            required_missing.then_some("required-native-assertion"),
+        );
+        progress["harnesses"] = json!(rows);
+        ledger.snapshot(progress);
+        save_progress(evidence_base, progress)?;
     }
     if scope == Scope::Native && (!runtime || !authority) {
-        return Err(io::Error::other(
-            "actual runtime/authority native process harness required",
-        ));
+        ledger.missing_native();
     }
-    progress["complete"] = true.into();
+    progress["active_harness"] = Value::Null;
     Ok(())
 }
 use sha2::Digest;
@@ -288,7 +377,7 @@ fn captured_helper_account(
     discovered: usize,
     success: bool,
     helper: &str,
-    parent: &str,
+    parents: &[&str],
 ) -> io::Result<usize> {
     let ignored: Vec<_> = log
         .lines()
@@ -298,9 +387,11 @@ fn captured_helper_account(
         })
         .collect();
     if ignored != [helper]
-        || !log
-            .lines()
-            .any(|line| line == format!("test {parent} ... ok"))
+        || parents.is_empty()
+        || parents.iter().any(|parent| {
+            !log.lines()
+                .any(|line| line == format!("test {parent} ... ok"))
+        })
     {
         return Err(io::Error::other(
             "captured subprocess helper/parent inventory differs",
@@ -399,7 +490,7 @@ mod tests {
     fn captured_helpers_require_single_summary_exact_helper_and_parent() {
         let good = "test helper ... ignored\ntest parent ... ok\ntest result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.1s";
         assert_eq!(
-            captured_helper_account(good, 2, true, "helper", "parent").unwrap(),
+            captured_helper_account(good, 2, true, "helper", &["parent"]).unwrap(),
             1
         );
         for bad in [
@@ -407,10 +498,10 @@ mod tests {
             good.replace("test helper", "test unknown"),
             format!("{good}\n{good}"),
         ] {
-            assert!(captured_helper_account(&bad, 2, true, "helper", "parent").is_err());
+            assert!(captured_helper_account(&bad, 2, true, "helper", &["parent"]).is_err());
         }
-        assert!(captured_helper_account(good, 2, false, "helper", "parent").is_err());
-        assert!(captured_helper_account(good, 3, true, "helper", "parent").is_err());
+        assert!(captured_helper_account(good, 2, false, "helper", &["parent"]).is_err());
+        assert!(captured_helper_account(good, 3, true, "helper", &["parent"]).is_err());
     }
     #[test]
     fn summary_rejects_skips_missing_tests_and_bad_exit() {
