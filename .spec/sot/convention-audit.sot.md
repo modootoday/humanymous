@@ -1051,3 +1051,31 @@ tools4, environment9. Actual Windows footer is93/0/0ignored/0filtered. Initial
 compiler_started=false is historical; terminal execution is separate. Public
 summary remains uncommitted at this observation; immutable commit/archive binding
 and actual GNU single-metric pilot remain pending. No audit workload executed.
+
+## Published B3 source binding and actual model reducer follow-up
+
+This supersedes only the earlier B3 publication wait, not its execution limits.
+Receipt bd91232dfa641c4cb9c6a9d92026dc3fa871cc55 binds the reviewed three source
+leaves and public summary to literal Git bytes (summary SHA256
+022d34581c1491f46e4df545861bbe2477fb5f62881fba40eebb1e5e275cb4f5,3075 bytes).
+All2768 original archive regular members match canonical eaa69690 Git blobs,
+without extraction, missing, extra or duplicate members. Execution-ledger content
+differs only at the three declared overlays, each matching its declared SHA256.
+The additional18 ledger records are .git metadata/sample hooks. The actual GNU
+single-metric pilot remains NOT_RUN; Windows93 tests are not GNU execution proof.
+Private b3-archive-and-public-binding-review-001.json SHA256
+74adbbd80ec4129406ba5556626c581b011ce12d4c31820ee39352ab76876907.
+
+Model receipt55fd8e6a upgrades the earlier source-only reducer review: exact raw
+footer4passed/0failed/0ignored/17filtered, four successful command records and
+check/strict-Clippy finish markers. Full1498 before/after closure records match.
+All2713 source archive regular members match aeefd20c Git blob bytes, without
+extraction, missing, extra or duplicate members. First comparison incorrectly
+stripped leading dots and produced866 false mismatches; it is rejected evidence.
+Corrected exact ./ prefix handling produced the accepted zero-mismatch result.
+The four tests cover inclusive0.5 float32 counts, absent support as None, invalid
+whole-batch refusal and sample caps. They do not rerun the prior17 or inference
+fixture, or qualify training/cohort/RNG/activation/product/system-SDK closure.
+Private model-reducer-actual-review-001.json SHA256
+f66eddfde27c0ed587596ec74fcdd21d3e9c9b1b73c9c13ef732ec86a24690cb.
+No compiler, runtime, SDK, service or Docker workload was executed by this audit.

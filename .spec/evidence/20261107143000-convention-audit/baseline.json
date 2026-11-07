@@ -486,5 +486,23 @@
     "b3_public_commit_binding_pending": true,
     "gnu_wrapper_actual_pilot": false,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_b3_published_and_model_actual": {
+    "private_review_sha256": {
+      "model-reducer-actual-review-001.json": "f66eddfde27c0ed587596ec74fcdd21d3e9c9b1b73c9c13ef732ec86a24690cb",
+      "b3-archive-and-public-binding-review-001.json": "74adbbd80ec4129406ba5556626c581b011ce12d4c31820ee39352ab76876907"
+    },
+    "b3_receipt_commit": "bd91232dfa641c4cb9c6a9d92026dc3fa871cc55",
+    "b3_base_archive_git_members": 2768,
+    "b3_declared_overlay_differences": 3,
+    "b3_git_metadata_extra_records": 18,
+    "b3_public_commit_binding_pending": false,
+    "b3_gnu_actual_pilot": false,
+    "model_receipt_commit": "55fd8e6a72a6bc8c53f04cb88d2d2a8b3da30afd",
+    "model_archive_git_members": 2713,
+    "model_actual_reducer_tests": 4,
+    "model_filtered_tests": 17,
+    "model_closure_records": 1498,
+    "new_audit_runtime_workloads": 0
   }
 }
