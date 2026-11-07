@@ -354,5 +354,14 @@
     "hosted_projection_unsupported": 7,
     "full_product_qualified": false,
     "original_report_hash_independently_recomputed": false
+  },
+  "followup_s2_execution_asgi_retention": {
+    "private_review_sha256": "69187d2a97dad8535e26302ee68ef558b49637db0ed47a59890ce5e952c0a93d",
+    "actual_exact_l1_tests": 5,
+    "private_attachments_verified": 48,
+    "selected_source_archive_and_git_blob_comparisons": 177,
+    "asgi_retention_source_accepted": true,
+    "actual_asgi_fault_tests": 0,
+    "native_or_product_qualified": false
   }
 }

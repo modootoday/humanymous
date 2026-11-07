@@ -739,3 +739,28 @@ with true expectations and7unsupported with null expectations. Delivery retains
 report bytes are unavailable locally; its committed hash is not an independent
 local original-byte verification. These observations do not close the full
 Docker product gate or establish new native/runtime/a11y qualification.
+
+### Executed private recovery model and ASGI retention re-audit
+
+Later evidence20261107155745 qualifies five private8cbc0397 L1 transition tests.
+Independent Windows-local review verified48 raw attachment hashes/lengths, five
+exact-name harness footers (each1passed/0failed/0ignored/114filtered), seven
+COMPLETE/exit0 command records, successful check/Clippy and fmt-first0. Selected
+before/after inventories match:177 source,3181 registry files,73 Rust tools and
+44 config candidates. Source JSON byte hashes differ from ordering; semantic
+records match. The original tar SHA256 matches; streaming its177 selected
+members without extraction independently matched saved SHA256/length AND actual
+canonical8cbc0397 Git blob SHA1. This is not all2707 archive members or a complete
+OS/linker closure. No new WSL/UNC/compiler execution was needed for this review.
+
+These actual five tests supersede their earlier NOT_RUN disposition only for
+the private pure model. Actual-type borrow compile-fail, authenticated scan to
+native zero-write/repair, retained native owner/Ready, capacity and product gates
+remain OPEN. Do not count five harnesses'114 filtered tests as executed coverage.
+
+ASGI252ad259 source now retains created task+permit before fallible registration,
+keeps Guard Drop active on Err and releases its lock before foreign cancellation.
+Independent source review accepts this ordering correction. A cancel request
+does not prove terminal settlement; registration/cancel failure, task-factory
+failure after creation and suppressed cancellation remain cleanup-uncertain.
+No new SDK/fault/queued host controls were observed. HANDOFF01 remains OPEN.

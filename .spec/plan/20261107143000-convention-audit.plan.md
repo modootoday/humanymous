@@ -235,3 +235,11 @@ Hosted42387564172 exact306 terminal failure independently queried; four public
 attachment hashes verified and26case projection recounted19evaluated/7unsupported.
 Original private report unavailable locally; full product remains false with
 10blocked required cases. No compiler/SDK/Docker workload launched by X.
+
+S2 actual8cbc private-model five exact tests independently accepted:48 raw
+attachment hashes,5footers,7terminal0records and selected177 source/3181registry/
+73tools/44config equality verified;177tar members also match canonicalGitblobs.
+This supersedes prior NOT_RUN only for those5pure tests; native/actual-type/
+repair/Ready/capacity/product gates remain OPEN. ASGI252ad task-retention source
+correction accepted, actual settlement/fault/host controls pending. Windows-local
+reads only; no WSL/UNC/compiler/SDK workload launched by X.
