@@ -12,6 +12,17 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## SDK preparation only (2026-11-07T09:48Z)
+
+Root separately allocated A for private official Windowsx64 SDK10.0.403
+preparation. The downloaded ZIP matches its official channel metadata SHA512.
+Only --version and --info executed, both exit0, reporting SDK10.0.403 and
+runtime10.0.14/win-x64. A fresh owner-only protected directory holds the SDK,
+CLI home and package cache; no global PATH/admin installer/SCM/account operation
+occurred. ASP.NET certificate generation was suppressed and telemetry opted out.
+A returned. Evidence: evidence:root/20261107094859, private evidence:root/20261107094726.
+This establishes tool readiness only, not managed compilation or host behavior.
+
 ## Allocated revalidation after quiet ended (2026-11-07T09:42Z)
 
 Root explicitly ended the benchmark quiet window, resumed this work and

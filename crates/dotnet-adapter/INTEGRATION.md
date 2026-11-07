@@ -2,6 +2,14 @@
 
 ## Current approved continuation
 
+SDK preparation A returned: official SDK10.0.403Windowsx64 ZIP hash verified and
+private installation ready. Only --version/--info ran successfully, reporting
+runtime10.0.14; no managed build/host. Evidence094859/private094726. Exact executable
+and environment paths are in private readiness.json and supplied directly to root.
+Fresh owner-only ACL does not qualify a different ordinary actor; package/host
+fixtures still require their separately verified actor/private parent. No global
+PATH/admin installer/SCM/account operation was used. Next build needs allocation.
+
 Quiet ended by explicit root instruction. Reclaimed adapter-dotnet; allocated A
 validated latest all-target check/Clippy and core12/export1pure, all passed with
 zero failures/ignored and259recursive source/configuration inputs unchanged.

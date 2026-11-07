@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.dotnet-sdk-readiness-public/1",
+  "sdk": "10.0.403",
+  "runtime": "10.0.14",
+  "rid": "win-x64",
+  "venue": "root-allocated-local-windows",
+  "metadata_url": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json",
+  "metadata_sha256": "8fa7ae2d46b1f94416d5458c7ed68b0c3cafc5efb8e34d89dea3a98bf0a38b33",
+  "archive_url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-win-x64.zip",
+  "official_sha512": "7a114c318fa7f1d9822991b534b2814d0e78386ceda816b371f5141acefe741d87ccb606ede06cadac8f9ac5070e32b708a67bbd1619ff5e5a7858a27874ef48",
+  "actual_sha512": "7a114c318fa7f1d9822991b534b2814d0e78386ceda816b371f5141acefe741d87ccb606ede06cadac8f9ac5070e32b708a67bbd1619ff5e5a7858a27874ef48",
+  "archive_bytes": 300745255,
+  "verified": true,
+  "dotnet_sha256": "1e881ec1786c31ba712d052258b4ad4202ac155df5965794030037878abb822f",
+  "version_exit": 0,
+  "info_exit": 0,
+  "version_info_elapsed_seconds": 0.7518022,
+  "install_scope": "fresh owner-only protected directory, no global PATH/admin installer",
+  "cli_home_and_nuget": "isolated private directories",
+  "telemetry_optout": true,
+  "aspnet_certificate_generation": "suppressed",
+  "build_performed": false,
+  "host_started": false,
+  "scm_or_accounts_modified": false,
+  "release_qualified_tuples": [],
+  "tool_handles": [
+    "623e02",
+    "23220",
+    "e8cf20"
+  ]
+}
