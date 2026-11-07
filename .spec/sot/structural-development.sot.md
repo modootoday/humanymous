@@ -753,3 +753,18 @@ Preserve self-reexecution dispatch, executable identity, root-directory discover
 original source-bound parity workload and isolated-lock advisory coverage through
 explicit rewiring. This decision is not proof of executable isolation or release
 qualification; those tests must pass on the consolidated implementation.
+The tools lint matrix covers every compiled crate root, including integration
+tests, examples, benches and any build script, not only the production and four
+qualification binaries. Safe roots declare forbid explicitly. Review generated
+or macro-expanded unsafe effects under the same boundary. Counting two allow
+attributes alone is insufficient: inventory the existing actor source and unsafe
+operations before and after relocation. Require byte identity except reviewed
+mechanical rewiring, and reject unreviewed module/path/include/macro linkage into
+an allowed subtree. Any semantic unsafe delta requires a separate decision.
+
+Verify the final release archive/binary inventory and transitive production
+feature graph. Required-features is an admission prerequisite, not an assertion
+that all-features cannot compile a qualification binary. Exact native-role joins
+include target name, kind, source path, features, profile and executable identity;
+a matching package name/manifest alone must reject sibling executables. Preserve
+negative sibling-role tests through the consolidated package identity change.
