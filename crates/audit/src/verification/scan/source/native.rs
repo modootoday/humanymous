@@ -184,6 +184,11 @@ fn relative(parent: &File, name: &str, directory: bool, cross_mount: bool) -> io
 struct Context<'scan, 'cancel> {
     control: &'scan Control<'cancel>,
     limits: &'scan Limits,
+    files: Arc<NativeFiles>,
+}
+// Owns every native pin and the last-dropped writer guard, without borrowing
+// a startup deadline/profile. Operation contexts and readers retain this owner.
+struct NativeFiles {
     admission: Admission,
     path: PathBuf,
     root_name: String,
@@ -240,9 +245,7 @@ impl<'scan, 'cancel> NativeSource<'scan, 'cancel> {
         let lock_observer = Pin::capture(relative(&root.file, LOCK, false, false)?, Role::Payload)?;
         same_mount(&root, &lock_observer)?;
         let guard = ExclusiveFile::acquire(lock_observer.file.try_clone()?)?;
-        let mut context = Context {
-            control,
-            limits,
+        let mut files = NativeFiles {
             admission,
             path: path.to_path_buf(),
             root_name: name.to_owned(),
@@ -254,8 +257,8 @@ impl<'scan, 'cancel> NativeSource<'scan, 'cancel> {
             poisoned: AtomicBool::new(false),
             _guard: guard,
         };
-        let (count, has_sidecar) = context.membership(None)?;
-        context
+        let (count, has_sidecar) = files.membership(limits, control, None)?;
+        files
             .segments
             .try_reserve_exact(count)
             .map_err(|_| io::Error::other("native pin inventory allocation refused"))?;
@@ -263,30 +266,78 @@ impl<'scan, 'cancel> NativeSource<'scan, 'cancel> {
         for index in 1..=count {
             control.check()?;
             let pin = Pin::capture(
-                relative(&context.root.file, &segment_name(index), false, false)?,
+                relative(&files.root.file, &segment_name(index), false, false)?,
                 Role::Payload,
             )?;
-            same_mount(&context.root, &pin)?;
+            same_mount(&files.root, &pin)?;
             bytes = bytes
                 .checked_add(pin.stamp.length)
                 .filter(|bytes| *bytes <= limits.record_bytes)
                 .ok_or_else(|| resource("native record bytes exceeded"))?;
-            context.segments.push(pin);
+            files.segments.push(pin);
         }
         if has_sidecar {
             control.check()?;
             let pin = Pin::capture(
-                relative(&context.root.file, SIDECAR, false, false)?,
+                relative(&files.root.file, SIDECAR, false, false)?,
                 Role::Payload,
             )?;
-            same_mount(&context.root, &pin)?;
+            same_mount(&files.root, &pin)?;
             if pin.stamp.length > limits.checkpoint_bytes {
                 return Err(resource("native sidecar bytes exceeded"));
             }
-            context.sidecar = Some(pin);
+            files.sidecar = Some(pin);
         }
         let source = Self {
-            context: Arc::new(context),
+            context: Arc::new(Context {
+                control,
+                limits,
+                files: Arc::new(files),
+            }),
+        };
+        source.unchanged()?;
+        Ok(source)
+    }
+    fn into_files(self) -> io::Result<Arc<NativeFiles>> {
+        // Outstanding operation readers must not cross an ownership handoff.
+        // A refusal drops this source only; those readers still retain the guard.
+        Arc::try_unwrap(self.context)
+            .map(|context| context.files)
+            .map_err(|_| invalid("native operation readers still retained"))
+    }
+    fn operation(
+        files: Arc<NativeFiles>,
+        limits: &'scan Limits,
+        control: &'scan Control<'cancel>,
+    ) -> io::Result<Self> {
+        limits.validate()?;
+        control.check()?;
+        files.admission.check(limits.segments)?;
+        files.ready(control)?;
+        if files.segments.len() > limits.segments {
+            return Err(resource(
+                "retained native inventory exceeds operation profile",
+            ));
+        }
+        files.segments.iter().try_fold(0u64, |bytes, pin| {
+            bytes
+                .checked_add(pin.stamp.length)
+                .filter(|bytes| *bytes <= limits.record_bytes)
+                .ok_or_else(|| resource("retained native record bytes exceeded"))
+        })?;
+        if files
+            .sidecar
+            .as_ref()
+            .is_some_and(|pin| pin.stamp.length > limits.checkpoint_bytes)
+        {
+            return Err(resource("retained native sidecar bytes exceeded"));
+        }
+        let source = Self {
+            context: Arc::new(Context {
+                control,
+                limits,
+                files,
+            }),
         };
         source.unchanged()?;
         Ok(source)
@@ -295,7 +346,7 @@ impl<'scan, 'cancel> NativeSource<'scan, 'cancel> {
         self.context.ready()?;
         let mut buffer = Vec::new();
         buffer.try_reserve_exact(BUFFER).map_err(|_| {
-            self.context.poisoned.store(true, Ordering::Release);
+            self.context.files.poisoned.store(true, Ordering::Release);
             io::Error::other("native reader allocation refused")
         })?;
         buffer.resize(BUFFER, 0);
@@ -322,27 +373,40 @@ fn same_mount(root: &Pin, pin: &Pin) -> io::Result<()> {
 
 impl Context<'_, '_> {
     fn ready(&self) -> io::Result<()> {
+        self.files.ready(self.control)
+    }
+    fn validate(&self) -> io::Result<()> {
+        self.files.validate(self.limits, self.control)
+    }
+}
+impl NativeFiles {
+    fn ready(&self, control: &Control<'_>) -> io::Result<()> {
         if self.poisoned.load(Ordering::Acquire) {
             return Err(invalid("native audit source poisoned"));
         }
-        let result = self.control.check();
+        let result = control.check();
         if result.is_err() {
             self.poisoned.store(true, Ordering::Release);
         }
         result
     }
-    fn membership(&self, expected: Option<usize>) -> io::Result<(usize, bool)> {
-        self.ready()?;
+    fn membership(
+        &self,
+        limits: &Limits,
+        control: &Control<'_>,
+        expected: Option<usize>,
+    ) -> io::Result<(usize, bool)> {
+        self.ready(control)?;
         let descriptor = relative(&self.root.file, ".", true, false)?;
         let mut buffer = [MaybeUninit::uninit(); 4096];
         let mut directory = RawDir::new(descriptor, &mut buffer);
         let mut seen = Vec::new();
-        seen.try_reserve_exact(self.limits.segments)
+        seen.try_reserve_exact(limits.segments)
             .map_err(|_| io::Error::other("native membership allocation refused"))?;
-        seen.resize(self.limits.segments, false);
+        seen.resize(limits.segments, false);
         let (mut entries, mut count, mut sidecar, mut lock) = (0usize, 0usize, false, false);
         while let Some(entry) = directory.next() {
-            self.ready()?;
+            self.ready(control)?;
             entries = entries
                 .checked_add(1)
                 .filter(|count| *count <= self.admission.max_entries)
@@ -390,7 +454,7 @@ impl Context<'_, '_> {
                 same_mount(&self.root, &pin)?;
             }
         }
-        self.ready()?;
+        self.ready(control)?;
         if !lock
             || seen[..count].iter().any(|seen| !seen)
             || expected
@@ -400,8 +464,8 @@ impl Context<'_, '_> {
         }
         Ok((count, sidecar))
     }
-    fn validate(&self) -> io::Result<()> {
-        self.ready()?;
+    fn validate(&self, limits: &Limits, control: &Control<'_>) -> io::Result<()> {
+        self.ready(control)?;
         self.parent.unchanged()?;
         self.root.unchanged()?;
         self.root
@@ -409,17 +473,17 @@ impl Context<'_, '_> {
         self.root.named(absolute(&self.path)?)?;
         self.lock_observer.unchanged()?;
         for pin in &self.segments {
-            self.ready()?;
+            self.ready(control)?;
             pin.unchanged()?;
         }
         if let Some(pin) = &self.sidecar {
-            self.ready()?;
+            self.ready(control)?;
             pin.unchanged()?;
         }
-        self.membership(Some(self.segments.len()))?;
+        self.membership(limits, control, Some(self.segments.len()))?;
         self.root.unchanged()?;
         self.parent.unchanged()?;
-        self.ready()
+        self.ready(control)
     }
 }
 impl sealed::Sealed for NativeSource<'_, '_> {}
@@ -427,11 +491,11 @@ impl<'scan, 'cancel> Source for NativeSource<'scan, 'cancel> {
     type Reader = NativeReader<'scan, 'cancel>;
     fn segment_count(&self) -> io::Result<usize> {
         self.context.ready()?;
-        Ok(self.context.segments.len())
+        Ok(self.context.files.segments.len())
     }
     fn segment(&self, index: usize) -> io::Result<Self::Reader> {
-        if index == 0 || index > self.context.segments.len() {
-            self.context.poisoned.store(true, Ordering::Release);
+        if index == 0 || index > self.context.files.segments.len() {
+            self.context.files.poisoned.store(true, Ordering::Release);
             return Err(invalid("native segment cursor outside inventory"));
         }
         self.reader(Some(index - 1))
@@ -439,6 +503,7 @@ impl<'scan, 'cancel> Source for NativeSource<'scan, 'cancel> {
     fn checkpoints(&self) -> io::Result<Option<Self::Reader>> {
         self.context.ready()?;
         self.context
+            .files
             .sidecar
             .as_ref()
             .map(|_| self.reader(None))
@@ -447,7 +512,7 @@ impl<'scan, 'cancel> Source for NativeSource<'scan, 'cancel> {
     fn unchanged(&self) -> io::Result<()> {
         let result = self.context.validate();
         if result.is_err() {
-            self.context.poisoned.store(true, Ordering::Release);
+            self.context.files.poisoned.store(true, Ordering::Release);
         }
         result
     }
@@ -469,9 +534,10 @@ impl NativeReader<'_, '_> {
             return Ok(());
         }
         let pin = match self.index {
-            Some(index) => &self.context.segments[index],
+            Some(index) => &self.context.files.segments[index],
             None => self
                 .context
+                .files
                 .sidecar
                 .as_ref()
                 .ok_or_else(|| invalid("native sidecar cursor missing"))?,
@@ -517,7 +583,7 @@ impl BufRead for NativeReader<'_, '_> {
         }
         self.failed = true;
         if let Err(error) = self.fill() {
-            self.context.poisoned.store(true, Ordering::Release);
+            self.context.files.poisoned.store(true, Ordering::Release);
             return Err(error);
         }
         self.failed = false;
@@ -526,7 +592,7 @@ impl BufRead for NativeReader<'_, '_> {
     fn consume(&mut self, amount: usize) {
         if amount > self.available - self.position {
             self.failed = true;
-            self.context.poisoned.store(true, Ordering::Release);
+            self.context.files.poisoned.store(true, Ordering::Release);
             return;
         }
         if let Some(next) = self.offset.checked_add(amount as u64) {
@@ -534,7 +600,7 @@ impl BufRead for NativeReader<'_, '_> {
             self.position += amount;
         } else {
             self.failed = true;
-            self.context.poisoned.store(true, Ordering::Release);
+            self.context.files.poisoned.store(true, Ordering::Release);
         }
     }
 }

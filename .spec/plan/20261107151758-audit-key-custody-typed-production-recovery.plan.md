@@ -388,6 +388,34 @@ do not grant writes to Runtime/Authority/native-security/CLI/Lab paths.
 
 ## Record
 
+### Owned native resource prerequisite (source only)
+
+Root accepted the actual private owner-type slice after15174100/88cc4ba9 review,
+including a lower resource-lifetime refactor when needed. The previous Context
+stored every native pin/guard beside borrowed startup Limits/Control, so moving
+that Context into OpeningOwner would retain the startup borrow. NativeFiles now
+owns the pins, inventory, original descriptor reservation, poison state and
+last-dropped guard WITHOUT operation borrows. Context borrows only current bounds
+and retains Arc<NativeFiles>; existing readers retain that same Context.
+
+Consuming NativeSource::into_files refuses while any operation reader remains;
+those readers keep the guard on refusal. A subsequent private operation validates
+its bounds, descriptor reservation, retained count/byte limits and poison state
+before re-opening names for the existing unchanged barrier. This is PRE-auth
+resource reuse only, not permission to replace VerifiedScan's original bounds.
+No raw handle, mutable File, production factory or recovery authority is exposed.
+The extra Arc allocation/reference count belongs in the eventual memory ledger;
+no added native descriptors or lowered reservation formula are claimed.
+
+The existing explicitly ignored controlled-native test now also authors a real
+NativeFiles positive lifetime control: local opening bounds end before files are
+returned, the retained guard blocks a second WAL, a fresh PRE-auth operation runs
+the existing two-pass scan, and an outstanding reader refuses resource handoff
+while keeping its readable data/guard until the last drop. These new assertions
+have NOT RUN. Direct Windows Rust1.99.1 rustfmt and diff checks passed; no compile,
+Clippy, native, capacity or product qualification is claimed for this refactor.
+Actual OpeningOwner/VerifiedScan types and their gates remain the next step.
+
 ### Private L1 transition scoped qualification
 
 The test-compiled scan/recovery_transition.rs now implements pure tail

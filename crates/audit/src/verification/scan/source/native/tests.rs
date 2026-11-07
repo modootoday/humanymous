@@ -194,6 +194,7 @@ fn controlled_native_inspection_cursor_lifetime_and_replacement() {
         if error.kind() == io::ErrorKind::WouldBlock));
     drop(second);
     drop(Wal::open(&dir, WalOptions::default()).unwrap());
+    retained_resources_outlive_opening_bounds(&dir, &policy);
     let source = NativeSource::open(&dir, &limits, &control, admission()).unwrap();
     let mut reader = source.segment(1).unwrap();
     fs::rename(dir.join(segment_name(1)), dir.join("replaced-original")).unwrap();
@@ -366,6 +367,59 @@ fn controlled_native_inspection_cursor_lifetime_and_replacement() {
 
     final_epoch_refuses(&dir, &limits, &control, &policy);
     fs::remove_dir_all(dir).unwrap();
+}
+
+fn retained_resources_outlive_opening_bounds(
+    path: &Path,
+    policy: &crate::storage::RecoveryPolicy<'_>,
+) {
+    // This positive control uses the real native resource type: none of these
+    // opening-operation locals can be borrowed by the returned files owner.
+    fn open_files(path: &Path) -> Arc<NativeFiles> {
+        let limits = limits();
+        let cancel = AtomicBool::new(false);
+        let control = Control::new(&cancel, Duration::from_secs(30)).unwrap();
+        NativeSource::open(
+            path,
+            &limits,
+            &control,
+            Admission {
+                max_entries: 16,
+                max_handles: 64,
+                other_handles: 16,
+            },
+        )
+        .unwrap()
+        .into_files()
+        .unwrap()
+    }
+    let files = open_files(path);
+    assert!(
+        matches!(crate::storage::Wal::open(path, Default::default()), Err(error)
+        if error.kind() == io::ErrorKind::WouldBlock)
+    );
+    let limits = limits();
+    let cancel = AtomicBool::new(false);
+    let control = Control::new(&cancel, Duration::from_secs(30)).unwrap();
+    let source = NativeSource::operation(files, &limits, &control).unwrap();
+    assert!(
+        crate::verification::scan::inspect(&source, policy, &limits, &control)
+            .unwrap()
+            .report
+            .unwrap()
+            .ok
+    );
+    let files = source.into_files().unwrap();
+    let source = NativeSource::operation(files, &limits, &control).unwrap();
+    let mut reader = source.segment(1).unwrap();
+    assert!(source.into_files().is_err());
+    assert!(
+        matches!(crate::storage::Wal::open(path, Default::default()), Err(error)
+        if error.kind() == io::ErrorKind::WouldBlock)
+    );
+    assert!(!reader.fill_buf().unwrap().is_empty());
+    drop(reader);
+    drop(crate::storage::Wal::open(path, Default::default()).unwrap());
 }
 
 fn final_epoch_refuses(
