@@ -18,6 +18,9 @@ fn signed_data_is_bound_but_cannot_mint_native_preparation() {
     assert_eq!(checked.grant_id(), &e.attempt.grant_id);
     assert_eq!(checked.not_after_ms(), 5000);
     assert_eq!(checked.startup_cap_ms(), 1000);
+    assert_eq!(checked.scope().installation, "i");
+    e.scope.installation = "changed-after-verification".into();
+    assert_eq!(checked.scope().installation, "i");
     assert!(matches!(
         crate::startup::observer::native_preparation(),
         Err(crate::startup::observer::NativePreparationUnavailable::Unsupported)
@@ -219,6 +222,35 @@ fn issuer_domain_cross_grant_and_noncanonical_signatures_are_not_interchangeable
 }
 
 #[test]
+fn low_order_key_and_identity_signature_forgeries_are_strictly_rejected() {
+    let mut identity = [0; 32];
+    identity[0] = 1;
+    for issuer in [true, false] {
+        let mut e = fixture::expected(false);
+        if issuer {
+            e.installer.public_key = identity;
+        } else {
+            e.publisher.public_key = identity;
+        }
+        let mut records = fixture::records(&mut e);
+        let index = if issuer { 0 } else { 1 };
+        let offset = records[index].len() - 64;
+        // R is the identity point and S=0. A permissive equation-only verifier
+        // under an identity public key can accept arbitrary messages; strict
+        // validation must reject before treating this as signature-checked DATA.
+        records[index][offset..].fill(0);
+        records[index][offset] = 1;
+        if issuer {
+            e.installer.delegation_commitment = fixture::digest("delegation-record", &records[0]);
+        }
+        assert!(matches!(
+            check(&records, &e, 2000),
+            Err(AuthorizationError::Signature)
+        ));
+    }
+}
+
+#[test]
 fn checked_lifetimes_expiry_equality_and_cap_cannot_renew() {
     let mut e = fixture::expected(false);
     let records = fixture::records(&mut e);
@@ -357,5 +389,9 @@ fn public_fixture_domain_vectors_have_stable_artifact_bytes() {
             hex::encode(fixture::digest("golden-fixture", record))
         );
     }
+    println!(
+        "authorization-public-fixture-json:{}",
+        fixture::public_vector(&e, &records)
+    );
     check(&records, &e, 2000).unwrap();
 }

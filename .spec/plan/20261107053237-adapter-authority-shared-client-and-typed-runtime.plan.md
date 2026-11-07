@@ -978,3 +978,17 @@ asked for explicit lock-window closure and warm expected35/check/strictClippy/fm
 allocation; no new workload or provider/SCM/account action inferred from source.
 Persistent goal API still reports historical blocked status despite user-resumed
 work; no unsupported resume operation/new goal or false completion was invented.
+
+## CLI checked-scope consumer refinement before first compilation
+
+CLI reviewed778ef36b and needs immutable checked scope to bind HostPlan/config
+without duplicating hashes or trusting later ExpectedData mutation. Added checked
+scope() retaining a validated ScopeData clone, with regression proving subsequent
+expected mutation cannot change it. Added explicit low-order identity-point key/
+signature forgery test to guard verify_strict semantics. New kernel cases now14,
+expected total36, actual execution still NOT_RUN. Private test-only public-vector
+export contains complete signed public packets and expected DATA, NEVER signing
+seeds/credentials or native capability. Stable public fixture hashes/file must
+be frozen from allocated Rust observation before final qualification/CLI import.
+No production signing API or v1 credential_id/store-selector shim added. No Cargo
+command/compile executed; direct rustfmt/diff passed, awaiting Root allocation.

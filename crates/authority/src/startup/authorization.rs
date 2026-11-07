@@ -193,8 +193,14 @@ pub struct ParsedAuthorization {
 /// There is deliberately no conversion into observer preparation or Ready.
 pub struct SignatureCheckedAuthorization {
     records: ParsedAuthorization,
+    scope: ScopeData,
 }
 impl SignatureCheckedAuthorization {
+    /// Immutable validated scope DATA, detached from later expected-data mutation.
+    /// This is not an installer, service or native origin capability.
+    pub fn scope(&self) -> &ScopeData {
+        &self.scope
+    }
     /// Signed service audience DATA, not a process handle or native peer proof.
     pub fn service(&self) -> &RoleData {
         &self.records.prepared.claims.service

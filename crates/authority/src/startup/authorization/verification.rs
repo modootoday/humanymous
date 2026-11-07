@@ -90,5 +90,8 @@ pub fn verify_bundle(
     {
         return Err(AuthorizationError::Lifetime);
     }
-    Ok(SignatureCheckedAuthorization { records: parsed })
+    Ok(SignatureCheckedAuthorization {
+        records: parsed,
+        scope: expected.scope.clone(),
+    })
 }

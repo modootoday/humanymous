@@ -225,3 +225,28 @@ pub(super) fn timed(
     e.installer.delegation_commitment = link;
     [delegation, prepared, commit]
 }
+
+pub(super) fn public_vector(
+    e: &ExpectedAuthorizationData,
+    records: &[Vec<u8>; 3],
+) -> serde_json::Value {
+    use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
+    let role = |r: &RoleData| {
+        serde_json::json!({
+            "role":match r.role {AudienceRole::Service=>1,AudienceRole::Observer=>2},
+            "name":r.name,"sid":hex::encode(&r.sid),"pid":r.pid,"creation":r.creation,
+            "epoch":hex::encode(r.epoch),"base_plan":hex::encode(r.base_plan),"artifact":hex::encode(r.artifact)
+        })
+    };
+    serde_json::json!({
+        "schema":"humanymous.authorization-test-vector/2","fixture_only":true,"now_ms":2000,
+        "delegation":URL_SAFE_NO_PAD.encode(&records[0]),"prepared":URL_SAFE_NO_PAD.encode(&records[1]),"commit":URL_SAFE_NO_PAD.encode(&records[2]),
+        "expected":{
+            "installer":{"public_key":hex::encode(e.installer.public_key),"sid":hex::encode(&e.installer.sid),"installation_epoch":hex::encode(e.installer.installation_epoch),"delegation_commitment":hex::encode(e.installer.delegation_commitment),"delegation_id":hex::encode(e.installer.delegation_id),"not_before_ms":e.installer.not_before_ms,"not_after_ms":e.installer.not_after_ms},
+            "publisher":{"name":e.publisher.name,"sid":hex::encode(&e.publisher.sid),"public_key":hex::encode(e.publisher.public_key),"artifact":hex::encode(e.publisher.artifact),"pid":e.publisher.pid,"creation":e.publisher.creation,"epoch":hex::encode(e.publisher.epoch)},
+            "service":role(&e.service),"observer":role(&e.observer),
+            "scope":{"installation":e.scope.installation,"tenant":e.scope.tenant,"origin":e.scope.origin,"revision":e.scope.revision,"application_authority":e.scope.application_authority},
+            "attempt":{"grant_id":hex::encode(e.attempt.grant_id),"credential_epoch":hex::encode(e.attempt.credential_epoch),"startup_cap_ms":e.attempt.startup_cap_ms,"earliest_issued_ms":e.attempt.earliest_issued_ms,"latest_not_after_ms":e.attempt.latest_not_after_ms}
+        }
+    })
+}
