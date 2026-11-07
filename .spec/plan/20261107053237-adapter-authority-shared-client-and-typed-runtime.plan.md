@@ -602,3 +602,24 @@ prevents Prepared-as-Commit, wrong-kind and cross-grant substitution. Exact form
 actual native rights/owner/image/time and unattended publisher policy remain open.
 Post-Commit uncertainty must not be called revocation or trigger automatic retry.
 Critique sent to native owner/root; no implementation or execution started.
+
+## Independent native v0.3 exact-format review
+
+Reviewed frozen native R1 plan SHA256
+c934d71a23546eed83f4e597e3be6817b9aeed29c5b9bf902208cae0218bd8f6.
+Independent arithmetic confirms Prepared body652/artifact726 and Commit
+body169/artifact243; full lowercase hex1938 plus grant overhead128 and other
+Hello896 totals2962, below3072. Separate exact signature domains, prepared artifact
+commitment including signature, repeated grant/key/epoch bindings and strict EOF
+address the prior record-kind/linkage concern at specification level. No new
+blocker found in the listed binary field ordering; this is not cryptographic code
+execution, test-vector qualification or acceptance of native identity.
+
+Required before format freeze: normative exact Hello DTO/format literal and strict
+unknown/duplicate fields, every non-grant JSON syntax byte included in896; golden
+byte/signature/commitment vectors for min/max names/SIDs and numeric boundaries;
+mutations of each bound field, Prepared-as-Commit, cross-grant records, trailing
+bytes, uppercase hex and oversize/predecode refusal. Overall NEEDS-WORK remains:
+actual native query/owner proof, loaded-image limits, unattended publisher policy,
+independent W and atomic epoch/secret gate. Sent exact review to root/native owner.
+No new source implementation, feature edge or runtime execution was performed.
