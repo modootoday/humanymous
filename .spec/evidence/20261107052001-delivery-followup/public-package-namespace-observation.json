@@ -1,0 +1,74 @@
+{
+  "schema": "humanymous.public-package-namespace-observation/1",
+  "requested_public_name": "humanymous",
+  "scope": "Unauthenticated read-only official registry public metadata, not ownership or publisher configuration",
+  "observations": [
+    {
+      "observed_at_utc": "2026-11-07T16:52:31.6570191Z",
+      "registry": "crates_io",
+      "curl_exit": 0,
+      "namespace_reservation_verified": false,
+      "http_status": 404,
+      "ownership_verified": false,
+      "body_bytes": 59,
+      "url": "https://crates.io/api/v1/crates/humanymous",
+      "published_public_record_observed": false,
+      "pending_publisher_configuration_verified": false,
+      "body_sha256": "f47096d02adfee5eb0d82b2510cd13786bff49c88d122c7c9da9c2c1ecf3f197"
+    },
+    {
+      "observed_at_utc": "2026-11-07T16:52:31.3643874Z",
+      "registry": "npm",
+      "curl_exit": 0,
+      "namespace_reservation_verified": false,
+      "http_status": 404,
+      "ownership_verified": false,
+      "body_bytes": 21,
+      "url": "https://registry.npmjs.org/humanymous",
+      "published_public_record_observed": false,
+      "pending_publisher_configuration_verified": false,
+      "body_sha256": "c8d3eae160a892e32837db3dcae515e843e5383fef52b8141940c8bcf8b6d59f"
+    },
+    {
+      "observed_at_utc": "2026-11-07T16:52:31.2217346Z",
+      "registry": "pypi",
+      "curl_exit": 0,
+      "namespace_reservation_verified": false,
+      "http_status": 404,
+      "ownership_verified": false,
+      "body_bytes": 24,
+      "url": "https://pypi.org/pypi/humanymous/json",
+      "published_public_record_observed": false,
+      "pending_publisher_configuration_verified": false,
+      "body_sha256": "b82014934f66beeb9e05a37f65357c4b50db0349d25d68d818ed0319dd4feb40"
+    },
+    {
+      "observed_at_utc": "2026-11-07T16:52:31.5210387Z",
+      "registry": "rubygems",
+      "curl_exit": 0,
+      "namespace_reservation_verified": false,
+      "http_status": 404,
+      "ownership_verified": false,
+      "body_bytes": 32,
+      "url": "https://rubygems.org/api/v1/gems/humanymous.json",
+      "published_public_record_observed": false,
+      "pending_publisher_configuration_verified": false,
+      "body_sha256": "8e1c7282dc77bc10b5ec8283711ff2f059a7304621579df6dd6b54445ff97bd5"
+    }
+  ],
+  "namespace_available": null,
+  "namespace_reserved": null,
+  "publisher_configuration_verified": false,
+  "oidc_exchange_executed": false,
+  "settings_mutated": false,
+  "package_published": false,
+  "private_capture_index_sha256": "2311cb4743caa16a2028e5a129c6ba8e0608aa198cd398707d75b2dbef15d238",
+  "limitations": [
+    "HTTP404 means no published public metadata record was returned at that endpoint/read time; it does not prove name availability or absence of reservations.",
+    "A private or pending trusted publisher can exist without a published public package; these queries do not inspect authenticated registry settings.",
+    "No account ownership, namespace bootstrap or repository/workflow/environment publisher binding is established.",
+    "All source registry prerequisites remain unverified; the existing GitHub environment observations are separate evidence.",
+    "The four reads form a time window, not an atomic cross-registry attestation; later results may differ.",
+    "No login, reservation, account mutation, OIDC token exchange, deployment or publication occurred."
+  ]
+}

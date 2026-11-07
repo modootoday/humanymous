@@ -3,7 +3,7 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T16:39:02Z
+updated: 2026-11-07T16:53:57Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
@@ -35,6 +35,7 @@ files:
   - {path: registry-environment-observation.json, sha256: 67e920e9b0fbfbe665941d4465380c3fc1137312d0eb17a4b1e8c4504d823e65, bytes: 3282, store: repo}
   - {path: browser-306eedc8-summary.json, sha256: 753b4d66b05aac0726fc0226adad55abc35c598aaecc3e2a6de878a97a93c542, bytes: 5803, store: repo}
   - {path: controlled-capture-owner-consumption.json, sha256: d50f74aa5d4ba1f85d5cfb339feae88446cacfb40793e96f430bbe699a39bc7c, bytes: 2318, store: repo}
+  - {path: public-package-namespace-observation.json, sha256: dcfff523dd1cd4c601b244574358be46df87c073d211febfbc2fdae8ad1cdaf9, bytes: 3366, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -572,3 +573,16 @@ outer fault scenarios remain untested; legacy consumers and Docker daemon object
 cleanup remain separate. Delivery SoT now names the fixed-profile admission and
 cooperative-before-Docker-child seam that must be accepted and actually exercised
 before notice extraction can claim its cleanup contract.
+
+## Unified public package metadata read window
+
+public-package-namespace-observation.json retains official unauthenticated GETs
+for the target name humanymous at crates.io/npm/PyPI/RubyGems. All four requests
+completed with HTTP404 at2026-11-07T16:52:31Z, with original bodies/headers and
+metadata privately captured. This observes no published public record returned;
+it does not establish availability, reservations, ownership, pending publishers
+or registry-side trusted-publisher bindings. Source verification flags remain
+false. The actual GitHub environment settings are a separate observation, not
+proof of registry bootstrap. No account, token, setting or package changed.
+Sealed private capture index SHA256 is
+2311cb4743caa16a2028e5a129c6ba8e0608aa198cd398707d75b2dbef15d238.
