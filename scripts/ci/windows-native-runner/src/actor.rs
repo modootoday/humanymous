@@ -227,33 +227,251 @@ fn quote(arg: &OsStr) -> io::Result<String> {
     }
     Ok(format!("\"{value}\""))
 }
-fn launch(
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum ProcessPhase {
+    Created,
+    JobCreated,
+    Configured,
+    Assigned,
+    Resumed,
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum CleanupTarget {
+    OwnedDirectChild,
+    OwnedJob,
+}
+impl ProcessPhase {
+    fn cleanup_target(self) -> CleanupTarget {
+        match self {
+            Self::Created | Self::JobCreated | Self::Configured => CleanupTarget::OwnedDirectChild,
+            Self::Assigned | Self::Resumed => CleanupTarget::OwnedJob,
+        }
+    }
+}
+#[derive(Clone, Copy)]
+struct ExitObservation {
+    code: u32,
+    natural: bool,
+}
+/// Existing Handle guards remain the sole native handle owners. No numeric PID
+/// constructor, generic executable, copied handle or detached identity exists.
+struct OwnedProcessAttempt {
+    child: Handle,
+    thread: Handle,
+    job: Option<Handle>,
+    direct_exit: Option<ExitObservation>,
+    phase: ProcessPhase,
+    force_requested: bool,
+    legacy_drop_cleanup: bool,
+}
+struct OwnedProcessFailure {
+    owner: OwnedProcessAttempt,
+    error: io::Error,
+}
+enum StartFailure {
+    NotStarted(io::Error),
+    Retained(OwnedProcessFailure),
+}
+/// Borrowing proof keeps the exact native owner alive. Not public/serializable.
+struct ConvergenceProof<'a> {
+    _owner: &'a OwnedProcessAttempt,
+    exit: ExitObservation,
+    scope: CleanupTarget,
+}
+impl OwnedProcessAttempt {
+    fn configure_and_resume(&mut self) -> io::Result<()> {
+        if self.phase != ProcessPhase::Created || self.job.is_some() {
+            return Err(io::Error::other("owned job already configured"));
+        }
+        self.job = Some(Handle(unsafe { CreateJobObjectW(null(), null()) }));
+        let job = self
+            .job
+            .as_ref()
+            .ok_or_else(|| io::Error::other("owned job absent"))?;
+        if job.0.is_null() {
+            return Err(io::Error::last_os_error());
+        }
+        self.phase = ProcessPhase::JobCreated;
+        let mut limits: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = unsafe { zeroed() };
+        limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+        if unsafe {
+            SetInformationJobObject(
+                job.0,
+                JobObjectExtendedLimitInformation,
+                (&limits as *const JOBOBJECT_EXTENDED_LIMIT_INFORMATION).cast(),
+                size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
+            )
+        } == 0
+        {
+            return Err(io::Error::last_os_error());
+        }
+        self.phase = ProcessPhase::Configured;
+        if unsafe { AssignProcessToJobObject(job.0, self.child.0) } == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        self.phase = ProcessPhase::Assigned;
+        if unsafe { ResumeThread(self.thread.0) } == u32::MAX {
+            return Err(io::Error::last_os_error());
+        }
+        self.phase = ProcessPhase::Resumed;
+        Ok(())
+    }
+    fn wait_run(&mut self, until: std::time::Instant) -> io::Result<ExitObservation> {
+        if std::time::Instant::now() >= until {
+            return Err(io::Error::new(
+                io::ErrorKind::TimedOut,
+                "standard-user deadline",
+            ));
+        }
+        if let Some(code) = self.direct_exit {
+            return Ok(code);
+        }
+        let remaining = until.saturating_duration_since(std::time::Instant::now());
+        if remaining.is_zero()
+            || unsafe {
+                WaitForSingleObject(
+                    self.child.0,
+                    remaining.as_millis().min(u128::from(u32::MAX)) as u32,
+                )
+            } != WAIT_OBJECT_0
+        {
+            return Err(io::Error::new(
+                io::ErrorKind::TimedOut,
+                "standard-user deadline",
+            ));
+        }
+        let mut code = 0;
+        if unsafe { GetExitCodeProcess(self.child.0, &mut code) } == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        let exit = ExitObservation {
+            code,
+            natural: !self.force_requested,
+        };
+        self.direct_exit = Some(exit);
+        if std::time::Instant::now() >= until {
+            return Err(io::Error::new(
+                io::ErrorKind::TimedOut,
+                "standard-user deadline",
+            ));
+        }
+        Ok(exit)
+    }
+    // Every failure borrows self: actual child/thread/optional Job stay owned.
+    fn contain(&mut self, until: std::time::Instant) -> io::Result<ConvergenceProof<'_>> {
+        if until <= std::time::Instant::now() {
+            return Err(io::Error::other("owned cleanup deadline"));
+        }
+        let scope = self.phase.cleanup_target();
+        if scope == CleanupTarget::OwnedDirectChild {
+            // Only partial, UNASSIGNED creation/configuration failures use the
+            // exact retained child HANDLE. An empty Job cannot contain it.
+            self.force_requested = true;
+            if unsafe { TerminateProcess(self.child.0, 1) } == 0 {
+                return Err(io::Error::last_os_error());
+            }
+            let exit = self.wait_run(until)?;
+            return Ok(ConvergenceProof {
+                _owner: self,
+                exit,
+                scope,
+            });
+        }
+        let job = self
+            .job
+            .as_ref()
+            .ok_or_else(|| io::Error::other("owned job absent"))?
+            .0;
+        if job.is_null() {
+            return Err(io::Error::other("owned job absent"));
+        }
+        self.force_requested = true;
+        if unsafe { TerminateJobObject(job, 1) } == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        let exit = self.wait_run(until)?;
+        loop {
+            if std::time::Instant::now() >= until {
+                return Err(io::Error::other("owned job cleanup deadline"));
+            }
+            let mut accounting: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION = unsafe { zeroed() };
+            if unsafe {
+                QueryInformationJobObject(
+                    job,
+                    JobObjectBasicAccountingInformation,
+                    (&mut accounting as *mut JOBOBJECT_BASIC_ACCOUNTING_INFORMATION).cast(),
+                    size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32,
+                    null_mut(),
+                )
+            } == 0
+            {
+                return Err(io::Error::last_os_error());
+            }
+            if std::time::Instant::now() >= until {
+                return Err(io::Error::other("owned job cleanup deadline"));
+            }
+            if accounting.ActiveProcesses == 0 {
+                return Ok(ConvergenceProof {
+                    _owner: self,
+                    exit,
+                    scope,
+                });
+            }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+    }
+}
+impl Drop for OwnedProcessAttempt {
+    fn drop(&mut self) {
+        // Preserve legacy failure behavior only. Retained-profile Drop must not
+        // renew its cleanup deadline or claim synchronous native cleanup.
+        if self.legacy_drop_cleanup || self.direct_exit.is_none() {
+            unsafe {
+                TerminateProcess(self.child.0, 1);
+            }
+        }
+        if self.legacy_drop_cleanup {
+            unsafe {
+                WaitForSingleObject(self.child.0, 10000);
+            }
+        }
+        // Exact owned Job closes before process/thread guards, as in old launch.
+        drop(self.job.take());
+    }
+}
+fn start_owned_runner(
     account: &Account,
     password: &[u16],
     arguments: &[OsString],
     environment: &[(String, String)],
     cwd: &Path,
-) -> io::Result<(u32, u32)> {
-    let exe = std::env::current_exe()?.canonicalize()?;
-    let application = wide(&exe);
-    let text = std::iter::once(exe.into_os_string())
-        .chain(arguments.iter().cloned())
-        .map(|s| quote(&s))
-        .collect::<io::Result<Vec<_>>>()?
-        .join(" ");
-    let mut command = wide(text);
-    let domain = wide(".");
-    let directory = wide(cwd);
-    let mut environment: Vec<_> = environment
-        .iter()
-        .map(|(k, v)| format!("{k}={v}"))
-        .collect();
-    environment.sort_by_key(|s| s.to_ascii_uppercase());
-    let environment: Vec<u16> = environment
-        .iter()
-        .flat_map(|s| s.encode_utf16().chain(Some(0)))
-        .chain(Some(0))
-        .collect();
+    legacy_cleanup: bool,
+) -> Result<OwnedProcessAttempt, StartFailure> {
+    let prepared = (|| -> io::Result<_> {
+        let exe = std::env::current_exe()?.canonicalize()?;
+        let application = wide(&exe);
+        let text = std::iter::once(exe.into_os_string())
+            .chain(arguments.iter().cloned())
+            .map(|s| quote(&s))
+            .collect::<io::Result<Vec<_>>>()?
+            .join(" ");
+        let command = wide(text);
+        let domain = wide(".");
+        let directory = wide(cwd);
+        let mut environment: Vec<_> = environment
+            .iter()
+            .map(|(k, v)| format!("{k}={v}"))
+            .collect();
+        environment.sort_by_key(|s| s.to_ascii_uppercase());
+        let environment: Vec<u16> = environment
+            .iter()
+            .flat_map(|s| s.encode_utf16().chain(Some(0)))
+            .chain(Some(0))
+            .collect();
+        Ok((application, command, domain, directory, environment))
+    })()
+    .map_err(StartFailure::NotStarted)?;
+    let (application, mut command, domain, directory, environment) = prepared;
     let mut startup: STARTUPINFOW = unsafe { zeroed() };
     startup.cb = size_of::<STARTUPINFOW>() as u32;
     startup.dwFlags = STARTF_USESHOWWINDOW;
@@ -275,79 +493,49 @@ fn launch(
         )
     };
     if result == 0 {
-        return Err(io::Error::last_os_error());
+        return Err(StartFailure::NotStarted(io::Error::last_os_error()));
     }
-    let child = Handle(process.hProcess);
-    let thread = Handle(process.hThread);
-    let job = Handle(unsafe { CreateJobObjectW(null(), null()) });
-    let managed = (|| -> io::Result<(u32, u32)> {
-        if job.0.is_null() {
-            return Err(io::Error::last_os_error());
-        }
-        let mut limits: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = unsafe { zeroed() };
-        limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-        if unsafe {
-            SetInformationJobObject(
-                job.0,
-                JobObjectExtendedLimitInformation,
-                (&limits as *const JOBOBJECT_EXTENDED_LIMIT_INFORMATION).cast(),
-                size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
-            )
-        } == 0
-            || unsafe { AssignProcessToJobObject(job.0, child.0) } == 0
-        {
-            return Err(io::Error::last_os_error());
-        }
-        if unsafe { ResumeThread(thread.0) } == u32::MAX {
-            return Err(io::Error::last_os_error());
-        }
-        if unsafe { WaitForSingleObject(child.0, 1_200_000) } != WAIT_OBJECT_0 {
-            return Err(io::Error::new(
-                io::ErrorKind::TimedOut,
-                "standard-user deadline",
-            ));
-        }
-        let mut code = 0;
-        if unsafe { GetExitCodeProcess(child.0, &mut code) } == 0 {
-            return Err(io::Error::last_os_error());
-        }
-        if unsafe { TerminateJobObject(job.0, 1) } == 0 {
-            return Err(io::Error::last_os_error());
-        }
-        let until = std::time::Instant::now() + std::time::Duration::from_secs(5);
-        loop {
-            let mut accounting: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION = unsafe { zeroed() };
-            if unsafe {
-                QueryInformationJobObject(
-                    job.0,
-                    JobObjectBasicAccountingInformation,
-                    (&mut accounting as *mut JOBOBJECT_BASIC_ACCOUNTING_INFORMATION).cast(),
-                    size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32,
-                    null_mut(),
-                )
-            } == 0
-            {
-                return Err(io::Error::last_os_error());
-            }
-            if accounting.ActiveProcesses == 0 {
-                return Ok((code, 0));
-            }
-            if std::time::Instant::now() >= until {
-                return Err(io::Error::other(
-                    "owned job still contains active processes",
-                ));
-            }
-            std::thread::sleep(std::time::Duration::from_millis(10));
-        }
-    })();
-    if managed.is_err() {
-        unsafe {
-            TerminateProcess(child.0, 1);
-            WaitForSingleObject(child.0, 10000);
-        }
+    // Retain the suspended child/thread BEFORE the next fallible Job operation.
+    let mut owner = OwnedProcessAttempt {
+        child: Handle(process.hProcess),
+        thread: Handle(process.hThread),
+        job: None,
+        direct_exit: None,
+        phase: ProcessPhase::Created,
+        force_requested: false,
+        legacy_drop_cleanup: legacy_cleanup,
+    };
+    if let Err(error) = owner.configure_and_resume() {
+        return Err(StartFailure::Retained(OwnedProcessFailure { owner, error }));
     }
-    drop(job);
-    managed
+    Ok(owner)
+}
+fn launch(
+    account: &Account,
+    password: &[u16],
+    arguments: &[OsString],
+    environment: &[(String, String)],
+    cwd: &Path,
+) -> io::Result<(u32, u32)> {
+    let mut owner = start_owned_runner(account, password, arguments, environment, cwd, true)
+        .map_err(|failure| match failure {
+            StartFailure::NotStarted(error) => error,
+            StartFailure::Retained(OwnedProcessFailure { owner, error }) => {
+                drop(owner);
+                error
+            }
+        })?;
+    let natural =
+        owner.wait_run(std::time::Instant::now() + std::time::Duration::from_secs(1200))?;
+    let proof = owner.contain(std::time::Instant::now() + std::time::Duration::from_secs(5))?;
+    if proof.scope != CleanupTarget::OwnedJob || !natural.natural || !proof.exit.natural {
+        return Err(io::Error::other(
+            "legacy natural exit and assigned Job required",
+        ));
+    }
+    let code = natural.code;
+    owner.legacy_drop_cleanup = false;
+    Ok((code, 0))
 }
 pub fn run(options: &Options, workload: Workload) -> io::Result<i32> {
     let service = workload == Workload::Service;
@@ -624,5 +812,25 @@ mod tests {
             Some("github-hosted"),
             None
         ));
+    }
+}
+
+#[cfg(test)]
+mod owner_tests {
+    use super::*;
+    #[test]
+    fn partial_setup_failure_cannot_select_an_empty_unassigned_job() {
+        // Failure immediately after each successful native setup operation must
+        // select the last actually established boundary, not a present handle.
+        for phase in [
+            ProcessPhase::Created,
+            ProcessPhase::JobCreated,
+            ProcessPhase::Configured,
+        ] {
+            assert!(phase.cleanup_target() == CleanupTarget::OwnedDirectChild);
+        }
+        for phase in [ProcessPhase::Assigned, ProcessPhase::Resumed] {
+            assert!(phase.cleanup_target() == CleanupTarget::OwnedJob);
+        }
     }
 }

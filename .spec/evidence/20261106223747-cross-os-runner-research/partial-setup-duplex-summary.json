@@ -1,0 +1,133 @@
+{
+  "schema": "humanymous.partial-setup-duplex-validation/1",
+  "status": "passed-narrow-component",
+  "base_sha": "77ca7d9f00f3e6995ca64b6487dca123b76f2b0a",
+  "owned_overlays_sha256": {
+    "scripts/ci/windows-native-runner/src/actor.rs": "0372733bc1a5d7be87b19084e62500a0a962be2e33d7880b30a6f85497d7fd39",
+    "crates/test-support/src/process.rs": "6b1edaf2f60f300fd5025009ee44c580f438e8aa73c406e67ce751dcaeb164cb"
+  },
+  "source_files": 2427,
+  "registry_packages": 32,
+  "registry_files": 2079,
+  "source_registry_config_flag_drift": 0,
+  "admission": {
+    "free_gib": 31.81,
+    "commit_percent": 80
+  },
+  "venue": "native Windows immutable base plus two owned overlays",
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "tests": [
+    {
+      "selector": "parent_context::tests",
+      "kind": "pure",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 23
+    },
+    {
+      "selector": "prebuilt::tests",
+      "kind": "pure",
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 31
+    },
+    {
+      "selector": "actor::owner_tests::partial_setup_failure_cannot_select_an_empty_unassigned_job",
+      "kind": "pure",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 37
+    },
+    {
+      "selector": "process::tests::duplex_caller_owns_pipes_and_guard_owns_lifetime",
+      "kind": "actual direct-child parent",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 26
+    }
+  ],
+  "nested_fixture_invocations_not_added_to_passed": 2,
+  "all_target_check": {
+    "shared": "passed",
+    "runner": "passed"
+  },
+  "strict_clippy": {
+    "shared": "passed with -D warnings",
+    "runner": "passed with -D warnings"
+  },
+  "actual_scope": "existing null-stderr duplex plus returned stdin/stdout/stderr, known direct child exit and concurrent bounded reader joins",
+  "actual_job_account_scm_sdk_kestrel_executed": false,
+  "actor_profile_qualified": false,
+  "native_partial_setup_fault_injection_executed": false,
+  "parent_context_transport_provenance_qualified": false,
+  "preflight_note": "77ca short ID ambiguous with tree; resolved unique commit77ca7d9f before compilation",
+  "raw": {
+    "after.json": {
+      "sha256": "0583e23853e9c202be344fede3b714e7b27e95c29dcd8aded13f44bfbb388f99",
+      "bytes": 518429
+    },
+    "before.json": {
+      "sha256": "0583e23853e9c202be344fede3b714e7b27e95c29dcd8aded13f44bfbb388f99",
+      "bytes": 518429
+    },
+    "duplex-only.log": {
+      "sha256": "3e1c44769d4e1887b8a2eea9ffeb07938253b52bdd2dda44d58efe9bb51fb33d",
+      "bytes": 412
+    },
+    "overlays.json": {
+      "sha256": "f605fb5123cfeae4aa8862080b75d61e780e48d2990b418234148feb13cc3450",
+      "bytes": 309
+    },
+    "results.json": {
+      "sha256": "ba01bceb6bc77d5c96bd5ce173128c54e75af0f44c478e20076ec66f84bedcce",
+      "bytes": 382
+    },
+    "root-tree.log": {
+      "sha256": "635c97fb752745b0ccc3b4cd4a08327d38efa555164cb6ac8fbfdaa3510aa75f",
+      "bytes": 481
+    },
+    "runner-check.log": {
+      "sha256": "3bfb678db449bd18110716d3e8291de1609df587b24eee80f77e1f8b8ef02585",
+      "bytes": 599
+    },
+    "runner-clippy.log": {
+      "sha256": "bd6df23921320ace1b172ab22c6e2e4ed67e204cbcddf347c2a59a9035c20c82",
+      "bytes": 255
+    },
+    "runner-partial.log": {
+      "sha256": "993b692d46a0dd9dd699a87a9b1db3fb2f416746b518485d71d7274db6a23464",
+      "bytes": 429
+    },
+    "runner-prebuilt.log": {
+      "sha256": "ba4c1d004785ac5065cb0c2849fa938eb37c11d16c0e96feb8d8c3ce9a5c6210",
+      "bytes": 1502
+    },
+    "runner-tree.log": {
+      "sha256": "92f988f2149de41adb62dceca6eaa8e698fb93703d8643259578721464f5fa29",
+      "bytes": 1455
+    },
+    "shared-check.log": {
+      "sha256": "939d1d7c2535020a848b4688bfd06f37452e8411317b85ff406ab8b87a736d77",
+      "bytes": 241
+    },
+    "shared-clippy.log": {
+      "sha256": "0c333528fe966285774fb0acb89636436cb05e4ed468558baa6b21cef7241a08",
+      "bytes": 241
+    },
+    "shared-pure.log": {
+      "sha256": "f6327fcc3c4a9bd85a1e089c8251152ececbc5939b26100945fa24e2a7d8e388",
+      "bytes": 872
+    }
+  },
+  "private_directory": ".spec.local/root/evidence/20261107130000-windows-runner-partial-duplex"
+}

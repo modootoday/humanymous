@@ -76,3 +76,14 @@ passed on immutableb482+owned overlays with BOTH check/strict Clippy; actual OS
 execution is unqualified. Exact source hashes are registered in cross-OS runner
 parent-context-joint-summary.json. Do not mutate these shared bytes during the
 .NET consumer's separately allocated source-bound compile.
+
+## Additive owned stderr duplex
+
+ManagedChild::spawn_duplex_with_stderr(&mut Command) returns one direct-child
+guard plus ChildStdin/ChildStdout/ChildStderr. No reader, write, framing, implicit
+deadline or descendant supervisor is added. Existing spawn_duplex remains stderr
+null. Caller retains bounded readers and joins them; pipe return or guard Drop is
+not EOF/Job-empty proof. On immutable77ca7d9f+process6b1, the existing duplex parent
+passed both modes with known child wait and concurrent bounded readers. This is
+ONE parent pass, not two added nested helper passes or Kestrel/actor qualification.
+Both package checks/strict Clippy passed; see registered partial-setup-duplex summary.

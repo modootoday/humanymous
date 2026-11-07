@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: partial-setup-duplex-summary.json, sha256: afd7dd3de43e209600d3e47fcfe983a79bc112d654e7c1d25e967a52ae17812a, bytes: 4288, store: repo}
   - {path: parent-context-joint-summary.json, sha256: 50e986abdcfa8255177a8dbbab107fbf51f01e89c8ebe3316f8a3b82b03ecd10, bytes: 4005, store: repo}
   - {path: dotnet-prebuilt-pure-summary.json, sha256: 5e92ee2cfc0a849a70f1ffe9c8b90cf3b042973484f21db1de92516cda15cc33, bytes: 2965, store: repo}
   - {path: linux-tree-bd62cc3c-summary.json, sha256: e2aec195de03cc7950eb9742acdadb20e060b628565d5c00dbfbb956c050a3b2, bytes: 4218, store: repo}
@@ -93,3 +94,13 @@ changes. OwnedActor account-failure refactor compiles; no native account, Job,
 profile, staging, reader or Kestrel operation ran. Actual retained Job owner and
 new NoProfile/native proofs remain separate gates. Registered summary preserves
 exact overlays/raw hashes and incomplete cache/compiler-observation limits.
+
+## Partial setup and additive duplex stderr validation
+
+Immutable77ca7d9f +actor0372733b/process6b1 overlays pass BOTH package check and
+strict Clippy,12pure cases and ONE actual direct-child duplex parent. Its two
+nested child helper invocations are not added to the denominator. Snapshot2427
+files and32registry packages/2079files plus observed config/flag fingerprints had
+zero drift. No actual Job/account/SCM/SDK/Kestrel or partial-setup native fault
+injection ran. Producer parent-context transport/provenance remains unqualified.
+See partial-setup-duplex-summary.json for exact four footers and raw/source hashes.

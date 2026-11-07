@@ -1,7 +1,7 @@
 //! Bounded native child lifetime and private readiness transport for pilots.
 use std::{
     io::{self, BufRead, BufReader, Read, Write},
-    process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio},
+    process::{Child, ChildStderr, ChildStdin, ChildStdout, Command, ExitStatus, Stdio},
     sync::mpsc,
     time::{Duration, Instant},
 };
@@ -85,6 +85,32 @@ impl ManagedChild {
             .take()
             .ok_or_else(|| io::Error::other("private stdout missing"))?;
         Ok((child, stdin, stdout))
+    }
+    /// Return one direct-child guard and all three owned pipes. This performs no
+    /// startup write, reader spawn, framing or descendant supervision. The caller
+    /// must apply verified cwd/env before launch, bound input/output, retain and
+    /// join readers, and independently establish owned-tree containment. Returning
+    /// pipes or dropping the guard is not EOF/reader-join/Job-empty proof.
+    pub fn spawn_duplex_with_stderr(
+        command: &mut Command,
+    ) -> io::Result<(Self, ChildStdin, ChildStdout, ChildStderr)> {
+        let mut child = Self::piped(command, true)?;
+        let stdin = child
+            .0
+            .stdin
+            .take()
+            .ok_or_else(|| io::Error::other("private stdin missing"))?;
+        let stdout = child
+            .0
+            .stdout
+            .take()
+            .ok_or_else(|| io::Error::other("private stdout missing"))?;
+        let stderr = child
+            .0
+            .stderr
+            .take()
+            .ok_or_else(|| io::Error::other("private stderr missing"))?;
+        Ok((child, stdin, stdout, stderr))
     }
     /// Observe the actual direct-child status without blocking a frame loop.
     pub fn try_wait(&mut self) -> io::Result<Option<ExitStatus>> {
@@ -254,13 +280,16 @@ mod tests {
             }
             Ok("stderr-flood") => eprintln!("{}", "x".repeat(8192)),
             Ok("identity") => println!("\nchild-pid:{}", std::process::id()),
-            Ok("duplex") => {
+            Ok("duplex") | Ok("duplex-both") => {
                 let mut input = String::new();
                 std::io::stdin()
                     .take(4096)
                     .read_to_string(&mut input)
                     .unwrap();
                 println!("{input}");
+                if std::env::var("HUMANYMOUS_SUPPORT_FIXTURE").as_deref() == Ok("duplex-both") {
+                    eprintln!("owned-duplex-stderr");
+                }
             }
             _ => (),
         }
@@ -351,5 +380,25 @@ mod tests {
         assert!(child.wait(Duration::from_secs(5)).unwrap().success());
         assert!(String::from_utf8_lossy(&bytes).contains("owned-native-duplex"));
         assert!(child.try_wait().unwrap().unwrap().success());
+
+        let (mut child, mut input, output, error) =
+            ManagedChild::spawn_duplex_with_stderr(&mut fixture("duplex-both")).unwrap();
+        let stdout = std::thread::spawn(move || {
+            let mut bytes = Vec::new();
+            output.take(4097).read_to_end(&mut bytes).map(|_| bytes)
+        });
+        let stderr = std::thread::spawn(move || {
+            let mut bytes = Vec::new();
+            error.take(4097).read_to_end(&mut bytes).map(|_| bytes)
+        });
+        input.write_all(b"owned-all-three-pipes").unwrap();
+        drop(input);
+        let status = child.wait(Duration::from_secs(5));
+        let stdout = stdout.join().unwrap().unwrap();
+        let stderr = stderr.join().unwrap().unwrap();
+        assert!(status.unwrap().success());
+        assert!(stdout.len() <= 4096 && stderr.len() <= 4096);
+        assert!(String::from_utf8_lossy(&stdout).contains("owned-all-three-pipes"));
+        assert_eq!(stderr, b"owned-duplex-stderr\n");
     }
 }

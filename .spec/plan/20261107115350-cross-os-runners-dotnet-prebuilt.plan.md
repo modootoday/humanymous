@@ -337,3 +337,75 @@ NOT_RUN marker above only for these exact new source hashes, registered in
 parent-context-joint-summary.json. Account state is explicitly Uncreated/Present/
 Deleted. Retained-policy owners cannot call the legacy account-delete adapter.
 No actual account, Job, profile, Kestrel or retained Job API execution occurred.
+
+## Retained Job source implementation candidate (not yet compiled)
+
+OwnedProcessAttempt now wraps ONLY existing Handle owners for child/thread and
+optional Job. Successful native CreateProcess stores both handles BEFORE Job
+creation/configuration/assignment/resume. StartFailure distinguishes pre-spawn
+NotStarted from Retained(OwnedProcessFailure with actual owner). wait_run and
+contain borrow the owner on every error. JobEmptyProof borrows the exact owner,
+combining actual direct-child exit observation with native active-process0;
+no numeric-ID, clone, serialization or external proof constructor is exposed.
+
+The existing legacy adapter remains the only caller: same fixed runner executable,
+LOGON_WITH_PROFILE,20minute run/5second Job budget and legacy failure Drop10second
+wait policy. Retained internal policy must be selected BEFORE creation and never
+renews a synchronous Drop wait; Drop requests exact owned direct termination
+when needed and closes exact Job, but cleanup remains Unknown. If Job setup or
+assignment failed and child was unassigned, contain may fail/timeout and retain
+the owner; no Job-empty/all-descendants proof is manufactured. New prebuilt mode
+is still not wired. No new Win32 API, flag, feature edge or separate unsafe handle
+owner exists. Native APIs remain in actor.rs's existing quarantined boundary.
+Critical diff must pass Root review and fresh compiler/pure checks; actual native
+Job/account/profile outcomes remain unexecuted and unqualified.
+
+## Additive duplex stderr API (source-only, actual IO review pending)
+
+ManagedChild::spawn_duplex_with_stderr(&mut Command) returns one ManagedChild,
+ChildStdin, ChildStdout, ChildStderr. Existing piped(command,true) supplies pipes;
+partial extraction drops the existing direct-child guard. No reader thread,
+startup write, protocol, implicit deadline or descendant supervisor is created.
+Original spawn_duplex remains stderr=null and does not delegate through a dropped
+stderr pipe. Caller owns all streams/join handles and explicit output bounds.
+
+Separate startup is one-shot<=64KiB AFTER actual captured child PID validation;
+subsequent controls<=1024bytes/queue64. Parent-context wire contains NO authority
+credential. EOF, joined readers and outer Job emptiness remain independent actual
+facts. Existing duplex parent fixture was extended for concurrent returned stdout/
+stderr readers, with no new harness helper-parent inventory. That actual process
+case is authored/NOT_RUN until Root explicitly allocates it; formatting alone is
+not pipe/EOF/deadline or Kestrel qualification. Shared context4629133c/fa436a2a
+remains bytefrozen for .NET's independent D compile.
+
+## Critical partial-setup correction before validation
+
+Independent .NET review found that a stored Job handle can still be null,
+unconfigured or unassigned while the child remains suspended. Explicit native
+phases now advance ONLY after each successful operation: Created -> JobCreated
+-> Configured -> Assigned -> Resumed. Created/JobCreated/Configured select exact
+owned child-HANDLE TerminateProcess plus bounded wait under ORIGINAL cleanup
+expiry; Assigned/Resumed select exact owned Job termination/query. No PID fallback,
+new Win32 API, fresh cleanup budget or dropped failure owner is used.
+
+ConvergenceProof records scope (unassigned direct child versus assigned Job) and
+independent exit observation with natural/forced provenance. It borrows the exact
+owner; unassigned convergence never claims Job-empty or descendants-empty.
+force_requested becomes irreversible BEFORE termination request. A previously
+observed natural exit stays distinct from exit observed after forced cleanup.
+Legacy return accepts only its prior natural exit plus assigned-Job convergence;
+forced exit0/Job-empty alone cannot become natural success or reader-settled proof.
+Reader/EOF/handoff/private/profile outcomes remain separate unknown native gates.
+Pure partial-phase failure matrix regression is authored, NOT_RUN pending Root
+allocation. No actual process/account/SCM/SDK/Kestrel execution is authorized here.
+
+### Partial setup and duplex actual narrow qualification
+
+Source actor0372733b/process6b1 on immutable77ca7d9f passed shared4,prebuilt7,
+partial-phase1 pure cases plus existing duplex parent1 (two nested helpers NOT
+counted separately), all0failed/ignored/measured. BOTH all-target check/strict
+Clippy passed. Snapshot2427files and32registry packages/2079files/config/flags had
+zero drift. This supersedes NOT_RUN above ONLY for that code and those selectors.
+Actual Job/account/partial-fault/profile/staging/Kestrel and authenticated parent
+transport remain unqualified. Exact footers/hashes are registered in the cross-OS
+runner partial-setup-duplex-summary.json. C returned, no background handle held.
