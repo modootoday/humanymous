@@ -1,4 +1,5 @@
 //! Order-preserving protocol observations captured before HTTP normalization.
+pub mod history;
 pub mod http;
 pub mod http2;
 pub mod report;

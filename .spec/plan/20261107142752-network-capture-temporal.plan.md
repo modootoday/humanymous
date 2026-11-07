@@ -1,17 +1,19 @@
 ---
 id: plan:root/20261107142752
 title: Correlation and traffic producer placement review
-status: draft
+status: active
 created: 2026-11-07T14:27:52Z
-updated: 2026-11-07T14:27:52Z
+updated: 2026-11-07T14:35:00Z
 rel:
+  governs: [crates/network/src/lib.rs, crates/network/src/history/**]
   depends_on: [sot:root/rust-migration, sot:root/crate-architecture, sot:root/network-capture]
 ---
 
 # Temporal network producer proposal
 
 Version0.1.0. Design/source inventory only, pending Root placement review.
-Root requested eight additional retirement rows beyond the20network rows.
+Root requested eight additional retirement rows beyond the20network rows and
+subsequently assigned the two anomaly prerequisite rows to this owner.
 Source inspected at734c62da0e493478bb2aa4d998664f11e432945c; no Rust source,
 dependencies, scoring, retirement inventory or execution was changed here.
 Existing capture actual5 proof remains evidence:root/20261107122900; this proposal
@@ -29,7 +31,9 @@ Propose network domain modules, without a new crate:
 
 - correlation/mod.rs: public typed observations, outcomes and lifecycle API.
 - correlation/registry.rs: per-key subnet/session and JA4 fanout state, stats/GC/reset.
-- correlation/velocity.rs: bounded arrival history and private population MAD core.
+- correlation/velocity.rs: bounded arrival history, reusing history::anomaly.
+- history/mod.rs and history/anomaly/{mod,config,tests}.rs: ONE generic bounded
+  keyed median/MAD history core, no verdict or scoring authority.
 - correlation/shared.rs: semantic coordinator input/result and explicit degraded state.
 - correlation/tests/{registry,velocity,shared}.rs: parity and negative boundaries.
 - traffic/mod.rs plus record.rs, log.rs, consistency.rs: representation, bounded
@@ -91,8 +95,9 @@ claiming12. Generic anomaly defaults are not the correlation configuration.
 Velocity is weight0; no added hard rule, verdict promotion or scoring adjustment.
 Dependency gap: internal/anomaly/detector.go implements this math and detector
 GC; there is no Rust counterpart found. Root must assign its canonical owner.
-Propose a private correlation-specific core now, not a duplicated public generic
-anomaly service; future generic migration must move/reuse it rather than fork.
+Root accepted ONE generic network::history::anomaly core, reused by correlation;
+this supersedes the initial private correlation-specific proposal. Do not fork it
+when another consumer needs keyed measurement history.
 
 T04. Coordinator aggregation affects ONLY new-subnet/velocity inputs. Local
 subnet/session/fanout counts and Gate Stats remain local. Go clamps velocity to
@@ -181,3 +186,74 @@ compatibility decision (T02-T07). These become review gates, not silent choices.
 7. Root reviews exact eight-row retirement mappings only after each real producer
    and its tests/integration are present and independently qualified. No producer
    source file is removed or declared retired by this design-only continuation.
+
+## Accepted placement and first pure history source slice
+
+Root accepted network placement with one runtime composition owner, legacy text
+IPv6 compatibility without a normalization delta, finite configured bounds and
+explicit exhaustion Unavailable, and typed optional shared local-degraded results.
+The atomic shared backend remains deferred; semantic trait alone is not fleet
+coverage. Rate limiter migration is a separate Root design and not in this slice.
+Runtime epoch/backfill integration remains pending and no runtime wiring is
+authorized by this acceptance. Existing eight rows remain unimplemented here.
+
+Two added source rows and exact first implementation paths:
+
+| Legacy row | Rust owner | Verification matrix |
+|---|---|---|
+| internal/anomaly/detector.go | crates/network/src/history/anomaly/{mod,config}.rs, exported through history/mod.rs and network/src/lib.rs | Keyed bounded sample histories; median/MAD, strict score>K before append, warmup, floor, oldest-key eviction, explicit GC; no signals/verdicts; finite input/config checks and arithmetic overflow handling |
+| internal/anomaly/detector_test.go | crates/network/src/history/anomaly/tests.rs | Port all5legacy cases: stable, outlier, warmup, floor, bounded cardinality; add exact K equality, even/odd median, sample ring, TTL equality, oldest eviction/tie determinism, no-mutation regression/error, key/byte limits, reset and invalid numeric config/input |
+
+First slice is these five Rust files only (network lib export, history/mod.rs,
+anomaly/mod.rs, anomaly/config.rs, anomaly/tests.rs). Correlation/traffic modules
+are reported paths for later pure implementation; they must reuse this core.
+No manifests/dependencies/scoring/production defaults, runtime wiring or execution.
+
+Caller supplies every detector Config value: window, K, warmup, MAD floor, and
+Limits(max_keys,max_window,max_key_bytes,max_payload_bytes), all finite/positive
+where appropriate. No Default constructor or implicit Go fallback. Correlation's
+already-frozen256/6/20/1/16 profile is a later caller configuration, not a new
+generic production default. Warmup may exceed window (legacy never-warm behavior).
+Byte admission accounts reserved sample payload (window*f64 size) plus key bytes;
+allocator/map metadata is excluded from that byte number but separately bounded
+by finite key/window/individual-byte limits. Checked arithmetic before mutation.
+All resource limits come from owning configuration; no invented production caps.
+Correlation/traffic will additionally require configured set/session/address and
+record-string bounds before their source is authorized.
+
+Time is caller-supplied ordered Duration ticks with no wall-clock reads. Observe,
+GC and reset reject now<last accepted time as explicit Unavailable BEFORE any
+state change. Equal ticks are allowed. GC removes idle keys only when age>TTL;
+TTL is caller supplied. Reset clears samples but retains the clock high-water
+mark; a new epoch requires a new detector, not replaying older ticks into reset
+state. This rejects legacy out-of-order input as an explicit compatibility delta
+accepted by Root. NaN/infinite values/configs and non-finite derived arithmetic
+also fail before mutation rather than generate a healthy zero score.
+
+Oldest-key eviction is a legacy generic anomaly behavior, with lexicographic tie
+break for deterministic equal timestamps (Go map ties were unspecified). The
+returned measurement identifies any evicted key, so loss of history is explicit;
+a future required-history caller cannot treat eviction as continuous coverage.
+Exhaustion of key length/window/payload budget returns Unavailable; it does not
+silently truncate samples or manufacture a normal measurement. New-key admission
+and possible eviction must be preflighted together; failure preserves old state.
+This generic anomaly eviction is not permission to evict correlation sets and
+report clean low counts. Measurement warmup is explicitly visible in the result.
+
+After this updated plan passes scoped checks and exact paths are reported to
+Root, pure history source implementation is authorized. Every authored test is
+NOT_RUN until a separate Root allocation. Qualification and retirement claims
+remain separate from source implementation.
+
+First source slice is now authored in the five reported files, with12pure tests
+(the5legacy behavior cases plus7boundary/state tests). None has been executed;
+fmt and diff checks only. No generic Go default is copied. Equal-time eviction
+ties are lexicographic; unlike Go's empty-string sentinel bug, an empty oldest
+key is actually evicted and reported, preserving the configured cardinality bound.
+This is a boundedness compatibility delta alongside explicit regression refusal.
+Payload accounting reserves exact window capacity plus key bytes; map allocator
+overhead and transient sorting copies remain separately bounded, not included in
+the byte counter. This does not claim allocator OOM recovery or a heap-RSS limit.
+Root's permission for this pure source slice does not authorize runtime wiring,
+new scoring, added dependencies or an actual workload. GenericMAD reuse by
+correlation remains the next source stage after this common core is reviewed.
