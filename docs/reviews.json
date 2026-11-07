@@ -60,9 +60,9 @@
 },
 {
   "source": "crates/apache-adapter/native/src/pilot/mod.rs",
-  "sha256": "b3c0b4236dd9ed040a7c520fbba0c59cdf9cbd252362773c66ff36f028d93dbf",
+  "sha256": "b7819d1626c0a605fdc63f2d296425d4b8c6609a1fb4296e2d565be45590a3ad",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete45-case/MPM pilot orchestration, current-source/module/ABI binding, actual-httpd source paths, not_run accounting and cleanup flag. Found graceful-reload early-error paths can bypass active request-thread join; reported to owner. Source remains unexecuted and cleanup flag alone does not prove containment.",
+  "notes": "Read complete pilot and subsequent worker-guard/connect/reload delta. Previously reported early-return join gap now has RequestWorker Drop join and explicit consuming join; connect1s/read-write3s timeouts are authored.45-case/source/ABI/outcome accounting remains component-only with synthetic fixtures. No actual selected-feature build, failure-path or containment execution observed.",
   "pages": [
     "docs/reference/supported-topologies.md"
   ]

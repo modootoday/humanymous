@@ -156,9 +156,11 @@ The contract contains no executed results or qualified artifact identities.
 The authored pilot uses the real shared authority and WAL with frozen synthetic
 reports for its ALLOW/DENY/CHALLENGE paths. Its loopback origin counts complete
 received requests before writing an echo response; this is not a business-commit
-witness or production browser provenance. The reload case also needs confirmed
-worker joining on every error path before cleanup can establish containment.
-Neither the pilot's name nor a cleanup flag supplies that missing evidence.
+witness or production browser provenance. The reload source now retains an
+owned request-worker guard that joins on early return as well as explicit
+completion, with bounded connect/read/write operations. Actual failure-path
+execution and complete process containment remain unverified; the pilot's name
+and cleanup flag do not establish them.
 
 The Go candidate's synthetic trusted-session cases cannot attest browser or
 human activity. Origin contact counts and observed application mutations are

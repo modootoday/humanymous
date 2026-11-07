@@ -1363,3 +1363,10 @@ strength and independently provisioned broker/OS/storage requirements. Receipt
 is not effect completion or independent sync observation. Added three exact manual
 receipts; no tests/native process run. Root's four-slot allocation received;
 no Pages compiler allocation, no self-assigned build or shared manifest changes.
+
+Apache owner accepted the reported join gap and authored RequestWorker RAII plus
+explicit consuming join and bounded connect/read/write calls. Inspected exact
+changed blocks and complete updated INTEGRATION metadata. Public text now records
+source correction rather than a still-open source bug; actual error-path/process
+containment remains unexecuted. Surgically renewed only inspected pilot receipt,
+retaining prior finding in history; default native check is not httpd/pilot proof.
