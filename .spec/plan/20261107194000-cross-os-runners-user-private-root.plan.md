@@ -3,7 +3,7 @@ id: plan:root/20261107194000
 title: Fresh ordinary-user private-root initialization at creation
 status: draft
 created: 2026-11-07T19:40:00Z
-updated: 2026-11-07T19:40:00Z
+updated: 2026-11-07T21:00:00Z
 rel:
   depends_on: [sot:root/cross-os-runners, sot:root/rust-migration]
 ---
@@ -27,6 +27,12 @@ cleanup obligation BEFORE caller validation. It performs no open-existing fallba
 or ACL repair and adds no wrapper/unsafe surface. Its bounded path encoder checks
 UTF16 before the native call. The bridge returns ONLY a locator, not a created
 File/identity or atomic handle-relative operation. Preserve this limitation.
+
+Current structural integration exposes that SAME implementation as
+humanymous_platform::windows_object behind Windows/windows-object. The old
+package spelling above records the original source boundary, not a compatibility
+alias request. create.rs bytes remain SHA256
+c323434eacc915e561aed5d48307bf2e8a3c02adf66cb7ba9a39c9185b90bbec.
 
 Reuse current_identity() for actual process TokenUser/elevation/enabled-admin
 checks and impersonating-thread refusal; verify_windows_privacy on held new child
@@ -238,3 +244,153 @@ Root will coordinate X/ABI/Delivery before implementation. Header receiver needs
 this private-storage component, not an Authority credential/NativeProof grant.
 Runtime/SCM producer association, admitted host, interactive workers, GPU and
 full product gates remain separate. No new graph/unsafe or consumer activation.
+
+## Selected-parent anchor amendment v0.2 (review only)
+
+Root requested a narrower replacement argument after the five opaque-ID fixture
+tests. This amendment proposes replacing v0.1's blanket full-chain owner/IO/peer
+creation refusal with ROLE-SPECIFIC checks. It is NOT accepted implementation
+policy, a whole-venue eligibility result, or a mutation/actor allocation. The
+original table/refusals remain the historical conservative proposal; they are
+not silently treated as tests of this amendment. Existing captured3SD input is
+unchanged SHA6d8dbb8c6c44db39acc9982b8aa79ce63719ebb212071d99c38b514547e2ab35.
+
+### Separate privacy, selected namespace and unrelated peers
+
+Privacy comes from actual TokenUser ownership plus the protected owner-only OICI
+descriptor applied at NEW directory creation, followed by same-held-child ACL
+readback before any payload. The anchor is permitted to have SY/BA and readonly
+outsiders: it need not satisfy child privacy. This is bootstrap, not repair.
+
+Namespace stability is a separate conjunction: exact configured selected parent,
+its held native identity and volume, every selected ancestor guarded against
+ordinary delete/rename, and no ordinary outsider able to change ACL/owner or
+retarget an ancestor in place. Peer creation alone is not selected-object
+replacement. A creator can cause a fresh-name collision (refused, no modification)
+without acquiring access to an already-created protected child. The initial
+amendment allows the OBSERVED add-subdirectory bit only at ancestor-role nodes;
+it need not admit outsider creation rights on the immediate anchor.
+
+Microsoft distinguishes [FILE_ADD_SUBDIRECTORY=0x4 from
+FILE_DELETE_CHILD=0x40](https://learn.microsoft.com/en-us/windows/win32/fileio/file-access-rights-constants).
+[CreateFile sharing](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew)
+excludes subsequent delete/rename access while the relevant sharing contract is
+held; [ACE_HEADER](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-ace_header)
+defines IO as not effective on its attached object. These documented distinctions
+motivate the design; they are not an actual share-mode/provider pilot.
+
+### Exact proposed role and ACE table
+
+Only parsed ordinary AccessAllowed ACEs with complete SID/mask/flag readback;
+unknown/object/callback/conditional/deny/CreatorOwner/null/empty/invalid encodings
+refuse in the initial classifier. Deny is conservatively refused, not treated as
+an allow. No effective-access/group-name oracle is introduced. Every effective
+grant to a SID outside actual TokenUser/SY/BA is evaluated as outsider, including
+groups that happen to contain the current actor. Unknown flag bits refuse.
+
+| Object role | Owner admission | Effective ordinary allow masks | Inheritance handling |
+| --- | --- | --- | --- |
+| Immediate parent anchor | Actual TokenUser, SY or BA only | Trusted principals exact0x001F01FF; outsider closed readonly set0x001200A9/0x001000A1/0x00100021/0x00100020. No outsider0x40,DELETE,WRITE_DAC,WRITE_OWNER,writeEA/writeAttributes or creation bits. | none/OI/CI/OI+CI, optionally recorded INHERITED flag; first anchor profile still refuses IO/generic ambiguity. |
+| Selected ancestor guard, including volume-root directory | NOT admitted as creation anchor; no new owner whitelist entry | Same readonly set and exact0x00000004 peer-add-subdirectory; trusted actual TokenUser/SY/BA exact full access. No outsider current-object deletion, ACL/owner change, writeEA/writeAttributes or generic mask. | Recognize exact observed OI+CI+IO masks0xE0010000 and0xA0000000 ONLY as non-effective on that ancestor; record rather than normalize into rights. Inspect each selected child independently; new child descriptor is protected. |
+| Newly created private root | Actual TokenUser only | Sole actual-SID full control, exact protected+OICI policy and existing privacy verifier | Reject every outsider/IO-only/no-propagation/missing required inheritance form; no inherited parent grant. |
+
+Flags are evaluated before current-object mask classification: those two CLOSED
+ancestor IO forms are not grants on the attached ancestor. Effective generic
+rights are never admitted under the IO exception. No blanket IO ignore, generic
+mapping guess or broad read/write mask widening. Metadata list/byte/path/depth
+bounds remain required. These exact sets need X/ABI/Root policy review.
+
+Ancestor ownership is NOT thereby declared harmless: an owner can change its
+DACL, which a deny-delete guard does not prevent. The candidate's ceiling excludes
+same-SID hostile code and privileged OS/administrator mutation. An ordinary
+outsider-owned ancestor or an unclassified owner with mutation capability remains
+Unsupported until a separate read-only admission proves the relevant exclusion.
+The captured root service-owner SID is NOT added to anchor TCB, and its account
+label alone supplies no admission. No denial of unrelated C:/ peer creation or
+TrustedInstaller whitelist is needed to state this conditional argument; current
+input still lacks the native/principal admission needed to instantiate it.
+
+### Apply to the actual three-descriptor layout
+
+| Observed level | Amendment candidate | Still missing / concrete refusal |
+| --- | --- | --- |
+| C:/ | Ancestor-role readonly masks plus exact peer0x4 and recognized non-effective IO need not fail selected-replacement policy. Root service owner is never an anchor candidate. | Actual held nonreparse/fixed NTFS identity/guard and owner-mutation threat exclusion unqualified. Ordinary outsider DELETE_CHILD/WRITE_DAC or unclassified mutable owner refuses, independently of peer0x4. |
+| C:/Users | SY-owned ancestor with effective readonly outsiders; recognized IO does not apply to current object. | Held guard/reopen and selected-child identity/ACL not established by Get-Acl. Effective outsider0x40 or selected-parent substitution refuses. |
+| Local user-profile directory | BA-owned immediate anchor candidate, full local-account grant only IF it equals actual native TokenUser; capability traverse0x00100020 fits readonly set. | TokenUser/elevation/admin/impersonation equality, held identity/provider, no-reparse chain and accepted selector custody remain unqualified; different account full-control grant refuses. |
+
+This table qualifies no venue. It identifies checks that may succeed in a later
+explicit read-only native allocation; it does not reinterpret preliminary
+PowerShell descriptor snapshots as native association/provider/ordinary-actor
+evidence. Unsupported remains the actual current outcome pending those checks.
+
+### Guard acquisition, configured selector and API custody
+
+Propose inspect_user_root_parent(selector: &ConfiguredParentSelector) rather than
+accepting env/TEMP/UserProfile defaults. The selector binds one exact canonical
+bounded path and configured identity expectation, but is unverified DATA until
+opened. Only same-held File observation can construct UserRootParent. Store the
+actual SID/volume/file IDs, exact selected components, policy revision, held chain
+and original clock pair privately; no external ID/path claim constructs custody.
+
+Acquire guards volume-root to anchor with safe OpenOptionsExt, proposed desired
+READ_CONTROL|FILE_LIST_DIRECTORY=0x00020001, share READ|WRITE=0x3 (NO DELETE),
+BACKUP_SEMANTICS|OPEN_REPARSE_POINT=0x02200000, open-existing only. Refuse denied
+opens or prior incompatible delete handles, no retry with broader sharing or
+privilege. Existing inspect_parent uses READ_CONTROL-only0x20000: do NOT declare
+it a qualified deny-delete guard just because share_delete is omitted. Explicit
+directory read access and actual share-conflict tests are prerequisites. The
+documented [share-check contract](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-iocheckshareaccess)
+depends on granted access and filesystem state; no unconditional kernel bound.
+
+For each prefix: inspect SAME held File as nonreparse directory, local fixed NTFS
+and persistent ACL; inspect bounded SD; retain it before opening the next prefix;
+reopen the locator using the same flags and compare volume64/file128 plus volume
+GUID to held identity. Revalidate all selected prefix associations before create,
+after child open and before cleanup. A share guard constrains delete/rename, not
+in-place ACL/reparse changes, privilege bypass or drive-letter remapping; require
+the explicit mutation/namespace ceiling and refuse if it cannot be admitted.
+OPEN_REPARSE_POINT protects only the opened final component; inspecting and
+holding EVERY selected prefix is mandatory. Filesystem/owner changes discovered
+after an effect yield retained Unknown, never retroactive privacy success.
+
+Before CreateDirectoryW, the independently supervised attempt registers the exact
+nonce, full child locator, configured selector revision, actual held-anchor ID,
+original deadlines and state Planned. Registration must be durable/acknowledged
+BEFORE native invocation, without treating a locator or acknowledgement as a
+creation/identity/cleanup proof. If registration is unavailable, refuse before
+mutation. Root must select the existing supervising owner and journal mechanism;
+a new authority callback/bool or a helper process is not authorized here.
+
+Creation success first retains CreatedDirectory, then opens/guards the child and
+reads actual FileID/owner/DACL/provider on that SAME handle. The planned nonce is
+not a FileID. CreateCallPending/interruption/CreatedUnopened with unknown ID stays
+RetainedUnknown; no path-based recovery deletion, even if a later open looks like
+the expected descriptor. A controller crash leaves a planned/unknown journal,
+not transferred handle custody or automatic cleanup. Stable-anchor premise and
+post-open ID reduce ordinary namespace ambiguity; they do not make create+open
+atomic, attest the native producer, or prove a human/root ownership authority.
+
+Existing exact-empty cleanup sequence remains: verify child identity and guards,
+no remaining consumer files, close child only under admitted replacement premise,
+path-remove, observe absence while parents remain held. Every uncertainty retains
+obligation/known IDs/original pair. No new unsafe, handle-bound delete claim,
+descriptor repair, recursive cleanup or clock renewal.
+
+### Narrow tests to author after policy acceptance (none executed)
+
+Pure matrix: ancestor peer0x4 accepted but effective0x40/DELETE/WRITE_DAC/OWNER/
+writeAttributes denied; same bits on anchor refused; exact IO forms non-effective
+only on ancestor, effective generic and unknown flags denied; ordinary mutable
+ancestor owner unsupported; no root-owner-to-anchor TCB promotion; wrong actual
+TokenUser/profile grant denied; selected-prefix ID/volume/reparse mismatch denied;
+guard access0x20000-only not a qualified guard; missing journal acknowledgement
+refuses before call; creation interruption/unopened retains Unknown with no
+delete; post-open failures and cleanup clocks preserve SAME owner and IDs.
+
+Separate later controlled native tests must demonstrate actual ancestor/anchor
+rename/delete opens fail while guard held, prior delete-open acquisition refuses,
+and unrelated peer creation does not authorize selected replacement. No such
+test is granted now. Existing three SDs are fixed offline fixtures for the policy
+matrix, not permission to mutate C:/, its profile, ACLs or any peer directory.
+Only Root-coordinated review/read-only admission and an explicit hosted fixture
+allocation can advance this proposal toward the .NET/Header foundation.
