@@ -515,3 +515,17 @@ verdict BLOCK pending actual Unknown/error ownership, verified-artifact-to-exec
 binding, descendant zombie/reap facts, concrete migration/launcher-denial profile
 and abnormal startup transitions. No shared API/source/dependency was changed
 and current NOT_ACCEPTED guard remains. This review is not backend qualification.
+
+### Immutable strict compile and receipt pure retry passed
+
+Root renewed B on d68682e4 for the same constrained scope. Admission81%commit/
+free32.55GiB passed. All-targets check2.33s and strict Clippy2.68s passed;
+receipt executable linking6.25s then exact selector executed2passed/0failed/
+0ignored/2filtered in0.00s. Filtered2 are deliberately blocked controller and
+cleanup definitions, not waivers of actual server groups. Before/after2325-file
+source hashes matched. Batch/closure exited0; handle62759 exited and B returned.
+No controller/setup/native import/server/pilot/install/signals occurred.
+Summary013 preserves this limited success; summaries011/012 failures stay.
+Root acknowledged terminal0 and forbids ASGI actual until shared lifetime review.
+Independent owned source/spec work may continue, but these results do not qualify
+actual ASGI42, refactored WSGI28, hosted execution or package/native Ruby gates.

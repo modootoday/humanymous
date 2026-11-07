@@ -11,7 +11,7 @@
   "source": "crates/python-adapter/src/hosted.rs",
   "asgiServerFactorySource": "crates/python-adapter/src/pilot_asgi.rs",
   "asgiServerFactory": "humanymous_python:pilot_asgi",
-  "asgiServerFactoryStatus": "all-targets-typecheck-passed-5655b965-runtime-not-run; receipt-Clippy-failed-in-summary012",
+  "asgiServerFactoryStatus": "all-targets-check-and-Clippy-passed-d68682e4; receipt2pure-passed-summary013; runtime-not-run",
   "asgiServerFactoryScope": "Starlette/FastAPI public ASGI mount routing/middleware; Django standard ASGI application with native view; not FastAPI parameter validation or dependency injection",
   "asgiServerLifecycleStatus": "requires-reviewed-shared-owned-lifetime-contract",
   "requiredGroups": [

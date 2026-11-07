@@ -9,7 +9,7 @@
   "executableHarnessImplemented": true,
   "harnessSource": "crates/python-adapter/tests/wsgi_server.rs",
   "sharedActualCaseSource": "crates/python-adapter/tests/support/framework_server_cases.rs",
-  "currentRefactorVerification": "all-targets-check-PASS-5655b965; Clippy-FAIL-receipt-parser; runtime-NOT_RUN; historical7842b6a8 success does not qualify refactored execution",
+  "currentRefactorVerification": "all-targets-check-and-Clippy-PASS-d68682e4; receipt2pure-PASS-summary013; runtime-NOT_RUN; historical7842b6a8 success does not qualify refactored execution",
   "hostedControllerSource": "crates/python-adapter/tests/component_controller.rs",
   "hostedControllerStatus": "NOT_ACCEPTED-shared-atomic-owned-lifetime-contract-required",
   "hostedWorkflow": "python-validation.yml",

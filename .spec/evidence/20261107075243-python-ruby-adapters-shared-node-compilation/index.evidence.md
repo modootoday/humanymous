@@ -19,6 +19,7 @@ files:
   - {path: summary-010.json, sha256: add5762fcb709a466af4976002d41bc46399f798d36539c7c44c3091606b39ec, bytes: 2763, store: repo}
   - {path: summary-011.json, sha256: 6d7e8054f717f621803acd8ec7628e4332692cdc9830813a9c4ba94008717477, bytes: 1963, store: repo}
   - {path: summary-012.json, sha256: b56d67b4cd5ca9c7a78d8d524bd033ef8bc739e9c9e97e92d15b640bc44734be, bytes: 1888, store: repo}
+  - {path: summary-013.json, sha256: 1cf7b1c41eb5208d7d90ec90a7529163e6f7ffafed8feb042311862297b6eb3c, bytes: 2319, store: repo}
 ---
 
 # Python Ruby adapters shared Node compilation
@@ -188,3 +189,17 @@ Source2313-file closure stayed unchanged. No linking, framework/native import,
 server, controller, package install or actual pilot occurred. B returned terminal101.
 The primary-only equivalent byte-slice correction has no suppression and needs
 its own new immutable retry. This is type-check evidence, not runtime qualification.
+
+## Strict compile and two receipt pure tests passed on immutable source
+
+Summary013 records exactd68682e4: all-targets check2.33s and Clippy2.68s passed.
+Receipt test linking completed6.25s, then the explicit receipt::tests:: selector
+executed2passed/0failed/0ignored/2filtered in0.00s. The filtered definitions are
+the blocked controller/cleanup entry points, not omitted actual server cases.
+The tests accept allowlisted historical14-row data and reject incomplete,
+duplicate, ambiguous or mutated receipts/discovery. This is pure parser proof.
+Source2325-file closure stayed unchanged; batch/closure exits0. Handle62759
+exited and B returned terminal0. No setup/import/server/controller/pilot/install/
+signals occurred. All previous failures remain retained. Typechecking the new
+ASGI source and running these two pure tests does not qualify actual ASGI42,
+refactored WSGI28, packages, hosted execution or the blocked lifecycle API.

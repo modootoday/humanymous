@@ -1,0 +1,31 @@
+{
+  "scope":"Allocated immutable Unix check/Clippy and exact two receipt pure tests",
+  "sourceSha":"d68682e4530d666fbb6b93e281ac565d23f3ed3b",
+  "archiveSha256":"2e26c40903ea292512cab0e0c6be0f571f2841e0fce9ae5fb096b8ec5eae7323",
+  "archiveBytes":66672640,
+  "sourceManifestRows":2325,
+  "sourceManifestBeforeAndAfterSha256":"60f1d0107a7fe1c1f0d0a57e09f64b14a441b1a7cafacf03514614605b6e5b03",
+  "closureExitCode":0,
+  "actorUid":1000,
+  "environment":"REA-Ubuntu WSL native; existing python-native target; locked offline dependencies; jobs1/incremental0; no package installation",
+  "admission":{"commitPercent":81,"freePhysicalGiB":32.55},
+  "commands":[
+    {"id":"host-pilot-all-targets-check","status":"PASS","exitCode":0,"elapsedSeconds":2.33},
+    {"id":"host-pilot-all-targets-clippy","status":"PASS","exitCode":0,"elapsedSeconds":2.68},
+    {"id":"receipt-pure-tests","status":"PASS","exitCode":0,"linkSeconds":6.25,"testSeconds":0.00,"selector":"receipt::tests::","passed":2,"failed":0,"ignored":0,"filtered":2}
+  ],
+  "filteredScope":"The two filtered definitions are coordinate and coordinate_cleanup, both deliberately NOT_ACCEPTED; they are not waived actual server cases.",
+  "pureCoverage":"Historical actual14-row positive receipt plus missing/duplicate rows, audit/effect/negative-count mutations, literal/escaped duplicate JSON keys, unknown fields and exact test discovery. This is parser behavior only.",
+  "batchExitCode":0,
+  "privateWindowsTeeLogSha256":"0f6d74198a817e93c07b981ee03c5e241d4b07dd01008e7faaa22d7a0fab8bfd",
+  "privateCliOrchestrationSha256":"47064b3da598b83e7bc84f9004d671a2b46e72917eb50deffc82677cc9e3c5ba",
+  "ownedCleanup":"Handle62759 exited0; B returned terminal0, no owned active workload.",
+  "frameworkOrNativeModuleImported":false,
+  "controllerExecuted":false,
+  "serverExecuted":false,
+  "sharedLifecycle":"NOT_ACCEPTED refusal unchanged",
+  "earlierFailuresRetained":["summary011: c5de4ae5 all-targets check E0433/101","summary012:5655b965 check pass then receipt Clippy101"],
+  "wholeProductQualified":false,
+  "productionBrowserEvidence":false,
+  "scopeLimit":"Native ASGI factory and WSGI/ASGI/controller definitions typechecked. Only the receipt test executable linked and two pure tests ran. No new actual framework, package, hosted or lifecycle qualification."
+}

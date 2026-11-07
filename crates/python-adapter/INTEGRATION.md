@@ -135,3 +135,10 @@ the two pure tests never started. Primary idiom correction has no suppression
 and requires a new immutable retry. Source2313-file closure stayed unchanged;
 B returned terminal101. No linking, native/framework import, server, controller
 or package execution occurred, and the lifecycle refusal stays NOT_ACCEPTED.
+
+Summary013 records the corrected immutable d68682e4 retry: all-targets check
+2.33s/strict Clippy2.68s passed; exactly two receipt pure tests passed with0failed/
+0ignored/2filtered. The two filtered definitions are blocked controller/cleanup
+entry points. Source2325-file hashes stayed unchanged; B returned terminal0.
+This supersedes only compile/parser verification status. No new actual ASGI42,
+refactored WSGI28, framework import, package or lifecycle execution occurred.

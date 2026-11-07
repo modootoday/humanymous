@@ -354,6 +354,12 @@ pure tests did not run. No linking or runtime/package/lifecycle qualification
 follows. The equivalent primary idiom fix has no suppression and needs its own
 immutable retry. Source2313-file closure stayed unchanged; B returned terminal101.
 
+Summary013 subsequently records immutable d68682e4 all-targets check and strict
+Clippy passes, plus exactly2receipt pure passes/0failed/0ignored/2filtered.
+Filtered definitions are blocked controller/cleanup entry points, not server
+case waivers. Source2325-file hashes stayed unchanged. No new actual framework,
+package, hosted or lifecycle result is inferred; NOT_ACCEPTED remains unchanged.
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;
