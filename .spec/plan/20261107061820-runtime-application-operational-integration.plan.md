@@ -20,6 +20,28 @@ dual-control and missing-required fail-closed remain invariant.
 
 ## Steps
 
+### CORE-SLICE-01 Runtime consumer edit
+
+Root explicitly authorized mechanical Rust consumer path changes under
+crates/runtime/src and tests: humanymous_signals/behavior/model/scoring/integrity/
+challenge/watermark become humanymous_core::<owning_context>. This overrides the
+prior import hold only for these references. Eleven files contain16 applicable
+references, all integrity/scoring/signals; the other four context names have no
+matches. Exact before/after SHA256 and replacement counts are attached in
+core-slice-01-runtime-consumer-paths.json under evidence:root/20261107061821.
+No file move, manifest/lock edit, visibility, behavior or scoring change is made.
+The source lane was reclaimed with narrow source/spec paths. Old-reference search
+and git diff --check passed. No compiler, Clippy, tests or full CI ran; Root must
+declare the relocated seven-context workspace coherent and allocate validation.
+Prior qualification remains historical and does not qualify these new imports.
+Root committed the exact11 delegated consumer source paths in
+c67d07c0114bd04793410f82f7182de7bfa6df2c with follow-up evidence1e2b4b38.
+Fresh current blob/SHA256 checks agree with those integrated bytes. The previous
+source-commit mutex blocker is resolved; do not recommit the same source. This
+owner's spec/evidence changes were not part of Root's source commit. Core162,
+core Clippy and collector WASM checks do not qualify Runtime consumers; separate
+bounded consumer validation remains not run and requires a Root allocation.
+
 ### Eight-package integration handoff — 2026-11-08
 
 **Mission and constraints.** Preserve every remaining R01-R17 responsibility while

@@ -1,0 +1,86 @@
+{
+  "schema": "humanymous.runtime-core-consumer-edit/1",
+  "slice": "CORE-SLICE-01",
+  "kind": "mechanical import/reference replacement only; no compile qualification",
+  "files": [
+    {
+      "path": "crates/runtime/tests/native_process.rs",
+      "before_sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac",
+      "after_sha256": "205eb6559c66cc88107192ffaaa33a37e4609f25eb09239d104a69cf8a52bfd4",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/tests.rs",
+      "before_sha256": "f87ade07f63180b9887aea321dfde249656c036dc0d66d1c445c5cfb8221f5b2",
+      "after_sha256": "d6aa7fe4a5d6e3865c27380ee026947ba300ec49d09b8fcf71f02515aece9181",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/browser.rs",
+      "before_sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe",
+      "after_sha256": "9cc32a76b1aec49c01dbdea13f8266d737effdc68572d3050daad11806076e6d",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/application.rs",
+      "before_sha256": "be295af77c51a83fb94a5fd453b9df2d99db7a60b97d35c5b02ec3dcdbf9b212",
+      "after_sha256": "9f3b3f04927dae8137d2d13580d26dfec2a882aabd6243bbdd09aeaf19e001bf",
+      "replacements": 3
+    },
+    {
+      "path": "crates/runtime/src/http.rs",
+      "before_sha256": "cee415ae755a5c4df8cecb0aaaaccbc4b9dc220e7f78cd77fc81afab6fb0680e",
+      "after_sha256": "c69c60bdc3c33072d10175b0e315db636e0d985958744ab7e09de57065a69da6",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/session.rs",
+      "before_sha256": "f9f84b80698e1c4d3013d380b687caa7b4532801f5c594d74695e88807c14b11",
+      "after_sha256": "9fffceb4998bd3aca68620b0a4201fcb4b9ffac7cb2d7774bc3c3af62249fca4",
+      "replacements": 4
+    },
+    {
+      "path": "crates/runtime/src/settings/store/journal.rs",
+      "before_sha256": "bb84e65a4877202df99977ae45021fcc8d11ba3883becfb05144ff5f1d8daa75",
+      "after_sha256": "64a1341091cca0e3009e0486f705e54296b45b18bb99612f88cfb568bc38c672",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/tests/browser.rs",
+      "before_sha256": "10371a58d5cf9083df2370a93d3809c0e8a9c9edac0861803be795e67c0dfd37",
+      "after_sha256": "42ff2a8c3e8915a46c325ff4eb48797495de9d6be814f661717bea1b8f40624c",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/management/operator.rs",
+      "before_sha256": "4c34921a740e3ac71fa1760cd0b732350e8f215cf8867bf65c5a9698e884d6ef",
+      "after_sha256": "f12a6e61bd02ced0706b5995f2124a200dfbe376903b998b4b082fdeb93d7fd0",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/tests/settings.rs",
+      "before_sha256": "61010b762a74d6fb3b2611ce48c9c3cb7c3f462de2cb1cec27ebb66b724d4bb3",
+      "after_sha256": "2173b20cbb7df576f732ff04b0e222ffc99321b63bdf9a15c159329402cccb60",
+      "replacements": 1
+    },
+    {
+      "path": "crates/runtime/src/settings.rs",
+      "before_sha256": "a73a05e5afe707aec0762546cfea66147b65c4a33d4f3b2e166f9129b80eab14",
+      "after_sha256": "3e04120155988ae12fb7bcdbfcbd571519e039f2aec15c0c6f879fadf4abe2fa",
+      "replacements": 1
+    }
+  ],
+  "remaining_old_references": 0,
+  "manifests_changed": false,
+  "paths_moved": false,
+  "behavior_changed": false,
+  "visibility_changed": false,
+  "compiler_executed": false,
+  "clippy_executed": false,
+  "workspace_coherence_owned_by": "Root",
+  "standalone_owned_rustfmt_exit": 0,
+  "integrated_source_commit": "c67d07c0114bd04793410f82f7182de7bfa6df2c",
+  "integration_evidence_commit": "1e2b4b38",
+  "source_status": "Root atomic integration committed exact11 delegated paths; no source commit blocker remains",
+  "consumer_validation_status": "not_run; requires separate bounded Root allocation; core162/Clippy/collectorWASM proof does not qualify Runtime consumers"
+}
