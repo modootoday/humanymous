@@ -28,7 +28,7 @@ They are component evidence, not final integration qualification.
 | --- | --- | --- |
 | Pages | Run42367274252 at44876534 succeeded: delivery65 and Pages37 tests; both88-page builds and165-file archive consumers passed; zero branch artifacts | Main upload/download roundtrip, browser/AT and deployment are not executed |
 | Go | Run42369171124 at15f63fef passed preflight/build, then all eight actor attempts failed at actor_writer_mount; zero evaluated, eight unknown assertion counts, cleanup true and source unchanged | Exact mount diagnosis and qualified eight-scenario retry; older438/448 build failures remain separate NOT_RUN records |
-| Apache | Run42367750854 atd65da705 actually ran45:23 passed/22 failed/zero NOT_RUN; event14/15, worker8/15, prefork1/15; container/image cleanup true but pilot cleanup false | Supported-MPM fixes plus independent event subrequest failure; actual45-case and pilot-cleanup qualification |
+| Apache | Run42369797560 at2d66c0df actually ran45:33 passed/12 failed/zero NOT_RUN; event15/15, worker15/15, prefork3/15; container/image cleanup true but pilot cleanup false | Earliest prefork stop/lifetime failure and subsequent refusal cascade; complete45-case and pilot-cleanup qualification |
 | Audit | Exactf88e76f4 full suite115 passed; five ignored excluded; focused nine overlap the full suite | Remaining S1 streaming primitives, independent native custody and later production gates |
 | Runtime TLS | Exact1646c482 six selected actual TLS tests passed against Auditf88 | Both identity cases remain CHALLENGE with zero origin; positive TLS ALLOW-to-origin is unqualified |
 | Python | Exactd68682e4 all-target check and strict Clippy passed; exactly two receipt pure tests passed/two controller definitions filtered;2325-file source manifest unchanged | Actual controller remains NOT_ACCEPTED; ASGI/server pilots not executed; prior5655 failure retained |
@@ -70,11 +70,7 @@ policy/catalog wiring. Owner exit1 or2 stays nonzero; no new green component
 contract, blanket exit waiver, raw artifact upload or synthetic provenance is
 accepted. Actual runtime/collector joining remains required.
 
-The local heavy slot is allocated to the pinned Desktop Ruby/Jekyll build phase
-of Pages plan e418ebda, fixed26960736/docs56b1e029. Other cold local compilation
-waits for its terminal cleanup. Server/browser phases are not allocated by that
-build grant. Linux read-only native-tree compilation/probe is queued next; no
-zbus dependency edge or native service backend is approved by its proposal.
+The pinned Desktop Ruby/Jekyll phase for fixed26960736/docs56b1e029 has returned: both base URLs passed builds and theme checks with88 HTML/165 public files each, all127 source files unchanged; exact container stopped and removed. Archive consumers and browser remain separately gated. B browser caller validation passed66 delivery tests, strict Clippy, compiled policy and actionlint with50 unchanged captured inputs; source3d3ea659 is committed but dispatch is held for the shared mount probe. Released bounded pipelines now cover Audit/signals, Linux bd62cc3c, Pages archive tooling and Capture edf700bc. No zbus edge, native service backend or server/browser launch is approved by these grants.
 ## Go component and full-product result ownership
 
 The dedicated Go workflow requests bounded Go8 qualification. Lab owns an
