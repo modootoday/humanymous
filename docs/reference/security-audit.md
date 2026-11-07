@@ -97,3 +97,30 @@ A Stopped frame is also distinct from observing process exit, reaping and lock
 release. Separate process execution, OS-account/key/head isolation, inaccessible
 mounts and independent retained anchors need deployment evidence; shared-host
 parent or privileged compromise is not excluded by this protocol.
+
+## Local export and shared persistence scope
+
+`DurableSink` requires independently provisioned node, HMAC and writer identity,
+plus a witness key when that scope requires it. It validates the complete
+supplied history and final checkpoint coverage before replacing the export.
+Existing-state reopen requires the exact externally retained latest checkpoint;
+pending export recovery authenticates both the committed pin and staged history.
+Its receipt binds the checkpoint, exact stored JSON digest and actual native
+persistence strength. It is not a remote-delivery or object-store acknowledgement.
+
+The shared private-state helper bounds each persisted JSON file to 4 MiB and
+uses a lifetime writer lock, private file checks, staged sync/rename and explicit
+pending-state recovery. The sink serializes and validates a complete buffered
+export; the file bound is not a constant-memory streaming WAL/Tree recovery
+contract. The helper itself does not verify signatures or select fresh trusted
+anchors: each owning control/witness/sink layer authenticates its state.
+
+A lock acquisition conflict is a real ownership failure, not permission to
+unlink the lock inode or bypass exclusive access. The guard attempts an
+explicit unlock on drop instead of relying only on closing a file while duplicate
+descriptions remain. Failed unlock falls back to closing the owned file; any
+remaining kernel lock must still be respected. Platform and supervisor assumptions
+require actual regression evidence. An I/O
+failure can leave staged or committed bytes and is not proof that nothing changed.
+Inputs must already be minimized/pseudonymized; the sink does not redact raw
+personal data, provide WORM media or remove previously exported copies.

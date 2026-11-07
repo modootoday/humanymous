@@ -820,3 +820,11 @@ reviewed verifier/parser/report code against671c439. Updated public pending
 pure-check wording and three explicitly reviewed receipts (including test-only
 network fixture visibility delta). No rerun or new runtime; earlier hosted
 results remain bound to their own source. Full generic conformance still pending.
+
+## Local sink and shared persistence review
+
+Read all sink/private-state/exclusive-file code. Three manual source receipts
+map full buffered history+finalcheckpoint verification, exact exportbytes receipt,
+4MiB persisted bound, authenticated-caller promotion and lockguard lifetime to
+public audit reference. No remote delivery/WORM/redaction/constant-memory or
+platform execution implied. No sink writes, locks, repairs or processes run.

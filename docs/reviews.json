@@ -2,6 +2,33 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/sink.rs",
+  "sha256": "b66c13c42de4dc527dd0fc6c48fd95d9d4d101b0abe1bda96ae61bf05495c137",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full provisioned sink policy/bootstrap, complete buffered JSON export, final checkpoint coverage and verify_history call, private persistence receipt and explicit pinned pending recovery. Public audit reference distinguishes local digest/durability from remote delivery/WORM, required prior minimization, complete buffered file bound versus streaming recovery and independently provisioned scope/keys. No export/write/recovery executed.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/private_state.rs",
+  "sha256": "dff83a4a68cabbda890624a3fbb4d31ba5b4e12546a3ef2b4329fc385ccf650b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full4MiB private state namespace, owner checks, persistent exclusive lock, bounded read, pending refusal, poisoned staged sync/rename and authenticated-caller promotion boundary. Public audit reference separates physical persistence helper from each consumer signature/fresh-pin validation, complete file bound from constant memory and I/O failure from no writes. No state repaired or modified.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
+  "source": "crates/audit/src/storage/exclusive_file.rs",
+  "sha256": "6fec030204c16ae39e8ba7be3318857eb40c6ad09fdee1dbcc09eec3cafb1b69",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete nonblocking native try_lock owner, WouldBlock classification, test-only duplicated file description and explicit unlock on guard Drop. Public audit reference states no lock-inode deletion/bypass and distinguishes source lifetime intent from actual platform regression evidence or privileged/remote-filesystem guarantees. No lock/process test executed in docs review.",
+  "pages": [
+    "docs/reference/security-audit.md"
+  ]
+},
+{
   "source": "crates/audit/src/keys/custody/permissions.rs",
   "sha256": "f2145493843450c54637e98b461008b611063138b28a2ad2857d77e8a441f969",
   "reviewer": "codex/rust-pages",
