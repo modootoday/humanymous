@@ -1,0 +1,90 @@
+{
+  "schema": "humanymous.pages-source-followup/1",
+  "full_read_files": 7,
+  "full_read_lines": 772,
+  "before_after_exact": true,
+  "reviewed_text_already_lf": true,
+  "reviews": [
+    {
+      "source": "crates/audit/src/verification/scan/mod.rs",
+      "sha256": "2332867a83f2daf1b037473c96b62d12d481373a185bdb1e2ab2eb5bc3f8eaa5",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete72-line source review: private cfg(test) scanner composes metadata then verification, returns optional diagnostic Report plus Work only. NativeBudget checks trusted selected descriptor reservations with segments+7+other handles,4096segment/4100entry ceilings and checked overflow; no identity, successful-scan or process authority token. Native inspection provider/source implementation remains separate. No production promotion, repair, executed-test or total startup-memory qualification.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/limits.rs",
+      "sha256": "30a91ff94ac50709587e1af586bac9924d3c6dbd5119df877b0f97e54b93c027",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete121-line source review: private resource profile rejects zero/unbounded sentinel sizes, depth>64, node/string budgets beyond frame and arithmetic overflow. Address-space estimate explicitly not full startup-memory ledger. Control uses caller AtomicBool and absolute Instant from nonzero checked timeout; checks before/after work return Interrupted/TimedOut but do not interrupt blocking OS/read/crypto operations. One authored elapsed-deadline test source-read only. cfg(test) enclosing module; not public recovery/runtime support.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/metadata.rs",
+      "sha256": "97fad69be4c379881dfcc5e90f021773c359994737e0f8c544f8fafc8da3ea2b",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete127-line source review: first full framed pass requires configured node/nonemptyHMAC, finite segments/values/bytes, exact node checks, positive increasing checkpoint sizes/lowercase64hex Merkle and exact trusted-head presence. Transcript includes blank/CRLF/torn bytes via shared budgets; records terminal torn tail observed only, no repair. Explicit allow_new empty history requires no checkpoint/pin. Source epoch/membership checked around scan; metadata not authenticated crypto success, repair permission or operational owner. cfg(test) only; no executed fixture claim.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/frames.rs",
+      "sha256": "eb506f8639db9438954e624021eedf5ef791e9b5507b8db8a2be6aed7cb64c92",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete141-line source review: one-frame decoder counts raw bytes inclblank lines/torn suffix and domain-separated segment index/end/sidecar presence transcripts. Checked per-stream bytes/value caps plus lexicalpreflight before unchanged serde decode; control checks bracket reads/parse, not interrupt guarantees. Any error poisons stream; finish requires observed EOF. Hash transcript is agreement commitment, not MAC/identity. Enclosing scanner cfg(test), no production API, actual native reader or execution qualified.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/checkpoints.rs",
+      "sha256": "81dcd924b653706c39d5583f44d141e92d73c5f42741f6522828a587f862bb5c",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete114-line source review: private forward checkpoint cursor retains one pending checkpoint and exact previous signature text with frame budget, strictly increasing tree sizes. Shared base checks then optional bounded witness check feed diagnostic accumulator; control checked between stages. Reaches complete EOF or refuses pending cursor at finish. Preserves malformed raw signature link for compatibility, separate64-byte crypto decode. No independent witness custody, rollback authority, source backend or new execution proof; cfg(test) only.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/verify.rs",
+      "sha256": "d9fe696df8c2222cfcb2b64995255c90230e8cccab600eb1cfa4896a7dea27c2",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete144-line source review: second full read validates records through shared checks and fixed frontier, consumes checkpoints at matching prefix or mismatch afterEOF. Moves exact raw prior hash/signature strings; no truncation. Requires metadata counts/bytes/domain-separated transcripts/torn suffix/sidecar and source epoch/membership agreement before diagnostic output. Successful witness-required nonempty history requires nonzero witnessed coverage; explicit new empty history returns reportNone. Source pins/metadata not returned as trusted authority; no mutation/repair. Native boundary and tests remain separate, entire scanner cfg(test), no production admission claim.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    },
+    {
+      "source": "crates/audit/src/verification/scan/source.rs",
+      "sha256": "9be67a75ff5af8be7774b96d4081a98e230f28309368712cf0af6e3fa7ab7e2d",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete53-line source review: sealed Source supplies readers/membership/unchanged observations. Actual diagnostic native module only test Linuxx86_64; other targets validate limits/control/descriptor admission then Unsupported. Operational open_native always Unsupported with uninhabited Unavailable, so diagnostic facade cannot mint caller ownership/trust token. Native backend facts and actual OS execution not accepted by this file read.",
+      "pages": [
+        "docs/reference/security-audit.md",
+        "docs/how-to/verify-audit-log.md",
+        "docs/standards/draft-v0/reviews/security-privacy.md"
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "native_backend_independently_reviewed_by_this_batch": false,
+  "enclosing_module_test_only": true,
+  "public_prose_changed": false
+}
