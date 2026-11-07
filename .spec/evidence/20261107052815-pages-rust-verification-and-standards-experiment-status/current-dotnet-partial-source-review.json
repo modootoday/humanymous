@@ -1,0 +1,123 @@
+{
+  "schema": "humanymous.pages-dotnet-partial-review/1",
+  "reviews": [
+    {
+      "source": "crates/dotnet-adapter/Cargo.toml",
+      "sha256_at_post_read_observation": "6a74fbb79703da649c25ff19cc494f2387e6e6f7161eb0f1813bfc05107a0aa9",
+      "lines": 28,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "28-line safe Rust request-core manifest, shared framework/authority/integrity/nativeABI, no new foreign ownership implementation. Declaration not ABI or managed host execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/export/Cargo.toml",
+      "sha256_at_post_read_observation": "ed3e0e51be373556712ec28062eb3ca64ae66f0ac89dcd54b1505467c23b26df",
+      "lines": 23,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "23-line separate cdylib/rlib facade, safe core/nativeABI and Tokio reused; unsafe denied except approved export attribute in source. Compile target not installed runtime proof.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/dotnet-adapter/export/src/lib.rs",
+      "sha256_at_post_read_observation": "0fdcac276e59e4f89914e185f16624e468d563325b7c197654c983b45050a6f8",
+      "lines": 122,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "122-line by-value command facade fully read. Global bridge mutex and process-lived one-worker runtime; prepare releases lock during authority future then completes under rechecked revocation. Panic/poison permanently revoke, panic payload forgotten to avoid secondary destructor unwind. No foreign pointers/callbacks; process-lived runtime does not establish native unload/reload or worker-drain compatibility.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/Directory.Build.props",
+      "sha256_at_post_read_observation": "0f485e7e623c978f0478eb95aa7eecdb288b393fde77e79c453628640fe9c113",
+      "lines": 10,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "10-line deterministic/lockfile/build-root declarations; generated lock under target directory. Deterministic setting not measured reproducibility or dependency closure.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
+      "sha256_at_post_read_observation": "9ed8f873a0251a9e92a6a008a990a98d794789b054d3340220f61470097c0994",
+      "lines": 34,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "34-line net10 nullable/AOT-compatible candidate, exact two explicit sources, native package file and Windows/Linux x64 RID required. Existence/RID check does not verify native hash, provenance, dependency notices or NativeAOT compatibility.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+      "sha256_at_post_read_observation": "88d4433c7f70cca0befa5f7cee28b2631eaf9c41f43439e3aa68d23952a486d5",
+      "lines": 18,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "18-line Kestrel pilot, explicit Program source, project reference versus selected candidate PackageReference. Package choice not actual restore/install execution.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/README.md",
+      "sha256_at_post_read_observation": "7c4307e66deb084c5d203b27aa61de8f508a5a88ba1d0c6678217e7879f3e331",
+      "lines": 52,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "52-line chronology read with bounded reread. Earlier Windows FDD/JIT build and separate generic ABI caller are distinct from Kestrel, GC/await, package and NativeAOT qualification. Later helper/parser/source-inventory checks do not establish joined workers/actor cleanup. Collectible unload unsupported. Historical NOT_RUN text not current full host qualification.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/capabilities.json",
+      "sha256_at_post_read_observation": "da2e574d5af8ccf989d2b1fb83e4ca3693bb3cf47d9bfd548ec88f789e25c533",
+      "lines": 40,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "40-line capability declaration keeps installedMiddleware/nativeExports false, release tuples empty and explicit host gates. genericAbiOnlyObserved is historical declaration, not independent actual .NET host result verified in this review.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/pilot-contract.json",
+      "sha256_at_post_read_observation": "dd125f633ef4eb8b0f58d58bfe64efcd599f5331265faf0be0e6ac73fc7d9a50",
+      "lines": 57,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "57-line four required OS/JIT/AOT tuples,21 namedhostcases plus complete lineage/outcome/lease obligations, runnablefalse. Required cases not execution counts. Contacts not mutations, synthetic decisions not authenticated productionALLOW, Docker gate separate.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs",
+      "sha256_at_post_read_observation": "c60f549045db118e914e2048dedcb8e1e09455067c7d7bd223daa1cf09953490",
+      "lines": 216,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "216 lines fully read in two contiguous chunks. Fixed88/48-byte x64 little-endian ABI, safe search path and collectible-load refusal; opaque handles with DangerousAddRef lease acquired before Task.Run and held through native authority call. Data copied32-byte chunks and bounded1MiB replay; cancel does not prove actual native task joined. SafeHandle ReleaseHandle returnsfalse on exception; source cannot establish actual GC/PInvoke/dispose race safety, installed package or worker termination.",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    }
+  ],
+  "full_read_files": 10,
+  "lines": 600,
+  "post_read_rehash_drift": [],
+  "source_receipts_renewed": false,
+  "new_execution": "NOT_RUN",
+  "docs_modified": false,
+  "full_product_qualified": false,
+  "remaining": "Rust request/bridge, full current owner chronology, host orchestration and actual managed/package test source still require full review. Initial truncated Rust lib output not counted as full read."
+}
