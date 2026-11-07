@@ -1,0 +1,94 @@
+{
+  "status": "research_proposal_only",
+  "scope": "Meari GPU-window presentation versus CEF native compositing",
+  "meari_pin": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+  "meari_release": "await_exact_tag_commit",
+  "source_files": [
+    {
+      "origin": "meari1482",
+      "path": "crates/meari-native/Cargo.toml",
+      "sha256": "f527744b728660e5901c2f470fdc872a89bfecc588080db2ed5fe847e4c805b1"
+    },
+    {
+      "origin": "meari1482",
+      "path": "crates/meari-native/src/infrastructure/window/driver.rs",
+      "sha256": "da773914b5c7b41716bf9bdd87629896b0e41b37b2e243947e9e3852b8f3265c"
+    },
+    {
+      "origin": "meari1482",
+      "path": "crates/meari-native/src/infrastructure/window/preparation.rs",
+      "sha256": "45f391e2ab80af58fdd306b2da8cad134af9316951637ba6eaae0f12352c57bf"
+    },
+    {
+      "origin": "meari1482",
+      "path": "crates/meari-native/src/infrastructure/verification/checked_window.rs",
+      "sha256": "8813a243e491a1bd4d189a8ee8cb41d6cb8ae094da92b870d71c2332479f5dfd"
+    },
+    {
+      "origin": "humanymous-f9a7fe92",
+      "path": "crates/browser/native/desktop/src/lib.rs",
+      "sha256": "581da97524358f09fe4b54fd7c4586eb0f218bab59b7cc96939d2ade202668f9"
+    },
+    {
+      "origin": "humanymous-f9a7fe92",
+      "path": "crates/browser/native/desktop/src/child.rs",
+      "sha256": "ac95b7177126926800920b610234fd763084c180c2bcc22bef06d3165e2c9d4e"
+    }
+  ],
+  "primary_sources": [
+    "https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/README.md",
+    "https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/Cargo.toml",
+    "https://docs.rs/wgpu/30.0.1/wgpu/type.RequestAdapterOptions.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/enum.DeviceType.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.AdapterInfo.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/enum.PowerPreference.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Surface.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/enum.CurrentSurfaceTexture.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/type.PollType.html",
+    "https://docs.rs/wgpu/30.0.1/wgpu/struct.Device.html",
+    "https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp",
+    "https://raw.githubusercontent.com/gfx-rs/wgpu/v30.0.1/wgpu/Cargo.toml"
+  ],
+  "mutable_candidate": "https://raw.githubusercontent.com/DioxusLabs/anyrender/main/crates/anyrender_vello/src/window_renderer.rs",
+  "mutable_candidate_limit": "per-frame indefinite wait observed; not selected or version-qualified",
+  "proposed_modes": [
+    "UI CPU only",
+    "UI Auto hardware preferred with measured eligible tuple",
+    "UI require verified hardware with explicit refusal"
+  ],
+  "cross_cutting_owner": "root structural canon",
+  "evidence_owner": "Browser native UI integration; Performance comparison canon",
+  "execution_changes": false,
+  "gpu_load": false,
+  "backend_switch": false,
+  "model_switch": false,
+  "dependency_change": false,
+  "driver_sdk_install": false,
+  "authored_shader": false,
+  "unsafe_exception": false,
+  "cpu_experiments": "unchanged",
+  "new_unit_tests": "not_run",
+  "actual_hardware_pilot": "not_run",
+  "gpu_product_e2e": "not_run",
+  "passed": null,
+  "failed": null,
+  "current_manual": "ce24 CPU UI observation is historical, human estimated lag not measured cause",
+  "remaining": [
+    "exact Meari release API/pin",
+    "transitive Rust1.99.1 compatibility",
+    "real hardware versus virtual/software adapter",
+    "native OS/architecture/vendor/runtime matrix",
+    "bounded resource completion/loss/cancel/drain",
+    "AX IME DPI native child integration",
+    "CPU/GPU image numeric parity",
+    "full event to displayed-frame timing"
+  ],
+  "browser_ready": false,
+  "native_full": false,
+  "msrv_review": {
+    "workspace": "1.93",
+    "wgpu_package_override": "1.87.0",
+    "rust_1_99_1_transitive_build": "not_run"
+  },
+  "independent_review": "Research scope appropriate; corrected workspace/package MSRV distinction; max2 frames remains proposal not qualification; UI38 cache elision not native event coalescing"
+}

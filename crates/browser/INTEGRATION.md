@@ -6,6 +6,14 @@ It does not allocate execution or promote historical pilots to current support.
 
 ## Actual Windows CEF checkpoint
 
+UI-39 GPU research is in GPU-BOUNDARY.md: optional hardware-preferred UI policy,
+visible CPU fallback/required-hardware refusal, hardware/software/virtual adapter
+classification, OS/architecture eligibility and lifecycle/parity evidence gates.
+This is a proposal for root structural policy, not a backend/pin or default change.
+Meari GPU window presentation remains distinct from the existing CEF native child
+compositor. Exact released Meari API and actual GPU hardware/OS integration are
+unqualified. All current CPU experiments remain unchanged; no GPU work was run.
+
 Newer UI-38 source candidate removes viewport-width-triggered tab source rebuilds
 together with responsive CSS layout. A checked Projection cache invalidates on
 model or source-owner/definition changes and acknowledges successful commits only.

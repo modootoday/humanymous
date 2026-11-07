@@ -31,9 +31,23 @@ files:
   - {path: controls-046-validation.json, sha256: fa9d4fb19faa3e338947e0f4db5efd7993e798743b54cb75fbc516fd016d5475, bytes: 2249, store: repo}
   - {path: manual-ce24-validation.json, sha256: 99eaf562b2650832c65b64fa434855bd8691dfe9d2a2f23208083c1a2c287c30, bytes: 3267, store: repo}
   - {path: viewport-source-candidate.json, sha256: 68cd63b809798ceb681544a41b1409b60a331d97d1425ed5f97b9c0cecd73030, bytes: 2660, store: repo}
+  - {path: gpu-boundary-research.json, sha256: 27221b26387ea3a29f5fcd6955447fcbb115688d883c42c510c356e131f848e4, bytes: 4048, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
+
+## UI-39 GPU boundary research without execution changes
+
+GPU-BOUNDARY.md and gpu-boundary-research.json record tagged wgpu30.0.1 research
+and exact cached Meari1482 source hashes. Upstream platform eligibility is separate
+from Browser OS/architecture/vendor/runtime qualification. Proposed per-UI CPU,
+hardware-preferred Auto and required-hardware modes do not change defaults or
+CEF compositor policy. Software/virtual/unknown adapters, resource completion,
+device loss/cancel, parity and actual display evidence retain explicit gaps.
+The mutable AnyRender candidate's indefinite per-frame wait is not a selected
+release or a resource-lifetime solution. Exact Meari release/pin remains pending.
+No GPU load, backend/model/dependency switch, driver/SDK install, new shader,
+unsafe exception or CPU experiment change occurred. No new tests were executed.
 
 ## UI-38 viewport-only source candidate: tests not executed
 

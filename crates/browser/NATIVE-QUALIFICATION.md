@@ -8,6 +8,13 @@ owns the Meari/CEF integration. CI owns the existing provisioning runner.
 
 ## Current evidence boundary
 
+GPU-BOUNDARY.md records UI-39 research/selection proposals and explicit unsupported
+OS/vendor/runtime tuples. Tagged wgpu30.0.1 upstream eligibility and Rust minimum
+are not a chosen dependency, a Rust1.99.1 build result or Meari/CEF qualification.
+Actual hardware UI presentation, software-adapter rejection, loss/cancel/drain,
+numeric/image parity and native AX/IME/child/DPI pilots remain not_run. No current
+CPU experiment or backend was changed. Root awaits the exact Meari release.
+
 UI-38 is a newer unexecuted source candidate: model-only retained tab projection,
 responsive CSS for viewport-only geometry, checked owner/definition cache and
 opt-in bounded numeric handler timings. New document/action/source-staleness and

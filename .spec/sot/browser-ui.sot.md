@@ -12,6 +12,31 @@ rel:
 
 # Native browser UI and CEF boundary
 
+UI-39 (research/proposal only): crates/browser/GPU-BOUNDARY.md owns the Browser
+eligibility matrix and Meari-window versus CEF-compositing interface analysis.
+Root structural canon owns project-wide CPU/GPU priority and final public mode
+names/defaults. Proposed per-UI CPU-only, hardware-preferred Auto and required
+hardware modes do not alter current execution. CPU-only must avoid UI GPU device
+initialization; Auto needs an eligible measured tuple and visible CPU fallback;
+required hardware refuses unknown/software/unqualified backing without fallback
+success. These modes do not implicitly change CEF's separate compositor policy.
+Adapter power preference, vendor names, GPU-process presence and texture backing
+alone are insufficient hardware qualification. Virtual/unknown/Noop/software
+adapters retain explicit classification and cannot silently satisfy hardware mode.
+
+Preserve single-use window/child/AX/IME/DPI ownership, bounded checked resource
+budgets, latest-size work, finite frames in flight, completion-backed resource
+lifetime and explicit timeout/loss/cancel outcomes. GPU completion and timeout
+are not OS display or cancellation/drain evidence. True window presentation
+excludes offscreen readback substitution and indefinite per-frame UI-thread waits.
+Graphics parity/tolerances and optimized CPU transfer/queue overhead controls are
+required; scoring/crypto/canonical numeric authority remains unchanged. No new
+GPU work, backend/model switch, pin/dependency, SDK/driver install, authored shader,
+foreign implementation or unsafe exception follows from this research. Current
+CPU experiments finish unchanged. Await exact Meari release and root's separately
+reviewed implementation decision; upstream wgpu30.0.1 sources are research inputs,
+not an approved dependency or target/vendor support claim.
+
 UI-38 (root-authorized source slice): retained tab projection compares only the
 tab model (identity/title/selection/membership), never viewport width. The same
 owning projection adapter performs checked NativeDocumentHandle source updates

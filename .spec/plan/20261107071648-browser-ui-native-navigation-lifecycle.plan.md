@@ -11,6 +11,24 @@ rel:
 
 # Native navigation lifecycle and strict probe closure
 
+## UI-39 project GPU research contribution, no execution change
+
+Root assigns Browser's Meari-window/CEF-compositing boundary within project-wide
+GPU research. GPU-BOUNDARY.md records current CPU/windowed baselines, proposed
+selection modes, OS/architecture/vendor/runtime eligibility, hardware versus
+software/virtual classification, transfer/queue costs, parity, lifecycle budgets
+and evidence gates. Primary tagged wgpu30.0.1/official versioned API sources are
+research only. Exact Meari release/API and all new GPU hardware pilots remain
+unqualified. No blanket driver/vendor support follows from an upstream API table.
+
+Next implementation decision must compare optimized CPU/UI38 controls with true
+GPU-window presentation, define explicit fallback/required refusal and preserve
+AX/IME/child/DPI ownership. Root owns pins/shared graph/cross-cutting policy and
+Performance owns the comparison matrix. Existing CPU experiments finish without
+retuning. No GPU load, new dependency/SDK/driver/shader, unsafe exception, backend
+or model switch is authorized. Review missing tagged candidate API, bounded GPU
+completion/resource drain and actual OS display evidence before any support claim.
+
 ## UI-38 pinned source candidate, not executed
 
 Root authorizes a bounded Browser-only source slice while Meari prepares its own
