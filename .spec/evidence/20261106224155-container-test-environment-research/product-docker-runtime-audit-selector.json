@@ -1,0 +1,30 @@
+{
+  "schema": "humanymous.lab-product-audit-selector-source-fix/1",
+  "path": "deployments/lab/images/product.Dockerfile",
+  "before_source": "1f2b9a93d68deb310ffd53f927977a75d807e007",
+  "before_git_blob": "70fe2efbce4450325af628a22b350067a3731d55",
+  "after_worktree_sha256": "cc31b25fe0dfe3d05a0d1a289118b6f375a32ce85bc4b37c26d40605edc54615",
+  "old_selector": "-p humanymous-audit --bin audit-witness",
+  "new_selector": "-p humanymous-runtime --no-default-features --features audit --bin audit-witness",
+  "metadata_proof": {
+    "new_package": "humanymous-runtime",
+    "source": "1f2b9a93d68deb310ffd53f927977a75d807e007",
+    "old_package_absent": true,
+    "private_evidence": "evidence:root/20261107230009",
+    "metadata_sha256": "60ec936d5539d219518fa21bbcba5215b2dcbc3c6955f63fc5241a8a305d697e",
+    "bin": "audit-witness",
+    "required_features": [
+      "audit"
+    ]
+  },
+  "preserved": [
+    "Existing /usr/local/bin/audit-witness destination and role",
+    "All other Docker RUN/COPY operations",
+    "No default Gateway feature enabled by the audit-only command",
+    "No manifests, namespace moves, policy, DTO or assertion changes"
+  ],
+  "validation": "Source and existing metadata inspection only; no compiler/Docker/hosted execution",
+  "causal_limit": "Source1f2 actual failure was browser_gate_build; exact first failed RUN remains unknown. This obsolete selector would independently prevent a completed build.",
+  "next": "Root selects coherent immutable candidate and actual positive Gate build/browser validation",
+  "full_product_qualified": false
+}

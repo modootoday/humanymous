@@ -10,7 +10,7 @@ RUN cargo build --release --locked -p humanymous-runtime -p humanymous-cli
 RUN cargo build --release --locked --manifest-path test/lab/runtime/Cargo.toml
 RUN cargo test --locked -p humanymous-runtime-pilot
 RUN cargo clippy --locked -p humanymous-runtime-pilot --all-targets -- -D warnings
-RUN cargo build --release --locked -p humanymous-audit --bin audit-witness
+RUN cargo build --release --locked -p humanymous-runtime --no-default-features --features audit --bin audit-witness
 
 FROM compiler AS custody-directories
 RUN ["mkdir","-p","/empty/witness/keys","/empty/witness/head","/empty/writer/keys","/empty/writer/wal"]
