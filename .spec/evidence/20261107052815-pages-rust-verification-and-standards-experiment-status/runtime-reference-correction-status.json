@@ -1,0 +1,36 @@
+{
+  "scope": "Root-released two-reference correction and individually reviewed receipt publication",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ],
+  "changes": [
+    "NativeFull credential boundary separate from explicit browser subset",
+    "Default64KiB buffered response versus opt-in1MiB native stream",
+    "Session quota default100/range and post-consumption429 semantics",
+    "Exact optional browser origin and route profile combinations",
+    "Actual frozen native parser/model/loopback observations",
+    "Selected actual TLS6pass with46filtered and bothCHALLENGE/noorigin, not ALLOW qualification"
+  ],
+  "manual_receipts": {
+    "additional_current_tls_dispatch_source": 1,
+    "selected": 34,
+    "unchanged_schema_and_operator_not_renewed": true,
+    "replaced_entries": 5,
+    "basis": "Seven complete-file manual review batches plus complete current151-line TLS dispatch review; every selected source rechecked against its reviewed exact hash before publication",
+    "fixed_delta_changed_or_added_sources": 33,
+    "blanket_digest_renewal": false,
+    "new_entries": 29
+  },
+  "source_checker": {
+    "errors": 0,
+    "pages": 88
+  },
+  "theme_and_token_hashes_unchanged": true,
+  "previous_build": "42367274252 qualifies prior docs treec434ddf5 only; changed docs require a new actual build",
+  "full_source_freshness_qualified": false,
+  "new_build": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "deployment_performed": false
+}

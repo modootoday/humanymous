@@ -15,21 +15,23 @@ must preserve legitimate application credentials according to its declared profi
 
 ## Experimental loopback runtime exception
 
-The current bounded runtime reserves and binds `Authorization` for its own
-runtime capability, then strips it before forwarding. A separate upstream
-application `Authorization` profile is unsupported. Do not place this slice
+The `native_full` profile reserves and binds `Authorization` for its own
+runtime capability, then strips it before forwarding. Within that profile,
+separate upstream application `Authorization` is unsupported. Do not place this slice
 over an arbitrary existing application and assume its authentication survives.
 
 Working source adds a separately selected `browser_auth_only` profile that
 rejects ambient cookies and preserves application Authorization in the origin
 request builder. Its response path inserts a consumed-counter ACK bound to the
-actual local or origin response status. These branches have not been built or
-executed in the current review, so they are not a qualified credential-preservation
-or browser integration guarantee. The existing native-profile exception above
-remains applicable to the verified slice.
+actual local or origin response status. At runtime source `adb8e3ed`, native
+component fixtures exercised the shared client/server model and these branches.
+Those cases do not execute browser Fetch or establish a qualified browser
+credential-preservation guarantee. The native-profile exception above remains
+applicable when that profile is selected.
 
-It accepts bounded complete HTTP/1.1 requests, with 64 KiB request and origin
-response body limits and a 16 KiB header bound. Transfer-encoded/chunked requests,
+The default buffered profile accepts complete HTTP/1.1 requests, with 64 KiB
+request and origin response body limits and a 16 KiB header bound.
+Transfer-encoded/chunked requests,
 upgrades, duplicate request headers and encoded/dot-segment paths are unsupported.
 Validated duplicate `Set-Cookie` response fields retain their separate values.
 Origin effects follow durable audit append and deadline/liveness checks;
@@ -43,9 +45,42 @@ streaming. Decoded entities remain bounded to 64 KiB. Chunk extensions, trailers
 ambiguous lengths, interim responses and protocol upgrades reject. HEAD, 204 and
 304 responses cannot carry entity bytes. Gateway-owned `X-Humanymous-` fields and
 selected hop-by-hop fields are removed before response metadata is added.
-These changed decoder paths and their new fixtures have not yet been executed
-in the current qualification run; ordinary repeated fields are not a blanket
-HTTP compatibility or credential-preservation guarantee.
+The frozen native component runs exercised these decoder cases. Ordinary repeated
+fields are not a blanket HTTP compatibility or credential-preservation guarantee.
+
+### Explicit native response streaming
+
+A route may select `response_profile: native_stream` instead of the default
+`buffered`. It still requires a complete request body before dispatch; this is
+not streaming upload integrity. Only the `native_full` integrity profile accepts
+this option. Browser integrity and the optional TLS/H1 listener require buffered
+responses and reject this combination.
+
+The native response path forwards a bounded entity incrementally, with a total
+1 MiB body limit and the connection/request deadline. It accepts validated length,
+simple chunked or connection-close framing, strips forged gateway fields and
+retains downstream backpressure. A known oversized body rejects before the
+downstream response head. A later malformed or truncated stream closes without a
+successful chunk terminator or a replacement success/error response. Bytes and
+origin effects already delivered cannot be retracted.
+
+An actual loopback fixture observed the first event before allowing the origin
+to finish. It used a synthetic report and an in-memory audit fixture; this does
+not establish independent durable audit, all socket cancellation races, graceful
+service shutdown or general streaming proxy compatibility. No generic Draft v0
+streaming wire or browser response-streaming support follows from it.
+
+### Selected TLS observations
+
+At later runtime source `1646c482`, six selected ordinary-user Windows TLS cases
+passed, with 46 library cases filtered out. They cover same-owner handshake/ALPN
+observation, malformed request refusal, handshake cancellation and policy/origin
+agreement. Both synthetic client identities received `CHALLENGE` with HTTP 403
+and no origin effect. This is actual TLS component evidence, not an observed
+ALLOW-to-origin path, the complete library, real browser/human/assistive use or
+independent witness deployment. Full TLS ingress qualification remains open.
+
+### Local decision authority boundary
 
 The separate local IPC authority has a different capability boundary: its
 currently reviewed route path rejects required browser collection, request-

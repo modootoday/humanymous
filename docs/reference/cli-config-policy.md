@@ -57,7 +57,8 @@ fixture is not authenticated runtime, recovery or management qualification.
 ## Runtime startup and limits
 
 Startup names `listen`, `origin`, `scope`, `routes`, `audit`, `owner`,
-`session_capacity`, `session_ttl_ms`, `timeout_ms` and `rate_per_second`.
+`session_capacity`, `session_ttl_ms`, `timeout_ms`, `rate_per_second`,
+`session_rate_per_second` and optional `browser`.
 Unknown fields are rejected. Both listeners/origins must be loopback; the origin
 port is nonzero. Scope binds installation, tenant, origin, revision and authority.
 Routes enumerate exact methods/paths and explicit required capabilities.
@@ -68,11 +69,35 @@ Routes enumerate exact methods/paths and explicit required capabilities.
 | `session_ttl_ms` | 1000–3600000 milliseconds |
 | `timeout_ms` | 1–30000 milliseconds |
 | `rate_per_second` | 1–10000 |
+| `session_rate_per_second` | 1–10000; defaults to 100 when omitted |
 | Protected routes | 1–4096; exact supported methods and unescaped paths |
 
-Every protected route requires request integrity. Required original TLS,
-HTTP/2 or qualified browser capture is unavailable in this slice, so those
-routes cannot become ready. A client assertion never fills that capability gap.
+The global rate limits accepted connections before authentication. The session
+rate applies after successful token consumption; a session-quota HTTP 429 can
+therefore still consume its counter. Browser callers need the consumed-counter
+ACK contract to interpret that result. These are resource limits, not detection
+scores or evidence of automation.
+
+`browser` is absent by default. When selected, its `origin` must exactly equal
+`http://` followed by the configured scope authority. It enables the initial
+cookie-free browser protocol policy, not browser collector or human qualification.
+
+Each route defaults to `rit_profile: native_full` and
+`response_profile: buffered`. Selecting `rit_profile: browser_auth_only` requires
+the explicit browser policy; it rejects ambient cookies and uses the separate
+browser-controlled binding/ACK contract. Selecting `response_profile: native_stream`
+opts a native route into bounded incremental responses, with a 1 MiB response-body
+limit. Combining browser integrity with native streaming rejects configuration.
+The standalone listener remains plaintext; the separate TLS/H1 library path also
+requires buffered native routes. See the [origin contract](gate-origin-contract.md)
+for framing, credential forwarding and observed-versus-unqualified execution scope.
+
+Every protected route requires request integrity. The plaintext standalone path
+cannot satisfy required TLS capture. The optional TLS/H1 library path retains
+its own handshaken connection owner; it does not recover original-client TLS
+through a re-terminating proxy. HTTP/2 and qualified browser capture remain
+unavailable, and routes requiring missing planes stay unready. A client assertion
+never fills that capability gap, and declared readiness is not deployment proof.
 
 Audit startup references a private durable directory and existing sealed custody
 with its passphrase delivered privately through inherited configuration. Inline

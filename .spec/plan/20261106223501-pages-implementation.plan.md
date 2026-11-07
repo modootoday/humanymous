@@ -2169,3 +2169,17 @@ refusal/cancellation component evidence, not positive TLS ALLOW-to-origin or
 full52library/R13/browser/product. First failure retained by owner. Stored source
 follow-up, no public frozen change or this-chat execution. Requested later doc
 reconciliation acknowledge actual partial observations without widening scope.
+
+### Released two-reference correction and manual receipts
+
+Root released gate-origin/config and exact manual receipts/change ledger. Corrected
+old unexecuted statements with actual frozen component boundaries, explicit
+buffered/native stream option, quotas/default100/consumed429, optional browser
+origin/integrity profiles and actual selected TLS6negative/agreement observations.
+No ALLOW-origin/full52library/realbrowser/AT/independent witness claim. Published
+34 individually reviewed source receipts (29new/5replaced), covering33 of fixed
+changed/new inventory plus current TLS dispatch. Rechecked every exact reviewed
+hash; unchanged schema/operator not renewed and no blanket digest refresh.
+Source checker88/errors0; theme/config/tokens unchanged. Changed docs invalidate
+using prior42367274252 as their render proof. Refreeze new checkpoint/tree and
+require fresh build/browser/freshness validation; whole goal remains incomplete.

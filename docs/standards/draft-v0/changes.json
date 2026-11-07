@@ -8,6 +8,14 @@
   "changes": [
     {
       "kind": "implementation-evidence",
+      "paths": ["../../reference/gate-origin-contract.md", "../../reference/cli-config-policy.md"],
+      "summary": "Reconcile runtime resource quota defaults, browser and route profiles, buffered versus native incremental responses, and exact component observations. Six selected TLS cases observed refusal and policy agreement, not ALLOW-to-origin, actual browser or complete ingress qualification.",
+      "generic_wire_changed": false,
+      "tls_allow_to_origin_qualified": false,
+      "full_product_qualified": false
+    },
+    {
+      "kind": "implementation-evidence",
       "paths": ["validation/implementation-map.md"],
       "summary": "Record exact-source Runtime Windows47/Unix51 and Audit Windows110 component observations, preserving ignored helpers, zero-test exclusions, same-process witness and unqualified deployment boundaries. The Unix resource-operator fixture supersedes its earlier unexecuted status.",
       "generic_wire_changed": false,

@@ -2,6 +2,289 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/runtime/src/settings/store/journal.rs",
+  "sha256": "bb84e65a4877202df99977ae45021fcc8d11ba3883becfb05144ff5f1d8daa75",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete97-line authenticated-record-only operational head: exact event/node/tenant/config/revision/digest, consecutive revisions and witnessed coverage, append/flush and final witness check. HTTP JSON cannot mint a head; same-process witness fixtures do not establish independent deployment.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/settings/store.rs",
+  "sha256": "830555f62462d5f50b27f21f0e792b79fae63c812974ddeb48f8e03c5a8e75e6",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete342-line private lifetime-locked native state plus witnessed journal selection, explicit CreateNew/Existing/pending recovery, exact envelope/parent/revision, durability policy, stage/audit/finalize/check sequence and poison across ambiguity. Caller still owes serialized apply/liveness; modeled selection tests are not power-loss proof.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/service/outcome.rs",
+  "sha256": "6418a93d8cdf3fcf199096eb08bd810d2c6dc519df654ba35bc7d5c6273c3569",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete bounded shutdown report/failure accounting; success only when both drain and audit flush return success, all failure combinations preserved without underlying sensitive errors. No stop/reaping result inferred from enum or serialization.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/service/readiness.rs",
+  "sha256": "588e2973865ad469d46a9bb9faeab13c5f95b2d9cb989e1022977d27ccb40fc5",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete expected profile construction, external witness presence separate from independence false, optional management/settings revision, TLS/H1 readiness excluding H2/collector. Declared readiness and source tests are not runtime or deployment attestation.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/service/shutdown.rs",
+  "sha256": "283a1c2aa47756baf927211b9dec7667ed410445b926f421fc24a5194eb194fb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete1..30000ms drain request and strictly positive supervisor slack below manager deadline, checked overflow; pure budget relation is not blocking-I/O preemption, actual child reaping or service stop execution.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/session/admission.rs",
+  "sha256": "275f5162e56e490dc9889b1091935e3185c4a7f78cc3281bde0af1ba84f0263e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete monotonic fixed-window resource admission; bounded counter, one-second reopen and permanent poison on elapsed rollback. This is neither client identity nor a detection signal.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/settings.rs",
+  "sha256": "a73a05e5afe707aec0762546cfea66147b65c4a33d4f3b2e166f9129b80eab14",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete pure scoped operational snapshot/CAS candidate:16KiB fixed struct JSON, exact bytes and domain commitment, scope/node binding, safe-integer revision and frozen parent/candidate bytes. PreparedSettings grants no durable authorization or effect.",
+  "pages": [
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/browser/src/main.rs",
+  "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+  "reviewer": "codex/rust-pages",
+  "notes": "Management-preview entrypoint, optional1..600 second lifetime, synthetic CEF NOT READY window title; does not launch a target browser.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/newtab.rs",
+  "sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Script-free typed local landing IR, explicit diagnostic actions/form, html5ever serialization and64KiB output limit. No remote assets/history in this template; source assertions do not prove CEF routing or complete runtime privacy.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/window_chrome.rs",
+  "sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Named labelled local controls, disabled preview state, app-owned resize regions, bounded16-event command projection; synthetic AccessKit and Enter tests do not qualify native window cleanup or OS accessibility.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/ui_navigation.rs",
+  "sha256": "6739cebff564c09b0af60b60eed99bfb3ed44bbaf95cf0cffd9a63f1c5ba5ff3",
+  "reviewer": "codex/rust-pages",
+  "notes": "App-owned address/home/reload paths, focus check, bounded16-event intent projection and committed-route address/title update. Synthetic AccessKit document test is not real keyboard or AT execution.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/viewport.rs",
+  "sha256": "ac272a323bb86823e91a0e71e92aa3fe2369a0c6ae3a86751208129a578d2329",
+  "reviewer": "codex/rust-pages",
+  "notes": "Pure bounded client-size/DPI allocation, reserved header and optional inspector/resize margins; positive content validation and source tests at several DPI values do not prove native rendering.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/navigation.rs",
+  "sha256": "47b70de3dc0891e28d5f401f1019e3c89cc1d122fc2412af1e096781b0aec24d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Pure typed route tickets, max64 navigation requests, separate acceptance/commit/terminal outcomes, irreversible revoke; ordered seven-step probe ledger requires all positive identities. Caller-supplied observations are not OS attestation.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/browser/src/lifecycle.rs",
+  "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+  "reviewer": "codex/rust-pages",
+  "notes": "Pure future-adapter lifecycle: bounded geometry, monotonic generation, irreversible cancellation/close, stale callback refusal, cleanup pending without native receipt; browser_ready always false.",
+  "pages": [
+    "docs/reference/native-browser.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/tests/tls/dispatch.rs",
+  "sha256": "42a335960ce0245f3e3374408d1b686be1be98239c074210abf16ff0b3c97b2d",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete151-line selected TLS dispatch fixture and matching execution-source commitment. Policy/status/origin agreement retains actual CHALLENGE refusals and no origin effect; no fabricated NativeFull browser ACK. Six selected cases do not qualify ALLOW-to-origin, full52library, actual browser/AT or independent durable audit.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/service.rs",
+  "sha256": "f467b7f96267e077fd92a23730972c3e925b8f74c673f18cee0decde10995eef",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete364-line ServiceHost/read_configuration API: bounded private inherited input, existing custody before listener bind/readiness, optional witnessed recovery/settings/observer/operator/TLS composition, one-item operator queue, private credential accessors and final drain+flush accounting. Broker/input provenance, external supervisor deadline and witness independence are separate obligations.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/tls.rs",
+  "sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete199-line bounded captured request+same connection ownership, strict shared HTTP parsing on owned blocking worker, cancellation/socket shutdown plus synchronous worker join, bounded consuming response. Supervisor still owns ultimate process deadline. Buffered native-only/HTTP1 ALPN policy test does not prove actual handshake/cancellation/AT.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/application/tls.rs",
+  "sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete184-line optional serialized TLS/H1 consumer, original handshaken owner, idle checks after audit/connect, buffered origin response and explicit stop/deadline gates. No plaintext fallback, browser/H2/stream profile inference or current TLS deployment qualification from source.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/application/settings.rs",
+  "sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete153-line native settings command serialization between requests, exact scope/CAS, context/deadline/stop checks around durable commit and apply, session invalidation and profile update. Post-stage ambiguity poisons epoch and reports outcome unknown; lost response cannot authorize mutation retry.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/application.rs",
+  "sha256": "3f48880645334ba59a6ddeae648d63da3ef94ac46983e1b8a6b5061116508554",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete607-line serialized application: exact route/capability/profile gate, token consumed before admission/downstream work, registry-owned scoring inputs, minimized request commitments, audit append then deadline checks and origin connect/pre-first-write liveness checks. Public Decision enum is a decision result, not an unforgeable one-use external dispatch capability; actual serialized connection path owns dispatch/no retry. Slow/blocking work is not hard preemption proof.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/startup.rs",
+  "sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete158-line existing sealed custody/audit owner lifetime, typed pinned external witness injection, mandatory witness fail-closed, explicit trusted-head recovery and platform owner selection. Key pin/presence is not organizational/process independence; no runtime key provisioning or automatic writer-only fallback.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/lib.rs",
+  "sha256": "69ece5ec5219113b8e09c165de475ea8e8248e32293ed1f7866bc36bdf201f02",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete17-line public module composition and shared Rejection re-export; no separate scoring or cryptographic implementation.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/configuration/audit.rs",
+  "sha256": "9cfac44efdbf9544e62b12d77e280bfd2d9b7c01b8e0de874d656f07382c523f",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete46-line strict existing sealed custody startup schema: private inherited zeroizing passphrase, separate allow_new history flag and optional trusted head/witness requirement. Inline keys/unknown sources reject; runtime does not initialize missing custody. Source deserialization tests do not prove independent secret provisioning.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/http.rs",
+  "sha256": "cee415ae755a5c4df8cecb0aaaaccbc4b9dc220e7f78cd77fc81afab6fb0680e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete280-line bounded single request HTTP/1.1 parser, canonical decimal, duplicate header refusal, ASCII/framing/target validation,64KiB body/16KiB head, complete-body read without waiting EOF. Origin builder strips gateway fields and native runtime authorization while browser profile preserves application authorization. Caller owns overall deadline; no arbitrary HTTP compatibility or provenance claim.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/browser.rs",
+  "sha256": "2c75a2d3c3f834851bddfabd48486c758122b54d6d33882eb7876d5d44e3f6fe",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete119-line explicit protocol classifier, no User-Agent inference, cookie refusal and exact same-origin Fetch metadata. Bootstrap secrets zeroizing/non-Debug; one consumed-request ACK signer binds original token/counter/bucket/response status. Fetch metadata is not native peer identity or human evidence; ACK is not an effect witness.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/configuration.rs",
+  "sha256": "8c5c3f1b8502a74e759d5da0e2e4a6bf570faaa39957a2e258f4285f4e09178e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete208-line strict trusted configuration: loopback source/origin, exact scope/routes, native_full/buffered defaults, default session quota100, optional exact http origin browser policy, browser+native_stream refusal and readiness separate from qualification. Full source review supersedes prior partial excerpts only; no actual transport proof.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/tests/stream.rs",
+  "sha256": "1768559c0ce1f6704efc038ba779436d6329be97b41ba74bb4a174b1d354e346",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete69-line actual loopback fixture: native stream first SSE event arrives before origin release, second event/terminator only after release. Synthetic report and in-memory audit records; server aborted at end. Does not prove durable external audit, graceful service stop, generic streaming wire or real browser/AT.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/http/stream.rs",
+  "sha256": "02444bb5a9212b3976d3a60eb7dc03eb0802e902a889f252017e41e278dac56b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete326-line optional native incremental response forwarding:16KiB head,1MiB total,8192-byte buffers, bounded chunk syntax/count, backpressure, fail without success terminator after partial malformed stream, explicit downstream-start observation. In-memory flow-control tests do not prove actual socket abort/drain or arbitrary protocol compatibility.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/session.rs",
+  "sha256": "f9f84b80698e1c4d3013d380b687caa7b4532801f5c594d74695e88807c14b11",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete384-line volatile session owner: independent random capability/key, no live eviction, clock rollback poison, native whole-header canonical binding versus browser subset profile, next-token consumption before admission/downstream work, session-bound reports and server-owned signal metadata. Browser report/ACK model is not actual browser collection or persistent logical-operation deduplication.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
+  ]
+},
+{
   "source": "crates/runtime/src/tests/service/settings_operator.rs",
   "sha256": "6ee62d985cb6c143937ced883b06b2c0934f492c3a8eb8853e83d71254520f70",
   "reviewer": "codex/rust-pages",
@@ -1268,47 +1551,52 @@
 },
 {
   "source": "crates/runtime/src/http/origin_response.rs",
-  "sha256": "2443d67c8d86bfb61f5aa8a1467fd6b8c94cb7c27599406d86024c5120f2c950",
+  "sha256": "1d3f37c0fae56dc4cbf433f3a540c654278fb6386f8c4d2323b196d109adbb39",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete bounded origin Response parser/encoder/chunk decoder and three authored fixtures: exact lengths, simple chunked or EOF entity framing, no extensions/trailers/interim/upgrades, empty HEAD/204/304 handling, ordinary duplicate field preservation and gateway/hop field filtering. Updated origin contract distinguishes complete buffering/reframing from streaming and explicitly leaves current decoder execution unverified. Source tests read only.",
+  "notes": "Complete287-line bounded HTTP/1.1 origin parser/encoder: strict status/ASCII headers/framing, duplicate cookie fields preserved, hop and forged gateway fields stripped, complete-body chunk/EOF reframing,64KiB decoded bound; rejects extensions/trailers/ambiguous framing. Default buffering is distinct from explicit native response streaming.",
   "pages": [
-    "docs/reference/gate-origin-contract.md"
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
   ]
 },
 {
   "source": "crates/runtime/src/service/lifecycle.rs",
-  "sha256": "481d0f14e70bcb5ed66a06d71be0f2438dd3b5165a366291a9ccaad61be8714b",
+  "sha256": "978db8db5889e2a8d65064a691fbad53544ce9ea8561c98b0364dfda91fd062c",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "notes": "Complete64-line joint application+management ownership, sibling stop fallback, explicit external controller forwarding, closed-controller error and join of all three futures before custody release. Native tests or manager/descendant cleanup are not inferred from this orchestration source.",
   "pages": [
-    "docs/reference/on-call-quick-reference.md"
+    "docs/reference/gate-origin-contract.md",
+    "docs/reference/cli-config-policy.md"
   ]
 },
 {
   "source": "crates/runtime/src/management/tests.rs",
-  "sha256": "aa86d590d9277d9f2ddd488f363664297839fc2d86f85ad1e1c79c3497a55402",
+  "sha256": "f4ace8af102cd7936cf459620cf0cc230ad3f052cacb7d8b22b05e3bb225a7ea",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "notes": "Complete201-line constructed policy cases for peer/credential/scope confusion, browser headers, duplicate Host, mutation/read separation, operator reuse and scoring-field refusal. NativePeer test values are constructed; these pure cases do not prove actual cross-user OS permissions or installed service behavior.",
   "pages": [
-    "docs/reference/on-call-quick-reference.md"
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/reviews/security-privacy.md"
   ]
 },
 {
   "source": "crates/runtime/src/management/policy.rs",
-  "sha256": "6e54a9384ec423a7c1698b066af0ec23965a67efaeb44e1d70cdd2c5d46df7fc",
+  "sha256": "a30577eaea0bef9f118c74ac0b4dd5b3741ef0dd120bda7e858084e2d2616dc9",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "notes": "Complete99-line trusted native endpoint/scope model, exact POST routes, strict five-field scope equality, unique headers, browser/proxy/gateway header refusal, fixed host/content type and8192-byte body bound. Locality/header policy alone does not establish caller authentication or SSRF resistance.",
   "pages": [
-    "docs/reference/on-call-quick-reference.md"
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/reviews/security-privacy.md"
   ]
 },
 {
   "source": "crates/runtime/src/management/mod.rs",
-  "sha256": "568614e57454cb287da7c70fa15133dfd47cf4d55eed137200822aa5e64f1bfb",
+  "sha256": "054ad50e3f93f2dd00a87438820b8ef324845485a1c910740486058a44c2aaeb",
   "reviewer": "codex/rust-pages",
-  "notes": "Read full source for separate native observer status listener/policy/fixtures and joined application-management shutdown: exact local peer, independently provisioned credential, exact scope and no mutation/browser authority. Incident reference records current source contract and remaining actual IPC/ACL/cancellation/lock-release gates. Source tests were read, not executed; status profile is not heartbeat or service health qualification.",
+  "notes": "Complete154-line distinct native listener and observer handler, independent credential provisioning, configured OS peer, strict exact routes, read-only status/settings and optional operator routing. Fixed admission capacity8/rate20/timeout1000ms and bounded drain are not independent peer/deployment proof.",
   "pages": [
-    "docs/reference/on-call-quick-reference.md"
+    "docs/reference/on-call-quick-reference.md",
+    "docs/standards/draft-v0/reviews/security-privacy.md"
   ]
 },
 {
