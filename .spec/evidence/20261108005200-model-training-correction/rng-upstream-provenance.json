@@ -1,0 +1,52 @@
+{
+  "schema": "humanymous.go-rng-provenance/1",
+  "status": "SOURCE_ONLY_NO_ORACLE_EXECUTION",
+  "version": "go1.26.3",
+  "version_time": "2026-05-04T20:36:18Z",
+  "source": "Installed Go distribution source; VERSION and LICENSE retained byte-for-byte",
+  "license": "Go Authors BSD-3-Clause text retained in raw upstream/LICENSE",
+  "retained_raw_directory": ".spec.local/root/evidence/20261108021500-model-training-correction-rng-l0/upstream",
+  "upstream_files": [
+    {
+      "path": "VERSION",
+      "sha256": "8614d1efa4e81c67187fb5d07f68239a57a6deb3091d40dbb195a3191e74f49c",
+      "bytes": 35
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "bytes": 1453
+    },
+    {
+      "path": "src/math/rand/rng.go",
+      "sha256": "e301d938fe5dbe4ef5ff52f31de68d2547c3ab50da5c95bb21c49ea983a817ab",
+      "bytes": 15112
+    },
+    {
+      "path": "src/math/rand/rand.go",
+      "sha256": "a57f58bcc4baa4ac71fb09a6f2a8ce525f6f097d7b9c7ea61f206bcfd910aa39",
+      "bytes": 17624
+    },
+    {
+      "path": "src/math/rand/normal.go",
+      "sha256": "d8f4450a14b03bd0ec939eb4b127e199d9d78ba3d07c4ad0a65ac493dfa1c62a",
+      "bytes": 6459
+    },
+    {
+      "path": "src/math/rand/regress_test.go",
+      "sha256": "bfd84f4881dd8bd1f057ccc4ba989b88194647a2cd791d7e96bb9e3133f0baa7",
+      "bytes": 18206
+    },
+    {
+      "path": "src/math/rand/rand_test.go",
+      "sha256": "d75a0d9de823a9a5c79a0e8c229b6749aaa1fbaa46c2cd7d8d5a4c336589d1d5",
+      "bytes": 18230
+    }
+  ],
+  "legacy_training": {
+    "path": "internal/mltrain/train.go",
+    "baseline_commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+    "sha256": "55ecd6e3d270c6a83584390efd82b6e16dfeb920a1e46f8a952b2825b99b8846"
+  },
+  "observability": "Upstream per-method seed0 vectors exist; no authoritative mixed normal/shuffle midstate fixture is claimed"
+}

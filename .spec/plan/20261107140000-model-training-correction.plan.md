@@ -58,6 +58,103 @@ No own overlays, source changes or common target reuse. Fresh exclusive reducer
 target was returned at terminal; remaining evaluation adapter/cohorts/time/RNG,
 Train and lifecycle responsibilities remain open.
 
+## RNG L0 proposal for acceptance: no execution or implementation yet
+
+### Retained inputs and observability
+
+Installed VERSION identifies go1.26.3 at2026-05-04T20:36:18Z. Exact rng.go,
+rand.go, normal.go, regress_test.go, rand_test.go, VERSION and BSD LICENSE bytes
+are retained privately; rng-upstream-provenance.json binds paths/hashes/sizes.
+go.mod specifies minimum go1.25.3, not proof of any prior runtime version; root's
+explicit compatibility target remains1.26.3. rng-normal-seed0-upstream.json retains
+20authoritative NormFloat64 expectations from regress_test.go lines304-323 as
+decimal strings. TestRegress reseeds0 before EACH method, takes20calls, and skips
+methods with no return. Shuffle is NOT covered. No new execution is claimed.
+
+| Unmodified surface | Observable | Missing |
+|---|---|---|
+| ml-train fixed data, epochs0 | all cold W1/W2/biases, mean/std, bundle | individual draws/state, pre-split shuffle order |
+| ml-train epochs1/2 | final weights; actual training grant required | per-example gradients/swaps/intermediate state |
+| TestWarmStart_UsesBaseAndKeepsShape | pass/fail and W2[0]/B2 copy assertions after30epoch base | full warm state, no-init draw count, mixed order |
+| mlcorrect-train epochs0 with base | candidate only if gates pass; otherwise exit3/no file | failed-gate weights/permutation/state |
+| upstream TestRegress | retained per-method goldens and aggregate test verdict | mixed normal+shuffle snapshots |
+
+Train starts its OWN new seed stream:27W1 normals then1W2 normal PER hidden unit;
+warm consumes no initialization draws. Epochs shuffle the already-permuted order
+in place. Bootstrap CLI has a SEPARATE stream for generation/pre-split shuffle,
+then Train resets its own stream. Fixed -data avoids synthetic draws but not the
+distinct pre-split shuffle. Date-derived version metadata must be retained raw
+and excluded only from a declared numeric comparison, never silently overwritten.
+
+### Exact fixture envelope and matrix
+
+Proposed schema `humanymous.go1263-training-stream/1` requires these fields:
+
+- provenance: source commit,7upstream hashes/license, tool binary hash/version/host,
+  command, input/base byte hashes, observation kind and actual execution status.
+- config: seed signed-i64 DECIMAL STRING, feature_dim27, hidden, epochs,
+  lr_f32_bits as8hex digits, warm_requested/effective, validated base shape/schema,
+  rejection status and explicit draw/swap/output budgets.
+- input: ordered stable sample IDs, labels,27f32 feature bitstrings per sample,
+  mean/std bits, timestamp/cohort/split membership. No provenance upgrade.
+- initialization: ordered normal16hex-f64 outputs and resulting8hex-f32 W1/W2,
+  bias zeros/calA1/calB0 and primitive draw counter.
+- snapshots: phase(seed/init/epoch-before-shuffle/after-swap/after-example/end),
+  epoch/example/swap ordinal, tap/feed,607state u64 words as16hex strings,
+  primitive draw count, complete sample-ID order and weights/gradients only when
+  an actual later SGD allocation observes them. Missing values are null+reason.
+- oracle_class PER observation: retained_upstream, unmodified_go_cli_output,
+  unmodified_go_test_assertion, rust_derived_reference or NOT_OBSERVED. Source
+  golden values cannot fill unobserved mixed-state fields.
+
+Seeds:0,1,-1,2147483647,-2147483648,i64::MIN/i64::MAX as strings. Pure shuffle
+sizes0/1/2/3/7/32/100000; mixed sizes3/7, hidden1/2/16, epochs0/1/3, cold and
+shape-valid warm. Reject wrong dim/ragged rows/hidden mismatch/stale schema BEFORE
+draws, with explicit rejection fixture. Proposed trace caps4096primitive draws,
+128swaps,3epochs and1MiB output; retain production ceilings hidden256/samples100000/
+epochs1000 without claiming those full sizes were traced. Cover signed seed modulo,
+zero fallback, wrapping state, rejection draws and empty/singleton no-draw behavior.
+
+### Bounded unchanged oracle invocation proposal, NOT RUN
+
+After a distinct root allocation: retained unmodified Go1.26.3, GOTOOLCHAIN=local,
+GOPROXY=off/GOSUMDB=off/GOWORK=off, owned temp cache/output, jobs1 and20s deadlines.
+Example: `go test math/rand -run ^TestRegress$ -count=1 -timeout=20s`.
+Do not pass printgolden; compare existing expectations rather than replacing them.
+No Go instrumentation, new Go tests or Go generator is proposed.
+
+A separately allocated zero-epoch initialization pilot may build unchanged
+ml-train from the immutable baseline, then invoke its binary with
+`-data fixture100.jsonl -hidden 1 -epochs 0 -seed 0 -out cold.json`.
+Exactly100bounded aggregate records would be authored by an approved Rust fixture
+tool, not generated here. Repeat only admitted seeds/shapes. This provides cold
+weight observations, not order/state proof. Warm test and epochs1/2 involve actual
+training and remain unallocated. No Go build/test/CLI or model initialization ran.
+
+### Proposed Rust-only kernel and cross-check, pending acceptance
+
+Exact proposed paths: training/rng/{mod.rs,source.rs,normal.rs,shuffle.rs,tables.rs,
+tests.rs}; one owning API, existing dependencies, no Cargo or trainer integration.
+Port rng607/tap273 seed recurrence/cooked607words with explicit wrapping u64 state;
+preserve Uint32 extraction and Float64 retry when rounding produces1. Preserve
+128entry ziggurat tables, integer/float widths and draw consumption. Shuffle uses
+internal int31n Lemire reduction, NOT public Int31n/Intn. n<=100000 excludes the
+huge-index Int63n branch; reject over-cap input instead of approximating it.
+BSD notices and root-owned third-party attribution are required before shipping.
+
+Rust-only differential proposal: a slow spec reference with explicit607word vector
+rotation/logical indices/draw transcript, independently reviewed against frozen Go
+statements, compared to circular-state production kernel AFTER EVERY draw/swap.
+Cover warm no-init and successive in-place epochs; anchor primitive/normal output
+against retained upstream goldens and later unchanged CLI cold weights. Label
+all derived state fixtures rust_derived, never fabricated Go observations. Inject
+bounded primitive tapes for normal-tail/rejection and shuffle-rejection branches;
+these are algorithm cases, not seed-stream oracles. Shared table/reference origin
+is a correlated-error risk, not independent cross-language proof. Integer/fast-path
+bits, normal-tail log/exp supported-target differences and unobserved SGD state
+must remain explicit. Full mixed-stream/SGD parity cannot be declared from these
+vectors alone. No Rust RNG code or new test execution is authored by this proposal.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.

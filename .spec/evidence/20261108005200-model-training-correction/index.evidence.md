@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T16:59:55Z
+updated: 2026-11-07T17:20:34Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -12,6 +12,8 @@ files:
   - {path: source-inventory.json, sha256: f2680379e9ecede8a520bfc1d58052623f21cd3795634c302e091c0aa90c0d33, bytes: 16297, store: repo}
   - {path: standardize-validation.json, sha256: 244809da8e82543a06c16a80a952bd06610c23e1a3540acfcfaff7357e795b53, bytes: 1089, store: repo}
   - {path: evaluate-validation.json, sha256: 4032655a3c889eab255ead8193ae715448d88f7d679bad78efe0fe2a705901bc, bytes: 1002, store: repo}
+  - {path: rng-upstream-provenance.json, sha256: d9f8ad32d68017a6613a652f4c776f325c2e2048a1aa6de16e607d2296d60b22, bytes: 1899, store: repo}
+  - {path: rng-normal-seed0-upstream.json, sha256: 1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989, bytes: 1246, store: repo}
 ---
 
 # Read-only source inventory
@@ -373,3 +375,16 @@ selected-packages, config-paths, per-step admission and environment JSON files
 retain the bounded inputs; `summary.json` records the comparison. System SDK/DLL
 closure is not measured. The full29-row migration and future gate/SGD/RNG/lifecycle
 remain open, with no execution reservation retained.
+
+## RNG L0 retained-source preparation
+
+No workload was run. Local installed Go VERSION is1.26.3. Seven unchanged upstream
+source/version/license files were copied byte-for-byte to
+`C:/workspaces/humanymous/.spec.local/root/evidence/20261108021500-model-training-correction-rng-l0/upstream/`.
+rng-upstream-provenance.json records exact hashes/sizes; rng-normal-seed0-upstream.json
+retains20source-golden decimal expectations and the exact upstream source identity.
+This is retained authoritative source data, not an oracle execution or mixed-stream
+fixture. The plan now specifies exact seed/shape/epoch/input/midstate fields,
+unmodified bounded oracle invocations and observability gaps, plus proposed Rust-only
+kernel/reference scope. Root acceptance is needed before RNG implementation or
+fixture/oracle workloads; existing full model scope/freeze remain unchanged.
