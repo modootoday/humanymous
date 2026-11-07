@@ -60,3 +60,13 @@ and precisely measured characters in historical receipts are intentionally
 preserved, as are immutable raw logs and their hashes. A bounded scan of current
 owned source/prose found only those functional/historical multilingual values;
 no authored Korean prose/comments required translation in the touched scope.
+
+
+## UI-28 source follow-up after c4b58be
+
+Registration rejection previously only logged. Actual process-local acceptance
+now gates desktop owner factory and renderer canary work; missing signal is not
+success. This changes no IPC/report schema and grants no all-process/sandbox
+attestation. Registry atomics are application-DLL/process-local. Native compile,
+positive/missing-registration runtime checks are hosted not_run. Core23 proof
+is unchanged and does not validate this native delta; formatter alone passes.

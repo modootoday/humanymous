@@ -347,3 +347,15 @@ needed to qualify actual candidate display/placement. Candidate remains open.
 The unchanged-source pilot exited0;33 private generated profiles now remain.
 See hanja-keycode-research.json in evidence:root/20261107021004 for primary links
 and the exact unsuccessful aliases. No application source changed.
+
+
+## Registration prerequisite follow-up
+
+UI-28/browser-ui0.6.1 requires actual process-local registration acceptance before
+desktop owner factory startup and renderer canary work. A missing/rejected App
+registration can no longer be merely logged and treated as available. Missing
+renderer observations remain unknown. No all-process registration or sandbox
+qualification is implied; no IPC/report schema change is introduced.
+Evidence registration-source.json in evidence:root/20261107073932 binds this
+native-only delta after c4b58be. Formatting passes, native compile/positive probe/
+missing-registration failure case remain hosted not_run; no new Cargo/runtime.

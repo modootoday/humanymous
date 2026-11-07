@@ -3,13 +3,14 @@ id: evidence:root/20261107073932
 title: Browser navigation lifecycle source checkpoint without native qualification
 status: active
 created: 2026-11-07T07:39:32Z
-updated: 2026-11-07T07:49:13Z
+updated: 2026-11-07T08:03:43Z
 rel:
   depends_on: [sot:root/browser-ui, plan:root/20261107071648]
 files:
   - {path: results.json, sha256: 45f5c34b386d478cdcb25dbab90eaa8ebed26c077d55ae7dabbf7690d39b1de1, bytes: 10994, store: repo}
   - {path: pure-results.json, sha256: 990cc4d6f91d8ec6b0c643b8868c1600db12285be201c14b8c7b2930b02297a1, bytes: 10439, store: repo}
   - {path: native-cli-source.json, sha256: 1e7137cfb314e8be70008445e35287b126519994a9ba27e3d1c0e46251ffce7e, bytes: 1279, store: repo}
+  - {path: registration-source.json, sha256: c1684d1b4499b7a4d86751e501a46343482266212c0e566020b553a0a3f03026, bytes: 1943, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
@@ -69,3 +70,18 @@ Authored prose/comments are English. Bounded owned-document/source review found
 only intentional Korean IME fixture or historical measured-character literals;
 those and immutable raw attachments remain unchanged. No Korean authored prose
 or comments required translation in the reviewed scope.
+
+
+## Registration prerequisite follow-up (UI-28)
+
+A later native-only source delta records actual process-local scheme acceptance.
+Desktop factory startup and renderer canary work refuse unknown/rejected
+registration. Browser initialization failure shuts CEF down before reporting the
+pre-browser error. Missing canary data is unknown; neither canary presence nor
+this guard attests all subprocesses or full sandbox policy. Existing IPC/report
+schema is unchanged and does not retroactively prove this new prerequisite.
+
+registration-source.json binds the three changed native files against c4b58be.
+Formatting passes; native compilation, positive probe and actual missing-
+registration failure exercise remain not_run. Core source is unchanged; no Cargo,
+local browser/OS runtime, REA or dispatch was started for this follow-up.

@@ -3,7 +3,7 @@ id: sot:root/browser-ui
 title: Native browser UI and CEF boundary
 status: active
 created: 2026-11-07T00:20:14Z
-updated: 2026-11-07T07:16:48Z
+updated: 2026-11-07T08:01:06Z
 verify: [manual]
 rel:
   governs: [crates/browser/**]
@@ -14,7 +14,7 @@ rel:
 
 ## Rule
 
-Version 0.6.0. The browser-first shell and research contract below supersede the initial management dashboard.
+Version 0.6.1. The browser-first shell and research contract below supersede the initial management dashboard.
 Authored application and tests are Rust; construct typed Meari IR directly, without
 TSX, HTML application source, JavaScript or embedded script strings. Pin Meari
 1482b746ebc0d867f25d17d01c48c12df888ca6c (0.2.0, MIT OR Apache-2.0), Rust 1.99.1.
@@ -583,3 +583,16 @@ renderer-canary callbacks refuse revoked/closed authority; late diagnostic resul
 are not appended after revocation. Close itself remains permitted while stopping
 until actual before-close, and does not become a focus/observer grant. No global
 hooks or third-party window/process inspection is introduced.
+
+
+UI-28 (accepted source follow-up; native compile/runtime not_run): owner-scheme
+registration records the actual add_custom_scheme return in process-local atomic
+state. Unknown/missing/rejected registration is not success. Desktop factory
+registration refuses to proceed unless its browser App observed acceptance;
+initialized CEF is shut down before reporting this pre-browser failure. Renderer
+canary work also refuses to run when its own App lacks accepted registration.
+No filesystem or canary denial is inferred from the absence of a renderer report.
+This is a process-local prerequisite, not all-process registration attestation,
+full sandbox qualification or a new BrowserReady value. Existing report/schema2
+fields do not retroactively prove UI-28. Old source c4b58be remains independently
+bound; this new native delta needs its own hosted compile and actual probe.

@@ -16,6 +16,7 @@ wrap_render_process_handler! {
     struct ProbeRenderer;
     impl RenderProcessHandler {
         fn on_browser_created(&self, browser: Option<&mut Browser>, extra_info: Option<&mut DictionaryValue>) {
+            if !crate::owner_scheme::registered() { return; }
             let Some(info) = extra_info else { return; };
             let owner = info.int(Some(&CefString::from("humanymous_probe_owner")));
             if owner <= 0 { return; }

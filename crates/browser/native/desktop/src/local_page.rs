@@ -8,6 +8,11 @@ use std::{
 const CSP: &str = "default-src 'none'; script-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; img-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'";
 
 pub fn register() -> io::Result<()> {
+    if !crate::owner_scheme::registered() {
+        return Err(io::Error::other(
+            "owner scheme registration was not accepted",
+        ));
+    }
     let bytes = humanymous_browser::newtab::markup()
         .map_err(io::Error::other)?
         .into_bytes();

@@ -1,0 +1,39 @@
+{
+  "schema": "humanymous.browser.scheme-source.v1",
+  "at": "2026-11-07T08:03:43Z",
+  "predecessor": "c4b58be",
+  "files": {
+    "crates/browser/native/shared/scheme.rs": {
+      "working_sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9",
+      "canonical_lf_sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9",
+      "predecessor_c4_sha256": "9ebe5d5d1976d69ae95553941470851bf818792f0779418a7407762cca0e6759"
+    },
+    "crates/browser/native/desktop/src/local_page.rs": {
+      "working_sha256": "79f77f0528db58de405c38eed65bdf78ea790439164533c13a12abe0993fa837",
+      "canonical_lf_sha256": "79f77f0528db58de405c38eed65bdf78ea790439164533c13a12abe0993fa837",
+      "predecessor_c4_sha256": "533cbe654c5a2988f531f31214d4a1ba383addede21c416516c41fca10a7fbe4"
+    },
+    "crates/browser/native/bootstrap/src/renderer_probe.rs": {
+      "working_sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0",
+      "canonical_lf_sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0",
+      "predecessor_c4_sha256": "4caba694ac7a756a43ed7ec2aa214ed87e564f0b1df449263241cacdbc8a69ef"
+    }
+  },
+  "change": "Process-local actual registration acceptance gates desktop factory and renderer canary work",
+  "checks": {
+    "rustfmt_exit": 0
+  },
+  "new_native_compile": "not_run",
+  "new_native_runtime": "not_run",
+  "missing_registration_failure_case": "not_run; requires hosted actual initialization/factory refusal",
+  "core_source_changed": false,
+  "new_cargo_run": false,
+  "all_process_attestation": false,
+  "sandbox_qualified": false,
+  "browser_ready": false,
+  "limits": [
+    "Canary absence is unknown, not file denial or registration proof",
+    "Existing IPC/report schema is unchanged; old schema2 reports do not prove UI-28",
+    "c4b58be pure23 results remain bound to their core source and do not compile or execute this native delta"
+  ]
+}

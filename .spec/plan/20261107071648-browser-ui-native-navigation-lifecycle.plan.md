@@ -74,3 +74,11 @@ consumer; integration process helpers are unchanged. Existing native-embedding
 SoT/plan07042614 still own its API contract. New hosted Linux Clippy is not_run;
 no Cargo during root's graph window. Track that source fix separately from the
 23 passing browser pure units, which did not compile/test native-cli.
+
+
+UI-28 follow-up: scheme registration currently logs failure but does not prevent
+owner factory startup. Record actual per-process acceptance, reject factory
+startup without browser acceptance, and skip renderer canary work without its own
+acceptance. Missing reports remain unknown; no false file-denial/all-process claim.
+This is a native-only source delta after c4b58be, not covered by its pure23 result.
+Actual compile/probe and missing-registration failure test are hosted not_run.
