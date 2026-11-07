@@ -20,6 +20,52 @@ dual-control and missing-required fail-closed remain invariant.
 
 ## Steps
 
+### Eight-package integration handoff — 2026-11-08
+
+**Mission and constraints.** Preserve every remaining R01-R17 responsibility while
+Root sequences the accepted eight-public-package baseline v0. Runtime's accepted
+destination is crates/sdk/humanymous-runtime; this is not permission for this
+owner to move paths, rename imports or edit the common graph independently.
+Detection freeze, fail-closed required signals, dual-control, accessibility,
+opaque authority and source-specific historical evidence remain binding.
+
+**Done.** Current crates/runtime paths exactly match the path/SHA256/blob manifest
+source-commitments.json in evidence:root/20261107061821. The attached
+runtime-package-handoff.json binds its exact hash, current clean-tree comparison,
+API/visibility/unsafe/dependency hazards and tests. Latest sourceaba7934d and
+receipt7bdda110 qualify six Windows checked-DATA consumers only, not the full79
+library inventory or native/Ready/product. CLI's consuming composition and its
+separate source-bound receipt remain CLI-owned.
+
+**In progress and blockers.** No dirty Runtime source, active compiler/native
+process, target lease or path-moving operation exists at this handoff. Root must
+freeze the precise incoming context topology, public API/import mapping and
+visibility changes before package integration. Actual original issuer/store,
+retained P/S/O identity, process-wide claim, W, bounded ACK/transport and final
+same-owner Ready remain independent missing producers.
+
+**Next actions.** Root integrates core first, then freezes runtime/platform paths
+and hashes with the relevant owners. Audit every pub(crate) constructor/field
+before contexts become siblings; preserve private/uninhabited proof and custody
+boundaries. Update the two cross-package include_str fixture references without
+changing owner bytes. Revalidate the resulting frozen graph and real boundaries;
+do not inherit old qualification from unchanged leaf files alone.
+
+**Verification.** Under a fresh Root allocation run cargo fmt -p
+humanymous-runtime -- --check first, then cargo check/clippy -p
+humanymous-runtime --all-features --all-targets --locked (Clippy: -- -D warnings).
+Compare cargo test -p humanymous-runtime --all-features --lib --locked -- --list
+against the new exact inventory before execution. Run source-selected meaningful
+pure tests, then actual native_process and OS lifecycle pilots in separate
+approved venues; product e2e remains Docker-only. Existing Windows79/Unix83 and
+native_process1 are authored inventories, not new merged-source passes.
+
+**Read first and out of scope.** Read AGENTS.md, .agents/lessons/HARD-WON.md,
+structural-development SoT, Runtime SoT and attached handoff hazards. No publishing,
+main merge, ref synchronization, compatibility shim, scoring change or native
+authority manufacture is authorized by this handoff. Codex Runtime chat retains
+residual operational context; Root owns the integration sequence.
+
 | ID | Requirement / accepted contract | Owner / prerequisite | Current status and acceptance |
 | --- | --- | --- | --- |
 | R01 | Shared14-field browser codec + counter ACK | root integrity;53abb0b/fabed20 | Runtime consumes shared APIs and compiled at709b0e2; actual current-source browser/ACK join pending; no copied codec |

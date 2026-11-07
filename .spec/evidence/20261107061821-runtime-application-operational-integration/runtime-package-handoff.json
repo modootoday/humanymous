@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.runtime-package-handoff/1",
+  "baseline": "accepted eight-public-package baseline v0; Root sequences actual moves",
+  "source": "aba7934d4a00cbc4ed9581df8aff401e98e4ec91",
+  "qualification_receipt": "7bdda110907e1abc581766bd97a089ccc2f2fc76",
+  "paths": [
+    "crates/runtime/**",
+    ".spec/sot/runtime-application.sot.md",
+    ".spec/plan/*runtime-application*.plan.md",
+    ".spec/evidence/*runtime-application*/**"
+  ],
+  "source_manifest": "source-commitments.json",
+  "source_manifest_sha256": "85c25bea44ee4312e69d4e349ec169a7b93f89ed66e628a18add0a29910b96e7",
+  "source_manifest_files": 59,
+  "current_source_hash_drift": 0,
+  "dirty_runtime_files": [],
+  "active_compilers": [],
+  "active_native_processes": [],
+  "active_target_leases": [],
+  "existing_package": "humanymous-runtime",
+  "accepted_target_parent": "crates/sdk",
+  "accepted_target_leaf": "humanymous-runtime",
+  "independent_path_moves_authorized": false,
+  "shared_manifests_owned_by": "Root",
+  "hazards": [
+    "Merging authority/audit/capture/network/native policy into one crate widens pub(crate). Restrict constructors, custody and state fields to owning context; preserve opaque uninhabited NativeProof and private Runtime Ready/retention ownership.",
+    "service::AuthorizationData is checked DATA only; no preparation, W receipt, secret-read permission, listener or Ready conversion.",
+    "Current public Configuration and ServiceHost signatures expose Authority Peer/Scope/Required, audit Checkpoint/TailRecovery and custody/witness types; curate final contextual public paths without compatibility shim or privilege promotion.",
+    "Runtime has no authored unsafe token match. Platform/export unsafe exceptions do not transfer into safe Runtime/core on consolidation.",
+    "Two include_str fixture paths cross package roots: service/authorization/tests.rs to authority/tests/fixtures/authorization-v2-minimal.json; tests/browser/contract/harness.rs to collector/pilot/fixture.json. Preserve exact owner bytes and update paths only in Root frozen slice.",
+    "Private cfg(test) application::temporal and service::epoch are not production providers. Do not promote them during path/import mechanical changes.",
+    "Existing shared Cargo graph remains Root-owned. Normal local edges authority/audit/capture/network -> runtime contexts; challenge/integrity/scoring/signals -> accepted core; collector remains dev dependency with actual WASM/browser gates.",
+    "No old source-specific proof qualifies a merged crate graph; current library inventory Windows79/Unix83 and native_process1 must be regenerated against the frozen integration candidate."
+  ],
+  "last_executed_scope": "Windows six DATA consumer tests;0fail0ignored73filtered;fmt/check/strictClippy0. Not full79 suite or native/product.",
+  "next_tests": [
+    "Root frozen candidate: Rust1.99.1/edition2024 fmt FIRST, locked all-feature/all-target check, strict Clippy; refresh exact per-platform --list inventory.",
+    "Run meaningful DATA6, retention3 and temporal9 regressions plus source-selected runtime suite on newly frozen graph; prior counts remain historical until revalidated.",
+    "Native_process actual OS pilot; Unix management/stream lifecycle and Windows service pilots under separate allocations; no local SCM/account mutation authorization.",
+    "Collector WASM/browser pilot and Docker-only actual product topology after lower provider gates; actual S/O/P/W/claim/ACK/Ready remains open."
+  ],
+  "references": [
+    "AGENTS.md",
+    ".agents/lessons/HARD-WON.md",
+    ".spec/sot/structural-development.sot.md",
+    ".spec/sot/runtime-application.sot.md",
+    ".spec/plan/20261107061820-runtime-application-operational-integration.plan.md"
+  ]
+}
