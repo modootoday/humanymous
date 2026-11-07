@@ -1,0 +1,50 @@
+{
+  "schema": "humanymous.cef-hosted-evidence/1",
+  "run_id": 42370958371,
+  "attempt": 1,
+  "source_sha": "0a1bb36ef53cf67a7f8739a2ad470398747235e1",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs_total": 1,
+  "artifacts_total": 0,
+  "job": {
+    "id": 128398793332,
+    "helper_units": {
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 0
+    },
+    "helper_clippy": "passed",
+    "native_build": {
+      "status": "failed",
+      "child_exit_code": 101,
+      "runner_exit_code": 1,
+      "compiler_log_body_acquired": false,
+      "root_cause": "unknown"
+    },
+    "synthetic_protocol": {
+      "required": 4,
+      "status": "not_run",
+      "executed": 0
+    },
+    "bootstrap_rejection": {
+      "required": 1,
+      "status": "not_run",
+      "executed": 0
+    },
+    "desktop_processes": {
+      "required": 2,
+      "status": "not_run",
+      "executed": 0
+    },
+    "upload_step": "skipped"
+  },
+  "capture_index_sha256": "60f0bcec3dd7ea9d010e5ffcefc4696dcb10e37ab6ea94fd46d9ca4ad7dab1c8",
+  "limitations": [
+    "No private native-build.log or report.json body was recovered.",
+    "Helper unit and Clippy success does not establish native feature compilation or CEF process execution.",
+    "GUI, keyboard, IME, assistive technology and full product qualification remain unverified.",
+    "Captured REST data is normalized decoded JSON; job log is a decoded connector wrapper, not HTTP wire bytes."
+  ]
+}
