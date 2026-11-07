@@ -10,6 +10,36 @@ rel:
 
 # Agent maintenance
 
+## Legacy Go core consumer inventory
+
+The user reaffirmed legacy Go core retirement while retaining the Rust Go-origin
+adapter. Read-only inspection at HEAD32914a0b found336 tracked clean Go files:
+cmd59/internal253/pkg2/scripts22. The owned retirement JSON records every exact
+path/hash and proposed batch; the consumer document maps frozen workflow,
+CodeQL, release image matrix, old Dockerfiles/Makefile/compose, regeneration
+scripts and Go embeds to owning deletion/replacement gates. Rust parity tests
+embed preserved JSON; bounded Rust-source searches found no direct .go embed.
+That bounded observation is not a universal semantic-dependency proof.
+
+The314-row baseline registry still showed255 pending/54 unit-ported/5 partial
+rows, not runtime qualification. Proposed batches are oracle20, tooling7, red4,
+collector9, runtime entrypoints49 and independently reviewed package batches247.
+Root/path owners may retire one responsibility with reviewed disposition instead
+of blocking all336 on unrelated chats or manufacturing replacement features.
+Preserve Rust Go-adapter/config/lab paths and untouched upstream Go fixtures.
+No deletion, Go command, Docker operation, test or publication was performed.
+
+Root requested a314-responsibility review queue instead of bypassing stale
+registry labels. legacy-go-owner-routing.json preserves every baseline hash,
+row pointer, test names/status and existing Rust mapping; all314 current hashes
+match and all59 mapped rows' paths exist. Review routing is audit28, detection49,
+runtime/CLI/authority147, lab4, root66 and network20. The255 unmapped rows remain
+semantically unresolved, not presumed missing or ported. Coarse existing Rust
+paths guide owner review but are not exact responsibility/runtime proof.
+Each owner supplies exact paths/receipts/missing gate or reviewed disposition in
+its own INTEGRATION/SoT; root alone merges the central registry serially. The22
+current files outside the314 baseline are20 migration and2 demo generators.
+
 ## Proof before coordination success reporting
 
 Root reported repeated premature commit announcements later retracted when the
