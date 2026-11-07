@@ -160,10 +160,102 @@ fn main() {
     let result = match args.as_slice() {
         [action] if action == "build" => build(),
         [action, wheel] if action == "inspect" => inspect(Path::new(wheel)),
-        _ => Err("usage: humanymous-python-package build | inspect ABSOLUTE_WHEEL".into()),
+        [action,wheel,python] if action=="install-test"=>install_test(Path::new(wheel),Path::new(python)),
+        _ => Err("usage: humanymous-python-package build | inspect ABSOLUTE_WHEEL | install-test ABSOLUTE_WHEEL PYTHON".into()),
     };
     if let Err(e) = result {
         eprintln!("{e}");
         std::process::exit(1);
     }
+}
+
+fn install_test(wheel: &Path, python: &Path) -> Result<(), String> {
+    if std::env::var("HUMANYMOUS_HOSTED_NATIVE_PILOT").as_deref() != Ok("1") {
+        return Err("clean native install/import is an explicit hosted pilot".into());
+    }
+    inspect(wheel)?;
+    let wheel = wheel.canonicalize().map_err(|e| e.to_string())?;
+    let version = Command::new(python)
+        .arg("--version")
+        .stdin(Stdio::null())
+        .output()
+        .map_err(|e| e.to_string())?;
+    if !version.status.success() {
+        return Err("inspection interpreter unavailable".into());
+    }
+    let interpreter = String::from_utf8_lossy(&version.stdout).trim().to_owned();
+    let expected = Python::attach(|py| -> PyResult<String> {
+        let info = py.import("sys")?.getattr("version_info")?;
+        Ok(format!(
+            "Python {}.{}.",
+            info.get_item(0)?.extract::<u8>()?,
+            info.get_item(1)?.extract::<u8>()?
+        ))
+    })
+    .map_err(|e| e.to_string())?;
+    if !interpreter.starts_with(&expected) {
+        return Err("pip and inspection interpreter versions differ".into());
+    }
+    let stamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_err(|e| e.to_string())?
+        .as_nanos();
+    let directory = root()
+        .join("target/python-native/install")
+        .join(format!("{}-{stamp}", std::process::id()));
+    let parent = directory.parent().unwrap();
+    fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    fs::create_dir(&directory).map_err(|e| e.to_string())?;
+    let status = Command::new(python)
+        .args([
+            "-m",
+            "pip",
+            "install",
+            "--no-deps",
+            "--no-index",
+            "--target",
+        ])
+        .arg(&directory)
+        .arg(&wheel)
+        .stdin(Stdio::null())
+        .status()
+        .map_err(|e| e.to_string())?;
+    if !status.success() {
+        return Err(format!("clean wheel installation failed: {status}"));
+    }
+    Python::attach(|py| -> PyResult<()> {
+        let sys = py.import("sys")?;
+        if sys.getattr("modules")?.contains("humanymous_python")? {
+            return Err(pyo3::exceptions::PyRuntimeError::new_err(
+                "native module already imported before clean install",
+            ));
+        }
+        sys.getattr("path")?
+            .call_method1("insert", (0, directory.to_string_lossy().as_ref()))?;
+        let module = py.import("humanymous_python")?;
+        let file: PathBuf = module.getattr("__file__")?.extract()?;
+        let actual = file.canonicalize().map_err(|_| {
+            pyo3::exceptions::PyRuntimeError::new_err("installed module path unavailable")
+        })?;
+        let expected = directory.canonicalize().map_err(|_| {
+            pyo3::exceptions::PyRuntimeError::new_err("install directory unavailable")
+        })?;
+        if !actual.starts_with(&expected)
+            || !module.getattr("Wsgi")?.is_callable()
+            || !module.getattr("Asgi")?.is_callable()
+        {
+            return Err(pyo3::exceptions::PyRuntimeError::new_err(
+                "installed native API unavailable",
+            ));
+        }
+        Ok(())
+    })
+    .map_err(|e| e.to_string())?;
+    println!(
+        "{}",
+        serde_json::json!({"schema":"humanymous.python-wheel-install/1","interpreter":interpreter,
+        "status":"clean-install-import-succeeded","native_api":["Wsgi","Asgi"],"generation_provenance_verified":false,
+        "actual_framework_qualified":false,"whole_product_qualified":false})
+    );
+    Ok(())
 }

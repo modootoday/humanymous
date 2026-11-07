@@ -103,3 +103,15 @@ Manifest edits outside an integration window caused another owner's locked
 failure; future graph edits are queued until explicit root integration approval.
 Two local independent validation targets are now permitted only by assignment;
 this owner has no assigned slot and no native process was started.
+Latest source adds Python wheel install-test (upstream pip isolated target and
+native API import) and transparent trusted-server ASGI lifespan forwarding.
+DjangoASGI extends expected smoke from4to5Python tuples, total8withRuby3; group
+count staysPython2/Ruby3. All actual cases remain NOT_RUN, including lifespan.
+No dependency/feature/manifest graph mutation accompanies these source changes.
+Later root explicitly opened the integration window for optional native host
+features. Python native gates PyO3/async runtimes; Ruby native gates Magnus.
+extension-module/host-pilot/package-tool explicitly include native, packaging bin
+requires package-tool. Root was notified immediately at completion and manifests
+are frozen again. No new package version; Node features unchanged. Mandatory
+pure+native gates and default0-not-success are recorded in both pilot contracts.
+All new feature/native source compilation and actual gates remain NOT_RUN.

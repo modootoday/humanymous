@@ -20,10 +20,20 @@ Compiler, Clippy, pure units, contextvars/cancellation/GIL, fidelity, server rea
 deadline, actual frameworks, clean install, Unix/Windows IPC/ABI and lock audit
 are all NOT_RUN. No previous Node success is attributed to this source.
 
-Hosted smoke contract expects2groups4cases only for actual framework objects
+Hosted smoke contract now expects2groups5cases for actual framework objects
 and dependency-down, with explicit ignored opt-in. No server/ALLOW/audit claim.
 Candidate direct pins are pilot-requirements.txt; retain hosted closure/audit.
 Rust wheel driver build/inspect prints hash/member/tag receipt with generation
 provenance=false and whole/runtime qualification=false. Clean install/import and
 input-source lineage remain mandatory. Initial Rustfmt syntax typo was corrected;
 compiler validation has not run here.
+Root-approved host isolation: PyO3/async deps optional behind native;
+extension-module/host-pilot/package-tool all enable native. Default0tests do not
+qualify anything; mandatory shared6pure plus native compilation and actual host
+groups/install gates remain. Use --features host-pilot for the two test groups;
+use --features package-tool --bin humanymous-python-package for Rust packaging.
+Later source adds trusted-server transparent lifespan forwarding and DjangoASGI
+target coverage; no lifespan runtime result is claimed. Wheel install-test uses
+upstream pip in a fresh target and native API import, with explicit hosted opt-in.
+It has not run; archive/import does not establish generation provenance or full
+framework/protection/ABI qualification.

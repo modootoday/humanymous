@@ -1,5 +1,5 @@
 //! Hosted-only actual Rack/Sinatra/Rails dependency-down native callback probe.
-use crate::{call, wrap};
+use super::{call, wrap};
 use magnus::{Error, RClass, RHash, RModule, Ruby, Value, method, prelude::*};
 use std::sync::atomic::{AtomicUsize, Ordering};
 static EFFECTS: AtomicUsize = AtomicUsize::new(0);
@@ -7,7 +7,7 @@ fn spy(ruby: &Ruby, receiver: Value, env: RHash) -> Result<Value, Error> {
     EFFECTS.fetch_add(1, Ordering::AcqRel);
     let inner: Value = receiver.ivar_get("@inner")?;
     if inner.is_nil() {
-        return Err(crate::failure(ruby, "unexpected protected origin call"));
+        return Err(super::failure(ruby, "unexpected protected origin call"));
     }
     inner.funcall("call", (env,))
 }
@@ -65,7 +65,7 @@ pub fn run_if_requested(ruby: &Ruby) -> Result<(), Error> {
         let response = call(ruby, guarded, env)?;
         let status: u16 = response.funcall("[]", (0,))?;
         if status != 503 || EFFECTS.load(Ordering::Acquire) != 0 {
-            return Err(crate::failure(
+            return Err(super::failure(
                 ruby,
                 "dependency-down invoked protected framework",
             ));

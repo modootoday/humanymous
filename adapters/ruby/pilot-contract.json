@@ -5,6 +5,8 @@
   "status": "not_run",
   "wholeProductQualified": false,
   "releaseQualifiedTuples": [],
+  "defaultBuildQualifiesNative": false,
+  "mandatoryGates": ["shared-framework-pure", "native-feature-compile", "host-pilot-all-required-groups", "installed-gem-native-require"],
   "source": "crates/ruby-adapter/src/hosted.rs",
   "requiredGroups": [
     {"id": "rack-dependency-unavailable", "framework": "rack", "cases": 1, "expectedStatus": 503, "expectedOriginEffects": 0},

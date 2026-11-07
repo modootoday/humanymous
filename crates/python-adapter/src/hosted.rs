@@ -60,6 +60,16 @@ fn module(py: Python<'_>) -> PyResult<Bound<'_, PyModule>> {
     crate::humanymous_python(&module)?;
     Ok(module)
 }
+fn django_settings(py: Python<'_>) -> PyResult<()> {
+    let settings = py.import("django.conf")?.getattr("settings")?;
+    if !settings.getattr("configured")?.extract::<bool>()? {
+        let kwargs = PyDict::new(py);
+        kwargs.set_item("SECRET_KEY", "nonsecret-owned-fixture")?;
+        kwargs.set_item("ALLOWED_HOSTS", vec!["example.test"])?;
+        settings.call_method("configure", (), Some(&kwargs))?;
+    }
+    Ok(())
+}
 
 #[test]
 #[ignore = "actual CPython/Flask/Django native callback; hosted only"]
@@ -74,13 +84,7 @@ fn wsgi_real_frameworks_dependency_failure_has_no_origin_effect() {
                     .getattr("Flask")?
                     .call1(("humanymous-owned-pilot",))?
             } else {
-                let settings = py.import("django.conf")?.getattr("settings")?;
-                if !settings.getattr("configured")?.extract::<bool>()? {
-                    let kwargs = PyDict::new(py);
-                    kwargs.set_item("SECRET_KEY", "nonsecret-owned-fixture")?;
-                    kwargs.set_item("ALLOWED_HOSTS", vec!["example.test"])?;
-                    settings.call_method("configure", (), Some(&kwargs))?;
-                }
+                django_settings(py)?;
                 py.import("django.core.wsgi")?
                     .call_method0("get_wsgi_application")?
             };
@@ -137,7 +141,9 @@ fn asgi_real_frameworks_dependency_failure_has_no_origin_effect() {
         for (name, class) in [
             ("starlette.applications", "Starlette"),
             ("fastapi", "FastAPI"),
+            ("django.core.asgi", "get_asgi_application"),
         ] {
+            if name=="django.core.asgi" {django_settings(py)?;}
             let app = py.import(name)?.getattr(class)?.call0()?;
             let effects = Arc::new(AtomicUsize::new(0));
             let spy = Py::new(

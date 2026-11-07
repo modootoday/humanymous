@@ -7,8 +7,9 @@ The candidate PyPI distribution name is unverified and no publish is authorized.
 
 Install at the outer application boundary before parsing/effects. WSGI requires
 an actual raw target server extension, exact CONTENT_LENGTH, HTTP_HOST and a
-server-enforced input deadline. ASGI requires raw_path and HTTP1 scope and rejects
-other protocols. A route not in the explicit configured inventory fails closed.
+server-enforced input deadline. Protected ASGI requests require raw_path and HTTP1.
+Trusted server lifespan scope/state/callbacks pass through to the application;
+WebSocket and other request protocols reject. Unknown routes fail closed.
 Default missing browser/capture planes do not become ALLOW.
 
 The required configuration fields and host lifecycle are specified in

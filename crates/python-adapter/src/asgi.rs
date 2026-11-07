@@ -14,7 +14,7 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 
-/// ASGI HTTP1 root callable; other lifecycle protocols currently reject.
+/// ASGI HTTP1 guard with transparent trusted-server lifespan forwarding.
 #[pyclass(module = "humanymous_python")]
 pub struct Asgi {
     app: Py<PyAny>,
@@ -36,6 +36,21 @@ impl Asgi {
         receive: Py<PyAny>,
         send: Py<PyAny>,
     ) -> PyResult<Bound<'py, PyAny>> {
+        let kind = scope
+            .get_item("type")?
+            .ok_or_else(|| failure("ASGI scope type missing"))?
+            .extract::<String>()?;
+        if kind == "lifespan" {
+            // Trusted server lifecycle is not a protected HTTP request. Forward
+            // the original scope/state and callbacks without inventing decisions.
+            let app = self.app.clone_ref(py);
+            let scope = scope.clone().into_any().unbind();
+            let locals = pyo3_async_runtimes::tokio::get_current_locals(py)?;
+            return pyo3_async_runtimes::tokio::future_into_py(py, async move {
+                call(&locals, &app, (scope, receive, send)).await?;
+                Ok(())
+            });
+        }
         let admission = Admission::acquire().map_err(failure)?;
         let pending = Pending::new(&self.config).map_err(failure)?;
         let scope = scope.copy()?;
@@ -44,7 +59,7 @@ impl Asgi {
                 .get_item(key)?
                 .ok_or_else(|| failure("required ASGI field missing"))
         };
-        if get("type")?.extract::<String>()? != "http"
+        if kind != "http"
             || !["1.0", "1.1"].contains(&get("http_version")?.extract::<String>()?.as_str())
         {
             return Err(failure("unsupported ASGI scope"));

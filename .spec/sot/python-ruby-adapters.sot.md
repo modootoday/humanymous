@@ -24,6 +24,13 @@ Rack callable. No handwritten Python/Ruby loaders, gemspec, extconf or executabl
 foreign-language strings. Host app registration belongs to the user's app.
 Upstream PyO3/Magnus generated ABI glue is recorded separately from authored Rust.
 Package registry names are undecided; no publish/token/tag action is authorized.
+Root accepted optional native host dependencies: Python native enables PyO3 and
+async-runtimes, Ruby native enables Magnus/rb-sys. extension-module, host-pilot
+and package-tool explicitly enable native. Default zero tests/empty host library
+are never native or product success. Mandatory shared pure gate and real native
+feature compile+pilot+installed-package gate must all pass; none substitutes for
+another. Package binary requires package-tool; shipping wheel uses extension-module,
+shipping Ruby native gem uses native without fixture/package features.
 
 Reuse authenticated authority::client, native-security transport identity,
 integrity schema, frozen scoring and durable audit. No duplicated decision,
@@ -79,8 +86,10 @@ Vec/Box/Arc. Hold GVL for Ruby calls. GVL scheduling/timeout and GC.compact are
 mandatory actual runtime probes; source safety annotations are insufficient.
 
 ASGI is a distinct async callable (scope,receive,send). HTTP1 only initially;
-require raw_path, reject unsupported lifespan/WebSocket explicitly until a
-transparent lifecycle contract is implemented. Bound http.request chunks before
+require raw_path. Trusted-server lifespan forwards the original scope/state and
+receive/send to the app without an HTTP decision; startup/shutdown effects are
+deployment lifecycle, not protected HTTP origin effects. Unsupported WebSocket
+and other request protocols reject. Bound http.request chunks before
 allocation; reject disconnect/incomplete body. Copy scope and replay one complete
 http.request followed by the real receive for disconnect ownership. Await real
 app/send callbacks with task-local context, cancellation drops Rust IPC future.
@@ -135,12 +144,12 @@ no current dependency closure audit, registry artifact or publisher verification
 
 ## Explicit hosted smoke source
 
-adapters/python/pilot-contract.json describes2required Rust test groups,4actual
-framework objects (Flask/Django WSGI and Starlette/FastAPI ASGI). They deliberately
+adapters/python/pilot-contract.json describes2required Rust test groups,5target
+framework tuples (Flask/Django WSGI and Starlette/FastAPI/Django ASGI). They deliberately
 use an unavailable authority fixture, expect503 and independent native spy count0.
 adapters/ruby/pilot-contract.json describes3required Rack/Sinatra/Rails object
 callbacks with the same dependency-down expectation. These are source-defined
-denominators, not executed counts. All7cases remain NOT_RUN. They do not qualify
+denominators, not executed counts. All8cases remain NOT_RUN. They do not qualify
 production IPC/ALLOW/audit/server/wheel/gem/streaming/cancellation-race behavior.
 Actual acceptance still requires the full earlier verification corpus.
 

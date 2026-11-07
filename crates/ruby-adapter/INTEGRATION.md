@@ -28,3 +28,8 @@ Production excludes host-pilot/package-tool. Package-tool init reads at most64Ki
 of private JSON from HUMANYMOUS_NATIVE_GEM_PACKAGE_REQUEST and calls upstream
 APIs, not eval or a generated Ruby executable string. Archive/install remain
 NOT_RUN. CGI leading-zero/duplicate content header ambiguity must reject.
+Root-approved host isolation gates Magnus behind native. host-pilot/package-tool
+both enable native, while production native enables neither fixture nor packager.
+Default0tests/empty host build is not native/product evidence. Shared pure and
+native feature compile/actual host/install groups are all mandatory. Host source
+is src/native.rs; explicit Init_humanymous_ruby symbol is unchanged.
