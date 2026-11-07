@@ -89,3 +89,16 @@ checks the pinned dumped request's exact method/target/entity; head_cookies chec
 transport decoding, artifact hashes and isolation. These helpers do not mint
 authority or authenticate evidence. Three added tests bring the source total to
 six; that new source still needs the next assigned unit/lint slot.
+
+Lab-requested scenario API now lives in scenario::{CaseObservation,evaluate,
+EvaluationError,BINARY_TARGET,BINARY_ENTITY,HEAD_TARGET}, with crate-level CASES.
+The DTO matches the lab's proposed field names, has no Debug/Serialize and no
+default fact substitution. evaluate returns Outcome only for complete matching
+measurements; errors retain static code/assertion count for the outer ledger.
+Missing counter never becomes zero. Status422 additionally requires exact
+required_capability JSON, incomplete400 requires measured write-half-close and
+truncated_body JSON, upgrade400 requires http_framing JSON. Cancellation needs
+pre-handoff plus observation past deadline; bypass needs both kernel-denied
+paths, with neither case claiming an HTTP response. Four new tests bring the
+total to ten; previous six-test source and older three-test result remain
+separate. No manifest changes; freeze source until assigned validation/failure.

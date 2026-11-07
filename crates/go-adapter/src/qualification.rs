@@ -20,12 +20,13 @@ pub enum Case {
     ForgedProvenance,
     /// Direct origin access from attacker namespace is denied.
     OriginBypass,
-    /// Upgrade and CONNECT cannot escape bounded HTTP authorization.
+    /// WebSocket upgrade cannot escape bounded HTTP authorization.
     Upgrade,
     /// One HEAD response preserves duplicate cookies and has no entity body.
     ResponseSemantics,
 }
-const REQUIRED: [Case; 8] = [
+/// Exact required case inventory; sibling hosts never inherit these results.
+pub const CASES: [Case; 8] = [
     Case::BinaryAllow,
     Case::DependencyDown,
     Case::Cancellation,
@@ -155,8 +156,8 @@ impl Receipt {
                 .all(|(actual, wanted)| actual == wanted && label(wanted))
             && self.isolated_docker
             && self.hosted
-            && self.outcomes.len() == REQUIRED.len()
-            && REQUIRED.into_iter().all(|case| {
+            && self.outcomes.len() == CASES.len()
+            && CASES.into_iter().all(|case| {
                 let mut found = self.outcomes.iter().filter(|r| r.case == case);
                 let Some(r) = found.next() else {
                     return false;
@@ -191,7 +192,7 @@ mod tests {
             arch: "amd64".into(),
             isolated_docker: true,
             hosted: true,
-            outcomes: REQUIRED
+            outcomes: CASES
                 .into_iter()
                 .map(|case| Outcome {
                     case,

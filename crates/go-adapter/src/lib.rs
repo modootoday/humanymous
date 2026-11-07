@@ -2,8 +2,9 @@
 //! No Go SDK, authority implementation or fabricated capture provenance.
 pub mod probe;
 mod qualification;
+pub mod scenario;
 use humanymous_runtime::{Rejection, configuration::Configuration};
-pub use qualification::{Case, ExpectedTuple, Outcome, QUALIFICATION_PROFILE, Receipt};
+pub use qualification::{CASES, Case, ExpectedTuple, Outcome, QUALIFICATION_PROFILE, Receipt};
 use serde::{Deserialize, Serialize};
 
 /// Host families have independent lifecycle qualification, even behind one Gate.

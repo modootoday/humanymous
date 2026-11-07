@@ -63,6 +63,17 @@ two separate Set-Cookie values. These are fixture assertions over the lab's
 already-decoded outer response, not a new HTTP ingress parser or authorization
 service. A successful assertion alone cannot prove an actual upstream process,
 network isolation or the authenticity of caller-supplied observations.
+The scenario evaluator accepts actual decoded response pairs/entity and optional
+independent contact count, plus explicit host, pre-handoff cancellation, deadline,
+half-close and kernel-denial observations. A missing counter is an error, never
+zero. Every required observation must match its case before producing Outcome.
+422 cases additionally require the exact shared required_capability response;
+incomplete input requires truncated_body400 and a measured write half-close.
+The upgrade case requires the actual http_framing400 response. Cancel/bypass
+cases require no HTTP response, not a timeout relabelled as a successful denial.
+The lab retains all eight observations/errors and builds a receipt only from
+eight real measured successes. Evaluator errors preserve attempted check counts
+with static diagnostic codes; raw request/response bytes are not Debug-logged.
 Binary allow and response semantics each require one contact; dependency loss,
 cancellation, incomplete body, forged provenance, bypass and upgrade require zero.
 The forged-provenance case uses a route requiring unavailable authenticated
