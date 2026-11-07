@@ -1,9 +1,9 @@
 ---
 id: plan:root/20261107172649
 title: Delivery closed header proof return
-status: draft
+status: active
 created: 2026-11-07T17:26:49Z
-updated: 2026-11-07T17:26:49Z
+updated: 2026-11-07T18:19:22Z
 ---
 
 # Delivery closed header proof return
@@ -11,8 +11,9 @@ updated: 2026-11-07T17:26:49Z
 ## Goal
 
 Prepare a Rust-owned, closed success-only return of original public header proof
-bytes through retained Actions logs. This draft authorizes neither dispatch nor
-an implementation allocation. Existing component execution and retained-proof
+bytes through retained Actions logs. Integration has now accepted source
+implementation and the header-only pinned-container recipe; dispatch still
+requires the stated verification gates. Existing component execution and retained-proof
 completeness are separate outcomes. No artifacts, permissions, registry writes,
 generic file export, private Specfold bundle or executable bytes are added.
 
@@ -126,6 +127,51 @@ Truncated retained logs fail the proof-return gate. Official API metadata must
 bind source, run, job and conclusion; log transport is not a signed attestation.
 
 ## Record
+
+Integration subsequently accepted the genuine standard Ubuntu24 hosted job with
+the exact R3 compiler-image container, preserving Debian18 compiler identity and
+no image-attestation claim. Typed admission, a raw Git-blob expectation builder,
+an explicit Actions timestamp wrapper adapter and a fresh-private reconstruction
+provider are now authored. They remain test-only/uncompiled until frontends are
+wired and the existing native-security workspace dependency is integrated by the
+root owner. No new unsafe, ACL implementation, external dependency version or
+actual filesystem/SCM/compiler workload is introduced by this source checkpoint.
+
+Admission closes all canonical profile fields and its 16 semantic ID/path pairs;
+it checks exact header/scope/compiler/version/target/layout originals, empty
+stderr, original source-before/after equality and exact independently expected
+canonical input hashes/object IDs/count. Context binds available hosted run,
+attempt and symbolic job `header`; the numeric official job ID belongs to the
+receiver's separate official-metadata binding, never a fabricated producer env.
+Compiler identity must be independently sampled and compared to the owner's seven-LF
+sidecar. Actual private nine-LF argv sidecars must supply raw digests; the exported
+fixed argv arrays are explicitly labelled templates and reference file ID0.
+
+The independent expected-source builder uses Git ls-tree regular-blob metadata
+and raw git show stdout bytes, without String conversion, archives or export
+filters. Defensive source bounds are 4096 paths/64 MiB raw aggregate. Current
+planning inventory1127 paths/56087774 bytes is not the final candidate's actual
+serialized snapshot measurement or dispatch approval. Source JSON remains capped
+at2 MiB each and all final candidate counts/sizes must be measured separately.
+
+Private reconstruction requires an existing verified private parent. Windows
+reuses native-security's ordinary-user creator and held-object privacy verifier,
+checking protected and inheritable directory policies before writing fresh files;
+Unix uses actual shared effective UID with0700/0600. Files are created new, held,
+synced and read back exactly. A pending completion file is verified before final
+rename; promotion is the final fallible operation. Successful receiver return,
+verified completion metadata and out-of-band official context are jointly
+required, never marker presence alone. Trusted ancestors/same-owner
+nonreplacement remain premises; there is no complete subtree lease or
+crash-durability-after-rename guarantee. Actual provider/fault pilots remain
+not_run. The timestamp adapter strips only reviewed transport framing and
+rejects ambiguous/unterminated protocol lines without normalizing payload bytes.
+
+New pure tests are authored for profile/path/schema rejection, synthetic complete
+admission and context/identity/stderr failures, source inventories, and timestamp
+wrappers. None has run. Producer/receiver frontends, actual sidecar sampling,
+official metadata checks, job/catalog/policy integration, actual code/unit/static
+qualification and the hosted/reconstruction pilot remain unfinished.
 
 Transport source is now authored in scripts/ci/delivery/src/header_proof.rs and
 header_proof/codec.rs, test-only until production admission and private IO are

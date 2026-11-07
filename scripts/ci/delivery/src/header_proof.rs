@@ -2,7 +2,11 @@
 //! remain separate; this module alone cannot export or qualify a header proof.
 use crate::{Result, require, source};
 use serde_json::{Value, json};
+mod actions_log;
+mod admission;
 mod codec;
+mod private_io;
+mod source_index;
 
 const PREFIX: &str = "HUMANYMOUS_HEADER_PROOF_V1 ";
 const FILES: usize = 16;
