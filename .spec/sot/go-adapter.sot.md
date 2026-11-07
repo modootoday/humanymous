@@ -62,14 +62,24 @@ No detection or a11y changes; fail-closed and T4 limits remain unchanged.
 
 ## Evidence and remaining gates
 
-Initial source is uncompiled. Direct Rust formatting passed; unit/Clippy await
-the root Cargo slot. Scoped spec check passed with zero errors/warnings.
+Root reports two pure unit tests passed after workspace registration (34 members).
+Detailed source-bound root artifact is pending; scoped Clippy remains in progress.
+Direct Rust formatting and scoped spec check passed with zero errors/warnings.
 Hosted external fixture execution, actual Go versions, image digests, isolation
 witness and product e2e are NOT_RUN. No host tuple is advertised as qualified.
 adapters/go/upstream-fixtures.json pins six untouched upstream candidate
 entrypoints using full Git revision and actual decoded file SHA256. These are
 entrypoint hashes only, not complete build/dependency/fixture artifact hashes.
 Greeting-only examples cannot satisfy the required complete-body corpus.
+The sole initial hosted contract is adapters/go/pilot-contract.json. It selects
+the untouched net/http go-httpbin candidate, exact binary dump endpoint and a
+single HEAD response with two cookies. Other hosts, 204/304 and streams remain
+outside that initial measurement. Cancellation means before complete body and
+origin handoff; no rollback after an effect is promised. An independent contact
+counter proves absence of origin contact conservatively; positive handler echo
+must separately establish actual Go execution. Contacts are not measured
+application mutations. Missing image/toolchain/full-fixture hashes stay null
+until the hosted owner measures them; this file cannot qualify itself.
 
 Official contracts: https://pkg.go.dev/net/http ; https://github.com/go-chi/chi ;
 https://gin-gonic.com/en/docs/ ; https://echo.labstack.com/ ;

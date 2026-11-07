@@ -1,0 +1,46 @@
+{
+  "schema": "humanymous.go-gate-pilot/1",
+  "status": "NOT_RUN",
+  "qualification_profile": "humanymous.go-gate/bounded-http-8-case/1",
+  "host": "net-http",
+  "evidence_profile": "synthetic-trusted-session-http-conformance",
+  "fixture": {
+    "repository": "https://github.com/mccutchen/go-httpbin",
+    "revision": "8b1bc1433750404fefd2a419cda3720d3088701b",
+    "entrypoint": "cmd/go-httpbin/main.go",
+    "entrypoint_sha256": "54c5f54bec490a16481bec0ababc841df7aef5fa37e10a4e71f7b74df0cdfd3e",
+    "build_package": "./cmd/go-httpbin",
+    "build_args": ["build", "-mod=readonly", "-trimpath", "-o", "/out/go-httpbin", "./cmd/go-httpbin"],
+    "argv": ["--host", "127.0.0.1", "--port", "18081", "--log-level", "OFF", "--max-body-size", "65536"],
+    "backend_port": 18081,
+    "full_fixture_digest": null,
+    "go_toolchain_image_digest": null,
+    "runtime_image_digest": null
+  },
+  "composition": {
+    "gate": "existing humanymous-runtime standalone shared-engine application",
+    "authority_ipc": "not used by this Gate topology; do not provision a new Go producer profile",
+    "private_startup": "existing runtime supervisor input; reuse lab installation/provisioning ownership; no credentials in this file",
+    "client": "reuse existing Rust lab native session/sign/collect helper; synthetic trusted observations stay explicitly separate from browser or human evidence",
+    "origin": "fixed runtime origin points to Rust lab witness; witness forwards once to actual upstream Go backend on loopback18081",
+    "effect_accounting": "independent origin contact count is conservative no-contact proof; positive response must additionally prove the real Go handler. Do not relabel contacts as observed application mutations",
+    "config_hash": "hash complete sanitized per-case configuration bundle, not a single incomplete route document"
+  },
+  "baseline_routes": [
+    {"method":"POST","path":"/dump/request","rit_profile":"native_full","response_profile":"buffered","required":{"raw_tls":false,"original_h2":false,"raw_header_order":false,"collector":false,"rit":true}},
+    {"method":"POST","path":"/anything","rit_profile":"native_full","response_profile":"buffered","required":{"raw_tls":false,"original_h2":true,"raw_header_order":false,"collector":false,"rit":true}},
+    {"method":"HEAD","path":"/response-headers","rit_profile":"native_full","response_profile":"buffered","required":{"raw_tls":false,"original_h2":false,"raw_header_order":false,"collector":false,"rit":true}}
+  ],
+  "cases": [
+    {"id":"binary-allow","method":"POST","target":"/dump/request?q=1%2B2","content_type":"application/octet-stream","body_hex":"00ff0d0a417f80","expected_status":200,"response_check":"parse outer HTTP response then upstream dumped HTTP request; entity bytes must equal body_hex; query must remain q=1%2B2","origin_contacts":1,"required_planes":"existing valid synthetic native session; no unavailable capture requirement"},
+    {"id":"dependency-down","method":"POST","target":"/anything","body_hex":"","expected_status":422,"response_check":"required_capability rejection with no origin contact","origin_contacts":0,"required_planes":"route.required.original_h2=true; actual original H2 capture unavailable"},
+    {"id":"cancellation","method":"POST","target":"/dump/request","body_hex":"","expected_status":null,"response_check":"declare Content-Length7, send only a prefix, disconnect before final body/handoff; observe zero contacts past original deadline","origin_contacts":0,"scope":"pre-handoff cancellation only; no rollback claim after origin effects"},
+    {"id":"incomplete-body","method":"POST","target":"/dump/request","body_hex":"00","declared_content_length":7,"expected_status":400,"response_check":"half-close client write after one byte; truncated_body, no contact","origin_contacts":0},
+    {"id":"forged-provenance","method":"POST","target":"/dump/request","body_hex":"","headers":[["x-humanymous-capture","forged"],["x-forwarded-for","127.0.0.1"]],"expected_status":422,"response_check":"separate route config required.raw_tls=true; forged headers cannot satisfy capture","origin_contacts":0},
+    {"id":"origin-bypass","method":"GET","target":"/dump/request","expected_status":null,"response_check":"attacker namespace direct backend and witness access denied by independently measured topology","origin_contacts":0},
+    {"id":"upgrade","method":"GET","target":"/dump/request","headers":[["Connection","Upgrade"],["Upgrade","websocket"]],"expected_status":400,"response_check":"unsupported upgrade rejected by existing runtime parser before origin","origin_contacts":0},
+    {"id":"response-semantics","method":"HEAD","target":"/response-headers?Set-Cookie=a%3D1&Set-Cookie=b%3D2","body_hex":"","expected_status":200,"response_check":"two distinct Set-Cookie values a=1,b=2 and zero response entity bytes","origin_contacts":1,"scope":"one HEAD/cookie probe only; 204/304 and streaming remain separate NOT_RUN"}
+  ],
+  "topology": {"runner":"standard free GitHub hosted Linux runner only","network":"Docker isolated owned lab namespaces; backend unreachable from attacker; no external egress during probes","prefetch":"pin toolchain/image/source/dependency closure before isolation; untouched upstream Go only","cleanup":"lab Rust process/container owner tears down children/networks on success, failure and cancellation","bypass_witness":"independent attacker and external witness measurements required, not a boolean supplied by this file"},
+  "not_qualified": ["native Go SDK", "chi", "Gin", "Echo", "Fiber", "fasthttp", "human/browser attestation", "CHALLENGE recovery", "204/304", "streaming", "post-origin rollback"]
+}
