@@ -3,10 +3,10 @@ id: sot:root/network-capture
 title: Original TLS and HTTP2 connection capture
 status: active
 created: 2026-11-07T07:25:00Z
-updated: 2026-11-07T12:29:00Z
+updated: 2026-11-07T22:21:04Z
 verify: manual
 rel:
-  governs: [crates/capture/**]
+  governs: [crates/sdk/humanymous-runtime/src/capture/**, crates/sdk/humanymous-runtime/tests/capture/**]
   depends_on: [sot:root/rust-migration, sot:root/runtime-application, sot:root/crate-architecture]
 ---
 

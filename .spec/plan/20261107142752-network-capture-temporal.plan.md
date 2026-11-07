@@ -3,9 +3,9 @@ id: plan:root/20261107142752
 title: Correlation and traffic producer placement review
 status: active
 created: 2026-11-07T14:27:52Z
-updated: 2026-11-07T14:59:00Z
+updated: 2026-11-07T22:21:04Z
 rel:
-  governs: [crates/network/src/lib.rs, crates/network/src/history/**, crates/network/src/traffic/**, crates/network/src/correlation/**]
+  governs: [crates/sdk/humanymous-runtime/src/network/mod.rs, crates/sdk/humanymous-runtime/src/network/history/**, crates/sdk/humanymous-runtime/src/network/traffic/**, crates/sdk/humanymous-runtime/src/network/correlation/**]
   depends_on: [sot:root/rust-migration, sot:root/crate-architecture, sot:root/network-capture]
 ---
 
