@@ -1,6 +1,6 @@
 //! Body-bound nginx ingress. Decisions, IPC authentication and audit stay shared.
-pub mod report;
 pub mod package;
+pub mod report;
 pub mod request;
 
 #[cfg(all(feature = "native", target_os = "linux"))]

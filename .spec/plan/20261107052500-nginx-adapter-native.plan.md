@@ -248,3 +248,15 @@ or rewrite status/result. Extra per-case diagnostic details remain private and
 are not blindly copied to public summaries. Source/image binding retains the
 owner assertion semantics. No report schema version or35-group change. This is
 a contract-only addition; current runtime qualification remains NOT_RUN.
+
+## Latest-source verification resumption
+
+Read the revised AGENTS.md and coordination rules on the user's resumption.
+An explicit latest-source rustfmt check found lib.rs module ordering drift;
+formatting corrected it and the repeated scoped check and git diff check passed.
+No current unit or Clippy pass is inferred from formatting. Root was explicitly
+asked for the next nginx lightweight Cargo slot and frozen-source hosted dispatch
+with the user's message authorization. A was allocated to root and B to Node,
+then Python; nginx has not started an unassigned Cargo pipeline. The last hosted
+run42348518353 completed failed at63f69ae and does not qualify current source.
+Actual current native build/authority/JSON/SSE/package execution remains NOT_RUN.
