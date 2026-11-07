@@ -10,7 +10,7 @@ verify:
   - cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .
   - cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- routing .
 rel:
-  governs: [AGENTS.md, .agents/rules/**, .agents/skills/**, .agents/agents/**, .agents/personas/**, .agents/evals/**, .agents/retirement/**, .agents/sessions/LANES.md, .agents/sessions/lanes.json, .agents/sessions/THREADS.md, skills/**]
+  governs: [AGENTS.md, .agents/README.md, .agents/INTEGRATION.md, .agents/manifest.yaml, .agents/rules/**, .agents/skills/**, .agents/agents/**, .agents/personas/**, .agents/evals/**, .agents/retirement/**, .agents/sessions/LANES.md, .agents/sessions/lanes.json, .agents/sessions/THREADS.md, skills/**]
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap]
 ---
 

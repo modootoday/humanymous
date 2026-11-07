@@ -1,115 +1,93 @@
 # M11 agent-maintenance integration
 
-Owner: agents-meta / rust-agents-m11. Accepted scope is roadmap1.2 M11; REA stays
-reference-only. Current implementation is canonical Rust-era AGENTS/rules/skills,
-six `.agents/agents` contracts plus persona pointers, retirement manifest and
-`humanymous-agent-maintenance` under repository `skills/agent-maintenance`.
-Implementation checkpoint: `9c3b735e759cf060b79a48f71db4ce234a9bd465`.
-The five Rust code/test Git blobs match the final tested worktree file objects;
-public git-binding.json distinguishes canonical Git identity from dirty snapshots.
+Owner: agents-meta / rust-agents-m11. REA remains reference-only. Current code
+checkpoint is `59c80426`; earlier `1714b27` and `9c3b735` records remain historical.
+Shared Cargo/lock/toolchain and final candidate integration belong to root.
 
-## Exact root Cargo delta
+## Current source and evidence
 
-Root integration in progress: the working root workspace now includes this
-member and scripts/ci/delivery (27members total, including the Node/nginx adapters
-and product-lab crates). This crate's standalone
-workspace table and lock were retired; the original lock is preserved as a
-private Specfold attachment before removal. Actual shared-root --locked tests
-passed7unit+4process and strict Clippy. This is a working-tree integration
-checkpoint; final common-manifest commit, exact-source CI and upstream named
-plugin eval remain separate unfinished gates. Delivery's16unit tests also passed
-in that common lock, without claiming whole-workspace/product qualification.
+- Developer canon: `AGENTS.md`, `.agents/rules`, `.agents/skills`, `.agents/agents`.
+- Product-user skill: `skills/SKILL.md` and `skills/references`, separate from internal guides.
+- Rust tooling: `skills/agent-maintenance`, already a shared workspace member.
+- JSON lane catalog: `.agents/sessions/lanes.json`; default writer mode remains legacy-coexistence.
+- Product suite: three cases/twelve subject runs. Developer suite: five cases/twenty runs.
+- Latest allocated component batch:36pure passed, zero failed/ignored/filtered, all-target check/Clippy and fmt passed. Private developer-before/after hashes match.
+- Public evidence: `evidence:root/20261107073348`; exact logs, source hashes and original artifacts: `evidence:root/20261107073349`.
 
-Add `skills/agent-maintenance` to root workspace members and remove only its
-standalone `[workspace]` table. Keep package publish=false, edition2024 and
-rust-version1.99.1. Root resolves Cargo.lock; dependencies are serde1.0,
-serde_json1.0, regex1.12 semver (resolved1.13.1 in local lock), sha2 0.10.9.
-The original standalone lock is preserved privately and its tracked copy is
-pending removal in the root integration commit after the shared-root locked tests.
-The root owner, rather than this component owner, edits the common Cargo files.
+Do not re-add a standalone workspace/lock or edit common Cargo files. The original
+seven-unit/four-process Windows pilot and forty-case routing proxy belong to
+historical evidence51014/51015; they do not qualify current source or model behavior.
 
-## Run and source boundaries
+## Remaining execution gates
+
+Local Cargo work requires a root-assigned slot, jobs1/incremental0 and the shared
+resource guards. The component pure command is:
 
 ```text
-cargo test --locked --manifest-path skills/agent-maintenance/Cargo.toml
-cargo clippy --locked --manifest-path skills/agent-maintenance/Cargo.toml --all-targets -- -D warnings
-cargo fmt --manifest-path skills/agent-maintenance/Cargo.toml -- --check
-cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- check .
-cargo run --locked --manifest-path skills/agent-maintenance/Cargo.toml -- routing .
+cargo test --locked -p humanymous-agent-maintenance --lib
 ```
 
-Actual Windows result: 7 unit/4 executable fixture tests, no ignored; canon14
-skills/6role pointers/no errors; deterministic routing40/40;92skill mirror drift
-entries retained. External user skills20 hashed read-only, no edits/qualification.
-Check/routing microsecond measurements are single warm local observations, not
-a comparative skill-performance claim. Evidence: evidence:root/20261107051014.
-The final source manifest and Rust logs are private attached evidence; public
-results contain sanitized counts, identities and explicit limitations.
-Use attached source-manifest-final.json/canon-check-final.json/routing-final.json
-for final source. Earlier snapshots remain preserved; schema initialization first
-failed Clippy and was corrected. Final clippy-final.txt and unit-process-final.txt
-pass; the failed log remains separate.
+Actual filesystem/process tests require the approved hosted source candidate:
 
-## Remaining upstream eval dependency
+```text
+cargo test --locked -p humanymous-agent-maintenance --test process --test session_storage --test product_package
+```
 
-modoo.today supplied codex-plugin-eval script SHA7430f009e37a556d1a96f512e31e508569297d35dbf1686766e6686fe48cfd3a
-but its skill_bundle omits required shared files (owned-process, isolate,
-cred-proxy, plugin-copy, options, runtime-contract, pricing and their dependencies).
-WSL bwrap0.9.0-1ubuntu0.3 was acquired in the private evidence directory and a real
-namespace probe passes. The exact upstream script --help fails before any login
-or inference on missing shared/owned-process.mjs. Supply the complete versioned
-marketplace/plugin package; do not mock shared files or use --isolation none.
+The current source has five process, four storage and two package tests. They
+remain unqualified. Run42355168729 at exact8132117 failed its Linux actor after
+15/88harnesses; none of these targets appears in the executed list. Preserve the
+failed total and missing coverage. A proposed independent scoped hosted step
+must not turn a failed whole-workspace/product job into a passing one.
 
-The separate Windows CLI pilot is partial and unqualified: Codex0.166.0-alpha.6,
-read-only sandbox, two baseline and one treatment answers,123450 observed tokens
-after the100000 future-call stop bound. The skill body read was policy-rejected,
-zero completed tool events. No positive paired delta; do not weaken policy or
-claim a complete modoo eval. The specific subject model was not observed.
-The treatment's historical automatic false grade is infrastructure on review;
-the original result is preserved and current code emits null on blocked reads.
+Read-only canonical checks and artifact staging are actual tool executions, not
+pure tests. Respect their assigned execution scope and preserve receipts. The
+historical `eval` CLI pilot is not the isolated upstream harness and must not be
+rerun around its earlier policy denial.
 
-## Final transition (root only)
+## Paired measurement and local runtime
 
-1. Migrate CI `sync-adapters`/legacy verify to the Rust gate and qualified provider
-   adapter generation where still needed. Do not drop the adapter compatibility
-   gate merely because the92drift entries are intentional during transition.
-2. Migrate `.agents/workflows` role references to `.agents/agents`; keep old persona
-   pointers until all old consumers are qualified. Operational scripts/hooks and
-   foreign oracle retirement are separate outstanding Rust migration work.
-3. Obtain complete upstream eval package and run two positive/one near miss,
-   twice per arm under bwrap with bounded authorized allowance and runtime lock.
-   Require actual discovery/read plus behavioral results, not claimed invocation.
-4. Inventory exact mirror consumers, migrate evidenced dependencies and qualify
-   fresh provider discovery before removing manifest-listed obsolete mirrors.
-   Active chats alone are not an indefinite blocker. Never bulk-delete user
-   global skills. Keep board/claims untouched and coordinate Git under its mutex.
-5. Run whole-program final supply-chain/foreign-source/native/product gates.
-   This component is not full M11 or full product completion.
+The full modootoday/marketplace skill-factory0.3.2 package is acquired at commit
+`1c4f32595d9cf3f07a393b8c561b9ab3b7f94981`. Its Codex script SHA256 is
+`7430f009e37a556d1a96f512e31e508569297d35dbf1686766e6686fe48cfd3a`.
+The old missing-import failure is historical, not a current acquisition blocker.
+Actual runtime lock, isolation, provider integration, traces and complete paired
+behavior/discovery results remain open. Do not weaken bwrap or substitute a proxy score.
 
-## Handoff frontier
+`stage-eval ROOT NEW_OUTPUT product|developer` creates separate fresh plugins.
+`paired-check RESULT_JSON [product|developer]` validates distinct12/20run profiles.
+Observed nonactivation/misrouting remains in discovery_failures and the behavior
+denominator. Missing observations, baseline/cross-plugin contamination and invalid
+judge/arm accounting refuse a delta. Accounting never proves source authenticity
+or skill-caused improvement; actual plugin/model traces remain mandatory.
 
-### Live claim migration prerequisite
+The user authorized autonomous no-API-cost setup and requested Rust instead of
+Ollama. Pinned mistral.rs0.9.5 CUDA and official Qwen artifacts are installed in
+a dedicated cache without global Codex configuration changes. The8B attempt
+loaded CUDA weights but host commit reached89% above88%; only the verified owned
+server was terminated. No API/tool/paired requests ran. The verified4B candidate
+is not loaded and needs a separate root-assigned inference slot. Initial smoke
+is limited to loopback, one process, context4096/output256 and GPU budget0.60,
+with preflight commit<85/freeRAM>20GiB and stop commit>=88/freeRAM<16GiB.
+These setup results do not replace hosted product or original paired qualification.
+The pinned upstream harness has fixed auth/config routing; local endpoint support
+needs an explicit supported integration, never a hidden auth/sandbox workaround.
 
-Read-only inspection on 2026-11-07 found two legacy scope-text shapes that the
-Rust fail-closed grammar deliberately refuses: e2e-infra contains
-`scripts/ci/** (except windows-*)`, and the legacy Git coordinator writes
-`.git/** (index/HEAD/ref writes only)`. These are human annotations, not valid
-relative glob scopes. This is a concrete compatibility frontier, not permission
-to strip annotations and silently broaden ownership. Keep legacy-coexistence
-until the owners normally release/reclaim explicit nonoverlapping scopes and
-all writers switch together. A temporary Git claim can disappear by normal
-owner release; never edit/delete a foreign live claim to make the parser pass.
-The Rust tool's default refusal is not a successful session rollout test.
+## Canonical transition
 
-Read AGENTS, `.agents/lessons/HARD-WON.md`, agent-maintenance SoT/plan/evidence,
-then this integration contract. Root owns the proposed common Cargo/CI delta;
-the complete modoo plugin/shared package is now pinned and privately acquired at
-commit `1c4f32595d9cf3f07a393b8c561b9ab3b7f94981`. Runtime lock, hosted
-model/auth/allowance and actual paired discovery/behavior evidence remain open.
-Resume that exact isolated harness task, not a new REA
-investigation. The Codex chat retains exploratory runtime context, while all
-material contracts/commands/results are in the files above. No scoring changes,
-publication, branch switch, main integration, active mirror removal or user-global
-skill mutation is authorized by this component handoff. The source-specific
-component gates can be rerun with the commands above; full product gates remain
-separate. Release the lane with this checkpoint and preserve the open task list.
+Root removed137 tracked generated vendor copies under the later explicit user
+instruction. Do not regenerate mirrors or vendor stubs. Canonical roles are
+required; surviving persona pointers are optional and validated when present.
+Fresh provider discovery after cleanup remains open. Settings/hooks, user-global
+skills and untracked state remain separately owned; no broad deletion is authorized.
+
+Live claim inspection found annotations in legacy scope strings:
+`scripts/ci/** (except windows-*)` and `.git/** (index/HEAD/ref writes only)`.
+The Rust grammar deliberately refuses them. Do not strip annotations and broaden
+ownership or edit another writer's claim. Owners must normally release/reclaim
+explicit nonoverlapping scopes before coordinated exclusive-writer rollout.
+Hosted ownership/atomicity/interop receipts and all-writer migration are required
+before changing writer_mode. No force takeover or stale-lock deletion is implied.
+
+Root owns final foreign-source/supply-chain/product gates and main integration.
+No scoring changes, publication, paid calls, global user configuration mutation
+or another lane's edits are authorized by this component contract.

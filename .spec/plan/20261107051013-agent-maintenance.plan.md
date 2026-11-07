@@ -49,6 +49,14 @@ altering product/scoring or extending the earlier bounded REA investigation.
 
 ### Continuation: transaction safety and input validation
 
+The integration contract was reconciled with current59c80426 rather than leaving
+initial27member/add-workspace/missing-upstream instructions operational. Historical
+7unit/4process evidence remains referenced, separately from current36pure. The
+contract now names actual11hosted tests,12/20paired profiles, the local runtime
+guard-abort, fixed-provider harness integration gap and canonical-only rollout
+requirements. No implementation, dependency, runtime policy or qualification claim
+changed. README/manifest/integration paths are explicitly governed by this SoT.
+
 The next explicit B batch completed:36pure passed, zero failed/ignored/filtered,
 all-target check/Clippy-Dwarnings and fmt passed. Recursive source/data and shared
 Cargo/lock/toolchain before/after snapshots match exactly; developer-* raw logs
