@@ -454,5 +454,15 @@
     "actual_owner_native_qualified": false,
     "empty_report_contract_clarification_pending": true,
     "new_audit_runtime_workloads": 0
+  },
+  "followup_empty_fix_cli_and_final_filenames": {
+    "private_review_sha256": "7e3d229bfd7940b42e13441d6f3056b6ed9bc51cd368fb2150229e69ad418980",
+    "empty_owner_P2_source_resolved": true,
+    "actual_auth_negative_tests_observed": 0,
+    "actual_cli_watchdog_cases": 0,
+    "public_filename_contract_commit": "3962278c",
+    "managed_assembly": "humanymous.dll",
+    "native_ffi_stem": "humanymous-native",
+    "actual_rename_or_host_qualified": false
   }
 }

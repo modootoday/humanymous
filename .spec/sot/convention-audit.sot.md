@@ -982,3 +982,32 @@ provenance and actual import gates. The final bounded target-contract verdict is
 ready, not implementation, runtime compatibility, registry ownership or release
 qualification. Consumers see one humanymous identity; internal adapter packages
 remain separate. No audit compiler/native/SDK/WSL/UNC/Docker workload was launched.
+
+### Existing-history correction and final public filenames
+
+Audit f9b0cda3 resolves the earlier empty-report source concern: Trust no longer
+accepts allow_new, the existing-physical policy fixes it false, and authentication
+requires Some(report) with report.ok. A separate authored empty-history fixture
+shows ordinary diagnostic initialization returning None while the private owner
+refuses that same empty history. Six logical authentication negatives cover node,
+witness alias, completed bad-HMAC diagnostics, post-auth mutation/no repair,
+missing sealed identity and empty history. All are NOT_RUN in this review; source
+acceptance does not establish actual native/type/zero-attempted-write proof.
+
+Controller24004321 maps exactly one CLI selector and16-lowercase-hex Cargo test
+filename to the same retained Job owner, keeping capture/CLI prefixes separate.
+The original deadlines are not renewed. The CLI parent and its separate baked
+service-fixture path both require pinned hashes and an artifact-write lease
+through terminal runtime; copying only the parent is insufficient. Actual CLI
+0/74 controls and outer failure paths remain pending, not inherited from five
+capture-provider tests. The bounded source delta has no new identified blocker.
+
+The final user filename decision, canonicalized3962278c, supersedes the earlier
+managed/native case-only layout: managed AssemblyName/file humanymous.dll,
+common native FFI stem humanymous-native with platform prefix/extension and
+LibraryImport logical name humanymous-native. Public NuGet/package ID remains
+humanymous and C# namespace Humanymous. Host extension module stems and mandatory
+Python/Ruby/Node initialization remain their explicit contracts. Role/target/ABI
+paths, trusted resolver, domain leases and unload restrictions still apply.
+This is a target mapping; no source rename, package ownership, actual loader
+compatibility or publication is qualified by the naming contract.
