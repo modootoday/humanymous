@@ -204,6 +204,32 @@ All actual backend/feature/device memory/SDK/driver and supported-target math
 qualification remains missing. No Cargo, driver/SDK install, shader, unsafe code,
 model download, workload or experiment change is authorized by this research.
 
+## RNG12 bounded validation profile ready for one root allocation
+
+Frozen source is728888051b7dacfa3e3181cf71da4fff2f526bd4 with ZERO overlays.
+Current13owned source/license/fixture file hashes and sizes match the original
+checkpoint; no model code changed during this preparation. Exact twelve names,
+upstream seven-file identity/license, commands, exclusions and deadlines are
+registered in rng-validation-profile.json. No oracle/kernel/formatter/Cargo run
+was performed and no compiler/GPU/process lease was retained.
+
+Proposed fresh exclusive target: target/validation-model-rng-72888805 (absent at
+preparation). Native Windows Rust1.99.1, jobs1/inc0, locked/offline and test-threads1.
+After actual admission free>20GiB/commit<85%, execute fmt FIRST(30s), RNG-filtered
+library tests(180s), library check(120s), strict Clippy lib/tests(120s), total450s.
+The focused command is `cargo test --locked --offline -p humanymous-model --lib
+training::rng::tests --jobs 1 -- --test-threads=1`; expected12executed and21prior
+library tests filtered IF compilation succeeds. Existing inference integration
+fixture is deliberately not rerun. Clippy compilation is not test execution.
+
+Fmt was explicitly withheld previously and may fail first on the authored layout;
+preserve this failure and immutable candidate, never preannounce12passes or silently
+format the archive. Routine source correction requires its own new frozen bytes
+and receipts. Do not carry72888805 results onto corrected source. Release target
+at terminal before evidence-only work; no broad sysroot/cache census or repeat of
+prior tests merely to refresh status. Source-table/output expectations and
+Rust-derived mixed state/epoch comparisons retain their distinct evidence classes.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.

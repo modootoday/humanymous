@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T18:36:43Z
+updated: 2026-11-07T19:11:45Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -16,6 +16,7 @@ files:
   - {path: rng-normal-seed0-upstream.json, sha256: 1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989, bytes: 1246, store: repo}
   - {path: rng-source-checkpoint.json, sha256: 96387eb06ecb372439d9370bec517fe981b0576df624f5107defc5f4eac95e41, bytes: 3079, store: repo}
   - {path: gpu-research.json, sha256: 9b04d66b27bced22d9c32f7b218cca431aae9f82971070735323956ff7442af1, bytes: 5186, store: repo}
+  - {path: rng-validation-profile.json, sha256: 9ef43265eb2dda0d957c52ba5a0d8abbc4fbe78fdc402d395ee9e4fd82686ec9, bytes: 8074, store: repo}
 ---
 
 # Read-only source inventory
@@ -442,3 +443,17 @@ Owned model scoped spec passed0errors/0warnings. A concurrent public-global snap
 reported one foreign E1 in the browser owner's gpu-boundary-research.json attachment
 hash, not this model bundle. No foreign metadata was repaired and no global-green
 claim is made. This research checkpoint does not reserve a compiler/GPU target.
+
+## Frozen RNG12 validation handoff
+
+rng-validation-profile.json pins728888051b7dacfa3e3181cf71da4fff2f526bd4,
+no overlays, all13owned source/license/fixture hashes and12exact RNG test names.
+Static reinspection found current source identical to the frozen checkpoint.
+Go1.26.3 seven-file source identity and full BSD license remain preserved; Go
+output expectations do not become observed mixed internal state. The proposed
+fresh Windows target is absent/unreserved. Commands are fmt FIRST, focused12RNG
+tests (21prior tests expected filtered), scoped check and strict Clippy. Deadlines,
+admission, exclusions, selected closure and first-failure behavior are explicit.
+This is READY_FOR_ALLOCATION, not an execution receipt:0tests/formatter/compiler/
+oracle runs,0live handles and no target lease. Prior correctness proofs stay bound
+to their original sources; full training/calibration/lifecycle remains incomplete.

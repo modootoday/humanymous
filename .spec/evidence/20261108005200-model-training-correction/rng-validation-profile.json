@@ -1,0 +1,183 @@
+{
+  "schema": "humanymous.rng-validation-profile/1",
+  "status": "PREPARED_NOT_ALLOCATED_NOT_RUN",
+  "source_commit": "728888051b7dacfa3e3181cf71da4fff2f526bd4",
+  "current_source_matches_frozen": true,
+  "own_overlays": [],
+  "source_files": [
+    {
+      "path": "crates/model/src/training/mod.rs",
+      "bytes": 139,
+      "sha256": "0f98f8588ac55ea29e3485bf7dc5f737da393efcb38378ce583909d19f53c1f3"
+    },
+    {
+      "path": "crates/model/src/training/rng/initialize.rs",
+      "bytes": 2779,
+      "sha256": "0e7546b98a65b6e790d15f893d116c426c50a51739dbba757861119508d4bbc1"
+    },
+    {
+      "path": "crates/model/src/training/rng/INTEGRATION.md",
+      "bytes": 3136,
+      "sha256": "21c4e0cf869c47577141b6115433c823ca669f988f9509fb9b922bfd24268c80"
+    },
+    {
+      "path": "crates/model/src/training/rng/LICENSE",
+      "bytes": 1453,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+    },
+    {
+      "path": "crates/model/src/training/rng/mod.rs",
+      "bytes": 2765,
+      "sha256": "ba8ce1867b988ca6d80402a4309ee1e9679d09711964942eb28b6ba9dd99f59c"
+    },
+    {
+      "path": "crates/model/src/training/rng/normal.rs",
+      "bytes": 1111,
+      "sha256": "3ab3ec8041e3ecc9097cf642605753a06810ecc3514c1f1b56a3c71fe3e0f084"
+    },
+    {
+      "path": "crates/model/src/training/rng/shuffle.rs",
+      "bytes": 1180,
+      "sha256": "5a1efcebb6deafce15ef673335db7c85f735fa5e5815f05d3f6cca00482a3c97"
+    },
+    {
+      "path": "crates/model/src/training/rng/source.rs",
+      "bytes": 4167,
+      "sha256": "dfbe5fe44701446d69b3695b1d9aaa1b3de0379eba97457fac39bf8fe7a06e0c"
+    },
+    {
+      "path": "crates/model/src/training/rng/tables.rs",
+      "bytes": 19187,
+      "sha256": "3c097e0d8a795c0c15519b3c22461ff81a7014b3b2f89e428948009ba4b46487"
+    },
+    {
+      "path": "crates/model/src/training/rng/tests.rs",
+      "bytes": 14968,
+      "sha256": "38180223c477fd4bd430d0ba93649aa4f4e69eb78cc7fb105a2a16d394f1d450"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-normal-seed0.json",
+      "bytes": 1246,
+      "sha256": "1dc34670f9779270d57307a4e71701ead87402b02ac35318b8d5fc9c28976989"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-normal-source.txt",
+      "bytes": 6459,
+      "sha256": "d8f4450a14b03bd0ec939eb4b127e199d9d78ba3d07c4ad0a65ac493dfa1c62a"
+    },
+    {
+      "path": "crates/model/tests/fixtures/go1263-rng-source.txt",
+      "bytes": 15112,
+      "sha256": "e301d938fe5dbe4ef5ff52f31de68d2547c3ab50da5c95bb21c49ea983a817ab"
+    }
+  ],
+  "upstream_version": "go1.26.3",
+  "upstream_files": [
+    {
+      "path": "VERSION",
+      "sha256": "8614d1efa4e81c67187fb5d07f68239a57a6deb3091d40dbb195a3191e74f49c",
+      "bytes": 35
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "bytes": 1453
+    },
+    {
+      "path": "src/math/rand/rng.go",
+      "sha256": "e301d938fe5dbe4ef5ff52f31de68d2547c3ab50da5c95bb21c49ea983a817ab",
+      "bytes": 15112
+    },
+    {
+      "path": "src/math/rand/rand.go",
+      "sha256": "a57f58bcc4baa4ac71fb09a6f2a8ce525f6f097d7b9c7ea61f206bcfd910aa39",
+      "bytes": 17624
+    },
+    {
+      "path": "src/math/rand/normal.go",
+      "sha256": "d8f4450a14b03bd0ec939eb4b127e199d9d78ba3d07c4ad0a65ac493dfa1c62a",
+      "bytes": 6459
+    },
+    {
+      "path": "src/math/rand/regress_test.go",
+      "sha256": "bfd84f4881dd8bd1f057ccc4ba989b88194647a2cd791d7e96bb9e3133f0baa7",
+      "bytes": 18206
+    },
+    {
+      "path": "src/math/rand/rand_test.go",
+      "sha256": "d75a0d9de823a9a5c79a0e8c229b6749aaa1fbaa46c2cd7d8d5a4c336589d1d5",
+      "bytes": 18230
+    }
+  ],
+  "license_sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+  "source_expected": "20Int63+20NormFloat64 seed0 upstream output expectations; copied Go table text is non-executed fixture data",
+  "rust_derived": "Modular seed/rotating feedback reference, mixed normal/shuffle, cold/warm init,3epochs and injected boundary tapes; no Go internal state observation",
+  "target_proposal": "C:/workspaces/humanymous/target/validation-model-rng-72888805",
+  "target_exists_at_preparation": false,
+  "target_reserved": false,
+  "venue": "Native Windows x86_64-pc-windows-msvc",
+  "rust": "1.99.1",
+  "jobs": 1,
+  "incremental": 0,
+  "locked": true,
+  "offline": true,
+  "test_threads": 1,
+  "admission": "Fresh free physical >20GiB and commit <85percent before each step; defer otherwise",
+  "expected_rng_tests": [
+    "training::rng::tests::translated_tables_match_unchanged_go1263_source_literals",
+    "training::rng::tests::retained_go1263_seed0_int63_output_goldens",
+    "training::rng::tests::retained_go1263_seed0_normal_output_goldens",
+    "training::rng::tests::rust_derived_seed_and_feedback_states_match_across_ring_wraps",
+    "training::rng::tests::rust_derived_normal_and_shuffle_mixed_stream_checks_every_primitive_draw",
+    "training::rng::tests::rust_derived_cold_warm_initialization_and_successive_epoch_orders",
+    "training::rng::tests::requested_warm_state_is_validated_before_any_draw_or_copy_alias",
+    "training::rng::tests::empty_singleton_and_seed_modulus_cases_preserve_draw_contract",
+    "training::rng::tests::budget_shape_and_size_errors_preserve_public_state_and_order",
+    "training::rng::tests::injected_float64_rounding_retry_and_shuffle_rejection_consume_extra_draws",
+    "training::rng::tests::injected_normal_fast_slow_accept_and_rejection_paths_are_distinct",
+    "training::rng::tests::injected_normal_tail_sign_rejection_and_finite_tape_exhaustion"
+  ],
+  "expected_new_pass_count_if_all_run": 12,
+  "expected_other_library_tests_filtered": 21,
+  "excluded_integration_fixture": 1,
+  "commands": [
+    {
+      "step": "fmt",
+      "command": "cargo fmt --package humanymous-model -- --check",
+      "deadline_seconds": 30,
+      "notes": "FIRST; prior source was deliberately not formatted because execution was withheld. Preserve first failure, no green claim."
+    },
+    {
+      "step": "rng-tests",
+      "command": "cargo test --locked --offline -p humanymous-model --lib training::rng::tests --jobs 1 -- --test-threads=1",
+      "deadline_seconds": 180,
+      "notes": "RNG compatibility first; do not rerun prior21 library tests or inference fixture for status."
+    },
+    {
+      "step": "check",
+      "command": "cargo check --locked --offline -p humanymous-model --lib --jobs 1",
+      "deadline_seconds": 120
+    },
+    {
+      "step": "clippy",
+      "command": "cargo clippy --locked --offline -p humanymous-model --lib --tests --jobs 1 -- -D warnings",
+      "deadline_seconds": 120,
+      "notes": "Compiles/tests lint targets; this does not mean filtered tests executed."
+    }
+  ],
+  "total_execution_deadline_seconds": 450,
+  "closure": "Exact immutable archive plus13listed owned source/license/fixture files; model resolved transitive path sources+selected registry only; root Cargo/lock/toolchain/config candidates; six selected native tools/compilerDLLs/native target runtime libs; no sysroot docs or unrelated cache census",
+  "missing_closure_before_run": "Resolved package paths and binaries to be captured from immutable archive during actual allocation; not observed by preparation",
+  "failure_policy": "Stop first failure or admission loss/deadline; retain command/terminal logs and candidate. Only own actual process may be stopped by bounded supervisor. Never alter an archive or claim partial census complete.",
+  "routine_correction": "Own formatting/source fixes may be separately frozen after first failure; never transfer results to modified bytes or reuse a foreign target.",
+  "release": "Return exclusive target immediately at terminal before read-only closure/evidence; retain caches without cleanup",
+  "prohibited": [
+    "SGD/training process",
+    "production inference/activation/scoring changes",
+    "GPU/WSL/download",
+    "new dependencies or shared Cargo/lock writes",
+    "Go execution or fresh oracle generation"
+  ],
+  "actual_tests_run": 0,
+  "live_handles": []
+}
