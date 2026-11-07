@@ -5,10 +5,14 @@ use std::{
 };
 use windows_sys::Win32::Storage::FileSystem::{
     FILE_ATTRIBUTE_DIRECTORY, FILE_ATTRIBUTE_REPARSE_POINT, FILE_ATTRIBUTE_TAG_INFO, FILE_ID_INFO,
-    FILE_NAME_NORMALIZED, FILE_PERSISTENT_ACLS, FILE_TYPE_DISK, FileAttributeTagInfo, FileIdInfo,
+    FILE_NAME_NORMALIZED, FILE_TYPE_DISK, FileAttributeTagInfo, FileIdInfo,
     GetFileInformationByHandleEx, GetFileType, GetFinalPathNameByHandleW,
     GetVolumeInformationByHandleW, VOLUME_NAME_GUID,
 };
+
+// Documented filesystem capability bit. windows-sys exposes this value only in
+// SystemServices; no new feature/dependency is needed for this query output bit.
+const FILE_PERSISTENT_ACLS: u32 = 0x0000_0008;
 
 pub(super) fn inspect(file: &File) -> Result<OpenedObjectObservation, BridgeError> {
     disk(file)?;

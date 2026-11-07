@@ -1059,3 +1059,13 @@ W/T/R design plus the exact bridge contract. Its three pure tests, native calls,
 caller custody wiring and actual Windows tests are still NOT_RUN. Producer
 identity stays Unsupported until the complete native caller and evidence qualify;
 no account/Job/SCM/apphost execution follows from either source checkpoint.
+
+The later exact b06fddae+querye792 source-only receipt now observes parent-context7,
+retained-capture4 and bridge3 pure passes, both all-target check/strict Clippy/fmt,
+with captured closure zero drift. See binding-capture-bridge-pure-summary.json
+in the cross-OS evidence bundle. Initial E0432 and corrected retry-before-renewal
+ordering are explicit and Root accepted the observed limited receipt. This
+supersedes NOT_RUN above ONLY for these exact pure/check bytes; actual child IO,
+worker joins, native queries/creation, producer custody and hosted tests remain
+NOT_RUN/Unsupported. A subsequently identified create.rs prevalidation allocation
+gap is not covered by these passing tests and needs a separate source checkpoint.

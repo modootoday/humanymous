@@ -1,0 +1,169 @@
+{
+  "schema": "humanymous.binding-capture-bridge-pure-validation/1",
+  "status": "passed-corrected-source-only",
+  "base_sha": "b06fddae4a7ffa94bbf3e8e630db3f89f9f866e6",
+  "graph_ancestor": "9d0c0db985c4b345931abb4f03d548b9157577ef",
+  "overlays": {
+    "crates/windows-object-bridge/src/query.rs": "e7921656c28da7f9671aed55390dddc7fffc0279e5eaeceed71e31f6317d6c53"
+  },
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "venue": "native Windows x86_64-pc-windows-msvc",
+  "admission": {
+    "corrected_commit_percent": 82,
+    "first_commit_percent": 83,
+    "corrected_free_bytes": 140393582592
+  },
+  "closure": {
+    "selected_tool_files": 76,
+    "differences": 0,
+    "source_files": 2610,
+    "registry_files": 1217,
+    "config_presence_absence_entries": 22,
+    "registry_packages": 15,
+    "environment_hash_entries": 7
+  },
+  "tests": [
+    {
+      "filter": "parent_context",
+      "includes": "four existing parent-context and three new binding cases",
+      "failed": 0,
+      "passed": 7,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 27
+    },
+    {
+      "filter": "process::capture_attempt",
+      "includes": "pure deadline ledger and allocation/EOF boundary only",
+      "failed": 0,
+      "passed": 4,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 30
+    },
+    {
+      "filter": "bridge --lib",
+      "includes": "pure metadata/UTF16/form/capacity only; wire roundtrip does not establish constructor compile failure",
+      "failed": 0,
+      "passed": 3,
+      "ignored": 0,
+      "measured": 0,
+      "filtered": 0
+    }
+  ],
+  "total_pure_passed": 14,
+  "checks": {
+    "all_targets_check": 0,
+    "strict_clippy": 0,
+    "fmt_check": 0
+  },
+  "first_failures": [
+    {
+      "cargo_started": false,
+      "stage": "archive preparation",
+      "exit": 1,
+      "reason": "PowerShell grouped archive output argument incorrectly; corrected before execution"
+    },
+    {
+      "reason": "E0432 FILE_PERSISTENT_ACLS imported from unavailable module; named documented 0x8 bit avoids new feature",
+      "stage": "bridge first compile",
+      "exit": 101,
+      "tests_run": 0
+    }
+  ],
+  "retry_ordering": {
+    "root_disposition": "Root accepted observed source/evidence after exact footer and closure verification; not a retroactive prior grant, no replay solely for internal ordering error",
+    "reported_to_root": true,
+    "executed_before_explicit_renewal": true
+  },
+  "actual_subprocess_fixtures": 0,
+  "actual_native_query_or_create_calls": 0,
+  "actual_accounts_jobs_scm_sdk_kestrel": 0,
+  "producer_identity": "Unsupported",
+  "limits": [
+    "No actual IO/process/worker join, blocked stdin, output flood or descendant containment is qualified.",
+    "No parent-context hash or hosted label grants native authority.",
+    "Captured selected toolchain executables/bin/rustlib and linker executable are not an entire OS/MSVC/Windows SDK image or cache key.",
+    "Root subsequently found unbounded prevalidation UTF16/path copy in prior create hash; a separate future source fix and tests are required; these 14 passes do not qualify that bounded-allocation claim."
+  ],
+  "raw": {
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\preparation-failure.json": {
+      "bytes": 119,
+      "sha256": "2185c205206c89dfeee0c9cf8f33ba38a119da6fd88b3e9e4a8136bd62720d54"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\before.json": {
+      "bytes": 465538,
+      "sha256": "5d9d0b0d3311939aecb0be72e758fdf60c3aaa0895f6cf4c06e367339f6f0820"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\after.json": {
+      "bytes": 465538,
+      "sha256": "5d9d0b0d3311939aecb0be72e758fdf60c3aaa0895f6cf4c06e367339f6f0820"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\results.json": {
+      "bytes": 359,
+      "sha256": "003c09540a090add4186cfe28efe7e4a3e02a5a6457096a88d02037c1a795dfe"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\parent-context-pure.log": {
+      "bytes": 1215,
+      "sha256": "799a09e40ef90a583e8c658b1682f15e90264c1393d36289da7b870659a6edd8"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\capture-pure.log": {
+      "bytes": 782,
+      "sha256": "a76dde4bf967b0cf1c57d6992ef394764a04335299da88291ecc9f813aa3be1b"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\bridge-pure.log": {
+      "bytes": 763,
+      "sha256": "76c54b00677bdc9c100457a5dc860673cb17d640e6d906fb8eed9b3dc8797bc3"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\selected-tree.log": {
+      "bytes": 772,
+      "sha256": "9be993c77a4a40d0ab3f515ff98c40485a718040cc1b857db1a4d54e34b1924b"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\before.json": {
+      "bytes": 466160,
+      "sha256": "1cec608717937d825c2c0f2876e5d75f321e7cec12bef0827991f5aa170d0ddf"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\after.json": {
+      "bytes": 466160,
+      "sha256": "1cec608717937d825c2c0f2876e5d75f321e7cec12bef0827991f5aa170d0ddf"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\results.json": {
+      "bytes": 517,
+      "sha256": "d96ce22da89b336390eada27bc4f0c9a37ee1c8e15d86354244abfa21e394cfc"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\overlay.json": {
+      "bytes": 199,
+      "sha256": "79ebac0344e5c480959344ca497b983bd64adb0d20c782648c05e677321fe50f"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\closure-summary.json": {
+      "bytes": 636,
+      "sha256": "85802b60cb4bb751a0cfd588c50e0088a29bc988162a5f2c5066857d3644ee91"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\parent-context-pure.log": {
+      "bytes": 1039,
+      "sha256": "602c1169a66f39f5583900b9213a882e826cf4a7c0f773395d9cac088485a14d"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\capture-pure.log": {
+      "bytes": 782,
+      "sha256": "8bbf0d844676a26c9cab2d92ef23112600c519024a8e72d8bb364db32f109c68"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\bridge-pure.log": {
+      "bytes": 775,
+      "sha256": "b13aee86ed6ddb8f254c8f8e001986b46a5115f145fecf6b7d06f9e320c2128f"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\shared-check.log": {
+      "bytes": 497,
+      "sha256": "ef281e366aec61687161e321949bc814f076336b693b9e61474c44dc8aff9b8d"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\shared-clippy.log": {
+      "bytes": 463,
+      "sha256": "eb83328e7d8468bea3d7094b293d3f19784a57df8232fcebea87a695337c54e7"
+    },
+    ".spec.local\\root\\evidence\\20261107144500-windows-runner-binding-capture-pure\\attempt-2\\shared-fmt.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

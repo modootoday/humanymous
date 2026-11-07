@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: binding-capture-bridge-pure-summary.json, sha256: 5836e9c4ae128481ada2e445cc9634d85c6b964fa26b8b412596fb62eb539f96, bytes: 7569, store: repo}
   - {path: actor-context-carrier-summary.json, sha256: b80b4a5d0c772b707322d1ff312cef0b267a0ce9fabf9340c22cc91c1c0dbaf2, bytes: 4066, store: repo}
   - {path: partial-setup-duplex-summary.json, sha256: afd7dd3de43e209600d3e47fcfe983a79bc112d654e7c1d25e967a52ae17812a, bytes: 4288, store: repo}
   - {path: parent-context-joint-summary.json, sha256: 50e986abdcfa8255177a8dbbab107fbf51f01e89c8ebe3316f8a3b82b03ecd10, bytes: 4005, store: repo}
@@ -116,3 +117,23 @@ check101 is preserved; no test ran in that first attempt. No actual publisher,
 reader, account, Job, SDK or Kestrel execution occurred. Exact producer handle
 association remains Unsupported; fixed-drive classification is not ancestor or
 provider identity proof. See actor-context-carrier-summary.json for raw hashes.
+
+## Shared binding, retained capture and isolated bridge pure validation
+
+Immutableb06fddae plus query-only e7921656 correction passed14pure cases:
+parent-context7 (27filtered), retained-capture4 (30filtered) and bridge3 (0filtered),
+all with0failed/ignored/measured. Both packages pass all-target check, strict
+Clippy and fmt. Snapshot2610sourcefiles,15registry packages/1217files,76selected
+tool files and config/flag hashes have zero before/after drift. Initial archive
+preparation failure and bridge E0432 compile101 are retained. Corrected retry
+executed before explicit allocation renewal; Root accepted the observed receipt
+after disclosure, not as a retroactive prior grant. No replay was requested solely
+for that internal ordering error.
+
+No actual subprocess fixture, native bridge query/create, account/Job/SCM/SDK or
+Kestrel case ran. Wire roundtrip is not a constructor compile-failure test, and
+selected tool hashes are not a complete OS/SDK image. Root subsequently identified
+unbounded prevalidation UTF16/path copies in create.rs; those require a separate
+source/test checkpoint. These pure results do not qualify that allocation claim.
+Producer identity remains Unsupported. Registered binding-capture-bridge-pure-
+summary.json preserves exact raw hashes and scope.
