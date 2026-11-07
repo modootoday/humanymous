@@ -1,0 +1,52 @@
+{
+  "schema": "humanymous.pages-historical-fetch-component/1",
+  "source_commit": "667e98fd961d0322a708b112022dda4d03a9322f",
+  "source_relation": "Git clean-filter normalized working bytes equal canonical source blobs; raw bytes may differ by CRLF",
+  "canonical_git_bindings_verified": 14,
+  "passed": 66,
+  "failed": 0,
+  "ignored": 0,
+  "filtered": 0,
+  "first_cleanup_attempt": {
+    "exit": 139,
+    "reason": "Thread creation EAGAIN under pids-limit256"
+  },
+  "successful_cleanup_attempt": {
+    "exit": 0,
+    "pids_limit": 1024,
+    "network": "none",
+    "user": "65532:65532",
+    "image": "sha256:d070050fb9790a600588514c5f242be05606983e6e291713b8d5ea2d88080ddd"
+  },
+  "earlier_separate_browser_final_log_passed": 65,
+  "runtime_positive_join": "NOT_RUN",
+  "later_source_qualified": false,
+  "full_product_qualified": false,
+  "raw_artifacts": [
+    {
+      "file": "fetch-transport-667e98f-git-binding.json",
+      "bytes": 3174,
+      "sha256": "25ac1dbd7c7f99b248633d75a47267cee083f652cb7e1cbbec49ae1c862cb491"
+    },
+    {
+      "file": "fetch-transport-bootstrap-cleanup-results.json",
+      "bytes": 1970,
+      "sha256": "c063bff9c128d50e5176a83e2fe8ed4f081a07c5dfadef2352394b5c19190d17"
+    },
+    {
+      "file": "fetch-transport-bootstrap-cleanup-browser-pids1024.log",
+      "bytes": 6993,
+      "sha256": "62e1697653d5716089af1d09e71ec582ac4a01085d93b0f23c8723c808904b37"
+    },
+    {
+      "file": "fetch-transport-bootstrap-cleanup-browser.log",
+      "bytes": 5256,
+      "sha256": "f9cea1d5dd176a2be9b4cc6d1ddfab9ed74a2d8ceaef9e221c9a96963a51d5b7"
+    },
+    {
+      "file": "fetch-transport-browser-final.log",
+      "bytes": 6887,
+      "sha256": "4a007e36501f763d387c6182c77c0ca3e0bead8e72df631ddfb88d5be20c5641"
+    }
+  ]
+}

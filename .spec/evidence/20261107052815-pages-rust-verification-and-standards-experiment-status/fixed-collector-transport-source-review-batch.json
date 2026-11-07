@@ -1,0 +1,205 @@
+{
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "scope": "Full-file read of collector transport/session subset, not all collector source",
+  "reviews": [
+    {
+      "source": "crates/collector/Cargo.toml",
+      "lines": 34,
+      "sha256": "29ecee302df403a6118b3495a322d505e9bbacfc2f73151bd0a2d4b0a04ccab1",
+      "current_primary_sha256": "29ecee302df403a6118b3495a322d505e9bbacfc2f73151bd0a2d4b0a04ccab1",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "WASM-only pinned bindings/test deps; runtime-pilot explicit nondefault feature. Manifest is not execution.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/INTEGRATION.md",
+      "lines": 81,
+      "sha256": "8eb4138907d6b4bf0a5402c3d433aeee701685a9dd4a9dfbeca09b9608dbb71e",
+      "current_primary_sha256": "8eb4138907d6b4bf0a5402c3d433aeee701685a9dd4a9dfbeca09b9608dbb71e",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "81-line owner chronology mixes earlier unported/remaining notes with historical component evidence. Do not copy obsolete present-tense statements as current support.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/lib.rs",
+      "lines": 106,
+      "sha256": "3e7b3da1ac8a6a2338ccfd44eb6d9aa7d025d97abaa229d1c5271806539d7890",
+      "current_primary_sha256": "3e7b3da1ac8a6a2338ccfd44eb6d9aa7d025d97abaa229d1c5271806539d7890",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "WASM-only BrowserSession/BrowserResponse reexports plus separate partial observation/epoch APIs. Explicit hooks/CDP operations and stop failure remain distinct from attestation.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/mod.rs",
+      "lines": 280,
+      "sha256": "d3c80e89546597312f55dd06cdc4bf2d3a4128af820b4028d64b01585958dc17",
+      "current_primary_sha256": "d3c80e89546597312f55dd06cdc4bf2d3a4128af820b4028d64b01585958dc17",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete buffered same-origin Fetch owner, provisioned scope,8KiB bootstrap/64KiB request/1MiB response, single pending request, deadline across headers/body, ACK only after bounded completion. Flight drop invalidates/aborts; Promise abandonment is not Rust future drop. No retry/cookie/stream support.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/io.rs",
+      "lines": 157,
+      "sha256": "49dce7b0ff34b7f7a48979ef621fcafa3bd09d747a99d85e6f15eb65a4191a23",
+      "current_primary_sha256": "49dce7b0ff34b7f7a48979ef621fcafa3bd09d747a99d85e6f15eb65a4191a23",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Bounded Request/Response interop, safe integer wall clock, one timer race, chunk reader cancel/release cleanup, actual nonredirected status, exposed normalized header budgets and reserved-field removal. No raw headers or response-body authentication.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/request.rs",
+      "lines": 151,
+      "sha256": "10933ea435173105f83dde0de7ffe64a3c9a699a11752f5756df2510f02ce859",
+      "current_primary_sha256": "10933ea435173105f83dde0de7ffe64a3c9a699a11752f5756df2510f02ce859",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Secure/loopback exact-authority origin; final browser Request representation signed, empty-query marker preserved. Reserved headers refused, credentials omitted, redirects error, no-store/referrer omission. ASCII unencoded path and64KiB body constraints are deliberate profile limits.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/tests.rs",
+      "lines": 352,
+      "sha256": "4dd8d17177e05c45c70734d3ede0d4e4bd04dce64876d68d054ef4304bea26b6",
+      "current_primary_sha256": "4dd8d17177e05c45c70734d3ede0d4e4bd04dce64876d68d054ef4304bea26b6",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "352-line tests use actual browser APIs with synthetic Fetch closure; signed bytes/ACK/status/body errors, overflow/timeouts, single request, explicit close/future drop and bootstrap abort checked. Missing owned real route is a negative test; none is positive runtime-to-origin evidence.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
+      "lines": 89,
+      "sha256": "d7e0d11dd2dab3cf78d94989441cfbecbc863f5bc2d522455aa7313b9e72bb5f",
+      "current_primary_sha256": "d7e0d11dd2dab3cf78d94989441cfbecbc863f5bc2d522455aa7313b9e72bb5f",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Explicit runtime-pilot feature defines real Fetch bootstrap/report-ingestion/required-capability refusal sequence against separate owned lab. Source assertions and feature existence do not prove coordinator isolation, origin counts, witness or actual execution.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/mod.rs",
+      "lines": 5,
+      "sha256": "2fd7d30f5b1f184fc6d23ff8e5d4590222d3749efc771fcc47f415782f9eeaa3",
+      "current_primary_sha256": "2fd7d30f5b1f184fc6d23ff8e5d4590222d3749efc771fcc47f415782f9eeaa3",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Private reexports share Abort/Timer/Settlement; not an independent API or qualification result.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/abort.rs",
+      "lines": 15,
+      "sha256": "d3799055afa27083fd5175b2791b7ea546938d28cf7fb1248203141cafe735a9",
+      "current_primary_sha256": "d3799055afa27083fd5175b2791b7ea546938d28cf7fb1248203141cafe735a9",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Owned AbortController calls abort explicitly and on Drop; thrown cleanup is best effort in Drop. Does not prove browser memory erasure.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/timer.rs",
+      "lines": 80,
+      "sha256": "fc73b418832018a86daf09ad9e7d2f2237b5098c235ad3d127ac9e95b51acd6c",
+      "current_primary_sha256": "fc73b418832018a86daf09ad9e7d2f2237b5098c235ad3d127ac9e95b51acd6c",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Native Promise resolver timeout marker distinguishes fulfilled values from timeout; one resolved deadline reused across stages. Cancel/Drop clear handle, no authored executable strings.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/timer/tests.rs",
+      "lines": 56,
+      "sha256": "2a3aa9e3b026cff1061a564b35ca2618a6122eb5fa0fc7be9c069b651ce67a22",
+      "current_primary_sha256": "2a3aa9e3b026cff1061a564b35ca2618a6122eb5fa0fc7be9c069b651ce67a22",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Actual Promise tests distinguish undefined/null/false/object fulfillment, rejection and timeout; expired timer remains expired for later pending stages. Source read only.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/session/mod.rs",
+      "lines": 307,
+      "sha256": "f055fe565fdb76c22588e7d4ea62b56d7ff2259fb3154df1d4593f0b18b04dc7",
+      "current_primary_sha256": "f055fe565fdb76c22588e7d4ea62b56d7ff2259fb3154df1d4593f0b18b04dc7",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "307-line pure volatile key epoch: strict provisioned bootstrap, shared canonical/token primitives, single pending counter, exact protocol/counter/status MAC, clock/expiry/exhaustion poison and zeroizing invalidation. Transport completion remains caller obligation.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/session/wire.rs",
+      "lines": 35,
+      "sha256": "2d512b6df4c04de32fce0391838e68a1829793b5ab89216b457ba2251ad5c18c",
+      "current_primary_sha256": "2d512b6df4c04de32fce0391838e68a1829793b5ab89216b457ba2251ad5c18c",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Strict deny-unknown bootstrap and canonical43-character URL-safe no-pad32-byte key; transient material zeroizing, no deployment/entropy attestation.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/session/tests.rs",
+      "lines": 239,
+      "sha256": "1e436f5f1031997bd367626e126b73f6d37a78a0ea253e7962569b00e4bb838d",
+      "current_primary_sha256": "1e436f5f1031997bd367626e126b73f6d37a78a0ea253e7962569b00e4bb838d",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "239-line pure cases cover omitted/unknown/duplicate/escaped fields, scope/key/clock bounds, busy/once ACK progression even503, shared codec, poison/expiry/exhaustion and no counter reservation on invalid local binding.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "reviewed_files": 15,
+  "lines": 1987,
+  "execution": "NOT_RUN",
+  "public_ledger": "No collector receipts renewed; wider owner55-file report remains separately reviewed"
+}

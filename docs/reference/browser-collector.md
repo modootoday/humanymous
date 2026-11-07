@@ -26,7 +26,9 @@ No observation establishes universal natural-person presence.
 | `stop()` | Freeze the summary, clear transient pairing/buffers and detach owned callbacks; failures remain visible |
 
 Guard baseline includes bounded native/prototype observations and an owned
-MutationObserver for relevant script changes. Complete hook
+MutationObserver. Its script counter inspects directly added `SCRIPT` nodes;
+it does not descend into inserted containers, and ignores scripts with a truthy
+`data-hm` marker. It does not inspect script payloads. Complete hook
 coverage is not established merely by collecting a baseline; the current report
 retains `reported: false` when required hooks are missing. A caller must not
 promote that into complete instrumentation or authenticated startup provenance.
@@ -70,10 +72,14 @@ integration and accessible recovery remain separate work.
 
 ### Browser transport follow-through under source review
 
-The current working source additionally declares WASM `BrowserSession` and
-`BrowserResponse` exports. This follow-through is uncommitted and has not been
-built or executed in the present resource-limited review. The pure `Session`
-state API above remains separate from this browser I/O owner.
+Source exposes WASM `BrowserSession` and `BrowserResponse` exports separately
+from the pure `Session` state API. At canonical source `667e98f`, the Firefox
+component suite passed 66 cases with no failures, ignored or filtered cases.
+These include real browser Request/Response APIs with a synthetic Fetch fixture;
+they do not establish the positive browser-to-runtime-to-origin join. The first
+cleanup attempt failed to create a thread under its 256-PID container limit;
+the recorded successful attempt used a 1,024-PID limit. These historical
+component results do not qualify later source changes or ordinary human use.
 
 | Working-source interface | Declared responsibility, not a qualification result |
 | --- | --- |
@@ -84,13 +90,13 @@ state API above remains separate from this browser I/O owner.
 
 The client source's response-body bound is 1 MiB, while the current runtime's
 origin-response bound is 64 KiB. One does not enlarge the other's support.
-Runtime source is also adding an explicit cookie-free `browser_auth_only`
-profile, bootstrap and consumed-counter ACK owner. The working origin-request
-builder preserves application Authorization for this profile, and local/origin
-response paths insert status-bound ACK headers. These changes still require
-source-bound execution validation. Do not treat new type declarations, source tests or
-policy intent as a working browser-to-origin flow. Existing component results
-do not qualify these changed sources.
+Runtime source separately selects a cookie-free `browser_auth_only` profile,
+bootstrap and consumed-counter ACK owner. Its origin-request builder preserves
+application Authorization for this profile, and local/origin response paths
+insert status-bound ACK headers. Native TCP fixtures at runtime source
+`adb8e3ed` exercised the shared client/server model. They do not run browser Fetch
+or qualify collector provenance. Neither those native fixtures nor the historical
+Firefox component suite establishes a qualified browser-to-origin flow.
 
 ```console
 cargo test --locked -p humanymous-collector

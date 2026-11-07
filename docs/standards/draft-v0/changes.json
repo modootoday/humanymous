@@ -7,6 +7,28 @@
   "generic_wire_selected": false,
   "changes": [
 {
+      "kind": "implementation-correction",
+      "paths": [
+            "../../reference/supported-topologies.md",
+            "../../reference/browser-collector.md"
+      ],
+      "summary": "Correct the ASP.NET Core exception boundary: downstream application invocation is outside the dependency catch and restores request state in finally. Clarify bounded direct SCRIPT observation and marked/descendant exclusions; neither source review is execution or code attestation.",
+      "generic_wire_changed": false,
+      "changed_source_execution_qualified": false,
+      "full_product_qualified": false
+},
+{
+      "kind": "implementation-evidence",
+      "paths": [
+            "../../reference/browser-collector.md",
+            "validation/implementation-map.md"
+      ],
+      "summary": "Replace stale uncommitted/unbuilt browser transport wording with exact canonical667e98f Firefox66 component evidence, preserving the first cleanup failure and separating synthetic Fetch fixtures from native runtime fixtures and the missing positive browser-to-origin join.",
+      "generic_wire_changed": false,
+      "runtime_positive_join_qualified": false,
+      "full_product_qualified": false
+},
+{
       "kind": "implementation-evidence",
       "paths": [
             "../../reference/production-vs-reference.md"

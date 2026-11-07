@@ -2,6 +2,761 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/collector/Cargo.toml",
+  "sha256": "29ecee302df403a6118b3495a322d505e9bbacfc2f73151bd0a2d4b0a04ccab1",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Private cdylib/rlib workspace member; runtime-pilot opt-in; exact bindgen pins and js-sys default features disabled. Manifest is not build evidence. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/pilot/fixture.json",
+  "sha256": "87a45f212f2974078fb618c1a55bc92b4e0bafddbc1035907f0162ba84be76e9",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Owned runtime-pilot route/scope/expected-status declaration; expected values and qualification text are configuration, not execution receipts. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/pilot/webdriver.json",
+  "sha256": "5d00b6c3e3a936a28b2def6668894616d9b8c20cc11edbe2e7abc5025997ebf7",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Manual loopback HTTP proxy and localhost-hijacking preference only; no ordinary-browser baseline or isolation proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/behavior/cadence.rs",
+  "sha256": "7cb14b5e27fe202cb36df637c99cb55418ff42898b44a4e6610c55549c95ac82",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Cadence requires four timestamps; strict >1500ms gaps and population variance; no human classification proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/behavior/keyboard.rs",
+  "sha256": "8458e89a25b6f2c44ca28b4a3fd1f5e123076947c5d852653c1ebd1f9d0f79e7",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Latest-down whole-window key pairing deliberately preserves negative dwell; press-to-press flight and bounded opaque IDs, no exported key names. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/behavior/mod.rs",
+  "sha256": "d4b1b3636dc280248762e96c7082d297b7640972184134ba61d6838f8a38b058",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "First-600 sample recorder with aggregate counters and finite bounds; wheel trust and keyup exclusions retained, no scoring changes. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/behavior/oracle_tests.rs",
+  "sha256": "90606313dfcb9b84984455907ef1e73ea23511e05548c6ffb972df49577f971d",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "WASM differential test source imports unchanged JS mouse/key oracles only in tests; arithmetic parity assertions are not execution evidence. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/behavior/pointer.rs",
+  "sha256": "8c4610d77106354314a9f2fee98bdfdbf7cc02ea9222905839b6d9250e475788",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Pointer reducer preserves strict >120ms pauses, >0.995 straightness, bounded-bin entropy and population statistics. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/behavior/statistics.rs",
+  "sha256": "a4f06c0949685a5f802e454273e02426dd9bfc32528902a128504b6bb5e0fbad",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Empty/singleton mean/variance defaults and population divisor; pure arithmetic, no browser observation. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/behavior/tests.rs",
+  "sha256": "1bfe035bca056a73107c4b549538309a2d16a44dbbae2d2a7fc43447e50e25af",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Analytic/cap/privacy/trust/invalid-value test assertions only; no actual human/AT evidence. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/advanced/capabilities.rs",
+  "sha256": "52cd663185cc892351a22d76be4dccc50ad3ae556a599b29d09c0cbca5e5802b",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Optional EME/GPU/WebGL/audio observations with 800ms settlement and close attempt; fallback flag observes presence/truthiness, not GPU/human attestation. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/advanced/media.rs",
+  "sha256": "1a2244d7a32695541828d0604a2e55505813f6ba44f9f9b3874e622690921722",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Device kinds and voice counts only, bounded enumeration, owned voiceschanged listener; no device labels or permission grant proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/advanced/mod.rs",
+  "sha256": "3567367f0ed899e7767fdc071a2eea07c58e50b15e85d0dacb7e90191433ecf3",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Optional probe sentinels and bounded conversions; rejected/timed-out optional APIs can remain defaults; probed does not mean every capability available. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/advanced/profile.rs",
+  "sha256": "1f4479d1f424af71cfdc8c7212241da48344bf2a4281226bc0ec81907046de9d",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Connection/battery/timezone/display/memory observations; memory rejection distinct from timeout; no privacy or automation proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/advanced/tests.rs",
+  "sha256": "75a5b507e2e0ea4ab0fb2a0ffa384686a70200d73c9b4890877041d75cafe54f",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Synthetic capability fixtures, legacy advanced parity binding and actual-surface test declarations; no run result inferred. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/behavior.rs",
+  "sha256": "70c4d058af681f507c9b23d34cdaeeb35f6671dd7c9f23ebfb2908dc49ac2f49",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Six passive listeners with physical-code epoch interning, finite budgets and freeze/cleanup; failures retain inert reachable callback lifetimes. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/behavior/tests.rs",
+  "sha256": "1fb1c1ecaae3c617be81deb7d04b05f7678cba48ccecde57e7299c32ac939440",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Synthetic dispatch/trap/reentrancy/registration/removal test source; privacy assertions do not establish human or AT usability. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/cdp.rs",
+  "sha256": "c6fa32bc79ac5e06d7bb3f9fb1da67e07700f8836e13df6e00d6dbb4037f72a4",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Explicit cached synchronous console-preview attempts with unsupported/failed states and managed lifetimes; groupEnd side effects; not universal CDP detection. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/cdp/tests.rs",
+  "sha256": "dd9edc09fb75734625aaaa8ae41596c6a791b993ad108992f7436d1ca2fd6d47",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Synthetic console callbacks and deferred lifetime assertions plus explicit actual-console test; no external CDP/client matrix proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/environment/mod.rs",
+  "sha256": "d7d5040f43486e0ed1de274a1b2d15e6d3126ec7d8534af96e3975575a829a09",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Explicit first-party bait and honeypot Fetch with omit credentials and abort; HTTP failure status deliberately not content-block proof; weak privacy heuristics. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/environment/resources.rs",
+  "sha256": "2d10aa171a58dfbc49d43202185dd05c33f90b0bc06a1c75295c8ff7b52e8e56",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "RAII bait removal and shared Abort reexport; cleanup attempts can fail and are not memory erasure. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/environment/tests.rs",
+  "sha256": "4ff01e154b9aca46b14208c07fca8a510b0591795bb6e2c1e4cb90e67df142ed",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Owned DOM/Fetch/timer fixtures and actual-surface test declarations; synthetic rejection/timeout not real tracking-protection effectiveness. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/fingerprint.rs",
+  "sha256": "5a9b4e08892e67e364c2d0626bb2e7e4f09bdd9566cd200578bc96cc09575d36",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Scoped WebGL debug vendor/renderer reads; fingerprint has experimental-webgl fallback, advanced does not; unavailable values are defaults. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/guard/forwarding.rs",
+  "sha256": "63c5bd20be88545b968af3aa82a39bc262f19c38b639910b7cae9da3e81fef05",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Opt-in per-realm leased eval/Function Proxy forwarding, descriptor ownership checks and managed callbacks; direct eval lexical semantics change. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/guard/forwarding/tests.rs",
+  "sha256": "827570c0d3dbc37ff9e3fb5d7e29886a4f1b0a661e65af1fe34bf084e87a3316",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Fixture forwarding/throw/newTarget/overlap/restore tests and explicit collector hook test; not application-wide compatibility or code attestation. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/guard/mod.rs",
+  "sha256": "d6a24159c678a56576d0f264b2f3bf5dbbfb93801b66c500fafbf7d0e9bb951b",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Native-text/property-count baseline and observer plus optional hooks; missing coverage reported=false; stop attempts every cleanup and preserves faults. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/guard/observer.rs",
+  "sha256": "3c4d05600899f91bfdead62f8b8084dd099bd33f66dcc84df3dcf794c1485a37",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Bounded direct added SCRIPT nodes only, ignores truthy data-hm; does not inspect payload or nested descendants; owned drain/disconnect and inert retained callback failures. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/guard/tests.rs",
+  "sha256": "3e460e3c7d5b64f187965a9854c4f6553965190e2cc3b7694e6b0f1d034e0f7b",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Native/enum/partial-report/mutation/drop tests include inert scripts; no complete script integrity or host application compatibility proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/integrity.rs",
+  "sha256": "b311dde0396222340759de1eda95b2198c11f3d0f29c430e1e99d17d3d1ee3b3",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "webdriver descriptor/native-marker observation and temporary hidden iframe with Drop cleanup; getter failure propagates; not native-code attestation. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/mod.rs",
+  "sha256": "adb5749db4805837122f1e9f50b911e8df5e0b99d9ebcb28ec82b6d3bbf9602e",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Checked browser capture, synchronous hints and frozen marker reads with bounded enumeration; report remains partial and sessionless. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/reflection.rs",
+  "sha256": "04ae46a0e04c62d34ce28ec4ee0f1bad792bfcc3fe2a0fd0f0f7e2b7493055b2",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Reflection conversion budgets and Go-compatible primitive tags; int truncates finite safe numeric observations rather than requiring integral inputs. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/resources/abort.rs",
+  "sha256": "d3799055afa27083fd5175b2791b7ea546938d28cf7fb1248203141cafe735a9",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Owned abort method/Drop attempt only; abort does not establish server rollback or that an origin effect did not occur. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/resources/mod.rs",
+  "sha256": "2fd7d30f5b1f184fc6d23ff8e5d4590222d3749efc771fcc47f415782f9eeaa3",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Shared resource modules/reexports; no loader or executable source string. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/resources/timer.rs",
+  "sha256": "fc73b418832018a86daf09ad9e7d2f2237b5098c235ad3d127ac9e95b51acd6c",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Native Promise timeout marker, reused deadline and owned clearTimeout; rejected versus timed-out distinguished, no server-side cancellation proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/resources/timer/tests.rs",
+  "sha256": "2a3aa9e3b026cff1061a564b35ca2618a6122eb5fa0fc7be9c069b651ce67a22",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Timer boundary test source checks undefined/null/false and reused expired deadlines; not an execution receipt. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/transport/io.rs",
+  "sha256": "49dce7b0ff34b7f7a48979ef621fcafa3bd09d747a99d85e6f15eb65a4191a23",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Bounded chunked byte reads and reader cancellation/release, strict status/redirect handling and exposed normalized header budgets; body integrity not ACK-authenticated. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/transport/mod.rs",
+  "sha256": "d3c80e89546597312f55dd06cdc4bf2d3a4128af820b4028d64b01585958dc17",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "WASM BrowserSession/Response exports; secure/loopback same-origin bootstrap 8KiB, one-flight signed buffered Fetch 64KiB request/1MiB response, poison ambiguous flights; no cookie/retry/stream or producer attestation. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/transport/request.rs",
+  "sha256": "10933ea435173105f83dde0de7ffe64a3c9a699a11752f5756df2510f02ce859",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Strict origin/target/header profile, omit credentials and redirect refusal; signs serialized final URL including empty query; percent-encoded path and numerous browser-controlled headers unsupported. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
+  "sha256": "d7e0d11dd2dab3cf78d94989441cfbecbc863f5bc2d522455aa7313b9e72bb5f",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Feature-gated actual Fetch runtime-lab test declaration expects challenge, report ingestion and missing-capability poison; requires separate isolation/proxy/witness receipts, not proof it ran. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/src/browser/transport/tests.rs",
+  "sha256": "4dd8d17177e05c45c70734d3ede0d4e4bd04dce64876d68d054ef4304bea26b6",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Synthetic Rust Fetch closure mints bootstrap/ACKs with actual Request/Response APIs; covers ambiguity/body limits/cancellation but does not join actual runtime wire; real missing-route test cannot create session. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/src/detection/fingerprint.rs",
+  "sha256": "688e6851e14bf570c229360721aa5956882f8f4ef0964d544e1c6b7ec6fe468e",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Frozen renderer/memory/screen predicates use shared signal constructor; heuristics are not reliable human/AI proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/detection/integrity.rs",
+  "sha256": "22dede93a5b7ca07ce7250b4f09cf202e2a4cbf0ed510396a5acca47e844482d",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Frozen webdriver getter and iframe mismatch signals; unmeasured fields do not become invented integrity coverage. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/detection/mod.rs",
+  "sha256": "58f4dc31b0d0f52fe5c6491ae4dfd916609793267a57825fc9b2f82e403519c3",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Pure L1-L3 detection uses shared Signal and ClientReport, requires viewport and rejects positive nonfinite memory; no duplicate engine or session minting. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/detection/snapshot.rs",
+  "sha256": "e8c3262b6f0a96b0ff0eb3786b9e26d142ba4c535b9089dc81d586511f598c0c",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Snapshot declares bounded observation inputs and untrusted externally produced flags; type is not authenticated browser evidence. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/detection/static_client.rs",
+  "sha256": "d567f867f24ffa067622dd72db7d5e35daff9ef0101b82a55bdd9729e96b324a",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Frozen 12 static tells including strict UA case and artifact truthiness; no new scoring/threshold work or universal automation proof. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/detection/tests.rs",
+  "sha256": "4f4e62064ca22f5a6390fdff8db9b1241a353efd7dc04f488e75cfd48ec880d2",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Pure frozen-ID/value/confidence/registry/boundary tests; parity assertions are not deployed browser qualification. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/guard/mod.rs",
+  "sha256": "026be3a2a58e9d10c60882cd1b6c15210df3a9cc3570b15104c4ff352bd24bce",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Pure measured guard epoch requires all three cover bits for reported, freezes counts and poisons overflow; caller-provided baseline is not independent observation. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/guard/native.rs",
+  "sha256": "cb8ceb08c61cf2fcce4a123b0188e78dc7a92ae1a3fc484ae959c42a4d8b4301",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Exact ECMAScript-whitespace native marker parser and unit vectors; matching source string is explicitly not code attestation. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/guard/tests.rs",
+  "sha256": "7d683a1c51c4893f3efb08aa37e23de76d5936c2ca7122e1065bbf993dcab7c0",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Pure coverage/counter/native/overflow tests; no browser hook installation or runtime observation on their own. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/lib.rs",
+  "sha256": "3e7b3da1ac8a6a2338ccfd44eb6d9aa7d025d97abaa229d1c5271806539d7890",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "WASM public observation/epoch exports and transport reexports; snapshot combines fresh L1-L3 with behavior/guard, optional CDP; environment/advanced remain explicit separate probes. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/collector/src/session/mod.rs",
+  "sha256": "f055fe565fdb76c22588e7d4ea62b56d7ff2259fb3154df1d4593f0b18b04dc7",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Volatile Session validates strict scoped bootstrap, shared canonical MAC and status-bound consumption ACK, one pending counter, expiry/rollback invalidation and zeroization; transport caller owns body/network outcomes. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/src/session/tests.rs",
+  "sha256": "1e436f5f1031997bd367626e126b73f6d37a78a0ea253e7962569b00e4bb838d",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Pure/WASM state tests for strict fields, bindings, counters, ACK forgery and invalidation; no actual server/bootstrap/ACK join. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/src/session/wire.rs",
+  "sha256": "2d512b6df4c04de32fce0391838e68a1829793b5ab89216b457ba2251ad5c18c",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Strict deny-unknown bootstrap schema and canonical 43-character unpadded URL-safe 32-byte key decoding; secret buffers zeroize, browser/OS erasure not established. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/collector/tests/runtime_pilot_contract.rs",
+  "sha256": "fd5e8883698c035b0fb7151b0441df848f2068b4dd50ca8039066e7a8bc12524",
+  "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+  "notes": "Native fixture consistency assertions constrain proxy/routes/expected status/selection; explicit source comment says not actual browser/network evidence. Complete-file report reviewed by Pages; source review only, not new execution or independent external certification.",
+  "pages": [
+    "docs/reference/browser-collector.md"
+  ]
+},
+{
+  "source": "crates/go-adapter/Cargo.toml",
+  "sha256": "7f7d9a95f8e9576a0b98e3068f771e2f632f2dfca88bd72b36f7cfcf787939e7",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Non-published Rust workspace package consumes runtime and serde only; no Go compiler embedding, cgo, SDK or alternate authority transport. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/go-adapter/INTEGRATION.md",
+  "sha256": "46536a3e6ff51d5a7e9be8ab612cc7539bc3c1c0562023ee08c38139135c7b2c",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Chronological owner handover distinguishes old pure results, source-subset limitations and first hosted runtime_build failure with eight NOT_RUN. Current quiet-window wording is stale operational history; use later Root admission decisions. It omits subsequent 448/15f actual failures and cannot establish current qualification. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/go-adapter/src/lib.rs",
+  "sha256": "61d8d5bb1b6ce5830d341a35133113ba885206124c57cefae1707931ed390b82",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Host enum distinguishes pooled framework contexts from borrowed entity slices. Deployment validates shared Configuration and transfers it without binding sockets; these source declarations do not implement or qualify native framework middleware. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/go-adapter/src/probe.rs",
+  "sha256": "efef4c891f432df88bdae1fb711039fd2c44f9e4ca9922ec22ffd861b6c5c771",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Fixture-only byte and HEAD-cookie assertions consume already-decoded outer responses. Exact query and binary entity, two individual cookies and zero HEAD entity are bounded checks, not ingress parsing or provenance authentication. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/go-adapter/src/qualification.rs",
+  "sha256": "4fc4bc1bef26d25f3953b9bbe567bef8be6c44b9e7ca2a034f87acb59fe7e42f",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Receipt qualifier checks exact independent tuple, hosted isolated Docker, eight unique cases, nonzero assertions and zero failures; contact and handler-proof fields differ. Caller-provided data is not authenticated execution or independent interoperability. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/go-adapter/src/scenario.rs",
+  "sha256": "0ab7e7e900aeda979ec4e3c3867a3ce54d38861cd7e2209df3a52c449850895d",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Pure typed evaluator requires actual-host evidence, observed counters, exact refusal bodies, measured half-close, cancellation phase/deadline and kernel denial. Sixteen static errors preserve attempted check counts. Observation booleans still require independent lab proof. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/go-adapter/src/scenario/tests.rs",
+  "sha256": "69c5674d7859a01a53ef0a853b8794bb07a3c531204f2454767ed804e3064128",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Four constructed-observation units exercise success and selected missing/corrupt facts; these are synthetic pure cases, not eight actual Go requests, namespace isolation or cancellation lifecycle execution. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/Cargo.toml",
+  "sha256": "5a5670505881cc8443125646db7da0297b201d66f56733ce5394c72a97ee9288",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Unpublished safe core with inherited workspace/toolchain/lints and zeroize dependency. Manifest existence is not an installed C SDK or runtime tuple. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/INTEGRATION.md",
+  "sha256": "cadfb28bfc2e13e8eba3892de1ae28ae7a6975622026e067bdf02b26d8b1a996",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Historical integration chronology distinguishes core, wrapper and parser cases and later supersedes an older pending unit note. Several unqualified present-tense statements are stale or ambiguous: lines23,42-50,71-73 still say no exports/artifacts/loading and never run compiler locally, while the wrapper and local_msvc source exist. Do not copy the chronology as current status. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/export/Cargo.toml",
+  "sha256": "f46ec9c16454615f4e29e4ee0f04634ce74e889f0dc9d7ae710d135958b327dc",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Unpublished cdylib/rlib wrapper depends on the one core. Local unsafe deny permits the explicitly scoped export attribute; it is not evidence of arbitrary unsafe loader code. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/export/examples/header_conformance.rs",
+  "sha256": "a0f438b3dfa48e6e4c21a66a12b0c2f6c3992e610d895205ca8c01af9a2b46a1",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Hosted Linux x64 environmental guard, generated-header size/UTF-8/entrypoint checks, fresh output directory, trusted Clang C11/C++11 syntax/layout parsing against four Rust records and 17 offsets. Synthetic parser tests reject missing/duplicate/malformed metadata. Compiler Command::output is not internally deadline/output bounded; CI owns timeout and source/tool/header hashes. Environmental labels are explicitly not hostile-host attestation. Does not load DLLs or test RAII/exceptions. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/export/examples/local_msvc.rs",
+  "sha256": "68d6c105edee241d0ea86afdfbffed4ec8f8ad41cd3a1598f9a314e8dd8d833f",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Explicit local Windows x64 flag, absolute existing tools/inputs and new output directory. Direct MSVC C11/C++14 header compile requires nonempty objects; dumpbin is passive. Entry-point text presence is not provenance authentication; operator supplies hashes. Child compiler output/deadline are not internally bounded. No actual generic calls or layout-equality verification. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/export/src/lib.rs",
+  "sha256": "13c6180cab314fbfbff1791fae4496990f6c208f3fed6d5f7385ea734c966080",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Single no_mangle extern C by-value command entrypoint; library-lifetime LazyLock/Mutex owner and atomic permanent revocation. Catches initialization/dispatch unwind, fails closed on mutex poison and only cleans initialized state. Six unit cases include concurrent handle uniqueness and close/access ordering. Host panic hook/abort/native faults remain outside containment; reentry, signal handlers and post-fork use unsupported. Calls must finish and contexts close before unload. No workers/callbacks or security decisions. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/src/boundary.rs",
+  "sha256": "333d994cfd9d2398529b50bc866c642fa73ea0f5e02508f15ef6032f58660919",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Safe exclusive owner catches unwind, zeroes error scalar, revokes buffers and permanently poisons after panic. Payload intentionally forgotten to avoid destructor repanic; at most one per boundary does not bound global RSS. Explicit revoke is cleanup with no reset. Unit tests are fixtures, not native fault containment. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/src/command.rs",
+  "sha256": "527859d9e5f85ed5f3e3bf7df989047c49e2cc4484c4fe361f21a05bdbfc1efb",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Repr(C) 88-byte command and 48-byte response carry no host pointers; operations1-7 negotiate every call, require zero flags/unused fields and limit chunks to32bytes. Error data/scalar and read tail initialize zero. Tests exercise roundtrip, malformed fields and Rust offsets. No cryptography, authentication or scoring occurs. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/src/lib.rs",
+  "sha256": "17df48a73db67b636d943ee04eeadfa3171d4a9a3eda03ddca9a79fddb044c6d",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Core exports safe Rust Boundary/Command/Registry/wire APIs and forbids unsafe. Statement that this library has no C symbols is accurate for core, although the separate wrapper exports one. No OS, workers, callbacks or verdict API. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/src/registry.rs",
+  "sha256": "447926b6fdc1f83e57b25a422c515b107def22f468749657ea03cb638c5ceac7",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "One shared nonreused monotonic context/buffer ID space, owner/kind/liveness checks;16contexts,64buffers/context,1MiB/buffer,8MiB initialized-byte cap. Fallible byte reserve, zero-filled Zeroizing allocations, bounded all-or-nothing copies and close/free cleanup. Buffer borrow ties lifetime to Rust owner. Container bookkeeping allocations can still abort; initialized-byte accounting is not RSS. Handles are not authenticated capabilities; independently recreated registries can reuse IDs. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/src/registry/tests.rs",
+  "sha256": "2cf744c7f98ab036392bd1aed31322730e1b65ab3a19636312f4f34e78394bfd",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Nine cases inspect exact negotiation, zero initialization, range atomicity, invalid owner/kind/zero/double free, close isolation, u64 exhaustion, count/byte caps, stale lifecycles and borrowed views. Tests infer cleanup through state/accounting, not observation of erased physical memory. No allocator-failure injection or foreign runtime here. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/native-abi/src/wire.rs",
+  "sha256": "74d5e37c452aa3fd18367bcfda893c9eb0859aa60d210c944e19b2043deb76e5",
+  "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Fixed-width Version16/Reply16/Status4; exact major1/minor0/size16/reserved0, statuses0-7, static descriptions and zero-valued failures. Layout tests run in the compiling Rust target; source does not establish every foreign calling convention. Status newtype accepts unknown numeric values, with safe unknown description. Pages accepted the implementation-owner report only; no independent interoperability or new native execution.",
+  "pages": [
+    "docs/reference/supported-topologies.md"
+  ]
+},
+{
+  "source": "crates/runtime/Cargo.toml",
+  "sha256": "c51afb41efd90a1402608d57da6a01942e2d35845a7ca6819c22ee4b364a23ed",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete manifest read: shared authority/audit/capture/challenge/integrity dependencies, exact rustls ring/std/tls12 with default features disabled, Tokio runtime/network/sync, collector and rcgen dev fixtures. Dependency declarations do not qualify an executable or combined graph.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/main.rs",
+  "sha256": "ce657a2bd2758ffb3a712626359c43e2bdefe19817accad3173ce209fc746797",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete legacy inherited-pipe entrypoint: refuses arguments or terminal stdin/stdout, bounded configuration, two-worker Tokio, ServiceHost::bind then one readiness JSON line. A retained unsignaled watch sender supplies no platform shutdown adapter; no TLS or operator provisioning is selected by this main.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/INTEGRATION.md",
+  "sha256": "89d56da2df5f31133809ac4ef80ac18e80bddeca719e9bda38405fc2d2ed2893",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete520-line owner chronology read. Leading exact adb8 Windows46+process1/Unix50+process1 observations supersede older unexecuted restrictions, while later historical paragraphs retain source-only chronology. Native management/resource fixtures use same-process witness; destructive issuer/kill startup-admission join and production credential broker remain incomplete. This narrative is not substituted for source or raw execution evidence.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/tests.rs",
+  "sha256": "f87ade07f63180b9887aea321dfde249656c036dc0d66d1c445c5cfb8221f5b2",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete642-line fixture root: mock in-memory Audit, zero-motor synthetic client report, configuration and session bounds, exact method/target/body/scope/header/deadline commitments, replay/cross-session refusal, missing planes, minimized audit/poison and post-append deadlines. Real TCP origin counters and independent-thread abort during blocking audit do not supply durable or browser evidence.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/tests/browser.rs",
+  "sha256": "12a6ea363b3ea983176b007db46171fa34eab1224484953ea0b5cf9826143c11",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete449-line real shared Session/native TCP fixtures: status-bound consumed ACK, original application Authorization, separate duplicate cookies, forged origin ACK stripping, bootstrap shape, replay/cookie/origin/report negatives, authenticated quota debit and continued ACK progression. Malformed origin response records one actual fixture effect and503ACK; it does not claim rollback or zero effects. No Fetch/browser/AT or independent durable audit is exercised.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/tests/tls.rs",
+  "sha256": "154a9b4a43f21673d5c69f4d6c93fe0e1c338f0ffa3ede0244096519207c3065",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete145-line owned rustls/rcgen socket harness: actual negotiated HTTP/1.1, bounded IO, partial/coalesced request refusal before new audit/origin and dropped-handshake future synchronously joins/closes worker socket. Synthetic report and in-memory audit remain component premises; no complete ingress race matrix follows.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/tests/tls/observation.rs",
+  "sha256": "f1f4639f63df149ae850282e89c6bd731c20f14c05eaddbe6805535791a281ff",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete36-line actual TLS connection observation case: offered ALPN order h2/http1.1 and negotiated http1.1 belong to one captured request owner; response200 is the fixture capture reply, not an authorized protected origin effect or HTTP2 serving qualification.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/runtime/tests/native_process.rs",
+  "sha256": "ccf9243cf1c7fdfedf7708389d2fdebf0880d79e42abe1922f943ed133bb90ac",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete291-line native executable fixture: private temporary owner permissions, explicit inherited pipes/readiness timeout, real shared canonical/token primitives, synthetic client report and known sealed key fixture. Asserts CHALLENGE before report, single counted origin dispatch, replay refusal, authenticated restart with old-session invalidation, wrong-passphrase startup refusal and minimized WAL. Process RAII kill/wait is not graceful service shutdown or Docker/browser qualification.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/authority/INTEGRATION.md",
+  "sha256": "48aaf09c88a2b99423a835ff14eef223b0d9e670e607a7f9ed49d83e28f54da7",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete264-line owner contract/chronology: provisioned producer profiles and exact binding; BoundResponse consumption still requires host cancellation/expiry before original handler. Native peer identity precedes bearer disclosure; LocalHandler is not management authority, cancellation/drop is not drain acknowledgment. Sealed startup and later Linux named30/ignored2 supersede earlier inline/unrun text for exact checkpoints only. Required privileged parent/helper and cross-OS/OS-store/witness/remote qualification remain separate. Chronology is not a fresh executable receipt.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
   "source": "crates/runtime/src/control.rs",
   "sha256": "09450b115e81ef97e33c97b4705f474e631f54080b8261e52a0fde2547b9bcbc",
   "reviewer": "codex/rust-pages",
@@ -1330,9 +2085,9 @@
 },
 {
   "source": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
-  "sha256": "38db3d6ffc07f27d2f2e0e1f0bd4df3fcecaf83ebe3f05ae846b6eaee08c3f37",
+  "sha256": "e4f3382af6786ec04cafc2af712b78c330433bd06d0b3a1cd17fc212b1268522",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete middleware ordering/body-to-EOF/cancellation/pooled-input/replay/final handoff and original-stream restore source. Source maps DENY403 and other non-ALLOW503 with no challenge recovery. Catch also covers selected downstream exceptions, so503/abort does not prove no prior app call/effect. Actual timing, callbacks, buffers and host lifecycle remain unexecuted.",
+  "notes": "Complete current middleware read: dependency/input catch ends before next(context); downstream application exceptions propagate to normal host handling. Final native handoff precedes application invocation; finally restores original body and disposes replay. Selected pre-handoff failures503/abort are not rollback proof. New downstream IOException pilot execution is NOT_RUN.",
   "pages": [
     "docs/reference/supported-topologies.md"
   ]
@@ -1491,9 +2246,9 @@
 },
 {
   "source": "adapters/go/pilot-contract.json",
-  "sha256": "619d78ccf264cae95704164047f116ffc9b55625d7ad7d5778116426fbfcfac2",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read complete eight-case synthetic trusted-session Gate contract, exact route-specific required planes and external Go backend/witness composition. Preserved contacts versus application mutations, pre-handoff cancellation only, narrow HEAD/cookie probe and unexecuted source/toolchain/topology lineage; not a native SDK or browser/human attestation.",
+  "sha256": "0127d059dd98cefbddf6545894e3c3cf3117a3dd45f42a6973950b8496419dcc",
+  "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+  "notes": "Pinned untouched net/http fixture, synthetic trusted-session bounded HTTP profile and sixteen static evaluator codes; null artifact identities and NOT_RUN are contract metadata, not execution results. Other Go hosts and native SDK remain unqualified. Pages accepted the source-review report only; actual hosted failures do not qualify the Go product.",
   "pages": [
     "docs/reference/supported-topologies.md"
   ]
@@ -2492,16 +3247,15 @@
       ]
     },
     {
-      "source": "adapters/contracts/README.md",
-      "sha256": "50dee26af4d5a3685a7dee8649829c25d70cd3524b4503bc74fad1996e6cf062",
-      "reviewer": "codex/rust-pages",
-      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/integrator.md",
-        "docs/explanation/will-this-break-my-app.md"
-      ]
-    },
+  "source": "adapters/contracts/README.md",
+  "sha256": "cda6eed84b96ad3b15c75cb952cc0d0ee1246b79bd05cf58cf218ad5889b4215",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete19-line internal adapter0.1 corpus boundary: JSON Schema checks structure, while shared semantic parsing enforces duplicate/UTF8/byte/body/framing/capability/peer/replay/binding rules under provisioned producer identity. Old Node structural corpus and mock fixtures do not qualify nginx mode, authenticated evidence or public Draft v0 conformance.",
+  "pages": [
+    "docs/reference/gate-origin-contract.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
     {
       "source": "adapters/node/.gitignore",
       "sha256": "ba79bbc25fa8951489e77f28f1561c2e9388115cb33f1c606424f8e08169f96b",

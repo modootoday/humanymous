@@ -249,9 +249,12 @@ The current shim maps DENY to 403 and other non-ALLOW verdicts, including
 CHALLENGE, to 503. It does not inject a challenge recovery page. These are
 candidate implementation mappings, not generic Draft v0 status assignments.
 
-The middleware also catches selected exceptions from the downstream application.
-A later 503 or connection abort therefore does not prove that the application
-was never called or that its effects rolled back. The candidate package requires
+Selected dependency and input exceptions before application handoff become a
+503 or connection abort. The downstream application runs outside that catch;
+its exceptions retain the host application's normal handling. A `finally` block
+restores the original request stream and disposes the replay buffer. A later
+error does not prove that the application was never called or that its effects
+rolled back. The candidate package requires
 a supplied native artifact and runtime identifier; that check alone does not
 verify its hash or package lineage. .NET 10 target metadata,
 AOT-compatible settings and a pinned SDK do not qualify an installed package,

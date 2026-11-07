@@ -104,12 +104,15 @@ establish a genuine hosted OS matrix, independent witness/retainer deployment,
 production audit-before-apply or full-product qualification. These frozen results
 do not automatically qualify later source changes or the generic Draft v0 wire.
 
-Working browser transport source now declares `BrowserSession`/`BrowserResponse`
+Browser transport source declares `BrowserSession`/`BrowserResponse`
 and an explicitly selected cookie-free runtime profile. It adds same-origin
 Fetch, bounded complete-body processing and status-bound consumed-counter ACK
 handling, with application Authorization forwarding in that selected profile.
-These changed paths have not been built or exercised in the current review;
-source wiring does not close the P-03, P-05 or P-07 evidence gaps. The
+The Firefox component suite at canonical source `667e98f` passed 66 cases,
+including browser API tests with a synthetic Fetch fixture. Native TCP fixtures
+at runtime source `adb8e3ed` separately exercised the shared client/server model.
+Neither result establishes the positive browser-to-runtime-to-origin join or
+qualifies later changes. The P-03, P-05 and P-07 deployment evidence gaps remain. The
 [browser API reference](../../../reference/browser-collector.md#browser-transport-follow-through-under-source-review)
 records the current bounds and cancellation semantics. This implementation
 experiment does not freeze a generic Draft v0 browser wire profile. An ACK

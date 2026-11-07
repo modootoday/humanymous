@@ -1,0 +1,725 @@
+{
+  "schema": "humanymous.pages-reviewed-report-acceptance/1",
+  "accepted_at_utc": "2026-11-07T12:29:32.543066+00:00",
+  "source_snapshot": "269607366e4b2e37b47a974595b406b66642caae",
+  "scope": "Pages read complete per-file semantic reports and page dispositions; rehashed every proposed source before publishing. Separate current middleware source was read directly. Not a blanket hash renewal.",
+  "reports": [
+    {
+      "report": "collector-fixed-2696-source-review.json",
+      "sha256": "6bf828ff91ea434149932115dd2bdb89f8d14de6188649db706a2c2eedf222e8",
+      "reviewed_files": 55
+    },
+    {
+      "report": "go-adapter/review.json",
+      "sha256": "119475cca56084a2635e2404d69c81ed43d8a2be7c70531f3cee25f5baa26a72",
+      "reviewed_files": 8
+    },
+    {
+      "report": "native-abi/review.json",
+      "sha256": "ce21f4096ac1c9f7345e19e9d10cb2e12468c0cd777c275582b4475a74900a2a",
+      "reviewed_files": 12
+    },
+    {
+      "report": "native-abi/report.md",
+      "sha256": "d2ef18edd5c66acf2388a8ecd828e91e66b109f2590ee5ba3daedbf5e3d655a0"
+    }
+  ],
+  "accepted_count": 75,
+  "accepted": [
+    {
+      "source": "crates/collector/Cargo.toml",
+      "sha256": "29ecee302df403a6118b3495a322d505e9bbacfc2f73151bd0a2d4b0a04ccab1",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/pilot/fixture.json",
+      "sha256": "87a45f212f2974078fb618c1a55bc92b4e0bafddbc1035907f0162ba84be76e9",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/pilot/webdriver.json",
+      "sha256": "5d00b6c3e3a936a28b2def6668894616d9b8c20cc11edbe2e7abc5025997ebf7",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/behavior/cadence.rs",
+      "sha256": "7cb14b5e27fe202cb36df637c99cb55418ff42898b44a4e6610c55549c95ac82",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/behavior/keyboard.rs",
+      "sha256": "8458e89a25b6f2c44ca28b4a3fd1f5e123076947c5d852653c1ebd1f9d0f79e7",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/behavior/mod.rs",
+      "sha256": "d4b1b3636dc280248762e96c7082d297b7640972184134ba61d6838f8a38b058",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/behavior/oracle_tests.rs",
+      "sha256": "90606313dfcb9b84984455907ef1e73ea23511e05548c6ffb972df49577f971d",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/behavior/pointer.rs",
+      "sha256": "8c4610d77106354314a9f2fee98bdfdbf7cc02ea9222905839b6d9250e475788",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/behavior/statistics.rs",
+      "sha256": "a4f06c0949685a5f802e454273e02426dd9bfc32528902a128504b6bb5e0fbad",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/behavior/tests.rs",
+      "sha256": "1bfe035bca056a73107c4b549538309a2d16a44dbbae2d2a7fc43447e50e25af",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/advanced/capabilities.rs",
+      "sha256": "52cd663185cc892351a22d76be4dccc50ad3ae556a599b29d09c0cbca5e5802b",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/advanced/media.rs",
+      "sha256": "1a2244d7a32695541828d0604a2e55505813f6ba44f9f9b3874e622690921722",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/advanced/mod.rs",
+      "sha256": "3567367f0ed899e7767fdc071a2eea07c58e50b15e85d0dacb7e90191433ecf3",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/advanced/profile.rs",
+      "sha256": "1f4479d1f424af71cfdc8c7212241da48344bf2a4281226bc0ec81907046de9d",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/advanced/tests.rs",
+      "sha256": "75a5b507e2e0ea4ab0fb2a0ffa384686a70200d73c9b4890877041d75cafe54f",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/behavior.rs",
+      "sha256": "70c4d058af681f507c9b23d34cdaeeb35f6671dd7c9f23ebfb2908dc49ac2f49",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/behavior/tests.rs",
+      "sha256": "1fb1c1ecaae3c617be81deb7d04b05f7678cba48ccecde57e7299c32ac939440",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/cdp.rs",
+      "sha256": "c6fa32bc79ac5e06d7bb3f9fb1da67e07700f8836e13df6e00d6dbb4037f72a4",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/cdp/tests.rs",
+      "sha256": "dd9edc09fb75734625aaaa8ae41596c6a791b993ad108992f7436d1ca2fd6d47",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/environment/mod.rs",
+      "sha256": "d7d5040f43486e0ed1de274a1b2d15e6d3126ec7d8534af96e3975575a829a09",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/environment/resources.rs",
+      "sha256": "2d10aa171a58dfbc49d43202185dd05c33f90b0bc06a1c75295c8ff7b52e8e56",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/environment/tests.rs",
+      "sha256": "4ff01e154b9aca46b14208c07fca8a510b0591795bb6e2c1e4cb90e67df142ed",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/fingerprint.rs",
+      "sha256": "5a9b4e08892e67e364c2d0626bb2e7e4f09bdd9566cd200578bc96cc09575d36",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/guard/forwarding.rs",
+      "sha256": "63c5bd20be88545b968af3aa82a39bc262f19c38b639910b7cae9da3e81fef05",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/guard/forwarding/tests.rs",
+      "sha256": "827570c0d3dbc37ff9e3fb5d7e29886a4f1b0a661e65af1fe34bf084e87a3316",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/guard/mod.rs",
+      "sha256": "d6a24159c678a56576d0f264b2f3bf5dbbfb93801b66c500fafbf7d0e9bb951b",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/guard/observer.rs",
+      "sha256": "3c4d05600899f91bfdead62f8b8084dd099bd33f66dcc84df3dcf794c1485a37",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/guard/tests.rs",
+      "sha256": "3e460e3c7d5b64f187965a9854c4f6553965190e2cc3b7694e6b0f1d034e0f7b",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/integrity.rs",
+      "sha256": "b311dde0396222340759de1eda95b2198c11f3d0f29c430e1e99d17d3d1ee3b3",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/mod.rs",
+      "sha256": "adb5749db4805837122f1e9f50b911e8df5e0b99d9ebcb28ec82b6d3bbf9602e",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/reflection.rs",
+      "sha256": "04ae46a0e04c62d34ce28ec4ee0f1bad792bfcc3fe2a0fd0f0f7e2b7493055b2",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/abort.rs",
+      "sha256": "d3799055afa27083fd5175b2791b7ea546938d28cf7fb1248203141cafe735a9",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/mod.rs",
+      "sha256": "2fd7d30f5b1f184fc6d23ff8e5d4590222d3749efc771fcc47f415782f9eeaa3",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/timer.rs",
+      "sha256": "fc73b418832018a86daf09ad9e7d2f2237b5098c235ad3d127ac9e95b51acd6c",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/resources/timer/tests.rs",
+      "sha256": "2a3aa9e3b026cff1061a564b35ca2618a6122eb5fa0fc7be9c069b651ce67a22",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/io.rs",
+      "sha256": "49dce7b0ff34b7f7a48979ef621fcafa3bd09d747a99d85e6f15eb65a4191a23",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/mod.rs",
+      "sha256": "d3c80e89546597312f55dd06cdc4bf2d3a4128af820b4028d64b01585958dc17",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/request.rs",
+      "sha256": "10933ea435173105f83dde0de7ffe64a3c9a699a11752f5756df2510f02ce859",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/runtime_pilot.rs",
+      "sha256": "d7e0d11dd2dab3cf78d94989441cfbecbc863f5bc2d522455aa7313b9e72bb5f",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/browser/transport/tests.rs",
+      "sha256": "4dd8d17177e05c45c70734d3ede0d4e4bd04dce64876d68d054ef4304bea26b6",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/detection/fingerprint.rs",
+      "sha256": "688e6851e14bf570c229360721aa5956882f8f4ef0964d544e1c6b7ec6fe468e",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/detection/integrity.rs",
+      "sha256": "22dede93a5b7ca07ce7250b4f09cf202e2a4cbf0ed510396a5acca47e844482d",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/detection/mod.rs",
+      "sha256": "58f4dc31b0d0f52fe5c6491ae4dfd916609793267a57825fc9b2f82e403519c3",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/detection/snapshot.rs",
+      "sha256": "e8c3262b6f0a96b0ff0eb3786b9e26d142ba4c535b9089dc81d586511f598c0c",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/detection/static_client.rs",
+      "sha256": "d567f867f24ffa067622dd72db7d5e35daff9ef0101b82a55bdd9729e96b324a",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/detection/tests.rs",
+      "sha256": "4f4e62064ca22f5a6390fdff8db9b1241a353efd7dc04f488e75cfd48ec880d2",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/guard/mod.rs",
+      "sha256": "026be3a2a58e9d10c60882cd1b6c15210df3a9cc3570b15104c4ff352bd24bce",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/guard/native.rs",
+      "sha256": "cb8ceb08c61cf2fcce4a123b0188e78dc7a92ae1a3fc484ae959c42a4d8b4301",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/guard/tests.rs",
+      "sha256": "7d683a1c51c4893f3efb08aa37e23de76d5936c2ca7122e1065bbf993dcab7c0",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/lib.rs",
+      "sha256": "3e7b3da1ac8a6a2338ccfd44eb6d9aa7d025d97abaa229d1c5271806539d7890",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/session/mod.rs",
+      "sha256": "f055fe565fdb76c22588e7d4ea62b56d7ff2259fb3154df1d4593f0b18b04dc7",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/session/tests.rs",
+      "sha256": "1e436f5f1031997bd367626e126b73f6d37a78a0ea253e7962569b00e4bb838d",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/src/session/wire.rs",
+      "sha256": "2d512b6df4c04de32fce0391838e68a1829793b5ab89216b457ba2251ad5c18c",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/collector/tests/runtime_pilot_contract.rs",
+      "sha256": "fd5e8883698c035b0fb7151b0441df848f2068b4dd50ca8039066e7a8bc12524",
+      "reviewer": "/root/collector_freshness_review subagent (not Pages)",
+      "report": "collector-fixed-2696-source-review.json",
+      "pages": [
+        "docs/reference/browser-collector.md"
+      ]
+    },
+    {
+      "source": "adapters/go/pilot-contract.json",
+      "sha256": "0127d059dd98cefbddf6545894e3c3cf3117a3dd45f42a6973950b8496419dcc",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/go-adapter/Cargo.toml",
+      "sha256": "7f7d9a95f8e9576a0b98e3068f771e2f632f2dfca88bd72b36f7cfcf787939e7",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/go-adapter/INTEGRATION.md",
+      "sha256": "46536a3e6ff51d5a7e9be8ab612cc7539bc3c1c0562023ee08c38139135c7b2c",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/go-adapter/src/lib.rs",
+      "sha256": "61d8d5bb1b6ce5830d341a35133113ba885206124c57cefae1707931ed390b82",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/go-adapter/src/probe.rs",
+      "sha256": "efef4c891f432df88bdae1fb711039fd2c44f9e4ca9922ec22ffd861b6c5c771",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/go-adapter/src/qualification.rs",
+      "sha256": "4fc4bc1bef26d25f3953b9bbe567bef8be6c44b9e7ca2a034f87acb59fe7e42f",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/go-adapter/src/scenario.rs",
+      "sha256": "0ab7e7e900aeda979ec4e3c3867a3ce54d38861cd7e2209df3a52c449850895d",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/go-adapter/src/scenario/tests.rs",
+      "sha256": "69c5674d7859a01a53ef0a853b8794bb07a3c531204f2454767ed804e3064128",
+      "reviewer": "Codex Go adapter owner, same implementation author; not an independent external reviewer",
+      "report": "go-adapter/review.json",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/Cargo.toml",
+      "sha256": "5a5670505881cc8443125646db7da0297b201d66f56733ce5394c72a97ee9288",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/INTEGRATION.md",
+      "sha256": "cadfb28bfc2e13e8eba3892de1ae28ae7a6975622026e067bdf02b26d8b1a996",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/export/Cargo.toml",
+      "sha256": "f46ec9c16454615f4e29e4ee0f04634ce74e889f0dc9d7ae710d135958b327dc",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/export/examples/header_conformance.rs",
+      "sha256": "a0f438b3dfa48e6e4c21a66a12b0c2f6c3992e610d895205ca8c01af9a2b46a1",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/export/examples/local_msvc.rs",
+      "sha256": "68d6c105edee241d0ea86afdfbffed4ec8f8ad41cd3a1598f9a314e8dd8d833f",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/export/src/lib.rs",
+      "sha256": "13c6180cab314fbfbff1791fae4496990f6c208f3fed6d5f7385ea734c966080",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/src/boundary.rs",
+      "sha256": "333d994cfd9d2398529b50bc866c642fa73ea0f5e02508f15ef6032f58660919",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/src/command.rs",
+      "sha256": "527859d9e5f85ed5f3e3bf7df989047c49e2cc4484c4fe361f21a05bdbfc1efb",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/src/lib.rs",
+      "sha256": "17df48a73db67b636d943ee04eeadfa3171d4a9a3eda03ddca9a79fddb044c6d",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/src/registry.rs",
+      "sha256": "447926b6fdc1f83e57b25a422c515b107def22f468749657ea03cb638c5ceac7",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/src/registry/tests.rs",
+      "sha256": "2cf744c7f98ab036392bd1aed31322730e1b65ab3a19636312f4f34e78394bfd",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "crates/native-abi/src/wire.rs",
+      "sha256": "74d5e37c452aa3fd18367bcfda893c9eb0859aa60d210c944e19b2043deb76e5",
+      "reviewer": "Codex native-abi owner / chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+      "report": "native-abi/report.md",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    },
+    {
+      "source": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
+      "sha256": "e4f3382af6786ec04cafc2af712b78c330433bd06d0b3a1cd17fc212b1268522",
+      "reviewer": "codex/rust-pages",
+      "report": "Pages direct full-file read",
+      "pages": [
+        "docs/reference/supported-topologies.md"
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "source": "crates/collector/INTEGRATION.md",
+      "reviewed_sha256": "8eb4138907d6b4bf0a5402c3d433aeee701685a9dd4a9dfbeca09b9608dbb71e",
+      "current_sha256": "3359f7ea4b8ecacbeea251550158b2065e5b3e3a85ba5b599078870945e7702d",
+      "reason": "Changed after complete reviewed snapshot; no renewal"
+    }
+  ],
+  "independent_external_review": false,
+  "new_execution": "NOT_RUN",
+  "complete_current_source_freshness": false,
+  "prior_preview_covers_new_docs": false
+}
