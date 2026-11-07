@@ -134,6 +134,17 @@ These setup results do not replace hosted product or original paired qualificati
 The pinned upstream harness has fixed auth/config routing; local endpoint support
 needs an explicit supported integration, never a hidden auth/sandbox workaround.
 
+The later explicit2026-11-08 user authorization and confirmation superseded the
+local CPU hold for a distinct profile, not the historical GPU or Codex/bwrap gates.
+Sources5ff7bf1b/cca0e85c ran64 actual local CPU subject attempts:60 final answers,
+4 incomplete,132 inference calls and144084 observed tokens, APIcharge0USD. Dynamic
+discovery and supplied-context exposure remain separate; the same-model judge is
+demonstrably unreliable and no behavior improvement is qualified. Both model
+sessions/PIDs/listener and target lease returned terminal before the original
+one-hour deadline. Details: `.agents/evals/local-rust-paired-results.md` and raw
+evidence:root/20261107174635. Full76 library units/build/strictClippy passed for
+the supplied-context driver. This does not erase hosted/provider/fullM11 debt.
+
 ## Canonical transition
 
 Root removed137 tracked generated vendor copies under the later explicit user
@@ -239,3 +250,17 @@ unchanged42-input closure. Raw evidence:root/20261107172013 binds the unique phy
 target/create-new lease and terminal return. Supplied assertions never become
 independent proof or retirement authority. Archive/read-back/OS/owner qualification
 and the mutator remain unimplemented/unqualified; full33 integration remains open.
+
+## Local inference GPU compatibility seam
+
+CPU64-attempt results remain immutable. The separate source-only proposal at
+`.agents/evals/local-rust-gpu-compatibility.md` binds upstream0.9.5 tag/commit and
+Candle revision, release assets and read-only NVML evidence:root/20261107184338.
+Actual RTX4070Ti/8.9 visibility and driver610.88/UMD13.3 do not qualify an installed
+SDK, native Windows CUDA build, Linux venue or usable model VRAM. The current
+Windows executable is CPU-only by its release route; no backend switch or GPU
+pilot occurred. A future matched CPU/GPU experiment requires root's reviewed
+implementation/venue/resource decision, original model/tokenizer/template/arms,
+reported actual placement/dtype, bounded lifecycle and a reliable quality grader.
+No global selection policy, dependency/pin, shader/native helper or unsafe code
+was added. GPU speed cannot repair the observed subject/judge quality failures.

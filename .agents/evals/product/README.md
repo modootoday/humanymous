@@ -15,3 +15,9 @@ These source fixtures have not been executed and imply no measured improvement.
 
 Stage under the product plugin's evals directory; do not load internal developer
 skills into either arm. Keep active provider mirrors and user-global config intact.
+
+The same source tasks have now been executed in the separate user-authorized
+Windows CPU local Rust profile:12 subjects in automatic selection and12 in
+supplied-context comparison. See `.agents/evals/local-rust-paired-results.md` for
+actual denominators, nonactivation and judge unreliability. This does not satisfy
+the original upstream Codex/bwrap hosted contract or establish improvement.

@@ -108,6 +108,27 @@ foreign helper is introduced. Resource admission/physical lease remains required
 before compiler/model initialization. This does not relax or counterfeit the
 original Codex/bwrap hosted or full M11 qualification contracts.
 
+The confirmed CPU experiment is now actual:64 subject attempts across separate
+32-run automatic-discovery and supplied-context profiles,60 final answers and
+4 incomplete, with132 inference calls/144084 observed tokens and APIcharge0USD.
+Sources5ff7bf1b and cca0e85c use unchanged task/rubric hashes and immutable archived
+inputs. Repeated-read and output-limit failures remain explicit. Same-model judge
+PASS results conflict with source-bound rubric counterexamples; quality effect
+stays unqualified. Results are `.agents/evals/local-rust-paired-results.md`, raw
+evidence:root/20261107174635. CPU/backend stayed unchanged; both model sessions and
+target leases returned terminal before the original deadline. No GPU qualification,
+Codex/bwrap/provider or full M11 completion follows.
+
+The separate GPU research proposal is `.agents/evals/local-rust-gpu-compatibility.md`,
+with tagged mistral.rs0.9.5/Candle source and raw read-only Windows NVML evidence
+at evidence:root/20261107184338. RTX4070Ti/compute8.9, driver610.88 and a free-memory
+snapshot establish device visibility only, not a working CUDA model or reserved
+VRAM. Windows CPU, Windows CUDA source candidate, Linux CUDA/sm89, Apple Metal and
+unestablished Vulkan/software paths remain distinct. Proposed selection, budgets,
+numeric/cancel/device-loss and matched-study gates are not implemented grants.
+No backend switch, driver/SDK install, dependency, shader, unsafe or GPU inference
+was performed; root retains cross-project policy and any implementation decision.
+
 ## Draft new-lane coexistence v0.3
 
 Root requested a minimal Rust-only coexistence design for convention-audit and

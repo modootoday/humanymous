@@ -20,3 +20,9 @@ Accounting keeps observed nonactivation/misrouting separate from missing data:
 discovery_failures and target-read counts retain those failures without dropping
 behavior runs. A complete accounting result is not a passing discovery result or
 proof that a numeric arm difference was caused by the skill.
+
+The same source tasks have now been executed in the separate user-authorized
+Windows CPU local Rust profile:20 subjects in automatic selection and20 in
+supplied-context comparison. See `.agents/evals/local-rust-paired-results.md` for
+actual repeated-read/truncation failures and judge unreliability. Original hosted
+Codex/provider qualification remains open; no benefit delta is inferred.

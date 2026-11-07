@@ -3,12 +3,14 @@ id: evidence:root/20261107073348
 title: Agents M11 product skills
 status: active
 created: 2026-11-07T07:33:48Z
-updated: 2026-11-07T17:24:46Z
+updated: 2026-11-07T18:53:34Z
 files:
   - {path: hosted-813-summary.json, sha256: 245218b433c356a94c8e8c90621ebaec906fd733fa9accad4412964af9af27cd, bytes: 873, store: repo}
   - {path: status.json, sha256: f46fc8b2bf6da4814a7c597dfad0e022be24d9006992b3dc146412df5a8cb578, bytes: 4147, store: repo}
   - {path: bounded-consumers-windows-summary.json, sha256: 8dadbb4329937a1b10a01611a8939b2fd635432247af753e07fab56861fb289d, bytes: 3064, store: repo}
   - {path: evidence-layout-windows-summary.json, sha256: 8e76e3b8105d2c107913a811e0d9385b3fecfdbc8ec2263dba152bb8d764623c, bytes: 2303, store: repo}
+  - {path: local-rust-paired-summary.json, sha256: c3ad6dceb564ea9c76080b4cafed0a8b8c26413b6fecbee7a30acb2c16772746, bytes: 3454, store: repo}
+  - {path: local-runtime-gpu-research-summary.json, sha256: 33d3e6bd45db05b93aad5902fcd158aae84f445736963b92ad89bc0cfbdfc636, bytes: 1179, store: repo}
 ---
 
 # Agents M11 product skills

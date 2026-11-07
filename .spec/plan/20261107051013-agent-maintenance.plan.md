@@ -810,3 +810,24 @@ Same-model judge limitations remain explicit; actual reads are not adherence pro
 Compilation/model resource allocation and actual32-run completion remain pending
 at this source checkpoint. No inference, paid API or hosted/Codex qualification is
 claimed before terminal raw results. See the distinct local Rust paired profile.
+
+The user explicitly confirmed completion of both32-run CPU studies. Actual results
+are now64 attempts/60 final answers/4 incomplete. Automatic release-plan treatments
+repeatedly read the skill without finishing; supplied-context CI-identity answers
+hit768-token output limits. All task/rubric hashes matched across phases and16
+baseline answers were identical.132 calls/144084 tokens incurred no external API
+charge. The local judge passed clear policy violations; raw grades are preserved,
+but no quality benefit is qualified. Both foreground servers, exact PIDs, children,
+listener and target lease returned terminal before the original18:59:33UTC deadline.
+Sourcecca0e85c passed full76 library units/build/strictClippy. Source/seed/policy and
+tokenizer warnings remain visible in raw evidence:root/20261107174635. The public
+report preserves separate original hosted/provider/fullM11 gates.
+
+After CPU shutdown, the separately requested GPU research records exact tagged
+source, release asset identities and read-only NVML hardware/driver/memory evidence.
+The owned compatibility proposal separates eligibility from usable CUDA/context
+proof, CPU fallback from require-GPU refusal, and matched semantics from speed.
+Theoretical896MiB KV and provisional budgets are not measured allocation or a
+resource grant. No GPU/SDK/backend/dependency change or extra inference ran.
+Actual CUDA/Metal/Vulkan/platform, numeric parity and cancel/device-loss pilots
+remain NOT_RUN pending root's separate reviewed implementation/allocation.
