@@ -1,0 +1,101 @@
+{
+  "scope": "Complete fixed source composition/lifetime review",
+  "candidate": "0036da8c5e5cb49643dcb9b8aa9e4fd18543ec08",
+  "reviewed_files": 6,
+  "lines": 1318,
+  "reviews": [
+    {
+      "source": "crates/runtime/src/lib.rs",
+      "lines": 17,
+      "sha256": "69ece5ec5219113b8e09c165de475ea8e8248e32293ed1f7866bc36bdf201f02",
+      "current_primary_sha256": "69ece5ec5219113b8e09c165de475ea8e8248e32293ed1f7866bc36bdf201f02",
+      "matches_prior_owner_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete17-line public module composition and shared Rejection re-export; no separate scoring or cryptographic implementation.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/startup.rs",
+      "lines": 158,
+      "sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db",
+      "current_primary_sha256": "2d09999d62983f02cb6b7b1ab7ba3a737aca548896c5fea4e8f206c2fa2b59db",
+      "matches_prior_owner_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete158-line existing sealed custody/audit owner lifetime, typed pinned external witness injection, mandatory witness fail-closed, explicit trusted-head recovery and platform owner selection. Key pin/presence is not organizational/process independence; no runtime key provisioning or automatic writer-only fallback.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/application.rs",
+      "lines": 607,
+      "sha256": "3f48880645334ba59a6ddeae648d63da3ef94ac46983e1b8a6b5061116508554",
+      "current_primary_sha256": "3f48880645334ba59a6ddeae648d63da3ef94ac46983e1b8a6b5061116508554",
+      "matches_prior_owner_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete607-line serialized application: exact route/capability/profile gate, token consumed before admission/downstream work, registry-owned scoring inputs, minimized request commitments, audit append then deadline checks and origin connect/pre-first-write liveness checks. Public Decision enum is a decision result, not an unforgeable one-use external dispatch capability; actual serialized connection path owns dispatch/no retry. Slow/blocking work is not hard preemption proof.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/application/settings.rs",
+      "lines": 153,
+      "sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61",
+      "current_primary_sha256": "edb04ba524f26f78af29071f6e658e4a17a578d3a9a3b043804e31cfc54bee61",
+      "matches_prior_owner_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete153-line native settings command serialization between requests, exact scope/CAS, context/deadline/stop checks around durable commit and apply, session invalidation and profile update. Post-stage ambiguity poisons epoch and reports outcome unknown; lost response cannot authorize mutation retry.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/application/tls.rs",
+      "lines": 184,
+      "sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6",
+      "current_primary_sha256": "141c2eb27eb33c90a8724296a878ae8d9eda8b15c956fedb13d7e16618bdd1f6",
+      "matches_prior_owner_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete184-line optional serialized TLS/H1 consumer, original handshaken owner, idle checks after audit/connect, buffered origin response and explicit stop/deadline gates. No plaintext fallback, browser/H2/stream profile inference or current TLS deployment qualification from source.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/runtime/src/tls.rs",
+      "lines": 199,
+      "sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db",
+      "current_primary_sha256": "dd888f72318390c30cf01c77565b01555a965348d586c767ccc255d10a9c84db",
+      "matches_prior_owner_source": true,
+      "delta_kind": "added",
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete199-line bounded captured request+same connection ownership, strict shared HTTP parsing on owned blocking worker, cancellation/socket shutdown plus synchronous worker join, bounded consuming response. Supervisor still owns ultimate process deadline. Buffered native-only/HTTP1 ALPN policy test does not prove actual handshake/cancellation/AT.",
+      "pages": [
+        "docs/reference/gate-origin-contract.md",
+        "docs/reference/cli-config-policy.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "execution": "NOT_RUN",
+  "qualification": "Read source, existing component evidence and declared policy are separate from current actual TLS/browser/AT, supervisor/independent witness or whole product qualification",
+  "public_ledger": "Frozen candidate unchanged; preserve individual hashes and later reconcile only after source review"
+}

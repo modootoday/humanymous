@@ -2111,3 +2111,16 @@ remains pending narrow window. Strict framing/authorization reconstruction and
 status-bound ACK model do not establish arbitrary HTTP compatibility, native
 peer identity from Fetch metadata, real browser/human/AT or effect receipts.
 Recorded substantive per-file notes; frozen public ledger/content untouched.
+
+### Fixed Runtime application and lifetime manual batch
+
+Read public composition17/startup158/application607/settings bridge153/TLS
+consumer184/captured TLS owner199 completely,1318lines. Six new inventory source
+hashes all match primary working bytes. Exact route/capability/token/admission/
+audit/origin ordering and repeated liveness/deadline checks are separate from
+public Decision enum construction and arbitrary caller one-use enforcement.
+Reviewed scope-bound witness/custody lifetime, explicit recovery, settings poison
+and joined blocking TLS cancellation; these do not prove independent deployment
+or hard manager deadline enforcement. Frozen public docs unchanged. No Cargo,
+native TLS, browser or AT execution inferred; source batch attached for later
+manual-ledger reconciliation.
