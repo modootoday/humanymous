@@ -244,6 +244,41 @@ impl Compiler {
     }
 }
 
+fn argv_record(command: &Command) -> Result<String, &'static str> {
+    let program = public_tool_path(Path::new(command.get_program()))?;
+    let args: Vec<_> = command.get_args().collect();
+    if args.len() != 7 {
+        return Err("compiler argv denominator refused");
+    }
+    let mut text = format!("schema=humanymous.header-compiler-argv/1\nprogram={program}\n");
+    for (index, arg) in args.iter().enumerate() {
+        let arg = arg.to_str().ok_or("compiler argv is not UTF-8")?;
+        if arg.len() > 1024
+            || arg.is_empty()
+            || !arg
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || b"/_.+-=".contains(&byte))
+        {
+            return Err("compiler argv outside bounded metadata profile");
+        }
+        text.push_str(&format!("arg{index:02}={arg}\n"));
+    }
+    public_tool_path(Path::new(args[6]))?;
+    Ok(text)
+}
+
+fn save_argv(output: &Path, label: &str, command: &Command) -> Result<(), &'static str> {
+    let text = argv_record(command)?;
+    let path = output.with_extension(format!("{label}-argv.txt"));
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)
+        .map_err(|_| "fresh private compiler argv sibling required")?;
+    file.write_all(text.as_bytes())
+        .map_err(|_| "cannot retain private compiler argv")
+}
+
 fn run() -> Result<(), &'static str> {
     // Environment checks prevent accidental local execution; they are not an
     // attestation against a malicious host that can forge its own environment.
@@ -297,7 +332,8 @@ fn run() -> Result<(), &'static str> {
                 return Err("compiler metadata failed");
             }
         }
-        let result = Command::new(&compiler.invocation)
+        let mut command = Command::new(&compiler.invocation);
+        command
             .args([
                 "-x",
                 language,
@@ -306,7 +342,11 @@ fn run() -> Result<(), &'static str> {
                 "-fdump-record-layouts-complete",
             ])
             .arg(format!("-std={standard}"))
-            .arg(&header)
+            .arg(&header);
+        // Observe this exact Command, including its private actual header path;
+        // only its digest and labelled template may enter the public context.
+        save_argv(output, label, &command)?;
+        let result = command
             .output()
             .map_err(|_| "compiler execution unavailable")?;
         save(output, &format!("{label}-stdout.txt"), &result.stdout)?;
@@ -355,6 +395,47 @@ fn main() -> ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn actual_command_argv_is_observed_without_template_substitution() {
+        let mut command = Command::new("/usr/bin/clang++");
+        command.args([
+            "-x",
+            "c++",
+            "-fsyntax-only",
+            "-Xclang",
+            "-fdump-record-layouts-complete",
+            "-std=c++11",
+            "/private-run/native-abi-v1.h",
+        ]);
+        let text = argv_record(&command).unwrap();
+        assert_eq!(text.lines().count(), 9);
+        assert!(
+            text.starts_with(
+                "schema=humanymous.header-compiler-argv/1\nprogram=/usr/bin/clang++\n"
+            )
+        );
+        assert!(text.ends_with("arg06=/private-run/native-abi-v1.h\n"));
+        command.arg("extra");
+        assert!(argv_record(&command).is_err());
+    }
+
+    #[test]
+    fn private_command_argv_refuses_control_injection_and_relative_header() {
+        for header in ["relative.h", "/private/a b.h", "/private/a\narg07=extra"] {
+            let mut command = Command::new("/usr/bin/clang");
+            command.args([
+                "-x",
+                "c",
+                "-fsyntax-only",
+                "-Xclang",
+                "-fdump-record-layouts-complete",
+                "-std=c11",
+                header,
+            ]);
+            assert!(argv_record(&command).is_err());
+        }
+    }
+
     #[test]
     fn compiler_identity_digest_requires_exact_path_lowercase_hex_and_one_line() {
         let path = Path::new("/usr/lib/llvm-18/bin/clang");

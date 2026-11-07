@@ -199,6 +199,19 @@ seventeenth original payload. Existing scope/success marker and thirteen names
 remain unchanged. Missing stock hash utility is a failed prerequisite, not a
 fallback to compiler labels or an inferred hash.
 
+ABI-17: Immediately before each real layout invocation, the same configured
+Command supplies get_program/get_args to a new private sibling
+header-compiler.c-argv.txt or header-compiler.cpp-argv.txt. The exact nine LF
+lines are schema=humanymous.header-compiler-argv/1, program and arg00 through
+arg06. Bounded ASCII values reject whitespace/control injection; the header
+argument must be absolute and in the accepted path profile. This captures the
+actual configured invocation, not a reconstructed template. Delivery hashes
+those original record bytes and exports only their digest and a labelled typed
+template; actual private header paths remain private. Neither argv sibling is
+a seventeenth payload. The record is an observation from trusted owner source,
+not a kernel execution trace or atomic process-image attestation. Failed calls
+may leave private records but cannot obtain scope success or proof completion.
+
 ## C++ contract
 
 ABI-14: The separately authorized local Windows x64 profile uses the explicit
