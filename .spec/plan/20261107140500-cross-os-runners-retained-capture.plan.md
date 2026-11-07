@@ -611,3 +611,20 @@ terminal; copying only the parent is insufficient. Root was notified. This is
 trusted component source/artifact closure, not producer or loaded-image attestation.
 Actual CLI gate remains NOT_RUN until controller checks/build/hash handoff plus
 fresh resource admission. SCM/accounts/privileges/native producer remain excluded.
+
+## Closed CLI profile static terminal and handoff v1.4
+
+On immutable24004321/controller49e488ea, four pure controller cases pass with
+38filtered and0failed/ignored/measured. Fmt FIRST, all-target check, strict Clippy
+and build pass; selected source/registry/config/tools/flags stay equal. Copied
+controller SHA2563ff6cb8e35454571a682e4a2d224d62e4bd3a4852dbc398d81d07ff2c7d474c0
+was handed to the CLI owner immediately after compiler target return. Native
+owner executes no duplicate CLI parent; canonical build receipt is registered as
+cli-controller-profile-summary.json.
+
+Controller parent_test_passed is actual exit0 plus timely native cleanup, NOT a
+Rust-harness selector/footer parser. CLI independently requires exactly one
+selected parent and all four correct subcase observations, along with both
+parent and baked fixture artifact pins. CLI reported its sole actual invocation
+terminal with parent1/four subcases, but that actual durable receipt belongs to
+the CLI owner and is not manufactured by this static build handoff.

@@ -1,0 +1,89 @@
+{
+  "schema": "humanymous.cli-controller-profile-build/1",
+  "status": "passed-profile-pure-static-build-only",
+  "base_sha": "2400432116a0ddd5b9d29ced92ab46954c2f24d2",
+  "controller_source_sha256": "49e488eafc08c6b36d13a156f7791d381d16c0a7cf563b68a7c8b6a17d9cf830",
+  "controller_binary_sha256": "3ff6cb8e35454571a682e4a2d224d62e4bd3a4852dbc398d81d07ff2c7d474c0",
+  "profile": {
+    "outer_cleanup_ms": 15000,
+    "outer_run_ms": 10000,
+    "selector": "final_delivery_watchdog_with_retained_unread_pipes",
+    "case": "cli-watchdog",
+    "expected_sha256_required": true,
+    "executable": "watchdog_boundary-<16lowerhex>.exe"
+  },
+  "pure": {
+    "failed": 0,
+    "measured": 0,
+    "passed": 4,
+    "filtered": 38,
+    "ignored": 0
+  },
+  "checks": {
+    "fmt_first": 0,
+    "strict_clippy": 0,
+    "build": 0,
+    "all_targets_check": 0
+  },
+  "admission": {
+    "commit_percent": 63,
+    "physical_available_mib": 36354,
+    "disk_free_bytes": 126872055808,
+    "utc": "2026-11-07T16:44:17.6855535Z"
+  },
+  "selected_source_files": 109,
+  "registry_packages": 31,
+  "differences": 0,
+  "actual_cli_execution_by_native": 0,
+  "compiler_reservation": "returned at terminal",
+  "invocation_owner": "CLI owner; exactly one parent with four separately checked subcase outcomes",
+  "artifact_requirement": "CLI pins parent and separate compile-time service fixture; exact fixture artifact-write lease lasts through actual terminal",
+  "limits": [
+    "Controller exit0 and cleanup facts do not parse the Rust harness footer; CLI independently requires selected parent1 and all four subcases.",
+    "No arbitrary selector/argv/PID, new FFI, SCM/account or producer authority.",
+    "Native5 historical receipt does not qualify this new profile or actual CLI behavior.",
+    "Outer live-parent timeout and unassigned failures remain not fault-injected."
+  ],
+  "raw": {
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/admission.json": {
+      "sha256": "d91da946d1a1849a0d2059fdef70998487eac0de1e88d392ca99ad3794a2adf7",
+      "bytes": 142
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/before.json": {
+      "sha256": "2128c457f90929433af484da3dfc18563e7cb893bbeb7c9703cfc67727e59180",
+      "bytes": 239559
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/after.json": {
+      "sha256": "2128c457f90929433af484da3dfc18563e7cb893bbeb7c9703cfc67727e59180",
+      "bytes": 239559
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/results.json": {
+      "sha256": "df40407064d5df14cc0f7a762917a49d87a1bfec04a443fd9dee38d04c7a4d87",
+      "bytes": 249
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/fmt-first.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/controller-pure.log": {
+      "sha256": "f9d348a4bee73f79382d6747dfebe5ee20352b52f1759ba8f37768dfa98bbade",
+      "bytes": 1440
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/controller-check.log": {
+      "sha256": "4c1392c15dc3743c4b5d4eb6744fcdb7b555af484a805d01ead15333bda2d09d",
+      "bytes": 791
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/controller-clippy.log": {
+      "sha256": "36fb819a3ec1eda50b1aa5afffb7a73657d368b83eebfafe580bcbc05cf3e308",
+      "bytes": 257
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/controller-build.log": {
+      "sha256": "663a9d9deb5fda3e252983729aa7a3c11f0038031f6ce37e8f9cfb6a53ce03a2",
+      "bytes": 44192
+    },
+    ".spec.local/root/evidence/20261107164200-windows-runner-cli-controller/binary-handoff.json": {
+      "sha256": "b67d4aaf3a7c237872da5b4df37863ece0513b0a1e95a734995f8767bf76c850",
+      "bytes": 393
+    }
+  }
+}

@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: cli-controller-profile-summary.json, sha256: 0d3aacd5d063b9e40ef1f725497a5c60d978158c19bc0a730bfa8669040060ac, bytes: 3950, store: repo}
   - {path: controlled-capture-parents-summary.json, sha256: f4c85272e4880f5d971cde18d1e48b328f48fd94099926f8d879384ff4fbd398, bytes: 16844, store: repo}
   - {path: common-owner-pure-summary.json, sha256: df3a4a83bddb3614cc43679b71139c669bba89e56d3c99a52eebb0065be7c726, bytes: 6119, store: repo}
   - {path: binding-capture-bridge-pure-summary.json, sha256: 08d40be7f3270adbc06521a5c9d0381eec8d9a73a75a1d0cc6d48fdb684f2afa, bytes: 7401, store: repo}
@@ -189,3 +190,16 @@ capture consumers' lifetime debt remains open. No CLI0/74, bridge native query/
 ACL-create/WTR, producer, account/SCM/privilege, Docker/GUI or hosted service gate
 ran. The registered controlled-capture-parents-summary.json binds48private attachments;
 receipt assembly's path-grouping error was preserved separately without reruns.
+
+## Closed CLI controller profile build and handoff
+
+Exact24004321 adds only the accepted cli-watchdog literal selector and specific
+watchdog_boundary-<16lowerhex>.exe plus expected SHA256 guard. Four pure controls
+pass (38filtered,0failed/ignored/measured), fmt FIRST/check/strict Clippy/build0.
+Selected input before/after stays equal. Copied controller3ff6cb8e was handed to
+CLI after compiler reservation return; native owner ran NO duplicate CLI parent.
+CLI separately pins its parent and baked service-fixture path through runtime.
+Outer exit0 alone is not the selected Rust footer/four-subcase parser; CLI owns
+those independent checks and its actual receipt. The new build does not inherit
+the native5 historical runtime proof or grant arbitrary process/producer authority.
+See cli-controller-profile-summary.json for exact source, binary and raw hashes.
