@@ -1,18 +1,27 @@
-# Bounded process support
+# Process support and qualification limits
 
-`process::{ManagedChild,capture,capture_with_stderr,Captured}` owns/reaps the
-direct native process, observes actual exit status and bounds readiness/stdout/
-stderr/deadlines. It is test/pilot support, never a product service supervisor.
+Legacy `process::{ManagedChild,capture,capture_with_stderr,Captured}` provides
+direct-child ownership, byte limits and best-effort deadline/exit observations.
+It does not guarantee bounded settlement or joined-worker completion. It is
+test/pilot support, never a product service supervisor.
 `capture(&mut Command,input:&[u8],timeout:Duration,limit:usize)` suppresses stderr;
 `capture_with_stderr` uses the same implementation and returns both streams.
 `Captured{status,stdout,stderr}` has content-redacted Debug (only status/lengths).
 Callers retain raw stdout/stderr only in private evidence, not public diagnostics.
 
 Private startup stdin is limited to4096bytes before launch; each output stream
-has its own byte cap. Overflow/unknown exit/EOF after the total deadline cannot
-become truncated success. A descendant-owning caller must additionally own its
-job/process group. This helper kills/reaps only the direct child and does not
-claim arbitrary descendant containment. No foreign script strings/dependencies.
+has its own byte cap. These bounds do not establish one total operation deadline:
+spawn_with_stderr performs blocking stdin.write_all before monitoring, capture
+starts child.wait(timeout) after spawn, readiness/readers discard their JoinHandle,
+and stop/Drop can block in wait. Overflow/EOF handling therefore does not prove
+bounded cleanup or complete worker settlement. This is a known legacy design
+gap, not a newly observed hang. A descendant-owning caller must additionally own
+its job/process group; direct-child kill/reap does not establish descendant
+containment. No foreign script strings/dependencies.
+
+The additive retained capture/interactive APIs preserve separate ownership and
+settlement obligations described in the cross-OS runner SoT. Their evidence does
+not retroactively qualify legacy callers or close global CA-LIFETIME-01.
 
 Eightlocal Windows tests passed, including actual child nonzero exit, bounded
 hang kill/reap, stdout/stderr overflow, concurrent stderr and content-redacted
