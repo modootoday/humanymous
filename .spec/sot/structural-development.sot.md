@@ -284,6 +284,33 @@ test harnesses use one test worker where appropriate; explicit concurrency tests
 retain their required internal scheduling. Source preparation and evidence work
 do not retain compiler reservations after terminal commands.
 
+### Physical target admission and explicit warm handoff
+
+An allocation must name the resolved absolute Cargo target directory, immutable
+source/workspace, provider/session and a create-new ownership lease marker before
+the first compiler starts. A logical label, board claim or root grant alone is not
+physical exclusivity. Different owners require different physical target paths;
+warm reuse requires the previous owner's actual terminal process observations
+and explicit lease return. A conflicting marker refuses admission; never remove
+or release another owner's marker or kill its process.
+
+On 2026-11-07, root allocated both Browser and Native the physical directory
+C:/workspaces/humanymous/target/validation-native without a filesystem lease.
+Native's first Cargo log records a build-directory lock wait during Browser's
+window. Cargo locking is not a substitute for the ownership contract, nor proof
+of corruption. Preserve observed command exits and source hashes, but classify
+the Native transaction NOT_QUALIFIED_COLLIDED; its two actual fault cases had not
+started. The original transaction deadline is not renewed. Root allocated a
+separate R2 transaction at target/native-outer-faults-62f47765-r2 with fresh outputs,
+an actual ownership marker and separately recorded original deadlines. R2 cannot
+rewrite the failed admission or establish provenance for R1 artifacts.
+
+Potential or confirmed overlap requires exact paths, process/session timelines
+and preserved logs. Source equality alone does not prove target/cache isolation.
+Record unknowns, stop new conflicting starts and qualify fresh isolated outputs
+before making artifact-provenance claims. Do not infer ownership from process
+names or use this rule to stop unrelated projects.
+
 Before launch, require physical available greater than20 GiB and commit below85
 percent. At or beyond either limit, admit no additional compiler and let existing
 bounded commands finish; never kill another owner's process. Root measures actual
