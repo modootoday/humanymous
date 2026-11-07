@@ -1,0 +1,16 @@
+{
+  "scope": "Restricted public Pages archive component, first Windows library execution",
+  "command": "cargo test --locked --offline -p humanymous-pages --lib -- --test-threads=1",
+  "passed": 35,
+  "failed": 1,
+  "ignored": 0,
+  "total": 36,
+  "failure": "Windows symlink_dir fixture setup failed with OS 1314 before the package assertion",
+  "output_chunk": "b2d0f2",
+  "repair": "Replace Windows symlink fixture with ordinary junction using existing locked junction 2.1.0; shared lock integration pending",
+  "subsequent_check_and_clippy": "Output truncated; no success established",
+  "complete_rendered_archive_pilot": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "deployment_performed": false
+}

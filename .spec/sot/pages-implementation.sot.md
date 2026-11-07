@@ -14,6 +14,22 @@ rel:
 
 # Authored Pages implementation and verification
 
+## Public archive roundtrip
+
+The Pages tool owns public-site packaging, separate from CI transport and deployment.
+It must validate rendered output before packaging and after restoring its own
+restricted uncompressed tar archive. Preserve every admitted byte and compare a
+sorted path/length/SHA-256 inventory across the roundtrip. Do not repair missing
+artifact files from authored source. Admit only fixed public site roots and
+reviewed asset extensions; the sole hidden path is `.well-known/security.txt`.
+Refuse symlinks, nonregular entries, traversal/absolute paths, duplicate entries,
+private/debug output and overwrite. Require fresh dedicated output paths outside
+source/site roots, bounded files/bytes and deterministic regular-file tar headers.
+The deployable archive is named `artifact.tar`; CI owns its allowed upload and
+download lifecycle. A passing in-job roundtrip is separate from an actual
+downloaded-artifact roundtrip. Neither qualifies browser, assistive technology,
+source-review freshness or product conformance.
+
 ## Rule
 
 Public content is English authored Markdown. No script generates page bodies.

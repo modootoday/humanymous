@@ -57,6 +57,130 @@ fn valid_source_and_output_are_read_only() {
 }
 
 #[test]
+fn public_archive_roundtrip_preserves_hidden_disclosure_and_rejects_tampering() {
+    let f = Fixture::new();
+    fs::create_dir(f.0.join("site/.well-known")).unwrap();
+    let disclosure = b"Contact: mailto:security@example.invalid\r\n";
+    fs::write(f.0.join("site/.well-known/security.txt"), disclosure).unwrap();
+    let archive = f.0.join("artifact.tar");
+    let manifest = f.0.join("manifest.json");
+    let restored = f.0.join("restored");
+    let args = |site: bool, output: &std::path::Path| {
+        let mut args = vec![
+            "--source".into(),
+            f.0.join("docs").to_str().unwrap().into(),
+            "--archive".into(),
+            archive.to_str().unwrap().into(),
+            "--manifest".into(),
+            manifest.to_str().unwrap().into(),
+            "--restored".into(),
+            output.to_str().unwrap().into(),
+        ];
+        if site {
+            args.extend(["--site".into(), f.0.join("site").to_str().unwrap().into()]);
+        }
+        args.into_iter()
+    };
+    crate::package::command("package", args(true, &restored)).unwrap();
+    assert_eq!(
+        fs::read(restored.join(".well-known/security.txt")).unwrap(),
+        disclosure
+    );
+    let downloaded = f.0.join("downloaded");
+    crate::package::command("archive-check", args(false, &downloaded)).unwrap();
+    assert_eq!(
+        fs::read(downloaded.join("index.html")).unwrap(),
+        fs::read(f.0.join("site/index.html")).unwrap()
+    );
+    let before = fs::read(&archive).unwrap();
+    assert!(crate::package::command("package", args(true, &f.0.join("overwrite"))).is_err());
+    assert_eq!(fs::read(&archive).unwrap(), before);
+    let original_manifest = fs::read(&manifest).unwrap();
+    let mut changed: serde_json::Value = serde_json::from_slice(&original_manifest).unwrap();
+    changed["inventory_sha256"] = "00".repeat(32).into();
+    fs::write(&manifest, serde_json::to_vec(&changed).unwrap()).unwrap();
+    let bad_manifest = f.0.join("bad-manifest");
+    assert!(crate::package::command("archive-check", args(false, &bad_manifest)).is_err());
+    assert!(!bad_manifest.exists());
+    fs::write(&manifest, original_manifest).unwrap();
+    let mut tampered = before;
+    tampered[512] ^= 1;
+    fs::write(&archive, tampered).unwrap();
+    let rejected = f.0.join("rejected");
+    assert!(crate::package::command("archive-check", args(false, &rejected)).is_err());
+    assert!(!rejected.exists());
+}
+
+#[test]
+fn public_archive_missing_disclosure_and_private_files_refuse_before_archive_creation() {
+    let f = Fixture::new();
+    let args = || {
+        vec![
+            "--source".into(),
+            f.0.join("docs").to_str().unwrap().into(),
+            "--site".into(),
+            f.0.join("site").to_str().unwrap().into(),
+            "--archive".into(),
+            f.0.join("artifact.tar").to_str().unwrap().into(),
+            "--manifest".into(),
+            f.0.join("manifest.json").to_str().unwrap().into(),
+            "--restored".into(),
+            f.0.join("restored").to_str().unwrap().into(),
+        ]
+        .into_iter()
+    };
+    assert!(crate::package::command("package", args()).is_err());
+    assert!(!f.0.join("artifact.tar").exists());
+    fs::create_dir(f.0.join("site/.well-known")).unwrap();
+    fs::write(
+        f.0.join("site/.well-known/security.txt"),
+        b"Contact: synthetic",
+    )
+    .unwrap();
+    fs::write(f.0.join("site/.env"), b"synthetic private content").unwrap();
+    assert!(crate::package::command("package", args()).is_err());
+    assert!(!f.0.join("artifact.tar").exists());
+    fs::remove_file(f.0.join("site/.env")).unwrap();
+    fs::create_dir(f.0.join("site/assets")).unwrap();
+    fs::write(
+        f.0.join("site/assets/data.json"),
+        b"{\"note\":\"-----BEGIN PRIVATE KEY-----\"}",
+    )
+    .unwrap();
+    assert!(crate::package::command("package", args()).is_err());
+    assert!(!f.0.join("artifact.tar").exists());
+}
+
+#[cfg(any(unix, windows))]
+#[test]
+fn public_archive_refuses_linked_site_roots_before_creating_outputs() {
+    let f = Fixture::new();
+    let link = f.0.join("linked-site");
+    #[cfg(unix)]
+    std::os::unix::fs::symlink(f.0.join("site"), &link).unwrap();
+    #[cfg(windows)]
+    junction::create(f.0.join("site"), &link).unwrap();
+    let args = vec![
+        "--source".into(),
+        f.0.join("docs").to_str().unwrap().into(),
+        "--site".into(),
+        link.to_str().unwrap().into(),
+        "--archive".into(),
+        f.0.join("artifact.tar").to_str().unwrap().into(),
+        "--manifest".into(),
+        f.0.join("manifest.json").to_str().unwrap().into(),
+        "--restored".into(),
+        f.0.join("restored").to_str().unwrap().into(),
+    ];
+    assert!(crate::package::command("package", args.into_iter()).is_err());
+    assert!(!f.0.join("artifact.tar").exists());
+    #[cfg(windows)]
+    junction::delete(&link).unwrap();
+    #[cfg(unix)]
+    fs::remove_file(&link).unwrap();
+}
+
+#[test]
 fn static_theme_skip_target_and_title_are_not_inferred_from_landmarks() {
     use scraper::Html;
     let valid = "<head><title>Example</title></head><body><a class='mt-skip' href='#doc'>Skip</a><main><div id='doc' tabindex='-1'><h1>Title</h1></div></main></body>";

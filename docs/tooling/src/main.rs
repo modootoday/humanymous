@@ -10,6 +10,9 @@ fn run() -> Result<(), String> {
     if mode == "browser" {
         return browser_command::run(arguments);
     }
+    if matches!(mode.as_str(), "package" | "archive-check") {
+        return humanymous_pages::package::command(&mode, arguments);
+    }
     if matches!(mode.as_str(), "snapshot" | "review-delta") {
         if arguments.next().as_deref() != Some("--root") {
             return Err(format!("{mode} requires --root"));

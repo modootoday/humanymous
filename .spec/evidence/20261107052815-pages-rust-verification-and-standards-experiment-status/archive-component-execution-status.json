@@ -1,0 +1,61 @@
+{
+  "scope": "Windows restricted public archive component after root graph integration e83d5e55",
+  "library": {
+    "failed": 0,
+    "seconds": 1.75,
+    "ignored": 0,
+    "passed": 37
+  },
+  "all_targets_check": "PASS",
+  "all_targets_clippy_warnings_denied": "PASS",
+  "cli_build": "PASS",
+  "execution_chunk": "e6ef95",
+  "cli_build_chunk": "f30530",
+  "first_failure_preserved": "archive-first-execution-status.json",
+  "junction_fixture": "Ordinary Windows junction creation, package refusal and deletion executed without elevation",
+  "downloaded_historical_artifacts": {
+    "apex": "exit 1 missing /.well-known/security.txt; archive/manifest/restored absent",
+    "manually_repaired": false,
+    "chunk": "f4792f",
+    "subpath": "exit 1 missing /humanymous/.well-known/security.txt; archive/manifest/restored absent"
+  },
+  "selected_input_hashes_after_execution": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "2d1c19bb8ec21249b291bcb0918daa54f144a295b2bca9e0473a877bed7ce13d"
+    },
+    {
+      "path": "docs/tooling/Cargo.toml",
+      "sha256": "212c6762fc4034ea20f65ead583424bb16b01409492a33d60ddf97a5f2afd7ad"
+    },
+    {
+      "path": "docs/tooling/src/package.rs",
+      "sha256": "2ab4507edd3d77bdf7d0e34f6d030abd607a1454e8bed60f305699eb96d0cad8"
+    },
+    {
+      "path": "docs/tooling/src/package/tar.rs",
+      "sha256": "545b454647546600c1c548a656aec41c684513706e75e0edd68963692d2dcb42"
+    },
+    {
+      "path": "docs/tooling/src/main.rs",
+      "sha256": "503c3563fa2894a08523344df195cb99b12396734472a310f0dfaf737de64b88"
+    },
+    {
+      "path": "docs/tooling/src/lib.rs",
+      "sha256": "538df6a7f851ca5c00a482e927683611e7f8ec9e5ea0e2e4b9c544e950008fbc"
+    },
+    {
+      "path": "docs/tooling/src/tests.rs",
+      "sha256": "3de6479823d9740b09b4272db579d6422224c8c011bb394eb11a12279e559115"
+    }
+  ],
+  "hash_scope": "Post-execution selected inputs only; not a full immutable source closure",
+  "complete_rendered_archive_pilot": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "assistive_technology": "NOT_RUN",
+  "deployment_performed": false
+}

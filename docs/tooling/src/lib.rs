@@ -6,6 +6,8 @@ mod files;
 mod inputs;
 mod navigation;
 mod output;
+/// Restricted public-site archive production and downloaded archive verification.
+pub mod package;
 pub mod review;
 pub mod snapshot;
 mod source;

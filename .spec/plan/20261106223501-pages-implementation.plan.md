@@ -1962,3 +1962,30 @@ fixtures replace hardcoded0; no compilation/nativeexecution. Attached distinct
 sourcefollowup, kept olddocsreceipt unchanged duringfreeze. Auditaccounting file
 read: raw101 minus oneenvabsent no-ophelper =>100acceptedcases; no public101claim
 found, historicalraw preserved.
+### Restricted public archive implementation and first execution
+
+Implemented a bounded deterministic regular-file USTAR profile with sorted
+path/length/SHA-256 inventory, strict public path allowlist and sole hidden
+security disclosure exception. Package validates rendered output, re-reads its
+actual archive, restores exact bytes into a fresh tree and validates again.
+Archive-check requires matching source digest, archive hash and trusted manifest.
+Links, reparse points, private paths, duplicate case-folded names, unsupported tar
+headers, truncation, extra trailing bytes and overwrite attempts refuse.
+
+First Windows library execution: 36 total, 35 passed, one failed, zero ignored.
+Failure was symlink fixture setup OS 1314 before packager assertion; retain this
+failure. Root approved a Windows-only test dependency on already-locked junction
+2.1.0 for a nonprivileged reparse fixture. Manifest edge and fixture are ready;
+Cargo is paused for root's serial shared-lock integration. A separate aggregate
+content-budget regression was subsequently added and remains unexecuted.
+Check/Clippy output was truncated; no pass is inferred. Complete actual rendered
+archive, browser preview and assistive-technology validation remain pending.
+
+Root integrated exact dependency edge in e83d5e55 and released D. Actual locked/offline
+Windows library execution passed 37/37 with zero ignored; all-target check and
+Clippy with warnings denied passed, CLI built. Ordinary junction refusal fixture
+executed. Actual historical downloaded apex and subpath package commands each
+refused missing security disclosure with exit 1 before archive/manifest/restore
+creation. No historical artifact repair. Selected post-execution input hashes
+recorded, not a full immutable closure. D returned; complete build/archive and
+browser/AT still pending. First 35/1 failure remains independently attached.
