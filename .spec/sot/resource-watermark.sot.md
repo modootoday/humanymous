@@ -11,7 +11,7 @@ rel:
 
 # Resource watermark migration contract
 
-Version 0.2.0. Root accepted the reconstructed contract, distinct
+Version 0.3.0. Root accepted the reconstructed contract, distinct
 `crates/watermark` / `humanymous-watermark` package and W01–W09 safety corrections.
 The first source-only implementation grant covers payload/carrier, bounded
 volatile ledger/reservation/cancellation and their tests, using existing
@@ -25,6 +25,12 @@ and complete fourteen-row status are in plan:root/20261107135500. Pages window
 prohibits compiler/workload execution. This newer source is not covered by the
 earlier A16 source-specific pass. WASM validator adoption and PNG remain pending;
 strict MIME identification alone does not implement those formats.
+
+Evidence:root/20261107144843 qualifies corrected2eb2069a pure components with
+29passing units, all-target check/strict Clippy/fmt0 and3589-file recorded closure
+with0difference records. The original27f1d1d1 strict Clippy failure/tests NOT_RUN
+remain preserved separately. Real grammar/resource semantics, WASM/PNG and
+V3–V5 are not established by this component pass.
 
 ## 1. Brief and evidence boundary
 

@@ -56,6 +56,14 @@ Foreign dirty files are untouched. Shared Git/index operations were not used.
 
 ### D29 first-failure correction
 
+Root later renewed C29 for exact corrected2eb2069a. All-target check, strict
+Clippy, fmt and all-target units passed:29passed/0failed/0ignored/0filtered.
+The recorded3589-file before/after closure has0difference records under its
+explicit selected toolchain/native SDK limits. See evidence:root/20261107144843.
+This supersedes only the corrected candidate's NOT_RUN execution status below;
+the original27f1d1d1 first failure remains unchanged. No codecs/pilots beyond
+this pure component grant were added or run, and the target was returned.
+
 Root allocated exact27f1d1d1 native component verification after the Pages window.
 fmt/checkalltarget exited0; strict Clippy exited101 for chunks_exact_to_as_chunks
 at codec/text.rs101. Tests were NOT_RUN under stop-on-first-failure. The immutable

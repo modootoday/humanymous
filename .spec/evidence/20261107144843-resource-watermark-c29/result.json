@@ -1,0 +1,73 @@
+{
+  "schema": "humanymous.watermark-c29-corrected-component/1",
+  "source_commit": "2eb2069a7851324b90311d54ffe663d8eb9f75cf",
+  "archive_sha256": "5aa38b004ff7fe877a7caaeabe8362f27663f223cf02fdba6e6000aef20a8bfd",
+  "archive_bytes": 69775360,
+  "venue": "native Windows x86_64-pc-windows-msvc",
+  "rust": "1.99.1",
+  "controller_pid": 5712,
+  "session": 45831,
+  "terminal_exit": 0,
+  "target": "target/validation-audit",
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "locked": true,
+  "results": [
+    {
+      "step": "fmt",
+      "command": "cargo fmt -p humanymous-watermark -- --check",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:50:14.7345166Z",
+      "ended_utc": "2026-11-07T14:50:14.8412981Z"
+    },
+    {
+      "step": "check",
+      "command": "cargo check --locked --offline -p humanymous-watermark --all-targets --jobs 1",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:50:15.9651694Z",
+      "ended_utc": "2026-11-07T14:50:16.4676342Z"
+    },
+    {
+      "step": "clippy",
+      "command": "cargo clippy --locked --offline -p humanymous-watermark --all-targets --jobs 1 -- -D warnings",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:50:17.4999312Z",
+      "ended_utc": "2026-11-07T14:50:18.0499726Z"
+    },
+    {
+      "step": "tests",
+      "command": "cargo test --locked --offline -p humanymous-watermark --all-targets --jobs 1 -- --test-threads=1",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:50:18.9035128Z",
+      "ended_utc": "2026-11-07T14:50:19.8867967Z"
+    }
+  ],
+  "tests": {
+    "passed": 29,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0
+  },
+  "closure": {
+    "before_files": 3589,
+    "after_files": 3589,
+    "difference_records": 0,
+    "archive_files": 2597,
+    "registry_source_files": 970,
+    "registry_packages": 20,
+    "toolchain_bin_files": 21,
+    "controller_files": 1,
+    "limits": "Not entire Windows SDK/linker/system DLL/host OS snapshot"
+  },
+  "admission": {
+    "initial_commit_percent": 82.84138410176891,
+    "initial_free_gib": 29.58938217163086,
+    "each_gate_rechecked": true
+  },
+  "first_failure_preserved": "evidence:root/20261107142752 exact27f1Clippy101/testsNOTRUN",
+  "raw_bundle": ".spec.local/root/evidence/20261107144843-resource-watermark-c29/",
+  "target_returned": true,
+  "qualification": "corrected low-level pure components only; full14responsibility parity and V3-V5 incomplete"
+}
