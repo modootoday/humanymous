@@ -10,8 +10,10 @@ rel:
 
 # Scope and approval boundary
 
-Version0.1.0; draft, not an implementation or accepted security contract. Root
-approved only the topology: three roles and two persistent process identities.
+Version0.1.1; draft, not an implementation or accepted security contract. Root
+approved the topology: three roles and two persistent process identities, with
+two independently SCM-owned own-process roles on Windows and distinct service
+principals. Observer O is its bootstrap receiver/broker; service S is independent.
 The transient authorized provisioner configures protected trust. The long-lived
 observer is also the bootstrap broker/receiver. The independently managed service
 host sends bootstrap material. Separate broker-to-observer delegation and
@@ -71,8 +73,12 @@ mandatory shared security decisions, not CLI JSON validation shortcuts.
    Then observer cancels and joins its own I/O workers, closes its clients and
    stops/reaps only children it actually owns, within independent native bounds.
 8. Lost observer, broken ACK, service failure or unfinished I/O produces failed or
-   unknown completion, never graceful success. Exact service failclosed response
-   to observer loss must be specified by runtime before implementation. A forced
+   unknown completion, never graceful success. Root accepted runtime's first-loss
+   semantics: irreversible atomic readiness/admission/volatile-context revocation,
+   no new origin effect after revocation linearizes, retained prior-effect
+   uncertainty and bounded drain/final flush with separate facts. No automatic
+   kill/erasure or counter reset occurs. Actual typed revocation, effect-commit
+   serialization and cancellation/join remain unimplemented review/test gates. A forced
    deadline exit retains the unproven74 convention. Concurrent/repeated stop may
    not extend deadlines. Observer must not erase persistent production custody.
 9. Restart requires explicit authorization of a new observer process instance and
@@ -108,10 +114,16 @@ Privacy: keep secret payloads and raw native identifiers in appropriate private
 evidence, not public receipts. Evaluation: preserve native component, genuine
 hosted and Docker product qualification as separate claims.
 
-Adversarial verdict: needs-work. P0: protected trust/discovery and native process
-instance proof are not yet specified by the shared owner. P0: observer-loss
-enforcement and bounded witness exchange/cancel/join must be specified and proven.
+Adversarial verdict: needs-work. P0 R1: protected grant publisher/discovery,
+retained actual instances in both directions, cross-SID endpoint access and native
+TokenUser proof need a concrete reviewed native-security backend/API and supported
+OS matrix. Legacy peer types, a callback or OS-store read cannot substitute.
+R2 launcher architecture and R3 loss semantics are root-approved as described
+above; actual activation/revocation and bounded witness exchange/cancel/join must
+still be specified and proven through shared typed APIs and actual tests.
 P1: new observer plan, command, readiness schema and typed shared API are not yet
-accepted or implemented. These are required preconditions, not accepted residual
+accepted or implemented. Startup's absolute30second bound is separate from lease,
+liveness and stop budgets; the proposed24hour lease is not an accepted universal
+default or renewal policy. These are required preconditions, not accepted residual
 risks. Native-security independent critique and root final review must precede
 implementation. This draft changes no scoring, verdict or accessibility rule.
