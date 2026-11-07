@@ -55,202 +55,30 @@ limit. See [implementation status](production-vs-reference.md) and the
 
 ## Experimental Rust Node-API framework bridge
 
-Current source exposes the following interfaces. Release qualification is still
-in progress: `capabilities()` reports an empty `releaseQualifiedTuples` list.
-Earlier component runs do not qualify later source changes or every Node/Bun,
-OS, architecture and framework combination.
-
-| Interface | Integration boundary |
-| --- | --- |
-| `createExpressServer(optionsJson, app)` | Owns the HTTP server around an existing Express app; enforcement precedes app parsers/effects and unsupported upgrade/CONNECT events reject |
-| `express(optionsJson)` | Advanced root middleware, installed before every parser/effect; independently installed upgrade listeners are outside its coverage |
-| `hono(optionsJson, app, streamModule)` | Outer Fetch handler; requires the real upstream `node:stream` module and validates the bounded complete request before calling the app |
-| `htmlHook(nonce, scriptPath)` | Explicit template markup and CSP source only; serves no collector script and performs no automatic response or CSP rewriting |
-| `capabilities()` | JSON description of available observations and lifecycle limits; not a deployment qualification receipt |
-
-Do not add competing server listeners or mutate protected routing after binding.
-Options select a complete route inventory and an independently provisioned local
-IPC authority peer and credential. There is no TCP or administrative fallback.
-The bridge delegates decisions to the shared authority; it does not add another
-scoring engine or inherit the loopback runtime's browser request-integrity API.
-
-Node HTTP/1 raw observations retain declared order/casing. The Bun HTTP shim uses
-normalized evidence, and Hono Fetch observations are normalized; neither can be
-promoted into strict raw-header or original TLS/HTTP2 evidence. Missing required
-planes prevent readiness. Complete request bodies are bounded to 1 MiB, with
-64 process-wide body/decision owners; these are resource limits, not interaction
-speed or motor-richness requirements.
-
-Application-owned response streams are distinct from authenticated upload
-streaming. WebSocket, CONNECT, gRPC and request trailers remain unqualified.
-Application credentials/cookies and response cookie meaning belong to this
-adapter's preservation contract; do not confuse it with the separately selected
-cookie-free runtime browser profile. Actual source-bound authority/origin,
-packaging and platform pilots remain required before rollout.
+See the [Rust Node adapter API](node-adapter.md) for current interfaces and
+qualification limits. Its release-qualified platform list remains empty.
 
 ### Node-API options and explicit template ownership
 
-`optionsJson` requires every field below and rejects unknown fields. Values
-identify the independently provisioned authority scope; they are not discovered
-from untrusted request headers.
-
-| Fields | Source-level bound or responsibility |
-| --- | --- |
-| `installation`, `tenant`, `origin`, `revision` | Nonempty ASCII scope identities, up to 128 bytes each |
-| `endpoint`, `server`, `credential` | Local Unix filesystem socket or Windows named pipe, expected authority peer and privately provisioned credential; credential is 32–256 ASCII letters/digits/underscore/hyphen |
-| `routes` | Nonempty inventory of at most 4096 pathnames; excludes query/fragment/percent/backslash forms and the reserved `/_humanymous` subtree |
-| `timeoutMs` | 1–30000 milliseconds per decision operation; not a requirement for a person to finish an interaction within that interval |
-| `maxBody` | 0–1048576 bytes of complete request body; zero permits an empty body only |
-
-A configured route alone does not authorize a request: the shared parser and
-actual authority still validate the envelope, required observations and scope.
-Request bodies are committed as transfer-decoded/content-encoded bytes using
-exact length, SHA-256 and standard padded Base64. Internal and forwarding trust
-assertions are removed before the shared parser consumes the envelope.
-
-`htmlHook` accepts a 16–128-byte nonce from its restricted ASCII alphabet and a
-bounded same-origin absolute `.js` path, then returns `markup` and `cspSource`.
-It does not generate randomness, provision a script or install the CSP policy.
-The application must provide an appropriate nonce, serve the intended script
-and insert both outputs into the same eligible application-owned response.
-A generated tag for a reserved path does not make that path available through
-the adapter. Template insertion is not evidence of authenticated collection.
+See [options and template ownership](node-adapter.md#node-api-options-and-explicit-template-ownership).
 
 ### Node request ownership and outcomes
 
-The Express guard refuses an already-ended request, an existing `body` property,
-text-decoded input or a non-HTTP/1 request. Install it before every parser and
-effect. After complete-body verification and a bound, unexpired ALLOW, it replays
-the buffered bytes through request body methods/events while retaining the
-original request for other events. Compatibility with custom request mutation
-still requires an actual application pilot.
-
-The Hono wrapper refuses an already-used body or aborted signal and constructs
-an authorized Request from the original with sanitized headers, verified body
-bytes and the original signal. That source path is separate from proof that
-every host preserves metadata and cancellation correctly. Neither path streams
-an unverified upload to the application.
-
-| Outcome before the application call | Adapter response |
-| --- | --- |
-| Bound, unexpired ALLOW | Invoke the application; its own status and response stream remain application-owned |
-| DENY | 403 JSON verdict |
-| CHALLENGE | 409 JSON verdict; no injected challenge HTML or implemented recovery service |
-| Input, body, capacity, dependency or decision failure | 503 JSON error |
-
-Adapter-generated JSON responses request `Cache-Control: no-store`. The owned
-Express server separately rejects upgrade/CONNECT with an empty no-store 503
-response. These mappings are implementation-specific, not generic Draft v0
-status assignments. A 503 is not a DENY verdict.
-
-Source checks cancellation and decision expiry before entering the application
-and consumes the bound decision once. It does not implement business-operation
-idempotency or retract an application effect after dispatch. Response streaming
-remains handler-owned; permit release is not proof that a download completed,
-a client received it or a side effect was rolled back. Actual abort/race/timeout
-and accessible recovery outcomes remain execution gates.
+See [request ownership and outcomes](node-adapter.md#node-request-ownership-and-outcomes).
 
 ### Node package qualification boundary
 
-The package manifest points CommonJS and ESM imports at upstream-generated
-native loaders and separate type declarations. Its explicit archive list excludes
-legacy handwritten source/tests and host-pilot programs. Missing generated output
-or a missing native binary blocks the package inspection path; compilation alone
-does not establish that an installable archive is correct.
-
-The Rust package driver owns generation/inspection exclusively, invokes the
-pinned upstream generator with locked Cargo resolution, checks generated LF text
-and provenance markers, typechecks declarations and loads both entrypoints in
-Node and Bun. Inspection writes a `component-only` provenance record with file
-hashes. It is not a read-only command or a complete framework/authority pilot.
-Do not use it as a supposedly lightweight local check under a runtime hold.
-
-`engines.node >=22` is an installation floor. Configured native build targets,
-loader import success and provenance hashes do not establish release-qualified
-OS/architecture/runtime tuples. A source-bound qualification receipt and actual
-authority/origin, archive and platform gates remain required; no npm publication
-or generally supported installation is implied here.
+See [package qualification](node-adapter.md#node-package-qualification-boundary).
 
 ## Experimental native nginx component
 
-A Rust nginx module now exists for an initial Linux HTTP/1.1 profile. It uses
-an upstream nginx C engine through the pinned ngx-rust SDK; it is not a Rust
-replacement for the engine. Default library unit tests do not qualify the native
-ABI, nginx binary/build flags or a deployed configuration.
-
-The `humanymous_guard` directive consumes supervisor-provisioned private
-configuration. The authority must independently select the nginx producer
-profile. The ingress projection binds an exact method/path inventory, Host,
-complete body and scope, then reuses the shared authority client. A generic
-parser accepting nginx envelopes is not proof of native module execution.
-
-The declared profile bounds complete uploads to 1 MiB. Non-HTTP/1.1 requests,
-file-backed/incomplete bodies, transfer-coded uploads, trailers, upgrades and
-gRPC are outside its support. Internal/forwarding assertions are sanitized;
-original TLS/H2 capture, HTML/CSP insertion and response-body filtering are not
-provided. Operator configuration remains trusted: prevent post-authorization
-rewrite and origin bypass, disable proxy retry/cache, and apply the declared
-buffering and upstream-control-header restrictions before claiming deployment
-isolation or unchanged handler-owned streaming.
-
-DENY maps to 403. Working source returns a no-store 409 JSON
-`challenge_unavailable` response for CHALLENGE; that is not an accessible
-recovery service. The JSON/timer follow-through has not been qualified by the
-historical 35-group Compose result. Historical positive ALLOW pilots used
-explicit test-only synthetic evidence; the actual production application-HTTP
-profile's 409/no-origin observation does not prove a successful human flow.
-Independent witness, cross-user isolation, sustained backpressure and full
-browser/human/assistive-technology qualification remain separate outstanding gates.
+See the [native nginx adapter reference](nginx-adapter.md) for the experimental
+Linux profile, historical component evidence and outstanding current-source gates.
 
 ### nginx provisioning and request projection
 
-Private provisioning is bounded to 64 KiB. The Linux reader requires a canonical
-absolute path, a private parent under the shared authority transport policy,
-no-follow file opening, a regular file owned by the current effective UID and
-exact `0600` permissions. The expected Unix authority UID must match that UID.
-The supervisor still owns ancestor mounts and removal of obsolete secret files;
-these checks do not establish protection from every hostile same-user process.
-Do not place credentials in request headers, public logs, argv or environment.
-
-The configuration declares scope, exact authority, a 1–30000 ms budget and at
-most 1024 unique method/path routes. Routes exclude the reserved namespace,
-CONNECT, dot segments and ambiguous query/fragment/percent/backslash forms.
-Projection checks that the target pathname equals the current location path,
-that exactly one Host matches the provisioned authority, and that complete body
-bytes fit the 1 MiB bound. Shared nginx-profile parsing verifies the resulting
-envelope; ordinary duplicate header order is distinct from forbidden duplicate
-framing or Host fields. Original peer, connection, TLS/H2 and capture evidence
-are not manufactured from this envelope.
-
-The default library feature set does not load nginx. Native exported-module and
-pilot features have different responsibilities; the pilot entrypoint refuses
-non-Linux targets rather than reporting zero executed tests as success. Executed
-native ABI, peer/ACL and request-lifecycle evidence remains separate from these
-source-level configuration and projection checks.
+See [provisioning and request projection](nginx-adapter.md#nginx-provisioning-and-request-projection).
 
 ### nginx dispatch and resource limits
 
-The preaccess handler captures the sanitized request and completes its bounded
-body before scheduling an authority task. Immediately before continuing nginx
-processing it compares a new method/target/path/header/body snapshot with the
-stored one and consumes the bound decision, including expiry checks. This is
-not protection from a later trusted module or operator rewrite; the configured
-post-authorization route/origin boundary still needs deployment evidence.
-
-The source permits at most 16 concurrent authority tasks per worker process.
-That slot is acquired after body collection; it is not a global limit of 16
-buffered uploads or all active nginx connections. Configure and validate nginx
-connection/body/resource limits as well. A single request budget covers body
-reception and the decision phase, with wall-clock and elapsed-time checks.
-Neither the budget nor a 10 ms polling interval is a human interaction deadline
-or a guaranteed response-time bound under load.
-
-Native snapshots reject file-backed bodies and bound the in-memory body chain.
-Header names/values must be representable as UTF-8 and pass the shared profile;
-preserving ordinary header order does not imply arbitrary raw header-byte
-fidelity. Input/header/route failures may return 400, body snapshot failure 413,
-and capacity/dependency/expiry failures 503. These are this native component's
-paths, not the Node adapter's uniform input-error mapping or generic Draft v0
-status rules. Pool cleanup aborts owned tasks and deletes owned timers in source;
-actual cancellation, finalization, reload and ABI lifetime safety need native
-execution and review against the exact engine/build flags.
+See [dispatch and resource limits](nginx-adapter.md#nginx-dispatch-and-resource-limits).

@@ -14,6 +14,7 @@ candidate artifact. The Rust system remains under migration.
 | Subject | Pages |
 | --- | --- |
 | Deployment | [Capabilities](supported-topologies.md), [requirements](install-requirements.md), [commands/configuration](cli-config-policy.md), [origin contract](gate-origin-contract.md), [cost/latency](deployment-cost-latency.md) |
+| Framework adapters | [Rust Node API](node-adapter.md), [native nginx](nginx-adapter.md) |
 | Security | [Decisions](hard-rules-verdicts.md), [roles](rbac-separation-of-duties.md), [audit evidence](security-audit.md), [disclosure](security-disclosure.md) |
 | Evaluation | [Catalog](red-team-catalog.md), [engagement rules](red-team-rules-of-engagement.md), [incident reference](on-call-quick-reference.md) |
 | Data and interface | [Data inventory](data-processing-inventory.md), [language/accessibility](console-localization.md) |

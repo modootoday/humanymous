@@ -657,3 +657,14 @@ body reception (not all buffered uploads), exact snapshot recheck, UTF-8 header
 limits and native status differences. One exact hash receipt is traceability only,
 not independent ABI/unsafe/race approval or execution. Required native/hosted
 gates remain unchanged. Existing source/spec checks only.
+
+## Adapter reference navigation split and menu correction
+
+Moved authored Node/nginx details into two dedicated reference pages, added nav
+and reference-directory entries, and kept all old topology heading anchors with
+links. Updated only corresponding source/surface page mappings. Corrected the
+Retry and effects YAML indentation found by manual nav inspection; old source
+checker had not detected that structural issue. Current tree is88pages, existing
+source checker errors0; JSON and surface-to-source mappings checked. Historical
+85builds and86source outcomes do not qualify this88page input. No fresh YAML
+render/Jekyll/browser/AT run; hosted actual build remains required.

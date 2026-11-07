@@ -11,6 +11,8 @@
     - {title: Full reference directory, url: /reference/}
     - {title: Implementation status, url: /reference/production-vs-reference.html}
     - {title: Deployment boundaries, url: /reference/supported-topologies.html}
+    - {title: Node adapter API, url: /reference/node-adapter.html}
+    - {title: nginx adapter, url: /reference/nginx-adapter.html}
     - {title: Requirements, url: /reference/install-requirements.html}
     - {title: Security disclosure, url: /reference/security-disclosure.html}
     - {title: Glossary, url: /reference/glossary.html}
@@ -28,7 +30,7 @@
     - {title: Draft v0, url: /standards/draft-v0/}
     - {title: Explainer, url: /standards/draft-v0/explainer/}
     - {title: Protocol profile, url: /standards/draft-v0/protocol/profile/}
-      - {title: Retry and effects, url: /standards/draft-v0/protocol/retry-effects/}
+    - {title: Retry and effects, url: /standards/draft-v0/protocol/retry-effects/}
     - {title: Experimental wire, url: /standards/draft-v0/protocol/implementation-experiment/}
     - {title: Implementation map, url: /standards/draft-v0/validation/implementation-map/}
     - {title: Parser vectors, url: /standards/draft-v0/validation/vectors/}

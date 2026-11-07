@@ -7,7 +7,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read full native ABI composition, configuration inheritance, request pool Context, task/slot ownership, timer polling/finalization, snapshot revalidation, shared decision consumption, header list rebuilding and bounded body chain. Public reference distinguishes16 authority tasks after body reception from total buffered uploads, UTF-8 headers from arbitrary bytes, native400/413/503 paths, later trusted rewrite limits and unqualified current JSON/timer changes. This is source/prose traceability, not independent unsafe-code approval, race/ABI proof or native execution qualification.",
   "pages": [
-    "docs/reference/supported-topologies.md"
+    "docs/reference/nginx-adapter.md"
   ]
 },
 {
@@ -16,7 +16,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read complete safe configuration/projection/private-reader implementation and all source unit cases. Public reference records scope/routes/Host/body commitments, nginx profile reuse, absent original peer/capture, no-follow current-UID0600 file plus private-parent checks and trusted ancestor-mount/supervisor cleanup assumptions. Source tests were read, not executed; canonical path checks and zeroizing credentials do not establish full hostile-same-user or erasure guarantees.",
   "pages": [
-    "docs/reference/supported-topologies.md"
+    "docs/reference/nginx-adapter.md"
   ]
 },
 {
@@ -25,7 +25,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read complete rlib/cdylib manifest, empty default features, optional Linux pinned ngx SDK, export-modules/native and pilot separation, shared authority/integrity reuse and safe-code lints with native ABI exception in composition root. Public reference distinguishes library units from actual nginx ABI/platform/feature qualification. No dependency build or advisory result claimed.",
   "pages": [
-    "docs/reference/supported-topologies.md"
+    "docs/reference/nginx-adapter.md"
   ]
 },
 {
@@ -34,7 +34,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read complete Linux-only owned-Docker pilot composition entrypoint, failure propagation and non-Linux exit2 explicitly reporting no tests executed. Public reference does not infer full product e2e from pilot existence or treat unsupported zero-test execution as success. Pilot modules and runtime need their own review/evidence.",
   "pages": [
-    "docs/reference/supported-topologies.md"
+    "docs/reference/nginx-adapter.md"
   ]
 },
 {
@@ -43,7 +43,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read the single generated .build-cache exclusion. Ignoring build cache does not accept authored files, refresh source receipts or make generated artifacts qualified.",
   "pages": [
-    "docs/reference/supported-topologies.md",
+    "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
   ]
 },
@@ -53,7 +53,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read full pinned Rust/Debian and checksum-pinned nginx build, same source/build flags, locked Cargo unit/native/pilot/Clippy/authority steps and nonroot final pilot entrypoint. Image guide now identifies lab-only engine/module/pilot/authority contents rather than a production runtime. Source instructions are not proof any step ran or the current image passed.",
   "pages": [
-    "docs/reference/supported-topologies.md",
+    "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
   ]
 },
@@ -63,7 +63,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read deny-by-default build context with explicit workspace source/manifests and current member inputs, excluding target and .build-cache. Context filtering is distinct from final image-content or secret-exclusion verification; image guide requires artifact inspection. No Docker build claimed.",
   "pages": [
-    "docs/reference/supported-topologies.md",
+    "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
   ]
 },
@@ -73,7 +73,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read actual lab image target, network none, UID65532, read-only root, 128MiB tmpfs, all capabilities dropped, no-new-privileges, process128 and memory1GiB limits. Image guide distinguishes requested configuration from effective runtime isolation evidence. No Compose execution claimed.",
   "pages": [
-    "docs/reference/supported-topologies.md",
+    "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
   ]
 },
@@ -83,7 +83,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read owner integration evidence boundaries: explicit nginx profile/shared consume, historical exact source/module commitments, synthetic-only positive ALLOW, production409 and reload503, remaining witness/cross-user/backpressure/full product gaps. Topology reference preserves those distinctions and does not qualify newer JSON/timer bytes.",
   "pages": [
-    "docs/reference/supported-topologies.md",
+    "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
   ]
 },
@@ -93,7 +93,7 @@
   "reviewer": "codex/rust-pages",
   "notes": "Read complete native module guidance including private supervisor provisioning, server-level guard, bounded uploads, trusted nginx configuration, no post-auth rewrite/retry/cache, historical35groups and legacy mock exclusion. Public topology/image references state experimental Linux scope, lab image purpose, synthetic ALLOW and outstanding current-source/human/AT qualification.",
   "pages": [
-    "docs/reference/supported-topologies.md",
+    "docs/reference/nginx-adapter.md",
     "docs/how-to/verify-the-image.md"
   ]
 },
@@ -102,56 +102,56 @@
       "sha256": "b037239dfc33dd41c3e9a79ecf85b0453d6554c9e0ed922c236952c4ee20c5f3",
       "reviewer": "codex/rust-pages",
       "notes": "Read full composition root: safe request projection export and feature/target-gated native nginx ABI, with explicit non-Linux refusal. Public topology reference now acknowledges existing experimental Linux module rather than claiming absence. Native source excerpts and owner results distinguish historical synthetic ALLOW pilots from unvalidated JSON/timer follow-through. This row does not approve full native.rs, ABI safety or current deployment execution; those need separate review/evidence.",
-      "pages": ["docs/reference/supported-topologies.md"]
+      "pages": ["docs/reference/nginx-adapter.md"]
     },
     {
       "source": "crates/node-adapter/src/stream.rs",
       "sha256": "d342b9328b9fe718f81158e3e9bdb87f45f3f8467445b5e65c80571c4cd13be3",
       "reviewer": "codex/rust-pages",
       "notes": "Read full Express/Fetch collection, admission, body bounds, event cancellation/deadline, shared authority client binding/consumption, dispatch checks and Express bounded replay. Public reference distinguishes pre-parser ownership, complete-body verification, Hono Request reconstruction, status mapping, handler-owned response streams and post-dispatch effect limits. Source inspection does not prove host metadata compatibility, race freedom, timer/listener lifecycle, actual origin-once behavior or accessible recovery; current-source execution remains required.",
-      "pages": ["docs/reference/supported-topologies.md"]
+      "pages": ["docs/reference/node-adapter.md"]
     },
     {
       "source": "crates/node-adapter/src/host.rs",
       "sha256": "9f0c54928271bb02be0e363840168f590ed2b078709e5f5a2da5c8eb10e3326e",
       "reviewer": "codex/rust-pages",
       "notes": "Read safe host property/call helpers, no-store JSON response construction, DENY403/CHALLENGE409/error mapping, headersSent refusal, RAII object references and raw header pair conversion. Public reference identifies JSON rather than challenge HTML, separates dependency error from DENY and does not equate reference release with request/response completion or cryptographic erasure. No actual Node/Bun host run claimed.",
-      "pages": ["docs/reference/supported-topologies.md"]
+      "pages": ["docs/reference/node-adapter.md"]
     },
     {
       "source": "crates/node-adapter/src/envelope.rs",
       "sha256": "ed171ef7118fefda9b028bf183ab678aa0b123ad8a35c3f89295d779e8b996ce",
       "reviewer": "codex/rust-pages",
       "notes": "Read strict camelCase configuration, required scope/peer/credential/routes/limits, platform-local endpoint syntax, reserved route refusal, forwarding assertion stripping, exact body commitment and shared parser reuse, including source tests. Public topology reference records bounds without treating configuration syntax or a fresh UUID as authority authentication or origin-effect evidence. Source-only review; no unit/IPC execution.",
-      "pages": ["docs/reference/supported-topologies.md"]
+      "pages": ["docs/reference/node-adapter.md"]
     },
     {
       "source": "crates/node-adapter/src/template.rs",
       "sha256": "7b9b542fbe81a359dabd7668b694ace35a40919594494263658a68c9cc3f6d2e",
       "reviewer": "codex/rust-pages",
       "notes": "Read full HtmlHook fields, restricted nonce and local .js path checks and source tests. Documented markup/cspSource as explicit application-owned template outputs, with no nonce generation, script service, CSP installation, response rewriting or authenticated collection guarantee. Reserved-path tag generation does not make that endpoint available. No execution claimed.",
-      "pages": ["docs/reference/supported-topologies.md"]
+      "pages": ["docs/reference/node-adapter.md"]
     },
     {
       "source": "crates/node-adapter/src/server.rs",
       "sha256": "ada95aaeb40f6e01f5ba008119aadad3b025911c2de43b96b13b43b20a5edf51",
       "reviewer": "codex/rust-pages",
       "notes": "Read owned Express HTTP server composition: guard callback precedes application callback, error response is fail-closed, upgrade/connect listeners reject with no-store 503. Topology reference requires no competing listeners or later protected-route mutation and distinguishes advanced middleware coverage. Downstream guard/host modules and actual host behavior require separate review and execution; this receipt does not establish them.",
-      "pages": ["docs/reference/supported-topologies.md"]
+      "pages": ["docs/reference/node-adapter.md"]
     },
     {
       "source": "crates/node-adapter/src/lib.rs",
       "sha256": "5bdf238aaf55c145380060eb8abe7e470edd550091be2bf645d14687fb75a863",
       "reviewer": "codex/rust-pages",
       "notes": "Read all exported Rust Node-API wrappers and capabilities JSON. Public topology reference distinguishes owned Express server versus advanced root middleware, Hono stream-module dependency, explicit template-only HTML, normalized Bun/Fetch evidence and empty releaseQualifiedTuples. Delegation to implementation modules is not independent execution proof. Source/prose review only; current native host, packaging and authority/origin execution remains unqualified.",
-      "pages": ["docs/reference/supported-topologies.md", "docs/start-here/integrator.md"]
+      "pages": ["docs/reference/node-adapter.md", "docs/start-here/integrator.md"]
     },
     {
       "source": "crates/node-adapter/src/admission.rs",
       "sha256": "8650bee55940004e616a844b9a9a79bca01f31facae8c14b27478b77f8a253da",
       "reviewer": "codex/rust-pages",
       "notes": "Read process-wide atomic 64-owner budget, refusal at exhaustion and RAII permit decrement, plus source unit case. Topology reference identifies a resource ownership limit rather than an abuse score, interaction-speed or motor-richness requirement. Did not execute this unit or infer cancellation/origin-effect qualification from permit release.",
-      "pages": ["docs/reference/supported-topologies.md"]
+      "pages": ["docs/reference/node-adapter.md"]
     },
     {
       "source": "crates/native-cli/Cargo.toml",
@@ -2690,7 +2690,7 @@
         "crates/node-adapter/src/stream.rs"
       ],
       "pages": [
-        "docs/reference/supported-topologies.md"
+        "docs/reference/node-adapter.md"
       ],
       "reviewer": "codex/rust-pages",
       "notes": "Reviewed Rust Node-API exports and full request lifecycle source against the public topology reference. Empty releaseQualifiedTuples, pre-parser body ownership, normalized evidence, JSON outcomes and post-dispatch effect limits remain explicit. The required native-host-process check is an obligation, not a claimed passing current-source result; authority/origin, platform, packaging and accessible recovery gates remain separate.",
@@ -2704,7 +2704,7 @@
         "crates/nginx-adapter/src/lib.rs"
       ],
       "pages": [
-        "docs/reference/supported-topologies.md"
+        "docs/reference/nginx-adapter.md"
       ],
       "reviewer": "codex/rust-pages",
       "notes": "The experimental Linux nginx module exists; topology reference separates SDK/native ABI, trusted operator configuration, synthetic historical ALLOW pilots and unvalidated JSON/timer follow-through. Required Docker deployment check remains an execution obligation, not a passing current-source claim. Full native source/ABI review and platform/witness/backpressure/human qualification remain pending.",

@@ -1,0 +1,97 @@
+---
+layout: doc
+title: Experimental native nginx adapter
+description: Linux ingress, private provisioning and native lifecycle qualification limits.
+permalink: /reference/nginx-adapter.html
+reviewed: 2026-11-07
+---
+# Experimental native nginx adapter
+
+**Diátaxis quadrant:** Reference. **Audience:** nginx and application integrators.
+
+Review the [deployment boundaries](supported-topologies.md) before selecting
+this experimental profile.
+
+## Experimental native nginx component
+
+A Rust nginx module now exists for an initial Linux HTTP/1.1 profile. It uses
+an upstream nginx C engine through the pinned ngx-rust SDK; it is not a Rust
+replacement for the engine. Default library unit tests do not qualify the native
+ABI, nginx binary/build flags or a deployed configuration.
+
+The `humanymous_guard` directive consumes supervisor-provisioned private
+configuration. The authority must independently select the nginx producer
+profile. The ingress projection binds an exact method/path inventory, Host,
+complete body and scope, then reuses the shared authority client. A generic
+parser accepting nginx envelopes is not proof of native module execution.
+
+The declared profile bounds complete uploads to 1 MiB. Non-HTTP/1.1 requests,
+file-backed/incomplete bodies, transfer-coded uploads, trailers, upgrades and
+gRPC are outside its support. Internal/forwarding assertions are sanitized;
+original TLS/H2 capture, HTML/CSP insertion and response-body filtering are not
+provided. Operator configuration remains trusted: prevent post-authorization
+rewrite and origin bypass, disable proxy retry/cache, and apply the declared
+buffering and upstream-control-header restrictions before claiming deployment
+isolation or unchanged handler-owned streaming.
+
+DENY maps to 403. Working source returns a no-store 409 JSON
+`challenge_unavailable` response for CHALLENGE; that is not an accessible
+recovery service. The JSON/timer follow-through has not been qualified by the
+historical 35-group Compose result. Historical positive ALLOW pilots used
+explicit test-only synthetic evidence; the actual production application-HTTP
+profile's 409/no-origin observation does not prove a successful human flow.
+Independent witness, cross-user isolation, sustained backpressure and full
+browser/human/assistive-technology qualification remain separate outstanding gates.
+
+### nginx provisioning and request projection
+
+Private provisioning is bounded to 64 KiB. The Linux reader requires a canonical
+absolute path, a private parent under the shared authority transport policy,
+no-follow file opening, a regular file owned by the current effective UID and
+exact `0600` permissions. The expected Unix authority UID must match that UID.
+The supervisor still owns ancestor mounts and removal of obsolete secret files;
+these checks do not establish protection from every hostile same-user process.
+Do not place credentials in request headers, public logs, argv or environment.
+
+The configuration declares scope, exact authority, a 1–30000 ms budget and at
+most 1024 unique method/path routes. Routes exclude the reserved namespace,
+CONNECT, dot segments and ambiguous query/fragment/percent/backslash forms.
+Projection checks that the target pathname equals the current location path,
+that exactly one Host matches the provisioned authority, and that complete body
+bytes fit the 1 MiB bound. Shared nginx-profile parsing verifies the resulting
+envelope; ordinary duplicate header order is distinct from forbidden duplicate
+framing or Host fields. Original peer, connection, TLS/H2 and capture evidence
+are not manufactured from this envelope.
+
+The default library feature set does not load nginx. Native exported-module and
+pilot features have different responsibilities; the pilot entrypoint refuses
+non-Linux targets rather than reporting zero executed tests as success. Executed
+native ABI, peer/ACL and request-lifecycle evidence remains separate from these
+source-level configuration and projection checks.
+
+### nginx dispatch and resource limits
+
+The preaccess handler captures the sanitized request and completes its bounded
+body before scheduling an authority task. Immediately before continuing nginx
+processing it compares a new method/target/path/header/body snapshot with the
+stored one and consumes the bound decision, including expiry checks. This is
+not protection from a later trusted module or operator rewrite; the configured
+post-authorization route/origin boundary still needs deployment evidence.
+
+The source permits at most 16 concurrent authority tasks per worker process.
+That slot is acquired after body collection; it is not a global limit of 16
+buffered uploads or all active nginx connections. Configure and validate nginx
+connection/body/resource limits as well. A single request budget covers body
+reception and the decision phase, with wall-clock and elapsed-time checks.
+Neither the budget nor a 10 ms polling interval is a human interaction deadline
+or a guaranteed response-time bound under load.
+
+Native snapshots reject file-backed bodies and bound the in-memory body chain.
+Header names/values must be representable as UTF-8 and pass the shared profile;
+preserving ordinary header order does not imply arbitrary raw header-byte
+fidelity. Input/header/route failures may return 400, body snapshot failure 413,
+and capacity/dependency/expiry failures 503. These are this native component's
+paths, not the Node adapter's uniform input-error mapping or generic Draft v0
+status rules. Pool cleanup aborts owned tasks and deletes owned timers in source;
+actual cancellation, finalization, reload and ABI lifetime safety need native
+execution and review against the exact engine/build flags.
