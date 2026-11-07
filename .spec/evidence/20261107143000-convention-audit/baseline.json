@@ -135,7 +135,7 @@
       "id": "CA-HANDOFF-01",
       "owner": "framework-adapters/root",
       "priority": "P1",
-      "state": "source-confirmed final handoff ordering gap; owner fix and actual regression OPEN",
+      "state": "sync source correction e34cee8a independently accepted; actual late-connected/timely controls, SDK compilation and queued Node/ASGI corrections OPEN",
       "private_review_sha256": "47839559782753f117035e93b04fdda1b915796b56572fde34bf45cbe53559cc",
       "actual_sdk_exploit_or_test_observed": false
     }
@@ -319,5 +319,19 @@
     "key_scoped_closed": true,
     "layout_scoped_closed": true,
     "native_or_product_qualified": false
+  },
+  "followup_model_s2_handoff_batch": {
+    "private_review_sha256": {
+      "model-standardize-functional-review-001.json": "a726bcdf58c4744d999138adb4dba3166bbd7f274f21a8b5b7e004636fbc4703",
+      "audit-s2-kernel-review-001.json": "1f2be01a212f46df0f5a41a6957d6703edc0c1fde80205a1d9fce7d3185b5d67",
+      "framework-handoff-fix-review-001.json": "76ad50e2e42ef66c88e4afdb65129dc0309785da8e86885c603fa54864a97666"
+    },
+    "model_actual_library_tests": 17,
+    "model_new_standardization_tests": 4,
+    "model_existing_fixture_tests": 1,
+    "s2_actual_new_tests_observed": 0,
+    "handoff_actual_new_host_tests_observed": 0,
+    "handoff_finding_closed": false,
+    "higher_layer_qualification": false
   }
 }

@@ -143,7 +143,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CLOSED scoped preallocation/UTF16 invariant: 3a0ba182 source plus 3200a5a1 actual boundary/doctest receipts independently checked; broader native provider qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
-| CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack run a potentially slow liveness callback after their last deadline check and early bound-response consumption | Framework adapters/root | Source-confirmed; retain bound result through host preparation and revalidate after callback; owner fix and late-connected/no-origin regression OPEN; no SDK exploit run |
+| CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync source correction e34cee8a independently accepted; actual late-connected/no-origin and timely controls, SDK compilation, Node/ASGI queued corrections and qualification remain OPEN |
 
 API01 was a safe Rust API invariant defect; no remote HTTP exploit was alleged.
 Its fixed file SHA256 is e0a012386d84fe2d4c61be5e5f96e35247d2f3ce189a194ab64db6ae923858e3,
@@ -656,3 +656,35 @@ admission now precedes required rotation/record/checkpoint writes. These revised
 L0 contracts are narrowly acceptable for root's selected private L1 model.
 Actual-type borrow/transition negatives and native durability/resource/repair/
 consumer gates remain OPEN; no production grant or S2 qualification is inferred.
+
+### Batched model, S2 kernel and synchronous handoff follow-up
+
+Model sourcee7d8f9a3 now has an independently read actual receipt at70276560:
+17library tests comprise4new standardization,8parser and5existing inference;
+1existing inference fixture also passed. All five fmt-first/lib/fixture/check/
+strict Clippy commands exited0. Current/frozen standardize and training-module
+leaves match the saved1497-entry before map; before/after maps are byte-identical.
+The four analytic cases preserve empty/constant distinction, float32 operation
+order, signed inputs and overflow refusal. They are not new Go-generated
+standardization oracle execution or Train/RNG/evaluation/lifecycle qualification.
+Do not add these overlapping existing tests as new unique migration coverage.
+
+S2 private kernel8cbc0397 was fully read with its cfg(test) scanner wiring. Tail
+plans reject all normal intents without clearing ambiguity; rotation refuses
+before a new index at its maximum; bootstrap produces shape plans, not native
+identity/authentication. OperationBounds retains the original borrowed limits/
+Control with sticky observed refusal. Five authored tests remain NOT_RUN in this
+review. No NativeFiles, real VerifiedScan, writable owner, actual-type borrow
+compile-fail, native zero-write/repair/durability or readiness proof is constructed.
+No new source blocker was found in this narrowly accepted private L1 model.
+
+HANDOFF01 synchronous source correction e34cee8a retains the bound result through
+replay/argument preparation and trusted liveness. WSGI prepares PyTuple; Rack
+prepares StringIO, environment/app lookup and interned call ID before the final
+callback. The same Pending check and actual BoundResponse.consume then precede
+the trusted invocation without an intervening unrelated callback/await. This
+source direction is independently accepted, not SDK compilation or actual host
+qualification. Node's private wall-clock Pending/early copied status and ASGI's
+queued early consumption remain explicitly OPEN in contractv0.3. Genuine bound
+ALLOW-before-late-connected/no-origin and timely positive controls remain required.
+No audit source edits, SDK/compiler/process/Docker workloads were performed.

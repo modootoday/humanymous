@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 01c3b963a0b19fb6ef0f0c7c73bc55ab2accd1d4510382fd2db8a95cf85156b2, bytes: 14453, store: repo}
+  - {path: baseline.json, sha256: 307a0adc2d8fdcca0c4c263eebf53bdca6104098ca7b97a6bc1f194a3cd30cfd, bytes: 15231, store: repo}
 ---
 
 # Convention audit baseline
