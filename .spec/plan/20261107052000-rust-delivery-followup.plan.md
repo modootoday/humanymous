@@ -453,3 +453,58 @@ hashes. Private registered evidence is
 d381358cf50bf6add05aac3b98130a2117b50ffd12623dbc2d71d9c8645bae5e.
 C was returned; actual Go, containers, process and SCM profiles were not run.
 Genuine hosted Go/lab preflight and the actual bounded component remain pending.
+
+The next CEF runner slice consumes the browser owner's four-name synthetic
+protocol_preflight contract. It adds native-feature no-run compilation and exact
+protocol execution before bootstrap/process pilots, preserving separate actual
+counts and unknown unexecuted counts. A direct ACT entry guard prevents local
+emulated-hosted admission. Rustfmt passed; four standalone runner pure tests
+and strict Clippy remain pending root allocation or genuine Windows preflight.
+No local CEF/GUI process, provisioning or service/account mutation was performed.
+
+The Pages owner delivered e2f27edc/8101a1b1 with 37 library tests, all-target
+check/Clippy and CLI build passing; both incomplete historical site downloads
+were correctly refused. The new CI source binds both fresh base builds to the
+owner package and a second independent archive-check destination. Safe terminal
+metadata observes exact tar/manifest hashes. Main serving uses that verified tar,
+downloads it and invokes the same owner consumer again, with final source and
+transfer status written before outcomes upload. Public branch uploads stay off.
+The Pages owner independently reviewed these guards and outcome ordering.
+Rustfmt/actionlint passed; current delivery suite has 65 expected tests, not yet
+executed for this slice. Fresh complete-site packaging and actual main artifact
+transfer remain unrun. Python workflow metadata is registered as names only;
+its controller lifecycle remains NOT_ACCEPTED and is not a runnable candidate.
+
+Root allocated D for sequential validation after the manifest window closed.
+Fresh admission was 81 percent commit and 33,666,764 KiB free physical memory.
+Delivery passed all 65 tests and strict all-target Clippy. The standalone CEF
+runner actually contained six tests, including two existing provisioning
+metadata/mock-file tests omitted from the earlier four-test estimate; all six,
+all-target check and strict Clippy passed. Zero tests failed, were ignored or
+filtered. The complete 61-file delivery/CEF/workflow/contract/root-input closure
+was unchanged. Private evidence 20261107105913-delivery-pages-cef-validation has
+registered index SHA256
+b29903d49f5bdeda8583e174c2cd9a1b74d385c26cd5545db6b35638f7dde502.
+D was returned. No CEF SDK, actual native-feature protocol fixtures, GUI,
+bootstrap/process pilot, Docker or complete-site archive was executed locally.
+
+The first actual Go run 42365025258 at 438a3fee completed with one successful
+preflight and one failed product job, zero artifacts. Actual unfiltered unit
+counts were Go10, lab15 and delivery64, plus selected Clippy/policy success.
+Product execution stopped at runtime_build before all eight scenarios; the
+valid receipt records eight NOT_RUN, zero evaluated and owned cleanup true,
+with a false bounded requirement. The private compiler transcript was not
+acquired, so its exact cause remains unknown. REST lineage and decoded job logs
+are retained privately with index SHA256
+5ca9a2c18b2b003ec9807377c8321e23de57119d07e09c6b2351a21578851c18;
+go-438a3fee-summary.json is the attached safe terminal summary. The next Go
+source adds explicit Unix runtime-pilot all-target check/Clippy before Docker;
+this local batch did not execute that Unix actor check or qualify the failed run.
+
+The lab separately reproduced exact 438a3fee on immutable Unix: actor check
+passed while strict Clippy rejected deprecated AtomicU32::fetch_update at
+test/lab/runtime/src/go/relay.rs:74. Owner fix 0ce4d82b uses try_update with the
+same checked addition and atomic orderings; its new immutable Unix check and
+strict Clippy both passed. That fix is an ancestor of the next CI checkpoint.
+The original private Docker transcript remains unrecovered; the separate
+reproduction and new-source proof do not rewrite the first hosted observation.

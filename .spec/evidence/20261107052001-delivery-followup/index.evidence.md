@@ -3,13 +3,14 @@ id: evidence:root/20261107052001
 title: Exact-source full CI failure and Rust delivery follow-up
 status: active
 created: 2026-11-07T05:20:01Z
-updated: 2026-11-07T10:28:43Z
+updated: 2026-11-07T10:57:42Z
 files:
   - {path: summary.json, sha256: 753f1e86267897755bf84e5fd5d64157ca92e2c33b6dca661629686c9fa1557b, bytes: 5330, store: repo}
   - {path: hosted-63f69ae-summary.json, sha256: 48c6cfd54506776a04e9f6182d55c98351c6a3cbe49ceb4759d8da7ad979c9d6, bytes: 5707, store: repo}
   - {path: hosted-8132117-summary.json, sha256: 92b51d1914a16305b845afa92d2cf4073076b58eb72d961bf8aa4b695d42b17f, bytes: 7453, store: repo}
   - {path: apache-workflow-review.json, sha256: 822d27f101456cd6888327410ae3fe97c38d4376e7c140f5c25ba07d73781c9a, bytes: 945, store: repo}
   - {path: pages-8624b57-summary.json, sha256: 68c72b8bf92dd11e7acd0f10c68d2779f5abaee2b08ce3e8f1427777e72c4079, bytes: 2857, store: repo}
+  - {path: go-438a3fee-summary.json, sha256: d0c9cff601c48cfd11c6c978138006b352cd446d155ebf02451453e2caefdd6e, bytes: 5911, store: repo}
 ---
 
 # Exact-source full CI failure and Rust delivery follow-up
@@ -186,3 +187,16 @@ d381358cf50bf6add05aac3b98130a2117b50ffd12623dbc2d71d9c8645bae5e.
 This proves parser/policy units and compilation, not actual Go8 or Docker/SCM.
 The attached Pages terminal summary distinguishes real build success from the
 historical automatic-upload policy miss and failed downloaded-site roundtrip.
+
+## Pages archive and CEF consumer validation
+
+Sequential root-allocated D passed delivery65 pure tests/strict Clippy and CEF
+runner6 tests/all-target check/strict Clippy, with zero failed/ignored/filtered.
+The earlier CEF estimate of four missed two existing provisioning metadata and
+mock-file tests. The 61-file input closure was unchanged, admission measured
+81 percent commit/33,666,764 KiB free physical memory, and D was returned.
+Private 20261107105913-delivery-pages-cef-validation index SHA256 is
+b29903d49f5bdeda8583e174c2cd9a1b74d385c26cd5545db6b35638f7dde502.
+No SDK/native GUI/process/Docker or fresh complete-site archive ran locally.
+The attached Go first-run terminal summary preserves eight NOT_RUN and an
+unknown private compiler cause; successful prior units do not qualify Go8.

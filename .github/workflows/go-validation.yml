@@ -36,9 +36,12 @@ jobs:
     - name: Execute current delivery receipt units
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo test --locked -p humanymous-delivery -j1
+    - name: Compile the Unix runtime actor before Docker
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo check --locked -p humanymous-runtime-pilot --all-targets -j1
     - name: Compile and lint all selected Unix targets
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
-      run: cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-delivery --all-targets -j1 -- -D warnings
+      run: cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings
     - name: Verify current workflow policy
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- policy

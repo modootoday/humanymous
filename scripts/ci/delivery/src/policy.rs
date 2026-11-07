@@ -111,8 +111,9 @@ fn upload_allowed(name: &str, condition: Option<&str>) -> bool {
             Some(
                 "github.ref == 'refs/heads/main'"
                     | "${{ always() && github.ref == 'refs/heads/main' && steps.source_prepare.outcome == 'success' }}"
-                    | "${{ always() && github.ref == 'refs/heads/main' && steps.apex.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}"
-                    | "${{ always() && github.ref == 'refs/heads/main' && steps.subpath.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}"
+                    | "${{ always() && github.ref == 'refs/heads/main' && steps.archive_apex.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}"
+                    | "${{ always() && github.ref == 'refs/heads/main' && steps.archive_subpath.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}"
+                    | "${{ github.ref == 'refs/heads/main' && steps.source_finish.outcome == 'success' }}"
             )
         ),
         _ => false,
@@ -170,7 +171,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             "cargo test --locked -p humanymous-go-adapter --lib -j1",
             "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1",
             "cargo test --locked -p humanymous-delivery -j1",
-            "cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-delivery --all-targets -j1 -- -D warnings",
+            "cargo check --locked -p humanymous-runtime-pilot --all-targets -j1",
+            "cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings",
             "cargo run --locked -p humanymous-delivery -- policy",
         ] {
             require(
@@ -210,6 +212,8 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             "cargo test --locked -p humanymous-delivery -j1",
             "cargo clippy --locked -p humanymous-delivery --all-targets -j1 -- -D warnings",
             "cargo run --locked -p humanymous-delivery -- policy",
+            "cargo test --locked -p humanymous-pages --lib -j1",
+            "cargo clippy --locked -p humanymous-pages --all-targets -j1 -- -D warnings",
         ] {
             require(
                 steps.iter().any(|step| {
@@ -225,6 +229,53 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         let steps = jobs["build"]["steps"]
             .as_array()
             .ok_or("Pages build steps absent")?;
+        require(
+            !steps.iter().any(|step| {
+                step["uses"]
+                    .as_str()
+                    .is_some_and(|action| action.starts_with("actions/upload-pages-artifact@"))
+            }),
+            "Pages serving must use the verified Rust archive, not a hidden-file filtering packager",
+        )?;
+        for (id, previous, command) in [
+            ("package_apex", "apex", " -- package --source docs"),
+            ("package_subpath", "subpath", " -- package --source docs"),
+            (
+                "archive_apex",
+                "package_apex",
+                " -- archive-check --source docs",
+            ),
+            (
+                "archive_subpath",
+                "package_subpath",
+                " -- archive-check --source docs",
+            ),
+        ] {
+            require(
+                steps.iter().any(|step| {
+                    step["id"] == id
+                        && step["if"]
+                            == format!(
+                                "${{{{ !cancelled() && steps.{previous}.outcome == 'success' }}}}"
+                            )
+                        && step["run"].as_str().is_some_and(|run| {
+                            run.contains(command) && run.contains("target/delivery-pages")
+                        })
+                }),
+                "Pages serialized archive checks must precede serving",
+            )?;
+        }
+        require(steps.iter().any(|step|step["id"]=="serving_upload" && step["with"]["path"]=="target/delivery-pages/apex/artifact.tar" && step["if"]=="${{ github.ref == 'refs/heads/main' && steps.source_finish.outcome == 'success' }}"),"Pages may only serve exact verified archive bytes")?;
+        require(
+            steps.iter().any(|step| {
+                step["id"] == "serving_roundtrip"
+                    && step["run"].as_str().is_some_and(|run| {
+                        run.contains(" -- archive-check --source docs")
+                            && run.contains("pages-serving-download/artifact.tar")
+                    })
+            }),
+            "Pages transferred archive consumer check missing",
+        )?;
         for id in ["apex", "subpath", "bundle_audit"] {
             require(
                 steps.iter().any(|step| {

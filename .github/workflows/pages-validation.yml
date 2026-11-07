@@ -32,6 +32,12 @@ jobs:
     - name: Check all delivery targets with warnings denied
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo clippy --locked -p humanymous-delivery --all-targets -j1 -- -D warnings
+    - name: Validate public Pages archive units
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-pages --lib -j1
+    - name: Check all Pages archive targets
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo clippy --locked -p humanymous-pages --all-targets -j1 -- -D warnings
     - name: Verify current workflow authorization policy
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- policy

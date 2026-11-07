@@ -25,6 +25,9 @@ fn logged(command: &mut Command, path: &Path) -> io::Result<()> {
     }
     Ok(())
 }
+fn hosted(actions: Option<&str>, environment: Option<&str>, act_present: bool) -> bool {
+    actions == Some("true") && environment == Some("github-hosted") && !act_present
+}
 
 fn verified_case(log: &str) -> bool {
     let summaries: Vec<_> = log
@@ -45,9 +48,11 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
             "Windows x64 native pilot required; other tuples are unsupported",
         ));
     }
-    if std::env::var("GITHUB_ACTIONS").as_deref() != Ok("true")
-        || std::env::var("RUNNER_ENVIRONMENT").as_deref() != Ok("github-hosted")
-    {
+    if !hosted(
+        std::env::var("GITHUB_ACTIONS").ok().as_deref(),
+        std::env::var("RUNNER_ENVIRONMENT").ok().as_deref(),
+        std::env::var_os("ACT").is_some(),
+    ) {
         return Err(io::Error::other(
             "standard hosted runner required for actual native pilot",
         ));
@@ -68,6 +73,39 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
         &output.join("native-build.log"),
     )?;
     let bundle = provisioning::prepare()?;
+    report["stage"] = "desktop-protocol-build".into();
+    logged(
+        Command::new("cargo").env("PATH", &tool_path).args([
+            "test",
+            "--locked",
+            "-p",
+            "humanymous-cef-desktop",
+            "--features",
+            "native-pilot-tests",
+            "--lib",
+            "--no-run",
+        ]),
+        &output.join("desktop-protocol-build.log"),
+    )?;
+    report["stage"] = "desktop-protocol-tests".into();
+    let selector = desktop::protocol_selector()?;
+    let protocol_log = output.join("desktop-protocol-tests.log");
+    logged(
+        Command::new("cargo").env("PATH", &tool_path).args([
+            "test",
+            "--locked",
+            "-p",
+            "humanymous-cef-desktop",
+            "--features",
+            "native-pilot-tests",
+            "--lib",
+            &selector,
+            "--",
+            "--test-threads=1",
+        ]),
+        &protocol_log,
+    )?;
+    report["protocol_preflight"] = desktop::verify_protocol(&fs::read_to_string(protocol_log)?)?;
     report["stage"] = "bootstrap-rejection".into();
     let log = output.join("native-negative-pilot.log");
     logged(
@@ -170,7 +208,7 @@ fn main() -> io::Result<()> {
     }
     let output = Path::new(&output);
     fs::create_dir_all(output)?;
-    let mut report = json!({"status":"failed","scope":"bootstrap rejection and two provisioned desktop process cases","required_test":CASE,"passed_tests":0,"ignored_tests":null,"desktop_passed_tests":null,"bootstrap_rejection_passed":false,"required_override_cases":4,"rejected_override_cases":null,"stage":"source-preflight","browser_ready":false,"full_runtime_qualified":false,"gui_keyboard_ime_ax":"not qualified by these bounded probes","descendant_cleanup_attested":false});
+    let mut report = json!({"status":"failed","scope":"separate synthetic protocol preflight, bootstrap rejection and two provisioned desktop process cases","required_test":CASE,"passed_tests":null,"ignored_tests":null,"desktop_passed_tests":null,"protocol_preflight":null,"bootstrap_rejection_passed":false,"required_override_cases":4,"rejected_override_cases":null,"stage":"source-preflight","browser_ready":false,"full_runtime_qualified":false,"gui_keyboard_ime_ax":"not qualified by these bounded probes","descendant_cleanup_attested":false});
     match run(output, &mut report) {
         Ok(()) => fs::write(
             output.join("report.json"),
@@ -191,6 +229,13 @@ fn main() -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn local_act_labels_cannot_start_native_browser_pilots() {
+        assert!(hosted(Some("true"), Some("github-hosted"), false));
+        assert!(!hosted(Some("true"), Some("github-hosted"), true));
+        assert!(!hosted(Some("true"), Some("self-hosted"), false));
+        assert!(!hosted(None, Some("github-hosted"), false));
+    }
     #[test]
     fn empty_or_ignored_harness_cannot_qualify() {
         assert!(!verified_case(

@@ -6,6 +6,78 @@ fn contract() -> io::Result<Value> {
         "../../../../crates/browser/native/desktop/pilot-contract.json"
     ))?)
 }
+fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
+    let contract = contract()?;
+    let profile = &contract["protocol_preflight"];
+    if profile["selector"] != "pilot_assertions::tests::"
+        || profile["classification"] != "synthetic_report_protocol"
+        || profile["initializes_cef"] != false
+        || profile["starts_processes"] != false
+        || profile["requires_native_feature_build"] != true
+    {
+        return Err(io::Error::other("unsupported synthetic protocol preflight"));
+    }
+    let mut names = Vec::new();
+    let mut unique = std::collections::BTreeSet::new();
+    for name in profile["test_names"]
+        .as_array()
+        .ok_or_else(|| io::Error::other("protocol inventory absent"))?
+    {
+        let name = name
+            .as_str()
+            .ok_or_else(|| io::Error::other("protocol name invalid"))?;
+        if !name.starts_with("pilot_assertions::tests::")
+            || !name
+                .bytes()
+                .all(|c| c.is_ascii_alphanumeric() || matches!(c, b'_' | b':'))
+            || !unique.insert(name.to_owned())
+        {
+            return Err(io::Error::other("invalid or duplicate protocol case"));
+        }
+        names.push(name.to_owned());
+    }
+    if names.is_empty()
+        || names.len() > 16
+        || profile["required_test_count"].as_u64() != Some(names.len() as u64)
+    {
+        return Err(io::Error::other("protocol inventory count mismatch"));
+    }
+    Ok(("pilot_assertions::tests::".to_owned(), names))
+}
+pub(super) fn protocol_selector() -> io::Result<String> {
+    Ok(protocol_inventory()?.0)
+}
+pub(super) fn verify_protocol(log: &str) -> io::Result<Value> {
+    let (_, names) = protocol_inventory()?;
+    let summaries: Vec<_> = log
+        .lines()
+        .filter(|line| line.starts_with("test result:"))
+        .collect();
+    if summaries.len() != 1
+        || names.iter().any(|name| {
+            log.lines()
+                .filter(|line| *line == format!("test {name} ... ok"))
+                .count()
+                != 1
+        })
+    {
+        return Err(io::Error::other(
+            "required protocol cases absent or duplicated",
+        ));
+    }
+    let prefix = format!(
+        "test result: ok. {} passed; 0 failed; 0 ignored; 0 measured; ",
+        names.len()
+    );
+    let filtered = summaries[0]
+        .strip_prefix(&prefix)
+        .and_then(|rest| rest.split_once(" filtered out;"))
+        .and_then(|(count, _)| count.parse::<u64>().ok())
+        .ok_or_else(|| io::Error::other("protocol execution summary mismatch"))?;
+    Ok(
+        json!({"classification":"synthetic_report_protocol","required":names.len(),"passed":names.len(),"failed":0,"ignored":0,"filtered":filtered,"initializes_cef":false,"actual_desktop_processes":0}),
+    )
+}
 pub(super) fn verify(log: &str) -> io::Result<Value> {
     let contract = contract()?;
     if contract["required_test_count"] != 2
@@ -77,6 +149,27 @@ pub(super) fn verify(log: &str) -> io::Result<Value> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn protocol_preflight_is_separate_and_cannot_accept_ignored_or_duplicate_counts() {
+        let (_, names) = protocol_inventory().unwrap();
+        let log = format!(
+            "{}test result: ok. {} passed; 0 failed; 0 ignored; 0 measured; 2 filtered out;",
+            names
+                .iter()
+                .map(|name| format!("test {name} ... ok\n"))
+                .collect::<String>(),
+            names.len()
+        );
+        assert_eq!(verify_protocol(&log).unwrap()["filtered"], 2);
+        assert!(verify_protocol(&log.replace("0 ignored", "1 ignored")).is_err());
+        assert!(verify_protocol(&format!("{log}\n{log}")).is_err());
+        assert!(
+            verify_protocol(
+                "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;"
+            )
+            .is_err()
+        );
+    }
     #[test]
     fn both_actual_cases_and_exact_denominator_are_required() {
         let contract = contract().unwrap();

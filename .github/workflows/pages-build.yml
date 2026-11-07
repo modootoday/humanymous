@@ -38,6 +38,22 @@ jobs:
       if: ${{ !cancelled() && steps.bundle_install.outcome == 'success' }}
       run: cargo run --locked -p humanymous-pages -- validate --source docs --destination "${{ runner.temp }}/pages-subpath" --baseurl /humanymous
       working-directory: .
+    - id: package_apex
+      if: ${{ !cancelled() && steps.apex.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-pages -- package --source docs --site "${{ runner.temp }}/pages-apex" --archive "${{ github.workspace }}/target/delivery-pages/apex/artifact.tar" --manifest "${{ github.workspace }}/target/delivery-pages/apex/manifest.json" --restored "${{ runner.temp }}/pages-apex-package-restored" --baseurl ''
+      working-directory: .
+    - id: package_subpath
+      if: ${{ !cancelled() && steps.subpath.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-pages -- package --source docs --site "${{ runner.temp }}/pages-subpath" --archive "${{ github.workspace }}/target/delivery-pages/subpath/artifact.tar" --manifest "${{ github.workspace }}/target/delivery-pages/subpath/manifest.json" --restored "${{ runner.temp }}/pages-subpath-package-restored" --baseurl /humanymous
+      working-directory: .
+    - id: archive_apex
+      if: ${{ !cancelled() && steps.package_apex.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-pages -- archive-check --source docs --archive "${{ github.workspace }}/target/delivery-pages/apex/artifact.tar" --manifest "${{ github.workspace }}/target/delivery-pages/apex/manifest.json" --restored "${{ runner.temp }}/pages-apex-consumer-restored" --baseurl ''
+      working-directory: .
+    - id: archive_subpath
+      if: ${{ !cancelled() && steps.package_subpath.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-pages -- archive-check --source docs --archive "${{ github.workspace }}/target/delivery-pages/subpath/artifact.tar" --manifest "${{ github.workspace }}/target/delivery-pages/subpath/manifest.json" --restored "${{ runner.temp }}/pages-subpath-consumer-restored" --baseurl /humanymous
+      working-directory: .
     - id: source_finish
       if: ${{ always() && steps.source_prepare.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- pages-evidence finish
@@ -47,33 +63,71 @@ jobs:
         HUMANYMOUS_PAGES_AUDIT: ${{ steps.bundle_audit.outcome }}
         HUMANYMOUS_PAGES_APEX: ${{ steps.apex.outcome }}
         HUMANYMOUS_PAGES_SUBPATH: ${{ steps.subpath.outcome }}
+        HUMANYMOUS_PAGES_PACKAGE_APEX: ${{ steps.package_apex.outcome }}
+        HUMANYMOUS_PAGES_PACKAGE_SUBPATH: ${{ steps.package_subpath.outcome }}
+        HUMANYMOUS_PAGES_ARCHIVE_APEX: ${{ steps.archive_apex.outcome }}
+        HUMANYMOUS_PAGES_ARCHIVE_SUBPATH: ${{ steps.archive_subpath.outcome }}
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: ${{ always() && github.ref == 'refs/heads/main' && steps.archive_apex.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
+      with:
+        name: pages-apex-${{ github.sha }}
+        path: |
+          target/delivery-pages/apex/artifact.tar
+          target/delivery-pages/apex/manifest.json
+        retention-days: 1
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: ${{ always() && github.ref == 'refs/heads/main' && steps.archive_subpath.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
+      with:
+        name: pages-subpath-${{ github.sha }}
+        path: |
+          target/delivery-pages/subpath/artifact.tar
+          target/delivery-pages/subpath/manifest.json
+        retention-days: 1
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      id: serving_upload
+      if: ${{ github.ref == 'refs/heads/main' && steps.source_finish.outcome == 'success' }}
+      with:
+        name: checked-pages-${{ github.sha }}
+        retention-days: 1
+        path: target/delivery-pages/apex/artifact.tar
+        if-no-files-found: error
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      id: serving_download
+      if: ${{ github.ref == 'refs/heads/main' && steps.serving_upload.outcome == 'success' }}
+      with:
+        name: checked-pages-${{ github.sha }}
+        path: ${{ runner.temp }}/pages-serving-download
+    - id: serving_roundtrip
+      if: ${{ github.ref == 'refs/heads/main' && steps.serving_download.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-pages -- archive-check --source docs --archive "${{ runner.temp }}/pages-serving-download/artifact.tar" --manifest "${{ github.workspace }}/target/delivery-pages/apex/manifest.json" --restored "${{ runner.temp }}/pages-serving-consumer-restored" --baseurl ''
+      working-directory: .
+    - name: Verify source after serving transfer
+      id: source_transfer
+      if: ${{ always() && github.ref == 'refs/heads/main' && steps.source_prepare.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- pages-evidence finish
+      working-directory: .
+      env:
+        HUMANYMOUS_PAGES_INSTALL: ${{ steps.bundle_install.outcome }}
+        HUMANYMOUS_PAGES_AUDIT: ${{ steps.bundle_audit.outcome }}
+        HUMANYMOUS_PAGES_APEX: ${{ steps.apex.outcome }}
+        HUMANYMOUS_PAGES_SUBPATH: ${{ steps.subpath.outcome }}
+        HUMANYMOUS_PAGES_PACKAGE_APEX: ${{ steps.package_apex.outcome }}
+        HUMANYMOUS_PAGES_PACKAGE_SUBPATH: ${{ steps.package_subpath.outcome }}
+        HUMANYMOUS_PAGES_ARCHIVE_APEX: ${{ steps.archive_apex.outcome }}
+        HUMANYMOUS_PAGES_ARCHIVE_SUBPATH: ${{ steps.archive_subpath.outcome }}
+        HUMANYMOUS_PAGES_TRANSFER: ${{ steps.serving_roundtrip.outcome }}
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       if: ${{ always() && github.ref == 'refs/heads/main' && steps.source_prepare.outcome == 'success' }}
       with:
         name: pages-outcomes-${{ github.sha }}
-        path: target/delivery-pages/*.json
+        path: |
+          target/delivery-pages/*.json
+          target/delivery-pages/apex/manifest.json
+          target/delivery-pages/subpath/manifest.json
         retention-days: 1
         if-no-files-found: error
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      if: ${{ always() && github.ref == 'refs/heads/main' && steps.apex.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
-      with:
-        name: pages-apex-${{ github.sha }}
-        path: ${{ runner.temp }}/pages-apex
-        retention-days: 1
-        if-no-files-found: error
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      if: ${{ always() && github.ref == 'refs/heads/main' && steps.subpath.outcome == 'success' && steps.source_finish.outputs.source-unchanged == 'true' }}
-      with:
-        name: pages-subpath-${{ github.sha }}
-        path: ${{ runner.temp }}/pages-subpath
-        retention-days: 1
-        if-no-files-found: error
-    - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
-      if: github.ref == 'refs/heads/main'
-      with:
-        name: checked-pages-${{ github.sha }}
-        retention-days: 1
-        path: ${{ runner.temp }}/pages-apex
     env:
       BUNDLE_FROZEN: 'true'
       CARGO_BUILD_JOBS: '1'

@@ -1107,3 +1107,25 @@ exit zero. The lab owns all bounded success predicates. Its existing
 --require-full mode remains a mandatory separate final gate with nonzero exit
 until full product readiness; exit two is never accepted as component success.
 Component qualification and environment metadata are not authenticated provenance.
+
+The existing CEF runner consumes protocol_preflight from the owning desktop
+contract before any native pilot process: first compile the native-feature
+library test binary without execution, then run the exact synthetic selector
+and reviewed names. Its parser-fixture counts and actual filtered totals stay
+separate from bootstrap rejection and the two actual desktop process cases.
+Unknown process counts remain null. The runner directly rejects any ACT
+presence even when hosted environment labels are emulated. Such environment
+admission is not remote attestation, and synthetic fixtures cannot qualify GUI,
+keyboard, IME, assistive technology or descendant process cleanup.
+
+Public Pages archives are produced only by the owning Rust packager, whose
+allowlist includes .well-known/security.txt and excludes source/private/special
+paths. Each base variant must pass package and a second fresh archive-check
+before its safe manifest/archive hashes are observed. Preparation creates fresh
+dedicated output parents; restores use distinct fresh destinations. The main
+serving artifact contains the verified artifact.tar itself, avoiding the old
+upload action's hidden-file filtering. Main additionally downloads that exact
+artifact and runs the owner archive-check against its original manifest before
+the build may release deployment readiness. Final source/transfer outcome is
+written before the terminal outcomes artifact. Branch uploads remain disabled.
+Observed archive integrity is distinct from browser/AT and full-product proof.
