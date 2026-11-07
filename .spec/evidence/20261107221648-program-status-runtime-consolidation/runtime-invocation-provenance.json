@@ -1,0 +1,19 @@
+{
+  "schema": "humanymous.runtime-invocation-provenance/1",
+  "relates_to": "5d68cd39 Runtime development check, Clippy, inventory and selected tests",
+  "discovery": "Independent review found no contemporaneous dev argv/start record",
+  "retained_record": "runtime-optional/dev-invocations.transcript-derived.json",
+  "sha256": "7c2705abf58c05024b081ab131f2c74cebdce8b4b11ab9b553ef38ab67d19cd0",
+  "bytes": 5300,
+  "provenance": "Retrospective transcription of actual Root execution tool calls and terminal results in this chat; not a contemporaneous process trace",
+  "sessions": [
+    71405,
+    90224
+  ],
+  "qualification_limits": [
+    "Exact flags rely on Root tool transcript plus terminal observations, not stderr alone",
+    "No independently authenticated per-phase start record",
+    "Runtime280-file closure only; reachable peer/registry/toolchain read closure not fully attested"
+  ],
+  "action": "No test rerun; original raw logs, summaries and historical public attachment remain unchanged"
+}

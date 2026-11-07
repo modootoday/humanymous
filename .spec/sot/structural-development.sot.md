@@ -904,3 +904,26 @@ into the CLI package. Its diagnostic source contract needs an owned digest/data
 profile plus bounded actual-source verification tied to the same checkout/build;
 missing or changed source cannot produce a refined diagnostic. Exact caller and
 snapshot-binding design remains pending owner review before implementation.
+
+## Accepted additional Tools input dispositions
+
+CEF desktop contract canon remains browser-owned at its existing path. Root
+accepts exactly one immutable CLI DATA replica at
+qualification/browser/cef/pilot-contract.json with adjacent explicit provenance.
+Producer9251376f99dba1fbe36af4bb2908ed5e39dd6047, blob
+4a134d4f7b613c4bd182c95a3062b2677028d1fc,3098 bytes, SHA256
+eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a
+are independently verified. Apply the license, reader and equality/source-custody
+gates in the accepted Tools13 CEF section of plan:root/20261107072500. This
+is DATA only; no CEF source, template, readiness or native proof is copied.
+
+Root adopts the mutable-reader design in plan:root/20261107051013 at244f5427.
+Actual verification requires an explicit root and finite source-bound manifest;
+live claims are separately bounded observations, never commit-frozen writer
+authority. Hash the exact parsed bytes; preserve explicit absence policies,
+tighter caps, path/identity/race checks and shared deadlines. Missing, changed
+or unsupported required inputs refuse qualification. No ambient CWD, manifest
+ancestor or vendor fallback; synthetic parser fixtures remain non-authoritative.
+Reuse existing selected-input readers where semantics match instead of adding
+a generalized framework. Reader ceilings authorize no arbitrary recursive scan.
+No input ownership decision alone freezes or moves the complete Tools slice.
