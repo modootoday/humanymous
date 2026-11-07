@@ -487,3 +487,16 @@ Any renewed attempt requires an explicit allocation and reviewed corrected
 orchestration: parse original ISO8601 strings once as DateTimeOffset, retain the
 offset-bearing type across persistence, and use prebuilt bounded supervision for
 the whole preparation/work interval. No RNG source was changed to mask this failure.
+
+### Reviewed monotonic repair proposal, no renewal or execution
+
+Root superseded the earlier DateTimeOffset deadline suggestion: ONE live Stopwatch
+must begin before preparation IO;390swork and450shard remaining derive solely from
+Elapsed. UTC DateTimeOffset.ToString('o') is audit-only and never parsed for control.
+The owning plan contains literal initialization/persistence, remaining/WaitForExit,
+bounded child settlement and required selected-local-manifest/Rust inclusion
+snippets. It prohibits absolute-ancestor /target/ filtering and requires each
+selected local manifest/Rust input plus13frozen files in BOTH before/after maps.
+No code source changed;72888805 remains frozen,12tests remain NOT_RUN, and the
+failed clock is not resumed. This is a concrete review proposal awaiting a fresh
+grant, not an execution receipt, active target lease or new product script.

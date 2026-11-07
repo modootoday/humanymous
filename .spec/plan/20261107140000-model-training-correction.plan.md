@@ -240,6 +240,178 @@ DateTimeOffset and keep typed offset-bearing deadlines; do not convert materiali
 DateTime objects through locale strings or hide preparation gaps. Profile0bd901e2
 is historical, not an active lease or successful qualification.
 
+## Repaired monotonic orchestration: literal review snippets, NOT EXECUTED
+
+Root requires ONE in-process Stopwatch for any renewed attempt. The earlier
+DateTimeOffset-based runtime deadline proposal is superseded: UTC values are audit
+strings ONLY and must never drive admission, remaining budget or WaitForExit.
+Do not renew the failed clock, restart the stopwatch or split execution into fresh
+tool processes. Prepare the complete orchestration body BEFORE a new allocation;
+only an explicitly granted run starts the following clock. This is review-only
+operational orchestration, not a new product implementation or executed script.
+
+### Clock initialization and first persistence
+
+```powershell
+$rngClock = [System.Diagnostics.Stopwatch]::StartNew()
+$rngAuditStart = [DateTimeOffset]::UtcNow.ToString('o')
+$rngWorkBudgetMs = [long]390000
+$rngHardBudgetMs = [long]450000
+$rngRun = 'C:/workspaces/humanymous/.spec.local/root/evidence/NEXT_GRANTED_RNG_RUN'
+$rngUtf8 = [System.Text.UTF8Encoding]::new($false)
+New-Item -ItemType Directory -Path $rngRun -ErrorAction Stop | Out-Null
+$rngAudit = [ordered]@{
+    started_utc = $rngAuditStart
+    work_budget_ms = $rngWorkBudgetMs
+    hard_budget_ms = $rngHardBudgetMs
+    stopwatch_frequency = [System.Diagnostics.Stopwatch]::Frequency
+    monotonic_start_elapsed_ticks = $rngClock.ElapsedTicks
+    controller_pid = $PID
+    source_commit = '728888051b7dacfa3e3181cf71da4fff2f526bd4'
+    overlays = @()
+}
+[IO.File]::WriteAllText(
+    (Join-Path $rngRun 'clock.json'),
+    ($rngAudit | ConvertTo-Json -Depth 4), $rngUtf8
+)
+```
+
+The clock precedes the first filesystem preparation operation; the first write
+records fixed budgets, not wall-clock deadlines. The same live object survives all
+preparation, native children, hashing and cleanup. Reading clock.json later is
+for evidence only. A process restart cannot resume or reconstruct this budget.
+
+### Remaining work and cleanup budgets
+
+```powershell
+function Get-RngRemainingMs([long]$budgetMs) {
+    $left = $budgetMs - $rngClock.Elapsed.TotalMilliseconds
+    return [int][Math]::Max(0, [Math]::Floor($left))
+}
+
+if ((Get-RngRemainingMs $rngWorkBudgetMs) -le 0) {
+    throw 'Work budget exhausted: enter cleanup without another child'
+}
+
+$rngTick = [ordered]@{
+    audit_utc = [DateTimeOffset]::UtcNow.ToString('o')
+    elapsed_ticks = $rngClock.ElapsedTicks
+    elapsed_ms = $rngClock.Elapsed.TotalMilliseconds
+    work_remaining_ms = Get-RngRemainingMs $rngWorkBudgetMs
+    cleanup_remaining_ms = Get-RngRemainingMs $rngHardBudgetMs
+}
+```
+
+No DateTime.Parse, UTC comparison, JSON time roundtrip, locale conversion or
+Elapsed reset is permitted in control flow. Fresh memory admission is checked
+before each new command: free>20GiB/commit<85%; no new compiler at free<16GiB or
+commit>=88%. WMI observations are bounded separately and do not restart the clock.
+Check remaining work before/after archive IO and each selected input hash. Timed
+out preparation or a vanished source is a first failure, not a hidden retry.
+
+### Native child wait and bounded settlement
+
+Every archive/metadata/formatter/compiler native command uses this pattern with
+its actual owned process, command log and per-step cap. The entire command list
+and code body exist before preparation starts; the model must not construct the
+next command through another tool turn while a target lease is held.
+
+```powershell
+$rngWaitMs = [Math]::Min($rngStepCapMs, (Get-RngRemainingMs $rngWorkBudgetMs))
+if ($rngWaitMs -le 0) { throw 'No work budget: do not start child' }
+$rngStepEndElapsedMs = [Math]::Min($rngWorkBudgetMs,
+    $rngClock.Elapsed.TotalMilliseconds + $rngWaitMs)
+$rngChild = Start-Process -FilePath $rngExecutable -ArgumentList $rngArguments `
+    -WorkingDirectory $rngSource -WindowStyle Hidden -PassThru `
+    -RedirectStandardOutput $rngStdout -RedirectStandardError $rngStderr
+$rngChildAudit = [ordered]@{
+    pid = $rngChild.Id
+    started_utc = [DateTimeOffset]::UtcNow.ToString('o')
+    started_elapsed_ms = $rngClock.Elapsed.TotalMilliseconds
+    wait_budget_ms = $rngWaitMs
+}
+[IO.File]::WriteAllText($rngChildReceipt,
+    ($rngChildAudit | ConvertTo-Json), $rngUtf8)
+$rngWaitMs = [int][Math]::Max(0, [Math]::Floor(
+    $rngStepEndElapsedMs - $rngClock.Elapsed.TotalMilliseconds))
+$rngFinished = $rngWaitMs -gt 0 -and $rngChild.WaitForExit([int]$rngWaitMs)
+if (-not $rngFinished) {
+    try {
+        if (-not $rngChild.HasExited) { $rngChild.Kill($true) }
+    } catch [InvalidOperationException] {
+        if (-not $rngChild.HasExited) { throw }
+    }
+    $rngSettleMs = Get-RngRemainingMs $rngHardBudgetMs
+    if (-not $rngChild.HasExited -and
+        ($rngSettleMs -le 0 -or -not $rngChild.WaitForExit($rngSettleMs))) {
+        throw 'OWNED_CHILD_UNSETTLED: keep marker/lease and report actual handle'
+    }
+    throw 'FIRST_FAILURE_TIMEOUT: settled child, no next workload or retry'
+}
+if ($rngChild.ExitCode -ne 0) {
+    throw ('FIRST_FAILURE_EXIT_' + $rngChild.ExitCode)
+}
+```
+
+The remaining work budget is rechecked after launch/receipt IO so those costs
+cannot extend the390swork phase. Finally cleanup verifies exact marker token and
+uses only450s minus Elapsed. Return a target ONLY after actual child settlement
+and owned marker release; retain uncertain ownership if cleanup cannot prove it.
+OS-level uninterruptible IO/termination latency remains a platform risk, not a
+claim that Kill or a request deadline proves termination. No foreign processes,
+shared cache deletion or GPU reset may be used to force deadline compliance.
+
+### Positive local-input inclusion, no absolute-ancestor target exclusion
+
+Derive required manifests/Rust inputs from EACH selected resolved local package
+and the13frozen source/license/fixture paths. Hash every required path even if an
+ancestor contains a directory named target. Never use absolute-path substring
+filters such as contains('/target/') to select source closure.
+
+```powershell
+$rngSourceRoot = [IO.Path]::GetFullPath($rngSource).TrimEnd([char[]]'\/')
+$rngSourcePrefix = $rngSourceRoot + [IO.Path]::DirectorySeparatorChar
+$rngRequired = [Collections.Generic.HashSet[string]]::new(
+    [StringComparer]::OrdinalIgnoreCase)
+foreach ($rngPackage in $rngSelectedPackages) {
+    if ($rngPackage.source) { continue }
+    $rngManifest = [IO.Path]::GetFullPath($rngPackage.manifest_path)
+    if (-not $rngManifest.StartsWith($rngSourcePrefix,
+        [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'LOCAL_INPUT_OUTSIDE_FROZEN_ARCHIVE'
+    }
+    [void]$rngRequired.Add($rngManifest)
+    Get-ChildItem -LiteralPath (Split-Path $rngManifest) -Recurse -File `
+        -Filter '*.rs' -ErrorAction Stop | ForEach-Object {
+            [void]$rngRequired.Add([IO.Path]::GetFullPath($_.FullName))
+        }
+}
+foreach ($rngOwnedFile in $rngFrozenSourceFiles) {
+    [void]$rngRequired.Add([IO.Path]::GetFullPath(
+        (Join-Path $rngSourceRoot $rngOwnedFile.path)))
+}
+foreach ($rngPath in $rngRequired) {
+    if (-not $rngBeforeByPath.ContainsKey($rngPath) -or
+        -not $rngAfterByPath.ContainsKey($rngPath)) {
+        throw ('MISSING_SELECTED_INPUT: ' + $rngPath)
+    }
+    if ($rngBeforeByPath[$rngPath] -cne $rngAfterByPath[$rngPath]) {
+        throw ('CHANGED_SELECTED_INPUT: ' + $rngPath)
+    }
+    if ([string]::IsNullOrWhiteSpace($rngBeforeByPath[$rngPath]) -or
+        [string]::IsNullOrWhiteSpace($rngAfterByPath[$rngPath])) {
+        throw ('EMPTY_SELECTED_INPUT_HASH: ' + $rngPath)
+    }
+}
+```
+
+Before/after maps use normalized full paths, ordinal-ignore-case keys and nonempty
+SHA256 values. Record required manifest count, Rust file count, frozen13-file count
+and total compared files separately from difference-record count. Registry/config/
+tool/env closure remains finite and selected; generated target outputs are outside
+the selected source roots, not removed through an absolute ancestor filter. All
+above snippets are NOT_RUN; no renewed lease, Stopwatch or compiler has started.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.
