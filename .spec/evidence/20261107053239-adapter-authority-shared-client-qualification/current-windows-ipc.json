@@ -1,0 +1,82 @@
+{
+  "schema": "humanymous.authority.local-native-validation/1",
+  "venue": "local Windows x86_64-pc-windows-msvc; actual current user SID captured privately",
+  "compiled_source": "332d79c0a32e5818515d337311d88965dd2dd33c; exact217 tracked closure inputs unchanged from compilation through execution",
+  "allocation": "renewed C warm artifacts, testthreads1, no Cargo/cold compilation",
+  "admission": {
+    "free_physical_gib": 33.4,
+    "commit_percent": 79
+  },
+  "native_process": {
+    "exit": 0,
+    "failed": 0,
+    "filtered": 0,
+    "discovered": 10,
+    "seconds": 11.41,
+    "passed": 10,
+    "ignored": 0
+  },
+  "local_service": {
+    "exit": 0,
+    "failed": 0,
+    "filtered": 0,
+    "discovered": 3,
+    "seconds": 0.18,
+    "passed": 3,
+    "ignored": 0
+  },
+  "changed_closure_inputs": [],
+  "remaining_target_processes": [],
+  "coverage": [
+    "sealed startup custody exclusion/release and restart key-byte identity",
+    "wrong passphrase and missing witness startup refusal",
+    "native PID and untrusted DACL denial",
+    "credential/profile/replay/body/scope/capacity/timeout/nonreader cases",
+    "generic local handler cancellation and explicit stop/drain"
+  ],
+  "limits": [
+    "controlled inherited private pipe fixture; no OS-store attestation",
+    "child kill/reap is not graceful sealed service final flush",
+    "local current-user component proof; not hosted or cross-principal SCM bootstrap",
+    "normalized producer loop is authority IPC, not actual framework ABI qualification"
+  ],
+  "not_run": [
+    "fresh hosted candidate IPC",
+    "macOS current-source IPC",
+    "protected OS-store authority unlock",
+    "independent remote Windows denial",
+    "Docker isolated other UID parent/probe",
+    "production R1 bootstrap channel",
+    "product Docker e2e"
+  ],
+  "raw": [
+    {
+      "name": "current-ipc-native-list.log",
+      "sha256": "93db434347a5236d0591415ca304b0510eee90d5caf3e79fe152620f95f3bf76"
+    },
+    {
+      "name": "current-ipc-local-list.log",
+      "sha256": "14785f551af7004bb74c561e008263db10d53f97be5f437c184acba4b01b00f6"
+    },
+    {
+      "name": "current-ipc-native.log",
+      "sha256": "2260d1dd2d6cec05337ff12560a6c7eb63dd4b8a943fbcd4277797ad7dd32c08"
+    },
+    {
+      "name": "current-ipc-local.log",
+      "sha256": "577d9cf2683922fdc9a3611250fa4e63970c3fb25a220a531c2d59cb2971d76b"
+    },
+    {
+      "name": "current-ipc-artifacts.json",
+      "sha256": "ddc09eba7c358c62e2443e76031af66eea83d77a2643709ff55eb5a826b87b7b"
+    },
+    {
+      "name": "current-ipc-after.json",
+      "sha256": "9e5a7a8f734c5629353f9db09a774f6431e8e88bd9fb4ec543ce4c632c8c610f"
+    },
+    {
+      "name": "current-ipc-actor.log",
+      "sha256": "6f4f1fcf0e976c979e67bd10e5d3b10e025b5b3f6f18e1ac2b0cd94d7f91a2c4"
+    }
+  ]
+}

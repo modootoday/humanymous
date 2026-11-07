@@ -507,3 +507,34 @@ This closes current graph compile/pure/Clippy/fmt revalidation only. Actual seal
 startup with custody/restart and native IPC integration harnesses were compiled,
 NOT executed. No new hosted result exists here. Root was asked for a separate
 actual IPC/hosted allocation; historical Linux813 results remain source-bound.
+
+## Renewed C actual Windows IPC result and R1 review
+
+Root explicitly renewed C for warm ordinary owned Windows process/pipe tests.
+At commit79percent/free33.4GiB, directly executed the already-built exact harness
+EXEs after reviewing actual --list and prerequisites: native_process10/10 and
+local_service3/3 passed, both0failed/ignored/filtered, exits0,11.41s/0.18s. No Cargo
+or cold compilation, no account/SCM/privilege change, no hosted-marker spoofing.
+All217 tracked compiled closure inputs stayed identical through execution. Actual
+local actor SID and three binary hashes are private; exact lists, terminal footers
+and post-run process observation are attached. No validation-target process remains.
+Public current-windows-ipc.json binds this local proof and its limits.
+
+Sealed custody/exclusion/release/restart identity and wrong-unlock/missing-witness
+refusal now have actual CURRENT Windows component proof. This uses controlled
+inherited provisioning, not OS-store attestation or production R1 bootstrap.
+Child termination is kill/reap, not graceful sealed service final flush. Generic
+local handler stop/drain has its own3-case proof; never merge these claims.
+Fresh hosted candidate IPC, current macOS, OS-store unlock, remote Windows denial,
+isolated Docker UID parent/probe, SCM/bootstrap and whole product remain NOT_RUN.
+
+Independently reviewed native R1 plan20261107103828 exact SHA256
+6b97bda59859527a7e9735f93bca34b68ab215514afba5ddc64faf99bf2b8778:
+NEEDS-WORK. Public signed targeted authorization could explicitly replace initial
+bearer Hello, subject to root decision; it is not a protocol fallback. Proposed
+SCM_RUNNING TransportPrepared also needs approval and real cross-SID primary-token
+query feasibility remains P0. Added requirements: authenticated typed P acceptance
+from BOTH live roles without making P management peer; one-use burn across repeated
+context constructors/process-wide concurrency; trusted clock/rollback and conserved
+absolute startup deadline; independent W key/capability/lifetime proof before
+unseal. Sent critique to native owner/root. No R1 channel implementation follows.
