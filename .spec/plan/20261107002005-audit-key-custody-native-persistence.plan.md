@@ -37,10 +37,12 @@ Current accepted coding order under root's registered audit-custody lane071ccef:
 3. Complete prepared-ciphertext destination-bound rotation and retained-control
    anchor seam requested by runtime R10. Frozen Record fields are not repurposed
    to carry full LedgerAnchor. Contract/source acceptance precedes execution.
-4. Request an explicitly assigned root local pipeline/isolated target for selected
-   pure units/scoped checks (jobs1/incremental0 under the current canonical policy);
-   real files/process/ACL/crash/witness/product cases run only in root's hosted
-   batch. Record not_run until exact-source observation, including remote
+4. Request an explicitly assigned root local pipeline/isolated target under the
+   measured hybrid policy (jobs1/incremental0). Supported ordinary-user native
+   files/process/IPC tests may run locally after allocation; protected account/
+   service profiles and genuine hosted contracts retain their required venue.
+   Docker e2e keeps its mandatory Desktop engine affinity. Record not_run until
+   exact-source observation, including remote
    42348518353/63f69ae versus later sources. No duplicate dispatch or publication.
 
 Native-security OS secret reader remains Windows owner responsibility; audit
@@ -99,6 +101,13 @@ returned immediately. Existing fa327b7 facts remain historical, not rewritten.
    root Cargo integration, then record exact checks and remaining deployment gates.
 
 ## Record
+
+The measured root hybrid policy now ends the benchmark quiet window. This lane
+has requested, but has not received, a new validation slot for latest retained
+state/erasure/witness lifetime source. No idle slot is self-allocated. Historical
+quiet-window/source-only records below describe their observation times, not a
+continuing blanket ban on local native validation. Root's rust-migration SoT is
+the execution-policy authority.
 
 Witness fixture timeout source correction follows the docs owner's full review:
 direct synchronous service pipe/read/wait paths now retain an absolute60-second

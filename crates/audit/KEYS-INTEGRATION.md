@@ -1,5 +1,12 @@
 # Sealed key compatibility integration
 
+The current root measured hybrid policy ends the benchmark quiet window.
+Latest audit source below remains NOT_RUN until an explicitly assigned local
+slot completes exact-source checking and native execution. Historical quiet
+records are observation-time facts, not a continuing hosted-only restriction.
+Supported ordinary-user Windows/WSL validation is authorized by allocation;
+protected profiles and genuine hosted contracts retain their venue requirements.
+
 ## New unqualified witness fixture lifetime
 
 Direct WitnessProcess and common typed-client fixtures now retain an owned
