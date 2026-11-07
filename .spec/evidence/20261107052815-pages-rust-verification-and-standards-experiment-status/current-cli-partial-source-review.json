@@ -96,15 +96,75 @@
         "docs/reference/install-requirements.md",
         "docs/reference/cli-config-policy.md"
       ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/mod.rs",
+      "sha256_at_post_read_observation": "723cda4d4280ddb7669b9e76999bf7bfe4c40a20ebffcdc0d7b83e4a9853cf9f",
+      "lines": 240,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete240-line composition fully read. Reads pinned plan/executable under preflight watchdog, binds shared ServiceHost, creates fresh observer credential only with explicit PrivateObserverProvisioner, otherwise observer plan refuses before secret input. HostReadiness embeds actual runtime readiness but product false. Diagnostic loopback exact19-byte challenge with200ms exchanges not authenticated management/health. Joins runtime and diagnostic futures, maps actual exit facts; binding and publish not full product qualification.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/input.rs",
+      "sha256_at_post_read_observation": "43d999aa48f120227efae575b532222de2a582248eeb024ae9bffce88f9ae8e7",
+      "lines": 263,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete263-line input boundary fully read.32KiB plan/64KiB config digest and private input checks; Windows actualserviceSID/delegatedhandle role, Unix private file. Empty plaintext passphrase required; scope/diagnostic/witness checks precede native secret lookup. Shared provider returns bounded4096 UTF8 zeroizing secret; typed ProtectedReadFailure minimizes provider errors. No filesystem/OS/browser copy-erasure proof or independently qualified path-race resistance.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/control.rs",
+      "sha256_at_post_read_observation": "60f187fecdf54d5da5a042cb96339868a62c8b1c4fb71966d6bb93783d17d984",
+      "lines": 293,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete293-line independent watchdog and pure transition tests fully read. Starting bound persists through ready until publication; stop keeps earliest deadline and repeated stop cannot renew it. Deadline/poison exits process74 without stopped success. Successful stop requires draining+returned stopped/drained/flushed; Drop disarms deadline and joins watchdog. This does not guarantee native manager receipt delivery or process-tree reaping; publication after stopped can be outside watchdog deadline.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/platform.rs",
+      "sha256_at_post_read_observation": "1db0f81b1e34ae1d8be35f73662ca343fcf120d47a104c9b824c3382e0f9e2e7",
+      "lines": 210,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete210-line adapter fully read. Windows foreground refused; SCM uses actual control handler, start/stop statuses and shared Supervisor; Unix foreground signals abort/join after run. Default platform execution passes no external witness or observer provisioning sink. SCM entry discards returned io error after run_service attempts final status; native error/readiness and process-exit evidence remain separate. Foreground calls supervisor.stopped before synchronous final stdout report, so final output is not proved deadline-bounded.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
+    },
+    {
+      "source": "crates/cli/src/runtime_host/pilot.rs",
+      "sha256_at_post_read_observation": "efd2a584e9d32d1ebb802ff9ece04c3fcabf914cbffcb11f5b5e05e36ca90d12",
+      "lines": 278,
+      "full_read": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete278-line Windows feature-only fixture fully read. Digest-pinned nonsecret metadata for actual disposable service, shared protected directories/native credential fixture, runtime config in private child. Missing-credential path removes ownedfixturesecret before production read, exact typed failure/no ready. finish rechecks delegated/private storage, removes only owned child, syncs create-new PID-suffixed bounded8KiB private receipt. run/source labels not hosted attestation, private readiness/PID not publicaggregate, no independent custodian/product witness. Explicit cleanup failure retained; no native fixture execution in review.",
+      "pages": [
+        "docs/reference/install-requirements.md",
+        "docs/reference/cli-config-policy.md"
+      ]
     }
   ],
-  "full_read_files": 8,
-  "lines": 829,
-  "post_read_rehash_drift": 0,
+  "full_read_files": 13,
+  "lines": 2113,
+  "post_read_rehash_drift": [],
   "pre_read_snapshot": "not captured; must not claim before/after immutable full-read closure",
   "source_receipts_renewed": false,
   "docs_modified": false,
   "new_execution": "NOT_RUN",
   "full_product_qualified": false,
-  "remaining": "Complete service/storage/native backend and runtime input/control/platform/pilot plus actual process source before accepting CLI public behavior or current ledger. Rehash at publication."
+  "remaining": "Service/storage/native backend, evidence example and actual process tests remain unread in this batch. No current ledger acceptance until complete relevant source and final rehash."
 }
