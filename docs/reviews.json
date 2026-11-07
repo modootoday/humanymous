@@ -2,6 +2,16 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/keys/backups.rs",
+  "sha256": "2be069378e0bdae9dc0260e6bcdacdc2c399185dbf807a800da46fb2fbbbfd86",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete signed inventory/open/pin, sealed digest/private-file validation, capacity/tombstones, creation/orphan adoption/active restore, consumed dual-control retirement, exact-operation reconciliation/resume and pending recovery including platform durability. Public audit/runbook references distinguish Active/Retiring/Retired and local unlink from global physical/remote-copy erasure, signing authority from approval and ambiguous failure from no effects. No creation, restore, deletion, recovery or subprocess executed.",
+  "pages": [
+    "docs/reference/security-audit.md",
+    "docs/runbooks/erasure-crypto-shred.md"
+  ]
+},
+{
   "source": "crates/audit/src/checkpoint/durable.rs",
   "sha256": "2ce83f57aea799ceef105f380ab4203cc638cf123133b272c8ee7d57879fadab",
   "reviewer": "codex/rust-pages",

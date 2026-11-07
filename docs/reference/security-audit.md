@@ -22,6 +22,7 @@ different questions and must be reported separately.
 | `storage::Wal` and `log::Log` | Durable local append and authenticated replay; rollback resistance needs a trusted head retained outside the local WAL |
 | External witness client/process | A separately supervised co-signer protocol; a trusted broker still owns process/peer authentication, pipe provenance, deadlines and reaping |
 | `sink::DurableSink` | Authenticated bounded local export and a receipt; no remote delivery, WORM storage or automatic personal-data sanitization is implied |
+| `keys::backups::BackupInventory` | Signed externally pinned inventory of exact encrypted local files; retirement requires consumed approval and does not erase unknown/remote/snapshot copies |
 
 The compatibility verifier can return `OK: true` with class `hmac-unchecked`
 when no HMAC key was supplied. Its native `Report.scope` records checked records,

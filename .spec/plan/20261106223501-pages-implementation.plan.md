@@ -769,3 +769,11 @@ frame/bootstrap/key+head/persistence/poison/cache boundaries, Ready capability
 versus receipt and Stopped frame versus actual exit/reaping/lock release. Three
 manual source hashes recorded. No child/IPC/storage test or product custody
 qualification; consumer deployment independence and durability gates retained.
+
+## Sealed backup inventory and retirement review
+
+Read complete backups module and pinned manual source/prose receipt. Audit
+reference/runbook now cover encrypted digest/active restore, orphan adoption,
+consumed approval, Active-Retiring-Retired, exact crash reconciliation and bounded
+tombstones. No local unlink is global physical/snapshot/remote erasure. Failed
+call is not no effects. No key/storage/destructive action executed.
