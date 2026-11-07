@@ -18,7 +18,7 @@ It does not assert that all depicted modules or production edges are qualified.
 
 ## Naming and responsibility
 
-### Public package family redesign: confirmation-gated draft v0
+### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
 humanymous-core and humanymous-cli, with no permanently private implementation
@@ -26,13 +26,13 @@ packages. This supersedes treating every current adapter/domain crate as a
 required final package. Internal modules and fields still need restricted Rust
 visibility; public package status never makes every implementation API public.
 
-The user's latest instruction is an explicit gate: explain the concrete design
-and receive confirmation BEFORE package/path consolidation and all-branch
-synchronization. Existing work continues within current paths. Do not move
-directories, rename manifests/imports, widen public APIs or synchronize validation
-refs as if this draft were accepted. The earlier requested fast-forward of
-codex/rust to9586f7e4 occurred before this gate; its CI result remains tied to that
-source. Main integration still requires the final migration gates.
+The user explicitly confirmed this eight-public-package baseline on 2026-11-08
+with "기준 설계 확정". The design approval gate is satisfied. Root now coordinates
+package/path consolidation and subsequent branch synchronization through the
+slice controls below; approval does not authorize concurrent uncoordinated moves.
+The earlier fast-forward of codex/rust to9586f7e4 and its CI remain historical
+source-bound observations. Main integration still requires the final migration
+gates; publication remains unauthorized.
 
 Read-only research found41 workspace packages, all currently publish=false,
 22 binary targets and10 cdylib-bearing packages. These are not41 deployed
@@ -41,7 +41,7 @@ including optional/target declarations, spans15 packages. A facade re-export
 cannot make unpublished path-only dependencies registry-ready. Do not solve this
 by flipping41 publish flags. Publication remains separately unauthorized.
 
-The recommended review target is EIGHT intentionally public packages. Six is a
+The accepted baseline is EIGHT intentionally public packages. Six is a
 more aggressive alternative with greater native/WASM/SDK feature coupling; three
 would erase useful safety and platform boundaries. Neither a smaller count nor
 faster builds is established without the required measurements and role audit.
@@ -64,7 +64,7 @@ flags remain release guards during design/verification. A necessary additional
 public loader/ABI package requires an explained design amendment, not an ad-hoc
 private crate or weakened unsafe policy.
 
-Proposed context parents are crates/sdk for facade/core/runtime,
+Accepted context parents are crates/sdk for facade/core/runtime,
 crates/integrations for platform/collector/adapters, and crates/apps for CLI/browser.
 Every manifest-bearing leaf directory matches its branded package name. Within
 each package use src/<context>/... with standard Cargo targets. This is the

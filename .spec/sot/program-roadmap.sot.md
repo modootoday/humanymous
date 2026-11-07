@@ -21,6 +21,31 @@ freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
 ## Current integration checkpoint
 
+The user explicitly confirmed the eight-public-package baseline on 2026-11-08.
+The design gate is satisfied. Root coordinates exact source/hash handoffs before
+each package/path slice, integrates and verifies the slice, then synchronizes
+work branches to the accepted checkpoint. Owners must not independently move
+paths or reset refs. Publication and final main integration remain separately
+gated. Historical evidence retains its original source identity.
+
+Existing full CI run42407744891 binds source9586f7e4. Its policy job passed;
+Docker and Ubuntu native jobs have terminated failed while later native/browser
+jobs continue. Docker reports72/72 assertions passed but9 required unavailable,
+and the wargame ledger evaluates19 of26 scheduled cases with7 unsupported.
+Its component/scoped success does not qualify the full product; preserve the
+nonzero owner/final result. This does not contradict the separately qualified
+bounded Go8/40 run42406688473 at a19e3802, whose two jobs have zero annotations.
+
+Header source review found a routing incompatibility: the reusable native job
+calls component header, which now enters a closed proof contract bound to the
+standalone header job and pinned R3 compiler. This source finding is independent
+of syntax/layout failures: the completed Ubuntu log reports semantic execution
+success and source unchanged, followed by compiler-profile admission refusal.
+The exact rejected compiler field is not established. Delivery and ABI owners must
+separate semantic checking from closed-proof transport responsibilities without
+weakening either required gate, compiler grammar or retention accounting. No
+retry, mode workaround or new validation ref is admitted by this observation.
+
 ### Integration delta after the 17:27 snapshot
 
 Latest source integration: GO-FACADE-01 committed c858b1dc atomically across24
