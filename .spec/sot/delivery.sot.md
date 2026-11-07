@@ -920,6 +920,25 @@ build context permits only the additional exact Go configuration and contract
 JSON files required by the lab owner's new compile-time runtime inputs; this is
 source preparation, not execution or qualification of a Go profile.
 
+The next Linux x64 hosted native job explicitly invokes capture's five ignored
+hosted_transport cases and the native ABI generated-header conformance example.
+Each invocation runs independently after the workspace build, preserves failure
+and source/raw-log hashes before returning nonzero, and never runs locally.
+Capture requires all five registered actual names, one exact five-pass summary,
+zero ignored/filtered tests and an unchanged source. This is original TLS/H2
+producer component coverage, not Runtime request binding or product acceptance.
+
+Header generation installs locked cbindgen 0.29.4 into a fresh private tool root
+and isolated build target outside the evidence bundle, records its observed
+version/binary/header hashes and invokes the owning Rust header_conformance
+example unchanged. The owner verifies C11/C++11 syntax and layouts; delivery
+does not copy that parser or author C/C++ source. The thirteen expected compiler
+evidence files remain private with public hashes and bounded command exits.
+No header existence or pure unit count proves dynamic ABI/managed/allocator host
+support. GNU timeout bounds these literal upstream executable invocations;
+only clean exact-source standard hosted Linux x64 may execute them. Actual
+capture/compiler runs remain required independently of source implementation.
+
 Root checkpoint a26d1c3 resolves the common 36-member Cargo graph/lock and the
 standalone scripts/ci/windows-native-runner/Cargo.lock against the shared native
 APIs. The runner lock is under this delivery governing scope but remains an

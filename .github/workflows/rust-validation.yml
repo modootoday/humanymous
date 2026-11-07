@@ -84,6 +84,12 @@ jobs:
     - name: Execute maintenance process and storage component tests
       if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
       run: cargo test --locked -p humanymous-agent-maintenance --test process --test session_storage --test product_package
+    - name: Execute five owned TLS and H2 capture cases
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' && runner.os == 'Linux' }}
+      run: cargo run --locked -p humanymous-delivery -- component capture
+    - name: Verify generated C11 and C++11 header layouts
+      if: ${{ !cancelled() && steps.native_build.outcome == 'success' && runner.os == 'Linux' }}
+      run: cargo run --locked -p humanymous-delivery -- component header
     - name: Execute provisioned Windows CEF component cases
       if: ${{ !cancelled() && steps.native_build.outcome == 'success' && runner.os == 'Windows' }}
       run: cargo run --locked --manifest-path scripts/ci/cef-pilot/Cargo.toml -- target/cef-native-evidence
