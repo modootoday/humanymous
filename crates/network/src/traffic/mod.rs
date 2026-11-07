@@ -16,6 +16,7 @@ pub struct Limits {
     max_payload_bytes: usize,
 }
 impl Limits {
+    /// Validate explicit session/address cardinalities and retained byte limits.
     pub fn new(
         sessions: usize,
         addresses: usize,

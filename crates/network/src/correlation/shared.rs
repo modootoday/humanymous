@@ -3,30 +3,45 @@ use std::time::Duration;
 
 /// Semantic atomic operation only. No backend, Lua, network I/O or fleet proof.
 pub trait AtomicCoordinator {
+    /// Describe one atomic new-subnet/count step; no implementation is supplied.
     fn observe(&mut self, request: &CoordinatorRequest)
     -> Result<Vec<i64>, CoordinatorUnavailable>;
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Coordinator operation could not produce a usable count observation.
 pub struct CoordinatorUnavailable;
 /// Caller must map ordered ticks into its accepted backend clock contract.
 pub struct CoordinatorRequest {
+    /// Fixed-width pseudonymous fingerprint-key digest.
     pub digest: String,
+    /// Caller-derived legacy subnet key, not authenticated by this value.
     pub subnet: String,
+    /// Ordered caller ticks, requiring a separately accepted backend mapping.
     pub now: Duration,
+    /// Trailing new-subnet observation window.
     pub window: Duration,
+    /// Key retention duration.
     pub ttl: Duration,
 }
 /// Reported counts are unqualified data, never a trusted fleet capability.
 pub enum FleetInput {
+    /// No coordinator is configured; use local counts only.
     LocalOnly,
+    /// A configured operation failed; retain explicit local degradation.
     Unavailable,
+    /// Unqualified legacy reply values: added and velocity, then ignored extras.
     Reported(Vec<i64>),
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Count origin only; no variant proves required coverage or fleet readiness.
 pub enum Scope {
+    /// Empty or pipe-only correlation identity was not recorded.
     MissingKey,
+    /// Local counters only, without a fleet observation.
     LocalOnly,
+    /// Coordinator failure/malformed data fell back to local counters.
     LocalDegraded,
+    /// Caller-reported coordinator counts, never a qualified fleet capability.
     CoordinatorReportedUnqualified,
 }
 impl FleetInput {

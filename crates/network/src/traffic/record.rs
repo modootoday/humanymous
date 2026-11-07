@@ -4,26 +4,43 @@ use std::time::Duration;
 /// Caller observations only; public fields cannot mint capture provenance.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Record {
+    /// Ordered caller ticks, not an independently read wall clock.
     pub time: Duration,
+    /// Caller-supplied session key; this value does not authenticate it.
     pub session_id: String,
+    /// Legacy address text, not a verified transport peer.
     pub remote_addr: String,
+    /// Observed JA3 fingerprint text.
     pub ja3: String,
+    /// Observed complete JA4 text.
     pub ja4: String,
+    /// Observed TLS engine-family classification.
     pub engine: String,
+    /// Extension-order fingerprint, never enabling disabled permutation rules.
     pub ext_order: String,
+    /// Protocol metadata supplied by the caller.
     pub alpn: String,
+    /// TLS version metadata supplied by the caller.
     pub tls_version: String,
+    /// Legacy HTTP protocol string, such as1.1 or2.
     pub proto: String,
+    /// HTTP method; empty distinguishes a TLS-only record.
     pub method: String,
+    /// Request path retained in transient history.
     pub path: String,
+    /// Short stable User-Agent hash.
     pub ua_hash: String,
+    /// Legacy ordered-name/set hash, without order provenance.
     pub header_order: String,
+    /// Caller-observed Sec-Fetch header presence.
     pub has_sec_fetch: bool,
 }
 impl Record {
+    /// JA4 exists and no HTTP method was recorded.
     pub fn is_tls(&self) -> bool {
         !self.ja4.is_empty() && self.method.is_empty()
     }
+    /// An HTTP method was recorded.
     pub fn is_http(&self) -> bool {
         !self.method.is_empty()
     }
@@ -49,12 +66,14 @@ impl Record {
     }
 }
 
+/// First six SHA256 bytes as hex; empty input retains the absent marker.
 pub fn hash_ua(ua: &str) -> String {
     if ua.is_empty() {
         return String::new();
     }
     hex::encode(&Sha256::digest(ua.as_bytes())[..6])
 }
+/// Hash the exact comma-joined names; this does not authenticate wire order.
 pub fn hash_order(names: &[&str]) -> String {
     if names.is_empty() {
         return String::new();

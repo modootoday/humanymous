@@ -11,10 +11,11 @@ rel:
 
 # Temporal network producer proposal
 
-Version0.3.1. Root accepted pure temporal producer placement. Original37936ee0
-MAD12selected passed separately; the combined MAD/rate/correlation/traffic source
-has58authored temporal fixtures, NOT_RUN. Runtime integration, real atomic
-coordinator, verified epoch backfill and current-source qualification remain open.
+Version0.4.0. Root accepted pure temporal producer placement. Combined corrected
+network source passed72units (58temporal plus14existing), fmt/all-target check/
+strict Clippy under the exact graph/overlays in evidence:root/20261107153100.
+Runtime integration, real atomic coordinator, verified epoch backfill and actual
+current-source provider/product qualification remain open.
 Root requested eight additional retirement rows beyond the20network rows and
 subsequently assigned the two anomaly prerequisite rows to this owner.
 Initial inventory inspected734c62da0e493478bb2aa4d998664f11e432945c without source
@@ -440,3 +441,19 @@ allocates sample storage. Current temporal fixtures58plus existing14means72
 authored total, NOT_RUN for this corrected candidate. Earlier source6c72a47f and
 original37936ee0 proof remain distinct. This is layout validation, not ordinary
 allocator OOM recovery or a heap/RSS guarantee. No policy/default/dependency change.
+
+## Complete current L1 gate and first failures
+
+Root allocated the lowest ready gate on e1ed50ce network plus graph173008f0,
+offline/locked/jobs1/incremental0 and the exclusive warm capture target. Fmt
+passed first. Compile then exposed3incorrect root signal namespace imports;
+0tests ran. Own consumers were corrected to canonical observation exports and
+committed0429731c, without changing shared signals. Separate immutable attempt2
+passed72units/all-target check, but strict Clippy failed82missing API docs. The
+documentation was supplied without suppression and a separate attempt3 passed
+fmt, all72units (0failed/ignored/filtered), all-target check and strict Clippy.
+Evidence:root/20261107153100 retains each failure, command and actual executed
+source/overlay hashes. Each2685file tree stayed unchanged; selected registry2316,
+tools50 and configuration18records stayed unchanged. Target returned at terminal.
+Earlier NOT_RUN notes are historical for those source checkpoints, not the final
+corrected L1 candidate. No provider/Runtime/fleet/Docker readiness is promoted.

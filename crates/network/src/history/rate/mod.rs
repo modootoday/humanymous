@@ -12,8 +12,11 @@ use std::{
 /// Classification against configured count cutpoints, never a serving verdict.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Level {
+    /// Count is below both configured cutpoints.
     Normal,
+    /// Soft cutpoint matched, without matching hard.
     Soft,
+    /// Hard cutpoint matched; takes precedence over soft.
     Hard,
 }
 
@@ -23,16 +26,24 @@ pub enum Coverage {
     /// Actual retained observations, without a currently known expansion gap.
     Retained,
     /// A larger window cannot recover already discarded history.
-    WindowExpanded { complete_after: Duration },
+    WindowExpanded {
+        /// Gap applies strictly before this point, not at equality.
+        complete_after: Duration,
+    },
 }
 
 /// Empty required identity is distinct from a measured normal count.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Observation {
+    /// No identity was counted and the clock did not advance.
     IgnoredEmptyKey,
+    /// A request was appended to this key's retained history.
     Counted {
+        /// Rolling count including this request.
         count: usize,
+        /// Classification using current configured cutpoints.
         level: Level,
+        /// Expansion-gap metadata only, not general capture health.
         coverage: Coverage,
     },
 }
@@ -40,14 +51,18 @@ pub enum Observation {
 /// Policy update preserves hits and makes retrospective loss explicit.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ConfigurationEffect {
+    /// Candidate window exceeded the previous configured window.
     pub window_expanded: bool,
+    /// A retrospective expansion gap remains at the update time.
     pub history_incomplete: bool,
 }
 
 /// A bounded pass does not assert that every stale key was reclaimed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct GcResult {
+    /// Keys actually visited in this bounded pass.
     pub scanned: usize,
+    /// Visited keys expired strictly beyond TTL.
     pub removed: usize,
 }
 
@@ -62,6 +77,7 @@ pub struct Limiter {
     incomplete_until: Option<Duration>,
 }
 impl Limiter {
+    /// Create empty counters with validated explicit policy and resource bounds.
     pub fn new(config: Config) -> Self {
         Self {
             config,

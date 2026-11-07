@@ -7,11 +7,16 @@ use std::collections::{BTreeMap, BTreeSet};
 /// Neither variant asserts healthy serving coverage or authenticated history.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Coverage {
+    /// Too few records or missing comparison fields.
     Insufficient,
+    /// Comparison fields exist, without verified transport/epoch provenance.
     UnqualifiedHistory,
 }
+/// Frozen observations with explicit non-authoritative history coverage.
 pub struct Outcome {
+    /// Existing intra-session consistency signals.
     pub signals: Vec<Signal>,
+    /// History sufficiency only; never provider health.
     pub coverage: Coverage,
 }
 

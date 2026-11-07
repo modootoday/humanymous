@@ -3,6 +3,7 @@ use crate::history::anomaly;
 use std::time::Duration;
 
 #[derive(Debug, Clone, Copy)]
+/// Finite retained key, distinct-set, string and payload limits.
 pub struct Limits {
     pub(super) max_keys: usize,
     pub(super) max_fanout_keys: usize,
@@ -11,6 +12,7 @@ pub struct Limits {
     pub(super) max_payload_bytes: usize,
 }
 impl Limits {
+    /// Reject zero bounds; values are supplied by the owning configuration.
     pub fn new(
         keys: usize,
         fanout: usize,
@@ -39,6 +41,7 @@ impl Limits {
         Ok(())
     }
 }
+/// Explicit TTL and bounded population measurement configuration.
 pub struct Config {
     pub(super) ttl: Duration,
     pub(super) limits: Limits,

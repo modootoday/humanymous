@@ -39,15 +39,27 @@ impl Fanout {
             .sum()
     }
 }
+/// Existing signals and count origin, never healthy admission coverage.
 pub struct Outcome {
+    /// Frozen local signals, including optional weight-zero velocity.
     pub signals: Vec<Signal>,
+    /// Origin/degradation of the observed counts, not a fleet attestation.
     pub scope: Scope,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Local counts without synthesizing zero for absent history.
 pub enum Stats {
+    /// No retained entry exists for this key.
     Absent,
-    Observed { subnets: usize, sessions: usize },
+    /// Counts from the retained local entry; GC is explicit.
+    Observed {
+        /// Distinct nonempty subnet keys.
+        subnets: usize,
+        /// Distinct supplied session identifiers.
+        sessions: usize,
+    },
 }
+/// Bounded local correlation history with one generic MAD population.
 pub struct Registry {
     config: Config,
     entries: BTreeMap<String, Entry>,
@@ -58,6 +70,7 @@ pub struct Registry {
     fallbacks: u64,
 }
 impl Registry {
+    /// Construct empty history; runtime owns synchronization and activation.
     pub fn new(config: Config) -> Self {
         let population = Population::new(config.population);
         Self {
@@ -212,6 +225,7 @@ impl Registry {
             scope: Scope::LocalOnly,
         })
     }
+    /// Read local retained counts without expiry, mutation or fleet promotion.
     pub fn stats(&self, key: &str) -> Stats {
         self.entries
             .get(key)
@@ -220,9 +234,11 @@ impl Registry {
                 sessions: entry.sessions.len(),
             })
     }
+    /// Lifetime degraded-observation count, retained across reset.
     pub fn fleet_fallbacks(&self) -> u64 {
         self.fallbacks
     }
+    /// Expire local/population histories strictly older than TTL; commit time.
     pub fn gc(&mut self, now: Duration) -> Result<(), Unavailable> {
         self.clock.check(now)?;
         self.population.gc(now, self.config.ttl)?;
@@ -245,6 +261,7 @@ impl Registry {
         self.clock.commit(now);
         Ok(())
     }
+    /// Clear histories while retaining clock custody and fallback telemetry.
     pub fn reset(&mut self, now: Duration) -> Result<(), Unavailable> {
         self.clock.check(now)?;
         self.population.reset(now)?;

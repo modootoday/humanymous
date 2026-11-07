@@ -6,11 +6,13 @@ use std::{
 };
 
 #[derive(Debug, Clone, Copy)]
+/// Caller-supplied retention and finite resource limits.
 pub struct Config {
     ttl: Duration,
     limits: Limits,
 }
 impl Config {
+    /// Reject zero TTL without supplying a production retention default.
     pub fn new(ttl: Duration, limits: Limits) -> Result<Self, Unavailable> {
         if ttl.is_zero() {
             return Err(Unavailable::InvalidConfiguration);
@@ -21,13 +23,16 @@ impl Config {
 /// Address-only legacy backfill never authenticates a connection epoch.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Association {
+    /// No matching address entry existed.
     Absent,
+    /// Legacy text-address match, not authenticated same-epoch TLS evidence.
     AddressOnly,
 }
 struct Session {
     records: VecDeque<Record>,
     seen: Duration,
 }
+/// Bounded caller history and legacy address-only TLS association.
 pub struct Log {
     config: Config,
     sessions: BTreeMap<String, Session>,
@@ -36,6 +41,7 @@ pub struct Log {
     bytes: usize,
 }
 impl Log {
+    /// Create empty history; runtime retains exclusive access and clock custody.
     pub fn new(config: Config) -> Self {
         Self {
             config,
@@ -45,6 +51,7 @@ impl Log {
             bytes: 0,
         }
     }
+    /// Replace the last TLS-shaped address record without authenticating it.
     pub fn record_tls(&mut self, record: Record) -> Result<(), Unavailable> {
         self.clock.check(record.time)?;
         self.config.limits.validate(&record)?;
@@ -63,6 +70,7 @@ impl Log {
         self.bytes = bytes;
         Ok(())
     }
+    /// Append one record with legacy backfill, preserving the newest64 per session.
     pub fn record_http(&mut self, mut record: Record) -> Result<Association, Unavailable> {
         self.clock.check(record.time)?;
         self.config.limits.validate(&record)?;
@@ -111,11 +119,13 @@ impl Log {
         self.bytes = bytes;
         Ok(association)
     }
+    /// Copy retained records oldest first; absent history yields an empty copy.
     pub fn session(&self, id: &str) -> Vec<Record> {
         self.sessions
             .get(id)
             .map_or_else(Vec::new, |s| s.records.iter().cloned().collect())
     }
+    /// Remove histories strictly older than TTL and commit the accepted time.
     pub fn gc(&mut self, now: Duration) -> Result<(), Unavailable> {
         self.clock.check(now)?;
         self.sessions.retain(|id, session| {
@@ -137,6 +147,7 @@ impl Log {
         self.clock.commit(now);
         Ok(())
     }
+    /// Clear both maps while retaining ordered-time custody.
     pub fn reset(&mut self, now: Duration) -> Result<(), Unavailable> {
         self.clock.check(now)?;
         self.sessions.clear();
