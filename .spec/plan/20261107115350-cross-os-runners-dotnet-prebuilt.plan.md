@@ -10,6 +10,10 @@ rel:
 
 # Prebuilt actor proposal v0.1
 
+Latest source continuation: the native metadata carrier described at the end is
+implemented and compiler/pure-tested only. It remains explicitly unqualified for
+exact producer identity or HostIO; earlier draft API notes are historical.
+
 DESIGN ONLY. Root requested comparison and exact API/paths before implementation.
 No local account/SCM mutation, execution grant, unsafe owner duplication, new
 manifest edge or backend qualification follows. .NET owns Host/controller and
@@ -409,3 +413,39 @@ zero drift. This supersedes NOT_RUN above ONLY for that code and those selectors
 Actual Job/account/partial-fault/profile/staging/Kestrel and authenticated parent
 transport remain unqualified. Exact footers/hashes are registered in the cross-OS
 runner partial-setup-duplex-summary.json. C returned, no background handle held.
+
+## Concrete metadata carrier v0.4 source checkpoint
+
+Harness-only locators are HUMANYMOUS_PARENT_CONTEXT_PATH/SHA256. Apphost receives
+neither locators nor GHA/tokens. Shared wire is UNVERIFIED and credential-free;
+one-shot authority startup remains separate after actual child PID verification.
+
+Native-security implements publish_actor_context and inspect_actor_context:
+actual elevated/enabled Admin publisher, native reserved hmrun<nonce-prefix> SID,
+create-new hmctx-<nonce32>/context.json and binding.json, <=64KiB/16KiB. Actual
+default owner must be Admins/SYSTEM; no current-user fallback or owner repair.
+Protected exact three-ACE policy grants Admins/SYSTEM full access and actor file
+RO/directory RX. Read-only deny-write/delete handles remain retained. Explicit
+finish removes only two create-new files and empty owned directory; failures
+return the owner, Drop only closes handles. Actual Job/reader settlement is the
+parent's independent precondition, never inferred from cleanup or hash.
+
+Inspector verifies current ordinary TokenUser/reserved actor lookup, fixed names,
+opened regular/nonreparse objects and exact DACL, returning private metadata.
+Fixed-drive classification is NOT trusted-ancestor/tree/provider/producer-handle
+proof. require_exact_producer_identity currently fails Unsupported on publisher
+and inspector. Reopening paths or matching hash/DTO cannot bypass it. No trusted
+execution-profile or Ready factory is provided.
+
+Independent binding.json is a joint interface proposal, not frozen codec:
+humanymous.parent-context-binding/1 with nonce, actor SID, source SHA, context
+SHA256, independently verified manifest/provenance commitments, original budget
+and parent preflight environment. Claims must bind actual original parent source,
+artifact/native-clock preflight; they cannot be minted by a caller JSON hash.
+
+Immutableadce3e9c +source6312cc4f/export44abcf67 passes native all-target check,
+strict Clippy, EXACT nonce/SDDL pure1 (14filtered) and runner compatibility check.
+2484source files and32registry packages/2079files/config/selected tools had zero
+drift. Initial E0308 check101 is preserved; bind LocalBox before borrowing fixes
+it. No actual publisher/reader/account/Job/SCM/SDK/Kestrel function ran. Registered
+actor-context-carrier-summary.json retains exact source/raw hashes and unknowns.

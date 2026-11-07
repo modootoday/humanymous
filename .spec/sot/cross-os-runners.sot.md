@@ -1005,3 +1005,19 @@ selected private handoff only, no admin ACL repair or token copying. Evaluator:
 package controller success is not every host contract case or full product pass.
 Verdict needs-work until outcome publication, cleanup/profile contract and typed
 input/environment details are agreed. No implementation starts from a placeholder.
+
+## Protected CI actor context carrier source checkpoint
+
+The narrow native-security metadata publisher/inspector is implemented, not a
+trusted launch/product authority. The owned prebuilt plan specifies bounded
+create-new context/binding files, actual Admin publisher/reserved ordinary actor,
+exact administrative-owner/actor-read DACL, retained handles and explicit failure
+cleanup. No local current-user fallback or implicit account/SCM/SDK operation.
+Context and startup credentials remain separate.
+
+Exact producer-handle/provider association remains Unsupported. Fixed-drive
+checks do not prove trusted ancestors or a nonreparse tree; locator/hash/JSON/GHA
+labels cannot mint Ready or a trusted execution profile. Source6312cc4f/export
+44abcf67 passes native check/strict Clippy, nonce/SDDL pure1 and runner check only.
+Actual publisher/reader/Job/profile/HostIO remain unexecuted. Initial E0308 is
+preserved; actor-context-carrier-summary.json binds raw/source/closure evidence.

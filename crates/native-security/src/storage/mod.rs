@@ -1,5 +1,12 @@
 //! Native file-handle privacy policies shared by audit, authority and installer.
 #[cfg(windows)]
+mod actor_context;
+#[cfg(windows)]
+pub use actor_context::{
+    ContextPublishError, InspectedActorContext, PublishedActorContext, inspect_actor_context,
+    publish_actor_context,
+};
+#[cfg(windows)]
 mod windows;
 #[cfg(windows)]
 pub use windows::{

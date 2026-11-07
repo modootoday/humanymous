@@ -5,6 +5,7 @@ status: active
 created: 2026-11-06T22:37:47Z
 updated: 2026-11-07T10:24:17Z
 files:
+  - {path: actor-context-carrier-summary.json, sha256: b80b4a5d0c772b707322d1ff312cef0b267a0ce9fabf9340c22cc91c1c0dbaf2, bytes: 4066, store: repo}
   - {path: partial-setup-duplex-summary.json, sha256: afd7dd3de43e209600d3e47fcfe983a79bc112d654e7c1d25e967a52ae17812a, bytes: 4288, store: repo}
   - {path: parent-context-joint-summary.json, sha256: 50e986abdcfa8255177a8dbbab107fbf51f01e89c8ebe3316f8a3b82b03ecd10, bytes: 4005, store: repo}
   - {path: dotnet-prebuilt-pure-summary.json, sha256: 5e92ee2cfc0a849a70f1ffe9c8b90cf3b042973484f21db1de92516cda15cc33, bytes: 2965, store: repo}
@@ -104,3 +105,14 @@ files and32registry packages/2079files plus observed config/flag fingerprints ha
 zero drift. No actual Job/account/SCM/SDK/Kestrel or partial-setup native fault
 injection ran. Producer parent-context transport/provenance remains unqualified.
 See partial-setup-duplex-summary.json for exact four footers and raw/source hashes.
+
+## Actor context metadata carrier source validation
+
+Corrected native-security carrier source passes exact nonce/SDDL pure1 (14filtered),
+all-target check and strict Clippy; runner all-target compatibility check passes.
+Immutableadce3e9c +two overlays has2484sourcefiles and32registry packages/2079files
+with zero captured source/registry/config/selected-tool drift. Initial E0308
+check101 is preserved; no test ran in that first attempt. No actual publisher,
+reader, account, Job, SDK or Kestrel execution occurred. Exact producer handle
+association remains Unsupported; fixed-drive classification is not ancestor or
+provider identity proof. See actor-context-carrier-summary.json for raw hashes.

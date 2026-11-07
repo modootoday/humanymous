@@ -1,0 +1,116 @@
+{
+  "schema": "humanymous.actor-context-carrier-source-validation/1",
+  "status": "passed-corrected-source-only",
+  "base_sha": "adce3e9c63236e96ebdee3b55f60ef29a4a2fead",
+  "overlays": {
+    "crates/native-security/src/storage/actor_context.rs": "6312cc4f393f4ec6a84990fcb142bc28eaa830c3125ba2b4f520dc9f9335f207",
+    "crates/native-security/src/storage/mod.rs": "44abcf67bd497f39d1459f4cf8cbfba7907e4a170197e191b129b31c0a28ef7c"
+  },
+  "admission": {
+    "commit_percent": 80,
+    "free_gib": 31.9
+  },
+  "jobs": 1,
+  "incremental": false,
+  "offline": true,
+  "source_files": 2484,
+  "registry_packages": 32,
+  "registry_files": 2079,
+  "source_registry_cargo_config_selected_tool_drift": 0,
+  "native_all_target_check": "passed",
+  "native_strict_clippy": "passed with -D warnings",
+  "runner_all_target_check": "passed",
+  "tests": {
+    "measured": 0,
+    "ignored": 0,
+    "passed": 1,
+    "filtered": 14,
+    "selector": "storage::actor_context::tests::nonce_and_exact_role_descriptors_reject_owner_or_write_fallbacks",
+    "failed": 0
+  },
+  "first_attempt": {
+    "tests_run": 0,
+    "corrected_by": "bind parsed LocalBox before borrow",
+    "source_drift": 0,
+    "native_check_exit": 101,
+    "reason": "E0308 LocalBox<Sid> reference coercion",
+    "raw_preserved": true
+  },
+  "actual_publisher_or_reader_executed": false,
+  "accounts_jobs_scm_sdk_kestrel_executed": false,
+  "exact_producer_identity": "Unsupported",
+  "trusted_profile_or_ready": false,
+  "fixed_drive_is_not_ancestor_or_provider_proof": true,
+  "complete_build_cache_key_proven": false,
+  "raw": {
+    "after.json": {
+      "bytes": 461132,
+      "sha256": "773bd4f2ad06ee509ca933b75ae04544772d4640da5b83aa7fe29bcbea6f0273"
+    },
+    "before.json": {
+      "bytes": 462102,
+      "sha256": "37a650b61e8d1a43f9b4330c1a0ed07f2df335e1805713962580c95ccdc9177d"
+    },
+    "native-check.log": {
+      "bytes": 960,
+      "sha256": "d4d06284fd75871d87c0b5056f78ff3bb6d528d199b580eb55d63b2a163030ca"
+    },
+    "overlays.json": {
+      "bytes": 327,
+      "sha256": "97872930af79ea241cca6a7180418aeaece99cfd1a718c7ca90f8edd05b6fda3"
+    },
+    "preflight-failure.json": {
+      "bytes": 100,
+      "sha256": "5245dc76b481f185c8abf122f9661631b7186691a0b5cb6ce5de81fba41c0812"
+    },
+    "results.json": {
+      "bytes": 258,
+      "sha256": "6431b4599765404932c53be638991b4d0c85f640e35610967aa304eb4208020c"
+    },
+    "tree.log": {
+      "bytes": 468,
+      "sha256": "88d47dc169637f978f4281ba3f9c256d21ebc2a2ab61edb5f75413715f82fcea"
+    },
+    "attempt-2/after.json": {
+      "bytes": 525622,
+      "sha256": "526032c2dd89c2704ecf6069f5cf7ae6d5bf9baf2bd2543ad029f708fd248cb8"
+    },
+    "attempt-2/before.json": {
+      "bytes": 525873,
+      "sha256": "01672f401d65165b9cedb20ab0f82d598f13ddec3927a034408d3ee54b2928ce"
+    },
+    "attempt-2/native-check.log": {
+      "bytes": 258,
+      "sha256": "2b84d1befbbac645749ea1460c3493f5b3256a3fa06205976c342c82171ad180"
+    },
+    "attempt-2/native-clippy.log": {
+      "bytes": 258,
+      "sha256": "8d54dc14c191c57992a31733a99957b1ba0ff2133b5a9e64944b1b225ec497f2"
+    },
+    "attempt-2/native-pure.log": {
+      "bytes": 815,
+      "sha256": "91cb49863b601fb68353207a9c4e3747a45e94ed4c84ec86391a2ac074b7bb8a"
+    },
+    "attempt-2/native-tree.log": {
+      "bytes": 478,
+      "sha256": "6369f5f41747f2fbd2923d5227dd7089e683e856b330482b8ef5f9600907d575"
+    },
+    "attempt-2/overlays.json": {
+      "bytes": 327,
+      "sha256": "d9b246940f4577a4947b837bf2ccbd24263584c35ab8faa585425a203683010d"
+    },
+    "attempt-2/results.json": {
+      "bytes": 328,
+      "sha256": "e8765f02d90ae63b3341dc3249d773bba4f74e36858b6d4b02a73f989757f061"
+    },
+    "attempt-2/runner-check.log": {
+      "bytes": 630,
+      "sha256": "244f072a87b33b1c4a372339660cbd2a831068eb923de8a4d57a64533ea0ab11"
+    },
+    "attempt-2/runner-tree.log": {
+      "bytes": 1482,
+      "sha256": "3e872e0a0bd3e45fed6f8001fc412e6b2ca2e04fa5ce2a88f1f8d777a70e7c69"
+    }
+  },
+  "private_directory": ".spec.local/root/evidence/20261107134500-windows-runner-actor-carrier"
+}
