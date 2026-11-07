@@ -939,7 +939,97 @@ No compiler, Cargo tree/resolution, Docker or WSL command was run for this revie
 
 Primary mechanism: [Cargo optional dependencies and feature unification](https://doc.rust-lang.org/cargo/reference/features.html).
 Actual source imports and the saved8e51 normal tree determine this proposal;
-the proposal remains unimplemented and performance benefit unmeasured.
+The original proposal was subsequently implemented by root at5d68cd39; the
+source/receipt review and still-unmeasured comparison are below.
+
+### Implemented wiring and matched comparison design
+
+Root's5d68cd39 changes Runtime Cargo only in production source. Its manifest
+SHA256 is c2c174b6e4a71b72637ca62958b4378ab68b22ef179886a682406c8bafb9bbd7.
+The retained runtime-optional/Cargo.toml.before exactly matches the earlier
+9c3353fd manifest hash. Cargo.lock.before and the current main lock both match
+5d3e1453ab8c3cdba1d22443effc045740e629153784d0c3b4ac62b7231cbf00.
+Optional wiring preserves default/context/pilot keys, versions/subfeatures and
+target predicates, removes the unused normal Platform edge and retains testing
+only as a dev edge. Current manifest bytes matched the exact implementation commit
+when inspected. No source/manifest/lock change was made by this owner.
+
+Root's [[evidence:root/20261107221648]] runtime-dependencies.json records17 isolated
+normal consumer profiles, six expected API-absence refusals, unchanged280 source
+inputs, Windows all-target/all-feature check/strict Clippy and177 selected pure
+passes out of366 inventoried tests. The selected groups are72network+19shipping+
+12journal+37Authority+10record+8Merkle+2limits+17HPACK; the full366 were not run.
+Raw compiler footers4.91/5.38seconds and selected test summaries were inspected.
+These times do not compare against the earlier31.03second CLI all-target check.
+Registry/toolchain attestation and Unix/native execution are explicitly absent.
+
+The first isolated native harness refused a seeded lock before compilation;
+attempt01 is preserved. The accepted harness seeds the main lock separately per
+profile, resolves offline, checks every external version/source/checksum against
+that baseline, then runs locked checks. Main lock remains unchanged. Summary
+counts alone do not independently establish which normal edges disappeared.
+The retained attempt-02-native consumer manifest explicitly selects only native-
+security/default-features=false; its saved command checks only that normal binary,
+not dev targets. Its metadata resolves15 packages total (consumer, Runtime and
+13 external packages), with Runtime feature native-security and exactly five
+normal direct edges: zeroize plus Windows keyring-core, windows-native-keyring-
+store, windows-permissions and winsafe. No dev edge is present in that Runtime
+node. The saved tree has no rustls, Tokio, HPACK, md-5, Core, Platform, testing,
+interprocess, widestring, aes-gcm or scrypt. Raw check footer is4.18seconds.
+These records were read, not rerun, by this owner. This isolated consumer is not
+the whole CLI: do not compare its15 metadata packages or4.18seconds against the
+older CLI normal tree or31.03second all-target check. The25 external lock records
+in the profile summary are a different denominator from13 resolved external
+metadata packages. Actual speed benefit remains unmeasured.
+
+Proposed finite comparison for a later explicit root lease:
+
+1. Root materializes two sibling immutable source roots from the same5d68cd39
+   code/fixtures, replacing ONLY arm A's Runtime manifest with the retained before
+   file. Arm B retains the exact implemented manifest. Bind full input manifests,
+   main-lock equality, compiler/linker/config/environment/profile and filesystem
+   location; do not use8e51 as a different-source timing arm. Record expected
+   root/target path differences and do not silently remap or trim the workspace.
+2. Primary workload is CLI normal binary checking only: cargo check --locked
+   --offline -p humanymous-cli --bin humanymous --no-default-features --jobs1
+   --message-format=json --timings, with incremental0 and identical existing dev
+   profile/flags. This excludes CLI/Runtime dev fixtures and service profiles.
+   Verify its normal Runtime feature set is native-security only before timing.
+   A separate build/link or service-profile trial would need its own scope.
+3. Root supplies four exclusively leased empty target directories for two cold-
+   artifact pairs, ordered A/B then B/A. There is no cache deletion or independent
+   target creation by this owner. Empty Cargo artifact cache is not cold registry,
+   filesystem, OS or machine cache; prewarm/attest selected dependency sources
+   identically outside timing and retain failures. No registry fetch/network.
+4. Reuse the second pair's targets for three unchanged replay pairs, alternating
+   A/B, B/A, A/B. At most10 compiler commands total. Capture freshness and actual
+   rebuilt units separately: all-fresh replays measure command/no-op overhead,
+   not compilation scaling. Two cold pairs support bounded observations, not a
+   universal statistical speedup; report both raw pairs and their order.
+5. Proposed work budget is600seconds plus60seconds owned settlement, subject to
+   root acceptance and its qualified controller. No simultaneous compilation,
+   GPU/model/heavy GUI work, jobs change, host tuning, global cache cleanup or
+   background benchmark. Recheck memory/disk admission before each command and
+   stop further launches at failure/deadline. A timed-out observation does not
+   terminate a live Cargo/rustc descendant: retain its handle/lease until root's
+   actual owned settlement, rather than declaring cleanup by elapsed time.
+
+Use one finite selected before/after preparation manifest per frozen source batch;
+report preparation separately and do not consume its time twice or reuse stale
+content hashes. Predeclare exact targets and source roots before any execution.
+If both sides cannot run locked against the identical external tuples, preserve
+that first refusal and revise the design explicitly rather than silently resolving
+new versions or dropping dependencies from the comparison.
+
+Each receipt records command/source/manifest/lock/tool identity, actual start/end/
+exit, artifact/package/build-script events, compiler timing, normal-feature tree,
+CPU/RSS sampling limits, external load, all failures and target return. Compare
+paired total check time and rebuilt-work differences; include every denominator.
+No aggregate ratio between an old cold all-target run and a new warm normal run.
+Existing root correctness receipts stay source-specific and do not become a full
+workspace/native/product qualification for materialized benchmark roots. Preserve
+no-new-dependency/version/pin, Platform testing dev-only and all12 context closures.
+No benchmark execution or target allocation follows from this design.
 
 ## Runtime measurement profiles awaiting owner allocation
 

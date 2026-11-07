@@ -12,6 +12,18 @@ rel:
 
 ## Bottom-up next admission
 
+Root implemented Runtime optionalization in5d68cd39. Review confirms the retained
+before manifest and unchanged main lock hashes, current implementation identity
+and bounded receipts17normal profiles/6negative/177selected pure of366. Isolated
+native-tree details were independently read from retained attempt-02-native:
+exactly five Runtime normal direct edges, no dev/TLS/Tokio/HPACK/Core/Platform
+edge;15 metadata packages include13external, not the25 lock-record denominator.
+No rerun occurred. The SoT
+defines a future identical-source manifest-only CLI normal check comparison with
+two cold-artifact pairs and three warm replay pairs,10commands maximum, proposed
+600second work/60second settlement budget and no simultaneous compilation. No
+targets/benchmark execution are authorized. Old31.03s is not a matched timing arm.
+
 Root assigned a Runtime64 normal-dependency review, not implementation. The SoT
 now records six-context/per-target source use, explicit optional dep: activations,
 unchanged Gateway default/implication chain and12 analytical context closures,
