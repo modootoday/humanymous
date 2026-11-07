@@ -310,3 +310,46 @@ two wargame P2 registrations, then CLI summary E1. Own attachments remain valid;
 no foreign evidence mutation or waiver. Root confirms new failure cause is the
 ci caller actions:none ceiling versus nested actions:read. CI owner implements
 minimal caller permission fix/regression; root remains sole push/dispatch owner.
+
+## Corrected candidate8132117 actual execution (partial)
+
+Run42355168729 passed policy and reached real Linux native actor and Docker.
+Linux workspace --all-targets compilation passed on the frozen graph. Actor
+failed strict publication after15of88harnesses: observed51passed tests,0failed
+tests,1actor error. Unique authority decisions target observed7passed/0failed;
+this is synthetic/pure decision coverage, not production capture or sealed IPC.
+Last host_process row had2passed/3ignored/exit0/validatedfalse. Source inspection
+and Node owner confirm these3ignores are actual Node/Bun host pilots, NOT helper
+subprocesses. Runner/Node/CI owners notified; do not relabel or waive them.
+Authority library/native_process/local_service were not reached. Sealed startup,
+normalized native producer assertions, cancellation/drain and actual UID denial
+therefore remain NOT_RUN in Linux. macOS/Windows results pending at this record.
+
+Recovered full public job logs privately. Docker public summary interleaved one
+stderr diagnostic line, so raw extract is invalid JSON; retain it unchanged and
+separately label the derived summary that removes that single diagnostic. It is
+not the private owning report. Docker failed/full_product_qualified=false and
+no authority otherUID receipt was observed. Sanitized partial result is attached;
+original raw execution report remains unrecovered under branch no-upload policy.
+Initial gh log retrieval refused escape sequences; explicit file-only retrieval
+succeeded without displaying untrusted control sequences. No local runtime run.
+
+Audit owner additionally committed future sourcea04603e (not pushed into813):
+recover_erasure_pending gains trusted Scope and rejects foreign-scope permit
+before I/O; no authority/runtime callsites exist. This requires next-candidate
+audit compilation plus audit-owned regression, not retrospective qualification
+from813control tests or local13. Direct sealed read_envelope revalidation remains
+separate. No new authority source change or local Cargo allocation was inferred.
+
+## Ignored qualification classification correction
+
+Ordinary Linux authority native_process has two ignored entries: required
+privileged Docker parent unix_other_user_is_denied_by_actual_socket_acl and its
+child helper unix_unprivileged_connect_probe. Earlier shorthand '2helpers' was
+imprecise. Preserve original measured22passed/2ignored plus separately executed
+parent1 at e346834; do not alter historic raw files/hashes. The ordinary parent
+is required_not_run until an actual isolated Docker parent receipt proves child
+UID65534/PermissionDenied. Only the child is a subprocess helper. Runner/CI
+owners were notified not to waive/reclassify the parent. Current813 actor will
+otherwise reject ignored authority coverage when it eventually reaches this
+harness; that is incomplete qualification, not failure of executed sealed cases.

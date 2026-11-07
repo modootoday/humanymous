@@ -11,7 +11,7 @@ The old nginx mock projection is not this native contract.
 
 Historical checkpoint e346834, accepted by Node/nginx/runtime, passed
 Windows25 scoped tests, release LocalHandler3, Linux network-none Docker22
-and explicit other-UID parent1. Linux default2helper ignores are not successes.
+and explicit other-UID parent1. Linux default2ignored entries are not successes (one required Docker parent and its child helper).
 Scoped check/Clippy/format pass. Source-bound evidence is in public Specfold
 evidence20261107053239 with canonical source proof. These results do not qualify
 the later Python/Ruby profile or private-credential changes; their Cargo and
@@ -234,3 +234,11 @@ reports external_parent_attested=false. Legacy inline readiness is labelled
 inline-component-nonproduction. Secret config and unlock buffers are zeroizing,
 not Debug/Serialize; no secret appears in added readiness metadata. Executable
 startup, provider and new custody/restart fixture qualification remain NOT_RUN.
+
+Exact8132117 hosted run42355168729 reached Linux full-workspace compilation,
+which passed. Partial actor results include authority decisions7passed, but
+execution stopped at unrelated Node/Bun host_process strict ignored-pilot
+accounting before authority native_process/local_service. These host pilots are
+not helper ignores and cannot be waived to publish green. Sealed startup/native
+IPC and drain are still NOT_RUN for Linux; other OS results remain pending.
+Public job logs were recovered; private actor raw report was not uploaded.

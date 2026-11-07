@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.authority.hosted-partial-result/1",
+  "source": "8132117e7bf1445939d7dee9066fcf45ccf0915b",
+  "run_id": 42355168729,
+  "run_final": false,
+  "ubuntu": {
+    "job_id": 128351926093,
+    "conclusion": "failure",
+    "required_harnesses": 88,
+    "executed_harnesses": 15,
+    "observed_all_test_passes": 51,
+    "observed_failed_tests": 0,
+    "actor_errors": 1,
+    "last_target": "host_process",
+    "last_target_validated": false,
+    "last_target_passed": 2,
+    "last_target_ignored": 3,
+    "ignored_are_helpers": false,
+    "authority_decisions_passed": 7,
+    "authority_decisions_failed": 0,
+    "authority_sealed_startup": "not_run",
+    "authority_native_process": "not_run",
+    "authority_local_service": "not_run"
+  },
+  "docker": {
+    "job_id": 128351926068,
+    "conclusion": "failure",
+    "full_product_qualified": false,
+    "console_summary_interleaved_stderr": true,
+    "derived_summary_removed_diagnostic_lines": 1,
+    "private_report_recovered": false,
+    "authority_other_uid": "not_run_no_receipt"
+  },
+  "pending_os": [
+    "macos-15",
+    "windows-2025"
+  ],
+  "raw_logs_recovered": true,
+  "raw_hashes": [
+    {
+      "name": "hosted-42355168729-ubuntu.log",
+      "sha256": "1ba0d5fcd209487333e6085d63d9edcf93f8ae034bad0cb1ba8a1f21dcc46a1d"
+    },
+    {
+      "name": "hosted-42355168729-docker.log",
+      "sha256": "fd5f012161b46556c9165515f971dfc0deb84e5929a52150dd086cc75b0124ec"
+    }
+  ]
+}
