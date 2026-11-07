@@ -204,7 +204,7 @@ this note changes no package, directory, workflow, ABI or registry permission.
 
 | Delivery-owned seam | Required coordinated update or preserved contract |
 | --- | --- |
-| .github/workflows/browser-product-validation.yml and go-validation.yml | Both Go unit and selected all-target Clippy commands use humanymous-go-adapter; migrate to humanymous-adapter-go together with policy.rs's exact command allowlist. Keep workflow filenames, branches, job keys, concurrency, permissions and test selectors unchanged unless explicitly remapped. |
+| .github/workflows/browser-product-validation.yml and go-validation.yml | GO-FACADE-01 prepares humanymous-adapter-go in both Go unit and selected all-target Clippy commands together with policy.rs's exact command allowlist. Keep workflow filenames, branches, job keys, concurrency, permissions and test selectors unchanged unless explicitly remapped. |
 | scripts/ci/delivery/src/package.rs::node | Cargo -p humanymous-node-adapter becomes humanymous-adapter-node. The explicit humanymous-node-package binary selector is a separate identity and does not change automatically. |
 | Delivery Cargo.toml and Rust imports | Delivery directly depends on test-support, not host-adapter packages; bounded searches found no host-adapter Rust use/import or explicit lib name in this crate. Preserve the shared native ABI/security provider identities. |
 | Dynamic crate metadata, waves and archives | package.rs and registry.rs derive package names, dependencies and name-version.crate identities from Cargo metadata. Regenerate and source-bind validation manifests after migration; old crate/archive receipts do not qualify renamed packages. publish=false and all ownership/trust/readiness guards remain. |
@@ -253,3 +253,22 @@ internal outputs or explicitly isolate build/staging paths before mapping the
 public basename, so native outputs cannot overwrite one another before packaging.
 Historical command
 strings, raw payloads, source identities and hashes remain unchanged.
+
+## GO-FACADE-01 supported validation entrypoints
+
+The Go and browser preflights retain their two-job standard-hosted contract.
+They separately select the Go leaf deployment_contract integration test, the
+facade default library, the adapter-go library and the external go_consumer test.
+Default and enabled facade Clippy commands are separate and explicitly disable
+default features. An all-features build cannot substitute for either profile.
+
+The Delivery facade-profile rust-library [adapter-go] command delegates request
+admission directly to humanymous::build_profile::validate. Workflow policy
+requires the matching admission before every corresponding facade command,
+its fixed step ID and a successful matching outcome in each build condition, and
+rejects omitted gates, reordered admission and extra facade build commands.
+This checks an explicit request only: Cargo feature unification, effective
+resolved features, actual artifacts and host execution remain separate evidence.
+Root owns the default-features=false dependency edge, common lock and atomic
+commit; no mixed live graph was compiled by Delivery. Earlier frozen receipts
+remain valid only for their exact sources, with no retroactive name changes.

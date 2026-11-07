@@ -11,14 +11,14 @@ const _: fn(&go::scenario::CaseObservation) -> Result<go::Outcome, go::scenario:
 fn reexport_preserves_leaf_types_and_bounded_profile() {
     let _: fn(
         Host,
-        humanymous_go_adapter::Configuration,
-    ) -> Result<Deployment, humanymous_go_adapter::Rejection> = Deployment::new;
+        humanymous_adapter_go::Configuration,
+    ) -> Result<Deployment, humanymous_adapter_go::Rejection> = Deployment::new;
     assert_eq!(
         go::QUALIFICATION_PROFILE,
         "humanymous.go-gate/bounded-http-8-case/2"
     );
     assert_eq!(go::CASES.len(), 8);
-    assert_eq!(go::CASES, humanymous_go_adapter::CASES);
+    assert_eq!(go::CASES, humanymous_adapter_go::CASES);
     assert!(!Host::NetHttp.pooled_context());
     assert!(Host::FastHttp.borrows_entity_slices());
     let _: Option<go::ExpectedTuple<'_>> = None;

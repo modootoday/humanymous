@@ -24,7 +24,7 @@ pub fn run() -> Result<()> {
     if !matches!(peer.ip(),std::net::IpAddr::V4(ip)if ip.is_private()) || peer.port() != 18082 {
         return Err("owned Go backend tuple required".into());
     }
-    let case: humanymous_go_adapter::Case = serde_json::from_value(json!(args[1]))?;
+    let case: humanymous::adapters::go::Case = serde_json::from_value(json!(args[1]))?;
     let executor = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()?;
@@ -33,7 +33,7 @@ pub fn run() -> Result<()> {
         let address=contact_listener.local_addr()?;
         let WitnessedInstallation{installation,external,writer_public,witness_public}=witnessed::fresh(BufReader::new(io::stdin()),|installation|{
             installation.config["origin"]=json!(address);
-            installation.config=super::configuration_value(installation.config.clone(),case==humanymous_go_adapter::Case::ForgedProvenance)?;
+            installation.config=super::configuration_value(installation.config.clone(),case==humanymous::adapters::go::Case::ForgedProvenance)?;
             Ok(())
         })?;
         let config=super::deployment(installation.config.clone())?;

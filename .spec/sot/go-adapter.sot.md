@@ -26,11 +26,14 @@ artifact remains unique, with no Go SDK/module/cgo or common native DLL.
 Configuration and Rejection are re-exported from the existing owning runtime,
 without a second implementation or conversion layer.
 
-The current leaf package remains `humanymous-go-adapter` until Root supplies the
-public facade, machine-checked build-product/feature manifest and atomic shared
-Cargo/lock/consumer candidate. Lab owns the public consumer imports and Delivery
-owns current workflow/policy selectors. The leaf export predecessor and its
-external Rust API/host-contract checks do not qualify that future facade.
+Root's facade/closed manifest predecessor is e696e6a5. GO-FACADE-01 prepares the
+leaf package identity `humanymous-adapter-go` and external test import
+`humanymous_adapter_go` for Root's single atomic Cargo/lock/consumer commit.
+The public namespace re-exports the whole existing leaf, including probe and
+scenario APIs; `evaluate` remains `scenario::evaluate`. Lab owns the public
+consumer imports and Delivery owns current workflow/policy selectors. No owner
+may commit or compile the intermediate mixed graph. Source preparation and the
+earlier facade component checks do not qualify the renamed runtime candidate.
 Fresh scoped tests, strict Clippy, actual public consumer and hosted Docker Go8
 are required at the renamed source. Preserve original c321 Go8 receipts and raw
 commands as historical exact-source evidence, without relabelling their result.

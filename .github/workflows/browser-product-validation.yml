@@ -29,7 +29,33 @@ jobs:
         toolchain: 1.99.1
     - name: Execute current Go owner units
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
-      run: cargo test --locked -p humanymous-go-adapter --lib -j1
+      run: cargo test --locked -p humanymous-adapter-go --lib -j1
+    - name: Execute Go leaf deployment contract
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo test --locked -p humanymous-adapter-go --test deployment_contract -j1
+    - name: Admit facade default build request
+      id: facade_default_admission
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- facade-profile rust-library
+    - name: Execute facade default library contract
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_default_admission.outcome == 'success' }}
+      run: cargo test --locked -p humanymous --lib --no-default-features -j1
+    - name: Admit facade Go build request
+      id: facade_go_admission
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      run: cargo run --locked -p humanymous-delivery -- facade-profile rust-library adapter-go
+    - name: Execute facade Go library contract
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_go_admission.outcome == 'success' }}
+      run: cargo test --locked -p humanymous --lib --no-default-features --features adapter-go -j1
+    - name: Execute facade Go external consumer
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_go_admission.outcome == 'success' }}
+      run: cargo test --locked -p humanymous --test go_consumer --no-default-features --features adapter-go -j1
+    - name: Lint facade default targets
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_default_admission.outcome == 'success' }}
+      run: cargo clippy --locked -p humanymous --all-targets --no-default-features -j1 -- -D warnings
+    - name: Lint facade Go targets
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_go_admission.outcome == 'success' }}
+      run: cargo clippy --locked -p humanymous --all-targets --no-default-features --features adapter-go -j1 -- -D warnings
     - name: Execute current lab owner units
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1
@@ -41,7 +67,7 @@ jobs:
       run: cargo check --locked -p humanymous-runtime-pilot --all-targets -j1
     - name: Compile and lint all selected Unix targets
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
-      run: cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings
+      run: cargo clippy --locked -p humanymous-adapter-go -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings
     - name: Verify current workflow policy
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo run --locked -p humanymous-delivery -- policy

@@ -21,7 +21,7 @@ serde.workspace = true
 zeroize.workspace = true
 tokio.workspace = true
 humanymous-test-support.workspace = true
-humanymous-go-adapter = {path="../../../crates/go-adapter"}
+humanymous = {path="../../../crates/humanymous", default-features=false, features=["adapter-go"]}
 
 [lints.rust]
 unsafe_code = "forbid"

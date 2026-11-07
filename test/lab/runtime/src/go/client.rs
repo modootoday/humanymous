@@ -1,6 +1,6 @@
 //! Bounded real client transport. Only the independent host fills proof fields.
 use super::{Result, response};
-use humanymous_go_adapter::{
+use humanymous::adapters::go::{
     Case,
     scenario::{BINARY_ENTITY, BINARY_TARGET, HEAD_TARGET},
 };

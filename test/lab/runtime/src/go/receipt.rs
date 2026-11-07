@@ -1,5 +1,5 @@
 //! Qualify complete measured Go ledgers with independently provisioned metadata.
-use humanymous_go_adapter::{ExpectedTuple, Host, Receipt};
+use humanymous::adapters::go::{ExpectedTuple, Host, Receipt};
 use serde_json::{Value, json};
 use std::io;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -40,9 +40,9 @@ pub fn evaluate() -> Result<()> {
     let mut bytes = Vec::new();
     std::io::Read::read_to_end(&mut io::Read::take(io::stdin(), 1_048_577), &mut bytes)?;
     let value = humanymous_test_support::json::decode_strict_json(&bytes, 1_048_576)?;
-    let observation: humanymous_go_adapter::scenario::CaseObservation =
+    let observation: humanymous::adapters::go::scenario::CaseObservation =
         serde_json::from_value(value)?;
-    let result = match humanymous_go_adapter::scenario::evaluate(&observation) {
+    let result = match humanymous::adapters::go::scenario::evaluate(&observation) {
         Ok(outcome) => {
             json!({"schema":"humanymous.go-case-evaluation/1","status":"passed","outcome":outcome})
         }

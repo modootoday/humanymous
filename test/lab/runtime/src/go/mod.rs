@@ -6,8 +6,7 @@ mod gate;
 mod receipt;
 mod relay;
 mod response;
-use humanymous_go_adapter::{Deployment, Host};
-use humanymous_runtime::configuration::Configuration;
+use humanymous::adapters::go::{Configuration, Deployment, Host};
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn deployment(value: serde_json::Value) -> Result<Configuration> {

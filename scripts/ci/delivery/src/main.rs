@@ -6,6 +6,7 @@ mod components;
 mod dependency_summary;
 mod docker_source;
 mod evidence;
+mod facade_profile;
 mod go_product;
 mod header_proof;
 mod image_candidates;
@@ -78,6 +79,7 @@ fn run() -> Result<()> {
     };
     match argument(0)? {
         "policy" => policy::check(&root),
+        "facade-profile" => facade_profile::check(&args[1..]),
         "component" => components::run(&root, argument(1)?),
         "native-component" => components::native(&root, argument(1)?),
         "action-pins" => policy::pins(&root),

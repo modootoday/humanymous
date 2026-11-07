@@ -1,5 +1,5 @@
 //! External Rust consumer of the deployment surface; no host execution claim.
-use humanymous_go_adapter::{Configuration, Deployment, Host, Rejection};
+use humanymous_adapter_go::{Configuration, Deployment, Host, Rejection};
 
 // Keep both directions tied to the owning runtime types without conversion.
 const _: fn(

@@ -10,10 +10,10 @@ autobins = false
 
 [features]
 default = []
-adapter-go = ["dep:humanymous-go-adapter"]
+adapter-go = ["dep:humanymous-adapter-go"]
 
 [dependencies]
-humanymous-go-adapter = { path = "../go-adapter", optional = true }
+humanymous-adapter-go = { path = "../go-adapter", optional = true }
 
 [dev-dependencies]
 serde_json.workspace = true

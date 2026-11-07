@@ -1,5 +1,5 @@
 [package]
-name = "humanymous-go-adapter"
+name = "humanymous-adapter-go"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

@@ -1909,9 +1909,17 @@ checksum = "6dbf3de79e51f3d586ab4cb9d5c3e2c14aa28ed23d180cf89b4df0454a69cc87"
 name = "humanymous"
 version = "0.1.0"
 dependencies = [
- "humanymous-go-adapter",
+ "humanymous-adapter-go",
  "serde_json",
  "toml",
+]
+
+[[package]]
+name = "humanymous-adapter-go"
+version = "0.1.0"
+dependencies = [
+ "humanymous-runtime",
+ "serde",
 ]
 
 [[package]]
@@ -2142,6 +2150,7 @@ name = "humanymous-delivery"
 version = "0.1.0"
 dependencies = [
  "flate2",
+ "humanymous",
  "humanymous-native-security",
  "humanymous-test-support",
  "serde_json",
@@ -2194,14 +2203,6 @@ dependencies = [
  "sha2 0.10.9",
  "tokio",
  "zeroize",
-]
-
-[[package]]
-name = "humanymous-go-adapter"
-version = "0.1.0"
-dependencies = [
- "humanymous-runtime",
- "serde",
 ]
 
 [[package]]
@@ -2415,10 +2416,10 @@ dependencies = [
  "base64 0.22.1",
  "ed25519-dalek",
  "getrandom 0.4.3",
+ "humanymous",
  "humanymous-attacker",
  "humanymous-audit",
  "humanymous-defender",
- "humanymous-go-adapter",
  "humanymous-integrity",
  "humanymous-runtime",
  "humanymous-test-support",

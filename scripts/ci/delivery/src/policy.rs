@@ -407,20 +407,80 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 if mount {
                     "cargo clippy --locked -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
                 } else {
-                    "cargo clippy --locked -p humanymous-go-adapter -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
+                    "cargo clippy --locked -p humanymous-adapter-go -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings"
                 },
                 "cargo run --locked -p humanymous-delivery -- policy",
             ]
         };
         if !mount && !image && !wargame {
-            commands.push("cargo test --locked -p humanymous-go-adapter --lib -j1");
+            commands.push("cargo test --locked -p humanymous-adapter-go --lib -j1");
+            commands.extend([
+                "cargo run --locked -p humanymous-delivery -- facade-profile rust-library",
+                "cargo run --locked -p humanymous-delivery -- facade-profile rust-library adapter-go",
+                "cargo test --locked -p humanymous-adapter-go --test deployment_contract -j1",
+                "cargo test --locked -p humanymous --lib --no-default-features -j1",
+                "cargo test --locked -p humanymous --lib --no-default-features --features adapter-go -j1",
+                "cargo test --locked -p humanymous --test go_consumer --no-default-features --features adapter-go -j1",
+                "cargo clippy --locked -p humanymous --all-targets --no-default-features -j1 -- -D warnings",
+                "cargo clippy --locked -p humanymous --all-targets --no-default-features --features adapter-go -j1 -- -D warnings",
+            ]);
+        }
+        if !mount && !image && !wargame {
+            for (admission, enabled, id) in [
+                (
+                    "cargo run --locked -p humanymous-delivery -- facade-profile rust-library",
+                    false,
+                    "facade_default_admission",
+                ),
+                (
+                    "cargo run --locked -p humanymous-delivery -- facade-profile rust-library adapter-go",
+                    true,
+                    "facade_go_admission",
+                ),
+            ] {
+                let admitted_at = preflight
+                    .iter()
+                    .position(|step| step["run"] == admission)
+                    .ok_or("facade request admission missing")?;
+                require(
+                    preflight[admitted_at]["id"] == id,
+                    "facade admission identity missing",
+                )?;
+                for (index, step) in preflight.iter().enumerate() {
+                    if let Some(run) = step["run"].as_str() {
+                        require(
+                            !run.contains("--all-features"),
+                            "facade feature widening refused",
+                        )?;
+                        if run.contains("-p humanymous ") {
+                            require(
+                                commands.contains(&run),
+                                "facade build outside closed command profile",
+                            )?;
+                            if run.contains("--features adapter-go") == enabled {
+                                require(
+                                    admitted_at < index,
+                                    "facade build precedes request admission",
+                                )?;
+                            }
+                        }
+                    }
+                }
+            }
         }
         for command in commands {
             require(
                 preflight.iter().any(|step| {
-                    step["run"] == command
-                        && step["if"]
-                            == "${{ !cancelled() && steps.toolchain.outcome == 'success' }}"
+                    let condition = if command.contains("-p humanymous ") {
+                        if command.contains("--features adapter-go") {
+                            "${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_go_admission.outcome == 'success' }}"
+                        } else {
+                            "${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.facade_default_admission.outcome == 'success' }}"
+                        }
+                    } else {
+                        "${{ !cancelled() && steps.toolchain.outcome == 'success' }}"
+                    };
+                    step["run"] == command && step["if"] == condition
                 }),
                 "Go current-source preflight required",
             )?;
@@ -1252,6 +1312,77 @@ mod tests {
                 changed["jobs"]["product"]["if"] = json!("${{ always() }}");
             }
             assert!(document("go-validation.yml", &changed).is_err());
+        }
+    }
+    #[test]
+    fn facade_consumer_gates_cannot_omit_or_precede_closed_admission() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let docs = workflows(&root).unwrap();
+        for name in ["go-validation.yml", "browser-product-validation.yml"] {
+            let original = &docs.iter().find(|(file, _)| file == name).unwrap().1;
+            assert!(document(name, original).is_ok());
+            let steps = original["jobs"]["preflight"]["steps"].as_array().unwrap();
+            for (index, step) in steps.iter().enumerate() {
+                if step["run"].as_str().is_some_and(|run| {
+                    run.contains("--test deployment_contract")
+                        || run.contains("-p humanymous ")
+                        || run.contains("-- facade-profile ")
+                }) {
+                    let mut changed = original.clone();
+                    changed["jobs"]["preflight"]["steps"]
+                        .as_array_mut()
+                        .unwrap()
+                        .remove(index);
+                    assert!(document(name, &changed).is_err());
+                }
+            }
+            for (index, step) in steps.iter().enumerate() {
+                if step["run"]
+                    .as_str()
+                    .is_some_and(|run| run.contains("-p humanymous "))
+                {
+                    for condition in [
+                        Value::Null,
+                        json!("${{ !cancelled() && steps.toolchain.outcome == 'success' }}"),
+                        json!(
+                            "${{ !cancelled() && steps.toolchain.outcome == 'success' && steps.unrelated.outcome == 'success' }}"
+                        ),
+                    ] {
+                        let mut changed = original.clone();
+                        changed["jobs"]["preflight"]["steps"][index]["if"] = condition;
+                        assert!(document(name, &changed).is_err());
+                    }
+                }
+                if step["run"]
+                    .as_str()
+                    .is_some_and(|run| run.contains("-- facade-profile "))
+                {
+                    for id in [Value::Null, json!("unrelated")] {
+                        let mut changed = original.clone();
+                        changed["jobs"]["preflight"]["steps"][index]["id"] = id;
+                        assert!(document(name, &changed).is_err());
+                    }
+                }
+            }
+            let admission = steps.iter().position(|step| step["run"] ==
+                "cargo run --locked -p humanymous-delivery -- facade-profile rust-library adapter-go").unwrap();
+            let consumer = steps.iter().position(|step| step["run"] ==
+                "cargo test --locked -p humanymous --test go_consumer --no-default-features --features adapter-go -j1").unwrap();
+            let mut changed = original.clone();
+            changed["jobs"]["preflight"]["steps"]
+                .as_array_mut()
+                .unwrap()
+                .swap(admission, consumer);
+            assert!(document(name, &changed).is_err());
+            let mut changed = original.clone();
+            changed["jobs"]["preflight"]["steps"]
+                .as_array_mut()
+                .unwrap()
+                .push(json!({
+                    "run":"cargo check --locked -p humanymous --all-features -j1",
+                    "if":"${{ !cancelled() && steps.toolchain.outcome == 'success' }}"
+                }));
+            assert!(document(name, &changed).is_err());
         }
     }
     #[test]

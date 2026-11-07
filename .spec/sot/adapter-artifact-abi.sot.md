@@ -321,7 +321,7 @@ A colocated closed build-product manifest and Rust validator must precede featur
 wiring. Initially admit only the rust-library profile with no features or exactly
 adapter-go; reject unknown profiles, features and combinations. This manifest is
 checked against the actual Cargo-declared feature set. Define adapter-go using
-`dep:humanymous-go-adapter` so an implicit alternate dependency feature cannot
+`dep:humanymous-adapter-go` so an implicit alternate dependency feature cannot
 bypass the closed feature vocabulary. Duplicate feature requests are invalid.
 This manifest is an admission boundary to be wired into supported build entrypoints, not a claim
 that Cargo cannot be invoked directly. The first slice includes no host extension
@@ -346,9 +346,29 @@ dev dependency was added. Only the new internal package lock entry was added,
 without external version changes. No full transitive source/tool attestation is
 claimed by this local validation.
 
-The admission API is not yet connected to Delivery build entrypoints. Actual
-resolved-profile artifact receipts, Lab consumer migration and fresh hosted
-product qualification remain required. Later adapter package renames require a separate
+GO-FACADE-01 renames the internal leaf to humanymous-adapter-go while preserving
+the public adapter-go feature and humanymous::adapters::go namespace. Lab Go
+consumers now import the public namespace. Delivery's facade-profile command
+delegates to the sole admission API; Go and browser workflows require the matching
+admission step's success before each corresponding facade build/lint gate.
+Independent checks may continue for accounting; failed or skipped required gates
+cannot qualify the candidate. The validator's minimal default-only bootstrap
+dependency is distinct from the requested product profile.
+
+Coherent local batch checks passed: leaf10 library plus1 external contract;
+facade2 default library,2 enabled library and2 enabled consumer executions;
+Delivery110 tests; actor all-target check; default/enabled facade and selected
+consumer strict Clippy; both allowed CLI profiles; workflow policy, fmt and
+actionlint. The facade numbers represent4 distinct tests across6 executions.
+The actor check ran on Windows: its Unix-only Go module was excluded by cfg.
+Public consumer type tests do not replace the required actual Linux actor compile
+and hosted Docker eight-case execution.
+The four affected source roots and root Cargo/lock/toolchain comprised3004
+unchanged selected inputs before/after. This does not attest all transitive
+dependency/tool bytes or establish actual Go host execution.
+
+Actual resolved-profile artifact receipts and fresh hosted product qualification
+remain required. Later adapter package renames require a separate
 atomic owner-coordinated graph batch and fresh product evidence. The immutable
 pre-fix e70 browser diagnostic must not be changed by this facade work.
 

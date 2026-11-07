@@ -1,32 +1,35 @@
 # Root integration
 
-## Active migration handover: source predecessor only
+## Active GO-FACADE-01 atomic source batch
 
 Mission: finish public `humanymous` / internal `humanymous-adapter-go` migration
 and actual consumer requalification, preserving historical Go8 evidence.
-Root explicitly orders facade, machine feature/build-product manifest and shared
-graph before any package rename. Feature `adapter-go` and the four startup types
-below are approved. Root still needs to decide how existing qualification and
-scenario APIs remain reachable by the actual lab consumer.
+Root's e696e6a5 implements the public facade, closed feature/build-product manifest
+and component consumer checks. Feature `adapter-go` re-exports the whole existing
+Go namespace; qualification, probe and scenario APIs retain their paths, including
+`scenario::evaluate`. Root now assigns one atomic shared graph batch.
 
-Done: 5ebcb180 updates the consumer contract; 9591bc2a exposes the same runtime
-types and authors one external integration test. Direct Rust fmt/check, scoped
-Go SoT/plan Specfold and diff whitespace passed. No Cargo test, Clippy, public
-facade compile, renamed artifact or new hosted run has executed. Historical Go8
-public directory is unchanged against 32914a0b. No live process, target lease,
-Git claim or hosted handle is retained. Codex retains residual chat context.
+The Go leaf manifest identity and external test import are prepared for Root's
+atomic commit. The owner explicitly delegates Root to stage and commit ONLY
+crates/go-adapter/Cargo.toml, crates/go-adapter/tests/deployment_contract.rs,
+crates/go-adapter/INTEGRATION.md, .spec/sot/go-adapter.sot.md and
+.spec/plan/20261107072800-go-adapter.plan.md, after verifying the supplied hashes.
+No owner commit or compile of the intermediate mixed graph is permitted.
+No dependencies, leaf implementation, receipt protocol, native ABI or scoring
+behavior change. Cargo's inferred Rust library identity follows the package
+rename. Historical Go8 public directory is unchanged against 32914a0b.
+No live process, target lease, Git claim or hosted handle is retained.
 
-Next: reclaim adapter-go, read AGENTS.md and .agents/lessons/HARD-WON.md, then
-consume Root's exact facade/manifest/atomic graph assignment. Apply only the
-assigned leaf package and external-test import changes; Lab and Delivery change
-their owned consumers/selectors. After an explicit execution allocation, run
+Next: read AGENTS.md and .agents/lessons/HARD-WON.md, then consume Root's exact
+coherent committed graph and execution assignment. Lab and Delivery change their
+owned consumers/selectors in the same batch. After an execution allocation, run
 locked leaf lib tests (existing ten), the new integration test, fmt and strict
 all-target Clippy; compile and execute the actual public facade consumer, then
 run genuine hosted Docker Go8 at the same frozen candidate. Preserve first
 failures and exact source/feature/artifact/topology/counts/exit/cleanup evidence.
-The current package's test commands are `cargo test --locked -p
-humanymous-go-adapter --lib` and `cargo test --locked -p humanymous-go-adapter
---test deployment_contract`; use the renamed selector only after the graph moves.
+The coherent renamed graph's commands are `cargo test --locked -p
+humanymous-adapter-go --lib` and `cargo test --locked -p humanymous-adapter-go
+--test deployment_contract`; do not run them on the mixed working tree.
 
 Read .spec/sot/adapter-artifact-abi.sot.md, .spec/sot/go-adapter.sot.md and this
 file's impact table first. Common Cargo/lock/facade, lab sources and CI paths
@@ -38,13 +41,13 @@ INCOMPLETE at this handover; old c321 success is not evidence for new bytes.
 
 The accepted internal target package name is `humanymous-adapter-go`; the public
 Rust package/crate is `humanymous`, with Go access through
-`humanymous::adapters::go`. The current internal package remains
-`humanymous-go-adapter` until Root's single graph migration. No rename is
-performed by this handoff, and the frozen c321 hosted receipt retains its
-original names. Root approved optional feature `adapter-go` and exports
+`humanymous::adapters::go`. The leaf internal rename is prepared in GO-FACADE-01
+for Root's single graph commit; it is not a separately committed or qualified
+graph. The frozen c321 hosted receipt retains its original names. Root approved
+optional feature `adapter-go` and exports
 `Deployment`, `Host`, `Configuration`, `Rejection` at that public Go path. Root
-still owns the machine-checked build-product manifest and facade wiring;
-neither is qualified by this table.
+owns the machine-checked build-product manifest and facade wiring, implemented
+in predecessor e696e6a5; neither is qualified for the renamed host by this table.
 
 | Surface | Exact migration impact and owner |
 | --- | --- |
@@ -78,7 +81,8 @@ same owning types without conversion; one new pure test checks all six host
 families' distinct pooled-context/borrowed-entity premises. These checks are
 authored, not executed: ten existing unit tests plus one new integration test
 need a Root-assigned compiler slot. Direct Rust formatting and scoped Specfold
-passed. This predecessor does not rename the package or qualify the facade.
+passed. GO-FACADE-01 additionally prepares the package/test-import rename; it
+does not execute these tests or qualify the renamed facade/runtime integration.
 
 Current accepted result: Rust Gate Go integration adapter, bounded net/http8,
 source c3211e27ba941f3f11809e420d07d61ececad623, actual hosted run42375310198.

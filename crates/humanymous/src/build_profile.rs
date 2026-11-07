@@ -53,17 +53,17 @@ mod tests {
         assert!(features["default"].as_array().unwrap().is_empty());
         assert_eq!(
             features["adapter-go"].as_array().unwrap(),
-            &[toml::Value::String("dep:humanymous-go-adapter".into())]
+            &[toml::Value::String("dep:humanymous-adapter-go".into())]
         );
         assert_eq!(
-            cargo["dependencies"]["humanymous-go-adapter"]["optional"].as_bool(),
+            cargo["dependencies"]["humanymous-adapter-go"]["optional"].as_bool(),
             Some(true)
         );
         assert!(
             !cargo["dev-dependencies"]
                 .as_table()
                 .unwrap()
-                .contains_key("humanymous-go-adapter")
+                .contains_key("humanymous-adapter-go")
         );
         assert_eq!(cargo["package"]["autobins"].as_bool(), Some(false));
         assert!(cargo.get("bin").is_none());
@@ -78,6 +78,7 @@ mod tests {
         );
         for features in [
             vec!["humanymous-go-adapter"],
+            vec!["humanymous-adapter-go"],
             vec!["adapter-go", "adapter-go"],
             vec!["adapter-go", "native"],
             vec![""],
