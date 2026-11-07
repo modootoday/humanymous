@@ -484,3 +484,26 @@ b1e9cd5d51b8e37e26350ec00b37690b9f477299fd167a9088e7be4e3b685f14:
 no remaining topology/permission objection in these corrections; overall verdict
 still needs-work for R1 backend and actual typed bounded R3 implementation/tests.
 This is consumer alignment, not channel implementation approval or native proof.
+
+## Current Windows C execution result
+
+After root explicitly closed the manifest window at e83d5e55, C admitted at
+commit79percent/free33.26GiB. Actual local rustc1.99.1 Windows x86_64 compiled all
+five authority harnesses (--all-targets --no-run), passed13pure library tests
+(0failed/ignored/filtered), and passed all-target Clippy -Dwarnings. Scoped
+cargo fmt -p humanymous-authority --check passed. The initial erroneous --all fmt
+invocation inspected foreign workspace packages and exited1; raw output is
+preserved separately, with no foreign source edits or whole-workspace fmt claim.
+
+Real locked/offline Windows cargo tree identified nine local package dependencies.
+All217 tracked closure inputs (including Cargo/lock/toolchain) were unchanged
+before/after. The broader533-input observation changed only an unrelated .NET
+package test outside that closure. Source at start332d79c0; this checkpoint does
+not assert a clean whole workspace. Public current-windows-pure.json records
+exact scope and raw hashes; private snapshots/logs are attached to execution
+evidence. No authority Cargo/process remains running after terminal collection.
+
+This closes current graph compile/pure/Clippy/fmt revalidation only. Actual sealed
+startup with custody/restart and native IPC integration harnesses were compiled,
+NOT executed. No new hosted result exists here. Root was asked for a separate
+actual IPC/hosted allocation; historical Linux813 results remain source-bound.

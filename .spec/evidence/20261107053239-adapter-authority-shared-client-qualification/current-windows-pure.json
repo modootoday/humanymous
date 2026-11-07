@@ -1,0 +1,74 @@
+{
+  "schema": "humanymous.authority.local-pure-validation/1",
+  "head_at_start": "332d79c0a32e5818515d337311d88965dd2dd33c",
+  "venue": "local Windows x86_64-pc-windows-msvc",
+  "toolchain": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "allocation": "C target/validation-authority jobs1 incremental0 after root e83d5e55 manifest close",
+  "closure_packages": [
+    "authority",
+    "audit",
+    "native-security",
+    "signals",
+    "integrity",
+    "network",
+    "scoring",
+    "behavior",
+    "model"
+  ],
+  "tracked_closure_input_count": 217,
+  "changed_closure_inputs": [],
+  "all_target_no_run_exit": 0,
+  "pure_library": {
+    "ignored": 0,
+    "filtered": 0,
+    "failed": 0,
+    "passed": 13
+  },
+  "clippy_all_targets_exit": 0,
+  "scoped_fmt_exit": 0,
+  "initial_workspace_fmt_exit": 1,
+  "initial_fmt_limit": "--all broadened scope to foreign packages; corrected scoped invocation passed; raw failure retained",
+  "not_run": [
+    "native integration/process/IPC cases",
+    "Windows/macOS hosted IPC",
+    "protected OS-store unlock",
+    "independent remote Windows denial",
+    "isolated Docker UID parent/probe",
+    "SCM bootstrap/graceful sealed flush",
+    "whole product e2e"
+  ],
+  "raw": [
+    {
+      "name": "current-c-before.json",
+      "sha256": "d478d38ea1b07600ec01aa6b295d6f827e3e00df9eb44c6921f91d6dba25ed2c"
+    },
+    {
+      "name": "current-c-after.json",
+      "sha256": "250f830e00d763f977d90fd28a5ce6f68d95ce19687fc1c97f70cb526a368028"
+    },
+    {
+      "name": "current-c-no-run.log",
+      "sha256": "49b64d0fb38f49742d38ffd8b593f1731df3a455f2b89d2ed86d55e37139ed17"
+    },
+    {
+      "name": "current-c-lib.log",
+      "sha256": "5bc6b9c93d9cf8ec677d4c6bd9e091febf0330fa31e3d3a534de8d41d07b58b9"
+    },
+    {
+      "name": "current-c-clippy.log",
+      "sha256": "379e9d93237fa6f1a641902f8fa23d594770d1674108c987465ec722d91e7cc5"
+    },
+    {
+      "name": "current-c-fmt.log",
+      "sha256": "b4c6edfa8da5a200c9de7307dbae25b2af43a06b87cb5b0deb6b16c064dd1295"
+    },
+    {
+      "name": "current-c-scoped-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "current-c-tree.log",
+      "sha256": "bb156d5b59481ed1ab92a730b3da063ae87c0b471e392348771de282da980143"
+    }
+  ]
+}
