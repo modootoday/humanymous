@@ -334,10 +334,21 @@ native-free closure is promised. Actual build receipts must bind effective
 resolved features, including Cargo feature unification, rather than only manifest
 declarations.
 
-Go's bounded namespace review accepted the concrete proposal. Framework, .NET
-and adversarial reviews also accept the library-only design with the explicit
-feature/closure constraints above. Native review remains required before source
-implementation. Later Lab imports and adapter package renames require a separate
+Go, framework, .NET, Native and adversarial bounded reviews accepted the concrete
+library-only design with the explicit feature/closure constraints above.
+The first source slice now implements the facade, closed manifest and Rust
+admission validator. Locked offline default-only library tests passed2 and its
+feature-gated consumer ran0 tests; enabled adapter-go passed2 library and2 public
+consumer tests. These are4 distinct tests across6 executions, not6 distinct
+cases. Enabled all-target strict Clippy and scoped format checks passed. The
+default normal dependency tree contained only humanymous; no unconditional Go
+dev dependency was added. Only the new internal package lock entry was added,
+without external version changes. No full transitive source/tool attestation is
+claimed by this local validation.
+
+The admission API is not yet connected to Delivery build entrypoints. Actual
+resolved-profile artifact receipts, Lab consumer migration and fresh hosted
+product qualification remain required. Later adapter package renames require a separate
 atomic owner-coordinated graph batch and fresh product evidence. The immutable
 pre-fix e70 browser diagnostic must not be changed by this facade work.
 
@@ -356,8 +367,9 @@ that filename refinement removes case-only collision without relaxing role,
 instance, trusted-path or actual import gates. Reviews are design evidence, not
 renamed implementation or runtime qualification.
 
-The facade, unified public imports, restored artifacts and changed host init
-symbols are NOT implemented/qualified by this document. Current support remains
+The initial Go Rust facade is implemented and locally checked as described above;
+other public imports, restored artifacts and changed host init symbols remain
+unimplemented or unqualified. Current support remains
 exact-source evidence in the owning SoTs. Public namespace ownership, unresolved
 host tuples, additional glue and actual GUI/AT remain explicit release gates.
 

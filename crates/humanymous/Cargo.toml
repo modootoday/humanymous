@@ -1,0 +1,23 @@
+[package]
+name = "humanymous"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+autobins = false
+
+[features]
+default = []
+adapter-go = ["dep:humanymous-go-adapter"]
+
+[dependencies]
+humanymous-go-adapter = { path = "../go-adapter", optional = true }
+
+[dev-dependencies]
+serde_json.workspace = true
+toml = "=1.2.1"
+
+[lints]
+workspace = true

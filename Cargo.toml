@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "crates/humanymous",
   # Shared security and service contexts.
   "crates/audit", "crates/authority", "crates/behavior", "crates/challenge",
   "crates/capture", "crates/collector", "crates/integrity", "crates/model", "crates/network",

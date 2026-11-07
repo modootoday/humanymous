@@ -1,0 +1,7 @@
+{
+  "schema": "humanymous.build-products/1",
+  "package": "humanymous",
+  "target": "lib",
+  "profile": "rust-library",
+  "allowed_feature_sets": [[], ["adapter-go"]]
+}
