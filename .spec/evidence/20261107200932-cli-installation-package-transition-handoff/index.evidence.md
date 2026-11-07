@@ -3,7 +3,7 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T23:27:20Z
+updated: 2026-11-07T23:41:55Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
@@ -14,6 +14,8 @@ files:
   - {path: tools-freeze-census.json, sha256: 7e7765d28b232f5760235c715fd7dfe29dc2ca93efed12d12d0f702502e23cce, bytes: 111913, store: repo}
   - {path: tools-source-readers.json, sha256: d6f6e022d7991cad3d4a65da7c87e6ee861c1cca9a2400728ec392db69cc1f12, bytes: 22007, store: repo}
   - {path: tools-linkage-map.json, sha256: 7b8621f9f11059e62a28a5e42e9a53d5cb9875561ef975b475a0c185e9ac2c4a, bytes: 89297, store: repo}
+  - {path: legacy-bin-unit-map.json, sha256: c8b1e8436e9bbb9188050da7d178acef31cc4aa4915fddaf4b540db4a35b17dc, bytes: 425533, store: repo}
+  - {path: legacy-lib-unit-map.json, sha256: acdc14a788d9683cedf28e8a6a9dc17d89ee0b99d2c658edcc2291cd0a57d835, bytes: 378413, store: repo}
 ---
 
 ## Mission and current ownership
@@ -95,6 +97,24 @@ integration and10actual filesystem/provider cases in the maintenance binary,
 never pure reclassification or duplicates. This resolves X's P2 identity choice
 as design only; final source/target/profile closure is still unfrozen. No source,
 Cargo or path changes are authorized before Root's complete input-map freeze.
+
+legacy-lib-unit-map.json separately inventories187source/function candidates:
+native11, attacker27, defender9, maintenance76, Pages37, retained CLI27. All have
+canonical source SHA/function locations and per-role new-bin selector candidates;
+shared-lab/verifier/runtime/report collections point to the same source cases,
+not multiplied coverage. The accepted33Maintenance cases remain separate.
+126module/cfg/path edges and exact bounded --list command proposals are recorded.
+No semantic discovery, compilation or case execution occurred. Platform cfg,
+selector resolution and per-role repeat collection are explicit unresolved items;
+Root must allocate and reconcile exact lists before freezing executable inventories.
+
+legacy-bin-unit-map.json separately covers ALL15existing binaries and their actual
+declared module closure:259source-target case candidates, zero lexical unresolved
+module/function locations. LIB+BIN446collections correspond to440physical source/
+function candidates; six preexisting shared-source collections are not new unique
+coverage. Wargame reconciliation: attacker27LIB=25nonignored+one portable ignored
+native+one cfgWindows ignored native, separate from3main/bin argument cases;
+defender9source is Linux8/nonLinux9. None are executed/flattened pass counts.
 
 Root-approved lint-isolation amendment d45e600d is now part of this handoff.
 tools-role-map.json records all13absorbed responsibilities: the9workspace roles

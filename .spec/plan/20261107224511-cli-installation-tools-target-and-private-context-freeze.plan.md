@@ -272,6 +272,114 @@ mandatory after the coherent move.
 
 # Ordered freeze and verification
 
+## Legacy LIB unit inventory handoff
+
+The completed machine artifacts are legacy-lib-unit-map.json and the separate
+legacy-bin-unit-map.json. All15MAIN/BINroots are now included rather than omitted:
+259source-target candidates from their declared module closures, no unresolved
+lexical module/function locations. Combined with187LIBcandidates this is446old
+source-target collections but440physical source/function candidates; six shared
+source collections are not new coverage. These are not semantic or pass counts.
+
+The exact Wargame5bcce859 source reconciliation is recorded per case. Attacker
+LIB27does not include its separate3main/bin argument tests:25nonignored units
+(5seed/catalog/report +5network +7verification/JSON +8legacy parity), one portable
+ignored native-publication case at report/legacy/tests.rs:235 and one Windows-only
+ignored sharing-denial case at:276. Thus static registered candidates are Linux26
+and Windows27, while25is the nonignored source category, never a measured pass
+count here. Defender's ninth source case is lab/isolation.rs:116,
+host_cannot_enable_network_mode, cfg(not(target_os="linux")); Linux8/nonLinux9.
+Ignore flags, platform cfg and actual native effects remain unchanged.
+
+| Existing bin root | Lexical own-bin source collections |
+| --- | --- |
+| humanymous-native-runner | 61 |
+| humanymous-cef-pilot | 14 |
+| humanymous-runtime-pilot | 9 |
+| humanymous-lab-runner | 40 |
+| humanymous-pages | 1 |
+| humanymous-delivery | 121 |
+| humanymous-agent-maintenance | 0; former LIB76and relocated10are separate required inputs |
+| humanymous-service-fixture | 0; actual fixture role remains required |
+| humanymous | 1 |
+| humanymous-docs-review | 8 |
+| humanymous-native | 0; former LIB11remains required |
+| humanymous-report | 1 |
+| humanymous-attacker | 1 |
+| humanymous-wargame-verify | 1 |
+| humanymous-local-parity | 1 |
+
+The bin map follows real mod/path declarations, only immediately adjacent path
+attributes, and retained inherited cfg. External library dependency units are NOT
+treated as old-bin units; actual shared source included directly by an old bin is
+recorded under that bin. Zero lexical cases does not waive executable/role proof.
+
+New command-module prefixes for the attacker/report/verifier entry roots are
+proposed attacker_command/report_command/wargame_verify_command, avoiding collision
+with canonical shared attacker/defender or legacy namespaces. Other bin prefixes
+match their private role context; primary humanymous retains commands:: names.
+Root must approve these precise command namespaces alongside semantic lists; no
+source, target or visibility change is performed by this proposal.
+
+legacy-lib-unit-map.json in [[evidence:root/20261107200932]] is the source-bound
+case/collection map, separate from the accepted33Maintenance cases. It records
+187unique source/function candidates:160across the five retiring tool libraries
+and27in the retained production CLI library. Counts are lexical, not semantic
+Cargo inventory or executed test denominators.
+
+| Original LIB | Source cases | Primary new collector |
+| --- | --- | --- |
+| native-cli | 11 | humanymous-native, native::<old-selector> |
+| attacker | 27 | humanymous-attacker, attacker::<old-selector> |
+| defender | 9 | humanymous-attacker, defender::<old-selector> |
+| agent-maintenance | 76 | humanymous-agent-maintenance, maintenance::<old-selector> |
+| Pages | 37 | humanymous-pages, pages::<old-selector> |
+| retained CLI | 27 | existing CLI lib selector unchanged |
+
+Each row pins old package/target/source SHA256/attribute and function line,
+source-derived old selector and exact proposed new target-qualified collections.
+There are0candidate selector collisions and0unresolved attribute/function pairs.
+126module declarations retain parent cfg/path observations for semantic review.
+Source layout/indentation is not a Rust parser; module resolution/platform cfg
+and actual test registration remain explicitly unresolved pending --list.
+
+Canonical attacker/defender cases may also collect from their actual shared source
+in the verifier and legitimate Unix runtime-pilot role. The10legacy report leaf
+cases additionally map to legacy::<suffix> in humanymous-report. These rows are
+repeat collections of the SAMEsource case, never new unique tests or substitutes
+for its primary owner. No source/test implementation is copied or deleted.
+Root must freeze the real bin/module cfg and exact per-target list before execution.
+
+The76Maintenance LIBcases do not include the33accepted integration/bin-relocation
+cases. Its complete owning binary inventory must retain all applicable library
+cases plus10actual filesystem/provider cases and any preexisting main-bin unit
+cases, while the23integration cases keep their exact executable boundary. No
+category is automatically pure. Only the historical CLI pure11 has prior effect
+review; other candidates need their actual filesystem/provider/runtime classification.
+
+Concrete unresolved items in the machine map:
+
+- Lexical CLI27includes conditional-platform source; historical Windows actual
+  inventory26is not a reason to drop a candidate. Resolve inherited cfg by --list.
+- Repeated shared-lab collection and preserved local test modules need exact
+  target-qualified inventory and unique-source accounting, not inflated totals.
+- Existing standalone/main-bin unit tests are now fully inventoried separately,
+  with all259lexical source-target cases retained; their cfg/semantic names and
+  exact private command prefixes still require owning --list reconciliation.
+- Proposed module prefixes are not semantic discovery; external include/input
+  ownership blockers must close before the new private-bin graph can compile.
+
+The machine map includes exact nonexecuting discovery commands: six OLDlibrary
+selectors use cargo test --locked --offline -p <old-package> --lib --all-features
+-- --list; NEWselectors use the CLI lib plus exact --bin for native, attacker,
+report, verifier, maintenance, Pages and legitimate runtime-pilot. A later
+Root allocation must pin old/new immutable graphs separately, enforce one context
+90s work/30s cleanup within a selected390s/450s batch, jobs1/inc0, fresh guards,
+exclusive lease and before/after source/tool/config/env hashes. Stop first failure
+or inventory drift, no retry/source fix/test execution. --list may compile and
+spawn the harness but must not call a test function or native/service/SDK pilot.
+No discovery command was run by this source inventory task.
+
 1. Accepted15bin names/features/default artifact policy stay fixed. Root reviews
    remaining test aliases/minimal feature selectors, per-bin shared module
    linkage, preserved bin-only public namespaces and dead-code handling. Resolve
