@@ -43,8 +43,115 @@ fn element(tag: &str, attributes: &[(&str, &str)], children: Vec<Node>) -> Node 
     }
 }
 
-/// Synthetic management controls. Address edits remain local native input state.
+/// Browser-first native shell. Actual page pixels are owned by the CEF child.
 pub fn component() -> Component {
+    component_with_window_controls(false)
+}
+
+/// Native pilot variant with owned window commands enabled.
+pub fn component_with_window_controls(enabled: bool) -> Component {
+    fn disabled_button(label: &str, name: &str) -> Node {
+        element(
+            "button",
+            &[
+                ("disabled", "true"),
+                ("aria-label", name),
+                ("title", name),
+                (
+                    "className",
+                    if label == "Reload" {
+                        "nav-button reload"
+                    } else {
+                        "nav-button"
+                    },
+                ),
+            ],
+            vec![crate::icons::node(match label {
+                "←" => crate::icons::Icon::Back,
+                "→" => crate::icons::Icon::Forward,
+                "Reload" => crate::icons::Icon::Reload,
+                _ => crate::icons::Icon::Plus,
+            })],
+        )
+    }
+    fn inspector(prefix: &str, dock: &str) -> Node {
+        let tabs = [
+            (
+                "diagnostics",
+                "Engine",
+                "Local engine observations",
+                "Observer sources are not connected. Missing events are unknown, not zero.",
+            ),
+            (
+                "scenario",
+                "Page exposure",
+                "Website-visible evidence",
+                "No page-exposure experiment has run. Engine-private facts are not website detection signals.",
+            ),
+            (
+                "audit",
+                "Server",
+                "Optional server evidence",
+                "Not integrated. No verified server verdict, receipt or origin effect is available.",
+            ),
+        ];
+        let triggers = tabs
+            .iter()
+            .map(|(value, label, _, _)| {
+                let id = format!("{prefix}{value}-tab");
+                element(
+                    "TabsTrigger",
+                    &[("id", &id), ("value", value)],
+                    vec![text(label)],
+                )
+            })
+            .collect();
+        let mut children = vec![element(
+            "TabsList",
+            &[
+                ("aria-label", "Laboratory panels"),
+                ("className", "analysis-tabs"),
+            ],
+            triggers,
+        )];
+        for (value, _, title, description) in tabs {
+            children.push(element(
+                "TabsContent",
+                &[("value", value)],
+                vec![
+                    element("h2", &[], vec![text(title)]),
+                    element("p", &[], vec![text(description)]),
+                    element(
+                        "p",
+                        &[("className", "muted")],
+                        vec![text(
+                            "Required sandbox: partial evidence. Full qualification pending.",
+                        )],
+                    ),
+                ],
+            ));
+        }
+        element(
+            "TabsContent",
+            &[
+                ("value", dock),
+                ("className", &format!("inspector inspector-{dock}")),
+            ],
+            vec![
+                element(
+                    "div",
+                    &[("className", "inspector-title")],
+                    vec![text("Research inspector")],
+                ),
+                element(
+                    "p",
+                    &[("className", "muted")],
+                    vec![text("Local fixture · bounded native pilot")],
+                ),
+                element("Tabs", &[("defaultValue", "diagnostics")], children),
+            ],
+        )
+    }
     Component {
         hook_order: vec![],
         states: vec![],
@@ -52,137 +159,193 @@ pub fn component() -> Component {
         name: "LaboratoryBrowser".into(),
         props: vec![],
         root: element(
-            "div",
-            &[("className", "shell")],
+            "Tabs",
+            &[
+                ("id", "browser-shell"),
+                ("className", "browser-shell"),
+                ("defaultValue", "hidden"),
+            ],
             vec![
-                element("h1", &[], vec![text("humanymous browser laboratory")]),
                 element(
-                    "p",
-                    &[],
-                    vec![text("Synthetic profile only | CEF: NOT READY")],
-                ),
-                element(
-                    "Label",
-                    &[("htmlFor", "address")],
-                    vec![text("Owned fixture address (editing only)")],
-                ),
-                element(
-                    "Input",
-                    &[
-                        ("id", "address"),
-                        ("defaultValue", "https://fixture.invalid/"),
-                        ("aria-label", "Owned fixture address"),
-                    ],
-                    vec![],
-                ),
-                element(
-                    "p",
-                    &[("role", "status")],
-                    vec![text(
-                        "Navigation unavailable: no sandbox-qualified CEF adapter attached.",
-                    )],
-                ),
-                element(
-                    "Tabs",
-                    &[("defaultValue", "diagnostics")],
+                    "div",
+                    &[("className", "tab-strip")],
                     vec![
+                        element("span", &[("className", "brand")], vec![text("h")]),
+                        element(
+                            "div",
+                            &[("role", "tablist"), ("aria-label", "Browser tabs")],
+                            vec![element(
+                                "button",
+                                &[
+                                    ("role", "tab"),
+                                    ("aria-selected", "true"),
+                                    ("aria-label", "Local fixture tab"),
+                                    ("className", "page-tab"),
+                                ],
+                                vec![text("Local fixture")],
+                            )],
+                        ),
+                        disabled_button("+", "New tab unavailable in this prototype"),
+                        element(
+                            "span",
+                            &[("className", "tab-caption")],
+                            vec![text("humanymous research browser")],
+                        ),
+                        crate::window_chrome::controls(enabled),
+                    ],
+                ),
+                element(
+                    "div",
+                    &[("className", "toolbar")],
+                    vec![
+                        disabled_button("←", "Back unavailable"),
+                        disabled_button("→", "Forward unavailable"),
+                        disabled_button("Reload", "Reload unavailable"),
+                        element(
+                            "Input",
+                            &[
+                                ("id", "address"),
+                                ("defaultValue", "about:blank"),
+                                ("aria-label", "Address — editing only; navigation locked"),
+                                ("className", "address"),
+                            ],
+                            vec![],
+                        ),
+                        element(
+                            "span",
+                            &[("role", "status"), ("className", "mode-badge")],
+                            vec![text("LOCAL · LOCKED")],
+                        ),
                         element(
                             "TabsList",
-                            &[("aria-label", "Laboratory panels")],
+                            &[
+                                ("aria-label", "Analysis panel position"),
+                                ("className", "dock-controls"),
+                            ],
                             vec![
                                 element(
                                     "TabsTrigger",
-                                    &[("id", "diagnostics-tab"), ("value", "diagnostics")],
-                                    vec![text("Diagnostics")],
+                                    &[
+                                        ("id", "dock-hidden"),
+                                        ("value", "hidden"),
+                                        ("aria-label", "Hide analysis panel"),
+                                    ],
+                                    vec![text("Page")],
                                 ),
                                 element(
                                     "TabsTrigger",
-                                    &[("id", "scenario-tab"), ("value", "scenario")],
-                                    vec![text("Scenario")],
+                                    &[
+                                        ("id", "dock-right"),
+                                        ("value", "right"),
+                                        ("aria-label", "Dock analysis panel right"),
+                                    ],
+                                    vec![text("Right")],
                                 ),
                                 element(
                                     "TabsTrigger",
-                                    &[("id", "audit-tab"), ("value", "audit")],
-                                    vec![text("Audit")],
-                                ),
-                            ],
-                        ),
-                        element(
-                            "TabsContent",
-                            &[("value", "diagnostics")],
-                            vec![
-                                element("h2", &[], vec![text("Engine and profile")]),
-                                element(
-                                    "p",
-                                    &[],
-                                    vec![text("Profile: synthetic-ephemeral-01 | Target tabs: 0")],
-                                ),
-                                element(
-                                    "p",
-                                    &[],
-                                    vec![text(
-                                        "CEF attachment / sandbox / focus / IME / AX: unqualified",
-                                    )],
-                                ),
-                                element(
-                                    "p",
-                                    &[],
-                                    vec![text(
-                                        "Filesystem, capture, popup, administration, bearer and native bridge: DENY",
-                                    )],
-                                ),
-                            ],
-                        ),
-                        element(
-                            "TabsContent",
-                            &[("value", "scenario")],
-                            vec![
-                                element("h2", &[], vec![text("Owned scenario")]),
-                                element(
-                                    "p",
-                                    &[],
-                                    vec![text(
-                                        "Not connected. No requests sent. No detector outcome measured.",
-                                    )],
-                                ),
-                            ],
-                        ),
-                        element(
-                            "TabsContent",
-                            &[("value", "audit")],
-                            vec![
-                                element("h2", &[], vec![text("Server audit")]),
-                                element(
-                                    "p",
-                                    &[],
-                                    vec![text(
-                                        "Not connected. No server verdict or origin effect receipt.",
-                                    )],
+                                    &[
+                                        ("id", "dock-bottom"),
+                                        ("value", "bottom"),
+                                        ("aria-label", "Dock analysis panel bottom"),
+                                    ],
+                                    vec![text("Bottom")],
                                 ),
                             ],
                         ),
                     ],
                 ),
                 element(
-                    "p",
-                    &[],
-                    vec![text(
-                        "Keyboard: Tab to address or panels; arrow keys switch panels. Close uses the native window control.",
+                    "div",
+                    &[
+                        ("className", "content-reservation"),
+                        ("aria-label", "Native Chromium content surface"),
+                    ],
+                    vec![element(
+                        "p",
+                        &[("className", "muted")],
+                        vec![text(
+                            "Native CEF surface is not attached in the standalone controls preview.",
+                        )],
                     )],
                 ),
+                inspector("", "right"),
+                inspector("bottom-", "bottom"),
+                crate::window_chrome::resize_regions(),
             ],
         ),
     }
 }
 
-/// Shared native control styles, including readable text/input contrast.
-pub const MANAGEMENT_STYLES: &str = "body{background:#101826;color:#edf3ff;font-family:system-ui;font-size:16px} .shell{padding:28px;max-width:1000px} h1{font-size:26px} input{padding:10px;border:1px solid #7890aa;border-radius:6px;background:#18263a;color:#edf3ff} button{padding:12px;background:#203652;color:#edf3ff} [hidden]{display:none!important}";
+/// Read only the shell's root widget; inspector sections cannot alter allocation.
+pub fn inspector_dock(doc: &InteractiveDocument) -> crate::viewport::InspectorDock {
+    use crate::viewport::InspectorDock;
+    match doc
+        .session
+        .widgets
+        .get("0")
+        .map(|widget| widget.value.as_str())
+    {
+        Some("right") => InspectorDock::Right,
+        Some("bottom") => InspectorDock::Bottom,
+        _ => InspectorDock::Hidden,
+    }
+}
 
+/// CSS metrics and native allocation share the same Rust constants.
+pub fn management_styles() -> &'static str {
+    static STYLES: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    STYLES.get_or_init(|| {
+        use crate::viewport::*;
+        r#"
+body{margin:0;background:#101620;color:#e8edf7;font-family:system-ui;font-size:14px}
+*{box-sizing:border-box} button,input{font:inherit} [hidden]{display:none!important}
+.browser-shell{display:block;gap:0;width:100vw;height:100vh;position:relative;overflow:hidden}
+.tab-strip{height:__TABS__px;display:flex;align-items:center;gap:10px;padding:0 12px;background:#0d121b}
+.brand{font-size:20px;font-weight:700;color:#6cddca;width:20px;text-align:center}
+.page-tab{height:30px;width:190px;text-align:left;padding:0 14px;border:0;border-radius:8px 8px 0 0;background:#202b3d;color:#f1f5fd}
+.tab-caption{color:#8d9ab0;font-size:12px;margin-left:auto}
+.window-controls{height:34px;display:flex;gap:0;margin-right:-12px}
+.window-button{width:46px;height:34px;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;color:#d8e7fb}
+.window-button:hover{background:#344259} #window-close:hover{background:#b6293b}
+.nav-button{display:flex;align-items:center;justify-content:center} svg{pointer-events:none;flex-shrink:0}
+.toolbar{height:__BAR__px;display:flex;align-items:center;gap:6px;padding:6px 10px;background:#202b3d;border-bottom:1px solid #344259}
+.nav-button{width:30px;height:30px;padding:0;border:0;border-radius:5px;background:transparent;color:#8592a8;font-size:18px}
+.nav-button.reload{width:30px}
+.address{flex:1;min-width:120px;height:34px;padding:5px 12px;border:1px solid #43536e;border-radius:18px;background:#101925;color:#edf3ff}
+.mode-badge{font-size:10px;color:#9fbbc7;white-space:nowrap;padding:0 6px}
+.dock-controls{display:flex;gap:2px;height:32px;padding:2px;background:#101925;border-radius:6px}
+.dock-controls button{height:28px;padding:3px 8px;border:0;border-radius:4px;background:#202f45;color:#d8e7fb;font-size:12px}
+.resize-hit{position:absolute;z-index:20}
+.resize-n{top:0;left:__EDGE__px;right:__EDGE__px;height:__EDGE__px;cursor:ns-resize}
+.resize-s{bottom:0;left:__EDGE__px;right:__EDGE__px;height:__EDGE__px;cursor:ns-resize}
+.resize-w{left:0;top:__EDGE__px;bottom:__EDGE__px;width:__EDGE__px;cursor:ew-resize}
+.resize-e{right:0;top:__EDGE__px;bottom:__EDGE__px;width:__EDGE__px;cursor:ew-resize}
+.resize-nw{left:0;top:0;width:__EDGE__px;height:__EDGE__px;cursor:nwse-resize}
+.resize-ne{right:0;top:0;width:__EDGE__px;height:__EDGE__px;cursor:nesw-resize}
+.resize-sw{left:0;bottom:0;width:__EDGE__px;height:__EDGE__px;cursor:nesw-resize}
+.resize-se{right:0;bottom:0;width:__EDGE__px;height:__EDGE__px;cursor:nwse-resize}
+button:not(:disabled){cursor:pointer} button:disabled{cursor:not-allowed} input{cursor:text}
+.content-reservation{position:absolute;left:0;right:0;top:__TOP__px;bottom:0;background:#ffffff;padding:20px;color:#58687f}
+.inspector{position:absolute;background:#131d2c;border:1px solid #344259;padding:16px;overflow:auto;z-index:2}
+.inspector-right{top:__TOP__px;right:__EDGE__px;bottom:__EDGE__px;width:32vw;max-width:__RIGHT__px}
+.inspector-bottom{left:__EDGE__px;right:__EDGE__px;bottom:__EDGE__px;height:40vh;max-height:__BOTTOM__px}
+.inspector-title{font-size:15px;font-weight:600;color:#e9f3ff}
+.inspector h2{font-size:14px;margin-top:20px}.inspector p{line-height:1.5;font-size:13px}
+.muted{color:#92a4bc;font-size:12px}.analysis-tabs{display:flex;gap:3px;margin-top:14px}
+.analysis-tabs button{padding:7px 8px;background:#24354e;color:#e7f0ff;border:0;border-radius:4px;font-size:12px}
+"#.replace("__TABS__", &TAB_STRIP_DIP.to_string())
+            .replace("__BAR__", &TOOLBAR_DIP.to_string())
+            .replace("__TOP__", &CHROME_TOP_DIP.to_string())
+            .replace("__RIGHT__", &RIGHT_MAX_DIP.to_string())
+            .replace("__BOTTOM__", &BOTTOM_MAX_DIP.to_string())
+            .replace("__EDGE__", &crate::frame_geometry::RESIZE_DIP.to_string())
+    })
+}
 /// Build the actual native document, with no parser or foreign application source.
 pub fn document(width: u32, height: u32) -> Result<InteractiveDocument, String> {
     InteractiveDocument::new(
         component(),
-        MANAGEMENT_STYLES,
+        management_styles(),
         Viewport {
             width,
             height,
@@ -202,6 +365,22 @@ mod tests {
     #[test]
     fn keyboard_roving_tabs_and_accessibility_actions_reach_real_document() {
         let mut doc = document(1100, 720).unwrap();
+        let dock = doc
+            .renderer
+            .document
+            .get_element_by_id("dock-right")
+            .unwrap();
+        accessibility::act(
+            &mut doc,
+            &accesskit::ActionRequest {
+                action: accesskit::Action::Click,
+                target_tree: accesskit::TreeId::ROOT,
+                target_node: accesskit::NodeId(dock.as_u64()),
+                data: None,
+            },
+        )
+        .unwrap();
+        assert_eq!(inspector_dock(&doc), crate::viewport::InspectorDock::Right);
         let diagnostics = doc
             .renderer
             .document
@@ -246,6 +425,34 @@ mod tests {
                 .values()
                 .any(|widget| widget.value == "audit")
         );
+    }
+
+    #[test]
+    fn dock_actions_change_allocation_state_without_navigation_or_authority() {
+        use crate::viewport::InspectorDock;
+        let mut doc = document(1280, 800).unwrap();
+        assert_eq!(inspector_dock(&doc), InspectorDock::Hidden);
+        for (id, expected) in [
+            ("dock-right", InspectorDock::Right),
+            ("dock-bottom", InspectorDock::Bottom),
+            ("dock-hidden", InspectorDock::Hidden),
+        ] {
+            let target = doc.renderer.document.get_element_by_id(id).unwrap();
+            accessibility::act(
+                &mut doc,
+                &accesskit::ActionRequest {
+                    action: accesskit::Action::Click,
+                    target_tree: accesskit::TreeId::ROOT,
+                    target_node: accesskit::NodeId(target.as_u64()),
+                    data: None,
+                },
+            )
+            .unwrap();
+            assert_eq!(inspector_dock(&doc), expected);
+            assert!(doc.activation_requests.is_empty());
+            assert!(doc.file_requests.is_empty());
+            assert!(doc.callback_scope().is_none());
+        }
     }
 
     #[test]

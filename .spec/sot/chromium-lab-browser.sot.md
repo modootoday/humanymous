@@ -3,7 +3,7 @@ id: sot:root/chromium-lab-browser
 title: Rust Chromium laboratory browser and observation adapters
 status: active
 created: 2026-11-06T23:34:52Z
-updated: 2026-11-06T23:34:52Z
+updated: 2026-11-07T04:17:05Z
 verify: manual
 rel:
   depends_on: [sot:root/adapter-ecosystem, sot:root/adapter-service-contract, sot:root/adapter-authority, sot:root/automation-evidence, sot:root/accessibility-agent-tools, sot:root/mobile-agent-tools, sot:root/crate-architecture, sot:root/cross-os-runners]
@@ -11,9 +11,8 @@ rel:
 
 # Rust Chromium laboratory browser
 
-Document version 0.1.0, research checked 2026-11-07 KST. Three read-only agents
-examined embedding, observation/adapters and security/distribution. All builds,
-browser executions and qualification cases are not_run. This document adds no
+Document version 0.3.0. The research/UI expansion below is authoritative. Initial research checked 2026-11-07 KST; three read-only agents
+examined embedding, observation/adapters and security/distribution. The initial research performed no builds or browser executions; later bounded Windows native evidence is separate. This document adds no
 scoring rule, runtime implementation, probing permission or production coverage.
 
 ## Brief and accepted constraints
@@ -39,10 +38,13 @@ The user subsequently authorized targeted browser-embedding REA, delegated to
 project chat 01a1b34e-f9e9-77d3-b883-0cc4d76763a4. That scoped investigation does
 not reinstate whole-runtime reconstruction or establish the current tab API yet.
 
-The browser measures owned/authorized fixtures, explains observations and joins
-them to actual server decisions. It does not grant trust to its own browser,
-replace server enforcement or promise T4 detection. Keep live server verdicts
-separate from optional offline replay through the same Rust libraries.
+The browser is an engine-observation research instrument. Its analysis scope
+includes user-directed websites that do not integrate humanymous. Local engine
+observations, ordinary-page-visible signals and optional verified server joins
+are separate evidence planes. Active automation/detection experiments remain
+restricted to owned/authorized fixtures. It grants no trust to its own browser,
+replaces no server enforcement and promises no T4 detection. Missing integration
+means not_integrated, not a failed website defense or an invented verdict.
 
 ## Architecture decision and alternatives
 
@@ -96,7 +98,7 @@ assumed behaviorally neutral or screen-reader equivalent. [U1, C7]
 ```text
 Trusted Rust native controls -> Rust browser supervisor -> CEF/Chromium processes
                                   |                         |
-                                  | bounded observations    | owned target requests
+                                  | bounded observations    | approved research navigation
                                   v                         v
                            private lab evidence       Rust ingress / Gate
                                   |                         |
@@ -215,8 +217,10 @@ contract and tests while retaining the one shared enforcement authority.
   capture or a bypass credential. Keep actual authority and audit server-side.
 - BRW-03 Safe process model: Prove sandbox and privilege isolation per tuple;
   reject unknown/disabled required sandbox. Keep trusted controls out of pages.
-- BRW-04 Scoped automation: Owned fixture origin/package and egress allowlists,
-  run budgets, fresh profiles and private authenticated control channels.
+- BRW-04 Scoped operation: User-directed public passive research and explicitly
+  scoped owned experiments have separate capabilities. Active automation uses
+  owned fixture origin/package/egress allowlists, run budgets, fresh profiles
+  and private authenticated control channels.
 - BRW-05 Fidelity: Typed provenance, clock domains, byte representation and loss
   states survive every adapter. Never fabricate missing collector/capture/RIT.
 - BRW-06 Non-interference: Baseline versus intervention runs are distinguished;
@@ -297,3 +301,239 @@ authored proposal requirements and measured limits, not expose raw lab traces.
 - U1 https://github.com/modootoday/meari/tree/1482b746ebc0d867f25d17d01c48c12df888ca6c
 - U2 https://github.com/modootoday/meari/blob/1482b746ebc0d867f25d17d01c48c12df888ca6c/rust-toolchain.toml ; https://crates.io/api/v1/crates/oxc_parser/0.154.0
 - U3 https://github.com/modootoday/meari/blob/1482b746ebc0d867f25d17d01c48c12df888ca6c/crates/meari-native/src/infrastructure/window/surface_slots/mod.rs ; https://github.com/modootoday/meari/blob/1482b746ebc0d867f25d17d01c48c12df888ca6c/crates/meari-native/src/infrastructure/window/parent/mod.rs
+
+## Expanded research contract RSRCH-01 through RSRCH-16
+
+This section supersedes the old owned-fixture-only research scope. It is accepted
+design, not a claim that external navigation or observation adapters are delivered.
+The current native pilot still denies external navigation. Rust-only, mandatory
+sandbox, a11y, defense-only active testing and scoring freeze remain in force.
+
+### Mission and operating modes
+
+RSRCH-01: Study which browser/engine observations can distinguish manual use,
+screenshot/pointer Computer Use, AX semantic actions, CDP/browser control and other
+automation, and which of those observations an ordinary website could actually
+obtain. A site's humanymous integration is not a prerequisite for local analysis.
+Do not collapse automation, authorization, vendor identity and malicious intent.
+
+RSRCH-02: Modes are explicit and immutable per run. external_passive_research is
+user-directed ordinary public HTTPS browsing plus bounded local observation;
+page navigation itself creates network effects. owned_validation additionally
+permits pre-authorized automation, active probes and attack-catalog experiments
+within declared fixture scope. CDP/AX clicks, script instrumentation, interception,
+replay, fuzzing, fingerprint/challenge tests, private destination access and stress
+traffic are not silently admitted by passive mode. No third-party active probing,
+access-restriction bypass or adaptation to evade site defenses is authorized.
+The public passive initial scope excludes personal accounts, credentials/forms,
+imports from personal profiles and automatic submission. Controlled benchmark
+cohorts use separate owned fixtures, not arbitrary production websites.
+
+RSRCH-03: Each observation declares visibility_plane=engine_private |
+page_observable | server_observed | wire_observed | unknown and independently
+source_provenance=runner_known | browser_observed | page_claimed |
+server_verified | wire_observed. Confidence is not trust authority. A local known
+CDP command, observer attachment or synthetic-input request is ground truth for
+that run, not proof of detection by the site. A page_observable claim requires a
+measured ordinary-page exposure mechanism and its constraints, not a copied
+privileged flag. Absence of observation is not proof of absence of automation.
+
+RSRCH-04: Tool attribution requires actual control/delivery evidence. Record
+requested, accepted, OS/protocol delivered, page effect, network effect and server
+receipt separately. UIA Value changes, native OS injection and physical hardware
+input are distinct cohorts even if they produce identical text or trusted events.
+A control-channel label is not a website-visible fingerprint. T4 remains an
+intentional ceiling; no speed/motor/isTrusted/AT-presence rule becomes enforcement.
+
+### Research admission and trust boundaries
+
+RSRCH-05: Derive per-tuple capabilities rather than fabricating one ready boolean:
+engine_navigation_admitted, native_ui_capabilities, observer_capabilities,
+server_planes and product_qualified each carry state/reason/evidence references.
+Required sandbox disabled/unknown refuses navigation. Missing Gate/collector/RIT
+or server integration does not itself disqualify passive rendering; it produces
+not_integrated/unavailable server evidence. Legacy BrowserReady stays false for
+the current prototype. UI capability failure cannot be hidden by screenshot-only
+substitutes or permission weakening. Enabling external browsing is a later code
+slice with its own admission tests; this design is not that admission receipt.
+
+RSRCH-06: Target frames/workers/content remain hostile and never obtain native
+control/admin commands, authority credentials, signing keys, filesystem access or
+an unrestricted inspector bridge. No public unauthenticated debugging listener.
+Pin protocol/capabilities; local TCP alone is not peer authentication. Validate
+bounded data before native display, navigation or evidence joins. Reader text
+cannot change observer policy, labels, experimental ground truth or credentials.
+
+RSRCH-07: Initial destination policy admits operator-selected public HTTPS and
+required public dependencies under a declared network policy. Block private,
+loopback, link-local/metadata and management destinations across DNS changes,
+redirects, frames, workers/SW, WebSocket/WebRTC and background paths. Browser
+callbacks alone do not prove OS egress enforcement. Resolve CDN/subresource
+admission explicitly: blocking required fonts/resources changes rendering and
+must be classified as policy_restricted. Preserve TLS verification and normal
+site CSP/security; do not disable sandbox/site isolation/security or camouflage
+fingerprints to make a comparison pass. Proxy/DNS/DoH/cache/SW/cookies/background
+traffic configuration is part of the run manifest.
+
+### Observation model and experimental discipline
+
+RSRCH-08: Proposed schema browser.research/0.2 includes run/experiment/cohort/scope,
+operator authorization reference, engine/CEF/wrapper/protocol/artifact/config/
+profile revisions, sandbox evidence and native tuple; observer epoch/sequence,
+producer/visibility/provenance/fact_kind, scoped tab/frame/target/loader/request
+IDs; monotonic clock/domain/wall mapping/uncertainty; action delivery stages;
+representation/sensitivity/redaction/completeness; contamination references,
+loss/budgets/retention and optional validated server receipt/origin effect join.
+Every feature has a manifest mapping its collector hook, available CEF/protocol
+API, actual exposure plane, supported versions, overhead and unsupported state.
+An unavailable engine hook stays unsupported. CEF observer wrappers do not prove
+Chromium-internal visibility that their public APIs do not expose. Any required
+upstream hook/fork must be justified before implementation; authored C/C++ patches
+remain excluded by Rust-only unless the user explicitly changes that constraint.
+No duplicated scoring, cryptography, audit or detector engine is introduced.
+
+RSRCH-09: States include not_requested, observed, inferred, hypothesis,
+not_observed, unsupported, denied, unavailable, partial, truncated, overflow,
+detached and error. Completeness applies only to a named domain/interval with
+known subscription coverage. Keep attempted/failed/blocked/skipped/timed_out and
+not_run cases in reports. Unknown protocol methods, queue gaps, observer restart
+and uncertain effects cannot become zero-valued clean signals or defense passes.
+No automatic retry of an action whose effect is uncertain.
+
+RSRCH-10: Compare clean manual, legitimate AT, controlled native synthesis,
+screenshot/pointer Computer Use, AX automation and CDP cohorts; record caller,
+model/tool, host and action-delivery versions independently. Baselines include
+observer off, minimum passive observer, specific enabled domains and explicit
+intervention. Timestamp CDP attachment/subscriptions, AX activation, screenshots,
+DOM execution, request replacement, throttling, cache/SW bypass and configuration
+changes. An observer can produce its own tell; require paired/interleaved runs,
+fresh-profile controls and blinded/held-out validation before causal claims.
+Do not feed known cohort labels, commands or synthetic markers into a detector
+and report that as independent discovery. A local observer and an evaluated
+automation controller must have distinguishable identities and access policies.
+
+RSRCH-11: Evaluate transferability in two stages: engine-private research may
+suggest a hypothesis; ordinary-page/server exposure must then be established in
+an owned test fixture. Report discrimination/false positives, uncertainty and
+failed controls before proposing a SoT-backed signal. No proposal changes frozen
+weights/thresholds/predicates/bands without separate explicit authorization.
+Source/version registries and experiment manifests must permit negative-result
+reproduction. Vendor/provider marketing is not ground truth for visiting traffic.
+
+### Data, resources and lifecycle
+
+RSRCH-12: Separate observed_in_memory, retained_locally and transmitted_externally.
+Default research artifacts exclude page/AX text and values, screenshots, raw/full
+URLs/query/fragment, headers/cookies/tokens, bodies, form/clipboard/keystroke data
+and crash memory. Browser state needed to render is not automatically research
+capture. Host/path/digests may identify activity and are not called anonymous.
+Sensitive capture requires visible run-scoped opt-in, purpose, bounds/expiry and
+revocation; redact before persistence/export and label reduced fidelity. Remote
+Computer Use/model transmission needs explicit destination/data-class/retention
+consent; browsing permission alone does not grant export permission.
+
+RSRCH-13: Use dedicated fresh non-personal profiles. Persistent research profiles
+or authenticated experiments require separately declared scope/lifecycle; no
+personal Chrome profile/cookie/password/extension imports. Default-deny file and
+external protocols, upload/download, capture, clipboard, location, notifications
+and device permissions. Future grants bind origin/capability/epoch/expiry and
+revocation. Maintain budgets for duration, tabs/actions/navigations/redirects,
+requests/bytes, CPU/RAM, observation queues, payloads, AX tree size/depth, screenshot
+cadence, artifacts and recovery attempts, with explicit exhaustion consequences.
+
+RSRCH-14: Preserve Created -> Admitted -> Running -> Stopping -> Closed |
+CleanupIncomplete lifecycle, per-process crash states, owned PID/start/image
+validation and epoch revocation. Browser/renderer/GPU/network/observer failures
+are distinct. Cleanup of ephemeral profile/cache, evidence retention and durable
+audit/key erasure are different operations; durable erasure retains dual control.
+A process-close receipt is not a disk-purge receipt. Existing retained pilot
+profiles remain cleanup debt and do not define the production retention policy.
+
+### Chrome rendering fidelity and native shell
+
+RSRCH-15: Actual CEF/Chromium owns the target page surface. Meari renders browser
+controls only; no page reconstruction, screenshot facade, video masquerade,
+authored HTML app shell or target CSS patching. Normal admitted research browsing
+must support ordinary target JS/CSS/images/fonts/iframes/workers and networking
+under its declared policy. The existing script-disabled static fixture is only a
+native input pilot, not evidence of normal website rendering or Chrome parity.
+
+Compare exact full Chromium/CEF/build configuration, OS/arch, GPU/driver/backend,
+DPR/page zoom/color/fonts/locale, resource versions, profile and flags. Same major
+version alone is insufficient. Cohorts: matching Chrome for Testing where
+available, separately recorded stock Chrome clean profile, upstream same-build CEF
+reference, and this browser with observation off/on. CfT is a distinct cohort with
+its own defaults, not an assumed neutral Chrome replacement. If exact matching
+binaries are unavailable, declare mismatch and limit the conclusion.
+
+| Area | Required owned-fixture qualification | Classification |
+| --- | --- | --- |
+| DOM/CSS | layout/flex/grid/transforms/stacking/scroll/forms/dynamic DOM/OOPIF | unexplained rendering discrepancy vs policy restriction |
+| Fonts | pinned web/system fonts, shaping/fallback, Korean/CJK/emoji | environment mismatch vs renderer defect |
+| GPU/canvas/WebGL | actual backend/acceleration, scenes/compositing/text | capability/driver difference vs defect |
+| Media | declared codecs, playback/seek/fullscreen/captions/A-V sync | licensed/build limitation vs playback/compositor defect |
+| Input/IME/AX | real mouse/keyboard/selection/scroll/native controls/IME/candidates/OS AT | native integration failure even if pixels match |
+| Network/state | HTTPS/redirects/storage/cache/SW/WS/SSE and declared profile behavior | transport/configuration/policy difference |
+| Host shell | content bounds, tabs/history/address/reload/stop/focus/close | shell completeness/geometry defect |
+| Observation | off/on, dock positions and interventions | measurement overhead/contamination |
+
+Capture window and content-only originals/diffs at equal content viewport/DPR,
+not equal outer window size. Pair image checks with geometry/interaction checks;
+derive tolerances from repeated same-browser noise. Record/limit mask areas and
+never mask the tested feature. Performance uses paired/interleaved repeats,
+cold/warm states, startup/navigation/frame pacing/input/resize/CPU/all-process
+RAM, sample counts/median/p95/variation and all failures. Performance budgets must
+be justified by a pilot, not invented as claimed Chrome equivalence. Chrome
+sync/account/password/store/branded services and licensed codecs/CDM/DRM are
+separate product/build/license rows, not automatically Blink rendering defects.
+
+RSRCH-16: The selected UI is browser-first: compact top tabs/address/navigation,
+real page filling the remaining client area, default-collapsed analysis dock
+right or bottom. At default text scale, top chrome target <=88 DIP; at1280x800
+client size collapsed content target >=89% height. Accessibility enlargement may
+increase chrome height. Docking reallocates the CEF child; it cannot overlay,
+reload, replace or change zoom/scroll/history/IME state of the page. Native child
+bounds must match allocation within1 physical pixel at tested DPI. UI reports
+engine-local/page-visible/server evidence separately and shows no integration
+without implying page failure. Implemented controls operate or are explicitly
+disabled; a visual tab/address does not imply working multi-tab navigation.
+
+## Critique reflected and implementation frontier
+
+P0 privileged observations mistaken for site detection -> RSRCH-03/04/08/11.
+P0 external browsing silently grants active probing -> RSRCH-02/06/07.
+P0 weak sandbox receipt or missing server plane conflated with readiness ->05/06.
+P1 observer fingerprints/ground-truth leakage ->09/10/11; AT false positives ->04/10.
+P1 private content/model export/profile residues ->12/13/14. P0 Chrome parity
+claimed from engine brand or static fixture ->15; fixed560-DIP UI content offset
+and diagnostic-dashboard chrome ->16. Panel used blue/red, privacy/SRE and evaluator
+reviews; these are design findings, not five independent implementation results.
+
+Current implementation frontier: pinned Windows bootstrap/child lifecycle and
+bounded native input/IME/AX actions are partial evidence. External passive
+navigation, complete observer feature registry, server joins, Chrome comparison
+matrix, full native AX/DPI/cross-OS sandbox and product Docker e2e remain incomplete.
+The native Hanja evidence is evidence:root/20261107033321; it predates the compact
+UI and does not qualify new geometry. Follow plan:root/20261107033358 for this slice.
+
+
+## Native embedding extension
+
+RSRCH-17: The developer-integrated native SDK and Windows DLL extension is
+canonical in sot:root/native-embedding. Share evidence/provenance contracts with
+this browser, not its process-owning bootstrap entrypoint. Observation support,
+website-visible automation detection and host enforcement remain independent
+capabilities. Current implementation is browser-only; SDK runtime gates are not_run.
+
+
+RSRCH-18: CEF internal chrome:// pages are a separate privileged navigation
+capability, not public HTTPS targets or an application scheme to counterfeit.
+Upstream supports internal WebUI (for example version and Chrome-runtime settings/
+flags), but availability varies with exact build/style/configuration. Read-only
+engine diagnostics require an exact-path allowlist, private-data display/export
+rules and measured per-tuple support; settings/flags/debugging/crash URLs remain
+separately denied unless explicitly admitted by policy. Never grant arbitrary
+chrome:// access or weaken sandbox from scheme recognition. Current fixture pilot
+admits none; internal URL loading is not_run. Primary references:
+https://github.com/chromiumembedded/cef/issues/3892 and
+https://github.com/chromiumembedded/cef/blob/master/docs/tutorial.md.

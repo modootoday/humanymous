@@ -78,6 +78,8 @@ pub fn management_document()
         fn rename(value: &mut Value) {
             if let Value::String(text) = value {
                 *text = match text.as_str() {
+                    "about:blank" => "data: [local generated fixture]",
+                    "Native CEF surface is not attached in the standalone controls preview." => "Native page surface",
                     "Profile: synthetic-ephemeral-01 | Target tabs: 0" => "Fresh synthetic profile | CEF qualification child: 1 requested",
                     "Navigation unavailable: no sandbox-qualified CEF adapter attached." => "External browsing disabled. Local generated fixture only; browser NOT READY.",
                     "CEF attachment / sandbox / focus / IME / AX: unqualified" => "Native CEF child pilot | sandbox / keyboard / IME / AX qualification pending",
@@ -101,14 +103,14 @@ pub fn management_document()
             }
         }
     }
-    let mut component = humanymous_browser::ui::component();
+    let mut component = humanymous_browser::ui::component_with_window_controls(true);
     label(&mut component.root);
     meari_native::infrastructure::document::InteractiveDocument::new(
         component,
-        humanymous_browser::ui::MANAGEMENT_STYLES,
+        humanymous_browser::ui::management_styles(),
         meari_native::domain::Viewport {
             width: 1100,
-            height: 1000,
+            height: 720,
             dark: true,
         },
     )

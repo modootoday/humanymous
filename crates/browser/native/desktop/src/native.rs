@@ -10,8 +10,14 @@ use windows::Win32::{
 };
 use winit::raw_window_handle::{HasWindowHandle, RawWindowHandle};
 
-#[allow(unsafe_code)]
 pub fn parent_geometry(parent: &NativeScopedParent<'_>) -> io::Result<(HWND, Rect, u32)> {
+    dock_geometry(parent, humanymous_browser::viewport::InspectorDock::Hidden)
+}
+#[allow(unsafe_code)]
+pub fn dock_geometry(
+    parent: &NativeScopedParent<'_>,
+    dock: humanymous_browser::viewport::InspectorDock,
+) -> io::Result<(HWND, Rect, u32)> {
     let RawWindowHandle::Win32(handle) = parent.window_handle().map_err(io::Error::other)?.as_raw()
     else {
         return Err(io::Error::other("Win32 parent required"));
@@ -24,14 +30,14 @@ pub fn parent_geometry(parent: &NativeScopedParent<'_>) -> io::Result<(HWND, Rec
     if dpi == 0 {
         return Err(io::Error::other("parent DPI unavailable"));
     }
-    let scale = f64::from(dpi) / 96.0;
-    let pad = (32.0 * scale).round() as i32;
-    let top = (560.0 * scale).round() as i32;
+    let allocation =
+        humanymous_browser::viewport::content_bounds(rect.right, rect.bottom, dpi, dock)
+            .map_err(io::Error::other)?;
     let bounds = Rect {
-        x: pad,
-        y: top,
-        width: rect.right - 2 * pad,
-        height: rect.bottom - top - pad,
+        x: allocation.x,
+        y: allocation.y,
+        width: allocation.width,
+        height: allocation.height,
     };
     if bounds.width < 1 || bounds.height < 1 || bounds.width > 16384 || bounds.height > 16384 {
         return Err(io::Error::other(
@@ -52,18 +58,7 @@ pub fn child_hwnd(browser: &Browser) -> io::Result<HWND> {
 }
 #[allow(unsafe_code)]
 pub fn prepare_parent(parent: &NativeScopedParent<'_>) -> io::Result<()> {
-    let (hwnd, _, _) = parent_geometry(parent)?;
-    // SAFETY: modify only our leased Meari parent so its CPU renderer does not
-    // paint over the native child and create an endless overlapping paint loop.
-    unsafe {
-        let style = GetWindowLongPtrW(hwnd, GWL_STYLE);
-        SetLastError(ERROR_SUCCESS);
-        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_CLIPCHILDREN.0 as isize);
-        if GetLastError() != ERROR_SUCCESS {
-            return Err(io::Error::last_os_error());
-        }
-    }
-    Ok(())
+    crate::window_frame::remove_decorations(parent)
 }
 #[allow(unsafe_code)]
 pub fn validate_parent(browser: &Browser, parent: HWND) -> io::Result<()> {

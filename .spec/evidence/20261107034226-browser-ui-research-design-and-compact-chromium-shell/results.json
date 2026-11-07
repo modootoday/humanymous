@@ -1,0 +1,561 @@
+{
+  "schema": "browser-ui-research-evidence/1",
+  "at": "2026-11-07T04:17:05Z",
+  "scope": "Windows native component, not product e2e or Chrome parity",
+  "platform": {
+    "system": "Windows",
+    "version": "10.0.26200",
+    "dpi_observed": [
+      96
+    ]
+  },
+  "constraints": {
+    "authored_code": "Rust",
+    "cef_sandbox_required": true,
+    "scoring_changed": false,
+    "external_navigation_enabled": false,
+    "chrome_internal_urls_admitted": false,
+    "hanja_replayed_for_ui": false
+  },
+  "checks": {
+    "core_tests": {
+      "passed": 18,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native_library_tests": {
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native_security_override_test": {
+      "passed": 1,
+      "flags": 4,
+      "new_profiles": 0
+    },
+    "core_and_native_clippy_warnings_denied": "pass",
+    "core_cargo_fmt_and_native_rustfmt": "pass"
+  },
+  "native_final": {
+    "exit": 0,
+    "decorations_removed_readback": true,
+    "actual_parent_matched": true,
+    "cef_size_readbacks": 6,
+    "page_allocations_requested_with_native_size_readback": [
+      [
+        [
+          5,
+          84,
+          1106,
+          670
+        ],
+        96
+      ],
+      [
+        [
+          5,
+          84,
+          1026,
+          670
+        ],
+        96
+      ],
+      [
+        [
+          5,
+          84,
+          1026,
+          610
+        ],
+        96
+      ],
+      [
+        [
+          5,
+          84,
+          986,
+          580
+        ],
+        96
+      ],
+      [
+        [
+          5,
+          84,
+          966,
+          560
+        ],
+        96
+      ],
+      [
+        [
+          5,
+          84,
+          654,
+          560
+        ],
+        96
+      ]
+    ],
+    "window_observations": [
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1324,
+          967
+        ],
+        "cursor": "text"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1324,
+          967
+        ],
+        "cursor": "arrow"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1324,
+          967
+        ],
+        "cursor": "ew_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1244,
+          967
+        ],
+        "cursor": "ew_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1244,
+          967
+        ],
+        "cursor": "ns_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1244,
+          907
+        ],
+        "cursor": "ns_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1244,
+          907
+        ],
+        "cursor": "nwse_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1204,
+          877
+        ],
+        "cursor": "nwse_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          208,
+          208,
+          1204,
+          877
+        ],
+        "cursor": "nesw_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          228,
+          208,
+          1204,
+          857
+        ],
+        "cursor": "ns_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          228,
+          208,
+          1204,
+          857
+        ],
+        "cursor": "nesw_resize"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          228,
+          208,
+          1204,
+          857
+        ],
+        "cursor": "text"
+      },
+      {
+        "minimized": false,
+        "maximized": false,
+        "screen_rect": [
+          228,
+          208,
+          1204,
+          857
+        ],
+        "cursor": "pointer"
+      }
+    ],
+    "close_commands": [
+      "Close:requested"
+    ],
+    "cef_before_close": true,
+    "host_closed": true,
+    "sandbox_qualified": false,
+    "accessibility_qualified": false
+  },
+  "native_resize_sequence": [
+    [
+      1116,
+      759
+    ],
+    [
+      1036,
+      759
+    ],
+    [
+      1036,
+      699
+    ],
+    [
+      996,
+      669
+    ],
+    [
+      976,
+      649
+    ]
+  ],
+  "measured_directions": [
+    "east",
+    "south",
+    "southeast",
+    "southwest"
+  ],
+  "model_directions": [
+    "north",
+    "south",
+    "east",
+    "west",
+    "northwest",
+    "northeast",
+    "southwest",
+    "southeast"
+  ],
+  "observed_cursor_names": [
+    "arrow",
+    "ew_resize",
+    "nesw_resize",
+    "ns_resize",
+    "nwse_resize",
+    "pointer",
+    "text"
+  ],
+  "prior_runs": [
+    {
+      "report": "report-borderless-svg.json",
+      "exit": 78,
+      "reason": "minimized zero drawable size rejected; fixed"
+    },
+    {
+      "report": "report-borderless-svg-fixed.json",
+      "exit": 78,
+      "reason": "poll closed document after cleanup; fixed"
+    },
+    {
+      "report": "report-borderless-svg-final.json",
+      "exit": 0,
+      "scope": "custom close; predecessor compact geometry"
+    },
+    {
+      "report": "report-resize-cursor.json",
+      "exit": 0,
+      "scope": "no resize displacement; late global press sample fixed"
+    }
+  ],
+  "source_identity": {
+    "final_working_sources": {
+      "crates/browser/Cargo.toml": {
+        "sha256": "ac0de68ab5e2f5777a7bcc10930a91be7a1ab57daf42c1465ca1321647f0df2b",
+        "bytes": 956
+      },
+      "crates/browser/src/frame_geometry.rs": {
+        "sha256": "b5390fbce9d53b04645b0b294900720f75311167a6d6ebb6a923e19a52af6247",
+        "bytes": 5326
+      },
+      "crates/browser/src/icons.rs": {
+        "sha256": "d44fbaf12bfcf288a5c80aec6ef4f9168938c5afd6bae955b22d4150339bcf05",
+        "bytes": 1984
+      },
+      "crates/browser/src/lib.rs": {
+        "sha256": "34cc663d16e1abe261dddbea8cfbb37feea39d95e4d13715de1a08050bfd0297",
+        "bytes": 339
+      },
+      "crates/browser/src/lifecycle.rs": {
+        "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+        "bytes": 6140
+      },
+      "crates/browser/src/main.rs": {
+        "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+        "bytes": 931
+      },
+      "crates/browser/src/policy.rs": {
+        "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+        "bytes": 4042
+      },
+      "crates/browser/src/ui.rs": {
+        "sha256": "d4d7e43a7584cbfdf815da43801293bf2984c4cc3c4c7d626ce1d8c3252ea5e7",
+        "bytes": 21858
+      },
+      "crates/browser/src/viewport.rs": {
+        "sha256": "c5a772451a389b9bde10ad0378f4cecb316ee756e0044d05f7f8c45d733c0db4",
+        "bytes": 4426
+      },
+      "crates/browser/src/window_chrome.rs": {
+        "sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+        "bytes": 7483
+      },
+      "crates/browser/native/bootstrap/Cargo.toml": {
+        "sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+        "bytes": 463
+      },
+      "crates/browser/native/desktop/Cargo.toml": {
+        "sha256": "3084e4311d574666594918cbe8b9ea38efd23f3ea4c0e73ca67b9347b56580d2",
+        "bytes": 1206
+      },
+      "crates/browser/native/bootstrap/src/lib.rs": {
+        "sha256": "e5f05198a536a82995feed724620b766c69fa0d94a6c72ed4a9a5c36610df3e0",
+        "bytes": 5392
+      },
+      "crates/browser/native/bootstrap/src/renderer_probe.rs": {
+        "sha256": "cfa279ac4ffeee4358fac3f64125716efb27262c53fbdb983db5412215f80243",
+        "bytes": 2251
+      },
+      "crates/browser/native/desktop/src/child.rs": {
+        "sha256": "b611d0e5c1156894d5d0923bebf8a01af06632481a2ecb670b6d8a6979712c3c",
+        "bytes": 17425
+      },
+      "crates/browser/native/desktop/src/fixture.rs": {
+        "sha256": "a5406c3fd946a6d89239f2b1eaf79d29f937397014d6d0b9a3dd38f6c94a7f2d",
+        "bytes": 4894
+      },
+      "crates/browser/native/desktop/src/host.rs": {
+        "sha256": "7aaa3a1dea3a3421702843a6560ba79d8792dd09a73b83038e016560e71fa947",
+        "bytes": 21384
+      },
+      "crates/browser/native/desktop/src/host_report.rs": {
+        "sha256": "118a0feb0c4473b10364972a38e05c435ef373140cf37a789abb78b08cf3a33f",
+        "bytes": 1749
+      },
+      "crates/browser/native/desktop/src/lib.rs": {
+        "sha256": "6e44c37e8d8ba1436504d91b6a5a481e35c8b1f7b49d07eb35d41cade80db288",
+        "bytes": 3143
+      },
+      "crates/browser/native/desktop/src/measured_input.rs": {
+        "sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+        "bytes": 7599
+      },
+      "crates/browser/native/desktop/src/native.rs": {
+        "sha256": "d724d7995d2030ae6edda9f9f76dc0857ccb949d49891f5f2748cce4632e514d",
+        "bytes": 20788
+      },
+      "crates/browser/native/desktop/src/window_frame.rs": {
+        "sha256": "01480502c485dccfec6daf7bee020d989b42b5e0279b786df0c1a0187a88310d",
+        "bytes": 10794
+      }
+    },
+    "gui_tested_snapshot_private_root": ".spec.local/root/evidence/20261107004558-browser-ui-cef-native/source-at-resize-native-run",
+    "gui_tested_snapshot": {
+      "Cargo.toml": {
+        "sha256": "ac0de68ab5e2f5777a7bcc10930a91be7a1ab57daf42c1465ca1321647f0df2b",
+        "bytes": 956
+      },
+      "src/frame_geometry.rs": {
+        "sha256": "b2a7f75754ab5f78d1e80b621c02265f199b62d5f7b42a871899bb07a67583cd",
+        "bytes": 4119
+      },
+      "src/icons.rs": {
+        "sha256": "d44fbaf12bfcf288a5c80aec6ef4f9168938c5afd6bae955b22d4150339bcf05",
+        "bytes": 1984
+      },
+      "src/lib.rs": {
+        "sha256": "34cc663d16e1abe261dddbea8cfbb37feea39d95e4d13715de1a08050bfd0297",
+        "bytes": 339
+      },
+      "src/lifecycle.rs": {
+        "sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+        "bytes": 6140
+      },
+      "src/main.rs": {
+        "sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+        "bytes": 931
+      },
+      "src/policy.rs": {
+        "sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+        "bytes": 4042
+      },
+      "src/ui.rs": {
+        "sha256": "d4d7e43a7584cbfdf815da43801293bf2984c4cc3c4c7d626ce1d8c3252ea5e7",
+        "bytes": 21858
+      },
+      "src/viewport.rs": {
+        "sha256": "c5a772451a389b9bde10ad0378f4cecb316ee756e0044d05f7f8c45d733c0db4",
+        "bytes": 4426
+      },
+      "src/window_chrome.rs": {
+        "sha256": "dcbd6b71716f7e39b8c438eaeebf58fccd8d659cbea51f7fd07d7d08e79bb186",
+        "bytes": 7483
+      },
+      "native/bootstrap/Cargo.toml": {
+        "sha256": "f1ab9208a8ae1f742d2503ce6ce067da866754bbb39b5ea000fe18d70d6e4574",
+        "bytes": 463
+      },
+      "native/desktop/Cargo.toml": {
+        "sha256": "3084e4311d574666594918cbe8b9ea38efd23f3ea4c0e73ca67b9347b56580d2",
+        "bytes": 1206
+      },
+      "native/bootstrap/src/lib.rs": {
+        "sha256": "e5f05198a536a82995feed724620b766c69fa0d94a6c72ed4a9a5c36610df3e0",
+        "bytes": 5392
+      },
+      "native/bootstrap/src/renderer_probe.rs": {
+        "sha256": "cfa279ac4ffeee4358fac3f64125716efb27262c53fbdb983db5412215f80243",
+        "bytes": 2251
+      },
+      "native/desktop/src/child.rs": {
+        "sha256": "b611d0e5c1156894d5d0923bebf8a01af06632481a2ecb670b6d8a6979712c3c",
+        "bytes": 17425
+      },
+      "native/desktop/src/fixture.rs": {
+        "sha256": "a5406c3fd946a6d89239f2b1eaf79d29f937397014d6d0b9a3dd38f6c94a7f2d",
+        "bytes": 4894
+      },
+      "native/desktop/src/host.rs": {
+        "sha256": "d5f53ae8f4e9598b979eac616379b743a851f144db7faf8df90637703fd3a581",
+        "bytes": 21404
+      },
+      "native/desktop/src/host_report.rs": {
+        "sha256": "118a0feb0c4473b10364972a38e05c435ef373140cf37a789abb78b08cf3a33f",
+        "bytes": 1749
+      },
+      "native/desktop/src/lib.rs": {
+        "sha256": "6e44c37e8d8ba1436504d91b6a5a481e35c8b1f7b49d07eb35d41cade80db288",
+        "bytes": 3143
+      },
+      "native/desktop/src/measured_input.rs": {
+        "sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+        "bytes": 7599
+      },
+      "native/desktop/src/native.rs": {
+        "sha256": "d724d7995d2030ae6edda9f9f76dc0857ccb949d49891f5f2748cce4632e514d",
+        "bytes": 20788
+      },
+      "native/desktop/src/window_frame.rs": {
+        "sha256": "e2cb822b68354ba620b6772e694a9d4b84e8b4c05546285d2dcde4271e9650af",
+        "bytes": 10095
+      }
+    },
+    "post_gui_changes": "Clippy item/guard restructuring. Final source additionally fixes maximized-edge arrow selection and DPI-scaled resize minima/capture cancellation on DPI change; these branches pass unit tests, Clippy and build but were not replayed in native GUI. Normal96-DPI gesture evidence refers to the preserved source snapshot and DLL."
+  },
+  "gui_tested_artifacts": {
+    "humanymous_cef_bootstrap.exe": {
+      "sha256": "f3992741bc06d43cafc568aefcc80b2c740121d9adf0eda19a314e1a72699ded",
+      "bytes": 4316160
+    },
+    "humanymous_cef_bootstrap.dll": {
+      "sha256": "f31233e86fbe49a23c01e4a673a8af442e7405b7c04c82dc30a723cccf8ba7ed",
+      "bytes": 285696
+    },
+    "humanymous_cef_desktop.dll": {
+      "sha256": "3cbd6ec12bf3462bda2270e2ae711fd3a6b625f1992d610f0763031ce6f637f0",
+      "bytes": 57900032
+    },
+    "libcef.dll": {
+      "sha256": "07168eacd81bc09ab9ab895d39bc1a80913b09c844f0b5a4730f5f89a71133f5",
+      "bytes": 294315008
+    }
+  },
+  "private_evidence_root": ".spec.local/root/evidence/20261107004558-browser-ui-cef-native",
+  "raw_reports": [
+    "report-resize-cursor-final.json",
+    "report-borderless-svg-final.json",
+    "report-borderless-svg-fixed.json",
+    "report-borderless-svg.json",
+    "report-resize-cursor.json"
+  ],
+  "retained_generated_profiles": 45,
+  "not_qualified": [
+    "native SDK crates/ABI/lifecycle or automation blocking",
+    "complete sandbox utility/network/job/signing policy",
+    "Chrome exact-version rendering parity and dynamic website matrix",
+    "external navigation and observer/server integration",
+    "chrome:// page compatibility and privileged navigation admission",
+    "native N/W/NE/NW resize and full native DPI/monitor matrix",
+    "keyboard resize/Snap/OS screen-reader and cached UIA pointer bounds",
+    "IME/candidate placement after new frame/resize geometry",
+    "packaged distribution/cross-OS/product Docker e2e",
+    "post-review maximized-perimeter arrow and DPI-transition paths in native GUI (unit/build only)"
+  ],
+  "privacy": "Only synthetic owned fixture preview published; unrelated background/overlay captures were not saved. No personal profile accessed.",
+  "post_review_build": {
+    "artifact": "private target/debug/humanymous_cef_desktop.dll",
+    "sha256": "dd869635aac39713b06533e24b0c367fbb485bb47e714aad6b7645230e5fb8dc",
+    "bytes": 57901056,
+    "native_gui_replayed": false
+  },
+  "spec_validation": {
+    "scoped_public_errors": 0,
+    "scoped_public_warnings": 0,
+    "scoped_private_manifest_errors": 0,
+    "scoped_private_manifest_warnings": 0,
+    "global_snapshot_errors": 3048,
+    "global_snapshot_warnings": 1,
+    "global_not_passed": "Other shared private-evidence manifest drift; browser-owned scopes pass. U2 skips binary PNG secret scanning; preview was manually visually reviewed as owned synthetic fixture only."
+  }
+}

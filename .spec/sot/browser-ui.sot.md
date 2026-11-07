@@ -3,7 +3,7 @@ id: sot:root/browser-ui
 title: Native browser UI and CEF boundary
 status: active
 created: 2026-11-07T00:20:14Z
-updated: 2026-11-07T02:20:30Z
+updated: 2026-11-07T04:17:05Z
 verify: [manual]
 rel:
   governs: [crates/browser/**]
@@ -14,7 +14,7 @@ rel:
 
 ## Rule
 
-Version 0.2.0. Implement the user-accepted Meari management-window slice first.
+Version 0.4.0. The browser-first shell and research contract below supersede the initial management dashboard.
 Authored application and tests are Rust; construct typed Meari IR directly, without
 TSX, HTML application source, JavaScript or embedded script strings. Pin Meari
 1482b746ebc0d867f25d17d01c48c12df888ca6c (0.2.0, MIT OR Apache-2.0), Rust 1.99.1.
@@ -26,8 +26,7 @@ UI-01: A real Meari window presents named address input, synthetic profile and
 tabs, diagnostics, scenario and audit status. Keyboard and AccessKit actions use
 the same native controls. Address editing does not imply navigation delivery.
 UI-02: All permissions default deny; no target filesystem/admin/bearer/command
-bridge. Only explicitly configured owned HTTPS origins are candidates for future
-navigation. URL parsing belongs to the standard URL crate, not hand-built parsing.
+bridge. Future external passive navigation follows the scoped research admission contract in sot:root/chromium-lab-browser. Active experiments remain owned/authorized. The current fixture pilot still denies external navigation. URL parsing belongs to the standard URL crate, not hand-built parsing.
 UI-03: Consumer-owned windowed CEF boundary tracks generation and explicit
 Detached/Attaching/Attached/Closing/Closed states. Unknown sandbox or missing
 focus, IME, keyboard or accessibility support prevents attachment readiness.
@@ -232,3 +231,108 @@ success is not a candidate receipt. Only synthetic field text and bounded native
 metadata may be retained. Sandbox bootstrap, deny policy and BrowserReady=false
 remain required. This explicitly requested native pilot supersedes the earlier
 no-raw-helper investigation constraint for this measured key only.
+## Browser-first UI contract UI-06 through UI-12
+
+UI-06: User-selected layout is a compact browser tab strip and navigation/address
+bar above a real CEF page, with an initially collapsed inspector dockable right
+or bottom. Replace the former large headings/diagnostic paragraphs and fixed560
+DIP content offset. The page surface fills remaining client area without decorative
+gutters. Inspector sections are not browser tabs. Only actual live target tabs
+are shown as target tabs; unsupported new/close/history/navigation controls are
+explicitly disabled instead of pretending they work.
+
+UI-07: Native allocation and Meari chrome use one shared layout model and constants:
+default strip34 DIP + toolbar50 DIP, content top84 DIP, no footer reservation.
+Right dock width=min(32% client width,340 DIP); bottom height=min(40% client
+height,260 DIP). Allocate from actual native client dimensions and DPI, with
+rounding at the physical boundary. Recheck the parent lease, resize the existing
+CEF child on dock/viewport/DPI change, and verify actual OS child bounds. No new
+browser, page reload, reparenting or zoom/scroll/history reset on inspector toggle.
+A later renderer-layout receipt must cover text enlargement rather than claiming
+fixed84 DIP works at every accessibility zoom. Native OS caption is separate.
+
+UI-08: The inspector's initial categories are local engine observations, page
+exposure hypotheses/experiments, and optional server receipts. Tabs keep accessible
+names and keyboard state; dock controls expose hidden/right/bottom states. For a
+nonintegrated site, server evidence is not_integrated/unavailable, not a failed
+page or an implied ALLOW. Unknown/missing observers show not connected/unsupported,
+not clean zero-event counters or fake classification. Status is concise and cannot
+consume most of the page. Untrusted content cannot activate native operations.
+
+UI-09: CEF/Chromium renders target HTML/CSS/JS/fonts/media. Meari cannot render,
+rebuild or fake the target page. The native pilot still uses a script-free local
+typed-Rust-IR fixture and denies external content; normal Chrome-like browsing is
+a separate admitted implementation slice. Do not promote its fixture restrictions
+into normal research mode or assert Chrome equivalence from this UI preview.
+Rendering fidelity, exact-version cohorts and capability/codec/service differences
+are governed by RSRCH-15 in sot:root/chromium-lab-browser.
+
+UI-10: Address editing, actual navigation request, accepted destination, committed
+engine URL/loading/error and security/admission status are separate states.
+Programmatic/redirect changes synchronize the address only from an actual engine
+receipt; editing text alone is not navigation. The first compact shell may retain
+navigation lock and one real fixture tab while multi-tab/session/observer wiring
+is incomplete. Feature status belongs in the inspector and capability manifest.
+
+UI-11: Preserve focused controls, real page AX subtree and IME ownership while
+docking. Do not capture composing keys as shortcuts. Default-scale metrics target
+<=88 DIP top chrome and >=89% content height at1280x800 client, inspector closed.
+Allow accessibility text enlargement to grow controls. Prove actual dock toggles,
+physical child bounds within1 pixel, focus/keyboard/zoom/screen-reader behavior
+per supported DPI/OS tuple. A model test is not a native layout/AX receipt.
+
+UI-12: Read-only panel synthesis used blue/red, privacy/SRE and evaluator views.
+P0 engine rendering confused with shell/UI imitation ->06/09 and RSRCH-15.
+P0 privileged debug knowledge promoted to site detection ->08/10 and RSRCH-03.
+P0 sandbox weakened for page loading ->02/09 and RSRCH-05/07. P1 inspector overlap,
+fixed header clipping or new-child reload ->07/11. P1 misleading disabled controls
+or not_integrated labels ->06/08/10. These findings are requirements, not new
+measured coverage. Shared project conventions remain in sot:root/rust-migration
+and AGENTS.md: bounded-context modules, Rust naming/testing, no duplicate engines,
+reviewed narrow unsafe boundary and attributed serial git operations.
+
+## Undecorated Windows host and SVG icons
+
+UI-13: The Windows pilot removes OS caption and thick-frame decorations from its
+own leased Meari parent. Keep actual CEF content, client DPI allocation and close
+coordinator. Draw accessible named minimize, maximize/restore and close buttons
+in the existing34-DIP strip. Pointer, keyboard and AX use the same local activation
+paths; close requests coordinated child/host cleanup, never DestroyWindow alone.
+Only blank title-strip space may initiate OS dragging. Do not claim edge resize,
+Snap layouts, text scaling, high-DPI/AT qualification without native evidence.
+Standalone controls preview disables native commands when no host is attached.
+
+UI-14: Add a reusable Rust-authored SVG icon module with a closed symbol enum and
+constant typed Meari IR path geometry. No font-glyph dependency, remote assets,
+script, arbitrary SVG parsing or authored HTML shell. Decorative SVG is hidden
+from AX; containing buttons retain meaningful names and disabled state. Verify
+actual vector rendering; a parsed document alone is not a pixel receipt.
+
+UI-15: Native SDK/DLL expansion is governed by sot:root/native-embedding and
+plan:root/20261107041001. The process-owning experimental browser DLL is explicitly
+not the SDK ABI. No SDK crates, automation-blocking policy or changed scoring
+are delivered by this UI slice. Existing sandbox-required and navigation locks
+remain in force. P0 unsafe DLL reuse and false sandbox claims become SDK-03/07;
+P1 lost window controls/AX and icon glyph failures become UI-13/14.
+
+
+UI-16: User-expanded resize scope supersedes UI-07's zero-gutter allocation at the
+outermost perimeter: reserve an unobtrusive5-DIP app-owned hit strip on left,
+right and bottom so the CEF child cannot swallow resize input. Top edge shares
+existing chrome. Eight edge/corner directions use corresponding resize cursors;
+interior inputs/buttons retain native text/pointer cursors. The strip is rendered
+by the app, not an OS caption/frame. Page allocation uses the same bounded DPI
+constant; default1280x800 content height target becomes >=88.5% (711 pixels),
+with84-DIP header unchanged. Right/bottom inspector does not cover outer hit strips.
+Resize clamps to DPI-scaled640x480 DIP minimum and16384 physical maximum; opposite edges stay
+fixed. Maximize disables edge resize. Capture is local to the current owned
+window, releases on button-up/focus loss and never uses global hooks. Measure
+actual geometry changes, CEF resize readbacks and cursor observations separately.
+
+
+UI-16 critique reflected: maximize must explicitly override the resize-strip CSS
+cursor to arrow; merely suppressing native resize is insufficient. Minimum size
+scales with DPI so bottom/right docking cannot produce negative CEF bounds at
+higher DPI. Cancel active capture on DPI transition. Native evidence remains96DPI;
+unit checks cover48..768 DPI and every dock at minimum size. Post-review max-cursor
+and high-DPI branches are built/unit-tested, not separately native-qualified.

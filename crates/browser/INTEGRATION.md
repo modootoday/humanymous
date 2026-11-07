@@ -1,9 +1,44 @@
 # Browser native integration
 
-Owner: misc / rust-browser-cef-native. The Meari management UI is integrated.
+Owner: misc / rust-browser-research-ui. The Meari management UI is integrated.
 Two actual Windows CEF native prototype packages are implemented below; shared
 workspace membership/lock integration is root-owned and now present in the shared checkout.
 BrowserReady=false; external target browsing is disabled.
+
+## Current canonical UI and SDK scope
+
+Canonical browser/UI requirements are `.spec/sot/browser-ui.sot.md` version0.4
+and `.spec/sot/chromium-lab-browser.sot.md` version0.3. Native embedding SDK/DLL
+scope is accepted in `.spec/sot/native-embedding.sot.md` and
+`.spec/plan/20261107041001-native-embedding-and-browser-ui-window-chrome.plan.md`.
+Four SDK crates are planned, not created or qualified. The current process-owning
+RunBrowserDesktop must not become an in-process SDK ABI.
+
+The Windows pilot now uses compact top tabs/address, an undecorated owned Meari
+window, Rust-authored SVG icons and named minimize/maximize/close buttons. A shared
+5-DIP app-owned perimeter enables eight-direction bounded resize and corresponding
+cursors; CEF content occupies the rest with right/bottom collapsible inspector.
+The page remains actual CEF, never a shell imitation. Unsupported navigation,
+history and new tabs remain disabled; inspector observer/server values remain
+unknown/not_connected. Internal chrome:// navigation is also not yet admitted.
+
+Evidence `.spec/evidence/20261107034226-browser-ui-research-design-and-compact-chromium-shell/`
+records native96-DPI E/S/SE/SW resize and6 CEF size readbacks, observed OS horizontal/
+vertical/both-diagonal/text/pointer cursors, coordinated custom close exit0, and
+predecessor minimize/maximize/restore observations. Core18/native11 tests, one
+feature test covering4 security-weakening overrides, Clippy and fmt pass.
+Earlier zero-size-on-minimize and closed-document polling errors were fixed;
+fast queued drags now use the original event press position, not a late cursor
+sample. GUI-tested artifact/source snapshot identities are distinct from final
+post-review sources. Final source additionally fixes maximized-edge arrow selection and DPI-scaled resize minima/capture cancellation on DPI change; these branches pass unit tests, Clippy and build but were not replayed in native GUI. Normal96-DPI gesture evidence refers to the preserved source snapshot and DLL.
+
+Complete sandbox policy/utility/network/job/signing, actual Chrome parity,
+external navigation/observers, SDK, high-DPI/multi-monitor/Snap/keyboard resize,
+OS screen-reader and new-layout IME qualification remain unverified. No Hanja
+replay was performed for this redesign. BrowserReady remains false, Rust-only and
+mandatory CEF sandbox unchanged. No profile deletion was retried; generated
+synthetic profiles remain private. The older sections below are historical
+qualification steps, not newer-layout or SDK completion claims.
 
 ## Exact root delta
 

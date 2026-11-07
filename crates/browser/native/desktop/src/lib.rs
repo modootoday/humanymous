@@ -6,6 +6,7 @@ mod fixture;
 mod host;
 mod measured_input;
 mod native;
+mod window_frame;
 use cef::*;
 
 wrap_app! {

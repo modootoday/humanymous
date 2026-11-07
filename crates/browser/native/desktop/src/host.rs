@@ -108,11 +108,15 @@ impl NativeWindowHost for Host {
 }
 struct Pilot {
     driver: NativeWindowDriver,
+    document: NativeDocumentHandle,
+    dock: humanymous_browser::viewport::InspectorDock,
     registrar: NativeChildRegistrar<CefChild>,
     state: Shared,
     parent: Option<Rc<NativeParentLease>>,
     registered: bool,
     ticks: usize,
+    window_request_cursor: usize,
+    drag: Option<crate::window_frame::Drag>,
     last_bounds: Option<(i32, i32, i32, i32, u32)>,
     focus_requested: bool,
     started: Instant,
@@ -123,40 +127,58 @@ struct Pilot {
     report: Rc<RefCell<Report>>,
     failure: Rc<RefCell<Option<String>>>,
 }
-#[derive(Default, serde::Serialize)]
-struct Report {
-    host_pid: u32,
-    cancellation_requested: bool,
-    late_created_after_cancel: bool,
-    cef_child_created: bool,
-    actual_parent_matched: bool,
-    resize_readbacks: usize,
-    focus_observed: bool,
-    before_close: bool,
-    host_closed: bool,
-    process_tokens: Vec<native::ProcessToken>,
-    process_roles: Vec<crate::child::ProcessRole>,
-    process_info_status: &'static str,
-    renderer_restricted_token_observed: bool,
-    sandbox_qualified: bool,
-    ime_candidate_placement: &'static str,
-    accessibility_qualified: bool,
-    target_navigation_enabled: bool,
-    cef_key_events: usize,
-    cef_editable_key_events: usize,
-    cef_focus_events: usize,
-    parent_key_events: usize,
-    renderer_file_probes: Vec<crate::child::FileProbe>,
-    input_snapshots: Vec<native::InputSnapshot>,
-    ime_setup: Option<String>,
-    ime_candidate_request: Option<String>,
-    measured_hanja: Vec<String>,
-    hanja_key_events: usize,
-    owned_surface_transitions: Vec<Vec<crate::measured_input::Surface>>,
-}
+#[path = "host_report.rs"]
+mod report;
+use report::Report;
 impl Pilot {
     fn tick(&mut self) -> io::Result<()> {
         self.ticks += 1;
+        if let Ok(dock) = self
+            .document
+            .try_with(humanymous_browser::ui::inspector_dock)
+        {
+            self.dock = dock;
+        }
+        if !self.close_requested
+            && self
+                .registrar
+                .phase()
+                .is_ok_and(|phase| phase == WindowPhase::Ready)
+            && let Some(parent) = &self.parent
+        {
+            let (cursor, commands) = self
+                .document
+                .try_with(|doc| {
+                    humanymous_browser::window_chrome::commands_since(
+                        doc,
+                        self.window_request_cursor,
+                    )
+                })
+                .map_err(io::Error::other)?;
+            self.window_request_cursor = cursor;
+            if cursor > 4096 {
+                return Err(io::Error::other("window intent budget exceeded"));
+            }
+            for command in commands {
+                if self.report.borrow().window_commands.len() < 128 {
+                    self.report
+                        .borrow_mut()
+                        .window_commands
+                        .push(format!("{command:?}:requested"));
+                }
+                if command == humanymous_browser::window_chrome::WindowCommand::Close {
+                    self.close_requested = true;
+                    self.driver
+                        .wake_handle()
+                        .request_close()
+                        .map_err(io::Error::other)?;
+                    break;
+                }
+                parent
+                    .with_parent(|scoped| crate::window_frame::apply(scoped, command))
+                    .map_err(io::Error::other)??;
+            }
+        }
         // Windows CEF owns its dedicated UI thread. Winit remains the Meari
         // parent thread; async creation copies WindowInfo within the lease call.
         if !self.registered
@@ -180,6 +202,7 @@ impl Pilot {
             self.parent = parent;
             eprintln!("native: CEF child creation end");
             self.registered = true;
+            self.report.borrow_mut().decorations_removed_readback = true;
             if self.cancel_immediately {
                 self.report.borrow_mut().cancellation_requested = true;
                 self.close_requested = true;
@@ -204,13 +227,34 @@ impl Pilot {
             if let Some(browser) = browser.filter(|_| !self.close_requested) {
                 parent
                     .with_parent(|scoped| -> io::Result<()> {
-                        let (hwnd, bounds, dpi) = native::parent_geometry(scoped)?;
+                        let observation = crate::window_frame::observe(scoped)?;
+                        let minimized = observation.minimized;
+                        if self.report.borrow().window_observations.len() < 64
+                            && self.report.borrow().window_observations.last() != Some(&observation)
+                        {
+                            self.report
+                                .borrow_mut()
+                                .window_observations
+                                .push(observation);
+                        }
+                        // Minimized zero client size is not a drawable viewport; retain
+                        // the child and last valid bounds until restoration.
+                        if minimized {
+                            return Ok(());
+                        }
+                        let (hwnd, bounds, dpi) = native::dock_geometry(scoped, self.dock)?;
                         native::validate_parent(&browser, hwnd)?;
                         let key = (bounds.x, bounds.y, bounds.width, bounds.height, dpi);
                         if self.last_bounds != Some(key) {
                             native::resize_child(&browser, &bounds)?;
                             self.last_bounds = Some(key);
                             self.report.borrow_mut().resize_readbacks += 1;
+                            if self.report.borrow().page_allocations.len() < 128 {
+                                self.report
+                                    .borrow_mut()
+                                    .page_allocations
+                                    .push(([bounds.x, bounds.y, bounds.width, bounds.height], dpi));
+                            }
                         }
                         Ok(())
                     })
@@ -302,7 +346,16 @@ impl ApplicationHandler for Pilot {
         if matches!(event, WindowEvent::KeyboardInput { .. }) {
             self.report.borrow_mut().parent_key_events += 1;
         }
+        let frame_event = event.clone();
         self.driver.window_event(event_loop, id, event);
+        if let Some(parent) = &self.parent
+            && !self.close_requested
+            && let Ok(Err(error)) = parent.with_parent(|scoped| {
+                crate::window_frame::pointer_event(scoped, &frame_event, &mut self.drag)
+            })
+        {
+            self.fail(event_loop, error);
+        }
         self.service(event_loop);
     }
     fn proxy_wake_up(&mut self, event_loop: &dyn ActiveEventLoop) {
@@ -365,7 +418,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     )?;
     let registrar = prepared.registrar();
     let runtime = Rc::new(RefCell::new(NativeHostRuntime::new(
-        document,
+        document.clone(),
         ChildWindowHost::new(Host, prepared.children()),
     )));
     let driver = prepared
@@ -385,11 +438,15 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let failure = Rc::new(RefCell::new(None));
     event_loop.run_app(Pilot {
         driver,
+        document,
+        dock: humanymous_browser::viewport::InspectorDock::Hidden,
         registrar,
         state: state.clone(),
         parent: None,
         registered: false,
         ticks: 0,
+        window_request_cursor: 0,
+        drag: None,
         last_bounds: None,
         focus_requested: false,
         started: Instant::now(),

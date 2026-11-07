@@ -5,3 +5,11 @@ pub mod lifecycle;
 pub mod policy;
 #[cfg(feature = "native-ui")]
 pub mod ui;
+pub mod viewport;
+
+#[cfg(feature = "native-ui")]
+pub mod icons;
+#[cfg(feature = "native-ui")]
+pub mod window_chrome;
+
+pub mod frame_geometry;
