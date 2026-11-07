@@ -80,6 +80,17 @@ retention source. Existing generation-only APIs are not reclassified as stronger
 product authorization. Actual rotation crash/restart and runtime routes remain
 required; no generic consumed-action retry is introduced.
 
+Follow-up hosted source adds one ordinary actual-child retention service test,
+making eight native cases authored after the seven pure units. Three bounded
+child invocations exercise persistence, exact pinned restart and stale-pin
+refusal; the shared client verifies actual captured protocol replies. No local
+native execution, actor-isolation proof or additional ignored helper is claimed.
+Source evidence: [[evidence:root/20261107080220]]. Root assigned A/shared for the
+seven pure units, scoped lib Clippy, retainer-binary check and integration-target
+--no-run compilation/link. All passed; before/after source/manifest/lock/toolchain
+hashes match. Actual native execution0; hosted boundaries remain not_run. Slot
+returned immediately. Existing fa327b7 facts remain historical, not rewritten.
+
 1. Record contracts and critique before implementation.
 2. Implement safe native permission validation and lifetime exclusive custody.
 3. Implement bounded load/create, pending replacement/recovery and sealed vault

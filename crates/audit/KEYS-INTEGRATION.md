@@ -58,10 +58,13 @@ responses poison the client. No network endpoint or filesystem reset exists.
 The persistence field preserves Windows namespace uncertainty and cannot satisfy
 `RetentionRequirement::FileAndDirectory` there.
 
-Seven deterministic policy/client/target tests and seven hosted-only actual-file tests
-are authored. Compilation, execution, independent process/owner/volume evidence,
-runtime kill-switch adoption and Docker product qualification remain not_run
-until exact-source checks are observed. No new dependency or shared Cargo delta.
+Seven deterministic policy/client/target tests and eight hosted-only native tests
+are authored. Root-assigned A/shared checks passed all7pure units, scoped library
+Clippy, retainer-binary compilation and integration-target compile/link-only.
+Before/after source and Cargo/lock/toolchain hashes match. Actual native execution,
+independent process/owner/volume evidence, runtime kill-switch adoption and Docker
+product qualification remain not_run. Evidence:root/20261107080220 records the
+exact overlay and results. No new dependency or shared Cargo delta.
 
 `keys::custody::PreparedRotation` holds only a private encrypted candidate and
 source/target commitments, with no public constructor, serializer, clone or Debug.
@@ -74,6 +77,16 @@ through the shared existing custody transaction. No post-approval re-encryption
 or seed generation occurs. Local generation-only rotate_approved remains a
 different lower-level API. Hosted wrong-password/empty-password, complete snapshot
 identity, substituted candidate and stale source cases are authored, not executed.
+
+The eighth native case runs the actual audit-control-retainer binary through
+the shared bounded capture API (60seconds,64KiB). It checks exact first-session
+and restart frame counts, original signed anchors through the shared typed
+client, exit status, empty success stderr and bounded stale-pin refusal, then
+reopens the actual store. There are three child invocations in one normal test,
+with no self-test helper or ignored-test exception. Captured-protocol verification
+is not a live interactive deadline test or proof of a different OS owner/volume.
+This test compiled/linked with --no-run and remains unexecuted;
+fa327b7's source manifest is historical.
 
 ## Test-output correction for strict workspace accounting
 

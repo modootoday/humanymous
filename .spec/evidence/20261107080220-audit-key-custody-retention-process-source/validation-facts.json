@@ -1,0 +1,86 @@
+{
+  "schema": "humanymous.audit-retention-validation/1",
+  "productionCommit": "fa327b7",
+  "testOverlay": "real-child retention-service case",
+  "sourceFiles": [
+    {
+      "path": "crates/audit/src/control/mod.rs",
+      "sha256": "17b9667f27eea921ca4b4fdafb45b4a9968341126c9de96cf71e0ecea333cd5e",
+      "bytes": 566
+    },
+    {
+      "path": "crates/audit/src/control/operations.rs",
+      "sha256": "56880c1d8525fbbd8540c2fb1a43f490a101e51c935c55495b96765412330f1b",
+      "bytes": 4530
+    },
+    {
+      "path": "crates/audit/src/control/policy.rs",
+      "sha256": "2e4032a76aaf499c9c2cc6f9031929b5c188ee31141b4c79c4983532b06606cf",
+      "bytes": 20668
+    },
+    {
+      "path": "crates/audit/src/control/retention.rs",
+      "sha256": "fa377c2d01cf31bc400d60141d80003486249205e7d646b3be3e708c4248fe12",
+      "bytes": 11546
+    },
+    {
+      "path": "crates/audit/src/control/retention_service.rs",
+      "sha256": "9ba1ff93ce143ffef9a2ab5939190629d7ecbab1d4c0c4d1dbac85794eac807d",
+      "bytes": 14364
+    },
+    {
+      "path": "crates/audit/src/bin/audit-control-retainer.rs",
+      "sha256": "b728c1807b7b6360c9c11024df9a5db8de30946c34de784eb35b7d8b174cf77d",
+      "bytes": 455
+    },
+    {
+      "path": "crates/audit/src/keys/custody.rs",
+      "sha256": "d4757bae9cee226ef0561f6110469406fc30cba3e5636f8996f4aadab1c34b73",
+      "bytes": 13750
+    },
+    {
+      "path": "crates/audit/src/keys/custody/rotation.rs",
+      "sha256": "928315549bd62161095078e7ac4b29ace625407eb2a4f79f982939ebc7688839",
+      "bytes": 3664
+    },
+    {
+      "path": "crates/audit/tests/control_operations.rs",
+      "sha256": "85332fd36c65f4c768017379fea96d73ee6b638c47561c21736ee3f89f334651",
+      "bytes": 39396
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "c304cad065cd0b9f274a940bc6d8f010e4f84eaa4b042a767c50d932ba622705",
+      "bytes": 2703
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+      "bytes": 168455
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615",
+      "bytes": 123
+    }
+  ],
+  "allInputsUnchanged": true,
+  "purePassed": 7,
+  "pureFailed": 0,
+  "pureIgnored": 0,
+  "pureFiltered": [
+    49,
+    49,
+    51
+  ],
+  "libClippy": "passed",
+  "retainerBinaryCheck": "passed",
+  "controlOperationsCompileLinkOnly": "passed",
+  "nativeTestsAuthoredAfterFa327b7": 8,
+  "actualNativeTestsExecuted": 0,
+  "hostedQualification": "not_run",
+  "slot": "A/shared returned",
+  "jobs": 1,
+  "incremental": 0,
+  "testThreads": 1
+}

@@ -700,6 +700,152 @@ fn prepared_rotation_rejects_substituted_destination_and_stale_source() {
 }
 
 #[test]
+fn retention_service_real_child_persists_restarts_and_rejects_stale_pin() {
+    use humanymous_audit::{
+        checkpoint::service::write_frame,
+        control::retention_service::{
+            RetentionServiceClient, RetentionServiceConfig, RetentionServiceRequest,
+        },
+    };
+    use humanymous_test_support::process::capture_with_stderr;
+    use std::{io::Cursor, process::Command, time::Duration};
+    let local = Dir::new();
+    let independent = Dir::new();
+    let mut authority = local.authority(LedgerBootstrap::New).unwrap();
+    let initial = authority.anchor().clone();
+    let public = authority.public_key();
+    let proposal = authority
+        .propose(
+            Action::KillSwitch,
+            target_commitment(b"activate-only"),
+            10,
+            100,
+        )
+        .unwrap();
+    let latest = authority
+        .consume(&proposal, &approvals(&proposal), 20)
+        .unwrap()
+        .anchor;
+    let owner_sid = match owner(&independent.0) {
+        #[cfg(unix)]
+        Owner::CurrentUser => None,
+        #[cfg(windows)]
+        Owner::WindowsSid(sid) => Some(sid),
+    };
+    let mut config = RetentionServiceConfig {
+        directory: independent.0.clone(),
+        owner_sid,
+        scope: scope(),
+        authority_public: public,
+        pin: initial.clone(),
+        provision: true,
+    };
+    let mut input = Vec::new();
+    write_frame(&mut input, &config).unwrap();
+    write_frame(&mut input, &RetentionServiceRequest::State).unwrap();
+    write_frame(
+        &mut input,
+        &RetentionServiceRequest::Retain {
+            previous: initial.clone(),
+            next: latest.clone(),
+        },
+    )
+    .unwrap();
+    write_frame(&mut input, &RetentionServiceRequest::State).unwrap();
+    write_frame(&mut input, &RetentionServiceRequest::Shutdown).unwrap();
+    let binary = env!("CARGO_BIN_EXE_audit-control-retainer");
+    let captured = capture_with_stderr(
+        &mut Command::new(binary),
+        &input,
+        Duration::from_secs(60),
+        64 * 1024,
+    )
+    .unwrap();
+    assert!(captured.status.success());
+    assert!(captured.stderr.is_empty());
+    assert_eq!(
+        captured
+            .stdout
+            .iter()
+            .filter(|byte| **byte == b'\n')
+            .count(),
+        5
+    );
+    // Verify the actual child's complete transcript using the shared client.
+    // This is captured-protocol validation, not a live interactive deadline test.
+    let mut client = RetentionServiceClient::from_ready(
+        Cursor::new(captured.stdout),
+        Vec::new(),
+        scope(),
+        public,
+        &initial,
+    )
+    .unwrap();
+    assert_eq!(client.current().unwrap(), initial);
+    assert_eq!(client.retain(&initial, &latest).unwrap().anchor(), &latest);
+    assert_eq!(client.current().unwrap(), latest);
+    client.shutdown().unwrap();
+
+    config.pin = latest.clone();
+    config.provision = false;
+    let mut input = Vec::new();
+    write_frame(&mut input, &config).unwrap();
+    write_frame(&mut input, &RetentionServiceRequest::State).unwrap();
+    write_frame(&mut input, &RetentionServiceRequest::Shutdown).unwrap();
+    let captured = capture_with_stderr(
+        &mut Command::new(binary),
+        &input,
+        Duration::from_secs(60),
+        64 * 1024,
+    )
+    .unwrap();
+    assert!(captured.status.success());
+    assert!(captured.stderr.is_empty());
+    assert_eq!(
+        captured
+            .stdout
+            .iter()
+            .filter(|byte| **byte == b'\n')
+            .count(),
+        3
+    );
+    let mut client = RetentionServiceClient::from_ready(
+        Cursor::new(captured.stdout),
+        Vec::new(),
+        scope(),
+        public,
+        &latest,
+    )
+    .unwrap();
+    assert_eq!(client.current().unwrap(), latest);
+    client.shutdown().unwrap();
+
+    config.pin = initial;
+    let mut input = Vec::new();
+    write_frame(&mut input, &config).unwrap();
+    let captured = capture_with_stderr(
+        &mut Command::new(binary),
+        &input,
+        Duration::from_secs(60),
+        64 * 1024,
+    )
+    .unwrap();
+    assert!(!captured.status.success());
+    assert!(captured.stdout.is_empty());
+    assert_eq!(captured.stderr, b"control retention service unavailable\n");
+    let mut restored = NativeAnchorRetainer::open(
+        &independent.0,
+        owner(&independent.0),
+        scope(),
+        public,
+        &latest,
+        false,
+    )
+    .unwrap();
+    assert_eq!(restored.current().unwrap(), latest);
+}
+
+#[test]
 fn durable_consumption_rejects_replay_and_whole_file_rollback() {
     let directory = Dir::new();
     let mut authority = directory.authority(LedgerBootstrap::New).unwrap();
