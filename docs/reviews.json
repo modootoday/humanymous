@@ -2,6 +2,27 @@
   "schema": 1,
   "reviews": [
     {
+      "source": "crates/node-adapter/src/envelope.rs",
+      "sha256": "ed171ef7118fefda9b028bf183ab678aa0b123ad8a35c3f89295d779e8b996ce",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read strict camelCase configuration, required scope/peer/credential/routes/limits, platform-local endpoint syntax, reserved route refusal, forwarding assertion stripping, exact body commitment and shared parser reuse, including source tests. Public topology reference records bounds without treating configuration syntax or a fresh UUID as authority authentication or origin-effect evidence. Source-only review; no unit/IPC execution.",
+      "pages": ["docs/reference/supported-topologies.md"]
+    },
+    {
+      "source": "crates/node-adapter/src/template.rs",
+      "sha256": "7b9b542fbe81a359dabd7668b694ace35a40919594494263658a68c9cc3f6d2e",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read full HtmlHook fields, restricted nonce and local .js path checks and source tests. Documented markup/cspSource as explicit application-owned template outputs, with no nonce generation, script service, CSP installation, response rewriting or authenticated collection guarantee. Reserved-path tag generation does not make that endpoint available. No execution claimed.",
+      "pages": ["docs/reference/supported-topologies.md"]
+    },
+    {
+      "source": "crates/node-adapter/src/server.rs",
+      "sha256": "ada95aaeb40f6e01f5ba008119aadad3b025911c2de43b96b13b43b20a5edf51",
+      "reviewer": "codex/rust-pages",
+      "notes": "Read owned Express HTTP server composition: guard callback precedes application callback, error response is fail-closed, upgrade/connect listeners reject with no-store 503. Topology reference requires no competing listeners or later protected-route mutation and distinguishes advanced middleware coverage. Downstream guard/host modules and actual host behavior require separate review and execution; this receipt does not establish them.",
+      "pages": ["docs/reference/supported-topologies.md"]
+    },
+    {
       "source": "crates/node-adapter/src/lib.rs",
       "sha256": "5bdf238aaf55c145380060eb8abe7e470edd550091be2bf645d14687fb75a863",
       "reviewer": "codex/rust-pages",

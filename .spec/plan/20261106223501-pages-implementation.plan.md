@@ -571,3 +571,10 @@ SHA256 in two manually authored reviews. Notes map wrappers/capabilities and
 64-owner refusal/RAII to actual public prose. No remaining module, whole package,
 execution gate or global freshness acceptance is inferred. JSON parse/duplicate
 check and existing Pages source check passed; no new build or runtime execution.
+
+## Node options and template source review
+
+Read all envelope/template/server source. Added exact option bounds, independent
+authority scope, zero-body semantics, request commitment and explicit nonce/script/
+CSP ownership. Manually reviewed three LF source hashes; no host/native execution
+claimed and downstream host/stream/packaging remain separate pending reviews.

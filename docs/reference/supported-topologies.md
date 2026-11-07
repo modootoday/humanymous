@@ -87,3 +87,31 @@ Application credentials/cookies and response cookie meaning belong to this
 adapter's preservation contract; do not confuse it with the separately selected
 cookie-free runtime browser profile. Actual source-bound authority/origin,
 packaging and platform pilots remain required before rollout.
+
+### Node-API options and explicit template ownership
+
+`optionsJson` requires every field below and rejects unknown fields. Values
+identify the independently provisioned authority scope; they are not discovered
+from untrusted request headers.
+
+| Fields | Source-level bound or responsibility |
+| --- | --- |
+| `installation`, `tenant`, `origin`, `revision` | Nonempty ASCII scope identities, up to 128 bytes each |
+| `endpoint`, `server`, `credential` | Local Unix filesystem socket or Windows named pipe, expected authority peer and privately provisioned credential; credential is 32–256 ASCII letters/digits/underscore/hyphen |
+| `routes` | Nonempty inventory of at most 4096 pathnames; excludes query/fragment/percent/backslash forms and the reserved `/_humanymous` subtree |
+| `timeoutMs` | 1–30000 milliseconds per decision operation; not a requirement for a person to finish an interaction within that interval |
+| `maxBody` | 0–1048576 bytes of complete request body; zero permits an empty body only |
+
+A configured route alone does not authorize a request: the shared parser and
+actual authority still validate the envelope, required observations and scope.
+Request bodies are committed as transfer-decoded/content-encoded bytes using
+exact length, SHA-256 and standard padded Base64. Internal and forwarding trust
+assertions are removed before the shared parser consumes the envelope.
+
+`htmlHook` accepts a 16–128-byte nonce from its restricted ASCII alphabet and a
+bounded same-origin absolute `.js` path, then returns `markup` and `cspSource`.
+It does not generate randomness, provision a script or install the CSP policy.
+The application must provide an appropriate nonce, serve the intended script
+and insert both outputs into the same eligible application-owned response.
+A generated tag for a reserved path does not make that path available through
+the adapter. Template insertion is not evidence of authenticated collection.
