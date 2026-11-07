@@ -87,8 +87,9 @@ pub(super) struct Running {
     service: tokio::task::JoinHandle<std::io::Result<()>>,
 }
 impl Running {
-    pub fn start(directory: &Directory, node: &str, gate: Option<Gate>) -> Self {
-        let value = configuration(directory, node);
+    pub fn start(directory: &Directory, node: &str, gate: Option<Gate>, profile: &str) -> Self {
+        let mut value = configuration(directory, node);
+        value["adapter"] = serde_json::json!(profile);
         let config: Configuration = serde_json::from_value(value.clone()).unwrap();
         let observed = Default::default();
         let audit = audit_log(&directory.0, node, true);

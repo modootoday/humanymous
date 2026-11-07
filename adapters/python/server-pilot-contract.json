@@ -8,6 +8,8 @@
   "factorySourceImplemented": true,
   "executableHarnessImplemented": true,
   "harnessSource": "crates/python-adapter/tests/wsgi_server.rs",
+  "sharedActualCaseSource": "crates/python-adapter/tests/support/framework_server_cases.rs",
+  "currentRefactorVerification": "NOT_RUN; historical7842b6a8 success does not qualify shared-case extraction or ASGI additions",
   "hostedControllerSource": "crates/python-adapter/tests/component_controller.rs",
   "hostedControllerStatus": "NOT_ACCEPTED-shared-atomic-owned-lifetime-contract-required",
   "hostedWorkflow": "python-validation.yml",

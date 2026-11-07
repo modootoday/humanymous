@@ -64,7 +64,31 @@ pub(super) fn host(
     framework: &str,
     endpoint: &str,
     credential: &str,
+    asgi: bool,
 ) -> (Host, u16) {
+    if asgi {
+        super::component_lifecycle::require_safe_lifecycle()
+            .expect("ASGI server lifecycle is not accepted");
+        let version = humanymous_test_support::process::capture_with_stderr(
+            Command::new(executable("HUMANYMOUS_UVICORN")).arg("--version"),
+            b"",
+            Duration::from_secs(5),
+            1024,
+        )
+        .expect("bounded upstream server identity required");
+        let text = std::str::from_utf8(&version.stdout).unwrap().trim();
+        assert!(
+            version.status.success()
+                && text.starts_with("Running uvicorn 0.54.0 with CPython 3.12.")
+                && text.ends_with("on Linux"),
+            "pinned Linux CPython3.12 Uvicorn0.54.0 profile required"
+        );
+        fs::write(
+            directory.0.join("server-version.private.txt"),
+            &version.stdout,
+        )
+        .unwrap();
+    }
     let port = TcpListener::bind(("127.0.0.1", 0))
         .unwrap()
         .local_addr()
@@ -75,18 +99,56 @@ pub(super) fn host(
             .expect("actual host-pilot extension directory required"),
     );
     assert!(module.is_absolute() && module.is_dir());
+    let port_arg = format!("--port={port}");
+    let args = if asgi {
+        vec![
+            "--host=127.0.0.1",
+            &port_arg,
+            "--factory",
+            "--workers=1",
+            "--interface=asgi3",
+            "--loop=asyncio",
+            "--http=h11",
+            "--ws=none",
+            "--no-proxy-headers",
+            "--no-access-log",
+            "--limit-concurrency=8",
+            "--timeout-graceful-shutdown=2",
+            if framework == "django" {
+                "--lifespan=off"
+            } else {
+                "--lifespan=on"
+            },
+            "humanymous_python:pilot_asgi",
+        ]
+    } else {
+        vec![
+            "--host=127.0.0.1",
+            &port_arg,
+            "--channel-request-lookahead=1",
+            "--channel-timeout=2",
+            "--cleanup-interval=1",
+            "--max-request-body-size=2048",
+            "--call",
+            "humanymous_python:pilot_wsgi",
+        ]
+    };
+    let mut command = Command::new(executable(if asgi {
+        "HUMANYMOUS_UVICORN"
+    } else {
+        "HUMANYMOUS_WAITRESS_SERVE"
+    }));
+    if asgi {
+        for (name, _) in std::env::vars_os() {
+            if name.to_string_lossy().starts_with("UVICORN_") {
+                command.env_remove(name);
+            }
+        }
+        command.env_remove("WEB_CONCURRENCY");
+    }
     let mut child = Host(
-        Command::new(executable("HUMANYMOUS_WAITRESS_SERVE"))
-            .args([
-                "--host=127.0.0.1",
-                &format!("--port={port}"),
-                "--channel-request-lookahead=1",
-                "--channel-timeout=2",
-                "--cleanup-interval=1",
-                "--max-request-body-size=2048",
-                "--call",
-                "humanymous_python:pilot_wsgi",
-            ])
+        command
+            .args(args)
             .env("PYTHONPATH", module)
             .env("PYTHONNOUSERSITE", "1")
             .env("HUMANYMOUS_HOSTED_NATIVE_PILOT", "1")
@@ -95,10 +157,10 @@ pub(super) fn host(
             .stdout(Stdio::null())
             .stderr(fs::File::create(directory.0.join("server-stderr.private.log")).unwrap())
             .spawn()
-            .expect("actual Waitress process required"),
+            .expect("actual provisioned server process required"),
     );
     let options = json!({"installation":"i","tenant":"t","origin":"o","revision":"r", "endpoint":endpoint,"credential":credential,
-        "server":{"kind":"unix","uid":humanymous_native_security::process::current_uid()},"routes":["/api"],"timeoutMs":1000,"maxBody":1024,"syncInputDeadlineEnforced":true});
+        "server":{"kind":"unix","uid":humanymous_native_security::process::current_uid()},"routes":["/api"],"timeoutMs":1000,"maxBody":1024,"syncInputDeadlineEnforced":!asgi});
     child.0.stdin.take().unwrap().write_all(&serde_json::to_vec(&json!({"framework":framework,"configuration":options.to_string(),"effect_file":directory.0.join("effects.jsonl")})).unwrap()).unwrap();
     let began = Instant::now();
     loop {

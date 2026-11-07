@@ -321,6 +321,32 @@ Primary references: https://uvicorn.dev/settings/ ;
 https://uvicorn.dev/server-behavior/ ;
 https://fastapi.tiangolo.com/advanced/sub-applications/ .
 
+The WSGI six actual case bodies now live once in
+tests/support/framework_server_cases.rs. WSGI retains its six named wrappers,
+two framing units and28 planned cases. ASGI adds matching wrappers over
+Starlette/FastAPI/Django:42planned cases/21rows plus the same two framing units.
+The suite selects the authenticated PythonAsgi/PythonWsgi authority profile and
+asserts the corresponding normalized observation mode; scoring/evidence/audit
+remain shared. Existing WSGI refusal expectations stay intact. ASGI unsupported
+upgrade and receive-deadline exceptions expect server500 with no authority/origin
+effects, rather than claiming they return the synchronous WSGI503 response.
+Exact empty owned WAL verification, accepted-byte stalled-peer proof and matched
+connected/disconnected ALLOW controls remain in the common implementation.
+
+The ASGI candidate is Uvicorn0.54.0 on Linux CPython3.12 with asyncio/h11,
+one worker, no reload/WebSocket/proxy headers, and stripped UVICORN_* overrides.
+Official PyPI wheel hashes pin Uvicorn/h11/Click in uvicorn-requirement.txt;
+this is not installation or an advisory/closure audit. A bounded version check
+must match the selected profile before a server can start. Starlette/FastAPI
+enable lifespan; Django6.1.3's HTTP-only ASGI handler uses lifespan off, explicitly
+not a Django lifespan-support claim. All new ASGI wrappers and its host launcher
+call the same unconditional component_lifecycle refusal before fixtures/processes.
+The dedicated controller uses that same refusal; no signal/group workaround is
+introduced. All refactored source is uncompiled/unexecuted; historical7842b6a8
+WSGI evidence cannot qualify these changed bytes. A reviewed shared lifetime
+contract and allocated immutable compile/runtime receipts remain required.
+Primary source: https://raw.githubusercontent.com/django/django/6.1.3/django/core/handlers/asgi.py .
+
 Primary references: https://flask.palletsprojects.com/en/stable/api/ ;
 https://docs.djangoproject.com/en/6.1/ref/urls/ ;
 https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html ;

@@ -460,3 +460,24 @@ and reject fields not allowed for that exact scenario group. Existing positive/
 mutation test definitions add duplicate literal/escaped keys and unknown fields.
 No new parser or manifest dependency was introduced. Formatting passes; the
 same two pure tests still await an explicit immutable Unix allocation.
+
+### Shared actual HTTP case bodies and blocked ASGI42 source
+
+Extracted the six WSGI actual bodies into framework_server_cases.rs and retained
+the same WSGI wrappers/counts. New ASGI wrappers apply those same authority/audit/
+effect/timeout/disconnect controls to three frameworks,42planned cases/21rows.
+The profile and normalized observation mode are explicit. WSGI expected status
+semantics are preserved; ASGI unsupported-upgrade/input-deadline exceptions
+expect bounded server500/no effect. No case is silently counted as passed.
+
+Moved the unconditional lifecycle refusal into one shared component_lifecycle
+module used by the controller and ASGI entry points, before fixtures/processes.
+No signals or duplicate process-tree containment exists. Uvicorn0.54.0/h11
+0.16.0/Click8.5.1 official PyPI wheel hashes are candidate source only; no new
+package installed. Linux CPython3.12/version/one-worker/nonreload/asyncio/h11
+settings are explicit; Django's HTTP-only handler has lifespan off, while
+Starlette/FastAPI use on. No Django lifespan qualification is inferred.
+
+Formatting passed. New files, shared case extraction and all changed fixture
+bytes remain uncompiled/unexecuted pending root allocation. Existing WSGI28
+success remains historical7842b6a8 evidence. No runtime/allocation is held.

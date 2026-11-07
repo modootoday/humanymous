@@ -1,5 +1,7 @@
 //! Hosted component orchestration; the actual cases remain in wsgi_server.rs.
 #![cfg(all(unix, feature = "host-pilot"))]
+#[path = "support/component_lifecycle.rs"]
+mod component_lifecycle;
 #[path = "support/component_process.rs"]
 mod component_process;
 #[path = "support/wsgi_receipt.rs"]
@@ -352,7 +354,7 @@ impl Controller {
 #[test]
 #[ignore = "explicit standard hosted Python component coordinator"]
 fn coordinate() -> Result<()> {
-    component_process::require_safe_lifecycle()?;
+    component_lifecycle::require_safe_lifecycle()?;
     let mut controller = Controller::new().expect("fresh owned controller");
     controller.persist().unwrap();
     let result = controller.execute();

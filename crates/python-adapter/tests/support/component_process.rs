@@ -2,10 +2,6 @@
 //! Procfs observations are diagnostics, never authorization to signal a group.
 use std::{fs, path::Path, process::Command};
 
-pub(super) fn require_safe_lifecycle() -> Result<(), String> {
-    Err("NOT_ACCEPTED: shared atomic owned-lifetime contract is not available".into())
-}
-
 pub(super) fn actual(
     _command: &mut Command,
     _bundle: &Path,

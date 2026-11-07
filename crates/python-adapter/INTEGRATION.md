@@ -115,3 +115,15 @@ env maps, after actionlint rejected the original workflow-level context. Direct
 actionlint passes after correction. The controller still refuses execution as
 NOT_ACCEPTED until the shared atomic owned-lifetime API is reviewed. Neither
 actionlint nor source formatting is compilation or runtime evidence.
+
+The actual HTTP case bodies are now shared in tests/support/framework_server_cases.rs.
+WSGI retains six named actual groups/28cases plus two framing tests; ASGI adds
+the same six controls across three frameworks/42planned cases/21rows plus two
+framing tests. Both select their exact authority profile and normalized mode.
+ASGI wrappers and host startup refuse through component_lifecycle before any
+fixture/process; the dedicated controller uses the same unconditional refusal.
+All extracted/new source remains uncompiled/unexecuted. The historical WSGI
+pass does not qualify this refactor. Candidate Uvicorn/h11/Click wheel hashes
+are pinned without installing anything; ASGI server/closure/lifecycle execution
+still requires review and root allocation. Django6.1.3's HTTP-only ASGI handler
+uses server lifespan off; only Starlette/FastAPI enable server lifespan.
