@@ -20,10 +20,11 @@ child/request lifecycle, meaningful pure tests, integration and pilot contract.
 - [x] Read current authority/framework shared APIs without editing their owners.
 - [x] Adversarial bypass/fork/pool/body findings reflected in owning SoT.
 - [x] Safe child generation/MPM admission, complete bounded body and cancellation.
-- [ ] Root workspace registration and local Cargo slot; pure units/fmt/Clippy.
+- [x] Root safe workspace registration and assigned A slot;9pure units/fmt/Clippy.
 - [ ] Apache integrity/authority/framework profile owned by corresponding owners.
 - [ ] Single-consumption authority response and exact final request handoff.
-- [ ] Approved minimal unsafe native ABI, generated binding provenance.
+- [x] Approved minimal isolated unsafe native ABI and pinned upstream inputs.
+- [ ] Native crate registration; generated binding/build provenance and execution.
 - [ ] Actual native module hooks/input replay/pool cleanup/child initialization.
 - [ ] Source-bound free hosted Docker MPM and outage/cancellation/reload pilots.
 - [ ] Spec check, owned attributed commit and integration evidence.
@@ -73,3 +74,18 @@ release archives and existing repository-pinned Rust/Debian base images. It
 builds all three MPMs and the opt-in native crate, with locked unit/Clippy gates.
 It has not been built and is not yet a pilot entrypoint. Runtime USER is65532;
 lab must provide isolated network-none execution and private provisioning.
+
+## Assigned A validation receipt
+
+Evidence evidence:root/20261107082159 records9pure tests with0failed/ignored/
+filtered and all-target Clippy warnings-denied pass. A used the shared target,
+jobs1/incremental0, root allocation and resource guard; returned promptly.
+This supersedes prior NOT_RUN only for the safe source hashes in that receipt.
+Native module/pilot still have no compile or runtime evidence.
+
+Pilot source accounts45required scenario/MPM pairs, including actual nested host
+probes, observed module graph, new-child graceful reload and process stop.
+Ordinary and test-probe modules have distinct filenames/hashes;39cases target
+the ordinary module and6nested-request cases use explicit test-only probe builds.
+Unreached cases remain not_run rather than reducing the denominator. Native
+registration remains queued to root's next lock-integration window.

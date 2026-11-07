@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.apache.pure/0.1",
+  "sourceCommit": null,
+  "sourceIdentity": "owned working-tree SHA256; no native source included",
+  "commands": [
+    {"argv": ["cargo", "test", "--locked", "-p", "humanymous-apache-adapter", "--lib"], "exit": 0, "passed": 9, "failed": 0, "ignored": 0, "filtered": 0},
+    {"argv": ["cargo", "clippy", "--locked", "-p", "humanymous-apache-adapter", "--all-targets", "--", "-D", "warnings"], "exit": 0}
+  ],
+  "environment": {"os": "Windows", "pipeline": "root-assigned-A", "target": "shared-default", "cargoBuildJobs": 1, "cargoIncremental": 0},
+  "resources": {"before": {"freePhysicalGiB": 33.11, "commitPercent": 81}, "after": {"freePhysicalGiB": 32.99, "commitPercent": 82}},
+  "sources": {
+    "crates/apache-adapter/Cargo.toml": "306897ca71d128a8ed0684286327496ad65e69a833159c6c1462b7c738ede7e5",
+    "crates/apache-adapter/src/lib.rs": "7f7affa01afb9072fa07751246ae050c56f7e936b2fa5f24c87dff47e3a14489",
+    "crates/apache-adapter/src/lifecycle.rs": "679641423e4fd5f70abfdefb1e9699c887e8bf658d193c0dcda275cf2006618f",
+    "crates/apache-adapter/src/replay.rs": "95c76e737a78202b8e093c5261cc0c0030b6b4a8cf828eeafb2a5e6b5c7a9b8c"
+  },
+  "lockObservedAfter": "06c2ed0db6d101a6e44c0e8186f550b2f565339ffe4a9ff849daddcf17146996",
+  "nativeFeatureExecuted": false,
+  "hostedPilotStatus": "not_run",
+  "fullProductSuccess": false
+}

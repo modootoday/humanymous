@@ -18,6 +18,7 @@
     "archiveSha256": "acd5f38440eda830e40c4fe35c2a6b8119493cfdba9c9d73d985c317beb4e4f8"
   },
   "headers": {
+    "http_request.h": "ccb48f4be0b60211a53d09494093ea352fc033b8648afd5799c0bf348367be87",
     "http_core.h": "67c454f63eed7ccce1a5bdfe4ac00e43afc44372366d992423fe7fef20ac5146",
     "httpd.h": "ea864d74612ead9822139ca97a3ce53fb015e50465f1fa496c90479fc247a498",
     "http_config.h": "da428a3e837a696702b8c60fe1f6a66dedef45b1da79a23dc000182f06b7a0e2",

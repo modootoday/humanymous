@@ -601,6 +601,20 @@ extern "C" fn quick(request: *mut request_rec, lookup: c_int) -> c_int {
 extern "C" fn final_check(request: *mut request_rec) -> c_int {
     boundary(|| {
         let current = unsafe { observation(request)? };
+        // SAFETY: current HTTP/1 callback owns the live connection. APR probes
+        // receive EOF without blocking or consuming application bytes.
+        let connection = unsafe { (*request).connection };
+        if connection.is_null() || unsafe { (*connection).aborted } != 0 {
+            return Err(());
+        }
+        let socket = unsafe { ap_get_conn_socket(connection) };
+        if socket.is_null() {
+            return Err(());
+        }
+        let mut eof = 0;
+        if unsafe { apr_socket_atreadeof(socket, &mut eof) } != 0 || eof != 0 {
+            return Err(());
+        }
         let saved = unsafe { &mut *context(request)? };
         if current.method != saved.original.method
             || current.target != saved.original.target
@@ -634,6 +648,40 @@ extern "C" fn handoff(request: *mut request_rec) -> c_int {
             return Err(());
         }
         saved.replay.eof().map_err(|_| ())?;
+        #[cfg(feature = "pilot-probes")]
+        {
+            // Test-only actual host lifecycle probes; never enabled implicitly
+            // by a client header, production configuration or runtime setting.
+            let path = saved.original.target.as_str();
+            if path == "/probe-subrequest" {
+                unsafe {
+                    apr_table_set(
+                        (*request).err_headers_out,
+                        c"X-Pilot-Probe-Ran".as_ptr(),
+                        c"subrequest".as_ptr(),
+                    );
+                    let subrequest =
+                        ap_sub_req_lookup_uri(c"/echo".as_ptr(), request, ptr::null_mut());
+                    if subrequest.is_null() {
+                        return Err(());
+                    }
+                    let _status = ap_run_sub_req(subrequest);
+                    ap_destroy_sub_req(subrequest);
+                }
+                return Ok(FAILURE);
+            }
+            if path == "/probe-redirect" {
+                unsafe {
+                    apr_table_set(
+                        (*request).err_headers_out,
+                        c"X-Pilot-Probe-Ran".as_ptr(),
+                        c"redirect".as_ptr(),
+                    );
+                    ap_internal_redirect(c"/echo".as_ptr(), request);
+                }
+                return Ok(0);
+            }
+        }
         Ok(PASS)
     })
 }

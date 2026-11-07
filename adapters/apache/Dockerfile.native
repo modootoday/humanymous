@@ -32,6 +32,12 @@ RUN cargo clippy --locked -p humanymous-apache-adapter --all-targets -- -D warni
 RUN cargo build --locked --release -p humanymous-apache-native --features httpd --lib
 RUN cargo clippy --locked -p humanymous-apache-native --features httpd --lib -- -D warnings
 RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_native.so
+RUN cargo build --locked --release -p humanymous-apache-native --features httpd,pilot-probes --lib
+RUN cargo clippy --locked -p humanymous-apache-native --features httpd,pilot-probes --lib -- -D warnings
+RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_probe.so
+RUN cargo build --locked --release -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot
+RUN cargo clippy --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot -- -D warnings
+RUN install -D /src/target/release/humanymous-apache-pilot /out/pilot
 
 FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS native-candidate
 RUN apt-get update
@@ -41,3 +47,8 @@ USER 65532:65532
 # Lab must supply its owned configuration and run in an isolated network-none
 # container. This entrypoint is a server build candidate, not a pilot success.
 ENTRYPOINT ["/opt/httpd/bin/httpd", "-DFOREGROUND"]
+
+FROM native-candidate AS pilot
+COPY --from=build /out/pilot /opt/apache-pilot
+ENV HUMANYMOUS_APACHE_OWNED_DOCKER=1
+ENTRYPOINT ["/opt/apache-pilot"]
