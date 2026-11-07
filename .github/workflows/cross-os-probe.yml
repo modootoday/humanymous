@@ -2,7 +2,7 @@ name: Cross OS implemented-crate probe
 on:
   workflow_dispatch:
   push:
-    branches: [codex/rust]
+    branches: [main]
     paths:
       - .github/workflows/cross-os-probe.yml
       - scripts/ci/runner-probe/**
@@ -17,13 +17,14 @@ permissions:
   contents: read
 concurrency:
   group: cross-os-probe-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   native:
     name: native-${{ matrix.os }}-${{ matrix.arch }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 40
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         include:
@@ -46,9 +47,9 @@ jobs:
       - name: Observe native tuple and execute implemented workspace tests
         run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os }} ${{ matrix.arch }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: always() && vars.CI_COMPONENT_ARTIFACTS == 'true'
         with:
           name: probe-${{ matrix.os }}-${{ matrix.arch }}-${{ github.sha }}
           path: target/runner-probe/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 1

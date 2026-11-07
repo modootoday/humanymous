@@ -7,9 +7,14 @@ permissions:
 defaults:
   run:
     shell: bash
+env:
+  CARGO_BUILD_JOBS: '1'
+  CARGO_INCREMENTAL: '0'
+# No cache writes: artifact/cache billing has not been verified for this account.
+# Dependency failure leaves later checks not_run; ready still rejects every skip.
 jobs:
   policy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -28,6 +33,7 @@ jobs:
 
         "$(go env GOPATH)/bin/actionlint" -shellcheck=""'
   native:
+    needs: browser
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     steps:
@@ -43,37 +49,43 @@ jobs:
       run: cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked -- --configure-toolchain
     - run: cargo build --workspace --all-targets --locked
     - name: Execute every workspace harness through the native Rust actor
-      run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'macos-latest' && 'macos' || 'linux' }} ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
+      run: cargo run --locked -p humanymous-delivery -- probe ${{ matrix.os == 'windows-2025' && 'windows' || matrix.os == 'macos-15' && 'macos' || 'linux' }} ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
     - name: Preserve native workspace accounting
-      if: always()
+      if: always() && startsWith(github.ref, 'refs/tags/v')
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: native-workspace-${{ matrix.os }}-${{ github.sha }}
         path: target/runner-probe/
         if-no-files-found: error
+        retention-days: 1
     - run: cargo build --workspace --bins --release --locked
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- pilot native
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- native-artifacts
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: startsWith(github.ref, 'refs/tags/v')
       with:
         name: native-binaries-${{ matrix.os }}-${{ github.sha }}
         path: target/delivery-artifacts/
         if-no-files-found: error
+        retention-days: 1
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: native-${{ matrix.os }}-${{ github.sha }}
+        retention-days: 1
         path: target/delivery-evidence/
         if-no-files-found: error
-      if: always()
+      if: always() && startsWith(github.ref, 'refs/tags/v')
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         os:
-        - ubuntu-latest
-        - macos-latest
-        - windows-latest
+        - ubuntu-24.04
+        - macos-15
+        - windows-2025
   msrv:
-    runs-on: ubuntu-latest
+    needs: native
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -88,7 +100,8 @@ jobs:
     - run: cargo test --manifest-path scripts/ci/docs-review/Cargo.toml --locked
     - run: cargo test --manifest-path scripts/ci/delivery/Cargo.toml --locked
   quality:
-    runs-on: ubuntu-latest
+    needs: msrv
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -108,7 +121,8 @@ jobs:
     - run: cargo fmt --manifest-path scripts/ci/delivery/Cargo.toml -- --check
     - run: cargo clippy --manifest-path scripts/ci/delivery/Cargo.toml --all-targets --locked -- -D warnings
   browser:
-    runs-on: ubuntu-latest
+    needs: docker
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -127,11 +141,13 @@ jobs:
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: browser-linux-${{ github.sha }}
+        retention-days: 1
         path: target/delivery-evidence/
         if-no-files-found: error
-      if: always()
+      if: always() && startsWith(github.ref, 'refs/tags/v')
   docker:
-    runs-on: ubuntu-latest
+    needs: policy
+    runs-on: ubuntu-24.04
     timeout-minutes: 75
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -146,11 +162,13 @@ jobs:
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: docker-linux-${{ github.sha }}
+        retention-days: 1
         path: target/delivery-evidence/
         if-no-files-found: error
-      if: always()
+      if: always() && startsWith(github.ref, 'refs/tags/v')
   images:
-    runs-on: ubuntu-latest
+    needs: quality
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -176,13 +194,15 @@ jobs:
         severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
         ignore-unfixed: false
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         name:
         - core
         - gate
   packages:
-    runs-on: ubuntu-latest
+    needs: images
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -194,14 +214,17 @@ jobs:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- package
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: startsWith(github.ref, 'refs/tags/v')
       with:
         name: validated-crates-${{ github.sha }}
+        retention-days: 1
         path: |
           target/package/*.crate
           target/delivery-crates/validated-archives.json
         if-no-files-found: error
   node:
-    runs-on: ubuntu-latest
+    needs: packages
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -219,16 +242,18 @@ jobs:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- node
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      if: always()
+      if: always() && startsWith(github.ref, 'refs/tags/v')
       with:
         name: node-native-${{ github.sha }}
+        retention-days: 1
         path: |
           target/node-native/
           target/delivery-node/
           adapters/node/native/provenance.json
         if-no-files-found: error
   advisories:
-    runs-on: ubuntu-latest
+    needs: node
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -251,11 +276,13 @@ jobs:
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: advisories-${{ github.sha }}
+        retention-days: 1
         path: target/delivery-evidence/
         if-no-files-found: error
-      if: always()
+      if: always() && startsWith(github.ref, 'refs/tags/v')
   documentation:
-    runs-on: ubuntu-latest
+    needs: advisories
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -267,9 +294,10 @@ jobs:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/docs-review/Cargo.toml -- .
   pages:
+    needs: documentation
     uses: ./.github/workflows/pages-build.yml
   ready:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262

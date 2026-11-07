@@ -88,3 +88,10 @@ Observation/2 live retrieval succeeded for42339951733 attempt1: same failure,
 same original log hash, three exact artifact ZIPs in a separate private directory.
 The later archive-hash marker addition passed its targeted test and Clippy. This does not
 qualify the failed CI run or a full product.
+
+Windows owner checkpoint16c9e89 adds exact captured-helper contracts for audit
+durable_witness/key_backups; tool7 tests and Clippy passed. Its actual73-harness
+workspace retry still rejects durable_witness9 nested child summaries despite
+process exit0. Audit producer repair and a new exact-source execution remain
+required. Separate source91f93 native release reports14/14harness67passed,
+errors0,requiredignored1,blocked2; this does not qualify the whole workspace.

@@ -2,7 +2,7 @@ name: Rust collector browser component
 on:
   workflow_dispatch:
   push:
-    branches: [codex/rust, main]
+    branches: [main]
     paths:
       - 'crates/**'
       - 'web/js/features/mouse.js'
@@ -28,6 +28,12 @@ on:
       - '.github/workflows/collector-component.yml'
 permissions:
   contents: read
+concurrency:
+  group: collector-component-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CARGO_BUILD_JOBS: '1'
+  CARGO_INCREMENTAL: '0'
 jobs:
   firefox-component:
     runs-on: ubuntu-24.04
@@ -48,8 +54,9 @@ jobs:
           docker image inspect humanymous/collector-browser:local > target/collector-evidence/image.json
           docker compose -f deployments/lab/compose.collector.yaml --profile collector run --rm --no-deps collector-browser 2>&1 | tee target/collector-evidence/browser-tests.log
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: always() && vars.CI_COMPONENT_ARTIFACTS == 'true'
         with:
           name: collector-component-${{ github.sha }}
           path: target/collector-evidence/
           if-no-files-found: warn
+          retention-days: 1

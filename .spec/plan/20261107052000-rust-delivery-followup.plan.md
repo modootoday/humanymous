@@ -12,6 +12,34 @@ rel:
 
 ## Scope and order
 
+Latest authorization supersedes design-only remote restriction: apply free
+standard public hosted validation; root alone integrates/pushes/starts first run.
+Existing workflows now serialize heavy validation, pin Ubuntu24.04, disable
+default branch artifact/cache storage and suppress duplicate codex/rust component
+pushes. Only static actionlint/diff checks performed locally, no new Cargo/Docker.
+Source closure before first CI: common27member Cargo/lock (root), lab runner+
+runtime+Compose/witness/collector producer checkpoint, Node/native/authority and
+current collector source commits, delivery checkpoint. Missing members or stale
+lock are real failures, not fetched from uncommitted local private files.
+
+Cross-chat policy consultation requested after this draft: full serial chain is
+provisional, not the final DAG. Its drawback is independent results becoming
+not_run after an early failure. Prefer dependency/impact classification with
+bounded heavy concurrency and strict final aggregation, subject to an explicit
+scheduler/policy update and actual evidence. Preserve required release gates.
+Local fast checks must separate pure unit logic from runtime-spawning tests;
+hosted standard VMs do not prove real interactive AT/SCM/CEF capability by label.
+No existing source or required check is deleted for this consultation.
+
+Resource triage update2026-11-07: heavy new execution is held; project-wide one
+slot awaits root allocation. P0 runtime+collector implementation, P1 adapter
+source checkpoints, P2 remote CI/Compose design, P3 sequential full reruns.
+No process kill, new agent, cloud creation, deployment or remote dispatch.
+CI owner now owns GitHub Ubuntu source/evidence design and top-level cost
+comparison; Compose owner owns Containers security/control-plane gaps. See the
+delivery SoT remote delta. Official docs inspected and repository PUBLIC checked;
+no actual remote capacity/equivalence or raw-evidence transport test performed.
+
 The user reauthorized completion across existing project chats. This lane owns
 workflows, non-Windows delivery CI tools, migration tooling, build/rust contexts,
 delivery canon and its own evidence. Root alone owns common Cargo/lock/toolchain;
@@ -76,6 +104,12 @@ pilot summaries now omit raw actor identity/trace payloads. Common Cargo updates
 and owner process/profile fixes gate the next actual retries.
 
 ## Acceptance and handoff
+
+Owner update16c9e89: exact durable_witness/key_backups helper catalog committed,
+runner7 tests/Clippy passed. Actual73-harness workspace retry still fails on
+durable_witness9 nested child summaries even with process exit0. Await audit
+producer repair then fresh execution; no green workspace status inferred.
+Separate91f93 native14/14harness67passed/errors0/requiredignored1 remainsblocked2.
 
 Latest local verification: delivery22 tests and strict Clippy pass; docs-review8
 tests and strict Clippy pass. Generated `.build-cache` files are excluded from

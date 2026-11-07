@@ -26,6 +26,116 @@ the final delivery runner requirements remain unchanged.
 
 ## Rust-only delivery follow-up contract v2
 
+### Remote lab design delta, 2026-11-07 KST (not executed)
+
+Initial root resource triage authorized design only. The later explicit user
+request authorizes applying free standard public-repository hosted validation;
+root integrates and performs the necessary branch push/Actions execution.
+No new local build, paid resource creation or deployment. Project heavy execution has one
+coordinated slot. Priority remains runtime/collector source integration before
+whole-workspace, wargame or render retries. Container owner governs provider
+security equivalence in container-test-environments; this section governs CI
+transport, source/evidence and cost selection. No duplicate lab implementation.
+Detailed provider boundaries live in
+[container-test-environments SoT](container-test-environments.sot.md), section
+"Remote execution design delta (2026-11-07, not_run)".
+That owner records Containers DinD/host-network incompatibility, independent
+witness durability gaps, Cloudflare reTLS L1/L2 provenance, outbound controls and
+Rust/cf lifecycle not_run. Provider compute examples exclude plan, Worker/DO,
+logs and egress and do not qualify a whole-lab replacement or a spending cap.
+
+Prefer an existing GitHub-hosted Ubuntu VM for main product e2e investigation.
+Reuse delivery `pilot docker`/`pilot browser` and owning Rust lab runner/Compose;
+do not introduce a shell/Python/JS coordinator or run product e2e on host loopback.
+Cloudflare Containers remains a supplementary actual-Cloudflare API candidate;
+its UID/namespace/egress/sandbox/witness and Rust control-plane compatibility
+remain unverified, not equivalent to the existing Compose lab.
+
+Official facts checked 2026-11-07 (not performance or account-capacity proof):
+
+| Candidate | Cost and documented capacity | Decision boundary |
+| --- | --- | --- |
+| GitHub standard public Ubuntu24.04 x64 VM | Public standard compute free;4CPU/16GBRAM/14GBSSD | Main candidate, actual build RAM/disk/runtime not_run |
+| Cloudflare Containers | Workers Paid $5/month; included25GiB-hours memory,375vCPU-minutes,200GB-hours disk; overage $0.0000025/GiB-second memory,$0.000020/active-vCPU-second,$0.00000007/GB-second disk | Additional Workers/DO/logs/egress charges; no account or resource change authorized |
+
+Repository visibility was read-only checked PUBLIC with `gh repo view`; no
+private-repository or larger-runner free-compute assumption. Artifact/cache
+storage allowances and charges are separate. Cloudflare memory/disk billing is
+provisioned capacity while awake; CPU billing is active use, so a bursty test
+needs measured usage before a dollar forecast. No cost estimate is a budget cap.
+
+Official references: [runner specs](https://docs.github.com/en/actions/reference/runners/github-hosted-runners),
+[billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions),
+[Ubuntu24.04 software](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md),
+[job limits](https://docs.github.com/en/actions/reference/limits),
+[artifact access/retention](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts),
+[Containers pricing](https://developers.cloudflare.com/containers/platform/pricing/),
+[Containers limits](https://developers.cloudflare.com/containers/platform/limits/).
+
+Future execution contract, pending root reassignment and source freeze:
+
+1. Use explicit ubuntu-24.04 VM, not moving latest/slim, one heavy job at a time.
+   Preserve existing required checks; a new scoped remote pilot cannot replace
+   full-release gates. Current browser/docker jobs are parallel latest-label
+   jobs, so the proposed serialized remote design is not implemented yet.
+2. Root commits the common lock and every producer prerequisite. Remote checkout
+   must be an available immutable commit with exact workflow SHA; local dirty
+   bytes are not silently represented by HEAD. Push remains separately forbidden
+   until authorized. Do not upload arbitrary local private trees to make it run.
+3. Capture OS/runner-image/toolchain/Docker/Compose versions, available RAM/disk,
+   source/lock/docs-review hashes and immutable owner snapshot before execution.
+   Pin actions to commits; mutable VM image versions are recorded, not described
+   as immutable. Assess compilation and image footprint before choosing capacity.
+4. Keep current Docker security policy, image digest/source proof, internal
+   topology and independent witness unchanged. Network access for dependency
+   acquisition is outside the measured isolated runtime. Privileged Docker host
+   access is not a successful nonroot container or process-actor assertion.
+5. Reuse fresh evidence bundle per attempt. Exit2/component-only stays blocked;
+   exit1/assertion or infrastructure failure stays failure; missing/ignored full
+   cases cannot turn green. Record cleanup attempt and verify owned objects;
+   cancellation/timeout means interrupted unless cleanup/evidence actually exists.
+6. Public-repository logs/artifacts are not a private raw evidence store. Upload
+   only allowlisted sanitized summaries, hashes and required nonsecret metadata.
+   Current target/delivery-evidence summaries qualify for review; raw private
+   transcripts, actor identities, cookies, credentials and private spec stay out.
+   Restricted durable raw-evidence transport remains an unresolved prerequisite
+   for complete remote auditability; never claim a hash alone preserves raw data.
+7. Bind result to repository/workflow/run/attempt/source and artifact IDs/digests.
+   observation/2 collects attempt-specific logs and source/time-window artifacts;
+   subsequent runs cannot replace failed-source evidence. Set explicit short
+   artifact retention when implemented; default is90days, read-access downloads.
+
+All proposed remote resource, sandbox-equivalence, runtime/collector connection,
+storage headroom, source transport and raw-evidence retention checks are not_run.
+Only official-document inspection and existing-source review were performed.
+
+Implementation delta after free-hosted authorization: existing validation jobs
+are serialized policy→docker→browser→native→msrv→quality→images→packages→node→
+advisories→documentation→pages; native/image matrices have max-parallel1. Native
+standard runner labels are explicit Ubuntu24.04/macOS15/Windows2025. No optional
+profile removes required gates. A predecessor failure leaves later jobs not_run
+and ready rejects skipped dependencies. CI entrypoint keeps same-ref cancellation.
+CEF/collector/cross-OS component pushes now target main, preserving manual/PR
+entrypoints while preventing duplicate codex/rust push builds. They cancel
+superseded same-ref runs; cross-OS matrix runs serially.
+
+Regular branch validation writes no action cache or artifacts by default. Pages
+bundler cache is disabled. Tag-only validated release archives retain their
+existing publication purpose, with1day retention; Pages deploy artifacts are
+main-only/1day. Component artifacts require explicit CI_COMPONENT_ARTIFACTS=true,
+with1day retention and review before enabling; raw private bundles are never
+uploaded. Pilot prints the existing allowlisted public summary to job log and
+GITHUB_STEP_SUMMARY, including on full-product rejection. Root retrieves exact
+run/attempt logs privately. Native/raw reports left only on an ephemeral hosted
+VM are not durable retained evidence; this remains a limitation, not success.
+
+Local checks for this delta are actionlint and diff whitespace only. Rust summary
+emission is formatted but tests/build are deliberately deferred to hosted CI.
+No remote run has yet been initiated by this owner. First root dispatch after
+source closure is `gh workflow run ci.yml --ref codex/rust`; an authorized branch
+push already triggers ci, so do not dispatch a duplicate. Root must record the
+resulting exact run ID/SHA/attempt and preserve all failed/not_run outcomes.
+
 Accepted for implementation by the explicit parallel-completion request on
 2026-11-07 KST. New authored implementation/tests use Rust1.99.1/edition2024.
 The existing upstream action/Jekyll/theme/generated glue and frozen legacy
