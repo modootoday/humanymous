@@ -3,7 +3,7 @@ use humanymous_network::{
     report::{Observation, build},
     residual,
 };
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 use serde_json::{Value, json};
 

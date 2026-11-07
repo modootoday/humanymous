@@ -516,3 +516,19 @@ After:
 
 This formatting-only checkpoint preserves earlier source-specific test receipts
 as historical evidence; it does not create a new provider or product result.
+
+## PLATFORM-SLICE-02 mechanical parity-test imports
+
+Root authorized Network Rust test consumers. Two existing imports changed from
+humanymous_test_support::assert_json_equivalent to
+humanymous_platform::testing::assert_json_equivalent. No windows-object-bridge
+reference matched. No old matching references remain in the35Rust file scope.
+Only tests/report_parity.rs and tests/tls_parity.rs changed, each one import;
+fixtures, dependency categories/features, authority and behavior are unchanged.
+No manifest/path move, shim or alias; no compiler/unit/Clippy/fmt/CI execution
+while Root completes the common graph. Diff inspection/check passed.
+
+| Source | SHA256 before | SHA256 after |
+|---|---|---|
+| crates/network/tests/tls_parity.rs | 32572b1c0a023eda9820aea849211598806f294ba1c3df07dce29cc8ef108153 | 5c83ac51ceee549b2663c869e5ce555c364e5dda807d7f7f307d5c043a76de05 |
+| crates/network/tests/report_parity.rs | 9d28088b687b038d18a226951889ecb8d83518b56f3934eb02f7ee6db92008d5 | bf044891a96af1c2df94fb91492ed41bfb756666d842de5ed19944aedcb9d4c1 |

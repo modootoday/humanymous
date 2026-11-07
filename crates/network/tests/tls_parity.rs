@@ -2,7 +2,7 @@
 use humanymous_network::tls::{
     engine_from_client_hello, extension_order_hash, ja3, ja4, parse_client_hello, parse_record,
 };
-use humanymous_test_support::assert_json_equivalent;
+use humanymous_platform::testing::assert_json_equivalent;
 use serde::Deserialize;
 use serde_json::{Value, json};
 
