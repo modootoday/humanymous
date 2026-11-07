@@ -67,6 +67,23 @@ is proposed. Rust 1.99.1 / edition 2024 applies to implementation and pilots.
 
 ## Compatibility and failure rules
 
+### Next authorized source slice: population standardization
+
+Root authorized the lowest deterministic L1 kernel without RNG/policy changes.
+`training/standardize.rs` and its module export implement only Standardize from
+original baseline row/files/231. Contract: preserve input order; float32 sums and
+mean division; float32 squared-delta population variance divided by count before
+float64 sqrt, cast to float32, then add1e-6. Empty input is mean0/std1; nonempty
+constant input deviation is1e-6. Do not substitute sample variance, sorted or
+float64 accumulation, a different epsilon placement, or blanket negative clamping.
+Reject schema mismatch, zero/>100000 sample budget, over-budget input, nonfinite
+features and nonfinite intermediate sums/variance with typed errors. Overflow
+rejection is an explicit fail-closed hardening delta; no invalid bundle is emitted.
+The kernel neither selects samples nor admits provenance nor alters their bytes.
+Fixed-size shared FeatureVector arrays avoid a second schema/extractor definition.
+This pure source+tests/fmt slice is authorized; compilation is NOT_RUN and no
+training-loop/RNG, temporal gate, lifecycle or activation authority is inferred.
+
 The accepted first slice uses explicit configurable ceilings of1MiB per physical
 line including its newline,128MiB total bytes including blank lines,100000 parsed
 records including quarantine,64 normalized cohorts and128 UTF-8 bytes per metadata

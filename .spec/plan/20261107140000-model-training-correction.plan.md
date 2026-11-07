@@ -33,6 +33,13 @@ statement only for that parser slice; kernel/lifecycle remain unallocated.
 7. Root/runtime/product-lab owners coordinate Docker integration, source closure and
    final row dispositions. Preserve every legacy responsibility until reviewed.
 
+Next lowest L1 sub-slice authorized by root: legacy Standardize only, source and
+fmt/spec work. standardize.rs plus training/mod.rs export and4module regression
+tests are prepared; all4tests are NOT_RUN. This does not implement Train or resolve
+RNG/holdout/lifecycle choices. Next allocation needs scoped fmt first, model units,
+check/strict Clippy on an immutable source; no slot has been retained or requested
+by source authorship itself. The prior parser14-pass receipt remains exact-source.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.

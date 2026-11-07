@@ -268,3 +268,21 @@ The original68898522 run remains separately retained in sibling directory
 `20261107144500-model-training-correction-cwarm`, including the first fmt failure
 and owner-cancelled overbroad preflight census. No immutable receipts were edited
 to reconcile current SoT status.
+
+## Next L1 source checkpoint: standardization only
+
+Original baseline /files/231 (internal/mltrain/train.go) Standardize is now mapped
+to crates/model/src/training/standardize.rs, exported by training/mod.rs. Original
+/files/230 training tests remain broader unfulfilled obligations; no full row
+closure is claimed. This kernel is independent of the unresolved RNG/time/cohort
+policy choices and unlocks later training without changing any such policy.
+
+Four authored tests cover empty versus constant defaults; population (not sample)
+variance, negative features/feature order and unchanged inputs; float32 ordered
+rounding versus float64/reordered sums; schema/budget/nonfinite input and finite
+input sum/variance overflow rejection. All4 are NOT_RUN. Hand-computed expected
+values are regression contracts, not newly captured Go-execution fixtures.
+Only rustfmt and scoped spec checks were run. No Cargo, model initialization,
+training loop, dependency change, production activation or target reservation.
+Existing parser13unit+1fixture qualification at a0ebc9ae remains separate and is
+not transferred to this new source. The broader29-row migration remains open.
