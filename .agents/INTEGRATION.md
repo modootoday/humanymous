@@ -59,7 +59,12 @@ native `pwsh -File` arguments, a filename containing spaces/brackets, canonical
 attribution and a foreign staged-file preservation assertion. It never touches
 the shared repository's index/HEAD. Multi-path array invocation is a separately
 recorded manual PowerShell validation; no foreign test-launcher string is added
-to Rust. This regression remains NOT_RUN until allocated.
+to Rust. At checkpoint8560e55e, the allocated local-Windows regression passed1/1
+with zero failed/ignored/filtered; scoped check and Clippy passed. Manual multi-path
+commit preserved foreign staging, and invalid/stale claims were denied without
+HEAD changes. Retry closure hashes matched across24 files. First failure at1914976
+and all raw receipts remain private73349/git-coord-1914976. This component result
+does not qualify the other13 cases, hosted profiles or the full goal.
 
 The two new process cases cover competing claim children and retained legacy
 BOM claim ownership. They are authored but NOT_RUN during the root benchmark

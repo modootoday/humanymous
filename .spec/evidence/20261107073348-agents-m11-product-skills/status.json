@@ -66,5 +66,25 @@
     "further_model_loads": "held for root static review",
     "paired_qualified": false
   },
-  "full_goal_complete": false
+  "full_goal_complete": false,
+  "git_coord_component": {
+    "source_checkpoint": "8560e55e",
+    "venue": "local-windows",
+    "actual_passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "check_passed": true,
+    "clippy_passed": true,
+    "manual_multi_path_passed": true,
+    "invalid_and_stale_denied": true,
+    "closure_files": 24,
+    "closure_equal": true,
+    "first_failure_preserved": true,
+    "raw_evidence": "evidence:root/20261107073349",
+    "raw_subdirectory": "git-coord-1914976",
+    "broader13_run": false,
+    "hosted_qualified": false,
+    "full_goal_complete": false
+  }
 }

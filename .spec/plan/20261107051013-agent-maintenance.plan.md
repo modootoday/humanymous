@@ -12,6 +12,23 @@ rel:
 
 ## Narrow Git coordinator array repair
 
+Result at8560e55e: actual local-Windows git_coord1/1 passed, zero failed/ignored/
+filtered; final scoped test-target check and Clippy-Dwarnings passed. Manual direct
+PowerShell multi-path commit included exactly the two literal owned names and
+left foreign.txt staged. Invalid and one-hour-old UTCZ claims were denied with
+unchanged HEAD. The fixture is retained in the user's temporary directory.
+Retry before/after24-file closure matched; original1914976 failure is unchanged.
+All19 raw records are registered in private73349/git-coord-1914976. B was returned
+terminal with no owned background processes; final commit86.85%/free28.81GiB.
+The broader13 tests, model evaluation and hosted qualification were not run.
+
+Automatic review rejected the first combined fixture creation/test/deletion
+command with only "blocked by policy" and no detailed reason. It executed nothing.
+The narrower run excluded deletion/environment removal and retained its fixture;
+an initial inherited-GIT check refused harmless GIT_PAGER before any mutation,
+then explicitly allowed that display-only variable. No global config, timezone,
+foreign claim or shared Git index/HEAD was changed by the regression validation.
+
 Allocated B's first single-path actual test at1914976 failed before argv handling:
 the genuine UTCZ claim was treated as stale. The first log/result are retained in
 private73349/git-coord-1914976. Read-only reproduction found parsed DateTime.Kind

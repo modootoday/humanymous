@@ -26,9 +26,10 @@ Invalid timestamps remain stale/fail-closed. This does not authorize stale
 takeover, foreign claim release, machine timezone changes or wider script edits.
 The isolated Rust single-path regression retains a genuine RFC3339Z claim.
 
-Local pure tests/fmt/Clippy require an explicit root execution slot. The separate
-hosted gate runs actual `process`, `session_storage` and `product_package` test
-targets on the exact source candidate. Actual upstream paired inference requires
+Local compilation and supported ordinary process/fixture tests require an explicit
+root slot under the measured hybrid rule94; GitHub-specific profiles and the final
+matrix remain separate gates. The owner JSON inventory binds actual discovery
+and execution on each exact source candidate. Actual upstream paired inference requires
 the pinned full harness, runtime lock, bwrap, approved model/auth/allowance and
 raw trace/source receipts; no pure proxy or accounting fixture substitutes for it.
 The later allocated B batch passed 34 pure tests, fmt, all-target compile and
