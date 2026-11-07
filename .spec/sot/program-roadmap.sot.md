@@ -11,6 +11,64 @@ rel:
 
 # 전체 로드맵과 마일스톤
 
+## 2026-11-07 역할 재분리와 완료 gate 타임라인
+
+이 절은 이전 시점의 13채팅/후속 미배정 표현을 갱신한다. 기존13 전용 채팅에
+Apache/C ABI/Go/.NET/raw capture 전용5개를 추가해 root 포함19채팅이다.
+이는 생성/배정 수이며 모든 goal 수락·빌드·제품 완료 수가 아니다.
+071ccef는 명명규칙·THREADS registry·비중복lane를 등록했다.
+agents-meta root 점유는 정상 해제했고 maintenance 담당에 인계했다.
+상세 소유권은 .agents/sessions/THREADS.md와 LANES.md에 따른다.
+
+| 단계 | 현재 상태 | 종료 조건 | 담당/병렬성 |
+|---|---|---|---|
+| T0 정본·역할 정리 | 규칙/19채팅 배정, 후속claim 확인 중 | 실제 goal·path owner·계약 일치 | root/maintenance |
+| T1 공유 Rust 통합 | 부분 구현; 새 언어 crate/lock 통합 미완료 | shared core 재사용·exact source unit/fmt/Clippy | root + 각 crate owner |
+| T2 보안·서비스 완결 | authority/management/audit API 구현; 실제 운영 미검증 | IPC peer/ACL·secret provider·witness 복구·drain 실제 검증 | runtime/authority/audit/OS/CLI 분리 |
+| T3 producer·adapter | Node/nginx 부분 구현, Python/Ruby 신규source; Apache/C ABI/Go/.NET/capture 착수 | 지원별 실제 framework/OS/ABI, missing-signal 거절 | 언어/서버별 독립 owner |
+| T4 브라우저·제품랩 | CEF/collector/Compose source; full qualification 미통과 | actual Fetch/CEF·격리·egress·DNS·witness·워게임 | browser/root/lab/wargame |
+| T5 Cross-OS·공급망 | policy27unit 통과; native3OS·Docker·browser·Node·advisories 실패 | exact candidate 모든 필수job/분모·CVE처리·archive 검증 | CI 표준hosted 두lane |
+| T6 문서·표준·환경 | Pages/Draft 지속 작성; npm/crates/pypi/rubygems 환경 준비 | 같은 source docs render/link/a11y/skills eval·trust 준비 | Pages 단일writer/maintenance/CI |
+| T7 최종 전환 | 미착수·앞 단계 의존 | 최종candidate 전체gate, 승인된main통합·Pages확인·branch정리 | root Git 직렬 |
+
+T는 달력 기한/주 수가 아니라 순서와 의존이다. native host glue/unsafe의
+기존 규칙 예외, 실제 AT/IME/human 대조, 외부 registry trust처럼 미결정/미관측인
+항목이 있어 확정 종료일·완료율을 만들지 않는다. source-only/filtered/ignored/
+unknown/blocked를 통과로 계산하지 않는다.
+
+```mermaid
+flowchart LR
+  T0[현재: 역할·정본 고정] --> T1[공유 Rust 통합]
+  T1 --> T2[IPC·감사·OS·CLI]
+  T1 --> T3[캡처·언어·서버 adapter]
+  T1 --> T4[CEF·collector·Compose]
+  T2 --> T5[동일 SHA Cross-OS·제품 전체 gate]
+  T3 --> T5
+  T4 --> T5
+  D[지속: Pages·Draft v0·Skills] --> T6[문서·환경·공급망 종료검토]
+  T5 --> T6 --> T7[최종 main 전환·branch 정리]
+```
+
+역할 규칙: 기존 adapter owner는 framework/Node/Python/Ruby만, Apache·C ABI·
+Go Gate 호환성·.NET·capture는 신규 단독owner다. 공용 opaque handle/ABI는
+native-abi 하나만 구현하고 host adapter에 복제하지 않는다. Go는 기존 정본의
+universal HTTP Gate profile을 우선하며 새 Go SDK/producer를 완료로 사칭하지 않는다.
+공유 Cargo/lock/toolchain/integrity/collector는 root, workflow/build inventory는 CI,
+OS credential provider는 native-security owner, CLI는 selector/validation만,
+공개 docs/**는 Pages owner 한 명이다. 다른 담당은 INTEGRATION/spec delta로 전달한다.
+
+실행 상한은 채팅 수와 별개다. 코딩/정본화는 비중복 경로에서 병렬이며 로컬 Cargo는
+전역1개, hosted heavy는 현재 workflow 두lane 상한을 유지한다. 추가 채팅 생성이
+로컬 빌드 폭주나 유료 인프라 허가가 되지 않는다. 실제 배포/발행/tag/OIDC 교환은
+현재 금지 상태를 유지하며 환경 준비만 수행한다. main 전환은 최종 통합 단계다.
+
+실행 관측 갱신: run42348518353/source63f69ae의 Windows native와 browser도
+실패했다. advisories Trivy는 go.mod에서13건(UNKNOWN1/MEDIUM7/HIGH5/CRITICAL0)을
+보고했다. 원본 Cargo audit closure는 미회수이므로 전체 취약점 검증 성공이 아니다.
+MSRV 등 나머지job의 최종 상태는 CI owner가 계속 기록한다. 새source의 진단·제품
+pilot·관리 API 구현을 이 과거 run의 성공/실패 원인으로 소급하지 않는다.
+
+
 ## 무료 원격 검증 적용 결정
 
 ### Workflow 명명 및 OIDC 환경 준비
@@ -103,6 +161,17 @@ artifact는 private vault가 아니다. 민감 raw는 업로드하지 않고 별
 무료 runner compute와 별개이며 이번 무료 실행 범위에 자동 포함하지 않는다.
 
 ### 최초 무료 hosted 실행의 실제 결과
+
+후속 run42348518353/attempt1/source63f69ae는 관측 시점 진행 중이다. 공통
+정책 job의27Rust unit·정책·공개 action commit/entrypoint 조회는 실제 통과해
+최초403문제의 수정 효과를 확인했다. Ubuntu/macOS native job은 실패했으며
+이 실행의 공개 로그에는 세부 harness 원인이 없어 과거 Node ignored 원인으로
+추정하지 않는다. Docker는 ownerexit2/errors0의 component-only blocked를
+full-product gate가 거절했다. 구체 assertion 분모가 누락돼 과거71개 결과를
+소급하지 않는다. Windows native와 browser job은 관측 시점 실행 중이다.
+후속 a0ceac3/d31520f는 raw trace 없이 owner 요약/분모를 노출하는 진단 보완이며
+이전63f69ae 실행 결과를 바꾸지 않는다. collector 새 product fixture0ac1403 및
+순수 계약 회귀검사6733128은 다음 source batch이며 실제 product 실행은 not_run이다.
 
 Run42347732666/attempt1, source bfc9f62335ae41906996c6b01b0ae9e7993feeed는
 terminal failure다. ubuntu24.04에서 delivery Rust22tests와 policy 검사는 통과했다.
