@@ -3,9 +3,9 @@ id: change:root/20261107162913
 title: nginx adapter naming migration handoff
 status: active
 created: 2026-11-07T16:29:13Z
-updated: 2026-11-07T16:29:13Z
+updated: 2026-11-07T16:35:45Z
 rel:
-  depends_on: [sot:root/rust-migration]
+  depends_on: [sot:root/rust-migration, sot:root/nginx-adapter]
 ---
 
 # nginx adapter naming migration handoff
