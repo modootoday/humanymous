@@ -1,14 +1,43 @@
 //! Authenticate existing custody and retain its lifetime writer exclusion.
 use crate::configuration::Configuration;
 use humanymous_audit::{
+    checkpoint::CheckpointWitness,
     keys::{
         KeyError,
         custody::{Custody, Owner},
     },
-    log::{Config, Log},
+    log::{Config, Log, WitnessDurability},
     storage::{Wal, WalOptions},
 };
 use humanymous_authority::configuration::Peer;
+
+/// Trusted broker input, never deserialized from application HTTP or startup JSON.
+/// Pinning a key does not establish process or organizational independence.
+pub struct ExternalWitness {
+    client: Box<dyn CheckpointWitness>,
+    durability: WitnessDurability,
+}
+impl ExternalWitness {
+    /// Pin the broker's authenticated client before opening writer state.
+    /// The broker owns peer authentication, I/O deadlines and child lifetime.
+    pub fn new(
+        client: Box<dyn CheckpointWitness>,
+        expected_public: [u8; 32],
+        durability: WitnessDurability,
+    ) -> std::io::Result<Self> {
+        if client.public_key() != expected_public {
+            return Err(std::io::Error::other("witness public identity mismatch"));
+        }
+        Ok(Self { client, durability })
+    }
+
+    pub(crate) fn durability_name(&self) -> &'static str {
+        match self.durability {
+            WitnessDurability::FileAndDirectory => "file_and_directory",
+            WitnessDurability::FileSynced => "file_synced_namespace_unconfirmed",
+        }
+    }
+}
 
 /// Audit and its custody guard share one lifetime; neither is extractable.
 pub struct SealedAudit {
@@ -29,6 +58,24 @@ impl SealedAudit {
 
 /// Open audit with an existing sealed identity; startup never provisions keys.
 pub fn open_audit(config: &mut Configuration) -> Result<SealedAudit, &'static str> {
+    open_audit_inner(config, None)
+}
+
+/// Required-witness startup; errors never fall back to the writer-only path.
+pub fn open_audit_with_witness(
+    config: &mut Configuration,
+    witness: ExternalWitness,
+) -> Result<SealedAudit, &'static str> {
+    open_audit_inner(config, Some(witness))
+}
+
+fn open_audit_inner(
+    config: &mut Configuration,
+    witness: Option<ExternalWitness>,
+) -> Result<SealedAudit, &'static str> {
+    if config.audit.require_external_witness && witness.is_none() {
+        return Err("required external witness unavailable");
+    }
     let passphrase = std::mem::take(&mut config.audit.keys.passphrase);
     humanymous_authority::transport::private_directory(&config.audit.directory, &config.owner)
         .map_err(|_| "audit directory is not private")?;
@@ -50,18 +97,30 @@ pub fn open_audit(config: &mut Configuration) -> Result<SealedAudit, &'static st
     if !(32..=256).contains(&material.hmac_key().len()) {
         return Err("audit key width");
     }
-    let log = Log::open(
-        Wal::open(&config.audit.directory, WalOptions::default()).map_err(|_| "audit WAL")?,
-        Config {
-            node_id: config.audit.node_id.clone(),
-            hmac_key: material.hmac_key().to_vec(),
-            signing_seed: *material.signing_seed(),
-            checkpoint_every: 1,
-            witness: None,
-        },
-        config.audit.trusted_head.as_ref(),
-        config.audit.allow_new,
-    )
+    let wal = Wal::open(&config.audit.directory, WalOptions::default()).map_err(|_| "audit WAL")?;
+    let log_config = Config {
+        node_id: config.audit.node_id.clone(),
+        hmac_key: material.hmac_key().to_vec(),
+        signing_seed: *material.signing_seed(),
+        checkpoint_every: 1,
+        witness: None,
+    };
+    let log = match witness {
+        Some(witness) => Log::open_with_external_witness(
+            wal,
+            log_config,
+            config.audit.trusted_head.as_ref(),
+            config.audit.allow_new,
+            witness.client,
+            witness.durability,
+        ),
+        None => Log::open(
+            wal,
+            log_config,
+            config.audit.trusted_head.as_ref(),
+            config.audit.allow_new,
+        ),
+    }
     .map_err(|_| "audit authenticated recovery")?;
     Ok(SealedAudit {
         log,

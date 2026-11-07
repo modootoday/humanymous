@@ -31,6 +31,17 @@ fn configuration(origin: std::net::SocketAddr) -> Configuration {
 fn config() -> Configuration {
     configuration("127.0.0.1:32123".parse().unwrap())
 }
+#[test]
+fn required_external_witness_refuses_writer_only_before_opening_state() {
+    let mut configuration = config();
+    configuration.audit.require_external_witness = true;
+    assert!(matches!(
+        crate::startup::open_audit(&mut configuration),
+        Err("required external witness unavailable")
+    ));
+    // Missing injection does not consume the private unlock credential.
+    assert_eq!(configuration.audit.keys.passphrase.as_str(), "unit-fixture");
+}
 #[derive(Clone, Default)]
 struct Audit {
     records: Arc<Mutex<Vec<Record>>>,

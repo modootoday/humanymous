@@ -1,5 +1,9 @@
 //! OS-independent lifecycle. The caller owns platform signals and private input.
-use crate::{application::Application, configuration::Configuration, startup::SealedAudit};
+use crate::{
+    application::Application,
+    configuration::Configuration,
+    startup::{ExternalWitness, SealedAudit},
+};
 use humanymous_authority::decision::DurableAudit;
 use serde::Serialize;
 use std::{
@@ -80,13 +84,32 @@ pub struct ServiceHost {
 }
 impl ServiceHost {
     /// Authenticate existing credentials before exposing a ready listener.
-    pub async fn bind(mut configuration: Configuration) -> io::Result<Self> {
+    pub async fn bind(configuration: Configuration) -> io::Result<Self> {
+        Self::bind_inner(configuration, None).await
+    }
+
+    /// Consume a pinned external client. No witness failure permits fallback.
+    pub async fn bind_with_witness(
+        configuration: Configuration,
+        witness: ExternalWitness,
+    ) -> io::Result<Self> {
+        Self::bind_inner(configuration, Some(witness)).await
+    }
+
+    async fn bind_inner(
+        mut configuration: Configuration,
+        witness: Option<ExternalWitness>,
+    ) -> io::Result<Self> {
         configuration
             .validate()
             .map_err(|_| io::Error::other("configuration invalid"))?;
-        let audit = Arc::new(Mutex::new(
-            crate::startup::open_audit(&mut configuration).map_err(io::Error::other)?,
-        ));
+        let witness_durability = witness.as_ref().map(ExternalWitness::durability_name);
+        let sealed = match witness {
+            Some(witness) => crate::startup::open_audit_with_witness(&mut configuration, witness),
+            None => crate::startup::open_audit(&mut configuration),
+        }
+        .map_err(io::Error::other)?;
+        let audit = Arc::new(Mutex::new(sealed));
         let listener = TcpListener::bind(configuration.listen).await?;
         let application = Application::new(
             configuration,
@@ -94,9 +117,14 @@ impl ServiceHost {
             Box::new(SharedAudit(audit.clone())),
         )
         .map_err(|_| io::Error::other("application startup"))?;
+        let mut profile = application.readiness();
+        profile["audit_external_witness"] = serde_json::json!(witness_durability.is_some());
+        profile["audit_witness_required_durability"] = serde_json::json!(witness_durability);
+        // A connected/pinned client alone cannot certify deployment independence.
+        profile["audit_witness_independence_qualified"] = serde_json::json!(false);
         let readiness = Readiness {
             listen: listener.local_addr()?,
-            profile: application.readiness(),
+            profile,
         };
         Ok(Self {
             application,

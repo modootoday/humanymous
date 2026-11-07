@@ -16,6 +16,9 @@ pub struct Audit {
     pub allow_new: bool,
     /// Independently retained anchor, when provisioned.
     pub trusted_head: Option<humanymous_audit::checkpoint::Checkpoint>,
+    /// Refuse writer-only startup when a trusted broker must supply a witness.
+    #[serde(default)]
+    pub require_external_witness: bool,
 }
 /// Secret startup source; neither Debug nor Serialize is implemented.
 #[derive(Deserialize)]

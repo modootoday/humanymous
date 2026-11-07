@@ -119,3 +119,19 @@ custody recovery and WAL flush require supervisor deadlines; this source cannot
 promise their preemption. Main reuses this lifecycle with legacy inherited pipes;
 actual SCM/SIGTERM controller, management listener and unattended credentials are
 still R09/R16 work. This implementation and all lifecycle tests are NOT_RUN.
+External witness injection source contract (R12/R15): private configuration may
+set audit.require_external_witness=true (default false preserves legacy startup).
+Without injection, startup refuses before opening custody/WAL or consuming the
+unlock credential. startup::ExternalWitness::new consumes Box<dyn
+CheckpointWitness>, a broker-pinned expected public key and WitnessDurability;
+ServiceHost::bind_with_witness consumes that value and calls the shared
+Log::open_with_external_witness. There is no failure fallback to writer-only.
+The client is Send + owned/'static, not required Sync; all audit/pipe exchanges
+remain serialized. Reuse audit WitnessServiceClient::connect/from_ready and its
+private frame codec. Broker owns authenticated handles/peer, actual I/O deadlines,
+child lifetime and reaping. FileAndDirectory is required for the Linux product
+isolation profile; FileSynced remains explicit namespace-unconfirmed component
+policy. Readiness records injection and required durability, while independence
+qualification remains false pending deployment evidence. Injection itself is not
+independence evidence. New missing-injection refusal test is authored, NOT_RUN;
+all new source compilation/runtime/witness integration tests are NOT_RUN.
