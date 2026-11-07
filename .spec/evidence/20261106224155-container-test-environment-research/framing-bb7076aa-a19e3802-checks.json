@@ -1,0 +1,48 @@
+{
+  "schema": "humanymous.lab-owned-failure-framing-source-proof/1",
+  "implementation_commit": "bb7076aa56ca3ab2443da209314c69f2aa052d31",
+  "measured_source": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb",
+  "measured_run": 42406688473,
+  "preflight_job": 128505794191,
+  "canonical_owner_commit": "17d6c08ef35652fc2b9b3a082d4488b146b0830e",
+  "canonical_owner_evidence": "evidence:root/20261107194718",
+  "venue": "actual GitHub Ubuntu24.04 Linux preflight",
+  "file_byte_identity": [
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure.rs",
+      "implementation_blob": "9acbb3b97e1616e4738e4c979c6143f58432ae4b",
+      "measured_blob": "9acbb3b97e1616e4738e4c979c6143f58432ae4b",
+      "equal": true
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "implementation_blob": "fe4ef3f6a105e49a3f5c0598b49324811a480f29",
+      "measured_blob": "fe4ef3f6a105e49a3f5c0598b49324811a480f29",
+      "equal": true
+    }
+  ],
+  "explicit_classifier_test_passes": 6,
+  "lab_total": {
+    "passed": 34,
+    "ignored": 0,
+    "filtered": 0,
+    "failed": 0
+  },
+  "selected_unix_clippy": "passed",
+  "unix_actor_compile": "passed",
+  "raw_log_sha256": "3523b94c04d85152b424197dc2a7293b43dd13ddd90de78fecfe144a9e2860ed",
+  "derived_excerpt": "actual-a19-framing-tests.derived.log",
+  "actual_pref_e70_plus_observer_candidate_executed": false,
+  "expected_pref_observer_tests": 32,
+  "actual_browser_assertion_verified": false,
+  "actual_e70_duplicate_locations_verified": false,
+  "actual_browser_wire_counter_observations_verified": false,
+  "full_product_qualified": false,
+  "limits": [
+    "Measured on a19 fixed/Go-facade source, not a not-yet-created observer-only e70 reproduction.",
+    "This actual preflight proves named pure classifier tests; the successful Go product does not run the selected browser test.",
+    "No original e70 private stream, panic location or duplicate-console content was recovered.",
+    "New structural/worktree/refs operations await the Root user-confirmation gate."
+  ],
+  "derived_excerpt_evidence": "evidence:root/20261107190848"
+}

@@ -105,6 +105,14 @@
       "result": "failed",
       "run": 42402268161,
       "profile": "browser_product"
+    },
+    {
+      "evidence": "hosted-go-a19e3802-success-join.json",
+      "profile": "go8",
+      "result": "passed",
+      "run": 42406688473,
+      "facts": "New public-facade consumer actual Docker8/8pass40knownassertions0unknown/failure/notrun; cleanuptrue/sourceunchanged/annotations0. PreflightLab34/Delivery110+Unixactor/Clippy. CanonicalGoowner17d6c08e; full/releasefalse and rawtuple unrecovered.",
+      "source": "a19e380218b87ea77c2f0d48d9fdd7edfa9fd8cb"
     }
   ],
   "unmeasured": [
