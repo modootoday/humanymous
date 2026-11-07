@@ -103,3 +103,13 @@ features). No handwritten WASM validator will replace standards validation.
 Instruction/type validation, explicit supported proposals, components refusal,
 count/work limits and real exported-module execution remain required. PNG
 metadata/LSB/alpha and memory/cancellation obligations remain open, not retired.
+
+### First D29 execution and corrected candidate
+
+Exact27f1d1d1 fmt/check passed, strict Clippy failed101 on chunks_exact_to_as_chunks,
+and tests were NOT_RUN. That first failure and3571-file unchanged closure remain
+in evidence:root/20261107142752. The working-source correction uses
+as_chunks::<8>().0.iter() and adds a partial-group assertion to an existing JSON
+recovery test. No source semantics, limit or dependency changes are intended.
+The corrected candidate still has29 authored tests and no execution qualification.
+Do not inherit the old16-unit A16 pass or rewrite the failed immutable archive.

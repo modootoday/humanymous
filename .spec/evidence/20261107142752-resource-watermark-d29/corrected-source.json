@@ -1,0 +1,101 @@
+{
+  "schema": "humanymous.watermark-d29-corrected-source/1",
+  "failed_source": "27f1d1d1ffe39e9cfb2d80671f4d45c0335d9701",
+  "source": [
+    {
+      "path": "crates/watermark/Cargo.toml",
+      "bytes": 324,
+      "sha256": "8973eddacca47b27eacad070d8efbe09b1846c1e01f47d707ef5e94eed3fd8f9"
+    },
+    {
+      "path": "crates/watermark/INTEGRATION.md",
+      "bytes": 7617,
+      "sha256": "4a6864958ba7cbd8da7ee372cb76da59e3630893e36e4abbc1d00f9e9d044235"
+    },
+    {
+      "path": "crates/watermark/src/codec.rs",
+      "bytes": 381,
+      "sha256": "a818fdc1ebd2abd69f424f2e440433dabf96d6d0fc72a8fa0bcf256a6ed95da4"
+    },
+    {
+      "path": "crates/watermark/src/codec/base32.rs",
+      "bytes": 3133,
+      "sha256": "5d2450a13e03d716ec0b506020a8106e540e0c010a0e52054fc2f2bdb4e6b97e"
+    },
+    {
+      "path": "crates/watermark/src/codec/binary.rs",
+      "bytes": 2064,
+      "sha256": "2b5334ec68a5188e8415254b0d4fbff901c6146172e750131c6d9245cc38ccc0"
+    },
+    {
+      "path": "crates/watermark/src/codec/mime.rs",
+      "bytes": 5797,
+      "sha256": "7647c94c29d82225e061c7a5c770e1fad535f3f394cf7589db48340708ce3c38"
+    },
+    {
+      "path": "crates/watermark/src/codec/text.rs",
+      "bytes": 3813,
+      "sha256": "95d8d45ac421faa6dc8200be3f25019dfdd0832fe998d64601513621624182ff"
+    },
+    {
+      "path": "crates/watermark/src/codec/text/tests.rs",
+      "bytes": 2087,
+      "sha256": "fa86a19ac88acb872ff44d1bbf24345f7d7bb5956dacdbc1b7d4df89c114d201"
+    },
+    {
+      "path": "crates/watermark/src/error.rs",
+      "bytes": 2843,
+      "sha256": "89e7282543ab5ce239f192a747ed34421e0187d2c2a6466cf6f318688a3a59bd"
+    },
+    {
+      "path": "crates/watermark/src/frame.rs",
+      "bytes": 5225,
+      "sha256": "77919c59dad834044da5bd9a5f4e265cdab6f0b72280d77ce2526ea2fcb5ceb5"
+    },
+    {
+      "path": "crates/watermark/src/frame/tests.rs",
+      "bytes": 2638,
+      "sha256": "92a24c4d4e4d8112f5ed1a0ba6cc78a112277dc4fcb602f866e02cf6fad89c0b"
+    },
+    {
+      "path": "crates/watermark/src/ledger.rs",
+      "bytes": 6542,
+      "sha256": "4acf4a486f4a87dfef7169908e289cac1c2c44c3dad3bbee9864a8b5a9898362"
+    },
+    {
+      "path": "crates/watermark/src/ledger/reservation.rs",
+      "bytes": 2911,
+      "sha256": "82c3ced22094bfecb9abda7eff994984d569c2ce9511102339e4c12b3b5d3ed4"
+    },
+    {
+      "path": "crates/watermark/src/ledger/state.rs",
+      "bytes": 1384,
+      "sha256": "e361e06324aeaaae3e4a0e4f856666d2bf758d39ad59292081398b610498726b"
+    },
+    {
+      "path": "crates/watermark/src/ledger/tests.rs",
+      "bytes": 8502,
+      "sha256": "048726f52c4ff465b4b30f3ebbdffc557bcc56c1182d0efa863a702bb5a4153b"
+    },
+    {
+      "path": "crates/watermark/src/lib.rs",
+      "bytes": 411,
+      "sha256": "56e17457fab81afb3e3125d3e41839a70e47ddbe6c9918df1b35d63118adb73e"
+    },
+    {
+      "path": "crates/watermark/src/payload.rs",
+      "bytes": 4863,
+      "sha256": "082ee65ab93908236f3a6db13a495cfc4649e5797e43a6f699b55e2ace20eb73"
+    },
+    {
+      "path": "crates/watermark/src/payload/tests.rs",
+      "bytes": 4696,
+      "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76"
+    }
+  ],
+  "package_files": 18,
+  "tests_authored": 29,
+  "candidate_tests_executed": 0,
+  "correction": "as_chunks::<8>().0.iter() with same complete-group semantics; existing test partial-group assertion",
+  "retry": "NOT_RUN"
+}

@@ -17,6 +17,9 @@ fn all_text_channels_preserve_source_prefix_and_recover() {
         assert!(out.starts_with(source));
         assert_eq!(recover(&out, limits()).unwrap(), b"carrier");
         if syntax == Syntax::Json {
+            let mut partial_group = out.clone();
+            partial_group.push(b' ');
+            assert_eq!(recover(&partial_group, limits()).unwrap(), b"carrier");
             assert!(
                 out[source.len()..]
                     .iter()

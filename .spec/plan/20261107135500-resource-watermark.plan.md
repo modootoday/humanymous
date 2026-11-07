@@ -54,6 +54,19 @@ Foreign dirty files are untouched. Shared Git/index operations were not used.
 
 ## Proposed interface for owner review
 
+### D29 first-failure correction
+
+Root allocated exact27f1d1d1 native component verification after the Pages window.
+fmt/checkalltarget exited0; strict Clippy exited101 for chunks_exact_to_as_chunks
+at codec/text.rs101. Tests were NOT_RUN under stop-on-first-failure. The immutable
+archive and3571-file before/after closure (zero differences) are retained in
+evidence:root/20261107142752. D target was returned to root, not silently reused.
+The source correction replaces chunks_exact(8) with as_chunks::<8>().0.iter():
+both consume complete eight-bit groups and ignore the same final partial group.
+An existing JSON recovery test gains the partial-group assertion. No suppression,
+new dependency, codec behavior/policy change or automatic retry is authorized.
+Corrected source is a separate candidate and has no execution proof yet.
+
 ### Accepted second source-only slice delta
 
 Root authorized bounded frame, deterministic strict MIME selection, text and

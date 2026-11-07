@@ -1,0 +1,65 @@
+{
+  "schema": "humanymous.watermark-d29-first-execution/1",
+  "source_commit": "27f1d1d1ffe39e9cfb2d80671f4d45c0335d9701",
+  "archive_sha256": "51e678fa03a9a476a795ac3c77c557f7627d8419ba4f8bfd2382f56e55ba86c3",
+  "archive_bytes": 69632000,
+  "venue": "native Windows x86_64-pc-windows-msvc",
+  "rust": "1.99.1",
+  "controller_pid": 41332,
+  "session": 35125,
+  "terminal_exit": 1,
+  "target": "target/validation-audit",
+  "jobs": 1,
+  "incremental": 0,
+  "offline": true,
+  "locked": true,
+  "results": [
+    {
+      "step": "fmt",
+      "command": "cargo fmt -p humanymous-watermark -- --check",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:29:28.5850304Z",
+      "ended_utc": "2026-11-07T14:29:28.6914764Z"
+    },
+    {
+      "step": "check",
+      "command": "cargo check --locked --offline -p humanymous-watermark --all-targets --jobs 1",
+      "exit_code": 0,
+      "started_utc": "2026-11-07T14:29:29.5601913Z",
+      "ended_utc": "2026-11-07T14:29:30.0505348Z"
+    },
+    {
+      "step": "clippy",
+      "command": "cargo clippy --locked --offline -p humanymous-watermark --all-targets --jobs 1 -- -D warnings",
+      "exit_code": 101,
+      "started_utc": "2026-11-07T14:29:31.1350539Z",
+      "ended_utc": "2026-11-07T14:29:31.5171401Z"
+    },
+    {
+      "step": "tests",
+      "status": "NOT_RUN"
+    }
+  ],
+  "first_failure": "clippy::chunks_exact_to_as_chunks codec/text.rs101",
+  "tests_authored": 29,
+  "tests_executed": 0,
+  "test_status": "NOT_RUN",
+  "closure": {
+    "before_files": 3571,
+    "after_files": 3571,
+    "difference_records": 0,
+    "archive_files": 2579,
+    "selected_registry_files": 970,
+    "registry_packages": 20,
+    "toolchain_bin_files": 21,
+    "controller_files": 1,
+    "limits": "Not an entire Windows SDK/linker/system DLL/host OS snapshot"
+  },
+  "admission": {
+    "commit_percent": 82.06166383076403,
+    "free_gib": 30.900794982910156
+  },
+  "raw_bundle": ".spec.local/root/evidence/20261107142752-resource-watermark-d29/",
+  "target_returned": true,
+  "qualification": "first Clippy failure; no29unit pass or product qualification"
+}

@@ -98,7 +98,9 @@ pub fn recover(source: &[u8], limits: Limits) -> Result<Vec<u8>, Error> {
         .count();
     if trailing >= 8 {
         let raw: Vec<u8> = source[source.len() - trailing..]
-            .chunks_exact(8)
+            .as_chunks::<8>()
+            .0
+            .iter()
             .map(|bits| {
                 bits.iter()
                     .fold(0, |byte, bit| (byte << 1) | u8::from(*bit == b'\t'))
