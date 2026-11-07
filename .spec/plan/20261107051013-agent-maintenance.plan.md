@@ -756,3 +756,13 @@ complete/link/RubyABI qualification remained false. The34-file selected source
 closure was unchanged; execution HEAD9aa77f9a9f25a8f381d3ebf35f789230aef6205b
 contains the exact authored checkpoint. Target returned terminal with no live
 handles. No WSL, backend change, model pilot or full29-case integration run.
+
+Root explicitly expanded the gate to all nonignored library units. First execution
+was63pass/1fail, due to stale title-test debt-presence assumption. The routine owned
+test correction retains an active unregistered-prose detection assertion. Full
+library then passed64/0/0ignored/0filtered, followed by both actual CLI targets9/0,
+all-target check, strict Clippy and fmt. Corrected selected source closure36 includes
+compile-time THREADS and language-preservation inputs and was unchanged. Target
+returned terminal again. Raw first failure is retained. A separate authored-public
+CRLF attachment mismatch was caught after e511d294 and corrected index-only at
+bda10042; raw original bytes were preserved and canonical LF payload verified.

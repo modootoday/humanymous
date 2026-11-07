@@ -180,12 +180,23 @@ mod tests {
             &records,
         );
         assert!(report.errors.is_empty());
-        assert!(!report.findings.is_empty());
         assert!(
             report
                 .findings
                 .iter()
                 .all(|finding| finding.classification == "preserved-exact-line")
+        );
+        // Current titles may all be English. A new unregistered authored line
+        // must still be detected instead of requiring historical title debt.
+        let extended = format!(
+            "{}\n추가 설명\n",
+            include_str!("../../../.agents/sessions/THREADS.md")
+        );
+        let changed = inspect(".agents/sessions/THREADS.md", &extended, &records);
+        assert_eq!(changed.findings.len(), report.findings.len() + 1);
+        assert_eq!(
+            changed.findings.last().unwrap().classification,
+            "authored-prose-review-debt"
         );
     }
 }

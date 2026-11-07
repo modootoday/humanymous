@@ -73,5 +73,39 @@
   "full_goal_complete": false,
   "target_returned": true,
   "raw_evidence": "evidence:root/20261107073349",
-  "raw_subdirectory": "bounded-consumers-windows"
+  "raw_subdirectory": "bounded-consumers-windows",
+  "full_library_followup": {
+    "first": {
+      "exit": 101,
+      "failure": "language repository title test incorrectly required remaining non-English titles",
+      "ignored": 0,
+      "failed": 1,
+      "passed": 63,
+      "filtered": 0
+    },
+    "correction": "allow all-English current titles and assert newly appended unregistered CJK prose is still detected",
+    "corrected": {
+      "ignored": 0,
+      "filtered": 0,
+      "passed": 64,
+      "failed": 0,
+      "exit": 0
+    },
+    "corrected_source_file": "skills/agent-maintenance/src/language.rs",
+    "corrected_source_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+    "corrected_source_closure_files": 36,
+    "corrected_source_difference_records": 0,
+    "actual_cli_rebound_passed": 9,
+    "check_exit": 0,
+    "clippy_exit": 0,
+    "fmt_exit": 0,
+    "target_returned": true
+  },
+  "public_attachment_correction": {
+    "first_commit": "e511d2945cfdc194ac57c068a1e35ae738979aea",
+    "correction_commit": "bda10042c3bd8837b3d6ebd3f095f8f04899b059",
+    "cause": "authored working CRLF projection metadata differed from canonical Git LF payload",
+    "original_preserved": "bounded-consumers-windows/first-public-crlf-original.json",
+    "raw_originals_normalized": false
+  }
 }

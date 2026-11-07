@@ -53,6 +53,15 @@ present; linkage, imports and Ruby ABI remain unqualified. The34-file source
 closure matched before/after. Full29-case integration and hosted qualification
 were not executed; the earlier Windows1314 link-fixture failure remains separate.
 
+The explicit full-library follow-up first failed63/1 because its title-preservation
+test required non-English findings after all current titles became English. The
+owned test now permits that valid state and still requires a newly appended
+unregistered authored CJK line to be detected. Corrected full library passed64/0,
+zero ignored/filtered; actual CLI9, check/Clippy/fmt passed again. The corrected
+36-file selected closure includes the two compile-time title/preservation inputs
+and matched before/after. First failure and exact test-source hash remain in the
+registered receipt; no integration29 or ABI qualification is inferred.
+
 Root accepted the future named `audit154715-equal-coverage-120s` profile only for
 the frozen Audit154715 equal-coverage input. Default30seconds and all byte/file
 caps remain. Profile execution is unavailable until exact selection binding and
