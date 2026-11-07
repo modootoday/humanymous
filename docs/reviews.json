@@ -1,6 +1,66 @@
 {
   "schema": 1,
   "reviews": [
+{
+  "source": "adapters/nginx/.gitignore",
+  "sha256": "0bb5e908544e65360b69a4baebee1768a83b9f2499b1537246c80c3213554ff4",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read the single generated .build-cache exclusion. Ignoring build cache does not accept authored files, refresh source receipts or make generated artifacts qualified.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "adapters/nginx/Dockerfile.native",
+  "sha256": "f4d2b28dc72ad4f1bc38b23ca8487f9c22dc567a1d725092212bae3a28ba1981",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read full pinned Rust/Debian and checksum-pinned nginx build, same source/build flags, locked Cargo unit/native/pilot/Clippy/authority steps and nonroot final pilot entrypoint. Image guide now identifies lab-only engine/module/pilot/authority contents rather than a production runtime. Source instructions are not proof any step ran or the current image passed.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "adapters/nginx/Dockerfile.native.dockerignore",
+  "sha256": "4a109d1ca1629ed40f3cce38e3554caa99df5bb08e3ab5f02afb81b26cc53051",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read deny-by-default build context with explicit workspace source/manifests and current member inputs, excluding target and .build-cache. Context filtering is distinct from final image-content or secret-exclusion verification; image guide requires artifact inspection. No Docker build claimed.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "adapters/nginx/compose.yaml",
+  "sha256": "1d8fa6a07c535688832a7eb0ca051c8a4c5d7c080dcff739ceca77d688e5f509",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read actual lab image target, network none, UID65532, read-only root, 128MiB tmpfs, all capabilities dropped, no-new-privileges, process128 and memory1GiB limits. Image guide distinguishes requested configuration from effective runtime isolation evidence. No Compose execution claimed.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "adapters/nginx/INTEGRATION.md",
+  "sha256": "be236990154088b51816b2dc37f08dcd1cbe05a3f4a525d967958076e3fbd0d0",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read owner integration evidence boundaries: explicit nginx profile/shared consume, historical exact source/module commitments, synthetic-only positive ALLOW, production409 and reload503, remaining witness/cross-user/backpressure/full product gaps. Topology reference preserves those distinctions and does not qualify newer JSON/timer bytes.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
+{
+  "source": "adapters/nginx/README.md",
+  "sha256": "2097578eb630eb695e8310f60beafcfdae23e84b0c864e89c7d3ab260cec958a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete native module guidance including private supervisor provisioning, server-level guard, bounded uploads, trusted nginx configuration, no post-auth rewrite/retry/cache, historical35groups and legacy mock exclusion. Public topology/image references state experimental Linux scope, lab image purpose, synthetic ALLOW and outstanding current-source/human/AT qualification.",
+  "pages": [
+    "docs/reference/supported-topologies.md",
+    "docs/how-to/verify-the-image.md"
+  ]
+},
     {
       "source": "crates/nginx-adapter/src/lib.rs",
       "sha256": "b037239dfc33dd41c3e9a79ecf85b0453d6554c9e0ed922c236952c4ee20c5f3",

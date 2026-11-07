@@ -629,3 +629,14 @@ Compared profile, conformance, preparation and reference pages. Added informativ
 result-record groups and explicit synthetic/production, ACK/origin, skip/failure,
 raw-retention and hosted/AT distinctions. No new conformance class, generic wire
 schema or normative requirement introduced; change manifest marks editorial.
+
+## Nginx lab configuration and source receipt review
+
+Existing docs-review binary refused full inventory with missing nginx source
+rows; did not compile it or infer complete freshness. Read six current adapter
+metadata/build/Compose/guide files and authored specific per-file review notes
+and exact hashes. Image guide now distinguishes pilot/authority lab image from
+production runtime and declarative isolation from actual effective controls.
+Workflow-name search found no public fixed-name/path references needing rename;
+reported root without inventing another policy/catalog. Theme SHA and override
+map remain unchanged. No build/browser/Docker execution.
