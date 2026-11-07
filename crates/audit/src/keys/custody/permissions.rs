@@ -85,6 +85,10 @@ fn no_alias(metadata: &fs::Metadata) -> io::Result<()> {
 pub(crate) fn file(file: &File, owner: &Owner) -> io::Result<()> {
     check(file, owner, false)
 }
+#[cfg(all(test, target_os = "linux", target_arch = "x86_64"))]
+pub(crate) fn directory_file(file: &File, owner: &Owner) -> io::Result<()> {
+    check(file, owner, true)
+}
 fn check(file: &File, owner: &Owner, directory: bool) -> io::Result<()> {
     let metadata = file.metadata()?;
     no_alias(&metadata)?;

@@ -4,6 +4,9 @@ use std::{
     path::Path,
 };
 
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+mod native;
+
 pub(super) mod sealed {
     pub trait Sealed {}
 }

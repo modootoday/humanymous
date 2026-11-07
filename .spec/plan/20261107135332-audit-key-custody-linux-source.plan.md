@@ -11,12 +11,49 @@ rel:
 
 # Audit key custody Linux retained source admission
 
-Version0.3. Root accepted the narrow prospective Unix WAL creation fix and the
+Version0.4. Root accepted the narrow prospective Unix WAL creation fix and the
 Linux diagnostic premises below; validation requires a new explicit A grant.
 Native producer implementation follows a separate concrete source-slice freeze.
 No dependency change or production route is authorized. Phase-B qualification
 remains exactly [[evidence:root/20261107133648]]. Current native Source remains
 Unsupported and scanner composition remains test-only.
+
+## Current source slice (unqualified)
+
+The private test-compiled Linux x86_64 backend now lives under
+verification/scan/source/native.rs. It implements the sealed Source with a
+bounded retained pin inventory, read-only cooperative lock and metadata observer,
+same-descriptor statx mount-ID requirement, ext-family/private permission checks,
+secure openat2 resolution, fixed-buffer RawDir membership scans and checked
+positioned Read/BufRead. Source and readers share the private context; the guard
+is its last field so pins close before final unlock. No File/&File/raw-handle
+getter, public constructor, unsafe, new dependency or product route is added.
+The existing open_native entrypoint continues returning Unsupported.
+
+Admission checks max4096 segments, max4100 directory entries and conservative
+N+1+6 plus configured other-process descriptor reservation before any native
+open. This is a trusted finite reservation, not a measurement of all live process
+FDs or proof of OS availability; EMFILE/ENFILE still refuse. Positioned readers
+share original descriptors. The trusted parent's object/provider/owner/mode
+remain checked, while its unrelated sibling-driven length/link/mtime/ctime
+changes are excluded; the private WAL root retains its full epoch and exact
+parent-relative/absolute current-name binding. Whole-WAL quiescence is required,
+not whole-parent quiescence. These refinements need actual native review/probes.
+
+Three ordinary unit tests are authored for finite descriptor admission including
+other reservations/overflow, cancellation-before-open and path-alias refusal.
+One additional explicitly ignored controlled-venue test requires
+HUMANYMOUS_AUDIT_NATIVE_SOURCE_PARENT, creates a private real-WAL fixture, performs
+two-pass signed-record/checkpoint diagnostics, interleaves positioned readers,
+asserts writer-lock retention through the final reader and refuses a same-size
+0600 replacement plus subsequent poisoned read. It must be selected explicitly
+in an allocated supported Linux venue. No environment absence/Unsupported is
+counted as a healthy native result. It is a qualification case, not a subprocess
+helper, and its ignored default outcome must be recorded separately from the
+five historical helper exclusions. ALL new native tests/code are NOT RUN or
+compiled; no fmt/check/Clippy/capacity/production qualification is claimed.
+Remaining actual fault cases include root replacement, truncate/regrow/append,
+sidecar changes, FD exhaustion, unsupported filesystem and final-epoch failure.
 
 ## Problem and proposed scope
 

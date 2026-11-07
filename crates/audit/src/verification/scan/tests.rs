@@ -91,7 +91,7 @@ fn fixture(segments: Vec<Vec<u8>>, sidecar: Option<Vec<u8>>) -> Fixture {
         second_pass_sidecar: None,
     }
 }
-fn limits() -> Limits {
+pub(super) fn limits() -> Limits {
     Limits {
         frame: 4096,
         json: preflight::Limits {
