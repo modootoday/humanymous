@@ -1,0 +1,157 @@
+{
+  "schema": "humanymous.delivery-dependabot-rust-review/1",
+  "reviewed_rust_head": "17d6c08ef35652fc2b9b3a082d4488b146b0830e",
+  "mode": "read-only; no merge, close, retarget, push, install, signing or OIDC exchange",
+  "pull_requests": [
+    {
+      "number": 6,
+      "head": "a667e9b47b01ca8b3f8b1e0f1739ce25eff43a71",
+      "base": "main",
+      "proposed": {
+        "version": "4.5.2",
+        "commit": "371161bbe7024a29a25c5e19bfcbc0804fe9ad2c"
+      },
+      "current": {
+        "version": "4.8.0",
+        "commit": "8aa5831fb8d48d8f76594c7ddde61ae58019f550"
+      },
+      "official_compare": {
+        "status": "ahead",
+        "ahead_by": 96,
+        "behind_by": 0
+      },
+      "disposition": "superseded on Rust; do not downgrade or blindly merge old-main branch",
+      "required_rust_source_changes": []
+    },
+    {
+      "number": 7,
+      "head": "38431e8178a1b6118c5a885f4a0637a6ae7d8b3b",
+      "base": "main",
+      "proposed": {
+        "version": "7.0.1",
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "runtime": "node24",
+        "entrypoint": "dist/index.js",
+        "entrypoint_git_blob": "06ae5d221b3dc83259d396ec60027972181e51b9",
+        "entrypoint_bytes": 1452503
+      },
+      "current": {
+        "version_family": "v6",
+        "commit": "d23441a48e516b6c34aea4fa41551a30e30af803"
+      },
+      "disposition": "not superseded; port/rebase a deliberate current-Rust upgrade instead of merging old workflow layout",
+      "security": "v7 defaults to refusing unsafe fork checkout for pull_request_target/workflow_run, uses ESM and dependency hardening; no unsafe opt-in needed by current allowed callers",
+      "compatibility": "Official Node24 runner floor2.327.1; authenticated Docker credential reuse has separate2.329.0 floor. Current exact-ref/persist-credentials:false and ordinary push/PR/manual/tag profiles appear compatible by source; not actually executed with v7.",
+      "required_rust_source_changes": [
+        "Coordinate all18 current workflow checkout files, including Apache/Python owners",
+        "Update all three strict checkout literals/fixture in Delivery policy",
+        "Preserve exact refs, persist-credentials:false, frozen oracle baseline and trigger/permission contracts",
+        "Fresh actionlint/policy and bounded actual Node24 checkout smoke; prior v6 hosted success does not qualify v7"
+      ]
+    },
+    {
+      "number": 8,
+      "head": "ed4439506f1c49a86d2520da04424bc4d7eb2d99",
+      "base": "main",
+      "proposed": {
+        "version": "4.1.2",
+        "commit": "6f9f17788090df1f26f669e9d70d6ae9567deba6",
+        "runtime": "composite",
+        "default_cosign": "3.0.6",
+        "linux_amd64_bootstrap_sha256": "c956e5dfcac53d52bcf058360d579472f0c1d2d9b69f55209e256fe7783f4c74"
+      },
+      "current": {
+        "commit": "398d4b0eeef1380460a10c8013a76f728fb906ac",
+        "runtime": "composite",
+        "default_cosign": "2.5.2"
+      },
+      "disposition": "not superseded; meaningful tool/security migration, not a Node20 warning fix",
+      "security_advisory": {
+        "id": "GHSA-whqx-f9j3-ch6m",
+        "cve": "CVE-2026-22703",
+        "affected": "<=2.6.1 and <=3.0.3",
+        "patched": "2.6.2 and3.0.4",
+        "limit": "Advisory is conditional on trust/bundle configuration; no publication job or exploit was executed in this review"
+      },
+      "compatibility": "v3 defaults to standardized bundle/OCI1.1 referring artifacts and new trust/service configuration. Version3.0.6 verify source transforms verified bundle output to SimpleContainerImage with critical.image.docker-manifest-digest, suggesting current Rust digest parser compatibility, not actual qualification. Installer adds envsubst dependency and retains default use-sudo:false.",
+      "required_rust_source_changes": [
+        "Update both release installer occurrences together; PR8 only changes the old-main signing occurrence",
+        "Review current digest/exact certificate identity/issuer parser against pinned v3 CLI; retain fail-closed checks and prefer explicit JSON output",
+        "Qualify installer/version and a separately admitted nonpublishing signature/verification compatibility fixture before any tag publication; do not exchange OIDC or publish during review",
+        "Preserve tag/readiness/environment/concurrency gates; do not keep vulnerable2.5.2 solely to avoid the migration"
+      ]
+    },
+    {
+      "number": 9,
+      "head": "6f9d75740dbfa0c295b2601b541d721c732dbc67",
+      "base": "main",
+      "proposed": {
+        "version": "8.0.1",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
+      },
+      "current": {
+        "version": "8.0.2",
+        "commit": "9000827ccba6bdab643e8b6fd33ac0654aef8333"
+      },
+      "official_compare": {
+        "status": "ahead",
+        "ahead_by": 5,
+        "behind_by": 0
+      },
+      "disposition": "superseded on Rust; preserve current hash-mismatch failure behavior and artifact contracts",
+      "required_rust_source_changes": []
+    },
+    {
+      "number": 10,
+      "head": "622d151e4996b8ccbc503bf36f832026c3095248",
+      "base": "main",
+      "proposed": {
+        "version": "3.0.2",
+        "commit": "3d0d9888cb7fd7b750713d6e236d1fcb99157228"
+      },
+      "current": {
+        "version": "3.0.4",
+        "tag_object": "28ab305d0ffa26d60ec4bd614126329e26c7a0ec",
+        "dereferenced_commit": "8a0cd651e5b2365bd640854a3fa5dfc70e4875f3"
+      },
+      "official_compare": {
+        "status": "ahead",
+        "ahead_by": 29,
+        "behind_by": 0
+      },
+      "disposition": "superseded on Rust; preserve current body_path file and fail-on-unmatched asset guard",
+      "required_rust_source_changes": []
+    },
+    {
+      "number": 11,
+      "head": "a89291aad44829a504ec60ba2035dbc486a69f01",
+      "base": "main",
+      "changed_paths": [
+        "go.mod",
+        "go.sum"
+      ],
+      "disposition": "separate legacy/main support decision; not a direct current-Rust graph update and not automatically safe to close",
+      "evidence": "Root Go manifests remain tracked; bounded workflow scan finds no Go build/test/vet command outside frozen-go-oracle. That oracle checks out immutable981d25cf71a5a54855d7e2b4359e832a9d5998e5, so updating current Go manifests does not update the oracle.",
+      "required_rust_source_changes": [
+        "Do not reintroduce Go product maintenance or silently move the oracle baseline",
+        "Root must decide old-main/legacy support versus approved retirement before closing or separately applying security updates",
+        "Do not claim Go dependency vulnerabilities fixed or manifests already retired; final Rust shipping gate currently rejects remaining tracked Go product inputs"
+      ]
+    }
+  ],
+  "sources": [
+    "https://api.github.com/repos/modootoday/humanymous/pulls/6/files",
+    "https://api.github.com/repos/modootoday/humanymous/pulls/7/files",
+    "https://api.github.com/repos/modootoday/humanymous/pulls/8/files",
+    "https://api.github.com/repos/modootoday/humanymous/pulls/9/files",
+    "https://api.github.com/repos/modootoday/humanymous/pulls/10/files",
+    "https://api.github.com/repos/modootoday/humanymous/pulls/11/files",
+    "https://github.com/actions/checkout/tree/3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "https://github.com/sigstore/cosign-installer/tree/6f9f17788090df1f26f669e9d70d6ae9567deba6",
+    "https://github.com/sigstore/cosign/blob/v3.0.6/CHANGELOG.md",
+    "https://github.com/sigstore/cosign/blob/v3.0.6/cmd/cosign/cli/verify/verify.go",
+    "https://github.com/sigstore/cosign/security/advisories/GHSA-whqx-f9j3-ch6m"
+  ],
+  "compiler_executed": false,
+  "external_changes": []
+}
