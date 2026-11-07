@@ -14,6 +14,24 @@ rel:
 
 # Rust migration conventions
 
+## Thirty-six-member hosted-candidate integration
+
+The root workspace now explicitly includes the owned capture producer and the
+pointer-free native ABI export crate. Their manifests and Rust sources are
+tracked before the shared graph is published. The shared lock includes approved
+CLI service features, lab Go-adapter consumption, Pages ureq, shared strict JSON,
+optional Python/Ruby native dependencies and bounded credential-provider inputs.
+The separate native runner lock is resolved against the same shared native APIs.
+Locked offline metadata succeeds for both workspaces; it is dependency-graph
+evidence, not a build, advisory scan or runtime qualification.
+
+Working-tree checks have measured capture21pure, export6pure, Pages26lib+1bin
+and scoped Clippy, followed by owner-measured ABI16+6+3 and authority13pure
+plus test-target compilation. Owner source changes and earlier lint/type failures
+remain separately recorded. Actual TLS/H2, dynamic loading, IPC/service/ACL,
+adapter and complete product tests still require the immutable hosted candidate.
+Next source-bound execution must not wait for unrelated future adapter expansion.
+
 ## Explicit managed host exception: ASP.NET Core
 
 The user explicitly approved exactly three minimal authored C# source files for
