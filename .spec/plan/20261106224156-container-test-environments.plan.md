@@ -12,10 +12,14 @@ rel:
 
 ## Rust-only v2 continuation (2026-11-07 KST)
 
+- [x] Root accepted two-namespace same-origin browser product contract; source consumes sole collector/pilot/fixture.json contract. Root owns WASM tests/typed Firefox proxy config, runtime supplies21b6c4b external-witness host seam, CI supplies6da9c02 product image.
+- [ ] New F/G Rust forwarders, separate Compose profile, actual injected ServiceHost/witness broker, status/ACK observations, namespace/key/egress negatives and authenticated effect receipts authored but Linux compile/runtime/browser execution not_run. Next hosted batch must run --browser-product in its own fresh evidence bundle. Physical crash, human/AT, producer provenance and browser-profile witness outage/recovery remain incomplete.
+- [x] Pure browser-summary parser negative unit1 passes via standalone rustc test; rejects wrong/duplicate/substr summaries, wrong selected case and ignored/filtered count changes. Windows orchestration strict Clippy passed before the final safe-diagnostic additions; latest compile remains pending. Safe public diagnostics contract authored in runner/safe-diagnostics.json; historical63f69ae browser failure cause remains unknown, without retroactive attribution.
+
 - [x] Design-only remote split: delivery owns GitHub-hosted Ubuntu Compose reuse; container SoT owns Containers cost/isolation/Rust-control-plane gaps.
 - [x] Checkpoint current Rust lab implementation with root workspace inheritance and child-lock deletion; image Cargo jobs bounded to1. Latest source execution not_run; source60627 results apply only to that prior snapshot.
 - [ ] Remote exact-source run, cancelled-run cleanup, provider security/witness equivalence and Rust-only lifecycle proof: not_run; local heavy execution held by root memory coordination.
-- [ ] Pending cross-owner policy agreement: local pure unit/fast checks; hosted actual runtime/Docker/browser/CrossOS with explicit interactive/human/AT/SCM/CEF exceptions. Lab proposes heavy image jobs1 and at most2 lightweight jobs initially, immutable build reuse and sequential disk reclamation; final DAG belongs to delivery canon. No required gate or source is removed by this proposal.
+- [x] Cross-owner policy accepted: program-roadmap.sot.md is the policy canon; delivery.sot.md owns its execution contract. Actual lab processes/IPC/ACL/Docker/browser verification moves to public standard hosted runners. Local bounded pure unit/fmt/scoped Clippy only; no new local lab execution. Required gates remain intact until the impact classifier exists. Human/AT/IME, physical failure and independent organizational witness require suitable direct evidence. Hosted execution is not_run for this checkpoint; old source60627 success is not transferred. Free branch profile disables cache writes and artifact uploads; retrieve sanitized logs/summary/hashes and explicitly mark any missing necessary private raw evidence.
 
 - [x] Root-integrated humanymous-lab-runner, inherited existing dependencies only.
 - [x] Rust Docker transport/snapshots, fixtures, direct-IP probes and owned TTL cleanup.

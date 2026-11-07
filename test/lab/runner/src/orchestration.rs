@@ -10,6 +10,41 @@ use std::{
 };
 
 const OWNER: &str = "rust-product-lab";
+fn safe_diagnostics(cases: &[Value]) -> Value {
+    let contract: Value = serde_json::from_str(include_str!("../safe-diagnostics.json"))
+        .expect("owned safe diagnostic contract");
+    let failed: Vec<_> = cases
+        .iter()
+        .filter(|case| case["status"] == "failed")
+        .collect();
+    let failures: Vec<_> = failed
+        .iter()
+        .take(512)
+        .map(|case| {
+            let id = case["id"]
+                .as_str()
+                .filter(|id| {
+                    !id.is_empty()
+                        && id.len() <= 96
+                        && id
+                            .bytes()
+                            .all(|b| b.is_ascii_alphanumeric() || b"_-".contains(&b))
+                })
+                .unwrap_or("unclassified_case");
+            let code = case["error_code"]
+                .as_str()
+                .filter(|code| {
+                    contract["error_codes"].as_array().is_some_and(|allowed| {
+                        allowed.iter().any(|value| value.as_str() == Some(*code))
+                    })
+                })
+                .unwrap_or("assertion_failed");
+            json!({"case_id":id,"status":"failed","error_code":code})
+        })
+        .collect();
+    json!({"schema":"humanymous.lab-safe-diagnostics/1","failures":failures,"failure_count":failed.len(),"partial":failed.len()>512})
+}
+mod browser;
 mod witness;
 struct Lab {
     docker: Docker,
@@ -18,6 +53,8 @@ struct Lab {
     evidence: PathBuf,
     collector: bool,
     topology_only: bool,
+    browser_product: bool,
+    stage: &'static str,
     cases: Vec<Value>,
     components: Value,
 }
@@ -46,6 +83,14 @@ impl Lab {
                 "deployments/lab/compose.rust.collector.yaml".into(),
                 "--profile".into(),
                 "collector".into(),
+            ]);
+        }
+        if self.browser_product {
+            command.extend([
+                "-f".into(),
+                "deployments/lab/compose.rust.browser.yaml".into(),
+                "--profile".into(),
+                "browser-product".into(),
             ]);
         }
         command.extend(args.iter().map(|s| (*s).to_owned()));
@@ -79,8 +124,8 @@ impl Lab {
             &container,
         )?;
         let host = &container["HostConfig"];
-        let mounts_allowed = if service.starts_with("witness-") {
-            let destinations: &[&str] = if service == "witness-writer" {
+        let mounts_allowed = if service.starts_with("witness-") || service == "browser-gate" {
+            let destinations: &[&str] = if matches!(service, "witness-writer" | "browser-gate") {
                 &["/writer/keys", "/writer/wal"]
             } else if service == "witness-key-denied" {
                 &["/witness/keys"]
@@ -120,6 +165,10 @@ impl Lab {
         Ok(container)
     }
     fn execute(&mut self) -> Result<()> {
+        if self.browser_product {
+            return browser::run(self);
+        }
+        self.stage = "compose_config";
         let config = self.compose(&["config", "--format", "json"], true)?.stdout;
         let parsed: Value = serde_json::from_str(&config)?;
         snapshot::write(&self.evidence, "resolved-compose.json", &parsed)?;
@@ -133,6 +182,7 @@ impl Lab {
             json!(snapshot::digest(config.as_bytes())),
         )?;
         eprintln!("lab: building immutable Rust image");
+        self.stage = "controls_build";
         self.compose(&["build", "origin"], true)?;
         self.compose(
             &[
@@ -194,6 +244,7 @@ impl Lab {
             .as_str()
             .ok_or("gateway missing")?
             .to_owned();
+        self.stage = "topology_controls";
         let result = self.compose(
             &[
                 "run",
@@ -230,6 +281,7 @@ impl Lab {
             json!("positive control fails after origin stop"),
         )?;
         if !self.topology_only {
+            self.stage = "runtime_build";
             self.compose(&["build", "runtime-pilot"], true)?;
             self.compose(&["create", "runtime-pilot"], true)?;
             let runtime = self.inspect("runtime-pilot")?;
@@ -239,6 +291,7 @@ impl Lab {
                 json!("runtime/client/origin share owned loopback; not L5 isolation"),
             )?;
             eprintln!("lab: running actual sealed-runtime process pilot");
+            self.stage = "runtime_process";
             let result = self.docker.invoke(
                 &[
                     "start".into(),
@@ -272,6 +325,7 @@ impl Lab {
                 runtime["Image"].as_str().ok_or("image missing")?,
             ])?)?;
             snapshot::write(&self.evidence, "runtime-image.json", &image[0])?;
+            self.stage = "wargame_process";
             self.compose(&["create", "wargame-pilot"], true)?;
             let wargame = self.inspect("wargame-pilot")?;
             self.case(
@@ -292,6 +346,7 @@ impl Lab {
             snapshot::write(&self.evidence, "wargame-report.json", &report)?;
             self.components["wargame"] = report.clone();
             self.case("actual-owned-wargame",result.success && report["scoped_passed"]==true,json!("19 actual programs plus 7 unsupported; audit verdicts and origin deltas retained"))?;
+            self.stage = "witness_component";
             witness::run(self)?;
         } else {
             self.components["runtime"] =
@@ -305,6 +360,7 @@ impl Lab {
         snapshot::write(&self.evidence, "controls-image.json", &controls[0])?;
         let _ = attacker;
         if self.collector {
+            self.stage = "collector_build";
             eprintln!(
                 "lab: building/running Firefox collector component without sandbox-disabling flags"
             );
@@ -316,6 +372,7 @@ impl Lab {
                 collector["HostConfig"]["NetworkMode"] == "none",
                 json!("no external browser traffic"),
             )?;
+            self.stage = "collector_process";
             let result = self.docker.invoke(
                 &[
                     "start".into(),
@@ -377,6 +434,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut evidence = None;
     let mut collector = false;
     let mut topology_only = false;
+    let mut browser_product = false;
     let mut full = false;
     let mut index = 0;
     while index < args.len() {
@@ -388,6 +446,7 @@ pub fn run(args: &[String]) -> Result<i32> {
                 ));
             }
             "--collector" => collector = true,
+            "--browser-product" => browser_product = true,
             "--topology-only" => topology_only = true,
             "--require-full" => full = true,
             _ => return Err("unknown runner argument".into()),
@@ -395,6 +454,9 @@ pub fn run(args: &[String]) -> Result<i32> {
         index += 1;
     }
     let evidence = evidence.ok_or("--evidence required")?.canonicalize()?;
+    if browser_product && (collector || topology_only) {
+        return Err("browser product requires a separate fresh bundle/profile".into());
+    }
     if !evidence.starts_with(root.join(".spec.local/root/evidence"))
         || !evidence.join("index.evidence.md").is_file()
     {
@@ -424,10 +486,13 @@ pub fn run(args: &[String]) -> Result<i32> {
             ),
             ("HM_LAB_IMAGE_TAG".into(), project),
             ("HM_LAB_EXPIRES".into(), expires.to_string()),
+            ("COMPOSE_PARALLEL_LIMIT".into(), "1".into()),
         ],
         evidence,
         collector,
         topology_only,
+        browser_product,
+        stage: "initialization",
         cases: Vec::new(),
         components: json!({}),
     };
@@ -443,26 +508,35 @@ pub fn run(args: &[String]) -> Result<i32> {
             }
         }
         lab.cases
-            .push(json!({"id":"execution","status":"failed","detail":error.to_string()}));
+            .push(json!({"id":"execution","status":"failed","error_code":lab.stage,"detail":error.to_string()}));
     }
     if let Err(error) = lab.cleanup() {
         lab.cases
-            .push(json!({"id":"cleanup","status":"failed","detail":error.to_string()}));
+            .push(json!({"id":"cleanup","status":"failed","error_code":"cleanup_failed","detail":error.to_string()}));
     }
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
-    let mut evidence_types = vec!["topology-control"];
+    let mut evidence_types = if browser_product {
+        vec![]
+    } else {
+        vec!["topology-control"]
+    };
     for (component, kind) in [
         ("runtime", "runtime-process"),
         ("wargame", "supervisor-owned-runtime-child-http1"),
         ("independent_witness", "independent-witness-component"),
         ("collector", "collector-component"),
+        (
+            "browser_product",
+            "same-origin-browser-runtime-isolated-pilot",
+        ),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {
             evidence_types.push(kind);
         }
     }
-    let report = json!({"schema":"humanymous.product-lab/2","project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
+    let diagnostics = safe_diagnostics(&lab.cases);
+    let report = json!({"schema":"humanymous.product-lab/2","safe_diagnostics":diagnostics,"project":lab.project,"evidence_types":evidence_types,"cases":lab.cases,"components":lab.components,"required_unavailable":["full Gate TLS/H2/capture","session-bound real browser collector","Pass recovery","human/keyboard/assistive controls","runtime binary authenticated witness transport","cross-namespace origin/audit effect product binding","signed remote target attestation","native OS qualification","provider deployment"],"full_product_qualified":false,"release_ready":false,"ttl":{"expires_unix":expires,"external_janitor_scheduled":false}});
     snapshot::write(&lab.evidence, "lab-report.json", &report)?;
     snapshot::write(
         &lab.evidence,
@@ -574,6 +648,21 @@ pub fn cleanup_expired() -> Result<()> {
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn public_diagnostics_never_copy_detail_or_arbitrary_error_text() {
+        let input = vec![
+            serde_json::json!({"id":"execution","status":"failed","error_code":"browser_actor","detail":"Bearer private secret"}),
+            serde_json::json!({"id":"private@example.com","status":"failed","error_code":"Bearer private secret"}),
+        ];
+        let safe = super::safe_diagnostics(&input);
+        assert_eq!(safe["failure_count"], 2);
+        assert_eq!(safe["failures"][0]["error_code"], "browser_actor");
+        assert_eq!(safe["failures"][1]["case_id"], "unclassified_case");
+        let bytes = safe.to_string();
+        assert!(
+            !bytes.contains("private") && !bytes.contains("detail") && !bytes.contains("Bearer")
+        );
+    }
     use super::*;
     #[test]
     fn component_denominator_does_not_confuse_ten_or_forty_with_zero() {

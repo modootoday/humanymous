@@ -1,5 +1,36 @@
 # Rust product-lab runner contract
 
+The accepted browser product profile is separate from collector component tests:
+`cargo run --locked -p humanymous-lab-runner -- run --evidence FRESH_PRIVATE_BUNDLE --browser-product --require-full`.
+Do not combine it with --collector or --topology-only. Its source is authored,
+Linux compile and actual execution are not_run pending the next hosted batch.
+The canonical fixture is crates/collector/pilot/fixture.json; lab actors include
+that exact JSON, not a copied scope/route definition. Root owns its runtime-pilot
+WASM feature/test and typed WebDriver JSON; delivery owns the separate pinned
+build/rust/browser-product.Dockerfile. Component network_mode:none is unchanged.
+Browser WBG31111 and proxy31112 bind only browser loopback, Gate frontend8080
+is on a dedicated internal bridge, actual ServiceHost/backend bind only Gate
+loopback. Separate-UID witness keys/head persist on disjoint named volumes;
+actual ServiceHost::bind_with_witness uses FileAndDirectory and private framed
+audit-owned client traffic. No public shutdown API: trusted Docker exec invokes
+the Rust --browser-stop control and waits for runtime flush/drain evidence.
+Host checks namespace/EROFS/UID/caps/no-new-privileges/no-origin-route, actual
+proxy hits and response403+ACK/200+ACK/422-without-ACK, closed-epoch no-retry,
+independent zero origin effects, authenticated WAL and external signed head.
+Missing receipts fail; no full-product qualification is implied. Browser-profile
+witness outage/recovery, physical failure, full sandbox, human/AT and qualified
+collector provenance remain unavailable until their own actual evidence lands.
+Free hosted policy comes from program-roadmap and delivery SoTs: no private raw
+artifact upload, no duplicate dispatch, sanitized summaries/logs/hashes only.
+Reports now expose safe_diagnostics under product-lab/2. Its sole enum/limits
+contract is test/lab/runner/safe-diagnostics.json. Public CI may copy only that
+validated schema's fixed failed-case ID/status/error-code rows and counts;
+raw case.detail, exception text, credentials, request/identity data and private
+evidence remain excluded. Truncation is explicit partial=true and cannot close
+readiness. Source63f69ae browser failure remains cause-unknown because those
+safe diagnostics were absent; a future diagnostic improvement does not supply
+missing historical evidence.
+
 Current implementation is authored Rust 1.99.1/edition 2024. Root owns workspace
 registration: member `test/lab/runner`, package/binary `humanymous-lab-runner`,
 workspace serde_json/sha2/getrandom only; no new production dependency version.

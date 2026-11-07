@@ -10,7 +10,9 @@ use std::{
     time::Duration,
 };
 
-fn frame_reader(output: std::process::ChildStdout) -> mpsc::Receiver<std::io::Result<Vec<u8>>> {
+pub(super) fn frame_reader(
+    output: std::process::ChildStdout,
+) -> mpsc::Receiver<std::io::Result<Vec<u8>>> {
     let (send, receive) = mpsc::sync_channel(1);
     std::thread::spawn(move || {
         let mut reader = BufReader::new(output);
@@ -32,16 +34,16 @@ fn frame_reader(output: std::process::ChildStdout) -> mpsc::Receiver<std::io::Re
     receive
 }
 
-struct Broker {
-    passphrase: Vec<u8>,
-    public: Option<Value>,
-    writer_public: Option<Value>,
-    head: Option<Value>,
-    transactions: usize,
-    inspections: Vec<Value>,
+pub(super) struct Broker {
+    pub(super) passphrase: Vec<u8>,
+    pub(super) public: Option<Value>,
+    pub(super) writer_public: Option<Value>,
+    pub(super) head: Option<Value>,
+    pub(super) transactions: usize,
+    pub(super) inspections: Vec<Value>,
 }
 impl Broker {
-    fn transaction(
+    pub(super) fn transaction(
         &mut self,
         lab: &mut Lab,
         writer: &Value,

@@ -1,0 +1,39 @@
+# Separate product profile. Component collector network-none is unchanged.
+services:
+  browser-gate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-lab:${HM_LAB_IMAGE_TAG:?owned tag required}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:?immutable source required}
+      dockerfile: deployments/lab/images/product.Dockerfile
+      target: runtime
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --browser-gate]
+    stdin_open: true
+    networks: [browser-ingress]
+    volumes: [writer-key:/writer/keys, writer-wal:/writer/wal]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 2
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=64m,mode=1777"]
+    profiles: [browser-product]
+  browser-product:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/browser-product:${HM_LAB_IMAGE_TAG:?owned tag required}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:?immutable source required}
+      dockerfile: build/rust/browser-product.Dockerfile
+    entrypoint: [/usr/local/bin/humanymous-runtime-pilot, --browser-driver]
+    command: ["${HM_BROWSER_GATE:-127.0.0.1:0}", "${HM_BROWSER_RUNTIME:-127.0.0.1:0}", "${HM_BROWSER_BACKEND:-127.0.0.1:0}"]
+    networks: [browser-ingress]
+    pids_limit: 512
+    mem_limit: 2g
+    cpus: 2
+    tmpfs: !override ["/tmp:rw,noexec,nosuid,size=512m,mode=1777", "/dev/shm:rw,noexec,nosuid,nodev,size=256m"]
+    profiles: [browser-product]
+networks:
+  browser-ingress:
+    internal: true
+    enable_ipv6: false
+    labels:
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:?expiry required}"

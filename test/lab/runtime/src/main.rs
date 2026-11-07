@@ -1,5 +1,11 @@
 //! Contextual Docker pilots; native unsupported targets never report success.
 #[cfg(unix)]
+mod browser_product;
+#[cfg(unix)]
+mod browser_proxy;
+#[cfg(any(unix, test))]
+mod browser_result;
+#[cfg(unix)]
 mod client;
 #[cfg(unix)]
 mod installation;
@@ -19,6 +25,11 @@ mod witness;
 #[cfg(unix)]
 fn main() {
     match std::env::args().nth(1).as_deref() {
+        Some("--browser-gate") => browser_product::gate().expect("owned browser gate"),
+        Some("--browser-driver") => browser_product::browser().expect("owned browser runner"),
+        Some("--browser-stop") => {
+            std::fs::write("/tmp/browser-pilot-stop", b"stop").expect("owned supervisor stop")
+        }
         Some("--wargame") => wargame::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")

@@ -35,7 +35,11 @@ struct WriterConfig {
     passphrase: Zeroizing<Vec<u8>>,
     trusted_head: Option<Checkpoint>,
 }
-fn material(directory: &Path, passphrase: &[u8], create: bool) -> Result<(Custody, KeyMaterial)> {
+pub(super) fn material(
+    directory: &Path,
+    passphrase: &[u8],
+    create: bool,
+) -> Result<(Custody, KeyMaterial)> {
     if create && (directory.join("keys.sealed").exists() || directory.join("keys.pending").exists())
     {
         return Err("explicit creation cannot replace existing identity".into());

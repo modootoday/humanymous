@@ -19,6 +19,8 @@ humanymous-defender = {path="../../../crates/defender"}
 ed25519-dalek.workspace = true
 serde.workspace = true
 zeroize.workspace = true
+tokio.workspace = true
+humanymous-test-support.workspace = true
 
 [lints.rust]
 unsafe_code = "forbid"

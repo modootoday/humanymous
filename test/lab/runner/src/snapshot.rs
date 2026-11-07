@@ -163,6 +163,8 @@ fn allowed(path: &str) -> bool {
             path,
             "build/rust/collector-browser.Dockerfile"
                 | "build/rust/collector-browser.Dockerfile.dockerignore"
+                | "build/rust/browser-product.Dockerfile"
+                | "build/rust/browser-product.Dockerfile.dockerignore"
         )
         || matches!(
             path,

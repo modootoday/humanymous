@@ -35,6 +35,92 @@ baseline. This component lab does not qualify full product e2e or Meari+CEF.
 
 ## Remote execution design delta (2026-11-07, not_run)
 
+### Accepted same-origin browser product pilot contract (not_run)
+
+Reuse the pinned wasm-bindgen-test-runner0.2.130 and Firefox ESR on hosted
+Ubuntu Linux. Its installed Rust source uses WASM_BINDGEN_TEST_ADDRESS for
+both test-server bind and WebDriver navigation (wasm_bindgen_test_runner.rs
+around424, headless.rs around175). A different proxy port cannot be selected
+through that variable alone. Do not modify upstream generated JavaScript or
+author a JavaScript harness. Existing tool-generated glue remains tooling.
+
+The minimum proposed wiring uses separate browser and Gate network namespaces:
+
+- Browser namespace: WBG asset/test server S=127.0.0.1:31111 and bounded Rust
+  explicit HTTP proxy F=127.0.0.1:31112. Firefox navigates S, preserving the
+  runner's existing test completion accounting. Typed WebDriver JSON selects
+  manual HTTP proxy F, empty noProxy and the Firefox localhost-proxy preference.
+  These settings are interventions; actual proxy hit receipts must prove they
+  work. No browser sandbox flags are disabled.
+- Gate namespace: only lab Rust frontend G is bridge-reachable. Actual runtime
+  Q and fixed synthetic backend R remain distinct loopback listeners. Runtime
+  scope.authority is127.0.0.1:31111 and browser.origin is
+  http://127.0.0.1:31111, independent of Q's physical assigned port. The runtime
+  configuration's loopback-only validation stays intact.
+- F sends exact runner asset requests to local S and only exact browser API/
+  protected fixture routes to fixed G. G forwards those APIs only to fixed Q;
+  G never routes to R or serves an alternate origin. Browser loopback cannot
+  reach Q/R in the Gate namespace. Use a dedicated internal bridge, no host
+  port publication, no external default route and no public DNS/metadata/daemon
+  access. Component compose.collector.yaml keeps network_mode:none unchanged.
+- Witness remains a separately owned UID65533/key/head-volume role; browser
+  and writer use UID65532 without its key mount. Authenticated external-witness
+  integration in the actual runtime host is a prerequisite, not supplied by
+  merely rerunning the separate witness component. Until that dependency is
+  implemented and measured, witness integration and full product remain false.
+
+F accepts only owned http absolute-form targets whose authority equals the
+unique Host header. Remove exactly that owned prefix to obtain origin-form;
+preserve method, encoded path/query, entity bytes, signed Content-Type and
+application Authorization, Origin, Fetch Metadata and RIT fields. Never repair
+missing required browser fields. Remove proxy-only hop fields that the actual
+runtime rejects. Reject CONNECT, foreign authorities, userinfo, alternate ports,
+unknown API paths, redirects and ambiguous/duplicate framing. G preserves the
+same request bytes after this bounded transport conversion. Relay actual
+status, body and ACK unchanged, with no automatic retry or synthetic response.
+Reuse the runtime's bounded HTTP framing/parser where applicable; extending
+absolute-form parsing belongs to lab Rust, not the production protocol.
+
+Acceptance requires: actual bootstrap and signed protected Fetch requests,
+valid ACK advancement, independently counted backend effects and authenticated
+audit records; missing/bad ACK invalidates the client epoch; altered/missing
+binding, replay and witness outage cannot release an effect. Exercise direct
+browser-to-backend, unknown route, foreign proxy destination and metadata/DNS
+negative controls. Record OS/browser/tool versions, namespace/listener tuples,
+UID/caps/read-only/egress/sandbox observations, source/lock/image commitments,
+proxy asset/API hit counts and complete test denominators. A loaded page or
+WebDriver zero exit alone is insufficient. This cookie-free buffered browser
+session slice does not qualify collector producer provenance, TLS/H2 planes,
+human/AT input or the intentional T4 ceiling. Collector-required routes still
+fail closed when qualified reports are unavailable.
+
+Responsibilities: collector/root owns Rust WASM pilot tests and typed browser
+configuration; lab owns F/G, Installation reuse, the distinct product Compose
+profile and effect/audit receipts; runtime owns external-witness host injection
+and production browser contract; delivery owns its image/hosted execution.
+No implementation or execution of this candidate has occurred. The one-
+namespace/manual-proxy alternative was rejected for product isolation because
+browser code could directly contact the loopback backend. It remains only a
+possible Fetch/session/ACK component experiment with isolation unqualified.
+Root accepted the two-namespace contract before implementation. Exact fixture
+scope/routes are consumed directly from crates/collector/pilot/fixture.json,
+schema humanymous.browser-runtime-pilot/1, owned by collector/root. It specifies
+installation=install,tenant=tenant,origin=origin,revision=r1 and authority equal
+to browser location.host at S. Exact POST allowlist is
+/_humanymous/browser/session, /_humanymous/browser/collect, /effect and
+/requires-collector. Both protected routes opt into browser_auth_only; only
+the latter requires the unqualified collector plane. Root's feature-gated
+runtime-pilot WASM flow expects bootstrap success, pre-report /effect403 with
+valid ACK, real BrowserCollector snapshot submission200 with valid ACK,
+collector-required route422 without ACK, which closes the client epoch; a
+subsequent fetch refuses without network activity. Do not
+rewrite the actual browser report to obtain ALLOW. Independent origin effects
+for this flow are zero; existing synthetic ALLOW fidelity retains a separate
+denominator. Status/ACK expectations must be reconciled with actual runtime
+behavior before claiming success. Existing hosted run
+42348518353/source63f69ae1 observes earlier source and must not be duplicated
+or cited as this pilot's evidence.
+
 Purpose: relieve local validation memory pressure while preserving source-bound
 Rust product evidence. This is a design-only delta: no workflow dispatch, image
 publication, account mutation, paid resource or remote pilot was performed.

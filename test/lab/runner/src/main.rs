@@ -14,7 +14,7 @@ fn main() {
         Some("provider-preflight") => provider::run(&args[1..]),
         Some("cleanup") => orchestration::cleanup_expired().map(|()| 0),
         Some("audit") => audit::run(&args[1..]),
-        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector] [--require-full] | fixture ROLE | cleanup | provider-preflight MANIFEST".into()),
+        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product] [--require-full] | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST".into()),
     };
     match result {
         Ok(code) => std::process::exit(code),

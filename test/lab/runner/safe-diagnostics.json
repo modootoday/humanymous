@@ -1,0 +1,14 @@
+{
+  "schema": "humanymous.lab-safe-diagnostics-contract/1",
+  "report_schema": "humanymous.lab-safe-diagnostics/1",
+  "case_id_max": 96,
+  "max_failures": 512,
+  "error_codes": [
+    "initialization", "compose_config", "controls_build", "topology_controls",
+    "runtime_build", "runtime_process", "wargame_process", "witness_component",
+    "collector_build", "collector_process", "browser_config", "browser_gate_build",
+    "browser_image_build", "browser_gate_start", "browser_witness_handshake",
+    "browser_actor", "browser_runtime_drain", "browser_receipts",
+    "assertion_failed", "execution_failed", "cleanup_failed"
+  ]
+}
