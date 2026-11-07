@@ -484,3 +484,16 @@ No other assigned legacy core-context names matched. No behavior/visibility,
 manifest, path/ref or fixture change; no compiler/Clippy/full CI was launched.
 Root owns common graph and relocation and must declare coherence before tests.
 Prior72unit/5hosted proofs are not transferred to the changed consumer tuple.
+
+## RUNTIME-SLICE-02 read-only owner disposition
+
+Evidence:root/20261107203158 records52current file hashes and all5Network
+pub(crate) declarations, each requiring Network-context-only visibility after
+the move. Capture has0former pub(crate); private transport/temporal fields and
+relative pub(super) remain narrow. Preserve Capture->Network direction and map
+old crate:: paths to capture/network rather than gateway or root aliases.
+No sibling visibility exception is needed for the inspected helpers. Root must
+settle the external hosted fixture's public capture path/test target without
+exposing owner constructors. Exact72pure/5actual test anchors and remaining
+epoch/fleet/Runtime/Docker gates are recorded. No source/import/manifest/move or
+compiler action occurred; the existing source claim stays until Root's freeze.
