@@ -871,6 +871,24 @@ accounting. This does not skip tests or qualify full product runtime.
 
 ## Bounded public archive transport and measurement
 
+Run 42354873001 at a26d1c3f08b365ca93545c6a51343095868edb45 is a distinct
+terminal startup_failure with zero jobs and zero artifacts. GitHub rejected the
+caller because its implicit actions:none ceiling could not grant the reusable
+policy job actions:read. The CI and release validate call jobs must explicitly
+grant exactly contents:read and actions:read; workflow globals stay contents:read
+and no write/OIDC permission is added. Static policy checks this caller ceiling
+as well as the callee permission. The failed source must never be rerun or
+reported as executed product coverage; a corrected new source needs a new run.
+
+Root checkpoint a26d1c3 resolves the common 36-member Cargo graph/lock and the
+standalone scripts/ci/windows-native-runner/Cargo.lock against the shared native
+APIs. The runner lock is under this delivery governing scope but remains an
+explicit root-owned integration input. Locked metadata resolution proves graph
+consistency only; strict native, advisory and hosted execution remain required.
+The root staged check's D1 change-note warning is retained in the execution
+record; this governing note documents that resolution rather than claiming a
+new build or retroactively changing its check output.
+
 The later explicitly authorized cache pilot is an exception to the earlier
 no-cache default, limited to checksum-verified public crates.io `.crate` archives.
 It never restores compiled targets, Cargo source/index trees, Git dependencies,

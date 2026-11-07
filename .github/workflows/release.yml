@@ -11,6 +11,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   validate:
+    permissions:
+      contents: read
+      actions: read
     uses: ./.github/workflows/rust-validation.yml
   readiness:
     runs-on: ubuntu-latest

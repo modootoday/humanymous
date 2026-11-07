@@ -92,6 +92,13 @@ fn pinned(action: &str) -> bool {
                 .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
     })
 }
+fn caller_permissions(job: &Value) -> Result<()> {
+    require(
+        job["uses"] == "./.github/workflows/rust-validation.yml"
+            && job["permissions"] == json!({"contents":"read","actions":"read"}),
+        "validation caller must allow the exact read-only reusable permission ceiling",
+    )
+}
 pub fn document(name: &str, doc: &Value) -> Result<()> {
     fn registry_env(value: &Value) -> Result<()> {
         for key in [
@@ -119,6 +126,9 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         "privileged untrusted PR trigger forbidden",
     )?;
     let jobs = doc["jobs"].as_object().ok_or("missing workflow jobs")?;
+    if matches!(name, "ci.yml" | "release.yml") {
+        caller_permissions(jobs.get("validate").unwrap_or(&Value::Null))?;
+    }
     for (id, job) in jobs {
         registry_env(&job["env"])?;
         let permissions = &job["permissions"];
@@ -658,6 +668,20 @@ mod tests {
             )
             .is_err()
         );
+    }
+    #[test]
+    fn reusable_validation_caller_cannot_deny_or_expand_cache_read_permission() {
+        let valid = json!({"uses":"./.github/workflows/rust-validation.yml","permissions":{"contents":"read","actions":"read"}});
+        assert!(caller_permissions(&valid).is_ok());
+        for permissions in [
+            json!({"contents":"read"}),
+            json!({"contents":"read","actions":"write"}),
+            json!({"contents":"read","actions":"read","id-token":"write"}),
+        ] {
+            let mut invalid = valid.clone();
+            invalid["permissions"] = permissions;
+            assert!(caller_permissions(&invalid).is_err());
+        }
     }
     #[test]
     fn required_docker_aggregate_and_execution_cannot_be_removed_or_skipped() {
