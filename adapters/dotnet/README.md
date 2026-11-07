@@ -8,8 +8,9 @@ opaque SafeHandle binding, ASP.NET middleware and the actual Kestrel pilot.
 The separate Rust export facade is pointer-free and consumes the shared native
 registry and authority. Candidate NuGet project metadata is present. These new
 managed sources compiled in the ABI owner's Windows FDD/JIT build after an
-actual marshalling error was corrected; no managed process has executed and
-no managed host tuple is advertised. That build disabled AOT analysis/publishing
+actual marshalling error was corrected. A separately supervised generic ABI-only
+managed process passed; Kestrel and middleware have not executed and no managed
+host tuple is advertised. That build disabled AOT analysis/publishing
 and does not establish NativeAOT compatibility.
 Actual GC stress, NativeAOT linkage, clean package install and product gates are
 NOT_RUN. Do not install this as a qualified Kestrel protection package.
@@ -26,8 +27,10 @@ SDK resolver finds this exact global.json. Actual host execution requires an
 explicit root allocation. The user authorized local Windows/WSL validation on
 2026-11-07. The benchmark quiet window ended; the next actual SDK/host stage
 requires its separate root allocation. An earlier Rust snapshot passed all-target
-check/Clippy and 13 pure tests. The newer projection/generic caller helpers still
-require their own source-bound compilation/tests; older results do not cover them.
+check/Clippy and 13 pure tests. The projection/generic caller helpers passed eight
+pure tests and release all-target Clippy at source07967eae. One non-build context
+document changed; the other267captured inputs were unchanged. Later metadata
+edits are separate from that source. Generic caller success does not qualify the adapter.
 The facade's Rust runtime is process-lived. Collectible assembly loading and
 explicit native unload/reload are unsupported; the binding rejects collectible
 contexts and does not manually load/free libraries. Zero request diagnostics do

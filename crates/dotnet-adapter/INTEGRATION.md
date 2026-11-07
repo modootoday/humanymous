@@ -2,6 +2,22 @@
 
 ## Current approved continuation
 
+### Observed helper and separate generic caller
+
+Source07967eae helper compiled, eight pure tests passed and scoped release
+all-target Clippy passed under root D. Evidence:root/20261107113926 retains the
+one-document snapshot guard failure and root's reviewed classification:267other
+inputs unchanged, path set stable,195retained dependency-info files without a
+reference to the changed audit context document. This is not zero drift.
+
+The ABI owner's sole actual generic-only CLR caller passed at commitd143f4f1;
+see local-managed-generic-caller.json in evidence:root/20261107081545. PID35468,
+exit0, two expected frames,130stdout bytes, zero stderr, fixture removed and seven
+input hashes unchanged afterward. Consume that receipt without another run.
+Kestrel/GC-await/NativeAOT/clean-package/full-product gates remain NOT_RUN.
+The historical pending notes below are superseded only for this narrow generic
+caller. Later metadata changes are outside the compiled source07967eae snapshot.
+
 ### Separate ABI-only managed startup, FDD/JIT built and runtime pending
 
 Actual ABI attempt2 now restored/built with exit0,0warnings/errors; required

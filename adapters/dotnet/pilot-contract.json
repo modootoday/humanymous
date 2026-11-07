@@ -2,7 +2,7 @@
   "schema": "humanymous.dotnet-host-pilot/1",
   "status": "windows-managed-fdd-jit-built-host-not-run",
   "runnable": false,
-  "reason": "Approved managed sources built on Windows FDD/JIT after marshalling fix; actual host/GC/NativeAOT/package and new Rust helper preflight remain pending",
+  "reason": "Windows FDD/JIT generic ABI-only caller passed separately; Kestrel/GC-await/NativeAOT/package remain pending. Rust helper preflight is bound to source07967eae, not future metadata edits",
   "implementationOwner": "crates/dotnet-adapter",
   "abiOwner": "crates/native-abi",
   "runner": "explicit-root-allocation-or-free-standard-github-hosted",

@@ -12,6 +12,23 @@ rel:
 
 # ASP.NET Core Rust adapter lifecycle
 
+## Current observed qualification boundary
+
+Evidence:root/20261107113926 records source07967eae helper compilation, eight
+passing pure tests and scoped release all-target Clippy. One context document
+drifted;267other captured inputs were unchanged and195retained compiler dependency
+files did not reference that document. Root accepted that explicit classification;
+the initial guard failure remains retained, without a whole-tree immutability claim.
+
+The separate generic-only CLR caller passed once under ABI ownership, recorded
+by local-managed-generic-caller.json in evidence:root/20261107081545, commitd143f4f1.
+Actual PID35468 exited0 with exactly two expected frames and no stderr; the caller
+fixture was removed and seven input hashes matched afterward. This FDD/JIT generic
+ABI result does not qualify this adapter's Kestrel, GC-await, NativeAOT or package
+matrix. Those remain NOT_RUN; no host tuple is qualified. Earlier pending notes
+below describe their historical checkpoints. Later status metadata changes are
+not retroactively covered by the source07967eae compilation.
+
 ## Approved generic ABI-only startup flag (2026-11-07)
 
 Actual ABI owner's attempt2 restore/build returned0 with0warnings/errors on the

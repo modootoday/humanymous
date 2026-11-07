@@ -1,0 +1,244 @@
+{
+  "schema": "humanymous.dotnet-helper-preflight/1",
+  "source_checkpoint": "07967eaeac16907dcd0adacb0af1f80baa332826",
+  "observed_worktree_head": "c943203e40eade9e82ad9333e8086adb5ed69583",
+  "whole_workspace_immutable": false,
+  "venue": "root-allocated-local",
+  "os": "windows",
+  "arch": "x86_64",
+  "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "build_jobs": 1,
+  "incremental": 0,
+  "profile": "release",
+  "captured_paths": 268,
+  "rediscovered_paths": 268,
+  "path_set_changes": 0,
+  "all_inputs_zero_drift": false,
+  "context_drift": {
+    "compiler_dependency_references": 0,
+    "dependency_info_files_inspected_and_retained": 195,
+    "root_review": "accepted explicit single non-build-context document drift; initial guard failure retained",
+    "after_sha256": "af39307c9669f0430cb13e9ba6e524a4342f3d69ce105dbfd3dc51cb46948764",
+    "path": "crates/audit/KEYS-INTEGRATION.md",
+    "before_sha256": "7a4262082efa01c737b995591c38056d3c6021d799da790403fdd6beef750a4b"
+  },
+  "other_captured_inputs_unchanged": 267,
+  "commands": [
+    {
+      "stage": "hosted-compile",
+      "result": {
+        "command": "cargo test --locked --release -p humanymous-dotnet-adapter --test hosted --no-run",
+        "exit_code": 0,
+        "elapsed_seconds": 28.404268,
+        "inputs": 268
+      },
+      "passed": null,
+      "filtered": null
+    },
+    {
+      "stage": "projection-tests",
+      "result": {
+        "command": "cargo test --locked --release -p humanymous-dotnet-adapter --test package projection::tests:: -- --test-threads=1",
+        "exit_code": 0,
+        "elapsed_seconds": 4.0580358
+      },
+      "passed": 4,
+      "filtered": 4
+    },
+    {
+      "stage": "venue-guard",
+      "result": {
+        "target": "package",
+        "selector": "support::tests::emulation_never_claims_hosted_or_allocated_actual_execution",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2626247
+      },
+      "passed": 1,
+      "filtered": 7
+    },
+    {
+      "stage": "ordinary-command-guard",
+      "result": {
+        "target": "package",
+        "selector": "ordinary_actor_git_and_sdk_commands_do_not_require_global_mutation",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2394136
+      },
+      "passed": 1,
+      "filtered": 7
+    },
+    {
+      "stage": "generic-frame-guard",
+      "result": {
+        "target": "hosted",
+        "selector": "generic::generic_receipt_requires_exact_pid_frames_and_no_host_events",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3100207
+      },
+      "passed": 1,
+      "filtered": 4
+    },
+    {
+      "stage": "digest-parser-guard",
+      "result": {
+        "target": "hosted",
+        "selector": "support::artifacts::tests::stock_digest_output_requires_one_bounded_commitment",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2356609
+      },
+      "passed": 1,
+      "filtered": 4
+    },
+    {
+      "stage": "release-clippy",
+      "result": {
+        "command": "cargo clippy --locked --release -p humanymous-dotnet-adapter -p humanymous-dotnet-adapter-export --all-targets -- -D warnings",
+        "exit_code": 0,
+        "elapsed_seconds": 18.8531291
+      },
+      "passed": null,
+      "filtered": null
+    }
+  ],
+  "pure_passed": 8,
+  "pure_failed": 0,
+  "pure_ignored": 0,
+  "helper_sha256": "24b782d1e5ad4c844833bbfba5ccdb9e26f7864760de3d5fcffcded58ba8f821",
+  "helper_bytes": 3817472,
+  "owned_input_hashes": [
+    {
+      "path": "adapters/dotnet/capabilities.json",
+      "sha256": "427b3906935cb0f1a59e1eb5adad8d4034702674bd02be25d9df573a1fd485f2"
+    },
+    {
+      "path": "adapters/dotnet/Directory.Build.props",
+      "sha256": "0f485e7e623c978f0478eb95aa7eecdb288b393fde77e79c453628640fe9c113"
+    },
+    {
+      "path": "adapters/dotnet/global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d"
+    },
+    {
+      "path": "adapters/dotnet/NOTICE",
+      "sha256": "76b799f9bff2551472db88f54d5c3177c1fcdbf4d9daa75d2564f67707f7e24d"
+    },
+    {
+      "path": "adapters/dotnet/NuGet.Packed.Config",
+      "sha256": "f4087cc1b2c83e1f75de07e0b75ce692f59e139165d829fdf5903c683a6b89ca"
+    },
+    {
+      "path": "adapters/dotnet/pilot-contract.json",
+      "sha256": "39ddca993fd68e28e5fee491e6bc604de6396d480b56d70e17567a3216af6b46"
+    },
+    {
+      "path": "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+      "sha256": "88d4433c7f70cca0befa5f7cee28b2631eaf9c41f43439e3aa68d23952a486d5"
+    },
+    {
+      "path": "adapters/dotnet/pilot/Program.cs",
+      "sha256": "5201fd500d688e19bd7af17d707c42b9bdc3177e792425a01894b0991a489b78"
+    },
+    {
+      "path": "adapters/dotnet/README.md",
+      "sha256": "64ab2c7a658c603e44a3371a3f0dae21efd96d7e7fecfa7a2506801c3d354a8a"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
+      "sha256": "9ed8f873a0251a9e92a6a008a990a98d794789b054d3340220f61470097c0994"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/HumanymousMiddleware.cs",
+      "sha256": "e4f3382af6786ec04cafc2af712b78c330433bd06d0b3a1cd17fc212b1268522"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs",
+      "sha256": "c60f549045db118e914e2048dedcb8e1e09455067c7d7bd223daa1cf09953490"
+    },
+    {
+      "path": "crates/dotnet-adapter/Cargo.toml",
+      "sha256": "40b5a8ad94eb50621817cb4a261fbd72b3ea7dccd012d70a3120243ed01125ef"
+    },
+    {
+      "path": "crates/dotnet-adapter/export/Cargo.toml",
+      "sha256": "ed3e0e51be373556712ec28062eb3ca64ae66f0ac89dcd54b1505467c23b26df"
+    },
+    {
+      "path": "crates/dotnet-adapter/export/src/lib.rs",
+      "sha256": "0fdcac276e59e4f89914e185f16624e468d563325b7c197654c983b45050a6f8"
+    },
+    {
+      "path": "crates/dotnet-adapter/INTEGRATION.md",
+      "sha256": "2f51a2c5cebdcd145a924ef78fa49787e6767b96d5f7ab79eb0fc4912216bfa3"
+    },
+    {
+      "path": "crates/dotnet-adapter/src/bridge.rs",
+      "sha256": "254790bc7c3c8980f584987ec537ea138c5741ee88a17af059ce0d440df3d1e6"
+    },
+    {
+      "path": "crates/dotnet-adapter/src/lib.rs",
+      "sha256": "f365a4f7239e33f0167702b0c6418840a11eca4c2dc2e3cdd9b7d95f835cd3b2"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted.rs",
+      "sha256": "7ab693ec6a455017b51d4571821aff3137533d4af7ea00086b4772d5e756359f"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/hosted/generic.rs",
+      "sha256": "4a0f2fd52c2a7132f120ff0f1e0e2c639b401529bced8392e8d3b333086330a2"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/managed_scope.rs",
+      "sha256": "58ece557467f3135e10ae820eee38dcbbd1c32a166aa8376ed6ec4e1a171e187"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/package.rs",
+      "sha256": "94df34555ccc08e147fdc825f77755ac061ad77129df22822801bff7343fd1a0"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/package/projection.rs",
+      "sha256": "08bc47208b464bfa547341afcdb0c8437355fb023cebd087f7246d464b371845"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/support/artifacts.rs",
+      "sha256": "7e17e12b1e9c7866e04ee5ffdcab1ef6070a3fa601e41a93ff72ab9924f125fd"
+    },
+    {
+      "path": "crates/dotnet-adapter/tests/support/mod.rs",
+      "sha256": "69909ca2872d52b5d821c7087f9c8481294f1af3a9152b17da92d72b7515b7b0"
+    }
+  ],
+  "graph_hashes": [
+    {
+      "path": "Cargo.lock",
+      "sha256": "339aa10ba586aa534fccfb0a4b1ebfe9aec0730be0e8304acbb167d2c02e2443"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "96a0cb76153f06f748eb6a54d88dd08140c433695e4ba1c4a0217ca131d970ac"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "df1b1f239d5b1df10f115021f4cefb60076919c5646693c9e77bb70a00aff615"
+    }
+  ],
+  "actual_managed_process_executed_in_this_batch": false,
+  "full_product": false,
+  "qualified_host_tuples": [],
+  "separate_generic_only_caller_receipt": ".spec/evidence/20261107081545-native-abi-pure-ownership-and-export-verification/local-managed-generic-caller.json",
+  "separate_generic_only_caller_commit": "d143f4f1",
+  "tool_handles": [
+    "fef7c3",
+    "14417",
+    "47f569",
+    "5fb888",
+    "2b12d7",
+    "627841",
+    "41701",
+    "af330a",
+    "800467",
+    "dea016",
+    "b3e777",
+    "2b8b97",
+    "ff9bdc"
+  ]
+}
