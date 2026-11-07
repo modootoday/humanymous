@@ -1,16 +1,18 @@
 ---
 id: evidence:root/20261107135643
-title: Performance readiness and four source-bound library builds
+title: Build and canonical-function performance evidence
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T15:01:03Z
+updated: 2026-11-07T15:10:19Z
 rel:
   depends_on: [sot:root/performance-optimization, plan:root/20261107135643]
 files:
-  - {path: baseline.json, sha256: 7786428c2bd847a59d7175623521b911c441bce23dbf72c20e206c88f7d37cea, bytes: 13105, store: repo}
+  - {path: baseline.json, sha256: 12d83bf00456c2d89ff35abfdf028801933eab89490423eb4377481ea082f399, bytes: 13965, store: repo}
 ---
 
-# Performance readiness and four source-bound library builds
+# Build and canonical-function performance evidence
+
+## B1 source-bound library builds
 
 Four root-allocated native Windows signals library builds actually terminated
 with exit0 and Cargo build-finished success on immutable source
@@ -159,6 +161,23 @@ Actual PID, tool terminal receipt, binary/profile data and detailed input/closur
 manifests remain in the owned private bundle. The B compiler/runtime reservation
 was returned. The complete performance goal still requires the remaining build
 cache/profile research and actual product runtime/security qualification.
+
+## B3 source-only command observation proposal
+
+Four inspected source files match checkpoint6aa87db1. They trace the component
+timeout wrapper to a metrics helper recognizing only literal Cargo as its invoked
+program. Inner Cargo observation and optional timing injection are absent on that
+route; the direct runtime helper is distinct. CLI target-directory requests and
+separate intermediate build-directory configuration also require clearer provenance
+before future cache comparisons. The existing argv digest still distinguishes
+argument vectors, and reuse authority remains false; no incorrect artifact reuse
+or changed validation outcome is claimed.
+
+The delivery owner acknowledged the typed inner-command proposal and relayed it
+to root. Timeout/kill flags, failure behavior, privacy and required actual commands
+must remain intact. No source patch, coverage pilot or new compiler run occurred.
+The private source observation SHA256 is
+ac5759bb8fd73dbbe9ea9525348992c672e3b3a95e34388c99138e852b7c3d66.
 
 The controlling SoT retains build and runtime scope, exact-byte regression
 requirements, security invariants, resource admission and Docker product gates.

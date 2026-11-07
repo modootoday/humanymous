@@ -3,7 +3,7 @@ id: plan:root/20261107135643
 title: Performance research and source-bound optimization execution
 status: active
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T15:01:03Z
+updated: 2026-11-07T15:10:19Z
 rel:
   depends_on: [sot:root/performance-optimization]
 ---
@@ -190,3 +190,20 @@ counts, current binary hash and saved closure equality. No measurement rerun.
 The three delegated Integrity paths were then returned to root through normal
 owned lane release/reclaim. The actual claim was reread as the original five
 exact documentation/evidence scopes only; root and agent-maintenance were notified.
+
+## B3 source-only observation coverage handoff
+
+Read metrics/components/runtime/command source and official Cargo configuration
+and build documentation on2026-11-08. The component GNU-timeout helper hides its
+inner Cargo command from the literal-program metrics allowlist; optional timing
+injection is also absent on that route. Direct runtime Cargo is a distinct path.
+The delivery owner and root received the exact source chain and a typed inner
+observation proposal preserving all existing timeout/kill/failure semantics.
+
+The CLI target-directory hash omission and separately configurable intermediate
+build directory are provenance gaps for future cache comparison. Effective config
+must remain unknown when only a request is observed. Proposed regressions cover
+privacy, forwarded arguments, directory precedence, empty/unset states and single
+accounting. No delivery code edits, compiler runs or coverage pilot were performed.
+The private b3-metrics-coverage-source.json binds inspected file hashes/checkpoint;
+implementation and a real allocated pilot remain with the owning delivery context.

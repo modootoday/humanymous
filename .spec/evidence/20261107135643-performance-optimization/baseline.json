@@ -13,6 +13,21 @@
   "allocation_count": null,
   "runtime_throughput": null,
   "full_product_qualified": false,
+  "b3_command_observation_research": {
+    "status": "source_only_proposal_routed_to_delivery_owner",
+    "reviewed_local_date": "2026-11-08",
+    "checkpoint": "6aa87db167abf5c958bc2f60a05a25846e8a23f4",
+    "inspected_source_files": 4,
+    "working_blobs_matching_checkpoint": 4,
+    "private_source_observation_sha256": "ac5759bb8fd73dbbe9ea9525348992c672e3b3a95e34388c99138e852b7c3d66",
+    "finding": "component timeout wrapper hides inner Cargo from literal-program metrics and optional timing injection",
+    "directory_identity_gap": "CLI target-dir request and independently configured intermediate build-dir are not represented by the current target_dir hash",
+    "owner_acknowledged": true,
+    "source_patch_implemented": false,
+    "compiler_executed": false,
+    "coverage_pilot_executed": false,
+    "cache_reuse_authority_enabled": false
+  },
   "native_tool_identity": {
     "cargo_version": "cargo 1.99.1 (5f94df478 2026-08-27)",
     "cargo_sha256": "aa5b8980be3681899fde765ba47e2ed361463ae9dd8ee7cd1963c18d23743a0f",

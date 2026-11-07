@@ -3,7 +3,7 @@ id: sot:root/performance-optimization
 title: Reproducible build and runtime performance optimization
 status: draft
 created: 2026-11-07T13:56:43Z
-updated: 2026-11-07T15:01:03Z
+updated: 2026-11-07T15:10:19Z
 rel:
   depends_on: [sot:root/rust-migration, sot:root/program-roadmap, sot:root/delivery]
   governs: [crates/integrity/src/request/canonical.rs, crates/integrity/src/request/canonical/tests.rs, crates/integrity/examples/canonical_performance.rs]
@@ -168,12 +168,56 @@ This establishes the selected comparison's coverage, not a timed A/B speedup for
 the proposed policy. Required parser/selection/budget tests and actual tool pilot
 belong to the owning Rust tooling context under a separate implementation grant.
 
+### B3 command-observation coverage proposal
+
+Source-only review at6aa87db1 traced components.rs::invoke through
+command::json_log to metrics.rs. The component helper invokes GNU timeout with
+the actual Cargo command nested in its fixed argument vector. Metrics recognize
+only literal cargo/cargo.exe as the executed program; this wrapper route therefore
+receives neither a Cargo observation nor optional --timings insertion. Capture,
+header and cbindgen installation use that route. The runtime component's explicit
+direct-Cargo helper is a separate observed route. No actual coverage pilot has
+run for this finding and no validation outcome is being reclassified.
+
+The proposed delivery-owner change supplies a closed explicit inner-Cargo
+descriptor when constructing the existing wrapper invocation. Do not infer an
+arbitrary nested command from untrusted strings. Preserve timeout budget, TERM,
+kill-after and failure behavior exactly; inject optional timings into the inner
+Cargo argument segment before its forwarding boundary. Distinguish wrapper
+elapsed time, including startup/wait, from pure Cargo-child time. Prevent double
+counting and keep raw arguments, paths and timing HTML private. Observations must
+not change required tests, cancellation semantics, success interpretation or
+artifact reuse flags. Tool-owner design/implementation and allocated real pilot
+remain required; this is not a new path grant or compiler allocation.
+
+Requested-directory identity also needs a separate correction before cache
+comparisons. Current metrics hash CARGO_TARGET_DIR or literal target, omitting
+the CLI --target-dir request. A real wrapped cbindgen install supplies that flag,
+although its metrics are currently absent through the wrapper gap above. Cargo's
+configuration reference states CLI override and a separate build.build-dir for
+intermediate artifacts. A unique target directory alone is not proof of distinct
+intermediate storage when that setting is overridden.
+
+Record requested CLI target directory and inherited target/build-directory
+candidates with presence/source labels and hashes. When effective config is not
+resolved, keep effective directory identity unknown rather than hashing a default
+as an observed location. Preserve both unset and explicitly empty flag states.
+Unknown config/wrapper/SDK dimensions must keep reuse_key_complete and
+linked_artifact_reuse_qualified false. No compiled-cache enablement follows.
+
+Required regression cases include wrapped/direct Cargo, non-Cargo wrapper,
+forwarded -- separator, unchanged wrapper stop flags, CLI versus inherited
+directory requests, empty/unset environment, build-directory override, redacted
+payloads and single metric accounting. Then an allocated Rust-authored actual
+bounded Cargo pilot must prove the observation arrives while original required
+commands still execute. No shell-script test implementation is authorized.
+
 | ID | Experiment and current status | Acceptance boundary |
 |---|---|---|
 | B1 | Four native signals builds completed on immutable9b064dbd; initial15fresh/8rebuilt, repeats23fresh/0rebuilt | Project-quiet/external-load-observed; no controlled A/B/cold-cache claim; [[evidence:root/20261107135643]] |
 | R1 | Native c4786b67 tests27/check/strict Clippy/fmt; one release fixed-corpus comparison completed |5hot paired batches observed13.75-18.69% shorter time, paired median15.68%; unchanged source/binary/input closure; no product/tail/allocation or independent-process claim |
 | B2 | Archive fetch/preparation measurement and eligible-job restore proposal; research only | Current policy-job cache does not populate other runner filesystems; owner approves any exact policy expansion |
-| B3 | Package/version/feature/target duplicate compilation and invalidation; research only | Prove equivalent gates and actual dependency features before eliminating any build |
+| B3 | Wrapped Cargo observation gap and directory provenance proposal routed to delivery owner; source only | Preserve wrapper stop/failure semantics and privacy; actual pilot pending; prove equivalent gates/features before eliminating builds |
 | B4 | Profile/debug/codegen/linker/incremental/sccache; research only | Separate developer and CI profiles; matched compile and actual executable regressions; no inferred universal speedup |
 | R2 | Runtime/Authority/Audit/collector resource and tail-latency pilots; not allocated | Owner-approved real boundary, bounded concurrency/I/O, request-level distributions and security/cleanup checks |
 
@@ -318,6 +362,9 @@ tagged upstream source and installed tools:
   [build cache](https://doc.rust-lang.org/cargo/reference/build-cache.html),
   [feature resolution](https://doc.rust-lang.org/cargo/reference/resolver.html),
   [build-script change detection](https://doc.rust-lang.org/cargo/reference/build-scripts.html#change-detection).
+- Additional2026-11-08 review: [Cargo configuration](https://doc.rust-lang.org/cargo/reference/config.html)
+  and [Cargo build options](https://doc.rust-lang.org/cargo/commands/cargo-build.html)
+  for target/build-directory requests and command observation scope.
 - [Rust1.99.1 String source](https://raw.githubusercontent.com/rust-lang/rust/1.99.1/library/alloc/src/string.rs)
   and [str::split_whitespace](https://doc.rust-lang.org/std/primitive.str.html#method.split_whitespace).
 - [LLVM23.1.1 benchmarking](https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-23.1.1/llvm/docs/Benchmarking.rst)
