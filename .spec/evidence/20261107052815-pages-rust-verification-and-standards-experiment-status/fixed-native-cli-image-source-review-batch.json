@@ -1,0 +1,58 @@
+{
+  "schema": "humanymous.pages-small-source-review/1",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/native-cli/src/lib.rs",
+      "lines": 11,
+      "sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+      "current_sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete11-line safe module root for arguments/manifest/storage; Windows-only library test-support cfg is separate from integration-test support. Metadata generation is not SDK/runtime qualification; no dependency or new execution inference.",
+      "pages": [
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "crates/native-cli/INTEGRATION.md",
+      "lines": 23,
+      "sha256": "f9eb20132fe468e2fffbbe05b7ccc7af152fa97f9e48938d766d52faf1abe099",
+      "current_sha256": "f9eb20132fe468e2fffbbe05b7ccc7af152fa97f9e48938d766d52faf1abe099",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete23-line owner chronology separates native planner from operational service CLI. Historical Linux Clippy unused test-support cause and cfg fix do not establish new executed Linux validation; old resource-slot restrictions are history, not public product behavior.",
+      "pages": [
+        "docs/reference/production-vs-reference.md"
+      ]
+    },
+    {
+      "source": "build/rust/browser-product.Dockerfile.dockerignore",
+      "lines": 42,
+      "sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
+      "current_sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete42-line allowlist includes workspace crates, selected read-only JS oracles, Pages tooling for dependency resolution and Rust lab/CI tooling; denies build outputs, foreign script extensions, keys/env/logs. Broad admitted source context is not rendered Pages, final image contents or secret/isolation proof.",
+      "pages": [
+        "docs/how-to/verify-the-image.md"
+      ]
+    },
+    {
+      "source": "build/rust/runtime-candidate.Dockerfile",
+      "lines": 21,
+      "sha256": "3b3a6d3e248c358a796187194992f78679a277b753fa0dc9f6a9f41151eccd3a",
+      "current_sha256": "7ea8df07aef50541e97cb0820b0fe340e3a61a3eaf7952e1bb1c73cc0092903e",
+      "current_matches_fixed": false,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete21-line pinned Rust Alpine build recipe with locked release runtime, one-job/no incremental; scratch final stage copies executable/license, UID65532 and private-pipe entrypoint. Labels are supplied claims, not attestation; no observed build, static-link closure, mount/privacy/service qualification or legacy-image replacement inferred.",
+      "pages": [
+        "docs/how-to/verify-the-image.md"
+      ]
+    }
+  ],
+  "full_read_files": 4,
+  "lines": 97,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; reviewed source, not latest execution or global freshness"
+}

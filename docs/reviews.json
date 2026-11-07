@@ -2,6 +2,308 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/integrity/src/adapter/mod.rs",
+  "sha256": "8a44c59f88a2888b05ff5c1c38b8d34c3fee0c429ce1aa394dc7c1e1f210dd22",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete331-line schema/semantic parser: strict bounded JSON, exact externally provisioned identity/profile, safe deadline, UUID4/scope, complete body layer/length/SHA/canonical Base64, headers/framing/targets and no invented TLS/H2/capture/stream. ValidatedRequest is not authenticated provenance, replay admission or ALLOW. Legacy parse_for changes expected identity but retains Node mode policy; named producers require parse_with_profile.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/integrity/src/adapter/tests.rs",
+  "sha256": "45aa2d41047656f14f540c1437bbc05990ee3b0f90c50ecb5f429168dc2a59ef",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete276-line synthetic parser tests: profile/mode/capture contradictions, exact byte/header preservation, required nullable and null-only fields, duplicate escaped/unknown/nonUTF8/BOM/limits, targets/framing/deadlines. No real server callbacks or independent parser interop execution in this review.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/integrity/src/adapter/wire.rs",
+  "sha256": "e8687e4be4dad979741fd582faeb0d097bda4572fbaf236763753ff836243db9",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete81-line fixed-schema deny-unknown typed model. Nullable newtype requires explicit string/null presence rather than omitted Option; capture/stream only explicit null. Structural decoding does not canonicalize/sign JSON or authenticate provenance.",
+  "pages": [
+    "docs/standards/draft-v0/protocol/implementation-experiment.md"
+  ]
+},
+{
+  "source": "crates/integrity/src/request/browser/ack.rs",
+  "sha256": "20526674e2a0e3f0267c5baa23837a9d378bbfa9db16a4ded1946151b1730b7a",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete59-line separate ACK domain binds request MAC, consumed counter, bucket and actual HTTP status under32-byte key; canonical token encoding and exact constant-time comparison. Not ALLOW, body authentication, collector provenance or origin commit proof.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/integrity/src/request/browser/ack/tests.rs",
+  "sha256": "cb39f96c7dfeabccbe9ee5e3113728f1260c58b32ebe23e190b68c46d2c68616",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete61-line fixed HMAC/SHA vector, every key/token/counter/bucket/status/encoding mutation and bounds refusals. Independently calculated vector is not independent runtime implementation or observed execution.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/integrity/src/request/browser/mod.rs",
+  "sha256": "19b57d4a33ac26075b9f546f3b8d0fa114fd5b8564be34f6d9543227401780a3",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete123-line browser0.1 canonical binding:14 length-prefixed fields and terminal newline, provisioned scope/final target/content-type/application Authorization/body SHA, distinct from native domain. Returned canonical text contains credentials and must remain transient. Numeric validation does not perform server freshness or consumed-counter state.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/integrity/src/request/browser/tests.rs",
+  "sha256": "7b15a71305ba23a29ba9c06673a80b57ae56d4389785d1cd151c88804b899362",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete164-line canonical byte/field-order/signature vectors, scope/session/method/header/body/integer negatives and exact query escape handling. Tests are source-reviewed only; no new cryptographic or browser execution.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/integrity/src/request/browser/validation.rs",
+  "sha256": "d47708d611a44bf4bfd419d66fe2e3831f897a29b6b7f02f2b32b3977c7ba55b",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete91-line bounds: scoped ASCII identities, canonical32-byte session, selected methods, nonempty GET/HEAD bodies reject, safe integers and1MiB codec body ceiling. ASCII header trimming only at edges; path validation differs from exact serialized query escapes. Transport/runtime may impose stricter64KiB bounds; this codec does not enlarge them.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
+{
+  "source": "crates/native-security/Cargo.toml",
+  "sha256": "4b1dff517ecc7127d4526f3a1474dd51d102ae181b5e80aefa692981fd91ce15",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Unpublished shared native-security crate, default read-only production credential path and explicit credential-pilot feature. Windows selects windows-permissions0.2.4, winsafe0.0.29 and explicit native keyring store; Unix uses rustix process queries. Dependency declarations are not an audited provider closure or supported tuple. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/lib.rs",
+  "sha256": "c6ce48bdcc12e9ff440285ddf0d3bf17b231d1fc24b7872f22bace8e8afdd7d0",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Exposes process/secret/storage, Windows-only volume. Module existence is not cross-platform feature parity. No detection policy or implicit provisioning. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/process/mod.rs",
+  "sha256": "04e51540d0b09d6dc7a51cd59b49f39271075d6999cdc6bc6de2595bf55a52aa",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Owned service-name syntax humanymous-lab- plus1..48lowercase/digit/hyphen. Unix current_uid obtains effective UID natively. Pure helpers require non-elevated AND no enabled admin for installer; deny-only admin is not enabled authority. Names and UID numbers alone do not authorize a service or prove a remote peer. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/process/windows.rs",
+  "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "WindowsIdentity fields cannot be caller-constructed; reads actual process TokenUser, elevation and enabled group attributes. Rejects any thread impersonation or unexpected token response. Queries do not change a token, prove a binary signature, authenticate a request or establish hosted provenance. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/secret/mod.rs",
+  "sha256": "eb7ba77665bb51bcb217a34dbf0309bf2c45ef28131c97003c17e7d28541c4c0",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "read_service_secret returns Zeroizing bytes, permits1..4096bytes and delegates only on Windows; non-Windows explicitly Unsupported. Production path has no creation/UI/argv/env/file fallback. Redacted PermissionDenied covers unavailable Windows credentials. Zeroizing this returned vector does not establish OS/backend-copy erasure. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/secret/pilot.rs",
+  "sha256": "99703482931610e1690671ed4b7e690cb9a9897e0d4bd4cccfb2f28ebc942942",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Feature-only disposable fixture mutation, strict service binding and pilot- plus32lower-hex target. Context validates run/source syntax only: caller must authenticate signed plan and external execution identity. No OS random generation here. Requires actual service principal through entry(); absence-check/write and verified delete are not atomic/CAS. finish observes absence/failure; Drop is best effort and explicit finish failure suppresses silent cleanup retry. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/secret/reference.rs",
+  "sha256": "772fad2c0d89dbe57745f29fe8863e2d896ab1ea24d7008df50e5ca49856a06e",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Nonsecret exact selector: owned service namespace and1..64lowercase/digit/hyphen credential id, redacted Debug and exact target composition. Rejects path/wildcard/whitespace syntax. Selector possession does not prove native identity or secret custody; read provider still verifies principal. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/secret/windows.rs",
+  "sha256": "ea9ae767ae62ef1137743dcd131bf877b03c0d078138ee9a7e086e2c9e209273",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Resolves owned virtual service SID and requires actual TokenUser equality, rejects impersonated thread via current_identity. Explicit Windows Store avoids ambient/mock default; exact target_name and Local persistence checked before/after bounded read. Errors redacted. Metadata reads are not an atomic anti-ABA snapshot; same-principal mutation remains possible and sealed custody must authenticate keys. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/storage/mod.rs",
+  "sha256": "3ba55562611e5d1537e052a67576ecab6d543ca418750786caf6885100b2b736",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Windows-only safe exports separate ordinary privacy, pipe privacy, service grants and private-directory creation. Unix absence here is not an equivalent implemented ACL backend. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/storage/private_directory.rs",
+  "sha256": "a6b2537611366c51a1eeb29b0be33de3add9a236dfed0aedca675a76ce3ef586",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "New bounded child component only; delegated installer parent versus already-private service parent are separate. Actual principal check precedes service initialization; ordinary-user factory rejects elevated/admin token. Existing parent is handle-verified; new child owner/non-reparse/DACL protection and inheritance verified. No existing-child repair, no secret write, no blind cleanup; partial empty child may remain. Parent-owner replacement/trusted ancestors remain premises; this is not atomic adversarial path-race containment. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/storage/service.rs",
+  "sha256": "e0dd437ed236cf3ac23f89556694c31b7ac7f64dec7be75eea002769b25c1220",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Owned native service SID resolution; exact S-1-5-80 five-u32 structure. Explicit local fixed-drive path, non-reparse opened handle; grant/revoke verify through same object. RX for executable, Modify+inheritance for state, no service owner/WRITE_DAC. Exact existing grant idempotent; unknown grants/owner not repaired. Revocation assumes caller stopped service; this function does not inspect SCM state. Tests include actual-file fixtures with synthetic service SID, not actual virtual-account lifecycle. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/storage/windows.rs",
+  "sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Actual opened owner/DACL checks reject reparse/type mismatch and unexpected/null/empty/deny ACEs. Protection and child inheritance are distinct policies. Installation-only policy may allow SYSTEM/Admin; ordinary audit/custody policies do not. Pipe verifier checks descriptor only: transport separately establishes actual pipe type/peer PID. ProtectedDirectory policy used for descriptor shape does not establish that a handle is a directory/pipe. Trusted ancestors/same-owner replacement remain premises. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/native-security/src/volume/mod.rs",
+  "sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+  "reviewer": "Codex native-abi chat 01a1b4e3-b2b7-71d3-bf3b-66a851cb7cf4",
+  "notes": "Windows require_fixed accepts explicit drive-letter root and native GetDriveType FIXED only. Unknown/remote/removable/optical/RAM roots reject; no physical-media provenance or trusted ancestry is proved. Pure enum/root checks are not observed production storage durability. Pages reviewed the delegated peer source report, not a native/API execution or external certification.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/Cargo.toml",
+  "sha256": "b1f3221b38e28cb225a8c928786392b113fce5bcdcbc58ebe60ef3c71abff846",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Rust2024/1.99.1 cdylib+rlib, default features empty, optional host-pilot; pinned NAPI8/upstream generated glue and existing shared authority/integrity. Build targets are not a qualified OS/runtime matrix. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/INTEGRATION.md",
+  "sha256": "c4572ce66064fe091f5a4839d2d37ae1befd7176288fdeebda5b1b0cafac0846",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Chronological component receipts have explicit drift and later-source exclusions. Historical Windows52/Linux36 cannot qualify fixed source refactor or package edits. Hosted source813 loader work did not produce missing qualification receipt. Memory hold text is operational history; no fresh execution claimed by this review. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/build.rs",
+  "sha256": "1f57ae6df404deec338aa9e64c9e4d42beba866ef8f9615470b89acef10d05c9",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Only upstream napi_build::setup; does not author loaders, prove ABI or install archive. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/src/bin/humanymous-node-package.rs",
+  "sha256": "8d8848e22153d9658dcea820dec2c3862e268400d3ebbdde6e851c952301b001",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Exclusive generation/inspection lock; pinned upstream CLI generates CJS/ESM declarations; inspect checks markers/LF/binaries/typechecking and four actual production import receipts then writes component provenance. Child output limits are post-capture and no timeout is installed here. Metadata/provenance generation is not full qualification. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/src/bin/humanymous-node-package/install.rs",
+  "sha256": "cc21f5e0713607e81c5912c166b7ccb7acac2d9621caa0a91b07a2b33c51115b",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Explicit opt-in,100MiB exact hashed copied archive, fresh offline npm install without scripts/audit/funding/lockfile, package identity/exports plus six production native imports. Generation lineage/framework/full-product explicitly false; source-only no actual clean-install claim. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/src/pilot.rs",
+  "sha256": "d50ab261e0a83ea7e8b6d9b3623a0eea75f789c7210bdf0464a5dc6194885e04",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Feature-gated Rust host fixture loads actual upstream Express/Hono and Bun.serve/Node adapter with private startup input. This is authored fixture wiring, not observed lifecycle or production evidence. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/src/pilot/origin.rs",
+  "sha256": "e1b0e73e4c1d4d4ac953d13fe03929dcef0110712c0e502497dceaa00489c319",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Rust fixture effect markers, binary echo, async iterator, cookie, redirect, HEAD204/304 and SSE routes. Effect append measures fixture handler entry, not a durable business commit. Authored response fixtures are not passing measurements. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/tests/host_process.rs",
+  "sha256": "e620113ac93c3d9d81cc4812655ddc8654fc7fda620dd0cc8cdfbb9bf3bd9275",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Three ignored-by-default actual-host groups plus two included framing groups. Separate real-production non-ALLOW and synthetic-evidence real-engine ALLOW/audit counters; sixty current required cases include seven positives per tuple. Tests need exact addon/framework/authority provisioning; default green or old36/52 results cannot discharge current corpus. Cleanup kills/waits child but is not independent full-product containment proof. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/tests/support/http.rs",
+  "sha256": "0cd896b0ec01729259da3f316be282bbaccf466bce89115c51a7bc74d35f765f",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Bounded fixture response receiver handles length/chunked and204/304 without requiring close, with conflict/incomplete pure tests. This is a test-client parser, not ingress authorization or broad HTTP conformance. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/node-adapter/tools/source_receipt.rs",
+  "sha256": "c6f6ca2c19f3aff8a6638937bc8e015f361e3264790e4a6fb35ee6d16be16d58",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Read-only Git/file hashing utility records working/filtered blobs and LF; hashing cannot authenticate execution or substitute for full semantic review. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
+{
+  "source": "crates/native-cli/INTEGRATION.md",
+  "sha256": "f9eb20132fe468e2fffbbe05b7ccc7af152fa97f9e48938d766d52faf1abe099",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete23-line owner chronology separates native planner from operational service CLI. Historical Linux Clippy unused test-support cause and cfg fix do not establish new executed Linux validation; old resource-slot restrictions are history, not public product behavior.",
+  "pages": [
+    "docs/reference/production-vs-reference.md"
+  ]
+},
+{
+  "source": "crates/native-security/INTEGRATION.md",
+  "sha256": "f9575d1c86ede01176710c5b8bd98928b3d09000e005732c93e77cb903bd1dce",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete current chronology read at f9575d1c after source change. Distinguishes actual token/descriptor APIs, bounded Windows-only WinCred reader, strict service child factories and opt-in disposable credential fixture. Context/run/source syntax is not attestation; metadata/precheck/delete is not CAS; historical native-file synthetic-SID and later scoped pure results remain separate. No new native execution/provider/service success accepted from narrative.",
+  "pages": [
+    "docs/reference/install-requirements.md"
+  ]
+},
+{
   "source": "crates/framework-adapter/Cargo.toml",
   "sha256": "4bfb4ea183741fda052b627b34c435db89d70bbb3823634a0b59be1378dc7a4c",
   "reviewer": "codex/rust-pages",
@@ -1805,9 +2107,9 @@
 },
 {
   "source": "adapters/node/host-pilot-contract.json",
-  "sha256": "f4ec52033a8e692b72d6a9bd6befe76825d65cb290a4f2fb72fd160e45538dcb",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read complete required contract: five harness groups/no ignore/filter, four Node/Bun Express/Hono tuples,12rows and60cases split4production-negative/28synthetic-ALLOW/16synthetic-negative/12unavailable. Required counts are not executed outcomes; no package/product or production browser qualification.",
+  "sha256": "c8bde18712278a1b6243e14abb039486a0e69426539a66720b05fc50d2825875",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Five groups, twelve distinct rows and sixty required host cases are denominators, not passing results. Four production non-ALLOW,28 synthetic ALLOW,16 synthetic negatives,12 unavailable negatives remain separate; no package/browser/full-product qualification. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
   "pages": [
     "docs/reference/node-adapter.md"
   ]
@@ -2096,9 +2398,9 @@
 },
 {
   "source": "build/rust/runtime-candidate.Dockerfile",
-  "sha256": "f24e4e0662eee7233e0d2030c8148c8bc94b463830d94fbdbc78305ef8729ed7",
+  "sha256": "7ea8df07aef50541e97cb0820b0fe340e3a61a3eaf7952e1bb1c73cc0092903e",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete pinned Rust compiler and scratch runtime recipe, exact executable/license copies, revision/qualification/role labels and non-root entrypoint. Private configuration/state/custody belong to caller; recipe/label/user do not establish actual binary provenance, peer/mount isolation, witness availability or startup/shutdown/CVE qualification. No build/run performed.",
+  "notes": "Complete current22-line recipe read: adds separately pinned cargo-auditable0.7.7 installation with locked tool deps and auditable workspace build, retaining scratch executable/license-only final stage and private-pipe UID65532 entrypoint. Embedded dependency data is not authenticated provenance, complete upstream reproducibility, observed image execution or final deployment qualification.",
   "pages": [
     "docs/how-to/verify-the-image.md"
   ]
@@ -2132,9 +2434,9 @@
 },
 {
   "source": "build/rust/browser-product.Dockerfile.dockerignore",
-  "sha256": "5e0990d76142924cc9921068dc96912cb32591ddc47e0452afd6984b1228c2aa",
+  "sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
   "reviewer": "codex/rust-pages",
-  "notes": "Read complete default-deny product-browser build context with exact Cargo/crate/feature oracle/tooling/lab/script inclusions and source/cache/credential exclusions. Pages tooling inclusion supports workspace metadata, not rendered docs or current keyboard evidence. Actual context/image inspection remains a separate execution gate.",
+  "notes": "Complete42-line allowlist includes workspace crates, selected read-only JS oracles, Pages tooling for dependency resolution and Rust lab/CI tooling; denies build outputs, foreign script extensions, keys/env/logs. Broad admitted source context is not rendered Pages, final image contents or secret/isolation proof.",
   "pages": [
     "docs/how-to/verify-the-image.md"
   ]
@@ -2945,9 +3247,9 @@
 },
 {
   "source": "adapters/node/Dockerfile.pilot",
-  "sha256": "84e452cd5f4657afae121fbe9fe0fd1b3ee53333bcf464aa5037606740ae6aa4",
-  "reviewer": "codex/rust-pages",
-  "notes": "Read full pinned Node/Bun/Rust image, workspace source and authority build, generated upstream host preload, host test compilation, offline runtime selection and UID65532 entrypoint. Public Node reference labels component test image, not production app or full browser deployment. Dockerfile comment requires caller isolation/resource flags; source alone does not prove effective controls or fresh execution.",
+  "sha256": "8c0e4de9f7b39249199ce68945c0c1a2c978257411072ec20aa515aae1aaef58",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Pinned Node24/Bun1.3.14/Rust1.99.1 component image builds host-pilot addon and actual authority; nonroot is selected but network-none/read-only/resource bounds belong to caller. CMD runs host tests, not production application. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
   "pages": [
     "docs/reference/node-adapter.md"
   ]
@@ -3102,12 +3404,14 @@
   ]
 },
     {
-      "source": "crates/node-adapter/src/stream.rs",
-      "sha256": "d342b9328b9fe718f81158e3e9bdb87f45f3f8467445b5e65c80571c4cd13be3",
-      "reviewer": "codex/rust-pages",
-      "notes": "Read full Express/Fetch collection, admission, body bounds, event cancellation/deadline, shared authority client binding/consumption, dispatch checks and Express bounded replay. Public reference distinguishes pre-parser ownership, complete-body verification, Hono Request reconstruction, status mapping, handler-owned response streams and post-dispatch effect limits. Source inspection does not prove host metadata compatibility, race freedom, timer/listener lifecycle, actual origin-once behavior or accessible recovery; current-source execution remains required.",
-      "pages": ["docs/reference/node-adapter.md"]
-    },
+  "source": "crates/node-adapter/src/stream.rs",
+  "sha256": "b8556c076025e977d6b66b1714e5992b39fcb5091b004e14d6dd542be4a5e504",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Bounded complete-body ownership with64shared admissions, original deadline, cancellation, actual authority client and one-time decision consume. Express replays body events and sanitized headers; Fetch clones original Request with verified bytes/signal. App response streams are not collected or rollback proof. GC/root release, timer races and later source changes require actual host execution. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
     {
       "source": "crates/node-adapter/src/host.rs",
       "sha256": "9f0c54928271bb02be0e363840168f590ed2b078709e5f5a2da5c8eb10e3326e",
@@ -3116,12 +3420,14 @@
       "pages": ["docs/reference/node-adapter.md"]
     },
     {
-      "source": "crates/node-adapter/src/envelope.rs",
-      "sha256": "ed171ef7118fefda9b028bf183ab678aa0b123ad8a35c3f89295d779e8b996ce",
-      "reviewer": "codex/rust-pages",
-      "notes": "Read strict camelCase configuration, required scope/peer/credential/routes/limits, platform-local endpoint syntax, reserved route refusal, forwarding assertion stripping, exact body commitment and shared parser reuse, including source tests. Public topology reference records bounds without treating configuration syntax or a fresh UUID as authority authentication or origin-effect evidence. Source-only review; no unit/IPC execution.",
-      "pages": ["docs/reference/node-adapter.md"]
-    },
+  "source": "crates/node-adapter/src/envelope.rs",
+  "sha256": "40eabadcc6621602529b466b63a1e781e9a005d0970114444ccb07b6ae0c8d8d",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Delegates config, entropy, header sanitization and envelope encoding to shared framework/integrity with Node profile. Three pure tests use constructed values; no host callbacks or actual IPC proven by this file. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
     {
       "source": "crates/node-adapter/src/template.rs",
       "sha256": "7b9b542fbe81a359dabd7668b694ace35a40919594494263658a68c9cc3f6d2e",
@@ -3137,12 +3443,14 @@
       "pages": ["docs/reference/node-adapter.md"]
     },
     {
-      "source": "crates/node-adapter/src/lib.rs",
-      "sha256": "5bdf238aaf55c145380060eb8abe7e470edd550091be2bf645d14687fb75a863",
-      "reviewer": "codex/rust-pages",
-      "notes": "Read all exported Rust Node-API wrappers and capabilities JSON. Public topology reference distinguishes owned Express server versus advanced root middleware, Hono stream-module dependency, explicit template-only HTML, normalized Bun/Fetch evidence and empty releaseQualifiedTuples. Delegation to implementation modules is not independent execution proof. Source/prose review only; current native host, packaging and authority/origin execution remains unqualified.",
-      "pages": ["docs/reference/node-adapter.md", "docs/start-here/integrator.md"]
-    },
+  "source": "crates/node-adapter/src/lib.rs",
+  "sha256": "6042f74648c07fb81e7bde4b687208424dc9b8f363af80a70b068beaacd0e9f7",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Safe NAPI public Express-owned-server, root middleware, Fetch, explicit HTML and capability APIs. Production-load assertion refuses host-pilot feature; capability output names no release tuples. Shared authority owns decisions. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
 
     {
       "source": "crates/native-cli/Cargo.toml",
@@ -3152,12 +3460,14 @@
       "pages": ["docs/tutorials/quickstart-monitor-mode.md", "docs/reference/cli-config-policy.md"]
     },
     {
-      "source": "crates/native-cli/src/lib.rs",
-      "sha256": "727de2499f0b3beaa0084a4375ae14c39915482e08bb1ed7c73bcf2f3dfbb1d5",
-      "reviewer": "codex/rust-pages",
-      "notes": "Reviewed exported arguments/manifest/storage modules and forbid-unsafe boundary. Reader pages identify declarative planning and explicit publication separately from actual runtime/SDK protection.",
-      "pages": ["docs/tutorials/quickstart-monitor-mode.md"]
-    },
+  "source": "crates/native-cli/src/lib.rs",
+  "sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete11-line safe module root for arguments/manifest/storage; Windows-only library test-support cfg is separate from integration-test support. Metadata generation is not SDK/runtime qualification; no dependency or new execution inference.",
+  "pages": [
+    "docs/reference/production-vs-reference.md"
+  ]
+},
     {
       "source": "crates/native-cli/src/arguments.rs",
       "sha256": "0c8e593d0d027cdf0b26852eeaf8e29eff51d29bc3ccb5a98c5cae4f99432b48",
@@ -3380,27 +3690,23 @@
   ]
 },
     {
-      "source": "adapters/node/.gitignore",
-      "sha256": "ba79bbc25fa8951489e77f28f1561c2e9388115cb33f1c606424f8e08169f96b",
-      "reviewer": "codex/rust-pages",
-      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/integrator.md",
-        "docs/explanation/will-this-break-my-app.md"
-      ]
-    },
+  "source": "adapters/node/.gitignore",
+  "sha256": "f0ce22fbe64e18e3231d9b1e0e8d40a6d031f3e3a4dcd041773132608f94c93c",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Ignores dependencies, archives and generated native outputs; ignore rules are not an archive-content or secret-exclusion proof. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
     {
-      "source": "adapters/node/capabilities.json",
-      "sha256": "dc76ebe8521634d60c17bafd315d9fecc2cdc3da22b1e47c8f688a3a661df0b8",
-      "reviewer": "codex/rust-pages",
-      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/integrator.md",
-        "docs/explanation/will-this-break-my-app.md"
-      ]
-    },
+  "source": "adapters/node/capabilities.json",
+  "sha256": "e30b2a2ea43644b7e0c1c6d89a8c75ee5f8263d996e7f3cebacd87f457e6815c",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Conditional raw Node HTTP1 versus normalized Bun/Fetch capabilities; original TLS/H2/H3, upload streaming, recovery/admin unavailable. Empty releaseQualifiedTuples and required actual receipt remain authoritative. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
     {
       "source": "adapters/node/LICENSE",
       "sha256": "28153ab6c3197253563f1ae0932a89a758d2d0f9c667d59da2e41c01c9cbfeb1",
@@ -3413,38 +3719,32 @@
       ]
     },
     {
-      "source": "adapters/node/package-lock.json",
-      "sha256": "7b8a1890c75e45aeb729113dc2be648e4ee5cb789905c6680930b443331bdc1d",
-      "reviewer": "codex/rust-pages",
-      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/integrator.md",
-        "docs/explanation/will-this-break-my-app.md"
-      ]
-    },
+  "source": "adapters/node/package-lock.json",
+  "sha256": "7d6740944840e34947cea72ea84231c70c47a6cbf8b2a10050970513a5a674cf",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Full3293-line lock read in contiguous chunks with overlap over initially truncated display. Lock v3 pins dev graph/resolved URLs/integrities and optional OS/CPU/libc packages; no runtime dependency block. NAPI CLI3.10.12 requires Node22.13 or other accepted ranges, lzma1.5.3 requires22.20/24.12/25, so install floor>=22 is not build-tool compatibility. Lock integrity is not downloaded-byte, advisory or license-closure verification. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
     {
-      "source": "adapters/node/package.json",
-      "sha256": "221225c94e3b2fa4f625585ec009dfdc658b4ee4279cfa8ba801c7b67516c75c",
-      "reviewer": "codex/rust-pages",
-      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/integrator.md",
-        "docs/explanation/will-this-break-my-app.md"
-      ]
-    },
+  "source": "adapters/node/package.json",
+  "sha256": "d584969e4879562c7a48b59e1091e0e54bb66dcf906b2976907d45dbf865a77d",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Experimental package explicit generated CJS/ESM/types/native/provenance allowlist; Node>=22 metadata, candidate Windows/Linux targets, pinned dev tools. Rust scripts/prepack inspect exist; publishConfig is not publication authorization or package qualification. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
     {
-      "source": "adapters/node/README.md",
-      "sha256": "40b48482d82511862200f4dc388e8119b4b3ddd055d4e5cf0edf5d5180f576b9",
-      "reviewer": "codex/rust-pages",
-      "notes": "Experimental adapter contract/package source is not a released integration. Capability descriptor has no release-qualified tuples and mock/local conformance cannot replace Rust authority, IPC peer/ACL and Docker/browser/native pilots. Reader pages withhold install/support guarantees.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/start-here/integrator.md",
-        "docs/explanation/will-this-break-my-app.md"
-      ]
-    },
+  "source": "adapters/node/README.md",
+  "sha256": "03ca875d121b76061e80afe6fc7e9e20ada33ea844998f3849d826843e51e7fc",
+  "reviewer": "Codex Go owner delegated read-only Node review; not Node implementation author or external interoperability evaluator",
+  "notes": "Experimental APIs and unknown release tuples are explicit. Claims about pending HEAD/304/cloning tests and memory hold are source-checkpoint history, not current executions. Node>=22 install floor is not the stricter dev-toolchain floor or all-version support. Pages reviewed the full-file report; no new host execution or release tuple acceptance.",
+  "pages": [
+    "docs/reference/node-adapter.md"
+  ]
+},
     {
       "source": "adapters/node/src/index.cjs",
       "sha256": "9039b26e0eb867715b3a5a28a4119552e1bf5f25aa169efdf61024f9d572e7c9",
@@ -4209,27 +4509,25 @@
       ]
     },
     {
-      "source": "crates/integrity/Cargo.toml",
-      "sha256": "952b33c8c18b09df5e68205ad8f574afbc40475f9aa1ddd3c6403b86aed04502",
-      "reviewer": "codex/rust-pages",
-      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/configure-attested-routes.md",
-        "docs/reference/gate-origin-contract.md"
-      ]
-    },
+  "source": "crates/integrity/Cargo.toml",
+  "sha256": "2f6608489207d5a75bf615e4c30f851b436aedeea5a33acf73425a20b63e3e24",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete25-line unpublished shared integrity manifest, reused HMAC/SHA/Base64/subtle/zeroizing/signals/serde dependencies and test-support dev edge. No runtime qualification from manifest.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
     {
-      "source": "crates/integrity/src/lib.rs",
-      "sha256": "de3f90370225a907d986bda42fa18cbf046959a0d0d78f1ac50f1f396f17b23a",
-      "reviewer": "codex/rust-pages",
-      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/configure-attested-routes.md",
-        "docs/reference/gate-origin-contract.md"
-      ]
-    },
+  "source": "crates/integrity/src/lib.rs",
+  "sha256": "9b197bf8b6716d0388f9b9625d65616b177deaba446cc877f22f592a4a141bbf",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete4-line module root exposes adapter/request/resource; declarations do not grant authority or independently review every exported implementation.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
     {
       "source": "crates/integrity/src/request/canonical.rs",
       "sha256": "70439a4a0050edb85db942d797ad8801a47f39f058081647467b5994a58f0990",
@@ -4242,16 +4540,15 @@
       ]
     },
     {
-      "source": "crates/integrity/src/request/mod.rs",
-      "sha256": "8616303a73bb1f706640197d2c7c5701568b7c376ff0abc681193eaa61029f89",
-      "reviewer": "codex/rust-pages",
-      "notes": "Integrity library and comparison vectors do not qualify route wiring. Reader pages require exact byte representation, request binding and verification before origin effects, with configuration and streaming integration still pending.",
-      "pages": [
-        "docs/reference/production-vs-reference.md",
-        "docs/how-to/configure-attested-routes.md",
-        "docs/reference/gate-origin-contract.md"
-      ]
-    },
+  "source": "crates/integrity/src/request/mod.rs",
+  "sha256": "2cac6164e323cd21fa26a59ab94450c9e912e8050c71f2999f52cb3806a15a9e",
+  "reviewer": "codex/rust-pages",
+  "notes": "Complete11-line frozen native token module wiring and separate browser binding. Legacy canonical/rotation/token/verification exports are not silently replaced by browser profile.",
+  "pages": [
+    "docs/reference/browser-collector.md",
+    "docs/standards/draft-v0/validation/implementation-map.md"
+  ]
+},
     {
       "source": "crates/integrity/src/request/rotation.rs",
       "sha256": "369eaed99785b14d2d7b4bf4e328de67ef4f60f7be9970b02476699516f0d0b8",

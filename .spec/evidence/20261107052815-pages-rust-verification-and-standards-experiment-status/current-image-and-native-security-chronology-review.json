@@ -1,0 +1,30 @@
+{
+  "schema": "humanymous.pages-current-source-review/1",
+  "reviews": [
+    {
+      "source": "build/rust/runtime-candidate.Dockerfile",
+      "sha256": "7ea8df07aef50541e97cb0820b0fe340e3a61a3eaf7952e1bb1c73cc0092903e",
+      "lines": 22,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete current22-line recipe read: adds separately pinned cargo-auditable0.7.7 installation with locked tool deps and auditable workspace build, retaining scratch executable/license-only final stage and private-pipe UID65532 entrypoint. Embedded dependency data is not authenticated provenance, complete upstream reproducibility, observed image execution or final deployment qualification.",
+      "pages": [
+        "docs/how-to/verify-the-image.md"
+      ]
+    },
+    {
+      "source": "crates/native-security/INTEGRATION.md",
+      "sha256": "f9575d1c86ede01176710c5b8bd98928b3d09000e005732c93e77cb903bd1dce",
+      "lines": 93,
+      "reviewer": "codex/rust-pages",
+      "full_file_read": true,
+      "notes": "Complete current chronology read at f9575d1c after source change. Distinguishes actual token/descriptor APIs, bounded Windows-only WinCred reader, strict service child factories and opt-in disposable credential fixture. Context/run/source syntax is not attestation; metadata/precheck/delete is not CAS; historical native-file synthetic-SID and later scoped pure results remain separate. No new native execution/provider/service success accepted from narrative.",
+      "pages": [
+        "docs/reference/install-requirements.md"
+      ]
+    }
+  ],
+  "execution": "NOT_RUN",
+  "old_fixed_hashes_renewed": false,
+  "public_ledger_updated": false
+}

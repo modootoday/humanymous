@@ -3,7 +3,7 @@ id: evidence:root/20261107052815
 title: Pages Rust verification and standards experiment status
 status: active
 created: 2026-11-07T05:28:15Z
-updated: 2026-11-07T12:35:08Z
+updated: 2026-11-07T12:44:18Z
 rel:
   governs: [docs]
 files:
@@ -73,6 +73,11 @@ files:
   - {path: owner-review-acceptance.json, sha256: 432dddf9d245a9750c93be064301e4ff4582997aa5adef86b1dcdc35fee46701, bytes: 29433, store: repo}
   - {path: framework-source-and-removed-admission-review.json, sha256: a6733f37ed8802bdb608cea66637c8e371b9f8f23455ef10ba865b4957ab91df, bytes: 5309, store: repo}
   - {path: framework-nginx-review-acceptance.json, sha256: 533ec30cd139307d18eda3b25f7ea266a963f9a4f4bc08a4f1c5d9d16e3ed3a7, bytes: 8500, store: repo}
+  - {path: fixed-integrity-source-review-batch.json, sha256: 883405c1e56b284895c5b87001dd358a2a3fc236a738d479713cf78f1bea8d45, bytes: 8613, store: repo}
+  - {path: integrity-native-security-node-review-preparation.json, sha256: 78760e7418519d4ce6b93b8f4ccf18626f5b4b75e2ed7aaeeea003dd64a5c845, bytes: 33025, store: repo}
+  - {path: fixed-native-cli-image-source-review-batch.json, sha256: a66c6cee95ca52cd008fb5dab6f6ccfd2d9ef065c5d90f355fac701708d41625, bytes: 3197, store: repo}
+  - {path: current-image-and-native-security-chronology-review.json, sha256: f680d8ca12b13723cc7694a730989dee1e20804cdc8d81b189e17f0ff386e1ff, bytes: 1689, store: repo}
+  - {path: integrity-security-node-review-acceptance.json, sha256: 735d9f34467898283439ce488d2c9db407c76a6fdf3f22d8677c2bdd9f9c2499, bytes: 36340, store: repo}
 ---
 
 # Pages Rust verification and standards experiment status

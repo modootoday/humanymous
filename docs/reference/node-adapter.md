@@ -138,9 +138,13 @@ pinned upstream generator with locked Cargo resolution, checks generated LF text
 and provenance markers, typechecks declarations and loads both entrypoints in
 Node and Bun. Inspection writes a `component-only` provenance record with file
 hashes. It is not a read-only command or a complete framework/authority pilot.
-Do not use it as a supposedly lightweight local check under a runtime hold.
+It starts compiler and Node/Bun child processes. The caller must bound their
+execution time and captured output; the driver's output checks occur after
+capture and do not install a child-process timeout.
 
-`engines.node >=22` is an installation floor. Configured native build targets,
+`engines.node >=22` is an installation floor; the pinned development tools have
+stricter version requirements and do not support every Node 22 release.
+Configured native build targets,
 loader import success and provenance hashes do not establish release-qualified
 OS/architecture/runtime tuples. A source-bound qualification receipt and actual
 authority/origin, archive and platform gates remain required; no npm publication

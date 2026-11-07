@@ -1,0 +1,150 @@
+{
+  "schema": "humanymous.pages-integrity-source-review/1",
+  "candidate": "269607366e4b2e37b47a974595b406b66642caae",
+  "reviews": [
+    {
+      "source": "crates/integrity/Cargo.toml",
+      "lines": 25,
+      "sha256": "2f6608489207d5a75bf615e4c30f851b436aedeea5a33acf73425a20b63e3e24",
+      "current_sha256": "2f6608489207d5a75bf615e4c30f851b436aedeea5a33acf73425a20b63e3e24",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete25-line unpublished shared integrity manifest, reused HMAC/SHA/Base64/subtle/zeroizing/signals/serde dependencies and test-support dev edge. No runtime qualification from manifest.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/lib.rs",
+      "lines": 4,
+      "sha256": "9b197bf8b6716d0388f9b9625d65616b177deaba446cc877f22f592a4a141bbf",
+      "current_sha256": "9b197bf8b6716d0388f9b9625d65616b177deaba446cc877f22f592a4a141bbf",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete4-line module root exposes adapter/request/resource; declarations do not grant authority or independently review every exported implementation.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/mod.rs",
+      "lines": 11,
+      "sha256": "2cac6164e323cd21fa26a59ab94450c9e912e8050c71f2999f52cb3806a15a9e",
+      "current_sha256": "2cac6164e323cd21fa26a59ab94450c9e912e8050c71f2999f52cb3806a15a9e",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete11-line frozen native token module wiring and separate browser binding. Legacy canonical/rotation/token/verification exports are not silently replaced by browser profile.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/adapter/mod.rs",
+      "lines": 331,
+      "sha256": "8a44c59f88a2888b05ff5c1c38b8d34c3fee0c429ce1aa394dc7c1e1f210dd22",
+      "current_sha256": "8a44c59f88a2888b05ff5c1c38b8d34c3fee0c429ce1aa394dc7c1e1f210dd22",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete331-line schema/semantic parser: strict bounded JSON, exact externally provisioned identity/profile, safe deadline, UUID4/scope, complete body layer/length/SHA/canonical Base64, headers/framing/targets and no invented TLS/H2/capture/stream. ValidatedRequest is not authenticated provenance, replay admission or ALLOW. Legacy parse_for changes expected identity but retains Node mode policy; named producers require parse_with_profile.",
+      "pages": [
+        "docs/standards/draft-v0/protocol/implementation-experiment.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/adapter/tests.rs",
+      "lines": 276,
+      "sha256": "45aa2d41047656f14f540c1437bbc05990ee3b0f90c50ecb5f429168dc2a59ef",
+      "current_sha256": "45aa2d41047656f14f540c1437bbc05990ee3b0f90c50ecb5f429168dc2a59ef",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete276-line synthetic parser tests: profile/mode/capture contradictions, exact byte/header preservation, required nullable and null-only fields, duplicate escaped/unknown/nonUTF8/BOM/limits, targets/framing/deadlines. No real server callbacks or independent parser interop execution in this review.",
+      "pages": [
+        "docs/standards/draft-v0/protocol/implementation-experiment.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/adapter/wire.rs",
+      "lines": 81,
+      "sha256": "e8687e4be4dad979741fd582faeb0d097bda4572fbaf236763753ff836243db9",
+      "current_sha256": "e8687e4be4dad979741fd582faeb0d097bda4572fbaf236763753ff836243db9",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete81-line fixed-schema deny-unknown typed model. Nullable newtype requires explicit string/null presence rather than omitted Option; capture/stream only explicit null. Structural decoding does not canonicalize/sign JSON or authenticate provenance.",
+      "pages": [
+        "docs/standards/draft-v0/protocol/implementation-experiment.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/browser/ack.rs",
+      "lines": 59,
+      "sha256": "20526674e2a0e3f0267c5baa23837a9d378bbfa9db16a4ded1946151b1730b7a",
+      "current_sha256": "20526674e2a0e3f0267c5baa23837a9d378bbfa9db16a4ded1946151b1730b7a",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete59-line separate ACK domain binds request MAC, consumed counter, bucket and actual HTTP status under32-byte key; canonical token encoding and exact constant-time comparison. Not ALLOW, body authentication, collector provenance or origin commit proof.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/browser/ack/tests.rs",
+      "lines": 61,
+      "sha256": "cb39f96c7dfeabccbe9ee5e3113728f1260c58b32ebe23e190b68c46d2c68616",
+      "current_sha256": "cb39f96c7dfeabccbe9ee5e3113728f1260c58b32ebe23e190b68c46d2c68616",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete61-line fixed HMAC/SHA vector, every key/token/counter/bucket/status/encoding mutation and bounds refusals. Independently calculated vector is not independent runtime implementation or observed execution.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/browser/mod.rs",
+      "lines": 123,
+      "sha256": "19b57d4a33ac26075b9f546f3b8d0fa114fd5b8564be34f6d9543227401780a3",
+      "current_sha256": "19b57d4a33ac26075b9f546f3b8d0fa114fd5b8564be34f6d9543227401780a3",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete123-line browser0.1 canonical binding:14 length-prefixed fields and terminal newline, provisioned scope/final target/content-type/application Authorization/body SHA, distinct from native domain. Returned canonical text contains credentials and must remain transient. Numeric validation does not perform server freshness or consumed-counter state.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/browser/tests.rs",
+      "lines": 164,
+      "sha256": "7b15a71305ba23a29ba9c06673a80b57ae56d4389785d1cd151c88804b899362",
+      "current_sha256": "7b15a71305ba23a29ba9c06673a80b57ae56d4389785d1cd151c88804b899362",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete164-line canonical byte/field-order/signature vectors, scope/session/method/header/body/integer negatives and exact query escape handling. Tests are source-reviewed only; no new cryptographic or browser execution.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    },
+    {
+      "source": "crates/integrity/src/request/browser/validation.rs",
+      "lines": 91,
+      "sha256": "d47708d611a44bf4bfd419d66fe2e3831f897a29b6b7f02f2b32b3977c7ba55b",
+      "current_sha256": "d47708d611a44bf4bfd419d66fe2e3831f897a29b6b7f02f2b32b3977c7ba55b",
+      "current_matches_fixed": true,
+      "reviewer": "codex/rust-pages",
+      "notes": "Complete91-line bounds: scoped ASCII identities, canonical32-byte session, selected methods, nonempty GET/HEAD bodies reject, safe integers and1MiB codec body ceiling. ASCII header trimming only at edges; path validation differs from exact serialized query escapes. Transport/runtime may impose stricter64KiB bounds; this codec does not enlarge them.",
+      "pages": [
+        "docs/reference/browser-collector.md",
+        "docs/standards/draft-v0/validation/implementation-map.md"
+      ]
+    }
+  ],
+  "full_read_files": 11,
+  "lines": 1226,
+  "execution": "NOT_RUN",
+  "public_ledger": "Frozen docs unchanged; this is full-file semantic review, not a hash-only renewal or new execution"
+}

@@ -9,6 +9,15 @@
 {
       "kind": "implementation-evidence",
       "paths": [
+            "../../reference/node-adapter.md"
+      ],
+      "summary": "Clarify Node package-driver child-process timeout/output responsibility and installation-floor versus development-tool version requirements. Source-only review receipts do not establish current host-case or package qualification.",
+      "generic_wire_changed": false,
+      "new_execution_qualified": false
+},
+{
+      "kind": "implementation-evidence",
+      "paths": [
             "../../reference/nginx-adapter.md"
       ],
       "summary": "Separate older status-only35 results from the exact8132117 hosted35 scenario-group execution, including JSON/keepalive and SSE upstream-closure assertions. Distinguish producer group checks, strict consumer obligations and missing exported package-manifest identity; no later-source or full-product qualification.",
