@@ -1,0 +1,209 @@
+{
+  "schema": "humanymous.delivery-hosted-partial-observation/1",
+  "observed_at": "2026-11-07T20:34:34Z",
+  "run_id": 42407744891,
+  "attempt": 1,
+  "source_sha": "9586f7e488e4a0570d4fa7a1f89dfb4c2c05a56b",
+  "terminal": false,
+  "scope": "Completed job metadata, annotations and decoded source-reported summaries; not a terminal full-run receipt",
+  "jobs": [
+    {
+      "id": 128509001665,
+      "name": "policy",
+      "status": "completed",
+      "conclusion": "success",
+      "annotations": {
+        "failure": 0,
+        "warning": 0,
+        "notice": 0
+      }
+    },
+    {
+      "id": 128509489187,
+      "name": "docker",
+      "status": "completed",
+      "conclusion": "failure",
+      "assertions": {
+        "passed": 72,
+        "failed": 0,
+        "total": 72
+      },
+      "required_unavailable": 9,
+      "wargame": {
+        "scheduled": 26,
+        "evaluated": 19,
+        "unsupported": 7,
+        "errors": 0,
+        "expectation_mismatches": 0,
+        "scoped_passed": true
+      },
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      }
+    },
+    {
+      "id": 128509489237,
+      "name": "native-ubuntu",
+      "status": "completed",
+      "conclusion": "failure",
+      "header": {
+        "generator_and_semantic_conformance_exit": 0,
+        "execution_passed": true,
+        "observed_failure": "header actual compiler profile refused",
+        "retention_complete": false,
+        "syntax_or_layout_failure_observed": false
+      },
+      "workspace": {
+        "passed": 1170,
+        "failed": 0,
+        "errors": 1,
+        "executed_harnesses": 112,
+        "coverage_complete": false
+      },
+      "annotations": {
+        "failure": 2,
+        "warning": 0,
+        "notice": 0
+      }
+    },
+    {
+      "id": 128509489271,
+      "name": "native-macos",
+      "status": "completed",
+      "conclusion": "failure",
+      "maintenance": {
+        "status": "failed",
+        "failed_harnesses": [
+          "evidence_layout_cli",
+          "selected_inputs"
+        ],
+        "exit_code": 101
+      },
+      "runtime": {
+        "passed": 84,
+        "failed": 0
+      },
+      "workspace": {
+        "passed": 1155,
+        "failed": 13,
+        "errors": 1,
+        "executed_harnesses": 112,
+        "coverage_complete": false
+      },
+      "annotations": {
+        "failure": 2,
+        "warning": 0,
+        "notice": 1,
+        "notice_scope": "macOS arm64 capacity/queue notice"
+      }
+    },
+    {
+      "id": 128509489275,
+      "name": "native-windows",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 128512402634,
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "failure",
+      "assertions": {
+        "passed": 75,
+        "failed": 2,
+        "total": 77
+      },
+      "required_unavailable": 9,
+      "safe_failures": [
+        {
+          "case_id": "collector-component",
+          "error_code": "assertion_failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "collector_process"
+        }
+      ],
+      "diagnostic_limit": "Parent stage does not distinguish a failed collector process from an absent or unrecognized summary",
+      "wargame": {
+        "scheduled": 26,
+        "evaluated": 19,
+        "unsupported": 7,
+        "errors": 0,
+        "expectation_mismatches": 0,
+        "scoped_passed": true
+      },
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      }
+    },
+    {
+      "id": 128516030159,
+      "name": "browser-product",
+      "status": "completed",
+      "conclusion": "failure",
+      "assertions": {
+        "passed": 16,
+        "failed": 2,
+        "total": 18
+      },
+      "required_unavailable": 9,
+      "safe_failures": [
+        {
+          "case_id": "browser-actual-witness-exchange",
+          "error_code": "assertion_failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "browser_panic_bootstrap"
+        }
+      ],
+      "browser_actor": {
+        "dns_finish": "succeeded",
+        "exit_code": 1,
+        "filtered_count": 66,
+        "full_product_qualified": false,
+        "inventory_count": 67,
+        "inventory_matched": true,
+        "parser_summary_matched": false,
+        "process_success": false,
+        "schema": "humanymous.lab-browser-actor-outcome/1",
+        "selected_count": 1,
+        "source_prefix_authenticated": false,
+        "state": "observed",
+        "test_passed": false
+      },
+      "annotations": {
+        "failure": 1,
+        "warning": 0,
+        "notice": 0
+      }
+    },
+    {
+      "id": 128520713483,
+      "name": "nginx",
+      "status": "queued",
+      "conclusion": null
+    }
+  ],
+  "observed_workflow_overlap": {
+    "maximum_active_to_date": 2,
+    "workflow_local_only": true,
+    "terminal_accounting": false,
+    "billing_verified": false,
+    "global_concurrency_verified": false
+  },
+  "raw_accounting": {
+    "job_logs": "Connector-decoded text, not original log archives; retained privately",
+    "native_ubuntu_body": "Separately verified gh API response body retained; not HTTP wire bytes or an archive",
+    "original_remote_private_reports_recovered": false,
+    "original_remote_actor_payload_recovered": false,
+    "raw_private_contents_included": false
+  },
+  "full_product_qualified": false,
+  "release_ready": false
+}
