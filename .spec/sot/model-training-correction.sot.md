@@ -21,7 +21,10 @@ and strict Clippy passed, including the actual owned-file parser pilot. Evidence
 for this bounded native component only; it does not qualify the full migration.
 Standardization was later qualified at e7d8f9a3 with17library+1fixture passed and
 fmt/check/strict Clippy. The next authorized source-only slice is evaluation metric
-reduction; new tests remain NOT_RUN. New crates, manifests, binaries, SGD/RNG and
+reduction was subsequently qualified at aeefd20c:4reducer tests passed,17prior
+library tests filtered, fmt/check/strict Clippy passed in a separate native target.
+[[evidence:root/20261108005200]] binds exact source/closure and exclusions.
+New crates, manifests, binaries, SGD/RNG and
 lifecycle implementation remain unapproved. Full legacy responsibility
 remains in scope. No retirement, training-loop, production inference or full runtime
 parity is claimed. Existing pure inference fixture comparison was executed only
@@ -98,7 +101,8 @@ returns None instead of legacy zero, an explicit reporting delta preventing miss
 classes appearing measured. This reducer does not implement promotion, cohort
 requirements, time split or label admission. Reject invalid labels, abstention,
 nonfinite/out-of-range probabilities and zero/>100000/over-budget input counts.
-Late errors reject the whole result. No new test execution is authorized yet.
+Late errors reject the whole result. The later bounded native allocation executed
+all4reducer tests at aeefd20c; no broader training or inference execution follows.
 
 RNG L0 target: retain Go1.26.3 math/rand NewSource(seed) sequence compatibility,
 not a generic seeded Rust generator. One stream feeds ordered NormFloat64 calls

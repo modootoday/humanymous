@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-07T16:22:02Z
+updated: 2026-11-07T16:59:55Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -11,6 +11,7 @@ files:
   - {path: record-validation.json, sha256: 1c4817263edad015048eb6aebf98baba803f8b7ebb720508ffb75a78cd2629d3, bytes: 1076, store: repo}
   - {path: source-inventory.json, sha256: f2680379e9ecede8a520bfc1d58052623f21cd3795634c302e091c0aa90c0d33, bytes: 16297, store: repo}
   - {path: standardize-validation.json, sha256: 244809da8e82543a06c16a80a952bd06610c23e1a3540acfcfaff7357e795b53, bytes: 1089, store: repo}
+  - {path: evaluate-validation.json, sha256: 4032655a3c889eab255ead8193ae715448d88f7d679bad78efe0fe2a705901bc, bytes: 1002, store: repo}
 ---
 
 # Read-only source inventory
@@ -347,3 +348,28 @@ before/after registration; only this index was modified. The subsequent global
 public check exited0 over248documents with0errors/0warnings, and the directory
 scoped check also exited0. This is not a claim about the full private global tree,
 model execution or new evaluator test results. Historical failures remain intact.
+
+## Actual separate Windows reducer qualification
+
+Root allocated a separate lightweight Windows slot with a fresh exclusive target
+target/validation-model-reducer-aeefd20c, distinct from Delivery and prior model
+targets. Current model source matched frozen aeefd20cd66c454edcd0e3901f08627b80ad76be;
+no own overlays were applied. Initial observation was35.3904GiB free and63.2629%
+commit; each actual step has a fresh retained admission. Native Rust1.99.1,
+x86_64-pc-windows-msvc, jobs1/inc0, locked/offline.
+
+Fmt FIRST, reducer-filtered library tests, all-target check and strict Clippy all
+exited0. Actual footer:4passed,0failed,0ignored,17filtered. This supersedes the
+new4tests NOT_RUN status only for this exact source; the previous17 tests and
+inference fixture were not rerun or counted as new passes. No first failure
+occurred in this allocation. All processes are terminal and the target was returned
+before closure/evidence work. evaluate-validation.json retains scope/count/closure
+facts; no training, model activation, scoring, dependencies, GPU or WSL changed.
+
+Raw directory: `C:/workspaces/humanymous/.spec.local/root/evidence/20261108020500-model-training-correction-reducer/`.
+`results.json` records all4terminal commands; `reducer-tests.stdout.txt` has exact
+names/footer, stderr identifies the native executable. Closure-before/after,
+selected-packages, config-paths, per-step admission and environment JSON files
+retain the bounded inputs; `summary.json` records the comparison. System SDK/DLL
+closure is not measured. The full29-row migration and future gate/SGD/RNG/lifecycle
+remain open, with no execution reservation retained.

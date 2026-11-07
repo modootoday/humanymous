@@ -52,6 +52,12 @@ unavailable. Four new tests are NOT_RUN; prior18-pass receipt is not inherited.
 RNG targets exact Go single-stream compatibility; source/fixture sequence freeze
 is required before RNG implementation. No new workload has been started.
 
+Subsequent separate Windows allocation qualified immutable aeefd20c:4reducer tests
+passed,17prior library tests filtered; fmt/all-target check/strict Clippy passed.
+No own overlays, source changes or common target reuse. Fresh exclusive reducer
+target was returned at terminal; remaining evaluation adapter/cohorts/time/RNG,
+Train and lifecycle responsibilities remain open.
+
 Each slice needs Rust 1.99.1/edition2024, scoped tests/fmt/Clippy, allocated actual
 pilot and source-bound receipts. No GPU, model download, training, inference,
 Cargo or Docker execution is authorized by this plan. No docs/** changes.
