@@ -552,8 +552,12 @@ mod tests {
             (Some("false"), Some("github-hosted")),
             (None, Some("github-hosted")),
         ] {
-            assert!(!evidence::host_allowed(actions, environment));
+            assert!(!evidence::host_allowed(actions, environment, None));
         }
-        assert!(evidence::host_allowed(Some("true"), Some("github-hosted")));
+        assert!(evidence::host_allowed(
+            Some("true"),
+            Some("github-hosted"),
+            None
+        ));
     }
 }

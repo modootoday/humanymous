@@ -303,3 +303,25 @@ no active process handles remain. No actual Docker, account, subprocess fixture,
 ACL, SCM or interruption execution occurred in this slot. This supersedes the
 pending pure/check status only, not missing actual qualification. CLI complete
 readiness source2679089e remains a separate unexecuted actual service candidate.
+
+
+Pending mutation admission correction: disposable_host now observes ACT with
+var_os and rejects any presence, including empty, false, zero and non-Unicode
+values. GITHUB_ACTIONS and RUNNER_ENVIRONMENT still require exact accepted
+labels. Both actor account provisioning and service mode call this guard before
+mutation. This is fail-closed local-emulator admission, not cryptographic hosted
+attestation; external actual-run evidence remains mandatory. One pure regression
+covers malformed labels and non-Unicode ACT without mutating environment. Source
+is formatted but NOT_RUN; next runner pure selection29, no SCM/account execution.
+
+Paired audit WAL checkpoint d7045fee makes process_lock_probe explicitly ignored,
+panics when unprovisioned, and is exercised by bounded actual parent capture.
+Runner recognizes only the exact audit library target/helper/parent and single
+outer summary, rejecting leaked humanymous-wal-lock-refused markers. Future full
+audit raw ignored count5 is separate from old/local narrower results. In hosted
+813 MSRV, audit library raw54 includes one no-op helper (53 substantive); full
+audit raw101 outer passes include that same no-op (100 accepted). Parity cases5
+are included, nested custody child summary is not added. Original raw logs and
+original reported totals remain immutable. Existing local three-target44/raw3
+adoption is unchanged. This historical qualification correction is not a fresh
+execution pass of the changed WAL code.

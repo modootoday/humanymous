@@ -231,10 +231,15 @@ pub fn disposable_host() -> bool {
     host_allowed(
         std::env::var("GITHUB_ACTIONS").ok().as_deref(),
         std::env::var("RUNNER_ENVIRONMENT").ok().as_deref(),
+        std::env::var_os("ACT").as_deref(),
     )
 }
-pub(super) fn host_allowed(actions: Option<&str>, environment: Option<&str>) -> bool {
-    actions == Some("true") && environment == Some("github-hosted")
+pub(super) fn host_allowed(
+    actions: Option<&str>,
+    environment: Option<&str>,
+    act: Option<&std::ffi::OsStr>,
+) -> bool {
+    actions == Some("true") && environment == Some("github-hosted") && act.is_none()
 }
 /// Publish only typed counts/commitments, excluding actual SID, paths and traces.
 pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
@@ -306,6 +311,38 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn mutation_guard_rejects_any_act_marker_and_malformed_host_labels() {
+        use std::ffi::OsStr;
+        assert!(host_allowed(Some("true"), Some("github-hosted"), None));
+        for marker in ["", "true", "false", "0", "invalid"] {
+            assert!(!host_allowed(
+                Some("true"),
+                Some("github-hosted"),
+                Some(OsStr::new(marker))
+            ));
+        }
+        for (actions, environment) in [
+            (None, Some("github-hosted")),
+            (Some("TRUE"), Some("github-hosted")),
+            (Some("true "), Some("github-hosted")),
+            (Some("true"), None),
+            (Some("true"), Some("self-hosted")),
+            (Some("true"), Some("github-hosted ")),
+        ] {
+            assert!(!host_allowed(actions, environment, None));
+        }
+        #[cfg(windows)]
+        {
+            use std::os::windows::ffi::OsStringExt;
+            let malformed = std::ffi::OsString::from_wide(&[0xd800]);
+            assert!(!host_allowed(
+                Some("true"),
+                Some("github-hosted"),
+                Some(&malformed)
+            ));
+        }
+    }
     #[test]
     fn public_summary_excludes_identity_credentials_and_raw_traces() {
         let directory = crate::fixture::Directory::new().unwrap();

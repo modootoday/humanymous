@@ -391,7 +391,11 @@ fn captured_helper_account(
                 .and_then(|s| s.split_once(" ... ignored").map(|(name, _)| name))
         })
         .collect();
-    if ignored != [helper]
+    if (helper == "storage::wal::tests::process_lock_probe"
+        && log
+            .lines()
+            .any(|line| line == "humanymous-wal-lock-refused"))
+        || ignored != [helper]
         || parents.is_empty()
         || parents.iter().any(|parent| {
             !log.lines()
@@ -543,6 +547,28 @@ mod tests {
         }
         assert!(captured_helper_account(good, 2, false, "helper", &["parent"]).is_err());
         assert!(captured_helper_account(good, 3, true, "helper", &["parent"]).is_err());
+        let wal = good
+            .replace("helper", "storage::wal::tests::process_lock_probe")
+            .replace(
+                "parent",
+                "storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart",
+            );
+        let helper = "storage::wal::tests::process_lock_probe";
+        let parents = &["storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"];
+        assert_eq!(
+            captured_helper_account(&wal, 2, true, helper, parents).unwrap(),
+            1
+        );
+        assert!(
+            captured_helper_account(
+                &format!("humanymous-wal-lock-refused\n{wal}"),
+                2,
+                true,
+                helper,
+                parents
+            )
+            .is_err()
+        );
     }
     #[test]
     fn summary_rejects_skips_missing_tests_and_bad_exit() {

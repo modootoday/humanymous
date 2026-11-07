@@ -15,6 +15,15 @@ pub(super) fn captured(entry: &Value) -> Option<(&'static str, &'static [&'stati
             _ => None,
         };
     }
+    if package.contains("#humanymous-audit@")
+        && entry["kind"] == json!(["lib"])
+        && entry["target"] == "humanymous_audit"
+    {
+        return Some((
+            "storage::wal::tests::process_lock_probe",
+            &["storage::wal::tests::exclusive_writer_rotation_checkpoint_and_restart"],
+        ));
+    }
     if package.contains("#humanymous-test-support@")
         && entry["kind"] == json!(["lib"])
         && entry["target"] == "humanymous_test_support"
@@ -60,6 +69,14 @@ mod tests {
     fn exact_helper_owners_do_not_include_product_host_pilots() {
         let support = json!({"package_id":"path+file:///support#humanymous-test-support@0.1.0","kind":["lib"],"target":"humanymous_test_support"});
         assert_eq!(captured(&support).unwrap().1.len(), 6);
+        let audit = json!({"package_id":"path+file:///audit#humanymous-audit@0.1.0","kind":["lib"],"target":"humanymous_audit"});
+        assert_eq!(
+            captured(&audit).unwrap().0,
+            "storage::wal::tests::process_lock_probe"
+        );
+        let mut wrong = audit;
+        wrong["target"] = json!("different_lib");
+        assert!(captured(&wrong).is_none());
         for target in ["host_process", "runtime_service_process"] {
             assert!(captured(&json!({"package_id":"path+file:///node#humanymous-node-adapter@0.1.0","kind":["test"],"target":target})).is_none());
         }
