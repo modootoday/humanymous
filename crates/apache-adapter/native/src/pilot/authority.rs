@@ -9,8 +9,8 @@ use humanymous_authority::{
     decision::{ApplicationHttp, Authority, Evidence},
     transport::Listener,
 };
-use humanymous_integrity::adapter::ValidatedRequest;
-use humanymous_signals::report::SessionReport;
+use humanymous_core::integrity::adapter::ValidatedRequest;
+use humanymous_core::signals::report::SessionReport;
 use std::path::Path;
 use std::sync::{
     Arc,

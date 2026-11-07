@@ -3,10 +3,10 @@
 use crate::ffi::*;
 use humanymous_apache_adapter::{Cancellation, Child, Mpm, ReadMode, Replay};
 use humanymous_authority::client::{BoundResponse, Verdict};
+use humanymous_core::integrity::adapter::AdapterProfile;
 use humanymous_framework_adapter::{
     Admission, Configuration, Observation, Pending, body_length, internal_header,
 };
-use humanymous_integrity::adapter::AdapterProfile;
 use std::ffi::{CStr, c_char, c_int, c_void};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::path::{Path, PathBuf};
