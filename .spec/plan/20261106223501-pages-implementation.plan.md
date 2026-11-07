@@ -1708,3 +1708,14 @@ Existing Pages source checker reports 88 pages and no errors. Scoped owning
 Specfold documents pass with zero errors/warnings; owned diff whitespace passes.
 Freshness inventory still fails, beginning with audit custody/control and
 authority integration/test files. No compiler/native/Docker execution occurred.
+### Retained control intent and kill effect inspection
+
+Read complete audit control/state.rs and runtime control/state.rs plus exact
+retained_action_state and KillTarget source. Added scoped full-file receipts for
+the two state modules only. Roles/runbook/Draft security distinguish retained
+consumption, witness-covered effect and Clear/Killed/Pending/error inspection;
+no installed destructive endpoint or admission enforcement is inferred. Added
+negative requirements for unknown targets, rollback, concurrent issuance and
+uncovered tails. Compilation/native qualification remains pending. Requested an
+explicit Pages validation allocation after observing root's completed parity
+comparison; no allocation inferred and no compiler/runtime/Docker started.

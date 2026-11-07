@@ -39,6 +39,23 @@ peer/restart/dual-control pilots remain separate consumer responsibilities.
 
 ## Policy and durable ledger scope
 
+### Retained intent is separate from effect completion
+
+Working source adds `ControlAuthority::retained_action_state`, returning a
+read-only `RetainedControlState` after reauthenticating stored state and comparing
+the exact independently retained latest anchor, scope and authority identity.
+Missing, pending or rolled-back state is an error. A matching consumed proposal
+remains consumed after its approval expires; the query neither reissues a permit
+nor acknowledges that its effect completed. The result also exposes other
+consumed targets for the queried action so a consumer can refuse an unknown
+target schema instead of treating it as a healthy reset.
+
+The caller must serialize this query with startup, admission and control issuance.
+Its authenticated absence result is a snapshot, not a distributed freshness lease
+or reusable admission capability. Current runtime source provides a separate
+[kill intent/effect assessment](../runbooks/kill-switch-and-bans.md#source-only-kill-state-assessment);
+these new paths still need current compilation and native execution evidence.
+
 For independently retained approval, `authorize_retained_action` first checks
 the retainer's exact scope, public identity and latest anchor, consumes approval
 locally, then retains and validates the signed successor before returning a

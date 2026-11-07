@@ -55,6 +55,16 @@ A timeout may leave a committed change without a successful response; do not
 repeat a mutation merely because its caller lost the reply. This resource-only
 path is not scoring policy, destructive control or a completed dual-control pilot.
 
+New retained-control and runtime kill-assessment source separates authenticated
+consumption intent from independently covered effect records. Required negative
+evidence includes consumed intent with no effect, an effect without intent,
+uncovered effect tails, unknown target versions, rolled-back independent anchors
+and concurrent issuance during startup inspection. Approval expiry must not
+rearm consumed kill intent, and a cached authenticated absence result must not
+act as a freshness lease. These source paths have not established an installed
+kill endpoint or qualified admission enforcement. See the
+[source-only assessment](../../../runbooks/kill-switch-and-bans.md#source-only-kill-state-assessment).
+
 Sources: [Windows pipe security](https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights),
 [Unix sockets](https://www.man7.org/linux/man-pages/man7/unix.7.html),
 [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/).

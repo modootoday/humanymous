@@ -2,6 +2,28 @@
   "schema": 1,
   "reviews": [
 {
+  "source": "crates/audit/src/control/state.rs",
+  "sha256": "7a08ee0849d914b73a80ac75f8eba92afacd84e6bb0da2f222cba4ad7a43a2cb",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete read-only retained intent type: exact scope/identity/anchor/action/target, consumed proposal and other consumed targets; no public constructor/clone/effect capability. Snapshot requires caller serialization, no freshness lease; no native qualification.",
+  "pages": [
+    "docs/reference/rbac-separation-of-duties.md",
+    "docs/runbooks/kill-switch-and-bans.md",
+    "docs/standards/draft-v0/reviews/security-privacy.md"
+  ]
+},
+{
+  "source": "crates/runtime/src/control/state.rs",
+  "sha256": "a69e8ee9ae821e35885a833a7b528750b4425a4f7cbd9ef9c26ce4545f4afc1c",
+  "reviewer": "codex/rust-pages",
+  "notes": "Read complete kill assessment and classifier source: exact stable target/authority/scope, refuse other consumed targets, validate kill event fields and witness coverage; absent/covered/ambiguous effects mapped to Clear/Killed/Pending/error. Caller serialization required; no installed admission gate or executed native evidence.",
+  "pages": [
+    "docs/reference/rbac-separation-of-duties.md",
+    "docs/runbooks/kill-switch-and-bans.md",
+    "docs/standards/draft-v0/reviews/security-privacy.md"
+  ]
+},
+{
   "source": "crates/runtime/src/management/operator.rs",
   "sha256": "4c34921a740e3ac71fa1760cd0b732350e8f215cf8867bf65c5a9698e884d6ef",
   "reviewer": "codex/rust-pages",
