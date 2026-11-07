@@ -1,6 +1,6 @@
 //! Pure, non-secret host-plan validation; no native calls or secret retrieval.
-use humanymous_authority::configuration::Peer;
-use humanymous_runtime::service::StopBudget;
+use humanymous_runtime::authority::configuration::Peer;
+use humanymous_runtime::gateway::service::StopBudget;
 use serde::Deserialize;
 use std::{io, net::SocketAddr, path::PathBuf, time::Duration};
 
@@ -155,12 +155,12 @@ impl HostPlan {
         {
             return Err(invalid("explicit launch-document installer SID required"));
         }
-        humanymous_native_security::secret::ServiceSecretReference::new(
+        humanymous_runtime::native_security::secret::ServiceSecretReference::new(
             &self.service_name,
             &self.unseal_credential_id,
         )?;
         if let Some(observer) = &self.observer {
-            humanymous_native_security::secret::ServiceSecretReference::new(
+            humanymous_runtime::native_security::secret::ServiceSecretReference::new(
                 &self.service_name,
                 &observer.credential_id,
             )?;

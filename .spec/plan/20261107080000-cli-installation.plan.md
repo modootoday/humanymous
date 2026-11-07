@@ -409,6 +409,17 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+RUNTIME-SLICE-02 Root-authorized source-only CLI consumer transition changes17Rust
+files under src/tests. Existing humanymous_runtime prefixes become gateway first;
+retired authority/audit/capture/network/native_security package paths then become
+the matching humanymous_runtime contexts. runtime-slice02-inputs.json under
+[[evidence:root/20261107200932]] retains exact before/after SHA256 paths. No native
+ownership, signed DATA, watchdog, role admission or helper behavior changed. No
+manifests/features/new Runtime source/path moves were authored here. Old context
+package references and cascading gateway::gateway references are absent. Compile,
+tests, Clippy and fmt are NOT_RUN pending coherent Root allocation; historical
+source-specific proofs are not promoted to this new graph.
+
 Root decisiond45e600d extends the Tools handoff to13responsibilities (9workspace
 +4standalone). [[evidence:root/20261107200932]] now includes tools-role-map.json
 and the approved explicit default-off four-bin matrix, local CLI deny vs safe-root

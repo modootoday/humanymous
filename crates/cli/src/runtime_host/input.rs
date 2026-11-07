@@ -1,10 +1,10 @@
 //! Pinned private configuration plus one native-security secret-store authority.
 use super::plan::{HostPlan, invalid};
 use crate::{installation::permissions::plain, release::digest};
-use humanymous_authority::startup::authorization::{
+use humanymous_runtime::authority::startup::authorization::{
     RoleData, ScopeData, SignatureCheckedAuthorization,
 };
-use humanymous_runtime::{configuration::Configuration, startup::ExternalWitness};
+use humanymous_runtime::gateway::{configuration::Configuration, startup::ExternalWitness};
 use std::{
     fs,
     io::{self, Read},
@@ -44,12 +44,12 @@ impl HostAuthorizationData {
     pub fn into_runtime_data(
         self,
     ) -> Result<
-        (HostPlan, humanymous_runtime::service::AuthorizationData),
-        humanymous_runtime::service::AuthorizationDataError,
+        (HostPlan, humanymous_runtime::gateway::service::AuthorizationData),
+        humanymous_runtime::gateway::service::AuthorizationDataError,
     > {
         let (plan, configuration, authorization) = self.into_parts();
         let data =
-            humanymous_runtime::service::AuthorizationData::bind(configuration, authorization)?;
+            humanymous_runtime::gateway::service::AuthorizationData::bind(configuration, authorization)?;
         Ok((plan, data))
     }
 }
@@ -130,11 +130,11 @@ impl std::fmt::Display for ProtectedReadFailure {
 impl std::error::Error for ProtectedReadFailure {}
 impl SecretSource for NativeSecrets {
     fn read(&self, service_name: &str, credential_id: &str) -> io::Result<Zeroizing<Vec<u8>>> {
-        let reference = humanymous_native_security::secret::ServiceSecretReference::new(
+        let reference = humanymous_runtime::native_security::secret::ServiceSecretReference::new(
             service_name,
             credential_id,
         )?;
-        humanymous_native_security::secret::read_service_secret(&reference)
+        humanymous_runtime::native_security::secret::read_service_secret(&reference)
     }
 }
 
@@ -160,11 +160,11 @@ fn private_input(file: &fs::File, path: &Path) -> io::Result<()> {
     #[cfg(windows)]
     {
         let _ = path;
-        let identity = humanymous_native_security::process::current_identity()?;
-        humanymous_native_security::storage::verify_windows_privacy(
+        let identity = humanymous_runtime::native_security::process::current_identity()?;
+        humanymous_runtime::native_security::storage::verify_windows_privacy(
             file,
             identity.sid(),
-            humanymous_native_security::storage::WindowsPrivacy::File,
+            humanymous_runtime::native_security::storage::WindowsPrivacy::File,
         )?;
     }
     #[cfg(not(windows))]
@@ -202,7 +202,7 @@ pub fn read_plan(path: &Path, expected_sha256: &str) -> io::Result<HostPlan> {
     plan.validate()?;
     #[cfg(windows)]
     {
-        use humanymous_native_security::{process::current_identity, storage};
+        use humanymous_runtime::native_security::{process::current_identity, storage};
         let service = storage::resolve_service_sid(&plan.service_name)?;
         if current_identity()?.sid() != service {
             return Err(invalid("actual launch service principal required"));
@@ -273,7 +273,7 @@ fn nonsecret_configuration(bytes: &[u8], plan: &HostPlan) -> io::Result<Configur
     if digest(bytes) != plan.configuration_sha256 {
         return Err(invalid("non-secret runtime configuration digest mismatch"));
     }
-    let configuration = humanymous_runtime::service::read_configuration(bytes)?;
+    let configuration = humanymous_runtime::gateway::service::read_configuration(bytes)?;
     if !configuration.audit.keys.passphrase.is_empty() {
         return Err(invalid(
             "plaintext unseal secret in configuration is forbidden",
@@ -353,7 +353,7 @@ mod tests {
         value["configuration_sha256"] = serde_json::json!(digest(&config_bytes));
         let plan_bytes = serde_json::to_vec(&value).unwrap();
         let service = RoleData {
-            role: humanymous_authority::startup::authorization::AudienceRole::Service,
+            role: humanymous_runtime::authority::startup::authorization::AudienceRole::Service,
             name: "humanymous-lab-unit".into(),
             sid: vec![1, 0, 0, 0, 0, 0, 0, 5],
             pid: 101,

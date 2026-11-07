@@ -1,11 +1,11 @@
 //! Disposable actual-service fixture. No production provisioning or erasure API.
 use super::{HostExit, HostPlan, NativeSecrets, SecretSource, invalid};
-use humanymous_audit::keys::{
+use humanymous_runtime::audit::keys::{
     KeyMaterial,
     custody::{Custody, Owner},
 };
-use humanymous_authority::credentials::Credential;
-use humanymous_native_security::{
+use humanymous_runtime::authority::credentials::Credential;
+use humanymous_runtime::native_security::{
     process::current_identity,
     secret::{
         ServiceSecretReference,

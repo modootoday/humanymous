@@ -126,7 +126,7 @@ fn private(path: &Path) {
         constants::{SeObjectType, SecurityInformation},
         wrappers,
     };
-    let owner = humanymous_native_security::process::current_identity().unwrap();
+    let owner = humanymous_runtime::native_security::process::current_identity().unwrap();
     assert!(owner.installer_allowed(), "ordinary actor is mandatory");
     let sid: LocalBox<Sid> = owner.sid().parse().unwrap();
     let descriptor: LocalBox<SecurityDescriptor> =

@@ -1,4 +1,4 @@
-use humanymous_native_security::{
+use humanymous_runtime::native_security::{
     process::current_identity,
     storage::{InstallationObject, WindowsPrivacy, verify_windows_privacy},
 };

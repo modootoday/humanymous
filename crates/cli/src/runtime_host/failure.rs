@@ -1,5 +1,5 @@
 //! Preserve returned runtime phase facts without promoting an error to Stopped.
-use humanymous_runtime::service::{ExitFailure, ExitStage};
+use humanymous_runtime::gateway::service::{ExitFailure, ExitStage};
 use serde::Serialize;
 use std::io;
 

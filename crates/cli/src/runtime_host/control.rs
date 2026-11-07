@@ -1,6 +1,6 @@
 //! Independent native watchdog: synchronous custody/flush cannot stall it.
 use super::plan::{StopPlan, invalid};
-use humanymous_runtime::service::{ExitReport, ShutdownRequest, StopBudget};
+use humanymous_runtime::gateway::service::{ExitReport, ShutdownRequest, StopBudget};
 use std::{
     io,
     sync::{Arc, Condvar, Mutex},

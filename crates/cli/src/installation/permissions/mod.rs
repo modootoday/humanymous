@@ -6,7 +6,7 @@ use std::{
 #[cfg(windows)]
 mod windows;
 #[cfg(windows)]
-pub(super) use humanymous_native_security::storage::InstallationObject;
+pub(super) use humanymous_runtime::native_security::storage::InstallationObject;
 #[cfg(windows)]
 pub(super) use windows::private as private_windows;
 pub(crate) fn plain(path: &Path) -> std::io::Result<()> {
@@ -19,7 +19,7 @@ pub(crate) fn plain(path: &Path) -> std::io::Result<()> {
             },
             _ => return Err(err("absolute local drive-letter path required")),
         };
-        humanymous_native_security::volume::require_fixed(&drive)?;
+        humanymous_runtime::native_security::volume::require_fixed(&drive)?;
     }
     if !path.is_absolute()
         || path
@@ -58,7 +58,7 @@ pub(crate) fn private_parent(path: &Path) -> std::io::Result<()> {
     #[cfg(unix)]
     {
         use std::os::unix::fs::MetadataExt;
-        let uid = humanymous_native_security::process::current_uid();
+        let uid = humanymous_runtime::native_security::process::current_uid();
         let meta = fs::metadata(path)?;
         if !uid_is_allowed(uid) || meta.uid() != uid || meta.mode() & 0o777 != 0o700 {
             return Err(err("private non-root owned parent required"));
@@ -82,7 +82,7 @@ pub(crate) fn private_file(path: &Path) -> std::io::Result<()> {
     {
         use std::os::unix::fs::MetadataExt;
         let metadata = fs::symlink_metadata(path)?;
-        if metadata.uid() != humanymous_native_security::process::current_uid()
+        if metadata.uid() != humanymous_runtime::native_security::process::current_uid()
             || metadata.mode() & 0o777 != 0o600
         {
             return Err(err("private owner-only managed file required"));

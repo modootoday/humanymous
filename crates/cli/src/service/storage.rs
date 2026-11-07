@@ -126,10 +126,10 @@ impl Generation {
             let plan = self.plan(root)?;
             if plan.verify_service(Some(sid)).is_err() {
                 plan.verify_service(None)?;
-                humanymous_native_security::storage::grant_service_access(
+                humanymous_runtime::native_security::storage::grant_service_access(
                     &self.executable(root),
                     sid,
-                    humanymous_native_security::storage::ServiceRole::Executable,
+                    humanymous_runtime::native_security::storage::ServiceRole::Executable,
                 )?;
             }
         }
@@ -153,10 +153,10 @@ impl Generation {
             .as_ref()
             .and_then(|i| i.service_sid.as_deref())
         {
-            humanymous_native_security::storage::revoke_service_access(
+            humanymous_runtime::native_security::storage::revoke_service_access(
                 &self.executable(root),
                 sid,
-                humanymous_native_security::storage::ServiceRole::Executable,
+                humanymous_runtime::native_security::storage::ServiceRole::Executable,
             )?;
         }
         let d = self.descriptor(key)?;

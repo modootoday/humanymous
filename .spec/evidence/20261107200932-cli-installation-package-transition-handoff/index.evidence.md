@@ -3,12 +3,13 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T21:59:18Z
+updated: 2026-11-07T22:12:00Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
   - {path: owned-paths.json, sha256: a439efb3738bd73836ab2b056a9fba09b972e544941f4f5ab2d7ee1776dea109, bytes: 8375, store: repo}
   - {path: tools-role-map.json, sha256: 342f08f560b0b401d4cedd185232e75eaf5e5cc2c99701ba34b96b7a4bd4f1ce, bytes: 8719, store: repo}
+  - {path: runtime-slice02-inputs.json, sha256: bf3657232be606d662433c31ae0c86acaeb8abed740910fd77d2071dcda35396, bytes: 4715, store: repo}
 ---
 
 ## Mission and current ownership
@@ -28,6 +29,15 @@ No compiler/runtime process handle, target or artifact-write lease remains held.
 The approved baseline does not authorize this chat to edit the common graph.
 
 ## Done and source-specific verification
+
+RUNTIME-SLICE-02 mechanical CLI consumer change is recorded separately in
+runtime-slice02-inputs.json:17Rust src/test files, exact before/after SHA256.
+Existing runtime roots map to humanymous_runtime::gateway before other old
+package names map to humanymous_runtime::{authority,audit,native_security}.
+No behavior/role/authority/unsafe change, aliases, Cargo edit or source move.
+The new graph's compile/test/Clippy/fmt gates remain NOT_RUN. Root owns context
+features and all common/dependency manifests. Historical checks below retain
+their old source-specific scopes.
 
 CLI DATA sourcef20db16e consumes shared Authority checked DATA and Runtime
 AuthorizationData without recreating cryptography, copying ownership or issuing

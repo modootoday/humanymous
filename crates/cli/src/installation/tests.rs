@@ -164,7 +164,7 @@ fn set_acl(path: &Path, extra_ace: &str) {
         wrappers,
     };
     let identity =
-        humanymous_native_security::process::current_identity().expect("native identity");
+        humanymous_runtime::native_security::process::current_identity().expect("native identity");
     let owner: LocalBox<Sid> = identity.sid().parse().unwrap();
     let sd: LocalBox<SecurityDescriptor> =
         format!("D:P(A;OICI;FA;;;{}){extra_ace}", identity.sid())

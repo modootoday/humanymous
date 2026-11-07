@@ -215,7 +215,7 @@ impl Manager for Native {
 
 #[cfg(target_os = "macos")]
 fn domain() -> String {
-    format!("gui/{}", humanymous_native_security::process::current_uid())
+    format!("gui/{}", humanymous_runtime::native_security::process::current_uid())
 }
 #[cfg(target_os = "macos")]
 impl Manager for Native {

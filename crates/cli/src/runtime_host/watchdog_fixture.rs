@@ -1,7 +1,7 @@
 //! Actual watchdog and final writer with simulated runtime completion only.
 //! The parent must retain unread pipes and independent native cleanup ownership.
 use super::{control::Supervisor, invalid, plan::StopPlan, platform::write_report};
-use humanymous_runtime::service::ExitReport;
+use humanymous_runtime::gateway::service::ExitReport;
 use serde::Serialize;
 use std::{
     io::{self, Write},

@@ -1,12 +1,12 @@
 //! Actual SCM/OS-store/ServiceHost qualification; disposable hosted actor only.
 #![cfg(all(windows, feature = "runtime-service-pilot"))]
 use ed25519_dalek::{Signer, SigningKey};
-use humanymous_authority::credentials::Credential;
+use humanymous_runtime::authority::credentials::Credential;
 use humanymous_cli::{
     release::{Descriptor, SignedRelease, signing_bytes},
     service::{self, ServicePlan},
 };
-use humanymous_native_security::process::current_identity;
+use humanymous_runtime::native_security::process::current_identity;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{
@@ -313,7 +313,7 @@ impl Fixture {
         let private = Path::new(self.metadata["configuration"].as_str().unwrap())
             .parent()
             .unwrap();
-        let sid = humanymous_native_security::storage::resolve_service_sid(&self.name).unwrap();
+        let sid = humanymous_runtime::native_security::storage::resolve_service_sid(&self.name).unwrap();
         // Independently reconstruct the signed fixture's expected nonsecret input;
         // actual readiness must match the shared complete schema, not a subset.
         let expected=serde_json::to_vec(&json!({
@@ -324,8 +324,8 @@ impl Fixture {
             "owner":{"kind":"windows","sid":sid,"pid":pid},"session_capacity":8,"session_ttl_ms":1000,"timeout_ms":1000,"rate_per_second":8,"browser":null
         })).unwrap();
         let configuration =
-            humanymous_runtime::service::read_configuration(expected.as_slice()).unwrap();
-        let profile = humanymous_runtime::service::standalone_profile(&configuration);
+            humanymous_runtime::gateway::service::read_configuration(expected.as_slice()).unwrap();
+        let profile = humanymous_runtime::gateway::service::standalone_profile(&configuration);
         assert_eq!(
             receipt["readiness_manifest"],
             json!({"schema":"humanymous.runtime-host.readiness.v1","service":self.name,"generation":self.metadata["generation"],"executable_sha256":self.metadata["executable_sha256"],"runtime":{"listen":self.runtime,"profile":profile},"product_qualified":false})

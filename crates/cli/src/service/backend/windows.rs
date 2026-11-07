@@ -65,7 +65,7 @@ impl Manager for Native {
             service
                 .set_config_service_sid_info(ServiceSidType::Unrestricted)
                 .map_err(io)?;
-            let sid = humanymous_native_security::storage::resolve_service_sid(&d.service_name)?;
+            let sid = humanymous_runtime::native_security::storage::resolve_service_sid(&d.service_name)?;
             Ok(Identity {
                 configuration: fingerprint(&service)?,
                 service_sid: Some(sid),
@@ -84,7 +84,7 @@ impl Manager for Native {
         let expected = OsString::from(format!("NT SERVICE\\{}", d.service_name));
         let observed_fingerprint = fingerprint(&service)?;
         let observed_sid =
-            humanymous_native_security::storage::resolve_service_sid(&d.service_name)?;
+            humanymous_runtime::native_security::storage::resolve_service_sid(&d.service_name)?;
         if config.account_name.as_deref() != Some(expected.as_os_str())
             || config.service_type != ServiceType::OWN_PROCESS
             || config.start_type != ServiceStartType::OnDemand

@@ -15,8 +15,8 @@ mod platform;
 pub mod watchdog_fixture;
 use control::Supervisor;
 pub use failure::{HostFailure, describe_failure};
-use humanymous_authority::credentials::Credential;
-use humanymous_runtime::{
+use humanymous_runtime::authority::credentials::Credential;
+use humanymous_runtime::gateway::{
     service::{ServiceHost, ShutdownRequest},
     startup::ExternalWitness,
 };
@@ -164,7 +164,7 @@ async fn run(
             let credential =
                 Credential::generate().map_err(|_| invalid("observer credential generation"))?;
             let credential_id = observer.credential_id;
-            let policy = humanymous_runtime::management::ManagementPolicy {
+            let policy = humanymous_runtime::gateway::management::ManagementPolicy {
                 endpoint: observer.endpoint,
                 peer: observer.peer,
                 stop_budget: plan.stop.budget()?,
@@ -231,8 +231,8 @@ async fn run(
 }
 
 impl HostExit {
-    fn report(&self) -> humanymous_runtime::service::ExitReport {
-        humanymous_runtime::service::ExitReport {
+    fn report(&self) -> humanymous_runtime::gateway::service::ExitReport {
+        humanymous_runtime::gateway::service::ExitReport {
             stopped: self.stopped,
             drained: self.drained,
             audit_flushed: self.audit_flushed,

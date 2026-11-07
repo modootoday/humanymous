@@ -147,12 +147,12 @@ impl Plan {
                     .read(true)
                     .custom_flags(0x00200000)
                     .open(&path)?;
-                let owner = humanymous_native_security::process::current_identity()?;
-                humanymous_native_security::storage::verify_service_access(
+                let owner = humanymous_runtime::native_security::process::current_identity()?;
+                humanymous_runtime::native_security::storage::verify_service_access(
                     &file,
                     owner.sid(),
                     service_sid.unwrap_or(""),
-                    humanymous_native_security::storage::ServiceRole::Executable,
+                    humanymous_runtime::native_security::storage::ServiceRole::Executable,
                 )?;
             } else {
                 private_windows(&path, InstallationObject::File)?;

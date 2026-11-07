@@ -6,7 +6,7 @@ use crate::{
     installation::permissions::{plain, private_file},
     release::{Descriptor, digest},
 };
-use humanymous_native_security::{
+use humanymous_runtime::native_security::{
     process::current_identity,
     storage::{self, ServiceRole},
 };
