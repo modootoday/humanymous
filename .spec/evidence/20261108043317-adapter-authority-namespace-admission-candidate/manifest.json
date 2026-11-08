@@ -1,0 +1,55 @@
+{
+  "schema": "humanymous.authority.preimage-candidate/1",
+  "branch": "codex/rust",
+  "applied": false,
+  "execution": "NOT_RUN; allocation requested",
+  "base_workspace": "Root read-only tools-integration-5f1010d4",
+  "native_backend": "Unavailable per Native owner; B2 containment never admission",
+  "changes": [
+    {
+      "target": "crates/sdk/humanymous-runtime/src/authority/startup/authorization.rs",
+      "preimage_sha256": "27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e",
+      "required_absent": false,
+      "candidate": "authorization.after.rs",
+      "after_sha256": "43349acfc5f59f1f0ae716e73b2398078d30352386cede71e89709f1f5ba91cc"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/tests.rs",
+      "preimage_sha256": "2144cb30ab6db6cdf535c55b89b16a24d91c9b8c5edf865e936a0155e08bade1",
+      "required_absent": false,
+      "candidate": "authorization-tests.after.rs",
+      "after_sha256": "83d186a09b2c76fadb39e367346b48c19d0963692ea18d7f12c1a2928bb4f37e"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/admission_policy.rs",
+      "preimage_sha256": null,
+      "required_absent": true,
+      "candidate": "admission_policy.rs",
+      "after_sha256": "55d78d0bb91e91dc22c7a79feb19002b29f50b743f26586d4f4329c5de00eb2e"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/authority/startup/observer.rs",
+      "preimage_sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806",
+      "required_absent": false,
+      "candidate": "observer.after.rs",
+      "after_sha256": "8ffb051fe9324532f727a415779f4b3e0bece14f6d7bf28f2b3baa8cb04e7fc2"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/authority/startup/observer/state.rs",
+      "preimage_sha256": "3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21",
+      "required_absent": false,
+      "candidate": "observer-state.after.rs",
+      "after_sha256": "66af32b9c0698996baef68999826f485ee9c531a172330a4179369887a81917a"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/authority/startup/observer/tests.rs",
+      "preimage_sha256": "c10d765a30a29df908135ef074e7f5a41682b82fc57517fd00a4b9e35593e470",
+      "required_absent": false,
+      "candidate": "observer-tests.after.rs",
+      "after_sha256": "aaa6c7355689e1f9c2be8094c519422fd56155fba5c89f07cffd10a5ee0a2efb"
+    }
+  ],
+  "test_cases_authored": 13,
+  "metadata": "admission_policy_tests.rs is supplemental readable source, tests inline in authorization-tests.after.rs; do not apply as second test target",
+  "remaining": "Root application and protocol review, allocated component checks; original native/W/Ready/hosted production gates open"
+}

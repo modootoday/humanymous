@@ -1308,3 +1308,25 @@ other five owners and403diagnostic remain independent prerequisites.
 - crates/authority/tests/local_service.rs SHA256 0ef5426b8033c1b7925b9205295177e64a896991e4fa133f9b21feb1efd4f442
 - crates/authority/tests/native_process.rs SHA256 fbfbf42f3d9174e0ac211dc604070e577549f3527872f9e7dea55809e6f94e03
 - crates/authority/tests/support/mod.rs SHA256 34d5a507015ecfe3df0e0e68e7430329e73b6b860d625e7d7619cced108f1820
+
+## Original namespace/channel/W candidate evidence:root/20261108043317
+
+Root mandatory branch codex/rust checked before writes; no branch/worktree/ref
+operations. Authored preimage-bound Rust candidates ONLY in unique evidence bundle,
+never main application or read-only tools-integration-5f1010d4 workspace. Manifest
+binds five replacement preimages plus one absent new policy module; exact source
+hashes, consuming signature and unavailable native origin are in CANDIDATE.md.
+Implemented namespace/original-delegation commitment checks, independently pinned
+strict peer/W role-separated challenge DATA signatures, bounded irreversible
+EPHEMERAL replay/refusal ledger (not OS consumption), and same-epoch consuming
+VerifiedObserverPreparation::into_prepared receipt interface. Both NativeProof and
+new ReceiptOrigin remain PRIVATE EMPTY; no constructors/serde/test proof/Ready.
+Native confirmed B2 is containment only, no namespace/delegation/channel/oneclaim/W
+provider. Runtime and CLI received exact proposed signature and that restriction.
+
+Thirteen meaningful tests authored, ZERO executed. No compiler/fmt/Clippy/native/
+hosted allocation assumed; request sent Root. Candidate transcript/record encoding
+is a review proposal, not accepted production wire or trust anchoring. Local source
+inspection corrected initial integration module-path attempt without any compiler
+run. No previous test pass transferred. Native production admission, W retention/
+JOIN, actual secret receipt, Ready and all current-source pilots remain open.
