@@ -2926,3 +2926,19 @@ times were not persisted. Registry1445files/36packages were captured POST-only;
 immediate reread equality is not pre/post equality. Full OS/config/loader/child
 read closure, Go bit/FMA parity, bootstrap CLI/process, production activation and
 Docker product e2e remain unqualified. Whole migration qualification stays OPEN.
+### Runtime optionalization matched CLI check observation
+
+Audit independently joined cc4758b5 to10 terminal exit0 command records, raw Cargo
+JSON artifact/fresh/rebuilt/build-script/success events, Runtime native-security
+features, ten timing HTML hashes and exact summary SHA6c034870. Two cold-artifact
+AB/BA pair reductions recompute to45.3852% and46.4555%. Artifact events are117 in A
+and62 in B; all six warm replays rebuild0. A build-script-executed event does not
+prove rerun. Each arm's3128 source files match before/after/current SHA256 and
+size. B matches exact5d68 Git blobs; A differs only in the intended Runtime
+manifest. Raw observations are retained in the audit's private indexed copy.
+
+Accept only this exact Windows Rust1.99.1 jobs1/incremental0 locked/offline CLI
+cargo-check observation. Cold artifacts do not mean cold OS/registry caches;
+two pairs do not establish generalized speedup. Complete dependency/SDK/linker
+byte custody, continuously quiet resource conditions, linked build, native
+runtime throughput and product qualification remain OPEN. No audit compiler ran.

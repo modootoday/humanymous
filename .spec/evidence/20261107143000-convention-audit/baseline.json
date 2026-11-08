@@ -2122,5 +2122,19 @@
     "binding": "45raw hashes/3archive hashes/14step joins/3153frozen sources to Git all0issues",
     "limits": "No exact OS starts; registry POSTONLY; no Go/production/bootstrap/product closure",
     "goal_complete": false
+  },
+  "runtime_ab_actual_review": {
+    "evidence": {
+      "path": ".spec.local/root/evidence/20261107143000-convention-audit/runtime-ab-actual-review-001.json",
+      "sha256": "84c2ed07661c4f83e600fedb24217c65b87981fef0be4303fb0dcc568e7fa87e",
+      "bytes": 17621
+    },
+    "commands": 10,
+    "raw_files": 104,
+    "issues": 0,
+    "source": "A/B3128 unchanged;Bexact5d68;AonlyRuntimeCargo manifest difference",
+    "result": "Two cold-artifact paired reductions45.39/46.46percent;warm0rebuilt",
+    "scope": "ExactCLIcheck only; no OS-cold/statistical/link/runtime/product claim",
+    "goal_complete": false
   }
 }
