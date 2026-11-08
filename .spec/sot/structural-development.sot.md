@@ -143,6 +143,26 @@ after this source correction. The Git cleanup wait/join can still outlive the
 poll deadline if a descendant retains stdout; hard process-tree containment and
 the isolated negative probe remain unresolved and must not be claimed complete.
 
+Root integrated the first maintenance language-reader candidate only into the
+isolated Tools assembly. Its executable compiled, initially with nine warnings.
+For that private role, unused convenience exports and methods now exist only in
+test builds; actual request capture remains in the executable. Explicit error
+formatting reads existing diagnostic fields while retaining the original textual
+shape. An initial strict check then found a test-only SystemClock import; Root
+moved the reference into the test-only helper. The maintenance executable's next
+locked strict Clippy check passed. No blanket lint allowance or required test
+removal was introduced. Its unit/integration targets still need the ten remaining
+external mutable-input rewrites and case reconciliation. The candidate honestly
+reports unsupported source identity, so this compile pass does not qualify the
+real repository language check or replace the required actual-source evidence.
+
+The wargame owner is assigned concrete Rust candidates that split role composition
+into simulation, verification, network execution and legacy report closures while
+linking each implementation source once. These candidates remain in that owner's
+evidence area; Root retains live and isolated integration custody. Existing field
+and symbol preservation, negative authority controls and source test identities
+must be reconciled before adoption; warning removal cannot erase functionality.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
