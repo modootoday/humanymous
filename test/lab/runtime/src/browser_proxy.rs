@@ -303,6 +303,11 @@ pub async fn serve(
     }
     let limit = Arc::new(Semaphore::new(16));
     let mut tasks = JoinSet::new();
+    // Match browser-product.Dockerfile WASM_BINDGEN_TEST_TIMEOUT. Debug
+    // collector wasm assets are fully buffered (up to 32MiB); a 15s ceiling
+    // returns 503 under Cap=1 Desktop contention before the selected
+    // runtime_pilot test starts, starving browser-actual-witness-exchange.
+    let exchange_timeout = Duration::from_secs(90);
     loop {
         tokio::select! {
             changed=stop.changed()=>{if changed.is_err() || *stop.borrow(){break;}}
@@ -313,7 +318,7 @@ pub async fn serve(
                 let config=config.clone();let receipts=receipts.clone();
                 tasks.spawn(async move {
                     let _permit=permit;
-                    if !matches!(tokio::time::timeout(Duration::from_secs(15),exchange(&mut socket,&config,&receipts)).await,Ok(Ok(()))) {
+                    if !matches!(tokio::time::timeout(exchange_timeout,exchange(&mut socket,&config,&receipts)).await,Ok(Ok(()))) {
                         receipts.hit("refused_or_failed");
                         let _=http::write(&mut socket,503,b"{}").await;
                     }
