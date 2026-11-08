@@ -3,7 +3,7 @@ id: plan:root/20261108221000-clean-room-matrix-cap-driver
 title: Lab-runner clean-room matrix Cap planner (fail-closed; no Cap burn)
 status: active
 created: 2026-11-08T13:15:00Z
-updated: 2026-11-08T13:15:00Z
+updated: 2026-11-08T13:20:03Z
 rel:
   depends_on:
     - plan:root/20261108220600-cap-ready-g4-w2-harness
@@ -58,6 +58,11 @@ W2 hosted H2 product-binding. Board protocol ping records Cap free + planner rea
 - Cap burn=0; Docker Cap unused; product=0
 
 ## 5. Residual / next gap
+
+Cap=1 (2026-11-08T13:20:03Z): sole prior serialize cell
+(`authority-node-ipc|lab_runner_require_full`) was a **false positive** — no Cap
+CLI binding; bare `--require-full` would Cap-spam wrong composition. Cap burn=0.
+Planner now refuses unbound scenarios (serialize=0). Matrix cell stays `unrun`.
 
 Root allocates G4 or W2 unlock → Cursor Cap=1 burns matching `cap-ready/` pack;
 matrix-plan then guides subsequent Cap serialization without Cap spam.

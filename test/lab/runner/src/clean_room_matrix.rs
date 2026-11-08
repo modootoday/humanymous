@@ -252,6 +252,15 @@ fn decide(
             Value::Null,
         );
     }
+    if !scenario_has_cap_cli_binding(gate, scenario) {
+        return (
+            Disposition::RefuseCap,
+            format!(
+                "scenario={scenario} has no lab-runner Cap CLI binding; bare --require-full preimage would Cap-spam the wrong composition; hold until Root allocates a bound path or matrix remaps; never invent pass_product_clean_room"
+            ),
+            Value::Null,
+        );
+    }
     let command = lab_runner_command(gate, scenario);
     let reason = if clean_room_required || counts_as_product {
         "required lab-runner cell still unrun; serialize Cap=1 preimage only — execute after Root unlock; product remains 0 until measured pass_product_clean_room".into()
@@ -259,6 +268,16 @@ fn decide(
         "required lab-runner cell still unrun; serialize Cap=1 preimage only — execute after Root unlock; component-eligible cells still cannot invent product".into()
     };
     (Disposition::SerializeWhenUnlocked, reason, command)
+}
+
+/// Only scenarios with an explicit lab-runner Cap selector may serialize.
+/// Unbound names (e.g. authority-node-ipc) must not inherit bare `--require-full`.
+fn scenario_has_cap_cli_binding(gate: &str, scenario: &str) -> bool {
+    match scenario {
+        "browser-product" | "collector-component" | "go-product" => true,
+        "topology-fixture" if gate == "lab_runner_topology_or_controls" => true,
+        _ => false,
+    }
 }
 
 fn lab_runner_command(gate: &str, scenario: &str) -> Value {
@@ -364,6 +383,22 @@ mod tests {
     }
 
     #[test]
+    fn unbound_authority_node_ipc_refuses_bare_require_full_preimage() {
+        let (disposition, reason, command) = decide(
+            "unrun",
+            "lab_runner_require_full",
+            "authority-node-ipc",
+            true,
+            true,
+            false,
+        );
+        assert_eq!(disposition, Disposition::RefuseCap);
+        assert!(reason.contains("no lab-runner Cap CLI binding"));
+        assert!(reason.contains("never invent pass_product_clean_room"));
+        assert!(command.is_null());
+    }
+
+    #[test]
     fn plan_matrix_summary_is_fail_closed_and_product_zero() {
         let matrix = json!({
             "schema": "humanymous.cursor-clean-room-product-matrix/1",
@@ -388,10 +423,10 @@ mod tests {
                     "counts_as_product": false
                 },
                 {
-                    "id": "c|runtime|lab_runner_require_full",
+                    "id": "c|authority|lab_runner_require_full",
                     "status": "unrun",
                     "gate": "lab_runner_require_full",
-                    "scenario": "runtime",
+                    "scenario": "authority-node-ipc",
                     "required": true,
                     "clean_room_required": true,
                     "counts_as_product": false
@@ -404,6 +439,15 @@ mod tests {
                     "required": true,
                     "clean_room_required": false,
                     "counts_as_product": false
+                },
+                {
+                    "id": "e|browser|lab_runner_require_full|unrun",
+                    "status": "unrun",
+                    "gate": "lab_runner_require_full",
+                    "scenario": "browser-product",
+                    "required": true,
+                    "clean_room_required": true,
+                    "counts_as_product": false
                 }
             ]
         });
@@ -411,7 +455,7 @@ mod tests {
         assert_eq!(plan["cap_execute"], false);
         assert_eq!(plan["pass_product_clean_room"], 0);
         assert_eq!(plan["full_product_qualified"], false);
-        assert_eq!(plan["summary"]["refuse_cap"], 1);
+        assert_eq!(plan["summary"]["refuse_cap"], 2);
         assert_eq!(plan["summary"]["hold_component"], 1);
         assert_eq!(plan["summary"]["serialize_cap_when_unlocked"], 1);
         assert_eq!(plan["summary"]["out_of_lab_runner_scope"], 1);
