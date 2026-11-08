@@ -3223,3 +3223,20 @@ and was excluded, never counted as a negative pass. Private
 privacy-regression-review-016.json binds this bounded actual regression. Main
 assembly adoption, strict lint (owner reports90warnings), actual three B1 compiler
 scenarios, native execution, full input closure and CA-LIFETIME remain OPEN.
+Node macro-capsule follow-up independently matches all5primary postimage hashes.
+Safe Node retains forbid(unsafe_code); new export capsule denies unsafe_code
+without new authored unsafe/allow. Thin delegates and DTO conversion retain safe
+logic/template validation. Initial unused HtmlHook reexport strict failure remains;
+review retry0.45s and primary export-lib strict0.48s are distinct observations.
+Primary node_host_process test/bin artifact has exact Node role features,
+test profile, fresh:false and successful final build-finished, but no body ran.
+
+Beyond initial2authored unsafe-block negatives, actual review-copy13controls
+cover6positive/negative pairs at Node host/template/pilot, export node/root and
+crate root, plus inherited-forbid lowering. Raw primary spans identify each
+inserted unsafe function (unsafe_code), while lowering allow produces E0453.
+All6positive terminals succeed without errors; all7negative terminals fail with
+the exact expected single error. Private node-macro-review-017.json and
+node-boundary-matrix-review-018.json bind raw sources and boundaries. This is
+not complete generated expansion, full input closure, Node DLL load, actual
+Node/Bun host equivalence, SDK qualification or overall migration completion.

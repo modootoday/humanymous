@@ -2697,5 +2697,17 @@
     "sha256": "632bb5f9bc414e217d8a1b5a59ff17c1ce6076265d590631b009654861311321",
     "bytes": 2335,
     "goal_complete": false
+  },
+  "node_macro_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/node-macro-review-017.json",
+    "sha256": "147f18ef2ab178d543d02dd0af6612a419c566982c1e380de808a32066ba9edb",
+    "bytes": 4285,
+    "goal_complete": false
+  },
+  "node_boundary_matrix_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/node-boundary-matrix-review-018.json",
+    "sha256": "30eeb813ada92deabd2b73bfc3d896bf666738537ba0e0e5995f0b44a7470d2d",
+    "bytes": 7029,
+    "goal_complete": false
   }
 }
