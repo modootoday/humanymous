@@ -1,0 +1,64 @@
+{
+  "old_callers_unchanged": 7,
+  "source_patch_application": "not_run",
+  "physical_scheme_files": 1,
+  "candidate_rust_files": 42,
+  "schema": "humanymous.browser-src-native-static-check/1",
+  "compiler": "not_run",
+  "four_patch_applicability_checks": "passed",
+  "implementation_outside_src": 0,
+  "native": "not_run",
+  "old_candidate_files_unchanged": 47,
+  "checked_literal_includes": [
+    {
+      "literal": "native/bootstrap/mod.rs",
+      "source": "src/lib.rs",
+      "target": "src/native/bootstrap/mod.rs"
+    },
+    {
+      "literal": "native/desktop/mod.rs",
+      "source": "src/lib.rs",
+      "target": "src/native/desktop/mod.rs"
+    },
+    {
+      "literal": "tabs_ui_resize_tests.rs",
+      "source": "src/tabs_ui.rs",
+      "target": "src/tabs_ui_resize_tests.rs"
+    },
+    {
+      "literal": "../shared/scheme.rs",
+      "source": "src/native/bootstrap/mod.rs",
+      "target": "src/native/shared/scheme.rs"
+    },
+    {
+      "literal": "../../../native/desktop/pilot-contract.json",
+      "source": "src/native/bootstrap/negative_pilot.rs",
+      "target": "native/desktop/pilot-contract.json"
+    },
+    {
+      "literal": "internal_probe.rs",
+      "source": "src/native/desktop/browser_controls.rs",
+      "target": "src/native/desktop/internal_probe.rs"
+    },
+    {
+      "literal": "host_deadline.rs",
+      "source": "src/native/desktop/host.rs",
+      "target": "src/native/desktop/host_deadline.rs"
+    },
+    {
+      "literal": "host_report.rs",
+      "source": "src/native/desktop/host.rs",
+      "target": "src/native/desktop/host_report.rs"
+    },
+    {
+      "literal": "../shared/scheme.rs",
+      "source": "src/native/desktop/mod.rs",
+      "target": "src/native/shared/scheme.rs"
+    },
+    {
+      "literal": "../../../native/desktop/pilot-contract.json",
+      "source": "src/native/desktop/pilot_assertions.rs",
+      "target": "native/desktop/pilot-contract.json"
+    }
+  ]
+}

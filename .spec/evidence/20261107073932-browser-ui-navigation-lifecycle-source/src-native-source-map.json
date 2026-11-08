@@ -1,0 +1,651 @@
+{
+  "schema": "humanymous.browser-consolidation-candidate/2",
+  "observed_head": "0b1d0ec48d5f101759f3771cb48bc5d518277696",
+  "state": "prepared-unapplied-uncompiled",
+  "source_map": [
+    {
+      "source": "crates/browser/Cargo.toml",
+      "destination": "crates/apps/humanymous-browser/Cargo.toml",
+      "preimage_sha256": "6cf5252d79027a40c7154940e97b16e57a380246a1c2895b2c162f7ef95cdfa1",
+      "preimage_git_blob": "e0978526b59857d94373773c00ad4679f7293ab1",
+      "bytes": 1060,
+      "candidate_sha256": "1bb662a27248ac0557049cafd8f812650d4fd75dd8c2b779a404846b1664c3e4",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/Cargo.toml",
+      "parent_candidate_sha256": "1bb662a27248ac0557049cafd8f812650d4fd75dd8c2b779a404846b1664c3e4"
+    },
+    {
+      "source": "crates/browser/GPU-BOUNDARY.md",
+      "destination": "crates/apps/humanymous-browser/GPU-BOUNDARY.md",
+      "preimage_sha256": "e32aa6507b8f8d3d7bdffc669a082bcb8437314728d121971eefdd4af8b4f2e5",
+      "preimage_git_blob": "6a87b9aeff3a8305e1032bbbc7383468499ea76c",
+      "bytes": 14331,
+      "candidate_sha256": "e32aa6507b8f8d3d7bdffc669a082bcb8437314728d121971eefdd4af8b4f2e5",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/GPU-BOUNDARY.md",
+      "parent_candidate_sha256": "e32aa6507b8f8d3d7bdffc669a082bcb8437314728d121971eefdd4af8b4f2e5"
+    },
+    {
+      "source": "crates/browser/INTEGRATION.md",
+      "destination": "crates/apps/humanymous-browser/INTEGRATION.md",
+      "preimage_sha256": "cd1dcd71a2b3f1f231a73aeaa991188b5501cc6f0dac7eddfb1b9c2bd316d9f2",
+      "preimage_git_blob": "758353129983643551509758d707244d2c0df38a",
+      "bytes": 38205,
+      "candidate_sha256": "cd1dcd71a2b3f1f231a73aeaa991188b5501cc6f0dac7eddfb1b9c2bd316d9f2",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/INTEGRATION.md",
+      "parent_candidate_sha256": "cd1dcd71a2b3f1f231a73aeaa991188b5501cc6f0dac7eddfb1b9c2bd316d9f2"
+    },
+    {
+      "source": "crates/browser/NATIVE-QUALIFICATION.md",
+      "destination": "crates/apps/humanymous-browser/NATIVE-QUALIFICATION.md",
+      "preimage_sha256": "20b7ca449133f2eb7d018348e284a173f32b15c1a97c985a5f83ae82025c48fb",
+      "preimage_git_blob": "6b750f1d9fba0d354bbd78c4c9f02e277df31496",
+      "bytes": 15112,
+      "candidate_sha256": "20b7ca449133f2eb7d018348e284a173f32b15c1a97c985a5f83ae82025c48fb",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/NATIVE-QUALIFICATION.md",
+      "parent_candidate_sha256": "20b7ca449133f2eb7d018348e284a173f32b15c1a97c985a5f83ae82025c48fb"
+    },
+    {
+      "source": "crates/browser/native/bootstrap/Cargo.toml",
+      "destination": null,
+      "preimage_sha256": "0c17226a8e8062a109e60ec890497822e8b3275b34b614fa2677f4b37a404462",
+      "preimage_git_blob": "6c22bf8fc74dbb8a5a6bd3a56ab73d1a484b5a84",
+      "bytes": 606,
+      "candidate_sha256": null,
+      "action": "remove-package-manifest-after-root-integration"
+    },
+    {
+      "source": "crates/browser/native/bootstrap/src/lib.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/bootstrap/mod.rs",
+      "preimage_sha256": "41450a30601621cf922a2c2af0339328f8494a5e295b2995a42072c020e813a9",
+      "preimage_git_blob": "790d14b8fd67d7d4a4e06deb50224867a752cfe1",
+      "bytes": 3941,
+      "candidate_sha256": "e44281f6b96f071246b3db54e35523007a61044a440e877f99322f1f25dc665a",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/bootstrap/src/lib.rs",
+      "parent_candidate_sha256": "41450a30601621cf922a2c2af0339328f8494a5e295b2995a42072c020e813a9"
+    },
+    {
+      "source": "crates/browser/native/bootstrap/src/negative_pilot.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/bootstrap/negative_pilot.rs",
+      "preimage_sha256": "833e68f4f9025530df377f4fc3468a1ee00b86e25dbc8c57b12da0b7a9680448",
+      "preimage_git_blob": "db204f681bb82021155056317d9385ee2893a4b7",
+      "bytes": 10324,
+      "candidate_sha256": "45af2a3f94240ef7363ff71a8d82bee11ab5abaadb5fcb1f2aaaf6f8c583b3e3",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/bootstrap/src/negative_pilot.rs",
+      "parent_candidate_sha256": "833e68f4f9025530df377f4fc3468a1ee00b86e25dbc8c57b12da0b7a9680448"
+    },
+    {
+      "source": "crates/browser/native/bootstrap/src/renderer_probe.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/bootstrap/renderer_probe.rs",
+      "preimage_sha256": "9863552c45a0d199744075417a337219a8b31023c96fb109ed118413c14b58d0",
+      "preimage_git_blob": "4bca5994b7de41f5c7ee21f2e6af9994661bb047",
+      "bytes": 2445,
+      "candidate_sha256": "bf319f3141d3779f757995ac9824e8d7c387036443b24c07b94766f5d3774674",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/bootstrap/src/renderer_probe.rs",
+      "parent_candidate_sha256": "bf319f3141d3779f757995ac9824e8d7c387036443b24c07b94766f5d3774674"
+    },
+    {
+      "source": "crates/browser/native/desktop/Cargo.toml",
+      "destination": null,
+      "preimage_sha256": "6048d76559ecb07f9498cad1e058830109f26ab3c27e511f61258d3d8decfc78",
+      "preimage_git_blob": "5f9de1fa193c323ee361579cb2ac32bd8516d2d1",
+      "bytes": 1351,
+      "candidate_sha256": null,
+      "action": "remove-package-manifest-after-root-integration"
+    },
+    {
+      "source": "crates/browser/native/desktop/pilot-contract.json",
+      "destination": "crates/apps/humanymous-browser/native/desktop/pilot-contract.json",
+      "preimage_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "preimage_git_blob": "4a134d4f7b613c4bd182c95a3062b2677028d1fc",
+      "bytes": 3098,
+      "candidate_sha256": "679e1de385bb8b31c8da83257ef0395b74c956873fa08c61470a064366debfd2",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/pilot-contract.json",
+      "parent_candidate_sha256": "679e1de385bb8b31c8da83257ef0395b74c956873fa08c61470a064366debfd2"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/browser_controls.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/browser_controls.rs",
+      "preimage_sha256": "16af27766824748334d44588c345d8433d496d1e7476320fa877623217f7bef6",
+      "preimage_git_blob": "41fbcf55901af9f19fd3452888ef2be1e80deaca",
+      "bytes": 7470,
+      "candidate_sha256": "3f93611d5a6cae4fca59e4e3bd7e894ac7d7d9bc38596bc4168cbf700e7df4f9",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/browser_controls.rs",
+      "parent_candidate_sha256": "3f93611d5a6cae4fca59e4e3bd7e894ac7d7d9bc38596bc4168cbf700e7df4f9"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/child.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/child.rs",
+      "preimage_sha256": "ac95b7177126926800920b610234fd763084c180c2bcc22bef06d3165e2c9d4e",
+      "preimage_git_blob": "c13f816d2591089f75d64aa23ee26d05a86e60af",
+      "bytes": 20788,
+      "candidate_sha256": "2cd73a535e8d461ae74e6f422cbb9df7e5ef26d6fc418ede1b01f33b25748f5a",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/child.rs",
+      "parent_candidate_sha256": "2cd73a535e8d461ae74e6f422cbb9df7e5ef26d6fc418ede1b01f33b25748f5a"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/fixture.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/fixture.rs",
+      "preimage_sha256": "a84903ec5a1b6888f2424f00832f76435f5623da091441f540a65bba8a5f1030",
+      "preimage_git_blob": "9d5554d499c680c33b4a488beee26c16ec836b35",
+      "bytes": 4975,
+      "candidate_sha256": "b485f21aeca407b032b97635a29cf076512cff9e152fd5ad1a3b0e0b0ea491cb",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/fixture.rs",
+      "parent_candidate_sha256": "b485f21aeca407b032b97635a29cf076512cff9e152fd5ad1a3b0e0b0ea491cb"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/history.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/history.rs",
+      "preimage_sha256": "25753d9ed23f5a05c6863c9aefb1253c2a6c488d58f3b77bb8743317d8e5e8b4",
+      "preimage_git_blob": "f11a6582b7398e9ac3dbd17e4b095236c4c4b15b",
+      "bytes": 3792,
+      "candidate_sha256": "20c55b803ee5ed3475c55c3290c40da8d28a079636af249211a752bc074541ac",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/history.rs",
+      "parent_candidate_sha256": "20c55b803ee5ed3475c55c3290c40da8d28a079636af249211a752bc074541ac"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/host.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/host.rs",
+      "preimage_sha256": "9becbdb150ba3dbf0d8cc28cb10b07e371800d449430f81baf0369d5fc957de5",
+      "preimage_git_blob": "2965479e07145e5beafa8748d1c5734dec3c5ce4",
+      "bytes": 21335,
+      "candidate_sha256": "6b8b40efba566fdea68f0ce9d666aaa49bc4e787e8e312488ec56f50454312f0",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/host.rs",
+      "parent_candidate_sha256": "6b8b40efba566fdea68f0ce9d666aaa49bc4e787e8e312488ec56f50454312f0"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/host_deadline.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/host_deadline.rs",
+      "preimage_sha256": "e767c77302141dd13d2aa8fc8b5f61360320a5c5ec1b38a51bf193c606b8442f",
+      "preimage_git_blob": "f200125cdf0d2b7879c28cbe3a1089b8f4239761",
+      "bytes": 3597,
+      "candidate_sha256": "e767c77302141dd13d2aa8fc8b5f61360320a5c5ec1b38a51bf193c606b8442f",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/host_deadline.rs",
+      "parent_candidate_sha256": "e767c77302141dd13d2aa8fc8b5f61360320a5c5ec1b38a51bf193c606b8442f"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/host_report.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/host_report.rs",
+      "preimage_sha256": "9fe8d22f358901e2f407e4c94ea02e782b9d33fbf1070a26dc039d34c3b50bf3",
+      "preimage_git_blob": "c76def07168462f3d3da626fb18dee1830eaeab3",
+      "bytes": 5956,
+      "candidate_sha256": "912a11a982f59c350a0d7efa9a7fcc3b35283e70931d2ee6a10b06f58dbe50a4",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/host_report.rs",
+      "parent_candidate_sha256": "912a11a982f59c350a0d7efa9a7fcc3b35283e70931d2ee6a10b06f58dbe50a4"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/internal_probe.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/internal_probe.rs",
+      "preimage_sha256": "5143b3ea4acfb82546955815f1c1499493180e10af5c4a21638b30b953854464",
+      "preimage_git_blob": "6a260f04c78c439c4b9842bea7fd4cde334c36d3",
+      "bytes": 3765,
+      "candidate_sha256": "38d1e38b6a94e96d453be0c26dd4bb49f6031535287d3058ae3e7834e2998e4a",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/internal_probe.rs",
+      "parent_candidate_sha256": "38d1e38b6a94e96d453be0c26dd4bb49f6031535287d3058ae3e7834e2998e4a"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/lib.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/mod.rs",
+      "preimage_sha256": "581da97524358f09fe4b54fd7c4586eb0f218bab59b7cc96939d2ade202668f9",
+      "preimage_git_blob": "bc345d5e6f342fb025b6f23871e1846f15462945",
+      "bytes": 3743,
+      "candidate_sha256": "28ac93f03ae94022babe7adc4f1a19bf7332b5cf4608f33952b1ac3a8e72c618",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/lib.rs",
+      "parent_candidate_sha256": "581da97524358f09fe4b54fd7c4586eb0f218bab59b7cc96939d2ade202668f9"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/local_page.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/local_page.rs",
+      "preimage_sha256": "79f77f0528db58de405c38eed65bdf78ea790439164533c13a12abe0993fa837",
+      "preimage_git_blob": "c5061194076cbb37e239c1fc84f8a88db387eade",
+      "bytes": 5142,
+      "candidate_sha256": "928db5a3d2b7833bba780a54cd6f311f6ec5b4099b0be4cffafbb52b475f7827",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/local_page.rs",
+      "parent_candidate_sha256": "928db5a3d2b7833bba780a54cd6f311f6ec5b4099b0be4cffafbb52b475f7827"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/measured_input.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/measured_input.rs",
+      "preimage_sha256": "1b1e08e9136bda44a727211e82af6afd6db1345468e7b7af057386d27455fbeb",
+      "preimage_git_blob": "52fa98ff6e575f06aa7f3be441ccdb773e9bc782",
+      "bytes": 7599,
+      "candidate_sha256": "a520a35fbdfa3dcb03121aa728eea6f1d6071e7e0f7c6f3cc4cd07d5df5b6f43",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/measured_input.rs",
+      "parent_candidate_sha256": "a520a35fbdfa3dcb03121aa728eea6f1d6071e7e0f7c6f3cc4cd07d5df5b6f43"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/native.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/native.rs",
+      "preimage_sha256": "264e96a925795bdfbb550498b177b36ab2310c6d0521348f65302d7abd9de455",
+      "preimage_git_blob": "0f080f0b9486b7c79f0b5de29f77491360d8262d",
+      "bytes": 20351,
+      "candidate_sha256": "fd80d6cc71b9de34f8634b83790cc694c0792ac895415803c71652d9b48d3fcf",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/native.rs",
+      "parent_candidate_sha256": "fd80d6cc71b9de34f8634b83790cc694c0792ac895415803c71652d9b48d3fcf"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/navigation.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/navigation.rs",
+      "preimage_sha256": "1eee477375fb6545f2361cde57616097764ea7d3d407a7dcb7d8f68871e7aca1",
+      "preimage_git_blob": "dac2b026ce41abd09f7615592453d18e7101f5af",
+      "bytes": 21134,
+      "candidate_sha256": "fd5d01f5de7d4ddb6fef9a8e5d75991aeb7dbd2e8922ea98ad850bbe2bc25260",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/navigation.rs",
+      "parent_candidate_sha256": "fd5d01f5de7d4ddb6fef9a8e5d75991aeb7dbd2e8922ea98ad850bbe2bc25260"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/pilot_assertions.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/pilot_assertions.rs",
+      "preimage_sha256": "c7e1a07981a21ce04800ac5bb783af0b0b8d973bb4925e3656039cce469b0e8d",
+      "preimage_git_blob": "c97c5311075d4b4dc38f67026157996394479951",
+      "bytes": 16799,
+      "candidate_sha256": "0f57260de242c0a66b82005e3134af68fc4dd60a5d447fc9746ecb9be1ac8992",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs",
+      "parent_candidate_sha256": "17288cbf55af8ec6b8b76dce8fbb82e990cce491fb3e223b6876b3635555060d"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/pilot_process.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/pilot_process.rs",
+      "preimage_sha256": "3303103b75edd533d61c74bc807adfed925c113fa0ae42f6535e3bf02741ac8f",
+      "preimage_git_blob": "865f6800095bec5129177e35af61bf5a4f4e52b3",
+      "bytes": 2857,
+      "candidate_sha256": "a4c0102f6e1a2ea4b4595f3ef84458205a9d59359bc8bbf7b03e02059ba4667c",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/pilot_process.rs",
+      "parent_candidate_sha256": "a4c0102f6e1a2ea4b4595f3ef84458205a9d59359bc8bbf7b03e02059ba4667c"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/shell_timings.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/shell_timings.rs",
+      "preimage_sha256": "cbe36cd433d0aeb5c5cf36c6d91b1d8d7dae5f7a8763f0c91f482a9738fd2aff",
+      "preimage_git_blob": "b6f321c5ab02fe167eaeae5c179fe531c3b89821",
+      "bytes": 4504,
+      "candidate_sha256": "cbe36cd433d0aeb5c5cf36c6d91b1d8d7dae5f7a8763f0c91f482a9738fd2aff",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/shell_timings.rs",
+      "parent_candidate_sha256": "cbe36cd433d0aeb5c5cf36c6d91b1d8d7dae5f7a8763f0c91f482a9738fd2aff"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/tab_sessions.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/tab_sessions.rs",
+      "preimage_sha256": "51abb4d4c0af2248c241c80c69462f6446844f43e2ef5be58095693c91f3fbe7",
+      "preimage_git_blob": "6c98368875b7c60e14a0ddc0d17d8feb8438e40d",
+      "bytes": 13527,
+      "candidate_sha256": "7fd67f8774da241986a69d5af651e97808a5e2cb0cbdb85d5fc2adb5744af293",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/tab_sessions.rs",
+      "parent_candidate_sha256": "7fd67f8774da241986a69d5af651e97808a5e2cb0cbdb85d5fc2adb5744af293"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/tab_windows.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/tab_windows.rs",
+      "preimage_sha256": "d401721d23c546601889774de04e2effc517395d3d55fee073ef85d556b43598",
+      "preimage_git_blob": "1c3fc04a658d18c0f67e578adab84d4409599c7b",
+      "bytes": 2506,
+      "candidate_sha256": "c86fa35d3888e9752923ce09eefacd35ba9acfc47061fdd89411e3b88db84559",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/tab_windows.rs",
+      "parent_candidate_sha256": "c86fa35d3888e9752923ce09eefacd35ba9acfc47061fdd89411e3b88db84559"
+    },
+    {
+      "source": "crates/browser/native/desktop/src/window_frame.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/desktop/window_frame.rs",
+      "preimage_sha256": "6518e0ac23268408ca155420ca6770d9cc36334f9b5ed78cb383cd9e2a4519eb",
+      "preimage_git_blob": "4101f1e040dfe76adf777b7eb31a558fde5c05ca",
+      "bytes": 11188,
+      "candidate_sha256": "74e5e5008ec1e4881413d8fa097f14c68426c421d974fb2f67b5660434ef43b0",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/desktop/src/window_frame.rs",
+      "parent_candidate_sha256": "74e5e5008ec1e4881413d8fa097f14c68426c421d974fb2f67b5660434ef43b0"
+    },
+    {
+      "source": "crates/browser/native/shared/scheme.rs",
+      "destination": "crates/apps/humanymous-browser/src/native/shared/scheme.rs",
+      "preimage_sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9",
+      "preimage_git_blob": "bf7180b94ad2409da1a293f83837140048ae83f9",
+      "bytes": 953,
+      "candidate_sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/native/shared/scheme.rs",
+      "parent_candidate_sha256": "1fd27ad583aabbeef3881006c6fab36cb9d5b55a63b5a36ea711c2280c18f9e9"
+    },
+    {
+      "source": "crates/browser/src/frame_geometry.rs",
+      "destination": "crates/apps/humanymous-browser/src/frame_geometry.rs",
+      "preimage_sha256": "b93347578ecea469c6bb28a37a54eb34cefcd3d4c149fa2fa07e74bd171adc1e",
+      "preimage_git_blob": "1fb7f2f922a38e8a032e692792ddcea661817ef7",
+      "bytes": 5835,
+      "candidate_sha256": "b93347578ecea469c6bb28a37a54eb34cefcd3d4c149fa2fa07e74bd171adc1e",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/frame_geometry.rs",
+      "parent_candidate_sha256": "b93347578ecea469c6bb28a37a54eb34cefcd3d4c149fa2fa07e74bd171adc1e"
+    },
+    {
+      "source": "crates/browser/src/history.rs",
+      "destination": "crates/apps/humanymous-browser/src/history.rs",
+      "preimage_sha256": "1a3c7e9fecf5e10a25dae82e4db2b0bb8af4fda1cd761a9bed774c5ebf3ff1fb",
+      "preimage_git_blob": "f83dcd1dc6aa3ae379cffe7aec6417a15648d257",
+      "bytes": 3570,
+      "candidate_sha256": "1a3c7e9fecf5e10a25dae82e4db2b0bb8af4fda1cd761a9bed774c5ebf3ff1fb",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/history.rs",
+      "parent_candidate_sha256": "1a3c7e9fecf5e10a25dae82e4db2b0bb8af4fda1cd761a9bed774c5ebf3ff1fb"
+    },
+    {
+      "source": "crates/browser/src/icons.rs",
+      "destination": "crates/apps/humanymous-browser/src/icons.rs",
+      "preimage_sha256": "e70e4327f91d0197d0f0b30bf09f72ae2e56ffb061f15655868077ced167047a",
+      "preimage_git_blob": "ab09d54e4435b460ace96cc1c5877a4ed5ed1478",
+      "bytes": 2202,
+      "candidate_sha256": "e70e4327f91d0197d0f0b30bf09f72ae2e56ffb061f15655868077ced167047a",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/icons.rs",
+      "parent_candidate_sha256": "e70e4327f91d0197d0f0b30bf09f72ae2e56ffb061f15655868077ced167047a"
+    },
+    {
+      "source": "crates/browser/src/input.rs",
+      "destination": "crates/apps/humanymous-browser/src/input.rs",
+      "preimage_sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c",
+      "preimage_git_blob": "f8beef47a8ba1d6dd7a3e6dd17f2f66115607d7f",
+      "bytes": 2866,
+      "candidate_sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/input.rs",
+      "parent_candidate_sha256": "be7015b3662d75ae392e7fecf7f5040a36be28b18ddff986755569fe8312fb7c"
+    },
+    {
+      "source": "crates/browser/src/internal_urls.rs",
+      "destination": "crates/apps/humanymous-browser/src/internal_urls.rs",
+      "preimage_sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
+      "preimage_git_blob": "85b25d063920a406958672325580bcd78b420684",
+      "bytes": 8944,
+      "candidate_sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/internal_urls.rs",
+      "parent_candidate_sha256": "7f9c7512a6c9ab68b6f1c6353686a3f9001dac7f7da09624cf3ac4ff78fb8161"
+    },
+    {
+      "source": "crates/browser/src/lib.rs",
+      "destination": "crates/apps/humanymous-browser/src/lib.rs",
+      "preimage_sha256": "57f5705b241f3e1a470fb2b49f544caeda48a75e38a623b7eec8a76d5d87ce0c",
+      "preimage_git_blob": "9fb707bafabc70ac0ef6c10ebe1fe74c3b4fa94c",
+      "bytes": 869,
+      "candidate_sha256": "d7b7c31b0071b76665f1418286e239adb934e41376dc6b2ac9f619a7d7b37b3e",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/lib.rs",
+      "parent_candidate_sha256": "04a2d34c3d0c2046cb78b7940855ea1f86d3ccf2888e664b5731a679904b3260"
+    },
+    {
+      "source": "crates/browser/src/lifecycle.rs",
+      "destination": "crates/apps/humanymous-browser/src/lifecycle.rs",
+      "preimage_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "preimage_git_blob": "3aeb6ee318530cda39041580fb7f5f307bd1d40e",
+      "bytes": 6140,
+      "candidate_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/lifecycle.rs",
+      "parent_candidate_sha256": "5f246d47146c4d7b0e8ddab062b7a68925e164a2eb1b571579072aa277239344"
+    },
+    {
+      "source": "crates/browser/src/main.rs",
+      "destination": "crates/apps/humanymous-browser/src/main.rs",
+      "preimage_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "preimage_git_blob": "f7336536376576f485f50f9c9986c5712000fcea",
+      "bytes": 931,
+      "candidate_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/main.rs",
+      "parent_candidate_sha256": "143c1ed1c74498cfa24a4b18bd58ce9d88509ae5cf790628a0b02e3ebb2106e8"
+    },
+    {
+      "source": "crates/browser/src/navigation.rs",
+      "destination": "crates/apps/humanymous-browser/src/navigation.rs",
+      "preimage_sha256": "1e20f58edff8fadb9cd721c3ca763c638fc61620f98ef69efeb14d311bc93440",
+      "preimage_git_blob": "83debf604cc48fecd2923aa7d5843e238bdbe513",
+      "bytes": 11046,
+      "candidate_sha256": "1e20f58edff8fadb9cd721c3ca763c638fc61620f98ef69efeb14d311bc93440",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/navigation.rs",
+      "parent_candidate_sha256": "1e20f58edff8fadb9cd721c3ca763c638fc61620f98ef69efeb14d311bc93440"
+    },
+    {
+      "source": "crates/browser/src/newtab.rs",
+      "destination": "crates/apps/humanymous-browser/src/newtab.rs",
+      "preimage_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+      "preimage_git_blob": "1f9522338262671f3b1fc927571278bdc953b6c7",
+      "bytes": 12836,
+      "candidate_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/newtab.rs",
+      "parent_candidate_sha256": "8d5807bfeb9fecc30790ef3c602a3f47e776ddfd5df1caf2a180c5732fb800c2"
+    },
+    {
+      "source": "crates/browser/src/policy.rs",
+      "destination": "crates/apps/humanymous-browser/src/policy.rs",
+      "preimage_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "preimage_git_blob": "4c519ff79d478fcf070799e657acb7e90e9e4e2b",
+      "bytes": 4042,
+      "candidate_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/policy.rs",
+      "parent_candidate_sha256": "2e9e7c402a989ce68a59128f8cd34f6db30f8ad67c28cdbb8b4cdad1f7e41626"
+    },
+    {
+      "source": "crates/browser/src/scene_projection.rs",
+      "destination": "crates/apps/humanymous-browser/src/scene_projection.rs",
+      "preimage_sha256": "730f4c4a82a7f28c561b13b1632d6505cb0ec931b206093cfedac98b7c23511f",
+      "preimage_git_blob": "129b03006f323b270a5c214b551ae28015c5ebb9",
+      "bytes": 3695,
+      "candidate_sha256": "730f4c4a82a7f28c561b13b1632d6505cb0ec931b206093cfedac98b7c23511f",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/scene_projection.rs",
+      "parent_candidate_sha256": "730f4c4a82a7f28c561b13b1632d6505cb0ec931b206093cfedac98b7c23511f"
+    },
+    {
+      "source": "crates/browser/src/tabs.rs",
+      "destination": "crates/apps/humanymous-browser/src/tabs.rs",
+      "preimage_sha256": "34d82972ef8c6d725d158ffe6e6b6f25c18d7e451832edf263d975852908bc4a",
+      "preimage_git_blob": "dfb7e4853c1fc581532a2230adade80b9d7b984f",
+      "bytes": 7688,
+      "candidate_sha256": "34d82972ef8c6d725d158ffe6e6b6f25c18d7e451832edf263d975852908bc4a",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/tabs.rs",
+      "parent_candidate_sha256": "34d82972ef8c6d725d158ffe6e6b6f25c18d7e451832edf263d975852908bc4a"
+    },
+    {
+      "source": "crates/browser/src/tabs_ui.rs",
+      "destination": "crates/apps/humanymous-browser/src/tabs_ui.rs",
+      "preimage_sha256": "b789d94427e1749e24de540c1af068ce9a4b39e03f0aeec1d1dd5ff713de735e",
+      "preimage_git_blob": "11b6f8bf7dd58a91b881054c845e1ad34091009d",
+      "bytes": 14196,
+      "candidate_sha256": "b789d94427e1749e24de540c1af068ce9a4b39e03f0aeec1d1dd5ff713de735e",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/tabs_ui.rs",
+      "parent_candidate_sha256": "b789d94427e1749e24de540c1af068ce9a4b39e03f0aeec1d1dd5ff713de735e"
+    },
+    {
+      "source": "crates/browser/src/tabs_ui_resize_tests.rs",
+      "destination": "crates/apps/humanymous-browser/src/tabs_ui_resize_tests.rs",
+      "preimage_sha256": "f6fd0be6e17a5665151f488a44e51548b22861af68c2a06e1b5edfd066a4f502",
+      "preimage_git_blob": "d8673c640a3ff53cafb3b143bc8dcf6461cee9a4",
+      "bytes": 10597,
+      "candidate_sha256": "f6fd0be6e17a5665151f488a44e51548b22861af68c2a06e1b5edfd066a4f502",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/tabs_ui_resize_tests.rs",
+      "parent_candidate_sha256": "f6fd0be6e17a5665151f488a44e51548b22861af68c2a06e1b5edfd066a4f502"
+    },
+    {
+      "source": "crates/browser/src/ui.rs",
+      "destination": "crates/apps/humanymous-browser/src/ui.rs",
+      "preimage_sha256": "88c71a27771e83f12c045a665c28d33fa87df98926974c4a1b65ef5073204521",
+      "preimage_git_blob": "069c2c55acc810661082485c3b0968e6c8eba94d",
+      "bytes": 25077,
+      "candidate_sha256": "88c71a27771e83f12c045a665c28d33fa87df98926974c4a1b65ef5073204521",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/ui.rs",
+      "parent_candidate_sha256": "88c71a27771e83f12c045a665c28d33fa87df98926974c4a1b65ef5073204521"
+    },
+    {
+      "source": "crates/browser/src/ui_navigation.rs",
+      "destination": "crates/apps/humanymous-browser/src/ui_navigation.rs",
+      "preimage_sha256": "70e2dfc2e877cf80d8c417432698bc142654e104245ab7d5e20c72f3fc377ff9",
+      "preimage_git_blob": "489a7474a602fc92a3c5c0faf6b35fd507adec0a",
+      "bytes": 13857,
+      "candidate_sha256": "70e2dfc2e877cf80d8c417432698bc142654e104245ab7d5e20c72f3fc377ff9",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/ui_navigation.rs",
+      "parent_candidate_sha256": "70e2dfc2e877cf80d8c417432698bc142654e104245ab7d5e20c72f3fc377ff9"
+    },
+    {
+      "source": "crates/browser/src/viewport.rs",
+      "destination": "crates/apps/humanymous-browser/src/viewport.rs",
+      "preimage_sha256": "2ee93b0bfbe42a02d9f81f83496f814579d719751d193a63f8ce9ffb863a57cc",
+      "preimage_git_blob": "18e81df82314f540a20efc99ef9e3849eb962297",
+      "bytes": 5649,
+      "candidate_sha256": "2ee93b0bfbe42a02d9f81f83496f814579d719751d193a63f8ce9ffb863a57cc",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/viewport.rs",
+      "parent_candidate_sha256": "2ee93b0bfbe42a02d9f81f83496f814579d719751d193a63f8ce9ffb863a57cc"
+    },
+    {
+      "source": "crates/browser/src/window_chrome.rs",
+      "destination": "crates/apps/humanymous-browser/src/window_chrome.rs",
+      "preimage_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+      "preimage_git_blob": "3381ac8eaf125253e46550974b39f3814bb20f46",
+      "bytes": 7483,
+      "candidate_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c",
+      "action": "move-with-recorded-candidate",
+      "parent_candidate_destination": "crates/apps/humanymous-browser/src/window_chrome.rs",
+      "parent_candidate_sha256": "69b8c584ca8a730d927626595b3523724eb6d6bdad5ed10ba65e759c4ee3dd1c"
+    }
+  ],
+  "caller_inventory": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "f711884eee0c5b2561380c18da583cd1124745d42ea64a6033f9ad6e07fdf696"
+    },
+    {
+      "path": "crates/apps/humanymous-cli/qualification/data-provenance.json",
+      "sha256": "de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87"
+    },
+    {
+      "path": ".github/workflows/cef-native-component.yml",
+      "sha256": "104fb52b77db470ba353eb2ff48716a2b756d621e0217bf726b047933e8fd099"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/main.rs",
+      "sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/provisioning.rs",
+      "sha256": "98a7184508c8b56bd4b91c39fb2f1888d4596f53141c43e438095e9f815aa352"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/diagnostics/tests.rs",
+      "sha256": "f6411d81a108887f4458cb6eb25c3228a5baf9902ed21d06ee0b07b8c1941b98"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/desktop.rs",
+      "sha256": "c00e9b3896c7b78805d51aa6e30293c7747d514c4915b70856df2843da410fd7"
+    },
+    {
+      "path": "scripts/ci/cef-pilot/src/provisioning/bundles.rs",
+      "sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9"
+    },
+    {
+      "path": "scripts/ci/delivery/src/qualification_data.rs",
+      "sha256": "f22ce7e0304666b6f15dfc5666e63e00ffc6cfe8225915cfb46528444e254c52"
+    }
+  ],
+  "compiler": "not_run",
+  "native_pilot": "not_run",
+  "workspace_lock_changes": "root-only",
+  "whole_workspace_closure_proven": false,
+  "caller_candidates": [
+    {
+      "preimage_sha256": "98a7184508c8b56bd4b91c39fb2f1888d4596f53141c43e438095e9f815aa352",
+      "candidate_sha256": "f15ffed870a5daf900dae9f1e08d7f660514e91ab620ce2545c4fc6921ecf5e3",
+      "path": "scripts/ci/cef-pilot/src/provisioning.rs",
+      "raw_source_sha256": "98a7184508c8b56bd4b91c39fb2f1888d4596f53141c43e438095e9f815aa352",
+      "git_blob": "1f2abe321cdd38b13f52d3f0e94fa0e1cd953195",
+      "parent_candidate_sha256": "96a8c8651fffe1dd788442175a9c809b70eb0c2a3e6337d3e87c8f1fda73b598"
+    },
+    {
+      "preimage_sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9",
+      "candidate_sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9",
+      "path": "scripts/ci/cef-pilot/src/provisioning/bundles.rs",
+      "raw_source_sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9",
+      "git_blob": "e831ae07b752fc89a579916dd30abf0451df28f3",
+      "parent_candidate_sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9"
+    },
+    {
+      "preimage_sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527",
+      "candidate_sha256": "82926ce2f413aac0a210284e928f79d2df7e29a496bc6e4f2309fc4acafeb4d9",
+      "path": "scripts/ci/cef-pilot/src/main.rs",
+      "raw_source_sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527",
+      "git_blob": "7c9e462bcf7efdfc0327c4ecbe7b44613d183914",
+      "parent_candidate_sha256": "82926ce2f413aac0a210284e928f79d2df7e29a496bc6e4f2309fc4acafeb4d9"
+    },
+    {
+      "preimage_sha256": "c00e9b3896c7b78805d51aa6e30293c7747d514c4915b70856df2843da410fd7",
+      "candidate_sha256": "26f19cd174d4c0ea31955b40b604ca14fe5eb4d4cbf9113f5eaead27dfc7f2db",
+      "path": "scripts/ci/cef-pilot/src/desktop.rs",
+      "raw_source_sha256": "c00e9b3896c7b78805d51aa6e30293c7747d514c4915b70856df2843da410fd7",
+      "git_blob": "913247b4ab783b4d8229a22a1f3569899aa7aeb5",
+      "parent_candidate_sha256": "26f19cd174d4c0ea31955b40b604ca14fe5eb4d4cbf9113f5eaead27dfc7f2db"
+    },
+    {
+      "preimage_sha256": "f6411d81a108887f4458cb6eb25c3228a5baf9902ed21d06ee0b07b8c1941b98",
+      "candidate_sha256": "9106039de43265ab0381632397e84faa0f8dc572c97ebe58da5c7033ec31d29c",
+      "path": "scripts/ci/cef-pilot/src/diagnostics/tests.rs",
+      "raw_source_sha256": "f6411d81a108887f4458cb6eb25c3228a5baf9902ed21d06ee0b07b8c1941b98",
+      "git_blob": "2c96827647c686be4158e89b9b6dd6d03e4f2120",
+      "parent_candidate_sha256": "05032bc5252c519693e2c2030bdf823676977cdb539e504c4d9a6baab95683ce"
+    },
+    {
+      "preimage_sha256": "999bb9d4c60546167bf8d7bc2c0175e5976ea9ea38b42e0827dc7939e5c1cf84",
+      "candidate_sha256": "d11c7c1f2f0a6850a62417e77e6ddfa2a4e3a98f941df04c388a164db3d7ecbc",
+      "path": "scripts/ci/cef-pilot/src/diagnostics/bootstrap.rs",
+      "raw_source_sha256": "999bb9d4c60546167bf8d7bc2c0175e5976ea9ea38b42e0827dc7939e5c1cf84",
+      "git_blob": "0b77f8445c6be5d5663e894f22664d38ea633ad1",
+      "parent_candidate_sha256": "d11c7c1f2f0a6850a62417e77e6ddfa2a4e3a98f941df04c388a164db3d7ecbc"
+    },
+    {
+      "candidate_sha256": "89d7fc65bd0323d595ede3d10df72f8d8a7839fed005b2ebae43082f1d012f22",
+      "path": "scripts/ci/cef-pilot/src/diagnostics.rs",
+      "preimage_sha256": "dd158986a8f9c39f0864ad0d8fd1c3e2ac3c85d670321515d5c3a6d513252043",
+      "raw_source_sha256": "dd158986a8f9c39f0864ad0d8fd1c3e2ac3c85d670321515d5c3a6d513252043",
+      "git_blob": "b868a2fb1a8aa820ab00c621cac95e8a2e263100",
+      "parent_candidate_sha256": "89d7fc65bd0323d595ede3d10df72f8d8a7839fed005b2ebae43082f1d012f22"
+    }
+  ],
+  "patch_applicability": {
+    "callers": "passed-git-apply-check-original-callers",
+    "patch_applied": false,
+    "caller_delta": "passed-git-apply-check-immutable-d340-callers",
+    "source_delta": "passed-git-apply-check-immutable-d340-candidate",
+    "source": "passed-git-apply-check-corrected-relocated-originals"
+  },
+  "supersedes_candidate_commit": "d340d7a3176417feeabd06b69fee177b0506610a",
+  "delta_scope": "Relocate native Rust implementation under src/native; rewire source and contract includes only"
+}

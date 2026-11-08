@@ -38,6 +38,13 @@ files:
   - {path: three-to-one-rust.patch, sha256: 63b7389843398039a42eba37d0ef4d9f195dba7284a76cf3605c3482a5b7fb4c, bytes: 52547, store: repo}
   - {path: three-to-one-callers.patch, sha256: 88f05e831b3cc1f8ba252f1fbb3ec59a13660d0af486dd1e5d85b03582489a31, bytes: 11709, store: repo}
   - {path: three-to-one-integration.md, sha256: b4a18facfd2d3d6cb79e7bf503ec0b76555695d319252bd54a5a38e6f11591aa, bytes: 7288, store: repo}
+  - {path: src-native-source-map.json, sha256: 500c5fe17ebebb1712ef937cd6fafc4de12d1a12d48868e6413625ee56c73e8a, bytes: 38478, store: repo}
+  - {path: src-native-rust.patch, sha256: bbbdd3c7389b8f1286809a5959ebc00bdda87b1cbad9c4ce158ac781d956aab9, bytes: 54853, store: repo}
+  - {path: src-native-callers.patch, sha256: 4ea85167db12f882a0e58e607fcfc08644e1b3e693d2287260ff75d069ecc2d6, bytes: 11713, store: repo}
+  - {path: src-native-from-d340.patch, sha256: cdf1ce01a7fda1adf103ff8cb98052e70cc3943b800907c092eb17f9110a50cf, bytes: 10043, store: repo}
+  - {path: src-native-callers-from-d340.patch, sha256: 714a41f601a9c1703a3aaecd984e84682beb79dd7d7d527bb0fec26639c1ee56, bytes: 3428, store: repo}
+  - {path: src-native-static-check.json, sha256: cc341c4c2610a0ad7907da5eb1a8534106a6a275212488d7ea327b884ef2394f, bytes: 1923, store: repo}
+  - {path: src-native-delta.md, sha256: 7c63a7036683b7c2225b6153df728ce12589d47974c0206be272b1af50053880, bytes: 4425, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint

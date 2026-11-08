@@ -1,0 +1,156 @@
+diff --git a/crates/apps/humanymous-browser/src/lib.rs b/crates/apps/humanymous-browser/src/lib.rs
+index 47ec6152..d604b216 100644
+--- a/crates/apps/humanymous-browser/src/lib.rs
++++ b/crates/apps/humanymous-browser/src/lib.rs
+@@ -59,8 +59,8 @@ compile_error!("CEF bootstrap must not link the Meari UI");
+ compile_error!("CEF native roles currently support Windows only");
+ 
+ #[cfg(all(windows, feature = "cef-bootstrap"))]
+-#[path = "../native/bootstrap/src/lib.rs"]
++#[path = "native/bootstrap/mod.rs"]
+ mod bootstrap;
+ #[cfg(all(windows, feature = "cef-desktop"))]
+-#[path = "../native/desktop/src/lib.rs"]
++#[path = "native/desktop/mod.rs"]
+ mod desktop;
+\ No newline at end of file
+diff --git a/crates/apps/humanymous-browser/native/bootstrap/src/lib.rs b/crates/apps/humanymous-browser/src/native/bootstrap/mod.rs
+similarity index 99%
+rename from crates/apps/humanymous-browser/native/bootstrap/src/lib.rs
+rename to crates/apps/humanymous-browser/src/native/bootstrap/mod.rs
+index 790d14b8..30f65ac7 100644
+--- a/crates/apps/humanymous-browser/native/bootstrap/src/lib.rs
++++ b/crates/apps/humanymous-browser/src/native/bootstrap/mod.rs
+@@ -3,7 +3,7 @@
+ #![cfg(windows)]
+ #[cfg(all(test, feature = "native-pilot-tests"))]
+ mod negative_pilot;
+-#[path = "../../shared/scheme.rs"]
++#[path = "../shared/scheme.rs"]
+ mod owner_scheme;
+ mod renderer_probe;
+ /// Upstream bootstrapc.exe owns argc/argv and the sandbox pointer for this call.
+diff --git a/crates/apps/humanymous-browser/native/bootstrap/src/negative_pilot.rs b/crates/apps/humanymous-browser/src/native/bootstrap/negative_pilot.rs
+similarity index 99%
+rename from crates/apps/humanymous-browser/native/bootstrap/src/negative_pilot.rs
+rename to crates/apps/humanymous-browser/src/native/bootstrap/negative_pilot.rs
+index db204f68..3556f5e4 100644
+--- a/crates/apps/humanymous-browser/native/bootstrap/src/negative_pilot.rs
++++ b/crates/apps/humanymous-browser/src/native/bootstrap/negative_pilot.rs
+@@ -58,7 +58,7 @@ impl Default for Facts {
+     }
+ }
+ fn config() -> Value {
+-    let contract: Value = serde_json::from_str(include_str!("../../desktop/pilot-contract.json"))
++    let contract: Value = serde_json::from_str(include_str!("../../../native/desktop/pilot-contract.json"))
+         .expect("owned bootstrap contract required");
+     let value = contract["bootstrap_rejection"].clone();
+     assert_eq!(value["observation_schema"], 1);
+diff --git a/crates/apps/humanymous-browser/native/bootstrap/src/renderer_probe.rs b/crates/apps/humanymous-browser/src/native/bootstrap/renderer_probe.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/bootstrap/src/renderer_probe.rs
+rename to crates/apps/humanymous-browser/src/native/bootstrap/renderer_probe.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/browser_controls.rs b/crates/apps/humanymous-browser/src/native/desktop/browser_controls.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/browser_controls.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/browser_controls.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/child.rs b/crates/apps/humanymous-browser/src/native/desktop/child.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/child.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/child.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/fixture.rs b/crates/apps/humanymous-browser/src/native/desktop/fixture.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/fixture.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/fixture.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/history.rs b/crates/apps/humanymous-browser/src/native/desktop/history.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/history.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/history.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/host.rs b/crates/apps/humanymous-browser/src/native/desktop/host.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/host.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/host.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/host_deadline.rs b/crates/apps/humanymous-browser/src/native/desktop/host_deadline.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/host_deadline.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/host_deadline.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/host_report.rs b/crates/apps/humanymous-browser/src/native/desktop/host_report.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/host_report.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/host_report.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/internal_probe.rs b/crates/apps/humanymous-browser/src/native/desktop/internal_probe.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/internal_probe.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/internal_probe.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/local_page.rs b/crates/apps/humanymous-browser/src/native/desktop/local_page.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/local_page.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/local_page.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/measured_input.rs b/crates/apps/humanymous-browser/src/native/desktop/measured_input.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/measured_input.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/measured_input.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/lib.rs b/crates/apps/humanymous-browser/src/native/desktop/mod.rs
+similarity index 99%
+rename from crates/apps/humanymous-browser/native/desktop/src/lib.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/mod.rs
+index bc345d5e..f7f79d11 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/lib.rs
++++ b/crates/apps/humanymous-browser/src/native/desktop/mod.rs
+@@ -10,7 +10,7 @@ mod local_page;
+ mod measured_input;
+ mod native;
+ mod navigation;
+-#[path = "../../shared/scheme.rs"]
++#[path = "../shared/scheme.rs"]
+ mod owner_scheme;
+ #[cfg(test)]
+ mod pilot_assertions;
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/native.rs b/crates/apps/humanymous-browser/src/native/desktop/native.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/native.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/native.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/navigation.rs b/crates/apps/humanymous-browser/src/native/desktop/navigation.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/navigation.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/navigation.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs b/crates/apps/humanymous-browser/src/native/desktop/pilot_assertions.rs
+similarity index 99%
+rename from crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/pilot_assertions.rs
+index 925b112b..a3bf5ac5 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs
++++ b/crates/apps/humanymous-browser/src/native/desktop/pilot_assertions.rs
+@@ -198,7 +198,7 @@ pub(super) fn verify(
+     exit: Option<i32>,
+     case: Case,
+ ) -> Result<Summary, &'static str> {
+-    let contract: Value = serde_json::from_str(include_str!("../pilot-contract.json"))
++    let contract: Value = serde_json::from_str(include_str!("../../../native/desktop/pilot-contract.json"))
+         .map_err(|_| "native pilot contract invalid")?;
+     let label = match case {
+         Case::Positive => "positive",
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/pilot_process.rs b/crates/apps/humanymous-browser/src/native/desktop/pilot_process.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/pilot_process.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/pilot_process.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/shell_timings.rs b/crates/apps/humanymous-browser/src/native/desktop/shell_timings.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/shell_timings.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/shell_timings.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/tab_sessions.rs b/crates/apps/humanymous-browser/src/native/desktop/tab_sessions.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/tab_sessions.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/tab_sessions.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/tab_windows.rs b/crates/apps/humanymous-browser/src/native/desktop/tab_windows.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/tab_windows.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/tab_windows.rs
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/window_frame.rs b/crates/apps/humanymous-browser/src/native/desktop/window_frame.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/desktop/src/window_frame.rs
+rename to crates/apps/humanymous-browser/src/native/desktop/window_frame.rs
+diff --git a/crates/apps/humanymous-browser/native/shared/scheme.rs b/crates/apps/humanymous-browser/src/native/shared/scheme.rs
+similarity index 100%
+rename from crates/apps/humanymous-browser/native/shared/scheme.rs
+rename to crates/apps/humanymous-browser/src/native/shared/scheme.rs

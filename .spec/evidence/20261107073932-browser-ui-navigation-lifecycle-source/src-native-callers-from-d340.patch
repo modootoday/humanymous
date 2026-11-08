@@ -1,0 +1,62 @@
+diff --git a/scripts/ci/cef-pilot/src/diagnostics/tests.rs b/scripts/ci/cef-pilot/src/diagnostics/tests.rs
+index a8211439..6a493878 100644
+--- a/scripts/ci/cef-pilot/src/diagnostics/tests.rs
++++ b/scripts/ci/cef-pilot/src/diagnostics/tests.rs
+@@ -22,14 +22,14 @@ fn marker_bytes(records: &[Value]) -> Vec<u8> {
+         .into_bytes()
+ }
+ fn source() -> Value {
+-    json!({"files":{"crates/apps/humanymous-browser/native/bootstrap/src/lib.rs":"a"}})
++    json!({"files":{"crates/apps/humanymous-browser/src/native/bootstrap/mod.rs":"a"}})
+ }
+ fn message(file: &str) -> Value {
+     json!({"reason":"compiler-message","message":{"level":"error","code":{"code":"E0308"},"rendered":"PRIVATE_CANARY","message":"PRIVATE_CANARY","spans":[{"is_primary":true,"file_name":file,"line_start":9,"text":[{"text":"PRIVATE_CANARY"}]}]}})
+ }
+ #[test]
+ fn compiler_projection_keeps_only_codes_and_reviewed_locations() {
+-    let bytes = message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs").to_string();
++    let bytes = message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs").to_string();
+     let value = project(bytes.as_bytes(), &source(), Some(101), false);
+     assert_eq!(value["diagnostics"][0]["error_code"], "E0308");
+     assert_eq!(value["diagnostics"][0]["locations"][0]["line"], 9);
+@@ -67,7 +67,7 @@ fn long_and_excess_records_are_bounded_with_explicit_omissions() {
+     bytes.push(b'\n');
+     for _ in 0..70 {
+         bytes.extend(
+-            message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs")
++            message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs")
+                 .to_string()
+                 .bytes(),
+         );
+@@ -78,12 +78,12 @@ fn long_and_excess_records_are_bounded_with_explicit_omissions() {
+     assert_eq!(value["oversized_records"], 1);
+     assert_eq!(value["omitted_diagnostics"], 6);
+     assert_eq!(value["diagnostic_read_truncated"], true);
+-    let mut warning = message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs");
++    let mut warning = message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs");
+     warning["message"]["level"] = json!("warning");
+     let text = format!(
+         "{}{}",
+         format!("{warning}\n").repeat(64),
+-        message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs")
++        message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs")
+     );
+     let value = project(text.as_bytes(), &source(), Some(101), false);
+     assert_eq!(
+diff --git a/scripts/ci/cef-pilot/src/provisioning.rs b/scripts/ci/cef-pilot/src/provisioning.rs
+index 043d9620..a337ceac 100644
+--- a/scripts/ci/cef-pilot/src/provisioning.rs
++++ b/scripts/ci/cef-pilot/src/provisioning.rs
+@@ -98,9 +98,9 @@ pub(super) fn source_snapshot() -> io::Result<Value> {
+         files.insert(file.to_owned(), digest(Path::new(file))?);
+     }
+     for directory in [
+-        "crates/apps/humanymous-browser/native/bootstrap/src",
+-        "crates/apps/humanymous-browser/native/desktop/src",
+-        "crates/apps/humanymous-browser/native/shared",
++        "crates/apps/humanymous-browser/src/native/bootstrap",
++        "crates/apps/humanymous-browser/src/native/desktop",
++        "crates/apps/humanymous-browser/src/native/shared",
+         "crates/apps/humanymous-browser/src",
+         "crates/integrations/humanymous-platform/src",
+         "scripts/ci/cef-pilot/src",

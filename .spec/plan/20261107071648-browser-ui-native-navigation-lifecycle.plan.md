@@ -566,3 +566,17 @@ rebase, contract replica provenance, Delivery triggers and coherent validation.
 No historical pilot qualifies this composition; unfinished CEF/UI/pilot and
 Core/Gate demo contracts remain open. Full application order and limitations are
 in the attached integration contract. No compiler/native/browser run occurred.
+
+
+## Explicit d340 standard-context correction
+
+Root found native Rust implementations outside package src in the initial
+d340 candidate. src-native-delta.md and its full map, four applicable patches
+and static receipt supersede only proposed layout/composition/include paths.
+All49 original Browser records/47destinations/7callers retain their preimages;
+42 Rust files now reside under src, with one shared scheme source and10checked
+literal include targets. Original d340 fullcandidate/patch/map/pins are immutable.
+Root may choose a fresh corrected-map application or exact-d340 delta route,
+never both. Runtime/ABI/unsafe/test identities, contract counts, feature roles,
+sandbox and model API are unchanged. No source/compiler/native/tool execution
+grant follows. Root owns final graph/Tools assembly and all unexecuted gates.
