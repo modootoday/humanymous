@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 778111905933d067b29ce5e091599ab8bd915a3348c6b7b21356a6ea82edff51, bytes: 124141, store: repo}
+  - {path: baseline.json, sha256: 0f26db24a0fd37fdcc2af8ea1e3a92f4c459f7eefe53269cc93a5d3bb22cacd7, bytes: 125670, store: repo}
 ---
 
 # Convention audit baseline
@@ -2126,3 +2126,44 @@ follow-up verifies and retains all17 indexed raw hashes/sizes and31official ZIP
 entries; complete product/preflight ZIP logs are byte-identical to the audit's
 fresh API downloads. This closes that receipt durability join only. It adds no
 test pass or product qualification; CA-REFERER-WIRE-01 remains OPEN.
+### Referer-v2 predicate source repair; actual privacy gates remain
+
+Independent review of5e8c8558 retains all five immutable committed file blobs.
+Producer classifies a present Referer as root only by exact trusted-fixture
+origin plus slash; all other values enter other. Eight fixed labels initialize
+to zero and increments check overflow; no raw URL enters receipts. Both B/G
+consumers require all four u64 counters, a positive checked fixture denominator,
+absent+present=total, root+other=present and other=0. Thus only complete
+absence/root mixtures qualify under explicit accepted SoTv2. Missing, malformed,
+overflow and inconsistent/foreign observations fail closed. Origin is unchanged.
+
+Source-predicate repair is CLOSED at scoped source level; CA-REFERER-WIRE-01 as a
+whole stays OPEN. Duplicate headers already fail case-insensitively in request
+parsing before first-header lookup/classification; no duplicate-bypass finding
+is asserted. Preserve and exercise that existing refusal. New authored consumer
+and producer negatives are meaningful, but source assertions are not actual
+Unix or browser evidence. Owner-reported5Windows wire passes/41filtered are not
+yet independently raw-qualified; separate Windows runtime filter selects0 and
+does not test the Unix producer. Required next gates remain actual Unix producer
+checks, sensitive document path/query/fragment browser control, reviewed
+source-pin updates and fresh isolated Docker product execution. No scoring,
+Runtime authentication fallback or full-product qualification changed.
+3137c905 adds the actual selected-test sensitive document control. Source review
+confirms history/state/href captured before mutation, exact owned path/query/
+fragment checked before bootstrap and retained through requests, explicit
+successful restore at the end and best-effort Drop only on early failure. No
+production request/scoring/public API changes occur. Pin abbc8bad/6571bytes and
+all33 line needles reproduce; new setup/cleanup failures remain unrefined. Owner
+WASM/parser/required-checkout claims await independent raw review. The initial
+short exact selector ran0 and is not coverage; corrected1 is a separate claim.
+Actual sensitive-browser/Unix/Docker qualification is still pending.
+
+5f43c219's eight DATA replicas independently match producer Git bytes, SHA256,
+size and commit/blob identities; all provenance working-OID observations match.
+Two producer working files match Git. Six Core L10-L15 working files differ by
+CRLF (analysis-only CR removal reproduces Git); their canonical replicas stay LF.
+First copy failure and this view distinction are retained. No producer was
+modified or normalized by audit. Canonical-Git preparation is accepted only at
+that scope: raw working/Git/replica equality cannot pass those six current files.
+Consumer rewiring, explicit equality gates and extracted package checks remain
+OPEN; no automatic pin refresh or silent normalization waiver is authorized.

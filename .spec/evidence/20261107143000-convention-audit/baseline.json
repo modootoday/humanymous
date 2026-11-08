@@ -2247,5 +2247,35 @@
     "raw": "17hashsize0issues;31ZIPentries;product/preflightbyteexactfresh",
     "result": "Samefailure;no additional test/product qualification",
     "goal_complete": false
+  },
+  "referer_v2_source_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/referer-v2-source-review-001.json",
+        "sha256": "31d0679830081548c1e931cf7bfd11705ebff15b741599b15fd7f067135ecec6",
+        "bytes": 3011
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/referer-duplicate-guard-prefixed-baseline-001.json",
+        "sha256": "3ec9f1ccc4e5ec8c280bdc645102bfc05145d8dde1d1b4efad4f1d38e6072037",
+        "bytes": 2139
+      }
+    ],
+    "source": "5e8c855876409cbac9a18395a311cfaa5f807927",
+    "source_predicate": "CLOSED scoped repair;exactrootorabsence partition withzeroother/all4required",
+    "actual": "Owner5Windowspassesnotindependentlyrawverified;0Windowsproducerselectedisnotproof",
+    "remaining": "Unixproducer/sensitiveactualbrowser/sourcepins/newDocker;findingwholeOPEN",
+    "goal_complete": false
+  },
+  "sensitive_document_and_data_source_review": {
+    "evidence": {
+      "path": ".spec.local/root/evidence/20261107143000-convention-audit/sensitive-document-and-data-source-review-001.json",
+      "sha256": "c733e6cd8e1cb0a4bcca2662bb7d2c575c2f3d0ef2698cc47911b8019d9e301a",
+      "bytes": 6931
+    },
+    "source": "3137sensitivehistory+6571B/33pin exact;no newsourceblocker",
+    "DATA": "5f43eightreplicas exactcanonicalGit;6Core rawworkingCRLFdifferences retained",
+    "actual": "Notindependentlyrawqualified;privacywholeOPEN;zeroexactselectionnotcoverage",
+    "goal_complete": false
   }
 }
