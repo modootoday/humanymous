@@ -185,6 +185,13 @@
       "result": "bootstrap_origin_browser_proxy_null",
       "facts": "Preflight Lab40/Delivery121/GNUproducer3passed6filtered/Go10+1/facade2+2+2/Unixcheck/Clippy/policy passed. Actual Docker actor observed67/1/66matched;18assertions16pass2fail, B-only null Origin diagnostic. No G/Runtime header attestation, full/releasefalse,9requiredunavailable.",
       "evidence": "hosted-browser-5d68cd39-null-origin.json"
+    },
+    {
+      "source": "f8aec28651919e97ef924afa8d633e3c4df38805",
+      "profile": "source_pin_windows_checks",
+      "result": "passed_after_explicit_harness_env_correction",
+      "facts": "Inventory45;default44passed1ignored;separate requiredactualsource1passed44filtered. Scopedfmt/check/strictClippy exit0. Retains originalnoncanonicalroot0passed1failed44filtered and priorfmtmodulefailure. 14964inputs3158Gitarchive+11806registry0decodedchanges; noUnix/browser/Docker/fullqualification.",
+      "evidence": "source-pin-f8aec286-windows-checks.json"
     }
   ],
   "unmeasured": [

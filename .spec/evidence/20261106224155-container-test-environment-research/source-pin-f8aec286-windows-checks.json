@@ -1,0 +1,425 @@
+{
+  "schema": 1,
+  "source": "f8aec28651919e97ef924afa8d633e3c4df38805",
+  "venue": "Windows x86_64 MSVC local allocated component/source checks",
+  "private_evidence": "evidence:root/20261108002416",
+  "terminal": {
+    "schema": 1,
+    "source": "f8aec28651919e97ef924afa8d633e3c4df38805",
+    "attempt": 3,
+    "main_handle": 21108,
+    "main_initial_exit": 1,
+    "canonical_continuation_handle": 46519,
+    "canonical_continuation_exit": 0,
+    "started_tick": 1228610578,
+    "original_work_deadline_tick": 1229000578,
+    "original_total_deadline_tick": 1229060578,
+    "corrected_env_started_tick": 1228972765,
+    "continuation_admitted_at_elapsed_ms": 362187,
+    "terminal_after_hash_elapsed_ms": 385515,
+    "work_limit_ms": 390000,
+    "total_limit_ms": 450000,
+    "new_90_150_slot": "not admitted; cancelled by Root after message ordering resolved",
+    "first_fmt": {
+      "source": "4ea11a34a67126b4a37057d465ce927d6ef1bf35",
+      "exit": 1,
+      "cause": "nested tests module resolution",
+      "correction_commit": "c900b193"
+    },
+    "second_attempt": "c06b6e1722495afa719d36f658fb862b5f0227da scoped formatting only;4owned paths; no tests",
+    "final_source_format_commit": "f8aec28651919e97ef924afa8d633e3c4df38805",
+    "fmt_exit": 0,
+    "inventory": 45,
+    "default": {
+      "passed": 44,
+      "failed": 0,
+      "ignored": 1,
+      "filtered": 0
+    },
+    "required_initial": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0,
+      "filtered": 44,
+      "exit": 101,
+      "cause": "noncanonical explicit harness source root"
+    },
+    "required_canonical": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 44,
+      "exit": 0
+    },
+    "check_exit": 0,
+    "clippy_exit": 0,
+    "input_files": 14964,
+    "archive_files": 3158,
+    "registry_files": 11806,
+    "decoded_input_difference_records": 0,
+    "invalid_inline_comparison_rows": 29928,
+    "invalid_comparison_cause": "Compared deserialized PS objects with OrderedDictionary; null-property rows. Original retained; both saved snapshots decoded into equal types then compared path/bytes/SHA.",
+    "selected_packages": 175,
+    "tool_hashes_before_initial_compile": false,
+    "tool_hashes_before_canonical_continuation": true,
+    "tool_and_config_difference_records": 0,
+    "source_prefix_authenticated": false,
+    "compiler_source_byte_effect_proof": false,
+    "full_os_custody": false,
+    "browser_or_docker_run": false,
+    "full_product_qualified": false,
+    "lease_returned": true,
+    "active_processes": 0
+  },
+  "raw_files": [
+    {
+      "path": "attachment-limits.json",
+      "bytes": 1420,
+      "sha256": "3c3910368aab8d52f1eabdde5bb56c65b18c1c5820618cb3437d3878f509c336",
+      "registered": true
+    },
+    {
+      "path": "epoch-terminal-canonical-continuation.json",
+      "bytes": 2211,
+      "sha256": "89c52e231330a9b399e86643705b14ffc4a584097b6abc2e385606a93962e7b8",
+      "registered": true
+    },
+    {
+      "path": "epoch-terminal.json",
+      "bytes": 1112,
+      "sha256": "6f9d45d8638f887382bb424d15faebbe992a6199fa2b7ab9d86be2217cc88097",
+      "registered": true
+    },
+    {
+      "path": "epoch.json",
+      "bytes": 1009,
+      "sha256": "52c86ffa7c74a1f5444c02dc3cd3281e61b574251ee4e2311ffad55f67833439",
+      "registered": true
+    },
+    {
+      "path": "attempt-01/active-process.json",
+      "bytes": 161,
+      "sha256": "a6e15ad7cf667fd5f7d2c9b07beacaf33ef529bd6b8c8c81f8a9eee107ca0b24",
+      "registered": true
+    },
+    {
+      "path": "attempt-01/fmt.result.json",
+      "bytes": 272,
+      "sha256": "832118c06573c3d42ca7dfab537385763305b3d379488e42b7373428da2e4808",
+      "registered": true
+    },
+    {
+      "path": "attempt-01/fmt.stderr.log",
+      "bytes": 187,
+      "sha256": "91f448d6a44333e14affa16d7e6941d2c2998df7b08aca28b1631ab2e0c02997",
+      "registered": true
+    },
+    {
+      "path": "attempt-01/fmt.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-01/source.zip",
+      "bytes": 8976787,
+      "sha256": "791aa117a4594793dfa776d36e3f4dfb432f3e08994d0929a657e2de8709442d",
+      "registered": false
+    },
+    {
+      "path": "attempt-02/active-process.json",
+      "bytes": 167,
+      "sha256": "72c707bf0a7fc729ba090ed080cc8e2a3f32b71812ae1727f18a54ae3f737247",
+      "registered": true
+    },
+    {
+      "path": "attempt-02/fmt-apply.result.json",
+      "bytes": 251,
+      "sha256": "a0f2f7c704255f426a329acf8819b3a1c879747644e6d67f81fa00b48787961b",
+      "registered": true
+    },
+    {
+      "path": "attempt-02/fmt-apply.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-02/fmt-apply.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-02/fmt-changes.json",
+      "bytes": 980,
+      "sha256": "411bcf91d1c9aa29c399b604dd259aefa79ce14b3ead4443dd46bb1637c5496c",
+      "registered": true
+    },
+    {
+      "path": "attempt-02/source.zip",
+      "bytes": 8981970,
+      "sha256": "83dfea4a849bcc6efc6759c55cf632ba0f9b61112634baa69962d92456bd8808",
+      "registered": false
+    },
+    {
+      "path": "attempt-03/active-process.json",
+      "bytes": 164,
+      "sha256": "cc558c194ceb197f1db287f5e8bdddfd33941eb53889e1290b55f0404022b004",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/canonical-env-correction.json",
+      "bytes": 456,
+      "sha256": "4f276aa42ed90ce2aa735cce472dcc1360b094bda12490633200a6a4d482f4dc",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/cargo-version-before.result.json",
+      "bytes": 219,
+      "sha256": "4be265f947af82981ba8a95f0f938f44136b3fd426dd3aaa064c18baf2fb63b1",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/cargo-version-before.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/cargo-version-before.stdout.log",
+      "bytes": 36,
+      "sha256": "c35608815f43d0b8788a9b826fad2bb17384f49fb328dc4fe64da9db5f5ef4d6",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/check.result.json",
+      "bytes": 301,
+      "sha256": "baf2e4183d6a6c23c9be51fad9013d26ec9c6543eb1b1591b9b191c5ed725af5",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/check.stderr.log",
+      "bytes": 2578,
+      "sha256": "a1d15c17903bd4520a9cd86fb6ea3bed3051cd823b51192fc8d2e209bca1e632",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/check.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/clippy.result.json",
+      "bytes": 341,
+      "sha256": "815ee09d3066342375ffa5049c0be359bc533ca0e5978d2c54a96bf2f8b0aec0",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/clippy.stderr.log",
+      "bytes": 698,
+      "sha256": "a58f4d1c244eacb15ba4f210ccf04df0e62b5ec68677e8612c8b9e0e80ec381b",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/clippy.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/fmt.result.json",
+      "bytes": 272,
+      "sha256": "1a0a7de492738b656370a4370006587daf2552b4cddf6d01275cdbee7eff7c6f",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/fmt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/fmt.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/git-archive-input-join.json",
+      "bytes": 428,
+      "sha256": "b6236bd820eeeaaac0ada0e9b50e06c0030c276e7438d145986befa7cb7c0a79",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/input-differences-canonical-decoded.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/input-differences-canonical.json",
+      "bytes": 5819987,
+      "sha256": "0fcf76539d4a82b56620ea5b7875341fb25d51b2f8c2a57e5d8555e64a390aa5",
+      "registered": false
+    },
+    {
+      "path": "attempt-03/input-differences.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/inputs-after-canonical.json",
+      "bytes": 3934523,
+      "sha256": "86c54b6356bf833712475b9219b751447ff01f0dc8b9cb854fcec4db5e674c47",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/inputs-after.json",
+      "bytes": 3934523,
+      "sha256": "86c54b6356bf833712475b9219b751447ff01f0dc8b9cb854fcec4db5e674c47",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/inputs-before.json",
+      "bytes": 3934523,
+      "sha256": "86c54b6356bf833712475b9219b751447ff01f0dc8b9cb854fcec4db5e674c47",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/inventory.result.json",
+      "bytes": 352,
+      "sha256": "0be7d87e6c373164fd2e4deab6b0e7ea8e061b1d196e26e758dc8d5661274684",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/inventory.stderr.log",
+      "bytes": 3041,
+      "sha256": "0c62ea8faba17e0c78a6b8a4460957e4d3d353f7a01054d3e3aa97cc4b1eba7e",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/inventory.stdout.log",
+      "bytes": 4473,
+      "sha256": "fdb910c3d3f92b3744e13de933d2a44791ec23e32a0b8622460a9a1c3509799a",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/metadata.result.json",
+      "bytes": 277,
+      "sha256": "57a9328ede51c7ad7d40c3aa1432cd476c15aa4a60c84bb49079c0089f50c810",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/metadata.stdout.log",
+      "bytes": 3087955,
+      "sha256": "b4f1ceb30f1afd8131bfa6fbb3c72fe6cd87e334b6e2e312d105281064090445",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/required-source-canonical.result.json",
+      "bytes": 492,
+      "sha256": "efca4faa5633f3a80ca7548c007eb31013038131b2d244bfcb980c902f855687",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/required-source-canonical.stderr.log",
+      "bytes": 214,
+      "sha256": "82df530fb7587e3ecb0806070ab355402ca3173a08e3e94d9899ec99fd8ed901",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/required-source-canonical.stdout.log",
+      "bytes": 199,
+      "sha256": "70e8c7dbb56461efa2276c38634738e23320d884de9944d6397e491211f40b56",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/required-source.result.json",
+      "bytes": 484,
+      "sha256": "16a71f7922cf548ba02c32cfa3aeb13e185fc4e36751f67bc8ac0fb29a82a403",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/required-source.stderr.log",
+      "bytes": 303,
+      "sha256": "d9517429e9690c8745091ae62619f472923d3d82531a2773ee64227ff385c5a0",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/required-source.stdout.log",
+      "bytes": 700,
+      "sha256": "8e0a6ff2c93a91142deb7991ab33f8ba6501642286066a924ae5022824f46c13",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/selected-packages.json",
+      "bytes": 61692,
+      "sha256": "34b1985b912726f8b121f1b3db00018b179dcdf43af3ded840fe66b680c9185a",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/source.zip",
+      "bytes": 8983376,
+      "sha256": "02a0cc54dcedbf75ad9d1764d35d2ecc32dd8df551d516e7b7d3efbe624d949a",
+      "registered": false
+    },
+    {
+      "path": "attempt-03/test.result.json",
+      "bytes": 355,
+      "sha256": "5a78d705c676d93772e84970eb1bfffd640eed9731f7db1a532ef43cf9ef5f08",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/test.stderr.log",
+      "bytes": 214,
+      "sha256": "82df530fb7587e3ecb0806070ab355402ca3173a08e3e94d9899ec99fd8ed901",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/test.stdout.log",
+      "bytes": 4909,
+      "sha256": "78c174e2004fe6d2907b5439133d751b200c0bb01b7be40420fbcb2503d26428",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/tool-config-env-scope.json",
+      "bytes": 2720,
+      "sha256": "93c4f10945df66dde032e1ffd90d85566ddaf2203f9e022f0ce1c1761817ad0e",
+      "registered": true
+    },
+    {
+      "path": "attempt-03/tools-after-canonical.json",
+      "bytes": 1774,
+      "sha256": "0c9bf9d82ac8354e672f349b65bab5f432f1039ffee852efd9874c7d66811c71",
+      "registered": true
+    }
+  ],
+  "independent_audit": {
+    "owner": "CI",
+    "method": "read-only existing original logs and parsed snapshot comparison, no new execution",
+    "required_source_passed": 1,
+    "required_source_filtered": 44,
+    "check_exit": 0,
+    "strict_clippy_exit": 0,
+    "input_files": 14964,
+    "input_difference_records": 0,
+    "pass_stdout_sha256": "70e8c7dbb56461efa2276c38634738e23320d884de9944d6397e491211f40b56"
+  },
+  "limitations": [
+    "No Unix conditional source-pin symlink test executed on Windows.",
+    "No Docker/browser/effect or full-product qualification.",
+    "Original default compilation lacked before tool-binary hashes; tool hashes captured between the failed and corrected source gate and after corrected checks compare equal. No full OS/compiler-read custody claim.",
+    "Old failing canonical-root invocation and first module-resolution failure remain retained failures; no source or assertion was changed for the one authorized environment correction.",
+    "Three Git archives and the invalid mixed-type comparison artifact exceed the attachment cap, remain raw private with hashes, and were not split.",
+    "Tools namespace/move and package archive qualification require their own source-bound gates."
+  ]
+}
