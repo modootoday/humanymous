@@ -109,5 +109,7 @@ product green. No detection-score edits.
 Full loader/distribution, cookie/streaming profiles, complete-guard browser
 authorize measurement, hosted browser-product requal (dispatch currently null),
 and matrix G2/`required_unavailable` clearance remain open. Next coordinator
-gap after this Cap=1 recording: G4 (AT/CEF; blocked_claim) with W2/G1 hosted H2
-product binding still residual. Detection freeze.
+gap after this Cap=1 recording: G4 (AT/CEF) recorded **`blocked_claim`**
+(`G4-ROOT-ASK.md`); W2/G1 hosted H2 product binding residual also Root-blocked
+(N06; `W2-H2-PRODUCT-BINDING-ROOT-ASK.md`). Cap burn=0 on that turn; product=0.
+Detection freeze.
