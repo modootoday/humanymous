@@ -3,7 +3,7 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-07T23:59:27Z
+updated: 2026-11-08T00:00:38Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
@@ -16,7 +16,7 @@ files:
   - {path: tools-input-dispositions-accepted.json, sha256: ffeea085f2e4bd9097650d286551aacf1a81d6eda53e948e418fcbc1c312bcdb, bytes: 131634, store: repo}
   - {path: tools-linkage-map.json, sha256: 002de30ae539aa5d08f1fa82acdb5a5d0cda9fe5538b12816fa2efe1a74665fa, bytes: 93370, store: repo}
   - {path: legacy-lib-unit-map.json, sha256: 611e0a90ff1c2e9fd65b854b1062c7da4b4c10a5a38740e9d65255972423fee0, bytes: 459793, store: repo}
-  - {path: legacy-bin-unit-map.json, sha256: 9a4e64f93457c67c6af3c8c423ee41a3db417f5b2edccf3b02a26b3b384112ed, bytes: 425911, store: repo}
+  - {path: legacy-bin-unit-map.json, sha256: edb7f9b1f495b613000e226448101d59c053505c10aef40148534cfca326fdc9, bytes: 428439, store: repo}
 ---
 
 ## Mission and current ownership

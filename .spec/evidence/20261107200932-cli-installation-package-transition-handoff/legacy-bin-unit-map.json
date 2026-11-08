@@ -14,8 +14,9 @@
       "visited_module_instances": 30,
       "lexical_bin_case_collections": 61,
       "new_private_command_prefix": "native_runner",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-native-runner --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline --manifest-path scripts/ci/windows-native-runner/Cargo.toml --bin humanymous-native-runner --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-native-runner --all-features -- --list"
     },
     {
       "old_package": "humanymous-cef-pilot",
@@ -24,8 +25,9 @@
       "visited_module_instances": 8,
       "lexical_bin_case_collections": 14,
       "new_private_command_prefix": "cef_pilot",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-cef-pilot --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline --manifest-path scripts/ci/cef-pilot/Cargo.toml --bin humanymous-cef-pilot --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-cef-pilot --all-features -- --list"
     },
     {
       "old_package": "humanymous-runtime-pilot",
@@ -34,8 +36,9 @@
       "visited_module_instances": 25,
       "lexical_bin_case_collections": 9,
       "new_private_command_prefix": "runtime_pilot",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-runtime-pilot --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-runtime-pilot --bin humanymous-runtime-pilot --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-runtime-pilot --all-features -- --list"
     },
     {
       "old_package": "humanymous-lab-runner",
@@ -44,8 +47,9 @@
       "visited_module_instances": 29,
       "lexical_bin_case_collections": 40,
       "new_private_command_prefix": "lab_runner",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-lab-runner --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-lab-runner --bin humanymous-lab-runner --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-lab-runner --all-features -- --list"
     },
     {
       "old_package": "humanymous-pages",
@@ -54,8 +58,9 @@
       "visited_module_instances": 2,
       "lexical_bin_case_collections": 1,
       "new_private_command_prefix": "pages",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-pages --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-pages --bin humanymous-pages --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-pages --all-features -- --list"
     },
     {
       "old_package": "humanymous-delivery",
@@ -64,8 +69,9 @@
       "visited_module_instances": 47,
       "lexical_bin_case_collections": 121,
       "new_private_command_prefix": "delivery",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-delivery --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-delivery --bin humanymous-delivery --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-delivery --all-features -- --list"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -74,8 +80,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 0,
       "new_private_command_prefix": "maintenance",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-agent-maintenance --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-agent-maintenance --bin humanymous-agent-maintenance --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-agent-maintenance --all-features -- --list"
     },
     {
       "old_package": "humanymous-cli",
@@ -84,8 +91,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 0,
       "new_private_command_prefix": "service_fixture",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-service-fixture --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-service-fixture --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-service-fixture --all-features -- --list"
     },
     {
       "old_package": "humanymous-cli",
@@ -94,8 +102,9 @@
       "visited_module_instances": 2,
       "lexical_bin_case_collections": 1,
       "new_private_command_prefix": "",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous --all-features -- --list"
     },
     {
       "old_package": "humanymous-docs-review",
@@ -104,8 +113,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 8,
       "new_private_command_prefix": "docs_review",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-docs-review --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline --manifest-path scripts/ci/docs-review/Cargo.toml --bin humanymous-docs-review --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-docs-review --all-features -- --list"
     },
     {
       "old_package": "humanymous-native-cli",
@@ -114,8 +124,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 0,
       "new_private_command_prefix": "native",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-native --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-native-cli --bin humanymous-native --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-native --all-features -- --list"
     },
     {
       "old_package": "humanymous-attacker",
@@ -124,8 +135,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 1,
       "new_private_command_prefix": "report_command",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-report --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-attacker --bin humanymous-report --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-report --all-features -- --list"
     },
     {
       "old_package": "humanymous-attacker",
@@ -134,8 +146,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 1,
       "new_private_command_prefix": "attacker_command",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-attacker --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-attacker --bin humanymous-attacker --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-attacker --all-features -- --list"
     },
     {
       "old_package": "humanymous-attacker",
@@ -144,8 +157,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 1,
       "new_private_command_prefix": "wargame_verify_command",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-wargame-verify --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline -p humanymous-attacker --bin humanymous-wargame-verify --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-wargame-verify --all-features -- --list"
     },
     {
       "old_package": "humanymous-local-parity",
@@ -154,8 +168,9 @@
       "visited_module_instances": 1,
       "lexical_bin_case_collections": 1,
       "new_private_command_prefix": "local_parity",
-      "list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-local-parity --all-features -- --list",
-      "execution": "NOT_ALLOCATED_NOT_EXECUTED"
+      "execution": "NOT_ALLOCATED_NOT_EXECUTED",
+      "old_graph_list_command": "cargo test --locked --offline --manifest-path scripts/ci/local-parity/Cargo.toml --bin humanymous-local-parity --all-features -- --list",
+      "new_graph_list_command": "cargo test --locked --offline -p humanymous-cli --bin humanymous-local-parity --all-features -- --list"
     }
   ],
   "cases": [
@@ -8079,5 +8094,6 @@
     "source_receipt": "evidence:root/20261107235307",
     "bin_semantic_discovery": false,
     "bin_tests_executed": 0
-  }
+  },
+  "discovery_plan_status": "OLD15BIN and NEW15BIN commands explicit but both NOT_ALLOCATED_NOT_EXECUTED; only separate old6LIB grant completed"
 }
