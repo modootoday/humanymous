@@ -118,6 +118,13 @@ Private pack: `cap-ready/authority-node-ipc/`.
 `cap-ready/authority-node-ipc/candidate-pack/` (`TRANSFER.md`,
 `transfer-manifest.json`, `candidate/**`, `patches/`, `notes/`).
 
+**Lab-runner transfer helper (Cursor P0 prep; Cap burn separate):**  
+`humanymous-lab-runner transfer-probe --manifest …/transfer-manifest.json`  
+verifies live preimages + candidate digests fail-closed.  
+`transfer-apply --manifest … --grant GRANT.json` applies only with Root grant
+schema `humanymous.cursor-unlock-c-transfer-grant/1`. Never invents
+`pass_product_clean_room`.
+
 Exact Root paths (from TRANSFER):
 
 - `deployments/lab/INTEGRATION.md` (host-exec forbid; Cap Docker authorize)

@@ -14,6 +14,9 @@ mod mount_policy;
 mod orchestration;
 mod provider;
 mod snapshot;
+mod transfer_applicator;
+mod transfer_preimage;
+mod unlock_gate;
 
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
@@ -25,7 +28,17 @@ fn main() {
         Some("cleanup") => orchestration::cleanup_expired().map(|()| 0),
         Some("audit") => audit::run(&args[1..]),
         Some("matrix-plan") => clean_room_matrix::plan(&args[1..]),
-        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe | --authority-node-ipc] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH]".into()),
+        Some("transfer-probe") => transfer_applicator::run(&args[1..]),
+        Some("transfer-apply") => {
+            let mut rest = args[1..].to_vec();
+            if !rest.iter().any(|arg| arg == "--apply") {
+                rest.push("--apply".into());
+            }
+            transfer_applicator::run(&rest)
+        }
+        Some("transfer-verify") => transfer_preimage::verify(&args[1..]),
+        Some("unlock-probe") => unlock_gate::probe(&args[1..]),
+        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe | --authority-node-ipc] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH] | transfer-probe --manifest PATH [--workspace PATH] [--emit PATH] | transfer-apply --manifest PATH --grant PATH [--workspace PATH] [--dry-run] [--emit PATH] | transfer-verify --manifest PATH [--root PATH] [--emit PATH] [--expect-applied] | unlock-probe [--manifest PATH] [--root PATH] [--emit PATH]".into()),
     };
     match result {
         Ok(code) => std::process::exit(code),
