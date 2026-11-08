@@ -3,9 +3,9 @@ id: evidence:root/20261108034133
 title: Program status B1 and CEF artifact component checkpoints
 status: active
 created: 2026-11-08T03:41:33Z
-updated: 2026-11-08T03:42:59Z
+updated: 2026-11-08T03:49:06Z
 files:
-  - {path: data/program-status-b1-cef-component-summary.json, sha256: 68e62dda9606230677257503e2785c527cf642dbf5dd5c30a391347b279db479, bytes: 2773, store: repo}
+  - {path: data/program-status-b1-cef-component-summary.json, sha256: 4a21c64757fc150ddc75b585eaa1b5ff7f1481e5039e297413a2988c55a9cc94, bytes: 2714, store: repo}
 ---
 
 # Program status B1 and CEF artifact component checkpoints
