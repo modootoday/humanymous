@@ -52,6 +52,7 @@ pub(crate) mod g4_cef_at;
 mod go;
 mod go_fixture;
 mod go_public;
+pub(crate) mod cap0_product_honesty;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
 mod public_receipts;
@@ -73,6 +74,8 @@ struct Lab {
     w2_h2_product_binding: bool,
     w2_h2_hosted_venue: bool,
     n06_owner_join_readiness: bool,
+    g2_collector_product_binding_readiness: bool,
+    g5_witness_transport_honesty: bool,
     g4_cef_at: bool,
     go_component_verified: bool,
     stage: &'static str,
@@ -140,6 +143,18 @@ impl Lab {
             // Owner-join readiness is receipt/auth gate only; no Docker Cap burn.
             return Err(
                 "n06-owner-join-readiness Cap has no Docker compose topology; Cap=0 readiness/auth handoff only; never invent pass_product_clean_room or Root ownership tokens"
+                    .into(),
+            );
+        }
+        if self.g2_collector_product_binding_readiness {
+            return Err(
+                "g2-collector-product-binding-readiness Cap has no Docker compose topology; Cap=0 honesty only; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+        if self.g5_witness_transport_honesty {
+            return Err(
+                "g5-witness-transport-honesty Cap has no Docker compose topology; Cap=0 honesty only; never invent authenticated witness transport product"
                     .into(),
             );
         }
@@ -316,6 +331,12 @@ impl Lab {
         }
         if self.n06_owner_join_readiness {
             return h2_product_binding::run_n06_owner_join_readiness(self);
+        }
+        if self.g2_collector_product_binding_readiness {
+            return cap0_product_honesty::run_g2_collector_product_binding_readiness(self);
+        }
+        if self.g5_witness_transport_honesty {
+            return cap0_product_honesty::run_g5_witness_transport_honesty(self);
         }
         if self.g4_cef_at {
             return g4_cef_at::run(self);
@@ -599,7 +620,11 @@ impl Lab {
         // Host-only Caps never open compose topology; still recheck Desktop
         // engine affinity (HUMANYMOUS_DOCKER_DESKTOP_BASELINE) then prove the
         // owned project left no Docker resources. Never invent compose down.
-        if self.g4_cef_at || self.n06_owner_join_readiness {
+        if self.g4_cef_at
+            || self.n06_owner_join_readiness
+            || self.g2_collector_product_binding_readiness
+            || self.g5_witness_transport_honesty
+        {
             self.docker.recheck_engine()?;
             let filter = format!("label=com.docker.compose.project={}", self.project);
             let containers = self.docker.call(&["ps", "-aq", "--filter", &filter])?;
@@ -652,6 +677,8 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut w2_h2_product_binding = false;
     let mut w2_h2_hosted_venue = false;
     let mut n06_owner_join_readiness = false;
+    let mut g2_collector_product_binding_readiness = false;
+    let mut g5_witness_transport_honesty = false;
     let mut g4_cef_at = false;
     let mut full = false;
     let mut require_go_component = false;
@@ -673,6 +700,10 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--w2-h2-product-binding" => w2_h2_product_binding = true,
             "--w2-h2-hosted-venue" => w2_h2_hosted_venue = true,
             "--n06-owner-join-readiness" => n06_owner_join_readiness = true,
+            "--g2-collector-product-binding-readiness" => {
+                g2_collector_product_binding_readiness = true
+            }
+            "--g5-witness-transport-honesty" => g5_witness_transport_honesty = true,
             "--g4-cef-at" => g4_cef_at = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
@@ -691,6 +722,8 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -715,6 +748,8 @@ pub fn run(args: &[String]) -> Result<i32> {
             || authority_node_ipc
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -737,6 +772,8 @@ pub fn run(args: &[String]) -> Result<i32> {
             || authority_node_ipc
             || w2_h2_product_binding
             || n06_owner_join_readiness
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -757,12 +794,58 @@ pub fn run(args: &[String]) -> Result<i32> {
             || authority_node_ipc
             || w2_h2_product_binding
             || w2_h2_hosted_venue
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
             || g4_cef_at
             || full
             || require_go_component
         {
             return Err(
                 "n06-owner-join-readiness Cap requires its own fresh profile; refuse hosted Cap reburn / Unlock A invent / foreign Cap selectors; Cap=0 without Root auth; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+    if g2_collector_product_binding_readiness {
+        // Cap=0 honesty only; no Cap burn / no require-full Cap spam.
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || n06_owner_join_readiness
+            || g5_witness_transport_honesty
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "g2-collector-product-binding-readiness Cap requires its own fresh Cap=0 profile; refuse collector/--require-full Cap spam; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+    if g5_witness_transport_honesty {
+        // Cap=0 honesty only; no Cap burn / no require-full Cap spam.
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || n06_owner_join_readiness
+            || g2_collector_product_binding_readiness
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "g5-witness-transport-honesty Cap requires its own fresh Cap=0 profile; refuse witness/--require-full Cap spam; never invent authenticated witness transport product"
                     .into(),
             );
         }
@@ -783,6 +866,8 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
             || full
             || require_go_component
         {
@@ -861,6 +946,8 @@ pub fn run(args: &[String]) -> Result<i32> {
         w2_h2_product_binding,
         w2_h2_hosted_venue,
         n06_owner_join_readiness,
+        g2_collector_product_binding_readiness,
+        g5_witness_transport_honesty,
         g4_cef_at,
         go_component_verified: false,
         stage: "initialization",
@@ -917,6 +1004,8 @@ pub fn run(args: &[String]) -> Result<i32> {
         || w2_h2_product_binding
         || w2_h2_hosted_venue
         || n06_owner_join_readiness
+        || g2_collector_product_binding_readiness
+        || g5_witness_transport_honesty
         || g4_cef_at
     {
         vec![]
@@ -938,6 +1027,14 @@ pub fn run(args: &[String]) -> Result<i32> {
         ("w2_h2_product_binding", "w2-h2-product-binding-component"),
         ("w2_h2_hosted_venue", "w2-h2-hosted-venue-component"),
         ("n06_owner_join_readiness", "n06-owner-join-readiness"),
+        (
+            "g2_collector_product_binding_readiness",
+            "g2-collector-product-binding-readiness",
+        ),
+        (
+            "g5_witness_transport_honesty",
+            "g5-witness-transport-honesty",
+        ),
         ("g4_cef_at", "g4-cef-at-component"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"

@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T17:20:00Z
+updated: 2026-11-08T17:25:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -97,8 +97,10 @@ Unlock A Cap **spent** (free=false) after Desktop-baseline Cap burn EXIT0 @
 `8f8a128d`. Matrix A/B/C remapped earned-only component cells; M3/product
 unavailable; BrowserReady remains false (interactive AT Root-gated; no non-Cap
 structural invent). N06 owner join Cap=0 binds hosted Cap EXIT0 + Unlock A
-EXIT0 status until Root auth. No hosted/W2/authority/A Cap reburn without
-structural delta. Cap free=**false**.
+EXIT0 status until Root auth. Cap=0 G2/G5 honesty gates land Desktop collector
++ custody/witness components without inventing product / authenticated
+transport. Matrix-plan after A/B/C: `serialize_cap_when_unlocked=0`. No
+hosted/W2/authority/A Cap reburn without structural delta. Cap free=**false**.
 
 Next Root-gated / Cap-conserving closer:
 
@@ -108,4 +110,5 @@ Next Root-gated / Cap-conserving closer:
 
 Never invent `pass_product_clean_room`, CEF binary, `desktop_as_hosted`,
 BrowserReady, or Root ownership tokens. Capture `observe_h2` still forbidden as
-product-binding.
+product-binding. Evidence:
+`.spec.local/root/evidence/20261109022100-cursor-cap0-g2-g5-honesty/`.

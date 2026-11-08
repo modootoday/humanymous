@@ -16,6 +16,10 @@ use crate::orchestration::g4_cef_at::{
     CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT, PATH_RELEASE_SURFACES,
     REQUIRED_CAP_MODULE,
 };
+use crate::orchestration::cap0_product_honesty::{
+    G2_CAP_SELECTOR, G2_PILOT_COMMAND, G2_PRODUCT_BINDING_TOPOLOGY, G5_CAP_SELECTOR,
+    G5_PILOT_COMMAND, G5_ROOT_ASK_PATHS, cap_free_after_unlock_a,
+};
 use crate::orchestration::h2_product_binding::{
     CAP_SELECTOR as W2_H2_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND,
 };
@@ -134,6 +138,24 @@ impl UnlockProbe {
             "cap": {
                 "burn_authorized_by_unlock_gate": self.any,
                 "burn_this_turn": false,
+                "free": cap_free_after_unlock_a(root).unwrap_or(false),
+                "realloc_policy": "only_real_structural_next_feeder_after_exit0_honesty",
+                "no_cap_spam_abc": true,
+                "g2_g5_cap_cli_with_topology": false,
+            },
+            "g2_collector_product_binding_cap0": {
+                "selector": G2_CAP_SELECTOR,
+                "pilot_command": G2_PILOT_COMMAND,
+                "status": "cap0_honesty_only",
+                "topology_surfaces": G2_PRODUCT_BINDING_TOPOLOGY,
+                "note": "Cap=0 readiness only; Desktop collector component ≠ G2 product; no Cap=1 without Cap free + claimable Cap CLI+topology"
+            },
+            "g5_witness_transport_cap0": {
+                "selector": G5_CAP_SELECTOR,
+                "pilot_command": G5_PILOT_COMMAND,
+                "status": "cap0_honesty_only",
+                "root_ask_paths": G5_ROOT_ASK_PATHS,
+                "note": "Cap=0 honesty only; custody/witness component ≠ authenticated transport product; no Cap=1 without Cap free + claimable Cap CLI+topology"
             },
             "product": 0,
             "pass_product": 0,
@@ -148,6 +170,8 @@ impl UnlockProbe {
                 "code_defined_g4_cef_at_cap_cli": true,
                 "never_cap_spam_a11y_require_full": true,
                 "capture_component_is_not_product_binding": true,
+                "cap_realloc_only_structural_feeder": true,
+                "g2_g5_cap0_not_product": true,
             },
         })
     }
