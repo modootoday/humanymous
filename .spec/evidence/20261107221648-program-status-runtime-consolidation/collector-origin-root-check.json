@@ -1,0 +1,86 @@
+{
+  "schema": "humanymous.collector-origin-root-check/1",
+  "state": "WASM-check-passed-strict-Clippy-failed",
+  "source": "fc9ad67f86c32f743c56ebf0e685b282713b10ce",
+  "archive_sha256": "ffce6a25454a32c7497d84e71260cf03dafb939bb9f84e4b0ad86f125a814584",
+  "source_files": 3142,
+  "source_difference_records": 0,
+  "phases": [
+    {
+      "phase": "check",
+      "exit": 0,
+      "end_utc": "2026-11-07T23:58:41.2990712Z",
+      "elapsed": 2.2396387
+    },
+    {
+      "phase": "clippy",
+      "exit": 101,
+      "end_utc": "2026-11-07T23:58:42.5984756Z",
+      "elapsed": 3.5390078
+    }
+  ],
+  "session": 80165,
+  "session_terminal_exit": 0,
+  "qualification": "Harness completed and retained phase failure; session exit0 does not make Clippy success",
+  "first_failure": {
+    "phase": "clippy",
+    "exit": 101,
+    "code": "clippy::collapsible_if",
+    "source": "crates/sdk/humanymous-core/src/model/training/sgd.rs:142",
+    "owner_fix": "Model owner assigned exact condition-preserving lint correction; no suppression"
+  },
+  "raw_records": [
+    {
+      "name": "fc9.summary.json",
+      "sha256": "8202db0b3fd13c17d481b1c3c1ce39053f17b3ccf64a82ca66ff150ab57ca24b",
+      "bytes": 511
+    },
+    {
+      "name": "fc9-check.command.json",
+      "sha256": "98ffd73078b04c8ccdaf2a9e7cd888c84a04bf11288c1ecccd64534cf65e22e4",
+      "bytes": 625
+    },
+    {
+      "name": "fc9-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "fc9-check.stderr",
+      "sha256": "4c906039d9a5c0ef0cd679029c11b690bc1d01340ab4e7ebac736e6195264b22",
+      "bytes": 446
+    },
+    {
+      "name": "fc9-clippy.command.json",
+      "sha256": "cb985ea547d2431a778b2d32c205b91fdfc4e35172300f957953ceb5a722d50c",
+      "bytes": 663
+    },
+    {
+      "name": "fc9-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "fc9-clippy.stderr",
+      "sha256": "5384a975817c7407894e8e278ef3fa81077af1edfba715f5be24fb15dfae170f",
+      "bytes": 1508
+    },
+    {
+      "name": "fc9.inputs.before.json",
+      "sha256": "3b5f40a1b0cac6a672809ecf4d9df23489dee1607dbb00ba68cf7f98834f6811",
+      "bytes": 585137
+    },
+    {
+      "name": "fc9.inputs.after.json",
+      "sha256": "3b5f40a1b0cac6a672809ecf4d9df23489dee1607dbb00ba68cf7f98834f6811",
+      "bytes": 585137
+    }
+  ],
+  "private_evidence": "evidence:root/20261108054000/collector-origin-root",
+  "limits": [
+    "No actual browser/mock-Fetch/network/file pilot execution",
+    "No full registry/toolchain/config/SDK read closure attestation",
+    "Clippy stops at Core failure; remaining Collector lint status unknown",
+    "No GHA rerun, Origin causality or full-product success"
+  ]
+}
