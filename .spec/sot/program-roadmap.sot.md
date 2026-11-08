@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-08T04:03:31Z
+updated: 2026-11-08T04:32:53Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -105,6 +105,171 @@ changed to obtain this pass. Both failed and successful logs are retained as
 This closes the relocated selected-file digest/line-needle check, not native
 custody, Linux symlink controls, actual Docker/browser execution or full product
 qualification. Historical source evidence remains bounded to its original view.
+
+## Node artifact review and actual export build failure
+
+The three-file Node observation-selector candidate was reviewed in a separate
+Root-owned copy, not adopted into the main isolated assembly. Its six pure tests
+and normal package-binary strict Clippy passed. Actual locked/offline metadata
+confirmed one node_host_process test/bin target and exactly export-node,
+framework,qualification-node-host features. The candidate's unavailable capture
+and host executor remain unfinished; a refusal stub is not working packaging.
+
+An actual Cargo test --no-run of that host role failed with exit101 and18 E0453
+errors: N-API/ctor generated allow(unsafe_code) conflicts with the Node module's
+forbid. No actual host ran and no successful compiler-artifact selection is
+claimed. Root assigned the owning ABI chat a precise native macro-capsule design
+and safe-sibling controls; no blanket lint relaxation or new unsafe grant follows.
+The direct-child cooperative capture candidate is a separate limited component,
+not process-tree/native/host authority. Logs, raw artifact JSONL, metadata summary
+and node-artifact-review-receipt.json remain under Root's core-consolidation
+private evidence. Earlier safe-context73 results do not cover this export role.
+
+## Final-path CLI and two actual native export builds
+
+The final-path isolated CLI passed all-target/all-feature strict Clippy. Adapters
+export-core-v1 and export-dotnet-v1 each passed separate library strict Clippy
+and actual locked/offline cargo rustc --crate-type cdylib builds. Root selected
+the one actual named compiler-artifact DLL from each successful build stream,
+retained each under a distinct create-new role filename before the next build,
+and verified byte-identical SHA256 copies. The compiler-artifact kind and
+crate_types are both cdylib for these two override builds; this does not prove
+Python's unobserved tuple or any other export role.
+
+The retained final-path CLI pre-list and the new post-build list contain1801
+identical source path/hash rows across the combined interval. Raw logs, artifact
+JSONL, role-specific file/hash receipts and adapters-two-export-builds-checkpoint
+remain in Root private core-consolidation evidence. No DLL was loaded and no
+native ABI, C# host, service, browser or product runtime test was performed.
+The Node E0453 failure remains open; the owner is preparing an exact existing
+macro-export capsule preserving safe-module forbid and adding no authored unsafe
+or blanket lint exception. Live cutover and actual supported host gates remain.
+
+## B1 local compiler-control review checkpoint
+
+In a separate review copy Root integrated the revision3 local compiler candidate
+with the older root-lint source. The first actual compilation found two old
+root-lint errors (unfinalized SHA256 formatting and restoration error string
+type). Originals/failure logs were retained; review-only fixes allowed20 selected
+pure/parser tests to pass with15 filtered. There were90 warnings, so no strict
+lint completion is claimed. The main isolated assembly was not changed.
+
+Actual sibling API controls then established one shared-read positive and three
+attributed negative outcomes (E0616 failures mutation, E0616 records mutation,
+E0596 mutation through shared getter). The first timestamp-preserving copied
+control reused prior positive compiler output and was rejected as evidence;
+unique source filenames and rewritten module references forced the corrected
+four-case pass. Both epochs are retained. No actual baseline/remove-allow/sibling
+B1 unsafe compiler sequence, native creation or hosted lifetime gate ran here.
+Private b1-local-compiler-review-summary.json and b1-privacy-compiler-controls-
+retry1.json bind these limited review outcomes and retained raw logs.
+
+## Node macro boundary correction integrated in isolated primary source
+
+Root reviewed the five-file existing N-API macro relocation and integrated it
+into the main isolated assembly. Seven original macro sites now live in the
+private exports/node capsule under deny; safe node retains forbid. No new
+authored unsafe operation, allow attribute or root lint weakening was added.
+A remaining unused safe HtmlHook reexport was removed after retaining its first
+strict failure. Export DTO mapping and safe delegates preserve the prior logic.
+
+The review copy passed actual host test --no-run and export-node strict library
+Clippy. Two actual negative probes (safe Node and export capsule) each produced
+one attributed unsafe_code error with exit101; the full six-context/expansion
+matrix remains pending. The primary isolated source then independently passed
+host test --no-run and export-node strict Clippy. Its actual compiler-artifact
+reports the exact three role features, test/bin target, test=true and nonnull
+executable with successful final build-finished. The actual executable hash/size
+is retained; it was not executed or granted loader custody. The earlier18 E0453
+failure remains historical. The Node selector stub candidate was not adopted;
+production capture, packaging, actual host/runtime and lifetime gates remain.
+Private receipts: node-macro-capsule-primary-adoption.json,
+node-macro-boundary-controls.json, node-primary-compiler-artifact-receipt.json
+and corresponding raw first-failure/retry/primary logs in core-consolidation.
+
+## Node complete boundary matrix and Meari0.3 CPU candidate
+
+The separate Node review copy passed all13 authored compiler controls: six safe
+positive baselines, six exact unsafe_code refusals and one inherited-forbid
+lowering E0453 refusal. Actual raw diagnostics and probe source views are retained
+in node-complete-compiler-boundary-matrix.json and node-matrix-* files. This does
+not execute Node or establish complete generated-expansion safety.
+
+Root created a separate meari-030-cpu-review-only source copy. Exactly three
+Browser git pins were coherently changed to ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4.
+Scoped lock resolution replaced seven Meari family0.2 packages with0.3 and removed
+windows-sys0.59. No unchanged634-tuple claim transfers to this upgrade epoch.
+CPU native-ui all-target check passed31.90s, strict Clippy passed3.07s and all32
+default model tests passed. The selected Windows normal/build graph contains no
+wgpu/Vello-GPU/anyrender_vello(non-CPU) packages. The timed source lists around
+strict/model checks are both retained with zero differences. This graph is not
+an actual renderer/driver observation. Primary isolated Browser still uses its
+prior pin; CEF, actual UI/IME/AX/DPI/shutdown, contract/source-pin, notices and
+supported host/package qualification remain prerequisites for final adoption.
+Receipts/logs/tree/snapshots are meari-030-* under Root core-consolidation evidence.
+
+## B2 private source-candidate work assignment
+
+Root reviewed plan:root/20261108043000 with X's bounded review002 and assigned
+Native the concrete minimum windows_supervisor Rust candidate. Candidate body
+authoring is permitted only in Native's owned evidence, with exactly the ten
+previously enumerated proposed native-function boundaries and no new API/scope.
+This is not acceptance of unseen unsafe bodies, source/manifest application,
+native execution, B2-P capture or product/provider/Ready authority. The parent
+plan remains draft; each concrete body must pass Root+X review before adoption.
+
+The assigned implementation must implement actual typed retained Job/process/
+thread/attribute ownership for the selected fixed CUI/no-stdio profile, exact
+flags, policy/query operations and separate signaled-exit/Job0 observations.
+Pure contract tests and explicit ignored native fixtures are required. No generic
+PID/name reconstruction, broker containment, reset/renewal, root allowance,
+unsafe Send/Sync or fake Unsupported replacement for the selected primitive is
+admitted. Common owner extraction, original InvocationOwner/storage/outer custody
+and B2-P remain separately tracked dependencies, not facts manufactured by this
+bridge. Work remains private until exact-body review and source-bound checks.
+
+## Adapters project package inputs
+
+Root added the isolated Adapters README and project NOTICE, selected the README
+in its manifest and copied the unchanged11353-byte project Apache LICENSE
+(SHA25628153ab6c3197253563f1ae0932a89a758d2d0f9c667d59da2e41c01c9cbfeb1).
+Cargo package --list succeeded offline/locked and includes those three files,
+the moved Apache/.NET contracts, Apache upstream lock and new Node export source.
+This is input-list evidence only: no archive verification, extracted build,
+dependency-specific legal review, registry upload or publication was performed.
+Private adapters-package-input-review.json and package-input-list.log retain the
+observations. The source additions supersede earlier1802-file source snapshots;
+those earlier seals are not transferred to this new package-input epoch.
+
+## Mandatory shared branch and completed validation-branch cleanup
+
+The user requires ALL project chats to work in C:/workspaces/humanymous on
+codex/rust. No unintended branch creation, branch switching or new worktree is
+permitted. Existing lane ownership and the global git-ops mutex remain mandatory.
+Root owns common Cargo/lock/toolchain and final source application. No Cursor
+handover document is requested or authored. User-intended exceptions must be
+explicit rather than inferred for convenience or parallel work.
+
+Root verified all ten remote codex validation branch tips are ancestors of local
+codex/rust with zero branch-only commits. Root first pushed codex/rust from
+1f87d310 to33dcf46d, then atomically deleted apache-validation,
+browser-product-validation,cef-validation,go-validation,local-parity-benchmark,
+mount-probe-validation,native-artifact-validation,native-component-validation,
+pages-validation and wargame-validation, using exact-tip deletion leases. No
+content force-update or duplicate merge commit was needed. A fresh remote-head
+observation confirms no other codex task branch remains. main and the six
+separate Dependabot PR branches are preserved. Historical detached evidence
+worktrees were not removed by this branch-only cleanup.
+
+All22 existing dedicated project chats received the mandatory branch policy and
+nonoverlapping concrete code/test/spec follow-up assignments. Immediate individual
+thread snapshots confirmed active/inProgress for all22; that is progress state,
+not completed work. Heavy/native/hosted execution still requires Root allocation;
+shared source ownership is not waived by concurrency. The agent-canon owner was
+assigned persistent policy/sync updates. Exact dispatch and snapshots are retained
+in parallel-shared-rust-dispatch.json; branch tips/remote results and guarded Git
+logs are in branch-cleanup-receipt.json under Root private core-consolidation.
+The isolated eight-package assembly remains separate from live source cutover.
 
 ## Integration status at the 2026-11-08 source checkpoint
 
