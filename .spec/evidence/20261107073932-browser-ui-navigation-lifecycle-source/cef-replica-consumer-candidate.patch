@@ -1,0 +1,543 @@
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
+index 6e8fd3ea..7171b7ed 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
+@@ -2,6 +2,7 @@
+ mod desktop;
+ mod diagnostics;
+ mod provisioning;
++mod receipt;
+ use serde_json::json;
+ use sha2::Digest;
+ use std::{
+@@ -318,11 +319,35 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+     Ok(())
+ }
+ 
++fn write_receipt_new(path: &Path, bytes: &[u8]) -> io::Result<()> {
++    use std::io::Write;
++    let mut file = fs::OpenOptions::new().write(true).create_new(true).open(path)?;
++    file.write_all(bytes)?;
++    file.sync_all()
++}
++
+ fn emit(output: &Path, report: &serde_json::Value) -> io::Result<()> {
+     let path = output.join("report.json");
+-    fs::write(&path, serde_json::to_vec_pretty(report)?)?;
++    write_receipt_new(&path, &serde_json::to_vec_pretty(report)?)?;
+     let mut safe = diagnostics::public(report);
+     safe["private_report_sha256"] = provisioning::digest(&path)?.into();
++    let bytes = serde_json::to_vec_pretty(&safe)?;
++    if safe["status"] == "passed" {
++        let contract = desktop::contract()?;
++        let manifest = format!("{:x}", sha2::Sha256::digest(
++            serde_json::to_vec(&report["source"]["files"])?));
++        let string = |value: &serde_json::Value| value.as_str().map(str::to_owned)
++            .ok_or_else(|| io::Error::other("CEF receipt expectation missing"));
++        let source = string(&report["source"]["commit"])?;
++        let bootstrap = string(&report["artifacts"]["humanymous_cef_bootstrap.dll"])?;
++        let desktop = string(&report["artifacts"]["humanymous_cef_desktop.dll"])?;
++        let _ = receipt::verify(&bytes, &receipt::Expected {
++            source_sha: &source, source_manifest_sha256: &manifest,
++            bootstrap_sha256: &bootstrap, desktop_sha256: &desktop, contract: &contract,
++        })?;
++    }
++    // Ordinary artifacts use only this safe projection; report.json stays private.
++    write_receipt_new(&output.join("safe-report.json"), &bytes)?;
+     println!("{safe}");
+     Ok(())
+ }
+@@ -385,4 +410,27 @@ mod tests {
+             "test {CASE} ... ok\ntest {CASE} ... ok\ntest result: ok. 1 passed; 0 failed; 0 ignored;"
+         )));
+     }
+-}
++
++    #[test]
++    fn shareable_report_uses_safe_projection_and_refuses_overwrite() {
++        let id = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)
++            .unwrap().as_nanos();
++        let dir = std::env::temp_dir().join(format!("humanymous-safe-cef-{}-{id}", std::process::id()));
++        fs::create_dir(&dir).unwrap();
++        let report = json!({"status":"failed","stage":"source-preflight",
++            "private_error":"PRIVATE_CANARY"});
++        emit(&dir, &report).unwrap();
++        let private = fs::read(dir.join("report.json")).unwrap();
++        let safe = fs::read(dir.join("safe-report.json")).unwrap();
++        assert!(String::from_utf8(private.clone()).unwrap().contains("PRIVATE_CANARY"));
++        assert!(!String::from_utf8(safe.clone()).unwrap().contains("PRIVATE_CANARY"));
++        let value: serde_json::Value = serde_json::from_slice(&safe).unwrap();
++        assert_eq!(value["schema"], "humanymous.cef-safe-diagnostics/2");
++        assert_eq!(value["status"], "failed");
++        assert!(emit(&dir, &report).is_err());
++        assert_eq!(fs::read(dir.join("report.json")).unwrap(), private);
++        assert_eq!(fs::read(dir.join("safe-report.json")).unwrap(), safe);
++        fs::remove_file(dir.join("report.json")).unwrap();
++        fs::remove_file(dir.join("safe-report.json")).unwrap();
++        fs::remove_dir(dir).unwrap();
++    }}
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt.rs
+new file mode 100644
+index 00000000..983ec0d7
+--- /dev/null
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt.rs
+@@ -0,0 +1,135 @@
++//! Bounded schema-2 receipt consumer. This is not nativeproof or runtime admission.
++use humanymous_platform::testing::json::decode_strict_json;
++use serde_json::{Value, json};
++use std::{collections::BTreeSet, io};
++
++/// The caller supplies reviewed expectations, never fields copied from the receipt.
++pub(super) struct Expected<'a> {
++    pub source_sha: &'a str,
++    pub source_manifest_sha256: &'a str,
++    pub bootstrap_sha256: &'a str,
++    pub desktop_sha256: &'a str,
++    pub contract: &'a Value,
++}
++
++fn require(ok: bool) -> io::Result<()> {
++    if ok { Ok(()) } else { Err(io::Error::other("CEF schema-2 receipt refused")) }
++}
++
++fn hex(value: &str, length: usize) -> bool {
++    value.len() == length && value.bytes().all(|byte| byte.is_ascii_digit()
++        || (b'a'..=b'f').contains(&byte))
++}
++
++fn exact_keys(value: &Value, keys: &[&str]) -> bool {
++    value.as_object().is_some_and(|object| object.len() == keys.len()
++        && keys.iter().all(|key| object.contains_key(*key)))
++}
++
++fn command(value: &Value) -> io::Result<()> {
++    require(value["status_observed"] == true && value["exit_code"] == 0
++        && value["diagnostic_read_truncated"] == false
++        && value["malformed_json_records"] == 0 && value["oversized_records"] == 0
++        && value["omitted_diagnostics"] == 0)?;
++    let rows = value["diagnostics"].as_array().ok_or_else(|| io::Error::other("CEF diagnostics absent"))?;
++    require(rows.len() <= 64 && rows.iter().all(|row| row["level"] == "warning"))
++}
++
++fn protocol(value: &Value, count: u64) -> io::Result<()> {
++    require(value["required"] == count && value["passed"] == count
++        && value["failed"] == 0 && value["ignored"] == 0
++        && value["filtered"].as_u64().is_some_and(|n| n <= 1_000_000)
++        && value["initializes_cef"] == false && value["starts_processes"] == false)
++}
++
++fn bootstrap_observations(value: &Value, contract: &Value) -> io::Result<()> {
++    require(value["status"] == "complete" && value["observations_complete"] == true
++        && value["read_truncated"] == false && value["full_product_qualified"] == false
++        && value["observed_cases"] == 4 && value["observed_profiles"] == 2)?;
++    let cases = value["cases"].as_array().ok_or_else(|| io::Error::other("CEF cases absent"))?;
++    let required = contract["bootstrap_rejection"]["cases"].as_array()
++        .ok_or_else(|| io::Error::other("CEF contract cases absent"))?;
++    require(cases.len() == 4 && required.len() == 4)?;
++    let mut seen = BTreeSet::new();
++    for case in cases {
++        let id = case["case_id"].as_str().ok_or_else(|| io::Error::other("CEF case id absent"))?;
++        require(required.iter().any(|item| item["id"] == id) && seen.insert(id)
++            && case["spawn_ok"] == true && case["wait_completed"] == true
++            && case["deadline_expired"] == false && case["reaped"] == true
++            && case["exit_code"] == 78
++            && case["spawn_error_kind"] == "none" && case["wait_error_kind"] == "none"
++            && case["cleanup_error_kind"] == "none")?;
++    }
++    let profiles = value["profiles"].as_array().ok_or_else(|| io::Error::other("CEF profiles absent"))?;
++    require(profiles.len() == 2)?;
++    let mut phases = BTreeSet::new();
++    for profile in profiles {
++        let phase = profile["phase"].as_str().ok_or_else(|| io::Error::other("CEF profile phase absent"))?;
++        require(matches!(phase, "before" | "after") && phases.insert(phase)
++            && profile["inventory_ok"] == true && profile["error_kind"] == "none")?;
++        require(if phase == "after" { profile["changed"] == false }
++            else { profile.get("changed") == Some(&Value::Null) })?;
++    }
++    Ok(())
++}
++
++pub(super) fn verify(bytes: &[u8], expected: &Expected<'_>) -> io::Result<Value> {
++    require(hex(expected.source_sha, 40) && hex(expected.source_manifest_sha256, 64)
++        && hex(expected.bootstrap_sha256, 64) && hex(expected.desktop_sha256, 64)
++        && expected.bootstrap_sha256 != expected.desktop_sha256)?;
++    let receipt = decode_strict_json(bytes, 1_048_576).map_err(io::Error::other)?;
++    require(receipt["schema"] == "humanymous.cef-safe-diagnostics/2"
++        && receipt.get("native_build").is_none() && receipt["status"] == "passed"
++        && receipt["stage"] == "complete" && receipt["source_changed"] == false
++        && receipt["source_sha"] == expected.source_sha
++        && receipt["source_manifest_sha256"] == expected.source_manifest_sha256
++        && receipt["browser_ready"] == false && receipt["full_runtime_qualified"] == false
++        && receipt["raw_contents_included"] == false)?;
++    let allowed = ["schema", "stage", "source_sha", "source_manifest_sha256", "native_builds",
++        "role_artifacts", "source_changed", "stage_commands", "status", "protocol_preflight",
++        "bootstrap_rejection_passed", "bootstrap_protocol_preflight", "desktop_passed_tests",
++        "browser_ready", "full_runtime_qualified", "raw_contents_included", "private_report_sha256"];
++    require(receipt.as_object().is_some_and(|object| object.keys()
++        .all(|key| allowed.contains(&key.as_str()))))?;
++    if let Some(value) = receipt.get("private_report_sha256") {
++        require(value.as_str().is_some_and(|value| hex(value, 64)))?;
++    }
++    let roles = ["cef-bootstrap", "cef-desktop"];
++    require(exact_keys(&receipt["native_builds"], &roles)
++        && exact_keys(&receipt["role_artifacts"], &roles))?;
++    for (role, digest) in [(roles[0], expected.bootstrap_sha256), (roles[1], expected.desktop_sha256)] {
++        let stage = format!("native-build-{role}");
++        require(receipt["native_builds"][role] == receipt["stage_commands"][&stage])?;
++        command(&receipt["native_builds"][role])?;
++        let artifact = &receipt["role_artifacts"][role];
++        require(exact_keys(artifact, &["sha256", "bytes"])
++            && artifact["sha256"] == digest && artifact["bytes"].as_u64().is_some_and(|n| n > 0))?;
++    }
++    let stages = ["native-build-cef-bootstrap", "native-build-cef-desktop",
++        "desktop-protocol-build", "desktop-protocol-tests", "bootstrap-protocol-build",
++        "bootstrap-protocol-tests", "bootstrap-rejection", "desktop-process-tests"];
++    require(exact_keys(&receipt["stage_commands"], &stages))?;
++    for stage in stages { command(&receipt["stage_commands"][stage])?; }
++    require(expected.contract["protocol_preflight"]["selector"] == "desktop::pilot_assertions::tests::"
++        && expected.contract["protocol_preflight"]["required_test_count"] == 4
++        && expected.contract["bootstrap_rejection"]["protocol_preflight"]["selector"] == "bootstrap::negative_pilot::tests::"
++        && expected.contract["bootstrap_rejection"]["protocol_preflight"]["required_test_count"] == 3
++        && expected.contract["required_test_count"] == 2)?;
++    protocol(&receipt["protocol_preflight"], 4)?;
++    protocol(&receipt["bootstrap_protocol_preflight"], 3)?;
++    require(receipt["bootstrap_rejection_passed"] == true && receipt["desktop_passed_tests"] == 2)?;
++    let rejection = &receipt["stage_commands"]["bootstrap-rejection"];
++    let outcome = &rejection["test_outcome"];
++    require(outcome["required_case_status"] == "passed" && outcome["executed_tests"] == 1
++        && outcome["passed"] == 1 && outcome["failed"] == 0 && outcome["ignored"] == 0
++        && outcome["filtered"].as_u64().is_some_and(|n| n <= 1_000_000))?;
++    bootstrap_observations(&rejection["bootstrap_observations"], expected.contract)?;
++    Ok(json!({"schema":"humanymous.cef-receipt-consumer/2","source_sha":expected.source_sha,
++        "source_manifest_sha256":expected.source_manifest_sha256,"bounded_receipt_verified":true,
++        "browser_ready":false,"full_runtime_qualified":false,"full_product_qualified":false,
++        "hardware_GPU_qualified":false,"GUI_keyboard_IME_AX_qualified":false}))
++}
++
++#[cfg(test)]
++#[path = "receipt_tests.rs"]
++mod tests;
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt_tests.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt_tests.rs
+new file mode 100644
+index 00000000..e8a5e115
+--- /dev/null
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt_tests.rs
+@@ -0,0 +1,138 @@
++use super::*;
++
++fn reviewed_contract() -> Value {
++    json!({"required_test_count":2,
++        "protocol_preflight":{"selector":"desktop::pilot_assertions::tests::","required_test_count":4},
++        "bootstrap_rejection":{"protocol_preflight":{
++            "selector":"bootstrap::negative_pilot::tests::","required_test_count":3},
++            "cases":[{"id":"no_sandbox"},{"id":"no_sandbox_zero"},
++                {"id":"disable_web_security"},{"id":"disable_gpu_sandbox"}]}})
++}
++
++fn expected(contract: &Value) -> Expected<'_> {
++    Expected { source_sha: "1111111111111111111111111111111111111111",
++        source_manifest_sha256: "2222222222222222222222222222222222222222222222222222222222222222",
++        bootstrap_sha256: "3333333333333333333333333333333333333333333333333333333333333333",
++        desktop_sha256: "4444444444444444444444444444444444444444444444444444444444444444",
++        contract }
++}
++
++fn command_receipt() -> Value {
++    json!({"status_observed":true,"exit_code":0,"diagnostic_read_truncated":false,
++        "malformed_json_records":0,"oversized_records":0,"omitted_diagnostics":0,"diagnostics":[]})
++}
++
++fn protocol_receipt(count: u64) -> Value {
++    json!({"required":count,"passed":count,"failed":0,"ignored":0,"filtered":17,
++        "initializes_cef":false,"starts_processes":false})
++}
++
++fn fixture(expected: &Expected<'_>) -> Value {
++    let mut stages = serde_json::Map::new();
++    for stage in ["native-build-cef-bootstrap", "native-build-cef-desktop",
++        "desktop-protocol-build", "desktop-protocol-tests", "bootstrap-protocol-build",
++        "bootstrap-protocol-tests", "bootstrap-rejection", "desktop-process-tests"] {
++        stages.insert(stage.into(), command_receipt());
++    }
++    let cases: Vec<_> = expected.contract["bootstrap_rejection"]["cases"].as_array().unwrap()
++        .iter().map(|case| json!({"case_id":case["id"],"spawn_ok":true,"wait_completed":true,
++            "deadline_expired":false,"reaped":true,"exit_code":78,"spawn_error_kind":"none",
++            "wait_error_kind":"none","cleanup_error_kind":"none"})).collect();
++    stages["bootstrap-rejection"]["test_outcome"] = json!({"required_case_status":"passed",
++        "executed_tests":1,"passed":1,"failed":0,"ignored":0,"filtered":29});
++    stages["bootstrap-rejection"]["bootstrap_observations"] = json!({"status":"complete",
++        "observations_complete":true,"read_truncated":false,"full_product_qualified":false,
++        "observed_cases":4,"observed_profiles":2,"cases":cases,"profiles":[
++            {"phase":"before","inventory_ok":true,"changed":null,"error_kind":"none"},
++            {"phase":"after","inventory_ok":true,"changed":false,"error_kind":"none"}]});
++    json!({"schema":"humanymous.cef-safe-diagnostics/2","status":"passed","stage":"complete",
++        "source_sha":expected.source_sha,"source_manifest_sha256":expected.source_manifest_sha256,
++        "source_changed":false,"native_builds":{"cef-bootstrap":command_receipt(),
++            "cef-desktop":command_receipt()},"role_artifacts":{
++            "cef-bootstrap":{"sha256":expected.bootstrap_sha256,"bytes":27},
++            "cef-desktop":{"sha256":expected.desktop_sha256,"bytes":53}},
++        "stage_commands":stages,"protocol_preflight":protocol_receipt(4),
++        "bootstrap_protocol_preflight":protocol_receipt(3),"bootstrap_rejection_passed":true,
++        "desktop_passed_tests":2,"browser_ready":false,"full_runtime_qualified":false,
++        "raw_contents_included":false})
++}
++
++#[test]
++fn reviewed_schema_two_receipt_stays_a_bounded_component_result() {
++    let contract = reviewed_contract();
++    let expected = expected(&contract);
++    let summary = verify(&serde_json::to_vec(&fixture(&expected)).unwrap(), &expected).unwrap();
++    assert_eq!(summary["bounded_receipt_verified"], true);
++    for flag in ["browser_ready", "full_runtime_qualified", "full_product_qualified",
++        "hardware_GPU_qualified", "GUI_keyboard_IME_AX_qualified"] {
++        assert_eq!(summary[flag], false);
++    }
++}
++
++#[test]
++fn old_aggregate_missing_role_unreviewed_identity_and_false_pass_are_refused() {
++    let contract = reviewed_contract();
++    let expected = expected(&contract);
++    for change in ["v1", "private-schema", "aggregate", "source", "manifest", "missing-role",
++        "failed-build", "unobserved-build", "artifact", "same-slot", "extra-role", "ignored",
++        "missing-process", "ready", "unknown-stage", "private-field", "failed-status"] {
++        let mut bad = fixture(&expected);
++        match change {
++            "v1" => bad["schema"] = json!("humanymous.cef-safe-diagnostics/1"),
++            "private-schema" => bad["schema"] = json!("humanymous.cef-native-pilot/2"),
++            "aggregate" => bad["native_build"] = command_receipt(),
++            "source" => bad["source_sha"] = json!("a".repeat(40)),
++            "manifest" => bad["source_manifest_sha256"] = json!("a".repeat(64)),
++            "missing-role" => bad["native_builds"]["cef-desktop"] = Value::Null,
++            "failed-build" => bad["native_builds"]["cef-desktop"]["exit_code"] = json!(101),
++            "unobserved-build" => bad["native_builds"]["cef-bootstrap"]["status_observed"] = json!(false),
++            "artifact" => bad["role_artifacts"]["cef-desktop"]["sha256"] = json!("a".repeat(64)),
++            "same-slot" => bad["role_artifacts"]["cef-desktop"]["sha256"] = json!(expected.bootstrap_sha256),
++            "extra-role" => bad["role_artifacts"]["other"] = json!({}),
++            "ignored" => bad["protocol_preflight"]["ignored"] = json!(1),
++            "missing-process" => bad["desktop_passed_tests"] = Value::Null,
++            "ready" => bad["browser_ready"] = json!(true),
++            "unknown-stage" => bad["stage_commands"]["unknown"] = command_receipt(),
++            "private-field" => bad["private_ledger"] = json!("PRIVATE_CANARY"),
++            "failed-status" => bad["status"] = json!("failed"),
++            _ => unreachable!(),
++        }
++        assert!(verify(&serde_json::to_vec(&bad).unwrap(), &expected).is_err(), "{change}");
++    }
++}
++
++#[test]
++fn incomplete_or_duplicated_native_rejection_observations_are_not_success() {
++    let contract = reviewed_contract();
++    let expected = expected(&contract);
++    for change in ["truncated", "unreaped", "deadline", "duplicate", "profile", "cleanup-error", "missing-outcome"] {
++        let mut bad = fixture(&expected);
++        let rejection = &mut bad["stage_commands"]["bootstrap-rejection"];
++        let observations = &mut rejection["bootstrap_observations"];
++        match change {
++            "truncated" => observations["read_truncated"] = json!(true),
++            "unreaped" => observations["cases"][0]["reaped"] = Value::Null,
++            "deadline" => observations["cases"][0]["deadline_expired"] = json!(true),
++            "duplicate" => observations["cases"][1] = observations["cases"][0].clone(),
++            "profile" => observations["profiles"][1]["changed"] = json!(true),
++            "cleanup-error" => observations["cases"][0]["cleanup_error_kind"] = json!("other"),
++            "missing-outcome" => rejection["test_outcome"] = Value::Null,
++            _ => unreachable!(),
++        }
++        assert!(verify(&serde_json::to_vec(&bad).unwrap(), &expected).is_err(), "{change}");
++    }
++}
++
++#[test]
++fn stale_contract_duplicate_json_and_oversized_reports_are_refused() {
++    let mut contract = reviewed_contract();
++    let bytes = serde_json::to_vec(&fixture(&expected(&contract))).unwrap();
++    contract["protocol_preflight"]["selector"] = json!("pilot_assertions::tests::");
++    assert!(verify(&bytes, &expected(&contract)).is_err());
++    let contract = reviewed_contract();
++    let expected = expected(&contract);
++    let duplicate = String::from_utf8(bytes).unwrap().replacen(
++        "\"schema\":", "\"status\":\"passed\",\"schema\":", 1);
++    assert!(verify(duplicate.as_bytes(), &expected).is_err());
++    assert!(verify(&vec![b' '; 1_048_577], &expected).is_err());
++}
+diff --git a/crates/apps/humanymous-cli/src/qualification/delivery/qualification_data.rs b/crates/apps/humanymous-cli/src/qualification/delivery/qualification_data.rs
+index d4f49f10..bee22aca 100644
+--- a/crates/apps/humanymous-cli/src/qualification/delivery/qualification_data.rs
++++ b/crates/apps/humanymous-cli/src/qualification/delivery/qualification_data.rs
+@@ -68,11 +68,15 @@ fn producer_git(root: &Path, args: &[&str], cap: usize, deadline: Instant) -> Re
+ }
+ 
+ const PACKAGE: &str = "crates/apps/humanymous-cli";
+-const COMMIT: &str = "3137c905ac4e52b8b345fa2306af9e4ef4d42b48";
++const HISTORICAL_COMMIT: &str = "3137c905ac4e52b8b345fa2306af9e4ef4d42b48";
++// Root must fill this only after the relocated producer is committed and reviewed.
++// None refuses CEF admission; no manifest value can authorize its own producer.
++const CEF_PRODUCER_COMMIT: Option<&str> = None;
++const CEF_REPLICA: &str = "qualification/browser/cef/pilot-contract.json";
+ const INPUTS: &[(&str, &str)] = &[
+     (
+         "qualification/browser/cef/pilot-contract.json",
+-        "crates/browser/native/desktop/pilot-contract.json",
++        "crates/apps/humanymous-browser/native/desktop/pilot-contract.json",
+     ),
+     (
+         "qualification/fixtures/collector/pilot.json",
+@@ -156,7 +160,25 @@ fn read(root: &Path, relative: &str) -> Result<Vec<u8>> {
+     Ok(bytes)
+ }
+ 
+-fn records(manifest: &Value) -> Result<Vec<&Value>> {
++fn trusted_commit<'a>(destination: &str, cef_commit: Option<&'a str>) -> Result<&'a str> {
++    let commit = if destination == CEF_REPLICA {
++        cef_commit.ok_or("DATA CEF producer is pending explicit committed-source admission")?
++    } else {
++        HISTORICAL_COMMIT
++    };
++    require(commit.len() == 40 && commit.bytes().all(|byte| {
++        byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte)
++    }), "DATA compiled producer commit refused")?;
++    Ok(commit)
++}
++
++fn validate_replica(row: &Value, bytes: &[u8], blob: &str, original: &[u8]) -> Result<()> {
++    require(row["bytes"].as_u64() == Some(bytes.len() as u64)
++        && row["sha256"] == source::sha(bytes), "DATA replica hash mismatch")?;
++    require(row["producer_git_blob"] == blob, "DATA producer blob mismatch")?;
++    require(original == bytes, "DATA producer byte mismatch")
++}
++fn records_with_pin<'a>(manifest: &'a Value, cef_commit: Option<&str>) -> Result<Vec<&'a Value>> {
+     require(
+         manifest["schema"] == "humanymous.cli-qualification-data-provenance/1"
+             && manifest["replica_count"].as_u64() == Some(8),
+@@ -179,7 +201,7 @@ fn records(manifest: &Value) -> Result<Vec<&Value>> {
+             "DATA ownership or duplicate refused",
+         )?;
+         require(
+-            row["producer_source_commit"] == COMMIT && row["license"] == "Apache-2.0",
++            row["producer_source_commit"] == trusted_commit(destination, cef_commit)? && row["license"] == "Apache-2.0",
+             "DATA provenance refused",
+         )?;
+         require(
+@@ -219,7 +241,7 @@ pub fn check(root: &Path) -> Result<Value> {
+     let manifest =
+         humanymous_platform::testing::json::decode_strict_json(&manifest_bytes, 1_048_576)
+             .map_err(|_| "DATA provenance JSON refused")?;
+-    for row in records(&manifest)? {
++    for row in records_with_pin(&manifest, CEF_PRODUCER_COMMIT)? {
+         let destination = row["destination"]
+             .as_str()
+             .ok_or("DATA destination missing")?;
+@@ -227,12 +249,8 @@ pub fn check(root: &Path) -> Result<Value> {
+             .as_str()
+             .ok_or("DATA producer missing")?;
+         let bytes = read(root, &format!("{PACKAGE}/{destination}"))?;
+-        require(
+-            row["bytes"].as_u64() == Some(bytes.len() as u64)
+-                && row["sha256"] == source::sha(&bytes),
+-            "DATA replica hash mismatch",
+-        )?;
+-        let object = format!("{COMMIT}:{producer}");
++        let commit = trusted_commit(destination, CEF_PRODUCER_COMMIT)?;
++        let object = format!("{commit}:{producer}");
+         let blob = String::from_utf8(producer_git(
+             root,
+             &["rev-parse", "--verify", &object],
+@@ -240,21 +258,20 @@ pub fn check(root: &Path) -> Result<Value> {
+             deadline,
+         )?)
+         .map_err(|_| "DATA Git object encoding refused")?;
+-        require(
+-            row["producer_git_blob"] == blob.trim(),
+-            "DATA producer blob mismatch",
+-        )?;
+         let original = producer_git(
+             root,
+             &["cat-file", "blob", blob.trim()],
+             bytes.len(),
+             deadline,
+         )?;
+-        require(original == bytes, "DATA producer byte mismatch")?;
++        validate_replica(row, &bytes, blob.trim(), &original)?;
+     }
+     Ok(
+-        json!({"schema":"humanymous.cli-qualification-data-check/1", "replicas":8,
+-        "source_commit":COMMIT,"manifest_sha256":source::sha(&manifest_bytes),
++        json!({"schema":"humanymous.cli-qualification-data-check/2", "replicas":8,
++        "source_pins":records_with_pin(&manifest, CEF_PRODUCER_COMMIT)?.iter().map(|row| json!({
++            "destination":row["destination"],"producer_source_path":row["producer_source_path"],
++            "producer_source_commit":row["producer_source_commit"],
++            "producer_git_blob":row["producer_git_blob"]})).collect::<Vec<_>>(),"manifest_sha256":source::sha(&manifest_bytes),
+         "git_byte_equality":true,"hostile_race_resistant":false,"runtime_qualified":false}),
+     )
+ }
+@@ -262,10 +279,14 @@ pub fn check(root: &Path) -> Result<Value> {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++    const FIXTURE_CEF_COMMIT: &str = "1111111111111111111111111111111111111111";
++    fn records(manifest: &Value) -> Result<Vec<&Value>> {
++        records_with_pin(manifest, Some(FIXTURE_CEF_COMMIT))
++    }
+     fn manifest() -> Value {
+         json!({"schema":"humanymous.cli-qualification-data-provenance/1","replica_count":8,
+             "records":INPUTS.iter().map(|(dest, producer)| json!({"destination":dest,
+-                "producer_source_path":producer,"producer_source_commit":COMMIT,"license":"Apache-2.0",
++                "producer_source_path":producer,"producer_source_commit":trusted_commit(dest, Some(FIXTURE_CEF_COMMIT)).unwrap(),"license":"Apache-2.0",
+                 "bytes":1,"producer_git_blob":"a".repeat(40),"sha256":"b".repeat(64)})).collect::<Vec<_>>()})
+     }
+     #[test]
+@@ -300,4 +321,52 @@ mod tests {
+             assert!(records(&bad).is_err());
+         }
+     }
+-}
++
++    #[test]
++    fn only_cef_changes_epoch_and_pending_or_self_authorized_commits_are_refused() {
++        let good = manifest();
++        assert!(records(&good).is_ok());
++        assert!(records_with_pin(&good, None).is_err());
++        assert!(records_with_pin(&good, Some("invalid")).is_err());
++        for index in 0..INPUTS.len() {
++            let expected = if index == 0 { FIXTURE_CEF_COMMIT } else { HISTORICAL_COMMIT };
++            assert_eq!(good["records"][index]["producer_source_commit"], expected);
++            let mut bad = good.clone();
++            bad["records"][index]["producer_source_commit"] = json!("2".repeat(40));
++            assert!(records(&bad).is_err(), "unreviewed producer {index}");
++        }
++        let mut stale = good;
++        stale["records"][0]["producer_source_path"] = json!("crates/browser/native/desktop/pilot-contract.json");
++        stale["records"][0]["producer_source_commit"] = json!(HISTORICAL_COMMIT);
++        assert!(records(&stale).is_err());
++    }
++
++    #[test]
++    fn seven_original_provenance_records_remain_admitted_without_repinning() {
++        let old: Value = serde_json::from_str(include_str!(
++            "../../../qualification/data-provenance.json")).unwrap();
++        assert_eq!(old["records"].as_array().unwrap().len(), 8);
++        let historical: Vec<_> = old["records"].as_array().unwrap().iter()
++            .filter(|row| row["destination"] != CEF_REPLICA).collect();
++        assert_eq!(historical.len(), 7);
++        for row in historical {
++            let destination = row["destination"].as_str().unwrap();
++            let producer = row["producer_source_path"].as_str().unwrap();
++            assert!(INPUTS.contains(&(destination, producer)));
++            assert_eq!(row["producer_source_commit"], trusted_commit(destination, None).unwrap());
++            assert_eq!(row["producer_source_commit"], HISTORICAL_COMMIT);
++        }
++    }
++
++    #[test]
++    fn replica_integrity_requires_both_reviewed_blob_and_exact_producer_bytes() {
++        let bytes = b"new CEF producer";
++        let blob = "a".repeat(40);
++        let row = json!({"bytes":bytes.len(),"sha256":source::sha(bytes),"producer_git_blob":blob});
++        assert!(validate_replica(&row, bytes, &blob, bytes).is_ok());
++        assert!(validate_replica(&row, bytes, &"b".repeat(40), bytes).is_err());
++        assert!(validate_replica(&row, b"new CEF produceR", &blob, bytes).is_err());
++        let mut rewritten = row;
++        rewritten["sha256"] = json!(source::sha(b"new CEF produceR"));
++        assert!(validate_replica(&rewritten, b"new CEF produceR", &blob, bytes).is_err());
++    }}

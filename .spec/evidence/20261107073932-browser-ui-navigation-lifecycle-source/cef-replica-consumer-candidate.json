@@ -1,0 +1,103 @@
+{
+  "schema": "humanymous.browser-cef-replica-consumer-candidate/1",
+  "branch": "codex/rust",
+  "state": "prepared-unapplied-uncompiled",
+  "root_read_only": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "private_tree": ".spec.local/root/evidence/20261108151000-browser-ui-replica-consumer",
+  "paths": [
+    {
+      "candidate_sha256": "679e1de385bb8b31c8da83257ef0395b74c956873fa08c61470a064366debfd2",
+      "preimage_bytes": 3216,
+      "preimage_sha256": "679e1de385bb8b31c8da83257ef0395b74c956873fa08c61470a064366debfd2",
+      "candidate_bytes": 3216,
+      "path": "crates/apps/humanymous-browser/native/desktop/pilot-contract.json",
+      "action": "preserve"
+    },
+    {
+      "candidate_sha256": "de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87",
+      "preimage_bytes": 6961,
+      "preimage_sha256": "de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87",
+      "candidate_bytes": 6961,
+      "path": "crates/apps/humanymous-cli/qualification/data-provenance.json",
+      "action": "preserve"
+    },
+    {
+      "candidate_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "preimage_bytes": 3098,
+      "preimage_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "candidate_bytes": 3098,
+      "path": "crates/apps/humanymous-cli/qualification/browser/cef/pilot-contract.json",
+      "action": "preserve"
+    },
+    {
+      "candidate_sha256": "433a5492c9abd2f9f7fc58fb89dea2d96e0a111890fa36169a32e0726cbade06",
+      "preimage_bytes": 14419,
+      "preimage_sha256": "bc6862e0cd29383204ea3edc24a6d167a749ec2bd01201760a5a6ca923b51672",
+      "candidate_bytes": 17081,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs",
+      "action": "replace-after-Root-review"
+    },
+    {
+      "candidate_sha256": "3b7a39332ea6d995c8dd6064b0fadcfdcaf0b199061796cf5faf7b19bcd61ed8",
+      "preimage_bytes": 11328,
+      "preimage_sha256": "a7cd1030201e4c76699d910c3423e1ee6d9afc29041fc7918cea2d58cac57075",
+      "candidate_bytes": 15528,
+      "path": "crates/apps/humanymous-cli/src/qualification/delivery/qualification_data.rs",
+      "action": "replace-after-Root-review"
+    },
+    {
+      "candidate_sha256": "e740ce3283e45109d9be5eaa84d7e65e7782a92acebe39a39a10b12d43339a3a",
+      "preimage_bytes": null,
+      "preimage_sha256": null,
+      "candidate_bytes": 7842,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt.rs",
+      "action": "add"
+    },
+    {
+      "candidate_sha256": "2bfa065d8c658b7aa4421926dea67b0cee59dd5c2968027168596b16164fa101",
+      "preimage_bytes": null,
+      "preimage_sha256": null,
+      "candidate_bytes": 7917,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/receipt_tests.rs",
+      "action": "add"
+    }
+  ],
+  "preimage_drift": 0,
+  "historical_inputs_preserved": 7,
+  "historical_commit": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "CEF_production_pin": null,
+  "CEF_production_pin_state": "None; fail-closed until Root commits and reviews relocated producer",
+  "replica_and_provenance_bytes": "unchanged pending explicit producer review",
+  "response_schemas": [
+    "humanymous.cli-qualification-data-check/2",
+    "humanymous.cef-safe-diagnostics/2",
+    "humanymous.cef-receipt-consumer/2"
+  ],
+  "new_Rust_regressions": 8,
+  "existing_data_refusal_tests_preserved": 2,
+  "safe_projection_file": "safe-report.json",
+  "private_report_file": "report.json",
+  "workflow_change": "not_authored",
+  "manifest_lock_change": "not_authored",
+  "patch_applicability": "passed against five exact Root preimages and two absent destinations",
+  "compiler": "not_run",
+  "formatter": "not_run",
+  "tests": "not_run",
+  "native_SDK_CEF_browser": "not_run",
+  "execution_allocation": "Root requested after delivery",
+  "qualified": false,
+  "spec_check": {
+    "full_public_observed": {
+      "errors": 24,
+      "docs_total": 310,
+      "scope": "all public documents; no path filter",
+      "status": "foreign P2 findings during parallel authoring; not green",
+      "warnings": 0
+    },
+    "owned_paths": {
+      "errors": 0,
+      "exit": 0,
+      "warnings": 0
+    }
+  }
+}

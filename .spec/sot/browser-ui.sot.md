@@ -929,3 +929,29 @@ No private artifact ledger may be relabeled as a safe public receipt. Exact path
 hash, ownership and next-gate deltas are in meari-030-cpu-next-deltas.md and
 meari-030-cpu-root-checkpoint.json under evidence:root/20261107073932.
 CPU default, CEF156/cef-rs pins, sandbox, scoring and all unverified goals persist.
+
+
+UI-42 (per-replica CEF and schema2 source candidate): DATA validation must
+select the CEF producer's independently reviewed compiled pin without changing
+the other seven3137c905 historical pins. Pending committed-source admission is
+None and must refuse, never a fabricated hash or provenance-file-controlled
+trust choice. Preserve eight required replicas, exact Git blob/byte equality,
+license/bounds/path/duplicate refusal and the historical provenance. DATA input
+records retain schema1; schema2 result lists actual per-replica source_pins.
+
+A safe CEF schema2 consumer must bind the caller's reviewed source/manifest and
+distinct role hashes, require both successful observed build/stage receipts,
+full bounded protocol/rejection/case counters and actual reported wait/reap
+values, and refuse unknown/old/private schema or aggregate/missing/failed data.
+Its result grants no BrowserReady, runtime/product/nativeproof/GPU/GUI authority.
+Observed terminal execution and a fresh owned output remain separate evidence.
+The ordinary safe-report.json producer must write only the existing safe
+projection with create-new semantics; full report.json and artifact ledgers stay
+private. Delivery workflow/consumer adoption is a separately owned delta.
+
+cef-replica-consumer-candidate.md/json/patch under evidence:root/20261107073932
+binds five Root preimages, two absent destinations and actual four Rust source
+postimages with eight new refusal/privacy/integrity fixtures. Applicability is
+checked; compile/tests/native/SDK/CEF execution remain unrun. Root alone applies,
+finalizes the real producer pin and allocates the scoped checks. CEF/Meari pins,
+CPU defaults, sandbox, scoring and all unfinished goals remain unchanged.

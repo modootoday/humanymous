@@ -56,6 +56,9 @@ files:
   - {path: meari-030-spec-link-repair.json, sha256: 6142e892e950138368af6c56758ea11c691ef1ddab9321fe53d52d31974e0008, bytes: 1057, store: repo}
   - {path: meari-030-cpu-next-deltas.md, sha256: 04d2bbc6a861c1fcaae46f37e2686864187d47de1cae1e2a02fb826b4a712473, bytes: 9585, store: repo}
   - {path: meari-030-cpu-root-checkpoint.json, sha256: c98348b224766b844f09e11b6aa8ff0385a728b1106b81fc6642afa926c6560e, bytes: 12304, store: repo}
+  - {path: cef-replica-consumer-candidate.md, sha256: 84996409ff2031f7ac807faeb3674c8331e9112cb3a12c12cd7afbca8471fe85, bytes: 7476, store: repo}
+  - {path: cef-replica-consumer-candidate.json, sha256: b26c767a14a6ea4b614e8de6b903a44c980508fd5184c0884f113f51c121665a, bytes: 4237, store: repo}
+  - {path: cef-replica-consumer-candidate.patch, sha256: 1d91b80db3dc0d6d8830b5db15ae083c1db0a6ddcbefad95cdec679dcbcf0f99, bytes: 29646, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint

@@ -651,3 +651,15 @@ real role/PE/SDK builds and boundednativeprocesses; full CPU resize/IME/AX/DPI/
 sandbox and teardown. Primary is unchanged and GPU remains separate. This
 sourcecandidate assignment made no implementation/manifest/lock changes or
 compiler/test/native execution. Root coordinates Delivery's owned changes.
+
+
+## UI-42 active per-replica and safe schema2 Rust candidate
+
+Root assigned actual implementation under evidence-only ownership on verified
+codex/rust. Candidate tree20261108151000-browser-ui-replica-consumer preserves
+exact Root preimages and authors per-replica compiled admission, schema2 receipt
+consumption and an actual create-new safe-report producer with refusal fixtures.
+The CEF producer commit remains explicitly None pending Root's committed-source
+review; other seven historical pins retain3137c905. No invented production pin,
+replica refresh, manifest/lock/workflow/source application or execution occurs.
+Root will receive the exact applicable patch and scoped-test allocation request.
