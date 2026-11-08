@@ -1,0 +1,317 @@
+{
+  "schema": "humanymous.browser-meari-030-review/1",
+  "review_date_kst": "2026-11-08",
+  "state": "review-only-upgrade-unqualified",
+  "release": {
+    "baseline": "1482b746ebc0d867f25d17d01c48c12df888ca6c",
+    "tag": "v0.3.0",
+    "tag_object": "52c612a1020b213f35f36e9741c1661ff999dc8d",
+    "commit": "ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4",
+    "tagger_date_utc": "2026-11-07T20:32:12Z",
+    "tag_signature": "unsigned",
+    "compare": {
+      "status": "ahead",
+      "ahead_by": 6,
+      "total_commits": 6,
+      "changed_files": 46,
+      "commits": [
+        {
+          "sha": "739d108ed22e028021644ffd7bdd78531bd5c2b8",
+          "subject": "feat(native): add GPU window rendering and resize latency metrics"
+        },
+        {
+          "sha": "7cd3ac2fafb49ffce1777e25e0fef73fba042274",
+          "subject": "Merge branch 'feat/window-rendering'"
+        },
+        {
+          "sha": "269d9ad8aeca0cb89505f2d80c0fa9d73ccbd831",
+          "subject": "chore: prepare 0.3.0 release"
+        },
+        {
+          "sha": "49f18932ddec533b98f7a0184fe30e3e8720102f",
+          "subject": "Merge branch 'chore/release-0.3.0'"
+        },
+        {
+          "sha": "f44edf422b20c8da5a630e2b8e8d6894ba1d0a75",
+          "subject": "chore: record patched shell source provenance"
+        },
+        {
+          "sha": "ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4",
+          "subject": "Merge branch 'fix/release-shell-provenance'"
+        }
+      ]
+    },
+    "github_release": {
+      "tag_endpoint_status": 404,
+      "list": []
+    },
+    "source_links": [
+      "https://github.com/modootoday/meari/tree/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4",
+      "https://api.github.com/repos/modootoday/meari/git/tags/52c612a1020b213f35f36e9741c1661ff999dc8d",
+      "https://github.com/modootoday/meari/compare/1482b746ebc0d867f25d17d01c48c12df888ca6c...v0.3.0"
+    ]
+  },
+  "registry": [
+    {
+      "created_at": "2026-11-08T03:53:52.773616Z",
+      "checksum": "7edab5106aa2d3d1044484d0ae8da0416aa31e1a2189d394a2422aade47c9500",
+      "version": "0.3.0",
+      "url": "https://crates.io/api/v1/crates/meari/0.3.0",
+      "yanked": false,
+      "rust_version": null
+    },
+    {
+      "created_at": "2026-11-08T03:53:58.273703Z",
+      "checksum": "19ef54a30b7504efff9b539af31222c834f14a3a13deb43bb6d730bce7eee357",
+      "version": "0.3.0",
+      "url": "https://crates.io/api/v1/crates/meari-native/0.3.0",
+      "yanked": false,
+      "rust_version": null
+    },
+    {
+      "created_at": "2026-11-08T03:53:53.677116Z",
+      "checksum": "ced0f4d6126f6416b441f241bef1eafecdcdb273af575d86ef33a3b68aeb54c6",
+      "version": "0.3.0",
+      "url": "https://crates.io/api/v1/crates/meari-dom/0.3.0",
+      "yanked": false,
+      "rust_version": "1.91.0"
+    },
+    {
+      "created_at": "2026-11-08T03:53:56.431112Z",
+      "checksum": "e45a3c413c45543d96f18c6557218e560bc58d246effe3a97438c771dbe4c7de",
+      "version": "0.3.0",
+      "url": "https://crates.io/api/v1/crates/meari-shell/0.3.0",
+      "yanked": false,
+      "rust_version": "1.91.0"
+    },
+    {
+      "created_at": "2026-07-01T21:09:10.497948Z",
+      "checksum": "6d8f4bd44d92da5270f03409dba9f952dab24f128e05d6a554926101d1bf9114",
+      "version": "30.0.0",
+      "url": "https://crates.io/api/v1/crates/wgpu/30.0.0",
+      "yanked": false,
+      "rust_version": "1.87.0"
+    },
+    {
+      "created_at": "2026-10-02T19:48:21.154901Z",
+      "checksum": "913abde56cab6131b62c0cc69b1a93b671d3c34b3097beb3714fd1dc93be8115",
+      "version": "0.11.0",
+      "url": "https://crates.io/api/v1/crates/vello/0.11.0",
+      "yanked": false,
+      "rust_version": "1.89"
+    },
+    {
+      "created_at": "2026-10-03T17:21:58.338591Z",
+      "checksum": "04d545f71a3f13b1099d5787c44cfeb00322cebbebbf90c4f8cdae78bee423f7",
+      "version": "0.15.0",
+      "url": "https://crates.io/api/v1/crates/anyrender_vello/0.15.0",
+      "yanked": false,
+      "rust_version": null
+    }
+  ],
+  "selected_upstream_files": [
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/CHANGELOG.md",
+      "sha256": "dd7858db2b391bec4f291ffe82be57ccfd3800d85993677e221396b0b507c8b4",
+      "bytes": 3078,
+      "git_blob": "6d5f9fe242472c5afa5d288ae440c7dbdf3c033c",
+      "path": "CHANGELOG.md"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/Cargo.toml",
+      "sha256": "55bf09a1a2a487c7e7a78121c3da8da0d81c0b6cc97772d0eb14d594c2e2add7",
+      "bytes": 1352,
+      "git_blob": "52bfa0c8f4a62ea37bdf37d28ef5889568bf122f",
+      "path": "Cargo.toml"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/Cargo.toml",
+      "sha256": "357e0f33bbb4ce2a25eca56afb06f18022b1e81994fe30bc4f42f6b67f7518ef",
+      "bytes": 6470,
+      "git_blob": "8a20d2b3fd1d073f5417ed2eb33a429a1d6d9ce5",
+      "path": "crates/meari-native/Cargo.toml"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/rendering/mod.rs",
+      "sha256": "99e62000831376b3201b8809801c9db6472eb4113f087ef77fcfa5847e66018b",
+      "bytes": 10089,
+      "git_blob": "116358af79cf067fa2c99c85f4add406753885d9",
+      "path": "crates/meari-native/src/infrastructure/window/rendering/mod.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/rendering/gpu.rs",
+      "sha256": "eb4e1205db41c1411c4ad87a449c62c15c0efb2868b3dfe032b5233b6c2a7d9e",
+      "bytes": 12656,
+      "git_blob": "b5e123ffcd67a7d69efb1ba506be56fa7ce3c51f",
+      "path": "crates/meari-native/src/infrastructure/window/rendering/gpu.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/rendering/flight.rs",
+      "sha256": "0a836b7f445b82f714480673cf7ac22aa717013aa31f81c8d3568b356898e3b7",
+      "bytes": 2687,
+      "git_blob": "9f27df48dde46f2fe1fb7961ac10c25612f042d5",
+      "path": "crates/meari-native/src/infrastructure/window/rendering/flight.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/rendering/metrics.rs",
+      "sha256": "9f8307c27da7a2f99c6b89d23cfcb0392acafeaaac60b1a281b3304c8ccf928d",
+      "bytes": 1456,
+      "git_blob": "21363ff5d6eab6c02c3d1859b931b8a4eddd79c5",
+      "path": "crates/meari-native/src/infrastructure/window/rendering/metrics.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/rendering/probe.rs",
+      "sha256": "a5dcbc9536a84c57bff599e8f7e3c2ccd134653348d0119d327cb72d308d98ff",
+      "bytes": 11830,
+      "git_blob": "0cdf287fe7d56f76bb9aad527bfd0bdd3c478510",
+      "path": "crates/meari-native/src/infrastructure/window/rendering/probe.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/verification/checked_window.rs",
+      "sha256": "ab38c48ecf534183403622aa8589d2574133813bcc440d7c3b7c5dfbf6ccc310",
+      "bytes": 10514,
+      "git_blob": "aab27a0464542b3009f97dd5a37ee31a83e37e75",
+      "path": "crates/meari-native/src/infrastructure/verification/checked_window.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/driver.rs",
+      "sha256": "19b6e9f538979c29b50d8b4409f83682c86fcc6f3293d17afa00019460214764",
+      "bytes": 12919,
+      "git_blob": "34dcaa86c93d576fa30a7877cde0344647b2b029",
+      "path": "crates/meari-native/src/infrastructure/window/driver.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/handler/event_loop.rs",
+      "sha256": "60c599d2e94ceec7e4f434244de3e518f2894e34fb25cd8ec53cda3c105961f7",
+      "bytes": 17991,
+      "git_blob": "eb0b64749f92ef08f90b40dd827d350121afccbd",
+      "path": "crates/meari-native/src/infrastructure/window/handler/event_loop.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/preparation.rs",
+      "sha256": "699f4bac707db71fb3bad6c0adefb77cd0f5732f881beee49aba63411bb93981",
+      "bytes": 11560,
+      "git_blob": "1a6d55087390da6a34e0eafb96127c3153f749ba",
+      "path": "crates/meari-native/src/infrastructure/window/preparation.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-shell/src/window.rs",
+      "sha256": "dcbb07311d9e815a31f708c521a1a7431c33621baff065a73f40e5ac2d3ea026",
+      "bytes": 37325,
+      "git_blob": "eb0227f093669a96c0a15db058c26ffddb6e607a",
+      "path": "crates/meari-shell/src/window.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/.spec/guide/native-window-renderer-selection-and-latency-probe.guide.md",
+      "sha256": "cab0576e6471175e060d3d4e1b370a2163a4711952015c61e9a3c212e3b7c7c3",
+      "bytes": 8504,
+      "git_blob": "0d22bb5f4c70a93792a2e419c13e4872f556b961",
+      "path": ".spec/guide/native-window-renderer-selection-and-latency-probe.guide.md"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/.spec/evidence/20261107174455-native-window-rendering-validation/index.evidence.md",
+      "sha256": "528992de8f75a6a4dec8796dc7d00652c8163bd34adc8307c8d4aaecacfd93f8",
+      "bytes": 13220,
+      "git_blob": "79344114d62db675f5e8b10653f1117f1057efaa",
+      "path": ".spec/evidence/20261107174455-native-window-rendering-validation/index.evidence.md"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/rust-toolchain.toml",
+      "sha256": "d13306be0ecda81ce779baa290ffb417380d525928477f16200884b5169cca33",
+      "bytes": 86,
+      "git_blob": "58eef2ccd48f957feeada49b17ad1e3fd667bf8c",
+      "path": "rust-toolchain.toml"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/window/rendering/gpu_scene.rs",
+      "sha256": "1c1a7facb8296630db28a3575296a29b7aacdde35df02160c63821b528b3e9a3",
+      "bytes": 1820,
+      "git_blob": "d9398eaa7d01eb2c3eac06cc5e471e1cce94cbae",
+      "path": "crates/meari-native/src/infrastructure/window/rendering/gpu_scene.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-native/src/infrastructure/environment/media_state.rs",
+      "sha256": "4ffe8aba766683f0d42bb8ade6e686e41203f0e36db7621025c56fd2fb84f377",
+      "bytes": 4348,
+      "git_blob": "3617f42ccc64f6d638b0eb67d9bbf21fbcd849b1",
+      "path": "crates/meari-native/src/infrastructure/environment/media_state.rs"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/crates/meari-shell/VENDORED.sha256",
+      "sha256": "a11ca90f4fdea8ae3e2cc00f692cd8abbc56ca451a6209a38683189359d9fdd1",
+      "bytes": 1434,
+      "git_blob": "fbc8f9940e7d6f97f6949c0d9838a652b3db980d",
+      "path": "crates/meari-shell/VENDORED.sha256"
+    },
+    {
+      "source_url": "https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/Cargo.lock",
+      "sha256": "029d2878a1b2424be533b406cfa3e0421f5bb9b4a08f5727822c37b121110342",
+      "bytes": 145346,
+      "git_blob": "d2137acaa27d67d56570c85169ce6e1a2addd661",
+      "path": "Cargo.lock"
+    }
+  ],
+  "exact_official_blob_matches": 20,
+  "consumer_view": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "inspected_consumers": [
+    {
+      "path": "crates/apps/humanymous-browser/Cargo.toml",
+      "sha256": "53f54d23c396b63e5d22e1f10548b8bf246bf0037b58eb74b94adfdef779d0dd"
+    },
+    {
+      "path": "crates/apps/humanymous-browser/src/native/desktop/host.rs",
+      "sha256": "9421499fb3db4345a587f07bece37150175993c4ab5f00b1a7c7a4c8bc0f8d64"
+    },
+    {
+      "path": "crates/apps/humanymous-browser/src/icons.rs",
+      "sha256": "e70e4327f91d0197d0f0b30bf09f72ae2e56ffb061f15655868077ced167047a"
+    },
+    {
+      "path": "crates/apps/humanymous-browser/src/ui.rs",
+      "sha256": "88c71a27771e83f12c045a665c28d33fa87df98926974c4a1b65ef5073204521"
+    },
+    {
+      "path": "crates/apps/humanymous-browser/src/scene_projection.rs",
+      "sha256": "730f4c4a82a7f28c561b13b1632d6505cb0ec931b206093cfedac98b7c23511f"
+    }
+  ],
+  "candidate": {
+    "registry_archive_tag_byte_equality": "not_checked",
+    "packages": [
+      "meari",
+      "meari-native",
+      "meari-dom"
+    ],
+    "first_stage": "CPU window feature unchanged",
+    "git_revision": "ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4",
+    "later_stage": "separate explicit trusted window-gpu and renderer selection",
+    "shared_manifest_lock_edits": false
+  },
+  "findings": {
+    "no_CPU_readback_in_GPU_path_in_source": true,
+    "upstream_Windows_CEF_IME_AX_DPI": "explicitly unverified",
+    "wgpu": "30.0.0",
+    "cpu_resize_changes_also_shipped": true,
+    "gpu_opt_in": true,
+    "one_gpu_frame_in_flight_in_source": true,
+    "cpu_default": true,
+    "upstream_hardware_success": false,
+    "gpu_hardware_classification_gap": "Cpu rejected; VirtualGpu/Other not independently rejected by the inspected selection",
+    "gpu_scene_limits": [
+      "filter",
+      "backdrop-filter",
+      "custom brush",
+      "resource brush"
+    ],
+    "toolchain": "Rust 1.99.1 edition2024",
+    "actual_display_ack": "unavailable"
+  },
+  "verdict": "needs-work before GPU adoption; CPU upgrade also unqualified",
+  "local_cargo_metadata": "not_run",
+  "compiler": "not_run",
+  "tests": "not_run",
+  "clippy": "not_run",
+  "native_GPU_CEF_IME_AX_DPI_sandbox": "not_run",
+  "distribution": "not_qualified",
+  "whole_dependency_closure": false
+}

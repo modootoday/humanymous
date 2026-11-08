@@ -614,3 +614,21 @@ public projection and Root explicit same-byte test cleanup remain unchanged.
 Four pure regressions authored/unrun. Patch applicability and static source
 checks passed; no formatter/compiler/metadata/test/SDK/PE/native/hosted execution.
 Root finalepoch/contract refresh and real role/pilot gates remain required.
+
+
+## UI-40 Meari0.3.0 release review and upgrade candidate
+
+Official v0.3.0 resolves to ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4.
+The annotated tag and unyanked registry packages are verified; no GitHub Release
+post/assets were observed. Current1482pin and shared/isolated manifests/lock are
+unchanged. meari-030-review.md/json records20officialblob-matched source files,
+compatibility/toolchain/distribution findings and read-only merged consumers.
+Root candidate order: exactcoherentMearipin withCPUfeatures; lock/source/metadata
+epoch rejoin and pure/document/rolegraph/strict gates; realSDKroles/artifactjoins;
+CPUrelease/dev fullBrowser resize/input/IME/AX/DPI/sandbox; separatetrustedGPU
+feature/selection, structuredhardwareclass/sceneparity/memory/lifecycle/package
+and actualdisplay-validation gates. Unknown VirtualGpu/Other must not become
+required-hardware success; upstream GPU choice alone is insufficient.
+Adversarial verdict needs-work beforeGPUadoption; CPUupgrade also unqualified.
+Upstream Linux reports do not count as our passes. No local Cargo resolution,
+compiler/test/Clippy/SDK/GPU/process/browser execution or publication occurred.

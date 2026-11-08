@@ -876,3 +876,33 @@ success. Diagnostic observations do not replace actual case/harness receipts,
 re-evaluate bootstrap semantics or qualify full sandbox/descendant cleanup.
 New producer and synthetic tests require independent native-feature compilation
 and execution; older source results are not inherited.
+
+
+UI-40 (Meari0.3.0 reviewed upgrade candidate, not adopted): official annotated
+tag v0.3.0/object52c612a1020b213f35f36e9741c1661ff999dc8d resolves to
+ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4, six commits after the current
+1482b746 pin. The reviewed tag/registry publication supersedes only UI-39's
+awaiting-release observation; it grants no active dependency/backend change.
+Root must pin all Meari-family Browser dependencies coherently, first qualify
+the unchanged CPU window feature and resize/media-layout changes, then admit a
+separate opt-in GPU candidate only after role/scene/native/distribution gates.
+Rust1.99.1/edition2024 is upstream's pinned toolchain; full transitive build
+compatibility remains unverified. Actual GPU dependencies include wgpu30.0.0,
+not the earlier speculative30.0.1 research version.
+
+Meari's Gpu rejects Cpu but does not independently reject VirtualGpu/Other;
+selectedGPU plus software_fallback=false is insufficient for required-hardware
+admission. Unknown class remains unknown/refused until structured evidence is
+available. Unsupported GPU filter/backdrop/custom/resource scenes must remain
+explicit failures, never dropped paint. Cpu remains the default; diagnostic
+GpuAllowSoftware and any future Auto policy are separate trusted choices.
+No CEF sandbox/security switch, OSR conversion, detector/scoring or SDK policy
+change follows. Preserve full IME/Hanja candidate/AX/DPI/native-child lifecycle
+gates; upstream Linux/synthetic/software evidence is not Windows support.
+Present return and queue completion are not display acknowledgement. Keep raw
+adapter diagnostics private and public timings content-free.
+
+Evidence: meari-030-review.md/json in evidence:root/20261107073932 binds exact
+tag/commit/registry observations,20upstream Gitblob-matched files, source-backed
+compatibility limits and the ordered Root qualification gates. No local compiler,
+metadata/test/Clippy/SDK/GPU/native/browser/distribution run was performed.
