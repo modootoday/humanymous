@@ -47,6 +47,19 @@
       "honest_receipt_write"
     ]
   },
+  "composition_cap_limits": {
+    "network_mode": "none",
+    "original_h2_measured": false,
+    "desktop_as_hosted": "forbidden",
+    "reason": "oneshot proves runtime binary + contract bind only; no TLS listen/client path"
+  },
+  "missing_for_original_h2_measured": [
+    "Root-allocated hosted gateway H2 product-binding measure topology (TLS listen + client path; not composition network_mode=none alone)",
+    "Cap pilot that serves humanymous-runtime gateway with route required.original_h2=true",
+    "Same-owner live Connection + successful observe_h2 for that request (not capture native-component observe_h2 folklore)",
+    "Owner-integration readiness join authorization after measured binding (SoT N06 / R14-D6)",
+    "Honest measure receipt artifact Cap may consume before flipping original_h2_measured"
+  ],
   "honesty": {
     "product": 0,
     "pass_product_clean_room": 0,
@@ -54,6 +67,7 @@
     "never_invent_readiness_original_h2": true,
     "n06_join_requires_measured_binding": true,
     "detection_freeze": true,
-    "authority_cap_reburn_forbidden": true
+    "authority_cap_reburn_forbidden": true,
+    "w2_cap_reburn_without_hosted_measure_delta": "forbidden"
   }
 }

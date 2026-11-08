@@ -3,6 +3,8 @@
 # Lab-only integration image. Detection freeze. CARGO_BUILD_JOBS=1.
 # Cap pilot oneshot: prove gateway runtime binary is Cap-bound; do not invent
 # readiness original_h2:true or pass_product_clean_room from composition alone.
+# network_mode=none composition Cap never measures hosted original_h2 (N06 join
+# still requires Root-hosted TLS listen+client pilot — see gateway contract).
 FROM rust:1.99.1-alpine@sha256:44819b27be4c97b0e4d7203bd2e02c4820f97700211b6a37fb4c246a2de59383 AS compiler
 ENV CARGO_BUILD_JOBS=1 CARGO_INCREMENTAL=0
 WORKDIR /src

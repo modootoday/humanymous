@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T15:20:00Z
+updated: 2026-11-08T15:35:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -27,8 +27,8 @@ Never invent `pass_product_clean_room`.
 | # | Closer | Result |
 | --- | --- | --- |
 | 1 | Unlock B / G1 W2 H2 product-binding | **Cap EXIT 0 component** — allowlist cites `deployments/lab/gateway/h2-product-binding-contract.json`; prior EXIT 1 @ `20261109000700`; reburn justified by structural allowlist delta; `counts_as=pass_component_desktop`; product=0 |
-| 2 | N06 readiness join | **blocked** — `original_h2_measured=false`; component Cap ≠ measured hosted binding |
-| 3 | Unlock A / G4 CEF/AT | **blocked / Cap CLI refuse-closed** — Cap CLI `--g4-cef-at` code-defined (mirrors B/C); no `UNLOCK-A-APPLIED`; empty entries; exact missing: path release `crates/browser/**` and/or `scripts/ci/cef-pilot/**`, Cap CLI GRANT pilot, `HUMANYMOUS_CEF_PILOT_BUNDLE`; Cap burn=0 |
+| 2 | N06 readiness join | **blocked (diagnosed)** — Cap EXIT 0 left `original_h2_measured=false` because composition Cap is `network_mode=none` oneshot (binary+contract only); Desktop≠hosted; missing Root-hosted measure join cited in contract + lab-runner refuse; Cap=0 this turn (no invent measure) |
+| 3 | Unlock A / G4 CEF/AT | **blocked / Cap CLI refuse-closed** @ `eebcf64d` — Cap CLI `--g4-cef-at` code-defined; no `UNLOCK-A-APPLIED`; exact missing: path release `crates/browser/**` and/or `scripts/ci/cef-pilot/**`, Cap CLI GRANT pilot, `HUMANYMOUS_CEF_PILOT_BUNDLE`; Cap burn=0 |
 
 ## 2. Decision rules
 
@@ -70,14 +70,17 @@ Tracked: this plan.
 
 ## 5. Residual / next
 
-Cap free (Unlock A Cap burn=0 this turn). Cap CLI `--g4-cef-at` refuse-closed
-citing exact missing path release + CEF bundle. Next Root-gated closer:
+N06 diagnose (this turn): Cap=0; strengthened refuse cites
+`missing_for_original_h2_measured` (contract + lab-runner). Cap free.
+Unlock A Cap CLI refuse-closed @ `eebcf64d`. Next Root-gated closer:
 
-1. Unlock **A** GRANT + exact path release (`crates/browser/**` and/or
+1. Root-hosted gateway H2 **measure** topology + pilot (exact join in
+   `deployments/lab/gateway/h2-product-binding-contract.json`
+   `missing_for_original_h2_measured`) → then Cap=1 once with that structural
+   delta → `original_h2_measured` only if measured — **or**
+2. Unlock **A** GRANT + exact path release (`crates/browser/**` and/or
    `scripts/ci/cef-pilot/**`) + Cap CLI `--g4-cef-at` pilot +
-   `HUMANYMOUS_CEF_PILOT_BUNDLE` then Cap=1 matching g4 pack — **or**
-2. Measured hosted gateway H2 binding → N06 readiness join eligibility
-   (still not automatic `pass_product_clean_room`; `original_h2_measured=false`)
+   `HUMANYMOUS_CEF_PILOT_BUNDLE` then Cap=1 matching g4 pack
 
 No W2/authority Cap reburn without new structural delta.
 Never invent `pass_product_clean_room`. Capture `observe_h2` still forbidden as

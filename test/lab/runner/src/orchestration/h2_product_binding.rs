@@ -2,6 +2,7 @@
 //!
 //! Cap topology (compose + Dockerfile for gateway serve + `required.original_h2`)
 //! is Cap-ready under claimed Cursor surface after Unlock B topology transfer.
+//! Composition Cap with `network_mode=none` never measures hosted original_h2.
 //! Capture `observe_h2` is never product-binding. Never invent `pass_product_clean_room`.
 use super::Lab;
 use crate::{docker::Result, snapshot};
@@ -24,6 +25,18 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
     "build/rust/h2-product-binding-lab.Dockerfile",
 ];
 
+/// Exact Root-hosted join still missing for `original_h2_measured=true` (N06).
+///
+/// Composition Cap EXIT 0 with `network_mode=none` does **not** satisfy these.
+/// Desktop Cap must not be treated as hosted (`desktop_as_hosted` forbidden).
+pub const MISSING_ORIGINAL_H2_MEASURE_JOIN: &[&str] = &[
+    "Root-allocated hosted gateway H2 product-binding measure topology (TLS listen + client path; not composition network_mode=none alone)",
+    "Cap pilot that serves humanymous-runtime gateway with route required.original_h2=true",
+    "Same-owner live Connection + successful observe_h2 for that request (not capture native-component observe_h2 folklore)",
+    "Owner-integration readiness join authorization after measured binding (SoT N06 / R14-D6)",
+    "Honest measure receipt artifact Cap may consume before flipping original_h2_measured",
+];
+
 /// Freeze pins from Cap-ready contract — abort Cap on drift.
 const FREEZE_PREIMAGES: &[(&str, &str)] = &[
     (
@@ -44,6 +57,22 @@ const FREEZE_PREIMAGES: &[(&str, &str)] = &[
     ),
 ];
 
+/// Composition Cap cannot claim measured original_h2; cite exact missing join.
+pub fn original_h2_measured_from_composition_cap() -> bool {
+    false
+}
+
+/// Fail-closed: refuse invented `original_h2_measured=true` without hosted join.
+pub fn refuse_invented_original_h2_measured(measured: bool) -> Result<()> {
+    if measured {
+        return Err(format!(
+            "w2-h2-product-binding Cap refused: original_h2_measured=true without Root-hosted measure join ({missing}); composition Cap / capture observe_h2 never lift N06; never invent pass_product_clean_room",
+            missing = MISSING_ORIGINAL_H2_MEASURE_JOIN.join("; ")
+        )
+        .into());
+    }
+    Ok(())
+}
 /// Missing Cap topology paths.
 pub fn missing_cap_topology(root: &Path) -> Vec<&'static str> {
     REQUIRED_CAP_TOPOLOGY
@@ -144,25 +173,57 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         running || exit_code == 0,
         json!({"running": running, "exit_code": exit_code}),
     )?;
+    // Composition Cap honesty: network_mode=none oneshot never measures hosted H2.
+    let measured = original_h2_measured_from_composition_cap();
+    refuse_invented_original_h2_measured(measured)?;
+    lab.case(
+        "h2-product-binding-original-h2-not-measured",
+        !measured,
+        json!({
+            "original_h2_measured": measured,
+            "missing_measure_join": MISSING_ORIGINAL_H2_MEASURE_JOIN,
+            "reason": "composition Cap network_mode=none; Root-hosted measure join absent; capture observe_h2 ≠ product-binding"
+        }),
+    )?;
     lab.components["w2_h2_product_binding"] = json!({
         "status": "executed",
         "kind": "w2-h2-product-binding-component",
         "product": 0,
         "pass_product_clean_room": 0,
-        "original_h2_measured": false,
-        "note": "component Cap composition only; never invent readiness original_h2 or pass_product_clean_room; capture observe_h2 ≠ product-binding"
+        "original_h2_measured": measured,
+        "missing_measure_join": MISSING_ORIGINAL_H2_MEASURE_JOIN,
+        "n06_join": "blocked",
+        "note": "component Cap composition only; original_h2_measured stays false until Root-hosted measure join; never invent readiness original_h2 or pass_product_clean_room; capture observe_h2 ≠ product-binding"
     });
     snapshot::write(
         &lab.evidence,
         "w2-h2-product-binding-component.json",
         &lab.components["w2_h2_product_binding"],
     )?;
+    snapshot::write(
+        &lab.evidence,
+        "original-h2-measure-join-missing.json",
+        &json!({
+            "schema": "humanymous.lab-h2-original-h2-measure-join/1",
+            "original_h2_measured": measured,
+            "missing_measure_join": MISSING_ORIGINAL_H2_MEASURE_JOIN,
+            "composition_cap_network_mode": "none",
+            "desktop_as_hosted": "forbidden",
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "n06_join": "blocked"
+        }),
+    )?;
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, missing_cap_topology};
+    use super::{
+        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, MISSING_ORIGINAL_H2_MEASURE_JOIN,
+        missing_cap_topology, original_h2_measured_from_composition_cap,
+        refuse_invented_original_h2_measured,
+    };
     use crate::snapshot;
     use std::fs;
 
@@ -188,6 +249,27 @@ mod tests {
         assert!(
             missing.is_empty(),
             "Cap topology must be present after Unlock B topology transfer; missing={missing:?}"
+        );
+    }
+
+    #[test]
+    fn composition_cap_never_claims_original_h2_measured() {
+        assert!(!original_h2_measured_from_composition_cap());
+        assert!(refuse_invented_original_h2_measured(false).is_ok());
+        let err = refuse_invented_original_h2_measured(true).expect_err("invented measured");
+        let message = err.to_string();
+        assert!(message.contains("original_h2_measured=true"));
+        assert!(message.contains("Root-hosted"));
+        assert!(MISSING_ORIGINAL_H2_MEASURE_JOIN.len() >= 4);
+        assert!(
+            MISSING_ORIGINAL_H2_MEASURE_JOIN
+                .iter()
+                .any(|item| item.contains("required.original_h2=true"))
+        );
+        assert!(
+            MISSING_ORIGINAL_H2_MEASURE_JOIN
+                .iter()
+                .any(|item| item.contains("observe_h2"))
         );
     }
 

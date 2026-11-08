@@ -54,7 +54,30 @@ cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-pro
 | Readiness `original_h2:true` without measured binding | refuse |
 | Authority `--authority-node-ipc` Cap spam reburn | refuse |
 
-## N06
+## N06 / why composition Cap leaves `original_h2_measured=false`
 
-Readiness / product / matrix G1 reconsideration only after measured binding +
-Root N06 join — never from Clippy/capture-component/composition Cap alone.
+Unlock B Cap EXIT 0 (`pass_component_desktop`) is intentional composition-only:
+
+| Cap surface | Measured state |
+| --- | --- |
+| `compose.h2-product-binding.yaml` | `network_mode: none` (no TLS listen/client path) |
+| Cap oneshot Dockerfile | hardcodes `original_h2_measured:false` |
+| Lab-runner Cap receipt | refuse-closed if invented `true` without hosted join |
+
+Capture `observe_h2` (run 42479169280) remains `pass_component_hosted` folklore —
+never product-binding / never N06 lift.
+
+### Exact missing join (Root-hosted)
+
+1. Hosted gateway H2 product-binding **measure** topology (TLS listen + client;
+   not composition `network_mode=none` alone; Desktop ≠ hosted).
+2. Cap pilot that **serves** `humanymous-runtime` with route
+   `required.original_h2=true`.
+3. Same-owner live `Connection` + successful `observe_h2` for that request.
+4. Owner-integration readiness join authorization (SoT N06 / R14-D6).
+5. Honest measure receipt artifact Cap may consume before flipping
+   `original_h2_measured`.
+
+Until that join lands: keep `original_h2_measured=false`, matrix
+`required_unavailable`, `product=0`. Never invent `pass_product_clean_room`.
+No W2 Cap reburn without a new hosted-measure structural delta.
