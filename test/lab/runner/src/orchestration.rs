@@ -596,6 +596,27 @@ impl Lab {
         Ok(())
     }
     fn cleanup(&mut self) -> Result<()> {
+        // Host-only Caps never open compose topology; still recheck Desktop
+        // engine affinity (HUMANYMOUS_DOCKER_DESKTOP_BASELINE) then prove the
+        // owned project left no Docker resources. Never invent compose down.
+        if self.g4_cef_at || self.n06_owner_join_readiness {
+            self.docker.recheck_engine()?;
+            let filter = format!("label=com.docker.compose.project={}", self.project);
+            let containers = self.docker.call(&["ps", "-aq", "--filter", &filter])?;
+            let networks = self
+                .docker
+                .call(&["network", "ls", "-q", "--filter", &filter])?;
+            let volumes = self
+                .docker
+                .call(&["volume", "ls", "-q", "--filter", &filter])?;
+            return self.case(
+                "cleanup-owned-project",
+                containers.trim().is_empty()
+                    && networks.trim().is_empty()
+                    && volumes.trim().is_empty(),
+                json!(self.project),
+            );
+        }
         self.docker.recheck_engine()?;
         let down = self.compose(
             &["down", "--volumes", "--remove-orphans", "--timeout", "2"],
