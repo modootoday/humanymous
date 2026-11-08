@@ -184,11 +184,9 @@ pub(super) fn hono(env: &Env, app: &Object<'_>, effects: Option<PathBuf>) -> Res
             })?;
         let _: Unknown = call(app, "post", FnArgs::from((path.to_owned(), handler)))?;
         if status == 204 {
-            let _: Unknown = call(
-                app,
-                "on",
-                FnArgs::from(("HEAD".to_owned(), path.to_owned(), handler)),
-            )?;
+            // Hono rewrites HEAD to GET before route matching, so app.on("HEAD") never
+            // runs (honojs/hono#5506). Register GET so HEAD /empty reaches this 204 fixture.
+            let _: Unknown = call(app, "get", FnArgs::from((path.to_owned(), handler)))?;
         }
     }
     let sse = env.create_function_from_closure::<(), Object, _>("fixtureFetchSse", move |ctx| {

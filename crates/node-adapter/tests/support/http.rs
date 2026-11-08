@@ -89,17 +89,35 @@ pub fn receive(stream: &mut impl Read) -> io::Result<Vec<u8>> {
     let mut bytes = Vec::new();
     let mut chunk = [0u8; 8192];
     loop {
-        if let Some((end, _)) = parsed(&bytes)? {
-            bytes.truncate(end);
-            return Ok(bytes);
+        match parsed(&bytes) {
+            Ok(Some((end, _))) => {
+                bytes.truncate(end);
+                return Ok(bytes);
+            }
+            Ok(None) => {}
+            Err(error) => {
+                let preview = String::from_utf8_lossy(&bytes[..bytes.len().min(512)]);
+                return Err(io::Error::other(format!(
+                    "{error}; received {} bytes; preview={preview:?}",
+                    bytes.len()
+                )));
+            }
         }
         let n = stream.read(&mut chunk)?;
         if n == 0 {
-            return Err(io::Error::other("incomplete fixture HTTP response"));
+            let preview = String::from_utf8_lossy(&bytes[..bytes.len().min(512)]);
+            return Err(io::Error::other(format!(
+                "incomplete fixture HTTP response; received {} bytes; preview={preview:?}",
+                bytes.len()
+            )));
         }
         bytes.extend_from_slice(&chunk[..n]);
         if bytes.len() > 2_162_688 {
-            return Err(invalid());
+            let preview = String::from_utf8_lossy(&bytes[..bytes.len().min(512)]);
+            return Err(io::Error::other(format!(
+                "invalid fixture HTTP response; received {} bytes; preview={preview:?}",
+                bytes.len()
+            )));
         }
     }
 }

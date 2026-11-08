@@ -400,8 +400,14 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
             let empty = request(port, "/empty", b"");
             assert!(empty.starts_with(b"HTTP/1.1 204"));
             assert!(http::body(&empty).is_empty());
-            let head = try_request_method(port, "HEAD", "/empty", b"").unwrap();
-            assert!(head.starts_with(b"HTTP/1.1 204"));
+            let head = try_request_method(port, "HEAD", "/empty", b"").unwrap_or_else(|error| {
+                panic!("{runtime_name}/{framework} HEAD /empty: {error}")
+            });
+            assert!(
+                head.starts_with(b"HTTP/1.1 204"),
+                "{runtime_name}/{framework} HEAD /empty status: {}",
+                String::from_utf8_lossy(&head[..head.len().min(256)])
+            );
             assert!(http::body(&head).is_empty());
             let cached = request(port, "/empty?not-modified", b"");
             assert!(cached.starts_with(b"HTTP/1.1 304"));
