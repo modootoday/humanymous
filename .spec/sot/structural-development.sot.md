@@ -462,6 +462,43 @@ The Model owner must repair reviewed pilot child-error handling and preserve
 outer-supervisor limitations. These assignments grant no shared source, manifest,
 compiler, native runtime or publication authority beyond existing owned paths.
 
+### CLI package contents and the retained coordinator checkout gate
+
+Actual locked/offline Cargo package --list exposed missing CLI description,
+README and package-root legal files. Root added the description, explicit README
+and project NOTICE in the isolated assembly, and copied LICENSE byte-for-byte
+from its frozen source:11353 bytes, SHA256
+28153ab6c3197253563f1ae0932a89a758d2d0f9c667d59da2e41c01c9cbfeb1.
+The final list exits zero with322 files and empty stderr. This is a file-list
+observation, not a built archive, registry resolution or complete dependency
+notice audit. The prior1783-file strict checkpoint predates these source changes.
+
+A literal include/path scan first failed on maintenance_git_coord.rs: its
+compile-time include reached the external scripts/agents/git-coord.ps1. Root
+replaced only that input binding with an explicit required checkout reader. The
+same original regression selector and actual owned Git/PowerShell fixture remain.
+It is now ignored by default and REQUIRED in hosted qualification, with explicit
+canonical HUMANYMOUS_QUALIFICATION_SOURCE_ROOT and reviewed
+HUMANYMOUS_GIT_COORD_SHA256. The frozen source script is8781 bytes, SHA256
+4244f1010e49a4e8506f579393a285efe4062ca785c7fd9d09cc2d3e356d154a.
+Do not recompute this as an approval of an unrelated mutable script.
+
+The reader refuses ancestor symlinks/reparse points and nonregular/oversized
+source, caps its captured read at32KiB plus a growth probe, and verifies the
+captured bytes before fixture creation. It is a cooperative trusted-checkout
+guard, not race-resistant source authority or a hard I/O deadline. Existing
+Command::output lifetime limitations remain. Scoped integration-target strict
+Clippy exits zero; actual discovery retains the one original case. No test body,
+Git mutation or PowerShell child was executed in this checkpoint.
+
+Final lexical review finds116 literal include_str/include_bytes/path attribute
+occurrences, all physically inside the CLI package and in Cargo's list. This is
+not macro expansion or a transitive compiler read closure. The original failed
+scan and corrected results remain separately retained under core-consolidation
+tools-cli-package-*; the new target lint/list logs use tools-git-coord-selected-
+source-*. Delivery must add the required ignored case and both input variables
+to its workflow candidate. Default ignored status cannot count as qualification.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
