@@ -22,7 +22,8 @@ and resource admission; follow the exact live run or process handle.
 ## Integration status at the 2026-11-08 source checkpoint
 
 Fresh locked/offline Cargo metadata confirms29 LIVE workspace members and21 in
-Root's isolated Tools assembly. The final accepted family is eight public
+Root's isolated Tools assembly before Browser consolidation. That same assembly
+now has19 after merging the three Browser packages into one. The final accepted family is eight public
 packages, not eight completed products. The live CLI has7 targets; the isolated
 CLI initially had27; the newly integrated hosted-only offline process test makes
 28 (1 library,15 binaries,11 integrations,1 example). Four standalone
@@ -38,7 +39,7 @@ actual graph observations, not registry or runtime availability claims.
 | humanymous-collector | Browser/WASM source live in old path | Source-specific WASM checks and hosted component observations | Final integrations path, session-bound collector and full actual browser/product binding |
 | humanymous-adapters | Twelve current packages; final one-package design accepted | Component-specific historical scopes; no final merged package compiled | Actual source/manifest/export/visibility/loader consolidation and native host/package qualification |
 | humanymous-cli | Original live contexts remain; thirteen-context union materialized in isolated assembly | Full isolated all-target/all-feature strict lint; selected pure tests and exact discovery; no live path cutover | Required checkout/package/negative-role gates, final freeze/caller/workflow integration, real native/service/install pilots |
-| humanymous-browser | Three current packages; consolidation candidate in progress | Existing limited CEF/model/source evidence | Actual consolidated roots/feature/artifact joins, CEF/Meari/native/a11y and distribution qualification |
+| humanymous-browser | Three live packages; one isolated package now materialized | Default32 model tests/strict lint, four role dependency graphs,634 external lock tuples unchanged | Repair seven CEF caller candidates, exact source/feature/artifact joins, CEF/Meari/native/a11y and distribution qualification |
 
 The latest formal isolated Tools checkpoint is evidence:root/20261108024914:
 1791 source files with zero before/after differences,14 registered attachments,
@@ -73,7 +74,7 @@ runtime execution requires its own current admission and hosted allocation.
 | A: Architecture and ownership | Accepted; ongoing enforcement | Root plus each claimed context | Eight-package map, exact work ownership, dependency/resource/API and unsafe decisions |
 | B: Core/Platform/Runtime foundations | Live source integrated; partially qualified | Root with Model/Native/Authority/Audit/Runtime | Context privacy/feature tests plus actual unresolved native/provider/runtime obligations |
 | C: Tools integration | Isolated source implemented; live cutover pending | Root; Delivery/M11/CLI/Lab source-specific inputs | Current complete source/target/test/caller freeze, required ignored gates, negative root controls and supported hosted qualification |
-| D: Adapters and Browser | Actual candidate construction in progress | ABI coordinator and Browser; original host owners | Applicable preserved-preimage Rust/manifest patches, exact resource/test maps, exports/unsafe/privacy/loader proof |
+| D: Adapters and Browser | Adapters candidate in progress; Browser isolated19 graph/default model verified, native callers unfinished | ABI coordinator and Browser; original host owners | Applicable preserved-preimage Rust/manifest patches, exact resource/test maps, exports/unsafe/privacy/loader proof |
 | E: Final eight graph and shipping roles | Not integrated | Root plus all owning contexts | Coherent supported role graphs, package/extracted/dependency checks, real Cross-OS/container/browser/native/host/AT outcomes |
 | F: Public docs and delivery | Source updates ongoing; final render unexecuted | Pages/Draft v0 and Delivery | Latest-code Pages render/accessibility/review, accurate standards maturity, clean CI annotations and prepared-only registry/OIDC environments |
 | G: Main integration | Not started; gated | Root | All required candidate gates and reviews pass, followed by actual main integration and post-merge verification |

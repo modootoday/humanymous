@@ -645,6 +645,64 @@ absent. In-process polling and retained child custody cannot replace it. Go/FMA
 parity, native execution, fault injection, cleanup qualification, activation and
 product validation remain open; compilation is not a process-pilot pass.
 
+### Browser three-to-one isolated source integration and caller defect
+
+Root adopted the corrected Browser34f0af03 candidate in its isolated assembly:
+all49 original preimages and47 destination postimages matched. Forty-seven files
+moved once into crates/apps/humanymous-browser; the two nested manifests were
+preserved outside the assembly. Rust implementation is under src/native with one
+physical shared scheme. Only the isolated workspace changes21 to19; live remains29.
+
+The first locked default test refused the stale lock. Root retained this failure
+and used offline workspace-only lock resolution. All634 external
+name/version/source/checksum tuples remain identical. The isolated lock changes
+frombbac0a79c9d82b21f1246fbe2a47b821d9039c8cb293145d5a90b5a1293d64f4
+to853c5154e80bff2f640c36c95e1772df00ea758a550a036123a70e9e19f03c90.
+This is not full feature/compiler closure or registry verification.
+
+Default Browser32 model tests and all-target strict Clippy pass. Scoped formatting
+changed10 files; candidate preimage/postimage records remain historical. Root
+added package description/README/NOTICE and exact frozen project LICENSE bytes.
+Fresh focused default test/lint observations bind1793 before/after regular source
+files with zero differences. Raw receipts and views reside in core-consolidation/
+browser-default-consolidation-checkpoint; no engine or native process ran.
+
+Actual locked/offline Windows normal/build dependency trees verify four roles:
+default activates neither CEF nor Meari; bootstrap activates CEF without Meari;
+native-ui activates Meari without CEF; desktop activates both. These are graph
+observations, not native build/export/loader/runtime results. Dual-role negative
+compilation and real CEF/UI/a11y/distribution gates remain pending.
+
+Root did NOT adopt the seven caller candidates. Actual source contradicted their
+documented sequential-build behavior: main repeated the same package without role
+features, snapshots required retired manifests, and protocol argv omitted their
+native role features. Browser must supply an explicit repaired candidate against
+the frozen current Tools callers, with real sequential role build/preservation,
+separate receipts/schema handling, supported features and exact case accounting.
+Default32 success cannot close CA-BROWSER-ROLE-CALLER-01. CLI contract replicas and
+producer/equality provenance must be explicitly reconciled; no stale pin refresh.
+
+### Adapter resource direction acceptance
+
+Root accepted the finite nine-input direction for the adapter candidate:
+
+| Original input | Accepted destination/action |
+| --- | --- |
+| adapters/apache/pilot-contract.json | Move original once to qualification/apache/pilot-contract.json in the final adapter package; preserve7599e453 producer/blob10fc878d |
+| adapters/apache/upstream-lock.json | Move original once to abi/apache/upstream-lock.json; preservec9bd7525 producer/blobd6a1cabf and SDK build-input binding |
+| adapters/dotnet/pilot-contract.json | Move original once to qualification/dotnet/pilot-contract.json; preserve50369722 producer/blobf2e26fe2 |
+| Existing nginx DATA/provenance | Preserve exact owned qualification/fixtures/nginx bytes and e3e7830/9fece6de provenance; no SDK dependency on CLI |
+| Five frozen Core JSON fixtures | Package-owned immutable DATA replicas from exactc67d07c0 Git producer bytes with independent provenance/equality; no implementation copy |
+
+All14 literal consumers and the real build-input reader must be rewired; external
+callers must receive an explicit disposition. The live Core worktree's CRLF bytes
+were NOT normalized. Root independently joined the five producer blobs to both
+the frozen isolated Core source and existing CLI DATA replicas with raw Git object
+hashing: all equal. The detailed raw SHA/size receipt is core-consolidation/
+adapter-five-core-fixture-producer-review.json. This resolves the canonical byte
+choice, not runtime, native host, package or resource closure qualification.
+The owner writes candidates only; Root retains actual source/path/Cargo movement.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
