@@ -1,0 +1,630 @@
+{
+  "schema": "humanymous.sgd-first-actual-validation/1",
+  "status": "ACTUAL_WINDOWS_COMPONENT_PASS_WITH_EXPLICIT_AUDIT_LIMITS",
+  "source": "42ecee7d86c74579ba590ac6e60b7aab9b1bb31f",
+  "formatter_source_commit": "81f98d7d3ff805d6d3e99a76d81cf1013cfb90fd",
+  "raw_directory": ".spec.local/root/evidence/20261108100000-model-sgd-epoch",
+  "admission": {
+    "utc": "2026-11-08T09:07:05.7920723+09:00",
+    "commit_pct": 61.37020777207274,
+    "free_bytes": 37727059968
+  },
+  "terminal": {
+    "start_audit": "Per-step exact OS StartTime was not persisted; monotonic dispatch remaining_ms is retained in tool transcript, end elapsed and actual PID/exit in steps.json",
+    "terminal": true,
+    "lease_returned": true,
+    "registry_reread_difference_count": 0,
+    "source_record_count": 3153,
+    "attempts": 3,
+    "registry_record_count": 1445,
+    "elapsed_ms": 231696.7279,
+    "registry_package_count": 36,
+    "source_difference_count": 0,
+    "final_source": "42ecee7d86c74579ba590ac6e60b7aab9b1bb31f"
+  },
+  "attempts": [
+    {
+      "attempt": "attempt1",
+      "difference_count": 0,
+      "archive_sha256": "b7d1c69b4e660aecabb6aa14100e00c0589195ea69be29b4571c45f063e4eef0",
+      "git": "a0eb2613c90eb452cd1189a929fdbee522375a54",
+      "before_count": 3149,
+      "after_count": 3149
+    },
+    {
+      "attempt": "attempt2",
+      "difference_count": 0,
+      "archive_sha256": "fad1f28fbb4ccc8ea83a301afee091c1109d6bb87994e97528f1218886079b5e",
+      "git": "81f98d7d3ff805d6d3e99a76d81cf1013cfb90fd",
+      "before_count": 3153,
+      "after_count": 3153
+    },
+    {
+      "attempt": "attempt3",
+      "difference_count": 0,
+      "archive_sha256": "4a22deb899993c4baf86e627d94a88a9e3ec975f2ab0835dbae021d392caf6a7",
+      "git": "42ecee7d86c74579ba590ac6e60b7aab9b1bb31f",
+      "before_count": 3153,
+      "after_count": 3153
+    }
+  ],
+  "step_audit": [
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 17356,
+      "redirect_created_utc": "2026-11-08T00:07:20.8981923Z",
+      "pid": 67204,
+      "argv": [
+        "fmt",
+        "--package",
+        "humanymous-core",
+        "--",
+        "--check"
+      ],
+      "executable": "cargo",
+      "name": "attempt1-fmt",
+      "terminal_elapsed_ms": 17678.0023,
+      "terminal": true,
+      "exit_code": 1
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 44359,
+      "redirect_created_utc": "2026-11-08T00:07:47.8965266Z",
+      "pid": 52976,
+      "argv": [
+        "fmt",
+        "--package",
+        "humanymous-core"
+      ],
+      "executable": "cargo",
+      "name": "workspace-format",
+      "terminal_elapsed_ms": 44563.8608,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 59109,
+      "redirect_created_utc": "2026-11-08T00:08:02.6463047Z",
+      "pid": 72984,
+      "argv": [
+        "fmt",
+        "--package",
+        "humanymous-core",
+        "--",
+        "--check"
+      ],
+      "executable": "cargo",
+      "name": "attempt2-fmt",
+      "terminal_elapsed_ms": 59312.6479,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 59314,
+      "redirect_created_utc": "2026-11-08T00:08:02.8518871Z",
+      "pid": 58840,
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--lib",
+        "model::training::sgd",
+        "--jobs",
+        "1",
+        "--",
+        "--test-threads=1"
+      ],
+      "executable": "cargo",
+      "name": "attempt2-sgd",
+      "terminal_elapsed_ms": 66157.5734,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 79501,
+      "redirect_created_utc": "2026-11-08T00:08:23.0390784Z",
+      "pid": 36152,
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--jobs",
+        "1",
+        "--",
+        "--test-threads=1"
+      ],
+      "executable": "cargo",
+      "name": "attempt2-core",
+      "terminal_elapsed_ms": 90972.912,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 90975,
+      "redirect_created_utc": "2026-11-08T00:08:34.5125697Z",
+      "pid": 49872,
+      "argv": [
+        "check",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--all-targets",
+        "--all-features",
+        "--jobs",
+        "1"
+      ],
+      "executable": "cargo",
+      "name": "attempt2-check",
+      "terminal_elapsed_ms": 93993.9376,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 93995,
+      "redirect_created_utc": "2026-11-08T00:08:37.5343687Z",
+      "pid": 64904,
+      "argv": [
+        "clippy",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--all-targets",
+        "--all-features",
+        "--jobs",
+        "1",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "executable": "cargo",
+      "name": "attempt2-clippy",
+      "terminal_elapsed_ms": 97286.8236,
+      "terminal": true,
+      "exit_code": 101
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 138064,
+      "redirect_created_utc": "2026-11-08T00:09:21.6027742Z",
+      "pid": 47072,
+      "argv": [
+        "fmt",
+        "--package",
+        "humanymous-core"
+      ],
+      "executable": "cargo",
+      "name": "workspace-lint-format",
+      "terminal_elapsed_ms": 138270.6365,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 153816,
+      "redirect_created_utc": "2026-11-08T00:09:37.3556569Z",
+      "pid": 58104,
+      "argv": [
+        "fmt",
+        "--package",
+        "humanymous-core",
+        "--",
+        "--check"
+      ],
+      "executable": "cargo",
+      "name": "attempt3-fmt",
+      "terminal_elapsed_ms": 154024.0275,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 154026,
+      "redirect_created_utc": "2026-11-08T00:09:37.5656618Z",
+      "pid": 53468,
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--lib",
+        "model::training::sgd",
+        "--jobs",
+        "1",
+        "--",
+        "--test-threads=1"
+      ],
+      "executable": "cargo",
+      "name": "attempt3-sgd",
+      "terminal_elapsed_ms": 160981.3747,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 160983,
+      "redirect_created_utc": "2026-11-08T00:09:44.5229670Z",
+      "pid": 72180,
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--jobs",
+        "1",
+        "--",
+        "--test-threads=1"
+      ],
+      "executable": "cargo",
+      "name": "attempt3-core",
+      "terminal_elapsed_ms": 172482.7596,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 172486,
+      "redirect_created_utc": "2026-11-08T00:09:56.0265446Z",
+      "pid": 13640,
+      "argv": [
+        "check",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--all-targets",
+        "--all-features",
+        "--jobs",
+        "1"
+      ],
+      "executable": "cargo",
+      "name": "attempt3-check",
+      "terminal_elapsed_ms": 175568.8528,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 175570,
+      "redirect_created_utc": "2026-11-08T00:09:59.1104626Z",
+      "pid": 36580,
+      "argv": [
+        "clippy",
+        "--locked",
+        "--offline",
+        "-p",
+        "humanymous-core",
+        "--all-targets",
+        "--all-features",
+        "--jobs",
+        "1",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "executable": "cargo",
+      "name": "attempt3-clippy",
+      "terminal_elapsed_ms": 178843.4092,
+      "terminal": true,
+      "exit_code": 0
+    },
+    {
+      "dispatch_elapsed_ms_from_recorded_remaining": 229880,
+      "redirect_created_utc": "2026-11-08T00:10:53.4218995Z",
+      "pid": 63948,
+      "argv": [
+        "metadata",
+        "--locked",
+        "--offline",
+        "--all-features",
+        "--filter-platform",
+        "x86_64-pc-windows-msvc",
+        "--format-version",
+        "1"
+      ],
+      "executable": "cargo",
+      "name": "resolved-metadata",
+      "terminal_elapsed_ms": 230345.8299,
+      "terminal": true,
+      "exit_code": 0
+    }
+  ],
+  "tool_files": [
+    {
+      "path": "C:\\Users\\smile\\.rustup\\toolchains\\1.99.1-x86_64-pc-windows-msvc\\bin\\cargo.exe",
+      "sha256": "aa5b8980be3681899fde765ba47e2ed361463ae9dd8ee7cd1963c18d23743a0f",
+      "tool": "cargo"
+    },
+    {
+      "path": "C:\\Users\\smile\\.rustup\\toolchains\\1.99.1-x86_64-pc-windows-msvc\\bin\\rustc.exe",
+      "sha256": "ba03e3ba03a73d9fef19ab3659140f94b43615ec1d587fe9befc9aed3bd5aa72",
+      "tool": "rustc"
+    }
+  ],
+  "actual_sgd_pass_inventory": [
+    "test model::training::sgd::pilot::actual_collision_is_unowned_and_cleanup_failure_is_reported ... ok",
+    "test model::training::sgd::pilot::actual_file_late_invalid_quarantine_support_and_capacity_fail_before_output ... ok",
+    "test model::training::sgd::pilot::actual_file_training_roundtrip_is_reproducible_and_never_overwrites_sentinel ... ok",
+    "test model::training::sgd::tests::analytic_active_step_uses_old_output_weight_and_exact_bias_order ... ok",
+    "test model::training::sgd::tests::analytic_inactive_and_signed_zero_relu_only_update_output_bias ... ok",
+    "test model::training::sgd::tests::defaults_empty_input_and_version_changes_preserve_weight_determinism ... ok",
+    "test model::training::sgd::tests::exact_work_limits_and_rejection_draw_budget_discard_entire_candidate ... ok",
+    "test model::training::sgd::tests::finite_input_overflows_and_invalid_config_never_mutate_inputs ... ok",
+    "test model::training::sgd::tests::finite_negative_logit_allows_exp_overflow_sigmoid_zero ... ok",
+    "test model::training::sgd::tests::limits_schema_labels_statistics_and_warm_shape_fail_before_work ... ok",
+    "test model::training::sgd::tests::rounded_product_is_not_fused_with_accumulator ... ok",
+    "test model::training::sgd::tests::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator ... ok",
+    "test model::training::sgd::tests::rust_derived_reference_matches_each_epoch_all_weight_bits_and_stream_counts ... ok",
+    "test model::training::sgd::tests::version_utf8_byte_capacity_accepts_128_and_rejects_129 ... ok",
+    "test model::training::sgd::tests::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function ... ok"
+  ],
+  "counts": {
+    "core_unit_passed": 160,
+    "failed": 0,
+    "focused_filtered": 145,
+    "core_unique_total": 177,
+    "ignored": 0,
+    "focused_sgd_passed": 15,
+    "focused_is_subset_not_added": true,
+    "core_filtered": 0,
+    "core_integration_passed": 17
+  },
+  "first_failures": [
+    "attempt1 fmt exit1; preserved raw diff; only delegated pilot/tests formatting applied and committed81f98d7d",
+    "attempt2 strictClippy exit101; needless_range_loop in reference test; preserved raw stderr; two iterator-only changes committed42ecee7d; no test expectation/numerical/admission change"
+  ],
+  "registry": {
+    "differences": [],
+    "records": 1445,
+    "packages": 36,
+    "scope": "Post-execution selected resolved registry snapshot compared to immediate reread; no pre-execution registry snapshot captured"
+  },
+  "config_env": {
+    "toolchain_file_sha256": "DF1B1F239D5B1DF10F115021F4CEFB60076919C5646693C9E77BB70A00AFF615",
+    "environment": {
+      "CARGO_TARGET_DIR": "C:\\workspaces\\humanymous\\target\\core-consolidation-v0",
+      "CARGO_ENCODED_RUSTFLAGS": null,
+      "CARGO_INCREMENTAL": "0",
+      "CARGO_BUILD_JOBS": "1",
+      "RUSTFLAGS": null,
+      "RUSTUP_TOOLCHAIN": null
+    },
+    "profile": "dev/test",
+    "target": "x86_64-pc-windows-msvc",
+    "config_files": []
+  },
+  "audit_limits": [
+    "Exact OS process StartTime was not persisted; dispatch monotonic remaining_ms from observed tool transcript and terminal elapsed/actual PID/exit are preserved; redirected-file creation UTC is an audit anchor only",
+    "Registry1445records/36packages snapshot and immediate reread were POSTexecution; cannot claim pre/post registry equality",
+    "No full OS/toolchain/linker environment closure claim",
+    "No new Go runtime; cross-language SGD bits/FMA remain unqualified",
+    "Native actual-file kernel pilot is not bootstrap CLI/process, production activation, complete ML migration or Docker product e2e"
+  ],
+  "raw_files": [
+    {
+      "name": "admission.json",
+      "sha256": "5abb4e2f6dbf2dca376a9033357c376b9542a9b99c5cd31781e56b5bdb2f2cfb",
+      "bytes": 118
+    },
+    {
+      "name": "attempt1-fmt.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt1-fmt.stdout",
+      "sha256": "7467662e106707a88e8f05b40077b39d74c60d35ff4b4c24f4b26758769b4a92",
+      "bytes": 6578
+    },
+    {
+      "name": "attempt1.before.json",
+      "sha256": "1ac3917f7cf0e1882112dedc0ad8688a5a6e5da5ae715069ca66d1c6e48569d2",
+      "bytes": 523693
+    },
+    {
+      "name": "attempt1.join.json",
+      "sha256": "9165d01591b8cb4d42e826d18bf049135045b26639c2cc77b273b29a38319a16",
+      "bytes": 280
+    },
+    {
+      "name": "attempt2-check.stderr",
+      "sha256": "896318250ee6528a43e82af89a40ac0f6238f96f8b7d0de43e6582945c62eacf",
+      "bytes": 401
+    },
+    {
+      "name": "attempt2-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt2-clippy.stderr",
+      "sha256": "9eedc1a33372be2b5c0046eef06957213b1180fdd6a32895443d4e0d39aec7d1",
+      "bytes": 1560
+    },
+    {
+      "name": "attempt2-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt2-core.stderr",
+      "sha256": "c127e39988a1cdda0f39f3b95c5a3b980ee38175654c49cbb71507a6607a2fbd",
+      "bytes": 1158
+    },
+    {
+      "name": "attempt2-core.stdout",
+      "sha256": "11f5c7e0b1b470bab8b036256a81131f003193f9547bc6f66d0bfd1b1f777c20",
+      "bytes": 17784
+    },
+    {
+      "name": "attempt2-fmt.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt2-fmt.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt2-sgd.stderr",
+      "sha256": "2b20814dcb0a87fdb1aa8e3f54eb8c760c67ea889b60dc396c6013ec1c435e0c",
+      "bytes": 540
+    },
+    {
+      "name": "attempt2-sgd.stdout",
+      "sha256": "5b4568066c1d11a90d19f809b56027e436818f56183fea504d1c3207f3dcb952",
+      "bytes": 1727
+    },
+    {
+      "name": "attempt2.before.json",
+      "sha256": "81dcb4d88057aa99786445401c7e78e931a1d06b48aa62ad33e05c2ce65e7ab5",
+      "bytes": 524369
+    },
+    {
+      "name": "attempt2.closure.json",
+      "sha256": "853196392c9bb177b0a9e773b879ba7e44bc55f37e072eeebaed317b76a153da",
+      "bytes": 45
+    },
+    {
+      "name": "attempt2.join.json",
+      "sha256": "b01138a4ae86c51f65b4d8880e7fcf028c8b95f80f272dfe6124582cc6319217",
+      "bytes": 280
+    },
+    {
+      "name": "attempt3-check.stderr",
+      "sha256": "4c3a28905fc32a22cb56a41808e4ef0d401dbfe9a6363c697ee04b411e064de7",
+      "bytes": 401
+    },
+    {
+      "name": "attempt3-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt3-clippy.stderr",
+      "sha256": "2cd27ff6c9ba6f8e8f2e15cb4525055f351ad7e6c09537141ef7fb8d47e26b4c",
+      "bytes": 401
+    },
+    {
+      "name": "attempt3-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt3-core.stderr",
+      "sha256": "6ea57ee32a75844cd17e9a06bce71f373a8e626d48d24752ba26568b38124b76",
+      "bytes": 1158
+    },
+    {
+      "name": "attempt3-core.stdout",
+      "sha256": "7496ea667933fa76f21ce9a9ebf4a0952afc56b6e1f697d5bd5354c297ccbc81",
+      "bytes": 17784
+    },
+    {
+      "name": "attempt3-fmt.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt3-fmt.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "attempt3-sgd.stderr",
+      "sha256": "c145908db6750c27ec336a6cb74fd4e1be4a354f479c8384574464a9ab0901c1",
+      "bytes": 540
+    },
+    {
+      "name": "attempt3-sgd.stdout",
+      "sha256": "5b4568066c1d11a90d19f809b56027e436818f56183fea504d1c3207f3dcb952",
+      "bytes": 1727
+    },
+    {
+      "name": "attempt3.before.json",
+      "sha256": "aab677b327d802655b14f1a635478a8408cae15ebd5e4486e15cf65a17ffc36b",
+      "bytes": 524369
+    },
+    {
+      "name": "attempt3.closure.json",
+      "sha256": "853196392c9bb177b0a9e773b879ba7e44bc55f37e072eeebaed317b76a153da",
+      "bytes": 45
+    },
+    {
+      "name": "attempt3.join.json",
+      "sha256": "4cbdb57ca3872cec5eb79d10812e24b9322aeec38f5ec234ec3dbad8e3c5348d",
+      "bytes": 280
+    },
+    {
+      "name": "cargo-version.txt",
+      "sha256": "b929969cf00615bdb1cba27468139f287430340cbd593d5de7d6c9e1cb8e5bfc",
+      "bytes": 329
+    },
+    {
+      "name": "config-env.json",
+      "sha256": "e1e86e4ee2e8e1257bdf17ce1874b8dfdd3547ebfe94f5e57b5b820dbf7048d6",
+      "bytes": 454
+    },
+    {
+      "name": "format-changed.json",
+      "sha256": "7c48a182787b1ef63643db7697d62a82363fe0b5740f30aa21d00df73e63ef0f",
+      "bytes": 205
+    },
+    {
+      "name": "registry.closure.json",
+      "sha256": "eb987a948d862f496cf02e68b9f5bae2023d0e3596d6037f5146a94bdd6cb82c",
+      "bytes": 206
+    },
+    {
+      "name": "registry.selected.json",
+      "sha256": "b91611909a670e8481b0108c19952d1da13fefafad9e39842ec49ba167a24812",
+      "bytes": 406269
+    },
+    {
+      "name": "resolved-metadata.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "resolved-metadata.stdout",
+      "sha256": "52caeadf46317776200e6f6ecd19514de05b2ba3b907815b63336bf55ed3afd2",
+      "bytes": 2368999
+    },
+    {
+      "name": "rustc-version.txt",
+      "sha256": "2a9ba90ddc1895fc7b4d94baee548ac7947533b6ef348fc9f010ab5d9f3d7898",
+      "bytes": 201
+    },
+    {
+      "name": "steps.json",
+      "sha256": "b9d9e7a11ad691a2b99d8ecbef621610aeb10430a9d8a0fbb79393aff055d043",
+      "bytes": 4311
+    },
+    {
+      "name": "terminal.json",
+      "sha256": "ab9fa775db5a57f3b200e497e1694a7d592045c85842defc646f2c82506417e6",
+      "bytes": 516
+    },
+    {
+      "name": "workspace-format.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "workspace-format.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "workspace-lint-format.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "workspace-lint-format.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ]
+}

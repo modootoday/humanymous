@@ -777,3 +777,46 @@ No formatter/compiler/tests were started for these amendments. Previous formatte
 pass applies ONLY7406195f; next needs fresh format/check plus15focused tests, full
 Core and all-target/all-feature check/strictClippy under separate source-bound
 Root allocation. No owned compiler handle or target lease is retained.
+
+### First actual SGD qualification: finite Windows epoch, explicit audit limits
+
+Root allocated390seconds work/450total including prep, max3fresh source attempts,
+exclusive target/core-consolidation-v0, jobs1/incremental0/offline locked and serial
+tests. Admission free37727059968bytes and commit61.37020777207274percent passed.
+A single persistent Stopwatch included prep, model/tool gaps and all3attempts.
+Actual terminal/lease return at231696.7279ms; all children reaped, marker absent.
+Tool output identifies cargo/rustc1.99.1, x86_64-pc-windows-msvc, LLVM23.1.1.
+
+Attempt1 actual fmt exit1 remains retained. Only delegated pilot/tests whitespace
+changed, committed81f98d7d; attempt2 fmt/SGD15/fullCore177/check passed, strict
+Clippy101 found2needless_range_loop warnings in test reference. Preserve that first
+failure. Minimal iterator-only reference changes committed42ecee7d, no expected
+values or numeric/admission predicates changed. Attempt3 immutable Git archive at
+42ecee7d passed fmt, ALL15SGD tests including3actual-file pilots, fullCore160unit+
+17integration=177unique tests, all-target/all-feature check and strictClippy.
+Focused15had145filtered and are a SUBSETof177, not192unique passes. Zero failed,
+ignored or fullCore filtered tests. Prior NOT_RUN statements remain historical;
+this receipt qualifies only its immutable source tuple and actual Windows venue.
+
+sgd-first-actual-validation.json pins all3archive joins/fullsource before/after
+counts and hashes, exact argv/PIDs/terminal exits, monotonic dispatch/end anchors,
+actual15case inventory, tool binary hashes, scoped config/env, raw logs and failures.
+Full archived-source counts3149/3153/3153 remain0differences in attempts1/2/3.
+Resolved registry
+selection includes36packages/1445manifest/checksum/Rust records, post-execution
+snapshot and immediate reread0differences. IMPORTANTaudit limitations: there was
+NOpre-execution registry snapshot, so pre/post registry equality is NOTestablished.
+Exact OS child StartTime was not persisted; observed monotonic dispatch remaining
+values and terminal elapsed/PID/exit are retained, while redirected-file creation
+UTC is an audit anchor only. No whole OS/linker/environment closure is claimed.
+Do not silently upgrade these limits into a stronger reproducibility claim.
+
+Actual file pilots passed complete read/admission/support/training/evaluation/
+serialize/readback, deterministic artifact equality, sentinel preservation,
+7exact negative categories, unowned collision preservation and explicit cleanup
+failure/success. Rust-derived reference/analytic evidence remains separate from
+unexecuted Go training transcripts; FMA/abs0rel0 cross-language parity remains
+unqualified. No bootstrap CLI/process, GPU, activation, correction/cohort/time
+admission or Docker product e2e success follows from this real kernel qualification.
+Temporary private non-test dead_code expectation still requires removal when the
+real offline composition caller is wired. Whole ML migration remains incomplete.
