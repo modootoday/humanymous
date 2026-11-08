@@ -21,6 +21,7 @@ mod package;
 mod pages;
 mod pilot;
 mod policy;
+mod qualification_data;
 mod registry;
 mod remote;
 mod service_component;
@@ -53,6 +54,18 @@ pub fn write_json(path: &Path, value: &serde_json::Value) -> Result<()> {
     .map_err(|e| e.to_string())
 }
 fn run() -> Result<()> {
+    let explicit: Vec<_> = std::env::args().skip(1).collect();
+    if explicit
+        .first()
+        .is_some_and(|value| value == "qualification-data")
+    {
+        require(
+            explicit.len() == 2,
+            "usage: qualification-data CANONICAL_ROOT",
+        )?;
+        println!("{}", qualification_data::check(Path::new(&explicit[1]))?);
+        return Ok(());
+    }
     let location = std::process::Command::new("git")
         .args(["rev-parse", "--show-toplevel"])
         .current_dir(env!("CARGO_MANIFEST_DIR"))

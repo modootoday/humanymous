@@ -82,6 +82,21 @@ The provenance explicitly distinguishes these views and forbids automatic
 refresh. This DATA-only step adds no source clone, Cargo member or package
 publication; consumer rewiring and packaged equality verification remain open.
 
+The existing Rust Delivery role now exposes qualification-data CANONICAL_ROOT
+before its legacy checkout discovery, so this new check never falls back to
+CWD or CARGO_MANIFEST_DIR. It checks the fixed eight destination/producer pairs,
+strict JSON, positive bounded sizes, lowercase digests, reviewed source commit
+and license, and compares bounded same-read replica bytes to their recorded hash
+and actual producer Git blob. Input components reject symlinks and Windows
+reparse points; changed length/mtime or canonical root escape refuses. This is
+trusted-checkout drift detection, explicitly not hostile-race or OS authority.
+Two scoped units passed (121 other tests filtered), strict Delivery Clippy passed,
+and an actual read-only qualification-data invocation verified eight replicas.
+The reported provenance SHA-256 is
+de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87.
+No source fixture was rewritten and runtime_qualified remains false. This new
+Delivery module must join Root's final Tools movement map before consolidation.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
