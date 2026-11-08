@@ -580,6 +580,34 @@ plain github.workspace spelling is not assumed to equal Rust canonical output.
 The current workflow supplement is not yet an admitted Windows gate. CA-LIFETIME
 outer supervision and full migration requirements remain open.
 
+### Coordinator native path spelling and remaining package integration work
+
+Root repaired the isolated coordinator input contract after the1791-file seal.
+An explicit absolute root without traversal components is now accepted in either
+ordinary or native canonical spelling. Original selected ancestors are inspected
+for symlinks/reparse points BEFORE canonicalization. Only then are the root and
+fixed scripts/agents/git-coord.ps1 canonicalized and required to retain that exact
+root-relative relation. Existing regular-file, captured-length, cap and reviewed
+raw SHA checks remain. The original ignored test selector and fixture assertions
+are preserved. This changes path spelling handling, not source authentication.
+
+Scoped maintenance-git-coord strict Clippy exits zero with0.33s footer. No actual
+test body, Git/PowerShell child or Windows positive/negative path control ran.
+The earlier seal is immutable and does not qualify this changed source. Exact
+old/new file hashes and raw lint log remain in the private core-consolidation
+tools-git-coord-native-spelling-change.json and matching clippy.log. Hostile path
+races, blocking I/O and CA-LIFETIME obligations remain open.
+
+Root also assigned existing Native ABI and Browser owners concrete parallel
+source-only consolidation candidates:12 contexts into humanymous-adapters and
+three into humanymous-browser. Deliverables are real manifest/composition-root
+Rust patches with exact preimages and file/test/caller mappings, not additional
+research alone. Each owner writes only its already claimed evidence/plan paths;
+Root retains shared source/path/Cargo integration. The existing seven exclusive
+adapter export roles, unsafe/visibility custody, loader identities and CEF/Meari
+direction remain required. These assignments do not claim either consolidation
+implemented or authorize compilation, browser/native execution or publication.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
