@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap-ready probe (Cap=0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T14:40:00Z
+updated: 2026-11-08T14:45:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -73,14 +73,19 @@ Tracked: this plan.
 
 ## 5. Residual / next
 
-Unlock **B** now has Unlock-C-style one-grant-apply scaffolding under
-`cap-ready/w2-h2-product-binding/candidate-pack/` (`TRANSFER.md`,
-`transfer-manifest.json`, `GRANT.TEMPLATE.json`). Lab-runner transfer-apply
-accepts schema `humanymous.cursor-unlock-b-transfer-grant/1` only with
-**non-empty** `pilot_command`. Autonomy GRANT attempt with null pilot was
-refused (Cap=0). Unlock **A** has scaffold-only TRANSFER/GRANT.TEMPLATE (not
-Cap-executable without path release).
+Unlock **B** one-grant-apply scaffolding remains Cap-ready
+(`unlock_b_preimage_ready=true`) but **blocked**: documented hosted gateway H2
+product-binding `pilot_command` was **not found** (search receipt
+`…/20261108233000-cursor-post-c-closer/PILOT-COMMAND-SEARCH.json`). Capture run
+`42479169280` stays `pass_component_hosted` only — forbidden as product-binding
+argv (COMMANDS.md §2). Never invent folklore pilot argv. Cap burn=0.
+
+Unlock **A** L2 residual taken this turn: lab-runner transfer applicator now
+recognizes unlock=`A` fail-closed (`entries: []` ⇒ `unlock_a_preimage_ready=false`;
+empty destinations refuse; writes `UNLOCK-A-APPLIED` only after real candidates).
+Still **not Cap-executable** without Root path release.
 
 Root: fill Unlock B `GRANT.pilot_command` (hosted gateway H2 product-binding Cap
-argv) → transfer-apply → Cap=1 once; else Unlock A path release. Cap free now.
-No `--authority-node-ipc` Cap spam reburn.
+argv) → transfer-apply → Cap=1 once; else Unlock A path release + non-empty
+destinations. Cap free now. No `--authority-node-ipc` Cap spam reburn.
+product=0.

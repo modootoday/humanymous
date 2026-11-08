@@ -5,8 +5,8 @@
 //! Cap module presence. Unlock B is true only when Root-authored
 //! `UNLOCK-B-APPLIED.json` exists (written by Unlock-B transfer-apply after a
 //! grant with non-empty `pilot_command`). Unlock A stays false unless
-//! Root-authored `UNLOCK-A-APPLIED.json` exists — never invent path release.
-//! Never invents product.
+//! Root-authored `UNLOCK-A-APPLIED.json` exists — never invent path release or
+//! folklore pilot argv. Never invents product.
 use crate::docker::Result;
 use crate::snapshot;
 use crate::transfer_preimage;
@@ -20,6 +20,9 @@ pub const DEFAULT_UNLOCK_C_MANIFEST: &str = ".spec.local/root/evidence/202611081
 
 /// Default private Unlock-B transfer manifest (one-grant-apply scaffolding).
 pub const DEFAULT_UNLOCK_B_MANIFEST: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/w2-h2-product-binding/candidate-pack/transfer-manifest.json";
+
+/// Default private Unlock-A transfer manifest (path-release scaffold; empty entries).
+pub const DEFAULT_UNLOCK_A_MANIFEST: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/g4-cef-at/candidate-pack/transfer-manifest.json";
 
 /// Root-authored apply receipts (fail-closed; absence ⇒ unlock false).
 const UNLOCK_A_RECEIPT: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/g4-cef-at/UNLOCK-A-APPLIED.json";
@@ -44,12 +47,18 @@ pub struct UnlockProbe {
 
 impl UnlockProbe {
     pub fn to_json(&self, root: &Path, manifest: Option<&Path>) -> Value {
+        let unlock_a_manifest = root.join(DEFAULT_UNLOCK_A_MANIFEST);
         let unlock_b_manifest = root.join(DEFAULT_UNLOCK_B_MANIFEST);
         json!({
             "schema": SCHEMA,
             "record_kind": "lab-runner-unlock-gate",
             "root": root.to_string_lossy(),
             "manifest": manifest.map(|path| path.to_string_lossy().into_owned()),
+            "unlock_a_manifest": if unlock_a_manifest.is_file() {
+                Some(unlock_a_manifest.to_string_lossy().into_owned())
+            } else {
+                None
+            },
             "unlock_b_manifest": if unlock_b_manifest.is_file() {
                 Some(unlock_b_manifest.to_string_lossy().into_owned())
             } else {
@@ -65,7 +74,7 @@ impl UnlockProbe {
                 "A": if self.a_g4_cef_at {
                     "UNLOCK-A-APPLIED present"
                 } else {
-                    "no UNLOCK-A-APPLIED; G4 CEF/AT path release absent"
+                    "no UNLOCK-A-APPLIED; G4 CEF/AT path release absent; transfer applicator wired fail-closed (empty destinations refuse)"
                 },
                 "B": if self.b_w2_h2_product_binding {
                     "UNLOCK-B-APPLIED present (Root GRANT with pilot_command + transfer-apply)"
@@ -91,6 +100,7 @@ impl UnlockProbe {
                 "cap_burn_only_after_unlock": true,
                 "detection_freeze": true,
                 "never_invent_unlock_b_pilot_command": true,
+                "never_invent_unlock_a_path_release": true,
             },
         })
     }

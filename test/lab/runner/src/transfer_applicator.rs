@@ -1,11 +1,12 @@
-//! Fail-closed Unlock B/C candidate-pack transfer probe / applicator helper.
+//! Fail-closed Unlock A/B/C candidate-pack transfer probe / applicator helper.
 //!
 //! Default is probe-only: verify live preimages and candidate digests against a
 //! transfer manifest. Apply requires an explicit Root grant and still aborts on
 //! any preimage mismatch. Unlock B additionally requires a non-empty
-//! `pilot_command` in the grant (Root-named hosted gateway binding). Never
-//! invents `pass_product_clean_room`. Cap burn is a separate step after a
-//! successful transfer.
+//! `pilot_command` in the grant (Root-named hosted gateway binding). Unlock A
+//! refuses empty destinations / empty entry lists (Root CEF/AT path release).
+//! Never invents `pass_product_clean_room` or folklore pilot argv. Cap burn is
+//! a separate step after a successful transfer.
 use crate::docker::Result;
 use crate::snapshot;
 use serde_json::{Map, Value, json};
@@ -20,6 +21,10 @@ const APPLY_SCHEMA_C: &str = "humanymous.lab-unlock-c-transfer-apply/1";
 const PROBE_SCHEMA_B: &str = "humanymous.lab-unlock-b-transfer-probe/1";
 const GRANT_SCHEMA_B: &str = "humanymous.cursor-unlock-b-transfer-grant/1";
 const APPLY_SCHEMA_B: &str = "humanymous.lab-unlock-b-transfer-apply/1";
+const PROBE_SCHEMA_A: &str = "humanymous.lab-unlock-a-transfer-probe/1";
+const GRANT_SCHEMA_A: &str = "humanymous.cursor-unlock-a-transfer-grant/1";
+const APPLY_SCHEMA_A: &str = "humanymous.lab-unlock-a-transfer-apply/1";
+const UNLOCK_A_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/g4-cef-at/UNLOCK-A-APPLIED.json";
 const UNLOCK_B_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/w2-h2-product-binding/UNLOCK-B-APPLIED.json";
 
 /// Compatibility alias used by Unlock-C unit tests.
@@ -32,6 +37,7 @@ const APPLY_SCHEMA: &str = APPLY_SCHEMA_C;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum UnlockLetter {
+    A,
     B,
     C,
 }
@@ -39,6 +45,7 @@ enum UnlockLetter {
 impl UnlockLetter {
     fn from_manifest(manifest: &Value) -> Result<Self> {
         match manifest.get("unlock").and_then(Value::as_str) {
+            Some("A") => Ok(Self::A),
             Some("B") => Ok(Self::B),
             Some("C") | None => Ok(Self::C),
             Some(other) => Err(format!("unsupported manifest.unlock={other}").into()),
@@ -47,6 +54,7 @@ impl UnlockLetter {
 
     fn probe_schema(self) -> &'static str {
         match self {
+            Self::A => PROBE_SCHEMA_A,
             Self::B => PROBE_SCHEMA_B,
             Self::C => PROBE_SCHEMA_C,
         }
@@ -54,6 +62,7 @@ impl UnlockLetter {
 
     fn apply_schema(self) -> &'static str {
         match self {
+            Self::A => APPLY_SCHEMA_A,
             Self::B => APPLY_SCHEMA_B,
             Self::C => APPLY_SCHEMA_C,
         }
@@ -61,6 +70,7 @@ impl UnlockLetter {
 
     fn grant_schema(self) -> &'static str {
         match self {
+            Self::A => GRANT_SCHEMA_A,
             Self::B => GRANT_SCHEMA_B,
             Self::C => GRANT_SCHEMA_C,
         }
@@ -68,6 +78,7 @@ impl UnlockLetter {
 
     fn ready_key(self) -> &'static str {
         match self {
+            Self::A => "unlock_a_preimage_ready",
             Self::B => "unlock_b_preimage_ready",
             Self::C => "unlock_c_preimage_ready",
         }
@@ -75,6 +86,7 @@ impl UnlockLetter {
 
     fn record_kind_probe(self) -> &'static str {
         match self {
+            Self::A => "lab-runner-unlock-a-transfer-probe",
             Self::B => "lab-runner-unlock-b-transfer-probe",
             Self::C => "lab-runner-unlock-c-transfer-probe",
         }
@@ -82,6 +94,7 @@ impl UnlockLetter {
 
     fn record_kind_apply(self) -> &'static str {
         match self {
+            Self::A => "lab-runner-unlock-a-transfer-apply",
             Self::B => "lab-runner-unlock-b-transfer-apply",
             Self::C => "lab-runner-unlock-c-transfer-apply",
         }
@@ -89,6 +102,7 @@ impl UnlockLetter {
 
     fn as_str(self) -> &'static str {
         match self {
+            Self::A => "A",
             Self::B => "B",
             Self::C => "C",
         }
@@ -165,7 +179,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         && !dry_run
     {
         return Err(format!(
-            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; never invent pass_product_clean_room",
+            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; Unlock A requires Root path-release destinations; never invent pass_product_clean_room",
             unlock.ready_key()
         )
         .into());
@@ -194,6 +208,7 @@ fn emit_report(report: &Value, emit_path: Option<&str>) -> Result<()> {
                 "emit": path,
                 "unlock_c_preimage_ready": report.get("unlock_c_preimage_ready"),
                 "unlock_b_preimage_ready": report.get("unlock_b_preimage_ready"),
+                "unlock_a_preimage_ready": report.get("unlock_a_preimage_ready"),
                 "applied": report.get("applied").cloned().unwrap_or(json!(false)),
                 "cap_execute": false,
                 "pass_product_clean_room": 0,
@@ -382,15 +397,20 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
             "authority_cap_green_is_not_product": true,
             "capture_component_is_not_product_binding": true,
             "unlock_b_requires_non_empty_pilot_command": unlock == UnlockLetter::B,
+            "unlock_a_requires_root_path_release_destinations": unlock == UnlockLetter::A,
+            "never_invent_pilot_command": true,
         },
         "mismatches": mismatches,
         "missing_candidates": missing_candidates,
         "checks": checks,
         "next": if unlock_preimage_ready {
             match unlock {
+                UnlockLetter::A => "Root issues Unlock-A GRANT with non-empty path-release destinations; transfer-apply then Cap=1 matching g4-cef-at pack",
                 UnlockLetter::B => "Root issues Unlock-B GRANT with non-empty pilot_command; transfer-apply then Cap=1 matching w2-h2-product-binding pack",
                 UnlockLetter::C => "Root issues transfer grant; transfer-apply then Cap=1 --authority-node-ipc",
             }
+        } else if unlock == UnlockLetter::A && entries.is_empty() {
+            "Unlock A scaffold: wait Root CEF/AT path release + candidate bodies; empty entries keep unlock_a_preimage_ready=false"
         } else {
             "Abort transfer; refresh candidate-pack or wait Root structural delta"
         },
@@ -498,6 +518,48 @@ fn apply_transfer(
         }
     }
 
+    if unlock == UnlockLetter::A && !dry_run {
+        if written.is_empty() {
+            return Err(
+                "Unlock A apply refused: no destinations written; Root CEF/AT path release + candidate bodies required; never invent path release"
+                    .into(),
+            );
+        }
+        let receipt = json!({
+            "schema": "humanymous.cursor-unlock-a-applied/1",
+            "unlock": "A",
+            "applied": true,
+            "applied_utc": chrono_like_utc(),
+            "grant": grant_path,
+            "destinations_written": written,
+            "cap_burn_authorized": true,
+            "cap_burn_limit": 1,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "honesty": {
+                "never_invent_pass_product_clean_room": true,
+                "detection_freeze": true,
+                "a11y_non_motor": true,
+                "never_cap_spam_a11y_require_full": true,
+            },
+        });
+        let receipt_path = workspace.join(UNLOCK_A_APPLIED_REL);
+        if let Some(parent) = receipt_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("mkdir {}: {error}", parent.display()))?;
+        }
+        fs::write(
+            &receipt_path,
+            format!(
+                "{}\n",
+                serde_json::to_string_pretty(&receipt)
+                    .map_err(|error| format!("unlock-a receipt encode: {error}"))?
+            ),
+        )
+        .map_err(|error| format!("write UNLOCK-A-APPLIED: {error}"))?;
+        written.push(UNLOCK_A_APPLIED_REL);
+    }
+
     if unlock == UnlockLetter::B && !dry_run {
         let Some(pilot) = pilot_command else {
             return Err(
@@ -573,6 +635,9 @@ fn apply_transfer(
             "Re-run without --dry-run after Root confirms grant; then Cap=1"
         } else {
             match unlock {
+                UnlockLetter::A => {
+                    "Cap=1 burn matching cap-ready/g4-cef-at pack after measured CEF/AT; matrix honesty retained; product=0"
+                }
                 UnlockLetter::B => {
                     "Cap=1 burn matching cap-ready/w2-h2-product-binding pack using grant pilot_command; matrix honesty retained; product=0"
                 }
@@ -621,12 +686,30 @@ fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Resu
             );
         }
     }
+    if unlock == UnlockLetter::A {
+        let release = grant
+            .get("path_release_required")
+            .and_then(Value::as_array)
+            .map(|items| !items.is_empty())
+            .unwrap_or(false);
+        if !release {
+            return Err(
+                "Unlock A grant.path_release_required must name Root CEF/AT paths; never invent path release; template alone is not a live grant"
+                    .into(),
+            );
+        }
+    }
     let destinations = grant
         .get("destinations")
         .and_then(Value::as_array)
         .ok_or("grant.destinations array required")?;
     if destinations.is_empty() {
-        return Err("grant.destinations must be non-empty".into());
+        return Err(if unlock == UnlockLetter::A {
+            "Unlock A grant.destinations must be non-empty after Root path release; empty scaffold is not executable"
+                .into()
+        } else {
+            "grant.destinations must be non-empty".into()
+        });
     }
     let entries = manifest
         .get("entries")
@@ -933,6 +1016,90 @@ mod tests {
         assert_eq!(
             root.join("workspace")
                 .join(UNLOCK_B_APPLIED_REL)
+                .exists(),
+            false
+        );
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn unlock_a_empty_entries_not_ready() {
+        let root = temp_dir("a-empty");
+        let manifest = json!({
+            "schema": "humanymous.cursor-unlock-a-g4-cef-at-candidate/1",
+            "unlock": "A",
+            "entries": []
+        });
+        let manifest_path = root.join("pack/transfer-manifest.json");
+        write(
+            &manifest_path,
+            serde_json::to_string_pretty(&manifest).unwrap().as_bytes(),
+        );
+        let probe =
+            probe_manifest(&manifest, &root.join("workspace"), &manifest_path).expect("probe");
+        assert_eq!(probe["schema"], PROBE_SCHEMA_A);
+        assert_eq!(probe["unlock_a_preimage_ready"], false);
+        assert_eq!(probe["pass_product_clean_room"], 0);
+        assert_eq!(
+            probe["honesty"]["unlock_a_requires_root_path_release_destinations"],
+            true
+        );
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn unlock_a_grant_refuses_empty_destinations() {
+        let root = temp_dir("a-empty-dest");
+        let body = b"cef pilot notes\n";
+        write(
+            &root.join("pack/candidate/scripts/ci/cef-pilot/NOTES.md"),
+            body,
+        );
+        let manifest = json!({
+            "schema": "humanymous.cursor-unlock-a-g4-cef-at-candidate/1",
+            "unlock": "A",
+            "entries": [
+                {
+                    "destination": "scripts/ci/cef-pilot/NOTES.md",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/scripts/ci/cef-pilot/NOTES.md",
+                    "candidateSha256": snapshot::digest(body),
+                }
+            ]
+        });
+        let manifest_path = root.join("pack/transfer-manifest.json");
+        write(
+            &manifest_path,
+            serde_json::to_string_pretty(&manifest).unwrap().as_bytes(),
+        );
+        let probe =
+            probe_manifest(&manifest, &root.join("workspace"), &manifest_path).expect("probe");
+        assert_eq!(probe["unlock_a_preimage_ready"], true);
+        let grant = json!({
+            "schema": GRANT_SCHEMA_A,
+            "root_authorized": true,
+            "allow_apply": true,
+            "unlock": "A",
+            "path_release_required": ["scripts/ci/cef-pilot/**"],
+            "destinations": []
+        });
+        let grant_path = root.join("grant.json");
+        write(
+            &grant_path,
+            serde_json::to_string_pretty(&grant).unwrap().as_bytes(),
+        );
+        let err = apply_transfer(
+            &manifest,
+            &probe,
+            Some(grant_path.to_str().unwrap()),
+            &root.join("workspace"),
+            false,
+        )
+        .expect_err("empty destinations refused");
+        assert!(err.to_string().contains("destinations"));
+        assert_eq!(
+            root.join("workspace")
+                .join(UNLOCK_A_APPLIED_REL)
                 .exists(),
             false
         );
