@@ -56,6 +56,20 @@ The corrected full exact selector subsequently executed one required checkout
 gate and passed (45 filtered); the earlier zero-selected invocation is retained
 as a failed selection attempt, not added coverage.
 
+Root fast-forwarded only the dedicated browser validation ref from f8aec286 to
+3137c905ac4e52b8b345fa2306af9e4ef4d42b48. Run42432665570 was independently
+observed queued and then preflight in progress; Lab owns its single terminal
+watch and evidence collection. No second dispatch, publication or main push was
+performed. This is execution admission, not a passing result.
+
+The private version-3 Tools movement proposal reconciles282 tracked rows against
+that exact Git source, including seven changed rows since version2. Every row's
+raw worktree Git object equals the corresponding source commit blob. Previous
+proposals remain retained. This proves the named source-row snapshot only, not
+compiler input closure or completed movement. The CLI owner is assigned actual
+Rust source candidates for14 thin composition roots in its owned evidence area;
+Root retains all live source movement and shared Cargo integration ownership.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
