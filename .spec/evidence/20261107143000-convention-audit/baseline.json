@@ -311,7 +311,7 @@
       "id": "CA-AUTH-LEDGER-CLOCK-01",
       "owner": "authority/root",
       "severity": "P2",
-      "state": "OPEN candidate DATA-policy correction and regression pending",
+      "state": "OPEN specific source correction independently accepted; actual allocated regressions pending",
       "native_proof_bypass_claimed": false,
       "goal_complete": false
     },
@@ -319,7 +319,7 @@
       "id": "CA-AUTH-PROCESS-REPLAY-01",
       "owner": "authority/root",
       "severity": "P2",
-      "state": "OPEN candidate DATA-policy correction and regression pending",
+      "state": "OPEN specific source correction independently accepted; actual allocated regressions pending",
       "native_proof_bypass_claimed": false,
       "goal_complete": false
     }
@@ -2836,6 +2836,13 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/authority-policy-gap-review-035.json",
     "sha256": "29c49e0a3e74c00193e8ba7547361b4724820215f57d84a31c35bc91d5ba1707",
     "bytes": 3272,
+    "goal_complete": false
+  },
+  "authority_policy_source_fix": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/authority-source-fix-review-036.json",
+    "sha256": "6c537537b26f6b592bcc095a52e620f5e683be0053d11f529f2f50d2b1018917",
+    "bytes": 2097,
+    "owner_commit": "f6a4ad91c87831ca851dd1bd3c5525d4f5abcac5",
     "goal_complete": false
   }
 }

@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: b48902760e58a255a6a6800eb2e4e732feb27b8a5aabae8c79cdc4962b07733c, bytes: 157368, store: repo}
+  - {path: baseline.json, sha256: 7fab46d7b70f7fa5ebeafcc413581674501846c1eeb8eff1cef19f5380e3b14b, bytes: 157774, store: repo}
 ---
 
 # Convention audit baseline
@@ -3149,3 +3149,17 @@ Unsupported and consuming receipt epoch check is pointer-identical/phase/loss
 checked. These are proposed DATA-policy defects, not native authority bypass or
 actual host failures. Candidate13tests remain authored NOTRUN; no whole candidate
 source, protocol approval or full migration qualification is inferred.
+
+Authority correction source re-audit: owner f6a4ad91c87831ca851dd1bd3c5525d4f5abcac5
+moves clock-watermark advancement before Replay/Capacity refusal without inserting
+a tombstone. New domain-separated process key binds SID/PID/creation/epoch only;
+both positions are compared while full role+plan signatures remain unchanged.
+Three new tests cover4refusal/rollback combinations plus permanent latch, fresh
+signed changed plans and signed role swaps. All6candidate after-hashes match;
+4-space-normalized inline test module equals supplemental15policy cases, plus
+1receipt model=16authored cases. No duplicate supplemental target is intended.
+Private authority-source-fix-review-036.json preserves corrected bytes. Specific
+source corrections for both findings are accepted; actual check/fmt/strict/tests
+remain NOTRUN. Both CA-AUTH findings stay OPEN for allocated regression evidence.
+Private empty proof/receipt and Unsupported native producer remain unchanged;
+no full protocol/producer/hosted/Ready qualification follows from these fixes.
