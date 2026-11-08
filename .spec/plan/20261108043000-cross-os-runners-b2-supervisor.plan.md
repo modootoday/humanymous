@@ -15,7 +15,13 @@ OwnedHandle ownership, and ONE safe owning lifecycle above the Platform bridge.
 No new crate, WinSafe dependency edge, nightly, foreign implementation, arbitrary
 Command/Read/Write provider or module-wide unsafe allowance. B2 remains an explicit
 Root+X review proposal; no source/feature/unsafe/compiler/native/actor grant follows.
-B1 is independent and remains unapproved. This is a concrete refinement of the
+B1 is independent: Root's conditional decision6aea9fcc accepts ONLY its exact
+seventh low-level non-authority creation scope. Root subsequently implemented it
+in isolated Platform source and reported scoped pure/compile/doc checks; actual
+four native fixtures remain ignored/unrun and provider admission Unsupported.
+This is isolated component source implementation, not native/provider/whole-source
+qualification; original04110973 candidate remains immutable. B2 remains UNAPPROVED.
+This is a concrete refinement of the
 prior ten-scope B2 proposal, not permission to add those scopes.
 
 First primitive supports fixed source-bound Rust child images with NO inherited
