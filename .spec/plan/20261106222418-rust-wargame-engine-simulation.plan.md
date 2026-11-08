@@ -13,6 +13,44 @@ rel:
 
 ## Goal
 
+### Tools role-composition Rust candidate (evidence-only, not integrated)
+
+Root requested actual Rust candidate diffs after isolated14bin checks showed
+private full-context composition warnings. Private evidence20261108013000 holds
+candidate.patch,37proposed Rust sources in candidate-rust.zip, exact26Root input
+pins, file-map and static test identity inventory. Root assembly
+tools-integration-5f1010d4 was never edited; checkpoint is
+5f1010d42f4938ed2ea30ce2e84945af7aedb180. Before/after source trees are review
+artifacts only, not per-role implementation copies. Patch SHA256:
+ba89226f27b48c8cc2e91ce67fc3f9cac00f647fa17d53ee865cb36d50d0e8c3;
+Rust ZIP SHA256:
+bad68875ff804177babdccd358d6686644c8ad8df296c41a3e7bbc32ee405de0.
+
+Candidate isolates replay/evaluation, network contract/data verification, actual
+runtime actor and legacy-only report. Sole physical status/shuffle/evaluation/
+error/data sources are extracted; case contract and actual execution separate,
+with a shared canonical builder. Offline verification tests use a cfg(test)
+failed ledger fixture instead of linking the process actor. All40existing test
+function identities and81ordered catalog quoted literals remain; actual actor
+and provider tests stay in the runtime role. Native ignored gates remain open.
+
+Private VerifiedSnapshot fields/Log construction stay provider-only; serialized
+observation data is not authenticated authority. No blanket allowance, dummy
+call, public SDK helper, implementation clone, Cargo/feature change or live source
+edit. Root's corrected report command/root remains legacy-only. Candidate removes
+unused report reexports and validates then discards the unused internal run
+ordinal; one assertion in the same test is adjusted. Root must explicitly review
+that storage narrowing and role-test discovery, not infer semantic qualification.
+
+Only evidence Rust parsing/formatting and patch applicability were checked.
+Compiler/Clippy/tests/new warnings were NOT measured. Root's26input hashes stayed
+unchanged. The patch applies to the pinned before tree without modifying it.
+Root must integrate in a fresh coherent source and check every role/feature/test
+closure under strict warnings, retaining source-specific native/Docker gates.
+Verifier feature inheritance may still enable runtime dependencies independently
+of module selection; Root owns that graph decision. This artifact is ready for
+integration review, not a claim that61warnings have actually been eliminated.
+
 ### Tools freeze contract: shared qualification lab support (source audit only)
 
 Root's requested destination is CLI src/qualification/lab_support/{attacker,
