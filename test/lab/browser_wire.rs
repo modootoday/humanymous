@@ -27,8 +27,38 @@ pub fn origins_match(hits: &Value, expected: &Value) -> bool {
     complete(hits, expected, "origin_matched", "origin_other")
 }
 
-pub fn referers_absent(hits: &Value, expected: &Value) -> bool {
+#[cfg(test)]
+fn referers_absent(hits: &Value, expected: &Value) -> bool {
     complete(hits, expected, "referer_absent", "referer_present")
+}
+
+/// Version 2 requires a complete partition without retaining raw header values.
+pub fn referers_private(hits: &Value, expected: &Value) -> bool {
+    let Some(counts) = expected["request_counts"].as_object() else {
+        return false;
+    };
+    let total = counts.values().try_fold(0_u64, |sum, value| {
+        sum.checked_add(value.as_u64().filter(|count| *count > 0)?)
+    });
+    let Some(total) = total.filter(|total| *total > 0) else {
+        return false;
+    };
+    let Ok(contract) = serde_json::from_str::<Value>(include_str!("browser-wire-contract.json"))
+    else {
+        return false;
+    };
+    let number = |key: &str| hits.get(contract[key].as_str()?)?.as_u64();
+    let (Some(absent), Some(present), Some(root), Some(other)) = (
+        number("referer_absent"),
+        number("referer_present"),
+        number("referer_root_matched"),
+        number("referer_other"),
+    ) else {
+        return false;
+    };
+    absent.checked_add(present) == Some(total)
+        && root.checked_add(other) == Some(present)
+        && other == 0
 }
 
 /// Browser-local proxy observations only; not Gate/Runtime header attestation.
@@ -81,6 +111,50 @@ pub fn bootstrap_origin(hits: &Value, fixture: &Value) -> Option<&'static str> {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn private_referer_partition_rejects_missing_malformed_foreign_and_overflow() {
+        let expected = json!({"request_counts":{"session":1,"effect":2}});
+        for absent in 0..=3 {
+            let good = json!({"wire_referer_absent":absent,"wire_referer_present":3-absent,
+                "wire_referer_root_matched":3-absent,"wire_referer_other":0});
+            assert!(referers_private(&good, &expected));
+            for key in [
+                "wire_referer_absent",
+                "wire_referer_present",
+                "wire_referer_root_matched",
+                "wire_referer_other",
+            ] {
+                let mut missing = good.clone();
+                missing.as_object_mut().unwrap().remove(key);
+                assert!(!referers_private(&missing, &expected));
+                for bad in [
+                    json!(null),
+                    json!(-1),
+                    json!("0"),
+                    json!(false),
+                    json!(0.5),
+                    json!(u64::MAX),
+                ] {
+                    let mut malformed = good.clone();
+                    malformed[key] = bad;
+                    assert!(!referers_private(&malformed, &expected));
+                }
+            }
+        }
+        for (absent, present, root, other) in [
+            (0, 3, 2, 1),
+            (0, 3, 2, 0),
+            (1, 3, 3, 0),
+            (u64::MAX, 4, 4, 0),
+        ] {
+            assert!(!referers_private(
+                &json!({"wire_referer_absent":absent,"wire_referer_present":present,
+                "wire_referer_root_matched":root,"wire_referer_other":other}),
+                &expected
+            ));
+        }
+    }
 
     fn origin_hits(matched: u64, other: u64, absent: u64, null_count: u64) -> Value {
         json!({"wire_origin_matched":matched,"wire_origin_other":other,

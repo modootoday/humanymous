@@ -11,6 +11,33 @@ rel:
 
 # Structural development canon
 
+## Browser wire privacy correction, version 2
+
+The actual selected browser passed at source f8aec286, while the product run
+42429778301 failed the historical Referer-absence assertion (41/43 assertions).
+The accepted Collector policy permits an exact owned origin-root Referer or
+absence. It never permits a document path, query, fragment or foreign origin.
+The version-2 product assertion replaces the incompatible absence-only assertion
+with explicit absent, present, root-matched and other counters at both proxies.
+All four counters must be unsigned integers; absent plus present must equal the
+positive checked fixture request denominator, root plus other must equal present,
+and other must be zero. Missing, malformed, overflowing or inconsistent counters
+fail closed. The root derives only from the trusted lab browser-origin fixture.
+Existing case-insensitive duplicate-header refusal and strict Origin checks stay
+in force. No raw Referer values enter receipts. This is a private qualification
+contract correction, not a scoring change or Runtime authentication fallback.
+
+The first scoped Windows runner test execution passed all five browser-wire
+tests, with41 other tests filtered out. Proxy producer validation, an actual
+selected-browser sensitive-document control, reviewed source-pin updates and
+the next Docker product run remain required. This source change alone does not
+establish network privacy or whole-product qualification.
+
+The Windows runtime-pilot filter selected zero tests (four filtered): the proxy
+module is Unix-only. That successful command exit is not producer-test evidence.
+An unrestricted spec check also failed on existing local-document layout issues;
+retain this failure separately from the scoped public-canon check.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.

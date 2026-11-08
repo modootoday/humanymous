@@ -257,6 +257,13 @@ fn record_wire(receipts: &Receipts, origin: Option<&str>, referer: Option<&str>)
         Some("null") => keys.push("origin_null"),
         _ => {}
     }
+    if let Some(referer) = referer {
+        keys.push(if referer == format!("{expected}/") {
+            "referer_root_matched"
+        } else {
+            "referer_other"
+        });
+    }
     let mut counts = receipts
         .0
         .lock()
@@ -266,6 +273,10 @@ fn record_wire(receipts: &Receipts, origin: Option<&str>, referer: Option<&str>)
         "origin_other",
         "origin_absent",
         "origin_null",
+        "referer_absent",
+        "referer_present",
+        "referer_root_matched",
+        "referer_other",
     ] {
         let name = contract[key].as_str().ok_or("owned wire counter absent")?;
         counts.entry(name.into()).or_default();
@@ -362,9 +373,31 @@ mod tests {
             serde_json::to_value(receipts.snapshot()).unwrap(),
             serde_json::json!({
                 "wire_origin_matched":1,"wire_origin_other":2,"wire_origin_absent":1,
-                "wire_origin_null":1,"wire_referer_absent":1,"wire_referer_present":2
+                "wire_origin_null":1,"wire_referer_absent":1,"wire_referer_present":2,
+                "wire_referer_root_matched":0,"wire_referer_other":2
             })
         );
+    }
+    #[test]
+    fn only_exact_owned_root_is_classified_as_private() {
+        for value in [
+            "http://127.0.0.1:31111/",
+            "http://127.0.0.1:31111/private",
+            "http://127.0.0.1:31111/?private",
+            "http://127.0.0.1:31111/#private",
+            "http://user@127.0.0.1:31111/",
+            "http://foreign/",
+            "",
+            " http://127.0.0.1:31111/",
+        ] {
+            let receipts = Receipts::default();
+            record_wire(&receipts, None, Some(value)).unwrap();
+            let counts = receipts.snapshot();
+            let matched = u64::from(value == "http://127.0.0.1:31111/");
+            assert_eq!(counts["wire_referer_root_matched"], matched);
+            assert_eq!(counts["wire_referer_other"], 1 - matched);
+            assert_eq!(counts["wire_referer_present"], 1);
+        }
     }
     #[test]
     fn owned_authority_and_api_dispatch_cannot_be_retargeted() {
