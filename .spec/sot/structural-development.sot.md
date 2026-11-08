@@ -542,6 +542,44 @@ No outer process-tree/time/output supervisor is implied by pure unit success.
 Updated full-role feature recipes, source/archive seals and hosted qualification
 remain required before the live Tools cutover.
 
+### Explicit materialization and exact coordinator result admission
+
+Root verified all candidate05 attachment hashes and its three exact isolated
+preimages, then adopted four Rust files from fa9f3690c46b6280c69ee16244025cafe67d09ad.
+prepare-stage-request requires an independently review-pinned finite allowlist,
+explicit frozen root, expected source epoch/kind and fresh request destination.
+The same strict selection decoder and raw-pin predicate serve materialization
+and staging. Only the reviewed root marker or identical root may bind. Changed
+source or legal bytes refuse; no discovery, automatic refresh or normalization
+is introduced. Materialization completion is not staging, canonical tree closure,
+source/provider authentication or runtime qualification.
+
+The isolated Delivery command git-coord-result LOG reuses the bounded result
+reader but requires exactly the original coordinator case, one run header and
+summary, one passed and zero failed/ignored/measured/filtered. Duplicated cases,
+summaries, extra executed cases and successful empty selection refuse. Cargo exit
+status and actual source/binary/host binding remain separate required gates.
+Delivery was assigned to add the fixed guard after actual hosted Cargo success.
+
+The new retained private evidence record evidence:root/20261108024914 contains
+14 registered attachments. All-target/all-feature locked/offline CLI strict
+Clippy exits zero with14.15s footer. Eight pure selection/materializer units pass
+with93 filtered; four result parser units pass with123 filtered. Actual discovery
+lists101 maintenance cases with all97 prior selectors preserved. Source views
+contain1791 files before/after, zero differences. Its5080861-byte source ZIP has
+SHA25611cdd17d8e0ade45fcfd5acb6f181cef4bd75f176cf997a3846a0ce5b7079de8;
+all1791 regular entry hashes/sizes/paths match the recorded source view, without
+duplicates or missing regular entries. Two bounded ordered chunks retain it
+without changing attachment limits. No remote upload or compiler read closure
+claim is made. Earlier seals remain immutable.
+
+Actual request materialization/staging, existing-output/changed-source negatives,
+coordinator Git/PowerShell execution and native actor bodies remain unexecuted.
+The coordinator's canonical-root equality needs an actual Windows caller control:
+plain github.workspace spelling is not assumed to equal Rust canonical output.
+The current workflow supplement is not yet an admitted Windows gate. CA-LIFETIME
+outer supervision and full migration requirements remain open.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
