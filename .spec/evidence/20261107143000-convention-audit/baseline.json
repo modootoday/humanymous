@@ -2387,5 +2387,32 @@
       }
     ],
     "unsafe_negatives": "Accepted safe-root/linkage controls still require implementation/allocation; Root notified"
+  },
+  "detection_freeze_consolidation_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/detection-freeze-consolidation-review-001.json",
+    "source": "14scoring leaves +4signalregistry/data/vocabulary;9exactbytes and9namespace/visibility/format changes",
+    "baseline": "d7c74125a05e0537873936b4f17541e3744939d9",
+    "transitive_actual_equivalence_proven": false,
+    "sha256": "841b90c9fa8f29925018ffeca173c423d7c4098b1626ff3d038791d120e76398",
+    "goal_complete": false,
+    "scoring_rule_change_observed": false,
+    "bytes": 9248
+  },
+  "detection_transitive_source_review": {
+    "bytes": 5065,
+    "goal_complete": false,
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/detection-transitive-source-review-001.json",
+    "result": "9behavior/inference/wire leaves;5byteidentical/4pathrewires;0worktreeGitdrift",
+    "sha256": "ecab6626df7a26eeac536d6f95d1335e9296bfef3bb98a7b27b7c1c4da2e2f6b",
+    "scope": "Static source preservation, not complete report/config/feature/artifact/output equivalence"
+  },
+  "signals_consolidation_complete_delta_review": {
+    "goal_complete": false,
+    "result": "18signal leaves/data;11byteidentical/7namespace and serde formatting changes;0workingGitdrift",
+    "final_actual_equivalence_proven": false,
+    "combined_distinct_named_scope": 39,
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/signals-consolidation-review-001.json",
+    "bytes": 8937,
+    "sha256": "ff51dd1ef872687f005d792d5b23ca91a425c5b17d7ab81d2f4451dd1906f366"
   }
 }

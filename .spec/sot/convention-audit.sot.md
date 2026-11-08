@@ -3346,3 +3346,54 @@ no runner was found in the searched isolated qualification Rust sources. Root wa
 asked to allocate their owning implementation/run alongside remaining final gates.
 No competing compiler/process workload was launched. Private
 data-negative-candidate-review-001.json preserves the bounded search and limits.
+
+## Detection freeze after Core consolidation
+
+Independent immutable comparison against canonical baseline d7c74125 maps all14
+scoring Rust leaves into current Core scoring. Five are byte-identical; all nine
+changed leaves were reviewed completely and differ only in namespace rewiring,
+visibility narrowing or formatting. No scoring arithmetic, weights, thresholds,
+hard-rule predicates, verdict bands or upgrade conditions changed in those leaves.
+Policy source itself is identical, retaining challenge30/deny70/layercap60.
+
+Four additional signal registry/data/vocabulary/verdict files are byte-identical,
+including registry.json's143 entries. All18 current reviewed worktree files match
+their exact Git blobs. Private detection-freeze-consolidation-review-001.json binds
+each old/new path, blob, SHA256 and size. The broader signals/report diff exceeded
+the bounded display and is NOT counted as complete manual coverage here.
+
+This verifies only the named scoring/registry source freeze. Transitive behavior,
+model, wire decoding, default/feature/configuration selection, actual regression
+and final output equivalence still need independent source/role/execution joins.
+No new scoring permission, production activation or global detection/a11y pass is
+inferred. Root received the scoped result; whole migration remains OPEN.
+
+Detection source follow-up reads all three behavior feature leaves, all four
+model inference leaves and both signal wire helper leaves against d7c74125.
+Five are byte-identical; four differ only by crate-path rewiring. All nine current
+worktree files match Git. Feature dimension27/bv1 order/schema digest, extraction
+arithmetic, default AbstainPredictor/no shadow, MLP validation/prediction/calibration
+and wire helper implementations are preserved. The new training source is not
+mistaken for active model selection by this review.
+
+This extends named static source coverage, not full report schemas or actual
+configured artifact/default-feature/runtime/output equivalence. The current
+maintenance executable SHAe124ddd1 differs from historically qualified4b38ef6a;
+it was not executed and old qualification was not transferred. Private
+detection-transitive-source-review-001.json binds exact source hashes and limits.
+
+The earlier truncated signal/report diff is now followed by complete bounded
+changed-token review. All18 signal source/data leaves map from d7c74125:11 are
+byte-identical, including registry/unicode JSON and wire helpers; seven changed
+signal/report leaves show namespace rewiring and serde attribute formatting only.
+Field names/types and serialization/default/optional policies are preserved.
+All18 current worktree files match their Git blobs. This later review extends
+the earlier limited observation without pretending its initial display was full.
+
+Combined distinct named coverage is14 scoring +3 behavior feature +4 model
+inference +18 signal leaves/data =39, accounting for previous overlap only once.
+This is a static source-delta review, not final role/config/artifact selection,
+compilation, actual output or whole migration qualification. Private
+signals-consolidation-review-001.json retains immutable per-file identities.
+The in-progress maintenance candidate04 was read only as mutable draft context;
+no final candidate correctness or executed result is claimed without its seal.
