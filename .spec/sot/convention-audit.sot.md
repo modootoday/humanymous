@@ -3645,3 +3645,29 @@ binds all7 checkpoint files. Live tracked manifests34/live workspace29 plus4
 standalone and isolated saved19 members remain separate from final8 design.
 Root received a nonblocking request to epoch-label structural-development's old
 'current tracked census39/34' sentence; no foreign canon was edited by audit.
+
+Root-requested B1 bounded boundary review completed against plan20261108040000,
+existing Platform types/create/query and pinned windows-permissions0.2.4 sources.
+Recommendation is conditional low-level non-authority creation only, not approval,
+source/executor grant or provider readiness. Root retains the explicit decision.
+Before implementation: valid native descriptor lifetime/provenance, preallocated
+creation-obligation storage, immediate native failure capture, one successful
+handle adoption with no fallible gap; default-off feature and exact seventh
+function-local unsafe scope require an explicit amendment to six-only canon.
+No broadened root/module allow, unsafe type conversion or SDK facade grant.
+
+The current Path+descriptor proposal cannot certify O/retained parent/original
+clock. Absolute create is not handle-relative namespace admission. Full original-I,
+held namespace, provider and Ready remain Unsupported. Creation return must retain
+File AND locator/obligation; lone into_file must not discard that obligation.
+Post-create refusals retain the same owner before diagnostics. No deletion/repair/
+existing-file adoption, truncate, retry name or fallback. Ordinary locator checks
+and ACL policy precede mutation; actual same-held provider checks follow with the
+obligation retained. Peer share0 denial alone cannot prove ACL enforcement.
+
+Private b1-boundary-review-001.json ranks implementation blockers, provider-only
+ship blockers, documented blocking-call/cleanup residuals, exact API/visibility/
+feature/unsafe amendments and pure/compile/actual NTFS negative tests. All those
+tests are NOTRUN; no unsafe implementation was authored. Primary sources are
+[Microsoft CreateFileW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew)
+and [Rust1.99.1 FromRawHandle](https://doc.rust-lang.org/std/os/windows/io/trait.FromRawHandle.html).

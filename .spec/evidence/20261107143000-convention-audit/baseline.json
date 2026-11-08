@@ -2559,5 +2559,15 @@
     "bytes": 2889,
     "scope": "Fresh1793beforeafter0diff binds32pass/defaultstrict0.21s;currentselected1793matchonly",
     "goal_complete": false
+  },
+  "b1_boundary_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b1-boundary-review-001.json",
+    "sha256": "a9e28333b1fb618cbb14bd0d519b090ff27bb4614f3132c2551b46d75d213f46",
+    "bytes": 8348,
+    "scope": "Root-requested bounded proposal review, not acceptance/source/executor grant",
+    "recommendation": "Conditional low-level non-authority primitive only; memory/ownership/feature-canon amendments before implementation, provider manufacture/namespace remainsUnsupported",
+    "Root_decision": "PENDING",
+    "source_or_native_execution": false,
+    "goal_complete": false
   }
 }
