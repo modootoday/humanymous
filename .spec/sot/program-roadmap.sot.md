@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-08T03:48:26Z
+updated: 2026-11-08T04:03:31Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -19,6 +19,93 @@ snapshots, including their allocation tables, counts and then-current CI handles
 They do not grant current execution slots, supersede newer contracts or prove
 freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
+## Latest isolated Adapters integration checkpoint
+
+Root has now adopted the reviewed twelve-to-one Adapters transformation into its
+owned isolated assembly. Locked/offline Cargo metadata reports eight workspace
+members there; the live workspace remains29 plus four standalone tools. Final
+Collector/facade paths, live cutover and shipping qualification remain unfinished.
+The adoption preserves124 preimage rows, moves112 context files and three
+resources, retires12 manifests outside the assembly, and adopts133 candidate
+files. The prior nineteen-member source archive is retained.
+
+The first combined safe-context test compilation failed because an existing
+empty-array comparison became type-ambiguous with the merged dependency graph.
+Root retained the failure and original file, then explicitly compared against
+an empty byte string without changing the assertion or production behavior.
+The corrected apache,dotnet,framework,go,native-abi,nginx profile passed strict
+all-target Clippy and all73 discovered library tests (zero failed, ignored or
+filtered). All1801 assembly files matched before/after the test invocation.
+These are component results, not seven export-role, native-loader, host-package,
+Cross-OS or product qualification. Default-library strict Clippy also passed.
+The public facade's adapter-go profile also passed two library and two external
+consumer tests plus strict all-target Clippy. All1801 source files remained
+unchanged across those checks. The634 external lock name/version/source/checksum
+tuples match the retained pre-Adapters lock exactly. These checks preserve the
+public Rust alias/profile contract; no actual Go host was run. Node artifact
+selection and Pages scope updates were assigned to their existing owners.
+
+
+Private receipts: `.spec.local/root/evidence/20261108054000-core-consolidation/`
+`adapters-source-adoption.json`, `adapters-eight-package-metadata.json`,
+`adapters-safe-contexts-clippy.log` (initial failure),
+`adapters-safe-contexts-clippy-retry1.log`, `adapters-safe-contexts-list.log`,
+`adapters-safe-contexts-tests.log`, and
+`adapters-safe-contexts-test-receipt.json`. The earlier dated checkpoint below
+retains its historical19-member and uncompiled-adapter observations.
+
+## Facade final-path checkpoint
+
+The isolated facade now resides at “crates/sdk/humanymous” with byte-identical
+package files. Root corrected the CLI relative dependency after retaining the
+first metadata failure. Locked/offline metadata and four facade tests passed
+after movement. A new strict all-target/all-feature facade Clippy check passed;
+its actual timed1801-file before and after lists are both retained under
+“facade-final-path-source-before.json” and “facade-final-path-source-after.json”.
+The prior component receipt computed equality but did not persist its after-list;
+it is not independently reproducible from that receipt alone. The new snapshot
+pair does not retroactively seal earlier tests. Collector relocation, live
+cutover and actual shipping qualification remain pending.
+
+## Collector final-path checkpoint
+
+The isolated Collector now resides at `crates/integrations/humanymous-collector`.
+All moved files were byte-verified before explicit path edits. Root updated the
+workspace member, current CLI source-pin/panic/fixture readers and two WASM
+oracle module paths. Historical producer DATA and provenance paths remain
+unchanged. The first metadata failure exposed Runtime's old Collector development
+dependency; its relative path was corrected and the failed output retained.
+Locked/offline metadata now observes all eight accepted physical package paths.
+
+Post-move Windows tests passed26 library cases and one fixture contract case.
+WASM all-target/runtime-pilot check and strict Clippy passed. A separately timed
+strict-WASM checkpoint persists both1801-file source lists with zero differences;
+it does not retroactively seal prior commands. CLI source-binding regressions,
+current contract references, frozen checkout/materializer/caller recipes and
+actual browser runtime qualification still require follow-up. No live source
+cutover, product success or publication follows from this path checkpoint.
+Private receipts are `collector-path-move.json`, retained `collector-path-originals/`,
+`final-eight-paths-metadata*.json`, `collector-final-path-tests.log`,
+`collector-final-path-wasm-{check,clippy}.log` and the timed
+`collector-final-path-{checkpoint,source-before,source-after}.json` under Root's
+`20261108054000-core-consolidation` evidence directory.
+
+## Collector CLI consumer regression checkpoint
+
+After relocation the selected CLI source-pin group passed5 synthetic/owned-file
+cases with one required checkout test ignored and40 other cases filtered. The
+panic classifier group passed8 cases with38 filtered. Both full1801-file source
+lists are retained around that two-command interval with zero differences in
+`collector-cli-regressions-{source-before,source-after,checkpoint}.json`.
+The separately selected required actual Collector source gate initially refused
+noncanonical Windows root spelling. With the explicit verbatim canonical root
+it passed1 case, zero ignored and45 filtered; no code or reviewed source pin was
+changed to obtain this pass. Both failed and successful logs are retained as
+`collector-final-path-actual-source-pin*.log`, with separately scoped receipts.
+This closes the relocated selected-file digest/line-needle check, not native
+custody, Linux symlink controls, actual Docker/browser execution or full product
+qualification. Historical source evidence remains bounded to its original view.
+
 ## Integration status at the 2026-11-08 source checkpoint
 
 Fresh locked/offline Cargo metadata confirms29 LIVE workspace members and21 in
