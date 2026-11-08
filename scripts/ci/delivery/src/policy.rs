@@ -197,6 +197,87 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             )?;
         }
     }
+    if name == "h2-hosted-venue-validation.yml" {
+        // Specfold Cap=1 N06 hosted venue — manual github-hosted only; never ACT spoof.
+        require(
+            doc["on"].as_object().is_some_and(|events| {
+                events.len() == 1 && events.contains_key("workflow_dispatch")
+            }),
+            "hosted venue Cap must remain manual Specfold dispatch only",
+        )?;
+        require(
+            jobs.len() == 2
+                && jobs.contains_key("preflight")
+                && jobs.contains_key("cap")
+                && jobs["cap"]["needs"] == "preflight"
+                && jobs["cap"].get("if").is_none()
+                && jobs["cap"].get("continue-on-error").is_none()
+                && jobs["preflight"]["runs-on"] == "ubuntu-latest"
+                && jobs["cap"]["runs-on"] == "ubuntu-latest"
+                && jobs["preflight"]["timeout-minutes"] == 25
+                && jobs["cap"]["timeout-minutes"] == 60
+                && doc["env"]["DOCKER_BUILD_RECORD_UPLOAD"] == "false"
+                && doc["env"]["CARGO_BUILD_JOBS"] == "1"
+                && doc["env"]["CARGO_INCREMENTAL"] == "0",
+            "hosted venue Cap must stay bounded ubuntu-latest Specfold and preflight gated",
+        )?;
+        for job in ["preflight", "cap"] {
+            require(
+                jobs[job]["steps"].as_array().is_some_and(|steps| {
+                    steps.iter().any(|step| {
+                        step["uses"] == "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
+                            && step["with"]["ref"] == "${{ github.sha }}"
+                            && step["with"]["persist-credentials"] == false
+                    })
+                }),
+                "hosted venue Cap jobs must check out exact run source without persisted credentials",
+            )?;
+        }
+        let preflight = jobs["preflight"]["steps"]
+            .as_array()
+            .ok_or("hosted venue Cap preflight steps absent")?;
+        for command in [
+            "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1",
+            "cargo test --locked -p humanymous-delivery -j1",
+            "cargo check --locked -p humanymous-runtime-pilot --all-targets -j1",
+            "cargo clippy --locked -p humanymous-lab-runner -p humanymous-runtime-pilot -p humanymous-delivery --all-targets -j1 -- -D warnings",
+            "cargo run --locked -p humanymous-delivery -- policy",
+        ] {
+            require(
+                preflight.iter().any(|step| {
+                    step["run"] == command
+                        && step["if"]
+                            == "${{ !cancelled() && steps.toolchain.outcome == 'success' }}"
+                }),
+                "hosted venue Cap current-source preflight required",
+            )?;
+        }
+        let cap_steps = jobs["cap"]["steps"]
+            .as_array()
+            .ok_or("hosted venue Cap steps absent")?;
+        require(
+            cap_steps.iter().any(|step| {
+                step["run"].as_str().is_some_and(|run| {
+                    run.contains("ACT")
+                        && run.contains("GITHUB_ACTIONS")
+                        && run.contains("RUNNER_OS")
+                        && run.contains("RUNNER_ENVIRONMENT")
+                        && run.contains("github-hosted")
+                })
+            }),
+            "hosted venue Cap must refuse ACT and confirm github-hosted Linux",
+        )?;
+        require(
+            cap_steps.iter().any(|step| {
+                step["run"].as_str().is_some_and(|run| {
+                    run.contains("cargo run --locked -p humanymous-lab-runner")
+                        && run.contains("--w2-h2-hosted-venue")
+                        && run.contains("--evidence")
+                }) && step.get("if").is_none()
+            }),
+            "hosted venue Cap must execute exact lab-runner --w2-h2-hosted-venue pilot",
+        )?;
+    }
     if name == "component-validation.yml" {
         let input = &doc["on"]["workflow_dispatch"]["inputs"]["component"];
         require(
@@ -1698,6 +1779,39 @@ mod tests {
         assert!(document("frozen-go-oracle.yml", &oracle).is_ok());
         oracle["jobs"]["go"]["steps"][0]["with"]["ref"] = json!("main");
         assert!(document("frozen-go-oracle.yml", &oracle).is_err());
+    }
+    #[test]
+    fn hosted_venue_cap_cannot_bypass_specfold_or_act_refuse() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let original = workflows(&root)
+            .unwrap()
+            .into_iter()
+            .find(|(file, _)| file == "h2-hosted-venue-validation.yml")
+            .unwrap()
+            .1;
+        assert!(document("h2-hosted-venue-validation.yml", &original).is_ok());
+        for mutation in 0..4 {
+            let mut changed = original.clone();
+            match mutation {
+                0 => changed["on"]["push"] = json!({"branches":["codex/rust"]}),
+                1 => changed["jobs"]["cap"]["runs-on"] = json!("ubuntu-24.04"),
+                2 => {
+                    let steps = changed["jobs"]["cap"]["steps"].as_array_mut().unwrap();
+                    steps.retain(|step| {
+                        !step["run"].as_str().is_some_and(|run| run.contains("ACT"))
+                    });
+                }
+                _ => {
+                    let steps = changed["jobs"]["cap"]["steps"].as_array_mut().unwrap();
+                    steps.retain(|step| {
+                        !step["run"]
+                            .as_str()
+                            .is_some_and(|run| run.contains("--w2-h2-hosted-venue"))
+                    });
+                }
+            }
+            assert!(document("h2-hosted-venue-validation.yml", &changed).is_err());
+        }
     }
     #[test]
     fn registry_job_cannot_return_to_shared_release_environment() {

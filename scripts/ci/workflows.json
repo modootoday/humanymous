@@ -22,6 +22,7 @@
     {"file":"browser-product-validation.yml","name":"CI / Browser product diagnostic","jobs":["preflight","product"],"concurrency":{"group":"browser-product-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"python-validation.yml","name":"CI / Python component","jobs":["component"],"concurrency":{"group":"python-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"go-validation.yml","name":"CI / Go component","jobs":["preflight","product"],"concurrency":{"group":"go-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
+    {"file":"h2-hosted-venue-validation.yml","name":"CI / H2 hosted venue Cap","jobs":["preflight","cap"],"concurrency":{"group":"h2-hosted-venue-cap-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"apache-validation.yml","name":"CI / Apache component","jobs":["component"],"concurrency":{"group":"apache-validation-${{ github.ref }}","cancel-in-progress":false},"artifacts":[]},
     {"file":"local-parity.yml","name":"CI / Local parity","jobs":["compare"],"concurrency":{"group":"local-parity-benchmark","cancel-in-progress":false},"artifacts":[]},
     {"file":"ci.yml","name":"CI / Validate","jobs":["validate"],"concurrency":{"group":"rust-ci-${{ github.ref }}","cancel-in-progress":true},"artifacts":[]},
