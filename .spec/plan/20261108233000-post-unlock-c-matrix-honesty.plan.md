@@ -125,8 +125,11 @@ Exact Root closer (mutually sufficient):
    release `crates/browser/**` / `scripts/ci/cef-pilot/**` / `crates/apps/humanymous-browser/**`
    only if Cursor applies measured BrowserReady.
 
-Bound receipts: tip `e38ce6c5`; hosted Cap **42500919761**; Unlock A Cap EXIT0;
-BrowserReady honesty `34493ff0`; G2/G5 honesty `14268686`.
+Bound receipts: tip `e54c51e6` (hard-stop) / honesty tip `e38ce6c5`; hosted Cap
+**42500919761**; Unlock A Cap EXIT0; BrowserReady honesty `34493ff0`; G2/G5
+honesty `14268686`. Tip-reconfirm receipt:
+`.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/HARD-STOP-RECEIPT.json`
+(matrix tip-bound; AUTH/AT still absent).
 
 Never invent `pass_product_clean_room`, CEF binary, `desktop_as_hosted`,
 BrowserReady, or Root ownership tokens. Capture `observe_h2` still forbidden as
