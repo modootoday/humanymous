@@ -38,6 +38,24 @@ module is Unix-only. That successful command exit is not producer-test evidence.
 An unrestricted spec check also failed on existing local-document layout issues;
 retain this failure separately from the scoped public-canon check.
 
+The selected actual runtime browser test now changes the real document history
+to /private-document/path?private-query=fixture#private-fragment before bootstrap
+and retains that context through all real requests. Explicit successful history
+restoration is required at the end; Drop is only best-effort early-failure cleanup.
+The selected test identity and request denominator stay unchanged. Its reviewed
+DATA pin is6571bytes, SHA-256
+abbc8badb89cc4aa879cec85e74cd776a236225df90e47707d86f17ca685d421.
+The33 existing diagnostic sites shift by exactly one line after the inserted
+fixture setup; new setup/cleanup failures remain unrefined, rather than widening
+the safe diagnostic vocabulary. WASM all-target runtime-pilot strict Clippy and
+five source-pin parser tests passed locally. The required actual-source gate
+must be run by its full snapshot::source_pin selector: an initial shortened
+exact selector selected zero tests and is not gate evidence. Actual browser and
+Unix producer execution remain pending, including the complete two-proxy result.
+The corrected full exact selector subsequently executed one required checkout
+gate and passed (45 filtered); the earlier zero-selected invocation is retained
+as a failed selection attempt, not added coverage.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.

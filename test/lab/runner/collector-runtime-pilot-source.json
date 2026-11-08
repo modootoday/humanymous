@@ -2,8 +2,8 @@
   "schema": 1,
   "path": "crates/collector/src/browser/transport/runtime_pilot.rs",
   "name": "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
-  "sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
-  "bytes": 4658,
+  "sha256": "abbc8badb89cc4aa879cec85e74cd776a236225df90e47707d86f17ca685d421",
+  "bytes": 6571,
   "sites": [
     {
       "line": 11,
@@ -31,142 +31,142 @@
       "needle": "assert_eq!(authority"
     },
     {
-      "line": 22,
+      "line": 23,
       "code": "browser_panic_bootstrap",
       "needle": ".expect(\"actual runtime bootstrap\")"
     },
     {
-      "line": 32,
+      "line": 33,
       "code": "browser_panic_effect_ack",
       "needle": ".expect(\"actual consumed request"
     },
     {
-      "line": 33,
+      "line": 34,
       "code": "browser_panic_effect_status",
       "needle": "assert_eq!(response.status()"
     },
     {
-      "line": 34,
+      "line": 35,
       "code": "browser_panic_effect_json",
       "needle": "serde_json::from_slice"
     },
     {
-      "line": 35,
+      "line": 36,
       "code": "browser_panic_effect_verdict",
       "needle": "assert_eq!(body[\"verdict\"]"
     },
     {
-      "line": 36,
+      "line": 37,
       "code": "browser_panic_effect_epoch",
       "needle": "assert!(!session.is_closed())"
     },
     {
-      "line": 37,
+      "line": 38,
       "code": "browser_panic_response_headers_json",
       "needle": "serde_json::from_str"
     },
     {
-      "line": 38,
+      "line": 39,
       "code": "browser_panic_response_headers_hidden",
       "needle": "assert!("
     },
     {
-      "line": 46,
+      "line": 47,
       "code": "browser_panic_oversize_local_refusal",
       "needle": "assert!("
     },
     {
-      "line": 57,
+      "line": 58,
       "code": "browser_panic_oversize_epoch",
       "needle": "assert!(!session.is_closed())"
     },
     {
-      "line": 69,
+      "line": 70,
       "code": "browser_panic_maximum_body_ack",
       "needle": ".expect(\"maximum supported body"
     },
     {
-      "line": 70,
+      "line": 71,
       "code": "browser_panic_maximum_body_status",
       "needle": "assert_eq!("
     },
     {
-      "line": 74,
+      "line": 75,
       "code": "browser_panic_fixture_status",
       "needle": ".unwrap()"
     },
     {
-      "line": 76,
+      "line": 77,
       "code": "browser_panic_maximum_body_json",
       "needle": "serde_json::from_slice"
     },
     {
-      "line": 77,
+      "line": 78,
       "code": "browser_panic_maximum_body_verdict",
       "needle": "assert_eq!("
     },
     {
-      "line": 81,
+      "line": 82,
       "code": "browser_panic_maximum_body_epoch",
       "needle": "assert!(!session.is_closed())"
     },
     {
-      "line": 85,
+      "line": 86,
       "code": "browser_panic_collector_start",
       "needle": "BrowserCollector::new()"
     },
     {
-      "line": 86,
+      "line": 87,
       "code": "browser_panic_collector_snapshot",
       "needle": "collector.snapshot_json()"
     },
     {
-      "line": 87,
+      "line": 88,
       "code": "browser_panic_collector_stop",
       "needle": "collector.stop()"
     },
     {
-      "line": 96,
+      "line": 97,
       "code": "browser_panic_collect_ack",
       "needle": ".expect(\"actual report ingestion"
     },
     {
-      "line": 97,
+      "line": 98,
       "code": "browser_panic_collect_status",
       "needle": "assert_eq!(collected.status()"
     },
     {
-      "line": 98,
+      "line": 99,
       "code": "browser_panic_collect_json",
       "needle": "serde_json::from_slice"
     },
     {
-      "line": 99,
+      "line": 100,
       "code": "browser_panic_collect_verdict",
       "needle": "assert_eq!(body[\"verdict\"]"
     },
     {
-      "line": 100,
+      "line": 101,
       "code": "browser_panic_collect_epoch",
       "needle": "assert!(!session.is_closed())"
     },
     {
-      "line": 104,
+      "line": 105,
       "code": "browser_panic_required_refusal",
       "needle": "assert!("
     },
     {
-      "line": 115,
+      "line": 116,
       "code": "browser_panic_required_epoch",
       "needle": "assert!(session.is_closed())"
     },
     {
-      "line": 116,
+      "line": 117,
       "code": "browser_panic_session_close",
       "needle": "session.close().unwrap()"
     },
     {
-      "line": 117,
+      "line": 118,
       "code": "browser_panic_closed_refusal",
       "needle": "assert!("
     }

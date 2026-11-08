@@ -16,8 +16,9 @@ async fn actual_runtime_session_report_and_required_capability_fail_closed() {
     )
     .unwrap();
     assert_eq!(authority, scope.authority, "owned lab origin required");
+    let mut document = SensitiveDocument::enter(&global).expect("owned sensitive document fixture");
     let routes = &fixture["routes"];
-    let session = BrowserSession::connect_with(global, scope, 5000)
+    let session = BrowserSession::connect_with(global.clone(), scope, 5000)
         .await
         .expect("actual runtime bootstrap");
     let headers = r#"[["content-type","application/octet-stream"],["authorization","Bearer owned-browser-fixture"]]"#;
@@ -125,4 +126,62 @@ async fn actual_runtime_session_report_and_required_capability_fail_closed() {
             .await
             .is_err()
     );
+    document.restore().expect("restore owned document history");
+}
+
+/// Keep the actual network pilot under a sensitive same-origin document URL.
+struct SensitiveDocument {
+    history: JsValue,
+    state: JsValue,
+    url: JsValue,
+    restored: bool,
+}
+
+impl SensitiveDocument {
+    fn enter(global: &JsValue) -> Result<Self, JsValue> {
+        let history = get(global, "history")?;
+        let mut document = Self {
+            state: get(&history, "state")?,
+            url: get(&get(global, "location")?, "href")?,
+            history,
+            restored: false,
+        };
+        call(
+            &document.history,
+            "replaceState",
+            &[
+                JsValue::NULL,
+                "".into(),
+                "/private-document/path?private-query=fixture#private-fragment".into(),
+            ],
+        )?;
+        let location = get(global, "location")?;
+        if get(&location, "pathname")?.as_string().as_deref() != Some("/private-document/path")
+            || get(&location, "search")?.as_string().as_deref() != Some("?private-query=fixture")
+            || get(&location, "hash")?.as_string().as_deref() != Some("#private-fragment")
+        {
+            document.restore()?;
+            return Err("sensitive document fixture mismatch".into());
+        }
+        Ok(document)
+    }
+
+    fn restore(&mut self) -> Result<(), JsValue> {
+        call(
+            &self.history,
+            "replaceState",
+            &[self.state.clone(), "".into(), self.url.clone()],
+        )?;
+        self.restored = true;
+        Ok(())
+    }
+}
+
+impl Drop for SensitiveDocument {
+    fn drop(&mut self) {
+        if !self.restored {
+            // Best effort on early failure; successful pilots require restore above.
+            let _ = self.restore();
+        }
+    }
 }
