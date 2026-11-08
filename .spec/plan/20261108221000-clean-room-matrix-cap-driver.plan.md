@@ -3,7 +3,7 @@ id: plan:root/20261108221000-clean-room-matrix-cap-driver
 title: Lab-runner clean-room matrix Cap planner (fail-closed; no Cap burn)
 status: active
 created: 2026-11-08T13:15:00Z
-updated: 2026-11-08T13:30:00Z
+updated: 2026-11-08T13:32:00Z
 rel:
   depends_on:
     - plan:root/20261108220600-cap-ready-g4-w2-harness
@@ -76,8 +76,11 @@ is **`blocked_claim`** (selector recognized; never Cap-serialize). Fail-closed
 - `adapters/node/src/**` (build inputs if Node adapter retained in image)
 - `crates/authority/**` if Rust IPC pilot lives there
 
-Cap burn remains 0 until G4/W2 unlock **or** Root unlocks executable authority Cap
-path. Never invent `pass_product_clean_room`.
+Cap burn remains 0 until unlock **A** G4, **B** W2, or **C** authority Cap paths.
+Never invent `pass_product_clean_room`. Canonical Root packet:
+`.spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/CONSOLIDATED-ROOT-ASK.md`
+(+ `cap-ready/authority-node-ipc/`). Live Codex Root may execute any one unlock
+without Cursor inventing ownership.
 
-Root allocates G4 or W2 unlock → Cursor Cap=1 burns matching `cap-ready/` pack;
-matrix-plan then guides subsequent Cap serialization without Cap spam.
+Root allocates A/B/C → Cursor Cap=1 burns matching `cap-ready/` pack; matrix-plan
+then guides subsequent Cap serialization without Cap spam.

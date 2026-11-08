@@ -3,7 +3,7 @@ id: plan:root/20261108220600-cap-ready-g4-w2-harness
 title: Cap-ready G4/W2 harness prep (unlock→Cap burn shortener)
 status: active
 created: 2026-11-08T13:06:00Z
-updated: 2026-11-08T13:06:00Z
+updated: 2026-11-08T13:32:00Z
 rel:
   depends_on:
     - plan:root/20261108220000-post-g4-w2-residual-root-ask
@@ -99,13 +99,22 @@ Cap=1 when unlocked:
 - This tracked plan mirrors command/env/fail-closed preimages for Root review.
 - Cap burn=0. product=0. Matrix untouched. No `pass_product_clean_room`.
 
-## 6. Residual / next gap
+## 6. Authority Cap-ready (unlock C; added 2026-11-08T13:32:00Z)
+
+Tip `222d7f26`: `--authority-node-ipc` is `blocked_claim` (EXIT 1 before Docker).
+Private pack: `cap-ready/authority-node-ipc/`. Exact Root paths:
+`deployments/lab/INTEGRATION.md`, `deployments/lab/authority/**`,
+`build/rust/authority-lab.Dockerfile` (+ dockerignore),
+`test/lab/runner/src/snapshot.rs`, optional `adapters/node/src/**`,
+optional `crates/authority/**`. Authority Cap green alone ≠ product.
+
+## 7. Residual / next gap
 
 | If | Then |
 | --- | --- |
-| Root allocates W2 or W4 + path release | Cursor Cap=1 executes matching pack; honest receipts |
+| Root allocates A G4, B W2, or C authority + path release | Cursor Cap=1 executes matching pack; honest receipts |
 | Still blocked | Hold Cap free; do not reburn feeders; do not idle-repeat ROOT-ASK |
 
-Exact next Root ask (unchanged substance): allocate **either** G4 CEF/AT
-interactive pilots with path release **or** W2 hosted H2 product-binding
-measurement + owner integration; then release exact paths for Cap=1.
+Exact next Root ask: allocate **any one** of A/B/C (see
+`plan:root/20261108220000-post-g4-w2-residual-root-ask`); then release exact
+paths for Cap=1. Live Codex Root may execute without Cursor inventing ownership.
