@@ -337,6 +337,30 @@ implementation writes. All22 project chats were notified of the activated split.
 No handover document was created; no main merge, branch creation or publication
 is authorized by this environment setup.
 
+## Cursor initial reviewed queue and coherent configuration
+
+Agent-canon commit dcd6f3e5 records the Cursor frontend, collaboration rule95 and
+two canonical lanes, complementing Root's26e65389 project rule/board-data setup.
+Existing board listing, PowerShell and Git Bash syntax, canonical lane identity
+sets and owned LF/Git byte equality were checked. Actual Cursor discovery/claim
+remains unobserved; Root has released implementation ownership and retains only
+coordination/configuration paths. No second implementation writer was started.
+
+Root independently rechecked all six Node correction preimage/absence and
+postimage guards, plus four Wargame patch preimages and three read-only producer
+assumptions against current isolated source. All match. The Wargame receipt-count
+change matches the current producer order: one runtime receipt before any step,
+and a second receipt before the restart step. This is bounded DATA consistency,
+not process authentication or a scoring change. Original failures/unsupported
+native gates remain distinct. Eleven Node pure functions and Wargame new
+regressions still require actual execution on the applied candidate.
+
+The finite reviewed queue and per-task constraints are retained in
+.spec.local/root/evidence/20261108-cursor-coordination/integration-queue.json.
+It does not confer a session claim or approve actual host/capture/native/runtime
+execution. Cursor must recheck preimages and claim the released scope before
+application. Root performed no implementation write during this review interval.
+
 ## Integration status at the 2026-11-08 source checkpoint
 
 Fresh locked/offline Cargo metadata confirms29 LIVE workspace members and21 in
