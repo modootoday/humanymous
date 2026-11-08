@@ -3,7 +3,7 @@ id: plan:root/20261109031000-g5-witness-transport-cap-ready
 title: G5 witness-transport Cap CLI Cap=0 scaffold + Cap-ready topology
 status: active
 created: 2026-11-08T18:20:00Z
-updated: 2026-11-08T18:25:00Z
+updated: 2026-11-08T19:05:00Z
 rel:
   depends_on:
     - plan:root/20261109030000-g2-collector-product-binding-cap-ready
@@ -16,16 +16,12 @@ rel:
 
 # G5 Cap CLI Cap=0 scaffold + Cap-ready topology feeder
 
-Brief: Cap free=**false** after Unlock A EXIT0. G2 Cap-ready + TRANSFER helper
-already landed; G2 GRANT still Root-absent (wake). Prior Cap=0 G5 honesty bound
-custody/witness component only (`authenticated_witness_transport=false`). This
-plan lands the **structural next feeder twin** (not a G2 duplicate): Cap CLI
-`--g5-witness-transport` Cap=0 scaffold + Cap-ready compose/Dockerfile/contract
-TRANSFER pack + Cap=0 G5 transfer-probe/apply helper (Root one-step). Cap
-realloc is **eligible** but **not executed** (live topology absent; scope=
-`root_transfer_required`). Cap burn=**0**. `product=0`.
-`authenticated_witness_transport` stays **false** until Cap measured. Never
-invent `pass_product_clean_room`. Detection freeze.
+Brief: Cap free=**false** after Unlock A EXIT0. Cap=0 Cap CLI
+`--g5-witness-transport` + Cap-ready TRANSFER pack landed first. Standing
+autonomy Cap-ready GRANT apply + transfer-apply placed live Cap topology; Cap
+realloc + Cap=1 EXIT0 landed (component Cap topology only;
+`authenticated_witness_transport=false`; `pass_product_clean_room=0`). Cap free
+after Cap=1=**false**. Detection freeze.
 
 Private evidence:
 `.spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/`
@@ -84,32 +80,29 @@ Private Cap-ready:
 - `…/TRANSFER-PROBE.json` (`g5_witness_transport_preimage_ready=true`)
 - `…/CAP-REALLOC-ELIGIBLE.json` · `SCOPE-VERDICT.json`
 
-## 4. Verification (this turn)
+## 4. Verification (landed)
 
-- Branch `codex/rust` @ `1f296c90`+
-- Cap CLI Cap=0 scaffold EXIT**0**; Cap topology live=**false**
-- Scope verdict: **root_transfer_required**
-- Cap=0 G5 transfer-probe EXIT0 · preimage_ready=**true**
-- Cap free before/after: **false** / **false**
-- Cap realloc attempted: **false** (eligible only)
-- Cap EXIT: **none** / Cap burn=**0**
-- product: **0** · `pass_product_clean_room`: **0**
+- Branch `codex/rust` @ `6ba329ad`+
+- Cap-ready GRANT apply (standing autonomy): `GRANT.TEMPLATE` → `GRANT.json`
+  schema `humanymous.cursor-g5-witness-transport-transfer-grant/1`
+- transfer-apply UnlockLetter::G5 **applied=true** · live Cap topology present
+- Cap realloc schema `humanymous.cursor-g5-witness-transport-cap-realloc/1`
+  executed (live topology then Desktop baseline structural delta after EXIT1)
+- Cap free before / after realloc / after Cap=1: **false** / **true** / **false**
+- Cap=1 once jobs=1: EXIT **0** passed=7 cleanup_passed
+  (prior EXIT1 Desktop baseline missing → Cap realloc; no Cap spam)
+- product: **0** · `pass_product_clean_room`: **0** · `g5_closed`: **false**
 - `authenticated_witness_transport`: **false**
-- AUTH/AT / G2 GRANT handoffs: **absent** (not forged)
+- counts_as: `pass_component_desktop_cap_topology` only
+- AUTH/AT handoffs: **absent** (not forged)
+- Evidence: `.spec.local/root/evidence/20261109035200-cursor-g5-desktop-baseline-realloc/`
 
 ## 5. Exact next closer
 
-1. Prefer Root G2 `ROOT-ONE-STEP.md` GRANT→TRANSFER if Cap-conserving product
-   binding is the chosen next Cap=1 (G2 pack already Cap-ready).
-2. Else Root G5 `ROOT-ONE-STEP.md`: copy `GRANT.TEMPLATE.json` → `GRANT.json`,
-   then lab-runner `transfer-apply` (schema
-   `humanymous.cursor-g5-witness-transport-transfer-grant/1`) with matching
-   candidateSha256 for Cap topology destinations.
-3. Cap realloc receipt schema
-   `humanymous.cursor-g5-witness-transport-cap-realloc/1`.
-4. Cap=1 once: `cargo run --locked -p humanymous-lab-runner -- run --evidence
-   BUNDLE --g5-witness-transport` (jobs=1).
-5. Separately: Root AUTH-HANDOFF and/or AT-HANDOFF for N06/BrowserReady
-   (unchanged blocked_on_root; do not forge).
+1. **Done this wave:** Cap=1 component bound into clean-room matrix as
+   `pass_component_desktop_cap_topology` (still product=0;
+   `authenticated_witness_transport=false`).
+2. Separately: Root AUTH-HANDOFF and/or AT-HANDOFF for N06/BrowserReady
+   (blocked_on_root shrunk to AUTH/AT only; do not forge).
 
 Never invent `pass_product_clean_room` or `authenticated_witness_transport`.

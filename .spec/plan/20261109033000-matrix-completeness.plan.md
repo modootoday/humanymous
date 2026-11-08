@@ -3,7 +3,7 @@ id: plan:root/20261109033000-matrix-completeness
 title: Cap=0 clean-room matrix completeness gate (tip a984a871)
 status: active
 created: 2026-11-08T18:35:00Z
-updated: 2026-11-08T18:35:00Z
+updated: 2026-11-08T19:05:00Z
 rel:
   depends_on:
     - plan:root/20261108221000-clean-room-matrix-cap-driver
@@ -15,10 +15,11 @@ rel:
 
 # Cap=0 matrix completeness
 
-Brief: While G2/G5 GRANT + AUTH/AT remain absent and Cap free=false, Cursor lands
-a Cap=0 `matrix-completeness` gate that enumerates every SoT-required
-usage-condition cell with an honest blocker, tip-bound to settled `a984a871`.
-No Cap burn. product=0. Never invent `pass_product_clean_room` / Cap free.
+Brief: Cap=0 `matrix-completeness` gate enumerates every SoT-required
+usage-condition cell with an honest blocker. Tip rebound to `6ba329ad` with G2
+Cap=1 component bind (`pass_component_desktop_cap_topology`) and G5 Cap=1
+component bind after Desktop baseline Cap realloc. Cap free=false. product=0.
+Never invent `pass_product_clean_room` / Cap free / authenticated transport.
 
 ## Decision
 
@@ -35,5 +36,5 @@ R4. Optional Cap-ready SoT path-release pack for new
 
 ## Residual
 
-Root G2 GRANT (prefer) → TRANSFER-apply → Cap realloc → Cap=1 once; AUTH/AT
-still separately required.
+G2+G5 Cap=1 Cap topology components bound (≠ product). AUTH/AT still separately
+required for N06/BrowserReady.

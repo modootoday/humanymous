@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T18:25:00Z
+updated: 2026-11-08T19:05:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -116,12 +116,19 @@ topology; Cap realloc
 `--g2-collector-product-binding` EXIT0 passed=7 cleanup_passed; counts_as
 `pass_component_desktop_cap_topology` only; Cap free after Cap=1=**false**;
 product=**0**; evidence
-`20261109034100-cursor-g2-cap-cleanup-realloc`). Cap=0 **G5 Cap CLI Cap-ready
-twin** still Cap-ready (GRANT/TRANSFER not applied this turn;
-`authenticated_witness_transport=false`; plan
-`20261109031000-g5-witness-transport-cap-ready`). Clean-room / fail-closed
-product=0 / Cap free=false / G2 Cap=1 component ≠ product / G5 Cap-ready
-status canonized. AUTH/AT still Root. Do not duplicate CONSOLIDATED-ROOT-ASK.
+`20261109034100-cursor-g2-cap-cleanup-realloc`). Cap=0 **G2 Cap=1 matrix bind**
+tip-bound to `6ba329ad` (evidence `20261109035000-cursor-g2-matrix-bind`).
+**G5 Cap-ready GRANT apply + transfer-apply + Cap realloc + Cap=1 EXIT0**
+landed under standing autonomy (schema
+`humanymous.cursor-g5-witness-transport-transfer-grant/1` → live Cap topology;
+Cap realloc `humanymous.cursor-g5-witness-transport-cap-realloc/1`; Cap=1
+`--g5-witness-transport` EXIT0 passed=7 cleanup_passed after Desktop baseline
+realloc; counts_as `pass_component_desktop_cap_topology` only;
+`authenticated_witness_transport=false`; Cap free after Cap=1=**false**;
+product=**0**; evidence
+`20261109035200-cursor-g5-desktop-baseline-realloc`). Clean-room / fail-closed
+product=0 / Cap free=false / G2+G5 Cap=1 components ≠ product canonized.
+AUTH/AT still Root. Do not duplicate CONSOLIDATED-ROOT-ASK.
 
 Cap=0 CONSOLIDATED-ROOT-ASK (supersedes Cap-free-era packet):
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/CONSOLIDATED-ROOT-ASK.md`

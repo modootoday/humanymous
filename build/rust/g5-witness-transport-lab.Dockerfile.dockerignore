@@ -1,0 +1,6 @@
+# Cap freeze context for G5 witness-transport lab image.
+target/
+.spec.local/
+.git/
+**/*.md
+**/node_modules/

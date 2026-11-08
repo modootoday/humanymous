@@ -206,14 +206,37 @@ fn first_present(root: &Path, candidates: &[&str]) -> Option<String> {
         .map(|path| (*path).to_string())
 }
 
+fn is_measured_component_status(status: &str) -> bool {
+    matches!(
+        status,
+        "pass_component_desktop"
+            | "pass_component_hosted"
+            | "pass_component_only"
+            | "pass_component_desktop_measure"
+            | "pass_component_hosted_measure"
+            | "pass_component_g4_cef_at_executed"
+            | "pass_component_desktop_cap_topology"
+            | "fixture_ready"
+    )
+}
+
 fn wake_state(root: &Path) -> Value {
     let g2_grant = path_exists(root, G2_GRANT_CANDIDATE);
     let g5_grant = path_exists(root, G5_GRANT_CANDIDATE);
     let auth = first_present(root, AUTH_HANDOFF_CANDIDATES);
     let at = first_present(root, AT_HANDOFF_CANDIDATES);
-    // Unlock A EXIT0 spent Cap; G2/G5 Cap realloc requires live topology TRANSFER.
-    // Cursor must not invent Cap free without documented Cap realloc receipt.
+    // Unlock A EXIT0 spent Cap; Cap free stays false unless a Cap-cycle realloc
+    // authorizes one burn. Cursor must not invent Cap free without documented
+    // Cap realloc receipt. GRANT presence alone ≠ Cap free.
     let cap_free = false;
+    let note = match (g2_grant, g5_grant, auth.is_some(), at.is_some()) {
+        (false, false, false, false) => {
+            "Live G2/G5 GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
+        }
+        _ => {
+            "GRANT and/or handoff presence observed; Cap free stays false until Cap realloc authorizes one Cap=1; AUTH/AT still Root when absent; never invent pass_product_clean_room"
+        }
+    };
     json!({
         "g2_grant_present": g2_grant,
         "g2_grant_candidate": G2_GRANT_CANDIDATE,
@@ -225,7 +248,7 @@ fn wake_state(root: &Path) -> Value {
         "at_handoff_path": at,
         "cap_free": cap_free,
         "cap_realloc_without_live_topology_authorized": false,
-        "note": "Live G2/G5 GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
+        "note": note
     })
 }
 
@@ -235,6 +258,17 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
     let auth = wake["auth_handoff_present"].as_bool().unwrap_or(false);
     let at = wake["at_handoff_present"].as_bool().unwrap_or(false);
     let cap_free = wake["cap_free"].as_bool().unwrap_or(false);
+
+    // Measured Cap=1 / component cells hold first — do not re-open as grant/Cap
+    // free blockers after Cap topology component EXIT0.
+    if is_measured_component_status(status) {
+        return (
+            "measured_component_hold",
+            format!(
+                "status={status} measured component/fixture only; never promote to pass_product_clean_room"
+            ),
+        );
+    }
 
     if scenario == "g2-collector-product-binding" {
         if !g2 {
@@ -286,7 +320,8 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
         ),
         "pass_component_desktop" | "pass_component_hosted" | "pass_component_only"
         | "pass_component_desktop_measure" | "pass_component_hosted_measure"
-        | "pass_component_g4_cef_at_executed" | "fixture_ready" => (
+        | "pass_component_g4_cef_at_executed" | "pass_component_desktop_cap_topology"
+        | "fixture_ready" => (
             "measured_component_hold",
             format!("status={status} measured component/fixture only; never promote to pass_product_clean_room"),
         ),
@@ -470,13 +505,12 @@ fn completeness_report(
         },
         "cells": cells,
         "blocked_on_root": [
-            "G2 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g2-collector-product-binding",
-            "G5 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g5-witness-transport",
+            "G5 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g5-witness-transport (when Cap-ready twin still open)",
             "AUTH-HANDOFF humanymous.root-n06-owner-join-auth-handoff/1",
             "AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1",
             "optional: Cap-ready SoT path transfer for clean-room usage-condition gate slices"
         ],
-        "next": "Root G2/G5 GRANT (prefer G2) or AUTH/AT handoff; Cap realloc only after live topology; product remains 0 until pass_product_clean_room measured",
+        "next": "Prefer Cap-ready G5 GRANT apply + Cap realloc + Cap=1 once, or AUTH/AT handoff; Cap realloc only after live topology; product remains 0 until pass_product_clean_room measured",
     }))
 }
 
@@ -630,6 +664,10 @@ fn decide(
         "pass_component_desktop"
             | "pass_component_hosted"
             | "pass_component_only"
+            | "pass_component_desktop_measure"
+            | "pass_component_hosted_measure"
+            | "pass_component_g4_cef_at_executed"
+            | "pass_component_desktop_cap_topology"
             | "fixture_ready"
     ) {
         return (
@@ -877,6 +915,25 @@ mod tests {
         let (blocker, detail) = honest_blocker("g2-collector-product-binding", "blocked", &wake);
         assert_eq!(blocker, "root_grant_g2");
         assert!(detail.contains("GRANT.json"));
+    }
+
+    #[test]
+    fn g2_cap_topology_component_holds_without_reopening_grant() {
+        let wake = json!({
+            "g2_grant_present": true,
+            "g5_grant_present": false,
+            "auth_handoff_present": false,
+            "at_handoff_present": false,
+            "cap_free": false
+        });
+        let (blocker, detail) = honest_blocker(
+            "g2-collector-product-binding",
+            "pass_component_desktop_cap_topology",
+            &wake,
+        );
+        assert_eq!(blocker, "measured_component_hold");
+        assert!(detail.contains("pass_component_desktop_cap_topology"));
+        assert!(!detail.contains("GRANT.json"));
     }
 
     #[test]

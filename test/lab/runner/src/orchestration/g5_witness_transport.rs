@@ -228,28 +228,85 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         // Cap=0 EXIT0 honesty: Cap CLI scaffolded, Cap burn refused (no Docker).
         return Ok(());
     }
-    // Cap=1 path reserved: Cap free or Cap realloc + live topology. Cap burn still
-    // refuse-closed here until a future Cap cycle executes Docker under realloc.
+    // Cap=1 Docker burn: live Cap topology + Cap free OR documented G5 Cap realloc.
+    // Custody/witness Cap green ≠ authenticated_witness_transport ≠ pass_product_clean_room.
+    let realloc_path = realloc
+        .as_ref()
+        .map(|path| path.display().to_string())
+        .unwrap_or_default();
+    lab.stage = "g5_witness_transport_compose_config";
+    let config = lab.compose(&["config", "--format", "json"], true)?.stdout;
+    let parsed: Value = serde_json::from_str(&config)?;
+    snapshot::write(
+        &lab.evidence,
+        "g5-witness-transport-resolved-compose.json",
+        &parsed,
+    )?;
+    lab.case(
+        "g5-no-published-ports",
+        parsed["services"]
+            .as_object()
+            .ok_or("services absent")?
+            .values()
+            .all(|service| service.get("ports").is_none()),
+        json!(snapshot::digest(config.as_bytes())),
+    )?;
+    eprintln!("lab: building immutable g5-witness-transport-lab image (Cap=1)");
+    lab.stage = "g5_witness_transport_build";
+    lab.compose(&["build", "g5-witness-transport-pilot"], true)?;
+    lab.stage = "g5_witness_transport_up";
+    lab.compose(&["up", "-d", "g5-witness-transport-pilot"], true)?;
+    let container = lab.inspect("g5-witness-transport-pilot")?;
+    lab.case(
+        "g5-network-none",
+        container["HostConfig"]["NetworkMode"] == "none",
+        json!("compose.g5-witness-transport.yaml network_mode=none"),
+    )?;
+    let exit_code = container["State"]["ExitCode"].as_i64().unwrap_or(-1);
+    let running = container["State"]["Running"] == true;
+    lab.case(
+        "g5-pilot-oneshot-or-running",
+        running || exit_code == 0,
+        json!({"running": running, "exit_code": exit_code}),
+    )?;
+    // Authenticated transport stays false unless a future Cap measure proves it.
+    // Cap topology oneshot scaffold ≠ authenticated_witness_transport product.
     lab.components["g5_witness_transport"] = json!({
-        "status": "cap1_path_reserved_not_burned",
+        "status": "executed",
         "kind": "g5-witness-transport-cap",
         "product": 0,
         "pass_product_clean_room": 0,
         "authenticated_witness_transport": false,
         "g5_closed": false,
-        "cap": 0,
+        "g5_matrix_cell_moved": false,
+        "cap": 1,
         "cap_free": cap_free,
-        "note": "Live topology + Cap realloc observed but Cap=0 scaffold does not Cap-burn; Cap=1 is next Cap cycle only; authenticated_witness_transport stays false until Cap measured"
+        "cap_realloc": realloc.is_some(),
+        "cap_realloc_path": realloc_path,
+        "cap_selector": CAP_SELECTOR,
+        "contract": CONTRACT_REL,
+        "pilot_exit_code": exit_code,
+        "pilot_running": running,
+        "counts_as": "pass_component_desktop_cap_topology",
+        "note": "Cap=1 Docker oneshot component only; custody/witness ≠ authenticated transport; never invent pass_product_clean_room"
     });
     snapshot::write(
         &lab.evidence,
         "g5-witness-transport-component.json",
         &lab.components["g5_witness_transport"],
     )?;
-    Err(
-        "g5-witness-transport Cap refused: Cap=0 scaffold does not Cap-burn Docker; Cap=1 only after Cap realloc cycle with jobs=1; never invent authenticated witness transport product"
-            .into(),
-    )
+    lab.case(
+        "g5-cap1-component-not-authenticated-transport",
+        true,
+        json!({
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "authenticated_witness_transport": false,
+            "g5_closed": false,
+            "counts_as": "pass_component_desktop_cap_topology"
+        }),
+    )?;
+    Ok(())
 }
 
 #[cfg(test)]

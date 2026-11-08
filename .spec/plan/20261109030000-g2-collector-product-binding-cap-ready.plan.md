@@ -3,7 +3,7 @@ id: plan:root/20261109030000-g2-collector-product-binding-cap-ready
 title: G2 collector product-binding Cap CLI Cap=0 scaffold + Cap-ready topology
 status: active
 created: 2026-11-08T18:00:00Z
-updated: 2026-11-08T18:40:00Z
+updated: 2026-11-08T19:05:00Z
 rel:
   depends_on:
     - plan:root/20261108233000-post-unlock-c-matrix-honesty
@@ -94,11 +94,12 @@ Private Cap-ready:
 
 ## 5. Exact next closer
 
-1. Bind G2 Cap=1 component receipt into clean-room matrix honesty (still
-   product=0; never invent `pass_product_clean_room`).
-2. Prefer Cap=0 G5 Cap-ready GRANT apply + transfer + Cap realloc + Cap=1 once
-   when Cap free restored / Cap-ready pack Cap-ready (separate GRANT schema).
+1. **Done this wave:** Cap=0 bind G2 Cap=1 component into clean-room matrix
+   tip-bound to `6ba329ad` as `pass_component_desktop_cap_topology` (still
+   product=0; evidence `20261109035000-cursor-g2-matrix-bind`).
+2. **Done this wave (G5 twin):** Cap-ready GRANT apply + transfer + Cap realloc
+   + Cap=1 EXIT0 (see plan `20261109031000-g5-witness-transport-cap-ready`).
 3. Separately: Root AUTH-HANDOFF and/or AT-HANDOFF for N06/BrowserReady
-   (blocked_on_root shrunk; do not forge).
+   (blocked_on_root shrunk to AUTH/AT only; do not forge).
 
 Never invent `pass_product_clean_room`.
