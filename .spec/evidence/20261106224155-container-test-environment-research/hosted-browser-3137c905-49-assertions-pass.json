@@ -1,0 +1,256 @@
+{
+  "schema": 1,
+  "source_sha": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "run": 42432665570,
+  "attempt": 1,
+  "event": "push",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42432665570",
+  "workflow_conclusion": "failure",
+  "report_status": "blocked",
+  "report_errors": 0,
+  "preflight": {
+    "job": 128584750194,
+    "conclusion": "success",
+    "lab_default": {
+      "passed": 46,
+      "filtered": 0,
+      "failed": 0,
+      "ignored": 1
+    },
+    "required_source_pin": {
+      "passed": 1,
+      "filtered": 46,
+      "failed": 0,
+      "ignored": 0
+    },
+    "unix_proxy_producer": {
+      "passed": 4,
+      "filtered": 6,
+      "failed": 0,
+      "ignored": 0
+    },
+    "delivery_passed": 121,
+    "go_units_passed": 10,
+    "deployment_passed": 1,
+    "facade_passed": [
+      2,
+      2,
+      2
+    ],
+    "unix_check": "passed",
+    "strict_clippy": "passed",
+    "policy": "passed"
+  },
+  "product": {
+    "job": 128585596675,
+    "conclusion": "failure",
+    "owner_exit_code": 2,
+    "assertions": {
+      "failed": 0,
+      "other": 0,
+      "passed": 49,
+      "total": 49
+    },
+    "safe_diagnostics": {
+      "browser_actor": {
+        "dns_finish": "succeeded",
+        "exit_code": 0,
+        "filtered_count": 66,
+        "full_product_qualified": false,
+        "inventory_count": 67,
+        "inventory_matched": true,
+        "parser_summary_matched": true,
+        "process_success": true,
+        "schema": "humanymous.lab-browser-actor-outcome/1",
+        "selected_count": 1,
+        "source_prefix_authenticated": false,
+        "state": "observed",
+        "test_passed": true
+      },
+      "failure_count": 0,
+      "failures": [],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    },
+    "images": [
+      "sha256:9a64ea983bac0d3b9b837539fe116f01d7488b24cb1eff90b62a9c320b81ea44",
+      "sha256:35c7988b32e65fdea05a07f48327b6163eacb28e0d7a967ba153fe3be656e790",
+      "sha256:d285e67452856e75d4f9c6ccd809cb99e3dd273069dcf1446945d70cc99d0ef5"
+    ],
+    "isolation": "docker",
+    "source_changed_during_execution": false,
+    "canonical_git_tree_sha256": "44f92a55dad55bffbacd9d5f0de95dbed3fbc58483dcd5ac97f2d1b7b879b46e",
+    "source_manifest_sha256": "767ee787f1d22b6a0ecfbaf59d5fabd9ffed981a3874a19f2fdbae6de7b35fd1",
+    "source_reported_private_report_sha256": "f05b9386ca85a8458fe9b6ce6c52c4ad527667ae7da5d59fa1a2658e29c97d8c",
+    "original_private_ledger_recovered": false,
+    "required_unavailable_count": 9,
+    "full_product_qualified": false,
+    "release_ready": false
+  },
+  "source_pin": {
+    "sha256": "abbc8badb89cc4aa879cec85e74cd776a236225df90e47707d86f17ca685d421",
+    "bytes": 6571,
+    "reviewed_sites": 33
+  },
+  "required_unavailable_record": "required-unavailable-3137-owner-routing.json",
+  "delivery_browser_cases": [
+    {
+      "evidence": "private source-bound owning report",
+      "id": "collector-parity",
+      "status": "blocked"
+    },
+    {
+      "evidence": "private source-bound owning report",
+      "id": "challenge-keyboard",
+      "status": "blocked"
+    },
+    {
+      "evidence": "private source-bound owning report",
+      "id": "challenge-assistive",
+      "status": "blocked"
+    },
+    {
+      "evidence": "private source-bound owning report",
+      "id": "missing-signals-closed",
+      "status": "blocked"
+    },
+    {
+      "evidence": "private source-bound owning report",
+      "id": "human-control",
+      "status": "blocked"
+    },
+    {
+      "evidence": "private source-bound owning report",
+      "id": "coherent-browser-ceiling",
+      "status": "blocked"
+    },
+    {
+      "evidence": "private source-bound owning report",
+      "id": "documentation-examples",
+      "status": "blocked"
+    }
+  ],
+  "interpretation": [
+    "The actual selected browser test passed with matching67-test inventory, selected1/filtered66, process0, summarytrue and DNSsuccess. The selected source requires sensitive same-origin document setup and successful restore call; both completed within the passed test.",
+    "All49 owning Lab assertions passed with0failed/0other. The new private-Referer B/G complete partitions passed; unrelated raw values were never added to public outcomes. This resolves the concrete earlier browser/Referer assertion failures at this source.",
+    "The workflow remains failed because owner exit2 and the hardcoded9 full-product unavailable declarations are retained. FullProduct assessment has no qualified success path at this source; repeated49-assertion success alone cannot clear it.",
+    "No general browser-origin causal diagnosis, Runtime header authentication, compiler-read/native custody or full-product readiness is claimed. All earlier failed source receipts remain preserved.",
+    "Go8 Docker success remains separately bound to historicala19 source; this browser run does not requalify Go8 at3137."
+  ],
+  "custody": {
+    "private_evidence": "evidence:root/20261108010626",
+    "raw_files": [
+      {
+        "name": "artifacts.json",
+        "bytes": 32,
+        "sha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c"
+      },
+      {
+        "name": "collector-source.raw",
+        "bytes": 6571,
+        "sha256": "abbc8badb89cc4aa879cec85e74cd776a236225df90e47707d86f17ca685d421"
+      },
+      {
+        "name": "connector-product-projection.json",
+        "bytes": 2322,
+        "sha256": "601b7db4e040c7305728fb7602d86dc8ea4e87580c7115478331632d5315b834"
+      },
+      {
+        "name": "official-run-logs.zip",
+        "bytes": 84902,
+        "sha256": "5f0be152e6f210fad1f8d0834ba79bef5861b7ad5e3f4d782bfbb97ead199a00"
+      },
+      {
+        "name": "preflight-annotations.json",
+        "bytes": 2,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "name": "preflight-job-api.json",
+        "bytes": 4678,
+        "sha256": "2c509cfdcb0b94ac82d72217b5571d1b62ae41f1963791d6be808f2db426cbd6"
+      },
+      {
+        "name": "preflight.official-job.log",
+        "bytes": 107911,
+        "sha256": "885d9629c11dbebb4cab9d46b4fe54abae2059ac255553c3c1c8f735ca1ee2b7"
+      },
+      {
+        "name": "product-annotations.json",
+        "bytes": 304,
+        "sha256": "67e5a02ec59437a657c2ad90ad8530d582371196f52d95a133bf4ab4dfa33920"
+      },
+      {
+        "name": "product-job-api.json",
+        "bytes": 2040,
+        "sha256": "fb5f979dd98973f6985b2145480368696d8b110daee673be1be5f0952a9c60ed"
+      },
+      {
+        "name": "product-source-reported.json",
+        "bytes": 2322,
+        "sha256": "601b7db4e040c7305728fb7602d86dc8ea4e87580c7115478331632d5315b834"
+      },
+      {
+        "name": "product.official-job.log",
+        "bytes": 50899,
+        "sha256": "65fe423aacdee99a2780e9064552b12330fa71b26714c792e3d5b422a701c268"
+      },
+      {
+        "name": "repository-visibility.json",
+        "bytes": 40,
+        "sha256": "1e3cd48c29e368a25789ae7c32070b08c87ef73974eaa4f81ba2fdc32ac858d5"
+      },
+      {
+        "name": "run-start.json",
+        "bytes": 3858,
+        "sha256": "a591bc1ff449603887cc16066bf6cc30b699214373669033e946a65bb7e73917"
+      },
+      {
+        "name": "run-terminal.json",
+        "bytes": 5521,
+        "sha256": "940aaa8ef9d34f4ad4f18b7541db9c99283d2df7dd097fbc196d22a80753410f"
+      },
+      {
+        "name": "source-bind.json",
+        "bytes": 545,
+        "sha256": "511fb36b547ebbf6fa8066fa0286cfdc1b5a03fd3bbf9103df5973d34f7c0a37"
+      },
+      {
+        "name": "source-pin-profile.json",
+        "bytes": 4210,
+        "sha256": "0350fc1cd69b06175e6f08e219c959dac182c40de20cc60a24d7c8761e8c6bbc"
+      },
+      {
+        "name": "watch-terminal.json",
+        "bytes": 153,
+        "sha256": "536c8cfd51bfebd02b9606c309c777cd463a7e7ce38f7d7d9b002e4541973ddb"
+      },
+      {
+        "name": "watch.log",
+        "bytes": 37069,
+        "sha256": "df4e06a1bc756f3960fb2b157f5f95fad58b54a03fdd412ad51b94a331b72e79"
+      },
+      {
+        "name": "zip-inventory.json",
+        "bytes": 2857,
+        "sha256": "354a32abc255356607cb3edb06dd5329d1a99d1d52e7ba47db23aa7340678bca"
+      }
+    ],
+    "connector_api_projection_byte_equal": true,
+    "zip_entries": 31,
+    "preflight_annotations": 0,
+    "product_annotations": 1,
+    "artifacts": 0,
+    "sole_watch": 35382,
+    "watch_exit": 1,
+    "active_watch": false
+  },
+  "hosted": {
+    "visibility": "public",
+    "runner": "ubuntu-24.04",
+    "runner_group": "GitHub Actions",
+    "free_compute_eligibility": "Public repository standard GitHub-hosted runner",
+    "billing_reference": "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "limits": "Compute eligibility only; no invoice, storage, network or universal cost audit."
+  }
+}

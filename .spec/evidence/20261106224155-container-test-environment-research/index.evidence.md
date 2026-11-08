@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-08T00:48:53Z
+updated: 2026-11-08T01:30:46Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -66,7 +66,9 @@ files:
   - {path: collector-source-pin-review-correction.json, sha256: d6c9196f6819c791312d36f57b71ea201cde42efc862ed387d05b56040863fbe, bytes: 874, store: repo}
   - {path: source-pin-f8aec286-windows-checks.json, sha256: f20e19af6f125901e1e0b7155700aee6e599ea74ed084c01c5469e7208505c37, bytes: 14384, store: repo}
   - {path: hosted-browser-f8aec286-referer-assertion.json, sha256: 958fd15ccc0f08f345629b7a5b9653e365e76b67dfe5ffe1c19eb1ad337e21cb, bytes: 7459, store: repo}
-  - {path: source-execution-index.json, sha256: 3db7939119181544f0df225d1cb02c5a8e831e537a97c3603c65272084e4170e, bytes: 11446, store: repo}
+  - {path: required-unavailable-3137-owner-routing.json, sha256: 626a257f77086c8164360730e548cd3c842cd65256de8f7cd7246871147e7da2, bytes: 7698, store: repo}
+  - {path: hosted-browser-3137c905-49-assertions-pass.json, sha256: 663e9b159c6fe9981463384227f2edfc84efac7c417792df049502a2af971e42, bytes: 8757, store: repo}
+  - {path: source-execution-index.json, sha256: b1a15782689bd64e7e2a04a4ddd3c404d9c1b1bd4e80d51bafa8ebe995dd317f, bytes: 12101, store: repo}
 ---
 
 # Container test environment research

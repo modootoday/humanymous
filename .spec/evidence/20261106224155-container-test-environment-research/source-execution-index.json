@@ -201,6 +201,15 @@
       "result": "selected_browser_pass_referer_assertion_failed",
       "facts": "GNUdefault45passed1ignored;requiredsourcegate1passed45filtered;Delivery121/Unixproducer3passed6filtered/Go+facade/checkClippygreen. Actualbrowser67/1/66process0/testtrue;43assertions41pass2fail browser-wire-no-referer-at-both-proxies/browser_receipts. No exactRefererbytes, full/releasefalse9unavailable.",
       "evidence": "hosted-browser-f8aec286-referer-assertion.json"
+    },
+    {
+      "source": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+      "run": 42432665570,
+      "job": 128585596675,
+      "profile": "browser_product",
+      "result": "all49_assertions_pass_full_qualification_blocked",
+      "facts": "GNUdefault46passed1ignored;requiredpin1passed46filtered;actualUnixproducer4passed6filtered/Delivery121/Go+facade/checkClippygreen. Browserselected1passed67inventory66filtered;49assertions49passed0failed;ownerexit2/requiredunavailable9/fullreleasefalse/statusblocked. Sensitivehistory andB/GprivateReferer gate passed; nofullqualification.",
+      "evidence": "hosted-browser-3137c905-49-assertions-pass.json"
     }
   ],
   "unmeasured": [

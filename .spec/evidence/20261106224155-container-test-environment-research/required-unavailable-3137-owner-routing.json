@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "source": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "run": 42432665570,
+  "public_count": 9,
+  "basis": {
+    "source_path": "test/lab/runner/src/orchestration.rs",
+    "line": 704,
+    "git_blob": "fc1caa8ac0d000ddb238c30e07a5b88b7e4c3543",
+    "source_has_machine_requirement_ids": false,
+    "source_has_owner_assignments": false,
+    "source_list_is_hardcoded": true,
+    "original_private_ledger_recovered": false,
+    "receipt_alias_namespace": "lab-receipt/3137-required-unavailable",
+    "alias_note": "IDs below are explicitly defined finite receipt aliases for the exact source labels, not pre-existing canonical test IDs."
+  },
+  "routing": {
+    "state": "proposed_from_existing_roles_for_Root_assignment",
+    "role_registry": ".agents/sessions/THREADS.md",
+    "profiles_basis": "scripts/ci/delivery/src/pilot.rs required(kind)",
+    "empty_profile_list": "No dedicated delivered qualifying profile established; do not invent a ready command.",
+    "evidence_contexts_basis": ".spec/sot/container-test-environments.sot.md"
+  },
+  "assessment": {
+    "source_path": "test/lab/runner/src/orchestration/requirement.rs",
+    "line": 47,
+    "git_blob": "0a8e062ab5cb046249ec735dd288b518f8d2c25d",
+    "full_product_result": "Unconditionally exit2/satisfied=false after no assertion failures",
+    "same_49_assertions_cannot_clear_full_ledger": true,
+    "required_source_and_owner_qualification_work_remains": true
+  },
+  "requirements": [
+    {
+      "meaning": "Full Gate transport and capture qualification, beyond the bounded plain-HTTP browser lab.",
+      "next": "Implement and execute the owned isolated TLS/HTTP2/capture path with source/image bindings and capture controls; no host-loopback substitute.",
+      "label": "full Gate TLS/H2/capture",
+      "id": "full_gate_tls_h2_capture",
+      "profiles": [
+        "docker"
+      ],
+      "cases": [
+        "gate",
+        "raw-tls-h2"
+      ],
+      "owners": [
+        "runtime-gate",
+        "network-observation",
+        "product-lab"
+      ]
+    },
+    {
+      "meaning": "Full collector parity and session/signal qualification beyond the passed selected transport/report slice.",
+      "next": "Join actual browser collector parity, required/missing signals and session-bound runtime effects against the full contract. Preserve current selected-test success as bounded support.",
+      "label": "session-bound real browser collector",
+      "id": "session_bound_real_browser_collector",
+      "profiles": [
+        "browser-product",
+        "browser"
+      ],
+      "cases": [
+        "collector-parity",
+        "missing-signals-closed"
+      ],
+      "owners": [
+        "integration-collector",
+        "runtime-gate",
+        "product-lab"
+      ]
+    },
+    {
+      "meaning": "Actual Pass recovery, replay/expiry and persistence behavior across the composed services.",
+      "next": "Execute owned recovery and restart/failure controls with durable state and motor/speed-independent accessibility; component tests do not clear product recovery.",
+      "label": "Pass recovery",
+      "id": "pass_recovery",
+      "profiles": [
+        "docker"
+      ],
+      "cases": [
+        "pass",
+        "audit-restart"
+      ],
+      "owners": [
+        "integration-pass",
+        "authority-ipc",
+        "audit-recovery",
+        "runtime-gate"
+      ]
+    },
+    {
+      "meaning": "Real human, keyboard and assistive-technology controls plus the coherent-browser ceiling.",
+      "next": "Run approved actual interactive browser/OS/keyboard/IME/AT and human controls with paired automation controls. An automated selected browser test is not a human baseline.",
+      "label": "human/keyboard/assistive controls",
+      "id": "human_keyboard_assistive_controls",
+      "profiles": [
+        "browser-product"
+      ],
+      "cases": [
+        "challenge-keyboard",
+        "challenge-assistive",
+        "human-control",
+        "coherent-browser-ceiling"
+      ],
+      "owners": [
+        "browser-native",
+        "integration-pass",
+        "product-lab"
+      ]
+    },
+    {
+      "meaning": "Qualified runtime-binary and native peer/transport binding to the independent witness.",
+      "next": "Join qualified binary/peer identity, direct transport, wrong-peer/replay/expiry refusals and independent witness state. Current functional exchange does not prove native binary custody.",
+      "label": "runtime binary authenticated witness transport",
+      "id": "runtime_binary_authenticated_witness_transport",
+      "profiles": [
+        "native",
+        "docker"
+      ],
+      "cases": [
+        "restart-replay",
+        "storage-failure-closed",
+        "audit-restart"
+      ],
+      "owners": [
+        "native-security",
+        "authority-ipc",
+        "audit-recovery",
+        "runtime-gate"
+      ]
+    },
+    {
+      "meaning": "Full cross-namespace binding of origin, authenticated audit and the same product effect.",
+      "next": "Compose qualified lower owners and execute bound audit-before-effect and origin/isolation tamper controls across actual namespaces. Keep existing functional49 assertions as bounded supporting evidence.",
+      "label": "cross-namespace origin/audit effect product binding",
+      "id": "cross_namespace_origin_audit_effect_product_binding",
+      "profiles": [
+        "docker",
+        "browser-product"
+      ],
+      "cases": [
+        "gate",
+        "origin-isolation",
+        "audit-restart"
+      ],
+      "owners": [
+        "runtime-gate",
+        "authority-ipc",
+        "audit-recovery",
+        "product-lab"
+      ]
+    },
+    {
+      "meaning": "Fresh signed identity and source/image/endpoint binding for an owned remote target.",
+      "next": "Define and qualify the target-attestation owner contract and verifier, then execute against an explicitly approved owned target. No dedicated delivered qualifying profile is established by this source.",
+      "label": "signed remote target attestation",
+      "id": "signed_remote_target_attestation",
+      "profiles": [],
+      "cases": [],
+      "owners": [
+        "authority-ipc",
+        "runtime-gate",
+        "ci-distribution",
+        "integration-root"
+      ]
+    },
+    {
+      "meaning": "Actual supported OS/architecture/account/service/native boundary qualification.",
+      "next": "Run owning native and cross-OS workflows on each required real tuple/account/SCM/UI profile; keep required ignored/unsupported outcomes separate. Linux Docker cannot substitute for Windows/macOS native qualification.",
+      "label": "native OS qualification",
+      "id": "native_os_qualification",
+      "profiles": [
+        "native"
+      ],
+      "cases": [
+        "startup",
+        "configuration-invalid",
+        "doctor",
+        "install-dry-run-no-mutation",
+        "local-only-admin",
+        "restart-replay",
+        "storage-failure-closed",
+        "documentation-examples"
+      ],
+      "owners": [
+        "native-security",
+        "cli-service-host",
+        "browser-native",
+        "ci-distribution"
+      ]
+    },
+    {
+      "meaning": "Actual owned provider deployment, capabilities, lifecycle, network/storage and cleanup.",
+      "next": "Use the provider-remote evidence context only after the dedicated account/target/resource budget and lifecycle contract are approved. Existing provider-preflight explicitly declares deployment_implemented=false; no deployment or paid resource was authorized or started.",
+      "label": "provider deployment",
+      "id": "provider_deployment",
+      "profiles": [],
+      "cases": [],
+      "owners": [
+        "product-lab",
+        "ci-distribution",
+        "integration-root"
+      ]
+    }
+  ]
+}
