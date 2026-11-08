@@ -59,6 +59,11 @@ jobs:
     - name: Execute current lab owner units
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner -j1
+    - name: Verify actual Collector source binding
+      if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
+      env:
+        HUMANYMOUS_LAB_SOURCE_ROOT: ${{ github.workspace }}
+      run: cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner --jobs 1 snapshot::source_pin::tests::actual_collector_source_matches_reviewed_pin -- --exact --ignored
     - name: Execute current delivery receipt units
       if: ${{ !cancelled() && steps.toolchain.outcome == 'success' }}
       run: cargo test --locked -p humanymous-delivery -j1
