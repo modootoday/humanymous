@@ -51,6 +51,7 @@ mod browser_failure;
 mod go;
 mod go_fixture;
 mod go_public;
+pub(crate) mod h2_product_binding;
 mod mount_probe;
 mod public_receipts;
 mod requirement;
@@ -68,6 +69,7 @@ struct Lab {
     go_product: bool,
     mount_probe: bool,
     authority_node_ipc: bool,
+    w2_h2_product_binding: bool,
     go_component_verified: bool,
     stage: &'static str,
     cases: Vec<Value>,
@@ -98,6 +100,20 @@ impl Lab {
                 self.config_file("deployments/lab/compose.authority.yaml")?,
                 "--profile".into(),
                 "authority".into(),
+            ];
+            command.extend(args.iter().map(|s| (*s).to_owned()));
+            return Ok(command);
+        }
+        if self.w2_h2_product_binding {
+            // Cap topology compose is Root-allocated; Cap CLI refuses before Docker when absent.
+            let mut command = vec![
+                "compose".into(),
+                "-p".into(),
+                self.project.clone(),
+                "-f".into(),
+                self.config_file("deployments/lab/compose.h2-product-binding.yaml")?,
+                "--profile".into(),
+                "h2-product-binding".into(),
             ];
             command.extend(args.iter().map(|s| (*s).to_owned()));
             return Ok(command);
@@ -259,6 +275,9 @@ impl Lab {
         }
         if self.authority_node_ipc {
             return authority::run(self);
+        }
+        if self.w2_h2_product_binding {
+            return h2_product_binding::run(self);
         }
         if self.go_product {
             return go::run(self);
@@ -568,6 +587,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut go_product = false;
     let mut mount_probe = false;
     let mut authority_node_ipc = false;
+    let mut w2_h2_product_binding = false;
     let mut full = false;
     let mut require_go_component = false;
     let mut index = 0;
@@ -585,6 +605,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--mount-probe" => mount_probe = true,
             "--topology-only" => topology_only = true,
             "--authority-node-ipc" => authority_node_ipc = true,
+            "--w2-h2-product-binding" => w2_h2_product_binding = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
             _ => return Err("unknown runner argument".into()),
@@ -599,11 +620,33 @@ pub fn run(args: &[String]) -> Result<i32> {
             || browser_product
             || go_product
             || mount_probe
+            || w2_h2_product_binding
             || full
             || require_go_component
         {
             return Err(
                 "authority-node-ipc Cap requires its own fresh profile; refuse foreign Cap selectors; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+    if w2_h2_product_binding {
+        // Cap CLI bound only after Unlock B transfer-apply with code-defined pilot.
+        crate::unlock_gate::require_w2_h2_product_binding_unlocked(&root)?;
+        // Refuse before freeze/Docker when Root Cap topology is absent (Cap conservation).
+        h2_product_binding::require_freeze_preimages(&root)?;
+        h2_product_binding::require_cap_topology(&root)?;
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || full
+            || require_go_component
+        {
+            return Err(
+                "w2-h2-product-binding Cap requires its own fresh profile; refuse foreign Cap selectors and capture/feeder reburns; never invent pass_product_clean_room"
                     .into(),
             );
         }
@@ -674,6 +717,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         go_product,
         mount_probe,
         authority_node_ipc,
+        w2_h2_product_binding,
         go_component_verified: false,
         stage: "initialization",
         cases: Vec::new(),
@@ -714,11 +758,13 @@ pub fn run(args: &[String]) -> Result<i32> {
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
     let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
-    let mut evidence_types = if browser_product || go_product || mount_probe || authority_node_ipc {
-        vec![]
-    } else {
-        vec!["topology-control"]
-    };
+    let mut evidence_types =
+        if browser_product || go_product || mount_probe || authority_node_ipc || w2_h2_product_binding
+        {
+            vec![]
+        } else {
+            vec!["topology-control"]
+        };
     for (component, kind) in [
         ("runtime", "runtime-process"),
         ("wargame", "supervisor-owned-runtime-child-http1"),
@@ -731,6 +777,10 @@ pub fn run(args: &[String]) -> Result<i32> {
             "same-origin-browser-runtime-isolated-pilot",
         ),
         ("authority_node_ipc", "authority-node-ipc-component"),
+        (
+            "w2_h2_product_binding",
+            "w2-h2-product-binding-component",
+        ),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {

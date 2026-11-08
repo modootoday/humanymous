@@ -675,14 +675,42 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
                 .into(),
         );
     }
-    if lower.contains("humanymous-lab-runner") || lower.contains("lab-runner") {
-        let feeder = ["--browser-product", "--collector", "--mount-probe", "--authority-node-ipc"]
+    // Code-defined Cap CLI is the only lab-runner Unlock B shape (mirrors Unlock C).
+    if lower.contains("--w2-h2-product-binding")
+        && (lower.contains("humanymous-lab-runner") || lower.contains("lab-runner"))
+    {
+        if lower.contains("--require-full")
+            || [
+                "--browser-product",
+                "--collector",
+                "--mount-probe",
+                "--authority-node-ipc",
+                "--go-product",
+            ]
             .iter()
-            .any(|flag| lower.contains(flag));
-        let require_full = lower.contains("--require-full");
-        if feeder && require_full {
+            .any(|flag| lower.contains(flag))
+        {
             return Err(
-                "Unlock B grant.pilot_command refused: lab-runner feeder --require-full Cap spam is not W2 H2 product-binding; Root must name hosted gateway binding argv"
+                "Unlock B grant.pilot_command refused: --w2-h2-product-binding Cap requires its own fresh profile; refuse foreign Cap selectors / --require-full; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+        return Ok(());
+    }
+    if lower.contains("humanymous-lab-runner") || lower.contains("lab-runner") {
+        let feeder = [
+            "--browser-product",
+            "--collector",
+            "--mount-probe",
+            "--authority-node-ipc",
+            "--go-product",
+        ]
+        .iter()
+        .any(|flag| lower.contains(flag));
+        let require_full = lower.contains("--require-full");
+        if feeder || require_full {
+            return Err(
+                "Unlock B grant.pilot_command refused: lab-runner feeder / --require-full Cap spam is not W2 H2 product-binding; use code-defined --w2-h2-product-binding Cap CLI"
                     .into(),
             );
         }
@@ -994,9 +1022,13 @@ mod tests {
         .expect_err("feeder require-full refused");
         assert!(err.to_string().contains("feeder"));
         refuse_forbidden_unlock_b_pilot_command(
+            "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-product-binding",
+        )
+        .expect("code-defined Cap CLI pilot accepted");
+        refuse_forbidden_unlock_b_pilot_command(
             "root-named-hosted-gateway-h2-product-binding-pilot",
         )
-        .expect("non-forbidden Root argv accepted without inventing allowlist");
+        .expect("non-feeder Root argv still accepted without inventing allowlist");
     }
 
     #[test]

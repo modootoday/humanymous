@@ -1,0 +1,55 @@
+{
+  "schema": "humanymous.lab-h2-product-binding-cap-pilot-contract/1",
+  "id": "w2-h2-product-binding-cap",
+  "status": "candidate_for_root_transfer",
+  "unlock": "B",
+  "gap": "G1",
+  "wake": "W2",
+  "cli_selector": "--w2-h2-product-binding",
+  "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-product-binding",
+  "pilot_command_note": "Code-defined lab-runner Cap CLI (Unlock C pattern). Distinct from capture native-component observe_h2 (run 42479169280). Cap topology compose/Dockerfile remain Root-allocated; Cap CLI refuse-closes when absent.",
+  "forbidden_as_product_binding": [
+    "cargo run --locked -p humanymous-delivery -- native-component capture",
+    "lab-runner --browser-product|--collector|controls|topology|a11y --require-full without new structural delta",
+    "reburn --authority-node-ipc --require-full without new structural delta"
+  ],
+  "missing_root_cap_topology": [
+    "deployments/lab/compose.h2-product-binding.yaml",
+    "build/rust/h2-product-binding-lab.Dockerfile"
+  ],
+  "freeze_preimages_sha256": {
+    "crates/sdk/humanymous-runtime/src/gateway/tls/h2.rs": "90a44014ac814c01e7e37194b3a903ddee8cf030d6fb8855b69b14f851199843",
+    "crates/sdk/humanymous-runtime/src/gateway/tls.rs": "7008fd3e94173c1fbd9e2d23d72635f10f15a7f623fb34625c10b67148390365",
+    "crates/sdk/humanymous-runtime/src/gateway/application/tls.rs": "2db651b3eea25ccf8f3eb917369738ee0f3e8658712787bb1c8f80e7621bb03f",
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs": "1b8e741bc18e2aeccd6b87464a9f93af63c9b260b34dd286ea23477a228e6d42"
+  },
+  "already_landed_not_product": {
+    "r14_serving": "5ce40904",
+    "hosted_capture_observe_h2_run": 42479169280,
+    "counts_as": "pass_component_hosted"
+  },
+  "cap1_recipe_when_unlocked": {
+    "jobs": 1,
+    "incremental": 0,
+    "locked": true,
+    "steps": [
+      "preimage_rehash_abort_on_drift",
+      "clippy_runtime_locked",
+      "failclosed_missing_planes_422",
+      "failclosed_alpn_h1_consumer",
+      "code_defined_cap_cli_w2_h2_product_binding",
+      "refuse_closed_if_cap_topology_missing",
+      "readiness_original_h2_only_if_measured",
+      "honest_receipt_write"
+    ]
+  },
+  "honesty": {
+    "product": 0,
+    "pass_product_clean_room": 0,
+    "component_green_is_not_product": true,
+    "never_invent_readiness_original_h2": true,
+    "n06_join_requires_measured_binding": true,
+    "detection_freeze": true,
+    "cap_topology_root_only": true
+  }
+}

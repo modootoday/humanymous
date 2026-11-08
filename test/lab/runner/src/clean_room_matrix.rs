@@ -340,18 +340,30 @@ fn cap_cli_status(scenario: &str) -> &'static str {
             Some("bound") => "bound",
             _ => "blocked_claim",
         },
+        "w2-h2-product-binding" => match crate::snapshot::root()
+            .ok()
+            .and_then(|root| crate::unlock_gate::w2_h2_cap_cli_status(&root).ok())
+        {
+            Some("bound") => "bound",
+            _ => "blocked_claim",
+        },
         _ => "absent",
     }
 }
 
 /// Only scenarios with an executable lab-runner Cap selector may serialize.
 /// `authority-node-ipc` serializes only after Unlock C makes Cap CLI `bound`.
+/// `w2-h2-product-binding` serializes only after Unlock B Cap CLI is `bound`.
 fn scenario_has_cap_cli_binding(gate: &str, scenario: &str) -> bool {
     if cap_cli_status(scenario) != "bound" {
         return false;
     }
     match scenario {
-        "browser-product" | "collector-component" | "go-product" | "authority-node-ipc" => true,
+        "browser-product"
+        | "collector-component"
+        | "go-product"
+        | "authority-node-ipc"
+        | "w2-h2-product-binding" => true,
         "topology-fixture" if gate == "lab_runner_topology_or_controls" => true,
         _ => false,
     }
@@ -368,6 +380,7 @@ fn lab_runner_command(gate: &str, scenario: &str) -> Value {
         "collector-component" => args.push("--collector".into()),
         "go-product" => args.push("--go-product".into()),
         "authority-node-ipc" => args.push("--authority-node-ipc".into()),
+        "w2-h2-product-binding" => args.push("--w2-h2-product-binding".into()),
         "topology-fixture" if gate == "lab_runner_topology_or_controls" => {
             args.push("--topology-only".into());
         }

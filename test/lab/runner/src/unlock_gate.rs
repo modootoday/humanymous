@@ -4,10 +4,14 @@
 //! detected from TRANSFER apply (candidate digests on live destinations) plus
 //! Cap module presence. Unlock B is true only when Root-authored
 //! `UNLOCK-B-APPLIED.json` exists (written by Unlock-B transfer-apply after a
-//! grant with non-empty `pilot_command`). Unlock A stays false unless
-//! Root-authored `UNLOCK-A-APPLIED.json` exists — never invent path release or
-//! folklore pilot argv. Never invents product.
+//! grant with non-empty `pilot_command` naming the code-defined Cap CLI
+//! `--w2-h2-product-binding`). Unlock A stays false unless Root-authored
+//! `UNLOCK-A-APPLIED.json` exists — never invent path release or folklore
+//! pilot argv. Never invents product. Capture `observe_h2` ≠ product-binding.
 use crate::docker::Result;
+use crate::orchestration::h2_product_binding::{
+    CAP_SELECTOR as W2_H2_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND,
+};
 use crate::snapshot;
 use crate::transfer_preimage;
 use serde_json::{Value, json};
@@ -35,6 +39,13 @@ const UNLOCK_C_REQUIRED_PATHS: &[&str] = &[
     "test/lab/runner/src/orchestration/authority.rs",
 ];
 
+/// Live Cap contract destination after Unlock B transfer (topology still Root-only).
+const UNLOCK_B_REQUIRED_PATHS: &[&str] = &[
+    "deployments/lab/gateway/h2-product-binding-contract.json",
+    "deployments/lab/gateway/H2-PRODUCT-BINDING.md",
+    "test/lab/runner/src/orchestration/h2_product_binding.rs",
+];
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct UnlockProbe {
     pub a_g4_cef_at: bool,
@@ -43,9 +54,9 @@ pub struct UnlockProbe {
     pub any: bool,
     pub authority_cap_cli_status: &'static str,
     pub reason_c: String,
-    /// Cap CLI status for W2 H2 product-binding (bound only after Unlock B + Root pilot_command).
+    /// Cap CLI status for W2 H2 product-binding (bound only after Unlock B + Cap CLI pilot).
     pub w2_h2_cap_cli_status: &'static str,
-    /// Root-named Cap argv echoed from UNLOCK-B-APPLIED when present; never invented.
+    /// Cap argv echoed from UNLOCK-B-APPLIED when present; code-defined Cap CLI preferred.
     pub w2_h2_pilot_command: Option<String>,
     pub reason_b: String,
 }
@@ -90,11 +101,12 @@ impl UnlockProbe {
                 "reason": self.reason_c,
             },
             "w2_h2_cap_cli": {
-                "selector": "GRANT.pilot_command",
+                "selector": W2_H2_CAP_SELECTOR,
                 "status": self.w2_h2_cap_cli_status,
                 "pilot_command": self.w2_h2_pilot_command,
+                "code_defined_pilot_command": CODE_DEFINED_PILOT_COMMAND,
                 "reason": self.reason_b,
-                "note": "No lab-runner Cap flag for hosted H2 product-binding exists; Cap argv is Root-named GRANT.pilot_command only (never invent; never capture observe_h2)"
+                "note": "Cap CLI --w2-h2-product-binding is the code-defined GRANT.pilot_command; refuse capture observe_h2 and feeder --require-full; Cap topology compose/Dockerfile remain Root-allocated"
             },
             "cap": {
                 "burn_authorized_by_unlock_gate": self.any,
@@ -108,6 +120,7 @@ impl UnlockProbe {
                 "cap_burn_only_after_unlock": true,
                 "detection_freeze": true,
                 "never_invent_unlock_b_pilot_command": true,
+                "code_defined_w2_h2_cap_cli": true,
                 "never_invent_unlock_a_path_release": true,
                 "capture_component_is_not_product_binding": true,
             },
@@ -195,13 +208,15 @@ pub fn probe_root(root: &Path, manifest: Option<&Path>) -> Result<UnlockProbe> {
     })
 }
 
-/// Unlock B Cap surface: bound only when UNLOCK-B-APPLIED carries Root pilot_command.
+/// Unlock B Cap surface: bound only when UNLOCK-B-APPLIED carries Cap CLI pilot.
 fn probe_unlock_b(root: &Path) -> Result<(bool, String, &'static str, Option<String>)> {
     let receipt_path = root.join(UNLOCK_B_RECEIPT);
     if !receipt_path.is_file() {
         return Ok((
             false,
-            "no UNLOCK-B-APPLIED; Unlock B candidate-pack ready but GRANT.pilot_command still Root-only; no lab-runner H2 Cap flag exists to invent".into(),
+            format!(
+                "no UNLOCK-B-APPLIED; Unlock B Cap CLI {W2_H2_CAP_SELECTOR} exists but GRANT.pilot_command + transfer-apply still required; Cap topology compose/Dockerfile remain Root-only"
+            ),
             "blocked_claim",
             None,
         ));
@@ -224,9 +239,37 @@ fn probe_unlock_b(root: &Path) -> Result<(bool, String, &'static str, Option<Str
             None,
         ));
     };
+    if !pilot.contains(W2_H2_CAP_SELECTOR) {
+        return Ok((
+            false,
+            format!(
+                "UNLOCK-B-APPLIED pilot_command lacks Cap CLI {W2_H2_CAP_SELECTOR}; refuse capture/feeder folklore; code-defined pilot is {CODE_DEFINED_PILOT_COMMAND}"
+            ),
+            "blocked_claim",
+            Some(pilot),
+        ));
+    }
+    let missing: Vec<&str> = UNLOCK_B_REQUIRED_PATHS
+        .iter()
+        .copied()
+        .filter(|relative| !root.join(relative).is_file())
+        .collect();
+    if !missing.is_empty() {
+        return Ok((
+            false,
+            format!(
+                "UNLOCK-B-APPLIED present but Cap contract/module destinations missing ({}); transfer incomplete; Cap CLI stays blocked_claim",
+                missing.join(", ")
+            ),
+            "blocked_claim",
+            Some(pilot),
+        ));
+    }
     Ok((
         true,
-        "UNLOCK-B-APPLIED present with Root GRANT.pilot_command; Cap=1 may burn matching w2-h2-product-binding pack using that exact argv (component≠product)".into(),
+        format!(
+            "UNLOCK-B-APPLIED present with Cap CLI {W2_H2_CAP_SELECTOR}; Cap=1 may attempt matching w2-h2-product-binding pack (refuse-closed if Cap topology absent); component≠product"
+        ),
         "bound",
         Some(pilot),
     ))
@@ -288,6 +331,11 @@ pub fn authority_cap_cli_status(root: &Path) -> Result<&'static str> {
     Ok(probe_root(root, manifest.as_deref())?.authority_cap_cli_status)
 }
 
+/// Cap CLI status for `--w2-h2-product-binding` (bound only after Unlock B apply).
+pub fn w2_h2_cap_cli_status(root: &Path) -> Result<&'static str> {
+    Ok(probe_root(root, None)?.w2_h2_cap_cli_status)
+}
+
 /// Fail-closed refuse for `--authority-node-ipc` until Unlock C is measured true.
 ///
 /// After Unlock C TRANSFER apply, Cap orchestration may burn once. Until then
@@ -305,9 +353,23 @@ pub fn require_authority_cap_unlocked(root: &Path) -> Result<()> {
     .into())
 }
 
+/// Fail-closed refuse for `--w2-h2-product-binding` until Unlock B is measured true.
+pub fn require_w2_h2_product_binding_unlocked(root: &Path) -> Result<()> {
+    let status = probe_root(root, None)?;
+    if status.b_w2_h2_product_binding {
+        return Ok(());
+    }
+    Err(format!(
+        "w2-h2-product-binding Cap CLI is blocked_claim: {}; never invent pass_product_clean_room; never reburn capture observe_h2 as product-binding",
+        status.reason_b
+    )
+    .into())
+}
+
 #[cfg(test)]
 mod tests {
     use super::{UNLOCK_B_RECEIPT, UNLOCK_C_REQUIRED_PATHS, probe_root};
+    use crate::orchestration::h2_product_binding::{CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND};
     use crate::snapshot;
     use serde_json::json;
     use std::fs;
@@ -329,8 +391,49 @@ mod tests {
     }
 
     #[test]
-    fn unlock_b_receipt_with_pilot_binds_w2_cap_cli() {
+    fn unlock_b_receipt_with_cap_cli_pilot_binds_when_destinations_present() {
         let directory = tempfile_dir("hm-unlock-gate-b-");
+        let receipt_path = directory.join(UNLOCK_B_RECEIPT);
+        fs::create_dir_all(receipt_path.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &receipt_path,
+            serde_json::to_string_pretty(&json!({
+                "schema": "humanymous.cursor-unlock-b-applied/1",
+                "unlock": "B",
+                "applied": true,
+                "pilot_command": CODE_DEFINED_PILOT_COMMAND,
+                "pass_product_clean_room": 0
+            }))
+            .expect("json"),
+        )
+        .expect("write");
+        for relative in [
+            "deployments/lab/gateway/h2-product-binding-contract.json",
+            "deployments/lab/gateway/H2-PRODUCT-BINDING.md",
+            "test/lab/runner/src/orchestration/h2_product_binding.rs",
+        ] {
+            let path = directory.join(relative);
+            fs::create_dir_all(path.parent().expect("parent")).expect("mkdir");
+            fs::write(&path, b"present\n").expect("write");
+        }
+        let status = probe_root(&directory, None).expect("probe");
+        assert!(status.b_w2_h2_product_binding);
+        assert!(status.any);
+        assert_eq!(status.w2_h2_cap_cli_status, "bound");
+        assert_eq!(
+            status.w2_h2_pilot_command.as_deref(),
+            Some(CODE_DEFINED_PILOT_COMMAND)
+        );
+        assert_eq!(
+            status.to_json(&directory, None)["w2_h2_cap_cli"]["selector"],
+            CAP_SELECTOR
+        );
+        let _ = fs::remove_dir_all(&directory);
+    }
+
+    #[test]
+    fn unlock_b_receipt_without_cap_selector_stays_blocked() {
+        let directory = tempfile_dir("hm-unlock-gate-b-bad-");
         let receipt_path = directory.join(UNLOCK_B_RECEIPT);
         fs::create_dir_all(receipt_path.parent().expect("parent")).expect("mkdir");
         fs::write(
@@ -346,17 +449,9 @@ mod tests {
         )
         .expect("write");
         let status = probe_root(&directory, None).expect("probe");
-        assert!(status.b_w2_h2_product_binding);
-        assert!(status.any);
-        assert_eq!(status.w2_h2_cap_cli_status, "bound");
-        assert_eq!(
-            status.w2_h2_pilot_command.as_deref(),
-            Some("root-named-hosted-gateway-h2-product-binding-pilot")
-        );
-        assert_eq!(
-            status.to_json(&directory, None)["w2_h2_cap_cli"]["selector"],
-            "GRANT.pilot_command"
-        );
+        assert!(!status.b_w2_h2_product_binding);
+        assert_eq!(status.w2_h2_cap_cli_status, "blocked_claim");
+        assert!(status.reason_b.contains(CAP_SELECTOR));
         let _ = fs::remove_dir_all(&directory);
     }
 

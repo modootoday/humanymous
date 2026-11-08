@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap-ready probe (Cap=0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T14:55:00Z
+updated: 2026-11-08T14:58:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -27,7 +27,7 @@ product=0. Never invent `pass_product_clean_room`.
 
 | # | Closer | Result |
 | --- | --- | --- |
-| 1 | Unlock B / G1 W2 hosted H2 product-binding | **blocked** — no `UNLOCK-B-APPLIED.json`; no Root-named gateway product-binding allocation; Cap-ready pack advanced with gateway preimage rehash only |
+| 1 | Unlock B / G1 W2 hosted H2 product-binding | **applied structurally** — Cap CLI `--w2-h2-product-binding` code-defined; `UNLOCK-B-APPLIED`; Cap burn=0 until Root Cap topology (compose+Dockerfile) |
 | 2 | Unlock A / G4 CEF/AT | **blocked** — no `UNLOCK-A-APPLIED.json`; Cap-ready honesty only |
 | 3 | P0 residual | **taken** — matrix honesty for Unlock C Cap component |
 
@@ -73,23 +73,21 @@ Tracked: this plan.
 
 ## 5. Residual / next
 
-Unlock **B** Cap-ready pack remains blocked on Root-named `GRANT.pilot_command`.
-Re-search @ tip `98f001b1`: **no** code-defined lab-runner/runtime Cap flag for
-hosted H2 product-binding (selectors remain collector/browser/go/mount/authority
-only). Cap burn=0.
+Unlock **B** Cap CLI `--w2-h2-product-binding` is code-defined (Unlock C pattern).
+`GRANT.pilot_command` + transfer-apply → `UNLOCK-B-APPLIED` + unlock-probe
+`w2_h2_cap_cli=bound`. Cap burn=**0**: Cap-ready pack is contract-only; missing
+Root Cap topology:
 
-Landed Cap=0 shorteners (this turn):
+- `deployments/lab/compose.h2-product-binding.yaml`
+- `build/rust/h2-product-binding-lab.Dockerfile`
 
-1. `refuse_forbidden_unlock_b_pilot_command` — fail-closed refuse of documented
-   capture `native-component capture` and lab-runner feeder `--require-full`
-   shapes (COMMANDS.md §2 / harness `forbidden_reburns`).
-2. `unlock-probe` `w2_h2_cap_cli` — when `UNLOCK-B-APPLIED` carries Root
-   `pilot_command`, status=`bound` and echoes that exact argv for Cap=1; never
-   invents a Cap selector.
-3. G5 matrix summary honesty — runtime/witness require_full summary cells match
-   combinations (`pass_component_desktop`); M3 Desktop summary cells
-   `required_unavailable` (not stale `unrun`).
+Capture `observe_h2` remains forbidden as product-binding. No authority Cap reburn.
 
-Root: fill Unlock B `GRANT.pilot_command` → transfer-apply → Cap=1 once using
-echoed `w2_h2_cap_cli.pilot_command`; else Unlock A path release. Cap free.
-product=0.
+Landed this closer:
+
+1. Cap CLI `--w2-h2-product-binding` refuse-closed (freeze pins + missing topology).
+2. GRANT + transfer-apply with code-defined pilot_command.
+3. Cap burn=0 honest receipt under `20261108310000-cursor-unlock-b-cap-cli/`.
+
+Root next: allocate Cap topology → Cap=1 once with Cap CLI; else Unlock A path
+release. Cap free. product=0.
