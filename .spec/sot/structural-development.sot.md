@@ -981,3 +981,30 @@ These decisions complete the named ownership direction, not the13-context source
 role, feature and test freeze. Exact current pins/callers and full main/bin/unit
 inventories must be reconciled before Root's atomic move. No independent source,
 resource, manifest or branch movement is authorized by this table.
+
+## Tools composition-root reconciliation before movement
+
+Root's first279-row file proposal maps old binary main files directly to new
+src/bin/<role>/main.rs paths. The separate unit-role map expects private context
+prefixes such as native_runner::actor. Those two mappings are not yet one
+implementation contract. Do not treat source/hash coverage as resolution of this
+namespace difference or freeze/move from the first proposal alone.
+
+For every nonprimary role, the new standard binary root must compose its owning
+private qualification implementation, preserving real main return/exit behavior.
+Bin-only implementation contexts use qualification role modules; contexts that
+already own a former library need distinct command modules. Attacker, legacy
+report and verifier command contexts have distinct prefixes. Keep shared Lab
+source single-owned and all private role/unsafe/test boundaries explicit. The
+CLI owner must reconcile exact old implementation path, new implementation path,
+new binary composition root and every test selector before Root applies movement.
+No public SDK forwarding API or duplicate implementation is authorized.
+
+## Temporary offline SGD reachability lint exception
+
+Root accepts only the reviewed non-test cfg_attr expectation of dead_code on the
+private model::training::sgd module while its real offline composition caller is
+not implemented. Tests do not receive this expectation. Remove it and verify
+actual reachability when that caller is integrated; do not add fake calls, public
+exports or broader suppressions. This temporary source allowance does not prove
+production integration, actual learning, file cleanup or numerical parity.
