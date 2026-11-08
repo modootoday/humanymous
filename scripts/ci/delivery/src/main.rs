@@ -26,6 +26,7 @@ mod registry;
 mod remote;
 mod service_component;
 mod source;
+mod source_pin_result;
 mod supply;
 mod workspace;
 
@@ -55,6 +56,13 @@ pub fn write_json(path: &Path, value: &serde_json::Value) -> Result<()> {
 }
 fn run() -> Result<()> {
     let explicit: Vec<_> = std::env::args().skip(1).collect();
+    if explicit
+        .first()
+        .is_some_and(|value| value == "source-pin-result")
+    {
+        require(explicit.len() == 2, "usage: source-pin-result LOG")?;
+        return source_pin_result::check(Path::new(&explicit[1]));
+    }
     if explicit
         .first()
         .is_some_and(|value| value == "qualification-data")

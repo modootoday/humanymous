@@ -117,7 +117,7 @@ Root assembled an isolated implementation candidate from exact source5f1010d4,
 retaining the original archive SHA-256
 8b4dd85edde2262c448de51e85030f716871a9090672620f97d8f7c5dcbbf28d.
 No shared Cargo or original implementation path was moved. In that candidate,
-274 original files moved once,37 Rust literal path sites were adjusted by their
+274 original files moved once,37 Rust files with literal paths were adjusted by their
 resolved original targets,14 reviewed composition roots were linked and the13
 original manifests were retained outside the candidate. The unified CLI manifest
 and workspace metadata now resolve21 members. The first default CLI library/bin
@@ -193,6 +193,29 @@ all targets also passed. Workflow callers must adopt the moved namespace and
 role feature during live integration; the old exact selector must not silently
 select zero tests. These results remain Windows qualification-tool tests, not
 the actual Unix proxy or Docker/browser product execution.
+
+The existing Delivery executable now provides source-pin-result LOG, a bounded
+UTF-8 log checker specialized to the exact moved required-test namespace. It
+requires exactly one executed case, one successful summary, one passing selected
+case line, zero failures/ignores and valid bounded filtered accounting. A Cargo
+exit code remains independently mandatory; this parser does not authenticate log
+provenance or replace source binding. Two parser units passed (123 filtered),
+strict Delivery Clippy passed, an actual moved-gate log was accepted, and a
+synthetic successful-empty-selection log was rejected with exit1. The retained
+actual log SHA-256 is
+67bb1fe1bd4ca7ac18fef72db599d589d7817b419f19cc118bf5f33cdde2c3bf.
+Workflow adoption remains assigned to Delivery for the eventual live cutover.
+
+The immutable3137c905 hosted run42432665570 subsequently reached terminal state:
+preflight passed; owning Lab assertions49/49 passed, selected browser67inventory/
+1selected/66filtered passed, including sensitive-document setup/restoration and
+the new B/G Referer partition assertion. Product workflow remains failed because
+the owner exits2 for full-product requirements with nine unavailable categories.
+The current full-product assessor always refuses full qualification; rerunning
+the same49 assertions cannot clear those requirements. The unavailable labels
+are currently hardcoded source labels, not canonical machine IDs or proof of
+owner admission. Lab is sealing exact source-specific evidence and proposed
+requirement routing. No CI-green, full-product or release-ready claim follows.
 
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
