@@ -429,7 +429,9 @@ fn start_decision(
                     .ok_or_else(|| error("missing origin callback"))?;
                 let next = next.borrow_back(env)?;
                 let response = response.get_value(env)?;
-                if prop::<bool>(&response, "destroyed")? {
+                // Bun's Node HTTP shim may omit `destroyed` (Undefined). Missing means
+                // the socket is still usable; only an explicit true skips origin.
+                if prop::<bool>(&response, "destroyed").unwrap_or(false) {
                     return pending.release(env);
                 }
                 if consume_handoff(&pending, bound).is_err() {
