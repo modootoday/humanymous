@@ -3268,3 +3268,18 @@ adapters-package-input-review-022.json binds actual list and source bytes.
 CA-NOTICE01 stays OPEN: actual archive extraction/content, extracted build,
 complete per-role dependency/native notices and final runtime-image verification
 remain required. Pre-Cargo role/SDK-negative validation is distinct from build.rs.
+Cooperative Node capture manufacturer source review completed for artifact.rs,
+capture.rs,6authored synthetic tests and caller delta. Exact manifest, opaque
+workspace/resolve identity, role features, test target/source/kind/type/profile,
+actual executable/filenames/exclusive target and terminal build-finished are
+joined. run-host-tests remains NOT_ACCEPTED rather than directory-hunt launch.
+One component900/930clock origin is reused for3captures; retained start/settle
+failures preserve the same owner. Expired settling explicitly has no bounded-
+return claim; outer tree/storage/original authority and WindowsACL/tool/env/source
+custody are external prerequisites. Neither fresh JSON nor path/hash DATA mints
+native authority. The actual fixture newline escape was inspected by codepoint.
+Initial review strict unused PathBuf failure is retained; no6test execution or
+strict success was observed by this audit at this source checkpoint. Existing
+build/install lifetime gates remain. Private node-capture-preliminary-review-023.json
+and node-capture-source-review-024.json bind bounded source reads; full capture,
+host execution, ABI and CA-LIFETIME closure remain OPEN.

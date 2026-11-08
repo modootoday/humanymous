@@ -2733,5 +2733,17 @@
     "sha256": "61ab79b6cf360e45846f1172f5e7372f44bd40002de65edcf53cca3f09ed5dbe",
     "bytes": 2199,
     "goal_complete": false
+  },
+  "node_capture_preliminary": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/node-capture-preliminary-review-023.json",
+    "sha256": "73ee79a659e320a99aefba2fd0e3c3321811ea092c9f680e3346f8b540fd510d",
+    "bytes": 1007,
+    "goal_complete": false
+  },
+  "node_capture_source_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/node-capture-source-review-024.json",
+    "sha256": "98ca63e2fdfc821cb8a0b9848761d91d25032a0494d8019e379919d9cf4cc47c",
+    "bytes": 2260,
+    "goal_complete": false
   }
 }
