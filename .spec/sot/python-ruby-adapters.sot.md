@@ -815,3 +815,47 @@ lockfile and six-context destination files. Source-only verification does not
 qualify an actual host. Compiler, tests, Clippy and formatting are not run pending
 Root allocation. No owned execution handle or target lease is active; consumer
 files freeze after source handoff. Historical runtime receipts remain unchanged.
+## Python/Ruby artifact-role candidate 003 (source only)
+
+Root assigned Python/Ruby-only versioned role metadata, artifact selectors and
+package lifecycle deltas in uniquely owned evidence paths. Candidate003 contains
+six full Rust candidate files with exact main-worktree preimage SHA256 and final
+candidate SHA256 in preimages.json. Root alone applies these after comparing every
+preimage; stale preimages require rejection and a new reviewed delta. No shared
+manifest, Node source or read-only Tools integration source was changed.
+
+The candidate adds host-artifact-role/1 metadata: exact Python/Ruby context,
+ABI major1 and production/host-pilot/package-tool role. Combined pilot/package
+features produce unsupported-combined, rejected by package validators. A shared
+package ID or two false flags alone cannot admit an artifact. Missing, wrong-major,
+wrong-schema, cross-language, feature-role mismatches and combined roles fail closed.
+
+The Python Cargo harness selector joins exact package ID obtained via Cargo pkgid,
+target source, test kind, bin crate type, test profile, exact feature set and one
+absolute executable below the allocated target. Malformed streams, ambiguous rows,
+wrong sources and path escapes are rejected. Staging checks selected and copied
+executable digests before/after copy. This is an observation across staging, not an
+atomic custody/TOCTOU proof. The controller's existing lifecycle refusal remains.
+Root must remap selectors when moving these adapter contexts; old literal paths
+are bound to the recorded preimages and are not a compatibility guarantee.
+
+Python wheel inspection hashes its sole native member. A future allocated clean
+import joins the installed relative member path, byte count and SHA256 with that
+inspection. Wheel .data relocation layouts are unsupported by this initial exact
+path join. Verification is post-import observed bytes, not authorization before
+native code execution, loader custody or generator provenance. Framework/product
+qualification remains false. Ruby records loadedArtifactJoinVerified=false: no
+Ruby loaded-extension byte/custody join has been observed or fabricated.
+
+Both package drivers refuse build/install before process or staging effects until
+an allocated shared owned-process lifecycle is integrated. Ruby run also refuses
+before spawn, retaining the old implementation only as non-authoritative source.
+Its old reader joins and Python unbounded package subprocesses must not become
+completion authority. An environment opt-in is insufficient to authorize them.
+The added refusal is deliberate incomplete functionality, not a completed lifecycle.
+
+Six Rust tests are authored, NOT_RUN: two role-contract suites, Python exact Cargo
+selector negatives, Python archive/import byte-join negatives and two lifecycle
+refusal guards. Candidate-only Rust1.99.1/edition2024 rustfmt passes. No compiler,
+Clippy, SDK, host, Docker, browser, hosted run or runtime tuple was executed.
+Root allocation is required for actual scoped tests and package/host qualification.

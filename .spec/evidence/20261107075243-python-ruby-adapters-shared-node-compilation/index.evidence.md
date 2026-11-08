@@ -7,6 +7,13 @@ updated: 2026-11-07T10:15:19Z
 rel:
   governs: [crates/node-adapter]
 files:
+  - {path: python-ruby-role-candidate-003/crates/python-adapter/src/lib.rs, sha256: 33abab10b70967391a83932a16f3dfd8eb50ab14e153529c08183eefd8503ff1, bytes: 2147, store: repo}
+  - {path: python-ruby-role-candidate-003/crates/ruby-adapter/src/native.rs, sha256: 45805b6a3258f13317c95f0d5bc5c60950f2357d51047e1848f6424ca69af5f0, bytes: 9548, store: repo}
+  - {path: python-ruby-role-candidate-003/crates/python-adapter/src/bin/humanymous-python-package.rs, sha256: 748484dec20fd336d7bb56413dd4a2300f4111237a59c150072e92c411c9f39b, bytes: 17903, store: repo}
+  - {path: python-ruby-role-candidate-003/crates/ruby-adapter/src/bin/humanymous-ruby-package.rs, sha256: 37e52eda9b48f674b8e06973e9e02e8c9f2d71ed0da0162fc452605ce5d56ba4, bytes: 12217, store: repo}
+  - {path: python-ruby-role-candidate-003/crates/python-adapter/tests/support/component_files.rs, sha256: 3120826b1b3dcfd33c4c632026e9894d47a95d7044ac945c0b91b943fa0f6c49, bytes: 8036, store: repo}
+  - {path: python-ruby-role-candidate-003/crates/python-adapter/tests/component_controller.rs, sha256: 0ece4b380b666322d04151225783f86c28cb4e4f7377ca77b27c6be316b585b6, bytes: 14909, store: repo}
+  - {path: python-ruby-role-candidate-003/preimages.json, sha256: 42d55cda92328db0998620302e6f2cd8b664c3f76815422ee8df510784fbd80f, bytes: 3247, store: repo}
   - {path: runtime-consumer-handoff-002.json, sha256: ac5cd52ecec2bf55036fe7e67459178ea79229800017f47516cf65baf241c9d0, bytes: 5633, store: repo}
   - {path: platform-consumer-handoff-002.json, sha256: 7099068521d6e7766d58e5f459643383f68e3b8f3a341438b0c0631b05011017, bytes: 1998, store: repo}
   - {path: summary-001.json, sha256: 09ba1cdf3e041fbbf16f6ff1546e49a4261a55a3bae2e8c187fd6f21524f89d9, bytes: 1306, store: repo}

@@ -1,0 +1,52 @@
+{
+  "files": [
+    {
+      "preimageSha256": "7a3754ef9545b39072ba1b38ae33041a793a909d4c44a7f8052f91e3483aa326",
+      "path": "crates/python-adapter/src/lib.rs",
+      "candidatePath": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/python-ruby-role-candidate-003/crates/python-adapter/src/lib.rs",
+      "candidateSha256": "33abab10b70967391a83932a16f3dfd8eb50ab14e153529c08183eefd8503ff1",
+      "candidateBytes": 2147
+    },
+    {
+      "preimageSha256": "1c33c6ecbb80bf28e9ff80407f2ad4d6d318af3f46e0c146ee6e44b6caa989af",
+      "path": "crates/ruby-adapter/src/native.rs",
+      "candidatePath": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/python-ruby-role-candidate-003/crates/ruby-adapter/src/native.rs",
+      "candidateSha256": "45805b6a3258f13317c95f0d5bc5c60950f2357d51047e1848f6424ca69af5f0",
+      "candidateBytes": 9548
+    },
+    {
+      "preimageSha256": "0b6a8d92343bde8550f20870f6c2d6f924ba13f1a00a1d929596e0c1157533c5",
+      "path": "crates/python-adapter/src/bin/humanymous-python-package.rs",
+      "candidatePath": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/python-ruby-role-candidate-003/crates/python-adapter/src/bin/humanymous-python-package.rs",
+      "candidateSha256": "748484dec20fd336d7bb56413dd4a2300f4111237a59c150072e92c411c9f39b",
+      "candidateBytes": 17903
+    },
+    {
+      "preimageSha256": "2ad3ceabff49d9fe58afee78b5f873ebe9a46bacc26f5ef9e237e9c943cb9051",
+      "path": "crates/ruby-adapter/src/bin/humanymous-ruby-package.rs",
+      "candidatePath": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/python-ruby-role-candidate-003/crates/ruby-adapter/src/bin/humanymous-ruby-package.rs",
+      "candidateSha256": "37e52eda9b48f674b8e06973e9e02e8c9f2d71ed0da0162fc452605ce5d56ba4",
+      "candidateBytes": 12217
+    },
+    {
+      "preimageSha256": "f9eafed042d88a1a3abf5c9705fad9eb4cb1f624408d987efbf94ecb75fac246",
+      "path": "crates/python-adapter/tests/support/component_files.rs",
+      "candidatePath": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/python-ruby-role-candidate-003/crates/python-adapter/tests/support/component_files.rs",
+      "candidateSha256": "3120826b1b3dcfd33c4c632026e9894d47a95d7044ac945c0b91b943fa0f6c49",
+      "candidateBytes": 8036
+    },
+    {
+      "preimageSha256": "ce7ffb6cc96b76f1b3d80b2e1e3719a029336a61e0615fd7fe58eda9695573a6",
+      "path": "crates/python-adapter/tests/component_controller.rs",
+      "candidatePath": ".spec/evidence/20261107075243-python-ruby-adapters-shared-node-compilation/python-ruby-role-candidate-003/crates/python-adapter/tests/component_controller.rs",
+      "candidateSha256": "0ece4b380b666322d04151225783f86c28cb4e4f7377ca77b27c6be316b585b6",
+      "candidateBytes": 14909
+    }
+  ],
+  "schema": "humanymous.python-ruby-role-candidate/1",
+  "sourceCommit": "f746dfa448eeb4876c4e95832f6af5bce2c7ec45",
+  "status": "authored-not-run",
+  "rustTestsAuthoredNotRun": 6,
+  "rustfmtCandidateOnly": "PASS;Rust1.99.1 edition2024 skip_children",
+  "applicationRule": "Root only; compare every literal target preimageSHA256 before applying; reject stale preimages; no automatic rebase"
+}
