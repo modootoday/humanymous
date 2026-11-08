@@ -2341,5 +2341,15 @@
     "actual": "Windows all-target/all-feature CLI strictClippy exit0, warm0.27s; no tests",
     "sha256": "4f9a1abacd803fa7a5461ab9ac27398c761ed50aa4638251d78847b37b7fad84",
     "bytes": 2915
+  },
+  "tools_format_and_unsafe_freeze_review": {
+    "format": "41 CLI files changed; no outside changes; after equals strict02 before",
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-format-unsafe-review-001.json",
+    "goal_complete": false,
+    "unsafe": "actor exact original after2path rewrites; SCMbyteidentical;26forbid/1deny",
+    "strict02": "1781 equal before/after; recorded current hashes equal; exit0/7.28s; no tests",
+    "sha256": "465a523a6fbabbc04e1260724b4ec8b5109b3b093fe47daec5dd1151f43389e2",
+    "bytes": 3083,
+    "negative_compile_probes": "NOT_RUN"
   }
 }

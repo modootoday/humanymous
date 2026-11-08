@@ -2515,3 +2515,24 @@ This discharges the previously pending list-preservation check for this role;
 execution and the separate full33 integration-role denominator remain OPEN.
 Private tools-all-role-strict-review-001.json hashes the eight reviewed evidence
 files and preserves the limits. Whole migration completion remains unproven.
+
+## Post-format Tools source and unsafe freeze re-audit
+
+Independent format manifests retain1781 files before/after and exactly41 changed
+CLI files, zero changes outside CLI. Formatted after records equal strict02 before
+records. Strict02 also has1781 equal before/after records and current recorded
+hashes match. Receipt records PID28960, exit0; raw log finishes7.28s. Accept this
+newer formatted-source Windows all-target/all-feature strict lint result only;
+no tests executed, external input closure remains unproved. Earlier strict01
+success remains historical, rather than being transferred across formatting.
+
+Against the original5f101 ZIP, native_runner/actor.rs is EXACTLY original after
+two crate::native_runner import/reference rewrites; actor/scm.rs is byte-identical.
+No unsafe-operation change is hidden by these source moves. Current roots retain
+26 safe forbids and the sole Native runner deny. Literal source linkage review
+finds the Native runner root and its cfg(windows) actor declaration with only the
+two existing unsafe allows. This is stronger than operation-count comparison but
+not arbitrary macro/generated reachability proof or a soundness audit. Required
+forbidden-unsafe/linkage negative compiles and actual native admission remain OPEN.
+Private tools-format-unsafe-review-001.json retains eight evidence hashes and
+the original actor blob. Formatting alone proves no semantic equivalence.
