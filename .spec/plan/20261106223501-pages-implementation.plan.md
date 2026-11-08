@@ -2664,3 +2664,22 @@ changedpathhashes, acceptedcomponent scope and source-only limits. Hosted3137
 49pass/selectedbrowserpass/fullfalse9unavailable/workflowfailure unchanged.
 Frozenchecker88pages/errors0/diffpass; no tooling source/compiler/build/native/
 render/AT/GHA/publish. No new allocation; all newproseUNRENDERED.
+
+### Final8 code-to-public scope, Node compile-only and separate Meari030
+
+Checked actualcodex/rust before writes; no branches/worktrees/refs changed.
+Read-only Rootprimary manifests confirm eight physical package paths, now mapped
+in developer guide and evidence07052815/final8-node-meari-code-public-scope.json.
+Facade/Collector finalpaths and bounded tests/staticchecks are isolated outcomes,
+not livecutover/registry/product. Actual13Nodecompilercontrols andprimaryhosttest
+no-run/strict pass do not execute a loader/host/captureproducer; earliermacro18E0453
+andunusedreexportfailures retained, stub/cooperativecandidate notadoptedproducer.
+
+Separate Meari030CPUcandidate pins/check/strict/32model cases do not change primary
+pin, inherit634tuplelockidentity or qualify actualUI/IME/AX/DPI/shutdown/CEF.
+CurrentreaderNode/nativeBrowser/status/Draft map reflect exact boundaries; no
+internalSoTIDs or guessed runtimecapabilities. API table retains its own heading.
+Frozenad04sourcechecker88pages/errors0 anddiffpass reveal no sourcecheckerdefect
+requiring an artificial fix/test. Tooling/commonCargo/roadmaps/Rootassembly not
+modified; no new heavy/compiler/browser/Docker/SDK/hostedallocation. Latest-source
+render/AT/product gates remainopen andnewproseUNRENDERED; no Cursor handover.

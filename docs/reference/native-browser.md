@@ -15,6 +15,24 @@ resize behavior. Its overall browser readiness remains false; a rendered page
 or native component test does not qualify external navigation, observation
 receipts, automation attribution or enforcement.
 
+## Separate Meari 0.3 CPU candidate
+
+A separate CPU review candidate coherently pins three Meari dependencies to
+`ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4`. Its selected native-UI all-target
+check, strict Clippy and 32 default browser-model tests passed. Its dependency
+graph excludes the GPU rendering packages checked by that profile; this is a
+dependency observation, not an actual renderer, hardware or driver test.
+
+The candidate is not adopted into the primary isolated browser, which retains
+its prior pin. Its seven Meari-family package upgrades and dependency removal
+form a separate lock epoch; an older unchanged-lock claim does not apply.
+CEF execution, actual UI/IME/accessibility/DPI/shutdown, contract/source-pin,
+notices and host/package qualification remain required. A successful model test
+or CPU compilation does not qualify these controls. The isolated browser path
+is listed in the [staged developer map](../start-here/developer.md#isolated-final-path-map).
+
+## Existing native prototype boundaries
+
 The current prototype has a script-free, app-owned `humanymous://newtab/`
 document and a narrow internal diagnostic allowlist: `chrome://version/`,
 `chrome://gpu/`, `chrome://credits/`, `chrome://license/` and

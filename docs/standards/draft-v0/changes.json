@@ -8,6 +8,14 @@
   "changes": [
 {
   "kind": "implementation-evidence",
+  "paths": ["../../start-here/developer.md", "../../reference/production-vs-reference.md", "../../reference/node-adapter.md", "../../reference/native-browser.md", "validation/implementation-map.md"],
+  "summary": "Map all eight isolated final package paths separately from live cutover. Record Node host-test no-run/strict and compiler-boundary controls without host/loader/capture qualification; preserve earlier failures and unadopted capture candidates. Record separate Meari0.3 CPU candidate checks/32model tests without primary pin adoption or actualUI/IME/AX/DPI/CEF/shutdown qualification.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
   "paths": ["../../reference/production-vs-reference.md", "validation/implementation-map.md"],
   "summary": "Distinguish isolated eight-member Tools/Adapters assembly after12-context adoption from live29workspace+4standalone with no cutover. Record73 safe-context library units and strict Clippy plus separate4facade Go alias/profile tests, without actualhost/export/loader/header-v2/NodePython/registry/native/CrossOS/CEF/AT/product completion. Package count is not product qualification.",
   "generic_wire_changed": false,

@@ -19,6 +19,25 @@ in progress: `capabilities()` reports an empty `releaseQualifiedTuples` list.
 Earlier component runs do not qualify later source changes or every Node/Bun,
 OS, architecture and framework combination.
 
+### Isolated compile-only checkpoint
+
+The isolated final-path adapter source builds the selected Node host test binary
+with `cargo test --no-run` and passes strict export-profile library Clippy.
+The generated executable has a recorded identity but was not executed or given
+loader custody. The earlier 18 unsafe-lint macro expansion errors and the first
+unused-reexport strict failure remain historical failures, not passing runs.
+
+Existing macro sites were moved into a private export capsule while the safe
+Node context retains its stronger unsafe prohibition. A separate review copy
+passed 13 compiler controls: six safe positive baselines, six expected unsafe-code
+refusals and one inherited-forbid lowering refusal. This does not prove complete
+generated-expansion safety or actual host execution. The observation-selector
+stub was not adopted; a separate cooperative capture candidate is not a shipped
+capture producer. Actual capture, packaging, host/runtime and lifetime gates
+remain open. See the [staged path map](../start-here/developer.md#isolated-final-path-map).
+
+### API surface
+
 | Interface | Integration boundary |
 | --- | --- |
 | `createExpressServer(optionsJson, app)` | Owns the HTTP server around an existing Express app; enforcement precedes app parsers/effects and unsupported upgrade/CONNECT events reject |

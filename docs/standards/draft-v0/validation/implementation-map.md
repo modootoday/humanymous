@@ -69,8 +69,15 @@ safe `apache`, `dotnet`, `framework`, `go`, `native-abi` and `nginx` profiles re
 73 library units and strict all-target Clippy; four facade Go alias/profile tests
 are separate. Neither the package count nor these Rust checks establish actual
 hosts, completed exclusive export roles, loaders, packaging, native/cross-OS/CEF/
-assistive behavior or full-product conformance. Final facade/collector paths and
-other integration gates remain open.
+assistive behavior or full-product conformance. The isolated facade/collector
+paths now match the [eight-package developer map](../../../start-here/developer.md#isolated-final-path-map);
+live cutover and other integration gates remain open.
+
+Node's isolated host-test build and strict Clippy are compile-only, with separate
+positive/negative unsafe-boundary controls; no host, loader or capture producer
+is qualified. Meari 0.3 is a separate CPU candidate with 32 model tests and static
+checks, not the primary browser or an actual UI/accessibility/CEF result. Neither
+checkpoint changes the generic wire model or supplies full conformance evidence.
 
 The staged Tools assembly also implements an isolated offline Core API and CLI
 training route whose outputs are unsigned data. Five new offline units, a

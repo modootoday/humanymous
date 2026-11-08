@@ -108,11 +108,22 @@ In that isolated assembly, the safe-context profiles `apache`, `dotnet`,
 `framework`, `go`, `native-abi` and `nginx` passed strict all-target Clippy and
 73 library units. Separately, four facade Go alias/profile tests and strict
 checks passed. These are Rust component results, not actual Go/framework hosts,
-native export/loader qualification or registry availability. Final facade and
-collector paths, host exports/loaders, header-v2 and Node/Python packaging remain
+native export/loader qualification or registry availability. Facade and collector
+now occupy their intended paths in the isolated assembly, as shown in the
+[developer path map](../start-here/developer.md#isolated-final-path-map).
+Live cutover, host exports/loaders, header-v2 and Node/Python packaging remain
 unfinished, as do native, cross-OS, CEF, assistive-technology and product gates.
 Draft inventories are not executed-test denominators; unchanged external lock
 identities do not prove package verification or dependency-read closure.
+
+The isolated Node export profile now builds its host test binary without running
+it and passes strict library Clippy after the retained macro-boundary failure
+was corrected. Separate compiler controls cover six safe positive baselines,
+six expected unsafe-code refusals and one inherited-forbid refusal. These are
+compile-only results, not actual Node host, loader, capture or complete expansion
+qualification. The separate Meari 0.3 CPU candidate passed checks, strict Clippy
+and 32 default model tests; it has not replaced the primary pin or passed actual
+UI, IME, accessibility, DPI, shutdown or CEF validation.
 
 A first pure public-role data parser is implemented at source `2e9934fe`.
 Its scoped Windows component run passed 19 parser tests, with 79 other library

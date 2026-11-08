@@ -1,0 +1,94 @@
+{
+  "schema": "humanymous.pages-final8-code-public-scope/1",
+  "branch": "codex/rust",
+  "scope": "Ownedreaderprose/spec only; Rootprimary isolated assembly READONLY, no tooling/commonCargo/roadmapwrites",
+  "source_basis": "Rootcurrentprogram-roadmap finalfacade/collectorpaths, integratedNodecapsule and13compilercontrols; separateMeari030candidateCPUcheckpoint",
+  "final8_map": [
+    {
+      "package": "humanymous",
+      "isolated_path": "crates/sdk/humanymous",
+      "observed_manifest_sha256": "6dbfc3a0be53b593cd196c8dbfb14a9d907890b65ac4cb168deab895e4c9af72",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    },
+    {
+      "package": "humanymous-core",
+      "isolated_path": "crates/sdk/humanymous-core",
+      "observed_manifest_sha256": "de7c7f85d9e7d92f04f9d715c04360bbd1bc062dbbc4b367778c475675f38b1b",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    },
+    {
+      "package": "humanymous-runtime",
+      "isolated_path": "crates/sdk/humanymous-runtime",
+      "observed_manifest_sha256": "f43127602371c7bb1c1f3e25595170ce335c346c34ab046c2740f5ebb8093034",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    },
+    {
+      "package": "humanymous-platform",
+      "isolated_path": "crates/integrations/humanymous-platform",
+      "observed_manifest_sha256": "04a2677de1a1a54c31c550d7ec7503111bdacce71caa6c8a644f8c7e07e024d3",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    },
+    {
+      "package": "humanymous-collector",
+      "isolated_path": "crates/integrations/humanymous-collector",
+      "observed_manifest_sha256": "17c09991d49a443e8139230bad69da04fb7a93d50cfc3eedce645ba06ce0318f",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    },
+    {
+      "package": "humanymous-adapters",
+      "isolated_path": "crates/integrations/humanymous-adapters",
+      "observed_manifest_sha256": "f16125a5b1f6f3a3b8058e480027a41b9ca6c760cecbd56da0e701392284d463",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    },
+    {
+      "package": "humanymous-cli",
+      "isolated_path": "crates/apps/humanymous-cli",
+      "observed_manifest_sha256": "5745fc6e33446a84b259e04bdc01034ddd0c6147fd4d21e80c40c901de95c610",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    },
+    {
+      "package": "humanymous-browser",
+      "isolated_path": "crates/apps/humanymous-browser",
+      "observed_manifest_sha256": "53f54d23c396b63e5d22e1f10548b8bf246bf0037b58eb74b94adfdef779d0dd",
+      "reader_map": "docs/start-here/developer.md#isolated-final-path-map"
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "docs/start-here/developer.md",
+      "sha256": "ce28fda0b69f35ef89a34d9f5a62c31aceedc1130d07fcef10e5fe24948668ca",
+      "bytes": 4735
+    },
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "0743059cc5925208a1c61f9953c2f21eaa27792edf9851248e183496b137e042",
+      "bytes": 14371
+    },
+    {
+      "path": "docs/reference/node-adapter.md",
+      "sha256": "928e83e7bc2630ac5efefd322a29043f7863c0c7df1197b3beac69efeaf20b75",
+      "bytes": 11685
+    },
+    {
+      "path": "docs/reference/native-browser.md",
+      "sha256": "1ce04ff597e5bfa03ef97812653951ac9f5dd9604156a4292321aaf130cde656",
+      "bytes": 7797
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "7d65e35ee9028ad922dc5a0f12b6bfdc32fac8cfbaf1532be7a889b488060123",
+      "bytes": 18135
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "97f85279c29ccf25e8d781a9fb584681bc11b17a49a31df75b49c8a4506cafca",
+      "bytes": 20458
+    }
+  ],
+  "mapping_limits": "Manifesthashes are point-in-time read-only observations, not fullselected-source/readclosure or actualexecution receipts. Isolated8 notlivecutover/registry/productcompletion; live29workspace+4standalone retained.",
+  "node": "Primaryisolatedhosttestno-run/export-node strictClippy; executableNOTexecuted/loadercustodyNOTgranted. Reviewcopy13controls=6positive+6unsafe_code refusals+1forbidloweringE0453. Prior18E0453 andunusedHtmlHookstrictfailureretained. ObservationstubNOTadopted/cooperativecapturecandidateNOTproducer; fullgeneratedexpansionmatrix/host/capture/packaging/lifetimeopen",
+  "meari": "SEPARATE030CPUreviewcandidate3pins ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4;7familyupgrades/lockepochnotold634unchanged;native-uiall-targetcheck/strictClippy32defaultmodelpass. Primarypriorpinretained; graphnotrenderer/driver/actualUIIMEAXDPIshutdownCEFproof",
+  "checker": "Existingimmutablead04sourcechecker88pages/errors0; no fix ormeaningfulmissingregression established bythisprosediff; no artificialtests/toolingwrites",
+  "validation": "diffcheckpass; no newheavycompiler/runtime/Docker/browser/SDK/hostedallocation; allnewproseUNRENDERED",
+  "residual": "3137actual49assertions/selectedbrowserpass remainsboundedfullfalse9unavailable/workflowfailure. Latest-source render and realAT taskremainrequired."
+}

@@ -31,6 +31,32 @@ Runtime now lives at `crates/sdk/humanymous-runtime`. Its contextual features ar
 Features can enable required sibling contexts. Selecting a role does not qualify
 its native service, browser flow or deployment.
 
+## Isolated final-path map
+
+The isolated assembly has reached the following eight physical package paths.
+This map describes staged source ownership, not a live checkout cutover,
+registry publication or supported deployment matrix. Existing live-checkout
+commands below retain their own package and source scope.
+
+| Package | Isolated path | Responsibility |
+| --- | --- | --- |
+| `humanymous` | `crates/sdk/humanymous` | Curated facade and build profiles |
+| `humanymous-core` | `crates/sdk/humanymous-core` | Shared safe detection, integrity and model contexts |
+| `humanymous-runtime` | `crates/sdk/humanymous-runtime` | Gateway, authority, audit, capture and network contexts |
+| `humanymous-platform` | `crates/integrations/humanymous-platform` | Explicit testing and Windows object roles |
+| `humanymous-collector` | `crates/integrations/humanymous-collector` | Browser/WASM collection |
+| `humanymous-adapters` | `crates/integrations/humanymous-adapters` | Safe adapter contexts and separate host export roles |
+| `humanymous-cli` | `crates/apps/humanymous-cli` | Applications and qualification tools |
+| `humanymous-browser` | `crates/apps/humanymous-browser` | Native browser model, bootstrap and desktop roles |
+
+The isolated facade passed four selected profile tests and strict Clippy after
+its move. The isolated collector passed 26 library cases and one fixture contract,
+plus WASM checks and strict Clippy. Selected source-pin and panic-classifier
+consumer checks are separate from actual browser execution. Earlier snapshot
+gaps are not repaired retroactively by a later unchanged-input observation.
+
+## Contributing and checking a component
+
 Read the repository's contributor instructions before editing. Keep security
 decisions in the shared authority; adapters translate lifecycle events rather
 than copying policy or cryptography. Test exact bytes, invalid inputs and failure
