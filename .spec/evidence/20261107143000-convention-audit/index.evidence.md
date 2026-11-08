@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: ecf0eece6faed4a211b53267cb285639deebad5743bcd35d004630eac2a175cd, bytes: 135688, store: repo}
+  - {path: baseline.json, sha256: 6f85247dc9d0f3e75a317afc2f48769f983500512801ea3d3672db104acd489d, bytes: 136282, store: repo}
 ---
 
 # Convention audit baseline
@@ -2497,3 +2497,24 @@ observed cb9 adoption. All61 selector discovery and18 raw component results rema
 as previously bounded. Root explicitly confirms no full source-closure seal for
 those18; actual native actor/SCM/production loader and final recipe gates remain
 OPEN. Later formatting must not inherit the older exact candidate-byte observation.
+
+## Watchdog compiler artifact and source-name control re-audit
+
+Independent44fb9c02 follow-up reads actual tools-watchdog-artifact.jsonl and
+stderr. Exactly one cli-watchdog-boundary compiler record and build-finished
+success exist. Kind=test/profile.test=true, declared source is the CLI qualification
+watchdog test; actual executable1581056bytes matches SHA8c98f09b31cdb672b07e8c7c33cbdcdbe1521e6ef9a99c70e2cc281ebc76cd17.
+Observed features are default/runtime-service/runtime-service-pilot/service-pilot.
+Opaque package ID/member/target and normalized source path join the saved first
+Cargo metadata exactly. That metadata is historical, not a fresh final graph or
+production Packages::load execution. No feature recipe equality follows.
+
+Current controlled source uses cli_watchdog_boundary- and retains exact selector
+final_delivery_watchdog_with_retained_unread_pipes. Authored checks explicitly
+refuse the old prefix, wrong profile, short/uppercase hash, DLL and trailing suffix.
+Root's two unit passes and no-run argv remain owner-reported until separate raw/
+source/terminal evidence joins; compiler events independently establish artifact
+construction only. The watchdog body, native actor, SCM, containment and launcher
+authentication were not run/proved by this audit. Private
+watchdog-artifact-source-review-001.json hashes the observed evidence and records
+these limits. Build/artifact identity must not become process authority.

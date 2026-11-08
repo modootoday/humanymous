@@ -2449,5 +2449,14 @@
     "actual97_census_or_hosted_boundary": "NOT_RUN by audit",
     "goal_complete": false,
     "bytes": 2013
+  },
+  "watchdog_artifact_source_review": {
+    "goal_complete": false,
+    "scope": "Artifact construction and prefix source checks; watchdog body/native launcher/containment NOTRUN",
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/watchdog-artifact-source-review-001.json",
+    "bytes": 2510,
+    "metadata": "OpaqueID/member/target/src joins older actual metadata only",
+    "sha256": "f4d7081a9681b0f6391b0b81c888c6fe47b9c557f3a861f0e2e46b1f94a5f063",
+    "actual": "One test/profiletrue compiler artifact, build-finished success, actual1581056B/SHA8c98f09b matches"
   }
 }
