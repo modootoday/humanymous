@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-08T02:19:20Z
+updated: 2026-11-08T03:05:50Z
 files:
   - {path: native-selector-validation-summary.json, sha256: afc912e9f5877c6df843d816ba6a09a9ce4a8682c697e3e42356e87220f7fe08, bytes: 12855, store: repo}
   - {path: native-selector-scan-triage-source.json, sha256: 5b5bdd18c40b2c18032b1c888ee8e74759f0c0a024751acb22db5e0538315f6a, bytes: 2088, store: repo}
@@ -86,6 +86,12 @@ files:
   - {path: cli-consumer-candidate/service/catalog.rs, sha256: 745971f461d141662a6d19f1e6ba59488f581856df726c7af6668168ab7a69ce, bytes: 2731, store: repo}
   - {path: cli-consumer-candidate/native-cli-consumer.patch, sha256: 6d4ebfc83094c7e30a18656069a9218a2673295cf03ebd2c6365d4675ab82535, bytes: 34267, store: repo}
   - {path: cli-consumer-candidate/source-and-test-map.json, sha256: 9c0e006dc487d8160e15d321fcd250893e450624e53f2e8535ceb3f3b1cc2393, bytes: 43117, store: repo}
+  - {path: installation-pair-candidate/mod.rs, sha256: 858d69bbd8acc00432ac52fdc1846683a16f6d138e0db89fd7cb3d750b2f79a7, bytes: 2356, store: repo}
+  - {path: installation-pair-candidate/installation.rs, sha256: 1e5a99acd4b50c0749acad746f23e8abaf61258483d524cc4bd6898519fa8aea, bytes: 10454, store: repo}
+  - {path: installation-pair-candidate/pair.rs, sha256: 14508a0001175363feda23718bb5ceed9288e81c8f73b628f7c9add76e622fd3, bytes: 9857, store: repo}
+  - {path: installation-pair-candidate/windows_process.rs, sha256: b39b7bb8fa5fc857bd5208791649555df6b7a13f20ba35d400401743e65eebf5, bytes: 7920, store: repo}
+  - {path: installation-pair-candidate/windows_service.rs, sha256: 06da47ad9d4761d8d2d597a08720d644f3628d7ef2d6e95d0fb2d0e470096d80, bytes: 3855, store: repo}
+  - {path: installation-pair-candidate/source-inputs.json, sha256: 48e24ef101cbfdb209b4687a56d5b1e4fd8657285288f33c34c21b8b113d736f, bytes: 6510, store: repo}
 ---
 
 # Cross OS runner research

@@ -1,0 +1,167 @@
+{
+  "schema": "native-installation-pair-candidate-v1",
+  "status": "ACTUAL_RUST_SOURCE_NOT_COMPILED",
+  "observed_head": "c585587e94db2ba7fa150525c2281da5e00d8254",
+  "source_pin_scope": "selected current worktree files, not immutable whole graph",
+  "live_source_edits": false,
+  "compiler_executed": false,
+  "native_queries_executed": false,
+  "scm_account_key_mutation": false,
+  "new_unsafe_scopes": 0,
+  "candidate_files": [
+    {
+      "path": "mod.rs",
+      "sha256": "858d69bbd8acc00432ac52fdc1846683a16f6d138e0db89fd7cb3d750b2f79a7",
+      "bytes": 2356,
+      "proposed_runtime_path": "crates/sdk/humanymous-runtime/src/native_security/process/observer/mod.rs",
+      "destination_exists": false,
+      "test_functions": [
+        "observation_clock_has_no_zero_or_oversize_profile"
+      ]
+    },
+    {
+      "path": "installation.rs",
+      "sha256": "1e5a99acd4b50c0749acad746f23e8abaf61258483d524cc4bd6898519fa8aea",
+      "bytes": 10454,
+      "proposed_runtime_path": "crates/sdk/humanymous-runtime/src/native_security/process/observer/installation.rs",
+      "destination_exists": false,
+      "test_functions": []
+    },
+    {
+      "path": "pair.rs",
+      "sha256": "14508a0001175363feda23718bb5ceed9288e81c8f73b628f7c9add76e622fd3",
+      "bytes": 9857,
+      "proposed_runtime_path": "crates/sdk/humanymous-runtime/src/native_security/process/observer/pair.rs",
+      "destination_exists": false,
+      "test_functions": [
+        "all_six_edges_have_distinct_fixed_directions",
+        "exact_query_descriptors_refuse_termination_rights_and_missing_peer"
+      ]
+    },
+    {
+      "path": "windows_process.rs",
+      "sha256": "b39b7bb8fa5fc857bd5208791649555df6b7a13f20ba35d400401743e65eebf5",
+      "bytes": 7920,
+      "proposed_runtime_path": "crates/sdk/humanymous-runtime/src/native_security/process/observer/windows_process.rs",
+      "destination_exists": false,
+      "test_functions": [
+        "zero_locator_is_rejected_without_native_open",
+        "expired_original_deadline_is_not_restarted",
+        "actual_self_observation_retains_handle_and_rechecks_primary_token"
+      ]
+    },
+    {
+      "path": "windows_service.rs",
+      "sha256": "06da47ad9d4761d8d2d597a08720d644f3628d7ef2d6e95d0fb2d0e470096d80",
+      "bytes": 3855,
+      "proposed_runtime_path": "crates/sdk/humanymous-runtime/src/native_security/process/observer/windows_service.rs",
+      "destination_exists": false,
+      "test_functions": []
+    }
+  ],
+  "current_runtime_preimages": [
+    {
+      "path": "crates/sdk/humanymous-runtime/src/native_security/process/mod.rs",
+      "sha256": "63c57f28da3d2fcca691a6f22558766791bee6f6e2c79f0cd172a88a8d28c3ec",
+      "bytes": 1943
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/native_security/process/windows.rs",
+      "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+      "bytes": 3263
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/native_security/storage/mod.rs",
+      "sha256": "9ee30f1a1dfb291b1d88b5ce20f3d306c2f9e2039a309e0a525f0bd308f97701",
+      "bytes": 858
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/native_security/storage/windows.rs",
+      "sha256": "7ea826ded7b6671579d13b34116061a397c76ffd8b61ccea98a4388c6282885f",
+      "bytes": 9227
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/native_security/storage/service.rs",
+      "sha256": "531fe452ba2e074a92332e27bf4d3b6d2004870399d914e9ff586048d22d508a",
+      "bytes": 10786
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/native_security/volume/mod.rs",
+      "sha256": "76965bc9ecf7e4c5f528f91dad8f6aa1c71fe8a85e5af454e6d278f20fc10956",
+      "bytes": 1402
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/authority/startup/observer.rs",
+      "sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806",
+      "bytes": 3587
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/Cargo.toml",
+      "sha256": "c2c174b6e4a71b72637ca62958b4378ab68b22ef179886a682406c8bafb9bbd7",
+      "bytes": 6022
+    },
+    {
+      "path": "crates/integrations/humanymous-platform/src/windows_object/mod.rs",
+      "sha256": "102016dc8c1a4a08cdd57b5fb2e55db09f3daaeda31eb4a85d184994c26c260e",
+      "bytes": 4748
+    }
+  ],
+  "reused_leaves": [
+    {
+      "path": ".spec\\evidence\\20261106223747-cross-os-runner-research\\observer-producer-candidate\\windows_process.rs",
+      "source_commit": "a7286fab82ee9b59bcfc557c4489cc040a9892ba",
+      "sha256": "e38d70e92431e4c0d54f0642bb1ceb326ab604b0d9f26528246a1812b62327f5"
+    },
+    {
+      "path": ".spec\\evidence\\20261106223747-cross-os-runner-research\\observer-producer-candidate\\windows_service.rs",
+      "source_commit": "a7286fab82ee9b59bcfc557c4489cc040a9892ba",
+      "sha256": "06da47ad9d4761d8d2d597a08720d644f3628d7ef2d6e95d0fb2d0e470096d80"
+    }
+  ],
+  "upstream_api_inputs": [
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/kernel/traits.rs",
+      "sha256": "f7407754377c56c1d63fc5d8a11ad8dd24a614224873640390c834405cccbd4d",
+      "bytes": 4955
+    },
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/kernel/co/consts.rs",
+      "sha256": "6a1824b90e4da408f23e30d77e19ba4fa555cb535148010c3bd954740cac238f",
+      "bytes": 48462
+    },
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/advapi/handles/hprocess.rs",
+      "sha256": "f13b2c1f2a39b624b8e97582c0f069a7b9d9a5a093c89515198f58e3fe5509fc",
+      "bytes": 977
+    },
+    {
+      "registry_relative_path": "windows-permissions-0.2.4/src/wrappers/get_security_info.rs",
+      "sha256": "7eda343e17073b855dbe61a1560c629b9aa1e24493b52bd4d1ae7d7eac69e136",
+      "bytes": 1297
+    },
+    {
+      "registry_relative_path": "windows-permissions-0.2.4/src/constants.rs",
+      "sha256": "55aea842d2847f0de4950f160cbf1f441525ded659e03b52a2666ca6339e9ed0",
+      "bytes": 8748
+    },
+    {
+      "registry_relative_path": "windows-service-0.8.1/src/service.rs",
+      "sha256": "e368f590111dc3532c409f6b11a57401cf31e273562ef1087107c9dd47b8754f",
+      "bytes": 76984
+    }
+  ],
+  "required_directed_edges": [
+    "P->S",
+    "S->P",
+    "P->O",
+    "O->P",
+    "S->O",
+    "O->S"
+  ],
+  "process_query_mask": "0x00121000",
+  "token_query_mask": "0x00020008",
+  "original_installer_admission": "Unsupported: no original installer producer",
+  "namespace_admission": "Unsupported: no held provider/ancestor admission",
+  "native_proof_or_ready": "NOT_IMPLEMENTED",
+  "b1_bridge": "PROPOSAL_ONLY_UNAPPROVED"
+}
