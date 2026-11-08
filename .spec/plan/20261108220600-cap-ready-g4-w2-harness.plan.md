@@ -3,7 +3,7 @@ id: plan:root/20261108220600-cap-ready-g4-w2-harness
 title: Cap-ready G4/W2 harness prep (unlock→Cap burn shortener)
 status: active
 created: 2026-11-08T13:06:00Z
-updated: 2026-11-08T13:32:00Z
+updated: 2026-11-08T13:40:00Z
 rel:
   depends_on:
     - plan:root/20261108220000-post-g4-w2-residual-root-ask
@@ -16,32 +16,39 @@ rel:
 
 # Cap-ready G4 / W2 H2 harness prep
 
-Brief: Wake-check still blocked (no G4 path release, no W2 H2 product-binding).
-Cap free. product=0. This plan mirrors Cap-ready checklists so one Cap can run
-when Root allocates — **not** another idle ROOT-ASK, **not** Cap spam, **not**
-`pass_product_clean_room`. Detection freeze.
+Brief: Wake-check still blocked at tip `28a1b1f5` (no G4 path release, no W2 H2
+product-binding, authority Cap still `blocked_claim`). Cap free. product=0.
+This plan mirrors Cap-ready checklists so one Cap can run when Root allocates —
+**not** Cap spam, **not** `pass_product_clean_room`. Detection freeze.
 
 Private full receipts (gitignored):  
 `.spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/`
 
+Unlock C candidate TRANSFER (this turn):  
+`…/cap-ready/authority-node-ipc/candidate-pack/TRANSFER.md`
+
 ## 1. Problem
 
-Prior turn filed consolidated ROOT-ASK at `865a1051`. No Root/Codex commits
-beyond that tip. Remaining product closers stay Root-blocked. Cap free alone
-cannot close product. Next Cursor value is prep that shortens unlock→Cap burn.
+No Root/Codex unlock commits beyond tip `28a1b1f5`. Remaining product closers
+stay Root-blocked. Cap free alone cannot close product. Next Cursor value while
+blocked is Unlock C **reviewable candidate diffs** Root can transfer — not idle
+ROOT-ASK re-push and not Cap spam.
 
 ## 2. Decision rules
 
 R-CR1. **No Cap burn this turn.** Cap conserved for structural delta after wake.
 
-R-CR2. **No idle ROOT-ASK re-push.** Ask text already filed; do not Cap-spam or
-re-broadcast the same ask without new evidence.
+R-CR2. **No idle ROOT-ASK re-push.** Ask text already filed; point Root at new
+candidate-pack instead of rebroadcasting the same ask alone.
 
 R-CR3. **Cap-ready packs only.** Exact preflight, command preimages, env,
-fail-closed expects, and forbidden reburns for W2 and G4.
+fail-closed expects, and forbidden reburns for W2, G4, and authority Cap.
 
 R-CR4. **Honesty.** Never invent readiness `original_h2` lift, matrix
 `pass_product*`, or BrowserReady from component green.
+
+R-CR5. **Candidates out of live paths** until Root allocates + transfers
+matching preimages.
 
 ## 3. W2 H2 product-binding Cap-ready (summary)
 
@@ -95,26 +102,40 @@ Cap=1 when unlocked:
 
 ## 5. Verification (this turn)
 
-- Private Cap-ready packs authored under claimed evidence path.
-- This tracked plan mirrors command/env/fail-closed preimages for Root review.
+- Private Cap-ready packs under claimed evidence path.
+- Unlock C **candidate-pack** authored: INTEGRATION Cap exception, freeze
+  allowlist deltas, Dockerfile notes, authority Cap sketch, TRANSFER.md with
+  preimage hashes — **not** live-applied.
+- This tracked plan mirrors Root review pointers.
 - Cap burn=0. product=0. Matrix untouched. No `pass_product_clean_room`.
 
-## 6. Authority Cap-ready (unlock C; added 2026-11-08T13:32:00Z)
+## 6. Authority Cap-ready (unlock C)
 
-Tip `222d7f26`: `--authority-node-ipc` is `blocked_claim` (EXIT 1 before Docker).
-Private pack: `cap-ready/authority-node-ipc/`. Exact Root paths:
-`deployments/lab/INTEGRATION.md`, `deployments/lab/authority/**`,
-`build/rust/authority-lab.Dockerfile` (+ dockerignore),
-`test/lab/runner/src/snapshot.rs`, optional `adapters/node/src/**`,
-optional `crates/authority/**`. Authority Cap green alone ≠ product.
+Tip `28a1b1f5`: `--authority-node-ipc` is `blocked_claim` (EXIT 1 before Docker).
+Private pack: `cap-ready/authority-node-ipc/`.
+
+**Candidate pack (reviewable diffs for Root transfer):**  
+`cap-ready/authority-node-ipc/candidate-pack/` (`TRANSFER.md`,
+`transfer-manifest.json`, `candidate/**`, `patches/`, `notes/`).
+
+Exact Root paths (from TRANSFER):
+
+- `deployments/lab/INTEGRATION.md` (host-exec forbid; Cap Docker authorize)
+- `deployments/lab/authority/**` (contract + Path A/B notes; freeze inputs)
+- `build/rust/authority-lab.Dockerfile` (+ dockerignore)
+- `test/lab/runner/src/snapshot.rs` freeze allowlist
+- `test/lab/runner/src/orchestration.rs` + new `orchestration/authority.rs`
+- optional `adapters/node/src/**`, optional `crates/authority/**` (Path B)
+
+Authority Cap green alone ≠ product.
 
 ## 7. Residual / next gap
 
 | If | Then |
 | --- | --- |
-| Root allocates A G4, B W2, or C authority + path release | Cursor Cap=1 executes matching pack; honest receipts |
-| Still blocked | Hold Cap free; do not reburn feeders; do not idle-repeat ROOT-ASK |
+| Root transfers Unlock C candidate-pack (or A/B unlock) | Cursor Cap=1 executes matching pack; honest receipts |
+| Still blocked | Hold Cap free; do not reburn feeders; point at TRANSFER.md |
 
-Exact next Root ask: allocate **any one** of A/B/C (see
-`plan:root/20261108220000-post-g4-w2-residual-root-ask`); then release exact
-paths for Cap=1. Live Codex Root may execute without Cursor inventing ownership.
+Exact next Root ask: review `candidate-pack/TRANSFER.md` and allocate **any one**
+of A/B/C; then release exact paths for Cap=1. Prefer Cap burn over more docs if
+unlocked. Live Codex Root may execute without Cursor inventing ownership.
