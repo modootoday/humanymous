@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T17:12:00Z
+updated: 2026-11-08T17:20:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -35,7 +35,7 @@ Unlock **A**: Cap realloc Desktop baseline + host-only cleanup + Cap=1
 | # | Closer | Result |
 | --- | --- | --- |
 | 1 | Unlock B / G1 W2 H2 product-binding | **Cap EXIT 0 Desktop measure** @ `4a5d0135` — `original_h2_measured=true` from validated TLS listen+client receipt; `counts_as=pass_component_desktop_measure`; product=0; **not** hosted / **not** N06 join |
-| 2 | N06 readiness / owner join | **open (Cap=0)** — hosted Cap EXIT0 component @ run **42500919761**; Cursor `--n06-owner-join-readiness` binds receipt → readiness (`n06_owner_join=false`); Root auth handoff absent; no invent join |
+| 2 | N06 readiness / owner join | **open (Cap=0)** — hosted Cap EXIT0 component @ run **42500919761** + Unlock A Cap EXIT0 @ `8f8a128d` bound into Cursor `--n06-owner-join-readiness` → readiness (`n06_owner_join=false`; Cap free=false; BrowserReady=false); Root auth handoff absent; no invent join / BrowserReady |
 | 3 | Unlock A / G4 CEF/AT | **Cap realloc + Cap=1 EXIT0** — Desktop baseline + host-only Cap cleanup; Cap CLI `--g4-cef-at` with `HUMANYMOUS_CEF_PILOT_BUNDLE` + `HUMANYMOUS_DOCKER_DESKTOP_BASELINE`; `g4_cef_at` **executed**; cleanup_passed (evidence `20261109020800`); Cap free=**false**; BrowserReady=false; product=0; no invent CEF binary / `pass_product` |
 
 ## 2. Decision rules
@@ -93,9 +93,12 @@ gateway/lab-runner Cap surfaces.
 
 ## 5. Residual / next
 
-Unlock A Cap **spent** (free=false) after Desktop-baseline Cap burn EXIT0.
-BrowserReady remains false (interactive AT Root-gated). N06 owner join Cap=0
-until Root auth. No hosted/W2/authority Cap reburn without structural delta.
+Unlock A Cap **spent** (free=false) after Desktop-baseline Cap burn EXIT0 @
+`8f8a128d`. Matrix A/B/C remapped earned-only component cells; M3/product
+unavailable; BrowserReady remains false (interactive AT Root-gated; no non-Cap
+structural invent). N06 owner join Cap=0 binds hosted Cap EXIT0 + Unlock A
+EXIT0 status until Root auth. No hosted/W2/authority/A Cap reburn without
+structural delta. Cap free=**false**.
 
 Next Root-gated / Cap-conserving closer:
 
@@ -103,5 +106,6 @@ Next Root-gated / Cap-conserving closer:
 2. Else Root N06 owner-integration auth handoff + exact path release
    (`configuration.rs` / `service/readiness.rs` / `application.rs`)
 
-Never invent `pass_product_clean_room`, CEF binary, `desktop_as_hosted`, or Root
-ownership tokens. Capture `observe_h2` still forbidden as product-binding.
+Never invent `pass_product_clean_room`, CEF binary, `desktop_as_hosted`,
+BrowserReady, or Root ownership tokens. Capture `observe_h2` still forbidden as
+product-binding.

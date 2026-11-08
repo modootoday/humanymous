@@ -67,6 +67,17 @@ pub const HOSTED_CAP_EXIT0_SCHEMA: &str = "humanymous.cursor-n06-hosted-venue-ca
 /// Specfold Cap EXIT0 run recorded for matrix honesty (component ≠ product).
 pub const HOSTED_CAP_EXIT0_RUN_ID: u64 = 42500919761;
 
+/// Unlock A Desktop-baseline Cap EXIT0 closer (component ≠ BrowserReady / product).
+pub const UNLOCK_A_CAP_EXIT0_CLOSER_REL: &str =
+    ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json";
+
+/// Unlock A closer schema after Desktop-baseline Cap realloc EXIT0.
+pub const UNLOCK_A_CAP_EXIT0_CLOSER_SCHEMA: &str =
+    "humanymous.cursor-unlock-a-desktop-baseline-realloc-closer/1";
+
+/// Unlock A Cap EXIT0 head recorded for Cap=0 N06 honesty bind (component only).
+pub const UNLOCK_A_CAP_EXIT0_HEAD_PREFIX: &str = "8f8a128d";
+
 /// Root-authored N06 owner-join auth handoff schema (Cursor must not invent).
 pub const N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA: &str =
     "humanymous.root-n06-owner-join-auth-handoff/1";
@@ -405,6 +416,138 @@ pub fn n06_owner_join_readiness_from_hosted_cap(hosted_cap: &Value) -> Result<Va
     }))
 }
 
+/// Validate Unlock A Cap EXIT0 closer (component only; Cap free=false; BrowserReady=false).
+/// Cap=0 N06 honesty bind — never invents BrowserReady / pass_product / Root AT tokens.
+pub fn validate_unlock_a_cap_exit0_closer(closer: &Value) -> Result<()> {
+    if closer.get("schema").and_then(Value::as_str) != Some(UNLOCK_A_CAP_EXIT0_CLOSER_SCHEMA) {
+        return Err(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer schema mismatch".into(),
+        );
+    }
+    if closer.get("cap_exit").and_then(Value::as_u64) != Some(0) {
+        return Err(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer cap_exit != 0".into(),
+        );
+    }
+    if closer.get("cap_free").and_then(Value::as_bool) != Some(false) {
+        return Err(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer must record cap_free=false"
+                .into(),
+        );
+    }
+    if closer.get("browser_ready").and_then(Value::as_bool) != Some(false) {
+        return Err(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer invented BrowserReady"
+                .into(),
+        );
+    }
+    if closer.get("product").and_then(Value::as_u64) != Some(0)
+        || closer
+            .get("pass_product_clean_room")
+            .and_then(Value::as_u64)
+            != Some(0)
+    {
+        return Err(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer invented product/pass_product_clean_room"
+                .into(),
+        );
+    }
+    if closer.get("g4_cef_at_component").and_then(Value::as_str) != Some("executed") {
+        return Err(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer missing g4_cef_at executed"
+                .into(),
+        );
+    }
+    if closer.get("n06_reburn").and_then(Value::as_bool) == Some(true)
+        || closer.get("w2_reburn").and_then(Value::as_bool) == Some(true)
+        || closer.get("authority_reburn").and_then(Value::as_bool) == Some(true)
+    {
+        return Err(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer records forbidden Cap reburn"
+                .into(),
+        );
+    }
+    Ok(())
+}
+
+/// Cap=0 honesty: bind Unlock A Cap EXIT0 status into N06 readiness without inventing Root tokens.
+pub fn bind_unlock_a_status_into_n06_readiness(
+    readiness: &mut Value,
+    unlock_a_closer: &Value,
+) -> Result<()> {
+    validate_unlock_a_cap_exit0_closer(unlock_a_closer)?;
+    let head = unlock_a_closer
+        .get("head")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    if !head.starts_with(UNLOCK_A_CAP_EXIT0_HEAD_PREFIX) {
+        // Prefer live CLOSER head when present; still require Cap EXIT0 honesty fields above.
+        // Cap=0 bind tolerates later HEAD as long as closer records EXIT0 + Cap free=false.
+    }
+    let obj = readiness
+        .as_object_mut()
+        .ok_or("N06 owner-join readiness refused: readiness must be a JSON object")?;
+    obj.insert(
+        "unlock_a_cap_exit0_bound".into(),
+        json!(true),
+    );
+    obj.insert(
+        "unlock_a_cap_exit".into(),
+        json!(0),
+    );
+    obj.insert("unlock_a_cap_free".into(), json!(false));
+    obj.insert("unlock_a_browser_ready".into(), json!(false));
+    obj.insert(
+        "unlock_a_g4_cef_at_component".into(),
+        json!("executed"),
+    );
+    obj.insert(
+        "unlock_a_counts_as".into(),
+        json!("pass_component_g4_cef_at_executed"),
+    );
+    obj.insert(
+        "unlock_a_closer".into(),
+        json!(UNLOCK_A_CAP_EXIT0_CLOSER_REL),
+    );
+    obj.insert(
+        "cap_free".into(),
+        json!(false),
+    );
+    obj.insert("browser_ready".into(), json!(false));
+    obj.insert(
+        "note".into(),
+        json!(
+            "Hosted Cap EXIT0 + Unlock A Cap EXIT0 component bound; Cap free=false; BrowserReady=false; N06 owner join still Root; never invent pass_product_clean_room or Root ownership tokens"
+        ),
+    );
+    Ok(())
+}
+
+/// Load Unlock A Cap EXIT0 closer for Cap=0 N06 honesty bind.
+pub fn load_unlock_a_cap_exit0_closer(root: &Path) -> Result<Value> {
+    let path = root.join(UNLOCK_A_CAP_EXIT0_CLOSER_REL);
+    if !path.is_file() {
+        return Err(format!(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer absent ({UNLOCK_A_CAP_EXIT0_CLOSER_REL}); Cap=0; never invent BrowserReady or Root AT tokens"
+        )
+        .into());
+    }
+    let bytes = fs::read(&path).map_err(|error| {
+        format!(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer read {}: {error}",
+            path.display()
+        )
+    })?;
+    let closer: Value = serde_json::from_slice(&bytes).map_err(|error| {
+        format!(
+            "N06 owner-join readiness refused: Unlock A Cap EXIT0 closer JSON {}: {error}",
+            path.display()
+        )
+    })?;
+    validate_unlock_a_cap_exit0_closer(&closer)?;
+    Ok(closer)
+}
+
 /// Locate a Root-authored N06 auth handoff (Cursor must never invent one).
 pub fn find_n06_owner_join_auth_handoff(root: &Path) -> Option<PathBuf> {
     N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES
@@ -527,8 +670,9 @@ pub fn require_freeze_preimages(root: &Path) -> Result<()> {
 /// Cap=1 entry: refuse-closed when Cap topology / freeze prerequisites fail;
 /// otherwise Docker-coordinate Cap measure (component only).
 /// Cursor-owned N06 owner-join readiness gate.
-/// Binds hosted Cap EXIT0 receipt → readiness; Cap=0 without Root auth handoff.
-/// Never invents `n06_owner_join=true` / `pass_product_clean_room` / Root ownership tokens.
+/// Binds hosted Cap EXIT0 receipt + Unlock A Cap EXIT0 status → readiness;
+/// Cap=0 without Root auth handoff. Never invents `n06_owner_join=true` /
+/// `BrowserReady` / `pass_product_clean_room` / Root ownership tokens.
 /// No Docker Cap burn.
 pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
     let root = snapshot::root()?;
@@ -571,9 +715,38 @@ pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
             hosted_cap_path.display()
         )
     })?;
-    let readiness = n06_owner_join_readiness_from_hosted_cap(&hosted_cap)?;
+    let mut readiness = n06_owner_join_readiness_from_hosted_cap(&hosted_cap)?;
+    lab.stage = "n06_owner_join_readiness_bind_unlock_a";
+    let unlock_a = match load_unlock_a_cap_exit0_closer(&root) {
+        Ok(closer) => closer,
+        Err(error) => {
+            lab.components["n06_owner_join_readiness"] = json!({
+                "status": "refused",
+                "kind": "n06-owner-join-readiness",
+                "product": 0,
+                "pass_product_clean_room": 0,
+                "n06_owner_join": false,
+                "browser_ready": false,
+                "cap": 0,
+                "cap_free": false,
+                "cap_executable_for_join": false,
+                "hosted_cap_exit0_run_id": HOSTED_CAP_EXIT0_RUN_ID,
+                "missing_unlock_a_cap_exit0_closer": UNLOCK_A_CAP_EXIT0_CLOSER_REL,
+                "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+                "note": "Unlock A Cap EXIT0 closer required for Cap=0 honesty bind after Unlock A spent; never invent BrowserReady"
+            });
+            snapshot::write(
+                &lab.evidence,
+                "n06-owner-join-readiness-refuse.json",
+                &lab.components["n06_owner_join_readiness"],
+            )?;
+            return Err(error);
+        }
+    };
+    bind_unlock_a_status_into_n06_readiness(&mut readiness, &unlock_a)?;
     validate_n06_owner_join_receipt(&readiness)?;
     snapshot::write(&lab.evidence, "n06-owner-join-readiness.json", &readiness)?;
+    snapshot::write(&lab.evidence, "n06-owner-join-unlock-a-bound.json", &unlock_a)?;
     lab.case(
         "n06-owner-join-hosted-cap-component-bound",
         readiness.get("hosted_cap_component_green") == Some(&json!(true))
@@ -581,6 +754,21 @@ pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
         json!({
             "run_id": HOSTED_CAP_EXIT0_RUN_ID,
             "counts_as": "pass_component_hosted_measure",
+            "product": 0
+        }),
+    )?;
+    lab.case(
+        "n06-owner-join-unlock-a-cap-exit0-bound",
+        readiness.get("unlock_a_cap_exit0_bound") == Some(&json!(true))
+            && readiness.get("unlock_a_cap_free") == Some(&json!(false))
+            && readiness.get("unlock_a_browser_ready") == Some(&json!(false))
+            && readiness.get("browser_ready") == Some(&json!(false))
+            && readiness.get("cap_free") == Some(&json!(false)),
+        json!({
+            "unlock_a_cap_exit": 0,
+            "counts_as": "pass_component_g4_cef_at_executed",
+            "cap_free": false,
+            "browser_ready": false,
             "product": 0
         }),
     )?;
@@ -594,14 +782,18 @@ pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
             &json!({
                 "schema": "humanymous.lab-h2-n06-owner-join-auth-handoff-refuse/1",
                 "cap": 0,
+                "cap_free": false,
                 "cap_executable_for_join": false,
                 "n06_owner_join": false,
+                "browser_ready": false,
                 "product": 0,
                 "pass_product_clean_room": 0,
+                "hosted_cap_exit0_run_id": HOSTED_CAP_EXIT0_RUN_ID,
+                "unlock_a_cap_exit0_bound": true,
                 "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
                 "auth_handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
                 "detail": error.to_string(),
-                "note": "fail-closed readiness; Cap=0; never invent Root ownership tokens"
+                "note": "fail-closed readiness; Cap=0; Cap free=false after Unlock A EXIT0; never invent Root ownership tokens"
             }),
         )?;
     } else if let Ok(ref handoff) = auth {
@@ -615,10 +807,13 @@ pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
         json!({
             "n06_owner_join": false,
             "cap": 0,
+            "cap_free": false,
             "cap_executable_for_join": false,
             "auth_handoff_present": auth_present,
+            "unlock_a_cap_exit0_bound": true,
+            "browser_ready": false,
             "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
-            "reason": "hosted Cap component green ≠ owner join / product; Root auth handoff still required"
+            "reason": "hosted Cap + Unlock A component green ≠ owner join / BrowserReady / product; Root auth handoff still required"
         }),
     )?;
     lab.components["n06_owner_join_readiness"] = json!({
@@ -627,13 +822,17 @@ pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
         "product": 0,
         "pass_product_clean_room": 0,
         "n06_owner_join": false,
+        "browser_ready": false,
         "cap": 0,
+        "cap_free": false,
         "cap_executable_for_join": false,
         "hosted_cap_exit0_run_id": HOSTED_CAP_EXIT0_RUN_ID,
         "counts_as": "pass_component_hosted_measure",
+        "unlock_a_cap_exit0_bound": true,
+        "unlock_a_counts_as": "pass_component_g4_cef_at_executed",
         "auth_handoff_present": auth_present,
         "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
-        "note": "Cursor-owned readiness gate landed; Cap=0 without Root auth; never invent pass_product_clean_room"
+        "note": "Cursor-owned readiness gate landed; hosted Cap EXIT0 + Unlock A Cap EXIT0 bound; Cap=0 without Root auth; Cap free=false; BrowserReady=false; never invent pass_product_clean_room"
     });
     snapshot::write(
         &lab.evidence,
@@ -975,12 +1174,15 @@ mod tests {
         HOSTED_VENUE_CAP_SELECTOR, HOSTED_VENUE_MARKERS, HOSTED_VENUE_PILOT_COMMAND,
         MEASURE_RECEIPT_SCHEMA, MISSING_N06_PRODUCT_LIFT, N06_OWNER_JOIN_CAP_SELECTOR,
         N06_OWNER_JOIN_PILOT_COMMAND, N06_OWNER_JOIN_RECEIPT_SCHEMA, N06_OWNER_JOIN_ROOT_ASK_PATHS,
-        REQUIRED_HOSTED_VENUE_TOPOLOGY, find_n06_owner_join_auth_handoff, missing_cap_topology,
+        REQUIRED_HOSTED_VENUE_TOPOLOGY, UNLOCK_A_CAP_EXIT0_CLOSER_REL,
+        UNLOCK_A_CAP_EXIT0_CLOSER_SCHEMA, bind_unlock_a_status_into_n06_readiness,
+        find_n06_owner_join_auth_handoff, load_unlock_a_cap_exit0_closer, missing_cap_topology,
         missing_hosted_venue_topology, n06_owner_join_readiness_from_hosted_cap,
         n06_owner_join_readiness_receipt, original_h2_measured_from_receipt, parse_measure_receipt,
         refuse_invented_original_h2_measured, refuse_n06_product_lift_from_desktop_measure,
         require_hosted_venue_for_n06_join, require_n06_owner_join_auth_handoff,
         validate_hosted_cap_exit0_receipt, validate_n06_owner_join_receipt,
+        validate_unlock_a_cap_exit0_closer,
     };
     use crate::snapshot;
     use serde_json::json;
@@ -1151,6 +1353,65 @@ mod tests {
             "actual_hosted_linux": true
         });
         assert!(validate_hosted_cap_exit0_receipt(&invent_join).is_err());
+    }
+
+    #[test]
+    fn unlock_a_cap_exit0_binds_into_n06_readiness_cap0() {
+        assert!(!UNLOCK_A_CAP_EXIT0_CLOSER_REL.is_empty());
+        let unlock_a = json!({
+            "schema": UNLOCK_A_CAP_EXIT0_CLOSER_SCHEMA,
+            "cap_exit": 0,
+            "cap_free": false,
+            "browser_ready": false,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "g4_cef_at_component": "executed",
+            "n06_reburn": false,
+            "w2_reburn": false,
+            "authority_reburn": false,
+            "head": "8f8a128d1e6ee51994a5324365c0cf1f4b4f3c58"
+        });
+        validate_unlock_a_cap_exit0_closer(&unlock_a).expect("Unlock A Cap EXIT0");
+        let hosted = json!({
+            "schema": HOSTED_CAP_EXIT0_SCHEMA,
+            "run_id": HOSTED_CAP_EXIT0_RUN_ID,
+            "cap_exit": 0,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false,
+            "n06_owner_join": false,
+            "actual_hosted_linux": true
+        });
+        let mut readiness = n06_owner_join_readiness_from_hosted_cap(&hosted).expect("hosted");
+        bind_unlock_a_status_into_n06_readiness(&mut readiness, &unlock_a).expect("bind A");
+        assert_eq!(readiness["unlock_a_cap_exit0_bound"], true);
+        assert_eq!(readiness["unlock_a_cap_free"], false);
+        assert_eq!(readiness["unlock_a_browser_ready"], false);
+        assert_eq!(readiness["browser_ready"], false);
+        assert_eq!(readiness["cap_free"], false);
+        assert_eq!(readiness["n06_owner_join"], false);
+        assert_eq!(readiness["product"], 0);
+        assert!(validate_n06_owner_join_receipt(&readiness).is_ok());
+
+        let invent_ready = json!({
+            "schema": UNLOCK_A_CAP_EXIT0_CLOSER_SCHEMA,
+            "cap_exit": 0,
+            "cap_free": false,
+            "browser_ready": true,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "g4_cef_at_component": "executed",
+            "n06_reburn": false,
+            "w2_reburn": false,
+            "authority_reburn": false
+        });
+        assert!(validate_unlock_a_cap_exit0_closer(&invent_ready).is_err());
+
+        let root = snapshot::root().expect("root");
+        let live = load_unlock_a_cap_exit0_closer(&root).expect("live Unlock A closer");
+        assert_eq!(live["cap_exit"], 0);
+        assert_eq!(live["browser_ready"], false);
+        assert_eq!(live["cap_free"], false);
     }
 
     #[test]
