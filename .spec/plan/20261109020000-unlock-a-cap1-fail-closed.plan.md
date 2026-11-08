@@ -83,8 +83,10 @@ structural feeder** landed (Cap CLI scaffold + Cap-ready topology pack;
 `20261109030000-g2-collector-product-binding-cap-ready.plan.md`.
 
 **Decision: `hard_stop_root_ask` for AUTH/AT** remains; tip-reconfirm @
-`e54c51e6` AUTH/AT still absent (no duplicate CONSOLIDATED-ROOT-ASK). Cap=1
-still forbidden while Cap free=false without Cap realloc + live G2 Cap topology
+`e54c51e6` AUTH/AT still absent (no duplicate CONSOLIDATED-ROOT-ASK). Cap=0 G2
+TRANSFER helper landed (`transfer-applicator` UnlockLetter::G2 +
+`ROOT-ONE-STEP.md`; probe ready=true; live topology still Root). Cap=1 still
+forbidden while Cap free=false without Cap realloc + live G2 Cap topology
 TRANSFER. product=0.
 
 1. Root places `AUTH-HANDOFF.json` schema

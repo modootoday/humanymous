@@ -107,10 +107,12 @@ hosted/W2/authority/A Cap reburn without structural delta. Cap free=**false**.
 
 **Decision @ `e38ce6c5` tip audit: `hard_stop_root_ask` for AUTH/AT.** Cap=0
 honesty CLIs remain closed. Cap=0 **G2 Cap CLI Cap-ready structural feeder**
-landed @ tip `8a129ab7`+ (Cap CLI `--g2-collector-product-binding` scaffold +
-Cap-ready topology pack; Cap realloc **eligible** not executed; Cap free still
-**false**; Cap burn=0). Cap=1 forbidden while Cap free=false without Cap
-realloc + live Cap topology TRANSFER. Do not duplicate CONSOLIDATED-ROOT-ASK.
+landed @ tip `76819bb4`+ (Cap CLI `--g2-collector-product-binding` scaffold +
+Cap-ready topology pack + Cap=0 G2 transfer-probe/apply helper /
+`ROOT-ONE-STEP.md`; Cap realloc **eligible** not executed; Cap free still
+**false**; Cap burn=0; scope=`root_transfer_required`). Cap=1 forbidden while
+Cap free=false without Cap realloc + live Cap topology TRANSFER. Do not
+duplicate CONSOLIDATED-ROOT-ASK.
 
 Cap=0 CONSOLIDATED-ROOT-ASK (supersedes Cap-free-era packet):
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/CONSOLIDATED-ROOT-ASK.md`
