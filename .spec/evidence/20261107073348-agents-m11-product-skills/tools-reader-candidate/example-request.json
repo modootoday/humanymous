@@ -1,0 +1,20 @@
+{
+  "schema": "humanymous.language-source-request.v1",
+  "operation": "language-check",
+  "repo_root": "C:/workspaces/humanymous",
+  "source_commit": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "source": {
+    "path": ".agents/sessions/THREADS.md",
+    "owner": "agents-meta",
+    "presence": "required",
+    "bytes": 9584,
+    "sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1"
+  },
+  "preservation": {
+    "path": ".agents/evals/language-preservation.json",
+    "owner": "agents-meta",
+    "presence": "required",
+    "bytes": 719,
+    "sha256": "4b4314e94f1862b10bdb7e59e47966e5eb5032a821dc402a11e5f58517fab406"
+  }
+}

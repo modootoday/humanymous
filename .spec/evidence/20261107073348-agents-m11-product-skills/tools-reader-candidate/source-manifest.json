@@ -1,0 +1,147 @@
+{
+  "schema": "humanymous.maintenance-reader-candidate.v1",
+  "base_source_commit": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "status": "UNCOMPILED_UNEXECUTED_CANDIDATE",
+  "scope": "priority language-source slice only; remaining twelve reader groups NOT_IMPLEMENTED",
+  "source_implementation_edited": false,
+  "compiler_or_native_executed": false,
+  "qualification_contract": {
+    "original_path": "skills/agent-maintenance/qualification-contract.json",
+    "bytes": 3787,
+    "sha256": "714b313c621c5fdf94f41b13feb27d3c8418949801094d0b5dadd796ac36e93d",
+    "expected_total": 33,
+    "targets": [
+      {
+        "kind": "test",
+        "name": "process",
+        "expected_count": 7,
+        "exact_test_names": [
+          "canonical_roles_do_not_require_retired_persona_pointers",
+          "checks_real_tree_and_rejects_wrong_skill_name",
+          "competing_claim_processes_leave_exactly_one_owner",
+          "eval_never_overwrites_existing_output",
+          "legacy_bom_claim_keeps_owner_until_exact_owner_releases",
+          "missing_routing_rule_is_an_error_not_a_negative_match",
+          "normalize_keeps_mirrors_and_preserves_content"
+        ]
+      },
+      {
+        "kind": "test",
+        "name": "session_storage",
+        "expected_count": 4,
+        "exact_test_names": [
+          "coexistence_refuses_mutation_without_creating_lock_or_claim",
+          "invalid_note_leaves_no_mutation_and_overlap_does_not_take_over",
+          "owned_release_preserves_history_and_rejects_foreign_owner",
+          "post_intent_board_failure_retains_claim_and_lock_for_recovery"
+        ]
+      },
+      {
+        "kind": "test",
+        "name": "product_package",
+        "expected_count": 2,
+        "exact_test_names": [
+          "developer_bundle_contains_separate_five_case_suite",
+          "product_bundle_contains_paired_suite_and_refuses_existing_output"
+        ]
+      },
+      {
+        "kind": "test",
+        "name": "git_coord",
+        "expected_count": 1,
+        "exact_test_names": [
+          "single_literal_owned_path_commits_without_consuming_foreign_staging"
+        ]
+      },
+      {
+        "kind": "test",
+        "name": "selected_inputs",
+        "expected_count": 6,
+        "exact_test_names": [
+          "actual_files_share_the_aggregate_budget_without_hidden_probes",
+          "binary_and_empty_files_do_not_inherit_canonical_lf_policy",
+          "missing_or_directory_inputs_remain_explicit_provider_errors",
+          "selected_file_link_is_refused_without_reading_its_target",
+          "tighter_observation_counts_reject_a_looser_frozen_selection",
+          "unknown_selection_is_not_promoted_by_successful_content_reads"
+        ]
+      },
+      {
+        "kind": "test",
+        "name": "selected_inputs_cli",
+        "expected_count": 6,
+        "exact_test_names": [
+          "complete_binary_selection_emits_hashes_without_contents_or_authority",
+          "invalid_request_diagnostics_do_not_echo_values",
+          "missing_selected_file_emits_incomplete_metadata_with_exit_one",
+          "oversized_request_is_rejected_before_selection",
+          "request_directory_or_missing_file_is_rejected",
+          "unknown_selection_emits_read_success_but_exit_one"
+        ]
+      },
+      {
+        "kind": "test",
+        "name": "windows_doctor",
+        "expected_count": 3,
+        "exact_test_names": [
+          "discovery_does_not_execute_candidates_or_promote_sdk_presence",
+          "discovery_retains_missing_paths_without_setting_pyo3",
+          "doctor_rejects_arbitrary_probe_arguments"
+        ]
+      },
+      {
+        "kind": "test",
+        "name": "evidence_layout_cli",
+        "expected_count": 4,
+        "exact_test_names": [
+          "active_handle_emits_refused_metadata_with_exit_one",
+          "complete_claims_emit_proposal_without_touching_candidate_or_verifying_archives",
+          "oversized_or_missing_request_does_not_start_a_plan",
+          "unknown_json_fields_are_sanitized_and_exit_two"
+        ]
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "candidate.patch",
+      "bytes": 16061,
+      "sha256": "ae79acbf7b9b18a04db649ce3bd20c8f4150a371ce67c727015c09bb06039799"
+    },
+    {
+      "path": "example-request.json",
+      "bytes": 649,
+      "sha256": "9443523a626e57c414d256dc2cd97dca85580eb5c0943835cc564afa04a506e8"
+    },
+    {
+      "path": "language_source.rs",
+      "bytes": 9716,
+      "sha256": "952054ad123deeda642e949d1ecb2d3540027ffd72d3f1c934ffb45bbea89883"
+    },
+    {
+      "path": "language.rs",
+      "bytes": 6669,
+      "sha256": "8beeb06916fc2df8635bdf7048a437fa73357bc01009617a0fae18d38818216c"
+    },
+    {
+      "path": "language.rs.base",
+      "bytes": 6852,
+      "sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37"
+    },
+    {
+      "path": "main.rs",
+      "bytes": 6952,
+      "sha256": "b6958e00108dd5349a4bb671349d374c44861ced5c953a1e4e81db81c516e4b0"
+    },
+    {
+      "path": "main.rs.base",
+      "bytes": 7380,
+      "sha256": "93470fb9fe506e38b6a8d0b0f9ec8c51888012507a712c06629494107caa54c7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6512,
+      "sha256": "3824c707725a3bccd50e61cf5166c888cd2e83ae965824b70683577961f22027"
+    }
+  ]
+}
