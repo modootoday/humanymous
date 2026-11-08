@@ -23,6 +23,8 @@ hmac.workspace = true
 base64.workspace = true
 subtle.workspace = true
 zeroize.workspace = true
+png.workspace = true
+wasmparser.workspace = true
 
 [dev-dependencies]
 humanymous-platform = { workspace = true, features = ["testing"] }

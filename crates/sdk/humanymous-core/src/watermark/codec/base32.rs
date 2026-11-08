@@ -6,7 +6,7 @@ const ALPHABET: &[u8; 32] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const MAX_RAW: usize = MAX_CARRIER_BYTES + 10;
 const MAX_ENCODED: usize = MAX_RAW.div_ceil(5) * 8;
 
-pub(super) fn encode(bytes: &[u8]) -> Result<Vec<u8>, Error> {
+pub(in crate::watermark::codec) fn encode(bytes: &[u8]) -> Result<Vec<u8>, Error> {
     if bytes.len() > MAX_RAW {
         return Err(Error::ResourceLimit);
     }
@@ -30,7 +30,7 @@ pub(super) fn encode(bytes: &[u8]) -> Result<Vec<u8>, Error> {
     Ok(out)
 }
 
-pub(super) fn decode(bytes: &[u8]) -> Result<Option<Vec<u8>>, Error> {
+pub(in crate::watermark::codec) fn decode(bytes: &[u8]) -> Result<Option<Vec<u8>>, Error> {
     if bytes.len() > MAX_ENCODED {
         return Err(Error::ResourceLimit);
     }

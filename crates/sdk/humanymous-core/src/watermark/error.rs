@@ -36,6 +36,8 @@ pub enum Error {
     InvalidMime,
     /// New text input is not UTF-8 or contains forbidden NUL bytes.
     InvalidText,
+    /// Resource bytes are not an admitted PNG/WASM profile or fail structural checks.
+    InvalidFormat,
 }
 
 impl std::fmt::Display for Error {
@@ -57,6 +59,7 @@ impl std::fmt::Display for Error {
             Self::Ambiguous => "ambiguous watermark carriers",
             Self::InvalidMime => "invalid watermark MIME declaration",
             Self::InvalidText => "invalid watermark text input",
+            Self::InvalidFormat => "invalid watermark resource format",
         })
     }
 }

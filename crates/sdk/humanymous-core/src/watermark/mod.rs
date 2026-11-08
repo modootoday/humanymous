@@ -2,7 +2,8 @@
 //!
 //! Legacy-v1 carriers identify an issuance, not a human or a policy verdict.
 //! Low-level carrier transforms do not validate source grammar or authorize HTTP
-//! issuance. PNG and standards-validated WASM codecs remain unimplemented.
+//! issuance. PNG metadata and WASM custom-section codecs are L2 carriers;
+//! PNG LSB/alpha and browser export execution remain separately gated.
 
 pub mod codec;
 mod error;

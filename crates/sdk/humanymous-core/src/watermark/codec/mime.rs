@@ -13,9 +13,9 @@ pub enum Family {
     BlockComment,
     /// Explicit application/octet-stream, still requiring owner qualification.
     Opaque,
-    /// PNG codec remains pending alpha/resource qualification.
+    /// PNG family; metadata L2 admitted, LSB pending alpha/resource qualification.
     Png,
-    /// WASM codec remains pending standards validator adoption.
+    /// WASM family; custom-section L2 admitted after wasmparser validation.
     Wasm,
     /// No admitted new-issuance transformation; never silently use a trailer.
     Unsupported,
