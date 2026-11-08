@@ -1,0 +1,53 @@
+{
+  "schema": "humanymous.offline-domain-api-cli-candidate/1",
+  "status": "EVIDENCE_ONLY_RUST_SOURCE_NOT_INTEGRATED_NOT_RUN",
+  "files": [
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/offline-core.candidate.rs",
+      "sha256": "b9680e3d553a0046855e43e267f065d91d49e1eda05fa5ee3bb1fe3d1f83d9d2",
+      "bytes": 10065
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/offline-core-tests.candidate.rs",
+      "sha256": "1748b033e485c0ab28c9466bd4be1bf7d06fca30b5c200b449a4219e83a438e0",
+      "bytes": 5982
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli.candidate.rs",
+      "sha256": "4be87a3f4e6b72960acde370850c1248f5c89d3cee313232651ad6b99730c300",
+      "bytes": 6342
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-tests.candidate.rs",
+      "sha256": "8b7e3042b645a2e236bb04d61fa7c879d03b9e34d94657ed0c58a4174879027e",
+      "bytes": 1526
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-pilot.candidate.rs",
+      "sha256": "c3ec0a5873215540e7f043d2b58ef8c1370b5d03ce00b29dff2b498c5a30abf5",
+      "bytes": 6943
+    }
+  ],
+  "proposed_operation": "humanymous_core::model::training::offline::fit_offline",
+  "proposed_command": "humanymous model-train-offline",
+  "candidate_tests": {
+    "cli_units": 2,
+    "all_status": "NOT_RUN",
+    "core": 5,
+    "negative_process_cases": 6,
+    "actual_process_pilots": 2
+  },
+  "live_source_api_cargo_changes": false,
+  "temporary_deadcode_expect_removed": false,
+  "foreign_code_or_new_dependency": false,
+  "activation": false,
+  "network": false,
+  "needs_review": [
+    "Public API/error naming and strong time/cohort/provenance contract",
+    "Combinedsample100000/cohorts64/supportdefault20 and caller-review versus source authentication",
+    "Actual final8 CLI route/file/manifest and real caller integration before removing deadcode exception",
+    "Go1.26.3 FMA/bit oracle remains unqualified; strict public time split differs from original bootstrap random split",
+    "Fresh formatter/compiler/actual process pilot allocation; existing Core177/SGD15 not inherited"
+  ],
+  "details": "plan:root/20261107140000 Concrete offline Core/CLI candidate section"
+}

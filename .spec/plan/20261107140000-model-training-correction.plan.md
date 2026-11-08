@@ -1006,3 +1006,146 @@ supply temporal split/tie semantics, per-cohort support/FPR/AUT, correction/drif
 calibration, authenticated labels, gold-anchor lifecycle, dual-control, production
 activation or Docker product validation. Track each separately; whole ML remains
 incomplete even if every oracle endpoint and bootstrap caller later passes.
+
+## Concrete offline Core/CLI candidate source (evidence only, not integrated)
+
+Status: PREPARED_RUST_CANDIDATE_NOT_COMPILED_OR_REVIEW_ACCEPTED. Per Root grant,
+ALLnew Rust source is stored ONLYunder this owner's evidence directory. No live
+Core/CLI source, public visibility, Cargo, workspace/Root snapshot, activation,
+NativeReady, GPU/network or scoring paths changed. Core177/SGD15 remain historical
+42ecee7d results and do not qualify any of these candidate files.
+
+### Exact source/destination/API map for Root review
+
+- offline-core.candidate.rs -> crates/sdk/humanymous-core/src/model/training/offline.rs;
+  real public domain operation model::training::offline::fit_offline, with explicit
+  OfflineInput/Config/Limits/Report/Metrics/CohortMetrics/Summary/Error. It composes
+  revalidation/admission/support/time, train-only statistics, existing privateSGD,
+  existing Mlp and existing evaluator. It is not an SDK forwarding/helper crate.
+- offline-core-tests.candidate.rs -> same Core training/offline/tests.rs.
+- offline-cli.candidate.rs -> proposed final CLI src/offline_train.rs;
+  offline-cli-tests.candidate.rs -> final CLI src/offline_train/tests.rs.
+- offline-cli-pilot.candidate.rs -> final CLI tests/offline_training.rs; real
+  CARGO_BIN_EXE_humanymous child, finite30seconds/log<=1MiB, explicit cleanup.
+  Existing live composition root is crates/cli/src/main.rs; final intended family
+  root is crates/apps/humanymous-cli. That directory currently has qualification
+  data but no live Cargo/src. Root's accepted21member candidate/final8 movement
+  owns the exact destination/binary-root reconciliation, not this evidence slice.
+
+The exact proposed router delta is a PRIVATE mod offline_train in the genuine
+humanymous main composition root and, BEFORENativeReady/runtime-service/provisioning
+branches: if command=="model-train-offline", call offline_train::run(args.collect())
+and propagate its real result through the existing main error/exit boundary. No
+fake reachability call. No NativeReady flag, runtime host, signing/staging actor
+or device bootstrap dependency is needed for this pure offline operation.
+Root must deliberately declare CLI->Core normal dependency using an existing
+workspace package, not a new helper/re-export package; live old CLI has no such
+dependency yet. serde/serde_json/sha2/hex are already in CLI/Core dependency tuples;
+no new third-party dependency is requested. All Cargo/router changes remain review
+proposals, not performed changes. For test-module path attributes, preserve the
+specified final sibling directory layout rather than compiling evidence filenames.
+
+Only at accepted REALcaller integration, add pub mod offline to training and REMOVE
+its temporary non-test expect(dead_code) on sgd; keep sgd pub(crate), its helpers
+private and no broad public export. Neither registration nor exception is edited
+here. Root reviews final API/error/versioning/source ownership before integration.
+Candidate source contains5Core unit tests,2private CLI unit tests and2real process
+pilot tests (the negative pilot has6cases); ALL9tests/actual pilots NOT_RUN.
+No formatter invocation is authorized for the candidate by its preparation alone.
+
+### Deliberate contract and unresolved source decisions
+
+Public input uses existing Sample to reuse canonical aggregate extraction. Because
+Sample has public fields, candidate REVALIDATESraw Record and recomputes admission
+and feature bits; forged cached features cannot bypass shared extraction. Consistent
+catalog/pass strings and --reviewed-input are caller review acknowledgements, NOT
+proof of oracle/human authentication. Quarantine refuses. Required labels are0/1;
+raw/derived nonfinite values, malformed data, mismatched schema and bounded metadata
+refuse before result. Fixed FeatureVector encodes27dimensions; existing privateSGD
+validates every base tensor/schema/finite field and requested hidden shape.
+
+Combined train+holdout<=100000, cohorts<=64, metadata<=128UTF-8bytes, mandatory
+explicit TS/cohort, strict max(train.TS)<min(holdout.TS), no tied cross-boundary
+window. Empty cohort normalizes default; missing cohort refuses. Require both
+labels in EACHset and min holdout-human support for EVERYhuman cohort present in
+train ORholdout. Default20, explicit bounded CLI --min-cohort-humans selects offline
+support. A cohort cannot disappear into an aggregate success. These are DELIBERATE
+stronger operation preconditions, not a claim the complete temporal/cohort/AUT/
+promotion policy is implemented. No public human-FPR/TPR promotion threshold is
+added or changed: all counts/rates are DATA. Remaining sample authenticity, class/
+cohort policy acceptance and default20require Root source-contract review before
+shipping. Current strict-time operation does not replicate bootstrap Go's random
+split; do not present them as the same split policy.
+
+Training preserves privateSGD default hidden/LR, zero/negative epoch semantics,
+finite capacity/draw budgets and rejected malformed warm request, ordered f32
+updates and one init+epoch stream. Warm weights/biases are copied, but newly
+computed train statistics and CalA=1/CalB=0 replace base statistics/calibration
+evenepoch0. Report/model mean/std expose these TRAINONLYstatistics, never holdout.
+No preserved function/accuracy claim. Existing bounded infallible RNG allocation
+and new bounded collections do NOTguarantee whole-process OOM recovery.
+
+Core returns model+counts/per-human-cohort rates+effective bounded summary with
+activation=false,signed=false. The flags express DATAstatus and are not security
+tokens or a new way to activate. Raw RNG snapshots/ID order/optimizer internals
+stay private. Core has no file/process/time/network/NativeReady side effects.
+
+CLI requires explicit train/holdout/output/version/hidden/epochs/LR/seed/support
+and --reviewed-input, rejects duplicate/unknown flags, caps argument lengths,
+uses existing bounded JSONL reader and <=1MiB base/model/receipt. It validates,
+trains and evaluates fully BEFOREcreating output. Artifact is PLAINoriginal
+MlpBundle JSON (Go-interoperable unsigned model); separate JSONstdout receipt has
+model digest, statistics-through-model identity, metrics/cohorts/summary and
+activation=false/signed=false/go_bit_parity=unqualified. No new serialization
+shape is forced onto the Go bundle loader. Read/write create_new handle, sync,
+seek/readback same handle, exact bytes; existing files refuse unchanged. Post-create
+I/O or stdout failure retains explicitly named unsigned/unpublished output as a
+cleanup obligation. No blind rollback/delete or signing/promotion/network action.
+Same-handle readback is a simple I/O check, NOT hostile-race/native path custody.
+
+### Meaningful candidate unit/process verification matrix
+
+Core tests cover train-only mean despite changed holdout distribution, unsigned/
+noactivation data, strict TS tie/missing TS, missing cohort, quarantine/source
+mismatch, forged/NaN cached features, per-cohort missing support, combined cap,
+hidden257, NaNLR, version129, wrong schema, malformed warm shape, raw nonfinite,
+and full warm-weight preservation/new-stats/Calreset with zero updates/draws.
+Existing privateSGD tests remain reused, not duplicated into another trainer.
+
+CLI units cover exact numeric flag parsing, absent review, duplicate/incomplete/
+unknown flags and activation option refusal. Actual-process source uses OWNcreated
+input/log files and controlled child's fresh output obligations, finite timeout,
+kill+wait only owned child and explicit finishResult (Drop only unwind fallback).
+Accepted process checks Go MlpBundle decode, train-only mean, Calreset, unsigned/
+activationfalse receipt/digest, deterministic second output and unchanged existing
+sentinel. Six negative processes: cross-boundary time tie, quarantine, disappearing
+human cohort, hidden257, NaNLR and malformed warm base; each must exitnonzero and
+leave no candidate file. The ownership helper never claims native hostile-race
+custody. A future allocated native I/O fault pilot must separately qualify partial
+write/stdout-failure reporting; that is not implied by source review or mock tests.
+
+Next gates require Root API/contract review, actual accepted8family snapshot/router/
+manifest integration and a NEWsource-bound execution allocation: fmt first, Core
+focused offline tests, existingSGD/Core regression, private CLI units, actual CLI
+accepted/refused process pilots, all-target/all-feature check/strictClippy. Target/
+source/registry BEFORE+AFTER/tool/config/environment and true child start/exit
+records must be captured; do not inherit prior epoch audit gaps as full closure.
+No tests were run here and no compiler/target lease is held.
+
+### Go1.26.3 relationship remains explicit
+
+872dec70's unchanged originalGo CLI7endpoint oracle remains the proposed direct
+Go authority: no Go/harness/source patch or foreign template. Matching final
+Go float bits is UNQUALIFIED until allocated exact tuple execution; no abs/rel
+waiver or FMA expectation patch. Go can FMA; record toolchain/CPU/target/buildflags.
+Core's strict-time public operation cannot consume a shuffled bootstrap holdout
+as if it satisfied time separation. The originalGo bootstrap oracle should keep
+using the privateSGD qualifier; correction CLI stable unique-time split can map
+explicit train/holdout inputs into this new operation for numeric comparison.
+Go CLI final bundle/stats are observable; IDs/gradients/per-update states and exact
+prediction-rate bits remain unobserved, as previously documented. No candidate
+here supplies that missing telemetry. Future full temporal split/tie/AUT policy,
+cohort promotion gates, correction/drift/calibration lifecycle, signed admission,
+gold-anchor management, dual-control/activation and Docker product validation
+remain separate unfinished responsibilities. This concrete caller/API candidate
+advances offline training independently of NativeReady, not whole ML completion.

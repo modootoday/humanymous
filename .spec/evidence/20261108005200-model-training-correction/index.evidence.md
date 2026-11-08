@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-08T00:22:44Z
+updated: 2026-11-08T02:28:05Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -27,6 +27,12 @@ files:
   - {path: sgd-review-fixes-source.json, sha256: 1c997880092da87d88c1389bd9f85608ca45371ed35e85886a1e286a36e7ab70, bytes: 2537, store: repo}
   - {path: sgd-first-actual-validation.json, sha256: be033c879f1298a32f0c5b975e24e4099dec5049a6f737cdca8280e825dec059, bytes: 19785, store: repo}
   - {path: go-sgd-oracle-caller-design.json, sha256: ff4426deff4b5aaae09882f1266fc5cb9b2567d91465dd84fff8aa6f80b119cc, bytes: 3317, store: repo}
+  - {path: offline-core.candidate.rs, sha256: b9680e3d553a0046855e43e267f065d91d49e1eda05fa5ee3bb1fe3d1f83d9d2, bytes: 10065, store: repo}
+  - {path: offline-core-tests.candidate.rs, sha256: 1748b033e485c0ab28c9466bd4be1bf7d06fca30b5c200b449a4219e83a438e0, bytes: 5982, store: repo}
+  - {path: offline-cli-tests.candidate.rs, sha256: 8b7e3042b645a2e236bb04d61fa7c879d03b9e34d94657ed0c58a4174879027e, bytes: 1526, store: repo}
+  - {path: offline-cli.candidate.rs, sha256: 4be87a3f4e6b72960acde370850c1248f5c89d3cee313232651ad6b99730c300, bytes: 6342, store: repo}
+  - {path: offline-cli-pilot.candidate.rs, sha256: c3ec0a5873215540e7f043d2b58ef8c1370b5d03ce00b29dff2b498c5a30abf5, bytes: 6943, store: repo}
+  - {path: offline-api-cli-candidate.json, sha256: 60517fa44a020484fd37694166c0b39ad9e4c894278b2a422674d47c75f429fe, bytes: 2326, store: repo}
 ---
 
 # Read-only source inventory
