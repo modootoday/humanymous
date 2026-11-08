@@ -2359,3 +2359,8 @@ failed assertion blindly. No exact observed Referer bytes, privacy leak, histori
 cause or received Runtime-header authentication is inferred. Original private
 ledger/image custody is unrecovered; logged image/manifest/private-report hashes
 remain source-reported. Product/release and the complete migration remain OPEN.
+Owner273695e7 subsequently sealed the same f8 failure receipt. Independent
+follow-up verifies and retains all17 indexed raw hashes/sizes and31official ZIP
+entries; complete product/preflight ZIP logs are byte-identical to the audit's
+fresh API downloads. This closes that receipt durability join only. It adds no
+test pass or product qualification; CA-REFERER-WIRE-01 remains OPEN.

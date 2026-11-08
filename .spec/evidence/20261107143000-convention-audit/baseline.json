@@ -2236,5 +2236,16 @@
     "hosted": "Freshcompletedf8logs/projectionexact;GNU46Labregistered45+separate1pass;selectedbrowser1pass;41of43assertions2fail",
     "finding": "CA-REFERER-WIRE-01 P2 Root/Lab OPEN;exactrootprivacywireproof absent;no blindwaiver",
     "goal_complete": false
+  },
+  "browser_f8_sealed_receipt_followup": {
+    "evidence": {
+      "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-f8-sealed-receipt-review-002.json",
+      "sha256": "f6269647ba259c8eac65daf54605a040498f109a33178d3d42f6a69bf2be6f03",
+      "bytes": 564
+    },
+    "owner_commit": "273695e7",
+    "raw": "17hashsize0issues;31ZIPentries;product/preflightbyteexactfresh",
+    "result": "Samefailure;no additional test/product qualification",
+    "goal_complete": false
   }
 }

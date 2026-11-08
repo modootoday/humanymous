@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 101860da22d5d72ae6f8e09014d5b1462efbee2bbd58f32818c7697d09cc5fe6, bytes: 123643, store: repo}
+  - {path: baseline.json, sha256: 778111905933d067b29ce5e091599ab8bd915a3348c6b7b21356a6ea82edff51, bytes: 124141, store: repo}
 ---
 
 # Convention audit baseline
@@ -2121,3 +2121,8 @@ failed assertion blindly. No exact observed Referer bytes, privacy leak, histori
 cause or received Runtime-header authentication is inferred. Original private
 ledger/image custody is unrecovered; logged image/manifest/private-report hashes
 remain source-reported. Product/release and the complete migration remain OPEN.
+Owner273695e7 subsequently sealed the same f8 failure receipt. Independent
+follow-up verifies and retains all17 indexed raw hashes/sizes and31official ZIP
+entries; complete product/preflight ZIP logs are byte-identical to the audit's
+fresh API downloads. This closes that receipt durability join only. It adds no
+test pass or product qualification; CA-REFERER-WIRE-01 remains OPEN.
