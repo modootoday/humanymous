@@ -3,9 +3,9 @@ id: plan:root/20261108155700
 title: Cursor spec gap audit against live Rust layout
 status: active
 created: 2026-11-08T15:57:00Z
-updated: 2026-11-08T15:57:00Z
+updated: 2026-11-08T16:08:00Z
 rel:
-  depends_on: [sot:root/crate-architecture, sot:root/runtime-application, sot:root/adapter-authority, sot:root/structural-development]
+  depends_on: [sot:root/crate-architecture, sot:root/runtime-application, sot:root/adapter-authority, sot:root/structural-development, sot:root/audit-key-custody, sot:root/native-security, sot:root/resource-watermark]
 ---
 
 # Cursor spec gap audit plan
@@ -35,11 +35,13 @@ documents as proposed deltas only.
 4. Preserve historical 13-package crate-architecture research text, but add an
    explicit live-layout correction that agents must prefer.
 
-## Residual for Root / owners
+## Wave-2 residual closure (measured)
 
-See evidence `proposed-patches.md`: audit-key-custody verify package ID,
-native-security package ID, resource-watermark package supersession,
-cross-os/convention-audit selectors, optional platform SoT, ghost cleanup.
+Closed under this plan: audit-key-custody / native-security package IDs,
+resource-watermark package supersession, and local untracked ghost-dir hygiene.
+Remaining Root/foreign items: cross-os-runners selectors, dirty
+convention-audit historical snippets, optional roadmap index notes, optional
+platform SoT. See evidence `proposed-patches.md` and `wave2-residuals.json`.
 
 ## Verification
 

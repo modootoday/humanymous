@@ -3,21 +3,37 @@ id: sot:root/resource-watermark
 title: Resource watermark migration contract
 status: active
 created: 2026-11-07T13:55:00Z
-updated: 2026-11-07T13:55:00Z
+updated: 2026-11-08T16:08:00Z
 verify: manual
 rel:
+  governs: [crates/sdk/humanymous-core/src/watermark/**]
   depends_on: [sot:root/rust-migration, sot:root/crate-architecture, sot:root/runtime-application]
 ---
 
 # Resource watermark migration contract
 
-Version 0.3.0. Root accepted the reconstructed contract, distinct
-`crates/watermark` / `humanymous-watermark` package and W01–W09 safety corrections.
-The first source-only implementation grant covers payload/carrier, bounded
-volatile ledger/reservation/cancellation and their tests, using existing
+## Live package supersession (measured 2026-11-08)
+
+The standalone package proposal `crates/watermark` / `humanymous-watermark` is
+**superseded** by the live module tree
+`crates/sdk/humanymous-core/src/watermark/**` inside workspace package
+`humanymous-core` (`humanymous_core::watermark`). Modules present: `payload`,
+`frame`, `ledger`, `codec` (text/binary/png/wasm). Root workspace already pins
+`png` and `wasmparser` for carrier work. Package `humanymous-watermark` is
+absent from locked metadata. Empty `crates/watermark/**` is an untracked ghost
+skeleton. Historical proposal wording below is retained as chronology; agents
+must use the core module paths. Carrier/pilot gates (V1–V5, WASM/PNG pilots)
+remain separate and are not product e2e success. Evidence:
+`.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
+
+Version 0.3.0. Root accepted the reconstructed contract and W01–W09 safety
+corrections. The original distinct-package grant is superseded as above. The
+first source-only implementation grant covers payload/carrier, bounded volatile
+ledger/reservation/cancellation and their tests, using existing
 hmac/sha2/subtle/zeroize. Root owns workspace registration and lock integration.
 No Cargo execution, codec dependency adoption, runtime wiring or actual pilot is
-allocated. V1–V5 remain separate gates; final parity is not established.
+allocated by this path correction. V1–V5 remain separate gates; final parity is
+not established.
 
 The later second source-only grant permits bounded frame, strict MIME selection
 and low-level text/opaque transforms without new dependencies. Its source delta
@@ -60,11 +76,16 @@ source observation, not proof about every historical branch or external service.
 
 ## 2. Responsibility and package proposal
 
+**Superseded package location:** live ownership is
+`humanymous-core` / `crates/sdk/humanymous-core/src/watermark/**` (see Live
+package supersession above). The following historical proposal text is kept for
+provenance only and must not be used to recreate a separate package.
+
 Propose `crates/watermark`, package `humanymous-watermark`, as a cohesive resource
 forensics library. It owns formats, bounded transformation and volatile issuance
 state; it is neither challenge presentation nor collector integrity. The routing
 queue's coarse `challenge`/`integrity` candidates have no existing mapping.
-Root accepted this location; workspace membership remains root-owned.
+Root accepted this location historically; workspace membership remains root-owned.
 
 | Legacy file | Proposed module / responsibility | Required preserved behavior |
 | --- | --- | --- |

@@ -3,14 +3,25 @@ id: sot:root/audit-key-custody
 title: Audit key custody
 status: active
 created: 2026-11-07T00:20:05Z
-updated: 2026-11-07T07:40:50Z
-verify: [cargo test -p humanymous-audit --locked]
+updated: 2026-11-08T16:08:00Z
+verify:
+  - cargo test -p humanymous-runtime --test audit-key-custody --features audit --locked
 rel:
-  governs: [crates/audit/**]
-  depends_on: [sot:root/rust-migration]
+  governs: [crates/sdk/humanymous-runtime/src/audit/**, crates/sdk/humanymous-runtime/tests/audit/**]
+  depends_on: [sot:root/rust-migration, sot:root/crate-architecture]
 ---
 
 # Audit key custody
+
+## Live package layout (measured 2026-11-08)
+
+Audit is not package `humanymous-audit`. The live owner is workspace member
+`humanymous-runtime` with feature `audit`, module `humanymous_runtime::audit`,
+and named tests under `tests/audit/` (including `audit-key-custody`). Empty
+`crates/audit/**` is an untracked ghost skeleton (zero files) and is not an
+implementation root. Historical `-p humanymous-audit` wording is obsolete.
+Evidence: `.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
+Component/unit success is not Docker product e2e success.
 
 S2 draft [[plan:root/20261107151758]] now records independently reviewed contract
 refinements: preserved ambiguous history is read-only/no Ready/normal append or

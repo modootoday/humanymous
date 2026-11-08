@@ -3,19 +3,32 @@ id: sot:root/native-security
 title: Native OS security boundary and CLI integration
 status: active
 created: 2026-11-07T01:05:00Z
-updated: 2026-11-07T01:05:00Z
+updated: 2026-11-08T16:08:00Z
 verify:
-  - cargo test -p humanymous-native-security -p humanymous-cli --locked
+  - cargo test -p humanymous-runtime --features native-security --locked
+  - cargo test -p humanymous-cli --locked
 rel:
-  governs: [crates/native-security/**]
-  depends_on: [sot:root/cli-installation, sot:root/adapter-authority]
+  governs: [crates/sdk/humanymous-runtime/src/native_security/**]
+  depends_on: [sot:root/cli-installation, sot:root/adapter-authority, sot:root/crate-architecture]
 ---
 
 # Native OS security boundary
 
-Create one context-bound humanymous-native-security crate for OS token, volume
-and handle privacy checks. It is not a detector, generic core or service manager.
-Move the existing audit Windows verifier into this crate without retaining a
+## Live package layout (measured 2026-11-08)
+
+There is no workspace package `humanymous-native-security`. The live owner is
+`humanymous-runtime` feature `native-security`, module
+`humanymous_runtime::native_security`. CLI consumes that module without a
+separate native-security crate dependency. Empty `crates/native-security/**` is
+an untracked ghost skeleton and is not an implementation root. Historical
+standalone-crate proposal text below remains chronology; live wiring uses the
+runtime paths above. Evidence:
+`.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
+Pilot/e2e remain distinct gates; no product e2e claim follows from this path fix.
+
+Create one context-bound native-security boundary for OS token, volume and
+handle privacy checks. It is not a detector, generic core or service manager.
+Move the existing audit Windows verifier into this context without retaining a
 second implementation. Audit storage reexports the same API for current callers.
 CLI uses this lower layer without acquiring an audit/crypto dependency. Pure
 WASM libraries do not gain native Windows dependencies on their WASM targets.
