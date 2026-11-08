@@ -2369,5 +2369,23 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-workflow-candidate-review-001.json",
     "revision": 2,
     "goal_complete": false
+  },
+  "tools_formal_seal_and_negative_frontier": {
+    "formal_seal": "18attachments exact; reconstructed5051834B ZIP/1781regular files exact,43directories separate",
+    "goal_complete": false,
+    "data_negatives": "3candidatefiles exact;4realGit controls/3probe modes uncompiled/unexecuted; outer process-tree runner pending",
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-formal-seal-review-001.json",
+        "sha256": "e78b0276fb3d0e78aea4d0b73024a61ee12e4c0127a1f431dc1a15c4abf2df8e",
+        "bytes": 1093
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/data-negative-candidate-review-001.json",
+        "sha256": "d11d0269b6c833a47f3c493df83cb4d48b2b78ff6f922a897996a6a6d1379514",
+        "bytes": 1334
+      }
+    ],
+    "unsafe_negatives": "Accepted safe-root/linkage controls still require implementation/allocation; Root notified"
   }
 }

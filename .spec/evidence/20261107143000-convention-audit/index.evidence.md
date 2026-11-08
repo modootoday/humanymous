@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 0ebadebbfc07a2f2ee984d505bdc7cfa36f9db577771e8a0d8b4a58eeb25a283, bytes: 130953, store: repo}
+  - {path: baseline.json, sha256: 9f635a486404aac6e886c04de6dca69a05e56dff0242b5c1e93afd6beb9bc60b, bytes: 131903, store: repo}
 ---
 
 # Convention audit baseline
@@ -2343,3 +2343,30 @@ not infer whole-manifest semantic equivalence. Final source freeze/rejoin, neste
 Cargo/path rewiring, admitted3137 Git objects for offline DATA, whole Rust policy
 and exact-source hosted checks remain OPEN. No live apply/compiler/dispatch was
 performed. Private tools-workflow-candidate-review-001.json binds this review.
+
+## Formal Tools snapshot seal and unexecuted negative controls
+
+Independent evidence:root/20261108020121 index SHA3eed2714 matches; all18
+attachments reproduce their declared hashes/sizes. In-memory concatenation of
+its two parts yields5051834 bytes/SHA743a7f71. ZIP has1824 entries:1781 regular
+files and43 directories. All regular entries match strict02 source-after path/
+hash/size, with zero duplicates, unlisted or missing source records. The initial
+all-entry comparison flagged43 directory entries; separate classification resolves
+that observation without modifying the archive. This formally joins the previously
+reviewed strict02/format/census at the isolated epoch, not Git/future-source or
+compiler external closure. Private tools-formal-seal-review-001.json retains it.
+
+Delivery DATA negative candidates have3 exact declared file hashes. Four real-Git
+cases exercise replacement with an ordinary-Git positive fixture, missing original
+versus present current file, oversize versus31-byte cap and expired shared budget.
+Three private probe modes target oversize, timeout and descendant-held stdout.
+They remain UNCOMPILED/UNEXECUTED. Exact Git/PATH identity and an admitted outer
+process-tree watchdog with cleanup allowance/reader-join proof are required before
+execution. Current producer poll timeout still precedes blocking wait/join;
+CA-LIFETIME-01 is OPEN. Source controls are not regression passes.
+
+Accepted safe-root unsafe/linkage negative compile controls are also still OPEN;
+no runner was found in the searched isolated qualification Rust sources. Root was
+asked to allocate their owning implementation/run alongside remaining final gates.
+No competing compiler/process workload was launched. Private
+data-negative-candidate-review-001.json preserves the bounded search and limits.
