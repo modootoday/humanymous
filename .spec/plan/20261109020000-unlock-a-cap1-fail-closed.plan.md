@@ -3,7 +3,7 @@ id: plan:root/20261109020000-unlock-a-cap1-fail-closed
 title: Unlock A G4 CEF/AT Cap=1 (missing CEF then realloc with host bundle + Desktop baseline)
 status: active
 created: 2026-11-08T16:58:00Z
-updated: 2026-11-08T17:32:00Z
+updated: 2026-11-08T17:50:00Z
 rel:
   depends_on:
     - plan:root/20261108233000-post-unlock-c-matrix-honesty
@@ -79,5 +79,14 @@ BrowserReady / interactive AT honesty gate landed
 **0** (hold components). Cap free=**false**. No Cap realloc (no Root owner-auth
 / interactive AT; no claimable Cap CLI+topology; no A/B/C Cap spam).
 
-1. Root N06 owner-integration auth handoff (Cap=0 owner-auth honesty without auth)
-2. Else Root interactive AT Windows tuple handoff for BrowserReady path
+**Decision: `hard_stop_root_ask`.** Tip audit @ `e38ce6c5` found no residual
+Cursor-claimable Cap=0 product-feeder. Cap=0 CONSOLIDATED-ROOT-ASK filed at
+`.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/`.
+No Cap=1. No more empty honesty CLIs. product=0.
+
+1. Root places `AUTH-HANDOFF.json` schema
+   `humanymous.root-n06-owner-join-auth-handoff/1`
+   (`n06_owner_join_authorized=true`, `product=0`, `pass_product_clean_room=0`)
+2. Else Root places `AT-HANDOFF.json` schema
+   `humanymous.root-interactive-at-windows-tuple/1`
+   (`browser_ready_authorized=true`, `product=0`, `pass_product_clean_room=0`)
