@@ -1,0 +1,131 @@
+{
+  "schema": "humanymous.maintenance-reader-candidate-03.v1",
+  "basis": "observed Root-owned tools-integration-5f1010d4 assembled source after candidate02; per-file .base hashes are authority, not current HEAD",
+  "status": "NOT_COMPILED_NOT_EXECUTED_NOT_INTEGRATED",
+  "root_source_edited": false,
+  "compiler_or_native_executed": false,
+  "original_integration_test_ids_retained": 33,
+  "product_package_target_preserved_ids": [
+    "product_bundle_contains_paired_suite_and_refuses_existing_output",
+    "developer_bundle_contains_separate_five_case_suite"
+  ],
+  "library_cases_still_required": 76,
+  "reader_units_still_required": 7,
+  "files": [
+    {
+      "path": "candidate.patch",
+      "bytes": 15818,
+      "sha256": "f5702c39c3d1c97039ddfeba44529466c006bcdeea2d43dc3c38d2dc5aed5a40"
+    },
+    {
+      "path": "maintenance__command.rs",
+      "bytes": 7737,
+      "sha256": "94e12121bb9e85c3b2235e69097de3fd41502e7d721d4f1fed9b253283d21ff4"
+    },
+    {
+      "path": "maintenance__command.rs.base",
+      "bytes": 7478,
+      "sha256": "ff69de5139b992e25389427f7491b5ca7f3612d88a09811409213c856b6f772a"
+    },
+    {
+      "path": "maintenance__language_source.rs",
+      "bytes": 9752,
+      "sha256": "73471f68961e59d889c405b7acfa009e63f634c9c342d13f7b008d20c354a337"
+    },
+    {
+      "path": "maintenance__language_source.rs.base",
+      "bytes": 9729,
+      "sha256": "becbe46f0618c42840a102248bc740520fcc28d3e66c5b17a5e77f181686f338"
+    },
+    {
+      "path": "maintenance__language.rs",
+      "bytes": 6622,
+      "sha256": "3e81407cd1de5406b07597f4b723bda891afbd5f46dda4d1aff4df67ce87425e"
+    },
+    {
+      "path": "maintenance__language.rs.base",
+      "bytes": 6669,
+      "sha256": "8beeb06916fc2df8635bdf7048a437fa73357bc01009617a0fae18d38818216c"
+    },
+    {
+      "path": "maintenance__product_selected.rs",
+      "bytes": 5730,
+      "sha256": "455e815702022ee40a44319a8bc74c38d1a06a192c3de7ced039573d7601b066"
+    },
+    {
+      "path": "maintenance__product_selected.rs.base",
+      "bytes": 5708,
+      "sha256": "ed79f5c3f768418f485eb95b74cb5a30896010b81a76f728d2e4c941b72428e9"
+    },
+    {
+      "path": "maintenance__product.rs",
+      "bytes": 8660,
+      "sha256": "34221cbc3815e2715be3d84712d3380ca6054e6da64d282079b3cdee60cfc681"
+    },
+    {
+      "path": "maintenance__product.rs.base",
+      "bytes": 8870,
+      "sha256": "51a6493be0a1d8f2c0c438109e5f8b6bfe6f9c01b335a16116144e562168701c"
+    },
+    {
+      "path": "maintenance__sessions__catalog_selected.rs",
+      "bytes": 5812,
+      "sha256": "0228a8eb1a76b8aa0ebd3bf3c8d5854e60d12e155887614b10ec156cda36aaed"
+    },
+    {
+      "path": "maintenance__sessions__catalog_selected.rs.base",
+      "bytes": 5780,
+      "sha256": "9702d8fe8745ec5124185ee999d43d909dd74c9d72fc156b702e53e774a47316"
+    },
+    {
+      "path": "maintenance__sessions__catalog.rs",
+      "bytes": 5805,
+      "sha256": "b2c45633adfd44d3fedf9e22cd77d24185a6e6419506fbfc7e9224bdcd30b2f0"
+    },
+    {
+      "path": "maintenance__sessions__catalog.rs.base",
+      "bytes": 6343,
+      "sha256": "a88909d369d0fdc06b92e0868eb1eb08b7692f117b6d8d89900a1bde80359ef0"
+    },
+    {
+      "path": "maintenance__sessions__registry_selected.rs",
+      "bytes": 4441,
+      "sha256": "cb0da5201310920fd529d9fac5463f695493c8e96a2e5d8ecfc643954d9068aa"
+    },
+    {
+      "path": "maintenance__sessions__registry_selected.rs.base",
+      "bytes": 4408,
+      "sha256": "24eb8093cb1c70d54512d4afe1ffe27735bc7dfbd168edeefdf7a7c89bdae7a7"
+    },
+    {
+      "path": "maintenance__sessions__registry.rs",
+      "bytes": 3062,
+      "sha256": "57c733d53fb608911e02255babf52e705d9d515a3ce1105165566d0fedb86f1d"
+    },
+    {
+      "path": "maintenance__sessions__registry.rs.base",
+      "bytes": 3294,
+      "sha256": "9bfbd3afd5e7b0e810f3dfbf3ce32b13fba5982b1c8282914a058a8800a39f5b"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7381,
+      "sha256": "31ba84d632753b879e1ebf2a3794019c878dbdf686451e0118f0900b5938ef4b"
+    },
+    {
+      "path": "tests__maintenance_product_package.rs",
+      "bytes": 4191,
+      "sha256": "ee425476fbe65b6d2af96713190c21ee5f25e24f38aef5c3c300c444638f380b"
+    },
+    {
+      "path": "tests__maintenance_product_package.rs.base",
+      "bytes": 2085,
+      "sha256": "c48cc0f35b15d6edeb0c8a925e96bf6af981648c1543a790ec0c9c20179698ed"
+    },
+    {
+      "path": "unit-ownership.json",
+      "bytes": 3449,
+      "sha256": "fac798586f2d0a7971c2c2b96f83b419372d692e4a1ea9879da7798c3a68af1f"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "humanymous.maintenance-composition-unit-ownership.v1",
+  "status": "STATIC_FUNCTION_IDS_ONLY_NOT_RUN",
+  "original_library_cases_remain_required": 76,
+  "new_reader_cases_remain_required": 7,
+  "original_integration_cases_remain_required": 33,
+  "product_package_boundary_cases": 2,
+  "reader_prefix_moves": [
+    {
+      "new": "maintenance_command::language_content::tests",
+      "old": "maintenance::language::source::tests"
+    },
+    {
+      "new": "maintenance_command::product_content::tests",
+      "old": "maintenance::product::selected::tests"
+    },
+    {
+      "new": "maintenance_command::lane_content::tests",
+      "old": "maintenance::sessions::catalog::selected::tests"
+    },
+    {
+      "new": "maintenance_command::thread_content::tests",
+      "old": "maintenance::sessions::registry::selected::tests"
+    }
+  ],
+  "files": [
+    {
+      "source": "maintenance/command.rs",
+      "preserved_test_function_ids": [],
+      "count": 0
+    },
+    {
+      "source": "maintenance/language.rs",
+      "preserved_test_function_ids": [
+        "unicode_is_not_an_ascii_only_policy",
+        "authored_comments_are_debt_but_literal_fixture_strings_are_not_prose",
+        "preservation_is_exact_and_does_not_exempt_whole_scopes",
+        "repository_title_records_preserve_exact_ui_lines"
+      ],
+      "count": 4
+    },
+    {
+      "source": "maintenance/product.rs",
+      "preserved_test_function_ids": [
+        "repository_product_bundle_has_resolved_references",
+        "accepts_portable_bundle_without_runtime_claim",
+        "refuses_missing_and_escape_links",
+        "duplicate_metadata_is_not_last_wins",
+        "validates_transitive_resources_and_rejects_orphans",
+        "orphan_cycles_do_not_count_as_reachable"
+      ],
+      "count": 6
+    },
+    {
+      "source": "maintenance/sessions/catalog.rs",
+      "preserved_test_function_ids": [
+        "repository_catalog_matches_all_compatibility_projections",
+        "exact_projections_are_static_not_runtime_qualification",
+        "drift_and_malformed_projection_fail",
+        "rejects_duplicate_fields_ids_and_versions"
+      ],
+      "count": 4
+    },
+    {
+      "source": "maintenance/sessions/registry.rs",
+      "preserved_test_function_ids": [
+        "repository_registry_has_valid_stable_names_and_unique_ids",
+        "duplicate_ids_or_path_titles_are_not_accepted",
+        "established_ci_cd_area_is_not_a_repository_path"
+      ],
+      "count": 3
+    },
+    {
+      "source": "maintenance/language_source.rs",
+      "preserved_test_function_ids": [
+        "strict_fixed_contract_has_no_live_or_unknown_fallback",
+        "finite_selection_rejects_escape_alias_and_optional_presence",
+        "verification_uses_exact_captured_bytes_without_normalizing",
+        "errors_do_not_echo_supplied_payloads"
+      ],
+      "count": 4
+    },
+    {
+      "source": "maintenance/product_selected.rs",
+      "preserved_test_function_ids": [
+        "incomplete_contract_does_not_discover_a_product_root"
+      ],
+      "count": 1
+    },
+    {
+      "source": "maintenance/sessions/catalog_selected.rs",
+      "preserved_test_function_ids": [
+        "missing_or_duplicate_fields_do_not_become_empty_success"
+      ],
+      "count": 1
+    },
+    {
+      "source": "maintenance/sessions/registry_selected.rs",
+      "preserved_test_function_ids": [
+        "no_snapshot_or_ambient_fallback_on_missing_contract"
+      ],
+      "count": 1
+    }
+  ]
+}

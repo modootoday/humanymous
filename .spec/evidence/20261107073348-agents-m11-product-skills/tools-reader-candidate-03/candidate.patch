@@ -1,0 +1,330 @@
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
+index 3f06a623..db4e38f4 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
+@@ -1,8 +1,18 @@
+ //! Read-only canonical checks and bounded skill evaluation profiles.
+ use crate::maintenance::{
+-    evaluation, inventory, language, package, paired, product, routing, selected_inputs, sessions,
++    evaluation, inventory, package, paired, routing, selected_inputs, sessions,
+ };
+ 
++// Reader composition belongs only to the command root, not pure parser modules.
++#[path = "language_source.rs"]
++mod language_content;
++#[path = "product_selected.rs"]
++mod product_content;
++#[path = "sessions/catalog_selected.rs"]
++mod lane_content;
++#[path = "sessions/registry_selected.rs"]
++mod thread_content;
++
+ use std::{env, path::Path, process::ExitCode};
+ 
+ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+@@ -34,7 +44,7 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             Ok(complete)
+         }
+         Some("language-check-request") if args.len() == 2 => {
+-            let receipt = language::source::check_request_file(Path::new(&args[1]))?;
++            let receipt = language_content::check_request_file(Path::new(&args[1]))?;
+             let complete = receipt.qualified_complete;
+             println!("{}", serde_json::to_string_pretty(&receipt)?);
+             Ok(complete)
+@@ -68,19 +78,19 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             Ok(result.failed == 0)
+         }
+         Some("product-content-check-request") if args.len() == 2 => {
+-            let receipt = product::selected::check_request_file(Path::new(&args[1]))?;
++            let receipt = product_content::check_request_file(Path::new(&args[1]))?;
+             let qualified = receipt.qualified_complete;
+             println!("{}", serde_json::to_string_pretty(&receipt)?);
+             Ok(qualified)
+         }
+         Some("lane-content-check-request") if args.len() == 2 => {
+-            let receipt = sessions::catalog::selected::check_request_file(Path::new(&args[1]))?;
++            let receipt = lane_content::check_request_file(Path::new(&args[1]))?;
+             let qualified = receipt.qualified_complete;
+             println!("{}", serde_json::to_string_pretty(&receipt)?);
+             Ok(qualified)
+         }
+         Some("thread-content-check-request") if args.len() == 2 => {
+-            let receipt = sessions::registry::selected::check_request_file(Path::new(&args[1]))?;
++            let receipt = thread_content::check_request_file(Path::new(&args[1]))?;
+             let qualified = receipt.qualified_complete;
+             println!("{}", serde_json::to_string_pretty(&receipt)?);
+             Ok(qualified)
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/language.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/language.rs
+index f3443122..e9e9d540 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/language.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/language.rs
+@@ -1,6 +1,4 @@
+ //! Bounded language indicators for review, not automatic language identification.
+-#[path = "language_source.rs"]
+-pub mod source;
+ 
+ use serde::{Deserialize, Serialize};
+ use sha2::{Digest, Sha256};
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs
+index 274b5ad8..531ed1c5 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs
+@@ -1,6 +1,4 @@
+ //! Product skill packaging/links, distinct from internal developer metadata.
+-#[path = "product_selected.rs"]
+-pub mod selected;
+ use crate::maintenance::inventory::{self, FileRecord};
+ use regex::Regex;
+ use serde::Serialize;
+@@ -162,11 +160,6 @@ pub fn load(root: &Path) -> Result<Bundle, Box<dyn std::error::Error>> {
+     Ok(Bundle { entry, resources })
+ }
+ 
+-pub fn inspect(root: &Path) -> Result<Report, Box<dyn std::error::Error>> {
+-    let bundle = load(root)?;
+-    Ok(validate(&bundle.entry, &bundle.resources))
+-}
+-
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog.rs
+index 6d49ed45..3fa61a81 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog.rs
+@@ -1,8 +1,6 @@
+ //! JSON lane authority and read-only legacy projection drift.
+-#[path = "catalog_selected.rs"]
+-pub mod selected;
+ use serde::{Deserialize, Serialize};
+-use std::{collections::BTreeSet, fs, path::Path};
++use std::collections::BTreeSet;
+ 
+ #[derive(Debug, Deserialize, Serialize)]
+ #[serde(deny_unknown_fields)]
+@@ -124,18 +122,6 @@ pub fn validate_projections(catalog: &Catalog, markdown: &str, ps: &str, bash: &
+         legacy_projection_qualified: false,
+     }
+ }
+-pub fn inspect(root: &Path) -> Result<Report, Box<dyn std::error::Error>> {
+-    let catalog = Catalog::parse(&fs::read_to_string(
+-        root.join(".agents/sessions/lanes.json"),
+-    )?)?;
+-    Ok(validate_projections(
+-        &catalog,
+-        &fs::read_to_string(root.join(".agents/sessions/LANES.md"))?,
+-        &fs::read_to_string(root.join("scripts/agents/session-board.ps1"))?,
+-        &fs::read_to_string(root.join("scripts/agents/session-board.sh"))?,
+-    ))
+-}
+-
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry.rs
+index 667ad373..e844ca1c 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry.rs
+@@ -1,8 +1,6 @@
+ //! Pure static registry validation; no app rename or claim of live title discovery.
+-#[path = "registry_selected.rs"]
+-pub mod selected;
+ use serde::Serialize;
+-use std::{collections::BTreeSet, fs, path::Path};
++use std::collections::BTreeSet;
+ 
+ #[derive(Serialize)]
+ pub struct Report {
+@@ -61,12 +59,6 @@ pub fn validate(text: &str) -> Report {
+     }
+     result
+ }
+-pub fn inspect(root: &Path) -> Result<Report, std::io::Error> {
+-    Ok(validate(&fs::read_to_string(
+-        root.join(".agents/sessions/THREADS.md"),
+-    )?))
+-}
+-
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/language_source.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/language_source.rs
+index db2302ef..ba2e5a04 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/language_source.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/language_source.rs
+@@ -1,5 +1,5 @@
+ //! Explicit language-source contract; trusted cooperative observations only.
+-use super::{Preservation, Report, inspect};
++use crate::maintenance::language::{Preservation, Report, inspect};
+ use crate::maintenance::selected_inputs::{
+     Clock, FrozenSelection, Input, Limits, MAX_REQUEST_BYTES, Root, SystemClock,
+     capture_request_file,
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/product_selected.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/product_selected.rs
+index 8421cf63..cb1fc3b7 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/product_selected.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/product_selected.rs
+@@ -1,5 +1,5 @@
+ //! Fixed five-file product skill content check; source identity remains unqualified.
+-use super::{Report, validate};
++use crate::maintenance::product::{Report, validate};
+ use crate::maintenance::{inventory::FileRecord, selected_inputs::{Clock, FrozenSelection, Input, Limits, Root, SystemClock, capture_source_file}};
+ use serde::{Deserialize, Serialize};
+ use sha2::{Digest, Sha256};
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog_selected.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog_selected.rs
+index 931dbbb7..544ad2b1 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog_selected.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/catalog_selected.rs
+@@ -1,5 +1,5 @@
+ //! Fixed lane projection content check; no script execution or source authority.
+-use super::{Catalog, Report, validate_projections};
++use crate::maintenance::sessions::catalog::{Catalog, Report, validate_projections};
+ use crate::maintenance::{inventory::FileRecord, selected_inputs::{Clock, FrozenSelection, Input, Limits, Root, SystemClock, capture_source_file}};
+ use serde::{Deserialize, Serialize};
+ use sha2::{Digest, Sha256};
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry_selected.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry_selected.rs
+index 05caa8d1..111ac02f 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry_selected.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/sessions/registry_selected.rs
+@@ -1,5 +1,5 @@
+ //! Explicit single-registry content observation, never live app or writer authority.
+-use super::{Report, validate};
++use crate::maintenance::sessions::registry::{Report, validate};
+ use crate::maintenance::selected_inputs::{Clock, FrozenSelection, Input, Limits, Root, SystemClock, capture_source_file};
+ use serde::{Deserialize, Serialize};
+ use sha2::{Digest, Sha256};
+diff --git a/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs b/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs
+index 10274e15..eed15eb9 100644
+--- a/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs
++++ b/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs
+@@ -1,64 +1,93 @@
+ #![forbid(unsafe_code)]
+-//! Real staged artifact test, for approved hosted execution only.
+-#[path = "../maintenance/mod.rs"]
+-mod maintenance;
+-use crate::maintenance::package;
++//! Actual binary staging boundary. Run only in the approved hosted allocation.
++use serde::Deserialize;
+ use sha2::{Digest, Sha256};
+-use std::{fs, path::Path};
++use std::{fs, path::{Path, PathBuf}, process::{Command, Output}};
++
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++struct Entry { path: String, bytes: usize, sha256: String }
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++struct Receipt {
++    schema: String,
++    kind: String,
++    files: Vec<Entry>,
++    runtime_qualified: bool,
++    release_qualified: bool,
++}
+ 
+ #[test]
+ fn product_bundle_contains_paired_suite_and_refuses_existing_output() {
+     verify_bundle("product", "humanymous-product", "humanymous-development", 3);
+ }
+-
+ #[test]
+ fn developer_bundle_contains_separate_five_case_suite() {
+-    verify_bundle(
+-        "developer",
+-        "humanymous-development",
+-        "humanymous-product",
+-        5,
+-    );
++    verify_bundle("developer", "humanymous-development", "humanymous-product", 5);
++}
++
++fn source_root() -> PathBuf {
++    // Required runner-selected source, never a package-parent/CWD discovery.
++    let root = PathBuf::from(std::env::var_os("HUMANYMOUS_MAINTENANCE_PACKAGE_ROOT")
++        .expect("required explicit source root; absent configuration is a failed test"));
++    assert!(root.is_absolute(), "source root must be absolute");
++    assert!(!root.components().any(|c| matches!(c, std::path::Component::CurDir | std::path::Component::ParentDir)));
++    for selected in root.ancestors() {
++        let meta = fs::symlink_metadata(selected).expect("source ancestor missing");
++        assert!(meta.is_dir() && !meta.file_type().is_symlink(), "unsafe source ancestor");
++        #[cfg(windows)]
++        {
++            use std::os::windows::fs::MetadataExt;
++            assert_eq!(meta.file_attributes() & 0x400, 0, "source reparse point refused");
++        }
++    }
++    root
++}
++
++fn stage(root: &Path, output: &Path, kind: &str) -> Output {
++    Command::new(env!("CARGO_BIN_EXE_humanymous-agent-maintenance"))
++        .arg("stage-eval").arg(root).arg(output).arg(kind)
++        .output().expect("execute the exact Cargo-selected maintenance role")
+ }
+ 
+ fn verify_bundle(kind: &str, plugin: &str, excluded: &str, expected_cases: usize) {
+-    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+-        .parent()
+-        .unwrap()
+-        .parent()
+-        .unwrap();
++    let root = source_root();
+     let output = std::env::temp_dir().join(format!(
+-        "humanymous-{kind}-bundle-{}-{}",
+-        std::process::id(),
+-        std::time::SystemTime::now()
+-            .duration_since(std::time::UNIX_EPOCH)
+-            .unwrap()
+-            .as_nanos()
++        "humanymous-{kind}-bundle-{}-{}", std::process::id(),
++        std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)
++            .unwrap().as_nanos(),
+     ));
+-    let receipt = package::stage(root, &output, kind).unwrap();
++    assert!(!output.exists());
++    let run = stage(&root, &output, kind);
++    assert!(run.status.success(), "stage failed: {}", String::from_utf8_lossy(&run.stderr));
++    assert!(run.stdout.len() <= 2 * 1024 * 1024, "oversized stage receipt");
++    let receipt: Receipt = serde_json::from_slice(&run.stdout).expect("actual stage JSON receipt");
++    assert_eq!(receipt.schema, "humanymous.skill-package.v1");
++    assert_eq!(receipt.kind, kind);
+     assert!(!receipt.runtime_qualified);
+     assert!(!receipt.release_qualified);
++    assert!(!receipt.files.is_empty() && receipt.files.len() <= 512);
+     for entry in &receipt.files {
+-        let bytes = fs::read(output.join(&entry.path)).unwrap();
++        let path = Path::new(&entry.path);
++        assert!(!path.is_absolute());
++        assert!(path.components().all(|c| matches!(c, std::path::Component::Normal(_))));
++        assert!(!entry.path.contains(['\\', ':']));
++        let bytes = fs::read(output.join(path)).unwrap();
+         assert_eq!(bytes.len(), entry.bytes);
+         assert_eq!(format!("{:x}", Sha256::digest(&bytes)), entry.sha256);
+         assert!(!entry.path.contains(excluded));
+         assert!(!entry.path.starts_with(".agents/"));
+     }
+-    let cases = receipt
+-        .files
+-        .iter()
+-        .filter(|entry| {
+-            entry.path.starts_with(&format!("plugins/{plugin}/evals/"))
+-                && entry.path.ends_with("/prompt.md")
+-        })
+-        .count();
++    let cases = receipt.files.iter().filter(|entry| {
++        entry.path.starts_with(&format!("plugins/{plugin}/evals/"))
++            && entry.path.ends_with("/prompt.md")
++    }).count();
+     assert_eq!(cases, expected_cases);
+     let before = fs::read(output.join("bundle-receipt.json")).unwrap();
+-    assert!(package::stage(root, &output, kind).is_err());
+-    assert_eq!(
+-        fs::read(output.join("bundle-receipt.json")).unwrap(),
+-        before
+-    );
++    let refused = stage(&root, &output, kind);
++    assert!(!refused.status.success(), "existing output must be refused");
++    assert_eq!(fs::read(output.join("bundle-receipt.json")).unwrap(), before);
++    // Only the fresh, successfully verified output selected by this test is removed.
++    // Failures retain their output and diagnostics for the allocated runner.
+     fs::remove_dir_all(output).unwrap();
+ }

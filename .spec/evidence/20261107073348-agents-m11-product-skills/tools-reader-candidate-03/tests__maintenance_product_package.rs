@@ -1,0 +1,93 @@
+#![forbid(unsafe_code)]
+//! Actual binary staging boundary. Run only in the approved hosted allocation.
+use serde::Deserialize;
+use sha2::{Digest, Sha256};
+use std::{fs, path::{Path, PathBuf}, process::{Command, Output}};
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Entry { path: String, bytes: usize, sha256: String }
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Receipt {
+    schema: String,
+    kind: String,
+    files: Vec<Entry>,
+    runtime_qualified: bool,
+    release_qualified: bool,
+}
+
+#[test]
+fn product_bundle_contains_paired_suite_and_refuses_existing_output() {
+    verify_bundle("product", "humanymous-product", "humanymous-development", 3);
+}
+#[test]
+fn developer_bundle_contains_separate_five_case_suite() {
+    verify_bundle("developer", "humanymous-development", "humanymous-product", 5);
+}
+
+fn source_root() -> PathBuf {
+    // Required runner-selected source, never a package-parent/CWD discovery.
+    let root = PathBuf::from(std::env::var_os("HUMANYMOUS_MAINTENANCE_PACKAGE_ROOT")
+        .expect("required explicit source root; absent configuration is a failed test"));
+    assert!(root.is_absolute(), "source root must be absolute");
+    assert!(!root.components().any(|c| matches!(c, std::path::Component::CurDir | std::path::Component::ParentDir)));
+    for selected in root.ancestors() {
+        let meta = fs::symlink_metadata(selected).expect("source ancestor missing");
+        assert!(meta.is_dir() && !meta.file_type().is_symlink(), "unsafe source ancestor");
+        #[cfg(windows)]
+        {
+            use std::os::windows::fs::MetadataExt;
+            assert_eq!(meta.file_attributes() & 0x400, 0, "source reparse point refused");
+        }
+    }
+    root
+}
+
+fn stage(root: &Path, output: &Path, kind: &str) -> Output {
+    Command::new(env!("CARGO_BIN_EXE_humanymous-agent-maintenance"))
+        .arg("stage-eval").arg(root).arg(output).arg(kind)
+        .output().expect("execute the exact Cargo-selected maintenance role")
+}
+
+fn verify_bundle(kind: &str, plugin: &str, excluded: &str, expected_cases: usize) {
+    let root = source_root();
+    let output = std::env::temp_dir().join(format!(
+        "humanymous-{kind}-bundle-{}-{}", std::process::id(),
+        std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)
+            .unwrap().as_nanos(),
+    ));
+    assert!(!output.exists());
+    let run = stage(&root, &output, kind);
+    assert!(run.status.success(), "stage failed: {}", String::from_utf8_lossy(&run.stderr));
+    assert!(run.stdout.len() <= 2 * 1024 * 1024, "oversized stage receipt");
+    let receipt: Receipt = serde_json::from_slice(&run.stdout).expect("actual stage JSON receipt");
+    assert_eq!(receipt.schema, "humanymous.skill-package.v1");
+    assert_eq!(receipt.kind, kind);
+    assert!(!receipt.runtime_qualified);
+    assert!(!receipt.release_qualified);
+    assert!(!receipt.files.is_empty() && receipt.files.len() <= 512);
+    for entry in &receipt.files {
+        let path = Path::new(&entry.path);
+        assert!(!path.is_absolute());
+        assert!(path.components().all(|c| matches!(c, std::path::Component::Normal(_))));
+        assert!(!entry.path.contains(['\\', ':']));
+        let bytes = fs::read(output.join(path)).unwrap();
+        assert_eq!(bytes.len(), entry.bytes);
+        assert_eq!(format!("{:x}", Sha256::digest(&bytes)), entry.sha256);
+        assert!(!entry.path.contains(excluded));
+        assert!(!entry.path.starts_with(".agents/"));
+    }
+    let cases = receipt.files.iter().filter(|entry| {
+        entry.path.starts_with(&format!("plugins/{plugin}/evals/"))
+            && entry.path.ends_with("/prompt.md")
+    }).count();
+    assert_eq!(cases, expected_cases);
+    let before = fs::read(output.join("bundle-receipt.json")).unwrap();
+    let refused = stage(&root, &output, kind);
+    assert!(!refused.status.success(), "existing output must be refused");
+    assert_eq!(fs::read(output.join("bundle-receipt.json")).unwrap(), before);
+    // Only the fresh, successfully verified output selected by this test is removed.
+    // Failures retain their output and diagnostics for the allocated runner.
+    fs::remove_dir_all(output).unwrap();
+}
