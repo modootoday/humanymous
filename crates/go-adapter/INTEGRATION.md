@@ -148,12 +148,13 @@ execution follows Root's latest user-authorized admission policy. The current
 benchmark quiet window forbids new workload commands, while this goal still
 requires actual hosted Go eight-case evidence.
 
-Commands used for that source, to rerun after later changes in an assigned slot:
+Commands used for that source, to rerun after later changes in an assigned slot
+(Cargo package id is `humanymous-adapter-go`; historical alias `humanymous-go-adapter` is invalid):
 
 ```
-cargo test --locked -p humanymous-go-adapter --lib
-cargo fmt -p humanymous-go-adapter -- --check
-cargo clippy --locked -p humanymous-go-adapter --all-targets -- -D warnings
+cargo test --locked -p humanymous-adapter-go --lib
+cargo fmt -p humanymous-adapter-go -- --check
+cargo clippy --locked -p humanymous-adapter-go --all-targets -- -D warnings
 ```
 
 Manifest/dependencies frozen at root request while workspace integration waits
