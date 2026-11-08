@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-08T00:31:47Z
+updated: 2026-11-08T01:35:46Z
 files:
   - {path: native-selector-validation-summary.json, sha256: afc912e9f5877c6df843d816ba6a09a9ce4a8682c697e3e42356e87220f7fe08, bytes: 12855, store: repo}
   - {path: native-selector-scan-triage-source.json, sha256: 5b5bdd18c40b2c18032b1c888ee8e74759f0c0a024751acb22db5e0538315f6a, bytes: 2088, store: repo}
@@ -71,6 +71,10 @@ files:
   - {path: local-windows-audit-evidence-adoption.json, sha256: 04367fe5390d1dc2fadcbcceea5b3ecbe650d3b6fa85daf9776415bf8043f9af, bytes: 1624, store: repo}
   - {path: runner-act-wal-pure-summary.json, sha256: 7b706eb725ec3523af073299a17611f4d46c8fc7d6ce3227e985f01b7787b88a, bytes: 1369, store: repo}
   - {path: cli-native-runner-contract-source.json, sha256: 87065626b7546dd2352f51df28612308486deead446a9c7e564cf5fb0706cdc0, bytes: 40727, store: repo}
+  - {path: observer-producer-candidate/mod.rs, sha256: 5f4ec608adb5ce096a7062afadee7cb7efdf3b036750b7a9463c97990d54fd63, bytes: 2788, store: repo}
+  - {path: observer-producer-candidate/source-inputs.json, sha256: 82874252fa51f44460b7bc1b7d3cbec7065840c919d076e003a999c90a570862, bytes: 4202, store: repo}
+  - {path: observer-producer-candidate/windows_process.rs, sha256: e38d70e92431e4c0d54f0642bb1ceb326ab604b0d9f26528246a1812b62327f5, bytes: 6441, store: repo}
+  - {path: observer-producer-candidate/windows_service.rs, sha256: 06da47ad9d4761d8d2d597a08720d644f3628d7ef2d6e95d0fb2d0e470096d80, bytes: 3855, store: repo}
 ---
 
 # Cross OS runner research

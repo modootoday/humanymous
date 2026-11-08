@@ -1,0 +1,110 @@
+{
+  "schema": "observer-producer-candidate-source-v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED",
+  "candidate_modules": 3,
+  "candidate_test_functions": 3,
+  "live_source_edits": false,
+  "compiler_executed": false,
+  "native_queries_executed": false,
+  "scm_or_account_mutation": false,
+  "new_unsafe_scopes": 0,
+  "preparation_ready_producer_implemented": false,
+  "non_windows": "Unsupported; no observer provider implementation",
+  "source_inputs": [
+    {
+      "path": "crates/sdk/humanymous-runtime/src/authority/startup/observer.rs",
+      "sha256": "c6aefce84793d37becdcc622dea2271277441c02a1f9feec2e4d5184003fc806",
+      "bytes": 3587
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/authority/startup/observer/state.rs",
+      "sha256": "3778b0c05fd9bf53dd64cd0c616ba45388e4ed157cb77a8e9aaf0e430e52cf21",
+      "bytes": 4891
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/authority/startup/authorization.rs",
+      "sha256": "27a0f90de644c3aeea2b3fe8e8bcf8366d7fee8e1a632bb4452027670dd7484e",
+      "bytes": 7868
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/authority/transport/windows.rs",
+      "sha256": "15d91a8c1e0fbde6b0edbdb9d856eb477dc71067e9d54ac9c79a99d416a363a9",
+      "bytes": 4791
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/gateway/service/observed.rs",
+      "sha256": "0c75a27137fa64331fd10d05f2f38921c5c6c9790666e48ef32e856660c14fad",
+      "bytes": 2791
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/gateway/startup.rs",
+      "sha256": "e534e8b9bdccb55ec9989a4237489c3548eb7e5f6759d97976bfcebd62c90a61",
+      "bytes": 6311
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/src/native_security/process/windows.rs",
+      "sha256": "28caa04853dd4fe6d24ad28a5dc75ee6ef3003d5c2e3557063f85d0c2606cc3b",
+      "bytes": 3263
+    },
+    {
+      "path": "crates/sdk/humanymous-runtime/Cargo.toml",
+      "sha256": "c2c174b6e4a71b72637ca62958b4378ab68b22ef179886a682406c8bafb9bbd7",
+      "bytes": 6022
+    }
+  ],
+  "upstream_api_inputs": [
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/kernel/handles/hprocess.rs",
+      "sha256": "2c7928ad1832a7e94a48c2a5117bf874a9c340167f1ffd1bda1e837e44060f5d",
+      "bytes": 10488
+    },
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/advapi/handles/hprocess.rs",
+      "sha256": "f13b2c1f2a39b624b8e97582c0f069a7b9d9a5a093c89515198f58e3fe5509fc",
+      "bytes": 977
+    },
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/advapi/handles/haccesstoken.rs",
+      "sha256": "933fcf2f472dffe4dd25b2788d9c0fe9c0ad7394085c0aa5e3045bc1afb43f80",
+      "bytes": 11446
+    },
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/advapi/funcs.rs",
+      "sha256": "c7116d557878305681bc42c5a046afc8a8e47209acb589e18e11fbf5e253a44a",
+      "bytes": 29485
+    },
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/kernel/traits.rs",
+      "sha256": "f7407754377c56c1d63fc5d8a11ad8dd24a614224873640390c834405cccbd4d",
+      "bytes": 4955
+    },
+    {
+      "registry_relative_path": "winsafe-0.0.29/src/kernel/structs.rs",
+      "sha256": "9176ffac71471695d81e925410a9b0154736692c5feb7d55ef92d4ea735a0106",
+      "bytes": 34640
+    },
+    {
+      "registry_relative_path": "windows-service-0.8.1/src/service.rs",
+      "sha256": "e368f590111dc3532c409f6b11a57401cf31e273562ef1087107c9dd47b8754f",
+      "bytes": 76984
+    },
+    {
+      "registry_relative_path": "windows-service-0.8.1/src/service_manager.rs",
+      "sha256": "c6f7678114425c20136959b1975773c8dca014f163a83ad413fb753315685f35",
+      "bytes": 9252
+    },
+    {
+      "registry_relative_path": "windows-permissions-0.2.4/src/wrappers/get_security_info.rs",
+      "sha256": "7eda343e17073b855dbe61a1560c629b9aa1e24493b52bd4d1ae7d7eac69e136",
+      "bytes": 1297
+    }
+  ],
+  "pending_decisions": [
+    "Windows-only native-security windows-service0.8.1 edge",
+    "Original installer and publisher protected delegation",
+    "Actual cross-SID feasibility without SeDebug",
+    "Owning two-principal IPC implementation",
+    "Immutable signed publication and B1 file-create decision",
+    "Native W capability and Authority receipt/Ready linearization"
+  ]
+}
