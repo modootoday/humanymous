@@ -300,6 +300,29 @@ passed. Earlier source snapshots and first failures remain historical evidence;
 the newer assembly still requires a fresh complete source/case freeze and all
 required hosted package/runtime checks before any shared-path cutover.
 
+Root removed the isolated Pages normalized-profile corpus compile embed while
+retaining the same actual25-case contract. The existing archive regular-path and
+bounded-reader helpers are reused privately; the vectors input requires an
+explicit absolute file. The required checkout test is now separately ignored
+unless explicitly selected with canonical HUMANYMOUS_QUALIFICATION_SOURCE_ROOT
+and reviewed HUMANYMOUS_NORMALIZED_CORPUS_SHA256. Its actual invocation passed
+one test (37 filtered), verifying five acceptances,20 rejections and exact corpus
+SHA-25663991623d692c135597249e73378c6f9a0228c5d149c617ce1ae4079900625c3.
+Pages all-target strict Clippy passed. No public corpus copy or implementation
+clone was introduced; the corpus remains canonical under docs and conformance
+remains false.
+
+The isolated Lab Docker recipe test likewise uses the existing private16KiB
+source reader, a fixed original recipe path and reviewed
+HUMANYMOUS_LAB_RECIPE_SHA256, rather than compiling the mutable recipe. Actual
+recipe gate execution passed one test (45 filtered) with SHA-256
+cc31b25fe0dfe3d05a0d1a289118b6f375a32ce85bc4b37c26d40605edc54615;
+Lab all-target strict Clippy passed. This test is also an explicitly required
+ignored checkout gate; its previous default-suite pass must not be transferred
+to the changed default suite. Existing real recipe assertions remain intact.
+Both new gate configurations are assigned to the workflow candidate owner, with
+separate Cargo-exit and positive case accounting required before hosted adoption.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
