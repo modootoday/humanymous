@@ -1,0 +1,111 @@
+{
+  "schema": "humanymous.browser-root-cef-caller-correction/1",
+  "state": "actual-Rust-candidate-unapplied-uncompiled",
+  "root_frozen_source": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "private_candidate": ".spec.local/root/evidence/20261108131000-browser-ui-cef-caller-correction",
+  "supersedes_only_callers_from": [
+    "d340d7a3176417feeabd06b69fee177b0506610a",
+    "34f0af03206362622d2a155f407a7bdbececb9d3"
+  ],
+  "cause": "Path separator mismatch skipped main/provisioning transformations; earlier applicability did not prove advertised semantics",
+  "files": [
+    {
+      "candidate_sha256": "82b008590e47a8a42978a144eaaf59e4835b500dbead300fbcbc9e0b13f0cd73",
+      "candidate_bytes": 13196,
+      "preimage_bytes": 12487,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs",
+      "root_preimage_sha256": "abf1dee05bc23a328d28e39bbd4f707b0f51a7d5af3f91f2d727707686938b74"
+    },
+    {
+      "candidate_sha256": "c72e3361d6980fbb4790ccf0a4219241ee8e0b8d52e855173a52ac192918ffea",
+      "candidate_bytes": 13130,
+      "preimage_bytes": 9857,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs",
+      "root_preimage_sha256": "debc34f361d8c3d89a23cf49f177d11bc440fca1f92f1df18781df336f71e2ff"
+    },
+    {
+      "candidate_sha256": "19e2e30e6b1b08a5007501226b506dbd02e1545182a6bfd59c2df558a170b3c0",
+      "candidate_bytes": 2601,
+      "preimage_bytes": 2356,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning/bundles.rs",
+      "root_preimage_sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9"
+    },
+    {
+      "candidate_sha256": "e5c7a31299af8107786e8b4b36cc60c2354d94628929a26a95ee71e804dd53c3",
+      "candidate_bytes": 8487,
+      "preimage_bytes": 8460,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/desktop.rs",
+      "root_preimage_sha256": "416e057fb1f755ae23b393b2b306797b9de6eb6bb07523b4c0db40a0555a3628"
+    },
+    {
+      "candidate_sha256": "bff1409f39933489069201938a20e360d5cf0dbab32d960280b9f795fb07a6eb",
+      "candidate_bytes": 13748,
+      "preimage_bytes": 12912,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs",
+      "root_preimage_sha256": "dd158986a8f9c39f0864ad0d8fd1c3e2ac3c85d670321515d5c3a6d513252043"
+    },
+    {
+      "candidate_sha256": "d11c7c1f2f0a6850a62417e77e6ddfa2a4e3a98f941df04c388a164db3d7ecbc",
+      "candidate_bytes": 4873,
+      "preimage_bytes": 4840,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/bootstrap.rs",
+      "root_preimage_sha256": "999bb9d4c60546167bf8d7bc2c0175e5976ea9ea38b42e0827dc7939e5c1cf84"
+    },
+    {
+      "candidate_sha256": "7eb47f770f28baef08507548dd03f1cc1ec6f6b2603d614df623d6aec9db069e",
+      "candidate_bytes": 12418,
+      "preimage_bytes": 10590,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs",
+      "root_preimage_sha256": "f6411d81a108887f4458cb6eb25c3228a5baf9902ed21d06ee0b07b8c1941b98"
+    }
+  ],
+  "root_preimage_drift": 0,
+  "observed_root_inputs": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "2dcbbfeec4432e76db74c5fc042efdf382120c318c732065cc192cee68eda24f"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "853c5154e80bff2f640c36c95e1772df00ea758a550a036123a70e9e19f03c90"
+    },
+    {
+      "path": "crates/apps/humanymous-browser/Cargo.toml",
+      "sha256": "53f54d23c396b63e5d22e1f10548b8bf246bf0037b58eb74b94adfdef779d0dd"
+    },
+    {
+      "path": "crates/apps/humanymous-cli/Cargo.toml",
+      "sha256": "41aec90f8307b30f49989817e9a3740743332464d78976e9b5cfa682b5a1afcd"
+    },
+    {
+      "path": "crates/apps/humanymous-cli/qualification/browser/cef/pilot-contract.json",
+      "sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a"
+    },
+    {
+      "path": "crates/apps/humanymous-cli/qualification/data-provenance.json",
+      "sha256": "de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87"
+    }
+  ],
+  "source_review_assertions": {
+    "no_retired_snapshot_roots": true,
+    "no_retired_packages": true,
+    "one_library_role_build_loop": true,
+    "root_main_visibility_preserved": true,
+    "actual_create_new_copy": true,
+    "six_explicit_role_tests": true,
+    "actual_copy_digest_join": true,
+    "seven_no_default_flags": true,
+    "cli_packaged_contract_include_preserved": true,
+    "public_single_native_build_removed": true,
+    "public_schema_two": true
+  },
+  "patch_applicability": "passed against seven exact frozen Root preimages",
+  "patch_application": "not_run",
+  "compiler": "not_run",
+  "fmt": "not_run",
+  "tests": "not_run",
+  "new_rust_regressions_authored": 3,
+  "native_pilot": "not_run",
+  "producer_contract_refresh": "Root pending; existing packaged include and immutable provenance unchanged",
+  "whole_graph_closure": false
+}

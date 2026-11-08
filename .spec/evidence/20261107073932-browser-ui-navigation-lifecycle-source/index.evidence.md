@@ -45,6 +45,9 @@ files:
   - {path: src-native-callers-from-d340.patch, sha256: 714a41f601a9c1703a3aaecd984e84682beb79dd7d7d527bb0fec26639c1ee56, bytes: 3428, store: repo}
   - {path: src-native-static-check.json, sha256: cc341c4c2610a0ad7907da5eb1a8534106a6a275212488d7ea327b884ef2394f, bytes: 1923, store: repo}
   - {path: src-native-delta.md, sha256: 7c63a7036683b7c2225b6153df728ce12589d47974c0206be272b1af50053880, bytes: 4425, store: repo}
+  - {path: root-cef-callers-correction.md, sha256: bae9e1890684c1ab2b960edfe2c85173ad6d18ee678a4e73e6b40c3a99483b13, bytes: 6700, store: repo}
+  - {path: root-cef-callers-correction.json, sha256: a53cd9e95225165a39c79cf18cdc92b653f165d722d83b5a696b614fdd8c94ef, bytes: 4944, store: repo}
+  - {path: root-cef-callers-corrected.patch, sha256: f37bbd670a0f36936c1e10d97e449f513e7e3314b084d3cbf6ab381534be7e08, bytes: 28975, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint

@@ -580,3 +580,21 @@ Root may choose a fresh corrected-map application or exact-d340 delta route,
 never both. Runtime/ABI/unsafe/test identities, contract counts, feature roles,
 sandbox and model API are unchanged. No source/compiler/native/tool execution
 grant follows. Root owns final graph/Tools assembly and all unexecuted gates.
+
+
+## CA-BROWSER-ROLE-CALLER-01 actual caller correction
+
+Root found main/provisioning transformations absent from earlier applicable
+caller patches because mixed path separators skipped conditional edits. Prior
+caller integration claims were overstated; immutable originals retain that failure.
+root-cef-callers-correction.md/json and root-cef-callers-corrected.patch now bind
+seven exact current Root isolated preimages to actual complete Rust postimages.
+Sequential explicit role builds, immediate create-new verified DLL preservation,
+fresh bundle assembly/hash joins, six explicit role tests, merged source roots
+and version2 separate receipts are present in inspected function bodies.
+Package-local CLI contract include/provenance stays unchanged; Root review and
+replica refresh are mandatory before new selectors can pass. Three new Rust
+regressions are authored/unexecuted. Applicability/static-source checks pass;
+no formatter/compiler/test/SDK/native/browser execution or live source change.
+This supersedes only prior caller candidates. Root adopts against exact hashes,
+then resolves schema consumers and runs coherent role/native qualification.

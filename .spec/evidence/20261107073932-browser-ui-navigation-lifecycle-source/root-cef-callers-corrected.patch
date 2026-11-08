@@ -1,0 +1,606 @@
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/desktop.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/desktop.rs
+index 43750dbf..195ce6c2 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/desktop.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/desktop.rs
+@@ -11,7 +11,7 @@ pub(super) fn contract() -> io::Result<Value> {
+ fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
+     let contract = contract()?;
+     let profile = &contract["protocol_preflight"];
+-    if profile["selector"] != "pilot_assertions::tests::"
++    if profile["selector"] != "desktop::pilot_assertions::tests::"
+         || profile["classification"] != "synthetic_report_protocol"
+         || profile["initializes_cef"] != false
+         || profile["starts_processes"] != false
+@@ -28,7 +28,7 @@ fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
+         let name = name
+             .as_str()
+             .ok_or_else(|| io::Error::other("protocol name invalid"))?;
+-        if !name.starts_with("pilot_assertions::tests::")
++        if !name.starts_with("desktop::pilot_assertions::tests::")
+             || !name
+                 .bytes()
+                 .all(|c| c.is_ascii_alphanumeric() || matches!(c, b'_' | b':'))
+@@ -44,7 +44,7 @@ fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
+     {
+         return Err(io::Error::other("protocol inventory count mismatch"));
+     }
+-    Ok(("pilot_assertions::tests::".to_owned(), names))
++    Ok(("desktop::pilot_assertions::tests::".to_owned(), names))
+ }
+ pub(super) fn protocol_selector() -> io::Result<String> {
+     Ok(protocol_inventory()?.0)
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/bootstrap.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/bootstrap.rs
+index 0b77f844..40e108a5 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/bootstrap.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/bootstrap.rs
+@@ -26,7 +26,7 @@ pub(super) fn public_observations(value: &Value) -> Value {
+ }
+ pub(super) fn selector() -> io::Result<String> {
+     let profile = config()?["protocol_preflight"].clone();
+-    if profile["selector"] != "negative_pilot::tests::"
++    if profile["selector"] != "bootstrap::negative_pilot::tests::"
+         || profile["required_test_count"] != 3
+         || profile["classification"] != "synthetic_bootstrap_observation_protocol"
+         || profile["initializes_cef"] != false
+@@ -34,7 +34,7 @@ pub(super) fn selector() -> io::Result<String> {
+     {
+         return Err(io::Error::other("unsupported bootstrap protocol preflight"));
+     }
+-    Ok("negative_pilot::tests::".into())
++    Ok("bootstrap::negative_pilot::tests::".into())
+ }
+ pub(super) fn verify_protocol(text: &str) -> io::Result<Value> {
+     selector()?;
+@@ -52,7 +52,7 @@ pub(super) fn verify_protocol(text: &str) -> io::Result<Value> {
+             .len()
+             != 3
+         || names.iter().any(|name| {
+-            !name.starts_with("negative_pilot::tests::")
++            !name.starts_with("bootstrap::negative_pilot::tests::")
+                 || !name
+                     .bytes()
+                     .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b':'))
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs
+index 2c968276..ca6356ae 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs
+@@ -22,14 +22,14 @@ fn marker_bytes(records: &[Value]) -> Vec<u8> {
+         .into_bytes()
+ }
+ fn source() -> Value {
+-    json!({"files":{"crates/browser/native/bootstrap/src/lib.rs":"a"}})
++    json!({"files":{"crates/apps/humanymous-browser/src/native/bootstrap/mod.rs":"a"}})
+ }
+ fn message(file: &str) -> Value {
+     json!({"reason":"compiler-message","message":{"level":"error","code":{"code":"E0308"},"rendered":"PRIVATE_CANARY","message":"PRIVATE_CANARY","spans":[{"is_primary":true,"file_name":file,"line_start":9,"text":[{"text":"PRIVATE_CANARY"}]}]}})
+ }
+ #[test]
+ fn compiler_projection_keeps_only_codes_and_reviewed_locations() {
+-    let bytes = message("crates/browser/native/bootstrap/src/lib.rs").to_string();
++    let bytes = message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs").to_string();
+     let value = project(bytes.as_bytes(), &source(), Some(101), false);
+     assert_eq!(value["diagnostics"][0]["error_code"], "E0308");
+     assert_eq!(value["diagnostics"][0]["locations"][0]["line"], 9);
+@@ -67,7 +67,7 @@ fn long_and_excess_records_are_bounded_with_explicit_omissions() {
+     bytes.push(b'\n');
+     for _ in 0..70 {
+         bytes.extend(
+-            message("crates/browser/native/bootstrap/src/lib.rs")
++            message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs")
+                 .to_string()
+                 .bytes(),
+         );
+@@ -78,12 +78,12 @@ fn long_and_excess_records_are_bounded_with_explicit_omissions() {
+     assert_eq!(value["oversized_records"], 1);
+     assert_eq!(value["omitted_diagnostics"], 6);
+     assert_eq!(value["diagnostic_read_truncated"], true);
+-    let mut warning = message("crates/browser/native/bootstrap/src/lib.rs");
++    let mut warning = message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs");
+     warning["message"]["level"] = json!("warning");
+     let text = format!(
+         "{}{}",
+         format!("{warning}\n").repeat(64),
+-        message("crates/browser/native/bootstrap/src/lib.rs")
++        message("crates/apps/humanymous-browser/src/native/bootstrap/mod.rs")
+     );
+     let value = project(text.as_bytes(), &source(), Some(101), false);
+     assert_eq!(
+@@ -243,3 +243,39 @@ fn duplicate_and_escaped_decoded_marker_keys_are_rejected() {
+     assert_eq!(result["malformed_json_records"], 1);
+     assert_eq!(result["diagnostics"], json!([]));
+ }
++
++#[test]
++fn separate_role_receipts_preserve_desktop_failure_without_aggregate_success() {
++    let report = json!({
++        "status":"failed", "stage":"native-build-cef-desktop",
++        "native_build":{"exit_code":0,"private":"PRIVATE_CANARY"},
++        "stage_commands":{
++            "native-build-cef-bootstrap":{"exit_code":0,"status_observed":true},
++            "native-build-cef-desktop":{"exit_code":101,"status_observed":true}
++        },
++        "role_artifacts":{
++            "cef-bootstrap":{"sha256":"a".repeat(64),"bytes":17},
++            "cef-desktop":{"sha256":"PRIVATE_CANARY","bytes":"PRIVATE_CANARY"}
++        }
++    });
++    let safe = public(&report);
++    assert_eq!(safe["schema"], "humanymous.cef-safe-diagnostics/2");
++    assert_eq!(safe["stage"], "native-build-cef-desktop");
++    assert_eq!(safe["status"], "failed");
++    assert_eq!(safe["native_builds"]["cef-bootstrap"]["exit_code"], 0);
++    assert_eq!(safe["native_builds"]["cef-desktop"]["exit_code"], 101);
++    assert!(safe.get("native_build").is_none());
++    assert_eq!(safe["role_artifacts"]["cef-bootstrap"]["sha256"], "a".repeat(64));
++    assert!(safe["role_artifacts"]["cef-desktop"]["sha256"].is_null());
++    assert!(!safe.to_string().contains("PRIVATE_CANARY"));
++}
++
++#[test]
++fn unexecuted_native_roles_stay_null_and_staging_failure_is_preserved() {
++    let safe = public(&json!({"status":"failed","stage":"native-stage-cef-bootstrap"}));
++    assert_eq!(safe["stage"], "native-stage-cef-bootstrap");
++    assert!(safe["native_builds"]["cef-bootstrap"].is_null());
++    assert!(safe["native_builds"]["cef-desktop"].is_null());
++    assert!(safe["role_artifacts"]["cef-bootstrap"]["sha256"].is_null());
++    assert!(safe["role_artifacts"]["cef-desktop"]["bytes"].is_null());
++}
+\ No newline at end of file
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs
+index b868a2fb..d6af5bc3 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs
+@@ -254,7 +254,8 @@ fn native_public(value: &Value, source: &Value) -> Value {
+ pub(super) fn public(report: &Value) -> Value {
+     let mut commands = serde_json::Map::new();
+     for stage in [
+-        "native-build",
++        "native-build-cef-bootstrap",
++        "native-build-cef-desktop",
+         "desktop-protocol-build",
+         "desktop-protocol-tests",
+         "bootstrap-protocol-build",
+@@ -272,7 +273,11 @@ pub(super) fn public(report: &Value) -> Value {
+             matches!(
+                 *stage,
+                 "source-preflight"
+-                    | "native-build"
++                    | "native-build-cef-bootstrap"
++                    | "native-build-cef-desktop"
++                    | "native-stage-cef-bootstrap"
++                    | "native-stage-cef-desktop"
++                    | "native-bundle"
+                     | "desktop-protocol-build"
+                     | "desktop-protocol-tests"
+                     | "bootstrap-protocol-build"
+@@ -291,8 +296,22 @@ pub(super) fn public(report: &Value) -> Value {
+         .as_object()
+         .and_then(|files| serde_json::to_vec(files).ok())
+         .map(|bytes| format!("{:x}", Sha256::digest(bytes)));
+-    json!({"schema":"humanymous.cef-safe-diagnostics/1","stage":stage,"source_sha":sha,
+-        "source_manifest_sha256":manifest,"native_build":report.get("native_build").map(|value| native_public(value, &report["source"])),
++    let mut builds = serde_json::Map::new();
++    let mut artifacts = serde_json::Map::new();
++    for role in ["cef-bootstrap", "cef-desktop"] {
++        let key = format!("native-build-{role}");
++        builds.insert(role.into(), commands.get(&key).cloned().unwrap_or(Value::Null));
++        let artifact = &report["role_artifacts"][role];
++        let sha = artifact["sha256"].as_str().filter(|sha| {
++            sha.len() == 64 && sha.bytes().all(|byte| byte.is_ascii_hexdigit())
++        });
++        artifacts.insert(role.into(), json!({
++            "sha256":sha,
++            "bytes":artifact["bytes"].as_u64(),
++        }));
++    }
++    json!({"schema":"humanymous.cef-safe-diagnostics/2","stage":stage,"source_sha":sha,
++        "source_manifest_sha256":manifest,"native_builds":builds,"role_artifacts":artifacts,
+         "source_changed":report["source_changed"].as_bool(),
+         "stage_commands":commands,
+         "status":if report["status"]=="passed"{"passed"}else{"failed"},
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
+index f307dbbf..fbe89a08 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
+@@ -10,7 +10,7 @@ use std::{
+ };
+ 
+ const CASE: &str =
+-    "tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation";
++    "bootstrap::tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation";
+ 
+ fn logged_status(command: &mut Command, path: &Path) -> io::Result<std::process::ExitStatus> {
+     let file = fs::File::create(path)?;
+@@ -72,44 +72,38 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+     }
+     let source = provisioning::source_snapshot()?;
+     report["source"] = source.clone();
+-    report["stage"] = "native-build".into();
+     let tool_path = provisioning::tool_path()?;
+-    let native_log = output.join("native-build.log");
+-    let native_status = logged_status(
+-        Command::new("cargo").env("PATH", &tool_path).args([
+-            "build",
+-            "-p",
+-            "humanymous-cef-bootstrap",
+-            "-p",
+-            "humanymous-cef-desktop",
+-            "--locked",
+-            "--message-format=json",
+-        ]),
+-        &native_log,
+-    );
+-    report["native_build"] = diagnostics::read(
+-        &native_log,
+-        &source,
+-        native_status.as_ref().ok().and_then(|status| status.code()),
+-        false,
+-    );
+-    report["native_build"]["status_observed"] = native_status.is_ok().into();
+-    report["stage_commands"]["native-build"] = report["native_build"].clone();
+-    if !native_status?.success() {
+-        return Err(io::Error::other(
+-            "native build failed; compiler details retained privately",
+-        ));
++    let staging = output.join("native-role-artifacts");
++    fs::create_dir(&staging)?;
++    for (role, name) in [
++        ("cef-bootstrap", "humanymous_cef_bootstrap.dll"),
++        ("cef-desktop", "humanymous_cef_desktop.dll"),
++    ] {
++        report["stage"] = format!("native-build-{role}").into();
++        logged(
++            Command::new("cargo").env("PATH", &tool_path).args([
++                "build", "--locked", "-p", "humanymous-browser", "--lib",
++                "--no-default-features", "--features", role, "--message-format=json",
++            ]),
++            &output.join(format!("native-build-{role}.log")),
++            report,
++        )?;
++        report["stage"] = format!("native-stage-{role}").into();
++        // Preserve this role before the next Cargo invocation overwrites its DLL.
++        report["role_artifacts"][role] = provisioning::retain_role(&staging, name)?;
+     }
+-    let bundle = provisioning::prepare()?;
++    report["stage"] = "native-bundle".into();
++    let bundle = provisioning::prepare(&staging)?;
+     report["stage"] = "desktop-protocol-build".into();
+     logged(
+         Command::new("cargo").env("PATH", &tool_path).args([
+             "test",
++            "--no-default-features",
+             "--locked",
+             "-p",
+-            "humanymous-cef-desktop",
++            "humanymous-browser",
+             "--features",
+-            "native-pilot-tests",
++            "cef-desktop,native-pilot-tests",
+             "--lib",
+             "--no-run",
+             "--message-format=json",
+@@ -123,11 +117,12 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+     logged(
+         Command::new("cargo").env("PATH", &tool_path).args([
+             "test",
++            "--no-default-features",
+             "--locked",
+             "-p",
+-            "humanymous-cef-desktop",
++            "humanymous-browser",
+             "--features",
+-            "native-pilot-tests",
++            "cef-desktop,native-pilot-tests",
+             "--lib",
+             &selector,
+             "--message-format=json",
+@@ -142,12 +137,13 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+     logged(
+         Command::new("cargo").env("PATH", &tool_path).args([
+             "test",
++            "--no-default-features",
+             "--locked",
+             "--message-format=json",
+             "-p",
+-            "humanymous-cef-bootstrap",
++            "humanymous-browser",
+             "--features",
+-            "native-pilot-tests",
++            "cef-bootstrap,native-pilot-tests",
+             "--lib",
+             "--no-run",
+         ]),
+@@ -160,12 +156,13 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+     logged(
+         Command::new("cargo").env("PATH", &tool_path).args([
+             "test",
++            "--no-default-features",
+             "--locked",
+             "--message-format=json",
+             "-p",
+-            "humanymous-cef-bootstrap",
++            "humanymous-browser",
+             "--features",
+-            "native-pilot-tests",
++            "cef-bootstrap,native-pilot-tests",
+             "--lib",
+             &bootstrap_selector,
+             "--",
+@@ -184,13 +181,14 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             .env("HUMANYMOUS_CEF_PILOT_BUNDLE", &bundle)
+             .args([
+                 "test",
++                "--no-default-features",
+                 "-p",
+-                "humanymous-cef-bootstrap",
++                "humanymous-browser",
+                 "--locked",
+                 "--lib",
+                 "--message-format=json",
+                 "--features",
+-                "native-pilot-tests",
++                "cef-bootstrap,native-pilot-tests",
+                 "--",
+                 CASE,
+                 "--exact",
+@@ -233,13 +231,14 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             .env("HUMANYMOUS_CEF_CANCELLED_BUNDLE", cancelled)
+             .args([
+                 "test",
++                "--no-default-features",
+                 "--locked",
+                 "-p",
+-                "humanymous-cef-desktop",
++                "humanymous-browser",
+                 "--lib",
+                 "--features",
+-                "native-pilot-tests",
+-                "pilot_process::",
++                "cef-desktop,native-pilot-tests",
++                "desktop::pilot_process::",
+                 "--message-format=json",
+                 "--",
+                 "--test-threads=1",
+@@ -270,6 +269,14 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             provisioning::digest(&bundle.join(name))?.into(),
+         );
+     }
++    for (role, name) in [
++        ("cef-bootstrap", "humanymous_cef_bootstrap.dll"),
++        ("cef-desktop", "humanymous_cef_desktop.dll"),
++    ] {
++        if report["role_artifacts"][role]["sha256"] != hashes[name] {
++            return Err(io::Error::other("packaged role differs from staged role"));
++        }
++    }
+     report["artifacts"] = hashes.into();
+     report["status"] = "passed".into();
+     report["stage"] = "complete".into();
+@@ -300,7 +307,7 @@ pub(super) fn main() -> io::Result<()> {
+     }
+     let output = Path::new(&output);
+     fs::create_dir_all(output)?;
+-    let mut report = json!({"status":"failed","scope":"separate synthetic protocol preflight, bootstrap rejection and two provisioned desktop process cases","required_test":CASE,"passed_tests":null,"ignored_tests":null,"desktop_passed_tests":null,"protocol_preflight":null,"bootstrap_rejection_passed":false,"required_override_cases":4,"rejected_override_cases":null,"stage":"source-preflight","browser_ready":false,"full_runtime_qualified":false,"gui_keyboard_ime_ax":"not qualified by these bounded probes","descendant_cleanup_attested":false});
++    let mut report = json!({"schema":"humanymous.cef-native-pilot/2","role_artifacts":{},"stage_commands":{},"status":"failed","scope":"separate synthetic protocol preflight, bootstrap rejection and two provisioned desktop process cases","required_test":CASE,"passed_tests":null,"ignored_tests":null,"desktop_passed_tests":null,"protocol_preflight":null,"bootstrap_rejection_passed":false,"required_override_cases":4,"rejected_override_cases":null,"stage":"source-preflight","browser_ready":false,"full_runtime_qualified":false,"gui_keyboard_ime_ax":"not qualified by these bounded probes","descendant_cleanup_attested":false});
+     match run(output, &mut report) {
+         Ok(()) => emit(output, &report),
+         Err(error) => {
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning/bundles.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning/bundles.rs
+index e831ae07..d7469e6b 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning/bundles.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning/bundles.rs
+@@ -11,11 +11,20 @@ pub(crate) fn fresh_bundle(source: &Path, output: &Path, name: &str) -> io::Resu
+     let destination = output.join(name);
+     // Existing reports, profiles or artifacts must never be reused as new evidence.
+     fs::create_dir(&destination)?;
++    copy_runtime(source, &destination)?;
+     for name in [
+         "humanymous_cef_bootstrap.exe",
+         "humanymous_cef_bootstrap.exe.manifest",
+         "humanymous_cef_bootstrap.dll",
+         "humanymous_cef_desktop.dll",
++    ] {
++        super::copy_verified(&source.join(name), &destination.join(name))?;
++    }
++    Ok(destination)
++}
++
++pub(super) fn copy_runtime(source: &Path, destination: &Path) -> io::Result<()> {
++    for name in [
+         "libcef.dll",
+         "chrome_elf.dll",
+         "icudtl.dat",
+@@ -64,5 +73,5 @@ pub(crate) fn fresh_bundle(source: &Path, output: &Path, name: &str) -> io::Resu
+     if count == 0 || !destination.join("locales/en-US.pak").is_file() {
+         return Err(io::Error::other("required native locale absent"));
+     }
+-    Ok(destination)
++    Ok(())
+ }
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs
+index 3054920b..ebf13de4 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs
+@@ -13,6 +13,10 @@ fn snapshot_directory(
+     directory: &Path,
+     files: &mut std::collections::BTreeMap<String, String>,
+ ) -> io::Result<()> {
++    let kind = fs::symlink_metadata(directory)?.file_type();
++    if kind.is_symlink() || !kind.is_dir() {
++        return Err(io::Error::other("source directory is linked or not a directory"));
++    }
+     for entry in fs::read_dir(directory)? {
+         let entry = entry?;
+         let kind = entry.file_type()?;
+@@ -88,23 +92,21 @@ pub(super) fn source_snapshot() -> io::Result<Value> {
+         "Cargo.lock",
+         "rust-toolchain.toml",
+         "crates/apps/humanymous-cli/Cargo.toml",
++        "crates/apps/humanymous-browser/Cargo.toml",
++        "crates/apps/humanymous-browser/native/desktop/pilot-contract.json",
+         "crates/sdk/humanymous-runtime/Cargo.toml",
+-        "crates/browser/native/bootstrap/Cargo.toml",
+-        "crates/browser/native/desktop/Cargo.toml",
+-        "crates/browser/native/desktop/pilot-contract.json",
+-        "crates/browser/Cargo.toml",
++        "crates/sdk/humanymous-core/Cargo.toml",
+         "crates/integrations/humanymous-platform/Cargo.toml",
+     ] {
+         files.insert(file.to_owned(), digest(Path::new(file))?);
+     }
+     for directory in [
+-        "crates/browser/native/bootstrap/src",
+-        "crates/browser/native/desktop/src",
+-        "crates/browser/native/shared",
+-        "crates/browser/src",
+-        "crates/integrations/humanymous-platform/src",
++        "crates/apps/humanymous-browser/src",
+         "crates/apps/humanymous-cli/src",
++        "crates/apps/humanymous-cli/qualification",
+         "crates/sdk/humanymous-runtime/src",
++        "crates/sdk/humanymous-core/src",
++        "crates/integrations/humanymous-platform/src",
+     ] {
+         snapshot_directory(Path::new(directory), &mut files)?;
+     }
+@@ -133,45 +135,68 @@ fn copy_verified(source: &Path, destination: &Path) -> io::Result<()> {
+     }
+     Ok(())
+ }
+-pub(super) fn prepare() -> io::Result<PathBuf> {
+-    let meta = metadata()?;
+-    let target = Path::new(
+-        meta["target_directory"]
+-            .as_str()
+-            .ok_or_else(|| io::Error::other("Cargo target absent"))?,
+-    )
+-    .canonicalize()?;
+-    let bundle = target.join("debug");
+-    if fs::symlink_metadata(&bundle)?.file_type().is_symlink()
+-        || bundle.canonicalize()?.parent() != Some(target.as_path())
+-    {
+-        return Err(io::Error::other("pilot directory escapes Cargo target"));
++fn debug_directory(meta: &Value) -> io::Result<PathBuf> {
++    let target = Path::new(meta["target_directory"].as_str()
++        .ok_or_else(|| io::Error::other("Cargo target absent"))?).canonicalize()?;
++    let debug = target.join("debug");
++    if fs::symlink_metadata(&debug)?.file_type().is_symlink()
++        || debug.canonicalize()?.parent() != Some(target.as_path()) {
++        return Err(io::Error::other("native directory escapes Cargo target"));
+     }
+-    let archive: Value = serde_json::from_slice(&fs::read(bundle.join("archive.json"))?)?;
++    Ok(debug)
++}
++
++/// Refuse an existing staged file even when its bytes happen to match.
++fn copy_new_verified(source: &Path, destination: &Path) -> io::Result<Value> {
++    let kind = fs::symlink_metadata(source)?.file_type();
++    if kind.is_symlink() || !kind.is_file() {
++        return Err(io::Error::other("native role source is not a regular file"));
++    }
++    let before = digest(source)?;
++    let mut input = fs::File::open(source)?;
++    let expected = input.metadata()?.len();
++    let mut output = fs::OpenOptions::new().write(true).create_new(true).open(destination)?;
++    let copied = io::copy(&mut input, &mut output)?;
++    output.sync_all()?;
++    let after = digest(source)?;
++    let staged = digest(destination)?;
++    if copied != expected || before != after || after != staged {
++        return Err(io::Error::other("native role changed during preservation"));
++    }
++    Ok(serde_json::json!({"sha256":staged,"bytes":copied}))
++}
++
++pub(super) fn retain_role(staging: &Path, name: &str) -> io::Result<Value> {
++    if !matches!(name, "humanymous_cef_bootstrap.dll" | "humanymous_cef_desktop.dll") {
++        return Err(io::Error::other("unknown native role artifact"));
++    }
++    let kind = fs::symlink_metadata(staging)?.file_type();
++    if kind.is_symlink() || !kind.is_dir() {
++        return Err(io::Error::other("native staging is not an owned directory"));
++    }
++    let debug = debug_directory(&metadata()?)?;
++    copy_new_verified(&debug.join("humanymous_browser.dll"), &staging.join(name))
++}
++
++pub(super) fn prepare(staging: &Path) -> io::Result<PathBuf> {
++    let meta = metadata()?;
++    let debug = debug_directory(&meta)?;
++    let archive: Value = serde_json::from_slice(&fs::read(debug.join("archive.json"))?)?;
+     if archive["name"]
+         != "cef_binary_156.0.15+gcf671c0+chromium-156.0.8078.80_windows64_minimal.tar.bz2"
+         || archive["sha1"] != "b690e035689ee20ba9d2500ac8953815bc7ed46a"
+-        || archive["type"] != "minimal"
+-    {
++        || archive["type"] != "minimal" {
+         return Err(io::Error::other("unexpected upstream CEF archive metadata"));
+     }
+-    for name in [
+-        "humanymous_cef_bootstrap.dll",
+-        "humanymous_cef_desktop.dll",
+-        "libcef.dll",
+-    ] {
+-        if !bundle.join(name).is_file() {
+-            return Err(io::Error::other(format!("native artifact absent: {name}")));
+-        }
++    // Assemble a fresh bundle from immutable staged roles and provisioned SDK inputs.
++    let bundle = staging.join("runtime");
++    fs::create_dir(&bundle)?;
++    bundles::copy_runtime(&debug, &bundle)?;
++    for name in ["humanymous_cef_bootstrap.dll", "humanymous_cef_desktop.dll"] {
++        copy_new_verified(&staging.join(name), &bundle.join(name))?;
+     }
+-    copy_verified(
+-        &bundle.join("bootstrapc.exe"),
+-        &bundle.join("humanymous_cef_bootstrap.exe"),
+-    )?;
+-    copy_verified(
+-        &cef_manifest(&meta)?,
+-        &bundle.join("humanymous_cef_bootstrap.exe.manifest"),
+-    )?;
++    copy_verified(&debug.join("bootstrapc.exe"), &bundle.join("humanymous_cef_bootstrap.exe"))?;
++    copy_verified(&cef_manifest(&meta)?, &bundle.join("humanymous_cef_bootstrap.exe.manifest"))?;
+     Ok(bundle)
+ }
+ fn tool_directories() -> io::Result<Vec<PathBuf>> {
+@@ -253,3 +278,38 @@ mod tests {
+         fs::remove_dir(dir).unwrap();
+     }
+ }
++
++#[cfg(test)]
++mod role_copy_tests {
++    use super::*;
++
++    struct OwnedDirectory(PathBuf);
++    impl Drop for OwnedDirectory {
++        fn drop(&mut self) {
++            let _ = fs::remove_dir_all(&self.0);
++        }
++    }
++
++    #[test]
++    fn role_copy_preserves_first_dll_and_refuses_reuse() {
++        let id = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)
++            .unwrap().as_nanos();
++        let dir = std::env::temp_dir().join(format!("humanymous-role-copy-{}-{id}", std::process::id()));
++        fs::create_dir(&dir).unwrap();
++        let owned = OwnedDirectory(dir);
++        let source = owned.0.join("humanymous_browser.dll");
++        let bootstrap = owned.0.join("humanymous_cef_bootstrap.dll");
++        let desktop = owned.0.join("humanymous_cef_desktop.dll");
++        fs::write(&source, b"bootstrap-role").unwrap();
++        let first = copy_new_verified(&source, &bootstrap).unwrap();
++        fs::write(&source, b"desktop-role").unwrap();
++        let second = copy_new_verified(&source, &desktop).unwrap();
++        assert_ne!(first["sha256"], second["sha256"]);
++        assert_eq!(fs::read(&bootstrap).unwrap(), b"bootstrap-role");
++        assert_eq!(fs::read(&desktop).unwrap(), b"desktop-role");
++        assert!(copy_new_verified(&source, &bootstrap).is_err());
++        assert_eq!(fs::read(&bootstrap).unwrap(), b"bootstrap-role");
++        assert_eq!(first["sha256"], digest(&bootstrap).unwrap());
++        assert_eq!(second["sha256"], digest(&desktop).unwrap());
++    }
++}
+\ No newline at end of file
