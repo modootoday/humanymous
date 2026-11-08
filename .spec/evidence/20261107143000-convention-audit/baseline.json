@@ -254,6 +254,16 @@
       "state": "CLOSED named source mismatch at observed cb9adcd8 adoption; actual61-selector list preserved and18raw selected results observed; full source/terminal receipt join and production/native regression remain OPEN",
       "required": "Atomic CLI manifest/target/kind/src/profile/features/artifact rewires and native source(false) moved implementation coverage; actual new-graph controls",
       "actual_native_failure_observed": false
+    },
+    {
+      "id": "CA-BROWSER-ROLE-CALLER-01",
+      "priority": "P2",
+      "owner": "Root/Browser",
+      "state": "OPEN corrected-layout caller candidate; not adopted",
+      "trigger": "After3-to1 composition, harness repeats default package build, has no sequential per-role preserved outputs, requires retired nested manifests, and protocol argv enable only native-pilot-tests while native modules require their role feature",
+      "runtime_failure_observed": false,
+      "required_fix": "Actual sequential bootstrap/desktop role features and preserve-copy/hash joins; merged snapshots; separate result schema; exact module-prefixed executed test census; required negative role controls",
+      "root_correction_assigned": true
     }
   ],
   "evidence_references": {
@@ -2534,6 +2544,13 @@
     "sha256": "8e72cd834ab86f5f57e86c577eacd8945d933ae2414cb82c6c62b21609140ca0",
     "bytes": 1958,
     "source": "47candidate+parent/7caller hashes exact;42byteidentical,5exactpathtransforms;10literal targets/0issues;0RustoutsideSrc/1scheme",
+    "goal_complete": false
+  },
+  "browser_caller_integration_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-caller-integration-review-002.json",
+    "sha256": "7d98f93796474e48657460f969164b673e8e56d18b8587204e41323f5283f3d1",
+    "bytes": 5577,
+    "scope": "Actualdefault32/strict0.87s;634external tuples exact;19savedmembers; caller source defect remainsOPEN",
     "goal_complete": false
   }
 }

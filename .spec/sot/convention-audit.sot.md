@@ -3606,3 +3606,28 @@ one physical shared scheme.rs. The named candidate layout defect is source-fixed
 Originald340 remains historical; Root adoption, role feature/unsafe/linkage negative
 controls, CEF/UI/process teardown and distribution are not inferred. Private
 browser-src-layout-followup-001.json binds this delta review, not full qualification.
+
+CA-BROWSER-ROLE-CALLER-01 (P2, Root/Browser): confirmed in preserved corrected-
+layout caller candidate, not an observed native runtime failure. main.rs repeats
+-p humanymous-browser without role features or sequential preserve-copy; source
+snapshot requires two retired nested manifests; prepare expects both role DLLs
+without a producer in that path. Protocol build/run selects only native-pilot-tests,
+while bootstrap/desktop modules require cef-bootstrap/cef-desktop respectively.
+Thus the authored caller cannot supply its claimed role build/protocol closure.
+Root withheld all7 callers and assigned correction. Required re-audit: actual
+per-role features, sequential preserved artifact/hash joins, merged snapshot,
+separate report schema and exact module-prefixed executed-case census, plus role
+negative controls. Earlier47-file layout correction remains valid at its scope.
+
+Actual Browser default-model log has32 unique passing cases/0failed/0ignored/
+0filtered and default all-target strict footer0.87s. Initial --locked stale-lock
+refusal stays separate. Saved metadata has19 isolated workspace members, not the
+accepted final8 design or current live graph. Independently parsed634 external
+name/version/source/checksum tuples agree before/after; raw old/new lock hashes
+match the owner record. Windows normal/build tree outputs distinguish default
+(noCEF/Meari), bootstrap(CEF/noMeari), UI(Meari/noCEF), desktop(CEF+Meari).
+These are graph-selection observations, not native linkage, PE exports, provisioned
+artifacts, loaded DLLs, process/CEF/UI success or full source/tool read closure.
+No complete before/after seal is joined to these executions. Default32 does not
+close the caller finding. Private browser-caller-integration-review-002.json binds
+actual logs, selected source epochs, saved metadata and lock comparison inputs.
