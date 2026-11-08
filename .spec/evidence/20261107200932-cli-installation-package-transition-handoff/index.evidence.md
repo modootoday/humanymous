@@ -3,7 +3,7 @@ id: evidence:root/20261107200932
 title: CLI installation package transition handoff
 status: active
 created: 2026-11-07T20:09:31Z
-updated: 2026-11-08T00:00:38Z
+updated: 2026-11-08T00:10:47Z
 rel:
   depends_on: [sot:root/cli-installation]
 files:
@@ -14,9 +14,10 @@ files:
   - {path: tools-freeze-census.json, sha256: 7e7765d28b232f5760235c715fd7dfe29dc2ca93efed12d12d0f702502e23cce, bytes: 111913, store: repo}
   - {path: tools-source-readers.json, sha256: d6f6e022d7991cad3d4a65da7c87e6ee861c1cca9a2400728ec392db69cc1f12, bytes: 22007, store: repo}
   - {path: tools-input-dispositions-accepted.json, sha256: ffeea085f2e4bd9097650d286551aacf1a81d6eda53e948e418fcbc1c312bcdb, bytes: 131634, store: repo}
-  - {path: tools-linkage-map.json, sha256: 002de30ae539aa5d08f1fa82acdb5a5d0cda9fe5538b12816fa2efe1a74665fa, bytes: 93370, store: repo}
-  - {path: legacy-lib-unit-map.json, sha256: 611e0a90ff1c2e9fd65b854b1062c7da4b4c10a5a38740e9d65255972423fee0, bytes: 459793, store: repo}
-  - {path: legacy-bin-unit-map.json, sha256: edb7f9b1f495b613000e226448101d59c053505c10aef40148534cfca326fdc9, bytes: 428439, store: repo}
+  - {path: legacy-lib-unit-map.json, sha256: eebb6c63760fb036661ce89fbefbfd0ca1b5900b7c25b0d30f674d15609a0a89, bytes: 475095, store: repo}
+  - {path: legacy-bin-unit-map.json, sha256: 157af43efe37eda8d355966411699c397518967cd2e7ac43a1afd954dc5ec8c0, bytes: 465611, store: repo}
+  - {path: tools-linkage-map.json, sha256: 2609fe9646e6fc18ee2df0028d03336f9d7a89566c0f031fd264d9e41d987303, bytes: 98725, store: repo}
+  - {path: bin-composition-identity-map.json, sha256: 8f50156afe03a5306db9464eaa31561e68b9cd6eff268d42332ed2a070a72ecb, bytes: 125865, store: repo}
 ---
 
 ## Mission and current ownership
@@ -205,6 +206,19 @@ Unresolved before the Root Tools freeze:
   copied old binaries or an idle target lease cannot authorize the new structure.
 
 ## Blockers and ordered next actions
+
+Concrete implementation/composition seam is reconciled in
+bin-composition-identity-map.json:15old implementation roots/hashes map to actual
+private implementation destinations and distinct binary crate-root namespaces;
+14NEWnonprimary composition roots path-link those implementations rather than
+receiving oldmain bytes.232in-package Rust src rows plus5canonical external Lab
+sources cover every187LIB+259BINsource row with0missing/destination mismatches.
+Native/Pages/Maintenance oldLIBmod.rs and MAINcommand.rs remain separate; their
+command modules are native_command/pages_command/maintenance_command while LIB
+namespaces remain native/pages/maintenance. Pages' browser_command is declared
+only under pages_command using one physical file. One proposed BINselector changes
+accordingly; LIB37and Maintenance33identities are unchanged. New-layout semantic
+lists, exact entry wiring and Root279file freeze remain pending. No code/moves.
 
 Subsequent separate Root allocation observed OLDWindows six-LIB --list inventories
 on immutable5d68:11Native,27Attacker,9Defender,76Maintenance,37Pages,26CLI, all186

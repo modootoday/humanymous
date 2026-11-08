@@ -30,9 +30,14 @@
       "required_features": "qualification-native-runner",
       "disposition": "retained compiled root",
       "root_lint": "deny; exact2actorallows",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "scripts/ci/windows-native-runner/src/main.rs",
+      "new_implementation_source": "src/qualification/native_runner/mod.rs",
+      "private_command_namespace": "native_runner",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-cef-pilot",
@@ -45,9 +50,14 @@
       "required_features": "qualification-cef-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "scripts/ci/cef-pilot/src/main.rs",
+      "new_implementation_source": "src/qualification/cef_pilot/mod.rs",
+      "private_command_namespace": "cef_pilot",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-runtime-pilot",
@@ -60,9 +70,14 @@
       "required_features": "qualification-runtime-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "test/lab/runtime/src/main.rs",
+      "new_implementation_source": "src/qualification/runtime_pilot/mod.rs",
+      "private_command_namespace": "runtime_pilot",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-lab-runner",
@@ -75,9 +90,14 @@
       "required_features": "qualification-lab-runner",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "test/lab/runner/src/main.rs",
+      "new_implementation_source": "src/qualification/lab_runner/mod.rs",
+      "private_command_namespace": "lab_runner",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-pages",
@@ -105,9 +125,14 @@
       "required_features": "qualification-pages",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "docs/tooling/src/main.rs",
+      "new_implementation_source": "src/qualification/pages/command.rs",
+      "private_command_namespace": "pages_command",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-delivery",
@@ -120,9 +145,14 @@
       "required_features": "qualification-delivery",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "scripts/ci/delivery/src/main.rs",
+      "new_implementation_source": "src/qualification/delivery/mod.rs",
+      "private_command_namespace": "delivery",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -240,9 +270,14 @@
       "required_features": "qualification-maintenance",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "skills/agent-maintenance/src/main.rs",
+      "new_implementation_source": "src/qualification/maintenance/command.rs",
+      "private_command_namespace": "maintenance_command",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-agent-maintenance",
@@ -285,9 +320,14 @@
       "required_features": "service-pilot",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "crates/cli/src/bin/service_fixture.rs",
+      "new_implementation_source": "src/qualification/service_fixture/mod.rs",
+      "private_command_namespace": "service_fixture",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-cli",
@@ -315,9 +355,14 @@
       "required_features": "",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "crates/cli/src/main.rs",
+      "new_implementation_source": "src/main.rs",
+      "private_command_namespace": "",
+      "new_composition_root_is_new_source": false,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-cli",
@@ -375,9 +420,14 @@
       "required_features": "qualification-docs-review",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "scripts/ci/docs-review/src/main.rs",
+      "new_implementation_source": "src/qualification/docs_review/mod.rs",
+      "private_command_namespace": "docs_review",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-native-cli",
@@ -390,9 +440,14 @@
       "required_features": "native-planner",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "crates/native-cli/src/main.rs",
+      "new_implementation_source": "src/qualification/native/command.rs",
+      "private_command_namespace": "native_command",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-native-cli",
@@ -420,9 +475,14 @@
       "required_features": "qualification-report",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "crates/attacker/src/bin/humanymous-report.rs",
+      "new_implementation_source": "src/qualification/report_command/mod.rs",
+      "private_command_namespace": "report_command",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-attacker",
@@ -435,9 +495,14 @@
       "required_features": "qualification-attacker",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "crates/attacker/src/main.rs",
+      "new_implementation_source": "src/qualification/attacker_command/mod.rs",
+      "private_command_namespace": "attacker_command",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-attacker",
@@ -450,9 +515,14 @@
       "required_features": "qualification-wargame-verify",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "crates/attacker/src/bin/humanymous-wargame-verify.rs",
+      "new_implementation_source": "src/qualification/wargame_verify_command/mod.rs",
+      "private_command_namespace": "wargame_verify_command",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     },
     {
       "old_package": "humanymous-attacker",
@@ -510,9 +580,14 @@
       "required_features": "qualification-local-parity",
       "disposition": "retained compiled root",
       "root_lint": "forbid",
-      "path_status": "Root requested standard-src proposal, no move; test aliases/minimal feature sets require final root review",
+      "path_status": "implementation destination and composition root reconciled; Root279map/final source freeze pending",
       "new_compiled_root": true,
-      "new_kind": "bin"
+      "new_kind": "bin",
+      "old_implementation_source": "scripts/ci/local-parity/src/main.rs",
+      "new_implementation_source": "src/qualification/local_parity/mod.rs",
+      "private_command_namespace": "local_parity",
+      "new_composition_root_is_new_source": true,
+      "source_hash_meaning": "old_source_sha256 belongs to original implementation; NEVER to new composition root"
     }
   ],
   "literal_source_resource_edges": [

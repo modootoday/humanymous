@@ -775,7 +775,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/tests.rs|ambiguous_unknown_missing_or_unbounded_arguments_fail_closed",
@@ -813,7 +814,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/tests.rs|output_names_cannot_escape_or_use_dos_device_aliases",
@@ -851,7 +853,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/tests.rs|declared_runtime_and_target_are_requirements_not_observed_support",
@@ -889,7 +892,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/storage/windows/tests.rs|complete_manifest_is_published_once_and_existing_bytes_never_change",
@@ -927,7 +931,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/storage/windows/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/storage/windows/tests.rs|competing_writers_have_exactly_one_publication_and_no_temporary_links",
@@ -965,7 +970,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/storage/windows/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/storage/windows/tests.rs|failed_staging_never_creates_destination_and_cleans_its_temporary_link",
@@ -1003,7 +1009,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/storage/windows/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/storage/windows/tests.rs|cleanup_failure_reports_publication_without_rolling_back_or_repeating_it",
@@ -1041,7 +1048,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/storage/windows/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/storage/windows/tests.rs|all_ancestors_remain_pinned_against_rename_and_static_junctions_are_denied",
@@ -1079,7 +1087,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/storage/windows/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/storage/windows/tests.rs|existing_link_target_and_unsafe_workspace_paths_are_refused",
@@ -1117,7 +1126,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/storage/windows/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-native-cli|lib|crates/native-cli/src/storage/windows/tests.rs|library_publication_requires_explicit_write_and_revalidates_basename",
@@ -1155,7 +1165,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/native/storage/windows/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/catalog.rs|catalog_has_unique_ids_and_seed_keeps_every_denominator",
@@ -1217,7 +1228,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/catalog.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/lib.rs|seed_reproduces_full_actual_engine_report",
@@ -1279,7 +1291,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report.rs|unavailable_and_failed_attempts_remain_in_denominator",
@@ -1341,7 +1354,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report.rs|human_challenge_and_ceiling_allow_are_not_attack_successes",
@@ -1399,7 +1413,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report.rs|wrong_expected_verdict_fails_without_changing_actual",
@@ -1457,7 +1472,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/verification.rs|network_rejects_relabelled_reordered_and_extra_steps_but_retains_failure_prefixes",
@@ -1515,7 +1531,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/verification.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/verification.rs|simulation_rejects_duplicate_keys_before_semantic_replay",
@@ -1573,7 +1590,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/verification.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/verification.rs|both_modes_reject_unknown_fields_at_every_report_structure",
@@ -1631,7 +1649,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/verification.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/verification.rs|network_rejects_duplicate_fields_and_dynamic_map_keys",
@@ -1689,7 +1708,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/verification.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/verification.rs|simulation_replays_real_engine_and_preserves_integer_float_json_semantics",
@@ -1747,7 +1767,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/verification.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/verification.rs|mutated_counters_trace_and_unknown_schemas_are_not_replay_evidence",
@@ -1805,7 +1826,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/verification.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/network/cases.rs|every_fixed_case_has_an_expectation_and_real_human_cases_are_unavailable",
@@ -1867,7 +1889,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/network/cases.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/network/mod.rs|attempted_execution_cannot_be_skipped_or_transport_failure_evaluated",
@@ -1925,7 +1948,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/network/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/network/mod.rs|transport_failure_ends_steps_and_cannot_claim_a_response_verdict",
@@ -1983,7 +2007,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/network/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/network/mod.rs|absent_lab_cannot_turn_into_success_or_disappear_from_denominator",
@@ -2041,7 +2066,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/network/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/network/mod.rs|verifier_refuses_fabricated_totals_participants_missing_cases_and_passes",
@@ -2099,7 +2125,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/network/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|frozen_go_four_metric_rows_and_fifth_skip_preserve_tpr_fpr",
@@ -2164,7 +2191,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|frozen_go_missed_bot_lowers_tpr_without_trusting_outcome",
@@ -2229,7 +2257,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|first_eligible_order_mean_rules_and_repeated_top_hits_are_preserved",
@@ -2294,7 +2323,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|errors_skips_missing_labels_and_diagnostic_privacy_remain_explicit",
@@ -2359,7 +2389,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|denied_only_human_fpr_does_not_hide_challenge_or_no_response",
@@ -2424,7 +2455,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|null_defaults_and_unknown_discard_match_go_without_duplicate_key_ambiguity",
@@ -2489,7 +2521,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|html_is_deterministic_and_escapes_every_dynamic_text_context",
@@ -2554,7 +2587,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|input_field_vector_row_caption_output_and_numeric_limits_fail_closed",
@@ -2619,7 +2653,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|native_publication_replaces_old_report_and_preserves_foreign_collision",
@@ -2688,7 +2723,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/report/legacy/tests.rs|native_windows_denied_replacement_retains_old_report",
@@ -2761,7 +2797,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/report/legacy/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-attacker|lib|crates/attacker/src/verification/json.rs|report_budget_and_invalid_input_keep_safe_diagnostics",
@@ -2823,7 +2860,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/attacker/verification/json.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lib.rs|missing_client_retains_real_engine_challenge",
@@ -2885,7 +2923,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lib.rs|invalid_arithmetic_is_an_error_without_verdict",
@@ -2943,7 +2982,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lab/client.rs|actual_shared_verifier_accepts_only_the_signed_bytes",
@@ -3005,7 +3045,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/lab/client.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lab/client.rs|response_parser_preserves_cookie_duplicates_and_refuses_ambiguity",
@@ -3063,7 +3104,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/lab/client.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lab/isolation.rs|malformed_missing_and_extra_interfaces_fail_closed",
@@ -3125,7 +3167,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/lab/isolation.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lab/isolation.rs|external_routes_are_not_isolation",
@@ -3183,7 +3226,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/lab/isolation.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lab/isolation.rs|host_cannot_enable_network_mode",
@@ -3245,7 +3289,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/lab/isolation.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lab/process.rs|readiness_is_exact_scope_not_just_a_loopback_string",
@@ -3307,7 +3352,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/lab/process.rs"
     },
     {
       "canonical_case_id": "humanymous-defender|lib|crates/defender/src/lab/snapshot.rs|projection_omits_raw_identifiers_and_prefix_rollback_is_fatal",
@@ -3369,7 +3415,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/lab_support/defender/lab/snapshot.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evaluation.rs|infrastructure_is_not_a_quality_failure",
@@ -3411,7 +3458,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evaluation.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evaluation.rs|native_units_do_not_establish_browser_qualification",
@@ -3453,7 +3501,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evaluation.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evaluation.rs|only_completed_commands_count",
@@ -3495,7 +3544,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evaluation.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/inventory.rs|normalizes_crlf_but_refuses_bare_cr",
@@ -3537,7 +3587,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/inventory.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/inventory.rs|folded_description_stops_at_next_key",
@@ -3579,7 +3630,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/inventory.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/inventory.rs|invalid_frontmatter_rejected",
@@ -3617,7 +3669,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/inventory.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/inventory.rs|description_limit_is_unicode_characters",
@@ -3655,7 +3708,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/inventory.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/language.rs|unicode_is_not_an_ascii_only_policy",
@@ -3697,7 +3751,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/language.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/language.rs|authored_comments_are_debt_but_literal_fixture_strings_are_not_prose",
@@ -3735,7 +3790,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/language.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/language.rs|preservation_is_exact_and_does_not_exempt_whole_scopes",
@@ -3773,7 +3829,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/language.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/language.rs|repository_title_records_preserve_exact_ui_lines",
@@ -3811,7 +3868,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/language.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/local_eval.rs|frontmatter_removal_keeps_actual_prompt_and_rubric",
@@ -3853,7 +3911,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/local_eval.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/local_eval.rs|product_and_developer_catalogs_remain_separate",
@@ -3891,7 +3950,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/local_eval.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/local_eval.rs|fresh_output_refuses_overwrite",
@@ -3929,7 +3989,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/local_eval.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/package.rs|product_plan_is_portable_and_has_no_developer_or_executable_glue",
@@ -3971,7 +4032,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/package.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/package.rs|invalid_product_cannot_be_packaged",
@@ -4009,7 +4071,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/package.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/paired.rs|full_denominator_is_accounted_but_never_self_qualifies_source",
@@ -4047,7 +4110,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/paired.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/paired.rs|developer_suite_requires_its_own_twenty_runs_and_targeted_reads",
@@ -4085,7 +4149,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/paired.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/paired.rs|observed_nonactivation_is_reported_without_dropping_behavior_runs",
@@ -4123,7 +4188,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/paired.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/paired.rs|partial_missing_null_and_contaminated_results_refuse_delta",
@@ -4161,7 +4227,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/paired.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/product.rs|repository_product_bundle_has_resolved_references",
@@ -4203,7 +4270,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/product.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/product.rs|accepts_portable_bundle_without_runtime_claim",
@@ -4241,7 +4309,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/product.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/product.rs|refuses_missing_and_escape_links",
@@ -4279,7 +4348,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/product.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/product.rs|duplicate_metadata_is_not_last_wins",
@@ -4317,7 +4387,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/product.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/product.rs|validates_transitive_resources_and_rejects_orphans",
@@ -4355,7 +4426,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/product.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/product.rs|orphan_cycles_do_not_count_as_reachable",
@@ -4393,7 +4465,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/product.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/windows_doctor.rs|missing_python_sdk_never_qualifies_linking",
@@ -4435,7 +4508,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/windows_doctor.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|complete_assertions_never_become_independently_verified_authority",
@@ -4473,7 +4547,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|unknown_duplicate_missing_and_arbitrary_fields_fail_closed",
@@ -4511,7 +4586,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|schema_and_request_bytes_are_bounded_without_value_disclosure",
@@ -4549,7 +4625,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|unknown_owners_active_handles_and_incomplete_inventory_are_refused",
@@ -4587,7 +4664,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|escapes_protected_roots_and_canonical_scratch_are_refused",
@@ -4625,7 +4703,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|member_case_aliases_and_link_ancestors_are_refused",
@@ -4663,7 +4742,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|archive_order_missing_parts_and_declared_byte_overflow_are_refused",
@@ -4701,7 +4781,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|coverage_and_readback_hashes_are_assertions_with_exact_bindings",
@@ -4739,7 +4820,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/evidence_layout/tests.rs|member_handle_and_archive_counts_are_finite",
@@ -4777,7 +4859,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/evidence_layout/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/files.rs|command_clock_is_not_restarted_for_selected_observation",
@@ -4819,7 +4902,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/files.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/files.rs|changed_open_file_is_not_observed_stable",
@@ -4857,7 +4941,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/files.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/reader.rs|counters_reject_overflow_without_wrapping",
@@ -4899,7 +4984,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/reader.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/request.rs|request_schema_requires_explicit_fields_and_rejects_unknown_or_duplicate_keys",
@@ -4937,7 +5023,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/request.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/request.rs|request_size_and_version_are_bounded_without_parser_value_disclosure",
@@ -4975,7 +5062,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/request.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/request.rs|request_reuses_selection_escape_and_count_guards",
@@ -5013,7 +5101,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/request.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/request.rs|request_reads_and_time_are_deducted_from_the_command_budget",
@@ -5051,7 +5140,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/request.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|accepted_defaults_are_finite_and_explicit",
@@ -5089,7 +5179,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|empty_reader_observes_eof_without_consuming_bytes",
@@ -5127,7 +5218,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|exact_file_cap_requires_a_real_eof_probe",
@@ -5165,7 +5257,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|cap_plus_one_is_accounted_and_has_no_full_digest",
@@ -5203,7 +5296,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|exact_aggregate_cap_is_unknown_without_probe_budget",
@@ -5241,7 +5335,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|multiple_files_share_content_and_probe_budget",
@@ -5279,7 +5374,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|short_reads_are_not_mistaken_for_eof",
@@ -5317,7 +5413,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|interrupted_read_retries_without_counting_phantom_bytes",
@@ -5355,7 +5452,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|io_error_keeps_partial_count_and_no_digest",
@@ -5393,7 +5491,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|deadline_after_blocking_read_prevents_a_late_complete_claim",
@@ -5431,7 +5530,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|interrupted_read_checks_the_cooperative_deadline",
@@ -5469,7 +5569,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|shared_clock_regression_is_not_a_per_file_reset",
@@ -5507,7 +5608,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|invalid_reader_count_is_refused_without_panicking_or_hashing",
@@ -5545,7 +5647,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|frozen_inventory_rejects_aliases_escapes_and_unknown_roots",
@@ -5583,7 +5686,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|finite_file_and_root_counts_apply_before_observation",
@@ -5621,7 +5725,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|selection_fingerprint_detects_changed_names_and_coverage_declaration",
@@ -5659,7 +5764,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/selected_inputs/tests.rs|invalid_limits_and_vacuous_selection_are_rejected",
@@ -5697,7 +5803,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/selected_inputs/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/catalog.rs|repository_catalog_matches_all_compatibility_projections",
@@ -5739,7 +5846,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/catalog.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/catalog.rs|exact_projections_are_static_not_runtime_qualification",
@@ -5777,7 +5885,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/catalog.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/catalog.rs|drift_and_malformed_projection_fail",
@@ -5815,7 +5924,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/catalog.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/catalog.rs|rejects_duplicate_fields_ids_and_versions",
@@ -5853,7 +5963,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/catalog.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/model.rs|glob_intersection_handles_shared_and_disjoint_patterns",
@@ -5891,7 +6002,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/model.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/model.rs|different_lane_name_cannot_hide_overlap_or_take_over_same_lane",
@@ -5929,7 +6041,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/model.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/model.rs|malformed_scope_identity_time_and_duplicates_refuse",
@@ -5967,7 +6080,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/model.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/model.rs|owner_match_requires_provider_and_session",
@@ -6005,7 +6119,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/model.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/model.rs|case_aliases_overlap_and_request_cannot_supply_ownership_state",
@@ -6043,7 +6158,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/model.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/registry.rs|repository_registry_has_valid_stable_names_and_unique_ids",
@@ -6085,7 +6201,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/registry.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/registry.rs|duplicate_ids_or_path_titles_are_not_accepted",
@@ -6123,7 +6240,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/registry.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/registry.rs|established_ci_cd_area_is_not_a_repository_path",
@@ -6165,7 +6283,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/registry.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/sessions/storage.rs|handover_input_is_validated_before_mutation",
@@ -6207,7 +6326,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/sessions/storage.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/windows_doctor/probe.rs|version_profiles_reject_wrong_python_host_and_ruby_abi",
@@ -6249,7 +6369,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/windows_doctor/probe.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/windows_doctor/probe.rs|fixed_probe_reports_missing_executable_and_expired_budget",
@@ -6287,7 +6408,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/windows_doctor/probe.rs"
     },
     {
       "canonical_case_id": "humanymous-agent-maintenance|lib|skills/agent-maintenance/src/windows_doctor/probe.rs|actual_child_failure_is_not_a_version_success",
@@ -6325,7 +6447,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/maintenance/windows_doctor/probe.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/browser.rs|driver_and_site_require_literal_local_urls_without_ambient_authority",
@@ -6367,7 +6490,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/browser.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/browser.rs|driver_id_cannot_change_command_path_or_query",
@@ -6405,7 +6529,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/browser.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/browser.rs|css_measurements_reject_invisible_and_malformed_computed_values",
@@ -6443,7 +6568,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/browser.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/browser.rs|report_cannot_accept_missing_cases_cleanup_or_changed_inputs",
@@ -6481,7 +6607,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/browser.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/package.rs|hidden_private_and_escaping_paths_never_enter_public_inventory",
@@ -6523,7 +6650,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/package.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/package.rs|security_disclosure_and_exact_bytes_are_required",
@@ -6561,7 +6689,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/package.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/package.rs|cross_platform_case_collisions_and_inventory_budget_refuse",
@@ -6599,7 +6728,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/package.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/package.rs|aggregate_content_budget_refuses_individually_valid_files",
@@ -6637,7 +6767,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/package.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/review.rs|exact_working_bytes_and_inventory_do_not_approve_review",
@@ -6675,7 +6806,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/review.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/snapshot.rs|deleted_index_file_is_reported_without_hiding_other_working_sources",
@@ -6717,7 +6849,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/snapshot.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/snapshot.rs|binary_and_lf_digest_distinction_is_not_a_review_approval",
@@ -6755,7 +6888,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/snapshot.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|valid_source_and_output_are_read_only",
@@ -6793,7 +6927,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|public_archive_roundtrip_preserves_hidden_disclosure_and_rejects_tampering",
@@ -6831,7 +6966,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|public_archive_missing_disclosure_and_private_files_refuse_before_archive_creation",
@@ -6869,7 +7005,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|public_archive_refuses_linked_site_roots_before_creating_outputs",
@@ -6911,7 +7048,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|static_theme_skip_target_and_title_are_not_inferred_from_landmarks",
@@ -6953,7 +7091,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|reader_controls_fail_without_rejecting_unicode_or_layout_whitespace",
@@ -6991,7 +7130,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|navigation_rejects_misindentation_missing_targets_and_empty_groups",
@@ -7029,7 +7169,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|build_input_commitment_covers_navigation_tokens_binary_assets_and_inventory",
@@ -7067,7 +7208,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|missing_escaping_reference_links_and_images_fail",
@@ -7105,7 +7247,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|private_identifiers_missing_metadata_and_duplicate_urls_fail",
@@ -7143,7 +7286,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|index_suffix_is_not_directory_index_and_decoded_anchors_work",
@@ -7181,7 +7325,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|canonical_baseurl_escape_duplicate_id_and_missing_anchor_fail",
@@ -7219,7 +7364,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|same_origin_absolute_and_protocol_relative_links_are_checked_locally",
@@ -7257,7 +7403,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|absolute_same_origin_links_cannot_escape_repository_baseurl",
@@ -7295,7 +7442,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|explicit_directory_index_links_validate_the_same_document_anchors",
@@ -7333,7 +7481,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|generated_html_is_checked_without_an_authored_markdown_counterpart",
@@ -7371,7 +7520,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|maps_private_output_and_missing_alt_fail",
@@ -7409,7 +7559,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|invalid_baseurl_and_empty_reader_tree_fail",
@@ -7447,7 +7598,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/tests.rs|build_refuses_relative_or_source_ancestor_destination_before_processes",
@@ -7485,7 +7637,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/package/tar.rs|unsupported_headers_truncation_padding_and_trailing_data_refuse",
@@ -7523,7 +7676,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/package/tar.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/package/tar.rs|duplicate_entries_and_missing_hidden_disclosure_refuse",
@@ -7561,7 +7715,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/package/tar.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/package/tar.rs|ustar_prefix_preserves_long_public_paths_and_rejects_file_budget",
@@ -7599,7 +7754,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/package/tar.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/vectors/mod.rs|normalized_host_profiles_use_fixed_positive_and_negative_bytes",
@@ -7641,7 +7797,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/vectors/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/vectors/mod.rs|binary_and_unicode_corpus_preserves_distinct_commitment_bytes",
@@ -7679,7 +7836,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/vectors/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/vectors/mod.rs|expectations_are_fixed_and_duplicate_key_bytes_are_not_round_tripped",
@@ -7717,7 +7875,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/vectors/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-pages|lib|docs/tooling/src/vectors/mod.rs|changed_digest_or_expectation_and_duplicate_id_fail",
@@ -7755,7 +7914,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/qualification/pages/vectors/mod.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/release.rs|signature_binds_exact_bytes_key_target_and_domain",
@@ -7793,7 +7953,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/release.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/release.rs|signed_invalid_schema_never_becomes_authority",
@@ -7831,7 +7992,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/release.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/installation/tests.rs|doctor_refuses_parent_without_owner_write_permission",
@@ -7873,7 +8035,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/installation/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/installation/tests.rs|dry_repeat_and_rollback",
@@ -7911,7 +8074,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/installation/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/installation/tests.rs|fail_closed_input_and_collision",
@@ -7949,7 +8113,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/installation/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/installation/tests.rs|changed_or_extra_files_block_rollback",
@@ -7987,7 +8152,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/installation/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/installation/tests.rs|partial_write_failure_cleans_owned_files",
@@ -8025,7 +8191,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/installation/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/installation/tests.rs|linked_artifact_is_rejected",
@@ -8063,7 +8230,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/installation/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/installation/tests.rs|unsafe_acl_and_unc_fail_closed",
@@ -8109,7 +8277,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/installation/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/control.rs|pure_final_delivery_rejects_expiry_before_and_during_delivery",
@@ -8151,7 +8320,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/control.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/control.rs|pure_final_delivery_keeps_original_deadline_until_success",
@@ -8189,7 +8359,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/control.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/control.rs|pure_stop_state_never_extends_deadline_or_fabricates_flush",
@@ -8227,7 +8398,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/control.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/control.rs|pure_readiness_before_stop_cannot_prove_stopped",
@@ -8265,7 +8437,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/control.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/failure.rs|pure_failure_keeps_partial_flush_success_and_unknown_separate",
@@ -8307,7 +8480,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/failure.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/input.rs|pure_nonsecret_parser_never_reopens_the_configuration_path",
@@ -8345,7 +8519,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/input.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/input.rs|pure_host_projection_binds_exact_documents_and_all_scope_fields",
@@ -8383,7 +8558,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/input.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/input.rs|pure_input_rejects_plaintext_and_required_witness_before_secret_read",
@@ -8421,7 +8597,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/input.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/input.rs|pure_input_injects_only_bounded_utf8_from_protected_producer",
@@ -8459,7 +8636,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/input.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/plan.rs|stop_budget_is_shared_strict_and_bounded",
@@ -8501,7 +8679,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/plan.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/runtime_host/plan.rs|selectors_and_hashes_have_no_wildcards_or_implicit_secrets",
@@ -8539,7 +8718,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/runtime_host/plan.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/service/backend.rs|declarative_configs_escape_arguments_without_a_shell",
@@ -8581,7 +8761,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/service/backend.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/service/tests.rs|pure_plan_explicit_opt_in_install_repeat_upgrade_and_known_rollback",
@@ -8619,7 +8800,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/service/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/service/tests.rs|registration_failure_cleans_new_files_and_restores_previous",
@@ -8657,7 +8839,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/service/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/service/tests.rs|mutation_pending_and_wrong_key_block_before_manager_changes",
@@ -8695,7 +8878,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/service/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/service/tests.rs|readiness_failure_restores_previous_and_keeps_replay_floor",
@@ -8733,7 +8917,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/service/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/service/tests.rs|create_new_lock_blocks_concurrent_mutation_and_releases_cleanly",
@@ -8771,7 +8956,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/service/tests.rs"
     },
     {
       "canonical_case_id": "humanymous-cli|lib|crates/cli/src/service/tests.rs|failed_predecessor_registration_restores_current_without_stale_identity",
@@ -8809,7 +8995,8 @@
         "test_function_executed": false,
         "receipt": "evidence:root/20261107235307",
         "new_bin_selectors_semantically_discovered": false
-      }
+      },
+      "new_implementation_source": "src/service/tests.rs"
     }
   ],
   "unresolved": [],

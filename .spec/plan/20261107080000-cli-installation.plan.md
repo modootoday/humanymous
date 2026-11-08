@@ -409,6 +409,22 @@ Next dependencies and acceptance:
 
 ## Handover checkpoint
 
+Root279implementation/composition seam is reconciled by the15role exact map:
+bin-composition-identity-map.json under [[evidence:root/20261107200932]]. Oldmain
+bytes go to private mod.rs/command.rs, never directly into newthin bin roots.
+Native/pages/maintenance lib and command files/namespaces remain distinct.
+All187LIB+259BINsource rows join232in-package Rust+5shared Lab implementations
+with0missing/destination mismatches. Pages one BINselector is now pages_command::
+browser_command::tests::<name>; LIB37and Maintenance33remain unchanged. No source,
+Cargo/moves/compiler work. Root still freezes actual279file/input/role map.
+
+Old6LIB clock precision provenance erratum is appended to
+[[evidence:root/20261107235307]]: PowerShell integer Math.Min rounded logged90s
+windows to90.0390521..90.3159935s. All actual six observations were<90s and no
+rerun occurred. Original63raw records remain unchanged; future monitors require
+explicit-double initial elapsed/deadlines or declared precision. No exact90s
+cutoff or hostile-child/global lifetime proof is claimed.
+
 Root a070983e/Delivery9cb6e435 accepted all35external input row dispositions;
 tools-input-dispositions-accepted.json preserves exact category/destination/pins,
 including CEF qualification/browser/cef and d49c19bc modest Collector source

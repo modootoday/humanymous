@@ -3,17 +3,28 @@ id: evidence:root/20261107235307
 title: CLI installation old library semantic inventory
 status: active
 created: 2026-11-07T23:53:07Z
-updated: 2026-11-07T23:54:46Z
+updated: 2026-11-08T00:05:02Z
 rel:
   depends_on: [sot:root/cli-installation, sot:root/structural-development]
 files:
   - {path: summary.json, sha256: c7d2cabaa0e2ec0bccb5fb5c4a9a60c252b3726a485da21c2aa5e45ae6e1ab5f, bytes: 4945, store: repo}
+  - {path: clock-precision-erratum.json, sha256: f1de27de603e55f5bacd954d8b0abe389b19923f7c00363164bdb2215c50d436, bytes: 3834, store: repo}
 ---
 
 Root allocated six OLDlibrary --list commands on immutable source
 5d68cd39f1d44b30d0df2804675d83cd28025d7e, retained comparison B. No overlays,
 source corrections or retries. This observes test registration; NOtest function
 was executed and no test pass is claimed.
+
+Clock precision erratum: clock-precision-erratum.json preserves the original raw
+command JSON and reproduces PowerShell Math.Min integer-overload rounding. The
+nominal90s window was logged as90.0390521..90.3159935s from captured initial elapsed,
+not an exact90s threshold; settlement deadlines were similarly rounded. All six
+actual observations remained below90s (maximum57.3472881s), with no observed
+overrun, timeout or rerun. This does not qualify an exact90s cutoff. Future monitors
+must capture initial elapsed once and use explicit double bounds/arguments or
+declare recorded precision. Original63raw files are unchanged; the erratum is one
+additional provenance attachment, not rewritten timing evidence.
 
 | Old package | Windows registered names | Exact expected-name differences |
 | --- | --- | --- |

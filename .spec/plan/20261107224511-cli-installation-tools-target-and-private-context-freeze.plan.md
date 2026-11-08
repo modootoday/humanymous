@@ -28,6 +28,61 @@ hashes do not qualify later edits or an immutable whole-graph source closure.
 
 # Production and private context matrix
 
+Implementation/composition identity reconciliation is explicit in
+bin-composition-identity-map.json: ALL15roles name old implementation/hash,
+new actual implementation file, private crate-root namespace and new composition
+root. The232Rust src-file rows join Root's279file map; all187LIB and259BINcase
+source paths/selectors now point at actual implementation, never at a thin root.
+Old source SHA256 applies to implementation bytes only. The14nonprimary
+src/bin/<role>/main.rs roots are NEWnarrow Rust composition source, not oldmain
+files moved there. Primary humanymous src/main.rs stays the existing implementation.
+
+| Bin | OLDimplementation | NEWimplementation | Private command namespace | NEWcomposition root |
+| --- | --- | --- | --- | --- |
+| humanymous | crates/cli/src/main.rs | src/main.rs | existing root | src/main.rs, unchanged |
+| humanymous-native | crates/native-cli/src/main.rs | src/qualification/native/command.rs | native_command | src/bin/native/main.rs |
+| humanymous-service-fixture | crates/cli/src/bin/service_fixture.rs | src/qualification/service_fixture/mod.rs | service_fixture | src/bin/service_fixture/main.rs |
+| humanymous-attacker | crates/attacker/src/main.rs | src/qualification/attacker_command/mod.rs | attacker_command | src/bin/attacker/main.rs |
+| humanymous-report | crates/attacker/src/bin/humanymous-report.rs | src/qualification/report_command/mod.rs | report_command | src/bin/report/main.rs |
+| humanymous-wargame-verify | crates/attacker/src/bin/humanymous-wargame-verify.rs | src/qualification/wargame_verify_command/mod.rs | wargame_verify_command | src/bin/wargame_verify/main.rs |
+| humanymous-agent-maintenance | skills/agent-maintenance/src/main.rs | src/qualification/maintenance/command.rs | maintenance_command | src/bin/maintenance/main.rs |
+| humanymous-delivery | scripts/ci/delivery/src/main.rs | src/qualification/delivery/mod.rs | delivery | src/bin/delivery/main.rs |
+| humanymous-pages | docs/tooling/src/main.rs | src/qualification/pages/command.rs | pages_command | src/bin/pages/main.rs |
+| humanymous-lab-runner | test/lab/runner/src/main.rs | src/qualification/lab_runner/mod.rs | lab_runner | src/bin/lab_runner/main.rs |
+| humanymous-runtime-pilot | test/lab/runtime/src/main.rs | src/qualification/runtime_pilot/mod.rs | runtime_pilot | src/bin/runtime_pilot/main.rs |
+| humanymous-cef-pilot | scripts/ci/cef-pilot/src/main.rs | src/qualification/cef_pilot/mod.rs | cef_pilot | src/bin/cef_pilot/main.rs |
+| humanymous-native-runner | scripts/ci/windows-native-runner/src/main.rs | src/qualification/native_runner/mod.rs | native_runner | src/bin/native_runner/main.rs |
+| humanymous-docs-review | scripts/ci/docs-review/src/main.rs | src/qualification/docs_review/mod.rs | docs_review | src/bin/docs_review/main.rs |
+| humanymous-local-parity | scripts/ci/local-parity/src/main.rs | src/qualification/local_parity/mod.rs | local_parity | src/bin/local_parity/main.rs |
+
+For native/pages/maintenance, the original LIBlib.rs moves to that context's
+mod.rs ONCEand stays under native/pages/maintenance namespace. Its original MAIN
+moves to command.rs separately. Composition roots path-link the lib context and
+the separate *_command module directly at their binary crate root. Main-command
+imports point to crate::<lib-context>, while helpers defined by that command
+remain in crate::<command-context>. This avoids overwriting mod.rs, merging
+unrelated test namespaces or adding forwarding exports to the production library.
+
+Pages browser_command.rs remains the single physical
+src/qualification/pages/browser_command.rs implementation and is declared ONLYby
+pages_command with an explicit file-relative path from command.rs. Its ONEbin unit
+selector changes from the prior proposal pages::browser_command::tests::<name>
+to pages_command::browser_command::tests::<name>. All37Pages LIBselectors remain
+pages::<old-selector>. Native and Maintenance own MAINunit counts are0; their
+LIBselectors remain native::* and maintenance::*. The accepted10relocated
+Maintenance cases remain maintenance::qualification_tests::*, not maintenance_command.
+
+Attacker/verifier composition roots link exact canonical shared attacker/defender
+files plus their distinct *_command implementation. Report links ONLYthe
+canonical legacy leaf plus report_command. Runtime-pilot links its own command
+context and only legitimate-cfg actual shared files. Actor stays ONLYunder
+native_runner; crate::Options/evidence/harness rewrites to that exact context.
+No old-package alias, implementation copy, SDK helper or capability-field visibility
+change is proposed. Each narrow command entry is parent-visible inside its
+owning binary and preserves original arguments, return/error/exit and flush.
+All safe composition roots forbid unsafe; native runner denies with only the
+existing two actor-module allows. No source/Cargo/move/compile has occurred.
+
 Keep production lib's current Plan/release/service and optional runtime_host APIs.
 Do not add pub maintenance/pages/attacker/defender/delivery/lab modules merely to
 preserve old crate imports. Native CLI is user-facing manifest planning, not
@@ -133,14 +188,14 @@ exact aliases/selectors are Root-review proposals, not executed Cargo metadata.
 | Bin | Minimal source modules and namespace rewiring |
 | --- | --- |
 | humanymous | existing production library only; no qualification module declared |
-| humanymous-native | src/qualification/native/mod.rs; old native lib+main handlers bind native::{arguments,manifest,storage}, old crate:: helpers become crate::native::* |
+| humanymous-native | native LIBmod.rs + native_command command.rs; command imports crate::native::{arguments,manifest,storage}; LIBhelpers remain crate::native::* |
 | humanymous-service-fixture | src/qualification/service_fixture/mod.rs and existing explicitly feature-gated CLI fixture APIs; no new lib qualification re-export |
 | humanymous-attacker | actual canonical attacker+defender mod.rs files; old humanymous_attacker -> crate::attacker, humanymous_defender -> crate::defender; former attacker crate:: references become crate::attacker::* |
 | humanymous-report | only canonical attacker/report/legacy/mod.rs leaf and its aggregate/html children; use crate::legacy, no full network/defender tree merely for type visibility |
 | humanymous-wargame-verify | canonical attacker+defender roots: verifier actually references replay run, NetworkReport/report types and defender LabError; full reachable closure reviewed, not a copied verifier shim |
-| humanymous-agent-maintenance | src/qualification/maintenance/mod.rs plus its existing module declarations; main/imports become crate::maintenance::*; no production lib exports |
+| humanymous-agent-maintenance | maintenance LIBmod.rs plus maintenance_command command.rs; LIBhelpers crate::maintenance::*, MAINhelpers crate::maintenance_command::* |
 | humanymous-delivery | src/qualification/delivery/mod.rs; its existing dispatcher/modules and Result/Options/helper references become crate::delivery::*; no other tool trees included |
-| humanymous-pages | src/qualification/pages/mod.rs plus existing browser command; old Pages APIs/helper refs become crate::pages::* within this bin |
+| humanymous-pages | pages LIBmod.rs + pages_command command.rs; browser_command belongs only to pages_command using one actual pages/browser_command.rs file |
 | humanymous-lab-runner | src/qualification/lab_runner/mod.rs plus only canonical shared lab support files it actually reads; no attacker/defender by default |
 | humanymous-runtime-pilot | src/qualification/runtime_pilot/mod.rs plus canonical attacker+defender and its actual shared lab inputs; preserve Unix/test cfg branches |
 | humanymous-cef-pilot | src/qualification/cef_pilot/mod.rs with existing desktop/diagnostics/provisioning; no actor module |
@@ -149,7 +204,7 @@ exact aliases/selectors are Root-review proposals, not executed Cargo metadata.
 | humanymous-local-parity | src/qualification/local_parity/mod.rs only, unchanged workload and root/control provenance |
 
 Each bin root is a narrow composition entry and links actual in-package files with
-#[path]. Private mod.rs owns the command implementation; expose only a parent-
+#[path]. Private mod.rs or split command.rs owns implementation; expose only a parent-
 visible command entry such as pub(super), not a generalized capability constructor.
 Root-private helpers formerly in main stay inside that owning context. Namespace
 rewiring includes nested crate:: references and unit tests; it does not require
@@ -328,8 +383,10 @@ recorded under that bin. Zero lexical cases does not waive executable/role proof
 
 New command-module prefixes for the attacker/report/verifier entry roots are
 proposed attacker_command/report_command/wargame_verify_command, avoiding collision
-with canonical shared attacker/defender or legacy namespaces. Other bin prefixes
-match their private role context; primary humanymous retains commands:: names.
+with canonical shared attacker/defender or legacy namespaces. Native, Pages and
+Maintenance command prefixes are native_command/pages_command/maintenance_command;
+their LIBnamespaces remain native/pages/maintenance. Other single-context bins
+retain their role prefix; primary humanymous retains commands:: names.
 Root must approve these precise command namespaces alongside semantic lists; no
 source, target or visibility change is performed by this proposal.
 

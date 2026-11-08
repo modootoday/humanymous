@@ -1,0 +1,2505 @@
+{
+  "schema": "humanymous.cli-bin-composition-identity-map/1",
+  "observed_utc": "2026-11-08T09:07:32.8551528+09:00",
+  "status": "source-only reconciliation, Root final279file freeze pending",
+  "bin_roles": 15,
+  "roles": [
+    {
+      "bin": "humanymous-native-runner",
+      "old_package": "humanymous-native-runner",
+      "old_implementation": "scripts/ci/windows-native-runner/src/main.rs",
+      "old_sha256": "2e085f6c557e09b8842867e9dfc2bc6c3ec39b0def86778b897479900c76ca73",
+      "new_implementation": "src/qualification/native_runner/mod.rs",
+      "implementation_private_root_namespace": "native_runner",
+      "new_composition_root": "src/bin/native_runner/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "deny; retain only existing actor2allows",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-cef-pilot",
+      "old_package": "humanymous-cef-pilot",
+      "old_implementation": "scripts/ci/cef-pilot/src/main.rs",
+      "old_sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527",
+      "new_implementation": "src/qualification/cef_pilot/mod.rs",
+      "implementation_private_root_namespace": "cef_pilot",
+      "new_composition_root": "src/bin/cef_pilot/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-runtime-pilot",
+      "old_package": "humanymous-runtime-pilot",
+      "old_implementation": "test/lab/runtime/src/main.rs",
+      "old_sha256": "d486f77d5712bff4ada046711cb7d50fab412e4d3346df766397651392cc16a0",
+      "new_implementation": "src/qualification/runtime_pilot/mod.rs",
+      "implementation_private_root_namespace": "runtime_pilot",
+      "new_composition_root": "src/bin/runtime_pilot/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [
+        {
+          "namespace": "attacker",
+          "source": "src/qualification/lab_support/attacker/mod.rs",
+          "role": "same physical shared source, no aliases/copies; exact original cfg preserved"
+        },
+        {
+          "namespace": "defender",
+          "source": "src/qualification/lab_support/defender/mod.rs",
+          "role": "same physical shared source, no aliases/copies; exact original cfg preserved"
+        }
+      ],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-lab-runner",
+      "old_package": "humanymous-lab-runner",
+      "old_implementation": "test/lab/runner/src/main.rs",
+      "old_sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45",
+      "new_implementation": "src/qualification/lab_runner/mod.rs",
+      "implementation_private_root_namespace": "lab_runner",
+      "new_composition_root": "src/bin/lab_runner/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-pages",
+      "old_package": "humanymous-pages",
+      "old_implementation": "docs/tooling/src/main.rs",
+      "old_sha256": "503c3563fa2894a08523344df195cb99b12396734472a310f0dfaf737de64b88",
+      "new_implementation": "src/qualification/pages/command.rs",
+      "implementation_private_root_namespace": "pages_command",
+      "new_composition_root": "src/bin/pages/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [
+        {
+          "namespace": "pages",
+          "source": "src/qualification/pages/mod.rs",
+          "role": "canonical former library context, original public interfaces remain bin-local, not production lib exports"
+        }
+      ],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-delivery",
+      "old_package": "humanymous-delivery",
+      "old_implementation": "scripts/ci/delivery/src/main.rs",
+      "old_sha256": "e5b028c5806b5b118a3b89207be327b7f152d03114422b9a7541751368eceb98",
+      "new_implementation": "src/qualification/delivery/mod.rs",
+      "implementation_private_root_namespace": "delivery",
+      "new_composition_root": "src/bin/delivery/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-agent-maintenance",
+      "old_package": "humanymous-agent-maintenance",
+      "old_implementation": "skills/agent-maintenance/src/main.rs",
+      "old_sha256": "93470fb9fe506e38b6a8d0b0f9ec8c51888012507a712c06629494107caa54c7",
+      "new_implementation": "src/qualification/maintenance/command.rs",
+      "implementation_private_root_namespace": "maintenance_command",
+      "new_composition_root": "src/bin/maintenance/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [
+        {
+          "namespace": "maintenance",
+          "source": "src/qualification/maintenance/mod.rs",
+          "role": "canonical former library context, original public interfaces remain bin-local, not production lib exports"
+        }
+      ],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-service-fixture",
+      "old_package": "humanymous-cli",
+      "old_implementation": "crates/cli/src/bin/service_fixture.rs",
+      "old_sha256": "be90a01df7aca4e229916d11f53f593cadd8994ed60ef467cdb51bc80e3749f9",
+      "new_implementation": "src/qualification/service_fixture/mod.rs",
+      "implementation_private_root_namespace": "service_fixture",
+      "new_composition_root": "src/bin/service_fixture/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous",
+      "old_package": "humanymous-cli",
+      "old_implementation": "crates/cli/src/main.rs",
+      "old_sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "new_implementation": "src/main.rs",
+      "implementation_private_root_namespace": "",
+      "new_composition_root": "src/main.rs",
+      "composition_is_new_source": false,
+      "composition_links": [],
+      "composition_contract": "retain existing main/commands composition",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-docs-review",
+      "old_package": "humanymous-docs-review",
+      "old_implementation": "scripts/ci/docs-review/src/main.rs",
+      "old_sha256": "d877646260960f94ec1c1c52c83822fe970e77dbd4e759b6f07bcda33194ffe6",
+      "new_implementation": "src/qualification/docs_review/mod.rs",
+      "implementation_private_root_namespace": "docs_review",
+      "new_composition_root": "src/bin/docs_review/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-native",
+      "old_package": "humanymous-native-cli",
+      "old_implementation": "crates/native-cli/src/main.rs",
+      "old_sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "new_implementation": "src/qualification/native/command.rs",
+      "implementation_private_root_namespace": "native_command",
+      "new_composition_root": "src/bin/native/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [
+        {
+          "namespace": "native",
+          "source": "src/qualification/native/mod.rs",
+          "role": "canonical former library context, original public interfaces remain bin-local, not production lib exports"
+        }
+      ],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-report",
+      "old_package": "humanymous-attacker",
+      "old_implementation": "crates/attacker/src/bin/humanymous-report.rs",
+      "old_sha256": "a23096cd699f82384fabddfe1e79dae7ca2cc601452635569bcb0a0d8836d199",
+      "new_implementation": "src/qualification/report_command/mod.rs",
+      "implementation_private_root_namespace": "report_command",
+      "new_composition_root": "src/bin/report/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [
+        {
+          "namespace": "legacy",
+          "source": "src/qualification/lab_support/attacker/report/legacy/mod.rs",
+          "role": "same physical canonical leaf only, no whole attacker/defender"
+        }
+      ],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-attacker",
+      "old_package": "humanymous-attacker",
+      "old_implementation": "crates/attacker/src/main.rs",
+      "old_sha256": "a9415905b5be0967862ae5c3dbf9a9359c4acedba8f5c01012b7089048baa7d6",
+      "new_implementation": "src/qualification/attacker_command/mod.rs",
+      "implementation_private_root_namespace": "attacker_command",
+      "new_composition_root": "src/bin/attacker/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [
+        {
+          "namespace": "attacker",
+          "source": "src/qualification/lab_support/attacker/mod.rs",
+          "role": "same physical shared source, no aliases/copies; exact original cfg preserved"
+        },
+        {
+          "namespace": "defender",
+          "source": "src/qualification/lab_support/defender/mod.rs",
+          "role": "same physical shared source, no aliases/copies; exact original cfg preserved"
+        }
+      ],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-wargame-verify",
+      "old_package": "humanymous-attacker",
+      "old_implementation": "crates/attacker/src/bin/humanymous-wargame-verify.rs",
+      "old_sha256": "d78c1f5b8694248019f94f8a3c1ced87279b3f3abe87f77bb16faa29832095e4",
+      "new_implementation": "src/qualification/wargame_verify_command/mod.rs",
+      "implementation_private_root_namespace": "wargame_verify_command",
+      "new_composition_root": "src/bin/wargame_verify/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [
+        {
+          "namespace": "attacker",
+          "source": "src/qualification/lab_support/attacker/mod.rs",
+          "role": "same physical shared source, no aliases/copies; exact original cfg preserved"
+        },
+        {
+          "namespace": "defender",
+          "source": "src/qualification/lab_support/defender/mod.rs",
+          "role": "same physical shared source, no aliases/copies; exact original cfg preserved"
+        }
+      ],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    },
+    {
+      "bin": "humanymous-local-parity",
+      "old_package": "humanymous-local-parity",
+      "old_implementation": "scripts/ci/local-parity/src/main.rs",
+      "old_sha256": "c81a1aa4be0ae055f06c40cbcf9b7cde6c3816c07f083d1fbc8be77820591c7b",
+      "new_implementation": "src/qualification/local_parity/mod.rs",
+      "implementation_private_root_namespace": "local_parity",
+      "new_composition_root": "src/bin/local_parity/main.rs",
+      "composition_is_new_source": true,
+      "composition_links": [],
+      "composition_contract": "in-package path-link actual implementation module and required canonical contexts; call one parent-visible command entry preserving original signature, argv/error/exit/flush; no duplicated implementation or SDK helper",
+      "root_lint": "forbid",
+      "library_api_changes": false
+    }
+  ],
+  "rust_implementation_files": [
+    {
+      "old_source": "crates/attacker/src/bin/humanymous-report.rs",
+      "old_git_mode": "100644",
+      "old_blob": "691ce2bf86c443b49c331fba29a02d27eb6497ea",
+      "old_sha256": "a23096cd699f82384fabddfe1e79dae7ca2cc601452635569bcb0a0d8836d199",
+      "new_implementation": "src/qualification/report_command/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/bin/humanymous-wargame-verify.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fe7659ac13922aa1a80dd157609b147352df395d",
+      "old_sha256": "d78c1f5b8694248019f94f8a3c1ced87279b3f3abe87f77bb16faa29832095e4",
+      "new_implementation": "src/qualification/wargame_verify_command/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/catalog.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d2dfcc670f19f1d3818dfc9abc98eb8a9b6a5e4c",
+      "old_sha256": "f3c7c65c60d57efa2a45dceb3820245adbb5db35cd92d588bd8d0d767c7498d7",
+      "new_implementation": "src/qualification/lab_support/attacker/catalog.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/lib.rs",
+      "old_git_mode": "100644",
+      "old_blob": "36e02d1266f616d598eb8033ea11a71cc8f61d78",
+      "old_sha256": "8e2d72eb028b262cf99fae6f65c4b35b95cd077096254692b5db9465df5b2344",
+      "new_implementation": "src/qualification/lab_support/attacker/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4e66e3775f3b7e2de29346f786f25bf80cdebaf6",
+      "old_sha256": "a9415905b5be0967862ae5c3dbf9a9359c4acedba8f5c01012b7089048baa7d6",
+      "new_implementation": "src/qualification/attacker_command/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/network/cases.rs",
+      "old_git_mode": "100644",
+      "old_blob": "3ddc21a53ed17d122718a28eb1e5c2fe8892c1cf",
+      "old_sha256": "52ded3c3a94ba24caff7a5c81ab893516a4b063b45bea90eddccf186f7f04a8d",
+      "new_implementation": "src/qualification/lab_support/attacker/network/cases.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/network/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "98b2afc13f43edbfe22bc7346eb5fb506c6862f9",
+      "old_sha256": "a2131c5092149841b0a664afe0c297e4d4affd4618207426d5e69bb3c2172e32",
+      "new_implementation": "src/qualification/lab_support/attacker/network/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/network/report.rs",
+      "old_git_mode": "100644",
+      "old_blob": "ff8002e031e35b50572270cb44c13ca6451c12e5",
+      "old_sha256": "056e4fc27f8e4aa3c06af3b4932c23e217560ad55c44b40b14cc6d67aa9c037f",
+      "new_implementation": "src/qualification/lab_support/attacker/network/report.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/report.rs",
+      "old_git_mode": "100644",
+      "old_blob": "e131e30732d826d88ca4c576bdaef70880d76291",
+      "old_sha256": "2ca5cc61265049ef9177f366353de8fce32f996a4c48f247398243fbc07d6689",
+      "new_implementation": "src/qualification/lab_support/attacker/report.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/report/legacy/aggregate.rs",
+      "old_git_mode": "100644",
+      "old_blob": "993c2af1ea9b3a60eacdc934058258a22af9b35a",
+      "old_sha256": "7db9a4094bca3ba2742078e7962a2bd8adb88a9b3683449adc03295c9fc6660b",
+      "new_implementation": "src/qualification/lab_support/attacker/report/legacy/aggregate.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/report/legacy/html.rs",
+      "old_git_mode": "100644",
+      "old_blob": "45f47434e4bf7238d74d41b92114830c9059c751",
+      "old_sha256": "ebde9669e4d44ba70d0562f52d2b89c4b412e3d2c1512d34058b46d140d5a720",
+      "new_implementation": "src/qualification/lab_support/attacker/report/legacy/html.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/report/legacy/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4bedf8d69d2fb01cee20464d8195f443abc87b93",
+      "old_sha256": "57d1b16589a0a3a1e00c5c8ca345f4060afedfc7ad965cd0b6c8cfdf33684f6a",
+      "new_implementation": "src/qualification/lab_support/attacker/report/legacy/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/report/legacy/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2968c8f0816f92c11ca3da38054098cd6c3ef2c8",
+      "old_sha256": "922ed14d182f320b14382514c1f38f705261ae4ef6801b9563ebcd312fd4045e",
+      "new_implementation": "src/qualification/lab_support/attacker/report/legacy/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/verification.rs",
+      "old_git_mode": "100644",
+      "old_blob": "e576ab44b2d3e6c63c1b0ef01d750156205c8dff",
+      "old_sha256": "6b8050fe96ad31df539e8a75d7b68cfd15f1743c34e88911615ac72be43b9675",
+      "new_implementation": "src/qualification/lab_support/attacker/verification.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/attacker/src/verification/json.rs",
+      "old_git_mode": "100644",
+      "old_blob": "1cd55d4650aa9c3e4f382e2bd62232aa8e183cc5",
+      "old_sha256": "a2942231d6d1d29045261d7d0de1636f1a6f29099eb353bb5b908e37087cd475",
+      "new_implementation": "src/qualification/lab_support/attacker/verification/json.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/bin/service_fixture.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fda1a9274002c3b5530c151b7d6c1e50e0d7af2e",
+      "old_sha256": "be90a01df7aca4e229916d11f53f593cadd8994ed60ef467cdb51bc80e3749f9",
+      "new_implementation": "src/qualification/service_fixture/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/commands.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8f81ee4933dfc873c812a86372bc84760cb73aeb",
+      "old_sha256": "abac4c2db93b854c0c935de9d55eb22775494f4eff3d5e459f0e13a6f1a294f6",
+      "new_implementation": "src/commands.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/installation/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "eb738fb228dd14a31ce38aa25e34d3a136e2446b",
+      "old_sha256": "604179b95e46e25243867a1a98bfd0068d2e921c8c308eefe1fa79b194b7d6c1",
+      "new_implementation": "src/installation/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/installation/permissions/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6fbdceb347f124f598382a86e472e6afdb65dc9d",
+      "old_sha256": "90c365f251d307534c3dd0e76ea8f2506ce387e221951f71aea01f4108ab7342",
+      "new_implementation": "src/installation/permissions/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/installation/permissions/windows.rs",
+      "old_git_mode": "100644",
+      "old_blob": "0325a57c539cb6727c07d43d036d7644dcc15c47",
+      "old_sha256": "c8d31041e252e2a294b7c8f72995a0298d0fdf59c935c4067d71d03e49c50f48",
+      "new_implementation": "src/installation/permissions/windows.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/installation/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d373d43dddb828f98ed0d0a9e38e486566a1ead9",
+      "old_sha256": "60b390d23dca49678ae87a988516d89b981d286943cf893833c92d84b2d78cbc",
+      "new_implementation": "src/installation/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/lib.rs",
+      "old_git_mode": "100644",
+      "old_blob": "28076078f2894cb58cb556cc78161866e1f59f06",
+      "old_sha256": "ed5ef8a2da815e2995eb661737ba59c693145271ca7aee64930c1e456e11ae6c",
+      "new_implementation": "src/lib.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a00c5999fb4e62e90328bd9864af7d191ea2fcd5",
+      "old_sha256": "5b9889403a4d1dce532f97d7dd02ecaaf2b040a9380dec07f23a58a4d7ca4f9b",
+      "new_implementation": "src/main.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/release.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fb49d19954cafb63b97287fd49fe02cf1dfd3ba7",
+      "old_sha256": "31a7e5a29b65d517958c8ddb565c05f3e902ba11da55dd79a4017d86b0389c35",
+      "new_implementation": "src/release.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/activation.rs",
+      "old_git_mode": "100644",
+      "old_blob": "101c1846c45177da040bf6b94b24cd76a9c517e6",
+      "old_sha256": "4c91812c50d02b26a8d18587428791242dfc4c2dc0b751479ff2b898568e0a6d",
+      "new_implementation": "src/runtime_host/activation.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/control.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a0d83fd8e595e59bf2b317739d9b3a2facfb996c",
+      "old_sha256": "f01773999f030e826c250252483c394b9b7c87d9c4f762297fee9a1f4050593b",
+      "new_implementation": "src/runtime_host/control.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/failure.rs",
+      "old_git_mode": "100644",
+      "old_blob": "900b2beaf8ccfa19e055b6aa705b033351a01397",
+      "old_sha256": "095c5c6842ae6f139ffb907e5200558110e6ae883d2e175d9e6fc36517c2141d",
+      "new_implementation": "src/runtime_host/failure.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/input.rs",
+      "old_git_mode": "100644",
+      "old_blob": "cfcaa21bacd52fa6edb2a5e24fbcf1bfcf29fa08",
+      "old_sha256": "9691bba6a8679db192c183bd27779671c101136ade57029f20942eacddc4b963",
+      "new_implementation": "src/runtime_host/input.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8d885b5ac705fca9a5c7b055228788aea842f2cf",
+      "old_sha256": "b13305c020fe47cd7236dabae19b5cd1802bb32f56bad515f8aca7672082a83d",
+      "new_implementation": "src/runtime_host/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/pilot.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9d1a53974c5fc8fe18de40aff3129a4f3c80e6b7",
+      "old_sha256": "cbe5a9483dd48182a2fc26feae8124e3102f11092592338fc18797b345f838af",
+      "new_implementation": "src/runtime_host/pilot.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/plan.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4b0231a749869c9cad8961df35fbf40ed2bc24ee",
+      "old_sha256": "86ccf0dbacd2346d0f0a803eaf7576e13dc6cca5826c9e072355bd19a1b7ed59",
+      "new_implementation": "src/runtime_host/plan.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/platform.rs",
+      "old_git_mode": "100644",
+      "old_blob": "1f7066a5d723d1d03cb628921784bb099ee95df0",
+      "old_sha256": "fb611870c133341cd0beaffe8101ae9b3af9f97ecefce88027e271b6f577d25c",
+      "new_implementation": "src/runtime_host/platform.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/runtime_host/watchdog_fixture.rs",
+      "old_git_mode": "100644",
+      "old_blob": "e62bdb445e189923eefae4027e3c7100ff051a5f",
+      "old_sha256": "2d97ce672a9c4d22c3f251cf2e38055657c26670938a5075a839c798cfc2b801",
+      "new_implementation": "src/runtime_host/watchdog_fixture.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/service/backend.rs",
+      "old_git_mode": "100644",
+      "old_blob": "36831d49be8adc875ed47c94a90dd4e42b18c49f",
+      "old_sha256": "55714fd4b62b9932baddf94cdf54a8d41c48e9a8204ad0d62a46bbd1d837186e",
+      "new_implementation": "src/service/backend.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/service/backend/windows.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6f9b5fae6b9c10cbaf0e54215cf53d67c6727d43",
+      "old_sha256": "7fb592d9f43092cc7f59f394eece67fb25f9479e49f04050ff40692ae000097f",
+      "new_implementation": "src/service/backend/windows.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/service/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "b6c2c6360fcc77838d89b0e2831d78aaa546e70b",
+      "old_sha256": "7edd0fad1c4f3651212b60d7c851e05853edde0471da0c21d7f963cd336ab010",
+      "new_implementation": "src/service/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/service/storage.rs",
+      "old_git_mode": "100644",
+      "old_blob": "3dcbaacb1a7a431e65b9a79c3ef5691bf5fb6778",
+      "old_sha256": "7d7a5cd4ed0aee527f5052c7ea21925f261232edbd4d3fc4b817eac7cb95cd7e",
+      "new_implementation": "src/service/storage.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/cli/src/service/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8a2197b39bfd90a24421100f981de828ad74a894",
+      "old_sha256": "65cd703f5cb67f361c1557f6a1ae4906cfe54409acf2ebf28fc0dccdaaa301df",
+      "new_implementation": "src/service/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/defender/src/lab/client.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f76fed90cfa7164c4e712409857a87a4ef4f234b",
+      "old_sha256": "e1f6b48982e33633a783a124084208d2091744f5cb501dba749e5325b78057f9",
+      "new_implementation": "src/qualification/lab_support/defender/lab/client.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/defender/src/lab/isolation.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f93544c13a80b2dc62c9d47fb083b37c583b1443",
+      "old_sha256": "101fc8ae6da720064e7f24f1917f0b3c9e02079a947caa6424d1de3483b4add0",
+      "new_implementation": "src/qualification/lab_support/defender/lab/isolation.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/defender/src/lab/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "ecf88f3b5d8de29108fd3084cefdbd133d25f875",
+      "old_sha256": "cd8d10726fcf78b5b53a8b838cc720d50a6681903f3b1e4a5a584b67d32cb404",
+      "new_implementation": "src/qualification/lab_support/defender/lab/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/defender/src/lab/process.rs",
+      "old_git_mode": "100644",
+      "old_blob": "de3dc4d29f51ca4c90ab9aa1797fe7c7510c1ea3",
+      "old_sha256": "0d3948566ac481aee9f1b32ca4733e2b2982a99bb762bed760052260a9a4f16e",
+      "new_implementation": "src/qualification/lab_support/defender/lab/process.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/defender/src/lab/snapshot.rs",
+      "old_git_mode": "100644",
+      "old_blob": "bfa6d4bb62b8b9d1807c225f7c9231181dc88e5b",
+      "old_sha256": "cc0be297ce234b7f3548a0a4a89189920ceec49546b062157d9657a4b702f19f",
+      "new_implementation": "src/qualification/lab_support/defender/lab/snapshot.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/defender/src/lib.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7b410506ec5d2b87b0c0a8776e39f79c9d476971",
+      "old_sha256": "78f5f341c4a3cf1990ba4f70692100232285c960552eb13101860c47d789cafb",
+      "new_implementation": "src/qualification/lab_support/defender/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/arguments.rs",
+      "old_git_mode": "100644",
+      "old_blob": "17d663af21a8b7f32e9b08f61e27f501fbadc75b",
+      "old_sha256": "0c8e593d0d027cdf0b26852eeaf8e29eff51d29bc3ccb5a98c5cae4f99432b48",
+      "new_implementation": "src/qualification/native/arguments.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/lib.rs",
+      "old_git_mode": "100644",
+      "old_blob": "912a9555e0764d74e786e6e28cb1b38ee2585a9d",
+      "old_sha256": "2a6e18a8017f93bfe884b0f4e8024b7e424b6f99b517ac6f83666743136cd621",
+      "new_implementation": "src/qualification/native/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "c8195af0d8bbb644627acf64cf77f0855b660286",
+      "old_sha256": "d547cc6a244a02ebc7e7c989939ab4a1419ab464157bc9b4856b5149089fb1ca",
+      "new_implementation": "src/qualification/native/command.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/manifest.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fae0b096cb39e19c3fa3940e3dc5a1abcfb7a396",
+      "old_sha256": "92ee2ad9635a2f297e864316d64152d9aa5ab8de198ef98c0e98fe028bca3239",
+      "new_implementation": "src/qualification/native/manifest.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/storage.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5a0a1378f461ac0dc69d45df331de6b7d5b823e7",
+      "old_sha256": "92ba13c460f74860751d5959e7fbe4ad7e163f86856475b9e042f7b668cc4d7b",
+      "new_implementation": "src/qualification/native/storage.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/storage/windows.rs",
+      "old_git_mode": "100644",
+      "old_blob": "dc653c983a72dc211e8969ab7b931b35d4479a26",
+      "old_sha256": "21aca8c7b0efc4c81be93c62a686f475f82afb168c0dfae8f1c86fe30ac430d7",
+      "new_implementation": "src/qualification/native/storage/windows.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/storage/windows/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "0b74637f653832d7c5b654a18171853a530d2050",
+      "old_sha256": "f009da89234090e20336449cecf9a6c5198b212d2e4b42b6b380c1dd70bf6deb",
+      "new_implementation": "src/qualification/native/storage/windows/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/test_support.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9463c032be9cc47e77780a1bfbd7588541777f0c",
+      "old_sha256": "af4483477730588c90df5bba8d2cce770eb78a51872f5931246e8d0f080d84b6",
+      "new_implementation": "src/qualification/native/test_support.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "crates/native-cli/src/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "b79b7fc82572c603bb43d65f1367dfb2feef9448",
+      "old_sha256": "3bedb8ba4418c75dff24220642b9bbd86a08aec2fb91c4df3b9ad5ba70f17d92",
+      "new_implementation": "src/qualification/native/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/accessibility.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5026670e69c852d5cd59c574a822a88eb9507a72",
+      "old_sha256": "2ba9ff70a48317ec0e59a936daf365394275135d76d0785893ffdc8fc943b889",
+      "new_implementation": "src/qualification/pages/accessibility.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/browser.rs",
+      "old_git_mode": "100644",
+      "old_blob": "ec614750a6f8b05266c52556bdc38c55af060f4b",
+      "old_sha256": "2689c5c60d090af23594e4638de76850232a803eedbf10169cf721c257181b29",
+      "new_implementation": "src/qualification/pages/browser.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/browser/webdriver.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5f3eb5543d1c1baec79e3f96851a0daad9d6e5d6",
+      "old_sha256": "2cfb4839ea19116082d51422aac9471dbbb6a3fceb651fd809abc57fc476dead",
+      "new_implementation": "src/qualification/pages/browser/webdriver.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/browser_command.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7b2f4f218de3c3d2694dbe89ce93aa31f3f01065",
+      "old_sha256": "15a4c68a241ca37fc647be4d557afeed61131620f40bee5e3c0dccfca3abd325",
+      "new_implementation": "src/qualification/pages/browser_command.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/build.rs",
+      "old_git_mode": "100644",
+      "old_blob": "85a130a56c96f24579254ea7608684ec13b6d78f",
+      "old_sha256": "499e1fcf23c0b57f0c4e01e329598177246c3556db3f0b6fcb86c4ecb5328c46",
+      "new_implementation": "src/qualification/pages/build.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/files.rs",
+      "old_git_mode": "100644",
+      "old_blob": "225e136b8caeeece2cd6e87f9f652b87093a289e",
+      "old_sha256": "c0dd01b6b22a6e5cb7e182d899f849db234235c1aeb836fee7457907251e2891",
+      "new_implementation": "src/qualification/pages/files.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/inputs.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4bf7c282ae7544da6bc70efafe82d0b3c5c2aafe",
+      "old_sha256": "f2bdf29c565be7c0218b7cc6656770ba15efdcfe8e7e2c6f906cd94836a2b547",
+      "new_implementation": "src/qualification/pages/inputs.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/lib.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8c0927502c424de43b8456fb10f45b1766b5e242",
+      "old_sha256": "538df6a7f851ca5c00a482e927683611e7f8ec9e5ea0e2e4b9c544e950008fbc",
+      "new_implementation": "src/qualification/pages/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5c67f98e08909c840d55d6bc71997765cbf44825",
+      "old_sha256": "503c3563fa2894a08523344df195cb99b12396734472a310f0dfaf737de64b88",
+      "new_implementation": "src/qualification/pages/command.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/navigation.rs",
+      "old_git_mode": "100644",
+      "old_blob": "ee66c6f87d2730875266c7e2be04bd4bfe9ca2ff",
+      "old_sha256": "fbe535fe2e1f1e05fdb239a22b07817400cba36ea430ae0f477ec90b09b8058c",
+      "new_implementation": "src/qualification/pages/navigation.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/output.rs",
+      "old_git_mode": "100644",
+      "old_blob": "3d76a9c3a0dae8f044c73aacc2233faa893734a2",
+      "old_sha256": "380525c50493e0167be5c959d7b9e7f97dd3b9410b639a861912b4117cffe517",
+      "new_implementation": "src/qualification/pages/output.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/package.rs",
+      "old_git_mode": "100644",
+      "old_blob": "dd550b6a2f3853c87fba5206e50946ba09ec68b0",
+      "old_sha256": "2ab4507edd3d77bdf7d0e34f6d030abd607a1454e8bed60f305699eb96d0cad8",
+      "new_implementation": "src/qualification/pages/package.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/package/tar.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f17ac2afbf5325614a7ebdce69dc1c9ef021152d",
+      "old_sha256": "545b454647546600c1c548a656aec41c684513706e75e0edd68963692d2dcb42",
+      "new_implementation": "src/qualification/pages/package/tar.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/review.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4663236a160eecfe10f111f7fed67cd90c7bec43",
+      "old_sha256": "cfbaf2c18efaa368282cb82c6c3b194277524ad22e0e43762f571e47ebdef3cc",
+      "new_implementation": "src/qualification/pages/review.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/snapshot.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5a78754cdf98fb4239332411e6698f149bdd47ef",
+      "old_sha256": "a3fe4675f9c05f66021031659f853287a824f934ac9b32b31e56c7dc3b63417f",
+      "new_implementation": "src/qualification/pages/snapshot.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/source.rs",
+      "old_git_mode": "100644",
+      "old_blob": "beca5705b768e54822bd3f73b53cbafca6cfab7b",
+      "old_sha256": "e03164ee1862a581e5540357a4cd3e676b93737e96fa9ce71c782060f99406ba",
+      "new_implementation": "src/qualification/pages/source.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "54aac25c0d077076cdf48064b9ff1e95e25f32a0",
+      "old_sha256": "3de6479823d9740b09b4272db579d6422224c8c011bb394eb11a12279e559115",
+      "new_implementation": "src/qualification/pages/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/vectors/author.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d58364f20c8381874a0f76278cad0821c3a7c135",
+      "old_sha256": "3d2b99174cb0a2e2bde27926af3287f368b57ac57350a01d5f4971a6793d3214",
+      "new_implementation": "src/qualification/pages/vectors/author.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/vectors/i18n.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fddf3434c180f12b1c7fadb6626685c2928f8015",
+      "old_sha256": "1b888924ebf18f7cbbb78171795c6943fbfb46869a0e1783baaf8591ed4365e1",
+      "new_implementation": "src/qualification/pages/vectors/i18n.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "docs/tooling/src/vectors/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9d0f5101bb37d45f18d94dd7bf8927b4383cdf35",
+      "old_sha256": "0c280759d66fedc8bd36b623af3d9240e615354f5d6105c2a96bf995c396e009",
+      "new_implementation": "src/qualification/pages/vectors/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/desktop.rs",
+      "old_git_mode": "100644",
+      "old_blob": "913247b4ab783b4d8229a22a1f3569899aa7aeb5",
+      "old_sha256": "c00e9b3896c7b78805d51aa6e30293c7747d514c4915b70856df2843da410fd7",
+      "new_implementation": "src/qualification/cef_pilot/desktop.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/diagnostics.rs",
+      "old_git_mode": "100644",
+      "old_blob": "b868a2fb1a8aa820ab00c621cac95e8a2e263100",
+      "old_sha256": "dd158986a8f9c39f0864ad0d8fd1c3e2ac3c85d670321515d5c3a6d513252043",
+      "new_implementation": "src/qualification/cef_pilot/diagnostics.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/diagnostics/bootstrap.rs",
+      "old_git_mode": "100644",
+      "old_blob": "0b77f8445c6be5d5663e894f22664d38ea633ad1",
+      "old_sha256": "999bb9d4c60546167bf8d7bc2c0175e5976ea9ea38b42e0827dc7939e5c1cf84",
+      "new_implementation": "src/qualification/cef_pilot/diagnostics/bootstrap.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/diagnostics/bootstrap/observations.rs",
+      "old_git_mode": "100644",
+      "old_blob": "b0b0c608742b4479351f290e2cb2110c9f478e0b",
+      "old_sha256": "2687135bb78e2b9c9716c0466c7c7545636f8ecf5104e129a05ca62f317e08d1",
+      "new_implementation": "src/qualification/cef_pilot/diagnostics/bootstrap/observations.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/diagnostics/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2c96827647c686be4158e89b9b6dd6d03e4f2120",
+      "old_sha256": "f6411d81a108887f4458cb6eb25c3228a5baf9902ed21d06ee0b07b8c1941b98",
+      "new_implementation": "src/qualification/cef_pilot/diagnostics/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7c9e462bcf7efdfc0327c4ecbe7b44613d183914",
+      "old_sha256": "d052d057716e0589e474f99babadbb29a7a17f9845ddf9d6e771f18f86cef527",
+      "new_implementation": "src/qualification/cef_pilot/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/provisioning.rs",
+      "old_git_mode": "100644",
+      "old_blob": "1f2abe321cdd38b13f52d3f0e94fa0e1cd953195",
+      "old_sha256": "98a7184508c8b56bd4b91c39fb2f1888d4596f53141c43e438095e9f815aa352",
+      "new_implementation": "src/qualification/cef_pilot/provisioning.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/cef-pilot/src/provisioning/bundles.rs",
+      "old_git_mode": "100644",
+      "old_blob": "e831ae07b752fc89a579916dd30abf0451df28f3",
+      "old_sha256": "e21a6630e83765275f0f33a302a6dfe1f7caaa695f7381f8a5229d8c729a87c9",
+      "new_implementation": "src/qualification/cef_pilot/provisioning/bundles.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/archive_cache.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fa54b11e68c01c6213f69adae668a3fe830ce492",
+      "old_sha256": "df71762c123f622fe251023f45fd51619daabcc35c94fccbb4639565c969daa2",
+      "new_implementation": "src/qualification/delivery/archive_cache.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/archive_cache/policy.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6ab70929b7c372ea1f273a4782293fdb06548c22",
+      "old_sha256": "e568eb53404e865ff656b5a85562d033a22ea50f8c8cc08b96401d3b6389c3f9",
+      "new_implementation": "src/qualification/delivery/archive_cache/policy.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/archive_cache/scan.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a618c7eb926814af8b5e1269299f3d96ca2c1c9f",
+      "old_sha256": "49250dcb6296434c76ba044a9ec95a9df72a00b3fe60e28060366abc62f37d0d",
+      "new_implementation": "src/qualification/delivery/archive_cache/scan.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/audit_source.rs",
+      "old_git_mode": "100644",
+      "old_blob": "75b692669535890ada964044a7f7944b0d09d12c",
+      "old_sha256": "4bdb50fc7120537cec74ea2f48f2e8fe4afcd346f0d11ababd7509995f7dd66f",
+      "new_implementation": "src/qualification/delivery/audit_source.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/command.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5c2edb6ce0f46b799d4a7c8cbdfe6818da26cf86",
+      "old_sha256": "50accf646cef395fd96c7d9aea80beb58c88d484993ed65ac3f15145283c971c",
+      "new_implementation": "src/qualification/delivery/command.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/components.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2b1f6cd005258dd5548fbf14bf931a3d739f052a",
+      "old_sha256": "5020d601192c8ee415ec56cb33a00d92a8ae98eb4912467cb89fef0f992dbb0f",
+      "new_implementation": "src/qualification/delivery/components.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/components/maintenance.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6e8f4b4fd269a8a42ec6472941594ea34e368ef1",
+      "old_sha256": "02d65157e0553f71f15c2ecc601bc09245eed43ee049f0a5dc80f37da80558ee",
+      "new_implementation": "src/qualification/delivery/components/maintenance.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/components/native_archive.rs",
+      "old_git_mode": "100644",
+      "old_blob": "62980ede0d8581dcc46fe3894e31b6dec531c775",
+      "old_sha256": "6288ddeb676ce304582c59f4cafb82906f46bb1c0cab6a6d44fa832f53725b60",
+      "new_implementation": "src/qualification/delivery/components/native_archive.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/components/node_host.rs",
+      "old_git_mode": "100644",
+      "old_blob": "b1eea4f0f503a59c853c4bf8f2003123c16f3590",
+      "old_sha256": "ad8d364417189360927425067f4e07d2e27dfd47528ed0638557ad35aa21f167",
+      "new_implementation": "src/qualification/delivery/components/node_host.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/components/runtime.rs",
+      "old_git_mode": "100644",
+      "old_blob": "c3fb30b956a343510798365f9d5a3bcc58a25f24",
+      "old_sha256": "f433403426d81ca2e3b5d1bf49ac8ac0c2ffca52c249cc99ce874a3ca7adcc35",
+      "new_implementation": "src/qualification/delivery/components/runtime.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/dependency_summary.rs",
+      "old_git_mode": "100644",
+      "old_blob": "09e11178c10f0d7a83f74cc2abe8e545650a7769",
+      "old_sha256": "db37d8058a09503c0b789169e2751b17cde7729e600387557451e0e9f2574196",
+      "new_implementation": "src/qualification/delivery/dependency_summary.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/docker_source.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a317556efdb77bbcca6e564dd560b5f3f3634c14",
+      "old_sha256": "a90e3f2c21abaab15322a607228c53e9a61bbbabf927b4e7a3da34d303635e32",
+      "new_implementation": "src/qualification/delivery/docker_source.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/evidence.rs",
+      "old_git_mode": "100644",
+      "old_blob": "411a4539721863e2c33f7f3c08217cf6c4fc7b6d",
+      "old_sha256": "d4628e26ff32dfdeeb95f49f0cbfc1d39928e862d9e6aedb990930fc54c924a3",
+      "new_implementation": "src/qualification/delivery/evidence.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/facade_profile.rs",
+      "old_git_mode": "100644",
+      "old_blob": "66010407ea8a80596c217d97d8c2224c4995e1e5",
+      "old_sha256": "df7ac038e9e8e975b6413959a40b76bb3a810e2346ac98f24edf62a33deaeee3",
+      "new_implementation": "src/qualification/delivery/facade_profile.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/go_product.rs",
+      "old_git_mode": "100644",
+      "old_blob": "25ce3ec89eabcad1a684e490ef704b58f07547ea",
+      "old_sha256": "5acb965950785f6691ab389b4c066ca0d011486a947af8acc9253704d2322c32",
+      "new_implementation": "src/qualification/delivery/go_product.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/header_proof.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fc93e304dc1604a1a500f0262aa29987b48ee436",
+      "old_sha256": "80f2dc0f5c48f62e26f0204daed6480b4e270ff6fb576207fb53a29633bcd206",
+      "new_implementation": "src/qualification/delivery/header_proof.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/header_proof/actions_log.rs",
+      "old_git_mode": "100644",
+      "old_blob": "70546b0001465f62af95ba1904767593030ec782",
+      "old_sha256": "ea44e5ff8e36096f47130bd2e7496f4d32550cbac27242bff9aa6db5252580b0",
+      "new_implementation": "src/qualification/delivery/header_proof/actions_log.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/header_proof/admission.rs",
+      "old_git_mode": "100644",
+      "old_blob": "29e88032c182e9879b19cdca91806a6bd6863455",
+      "old_sha256": "a0ba40a16b77f752b3c3f0482436ff9d56281196070ba3f1103f54a32236b00f",
+      "new_implementation": "src/qualification/delivery/header_proof/admission.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/header_proof/codec.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2d3f7691cc8246928b4025456aa97058db6cef09",
+      "old_sha256": "dcaaa5bf836f62df362a1f362f5edc88fb8f987327e2b31c854a6e3387494fa4",
+      "new_implementation": "src/qualification/delivery/header_proof/codec.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/header_proof/frontend.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5b4bccc7f42514fa9172d2d7003b71528e2f8a9a",
+      "old_sha256": "46c4cfcb1871b731305845efba0eda07f7dac68c048bf2678fc0a9348cf74aaf",
+      "new_implementation": "src/qualification/delivery/header_proof/frontend.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/header_proof/private_io.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a82ae7c703501967212dd7f9066947b8536d184b",
+      "old_sha256": "d03421d5113fb621b50bd2feed18faca81776e4b0b300c0a3912318e81c0e489",
+      "new_implementation": "src/qualification/delivery/header_proof/private_io.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/header_proof/source_index.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a97faba8cb22bb9375c0044037e05cbd3d61f04e",
+      "old_sha256": "cc4a38e8f2d19f50a2f1998919429064d4b0e545f8e743587d547e54f2106757",
+      "new_implementation": "src/qualification/delivery/header_proof/source_index.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/image_candidates.rs",
+      "old_git_mode": "100644",
+      "old_blob": "63fbb424cc3d43b8d7758fdc13931c742d4f2c1e",
+      "old_sha256": "11884db7da23998fc3b26f996a8cd18f66c961e19ba6e5551e211bea2688dd23",
+      "new_implementation": "src/qualification/delivery/image_candidates.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/image_scan.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2abea37be5d5e4652931ac9adf768849e2cd918c",
+      "old_sha256": "0b181b0372bbb38fbd5fac8a1d3fd4071cbf7f793db9c1b827b385e7da23a738",
+      "new_implementation": "src/qualification/delivery/image_scan.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/lab_diagnostics.rs",
+      "old_git_mode": "100644",
+      "old_blob": "aaeb2bbcfc02b62fdd632964ea63d0f76a2cf726",
+      "old_sha256": "bd7135af0585b821b92971477affb21be1d8eb45b36d16b1a21e8c219c8a5f15",
+      "new_implementation": "src/qualification/delivery/lab_diagnostics.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/lab_receipts.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2e8864097fbc41bf19496c057c52dda698b3135c",
+      "old_sha256": "12317742e145d338642161f937d4a2703bd133795204b71329a1e3103cebb4f3",
+      "new_implementation": "src/qualification/delivery/lab_receipts.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6a7d78f6fd4dbe79fe885f43eb967c395581128d",
+      "old_sha256": "e5b028c5806b5b118a3b89207be327b7f152d03114422b9a7541751368eceb98",
+      "new_implementation": "src/qualification/delivery/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/metrics.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d09d0257aa5c997fb1d2cf2d66b1751d7c9fe3b5",
+      "old_sha256": "ed694b660d5d350cc5560892f7e2907c2566deb18a198685d0874864a6ab9864",
+      "new_implementation": "src/qualification/delivery/metrics.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/mount_probe.rs",
+      "old_git_mode": "100644",
+      "old_blob": "05e6bb53a9ef98d53003e11b689f986fa2fd3301",
+      "old_sha256": "68efcad46ef10cb3bdaf200ae8ccd649bef96f37577714f623e18557b073a7e8",
+      "new_implementation": "src/qualification/delivery/mount_probe.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/nginx.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6f3133a94d97ef5366692e82f87cde1cb29e0915",
+      "old_sha256": "10971619842062e1958ec15870097daaeeca8c663667068a8f7e48eefb617536",
+      "new_implementation": "src/qualification/delivery/nginx.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/nginx/runner.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8f876330d6dff30c00533e18d7d48cf3de2fc551",
+      "old_sha256": "7a65a0e9e2c6f0ec83617979918bf1df5d33db2b348b874624f12752a8555b17",
+      "new_implementation": "src/qualification/delivery/nginx/runner.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/notices.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8d8b2b050fa333dcae3e01f83fccb02c7bfdc11a",
+      "old_sha256": "0ae70259f9f73c89360a6316765829f244468b40954fd0321f59db9d5ab36b4c",
+      "new_implementation": "src/qualification/delivery/notices.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/notices/archive.rs",
+      "old_git_mode": "100644",
+      "old_blob": "dfe1a6daf8fb62f864c6e2e215fdd028a7712164",
+      "old_sha256": "47538a97a6908fec8fe9023c6c828e8a7d97ea9d34a407c16153303a83b36a54",
+      "new_implementation": "src/qualification/delivery/notices/archive.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/notices/members.rs",
+      "old_git_mode": "100644",
+      "old_blob": "81122f464f2522c36a2f4cdb98721d23ff349082",
+      "old_sha256": "e4cce67d39fbe1f9718a2f214e4a52e1ee04c9444f005e01900c0e618bdceb70",
+      "new_implementation": "src/qualification/delivery/notices/members.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/package.rs",
+      "old_git_mode": "100644",
+      "old_blob": "245caaa4d14f5e6a8139a1b25d8dfdf3191de269",
+      "old_sha256": "c9468916cd3c2e48c4a6a94ec56eef7d112837f8f4be1fab0bd6d8c505b28758",
+      "new_implementation": "src/qualification/delivery/package.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/package/native.rs",
+      "old_git_mode": "100644",
+      "old_blob": "81e7fdaaec833e40bfa2f5723458023e896d7f75",
+      "old_sha256": "618e042a9e3d8fdec2e5a426ba0761637301d38cbfb67b9d66a86dbf974d5748",
+      "new_implementation": "src/qualification/delivery/package/native.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/package/native/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "df9f1bf5468e61a8bcb5f39e28b5ca4c05152154",
+      "old_sha256": "ed311601f09cf18c7826c1bec5020892e3272d0465db9da959ccad7411a83699",
+      "new_implementation": "src/qualification/delivery/package/native/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/pages.rs",
+      "old_git_mode": "100644",
+      "old_blob": "622d8c3c0026af7a5628a41ad48f0e3be8fa91c7",
+      "old_sha256": "b7c238fd58b6865f4d70f121775d21c1a3fc2e91336c0d49dd9707083351b0ff",
+      "new_implementation": "src/qualification/delivery/pages.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/pilot.rs",
+      "old_git_mode": "100644",
+      "old_blob": "71ba1457142172284eff9734a8e8adb9ffe4e707",
+      "old_sha256": "3d8725ab90bff430630b78c470528362527603083e91ed928e8f32214bf3c7ca",
+      "new_implementation": "src/qualification/delivery/pilot.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/policy.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4f080febb5346f64a897a7e7063f6c51a1e0aa0e",
+      "old_sha256": "8a982b9c160b6ff24bf13e4f84b95954517d23ef2884d3b2abe18bbdc6b678d7",
+      "new_implementation": "src/qualification/delivery/policy.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/registry.rs",
+      "old_git_mode": "100644",
+      "old_blob": "3d9f934b8dcfd34f310b986e61c9947e87cf5503",
+      "old_sha256": "10691745c93e922491853275d631d8df5ab0da94b042c49be0a206215288b4be",
+      "new_implementation": "src/qualification/delivery/registry.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/remote.rs",
+      "old_git_mode": "100644",
+      "old_blob": "c26bdf29efdf61b74306bdf85f53798794dcf574",
+      "old_sha256": "c241a9e62aeb257735eaed496d7a68b5a296380071a3215e937dfe191e0c3d96",
+      "new_implementation": "src/qualification/delivery/remote.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/service_component.rs",
+      "old_git_mode": "100644",
+      "old_blob": "80f54394eb328a902c8fe94747f75d5de6b23e35",
+      "old_sha256": "c641cacdd78041158bfabc197bf5bb318802bbad8787123214e6ba2aae1de4dc",
+      "new_implementation": "src/qualification/delivery/service_component.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/source.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f2ffdb4f3d8bc054cbd78254a08a88532146718e",
+      "old_sha256": "98f7dd7cca84dc9e433c57406da9013c426ac74449f432d2cd52fff63d9790c2",
+      "new_implementation": "src/qualification/delivery/source.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/supply.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a5ce6f6772e2b837e8f279410a868db25890157d",
+      "old_sha256": "197c0790f621a510573f2034b5151fbfd8fcc0662ca6e76c2100351050f236e0",
+      "new_implementation": "src/qualification/delivery/supply.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/delivery/src/workspace.rs",
+      "old_git_mode": "100644",
+      "old_blob": "72ed6d0446ea1b7c9c470c23556162f281995a29",
+      "old_sha256": "5db6d25b230ec0c9af36863fe5664befb165187a2629fa9c7891fec70d7a2ef1",
+      "new_implementation": "src/qualification/delivery/workspace.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/docs-review/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "50d1d50299876598d3348dc7c94c3ed7b7c77c9f",
+      "old_sha256": "d877646260960f94ec1c1c52c83822fe970e77dbd4e759b6f07bcda33194ffe6",
+      "new_implementation": "src/qualification/docs_review/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/local-parity/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "0695ffbc6be1f740fbb1c2726faba72cf6d0fa40",
+      "old_sha256": "c81a1aa4be0ae055f06c40cbcf9b7cde6c3816c07f083d1fbc8be77820591c7b",
+      "new_implementation": "src/qualification/local_parity/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/actor.rs",
+      "old_git_mode": "100644",
+      "old_blob": "011977b19195209a6302469a633f111a0f852532",
+      "old_sha256": "c0b233b5fdbb9bb539406f68816190f898a1e82ec60f71b502e617bdedeb1323",
+      "new_implementation": "src/qualification/native_runner/actor.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/actor/prebuilt.rs",
+      "old_git_mode": "100644",
+      "old_blob": "100da3753036e67aeda91fa4ad5b8d5ae52c8d48",
+      "old_sha256": "815611fb54a46a308b4e4be2abcae75c26dca4f661dd19c3a7fb17b244230bee",
+      "new_implementation": "src/qualification/native_runner/actor/prebuilt.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5521ff9aa070fc1280765599e293977252a396b3",
+      "old_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation": "src/qualification/native_runner/actor/prebuilt/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/actor/scm.rs",
+      "old_git_mode": "100644",
+      "old_blob": "c4391c3a24e93eafc7df5a58843e32e28b8f7ee0",
+      "old_sha256": "48acd4982b48d72ef457c70f2adc03623d8c237cc99257e4e71a95904280169b",
+      "new_implementation": "src/qualification/native_runner/actor/scm.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/controlled.rs",
+      "old_git_mode": "100644",
+      "old_blob": "730920e6a483f2172c1d7b3e45134062e801be8d",
+      "old_sha256": "61ad7eba41026752665ab6050e6dc06396f98b2638ad84bf7b8a5f760ae18733",
+      "new_implementation": "src/qualification/native_runner/controlled.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/controlled/outcome.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5b9d1154c3072a6a9ae90a14c6d36f5505f5f85c",
+      "old_sha256": "33dabbfb1135e6f6e3bba6085733af51a7757da853783edaf172d9e186ed5511",
+      "new_implementation": "src/qualification/native_runner/controlled/outcome.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/evidence.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7d482126bb90a89a802653b88d00139b578b014b",
+      "old_sha256": "355eaee65c8c93ded04af19f0bec10a9ac76d2621b77b76e8b8f6b4e352aa29d",
+      "new_implementation": "src/qualification/native_runner/evidence.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/evidence/accounting.rs",
+      "old_git_mode": "100644",
+      "old_blob": "849f25f32bfbbf88069ea1342e3abfc4c7c789d6",
+      "old_sha256": "dbbb287e4213423b566f799255c271e1c7251cc698d223b312699149b2a7c8b0",
+      "new_implementation": "src/qualification/native_runner/evidence/accounting.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/evidence/coverage.rs",
+      "old_git_mode": "100644",
+      "old_blob": "25e0b562513afb0fc092ceda3c8ab86852eeebba",
+      "old_sha256": "4ef369cdcf858f4f9277b42603f9e7b78aa75076f0778ec7accab5d732cd4034",
+      "new_implementation": "src/qualification/native_runner/evidence/coverage.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/evidence/failure.rs",
+      "old_git_mode": "100644",
+      "old_blob": "27052e3973c07e420e7f54030edba4690f4f493e",
+      "old_sha256": "5773c36ac61de78dbed4d9bacffe13df872fc5a164924c39614289124cadbc77",
+      "new_implementation": "src/qualification/native_runner/evidence/failure.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/evidence/lifecycle.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d27e4b91a07dfadd1079b8c5da83fef216701187",
+      "old_sha256": "abde401164ae871ad5dd61a862effa05a0f34039a098ab06fd69014eeb72254f",
+      "new_implementation": "src/qualification/native_runner/evidence/lifecycle.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/evidence/recovery.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9e668dc37eca5e1063f09b7155a6df443c005565",
+      "old_sha256": "f12c8b9d384df315a5b2e5ec432561dd2dbfeaae8e8ae21166dd5876cd6d24cd",
+      "new_implementation": "src/qualification/native_runner/evidence/recovery.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/evidence/source_inputs.rs",
+      "old_git_mode": "100644",
+      "old_blob": "171cb7861880d9768e31ad46b799755af3af14d7",
+      "old_sha256": "72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c",
+      "new_implementation": "src/qualification/native_runner/evidence/source_inputs.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/fixture.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4c14dcc6596cb71978fbe7d09bd2b745abbbeb1b",
+      "old_sha256": "cf3e1891aada03505b7262ca764d285cb07d1c6c6c1e371ba9678f085551cc4f",
+      "new_implementation": "src/qualification/native_runner/fixture.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/harness.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9b7b33824b1b4696672b177274e905045f0b2ea5",
+      "old_sha256": "4adf1a131db92433091bafa3e92acc78bdf21d1fa638b483588d674f17e4ac6f",
+      "new_implementation": "src/qualification/native_runner/harness.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/harness/build_observation.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fb39128496f5c2730f053d337fa6e2bc8a4ee8f0",
+      "old_sha256": "ee838d670b4b34dce25e876e8d9e87f7e8cb27fac064bf36c2656b47fff9e114",
+      "new_implementation": "src/qualification/native_runner/harness/build_observation.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/harness/collection.rs",
+      "old_git_mode": "100644",
+      "old_blob": "03efe0605ccff6d53f58b2b91311757525ebca97",
+      "old_sha256": "947b0f474c0daadc299ebdf93b463d0fcf9ed5c44d5104164d6ecddd2b22a769",
+      "new_implementation": "src/qualification/native_runner/harness/collection.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/harness/helpers.rs",
+      "old_git_mode": "100644",
+      "old_blob": "c13a5c83c5b7115f1c593511775ceb3fe9606153",
+      "old_sha256": "e699a24c83c367e541c17a75781b74602877fa54fee4f6d35b85d6cb762349e6",
+      "new_implementation": "src/qualification/native_runner/harness/helpers.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/harness/packages.rs",
+      "old_git_mode": "100644",
+      "old_blob": "1c65a41fd3b3a14e880b641914b8f09483dd0c91",
+      "old_sha256": "ee98b5e9c52787469110102cb501eedf864ae83e3463544b412554025d053466",
+      "new_implementation": "src/qualification/native_runner/harness/packages.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/harness/packages/roles.rs",
+      "old_git_mode": "100644",
+      "old_blob": "67edccf3b7b6ec52ccfc485adce10e35059813f8",
+      "old_sha256": "be812642c58ddf276afa21b579ba8f6437f065aba47ab128ba151b2aba04581c",
+      "new_implementation": "src/qualification/native_runner/harness/packages/roles.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/harness/packages/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9a127ed43d0f380de5227269a96d021321171d05",
+      "old_sha256": "738abdf9742c5863e3926738c02c732260670bc18506f1e93642373fd90e2a59",
+      "new_implementation": "src/qualification/native_runner/harness/packages/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "cf012fa83da8939448e41fb56af2653724c2cd8d",
+      "old_sha256": "2e085f6c557e09b8842867e9dfc2bc6c3ec39b0def86778b897479900c76ca73",
+      "new_implementation": "src/qualification/native_runner/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/pilot.rs",
+      "old_git_mode": "100644",
+      "old_blob": "72974e4b2c27386fa64e1c9b425132107118f462",
+      "old_sha256": "763ee8e41bdd0336b178bd0384065040667219f16ac0bac17a4cc0c51a40fd31",
+      "new_implementation": "src/qualification/native_runner/pilot.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/service.rs",
+      "old_git_mode": "100644",
+      "old_blob": "38c41a8c2fcaf6d98aceb5c17ef4d498252c4c50",
+      "old_sha256": "0db47f5425af60ecc6c608b1e349e8e38a2583b0cb60afce8eae5bf6d2dce3bf",
+      "new_implementation": "src/qualification/native_runner/service.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/service/catalog.rs",
+      "old_git_mode": "100644",
+      "old_blob": "591b58d7c9e70e2a855df910a39fd1840761cdd0",
+      "old_sha256": "3201f813199eef4c1530dc2b4ea12e048ecd5ff85a82fd3fbbadae09d2d1b0e2",
+      "new_implementation": "src/qualification/native_runner/service/catalog.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/service/execution.rs",
+      "old_git_mode": "100644",
+      "old_blob": "62fc228b3383d257cb6f0e8664b185ef7964664b",
+      "old_sha256": "8d3b751093e2397a66859e9e69662dba32713fc2efbc81ae74303601211cd7d4",
+      "new_implementation": "src/qualification/native_runner/service/execution.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/service/receipt.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8686df1f9352b834a79c567f14609608da58f702",
+      "old_sha256": "ce276fc46c5c134ba056b3e87e820731dd8307ee8e2c909d0544bfd5c8aabbc1",
+      "new_implementation": "src/qualification/native_runner/service/receipt.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/service/summary.rs",
+      "old_git_mode": "100644",
+      "old_blob": "a867bc46fd8f2e7cf8d25a21ddfe36b9e55fc2c7",
+      "old_sha256": "01cffc53fd1879b4adf9229f448b96fcb1d6eeab4fc7dde266a566f0763a5172",
+      "new_implementation": "src/qualification/native_runner/service/summary.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/service/summary/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5bec8ad165007e00261a7c672de8c56cdb777513",
+      "old_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation": "src/qualification/native_runner/service/summary/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "scripts/ci/windows-native-runner/src/workspace.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6efb57457bc82cdd776edd2988bacd8f7da78c4f",
+      "old_sha256": "d8ae3b883a73eff1fe95ea35aa7cc9c9f3cc62aa45f6251eeefee92b8e66c60e",
+      "new_implementation": "src/qualification/native_runner/workspace.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/evaluation.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4616e47ede714f222e8f7bf3f22ea3ea3508dc1a",
+      "old_sha256": "55ce54d98f8f0a98ba270f67e7f50de07bab83111ba3475ea6c019300380ca7d",
+      "new_implementation": "src/qualification/maintenance/evaluation.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/evidence_layout/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "b90728d3f72b955936c0ddfd92d5101b297938ff",
+      "old_sha256": "7d2fb9df9835621d30c6f2519eaa74cf023ca07938ed016be77a222002adae4d",
+      "new_implementation": "src/qualification/maintenance/evidence_layout/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/evidence_layout/model.rs",
+      "old_git_mode": "100644",
+      "old_blob": "e3bda7c011edff9bdd9d0e8a9ccb17458565f958",
+      "old_sha256": "212f388a75a1b46c3999f98713684614a7fab316667971ee3cd4451f5e311112",
+      "new_implementation": "src/qualification/maintenance/evidence_layout/model.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/evidence_layout/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d4d30aea63c02ecc2e6d79479ad91fc20d97af8f",
+      "old_sha256": "294c9abb4ff8ca3b576d4f053a7cfa3955a745e55866210ca92829ab2b5cffe2",
+      "new_implementation": "src/qualification/maintenance/evidence_layout/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/evidence_layout/validate.rs",
+      "old_git_mode": "100644",
+      "old_blob": "934d629d8399a2fab360c86dc68b5496a603f971",
+      "old_sha256": "9f250ca9f909149d503ab5e355332afe1f318b6e395af2ff6cb79e3d90934e7e",
+      "new_implementation": "src/qualification/maintenance/evidence_layout/validate.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/inventory.rs",
+      "old_git_mode": "100644",
+      "old_blob": "01053a54af07a0d55fe7c218ae81c89661f3d8a6",
+      "old_sha256": "2b4a8553339fb2cb8c9f60c92ee3ccec20fe09c77fc92acf2809dc2052ff9ccb",
+      "new_implementation": "src/qualification/maintenance/inventory.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/language.rs",
+      "old_git_mode": "100644",
+      "old_blob": "291dcc8d519b6f8a00edc41927544930c5cf6476",
+      "old_sha256": "602604517990e8c72be439f49371dbea60b45f940f8ee82ec7688f4ca9817e37",
+      "new_implementation": "src/qualification/maintenance/language.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/lib.rs",
+      "old_git_mode": "100644",
+      "old_blob": "60013b5c9964bceb8412db067fd59da75177621c",
+      "old_sha256": "72fafe69868745cb6646774be70f8da3e89f7e73cee3d538e08d2c5c522761a1",
+      "new_implementation": "src/qualification/maintenance/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/local_eval.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6969a7d79f9103151ace052a68f9cfaebe437050",
+      "old_sha256": "f99452cadb616581d688d6e08b0e242ef7c8ba3d51190d728e85c6842407c843",
+      "new_implementation": "src/qualification/maintenance/local_eval.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f36becc375e9ad8fb1049e512564250f1261c217",
+      "old_sha256": "93470fb9fe506e38b6a8d0b0f9ec8c51888012507a712c06629494107caa54c7",
+      "new_implementation": "src/qualification/maintenance/command.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/package.rs",
+      "old_git_mode": "100644",
+      "old_blob": "04a44ad36359e94bdcb3ef9f5a827a724274a758",
+      "old_sha256": "4058ae0e98ce31ba8a06e3b20e553ca1663115af2fe533c035789d4b0ef02ea5",
+      "new_implementation": "src/qualification/maintenance/package.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/paired.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f65d92546173d6afefb7d2711e7b3cdbe16971be",
+      "old_sha256": "dbf5dac0460a3663aa75dab6852e5ca34ea5c7b14aefff6ad2b6ddb2dbb2e89a",
+      "new_implementation": "src/qualification/maintenance/paired.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/product.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f82ba1587c69f379d1c2e227b2064ecedc4a6e28",
+      "old_sha256": "4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e",
+      "new_implementation": "src/qualification/maintenance/product.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/routing.rs",
+      "old_git_mode": "100644",
+      "old_blob": "76bd61c1a68315a00a588b7be2099cd37507ecf3",
+      "old_sha256": "b4deee808b90f45e3634348a1815fdcde01228b9d405a076df3e21319a0af0fa",
+      "new_implementation": "src/qualification/maintenance/routing.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/selected_inputs/files.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2cee39f454980432c9c358619dec8abc4087c5e2",
+      "old_sha256": "f2b28bb34de9872f3b9d6e7120c29cd2ee483d9f1ac443cd9ec7db98a9042188",
+      "new_implementation": "src/qualification/maintenance/selected_inputs/files.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/selected_inputs/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "53324763c5041def59ec1f225af937355044d0a7",
+      "old_sha256": "3473b360918bd3b12769113d24cbe1cb547c0cd50a89bf18c5524276ef7748b4",
+      "new_implementation": "src/qualification/maintenance/selected_inputs/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/selected_inputs/model.rs",
+      "old_git_mode": "100644",
+      "old_blob": "10b238761860a992cb81fbc0971122e14d4f8097",
+      "old_sha256": "b2322e26f0c6c7a29e57733502e41c701784359fff74a0ef8f3852e526392202",
+      "new_implementation": "src/qualification/maintenance/selected_inputs/model.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/selected_inputs/reader.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2257ab559c13d06159ee8b9c9c31f16dd6dee98a",
+      "old_sha256": "4a50514e0063f3fee7904c88f97abe63560d4f390208df81eb85f2926e5e21a1",
+      "new_implementation": "src/qualification/maintenance/selected_inputs/reader.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/selected_inputs/request.rs",
+      "old_git_mode": "100644",
+      "old_blob": "88802fe23f27526315f1426fdc7b37e78b9cff4b",
+      "old_sha256": "5a6e87e176ee503711e563005c3d24e143094d0439d32694946d6bd001c1f95e",
+      "new_implementation": "src/qualification/maintenance/selected_inputs/request.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/selected_inputs/tests.rs",
+      "old_git_mode": "100644",
+      "old_blob": "f1aa6d52ad780a751f5c06d93edc06939d56b98e",
+      "old_sha256": "e1bc11f04059ca661d0809cdf015fae946965889a48c857e07ab5f67937b492c",
+      "new_implementation": "src/qualification/maintenance/selected_inputs/tests.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/sessions/catalog.rs",
+      "old_git_mode": "100644",
+      "old_blob": "766adc7016936617b69b971da392a7e08143dd6a",
+      "old_sha256": "8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a",
+      "new_implementation": "src/qualification/maintenance/sessions/catalog.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/sessions/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "cf4a3a25c2fee4f59bfd2667cbcf7cc48c6c22ef",
+      "old_sha256": "e0b88c4046343439f4db522e21090a1d9d100e01fb39130676baf8062cee281d",
+      "new_implementation": "src/qualification/maintenance/sessions/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/sessions/model.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8445d4689f1eccc50310f072b733a92e6e5c22d0",
+      "old_sha256": "1cf72bdfd56c388ef881fbff57baa9444b12bfe1ede289804bc99bdd0b9d87a5",
+      "new_implementation": "src/qualification/maintenance/sessions/model.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/sessions/registry.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7a6165833295b94fc9cba8e45e55b7446359ac49",
+      "old_sha256": "905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7",
+      "new_implementation": "src/qualification/maintenance/sessions/registry.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/sessions/storage.rs",
+      "old_git_mode": "100644",
+      "old_blob": "3b32a0a88b996d6e52a76f66534203bee78303af",
+      "old_sha256": "f637ad898e9c65526f0988e9c3d00bda80259cc213a1761510056751d3f0a70f",
+      "new_implementation": "src/qualification/maintenance/sessions/storage.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/windows_doctor.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7dac7651f6967d7799aa9258897d8b7055451f52",
+      "old_sha256": "511eb7a6a756884bc8ed67a64ae068035d35771dde105d4fe70d09dd7feae3b3",
+      "new_implementation": "src/qualification/maintenance/windows_doctor.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "skills/agent-maintenance/src/windows_doctor/probe.rs",
+      "old_git_mode": "100644",
+      "old_blob": "21cf4e2cf80ae93687a1dd9c17bbd29fec497347",
+      "old_sha256": "68e0583c2d6f3e6fc43ac94f2bd79b46b25b72a938fef4dd99c0c239e656cf65",
+      "new_implementation": "src/qualification/maintenance/windows_doctor/probe.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/audit.rs",
+      "old_git_mode": "100644",
+      "old_blob": "58c0345938375a25fb24bede59386586074cce81",
+      "old_sha256": "f70b2c18b7f3e7baf00fadc47f34c3037802a0de0b51231aa4fc70f6b2ac812d",
+      "new_implementation": "src/qualification/lab_runner/audit.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/docker.rs",
+      "old_git_mode": "100644",
+      "old_blob": "3f545e55a0cc4ffc0a7d61ab09f3aba8e2166432",
+      "old_sha256": "edda404a591745078d7eaaf6a0c5aa833d20c51b57f8170dbc4940bda347ba9a",
+      "new_implementation": "src/qualification/lab_runner/docker.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/docker/affinity.rs",
+      "old_git_mode": "100644",
+      "old_blob": "c06e464e997c178a821203215350f783b2a20aea",
+      "old_sha256": "d8a2549b9ed47331eaac9a7f026cdc8ab7f3f98d7a3233d6099ff3025242eca5",
+      "new_implementation": "src/qualification/lab_runner/docker/affinity.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/fixture.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2030203cf203efbc96e4be4c61e3c7e9863c68f7",
+      "old_sha256": "af81c4c0ed1a63cead57001ead64db409592c223aa872f7c1a6448395f13c9da",
+      "new_implementation": "src/qualification/lab_runner/fixture.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/fixture/dns.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fc97732274587bd09390ac8f42f445b12e3fb4e0",
+      "old_sha256": "2af94eec36e4b216edd0e5436a98d538093f80f3112a988b51998eff62c3da22",
+      "new_implementation": "src/qualification/lab_runner/fixture/dns.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/fixture/mount.rs",
+      "old_git_mode": "100644",
+      "old_blob": "2ce6df3ffd9ec0918201b9996a882271bfe8c52b",
+      "old_sha256": "7e6251614df88f78bcc70bb61f37080362083420590cd41961410da721c6a55d",
+      "new_implementation": "src/qualification/lab_runner/fixture/mount.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "92ff6a395749fc66b2ac7b56c3acbd9f36fb5011",
+      "old_sha256": "17911e93012a9c969fa5f25ebe89465a182fb38579b8d9eb0f1928c9b6501e45",
+      "new_implementation": "src/qualification/lab_runner/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7a09df6b148e29a8c5fc8709d00092b08145234b",
+      "old_sha256": "ade6085349ca53954f3650da75c3559288edb4751bcfc1a800e4a638c4af6fef",
+      "new_implementation": "src/qualification/lab_runner/orchestration.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/browser.rs",
+      "old_git_mode": "100644",
+      "old_blob": "66d91b04e034959e731f76486d424378aa6332c7",
+      "old_sha256": "1307707dc16b267aad61afe06c23f5ca3503a4d5425ba6fafa8701494540115a",
+      "new_implementation": "src/qualification/lab_runner/orchestration/browser.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "old_git_mode": "100644",
+      "old_blob": "5d57bd162797c365bb6d875c1b33a7e85218faad",
+      "old_sha256": "12c1aac20092b59dda4eece8a2f3e4f2a137820ca7b805c56157fe02518642b6",
+      "new_implementation": "src/qualification/lab_runner/orchestration/browser_actor.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/browser_failure.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9acbb3b97e1616e4738e4c979c6143f58432ae4b",
+      "old_sha256": "b0f33c32fd049870ded024b8b30d0bf93830911e3e5da91598eb0e2ae3c2efc7",
+      "new_implementation": "src/qualification/lab_runner/orchestration/browser_failure.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7adba8387e45bdeaf5a69a66c9889e904d2236f3",
+      "old_sha256": "18861670874c8b463c776b873b147c41bdea6199ea8658c7c423b91b9f7dd3f3",
+      "new_implementation": "src/qualification/lab_runner/orchestration/browser_failure/panic_site.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/browser_failure/panic_site/bootstrap.rs",
+      "old_git_mode": "100644",
+      "old_blob": "62f64ff7d01cc7c12ae55690d5e51c504fdd36be",
+      "old_sha256": "2e8a844562f936082dae202741293facce70d0e714a44f452e6984fe5109c8af",
+      "new_implementation": "src/qualification/lab_runner/orchestration/browser_failure/panic_site/bootstrap.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/go.rs",
+      "old_git_mode": "100644",
+      "old_blob": "db510a84ea83e3517a31e9776d7e909c77aa7c95",
+      "old_sha256": "e066089199ff637052768838f65cc0c1156ab9043d9aab6c2b4e1c55f15e19b3",
+      "new_implementation": "src/qualification/lab_runner/orchestration/go.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/go_fixture.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9e4484e8e32f7a61573df2949b89a8a595de67f6",
+      "old_sha256": "8b7d94877245b524c81c9164e47ab20d0187b63b94d94cb361d33605328f2560",
+      "new_implementation": "src/qualification/lab_runner/orchestration/go_fixture.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/go_public.rs",
+      "old_git_mode": "100644",
+      "old_blob": "4a699d9fe6bdb65765d89fc978e82f55631066b0",
+      "old_sha256": "2efa1574605fa0584d8e37456e7d1ee54526ec5cccb938d75a4e8877fc893b35",
+      "new_implementation": "src/qualification/lab_runner/orchestration/go_public.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/mount_probe.rs",
+      "old_git_mode": "100644",
+      "old_blob": "e323b2750bdf1b415f3278cde49a59550ebf4399",
+      "old_sha256": "e485c01e2095e9f36f254dbc037bfc354c36a13891efffb02298401ad23bbe45",
+      "new_implementation": "src/qualification/lab_runner/orchestration/mount_probe.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/mount_probe/projection.rs",
+      "old_git_mode": "100644",
+      "old_blob": "ec0c606f209adcb26808a72d9890cc635ba8f3e7",
+      "old_sha256": "c1ab8645b3655f9a16d15b6fb97cc0f5a97de7f5f7bc9e7c1307dc34566a4a42",
+      "new_implementation": "src/qualification/lab_runner/orchestration/mount_probe/projection.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/public_receipts.rs",
+      "old_git_mode": "100644",
+      "old_blob": "67aedd7183102eef64162f9bf4c71e2b8d76e63a",
+      "old_sha256": "7c238df82228e91a8090b0ca02f7c63a104a6dd9d588f2333ebba73c7115fe23",
+      "new_implementation": "src/qualification/lab_runner/orchestration/public_receipts.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/requirement.rs",
+      "old_git_mode": "100644",
+      "old_blob": "0a8e062ab5cb046249ec735dd288b518f8d2c25d",
+      "old_sha256": "d2ef8b50fc0df0604e11d84050e0679249189357956b1eb34b6afb076bc739c3",
+      "new_implementation": "src/qualification/lab_runner/orchestration/requirement.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/startup_failure.rs",
+      "old_git_mode": "100644",
+      "old_blob": "58dbb6e82056a7d8ae0b28e75f4fd5de6df3d7f8",
+      "old_sha256": "fabcc49f88d4934de9acbaae292ea256c097e34b12a93c3a43275d64ec4c1a93",
+      "new_implementation": "src/qualification/lab_runner/orchestration/startup_failure.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/orchestration/witness.rs",
+      "old_git_mode": "100644",
+      "old_blob": "440dff839a507c4bc6c5d811acb4a00a5016fe94",
+      "old_sha256": "701d3eb0ab2df102270ee10e9e864e95fce8077bf58521e93ef2ee77f7285e89",
+      "new_implementation": "src/qualification/lab_runner/orchestration/witness.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/provider.rs",
+      "old_git_mode": "100644",
+      "old_blob": "59c5d0d7c8f8332072b1a2a612a17e660a166616",
+      "old_sha256": "9ef4d2b568a0d9de31d27a0e5d45804bf50c87fc0d1f2c564079a1c6b343b9f0",
+      "new_implementation": "src/qualification/lab_runner/provider.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runner/src/snapshot.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9fced50051d667a0662b57762a1ac76592cbb41b",
+      "old_sha256": "61a34c6cead93f43e228190a008027793bbd4ff5c07e1f5299c6f928871a6456",
+      "new_implementation": "src/qualification/lab_runner/snapshot.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/browser_dns.rs",
+      "old_git_mode": "100644",
+      "old_blob": "18b77d49ff75c8d0eafea34f6d0689a1a1ee556b",
+      "old_sha256": "2e2128d14ebd9c59a375087c850529fa80ec04a30510ddd15ef5fc58a84ec741",
+      "new_implementation": "src/qualification/runtime_pilot/browser_dns.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/browser_product.rs",
+      "old_git_mode": "100644",
+      "old_blob": "da581e8d41b0e12618d957fefccb39fbe6eb4c84",
+      "old_sha256": "7b5428e8f661e4f70213dd8b99198be0a952e38520901c8889c10c7ed1b9481c",
+      "new_implementation": "src/qualification/runtime_pilot/browser_product.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/browser_proxy.rs",
+      "old_git_mode": "100644",
+      "old_blob": "8ca8b6a0608c42f83c9fbbb921338d883f0e4648",
+      "old_sha256": "4b0d3acb859878463d56ab66a287ffc67d960143bdc5bc71172d49742ed9e1a1",
+      "new_implementation": "src/qualification/runtime_pilot/browser_proxy.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/browser_result.rs",
+      "old_git_mode": "100644",
+      "old_blob": "fbf04220bdc3c89913f5533559a1e0f44451ecdf",
+      "old_sha256": "92e5d68d70df7473c48eed2b7597f51ee07fc7e5bd38812381b3d5e2f858c1e0",
+      "new_implementation": "src/qualification/runtime_pilot/browser_result.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/client.rs",
+      "old_git_mode": "100644",
+      "old_blob": "bc189dfae1717160af83d3c3fc20a19a765759f3",
+      "old_sha256": "9859d56ceee0b246c2c0988964661caaa333511ae1a7ba5d2f81cd8397549b4d",
+      "new_implementation": "src/qualification/runtime_pilot/client.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/backend.rs",
+      "old_git_mode": "100644",
+      "old_blob": "516c01d469d118a3faec3c69954ee2b3acc959cb",
+      "old_sha256": "a6d4aae4b45e10d88d69b50d331c05f2bcb54b189ccf32c0816c0d0a3bfd35bc",
+      "new_implementation": "src/qualification/runtime_pilot/go/backend.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/client.rs",
+      "old_git_mode": "100644",
+      "old_blob": "6b6e91400b532abcb20fec40794a6bb2f60a1211",
+      "old_sha256": "f8ce02b72eadf0909eda583d032c93329bebc7ac9252705ac36a43d2539171d9",
+      "new_implementation": "src/qualification/runtime_pilot/go/client.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/egress.rs",
+      "old_git_mode": "100644",
+      "old_blob": "0e55f6ebf3f7f6f95ac3c82b8f8d8ed1aa53dc46",
+      "old_sha256": "3e5ac05219b6e2acfb6a88f4f6882474a68994e7a63817c59cdc7ae368bf2486",
+      "new_implementation": "src/qualification/runtime_pilot/go/egress.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/gate.rs",
+      "old_git_mode": "100644",
+      "old_blob": "7f4e4f98b59ac95c157971cad4251f7a41ab6609",
+      "old_sha256": "c7a96423038ae64593a275a2ac9d32faea560f8eedd7315b38c532a0f08a87d5",
+      "new_implementation": "src/qualification/runtime_pilot/go/gate.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/mod.rs",
+      "old_git_mode": "100644",
+      "old_blob": "729b1f991ce866a4707f3520a4f91c41bcc3ac3d",
+      "old_sha256": "0cc2fe4c19e8477d0a503d8df976b2b4c1dbb0b502a306d3a617a921ea280082",
+      "new_implementation": "src/qualification/runtime_pilot/go/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/receipt.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d3407a97b74fa1ccaa2131d08350b896c7fc0063",
+      "old_sha256": "0572f1cb4293c7f37bd2a88a6cbc2b5d5ad7951e1c392512173f390f232d6378",
+      "new_implementation": "src/qualification/runtime_pilot/go/receipt.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/relay.rs",
+      "old_git_mode": "100644",
+      "old_blob": "03800b94e5639f58bf0612202acd2667dcb3a7c3",
+      "old_sha256": "55efde9ffba77fe597a18a1081108f47d283543df174f237180210a97dcce5f8",
+      "new_implementation": "src/qualification/runtime_pilot/go/relay.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/go/response.rs",
+      "old_git_mode": "100644",
+      "old_blob": "1792b0344c4a6de9ec2e991f883648bf5db8c60e",
+      "old_sha256": "3634b18670945ecad59947771cfd085f99ca15c834548707c7b26fc781fff30b",
+      "new_implementation": "src/qualification/runtime_pilot/go/response.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/installation.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9f4f3c3429e39096393ea084982d1ee66f16c57f",
+      "old_sha256": "4f1a65ef526446a1e757d03cc2064dd94065ff824b7e2d65409c5b6a8de71803",
+      "new_implementation": "src/qualification/runtime_pilot/installation.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/installation/witnessed.rs",
+      "old_git_mode": "100644",
+      "old_blob": "ae9aa40c10ef06bc0310919a45c438fdff85f447",
+      "old_sha256": "ad84d299f2a5b631137597bc2b0253140d4f2936366a20fc1a3c7751b933053e",
+      "new_implementation": "src/qualification/runtime_pilot/installation/witnessed.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/main.rs",
+      "old_git_mode": "100644",
+      "old_blob": "977e198d8f06b594bf46e8e82e600f27d9329b45",
+      "old_sha256": "d486f77d5712bff4ada046711cb7d50fab412e4d3346df766397651392cc16a0",
+      "new_implementation": "src/qualification/runtime_pilot/mod.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/origin.rs",
+      "old_git_mode": "100644",
+      "old_blob": "d92534797b5d41dcda60f3dead8b924100a50447",
+      "old_sha256": "73c43b341a9ba3d329c531951d054a6374ff9a58b92b220ef0b3ee07382967ef",
+      "new_implementation": "src/qualification/runtime_pilot/origin.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/process.rs",
+      "old_git_mode": "100644",
+      "old_blob": "05b8220cc5387be2065df7297c41ef26829a9a9d",
+      "old_sha256": "588e194c87925b97d6d8bbac4391c7543b000a0e8bed4ef9af029e3c8dda464f",
+      "new_implementation": "src/qualification/runtime_pilot/process.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/provisioning.rs",
+      "old_git_mode": "100644",
+      "old_blob": "0e72993da440e049529a1192770ed99629a5c639",
+      "old_sha256": "8f8d69b98d0ae9ba36b8c44a9b58f6c083fa37a780fbbc70489653edee7efd4a",
+      "new_implementation": "src/qualification/runtime_pilot/provisioning.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/scenario.rs",
+      "old_git_mode": "100644",
+      "old_blob": "9041ccacec4dc2450633777be1ce57e564783ab7",
+      "old_sha256": "bb42fc9016779a83ebf53c88aa773292dcf1a102d5b759074a7720ab877834e7",
+      "new_implementation": "src/qualification/runtime_pilot/scenario.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/wargame.rs",
+      "old_git_mode": "100644",
+      "old_blob": "53ed74e31f7dd19daed825fbe698ec5d93f7122d",
+      "old_sha256": "7d159e241584b5d47ab3e665e9c7caef4e90abcae667be8a1edb2d2ec8891d97",
+      "new_implementation": "src/qualification/runtime_pilot/wargame.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    },
+    {
+      "old_source": "test/lab/runtime/src/witness.rs",
+      "old_git_mode": "100644",
+      "old_blob": "83a7fd5865f7bd6bfbad5594b876e00e07d78ed8",
+      "old_sha256": "46fc58b51d62e9c95b984b72d0f47cfb8fae05b26e982c9a71f91e57edd781c8",
+      "new_implementation": "src/qualification/runtime_pilot/witness.rs",
+      "source_copied": false,
+      "status": "exact destination proposal for Root279map join, no move performed"
+    }
+  ],
+  "lib_case_source_rows": 187,
+  "bin_case_source_rows": 259,
+  "all_unit_source_rows_mapped": true,
+  "pages_overlap": {
+    "old_lib": "docs/tooling/src/lib.rs",
+    "lib_destination": "src/qualification/pages/mod.rs",
+    "old_main": "docs/tooling/src/main.rs",
+    "command_destination": "src/qualification/pages/command.rs",
+    "old_browser_command": "docs/tooling/src/browser_command.rs",
+    "browser_destination": "src/qualification/pages/browser_command.rs",
+    "declaration": "pages_command owns browser_command by exact relative path from command.rs; pages LIB context does not redeclare it",
+    "bin_case_new_selector": "pages_command::browser_command::tests::browser_cli_requires_services_without_accepting_duplicate_or_unknown_flags",
+    "lib_case_selectors": "pages::<unchanged old LIB selector>"
+  },
+  "invariants": [
+    "all14nonprimary composition roots are newly authored narrow Rust roots, never old implementation moved directly into src/bin",
+    "existing implementation source moved once; same canonical lab files linked, no copies/helpers/public SDK exports",
+    "native/pages/maintenance LIBmod.rs and COMMANDcommand.rs do not overwrite or merge each other; command namespaces *_command distinct",
+    "all187LIB+259BINsource/unit rows explicitly map to implementation file; Maintenance33 remains separate accepted exact selectors",
+    "all source/Cargo/path moves and compiler/test execution remain unperformed"
+  ],
+  "unit_selector_maps": {
+    "lib": "legacy-lib-unit-map.json: all187source cases map new implementation; oldWindows186names observed, new role collections not discovered",
+    "bin": "legacy-bin-unit-map.json: all259source-target cases map actual implementation + root private namespace; only Pages one-case prefix changed to pages_command",
+    "maintenance33": "tools-linkage-map.json maintenance_exact_case_map retains accepted23integration+10bin names; maintenance::qualification_tests selectors unchanged"
+  },
+  "namespace_changes_from_prior_bin_map": [
+    {
+      "bin": "humanymous-native",
+      "old": "native",
+      "new": "native_command",
+      "old_own_bin_unit_cases": 0,
+      "library_units": "native::* unchanged"
+    },
+    {
+      "bin": "humanymous-agent-maintenance",
+      "old": "maintenance",
+      "new": "maintenance_command",
+      "old_own_bin_unit_cases": 0,
+      "library_and_relocated_cases": "maintenance::* unchanged"
+    },
+    {
+      "bin": "humanymous-pages",
+      "old": "pages",
+      "new": "pages_command",
+      "old_own_bin_unit_cases": 1,
+      "library_units": "pages::* unchanged",
+      "browser_command": "declared only in pages_command; canonical pages/browser_command.rs file loaded by explicit file-relative path"
+    }
+  ],
+  "canonical_external_shared_lab_sources": [
+    {
+      "old_source": "test/lab/browser_expectations.rs",
+      "new_implementation": "src/qualification/lab_support/browser_expectations.rs",
+      "original_pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "1b2594cbf1db0bdac811f782e4fade6351d5e91c",
+        "canonical_git_sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439",
+        "canonical_git_bytes": 4513,
+        "retained_working_sha256": "6aa4b3fb1eb9da37eb37bfea2f84896f7eadb973c785cbb2e7b67faa98ab6439",
+        "retained_working_bytes": 4513,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "physical_copies": 1,
+      "source_move_authorized": false
+    },
+    {
+      "old_source": "test/lab/browser_outcome.rs",
+      "new_implementation": "src/qualification/lab_support/browser_outcome.rs",
+      "original_pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "43a74490bca62e3506ad024f45c3c73aa9ecb4bd",
+        "canonical_git_sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
+        "canonical_git_bytes": 7663,
+        "retained_working_sha256": "36b40be2d21681d3de7dff259945796fe3d1390da95061f328af7a509ee9409f",
+        "retained_working_bytes": 7663,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "physical_copies": 1,
+      "source_move_authorized": false
+    },
+    {
+      "old_source": "test/lab/browser_wire.rs",
+      "new_implementation": "src/qualification/lab_support/browser_wire.rs",
+      "original_pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "0386b568903c295b3a8c242b443dde963e7541d9",
+        "canonical_git_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d",
+        "canonical_git_bytes": 8662,
+        "retained_working_sha256": "e26064f5f4dbc8b7b76126ed7be6926eef656f2c877c4c4e42f67420e175d72d",
+        "retained_working_bytes": 8662,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "physical_copies": 1,
+      "source_move_authorized": false
+    },
+    {
+      "old_source": "test/lab/dns_wire.rs",
+      "new_implementation": "src/qualification/lab_support/dns_wire.rs",
+      "original_pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "4b1efe002d46bac00f7378f233c8b2dd6744c923",
+        "canonical_git_sha256": "0717cf28f759cf26b9b37183faa23148f7eb2d222977edfd21bef291cec403b1",
+        "canonical_git_bytes": 3114,
+        "retained_working_sha256": "0717cf28f759cf26b9b37183faa23148f7eb2d222977edfd21bef291cec403b1",
+        "retained_working_bytes": 3114,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "physical_copies": 1,
+      "source_move_authorized": false
+    },
+    {
+      "old_source": "test/lab/mount_policy.rs",
+      "new_implementation": "src/qualification/lab_support/mount_policy.rs",
+      "original_pins": {
+        "observed_commit": "90d3af4424abfe7a1fe450a11a2c0fda41be7c57",
+        "git_blob_oid": "48796e77126e62c568cac0b79a1c84b357236acd",
+        "canonical_git_sha256": "0038b94c599bc4f19b382c9e19fcefdfbd8b2b4d6191317083a5e8ddc63fc3eb",
+        "canonical_git_bytes": 4821,
+        "retained_working_sha256": "0038b94c599bc4f19b382c9e19fcefdfbd8b2b4d6191317083a5e8ddc63fc3eb",
+        "retained_working_bytes": 4821,
+        "working_equals_git": true,
+        "no_normalization_or_copy_performed": true
+      },
+      "physical_copies": 1,
+      "source_move_authorized": false
+    }
+  ],
+  "unit_implementation_join": {
+    "lib_cases": 187,
+    "bin_source_target_cases": 259,
+    "total_source_target_cases": 446,
+    "missing": 0,
+    "destination_mismatches": 0,
+    "schema_meaning": "implementation/source selector join only, NOT newgraph semantic inventory or pass"
+  }
+}

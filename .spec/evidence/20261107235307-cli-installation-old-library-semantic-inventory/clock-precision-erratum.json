@@ -1,0 +1,85 @@
+{
+  "schema": "humanymous.cli-old6-clock-precision-erratum/1",
+  "observed_utc": "2026-11-08T00:04:57.0273722+00:00",
+  "receipt": "evidence:root/20261107235307",
+  "scope": "provenance precision residual only, original63raw files and commandJSON unchanged",
+  "basis": "Observe captured begin from Stopwatch.Elapsed.TotalSeconds(double) then used Math.Min(390,begin+90) and Math.Min(450,begin+120); PowerShell selected integer overload from first integer argument and rounded the second value. Logs used initial elapsed unchanged; deadlines were not exact initial+90/120.",
+  "rows": [
+    {
+      "label": "humanymous-agent-maintenance",
+      "initial_elapsed": 81.9609479,
+      "logged_work_deadline": 172,
+      "effective_work_window": 90.0390521,
+      "logged_settlement_deadline": 202,
+      "effective_settlement_window": 120.0390521,
+      "actual_observation_seconds": 11.235016800000011,
+      "actual_under_nominal90": true,
+      "original_command_sha256": "35dd50268908c1f76cbd2287edfccabdf1005a7ba0c1b053d59ed25826fd16d1"
+    },
+    {
+      "label": "humanymous-attacker",
+      "initial_elapsed": 21.9069808,
+      "logged_work_deadline": 112,
+      "effective_work_window": 90.0930192,
+      "logged_settlement_deadline": 142,
+      "effective_settlement_window": 120.0930192,
+      "actual_observation_seconds": 57.3472881,
+      "actual_under_nominal90": true,
+      "original_command_sha256": "1ee4daf0d87ae70c025a2ea7a485078ca4673fca1e2ee56e05558ad795b9c22f"
+    },
+    {
+      "label": "humanymous-cli",
+      "initial_elapsed": 140.7970431,
+      "logged_work_deadline": 231,
+      "effective_work_window": 90.2029569,
+      "logged_settlement_deadline": 261,
+      "effective_settlement_window": 120.2029569,
+      "actual_observation_seconds": 18.422664800000007,
+      "actual_under_nominal90": true,
+      "original_command_sha256": "87ed7c55c7515e27636a1561c7005ec1e77dc2c963f4bf4361d5a8752f84b04e"
+    },
+    {
+      "label": "humanymous-defender",
+      "initial_elapsed": 79.7548156,
+      "logged_work_deadline": 170,
+      "effective_work_window": 90.2451844,
+      "logged_settlement_deadline": 200,
+      "effective_settlement_window": 120.2451844,
+      "actual_observation_seconds": 1.6880562999999995,
+      "actual_under_nominal90": true,
+      "original_command_sha256": "a76671ebc934d5b8778416bd5a258ebd5171929259fa8a5f19dd4840508a5f8f"
+    },
+    {
+      "label": "humanymous-native-cli",
+      "initial_elapsed": 10.9346379,
+      "logged_work_deadline": 101,
+      "effective_work_window": 90.0653621,
+      "logged_settlement_deadline": 131,
+      "effective_settlement_window": 120.0653621,
+      "actual_observation_seconds": 10.4687398,
+      "actual_under_nominal90": true,
+      "original_command_sha256": "2324ac0415baef9e418f9fa7b21d9f4cf5f95af62b3b0a270322e14f5d3ecec6"
+    },
+    {
+      "label": "humanymous-pages",
+      "initial_elapsed": 93.6840065,
+      "logged_work_deadline": 184,
+      "effective_work_window": 90.3159935,
+      "logged_settlement_deadline": 214,
+      "effective_settlement_window": 120.3159935,
+      "actual_observation_seconds": 46.7188359,
+      "actual_under_nominal90": true,
+      "original_command_sha256": "35bdb89a79e0d7215487f0fee685216edf7cafc1a54cf3623bd30da9a1cd4164"
+    }
+  ],
+  "reproduction": {
+    "initial_elapsed": 21.9069808,
+    "untyped_math_min": 112,
+    "explicit_double_math_min": 111.9069808,
+    "method": "pure arithmetic reproduction only, no compiler/controller rerun"
+  },
+  "actual_overruns_of_nominal90": 0,
+  "rerun": false,
+  "future_rule": "capture initial Stopwatch elapsed once and use explicit double bounds/arguments or declare exact recorded precision; never rebase per-poll deadline",
+  "limits": "actual commands all below90 does not qualify exact90 cutoff, hard OS containment or descendant lifetime"
+}
