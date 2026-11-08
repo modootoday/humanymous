@@ -499,6 +499,49 @@ tools-cli-package-*; the new target lint/list logs use tools-git-coord-selected-
 source-*. Delivery must add the required ignored case and both input variables
 to its workflow candidate. Default ignored status cannot count as qualification.
 
+### Offline training domain and actual CLI composition in the isolated assembly
+
+Root accepted the reviewed Model candidate's bounded offline operation as a
+domain API, not a promotion or detection-policy change. All five declared
+candidate file hashes matched before copying the four implementation/unit files
+into the owned isolated assembly. Core training now exposes offline::fit_offline,
+reuses the single private SGD implementation, and removes its temporary non-test
+deadcode expectation. The SGD module is private to training. Live Core ownership
+and sources remain unchanged by this isolated checkpoint.
+
+The CLI adds an explicit offline-training feature and model-train-offline route.
+Its default normal/build dependency tree still excludes Core. The command requires
+caller-reviewed aggregate data, strict temporal separation and human cohort
+support, and writes only a fresh unsigned model and unsigned receipt. It does
+not sign, install, promote, activate or modify inference/scoring. Caller review
+and source labels are not authenticated human provenance. The fixed limits and
+legacy calibration reset remain as reviewed in the Model plan.
+
+Actual Core offline units pass5/0/0 with160 filtered. An actual full Core library
+regression passes165/0/0 with zero filtered, including existing owned temporary
+file SGD tests; this is not actual CLI/native process validation. New public API
+documentation initially emitted61 warnings, which Root repaired without lint
+suppression; Core all-target strict Clippy then passes. CLI offline units pass
+2/0/0 with one existing case filtered. Its first strict Clippy found the training
+error payload unused; Root fixed Display to report the actual underlying error,
+and corrected all-target offline-profile strict Clippy passes.
+
+After making SGD private, Root repeated only the affected5 Core and2 CLI units
+with source views:1790 regular files before/after, zero difference records.
+The exact argv, UTC start/end, terminal exit codes and separate raw outputs are
+retained in core-consolidation/tools-offline-integration-checkpoint. Earlier raw
+regression and failed/corrected lint logs remain under tools-offline-*.
+The existing SGD/record/standardize/evaluate files matched current live hashes
+before integration; no second training kernel was introduced.
+
+Actual CLI accepted/refused process pilots, hostile-I/O failure handling,
+Go1.26.3 numeric/CPU/FMA parity, promotion lifecycle and Docker product validation
+remain unexecuted or unfinished. Root assigned the owner to repair the reviewed
+pilot Drop ordering so child custody transfers before fallible diagnostics.
+No outer process-tree/time/output supervisor is implied by pure unit success.
+Updated full-role feature recipes, source/archive seals and hosted qualification
+remain required before the live Tools cutover.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
