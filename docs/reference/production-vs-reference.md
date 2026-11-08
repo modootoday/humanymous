@@ -70,6 +70,22 @@ check and strict Clippy passed; independent review is retained at `b71f2f00`.
 This does not establish unchanged-Go bit parity, bootstrap deployment, model
 activation or live detection performance.
 
+An isolated Tools assembly now implements a Core offline-training API and an
+explicitly enabled CLI training route. It accepts reviewed aggregate data with
+temporal separation and cohort support, and produces only unsigned model and
+receipt data. Caller review and cohort labels are not authenticated human
+provenance. It does not sign, install, promote or activate a model, or change
+inference and scoring. This is not a live CLI cutover or registry availability.
+
+That isolated checkpoint passed five new Core offline units and the full
+165-case Core library regression, plus two CLI parser units with one other case
+filtered and targeted strict checks. A later isolated Tools checkpoint passed
+12 pure maintenance selection/materializer/result-parser units and full CLI
+strict Clippy. Subsequent coordinator native-path spelling changes have only
+scoped lint evidence and do not inherit the earlier source seal. No actual CLI
+process, unchanged-Go/FMA parity, model promotion or Runtime qualification is
+established by these component checks.
+
 The matched Runtime dependency experiment at source `5d68cd39`, retained at
 `cc4758` and independently reviewed at `90b125d2`, measured two cold-artifact
 CLI `cargo check` pairs. Wall time fell by 45.385% and 46.455%, with artifact

@@ -66,6 +66,17 @@ and hostile custody remain unqualified. WASM/static checks do not execute a
 browser. Planned Tools composition and the accepted one-library/seven-export-role
 adapters design are not implemented packages or new conformance evidence.
 
+The staged Tools assembly also implements an isolated offline Core API and CLI
+training route whose outputs are unsigned data. Five new offline units, a
+165-case Core library regression and two CLI parser units passed; a later Tools
+checkpoint records 12 pure maintenance/materializer/result-parser units and
+strict Clippy. This is not actual CLI
+process execution, authenticated human provenance, Go/FMA parity, model signing,
+promotion or activation. The later coordinator path-spelling change remains
+separate from the earlier sealed source. Live workspace and Runtime qualification
+do not follow from the isolated assembly, and no generic Draft v0 requirement or
+new public readiness is established.
+
 The later 2026-11-08 source `3137c905` provides a bounded actual-browser milestone:
 49 isolated Lab assertions passed, including sensitive-document and browser/Gate
 Referer-v2 checks. One actual browser test was selected from 67 inventoried tests;

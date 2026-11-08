@@ -8,6 +8,14 @@
   "changes": [
 {
   "kind": "implementation-evidence",
+  "paths": ["../../reference/production-vs-reference.md", "validation/implementation-map.md"],
+  "summary": "Describe isolated Tools offline Core/CLI implementation as unsigned model/receipt DATA, with5new Core units/165library cases/2CLIparser units and separate12pureCLI/strict checkpoint. Keep post-seal coordinator native-path changes separate, with no actualCLIprocess/Go-FMA parity/promotion/activation/Runtime or liveTools cutover claim. Preserve3137 boundedbrowser49pass/fullfalse/blocking status.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
   "paths": ["../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
   "summary": "Record2026-11-08 source3137c905 bounded49/49 Lab assertions and one selected actualbrowser test from67inventory/66filtered, sensitive-document andB/GReferer-v2 passes, with separate GNU46default/1checkout/4Unix scopes. Preserve blocked exit2/nineunavailable/fullfalse/releasefalse/workflowfailure and unconditional full-assessor refusal; labels are not canonical machineIDs, rerunning49 cannot fullqualify. Isolated Tools prototype is not live package cutover.",
   "generic_wire_changed": false,

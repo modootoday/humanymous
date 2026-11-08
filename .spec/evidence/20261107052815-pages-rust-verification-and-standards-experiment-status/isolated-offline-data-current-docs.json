@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.pages-isolated-offline-data-status/1",
+  "canonical_sources": [
+    "4cb4c7bd isolated offline Core/CLI composition in structural-development SoT",
+    "0b1d0ec48d5f101759f3771cb48bc5d518277696 coordinator path repair in same canon"
+  ],
+  "changed_files": [
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "f5ec2c7b7f8a0eb6f50de27bd4b4db7b54c87cab4b1cf628e0ebca29bdc5e618",
+      "bytes": 12935
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "b624ee8642f709ac9521b94ad180d555ab60049fdae3f3e6af2e3bd6258182d9",
+      "bytes": 17157
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "5aa5220e200ed5802ec9f935f0c54359fefb4dd0ba8ace7fb18910818a81031f",
+      "bytes": 19083
+    }
+  ],
+  "offline": "IsolatedCoretrainingAPI5newunits/fullCorelib165(defaultprior160+5),2CLIparserunits1otherfiltered,targetedstrict0; outputsunsignedmodel+unsignedreceiptDATA only; no sign/install/promote/activate/inference/scoring change",
+  "separate_cli": "Private1791FILEepoch(fullCLIalltargetallfeaturestrict0/8selectionmaterializer+4resultparserunits), not Gitcommit1791; latercoordinatornativepathspellingchangeonlyscopedlint0,nosealtransfer",
+  "limits": "No actualCLIprocess/Go bitparity/FMA/promotion/activation/nativepathcontrols/Runtime transfer; latestsource rendered/ATgate stillrequired",
+  "staged_tools": "Live29workspace+4standalone=33maintained vsisolated21prototype vsacceptedfinal8; no livepackage/sourcecutover",
+  "browser": "Existing3137actual49/49+selectedbrowserpass keptintact; exit2blocked9unavailable/fullfalse/releasefalse/workflowfailure unchanged",
+  "provenance": "Read current structural canon and exact4cb/0b1 deltas; no internal evidence/SoT IDs added to reader docs",
+  "validation": "Existingimmutablead04sourcechecker88pages/errors0/diffcheckpass; no newcompiler/build/render/AT/browser/GHA/publish. NewproseUNRENDERED"
+}

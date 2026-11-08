@@ -2629,3 +2629,21 @@ liveworkspace29/finaltarget8 unchanged. No internalSoTIDs added to readerdocs.
 Evidence07052815/3137-browser-milestone-current-docs.json binds four exact changed
 pathhashes/source/date. Frozenchecker88pages/errors0; no build/render/preview/GHA/
 publish or newworkload. All newprose staysUNRENDERED until a coordinatedPagesgate.
+
+### Isolated offline unsigned DATA versus activation status
+
+Derived current public status/map from accepted structural canon4cb4c7bd and
+0b1d0ec4: isolated offline Core API/CLI composition outputs unsigned model and
+receipt DATA only, not signing/install/promotion/activation/inference/scoring.
+Actual5newCoreunits/full165library and2CLIparserunits/1otherfiltered plusstrict
+checks are distinct from a later12puremaintenance/materializer/resultparser
+checkpoint/fullCLIstrict0. No actualCLIprocess/Go/FMA/promotion/Runtime transfer.
+
+Private1791-file epoch is not a Gitrevision. Subsequent coordinatornativepath
+spelling change has scopedlint only; no earlierseal/authentication inheritance.
+Live29+4 vsisolated21prototype vsacceptedfinal8 remain distinct; no cutover.
+Existing3137actual49pass/selectedbrowserpass/fullfalse9blocked/workflowfailure
+kept unchanged. Evidence07052815/isolated-offline-data-current-docs.json binds
+three exact changedpathhashes and limits; no internalSoT/evidence IDs in readers.
+Frozenchecker88pages/errors0/diffpass; no newcompile/build/render/AT/GHA/publish.
+Latest-source coordinated render and AT remain required; all newproseUNRENDERED.
