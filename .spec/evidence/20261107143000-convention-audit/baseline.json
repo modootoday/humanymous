@@ -2110,5 +2110,17 @@
     "correction": "Original P1 double-delete panic claim withdrawn after examining Snapshot basename guard;3332881d ownership clarification source reviewed",
     "actual_qualified": false,
     "goal_complete": false
+  },
+  "sgd_actual_review": {
+    "evidence": {
+      "path": ".spec.local/root/evidence/20261107143000-convention-audit/sgd-actual-review-001.json",
+      "sha256": "27649d85d3fe06d1d8c0785f4a49e9701c82e6410a48f6e7b67ab935ea9f3431",
+      "bytes": 1770
+    },
+    "source": "42ecee7d86c74579ba590ac6e60b7aab9b1bb31f",
+    "actual": "15SGD incl3actual-file subset of177Core; fmt/check/strictClippy pass",
+    "binding": "45raw hashes/3archive hashes/14step joins/3153frozen sources to Git all0issues",
+    "limits": "No exact OS starts; registry POSTONLY; no Go/production/bootstrap/product closure",
+    "goal_complete": false
   }
 }

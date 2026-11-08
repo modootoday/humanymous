@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 72c2863cb266e21eb7b4938318a02c871893d9d1210158532172e337d17a0439, bytes: 117024, store: repo}
+  - {path: baseline.json, sha256: 35e857cfe03f4375ec3ecc4c01caf39159c819a7244e904bcebf7d3d7086e770, bytes: 117652, store: repo}
 ---
 
 # Convention audit baseline
@@ -1934,3 +1934,19 @@ bug as fixed. 3332881d separately clarifies ownership using an exclusively creat
 Snapshot directory, explicit drop and an absence assertion. Source review passes;
 no authored test or ignored explicit-checkout gate has been executed by audit.
 The required separate CI checkout gate remains pending. Whole qualification OPEN.
+### First independently checked SGD actual component receipt
+
+Owner4cc8259f binds final source42ecee7d. Audit checked and retained45 indexed
+raw files (hash and size), three archive hashes and14 PID/argv/terminal/exit
+joins, with zero issues. All3153 frozen source files match both recorded SHA256
+and the exact3153-file Git tree. The final focused15 SGD passes include3 actual
+file cases and are a subset of177 Core passes (160unit,17integration), never an
+additional15. Final formatter check, all-target/all-feature check and strict
+Clippy exit0. First formatter exit1 and earlier Clippy exit101 remain retained;
+the iterator-only reference-test correction preserves numerical order.
+
+This qualifies the checked Windows Rust1.99.1 component scope. Per-step OS start
+times were not persisted. Registry1445files/36packages were captured POST-only;
+immediate reread equality is not pre/post equality. Full OS/config/loader/child
+read closure, Go bit/FMA parity, bootstrap CLI/process, production activation and
+Docker product e2e remain unqualified. Whole migration qualification stays OPEN.
