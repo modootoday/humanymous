@@ -163,6 +163,23 @@ evidence area; Root retains live and isolated integration custody. Existing fiel
 and symbol preservation, negative authority controls and source test identities
 must be reconciled before adoption; warning removal cannot erase functionality.
 
+The isolated default CLI library subsequently executed all15 tests successfully,
+with zero failures, ignores or filtered cases. Independent old-path and new-path
+list-only invocations each discovered the same15 exact case names; their name
+difference count is zero. The1765-file candidate source inventory remained equal
+to the preceding strict-check after view. Runtime-service optional cases and real
+SCM/service execution are outside this default-library result and remain open.
+
+Root compared external package identities in the original and candidate root
+lockfiles:634 name/version/source/checksum tuples on each side, zero differences.
+The original lock SHA-256 remains
+5d3e1453ab8c3cdba1d22443effc045740e629153784d0c3b4ac62b7231cbf00;
+the isolated integrated lock SHA-256 is
+bbac0a79c9d82b21f1246fbe2a47b821d9039c8cb293145d5a90b5a1293d64f4.
+This comparison does not establish feature/target dependency completeness or
+replace advisory coverage of the four retained standalone locks. The shared
+root lock has not been replaced by the candidate lock.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
