@@ -70,6 +70,18 @@ compiler input closure or completed movement. The CLI owner is assigned actual
 Rust source candidates for14 thin composition roots in its owned evidence area;
 Root retains all live source movement and shared Cargo integration ownership.
 
+Root materialized only the eight accepted immutable DATA replicas under
+crates/apps/humanymous-cli/qualification, with data-provenance.json binding each
+destination to source commit3137c905, original path, exact Git blob, SHA-256,
+length and Apache-2.0 license. Six Core fixture worktree byte views differed
+from their committed blobs. The first preparation stopped at that mismatch
+after the two matching CEF/Collector copies; continuation extracted exact Git
+blob bytes for the remaining six, preserving every original worktree file.
+All eight destination raw Git objects equal their recorded producer blobs.
+The provenance explicitly distinguishes these views and forbids automatic
+refresh. This DATA-only step adds no source clone, Cargo member or package
+publication; consumer rewiring and packaged equality verification remain open.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.

@@ -1,0 +1,70 @@
+{
+  "summary_schema": 1,
+  "navigation_schema": 2,
+  "renderer_file_probe_schema": 2,
+  "required_test_count": 2,
+  "bootstrap_rejection": {
+    "observation_schema": 1,
+    "marker_prefix": "HUMANYMOUS_BOOTSTRAP_OBSERVATION ",
+    "max_record_bytes": 1024,
+    "test_name": "tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation",
+    "case_count": 4,
+    "expected_exit_code": 78,
+    "expected_profile_changed": false,
+    "deadline_ms": 10000,
+    "cases": [
+      {"id": "no_sandbox", "flag": "--no-sandbox"},
+      {"id": "no_sandbox_zero", "flag": "--no-sandbox=0"},
+      {"id": "disable_web_security", "flag": "--disable-web-security"},
+      {"id": "disable_gpu_sandbox", "flag": "--disable-gpu-sandbox"}
+    ],
+    "error_kinds": ["none", "not_found", "permission_denied", "timed_out", "interrupted", "other"],
+    "profile_phases": ["before", "after"],
+    "case_fields": ["schema", "kind", "case_id", "spawn_ok", "wait_completed", "deadline_expired", "reaped", "exit_code", "cleanup_attempted", "spawn_error_kind", "wait_error_kind", "cleanup_error_kind"],
+    "profile_fields": ["schema", "kind", "phase", "inventory_ok", "changed", "error_kind"],
+    "reaped_semantics": "true only after wait or stop returned actual direct-child status; otherwise null, never inferred from spawn or exit expectation",
+    "protocol_preflight": {
+      "selector": "negative_pilot::tests::",
+      "required_test_count": 3,
+      "classification": "synthetic_bootstrap_observation_protocol",
+      "initializes_cef": false,
+      "starts_processes": false,
+      "test_names": [
+        "negative_pilot::tests::case_projection_is_closed_and_rejects_foreign_ids",
+        "negative_pilot::tests::unobserved_reaping_stays_null",
+        "negative_pilot::tests::profile_error_projection_excludes_private_details"
+      ]
+    }
+  },
+  "protocol_preflight": {
+    "selector": "pilot_assertions::tests::",
+    "required_test_count": 4,
+    "classification": "synthetic_report_protocol",
+    "initializes_cef": false,
+    "starts_processes": false,
+    "requires_native_feature_build": true,
+    "test_names": [
+      "pilot_assertions::tests::protocol_fixture_accepts_complete_shape_without_exporting_private_fields",
+      "pilot_assertions::tests::protocol_rejects_stale_missing_truncated_and_unjoined_success_claims",
+      "pilot_assertions::tests::canceled_protocol_fixture_requires_real_cleanup_and_explicit_cancellation",
+      "pilot_assertions::tests::cancellation_rejects_retained_probes_missing_schema_and_stale_transactions"
+    ]
+  },
+  "cases": {
+    "positive": {
+      "test_name": "pilot_process::provisioned_positive_internal_routes_and_cleanup",
+      "exit_code": 0,
+      "observed": 7,
+      "joined_renderer_probes_min": 1,
+      "joined_renderer_probes_max": 32
+    },
+    "cancelled": {
+      "renderer_file_probes": 0,
+      "test_name": "pilot_process::provisioned_cancellation_rejects_incomplete_probe_after_cleanup",
+      "exit_code": 78,
+      "observed": 0,
+      "joined_renderer_probes_min": 0,
+      "joined_renderer_probes_max": 0
+    }
+  }
+}

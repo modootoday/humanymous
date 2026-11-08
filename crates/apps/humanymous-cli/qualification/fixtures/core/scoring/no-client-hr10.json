@@ -1,0 +1,120 @@
+{
+  "id": "no-client-hr10",
+  "report": {
+    "sessionId": "",
+    "ts": "0001-01-01T00:00:00Z",
+    "client": {
+      "sessionId": "",
+      "userAgent": "",
+      "uaClientHints": {
+        "mobile": false
+      },
+      "signals": null,
+      "behavior": {
+        "mouse": {
+          "samples": 0,
+          "meanCurvature": 0,
+          "velocityStdDev": 0,
+          "accelEntropy": 0,
+          "straightLineFrac": 0,
+          "pauseCount": 0,
+          "maxTeleportPx": 0,
+          "meanJerk": 0,
+          "coalescedRatio": 0
+        },
+        "key": {
+          "keystrokes": 0,
+          "meanDwellMs": 0,
+          "dwellStdDevMs": 0,
+          "meanFlightMs": 0,
+          "flightStdDevMs": 0,
+          "pasteEvents": 0,
+          "zeroDwellFrac": 0
+        },
+        "events": {
+          "totalEvents": 0,
+          "untrustedFrac": 0,
+          "noMoveClicks": 0,
+          "syntheticFlags": 0,
+          "clickCount": 0,
+          "longGapCount": 0,
+          "burstVarMs": 0,
+          "minReactionMs": 0
+        },
+        "durationS": 0
+      },
+      "environment": {
+        "probed": false,
+        "adBlock": false,
+        "trackingProtection": false,
+        "doNotTrack": "",
+        "gpc": false,
+        "collectorBlocked": false,
+        "braveShields": false
+      },
+      "guard": {
+        "reported": false,
+        "evalUsed": 0,
+        "funcCtor": 0,
+        "scriptInjected": 0,
+        "protoPolluted": false,
+        "nativeHooked": false,
+        "consoleDisabled": false
+      },
+      "advanced": {
+        "probed": false,
+        "mediaDeviceCount": 0,
+        "hasAudioInput": false,
+        "hasVideoInput": false,
+        "voiceCount": 0,
+        "widevineSupported": false,
+        "webgpuPresent": false,
+        "webgpuVendor": "",
+        "webgpuFallback": false,
+        "webglVendor": "",
+        "audioSampleRate": 0,
+        "connectionPresent": false,
+        "connectionRtt": 0,
+        "batteryPresent": false,
+        "batteryLevel": 0,
+        "batteryCharging": false,
+        "timezoneIana": "",
+        "timezoneOffsetMin": 0,
+        "language": "",
+        "colorGamut": "",
+        "dynamicRange": "",
+        "pointerCoarse": false,
+        "maxTouchPoints": 0,
+        "perfMemoryPresent": false,
+        "measureMemThrows": false,
+        "mobileUA": false
+      },
+      "fingerprintId": "",
+      "engineVersion": ""
+    },
+    "network": {
+      "ja3": "",
+      "ja3Text": "",
+      "ja4": "",
+      "ja4Engine": "chrome",
+      "h2Engine": "chrome",
+      "secFetchPresent": false,
+      "secChUaPresent": false,
+      "signals": null
+    },
+    "crosschecks": null,
+    "scoring": {
+      "riskScore": 0,
+      "verdict": "CHALLENGE",
+      "hardRuleFired": "HR-10",
+      "topContributors": [],
+      "policyVersion": "1.0.0"
+    }
+  },
+  "want": {
+    "riskScore": 0,
+    "verdict": "CHALLENGE",
+    "hardRuleFired": "HR-10",
+    "policyVersion": "1.0.0"
+  }
+}
