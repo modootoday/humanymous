@@ -350,6 +350,28 @@ compile/lint epoch only; no tests ran in that strict invocation, and resolved
 compiler/registry/environment closure, unsafe negative controls, per-role normal
 feature isolation, extracted packages and actual hosted runtime gates remain open.
 
+After the sealed strict02 epoch, Root corrected five isolated Delivery execution
+callers: native pilot, workspace probe/summary, service component, Go product and
+mount probe now select the unified CLI manifest/package plus the exact preserved
+binary and required qualification feature. Native and Lab executable names,
+report semantics, actual result checks and historical receipt identities remain
+unchanged. Delivery's all-target strict profile passed after these source edits;
+the calls themselves were not executed locally and still require owning hosted
+artifact/admission qualification. Native package-ID/source-role migration remains
+separately assigned to its owner; changing argv cannot establish that identity.
+
+CEF source observation now includes the unified CLI manifest/source and Runtime
+manifest/source required by the new package graph instead of its absent standalone
+manifest/lock/source. The root workspace lock remains observed. Local parity
+records the preserved thin binary root and its actual implementation separately,
+using the unified manifest and workspace lock; older standalone receipts are not
+rewritten. The combined CEF/local-parity all-target strict profile passed, without
+running CEF, local workflow workloads or native provider operations. These source
+views are declared overapproximations, not complete compiler-input attestation.
+The earlier sealed snapshot remains immutable and cannot qualify these later
+caller changes. The next final freeze must include and validate their actual
+source/artifact/role joins, expanded unsafe negatives and hosted execution.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
