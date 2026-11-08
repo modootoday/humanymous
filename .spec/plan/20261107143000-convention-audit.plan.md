@@ -3315,3 +3315,23 @@ before/after path/hash rows agree, SHA85e4872e7549dc6e9073e3898b302cb1f0c87de27c
 Private node-capture-regression-review-029.json binds actual logs/snapshots.
 This supersedes earlier source-only NOTRUN status for those6units only. Actual
 3capture steps, host execution, ABI and full CA-LIFETIME remain OPEN.
+### B2 first-loss drain contract finding
+
+CA-B2-DRAIN-01 (P2, Native Windows/Root) is OPEN in the unapproved body candidate.
+Plan original-deadlines paragraph requires effective cleanup=min(original cleanup,
+first-loss instant+accepted drain cap). Current BudgetLimits/State expose only
+run/original cleanup; record retains first issue but never tightens cleanup, and
+request_stop/settle use that original limit. Early failure can therefore leave a
+cleanup window beyond the contracted drain cap. This is confirmed source/plan
+mismatch, not an observed native failure. Native and Root were notified. Required
+correction keeps the original pair unchanged and adds bounded accepted drain plus
+sticky effective minimum/checked arithmetic. Require regressions for early-loss
+shortening, earlier original cleanup, repeated failure non-extension and exact
+boundary refusal; actual execution is pending. Raw first-attempt state/facade/plan
+bytes are preserved privately with b2-drain-gap-review-031.json.
+
+B2 fixture source has6required parent tests and6subprocess helpers, allignored and
+NOTRUN. Helper execution cannot count as parent success. Detached standard-stream
+coverage also needs independent external no-leaked-marker observation; the parent
+body alone cannot prove that. Private b2-fixture-review-030.json binds this source
+scope. B2 remains UNAPPROVED; full Native/CA-LIFETIME/migration gates stay OPEN.
