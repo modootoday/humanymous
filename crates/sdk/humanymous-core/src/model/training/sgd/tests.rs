@@ -145,12 +145,12 @@ fn reference_step(b: &mut MlpBundle, x: &FeatureVector, label: u8, lr: f32) {
     let old = b.clone();
     let mut pre = vec![0.0; b.hidden as usize];
     let mut logit = old.b2;
-    for h in 0..pre.len() {
+    for (h, hidden_pre) in pre.iter_mut().enumerate() {
         let mut value = old.b1[h];
         for (i, input) in z.iter().enumerate() {
             value += old.w1[h][i] * input;
         }
-        pre[h] = value;
+        *hidden_pre = value;
         logit += old.w2[h] * if value > 0.0 { value } else { 0.0 };
     }
     let d = (1.0_f64 / (1.0 + f64::from(-logit).exp())) as f32 - f32::from(label);
@@ -165,8 +165,8 @@ fn reference_step(b: &mut MlpBundle, x: &FeatureVector, label: u8, lr: f32) {
         }
     }
     for h in 0..pre.len() {
-        for i in 0..FEATURE_DIM {
-            b.w1[h][i] = old.w1[h][i] - gw1[h][i];
+        for (i, gradient) in gw1[h].iter().enumerate() {
+            b.w1[h][i] = old.w1[h][i] - gradient;
         }
         b.b1[h] = old.b1[h] - lr * gb1[h];
         b.w2[h] = old.w2[h] - lr * gw2[h];
