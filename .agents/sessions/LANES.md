@@ -34,6 +34,14 @@ These formal lanes supplement legacy lanes above. Existing owners migrate by nor
 | adapter-go | crates/go-adapter/**, adapters/go/** |
 | adapter-dotnet | crates/dotnet-adapter/**, adapters/dotnet/** |
 | network-capture | crates/capture/**; existing crates/network/** read-only |
+| root-coordination | Root design/allocation/review/roadmap; exact claimed spec/evidence paths only, no integration source writes after transfer |
+| cursor-integration | Cursor integration source/common Cargo/lock only after exact owner release and actual provider/session claim; other active claims remain authoritative |
+
+The two collaboration lanes follow `.agents/rules/95-cursor-collaboration.md` and
+the accepted roadmap contract. Primary paths are context descriptions, not an
+automatic source grant. Session `cursor-integrator` must use its actual registered
+model provider; Cursor itself is not a provider identity. No existing claim is
+released or moved by adding these lane IDs.
 
 Native-security OS credential provider belongs to native-windows; CLI only selects/validates typed references, runtime consumes shared protected input. No duplicate OS secret reader. Cross-context API changes require explicit owner agreement. Scoring seams stay frozen.
 

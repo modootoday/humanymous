@@ -8,8 +8,9 @@ All repository work in this shared session stays in `C:\workspaces\humanymous`
 on `codex/rust`. Read the actual branch before every write; on mismatch stop and
 coordinate with Root, never switch automatically. Do not create/switch branches,
 create worktrees, or recreate deleted validation refs. Owners do not push/delete
-refs themselves. Root alone performs explicitly user-authorized integration/ref
-work. A `git-ops` claim does not waive these restrictions. Isolated Root source is
+refs themselves. Root performs explicitly user-authorized ref work; Cursor applies
+integration source only after recorded ownership transfer under rule95.
+A `git-ops` claim does not waive these restrictions. Isolated Root source is
 read-only; candidate edits remain under the author's exact claimed evidence paths.
 
 ## Rules

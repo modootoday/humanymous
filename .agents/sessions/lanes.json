@@ -26,6 +26,8 @@
     {"id":"native-abi","kind":"rust","primary_paths":["crates/native-abi/**","adapters/native/**"]},
     {"id":"adapter-go","kind":"rust","primary_paths":["crates/go-adapter/**","adapters/go/**"]},
     {"id":"adapter-dotnet","kind":"rust","primary_paths":["crates/dotnet-adapter/**","adapters/dotnet/**"]},
-    {"id":"network-capture","kind":"rust","primary_paths":["crates/capture/**"]}
+    {"id":"network-capture","kind":"rust","primary_paths":["crates/capture/**"]},
+    {"id":"root-coordination","kind":"coordination","primary_paths":[".spec/sot/program-roadmap.sot.md",".spec/sot/structural-development.sot.md",".spec/plan/*program-roadmap*.plan.md"]},
+    {"id":"cursor-integration","kind":"rust","primary_paths":["Cargo.toml","Cargo.lock","rust-toolchain.toml","crates/sdk/**","crates/integrations/**","crates/apps/**"]}
   ]
 }

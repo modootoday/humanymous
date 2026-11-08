@@ -46,6 +46,12 @@ canon:
   run_schema: .agents/workflows/run.schema.json
 
 adapters:
+  cursor:
+    project_rules: [AGENTS.md]
+    rules: [.agents/rules/95-cursor-collaboration.md]
+    entrypoint: .cursor/rules/humanymous-collaboration.mdc
+    discovery_qualified: false
+    git_identity: actual-registered-model-provider
   claude:
     project_rules: [AGENTS.md]
     skills: .agents/skills
@@ -86,6 +92,7 @@ rules:
   - 92-git-commit-attribution.md
   - 93-release-and-ci.md
   - 94-chat-coordination.md
+  - 95-cursor-collaboration.md
   - 96-docker-engine-affinity.md
 
 sessions:

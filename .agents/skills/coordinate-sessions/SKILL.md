@@ -20,7 +20,8 @@ this repository.
 0. Require `C:\workspaces\humanymous` and actual branch `codex/rust` before
    every write. Stop on mismatch; do not create/switch branches, create worktrees,
    push/delete refs, or recreate removed validation branches. Root owns separately
-   authorized ref work and common Cargo/source application. Root's isolated source
+   authorized ref work; Cursor owns common Cargo/source application only after
+   recorded path release/claim under rule95. Root's isolated source
    is read-only; author candidates only in the claimed evidence paths. Keep this
    migration goal active and preserve incomplete gates; no Cursor handover document.
 
@@ -86,7 +87,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Git release failed' }
   `codex <codex@openai.com>` — full registry in `COMMIT-CONVENTION.md`.
 - Do not use bare `git commit -m` without that trailer; do not invent unowned emails.
 - Read-only `git status`/`diff`/`log` — no claim.
-- Shared index contains another writer's staged work: use `git-coord commit -OnlyPaths @('own/literal/path')`; never restore/unstage their files. Common Cargo/lock/toolchain and whole roadmap remain root-owned unless assigned.
+- Shared index contains another writer's staged work: use `git-coord commit -OnlyPaths @('own/literal/path')`; never restore/unstage their files. Cursor claims released common Cargo/source integration paths; Root retains roadmap/design/allocation/review. Follow rule95 and actual claims, never inferred ownership.
 - If preflight reports `index.lock` or active `git-ops` → wait.
 - No force-push to shared branches; no amend of pushed commits without user OK.
 - Full rules: `GIT-PROTOCOL.md`, `COMMIT-CONVENTION.md`, rules `91` + `92`.

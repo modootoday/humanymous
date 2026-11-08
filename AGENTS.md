@@ -75,6 +75,9 @@ branches. Do not push or delete refs yourself; Root owns user-authorized ref wor
 Work-lane ownership and serial attributed `git-ops` still apply. Root's isolated
 integration source is read-only to other owners; source candidates belong only
 in their claimed evidence paths. This is not a main merge/publication grant.
+Accepted Cursor collaboration: rule `.agents/rules/95-cursor-collaboration.md`.
+Cursor applies integration source/common Cargo only after actual path transfer;
+Root coordinates design/allocation/review and ref operations. No handover document.
 
 Several LLM chats may run on this repo **at once**. Before non-trivial edits:
 
