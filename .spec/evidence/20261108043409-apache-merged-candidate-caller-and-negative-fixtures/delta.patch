@@ -1,0 +1,523 @@
+diff --git a/adapters/apache/Dockerfile.native b/adapters/apache/Dockerfile.native
+index 566e6642..7afd0f71 100644
+--- a/adapters/apache/Dockerfile.native
++++ b/adapters/apache/Dockerfile.native
+@@ -30,21 +30,21 @@ ENV HUMANYMOUS_APU_INCLUDE=/opt/httpd/include
+ ENV HUMANYMOUS_CLANG_LIBRARY=/usr/lib/llvm-14/lib/libclang.so.1
+ ENV LIBCLANG_PATH=/usr/lib/llvm-14/lib/libclang.so.1
+ RUN rustup component add clippy --toolchain 1.99.1
+-RUN cargo test --locked -p humanymous-apache-adapter --lib
+-RUN cargo clippy --locked -p humanymous-apache-adapter --all-targets -- -D warnings
+-# Native package registration is owned by root and is a prerequisite for these.
++RUN cargo test --locked -p humanymous-adapters --no-default-features --features apache --lib apache::
++RUN cargo clippy --locked -p humanymous-adapters --no-default-features --features apache --lib -- -D warnings
++# One merged library target, one exact Apache role and isolated target per artifact.
+ RUN mkdir /out
+-RUN HUMANYMOUS_APACHE_ABI_RECEIPT=/out/apache-abi-production.json cargo build --locked --release -p humanymous-apache-native --features httpd --lib
+-RUN cargo clippy --locked -p humanymous-apache-native --features httpd --lib -- -D warnings
+-RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_native.so
+-RUN install -D /out/apache-abi-production.json /opt/httpd/modules/apache-abi-production.json
++RUN CARGO_TARGET_DIR=/src/target/apache-production HUMANYMOUS_APACHE_ABI_RECEIPT=/out/apache-abi-production.json cargo rustc --locked --release -p humanymous-adapters --no-default-features --features export-apache --lib --crate-type cdylib
++RUN CARGO_TARGET_DIR=/src/target/apache-production cargo clippy --locked -p humanymous-adapters --no-default-features --features export-apache --lib -- -D warnings
++RUN install -D /src/target/apache-production/release/libhumanymous_adapters.so /opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/production/humanymous.so
++RUN install -D /out/apache-abi-production.json /opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/production/apache-abi.json
+ RUN install -D /src/Cargo.lock /opt/httpd/source-Cargo.lock
+-RUN cargo build --locked --release -p humanymous-apache-native --features httpd,pilot-probes --lib
+-RUN cargo clippy --locked -p humanymous-apache-native --features httpd,pilot-probes --lib -- -D warnings
+-RUN install -D /src/target/release/libhumanymous_apache_native.so /opt/httpd/modules/libhumanymous_apache_probe.so
+-RUN cargo build --locked --release -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot
+-RUN cargo clippy --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot -- -D warnings
+-RUN install -D /src/target/release/humanymous-apache-pilot /out/pilot
++RUN CARGO_TARGET_DIR=/src/target/apache-probe cargo rustc --locked --release -p humanymous-adapters --no-default-features --features export-apache,qualification-apache-probes --lib --crate-type cdylib
++RUN CARGO_TARGET_DIR=/src/target/apache-probe cargo clippy --locked -p humanymous-adapters --no-default-features --features export-apache,qualification-apache-probes --lib -- -D warnings
++RUN install -D /src/target/apache-probe/release/libhumanymous_adapters.so /opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/probe/humanymous.so
++RUN CARGO_TARGET_DIR=/src/target/apache-pilot cargo build --locked --release -p humanymous-adapters --no-default-features --features qualification-apache-pilot --bin humanymous-apache-pilot
++RUN CARGO_TARGET_DIR=/src/target/apache-pilot cargo clippy --locked -p humanymous-adapters --no-default-features --features qualification-apache-pilot --bin humanymous-apache-pilot -- -D warnings
++RUN install -D /src/target/apache-pilot/release/humanymous-apache-pilot /out/pilot
+ 
+ FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS native-candidate
+ RUN apt-get update
+diff --git a/.github/workflows/apache-validation.yml b/.github/workflows/apache-validation.yml
+index c9df1721..77f0c5f8 100644
+--- a/.github/workflows/apache-validation.yml
++++ b/.github/workflows/apache-validation.yml
+@@ -1,8 +1,6 @@
+ # Component qualification only; no publication, deployment or private uploads.
+ name: CI / Apache component
+ 'on':
+-  push:
+-    branches: [codex/apache-validation]
+   workflow_dispatch: null
+ permissions:
+   contents: read
+@@ -29,20 +27,20 @@ jobs:
+         toolchain: 1.99.1
+         components: clippy
+     - name: Validate safe lifecycle and replay units
+-      run: cargo test --locked -p humanymous-apache-adapter --lib
++      run: 'cargo test --locked -p humanymous-adapters --no-default-features --features apache --lib apache::'
+     - name: Validate strict receipt and engine units
+-      run: cargo test --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot
++      run: cargo test --locked -p humanymous-adapters --no-default-features --features qualification-apache-pilot --bin humanymous-apache-pilot
+     - name: Check Linux pilot targets
+-      run: cargo check --locked -p humanymous-apache-native --features pilot --all-targets
++      run: cargo check --locked -p humanymous-adapters --no-default-features --features qualification-apache-pilot --bin humanymous-apache-pilot
+     - name: Deny safe crate Clippy warnings
+-      run: cargo clippy --locked -p humanymous-apache-adapter --all-targets -- -D warnings
++      run: cargo clippy --locked -p humanymous-adapters --no-default-features --features apache --lib -- -D warnings
+     - name: Deny native pilot Clippy warnings
+-      run: cargo clippy --locked -p humanymous-apache-native --features pilot --all-targets -- -D warnings
++      run: cargo clippy --locked -p humanymous-adapters --no-default-features --features qualification-apache-pilot --bin humanymous-apache-pilot -- -D warnings
+     - name: Build actual ABI and execute all 45 MPM scenarios
+       id: pilot
+       timeout-minutes: 42
+-      run: cargo run --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot -- coordinate --bundle "$RUNNER_TEMP/apache-native"
++      run: cargo run --locked -p humanymous-adapters --no-default-features --features qualification-apache-pilot --bin humanymous-apache-pilot -- coordinate --bundle "$RUNNER_TEMP/apache-native"
+     - name: Verify owned ledger cleanup
+       if: ${{ always() && steps.pilot.outcome != 'skipped' && steps.pilot.outcome != '' }}
+       timeout-minutes: 3
+-      run: cargo run --locked -p humanymous-apache-native --features pilot --bin humanymous-apache-pilot -- coordinate-cleanup --bundle "$RUNNER_TEMP/apache-native"
++      run: cargo run --locked -p humanymous-adapters --no-default-features --features qualification-apache-pilot --bin humanymous-apache-pilot -- coordinate-cleanup --bundle "$RUNNER_TEMP/apache-native"
+diff --git a/adapters/apache/coordinator-contract.json b/adapters/apache/coordinator-contract.json
+index f3f85147..85bb3a57 100644
+--- a/adapters/apache/coordinator-contract.json
++++ b/adapters/apache/coordinator-contract.json
+@@ -2,10 +2,10 @@
+   "schema": "humanymous.apache.coordinator-contract/0.1",
+   "report_schema": "humanymous.apache.coordinator/0.1",
+   "cleanup_schema": "humanymous.apache.cleanup/0.1",
+-  "source_status": "hosted-component-passed-at-bound-source",
+-  "qualificationEvidence": {"sourceCommit":"b400094480483d9abb8328234f9de12520b71b65","workflowRun":42374566498,"evidence":"evidence:root/20261107130407","fullProductSuccess":false},
+-  "command": ["cargo", "run", "--locked", "-p", "humanymous-apache-native", "--features", "pilot", "--bin", "humanymous-apache-pilot", "--", "coordinate", "--bundle", "<absolute-fresh-private-Specfold-bundle>"],
+-  "always_cleanup_command": ["cargo", "run", "--locked", "-p", "humanymous-apache-native", "--features", "pilot", "--bin", "humanymous-apache-pilot", "--", "coordinate-cleanup", "--bundle", "<same-private-bundle>"],
++  "source_status": "merged-package-source-candidate-uncompiled",
++  "historicalQualificationEvidence": {"sourceCommit":"b400094480483d9abb8328234f9de12520b71b65","workflowRun":42374566498,"evidence":"evidence:root/20261107130407","fullProductSuccess":false},
++  "command": ["cargo", "run", "--locked", "-p", "humanymous-adapters", "--no-default-features", "--features", "qualification-apache-pilot", "--bin", "humanymous-apache-pilot", "--", "coordinate", "--bundle", "<absolute-fresh-private-Specfold-bundle>"],
++  "always_cleanup_command": ["cargo", "run", "--locked", "-p", "humanymous-adapters", "--no-default-features", "--features", "qualification-apache-pilot", "--bin", "humanymous-apache-pilot", "--", "coordinate-cleanup", "--bundle", "<same-private-bundle>"],
+   "private_bundle": {"mode": "0700", "owner": "actual-current-euid", "initial_entries": ["index.evidence.md"], "reuse": false},
+   "hosted_bundle": {"path": "canonical RUNNER_TEMP/apache-native", "creation": "Rust coordinator create-new mode0700 before workload", "ordinary_actor": true, "source_binding": "Git archive HEAD equals actual GITHUB_SHA", "cleanup_creates_bundle": false},
+   "public_output": "apache-public.json",
+diff --git a/crates/integrations/humanymous-adapters/qualification/apache/pilot-contract.json b/crates/integrations/humanymous-adapters/qualification/apache/pilot-contract.json
+index 10fc878d..9be6242a 100644
+--- a/crates/integrations/humanymous-adapters/qualification/apache/pilot-contract.json
++++ b/crates/integrations/humanymous-adapters/qualification/apache/pilot-contract.json
+@@ -3,10 +3,10 @@
+   "report_schema": "humanymous.apache.pilot/0.1",
+   "implemented": true,
+   "sourceImplemented": true,
+-  "status": "passed",
++  "status": "not_run",
+   "fullProductSuccess": false,
+-  "qualification": "Source-bound Apache H1 component only: all45 passed at b4000944. Frozen ALLOW evidence is not product provenance; later source commits are not implicitly qualified.",
+-  "qualificationEvidence": {"sourceCommit":"b400094480483d9abb8328234f9de12520b71b65","workflowRun":42374566498,"workflowJob":128409407533,"evidence":"evidence:root/20261107130407"},
++  "qualification": "Unqualified merged-package Apache role candidate. Historical b400 evidence remains source-bound component-only; no new runtime result is claimed.",
++  "historicalQualificationEvidence": {"sourceCommit":"b400094480483d9abb8328234f9de12520b71b65","workflowRun":42374566498,"workflowJob":128409407533,"evidence":"evidence:root/20261107130407"},
+   "buildCandidate": {
+     "available": true,
+     "dockerfile": "adapters/apache/Dockerfile.native",
+@@ -134,11 +134,11 @@
+     },
+     "moduleSha256": {
+       "format": "lowercase-hex-64",
+-      "path": "/opt/httpd/modules/libhumanymous_apache_native.so"
++      "path": "/opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/production/humanymous.so"
+     },
+     "probeModuleSha256": {
+       "format": "lowercase-hex-64",
+-      "path": "/opt/httpd/modules/libhumanymous_apache_probe.so"
++      "path": "/opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/probe/humanymous.so"
+     },
+     "httpdSha256": {
+       "format": "lowercase-hex-64",
+@@ -146,7 +146,7 @@
+     },
+     "abiReceiptSha256": {
+       "format": "lowercase-hex-64",
+-      "path": "/opt/httpd/modules/apache-abi-production.json"
++      "path": "/opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/production/apache-abi.json"
+     },
+     "lockSha256": {
+       "format": "lowercase-hex-64",
+diff --git a/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/mod.rs b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/mod.rs
+index 5e5b659f..17fc03ff 100644
+--- a/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/mod.rs
++++ b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/mod.rs
+@@ -1,4 +1,5 @@
+ //! Hosted-only native Apache pilot executable.
++mod artifacts;
+ #[path = "coordinator.rs"]
+ mod coordinator;
+ #[cfg(target_os = "linux")]
+diff --git a/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/coordinator/host.rs b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/coordinator/host.rs
+index 2afe6731..15794aec 100644
+--- a/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/coordinator/host.rs
++++ b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/coordinator/host.rs
+@@ -641,13 +641,7 @@ fn execute(
+         "abiReceiptSha256",
+         "lockSha256",
+     ] {
+-        let remote = contract["artifact_bindings"][key]["path"]
+-            .as_str()
+-            .ok_or("contract-artifact-path")?;
+-        ensure(
+-            remote.starts_with("/opt/httpd/") && !remote.contains(".."),
+-            "contract-artifact-scope",
+-        )?;
++        let remote = super::super::artifacts::path(&contract, key)?;
+         let local = operations.bundle.join(format!("{key}.artifact"));
+         let destination = operations.destination(&local)?;
+         operations.docker(
+@@ -656,6 +650,10 @@ fn execute(
+         )?;
+         artifacts.insert(key.to_owned(), file_hash(&local)?);
+     }
++    super::super::artifacts::header_receipt(&read_bound(
++        &operations.bundle.join("abiReceiptSha256.artifact"),
++        1_048_576,
++    )?)?;
+     let expected = Expected {
+         source,
+         manifest,
+diff --git a/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/pilot/mod.rs b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/pilot/mod.rs
+index 63ec2397..2a7993f2 100644
+--- a/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/pilot/mod.rs
++++ b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/pilot/mod.rs
+@@ -218,13 +218,14 @@ fn startup(
+     let port = lease.local_addr()?.port();
+     drop(lease);
+     let path = base.join("httpd.conf");
++    let production = super::artifacts::PRODUCTION;
+     let uid = rustix::process::geteuid().as_raw();
+     let gid = rustix::process::getegid().as_raw();
+     // Apache configuration only; no authored executable foreign host glue.
+     std::fs::write(
+         &path,
+         format!(
+-            "ServerRoot /opt/httpd\nDefaultRuntimeDir {base}\nServerName example.test\nListen 127.0.0.1:{port}\nLoadModule mpm_{mpm}_module modules/mod_mpm_{mpm}.so\nLoadModule unixd_module modules/mod_unixd.so\nLoadModule authz_core_module modules/mod_authz_core.so\nLoadModule proxy_module modules/mod_proxy.so\nLoadModule proxy_http_module modules/mod_proxy_http.so\nLoadModule humanymous_module modules/libhumanymous_apache_native.so\nUser #{uid}\nGroup #{gid}\nPidFile {base}/httpd.pid\nErrorLog {base}/httpd-error.log\nLogLevel error\nTimeout 2\nKeepAlive Off\nHumanymousConfig {private}\nProxyRequests Off\nProxyAddHeaders Off\nProxyPass / http://127.0.0.1:{origin}/\n<Location />\nRequire all granted\n</Location>\n",
++            "ServerRoot /opt/httpd\nDefaultRuntimeDir {base}\nServerName example.test\nListen 127.0.0.1:{port}\nLoadModule mpm_{mpm}_module modules/mod_mpm_{mpm}.so\nLoadModule unixd_module modules/mod_unixd.so\nLoadModule authz_core_module modules/mod_authz_core.so\nLoadModule proxy_module modules/mod_proxy.so\nLoadModule proxy_http_module modules/mod_proxy_http.so\nLoadModule humanymous_module {production}\nUser #{uid}\nGroup #{gid}\nPidFile {base}/httpd.pid\nErrorLog {base}/httpd-error.log\nLogLevel error\nTimeout 2\nKeepAlive Off\nHumanymousConfig {private}\nProxyRequests Off\nProxyAddHeaders Off\nProxyPass / http://127.0.0.1:{origin}/\n<Location />\nRequire all granted\n</Location>\n",
+             base = base.display(),
+             private = private.display()
+         ),
+@@ -233,10 +234,7 @@ fn startup(
+         let config = std::fs::read_to_string(&path)?;
+         std::fs::write(
+             &path,
+-            config.replace(
+-                "libhumanymous_apache_native.so",
+-                "libhumanymous_apache_probe.so",
+-            ),
++            config.replace(super::artifacts::PRODUCTION, super::artifacts::PROBE),
+         )?;
+     }
+     if cache {
+@@ -518,6 +516,7 @@ fn suite(mpm: &str, cases: &mut Vec<serde_json::Value>) -> Result<(), Error> {
+     Ok(())
+ }
+ pub fn run() -> Result<(), Error> {
++    let artifact_contract = super::coordinator::contract()?;
+     ensure(
+         std::env::var("HUMANYMOUS_APACHE_OWNED_DOCKER").as_deref() == Ok("1"),
+         "owned hosted Docker marker required",
+@@ -579,10 +578,10 @@ pub fn run() -> Result<(), Error> {
+         .count();
+     let report = serde_json::json!({"schema":"humanymous.apache.pilot/0.1","status":if failed==0&&not_run==0&&diagnostic_closed{"passed"}else{"incomplete"},
+         "qualification":"actual-httpd/shared-authority-WAL; synthetic frozen ALLOW fixture; component only",
+-        "sourceCommit":source,"sourceManifestSha256":source_manifest,"imageDigest":image,"moduleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_native.so"))?,
+-        "probeModuleSha256":hash(Path::new("/opt/httpd/modules/libhumanymous_apache_probe.so"))?,
+-        "httpdSha256":hash(Path::new("/opt/httpd/bin/httpd"))?,"abiReceiptSha256":hash(Path::new("/opt/httpd/modules/apache-abi-production.json"))?,
+-        "lockSha256":hash(Path::new("/opt/httpd/source-Cargo.lock"))?,
++        "sourceCommit":source,"sourceManifestSha256":source_manifest,"imageDigest":image,"moduleSha256":hash(Path::new(super::artifacts::path(&artifact_contract, "moduleSha256")?))?,
++        "probeModuleSha256":hash(Path::new(super::artifacts::path(&artifact_contract, "probeModuleSha256")?))?,
++        "httpdSha256":hash(Path::new(super::artifacts::path(&artifact_contract, "httpdSha256")?))?,"abiReceiptSha256":hash(Path::new(super::artifacts::path(&artifact_contract, "abiReceiptSha256")?))?,
++        "lockSha256":hash(Path::new(super::artifacts::path(&artifact_contract, "lockSha256")?))?,
+         "engineVersionObservation":version,"cases":cases,"requiredScenarioCount":45,"passed":passed,"failed":failed,"not_run":not_run,
+         "fullProductSuccess":false,"cleanupObserved":diagnostic_closed&&failed==0&&cases.iter().filter(|case|case["name"]=="cleanup"&&case["result"]=="passed").count()==3});
+     println!("{}", serde_json::to_string(&report)?);
+diff --git a/crates/integrations/humanymous-adapters/src/apache/lifecycle.rs b/crates/integrations/humanymous-adapters/src/apache/lifecycle.rs
+index 37e0bfe0..dd43dba9 100644
+--- a/crates/integrations/humanymous-adapters/src/apache/lifecycle.rs
++++ b/crates/integrations/humanymous-adapters/src/apache/lifecycle.rs
+@@ -364,4 +364,43 @@ mod tests {
+             assert!(Mpm::identify(name, threaded, asynchronous, 0).is_err());
+         }
+     }
++    #[test]
++    fn late_pool_cancellation_cannot_revoke_a_replacement_request() {
++        let c = child();
++        let old = begin(&c, 0).unwrap();
++        let late_cleanup = old.cancellation();
++        drop(old);
++        let mut replacement = begin(&c, 0).unwrap();
++        replacement.finish().unwrap();
++        late_cleanup.cancel();
++        late_cleanup.cancel();
++        assert_eq!(replacement.body().unwrap(), b"");
++        assert!(begin(&c, 0).is_err());
++        drop(replacement);
++        assert!(begin(&c, 0).is_ok());
++    }
++    #[test]
++    fn expired_complete_request_retains_its_permit_until_owned_drop() {
++        let c = child();
++        let mut request = begin(&c, 0).unwrap();
++        request.finish().unwrap();
++        request.until = Instant::now();
++        assert_eq!(request.body(), Err(Error::RequestClosed));
++        assert_eq!(request.remaining(), Err(Error::RequestClosed));
++        assert!(begin(&c, 0).is_err());
++        drop(request);
++        assert!(begin(&c, 0).is_ok());
++    }
++    #[test]
++    fn rejected_generation_does_not_consume_or_release_another_permit() {
++        let c = child();
++        assert!(c.begin(8, true, 0, 8, Duration::from_secs(1)).is_err());
++        let retained = begin(&c, 0).unwrap();
++        assert!(c.begin(8, true, 0, 8, Duration::from_secs(1)).is_err());
++        assert_eq!(c.0.state.lock().unwrap().active, 1);
++        assert!(begin(&c, 0).is_err());
++        drop(retained);
++        assert_eq!(c.0.state.lock().unwrap().active, 0);
++        assert!(begin(&c, 0).is_ok());
++    }
+ }
+diff --git a/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/artifacts.rs b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/artifacts.rs
+new file mode 100644
+index 00000000..5cb78fd8
+--- /dev/null
++++ b/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/artifacts.rs
+@@ -0,0 +1,234 @@
++//! Apache-only staged artifacts: a merged Cargo package is not a host-role proof.
++#![cfg_attr(not(target_os = "linux"), allow(dead_code))]
++use serde_json::Value;
++
++pub(super) const PRODUCTION: &str =
++    "/opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/production/humanymous.so";
++pub(super) const PROBE: &str =
++    "/opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/probe/humanymous.so";
++const ABI: &str = "/opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/production/apache-abi.json";
++const PATHS: &[(&str, &str)] = &[
++    ("moduleSha256", PRODUCTION),
++    ("probeModuleSha256", PROBE),
++    ("httpdSha256", "/opt/httpd/bin/httpd"),
++    ("abiReceiptSha256", ABI),
++    ("lockSha256", "/opt/httpd/source-Cargo.lock"),
++];
++fn header_lock(lock: &Value) -> Result<(), &'static str> {
++    let required = [
++        "http_request.h",
++        "http_core.h",
++        "httpd.h",
++        "http_config.h",
++        "http_protocol.h",
++        "util_filter.h",
++        "ap_mpm.h",
++        "ap_mmn.h",
++        "apr_pools.h",
++        "apr_tables.h",
++        "apr_buckets.h",
++    ];
++    if lock["schema"] != "humanymous.apache.upstream/0.1"
++        || lock["target"] != "x86_64-unknown-linux-gnu"
++        || lock["httpd"]["version"] != "2.4.70"
++        || lock["apr"]["version"] != "1.7.6"
++        || lock["aprUtil"]["version"] != "1.6.6"
++        || !lock["headers"].as_object().is_some_and(|headers| {
++            headers.len() == required.len()
++                && required.iter().all(|name| {
++                    headers
++                        .get(*name)
++                        .and_then(Value::as_str)
++                        .is_some_and(|hash| {
++                            hash.len() == 64
++                                && hash
++                                    .bytes()
++                                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++                        })
++                })
++        })
++    {
++        return Err("apache-header-resource-identity");
++    }
++    Ok(())
++}
++pub(super) fn path<'a>(contract: &'a Value, key: &str) -> Result<&'a str, &'static str> {
++    let expected = PATHS
++        .iter()
++        .find(|(known, _)| *known == key)
++        .ok_or("unknown-apache-artifact")?
++        .1;
++    let actual = contract["artifact_bindings"][key]["path"]
++        .as_str()
++        .ok_or("missing-apache-artifact")?;
++    if actual != expected {
++        return Err("apache-artifact-role-path");
++    }
++    Ok(actual)
++}
++pub(super) fn header_receipt(bytes: &[u8]) -> Result<(), &'static str> {
++    use sha2::{Digest, Sha256};
++    use std::collections::BTreeMap;
++    let receipt: Value = serde_json::from_slice(bytes).map_err(|_| "apache-abi-json")?;
++    if serde_json::to_vec_pretty(&receipt).map_err(|_| "apache-abi-json")? != bytes {
++        return Err("apache-abi-noncanonical");
++    }
++    let lock: Value = serde_json::from_str(include_str!("../../../abi/apache/upstream-lock.json"))
++        .map_err(|_| "apache-header-lock")?;
++    header_lock(&lock)?;
++    let fields = [
++        "schema",
++        "target",
++        "bindgenVersion",
++        "libclangSha256",
++        "clangVersion",
++        "directHeaders",
++        "configuredHeaderClosure",
++        "headerClosureSha256",
++        "bindingsSha256",
++        "fullProductSuccess",
++    ];
++    let object = receipt.as_object().ok_or("apache-abi-object")?;
++    if object.len() != fields.len() || fields.iter().any(|key| !object.contains_key(*key)) {
++        return Err("apache-abi-fields");
++    }
++    if receipt["schema"] != "humanymous.apache.abi-build/0.1"
++        || receipt["target"] != "x86_64-unknown-linux-gnu"
++        || receipt["target"] != lock["target"]
++        || receipt["bindgenVersion"] != "0.73.2"
++        || receipt["fullProductSuccess"] != false
++        || receipt["directHeaders"] != lock["headers"]
++        || !receipt["clangVersion"]
++            .as_str()
++            .is_some_and(|value| !value.is_empty())
++    {
++        return Err("apache-abi-identity");
++    }
++    let digest = |value: &Value| {
++        value.as_str().is_some_and(|s| {
++            s.len() == 64
++                && s.bytes()
++                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++        })
++    };
++    for key in ["libclangSha256", "bindingsSha256", "headerClosureSha256"] {
++        if !digest(&receipt[key]) {
++            return Err("apache-abi-digest");
++        }
++    }
++    let closure = receipt["configuredHeaderClosure"]
++        .as_object()
++        .ok_or("apache-abi-closure")?;
++    if closure.is_empty()
++        || closure.iter().any(|(name, hash)| {
++            !name.starts_with('/')
++                || name.contains('\\')
++                || name.split('/').any(|part| part == ".." || part == ".")
++                || !digest(hash)
++        })
++    {
++        return Err("apache-abi-closure");
++    }
++    let sorted: BTreeMap<_, _> = closure
++        .iter()
++        .map(|(name, hash)| (name, hash.as_str().unwrap()))
++        .collect();
++    let hash = format!(
++        "{:x}",
++        Sha256::digest(serde_json::to_vec(&sorted).map_err(|_| "apache-abi-closure")?)
++    );
++    if receipt["headerClosureSha256"] != hash {
++        return Err("apache-abi-closure-binding");
++    }
++    Ok(())
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    fn contract() -> Value {
++        serde_json::from_str(include_str!(
++            "../../../qualification/apache/pilot-contract.json"
++        ))
++        .unwrap()
++    }
++    #[test]
++    fn same_merged_package_never_authorizes_another_role_target_or_probe() {
++        let valid = contract();
++        for (key, expected) in PATHS {
++            assert_eq!(path(&valid, key).unwrap(), *expected);
++        }
++        for wrong in [
++            PROBE,
++            "/opt/httpd/modules/libhumanymous_adapters.so",
++            "/opt/httpd/modules/libhumanymous_apache_native.so",
++            "/opt/httpd/modules/humanymous/nginx/production/humanymous.so",
++            "/opt/httpd/modules/humanymous/apache/2.4.70/aarch64-unknown-linux-gnu/production/humanymous.so",
++            "/opt/httpd/modules/humanymous/apache/2.4.70/x86_64-unknown-linux-gnu/production/../production/humanymous.so",
++        ] {
++            let mut changed = valid.clone();
++            changed["artifact_bindings"]["moduleSha256"]["path"] = wrong.into();
++            assert!(path(&changed, "moduleSha256").is_err(), "{wrong}");
++        }
++        let mut changed = valid.clone();
++        changed["artifact_bindings"]["probeModuleSha256"]["path"] = PRODUCTION.into();
++        assert!(path(&changed, "probeModuleSha256").is_err());
++        assert!(path(&valid, "unknownSha256").is_err());
++    }
++    fn receipt() -> Value {
++        use sha2::{Digest, Sha256};
++        let lock: Value =
++            serde_json::from_str(include_str!("../../../abi/apache/upstream-lock.json")).unwrap();
++        let closure = serde_json::json!({"/opt/httpd/include/httpd.h": "a".repeat(64)});
++        let hash = format!(
++            "{:x}",
++            Sha256::digest(serde_json::to_vec(&closure).unwrap())
++        );
++        serde_json::json!({"schema":"humanymous.apache.abi-build/0.1", "target":lock["target"], "bindgenVersion":"0.73.2", "libclangSha256":"b".repeat(64), "clangVersion":"fixture only; not an actual build", "directHeaders":lock["headers"], "configuredHeaderClosure":closure, "headerClosureSha256":hash, "bindingsSha256":"c".repeat(64), "fullProductSuccess":false})
++    }
++    #[test]
++    fn packaged_header_resource_cannot_be_substituted_by_common_native_abi() {
++        let lock: Value =
++            serde_json::from_str(include_str!("../../../abi/apache/upstream-lock.json")).unwrap();
++        assert!(header_lock(&lock).is_ok());
++        for (key, replacement) in [
++            ("schema", serde_json::json!("humanymous.native.abi/1")),
++            ("target", serde_json::json!("aarch64-unknown-linux-gnu")),
++            ("headers", serde_json::json!({})),
++        ] {
++            let mut changed = lock.clone();
++            changed[key] = replacement;
++            assert!(header_lock(&changed).is_err(), "{key}");
++        }
++        let original = receipt();
++        assert!(header_receipt(&serde_json::to_vec_pretty(&original).unwrap()).is_ok());
++        for (key, replacement) in [
++            ("schema", serde_json::json!("humanymous.native.abi/1")),
++            ("target", serde_json::json!("aarch64-unknown-linux-gnu")),
++            ("bindgenVersion", serde_json::json!("0.73.1")),
++            ("directHeaders", serde_json::json!({})),
++            (
++                "configuredHeaderClosure",
++                serde_json::json!({"relative/header.h":"a".repeat(64)}),
++            ),
++            ("headerClosureSha256", serde_json::json!("d".repeat(64))),
++            ("fullProductSuccess", serde_json::json!(true)),
++        ] {
++            let mut changed = original.clone();
++            changed[key] = replacement;
++            assert!(
++                header_receipt(&serde_json::to_vec_pretty(&changed).unwrap()).is_err(),
++                "{key}"
++            );
++        }
++        let mut changed = original.clone();
++        changed["directHeaders"]["httpd.h"] = "d".repeat(64).into();
++        assert!(header_receipt(&serde_json::to_vec_pretty(&changed).unwrap()).is_err());
++        let mut changed = original.clone();
++        changed["unexpected"] = true.into();
++        assert!(header_receipt(&serde_json::to_vec_pretty(&changed).unwrap()).is_err());
++        let mut bytes = serde_json::to_vec_pretty(&original).unwrap();
++        bytes.extend_from_slice(b"{}");
++        assert!(header_receipt(&bytes).is_err());
++    }
++}

@@ -1,0 +1,110 @@
+{
+  "schema": "humanymous.apache.preimage-candidate/0.1",
+  "readOnlyInput": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "applied": false,
+  "compilerExecuted": false,
+  "runtimeExecuted": false,
+  "artifactLayout": "PROPOSAL for root review; not a new qualified tuple",
+  "workflow": "manual-only candidate; no deleted validation branches or automatic heavy launch",
+  "testsAuthored": [
+    "same_merged_package_never_authorizes_another_role_target_or_probe",
+    "packaged_header_resource_cannot_be_substituted_by_common_native_abi",
+    "late_pool_cancellation_cannot_revoke_a_replacement_request",
+    "expired_complete_request_retains_its_permit_until_owned_drop",
+    "rejected_generation_does_not_consume_or_release_another_permit"
+  ],
+  "entries": [
+    {
+      "destination": "adapters/apache/Dockerfile.native",
+      "preimageSha256": "178b2901519a1bf647ea73ae5272cf379a07ee59411a167798971f93f78c04b6",
+      "candidateRelative": "candidate/adapters/apache/Dockerfile.native",
+      "candidateSha256": "1dab192f4b214f63dff31df6a1faa627ff94e6979a7565c76e29a25677b57763",
+      "bytes": 4798
+    },
+    {
+      "destination": ".github/workflows/apache-validation.yml",
+      "preimageSha256": "5ac266b9f43fe9cc68477839c34f59d6efcc9fe45c3418c6e0b3b305798c7437",
+      "candidateRelative": "candidate/.github/workflows/apache-validation.yml",
+      "candidateSha256": "d7bb848b38ef5d6c7dab41f5a1a0f8cd3e2b74126c617aedd0b70852a08b4af7",
+      "bytes": 2384
+    },
+    {
+      "destination": "adapters/apache/coordinator-contract.json",
+      "preimageSha256": "4f0fba11f6e10fb63f8e2d2d24003ef42ce1b4c88cc4db12cb020b29a984ee59",
+      "candidateRelative": "candidate/adapters/apache/coordinator-contract.json",
+      "candidateSha256": "f503549c1fe81f5cd0099ca0641a623a8cc77906c7537441e2b2a6c0c19a111d",
+      "bytes": 4772
+    },
+    {
+      "destination": "crates/integrations/humanymous-adapters/qualification/apache/pilot-contract.json",
+      "preimageSha256": "7b178710f158de772173091fd32e14631eb1cbc91646bc1147051d99abb11e9b",
+      "candidateRelative": "candidate/crates/integrations/humanymous-adapters/qualification/apache/pilot-contract.json",
+      "candidateSha256": "e6fab1cf5be35caec3a4d97f6e304452e8e478359c6340e338c0a2304e6db987",
+      "bytes": 5352
+    },
+    {
+      "destination": "crates/integrations/humanymous-adapters/src/qualification/apache_pilot/mod.rs",
+      "preimageSha256": "146ae90f59f0c0e054045e0bab1766815054dea66931c0a688c2885a7035e7d0",
+      "candidateRelative": "candidate/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/mod.rs",
+      "candidateSha256": "0bac57481e28f2d7982f6b94421ef11f596cca03764cb5ee66ba98b2a8cc25c6",
+      "bytes": 844
+    },
+    {
+      "destination": "crates/integrations/humanymous-adapters/src/qualification/apache_pilot/coordinator/host.rs",
+      "preimageSha256": "b70b2779b65e45d67e6658e5797f03ec3c81b96a216bf7fc485cb87ba5d2aab9",
+      "candidateRelative": "candidate/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/coordinator/host.rs",
+      "candidateSha256": "3ac3e830643b7588aeddec0b85dd497b51f07ebd96edc905d4ebf8f67ecdac6b",
+      "bytes": 33870
+    },
+    {
+      "destination": "crates/integrations/humanymous-adapters/src/qualification/apache_pilot/pilot/mod.rs",
+      "preimageSha256": "c44497423568c055c529778afcc0f2f1e79a34774bd712ac34c5946b03ad0f05",
+      "candidateRelative": "candidate/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/pilot/mod.rs",
+      "candidateSha256": "f07fb594f032969a0bcf56bf027f23d8e21eff3548329e51343db5c11395b14b",
+      "bytes": 23804
+    },
+    {
+      "destination": "crates/integrations/humanymous-adapters/src/apache/lifecycle.rs",
+      "preimageSha256": "f65ccd8df1937b0699c57359f3601542c3ed0cf54d5fba4c3a712cd76880a795",
+      "candidateRelative": "candidate/crates/integrations/humanymous-adapters/src/apache/lifecycle.rs",
+      "candidateSha256": "0bf3753d26c066f1b3d815bf4b16ba3c038009c51dfa592eba548102c9e3d275",
+      "bytes": 13968
+    },
+    {
+      "destination": "crates/integrations/humanymous-adapters/src/qualification/apache_pilot/artifacts.rs",
+      "preimageSha256": null,
+      "candidateRelative": "candidate/crates/integrations/humanymous-adapters/src/qualification/apache_pilot/artifacts.rs",
+      "candidateSha256": "935ba8ae530555308d2f483dab2ef81a3a27b4bb55df471c3c9041f547dc6f93",
+      "bytes": 9573
+    }
+  ],
+  "readOnlyDependencies": [
+    {
+      "path": "crates/integrations/humanymous-adapters/Cargo.toml",
+      "sha256": "f16125a5b1f6f3a3b8058e480027a41b9ca6c760cecbd56da0e701392284d463"
+    },
+    {
+      "path": "crates/integrations/humanymous-adapters/src/lib.rs",
+      "sha256": "393d1c84e9060962657a1602a82e59cbec44b92bdb3c9eac8607fb441165b5fa"
+    },
+    {
+      "path": "crates/integrations/humanymous-adapters/build/apache.rs",
+      "sha256": "2bd3f4e95bdd718eec1192eef5f37a2cd85c23c4c7abd534618bce6854faa9ef"
+    },
+    {
+      "path": "crates/integrations/humanymous-adapters/abi/apache/upstream-lock.json",
+      "sha256": "dc4f977fe1cd935a4282e7ffba7a5c47d281c8e531538e3199f0c5d4e1a8ff97"
+    },
+    {
+      "path": "crates/integrations/humanymous-adapters/qualification/resource-provenance.json",
+      "sha256": "a09f8fb73bc237642636d0c7dd4c857f50f5f91945d8c09b1bc03021c9598f4c"
+    }
+  ],
+  "rootIntegrationObligations": [
+    "Review proposed role-isolated public artifact layout; not globally accepted native ABI profile.",
+    "Update common workflow policy/catalog for manual-only merged Apache caller, preserving45scenario semantics.",
+    "Record transformed Apache pilot-contract resource candidate hash in root assembly/provenance; original producer resource hash remains historical.",
+    "No actual SDK/runtime eligibility inferred from merged package ID, lib filename or synthetic ABI receipt test fixture.",
+    "Apply only with exact raw preimage equality/new-file absence."
+  ]
+}
