@@ -1,0 +1,81 @@
+{
+  "schema": "humanymous.preimage-bound-candidate/1",
+  "input_tree": "tools-integration-5f1010d4",
+  "branch": "codex/rust",
+  "files": [
+    {
+      "path": "crates/integrations/humanymous-adapters/src/exports/dotnet_v1.rs",
+      "preimage_sha256": "324a0bc90cdc8ecf828f793f024ad3b6090271f1f652e4a49caed752e2bfde06",
+      "preimage_bytes": 3667,
+      "candidate_sha256": "e20e23467ffee8d5fbc77323a34a2412dbc8842948c02ffeca021de3298d1117",
+      "candidate_bytes": 8382,
+      "apply_group": "review-role-and-abi-refusals"
+    },
+    {
+      "path": "crates/integrations/humanymous-adapters/tests/dotnet/support/artifacts.rs",
+      "preimage_sha256": "7e17e12b1e9c7866e04ee5ffdcab1ef6070a3fa601e41a93ff72ab9924f125fd",
+      "preimage_bytes": 1804,
+      "candidate_sha256": "b7c0e47655dc98381c28f87aca7aa8689655b5acd86af02b8a15566759b3d146",
+      "candidate_bytes": 17717,
+      "apply_group": "review-role-and-abi-refusals"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/NativeBinding.cs",
+      "preimage_sha256": "c60f549045db118e914e2048dedcb8e1e09455067c7d7bd223daa1cf09953490",
+      "preimage_bytes": 9707,
+      "candidate_sha256": "11f5f35ab8081d7f5c74e408713d0bdc8592a41a99f5d9de1926cc1543ef59c7",
+      "candidate_bytes": 9855,
+      "apply_group": "blocked-atomic-naming-loader"
+    },
+    {
+      "path": "adapters/dotnet/pilot/Program.cs",
+      "preimage_sha256": "5201fd500d688e19bd7af17d707c42b9bdc3177e792425a01894b0991a489b78",
+      "preimage_bytes": 11420,
+      "candidate_sha256": "e3e9b46fb9cff5152f088e7c086b6198d32013c9384e141c0610e0c143c787fd",
+      "candidate_bytes": 11532,
+      "apply_group": "blocked-atomic-naming-loader"
+    },
+    {
+      "path": "adapters/dotnet/src/Humanymous.Native/Humanymous.Native.csproj",
+      "preimage_sha256": "9ed8f873a0251a9e92a6a008a990a98d794789b054d3340220f61470097c0994",
+      "preimage_bytes": 1981,
+      "candidate_sha256": "6937f74b35f7cc116069c551dcc227ec77b98a08e1940dab995e4a1080afe720",
+      "candidate_bytes": 2078,
+      "apply_group": "blocked-atomic-naming-loader"
+    },
+    {
+      "path": "adapters/dotnet/pilot/Humanymous.HostPilot.csproj",
+      "preimage_sha256": "88d4433c7f70cca0befa5f7cee28b2631eaf9c41f43439e3aa68d23952a486d5",
+      "preimage_bytes": 808,
+      "candidate_sha256": "0095556b4bb7683bfc4a0cdf8ff05db998539fd398fd026640bbf376f193bb8b",
+      "candidate_bytes": 788,
+      "apply_group": "blocked-atomic-naming-loader"
+    },
+    {
+      "path": "crates/integrations/humanymous-adapters/tests/dotnet/package.rs",
+      "preimage_sha256": "7484cfccab368973b8549c527e5d3a949ddd3113a50ea339baeeb0a88c8bff64",
+      "preimage_bytes": 18070,
+      "candidate_sha256": "a12ce6da9301a40f1f32687f5784bae5666dc99cca2fd3ea292255977b4687ba",
+      "candidate_bytes": 18020,
+      "apply_group": "blocked-atomic-naming-loader"
+    },
+    {
+      "path": "crates/integrations/humanymous-adapters/tests/dotnet/hosted/generic.rs",
+      "preimage_sha256": "e0149350b729b93c9822070bcba31a2136450f55d399edab9ca149a9b349dfc0",
+      "preimage_bytes": 11403,
+      "candidate_sha256": "ff55dad8864c7540508561f3abede410ce0a78b3eac4f5e9e777f5e677f46afb",
+      "candidate_bytes": 11381,
+      "apply_group": "blocked-atomic-naming-loader"
+    }
+  ],
+  "new_test_functions": 11,
+  "test_execution": "NOT_RUN",
+  "compiler_execution": "NOT_RUN",
+  "format": "bare-rustfmt-skip-children-only",
+  "format_preparation_failure": "First package.rs formatter attempt could not resolve uncopied projection module; no compiler/test ran.",
+  "role_binding_schema": "humanymous.native-role-binding.candidate/1",
+  "apply_permission": false,
+  "loader_activation": "BLOCKED-pending-accepted-role-instance-lease-and-resolver",
+  "unsafe_glue_added": false,
+  "readonly_tree_modified": false
+}
