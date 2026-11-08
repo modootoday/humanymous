@@ -4037,3 +4037,19 @@ Additional8script-invocation indicator sites resolve to Git configuration1,
 .NET Release configuration2 and nginx configuration5, not script bodies. Private
 script-invocation-review-025.json records source hashes and discarded prefix/
 extension false positives; no complete foreign-code conformance is claimed.
+B2 draft preliminary source review covers held PE/clock/owner bookkeeping and
+native operations. Exactly10function-local allowances contain17lexical unsafe
+blocks; those counts are distinct. Initialized closed query outputs/lengths,
+stable attribute/job backing, retained partial process/thread owners and signal-
+before-exit259 were read. Private b2-body-preliminary-review-027.json and
+b2-native-scope-review-028.json bind draft epochs, NOT final source acceptance,
+Root+X permission or native execution. Final frozen6file inventory/fixtures and
+namespace/source/image/outer admission remain pending.
+
+Node capture review-copy actual regression now has6synthetic selector passes,
+0fail/0ignore and2filtered, plus strict lint0.65s. Full source diff removes only
+unused PathBuf import; original strict failure remains preserved. Timed1809
+before/after path/hash rows agree, SHA85e4872e7549dc6e9073e3898b302cb1f0c87de27c3a39a44896814f3ab819a3.
+Private node-capture-regression-review-029.json binds actual logs/snapshots.
+This supersedes earlier source-only NOTRUN status for those6units only. Actual
+3capture steps, host execution, ABI and full CA-LIFETIME remain OPEN.

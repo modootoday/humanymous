@@ -2757,5 +2757,23 @@
     "sha256": "327609ddc930627e9f6863a61204b614a75826c3b2c1c13a2226b391fddf1707",
     "bytes": 1788,
     "goal_complete": false
+  },
+  "b2_body_preliminary": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-body-preliminary-review-027.json",
+    "sha256": "f2ecec5c73dfcb39639f1076ea3292638e0b2a9bce53df8f185b5cdc36f6bbce",
+    "bytes": 1863,
+    "goal_complete": false
+  },
+  "b2_native_scope_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-native-scope-review-028.json",
+    "sha256": "27f4351f7aaf050149bd14ddcb74d72acab04c2d7fd616007c1bd5c1b4af6c49",
+    "bytes": 1363,
+    "goal_complete": false
+  },
+  "node_capture_regression_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/node-capture-regression-review-029.json",
+    "sha256": "e8833e33dc7e8375b8a95851545e563dda7b59242004d38d46e8c4e4c5eeddca",
+    "bytes": 2002,
+    "goal_complete": false
   }
 }
