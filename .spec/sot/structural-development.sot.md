@@ -608,6 +608,43 @@ adapter export roles, unsafe/visibility custody, loader identities and CEF/Meari
 direction remain required. These assignments do not claim either consolidation
 implemented or authorize compilation, browser/native execution or publication.
 
+### Browser candidate preimage review and offline process target integration
+
+Root compared all49 Browser candidate d340d7a3 preimages with the isolated source:
+49 exact hashes, zero missing/drifted files. It was NOT moved or applied because
+the candidate retained Rust implementation under native/*/src outside the
+accepted src/<context> convention. The Browser owner must supply an explicit
+immutable delta with src/native/bootstrap, src/native/desktop and one shared
+scheme source, including all resource/include/caller rewiring. The original
+candidate and source-only applicability observations remain preserved.
+
+Root separately admitted the latest Model process-pilot source58932ca3878732b4d3c23874cc41b5fc012242f850af051ab94eb7d53905610d
+into the isolated CLI as cli-offline-training-process, required feature
+offline-training. Its root explicitly forbids unsafe. Both original test IDs
+are required ignored hosted gates; no child/model process was executed locally.
+The two test bodies declare nine child invocations: two successful candidate
+writes, one existing-output collision, and six refusal tuples. Root updated
+expected training error diagnostics to the actual accepted Display format.
+
+The first strict lint rejected a collapsible conditional; Root retained that
+failure, repaired it without suppression, and scoped strict Clippy then exited
+zero. Actual Cargo --no-run built the integration artifact with profile.test=true,
+1431040 bytes, SHA256
+72119993119af74803b3143d69dae0ff3a0bdf3789aa1cea31e1ebf9ae98c153.
+Actual discovery lists the two original selectors; no test body or child was run.
+Fresh metadata now has28 CLI targets: the former27 plus this integration target.
+The target's source/manifest hashes and opaque package ID are retained in private
+core-consolidation/tools-offline-process-target-compile-receipt.json with raw
+lint, compiler JSON and list logs. Source pins there are post-command observations,
+not a claimed complete before/after compiler input closure.
+
+Delivery must update its supported feature/required ignored gate and future root
+inventory to28; old27-root templates and1791-file source seals remain historical.
+The actual admitted outer process-tree/time/output/storage supervisor is still
+absent. In-process polling and retained child custody cannot replace it. Go/FMA
+parity, native execution, fault injection, cleanup qualification, activation and
+product validation remain open; compilation is not a process-pilot pass.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,

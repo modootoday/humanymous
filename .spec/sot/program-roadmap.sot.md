@@ -24,7 +24,8 @@ and resource admission; follow the exact live run or process handle.
 Fresh locked/offline Cargo metadata confirms29 LIVE workspace members and21 in
 Root's isolated Tools assembly. The final accepted family is eight public
 packages, not eight completed products. The live CLI has7 targets; the isolated
-CLI has27 (1 library,15 binaries,10 integrations,1 example). Four standalone
+CLI initially had27; the newly integrated hosted-only offline process test makes
+28 (1 library,15 binaries,11 integrations,1 example). Four standalone
 tools remain part of the live maintained census, so live total is33. These are
 actual graph observations, not registry or runtime availability claims.
 
