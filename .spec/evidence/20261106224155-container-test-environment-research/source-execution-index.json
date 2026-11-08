@@ -192,6 +192,15 @@
       "result": "passed_after_explicit_harness_env_correction",
       "facts": "Inventory45;default44passed1ignored;separate requiredactualsource1passed44filtered. Scopedfmt/check/strictClippy exit0. Retains originalnoncanonicalroot0passed1failed44filtered and priorfmtmodulefailure. 14964inputs3158Gitarchive+11806registry0decodedchanges; noUnix/browser/Docker/fullqualification.",
       "evidence": "source-pin-f8aec286-windows-checks.json"
+    },
+    {
+      "source": "f8aec28651919e97ef924afa8d633e3c4df38805",
+      "run": 42429778301,
+      "job": 128576757106,
+      "profile": "browser_product",
+      "result": "selected_browser_pass_referer_assertion_failed",
+      "facts": "GNUdefault45passed1ignored;requiredsourcegate1passed45filtered;Delivery121/Unixproducer3passed6filtered/Go+facade/checkClippygreen. Actualbrowser67/1/66process0/testtrue;43assertions41pass2fail browser-wire-no-referer-at-both-proxies/browser_receipts. No exactRefererbytes, full/releasefalse9unavailable.",
+      "evidence": "hosted-browser-f8aec286-referer-assertion.json"
     }
   ],
   "unmeasured": [

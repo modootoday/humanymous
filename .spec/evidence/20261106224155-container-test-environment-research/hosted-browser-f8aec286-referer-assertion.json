@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "source_sha": "f8aec28651919e97ef924afa8d633e3c4df38805",
+  "run": 42429778301,
+  "attempt": 1,
+  "event": "push",
+  "url": "https://github.com/modootoday/humanymous/actions/runs/42429778301",
+  "terminal": "failure",
+  "preflight": {
+    "job": 128575889707,
+    "conclusion": "success",
+    "lab_default": {
+      "passed": 45,
+      "failed": 0,
+      "ignored": 1,
+      "filtered": 0
+    },
+    "required_source_pin": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 45
+    },
+    "unix_symlink_test": "passed",
+    "delivery_passed": 121,
+    "go_units_passed": 10,
+    "deployment_passed": 1,
+    "facade_default_passed": 2,
+    "facade_go_passed": 2,
+    "facade_external_passed": 2,
+    "unix_proxy_producer_passed": 3,
+    "unix_proxy_other_tests_filtered": 6,
+    "unix_actor_check": "passed",
+    "strict_clippy": "passed",
+    "policy": "passed"
+  },
+  "product": {
+    "job": 128576757106,
+    "conclusion": "failure",
+    "assertions": {
+      "failed": 2,
+      "other": 0,
+      "passed": 41,
+      "total": 43
+    },
+    "safe_diagnostics": {
+      "browser_actor": {
+        "dns_finish": "succeeded",
+        "exit_code": 0,
+        "filtered_count": 66,
+        "full_product_qualified": false,
+        "inventory_count": 67,
+        "inventory_matched": true,
+        "parser_summary_matched": true,
+        "process_success": true,
+        "schema": "humanymous.lab-browser-actor-outcome/1",
+        "selected_count": 1,
+        "source_prefix_authenticated": false,
+        "state": "observed",
+        "test_passed": true
+      },
+      "failure_count": 2,
+      "failures": [
+        {
+          "case_id": "browser-wire-no-referer-at-both-proxies",
+          "error_code": "assertion_failed",
+          "status": "failed"
+        },
+        {
+          "case_id": "execution",
+          "error_code": "browser_receipts",
+          "status": "failed"
+        }
+      ],
+      "partial": false,
+      "schema": "humanymous.lab-safe-diagnostics/1"
+    },
+    "images": [
+      "sha256:146cdd79959640961954ef45f33b6c14880aa7c0b0111b17618551d5bf3fd7b9",
+      "sha256:f89cd12ca3852061a8049ec0f6d8b3a6f632a9deeda1e40bdcf438a2abbb72c7",
+      "sha256:4fe7bfa2a5c12339a3434a3c3f7f506674bc6ee1d819c27bbd6b337c533e20af"
+    ],
+    "isolation": "docker",
+    "source_changed_during_execution": false,
+    "canonical_git_tree_sha256": "ef9d26e7e6ee1e8fe193d3dc1f22cd6ad693f407acc1bff37cade6f62cbf14e7",
+    "source_manifest_sha256": "92703573bf5211345b483af0522888852e21b3757d86913b775ef7141f01c5d3",
+    "source_reported_private_report_sha256": "202b09766e723b220678affc08a90833f884ee850df4932d46008fd28151f450",
+    "original_private_ledger_recovered": false,
+    "full_product_qualified": false,
+    "release_ready": false,
+    "required_unavailable_count": 9
+  },
+  "interpretation": [
+    "The actual selected browser test passed with process exit0, matching summary and inventory67/selected1/filtered66. Earlier bootstrap panic and Origin-rejection failure did not recur at this source.",
+    "Execution progressed from the prior18 assertions to43 assertions,41passed2failed. The failed owning assertion is browser-wire-no-referer-at-both-proxies; execution wraps it as browser_receipts.",
+    "At exact f8 source, test/lab/runner/src/orchestration/browser.rs:427 calls referers_absent at both proxies. Candidate client request.rs sets explicit referrer to the owned origin root. These contracts require reconciliation; observed presence alone does not establish exact Referer bytes or privacy qualification.",
+    "No assertion was weakened, source changed or redispatch performed by this monitor. Strengthen bounded fixed-class origin-root/other producer observations and matching assertions in the owning source before a new qualified run.",
+    "No actual Go8 Docker rerun belongs to this source; historical a19Go8 qualification remains separate."
+  ],
+  "custody": {
+    "private_evidence": "evidence:root/20261108002742",
+    "raw_files": [
+      {
+        "name": "artifacts.json",
+        "bytes": 32,
+        "sha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c"
+      },
+      {
+        "name": "connector-product-projection.json",
+        "bytes": 2498,
+        "sha256": "2b9b5aaa30e6096e4ec2b8f33af06dbc1f0b833b210c7b4778dc9cf1483d7c82"
+      },
+      {
+        "name": "official-run-logs.zip",
+        "bytes": 84932,
+        "sha256": "3ec2badbc634f23001bf62046f918d8235d9f0c5f921cc730a254e6d87789c12"
+      },
+      {
+        "name": "preflight-annotations.json",
+        "bytes": 2,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "name": "preflight-job-api.json",
+        "bytes": 4678,
+        "sha256": "824af5b3963f0acece9c786af59d5b165e3059fd68f351b7430dcefc8efaa4e6"
+      },
+      {
+        "name": "preflight.official-job.log",
+        "bytes": 107664,
+        "sha256": "4a4f042afd798444c0c676622982c33192b8156736d22cd9bf576054e6ab6679"
+      },
+      {
+        "name": "product-annotations.json",
+        "bytes": 304,
+        "sha256": "2f12eee924ce8a37b1183fc5ec37a7b5cb484b36087b6ecf4653f2d8ce0f4119"
+      },
+      {
+        "name": "product-job-api.json",
+        "bytes": 2040,
+        "sha256": "b6dea0df0a580e3f386f3dc663a371c58782d15f258706d073e30a3c12f418f0"
+      },
+      {
+        "name": "product-source-reported.json",
+        "bytes": 2498,
+        "sha256": "2b9b5aaa30e6096e4ec2b8f33af06dbc1f0b833b210c7b4778dc9cf1483d7c82"
+      },
+      {
+        "name": "product.official-job.log",
+        "bytes": 51080,
+        "sha256": "1965ff1425635afc499cf8e7461c51a055a100d44a9638931aac3a1ed1fe4598"
+      },
+      {
+        "name": "repository-visibility.json",
+        "bytes": 40,
+        "sha256": "1e3cd48c29e368a25789ae7c32070b08c87ef73974eaa4f81ba2fdc32ac858d5"
+      },
+      {
+        "name": "run-start.json",
+        "bytes": 3858,
+        "sha256": "0fff7d9842d18c95e13ca51de3e5dbb4b4319960b9913806e120a30e4eefa999"
+      },
+      {
+        "name": "run-terminal.json",
+        "bytes": 5521,
+        "sha256": "6b1238507de1edd2dbeb78b4791e4bee78c5c704c5da2595aab013867675ab37"
+      },
+      {
+        "name": "source-bind.json",
+        "bytes": 363,
+        "sha256": "647ea7b1e0b482e14df6f5d96afc4fcc3963abae2dc67400343f3f2a50964550"
+      },
+      {
+        "name": "watch-terminal.json",
+        "bytes": 153,
+        "sha256": "746bc0e6560f00697c89412d483fce18b1832e2a47163756c5edd7d3ee024043"
+      },
+      {
+        "name": "watch.log",
+        "bytes": 34103,
+        "sha256": "6e3e2efd2c88f29cf0bccaaa2ba17022cb12f143c4c280477a7e500501c01700"
+      },
+      {
+        "name": "zip-inventory.json",
+        "bytes": 2857,
+        "sha256": "33300440c6d84da209ed1bac57046a467cbaf89df34d307acccf855c12a33e4f"
+      }
+    ],
+    "connector_api_projection_byte_equal": true,
+    "zip_entries": 31,
+    "preflight_annotations": 0,
+    "product_annotations": 1,
+    "artifacts": 0,
+    "sole_watch": 71319,
+    "watch_exit": 1,
+    "active_watch": false
+  },
+  "hosted": {
+    "visibility": "public",
+    "runner": "ubuntu-24.04",
+    "runner_group": "GitHub Actions",
+    "free_compute_eligibility": "Public repository standard GitHub-hosted runner",
+    "billing_reference": "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "limits": "Compute eligibility only, not an invoice, storage, network or universal cost audit."
+  }
+}

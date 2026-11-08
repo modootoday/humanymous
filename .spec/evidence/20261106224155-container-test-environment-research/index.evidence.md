@@ -3,7 +3,7 @@ id: evidence:root/20261106224155
 title: Container test environment research
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-08T00:25:33Z
+updated: 2026-11-08T00:48:53Z
 files:
   - {path: hosted-8132117-failures.json, sha256: d64ffdcd47fe7e3a82cdc0ecd354203b30753c6188c375897692e579fc377adc, bytes: 12703, store: repo}
   - {path: container-runtime-results.json, sha256: 82c63a579e44279bae8e6d832d483e57f375b307ec6df67b27adf9c9255da363, bytes: 3958, store: repo}
@@ -65,7 +65,8 @@ files:
   - {path: collector-source-pin-implementation-source.json, sha256: 8f475080647bdbd3c652efbf796ed7821c88cdcab482ec168ab0538d44114313, bytes: 5812, store: repo}
   - {path: collector-source-pin-review-correction.json, sha256: d6c9196f6819c791312d36f57b71ea201cde42efc862ed387d05b56040863fbe, bytes: 874, store: repo}
   - {path: source-pin-f8aec286-windows-checks.json, sha256: f20e19af6f125901e1e0b7155700aee6e599ea74ed084c01c5469e7208505c37, bytes: 14384, store: repo}
-  - {path: source-execution-index.json, sha256: e6d2600e6cbeb14fd88db03152a8d8a241127b12e6103260bef9379d28095c11, bytes: 10828, store: repo}
+  - {path: hosted-browser-f8aec286-referer-assertion.json, sha256: 958fd15ccc0f08f345629b7a5b9653e365e76b67dfe5ffe1c19eb1ad337e21cb, bytes: 7459, store: repo}
+  - {path: source-execution-index.json, sha256: 3db7939119181544f0df225d1cb02c5a8e831e537a97c3603c65272084e4170e, bytes: 11446, store: repo}
 ---
 
 # Container test environment research
