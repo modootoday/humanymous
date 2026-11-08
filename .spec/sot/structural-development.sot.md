@@ -180,6 +180,20 @@ This comparison does not establish feature/target dependency completeness or
 replace advisory coverage of the four retained standalone locks. The shared
 root lock has not been replaced by the candidate lock.
 
+The moved Lab runner test compilation first exposed one remaining root-qualified
+browser_expectations reference inside shared browser_wire tests. Root replaced
+that reference with its actual enclosing-context path in the isolated source.
+The subsequent moved-role unit run executed45 passing tests with one ignored
+required source gate and no filtered cases. The required gate was then executed
+separately by the exact moved namespace
+lab_runner::snapshot::source_pin::tests::actual_collector_source_matches_reviewed_pin:
+one passed, zero ignored,45 filtered, against the explicit canonical isolated
+source root. Locked strict Clippy with the qualification-lab-runner profile and
+all targets also passed. Workflow callers must adopt the moved namespace and
+role feature during live integration; the old exact selector must not silently
+select zero tests. These results remain Windows qualification-tool tests, not
+the actual Unix proxy or Docker/browser product execution.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
