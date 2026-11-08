@@ -1,4 +1,8 @@
 //! Joined blocking TLS ingress. This owner alone does not qualify a route.
+mod h2;
+
+pub use h2::CapturedH2Request;
+
 use crate::capture::tls::{Cancellation, Connection, PendingHandshake};
 use crate::gateway::http::{self, Request};
 use rustls::ServerConfig;
@@ -16,6 +20,10 @@ use tokio::{
     sync::oneshot,
 };
 
+fn alpn_supported(protocol: &[u8]) -> bool {
+    protocol == b"http/1.1" || protocol == b"h2"
+}
+
 pub(in crate::gateway) fn validate_configuration(
     config: &crate::gateway::configuration::Configuration,
     tls: &ServerConfig,
@@ -27,13 +35,80 @@ pub(in crate::gateway) fn validate_configuration(
         || tls
             .alpn_protocols
             .iter()
-            .any(|protocol| protocol != b"http/1.1")
+            .any(|protocol| !alpn_supported(protocol))
     {
         return Err(io::Error::other(
-            "TLS/H1 requires native buffered routes and HTTP/1.1 ALPN",
+            "TLS requires native buffered routes and HTTP/1.1 or H2 ALPN",
         ));
     }
     Ok(())
+}
+
+/// R13 H1 or R14 H2 complete request retained with its live TLS owner.
+pub enum CapturedTls {
+    /// HTTP/1.1 negotiated consumer.
+    H1(CapturedRequest),
+    /// HTTP/2 stream-1 serving consumer.
+    H2(CapturedH2Request),
+}
+
+impl CapturedTls {
+    /// Accept one TLS connection and dispatch to the R13 or R14 consumer.
+    pub async fn receive(
+        socket: TcpStream,
+        config: Arc<ServerConfig>,
+        budget: Duration,
+    ) -> io::Result<Self> {
+        // Peek negotiation via a short handshake would consume the socket; instead
+        // prefer advertised order: if server offers only h2, take H2 path; if only
+        // http/1.1, H1; if both, handshake first through H1 receiver's shared
+        // PendingHandshake by dispatching after accept inside each path.
+        // Dual-offer: use H2 receiver when h2 is listed first or alone, else H1.
+        let offers_h2 = config.alpn_protocols.iter().any(|p| p.as_slice() == b"h2");
+        let offers_h1 = config
+            .alpn_protocols
+            .iter()
+            .any(|p| p.as_slice() == b"http/1.1");
+        match (offers_h2, offers_h1) {
+            (true, false) => Ok(Self::H2(
+                CapturedH2Request::receive(socket, config, budget).await?,
+            )),
+            (false, true) => Ok(Self::H1(
+                CapturedRequest::receive(socket, config, budget).await?,
+            )),
+            (true, true) => receive_dual(socket, config, budget).await,
+            (false, false) => Err(io::Error::other("TLS ALPN unsupported")),
+        }
+    }
+}
+
+async fn receive_dual(
+    socket: TcpStream,
+    config: Arc<ServerConfig>,
+    budget: Duration,
+) -> io::Result<CapturedTls> {
+    // Handshake once, then branch on negotiated ALPN without reparsing H1 as H2.
+    let pending = PendingHandshake::new(socket, config, budget)?;
+    let cancellation = pending.cancellation()?;
+    let runtime = tokio::runtime::Handle::current();
+    joined(cancellation, move || {
+        let mut connection = pending.accept()?;
+        match connection.negotiated_alpn() {
+            Some(b"h2") => Ok(CapturedTls::H2(h2::serve_accepted(connection)?)),
+            None | Some(b"http/1.1") => {
+                let request = runtime
+                    .block_on(http::read(&mut Plaintext(&mut connection)))
+                    .map_err(|_| io::Error::other("TLS complete request framing failed"))?;
+                connection.remaining()?;
+                Ok(CapturedTls::H1(CapturedRequest {
+                    request,
+                    connection,
+                }))
+            }
+            _ => Err(io::Error::other("TLS application protocol unsupported")),
+        }
+    })
+    .await
 }
 
 /// A complete bounded request and its original successfully handshaken owner.
@@ -185,7 +260,9 @@ mod tests {
         config.routes[0].required.raw_tls = true;
         assert!(validate_configuration(&config, &tls).is_ok());
         tls.alpn_protocols = vec![b"h2".to_vec()];
-        assert!(validate_configuration(&config, &tls).is_err());
+        assert!(validate_configuration(&config, &tls).is_ok());
+        tls.alpn_protocols = vec![b"http/1.1".to_vec(), b"h2".to_vec()];
+        assert!(validate_configuration(&config, &tls).is_ok());
         tls.alpn_protocols = vec![b"http/1.1".to_vec()];
         config.routes[0].response_profile = ResponseProfile::NativeStream;
         assert!(validate_configuration(&config, &tls).is_err());
@@ -193,6 +270,9 @@ mod tests {
         config.browser = Some(BrowserPolicy {
             origin: "http://owned.test".into(),
         });
+        assert!(validate_configuration(&config, &tls).is_err());
+        config.browser = None;
+        tls.alpn_protocols = vec![b"http/1.0".to_vec()];
         assert!(validate_configuration(&config, &tls).is_err());
     }
 }

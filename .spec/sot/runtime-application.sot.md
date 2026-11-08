@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-08T16:33:00Z
+updated: 2026-11-08T21:00:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -594,6 +594,26 @@ only for this injected transport; product_qualified remains false and required
 collector/H2 remain fail-closed. Plaintext profile still refuses raw-TLS routes.
 This source contract needs hosted TLS/body/abort/cancel/drain/origin evidence;
 configuration readiness must not be reported as actual runtime qualification.
+R14 H2 serving consumer (first profile): gateway owns a separate
+`CapturedH2Request` path that consumes the same `PendingHandshake` →
+`Connection` model as R13 but requires negotiated ALPN `h2`. R13 remains
+H1-only; do not widen `CapturedRequest` to parse H2 as H1. After handshake
+the serving owner writes connection SETTINGS (with `INITIAL_WINDOW_SIZE` at
+least the gateway body budget), ACKs client SETTINGS, reads plaintext through
+the existing capture feed, and accepts only client stream id `1` once Capture
+reports Ended without trailers. Capture still retains no body values; the
+gateway accumulates unpadded DATA and refuses any mismatch with Capture
+metadata or gateway `MAX_BODY`. Application `required.original_h2` is no longer
+unconditional 422: authorize only when the live TLS owner succeeds
+`observe_h2` for that request's method, authority, target and body length;
+otherwise 422. Negotiated ALPN `h2` is reported only from that owner. Do not
+call `check_h1_idle` on H2; recheck `remaining()` and stream-1 Ended/body
+invariance before decision, after durable audit and before origin write.
+Trailers, push, streams other than `1`, h2c and H3 are unsupported here.
+Configuration readiness, matrix product cells and `pass_product*` stay
+non-green until actual hosted H2 binding and owner integration are measured;
+Cap=1 pure success is not product qualification. No scoring or signal changes.
+Plan: `.spec/plan/20261108210000-r14-h2-serving-consumer.plan.md`.
 R17 native component inventory: the live owner-maintained data contract is
 crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json
 (historical path crates/runtime/qualification-contract.json is obsolete after

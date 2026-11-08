@@ -1,6 +1,9 @@
-//! Bounded TLS/H1 consumer; all request authority stays in Application.
+//! Bounded TLS/H1 and R14 H2 consumers; all request authority stays in Application.
 use super::*;
-use crate::gateway::{service::ShutdownRequest, tls::CapturedRequest};
+use crate::gateway::{
+    service::ShutdownRequest,
+    tls::{CapturedH2Request, CapturedRequest, CapturedTls},
+};
 use rustls::ServerConfig;
 use std::{io, sync::Arc};
 use tokio::sync::watch;
@@ -11,7 +14,7 @@ impl Application {
     }
 
     /// Same serialized application owner with an explicitly injected TLS server.
-    /// No plaintext fallback, H2, early data, or native streaming inference.
+    /// No plaintext fallback, early data, or native streaming inference.
     pub async fn serve_tls_until(
         &mut self,
         listener: TcpListener,
@@ -53,8 +56,8 @@ impl Application {
             let connection_shutdown = shutdown.clone();
             let pending = timeout_at(until, async {
                 let captured =
-                    CapturedRequest::receive(stream.into_std()?, tls.clone(), budget).await?;
-                self.captured_connection(captured, until, &connection_shutdown)
+                    CapturedTls::receive(stream.into_std()?, tls.clone(), budget).await?;
+                self.captured_tls_connection(captured, until, &connection_shutdown)
                     .await
             });
             tokio::pin!(pending);
@@ -78,7 +81,19 @@ impl Application {
         }
     }
 
-    async fn captured_connection(
+    async fn captured_tls_connection(
+        &mut self,
+        captured: CapturedTls,
+        until: Instant,
+        shutdown: &watch::Receiver<Option<ShutdownRequest>>,
+    ) -> io::Result<()> {
+        match captured {
+            CapturedTls::H1(captured) => self.captured_h1_connection(captured, until, shutdown).await,
+            CapturedTls::H2(captured) => self.captured_h2_connection(captured, until, shutdown).await,
+        }
+    }
+
+    async fn captured_h1_connection(
         &mut self,
         mut captured: CapturedRequest,
         until: Instant,
@@ -86,7 +101,7 @@ impl Application {
     ) -> io::Result<()> {
         let mut ack = None;
         let response = self
-            .captured_response(&mut captured, until, shutdown, &mut ack)
+            .captured_h1_response(&mut captured, until, shutdown, &mut ack)
             .await;
         let bytes = match response {
             Ok(bytes) => bytes,
@@ -106,7 +121,35 @@ impl Application {
         captured.respond(bytes).await
     }
 
-    async fn captured_response(
+    async fn captured_h2_connection(
+        &mut self,
+        mut captured: CapturedH2Request,
+        until: Instant,
+        shutdown: &watch::Receiver<Option<ShutdownRequest>>,
+    ) -> io::Result<()> {
+        let mut ack = None;
+        let response = self
+            .captured_h2_response(&mut captured, until, shutdown, &mut ack)
+            .await;
+        let bytes = match response {
+            Ok(bytes) => bytes,
+            Err(error) => {
+                let headers = ack
+                    .as_ref()
+                    .map(|value| value.headers(error.status))
+                    .transpose()
+                    .map_err(|_| io::Error::other("TLS response integrity failed"))?
+                    .unwrap_or_default();
+                let body = serde_json::to_vec(&serde_json::json!({"error": error.code}))?;
+                let mut bytes = Vec::new();
+                http::write_headers(&mut bytes, error.status, &body, &headers).await?;
+                bytes
+            }
+        };
+        captured.respond(bytes).await
+    }
+
+    async fn captured_h1_response(
         &mut self,
         captured: &mut CapturedRequest,
         until: Instant,
@@ -122,6 +165,62 @@ impl Application {
         connection
             .check_h1_idle()
             .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
+        self.encode_decision(
+            EncodeArgs {
+                decision,
+                request,
+                connection,
+                until,
+                shutdown,
+                ack,
+                h1_idle: true,
+            },
+        )
+        .await
+    }
+
+    async fn captured_h2_response(
+        &mut self,
+        captured: &mut CapturedH2Request,
+        until: Instant,
+        shutdown: &watch::Receiver<Option<ShutdownRequest>>,
+        ack: &mut Option<Ack>,
+    ) -> Result<Vec<u8>, Rejection> {
+        captured
+            .check_stream()
+            .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
+        let decision = {
+            let (request, connection, _) = captured.parts();
+            self.decide_observed(request, crate::authority::now_ms, ack, Some(connection))?
+        };
+        captured
+            .check_stream()
+            .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
+        let (request, connection, _) = captured.parts();
+        self.encode_decision(
+            EncodeArgs {
+                decision,
+                request,
+                connection,
+                until,
+                shutdown,
+                ack,
+                h1_idle: false,
+            },
+        )
+        .await
+    }
+
+    async fn encode_decision(&mut self, args: EncodeArgs<'_>) -> Result<Vec<u8>, Rejection> {
+        let EncodeArgs {
+            decision,
+            request,
+            connection,
+            until,
+            shutdown,
+            ack,
+            h1_idle,
+        } = args;
         let response = match decision {
             Decision::Local(status, body) => {
                 let body = zeroize::Zeroizing::new(body);
@@ -150,10 +249,15 @@ impl Application {
                     let mut upstream = TcpStream::connect(self.config.origin)
                         .await
                         .map_err(|_| Rejection::new(503, "origin_connect"))?;
-                    // Recheck after both synchronous durable audit and async connect.
-                    connection
-                        .check_h1_idle()
-                        .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
+                    if h1_idle {
+                        connection
+                            .check_h1_idle()
+                            .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
+                    } else {
+                        connection
+                            .remaining()
+                            .map_err(|_| Rejection::new(400, "tls_client_closed"))?;
+                    }
                     self.check_deadline(deadline, crate::authority::now_ms())?;
                     if shutdown.borrow().is_some() || Instant::now() >= until {
                         return Err(Rejection::new(503, "service_stopping"));
@@ -181,4 +285,14 @@ impl Application {
             .unwrap_or_default();
         response.encode(&headers)
     }
+}
+
+struct EncodeArgs<'a> {
+    decision: Decision,
+    request: &'a Request,
+    connection: &'a mut crate::capture::tls::Connection,
+    until: Instant,
+    shutdown: &'a watch::Receiver<Option<ShutdownRequest>>,
+    ack: &'a mut Option<Ack>,
+    h1_idle: bool,
 }

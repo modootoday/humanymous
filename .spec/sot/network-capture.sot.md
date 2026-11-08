@@ -3,7 +3,7 @@ id: sot:root/network-capture
 title: Original TLS and HTTP2 connection capture
 status: active
 created: 2026-11-07T07:25:00Z
-updated: 2026-11-07T22:21:04Z
+updated: 2026-11-08T21:00:00Z
 verify: manual
 rel:
   governs: [crates/sdk/humanymous-runtime/src/capture/**, crates/sdk/humanymous-runtime/tests/capture/**]
@@ -76,12 +76,19 @@ values. A complete initial request header block is required; do not claim comple
 request body or a fully validated HTTP server. Runtime must bind method, target,
 authority, body and stream to its own request parser before authorizing effects.
 
-N06. Runtime/authority currently reject required.raw_tls/original_h2 with422.
-Keep that refusal until their owners integrate a same-owner borrowed observation
-and actual hosted validation. Adapter0.1 capture remains null-only. Do not export
-a wire format that lets an adapter manufacture capture. RIT/collector provenance,
-TCP SYN, TLS ECH inner hello, QUIC, MITM resistance and T4 detection are outside
-this slice. H1 TLS success cannot qualify H2.
+N06. Runtime/authority reject required.raw_tls/original_h2 with422 when the
+same-owner borrowed observation is absent or incomplete. After the runtime R14
+H2 serving consumer is wired, `original_h2` follows the same observation-gated
+pattern as `raw_tls` (live Connection + successful `observe_h2`), not an
+unconditional always-422. Observation modules alone (`observe_h2` /
+`project_h2` without the serving consumer and retained body owner) must not
+authorize effects. Actual hosted validation and owner integration remain
+mandatory before configuration readiness, matrix product cells or
+`pass_product*` claim original H2 available; Cap=1 pure green is not product
+green. Adapter0.1 capture remains null-only. Do not export a wire format that
+lets an adapter manufacture capture. RIT/collector provenance, TCP SYN, TLS ECH
+inner hello, QUIC, MITM resistance and T4 detection are outside this slice. H1
+TLS success cannot qualify H2.
 
 ## Verification and evidence
 

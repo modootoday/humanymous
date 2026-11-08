@@ -174,7 +174,7 @@ impl Application {
                 return Err(Rejection::new(409, "route_integrity_profile"));
             }
             if route.required.raw_tls && tls.and_then(|owner| owner.client_hello()).is_none()
-                || route.required.original_h2
+                || route.required.original_h2 && !tls.is_some_and(|owner| original_h2_observation(owner, req))
                 || route.required.collector
             {
                 return Err(Rejection::new(422, "required_capability"));
@@ -238,6 +238,7 @@ impl Application {
                 // The shared report's offered ALPN default is not negotiation.
                 report.network.negotiated_alpn = match tls.negotiated_alpn() {
                     Some(b"http/1.1") => "http/1.1".into(),
+                    Some(b"h2") => "h2".into(),
                     None => String::new(),
                     _ => return Err(Rejection::new(422, "tls_application_protocol")),
                 };
@@ -596,6 +597,21 @@ async fn write_or_stop(
             _ = &mut pending => return Ok(false),
         }
     }
+}
+
+/// R14 same-owner observation for `required.original_h2` (fail-closed).
+fn original_h2_observation(tls: &crate::capture::tls::Connection, req: &Request) -> bool {
+    let Some(authority) = req.header("host") else {
+        return false;
+    };
+    let claim = crate::network::ingress::H2Claim {
+        stream: 1,
+        method: &req.method,
+        authority,
+        target: &req.target,
+        body_bytes: req.body.len() as u64,
+    };
+    tls.observe_h2(&claim).is_ok()
 }
 
 fn connected(stream: &TcpStream) -> Result<(), Rejection> {
