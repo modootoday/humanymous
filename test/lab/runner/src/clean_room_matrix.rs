@@ -1,14 +1,46 @@
-//! Fail-closed Cap planner for the Docker clean-room product matrix.
+//! Fail-closed Cap planner + usage-condition completeness for the Docker
+//! clean-room product matrix.
 //!
 //! Dry-run only: serializes Cap=1 command preimages for later execution after
-//! Root unlock. Never invents `pass_product_clean_room`, never burns Cap, and
-//! refuses Cap dispatch for `required_unavailable` / blocked / component-hold
-//! cells (SoT honesty + no `--require-full` Cap spam).
+//! Root unlock, and Cap=0-enumerates every SoT-required usage-condition cell
+//! with an honest blocker. Never invents `pass_product_clean_room`, never burns
+//! Cap, and refuses Cap dispatch for `required_unavailable` / blocked /
+//! component-hold cells (SoT honesty + no `--require-full` Cap spam).
 use crate::docker::Result;
 use serde_json::{Map, Value, json};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-clean-room-matrix-plan/1";
+const COMPLETENESS_SCHEMA: &str = "humanymous.lab-clean-room-matrix-completeness/1";
+
+/// SoT/ENVIRONMENTS + Cap-tracked product scenarios that the clean-room matrix
+/// must enumerate (fail-closed). Adapter-home and pages/docs are optional.
+const SOT_REQUIRED_SCENARIOS: &[&str] = &[
+    "engine-affinity",
+    "topology-fixture",
+    "rust-controls",
+    "authority-node-ipc",
+    "go-product",
+    "browser-product",
+    "collector-component",
+    "custody",
+    "runtime",
+    "witness",
+    "m3-full-product",
+    "w2-h2-product-binding",
+    "g2-collector-product-binding",
+    "g5-witness-transport",
+];
+
+const G2_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/candidate-pack/GRANT.json";
+const G5_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/candidate-pack/GRANT.json";
+const AUTH_HANDOFF_CANDIDATES: &[&str] = &[
+    ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+    ".spec.local/root/grants/n06-owner-join/GRANT.json",
+];
+const AT_HANDOFF_CANDIDATES: &[&str] = &[
+    ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+];
 
 /// Root paths that must move before authority-node-ipc Cap CLI may serialize.
 const AUTHORITY_NODE_IPC_ROOT_ASK_PATHS: &[&str] = &[
@@ -90,6 +122,362 @@ pub fn plan(args: &[String]) -> Result<i32> {
         println!("{rendered}");
     }
     Ok(0)
+}
+
+/// Cap=0 enumerate every required usage-condition cell with an honest blocker.
+/// Never invents product / Cap free / BrowserReady; Cap burn stays 0.
+pub fn completeness(args: &[String]) -> Result<i32> {
+    let mut matrix_path = None;
+    let mut emit_path = None;
+    let mut expect_head = None;
+    let mut workspace = None;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--matrix" => {
+                index += 1;
+                matrix_path = Some(args.get(index).ok_or("--matrix path missing")?.clone());
+            }
+            "--emit" => {
+                index += 1;
+                emit_path = Some(args.get(index).ok_or("--emit path missing")?.clone());
+            }
+            "--expect-head" => {
+                index += 1;
+                expect_head = Some(args.get(index).ok_or("--expect-head sha missing")?.clone());
+            }
+            "--workspace" => {
+                index += 1;
+                workspace = Some(args.get(index).ok_or("--workspace path missing")?.clone());
+            }
+            _ => {
+                return Err(
+                    "usage: matrix-completeness --matrix PATH [--emit PATH] [--expect-head SHA] [--workspace PATH]"
+                        .into(),
+                );
+            }
+        }
+        index += 1;
+    }
+    let matrix_path = matrix_path.ok_or("--matrix required")?;
+    let workspace_root = workspace
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| crate::snapshot::root().unwrap_or_else(|_| std::path::PathBuf::from(".")));
+    let raw =
+        fs::read_to_string(&matrix_path).map_err(|error| format!("matrix read failed: {error}"))?;
+    let matrix: Value =
+        serde_json::from_str(&raw).map_err(|error| format!("matrix json: {error}"))?;
+    let report = completeness_report(&matrix, &workspace_root, expect_head.as_deref())?;
+    let rendered = serde_json::to_string_pretty(&report)
+        .map_err(|error| format!("completeness encode failed: {error}"))?;
+    if let Some(path) = emit_path {
+        if let Some(parent) = Path::new(&path).parent() {
+            fs::create_dir_all(parent).map_err(|error| format!("emit mkdir: {error}"))?;
+        }
+        fs::write(&path, format!("{rendered}\n"))
+            .map_err(|error| format!("emit write failed: {error}"))?;
+        println!(
+            "{}",
+            json!({
+                "schema": COMPLETENESS_SCHEMA,
+                "emit": path,
+                "cap": 0,
+                "cap_burn": 0,
+                "cap_free": report["wake"]["cap_free"].clone(),
+                "pass_product_clean_room": 0,
+                "product": 0,
+                "summary": report["summary"].clone(),
+            })
+        );
+    } else {
+        println!("{rendered}");
+    }
+    Ok(0)
+}
+
+fn path_exists(root: &Path, relative: &str) -> bool {
+    root.join(relative).is_file()
+}
+
+fn first_present(root: &Path, candidates: &[&str]) -> Option<String> {
+    candidates
+        .iter()
+        .find(|path| path_exists(root, path))
+        .map(|path| (*path).to_string())
+}
+
+fn wake_state(root: &Path) -> Value {
+    let g2_grant = path_exists(root, G2_GRANT_CANDIDATE);
+    let g5_grant = path_exists(root, G5_GRANT_CANDIDATE);
+    let auth = first_present(root, AUTH_HANDOFF_CANDIDATES);
+    let at = first_present(root, AT_HANDOFF_CANDIDATES);
+    // Unlock A EXIT0 spent Cap; G2/G5 Cap realloc requires live topology TRANSFER.
+    // Cursor must not invent Cap free without documented Cap realloc receipt.
+    let cap_free = false;
+    json!({
+        "g2_grant_present": g2_grant,
+        "g2_grant_candidate": G2_GRANT_CANDIDATE,
+        "g5_grant_present": g5_grant,
+        "g5_grant_candidate": G5_GRANT_CANDIDATE,
+        "auth_handoff_present": auth.is_some(),
+        "auth_handoff_path": auth,
+        "at_handoff_present": at.is_some(),
+        "at_handoff_path": at,
+        "cap_free": cap_free,
+        "cap_realloc_without_live_topology_authorized": false,
+        "note": "Live G2/G5 GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
+    })
+}
+
+fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, String) {
+    let g2 = wake["g2_grant_present"].as_bool().unwrap_or(false);
+    let g5 = wake["g5_grant_present"].as_bool().unwrap_or(false);
+    let auth = wake["auth_handoff_present"].as_bool().unwrap_or(false);
+    let at = wake["at_handoff_present"].as_bool().unwrap_or(false);
+    let cap_free = wake["cap_free"].as_bool().unwrap_or(false);
+
+    if scenario == "g2-collector-product-binding" {
+        if !g2 {
+            return (
+                "root_grant_g2",
+                "G2 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1".into(),
+            );
+        }
+        if !cap_free {
+            return (
+                "cap_free_false",
+                "G2 GRANT present but Cap free=false until Cap realloc after live topology".into(),
+            );
+        }
+    }
+    if scenario == "g5-witness-transport" {
+        if !g5 {
+            return (
+                "root_grant_g5",
+                "G5 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1".into(),
+            );
+        }
+        if !cap_free {
+            return (
+                "cap_free_false",
+                "G5 GRANT present but Cap free=false until Cap realloc after live topology".into(),
+            );
+        }
+    }
+    if scenario.contains("n06") || scenario == "w2-h2-hosted-venue" {
+        if !auth {
+            return (
+                "root_auth_handoff",
+                "AUTH-HANDOFF absent; N06 owner join / hosted product binding cannot invent join".into(),
+            );
+        }
+    }
+    if matches!(scenario, "g4-cef-at" | "browser-product") && status == "required_unavailable" && !at
+    {
+        return (
+            "root_at_handoff",
+            "AT-HANDOFF absent; BrowserReady/interactive AT remains false".into(),
+        );
+    }
+    match status {
+        "pass_product_clean_room" => (
+            "measured_product",
+            "cell already measured pass_product_clean_room".into(),
+        ),
+        "pass_component_desktop" | "pass_component_hosted" | "pass_component_only"
+        | "pass_component_desktop_measure" | "pass_component_hosted_measure"
+        | "pass_component_g4_cef_at_executed" | "fixture_ready" => (
+            "measured_component_hold",
+            format!("status={status} measured component/fixture only; never promote to pass_product_clean_room"),
+        ),
+        "required_unavailable" => (
+            "root_structural_g1_g9",
+            "required_unavailable until Root allocates structural delta (TLS/H2/AT/G1–G9); Cap spam forbidden"
+                .into(),
+        ),
+        "blocked_hosted_linux" => (
+            "blocked_hosted_linux",
+            "hosted Linux allocation / Specfold provenance still required".into(),
+        ),
+        "blocked" | "blocked_claim" => (
+            "blocked_root_claim",
+            format!("status={status}; Root path release / claim still required"),
+        ),
+        "fail" => (
+            "fail_needs_structural_delta",
+            "failed gate needs Root-reviewed structural delta before Cap retry".into(),
+        ),
+        "unrun" => {
+            if !cap_free {
+                (
+                    "cap_free_false",
+                    "required cell still unrun and Cap free=false; Cap=1 refuse-closed until Cap realloc + live topology / Root unlock"
+                        .into(),
+                )
+            } else {
+                (
+                    "unrun_awaiting_cap_or_root",
+                    "required cell still unrun; Cap may serialize only after unlock binding".into(),
+                )
+            }
+        }
+        "n/a" => ("n_a", "not a required usage-condition cell".into()),
+        other => (
+            "unknown_status_refuse_closed",
+            format!("status={other} has no product promotion path; refuse-closed"),
+        ),
+    }
+}
+
+fn completeness_report(
+    matrix: &Value,
+    workspace_root: &Path,
+    expect_head: Option<&str>,
+) -> Result<Value> {
+    let combinations = matrix
+        .get("combinations")
+        .and_then(Value::as_array)
+        .ok_or("matrix.combinations array required")?;
+    let wake = wake_state(workspace_root);
+    let matrix_head = matrix
+        .get("head_sha")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let tip_bind_ok = match expect_head {
+        Some(expected) => matrix_head.starts_with(expected) || expected.starts_with(matrix_head),
+        None => true,
+    };
+
+    let mut cells = Vec::new();
+    let mut blocker_counts: Map<String, Value> = Map::new();
+    let mut required = 0u64;
+    let mut clean_room_required = 0u64;
+    let mut pass_product = 0u64;
+    let present_scenarios: std::collections::BTreeSet<String> = combinations
+        .iter()
+        .filter_map(|cell| cell.get("scenario").and_then(Value::as_str).map(str::to_string))
+        .collect();
+
+    for cell in combinations {
+        let id = cell
+            .get("id")
+            .and_then(Value::as_str)
+            .ok_or("cell.id required")?;
+        let status = cell
+            .get("status")
+            .and_then(Value::as_str)
+            .unwrap_or("unrun");
+        let gate = cell.get("gate").and_then(Value::as_str).unwrap_or("");
+        let scenario = cell.get("scenario").and_then(Value::as_str).unwrap_or("");
+        let is_required = cell
+            .get("required")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
+        let is_clean_room = cell
+            .get("clean_room_required")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
+        if !is_required {
+            continue;
+        }
+        required += 1;
+        if is_clean_room {
+            clean_room_required += 1;
+        }
+        if status == "pass_product_clean_room" {
+            pass_product += 1;
+        }
+        let (blocker, detail) = honest_blocker(scenario, status, &wake);
+        let entry = blocker_counts
+            .entry(blocker.to_string())
+            .or_insert(json!(0));
+        if let Some(count) = entry.as_u64() {
+            *entry = json!(count + 1);
+        }
+        cells.push(json!({
+            "id": id,
+            "env": cell.get("env").cloned().unwrap_or(Value::Null),
+            "adapter": cell.get("adapter").cloned().unwrap_or(Value::Null),
+            "scenario": scenario,
+            "gate": gate,
+            "status": status,
+            "required": true,
+            "clean_room_required": is_clean_room,
+            "counts_as_product": cell.get("counts_as_product").cloned().unwrap_or(json!(false)),
+            "honest_blocker": blocker,
+            "blocker_detail": detail,
+            "pass_product_clean_room": status == "pass_product_clean_room",
+        }));
+    }
+
+    let missing_scenarios: Vec<Value> = SOT_REQUIRED_SCENARIOS
+        .iter()
+        .filter(|scenario| !present_scenarios.contains(**scenario))
+        .map(|scenario| {
+            let (blocker, detail) = honest_blocker(scenario, "unrun", &wake);
+            json!({
+                "scenario": scenario,
+                "present_in_matrix": false,
+                "honest_blocker": blocker,
+                "blocker_detail": format!("SoT-required scenario missing from matrix combinations; {detail}"),
+            })
+        })
+        .collect();
+
+    let completeness_ok = missing_scenarios.is_empty() && tip_bind_ok && pass_product == 0;
+    Ok(json!({
+        "schema": COMPLETENESS_SCHEMA,
+        "record_kind": "lab-runner-clean-room-matrix-completeness",
+        "cap": 0,
+        "cap_burn": 0,
+        "cap_execute": false,
+        "product": 0,
+        "pass_product": 0,
+        "pass_product_clean_room": pass_product,
+        "full_product_qualified": false,
+        "m3_claim": false,
+        "tip_bind": {
+            "matrix_head_sha": matrix_head,
+            "expect_head": expect_head,
+            "ok": tip_bind_ok,
+        },
+        "wake": wake,
+        "honesty": {
+            "never_invent_pass_product_clean_room": true,
+            "never_invent_cap_free": true,
+            "never_forge_grant_auth_at": true,
+            "detection_freeze": true,
+            "component_ne_product": true,
+            "cap_realloc_requires_live_topology": true,
+        },
+        "source_matrix": {
+            "schema": matrix.get("schema").cloned().unwrap_or(Value::Null),
+            "head_sha": matrix_head,
+            "observed_utc": matrix.get("observed_utc").cloned().unwrap_or(Value::Null),
+            "cell_count": combinations.len(),
+        },
+        "sot_required_scenarios": SOT_REQUIRED_SCENARIOS,
+        "missing_sot_scenarios": missing_scenarios,
+        "summary": {
+            "required_cells_enumerated": required,
+            "clean_room_required_cells": clean_room_required,
+            "pass_product_clean_room": pass_product,
+            "missing_sot_scenario_count": missing_scenarios.len(),
+            "completeness_enumerated": true,
+            "completeness_ok_fail_closed": completeness_ok,
+            "blocker_counts": blocker_counts,
+            "product": 0,
+        },
+        "cells": cells,
+        "blocked_on_root": [
+            "G2 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g2-collector-product-binding",
+            "G5 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g5-witness-transport",
+            "AUTH-HANDOFF humanymous.root-n06-owner-join-auth-handoff/1",
+            "AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1",
+            "optional: Cap-ready SoT path transfer for clean-room usage-condition gate slices"
+        ],
+        "next": "Root G2/G5 GRANT (prefer G2) or AUTH/AT handoff; Cap realloc only after live topology; product remains 0 until pass_product_clean_room measured",
+    }))
 }
 
 fn plan_matrix(matrix: &Value) -> Result<Value> {
@@ -410,8 +798,97 @@ fn lab_runner_command(gate: &str, scenario: &str) -> Value {
 
 #[cfg(test)]
 mod tests {
-    use super::{Disposition, decide, plan_matrix};
+    use super::{Disposition, completeness_report, decide, honest_blocker, plan_matrix, wake_state};
     use serde_json::json;
+    use std::path::{Path, PathBuf};
+
+    #[test]
+    fn completeness_enumerates_required_cells_fail_closed_product_zero() {
+        let matrix = json!({
+            "schema": "humanymous.cursor-clean-room-product-matrix/1",
+            "head_sha": "a984a87101c725e001a672a695f8d41b7b5e4362",
+            "combinations": [
+                {
+                    "id": "desktop-linux|none|m3-full-product|lab_runner_require_full",
+                    "env": "desktop-linux",
+                    "adapter": "none",
+                    "scenario": "m3-full-product",
+                    "gate": "lab_runner_require_full",
+                    "required": true,
+                    "clean_room_required": true,
+                    "counts_as_product": true,
+                    "status": "required_unavailable"
+                },
+                {
+                    "id": "desktop-linux|none|g2-collector-product-binding|lab_runner_require_full",
+                    "env": "desktop-linux",
+                    "adapter": "none",
+                    "scenario": "g2-collector-product-binding",
+                    "gate": "lab_runner_require_full",
+                    "required": true,
+                    "clean_room_required": true,
+                    "counts_as_product": false,
+                    "status": "blocked"
+                },
+                {
+                    "id": "desktop-linux|none|browser-product|compose_config",
+                    "env": "desktop-linux",
+                    "adapter": "none",
+                    "scenario": "browser-product",
+                    "gate": "compose_config",
+                    "required": false,
+                    "clean_room_required": false,
+                    "counts_as_product": false,
+                    "status": "n/a"
+                }
+            ]
+        });
+        let root = PathBuf::from(".");
+        let report = completeness_report(&matrix, &root, Some("a984a871")).expect("report");
+        assert_eq!(report["cap"], 0);
+        assert_eq!(report["product"], 0);
+        assert_eq!(report["pass_product_clean_room"], 0);
+        assert_eq!(report["tip_bind"]["ok"], true);
+        assert_eq!(report["summary"]["required_cells_enumerated"], 2);
+        assert_eq!(report["honesty"]["never_invent_cap_free"], true);
+        let cells = report["cells"].as_array().expect("cells");
+        assert_eq!(cells.len(), 2);
+        let g2 = cells
+            .iter()
+            .find(|cell| cell["scenario"] == "g2-collector-product-binding")
+            .expect("g2 cell");
+        assert_eq!(g2["honest_blocker"], "root_grant_g2");
+        let m3 = cells
+            .iter()
+            .find(|cell| cell["scenario"] == "m3-full-product")
+            .expect("m3 cell");
+        assert_eq!(m3["honest_blocker"], "root_structural_g1_g9");
+    }
+
+    #[test]
+    fn g2_blocker_prefers_root_grant_when_absent() {
+        let wake = json!({
+            "g2_grant_present": false,
+            "g5_grant_present": false,
+            "auth_handoff_present": false,
+            "at_handoff_present": false,
+            "cap_free": false
+        });
+        let (blocker, detail) = honest_blocker("g2-collector-product-binding", "blocked", &wake);
+        assert_eq!(blocker, "root_grant_g2");
+        assert!(detail.contains("GRANT.json"));
+    }
+
+    #[test]
+    fn wake_state_does_not_invent_cap_free_or_handoffs() {
+        let wake = wake_state(Path::new("."));
+        assert_eq!(wake["cap_free"], false);
+        assert_eq!(wake["cap_realloc_without_live_topology_authorized"], false);
+        assert_eq!(wake["g2_grant_present"], false);
+        assert_eq!(wake["g5_grant_present"], false);
+        assert_eq!(wake["auth_handoff_present"], false);
+        assert_eq!(wake["at_handoff_present"], false);
+    }
 
     #[test]
     fn required_unavailable_refuses_cap_and_never_invents_product() {
