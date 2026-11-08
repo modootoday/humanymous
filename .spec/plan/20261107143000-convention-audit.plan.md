@@ -2155,3 +2155,20 @@ composition roots. Prior279 coverage/collision checks are not that semantic
 closure. Updated exact mapping is queued; generic ownership decisions remain
 accepted. Audit ran no compiler/list/native/test action and whole migration
 qualification remains OPEN.
+### Lab selected-source review and audit correction
+
+8379b876 source binding records the same bytes freeze copies, requires the
+browser selected-source gate before builds, joins both resolved browser Compose
+contexts and revalidates during refinement and after successful execution.
+Actual Collector bytes match the owned c61b7649 pin (4658 bytes); all33 line
+needles match. Nonbrowser binding remains None. This is trusted-checkout drift
+detection, without hostile-race, authenticated-prefix, compiler or image custody.
+
+The audit initially alleged a P1 double-delete/NotFound panic in the new fixture.
+That causal claim is WITHDRAWN: Snapshot Drop requires an hm-rust-lab- basename,
+while the original fixture uses hm-source-pin-test-. The guard prevents the
+claimed deletion. Preserve this correction rather than presenting an established
+bug as fixed. 3332881d separately clarifies ownership using an exclusively created
+Snapshot directory, explicit drop and an absence assertion. Source review passes;
+no authored test or ignored explicit-checkout gate has been executed by audit.
+The required separate CI checkout gate remains pending. Whole qualification OPEN.
