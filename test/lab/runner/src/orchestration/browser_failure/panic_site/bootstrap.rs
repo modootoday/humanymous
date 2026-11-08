@@ -49,7 +49,7 @@ pub(super) fn refine(block: &[&str], location: usize) -> Option<&'static str> {
 
 #[cfg(test)]
 mod tests {
-    use super::super::{NAME, PATH, classify, tests::report};
+    use super::super::tests::{NAME, PATH, classify, report};
     use super::*;
     use std::collections::HashSet;
 

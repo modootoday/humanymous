@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "status": "implemented_source_only_not_compiled_or_qualified",
+  "base_commit": "d376e07bea3979e8ef51d4c226022eb0ed633be7",
+  "files": [
+    {
+      "path": "test/lab/runner/src/audit.rs",
+      "before_git_blob": "58c0345938375a25fb24bede59386586074cce81",
+      "bytes": 7866,
+      "sha256": "6b969ff3e36862b656cf7dc56648fd8bf0b67c50a75cd9295766fdad00f570df"
+    },
+    {
+      "path": "test/lab/runner/src/snapshot.rs",
+      "before_git_blob": "9fced50051d667a0662b57762a1ac76592cbb41b",
+      "bytes": 10168,
+      "sha256": "4168f1e860739ca2b4a7ab2b4eaec7563753a44facd3019c6c0946224f126e97"
+    },
+    {
+      "path": "test/lab/runner/src/source_pin.rs",
+      "before_git_blob": null,
+      "bytes": 7235,
+      "sha256": "f8ab0764278cd572ffd5b10913c6654e8c0343642e1e9490079662ee0c300e0d"
+    },
+    {
+      "path": "test/lab/runner/src/source_pin/tests.rs",
+      "before_git_blob": null,
+      "bytes": 7535,
+      "sha256": "9467194bb8d9ab8d25d7525899ef28072ea6bc294aeee88a4161b808f1b96b8f"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration.rs",
+      "before_git_blob": "7a09df6b148e29a8c5fc8709d00092b08145234b",
+      "bytes": 34670,
+      "sha256": "23567237b92f7c26429127303c39dc8d1de1d4c69424db95f5cfa62a552cbb41"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser.rs",
+      "before_git_blob": "ad6164f5879cfc11a854fc3e42cb0db6780d4fc2",
+      "bytes": 20554,
+      "sha256": "743274dfa114087d2540fb805cec269b4ab1e2ceca158301039cd0a9b21b754b"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_actor.rs",
+      "before_git_blob": "5d57bd162797c365bb6d875c1b33a7e85218faad",
+      "bytes": 14813,
+      "sha256": "52401ae3f122107016f79d420f2897bb25f1efd5d286a23c3653dede099d26f9"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure.rs",
+      "before_git_blob": "9acbb3b97e1616e4738e4c979c6143f58432ae4b",
+      "bytes": 4579,
+      "sha256": "cd5feaa1fc5b2654cb2832ef21bf1a8c1dd85a255cacc7fbf61b00aab4c94fe7"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site.rs",
+      "before_git_blob": "7adba8387e45bdeaf5a69a66c9889e904d2236f3",
+      "bytes": 5441,
+      "sha256": "e69f46ddae9207b7f1f04e49d696c25d696a5ab56f0f4d0b79a62f7d07899386"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/browser_failure/panic_site/bootstrap.rs",
+      "before_git_blob": "62f64ff7d01cc7c12ae55690d5e51c504fdd36be",
+      "bytes": 5073,
+      "sha256": "a6838a6d1136543e86eec2d011dbc04eac2429d5909cf1c6072ba1302dbefc3b"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go.rs",
+      "before_git_blob": "96445f51e5092d7f5d2bbe361cf041a3fad70444",
+      "bytes": 31007,
+      "sha256": "f53f6e3a7e103cd1611452fdcf430aff68d3d2b9912cde4cf33cf3448dd7f3cf"
+    },
+    {
+      "path": "test/lab/runner/src/orchestration/go_fixture.rs",
+      "before_git_blob": "9e4484e8e32f7a61573df2949b89a8a595de67f6",
+      "bytes": 8553,
+      "sha256": "99f92268e7e4dcfbf3e1362046052b0c785fb9aef5514f8c6af95eb43095e016"
+    },
+    {
+      "path": "test/lab/runner/collector-runtime-pilot-source.json",
+      "before_git_blob": null,
+      "bytes": 4209,
+      "sha256": "3e65e80fa3462aebddcf83366c4f7a185480a2c8deb622b8e97c678cd73614d9"
+    }
+  ],
+  "new_rust_sources": [
+    "test/lab/runner/src/source_pin.rs",
+    "test/lab/runner/src/source_pin/tests.rs"
+  ],
+  "new_data_profiles": [
+    "test/lab/runner/collector-runtime-pilot-source.json"
+  ],
+  "profile_source_sha256": "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064",
+  "profile_source_bytes": 4658,
+  "profile_sites": 33,
+  "inspection_only_missing_needles": 0,
+  "source_changes": "Same-freeze in-memory selected record; explicit frozen-root and two resolved Compose contexts; bounded source reader, exact hash/bytes/UTF-8/line checks and revalidation; source-independent fallback without a valid binding. Entire Collector implementation include_bytes removed.",
+  "constructor_joins": [
+    "audit.rs: temporary None record only",
+    "orchestration/go_fixture.rs: temporary None record only",
+    "orchestration/go.rs: nonbrowser child binding None only"
+  ],
+  "preserved": [
+    "public13/private21 DTO fields",
+    "strict Origin and detection freeze",
+    "finite diagnostic vocabulary",
+    "existing witness/drain ordering and product assertion denominators"
+  ],
+  "test_inventory_proposed": {
+    "prior_default": 40,
+    "removed_tests": 2,
+    "replacement_tests": 1,
+    "new_default_common": 5,
+    "new_unix_only": 1,
+    "new_required_ignored_checkout": 1,
+    "expected_windows_default_pass_candidates": 44,
+    "expected_unix_default_pass_candidates": 45,
+    "actual_executed": 0,
+    "note": "Source-count estimate, not a compiler-discovered or passing inventory. One required ignored checkout gate must execute separately."
+  },
+  "qualification": {
+    "compiler": "not run; requires Root slot",
+    "formatter": "not run; requires Root slot",
+    "clippy": "not run; requires Root slot",
+    "docker": "not run",
+    "package_archive": "not qualified; existing external DATA dependencies remain under Tools migration",
+    "native_custody": false,
+    "hostile_race_proof": false,
+    "full_product_qualified": false
+  },
+  "argv_plan": [
+    "cargo fmt --all --check",
+    "cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner",
+    "HUMANYMOUS_LAB_SOURCE_ROOT=<explicit immutable checkout root> cargo test --locked -p humanymous-lab-runner --bin humanymous-lab-runner snapshot::source_pin::tests::actual_collector_source_matches_reviewed_pin -- --exact --ignored",
+    "cargo clippy --locked -p humanymous-lab-runner --all-targets -- -D warnings",
+    "Root-dispatched exact-source hosted Docker browser-product gate; no local substitute"
+  ]
+}

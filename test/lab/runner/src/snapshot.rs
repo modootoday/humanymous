@@ -20,7 +20,20 @@ pub fn root() -> Result<PathBuf> {
     }
     Ok(PathBuf::from(String::from_utf8(output.stdout)?.trim()).canonicalize()?)
 }
-pub struct Snapshot(pub PathBuf);
+#[path = "source_pin.rs"]
+pub(crate) mod source_pin;
+pub struct Snapshot(pub PathBuf, Option<source_pin::SelectedSource>);
+impl Snapshot {
+    pub(crate) fn temporary(path: PathBuf) -> Self {
+        Self(path, None)
+    }
+    pub(crate) fn source_binding(&self) -> Result<source_pin::SourceBinding> {
+        source_pin::SourceBinding::bind(
+            &self.0,
+            self.1.as_ref().ok_or("required selected build source absent")?,
+        )
+    }
+}
 impl Drop for Snapshot {
     fn drop(&mut self) {
         // Only the exclusively created, generated direct child of our temp root.
@@ -39,7 +52,7 @@ impl Drop for Snapshot {
 pub fn freeze(root: &Path, project: &str, evidence: &Path) -> Result<Snapshot> {
     let directory = std::env::temp_dir().canonicalize()?.join(project);
     fs::create_dir(&directory)?;
-    let snapshot = Snapshot(directory);
+    let mut snapshot = Snapshot::temporary(directory);
     let output = Command::new("git")
         .args(["ls-files", "-co", "--exclude-standard", "-z"])
         .current_dir(root)
@@ -89,6 +102,12 @@ pub fn freeze(root: &Path, project: &str, evidence: &Path) -> Result<Snapshot> {
         let destination = snapshot.0.join(&relative);
         fs::create_dir_all(destination.parent().ok_or("source parent missing")?)?;
         fs::write(destination, &bytes)?;
+        if let Some(selected) = source_pin::selected(&relative, &bytes) {
+            if snapshot.1.is_some() {
+                return Err("duplicate selected build source".into());
+            }
+            snapshot.1 = Some(selected);
+        }
         manifest.push(json!({"path":relative,"sha256":digest(&bytes),"bytes":bytes.len()}));
     }
     let head = Command::new("git")

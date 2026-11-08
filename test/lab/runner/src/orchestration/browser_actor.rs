@@ -130,6 +130,7 @@ pub(super) fn from_stdout(
     bytes: &[u8],
     fixture: &Value,
     expected: &Value,
+    binding: Option<&crate::snapshot::source_pin::SourceBinding>,
 ) -> (Value, Option<&'static str>) {
     if bytes.iter().all(u8::is_ascii_whitespace) {
         return (unavailable("missing"), None);
@@ -154,13 +155,18 @@ pub(super) fn from_stdout(
             actor["selected_test"]
                 .as_str()
                 .expect("validated owned name"),
+            binding,
         )
     } else {
         None
     };
     let failure = match failure {
         Some("browser_bootstrap_http_forbidden_origin") => {
-            crate::browser_wire::bootstrap_origin(&actor["proxy_hits"], fixture).or(failure)
+            if binding.is_some_and(|binding| binding.refinement_ready()) {
+                crate::browser_wire::bootstrap_origin(&actor["proxy_hits"], fixture).or(failure)
+            } else {
+                Some("browser_selected_test_failed")
+            }
         }
         _ => failure,
     };
@@ -170,6 +176,11 @@ pub(super) fn from_stdout(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn from_stdout(bytes: &[u8], fixture: &Value, expected: &Value) -> (Value, Option<&'static str>) {
+        let source = crate::snapshot::source_pin::tests::fixture();
+        super::from_stdout(bytes, fixture, expected, Some(&source.binding))
+    }
 
     fn actor() -> (Value, Value, Value) {
         let fixture: Value = serde_json::from_str(include_str!(
@@ -244,6 +255,16 @@ mod tests {
         assert_eq!(
             failure,
             Some("browser_bootstrap_origin_browser_proxy_absent")
+        );
+        assert_eq!(
+            super::from_stdout(&encode(&actor), &fixture, &expected, None).1,
+            Some("browser_selected_test_failed")
+        );
+        let source = crate::snapshot::source_pin::tests::fixture();
+        source.drift();
+        assert_eq!(
+            super::from_stdout(&encode(&actor), &fixture, &expected, Some(&source.binding)).1,
+            Some("browser_selected_test_failed")
         );
         assert_eq!(actor.as_object().unwrap().len(), 21);
         assert_eq!(public.as_object().unwrap().len(), 13);

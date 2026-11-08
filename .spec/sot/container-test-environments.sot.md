@@ -1098,6 +1098,34 @@ The canonical generation reference is the Fetch Standard's
 Historical browser bugs and the observed 403 alone do not establish the cause of
 the current browser's header generation.
 
+## Explicit selected-source diagnostic binding
+
+Panic and browser-proxy Origin refinement must use an explicit frozen build root
+and a private selected-source record captured from the same bytes copied during
+freeze. Retained JSON manifests are receipts, not authority. The owned DATA pin
+contains the exact relative path, selected test name, byte count, SHA-256 and
+line/short-needle/fixed-code sites; never embed the full Collector implementation.
+The current Lab-owned profile is `test/lab/runner/collector-runtime-pilot-source.json`;
+the accepted future Tools destination is `qualification/pins/` in the same package.
+
+The reader caps source reads at 16 KiB, checks regular-file containment under the
+explicit canonical root, UTF-8, exact bytes/digest and every line needle, then
+revalidates before emitting refinements. Both resolved browser build contexts
+must equal that root. Missing, changed or unjoined source cannot refine a
+source-independent selected-test failure. The required actual-browser source
+gate fails nonzero before building images, with final revalidation after success.
+No cwd, Git discovery, manifest-directory or installed-neighbor fallback belongs
+inside this reader. Nonbrowser temporary snapshots carry no selected record.
+
+This is trusted-checkout drift detection. Metadata checks do not close hostile
+open races, establish native authenticated custody or prove which bytes a
+compiler read. Keep `source_prefix_authenticated` false. Tiny synthetic source
+strings cover package-only parser tests; the actual Collector hash and all sites
+require a separate explicit-root checkout gate. Its ignored-by-default status is
+not success: execute that named gate explicitly and record its own denominator.
+Keep public/private DTO shapes, diagnostic vocabulary, scoring/Origin policy,
+witness/drain ordering and product assertion denominators unchanged.
+
 ## Official sources, checked 2026-11-07
 
 - D1 https://docs.docker.com/reference/compose-file/networks/

@@ -47,7 +47,7 @@ pub(super) fn prepare(lab: &mut Lab) -> Result<Fixture> {
     );
     let path = std::env::temp_dir().canonicalize()?.join(name);
     fs::create_dir(&path)?;
-    let context = Snapshot(path);
+    let context = Snapshot::temporary(path);
     let checkout = context.0.join("upstream");
     fs::create_dir(&checkout)?;
     let revision = contract["fixture"]["revision"]

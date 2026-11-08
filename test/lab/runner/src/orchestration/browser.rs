@@ -77,6 +77,10 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     let expected = crate::browser_expectations::from_fixture(&fixture)?;
     let config = lab.compose(&["config", "--format", "json"], true)?.stdout;
     let parsed: Value = serde_json::from_str(&config)?;
+    lab.source_binding
+        .as_mut()
+        .ok_or("required browser source binding absent")?
+        .join_compose(&parsed)?;
     snapshot::write(&lab.evidence, "resolved-compose.json", &parsed)?;
     lab.case(
         "browser-product-no-published-ports",
@@ -286,8 +290,12 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         // can terminate the run. Raw output remains in the private bundle.
         match &captured {
             Ok(result) => {
-                let (outcome, failure) =
-                    super::browser_actor::from_stdout(&result.stdout, &fixture, &expected);
+                let (outcome, failure) = super::browser_actor::from_stdout(
+                    &result.stdout,
+                    &fixture,
+                    &expected,
+                    lab.source_binding.as_ref(),
+                );
                 actor_failure = failure;
                 lab.components["browser_actor_diagnostic"] = outcome;
                 if let Some(stage) =

@@ -1,119 +1,6 @@
-//! Source-bound private panic locations become fixed diagnostic codes only.
+//! Explicit selected-source binding permits fixed panic codes, never raw text.
+use crate::snapshot::source_pin::SourceBinding;
 mod bootstrap;
-const SOURCE: &[u8] =
-    include_bytes!("../../../../../../crates/collector/src/browser/transport/runtime_pilot.rs");
-const SOURCE_SHA256: &str = "c61b764905884233d7dc814cd6179e4e31e439921314d8a83a4475bbdadf4064";
-const PATH: &str = "crates/collector/src/browser/transport/runtime_pilot.rs";
-const NAME: &str = "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed";
-
-// Each line identifies one fixed assertion or fallible call, never its values.
-const SITES: &[(usize, &str, &str)] = &[
-    (11, "browser_panic_fixture_json", "serde_json::from_str"),
-    (12, "browser_panic_fixture_scope", "let scope:"),
-    (14, "browser_panic_location_host", "&get(&get("),
-    (17, "browser_panic_location_text", ".unwrap()"),
-    (18, "browser_panic_owned_origin", "assert_eq!(authority"),
-    (
-        22,
-        "browser_panic_bootstrap",
-        ".expect(\"actual runtime bootstrap\")",
-    ),
-    (
-        32,
-        "browser_panic_effect_ack",
-        ".expect(\"actual consumed request",
-    ),
-    (
-        33,
-        "browser_panic_effect_status",
-        "assert_eq!(response.status()",
-    ),
-    (34, "browser_panic_effect_json", "serde_json::from_slice"),
-    (
-        35,
-        "browser_panic_effect_verdict",
-        "assert_eq!(body[\"verdict\"]",
-    ),
-    (
-        36,
-        "browser_panic_effect_epoch",
-        "assert!(!session.is_closed())",
-    ),
-    (
-        37,
-        "browser_panic_response_headers_json",
-        "serde_json::from_str",
-    ),
-    (38, "browser_panic_response_headers_hidden", "assert!("),
-    (46, "browser_panic_oversize_local_refusal", "assert!("),
-    (
-        57,
-        "browser_panic_oversize_epoch",
-        "assert!(!session.is_closed())",
-    ),
-    (
-        69,
-        "browser_panic_maximum_body_ack",
-        ".expect(\"maximum supported body",
-    ),
-    (70, "browser_panic_maximum_body_status", "assert_eq!("),
-    (74, "browser_panic_fixture_status", ".unwrap()"),
-    (
-        76,
-        "browser_panic_maximum_body_json",
-        "serde_json::from_slice",
-    ),
-    (77, "browser_panic_maximum_body_verdict", "assert_eq!("),
-    (
-        81,
-        "browser_panic_maximum_body_epoch",
-        "assert!(!session.is_closed())",
-    ),
-    (
-        85,
-        "browser_panic_collector_start",
-        "BrowserCollector::new()",
-    ),
-    (
-        86,
-        "browser_panic_collector_snapshot",
-        "collector.snapshot_json()",
-    ),
-    (87, "browser_panic_collector_stop", "collector.stop()"),
-    (
-        96,
-        "browser_panic_collect_ack",
-        ".expect(\"actual report ingestion",
-    ),
-    (
-        97,
-        "browser_panic_collect_status",
-        "assert_eq!(collected.status()",
-    ),
-    (98, "browser_panic_collect_json", "serde_json::from_slice"),
-    (
-        99,
-        "browser_panic_collect_verdict",
-        "assert_eq!(body[\"verdict\"]",
-    ),
-    (
-        100,
-        "browser_panic_collect_epoch",
-        "assert!(!session.is_closed())",
-    ),
-    (104, "browser_panic_required_refusal", "assert!("),
-    (
-        115,
-        "browser_panic_required_epoch",
-        "assert!(session.is_closed())",
-    ),
-    (
-        116,
-        "browser_panic_session_close",
-        "session.close().unwrap()",
-    ),
-    (117, "browser_panic_closed_refusal", "assert!("),
-];
 
 fn canonical_number(value: &str) -> Option<usize> {
     if value.is_empty()
@@ -157,15 +44,17 @@ fn failure_block<'a>(output: &'a str, name: &str) -> Option<Vec<&'a str>> {
     (started && closed).then_some(block)
 }
 
-fn from_source(output: &str, name: &str, source: &[u8]) -> Option<&'static str> {
-    if name != NAME || crate::snapshot::digest(source) != SOURCE_SHA256 {
+pub(super) fn classify(
+    output: &str,
+    name: &str,
+    binding: Option<&SourceBinding>,
+) -> Option<&'static str> {
+    let binding = binding?;
+    if name != binding.name() || !binding.refinement_ready() {
         return None;
     }
-    let text = std::str::from_utf8(source).ok()?;
-    let prefix = format!("panicked at {PATH}:");
+    let prefix = format!("panicked at {}:", binding.path());
     let mut found = None;
-    // The pinned headless runner reprints the console channel after the test
-    // summary. Only the selected test's closed failure block is authoritative.
     let block = failure_block(output, name)?;
     for (index, line) in block.iter().map(|line| line.trim()).enumerate() {
         if !line.starts_with("panicked at ") {
@@ -175,71 +64,49 @@ fn from_source(output: &str, name: &str, source: &[u8]) -> Option<&'static str> 
         let (line_number, column) = location.split_once(':')?;
         let line_number = canonical_number(line_number)?;
         let column = canonical_number(column)?;
-        let (_, code, _) = SITES.iter().find(|(number, _, _)| *number == line_number)?;
-        if column > text.lines().nth(line_number - 1)?.len() || found.is_some() {
+        let code = binding.site(line_number, column)?;
+        if found.is_some() {
             return None;
         }
-        found = Some(if line_number == 22 {
+        found = Some(if code == "browser_panic_bootstrap" {
             bootstrap::refine(&block, index)?
         } else {
-            *code
+            code
         });
     }
+    binding.revalidate().ok()?;
     found
-}
-
-pub(super) fn classify(output: &str, name: &str) -> Option<&'static str> {
-    from_source(output, name, SOURCE)
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::collections::HashSet;
+    pub(super) const NAME: &str = "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed";
+    pub(super) const PATH: &str = "crates/collector/src/browser/transport/runtime_pilot.rs";
+
+    pub(super) fn classify(output: &str, name: &str) -> Option<&'static str> {
+        let fixture = crate::snapshot::source_pin::tests::fixture();
+        super::classify(output, name, Some(&fixture.binding))
+    }
 
     pub(super) fn report(body: &str, console: &str) -> String {
-        let body = body
-            .lines()
-            .map(|line| format!("        {line}\n"))
-            .collect::<String>();
-        let console = console
-            .lines()
-            .map(|line| format!("    {line}\n"))
-            .collect::<String>();
         format!(
-            "test {NAME} ... FAIL\n\nfailures:\n\n---- {NAME} output ----\n    error output:\n{body}\nfailures:\n\n    {NAME}\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 66 filtered out\n\nconsole output:\n{console}"
+            "test {NAME} ... FAIL\n---- {NAME} output ----\n{body}\nfailures:\n{NAME}\nconsole output:\n{console}"
         )
     }
 
     #[test]
-    fn source_hash_sites_and_public_vocabulary_are_one_pinned_contract() {
-        assert_eq!(crate::snapshot::digest(SOURCE), SOURCE_SHA256);
-        let source = std::str::from_utf8(SOURCE).unwrap();
-        let contract: serde_json::Value =
-            serde_json::from_str(include_str!("../../../safe-diagnostics.json")).unwrap();
-        let codes = contract["error_codes"].as_array().unwrap();
-        let mut lines = HashSet::new();
-        let mut names = HashSet::new();
-        for (line, code, fragment) in SITES {
-            assert!(lines.insert(line));
-            assert!(names.insert(code));
-            assert!(source.lines().nth(line - 1).unwrap().contains(fragment));
-            assert!(codes.iter().any(|value| value.as_str() == Some(*code)));
-            let observation = format!("  panicked at {PATH}:{line}:5:");
-            assert_eq!(
-                classify(&report(&observation, &observation), NAME),
-                Some(*code)
-            );
-        }
-    }
-
-    #[test]
-    fn drift_payloads_unknown_and_duplicate_locations_do_not_refine() {
+    fn synthetic_locations_reject_missing_binding_drift_and_payloads() {
         let valid = format!("panicked at {PATH}:22:10:");
-        let mut drift = SOURCE.to_vec();
-        drift.push(b' ');
-        assert_eq!(from_source(&report(&valid, &valid), NAME, &drift), None);
-        assert_eq!(classify(&report(&valid, &valid), "foreign::test"), None);
+        let complete = report(&valid, &valid);
+        assert_eq!(classify(&complete, NAME), Some("browser_panic_bootstrap"));
+        assert_eq!(super::classify(&complete, NAME, None), None);
+        assert_eq!(classify(&complete, "foreign::test"), None);
+        let fixture = crate::snapshot::source_pin::tests::fixture();
+        fixture.drift();
+        assert_eq!(
+            super::classify(&complete, NAME, Some(&fixture.binding)),
+            None
+        );
         for bad in [
             format!("{valid} PRIVATE_BODY"),
             format!("panicked at /private/{PATH}:22:10:"),

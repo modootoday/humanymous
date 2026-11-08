@@ -661,6 +661,7 @@ fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> 
             collector: false,
             topology_only: false,
             browser_product: false,
+            source_binding: None,
             go_product: true,
             mount_probe: false,
             go_component_verified: false,

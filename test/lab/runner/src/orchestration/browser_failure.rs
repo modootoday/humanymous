@@ -20,7 +20,12 @@ fn anyhow_context(line: &str) -> &str {
     }
 }
 
-pub(super) fn classify(output: &str, stderr: &str, name: &str) -> Option<&'static str> {
+pub(super) fn classify(
+    output: &str,
+    stderr: &str,
+    name: &str,
+    binding: Option<&crate::snapshot::source_pin::SourceBinding>,
+) -> Option<&'static str> {
     let failed_test = format!("test {name} ... FAIL");
     let mut found = None;
     for line in output.lines().chain(stderr.lines()).map(str::trim) {
@@ -41,7 +46,7 @@ pub(super) fn classify(output: &str, stderr: &str, name: &str) -> Option<&'stati
         }
     }
     if found == Some("browser_selected_test_failed") {
-        panic_site::classify(output, name).or(found)
+        panic_site::classify(output, name, binding).or(found)
     } else {
         found
     }
@@ -50,6 +55,11 @@ pub(super) fn classify(output: &str, stderr: &str, name: &str) -> Option<&'stati
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn classify(output: &str, stderr: &str, name: &str) -> Option<&'static str> {
+        let fixture = crate::snapshot::source_pin::tests::fixture();
+        super::classify(output, stderr, name, Some(&fixture.binding))
+    }
 
     #[test]
     fn pinned_complete_lines_yield_only_fixed_source_reported_categories() {

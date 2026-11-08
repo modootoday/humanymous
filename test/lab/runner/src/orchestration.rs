@@ -63,6 +63,7 @@ struct Lab {
     collector: bool,
     topology_only: bool,
     browser_product: bool,
+    source_binding: Option<snapshot::source_pin::SourceBinding>,
     go_product: bool,
     mount_probe: bool,
     go_component_verified: bool,
@@ -608,6 +609,12 @@ pub fn run(args: &[String]) -> Result<i32> {
             .collect::<String>()
     );
     let source = snapshot::freeze(&root, &project, &evidence)?;
+    // Required actual-source gate, before any product image is built.
+    let source_binding = if browser_product {
+        Some(source.source_binding()?)
+    } else {
+        None
+    };
     let expires = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs() + 1800;
     let mut lab = Lab {
         docker: Docker::new(&root),
@@ -625,6 +632,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         collector,
         topology_only,
         browser_product,
+        source_binding,
         go_product,
         mount_probe,
         go_component_verified: false,
@@ -633,7 +641,13 @@ pub fn run(args: &[String]) -> Result<i32> {
         components: json!({}),
         public_receipts: json!({"schema":"humanymous.lab-public-receipts/1"}),
     };
-    if let Err(error) = lab.execute() {
+    let execution = lab.execute().and_then(|()| {
+        if let Some(binding) = &lab.source_binding {
+            binding.revalidate()?;
+        }
+        Ok(())
+    });
+    if let Err(error) = execution {
         let filter = format!("label=com.docker.compose.project={}", lab.project);
         if let Ok(ids) = lab.docker.call(&["ps", "-aq", "--filter", &filter]) {
             for id in ids.lines() {

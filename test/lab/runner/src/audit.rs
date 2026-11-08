@@ -28,7 +28,8 @@ pub fn run(args: &[String]) -> Result<i32> {
         "hm-rust-lab-{}",
         nonce.iter().map(|b| format!("{b:02x}")).collect::<String>()
     );
-    let temporary = snapshot::Snapshot(std::env::temp_dir().canonicalize()?.join(&project));
+    let temporary =
+        snapshot::Snapshot::temporary(std::env::temp_dir().canonicalize()?.join(&project));
     fs::create_dir(&temporary.0)?;
     let cache = temporary.0.join("cache");
     fs::create_dir(&cache)?;
