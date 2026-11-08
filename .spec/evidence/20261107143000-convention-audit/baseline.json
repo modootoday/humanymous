@@ -2218,5 +2218,23 @@
     "nginx": "34622280sourceonly2includechanges;4030BexactDATA/provenance;gate/compile/extracted/nativeOPEN",
     "Lab": "5d68Linux40vsf8Windows45:38common7added2replaced;Unix46sourcecandidateonly",
     "goal_complete": false
+  },
+  "collector_f8_actual_and_referer_contract_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/collector-f8-wasm-actual-review-001.json",
+        "sha256": "89775f2d7d6272fa083ec8a8d4033481b68a1743e65583230764fe2fbe013bbf",
+        "bytes": 1115
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-f8-actual-review-001.json",
+        "sha256": "b696b31b988dce06898eb5204e5ade38077a2d5b9a4805c69b852ca1219f522e",
+        "bytes": 4688
+      }
+    ],
+    "wasm": "10raw/3158saved+Git/archive0issues;checkandstrictClippylogged0;3rustupshimscopeonly",
+    "hosted": "Freshcompletedf8logs/projectionexact;GNU46Labregistered45+separate1pass;selectedbrowser1pass;41of43assertions2fail",
+    "finding": "CA-REFERER-WIRE-01 P2 Root/Lab OPEN;exactrootprivacywireproof absent;no blindwaiver",
+    "goal_complete": false
   }
 }

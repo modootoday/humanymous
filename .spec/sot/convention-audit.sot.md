@@ -3067,3 +3067,33 @@ New cfg(unix) symlink negative is not Windows-registered/executed. Unix46 is onl
 a source candidate prediction until actual Linux discovery, never a claimed pass.
 The cross-venue comparison does not prove same-platform equivalence; historical
 446/528 inventories stay intact and the future graph needs its own exact census.
+### f8 WASM, GNU and actual browser audit; Referer contract mismatch
+
+Root8abb2714 WASM receipt matches10 raw hashes/sizes,3158 before/after input
+records and3158 frozen files joined to exact f8 Git blobs. Archive fd29bd75
+matches. All-target/runtime-pilot WASM check and strictClippy argv/finished logs
+agree with the reported exit0 session. Three saved tool hashes are rustup shims;
+current audit reread matches, but no separate immediate-after list or actual
+driver/OS-start custody is retained. Phase elapsed values are cumulative epoch
+endpoints. Earlier fc9 Core lint failure is preserved; no local mock/browser ran.
+
+Fresh official completed f8 jobs128575889707/128576757106 match cached preflight
+107664bytes SHA4a4f042a and product51080bytes SHA1965ff14. The sole typed projection
+matches exactly; canonical Git SCOPES ef9d26e7 independently recomputes. GNU21
+preflight steps succeed, with46Lab registrations:45default passes/1ignored plus
+separate required1pass/45filtered. This confirms the previously source-predicted
+Unix-only case in this actual venue. Delivery121 and Unix producer3/6filtered
+remain distinct. The actual selected browser test passes1/67 with66filtered,
+DNSsuccess and exit0; product41of43assertions pass,2fail,9requiredunavailable.
+
+CA-REFERER-WIRE-01 (P2, Root/Lab, OPEN): Collector's accepted explicit origin-root
+referrer policy conflicts with the existing no-Referer wire assertion, which
+fails in f8. Current producers classify only absent/present, so changing expected
+presence cannot prove exact origin-root-only privacy. Keep fail-closed until an
+explicit source-bound policy, finite exact-owned-root versus absent/other/ambiguous
+classes at both B/G, complete counts and meaningful negatives/actual sensitive-URL
+browser controls are qualified. Never project raw URL/header values or waive the
+failed assertion blindly. No exact observed Referer bytes, privacy leak, historic
+cause or received Runtime-header authentication is inferred. Original private
+ledger/image custody is unrecovered; logged image/manifest/private-report hashes
+remain source-reported. Product/release and the complete migration remain OPEN.
