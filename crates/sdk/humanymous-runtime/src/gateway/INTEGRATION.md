@@ -105,9 +105,11 @@ duplicate Set-Cookie, forged origin ACK stripping, replay and Cookie refusal.
 Native helpers remain synthetic controls, not ordinary browser/human/AT success.
 Root's actual BrowserSession API can connect to the new reserved bootstrap and
 fetch collect/protected with matching exact origin/authority and caller scope.
-required.collector remains422 pending fresh provenance, and there is no public
-admin, servicehost, Pass or TLS/H2 support in this checkpoint. R15 and R05/R06
-remaining work continue in later commits; this is not whole-plan completion.
+required.collector is observation-gated on FreshCollectorProvenance (rust-wasm-
+engineVersion + guard.reported); partial collect still422. That gate is not
+product/browser qualification. No public admin, servicehost or Pass in this
+checkpoint. R15 and R05/R06 remaining work continue in later commits; this is
+not whole-plan completion.
 
 Intermediate production-only cargo check passed before final report/test edits;
 it is not validation of final bytes. Formatter and public-only spec check are

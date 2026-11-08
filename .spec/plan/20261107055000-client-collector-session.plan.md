@@ -66,8 +66,10 @@ client's closed/error result alone cannot distinguish that from network failure.
 - [x] Verify ACK only after complete bounded body, cancellation/drop cleanup and
   reentrancy/concurrency; invalidate on partial body/network/timeout/redirect.
 - [ ] Join real runtime bootstrap/browser profile/ACK and actual owned Docker lab.
-- [ ] Bind actual collector version/epoch/coverage to fresh server-issued context;
-  keep required.collector422 until accepted provenance and actual browser pilot.
+- [x] Bind actual collector version/epoch/coverage to fresh server-issued context
+  (G2/R03 first profile plan 20261108213000: server receipt + rust-wasm- version +
+  guard.reported; partial still 422). Actual browser/product pilot remains open;
+  keep readiness/product non-green until measured.
 - [ ] Complete route-scoped cookie/identity profile, distribution/bootstrap and
   full product/human/keyboard/AT qualification; initial cookie-free is not final scope.
 

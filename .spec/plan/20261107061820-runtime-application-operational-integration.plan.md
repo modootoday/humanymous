@@ -449,7 +449,7 @@ residual operational context; Root owns the integration sequence.
 | --- | --- | --- | --- |
 | R01 | Shared14-field browser codec + counter ACK | root integrity;53abb0b/fabed20 | Runtime consumes shared APIs and compiled at709b0e2; actual current-source browser/ACK join pending; no copied codec |
 | R02 | Explicit cookie-free browser session/collect/protected profile | runtime;R01 and normal lane claim | Source implemented, latest source tests NOT_RUN; actual shared-client nativeTCP fixtures authored, hosted execution pending |
-| R03 | Fresh collection provenance/coverage | root collector + runtime join | Contract pending; required.collector422; actual epoch/version/coverage vs server time/counter separation |
+| R03 | Fresh collection provenance/coverage | root collector + runtime join | G2 first profile designed+implemented (plan 20261108213000): server FreshCollectorProvenance + observation-gated required.collector; partial guard still 422; Cap=1 ≠ product; actual browser/product binding pending |
 | R04 | Actual browser Fetch/one-flight/ACK/body/abort lifecycle | root collector + runtime server | Pure client validated by root; actual join pending; actual browser and human/keyboard/AT separate |
 | R05 | Shared response-head/framing and fidelity | runtime | Buffered/stream head parsing and bounded chunk/EOF source wired; HTTP10 pure passedadb8e3ed; actual current-source fidelity/failure matrix pending |
 | R06 | Explicit bounded response streaming | runtime;R05 | Native stream wired; in-memory stream4 plus profile pure passedadb8e3ed; actual current-source backpressure/abort/drain pending; browser ACK stream separate |

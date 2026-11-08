@@ -41,11 +41,28 @@ pub struct Issued {
     pub expires: u64,
 }
 
+/// Server-owned fresh collector receipt; client fields remain assertions only.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(in crate::gateway) struct FreshCollectorProvenance {
+    /// Server-issued session capability this receipt binds.
+    session_id: String,
+    /// Server-observed consumed counter at successful collect.
+    consumed_counter: u64,
+    /// Server-observed receive time (UTC ms) at successful collect.
+    received_at_ms: u64,
+    /// Client-asserted collector engine version (not execution attestation).
+    engine_version: String,
+    /// Client-asserted guard completeness; partial stays false.
+    guard_reported: bool,
+}
+
 struct Session {
     key: Zeroizing<[u8; 32]>,
     counter: u64,
     expires: u64,
     report: Option<ClientReport>,
+    /// Present only after a successful collect wrote a distinguished receipt.
+    collector_provenance: Option<FreshCollectorProvenance>,
     profile: RitProfile,
     created: std::time::Instant,
     admission: Window,
@@ -163,6 +180,7 @@ impl Sessions {
                 counter: 0,
                 expires: issued.expires,
                 report: None,
+                collector_provenance: None,
                 profile,
             },
         );
@@ -295,14 +313,21 @@ impl Sessions {
         })
     }
 
-    /// Store only a session-bound client report; this does not prove browser collection.
-    pub fn collect(&mut self, id: &str, body: &[u8]) -> Result<(), Rejection> {
+    /// Store only a session-bound client report plus a distinguished provenance
+    /// receipt; neither proves browser collection by itself.
+    pub fn collect(
+        &mut self,
+        id: &str,
+        body: &[u8],
+        counter: u64,
+        now: u64,
+    ) -> Result<(), Rejection> {
         let report: ClientReport =
             serde_json::from_slice(body).map_err(|_| Rejection::new(400, "client_report"))?;
         if report.session_id != id {
             return Err(Rejection::new(403, "report_session"));
         }
-        self.store_report(id, report)
+        self.store_report(id, report, counter, now)
     }
 
     /// Only call after successful next-token consumption. A429 is still a
@@ -319,6 +344,8 @@ impl Sessions {
         &mut self,
         id: &str,
         body: &[u8],
+        counter: u64,
+        now: u64,
     ) -> Result<(), Rejection> {
         let mut report: ClientReport =
             serde_json::from_slice(body).map_err(|_| Rejection::new(400, "client_report"))?;
@@ -326,10 +353,41 @@ impl Sessions {
             return Err(Rejection::new(403, "report_session"));
         }
         report.session_id = id.to_owned();
-        self.store_report(id, report)
+        self.store_report(id, report, counter, now)
     }
 
-    fn store_report(&mut self, id: &str, mut report: ClientReport) -> Result<(), Rejection> {
+    /// G2/R03 pre-consumption lookup: complete fresh provenance only (fail-closed).
+    pub(in crate::gateway) fn fresh_collector_provenance(&self, req: &Request) -> bool {
+        let Ok(profile) = browser::profile(req) else {
+            return false;
+        };
+        let Some(id) = (match profile {
+            RitProfile::NativeFull => req
+                .header("authorization")
+                .and_then(|s| s.strip_prefix("Bearer ")),
+            RitProfile::BrowserAuthOnly => req.header("x-humanymous-session"),
+        })
+        .filter(|s| s.len() == 43) else {
+            return false;
+        };
+        self.entries
+            .get(id)
+            .and_then(|session| session.collector_provenance.as_ref())
+            .is_some_and(|receipt| {
+                receipt.session_id == id
+                    && receipt.engine_version.starts_with("rust-wasm-")
+                    && receipt.engine_version.len() > "rust-wasm-".len()
+                    && receipt.guard_reported
+            })
+    }
+
+    fn store_report(
+        &mut self,
+        id: &str,
+        mut report: ClientReport,
+        counter: u64,
+        now: u64,
+    ) -> Result<(), Rejection> {
         // Registry metadata and scores are server-owned even when observations
         // are asserted by a client. No network/server signals cross this seam.
         let mut seen = std::collections::HashSet::new();
@@ -359,10 +417,19 @@ impl Sessions {
                 "",
             );
         }
-        self.entries
+        let provenance = FreshCollectorProvenance {
+            session_id: id.to_owned(),
+            consumed_counter: counter,
+            received_at_ms: now,
+            engine_version: report.engine_version.clone(),
+            guard_reported: report.guard.reported,
+        };
+        let session = self
+            .entries
             .get_mut(id)
-            .ok_or(Rejection::new(401, "session"))?
-            .report = Some(report);
+            .ok_or(Rejection::new(401, "session"))?;
+        session.report = Some(report);
+        session.collector_provenance = Some(provenance);
         Ok(())
     }
 

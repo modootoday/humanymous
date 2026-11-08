@@ -3,7 +3,7 @@ id: sot:root/client-collector
 title: Rust browser signal collection and generated WASM boundary
 status: active
 created: 2026-11-07T01:30:00Z
-updated: 2026-11-07T04:56:14Z
+updated: 2026-11-08T21:30:00Z
 verify:
   - cargo test -p humanymous-collector --locked
 rel:
@@ -62,7 +62,10 @@ TLS/H2/header provenance. Its actual hit counters and backend/egress isolation
 must be independently measured by the lab, not inferred from a configured pref.
 Missing required fresh collector capability remains a pre-consumption422 without
 ACK and closes the client epoch. This is distinct from accepted client-asserted
-report ingestion200. The feature test alone does not prove the full product,
+report ingestion200. Runtime G2/R03 first profile gates `required.collector` on
+a server-owned fresh provenance receipt (version/`rust-wasm-` prefix + complete
+guard `reported=true` bound to server session/counter/time); partial signed
+snapshots stay 422. That gate is not actual browser/product qualification. The feature test alone does not prove the full product,
 witness independence, human/AT support, cookies or streaming. Those gates remain
 required; runtime execution of this new source is currently not_run.
 

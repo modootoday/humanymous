@@ -175,7 +175,7 @@ impl Application {
             }
             if route.required.raw_tls && tls.and_then(|owner| owner.client_hello()).is_none()
                 || route.required.original_h2 && !tls.is_some_and(|owner| original_h2_observation(owner, req))
-                || route.required.collector
+                || route.required.collector && !self.sessions.fresh_collector_provenance(req)
             {
                 return Err(Rejection::new(422, "required_capability"));
             }
@@ -189,8 +189,14 @@ impl Application {
         let deadline = authorized.deadline;
         let (verdict, risk, rule) = if collect {
             match authorized.profile {
-                RitProfile::NativeFull => self.sessions.collect(id, &req.body)?,
-                RitProfile::BrowserAuthOnly => self.sessions.collect_browser(id, &req.body)?,
+                RitProfile::NativeFull => {
+                    self.sessions
+                        .collect(id, &req.body, authorized.counter, now)?
+                }
+                RitProfile::BrowserAuthOnly => {
+                    self.sessions
+                        .collect_browser(id, &req.body, authorized.counter, now)?
+                }
             }
             ("COLLECTED".to_owned(), 0.0, String::new())
         } else {

@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-08T21:00:00Z
+updated: 2026-11-08T21:30:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -144,8 +144,21 @@ A fresh collection receipt must distinguish server-issued epoch binding and
 server-observed receive time/consumed counter from client-asserted version,
 collection epoch and measured coverage. Root owns its collector envelope and
 actual Rust/WASM lifecycle. Default partial guard/advanced observations do not
-become complete merely because they were signed. Until that accepted contract is
-implemented and exercised, required.collector stays422. Native/report assertions
+become complete merely because they were signed. G2/R03 first profile (plan
+`.spec/plan/20261108213000-g2-collector-provenance.plan.md`): on successful
+collect after next-token consumption, the session owner writes a server-owned
+`FreshCollectorProvenance` receipt recording server `session_id`,
+`consumed_counter` and `received_at_ms` separately from client-asserted
+`engine_version` and guard coverage/`reported`. Collection epoch binding for
+this profile is `(session_id, consumed_counter at collect)` without a new report
+wire field. Application `required.collector` is no longer unconditional 422:
+authorize only when that live receipt exists with nonempty `engine_version`
+prefixed `rust-wasm-` and `guard.reported == true`; missing session, missing
+receipt, foreign/empty version or partial guard (`reported=false`) stays
+pre-consumption 422 without ACK. Storing a `ClientReport` alone never authorizes.
+Configuration readiness, matrix product cells and `pass_product*` stay non-green
+until actual browser/product binding is measured; Cap=1 pure success is not
+product qualification. No scoring or signal changes. Native/report assertions
 remain distinct from actual transport observations and VerifiedRitProfile.
 
 Adapter0.1 strips reserved integrity headers and has null-only capture/stream

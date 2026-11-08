@@ -36,6 +36,11 @@ fn configuration(origin: std::net::SocketAddr) -> Configuration {
 pub(in crate::gateway) fn config() -> Configuration {
     configuration("127.0.0.1:32123".parse().unwrap())
 }
+fn config_with_collector() -> Configuration {
+    let mut cfg = config();
+    cfg.routes[0].required.collector = true;
+    cfg
+}
 #[test]
 fn streaming_requires_explicit_native_profile_and_preserves_browser_complete_body_contract() {
     use crate::gateway::configuration::{BrowserPolicy, ResponseProfile, RitProfile};
@@ -345,6 +350,59 @@ fn missing_client_is_challenge_and_missing_planes_are_not_ready() {
     }
 }
 #[test]
+fn fresh_collector_provenance_gates_required_collector() {
+    let mut cfg = config();
+    cfg.routes[0].required.collector = true;
+    let mut app =
+        Application::new(config_with_collector(), Default::default(), Box::new(Audit::default()))
+            .unwrap();
+    let issued = issue(&mut app, 10_000);
+    // Partial / missing version+guard.reported after collect still refuses.
+    collected(&mut app, &cfg, &issued, 10_000);
+    let req = protected(&cfg, &issued, 2, 10_000);
+    assert_eq!(app.decide(&req, || Ok(10_000)).err().unwrap().status, 422);
+
+    let mut app =
+        Application::new(config_with_collector(), Default::default(), Box::new(Audit::default()))
+            .unwrap();
+    let issued = issue(&mut app, 10_000);
+    let mut collect = request(
+        "POST",
+        "/_humanymous/collect",
+        serde_json::to_vec(&json!({
+            "sessionId": issued["session"].as_str().unwrap(),
+            "engineVersion": "rust-wasm-0.1.0",
+            "guard": {"reported": true, "evalUsed": 0, "funcCtor": 0, "scriptInjected": 0},
+            "environment": {"probed": true},
+            "behavior": {},
+            "uaClientHints": {"brands":[{"brand":"Chromium","version":"126"}],"platform":"Windows"},
+            "signals":[{"id":"l1.navigator.webdriver","value":false,"verdict":"OK","confidence":1,"collected":"wasm"}]
+        }))
+        .unwrap(),
+    );
+    sign(
+        &cfg,
+        &mut collect,
+        issued["session"].as_str().unwrap(),
+        issued["key"].as_str().unwrap(),
+        1,
+        10_000,
+    );
+    assert!(matches!(
+        app.decide(&collect, || Ok(10_000)).unwrap(),
+        Decision::Local(200, _)
+    ));
+    let req = protected(&cfg, &issued, 2, 10_000);
+    // Capability gate clears; post-collect protected path may Origin (not 422).
+    assert!(
+        matches!(
+            app.decide(&req, || Ok(10_000)).unwrap(),
+            Decision::Origin { .. }
+        ),
+        "fresh provenance must clear required.collector 422"
+    );
+}
+#[test]
 fn audit_is_minimized_and_failure_poison_is_permanent() {
     let cfg = config();
     let audit = Audit::default();
@@ -419,13 +477,22 @@ fn report_rejects_server_planes_and_uses_registry_scores() {
                 .collect(
                     &issued.session,
                     &serde_json::to_vec(&json!({"sessionId":issued.session,"signals":[signal]}))
-                        .unwrap()
+                        .unwrap(),
+                    1,
+                    10_000,
                 )
                 .is_err()
         );
     }
-    sessions.collect(&issued.session,&serde_json::to_vec(&json!({"sessionId":issued.session,"signals":[{
-        "id":"l1.navigator.webdriver","collected":"wasm","verdict":"BOT","confidence":1,"score":-1000,"weight":-1000}]})).unwrap()).unwrap();
+    sessions
+        .collect(
+            &issued.session,
+            &serde_json::to_vec(&json!({"sessionId":issued.session,"signals":[{
+        "id":"l1.navigator.webdriver","collected":"wasm","verdict":"BOT","confidence":1,"score":-1000,"weight":-1000}]})).unwrap(),
+            1,
+            10_000,
+        )
+        .unwrap();
     assert_eq!(
         sessions.report(&issued.session).signals.unwrap()[0].score,
         15.0
