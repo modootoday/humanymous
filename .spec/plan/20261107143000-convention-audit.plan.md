@@ -2756,3 +2756,115 @@ construction only. The watchdog body, native actor, SCM, containment and launche
 authentication were not run/proved by this audit. Private
 watchdog-artifact-source-review-001.json hashes the observed evidence and records
 these limits. Build/artifact identity must not become process authority.
+
+## Offline model candidate and updated maintenance execution observations
+
+Model7f478912's five candidate hashes/sizes reproduce. Named Core/CLI precondition
+review finds existing SGD/train-only statistics reuse, Sample aggregate/admission/
+feature revalidation, strict time separation and explicit human-cohort support.
+Unsigned/no-activation result and CLI create_new/reread/hash receipt are retained.
+Caller review is not provenance authentication, cohort support is not full promotion,
+and Go-bit/FMA/signed/runtime qualification remains unproved. This was bounded
+source inspection, not a whole-source or executed model pass. CA-LIFETIME also
+applies: CLI opens/reads/stdout can block; the pilot starts its clock after spawn,
+unwrap failure can drop a child without a retained guard, timeout kill/wait blocks,
+and file-size polling is a threshold rather than a hard storage cap. Root received
+these concrete limits. No model candidate was integrated/run by audit.
+
+Maintenance candidate04 now has actual97-case discovery with all93 prior names
+retained and exactly four package-selection additions. Raw four-case result names
+and4passed/0failed/0ignored/93filtered footer match. The first nonexistent
+humanymous-maintenance bin was rejected by Cargo before discovery; its original
+log is retained and contributes no coverage. Corrected agent-maintenance result
+is separate. Raw maintenance lint finishes1.95s; exact strict invocation/source-
+terminal qualification is supplied separately below, not assumed from that footer.
+
+New fcc74e9c checkpoint records all-target/all-feature locked/offline CLI Clippy
+-Dwarnings, start/end/exit0, raw Finished5.65s, and1783 equal before/after path/hash/
+size rows. Inventory adds exactly package_stage.rs/package_selection.rs to strict02.
+Current recorded drift is one later CLI Cargo.toml change, so success stays at its
+recorded epoch. Receipt lacks OS PID/resolved tool identity and explicitly leaves
+compiler read closure/source authentication/runtime/release false. It cannot
+retroactively seal earlier four-unit or18Native execution source/process closure.
+Full97, original33 integration cases, package/native/product gates remain OPEN.
+Three private review records referenced in baseline.json bind these observations.
+
+Model4645b152 follow-up preserves the earlier7f source critique rather than
+transferring it unchanged: original clock is now before spawn/setup, Child is
+stored before fallible polling, blocking wait is removed, incomplete custody
+blocks finish and is retained, and cooperative threshold/outer-supervisor limits
+are explicit. Updated pilot12161bytes/SHAed3439c6 matches its attachment. No fault,
+formatter/compiler or process pilot result is inferred from these source changes.
+
+One remaining CA-LIFETIME custody-order gap is confirmed in Owned::drop: Child
+is taken from self, then eprintln! runs before RETAINED.push. Rust1.99.1 primary
+documentation states stderr write failure can panic, and Child drop has no automatic
+kill/wait. A failed diagnostic can therefore interrupt registry transfer. Root
+received the exact path and direction: retain custody before fallible reporting,
+and use best-effort/non-panicking diagnostics. No actual stderr fault or child
+leak was reproduced; hard time/output/tree/cleanup gates remain OPEN. Primary refs:
+https://doc.rust-lang.org/std/macro.eprintln.html and
+https://doc.rust-lang.org/std/process/struct.Child.html . Private
+offline-model-lifecycle-followup-002.json binds this source epoch and limits.
+
+Formatted Tools1791/offline follow-up: all14 private checkpoint attachment hashes/
+sizes reproduce. ZIP5080861bytes/SHA11cdd17d8e0ade45fcfd5acb6f181cef4bd75f176cf997a3846a0ce5b7079de8
+contains1791 regular entries matching exact case-sensitive path/hash/size rows,
+plus43 directories; no duplicate/missing/unlisted regular files. Before/after1791
+tuples agree. At that epoch strict all-target/all-feature Clippy exited0/14.15s,
+selection/materializer units8pass/93filtered and result guards4pass/123filtered.
+Actual101-case maintenance list retains all97 earlier cases plus four materializer
+units. Materialize/stage/coordinator/Native bodies and transitive tool/read closure
+remain unqualified. Source review confirms reviewed-root binding, strict decode,
+raw pin verification before deriving output, create_new and readback; parser/pin
+units are not actual materialization execution.
+
+Focused offline Core5pass/160filtered and CLI2pass/1filtered have1790 identical
+before/after source tuples. Earlier fullCore165 library pass retains all historical
+160 library cases and adds exactly those5; historical17 integration cases were
+not rerun. The focused source seal does not seal the older full165 execution.
+Initial CLI unused-payload lint failure and corrected lint remain separate. No
+actual model process, Go numeric parity, activation or promotion proof is claimed.
+
+Historical CLI package322 unique list entries contain all116 resolved literal
+inputs with zero observed lexical containment/presence/case-sensitive membership
+issues. Original117 rows included one outside/unlisted coordinator compile embed;
+original145-byte Cargo stderr is a missing-description warning, not command-failure
+proof. This package list is not a crate archive, macro/transitive closure, actual
+binary/image distribution or complete legal inventory; CA-NOTICE remains OPEN.
+
+After1791 seal, coordinator a9b255d8/7231bytes accepts ordinary/native absolute roots,
+checks original ancestors before canonicalization, then fixed coordinator under
+canonical root; regular32KiB/captured hash guards remain. Scoped lint0.33s observed;
+Windows controls and Git/Pwsh body NOTRUN. Later source cannot inherit prior seal.
+
+Correction to preceding4645 disposition:219db9a7 pilot12441bytes/SHA58932ca3 now
+transfers Child custody before best-effort writeln in Drop, with non-panicking
+cleanup diagnostics. The named diagnostic-order gap is source-corrected. Earlier
+report stays historical. No actual stderr fault, retained-tree settlement, hard
+wall/storage limit or process cleanup result is inferred; global CA-LIFETIME OPEN.
+Four private reports in baseline.json bind these scoped follow-up observations.
+
+Fresh offline process target: one actual compiler-artifact row joins exact CLI
+package ID, cli-offline-training-process test target, source path, test profile
+and default/offline-training features; build-finished success is present. Actual
+executable1431040bytes/SHA72119993 matches the receipt. Initial collapsible_if
+strict failure is retained; corrected strict footer0.28s. Actual list contains two
+cases, both source-declared ignored behind required offline-training. Authored
+coverage intends2success+collision+6refusals, not nine observed executions. Source
+retains pre-spawn clock/Child custody/diagnostic-after-transfer. Manifest declares
+15bins+11tests+lib+example=28targets, with autodiscovery disabled. Receipt/source
+hashes are post-command observations only, not full before/after source closure.
+Previous1791/27-target seal remains historical; no test-body, process fault, cleanup,
+outer containment, Go numeric parity or full product qualification is inferred.
+Private offline-process-target-compile-review-004.json binds these observations.
+
+Browser34f0af03 source-layout delta independently checked:49 records retain47
+candidate destinations and2 retired manifests. All47 destination/parent hashes and
+7 caller hashes match preserved private trees.42 files are byte-identical to d340;
+remaining5 exactly reproduce from path-string substitutions only. All10 declared
+literal targets exist and resolve correctly; zero Rust implementations outside src,
+one physical shared scheme.rs. The named candidate layout defect is source-fixed.
+Originald340 remains historical; Root adoption, role feature/unsafe/linkage negative
+controls, CEF/UI/process teardown and distribution are not inferred. Private
+browser-src-layout-followup-001.json binds this delta review, not full qualification.

@@ -2458,5 +2458,82 @@
     "metadata": "OpaqueID/member/target/src joins older actual metadata only",
     "sha256": "f4d7081a9681b0f6391b0b81c888c6fe47b9c557f3a861f0e2e46b1f94a5f063",
     "actual": "One test/profiletrue compiler artifact, build-finished success, actual1581056B/SHA8c98f09b matches"
+  },
+  "offline_model_and_current_staging_followup": {
+    "maintenance": "97actualregistered/old93retained;4selected pass raw; firstinvalidbinrefusal preserved",
+    "strict": "1783beforeafter0diff/5.65s; laterCLI manifestdrift1, no transfer",
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/offline-model-candidate-review-001.json",
+        "sha256": "7ef0cce7c4e5f760fec4a7db16dd3e4839d8dcf90f928e299a65d33a68171da7",
+        "bytes": 1343
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/maintenance-candidate04-observation-002.json",
+        "sha256": "d03d542f2353da453b763daca6f8af2d969805de889bdc104bb5986be31bb778",
+        "bytes": 1708
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-candidate04-strict-review-001.json",
+        "sha256": "68cb60dbb8af3521a6324a1c0c97c457658dc2fa4f5a936490724d7c431bda90",
+        "bytes": 2071
+      }
+    ],
+    "full_source_process_runtime_qualification": false,
+    "goal_complete": false,
+    "model": "5candidatehashes exact; named guards reviewed, no integration/execution/activation"
+  },
+  "offline_model_lifecycle_followup": {
+    "remaining": "Drop takesChild then eprintln before registry transfer: stderrpanic can interrupt retention; Root notified",
+    "fault_execution": "NOT_RUN",
+    "bytes": 1443,
+    "sha256": "c3ffcf7fa43b9572cc1d5b6f08b254ea10c088faf7b59b242ee275ca2b662fea",
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/offline-model-lifecycle-followup-002.json",
+    "goal_complete": false,
+    "source": "4645pre-spawnclock/retainedChild/cooperativepolling repairs accepted as source direction only",
+    "current_disposition": "Prior4645 remaining diagnostic-order gap source-corrected in219db9a7; actual fault/cleanup and global CA-LIFETIME remain OPEN"
+  },
+  "formatted_tools_and_offline_execution_followup": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/cli-package-literal-review-001.json",
+        "sha256": "7860a12f5717196bbf448100bebcd8a22f8ff954e60cd74591916df07a6d0d39",
+        "bytes": 3125
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-formatted1791-review-001.json",
+        "sha256": "373d9782859737b071f6b1cdbecf8fa27b087d49a9ea984de64f5df4ec6abb15",
+        "bytes": 1670
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/offline-integrated-execution-review-003.json",
+        "sha256": "34d72bf4018ba6dbf350d774cd9e22ac9717b80fd6f88d4cddb217699540d5c6",
+        "bytes": 3265
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/coordinator-and-pilot-source-followup-003.json",
+        "sha256": "0513763e346a7ce00f12e301477c4ff0f6010fb482b7ce212a2b4309917461c2",
+        "bytes": 1974
+      }
+    ],
+    "seal": "evidence:root/20261108024914:14attachments/1791regularZIPfiles exact; strict0, selected8+4pass, actual101list/old97retained",
+    "offline": "1790beforeafter0diff binds focusedCore5/CLI2; fullCore165 retains160library cases, no17integration rerun",
+    "package": "Historical322listed/116literal closure exact; firststderr is warning, not proven Cargo failure; archive/legal/native still open",
+    "source_fixes": "219db9a7 fixes prior4645 Drop diagnostic ordering; later coordinator native-spelling repair source reviewed, scope0.33s lint only",
+    "goal_complete": false
+  },
+  "offline_process_target_compile_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/offline-process-target-compile-review-004.json",
+    "sha256": "cda8eb653367c4ec9d0a1e486511a339ca29ecd50a0d258e5e5cc67919efeaa4",
+    "bytes": 3503,
+    "scope": "One actual no-run test artifact matches current file; actual2list/ignoredsource;28declaredtargets; no test-body execution",
+    "goal_complete": false
+  },
+  "browser_src_layout_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-src-layout-followup-001.json",
+    "sha256": "8e72cd834ab86f5f57e86c577eacd8945d933ae2414cb82c6c62b21609140ca0",
+    "bytes": 1958,
+    "source": "47candidate+parent/7caller hashes exact;42byteidentical,5exactpathtransforms;10literal targets/0issues;0RustoutsideSrc/1scheme",
+    "goal_complete": false
   }
 }
