@@ -271,6 +271,72 @@ in parallel-shared-rust-dispatch.json; branch tips/remote results and guarded Gi
 logs are in branch-cleanup-receipt.json under Root private core-consolidation.
 The isolated eight-package assembly remains separate from live source cutover.
 
+## Cursor collaboration operating contract
+
+The user accepted collaboration, not replacement or a handover. All participants
+use the existing C:/workspaces/humanymous checkout on codex/rust. No new branch or
+worktree, destructive checkout, blanket stash/reset or foreign-path staging is
+permitted. A Cursor editor rule is a thin entrypoint to this contract and AGENTS;
+retired agent mirror trees are not recreated. Actual Cursor rule discovery is
+unverified until its agent reports a real workspace session.
+
+| Role | Write responsibility | Limits |
+| --- | --- | --- |
+| Codex coordinator | Architecture/contracts, allocation, independent review, roadmap and remote ref operations | Stops common implementation writes after recorded ownership release |
+| Cursor integrator | Exclusively claimed source application, common Cargo/lock, integration repairs and allocated checks | Must claim released paths before editing; no guessed identity, native scope expansion, publishing or autonomous push |
+| Existing22 owners | Nonoverlapping module candidates, tests and owned specs/evidence | Primary assembly and live integration paths remain read-only unless explicitly reassigned |
+| Audit | Independent exact-source and evidence review | No implementation/native executor grant |
+
+Ownership activation requires the real session board: root-coordination for the
+coordinator and cursor-integration for the actual Cursor session. Configuration
+alone is not a Cursor claim. Preserve the released integration-path list and
+claim the same approved scope with the actual registered provider and session
+cursor-integrator. Cursor is an editor frontend, not permission to invent model
+attribution or vendor email. Existing owner claims remain effective. The git-ops
+mutex still serializes index/commit transactions; Root schedules remote pushes.
+
+Cursor first actions, after a successful real claim:
+
+1. Read current AGENTS, this roadmap, structural design and actual source status.
+   Distinguish live29+four tools from the isolated final8 assembly. Do not copy the
+   whole historical snapshot over current docs/spec/foreign dirty work.
+2. Review and compile the preimage-bound Node capture correction ef3ac465 candidate
+   with its eleven pure tests and strict package-binary lint in an owned copy.
+   Keep actual capture/host/tree/storage requirements separate and unexecuted.
+3. Apply reviewed Wargame final-role receipt-count/ordinal corrections with exact
+   preserved-case tests; retain red/green evidence without scoring changes.
+4. Assemble approved module/caller/recipe/workflow deltas for the final8 source
+   cutover, preserving immutable producer identities and current owner changes.
+5. Register a new exact source/input/role checkpoint before allocating hosted
+   Cross-OS/container/browser/native gates. No main merge or publication follows
+   from pure/model/check-only success.
+
+Task3 candidate is evidence:root/20261108024500; Node correction remains under
+20261108133208-native-abi-node-capture-corrections. These are implementation inputs,
+not prequalified runtime artifacts. Actual source-custody activation and individual
+check allocations must be recorded, not inferred from this ordered queue.
+
+## Cursor collaboration environment activation
+
+Root created the always-applied .cursor/rules/humanymous-collaboration.mdc as a
+thin direct-canon entrypoint and added root-coordination/cursor-integration lane
+identifiers to the existing PowerShell/Bash board data. Existing board listing
+and PowerShell parser checks passed; actual Cursor UI/agent discovery has not
+been observed. Cursor CLI was not found on PATH; no installation or automatic
+launch is claimed. Official rule format reference: https://cursor.com/docs/rules.
+
+Root successfully claimed root-coordination for the coordination/configuration
+paths and released only its own detection-core common integration-source claim.
+The exact released scope and first finite check allocation are recorded in
+cursor-collaboration-scope.json under Root core-consolidation evidence. That
+record is prepared ownership coordination, not a fabricated active Cursor claim.
+The actual cursor-integrator session must claim cursor-integration with its real
+registered provider before any implementation write. Foreign owner claims remain
+in force. Root continues architecture, allocation and review without simultaneous
+implementation writes. All22 project chats were notified of the activated split.
+No handover document was created; no main merge, branch creation or publication
+is authorized by this environment setup.
+
 ## Integration status at the 2026-11-08 source checkpoint
 
 Fresh locked/offline Cargo metadata confirms29 LIVE workspace members and21 in

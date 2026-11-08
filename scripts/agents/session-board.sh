@@ -9,7 +9,7 @@ CLAIMS="$BOARD/claims"
 TTL_HOURS=4
 ACTION="${1:-list}"
 
-VALID="detection-core gate-edge pass red-catalog e2e-infra docs agents-meta sot-plan release git-ops misc authority-ipc audit-custody native-cli native-windows browser-ui product-lab adapter-hosts adapter-nginx project-coordination adapter-apache native-abi adapter-go adapter-dotnet network-capture"
+VALID="detection-core gate-edge pass red-catalog e2e-infra docs agents-meta sot-plan release git-ops misc authority-ipc audit-custody native-cli native-windows browser-ui product-lab adapter-hosts adapter-nginx project-coordination adapter-apache native-abi adapter-go adapter-dotnet network-capture root-coordination cursor-integration"
 
 ensure_board() {
   mkdir -p "$CLAIMS"

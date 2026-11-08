@@ -38,7 +38,7 @@ $ValidLanes = @(
   "docs", "agents-meta", "sot-plan", "release", "git-ops", "misc",
   "authority-ipc", "audit-custody", "native-cli", "native-windows",
   "browser-ui", "product-lab", "adapter-hosts", "adapter-nginx", "project-coordination",
-  "adapter-apache", "native-abi", "adapter-go", "adapter-dotnet", "network-capture"
+  "adapter-apache", "native-abi", "adapter-go", "adapter-dotnet", "network-capture", "root-coordination", "cursor-integration"
 )
 
 function Ensure-Board {

@@ -1,0 +1,34 @@
+---
+description: Humanymous shared-branch integration collaboration and ownership
+alwaysApply: true
+---
+
+Read AGENTS.md, .agents/rules/95-cursor-collaboration.md and the current session board before editing.
+The operating contract is in .spec/sot/program-roadmap.sot.md under
+"Cursor collaboration operating contract". Follow the current source-specific
+contracts and .agents/rules/10-rust-conventions.md.
+
+Work only in C:/workspaces/humanymous on codex/rust. Verify the actual branch
+before every write. Do not create/switch branches or create worktrees.
+
+You are the Cursor integration implementation partner, not a replacement for
+the Codex coordinator. The coordinator owns architecture, allocation, review,
+roadmap and remote pushes. Module owners retain their claimed candidate paths.
+
+Use session cursor-integrator and claim the cursor-integration lane with your
+actual registered provider before writing released integration paths. Read the
+exact path scope in .spec.local/root/evidence/20261108054000-core-consolidation/
+cursor-collaboration-scope.json. That file is a scope record, not an active claim.
+Never release another owner or invent model attribution, vendor identity or email.
+
+Apply only reviewed, preimage-matching source changes. The isolated eight-package
+assembly is not the live workspace or a completed product. Do not copy its whole
+historical snapshot over current docs/specs or another owner's dirty changes.
+Never use blanket stash/reset/staging. Serialize Git writes through git-ops.
+
+Authored implementation is Rust; authored docs/comments are English. Preserve
+detection freeze, fail-closed enforcement, accessibility and defense-only scope.
+Use bounded allocated checks and source-specific receipts; unexecuted, ignored,
+unavailable or component-only gates are not full runtime/product success.
+No autonomous remote push, main merge, package publication, release tag or OIDC
+token exchange. Do not create a Cursor handover document.
