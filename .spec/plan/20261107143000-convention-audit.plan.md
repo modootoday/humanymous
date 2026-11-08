@@ -2204,3 +2204,26 @@ cargo-check observation. Cold artifacts do not mean cold OS/registry caches;
 two pairs do not establish generalized speedup. Complete dependency/SDK/linker
 byte custody, continuously quiet resource conditions, linked build, native
 runtime throughput and product qualification remain OPEN. No audit compiler ran.
+### Tools v2 composition and clock precision reconciliation
+
+Root private v2 retains v1 and maps282 tracked rows, including the new2Rust+1DATA
+Lab inputs. Independent joins to CLI33de76 cover15 roles,14 new composition
+roots,232 implementation paths and446 legacy unit-source rows with zero path
+mismatches. All259 BIN selector prefixes match precise command namespaces; LIB
+role-link namespaces exist. All528 target-qualified collection candidates are
+unique. Only13 manifest merges and3 identical ignore merges share destinations.
+Formal Cargo proposes15bins+10tests+1example+1lib=27targets and17features; role
+paths match and report's normal Platform/testing dependency fix remains present.
+This is source proposal reconciliation, not compiler or new-graph qualification.
+
+V2 captured c900 Git blob pins match; current4Lab files have advanced through
+formatting and require pin refresh before exact source freeze. The446/528 legacy
+inventories must gain the new source-pin case/ignored-gate delta; they do not prove
+complete current registration. Actual names/cfg/effects, normal-only feature and
+privacy/unsafe boundaries, package/native/product gates remain OPEN.
+
+CLI33de clock erratum preserves all six original command hashes. Independent
+arithmetic reproduces PowerShell's integer Math.Min overload rounding, explaining
+90.039..90.316s windows. All actual observations stay below nominal90s. This closes
+the requested provenance explanation only, without rerun or hard90/OS-containment
+qualification. Full convention audit goal remains active.
