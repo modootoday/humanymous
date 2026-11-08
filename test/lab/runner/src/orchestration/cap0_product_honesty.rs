@@ -56,7 +56,8 @@ const N06_READINESS_CLOSER_REL: &str =
 /// Desktop collector Cap1 component receipt (≠ G2 product-binding).
 pub const G2_COMPONENT_RECEIPT_REL: &str = ".spec.local/root/evidence/20261108213000-g2-collector-provenance/cap1-browser-pilot/cap1-receipt.json";
 
-const G5_COMPONENT_SUMMARY_REL: &str =
+/// Custody/witness Cap1 component summary (≠ authenticated witness transport).
+pub const G5_COMPONENT_SUMMARY_REL: &str =
     ".spec.local/root/evidence/cursor-product-custody-witness/attempt-5/summary.json";
 
 /// Component observation surfaces (≠ Cap topology). Cap product-binding topology
@@ -382,8 +383,13 @@ pub(super) fn run_g5_witness_transport_honesty(lab: &mut Lab) -> Result<()> {
         "m3_claim": false,
         "root_ask_paths": G5_ROOT_ASK_PATHS,
         "cap_realloc_policy": "only_real_structural_next_feeder",
-        "no_g5_cap_cli_with_topology": true,
-        "note": "custody/witness Cap feeders = pass_component_* only; authenticated witness transport still Root; Cap=0; Cap free conserved; never invent pass_product_clean_room"
+        "no_g5_cap_cli_with_topology": false,
+        "g5_cap_cli_cap_ready": true,
+        "g5_cap_cli_selector": "--g5-witness-transport",
+        "g5_cap_ready_pack": ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/candidate-pack/",
+        "g5_cap_topology_live": false,
+        "authenticated_witness_transport_until_cap_measured": false,
+        "note": "custody/witness Cap feeders = pass_component_* only; Cap CLI Cap-ready twin landed separately; live Cap topology still Root TRANSFER; authenticated_witness_transport=false until Cap measured; Cap=0; Cap free conserved; never invent pass_product_clean_room"
     });
     snapshot::write(&lab.evidence, "g5-witness-transport-honesty.json", &honesty)?;
     lab.case(
@@ -405,7 +411,7 @@ pub(super) fn run_g5_witness_transport_honesty(lab: &mut Lab) -> Result<()> {
         json!({
             "cap": 0,
             "cap_free": cap_free,
-            "reason": "no claimable G5 Cap CLI+topology; Cap free=false after Unlock A EXIT0; no Cap spam"
+            "reason": "G5 Cap CLI Cap-ready twin landed; Cap free=false after Unlock A EXIT0; Cap=1 needs Cap realloc + live topology TRANSFER; no Cap spam"
         }),
     )?;
     lab.components["g5_witness_transport_honesty"] = json!({
@@ -418,7 +424,7 @@ pub(super) fn run_g5_witness_transport_honesty(lab: &mut Lab) -> Result<()> {
         "cap": 0,
         "cap_free": cap_free,
         "root_ask_paths": G5_ROOT_ASK_PATHS,
-        "note": "Cap=0 G5 honesty gate; component bound; authenticated transport still Root; Cap free conserved"
+        "note": "Cap=0 G5 honesty gate; component bound; Cap CLI Cap-ready twin separate; authenticated transport still false until Cap measured; Cap free conserved"
     });
     snapshot::write(
         &lab.evidence,

@@ -51,6 +51,7 @@ mod browser_failure;
 pub(crate) mod cap0_product_honesty;
 pub(crate) mod g2_collector_product_binding;
 pub(crate) mod g4_cef_at;
+pub(crate) mod g5_witness_transport;
 mod go;
 mod go_fixture;
 mod go_public;
@@ -78,6 +79,7 @@ struct Lab {
     g2_collector_product_binding: bool,
     g2_collector_product_binding_readiness: bool,
     g5_witness_transport_honesty: bool,
+    g5_witness_transport: bool,
     browser_ready_interactive_at_honesty: bool,
     n06_owner_auth_handoff_honesty: bool,
     g4_cef_at: bool,
@@ -171,6 +173,21 @@ impl Lab {
                 "g2-collector-product-binding-readiness Cap has no Docker compose topology; Cap=0 honesty only; never invent pass_product_clean_room"
                     .into(),
             );
+        }
+        if self.g5_witness_transport {
+            let mut command = vec![
+                "compose".into(),
+                "-p".into(),
+                self.project.clone(),
+                "-f".into(),
+                self.config_file(
+                    "deployments/lab/compose.g5-witness-transport.yaml",
+                )?,
+                "--profile".into(),
+                "g5-witness-transport".into(),
+            ];
+            command.extend(args.iter().map(|s| (*s).to_owned()));
+            return Ok(command);
         }
         if self.g5_witness_transport_honesty {
             return Err(
@@ -369,6 +386,9 @@ impl Lab {
         }
         if self.g2_collector_product_binding_readiness {
             return cap0_product_honesty::run_g2_collector_product_binding_readiness(self);
+        }
+        if self.g5_witness_transport {
+            return g5_witness_transport::run(self);
         }
         if self.g5_witness_transport_honesty {
             return cap0_product_honesty::run_g5_witness_transport_honesty(self);
@@ -666,6 +686,7 @@ impl Lab {
             || self.g2_collector_product_binding
             || self.g2_collector_product_binding_readiness
             || self.g5_witness_transport_honesty
+            || self.g5_witness_transport
             || self.browser_ready_interactive_at_honesty
             || self.n06_owner_auth_handoff_honesty
         {
@@ -724,6 +745,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut g2_collector_product_binding = false;
     let mut g2_collector_product_binding_readiness = false;
     let mut g5_witness_transport_honesty = false;
+    let mut g5_witness_transport = false;
     let mut browser_ready_interactive_at_honesty = false;
     let mut n06_owner_auth_handoff_honesty = false;
     let mut g4_cef_at = false;
@@ -752,6 +774,7 @@ pub fn run(args: &[String]) -> Result<i32> {
                 g2_collector_product_binding_readiness = true
             }
             "--g5-witness-transport-honesty" => g5_witness_transport_honesty = true,
+            "--g5-witness-transport" => g5_witness_transport = true,
             "--browser-ready-interactive-at-honesty" => browser_ready_interactive_at_honesty = true,
             "--n06-owner-auth-handoff-honesty" => n06_owner_auth_handoff_honesty = true,
             "--g4-cef-at" => g4_cef_at = true,
@@ -775,6 +798,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -804,6 +828,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -831,6 +856,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -856,6 +882,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -882,6 +909,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || n06_owner_join_readiness
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -890,6 +918,33 @@ pub fn run(args: &[String]) -> Result<i32> {
         {
             return Err(
                 "g2-collector-product-binding Cap requires its own fresh profile; refuse readiness/--require-full Cap spam; Cap=0 scaffold refuse-closed without Cap realloc+topology; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+    if g5_witness_transport {
+        // Cap CLI Cap=0 scaffold: Cap free / topology refuse-closed inside Cap module
+        // before Docker. Cap=1 only after Cap realloc + live Cap topology TRANSFER.
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || n06_owner_join_readiness
+            || g2_collector_product_binding
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
+            || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "g5-witness-transport Cap requires its own fresh profile; refuse honesty/--require-full Cap spam; Cap=0 scaffold refuse-closed without Cap realloc+topology; never invent authenticated witness transport product"
                     .into(),
             );
         }
@@ -907,6 +962,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || n06_owner_join_readiness
             || g2_collector_product_binding
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -932,6 +988,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || n06_owner_join_readiness
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -958,6 +1015,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
@@ -983,6 +1041,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || g4_cef_at
             || full
@@ -1013,6 +1072,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || g5_witness_transport
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || full
@@ -1096,6 +1156,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         g2_collector_product_binding,
         g2_collector_product_binding_readiness,
         g5_witness_transport_honesty,
+        g5_witness_transport,
         browser_ready_interactive_at_honesty,
         n06_owner_auth_handoff_honesty,
         g4_cef_at,
@@ -1153,6 +1214,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         || g2_collector_product_binding
         || g2_collector_product_binding_readiness
         || g5_witness_transport_honesty
+        || g5_witness_transport
         || browser_ready_interactive_at_honesty
         || n06_owner_auth_handoff_honesty
         || g4_cef_at
@@ -1187,6 +1249,10 @@ pub fn run(args: &[String]) -> Result<i32> {
         (
             "g5_witness_transport_honesty",
             "g5-witness-transport-honesty",
+        ),
+        (
+            "g5_witness_transport",
+            "g5-witness-transport-cap",
         ),
         (
             "browser_ready_interactive_at_honesty",

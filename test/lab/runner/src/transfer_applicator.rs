@@ -8,11 +8,16 @@
 //! CLI `--g4-cef-at` pilot; empty destinations / empty entry lists refuse.
 //! G2 requires the code-defined Cap CLI `--g2-collector-product-binding` pilot;
 //! Cap burn stays Cap-realloc-gated (topology apply ≠ Cap free).
+//! G5 requires the code-defined Cap CLI `--g5-witness-transport` pilot;
+//! Cap burn stays Cap-realloc-gated (topology apply ≠ Cap free / ≠ authenticated transport).
 //! Never invents `pass_product_clean_room` or folklore pilot argv. Cap burn is
 //! a separate step after a successful transfer.
 use crate::docker::Result;
 use crate::orchestration::g2_collector_product_binding::{
     CAP_SELECTOR as G2_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G2_CODE_DEFINED_PILOT,
+};
+use crate::orchestration::g5_witness_transport::{
+    CAP_SELECTOR as G5_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G5_CODE_DEFINED_PILOT,
 };
 use crate::orchestration::g4_cef_at::{
     CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT,
@@ -39,10 +44,14 @@ const APPLY_SCHEMA_N06: &str = "humanymous.lab-n06-hosted-venue-transfer-apply/1
 const PROBE_SCHEMA_G2: &str = "humanymous.lab-g2-collector-product-binding-transfer-probe/1";
 const GRANT_SCHEMA_G2: &str = "humanymous.cursor-g2-collector-product-binding-transfer-grant/1";
 const APPLY_SCHEMA_G2: &str = "humanymous.lab-g2-collector-product-binding-transfer-apply/1";
+const PROBE_SCHEMA_G5: &str = "humanymous.lab-g5-witness-transport-transfer-probe/1";
+const GRANT_SCHEMA_G5: &str = "humanymous.cursor-g5-witness-transport-transfer-grant/1";
+const APPLY_SCHEMA_G5: &str = "humanymous.lab-g5-witness-transport-transfer-apply/1";
 const UNLOCK_A_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/g4-cef-at/UNLOCK-A-APPLIED.json";
 const UNLOCK_B_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/w2-h2-product-binding/UNLOCK-B-APPLIED.json";
 const N06_HOSTED_VENUE_APPLIED_REL: &str = ".spec.local/root/evidence/20261109003000-cursor-n06-original-h2-measure/cap-ready-hosted-venue/N06-HOSTED-VENUE-APPLIED.json";
 const UNLOCK_G2_APPLIED_REL: &str = ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/UNLOCK-G2-APPLIED.json";
+const UNLOCK_G5_APPLIED_REL: &str = ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/UNLOCK-G5-APPLIED.json";
 const N06_HOSTED_VENUE_CAP_SELECTOR: &str = "--w2-h2-hosted-venue";
 const N06_HOSTED_VENUE_PILOT: &str =
     "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-hosted-venue";
@@ -62,6 +71,7 @@ enum UnlockLetter {
     C,
     N06,
     G2,
+    G5,
 }
 
 impl UnlockLetter {
@@ -71,6 +81,7 @@ impl UnlockLetter {
             Some("B") => Ok(Self::B),
             Some("N06") => Ok(Self::N06),
             Some("G2") => Ok(Self::G2),
+            Some("G5") => Ok(Self::G5),
             Some("C") | None => Ok(Self::C),
             Some(other) => Err(format!("unsupported manifest.unlock={other}").into()),
         }
@@ -83,6 +94,7 @@ impl UnlockLetter {
             Self::C => PROBE_SCHEMA_C,
             Self::N06 => PROBE_SCHEMA_N06,
             Self::G2 => PROBE_SCHEMA_G2,
+            Self::G5 => PROBE_SCHEMA_G5,
         }
     }
 
@@ -93,6 +105,7 @@ impl UnlockLetter {
             Self::C => APPLY_SCHEMA_C,
             Self::N06 => APPLY_SCHEMA_N06,
             Self::G2 => APPLY_SCHEMA_G2,
+            Self::G5 => APPLY_SCHEMA_G5,
         }
     }
 
@@ -103,6 +116,7 @@ impl UnlockLetter {
             Self::C => GRANT_SCHEMA_C,
             Self::N06 => GRANT_SCHEMA_N06,
             Self::G2 => GRANT_SCHEMA_G2,
+            Self::G5 => GRANT_SCHEMA_G5,
         }
     }
 
@@ -113,6 +127,7 @@ impl UnlockLetter {
             Self::C => "unlock_c_preimage_ready",
             Self::N06 => "n06_hosted_venue_preimage_ready",
             Self::G2 => "g2_collector_product_binding_preimage_ready",
+            Self::G5 => "g5_witness_transport_preimage_ready",
         }
     }
 
@@ -123,6 +138,7 @@ impl UnlockLetter {
             Self::C => "lab-runner-unlock-c-transfer-probe",
             Self::N06 => "lab-runner-n06-hosted-venue-transfer-probe",
             Self::G2 => "lab-runner-g2-collector-product-binding-transfer-probe",
+            Self::G5 => "lab-runner-g5-witness-transport-transfer-probe",
         }
     }
 
@@ -133,6 +149,7 @@ impl UnlockLetter {
             Self::C => "lab-runner-unlock-c-transfer-apply",
             Self::N06 => "lab-runner-n06-hosted-venue-transfer-apply",
             Self::G2 => "lab-runner-g2-collector-product-binding-transfer-apply",
+            Self::G5 => "lab-runner-g5-witness-transport-transfer-apply",
         }
     }
 
@@ -143,6 +160,7 @@ impl UnlockLetter {
             Self::C => "C",
             Self::N06 => "N06",
             Self::G2 => "G2",
+            Self::G5 => "G5",
         }
     }
 }
@@ -217,7 +235,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         && !dry_run
     {
         return Err(format!(
-            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; Unlock A requires Root path-release destinations; N06 requires hosted-venue Cap CLI pilot; G2 requires Cap CLI --g2-collector-product-binding pilot; never invent pass_product_clean_room",
+            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; Unlock A requires Root path-release destinations; N06 requires hosted-venue Cap CLI pilot; G2 requires Cap CLI --g2-collector-product-binding pilot; G5 requires Cap CLI --g5-witness-transport pilot; never invent pass_product_clean_room",
             unlock.ready_key()
         )
         .into());
@@ -442,6 +460,9 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
             "n06_requires_hosted_venue_cap_cli_pilot": unlock == UnlockLetter::N06,
             "g2_requires_collector_product_binding_cap_cli_pilot": unlock == UnlockLetter::G2,
             "g2_topology_apply_does_not_invent_cap_free": unlock == UnlockLetter::G2,
+            "g5_requires_witness_transport_cap_cli_pilot": unlock == UnlockLetter::G5,
+            "g5_topology_apply_does_not_invent_cap_free": unlock == UnlockLetter::G5,
+            "g5_topology_apply_does_not_invent_authenticated_transport": unlock == UnlockLetter::G5,
             "never_invent_pilot_command": true,
             "never_invent_desktop_as_hosted": true,
         },
@@ -455,6 +476,7 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
                 UnlockLetter::C => "Root issues transfer grant; transfer-apply then Cap=1 --authority-node-ipc",
                 UnlockLetter::N06 => "Root/autonomy GRANT with Cap CLI --w2-h2-hosted-venue; transfer-apply then Cap=1 only when actual_hosted_linux; Desktop Cap=0 fail-closed",
                 UnlockLetter::G2 => "Root copies GRANT.TEMPLATE.json → GRANT.json (or issues matching grant); transfer-apply --manifest … --grant GRANT.json; then Cap realloc schema humanymous.cursor-g2-collector-product-binding-cap-realloc/1 → Cap=1 once --g2-collector-product-binding; Cap free stays false until realloc; never invent pass_product_clean_room",
+                UnlockLetter::G5 => "Root copies GRANT.TEMPLATE.json → GRANT.json (or issues matching grant); transfer-apply --manifest … --grant GRANT.json; then Cap realloc schema humanymous.cursor-g5-witness-transport-cap-realloc/1 → Cap=1 once --g5-witness-transport; Cap free stays false until realloc; authenticated_witness_transport stays false until Cap measured; never invent pass_product_clean_room",
             }
         } else if unlock == UnlockLetter::A && entries.is_empty() {
             "Unlock A scaffold: wait Root CEF/AT path release (crates/browser/** and/or scripts/ci/cef-pilot/**) + candidate bodies + Cap CLI --g4-cef-at GRANT; empty entries keep unlock_a_preimage_ready=false; Cap day also requires HUMANYMOUS_CEF_PILOT_BUNDLE"
@@ -750,6 +772,55 @@ fn apply_transfer(
         written.push(UNLOCK_G2_APPLIED_REL);
     }
 
+    if unlock == UnlockLetter::G5 && !dry_run {
+        let Some(pilot) = pilot_command else {
+            return Err(
+                "G5 apply refused: grant.pilot_command must be non-empty Cap CLI --g5-witness-transport; never invent pilot_command"
+                    .into(),
+            );
+        };
+        let receipt = json!({
+            "schema": "humanymous.cursor-g5-witness-transport-applied/1",
+            "unlock": "G5",
+            "applied": true,
+            "applied_utc": chrono_like_utc(),
+            "grant": grant_path,
+            "pilot_command": pilot,
+            "destinations_written": written,
+            "cap_burn_authorized": false,
+            "cap_burn_limit": 1,
+            "cap_realloc_required_before_burn": true,
+            "cap_realloc_schema": "humanymous.cursor-g5-witness-transport-cap-realloc/1",
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "authenticated_witness_transport": false,
+            "honesty": {
+                "never_invent_pass_product_clean_room": true,
+                "detection_freeze": true,
+                "custody_witness_component_is_not_authenticated_transport": true,
+                "topology_apply_does_not_invent_cap_free": true,
+                "topology_apply_does_not_invent_authenticated_transport": true,
+                "cap_realloc_only_structural_feeder": true,
+            },
+        });
+        let receipt_path = workspace.join(UNLOCK_G5_APPLIED_REL);
+        if let Some(parent) = receipt_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("mkdir {}: {error}", parent.display()))?;
+        }
+        fs::write(
+            &receipt_path,
+            format!(
+                "{}
+",
+                serde_json::to_string_pretty(&receipt)
+                    .map_err(|error| format!("unlock-g5 receipt encode: {error}"))?
+            ),
+        )
+        .map_err(|error| format!("write UNLOCK-G5-APPLIED: {error}"))?;
+        written.push(UNLOCK_G5_APPLIED_REL);
+    }
+
     let mut report = Map::new();
     report.insert("schema".into(), json!(unlock.apply_schema()));
     report.insert("record_kind".into(), json!(unlock.record_kind_apply()));
@@ -774,6 +845,8 @@ fn apply_transfer(
             "cap_burn_is_separate_step": true,
             "never_invent_desktop_as_hosted": true,
             "g2_topology_apply_does_not_invent_cap_free": unlock == UnlockLetter::G2,
+            "g5_topology_apply_does_not_invent_cap_free": unlock == UnlockLetter::G5,
+            "g5_topology_apply_does_not_invent_authenticated_transport": unlock == UnlockLetter::G5,
         }),
     );
     report.insert("planned".into(), json!(planned));
@@ -798,6 +871,9 @@ fn apply_transfer(
                 }
                 UnlockLetter::G2 => {
                     "Cap realloc schema humanymous.cursor-g2-collector-product-binding-cap-realloc/1 citing live Cap CLI+topology; then Cap=1 once --g2-collector-product-binding (jobs=1); Cap free conserved until realloc; never invent pass_product_clean_room"
+                }
+                UnlockLetter::G5 => {
+                    "Cap realloc schema humanymous.cursor-g5-witness-transport-cap-realloc/1 citing live Cap CLI+topology; then Cap=1 once --g5-witness-transport (jobs=1); Cap free conserved until realloc; authenticated_witness_transport stays false until Cap measured; never invent pass_product_clean_room"
                 }
             }
         }),
@@ -938,6 +1014,70 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
     Ok(())
 }
 
+fn refuse_forbidden_g5_witness_transport_pilot_command(pilot: &str) -> Result<()> {
+    let normalized = pilot.split_whitespace().collect::<Vec<_>>().join(" ");
+    let lower = normalized.to_ascii_lowercase();
+    if lower.contains(G5_CAP_SELECTOR)
+        && (lower.contains("humanymous-lab-runner") || lower.contains("lab-runner"))
+    {
+        if lower.contains("--require-full")
+            || [
+                "--browser-product",
+                "--collector",
+                "--mount-probe",
+                "--authority-node-ipc",
+                "--w2-h2-product-binding",
+                "--w2-h2-hosted-venue",
+                "--g4-cef-at",
+                "--go-product",
+                "--g2-collector-product-binding",
+                "--g2-collector-product-binding-readiness",
+                "--g5-witness-transport-honesty",
+            ]
+            .iter()
+            .any(|flag| lower.contains(flag))
+        {
+            return Err(
+                "G5 grant.pilot_command refused: --g5-witness-transport Cap requires its own fresh profile; refuse foreign Cap selectors / honesty/--require-full Cap spam; never invent authenticated witness transport product"
+                    .into(),
+            );
+        }
+        // Exact Cap selector must not be only the honesty twin substring falsely accepted.
+        // "--g5-witness-transport-honesty" contains CAP_SELECTOR as prefix; blocked above.
+        return Ok(());
+    }
+    if lower.contains("humanymous-lab-runner") || lower.contains("lab-runner") {
+        let feeder = [
+            "--browser-product",
+            "--collector",
+            "--mount-probe",
+            "--authority-node-ipc",
+            "--w2-h2-product-binding",
+            "--w2-h2-hosted-venue",
+            "--g4-cef-at",
+            "--go-product",
+            "--g2-collector-product-binding",
+            "--g5-witness-transport-honesty",
+        ]
+        .iter()
+        .any(|flag| lower.contains(flag));
+        let require_full = lower.contains("--require-full");
+        if feeder || require_full {
+            return Err(format!(
+                "G5 grant.pilot_command refused: lab-runner feeder / --require-full Cap spam is not G5 witness transport; use code-defined {G5_CODE_DEFINED_PILOT}"
+            )
+            .into());
+        }
+    }
+    if !lower.contains(G5_CAP_SELECTOR) || lower.contains("--g5-witness-transport-honesty") {
+        return Err(format!(
+            "G5 grant.pilot_command refused: must embed Cap CLI {G5_CAP_SELECTOR} (not honesty twin); code-defined pilot is {G5_CODE_DEFINED_PILOT}; never invent custody component as authenticated transport"
+        )
+        .into());
+    }
+    Ok(())
+}
+
 fn refuse_forbidden_g2_collector_product_binding_pilot_command(pilot: &str) -> Result<()> {
     let normalized = pilot.split_whitespace().collect::<Vec<_>>().join(" ");
     let lower = normalized.to_ascii_lowercase();
@@ -955,6 +1095,8 @@ fn refuse_forbidden_g2_collector_product_binding_pilot_command(pilot: &str) -> R
                 "--g4-cef-at",
                 "--go-product",
                 "--g2-collector-product-binding-readiness",
+                "--g5-witness-transport",
+                "--g5-witness-transport-honesty",
             ]
             .iter()
             .any(|flag| lower.contains(flag))
@@ -1103,6 +1245,20 @@ fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Resu
             );
         }
         refuse_forbidden_g2_collector_product_binding_pilot_command(pilot)?;
+    }
+    if unlock == UnlockLetter::G5 {
+        let pilot = grant
+            .get("pilot_command")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .unwrap_or("");
+        if pilot.is_empty() {
+            return Err(
+                "G5 grant.pilot_command must be a non-empty Cap CLI --g5-witness-transport argv; never invent pilot_command; template alone is not a live grant"
+                    .into(),
+            );
+        }
+        refuse_forbidden_g5_witness_transport_pilot_command(pilot)?;
     }
     if unlock == UnlockLetter::A {
         let release = grant
@@ -1785,6 +1941,178 @@ mod tests {
                 .exists()
         );
         assert!(!root.join("workspace").join(UNLOCK_G2_APPLIED_REL).exists());
+        let _ = fs::remove_dir_all(root);
+    }
+
+    fn sample_g5_pack(root: &Path) -> (PathBuf, Value) {
+        let compose = b"services: {}\n";
+        let dockerfile = b"FROM scratch\n";
+        let dockerignore = b"*\n";
+        let contract = b"{\"pilot_command\":null}\n";
+        let scaffold = b"{\"status\":\"scaffold\"}\n";
+        let pilot_sh = b"#!/bin/sh\nexit 0\n";
+        write(
+            &root.join("pack/candidate/deployments/lab/compose.g5-witness-transport.yaml"),
+            compose,
+        );
+        write(
+            &root.join("pack/candidate/build/rust/g5-witness-transport-lab.Dockerfile"),
+            dockerfile,
+        );
+        write(
+            &root.join(
+                "pack/candidate/build/rust/g5-witness-transport-lab.Dockerfile.dockerignore",
+            ),
+            dockerignore,
+        );
+        write(
+            &root.join(
+                "pack/candidate/deployments/lab/witness/g5-witness-transport-contract.json",
+            ),
+            contract,
+        );
+        write(
+            &root.join(
+                "pack/candidate/deployments/lab/witness/g5-witness-transport-measure-receipt.scaffold.json",
+            ),
+            scaffold,
+        );
+        write(
+            &root.join(
+                "pack/candidate/deployments/lab/witness/g5-witness-transport-cap-pilot.sh",
+            ),
+            pilot_sh,
+        );
+        let manifest = json!({
+            "schema": "humanymous.cursor-g5-witness-transport-candidate/1",
+            "unlock": "G5",
+            "entries": [
+                {
+                    "destination": "deployments/lab/compose.g5-witness-transport.yaml",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/deployments/lab/compose.g5-witness-transport.yaml",
+                    "candidateSha256": snapshot::digest(compose),
+                },
+                {
+                    "destination": "build/rust/g5-witness-transport-lab.Dockerfile",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/build/rust/g5-witness-transport-lab.Dockerfile",
+                    "candidateSha256": snapshot::digest(dockerfile),
+                },
+                {
+                    "destination": "build/rust/g5-witness-transport-lab.Dockerfile.dockerignore",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/build/rust/g5-witness-transport-lab.Dockerfile.dockerignore",
+                    "candidateSha256": snapshot::digest(dockerignore),
+                },
+                {
+                    "destination": "deployments/lab/witness/g5-witness-transport-contract.json",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/deployments/lab/witness/g5-witness-transport-contract.json",
+                    "candidateSha256": snapshot::digest(contract),
+                },
+                {
+                    "destination": "deployments/lab/witness/g5-witness-transport-measure-receipt.scaffold.json",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/deployments/lab/witness/g5-witness-transport-measure-receipt.scaffold.json",
+                    "candidateSha256": snapshot::digest(scaffold),
+                },
+                {
+                    "destination": "deployments/lab/witness/g5-witness-transport-cap-pilot.sh",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/deployments/lab/witness/g5-witness-transport-cap-pilot.sh",
+                    "candidateSha256": snapshot::digest(pilot_sh),
+                }
+            ]
+        });
+        let manifest_path = root.join("pack/transfer-manifest.json");
+        write(
+            &manifest_path,
+            serde_json::to_string_pretty(&manifest).unwrap().as_bytes(),
+        );
+        (manifest_path, manifest)
+    }
+
+    #[test]
+    fn g5_probe_reports_ready_when_candidates_match_and_live_absent() {
+        let root = temp_dir("g5-ready");
+        let (manifest_path, manifest) = sample_g5_pack(&root);
+        let probe =
+            probe_manifest(&manifest, &root.join("workspace"), &manifest_path).expect("probe");
+        assert_eq!(probe["schema"], PROBE_SCHEMA_G5);
+        assert_eq!(probe["g5_witness_transport_preimage_ready"], true);
+        assert_eq!(probe["applied"], false);
+        assert_eq!(probe["cap_execute"], false);
+        assert_eq!(probe["pass_product_clean_room"], 0);
+        assert_eq!(probe["product"], 0);
+        assert_eq!(
+            probe["honesty"]["g5_requires_witness_transport_cap_cli_pilot"],
+            true
+        );
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn g5_grant_refuses_honesty_require_full_spam() {
+        let err = refuse_forbidden_g5_witness_transport_pilot_command(
+            "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g5-witness-transport-honesty",
+        )
+        .expect_err("honesty twin refused");
+        assert!(
+            err.to_string().contains("feeder")
+                || err.to_string().contains("g5-witness-transport")
+                || err.to_string().contains("honesty")
+        );
+        refuse_forbidden_g5_witness_transport_pilot_command(G5_CODE_DEFINED_PILOT)
+            .expect("code-defined Cap CLI pilot accepted");
+    }
+
+    #[test]
+    fn g5_apply_dry_run_with_grant_keeps_product_zero_and_no_writes() {
+        let root = temp_dir("g5-dry");
+        let (manifest_path, manifest) = sample_g5_pack(&root);
+        let probe =
+            probe_manifest(&manifest, &root.join("workspace"), &manifest_path).expect("probe");
+        let grant = json!({
+            "schema": GRANT_SCHEMA_G5,
+            "root_authorized": true,
+            "allow_apply": true,
+            "unlock": "G5",
+            "pilot_command": G5_CODE_DEFINED_PILOT,
+            "destinations": [
+                "deployments/lab/compose.g5-witness-transport.yaml",
+                "build/rust/g5-witness-transport-lab.Dockerfile",
+                "build/rust/g5-witness-transport-lab.Dockerfile.dockerignore",
+                "deployments/lab/witness/g5-witness-transport-contract.json",
+                "deployments/lab/witness/g5-witness-transport-measure-receipt.scaffold.json",
+                "deployments/lab/witness/g5-witness-transport-cap-pilot.sh"
+            ]
+        });
+        let grant_path = root.join("grant.json");
+        write(
+            &grant_path,
+            serde_json::to_string_pretty(&grant).unwrap().as_bytes(),
+        );
+        let report = apply_transfer(
+            &manifest,
+            &probe,
+            Some(grant_path.to_str().unwrap()),
+            &root.join("workspace"),
+            true,
+        )
+        .expect("dry-run");
+        assert_eq!(report["schema"], APPLY_SCHEMA_G5);
+        assert_eq!(report["applied"], false);
+        assert_eq!(report["dry_run"], true);
+        assert_eq!(report["pass_product_clean_room"], 0);
+        assert_eq!(report["product"], 0);
+        assert_eq!(report["cap_execute"], false);
+        assert!(
+            !root
+                .join("workspace/deployments/lab/compose.g5-witness-transport.yaml")
+                .exists()
+        );
+        assert!(!root.join("workspace").join(UNLOCK_G5_APPLIED_REL).exists());
         let _ = fs::remove_dir_all(root);
     }
 }

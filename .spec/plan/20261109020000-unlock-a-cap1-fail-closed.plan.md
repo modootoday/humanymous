@@ -83,15 +83,23 @@ structural feeder** landed (Cap CLI scaffold + Cap-ready topology pack;
 `20261109030000-g2-collector-product-binding-cap-ready.plan.md`.
 
 **Decision: `hard_stop_root_ask` for AUTH/AT** remains; tip-reconfirm @
-`e54c51e6` AUTH/AT still absent (no duplicate CONSOLIDATED-ROOT-ASK). Cap=0 G2
+`1f296c90` AUTH/AT still absent (no duplicate CONSOLIDATED-ROOT-ASK). Cap=0 G2
 TRANSFER helper landed (`transfer-applicator` UnlockLetter::G2 +
-`ROOT-ONE-STEP.md`; probe ready=true; live topology still Root). Cap=1 still
-forbidden while Cap free=false without Cap realloc + live G2 Cap topology
-TRANSFER. product=0.
+`ROOT-ONE-STEP.md`; probe ready=true; live topology still Root; G2 GRANT still
+absent). Cap=0 **G5 Cap CLI Cap-ready twin** landed (Cap CLI
+`--g5-witness-transport` + Cap-ready pack + UnlockLetter::G5 TRANSFER helper +
+`ROOT-ONE-STEP.md`; Cap free still false; `authenticated_witness_transport=false`;
+see plan `20261109031000-g5-witness-transport-cap-ready`). Cap=1 still forbidden
+while Cap free=false without Cap realloc + live Cap topology TRANSFER.
+product=0. Clean-room gates / fail-closed product=0 / Cap free=false canonized
+in claimable Cap=0 plans.
 
-1. Root places `AUTH-HANDOFF.json` schema
+1. Root G2 `ROOT-ONE-STEP.md` GRANT→TRANSFER → Cap realloc → Cap=1 once
+   `--g2-collector-product-binding` (jobs=1), **or** Root G5 `ROOT-ONE-STEP.md`
+   GRANT→TRANSFER → Cap realloc → Cap=1 once `--g5-witness-transport`
+2. Root places `AUTH-HANDOFF.json` schema
    `humanymous.root-n06-owner-join-auth-handoff/1`
    (`n06_owner_join_authorized=true`, `product=0`, `pass_product_clean_room=0`)
-2. Else Root places `AT-HANDOFF.json` schema
+3. Else Root places `AT-HANDOFF.json` schema
    `humanymous.root-interactive-at-windows-tuple/1`
    (`browser_ready_authorized=true`, `product=0`, `pass_product_clean_room=0`)

@@ -3,7 +3,7 @@ id: plan:root/20261109030000-g2-collector-product-binding-cap-ready
 title: G2 collector product-binding Cap CLI Cap=0 scaffold + Cap-ready topology
 status: active
 created: 2026-11-08T18:00:00Z
-updated: 2026-11-08T18:12:00Z
+updated: 2026-11-08T18:25:00Z
 rel:
   depends_on:
     - plan:root/20261108233000-post-unlock-c-matrix-honesty
@@ -57,8 +57,10 @@ R-G2-5. **No A/B/C Cap spam.** No AUTH/AT invent. Detection freeze.
 
 R-G2-6. **Cap=0 TRANSFER helper when Root TRANSFER required.** Lab-runner
 `transfer-probe` / `transfer-apply` UnlockLetter::G2 + `ROOT-ONE-STEP.md` so Root
-can complete apply in one documented step (like Unlock C). Prefer this over
-redundant G5 Cap CLI twin while Cap free=false.
+can complete apply in one documented step (like Unlock C). While G2 GRANT still
+Root-absent, Cap=0 **G5 Cap CLI Cap-ready twin** may land in parallel (separate
+pack/GRANT; see plan `20261109031000-g5-witness-transport-cap-ready`) — do not
+duplicate G2 GRANT/TRANSFER.
 
 ## 3. Surfaces
 
@@ -100,5 +102,8 @@ Private Cap-ready:
    BUNDLE --g2-collector-product-binding` (jobs=1).
 4. Separately: Root AUTH-HANDOFF and/or AT-HANDOFF for N06/BrowserReady (unchanged
    blocked_on_root; do not forge).
+5. Cap=0 G5 Cap CLI Cap-ready twin landed separately (plan
+   `20261109031000-g5-witness-transport-cap-ready`); Cap free still false;
+   product=0; do not Cap=1 either feeder without Cap realloc + live topology.
 
 Never invent `pass_product_clean_room`.

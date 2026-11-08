@@ -202,10 +202,15 @@ fn allowed(path: &str) -> bool {
                 | "build/rust/h2-hosted-venue-lab.Dockerfile.dockerignore"
                 | "build/rust/g2-collector-product-binding-lab.Dockerfile"
                 | "build/rust/g2-collector-product-binding-lab.Dockerfile.dockerignore"
+                | "build/rust/g5-witness-transport-lab.Dockerfile"
+                | "build/rust/g5-witness-transport-lab.Dockerfile.dockerignore"
                 | "deployments/lab/gateway/h2-product-binding-contract.json"
                 | "deployments/lab/collector/g2-collector-product-binding-contract.json"
                 | "deployments/lab/collector/g2-collector-product-binding-measure-receipt.scaffold.json"
                 | "deployments/lab/collector/g2-collector-product-binding-cap-pilot.sh"
+                | "deployments/lab/witness/g5-witness-transport-contract.json"
+                | "deployments/lab/witness/g5-witness-transport-measure-receipt.scaffold.json"
+                | "deployments/lab/witness/g5-witness-transport-cap-pilot.sh"
                 | "deployments/lab/authority/package.json"
                 | "deployments/lab/authority/package-lock.json"
                 | "deployments/lab/authority/pilot.mjs"
@@ -264,10 +269,15 @@ mod tests {
             "build/rust/h2-product-binding-lab.Dockerfile.dockerignore",
             "build/rust/g2-collector-product-binding-lab.Dockerfile",
             "build/rust/g2-collector-product-binding-lab.Dockerfile.dockerignore",
+            "build/rust/g5-witness-transport-lab.Dockerfile",
+            "build/rust/g5-witness-transport-lab.Dockerfile.dockerignore",
             "deployments/lab/gateway/h2-product-binding-contract.json",
             "deployments/lab/collector/g2-collector-product-binding-contract.json",
             "deployments/lab/collector/g2-collector-product-binding-measure-receipt.scaffold.json",
             "deployments/lab/collector/g2-collector-product-binding-cap-pilot.sh",
+            "deployments/lab/witness/g5-witness-transport-contract.json",
+            "deployments/lab/witness/g5-witness-transport-measure-receipt.scaffold.json",
+            "deployments/lab/witness/g5-witness-transport-cap-pilot.sh",
             "adapters/node/src/index.cjs",
         ] {
             assert!(allowed(path));

@@ -22,6 +22,11 @@ use crate::orchestration::g2_collector_product_binding::{
     CODE_DEFINED_PILOT_COMMAND as G2_CAP_CLI_PILOT, CONTRACT_REL as G2_CAP_CONTRACT,
     REQUIRED_CAP_TOPOLOGY as G2_REQUIRED_CAP_TOPOLOGY, missing_cap_topology as g2_missing_cap_topology,
 };
+use crate::orchestration::g5_witness_transport::{
+    CAP_READY_PACK_REL as G5_CAP_READY_PACK, CAP_SELECTOR as G5_CAP_CLI_SELECTOR,
+    CODE_DEFINED_PILOT_COMMAND as G5_CAP_CLI_PILOT, CONTRACT_REL as G5_CAP_CONTRACT,
+    REQUIRED_CAP_TOPOLOGY as G5_REQUIRED_CAP_TOPOLOGY, missing_cap_topology as g5_missing_cap_topology,
+};
 use crate::orchestration::g4_cef_at::{
     CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CEF_BUNDLE_ENV,
     CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT, PATH_RELEASE_SURFACES,
@@ -150,9 +155,12 @@ impl UnlockProbe {
                 "free": cap_free_after_unlock_a(root).unwrap_or(false),
                 "realloc_policy": "only_real_structural_next_feeder_after_exit0_honesty",
                 "no_cap_spam_abc": true,
-                "g2_g5_cap_cli_with_topology": g2_missing_cap_topology(root).is_empty(),
+                "g2_g5_cap_cli_with_topology": g2_missing_cap_topology(root).is_empty()
+                    && g5_missing_cap_topology(root).is_empty(),
                 "g2_cap_cli_scaffolded": true,
                 "g2_cap_topology_live": g2_missing_cap_topology(root).is_empty(),
+                "g5_cap_cli_scaffolded": true,
+                "g5_cap_topology_live": g5_missing_cap_topology(root).is_empty(),
             },
             "g2_collector_product_binding_cap_cli": {
                 "selector": G2_CAP_CLI_SELECTOR,
@@ -176,12 +184,28 @@ impl UnlockProbe {
                 "topology_surfaces": G2_PRODUCT_BINDING_TOPOLOGY,
                 "note": "Cap=0 readiness only; Desktop collector component ≠ G2 product; Cap CLI Cap=0 scaffolded separately; no Cap=1 without Cap realloc + live Cap CLI+topology"
             },
+            "g5_witness_transport_cap_cli": {
+                "selector": G5_CAP_CLI_SELECTOR,
+                "pilot_command": G5_CAP_CLI_PILOT,
+                "code_defined_pilot_command": G5_CAP_CLI_PILOT,
+                "status": if g5_missing_cap_topology(root).is_empty() {
+                    "cap_cli_topology_live_cap1_requires_realloc"
+                } else {
+                    "cap0_scaffold_topology_cap_ready"
+                },
+                "required_cap_topology": G5_REQUIRED_CAP_TOPOLOGY,
+                "missing_cap_topology": g5_missing_cap_topology(root),
+                "contract": G5_CAP_CONTRACT,
+                "cap_ready_pack": G5_CAP_READY_PACK,
+                "authenticated_witness_transport": false,
+                "note": "Cap CLI Cap=0 scaffolded; Cap topology Cap-ready until TRANSFER; Cap=1 only after Cap realloc + live topology; authenticated_witness_transport=false until Cap measured; never invent pass_product_clean_room"
+            },
             "g5_witness_transport_cap0": {
                 "selector": G5_CAP_SELECTOR,
                 "pilot_command": G5_PILOT_COMMAND,
                 "status": "cap0_honesty_only",
                 "root_ask_paths": G5_ROOT_ASK_PATHS,
-                "note": "Cap=0 honesty only; custody/witness component ≠ authenticated transport product; no Cap=1 without Cap free + claimable Cap CLI+topology"
+                "note": "Cap=0 honesty only; custody/witness component ≠ authenticated transport product; Cap CLI Cap=0 scaffolded separately; no Cap=1 without Cap realloc + live Cap CLI+topology"
             },
             "n06_owner_join_cap0": {
                 "selector": N06_OWNER_JOIN_CAP_SELECTOR,
@@ -226,7 +250,10 @@ impl UnlockProbe {
                 "cap_realloc_only_structural_feeder": true,
                 "g2_g5_cap0_not_product": true,
                 "g2_cap_cli_scaffolded_not_product": true,
+                "g5_cap_cli_scaffolded_not_product": true,
                 "code_defined_g2_collector_product_binding_cap_cli": true,
+                "code_defined_g5_witness_transport_cap_cli": true,
+                "authenticated_witness_transport_false_until_cap_measured": true,
                 "g4_component_not_browser_ready": true,
                 "never_invent_interactive_at_tokens": true,
                 "hosted_unlock_a_n06_readiness_not_owner_join": true,

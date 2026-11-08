@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T18:05:00Z
+updated: 2026-11-08T18:25:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -107,12 +107,19 @@ hosted/W2/authority/A Cap reburn without structural delta. Cap free=**false**.
 
 **Decision @ `e38ce6c5` tip audit: `hard_stop_root_ask` for AUTH/AT.** Cap=0
 honesty CLIs remain closed. Cap=0 **G2 Cap CLI Cap-ready structural feeder**
-landed @ tip `76819bb4`+ (Cap CLI `--g2-collector-product-binding` scaffold +
-Cap-ready topology pack + Cap=0 G2 transfer-probe/apply helper /
-`ROOT-ONE-STEP.md`; Cap realloc **eligible** not executed; Cap free still
-**false**; Cap burn=0; scope=`root_transfer_required`). Cap=1 forbidden while
-Cap free=false without Cap realloc + live Cap topology TRANSFER. Do not
-duplicate CONSOLIDATED-ROOT-ASK.
+landed @ tip `76819bb4`+ / TRANSFER helper `1f296c90` (Cap CLI
+`--g2-collector-product-binding` scaffold + Cap-ready topology pack + Cap=0 G2
+transfer-probe/apply helper / `ROOT-ONE-STEP.md`; Cap realloc **eligible** not
+executed; Cap free still **false**; Cap burn=0; scope=`root_transfer_required`;
+G2 GRANT still absent). Cap=0 **G5 Cap CLI Cap-ready twin** landed (Cap CLI
+`--g5-witness-transport` + Cap-ready pack + UnlockLetter::G5 TRANSFER helper +
+`ROOT-ONE-STEP.md`; Cap realloc eligible not executed; Cap free=false;
+`authenticated_witness_transport=false`; plan
+`20261109031000-g5-witness-transport-cap-ready`). Cap=1 forbidden while Cap
+free=false without Cap realloc + live Cap topology TRANSFER. Clean-room /
+fail-closed product=0 / Cap free=false / G2 Cap-ready+TRANSFER wait / G5
+Cap-ready status canonized in claimable Cap=0 plans. Do not duplicate
+CONSOLIDATED-ROOT-ASK.
 
 Cap=0 CONSOLIDATED-ROOT-ASK (supersedes Cap-free-era packet):
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/CONSOLIDATED-ROOT-ASK.md`
@@ -144,5 +151,6 @@ product-binding. Evidence:
 `.spec.local/root/evidence/20261109023000-cursor-cap0-browser-ready-honesty/`,
 `.spec.local/root/evidence/20261109024500-cursor-cap0-n06-owner-auth-honesty/`,
 `.spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/`,
+`.spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/`,
 and
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/`.
