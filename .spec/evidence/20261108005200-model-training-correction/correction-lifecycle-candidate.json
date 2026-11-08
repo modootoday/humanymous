@@ -1,0 +1,227 @@
+{
+  "schema": "humanymous.correction-lifecycle-source-candidate/1",
+  "status": "EVIDENCE_ONLY_COMPLETE_PURE_SOURCE_CANDIDATE_NOT_COMPILED_OR_EXECUTED",
+  "branch": "codex/rust",
+  "files": [
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-mod.candidate.rs",
+      "sha256": "5da3aa9ea432793f2e7873c3cd6cea201a7e0de21a572a6674faf713431a83f5",
+      "bytes": 2056
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-numeric.candidate.rs",
+      "sha256": "3ac2ff796dddb0409d5ead71312f946815057b040fd874f40744315be8a1c7f5",
+      "bytes": 8140
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-features.candidate.rs",
+      "sha256": "84d2a2370ac59b7b0fe22df9fbae0f41ff6aebef3c1ff560c09cdfa9f3d212da",
+      "bytes": 3608
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-gates.candidate.rs",
+      "sha256": "5d613bcf6e42174fbd83cb40c2e7693d49be6e8182d795972fb0335fde2548b5",
+      "bytes": 7321
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-lifecycle.candidate.rs",
+      "sha256": "a2f590bfecc0db2429ced7acc3ee36658f5d214c53830331e7ba98837c4cf62f",
+      "bytes": 10637
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-controller.candidate.rs",
+      "sha256": "e1f9d6811cc0b514f8d26eb0f20b92c6aac2f5e083d66abf50ae797aad17f448",
+      "bytes": 4319
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-tests.candidate.rs",
+      "sha256": "07a4b96ab1279d47f9ad30ab1a5ff7a817a537d31f84dc92e88fd761ccc50ede",
+      "bytes": 20954
+    },
+    {
+      "path": ".spec/evidence/20261108005200-model-training-correction/correction-numeric-fixtures.json",
+      "sha256": "894b36077d70908ceb6bd4983f6f1324dc5764c85c6967d5ae648d09549901ea",
+      "bytes": 2379
+    }
+  ],
+  "go_source_preimages": [
+    {
+      "path": "internal/mlcorrect/bundle_test.go",
+      "sha256": "982d3c16edafadddd69cbe5b500db90ce3738ef3692ec2b33ac1784cb98a1265"
+    },
+    {
+      "path": "internal/mlcorrect/bundle.go",
+      "sha256": "79fb962102860cf905c2eed92bdca4d0ca948d670e53c4035e217655c4f690ea"
+    },
+    {
+      "path": "internal/mlcorrect/calibrate_test.go",
+      "sha256": "ae0d9105a66012905551e7e5f204e83cd2e8b54c3d3679bb63b027462d49009d"
+    },
+    {
+      "path": "internal/mlcorrect/calibrate.go",
+      "sha256": "875d0dc16ecfdfd685e2294eec48620cdb8b74d50a7c19e27bae0a886e192c43"
+    },
+    {
+      "path": "internal/mlcorrect/canary_test.go",
+      "sha256": "ced045a4ffd19425fe8f758627c734a3cd0305c60fa2caa6bebea02e11c81a7d"
+    },
+    {
+      "path": "internal/mlcorrect/canary.go",
+      "sha256": "88f229041984ec971e8469d873e3071eb4e55afcdb5dd6a03e2d4ea55ab048b7"
+    },
+    {
+      "path": "internal/mlcorrect/controller_test.go",
+      "sha256": "5265c2163b7a8d2e6673538d57eecdb80c43cc090cd1a267caee7798320920f9"
+    },
+    {
+      "path": "internal/mlcorrect/controller.go",
+      "sha256": "b21258bc9b3773067b53ef55861b61df80fe7a53c534f844f4afab84e6e0d6a6"
+    },
+    {
+      "path": "internal/mlcorrect/drift_test.go",
+      "sha256": "1f6c08d011246f52de554da2227db8610463f8afb1081d8163966de62d2e7e27"
+    },
+    {
+      "path": "internal/mlcorrect/drift.go",
+      "sha256": "8274153f955dabd2ce662f19b0a5f5d0f372cecb89297f93ee606c13ab188ed6"
+    },
+    {
+      "path": "internal/mlcorrect/features_monitor_test.go",
+      "sha256": "e8d145629ce455dc6ba903a353f3ba49d3ec47bd6f2966ac65d9e338725369b7"
+    },
+    {
+      "path": "internal/mlcorrect/features_monitor.go",
+      "sha256": "9d6899da931894c1b6a3b27300e04ea3be44903aaf34d8be14aaa18b2af37513"
+    },
+    {
+      "path": "internal/mlcorrect/oracle_test.go",
+      "sha256": "8610155284f3c5a274460dbe4c870f243f8dae787c6d73593b4dc6e02e2d3624"
+    },
+    {
+      "path": "internal/mlcorrect/oracle.go",
+      "sha256": "0e498cebe52f740d292ac777c132283947f5b111d5b796e6bd1e4cf0bbb93a5e"
+    },
+    {
+      "path": "internal/mlcorrect/shadow_test.go",
+      "sha256": "3a3c07eec96d976c35c7aa26749bd72702649df984f6cc6dd28955302a14d7d7"
+    },
+    {
+      "path": "internal/mlcorrect/shadow.go",
+      "sha256": "c8581453322a0cdc14665d6ef67161fbfe13e8dc88eac032990c6f6b6c3d433f"
+    },
+    {
+      "path": "cmd/mlcorrect-train/gate.go",
+      "sha256": "c25c2a7fffe71fe2097265ea5410d98e6c827394df66d170472d04d1c20e9cf2"
+    },
+    {
+      "path": "cmd/mlcorrect-train/main.go",
+      "sha256": "dc5c9c842edc2a9f3951a3d124951cbbeae04ae8c2b3eb084c31e3cdc3d5f65b"
+    },
+    {
+      "path": "internal/mltrain/train.go",
+      "sha256": "55ecd6e3d270c6a83584390efd82b6e16dfeb920a1e46f8a952b2825b99b8846"
+    },
+    {
+      "path": "internal/mltrain/record.go",
+      "sha256": "b10f323c1e8c78da1bb4c71e4e10ae14a757b7c480a103a6ec52fe18e0a22f3c"
+    }
+  ],
+  "root_readonly_preimages": [
+    {
+      "exists": true,
+      "sha256": "f576837b5348af278e0b8ba59f022cbf439ec123b7dab0fb43a25bfa160b567b",
+      "root_readonly_path": ".spec.local\\root\\evidence\\20261108054000-core-consolidation\\tools-integration-5f1010d4\\crates\\sdk\\humanymous-core\\src\\model\\mod.rs",
+      "mode": "READ_ONLY_PREIMAGE_NOT_APPLIED"
+    },
+    {
+      "exists": true,
+      "sha256": "ab3db88975c14310c655d480079332e11c92467215756bfb90a638fda67cb13e",
+      "root_readonly_path": ".spec.local\\root\\evidence\\20261108054000-core-consolidation\\tools-integration-5f1010d4\\crates\\sdk\\humanymous-core\\src\\model\\inference\\mod.rs",
+      "mode": "READ_ONLY_PREIMAGE_NOT_APPLIED"
+    },
+    {
+      "exists": true,
+      "sha256": "3490db46846fac78219a98f8e5e8620cbb32840c350fe94da1ab1ef4390b3235",
+      "root_readonly_path": ".spec.local\\root\\evidence\\20261108054000-core-consolidation\\tools-integration-5f1010d4\\crates\\sdk\\humanymous-core\\src\\model\\inference\\runtime.rs",
+      "mode": "READ_ONLY_PREIMAGE_NOT_APPLIED"
+    },
+    {
+      "exists": true,
+      "sha256": "5bd49ab1543a20b22df4a0f773540a64afce796963411b45f85a1751b69ea453",
+      "root_readonly_path": ".spec.local\\root\\evidence\\20261108054000-core-consolidation\\tools-integration-5f1010d4\\crates\\sdk\\humanymous-core\\src\\model\\training\\mod.rs",
+      "mode": "READ_ONLY_PREIMAGE_NOT_APPLIED"
+    },
+    {
+      "exists": true,
+      "sha256": "fd3824afe4fa9e11ed4e368fd847c6559b465774206387f619c363a527cd043e",
+      "root_readonly_path": ".spec.local\\root\\evidence\\20261108054000-core-consolidation\\tools-integration-5f1010d4\\crates\\sdk\\humanymous-core\\src\\model\\training\\offline.rs",
+      "mode": "READ_ONLY_PREIMAGE_NOT_APPLIED"
+    },
+    {
+      "exists": true,
+      "sha256": "de7c7f85d9e7d92f04f9d715c04360bbd1bc062dbbc4b367778c475675f38b1b",
+      "root_readonly_path": ".spec.local\\root\\evidence\\20261108054000-core-consolidation\\tools-integration-5f1010d4\\crates\\sdk\\humanymous-core\\Cargo.toml",
+      "mode": "READ_ONLY_PREIMAGE_NOT_APPLIED"
+    }
+  ],
+  "proposed_destination": "crates/sdk/humanymous-core/src/model/correction/{mod,numeric,features,gates,lifecycle,controller,tests}.rs and tests/fixtures/model/correction-numeric.json",
+  "authored_test_count": 22,
+  "authored_test_inventory": [
+    "fn frozen_source_derived_aci_bits_and_bot_noop() {",
+    "fn frozen_page_hinkley_order_and_reset() {",
+    "fn frozen_pass_fraction_and_solve_ema_then_anomaly_refusal() {",
+    "fn frozen_shadow_float32_delta_before_float64_aggregate() {",
+    "fn psi_identity_exact_and_invalid_shapes_fail_closed() {",
+    "fn numeric_nonfinite_capacity_and_late_failures_preserve_state() {",
+    "fn frozen_reference_window_closes_once_and_nan_is_transactional() {",
+    "fn degenerate_reference_blindspot_is_preserved_not_overclaimed() {",
+    "fn weak_labels_quarantine_while_legacy_mapping_remains_explicit() {",
+    "fn controller_uses_post_update_theta_and_snapshots_do_not_increment_events() {",
+    "fn controller_composite_failure_rolls_back_mimic_and_calibration() {",
+    "fn canary_strict_boundary_priority_one_shot_and_count_regression() {",
+    "fn stage_exact_bytes_digest_signature_schema_and_failed_replacement_are_atomic() {",
+    "fn unsigned_data_stages_but_never_produces_promotion_request() {",
+    "fn dual_control_scope_stale_generation_expiry_and_replay_refuse_without_mutation() {",
+    "fn offline_promotion_retains_one_previous_and_rollback_reverts_to_none_without_runtime() {",
+    "fn authority_clock_regression_is_fail_closed_and_staging_never_selects() {",
+    "fn gate_default_quality_counts_aut_bits_and_exact_model_evidence_binding() {",
+    "fn quality_cannot_hide_missing_cohort_or_poisoned_minority_in_aggregate() {",
+    "fn temporal_ties_missing_class_and_quarantine_refuse_not_zero_success() {",
+    "fn cohort_rate_is_float32_then_compared_as_float64_like_original_gate() {",
+    "fn composed_shadow_pass_poisoning_and_canary_emit_data_without_activation() {"
+  ],
+  "fixture_origin": "Analytic/source-derived frozen bits only; no new Go or Rust execution",
+  "crypto_boundary": "Required exact-byte signature+two distinct authenticated approver adapters; no real adapter/key provisioning is implemented or qualified; mocks explicitly test-only",
+  "offline_only": true,
+  "activation": false,
+  "live_source_cargo_root_snapshot_changes": false,
+  "execution": "NOT_RUN",
+  "required_review": [
+    "Private correction domain visibility/caller ownership; no broad re-export/fake calls",
+    "Required digest/signed promotion/quality evidence/dual approvals stronger than originalGo",
+    "Read-only snapshots, weak-label quarantine, strict-time tie and missing-support refusal are explicit deltas",
+    "Default legacy gate constants preserved; f32 metrics widened to f64 policy comparison",
+    "Authority adapters/trust roots/authenticated oracle/clock remain actual integration prerequisites",
+    "No production ThresholdProvider, Runtime setters, weight/score/verdict changes",
+    "No CLI offline-process target changes; hosted cases mapped separately in plan"
+  ],
+  "hosted_cases": [
+    "Exact-byte Stage/read/hash/decode and signature valid/wrong/missing/replaced-file identity",
+    "Trusted authority pair/action/evidence/generation/expiry/replay and failclosed disconnected/custody recovery",
+    "Cohort/time/class-support/finite input refusal before candidate/proposal",
+    "Canary one-shot proposal and optional isolated ledger rollback; production activation remains disabled",
+    "Existing CLI2process tests/9child invocations remain separate and NOT_RUN; hosted outer supervisor time/tree/storage qualification",
+    "Go1.26.3 original regression and any truly observable floatbits; do not upgrade analytic fixtures to Go observations"
+  ],
+  "execution_allocation_request": {
+    "status": "REQUEST_ROOT_REVIEW_AND_SCOPED_ALLOCATION_NOT_GRANTED",
+    "commands": [
+      "cargo fmt --package humanymous-core -- --check",
+      "cargo test --locked --offline -p humanymous-core --lib model::correction::tests --jobs 1 -- --test-threads=1",
+      "cargo test --locked --offline -p humanymous-core --jobs 1 -- --test-threads=1",
+      "cargo check --locked --offline -p humanymous-core --all-targets --all-features --jobs 1",
+      "cargo clippy --locked --offline -p humanymous-core --all-targets --all-features --jobs 1 -- -D warnings"
+    ],
+    "required": "Accepted preimage-bound assembly/caller visibility, then fmt/focused22/Core regression/alltarget check/strictClippy; no local heavy or hosted launch by this owner"
+  }
+}

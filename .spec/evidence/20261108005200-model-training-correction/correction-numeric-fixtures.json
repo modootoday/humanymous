@@ -1,0 +1,40 @@
+{
+  "schema": "humanymous.correction-frozen-numeric-contract/1",
+  "provenance": "ANALYTIC_SOURCE_DERIVED_NOT_A_GO_RUN_OR_RUST_EXECUTION",
+  "go_observed_internal_states": false,
+  "compatibility": "Expected exact bits in this restricted binary-rational fixture; Go/Rust target FMA/ln parity still unqualified",
+  "aci": {
+    "budget": 0.25, "theta": 0.5, "gamma": 0.25,
+    "observations": [
+      {"human": true, "p": 0.5, "theta_bits": "3f300000", "fp_ema_bits": "3e87ae14", "humans": 1, "bots": 0},
+      {"human": false, "p": 0.75, "theta_bits": "3f300000", "fp_ema_bits": "3e87ae14", "humans": 1, "bots": 1},
+      {"human": true, "p": 0.0, "theta_bits": "3f200000", "humans": 2, "bots": 1}
+    ]
+  },
+  "page_hinkley": {
+    "delta": 0.25, "lambda": 0.5,
+    "observations": [
+      {"x": 0.0, "mean_bits": "0000000000000000", "cumulative_bits": "bfd0000000000000", "alarm": false},
+      {"x": 0.0, "mean_bits": "0000000000000000", "cumulative_bits": "bfe0000000000000", "alarm": false},
+      {"x": 1.0, "alarm": false},
+      {"x": 1.0, "mean_bits": "3fe0000000000000", "alarm": true}
+    ]
+  },
+  "pass": {"fraction": 0.5, "baseline": 0.5, "others": 600, "admitted": 600, "one_solved_ema_bits": "3f0147ae"},
+  "shadow": {
+    "pairs": [
+      {"a": 0.25, "s": 0.75, "aa": false, "sa": false},
+      {"a": 0.75, "s": 0.25, "aa": false, "sa": false},
+      {"a": 0.0, "s": 0.0, "aa": true, "sa": true},
+      {"a": 0.0, "s": 0.75, "aa": true, "sa": false}
+    ],
+    "theta": 0.5, "n": 4, "both": 2, "shadow_more": 1, "active_more": 1,
+    "mean_delta_bits": "3fe0000000000000", "agreement_bits": "0000000000000000"
+  },
+  "psi_identity": {"reference": [0.25, 0.75], "current": [0.25, 0.75], "expected_bits": "0000000000000000"},
+  "canary": {"max_fp": 0.25, "probation": 20, "minimum_humans": 20, "strict_gt_boundary": true},
+  "quality_counts": {"humans": 50, "bots": 50, "human_fp": 0, "bot_tp": 50, "aut_bits": "3f800000", "human_fpr_bits": "00000000", "bot_tpr_bits": "3f800000"},
+  "quality_boundary": {"human_fp": 2, "cohort_humans": 20, "rate_f32_bits": "3dcccccd", "policy_f64_bits": "3fb999999999999a", "exceeds_policy": true},
+  "quarantined_legacy_auto_labels": ["ChallengeFailed", "ChallengeAbandoned"],
+  "unsupported_parity_claims": ["New executed Go outputs", "Nonzero PSI ln bits", "Cross-platform FMA", "Production threshold/weight/verdict change"]
+}

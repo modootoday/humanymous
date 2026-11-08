@@ -1205,3 +1205,174 @@ subprocesses. Root owns the isolated documentation/Display/compiler fixes and
 actual caller routing; original candidate source history stays immutable in Git.
 This correction changes evidence only; current live visibility/Cargo/deadcode
 expectation are untouched. Core offline/unsigned/noactivation contract unchanged.
+
+## Correction/promotion lifecycle candidate: pure Rust source, no activation
+
+Status: PREPARED_EVIDENCE_ONLY_PENDING_ROOT_REVIEW_AND_EXECUTION. Actual branch
+codex/rust was checked before each write; no branch/worktree/ref creation, push
+or ref deletion. This owner writes only its claimed Model evidence and plan.
+Root's isolated tools-integration-5f1010d4 is READ_ONLY: exact model/module/Cargo
+preimages were hashed, never edited. Cursor integration/common paths are not
+claimed here; the coordinator and eventual actual Cursor claim own application.
+This is a source review queue item, not a handover or an applied integration.
+
+### Exact source map and completed pure responsibilities
+
+All candidates are adjacent correction-*.candidate.rs plus immutable numeric
+fixture, registered by correction-lifecycle-candidate.json. Intended Core location
+is src/model/correction/{mod,numeric,features,gates,lifecycle,controller,tests}.rs;
+fixture is tests/fixtures/model/correction-numeric.json, included via manifest-dir
+rather than fragile parent traversal. No live mod.rs/API/Cargo/Root snapshot edits.
+
+- numeric: bounded ordered f32 ACI theta/FP-EMA proposal, f64 Page-Hinkley,
+  PSI, Pass solve-EMA/fraction admission, active/shadow comparison with f32delta
+  BEFOREf64aggregation. Source defaults/cut-points retain the original Go formulas.
+- features: first reference window freezes8quantile buckets per27features;
+  subsequent complete windows yield max-PSI. Default500, explicit window<=4096;
+  invalid shape/nonfinite observation refuses without partial counters.
+- gates: stable temporal partition, strict cross-boundary tie refusal, source-
+  reviewed record/feature revalidation, class/cohort support, original per-cohort
+  FPR/TPR policy and f32 bucket-mean AUT. Combined rows100..100000, cohorts<=64,
+  metadata<=128bytes, no absent-class "success". Required human cohorts are the
+  union of TRAINandTEST, so a missing minority cannot disappear in the aggregate.
+- lifecycle: hash/decode/shape/schema/finite/signature verification over ONEexact
+  bounded byte buffer, stage as offline data, attach quality evidence bound to
+  exact model digest and exact ordered records/policy. Signed candidate+quality
+  evidence required before an offline promotion request can be constructed.
+  Two DISTINCTauthenticated principals approve a domain/action/model/evidence/
+  generation/expiry-bound request. Replay, stale stage/generation, wrong evidence,
+  expiry, clock regression and failed approval preserve the prior ledger state.
+  Retain one previous candidate; rollback returns to it then to no-model data.
+- canary: arm/probation/min20human budget comparison, drift/Pass anomaly priority,
+  strict greater-than boundary, graduation, regression refusal and one-shot
+  rollback PROPOSAL. No callback, runtime setter or automatic online action.
+- controller: cohort-scoped composition, independent reviewed label requirement,
+  weak challenge failure/abandonment quarantine, source post-ACI oracle-error
+  comparison, transactional composite updates and read-only aggregate snapshots.
+  No implementation of production ThresholdProvider/FeatureObserver is installed.
+
+Every promotion/canary/controller receipt remains activation=false. Selected/
+previous in the ledger are OFFLINEcandidate data identities, not serving slots.
+Weights in live/isolated production source and Runtime remain untouched. Frozen
+scoring weights/hard predicates/thresholds/verdict bands never change. No motor
+richness/speed or Pass/CHALLENGE user gate is introduced by these offline sensors.
+
+### Precise source and policy deltas requiring coordinator acceptance
+
+OriginalGo BundleManager Stage read/hash/signature-checks a file, then opens it
+again through LoadMLP. Candidate uses one immutable buffer. Go digest was optional,
+unsigned configuration could promote, and Promote had NOapproval argument despite
+its comments. Candidate requires exact digest and independently configured signed
+verification+two distinct authority proofs for offline promotion. These are explicit
+fail-closed deltas, not claims that Go already enforced dual control.
+
+SignatureVerifier and ApprovalAuthority are TRUSTBOUNDARYinterfaces, not crypto
+implementations or verified identities by themselves. Adapters, trust-root/key
+provisioning, PKIX/PEM handling, authentic oracle events and trusted time remain
+Root/authority integration prerequisites. Without verifier/signature, signed stage
+refuses. Without two valid authority results, commit refuses. Tests use NAMEDMOCKS;
+they do not establish Ed25519/key custody/security. Do not expose private correction
+interfaces through forwarding/helper SDKs just to wire an adapter. Actual domain
+visibility/authority composition must be accepted before any caller integration.
+
+Quality report has private construction and binds model+ordered TRAIN/TEST record
+encodings+policy. It establishes its SPECIFICreviewed offline batch, not "latest
+traffic" freshness or authenticated dataset provenance. No online health claim
+is inferred. Approval authority must bind the exact evidence/action digest and
+source/time policy; caller-supplied now is not an authenticated clock by itself.
+The300second action window is a proposed finite offline approval limit, not a
+production scoring threshold or a presently deployed authority policy.
+
+Go Gate/Snapshot could increment drift event counts on every dashboard read.
+Candidate snapshots are read-only; events increment only on recorded outcome
+updates. Weak failed/abandoned challenge labels remain legacy diagnostics as BOT,
+but reviewed admission quarantines them as ambiguous, matching prior Model policy.
+Absent shadow support uses None, not measured zero. Empty/mismatched PSI arrays
+refuse instead of Go's successful zero; all nonfinite/overflow/capacity failures
+are explicit. Cross-time ties refuse instead of silently calling a tied window
+"future". Counters are checked/bounded; no wrapped count or unsigned subtraction.
+These changes require Root design acceptance and eventual SoT reconciliation.
+
+Gate policy comparisons preserve an easily missed original detail: cohort rates
+and botTPR are f32, WIDENEDto f64 before comparison with Go gate's f64config. No
+f32policy rounding is substituted. A2/20cohort FP rate has f32bits3dcccccd, which
+is greater than f64policy0.1bits3fb999999999999a; fixture/test freeze that boundary.
+Policy alternatives in tests are explicit separate inputs, not tolerance waivers.
+All evaluation uses existing Mlp/evaluate; there is no duplicate inference math.
+
+Bounded reference/model/record collections do not guarantee whole-process OOM
+recovery. Core is pure/serialized by &mutself; no new lock/callback lifetime or
+concurrency guarantee is asserted. No new third-party dependency is requested:
+existing Core serde_json/sha2 and existing inference/training primitives are used.
+Private module/caller reachability and full diagnostics/docs remain future review
+and compile gates; no new blanket lint suppression or fake caller is authored.
+
+### Frozen numeric fixtures and22authored tests, ALL NOT_RUN
+
+correction-numeric-fixtures.json is explicitly ANALYTIC_SOURCE_DERIVED, neither a
+Go run nor a Rust execution. It freezes exact finite f32/f64 bits for binary-
+rational ACI theta/selected EMA, Page-Hinkley states, Pass EMA/fraction, shadow
+f32delta/f64mean, identity PSI, exact class/AUT ratios and the f32/f64gate boundary.
+Named Go source files/tests and exact current hashes are pinned by manifest. No
+unobserved Go state is reclassified as observed. Go1.26.3 FMA/ln/toolchain/target
+parity remains UNQUALIFIED; no abs/rel waiver or upstream/expectation patch.
+Nonzero PSI ln receives a qualitative shift check only, not a bit-parity claim.
+The original degenerate-reference PSI blindspot is explicitly preserved/tested:
+constant zero reference and higher constant current can map to the same bucket.
+It is not silently "fixed" or claimed to detect that shift.
+
+22tests cover frozen bits/ordered updates, bot ACI no-op, reset, solve poisoning,
+shadow abstention/direction, invalid/overflow/capacity transactionality, frozen
+reference/shape/NaN, degenerate blindspot, weak-label distinction, post-ACI error,
+read-only snapshots, composite update rollback, canary boundary/priority/one-shot,
+exact-byte/digest/signature/schema staging, unsigned promotion refusal, dual
+principals/action/evidence/generation/expiry/replay, previous/no-model rollback,
+clock regression, missing quality, minority poisoning/support, temporal ties,
+missing class/quarantine and f32metric/f64policy comparison. All are SOURCEONLY.
+Historical Core177/SGD15 and Root isolated165/5/2 results qualify none of this.
+
+### Required execution and hosted cases, separated from CLI process target
+
+No new compiler/runtime/Docker/browser/SDK/hosted work is allocated or started.
+Next Root/actual integrator may review exact preimages and queue a source-bound
+qualification snapshot: fmt first, focused correction22, previous Model/Core
+regression, all-target/all-feature check and strictClippy. Record true process
+start/exit, BEFORE+AFTERsource/registry/tool/config and scoped venue. Never call
+unrun/filtered/mocked conditions a pass. Actual signature/authority adapters and
+accepted visibility/caller wiring must exist before claiming lifecycle integration.
+
+Required separate hosted matrix:
+H1 exact-buffer read/hash/decode, valid/wrong/missing/truncated Ed25519 signature,
+wrong/unprovisioned key, replaced-path attempt and bounded I/O failure: selected
+runtime remains unchanged; original Go double-open behavior is not emulated.
+H2 real authority TWOprincipals, wrong/replayed/action/evidence/generation-scoped
+proof, expired/untrusted time, disconnected authority, partial/rejected approval,
+crash/restart/audit custody and concurrent/replayed request: no mutation without
+complete verified approval; no kill/erasure/permanent-ban authority is added.
+H3 zero/one-class support, missing minority cohort, timestamp tie/missing provenance,
+nonfinite/overflow/budgets, calibrated warm-base exact-byte identity, gate failure:
+no new candidate/selected model or promotion success. Actual adapters must report
+failure rather than fabricate missing evidence.
+H4 isolated lab Stage->shadow->approved OFFLINEledger selection->probation->trip/
+graduation->rollback/no-model and concurrent/read-only snapshots. Canary emits
+ONEproposal; actual lab actor application is separately qualified. Production
+activation disabled throughout; no production model/weights change authorized.
+H5 original Go1.26.3 unchanged tests/available original surfaces on pinned CPU/
+compiler/buildflags; only genuinely emitted values become Go-observed. Original
+regression pass cannot expose unprinted calibration/drift/gradient states. Frozen
+analytic fixture parity remains source-derived until a separately allocated
+observable oracle qualifies the exact tuple.
+
+The existing CLI offline-process target remains SEPARATE:2testIDs/9intended child
+invocations (2success+collision+6refusals), all unexecuted/hosted-only. Do not alter
+its evidence candidate, Root copies, targets or expected strings for this lifecycle
+slice. It needs its own outer process-tree/time/output/storage supervisor and real
+custody/cleanup fault cases; compile/list/no-run artifacts are not execution.
+This lifecycle candidate adds no CLI command or NativeReady dependency. Actual
+correction actor/audit/authority integration, authenticated labels, durable gold
+anchor/custody and production activation authorization remain incomplete gates.
+
+The22nd composed test exercises real Controller shadow/Pass/armed-canary entrypoints:
+poisoning stops admitted counts, the20thconfirmed human emits one rollback proposal,
+and repeated updates never activate or emit a second proposal. Root review/scoped
+execution allocation is requested in the manifest; none is granted or launched here.

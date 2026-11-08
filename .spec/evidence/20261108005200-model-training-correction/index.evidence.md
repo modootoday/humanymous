@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-08T02:46:31Z
+updated: 2026-11-08T04:52:24Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -35,6 +35,15 @@ files:
   - {path: offline-cli-pilot.candidate.rs, sha256: 58932ca3878732b4d3c23874cc41b5fc012242f850af051ab94eb7d53905610d, bytes: 12441, store: repo}
   - {path: offline-api-cli-candidate.json, sha256: 2105e219887bb50239eef4b09ca7e9a70833cb5c37dc192ecfaeb4df33106530, bytes: 2545, store: repo}
   - {path: offline-cli-pilot-drop-order.json, sha256: fcdf68fbb732fa6ca56478a5292c95d3a0fed19baf1b0acd82920a0066ade063, bytes: 1533, store: repo}
+  - {path: correction-mod.candidate.rs, sha256: 5da3aa9ea432793f2e7873c3cd6cea201a7e0de21a572a6674faf713431a83f5, bytes: 2056, store: repo}
+  - {path: correction-numeric.candidate.rs, sha256: 3ac2ff796dddb0409d5ead71312f946815057b040fd874f40744315be8a1c7f5, bytes: 8140, store: repo}
+  - {path: correction-features.candidate.rs, sha256: 84d2a2370ac59b7b0fe22df9fbae0f41ff6aebef3c1ff560c09cdfa9f3d212da, bytes: 3608, store: repo}
+  - {path: correction-gates.candidate.rs, sha256: 5d613bcf6e42174fbd83cb40c2e7693d49be6e8182d795972fb0335fde2548b5, bytes: 7321, store: repo}
+  - {path: correction-lifecycle.candidate.rs, sha256: a2f590bfecc0db2429ced7acc3ee36658f5d214c53830331e7ba98837c4cf62f, bytes: 10637, store: repo}
+  - {path: correction-controller.candidate.rs, sha256: e1f9d6811cc0b514f8d26eb0f20b92c6aac2f5e083d66abf50ae797aad17f448, bytes: 4319, store: repo}
+  - {path: correction-numeric-fixtures.json, sha256: 894b36077d70908ceb6bd4983f6f1324dc5764c85c6967d5ae648d09549901ea, bytes: 2379, store: repo}
+  - {path: correction-tests.candidate.rs, sha256: 07a4b96ab1279d47f9ad30ab1a5ff7a817a537d31f84dc92e88fd761ccc50ede, bytes: 20954, store: repo}
+  - {path: correction-lifecycle-candidate.json, sha256: 441760a2f04fe2f0a25e5d376093b1a46e898d4edc55cee6942c09ff3d1e1b27, bytes: 11542, store: repo}
 ---
 
 # Read-only source inventory
