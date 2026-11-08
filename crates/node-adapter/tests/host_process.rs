@@ -316,7 +316,7 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
             };
             let service = runtime.spawn(listener.serve(authority, 8, 100, 2000));
             let effect_file = directory.0.join("effects.log");
-            let (host, port) = configure_host(
+            let (mut host, port) = configure_host(
                 child,
                 framework,
                 &endpoint,
@@ -330,9 +330,7 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
                 if let Some(mut stderr) = host.0.stderr.take() {
                     let _ = stderr.read_to_string(&mut errors);
                 }
-                panic!(
-                    "{runtime_name}/{framework} POST /api: {error}; host stderr: {errors}"
-                );
+                panic!("{runtime_name}/{framework} POST /api: {error}; host stderr: {errors}");
             });
             let separator = wire
                 .windows(4)
