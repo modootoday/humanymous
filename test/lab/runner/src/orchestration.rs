@@ -826,6 +826,14 @@ pub fn run(args: &[String]) -> Result<i32> {
                 );
             }
         }
+        // Specfold Cap public log must show fail-closed stage/detail (private transcript stays private).
+        if w2_h2_hosted_venue || w2_h2_product_binding || authority_node_ipc {
+            eprintln!(
+                "lab Cap fail-closed: stage={} detail={}",
+                lab.stage,
+                error
+            );
+        }
         lab.cases
             .push(json!({"id":"execution","status":"failed","error_code":lab.stage,"detail":error.to_string()}));
     }
