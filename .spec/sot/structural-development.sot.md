@@ -437,6 +437,31 @@ tools-maintenance-candidate04-list-corrected.log and
 tools-maintenance-candidate04-selection.log. A final source-bound evidence seal
 and actual hosted staging qualification remain required before live cutover.
 
+### Candidate04 whole-CLI lint and preserved discovery checkpoint
+
+After adoption, Root ran the actual Windows isolated humanymous-cli Clippy with
+--locked --offline --all-targets --all-features --jobs1 and -D warnings. It exited
+zero with a5.65s Cargo footer. The independently captured regular-file source
+views contain1783 files before and after with zero difference records. The
+earlier93 maintenance selectors all remain in actual discovery; the97-case view
+adds exactly the four package-selection parser tests and removes none. Discovery
+is not execution of the remaining93 cases or either hosted package subprocess.
+
+The owned private core-consolidation directory now retains
+tools-candidate04-strict-checkpoint/{source-before.json,source-after.json,
+stdout.log,stderr.log,receipt.json}. This binds the current local lint observation,
+not an external compiler read closure, authenticated source authority, native
+runtime proof or final source archive seal. Earlier sealed epochs remain immutable.
+
+Root assigned M11 a source-only finite staging-request materializer using an
+explicit frozen canonical root and owner-reviewed path allowlist. Delivery owns
+the hosted request/environment handoff review and a concrete safe lifecycle
+backend investigation for the existing root-lint candidate. Its current
+Unavailable backend does not complete the required negative compilation gates.
+The Model owner must repair reviewed pilot child-error handling and preserve
+outer-supervisor limitations. These assignments grant no shared source, manifest,
+compiler, native runtime or publication authority beyond existing owned paths.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
