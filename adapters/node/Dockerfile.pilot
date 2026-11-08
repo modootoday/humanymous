@@ -17,7 +17,8 @@ COPY scripts/ci/delivery/ ./scripts/ci/delivery/
 COPY skills/agent-maintenance/ ./skills/agent-maintenance/
 COPY adapters/node/package.json adapters/node/package-lock.json ./adapters/node/
 RUN node /usr/local/lib/node_modules/npm/bin/npm-cli.js ci --ignore-scripts --prefix adapters/node
-RUN cargo build --locked -p humanymous-node-adapter --features host-pilot -p humanymous-authority
+RUN cargo build --locked -p humanymous-runtime --features authority --bin humanymous-authority
+RUN cargo build --locked -p humanymous-node-adapter --features host-pilot --bin humanymous-node-package
 RUN node /usr/local/lib/node_modules/npm/bin/npm-cli.js exec --prefix adapters/node -- napi build --manifest-path crates/node-adapter/Cargo.toml --package-json-path adapters/node/package.json --platform --output-dir target/node-native/host-glue --js index.cjs --dts index.d.cts --format commonjs --features host-pilot -- --locked
 RUN cargo test --locked -p humanymous-node-adapter --features host-pilot --test host_process --no-run
 ENV HUMANYMOUS_NODE_ADDON=/source/target/node-native/host-glue/humanymous-node.linux-x64-gnu.node
