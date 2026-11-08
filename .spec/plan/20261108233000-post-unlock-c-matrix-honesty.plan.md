@@ -97,20 +97,25 @@ Unlock A Cap **spent** (free=false) after Desktop-baseline Cap burn EXIT0 @
 `8f8a128d`. Matrix A/B/C remapped earned-only component cells; M3/product
 unavailable; BrowserReady remains false (interactive AT Root-gated; no non-Cap
 structural invent). N06 owner join Cap=0 binds hosted Cap EXIT0 + Unlock A
-EXIT0 status until Root auth. Cap=0 G2/G5 honesty gates land Desktop collector
-+ custody/witness components without inventing product / authenticated
-transport. Matrix-plan after A/B/C: `serialize_cap_when_unlocked=0`. No
+EXIT0 status until Root auth. Cap=0 `--n06-owner-auth-handoff-honesty` binds
+those receipts + prior N06 readiness closer and refuse-closes without inventing
+`n06_owner_join=true`. Cap=0 G2/G5 honesty gates land Desktop collector +
+custody/witness components without inventing product / authenticated transport.
+Matrix-plan after A/B/C: `serialize_cap_when_unlocked=0`. No
 hosted/W2/authority/A Cap reburn without structural delta. Cap free=**false**.
 
 Next Root-gated / Cap-conserving closer:
 
-1. Root interactive AT Windows tuple handoff (BrowserReady path; Cap=0 honesty
-   already refuse-closed without inventing AT)
-2. Else Root N06 owner-integration auth handoff + exact path release
-   (`configuration.rs` / `service/readiness.rs` / `application.rs`)
+1. Root N06 owner-integration auth handoff + exact path release
+   (`configuration.rs` / `service/readiness.rs` / `application.rs`; Cap=0
+   owner-auth honesty already refuse-closed without inventing join)
+2. Else Root interactive AT Windows tuple handoff (BrowserReady path; Cap=0
+   honesty already refuse-closed without inventing AT)
 
 Never invent `pass_product_clean_room`, CEF binary, `desktop_as_hosted`,
 BrowserReady, or Root ownership tokens. Capture `observe_h2` still forbidden as
 product-binding. Evidence:
-`.spec.local/root/evidence/20261109022100-cursor-cap0-g2-g5-honesty/` and
-`.spec.local/root/evidence/20261109023000-cursor-cap0-browser-ready-honesty/`.
+`.spec.local/root/evidence/20261109022100-cursor-cap0-g2-g5-honesty/`,
+`.spec.local/root/evidence/20261109023000-cursor-cap0-browser-ready-honesty/`,
+and
+`.spec.local/root/evidence/20261109024500-cursor-cap0-n06-owner-auth-honesty/`.

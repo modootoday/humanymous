@@ -77,6 +77,7 @@ struct Lab {
     g2_collector_product_binding_readiness: bool,
     g5_witness_transport_honesty: bool,
     browser_ready_interactive_at_honesty: bool,
+    n06_owner_auth_handoff_honesty: bool,
     g4_cef_at: bool,
     go_component_verified: bool,
     stage: &'static str,
@@ -162,6 +163,12 @@ impl Lab {
         if self.browser_ready_interactive_at_honesty {
             return Err(
                 "browser-ready-interactive-at-honesty Cap has no Docker compose topology; Cap=0 honesty only; never invent BrowserReady or Root AT tokens"
+                    .into(),
+            );
+        }
+        if self.n06_owner_auth_handoff_honesty {
+            return Err(
+                "n06-owner-auth-handoff-honesty Cap has no Docker compose topology; Cap=0 honesty only; never invent n06_owner_join or Root ownership tokens"
                     .into(),
             );
         }
@@ -347,6 +354,9 @@ impl Lab {
         }
         if self.browser_ready_interactive_at_honesty {
             return cap0_product_honesty::run_browser_ready_interactive_at_honesty(self);
+        }
+        if self.n06_owner_auth_handoff_honesty {
+            return cap0_product_honesty::run_n06_owner_auth_handoff_honesty(self);
         }
         if self.g4_cef_at {
             return g4_cef_at::run(self);
@@ -635,6 +645,7 @@ impl Lab {
             || self.g2_collector_product_binding_readiness
             || self.g5_witness_transport_honesty
             || self.browser_ready_interactive_at_honesty
+            || self.n06_owner_auth_handoff_honesty
         {
             self.docker.recheck_engine()?;
             let filter = format!("label=com.docker.compose.project={}", self.project);
@@ -691,6 +702,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut g2_collector_product_binding_readiness = false;
     let mut g5_witness_transport_honesty = false;
     let mut browser_ready_interactive_at_honesty = false;
+    let mut n06_owner_auth_handoff_honesty = false;
     let mut g4_cef_at = false;
     let mut full = false;
     let mut require_go_component = false;
@@ -717,6 +729,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             }
             "--g5-witness-transport-honesty" => g5_witness_transport_honesty = true,
             "--browser-ready-interactive-at-honesty" => browser_ready_interactive_at_honesty = true,
+            "--n06-owner-auth-handoff-honesty" => n06_owner_auth_handoff_honesty = true,
             "--g4-cef-at" => g4_cef_at = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
@@ -738,6 +751,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -765,6 +779,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -790,6 +805,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -813,6 +829,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -836,6 +853,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || n06_owner_join_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -859,6 +877,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || n06_owner_join_readiness
             || g2_collector_product_binding_readiness
             || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
             || require_go_component
@@ -882,12 +901,37 @@ pub fn run(args: &[String]) -> Result<i32> {
             || n06_owner_join_readiness
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
+            || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
             || require_go_component
         {
             return Err(
                 "browser-ready-interactive-at-honesty Cap requires its own fresh Cap=0 profile; refuse g4/--require-full Cap spam; never invent BrowserReady or Root AT tokens"
+                    .into(),
+            );
+        }
+    }
+    if n06_owner_auth_handoff_honesty {
+        // Cap=0 honesty only; no Cap burn / no Unlock A / hosted Cap reburn / invent join.
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || n06_owner_join_readiness
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
+            || browser_ready_interactive_at_honesty
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "n06-owner-auth-handoff-honesty Cap requires its own fresh Cap=0 profile; refuse hosted/Unlock A/--require-full Cap spam; never invent n06_owner_join or Root ownership tokens"
                     .into(),
             );
         }
@@ -911,6 +955,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
             || full
             || require_go_component
         {
@@ -992,6 +1037,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         g2_collector_product_binding_readiness,
         g5_witness_transport_honesty,
         browser_ready_interactive_at_honesty,
+        n06_owner_auth_handoff_honesty,
         g4_cef_at,
         go_component_verified: false,
         stage: "initialization",
@@ -1047,6 +1093,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         || g2_collector_product_binding_readiness
         || g5_witness_transport_honesty
         || browser_ready_interactive_at_honesty
+        || n06_owner_auth_handoff_honesty
         || g4_cef_at
     {
         vec![]
@@ -1079,6 +1126,10 @@ pub fn run(args: &[String]) -> Result<i32> {
         (
             "browser_ready_interactive_at_honesty",
             "browser-ready-interactive-at-honesty",
+        ),
+        (
+            "n06_owner_auth_handoff_honesty",
+            "n06-owner-auth-handoff-honesty",
         ),
         ("g4_cef_at", "g4-cef-at-component"),
     ] {

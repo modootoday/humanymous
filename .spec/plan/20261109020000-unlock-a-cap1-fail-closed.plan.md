@@ -68,14 +68,16 @@ R-A4. **No N06/W2/authority Cap reburn** without new structural delta.
 ## Next
 
 Cap=0 honesty landed: matrix A/B/C earned-only remap; N06 readiness binds
-Unlock A Cap EXIT0 closer + hosted Cap EXIT0 (join still open). Cap=0 G2
-collector product-binding readiness + G5 witness transport honesty gates landed
-(component bound; product still open). Cap=0 BrowserReady / interactive AT
-honesty gate landed (`--browser-ready-interactive-at-honesty` EXIT0; Unlock A
-g4 component bound; `browser_ready=false`; Root AT handoff absent). Matrix
-serialize after A/B/C = **0** (hold components). Cap free=**false**. No Cap
-realloc (no Root interactive AT tuple; no claimable Cap CLI+topology; no A/B/C
-Cap spam).
+Unlock A Cap EXIT0 closer + hosted Cap EXIT0 (join still open). Cap=0
+`--n06-owner-auth-handoff-honesty` EXIT0 binds hosted Cap + Unlock A + N06
+readiness receipts (`n06_owner_join=false`; Root owner-auth absent
+refuse-closed). Cap=0 G2 collector product-binding readiness + G5 witness
+transport honesty gates landed (component bound; product still open). Cap=0
+BrowserReady / interactive AT honesty gate landed
+(`--browser-ready-interactive-at-honesty` EXIT0; Unlock A g4 component bound;
+`browser_ready=false`; Root AT handoff absent). Matrix serialize after A/B/C =
+**0** (hold components). Cap free=**false**. No Cap realloc (no Root owner-auth
+/ interactive AT; no claimable Cap CLI+topology; no A/B/C Cap spam).
 
-1. Root interactive AT Windows tuple handoff for BrowserReady path
-2. Else Root N06 owner-integration auth handoff (Cap=0 readiness without auth)
+1. Root N06 owner-integration auth handoff (Cap=0 owner-auth honesty without auth)
+2. Else Root interactive AT Windows tuple handoff for BrowserReady path

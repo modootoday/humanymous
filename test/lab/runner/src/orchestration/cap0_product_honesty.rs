@@ -1,9 +1,16 @@
 //! Cap=0 product-honesty gates for G2 collector product-binding, G5 witness
-//! transport, and BrowserReady / interactive AT path. Never Cap-burns; never
-//! invents `pass_product_clean_room` / BrowserReady / N06 join / Root AT
-//! tokens. Cap free remains false after Unlock A EXIT0 unless a real
-//! structural next feeder reallocates Cap.
+//! transport, BrowserReady / interactive AT path, and N06 owner-auth handoff.
+//! Never Cap-burns; never invents `pass_product_clean_room` / BrowserReady /
+//! N06 join / Root AT or ownership tokens. Cap free remains false after
+//! Unlock A EXIT0 unless a real structural next feeder reallocates Cap.
 use super::Lab;
+use super::h2_product_binding::{
+    N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES, N06_OWNER_JOIN_ROOT_ASK_PATHS,
+    bind_unlock_a_status_into_n06_readiness, find_n06_owner_join_auth_handoff,
+    load_unlock_a_cap_exit0_closer, n06_owner_join_readiness_from_hosted_cap,
+    require_n06_owner_join_auth_handoff, validate_hosted_cap_exit0_receipt,
+    validate_n06_owner_join_receipt,
+};
 use crate::docker::Result;
 use crate::snapshot;
 use serde_json::{Value, json};
@@ -21,17 +28,30 @@ pub const G5_CAP_SELECTOR: &str = "--g5-witness-transport-honesty";
 /// Cap=0 BrowserReady / interactive AT honesty selector (no Cap burn).
 pub const BROWSER_READY_CAP_SELECTOR: &str = "--browser-ready-interactive-at-honesty";
 
+/// Cap=0 N06 owner-auth handoff honesty selector (no Cap burn).
+pub const N06_OWNER_AUTH_CAP_SELECTOR: &str = "--n06-owner-auth-handoff-honesty";
+
 pub const G2_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g2-collector-product-binding-readiness";
 
 pub const G5_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g5-witness-transport-honesty";
 
 pub const BROWSER_READY_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty";
 
+pub const N06_OWNER_AUTH_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-auth-handoff-honesty";
+
 const G2_READINESS_SCHEMA: &str = "humanymous.lab-g2-collector-product-binding-readiness/1";
 const G5_HONESTY_SCHEMA: &str = "humanymous.lab-g5-witness-transport-honesty/1";
 const BROWSER_READY_HONESTY_SCHEMA: &str = "humanymous.lab-browser-ready-interactive-at-honesty/1";
+const N06_OWNER_AUTH_HONESTY_SCHEMA: &str = "humanymous.lab-n06-owner-auth-handoff-honesty/1";
 const UNLOCK_A_CLOSER_SCHEMA: &str = "humanymous.cursor-unlock-a-desktop-baseline-realloc-closer/1";
 const INTERACTIVE_AT_HANDOFF_SCHEMA: &str = "humanymous.root-interactive-at-windows-tuple/1";
+
+const HOSTED_CAP_EXIT0_REL: &str =
+    ".spec.local/root/evidence/20261109013400-cursor-n06-hosted-venue-cap-realloc/CAP1-EXIT0.json";
+
+/// Prior Cap=0 N06 readiness closer (component bind; join still open).
+const N06_READINESS_CLOSER_REL: &str =
+    ".spec.local/root/evidence/20261109005000-cursor-n06-owner-join/CLOSER.json";
 
 const G2_COMPONENT_RECEIPT_REL: &str = ".spec.local/root/evidence/20261108213000-g2-collector-provenance/cap1-browser-pilot/cap1-receipt.json";
 
@@ -657,6 +677,299 @@ pub(super) fn run_browser_ready_interactive_at_honesty(lab: &mut Lab) -> Result<
     Ok(())
 }
 
+fn validate_n06_readiness_closer(closer: &Value) -> Result<()> {
+    if closer.get("schema").and_then(Value::as_str)
+        != Some("humanymous.cursor-n06-owner-join-closer/1")
+    {
+        return Err(
+            "N06 owner-auth handoff honesty refused: N06 readiness closer schema mismatch".into(),
+        );
+    }
+    if closer.get("n06_owner_join").and_then(Value::as_bool) == Some(true) {
+        return Err(
+            "N06 owner-auth handoff honesty refused: readiness closer invented n06_owner_join=true"
+                .into(),
+        );
+    }
+    if closer.get("product").and_then(Value::as_u64) != Some(0)
+        || closer
+            .get("pass_product_clean_room")
+            .and_then(Value::as_u64)
+            != Some(0)
+    {
+        return Err(
+            "N06 owner-auth handoff honesty refused: readiness closer invented product".into(),
+        );
+    }
+    if closer.get("cap_free").and_then(Value::as_bool) != Some(false) {
+        return Err(
+            "N06 owner-auth handoff honesty refused: readiness closer must record cap_free=false"
+                .into(),
+        );
+    }
+    if closer
+        .get("unlock_a_cap_exit")
+        .and_then(Value::as_u64)
+        != Some(0)
+    {
+        return Err(
+            "N06 owner-auth handoff honesty refused: readiness closer missing Unlock A Cap EXIT0"
+                .into(),
+        );
+    }
+    Ok(())
+}
+
+/// Cap=0 N06 owner-auth honesty: bind hosted Cap EXIT0 + Unlock A EXIT0 /
+/// prior N06 readiness receipts; refuse-closed when Root owner-auth absent;
+/// never invent `n06_owner_join=true` / product / Cap free.
+pub(super) fn run_n06_owner_auth_handoff_honesty(lab: &mut Lab) -> Result<()> {
+    let root = snapshot::root()?;
+    let cap_free = cap_free_after_unlock_a(&root)?;
+    lab.stage = "n06_owner_auth_bind_hosted_cap";
+    let hosted_cap_path = root.join(HOSTED_CAP_EXIT0_REL);
+    if !hosted_cap_path.is_file() {
+        lab.components["n06_owner_auth_handoff_honesty"] = json!({
+            "status": "refused",
+            "kind": "n06-owner-auth-handoff-honesty",
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "n06_owner_join": false,
+            "cap": 0,
+            "cap_free": cap_free,
+            "missing_hosted_cap_exit0": HOSTED_CAP_EXIT0_REL,
+            "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+            "note": "N06 Cap=0 honesty requires hosted Cap EXIT0 receipt; never invent owner join"
+        });
+        snapshot::write(
+            &lab.evidence,
+            "n06-owner-auth-handoff-honesty-refuse.json",
+            &lab.components["n06_owner_auth_handoff_honesty"],
+        )?;
+        return Err(
+            "N06 owner-auth handoff honesty refused: hosted Cap EXIT0 receipt absent; Cap=0; never invent n06_owner_join"
+                .into(),
+        );
+    }
+    let hosted_bytes = fs::read(&hosted_cap_path).map_err(|error| {
+        format!(
+            "N06 owner-auth handoff honesty refused: hosted Cap EXIT0 read {}: {error}",
+            hosted_cap_path.display()
+        )
+    })?;
+    let hosted_cap: Value = serde_json::from_slice(&hosted_bytes).map_err(|error| {
+        format!(
+            "N06 owner-auth handoff honesty refused: hosted Cap EXIT0 JSON {}: {error}",
+            hosted_cap_path.display()
+        )
+    })?;
+    validate_hosted_cap_exit0_receipt(&hosted_cap)?;
+    let mut readiness = n06_owner_join_readiness_from_hosted_cap(&hosted_cap)?;
+
+    lab.stage = "n06_owner_auth_bind_unlock_a";
+    let unlock_a = match load_unlock_a_cap_exit0_closer(&root) {
+        Ok(closer) => closer,
+        Err(error) => {
+            lab.components["n06_owner_auth_handoff_honesty"] = json!({
+                "status": "refused",
+                "kind": "n06-owner-auth-handoff-honesty",
+                "product": 0,
+                "pass_product_clean_room": 0,
+                "n06_owner_join": false,
+                "cap": 0,
+                "cap_free": cap_free,
+                "missing_unlock_a_cap_exit0_closer": UNLOCK_A_CLOSER_REL,
+                "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+                "note": "Unlock A Cap EXIT0 closer required for Cap=0 N06 owner-auth honesty; never invent Root tokens"
+            });
+            snapshot::write(
+                &lab.evidence,
+                "n06-owner-auth-handoff-honesty-refuse.json",
+                &lab.components["n06_owner_auth_handoff_honesty"],
+            )?;
+            return Err(error);
+        }
+    };
+    bind_unlock_a_status_into_n06_readiness(&mut readiness, &unlock_a)?;
+    validate_n06_owner_join_receipt(&readiness)?;
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-auth-hosted-cap-bound.json",
+        &hosted_cap,
+    )?;
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-auth-unlock-a-bound.json",
+        &unlock_a,
+    )?;
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-auth-readiness-bound.json",
+        &readiness,
+    )?;
+
+    lab.stage = "n06_owner_auth_bind_n06_readiness_closer";
+    let n06_closer_path = root.join(N06_READINESS_CLOSER_REL);
+    if !n06_closer_path.is_file() {
+        lab.components["n06_owner_auth_handoff_honesty"] = json!({
+            "status": "refused",
+            "kind": "n06-owner-auth-handoff-honesty",
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "n06_owner_join": false,
+            "cap": 0,
+            "cap_free": cap_free,
+            "missing_n06_readiness_closer": N06_READINESS_CLOSER_REL,
+            "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+            "note": "Prior Cap=0 N06 readiness closer required for owner-auth honesty bind"
+        });
+        snapshot::write(
+            &lab.evidence,
+            "n06-owner-auth-handoff-honesty-refuse.json",
+            &lab.components["n06_owner_auth_handoff_honesty"],
+        )?;
+        return Err(
+            "N06 owner-auth handoff honesty refused: prior N06 readiness closer absent; Cap=0"
+                .into(),
+        );
+    }
+    let n06_closer_bytes = fs::read(&n06_closer_path).map_err(|error| {
+        format!(
+            "N06 owner-auth handoff honesty refused: readiness closer read {}: {error}",
+            n06_closer_path.display()
+        )
+    })?;
+    let n06_closer: Value = serde_json::from_slice(&n06_closer_bytes).map_err(|error| {
+        format!(
+            "N06 owner-auth handoff honesty refused: readiness closer JSON {}: {error}",
+            n06_closer_path.display()
+        )
+    })?;
+    validate_n06_readiness_closer(&n06_closer)?;
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-auth-n06-readiness-closer-bound.json",
+        &n06_closer,
+    )?;
+
+    lab.stage = "n06_owner_auth_handoff";
+    let auth = require_n06_owner_join_auth_handoff(&root);
+    let auth_present = auth.is_ok();
+    if let Err(error) = &auth {
+        snapshot::write(
+            &lab.evidence,
+            "n06-owner-auth-handoff-refuse.json",
+            &json!({
+                "schema": "humanymous.lab-n06-owner-auth-handoff-refuse/1",
+                "cap": 0,
+                "cap_free": cap_free,
+                "product": 0,
+                "pass_product_clean_room": 0,
+                "n06_owner_join": false,
+                "hosted_cap_exit0_bound": true,
+                "unlock_a_cap_exit0_bound": true,
+                "n06_readiness_closer_bound": true,
+                "owner_auth_present": false,
+                "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+                "handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
+                "detail": error.to_string(),
+                "note": "hosted Cap EXIT0 + Unlock A EXIT0 + N06 readiness ≠ owner join; Root auth handoff still required"
+            }),
+        )?;
+    } else if let Ok(handoff) = &auth {
+        snapshot::write(&lab.evidence, "n06-owner-auth-handoff.json", handoff)?;
+    }
+
+    // Cap=0 honesty always records n06_owner_join=false until Root auth is
+    // present AND a separate measured hosted join is proven (never invent).
+    let n06_owner_join = false;
+    let honesty = json!({
+        "schema": N06_OWNER_AUTH_HONESTY_SCHEMA,
+        "record_kind": "n06-owner-auth-handoff-honesty",
+        "cap": 0,
+        "cap_free": cap_free,
+        "cap_burn": false,
+        "cap_selector": N06_OWNER_AUTH_CAP_SELECTOR,
+        "pilot_command": N06_OWNER_AUTH_PILOT_COMMAND,
+        "product": 0,
+        "pass_product_clean_room": 0,
+        "n06_owner_join": n06_owner_join,
+        "browser_ready": false,
+        "hosted_cap_exit0": HOSTED_CAP_EXIT0_REL,
+        "hosted_cap_counts_as": "pass_component_hosted_measure",
+        "unlock_a_cap_exit": 0,
+        "unlock_a_cap_free": false,
+        "unlock_a_browser_ready": false,
+        "unlock_a_counts_as": "pass_component_g4_cef_at_executed",
+        "unlock_a_closer": UNLOCK_A_CLOSER_REL,
+        "n06_readiness_closer": N06_READINESS_CLOSER_REL,
+        "owner_auth_present": auth_present,
+        "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+        "handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
+        "cap_realloc_policy": "only_real_structural_next_feeder",
+        "no_n06_join_cap1_without_root_auth": true,
+        "note": "Hosted Cap EXIT0 + Unlock A Cap EXIT0 + N06 readiness ≠ owner join; Cap=0; Cap free conserved; Root owner-auth handoff still required; never invent n06_owner_join or pass_product_clean_room"
+    });
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-auth-handoff-honesty.json",
+        &honesty,
+    )?;
+    lab.case(
+        "n06-owner-auth-hosted-unlock-a-bound-not-join",
+        honesty.get("product") == Some(&json!(0))
+            && honesty.get("n06_owner_join") == Some(&json!(false))
+            && honesty.get("unlock_a_cap_exit") == Some(&json!(0)),
+        json!({
+            "counts_as": "pass_component_hosted_measure_plus_g4_component",
+            "product": 0,
+            "n06_owner_join": false
+        }),
+    )?;
+    lab.case(
+        "n06-owner-auth-cap-conserved-no-cap1",
+        honesty.get("cap") == Some(&json!(0))
+            && honesty.get("cap_burn") == Some(&json!(false))
+            && honesty.get("cap_free") == Some(&json!(cap_free))
+            && !auth_present,
+        json!({
+            "cap": 0,
+            "cap_free": cap_free,
+            "owner_auth_present": auth_present,
+            "reason": "Root N06 owner-auth handoff absent; Cap free=false after Unlock A EXIT0; no Cap spam"
+        }),
+    )?;
+    lab.case(
+        "n06-owner-auth-handoff-refuse-closed",
+        !auth_present
+            && honesty.get("n06_owner_join") == Some(&json!(false))
+            && find_n06_owner_join_auth_handoff(&root).is_none(),
+        json!({
+            "owner_auth_present": false,
+            "n06_owner_join": false,
+            "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS
+        }),
+    )?;
+    lab.components["n06_owner_auth_handoff_honesty"] = json!({
+        "status": "honesty_landed_n06_owner_join_open",
+        "kind": "n06-owner-auth-handoff-honesty",
+        "product": 0,
+        "pass_product_clean_room": 0,
+        "n06_owner_join": false,
+        "owner_auth_present": auth_present,
+        "cap": 0,
+        "cap_free": cap_free,
+        "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+        "note": "Cap=0 N06 owner-auth honesty gate; hosted Cap + Unlock A + readiness bound; Root auth still required; Cap free conserved"
+    });
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-auth-handoff-honesty-component.json",
+        &lab.components["n06_owner_auth_handoff_honesty"],
+    )?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -744,5 +1057,39 @@ mod tests {
         assert!(find_interactive_at_handoff(&root).is_none());
         let err = require_interactive_at_handoff(&root).expect_err("no invent");
         assert!(err.to_string().contains("Root interactive AT"));
+    }
+
+    #[test]
+    fn n06_readiness_closer_accepts_join_open_cap0() {
+        let closer = json!({
+            "schema": "humanymous.cursor-n06-owner-join-closer/1",
+            "n06_owner_join": false,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "cap_free": false,
+            "unlock_a_cap_exit": 0
+        });
+        assert!(validate_n06_readiness_closer(&closer).is_ok());
+    }
+
+    #[test]
+    fn n06_readiness_closer_refuses_join_invent() {
+        let closer = json!({
+            "schema": "humanymous.cursor-n06-owner-join-closer/1",
+            "n06_owner_join": true,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "cap_free": false,
+            "unlock_a_cap_exit": 0
+        });
+        assert!(validate_n06_readiness_closer(&closer).is_err());
+    }
+
+    #[test]
+    fn n06_owner_auth_handoff_refuses_without_root_token() {
+        let root = snapshot::root().expect("workspace root");
+        assert!(find_n06_owner_join_auth_handoff(&root).is_none());
+        let err = require_n06_owner_join_auth_handoff(&root).expect_err("no invent");
+        assert!(err.to_string().contains("auth handoff") || err.to_string().contains("Root"));
     }
 }

@@ -15,7 +15,7 @@ use crate::orchestration::cap0_product_honesty::{
     BROWSER_READY_CAP_SELECTOR, BROWSER_READY_PILOT_COMMAND, BROWSER_READY_ROOT_ASK_PATHS,
     G2_CAP_SELECTOR, G2_PILOT_COMMAND, G2_PRODUCT_BINDING_TOPOLOGY, G5_CAP_SELECTOR,
     G5_PILOT_COMMAND, G5_ROOT_ASK_PATHS, INTERACTIVE_AT_HANDOFF_CANDIDATES,
-    cap_free_after_unlock_a,
+    N06_OWNER_AUTH_CAP_SELECTOR, N06_OWNER_AUTH_PILOT_COMMAND, cap_free_after_unlock_a,
 };
 use crate::orchestration::g4_cef_at::{
     CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CEF_BUNDLE_ENV,
@@ -170,6 +170,15 @@ impl UnlockProbe {
                 "auth_handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
                 "note": "Cap=0 readiness only; hosted Cap EXIT0 + Unlock A EXIT0 bound ≠ owner join; Root auth handoff still required; never invent Root tokens"
             },
+            "n06_owner_auth_handoff_cap0": {
+                "selector": N06_OWNER_AUTH_CAP_SELECTOR,
+                "pilot_command": N06_OWNER_AUTH_PILOT_COMMAND,
+                "status": "cap0_honesty_only",
+                "n06_owner_join": false,
+                "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+                "auth_handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
+                "note": "Cap=0 honesty only; hosted Cap EXIT0 + Unlock A EXIT0 + N06 readiness ≠ owner join; Root owner-auth handoff still required; never invent Root tokens"
+            },
             "browser_ready_interactive_at_cap0": {
                 "selector": BROWSER_READY_CAP_SELECTOR,
                 "pilot_command": BROWSER_READY_PILOT_COMMAND,
@@ -196,6 +205,8 @@ impl UnlockProbe {
                 "g2_g5_cap0_not_product": true,
                 "g4_component_not_browser_ready": true,
                 "never_invent_interactive_at_tokens": true,
+                "hosted_unlock_a_n06_readiness_not_owner_join": true,
+                "never_invent_n06_owner_auth_tokens": true,
             },
         })
     }
