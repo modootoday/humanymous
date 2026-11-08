@@ -1,0 +1,63 @@
+{
+  "schema": "humanymous.delivery-source-followup/1",
+  "branch": "codex/rust",
+  "local_compiler": {
+    "private_evidence": "evidence:root/20261108032000",
+    "revision": 4,
+    "state": "uncompiled-unexecuted-unadopted",
+    "source_only_input_fixtures": 6,
+    "root_prior_review": {
+      "units_passed": 20,
+      "filtered": 15,
+      "warnings": 90,
+      "strict_clippy_pass": false,
+      "privacy_control_retry_attributed": 4,
+      "failed_first_privacy_attempt_retained": true
+    },
+    "actual_b1_scenarios_executed": false,
+    "hosted_qualified": false,
+    "ca_lifetime_qualified": false,
+    "tree_coverage": "UNKNOWN",
+    "files": [
+      {
+        "path": "INTEGRATION.md",
+        "bytes": 6453,
+        "sha256": "65422acff60239d2081ec2f7c05c7ee3ac714376a4ef6e8bc7a3af1817a1eb34"
+      },
+      {
+        "path": "local_compiler.rs",
+        "bytes": 26445,
+        "sha256": "092b59522bd7d89b5b9c7ee549944a28e626dfcc7e7acdf17dc2769902b7e4b6"
+      },
+      {
+        "path": "local_driver.rs",
+        "bytes": 1227,
+        "sha256": "17d86ad176dbf954393211a1109469beeceaff824593527d67a38d4c913185c6"
+      },
+      {
+        "path": "local_input.rs",
+        "bytes": 9858,
+        "sha256": "1af0207f5545dadc3518c9152fd8cdb31f29fe7b625d377fe09def75b985b301"
+      }
+    ]
+  },
+  "workflow": {
+    "private_evidence": "evidence:root/20261108044500",
+    "candidate_files": 12,
+    "state": "static-only-unparsed-unapplied",
+    "removed_run_selectors": 0,
+    "unknown_selected_packages": 0,
+    "actionlint_executed": false,
+    "live_workflow_changed": false,
+    "patch_sha256": "1ee7551b37c1eba4ab2b01a077028c33998b6fdf34117609fbe927f9e14cb9b1"
+  },
+  "actions": {
+    "run": 42447084223,
+    "head": "33dcf46d9ee277d4b13d82158600b19040ea6e6d",
+    "native_linux": "cancelled by higher priority concurrency request",
+    "docker": "cancelled by higher priority concurrency request",
+    "ready": "exit1 fail-closed on failed/skipped/cancelled validation",
+    "selector_failure_observed": false,
+    "dispatch_performed": false
+  }
+}
