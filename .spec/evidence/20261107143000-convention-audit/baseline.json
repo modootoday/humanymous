@@ -2201,5 +2201,22 @@
     "reader_delta": "Two new Lab DATA includes require exact mapped-path rewrites; current source is qualified, relocation notperformed",
     "native": "61cases exactlyjoin33de source map; actualartifactroles/features/profiletest/productionloader remain NOT_RUN",
     "goal_complete": false
+  },
+  "nginx_replica_and_lab_case_delta_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/nginx-contract-replica-source-review-001.json",
+        "sha256": "9cdb319cd36070909699fe64aa80e4738d5666de051b6d25e026c9a2aa7f59b6",
+        "bytes": 3419
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/lab-current-case-delta-review-001.json",
+        "sha256": "1bebf811c0fa770cff22c5e615b215ef92f46b7f018b0470bec961f6eed8470e",
+        "bytes": 5682
+      }
+    ],
+    "nginx": "34622280sourceonly2includechanges;4030BexactDATA/provenance;gate/compile/extracted/nativeOPEN",
+    "Lab": "5d68Linux40vsf8Windows45:38common7added2replaced;Unix46sourcecandidateonly",
+    "goal_complete": false
   }
 }

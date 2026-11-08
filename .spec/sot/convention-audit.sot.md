@@ -3045,3 +3045,25 @@ features/profile.test, same-source executable association, versioned workspace
 lock custody and production Packages::load/negative native controls NOT_RUN.
 Source61 and historical Runtime fixtures do not qualify the new CLI/native graph.
 Full source freeze, relocated-reader compilation and actual product remain OPEN.
+### nginx owned DATA source fix and current Lab case delta
+
+Independently reviewed34622280 exact six committed paths. Normal nginx SDK and
+its test now read one package-owned immutable contract replica; report.rs differs
+only by the two include literals. Producer e3e7830/blob9fece6de, current canonical
+and replica bytes are identical SHA32be2e8c/4030bytes. Provenance/Apache-2.0 and
+future CLI-owned L05 path match. All35group/version/rejection/report semantics
+stay unchanged. The normal SDK reverse include is CLOSED at SOURCE scope; no
+formatter/compiler/Clippy/extracted-package/native success is inferred. Explicit
+root canonical Git/working/replica/provenance equality and negative controls are
+still NOT IMPLEMENTED; actual package/host gates and final Adapters path rewiring
+remain required. No generic ownership decision was reopened.
+
+Current Lab name delta is independently derived from actual5d68 Linux40pass and
+f8 Windows45inventory:38common,7added,2removed/replaced. Old drift/payload controls
+remain in renamed synthetic_locations; old embedded-source table test is replaced
+by owned DATA/profile/code tests and the separate actual-source gate. These are
+explicit identity changes, not old-name preservation or lost-case count waivers.
+New cfg(unix) symlink negative is not Windows-registered/executed. Unix46 is only
+a source candidate prediction until actual Linux discovery, never a claimed pass.
+The cross-venue comparison does not prove same-platform equivalence; historical
+446/528 inventories stay intact and the future graph needs its own exact census.
