@@ -2321,5 +2321,15 @@
     "case_list": "15 exact default CLI names before/after; runtime30 listed, not executed",
     "candidate03": "23 manifest files exact; 8 changed test-module suffixes byte-identical; actual full76 census pending",
     "lifetime": "CA-LIFETIME-01 extends to candidate stage Command::output; after-output size check is not bounded capture"
+  },
+  "browser_3137_actual_review": {
+    "goal_complete": false,
+    "actual": "Unix4pass; sensitive-browser1pass/66filtered; Docker49/49 assertions; required-unavailable9",
+    "sha256": "f85547d39b622f85d2b477e7aa2cb75224a9adca7f094c61e9fcd63ea330d706",
+    "scope": "Meaningful Referer component regression; product job failure, fullfalse and releasefalse",
+    "bytes": 2636,
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-3137-actual-review-001.json",
+    "private_ledger_recovered": false,
+    "run": 42432665570
   }
 }

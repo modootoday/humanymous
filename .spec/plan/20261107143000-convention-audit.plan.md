@@ -2465,3 +2465,29 @@ No original deadline, stderr cap, child-tree cleanup or reader-join proof exists
 in that helper. Root received the concrete limitation. Do not treat the later
 length assertion as bounded capture, or infer an observed hang/new production
 fault. Private maintenance-candidate03-review-001.json preserves source scope.
+
+## Independently verified 3137 hosted Referer component regression
+
+Completed run 42432665570 attempt1 is source3137c905. Fresh official API logs for
+preflight128584750194 and product128585596675 match retained logs byte-for-byte:
+107911 bytes/SHA885d9629 and 50899 bytes/SHA65fe423a. All19 sealed owner file
+hashes/sizes reproduce. Official ZIP has31 entries with zero inventory differences;
+both full-job ZIP log bytes match fresh logs. The sole typed product projection
+is byte-identical to its official log record. Collector raw6571 bytes/abbc8bad
+also matches immutable source Git blob6a58086bca04a5b806b45e964006672491e0b004.
+
+Actual GNU preflight passes include Unix proxy4/6filtered (exact-owned-root
+classification included), Lab46passed/1ignored plus separately required1passed/
+46filtered, Delivery121, Go10/deployment1/facade2+2+2. Actual sensitive-document
+browser selected1 of67 inventory/66filtered passes with DNS success, exit0 and
+matching inventory/parser summary. Docker projection reports49/49 assertions,
+zero failed/other. Immutable consumer includes both-proxy private Referer v2.
+CA-REFERER-WIRE-01 now has meaningful source-bound Unix and browser Docker
+component regression beyond its previously accepted source repair.
+
+Product job still FAILS: component exit2, required-unavailable9, full-productfalse
+and releasefalse. Original private ledger is not recovered; exact per-proxy raw
+counters and individual assertion records remain unavailable. Image/source-manifest/
+private-ledger hashes stay source-reported. Do not infer complete privacy/product
+qualification. Historical f8 41/43 with two failures remains preserved. Private
+browser-3137-actual-review-001.json binds the fresh logs and precise limitations.
