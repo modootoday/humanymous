@@ -19,6 +19,9 @@ use crate::orchestration::g2_collector_product_binding::{
 use crate::orchestration::g5_witness_transport::{
     CAP_SELECTOR as G5_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G5_CODE_DEFINED_PILOT,
 };
+use crate::orchestration::clean_room_product::{
+    CAP_SELECTOR as CR_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as CR_CODE_DEFINED_PILOT,
+};
 use crate::orchestration::g4_cef_at::{
     CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT,
 };
@@ -47,11 +50,15 @@ const APPLY_SCHEMA_G2: &str = "humanymous.lab-g2-collector-product-binding-trans
 const PROBE_SCHEMA_G5: &str = "humanymous.lab-g5-witness-transport-transfer-probe/1";
 const GRANT_SCHEMA_G5: &str = "humanymous.cursor-g5-witness-transport-transfer-grant/1";
 const APPLY_SCHEMA_G5: &str = "humanymous.lab-g5-witness-transport-transfer-apply/1";
+const PROBE_SCHEMA_CR: &str = "humanymous.lab-clean-room-product-transfer-probe/1";
+const GRANT_SCHEMA_CR: &str = "humanymous.cursor-clean-room-product-transfer-grant/1";
+const APPLY_SCHEMA_CR: &str = "humanymous.lab-clean-room-product-transfer-apply/1";
 const UNLOCK_A_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/g4-cef-at/UNLOCK-A-APPLIED.json";
 const UNLOCK_B_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/w2-h2-product-binding/UNLOCK-B-APPLIED.json";
 const N06_HOSTED_VENUE_APPLIED_REL: &str = ".spec.local/root/evidence/20261109003000-cursor-n06-original-h2-measure/cap-ready-hosted-venue/N06-HOSTED-VENUE-APPLIED.json";
 const UNLOCK_G2_APPLIED_REL: &str = ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/UNLOCK-G2-APPLIED.json";
 const UNLOCK_G5_APPLIED_REL: &str = ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/UNLOCK-G5-APPLIED.json";
+const UNLOCK_CR_APPLIED_REL: &str = ".spec.local/root/evidence/20261109040000-cursor-clean-room-product-cap-ready/cap-ready/clean-room-product/UNLOCK-CR-APPLIED.json";
 const N06_HOSTED_VENUE_CAP_SELECTOR: &str = "--w2-h2-hosted-venue";
 const N06_HOSTED_VENUE_PILOT: &str =
     "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-hosted-venue";
@@ -72,6 +79,7 @@ enum UnlockLetter {
     N06,
     G2,
     G5,
+    CR,
 }
 
 impl UnlockLetter {
@@ -82,6 +90,7 @@ impl UnlockLetter {
             Some("N06") => Ok(Self::N06),
             Some("G2") => Ok(Self::G2),
             Some("G5") => Ok(Self::G5),
+            Some("CR") => Ok(Self::CR),
             Some("C") | None => Ok(Self::C),
             Some(other) => Err(format!("unsupported manifest.unlock={other}").into()),
         }
@@ -95,6 +104,7 @@ impl UnlockLetter {
             Self::N06 => PROBE_SCHEMA_N06,
             Self::G2 => PROBE_SCHEMA_G2,
             Self::G5 => PROBE_SCHEMA_G5,
+            Self::CR => PROBE_SCHEMA_CR,
         }
     }
 
@@ -106,6 +116,7 @@ impl UnlockLetter {
             Self::N06 => APPLY_SCHEMA_N06,
             Self::G2 => APPLY_SCHEMA_G2,
             Self::G5 => APPLY_SCHEMA_G5,
+            Self::CR => APPLY_SCHEMA_CR,
         }
     }
 
@@ -117,6 +128,7 @@ impl UnlockLetter {
             Self::N06 => GRANT_SCHEMA_N06,
             Self::G2 => GRANT_SCHEMA_G2,
             Self::G5 => GRANT_SCHEMA_G5,
+            Self::CR => GRANT_SCHEMA_CR,
         }
     }
 
@@ -128,6 +140,7 @@ impl UnlockLetter {
             Self::N06 => "n06_hosted_venue_preimage_ready",
             Self::G2 => "g2_collector_product_binding_preimage_ready",
             Self::G5 => "g5_witness_transport_preimage_ready",
+            Self::CR => "clean_room_product_preimage_ready",
         }
     }
 
@@ -139,6 +152,7 @@ impl UnlockLetter {
             Self::N06 => "lab-runner-n06-hosted-venue-transfer-probe",
             Self::G2 => "lab-runner-g2-collector-product-binding-transfer-probe",
             Self::G5 => "lab-runner-g5-witness-transport-transfer-probe",
+            Self::CR => "lab-runner-clean-room-product-transfer-probe",
         }
     }
 
@@ -150,6 +164,7 @@ impl UnlockLetter {
             Self::N06 => "lab-runner-n06-hosted-venue-transfer-apply",
             Self::G2 => "lab-runner-g2-collector-product-binding-transfer-apply",
             Self::G5 => "lab-runner-g5-witness-transport-transfer-apply",
+            Self::CR => "lab-runner-clean-room-product-transfer-apply",
         }
     }
 
@@ -161,6 +176,7 @@ impl UnlockLetter {
             Self::N06 => "N06",
             Self::G2 => "G2",
             Self::G5 => "G5",
+            Self::CR => "CR",
         }
     }
 }
@@ -235,7 +251,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         && !dry_run
     {
         return Err(format!(
-            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; Unlock A requires Root path-release destinations; N06 requires hosted-venue Cap CLI pilot; G2 requires Cap CLI --g2-collector-product-binding pilot; G5 requires Cap CLI --g5-witness-transport pilot; never invent pass_product_clean_room",
+            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; Unlock A requires Root path-release destinations; N06 requires hosted-venue Cap CLI pilot; G2 requires Cap CLI --g2-collector-product-binding pilot; G5 requires Cap CLI --g5-witness-transport pilot; CR requires Cap CLI --clean-room-product pilot; never invent pass_product_clean_room",
             unlock.ready_key()
         )
         .into());
@@ -268,6 +284,8 @@ fn emit_report(report: &Value, emit_path: Option<&str>) -> Result<()> {
                 "n06_hosted_venue_preimage_ready": report.get("n06_hosted_venue_preimage_ready"),
                 "g2_collector_product_binding_preimage_ready": report
                     .get("g2_collector_product_binding_preimage_ready"),
+                "clean_room_product_preimage_ready": report
+                    .get("clean_room_product_preimage_ready"),
                 "applied": report.get("applied").cloned().unwrap_or(json!(false)),
                 "cap_execute": false,
                 "pass_product_clean_room": 0,
@@ -463,6 +481,8 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
             "g5_requires_witness_transport_cap_cli_pilot": unlock == UnlockLetter::G5,
             "g5_topology_apply_does_not_invent_cap_free": unlock == UnlockLetter::G5,
             "g5_topology_apply_does_not_invent_authenticated_transport": unlock == UnlockLetter::G5,
+            "cr_requires_clean_room_product_cap_cli_pilot": unlock == UnlockLetter::CR,
+            "cr_topology_apply_does_not_invent_cap_free": unlock == UnlockLetter::CR,
             "never_invent_pilot_command": true,
             "never_invent_desktop_as_hosted": true,
         },
@@ -477,6 +497,7 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
                 UnlockLetter::N06 => "Root/autonomy GRANT with Cap CLI --w2-h2-hosted-venue; transfer-apply then Cap=1 only when actual_hosted_linux; Desktop Cap=0 fail-closed",
                 UnlockLetter::G2 => "Root copies GRANT.TEMPLATE.json → GRANT.json (or issues matching grant); transfer-apply --manifest … --grant GRANT.json; then Cap realloc schema humanymous.cursor-g2-collector-product-binding-cap-realloc/1 → Cap=1 once --g2-collector-product-binding; Cap free stays false until realloc; never invent pass_product_clean_room",
                 UnlockLetter::G5 => "Root copies GRANT.TEMPLATE.json → GRANT.json (or issues matching grant); transfer-apply --manifest … --grant GRANT.json; then Cap realloc schema humanymous.cursor-g5-witness-transport-cap-realloc/1 → Cap=1 once --g5-witness-transport; Cap free stays false until realloc; authenticated_witness_transport stays false until Cap measured; never invent pass_product_clean_room",
+                UnlockLetter::CR => "Standing autonomy / Root copies GRANT.TEMPLATE.json → GRANT.json; transfer-apply; Cap realloc schema humanymous.cursor-clean-room-product-cap-realloc/1 → Cap=1 once --clean-room-product; binds G2+G5 holds + AUTH/AT refuse; Cap free stays false until realloc; never invent pass_product_clean_room",
             }
         } else if unlock == UnlockLetter::A && entries.is_empty() {
             "Unlock A scaffold: wait Root CEF/AT path release (crates/browser/** and/or scripts/ci/cef-pilot/**) + candidate bodies + Cap CLI --g4-cef-at GRANT; empty entries keep unlock_a_preimage_ready=false; Cap day also requires HUMANYMOUS_CEF_PILOT_BUNDLE"
@@ -821,6 +842,55 @@ fn apply_transfer(
         written.push(UNLOCK_G5_APPLIED_REL);
     }
 
+    if unlock == UnlockLetter::CR && !dry_run {
+        let Some(pilot) = pilot_command else {
+            return Err(
+                "CR apply refused: grant.pilot_command must be non-empty Cap CLI --clean-room-product; never invent pilot_command"
+                    .into(),
+            );
+        };
+        let receipt = json!({
+            "schema": "humanymous.cursor-clean-room-product-applied/1",
+            "unlock": "CR",
+            "applied": true,
+            "applied_utc": chrono_like_utc(),
+            "grant": grant_path,
+            "pilot_command": pilot,
+            "destinations_written": written,
+            "cap_burn_authorized": false,
+            "cap_burn_limit": 1,
+            "cap_realloc_required_before_burn": true,
+            "cap_realloc_schema": "humanymous.cursor-clean-room-product-cap-realloc/1",
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "browser_ready": false,
+            "n06_owner_join": false,
+            "honesty": {
+                "never_invent_pass_product_clean_room": true,
+                "detection_freeze": true,
+                "g2_g5_component_holds_are_not_product": true,
+                "topology_apply_does_not_invent_cap_free": true,
+                "cap_realloc_only_structural_feeder": true,
+                "auth_at_absent_refuse": true,
+            },
+        });
+        let receipt_path = workspace.join(UNLOCK_CR_APPLIED_REL);
+        if let Some(parent) = receipt_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("mkdir {}: {error}", parent.display()))?;
+        }
+        fs::write(
+            &receipt_path,
+            format!(
+                "{}\n",
+                serde_json::to_string_pretty(&receipt)
+                    .map_err(|error| format!("unlock-cr receipt encode: {error}"))?
+            ),
+        )
+        .map_err(|error| format!("write UNLOCK-CR-APPLIED: {error}"))?;
+        written.push(UNLOCK_CR_APPLIED_REL);
+    }
+
     let mut report = Map::new();
     report.insert("schema".into(), json!(unlock.apply_schema()));
     report.insert("record_kind".into(), json!(unlock.record_kind_apply()));
@@ -874,6 +944,9 @@ fn apply_transfer(
                 }
                 UnlockLetter::G5 => {
                     "Cap realloc schema humanymous.cursor-g5-witness-transport-cap-realloc/1 citing live Cap CLI+topology; then Cap=1 once --g5-witness-transport (jobs=1); Cap free conserved until realloc; authenticated_witness_transport stays false until Cap measured; never invent pass_product_clean_room"
+                }
+                UnlockLetter::CR => {
+                    "Cap realloc schema humanymous.cursor-clean-room-product-cap-realloc/1 citing live Cap CLI+topology; then Cap=1 once --clean-room-product (jobs=1); Cap free conserved until realloc; G2+G5 holds bound; AUTH/AT refuse; never invent pass_product_clean_room"
                 }
             }
         }),
@@ -1014,6 +1087,42 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
     Ok(())
 }
 
+
+fn refuse_forbidden_clean_room_product_pilot_command(pilot: &str) -> Result<()> {
+    let lower = pilot.to_ascii_lowercase();
+    if lower.contains(CR_CAP_SELECTOR)
+        && (lower.contains("--require-full")
+            || lower.contains("--g2-collector-product-binding")
+            || lower.contains("--g5-witness-transport")
+            || lower.contains("--browser-product")
+            || lower.contains("--collector")
+            || lower.contains("--authority-node-ipc")
+            || lower.contains("--g4-cef-at")
+            || lower.contains("--w2-h2"))
+    {
+        return Err(
+            "CR grant.pilot_command refused: --clean-room-product Cap requires its own fresh profile; refuse foreign Cap selectors / --require-full Cap spam; never invent pass_product_clean_room"
+                .into(),
+        );
+    }
+    if (lower.contains("--require-full") && !lower.contains(CR_CAP_SELECTOR))
+        || lower.contains("--browser-product")
+        || lower.contains("--collector")
+        || lower.contains("observe_h2")
+    {
+        return Err(format!(
+            "CR grant.pilot_command refused: lab-runner feeder / --require-full Cap spam is not clean-room product Cap; use code-defined {CR_CODE_DEFINED_PILOT}"
+        )
+        .into());
+    }
+    if !lower.contains(CR_CAP_SELECTOR) {
+        return Err(format!(
+            "CR grant.pilot_command refused: must embed Cap CLI {CR_CAP_SELECTOR}; code-defined pilot is {CR_CODE_DEFINED_PILOT}; never invent pass_product_clean_room"
+        )
+        .into());
+    }
+    Ok(())
+}
 fn refuse_forbidden_g5_witness_transport_pilot_command(pilot: &str) -> Result<()> {
     let normalized = pilot.split_whitespace().collect::<Vec<_>>().join(" ");
     let lower = normalized.to_ascii_lowercase();
@@ -1259,6 +1368,20 @@ fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Resu
             );
         }
         refuse_forbidden_g5_witness_transport_pilot_command(pilot)?;
+    }
+    if unlock == UnlockLetter::CR {
+        let pilot = grant
+            .get("pilot_command")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .unwrap_or("");
+        if pilot.is_empty() {
+            return Err(
+                "CR grant.pilot_command must be a non-empty Cap CLI --clean-room-product argv; never invent pilot_command; template alone is not a live grant"
+                    .into(),
+            );
+        }
+        refuse_forbidden_clean_room_product_pilot_command(pilot)?;
     }
     if unlock == UnlockLetter::A {
         let release = grant

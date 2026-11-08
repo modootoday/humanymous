@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.lab-clean-room-product-contract/1",
+  "record_kind": "clean-room-product-cap-contract",
+  "cap_selector": "--clean-room-product",
+  "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --clean-room-product",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "detection_freeze": true,
+  "required_cap_topology": [
+    "deployments/lab/compose.clean-room-product.yaml",
+    "build/rust/clean-room-product-lab.Dockerfile"
+  ],
+  "bound_g2_cap1": ".spec.local/root/evidence/20261109034100-cursor-g2-cap-cleanup-realloc/CAP1-RECEIPT.json",
+  "bound_g5_cap1": ".spec.local/root/evidence/20261109035200-cursor-g5-desktop-baseline-realloc/CAP1-RECEIPT.json",
+  "auth_at_policy": "refuse_closed_when_absent_never_forge",
+  "forbidden": [
+    "invent pass_product_clean_room",
+    "bare --require-full Cap spam",
+    "G2/G5 Cap-ready twin spam",
+    "Cap=1 while Cap free=false without Cap realloc",
+    "invent Cap free / BrowserReady / n06_owner_join / AUTH-HANDOFF / AT-HANDOFF"
+  ],
+  "honesty": {
+    "g2_g5_component_holds_are_not_product": true,
+    "cap0_scaffold_not_product": true,
+    "cap_realloc_only_structural_feeder": true,
+    "auth_at_absent_refuse": true
+  }
+}

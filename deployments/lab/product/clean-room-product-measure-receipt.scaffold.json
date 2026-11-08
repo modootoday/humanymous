@@ -1,0 +1,13 @@
+{
+  "schema": "humanymous.lab-clean-room-product-measure-receipt/1",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "g2_cap1_bound": true,
+  "g5_cap1_bound": true,
+  "auth_handoff_present": false,
+  "at_handoff_present": false,
+  "counts_as": "pass_component_desktop_cap_topology",
+  "note": "Cap topology oneshot scaffold; never invent product"
+}

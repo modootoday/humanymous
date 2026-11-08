@@ -3,7 +3,7 @@ id: sot:root/clean-room-usage-matrix
 title: Docker clean-room usage-condition matrix completeness gates
 status: accepted
 created: 2026-11-08T18:35:00Z
-updated: 2026-11-08T19:20:00Z
+updated: 2026-11-08T19:10:00Z
 verify: manual
 rel:
   depends_on: [sot:root/container-test-environments, sot:root/delivery, sot:root/program-roadmap]
@@ -41,13 +41,14 @@ green.
 
 ## Cap realloc
 
-Cap realloc schemas for G2/G5 require live Cap topology TRANSFER first.
+Cap realloc schemas for G2/G5/CR require live Cap topology TRANSFER first.
 Cursor must not invent Cap free from Cap-ready structural feeders alone.
-G2+G5 Cap=1 component burns already spent at tip `b3bce0c0`; Cap free=false.
+G2+G5+CR Cap=1 component burns already spent at tip `10de63c1`; Cap free=false.
 
 ## Tip bind
 
 Matrix `head_sha` must bind the settled integration tip before completeness
-claims. Missing SoT-required scenarios fail closed. Tip bind `b3bce0c0`:
-G2+G5 cells may hold `pass_component_desktop_cap_topology` only — never
-`pass_product_clean_room`.
+claims. Missing SoT-required scenarios fail closed. Tip bind `10de63c1`:
+G2+G5+CR cells may hold `pass_component_desktop_cap_topology` only — never
+`pass_product_clean_room`. CR Cap=1 binds G2+G5 Cap=1 holds and Cap=0 AUTH/AT
+refuse; AUTH/AT handoffs remain Root and are never forged.

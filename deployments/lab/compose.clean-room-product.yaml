@@ -1,0 +1,18 @@
+# Clean-room product Cap topology (Cap=0 Cap-ready; Cap=1 after Cap realloc).
+# Binds G2+G5 Cap=1 component holds + AUTH/AT refuse; never invent pass_product_clean_room.
+# Detection freeze. Lab-only; no published ports. network_mode=none loopback measure.
+services:
+  clean-room-product-pilot:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/clean-room-product-lab:${HM_LAB_IMAGE_TAG:-local}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:-../..}
+      dockerfile: build/rust/clean-room-product-lab.Dockerfile
+    network_mode: none
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    labels:
+      org.humanymous.evidence: rust-clean-room-product
+    profiles: [clean-room-product]
