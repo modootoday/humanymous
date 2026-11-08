@@ -3178,3 +3178,30 @@ patch and fixture bodies are preserved independently. Private
 localcompiler-receipt-owner-fix-review-013.json binds correction/source limits;
 Root retains actual integration/allocation and full compiler/hosted/tree/native/
 CA-LIFETIME gates remain OPEN.
+
+Isolated eight-package/layout milestone independently observed: saved final retry
+metadata resolves all8accepted names at sdk/integrations/apps paths; current source
+inventory04:07:52Z has9manifests=root+8leaves. CLI28/Adapters18 targets are metadata,
+not execution. Live source/cutover/publication/main remains separate.634external
+lock name/version/source/checksum tuples agree before/after; old853c5154 and new
+9d5b7e75 raw hashes reproduced, not feature/tool/registry proof.
+
+Adapters six safe-context units have73unique passes/0fail/0ignore/0filtered and
+exactly matching73registered list identities. Initial replay E0282/E0283 is retained;
+only test [] becomes typed empty bytes. Default strict0.43s and corrected safe
+strict1.16s are separate. The test receipt's1801after0diff was computed by owner
+but after rows were not persisted. Root acknowledged that independent historical
+equality cannot be reproduced and did not reconstruct it. An audit comparison
+that wrongly assumed a size field was discarded; these snapshots have path/hash
+ONLY. Corrected late observation found7expected subsequent facade/manifest changes,
+not a claim of old equality or whole current file-set closure.
+
+New explicitly timed facade lint pair1801path/hash rows is equal, SHAa2f0d8b391dbb8c1dee3bce2a9a5594e5623888a06d2bd7a9e74a11b6fc25b62;
+all-target/all-feature strict footer3.73s. Its separate2lib+2Go test passes are not
+retrosealed. New Collector WASM runtime-pilot strict pair1801equal, SHA29677b89f4e1bfbb94c86c461547660c20383a4e0caa44016877f4200d4ed079,
+footer2.16s. Separate26Windows lib+1contract pass and WASM check2.45s remain their
+own observations, not actual browser runtime. Initial facade/Collector-relative
+metadata failures remain before corrected final metadata. Private
+eight-package-stage-review-014.json binds these different sources/scopes; unsafe/
+privacy/linkage, actualNative4, Collector browser, CEF/SDK/outer lifecycle and full
+migration gates remain OPEN. No compiler/native executor was used by audit.

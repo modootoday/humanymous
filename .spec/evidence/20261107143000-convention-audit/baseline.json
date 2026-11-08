@@ -2679,5 +2679,11 @@
     "sha256": "265b7ade31361b639e6c51158391c343f40643b52e258d76f9d4b608e290ee73",
     "bytes": 2658,
     "goal_complete": false
+  },
+  "eight_package_stage_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/eight-package-stage-review-014.json",
+    "sha256": "31c0c3d423ce81b265236d9b046d8d1e4a8526455cf31d464af6cfef78b9ee11",
+    "bytes": 9558,
+    "goal_complete": false
   }
 }
