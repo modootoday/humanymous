@@ -2721,5 +2721,17 @@
     "sha256": "08132dd3fe5b19f57780089db5df832370ddfc776e3cf75b3f4225c36cde8ae6",
     "bytes": 2274,
     "goal_complete": false
+  },
+  "current_indicator_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/current-indicator-review-021.json",
+    "sha256": "106cc7488654a917791464d62cafacbcfbcf97953a4866ae07e9ef0c642806da",
+    "bytes": 4717,
+    "goal_complete": false
+  },
+  "adapters_package_input_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/adapters-package-input-review-022.json",
+    "sha256": "61ab79b6cf360e45846f1172f5e7372f44bd40002de65edcf53cca3f09ed5dbe",
+    "bytes": 2199,
+    "goal_complete": false
   }
 }

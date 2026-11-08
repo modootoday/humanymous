@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 724f06ca98a8fd96d35e838c5b802f8b8bf063ea0844b439597b26c4330387e4, bytes: 152273, store: repo}
+  - {path: baseline.json, sha256: 8386cb789059d5b1401cfaaf0c8e85466acd62d25a8fba973c79f9a1b5c281fb, bytes: 152831, store: repo}
 ---
 
 # Convention audit baseline
@@ -3014,3 +3014,19 @@ softbuffer, not a runtime/driver classification. Private meari-cpu-review-019.js
 and meari-epoch-review-020.json bind evidence. No source-read/tool/environment
 closure, actual CEF window, IME, accessibility, DPI, GPU or release qualification
 is inferred; main assembly adoption remains a distinct Root action.
+Current isolated source indicator follow-up inventories897Rust files and16CJK/
+Hangul hit rows. Named hits are IME/Unicode/i18n fixture literals or language
+scanner adversarial test inputs; no new authored-prose violation was confirmed.
+This script-range search does not prove whole-source English or foreign-code
+conformance. Apache clippy::all allowance remains generated-ffi scoped; handwritten
+host unsafe allowance remains separate, not full native qualification. Private
+current-indicator-review-021.json retains the bounded observation.
+
+Adapters package input listing has139unique rows,0duplicates and all7named
+required inputs. LICENSE11353B matches both receipt and isolated root bytes.
+NOTICE and README correctly distinguish source licensing from actual selected-role
+and dependency/native distribution qualification. Private
+adapters-package-input-review-022.json binds actual list and source bytes.
+CA-NOTICE01 stays OPEN: actual archive extraction/content, extracted build,
+complete per-role dependency/native notices and final runtime-image verification
+remain required. Pre-Cargo role/SDK-negative validation is distinct from build.rs.
