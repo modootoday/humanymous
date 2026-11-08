@@ -1,6 +1,7 @@
-# Unlock B Cap topology — W2 H2 product-binding (original_h2 serve path).
+# Unlock B Cap topology — W2 H2 product-binding TLS listen+client measure.
 # Distinct from capture-component observe_h2. Component Cap green != product.
-# Detection freeze. Lab-only; no published ports.
+# Detection freeze. Lab-only; no published ports. Loopback measure under network_mode=none.
+# Never claim desktop_as_hosted as hosted product.
 services:
   h2-product-binding-pilot:
     extends: {file: topology/sandbox.yaml, service: sandbox}

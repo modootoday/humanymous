@@ -4,6 +4,8 @@ pub mod browser;
 pub mod configuration;
 pub mod control;
 pub mod http;
+#[cfg(feature = "hosted-pilot")]
+pub mod lab_h2_measure;
 pub mod management;
 pub mod service;
 pub mod session;

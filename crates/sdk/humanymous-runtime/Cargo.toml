@@ -73,6 +73,11 @@ path = "src/gateway/main.rs"
 required-features = ["gateway"]
 
 [[bin]]
+name = "humanymous-h2-product-binding-measure"
+path = "src/gateway/bin/h2_product_binding_measure.rs"
+required-features = ["gateway", "hosted-pilot"]
+
+[[bin]]
 name = "humanymous-authority"
 path = "src/authority/main.rs"
 required-features = ["authority"]

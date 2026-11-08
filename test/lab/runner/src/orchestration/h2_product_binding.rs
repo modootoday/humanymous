@@ -1,12 +1,12 @@
 //! Unlock B Cap CLI — W2 H2 product-binding (fail-closed).
 //!
-//! Cap topology (compose + Dockerfile for gateway serve + `required.original_h2`)
-//! is Cap-ready under claimed Cursor surface after Unlock B topology transfer.
-//! Composition Cap with `network_mode=none` never measures hosted original_h2.
-//! Capture `observe_h2` is never product-binding. Never invent `pass_product_clean_room`.
+//! Cap topology runs TLS listen+client measure (loopback under network_mode=none).
+//! `original_h2_measured=true` only after a validated measure receipt.
+//! Capture `observe_h2` is never product-binding. Never invent `pass_product_clean_room`
+//! or claim `desktop_as_hosted` as hosted product.
 use super::Lab;
 use crate::{docker::Result, snapshot};
-use serde_json::json;
+use serde_json::{Value, json};
 use std::{fs, path::Path};
 
 /// Code-defined Cap selector (mirrors Unlock C `--authority-node-ipc`).
@@ -25,16 +25,14 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
     "build/rust/h2-product-binding-lab.Dockerfile",
 ];
 
-/// Exact Root-hosted join still missing for `original_h2_measured=true` (N06).
-///
-/// Composition Cap EXIT 0 with `network_mode=none` does **not** satisfy these.
-/// Desktop Cap must not be treated as hosted (`desktop_as_hosted` forbidden).
-pub const MISSING_ORIGINAL_H2_MEASURE_JOIN: &[&str] = &[
-    "Root-allocated hosted gateway H2 product-binding measure topology (TLS listen + client path; not composition network_mode=none alone)",
-    "Cap pilot that serves humanymous-runtime gateway with route required.original_h2=true",
-    "Same-owner live Connection + successful observe_h2 for that request (not capture native-component observe_h2 folklore)",
+/// Measure receipt schema emitted by Cap oneshot.
+pub const MEASURE_RECEIPT_SCHEMA: &str = "humanymous.lab-h2-product-binding-measure-receipt/1";
+
+/// Residual Root join for N06 / product lift after Desktop lab measure.
+pub const MISSING_N06_PRODUCT_LIFT: &[&str] = &[
     "Owner-integration readiness join authorization after measured binding (SoT N06 / R14-D6)",
-    "Honest measure receipt artifact Cap may consume before flipping original_h2_measured",
+    "Root-hosted venue qualification (Desktop lab measure ≠ desktop_as_hosted / hosted product)",
+    "Matrix G1 / pass_product_clean_room admission by Root after measured binding",
 ];
 
 /// Freeze pins from Cap-ready contract — abort Cap on drift.
@@ -57,22 +55,104 @@ const FREEZE_PREIMAGES: &[(&str, &str)] = &[
     ),
 ];
 
-/// Composition Cap cannot claim measured original_h2; cite exact missing join.
-pub fn original_h2_measured_from_composition_cap() -> bool {
-    false
+/// Parse Cap oneshot stdout for a measure receipt JSON object.
+pub fn parse_measure_receipt(logs: &str) -> Result<Value> {
+    let mut last_err = "measure receipt JSON absent from Cap logs".to_string();
+    for line in logs.lines().rev() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with('{') {
+            continue;
+        }
+        match serde_json::from_str::<Value>(trimmed) {
+            Ok(value) => {
+                if value.get("schema").and_then(Value::as_str) == Some(MEASURE_RECEIPT_SCHEMA) {
+                    return Ok(value);
+                }
+                last_err = format!(" Cap log JSON schema mismatch: {trimmed}");
+            }
+            Err(error) => last_err = format!("Cap log JSON parse: {error}"),
+        }
+    }
+    Err(last_err.into())
 }
 
-/// Fail-closed: refuse invented `original_h2_measured=true` without hosted join.
-pub fn refuse_invented_original_h2_measured(measured: bool) -> Result<()> {
+/// Fail-closed: `original_h2_measured` only from validated measure receipt.
+pub fn original_h2_measured_from_receipt(receipt: &Value) -> Result<bool> {
+    if receipt.get("schema").and_then(Value::as_str) != Some(MEASURE_RECEIPT_SCHEMA) {
+        return Err("w2-h2-product-binding Cap refused: measure receipt schema mismatch".into());
+    }
+    if receipt.get("desktop_as_hosted").and_then(Value::as_bool) == Some(true) {
+        return Err(
+            "w2-h2-product-binding Cap refused: desktop_as_hosted=true forbidden; Desktop lab ≠ hosted product"
+                .into(),
+        );
+    }
+    if receipt.get("product").and_then(Value::as_u64) != Some(0)
+        || receipt
+            .get("pass_product_clean_room")
+            .and_then(Value::as_u64)
+            != Some(0)
+    {
+        return Err(
+            "w2-h2-product-binding Cap refused: measure receipt invented product/pass_product_clean_room"
+                .into(),
+        );
+    }
+    let measured = receipt
+        .get("original_h2_measured")
+        .and_then(Value::as_bool)
+        .ok_or("w2-h2-product-binding Cap refused: measure receipt missing original_h2_measured")?;
     if measured {
-        return Err(format!(
-            "w2-h2-product-binding Cap refused: original_h2_measured=true without Root-hosted measure join ({missing}); composition Cap / capture observe_h2 never lift N06; never invent pass_product_clean_room",
-            missing = MISSING_ORIGINAL_H2_MEASURE_JOIN.join("; ")
-        )
-        .into());
+        let status = receipt
+            .get("tls_h2_status")
+            .and_then(Value::as_u64)
+            .ok_or("w2-h2-product-binding Cap refused: measured=true without tls_h2_status")?;
+        if status == 422 {
+            return Err(
+                "w2-h2-product-binding Cap refused: measured=true but tls_h2_status=422"
+                    .into(),
+            );
+        }
+        let control = receipt
+            .get("plaintext_control_status")
+            .and_then(Value::as_u64)
+            .ok_or(
+                "w2-h2-product-binding Cap refused: measured=true without plaintext_control_status",
+            )?;
+        if control != 422 {
+            return Err(
+                "w2-h2-product-binding Cap refused: measured=true without plaintext 422 control"
+                    .into(),
+            );
+        }
+    }
+    Ok(measured)
+}
+
+/// Fail-closed: refuse invented `original_h2_measured=true` without receipt.
+pub fn refuse_invented_original_h2_measured(
+    measured: bool,
+    receipt: Option<&Value>,
+) -> Result<()> {
+    if !measured {
+        return Ok(());
+    }
+    let Some(receipt) = receipt else {
+        return Err(
+            "w2-h2-product-binding Cap refused: original_h2_measured=true without measure receipt; composition Cap / capture observe_h2 never lift N06; never invent pass_product_clean_room"
+                .into(),
+        );
+    };
+    let validated = original_h2_measured_from_receipt(receipt)?;
+    if !validated {
+        return Err(
+            "w2-h2-product-binding Cap refused: original_h2_measured=true but receipt validates false"
+                .into(),
+        );
     }
     Ok(())
 }
+
 /// Missing Cap topology paths.
 pub fn missing_cap_topology(root: &Path) -> Vec<&'static str> {
     REQUIRED_CAP_TOPOLOGY
@@ -119,7 +199,7 @@ pub fn require_freeze_preimages(root: &Path) -> Result<()> {
 }
 
 /// Cap=1 entry: refuse-closed when Cap topology / freeze prerequisites fail;
-/// otherwise Docker-coordinate Cap composition (component only).
+/// otherwise Docker-coordinate Cap measure (component only).
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
     let root = snapshot::root()?;
     require_freeze_preimages(&root)?;
@@ -154,65 +234,98 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             .all(|s| s.get("ports").is_none()),
         json!(snapshot::digest(config.as_bytes())),
     )?;
-    eprintln!("lab: building immutable h2-product-binding-lab image (Cap)");
+    eprintln!("lab: building immutable h2-product-binding-lab measure image (Cap)");
     lab.stage = "h2_product_binding_build";
     lab.compose(&["build", "h2-product-binding-pilot"], true)?;
-    // Cap oneshot (exits 0). Do not use compose --wait.
+    // Cap measure oneshot (exits 0 on measured receipt). Do not use compose --wait.
     lab.stage = "h2_product_binding_up";
     lab.compose(&["up", "-d", "h2-product-binding-pilot"], true)?;
     let container = lab.inspect("h2-product-binding-pilot")?;
     lab.case(
         "h2-product-binding-network-none",
         container["HostConfig"]["NetworkMode"] == "none",
-        json!("compose.h2-product-binding.yaml network_mode=none"),
+        json!("compose.h2-product-binding.yaml network_mode=none loopback measure"),
     )?;
-    let exit_code = container["State"]["ExitCode"].as_i64().unwrap_or(-1);
-    let running = container["State"]["Running"] == true;
+    let id = container["Id"]
+        .as_str()
+        .ok_or("h2-product-binding pilot container id missing")?
+        .to_owned();
+    // Wait briefly if measure oneshot is still in flight (no second inspect case).
+    let mut exit_code = container["State"]["ExitCode"].as_i64().unwrap_or(-1);
+    let mut running = container["State"]["Running"] == true;
+    if running {
+        for _ in 0..60 {
+            std::thread::sleep(std::time::Duration::from_millis(500));
+            let state: Value = serde_json::from_str(&lab.docker.call(&["inspect", &id])?)?;
+            exit_code = state[0]["State"]["ExitCode"].as_i64().unwrap_or(-1);
+            running = state[0]["State"]["Running"] == true;
+            if !running {
+                break;
+            }
+        }
+    }
     lab.case(
-        "h2-product-binding-pilot-oneshot-or-running",
-        running || exit_code == 0,
+        "h2-product-binding-pilot-measure-oneshot",
+        !running && (exit_code == 0 || exit_code == 1),
         json!({"running": running, "exit_code": exit_code}),
     )?;
-    // Composition Cap honesty: network_mode=none oneshot never measures hosted H2.
-    let measured = original_h2_measured_from_composition_cap();
-    refuse_invented_original_h2_measured(measured)?;
+    let logs = lab.docker.call(&["logs", "--tail", "20", &id])?;
+    snapshot::write(
+        &lab.evidence,
+        "h2-product-binding-measure-logs.json",
+        &json!({"logs": logs}),
+    )?;
+    let receipt = parse_measure_receipt(&logs)?;
+    snapshot::write(&lab.evidence, "original-h2-measure-receipt.json", &receipt)?;
+    let measured = original_h2_measured_from_receipt(&receipt)?;
+    refuse_invented_original_h2_measured(measured, Some(&receipt))?;
     lab.case(
-        "h2-product-binding-original-h2-not-measured",
-        !measured,
+        "h2-product-binding-measure-receipt-validated",
+        true,
         json!({
             "original_h2_measured": measured,
-            "missing_measure_join": MISSING_ORIGINAL_H2_MEASURE_JOIN,
-            "reason": "composition Cap network_mode=none; Root-hosted measure join absent; capture observe_h2 ≠ product-binding"
+            "tls_h2_status": receipt.get("tls_h2_status"),
+            "plaintext_control_status": receipt.get("plaintext_control_status"),
+            "desktop_as_hosted": false,
+            "exit_code": exit_code
         }),
     )?;
+    if measured {
+        lab.case(
+            "h2-product-binding-original-h2-measured",
+            measured && exit_code == 0,
+            json!({
+                "original_h2_measured": measured,
+                "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+                "reason": "Desktop lab TLS measure receipt validated; not hosted product"
+            }),
+        )?;
+    } else {
+        lab.case(
+            "h2-product-binding-original-h2-not-measured",
+            !measured,
+            json!({
+                "original_h2_measured": measured,
+                "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+                "reason": "measure receipt present but original_h2_measured=false; capture observe_h2 ≠ product-binding"
+            }),
+        )?;
+    }
     lab.components["w2_h2_product_binding"] = json!({
         "status": "executed",
         "kind": "w2-h2-product-binding-component",
         "product": 0,
         "pass_product_clean_room": 0,
         "original_h2_measured": measured,
-        "missing_measure_join": MISSING_ORIGINAL_H2_MEASURE_JOIN,
-        "n06_join": "blocked",
-        "note": "component Cap composition only; original_h2_measured stays false until Root-hosted measure join; never invent readiness original_h2 or pass_product_clean_room; capture observe_h2 ≠ product-binding"
+        "desktop_as_hosted": false,
+        "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+        "n06_join": if measured { "measured_desktop_lab_awaiting_owner_hosted_join" } else { "blocked" },
+        "note": "component Cap TLS measure; never invent pass_product_clean_room; capture observe_h2 ≠ product-binding; Desktop ≠ hosted product"
     });
     snapshot::write(
         &lab.evidence,
         "w2-h2-product-binding-component.json",
         &lab.components["w2_h2_product_binding"],
-    )?;
-    snapshot::write(
-        &lab.evidence,
-        "original-h2-measure-join-missing.json",
-        &json!({
-            "schema": "humanymous.lab-h2-original-h2-measure-join/1",
-            "original_h2_measured": measured,
-            "missing_measure_join": MISSING_ORIGINAL_H2_MEASURE_JOIN,
-            "composition_cap_network_mode": "none",
-            "desktop_as_hosted": "forbidden",
-            "product": 0,
-            "pass_product_clean_room": 0,
-            "n06_join": "blocked"
-        }),
     )?;
     Ok(())
 }
@@ -220,11 +333,12 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, MISSING_ORIGINAL_H2_MEASURE_JOIN,
-        missing_cap_topology, original_h2_measured_from_composition_cap,
+        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, MEASURE_RECEIPT_SCHEMA, MISSING_N06_PRODUCT_LIFT,
+        missing_cap_topology, original_h2_measured_from_receipt, parse_measure_receipt,
         refuse_invented_original_h2_measured,
     };
     use crate::snapshot;
+    use serde_json::json;
     use std::fs;
 
     #[test]
@@ -253,24 +367,39 @@ mod tests {
     }
 
     #[test]
-    fn composition_cap_never_claims_original_h2_measured() {
-        assert!(!original_h2_measured_from_composition_cap());
-        assert!(refuse_invented_original_h2_measured(false).is_ok());
-        let err = refuse_invented_original_h2_measured(true).expect_err("invented measured");
-        let message = err.to_string();
-        assert!(message.contains("original_h2_measured=true"));
-        assert!(message.contains("Root-hosted"));
-        assert!(MISSING_ORIGINAL_H2_MEASURE_JOIN.len() >= 4);
-        assert!(
-            MISSING_ORIGINAL_H2_MEASURE_JOIN
-                .iter()
-                .any(|item| item.contains("required.original_h2=true"))
-        );
-        assert!(
-            MISSING_ORIGINAL_H2_MEASURE_JOIN
-                .iter()
-                .any(|item| item.contains("observe_h2"))
-        );
+    fn measure_receipt_required_before_original_h2_measured() {
+        assert!(refuse_invented_original_h2_measured(false, None).is_ok());
+        let err = refuse_invented_original_h2_measured(true, None).expect_err("invented measured");
+        assert!(err.to_string().contains("without measure receipt"));
+        let receipt = json!({
+            "schema": MEASURE_RECEIPT_SCHEMA,
+            "original_h2_measured": true,
+            "tls_h2_status": 403,
+            "plaintext_control_status": 422,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false
+        });
+        assert!(original_h2_measured_from_receipt(&receipt).unwrap());
+        assert!(refuse_invented_original_h2_measured(true, Some(&receipt)).is_ok());
+        let bad = json!({
+            "schema": MEASURE_RECEIPT_SCHEMA,
+            "original_h2_measured": true,
+            "tls_h2_status": 422,
+            "plaintext_control_status": 422,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false
+        });
+        assert!(original_h2_measured_from_receipt(&bad).is_err());
+        assert!(MISSING_N06_PRODUCT_LIFT.len() >= 2);
+    }
+
+    #[test]
+    fn parse_measure_receipt_takes_last_matching_schema() {
+        let logs = "noise\n{\"schema\":\"other\"}\n{\"schema\":\"humanymous.lab-h2-product-binding-measure-receipt/1\",\"original_h2_measured\":false,\"product\":0,\"pass_product_clean_room\":0,\"desktop_as_hosted\":false}\n";
+        let receipt = parse_measure_receipt(logs).expect("receipt");
+        assert_eq!(receipt["original_h2_measured"], false);
     }
 
     fn tempfile_dir(prefix: &str) -> std::path::PathBuf {
