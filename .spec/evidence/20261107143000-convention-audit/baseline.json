@@ -2709,5 +2709,17 @@
     "sha256": "30eeb813ada92deabd2b73bfc3d896bf666738537ba0e0e5995f0b44a7470d2d",
     "bytes": 7029,
     "goal_complete": false
+  },
+  "meari_cpu_candidate_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/meari-cpu-review-019.json",
+    "sha256": "e9586dae9c64a93a23c7b569fd513adf04114fc28452625c2f6504693ae47e19",
+    "bytes": 1564,
+    "goal_complete": false
+  },
+  "meari_sealed_epoch_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/meari-epoch-review-020.json",
+    "sha256": "08132dd3fe5b19f57780089db5df832370ddfc776e3cf75b3f4225c36cde8ae6",
+    "bytes": 2274,
+    "goal_complete": false
   }
 }

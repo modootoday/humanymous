@@ -3978,3 +3978,15 @@ the exact expected single error. Private node-macro-review-017.json and
 node-boundary-matrix-review-018.json bind raw sources and boundaries. This is
 not complete generated expansion, full input closure, Node DLL load, actual
 Node/Bun host equivalence, SDK qualification or overall migration completion.
+Meari0.3 CPU candidate is a separate source/lock epoch. Three Browser manifest
+revision pins move1482b746 to ef3d2d0a without declared-feature changes. External
+name/version/source/checksum comparison finds7Meari0.2-to0.3 replacements and
+windows-sys0.59 removal only; previous634unchanged claim does not transfer.
+Initial native-ui check31.90s precedes the fresh strict/unit snapshot interval.
+Timed strict3.07s and32unique actual default-model passes/0fail/0ignore/0filtered
+have1802equal before/after path/hash rows, SHA2b0eeaac558b8d6b3054a520b8927ff1edeedf25f9a3c6742a7aa359e8ea0487.
+Selected Windows normal/build dependency graph includes CPU vello_cpu and
+softbuffer, not a runtime/driver classification. Private meari-cpu-review-019.json
+and meari-epoch-review-020.json bind evidence. No source-read/tool/environment
+closure, actual CEF window, IME, accessibility, DPI, GPU or release qualification
+is inferred; main assembly adoption remains a distinct Root action.
