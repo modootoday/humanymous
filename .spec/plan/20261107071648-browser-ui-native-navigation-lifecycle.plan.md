@@ -632,3 +632,22 @@ required-hardware success; upstream GPU choice alone is insufficient.
 Adversarial verdict needs-work beforeGPUadoption; CPUupgrade also unqualified.
 Upstream Linux reports do not count as our passes. No local Cargo resolution,
 compiler/test/Clippy/SDK/GPU/process/browser execution or publication occurred.
+
+
+## UI-41 Root CPU checkpoint and exact next delta ownership
+
+Root's separate Meari030 CPU review candidate has actual native-ui check0,
+strict0 and32default tests with zero failures/ignored/filtered. Nine raw proof
+inputs and nineteen primary/candidate path pairs are hashed in the attached
+meari-030-cpu-root-checkpoint.json.1802before/after map entries have zero
+difference records; the pair scopes strict/default tests, not the earlier
+31.90s initial check. No actual CEF/UI/native pilot is inferred.
+
+meari-030-cpu-next-deltas.md supplies the exact accepted-family paths and
+Root/Browser/CLI/Delivery ordering: finalpin/lock/sourcejoin; producer/L07
+explicit per-replica DATA allowlist/equality; schema2consumer/CLIbinfeature
+workflow and safe-report custody; selected/full/package registry/SBOM/notices;
+real role/PE/SDK builds and boundednativeprocesses; full CPU resize/IME/AX/DPI/
+sandbox and teardown. Primary is unchanged and GPU remains separate. This
+sourcecandidate assignment made no implementation/manifest/lock changes or
+compiler/test/native execution. Root coordinates Delivery's owned changes.

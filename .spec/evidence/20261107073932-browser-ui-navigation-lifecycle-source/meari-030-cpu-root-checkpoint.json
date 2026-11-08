@@ -1,0 +1,245 @@
+{
+  "schema": "humanymous.browser-meari-cpu-root-checkpoint/1",
+  "state": "CPU-component-qualified-only; primary-not-adopted",
+  "owner": "Root",
+  "candidate": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-cpu-review-only",
+  "primary": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "inputs": [
+    {
+      "bytes": 354,
+      "sha256": "d56ee981d2a72f4b5f7c355329ff337a1044e0bb98ec0c91343cccfc76396dcc",
+      "last_write_utc": "2026-11-08T04:22:43.5044667Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-cpu-checkpoint.json"
+    },
+    {
+      "bytes": 1670,
+      "sha256": "8f129573a837c1694e7a8a886477e2eaf2d6a5701d4c1b0b58ad770e2b288790",
+      "last_write_utc": "2026-11-08T04:22:56.7450203Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-cpu-tree-summary.json"
+    },
+    {
+      "bytes": 21012,
+      "sha256": "e5b3ece3fc71ee7484180caf9f40419022e00812c0d8b7027356e63ea7e7d067",
+      "last_write_utc": "2026-11-08T04:22:56.6759290Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-cpu-normal-build-tree.log"
+    },
+    {
+      "bytes": 2070,
+      "sha256": "040465d79bda580948480f99844cf21c91cebb4f3cf075fc0903812d5284a49f",
+      "last_write_utc": "2026-11-08T04:21:27.6629748Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-lock-resolution.log"
+    },
+    {
+      "bytes": 1913,
+      "sha256": "98bde40eb914a8624dfea2e8f810713756c84afe27f7e6d9620d3aa99824234c",
+      "last_write_utc": "2026-11-08T04:22:10.2806312Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-native-ui-check.log"
+    },
+    {
+      "bytes": 451,
+      "sha256": "6ce508b4cc277893b3feb0797726bcae47a16042bc5313f5735588277ae40334",
+      "last_write_utc": "2026-11-08T04:22:40.9818098Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-native-ui-strict.log"
+    },
+    {
+      "bytes": 3520,
+      "sha256": "86f1dfe49bf67c71eeb8bc646d9333f645719990f4e2d71d5623fc3704a2935a",
+      "last_write_utc": "2026-11-08T04:22:43.2249679Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-default-tests.log"
+    },
+    {
+      "bytes": 294896,
+      "sha256": "2b0eeaac558b8d6b3054a520b8927ff1edeedf25f9a3c6742a7aa359e8ea0487",
+      "last_write_utc": "2026-11-08T04:22:37.8074897Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-source-before.json"
+    },
+    {
+      "bytes": 294896,
+      "sha256": "2b0eeaac558b8d6b3054a520b8927ff1edeedf25f9a3c6742a7aa359e8ea0487",
+      "last_write_utc": "2026-11-08T04:22:43.4914612Z",
+      "path": ".spec.local/root/evidence/20261108054000-core-consolidation/meari-030-source-after.json"
+    }
+  ],
+  "actual_root_results": {
+    "native_ui_strict_clippy": {
+      "exit": 0,
+      "footer_seconds": 3.07
+    },
+    "native_ui_alltargets_check": {
+      "exit_evidence": "Root terminal report",
+      "exit": 0,
+      "footer": "Finished dev profile in31.90s",
+      "timed_pair_brackets_check": false
+    },
+    "default_library_tests": {
+      "ignored": 0,
+      "failed": 0,
+      "exit": 0,
+      "filtered": 0,
+      "passed": 32
+    }
+  },
+  "source_capture": {
+    "before_entries": 1802,
+    "coverage": "strict Clippy and default model tests; initial check log predates this pair",
+    "after_entries": 1802,
+    "timed_checkpoint": {
+      "started_utc": "2026-11-08T04:22:27.3746048Z",
+      "finished_utc": "2026-11-08T04:22:43.5031609Z",
+      "native_ui_clippy_exit": 0,
+      "default_tests_exit": 0,
+      "before_files": 1802,
+      "after_files": 1802,
+      "differences": [],
+      "scope": "separate upgrade candidate strict CPU UI compile and default model tests; no CEF/UI/GPU/IME/AX/DPI actual runtime"
+    },
+    "SDK_bundle_process_or_future_epoch_closure": false,
+    "difference_records": 0
+  },
+  "selected_tree": {
+    "observed_utc": "2026-11-08T04:22:56.7322492Z",
+    "target": "x86_64-pc-windows-msvc",
+    "edges": [
+      "normal",
+      "build"
+    ],
+    "features": [
+      "native-ui"
+    ],
+    "gpu_package_rows": [],
+    "family_rows": [
+      "meari v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a)",
+      "meari v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a) (*)",
+      "meari-dom v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a)",
+      "meari-dom v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a) (*)",
+      "meari-html v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a)",
+      "meari-native v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a)",
+      "meari-paint v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a)",
+      "meari-paint v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a) (*)",
+      "meari-platform v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a)",
+      "meari-platform v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a) (*)",
+      "meari-shell v0.3.0 (https://github.com/modootoday/meari.git?rev=ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4#ef3d2d0a)"
+    ],
+    "scope": "declared selected CPU dependency graph only; not renderer runtime/driver classification"
+  },
+  "lock_change_evidence": "resolution log: seven Meari family replacements and windows-sys0.59.0 removal; full tuple/checksum review Root pending",
+  "inspected_primary_and_cpu_paths": [
+    {
+      "cpu_candidate_sha256": "d5703c356a6136c1e558c7df222d2b2b829289444d79cdadb10529a636a072f6",
+      "primary_sha256": "d5703c356a6136c1e558c7df222d2b2b829289444d79cdadb10529a636a072f6",
+      "path": "Cargo.toml"
+    },
+    {
+      "cpu_candidate_sha256": "03660cc62ac157b8234ecee7c8823b0a2e6a63e4b30855f16759e0bf1911102d",
+      "primary_sha256": "9d5b7e7554b0e28cca4ebab139856001856161635cef1b778c62b24c4d21096e",
+      "path": "Cargo.lock"
+    },
+    {
+      "cpu_candidate_sha256": "e53409e622f4b0f5b177d144a74174d6efc87da9da195e889e48554fc407907c",
+      "primary_sha256": "53f54d23c396b63e5d22e1f10548b8bf246bf0037b58eb74b94adfdef779d0dd",
+      "path": "crates/apps/humanymous-browser/Cargo.toml"
+    },
+    {
+      "cpu_candidate_sha256": "679e1de385bb8b31c8da83257ef0395b74c956873fa08c61470a064366debfd2",
+      "primary_sha256": "679e1de385bb8b31c8da83257ef0395b74c956873fa08c61470a064366debfd2",
+      "path": "crates/apps/humanymous-browser/native/desktop/pilot-contract.json"
+    },
+    {
+      "cpu_candidate_sha256": "9421499fb3db4345a587f07bece37150175993c4ab5f00b1a7c7a4c8bc0f8d64",
+      "primary_sha256": "9421499fb3db4345a587f07bece37150175993c4ab5f00b1a7c7a4c8bc0f8d64",
+      "path": "crates/apps/humanymous-browser/src/native/desktop/host.rs"
+    },
+    {
+      "cpu_candidate_sha256": "5745fc6e33446a84b259e04bdc01034ddd0c6147fd4d21e80c40c901de95c610",
+      "primary_sha256": "5745fc6e33446a84b259e04bdc01034ddd0c6147fd4d21e80c40c901de95c610",
+      "path": "crates/apps/humanymous-cli/Cargo.toml"
+    },
+    {
+      "cpu_candidate_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "primary_sha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a",
+      "path": "crates/apps/humanymous-cli/qualification/browser/cef/pilot-contract.json"
+    },
+    {
+      "cpu_candidate_sha256": "de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87",
+      "primary_sha256": "de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87",
+      "path": "crates/apps/humanymous-cli/qualification/data-provenance.json"
+    },
+    {
+      "cpu_candidate_sha256": "a7cd1030201e4c76699d910c3423e1ee6d9afc29041fc7918cea2d58cac57075",
+      "primary_sha256": "a7cd1030201e4c76699d910c3423e1ee6d9afc29041fc7918cea2d58cac57075",
+      "path": "crates/apps/humanymous-cli/src/qualification/delivery/qualification_data.rs"
+    },
+    {
+      "cpu_candidate_sha256": "bc6862e0cd29383204ea3edc24a6d167a749ec2bd01201760a5a6ca923b51672",
+      "primary_sha256": "bc6862e0cd29383204ea3edc24a6d167a749ec2bd01201760a5a6ca923b51672",
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs"
+    },
+    {
+      "cpu_candidate_sha256": "b2c8f2cd7bebfa7bd9e4ee78e26a4cbf1c3ba74e4f9cefed65d08da93607d105",
+      "primary_sha256": "b2c8f2cd7bebfa7bd9e4ee78e26a4cbf1c3ba74e4f9cefed65d08da93607d105",
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs"
+    },
+    {
+      "cpu_candidate_sha256": "1da0eca23f495da1f473359c0b9363a0702e9c76893c36cf61639c65a798b8ea",
+      "primary_sha256": "1da0eca23f495da1f473359c0b9363a0702e9c76893c36cf61639c65a798b8ea",
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs"
+    },
+    {
+      "cpu_candidate_sha256": "e5c7a31299af8107786e8b4b36cc60c2354d94628929a26a95ee71e804dd53c3",
+      "primary_sha256": "e5c7a31299af8107786e8b4b36cc60c2354d94628929a26a95ee71e804dd53c3",
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/desktop.rs"
+    },
+    {
+      "cpu_candidate_sha256": "e3720224aa46b1c217e3d6f733d0c4a6a8b55ba8b6d58d8715abe34956dbc011",
+      "primary_sha256": "e3720224aa46b1c217e3d6f733d0c4a6a8b55ba8b6d58d8715abe34956dbc011",
+      "path": "crates/apps/humanymous-cli/src/qualification/delivery/notices.rs"
+    },
+    {
+      "cpu_candidate_sha256": "d0cc8d01898b1ee21b8bb965d2d7ee0eedeaf77cecd4372b7e507c96273b7416",
+      "primary_sha256": "d0cc8d01898b1ee21b8bb965d2d7ee0eedeaf77cecd4372b7e507c96273b7416",
+      "path": "crates/apps/humanymous-cli/src/qualification/delivery/notices/members.rs"
+    },
+    {
+      "cpu_candidate_sha256": "f4c5631c14ebf710c666d656aa596fc672df068ff9de48af7c9c0dd1c56422ee",
+      "primary_sha256": "f4c5631c14ebf710c666d656aa596fc672df068ff9de48af7c9c0dd1c56422ee",
+      "path": "crates/apps/humanymous-cli/src/qualification/delivery/notices/archive.rs"
+    },
+    {
+      "cpu_candidate_sha256": "5699c7b14e4e4f9b6637274803a189537bdef0e2dfeaa074cd2019802c892a03",
+      "primary_sha256": "5699c7b14e4e4f9b6637274803a189537bdef0e2dfeaa074cd2019802c892a03",
+      "path": "NOTICE"
+    },
+    {
+      "cpu_candidate_sha256": "bc27387cb6eeb3601bd931466c098c2e916f0510abbf18713911b0eb832d9626",
+      "primary_sha256": "bc27387cb6eeb3601bd931466c098c2e916f0510abbf18713911b0eb832d9626",
+      "path": "THIRD_PARTY_LICENSES.md"
+    },
+    {
+      "cpu_candidate_sha256": "77a8a0e22f0e5a76f802d69011460c364fe532d6ba29d63b742e8d12fcbaadf6",
+      "primary_sha256": "77a8a0e22f0e5a76f802d69011460c364fe532d6ba29d63b742e8d12fcbaadf6",
+      "path": "crates/apps/humanymous-browser/NOTICE"
+    }
+  ],
+  "workflow": {
+    "sha256": "104fb52b77db470ba353eb2ff48716a2b756d621e0217bf726b047933e8fd099",
+    "status": "live standalone manifest dispatch; Delivery successor pending",
+    "path": ".github/workflows/cef-native-component.yml"
+  },
+  "contract_gap": {
+    "replica_selector": "pilot_assertions::tests::",
+    "validation_code_gap": "global COMMIT and retired Browser producer INPUTS path",
+    "producer_test": "bootstrap::tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation",
+    "required": "explicit per-replica reviewed pins; keep8requiredreplicas",
+    "replica_test": "tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation",
+    "producer_selector": "desktop::pilot_assertions::tests::"
+  },
+  "next_delta_list": "meari-030-cpu-next-deltas.md",
+  "native_ui_document_tests": "not_run_by_reported_commands",
+  "CEF_build_PE_SDK": "not_run",
+  "keyboard_IME_AX_DPI_sandbox_runtime": "not_run",
+  "GPU": "not_enabled_not_run",
+  "registry_source_switch": "not_done",
+  "SBOM_notices": "pending final epoch and role/package inventory",
+  "delegate_execution": "read-only evidence/spec checks only",
+  "whole_product_qualified": false
+}

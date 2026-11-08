@@ -54,6 +54,8 @@ files:
   - {path: meari-030-review.md, sha256: 131405ca7e879a080b823f211cc7b0a7e5fd7892ebbe99c28a760587fbeaeb98, bytes: 10502, store: repo}
   - {path: meari-030-review.json, sha256: f517f6f2321bc3bc1056c503ff28c281b9722f8817758870ba74c9d64715ee8b, bytes: 14412, store: repo}
   - {path: meari-030-spec-link-repair.json, sha256: 6142e892e950138368af6c56758ea11c691ef1ddab9321fe53d52d31974e0008, bytes: 1057, store: repo}
+  - {path: meari-030-cpu-next-deltas.md, sha256: 04d2bbc6a861c1fcaae46f37e2686864187d47de1cae1e2a02fb826b4a712473, bytes: 9585, store: repo}
+  - {path: meari-030-cpu-root-checkpoint.json, sha256: c98348b224766b844f09e11b6aa8ff0385a728b1106b81fc6642afa926c6560e, bytes: 12304, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint

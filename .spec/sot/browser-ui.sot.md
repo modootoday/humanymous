@@ -906,3 +906,26 @@ Evidence: meari-030-review.md/json in evidence:root/20261107073932 binds exact
 tag/commit/registry observations,20upstream Gitblob-matched files, source-backed
 compatibility limits and the ordered Root qualification gates. No local compiler,
 metadata/test/Clippy/SDK/GPU/native/browser/distribution run was performed.
+
+
+UI-41 (Root's separate Meari0.3.0 CPU component checkpoint): the isolated
+CPU candidate completed native-ui all-target Cargo check (Root-reported exit0,
+31.90s footer), strict Clippy exit0/3.07s and32default-model tests with zero
+failed/ignored/filtered. The1802-entry before/after maps match; their timed
+checkpoint covers strict/default tests, not the earlier initial check log.
+These commands do not execute native-ui document tests, CEF SDK roles, a GUI,
+keyboard/IME/AX/DPI/sandbox runtime, GPU or distribution validation. Primary
+remains on its prior pin pending Root adoption. The selected Windows CPU
+normal/build graph has seven exact ef3d2d0a Meari0.3 family packages and no
+selected wgpu/GPU-Vello/non-CPU-anyrender_vello; this is not hardware evidence.
+
+Before real role/pilot qualification, Root must rejoin final source/metadata/lock
+and compiler-artifact receipts, commit/review the relocated producer contract,
+refresh L07 through explicit per-replica pins while retaining the other seven,
+and migrate version2 consumers/workflow/report custody and role-bound notices.
+The current DATA validator's global historical COMMIT must not force unrelated
+replicas to inherit a new producer commit or accept self-reported arbitrary pins.
+No private artifact ledger may be relabeled as a safe public receipt. Exact path,
+hash, ownership and next-gate deltas are in meari-030-cpu-next-deltas.md and
+meari-030-cpu-root-checkpoint.json under evidence:root/20261107073932.
+CPU default, CEF156/cef-rs pins, sandbox, scoring and all unverified goals persist.
