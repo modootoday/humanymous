@@ -276,6 +276,30 @@ unused actual-provider methods/helpers remain in this Windows test composition;
 their scope needs explicit refinement before strict qualification, without
 suppressing the retained portable cases or pretending Unix actor execution.
 
+Root merged maintenance candidate02 into the isolated assembly by three-way
+comparison with its preserved base, retaining the earlier language and lint
+changes. Five replacements merged cleanly; the command usage text conflict was
+resolved to include all four explicit request commands. Three real selected-input
+reader modules were added. The next locked all-target/all-feature CLI check
+passed for the first time (11.12seconds), with warnings still present. This is
+compilation only: synthetic parser cases and actual external-source checks remain
+distinct, and the reader identity/qualification flags stay false.
+
+Root rewired approved immutable DATA include references in seven Rust files to
+the eight package-owned exact replicas. The selected replay/report/verifier/Lab/
+CEF executable compilation passed; no SDK producer or replica bytes were changed.
+This closes those named external include paths, not every package input reader.
+
+The reviewed two-file Windows scope refinement gates only actual Unix provider
+digest/spawn/snapshot-read methods and exclusive imports. Portable types and test
+cases remain present, with the non-Unix execution fallback unchanged. Locked
+all-target strict Clippy for the Runtime-pilot profile then passed. Root also
+forward-ported current Delivery DATA pre-open guards and both finite result
+checkers into the isolated assembly; its all-target Delivery profile strict check
+passed. Earlier source snapshots and first failures remain historical evidence;
+the newer assembly still requires a fresh complete source/case freeze and all
+required hosted package/runtime checks before any shared-path cutover.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
