@@ -598,3 +598,19 @@ regressions are authored/unexecuted. Applicability/static-source checks pass;
 no formatter/compiler/test/SDK/native/browser execution or live source change.
 This supersedes only prior caller candidates. Root adopts against exact hashes,
 then resolves schema consumers and runs coherent role/native qualification.
+
+
+## CA-BROWSER-ROLE-CALLER-01 Cargo artifact join delta
+
+Root adopted d08 caller code but found guessed target/debug DLL preservation
+was not joined to an actual selected-role compiler artifact. New fresh frozen
+seven-file Root preimages and four changed postimages are attached in
+cargo-artifact-role-join.md/json/patch. Metadata opaque package/manifest/library
+identity, exact features/profile, one actual output, observed successful command
+and final build-finished now precede immediate actual-path preservation. Cached,
+duplicate/conflicting/stale/missing/foreign/escaping outputs refuse the join.
+Private receipt retains source/metadata/ledger/role/path hashes and identity;
+public projection and Root explicit same-byte test cleanup remain unchanged.
+Four pure regressions authored/unrun. Patch applicability and static source
+checks passed; no formatter/compiler/metadata/test/SDK/PE/native/hosted execution.
+Root finalepoch/contract refresh and real role/pilot gates remain required.

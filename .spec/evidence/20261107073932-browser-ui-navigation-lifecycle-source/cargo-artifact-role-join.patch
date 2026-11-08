@@ -1,0 +1,414 @@
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs
+index 7290d884..546f1401 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs
+@@ -282,3 +282,130 @@ fn unexecuted_native_roles_stay_null_and_staging_failure_is_preserved() {
+     assert!(safe["role_artifacts"]["cef-bootstrap"]["sha256"].is_null());
+     assert!(safe["role_artifacts"]["cef-desktop"]["bytes"].is_null());
+ }
++
++fn artifact_fixture(role: &str) -> (Value, Value, std::path::PathBuf) {
++    let workspace = std::env::current_dir().unwrap().join("pure-cargo-fixture");
++    let id = "opaque-browser-package-id-preserved-verbatim";
++    let target = json!({"name":"humanymous_browser","src_path":workspace.join(
++        "crates/apps/humanymous-browser/src/lib.rs"),
++        "kind":["rlib","cdylib"],"crate_types":["rlib","cdylib"]});
++    let manifest = workspace.join("crates/apps/humanymous-browser/Cargo.toml");
++    let directory = workspace.join("target");
++    let metadata = json!({"workspace_root":workspace,"target_directory":directory,
++        "workspace_members":[id],"packages":[{
++            "name":"humanymous-browser","id":id,"source":null,
++            "manifest_path":manifest,"targets":[target.clone()]}]});
++    let features = if role == "cef-bootstrap" { json!([role]) } else { json!([role,"native-ui"]) };
++    let row = json!({"reason":"compiler-artifact","package_id":id,
++        "manifest_path":manifest,"target":target,"features":features,
++        "profile":{"test":false,"opt_level":"0"},"fresh":false,"executable":null,
++        "filenames":[directory.join("actual-compiler-output/humanymous_browser.dll"),
++            directory.join("actual-compiler-output/libhumanymous_browser.rlib")]});
++    (metadata, row, workspace)
++}
++
++fn artifact_bytes(rows: &[Value]) -> Vec<u8> {
++    rows.iter().map(|row| format!("{row}
++")).collect::<String>().into_bytes()
++}
++
++#[test]
++fn metadata_selects_one_exact_workspace_library_and_preserves_opaque_id() {
++    let (metadata, _, workspace) = artifact_fixture("cef-bootstrap");
++    let identity = browser_identity(&metadata, &workspace).unwrap();
++    assert_eq!(identity["package_id"], "opaque-browser-package-id-preserved-verbatim");
++    for field in ["manifest", "source", "types", "duplicate", "member", "remote", "workspace"] {
++        let mut bad = metadata.clone();
++        match field {
++            "manifest" => bad["packages"][0]["manifest_path"] = json!(workspace.join("wrong/Cargo.toml")),
++            "source" => bad["packages"][0]["targets"][0]["src_path"] = json!(workspace.join("wrong/lib.rs")),
++            "types" => bad["packages"][0]["targets"][0]["crate_types"] = json!(["cdylib"]),
++            "duplicate" => {
++                let package = bad["packages"][0].clone();
++                bad["packages"].as_array_mut().unwrap().push(package);
++            }
++            "member" => bad["workspace_members"] = json!(["other-id"]),
++            "remote" => bad["packages"][0]["source"] = json!("git+unrelated"),
++            "workspace" => bad["workspace_root"] = json!(workspace.join("other")),
++            _ => unreachable!(),
++        }
++        assert!(browser_identity(&bad, &workspace).is_err(), "{field}");
++    }
++}
++
++#[test]
++fn artifact_ledger_joins_each_role_to_its_actual_output_and_finished_build() {
++    for role in ["cef-bootstrap", "cef-desktop"] {
++        let (metadata, row, workspace) = artifact_fixture(role);
++        let identity = browser_identity(&metadata, &workspace).unwrap();
++        let log = artifact_bytes(&[row.clone(), json!({"reason":"build-finished","success":true})]);
++        let joined = artifact_ledger(&log, &identity, role, Some(0)).unwrap();
++        assert_eq!(joined["filename"], row["filenames"][0]);
++        assert_eq!(joined["role"], role);
++        assert_eq!(joined["profile"]["test"], false);
++        assert_eq!(joined["build_finished_success"], true);
++        assert_ne!(joined["filename"], json!(workspace.join("target/debug/humanymous_browser.dll")));
++        assert_eq!(joined["ledger_sha256"], format!("{:x}", Sha256::digest(&log)));
++    }
++}
++
++#[test]
++fn artifact_ledger_refuses_foreign_stale_duplicate_conflicting_and_escaping_rows() {
++    let (metadata, row, workspace) = artifact_fixture("cef-desktop");
++    let identity = browser_identity(&metadata, &workspace).unwrap();
++    let finish = json!({"reason":"build-finished","success":true});
++    for field in ["package", "manifest", "target", "source", "types", "role", "extra",
++        "test", "fresh", "missing", "duplicate-output", "outside", "parent", "executable"] {
++        let mut bad = row.clone();
++        match field {
++            "package" => bad["package_id"] = json!("other-package"),
++            "manifest" => bad["manifest_path"] = json!(workspace.join("wrong/Cargo.toml")),
++            "target" => bad["target"]["name"] = json!("other-target"),
++            "source" => bad["target"]["src_path"] = json!(workspace.join("wrong/lib.rs")),
++            "types" => bad["target"]["crate_types"] = json!(["cdylib"]),
++            "role" => bad["features"] = json!(["cef-bootstrap"]),
++            "extra" => bad["features"] = json!(["cef-desktop","native-ui","native-pilot-tests"]),
++            "test" => bad["profile"]["test"] = json!(true),
++            "fresh" => bad["fresh"] = json!(true),
++            "missing" => bad["filenames"] = json!([]),
++            "duplicate-output" => bad["filenames"] = json!([row["filenames"][0], row["filenames"][0]]),
++            "outside" => bad["filenames"] = json!([workspace.join("elsewhere/humanymous_browser.dll")]),
++            "parent" => bad["filenames"] = json!([workspace.join("target/../humanymous_browser.dll")]),
++            "executable" => bad["executable"] = json!(workspace.join("target/other.exe")),
++            _ => unreachable!(),
++        }
++        assert!(artifact_ledger(&artifact_bytes(&[bad, finish.clone()]),
++            &identity, "cef-desktop", Some(0)).is_err(), "{field}");
++    }
++    for rows in [
++        vec![row.clone()],
++        vec![row.clone(), json!({"reason":"build-finished","success":false})],
++        vec![row.clone(), row.clone(), finish.clone()],
++        vec![row.clone(), finish.clone(), finish.clone()],
++        vec![finish.clone(), row.clone()],
++        vec![json!({"reason":"compiler-artifact","package_id":"unrelated",
++            "target":{"name":"unrelated"},"filenames":[]}), finish.clone()],
++    ] {
++        assert!(artifact_ledger(&artifact_bytes(&rows), &identity, "cef-desktop", Some(0)).is_err());
++    }
++    let log = artifact_bytes(&[row, finish]);
++    for exit in [None, Some(101)] {
++        assert!(artifact_ledger(&log, &identity, "cef-desktop", exit).is_err());
++    }
++    assert!(artifact_ledger(b"{broken
++", &identity, "cef-desktop", Some(0)).is_err());
++    assert!(artifact_ledger(&vec![b' '; MAX_BYTES + 1],
++        &identity, "cef-desktop", Some(0)).is_err());
++}
++
++#[test]
++fn compiler_ledger_and_actual_output_paths_stay_private() {
++    let safe = public(&json!({"role_artifacts":{"cef-bootstrap":{
++        "sha256":"a".repeat(64),"bytes":23,
++        "cargo":{"filename":"PRIVATE_CANARY","package_id":"PRIVATE_CANARY",
++            "ledger_sha256":"PRIVATE_CANARY","target":{"src_path":"PRIVATE_CANARY"}}
++    }}}));
++    assert_eq!(safe["role_artifacts"]["cef-bootstrap"]["bytes"], 23);
++    assert!(safe["role_artifacts"]["cef-bootstrap"].get("cargo").is_none());
++    assert!(!safe.to_string().contains("PRIVATE_CANARY"));
++}
+\ No newline at end of file
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs
+index 9a6db69a..1d95ad41 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs
+@@ -342,5 +342,146 @@ pub(super) fn public(report: &Value) -> Value {
+         "browser_ready":false,"full_runtime_qualified":false,"raw_contents_included":false})
+ }
+ 
++/// A package ID is opaque: bind the metadata-selected workspace package verbatim.
++pub(super) fn browser_identity(metadata: &Value, workspace: &Path) -> std::io::Result<Value> {
++    let reject = || std::io::Error::other("incompatible Browser Cargo metadata");
++    let manifest = workspace.join("crates/apps/humanymous-browser/Cargo.toml");
++    let source = workspace.join("crates/apps/humanymous-browser/src/lib.rs");
++    if metadata["workspace_root"].as_str().map(Path::new) != Some(workspace) {
++        return Err(reject());
++    }
++    let packages = metadata["packages"].as_array().ok_or_else(reject)?;
++    let selected: Vec<_> = packages.iter().filter(|package| {
++        package["manifest_path"].as_str().map(Path::new) == Some(manifest.as_path())
++            || package["name"] == "humanymous-browser"
++    }).collect();
++    if selected.len() != 1 {
++        return Err(reject());
++    }
++    let package = selected[0];
++    let id = package["id"].as_str().filter(|id| {
++        !id.is_empty() && id.len() <= 4096 && !id.chars().any(char::is_control)
++    }).ok_or_else(reject)?;
++    if package["name"] != "humanymous-browser" || package.get("source") != Some(&Value::Null)
++        || package["manifest_path"].as_str().map(Path::new) != Some(manifest.as_path())
++        || !metadata["workspace_members"].as_array().ok_or_else(reject)?
++            .iter().any(|member| member == id) {
++        return Err(reject());
++    }
++    let targets: Vec<_> = package["targets"].as_array().ok_or_else(reject)?.iter()
++        .filter(|target| target["crate_types"].as_array()
++            .is_some_and(|types| types.iter().any(|kind| kind == "cdylib"))).collect();
++    if targets.len() != 1 {
++        return Err(reject());
++    }
++    let target = targets[0];
++    let types = target["crate_types"].as_array().ok_or_else(reject)?;
++    if target["name"] != "humanymous_browser"
++        || target["src_path"].as_str().map(Path::new) != Some(source.as_path())
++        || target["kind"] != target["crate_types"]
++        || types.len() != 2 || !types.contains(&json!("rlib")) || !types.contains(&json!("cdylib")) {
++        return Err(reject());
++    }
++    let target_directory = metadata["target_directory"].as_str().map(Path::new)
++        .filter(|path| path.is_absolute()).ok_or_else(reject)?;
++    Ok(json!({"package_id":id,"manifest_path":manifest,"target":target,
++        "target_directory":target_directory,
++        "metadata_sha256":format!("{:x}",Sha256::digest(serde_json::to_vec(metadata)?))}))
++}
++
++fn exact_role_features(role: &str, features: &Value) -> bool {
++    let expected = match role {
++        "cef-bootstrap" => vec![json!("cef-bootstrap")],
++        "cef-desktop" => vec![json!("cef-desktop"), json!("native-ui")],
++        _ => return false,
++    };
++    features.as_array().is_some_and(|actual| {
++        actual.len() == expected.len() && expected.iter().all(|feature| actual.contains(feature))
++    })
++}
++
++/// Select only the current role's actual emitted library, never a guessed DLL path.
++pub(super) fn artifact_ledger(
++    bytes: &[u8], identity: &Value, role: &str, exit: Option<i32>,
++) -> std::io::Result<Value> {
++    let reject = || std::io::Error::other("unjoined Browser role Cargo artifact ledger");
++    if bytes.len() > MAX_BYTES || exit != Some(0)
++        || !matches!(role, "cef-bootstrap" | "cef-desktop") {
++        return Err(reject());
++    }
++    let mut selected = None;
++    let mut finished = false;
++    let mut records = 0;
++    for line in bytes.split(|byte| *byte == b'\n') {
++        let line = line.trim_ascii();
++        if line.first() != Some(&b'{') {
++            continue;
++        }
++        records += 1;
++        if finished || records > 65536 || line.len() > MAX_LINE {
++            return Err(reject());
++        }
++        let row = decode_strict_json(line, MAX_LINE).map_err(|_| reject())?;
++        match row["reason"].as_str() {
++            Some("build-finished") => {
++                if row["success"] != true {
++                    return Err(reject());
++                }
++                finished = true;
++            }
++            Some("compiler-message") if row["message"]["level"] == "error" => return Err(reject()),
++            Some("compiler-artifact") => {
++                let is_browser = row["package_id"] == identity["package_id"]
++                    || row["target"]["name"] == "humanymous_browser"
++                    || row["filenames"].as_array().is_some_and(|names| names.iter().any(|name| {
++                        name.as_str().map(Path::new).and_then(Path::file_name)
++                            .is_some_and(|name| name == "humanymous_browser.dll")
++                    }));
++                if !is_browser {
++                    continue;
++                }
++                let expected = &identity["target"];
++                if selected.is_some() || row["package_id"] != identity["package_id"]
++                    || row["manifest_path"] != identity["manifest_path"]
++                    || ["name", "src_path", "crate_types", "kind"].iter()
++                        .any(|key| row["target"][key] != expected[key])
++                    || !exact_role_features(role, &row["features"])
++                    || row["profile"]["test"] != false || row["fresh"] != false
++                    || row.get("executable") != Some(&Value::Null) {
++                    return Err(reject());
++                }
++                let target = identity["target_directory"].as_str().map(Path::new).ok_or_else(reject)?;
++                let names = row["filenames"].as_array().ok_or_else(reject)?;
++                let mut dll = None;
++                for name in names {
++                    let path = name.as_str().map(Path::new).ok_or_else(reject)?;
++                    if !path.is_absolute() || !path.starts_with(target)
++                        || path.components().any(|part| matches!(part,
++                            std::path::Component::ParentDir | std::path::Component::CurDir)) {
++                        return Err(reject());
++                    }
++                    if path.extension().is_some_and(|extension| extension == "dll") {
++                        if dll.is_some() || path.file_name().is_none_or(|name| name != "humanymous_browser.dll") {
++                            return Err(reject());
++                        }
++                        dll = Some(path.to_path_buf());
++                    }
++                }
++                let dll = dll.ok_or_else(reject)?;
++                selected = Some(json!({"role":role,"package_id":identity["package_id"],
++                    "manifest_path":identity["manifest_path"],"target":expected,
++                    "features":row["features"],"profile":row["profile"],"fresh":false,
++                    "filename":dll,"target_directory":target,
++                    "metadata_sha256":identity["metadata_sha256"]}));
++            }
++            Some(_) => {}
++            None => return Err(reject()),
++        }
++    }
++    let mut selected = selected.filter(|_| finished).ok_or_else(reject)?;
++    selected["ledger_sha256"] = json!(format!("{:x}", Sha256::digest(bytes)));
++    selected["build_finished_success"] = json!(true);
++    Ok(selected)
++}
+ #[cfg(test)]
+ mod tests;
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
+index ca3d09dd..4295c52c 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs
+@@ -3,6 +3,7 @@ mod desktop;
+ mod diagnostics;
+ mod provisioning;
+ use serde_json::json;
++use sha2::Digest;
+ use std::{
+     fs, io,
+     path::Path,
+@@ -13,7 +14,7 @@ const CASE: &str =
+     "bootstrap::tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation";
+ 
+ fn logged_status(command: &mut Command, path: &Path) -> io::Result<std::process::ExitStatus> {
+-    let file = fs::File::create(path)?;
++    let file = fs::OpenOptions::new().write(true).create_new(true).open(path)?;
+     command
+         .stdout(Stdio::from(file.try_clone()?))
+         .stderr(Stdio::from(file))
+@@ -72,6 +73,10 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+     }
+     let source = provisioning::source_snapshot()?;
+     report["source"] = source.clone();
++    let identity = provisioning::role_identity()?;
++    if source["files"] != provisioning::source_snapshot()?["files"] {
++        return Err(io::Error::other("source changed during Cargo metadata selection"));
++    }
+     let tool_path = provisioning::tool_path()?;
+     let staging = output.join("native-role-artifacts");
+     fs::create_dir(&staging)?;
+@@ -79,7 +84,9 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+         ("cef-bootstrap", "humanymous_cef_bootstrap.dll"),
+         ("cef-desktop", "humanymous_cef_desktop.dll"),
+     ] {
+-        report["stage"] = format!("native-build-{role}").into();
++        let stage = format!("native-build-{role}");
++        let log = output.join(format!("native-build-{role}.log"));
++        report["stage"] = stage.clone().into();
+         logged(
+             Command::new("cargo").env("PATH", &tool_path).args([
+                 "build",
+@@ -92,12 +99,22 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+                 role,
+                 "--message-format=json",
+             ]),
+-            &output.join(format!("native-build-{role}.log")),
++            &log,
+             report,
+         )?;
+         report["stage"] = format!("native-stage-{role}").into();
+         // Preserve this role before the next Cargo invocation overwrites its DLL.
+-        report["role_artifacts"][role] = provisioning::retain_role(&staging, name)?;
++        if source["files"] != provisioning::source_snapshot()?["files"]
++            || identity != provisioning::role_identity()? {
++            return Err(io::Error::other("source or metadata changed during role build"));
++        }
++        let ledger = diagnostics::text(&log)?;
++        let exit = report["stage_commands"][&stage]["exit_code"].as_i64()
++            .and_then(|code| i32::try_from(code).ok());
++        let mut joined = diagnostics::artifact_ledger(ledger.as_bytes(), &identity, role, exit)?;
++        joined["source_manifest_sha256"] = json!(format!("{:x}",
++            sha2::Sha256::digest(serde_json::to_vec(&source["files"])?)));
++        report["role_artifacts"][role] = provisioning::retain_role(&staging, name, &joined)?;
+     }
+     report["stage"] = "native-bundle".into();
+     let bundle = provisioning::prepare(&staging)?;
+diff --git a/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs b/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs
+index cd9f9f54..44855cfb 100644
+--- a/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs
++++ b/crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs
+@@ -42,7 +42,11 @@ fn metadata() -> io::Result<Value> {
+     if !result.status.success() {
+         return Err(io::Error::other("root locked metadata failed"));
+     }
+-    Ok(serde_json::from_slice(&result.stdout)?)
++    humanymous_platform::testing::json::decode_strict_json(&result.stdout, 8 * 1024 * 1024)
++        .map_err(io::Error::other)
++}
++pub(super) fn role_identity() -> io::Result<Value> {
++    super::diagnostics::browser_identity(&metadata()?, &std::env::current_dir()?)
+ }
+ fn cef_manifest(metadata: &Value) -> io::Result<PathBuf> {
+     let cef = metadata["packages"]
+@@ -176,21 +180,30 @@ fn copy_new_verified(source: &Path, destination: &Path) -> io::Result<Value> {
+     Ok(serde_json::json!({"sha256":staged,"bytes":copied}))
+ }
+ 
+-pub(super) fn retain_role(staging: &Path, name: &str) -> io::Result<Value> {
+-    if !matches!(
+-        name,
+-        "humanymous_cef_bootstrap.dll" | "humanymous_cef_desktop.dll"
+-    ) {
+-        return Err(io::Error::other("unknown native role artifact"));
+-    }
++pub(super) fn retain_role(staging: &Path, name: &str, joined: &Value) -> io::Result<Value> {
++    let role = match name {
++        "humanymous_cef_bootstrap.dll" => "cef-bootstrap",
++        "humanymous_cef_desktop.dll" => "cef-desktop",
++        _ => return Err(io::Error::other("unknown native role artifact")),
++    };
+     let kind = fs::symlink_metadata(staging)?.file_type();
+     if kind.is_symlink() || !kind.is_dir() {
+-        return Err(io::Error::other("native staging is not an owned directory"));
++        return Err(io::Error::other("native staging is linked or not a directory"));
++    }
++    if joined["role"] != role || joined["build_finished_success"] != true {
++        return Err(io::Error::other("native preservation lacks a matching Cargo role"));
+     }
+-    let debug = debug_directory(&metadata()?)?;
+-    copy_new_verified(&debug.join("humanymous_browser.dll"), &staging.join(name))
++    let source = Path::new(joined["filename"].as_str()
++        .ok_or_else(|| io::Error::other("Cargo artifact filename absent"))?);
++    let target = Path::new(joined["target_directory"].as_str()
++        .ok_or_else(|| io::Error::other("Cargo target directory absent"))?).canonicalize()?;
++    if !target.is_dir() || !source.canonicalize()?.starts_with(&target) {
++        return Err(io::Error::other("Cargo artifact escapes the actual target"));
++    }
++    let mut retained = copy_new_verified(source, &staging.join(name))?;
++    retained["cargo"] = joined.clone();
++    Ok(retained)
+ }
+-
+ pub(super) fn prepare(staging: &Path) -> io::Result<PathBuf> {
+     let meta = metadata()?;
+     let debug = debug_directory(&meta)?;

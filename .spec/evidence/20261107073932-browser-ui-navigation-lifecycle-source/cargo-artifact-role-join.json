@@ -1,0 +1,101 @@
+{
+  "schema": "humanymous.browser-cargo-artifact-role-join/1",
+  "state": "candidate-unapplied-uncompiled",
+  "root_frozen_tree": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "private_candidate": ".spec.local/root/evidence/20261108134000-browser-ui-artifact-ledger",
+  "files": [
+    {
+      "preimage_bytes": 13308,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/mod.rs",
+      "candidate_bytes": 14295,
+      "candidate_sha256": "af0cc5a712d03cc3b9065d00f45538842ac25486b055f9c81b3f53e825c9df6c",
+      "changed": true,
+      "preimage_sha256": "a4009832c2de7ea71247c47fb8e5c6b804260a85aecee8cdce2629c64f785592"
+    },
+    {
+      "preimage_bytes": 13604,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning.rs",
+      "candidate_bytes": 14497,
+      "candidate_sha256": "2a1a58886404bebd4254d7106da6b4155ee0e60213f413e14b58b2b671554538",
+      "changed": true,
+      "preimage_sha256": "ca050550af0010749381b8c895606a34274b5d2bc73a7c55e669c289a91a7cf0"
+    },
+    {
+      "preimage_bytes": 2601,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/provisioning/bundles.rs",
+      "candidate_bytes": 2601,
+      "candidate_sha256": "19e2e30e6b1b08a5007501226b506dbd02e1545182a6bfd59c2df558a170b3c0",
+      "changed": false,
+      "preimage_sha256": "19e2e30e6b1b08a5007501226b506dbd02e1545182a6bfd59c2df558a170b3c0"
+    },
+    {
+      "preimage_bytes": 8487,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/desktop.rs",
+      "candidate_bytes": 8487,
+      "candidate_sha256": "e5c7a31299af8107786e8b4b36cc60c2354d94628929a26a95ee71e804dd53c3",
+      "changed": false,
+      "preimage_sha256": "e5c7a31299af8107786e8b4b36cc60c2354d94628929a26a95ee71e804dd53c3"
+    },
+    {
+      "preimage_bytes": 13832,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics.rs",
+      "candidate_bytes": 20926,
+      "candidate_sha256": "7c5273e526a51aebc3096ef7bce3a47dc219eb6d28fb3d00ce9c70433eab04cd",
+      "changed": true,
+      "preimage_sha256": "c0a826564cc6c9b85e43e5041359abe1ef79ccc811dabdcd03b70adefcca4faa"
+    },
+    {
+      "preimage_bytes": 4873,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/bootstrap.rs",
+      "candidate_bytes": 4873,
+      "candidate_sha256": "d11c7c1f2f0a6850a62417e77e6ddfa2a4e3a98f941df04c388a164db3d7ecbc",
+      "changed": false,
+      "preimage_sha256": "d11c7c1f2f0a6850a62417e77e6ddfa2a4e3a98f941df04c388a164db3d7ecbc"
+    },
+    {
+      "preimage_bytes": 12441,
+      "path": "crates/apps/humanymous-cli/src/qualification/cef_pilot/diagnostics/tests.rs",
+      "candidate_bytes": 19408,
+      "candidate_sha256": "6ffbf242293f91d36175cda73da1a6787ecaff1e7038f60787f3d6388c47b336",
+      "changed": true,
+      "preimage_sha256": "d49990f1c73dbb78e186f0f82274007be88b531d1b414cee03cfb8decf82a728"
+    }
+  ],
+  "frozen_source_drift": 0,
+  "changed_files": 4,
+  "public_projection_unchanged": true,
+  "root_copy_test_and_explicit_cleanup_preserved": true,
+  "dll_source": "actual compiler-artifact filename only",
+  "private_join_fields": [
+    "source_manifest_sha256",
+    "metadata_sha256",
+    "package_id",
+    "manifest_path",
+    "target",
+    "role",
+    "features",
+    "profile",
+    "fresh",
+    "filename",
+    "target_directory",
+    "ledger_sha256",
+    "build_finished_success"
+  ],
+  "cached_fresh_artifacts": "refused pending explicit cache qualification",
+  "strict_limits": {
+    "ledger_bytes": 8388608,
+    "metadata_bytes": 8388608,
+    "json_line_bytes": 262144,
+    "json_rows": 65536
+  },
+  "same_source": "source file map and metadata identity checked before/after each role",
+  "patch_applicability": "passed exact preserved Root preimages",
+  "new_pure_rust_tests": 4,
+  "existing_same_byte_copy_test": "preserved; no execution in this turn",
+  "compiler": "not_run",
+  "fmt": "not_run",
+  "cargo_metadata": "not_run",
+  "unit_tests": "not_run",
+  "native_PE_SDK_runtime": "not_run",
+  "qualified": false
+}

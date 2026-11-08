@@ -48,6 +48,9 @@ files:
   - {path: root-cef-callers-correction.md, sha256: bae9e1890684c1ab2b960edfe2c85173ad6d18ee678a4e73e6b40c3a99483b13, bytes: 6700, store: repo}
   - {path: root-cef-callers-correction.json, sha256: a53cd9e95225165a39c79cf18cdc92b653f165d722d83b5a696b614fdd8c94ef, bytes: 4944, store: repo}
   - {path: root-cef-callers-corrected.patch, sha256: f37bbd670a0f36936c1e10d97e449f513e7e3314b084d3cbf6ab381534be7e08, bytes: 28975, store: repo}
+  - {path: cargo-artifact-role-join.md, sha256: acc14d1f20f6cc7f6bcb88f84bad954288f5c56a05a6697ec8721c91fb465666, bytes: 6134, store: repo}
+  - {path: cargo-artifact-role-join.json, sha256: 48efe7084fe060f163be2bfb238193c4ec433cc8866c3685b3c132cbd3ada94d, bytes: 4070, store: repo}
+  - {path: cargo-artifact-role-join.patch, sha256: 58405dce9c5c028f56a9af2638abd6567b17fbbd190724138018a06b5ab1f743, bytes: 21916, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint
