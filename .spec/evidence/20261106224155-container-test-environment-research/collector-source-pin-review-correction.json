@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "status": "source_review_correction_not_executed",
+  "prior_source_commit": "8379b876fabf8575bcaee531adaf4f48864b8ce6",
+  "path": "test/lab/runner/src/source_pin/tests.rs",
+  "sha256": "34aa3d030e1f41643213d2079e3271dee0f52a9a5765da028efca2cf1888834b",
+  "bytes": 7873,
+  "change": "Missing-record Snapshot test now creates a distinct actual hm-rust-lab-* root owned solely by Snapshot, explicitly drops it and asserts cleanup. Synthetic fixture retains its independent root.",
+  "review_limit": "The originally suggested double cleanup panic was not established: Snapshot Drop requires hm-rust-lab- prefix, whereas synthetic fixture root uses hm-source-pin-test-. The followup removes ambiguous ownership regardless.",
+  "tests": "No compiler, formatter or execution; proposed inventory unchanged; separate required checkout gate remains outstanding."
+}

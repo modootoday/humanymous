@@ -79,8 +79,19 @@ pub(crate) fn fixture() -> Fixture {
 fn source_identity_context_and_revalidation_are_required() {
     let fixture = fixture();
     let binding = &fixture.binding;
-    let empty = super::super::Snapshot::temporary(binding.root.clone());
+    let empty_root = std::env::temp_dir()
+        .canonicalize()
+        .unwrap()
+        .join(format!(
+            "hm-rust-lab-pin-missing-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed),
+        ));
+    fs::create_dir(&empty_root).unwrap();
+    let empty = super::super::Snapshot::temporary(empty_root.clone());
     assert!(empty.source_binding().is_err());
+    drop(empty);
+    assert!(!empty_root.exists());
     let captured = selected(PATH, &text()).unwrap();
     assert_eq!(captured.sha256, binding.selected.sha256);
     assert_eq!(captured.bytes, binding.selected.bytes);
