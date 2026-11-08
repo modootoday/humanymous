@@ -20,8 +20,9 @@ pub fn admit(source: &[u8]) -> Result<(), Error> {
     if !source.starts_with(SIGNATURE) {
         return Err(Error::InvalidFormat);
     }
-    let mut limits = PngLimits::default();
-    limits.bytes = DECODE_BYTE_BUDGET.min(source.len().saturating_mul(4).max(64 * 1024));
+    let limits = PngLimits {
+        bytes: DECODE_BYTE_BUDGET.min(source.len().saturating_mul(4).max(64 * 1024)),
+    };
     let decoder = Decoder::new_with_limits(Cursor::new(source), limits);
     let reader = decoder.read_info().map_err(|_| Error::InvalidFormat)?;
     let info = reader.info();
