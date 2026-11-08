@@ -3,7 +3,7 @@ id: evidence:root/20261107073348
 title: Agents M11 product skills
 status: active
 created: 2026-11-07T07:33:48Z
-updated: 2026-11-08T01:12:15Z
+updated: 2026-11-08T01:24:20Z
 files:
   - {path: hosted-813-summary.json, sha256: 245218b433c356a94c8e8c90621ebaec906fd733fa9accad4412964af9af27cd, bytes: 873, store: repo}
   - {path: status.json, sha256: f46fc8b2bf6da4814a7c597dfad0e022be24d9006992b3dc146412df5a8cb578, bytes: 4147, store: repo}
@@ -20,6 +20,29 @@ files:
   - {path: tools-reader-candidate/main.rs.base, sha256: 93470fb9fe506e38b6a8d0b0f9ec8c51888012507a712c06629494107caa54c7, bytes: 7380, store: repo}
   - {path: tools-reader-candidate/README.md, sha256: 3824c707725a3bccd50e61cf5166c888cd2e83ae965824b70683577961f22027, bytes: 6512, store: repo}
   - {path: tools-reader-candidate/source-manifest.json, sha256: 9d326159424ecff7e9e6cde1adc590cc16351959c8ffb8ba3e47dba77ff16338, bytes: 5232, store: repo}
+  - {path: tools-reader-candidate-02/candidate.patch, sha256: c04aeed4ae192c1cd59c3678cb1f274b681902c67dfc710da14609e7328f2207, bytes: 29822, store: repo}
+  - {path: tools-reader-candidate-02/catalog_selected.rs, sha256: ad8a32da11247942febfd03bc99a351fa114bd9c33124f6c2ea832f8f697d846, bytes: 5767, store: repo}
+  - {path: tools-reader-candidate-02/catalog-request.json, sha256: 0843fc1a9a4f00f2337ddb9029ca720b3db57db0b79b9338c04325fb465ae1e4, bytes: 1103, store: repo}
+  - {path: tools-reader-candidate-02/product_selected.rs, sha256: 2e5cbf23e34c1f024b5054feeea03a14eedc7c1d52c2b78ee60b67bfa63a4583, bytes: 5695, store: repo}
+  - {path: tools-reader-candidate-02/product-request.json, sha256: 31aa654fdd92fac3847d98bd0991dac0b19873f9c116090d1587dee41ddd0290, bytes: 1294, store: repo}
+  - {path: tools-reader-candidate-02/README.md, sha256: b453bf23ea4ed6a758097ce15de34ec3b10700047fdc3ee37e83d8b22940a67f, bytes: 9040, store: repo}
+  - {path: tools-reader-candidate-02/registry_selected.rs, sha256: 3baa4c70aa2a90f0fa2b824f40b6679490af51b767fd876f7e39969eecb128d3, bytes: 4395, store: repo}
+  - {path: tools-reader-candidate-02/registry-request.json, sha256: 3e2d0d3d84041f4dbf127af7965d9cca63a4eed78b4495b10eb780e0b5d8d48d, bytes: 351, store: repo}
+  - {path: tools-reader-candidate-02/selected_inputs_private_mod.rs, sha256: b7a6fb4cb1a7ff7aa0fc4dc95a95adbc3745cf90180110a7415fd6aabed6e063, bytes: 476, store: repo}
+  - {path: tools-reader-candidate-02/selected_inputs_test_import.rs, sha256: 32eb1c4beaa5cf8c72044148b08b8c7b0b778e823d778e69cd47451e0e33a3e9, bytes: 299, store: repo}
+  - {path: tools-reader-candidate-02/source-manifest.json, sha256: 29a85a9802e5c202c64853da1492801d2b981ea013d9d6b7b7819716a3837e4a, bytes: 3852, store: repo}
+  - {path: tools-reader-candidate-02/src__main.rs, sha256: 4586e16c0969c7a22189a6d1642cba473f06d39afa91ed70768b09d389e21499, bytes: 7945, store: repo}
+  - {path: tools-reader-candidate-02/src__main.rs.base, sha256: 93470fb9fe506e38b6a8d0b0f9ec8c51888012507a712c06629494107caa54c7, bytes: 7380, store: repo}
+  - {path: tools-reader-candidate-02/src__product.rs, sha256: 85ea536912d231f6b3ca4b0dfdb20b69c2049be80fa6d4b2a828c7cb8c7f25b1, bytes: 8857, store: repo}
+  - {path: tools-reader-candidate-02/src__product.rs.base, sha256: 4c306782a38ab57a1a7137a52f496571fc59d93235471998e62bfc363507549e, bytes: 9454, store: repo}
+  - {path: tools-reader-candidate-02/src__selected_inputs__mod.rs, sha256: 279bab0b29d239334b118d4f5fc45ce335663efdbbac9c02370f4176fbe8179b, bytes: 568, store: repo}
+  - {path: tools-reader-candidate-02/src__selected_inputs__mod.rs.base, sha256: 3473b360918bd3b12769113d24cbe1cb547c0cd50a89bf18c5524276ef7748b4, bytes: 545, store: repo}
+  - {path: tools-reader-candidate-02/src__selected_inputs__request.rs, sha256: 4c763793205704b107090537f736b03a639e6cb9ff84492033ca8c93e46f3559, bytes: 10146, store: repo}
+  - {path: tools-reader-candidate-02/src__selected_inputs__request.rs.base, sha256: 5a6e87e176ee503711e563005c3d24e143094d0439d32694946d6bd001c1f95e, bytes: 9423, store: repo}
+  - {path: tools-reader-candidate-02/src__sessions__catalog.rs, sha256: a88909d369d0fdc06b92e0868eb1eb08b7692f117b6d8d89900a1bde80359ef0, bytes: 6343, store: repo}
+  - {path: tools-reader-candidate-02/src__sessions__catalog.rs.base, sha256: 8dba27db041dc644d3c49434b6df93aab26a8f7d7cc153ce81b2662928a90a6a, bytes: 6695, store: repo}
+  - {path: tools-reader-candidate-02/src__sessions__registry.rs, sha256: 9bfbd3afd5e7b0e810f3dfbf3ce32b13fba5982b1c8282914a058a8800a39f5b, bytes: 3294, store: repo}
+  - {path: tools-reader-candidate-02/src__sessions__registry.rs.base, sha256: 905507923916279ce2d70440d9963d31f21c6f41084d1e5b079365b5d5d523b7, bytes: 3222, store: repo}
 ---
 
 # Agents M11 product skills

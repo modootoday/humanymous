@@ -1,0 +1,10 @@
+{
+  "schema": "humanymous.thread-registry-source.v1",
+  "repo_root": "C:/workspaces/humanymous",
+  "source_commit": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "path": ".agents/sessions/THREADS.md",
+  "owner": "agents-meta",
+  "presence": "required",
+  "bytes": 9584,
+  "sha256": "d9b5d2c4bd4ad811ac09e89f6b455500976032d8fe699970fbb5f485a42420e1"
+}

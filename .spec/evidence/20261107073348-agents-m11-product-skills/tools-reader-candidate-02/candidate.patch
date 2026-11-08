@@ -1,0 +1,610 @@
+diff --git a/skills/agent-maintenance/src/sessions/catalog.rs b/skills/agent-maintenance/src/sessions/catalog.rs
+index 766adc70..6d49ed45 100644
+--- a/skills/agent-maintenance/src/sessions/catalog.rs
++++ b/skills/agent-maintenance/src/sessions/catalog.rs
+@@ -1,4 +1,6 @@
+ //! JSON lane authority and read-only legacy projection drift.
++#[path = "catalog_selected.rs"]
++pub mod selected;
+ use serde::{Deserialize, Serialize};
+ use std::{collections::BTreeSet, fs, path::Path};
+ 
+@@ -139,28 +141,14 @@ mod tests {
+     use super::*;
+     #[test]
+     fn repository_catalog_matches_all_compatibility_projections() {
+-        let c = Catalog::parse(include_str!(concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../.agents/sessions/lanes.json"
+-        )))
+-        .unwrap();
++        // Inert parser tokens only; not an executable compatibility script.
+         let r = validate_projections(
+-            &c,
+-            include_str!(concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/../../.agents/sessions/LANES.md"
+-            )),
+-            include_str!(concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/../../scripts/agents/session-board.ps1"
+-            )),
+-            include_str!(concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/../../scripts/agents/session-board.sh"
+-            )),
++            &catalog(), "| `agents-meta` | fixture |",
++            "$ValidLanes = @(\"agents-meta\")", "VALID=\"agents-meta\"",
+         );
+-        assert!(r.errors.is_empty(), "{:?}", r.errors);
+-        assert_eq!(r.lane_count, 25);
++        assert!(r.errors.is_empty());
++        assert_eq!(r.lane_count, 1);
++        assert!(!r.legacy_projection_qualified);
+     }
+     fn catalog() -> Catalog {
+         Catalog::parse(r#"{"schema_version":1,"writer_mode":"legacy-coexistence","lanes":[{"id":"agents-meta","kind":"shared","primary_paths":[".agents/**"]}]}"#).unwrap()
+diff --git a/skills/agent-maintenance/src/sessions/registry.rs b/skills/agent-maintenance/src/sessions/registry.rs
+index 7a616583..667ad373 100644
+--- a/skills/agent-maintenance/src/sessions/registry.rs
++++ b/skills/agent-maintenance/src/sessions/registry.rs
+@@ -1,4 +1,6 @@
+ //! Pure static registry validation; no app rename or claim of live title discovery.
++#[path = "registry_selected.rs"]
++pub mod selected;
+ use serde::Serialize;
+ use std::{collections::BTreeSet, fs, path::Path};
+ 
+@@ -70,11 +72,10 @@ mod tests {
+     use super::*;
+     #[test]
+     fn repository_registry_has_valid_stable_names_and_unique_ids() {
+-        let r = validate(include_str!(concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../.agents/sessions/THREADS.md"
+-        )));
+-        assert!(r.errors.is_empty(), "{:?}", r.errors);
++        let text = "| Humanymous · Fixture · Parser | 00000000-0000-4000-8000-000000000001 | Synthetic responsibility |";
++        let r = validate(text);
++        assert!(r.errors.is_empty());
++        assert_eq!(r.chats, 1);
+         assert!(!r.live_app_verified);
+     }
+     #[test]
+diff --git a/skills/agent-maintenance/src/product.rs b/skills/agent-maintenance/src/product.rs
+index f82ba158..95eb9026 100644
+--- a/skills/agent-maintenance/src/product.rs
++++ b/skills/agent-maintenance/src/product.rs
+@@ -1,4 +1,6 @@
+ //! Product skill packaging/links, distinct from internal developer metadata.
++#[path = "product_selected.rs"]
++pub mod selected;
+ use crate::inventory::{self, FileRecord};
+ use regex::Regex;
+ use serde::Serialize;
+@@ -171,43 +173,17 @@ mod tests {
+     const HEADER: &str = "---\nname: humanymous\ndescription: Operate an owned deployment.\n---\n";
+     #[test]
+     fn repository_product_bundle_has_resolved_references() {
+-        let entry = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../SKILL.md"));
++        let entry = format!("{HEADER}[install](references/installation.md)");
+         let resources = BTreeMap::from([
+-            (
+-                "references/installation.md".into(),
+-                include_str!(concat!(
+-                    env!("CARGO_MANIFEST_DIR"),
+-                    "/../references/installation.md"
+-                ))
+-                .into(),
+-            ),
+-            (
+-                "references/operations.md".into(),
+-                include_str!(concat!(
+-                    env!("CARGO_MANIFEST_DIR"),
+-                    "/../references/operations.md"
+-                ))
+-                .into(),
+-            ),
+-            (
+-                "references/adapters.md".into(),
+-                include_str!(concat!(
+-                    env!("CARGO_MANIFEST_DIR"),
+-                    "/../references/adapters.md"
+-                ))
+-                .into(),
+-            ),
+-            (
+-                "references/qualification.md".into(),
+-                include_str!(concat!(
+-                    env!("CARGO_MANIFEST_DIR"),
+-                    "/../references/qualification.md"
+-                ))
+-                .into(),
+-            ),
++            ("references/installation.md".into(), "[operate](operations.md)".into()),
++            ("references/operations.md".into(), "[adapt](adapters.md)".into()),
++            ("references/adapters.md".into(), "[qualify](qualification.md)".into()),
++            ("references/qualification.md".into(), "Synthetic reference endpoint.".into()),
+         ]);
+-        let report = validate(entry, &resources);
+-        assert!(report.errors.is_empty(), "{:?}", report.errors);
++        let report = validate(&entry, &resources);
++        assert!(report.errors.is_empty());
++        assert_eq!(report.resources.len(), 4);
++        assert!(!report.runtime_qualified);
+     }
+     #[test]
+     fn accepts_portable_bundle_without_runtime_claim() {
+diff --git a/skills/agent-maintenance/src/selected_inputs/request.rs b/skills/agent-maintenance/src/selected_inputs/request.rs
+index 88802fe2..8dc82700 100644
+--- a/skills/agent-maintenance/src/selected_inputs/request.rs
++++ b/skills/agent-maintenance/src/selected_inputs/request.rs
+@@ -121,14 +121,33 @@ pub(crate) fn capture_request_file(
+             .map_err(|e| RequestError::File(e.kind()))?
+             .join(path)
+     };
+-    let before = files::checked_path(&path, true).map_err(|e| RequestError::File(e.kind()))?;
+-    if before.len() > MAX_REQUEST_BYTES {
++    capture_source_file(&path, MAX_REQUEST_BYTES, clock)
++}
++
++/// Reuse the existing capture implementation with a tighter caller-owned cap.
++/// Source callers must provide an absolute path; no repository discovery occurs.
++pub(crate) fn capture_source_file(
++    path: &Path,
++    max_bytes: u64,
++    clock: &mut SystemClock,
++) -> Result<(Vec<u8>, ContentRead), RequestError> {
++    if max_bytes == 0 || max_bytes > MAX_REQUEST_BYTES {
++        return Err(RequestError::TooLarge);
++    }
++    if !path.is_absolute()
++        || path.to_str().is_none_or(|s| s.len() > 4096 || s.chars().any(char::is_control))
++        || path.components().any(|c| matches!(c, Component::ParentDir | Component::CurDir))
++    {
++        return Err(RequestError::InvalidPath);
++    }
++    let before = files::checked_path(path, true).map_err(|e| RequestError::File(e.kind()))?;
++    if before.len() > max_bytes {
+         return Err(RequestError::TooLarge);
+     }
+     let modified = before
+         .modified()
+         .map_err(|e| RequestError::File(e.kind()))?;
+-    let file = File::open(&path).map_err(|e| RequestError::File(e.kind()))?;
++    let file = File::open(path).map_err(|e| RequestError::File(e.kind()))?;
+     let opened = file.metadata().map_err(|e| RequestError::File(e.kind()))?;
+     if !opened.is_file()
+         || opened.len() != before.len()
+@@ -144,8 +163,8 @@ pub(crate) fn capture_request_file(
+         bytes: Vec::new(),
+     };
+     let mut request_budget = ReadBudget::new(Limits {
+-        max_file_bytes: MAX_REQUEST_BYTES,
+-        max_total_read_bytes: MAX_REQUEST_BYTES + 1,
++        max_file_bytes: max_bytes,
++        max_total_read_bytes: max_bytes + 1,
+         ..Limits::default()
+     })
+     .map_err(RequestError::Selection)?;
+@@ -153,7 +172,7 @@ pub(crate) fn capture_request_file(
+     if !request_read.complete() {
+         return Err(RequestError::IncompleteRead(request_read.status));
+     }
+-    let after = files::checked_path(&path, true).map_err(|e| RequestError::File(e.kind()))?;
++    let after = files::checked_path(path, true).map_err(|e| RequestError::File(e.kind()))?;
+     let handle = captured
+         .file
+         .metadata()
+diff --git a/skills/agent-maintenance/src/selected_inputs/mod.rs b/skills/agent-maintenance/src/selected_inputs/mod.rs
+index 53324763..035289c3 100644
+--- a/skills/agent-maintenance/src/selected_inputs/mod.rs
++++ b/skills/agent-maintenance/src/selected_inputs/mod.rs
+@@ -3,7 +3,7 @@ mod files;
+ mod model;
+ mod reader;
+ mod request;
+-pub(crate) use request::capture_request_file;
++pub(crate) use request::{capture_request_file, capture_source_file};
+ 
+ pub use files::observe;
+ pub use files::{FileObservation, PreparationReceipt, Stability};
+diff --git a/skills/agent-maintenance/src/main.rs b/skills/agent-maintenance/src/main.rs
+index f36becc3..665c0d32 100644
+--- a/skills/agent-maintenance/src/main.rs
++++ b/skills/agent-maintenance/src/main.rs
+@@ -73,20 +73,27 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             println!("{}", serde_json::to_string_pretty(&result)?);
+             Ok(result.failed == 0)
+         }
+-        Some("skill-check") if args.len() == 2 => {
+-            let result = product::inspect(Path::new(&args[1]))?;
+-            println!("{}", serde_json::to_string_pretty(&result)?);
+-            Ok(result.errors.is_empty())
++        Some("product-content-check-request") if args.len() == 2 => {
++            let receipt = product::selected::check_request_file(Path::new(&args[1]))?;
++            let qualified = receipt.qualified_complete;
++            println!("{}", serde_json::to_string_pretty(&receipt)?);
++            Ok(qualified)
+         }
+-        Some("lane-check") if args.len() == 2 => {
+-            let result = sessions::catalog::inspect(Path::new(&args[1]))?;
+-            println!("{}", serde_json::to_string_pretty(&result)?);
+-            Ok(result.errors.is_empty())
++        Some("lane-content-check-request") if args.len() == 2 => {
++            let receipt = sessions::catalog::selected::check_request_file(Path::new(&args[1]))?;
++            let qualified = receipt.qualified_complete;
++            println!("{}", serde_json::to_string_pretty(&receipt)?);
++            Ok(qualified)
+         }
+-        Some("thread-check") if args.len() == 2 => {
+-            let result=sessions::registry::inspect(Path::new(&args[1]))?;
+-            println!("{}",serde_json::to_string_pretty(&result)?);Ok(result.errors.is_empty())
++        Some("thread-content-check-request") if args.len() == 2 => {
++            let receipt = sessions::registry::selected::check_request_file(Path::new(&args[1]))?;
++            let qualified = receipt.qualified_complete;
++            println!("{}", serde_json::to_string_pretty(&receipt)?);
++            Ok(qualified)
+         }
++        Some("skill-check" | "lane-check" | "thread-check") => Err(
++            "explicit source request required; select product/lane/thread-content-check-request ABSOLUTE_REQUEST_JSON".into(),
++        ),
+         Some("session-list") if args.len() == 2 => {
+             println!("{}",serde_json::to_string_pretty(&sessions::storage::list(Path::new(&args[1]))?)?);Ok(true)
+         }
+@@ -123,7 +130,7 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             &args[4],
+         ),
+         _ => Err(
+-            "usage: agent-maintenance evidence-layout-plan REQUEST_JSON | windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check SOURCE PRESERVATION_JSON | check ROOT | routing ROOT | skill-check ROOT | thread-check ROOT | lane-check ROOT | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
++            "usage: agent-maintenance evidence-layout-plan REQUEST_JSON | windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check SOURCE PRESERVATION_JSON | check ROOT | routing ROOT | product-content-check-request ABSOLUTE_REQUEST_JSON | thread-content-check-request ABSOLUTE_REQUEST_JSON | lane-content-check-request ABSOLUTE_REQUEST_JSON | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
+                 .into(),
+         ),
+     }
+diff --git a/skills/agent-maintenance/src/sessions/catalog_selected.rs b/skills/agent-maintenance/src/sessions/catalog_selected.rs
+new file mode 100644
+--- /dev/null
++++ b/skills/agent-maintenance/src/sessions/catalog_selected.rs
+@@ -0,0 +1,122 @@
++//! Fixed lane projection content check; no script execution or source authority.
++use super::{Catalog, Report, validate_projections};
++use crate::{inventory::FileRecord, selected_inputs::{Clock, FrozenSelection, Input, Limits, Root, SystemClock, capture_source_file}};
++use serde::{Deserialize, Serialize};
++use sha2::{Digest, Sha256};
++use std::path::PathBuf;
++
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct Request {
++    pub schema: String,
++    pub repo_root: PathBuf,
++    pub source_commit: String,
++    pub expected_lane_count: u16,
++    pub inputs: [Pin; 4],
++}
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct Pin {
++    pub path: String,
++    pub owner: String,
++    pub presence: String,
++    pub bytes: u64,
++    pub sha256: String,
++}
++#[derive(Serialize)]
++pub struct Receipt {
++    pub report: Report,
++    pub declared_source_commit: String,
++    pub files: Vec<FileRecord>,
++    pub actual_read_bytes: u64,
++    pub content_checks_complete: bool,
++    pub source_commit_verified: bool,
++    pub provider_identity_qualified: bool,
++    pub writer_authorized: bool,
++    pub qualified_complete: bool,
++    pub identity_status: &'static str,
++}
++
++const PATHS: [&str; 4] = [
++    ".agents/sessions/lanes.json", ".agents/sessions/LANES.md",
++    "scripts/agents/session-board.ps1", "scripts/agents/session-board.sh",
++];
++const CAPS: [u64; 4] = [256 * 1024, 2 * 1024 * 1024, 2 * 1024 * 1024, 2 * 1024 * 1024];
++
++/// The caller supplies bounded request bytes from its command's original clock.
++/// Root must bind request capture and these reads to that same command budget.
++pub fn inspect_bytes(
++    bytes: &[u8], clock: &mut SystemClock,
++) -> Result<Receipt, Box<dyn std::error::Error>> {
++    if bytes.len() > 2 * 1024 * 1024 { return Err("catalog request exceeds cap".into()); }
++    let request: Request = serde_json::from_slice(bytes).map_err(|_| "invalid catalog request")?;
++    if request.schema != "humanymous.lane-projection-source.v1"
++        || request.expected_lane_count == 0 || request.expected_lane_count > 128
++        || ![40, 64].contains(&request.source_commit.len())
++        || !request.source_commit.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++    { return Err("invalid catalog source declaration".into()); }
++    if request.repo_root.to_str().is_none_or(|root| {
++        root.contains(['*', '?', '[', ']']) || root.chars().any(char::is_control)
++    }) { return Err("unsafe explicit source root".into()); }
++    FrozenSelection::new(
++        vec![Root { id: "repo".into(), path: request.repo_root.clone() }],
++        PATHS.iter().map(|p| Input { root: "repo".into(), path: (*p).into() }).collect(),
++        true, &Limits::default(),
++    ).map_err(|_| "invalid explicit catalog root")?;
++    let mut texts = Vec::with_capacity(4);
++    let mut files = Vec::with_capacity(4);
++    let mut actual = 0_u64;
++    for (index, pin) in request.inputs.iter().enumerate() {
++        if pin.path != PATHS[index] || pin.owner != "agents-meta" || pin.presence != "required"
++            || pin.bytes > CAPS[index] || pin.sha256.len() != 64
++            || !pin.sha256.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++        { return Err("catalog finite input pin mismatch".into()); }
++        let (captured, read) = capture_source_file(
++            &request.repo_root.join(PATHS[index]), pin.bytes.max(1), clock,
++        )?;
++        actual = actual.checked_add(read.actual_read_bytes).ok_or("catalog accounting overflow")?;
++        let sha256 = format!("{:x}", Sha256::digest(&captured));
++        if captured.len() as u64 != pin.bytes || sha256 != pin.sha256 {
++            return Err("catalog captured source mismatch".into());
++        }
++        files.push(FileRecord { path: pin.path.clone(), bytes: captured.len(), sha256 });
++        texts.push(String::from_utf8(captured).map_err(|_| "catalog input is not UTF-8")?);
++    }
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("catalog deadline".into()); }
++    let catalog = Catalog::parse(&texts[0]).map_err(|_| "invalid lane catalog")?;
++    let mut report = validate_projections(&catalog, &texts[1], &texts[2], &texts[3]);
++    if report.lane_count != usize::from(request.expected_lane_count) {
++        report.errors.push("declared lane count mismatch".into());
++    }
++    let complete = report.errors.is_empty();
++    Ok(Receipt {
++        report, declared_source_commit: request.source_commit, files, actual_read_bytes: actual,
++        content_checks_complete: complete, source_commit_verified: false,
++        provider_identity_qualified: false, writer_authorized: false, qualified_complete: false,
++        identity_status: "unsupported_source_identity; trusted-checkout content observation only",
++    })
++}
++
++/// Actual explicit request-file entrypoint; no relative request fallback.
++pub fn check_request_file(path: &std::path::Path) -> Result<Receipt, Box<dyn std::error::Error>> {
++    let mut clock = SystemClock::default();
++    let (bytes, request_read) = capture_source_file(path, 2 * 1024 * 1024, &mut clock)?;
++    let mut receipt = inspect_bytes(&bytes, &mut clock)?;
++    receipt.actual_read_bytes = receipt.actual_read_bytes.checked_add(request_read.actual_read_bytes)
++        .ok_or("source command accounting overflow")?;
++    if receipt.actual_read_bytes > 10 * 1024 * 1024 + 6 || clock.elapsed() >= Limits::default().max_elapsed {
++        return Err("source command budget exhausted".into());
++    }
++    Ok(receipt)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    #[test]
++    fn missing_or_duplicate_fields_do_not_become_empty_success() {
++        let mut clock = SystemClock::default();
++        assert!(inspect_bytes(br#"{"schema":"x","schema":"y"}"#, &mut clock).is_err());
++        assert!(inspect_bytes(br#"{}"#, &mut clock).is_err());
++    }
++}
+diff --git a/skills/agent-maintenance/src/sessions/registry_selected.rs b/skills/agent-maintenance/src/sessions/registry_selected.rs
+new file mode 100644
+--- /dev/null
++++ b/skills/agent-maintenance/src/sessions/registry_selected.rs
+@@ -0,0 +1,93 @@
++//! Explicit single-registry content observation, never live app or writer authority.
++use super::{Report, validate};
++use crate::selected_inputs::{Clock, FrozenSelection, Input, Limits, Root, SystemClock, capture_source_file};
++use serde::{Deserialize, Serialize};
++use sha2::{Digest, Sha256};
++use std::path::PathBuf;
++
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct Request {
++    pub schema: String,
++    pub repo_root: PathBuf,
++    pub source_commit: String,
++    pub path: String,
++    pub owner: String,
++    pub presence: String,
++    pub bytes: u64,
++    pub sha256: String,
++}
++#[derive(Serialize)]
++pub struct Receipt {
++    pub report: Report,
++    pub declared_source_commit: String,
++    pub captured_sha256: String,
++    pub actual_read_bytes: u64,
++    pub content_checks_complete: bool,
++    pub source_commit_verified: bool,
++    pub provider_identity_qualified: bool,
++    pub writer_authorized: bool,
++    pub qualified_complete: bool,
++    pub identity_status: &'static str,
++}
++
++/// Input is a bounded request captured by the caller with the same original clock.
++pub fn inspect_bytes(bytes: &[u8], clock: &mut SystemClock) -> Result<Receipt, Box<dyn std::error::Error>> {
++    if bytes.len() > 2 * 1024 * 1024 { return Err("registry request exceeds cap".into()); }
++    let request: Request = serde_json::from_slice(bytes).map_err(|_| "invalid registry request")?;
++    if request.schema != "humanymous.thread-registry-source.v1"
++        || request.path != ".agents/sessions/THREADS.md" || request.owner != "agents-meta"
++        || request.presence != "required" || request.bytes > 2 * 1024 * 1024
++        || request.sha256.len() != 64
++        || !request.sha256.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++        || ![40, 64].contains(&request.source_commit.len())
++        || !request.source_commit.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++    { return Err("invalid finite registry source contract".into()); }
++    if request.repo_root.to_str().is_none_or(|root| {
++        root.contains(['*', '?', '[', ']']) || root.chars().any(char::is_control)
++    }) { return Err("unsafe explicit source root".into()); }
++    FrozenSelection::new(
++        vec![Root { id: "repo".into(), path: request.repo_root.clone() }],
++        vec![Input { root: "repo".into(), path: request.path.clone() }], true, &Limits::default(),
++    ).map_err(|_| "invalid explicit registry root")?;
++    let (captured, read) = capture_source_file(
++        &request.repo_root.join(&request.path), request.bytes.max(1), clock,
++    )?;
++    let captured_sha256 = format!("{:x}", Sha256::digest(&captured));
++    if captured.len() as u64 != request.bytes || captured_sha256 != request.sha256 {
++        return Err("registry captured source mismatch".into());
++    }
++    let text = std::str::from_utf8(&captured).map_err(|_| "registry input is not UTF-8")?;
++    let report = validate(text);
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("registry deadline".into()); }
++    let complete = report.errors.is_empty();
++    Ok(Receipt {
++        report, declared_source_commit: request.source_commit, captured_sha256,
++        actual_read_bytes: read.actual_read_bytes, content_checks_complete: complete,
++        source_commit_verified: false, provider_identity_qualified: false,
++        writer_authorized: false, qualified_complete: false,
++        identity_status: "unsupported_source_identity; trusted-checkout content observation only",
++    })
++}
++
++/// Actual explicit request-file entrypoint; no relative request fallback.
++pub fn check_request_file(path: &std::path::Path) -> Result<Receipt, Box<dyn std::error::Error>> {
++    let mut clock = SystemClock::default();
++    let (bytes, request_read) = capture_source_file(path, 2 * 1024 * 1024, &mut clock)?;
++    let mut receipt = inspect_bytes(&bytes, &mut clock)?;
++    receipt.actual_read_bytes = receipt.actual_read_bytes.checked_add(request_read.actual_read_bytes)
++        .ok_or("source command accounting overflow")?;
++    if receipt.actual_read_bytes > 10 * 1024 * 1024 + 6 || clock.elapsed() >= Limits::default().max_elapsed {
++        return Err("source command budget exhausted".into());
++    }
++    Ok(receipt)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    #[test]
++    fn no_snapshot_or_ambient_fallback_on_missing_contract() {
++        assert!(inspect_bytes(b"{}", &mut SystemClock::default()).is_err());
++    }
++}
+diff --git a/skills/agent-maintenance/src/product_selected.rs b/skills/agent-maintenance/src/product_selected.rs
+new file mode 100644
+--- /dev/null
++++ b/skills/agent-maintenance/src/product_selected.rs
+@@ -0,0 +1,117 @@
++//! Fixed five-file product skill content check; source identity remains unqualified.
++use super::{Report, validate};
++use crate::{inventory::FileRecord, selected_inputs::{Clock, FrozenSelection, Input, Limits, Root, SystemClock, capture_source_file}};
++use serde::{Deserialize, Serialize};
++use sha2::{Digest, Sha256};
++use std::{collections::BTreeMap, path::PathBuf};
++
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct Request {
++    pub schema: String,
++    pub repo_root: PathBuf,
++    pub source_commit: String,
++    pub inputs: [Pin; 5],
++}
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct Pin {
++    pub path: String,
++    pub owner: String,
++    pub presence: String,
++    pub bytes: u64,
++    pub sha256: String,
++}
++#[derive(Serialize)]
++pub struct Receipt {
++    pub report: Report,
++    pub declared_source_commit: String,
++    pub files: Vec<FileRecord>,
++    pub actual_read_bytes: u64,
++    pub content_checks_complete: bool,
++    pub source_commit_verified: bool,
++    pub provider_identity_qualified: bool,
++    pub qualified_complete: bool,
++    pub runtime_qualified: bool,
++    pub identity_status: &'static str,
++}
++const PATHS: [&str; 5] = [
++    "skills/SKILL.md", "skills/references/installation.md", "skills/references/operations.md",
++    "skills/references/adapters.md", "skills/references/qualification.md",
++];
++
++/// Fixed canonical profile only. A different reference closure needs a new
++/// explicit profile decision; it is never discovered by recursively walking.
++pub fn inspect_bytes(bytes: &[u8], clock: &mut SystemClock) -> Result<Receipt, Box<dyn std::error::Error>> {
++    if bytes.len() > 2 * 1024 * 1024 { return Err("product request exceeds cap".into()); }
++    let request: Request = serde_json::from_slice(bytes).map_err(|_| "invalid product request")?;
++    if request.schema != "humanymous.product-skill-source.v1"
++        || ![40, 64].contains(&request.source_commit.len())
++        || !request.source_commit.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++    { return Err("invalid product source declaration".into()); }
++    if request.repo_root.to_str().is_none_or(|root| {
++        root.contains(['*', '?', '[', ']']) || root.chars().any(char::is_control)
++    }) { return Err("unsafe explicit source root".into()); }
++    FrozenSelection::new(
++        vec![Root { id: "repo".into(), path: request.repo_root.clone() }],
++        PATHS.iter().map(|p| Input { root: "repo".into(), path: (*p).into() }).collect(),
++        true, &Limits::default(),
++    ).map_err(|_| "invalid explicit product root")?;
++    let total = request.inputs.iter().try_fold(0_u64, |n, pin| n.checked_add(pin.bytes))
++        .ok_or("product declared size overflow")?;
++    if total > 8 * 1024 * 1024 { return Err("product bundle exceeds cap".into()); }
++    let mut texts = Vec::with_capacity(5);
++    let mut files = Vec::with_capacity(5);
++    let mut actual = 0_u64;
++    for (index, pin) in request.inputs.iter().enumerate() {
++        let cap = if index == 0 { 256 * 1024 } else { 2 * 1024 * 1024 };
++        if pin.path != PATHS[index] || pin.owner != "agents-meta" || pin.presence != "required"
++            || pin.bytes > cap || pin.sha256.len() != 64
++            || !pin.sha256.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++        { return Err("product finite input pin mismatch".into()); }
++        let (captured, read) = capture_source_file(
++            &request.repo_root.join(PATHS[index]), pin.bytes.max(1), clock,
++        )?;
++        actual = actual.checked_add(read.actual_read_bytes).ok_or("product accounting overflow")?;
++        let sha256 = format!("{:x}", Sha256::digest(&captured));
++        if captured.len() as u64 != pin.bytes || sha256 != pin.sha256 {
++            return Err("product captured source mismatch".into());
++        }
++        files.push(FileRecord { path: pin.path.clone(), bytes: captured.len(), sha256 });
++        texts.push(String::from_utf8(captured).map_err(|_| "product input is not UTF-8")?);
++    }
++    let resources = PATHS.iter().skip(1).zip(texts.iter().skip(1))
++        .map(|(path, text)| (path.strip_prefix("skills/").expect("fixed path").into(), text.clone()))
++        .collect::<BTreeMap<_, _>>();
++    let report = validate(&texts[0], &resources);
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("product deadline".into()); }
++    let complete = report.errors.is_empty();
++    Ok(Receipt {
++        report, declared_source_commit: request.source_commit, files, actual_read_bytes: actual,
++        content_checks_complete: complete, source_commit_verified: false,
++        provider_identity_qualified: false, qualified_complete: false, runtime_qualified: false,
++        identity_status: "unsupported_source_identity; trusted-checkout content observation only",
++    })
++}
++
++/// Actual explicit request-file entrypoint; no relative request fallback.
++pub fn check_request_file(path: &std::path::Path) -> Result<Receipt, Box<dyn std::error::Error>> {
++    let mut clock = SystemClock::default();
++    let (bytes, request_read) = capture_source_file(path, 2 * 1024 * 1024, &mut clock)?;
++    let mut receipt = inspect_bytes(&bytes, &mut clock)?;
++    receipt.actual_read_bytes = receipt.actual_read_bytes.checked_add(request_read.actual_read_bytes)
++        .ok_or("source command accounting overflow")?;
++    if receipt.actual_read_bytes > 10 * 1024 * 1024 + 6 || clock.elapsed() >= Limits::default().max_elapsed {
++        return Err("source command budget exhausted".into());
++    }
++    Ok(receipt)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    #[test]
++    fn incomplete_contract_does_not_discover_a_product_root() {
++        assert!(inspect_bytes(b"{}", &mut SystemClock::default()).is_err());
++    }
++}

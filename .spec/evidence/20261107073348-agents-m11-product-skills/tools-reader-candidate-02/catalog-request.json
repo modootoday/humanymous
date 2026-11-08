@@ -1,0 +1,36 @@
+{
+  "schema": "humanymous.lane-projection-source.v1",
+  "repo_root": "C:/workspaces/humanymous",
+  "source_commit": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "expected_lane_count": 25,
+  "inputs": [
+    {
+      "path": ".agents/sessions/lanes.json",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2743,
+      "sha256": "78c8790146ffc26fd69bf35684b826a78cc88a064f3e070f2b15a72a852261d7"
+    },
+    {
+      "path": ".agents/sessions/LANES.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 9662,
+      "sha256": "b9f7d292a34c3cb0c1aedc9567fd64197cd9b13544b4dd5ed442aaf9b00c9b50"
+    },
+    {
+      "path": "scripts/agents/session-board.ps1",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 7568,
+      "sha256": "17985f89f2ebc9c839fdec4fdb75f21891706a33b7dd33b762ab9da295ab4e88"
+    },
+    {
+      "path": "scripts/agents/session-board.sh",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 3638,
+      "sha256": "be6f6d23b5b49955f22aa74a5ca53bcdaab85f47caefd3ae7418f8bfb852b2c1"
+    }
+  ]
+}

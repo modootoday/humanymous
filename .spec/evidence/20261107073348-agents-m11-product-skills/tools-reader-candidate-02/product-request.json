@@ -1,0 +1,42 @@
+{
+  "schema": "humanymous.product-skill-source.v1",
+  "repo_root": "C:/workspaces/humanymous",
+  "source_commit": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "inputs": [
+    {
+      "path": "skills/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2628,
+      "sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654"
+    },
+    {
+      "path": "skills/references/installation.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2658,
+      "sha256": "d61688100b9c0db630306ab0f9a27fd490b8ac1780131f88352fb13379e68c6d"
+    },
+    {
+      "path": "skills/references/operations.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2205,
+      "sha256": "015642b84019e645684372330547d24b487eef9882b372cf8eee5054b5ef100c"
+    },
+    {
+      "path": "skills/references/adapters.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2746,
+      "sha256": "6e2cc2ad417c8d441df6a8ccac9f891c464b89554b7dfc2e21629d3572ee366d"
+    },
+    {
+      "path": "skills/references/qualification.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1677,
+      "sha256": "85ba9bf8901016fc4bb970de693e15d71825ceb1a961e44ee5964b0e5f5e7eff"
+    }
+  ]
+}
