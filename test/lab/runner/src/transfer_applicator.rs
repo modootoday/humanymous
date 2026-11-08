@@ -1319,10 +1319,7 @@ mod tests {
         )
         .expect_err("null pilot refused");
         assert!(err.to_string().contains("pilot_command"));
-        assert_eq!(
-            root.join("workspace").join(UNLOCK_B_APPLIED_REL).exists(),
-            false
-        );
+        assert!(!root.join("workspace").join(UNLOCK_B_APPLIED_REL).exists());
         let _ = fs::remove_dir_all(root);
     }
 
@@ -1402,10 +1399,7 @@ mod tests {
         )
         .expect_err("empty destinations refused");
         assert!(err.to_string().contains("destinations"));
-        assert_eq!(
-            root.join("workspace").join(UNLOCK_A_APPLIED_REL).exists(),
-            false
-        );
+        assert!(!root.join("workspace").join(UNLOCK_A_APPLIED_REL).exists());
         let _ = fs::remove_dir_all(root);
     }
 

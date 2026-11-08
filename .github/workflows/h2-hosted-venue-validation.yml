@@ -2,6 +2,7 @@
 # Component Cap green != product; never invent pass_product_clean_room / desktop_as_hosted.
 # Specfold burn: push this workflow file on codex/rust (path-filtered) or workflow_dispatch
 # once registered on default branch. Refuse ACT / Desktop spoof.
+# Rearm note: preflight fix for venue-aware unit + clippy bool_assert (Cap CLI not yet burned).
 name: CI / H2 hosted venue Cap
 'on':
   push:

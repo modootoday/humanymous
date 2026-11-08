@@ -635,7 +635,8 @@ mod tests {
         CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, HOSTED_VENUE_CAP_SELECTOR, HOSTED_VENUE_MARKERS,
         HOSTED_VENUE_PILOT_COMMAND, MEASURE_RECEIPT_SCHEMA, MISSING_N06_PRODUCT_LIFT,
         N06_OWNER_JOIN_RECEIPT_SCHEMA, REQUIRED_HOSTED_VENUE_TOPOLOGY, missing_cap_topology,
-        n06_owner_join_readiness_receipt, original_h2_measured_from_receipt, parse_measure_receipt,
+        missing_hosted_venue_topology, n06_owner_join_readiness_receipt,
+        original_h2_measured_from_receipt, parse_measure_receipt,
         refuse_invented_original_h2_measured, refuse_n06_product_lift_from_desktop_measure,
         require_hosted_venue_for_n06_join, validate_n06_owner_join_receipt,
     };
@@ -671,15 +672,20 @@ mod tests {
     #[test]
     fn hosted_venue_cap_refuses_without_actual_hosted_linux() {
         let root = snapshot::root().expect("root");
-        // Topology may be present after N06 transfer-apply; Cap still refuse-closed on Desktop.
-        let err = require_hosted_venue_for_n06_join(&root).expect_err("desktop refuse");
-        assert!(
-            err.to_string().contains("actual_hosted_linux=false"),
-            "Desktop Cap must refuse hosted venue; got {err}"
-        );
-        assert!(!crate::docker::actual_hosted_linux());
         assert!(HOSTED_VENUE_PILOT_COMMAND.contains(HOSTED_VENUE_CAP_SELECTOR));
         assert_eq!(REQUIRED_HOSTED_VENUE_TOPOLOGY.len(), 2);
+        // Desktop Cap refuse-closed; Specfold/github-hosted admits when topology present.
+        if crate::docker::actual_hosted_linux() {
+            require_hosted_venue_for_n06_join(&root)
+                .expect("hosted Cap admits when actual_hosted_linux + topology");
+            assert!(missing_hosted_venue_topology(&root).is_empty());
+        } else {
+            let err = require_hosted_venue_for_n06_join(&root).expect_err("desktop refuse");
+            assert!(
+                err.to_string().contains("actual_hosted_linux=false"),
+                "Desktop Cap must refuse hosted venue; got {err}"
+            );
+        }
     }
 
     #[test]
