@@ -325,7 +325,15 @@ fn actual_framework_allow_preserves_binary_body_and_headers() {
                 Some(effect_file.clone()),
             );
             let body = [0, 255, 13, 10, 42];
-            let wire = request(port, "/api?q=1", &body);
+            let wire = try_request(port, "/api?q=1", &body).unwrap_or_else(|error| {
+                let mut errors = String::new();
+                if let Some(mut stderr) = host.0.stderr.take() {
+                    let _ = stderr.read_to_string(&mut errors);
+                }
+                panic!(
+                    "{runtime_name}/{framework} POST /api: {error}; host stderr: {errors}"
+                );
+            });
             let separator = wire
                 .windows(4)
                 .position(|v| v == b"\r\n\r\n")
