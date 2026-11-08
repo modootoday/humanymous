@@ -1184,3 +1184,24 @@ and distinct output/storage enforcement. None is implemented or qualified by thi
 source correction. Failure-path/fault-injection, supervisor escalation and real
 cleanup qualification remain unresolved execution gates; no hosted/compile loan
 was granted or consumed here. Core offline/unsigned/noactivation contract unchanged.
+
+### Pilot Drop custody-before-diagnostics correction
+
+offline-cli-pilot-drop-order.json pins prior4645b152 and before/after candidate
+hashes. The actual Child/path/file obligations now enter RETAINED BEFORE any stderr
+diagnostic. Both Drop reports use best-effort writeln! with ignored io::Result;
+a broken stderr no longer triggers eprintln panic and loses the not-yet-retained
+local Child. Retained process custody still is NOTreap/cleanup or eventual recovery.
+No hard lifetime/output/storage bounds are inferred; allocator failure, blocking
+OS/stdio calls and external supervisor qualification remain explicit limitations.
+No fault injection, compile, formatter, hosted or process pilot was executed here.
+
+Root separately reports isolated integration:5pure Core offline tests,165Core
+library tests,2pure CLI offline tests (1existing filtered), Core strictClippy and
+corrected CLI strictClippy passed;1790source records0differences. Those are
+ROOT_REPORTEDisolated assembly facts, not independent executions by this owner,
+not qualification of this updated pilot candidate, live API, Go bits or CLI/native
+subprocesses. Root owns the isolated documentation/Display/compiler fixes and
+actual caller routing; original candidate source history stays immutable in Git.
+This correction changes evidence only; current live visibility/Cargo/deadcode
+expectation are untouched. Core offline/unsigned/noactivation contract unchanged.

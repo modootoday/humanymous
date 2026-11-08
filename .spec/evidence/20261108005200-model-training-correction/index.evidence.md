@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-08T02:40:47Z
+updated: 2026-11-08T02:46:31Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -31,9 +31,10 @@ files:
   - {path: offline-core-tests.candidate.rs, sha256: 1748b033e485c0ab28c9466bd4be1bf7d06fca30b5c200b449a4219e83a438e0, bytes: 5982, store: repo}
   - {path: offline-cli-tests.candidate.rs, sha256: 8b7e3042b645a2e236bb04d61fa7c879d03b9e34d94657ed0c58a4174879027e, bytes: 1526, store: repo}
   - {path: offline-cli.candidate.rs, sha256: 4be87a3f4e6b72960acde370850c1248f5c89d3cee313232651ad6b99730c300, bytes: 6342, store: repo}
-  - {path: offline-cli-pilot.candidate.rs, sha256: ed3439c67e770306ef9141cd64fd4a78288b2d16439490dc1a11f69e35d3f3e2, bytes: 12161, store: repo}
-  - {path: offline-api-cli-candidate.json, sha256: 1e2a99f867d864b32e407aee6898d00439d7d40eb96ca09c6a8508acb1c230c9, bytes: 2545, store: repo}
   - {path: offline-cli-pilot-lifecycle-review.json, sha256: 21395f49f36849e13653fdfd90e814ca8df6343f6e26c26e5dcf96560c3a70e3, bytes: 2168, store: repo}
+  - {path: offline-cli-pilot.candidate.rs, sha256: 58932ca3878732b4d3c23874cc41b5fc012242f850af051ab94eb7d53905610d, bytes: 12441, store: repo}
+  - {path: offline-api-cli-candidate.json, sha256: 2105e219887bb50239eef4b09ca7e9a70833cb5c37dc192ecfaeb4df33106530, bytes: 2545, store: repo}
+  - {path: offline-cli-pilot-drop-order.json, sha256: fcdf68fbb732fa6ca56478a5292c95d3a0fed19baf1b0acd82920a0066ade063, bytes: 1533, store: repo}
 ---
 
 # Read-only source inventory

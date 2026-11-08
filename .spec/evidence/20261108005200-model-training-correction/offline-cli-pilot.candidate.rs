@@ -54,16 +54,20 @@ impl Drop for Owned {
             type Retained = (Option<Child>, PathBuf, Vec<PathBuf>);
             static RETAINED: std::sync::Mutex<Vec<Retained>> = std::sync::Mutex::new(Vec::new());
             let child = self.child.get_mut().take();
-            eprintln!("PILOT_CUSTODY_INCOMPLETE pid={:?} retained={}",
-                child.as_ref().map(Child::id), self.directory.display());
+            let pid = child.as_ref().map(Child::id);
             RETAINED.lock().unwrap_or_else(|poison| poison.into_inner()).push((
                 child, self.directory.clone(), std::mem::take(self.files.get_mut())));
+            // Transfer custody BEFORE diagnostics. A failed stderr write must
+            // neither panic during Drop nor discard the retained Child handle.
+            let _ = writeln!(&mut std::io::stderr().lock(),
+                "PILOT_CUSTODY_INCOMPLETE pid={pid:?} retained={}", self.directory.display());
             return;
         }
         // Only unwind fallback; every successful test must assert explicit finish.
         if self.directory.exists() {
             if let Err(error) = self.finish() {
-                eprintln!("PILOT_CLEANUP_INCOMPLETE retained={} kind={:?}", self.directory.display(), error.kind());
+                let _ = writeln!(&mut std::io::stderr().lock(),
+                    "PILOT_CLEANUP_INCOMPLETE retained={} kind={:?}", self.directory.display(), error.kind());
             }
         }
     }

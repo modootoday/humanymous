@@ -1,0 +1,34 @@
+{
+  "schema": "humanymous.offline-cli-pilot-drop-order/1",
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "baseline_commit": "4645b1521c06fd470ba7be4943982964bf9b01f9",
+  "before": {
+    "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-pilot.candidate.rs",
+    "sha256": "ed3439c67e770306ef9141cd64fd4a78288b2d16439490dc1a11f69e35d3f3e2",
+    "bytes": 12161
+  },
+  "after": {
+    "sha256": "58932ca3878732b4d3c23874cc41b5fc012242f850af051ab94eb7d53905610d",
+    "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-pilot.candidate.rs",
+    "bytes": 12441
+  },
+  "change": "Actual Child/path/file obligations are transferred to RETAINED before diagnostics; Drop stderr writes use ignored io::Result rather than panic-on-error eprintln",
+  "limits": [
+    "Retained custody is not reaping, cleanup or activation",
+    "No hard OS lifetime/output/storage guarantee",
+    "Allocator failure and blocking stderr/OS calls are not made recoverable or bounded",
+    "No stdout/stderr-failure fault injection or pilot execution"
+  ],
+  "root_reported_isolated_results": {
+    "core_library_total": 165,
+    "strict_clippy": "Core and corrected CLI pass in Root isolated assembly",
+    "cli_existing_filtered": 1,
+    "cli_pure_offline": 2,
+    "source_differences": 0,
+    "qualification": "Root-reported only, not independently rerun or promoted to live/API/process/Go parity proof",
+    "core_pure_offline": 5,
+    "source_closed_records": 1790
+  },
+  "live_changes": false,
+  "execution": false
+}

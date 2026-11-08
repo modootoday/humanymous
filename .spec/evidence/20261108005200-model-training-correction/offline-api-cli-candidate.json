@@ -24,8 +24,8 @@
     },
     {
       "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-pilot.candidate.rs",
-      "sha256": "ed3439c67e770306ef9141cd64fd4a78288b2d16439490dc1a11f69e35d3f3e2",
-      "bytes": 12161
+      "sha256": "58932ca3878732b4d3c23874cc41b5fc012242f850af051ab94eb7d53905610d",
+      "bytes": 12441
     }
   ],
   "proposed_operation": "humanymous_core::model::training::offline::fit_offline",
