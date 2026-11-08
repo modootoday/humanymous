@@ -29,6 +29,15 @@ fn authority() -> String {
 }
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
+/// Browser asset response ceiling (headers + body).
+///
+/// Measured Cap=1 attempt-3 image artifact
+/// `/usr/local/lib/collector-product-tests.wasm` = 40_915_031 bytes. The prior
+/// 32 MiB ceiling returned `proxy response bound` → HTTP 503 on
+/// `wasm-bindgen-test_bg.wasm`, so the selected runtime_pilot test never ran
+/// and `browser-actual-witness-exchange` stayed at bootstrap transactions=1.
+const ASSET_RESPONSE_MAX: u64 = 64 * 1024 * 1024;
+
 #[derive(Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProxyConfig {
@@ -196,7 +205,7 @@ async fn exchange(socket: &mut TcpStream, config: &ProxyConfig, receipts: &Recei
     let mut remote = TcpStream::connect(upstream).await?;
     remote.write_all(&encode(&frame)).await?;
     // No retry, redirect following, status rewriting or synthesized ACK.
-    let max = if api { 131_072 } else { 32 * 1024 * 1024 };
+    let max = if api { 131_072 } else { ASSET_RESPONSE_MAX };
     let mut reply = Vec::new();
     (&mut remote).take(max + 1).read_to_end(&mut reply).await?;
     if reply.len() as u64 > max {
@@ -303,10 +312,8 @@ pub async fn serve(
     }
     let limit = Arc::new(Semaphore::new(16));
     let mut tasks = JoinSet::new();
-    // Match browser-product.Dockerfile WASM_BINDGEN_TEST_TIMEOUT. Debug
-    // collector wasm assets are fully buffered (up to 32MiB); a 15s ceiling
-    // returns 503 under Cap=1 Desktop contention before the selected
-    // runtime_pilot test starts, starving browser-actual-witness-exchange.
+    // Match browser-product.Dockerfile WASM_BINDGEN_TEST_TIMEOUT so a full
+    // ASSET_RESPONSE_MAX debug-wasm transfer can finish under Cap=1 Desktop.
     let exchange_timeout = Duration::from_secs(90);
     loop {
         tokio::select! {
@@ -334,6 +341,12 @@ pub async fn serve(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn asset_response_max_covers_measured_debug_collector_wasm() {
+        // Attempt-3 Desktop image: humanymous/browser-product:hm-rust-lab-f87186e0695e4771
+        const MEASURED_ATTEMPT3_WASM_BYTES: u64 = 40_915_031;
+        assert!(ASSET_RESPONSE_MAX > MEASURED_ATTEMPT3_WASM_BYTES + 65_536);
+    }
     #[test]
     fn origin_classes_initialize_zeroes_and_never_retain_foreign_values() {
         for (origin, expected) in [
