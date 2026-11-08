@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-07T10:24:17Z
+updated: 2026-11-08T00:31:47Z
 files:
   - {path: native-selector-validation-summary.json, sha256: afc912e9f5877c6df843d816ba6a09a9ce4a8682c697e3e42356e87220f7fe08, bytes: 12855, store: repo}
   - {path: native-selector-scan-triage-source.json, sha256: 5b5bdd18c40b2c18032b1c888ee8e74759f0c0a024751acb22db5e0538315f6a, bytes: 2088, store: repo}
@@ -70,6 +70,7 @@ files:
   - {path: runner-accounting-docker-pure-summary.json, sha256: 9ee82057857872e19acc69ffb2e74b3d5c35ca5be7611d039f116297279c0a32, bytes: 2604, store: repo}
   - {path: local-windows-audit-evidence-adoption.json, sha256: 04367fe5390d1dc2fadcbcceea5b3ecbe650d3b6fa85daf9776415bf8043f9af, bytes: 1624, store: repo}
   - {path: runner-act-wal-pure-summary.json, sha256: 7b706eb725ec3523af073299a17611f4d46c8fc7d6ce3227e985f01b7787b88a, bytes: 1369, store: repo}
+  - {path: cli-native-runner-contract-source.json, sha256: 87065626b7546dd2352f51df28612308486deead446a9c7e564cf5fb0706cdc0, bytes: 40727, store: repo}
 ---
 
 # Cross OS runner research
