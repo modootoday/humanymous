@@ -703,6 +703,93 @@ adapter-five-core-fixture-producer-review.json. This resolves the canonical byte
 choice, not runtime, native host, package or resource closure qualification.
 The owner writes candidates only; Root retains actual source/path/Cargo movement.
 
+### Native candidate review and the exact B1 implementation decision
+
+Root verified all five installation/pair candidate02c456e9 file hashes and nine
+current Runtime/Platform source preimages against its isolated assembly: zero
+differences. The private original-installer proof and held namespace manufacturer
+remain uninhabited/Unsupported. No candidate was integrated or native operation
+executed. The source review and primary API references are retained in private
+core-consolidation/native-b1-root-critique.json.
+
+After independent X review7e341dcb, Root accepts B1 ONLY as a low-level descriptor-
+at-create primitive. This is an explicit amendment of the six-only exception
+direction, not a statement that a seventh unsafe function is implemented. The
+existing six exceptions remain unchanged. The ONE newly allowed private function
+is windows_object::create_file::create_native, compiled only on Windows behind a
+default-off windows-file-create feature implying windows-object. No root/module
+allow, facade reexport, generic provider, signing or process/Job operation is
+authorized. The isolated manifest reserves this feature and explicitly updates
+its comment; the live source and manifest remain unchanged.
+
+The safe-facing operation may return only a must-use CreatedFile containing the
+actual owned File and preallocated locator/creation obligation with private
+fields. Retain that owner and borrow its File; do not provide a lone into_file,
+Clone, serde, raw constructor, identity/proof conversion or public admitted-O
+marker. Actual private Runtime post-validation failures must retain that owner.
+No parent/O/provider/original-clock/Ready authority is implied by path+descriptor.
+Namespace admission, original-I, genesis and full production provider remain
+Unsupported until their separate manufacturers and actual checks exist.
+
+The seventh function's entire unsafe operation allowance is precisely:
+CreateFileW with CREATE_NEW, desired0xc0020000, share0, borrowed valid pinned
+windows-permissions native descriptor, noninheritable SECURITY_ATTRIBUTES,
+FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OPEN_REPARSE_POINT and null template; then one
+OwnedHandle::from_raw_handle adoption of that exact successful owned handle,
+followed by safe File::from. Capture the API-specific invalid-handle error
+immediately. Precompute bounded locator/UTF16/attributes/obligation allocations
+before creation; no fallible allocation, logging or unwrap gap may lose a
+successfully created owner. No existing-open/truncate/retry/repair/delete/close
+fallback or additional native unsafe operation is allowed.
+
+The locator grammar must reject unsupported namespace/device/UNC/ADS/traversal,
+embedded NUL and reserved/ambiguous component forms before mutation, without
+unjustifiably banning legitimate Unicode. Descriptor allocation provenance and
+lifetime must match pinned native storage, never an unrelated wrapper layout.
+Absolute CreateFileW is not handle-relative; leaf reparse handling does not prove
+ancestor identity. Independent namespace/parent/descriptor/provider policy and
+original outer budget belong to the real caller. Peer denial under share0 alone
+must not become an ACL proof. The Microsoft CreateFileW/security contracts and
+Rust OwnedHandle ownership contract support these API distinctions; the missing
+parent authority is also directly visible in the proposed signature.
+
+Native is authorized to author this exact candidate in its already owned evidence
+paths only, after this decision is committed. Root retains actual Platform/Cargo
+integration; compilation and real NTFS/native fixtures require later allocation.
+Required gates include default/feature absence and exact unsafe negative controls,
+collision byte/owner preservation, same-held descriptor/type/reparse/ID and
+noninheritance, retained post-create refusal, expired caller budget and no fake
+namespace admission. Blocking native close/I/O and outer lifetime/storage controls
+remain open. B2 process-tree supervisor operations remain UNAPPROVED and require
+their own exact proposal/review; B1 is not a blanket unsafe exemption.
+
+Primary references: [CreateFileW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew),
+[file security](https://learn.microsoft.com/en-us/windows/win32/fileio/file-security-and-access-rights),
+and [OwnedHandle](https://doc.rust-lang.org/std/os/windows/io/struct.OwnedHandle.html).
+
+### CEF caller repair adoption and remaining compiler-artifact binding
+
+Root verified and adopted all seven d08dc778 exact current caller preimages and
+postimages into the isolated CLI. Supported CEF-pilot all-target strict Clippy
+passes. Three new exact regressions each pass1/0/0 with16 filtered: two pure safe-
+diagnostic cases and one synthetic owned byte-file copy case. Root replaced the
+new copy test's silent recursive Drop cleanup with explicit removal of only its
+three owned files and directory, asserted before successful return. No real DLL,
+SDK, browser or process was executed. Exact selected runs bind1793 before/after
+source files with zero differences in core-consolidation/
+cef-caller-three-regressions-checkpoint.
+
+The source now builds/preserves roles sequentially and exposes separate v2 role
+receipts. CA-BROWSER-ROLE-CALLER-01 nevertheless remains OPEN: retain_role still
+derives the library path from target_directory/debug rather than joining the
+actual selected compiler-artifact and build-finished ledger. Successful Cargo
+exit plus hash equality cannot qualify a guessed/stale output path. Browser must
+bind exact opaque package ID, same-source manifest/library source/crate types,
+role features/profile, actual filename and unique successful artifact before
+preservation. Contract producer/equality refresh and external v1 consumer migration
+also remain pending. The old immutable candidates/seals are not retroactively
+qualified by these new observations.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
@@ -896,7 +983,7 @@ The workspace-member milestones are41 initially,35 after core,34 after platform,
 the facade and collector changes paths without reducing this count. These are
 planned structural counts, not functional completion or performance claims.
 
-The complete maintained-package totals are45 initially,39 after core,38 after platform,33 after runtime,21 after tools,10 after adapters and8 after browser. Four standalone packages under scripts/ci/{cef-pilot,windows-native-runner,docs-review,local-parity} each have an isolated workspace today. All four join the CLI qualification responsibility at the tools stage; they are not permanent private helpers. The current tracked census is39 Cargo manifests: one virtual root,34 main-workspace members and four standalone packages. Historical workspace-only counts remain valid within their original scope.
+The complete maintained-package totals in the original sequence are45 initially,39 after core,38 after platform,33 after runtime,21 after tools,10 after adapters and8 after browser. Four standalone packages under scripts/ci/{cef-pilot,windows-native-runner,docs-review,local-parity} retain isolated workspaces in the live tree. All four join the CLI qualification responsibility at the tools stage; they are not permanent private helpers. The historical post-Platform census was39 Cargo manifests: one virtual root,34 main-workspace members and four standalone packages. After Runtime integration, the live census is34 manifests: one virtual root,29 workspace members and four standalone tools. The later isolated Tools-plus-Browser assembly has19 members; that prototype is not the live graph. Historical workspace-only counts remain valid within their original scope.
 
 Cargo package IDs are opaque join keys. The observed new core/platform IDs end
 in #0.1.0 because their leaf directory matches their package name, while older
