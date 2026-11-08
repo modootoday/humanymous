@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-08T02:56:20Z
+updated: 2026-11-08T03:48:26Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -35,11 +35,11 @@ actual graph observations, not registry or runtime availability claims.
 | humanymous | Existing curated facade | Existing scoped API/profile evidence only | Final sdk path, exports and registry-compatible dependency graph |
 | humanymous-core | Seven contexts live; private SGD live; new offline API in isolated assembly only | Historical live160 unit+17 integration results; isolated library165 and new CLI2 pure units; relevant strict lint passes | Offline process/Go numeric parity, correction/promotion lifecycle and source-bound consumer/package gates |
 | humanymous-runtime | Six contexts live | Historical selected177 pure cases from366; scoped access/profile/extracted checks | Actual provider/W/Offer-ACK/Ready, full shipping ingress/TLS-H2/admin/runtime/product integration |
-| humanymous-platform | Shared platform and testing context live | Scoped pure/privacy/package checks | Real process-tree/recovery backend and explicitly reviewed native boundary gaps |
+| humanymous-platform | Shared context live; exact B1 primitive implemented in isolated source only | Pure locator cases, feature/API absence and positive/private Rustdoc controls; no native creation | Exact unsafe/linkage controls, four native fixtures, original namespace/provider and process-tree/recovery backend |
 | humanymous-collector | Browser/WASM source live in old path | Source-specific WASM checks and hosted component observations | Final integrations path, session-bound collector and full actual browser/product binding |
 | humanymous-adapters | Twelve current packages; final one-package design accepted | Component-specific historical scopes; no final merged package compiled | Actual source/manifest/export/visibility/loader consolidation and native host/package qualification |
 | humanymous-cli | Original live contexts remain; thirteen-context union materialized in isolated assembly | Full isolated all-target/all-feature strict lint; selected pure tests and exact discovery; no live path cutover | Required checkout/package/negative-role gates, final freeze/caller/workflow integration, real native/service/install pilots |
-| humanymous-browser | Three live packages; one isolated package now materialized | Default32 model tests/strict lint, four role dependency graphs,634 external lock tuples unchanged | Repair seven CEF caller candidates, exact source/feature/artifact joins, CEF/Meari/native/a11y and distribution qualification |
+| humanymous-browser | Three live packages; one isolated package and corrected CLI CEF callers materialized | Default32 model tests/strict lint, role graphs,634 external lock tuples unchanged; five selected artifact/privacy/copy regressions | Real role build-to-DLL/PE/load, contract producer/replica and v2 consumer migration, CEF/Meari/native/a11y/distribution qualification |
 
 The latest formal isolated Tools checkpoint is evidence:root/20261108024914:
 1791 source files with zero before/after differences,14 registered attachments,
@@ -64,6 +64,36 @@ the overall product job/workflow failed. No rerun of the same component can clos
 the nine missing product responsibilities merely by repeating49 successes.
 
 ## Dependency timeline and exit milestones
+
+### Design-completion frontier for the latest user briefing
+
+The reference architecture is accepted. Detailed design is NOT complete merely
+because the eight package names are selected or the isolated sources compile.
+Its remaining decisions must close before the design can be frozen as complete:
+
+| Contract group | Current disposition | Design exit |
+| --- | --- | --- |
+| Package family, naming, ownership, bottom-up work and core safety | Accepted baseline | Continue enforcing exact paths/API boundaries and source-specific proof |
+| B1 descriptor-at-create | Exact low-level scope accepted; isolated component source/checks present | Keep creation observation separate from original-I/namespace/provider/Ready; complete the real caller contract and actual qualification |
+| B2 process supervisor and B2-P capture | Detailed proposals reviewed; NOT approved or implemented | Freeze native operations/console/ownership/recovery, actual helper and storage/outer-supervisor contracts; no mocked completion |
+| Original installer, namespace, authenticated channels/W and Ready | Partial contracts/queries; required manufacturers remain absent | Concrete original authority, durable journal/genesis, frame and Offer/ACK/activation ownership without DATA-to-proof shortcuts |
+| Adapters role/ABI and package artifact contracts | Twelve-to-one source candidate; seven export profiles;171 lexical cases, no merged compilation | Final selector/loader/header-v2/resource/caller and namespace/visibility contracts, actual metadata/test matrix and supported packaging recipes |
+| Browser role and caller integration | Isolated source/component evidence | Admit actual role artifacts/contract producer/v2 consumers; complete CEF/UI/a11y/distribution contract and tests |
+| Public standards and delivery | Source updates ongoing | Final code-to-Draft-v0 scope alignment, versioned interfaces and Pages/render/review/CI contract |
+
+The current Adapters candidate is still being revised, including Python artifact
+selection and the three-field header-v2 metadata proposal. Its reviewed132 files,
+171 lexical case declarations and resource maps are SOURCE inventories, not a
+compiled package or passed171 tests. The latest Delivery local compiler-control
+candidate is likewise uncompiled/unexecuted. It cannot complete hosted lifecycle
+validation by being present on disk.
+
+The full migration goal continues after design closure: coherent final-eight
+implementation, required real supported Cross-OS/host/container/browser/native
+qualification, public documentation review, main integration/post-merge checks,
+approved Pages confirmation and main-only branch state. Package publication,
+release tags and OIDC token exchange remain separately unauthorized. No calendar
+completion date or aggregate percentage is asserted without evidence.
 
 This is a dependency timeline, not an invented calendar completion estimate.
 Independent implementation and source review continue in parallel; actual heavy
@@ -100,8 +130,9 @@ Root inspected current chat turn snapshots: Adapters and Browser candidate turns
 are active; Model's child-custody correction is source-only; Delivery has a
 reviewed private workflow supplement; Native and CLI positive provider/admission
 remain unfinished; Pages' prior source update is unrendered. Root reassigned
-Native concrete D2/D3 read-only installation/role-query candidates, leaving B1/B2
-unsafe amendments and new frame schemas unapproved. Pages must track offline
+Native concrete D2/D3 read-only installation/role-query candidates. That earlier
+inspection preceded the later exact B1 decision6aea9fcc and isolated implementation;
+B2 and new frame schemas remain unapproved. Pages must track offline
 unsigned DATA versus unfinished activation. No shared source/Cargo or runtime
 execution authority was delegated by these evidence-only assignments.
 

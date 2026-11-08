@@ -3,7 +3,7 @@ id: sot:root/structural-development
 title: Bottom-up development architecture and chat responsibility canon
 status: active
 created: 2026-11-07T15:10:00Z
-updated: 2026-11-07T15:10:00Z
+updated: 2026-11-08T03:48:26Z
 verify: manual
 rel:
   depends_on: [sot:root/program-roadmap, sot:root/rust-migration, plan:root/20261107151000, plan:root/20261107150000]
@@ -789,6 +789,90 @@ role features/profile, actual filename and unique successful artifact before
 preservation. Contract producer/equality refresh and external v1 consumer migration
 also remain pending. The old immutable candidates/seals are not retroactively
 qualified by these new observations.
+
+### B1 isolated implementation and CEF artifact-selector component evidence
+
+The scoped component summary is [[evidence:root/20261108034133]]. It preserves
+the distinction between actual isolated source and the unchanged live graph.
+Root admitted the exact3acfa668 CEF delta after seven preimage/postimage checks;
+its supported all-target strict lint passes. Actual compiler-artifact filenames,
+opaque metadata identities and exact role features now feed immediate verified
+preservation instead of a guessed global debug path. Cached fresh=true Browser
+artifacts remain explicitly unsupported by this profile. Four new pure metadata/
+artifact/privacy cases and the retained synthetic byte-copy case each pass1/0/0
+with20 filtered, bound to1793 before/after files with zero differences. Real native
+role build-to-DLL, PE/load, contract producer/replica and v2 consumer gates remain
+open; the component source repair is not whole CEF qualification.
+
+Root then integrated B1 candidate04110973 after all six Platform preimages and
+three candidate file hashes matched. No live Platform edit occurred. The existing
+six function-local unsafe scopes remain unchanged; the only new scope is the
+already accepted create_file::create_native with its exact two operations. The
+safe owner retains File plus creation obligation and exposes borrowing only.
+The first feature-enabled strict lint rejected err().expect on a standard File
+result; Root retained it and changed only that fixture expression to expect_err.
+Corrected all-target windows-file-create strict lint passes with0.25s footer.
+
+The two actual locator grammar tests pass with8 filtered; they perform no native
+creation. Four native fixtures remain required ignored/unrun. Root added a positive
+no-run external borrow API example alongside the private/no-escape compile-fail
+examples, and conditional default/query-only absence examples. Fresh source-bound
+documentation matrix: default one module-absence negative; queries one retained
+pure wire-API positive plus two negatives (one new creation absence, one retained
+observation privacy); creation one positive no-run plus two compile-fail examples.
+No example invokes a native query. The matrix binds1795 before/after source files
+with zero differences. Exact unsafe insertion/linkage controls, actual NTFS/DACL/
+share/collision/retention/original-budget and provider/Ready qualification remain
+separate unpassed gates, not implied by Rustdoc success.
+
+### B2 and bounded qualification capture review direction, not acceptance
+
+Root reviewed plan20261108043000 and X review902abd95. B2's proposed minimum is
+now a fixed admitted Windows x64 Rust console helper with explicit DETACHED_PROCESS,
+initialized startup fields and no inherited stdio; bInheritHandles=false alone
+did not specify console attachment. The ten proposed native scopes remain
+UNAPPROVED. Before any source authorization they need stable aligned attribute
+storage AND a stable Job-handle array through deletion, exact initialization/
+cleanup states, bounded mutable argv/environment/cwd, immediate independent
+process/thread adoption and retained same-Job failure ownership. Real console-
+attached/redirected-parent and Job/nesting/owner-loss fixtures remain required.
+Broker/SCM/WMI trees and original InvocationOwner manufacture are not supplied.
+
+B2-P's fixed-helper direction is defensible for qualification only: the parent
+owns the original Job/deadlines and admits the exact helper artifact; safe Rust
+helper capture owns actual Cargo/reader handles and bounded output before writes.
+Success needs real child exit/joins plus independent parent helper signal/Job0.
+Killed/panicked helpers cannot attest joined Rust workers or a successful run.
+Reports remain DATA and cannot mint Runtime completion or NativeProof. No unlimited
+raw tee, post-hoc byte-cap claim or Cargo target/temp storage bound inferred from
+memory buffers/time limits is accepted. Actual outer supervision/storage control
+and the full capture implementation remain absent; no B2/B2-P grant follows.
+
+Root assigned Delivery a separate LOCAL COMPILER OBSERVATION source candidate for
+actual B1 baseline/remove-allow/safe-sibling compiler diagnostics on an explicit
+owned disposable source copy. It must reuse real diagnostic/capture machinery,
+retain source mutation/restoration and raw terminal evidence, and keep hosted/
+tree/runtime/full-gate claims false. Such bounded local compiler-unit observations
+are not a substitute for final hosted unsafe/linkage/lifetime gates. No execution
+or shared source/Cargo grant was delegated to Delivery.
+
+### Pending adapter qualification interfaces
+
+Root supplied the private Python WSGI controller's owning artifact expectation:
+same-source workspace metadata for humanymous-adapters at its accepted manifest,
+test target python_wsgi_server/src tests/python/wsgi_server.rs, test/bin kind,
+profile.test=true and one actual executable. Its explicit no-default-features
+qualification-python-host closure must be verified in real merged metadata, not
+guessed from opaque URI text or trusted as a NativeProof. Module/Authority copies
+need their own joins; this test-target expectation does not qualify them.
+
+The header source-binding migration may prepare a v2 profile candidate changing
+ONLY schema, profile identity and the relocated owningVerifier path. All compiler,
+image,4600-byte header/hash, AST, budget, success and security pins stay unchanged;
+old v1 bytes/history remain preserved. Root/Delivery must admit the actual v2
+consumer/path/provenance transition, and a pinned hosted cbindgen run must prove
+unchanged R3 header bytes. Candidate metadata direction does not refresh active
+Root profile bytes, authorize dispatch or establish header/dynamic ABI qualification.
 
 ### Public package family redesign: accepted baseline v0
 

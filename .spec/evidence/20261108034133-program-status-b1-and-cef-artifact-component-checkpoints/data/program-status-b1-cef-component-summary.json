@@ -1,0 +1,59 @@
+{
+  "schema": "humanymous.program-component-status.v1",
+  "state": "ISOLATED_SOURCE_COMPONENT_OBSERVATIONS_NOT_LIVE_CUTOVER",
+  "cef": {
+    "candidate_commit": "3acfa668707f024055beb6477401ef8c8ffdea98",
+    "selected_unique_regressions": 5,
+    "each_case_passed": 1,
+    "each_case_failed": 0,
+    "each_case_ignored": 0,
+    "each_case_filtered": 20,
+    "effects": "Four pure metadata/artifact/privacy fixtures and one synthetic byte-file copy with explicit cleanup",
+    "source_files_before": 1793,
+    "source_files_after": 1793,
+    "source_difference_records": 0,
+    "source_view_sha256": "a5b685e32d1984683e8907d2ec90b9974a49c958bfbe783ceb1179206620c958",
+    "actual_native_role_builds": false,
+    "contract_producer_replica_migration_complete": false,
+    "full_cef_qualification": false
+  },
+  "b1": {
+    "candidate_commit": "041109738fc353c872637b402adb6fa4de101981",
+    "decision_commit": "6aea9fcc73ddd2c6e0ff23dce77141d000a4654b",
+    "state": "Low-level non-authority source implemented only in isolated Platform",
+    "pure_path_cases_passed": 2,
+    "pure_path_cases_filtered": 8,
+    "new_scope": "windows_object::create_file::create_native",
+    "existing_six_scopes_changed": false,
+    "new_function_unsafe_operations": [
+      "CreateFileW with exact approved new-file profile",
+      "Once-owned handle adoption"
+    ],
+    "actual_native_fixture_cases_required": 4,
+    "actual_native_fixture_cases_executed": 0,
+    "feature_doc_matrix": {
+      "default_absence_cases": 1,
+      "queries_only_negative_cases": 2,
+      "create_positive_no_run_control": 1,
+      "create_private_or_no_escape_negative_cases": 2,
+      "source_files_before": 1795,
+      "source_files_after": 1795,
+      "source_difference_records": 0,
+      "source_view_sha256": "9e4eb2470600f4fcfd5c6d74c6393bc0dcd26801f22e827d3307e8a092b59d22",
+      "queries_only_retained_positive_wire_api_case": 1
+    },
+    "actual_unsafe_sibling_linkage_negatives_executed": false,
+    "native_namespace_provider_or_ready_qualified": false
+  },
+  "b2": {
+    "status": "PROPOSED_NOT_APPROVED_NOT_IMPLEMENTED",
+    "minimum_profile": "Fixed admitted Rust console helper, Job at creation, explicit detached console/no inherited stdio",
+    "capture_helper": "Qualification-only direction under review; no native completion facts from report booleans",
+    "storage_enforcement_qualified": false,
+    "outer_owner_manufacturer_implemented": false
+  },
+  "compiler_external_read_closure_proven": false,
+  "runtime_qualified": false,
+  "published": false,
+  "raw_custody": "Original stdout/stderr/argv/terminal times/source views retained in Root private core-consolidation checkpoints; public summary does not replace them"
+}
