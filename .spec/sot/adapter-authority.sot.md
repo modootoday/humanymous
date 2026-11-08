@@ -3,7 +3,7 @@ id: sot:root/adapter-authority
 title: Adapter authority
 status: active
 created: 2026-11-06T22:50:11Z
-updated: 2026-11-08T15:57:00Z
+updated: 2026-11-08T16:33:00Z
 verify: [manual]
 rel:
   governs: [crates/sdk/humanymous-runtime/src/authority/**, crates/sdk/humanymous-runtime/tests/authority/**]
@@ -217,7 +217,8 @@ while honestly preserving the missing original-client observations.
 Cargo unit/integration/native child-process tests cover schema/auth/scope,
 replay/restart/body/capture/route/deadline/admission/audit failure. MSRV 1.99.1 and
 advisory scan cover new dependencies. Docker product lab and remote native tuples
-remain distinct evidence. See implementation plan and crates/authority/INTEGRATION.md.
+remain distinct evidence. See implementation plan and
+crates/sdk/humanymous-runtime/src/authority/INTEGRATION.md.
 
 ### Native Windows storage privacy
 
@@ -1180,7 +1181,8 @@ saved manifests. Same original600s work/660s cleanup clock, terminal480.969s;
 actual lease removed and zero owned target processes. No actual native IPC/store/
 SCM/account/host/browser process was run by these unit gates.
 
-Public test vectors under crates/authority/tests/fixtures/authorization-v2-*.json
+Public test vectors under
+crates/sdk/humanymous-runtime/tests/fixtures/authority/authorization-v2-*.json
 contain synthetic PUBLIC packets/expected DATA, no seeds or credentials. Their
 fixed byte/signature assertions are regression vectors from a separate Rust test
 encoder, NOT an independent cryptographic interoperability oracle, native issuer

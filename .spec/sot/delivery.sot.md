@@ -3,15 +3,28 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-07T05:20:00Z
+updated: 2026-11-08T16:33:00Z
 verify:
   - cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy
   - cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml
   - cargo test --locked --manifest-path scripts/ci/docs-review/Cargo.toml
 rel:
   governs: [docs/**, .github/workflows/**, scripts/ci/**, scripts/migration/**, build/rust/**]
-  depends_on: [sot:root/rust-migration]
+  depends_on: [sot:root/rust-migration, sot:root/container-test-environments]
 ---
+
+## Product e2e completion authority (measured 2026-11-08)
+
+Delivery CI transport does not itself certify Rust full-product or M3 pass.
+Product completion remains Docker-only under `sot:root/container-test-environments`,
+with the usage-condition matrix at `deployments/lab/ENVIRONMENTS.md`, rule
+`60-e2e-docker-only`, and skill `red-blue-validate`. Prefer
+`humanymous-lab-runner` + lab Compose over host/loopback or new foreign
+coordinators. Component workflow greens (collector Firefox lab, adapter pilots,
+Go bounded eight-case) keep `full_product_qualified=false` until an allocated
+isolated composition measures required adversarial/a11y denominators with exact
+source/image/topology binding. Fail closed when required product signals are
+missing; do not invent release readiness from partial gates.
 
 ## Collector component validation delta c3389b6
 
@@ -204,7 +217,8 @@ Rust/cf lifecycle not_run. Provider compute examples exclude plan, Worker/DO,
 logs and egress and do not qualify a whole-lab replacement or a spending cap.
 
 Prefer an existing GitHub-hosted Ubuntu VM for main product e2e investigation.
-Reuse delivery `pilot docker`/`pilot browser` and owning Rust lab runner/Compose;
+Reuse delivery `pilot docker`/`pilot browser`, `humanymous-lab-runner`, and the
+lab matrix in `deployments/lab/ENVIRONMENTS.md`;
 do not introduce a shell/Python/JS coordinator or run product e2e on host loopback.
 Cloudflare Containers remains a supplementary actual-Cloudflare API candidate;
 its UID/namespace/egress/sandbox/witness and Rust control-plane compatibility

@@ -3,7 +3,7 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-08T15:57:00Z
+updated: 2026-11-08T16:33:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
   governs: [crates/sdk/humanymous-runtime/**]
@@ -594,9 +594,11 @@ only for this injected transport; product_qualified remains false and required
 collector/H2 remain fail-closed. Plaintext profile still refuses raw-TLS routes.
 This source contract needs hosted TLS/body/abort/cancel/drain/origin evidence;
 configuration readiness must not be reported as actual runtime qualification.
-R17 native component inventory: crates/runtime/qualification-contract.json is the
-single owner-maintained data contract for required library/integration targets,
-features, exact common/Unix-only case names and per-OS counts. CI must compare
+R17 native component inventory: the live owner-maintained data contract is
+crates/sdk/humanymous-runtime/qualification/gateway/qualification-contract.json
+(historical path crates/runtime/qualification-contract.json is obsolete after
+SDK consolidation). It lists required library/integration targets, features,
+exact common/Unix-only case names and per-OS counts. CI must compare
 exact-source --list inventory against it, attempt both targets even if one fails,
 and retain zero ignored/filtered requirements. Source-authored inventory is not
 execution evidence and mismatches fail rather than adapting expected coverage.

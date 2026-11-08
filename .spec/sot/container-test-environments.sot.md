@@ -3,12 +3,44 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-07T22:37:38Z
+updated: 2026-11-08T16:33:00Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
   depends_on: [sot:root/cross-os-runners, sot:root/adapter-ecosystem, sot:root/automation-evidence]
 ---
+
+## Product verification canon (measured 2026-11-08)
+
+Product completion authority is **Docker-only**. Host/loopback runners, scoped
+`cargo test`, Clippy, adapter Compose authorship, and component/scenario pilots
+are not full product or M3 pass. Missing required signals stay fail-closed;
+unavailable / not_run / ignored / component-only rows never aggregate into
+`full_product_qualified=true` or release readiness.
+
+| Pointer | Role |
+| --- | --- |
+| `deployments/lab/ENVIRONMENTS.md` | Usage-condition Compose matrix: adapter homes vs lab scenarios; which gate each feeds |
+| `deployments/lab/INTEGRATION.md` | Lab runner affinity, evidence bundle, fail-closed preflight |
+| `.agents/rules/60-e2e-docker-only.md` | Completion-authority rule (host e2e forbidden as done) |
+| skill `red-blue-validate` | Docker product measure checklist; legacy oracle recipes ≠ Rust full-product runner proof |
+| `.agents/rules/96-docker-engine-affinity.md` | Desktop `desktop-linux` binding before local mutation |
+
+Live lab tree (measured): `deployments/lab/{compose.yaml,compose.*.yaml,topology/,authority/,clients/,adapters/,scenarios/,providers/,ENVIRONMENTS.md,INTEGRATION.md}`.
+The earlier “proposed future layout” wording is superseded by this measured tree;
+profiles still select services and are not security boundaries.
+
+Live product coordinator is workspace package `humanymous-lab-runner`
+(`test/lab/runner/**`). Historical `test/lab/run.py` / `cleanup.py` remain on
+disk as compatibility oracles; they are not permission to author new foreign
+product harnesses or to claim product green. Evidence for this canonization:
+`.spec.local/root/evidence/20261108163300-cursor-spec-canonization/`.
+
+Honesty: do not invent product/M3 green from ENVIRONMENTS rows, Compose `config`
+checks, or bounded Go/browser/collector scenario receipts. Program roadmap M3
+composed product e2e remains **Not qualified** until an allocated isolated Docker
+composition with exact source/image/topology and required adversarial/a11y
+denominators is measured.
 
 ## Rust collector component lab delta c3389b6
 
@@ -717,11 +749,14 @@ network must not be copied into the new local-only Rust topology.
 
 ## Canonical Compose structure and boundaries
 
-Proposed future layout: deployments/lab/compose.yaml, topology/, authority/,
-clients/, adapters/, scenarios/, providers/. Share base service definitions;
+Live layout (measured 2026-11-08): `deployments/lab/compose.yaml` plus
+`topology/`, `authority/`, `clients/`, `adapters/`, `scenarios/`, `providers/`,
+and the usage-condition index `ENVIRONMENTS.md`. Share base service definitions;
 overlays express only contextual differences, avoiding duplicated topology.
 Profiles select services; they are not security boundaries. Hash the resolved
 configuration and inspect actual container/network/mount/port state. [D1-D4]
+Compose file presence or `docker compose config` success is topology evidence
+only — never Rust full-product or M3 pass.
 
 - Gate accepts only the ingress lab network and private origin/state networks.
 - Origin has no published port and is reachable only through Gate's backend
@@ -892,13 +927,15 @@ TLS/H2/browser capture. nginx remains unexecuted against Rust because its pilot
 protocol differs. Per-process restart/WAL authentication in tmpfs is distinct
 from durable volume/container recreation, external latest-head or power loss.
 
-`test/lab/run.py` coordinates unique owned projects and runs network clients
-inside Docker. Required product checks missing at the end force
-`releaseReady=false`; `--require-full` exits 2 after scoped cases pass. Execution
-failures exit 1. Cleanup runs in finally and checks project resources are gone.
-Resources carry an explicit 1800-second expiry and owner labels; an external
-operator/runner can invoke `test/lab/cleanup.py` to reap only expired projects
-matching the generated project grammar. No active external scheduler is implied.
+Live coordinator is `humanymous-lab-runner` (`cargo run --locked -p
+humanymous-lab-runner -- …` per `deployments/lab/INTEGRATION.md`). It owns
+unique projects and runs network clients inside Docker. Required product checks
+missing at the end force `release_ready=false` / `full_product_qualified=false`;
+`--require-full` exits 2 after scoped cases pass. Execution failures exit 1.
+Historical `test/lab/run.py` and `test/lab/cleanup.py` are compatibility oracles
+only. Cleanup must still verify project resources are gone. Resources carry an
+explicit 1800-second expiry and owner labels; expired-project reap remains
+operator-invoked and affinity-checked. No active external scheduler is implied.
 
 Images use context allowlists and pinned base digests. Build/dependency fetches
 are control-plane activity before network-isolated tests. Runtime keys are

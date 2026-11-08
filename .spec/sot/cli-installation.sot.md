@@ -3,9 +3,9 @@ id: sot:root/cli-installation
 title: Explicit CLI provisioning boundary
 status: active
 created: 2026-11-07T00:00:00Z
-updated: 2026-11-07T00:00:00Z
+updated: 2026-11-08T16:33:00Z
 verify:
-  - cargo test -p humanymous-cli
+  - cargo test -p humanymous-cli --locked
 rel:
   governs: [crates/cli/**]
 ---
@@ -404,17 +404,20 @@ Official implementation references: [Rust filesystem race guidance](https://doc.
 
 humanymous-cli owns installation orchestration and explicit transactional files.
 Its installation/permissions context delegates native facts and role-specific
-DACL semantics to humanymous-native-security. Installer SYSTEM/Administrators
-exceptions do not apply to audit/custody profiles. Parent owner full self/child
-rights and protected DACL remain mandatory. Null/empty/unknown/deny ACE forms
-are refused. GetDriveType proves only its native fixed classification, not
-hardware identity. The actual process token must not be elevated or have enabled
-administrator authority; an impersonated thread is unsupported. Unix geteuid
-replaces the id subprocess. There is no authored shell source in crate runtime
-or tests. A supplied artifact still is not executed or registered as a service.
-The Docker process lab also invokes the actual CLI for doctor, dry-run snapshots,
+DACL semantics to `humanymous-runtime` feature `native-security`
+(`humanymous_runtime::native_security`); there is no workspace package
+`humanymous-native-security`. Installer SYSTEM/Administrators exceptions do not
+apply to audit/custody profiles. Parent owner full self/child rights and
+protected DACL remain mandatory. Null/empty/unknown/deny ACE forms are refused.
+GetDriveType proves only its native fixed classification, not hardware identity.
+The actual process token must not be elevated or have enabled administrator
+authority; an impersonated thread is unsupported. Unix geteuid replaces the id
+subprocess. There is no authored shell source in crate runtime or tests. A
+supplied artifact still is not executed or registered as a service. The Docker
+process lab also invokes the actual CLI for doctor, dry-run snapshots,
 install/repeat/rollback, digest mismatch and mutation refusal; this remains a
-bounded Linux non-root provisioning pilot, not a service-install qualification.
+bounded Linux non-root provisioning pilot, not a service-install qualification
+or Docker product e2e pass.
 
 
 Doctor also rejects a Unix parent with owner read/execute but no write permission
