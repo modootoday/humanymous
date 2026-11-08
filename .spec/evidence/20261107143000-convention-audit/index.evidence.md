@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: b0ce52862e6a8f4ab018eaaa1fa3d3a7f64ffcdd874312c69e6e400f03febdf7, bytes: 150634, store: repo}
+  - {path: baseline.json, sha256: eb390f22ccfa03c7115ee3b183510421c488b1d324ae5c1c3a29bdce30c02a00, bytes: 151196, store: repo}
 ---
 
 # Convention audit baseline
@@ -2967,3 +2967,21 @@ metadata failures remain before corrected final metadata. Private
 eight-package-stage-review-014.json binds these different sources/scopes; unsafe/
 privacy/linkage, actualNative4, Collector browser, CEF/SDK/outer lifecycle and full
 migration gates remain OPEN. No compiler/native executor was used by audit.
+Post-layout export/compiler follow-up: two actual Adapters cdylib artifacts each
+join one exact Cargo artifact record, fresh:false and final build-finished success.
+Retained core291328B and dotnet2374656B hashes match receipts. CLI strict lint
+through both builds has1801before/after path/hash rows with0differences; this is
+not compiler-read closure, ABI loading or host qualification. Private
+export-compiler-followup-review-015.json preserves evidence and initial failures.
+
+Review-only LocalObservation revision3 source matches9a25d3bc. Actual20pure units
+passed,15filtered, after two retained Root-lint compile errors were corrected in
+that review copy. Four unique-path sibling compiler controls then produced:
+positive0/no errors; failures and records mutation101/E0616; shared getter mutation
+101/E0596. Independently read diagnostics name each fixture and offending line,
+selected CLI target, and corresponding final build-finished success/failure.
+Initial timestamp-preserving fixture copy reused positive fresh:true diagnostics
+and was excluded, never counted as a negative pass. Private
+privacy-regression-review-016.json binds this bounded actual regression. Main
+assembly adoption, strict lint (owner reports90warnings), actual three B1 compiler
+scenarios, native execution, full input closure and CA-LIFETIME remain OPEN.

@@ -2685,5 +2685,17 @@
     "sha256": "31c0c3d423ce81b265236d9b046d8d1e4a8526455cf31d464af6cfef78b9ee11",
     "bytes": 9558,
     "goal_complete": false
+  },
+  "export_compiler_followup_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/export-compiler-followup-review-015.json",
+    "sha256": "d2be95fa0234246db5a8a41b976a95d6daaba7c37af82b34f2bf12f402edd1f7",
+    "bytes": 4908,
+    "goal_complete": false
+  },
+  "privacy_regression_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/privacy-regression-review-016.json",
+    "sha256": "632bb5f9bc414e217d8a1b5a59ff17c1ce6076265d590631b009654861311321",
+    "bytes": 2335,
+    "goal_complete": false
   }
 }
