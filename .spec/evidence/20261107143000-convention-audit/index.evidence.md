@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 89899f32ad3f393ccee97d6096c41c181f404b7314666052b17221a0e73fcf9a, bytes: 127064, store: repo}
+  - {path: baseline.json, sha256: d26504ca3334d6faf2d4cd1874ab8535751c80bab3e2d209c26ca28bff7c969d, bytes: 127985, store: repo}
 ---
 
 # Convention audit baseline
@@ -2203,3 +2203,27 @@ hashes/sizes. Its declared states are 117 byte-preserved, 156 transformed requir
 review and one split requiring review. Later mutable destinations differ at 32
 rows, so this historical view is not a current seal. Intentional network/cases.rs
 split is not asserted as source loss. Semantic/effect preservation remains OPEN.
+
+## Maintenance composition and actual case-list observation
+
+The retained original/candidate default CLI list logs contain the same 15 exact
+case names, with zero set differences. Runtime legacy v2 lists 30 portable cases.
+These are listing observations, not executed tests. The retained zero-selector
+negative runs 0 with 46 filtered and contributes no coverage. The moved source-pin
+log shows 1 pass/45 filtered; independent source/terminal receipt joining remains
+pending. Exact observed log hashes are in tools-case-list-review-001.json.
+
+At immutable 38da9686, candidate03's 23 declared file hashes/sizes reproduce.
+All eight changed pure/reader files containing cfg(test) retain byte-identical
+module-to-EOF text against their preserved bases. This is not an actual complete
+76-case census. Four I/O readers now belong to the command root and import the
+canonical pure parsers. The package integration alternative imports no maintenance
+source module and calls the exact Cargo-selected executable; its two original
+boundary IDs remain. Adoption, final role joins and hosted execution remain OPEN.
+
+CA-LIFETIME-01 also applies to the proposed stage() subprocess boundary:
+Command::output buffers both streams and waits before the stdout 2 MiB assertion.
+No original deadline, stderr cap, child-tree cleanup or reader-join proof exists
+in that helper. Root received the concrete limitation. Do not treat the later
+length assertion as bounded capture, or infer an observed hang/new production
+fault. Private maintenance-candidate03-review-001.json preserves source scope.

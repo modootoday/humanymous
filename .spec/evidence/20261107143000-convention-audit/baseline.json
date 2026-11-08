@@ -2303,5 +2303,23 @@
         "bytes": 753
       }
     ]
+  },
+  "maintenance_composition_and_case_followup": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-case-list-review-001.json",
+        "sha256": "8bff1095650f4809882dcbd12621cd9b3918ec8e9e6313c7142d29641a3f9129",
+        "bytes": 1490
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/maintenance-candidate03-review-001.json",
+        "sha256": "f2b4049f337c8a8759bbc3d6b14fc6fd59b4e4c60a7dde4792889e34ae6be366",
+        "bytes": 1347
+      }
+    ],
+    "goal_complete": false,
+    "case_list": "15 exact default CLI names before/after; runtime30 listed, not executed",
+    "candidate03": "23 manifest files exact; 8 changed test-module suffixes byte-identical; actual full76 census pending",
+    "lifetime": "CA-LIFETIME-01 extends to candidate stage Command::output; after-output size check is not bounded capture"
   }
 }
