@@ -181,6 +181,8 @@ fn allowed(path: &str) -> bool {
         )
         || ((path.starts_with("crates/") || path.starts_with("test/lab/"))
             && matches!(extension, "rs" | "toml" | "lock" | "json"))
+        || path
+            == "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm"
         || (path.starts_with("deployments/lab/")
             && matches!(extension, "yaml" | "Dockerfile" | "dockerignore"))
         || (path.starts_with("docs/tooling/") && matches!(extension, "rs" | "toml"))
@@ -251,8 +253,13 @@ mod tests {
             "test/lab/runner/mount-probe-contract.json",
             "deployments/lab/compose.rust.mount.yaml",
             "deployments/lab/images/product.Dockerfile",
+            "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm",
         ] {
             assert!(allowed(path));
         }
+        assert!(!allowed(
+            "crates/sdk/humanymous-core/src/watermark/codec/fixtures/other.wasm"
+        ));
+        assert!(!allowed("web/detector.wasm"));
     }
 }
