@@ -143,8 +143,31 @@ Its finite diagnostic was `browser_bootstrap_origin_browser_proxy_null`, observi
 the browser-proxy Origin null class. It does not establish the Origin bytes
 received by the Gate proxy or Runtime, identify an older source's failure cause,
 or qualify a successful witness exchange. A newer source `f8aec286` run,
-`42429778301`, was queued; no terminal outcome for it is consumed here.
+`42429778301`, was queued at that checkpoint; its outcome is not part of this result.
 Local source checks and WASM compilation are separate from that browser run.
+
+## Selected actual-browser milestone
+
+Source `3137c905`, dated 2026-11-08, completed
+[run `42432665570`](https://github.com/modootoday/humanymous/actions/runs/42432665570)
+with all 49 isolated Lab assertions passing, including sensitive-document and
+browser/Gate Referer-v2 checks. The actor inventory contained 67 tests, with one
+selected and 66 filtered; the selected test passed and its process exited 0.
+These counts do not mean 67 browser tests executed. The source-prefix
+authentication flag remained false and the original private ledger was not
+recovered; the structured result is not an independent reconstruction of it.
+
+The GNU preflight passed 46 default Lab cases with one ignored, then passed the
+separately selected checkout gate with 46 filtered. Four Unix proxy cases passed
+with six filtered. Those are separate component scopes from the 49 assertions.
+
+The product owner still exited 2 with a blocked report, zero report errors and
+nine required entries unavailable. Full-product and release flags remained false,
+and the workflow failed. At this source the full assessor unconditionally refuses
+qualification; another run of the same 49 assertions cannot satisfy the missing
+requirements. Its nine labels are not canonical machine IDs or proof of completed
+owner qualification. Full collector parity, keyboard/assistive recovery and the
+remaining product gates remain open.
 
 ```console
 cargo test --locked -p humanymous-collector

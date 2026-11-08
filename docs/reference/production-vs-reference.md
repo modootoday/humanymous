@@ -18,12 +18,21 @@ release is claimed.
 | HTTP runtime | Experimental loopback HTTP/1.1 with bounded complete requests, sessions, request integrity and durable audit before origin dispatch |
 | Artifact and service provisioning | Original `doctor`, `install`, `rollback` manage an explicit artifact; separate signed `service-*` commands implement owned lab-service lifecycle with full runtime qualification still false |
 | Native integration CLI | `humanymous-native init` emits an unqualified framework plan; explicit manifest writing currently requires Windows |
-| Browser collector | Rust/WASM browser reads, passive behavior and separate environment/advanced APIs exist; authenticated runtime integration and recovery remain incomplete |
+| Browser collector | A selected actual-browser transport test passed at source `3137c905`; full session/collector parity, human recovery and product qualification remain incomplete |
 | Laboratory browser | Windows Meari/CEF prototype has actual native rendering and window controls; full browser readiness, external navigation and SDK qualification remain separate |
 | Node/Bun and nginx adapters | Rust Node-API and Linux nginx implementations exist with bounded historical pilots; changed-source platform, packaging and deployment qualification remain separate |
 | Cross-platform packages | Source-bound native component runs exist; they do not qualify every service, browser or framework on those operating systems |
 | Documentation | Fixed-source pinned-theme builds, rendered-link checks, archive round trips and representative browser observations exist; complete source review and accessibility qualification remain separate |
 | Standards Draft v0 | Independent developing proposal; no external submission or adoption |
+
+At source `3137c905`, dated 2026-11-08, the isolated Docker Lab recorded all
+49 assertions passing and a successful selected actual-browser test.
+Sensitive-document and browser/Gate Referer-v2 checks passed. This is a bounded milestone:
+the report remained blocked with nine required entries unavailable, owner exit 2,
+full-product qualification false and release readiness false. The workflow
+conclusion was failure, not a green CI result. At that source, the full assessor
+always refuses qualification; repeating the same 49 assertions cannot clear it.
+The unavailable labels are not canonical machine requirement identifiers.
 
 Core consolidation at `c67d07c0`, Platform consolidation at `89715c04` and Runtime
 consolidation at `64f74c7a` reduce the workspace from 41 packages to 29. Four
@@ -74,8 +83,9 @@ Formatting, check and strict Clippy passed, but complete tool prehash and hostil
 custody are not established. The separate WASM check and strict Clippy success
 on unchanged source inputs also does not execute a browser or qualify deployment.
 
-Tools relocation and the accepted adapters design of one Rust library with seven
-mutually exclusive export roles remain unimplemented plans at this checkpoint.
+Tools relocation has isolated prototype work but no live package/source cutover;
+the workspace remains at the 29-member checkpoint. The accepted adapters design
+of one Rust library with seven mutually exclusive export roles is not implemented.
 Draft module/root inventories are not executed-test denominators or available
 registry packages.
 

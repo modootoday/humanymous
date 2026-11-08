@@ -1,0 +1,39 @@
+{
+  "schema": "humanymous.pages-3137-browser-milestone/1",
+  "source_sha": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+  "source_date": "2026-11-08T10:04:13+09:00",
+  "sealed_receipt_commit": "c6cd2e88cacee724044b14df948d299f93cdeb9d",
+  "run": 42432665570,
+  "receipts": [
+    ".spec/evidence/20261106224155-container-test-environment-research/hosted-browser-3137c905-49-assertions-pass.json",
+    ".spec/evidence/20261106224155-container-test-environment-research/required-unavailable-3137-owner-routing.json"
+  ],
+  "changed_files": [
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "bbea126096ce168d3ce99f72748f71cf6c4be38a2c960464d1c50546324865b7",
+      "bytes": 11888
+    },
+    {
+      "path": "docs/reference/browser-collector.md",
+      "sha256": "7fa3a08b863ad0747ece86bfa5bfe462d7ce1308f925fb0bd894bebc75642667",
+      "bytes": 12186
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "a61763bd85e236c46673361f8106590a0dba4451134c711b03f729e23175a0fe",
+      "bytes": 16452
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "c85aa0a3aed64f190a5e72469b0f36c1b906766fbed9d3f8a58f5688d60c7a05",
+      "bytes": 18433
+    }
+  ],
+  "actual": "49/49assertions0failed; actualbrowser67inventory1selected66filtered/process0/testtrue; sensitive-document andB/GReferer-v2pass",
+  "preflight": "GNUdefault46pass1ignored; separatesourcegate1pass46filtered; Unixproxy4pass6filtered",
+  "limits": "Ownerexit2/statusblocked/errors0/nineunavailable/fullfalse/releasefalse/workflowfailure; ninehardcodedlabelsnotcanonicalmachineIDs, assessmentunconditionallyrefuses; same49rerunnotfullqualification; sourceprefixauthfalse/privateledgernotrecovered",
+  "tools": "Isolatedprototype21members/defaultCLI15pass/strictLabmaintenance/replay-report-verifierprogress NOTlivepackage/sourcecutover; liveworkspace29/final8targetunchanged",
+  "validation": "Existingimmutablead04 checker88pages/errors0; no newcompiler/build/render/preview/GHA/publish; newproseUNRENDERED",
+  "no_internal_sot_ids_added_to_reader_docs": true
+}

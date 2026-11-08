@@ -66,6 +66,17 @@ and hostile custody remain unqualified. WASM/static checks do not execute a
 browser. Planned Tools composition and the accepted one-library/seven-export-role
 adapters design are not implemented packages or new conformance evidence.
 
+The later 2026-11-08 source `3137c905` provides a bounded actual-browser milestone:
+49 isolated Lab assertions passed, including sensitive-document and browser/Gate
+Referer-v2 checks. One actual browser test was selected from 67 inventoried tests;
+66 were filtered and the selected process exited 0. This is not a full browser
+corpus or Draft v0 conformance result. The report remained blocked with nine
+required entries unavailable, owner exit 2 and full-product/release flags false;
+the workflow failed. At that source the full assessor always refuses completion,
+so repeating the same assertions cannot qualify it. The labels are not canonical
+machine requirement IDs. No private ledger recovery, complete collector parity,
+assistive recovery or production deployment is established.
+
 The first pure public-role data parser is implemented at source `2e9934fe`, with
 19 scoped Windows parser tests passing and 79 other library tests filtered out,
 as retained at `e8f71220`. A separate source `be9eec6d` run, retained at `8c8fc504`,

@@ -9,6 +9,14 @@
 {
   "kind": "implementation-evidence",
   "paths": ["../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
+  "summary": "Record2026-11-08 source3137c905 bounded49/49 Lab assertions and one selected actualbrowser test from67inventory/66filtered, sensitive-document andB/GReferer-v2 passes, with separate GNU46default/1checkout/4Unix scopes. Preserve blocked exit2/nineunavailable/fullfalse/releasefalse/workflowfailure and unconditional full-assessor refusal; labels are not canonical machineIDs, rerunning49 cannot fullqualify. Isolated Tools prototype is not live package cutover.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
+  "paths": ["../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
   "summary": "Record bounded42ecee7d Core/SGD tests, independently reviewed CLI check-only A/B measurements, and f8aec286 Windows/WASM checks with corrected-input and custody limits. Record actual5d68cd39 browser-proxy Origin null-class failure separately from queued f8 run; Tools and one-library/seven-exclusive-export adapters remain designs. No live detection, full-build, browser success or deployment claim.",
   "generic_wire_changed": false,
   "full_product_qualified": false,

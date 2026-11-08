@@ -2611,3 +2611,21 @@ denominators. Evidence07052815/current-component-status-reconciliation.json bind
 four exact changedpathhashes, accepted sources and provenance limits, including
 57c3 retrospective invocation flags rather than authenticated perphase starts.
 Frozenchecker88pages/errors0/diffcheckpass; no new workload/render/deployment.
+
+### Immutable3137 actual-browser milestone derived for public readers
+
+Consumed sealedc6cd2e88 receipt and required-unavailable owner-routing source:
+3137c905 dated2026-11-08/run42432665570 passed49Lab assertions and one selected
+actualbrowser test from67inventory/66filtered/process0/testtrue, sensitive-document
+andB/GReferer-v2. GNU46default+1ignored, separatesourcegate1/46filtered andUnix4/
+6filtered remain distinct component scopes. No denominator merging.
+
+Reader status/browser/map explicitly retain ownerexit2/statusblocked/errors0/
+nineunavailable/fullfalse/releasefalse/workflowfailure. Fullassessor unconditionally
+refuses atthat source; same49rerun cannotclearledger. Labels are not canonical
+machineIDs; sourceprefixauthfalse/privateledgernotrecovered, fullcollector/human
+AT/recovery/product remainopen. Tools isolatedprototype is not livepackagecutover;
+liveworkspace29/finaltarget8 unchanged. No internalSoTIDs added to readerdocs.
+Evidence07052815/3137-browser-milestone-current-docs.json binds four exact changed
+pathhashes/source/date. Frozenchecker88pages/errors0; no build/render/preview/GHA/
+publish or newworkload. All newprose staysUNRENDERED until a coordinatedPagesgate.
