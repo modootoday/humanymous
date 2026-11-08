@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 0f26db24a0fd37fdcc2af8ea1e3a92f4c459f7eefe53269cc93a5d3bb22cacd7, bytes: 125670, store: repo}
+  - {path: baseline.json, sha256: 89899f32ad3f393ccee97d6096c41c181f404b7314666052b17221a0e73fcf9a, bytes: 127064, store: repo}
 ---
 
 # Convention audit baseline
@@ -2167,3 +2167,39 @@ modified or normalized by audit. Canonical-Git preparation is accepted only at
 that scope: raw working/Git/replica equality cannot pass those six current files.
 Consumer rewiring, explicit equality gates and extracted package checks remain
 OPEN; no automatic pin refresh or silent normalization waiver is authorized.
+
+## Delivery pre-open refusal and initial isolated Tools audit
+
+CA-DATA-OPEN-01 (P2) identified a final nonregular input reaching File::open
+before the regular-file check in 5f1010d4. Immutable c478543b adds a
+symlink_metadata regular-file and 1 MiB bound before open and retains handle
+checks. The initial route is repaired at SOURCE scope. Actual FIFO refusal is
+NOT_RUN; hostile-race protection and blocking wait/join lifetime remain OPEN.
+
+CA-TOOLS-UNSAFE-ROOT-01 (P1) identified missing explicit forbid roots in the
+isolated candidate under a package-level deny. The retained repaired observation
+contains 26 safe roots with forbid and the sole Native Runner root with deny.
+This is mutable candidate source evidence; forbidden-unsafe negative compiles and
+complete per-role qualification remain OPEN.
+
+The historical maintenance strict receipt reports exit 0 for one executable.
+Independent retained before/after comparison confirms 1765 files in each view
+and zero difference records. It contains no tests or runtime proof and explicitly
+leaves external input closure unproved. Later edits and root-lint observations
+must not inherit this older receipt. Root has prepared a newer transformation
+view; independent review of that view and subsequent role receipts is pending.
+Private delivery-tools-source-review-001.json retains these scope distinctions.
+Whole migration and full product qualification remain OPEN.
+
+Follow-up: immutable a7286fab observer candidate review read all three safe
+modules and D1-D6 plan; all nine upstream source hashes/sizes reproduce. No new
+source-level authority-forging path was found. Retained native observations stay
+private DATA with no NativeProof/Ready conversion. This does not establish type
+correctness, cross-SID feasibility, installation trust, channel/W/Ready or hard
+native-call lifetime. These gates remain OPEN; no new unsafe scope is approved.
+
+Independent transformation-view-v2 review reproduces all 274 original ZIP row
+hashes/sizes. Its declared states are 117 byte-preserved, 156 transformed requiring
+review and one split requiring review. Later mutable destinations differ at 32
+rows, so this historical view is not a current seal. Intentional network/cases.rs
+split is not asserted as source loss. Semantic/effect preservation remains OPEN.

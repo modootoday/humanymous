@@ -2277,5 +2277,31 @@
     "DATA": "5f43eightreplicas exactcanonicalGit;6Core rawworkingCRLFdifferences retained",
     "actual": "Notindependentlyrawqualified;privacywholeOPEN;zeroexactselectionnotcoverage",
     "goal_complete": false
+  },
+  "delivery_tools_source_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/delivery-tools-source-review-001.json",
+    "sha256": "8c49777ea6ee64ae09f1b3bb3b3fd95720b1d4916690b7f793da32075aa9e947",
+    "bytes": 1886,
+    "data_open": "Source repair only; actual FIFO refusal NOT_RUN",
+    "tools_roots": "26 safe forbid and one Native Runner deny in retained mutable observation",
+    "maintenance": "1765 historical before/after files; no current-tree or runtime qualification",
+    "goal_complete": false
+  },
+  "native_and_transformation_followup": {
+    "tools": "274 v2 original archive rows exact; 32 later mutable differences; no current seal or semantic equivalence claim",
+    "native": "a728 three modules source-reviewed; 9 upstream hashes exact; no new confirmed violation; D1-D6 actual qualification open",
+    "goal_complete": false,
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/native-observer-a728-source-review-001.json",
+        "sha256": "7d10498fc458f0ebe9b6ea90ef6e52492ea2c29394ce5ea6ac3bc23580e1dd23",
+        "bytes": 1324
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-transformation-v2-review-001.json",
+        "sha256": "3b5811a1b182f2dd5df9537e6618b65f4a1b82a4029b3c874e374d3d7869d185",
+        "bytes": 753
+      }
+    ]
   }
 }
