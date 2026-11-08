@@ -211,4 +211,5 @@ impl SourceBinding {
 }
 
 #[cfg(test)]
+#[path = "source_pin/tests.rs"]
 pub(crate) mod tests;
