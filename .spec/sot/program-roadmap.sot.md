@@ -36,10 +36,10 @@ receipts and appended provenance qualification in evidence:root/20261107221648.
 | --- | --- | --- |
 | Tools maintenance identity | CLI7b5edfad and Delivery99ec7b80 agree on33 original cases; X d00ba197 closes the design mismatch | Actual mapped execution after movement; preserve23 integrations and10 real filesystem/provider bin cases |
 | Tools compiled roots | Accepted27 roots:1 library,15 bins,10 integration targets,1 example | Full source/role/feature/input freeze and actual metadata/discovery |
-| Legacy library units | Source-derived187 candidates across six retained/retiring library contexts | cfg-aware discovery, exact source-to-role mapping and original main/bin inventories;187 is not an executed denominator |
+| Legacy library units | Immutable5d68 Windows --list exactly186 names across six libraries; source map also retains the Unix-only187th candidate | No test functions ran in discovery; validate mapped new roles and preserve main/bin inventories |
 | Tools external inputs | Ten original operational resources plus accepted pinned CEF DATA exception and explicit mutable-reader design | Complete13-context union and actual Collector source binding; no source implementation copy |
-| Runtime build performance | Matched5d68 A/B roots differ only by retained old Runtime manifest; identical lock and four empty dedicated targets prepared | Finite serial measurement and functional review; no measured speedup yet |
-| Browser product regression | Run42425474990/source5d68 preflight passed; product job128563546997 last observed active | Terminal actual Docker/browser results and exact source-bound receipt |
+| Runtime build performance | cc4758 measured two CLI check cold-artifact pairs at45.39%/46.46% less wall time and117-to-62 artifact events; independent90b125 audit | Not cold OS/registry, linked build, runtime or product performance; six unchanged replays rebuilt zero artifacts |
+| Browser product regression | Source5d68 run42425474990 failed16/18 assertions with browser-proxy null Origin; new exactf8 run42429778301 dispatched | Actual new-source browser/wire/effect/product result; no causal or full-product success claim |
 
 Lab c3c2a6e6 fixes the deleted audit package selector for the existing audit-witness
 binary. This is a source invocation repair; the previous1f2 first failing inner
@@ -47,11 +47,32 @@ Docker RUN remains unknown. Do not transfer previous Origin403 observations to
 a new actor that has not been observed. No production merge, package publication,
 release tag or OIDC token exchange follows from these component/design results.
 
+### Latest bounded code qualification and next structural slice
+
+| Scope | Actual result | Explicit boundary |
+| --- | --- | --- |
+| Offline SGD/Core | Source42ecee7d:15 SGD cases including3 actual-file cases;177 total Core cases (160unit+17integration), fmt/check/strictClippy passed;4cc8259 evidence independently reviewed at b71f2f00 | SGD15 is a subset of177; no Go bit parity, public bootstrap caller, activation or full ML migration; registry capture was post-only |
+| Collector origin-root transport | Immutablef8: WASM all-target/runtime-pilot check and strict Clippy both passed;3158 extracted files unchanged | Earlierfc9 Core lint failure retained; mock/browser/wire behavior not executed locally |
+| Actual selected-source binding | Immutablef8 Windows:44 default tests plus the separate required ignored checkout test passed; check/strictClippy passed under original390/450 epoch | Initial noncanonical ENV gate failure retained; input-only correction and385515ms original-clock finish; no hostile-race/native custody or before-initial-tool-byte proof |
+| Tools assembly | Source33de76a3 separates15 role implementations from14 new thin binary roots; Root v2 maps282 tracked context files without destination collisions | Refresh exact final source pins and new source-pin test addendum before movement; no consolidation implemented yet |
+| Adapter family | e9af84e1/c06b6e17 accepted one rlib, seven exclusive cdylib export roles and six nondefault qualification bins | Existing unsafe operations only; private-capsule/sibling-forgery controls and native host loading remain required; no source relocation |
+
+The new browser run is sourcef8aec286, including the required actual-source
+preflight and the origin-root referrer experiment. Lab is its sole monitor.
+Source-only acceptance, default tests and explicit checkout verification remain
+separate from hosted GNU and actual Docker/browser outcomes. The prior5d68 null
+classification is a B-only observation, not a Runtime-origin attestation.
+
+Core/SGD receipts are [[evidence:root/20261108005200]], matched CLI measurements
+are [[evidence:root/20261107135643]], and Lab source-binding/browser receipts are
+[[evidence:root/20261106224155]]. Before/after source comparisons do not by
+themselves prove a complete registry/compiler/linker/OS read closure.
+
 ## Current integration checkpoint
 
 | Structural stage | Workspace count after stage | Current state |
 | --- | --- | --- |
-| Core | 35 | Source integrated; bounded local tests/type/lint and default extracted-library consumer passed; full packaging/product gates pending |
+| Core | 35 | Source integrated; source42ecee7d passed177 Core cases including15 SGD cases plus bounded type/lint; packaging and actual serving/product gates pending |
 | Platform | 34 | Source moved; pure/type/lint, feature/API boundaries and default-library package verification passed; full consumers/runtime gates pending |
 | Runtime | 29 | Source relocated into six contexts; Windows all-target/all-feature check and strict Clippy passed; 177 selected pure cases passed from a 366-case library inventory; named sibling-access probes and extracted compilation also passed; coherent consumers, full packaging and actual runtime gates pending |
 | Tools | 21 | Owner handoffs prepared; implementation not consolidated |

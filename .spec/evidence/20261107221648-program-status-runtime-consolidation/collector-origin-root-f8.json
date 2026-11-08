@@ -1,0 +1,95 @@
+{
+  "schema": "humanymous.collector-origin-root-success-and-dispatch/1",
+  "state": "WASM-type-lint-passed-hosted-product-pending",
+  "source": "f8aec28651919e97ef924afa8d633e3c4df38805",
+  "source_files": 3158,
+  "source_difference_records": 0,
+  "tool_difference_records": 0,
+  "phases": [
+    {
+      "phase": "check",
+      "exit": 0,
+      "end_utc": "2026-11-08T00:24:59.3899935Z",
+      "elapsed": 2.2669779
+    },
+    {
+      "phase": "clippy",
+      "exit": 0,
+      "end_utc": "2026-11-08T00:25:01.7923792Z",
+      "elapsed": 4.6693042
+    }
+  ],
+  "archive_sha256": "fd29bd7582feb5133e3ab11c0872de3de8b9eeec1d6c4b821014893a35814c59",
+  "session": 19390,
+  "session_terminal_exit": 0,
+  "raw_records": [
+    {
+      "name": "f8.summary.json",
+      "sha256": "7074badc6f59f36aaad7bbd391d0a5157f111906fa2b271155af4f8d6e88611b",
+      "bytes": 541
+    },
+    {
+      "name": "f8-check.command.json",
+      "sha256": "1913422aef1a2fb461d76cd35a212e24b88dda4a1c4478cce42f5f43987f8924",
+      "bytes": 621
+    },
+    {
+      "name": "f8-check.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "f8-check.stderr",
+      "sha256": "ec94b825cc4ffdf60abd6707f4ae24cdf9fcc3de528a68a4779c3eb8f1bb08cb",
+      "bytes": 446
+    },
+    {
+      "name": "f8-clippy.command.json",
+      "sha256": "29e38966d16d8a096174b3f7373787f0b54c2c3f1cbc0e9230b27a853590641e",
+      "bytes": 659
+    },
+    {
+      "name": "f8-clippy.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "f8-clippy.stderr",
+      "sha256": "25eea9ff02a0e78147e3d7b39c82999aa5401fc49f4fe8eceb5f6aa540579f4d",
+      "bytes": 446
+    },
+    {
+      "name": "f8.inputs.before.json",
+      "sha256": "88ed804d1426900a861e1dd87aade9fdba62c07ba2e0638a3a17978a3ff135d4",
+      "bytes": 572818
+    },
+    {
+      "name": "f8.inputs.after.json",
+      "sha256": "88ed804d1426900a861e1dd87aade9fdba62c07ba2e0638a3a17978a3ff135d4",
+      "bytes": 572818
+    },
+    {
+      "name": "f8.tools.before.json",
+      "sha256": "287f926c79e4e939e43ecd924815f921b1782846ba71ffeb0bc966be39d8e0f0",
+      "bytes": 520
+    }
+  ],
+  "dispatch": {
+    "run_id": 42429778301,
+    "attempt": 1,
+    "event": "push",
+    "ref": "codex/browser-product-validation",
+    "previous_source": "5d68cd39f1d44b30d0df2804675d83cd28025d7e",
+    "source": "f8aec28651919e97ef924afa8d633e3c4df38805",
+    "url": "https://github.com/modootoday/humanymous/actions/runs/42429778301",
+    "observed": "GNU preflight passed; product running per sole Lab monitor",
+    "sole_monitor": "product-lab/watch71319"
+  },
+  "limits": [
+    "No local actual browser/mock-Fetch execution",
+    "Three tool hashes bind selected shims only, not full toolchain/registry/config/linker/SDK closure",
+    "Earlier fc9 check0/Clippy101 retained unchanged",
+    "No Origin causality or product success claim"
+  ],
+  "private_evidence": "evidence:root/20261108054000/collector-origin-root"
+}

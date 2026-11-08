@@ -7,6 +7,7 @@ updated: 2026-11-07T22:16:48Z
 rel:
   depends_on: [sot:root/structural-development, sot:root/program-roadmap, evidence:root/20261107205600]
 files:
+  - {path: collector-origin-root-f8.json, sha256: 0fe350f5a453d3a08cf8847b50b7aa9fff2a7d5f26d4727e857cd3b9ce4132f6, bytes: 3062, store: repo}
   - {path: collector-origin-root-check.json, sha256: b8b1ef9a6468801da881e4ce3efd0a8a9fbb93b89b6d85175323f278f2f9b902, bytes: 2803, store: repo}
   - {path: runtime-invocation-provenance.json, sha256: a3614c4ce3f2aa36cf249bd2771ec07a9940852775eacb9ebea3d61693b00cfd, bytes: 1009, store: repo}
   - {path: browser-5d68-dispatch.json, sha256: 000f72a878c02a93aa352f2c7a9562823b7d7c0dcadc7cf3290f5251d01aa273, bytes: 851, store: repo}
@@ -35,3 +36,5 @@ The dependency-isolation attachment records seventeen isolated normal-only consu
 The invocation-provenance follow-up explicitly records that development argv and exit associations were transcribed retrospectively from Root's execution transcript. No contemporaneous per-phase start record was retained. Existing stderr and raw summaries remain unchanged; their footers alone do not prove every command flag. No rerun was performed to hide that limitation.
 
 The Collector origin-root follow-up is a source-only client experiment. On immutable fc9ad67f its WASM all-target/runtime-pilot check passed, but strict Clippy failed in the newly authored Core SGD validation condition. All3142 extracted source files remained unchanged. The orchestration session terminated0 after retaining phase exit101; it is not a green Clippy or browser result. A subsequent corrected source needs its own validation.
+
+The immutablef8 Collector source passed both WASM all-target/runtime-pilot check and strict Clippy. All3158 extracted files remained unchanged. Selected tool shim hashes remained equal; this is not complete compiler/registry/SDK read attestation. The exact source was fast-forwarded to the dedicated browser validation ref, run42429778301. GNU preflight success and actual product outcome remain separate; the product was still running at this receipt observation.
