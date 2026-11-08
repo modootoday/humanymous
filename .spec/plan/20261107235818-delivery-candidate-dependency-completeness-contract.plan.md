@@ -93,13 +93,23 @@ are not a hermeticity proof. Actual admission must state its isolated filesystem
 and network boundary, residual reads and generated-input ownership. Uncontrolled
 reads remain unqualified provenance, never an implicit complete-source claim.
 
-Implement a Rust observer as RUSTC_WRAPPER around Cargo's actual compiler chain;
+Root chose the existing humanymous-delivery executable's private trusted-build
+dispatch as the future observer; preserve the frozen15 bins. No16th bin, helper
+crate or foreign wrapper is authorized. Implement this Rust role as RUSTC_WRAPPER
+around Cargo's actual compiler chain only after separate implementation admission;
 cargo-auditable retains its pinned RUSTC_WORKSPACE_WRAPPER role. No shell wrapper.
 Record argv as OS arguments, cwd, allowlisted Cargo identity variables, effective
 target/cfg/features, --extern artifact references, crate types/output locations,
 child executable identities, terminal exit and output hashes. Preserve semantics,
 exit/signal propagation and argument ordering. Reject unapproved extra wrappers,
 response files or unparsed graph-affecting flags until explicitly supported.
+Review the exact Cargo-provided wrapper argv contract, including the possible
+workspace-wrapper argument preceding rustc, before accepting this dispatch. An
+environment flag alone is not authorization. Require an explicit bounded parent
+observation request bound to this tool/source/build/output identity, selected
+compiler and allowed child chain; foreign, replayed, malformed or absent requests
+refuse execution. The request and environment do not prove hermeticity. The dispatch
+must never become a general command runner or expand NativeRunner/service roles.
 Observer cannot claim to observe injected inner arguments it did not see. Admission
 must test this precise chain with the pinned auditable implementation and prove
 that its transformation preserves the recorded --extern graph; otherwise B is
@@ -186,9 +196,11 @@ separate accepted role, lifecycle, product topology and release requirements pas
 1. Pure Rust bounded schemas, opaque identity joins and graph/projection verifier
    within Delivery's final frozen private qualification module. No helper package,
    public SDK API or duplication of Cargo resolution logic.
-2. Private Rust compiler observer role in the same Tools package, default-off and
-   excluded from production release. Root must freeze its bin/dispatch identity,
-   self-executable restrictions and wrapper composition before source implementation.
+2. Private Rust compiler observer dispatch of existing humanymous-delivery in the
+   same Tools package, default-off and excluded from production release. Root has
+   selected this role design while preserving15 bins; exact bounded-request/argv,
+   self-executable restrictions and wrapper composition still need review before
+   source implementation. No extra bin, helper crate or foreign wrapper.
 3. Pinned safe Rust binary extractor/decompressor/schema validation, installed from
    reviewed locked sources; no new version/dependency granted by this design.
 4. Candidate builder retains normal Cargo JSON/transcripts/artifact and container
@@ -238,3 +250,7 @@ P1 copied logs, cache reuse and image labels alone cannot establish custody.
 P1 public logs cannot expose private compiler arguments. No current candidate
 result is promoted. This design is ready for owner review, not shipping or source
 implementation; Root must accept exact slices and Tools identities first.
+
+Root's subsequent role decision accepts only existing Delivery internal dispatch
+as design. It authorizes no implementation, actual build or runtime expansion.
+Failed or unsupported observer composition keeps completeness false.
