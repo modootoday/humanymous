@@ -2893,3 +2893,17 @@ artifacts, loaded DLLs, process/CEF/UI success or full source/tool read closure.
 No complete before/after seal is joined to these executions. Default32 does not
 close the caller finding. Private browser-caller-integration-review-002.json binds
 actual logs, selected source epochs, saved metadata and lock comparison inputs.
+
+Fresh Browser default1793 checkpoint updates source-binding evidence for its own
+new execution:1793 before/after path/hash/size rows agree, no duplicate paths,
+snapshot SHA6d4cd4954ee1feed2ed23be0799c1edd0fdcfa7d03e130a81086241a44ebc773.
+Receipt command/start/end/exit0 matches raw32pass/0fail/0ignore/0filtered and strict
+default all-target footer0.21s. The earlier0.87s run remains separate. Current
+recorded1793 file hashes/sizes match at observation, without enumerating new
+unlisted files or proving transitive compiler/tool/environment closure. No source
+success transfer from1791. CA-BROWSER-ROLE-CALLER-01, role builds, actual CEF/UI/
+process and distribution remain OPEN. Private browser-default1793-review-003.json
+binds all7 checkpoint files. Live tracked manifests34/live workspace29 plus4
+standalone and isolated saved19 members remain separate from final8 design.
+Root received a nonblocking request to epoch-label structural-development's old
+'current tracked census39/34' sentence; no foreign canon was edited by audit.

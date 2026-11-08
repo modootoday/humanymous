@@ -2552,5 +2552,12 @@
     "bytes": 5577,
     "scope": "Actualdefault32/strict0.87s;634external tuples exact;19savedmembers; caller source defect remainsOPEN",
     "goal_complete": false
+  },
+  "browser_default1793_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-default1793-review-003.json",
+    "sha256": "b70e8d324b6f64220dcaf2b77f0cec9c0b50710c703b1dd2b8b3c6d9b277cbd2",
+    "bytes": 2889,
+    "scope": "Fresh1793beforeafter0diff binds32pass/defaultstrict0.21s;currentselected1793matchonly",
+    "goal_complete": false
   }
 }
