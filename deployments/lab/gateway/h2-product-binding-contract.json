@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.lab-h2-product-binding-cap-pilot-contract/1",
   "id": "w2-h2-product-binding-cap",
-  "status": "hosted_venue_topology_landed_awaiting_actual_hosted_linux_cap",
+  "status": "hosted_venue_cap_exit0_component_n06_owner_join_open",
   "unlock": "B",
   "gap": "G1",
   "wake": "W2",
@@ -73,22 +73,42 @@
   "hosted_venue_cap_cli": "--w2-h2-hosted-venue",
   "hosted_venue_pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-hosted-venue",
   "n06_owner_join_receipt_schema": "humanymous.lab-h2-n06-owner-join-readiness/1",
+  "n06_owner_join_cap_cli": "--n06-owner-join-readiness",
+  "n06_owner_join_pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-join-readiness",
+  "hosted_venue_cap_exit0": {
+    "run_id": 42500919761,
+    "head": "d483c40f",
+    "counts_as": "pass_component_hosted_measure",
+    "product": 0,
+    "n06_owner_join": false,
+    "evidence": ".spec.local/root/evidence/20261109013400-cursor-n06-hosted-venue-cap-realloc/CAP1-EXIT0.json"
+  },
   "missing_for_n06_product_lift": [
-    "actual_hosted_linux Cap venue (Specfold/github-hosted); Desktop Cap refuse-closed Cap=0",
     "Owner-integration readiness join authorization after hosted measured binding (SoT N06 / R14-D6)",
-    "Matrix G1 / pass_product_clean_room admission by Root after measured hosted binding"
+    "Root auth handoff / exact path release for N06 join (never invent Root ownership tokens)",
+    "Matrix G1 / pass_product_clean_room admission by Root after hosted measure + owner join"
+  ],
+  "n06_owner_join_root_ask_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    ".spec/sot/network-capture.sot.md",
+    ".spec/plan/20261108210000-r14-h2-serving-consumer.plan.md"
   ],
   "honesty": {
     "product": 0,
     "pass_product_clean_room": 0,
     "component_green_is_not_product": true,
+    "hosted_cap_component_green_is_not_product": true,
     "desktop_lab_measured_is_not_hosted_product": true,
     "never_invent_readiness_original_h2": true,
     "n06_join_requires_measured_binding_and_owner_integration": true,
-    "n06_owner_join_still_open_after_desktop_measure": true,
+    "n06_owner_join_still_open_after_hosted_cap_exit0": true,
     "detection_freeze": true,
     "authority_cap_reburn_forbidden": true,
     "w2_desktop_measure_reburn_forbidden_without_structural_delta": true,
-    "original_h2_measured_requires_measure_receipt": true
+    "hosted_venue_cap_reburn_forbidden_without_structural_delta": true,
+    "original_h2_measured_requires_measure_receipt": true,
+    "cap_free_after_hosted_exit0_for_unlock_a": true
   }
 }

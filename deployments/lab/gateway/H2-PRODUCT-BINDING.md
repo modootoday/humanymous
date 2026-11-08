@@ -31,12 +31,13 @@ Measure binary: `humanymous-h2-product-binding-measure` (features
 `gateway,hosted-pilot`). Emits receipt schema
 `humanymous.lab-h2-product-binding-measure-receipt/1`.
 
-## Hosted venue Cap topology (N06 — transferred; Cap venue pending)
+## Hosted venue Cap topology (N06 — Specfold Cap EXIT0 component)
 
 Live Cap topology transferred (GRANT → transfer-apply). Cap CLI:
-`--w2-h2-hosted-venue`. Cap=1 only when `actual_hosted_linux=true`
-(Specfold/github-hosted). Desktop Cap refuse-closed (Cap=0; no
-`GITHUB_ACTIONS` spoof).
+`--w2-h2-hosted-venue`. Specfold Cap EXIT **0** run **42500919761** @
+`d483c40f` = `pass_component_hosted_measure` only — **not** product, **not**
+N06 owner join. Desktop Cap refuse-closed (no `GITHUB_ACTIONS` spoof). No
+hosted Cap reburn without structural delta. Cap free again for Unlock A.
 
 | Path | Role |
 | --- | --- |
@@ -44,10 +45,12 @@ Live Cap topology transferred (GRANT → transfer-apply). Cap CLI:
 | `build/rust/h2-hosted-venue-lab.Dockerfile` | Hosted Cap image |
 | `build/rust/h2-hosted-venue-lab.Dockerfile.dockerignore` | Hosted Cap build context |
 
-Owner-join readiness schema:
-`humanymous.lab-h2-n06-owner-join-readiness/1` (always
-`n06_owner_join=false` until hosted measure + Root join). Evidence:
-`.spec.local/root/evidence/20261109010000-cursor-n06-hosted-venue-apply/`.
+Owner-join readiness Cap CLI: `--n06-owner-join-readiness` (Cursor-owned;
+binds hosted Cap EXIT0 → readiness; Cap=0 without Root auth handoff). Schema
+`humanymous.lab-h2-n06-owner-join-readiness/1` always
+`n06_owner_join=false` until Root auth handoff. Evidence:
+`.spec.local/root/evidence/20261109013400-cursor-n06-hosted-venue-cap-realloc/`,
+`.spec.local/root/evidence/20261109005000-cursor-n06-owner-join/`.
 
 ## Already landed (not product)
 
@@ -58,6 +61,7 @@ Owner-join readiness schema:
 | Cap=1 Clippy / fail-closed pure | component |
 | Unlock C `--authority-node-ipc` Cap | component only; no reburn |
 | Desktop lab TLS measure @ `4a5d0135` / `20261109004100` | `pass_component_desktop_measure` only |
+| Hosted venue Cap EXIT0 run 42500919761 @ `d483c40f` | `pass_component_hosted_measure` only |
 
 ## Fail-closed
 
@@ -69,19 +73,25 @@ Owner-join readiness schema:
 | `original_h2_measured=true` without measure receipt | refuse |
 | Authority `--authority-node-ipc` Cap spam reburn | refuse |
 | Desktop measure claimed as hosted product | refuse |
-| `n06_owner_join=true` without hosted venue + `actual_hosted_linux` | refuse |
+| Hosted Cap component claimed as product / N06 join | refuse |
+| `n06_owner_join=true` without Root auth handoff | refuse (Cap=0) |
 | Hosted venue Cap on Desktop | refuse (`actual_hosted_linux=false`) |
 | W2 Desktop measure Cap reburn without structural delta | refuse |
+| Hosted venue Cap reburn without structural delta | refuse |
 
-## N06 / honesty after Desktop measure
+## N06 / honesty after hosted Cap EXIT0
 
 Desktop lab loopback measure may set `original_h2_measured=true` when the
-receipt validates (TLS/H2 status ≠ 422 `required_capability`). That is **not**
-`desktop_as_hosted`, **not** readiness product green, **not**
-`pass_product_clean_room`, **not** N06 owner join.
+receipt validates (TLS/H2 status ≠ 422 `required_capability`). Hosted Cap
+EXIT0 run **42500919761** is **component** only. Neither is
+`desktop_as_hosted`, readiness product green, `pass_product_clean_room`, or
+N06 owner join.
 
 Still Root for N06 product lift:
 
-1. Specfold/`actual_hosted_linux` Cap=1 once with `--w2-h2-hosted-venue` (topology already transferred)
-2. Owner-integration readiness join (SoT N06 / R14-D6) after hosted measure
-3. Matrix G1 admission after measured hosted binding
+1. ~~Specfold/`actual_hosted_linux` Cap=1 once with `--w2-h2-hosted-venue`~~ **done** (component EXIT0)
+2. Owner-integration readiness join authorization + exact path release (SoT N06 / R14-D6) — Root auth handoff; Cap=0 until then
+3. Matrix G1 / `pass_product_clean_room` admission after hosted measure + owner join
+
+Exact Root ask paths: `configuration.rs`, `service/readiness.rs`,
+`application.rs`, network-capture SoT N06, R14-D6 plan.

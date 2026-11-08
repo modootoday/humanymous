@@ -72,6 +72,7 @@ struct Lab {
     authority_node_ipc: bool,
     w2_h2_product_binding: bool,
     w2_h2_hosted_venue: bool,
+    n06_owner_join_readiness: bool,
     g4_cef_at: bool,
     go_component_verified: bool,
     stage: &'static str,
@@ -134,6 +135,13 @@ impl Lab {
             ];
             command.extend(args.iter().map(|s| (*s).to_owned()));
             return Ok(command);
+        }
+        if self.n06_owner_join_readiness {
+            // Owner-join readiness is receipt/auth gate only; no Docker Cap burn.
+            return Err(
+                "n06-owner-join-readiness Cap has no Docker compose topology; Cap=0 readiness/auth handoff only; never invent pass_product_clean_room or Root ownership tokens"
+                    .into(),
+            );
         }
         if self.g4_cef_at {
             // G4 Cap is host CEF/AT refuse-closed; no Docker compose topology.
@@ -305,6 +313,9 @@ impl Lab {
         }
         if self.w2_h2_hosted_venue {
             return h2_product_binding::run_hosted_venue(self);
+        }
+        if self.n06_owner_join_readiness {
+            return h2_product_binding::run_n06_owner_join_readiness(self);
         }
         if self.g4_cef_at {
             return g4_cef_at::run(self);
@@ -619,6 +630,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut authority_node_ipc = false;
     let mut w2_h2_product_binding = false;
     let mut w2_h2_hosted_venue = false;
+    let mut n06_owner_join_readiness = false;
     let mut g4_cef_at = false;
     let mut full = false;
     let mut require_go_component = false;
@@ -639,6 +651,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--authority-node-ipc" => authority_node_ipc = true,
             "--w2-h2-product-binding" => w2_h2_product_binding = true,
             "--w2-h2-hosted-venue" => w2_h2_hosted_venue = true,
+            "--n06-owner-join-readiness" => n06_owner_join_readiness = true,
             "--g4-cef-at" => g4_cef_at = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
@@ -656,6 +669,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || mount_probe
             || w2_h2_product_binding
             || w2_h2_hosted_venue
+            || n06_owner_join_readiness
             || g4_cef_at
             || full
             || require_go_component
@@ -679,6 +693,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || mount_probe
             || authority_node_ipc
             || w2_h2_hosted_venue
+            || n06_owner_join_readiness
             || g4_cef_at
             || full
             || require_go_component
@@ -700,12 +715,33 @@ pub fn run(args: &[String]) -> Result<i32> {
             || mount_probe
             || authority_node_ipc
             || w2_h2_product_binding
+            || n06_owner_join_readiness
             || g4_cef_at
             || full
             || require_go_component
         {
             return Err(
                 "w2-h2-hosted-venue Cap requires its own fresh profile; refuse Desktop measure reburn and foreign Cap selectors; never invent pass_product_clean_room or desktop_as_hosted"
+                    .into(),
+            );
+        }
+    }
+    if n06_owner_join_readiness {
+        // Cursor-owned readiness/auth gate; Cap=0 without Root auth handoff (no Docker burn).
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "n06-owner-join-readiness Cap requires its own fresh profile; refuse hosted Cap reburn / Unlock A invent / foreign Cap selectors; Cap=0 without Root auth; never invent pass_product_clean_room"
                     .into(),
             );
         }
@@ -725,6 +761,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || authority_node_ipc
             || w2_h2_product_binding
             || w2_h2_hosted_venue
+            || n06_owner_join_readiness
             || full
             || require_go_component
         {
@@ -802,6 +839,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         authority_node_ipc,
         w2_h2_product_binding,
         w2_h2_hosted_venue,
+        n06_owner_join_readiness,
         g4_cef_at,
         go_component_verified: false,
         stage: "initialization",
@@ -857,6 +895,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         || authority_node_ipc
         || w2_h2_product_binding
         || w2_h2_hosted_venue
+        || n06_owner_join_readiness
         || g4_cef_at
     {
         vec![]
@@ -877,6 +916,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         ("authority_node_ipc", "authority-node-ipc-component"),
         ("w2_h2_product_binding", "w2-h2-product-binding-component"),
         ("w2_h2_hosted_venue", "w2-h2-hosted-venue-component"),
+        ("n06_owner_join_readiness", "n06-owner-join-readiness"),
         ("g4_cef_at", "g4-cef-at-component"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"

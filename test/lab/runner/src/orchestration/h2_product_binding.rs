@@ -7,7 +7,10 @@
 use super::Lab;
 use crate::{docker::Result, snapshot};
 use serde_json::{Value, json};
-use std::{fs, path::Path};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 /// Code-defined Cap selector (mirrors Unlock C `--authority-node-ipc`).
 pub const CAP_SELECTOR: &str = "--w2-h2-product-binding";
@@ -43,11 +46,44 @@ pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
 /// Measure receipt schema emitted by Cap oneshot.
 pub const MEASURE_RECEIPT_SCHEMA: &str = "humanymous.lab-h2-product-binding-measure-receipt/1";
 
-/// Residual Root join for N06 / product lift after Desktop lab measure.
+/// Residual Root join for N06 / product lift after hosted Cap component measure.
+/// Hosted Cap EXIT0 (`--w2-h2-hosted-venue`) is component only — not product / not join.
 pub const MISSING_N06_PRODUCT_LIFT: &[&str] = &[
-    "Owner-integration readiness join authorization after measured binding (SoT N06 / R14-D6)",
-    "Root-hosted venue qualification (Desktop lab measure ≠ desktop_as_hosted / hosted product)",
-    "Matrix G1 / pass_product_clean_room admission by Root after measured binding",
+    "Owner-integration readiness join authorization after hosted measured binding (SoT N06 / R14-D6)",
+    "Root auth handoff / exact path release for N06 join (never invent Root ownership tokens)",
+    "Matrix G1 / pass_product_clean_room admission by Root after hosted measure + owner join",
+];
+
+/// N06 owner-join readiness Cap selector (Cursor-owned gate; Cap=0 without Root auth).
+pub const N06_OWNER_JOIN_CAP_SELECTOR: &str = "--n06-owner-join-readiness";
+
+/// Exact owner-join readiness Cap argv shape (never invents join=true / pass_product).
+pub const N06_OWNER_JOIN_PILOT_COMMAND: &str =
+    "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-join-readiness";
+
+/// Hosted Cap EXIT0 receipt schema (component only; binds to owner-join readiness).
+pub const HOSTED_CAP_EXIT0_SCHEMA: &str = "humanymous.cursor-n06-hosted-venue-cap1-exit0/1";
+
+/// Specfold Cap EXIT0 run recorded for matrix honesty (component ≠ product).
+pub const HOSTED_CAP_EXIT0_RUN_ID: u64 = 42500919761;
+
+/// Root-authored N06 owner-join auth handoff schema (Cursor must not invent).
+pub const N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA: &str =
+    "humanymous.root-n06-owner-join-auth-handoff/1";
+
+/// Exact Root ask / auth-handoff candidate paths (fail-closed when absent).
+pub const N06_OWNER_JOIN_ROOT_ASK_PATHS: &[&str] = &[
+    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    ".spec/sot/network-capture.sot.md",
+    ".spec/plan/20261108210000-r14-h2-serving-consumer.plan.md",
+];
+
+/// Private evidence candidates where Root may place auth handoff (never invent).
+pub const N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES: &[&str] = &[
+    ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+    ".spec.local/root/grants/n06-owner-join/GRANT.json",
 ];
 
 /// Cap topology required before hosted-venue N06 Cap may Docker-coordinate.
@@ -287,6 +323,8 @@ pub fn n06_owner_join_readiness_receipt(
     Ok(json!({
         "schema": N06_OWNER_JOIN_RECEIPT_SCHEMA,
         "original_h2_measured_desktop_lab": measured,
+        "hosted_cap_component_green": false,
+        "hosted_cap_exit0_run_id": Value::Null,
         "n06_owner_join": false,
         "n06_product_lift": false,
         "desktop_as_hosted": false,
@@ -295,8 +333,133 @@ pub fn n06_owner_join_readiness_receipt(
         "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
         "missing_hosted_venue_topology": REQUIRED_HOSTED_VENUE_TOPOLOGY,
         "hosted_venue_markers_accepted": HOSTED_VENUE_MARKERS,
+        "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
         "note": "Desktop lab measure ≠ hosted product; N06 owner join still Root; Cap-ready hosted venue topology cited for Root transfer"
     }))
+}
+
+/// Validate a hosted Cap EXIT0 component receipt (never invents product / join).
+pub fn validate_hosted_cap_exit0_receipt(receipt: &Value) -> Result<()> {
+    if receipt.get("schema").and_then(Value::as_str) != Some(HOSTED_CAP_EXIT0_SCHEMA) {
+        return Err("N06 owner-join refused: hosted Cap EXIT0 receipt schema mismatch".into());
+    }
+    if receipt.get("cap_exit").and_then(Value::as_u64) != Some(0) {
+        return Err("N06 owner-join refused: hosted Cap EXIT0 receipt cap_exit != 0".into());
+    }
+    if receipt.get("run_id").and_then(Value::as_u64) != Some(HOSTED_CAP_EXIT0_RUN_ID) {
+        return Err(format!(
+            "N06 owner-join refused: hosted Cap EXIT0 run_id must be {HOSTED_CAP_EXIT0_RUN_ID}; never invent alternate product run"
+        )
+        .into());
+    }
+    if receipt.get("product").and_then(Value::as_u64) != Some(0)
+        || receipt
+            .get("pass_product_clean_room")
+            .and_then(Value::as_u64)
+            != Some(0)
+    {
+        return Err(
+            "N06 owner-join refused: hosted Cap EXIT0 invented product/pass_product_clean_room"
+                .into(),
+        );
+    }
+    if receipt.get("desktop_as_hosted").and_then(Value::as_bool) == Some(true) {
+        return Err("N06 owner-join refused: hosted Cap EXIT0 desktop_as_hosted=true forbidden".into());
+    }
+    if receipt.get("n06_owner_join").and_then(Value::as_bool) == Some(true) {
+        return Err(
+            "N06 owner-join refused: hosted Cap EXIT0 component cannot authorize owner join; Root auth handoff still required"
+                .into(),
+        );
+    }
+    if receipt.get("actual_hosted_linux").and_then(Value::as_bool) != Some(true) {
+        return Err(
+            "N06 owner-join refused: hosted Cap EXIT0 must record actual_hosted_linux=true"
+                .into(),
+        );
+    }
+    Ok(())
+}
+
+/// Bind hosted Cap EXIT0 component receipt → owner-join readiness (always join=false without Root auth).
+pub fn n06_owner_join_readiness_from_hosted_cap(hosted_cap: &Value) -> Result<Value> {
+    validate_hosted_cap_exit0_receipt(hosted_cap)?;
+    Ok(json!({
+        "schema": N06_OWNER_JOIN_RECEIPT_SCHEMA,
+        "original_h2_measured_desktop_lab": true,
+        "hosted_cap_component_green": true,
+        "hosted_cap_exit0_run_id": HOSTED_CAP_EXIT0_RUN_ID,
+        "hosted_cap_exit0_schema": HOSTED_CAP_EXIT0_SCHEMA,
+        "counts_as": "pass_component_hosted_measure",
+        "n06_owner_join": false,
+        "n06_product_lift": false,
+        "desktop_as_hosted": false,
+        "product": 0,
+        "pass_product_clean_room": 0,
+        "cap_executable_for_join": false,
+        "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+        "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+        "auth_handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
+        "hosted_venue_markers_accepted": HOSTED_VENUE_MARKERS,
+        "note": "Hosted Cap component green ≠ product; N06 owner join still Root; never invent pass_product_clean_room or Root ownership tokens"
+    }))
+}
+
+/// Locate a Root-authored N06 auth handoff (Cursor must never invent one).
+pub fn find_n06_owner_join_auth_handoff(root: &Path) -> Option<PathBuf> {
+    N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES
+        .iter()
+        .map(|relative| root.join(relative))
+        .find(|path| path.is_file())
+}
+
+/// Fail-closed auth handoff for Cap-executable N06 owner join.
+/// Absent / invented Root tokens → Cap=0 (readiness only).
+pub fn require_n06_owner_join_auth_handoff(root: &Path) -> Result<Value> {
+    let Some(path) = find_n06_owner_join_auth_handoff(root) else {
+        return Err(format!(
+            "N06 owner-join Cap refused: Root auth handoff absent; Cap=0 readiness only; exact Root ask paths ({paths}); never invent Root ownership tokens",
+            paths = N06_OWNER_JOIN_ROOT_ASK_PATHS.join(", ")
+        )
+        .into());
+    };
+    let bytes = fs::read(&path).map_err(|error| {
+        format!(
+            "N06 owner-join Cap refused: auth handoff read {}: {error}",
+            path.display()
+        )
+    })?;
+    let handoff: Value = serde_json::from_slice(&bytes).map_err(|error| {
+        format!(
+            "N06 owner-join Cap refused: auth handoff JSON {}: {error}",
+            path.display()
+        )
+    })?;
+    if handoff.get("schema").and_then(Value::as_str) != Some(N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA)
+    {
+        return Err(
+            "N06 owner-join Cap refused: auth handoff schema mismatch; never invent Root ownership tokens"
+                .into(),
+        );
+    }
+    if handoff.get("n06_owner_join_authorized").and_then(Value::as_bool) != Some(true) {
+        return Err(
+            "N06 owner-join Cap refused: auth handoff does not authorize n06_owner_join; Cap=0"
+                .into(),
+        );
+    }
+    if handoff.get("product").and_then(Value::as_u64) != Some(0)
+        || handoff
+            .get("pass_product_clean_room")
+            .and_then(Value::as_u64)
+            != Some(0)
+    {
+        return Err(
+            "N06 owner-join Cap refused: auth handoff invented product/pass_product_clean_room"
+                .into(),
+        );
+    }
+    Ok(handoff)
 }
 
 /// Validate a Root-authored N06 owner-join / hosted measure receipt (fail-closed).
@@ -363,6 +526,124 @@ pub fn require_freeze_preimages(root: &Path) -> Result<()> {
 
 /// Cap=1 entry: refuse-closed when Cap topology / freeze prerequisites fail;
 /// otherwise Docker-coordinate Cap measure (component only).
+/// Cursor-owned N06 owner-join readiness gate.
+/// Binds hosted Cap EXIT0 receipt → readiness; Cap=0 without Root auth handoff.
+/// Never invents `n06_owner_join=true` / `pass_product_clean_room` / Root ownership tokens.
+/// No Docker Cap burn.
+pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
+    let root = snapshot::root()?;
+    lab.stage = "n06_owner_join_readiness_bind_hosted_cap";
+    let hosted_cap_path = root.join(
+        ".spec.local/root/evidence/20261109013400-cursor-n06-hosted-venue-cap-realloc/CAP1-EXIT0.json",
+    );
+    if !hosted_cap_path.is_file() {
+        lab.components["n06_owner_join_readiness"] = json!({
+            "status": "refused",
+            "kind": "n06-owner-join-readiness",
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "n06_owner_join": false,
+            "cap": 0,
+            "cap_executable_for_join": false,
+            "missing_hosted_cap_exit0": hosted_cap_path.display().to_string(),
+            "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+            "note": "hosted Cap EXIT0 receipt required before owner-join readiness; never invent pass_product"
+        });
+        snapshot::write(
+            &lab.evidence,
+            "n06-owner-join-readiness-refuse.json",
+            &lab.components["n06_owner_join_readiness"],
+        )?;
+        return Err(
+            "N06 owner-join readiness refused: hosted Cap EXIT0 receipt absent; Cap=0; never invent pass_product_clean_room"
+                .into(),
+        );
+    }
+    let hosted_bytes = fs::read(&hosted_cap_path).map_err(|error| {
+        format!(
+            "N06 owner-join readiness refused: hosted Cap EXIT0 read {}: {error}",
+            hosted_cap_path.display()
+        )
+    })?;
+    let hosted_cap: Value = serde_json::from_slice(&hosted_bytes).map_err(|error| {
+        format!(
+            "N06 owner-join readiness refused: hosted Cap EXIT0 JSON {}: {error}",
+            hosted_cap_path.display()
+        )
+    })?;
+    let readiness = n06_owner_join_readiness_from_hosted_cap(&hosted_cap)?;
+    validate_n06_owner_join_receipt(&readiness)?;
+    snapshot::write(&lab.evidence, "n06-owner-join-readiness.json", &readiness)?;
+    lab.case(
+        "n06-owner-join-hosted-cap-component-bound",
+        readiness.get("hosted_cap_component_green") == Some(&json!(true))
+            && readiness.get("hosted_cap_exit0_run_id") == Some(&json!(HOSTED_CAP_EXIT0_RUN_ID)),
+        json!({
+            "run_id": HOSTED_CAP_EXIT0_RUN_ID,
+            "counts_as": "pass_component_hosted_measure",
+            "product": 0
+        }),
+    )?;
+    lab.stage = "n06_owner_join_auth_handoff";
+    let auth = require_n06_owner_join_auth_handoff(&root);
+    let auth_present = auth.is_ok();
+    if let Err(ref error) = auth {
+        snapshot::write(
+            &lab.evidence,
+            "n06-owner-join-auth-handoff-refuse.json",
+            &json!({
+                "schema": "humanymous.lab-h2-n06-owner-join-auth-handoff-refuse/1",
+                "cap": 0,
+                "cap_executable_for_join": false,
+                "n06_owner_join": false,
+                "product": 0,
+                "pass_product_clean_room": 0,
+                "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+                "auth_handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
+                "detail": error.to_string(),
+                "note": "fail-closed readiness; Cap=0; never invent Root ownership tokens"
+            }),
+        )?;
+    } else if let Ok(ref handoff) = auth {
+        snapshot::write(&lab.evidence, "n06-owner-join-auth-handoff.json", handoff)?;
+    }
+    // Cap-executable join would require Root auth; Cursor must not invent it.
+    // This gate always lands readiness with join=false when Cap=0 (auth absent).
+    lab.case(
+        "n06-owner-join-still-open-cap0",
+        readiness.get("n06_owner_join") == Some(&json!(false)) && !auth_present,
+        json!({
+            "n06_owner_join": false,
+            "cap": 0,
+            "cap_executable_for_join": false,
+            "auth_handoff_present": auth_present,
+            "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+            "reason": "hosted Cap component green ≠ owner join / product; Root auth handoff still required"
+        }),
+    )?;
+    lab.components["n06_owner_join_readiness"] = json!({
+        "status": "readiness_landed_join_open",
+        "kind": "n06-owner-join-readiness",
+        "product": 0,
+        "pass_product_clean_room": 0,
+        "n06_owner_join": false,
+        "cap": 0,
+        "cap_executable_for_join": false,
+        "hosted_cap_exit0_run_id": HOSTED_CAP_EXIT0_RUN_ID,
+        "counts_as": "pass_component_hosted_measure",
+        "auth_handoff_present": auth_present,
+        "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+        "note": "Cursor-owned readiness gate landed; Cap=0 without Root auth; never invent pass_product_clean_room"
+    });
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-join-readiness-component.json",
+        &lab.components["n06_owner_join_readiness"],
+    )?;
+    // Cap=0: readiness landed; join Cap not burned / not executable without Root auth.
+    Ok(())
+}
+
 /// N06 hosted-venue Cap — refuse-closed unless `actual_hosted_linux` + topology.
 /// Never invents `desktop_as_hosted` / `pass_product_clean_room`. No GITHUB_ACTIONS spoof.
 pub(super) fn run_hosted_venue(lab: &mut Lab) -> Result<()> {
@@ -690,13 +971,16 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, HOSTED_VENUE_CAP_SELECTOR, HOSTED_VENUE_MARKERS,
-        HOSTED_VENUE_PILOT_COMMAND, MEASURE_RECEIPT_SCHEMA, MISSING_N06_PRODUCT_LIFT,
-        N06_OWNER_JOIN_RECEIPT_SCHEMA, REQUIRED_HOSTED_VENUE_TOPOLOGY, missing_cap_topology,
-        missing_hosted_venue_topology, n06_owner_join_readiness_receipt,
-        original_h2_measured_from_receipt, parse_measure_receipt,
+        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, HOSTED_CAP_EXIT0_RUN_ID, HOSTED_CAP_EXIT0_SCHEMA,
+        HOSTED_VENUE_CAP_SELECTOR, HOSTED_VENUE_MARKERS, HOSTED_VENUE_PILOT_COMMAND,
+        MEASURE_RECEIPT_SCHEMA, MISSING_N06_PRODUCT_LIFT, N06_OWNER_JOIN_CAP_SELECTOR,
+        N06_OWNER_JOIN_PILOT_COMMAND, N06_OWNER_JOIN_RECEIPT_SCHEMA, N06_OWNER_JOIN_ROOT_ASK_PATHS,
+        REQUIRED_HOSTED_VENUE_TOPOLOGY, find_n06_owner_join_auth_handoff, missing_cap_topology,
+        missing_hosted_venue_topology, n06_owner_join_readiness_from_hosted_cap,
+        n06_owner_join_readiness_receipt, original_h2_measured_from_receipt, parse_measure_receipt,
         refuse_invented_original_h2_measured, refuse_n06_product_lift_from_desktop_measure,
-        require_hosted_venue_for_n06_join, validate_n06_owner_join_receipt,
+        require_hosted_venue_for_n06_join, require_n06_owner_join_auth_handoff,
+        validate_hosted_cap_exit0_receipt, validate_n06_owner_join_receipt,
     };
     use crate::snapshot;
     use serde_json::json;
@@ -832,6 +1116,50 @@ mod tests {
         let logs = "noise\n{\"schema\":\"other\"}\n{\"schema\":\"humanymous.lab-h2-product-binding-measure-receipt/1\",\"original_h2_measured\":false,\"product\":0,\"pass_product_clean_room\":0,\"desktop_as_hosted\":false}\n";
         let receipt = parse_measure_receipt(logs).expect("receipt");
         assert_eq!(receipt["original_h2_measured"], false);
+    }
+
+    #[test]
+    fn hosted_cap_exit0_binds_owner_join_readiness_cap0() {
+        assert!(N06_OWNER_JOIN_PILOT_COMMAND.contains(N06_OWNER_JOIN_CAP_SELECTOR));
+        assert!(!N06_OWNER_JOIN_ROOT_ASK_PATHS.is_empty());
+        let hosted = json!({
+            "schema": HOSTED_CAP_EXIT0_SCHEMA,
+            "run_id": HOSTED_CAP_EXIT0_RUN_ID,
+            "cap_exit": 0,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false,
+            "n06_owner_join": false,
+            "actual_hosted_linux": true
+        });
+        validate_hosted_cap_exit0_receipt(&hosted).expect("hosted Cap EXIT0");
+        let readiness = n06_owner_join_readiness_from_hosted_cap(&hosted).expect("bind");
+        assert_eq!(readiness["n06_owner_join"], false);
+        assert_eq!(readiness["product"], 0);
+        assert_eq!(readiness["hosted_cap_exit0_run_id"], HOSTED_CAP_EXIT0_RUN_ID);
+        assert_eq!(readiness["cap_executable_for_join"], false);
+        assert!(validate_n06_owner_join_receipt(&readiness).is_ok());
+
+        let invent_join = json!({
+            "schema": HOSTED_CAP_EXIT0_SCHEMA,
+            "run_id": HOSTED_CAP_EXIT0_RUN_ID,
+            "cap_exit": 0,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false,
+            "n06_owner_join": true,
+            "actual_hosted_linux": true
+        });
+        assert!(validate_hosted_cap_exit0_receipt(&invent_join).is_err());
+    }
+
+    #[test]
+    fn owner_join_auth_handoff_refuses_without_root_token() {
+        let root = snapshot::root().expect("root");
+        assert!(find_n06_owner_join_auth_handoff(&root).is_none());
+        let err = require_n06_owner_join_auth_handoff(&root).expect_err("no invent");
+        assert!(err.to_string().contains("Root auth handoff absent"));
+        assert!(err.to_string().contains("Cap=0"));
     }
 
     fn tempfile_dir(prefix: &str) -> std::path::PathBuf {
