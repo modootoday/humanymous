@@ -3,7 +3,7 @@ id: sot:root/container-test-environments
 title: Canonical Compose lab and Cloudflare test environment profiles
 status: active
 created: 2026-11-06T22:41:55Z
-updated: 2026-11-08T16:33:00Z
+updated: 2026-11-08T16:40:00Z
 verify: manual
 rel:
   governs: [deployments/lab/**, build/rust/**, test/lab/**]
@@ -12,11 +12,51 @@ rel:
 
 ## Product verification canon (measured 2026-11-08)
 
-Product completion authority is **Docker-only**. Host/loopback runners, scoped
-`cargo test`, Clippy, adapter Compose authorship, and component/scenario pilots
-are not full product or M3 pass. Missing required signals stay fail-closed;
+Product completion authority is **Docker clean-room only**. Every required
+usage-condition combination must pass that clean-room gate; host/loopback e2e
+is never completion authority. Missing required signals stay fail-closed;
 unavailable / not_run / ignored / component-only rows never aggregate into
 `full_product_qualified=true` or release readiness.
+
+### Docker clean-room (measured definition)
+
+In this repository, **clean-room** means an affinity-checked Docker Engine run
+that exercises the lab's isolated Compose topology with owned project naming,
+exact source/image/topology binding, and verified owned cleanup. It is the
+sole product-completion authority for Rust full-product and M3 composed e2e.
+
+| Element | Measured requirement | Not clean-room |
+| --- | --- | --- |
+| Engine | Windows Desktop `desktop-linux` / `npipe:////./pipe/dockerDesktopLinuxEngine`, or genuine GitHub-hosted Linux with its own provenance; rule `96` preflight before mutation | Unallocated WSL daemon fallback; PATH-missing substitution; merging Desktop and WSL server IDs |
+| L5 topology | Lab internal networks; separated Gate / origin / attacker / browser / witness roles; product HTTP probes inside the lab; host coordinates Docker only | Host-published Gate/origin as the measured plane; loopback-only multi-role claims; single-namespace browser+backend product claim |
+| Lab isolation | Unique owned Compose projects; clients run in Docker; defense-only `internal: true`; no host Docker socket mount into attackers | Shared foreign projects; host `node`/`cargo` product HTTP runners; third-party probing |
+| Project naming | Prefix `humanymous-<family>-*` (e.g. `humanymous-lab-go-product`); never reuse `humanymous-pages-preview` | Unscoped default project names; pages-preview collision |
+| Coordinator | `humanymous-lab-runner` and/or Docker red-blue suite (`scripts/e2e-docker.*` / skill `red-blue-validate`) with exact source/image/topology binding | Historical `test/lab/run.py`; host `node test/e2e/runner.mjs`; host `node test/gate/e2e.mjs` |
+| act | Local nektos/act may compare YAML after explicit Desktop `DOCKER_HOST`; it **cannot** mint hosted=`true` / `GITHUB_ACTIONS` product qualification or attributed hosted run IDs | Spoofed Actions env; treating act success as hosted Linux product green |
+| Cell status | Product completion needs required matrix cells at `pass_product` (binding + cleanup included) | `pass_component_only`, `compose config`, Desktop component pilots, scoped `cargo test` / Clippy |
+
+Desktop component / adapter / custody / collector / authority-IPC pilots remain
+**non-product**: at best `pass_component_only`. They never set
+`full_product_qualified=true` or satisfy M3.
+
+### Usage-condition matrix and inventory pointer
+
+The usage-condition surface is `deployments/lab/ENVIRONMENTS.md` (adapter homes
+× lab scenarios × which gate each feeds). Product completion requires the
+**Docker clean-room matrix** over those conditions (env × adapter × scenario ×
+gate), not a single happy-path stack.
+
+Inventory-only gap record (not a product pass; `pass_product_count=0` as of
+2026-11-08T07:34:41Z observation):
+
+`.spec.local/root/evidence/20261108163200-cursor-product-completion-matrix/`
+
+Treat that path as **inventory / gap tracking only** until required cells are
+actually measured `pass_product`. Do not promote its `pass_component_only`,
+`unrun`, `blocked`, or historical hosted rows into product or M3 green.
+Program roadmap M3 composed product e2e remains **Not qualified** until an
+allocated clean-room composition measures required adversarial/a11y
+denominators with exact source/image/topology binding.
 
 | Pointer | Role |
 | --- | --- |
@@ -25,6 +65,7 @@ unavailable / not_run / ignored / component-only rows never aggregate into
 | `.agents/rules/60-e2e-docker-only.md` | Completion-authority rule (host e2e forbidden as done) |
 | skill `red-blue-validate` | Docker product measure checklist; legacy oracle recipes ≠ Rust full-product runner proof |
 | `.agents/rules/96-docker-engine-affinity.md` | Desktop `desktop-linux` binding before local mutation |
+| `.spec.local/root/evidence/20261108163200-cursor-product-completion-matrix/` | Inventory-only completion gap matrix until `pass_product` cells exist |
 
 Live lab tree (measured): `deployments/lab/{compose.yaml,compose.*.yaml,topology/,authority/,clients/,adapters/,scenarios/,providers/,ENVIRONMENTS.md,INTEGRATION.md}`.
 The earlier “proposed future layout” wording is superseded by this measured tree;
@@ -33,14 +74,14 @@ profiles still select services and are not security boundaries.
 Live product coordinator is workspace package `humanymous-lab-runner`
 (`test/lab/runner/**`). Historical `test/lab/run.py` / `cleanup.py` remain on
 disk as compatibility oracles; they are not permission to author new foreign
-product harnesses or to claim product green. Evidence for this canonization:
-`.spec.local/root/evidence/20261108163300-cursor-spec-canonization/`.
+product harnesses or to claim product green. Prior honesty canonization:
+`.spec.local/root/evidence/20261108163300-cursor-spec-canonization/`. Clean-room
+completion-authority strengthening:
+`.spec.local/root/evidence/20261108164000-cursor-clean-room-canon/`.
 
 Honesty: do not invent product/M3 green from ENVIRONMENTS rows, Compose `config`
-checks, or bounded Go/browser/collector scenario receipts. Program roadmap M3
-composed product e2e remains **Not qualified** until an allocated isolated Docker
-composition with exact source/image/topology and required adversarial/a11y
-denominators is measured.
+checks, matrix inventory status, or bounded Go/browser/collector Desktop
+scenario receipts.
 
 ## Rust collector component lab delta c3389b6
 

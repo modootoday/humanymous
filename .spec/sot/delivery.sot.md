@@ -3,7 +3,7 @@ id: sot:root/delivery
 title: Rust delivery and Pages contracts
 status: active
 created: 2026-11-06T20:27:03Z
-updated: 2026-11-08T16:33:00Z
+updated: 2026-11-08T16:40:00Z
 verify:
   - cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy
   - cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml
@@ -16,15 +16,21 @@ rel:
 ## Product e2e completion authority (measured 2026-11-08)
 
 Delivery CI transport does not itself certify Rust full-product or M3 pass.
-Product completion remains Docker-only under `sot:root/container-test-environments`,
-with the usage-condition matrix at `deployments/lab/ENVIRONMENTS.md`, rule
-`60-e2e-docker-only`, and skill `red-blue-validate`. Prefer
-`humanymous-lab-runner` + lab Compose over host/loopback or new foreign
-coordinators. Component workflow greens (collector Firefox lab, adapter pilots,
-Go bounded eight-case) keep `full_product_qualified=false` until an allocated
-isolated composition measures required adversarial/a11y denominators with exact
-source/image/topology binding. Fail closed when required product signals are
-missing; do not invent release readiness from partial gates.
+Product completion requires **Docker clean-room** under
+`sot:root/container-test-environments` (L5 topology, lab isolation, owned
+`humanymous-<family>-*` projects, affinity-checked engine, exact
+source/image/topology binding, owned cleanup). Host/loopback e2e, local act
+hosted-marker spoofing, and Desktop component pilots are not completion
+authority. Usage conditions: `deployments/lab/ENVIRONMENTS.md`. Measure via
+rule `60-e2e-docker-only` and skill `red-blue-validate` /
+`humanymous-lab-runner`. Gap inventory only (not a pass) until cells are
+`pass_product`:
+`.spec.local/root/evidence/20261108163200-cursor-product-completion-matrix/`.
+Component workflow greens (collector Firefox lab, adapter pilots, Go bounded
+eight-case) keep `full_product_qualified=false` until required clean-room
+matrix cells and adversarial/a11y denominators are measured. Fail closed when
+required product signals are missing; do not invent release readiness or M3
+green from partial gates.
 
 ## Collector component validation delta c3389b6
 

@@ -3,7 +3,7 @@ id: sot:root/structural-development
 title: Bottom-up development architecture and chat responsibility canon
 status: active
 created: 2026-11-07T15:10:00Z
-updated: 2026-11-08T16:33:00Z
+updated: 2026-11-08T16:40:00Z
 verify: manual
 rel:
   depends_on: [sot:root/program-roadmap, sot:root/rust-migration, sot:root/container-test-environments, plan:root/20261107151000, plan:root/20261107150000]
@@ -13,12 +13,17 @@ rel:
 
 ## L5 product verification honesty (measured 2026-11-08)
 
-L5 Docker product/adversarial qualification is fail-closed and Docker-only.
-Authoritative pointers: `sot:root/container-test-environments` product-verification
+L5 Docker product/adversarial qualification is fail-closed and **Docker
+clean-room only** (isolated lab topology, owned Compose projects, affinity-
+checked engine; host/loopback and Desktop component pilots ≠ product pass).
+Authoritative pointers: `sot:root/container-test-environments` clean-room
 canon, `deployments/lab/ENVIRONMENTS.md` usage-condition matrix, rule
-`60-e2e-docker-only`, and skill `red-blue-validate`. Lower-layer unit/native/
-adapter/component receipts never establish L5 product or M3 composed e2e pass.
-Do not invent green from Compose authorship or scenario scaffolds.
+`60-e2e-docker-only`, and skill `red-blue-validate`. Inventory-only gap matrix
+until required cells are `pass_product`:
+`.spec.local/root/evidence/20261108163200-cursor-product-completion-matrix/`.
+Lower-layer unit/native/adapter/component receipts never establish L5 product
+or M3 composed e2e pass. Do not invent green from Compose authorship, scenario
+scaffolds, or matrix inventory rows.
 
 ## Browser wire privacy correction, version 2
 
@@ -1182,7 +1187,7 @@ are not filesystem write grants. No new crate or source reorganization is implie
 | L2 | Actual OS/file/process/socket/FFI provider tests, resource ownership and failure evidence |
 | L3 | Authenticated application services, recovery/session/ACK/lifecycle composition and narrow real integration |
 | L4 | Host adapters, CLI and browser consumers: actual supported host or GUI pilots |
-| L5 | Docker product/adversarial, cross-OS/artifact and public documentation qualification; ENVIRONMENTS matrix + red-blue Docker gate; component-only ≠ product pass |
+| L5 | Docker clean-room product/adversarial, cross-OS/artifact and public documentation qualification; ENVIRONMENTS × clean-room matrix must reach `pass_product`; host/loopback and Desktop component pilots ≠ product pass |
 | X | Shared graph, independent review, performance and Rust developer tooling across all layers |
 
 ## Exact23-chat registry
