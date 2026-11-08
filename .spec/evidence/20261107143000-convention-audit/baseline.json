@@ -266,6 +266,20 @@
       "root_correction_assigned": true,
       "remaining": "Actual native role Cargo ledger-to-built/copied DLL proof, contract producer/equality and v2consumer migration; no fullCEF/runtime qualification",
       "latest_review": "browser-artifact-b1-implementation-review-006.json"
+    },
+    {
+      "id": "CA-B1-LOCAL-EXIT-01",
+      "priority": "P2",
+      "owner": "Root/Delivery",
+      "state": "Named candidate source mismatch corrected revision2; actual9fixtures/compiler observations pending",
+      "trigger": "LocalObservation::settle_current requires empty capture issues before negative validator; actual reused owner records UnsuccessfulExit for every intended Cargo101 and forwards it to CapturedDirectChild",
+      "effect": "Expected negative is refused before exact diagnostics, preventing intended finite local sequence completion",
+      "runtime_or_test_failure_observed": false,
+      "required_fix": "Case-aware outcome acceptance: positive cases0/noissues; negatives101/onlyexpectedUnsuccessfulExit, actual3/3joins and exact unsafe diagnostics; refuse all transport/deadline/panic/setup/stop issues. Preserve raw receipt/shared capture semantics.",
+      "requested_regressions": "Expected101 vs wrongexit/extraissue and retained source/firstcause behavior; no blanket issue suppression",
+      "owner_notified": true,
+      "fixed_source_sha256": "9cfaec5efee0bb1793ae1f4621f64ccd2dd44699da7213f3652f04dfa2a17e2b",
+      "actual_regression_verified": false
     }
   ],
   "evidence_references": {
@@ -2624,6 +2638,18 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/adapter-declarations-b2-status-review-009.json",
     "sha256": "dbc2264c846bb392c8dc1efecfd020417c2fb077c2f12142ac27ebf90d4fd616",
     "bytes": 2835,
+    "goal_complete": false
+  },
+  "localcompiler_exit_summary_binding_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/localcompiler-exit-summary-binding-review-010.json",
+    "sha256": "b1dfc7bb80ac76e7064a47a9e408d470fc2e1d0d36461858437fea07568ec697",
+    "bytes": 4031,
+    "goal_complete": false
+  },
+  "localcompiler_exit_fix_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/localcompiler-exit-fix-review-011.json",
+    "sha256": "d204751e990cbd5b4576b697a9da5dbdf519c59b532771203ac8ef8ac42c1116",
+    "bytes": 1726,
     "goal_complete": false
   }
 }

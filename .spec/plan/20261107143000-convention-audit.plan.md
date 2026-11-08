@@ -3109,3 +3109,40 @@ query. Owner draft was Git-untracked at observation; no committed/publication
 claim is made. It cannot replace raw custody, compiler-read closure or actual
 native/runtime gates. Private adapter-declarations-b2-status-review-009.json binds
 these observations; full objective remains active.
+
+CA-B1-LOCAL-EXIT-01 (P2, Root/Delivery) confirmed in candidate source before actual
+execution: settle_current requires empty CapturedDirectChild issues before its
+negative validator. The reused OwnedDirectChild records UnsuccessfulExit for each
+nonzero status and CaptureAttempt forwards it to that receipt. Thus intended
+Cargo101 negative outcomes are refused before exact diagnostic checks. Six pure
+fixtures were authored, not executed; no actual test/runtime failure is claimed.
+Root and Delivery received the concrete case-aware correction: positive0/noissues,
+negative101/onlyexpected unsuccessful outcome plus actual3/3worker joins and exact
+unsafe diagnostics; every transport/deadline/panic/setup/stop issue still refuses.
+Shared capture semantics and original raw issues must not be weakened. Require
+expected101/wrongexit/extraissue and retained-failure/source regressions. Original
+candidate22816B/SHA3c92d828, its diagnostic source/manifest and exact reused owner/
+capture sources are preserved raw in audit local-compiler-first-attempt-010.
+
+Formal summary binding follow-up: Root committed cca8a64d then1c4502c0. Current
+summary2714B/SHA4a21c64757fc150ddc75b585eaa1b5ff7f1481e5039e297413a2988c55a9cc94
+matches updated index. Independent raw Git object equals both owner commit blobs
+1ce17aaff5a7d22a9c01b454ede09e6b451d4db7; i/lf andw/lf. Previous2773B/SHA68e62
+observation remains only the historical untracked working draft, never a claim of
+committed raw equality. The authored derived summary adjustment does not imply
+normalization of raw logs/legal/fixtures or qualify runtime/publication. Private
+localcompiler-exit-summary-binding-review-010.json binds findings and source epochs.
+
+CA-B1-LOCAL-EXIT-01 follow-up: Delivery revision2 source25816B/SHA9cfaec5efee0bb1793ae1f4621f64ccd2dd44699da7213f3652f04dfa2a17e2b
+corrects the named mismatch in BOTH pending poll and final settlement. Expected
+negative pending outcome may retain only UnsuccessfulExit; final negative needs
+exit101/exactlythatissue/actual3of3joins/no priorfailure before the unchanged
+attributed diagnostic checks. Positive cases need0/noissues. Shared capture/old
+raw issues remain unchanged; no broad suppression or prior failure reset. Three
+new pure controls cover expected/wrongexit/missing/extra10faultkinds/incomplete
+joins/sticky originalfailure; total9 definitions are NOTRUN. Actual compiler
+controls are NOTRUN. Thus source correction is verified, actual regression pending.
+Both raw first3c92 and fix9cfa source epochs are independently preserved in audit
+snapshots. Private localcompiler-exit-fix-review-011.json binds this direction;
+Root retains integration and execution allocation, full hosted/tree/CA-LIFETIME/
+native4/whole-root gates remain OPEN. No executor was requested or run by audit.
