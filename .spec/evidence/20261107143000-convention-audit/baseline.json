@@ -259,11 +259,13 @@
       "id": "CA-BROWSER-ROLE-CALLER-01",
       "priority": "P2",
       "owner": "Root/Browser",
-      "state": "OPEN corrected-layout caller candidate; not adopted",
+      "state": "OPEN: d08 role-loop/features/snapshot/schema direction corrected; actual Cargo artifact provenance join still missing",
       "trigger": "After3-to1 composition, harness repeats default package build, has no sequential per-role preserved outputs, requires retired nested manifests, and protocol argv enable only native-pilot-tests while native modules require their role feature",
       "runtime_failure_observed": false,
       "required_fix": "Actual sequential bootstrap/desktop role features and preserve-copy/hash joins; merged snapshots; separate result schema; exact module-prefixed executed test census; required negative role controls",
-      "root_correction_assigned": true
+      "root_correction_assigned": true,
+      "remaining": "Fixed debugDLL path not joined to exact compiler-artifact/opaque package/target/source/profile/features/build-finished",
+      "latest_review": "browser-role-caller-followup-004.json"
     }
   ],
   "evidence_references": {
@@ -2568,6 +2570,12 @@
     "recommendation": "Conditional low-level non-authority primitive only; memory/ownership/feature-canon amendments before implementation, provider manufacture/namespace remainsUnsupported",
     "Root_decision": "PENDING",
     "source_or_native_execution": false,
+    "goal_complete": false
+  },
+  "browser_role_caller_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-role-caller-followup-004.json",
+    "sha256": "6c102e639500986c38b68c666f349739a89686b7b74d8d5bddafb88d7e67bba3",
+    "bytes": 6547,
     "goal_complete": false
   }
 }

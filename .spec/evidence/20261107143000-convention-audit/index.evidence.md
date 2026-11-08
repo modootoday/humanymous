@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: c8ee69ee6dd27db84a723b64899d183753f3d0e7f47828145fa869345a1f05d9, bytes: 142833, store: repo}
+  - {path: baseline.json, sha256: 888009d138b1fca2c612c0114566864865a242198b85c438d6296ecb73f2e2c2, bytes: 143384, store: repo}
 ---
 
 # Convention audit baseline
@@ -2695,3 +2695,22 @@ feature/unsafe amendments and pure/compile/actual NTFS negative tests. All those
 tests are NOTRUN; no unsafe implementation was authored. Primary sources are
 [Microsoft CreateFileW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew)
 and [Rust1.99.1 FromRawHandle](https://doc.rust-lang.org/std/os/windows/io/trait.FromRawHandle.html).
+
+Browser caller d08dc778 follow-up: all7 candidate/preserved-preimage hashes and
+sizes match declared records. Named source direction now has sequential per-role
+build/preserve, explicit role features on six test commands, merged snapshots and
+v2 separate receipt projection. At current Root observation3 files equal candidate,
+4 changed further; this is not whole-source equality. Raw strict footer1.71s is
+observed separately without a joined full argv/source-before-after receipt.
+
+CA-BROWSER-ROLE-CALLER-01 remains OPEN: retain_role still selects metadata target_
+directory/debug/humanymous_browser.dll after Cargo exit success. It does not join
+that path to a compiler-artifact/opaque package_id/target/source/profile/role-feature
+record or build-finished success; diagnostic projection drops non-compiler-message
+records. Staged/package hash equality proves copying that path, not its exact role
+producer. Root received the remaining fix: select exactly one actual cdylib output
+through same-source metadata and compiler records, then preserve/hash that actual
+filename immediately per role. No actual wrong DLL or runtime failure was observed.
+Pure preservation tests and strict compilation cannot close provenance, producer
+contract refresh, v2 consumer migration, PE export/import or real CEF/UI/lifetime
+validation. Private browser-role-caller-followup-004.json binds this scoped review.
