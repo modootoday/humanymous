@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 9fcc2119a380c7a8d38e858c2db093c24c9744fa7951863a03cf0b13a464d96d, bytes: 155737, store: repo}
+  - {path: baseline.json, sha256: 2bae7e27c84ebb2b96e3cc44cba36baa68f53efb02f2a810fc3e9592cfd7642a, bytes: 156564, store: repo}
 ---
 
 # Convention audit baseline
@@ -3097,3 +3097,29 @@ NOTRUN. Helper execution cannot count as parent success. Detached standard-strea
 coverage also needs independent external no-leaked-marker observation; the parent
 body alone cannot prove that. Private b2-fixture-review-030.json binds this source
 scope. B2 remains UNAPPROVED; full Native/CA-LIFETIME/migration gates stay OPEN.
+CA-B2-DRAIN-01 correction follow-up remains OPEN. Owner added bounded positive
+accepted drain, sticky effective_cleanup=min(original cleanup, first+drain),
+checked overflow refusal, preserved original pair and authored four boundary
+conditions in one pure test. Mid-edit4-argument constructor calls were preserved
+as historical source; later saved state deaaf806/8095B independently matches
+owner and has corrected3-argument calls. No compiler failure or test pass inferred.
+
+Additional confirmed ordering edge: poll_inner observes clock before native call,
+then records Exited(nonzero) at return time BEFORE final clock observation. If
+precall0.9/run1/native-return3/drain3, sticky first issue is recorded at3 and
+effective cleanup6 rather than known run-expiry1+drain3=4. Post-native clock must
+be observed before recording that nonzero outcome, or equivalent ordering must
+preserve earlier expiry. Native/Root were notified; require a delayed-return
+ordering regression. This is source arithmetic/control flow, not an actual blocked
+native observation. Private b2-drain-correction-progress-032.json and
+b2-delayed-nonzero-review-033.json preserve exact intermediate bytes/counterexample.
+Final source acceptance, actual regressions and B2/native/lifetime gates remain OPEN.
+
+
+Subsequent saved correction independently reviewed: State::direct_exit_observed
+observes time BEFORE recording nonzero; facade retains actual exit and calls it,
+while Pending also post-checks time. Authored delayed-return regression uses exact
+0.9/1/3/drain3 counterexample and requires first RunExpired at1/effective4 with
+original cleanup10 unchanged. Private b2-drain-source-fix-review-034.json preserves
+corrected state/facade bytes separately. Source gap corrected; actual tests remain
+NOTRUN, final frozen inventory/approval pending, CA-B2-DRAIN-01 stays OPEN.

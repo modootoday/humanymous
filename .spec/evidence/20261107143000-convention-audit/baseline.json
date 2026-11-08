@@ -301,7 +301,7 @@
       "id": "CA-B2-DRAIN-01",
       "owner": "native-windows/root",
       "severity": "P2",
-      "state": "OPEN unapproved draft plan/body contract gap; owner correction and actual regressions pending",
+      "state": "OPEN source correction independently reviewed; actual boundary/delayedreturn regressions pending",
       "requirement": "Effective cleanup=min(original cleanup,first loss+accepted drain cap)",
       "observed": "State only retains original cleanup; no drain cap/effective limit",
       "native_failure_observed": false,
@@ -2796,6 +2796,24 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-drain-gap-review-031.json",
     "sha256": "e4a355b98c28501b263c2168911ec3a903febcd3913dabe74038cf2099036b00",
     "bytes": 1976,
+    "goal_complete": false
+  },
+  "b2_drain_correction_progress": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-drain-correction-progress-032.json",
+    "sha256": "6f2a45caba91a5f754d515133eccec75b903eab529adee006f9f29d96fbf8203",
+    "bytes": 916,
+    "goal_complete": false
+  },
+  "b2_delayed_nonzero_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-delayed-nonzero-review-033.json",
+    "sha256": "96ab7f560c13aac83354f1738702dcbfa099e7a228be26a82310d2567968f1a1",
+    "bytes": 1463,
+    "goal_complete": false
+  },
+  "b2_drain_source_fix": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-drain-source-fix-review-034.json",
+    "sha256": "b4b5e67acc598642e71d5a3275195f658e7b72fd92b03601c66c2d77cd285689",
+    "bytes": 1343,
     "goal_complete": false
   }
 }
