@@ -372,6 +372,33 @@ The earlier sealed snapshot remains immutable and cannot qualify these later
 caller changes. The next final freeze must include and validate their actual
 source/artifact/role joins, expanded unsafe negatives and hosted execution.
 
+Root adopted the nine exact-preimage Native consumer files from cb9adcd8 only
+into the isolated assembly. Source/build observations use workspace-only lock
+schema2, required source inputs include the actual CLI composition/implementation,
+and service roles use the real cli-service-process/cli-runtime-service-process
+targets. Compiler records retain opaque package ID, source path, profile.test,
+features and executable digest. Feature checks establish required-feature
+inclusion, not equality of the complete build recipe; exact recipe qualification
+remains open. External runner-artifact observations grant no actor authority.
+
+The Native-runner all-target strict profile passed. Actual list-only discovery
+preserves all61 exact old mapped selectors with zero differences. Eighteen changed
+unit cases each executed successfully with one pass and60 filtered; they include
+bounded owned-file fixtures as well as in-memory validation, not memory-only work.
+Production Packages::load, actor dispatch, process/service/native qualification
+were not executed and cannot inherit those passes. Raw per-case logs and the
+selector summary are retained; their full source/process closure still needs a
+fresh final seal after subsequent edits.
+
+Root additionally corrected the controlled watchdog test artifact prefix to
+cli_watchdog_boundary-, preserved its exact test selector and added explicit
+rejection of the old watchdog_boundary- spelling. Two existing unit cases passed.
+An actual Cargo no-run build produced one cli-watchdog-boundary test artifact,
+profile.test=true, filename cli_watchdog_boundary-a3ff4bb7df0d84aa.exe and SHA-256
+8c98f09b31cdb672b07e8c7c33cbdcdbe1521e6ef9a99c70e2cc281ebc76cd17.
+The watchdog test body was not executed. Source/artifact observations and filename
+admission remain distinct from native containment or authenticated launcher proof.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
