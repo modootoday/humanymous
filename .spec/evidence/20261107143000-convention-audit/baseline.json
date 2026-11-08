@@ -2075,5 +2075,29 @@
     "sgd": "c9ba source-only noP0P1; temporary narrow expect conditionalRootexception; P2 ownership/explicitcleanup/errorcategories/boundaries requested; actual NOT qualified",
     "origin": "fc9source/privacy/testmeaning reviewed; actualbrowser/mock/type/wire/causality NOT qualified",
     "goal_complete": false
+  },
+  "old6lib_and_sgd_fix_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/old6lib-actual-review-001.json",
+        "sha256": "6ec2ad4da6cb77fb7356229345630d6acb29bb0d8990bf8a6bb3cfa6a0b6ba4c",
+        "bytes": 48419
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/old6lib-source-join-001.json",
+        "sha256": "702e51554381dbe45a27da6bf1067a21dda18b650f435b5e563201f93be55d95",
+        "bytes": 158
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/sgd-ownership-source-fix-review-002.json",
+        "sha256": "695e756c798ba2f75619ea9cac2f9a8e2f8e67754b63a50edfd0eb82cae01c6b",
+        "bytes": 1525
+      }
+    ],
+    "old_libs": "Source5d68 actual186Windowsnames exact;6lists/0tests;63rawhashsize;3128Git/current/snapshot0issues;9510+17beforeafterequal",
+    "clock": "Actual allunder90s; recordeddeadline windows90.039..90.316 rounding provenance requested, no measured overrun; no hardOS containment claim",
+    "sgd": "2e69P2sourceownership/finish/collision/error/boundaries CLOSED;15authored notactualqualified",
+    "remaining": "New BIN semantic lists/effects, updated279 privatecomposition map, actualSGD/Core and full product/native/package gates",
+    "goal_complete": false
   }
 }

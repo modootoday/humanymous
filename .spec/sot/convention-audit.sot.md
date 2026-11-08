@@ -2850,3 +2850,46 @@ causality of prior null and full product remain unqualified by this source revie
 Audit launched no compiler/test/browser/native action. New Root list-only186-name
 receipt and matched performance result still require independent raw review;
 their reported success is not silently promoted here.
+
+## Independent old-six-library semantic discovery and SGD source-fix review
+
+Receipt b0a63726 was independently joined through63 hash/size-verified raw files.
+All six owned Cargo commands select the exact old package, lib/all-features and
+--list; matching process/PID/terminal exit0 and completed output-copy records are
+present. Actual Windows names are Maintenance76,Attacker27,CLI26,Defender9,
+Native11,Pages37 =186, exactly matching expected names. No test function ran and
+ignored registered names are not passes. The one missing187-source candidate is
+CLI doctor_refuses_parent_without_owner_write_permission, explicitly cfg(unix).
+
+All3128 source snapshot rows join exact5d68 Git blobs and current frozen B bytes,
+zero mismatch. Source3128/dependencies9510/environment17 before-after snapshots
+are byte-equal. The234 selected package records join exact metadata opaque IDs;
+all10 local packages stay inside frozen B,224 are registry packages. Dependencies
+comprise9444 registry files and66 tool files; their whole present-day bytes were
+not independently rehashed. Ancestor config audit is POST-only and full resolved
+config/child/loader reads remain unproven. Trusted process exit/drain is not hard
+OS containment or complete descendant cleanup proof.
+
+Actual command durations all stay below90s (maximum57.3472881s). Retained command
+deadline-original_elapsed windows are90.039..90.316s rather than exact90; rounding
+provenance was requested without rerun or a measured-overrun claim. Do not promote
+this to exact native deadline/containment qualification. New BIN collection,
+per-role effects and old/new relocated semantic equivalence remain OPEN.
+
+SGD2e69fe51 addresses the requested P2 source controls: successful create_new
+paths are recorded before writes; explicit finish propagates failures and never
+removes an untracked collision; every file case asserts finish, with Drop only
+fallback. Collision ownership refusal, seven exact negative categories, finite
+negative sigmoid saturation and128/129version limits are authored. The warm-base
+let-chain preserves validation/error order. These P2s are CLOSED at SOURCE scope;
+15 authored tests (12numeric,3file) are not yet independently actual-qualified.
+The simple ledger explicitly does not provide hostile-race/native FileID custody.
+Root a0eb2613 records the narrow private non-test dead-code exception and removal
+at real offline caller integration; no production integration credit follows.
+
+Root reported a fresh concrete assembly gate: old279 entry-file destinations
+need reconciliation with proposed private command-module namespaces and NEWthin
+composition roots. Prior279 coverage/collision checks are not that semantic
+closure. Updated exact mapping is queued; generic ownership decisions remain
+accepted. Audit ran no compiler/list/native/test action and whole migration
+qualification remains OPEN.
