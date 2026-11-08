@@ -573,12 +573,12 @@ pub fn run(args: &[String]) -> Result<i32> {
         index += 1;
     }
     if authority_node_ipc {
-        // Cap CLI selector is recognized for matrix honesty, but INTEGRATION.md
-        // forbids lab-runner from executing deployments/lab/authority/pilot.mjs.
-        // Fail closed until Root allocates a Rust Cap pilot + freeze allowlist.
+        // Cap CLI selector is recognized for matrix honesty. Fail closed through
+        // unlock_gate until Unlock C TRANSFER apply + Cap orchestration wire.
         let _ = evidence;
+        crate::unlock_gate::refuse_authority_cap_until_unlocked(&root)?;
         return Err(
-            "authority-node-ipc Cap CLI is blocked_claim: deployments/lab/INTEGRATION.md forbids lab-runner execution of deployments/lab/authority/pilot.mjs; freeze allowlist excludes authority pilot/Dockerfile inputs; Root must allocate Rust-authored Cap pilot under deployments/lab/authority/** (or INTEGRATION amendment) + build/rust/authority-lab.Dockerfile allowlist in test/lab/runner/src/snapshot.rs (+ adapters/node/src/** as needed) before Cap can serialize/burn; never invent pass_product_clean_room"
+            "authority-node-ipc Cap CLI refused after unlock gate (unreachable without Cap wire); never invent pass_product_clean_room"
                 .into(),
         );
     }

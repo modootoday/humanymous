@@ -63,8 +63,8 @@ pub fn plan(args: &[String]) -> Result<i32> {
         index += 1;
     }
     let matrix_path = matrix_path.ok_or("--matrix required")?;
-    let raw = fs::read_to_string(&matrix_path)
-        .map_err(|error| format!("matrix read failed: {error}"))?;
+    let raw =
+        fs::read_to_string(&matrix_path).map_err(|error| format!("matrix read failed: {error}"))?;
     let matrix: Value =
         serde_json::from_str(&raw).map_err(|error| format!("matrix json: {error}"))?;
     let plan = plan_matrix(&matrix)?;
@@ -329,24 +329,29 @@ fn decide(
 }
 
 /// Cap CLI status for a matrix scenario. `blocked_claim` is recognized but
-/// Root-owned; only `bound` may serialize.
+/// Root-owned until Unlock C TRANSFER apply; only `bound` may serialize.
 fn cap_cli_status(scenario: &str) -> &'static str {
     match scenario {
         "browser-product" | "collector-component" | "go-product" | "topology-fixture" => "bound",
-        "authority-node-ipc" => "blocked_claim",
+        "authority-node-ipc" => match crate::snapshot::root()
+            .ok()
+            .and_then(|root| crate::unlock_gate::authority_cap_cli_status(&root).ok())
+        {
+            Some("bound") => "bound",
+            _ => "blocked_claim",
+        },
         _ => "absent",
     }
 }
 
 /// Only scenarios with an executable lab-runner Cap selector may serialize.
-/// `authority-node-ipc` is recognized (`blocked_claim`) but must not inherit
-/// bare `--require-full` until Root unlocks an executable Cap path.
+/// `authority-node-ipc` serializes only after Unlock C makes Cap CLI `bound`.
 fn scenario_has_cap_cli_binding(gate: &str, scenario: &str) -> bool {
     if cap_cli_status(scenario) != "bound" {
         return false;
     }
     match scenario {
-        "browser-product" | "collector-component" | "go-product" => true,
+        "browser-product" | "collector-component" | "go-product" | "authority-node-ipc" => true,
         "topology-fixture" if gate == "lab_runner_topology_or_controls" => true,
         _ => false,
     }
@@ -407,8 +412,14 @@ mod tests {
             "pass_component_hosted",
             "fixture_ready",
         ] {
-            let (disposition, reason, command) =
-                decide(status, "lab_runner_require_full", "browser-product", true, true, false);
+            let (disposition, reason, command) = decide(
+                status,
+                "lab_runner_require_full",
+                "browser-product",
+                true,
+                true,
+                false,
+            );
             assert_eq!(disposition, Disposition::HoldComponent);
             assert!(reason.contains("reburn forbidden"));
             assert!(command.is_null());
@@ -428,7 +439,13 @@ mod tests {
         assert_eq!(disposition, Disposition::SerializeWhenUnlocked);
         assert_eq!(
             command,
-            json!(["run", "--evidence", "BUNDLE", "--browser-product", "--require-full"])
+            json!([
+                "run",
+                "--evidence",
+                "BUNDLE",
+                "--browser-product",
+                "--require-full"
+            ])
         );
     }
 
@@ -533,7 +550,10 @@ mod tests {
         assert_eq!(plan["summary"]["serialize_cap_when_unlocked"], 1);
         assert_eq!(plan["summary"]["out_of_lab_runner_scope"], 1);
         assert_eq!(plan["summary"]["blocked_claim"], 1);
-        assert_eq!(plan["honesty"]["never_invent_pass_product_clean_room"], true);
+        assert_eq!(
+            plan["honesty"]["never_invent_pass_product_clean_room"],
+            true
+        );
         assert_eq!(plan["honesty"]["blocked_claim_never_serializes"], true);
         let authority = plan["cells"]
             .as_array()
