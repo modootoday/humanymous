@@ -17,7 +17,7 @@ struct Contract {
 /// Counts are scenario groups, never inferred Rust harness tests or human trials.
 pub fn completed_groups(cases: &mut [Value]) -> Result<usize, &'static str> {
     let contract: Contract =
-        serde_json::from_str(include_str!("../../../adapters/nginx/pilot-contract.json"))
+        serde_json::from_str(include_str!("../qualification/fixtures/nginx/pilot-contract.json"))
             .map_err(|_| "pilot contract schema")?;
     if contract.report_schema != SCHEMA {
         return Err("pilot contract version");
@@ -62,7 +62,7 @@ mod tests {
     use super::*;
     fn cases() -> Vec<Value> {
         let c: Contract =
-            serde_json::from_str(include_str!("../../../adapters/nginx/pilot-contract.json"))
+            serde_json::from_str(include_str!("../qualification/fixtures/nginx/pilot-contract.json"))
                 .unwrap();
         c.required_groups
             .into_iter()

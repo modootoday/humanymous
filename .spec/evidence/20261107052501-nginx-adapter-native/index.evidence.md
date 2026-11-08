@@ -3,7 +3,7 @@ id: evidence:root/20261107052501
 title: Rust nginx native source-bound compatibility results
 status: active
 created: 2026-11-07T05:25:01Z
-updated: 2026-11-07T22:11:53Z
+updated: 2026-11-08T00:39:52Z
 files:
   - {path: native-results.json, sha256: 17aceea2fa59f73972f9fe6d6d431fa47bbd83dead978caa17197cdb063b570e, bytes: 9567, store: repo}
   - {path: git-byte-proof.json, sha256: 811e7f6bceb631d781e6085c2ebc88a97f639561490af0fd9dda9494287b099e, bytes: 8416, store: repo}
@@ -15,6 +15,7 @@ files:
   - {path: eight-public-package-handoff.json, sha256: 305217206e59cadd4aecb15b4a2c78b895117abd4172dab59b9eb740189c362f, bytes: 12028, store: repo}
   - {path: core-slice01-consumer-imports.json, sha256: 911bbcdc63e46ed123fc8ef910a6a2b5c2d157816af4a3281ab8a2896fec9591, bytes: 3366, store: repo}
   - {path: runtime-slice02-consumer-imports.json, sha256: 2a3c3dcb48bdc2daef1fddd983065b75801c5c544fc9e4c0835da1407b3b83cf, bytes: 2131, store: repo}
+  - {path: immutable-pilot-contract-replica.json, sha256: 9861c4bcade13217fe70697af7b0a623bfec1adb9309e93a856fa189d76de794, bytes: 2495, store: repo}
 ---
 
 # Rust native nginx compatibility

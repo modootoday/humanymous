@@ -1,0 +1,16 @@
+{
+  "schema": "humanymous.nginx.data-replica-provenance/1",
+  "kind": "immutable DATA replica, not implementation",
+  "producer_commit": "e3e7830e619d3c3ff60b9d931ac463a84e15f4c6",
+  "producer_path": "adapters/nginx/pilot-contract.json",
+  "producer_git_blob": "9fece6de6bdeca2fb9832606fa6f19afce7d3752",
+  "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+  "bytes": 4030,
+  "license": "Apache-2.0",
+  "license_source": "LICENSE",
+  "replica_package_relative_path": "qualification/fixtures/nginx/pilot-contract.json",
+  "future_canonical_owner": "humanymous-cli qualification",
+  "future_canonical_path": "crates/apps/humanymous-cli/qualification/adapters/nginx/pilot-contract.json",
+  "refresh_policy": "No automatic expected-digest refresh. An intentional canonical change needs owner approval, explicit pin update, byte-equality gate and new source-bound qualification.",
+  "required_gate": "Root/CLI package-source gate must take explicit repository root, compare original/moved canonical Git bytes and working bytes with this replica and pinned SHA256/provenance before qualification/archive, refusing absent roots/canonical inputs, drift or mismatches. Normal SDK builds must not read CLI source."
+}

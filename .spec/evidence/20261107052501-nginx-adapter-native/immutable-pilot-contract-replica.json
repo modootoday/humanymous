@@ -1,0 +1,48 @@
+{
+  "schema": "humanymous.nginx.immutable-contract-replica/1",
+  "kind": "single root-approved DATA exception",
+  "producer_commit": "e3e7830e619d3c3ff60b9d931ac463a84e15f4c6",
+  "producer_path": "adapters/nginx/pilot-contract.json",
+  "producer_git_blob": "9fece6de6bdeca2fb9832606fa6f19afce7d3752",
+  "canonical_sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+  "canonical_bytes": 4030,
+  "future_canonical_path": "crates/apps/humanymous-cli/qualification/adapters/nginx/pilot-contract.json",
+  "files": [
+    {
+      "path": "crates/nginx-adapter/src/report.rs",
+      "sha256": "70685d5afbb3e0598e9f2e6aec4e7e38d313c2b8938f313b96fca3d4566a6646",
+      "bytes": 3649
+    },
+    {
+      "path": "crates/nginx-adapter/qualification/fixtures/nginx/pilot-contract.json",
+      "sha256": "32be2e8c190d64fb095a06c1e9d67b86cd02a880bd0d2b43dbe7e3c2f40964b4",
+      "bytes": 4030
+    },
+    {
+      "path": "crates/nginx-adapter/qualification/fixtures/nginx/provenance.json",
+      "sha256": "96ff54e775928f8f76f85b3b87ea2ee13861386be1166d077b226809c6000ab8",
+      "bytes": 1235
+    }
+  ],
+  "equality": "canonical producer Git bytes == current canonical working bytes == replica; pinned SHA256 matches; no normalization",
+  "report_schema": "humanymous.nginx.pilot/0.2",
+  "required_groups": 35,
+  "source_changes": "Only two include paths in report.rs; no test/behavior/runtime/public API/dependency/manifest change",
+  "existing_owned_source_gate": "none; package binary checks built artifact provenance, not explicit repository source",
+  "required_root_CLI_gate": "Explicit root required; compare canonical Git and working bytes plus package replica/provenance/pin before source archive or qualification. Missing canonical/root/drift is failure; never auto-refresh expected digest.",
+  "next_checks": [
+    "allocated formatter, no formatter run yet",
+    "old library14/report negative cases plus package check and scoped Clippy after coherent graph",
+    "required explicit-root equality positive and drift/missing-input negatives",
+    "package file inventory and extracted normal build with CLI source absent",
+    "future exact-source actual35 host qualification as required"
+  ],
+  "formatter": "NOT_RUN per root hold",
+  "compiler_Clippy_Docker": "NOT_RUN per root hold",
+  "diff_spec_checks": "passed",
+  "source_ready": true,
+  "gate_implementation_pending": "Root/CLI source gate owner",
+  "qualified": false,
+  "live_handles": [],
+  "target_leases": []
+}
