@@ -143,7 +143,7 @@ sharing/substitution, caller custody and retained-failure pilots remain open.
 | CA-BRIDGE-ALLOC-01 | P1 resource contract: directory creation clones the whole Path and collects all UTF16 before enforcing the advertised input cap | Native Windows/root | CLOSED scoped preallocation/UTF16 invariant: 3a0ba182 source plus 3200a5a1 actual boundary/doctest receipts independently checked; broader native provider qualification OPEN; no actual OOM alleged |
 | CA-SECRET-01 | P2 encoded-key drop ownership: preflight failures retained ordinary String fields outside Zeroizing ownership | Authority | CLOSED scoped field ownership: 2ca6e4fa source, actual22 tests/check/Clippy/fmt and durable14ad4378 evidence independently re-audited; no all-copy erasure/provider claim |
 | CA-HISTORY-LAYOUT-01 | P2 invalid resource configuration: usize products exceeded Vec isize layout ceiling before capacity allocation | Network/root | CLOSED scoped constructor invariant: e1ed50ce correction, durable306eedc8 receipt, actual72 tests including both no-allocation boundary cases independently checked; no provider/product claim |
-| CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync e34cee8a and ASGI queued 800b9679 source direction accepted; owner accepted additional task-setup ownership gap. First SDK check failed101 before host tests. Corrected compilation, actual host controls, Node and task settlement remain OPEN |
+| CA-HANDOFF-01 | P1 final origin admission: WSGI/Rack ran liveness callbacks after final deadline checks and early bound consumption | Framework adapters/root | Sync e34cee8a, Node0a1d3123 and ASGI252ad259/2e3f5053 source accepted; historical framework9+Node4 pure tests verified. First host-pilot failures remain preserved. Corrected SDK/host compilation, actual timely/late invocation, queued fault/settlement and lifetime gates remain OPEN |
 | CA-EVIDENCE-01 | P2: four model evidence JSON files omitted from their canonical attachment inventory | Model | CLOSED scoped inventory at faae5ced; index-only correction preserves JSON payloads, independently verified actual Git archive attachments and public248-document check0 |
 | CA-EVIDENCE-02 | P2: nine public attachment index hash/size entries differ from actual Git payload bytes | Pages/M11 | CLOSED scoped metadata: M11 bda10042 plus Pages9691b638 index-only corrections. Independent Pages Git archive125 inline rows match; all eight original payloads unchanged |
 
@@ -3274,3 +3274,23 @@ not arbitrary macro/generated reachability proof or a soundness audit. Required
 forbidden-unsafe/linkage negative compiles and actual native admission remain OPEN.
 Private tools-format-unsafe-review-001.json retains eight evidence hashes and
 the original actor blob. Formatting alone proves no semantic equivalence.
+
+## Prior fixed invariants after context consolidation
+
+Source re-audit finds Framework Admission identical to fixed ac7dc4a, Runtime
+anomaly/rate configs identical to306eedc8 and Platform windows_object/create.rs
+identical to3a0ba182. Their private constructor, Layout::array and bounded UTF16/
+pre-effect ownership fixes survive consolidation. Authority configuration retains
+Zeroizing<String> for both encoded keys; comparison to2ca6e4fa shows namespace
+rewires/test formatting only. Five current worktree files equal their Git blobs.
+Prior scoped closure is preserved; no old execution transfers to the new graph.
+
+The CA-HANDOFF summary/table was stale relative to later detailed audit records.
+It now explicitly accepts sync/Node/ASGI source corrections and the historical
+framework9+Node4 pure tests while preserving first host-pilot failures. Actual
+corrected SDK/host compilation, timely/late VM controls, queued fault/settlement
+and lifetime gates remain OPEN. Current WSGI authored controls delay the final
+callback after one actual Authority observation, require WAL ALLOW and zero origin
+versus timely one-origin. They remain ignored hosted-only, NOT_RUN by this audit.
+No new production/host success follows from this source inspection. Private
+closed-invariant-consolidation-review-001.json binds the reviewed source view.

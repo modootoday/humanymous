@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: d96513e6c47efefe6b7580dc874f3608a0cf7bdfb399052bde239a538a1f9190, bytes: 129736, store: repo}
+  - {path: baseline.json, sha256: 88116f582496e5ff0fd0d613003a209bdfd61089f483657a85237d07bb3cdd50, bytes: 130368, store: repo}
 ---
 
 # Convention audit baseline
@@ -2298,3 +2298,23 @@ not arbitrary macro/generated reachability proof or a soundness audit. Required
 forbidden-unsafe/linkage negative compiles and actual native admission remain OPEN.
 Private tools-format-unsafe-review-001.json retains eight evidence hashes and
 the original actor blob. Formatting alone proves no semantic equivalence.
+
+## Prior fixed invariants after context consolidation
+
+Source re-audit finds Framework Admission identical to fixed ac7dc4a, Runtime
+anomaly/rate configs identical to306eedc8 and Platform windows_object/create.rs
+identical to3a0ba182. Their private constructor, Layout::array and bounded UTF16/
+pre-effect ownership fixes survive consolidation. Authority configuration retains
+Zeroizing<String> for both encoded keys; comparison to2ca6e4fa shows namespace
+rewires/test formatting only. Five current worktree files equal their Git blobs.
+Prior scoped closure is preserved; no old execution transfers to the new graph.
+
+The CA-HANDOFF summary/table was stale relative to later detailed audit records.
+It now explicitly accepts sync/Node/ASGI source corrections and the historical
+framework9+Node4 pure tests while preserving first host-pilot failures. Actual
+corrected SDK/host compilation, timely/late VM controls, queued fault/settlement
+and lifetime gates remain OPEN. Current WSGI authored controls delay the final
+callback after one actual Authority observation, require WAL ALLOW and zero origin
+versus timely one-origin. They remain ignored hosted-only, NOT_RUN by this audit.
+No new production/host success follows from this source inspection. Private
+closed-invariant-consolidation-review-001.json binds the reviewed source view.

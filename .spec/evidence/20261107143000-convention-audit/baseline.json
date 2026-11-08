@@ -135,7 +135,7 @@
       "id": "CA-HANDOFF-01",
       "owner": "framework-adapters/root",
       "priority": "P1",
-      "state": "sync source correction e34cee8a independently accepted; actual late-connected/timely controls, SDK compilation and queued Node/ASGI corrections OPEN",
+      "state": "OPEN actual host/SDK qualification: sync e34cee8a, Node0a1d3123 and ASGI252ad259/2e3f5053 source accepted; historical framework9+Node4 pure passes; corrected host compilation, timely/late VM controls and fault/settlement/lifetime remain OPEN",
       "private_review_sha256": "47839559782753f117035e93b04fdda1b915796b56572fde34bf45cbe53559cc",
       "actual_sdk_exploit_or_test_observed": false
     },
@@ -2351,5 +2351,13 @@
     "sha256": "465a523a6fbabbc04e1260724b4ec8b5109b3b093fe47daec5dd1151f43389e2",
     "bytes": 3083,
     "negative_compile_probes": "NOT_RUN"
+  },
+  "closed_invariant_consolidation_reaudit": {
+    "sha256": "dfb600bcbea96c63e12575af4fc67231493bf8fc151308d13059ada448650e4c",
+    "result": "API/history/bridge exact prior fixed bytes; Authority only namespace/test formatting changes; no new execution",
+    "goal_complete": false,
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/closed-invariant-consolidation-review-001.json",
+    "bytes": 3070,
+    "handoff": "Stale summary corrected to distinguish accepted source from missing actual host qualification"
   }
 }
