@@ -5,6 +5,12 @@
 !crates/**
 !test/
 !test/lab/
+!test/lab/go-configuration.json
+!test/lab/browser-wire-contract.json
+!test/lab/dns_wire.rs
+!adapters/
+!adapters/go/
+!adapters/go/pilot-contract.json
 !test/lab/runtime/
 !test/lab/runtime/Cargo.toml
 !test/lab/runtime/Cargo.lock
