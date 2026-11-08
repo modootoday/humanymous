@@ -2,7 +2,7 @@
 # Component Cap green != product; never invent pass_product_clean_room / desktop_as_hosted.
 # Specfold burn: push this workflow file on codex/rust (path-filtered) or workflow_dispatch
 # once registered on default branch. Refuse ACT / Desktop spoof.
-# Rearm note: preflight fix for venue-aware unit + clippy bool_assert (Cap CLI not yet burned).
+# Fresh private Specfold evidence bundle required under .spec.local/root/evidence before Cap CLI.
 name: CI / H2 hosted venue Cap
 'on':
   push:
@@ -72,8 +72,17 @@ jobs:
         test "${RUNNER_OS}" = "Linux"
         test "${RUNNER_ENVIRONMENT}" = "github-hosted"
         echo "actual_hosted_linux venue confirmed"
+    - name: Prepare fresh private Specfold Cap evidence bundle
+      id: bundle
+      run: |
+        set -eu
+        stamp="$(date -u +%Y%m%d%H%M%S)"
+        bundle=".spec.local/root/evidence/${stamp}-cursor-n06-hosted-venue-cap1"
+        mkdir -p "$bundle"
+        cargo run --locked -p humanymous-delivery -- register-evidence "$bundle" "N06 hosted venue Cap"
+        test -f "$bundle/index.evidence.md"
+        echo "path=$bundle" >> "$GITHUB_OUTPUT"
     - name: Execute Cap=1 humanymous-lab-runner --w2-h2-hosted-venue
       run: |
         set -eu
-        mkdir -p target/h2-hosted-venue-cap-evidence
-        cargo run --locked -p humanymous-lab-runner -- run --evidence target/h2-hosted-venue-cap-evidence --w2-h2-hosted-venue
+        cargo run --locked -p humanymous-lab-runner -- run --evidence "${{ steps.bundle.outputs.path }}" --w2-h2-hosted-venue

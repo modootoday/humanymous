@@ -273,13 +273,25 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         )?;
         require(
             cap_steps.iter().any(|step| {
+                step["id"] == "bundle"
+                    && step["run"].as_str().is_some_and(|run| {
+                        run.contains(".spec.local/root/evidence/")
+                            && run.contains("register-evidence")
+                            && run.contains("index.evidence.md")
+                    })
+            }),
+            "hosted venue Cap must prepare a fresh private Specfold evidence bundle",
+        )?;
+        require(
+            cap_steps.iter().any(|step| {
                 step["run"].as_str().is_some_and(|run| {
                     run.contains("cargo run --locked -p humanymous-lab-runner")
                         && run.contains("--w2-h2-hosted-venue")
                         && run.contains("--evidence")
+                        && run.contains("steps.bundle.outputs.path")
                 }) && step.get("if").is_none()
             }),
-            "hosted venue Cap must execute exact lab-runner --w2-h2-hosted-venue pilot",
+            "hosted venue Cap must execute exact lab-runner --w2-h2-hosted-venue pilot against Specfold bundle",
         )?;
     }
     if name == "component-validation.yml" {
