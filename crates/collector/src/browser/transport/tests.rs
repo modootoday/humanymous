@@ -208,7 +208,7 @@ fn actual_final_url_keeps_empty_query_and_encoded_query_data() {
         ],
     )
     .unwrap();
-    let observed = (|| -> Result<Vec<JsValue>, JsValue> {
+    let observed: Result<Vec<JsValue>, JsValue> =
         ["/_humanymous/browser/session", "/api?effect=fixture"]
             .into_iter()
             .map(|target| {
@@ -223,8 +223,7 @@ fn actual_final_url_keeps_empty_query_and_encoded_query_data() {
                 )?;
                 get(&request, "referrer")
             })
-            .collect()
-    })();
+            .collect();
     // Restore document history before inspecting any fallible observations.
     call(
         &history,
