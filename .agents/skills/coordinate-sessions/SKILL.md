@@ -17,6 +17,13 @@ this repository.
 
 ### Session start
 
+0. Require `C:\workspaces\humanymous` and actual branch `codex/rust` before
+   every write. Stop on mismatch; do not create/switch branches, create worktrees,
+   push/delete refs, or recreate removed validation branches. Root owns separately
+   authorized ref work and common Cargo/source application. Root's isolated source
+   is read-only; author candidates only in the claimed evidence paths. Keep this
+   migration goal active and preserve incomplete gates; no Cursor handover document.
+
 1. `pwsh -File scripts/agents/session-board.ps1 list`  
    (or `bash scripts/agents/session-board.sh list`)
 2. `git status -sb` — note dirty paths vs claimed lanes.

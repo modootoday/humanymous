@@ -1,6 +1,18 @@
 # Multi-provider agent layout inventory (canon).
 version: 6
 
+shared_worktree:
+  root: 'C:\workspaces\humanymous'
+  branch: codex/rust
+  actual_branch_check_before_every_write: true
+  create_or_switch_branches: false
+  create_worktrees: false
+  recreate_deleted_validation_refs: false
+  owner_push_or_delete_refs: false
+  root_isolated_source: read-only-to-other-owners
+  candidate_writes: claimed-evidence-paths-only
+  generated_policy_projection: direct-canonical-AGENTS-entrypoint
+
 authored_source_exceptions:
   - decision: .spec/sot/rust-migration.sot.md#explicit-managed-host-exception-aspnet-core
     language: CSharp

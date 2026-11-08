@@ -68,6 +68,14 @@ Cloudflare: use `cf` CLI unless the target project has Wrangler configuration.
 
 ## Multi-provider / nested sessions (overlap)
 
+**Mandatory shared workspace:** work in `C:\workspaces\humanymous` on
+`codex/rust`. Check the actual branch before every write; stop on mismatch.
+Do not create/switch branches, create worktrees, or recreate deleted validation
+branches. Do not push or delete refs yourself; Root owns user-authorized ref work.
+Work-lane ownership and serial attributed `git-ops` still apply. Root's isolated
+integration source is read-only to other owners; source candidates belong only
+in their claimed evidence paths. This is not a main merge/publication grant.
+
 Several LLM chats may run on this repo **at once**. Before non-trivial edits:
 
 1. `pwsh -File scripts/agents/session-board.ps1 list` (or `bash scripts/agents/session-board.sh list`)

@@ -1,0 +1,110 @@
+{
+  "schema": "humanymous.shared-workspace-policy-projection.v1",
+  "workspace": "C:/workspaces/humanymous",
+  "required_branch": "codex/rust",
+  "actual_branch": "codex/rust",
+  "branch_checked_before_write": true,
+  "create_switch_branches": false,
+  "create_worktrees": false,
+  "owner_push_delete_refs": false,
+  "retired_validation_refs_recreated": false,
+  "root_isolated_source_edited": false,
+  "existing_adapter_projections": [
+    {
+      "provider": "claude",
+      "project_rules": "AGENTS.md",
+      "project_rules_exists": true,
+      "generated_copy_required": false,
+      "provider_discovery_qualified": false
+    },
+    {
+      "provider": "grok",
+      "project_rules": "AGENTS.md",
+      "project_rules_exists": true,
+      "generated_copy_required": false,
+      "provider_discovery_qualified": false
+    },
+    {
+      "provider": "codex",
+      "project_rules": "AGENTS.md",
+      "project_rules_exists": true,
+      "generated_copy_required": false,
+      "provider_discovery_qualified": false
+    },
+    {
+      "provider": "gemini",
+      "project_rules": "AGENTS.md",
+      "project_rules_exists": true,
+      "generated_copy_required": false,
+      "provider_discovery_qualified": false
+    }
+  ],
+  "generated_mirror_trees_found": [],
+  "generated_mirrors_created": false,
+  "legacy_recursive_sync_run": false,
+  "surviving_vendor_configuration_paths": [
+    ".claude/settings.json",
+    ".codex/config.toml",
+    ".codex/hooks.json",
+    ".gemini/settings.json",
+    ".grok/hooks/project-safety.json"
+  ],
+  "foreign_configuration_edited": false,
+  "source_files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 7958,
+      "sha256": "f4b4f23c77da29f73be27b8ac1d0761c6d89868602451356f42c5b21ff2a0ba3",
+      "written_by_this_update": true
+    },
+    {
+      "path": ".agents/rules/91-git-contention.md",
+      "bytes": 2558,
+      "sha256": "a5c048b67ddef6a172fa51f181a049d95e5398b626c268e733614feef78bc851",
+      "written_by_this_update": true
+    },
+    {
+      "path": ".agents/skills/coordinate-sessions/SKILL.md",
+      "bytes": 7975,
+      "sha256": "8ea2e11e832d5e4d790790ab926a6218879e6309bbef67aa3f8eb26ba45fd1de",
+      "written_by_this_update": true
+    },
+    {
+      "path": ".agents/manifest.yaml",
+      "bytes": 4064,
+      "sha256": "0b6be25bd38f577ae4df88d3a5391aa109b738874e43b5c4d97ba4773c664332",
+      "written_by_this_update": true
+    },
+    {
+      "path": ".claude/settings.json",
+      "bytes": 283,
+      "sha256": "ee1f64dbf8f122be88e66de8078799402718bafc036297cffba47a751bda6052",
+      "written_by_this_update": false
+    },
+    {
+      "path": ".codex/config.toml",
+      "bytes": 944,
+      "sha256": "f2510b5910edadb75446db28150b6484b74e689c260a54cbf602268a583914b6",
+      "written_by_this_update": false
+    },
+    {
+      "path": ".codex/hooks.json",
+      "bytes": 589,
+      "sha256": "cf086617fc60a30d21adfd14fa7b655dabf1e122217bffa3441eff26f0056d8c",
+      "written_by_this_update": false
+    },
+    {
+      "path": ".gemini/settings.json",
+      "bytes": 56,
+      "sha256": "ceedf1fcc4e2d6a01c024b85d8c4c951d5baf8fcd8f1c49c204334a730df977d",
+      "written_by_this_update": false
+    },
+    {
+      "path": ".grok/hooks/project-safety.json",
+      "bytes": 286,
+      "sha256": "3026e819dc2971286278935bedfc8bc94c54bd0db150b4fa118ce4351168521b",
+      "written_by_this_update": false
+    }
+  ],
+  "provider_runtime_discovery_proven": false
+}
