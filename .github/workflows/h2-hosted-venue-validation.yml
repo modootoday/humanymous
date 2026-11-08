@@ -3,6 +3,7 @@
 # Specfold burn: push this workflow file on codex/rust (path-filtered) or workflow_dispatch
 # once registered on default branch. Refuse ACT / Desktop spoof.
 # Fresh private Specfold evidence bundle required under .spec.local/root/evidence before Cap CLI.
+# Freeze allowlist must include h2-hosted-venue-lab.Dockerfile(+dockerignore) or Cap build fails closed.
 name: CI / H2 hosted venue Cap
 'on':
   push:

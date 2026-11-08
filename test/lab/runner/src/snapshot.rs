@@ -198,6 +198,8 @@ fn allowed(path: &str) -> bool {
                 | "build/rust/authority-lab.Dockerfile.dockerignore"
                 | "build/rust/h2-product-binding-lab.Dockerfile"
                 | "build/rust/h2-product-binding-lab.Dockerfile.dockerignore"
+                | "build/rust/h2-hosted-venue-lab.Dockerfile"
+                | "build/rust/h2-hosted-venue-lab.Dockerfile.dockerignore"
                 | "deployments/lab/gateway/h2-product-binding-contract.json"
                 | "deployments/lab/authority/package.json"
                 | "deployments/lab/authority/package-lock.json"
