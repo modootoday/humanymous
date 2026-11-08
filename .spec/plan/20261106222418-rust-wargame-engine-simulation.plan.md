@@ -13,6 +13,31 @@ rel:
 
 ## Goal
 
+### Final-layout role/accounting negative candidate (not executed)
+
+Private evidence20261108024500 pins four current final-layout Root assembly
+files and three producer/builder assumptions. It contains a real four-file Rust
+patch (SHA256e1a101ed53019c1211f6349dc229315c03e9e77da0d75a0f6c36557184611044)
+and source ZIP (SHA2568aebeaf42f3be80c705a74e0d3cfc37a6ddac26fb1a8b7c1f0b7c2d361fb65df).
+No live source/Cargo/Root snapshot change or compiler/workload was performed;
+branch codex/rust was checked before writes. Four preimages remained unchanged.
+
+Canonical case process counts follow existing execution:1ordinary child,
+2forRestart. The candidate rejects excessive counts and missing receipts for
+evaluated/attempted-step rows while preserving pre-step failure prefixes. This
+is receipt-plan consistency, not process authentication or a scoring predicate.
+Two new verifier tests cover missing/inflated/truncated receipts and meaningful
+accepted failed controls, including corrected case/class totals. One old fixture
+receives its missing receipt before adding steps; no test is dropped. A report
+test verifies ignored ordinal validation cannot be bypassed by terminal accounting
+and valid ordinals remain aggregate-neutral after storage removal.
+
+Static source-local inventory17existing+3new=20, removed0. Evidence parsing and
+patch applicability pass; red-before/green-after is NOT executed or claimed.
+Root-only scoped pure verifier/report test/check/Clippy allocation is requested,
+without any new heavy/native/hosted run. Immutable producer evidence and all
+open native-publication/OS-census/Unix-producer gates are preserved.
+
 ### Tools role-composition Rust candidate (evidence-only, not integrated)
 
 Follow-up Windows portable-test scope candidate is registered in the SAME private
