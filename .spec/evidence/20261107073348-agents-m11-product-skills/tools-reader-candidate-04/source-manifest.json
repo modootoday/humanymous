@@ -1,0 +1,110 @@
+{
+  "schema": "humanymous.maintenance-stage-candidate-04.v1",
+  "basis": "six exact observed Root-isolated source files after candidate03 and Root qualification/fmt changes; original .base hashes are authority",
+  "status": "NOT_COMPILED_NOT_EXECUTED_NOT_INTEGRATED",
+  "root_source_edited": false,
+  "compiler_or_native_executed": false,
+  "root_existing_actual_list_cases_still_required": 93,
+  "old_integration_ids_still_required": 33,
+  "new_synthetic_parser_cases": 4,
+  "required_native_package_boundary_cases": 2,
+  "actual_fs_native_execution": "HOSTED_ONLY_NOT_RUN",
+  "source_authentication": "UNSUPPORTED",
+  "files": [
+    {
+      "path": "candidate.patch",
+      "bytes": 34338,
+      "sha256": "fbfb3c2b8a9277f8d2307b0765477ed4f9a5ac18283c406eedb4b026bfd760f5"
+    },
+    {
+      "path": "developer-stage-request.json",
+      "bytes": 10390,
+      "sha256": "855cb27c92000715f87796f492ec17347dc8d5e25d734d4ab9ce60c20cbda8c9"
+    },
+    {
+      "path": "maintenance__command.rs",
+      "bytes": 7883,
+      "sha256": "25edf0afb038db2f6958e395ae63448737acb1fbcf1eefc1141dab99d8daaa37"
+    },
+    {
+      "path": "maintenance__command.rs.base",
+      "bytes": 7737,
+      "sha256": "df67fce46773b2de010e6d3c0cfe400bb1e2c34e23d91df33a1a05d3d38649ce"
+    },
+    {
+      "path": "maintenance__package.rs",
+      "bytes": 6994,
+      "sha256": "774a0ca2e1c955e3b5df7bf07177ce4647da1d9d4d72e44b0d0e844bd5d572e1"
+    },
+    {
+      "path": "maintenance__package.rs.base",
+      "bytes": 7086,
+      "sha256": "9e5243bac5ad2a42428188772a8568a0336a88d6b1c63f5adbcb8b5685fa6554"
+    },
+    {
+      "path": "maintenance__product.rs",
+      "bytes": 7596,
+      "sha256": "421fb6f5d604aa69fa43b069c3bc3f0eabb27dfe8d38aa87fd3cc38b7322fb5d"
+    },
+    {
+      "path": "maintenance__product.rs.base",
+      "bytes": 8848,
+      "sha256": "2c753d73598157941a7f62dd52fc65e6064b92bc9f3b3c361a119a91b7c17393"
+    },
+    {
+      "path": "maintenance__selected_inputs__files.rs",
+      "bytes": 9271,
+      "sha256": "3c05ff038eef8c7dd72d3b793ca888dbc920f9da9cfebb45116ba49070167eb6"
+    },
+    {
+      "path": "maintenance__selected_inputs__files.rs.base",
+      "bytes": 9271,
+      "sha256": "51e208eea5e7df36a8f2a1f0be83085cc8b428b2de1a7ba7c5fb756b77f7cc70"
+    },
+    {
+      "path": "maintenance__selected_inputs__mod.rs",
+      "bytes": 552,
+      "sha256": "c325b87277b921707851cd680193abc4d0ee894b834a87195c3ee0a6660310b9"
+    },
+    {
+      "path": "maintenance__selected_inputs__mod.rs.base",
+      "bytes": 516,
+      "sha256": "b974ef1413d0e6772c8ccd6966cd6b4791b46b8868e7005b72b49246776780a9"
+    },
+    {
+      "path": "package_selection.rs",
+      "bytes": 7662,
+      "sha256": "bfc5a4c19cb44ad27fc163098fa1892ac8c9822058ac80e76a822e294ffecbf4"
+    },
+    {
+      "path": "package_stage.rs",
+      "bytes": 5722,
+      "sha256": "f562963535cf677cf0e08444b1a4d7ab2917cb6e77a96c04a13c5315df831f4b"
+    },
+    {
+      "path": "product-stage-request.json",
+      "bytes": 4037,
+      "sha256": "4642537a92f4ba5e17c3ec0fd2d67b884bd349d5aaed8d5c4142ffe1897d9807"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10073,
+      "sha256": "193356e3f8600257e09b04a7a5c05f4b1e1fc2dca02caa7cee463b5765ddcfb7"
+    },
+    {
+      "path": "tests__maintenance_product_package.rs",
+      "bytes": 8185,
+      "sha256": "08ad9a42e2a46e2ad87758cbc39d6da9a688901d0b9d1dbcd6a9a7050f34a963"
+    },
+    {
+      "path": "tests__maintenance_product_package.rs.base",
+      "bytes": 4626,
+      "sha256": "f0c61a4b1965aa390068ee6b5f380ce9a7fd7266abfd4dab055394f233b323c5"
+    },
+    {
+      "path": "unit-ownership.json",
+      "bytes": 2091,
+      "sha256": "7a1ee628684c42c2ba79d6c2f360bfdbe4d1d678f952640038a1794a3e3414fc"
+    }
+  ]
+}

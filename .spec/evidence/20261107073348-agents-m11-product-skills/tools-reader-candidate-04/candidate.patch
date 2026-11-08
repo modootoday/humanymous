@@ -1,0 +1,704 @@
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/package.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/package.rs
+index c89cd532..9ea006a6 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/package.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/package.rs
+@@ -1,6 +1,7 @@
+ //! Fresh staged marketplace artifacts. Never writes active provider mirrors.
+ use crate::maintenance::{
+     inventory,
++    selected_inputs::{Clock, Limits, SystemClock},
+     product::{self, Bundle},
+ };
+ use serde::Serialize;
+@@ -25,6 +26,24 @@ pub struct Receipt {
+     pub files: Vec<Entry>,
+     pub runtime_qualified: bool,
+     pub release_qualified: bool,
++    pub source: SourceReceipt,
++}
++
++#[derive(Serialize)]
++pub struct SourceReceipt {
++    pub repo_root: std::path::PathBuf,
++    pub declared_source_commit: String,
++    pub request_sha256: String,
++    pub inputs: Vec<Entry>,
++    pub actual_read_bytes: u64,
++    pub elapsed_micros_before_write: u128,
++    pub input_selection_declared_complete: bool,
++    pub selected_content_matches: bool,
++    pub canonical_tree_complete: bool,
++    pub source_commit_verified: bool,
++    pub provider_identity_qualified: bool,
++    pub qualified_complete: bool,
++    pub identity_status: &'static str,
+ }
+ 
+ fn metadata(
+@@ -64,72 +83,37 @@ pub fn plan_product(
+     Ok(files)
+ }
+ 
+-fn plan_developer(
+-    root: &Path,
++pub(crate) fn plan_developer(
++    skills: &BTreeMap<String, String>,
+     license: &str,
+ ) -> Result<BTreeMap<String, String>, Box<dyn std::error::Error>> {
++    if skills.is_empty() { return Err("empty selected developer skill set".into()); }
+     let mut files = BTreeMap::new();
+     metadata("humanymous-development", &mut files)?;
+-    let source = root.join(".agents/skills");
+-    if fs::symlink_metadata(&source)?.file_type().is_symlink() {
+-        return Err("developer skill root link refused".into());
+-    }
+-    let mut records = Vec::new();
+-    let mut errors = Vec::new();
+-    inventory::files(&source, &source, &mut records, &mut errors)?;
+-    if !errors.is_empty() {
+-        return Err(errors.join("; ").into());
+-    }
+-    for record in records {
+-        let text = fs::read_to_string(source.join(&record.path))?;
+-        if record.path.ends_with("/SKILL.md") {
+-            inventory::description(&text)?;
++    for (path, text) in skills {
++        if path.ends_with("/SKILL.md") {
++            let (name, _) = inventory::description(text)?;
++            if path != &format!("{name}/SKILL.md") {
++                return Err("developer skill name/path mismatch".into());
++            }
+         }
+-        files.insert(
+-            format!("plugins/humanymous-development/skills/{}", record.path),
+-            text,
+-        );
++        files.insert(format!("plugins/humanymous-development/skills/{path}"), text.clone());
+     }
+     files.insert("LICENSE".into(), license.into());
+     Ok(files)
+ }
+ 
+ /// Write one fresh artifact only. Partial output remains for diagnosis on any failure.
+-pub fn stage(
+-    root: &Path,
++pub(crate) fn stage_prepared(
+     output: &Path,
+     kind: &str,
++    files: BTreeMap<String, String>,
++    source: SourceReceipt,
++    clock: &mut SystemClock,
+ ) -> Result<Receipt, Box<dyn std::error::Error>> {
+     if !["product", "developer"].contains(&kind) {
+         return Err("unknown staged skill kind".into());
+     }
+-    let license = fs::read_to_string(root.join("LICENSE"))?;
+-    let mut files = if kind == "product" {
+-        plan_product(&product::load(&root.join("skills"))?, &license)?
+-    } else {
+-        plan_developer(root, &license)?
+-    };
+-    {
+-        let source = root.join(".agents/evals").join(kind);
+-        let plugin = if kind == "product" {
+-            "humanymous-product"
+-        } else {
+-            "humanymous-development"
+-        };
+-        if fs::symlink_metadata(&source)?.file_type().is_symlink() {
+-            return Err("eval root link refused".into());
+-        }
+-        let mut records = Vec::new();
+-        let mut errors = Vec::new();
+-        inventory::files(&source, &source, &mut records, &mut errors)?;
+-        if !errors.is_empty() {
+-            return Err(errors.join("; ").into());
+-        }
+-        for record in records {
+-            let text = fs::read_to_string(source.join(&record.path))?;
+-            files.insert(format!("plugins/{plugin}/evals/{}", record.path), text);
+-        }
+-    }
+     if files.len() > 512 || files.values().map(String::len).sum::<usize>() > 8 * 1024 * 1024 {
+         return Err("staged artifact exceeds budget".into());
+     }
+@@ -139,6 +123,7 @@ pub fn stage(
+             return Err("non-LF or wildcard artifact path".into());
+         }
+     }
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("stage write deadline".into()); }
+     fs::create_dir(output)?;
+     let mut receipt = Receipt {
+         schema: "humanymous.skill-package.v1",
+@@ -146,8 +131,10 @@ pub fn stage(
+         files: Vec::new(),
+         runtime_qualified: false,
+         release_qualified: false,
++        source,
+     };
+     for (path, text) in files {
++        if clock.elapsed() >= Limits::default().max_elapsed { return Err("stage write deadline".into()); }
+         let target = output.join(&path);
+         fs::create_dir_all(target.parent().ok_or("artifact parent missing")?)?;
+         let mut file = OpenOptions::new()
+@@ -162,6 +149,7 @@ pub fn stage(
+             sha256: format!("{:x}", Sha256::digest(text.as_bytes())),
+         });
+     }
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("stage receipt deadline".into()); }
+     let mut file = OpenOptions::new()
+         .write(true)
+         .create_new(true)
+@@ -169,6 +157,7 @@ pub fn stage(
+     file.write_all(serde_json::to_string_pretty(&receipt)?.as_bytes())?;
+     file.write_all(b"\n")?;
+     file.sync_all()?;
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("stage final deadline".into()); }
+     Ok(receipt)
+ }
+ 
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs
+index b176c586..26dda3cc 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/product.rs
+@@ -5,8 +5,6 @@ use serde::Serialize;
+ use sha2::{Digest, Sha256};
+ use std::{
+     collections::{BTreeMap, BTreeSet},
+-    fs,
+-    path::Path,
+ };
+ 
+ #[derive(Serialize)]
+@@ -130,36 +128,6 @@ pub fn validate(entry: &str, resources: &BTreeMap<String, String>) -> Report {
+     result
+ }
+ 
+-/// Read only the product entrypoint and reference tree, never the maintenance target directory.
+-pub fn load(root: &Path) -> Result<Bundle, Box<dyn std::error::Error>> {
+-    for path in [root.to_path_buf(), root.join("SKILL.md")] {
+-        if fs::symlink_metadata(path)?.file_type().is_symlink() {
+-            return Err("product root/entrypoint link refused".into());
+-        }
+-    }
+-    let mut records = Vec::new();
+-    let mut errors = Vec::new();
+-    let refs = root.join("references");
+-    if refs.exists() {
+-        if fs::symlink_metadata(&refs)?.file_type().is_symlink() {
+-            return Err("references root link refused".into());
+-        }
+-        inventory::files(root, &refs, &mut records, &mut errors)?;
+-    }
+-    if !errors.is_empty() {
+-        return Err(errors.join("; ").into());
+-    }
+-    let resources = records
+-        .into_iter()
+-        .map(|r| Ok((r.path.clone(), fs::read_to_string(root.join(r.path))?)))
+-        .collect::<Result<BTreeMap<_, _>, std::io::Error>>()?;
+-    if fs::metadata(root.join("SKILL.md"))?.len() > 256 * 1024 {
+-        return Err("oversized product entrypoint".into());
+-    }
+-    let entry = fs::read_to_string(root.join("SKILL.md"))?;
+-    Ok(Bundle { entry, resources })
+-}
+-
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
+index 0507cfb8..c667b055 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
+@@ -1,6 +1,6 @@
+ //! Read-only canonical checks and bounded skill evaluation profiles.
+ use crate::maintenance::{
+-    evaluation, inventory, package, paired, routing, selected_inputs, sessions,
++    evaluation, inventory, paired, routing, selected_inputs, sessions,
+ };
+ 
+ // Reader composition belongs only to the command root, not pure parser modules.
+@@ -15,6 +15,9 @@ mod thread_content;
+ 
+ use std::{env, path::Path, process::ExitCode};
+ 
++#[path = "package_stage.rs"]
++mod package_stage;
++
+ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+     match args.first().map(String::as_str) {
+         Some("local-skill-eval") if args.len() == 4 => {
+@@ -109,9 +112,10 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             sessions::storage::release(Path::new(&args[1]),&args[2],&args[3],&args[4],&args[5])?;
+             println!("{}",serde_json::json!({"schema":"humanymous.session-release.v1","released":true,"runtime_qualified":false}));Ok(true)
+         }
+-        Some("stage-eval") if args.len() == 4 => {
+-            let receipt=package::stage(Path::new(&args[1]),Path::new(&args[2]),&args[3])?;
+-            println!("{}",serde_json::to_string_pretty(&receipt)?);Ok(true)
++        Some("stage-eval") if args.len() == 3 => {
++            let receipt = package_stage::stage_request_file(Path::new(&args[1]), Path::new(&args[2]))?;
++            println!("{}", serde_json::to_string_pretty(&receipt)?);
++            Ok(true) // Fresh bounded artifact completion; no source/runtime qualification.
+         }
+         Some("observe-skills") if args.len() == 2 => {
+             println!(
+@@ -134,7 +138,7 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             &args[4],
+         ),
+         _ => Err(
+-            "usage: agent-maintenance evidence-layout-plan REQUEST_JSON | windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check-request ABSOLUTE_REQUEST_JSON | check ROOT | routing ROOT | product-content-check-request ABSOLUTE_REQUEST_JSON | thread-content-check-request ABSOLUTE_REQUEST_JSON | lane-content-check-request ABSOLUTE_REQUEST_JSON | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ROOT NEW_OUTPUT product|developer | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
++            "usage: agent-maintenance evidence-layout-plan REQUEST_JSON | windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check-request ABSOLUTE_REQUEST_JSON | check ROOT | routing ROOT | product-content-check-request ABSOLUTE_REQUEST_JSON | thread-content-check-request ABSOLUTE_REQUEST_JSON | lane-content-check-request ABSOLUTE_REQUEST_JSON | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ABSOLUTE_REQUEST_JSON ABSOLUTE_NEW_OUTPUT | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
+                 .into(),
+         ),
+     }
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/files.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/files.rs
+index 28ae0d29..5880e91d 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/files.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/files.rs
+@@ -74,7 +74,7 @@ fn linked(metadata: &Metadata) -> bool {
+ 
+ /// Check each selected ancestor without walking directory entries.
+ /// Concurrent hostile replacement is deliberately not an identity guarantee.
+-pub(super) fn checked_path(path: &Path, file: bool) -> io::Result<Metadata> {
++pub(crate) fn checked_path(path: &Path, file: bool) -> io::Result<Metadata> {
+     let mut selected = PathBuf::new();
+     for component in path.components() {
+         selected.push(component.as_os_str());
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/mod.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/mod.rs
+index 62d58b6c..73243b1b 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/mod.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/selected_inputs/mod.rs
+@@ -1,5 +1,6 @@
+ //! Bounded observations of a caller-frozen selection, never a security snapshot.
+ mod files;
++pub(crate) use files::checked_path;
+ mod model;
+ mod reader;
+ mod request;
+diff --git a/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs b/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs
+index 0825f535..101dd008 100644
+--- a/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs
++++ b/crates/apps/humanymous-cli/src/qualification/tests/maintenance_product_package.rs
+@@ -4,6 +4,7 @@ use serde::Deserialize;
+ use sha2::{Digest, Sha256};
+ use std::{
+     fs,
++    io::Read,
+     path::{Path, PathBuf},
+     process::{Command, Output},
+ };
+@@ -23,6 +24,25 @@ struct Receipt {
+     files: Vec<Entry>,
+     runtime_qualified: bool,
+     release_qualified: bool,
++    source: SourceReceipt,
++}
++
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++struct SourceReceipt {
++    repo_root: PathBuf,
++    declared_source_commit: String,
++    request_sha256: String,
++    inputs: Vec<Entry>,
++    actual_read_bytes: u64,
++    elapsed_micros_before_write: u128,
++    input_selection_declared_complete: bool,
++    selected_content_matches: bool,
++    canonical_tree_complete: bool,
++    source_commit_verified: bool,
++    provider_identity_qualified: bool,
++    qualified_complete: bool,
++    identity_status: String,
+ }
+ 
+ #[test]
+@@ -39,12 +59,27 @@ fn developer_bundle_contains_separate_five_case_suite() {
+     );
+ }
+ 
+-fn source_root() -> PathBuf {
+-    // Required runner-selected source, never a package-parent/CWD discovery.
+-    let root = PathBuf::from(
+-        std::env::var_os("HUMANYMOUS_MAINTENANCE_PACKAGE_ROOT")
+-            .expect("required explicit source root; absent configuration is a failed test"),
+-    );
++fn source_request(kind: &str) -> (PathBuf, serde_json::Value, Vec<u8>) {
++    let variable = match kind {
++        "product" => "HUMANYMOUS_MAINTENANCE_PRODUCT_STAGE_REQUEST",
++        "developer" => "HUMANYMOUS_MAINTENANCE_DEVELOPER_STAGE_REQUEST",
++        _ => panic!("unsupported stage kind"),
++    };
++    let path = PathBuf::from(std::env::var_os(variable).expect("required explicit stage request"));
++    assert!(path.is_absolute());
++    let meta = fs::symlink_metadata(&path).unwrap();
++    assert!(meta.is_file() && !meta.file_type().is_symlink() && meta.len() <= 2 * 1024 * 1024);
++    let mut bytes = Vec::new();
++    fs::File::open(&path).unwrap().take(2 * 1024 * 1024 + 1).read_to_end(&mut bytes).unwrap();
++    assert!(bytes.len() <= 2 * 1024 * 1024);
++    let request: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
++    assert_eq!(request["schema"], "humanymous.stage-eval-source.v1");
++    assert_eq!(request["kind"], kind);
++    (path, request, bytes)
++}
++
++fn source_root(request: &serde_json::Value) -> PathBuf {
++    let root = PathBuf::from(request["repo_root"].as_str().expect("explicit selected source root"));
+     assert!(root.is_absolute(), "source root must be absolute");
+     assert!(!root.components().any(|c| matches!(
+         c,
+@@ -69,18 +104,30 @@ fn source_root() -> PathBuf {
+     root
+ }
+ 
+-fn stage(root: &Path, output: &Path, kind: &str) -> Output {
++fn stage(request: &Path, output: &Path) -> Output {
+     Command::new(env!("CARGO_BIN_EXE_humanymous-agent-maintenance"))
+-        .arg("stage-eval")
+-        .arg(root)
+-        .arg(output)
+-        .arg(kind)
+-        .output()
+-        .expect("execute the exact Cargo-selected maintenance role")
++        .arg("stage-eval").arg(request).arg(output)
++        .output().expect("execute the exact Cargo-selected maintenance role")
++}
++
++fn mismatched_source_never_creates_output(request: &serde_json::Value, output: &Path) {
++    let path = output.with_extension("bad-request.json");
++    let rejected_output = output.with_extension("bad-output");
++    let mut bad = request.clone();
++    bad["files"][0]["sha256"] = "0".repeat(64).into();
++    let bytes = serde_json::to_vec_pretty(&bad).unwrap();
++    let mut file = fs::OpenOptions::new().write(true).create_new(true).open(&path).unwrap();
++    std::io::Write::write_all(&mut file, &bytes).unwrap();
++    drop(file);
++    let refused = stage(&path, &rejected_output);
++    assert!(!refused.status.success(), "mismatched source must be refused");
++    assert!(!rejected_output.exists(), "input failure must precede output creation");
++    fs::remove_file(path).unwrap();
+ }
+ 
+ fn verify_bundle(kind: &str, plugin: &str, excluded: &str, expected_cases: usize) {
+-    let root = source_root();
++    let (request_path, request, request_bytes) = source_request(kind);
++    let root = source_root(&request);
+     let output = std::env::temp_dir().join(format!(
+         "humanymous-{kind}-bundle-{}-{}",
+         std::process::id(),
+@@ -90,7 +137,7 @@ fn verify_bundle(kind: &str, plugin: &str, excluded: &str, expected_cases: usize
+             .as_nanos(),
+     ));
+     assert!(!output.exists());
+-    let run = stage(&root, &output, kind);
++    let run = stage(&request_path, &output);
+     assert!(
+         run.status.success(),
+         "stage failed: {}",
+@@ -105,6 +152,25 @@ fn verify_bundle(kind: &str, plugin: &str, excluded: &str, expected_cases: usize
+     assert_eq!(receipt.kind, kind);
+     assert!(!receipt.runtime_qualified);
+     assert!(!receipt.release_qualified);
++    assert_eq!(receipt.source.repo_root, root);
++    assert_eq!(receipt.source.declared_source_commit, request["source_commit"].as_str().unwrap());
++    assert_eq!(receipt.source.request_sha256, format!("{:x}", Sha256::digest(&request_bytes)));
++    assert!(receipt.source.input_selection_declared_complete && receipt.source.selected_content_matches);
++    assert!(!receipt.source.canonical_tree_complete && !receipt.source.source_commit_verified);
++    assert!(!receipt.source.provider_identity_qualified && !receipt.source.qualified_complete);
++    assert!(receipt.source.identity_status.starts_with("unsupported_source_identity"));
++    assert!(receipt.source.elapsed_micros_before_write < 30_000_000);
++    let pins = request["files"].as_array().unwrap();
++    assert_eq!(receipt.source.inputs.len(), pins.len());
++    let mut expected_read = request_bytes.len() as u64;
++    for (input, pin) in receipt.source.inputs.iter().zip(pins) {
++        assert_eq!(input.path, pin["path"].as_str().unwrap());
++        assert_eq!(input.bytes as u64, pin["bytes"].as_u64().unwrap());
++        assert_eq!(input.sha256, pin["sha256"].as_str().unwrap());
++        expected_read += input.bytes as u64;
++    }
++    assert_eq!(receipt.source.actual_read_bytes, expected_read);
++    assert_eq!(fs::read(&request_path).unwrap(), request_bytes);
+     assert!(!receipt.files.is_empty() && receipt.files.len() <= 512);
+     for entry in &receipt.files {
+         let path = Path::new(&entry.path);
+@@ -129,8 +195,9 @@ fn verify_bundle(kind: &str, plugin: &str, excluded: &str, expected_cases: usize
+         })
+         .count();
+     assert_eq!(cases, expected_cases);
++    mismatched_source_never_creates_output(&request, &output);
+     let before = fs::read(output.join("bundle-receipt.json")).unwrap();
+-    let refused = stage(&root, &output, kind);
++    let refused = stage(&request_path, &output);
+     assert!(!refused.status.success(), "existing output must be refused");
+     assert_eq!(
+         fs::read(output.join("bundle-receipt.json")).unwrap(),
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/package_selection.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/package_selection.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/package_selection.rs
+@@ -0,0 +1,157 @@
++//! Fixed skill/evaluation staging input contract; no filesystem or source authority.
++use crate::maintenance::selected_inputs::{FrozenSelection, Input, Limits, Root};
++use serde::Deserialize;
++use std::{collections::BTreeSet, path::PathBuf};
++
++pub const MAX_REQUEST: u64 = 2 * 1024 * 1024;
++pub const MAX_TEXT: u64 = 8 * 1024 * 1024;
++pub const MAX_INPUTS: usize = 510; // Two generated metadata files keep output <=512.
++
++#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq)]
++#[serde(rename_all = "lowercase")]
++pub enum Kind { Product, Developer }
++impl Kind {
++    pub fn name(self) -> &'static str {
++        match self { Self::Product => "product", Self::Developer => "developer" }
++    }
++    pub fn plugin(self) -> &'static str {
++        match self { Self::Product => "humanymous-product", Self::Developer => "humanymous-development" }
++    }
++    pub fn cases(self) -> &'static [&'static str] {
++        match self {
++            Self::Product => &["install-plan", "readiness", "unrelated-ui"],
++            Self::Developer => &["ci-identity", "ci-accounting", "release-prepare", "release-failed-claim", "unrelated-layout"],
++        }
++    }
++}
++#[derive(Debug, Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct Request {
++    pub schema: String,
++    pub repo_root: PathBuf,
++    pub source_commit: String,
++    pub kind: Kind,
++    pub input_selection_complete: bool,
++    pub expected_skill_names: Vec<String>,
++    pub files: Vec<Pin>,
++}
++#[derive(Debug, Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct Pin {
++    pub path: String,
++    pub owner: String,
++    pub presence: String,
++    pub bytes: u64,
++    pub sha256: String,
++}
++fn hex(s: &str, length: usize) -> bool {
++    s.len() == length && s.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++}
++fn skill_name(s: &str) -> bool {
++    !s.is_empty() && s.len() <= 64
++        && s.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
++}
++pub fn cap(path: &str) -> u64 {
++    if path == "skills/SKILL.md" { 256 * 1024 } else { 2 * 1024 * 1024 }
++}
++
++pub fn decode(bytes: &[u8]) -> Result<Request, &'static str> {
++    if bytes.len() as u64 > MAX_REQUEST { return Err("stage_request_size"); }
++    let request: Request = serde_json::from_slice(bytes).map_err(|_| "stage_request_json")?;
++    if request.schema != "humanymous.stage-eval-source.v1" || !request.input_selection_complete
++        || !(hex(&request.source_commit, 40) || hex(&request.source_commit, 64))
++        || request.files.is_empty() || request.files.len() > MAX_INPUTS
++        || request.expected_skill_names.is_empty() || request.expected_skill_names.len() > 128
++        || request.expected_skill_names.iter().any(|n| !skill_name(n))
++        || request.repo_root.to_str().is_none_or(|p| p.contains(['*', '?', '[', ']']) || p.chars().any(char::is_control))
++    { return Err("stage_request_contract"); }
++    let names: BTreeSet<_> = request.expected_skill_names.iter().cloned().collect();
++    if names.len() != request.expected_skill_names.len()
++        || (request.kind == Kind::Product && names.len() != 1)
++    { return Err("stage_skill_set"); }
++    FrozenSelection::new(
++        vec![Root { id: "repo".into(), path: request.repo_root.clone() }],
++        request.files.iter().map(|p| Input { root: "repo".into(), path: p.path.clone() }).collect(),
++        true, &Limits::default(),
++    ).map_err(|_| "stage_root_or_paths")?;
++    let eval_root = format!(".agents/evals/{}/", request.kind.name());
++    let mut required = BTreeSet::from(["LICENSE".to_owned(), format!("{eval_root}README.md")]);
++    for case in request.kind.cases() {
++        for tail in ["prompt.md", "graders/behavior.md", "graders/discovery.md"] {
++            required.insert(format!("{eval_root}{case}/{tail}"));
++        }
++    }
++    match request.kind {
++        Kind::Product => { required.insert("skills/SKILL.md".into()); }
++        Kind::Developer => {
++            for name in &names { required.insert(format!(".agents/skills/{name}/SKILL.md")); }
++        }
++    }
++    let mut total = 0_u64;
++    for pin in &request.files {
++        let owner = if pin.path == "LICENSE" { "repository" } else { "agents-meta" };
++        if pin.presence != "required" || pin.bytes > cap(&pin.path) || !hex(&pin.sha256, 64)
++            || pin.path.contains(['*', '?', '[', ']'])
++            || (pin.path != "LICENSE" && !pin.path.ends_with(".md"))
++            || pin.owner != owner
++        { return Err("stage_pin_contract"); }
++        total = total.checked_add(pin.bytes).ok_or("stage_size_overflow")?;
++        if total > MAX_TEXT { return Err("stage_source_text_cap"); }
++        let allowed = if pin.path == "LICENSE" || required.contains(&pin.path) { true }
++        else if request.kind == Kind::Product { pin.path.starts_with("skills/references/") }
++        else { pin.path.strip_prefix(".agents/skills/")
++            .and_then(|p| p.split_once('/')).is_some_and(|(name, _)| names.contains(name)) };
++        if !allowed { return Err("stage_profile_exclusion"); }
++    }
++    let selected: BTreeSet<_> = request.files.iter().map(|pin| pin.path.clone()).collect();
++    if !required.is_subset(&selected) { return Err("stage_missing_required_input"); }
++    Ok(request)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    fn product() -> serde_json::Value {
++        let mut paths = vec!["LICENSE".to_owned(), "skills/SKILL.md".into(), ".agents/evals/product/README.md".into()];
++        for case in Kind::Product.cases() {
++            for tail in ["prompt.md", "graders/behavior.md", "graders/discovery.md"] {
++                paths.push(format!(".agents/evals/product/{case}/{tail}"));
++            }
++        }
++        serde_json::json!({"schema":"humanymous.stage-eval-source.v1","repo_root":std::env::temp_dir(),
++            "source_commit":"a".repeat(40),"kind":"product","input_selection_complete":true,
++            "expected_skill_names":["fixture"],"files":paths.iter().map(|p|serde_json::json!({
++                "path":p,"owner":if p=="LICENSE" {"repository"} else {"agents-meta"},
++                "presence":"required","bytes":0,"sha256":"0".repeat(64)})).collect::<Vec<_>>()})
++    }
++    #[test]
++    fn fixed_eval_case_and_grader_closure_is_required() {
++        let mut value = product();
++        assert!(decode(&serde_json::to_vec(&value).unwrap()).is_ok());
++        value["files"].as_array_mut().unwrap().pop();
++        assert!(decode(&serde_json::to_vec(&value).unwrap()).is_err());
++    }
++    #[test]
++    fn another_profile_or_executable_is_not_a_stage_resource() {
++        for path in [".agents/evals/developer/README.md", "scripts/agents/git-coord.ps1", "skills/../secret.md"] {
++            let mut value = product(); value["files"][0]["path"] = path.into();
++            assert!(decode(&serde_json::to_vec(&value).unwrap()).is_err());
++        }
++    }
++    #[test]
++    fn false_completeness_unknown_fields_and_aliases_refuse() {
++        let mut value = product(); value["input_selection_complete"] = false.into();
++        assert!(decode(&serde_json::to_vec(&value).unwrap()).is_err());
++        let mut value = product(); value["ambient_fallback"] = true.into();
++        assert!(decode(&serde_json::to_vec(&value).unwrap()).is_err());
++        let mut value = product(); let duplicate = value["files"][0].clone();
++        value["files"].as_array_mut().unwrap().push(duplicate);
++        assert!(decode(&serde_json::to_vec(&value).unwrap()).is_err());
++    }
++    #[test]
++    fn tighter_caps_and_duplicate_json_keys_remain_failures() {
++        let mut value = product(); value["files"][1]["bytes"] = (256 * 1024 + 1).into();
++        assert!(decode(&serde_json::to_vec(&value).unwrap()).is_err());
++        assert!(decode(br#"{"schema":"x","schema":"y"}"#).is_err());
++    }
++}
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/package_stage.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/package_stage.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/package_stage.rs
+@@ -0,0 +1,102 @@
++//! Bounded explicit skill/eval staging; no ambient inventory or source authentication.
++#[path = "package_selection.rs"]
++mod selection;
++use crate::maintenance::{
++    inventory, package::{self, Entry, Receipt, SourceReceipt}, product::Bundle,
++    selected_inputs::{Clock, Limits, SystemClock, capture_source_file, checked_path},
++};
++use selection::{Kind, MAX_INPUTS, MAX_REQUEST, MAX_TEXT};
++use sha2::{Digest, Sha256};
++use std::{collections::BTreeMap, fs, path::{Component, Path, PathBuf}};
++
++fn hash(bytes: &[u8]) -> String { format!("{:x}", Sha256::digest(bytes)) }
++
++fn output_path(repo: &Path, output: &Path) -> Result<PathBuf, Box<dyn std::error::Error>> {
++    if !output.is_absolute() || output.components().any(|c| matches!(c, Component::CurDir | Component::ParentDir))
++        || output.to_str().is_none_or(|s| s.len() > 4096 || s.chars().any(char::is_control))
++        || output.components().any(|c| matches!(c, Component::Normal(name) if [".agents", ".codex", ".claude", ".grok", ".gemini"].iter().any(|blocked| name.to_string_lossy().eq_ignore_ascii_case(blocked))))
++    { return Err("stage_output_path".into()); }
++    let parent = output.parent().ok_or("stage_output_parent")?;
++    checked_path(repo, false)?;
++    checked_path(parent, false)?;
++    let source = fs::canonicalize(repo)?;
++    let selected = fs::canonicalize(parent)?.join(output.file_name().ok_or("stage_output_name")?);
++    if selected.starts_with(&source) || source.starts_with(&selected) {
++        return Err("stage_output_overlaps_source".into());
++    }
++    match fs::symlink_metadata(&selected) {
++        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(selected),
++        _ => Err("stage_output_already_exists_or_unknown".into()),
++    }
++}
++
++/// Reads only explicitly pinned files. All validation completes before output creation.
++pub fn stage_request_file(request_path: &Path, output: &Path) -> Result<Receipt, Box<dyn std::error::Error>> {
++    let mut clock = SystemClock::default();
++    let (request_bytes, request_read) = capture_source_file(request_path, MAX_REQUEST, &mut clock)?;
++    let request = selection::decode(&request_bytes)?;
++    let output = output_path(&request.repo_root, output)?;
++    let mut actual = request_read.actual_read_bytes;
++    let mut texts = BTreeMap::new();
++    let mut inputs = Vec::with_capacity(request.files.len());
++    for pin in &request.files {
++        // Declared length tightens the existing reader, including growth probes.
++        let (captured, read) = capture_source_file(
++            &request.repo_root.join(&pin.path), pin.bytes.max(1), &mut clock,
++        )?;
++        actual = actual.checked_add(read.actual_read_bytes).ok_or("stage_read_overflow")?;
++        if actual > MAX_REQUEST + MAX_TEXT + MAX_INPUTS as u64 + 1 {
++            return Err("stage_actual_read_cap".into());
++        }
++        let sha256 = hash(&captured);
++        if captured.len() as u64 != pin.bytes || sha256 != pin.sha256 {
++            return Err("stage_captured_source_mismatch".into());
++        }
++        let text = String::from_utf8(captured).map_err(|_| "stage_input_utf8")?;
++        if text.contains('\r') { return Err("stage_input_non_lf".into()); }
++        inputs.push(Entry { path: pin.path.clone(), bytes: text.len(), sha256 });
++        texts.insert(pin.path.clone(), text);
++    }
++    let license = texts.remove("LICENSE").ok_or("stage_missing_license")?;
++    let mut files = match request.kind {
++        Kind::Product => {
++            let entry = texts.remove("skills/SKILL.md").ok_or("stage_missing_product")?;
++            let (name, _) = inventory::description(&entry).map_err(|_| "stage_product_metadata")?;
++            if request.expected_skill_names.first().map(String::as_str) != Some(name.as_str()) {
++                return Err("stage_product_name".into());
++            }
++            let resources = texts.iter().filter_map(|(path, text)| {
++                path.strip_prefix("skills/").map(|p| (p.to_owned(), text.clone()))
++            }).collect();
++            package::plan_product(&Bundle { entry, resources }, &license)?
++        }
++        Kind::Developer => {
++            let skills = texts.iter().filter_map(|(path, text)| {
++                path.strip_prefix(".agents/skills/").map(|p| (p.to_owned(), text.clone()))
++            }).collect::<BTreeMap<_, _>>();
++            package::plan_developer(&skills, &license)?
++        }
++    };
++    let eval_prefix = format!(".agents/evals/{}/", request.kind.name());
++    for (path, text) in &texts {
++        if let Some(relative) = path.strip_prefix(&eval_prefix) {
++            files.insert(format!("plugins/{}/evals/{relative}", request.kind.plugin()), text.clone());
++        }
++    }
++    let case_count = files.keys().filter(|path| {
++        path.starts_with(&format!("plugins/{}/evals/", request.kind.plugin())) && path.ends_with("/prompt.md")
++    }).count();
++    if case_count != request.kind.cases().len() { return Err("stage_eval_case_count".into()); }
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("stage_deadline_before_write".into()); }
++    let source = SourceReceipt {
++        repo_root: request.repo_root,
++        declared_source_commit: request.source_commit,
++        request_sha256: hash(&request_bytes), inputs,
++        actual_read_bytes: actual, elapsed_micros_before_write: clock.elapsed().as_micros(),
++        input_selection_declared_complete: true, selected_content_matches: true,
++        canonical_tree_complete: false, source_commit_verified: false,
++        provider_identity_qualified: false, qualified_complete: false,
++        identity_status: "unsupported_source_identity; cooperative selected-content staging only",
++    };
++    package::stage_prepared(&output, request.kind.name(), files, source, &mut clock)
++}

@@ -1,0 +1,55 @@
+{
+  "schema": "humanymous.stage-eval-candidate-unit-ownership.v1",
+  "status": "STATIC_ONLY_NOT_EXECUTED",
+  "root_original_actual_list_count_required": 93,
+  "old_integration_ids_required": 33,
+  "old_filesystem_provider_cases_required": 10,
+  "new_synthetic_selection_unit_ids": [
+    "maintenance_command::package_stage::selection::tests::fixed_eval_case_and_grader_closure_is_required",
+    "maintenance_command::package_stage::selection::tests::another_profile_or_executable_is_not_a_stage_resource",
+    "maintenance_command::package_stage::selection::tests::false_completeness_unknown_fields_and_aliases_refuse",
+    "maintenance_command::package_stage::selection::tests::tighter_caps_and_duplicate_json_keys_remain_failures"
+  ],
+  "files": [
+    {
+      "source": "maintenance/package.rs",
+      "preserved_test_function_ids": [
+        "product_plan_is_portable_and_has_no_developer_or_executable_glue",
+        "invalid_product_cannot_be_packaged"
+      ]
+    },
+    {
+      "source": "maintenance/product.rs",
+      "preserved_test_function_ids": [
+        "repository_product_bundle_has_resolved_references",
+        "accepts_portable_bundle_without_runtime_claim",
+        "refuses_missing_and_escape_links",
+        "duplicate_metadata_is_not_last_wins",
+        "validates_transitive_resources_and_rejects_orphans",
+        "orphan_cycles_do_not_count_as_reachable"
+      ]
+    },
+    {
+      "source": "maintenance/command.rs",
+      "preserved_test_function_ids": []
+    },
+    {
+      "source": "maintenance/selected_inputs/files.rs",
+      "preserved_test_function_ids": [
+        "command_clock_is_not_restarted_for_selected_observation",
+        "changed_open_file_is_not_observed_stable"
+      ]
+    },
+    {
+      "source": "maintenance/selected_inputs/mod.rs",
+      "preserved_test_function_ids": []
+    },
+    {
+      "source": "tests/maintenance_product_package.rs",
+      "preserved_test_function_ids": [
+        "product_bundle_contains_paired_suite_and_refuses_existing_output",
+        "developer_bundle_contains_separate_five_case_suite"
+      ]
+    }
+  ]
+}

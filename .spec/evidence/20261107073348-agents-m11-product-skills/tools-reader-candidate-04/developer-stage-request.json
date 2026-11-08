@@ -1,0 +1,305 @@
+{
+  "schema": "humanymous.stage-eval-source.v1",
+  "repo_root": "C:/ROOT_FROZEN_SOURCE_REPLACE_EXPLICITLY",
+  "source_commit": "5f1010d42f4938ed2ea30ce2e84945af7aedb180",
+  "kind": "developer",
+  "input_selection_complete": true,
+  "expected_skill_names": [
+    "adversarial-critique",
+    "coordinate-sessions",
+    "cut-release",
+    "design-sot",
+    "docs-from-sot",
+    "github-actions-ops",
+    "handover-pack",
+    "implement-sot-slice",
+    "optimize-skill-description",
+    "pass-wargame-round",
+    "red-blue-validate",
+    "red-blue-wargame-round",
+    "review-changes",
+    "survey-provider-history"
+  ],
+  "files": [
+    {
+      "path": ".agents/evals/developer/ci-accounting/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 517,
+      "sha256": "207a0bf36b4bf634e19bc0bd4e759ca157c1398319516613626826658afb59c6"
+    },
+    {
+      "path": ".agents/evals/developer/ci-accounting/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 153,
+      "sha256": "68ece781f3e4f92ce310ff236390588954a1ba3e1bfc08ad48677169b5ac7d1a"
+    },
+    {
+      "path": ".agents/evals/developer/ci-accounting/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 458,
+      "sha256": "69c74519cf9a3d47da233ec0d5fe8dad49399bd5cbfa7086f23c982cd4e972d9"
+    },
+    {
+      "path": ".agents/evals/developer/ci-identity/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 557,
+      "sha256": "a1ee339d0469b506991e3bb18c748ccdd46c969a443e62e8c30851788a80ea76"
+    },
+    {
+      "path": ".agents/evals/developer/ci-identity/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 157,
+      "sha256": "620941010bcf60da62db80e00b51b79e364f1a2328f0492bbad31a2263be62c8"
+    },
+    {
+      "path": ".agents/evals/developer/ci-identity/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 452,
+      "sha256": "d594f691460e0934a14362f616e9d7e3b93f10cd1b7c897cf4ac47b411049837"
+    },
+    {
+      "path": ".agents/evals/developer/README.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1813,
+      "sha256": "d01f670bd9adc7e05d16ecce72d91d15fbaa7c67776fbe839d69ad53b1268ed7"
+    },
+    {
+      "path": ".agents/evals/developer/release-failed-claim/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 559,
+      "sha256": "f9053fa50fe33a9102aa1210a8c6781493555a152b49a9aed099952ffb6b71d8"
+    },
+    {
+      "path": ".agents/evals/developer/release-failed-claim/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 168,
+      "sha256": "7c017e1793712487ee3b515fb2aa0006df690d569a75a6da60eaa839a193b6ff"
+    },
+    {
+      "path": ".agents/evals/developer/release-failed-claim/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 495,
+      "sha256": "c734695dfc52a3b7d15bdcdcf0e8c4ccbd6e19ac2694db6ebe1477efc9de2f6d"
+    },
+    {
+      "path": ".agents/evals/developer/release-prepare/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 434,
+      "sha256": "09b80382f8d3cbfff2a2acd61d847163e46bf38b2ebd9364ced215596395d73f"
+    },
+    {
+      "path": ".agents/evals/developer/release-prepare/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 161,
+      "sha256": "a2c477200665f5089b4b379d520380722d412de75fc309a1fd183b67c2c94c52"
+    },
+    {
+      "path": ".agents/evals/developer/release-prepare/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 419,
+      "sha256": "01618bcd9ffb95e943231886399335454e9ca0b5e3aac5ab5d85b11c1ef19f5b"
+    },
+    {
+      "path": ".agents/evals/developer/unrelated-layout/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 269,
+      "sha256": "deb8d79f638d5653309dab050ee82ab5ebbe7fa47d7335753d799cdf974aa175"
+    },
+    {
+      "path": ".agents/evals/developer/unrelated-layout/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 207,
+      "sha256": "5607b3265c824e7d129f3888938299a808f9f9f8a267e6e11131aae83117bcf5"
+    },
+    {
+      "path": ".agents/evals/developer/unrelated-layout/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 286,
+      "sha256": "29279d10d0e0398212b2f76d2da1589f9df7a84761747b1b0511f18e9329b626"
+    },
+    {
+      "path": ".agents/skills/adversarial-critique/assets/critique-report.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 286,
+      "sha256": "e85019389dce4c0026046b1d9b002980b7a01f304525c8122af522b5e44d6998"
+    },
+    {
+      "path": ".agents/skills/adversarial-critique/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1032,
+      "sha256": "faa1a43f97aa890802f0e0ac5b89807c526c0f7fb64f85614b0d0c8575e104e6"
+    },
+    {
+      "path": ".agents/skills/coordinate-sessions/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 7483,
+      "sha256": "08575db9f23d98cd4c808a87d09b0c47a7e0f2515d3d2f752dfc960c3b537898"
+    },
+    {
+      "path": ".agents/skills/cut-release/assets/preflight-checklist.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1322,
+      "sha256": "5c147f05f3a397ab1778d04a6dfdc830e528eb77eae032a3f566f9a04dc7b217"
+    },
+    {
+      "path": ".agents/skills/cut-release/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 7103,
+      "sha256": "51f0ebcf43850429d99b8837f5d1ddc6135df287d6ab196dfdc2f8dfe17670b6"
+    },
+    {
+      "path": ".agents/skills/design-sot/assets/sot-outline.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 452,
+      "sha256": "6d86b7336499fead7e276ef9eb11fb3d0072804a1fe69a590ce76dd7b822a137"
+    },
+    {
+      "path": ".agents/skills/design-sot/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1512,
+      "sha256": "fd9b3f1f008315b663ceee45e01bb6b898cdcf451cf308be8832b2d5bc8ba974"
+    },
+    {
+      "path": ".agents/skills/docs-from-sot/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 678,
+      "sha256": "bf52927cbd60716aac28ce95c20391ace826f319ee95dae787f76c575484e058"
+    },
+    {
+      "path": ".agents/skills/github-actions-ops/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 7255,
+      "sha256": "b549bc09f73780dd1466b11c8757b27da4da24255ede5343d2cd96cfc100dab1"
+    },
+    {
+      "path": ".agents/skills/handover-pack/assets/handover-template.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 259,
+      "sha256": "35640a87500809bb5bb1a078ae8e7396d9dfa64e666617853a0cb898a12e6965"
+    },
+    {
+      "path": ".agents/skills/handover-pack/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1412,
+      "sha256": "0072ea2466e9ebe9dcba4a49a51eb823b7979ce5538957e876649a87be13c04b"
+    },
+    {
+      "path": ".agents/skills/implement-sot-slice/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2133,
+      "sha256": "a6954408c3e85f05da679905d386442aecf62fa9ebf930fa0478a3295bfbd70f"
+    },
+    {
+      "path": ".agents/skills/optimize-skill-description/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2152,
+      "sha256": "fe2cc71a2d9bbb26695bef56be9be658d22913dbcbecd65699f5145ffa5d2aaf"
+    },
+    {
+      "path": ".agents/skills/pass-wargame-round/assets/round-log.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 318,
+      "sha256": "04862bafa98a8f7823f0e946dc7f227ed645e0d7a445dc3c47dcb488b37ac4e6"
+    },
+    {
+      "path": ".agents/skills/pass-wargame-round/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1536,
+      "sha256": "469241b579a1b1730e4eef94c2eb178ec3be47e335fd3757c20fff0040ddaa5b"
+    },
+    {
+      "path": ".agents/skills/red-blue-validate/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2782,
+      "sha256": "6300cdfdbee6f357d826663aebbec9790d801d9098fbb5d81c17bdf6768ef3fa"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/backlog-template.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 166,
+      "sha256": "9aa26529f9740973e9c111a161e5dc02934c96a3fd2f4f335444a7f4eff0584b"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/evidence-template.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 600,
+      "sha256": "e90ea209e02e8a7f3df4ebfac2012ea8157e69176b1c1c15ec83802bf926b5dd"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/ledger-template.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 382,
+      "sha256": "39c4f205cb835d6e8b77a4eebf2d06cae0bb7234a8b92e2f207c59b88d3b3850"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/assets/protocol.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 945,
+      "sha256": "05da64fc564abbcbbbbbecceab4c8fafbae8c787590d482fcf54f0b94fb81fc7"
+    },
+    {
+      "path": ".agents/skills/red-blue-wargame-round/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 4837,
+      "sha256": "d7d3588e54badaeb564e313a4a83d527925ac1c142f2aa507bb5d268cbc396a3"
+    },
+    {
+      "path": ".agents/skills/review-changes/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 677,
+      "sha256": "d57c319bb4ae6096f1c278b96ded95128b5a604d851f172bfb598defad14f9f6"
+    },
+    {
+      "path": ".agents/skills/survey-provider-history/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1587,
+      "sha256": "563c3446a5b302abc0cf73d536c4c95db8e6a6cee019c845cc99c6b6befc7faa"
+    },
+    {
+      "path": "LICENSE",
+      "owner": "repository",
+      "presence": "required",
+      "bytes": 11353,
+      "sha256": "28153ab6c3197253563f1ae0932a89a758d2d0f9c667d59da2e41c01c9cbfeb1"
+    }
+  ]
+}

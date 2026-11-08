@@ -1,0 +1,16 @@
+//! Bounded observations of a caller-frozen selection, never a security snapshot.
+mod files;
+mod model;
+mod reader;
+mod request;
+pub(crate) use request::{capture_request_file, capture_source_file};
+
+pub use files::PreparationReceipt;
+#[cfg(test)]
+pub use files::observe;
+pub use model::{FrozenSelection, Input, Limits, Root, SelectionError};
+pub use reader::{Clock, ContentRead, ReadBudget, ReadStatus, SystemClock};
+pub use request::{MAX_REQUEST_BYTES, RequestError, observe_request_file};
+
+#[cfg(test)]
+mod tests;
