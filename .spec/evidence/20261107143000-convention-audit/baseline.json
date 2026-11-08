@@ -2568,14 +2568,22 @@
     "bytes": 8348,
     "scope": "Root-requested bounded proposal review, not acceptance/source/executor grant",
     "recommendation": "Conditional low-level non-authority primitive only; memory/ownership/feature-canon amendments before implementation, provider manufacture/namespace remainsUnsupported",
-    "Root_decision": "PENDING",
+    "Root_decision": "CONDITIONALLY_ACCEPTED exact low-level implementation direction by6aea9fcc; evidence-only candidate authoring, no actual integration/execute grant",
     "source_or_native_execution": false,
-    "goal_complete": false
+    "goal_complete": false,
+    "current_disposition": "Root6aea9fcc conditionally accepts exact low-level implementation direction; evidence-only candidate authorized, actual source/compile/native remains pending, B2 unapproved",
+    "historical_review_decision": "Original7e341dcb review/private report wasPENDING beforeRoot6aea9fcc; retained immutable"
   },
   "browser_role_caller_followup": {
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-role-caller-followup-004.json",
     "sha256": "6c102e639500986c38b68c666f349739a89686b7b74d8d5bddafb88d7e67bba3",
     "bytes": 6547,
+    "goal_complete": false
+  },
+  "cef_regressions_b1_decision_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/cef-regressions-b1-decision-followup-005.json",
+    "sha256": "b574aa5ef7d7482f96a60a8f1a5d683f7ec5f62d40c24b3ab4bc5b8db6a4b2f6",
+    "bytes": 4365,
     "goal_complete": false
   }
 }

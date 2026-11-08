@@ -2952,3 +2952,24 @@ filename immediately per role. No actual wrong DLL or runtime failure was observ
 Pure preservation tests and strict compilation cannot close provenance, producer
 contract refresh, v2 consumer migration, PE export/import or real CEF/UI/lifetime
 validation. Private browser-role-caller-followup-004.json binds this scoped review.
+
+CEF selected-regression follow-up: exact3 actual named commands each pass1 with
+0failed/0ignored/16filtered.1793 before/after tuples agree, SHA67a7b00402ec1903388d15520d47444db5277766b25aab0be38c3c5a3ffd34d0.
+Exactly7 CEF caller files differ from the previous default1793 epoch; equal counts
+do not transfer source identity. One test copies synthetic byte files, explicitly
+removes its3 files/directory before success; two test JSON projection. This is not
+full17-target coverage, actual DLL/SDK/process/CEF or artifact-provenance closure.
+CA-BROWSER-ROLE-CALLER-01 remains OPEN; no native runtime failure is claimed.
+
+B1 disposition updated from prior pending review: Root6aea9fcc explicitly amended
+structuralSoT for one seventh private create_native scope behind Windows/default-
+off windows-file-create=>windows-object, preserving the existing6. Only descriptor-
+at-create CreateFileW and one immediate OwnedHandle adoption are admitted. Exact
+memory/locator/obligation conditions and private must-use borrowed-File return
+exclude lone into_file/Clone/serde/raw/proof authority. Native may author evidence
+candidate only; Root retains actual integration and later execution allocation.
+This is conditional implementation direction, not implemented/new tested unsafe.
+Original-I/O/held namespace/genesis/provider/Ready remain Unsupported; B2 remains
+UNAPPROVED. Prior pending/needs-work source records stay historical. Private
+cef-regressions-b1-decision-followup-005.json binds this new decision and raw9-file
+regression checkpoint; compiler/tool/read/lifetime/storage/full migration OPEN.
