@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "status": "source_candidate_authored_unexecuted_unapplied",
+  "branch": "codex/rust",
+  "private_evidence": "evidence:root/20261108043306",
+  "candidate_manifest_sha256": "4cd71eabb7936e82e4595b5208494edf2d8cf7608d7544b446053c6cca7c6dad",
+  "base": "Root readonly tools-integration-5f1010d4 final8",
+  "file_changes": [
+    {
+      "target": "deployments/lab/images/product.Dockerfile",
+      "candidate": "candidate/deployments/lab/images/product.Dockerfile",
+      "preimage_state": "present",
+      "preimage_sha256": "cc31b25fe0dfe3d05a0d1a289118b6f375a32ce85bc4b37c26d40605edc54615",
+      "producer_basis": "Root isolated final8 readonly snapshot",
+      "producer_sha256": "cc31b25fe0dfe3d05a0d1a289118b6f375a32ce85bc4b37c26d40605edc54615",
+      "postimage_bytes": 2224,
+      "postimage_sha256": "dad598aaef4d10379740dfb26c177dd0c1132f0f7d249d04522f0777b7b2e08e"
+    },
+    {
+      "target": "crates/apps/humanymous-cli/src/qualification/lab_runner/snapshot.rs",
+      "candidate": "candidate/crates/apps/humanymous-cli/src/qualification/lab_runner/snapshot.rs",
+      "preimage_state": "present",
+      "preimage_sha256": "3fea311d8dab4ee5ea90ee758a87f0a6618b0c8a3903c35d8c1c1554c514d81f",
+      "producer_basis": "Root isolated final8 readonly snapshot",
+      "producer_sha256": "3fea311d8dab4ee5ea90ee758a87f0a6618b0c8a3903c35d8c1c1554c514d81f",
+      "postimage_bytes": 11223,
+      "postimage_sha256": "6d45e4340c5e6f4fa418a72f96ae0ffc7bd524f52f60e3ab1e516a3f359b0bef"
+    },
+    {
+      "target": "crates/apps/humanymous-cli/src/qualification/delivery/mod.rs",
+      "candidate": "candidate/crates/apps/humanymous-cli/src/qualification/delivery/mod.rs",
+      "preimage_state": "present",
+      "preimage_sha256": "688390f3697767793f8f9a72724d7d10e0573146de21bc701c8772a2af4efcf6",
+      "producer_basis": "Root isolated final8 readonly snapshot",
+      "producer_sha256": "688390f3697767793f8f9a72724d7d10e0573146de21bc701c8772a2af4efcf6",
+      "postimage_bytes": 6274,
+      "postimage_sha256": "05a5312ae9a58e1104a44ca4e2efb365a4c24902b04963ea5254edfdbe04f38a"
+    },
+    {
+      "target": "build/rust/browser-product.Dockerfile",
+      "candidate": "candidate/build/rust/browser-product.Dockerfile",
+      "preimage_state": "absent",
+      "preimage_sha256": null,
+      "producer_basis": "main codex/rust individually reviewed historical recipe",
+      "producer_sha256": "68f765005f4e363387ece02d39b836b515814c93987efcc62433cc8519b54148",
+      "postimage_bytes": 2174,
+      "postimage_sha256": "5374bdcd0c2df2e4d708d4611423757d599eb82b5d5a8819c9a78fea22872b71"
+    },
+    {
+      "target": "build/rust/browser-product.Dockerfile.dockerignore",
+      "candidate": "candidate/build/rust/browser-product.Dockerfile.dockerignore",
+      "preimage_state": "absent",
+      "preimage_sha256": null,
+      "producer_basis": "main codex/rust individually reviewed historical recipe",
+      "producer_sha256": "93f65911a4897df544b5cba07d6a5464d013d88a74f4de125f1fd8f06af0aec3",
+      "postimage_bytes": 622,
+      "postimage_sha256": "228146bbaa1e70bedc51c3061159682a37228b9380d60e1ef346abbf4af576e1"
+    },
+    {
+      "target": "build/rust/collector-browser.Dockerfile",
+      "candidate": "candidate/build/rust/collector-browser.Dockerfile",
+      "preimage_state": "absent",
+      "preimage_sha256": null,
+      "producer_basis": "main codex/rust individually reviewed historical recipe",
+      "producer_sha256": "5027c10ebc76901711d45ce4d2a6ac91007bfe1a9da19ad3d30d2faaf40f3f93",
+      "postimage_bytes": 1670,
+      "postimage_sha256": "87eb0c3facca94dca2db5ebb61a6e6dcc8dd6fe27520d40b1126d297d6b98a6a"
+    },
+    {
+      "target": "build/rust/collector-browser.Dockerfile.dockerignore",
+      "candidate": "candidate/build/rust/collector-browser.Dockerfile.dockerignore",
+      "preimage_state": "absent",
+      "preimage_sha256": null,
+      "producer_basis": "main codex/rust individually reviewed historical recipe",
+      "producer_sha256": "696962c5556588ab02e04ef37ad54c6c753f66662b4d6c8eed57b097d2b1cabb",
+      "postimage_bytes": 622,
+      "postimage_sha256": "228146bbaa1e70bedc51c3061159682a37228b9380d60e1ef346abbf4af576e1"
+    },
+    {
+      "target": "deployments/lab/images/product.Dockerfile.dockerignore",
+      "candidate": "candidate/deployments/lab/images/product.Dockerfile.dockerignore",
+      "preimage_state": "present",
+      "preimage_sha256": "4748966a0f02dc4de7807af0a956c18b266a95da1a53113aa67a46c2631bfc39",
+      "producer_basis": "Root isolated final8 readonly snapshot",
+      "producer_sha256": "4748966a0f02dc4de7807af0a956c18b266a95da1a53113aa67a46c2631bfc39",
+      "postimage_bytes": 622,
+      "postimage_sha256": "228146bbaa1e70bedc51c3061159682a37228b9380d60e1ef346abbf4af576e1"
+    },
+    {
+      "target": "crates/apps/humanymous-cli/src/qualification/delivery/lab_recipe_contract.rs",
+      "candidate": "candidate/crates/apps/humanymous-cli/src/qualification/delivery/lab_recipe_contract.rs",
+      "preimage_state": "absent",
+      "preimage_sha256": null,
+      "producer_basis": "new authored Rust source regression tests",
+      "producer_sha256": null,
+      "postimage_bytes": 12460,
+      "postimage_sha256": "b9ba2586c2953f040195f750d47fb7f946085cb858a95a26f197405fffe6658a"
+    }
+  ],
+  "scope": [
+    "Exact humanymous-cli binary and feature selectors; no common Cargo changes",
+    "Restore only four individually reviewed browser recipe/ignore paths absent in final8; main producer hashes distinct",
+    "Relocated Collector webdriver copy and fail-closed single WASM artifact COPY",
+    "Final8 source allowlist excludes retired package roots/private/compiled paths and retains explicit historical DATA",
+    "Root isolation/strict Origin/detection freeze unchanged; no actual Docker or host-loopback claim"
+  ],
+  "tests": {
+    "new_pure_cases": 4,
+    "new_explicit_source_gate_ignored_by_default": 1,
+    "existing_snapshot_cases_expanded": 2,
+    "actual_executed": 0,
+    "compiler": "not run",
+    "fmt": "not run",
+    "clippy": "not run",
+    "Docker": "not run",
+    "hosted": "not run"
+  },
+  "preserved_qualification": {
+    "qualified_source": "3137c905ac4e52b8b345fa2306af9e4ef4d42b48",
+    "owning_assertions_passed": 49,
+    "required_unavailable": 9,
+    "full_product_qualified": false,
+    "release_ready": false,
+    "candidate_inherits_no_execution_proof": true
+  },
+  "application": "Root/Cursor integrator only after all preimage/absence checks and actual lane ownership; no force or automatic base overwrite",
+  "execution": "No compiler/formatter/Clippy/Docker/browser/SDK/hosted run allocated or started",
+  "remaining": [
+    "Allocate source-bound formatting and scoped tests/check/Clippy against a separately projected final8 tree",
+    "Execute exact ignored source/topology contract gate separately; default unit success cannot count it as passed",
+    "Actual final8 Docker and hosted qualification remain unmeasured; historical3137 49pass/nine unavailable unchanged"
+  ]
+}
