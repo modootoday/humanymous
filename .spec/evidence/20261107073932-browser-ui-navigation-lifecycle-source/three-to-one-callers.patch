@@ -1,0 +1,254 @@
+diff --git a/scripts/ci/cef-pilot/src/desktop.rs b/scripts/ci/cef-pilot/src/desktop.rs
+index 913247b4..7d54a2b2 100644
+--- a/scripts/ci/cef-pilot/src/desktop.rs
++++ b/scripts/ci/cef-pilot/src/desktop.rs
+@@ -3,7 +3,7 @@ use serde_json::{Value, json};
+ use std::io;
+ pub(super) fn contract() -> io::Result<Value> {
+     humanymous_platform::testing::json::decode_strict_json(
+-        include_bytes!("../../../../crates/browser/native/desktop/pilot-contract.json"),
++        include_bytes!("../../../../crates/apps/humanymous-browser/native/desktop/pilot-contract.json"),
+         1024 * 1024,
+     )
+     .map_err(io::Error::other)
+@@ -11,7 +11,7 @@ pub(super) fn contract() -> io::Result<Value> {
+ fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
+     let contract = contract()?;
+     let profile = &contract["protocol_preflight"];
+-    if profile["selector"] != "pilot_assertions::tests::"
++    if profile["selector"] != "desktop::pilot_assertions::tests::"
+         || profile["classification"] != "synthetic_report_protocol"
+         || profile["initializes_cef"] != false
+         || profile["starts_processes"] != false
+@@ -28,7 +28,7 @@ fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
+         let name = name
+             .as_str()
+             .ok_or_else(|| io::Error::other("protocol name invalid"))?;
+-        if !name.starts_with("pilot_assertions::tests::")
++        if !name.starts_with("desktop::pilot_assertions::tests::")
+             || !name
+                 .bytes()
+                 .all(|c| c.is_ascii_alphanumeric() || matches!(c, b'_' | b':'))
+@@ -44,7 +44,7 @@ fn protocol_inventory() -> io::Result<(String, Vec<String>)> {
+     {
+         return Err(io::Error::other("protocol inventory count mismatch"));
+     }
+-    Ok(("pilot_assertions::tests::".to_owned(), names))
++    Ok(("desktop::pilot_assertions::tests::".to_owned(), names))
+ }
+ pub(super) fn protocol_selector() -> io::Result<String> {
+     Ok(protocol_inventory()?.0)
+diff --git a/scripts/ci/cef-pilot/src/diagnostics/bootstrap.rs b/scripts/ci/cef-pilot/src/diagnostics/bootstrap.rs
+index 0b77f844..40e108a5 100644
+--- a/scripts/ci/cef-pilot/src/diagnostics/bootstrap.rs
++++ b/scripts/ci/cef-pilot/src/diagnostics/bootstrap.rs
+@@ -26,7 +26,7 @@ pub(super) fn public_observations(value: &Value) -> Value {
+ }
+ pub(super) fn selector() -> io::Result<String> {
+     let profile = config()?["protocol_preflight"].clone();
+-    if profile["selector"] != "negative_pilot::tests::"
++    if profile["selector"] != "bootstrap::negative_pilot::tests::"
+         || profile["required_test_count"] != 3
+         || profile["classification"] != "synthetic_bootstrap_observation_protocol"
+         || profile["initializes_cef"] != false
+@@ -34,7 +34,7 @@ pub(super) fn selector() -> io::Result<String> {
+     {
+         return Err(io::Error::other("unsupported bootstrap protocol preflight"));
+     }
+-    Ok("negative_pilot::tests::".into())
++    Ok("bootstrap::negative_pilot::tests::".into())
+ }
+ pub(super) fn verify_protocol(text: &str) -> io::Result<Value> {
+     selector()?;
+@@ -52,7 +52,7 @@ pub(super) fn verify_protocol(text: &str) -> io::Result<Value> {
+             .len()
+             != 3
+         || names.iter().any(|name| {
+-            !name.starts_with("negative_pilot::tests::")
++            !name.starts_with("bootstrap::negative_pilot::tests::")
+                 || !name
+                     .bytes()
+                     .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b':'))
+diff --git a/scripts/ci/cef-pilot/src/diagnostics/tests.rs b/scripts/ci/cef-pilot/src/diagnostics/tests.rs
+index 2c968276..a8211439 100644
+--- a/scripts/ci/cef-pilot/src/diagnostics/tests.rs
++++ b/scripts/ci/cef-pilot/src/diagnostics/tests.rs
+@@ -22,14 +22,14 @@ fn marker_bytes(records: &[Value]) -> Vec<u8> {
+         .into_bytes()
+ }
+ fn source() -> Value {
+-    json!({"files":{"crates/browser/native/bootstrap/src/lib.rs":"a"}})
++    json!({"files":{"crates/apps/humanymous-browser/native/bootstrap/src/lib.rs":"a"}})
+ }
+ fn message(file: &str) -> Value {
+     json!({"reason":"compiler-message","message":{"level":"error","code":{"code":"E0308"},"rendered":"PRIVATE_CANARY","message":"PRIVATE_CANARY","spans":[{"is_primary":true,"file_name":file,"line_start":9,"text":[{"text":"PRIVATE_CANARY"}]}]}})
+ }
+ #[test]
+ fn compiler_projection_keeps_only_codes_and_reviewed_locations() {
+-    let bytes = message("crates/browser/native/bootstrap/src/lib.rs").to_string();
++    let bytes = message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs").to_string();
+     let value = project(bytes.as_bytes(), &source(), Some(101), false);
+     assert_eq!(value["diagnostics"][0]["error_code"], "E0308");
+     assert_eq!(value["diagnostics"][0]["locations"][0]["line"], 9);
+@@ -67,7 +67,7 @@ fn long_and_excess_records_are_bounded_with_explicit_omissions() {
+     bytes.push(b'\n');
+     for _ in 0..70 {
+         bytes.extend(
+-            message("crates/browser/native/bootstrap/src/lib.rs")
++            message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs")
+                 .to_string()
+                 .bytes(),
+         );
+@@ -78,12 +78,12 @@ fn long_and_excess_records_are_bounded_with_explicit_omissions() {
+     assert_eq!(value["oversized_records"], 1);
+     assert_eq!(value["omitted_diagnostics"], 6);
+     assert_eq!(value["diagnostic_read_truncated"], true);
+-    let mut warning = message("crates/browser/native/bootstrap/src/lib.rs");
++    let mut warning = message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs");
+     warning["message"]["level"] = json!("warning");
+     let text = format!(
+         "{}{}",
+         format!("{warning}\n").repeat(64),
+-        message("crates/browser/native/bootstrap/src/lib.rs")
++        message("crates/apps/humanymous-browser/native/bootstrap/src/lib.rs")
+     );
+     let value = project(text.as_bytes(), &source(), Some(101), false);
+     assert_eq!(
+diff --git a/scripts/ci/cef-pilot/src/diagnostics.rs b/scripts/ci/cef-pilot/src/diagnostics.rs
+index b868a2fb..4be307bd 100644
+--- a/scripts/ci/cef-pilot/src/diagnostics.rs
++++ b/scripts/ci/cef-pilot/src/diagnostics.rs
+@@ -255,6 +255,8 @@ pub(super) fn public(report: &Value) -> Value {
+     let mut commands = serde_json::Map::new();
+     for stage in [
+         "native-build",
++        "native-build-cef-bootstrap",
++        "native-build-cef-desktop",
+         "desktop-protocol-build",
+         "desktop-protocol-tests",
+         "bootstrap-protocol-build",
+@@ -273,6 +275,8 @@ pub(super) fn public(report: &Value) -> Value {
+                 *stage,
+                 "source-preflight"
+                     | "native-build"
++                    | "native-build-cef-bootstrap"
++                    | "native-build-cef-desktop"
+                     | "desktop-protocol-build"
+                     | "desktop-protocol-tests"
+                     | "bootstrap-protocol-build"
+diff --git a/scripts/ci/cef-pilot/src/main.rs b/scripts/ci/cef-pilot/src/main.rs
+index 7c9e462b..bca255f3 100644
+--- a/scripts/ci/cef-pilot/src/main.rs
++++ b/scripts/ci/cef-pilot/src/main.rs
+@@ -10,7 +10,7 @@ use std::{
+ };
+ 
+ const CASE: &str =
+-    "tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation";
++    "bootstrap::tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation";
+ 
+ fn logged_status(command: &mut Command, path: &Path) -> io::Result<std::process::ExitStatus> {
+     let file = fs::File::create(path)?;
+@@ -79,9 +79,9 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+         Command::new("cargo").env("PATH", &tool_path).args([
+             "build",
+             "-p",
+-            "humanymous-cef-bootstrap",
++            "humanymous-browser",
+             "-p",
+-            "humanymous-cef-desktop",
++            "humanymous-browser",
+             "--locked",
+             "--message-format=json",
+         ]),
+@@ -107,7 +107,7 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             "test",
+             "--locked",
+             "-p",
+-            "humanymous-cef-desktop",
++            "humanymous-browser",
+             "--features",
+             "native-pilot-tests",
+             "--lib",
+@@ -125,7 +125,7 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             "test",
+             "--locked",
+             "-p",
+-            "humanymous-cef-desktop",
++            "humanymous-browser",
+             "--features",
+             "native-pilot-tests",
+             "--lib",
+@@ -145,7 +145,7 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             "--locked",
+             "--message-format=json",
+             "-p",
+-            "humanymous-cef-bootstrap",
++            "humanymous-browser",
+             "--features",
+             "native-pilot-tests",
+             "--lib",
+@@ -163,7 +163,7 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             "--locked",
+             "--message-format=json",
+             "-p",
+-            "humanymous-cef-bootstrap",
++            "humanymous-browser",
+             "--features",
+             "native-pilot-tests",
+             "--lib",
+@@ -185,7 +185,7 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+             .args([
+                 "test",
+                 "-p",
+-                "humanymous-cef-bootstrap",
++                "humanymous-browser",
+                 "--locked",
+                 "--lib",
+                 "--message-format=json",
+@@ -235,11 +235,11 @@ fn run(output: &Path, report: &mut serde_json::Value) -> io::Result<()> {
+                 "test",
+                 "--locked",
+                 "-p",
+-                "humanymous-cef-desktop",
++                "humanymous-browser",
+                 "--lib",
+                 "--features",
+                 "native-pilot-tests",
+-                "pilot_process::",
++                "desktop::pilot_process::",
+                 "--message-format=json",
+                 "--",
+                 "--test-threads=1",
+diff --git a/scripts/ci/cef-pilot/src/provisioning.rs b/scripts/ci/cef-pilot/src/provisioning.rs
+index 1f2abe32..043d9620 100644
+--- a/scripts/ci/cef-pilot/src/provisioning.rs
++++ b/scripts/ci/cef-pilot/src/provisioning.rs
+@@ -89,19 +89,19 @@ pub(super) fn source_snapshot() -> io::Result<Value> {
+         "rust-toolchain.toml",
+         "scripts/ci/cef-pilot/Cargo.toml",
+         "scripts/ci/cef-pilot/Cargo.lock",
+-        "crates/browser/native/bootstrap/Cargo.toml",
+-        "crates/browser/native/desktop/Cargo.toml",
+-        "crates/browser/native/desktop/pilot-contract.json",
+-        "crates/browser/Cargo.toml",
++        "crates/apps/humanymous-browser/native/bootstrap/Cargo.toml",
++        "crates/apps/humanymous-browser/native/desktop/Cargo.toml",
++        "crates/apps/humanymous-browser/native/desktop/pilot-contract.json",
++        "crates/apps/humanymous-browser/Cargo.toml",
+         "crates/integrations/humanymous-platform/Cargo.toml",
+     ] {
+         files.insert(file.to_owned(), digest(Path::new(file))?);
+     }
+     for directory in [
+-        "crates/browser/native/bootstrap/src",
+-        "crates/browser/native/desktop/src",
+-        "crates/browser/native/shared",
+-        "crates/browser/src",
++        "crates/apps/humanymous-browser/native/bootstrap/src",
++        "crates/apps/humanymous-browser/native/desktop/src",
++        "crates/apps/humanymous-browser/native/shared",
++        "crates/apps/humanymous-browser/src",
+         "crates/integrations/humanymous-platform/src",
+         "scripts/ci/cef-pilot/src",
+     ] {

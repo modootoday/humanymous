@@ -1,0 +1,1045 @@
+diff --git a/crates/apps/humanymous-browser/Cargo.toml b/crates/apps/humanymous-browser/Cargo.toml
+index e0978526..c0566576 100644
+--- a/crates/apps/humanymous-browser/Cargo.toml
++++ b/crates/apps/humanymous-browser/Cargo.toml
+@@ -10,8 +10,14 @@ publish = false
+ [lints]
+ workspace = true
+ 
++[lib]
++crate-type = ["rlib", "cdylib"]
++
+ [features]
+ default = []
++cef-bootstrap = ["dep:cef", "dep:libloading"]
++cef-desktop = ["native-ui", "dep:cef", "dep:winit", "dep:windows", "dep:serde", "dep:serde_json"]
++native-pilot-tests = []
+ native-ui = ["dep:meari", "dep:meari-native", "dep:html5ever", "dep:meari-dom"]
+ 
+ [dependencies]
+@@ -30,3 +36,15 @@ keyboard-types = "=0.8.3"
+ name = "humanymous-browser"
+ path = "src/main.rs"
+ required-features = ["native-ui"]
++
++[target.'cfg(windows)'.dependencies]
++cef = { git = "https://github.com/tauri-apps/cef-rs.git", rev = "224a785c7b41758b51821cbb7395ea57ba493a63", default-features = false, features = ["sandbox"], optional = true }
++libloading = { version = "=0.9.0", optional = true }
++winit = { version = "=0.31.0-beta.3", optional = true }
++windows = { version = "=0.62.2", optional = true, features = ["Wdk_System_Threading", "Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_Input_Ime", "Win32_UI_HiDpi", "Win32_System_Threading", "Win32_System_Diagnostics_ToolHelp", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Com", "Win32_System_ProcessStatus"] }
++serde = { version = "1", features = ["derive"], optional = true }
++serde_json = { version = "1", optional = true }
++
++[target.'cfg(windows)'.dev-dependencies]
++humanymous-platform = { workspace = true, features = ["testing"] }
++serde_json = { workspace = true }
+\ No newline at end of file
+diff --git a/crates/apps/humanymous-browser/native/bootstrap/src/renderer_probe.rs b/crates/apps/humanymous-browser/native/bootstrap/src/renderer_probe.rs
+index 4bca5994..120d86df 100644
+--- a/crates/apps/humanymous-browser/native/bootstrap/src/renderer_probe.rs
++++ b/crates/apps/humanymous-browser/native/bootstrap/src/renderer_probe.rs
+@@ -4,7 +4,7 @@ use cef::*;
+ wrap_app! {
+     struct ProbeApp;
+     impl App {
+-        fn on_register_custom_schemes(&self, registrar: Option<&mut SchemeRegistrar>) { crate::owner_scheme::register(registrar); }
++        fn on_register_custom_schemes(&self, registrar: Option<&mut SchemeRegistrar>) { crate::bootstrap::owner_scheme::register(registrar); }
+         fn render_process_handler(&self) -> Option<RenderProcessHandler> { Some(ProbeRenderer::new()) }
+     }
+ }
+@@ -16,7 +16,7 @@ wrap_render_process_handler! {
+     struct ProbeRenderer;
+     impl RenderProcessHandler {
+         fn on_browser_created(&self, browser: Option<&mut Browser>, extra_info: Option<&mut DictionaryValue>) {
+-            if !crate::owner_scheme::registered() { return; }
++            if !crate::bootstrap::owner_scheme::registered() { return; }
+             let Some(info) = extra_info else { return; };
+             let owner = info.int(Some(&CefString::from("humanymous_probe_owner")));
+             if owner <= 0 { return; }
+diff --git a/crates/apps/humanymous-browser/native/desktop/pilot-contract.json b/crates/apps/humanymous-browser/native/desktop/pilot-contract.json
+index 4a134d4f..a19e3865 100644
+--- a/crates/apps/humanymous-browser/native/desktop/pilot-contract.json
++++ b/crates/apps/humanymous-browser/native/desktop/pilot-contract.json
+@@ -7,7 +7,7 @@
+     "observation_schema": 1,
+     "marker_prefix": "HUMANYMOUS_BOOTSTRAP_OBSERVATION ",
+     "max_record_bytes": 1024,
+-    "test_name": "tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation",
++    "test_name": "bootstrap::tests::native_bootstrap_rejects_security_overrides_before_ui_or_profile_creation",
+     "case_count": 4,
+     "expected_exit_code": 78,
+     "expected_profile_changed": false,
+@@ -24,35 +24,35 @@
+     "profile_fields": ["schema", "kind", "phase", "inventory_ok", "changed", "error_kind"],
+     "reaped_semantics": "true only after wait or stop returned actual direct-child status; otherwise null, never inferred from spawn or exit expectation",
+     "protocol_preflight": {
+-      "selector": "negative_pilot::tests::",
++      "selector": "bootstrap::negative_pilot::tests::",
+       "required_test_count": 3,
+       "classification": "synthetic_bootstrap_observation_protocol",
+       "initializes_cef": false,
+       "starts_processes": false,
+       "test_names": [
+-        "negative_pilot::tests::case_projection_is_closed_and_rejects_foreign_ids",
+-        "negative_pilot::tests::unobserved_reaping_stays_null",
+-        "negative_pilot::tests::profile_error_projection_excludes_private_details"
++        "bootstrap::negative_pilot::tests::case_projection_is_closed_and_rejects_foreign_ids",
++        "bootstrap::negative_pilot::tests::unobserved_reaping_stays_null",
++        "bootstrap::negative_pilot::tests::profile_error_projection_excludes_private_details"
+       ]
+     }
+   },
+   "protocol_preflight": {
+-    "selector": "pilot_assertions::tests::",
++    "selector": "desktop::pilot_assertions::tests::",
+     "required_test_count": 4,
+     "classification": "synthetic_report_protocol",
+     "initializes_cef": false,
+     "starts_processes": false,
+     "requires_native_feature_build": true,
+     "test_names": [
+-      "pilot_assertions::tests::protocol_fixture_accepts_complete_shape_without_exporting_private_fields",
+-      "pilot_assertions::tests::protocol_rejects_stale_missing_truncated_and_unjoined_success_claims",
+-      "pilot_assertions::tests::canceled_protocol_fixture_requires_real_cleanup_and_explicit_cancellation",
+-      "pilot_assertions::tests::cancellation_rejects_retained_probes_missing_schema_and_stale_transactions"
++      "desktop::pilot_assertions::tests::protocol_fixture_accepts_complete_shape_without_exporting_private_fields",
++      "desktop::pilot_assertions::tests::protocol_rejects_stale_missing_truncated_and_unjoined_success_claims",
++      "desktop::pilot_assertions::tests::canceled_protocol_fixture_requires_real_cleanup_and_explicit_cancellation",
++      "desktop::pilot_assertions::tests::cancellation_rejects_retained_probes_missing_schema_and_stale_transactions"
+     ]
+   },
+   "cases": {
+     "positive": {
+-      "test_name": "pilot_process::provisioned_positive_internal_routes_and_cleanup",
++      "test_name": "desktop::pilot_process::provisioned_positive_internal_routes_and_cleanup",
+       "exit_code": 0,
+       "observed": 7,
+       "joined_renderer_probes_min": 1,
+@@ -60,7 +60,7 @@
+     },
+     "cancelled": {
+       "renderer_file_probes": 0,
+-      "test_name": "pilot_process::provisioned_cancellation_rejects_incomplete_probe_after_cleanup",
++      "test_name": "desktop::pilot_process::provisioned_cancellation_rejects_incomplete_probe_after_cleanup",
+       "exit_code": 78,
+       "observed": 0,
+       "joined_renderer_probes_min": 0,
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/browser_controls.rs b/crates/apps/humanymous-browser/native/desktop/src/browser_controls.rs
+index 41fbcf55..c7f321bf 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/browser_controls.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/browser_controls.rs
+@@ -1,6 +1,6 @@
+ //! Native address/home/reload intents. Target documents never own these controls.
+-use crate::child::Shared;
+-use humanymous_browser::{
++use crate::desktop::child::Shared;
++use crate::{
+     internal_urls,
+     tabs::Command,
+     ui_navigation::{self, ImeGuard, Intent},
+@@ -22,7 +22,7 @@ pub struct Controls {
+     modifiers: ModifiersState,
+     committed: u64,
+     notice: Option<&'static str>,
+-    controls: Option<humanymous_browser::history::Controls>,
++    controls: Option<crate::history::Controls>,
+     probe: Option<probe::Probe>,
+ }
+ impl Controls {
+@@ -68,7 +68,7 @@ impl Controls {
+                     }
+                     _ => 0,
+                 };
+-                if let Some(command) = humanymous_browser::tabs::shortcut(
++                if let Some(command) = crate::tabs::shortcut(
+                     vk,
+                     self.modifiers.control_key(),
+                     self.modifiers.alt_key(),
+@@ -76,7 +76,7 @@ impl Controls {
+                     self.modifiers.meta_key(),
+                     event.repeat,
+                 ) {
+-                    crate::tab_sessions::enqueue_window(&self.state, command)?;
++                    crate::desktop::tab_sessions::enqueue_window(&self.state, command)?;
+                     return Ok(());
+                 }
+                 if event.logical_key == Key::Named(NamedKey::Enter) {
+@@ -121,7 +121,7 @@ impl Controls {
+                 }
+             },
+         };
+-        crate::tab_sessions::enqueue_window(&self.state, command)
++        crate::desktop::tab_sessions::enqueue_window(&self.state, command)
+     }
+     pub fn poll(&mut self) -> io::Result<()> {
+         let (cursor, intents) = self
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/child.rs b/crates/apps/humanymous-browser/native/desktop/src/child.rs
+index c13f816d..43a6ef3b 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/child.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/child.rs
+@@ -10,11 +10,11 @@ use std::{
+ pub struct State {
+     pub active: bool,
+     pub tab_id: usize,
+-    pub commands: Option<crate::tab_sessions::Queue>,
++    pub commands: Option<crate::desktop::tab_sessions::Queue>,
+     pub surface_error: Option<&'static str>,
+     pub browser: Option<Browser>,
+     pub browser_id: Option<i32>,
+-    pub navigation: crate::navigation::State,
++    pub navigation: crate::desktop::navigation::State,
+     pub created: bool,
+     pub creation_requested: bool,
+     pub closed: bool,
+@@ -49,7 +49,7 @@ pub struct FileProbe {
+     pub pid: u32,
+     pub read_os_error: i32,
+     pub create_os_error: i32,
+-    pub os_token: Option<crate::native::ProcessToken>,
++    pub os_token: Option<crate::desktop::native::ProcessToken>,
+     pub os_token_status: &'static str,
+     pub os_token_error: Option<i32>,
+ }
+@@ -92,7 +92,7 @@ wrap_task! {
+                 host.set_accessibility_state(cef::State::ENABLED);
+                 host.set_focus(1);
+                 if std::env::args().any(|a| a == "--native-korean-ime") {
+-                    let outcome = crate::native::prepare_korean_ime(&self.browser)
++                    let outcome = crate::desktop::native::prepare_korean_ime(&self.browser)
+                         .map_or_else(|error| error.to_string(), |_| "open_requested_not_qualified".into());
+                     if let Ok(mut state) = self.state.lock() && state.is_live() { state.ime_setup = Some(outcome); }
+                 }
+@@ -115,7 +115,7 @@ wrap_task! {
+     struct DestroyChild { browser: Browser, }
+     impl Task {
+         fn execute(&self) {
+-            if let Err(error) = crate::native::destroy_child(&self.browser) { eprintln!("native: child destroy failed: {error}"); }
++            if let Err(error) = crate::desktop::native::destroy_child(&self.browser) { eprintln!("native: child destroy failed: {error}"); }
+         }
+     }
+ }
+@@ -137,7 +137,7 @@ wrap_client! {
+                 && !state.file_probes.iter().any(|p| p.pid == pid as u32)) { return 1; }
+             // Inspect only independently discovered owned descendants, never an
+             // arbitrary PID supplied by the renderer. Do not hold State over OS calls.
+-            let (os_token, os_token_status, os_token_error) = match crate::native::owned_process_tokens() {
++            let (os_token, os_token_status, os_token_error) = match crate::desktop::native::owned_process_tokens() {
+                 Ok(tokens) => match tokens.into_iter().find(|token| token.pid == pid as u32) {
+                     Some(token) => (Some(token), "observed", None),
+                     None => (None, "owned_pid_not_observed", None),
+@@ -150,11 +150,11 @@ wrap_client! {
+             }
+             1
+         }
+-        fn load_handler(&self) -> Option<LoadHandler> { Some(crate::navigation::handler(self.state.clone())) }
++        fn load_handler(&self) -> Option<LoadHandler> { Some(crate::desktop::navigation::handler(self.state.clone())) }
+         fn keyboard_handler(&self) -> Option<KeyboardHandler> { Some(InputEvidence::new(self.state.clone())) }
+         fn focus_handler(&self) -> Option<FocusHandler> { Some(FocusEvidence::new(self.state.clone())) }
+         fn life_span_handler(&self) -> Option<LifeSpanHandler> { Some(PilotLife::new(self.state.clone())) }
+-        fn request_handler(&self) -> Option<RequestHandler> { Some(crate::navigation::request_handler(self.state.clone(), self.uri.clone())) }
++        fn request_handler(&self) -> Option<RequestHandler> { Some(crate::desktop::navigation::request_handler(self.state.clone(), self.uri.clone())) }
+         fn permission_handler(&self) -> Option<PermissionHandler> { Some(DenyPermissions::new()) }
+         fn dialog_handler(&self) -> Option<DialogHandler> { Some(DenyFiles::new()) }
+         fn download_handler(&self) -> Option<DownloadHandler> { Some(DenyDownloads::new()) }
+@@ -182,10 +182,10 @@ wrap_keyboard_handler! {
+             if let Some(event)=event.filter(|e|e.type_==KeyEventType::RAWKEYDOWN) {
+                 use cef::sys::cef_event_flags_t as Flags;
+                 let flag=|value:Flags|event.modifiers & value.0 as u32 !=0;
+-                if let Some(command)=humanymous_browser::tabs::shortcut(event.windows_key_code as u32,
++                if let Some(command)=crate::tabs::shortcut(event.windows_key_code as u32,
+                     flag(Flags::EVENTFLAG_CONTROL_DOWN),flag(Flags::EVENTFLAG_ALT_DOWN),flag(Flags::EVENTFLAG_SHIFT_DOWN),
+                     flag(Flags::EVENTFLAG_COMMAND_DOWN),flag(Flags::EVENTFLAG_IS_REPEAT)) {
+-                    if crate::tab_sessions::enqueue(&self.state,command).is_err()
++                    if crate::desktop::tab_sessions::enqueue(&self.state,command).is_err()
+                         && let Ok(mut state)=self.state.lock() {state.surface_error=Some("tab command rejected");}
+                     return 1;
+                 }
+@@ -195,7 +195,7 @@ wrap_keyboard_handler! {
+                 && std::env::args().any(|a| a == "--native-korean-ime") {
+                 if self.state.lock().map_or(true, |s| s.measured_hanja.len() >= 4) { return 1; }
+                 if let Some(browser) = _browser.as_ref() {
+-                    let result = crate::measured_input::replay_hanja(browser, event.map_or(0, |e| e.modifiers)).unwrap_or_else(|e| e.to_string());
++                    let result = crate::desktop::measured_input::replay_hanja(browser, event.map_or(0, |e| e.modifiers)).unwrap_or_else(|e| e.to_string());
+                     eprintln!("native: measured Hanja {result}");
+                     if let Ok(mut state) = self.state.lock() && state.is_live() { state.measured_hanja.push(result); }
+                 }
+@@ -204,14 +204,14 @@ wrap_keyboard_handler! {
+             if event.is_some_and(|e| e.windows_key_code == 0x78 && e.type_ == KeyEventType::RAWKEYDOWN)
+                 && std::env::args().any(|a| a == "--native-korean-ime")
+                 && let Some(browser) = _browser.as_ref() {
+-                let outcome = crate::native::request_ime_candidates(browser).unwrap_or_else(|error| error.to_string());
++                let outcome = crate::desktop::native::request_ime_candidates(browser).unwrap_or_else(|error| error.to_string());
+                 if let Ok(mut state) = self.state.lock() && state.is_live() { state.ime_candidate_request = Some(outcome); }
+                 return 1;
+             }
+             if event.is_some_and(|e| e.windows_key_code == 0x77 && e.type_ == KeyEventType::RAWKEYDOWN)
+                 && std::env::args().any(|a| a == "--native-korean-ime")
+                 && let Some(browser) = _browser {
+-                let outcome = crate::native::prepare_korean_ime(browser)
++                let outcome = crate::desktop::native::prepare_korean_ime(browser)
+                     .map_or_else(|error| error.to_string(), |_| "focused_context_open_requested_not_qualified".into());
+                 if let Ok(mut state) = self.state.lock() && state.is_live() { state.ime_setup = Some(outcome); }
+                 return 1;
+@@ -283,7 +283,7 @@ wrap_life_span_handler! {
+             }
+             if !close && let Some(browser)=&browser {
+                 let active=self.state.lock().is_ok_and(|s|s.active);
+-                if crate::tab_windows::visible(browser,active).is_err()
++                if crate::desktop::tab_windows::visible(browser,active).is_err()
+                     && let Ok(mut state)=self.state.lock() {state.surface_error=Some("tab visibility failed");}
+             }
+             if close && let Some(host) = browser.and_then(|b| b.host()) { host.close_browser(1); }
+@@ -317,8 +317,8 @@ impl CefChild {
+         state: Shared,
+     ) -> Result<Self, ChildCreationFailure<Self>> {
+         let create = || -> io::Result<()> {
+-            crate::native::prepare_parent(parent)?;
+-            let (hwnd, bounds, _) = crate::native::parent_geometry(parent)?;
++            crate::desktop::native::prepare_parent(parent)?;
++            let (hwnd, bounds, _) = crate::desktop::native::parent_geometry(parent)?;
+             let mut info = WindowInfo {
+                 runtime_style: RuntimeStyle::ALLOY,
+                 ..Default::default()
+@@ -327,12 +327,12 @@ impl CefChild {
+             if !state.lock().is_ok_and(|s| s.active) {
+                 info.style &= !windows::Win32::UI::WindowsAndMessaging::WS_VISIBLE.0;
+             }
+-            let fixture = crate::fixture::input_mode();
++            let fixture = crate::desktop::fixture::input_mode();
+             let uri = if fixture {
+-                crate::fixture::uri().map_err(io::Error::other)?
++                crate::desktop::fixture::uri().map_err(io::Error::other)?
+             } else {
+-                crate::navigation::initialize(&state)?;
+-                humanymous_browser::internal_urls::NEW_TAB_URL.to_owned()
++                crate::desktop::navigation::initialize(&state)?;
++                crate::internal_urls::NEW_TAB_URL.to_owned()
+             };
+             let mut client = PilotClient::new(
+                 state.clone(),
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/fixture.rs b/crates/apps/humanymous-browser/native/desktop/src/fixture.rs
+index 9d5554d4..704623da 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/fixture.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/fixture.rs
+@@ -111,11 +111,11 @@ pub fn management_document()
+             }
+         }
+     }
+-    let mut component = humanymous_browser::ui::component_with_window_controls(true);
++    let mut component = crate::ui::component_with_window_controls(true);
+     label(&mut component.root);
+     meari_native::infrastructure::document::InteractiveDocument::new(
+         component,
+-        humanymous_browser::ui::management_styles(),
++        crate::ui::management_styles(),
+         meari_native::domain::Viewport {
+             width: 1100,
+             height: 720,
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/history.rs b/crates/apps/humanymous-browser/native/desktop/src/history.rs
+index f11a6582..fb6200d6 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/history.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/history.rs
+@@ -1,7 +1,7 @@
+ //! CEF-owned history traversal. No mirrored application history or foreign routes.
+-use crate::child::Shared;
++use crate::desktop::child::Shared;
+ use cef::*;
+-use humanymous_browser::{
++use crate::{
+     history::Entries,
+     internal_urls,
+     navigation::{Outcome, Ticket},
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/host.rs b/crates/apps/humanymous-browser/native/desktop/src/host.rs
+index 2965479e..7669d776 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/host.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/host.rs
+@@ -1,4 +1,4 @@
+-use crate::{
++use crate::desktop::{
+     child::{CefChild, Shared, State},
+     native,
+ };
+@@ -46,17 +46,17 @@ impl NativeWindowHost for Host {
+ struct Pilot {
+     driver: NativeWindowDriver,
+     document: NativeDocumentHandle,
+-    controls: crate::browser_controls::Controls,
+-    dock: humanymous_browser::viewport::InspectorDock,
++    controls: crate::desktop::browser_controls::Controls,
++    dock: crate::viewport::InspectorDock,
+     registrar: NativeChildRegistrar<CefChild>,
+     state: Shared,
+-    tabs: crate::tab_sessions::Sessions,
+-    timings: crate::shell_timings::Shared,
++    tabs: crate::desktop::tab_sessions::Sessions,
++    timings: crate::desktop::shell_timings::Shared,
+     parent: Option<Rc<NativeParentLease>>,
+     registered: bool,
+     ticks: usize,
+     window_request_cursor: usize,
+-    drag: Option<crate::window_frame::Drag>,
++    drag: Option<crate::desktop::window_frame::Drag>,
+     last_bounds: Option<(i32, i32, i32, i32, u32)>,
+     focus_requested: bool,
+     started: Instant,
+@@ -96,7 +96,7 @@ impl Pilot {
+         };
+         parent
+             .with_parent(|scoped| -> io::Result<()> {
+-                if crate::window_frame::observe(scoped)?.minimized {
++                if crate::desktop::window_frame::observe(scoped)?.minimized {
+                     return Ok(());
+                 }
+                 let (hwnd, bounds, dpi) = native::dock_geometry(scoped, self.dock)?;
+@@ -130,7 +130,7 @@ impl Pilot {
+         }
+         if let Ok(dock) = self
+             .document
+-            .try_with(humanymous_browser::ui::inspector_dock)
++            .try_with(crate::ui::inspector_dock)
+         {
+             self.dock = dock;
+         }
+@@ -144,7 +144,7 @@ impl Pilot {
+             let (cursor, commands) = self
+                 .document
+                 .try_with(|doc| {
+-                    humanymous_browser::window_chrome::commands_since(
++                    crate::window_chrome::commands_since(
+                         doc,
+                         self.window_request_cursor,
+                     )
+@@ -161,7 +161,7 @@ impl Pilot {
+                         .window_commands
+                         .push(format!("{command:?}:requested"));
+                 }
+-                if command == humanymous_browser::window_chrome::WindowCommand::Close {
++                if command == crate::window_chrome::WindowCommand::Close {
+                     self.close_requested = true;
+                     self.driver
+                         .wake_handle()
+@@ -170,7 +170,7 @@ impl Pilot {
+                     break;
+                 }
+                 parent
+-                    .with_parent(|scoped| crate::window_frame::apply(scoped, command))
++                    .with_parent(|scoped| crate::desktop::window_frame::apply(scoped, command))
+                     .map_err(io::Error::other)??;
+             }
+         }
+@@ -250,7 +250,7 @@ impl Pilot {
+             if let Some(browser) = browser.filter(|_| !self.close_requested) {
+                 parent
+                     .with_parent(|scoped| -> io::Result<()> {
+-                        let observation = crate::window_frame::observe(scoped)?;
++                        let observation = crate::desktop::window_frame::observe(scoped)?;
+                         let minimized = observation.minimized;
+                         if self.report.borrow().window_observations.len() < 64
+                             && self.report.borrow().window_observations.last() != Some(&observation)
+@@ -276,7 +276,7 @@ impl Pilot {
+                     .created;
+                 report.actual_parent_matched = true;
+                 if !self.focus_requested {
+-                    crate::child::queue_action(browser.clone(), false, self.state.clone())?;
++                    crate::desktop::child::queue_action(browser.clone(), false, self.state.clone())?;
+                     self.focus_requested = true;
+                 }
+                 report.focus_observed |= native::focus_observed(&browser)?;
+@@ -284,7 +284,7 @@ impl Pilot {
+                     && report.owned_surface_transitions.len() < 64
+                     && std::env::args().any(|a| a == "--native-measured-hanja")
+                 {
+-                    let surfaces = crate::measured_input::owned_surfaces()?;
++                    let surfaces = crate::desktop::measured_input::owned_surfaces()?;
+                     if report.owned_surface_transitions.last() != Some(&surfaces) {
+                         eprintln!(
+                             "native: owned surface geometry {}",
+@@ -368,9 +368,9 @@ impl ApplicationHandler for Pilot {
+         let frame_event = event.clone();
+         let stage = match &event {
+             WindowEvent::SurfaceResized(_) | WindowEvent::ScaleFactorChanged { .. } => {
+-                Some(crate::shell_timings::Stage::MeariResizeHandler)
++                Some(crate::desktop::shell_timings::Stage::MeariResizeHandler)
+             }
+-            WindowEvent::RedrawRequested => Some(crate::shell_timings::Stage::MeariRedrawHandler),
++            WindowEvent::RedrawRequested => Some(crate::desktop::shell_timings::Stage::MeariRedrawHandler),
+             _ => None,
+         };
+         let started = stage.and_then(|_| self.timings.borrow().start());
+@@ -394,7 +394,7 @@ impl ApplicationHandler for Pilot {
+         if let Some(parent) = &self.parent
+             && !self.close_requested
+             && let Ok(Err(error)) = parent.with_parent(|scoped| {
+-                crate::window_frame::pointer_event(scoped, &frame_event, &mut self.drag)
++                crate::desktop::window_frame::pointer_event(scoped, &frame_event, &mut self.drag)
+             })
+         {
+             self.fail(event_loop, error);
+@@ -453,12 +453,12 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
+     }
+     let cancel_immediately = std::env::args().any(|arg| arg == "--native-cancel-before-created");
+     let event_loop = EventLoop::builder().build()?;
+-    let document = NativeDocumentHandle::new(crate::fixture::management_document()?, 1)?;
++    let document = NativeDocumentHandle::new(crate::desktop::fixture::management_document()?, 1)?;
+     let prepared = NativeWindowPreparation::new(
+         &event_loop,
+         document.clone(),
+         LifecycleLimits::new(
+-            humanymous_browser::tabs::Tabs::CAPACITY,
++            crate::tabs::Tabs::CAPACITY,
+             Duration::from_secs(5),
+         )?,
+         WindowOptions {
+@@ -479,9 +479,9 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
+     let _close_deadline = CloseDeadline::start(driver.wake_handle(), pilot_seconds);
+     let internal_probe_requested = std::env::args().any(|a| a == "--native-internal-probe");
+     let state = Arc::new(Mutex::new(State {
+-        navigation: crate::navigation::State {
++        navigation: crate::desktop::navigation::State {
+             probe: internal_probe_requested
+-                .then(humanymous_browser::navigation::ProbeLedger::default),
++                .then(crate::navigation::ProbeLedger::default),
+             ..Default::default()
+         },
+         process_info_status: "not_run",
+@@ -496,18 +496,18 @@ pub(super) fn run() -> Result<CleanExit, Box<dyn std::error::Error>> {
+         ..Default::default()
+     }));
+     let failure = Rc::new(RefCell::new(None));
+-    crate::child::prepare_canary()?;
++    crate::desktop::child::prepare_canary()?;
+     let inventory = Rc::new(RefCell::new(vec![state.clone()]));
+-    let timings = crate::shell_timings::Trace::shared(
++    let timings = crate::desktop::shell_timings::Trace::shared(
+         std::env::args().any(|a| a == "--native-shell-timings"),
+     );
+     let tabs =
+-        crate::tab_sessions::Sessions::new(children, &state, inventory.clone(), timings.clone())?;
++        crate::desktop::tab_sessions::Sessions::new(children, &state, inventory.clone(), timings.clone())?;
+     event_loop.run_app(Pilot {
+         driver,
+-        controls: crate::browser_controls::Controls::new(document.clone(), state.clone()),
++        controls: crate::desktop::browser_controls::Controls::new(document.clone(), state.clone()),
+         document,
+-        dock: humanymous_browser::viewport::InspectorDock::Hidden,
++        dock: crate::viewport::InspectorDock::Hidden,
+         registrar,
+         state: state.clone(),
+         tabs,
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/host_report.rs b/crates/apps/humanymous-browser/native/desktop/src/host_report.rs
+index c76def07..75b532fb 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/host_report.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/host_report.rs
+@@ -1,8 +1,8 @@
+ //! Bounded native qualification receipts, distinct from product readiness.
+-use crate::native;
++use crate::desktop::native;
+ #[derive(Default, serde::Serialize)]
+ pub(super) struct Report {
+-    pub(super) shell_timings: Option<crate::shell_timings::Snapshot>,
++    pub(super) shell_timings: Option<crate::desktop::shell_timings::Snapshot>,
+     pub(super) tabs: Vec<TabReceipt>,
+     pub(super) tabs_created: usize,
+     pub(super) tabs_before_close: usize,
+@@ -10,14 +10,14 @@ pub(super) struct Report {
+     pub(super) host_pid: u32,
+     pub(super) navigation_schema: u32,
+     pub(super) renderer_file_probe_schema: u32,
+-    pub(super) navigation_receipts: Vec<crate::navigation::Receipt>,
++    pub(super) navigation_receipts: Vec<crate::desktop::navigation::Receipt>,
+     pub(super) navigation_receipts_dropped: u64,
+     pub(super) internal_probe_requested: bool,
+     pub(super) internal_probe_finished: bool,
+     pub(super) internal_probe_observed: usize,
+     pub(super) internal_probe_passed: bool,
+     pub(super) decorations_removed_readback: bool,
+-    pub(super) window_observations: Vec<crate::window_frame::Observation>,
++    pub(super) window_observations: Vec<crate::desktop::window_frame::Observation>,
+     pub(super) window_commands: Vec<String>,
+     pub(super) cancellation_requested: bool,
+     pub(super) late_created_after_cancel: bool,
+@@ -28,7 +28,7 @@ pub(super) struct Report {
+     pub(super) before_close: bool,
+     pub(super) host_closed: bool,
+     pub(super) process_tokens: Vec<native::ProcessToken>,
+-    pub(super) process_roles: Vec<crate::child::ProcessRole>,
++    pub(super) process_roles: Vec<crate::desktop::child::ProcessRole>,
+     pub(super) process_info_status: &'static str,
+     pub(super) renderer_restricted_token_observed: bool,
+     pub(super) sandbox_qualified: bool,
+@@ -39,13 +39,13 @@ pub(super) struct Report {
+     pub(super) cef_editable_key_events: usize,
+     pub(super) cef_focus_events: usize,
+     pub(super) parent_key_events: usize,
+-    pub(super) renderer_file_probes: Vec<crate::child::FileProbe>,
++    pub(super) renderer_file_probes: Vec<crate::desktop::child::FileProbe>,
+     pub(super) input_snapshots: Vec<native::InputSnapshot>,
+     pub(super) ime_setup: Option<String>,
+     pub(super) ime_candidate_request: Option<String>,
+     pub(super) measured_hanja: Vec<String>,
+     pub(super) hanja_key_events: usize,
+-    pub(super) owned_surface_transitions: Vec<Vec<crate::measured_input::Surface>>,
++    pub(super) owned_surface_transitions: Vec<Vec<crate::desktop::measured_input::Surface>>,
+     pub(super) page_allocations: Vec<([i32; 4], u32)>,
+ }
+ 
+@@ -57,12 +57,12 @@ pub(super) struct TabReceipt {
+     created: bool,
+     before_close: bool,
+     committed_route: Option<&'static str>,
+-    navigation_receipts: Vec<crate::navigation::Receipt>,
++    navigation_receipts: Vec<crate::desktop::navigation::Receipt>,
+     navigation_receipts_dropped: u64,
+ }
+ 
+ impl Report {
+-    pub(super) fn observe_tabs(&mut self, tabs: &[crate::child::Shared]) -> std::io::Result<()> {
++    pub(super) fn observe_tabs(&mut self, tabs: &[crate::desktop::child::Shared]) -> std::io::Result<()> {
+         for tab in tabs {
+             let tab = tab
+                 .lock()
+@@ -88,7 +88,7 @@ impl Report {
+         }
+         Ok(())
+     }
+-    pub(super) fn observe_navigation(&mut self, state: &crate::navigation::State) {
++    pub(super) fn observe_navigation(&mut self, state: &crate::desktop::navigation::State) {
+         if let Some(probe) = &state.probe {
+             self.internal_probe_finished = probe.finished();
+             self.internal_probe_observed = probe.observed();
+@@ -99,7 +99,7 @@ impl Report {
+ 
+ impl Report {
+     /// Project one consistent post-loop state snapshot; no CEF or OS calls here.
+-    pub(super) fn observe_state(&mut self, state: &crate::child::State, host_closed: bool) {
++    pub(super) fn observe_state(&mut self, state: &crate::desktop::child::State, host_closed: bool) {
+         self.navigation_receipts = state.navigation.receipts.clone();
+         self.navigation_receipts_dropped = state.navigation.receipts_dropped;
+         self.observe_navigation(&state.navigation);
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/internal_probe.rs b/crates/apps/humanymous-browser/native/desktop/src/internal_probe.rs
+index 6a260f04..fb0fc23e 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/internal_probe.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/internal_probe.rs
+@@ -1,6 +1,6 @@
+ //! Native timer/dispatch adapter for the pure ordered probe ledger.
+-use crate::{child::Shared, navigation};
+-use humanymous_browser::navigation::{Outcome, Ticket};
++use crate::desktop::{child::Shared, navigation};
++use crate::navigation::{Outcome, Ticket};
+ use std::{
+     io,
+     time::{Duration, Instant},
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/local_page.rs b/crates/apps/humanymous-browser/native/desktop/src/local_page.rs
+index c5061194..dcb0e23c 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/local_page.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/local_page.rs
+@@ -8,12 +8,12 @@ use std::{
+ const CSP: &str = "default-src 'none'; script-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; img-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'";
+ 
+ pub fn register() -> io::Result<()> {
+-    if !crate::owner_scheme::registered() {
++    if !crate::desktop::owner_scheme::registered() {
+         return Err(io::Error::other(
+             "owner scheme registration was not accepted",
+         ));
+     }
+-    let bytes = humanymous_browser::newtab::markup()
++    let bytes = crate::newtab::markup()
+         .map_err(io::Error::other)?
+         .into_bytes();
+     let mut factory = OwnerFactory::new(Arc::new(bytes));
+@@ -34,7 +34,7 @@ wrap_scheme_handler_factory! {
+     impl SchemeHandlerFactory {
+         fn create(&self, _browser: Option<&mut Browser>, _frame: Option<&mut Frame>, _scheme: Option<&CefString>, request: Option<&mut Request>) -> Option<ResourceHandler> {
+             let request=request?;
+-            if CefString::from(&request.url()).to_string()!=humanymous_browser::internal_urls::NEW_TAB_URL
++            if CefString::from(&request.url()).to_string()!=crate::internal_urls::NEW_TAB_URL
+                 || CefString::from(&request.method()).to_string()!="GET" { return None; }
+             Some(OwnerResource::new(self.bytes.clone(),Arc::new(Mutex::new(0))))
+         }
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/measured_input.rs b/crates/apps/humanymous-browser/native/desktop/src/measured_input.rs
+index 52fa98ff..0dfafcf1 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/measured_input.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/measured_input.rs
+@@ -133,7 +133,7 @@ pub fn replay_hanja(browser: &Browser, cef_modifiers: u32) -> io::Result<String>
+     if cef::currently_on(cef::ThreadId::UI) != 1 {
+         return Err(io::Error::other("measured input requires CEF UI thread"));
+     }
+-    let child = crate::native::child_hwnd(browser)?;
++    let child = crate::desktop::native::child_hwnd(browser)?;
+     let mut info = GUITHREADINFO {
+         cbSize: size_of::<GUITHREADINFO>() as u32,
+         ..Default::default()
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/native.rs b/crates/apps/humanymous-browser/native/desktop/src/native.rs
+index 0f080f0b..31cfb508 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/native.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/native.rs
+@@ -11,12 +11,12 @@ use windows::Win32::{
+ use winit::raw_window_handle::{HasWindowHandle, RawWindowHandle};
+ 
+ pub fn parent_geometry(parent: &NativeScopedParent<'_>) -> io::Result<(HWND, Rect, u32)> {
+-    dock_geometry(parent, humanymous_browser::viewport::InspectorDock::Hidden)
++    dock_geometry(parent, crate::viewport::InspectorDock::Hidden)
+ }
+ #[allow(unsafe_code)]
+ pub fn dock_geometry(
+     parent: &NativeScopedParent<'_>,
+-    dock: humanymous_browser::viewport::InspectorDock,
++    dock: crate::viewport::InspectorDock,
+ ) -> io::Result<(HWND, Rect, u32)> {
+     let RawWindowHandle::Win32(handle) = parent.window_handle().map_err(io::Error::other)?.as_raw()
+     else {
+@@ -30,7 +30,7 @@ pub fn dock_geometry(
+     if dpi == 0 {
+         return Err(io::Error::other("parent DPI unavailable"));
+     }
+-    let allocation = humanymous_browser::viewport::content_bounds_in_window(
++    let allocation = crate::viewport::content_bounds_in_window(
+         rect.right,
+         rect.bottom,
+         dpi,
+@@ -63,7 +63,7 @@ pub fn child_hwnd(browser: &Browser) -> io::Result<HWND> {
+ }
+ #[allow(unsafe_code)]
+ pub fn prepare_parent(parent: &NativeScopedParent<'_>) -> io::Result<()> {
+-    crate::window_frame::remove_decorations(parent)
++    crate::desktop::window_frame::remove_decorations(parent)
+ }
+ #[allow(unsafe_code)]
+ pub fn validate_parent(browser: &Browser, parent: HWND) -> io::Result<()> {
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/navigation.rs b/crates/apps/humanymous-browser/native/desktop/src/navigation.rs
+index dac2b026..569262b5 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/navigation.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/navigation.rs
+@@ -1,7 +1,7 @@
+ //! CEF adapter for the single pure navigation authority and bounded receipts.
+-use crate::child::Shared;
++use crate::desktop::child::Shared;
+ use cef::*;
+-use humanymous_browser::{
++use crate::{
+     internal_urls::{self, InternalPage, Route},
+     navigation::{Navigation, Outcome, ProbeLedger, Ticket},
+ };
+@@ -10,7 +10,7 @@ use std::io;
+ #[derive(Default)]
+ pub struct State {
+     pub control_epoch: u64,
+-    pub controls: humanymous_browser::history::Controls,
++    pub controls: crate::history::Controls,
+     pub transaction: Navigation,
+     pub notice: Option<&'static str>,
+     pub receipts: Vec<Receipt>,
+@@ -205,7 +205,7 @@ wrap_load_handler! {
+     impl LoadHandler {
+         fn on_loading_state_change(&self,_browser:Option<&mut Browser>,loading:i32,back:i32,forward:i32) {
+             if let Ok(mut state)=self.state.lock() && state.is_live() {
+-                state.navigation.controls=humanymous_browser::history::Controls {back:back==1,forward:forward==1,loading:loading==1};
++                state.navigation.controls=crate::history::Controls {back:back==1,forward:forward==1,loading:loading==1};
+             }
+         }
+         fn on_load_start(&self,_browser:Option<&mut Browser>,frame:Option<&mut Frame>,_transition:TransitionType) {
+@@ -476,7 +476,7 @@ mod tests {
+         ));
+         assert!(identity(
+             Route::NewTab,
+-            &humanymous_browser::newtab::markup().unwrap()
++            &crate::newtab::markup().unwrap()
+         ));
+     }
+ }
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs b/crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs
+index c97c5311..925b112b 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/pilot_assertions.rs
+@@ -1,6 +1,6 @@
+ //! Independent private-report checks for provisioned hosted CEF process tests.
+ //! Synthetic tests below validate this protocol only; they never qualify a browser.
+-use humanymous_browser::navigation::ProbeLedger;
++use crate::navigation::ProbeLedger;
+ use serde_json::Value;
+ 
+ #[derive(Clone, Copy, Debug)]
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/pilot_process.rs b/crates/apps/humanymous-browser/native/desktop/src/pilot_process.rs
+index 865f6800..04430cab 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/pilot_process.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/pilot_process.rs
+@@ -1,6 +1,6 @@
+ //! Provisioned hosted-only CEF cases behind the explicit native pilot feature.
+ //! The shared supervisor reaps only its direct child; descendant cleanup is not attested.
+-use crate::pilot_assertions::{self, Case};
++use crate::desktop::pilot_assertions::{self, Case};
+ use humanymous_platform::testing::process::capture_with_stderr;
+ use std::{fs, io::Read, path::PathBuf, process::Command, time::Duration};
+ 
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/tab_sessions.rs b/crates/apps/humanymous-browser/native/desktop/src/tab_sessions.rs
+index 6c983688..8c8d5e5e 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/tab_sessions.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/tab_sessions.rs
+@@ -1,6 +1,6 @@
+ //! One host owns all real tab children through the existing Meari lifecycle.
+-use crate::child::{CefChild, Shared, State};
+-use humanymous_browser::{
++use crate::desktop::child::{CefChild, Shared, State};
++use crate::{
+     tabs::{Command, Tabs},
+     tabs_ui::{Projection, View},
+ };
+@@ -35,7 +35,7 @@ pub struct Sessions {
+     children: Rc<WindowLifecycle<CefChild>>,
+     inventory: Inventory,
+     projection: Projection,
+-    timings: crate::shell_timings::Shared,
++    timings: crate::desktop::shell_timings::Shared,
+     active: Option<usize>,
+ }
+ pub fn enqueue(state: &Shared, command: Command) -> io::Result<()> {
+@@ -81,7 +81,7 @@ impl Sessions {
+         children: Rc<WindowLifecycle<CefChild>>,
+         initial: &Shared,
+         inventory: Inventory,
+-        timings: crate::shell_timings::Shared,
++        timings: crate::desktop::shell_timings::Shared,
+     ) -> io::Result<Self> {
+         let queue = Queue::default();
+         {
+@@ -139,8 +139,8 @@ impl Sessions {
+                     }
+                 };
+                 if let Some(browser) = browser {
+-                    crate::tab_windows::visible(&browser, active)?;
+-                    crate::tab_windows::focus(browser, entry.state.clone(), active)?;
++                    crate::desktop::tab_windows::visible(&browser, active)?;
++                    crate::desktop::tab_windows::focus(browser, entry.state.clone(), active)?;
+                 }
+             }
+         }
+@@ -253,7 +253,7 @@ impl Sessions {
+                         .browser
+                         .clone()
+                     {
+-                        crate::tab_windows::focus(browser, entry.state.clone(), false)?;
++                        crate::desktop::tab_windows::focus(browser, entry.state.clone(), false)?;
+                     }
+                     let stamp = document.stamp().map_err(io::Error::other)?;
+                     document
+@@ -268,7 +268,7 @@ impl Sessions {
+                         .map_err(io::Error::other)?;
+                     entry
+                         .parent
+-                        .with_parent(crate::tab_windows::focus_address)
++                        .with_parent(crate::desktop::tab_windows::focus_address)
+                         .map_err(io::Error::other)??;
+                 }
+                 Command::Back
+@@ -293,13 +293,13 @@ impl Sessions {
+                         if matches!(command, Command::Reload | Command::Home | Command::Open(_)) {
+                             let route = match command {
+                                 Command::Home => {
+-                                    Some(humanymous_browser::internal_urls::Route::NewTab)
++                                    Some(crate::internal_urls::Route::NewTab)
+                                 }
+                                 Command::Open(route) => Some(route),
+                                 _ => route,
+                             };
+                             if let Some(route) = route {
+-                                crate::navigation::queue(
++                                crate::desktop::navigation::queue(
+                                     browser,
+                                     route,
+                                     entry.state.clone(),
+@@ -307,15 +307,15 @@ impl Sessions {
+                                 )?;
+                             }
+                         } else {
+-                            crate::history::queue(
++                            crate::desktop::history::queue(
+                                 browser,
+                                 entry.state.clone(),
+                                 if command == Command::Stop {
+-                                    crate::history::Action::Stop
++                                    crate::desktop::history::Action::Stop
+                                 } else if command == Command::Back {
+-                                    crate::history::Action::Back
++                                    crate::desktop::history::Action::Back
+                                 } else {
+-                                    crate::history::Action::Forward
++                                    crate::desktop::history::Action::Forward
+                                 },
+                             )?;
+                         }
+@@ -348,7 +348,7 @@ impl Sessions {
+         let started = self.timings.borrow().start();
+         let projected = self.projection.update(document, &views);
+         self.timings.borrow_mut().finish(
+-            crate::shell_timings::Stage::TabProjection,
++            crate::desktop::shell_timings::Stage::TabProjection,
+             started,
+             Some(self.projection.commits()),
+             None,
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/tab_windows.rs b/crates/apps/humanymous-browser/native/desktop/src/tab_windows.rs
+index 1c3fc04a..fbbad256 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/tab_windows.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/tab_windows.rs
+@@ -1,12 +1,12 @@
+ //! Owned CEF child visibility and focus; no foreign windows or thread attachment.
+-use crate::child::Shared;
++use crate::desktop::child::Shared;
+ use cef::*;
+ use std::io;
+ use windows::Win32::UI::WindowsAndMessaging::*;
+ 
+ #[allow(unsafe_code)]
+ pub fn visible(browser: &Browser, visible: bool) -> io::Result<()> {
+-    let child = crate::native::child_hwnd(browser)?;
++    let child = crate::desktop::native::child_hwnd(browser)?;
+     // SAFETY: this handle comes from the current owned CEF Browser; do not reparent.
+     unsafe {
+         SetWindowPos(
+diff --git a/crates/apps/humanymous-browser/native/desktop/src/window_frame.rs b/crates/apps/humanymous-browser/native/desktop/src/window_frame.rs
+index 4101f1e0..0350760f 100644
+--- a/crates/apps/humanymous-browser/native/desktop/src/window_frame.rs
++++ b/crates/apps/humanymous-browser/native/desktop/src/window_frame.rs
+@@ -50,9 +50,9 @@ pub fn remove_decorations(parent: &NativeScopedParent<'_>) -> io::Result<()> {
+ #[allow(unsafe_code)]
+ pub fn apply(
+     parent: &NativeScopedParent<'_>,
+-    command: humanymous_browser::window_chrome::WindowCommand,
++    command: crate::window_chrome::WindowCommand,
+ ) -> io::Result<()> {
+-    use humanymous_browser::window_chrome::WindowCommand;
++    use crate::window_chrome::WindowCommand;
+     let hwnd = hwnd(parent)?;
+     // SAFETY: UI-thread access to this host only. Close uses lifecycle wake instead.
+     unsafe {
+@@ -73,7 +73,7 @@ pub fn apply(
+ pub struct Drag {
+     cursor: POINT,
+     rect: RECT,
+-    edge: Option<humanymous_browser::frame_geometry::Edge>,
++    edge: Option<crate::frame_geometry::Edge>,
+ }
+ 
+ #[allow(unsafe_code)]
+@@ -107,7 +107,7 @@ pub fn pointer_event(
+                 let mut client = RECT::default();
+                 GetClientRect(hwnd, &mut client).map_err(io::Error::other)?;
+                 let dpi = windows::Win32::UI::HiDpi::GetDpiForWindow(hwnd) as f64 / 96.0;
+-                let edge = humanymous_browser::frame_geometry::hit(
++                let edge = crate::frame_geometry::hit(
+                     client.right,
+                     client.bottom,
+                     (dpi * 96.0) as u32,
+@@ -141,7 +141,7 @@ pub fn pointer_event(
+                 let mut client = RECT::default();
+                 GetClientRect(hwnd, &mut client).map_err(io::Error::other)?;
+                 let maximized = IsZoomed(hwnd).as_bool();
+-                let edge = humanymous_browser::frame_geometry::hit(
++                let edge = crate::frame_geometry::hit(
+                     client.right,
+                     client.bottom,
+                     windows::Win32::UI::HiDpi::GetDpiForWindow(hwnd),
+@@ -168,7 +168,7 @@ pub fn pointer_event(
+                         start.rect.bottom,
+                     ];
+                     let rect = match start.edge {
+-                        Some(edge) => humanymous_browser::frame_geometry::resize(
++                        Some(edge) => crate::frame_geometry::resize(
+                             original,
+                             edge,
+                             dx,
+@@ -236,10 +236,10 @@ pub fn observe(parent: &NativeScopedParent<'_>) -> io::Result<Observation> {
+ }
+ 
+ fn cursor_for(
+-    edge: humanymous_browser::frame_geometry::Edge,
++    edge: crate::frame_geometry::Edge,
+     maximized: bool,
+ ) -> windows::core::PCWSTR {
+-    use humanymous_browser::frame_geometry::Edge::*;
++    use crate::frame_geometry::Edge::*;
+     if maximized {
+         return IDC_ARROW;
+     }
+@@ -283,7 +283,7 @@ fn cursor_name() -> &'static str {
+ mod tests {
+     #[test]
+     fn maximized_edges_use_arrow_instead_of_resize_cursor() {
+-        use humanymous_browser::frame_geometry::Edge::*;
++        use crate::frame_geometry::Edge::*;
+         for edge in [
+             West, East, North, South, NorthWest, NorthEast, SouthWest, SouthEast,
+         ] {
+diff --git a/crates/apps/humanymous-browser/src/lib.rs b/crates/apps/humanymous-browser/src/lib.rs
+index 9fb707ba..47ec6152 100644
+--- a/crates/apps/humanymous-browser/src/lib.rs
++++ b/crates/apps/humanymous-browser/src/lib.rs
+@@ -1,36 +1,66 @@
+ //! Trusted laboratory browser controls; target engine attachment is not ready.
+-#![forbid(unsafe_code)]
++#![deny(unsafe_code)]
+ 
++#[forbid(unsafe_code)]
+ pub mod lifecycle;
++#[forbid(unsafe_code)]
+ pub mod policy;
+ #[cfg(feature = "native-ui")]
++#[forbid(unsafe_code)]
+ pub mod ui;
++#[forbid(unsafe_code)]
+ pub mod viewport;
+ 
+ #[cfg(feature = "native-ui")]
++#[forbid(unsafe_code)]
+ pub mod icons;
+ #[cfg(feature = "native-ui")]
++#[forbid(unsafe_code)]
+ pub mod window_chrome;
+ 
++#[forbid(unsafe_code)]
+ pub mod frame_geometry;
+ 
++#[forbid(unsafe_code)]
+ pub mod internal_urls;
+ #[cfg(feature = "native-ui")]
++#[forbid(unsafe_code)]
+ pub mod newtab;
+ 
+ #[cfg(feature = "native-ui")]
++#[forbid(unsafe_code)]
+ pub mod ui_navigation;
+ 
+ /// Pure navigation tickets and strict diagnostic-probe accounting.
++#[forbid(unsafe_code)]
+ pub mod navigation;
+ 
+ /// Bounded actual-engine history snapshot validation.
++#[forbid(unsafe_code)]
+ pub mod history;
+ /// Pure native address composition and confirmation policy.
++#[forbid(unsafe_code)]
+ pub mod input;
+ #[cfg(feature = "native-ui")]
++#[forbid(unsafe_code)]
+ mod scene_projection;
+ /// Pure tab identities, cleanup accounting and browser accelerators.
++#[forbid(unsafe_code)]
+ pub mod tabs;
+ #[cfg(feature = "native-ui")]
++#[forbid(unsafe_code)]
+ pub mod tabs_ui;
++
++#[cfg(all(feature = "cef-bootstrap", feature = "cef-desktop"))]
++compile_error!("CEF bootstrap and desktop roles must be built separately");
++#[cfg(all(feature = "cef-bootstrap", feature = "native-ui"))]
++compile_error!("CEF bootstrap must not link the Meari UI");
++#[cfg(all(any(feature = "cef-bootstrap", feature = "cef-desktop"), not(windows)))]
++compile_error!("CEF native roles currently support Windows only");
++
++#[cfg(all(windows, feature = "cef-bootstrap"))]
++#[path = "../native/bootstrap/src/lib.rs"]
++mod bootstrap;
++#[cfg(all(windows, feature = "cef-desktop"))]
++#[path = "../native/desktop/src/lib.rs"]
++mod desktop;
+\ No newline at end of file

@@ -34,6 +34,10 @@ files:
   - {path: gpu-boundary-research.json, sha256: 27221b26387ea3a29f5fcd6955447fcbb115688d883c42c510c356e131f848e4, bytes: 4048, store: repo}
   - {path: structural-v0-handoff.json, sha256: 896ec6839f95f59535144540624f4813cf703ef5e49af2917cc41712e489a7d3, bytes: 21738, store: repo}
   - {path: platform-slice-02-consumers.json, sha256: f85e4eeb261f832d6632387a530d579343fb2935216b37a5b42dad32db38762e, bytes: 1654, store: repo}
+  - {path: three-to-one-source-map.json, sha256: 640c0fec24c64bb6c77729db77b67cb4e4d094277403a5636b51486f44c95108, bytes: 28125, store: repo}
+  - {path: three-to-one-rust.patch, sha256: 63b7389843398039a42eba37d0ef4d9f195dba7284a76cf3605c3482a5b7fb4c, bytes: 52547, store: repo}
+  - {path: three-to-one-callers.patch, sha256: 88f05e831b3cc1f8ba252f1fbb3ec59a13660d0af486dd1e5d85b03582489a31, bytes: 11709, store: repo}
+  - {path: three-to-one-integration.md, sha256: b4a18facfd2d3d6cb79e7bf503ec0b76555695d319252bd54a5a38e6f11591aa, bytes: 7288, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint

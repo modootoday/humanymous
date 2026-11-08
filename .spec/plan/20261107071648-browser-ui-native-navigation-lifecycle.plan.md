@@ -550,3 +550,19 @@ Docker commands. Browser owns no active execution handle or allocated pipeline.
 Root will measure an isolated committed checkout before revising execution policy;
 this authorization is not a benchmark result or tuple qualification. Historical
 not_run records are preserved. Common manifests/locks/toolchain remain root-owned.
+
+
+## Browser three-to-one actual transformation candidate
+
+Root requested actual source and manifest candidates under evidence-only ownership.
+three-to-one-integration.md and its source-map/source/caller patch attachments in
+evidence:root/20261107073932 bind49 Browser preimages,47 destination entries and
+seven Rust caller candidates. Both patches passed applicability checks against
+preserved preimages; no product source, manifest, lock, path or execution changed.
+The single-package composition preserves separate mutually exclusive bootstrap
+and desktop role builds, ABI/bundle basenames, sandbox, pure unsafe prohibition,
+pinned upstream inputs and normal SDK separation. Root owns final graph/Tools
+rebase, contract replica provenance, Delivery triggers and coherent validation.
+No historical pilot qualifies this composition; unfinished CEF/UI/pilot and
+Core/Gate demo contracts remain open. Full application order and limitations are
+in the attached integration contract. No compiler/native/browser run occurred.
