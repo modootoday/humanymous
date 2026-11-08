@@ -1,13 +1,13 @@
 {
   "schema": "humanymous.lab-h2-product-binding-cap-pilot-contract/1",
   "id": "w2-h2-product-binding-cap",
-  "status": "cap_measure_topology",
+  "status": "desktop_lab_measured_awaiting_n06_owner_hosted_join",
   "unlock": "B",
   "gap": "G1",
   "wake": "W2",
   "cli_selector": "--w2-h2-product-binding",
   "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-product-binding",
-  "pilot_command_note": "Code-defined lab-runner Cap CLI. Cap topology is TLS listen+client measure (loopback under network_mode=none). Distinct from capture native-component observe_h2 (run 42479169280). original_h2_measured flips only from validated measure receipt.",
+  "pilot_command_note": "Code-defined lab-runner Cap CLI. Desktop Cap topology is TLS listen+client measure (loopback under network_mode=none). original_h2_measured may be true from Desktop lab receipt; that is NOT hosted product / NOT N06 owner join. Distinct from capture native-component observe_h2 (run 42479169280).",
   "forbidden_as_product_binding": [
     "cargo run --locked -p humanymous-delivery -- native-component capture",
     "lab-runner --browser-product|--collector|controls|topology|a11y --require-full without new structural delta",
@@ -59,19 +59,35 @@
     "desktop_as_hosted": "forbidden",
     "reason": "loopback TLS measure under network_mode=none is Desktop lab component only; never hosted product"
   },
+  "desktop_measure_landed": {
+    "evidence": ".spec.local/root/evidence/20261109004100-cursor-w2-h2-measure-topology/",
+    "original_h2_measured": true,
+    "counts_as": "pass_component_desktop_measure",
+    "not": ["pass_component_hosted", "pass_product_clean_room", "desktop_as_hosted", "n06_owner_join"]
+  },
+  "hosted_venue_cap_topology_required": [
+    "deployments/lab/compose.h2-hosted-venue.yaml",
+    "build/rust/h2-hosted-venue-lab.Dockerfile"
+  ],
+  "n06_owner_join_receipt_schema": "humanymous.lab-h2-n06-owner-join-readiness/1",
   "missing_for_n06_product_lift": [
     "Owner-integration readiness join authorization after measured binding (SoT N06 / R14-D6)",
     "Root-hosted venue qualification (Desktop lab measure ≠ desktop_as_hosted / hosted product)",
-    "Matrix G1 / pass_product_clean_room admission by Root after measured binding"
+    "Matrix G1 / pass_product_clean_room admission by Root after measured binding",
+    "Hosted Cap topology transfer: deployments/lab/compose.h2-hosted-venue.yaml + build/rust/h2-hosted-venue-lab.Dockerfile",
+    "actual_hosted_linux Cap venue (Specfold/github-hosted); Desktop Cap refuse-closed for hosted join"
   ],
   "honesty": {
     "product": 0,
     "pass_product_clean_room": 0,
     "component_green_is_not_product": true,
+    "desktop_lab_measured_is_not_hosted_product": true,
     "never_invent_readiness_original_h2": true,
     "n06_join_requires_measured_binding_and_owner_integration": true,
+    "n06_owner_join_still_open_after_desktop_measure": true,
     "detection_freeze": true,
     "authority_cap_reburn_forbidden": true,
+    "w2_desktop_measure_reburn_forbidden_without_structural_delta": true,
     "original_h2_measured_requires_measure_receipt": true
   }
 }

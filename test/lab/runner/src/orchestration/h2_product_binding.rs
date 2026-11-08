@@ -35,6 +35,24 @@ pub const MISSING_N06_PRODUCT_LIFT: &[&str] = &[
     "Matrix G1 / pass_product_clean_room admission by Root after measured binding",
 ];
 
+/// Cap topology required before hosted-venue N06 Cap may Docker-coordinate.
+/// Distinct from Desktop `compose.h2-product-binding.yaml` (loopback / network_mode=none).
+pub const REQUIRED_HOSTED_VENUE_TOPOLOGY: &[&str] = &[
+    "deployments/lab/compose.h2-hosted-venue.yaml",
+    "build/rust/h2-hosted-venue-lab.Dockerfile",
+];
+
+/// Owner-join readiness receipt schema (never invents product; Cap-ready for Root).
+pub const N06_OWNER_JOIN_RECEIPT_SCHEMA: &str =
+    "humanymous.lab-h2-n06-owner-join-readiness/1";
+
+/// Allowed hosted venue markers on an owner-join / hosted measure receipt.
+pub const HOSTED_VENUE_MARKERS: &[&str] = &[
+    "github-hosted-linux",
+    "root-hosted-linux",
+    "hosted_linux_specfold",
+];
+
 /// Freeze pins from Cap-ready contract — abort Cap on drift.
 const FREEZE_PREIMAGES: &[(&str, &str)] = &[
     (
@@ -162,6 +180,15 @@ pub fn missing_cap_topology(root: &Path) -> Vec<&'static str> {
         .collect()
 }
 
+/// Missing hosted-venue Cap topology paths (N06 owner join Cap-ready).
+pub fn missing_hosted_venue_topology(root: &Path) -> Vec<&'static str> {
+    REQUIRED_HOSTED_VENUE_TOPOLOGY
+        .iter()
+        .copied()
+        .filter(|relative| !root.join(relative).is_file())
+        .collect()
+}
+
 /// Fail-closed Cap topology gate — cite missing paths; no Docker burn.
 pub fn require_cap_topology(root: &Path) -> Result<()> {
     let missing = missing_cap_topology(root);
@@ -173,6 +200,126 @@ pub fn require_cap_topology(root: &Path) -> Result<()> {
         missing = missing.join(", ")
     )
     .into())
+}
+
+/// Fail-closed: Desktop lab measure never lifts N06 product / pass_product.
+pub fn refuse_n06_product_lift_from_desktop_measure(receipt: &Value) -> Result<()> {
+    let venue = receipt.get("venue").and_then(Value::as_str).unwrap_or("");
+    if venue == "desktop_lab_loopback" || venue.is_empty() {
+        if receipt.get("product").and_then(Value::as_u64) != Some(0)
+            || receipt
+                .get("pass_product_clean_room")
+                .and_then(Value::as_u64)
+                != Some(0)
+        {
+            return Err(
+                "N06 owner-join refused: Desktop lab measure invented product/pass_product_clean_room; measured Desktop ≠ hosted product"
+                    .into(),
+            );
+        }
+        if receipt.get("desktop_as_hosted").and_then(Value::as_bool) == Some(true) {
+            return Err(
+                "N06 owner-join refused: desktop_as_hosted=true forbidden; Desktop lab measure ≠ hosted venue"
+                    .into(),
+            );
+        }
+        if receipt.get("n06_owner_join").and_then(Value::as_bool) == Some(true)
+            || receipt.get("n06_product_lift").and_then(Value::as_bool) == Some(true)
+        {
+            return Err(
+                "N06 owner-join refused: Desktop lab measure cannot authorize owner join / product lift; Root hosted venue still required"
+                    .into(),
+            );
+        }
+    }
+    Ok(())
+}
+
+/// Fail-closed hosted-venue gate for N06 Cap day (topology + actual hosted Linux).
+pub fn require_hosted_venue_for_n06_join(root: &Path) -> Result<()> {
+    if !crate::docker::actual_hosted_linux() {
+        return Err(
+            "N06 hosted-venue Cap refused: actual_hosted_linux=false; Desktop Cap cannot qualify hosted venue; never invent desktop_as_hosted; Cap CLI refuse-closed before Docker"
+                .into(),
+        );
+    }
+    let missing = missing_hosted_venue_topology(root);
+    if missing.is_empty() {
+        return Ok(());
+    }
+    Err(format!(
+        "N06 hosted-venue Cap refused: missing hosted Cap topology ({missing}); Cap-ready pack cites exact destinations; never invent pass_product_clean_room from Desktop measure",
+        missing = missing.join(", ")
+    )
+    .into())
+}
+
+/// Build Cap-ready N06 owner-join readiness receipt after Desktop measure.
+/// Always `n06_owner_join=false` / product=0 until Root hosted join.
+pub fn n06_owner_join_readiness_receipt(
+    measured: bool,
+    desktop_measure_receipt: &Value,
+) -> Result<Value> {
+    refuse_n06_product_lift_from_desktop_measure(desktop_measure_receipt)?;
+    let measured_ok = original_h2_measured_from_receipt(desktop_measure_receipt)?;
+    if measured != measured_ok {
+        return Err(
+            "N06 owner-join readiness refused: measured flag disagrees with validated Desktop receipt"
+                .into(),
+        );
+    }
+    Ok(json!({
+        "schema": N06_OWNER_JOIN_RECEIPT_SCHEMA,
+        "original_h2_measured_desktop_lab": measured,
+        "n06_owner_join": false,
+        "n06_product_lift": false,
+        "desktop_as_hosted": false,
+        "product": 0,
+        "pass_product_clean_room": 0,
+        "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+        "missing_hosted_venue_topology": REQUIRED_HOSTED_VENUE_TOPOLOGY,
+        "hosted_venue_markers_accepted": HOSTED_VENUE_MARKERS,
+        "note": "Desktop lab measure ≠ hosted product; N06 owner join still Root; Cap-ready hosted venue topology cited for Root transfer"
+    }))
+}
+
+/// Validate a Root-authored N06 owner-join / hosted measure receipt (fail-closed).
+pub fn validate_n06_owner_join_receipt(receipt: &Value) -> Result<()> {
+    if receipt.get("schema").and_then(Value::as_str) != Some(N06_OWNER_JOIN_RECEIPT_SCHEMA)
+        && receipt.get("schema").and_then(Value::as_str) != Some(MEASURE_RECEIPT_SCHEMA)
+    {
+        return Err("N06 owner-join refused: receipt schema mismatch".into());
+    }
+    if receipt.get("desktop_as_hosted").and_then(Value::as_bool) == Some(true) {
+        return Err("N06 owner-join refused: desktop_as_hosted=true forbidden".into());
+    }
+    if receipt.get("product").and_then(Value::as_u64) != Some(0)
+        || receipt
+            .get("pass_product_clean_room")
+            .and_then(Value::as_u64)
+            != Some(0)
+    {
+        return Err(
+            "N06 owner-join refused: receipt invented product/pass_product_clean_room".into(),
+        );
+    }
+    let venue = receipt.get("venue").and_then(Value::as_str).unwrap_or("");
+    if receipt.get("n06_owner_join").and_then(Value::as_bool) == Some(true) {
+        if !HOSTED_VENUE_MARKERS.contains(&venue) {
+            return Err(format!(
+                "N06 owner-join refused: n06_owner_join=true requires hosted venue marker ({allowed}); got {venue:?}; Desktop lab never qualifies",
+                allowed = HOSTED_VENUE_MARKERS.join(", ")
+            )
+            .into());
+        }
+        if !crate::docker::actual_hosted_linux() {
+            return Err(
+                "N06 owner-join refused: n06_owner_join=true without actual_hosted_linux; never invent desktop_as_hosted"
+                    .into(),
+            );
+        }
+    }
+    Ok(())
 }
 
 /// Verify Cap-ready freeze pins match live workspace bytes.
@@ -279,6 +426,14 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     snapshot::write(&lab.evidence, "original-h2-measure-receipt.json", &receipt)?;
     let measured = original_h2_measured_from_receipt(&receipt)?;
     refuse_invented_original_h2_measured(measured, Some(&receipt))?;
+    refuse_n06_product_lift_from_desktop_measure(&receipt)?;
+    let n06_readiness = n06_owner_join_readiness_receipt(measured, &receipt)?;
+    validate_n06_owner_join_receipt(&n06_readiness)?;
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-join-readiness.json",
+        &n06_readiness,
+    )?;
     lab.case(
         "h2-product-binding-measure-receipt-validated",
         true,
@@ -311,6 +466,15 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             }),
         )?;
     }
+    lab.case(
+        "h2-product-binding-n06-owner-join-still-open",
+        n06_readiness.get("n06_owner_join") == Some(&json!(false)),
+        json!({
+            "n06_owner_join": false,
+            "missing_hosted_venue_topology": missing_hosted_venue_topology(&root),
+            "reason": "measured Desktop lab ≠ hosted product; Root owner join still open"
+        }),
+    )?;
     lab.components["w2_h2_product_binding"] = json!({
         "status": "executed",
         "kind": "w2-h2-product-binding-component",
@@ -318,9 +482,11 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         "pass_product_clean_room": 0,
         "original_h2_measured": measured,
         "desktop_as_hosted": false,
+        "n06_owner_join": false,
         "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+        "missing_hosted_venue_topology": missing_hosted_venue_topology(&root),
         "n06_join": if measured { "measured_desktop_lab_awaiting_owner_hosted_join" } else { "blocked" },
-        "note": "component Cap TLS measure; never invent pass_product_clean_room; capture observe_h2 ≠ product-binding; Desktop ≠ hosted product"
+        "note": "component Cap TLS measure; never invent pass_product_clean_room; capture observe_h2 ≠ product-binding; Desktop ≠ hosted product; N06 owner join Cap-ready cites hosted venue topology"
     });
     snapshot::write(
         &lab.evidence,
@@ -333,9 +499,12 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, MEASURE_RECEIPT_SCHEMA, MISSING_N06_PRODUCT_LIFT,
-        missing_cap_topology, original_h2_measured_from_receipt, parse_measure_receipt,
-        refuse_invented_original_h2_measured,
+        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, HOSTED_VENUE_MARKERS, MEASURE_RECEIPT_SCHEMA,
+        MISSING_N06_PRODUCT_LIFT, N06_OWNER_JOIN_RECEIPT_SCHEMA, REQUIRED_HOSTED_VENUE_TOPOLOGY,
+        missing_cap_topology, missing_hosted_venue_topology, n06_owner_join_readiness_receipt,
+        original_h2_measured_from_receipt, parse_measure_receipt,
+        refuse_invented_original_h2_measured, refuse_n06_product_lift_from_desktop_measure,
+        require_hosted_venue_for_n06_join, validate_n06_owner_join_receipt,
     };
     use crate::snapshot;
     use serde_json::json;
@@ -364,6 +533,59 @@ mod tests {
             missing.is_empty(),
             "Cap topology must be present after Unlock B topology transfer; missing={missing:?}"
         );
+    }
+
+    #[test]
+    fn hosted_venue_topology_still_missing_on_desktop() {
+        let root = snapshot::root().expect("root");
+        let missing = missing_hosted_venue_topology(&root);
+        assert_eq!(missing, REQUIRED_HOSTED_VENUE_TOPOLOGY.to_vec());
+        let err = require_hosted_venue_for_n06_join(&root).expect_err("desktop refuse");
+        assert!(err.to_string().contains("actual_hosted_linux=false"));
+    }
+
+    #[test]
+    fn desktop_measure_cannot_lift_n06_product() {
+        let receipt = json!({
+            "schema": MEASURE_RECEIPT_SCHEMA,
+            "original_h2_measured": true,
+            "tls_h2_status": 403,
+            "plaintext_control_status": 422,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false,
+            "venue": "desktop_lab_loopback"
+        });
+        assert!(refuse_n06_product_lift_from_desktop_measure(&receipt).is_ok());
+        let readiness = n06_owner_join_readiness_receipt(true, &receipt).expect("readiness");
+        assert_eq!(readiness["schema"], N06_OWNER_JOIN_RECEIPT_SCHEMA);
+        assert_eq!(readiness["n06_owner_join"], false);
+        assert_eq!(readiness["product"], 0);
+        assert!(validate_n06_owner_join_receipt(&readiness).is_ok());
+
+        let invented = json!({
+            "schema": MEASURE_RECEIPT_SCHEMA,
+            "original_h2_measured": true,
+            "tls_h2_status": 403,
+            "plaintext_control_status": 422,
+            "product": 1,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false,
+            "venue": "desktop_lab_loopback"
+        });
+        assert!(refuse_n06_product_lift_from_desktop_measure(&invented).is_err());
+
+        let fake_join = json!({
+            "schema": N06_OWNER_JOIN_RECEIPT_SCHEMA,
+            "n06_owner_join": true,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false,
+            "venue": "desktop_lab_loopback"
+        });
+        let err = validate_n06_owner_join_receipt(&fake_join).expect_err("desktop join");
+        assert!(err.to_string().contains("hosted venue marker"));
+        assert!(HOSTED_VENUE_MARKERS.contains(&"github-hosted-linux"));
     }
 
     #[test]
