@@ -323,6 +323,33 @@ to the changed default suite. Existing real recipe assertions remain intact.
 Both new gate configurations are assigned to the workflow candidate owner, with
 separate Cargo-exit and positive case accounting required before hosted adoption.
 
+Maintenance candidate03 now separates private command readers from the pure
+parsers and replaces the package integration's whole-library link with the real
+Cargo-selected executable. Its two package cases are still hosted-only; inherited
+Command::output buffering and child-lifetime limits remain explicit open work.
+During strict compilation Root found that ten relocated owned-file cases had not
+yet been declared by the new composition. Their qualification_tests module is now
+linked under the accepted namespace. Unused private type reexports and two unused
+convenience methods were removed; required test functions were not suppressed.
+Actual discovery now joins all76 original library selectors with zero differences,
+seven reader units and ten owned-file cases, totaling93 registered cases. Listing
+does not execute those cases or qualify the33 original integration obligations.
+
+The isolated CLI subsequently passed all-target/all-feature strict Clippy. A
+scoped format check first failed, then formatting changed41 CLI files and zero
+files outside that package; the following format check passed. Fresh strict02
+execution used actual PID28960 and exited0 against1781 before/after source files
+with zero difference records. Private evidence root/20261108020121 registers18
+attachments with the actual invocation, native start/terminal observations,
+separate logs, source manifests, retained first-format views, case census and
+ordered source ZIP chunks. The reconstructed archive SHA-256 is
+743a7f718c2833b1b03fdef4dc977dd868ee87e122774bcba92405ca0a7e4457;
+all1781 regular archive entries match the final source manifest. The local
+evidence check passed with zero errors/warnings. This is the formatted Windows
+compile/lint epoch only; no tests ran in that strict invocation, and resolved
+compiler/registry/environment closure, unsafe negative controls, per-role normal
+feature isolation, extracted packages and actual hosted runtime gates remain open.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
