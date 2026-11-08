@@ -99,11 +99,20 @@ Formatting, check and strict Clippy passed, but complete tool prehash and hostil
 custody are not established. The separate WASM check and strict Clippy success
 on unchanged source inputs also does not execute a browser or qualify deployment.
 
-Tools relocation has isolated prototype work but no live package/source cutover;
-the workspace remains at the 29-member checkpoint. The accepted adapters design
-of one Rust library with seven mutually exclusive export roles is not implemented.
-Draft module/root inventories are not executed-test denominators or available
-registry packages.
+The isolated assembly now resolves eight package members after adopting the
+12-context Adapters composition. The live workspace still has 29 members plus
+four standalone tools; no live source/package cutover has occurred. Eight members
+in the isolated assembly do not mean eight production-qualified packages.
+
+In that isolated assembly, the safe-context profiles `apache`, `dotnet`,
+`framework`, `go`, `native-abi` and `nginx` passed strict all-target Clippy and
+73 library units. Separately, four facade Go alias/profile tests and strict
+checks passed. These are Rust component results, not actual Go/framework hosts,
+native export/loader qualification or registry availability. Final facade and
+collector paths, host exports/loaders, header-v2 and Node/Python packaging remain
+unfinished, as do native, cross-OS, CEF, assistive-technology and product gates.
+Draft inventories are not executed-test denominators; unchanged external lock
+identities do not prove package verification or dependency-read closure.
 
 A first pure public-role data parser is implemented at source `2e9934fe`.
 Its scoped Windows component run passed 19 parser tests, with 79 other library

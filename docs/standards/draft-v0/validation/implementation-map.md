@@ -63,8 +63,14 @@ parity or model-activation qualification. The two matched CLI check pairs at
 performance. Lab source `f8aec286` records 44 default Windows cases plus one
 separate checkout case after a canonical-input correction; complete tool prehash
 and hostile custody remain unqualified. WASM/static checks do not execute a
-browser. Planned Tools composition and the accepted one-library/seven-export-role
-adapters design are not implemented packages or new conformance evidence.
+browser. The isolated Tools/Adapters assembly now has eight members, while the
+live workspace remains at 29 plus four standalone tools with no cutover. Its
+safe `apache`, `dotnet`, `framework`, `go`, `native-abi` and `nginx` profiles record
+73 library units and strict all-target Clippy; four facade Go alias/profile tests
+are separate. Neither the package count nor these Rust checks establish actual
+hosts, completed exclusive export roles, loaders, packaging, native/cross-OS/CEF/
+assistive behavior or full-product conformance. Final facade/collector paths and
+other integration gates remain open.
 
 The staged Tools assembly also implements an isolated offline Core API and CLI
 training route whose outputs are unsigned data. Five new offline units, a

@@ -1,0 +1,29 @@
+{
+  "schema": "humanymous.pages-isolated-eight-adapters-status/1",
+  "observed_live_head": "e6d7ff5415586887261ca1c730c247563192a797",
+  "provenance": "Root accepted actual component handoff for isolated12-to1Adapters adoption; current structural and roadmap scope inspected read-only, root retains private assembly/source ownership",
+  "changed_files": [
+    {
+      "path": "docs/reference/production-vs-reference.md",
+      "sha256": "6931d17797a403e3f31f5275ee95d38928f5f5ac1aaf3188fdcbb170f4a0e582",
+      "bytes": 13606
+    },
+    {
+      "path": "docs/standards/draft-v0/validation/implementation-map.md",
+      "sha256": "248f00ec6e08d8d3bae8287fb32f2b27e3cd90caafe2729fb27c7ec9a0c2e270",
+      "bytes": 17603
+    },
+    {
+      "path": "docs/standards/draft-v0/changes.json",
+      "sha256": "afd57baa686f9d60235dc78b772f003e8d06812fd2393829c90f9620f49b3239",
+      "bytes": 19717
+    }
+  ],
+  "counts": "ISOLATED8members after133candidatefiles/12contexts->1adapters; LIVE29workspace+4standalone/final8targetunchanged/no livecutover",
+  "actual_component": "Safeapache,dotnet,framework,go,native-abi,nginx strictalltargetClippy0 and73libunits; separatefacadeGoalias/profile4tests+strict0",
+  "retained_first_failure": "Earlierempty-arraytypeerror retained, corrected to b-empty-string assertion before actual passes",
+  "dependency_identity": "634external lock name/version/source/checksum tuplesunchanged; not fullregistryclosure/packageverification",
+  "incomplete": "Finalfacade/collectorpaths,hostexports/loaders/header-v2/NodePythonpackaging,native/CrossOS/CEF/AT/product gates; no actualGohost/registry/publicreadiness",
+  "browser": "Hosted3137actual49/49selectedbrowserpass/fullfalse9unavailable/workflowfailure unchanged",
+  "validation": "Existingimmutablead04checker88pages/errors0/diffcheckpass; no tooling source/compiler/build/native/render/AT/GHA/publish ornewallocation; newproseUNRENDERED"
+}

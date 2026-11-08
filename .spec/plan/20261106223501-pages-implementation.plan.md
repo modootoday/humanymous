@@ -2647,3 +2647,20 @@ kept unchanged. Evidence07052815/isolated-offline-data-current-docs.json binds
 three exact changedpathhashes and limits; no internalSoT/evidence IDs in readers.
 Frozenchecker88pages/errors0/diffpass; no newcompile/build/render/AT/GHA/publish.
 Latest-source coordinated render and AT remain required; all newproseUNRENDERED.
+
+### Isolated eight-member assembly versus live workspace
+
+Consumed Root actual12-to1Adapters/133candidatefile adoption: isolatedassembly8,
+live29workspace+4standalone/no livecutover. Public status/map no longer describe
+Adapters as only an unimplemented design: safeapache/dotnet/framework/go/native-abi/
+nginx profiles passed73libunits and strictalltargetClippy; separatefacadeGoalias/
+profile4tests+strict. Firstemptyarraytypefailure retained/correctedb"" assertion;
+634externallocktuplesunchanged is not registry/package/readclosure qualification.
+
+Finalfacade/collectorpaths, hostexports/loaders/header-v2/NodePythonpackaging,
+native/CrossOS/CEF/AT/product remainopen; packagecount8 is not completion.
+Evidence07052815/isolated-eight-adapters-current-docs.json binds three exact
+changedpathhashes, acceptedcomponent scope and source-only limits. Hosted3137
+49pass/selectedbrowserpass/fullfalse9unavailable/workflowfailure unchanged.
+Frozenchecker88pages/errors0/diffpass; no tooling source/compiler/build/native/
+render/AT/GHA/publish. No new allocation; all newproseUNRENDERED.
