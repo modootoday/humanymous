@@ -3,7 +3,7 @@ id: sot:root/program-roadmap
 title: Integrated roadmap and parallel work outcomes
 status: active
 created: 2026-11-06T23:55:19Z
-updated: 2026-11-07T17:27:03Z
+updated: 2026-11-08T02:56:20Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/client-collector, sot:root/adapter-authority, sot:root/delivery, sot:root/cross-os-runners, sot:root/chromium-lab-browser, sot:root/server-adapter-expansion, sot:root/browser-ui, sot:root/native-embedding]
@@ -19,7 +19,91 @@ snapshots, including their allocation tables, counts and then-current CI handles
 They do not grant current execution slots, supersede newer contracts or prove
 freshness for later source. Actual allocation requires current root coordination
 and resource admission; follow the exact live run or process handle.
-### Runtime isolation and Tools pre-move reconciliation
+## Integration status at the 2026-11-08 source checkpoint
+
+Fresh locked/offline Cargo metadata confirms29 LIVE workspace members and21 in
+Root's isolated Tools assembly. The final accepted family is eight public
+packages, not eight completed products. The live CLI has7 targets; the isolated
+CLI has27 (1 library,15 binaries,10 integrations,1 example). Four standalone
+tools remain part of the live maintained census, so live total is33. These are
+actual graph observations, not registry or runtime availability claims.
+
+| Package destination | Implemented source | Current verification boundary | Remaining integration |
+| --- | --- | --- | --- |
+| humanymous | Existing curated facade | Existing scoped API/profile evidence only | Final sdk path, exports and registry-compatible dependency graph |
+| humanymous-core | Seven contexts live; private SGD live; new offline API in isolated assembly only | Historical live160 unit+17 integration results; isolated library165 and new CLI2 pure units; relevant strict lint passes | Offline process/Go numeric parity, correction/promotion lifecycle and source-bound consumer/package gates |
+| humanymous-runtime | Six contexts live | Historical selected177 pure cases from366; scoped access/profile/extracted checks | Actual provider/W/Offer-ACK/Ready, full shipping ingress/TLS-H2/admin/runtime/product integration |
+| humanymous-platform | Shared platform and testing context live | Scoped pure/privacy/package checks | Real process-tree/recovery backend and explicitly reviewed native boundary gaps |
+| humanymous-collector | Browser/WASM source live in old path | Source-specific WASM checks and hosted component observations | Final integrations path, session-bound collector and full actual browser/product binding |
+| humanymous-adapters | Twelve current packages; final one-package design accepted | Component-specific historical scopes; no final merged package compiled | Actual source/manifest/export/visibility/loader consolidation and native host/package qualification |
+| humanymous-cli | Original live contexts remain; thirteen-context union materialized in isolated assembly | Full isolated all-target/all-feature strict lint; selected pure tests and exact discovery; no live path cutover | Required checkout/package/negative-role gates, final freeze/caller/workflow integration, real native/service/install pilots |
+| humanymous-browser | Three current packages; consolidation candidate in progress | Existing limited CEF/model/source evidence | Actual consolidated roots/feature/artifact joins, CEF/Meari/native/a11y and distribution qualification |
+
+The latest formal isolated Tools checkpoint is evidence:root/20261108024914:
+1791 source files with zero before/after differences,14 registered attachments,
+full CLI strict Clippy exit0,8 staging/materializer pure tests and4 result-parser
+tests passed, and101 discovered maintenance cases preserving the earlier97.
+Its exact source ZIP and both bounded chunks are retained. This is not execution
+of all101 cases. The later coordinator native-path repair changed one file; the
+formal seal remains historical for that file and must not be transferred.
+
+Staging materialization now verifies explicit review-pinned allowlists and same-
+capture raw pins; changed LICENSE refuses. Actual materialization/staging and
+coordinator Git/PowerShell cases remain required hosted tests. The new exact
+git-coord-result parser closes only the successful-empty-selection accounting
+gap. Its success cannot replace Cargo exit or actual host/source/binary joins.
+The Root-lint candidate's only backend remains Unavailable: compiler-negative
+execution and real process-tree/reader/recovery custody are not complete.
+
+The terminal hosted browser checkpoint at source3137c905/run42432665570 passed
+all49 owning Lab assertions and the one selected browser case from67. The owner
+still exits2 with nine required unavailable gates, full=false and release=false;
+the overall product job/workflow failed. No rerun of the same component can close
+the nine missing product responsibilities merely by repeating49 successes.
+
+## Dependency timeline and exit milestones
+
+This is a dependency timeline, not an invented calendar completion estimate.
+Independent implementation and source review continue in parallel; actual heavy
+runtime execution requires its own current admission and hosted allocation.
+
+| Phase | Current status | Owner responsibility | Required exit evidence |
+| --- | --- | --- | --- |
+| A: Architecture and ownership | Accepted; ongoing enforcement | Root plus each claimed context | Eight-package map, exact work ownership, dependency/resource/API and unsafe decisions |
+| B: Core/Platform/Runtime foundations | Live source integrated; partially qualified | Root with Model/Native/Authority/Audit/Runtime | Context privacy/feature tests plus actual unresolved native/provider/runtime obligations |
+| C: Tools integration | Isolated source implemented; live cutover pending | Root; Delivery/M11/CLI/Lab source-specific inputs | Current complete source/target/test/caller freeze, required ignored gates, negative root controls and supported hosted qualification |
+| D: Adapters and Browser | Actual candidate construction in progress | ABI coordinator and Browser; original host owners | Applicable preserved-preimage Rust/manifest patches, exact resource/test maps, exports/unsafe/privacy/loader proof |
+| E: Final eight graph and shipping roles | Not integrated | Root plus all owning contexts | Coherent supported role graphs, package/extracted/dependency checks, real Cross-OS/container/browser/native/host/AT outcomes |
+| F: Public docs and delivery | Source updates ongoing; final render unexecuted | Pages/Draft v0 and Delivery | Latest-code Pages render/accessibility/review, accurate standards maturity, clean CI annotations and prepared-only registry/OIDC environments |
+| G: Main integration | Not started; gated | Root | All required candidate gates and reviews pass, followed by actual main integration and post-merge verification |
+| H: Final Pages and branch cleanup | Not started; gated | Root and Pages | Approved Pages confirmation on integrated source, then verified main-only branch state; no package/tag/OIDC publication |
+
+```mermaid
+flowchart LR
+    A[Accepted contracts and ownership] --> B[Live foundations]
+    A --> C[Tools isolated implementation]
+    A --> D[Adapters and Browser candidates]
+    B --> E[Coherent final eight graph]
+    C --> E
+    D --> E
+    E --> Q[Required actual hosted and package gates]
+    Q --> M[Main integration and post-merge checks]
+    E --> P[Latest Pages and Draft v0 review]
+    P --> M
+    M --> V[Approved Pages confirmation]
+    V --> Z[Verified main-only branch state]
+```
+
+Root inspected current chat turn snapshots: Adapters and Browser candidate turns
+are active; Model's child-custody correction is source-only; Delivery has a
+reviewed private workflow supplement; Native and CLI positive provider/admission
+remain unfinished; Pages' prior source update is unrendered. Root reassigned
+Native concrete D2/D3 read-only installation/role-query candidates, leaving B1/B2
+unsafe amendments and new frame schemas unapproved. Pages must track offline
+unsigned DATA versus unfinished activation. No shared source/Cargo or runtime
+execution authority was delegated by these evidence-only assignments.
+
+### Historical Runtime isolation and Tools pre-move reconciliation
 
 Runtime source5d68cd39 isolated context-owned normal dependencies without changing
 its nine public feature keys or main lock. Seventeen isolated normal consumer
@@ -47,7 +131,7 @@ Docker RUN remains unknown. Do not transfer previous Origin403 observations to
 a new actor that has not been observed. No production merge, package publication,
 release tag or OIDC token exchange follows from these component/design results.
 
-### Latest bounded code qualification and next structural slice
+### Historical bounded code qualification and next structural slice
 
 | Scope | Actual result | Explicit boundary |
 | --- | --- | --- |
@@ -68,14 +152,14 @@ are [[evidence:root/20261107135643]], and Lab source-binding/browser receipts ar
 [[evidence:root/20261106224155]]. Before/after source comparisons do not by
 themselves prove a complete registry/compiler/linker/OS read closure.
 
-## Current integration checkpoint
+## Historical integration checkpoint and source details
 
 | Structural stage | Workspace count after stage | Current state |
 | --- | --- | --- |
 | Core | 35 | Source integrated; source42ecee7d passed177 Core cases including15 SGD cases plus bounded type/lint; packaging and actual serving/product gates pending |
 | Platform | 34 | Source moved; pure/type/lint, feature/API boundaries and default-library package verification passed; full consumers/runtime gates pending |
 | Runtime | 29 | Source relocated into six contexts; Windows all-target/all-feature check and strict Clippy passed; 177 selected pure cases passed from a 366-case library inventory; named sibling-access probes and extracted compilation also passed; coherent consumers, full packaging and actual runtime gates pending |
-| Tools | 21 | Owner handoffs prepared; implementation not consolidated |
+| Tools | 21 | Isolated thirteen-context CLI union implemented and scoped-qualified; live workspace remains29 pending cutover gates |
 | Adapters | 10 | Role/loader/unsafe gates and owner handoffs prepared; implementation not consolidated |
 | Browser | 8 | Separate artifact/loader decisions required; implementation not consolidated |
 
