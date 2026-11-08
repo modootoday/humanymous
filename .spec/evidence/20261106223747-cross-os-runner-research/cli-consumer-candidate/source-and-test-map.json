@@ -1,0 +1,531 @@
+{
+  "schema": "native-cli-consumer-candidate-v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED",
+  "input_root": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4/crates/apps/humanymous-cli/src/qualification/native_runner",
+  "source_map_sha256": "157af43efe37eda8d355966411699c397518967cd2e7ac43a1afd954dc5ec8c0",
+  "input_files": [
+    {
+      "relative_path": "evidence.rs",
+      "input_sha256": "80cbed59b0e32be8bd692ed88c9c92d61502a5a32ec942028933847225cf6a11",
+      "candidate_sha256": "d735407ed7cee6275ff42b608482194a6023177f521d83cccde63f5842275cd0",
+      "candidate_bytes": 17357,
+      "unchanged_test_function_names": [
+        "mutation_guard_rejects_any_act_marker_and_malformed_host_labels",
+        "public_summary_excludes_identity_credentials_and_raw_traces"
+      ]
+    },
+    {
+      "relative_path": "evidence/source_inputs.rs",
+      "input_sha256": "968ee639f5f67d8c20701cd2d45db276c884676c2d61623e9fd10b023ad0fc53",
+      "candidate_sha256": "758e4a3d240b772c435826e1c7e730071539c7686ecf68a00e3e1bbbbff77ed4",
+      "candidate_bytes": 5443,
+      "unchanged_test_function_names": [
+        "nested_manifest_and_each_compiled_input_mutation_changes_inventory",
+        "each_missing_required_input_refuses_inventory",
+        "each_omitted_required_snapshot_entry_refuses_verification"
+      ]
+    },
+    {
+      "relative_path": "harness.rs",
+      "input_sha256": "6e84ceed1806c61ccc25fa70dab822e08de99020f2fb75faa489324be160e460",
+      "candidate_sha256": "72e37e7ce8eb9e9b546eb6ce2a018a9e8cc69995f855d7f5f6164ff645cf746d",
+      "candidate_bytes": 26141,
+      "unchanged_test_function_names": [
+        "captured_helpers_require_single_summary_exact_helper_and_parent",
+        "summary_rejects_skips_missing_tests_and_bad_exit",
+        "custody_helpers_require_exact_parents_single_summary_and_zero_unknown_skips",
+        "extreme_counts_are_rejected_without_arithmetic_overflow",
+        "summary_requires_exact_labels_and_finite_elapsed_field"
+      ]
+    },
+    {
+      "relative_path": "harness/packages.rs",
+      "input_sha256": "8bcc5cb53f9584b4397634605c2e817f5de127db0b9e6ee85636364be360180b",
+      "candidate_sha256": "bc4c64d78dad4e08cd29cd5bc02fd6c394d310907206718285e98382e4740dbd",
+      "candidate_bytes": 5634,
+      "unchanged_test_function_names": []
+    },
+    {
+      "relative_path": "harness/packages/roles.rs",
+      "input_sha256": "be812642c58ddf276afa21b579ba8f6437f065aba47ab128ba151b2aba04581c",
+      "candidate_sha256": "3a72c8813f1fb9fbf5dad849822c70bc76903d5eef703fe2359086036af2c789",
+      "candidate_bytes": 9208,
+      "unchanged_test_function_names": []
+    },
+    {
+      "relative_path": "harness/packages/tests.rs",
+      "input_sha256": "738abdf9742c5863e3926738c02c732260670bc18506f1e93642373fd90e2a59",
+      "candidate_sha256": "e8f4c6b17ef0eff22d00e7b1afed210ac76fb0943d84fcc0810e9953dbe0ac9a",
+      "candidate_bytes": 9337,
+      "unchanged_test_function_names": [
+        "short_id_requires_exact_member_name_manifest_and_target_join",
+        "metadata_nonmember_duplicate_registry_and_missing_version_cannot_assign_role",
+        "shared_runtime_id_requires_exact_context_target_kind_and_source"
+      ]
+    },
+    {
+      "relative_path": "harness/build_observation.rs",
+      "input_sha256": "9d6fb0f8062147b36b36503ae343b9c56d4f173e2780643d79c8d09da0539adb",
+      "candidate_sha256": "f13ca80660dfeb84e1f3eaa6757516ab5f919a2071adff5398f3d3d59037cfaf",
+      "candidate_bytes": 8328,
+      "unchanged_test_function_names": [
+        "fresh_counts_use_artifact_events_without_dropping_unknowns",
+        "projection_excludes_private_paths_flags_and_untrusted_labels"
+      ]
+    },
+    {
+      "relative_path": "harness/helpers.rs",
+      "input_sha256": "e699a24c83c367e541c17a75781b74602877fa54fee4f6d35b85d6cb762349e6",
+      "candidate_sha256": "007fbe77f9788528c319df3f31cab64f792171cfdb4595f2058fc66b34713489",
+      "candidate_bytes": 4916,
+      "unchanged_test_function_names": [
+        "exact_helper_owners_do_not_include_product_host_pilots",
+        "ignored_privileged_parent_is_required_and_never_a_verified_helper"
+      ]
+    },
+    {
+      "relative_path": "service/catalog.rs",
+      "input_sha256": "1e7076ec03374f952ceb284ccb8570979d362fdcb4186e6462758a2dd5374bb0",
+      "candidate_sha256": "745971f461d141662a6d19f1e6ba59488f581856df726c7af6668168ab7a69ce",
+      "candidate_bytes": 2731,
+      "unchanged_test_function_names": [
+        "required_cases_match_exact_owned_package_target_and_test_kind"
+      ]
+    }
+  ],
+  "old_case_count": 61,
+  "old_case_ids_preserved": true,
+  "compiler_executed": false,
+  "tests_executed": false,
+  "actor_dispatch_authenticated": false,
+  "production_metadata_loader": "NOT_RUN",
+  "cases": [
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor.rs|native_command_line_is_literal_and_bounded",
+      "old_selector": "actor::tests::native_command_line_is_literal_and_bounded",
+      "new_selector": "native_runner::actor::tests::native_command_line_is_literal_and_bounded",
+      "old_source_sha256": "c0b233b5fdbb9bb539406f68816190f898a1e82ec60f71b502e617bdedeb1323",
+      "new_implementation_source": "src/qualification/native_runner/actor.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor.rs|local_provisioning_is_refused_before_any_account_api",
+      "old_selector": "actor::tests::local_provisioning_is_refused_before_any_account_api",
+      "new_selector": "native_runner::actor::tests::local_provisioning_is_refused_before_any_account_api",
+      "old_source_sha256": "c0b233b5fdbb9bb539406f68816190f898a1e82ec60f71b502e617bdedeb1323",
+      "new_implementation_source": "src/qualification/native_runner/actor.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor.rs|partial_setup_failure_cannot_select_an_empty_unassigned_job",
+      "old_selector": "actor::owner_tests::partial_setup_failure_cannot_select_an_empty_unassigned_job",
+      "new_selector": "native_runner::actor::owner_tests::partial_setup_failure_cannot_select_an_empty_unassigned_job",
+      "old_source_sha256": "c0b233b5fdbb9bb539406f68816190f898a1e82ec60f71b502e617bdedeb1323",
+      "new_implementation_source": "src/qualification/native_runner/actor.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled.rs|fixed_selectors_refuse_unknown_or_duplicate_arguments",
+      "old_selector": "controlled::tests::fixed_selectors_refuse_unknown_or_duplicate_arguments",
+      "new_selector": "native_runner::controlled::tests::fixed_selectors_refuse_unknown_or_duplicate_arguments",
+      "old_source_sha256": "0bf097fc18887e94d63aabab4907f7cd1b7447a5300da3e48735aaaafeca2e4b",
+      "new_implementation_source": "src/qualification/native_runner/controlled.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled.rs|fixed_parent_requires_absolute_executable_digest_and_new_work_locator",
+      "old_selector": "controlled::tests::fixed_parent_requires_absolute_executable_digest_and_new_work_locator",
+      "new_selector": "native_runner::controlled::tests::fixed_parent_requires_absolute_executable_digest_and_new_work_locator",
+      "old_source_sha256": "0bf097fc18887e94d63aabab4907f7cd1b7447a5300da3e48735aaaafeca2e4b",
+      "new_implementation_source": "src/qualification/native_runner/controlled.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled.rs|cli_profile_has_one_literal_selector_and_specific_artifact_prefix",
+      "old_selector": "controlled::tests::cli_profile_has_one_literal_selector_and_specific_artifact_prefix",
+      "new_selector": "native_runner::controlled::tests::cli_profile_has_one_literal_selector_and_specific_artifact_prefix",
+      "old_source_sha256": "0bf097fc18887e94d63aabab4907f7cd1b7447a5300da3e48735aaaafeca2e4b",
+      "new_implementation_source": "src/qualification/native_runner/controlled.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled.rs|executable_hash_names_cannot_cross_profiles_or_escape_fixed_shape",
+      "old_selector": "controlled::tests::executable_hash_names_cannot_cross_profiles_or_escape_fixed_shape",
+      "new_selector": "native_runner::controlled::tests::executable_hash_names_cannot_cross_profiles_or_escape_fixed_shape",
+      "old_source_sha256": "0bf097fc18887e94d63aabab4907f7cd1b7447a5300da3e48735aaaafeca2e4b",
+      "new_implementation_source": "src/qualification/native_runner/controlled.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled.rs|fault_profiles_have_fixed_selectors_and_cannot_weaken_ordinary_outcomes",
+      "old_selector": "controlled::tests::fault_profiles_have_fixed_selectors_and_cannot_weaken_ordinary_outcomes",
+      "new_selector": "native_runner::controlled::tests::fault_profiles_have_fixed_selectors_and_cannot_weaken_ordinary_outcomes",
+      "old_source_sha256": "0bf097fc18887e94d63aabab4907f7cd1b7447a5300da3e48735aaaafeca2e4b",
+      "new_implementation_source": "src/qualification/native_runner/controlled.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence.rs|mutation_guard_rejects_any_act_marker_and_malformed_host_labels",
+      "old_selector": "evidence::tests::mutation_guard_rejects_any_act_marker_and_malformed_host_labels",
+      "new_selector": "native_runner::evidence::tests::mutation_guard_rejects_any_act_marker_and_malformed_host_labels",
+      "old_source_sha256": "355eaee65c8c93ded04af19f0bec10a9ac76d2621b77b76e8b8f6b4e352aa29d",
+      "new_implementation_source": "src/qualification/native_runner/evidence.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence.rs|public_summary_excludes_identity_credentials_and_raw_traces",
+      "old_selector": "evidence::tests::public_summary_excludes_identity_credentials_and_raw_traces",
+      "new_selector": "native_runner::evidence::tests::public_summary_excludes_identity_credentials_and_raw_traces",
+      "old_source_sha256": "355eaee65c8c93ded04af19f0bec10a9ac76d2621b77b76e8b8f6b4e352aa29d",
+      "new_implementation_source": "src/qualification/native_runner/evidence.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness.rs|captured_helpers_require_single_summary_exact_helper_and_parent",
+      "old_selector": "harness::tests::captured_helpers_require_single_summary_exact_helper_and_parent",
+      "new_selector": "native_runner::harness::tests::captured_helpers_require_single_summary_exact_helper_and_parent",
+      "old_source_sha256": "4adf1a131db92433091bafa3e92acc78bdf21d1fa638b483588d674f17e4ac6f",
+      "new_implementation_source": "src/qualification/native_runner/harness.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness.rs|summary_rejects_skips_missing_tests_and_bad_exit",
+      "old_selector": "harness::tests::summary_rejects_skips_missing_tests_and_bad_exit",
+      "new_selector": "native_runner::harness::tests::summary_rejects_skips_missing_tests_and_bad_exit",
+      "old_source_sha256": "4adf1a131db92433091bafa3e92acc78bdf21d1fa638b483588d674f17e4ac6f",
+      "new_implementation_source": "src/qualification/native_runner/harness.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness.rs|custody_helpers_require_exact_parents_single_summary_and_zero_unknown_skips",
+      "old_selector": "harness::tests::custody_helpers_require_exact_parents_single_summary_and_zero_unknown_skips",
+      "new_selector": "native_runner::harness::tests::custody_helpers_require_exact_parents_single_summary_and_zero_unknown_skips",
+      "old_source_sha256": "4adf1a131db92433091bafa3e92acc78bdf21d1fa638b483588d674f17e4ac6f",
+      "new_implementation_source": "src/qualification/native_runner/harness.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness.rs|extreme_counts_are_rejected_without_arithmetic_overflow",
+      "old_selector": "harness::tests::extreme_counts_are_rejected_without_arithmetic_overflow",
+      "new_selector": "native_runner::harness::tests::extreme_counts_are_rejected_without_arithmetic_overflow",
+      "old_source_sha256": "4adf1a131db92433091bafa3e92acc78bdf21d1fa638b483588d674f17e4ac6f",
+      "new_implementation_source": "src/qualification/native_runner/harness.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness.rs|summary_requires_exact_labels_and_finite_elapsed_field",
+      "old_selector": "harness::tests::summary_requires_exact_labels_and_finite_elapsed_field",
+      "new_selector": "native_runner::harness::tests::summary_requires_exact_labels_and_finite_elapsed_field",
+      "old_source_sha256": "4adf1a131db92433091bafa3e92acc78bdf21d1fa638b483588d674f17e4ac6f",
+      "new_implementation_source": "src/qualification/native_runner/harness.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/scm.rs|grant_is_exact_connect_create_only_and_never_replaces_existing_aces",
+      "old_selector": "actor::scm::tests::grant_is_exact_connect_create_only_and_never_replaces_existing_aces",
+      "new_selector": "native_runner::actor::scm::tests::grant_is_exact_connect_create_only_and_never_replaces_existing_aces",
+      "old_source_sha256": "48acd4982b48d72ef457c70f2adc03623d8c237cc99257e4e71a95904280169b",
+      "new_implementation_source": "src/qualification/native_runner/actor/scm.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled/outcome.rs|ordinary_profile_does_not_accept_a_missing_grant_or_negative_exit",
+      "old_selector": "controlled::outcome::tests::ordinary_profile_does_not_accept_a_missing_grant_or_negative_exit",
+      "new_selector": "native_runner::controlled::outcome::tests::ordinary_profile_does_not_accept_a_missing_grant_or_negative_exit",
+      "old_source_sha256": "33dabbfb1135e6f6e3bba6085733af51a7757da853783edaf172d9e186ed5511",
+      "new_implementation_source": "src/qualification/native_runner/controlled/outcome.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled/outcome.rs|missing_grant_requires_explicit_refusal_marker_and_known_cleanup",
+      "old_selector": "controlled::outcome::tests::missing_grant_requires_explicit_refusal_marker_and_known_cleanup",
+      "new_selector": "native_runner::controlled::outcome::tests::missing_grant_requires_explicit_refusal_marker_and_known_cleanup",
+      "old_source_sha256": "33dabbfb1135e6f6e3bba6085733af51a7757da853783edaf172d9e186ed5511",
+      "new_implementation_source": "src/qualification/native_runner/controlled/outcome.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled/outcome.rs|timeout_alone_is_never_terminal_or_a_qualified_live_fault",
+      "old_selector": "controlled::outcome::tests::timeout_alone_is_never_terminal_or_a_qualified_live_fault",
+      "new_selector": "native_runner::controlled::outcome::tests::timeout_alone_is_never_terminal_or_a_qualified_live_fault",
+      "old_source_sha256": "33dabbfb1135e6f6e3bba6085733af51a7757da853783edaf172d9e186ed5511",
+      "new_implementation_source": "src/qualification/native_runner/controlled/outcome.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/controlled/outcome.rs|errors_or_already_empty_job_cannot_become_live_termination_evidence",
+      "old_selector": "controlled::outcome::tests::errors_or_already_empty_job_cannot_become_live_termination_evidence",
+      "new_selector": "native_runner::controlled::outcome::tests::errors_or_already_empty_job_cannot_become_live_termination_evidence",
+      "old_source_sha256": "33dabbfb1135e6f6e3bba6085733af51a7757da853783edaf172d9e186ed5511",
+      "new_implementation_source": "src/qualification/native_runner/controlled/outcome.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/accounting.rs|overflowing_observed_totals_are_errors_before_publication",
+      "old_selector": "evidence::accounting::tests::overflowing_observed_totals_are_errors_before_publication",
+      "new_selector": "native_runner::evidence::accounting::tests::overflowing_observed_totals_are_errors_before_publication",
+      "old_source_sha256": "dbbb287e4213423b566f799255c271e1c7251cc698d223b312699149b2a7c8b0",
+      "new_implementation_source": "src/qualification/native_runner/evidence/accounting.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/accounting.rs|rejects_null_missing_negative_nonzero_and_inconsistent_counts",
+      "old_selector": "evidence::accounting::tests::rejects_null_missing_negative_nonzero_and_inconsistent_counts",
+      "new_selector": "native_runner::evidence::accounting::tests::rejects_null_missing_negative_nonzero_and_inconsistent_counts",
+      "old_source_sha256": "dbbb287e4213423b566f799255c271e1c7251cc698d223b312699149b2a7c8b0",
+      "new_implementation_source": "src/qualification/native_runner/evidence/accounting.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/accounting.rs|preserves_zero_harnesses_and_counts_helpers_separately",
+      "old_selector": "evidence::accounting::tests::preserves_zero_harnesses_and_counts_helpers_separately",
+      "new_selector": "native_runner::evidence::accounting::tests::preserves_zero_harnesses_and_counts_helpers_separately",
+      "old_source_sha256": "dbbb287e4213423b566f799255c271e1c7251cc698d223b312699149b2a7c8b0",
+      "new_implementation_source": "src/qualification/native_runner/evidence/accounting.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/accounting.rs|passed_child_cannot_hide_missing_or_failed_actor_cleanup",
+      "old_selector": "evidence::accounting::tests::passed_child_cannot_hide_missing_or_failed_actor_cleanup",
+      "new_selector": "native_runner::evidence::accounting::tests::passed_child_cannot_hide_missing_or_failed_actor_cleanup",
+      "old_source_sha256": "dbbb287e4213423b566f799255c271e1c7251cc698d223b312699149b2a7c8b0",
+      "new_implementation_source": "src/qualification/native_runner/evidence/accounting.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/coverage.rs|named_assertions_are_preserved_without_publishing_private_strings",
+      "old_selector": "evidence::coverage::tests::named_assertions_are_preserved_without_publishing_private_strings",
+      "new_selector": "native_runner::evidence::coverage::tests::named_assertions_are_preserved_without_publishing_private_strings",
+      "old_source_sha256": "4ef369cdcf858f4f9277b42603f9e7b78aa75076f0778ec7accab5d732cd4034",
+      "new_implementation_source": "src/qualification/native_runner/evidence/coverage.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/coverage.rs|indexed_failure_projection_excludes_private_diagnostics",
+      "old_selector": "evidence::coverage::tests::indexed_failure_projection_excludes_private_diagnostics",
+      "new_selector": "native_runner::evidence::coverage::tests::indexed_failure_projection_excludes_private_diagnostics",
+      "old_source_sha256": "4ef369cdcf858f4f9277b42603f9e7b78aa75076f0778ec7accab5d732cd4034",
+      "new_implementation_source": "src/qualification/native_runner/evidence/coverage.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/failure.rs|initialization_is_failed_with_unknown_source_and_denominators",
+      "old_selector": "evidence::failure::tests::initialization_is_failed_with_unknown_source_and_denominators",
+      "new_selector": "native_runner::evidence::failure::tests::initialization_is_failed_with_unknown_source_and_denominators",
+      "old_source_sha256": "5773c36ac61de78dbed4d9bacffe13df872fc5a164924c39614289124cadbc77",
+      "new_implementation_source": "src/qualification/native_runner/evidence/failure.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/lifecycle.rs|keeps_failed_cleanup_unknowns_and_no_private_identifiers",
+      "old_selector": "evidence::lifecycle::tests::keeps_failed_cleanup_unknowns_and_no_private_identifiers",
+      "new_selector": "native_runner::evidence::lifecycle::tests::keeps_failed_cleanup_unknowns_and_no_private_identifiers",
+      "old_source_sha256": "abde401164ae871ad5dd61a862effa05a0f34039a098ab06fd69014eeb72254f",
+      "new_implementation_source": "src/qualification/native_runner/evidence/lifecycle.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/lifecycle.rs|prelaunch_negative_does_not_claim_an_observed_job",
+      "old_selector": "evidence::lifecycle::tests::prelaunch_negative_does_not_claim_an_observed_job",
+      "new_selector": "native_runner::evidence::lifecycle::tests::prelaunch_negative_does_not_claim_an_observed_job",
+      "old_source_sha256": "abde401164ae871ad5dd61a862effa05a0f34039a098ab06fd69014eeb72254f",
+      "new_implementation_source": "src/qualification/native_runner/evidence/lifecycle.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/recovery.rs|preserves_known_counts_and_unknowns_but_never_recovers_success",
+      "old_selector": "evidence::recovery::tests::preserves_known_counts_and_unknowns_but_never_recovers_success",
+      "new_selector": "native_runner::evidence::recovery::tests::preserves_known_counts_and_unknowns_but_never_recovers_success",
+      "old_source_sha256": "f12c8b9d384df315a5b2e5ec432561dd2dbfeaae8e8ae21166dd5876cd6d24cd",
+      "new_implementation_source": "src/qualification/native_runner/evidence/recovery.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/recovery.rs|rejects_duplicate_keys_wrong_identity_and_inconsistent_denominators",
+      "old_selector": "evidence::recovery::tests::rejects_duplicate_keys_wrong_identity_and_inconsistent_denominators",
+      "new_selector": "native_runner::evidence::recovery::tests::rejects_duplicate_keys_wrong_identity_and_inconsistent_denominators",
+      "old_source_sha256": "f12c8b9d384df315a5b2e5ec432561dd2dbfeaae8e8ae21166dd5876cd6d24cd",
+      "new_implementation_source": "src/qualification/native_runner/evidence/recovery.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/source_inputs.rs|nested_manifest_and_each_compiled_input_mutation_changes_inventory",
+      "old_selector": "evidence::source_inputs::tests::nested_manifest_and_each_compiled_input_mutation_changes_inventory",
+      "new_selector": "native_runner::evidence::source_inputs::tests::nested_manifest_and_each_compiled_input_mutation_changes_inventory",
+      "old_source_sha256": "72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c",
+      "new_implementation_source": "src/qualification/native_runner/evidence/source_inputs.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/source_inputs.rs|each_missing_required_input_refuses_inventory",
+      "old_selector": "evidence::source_inputs::tests::each_missing_required_input_refuses_inventory",
+      "new_selector": "native_runner::evidence::source_inputs::tests::each_missing_required_input_refuses_inventory",
+      "old_source_sha256": "72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c",
+      "new_implementation_source": "src/qualification/native_runner/evidence/source_inputs.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/evidence/source_inputs.rs|each_omitted_required_snapshot_entry_refuses_verification",
+      "old_selector": "evidence::source_inputs::tests::each_omitted_required_snapshot_entry_refuses_verification",
+      "new_selector": "native_runner::evidence::source_inputs::tests::each_omitted_required_snapshot_entry_refuses_verification",
+      "old_source_sha256": "72190755582633f5289f1d3af541970b96cbbfb513c1fbbfd28403ee6e130f3c",
+      "new_implementation_source": "src/qualification/native_runner/evidence/source_inputs.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/build_observation.rs|fresh_counts_use_artifact_events_without_dropping_unknowns",
+      "old_selector": "harness::build_observation::tests::fresh_counts_use_artifact_events_without_dropping_unknowns",
+      "new_selector": "native_runner::harness::build_observation::tests::fresh_counts_use_artifact_events_without_dropping_unknowns",
+      "old_source_sha256": "ee838d670b4b34dce25e876e8d9e87f7e8cb27fac064bf36c2656b47fff9e114",
+      "new_implementation_source": "src/qualification/native_runner/harness/build_observation.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/build_observation.rs|projection_excludes_private_paths_flags_and_untrusted_labels",
+      "old_selector": "harness::build_observation::tests::projection_excludes_private_paths_flags_and_untrusted_labels",
+      "new_selector": "native_runner::harness::build_observation::tests::projection_excludes_private_paths_flags_and_untrusted_labels",
+      "old_source_sha256": "ee838d670b4b34dce25e876e8d9e87f7e8cb27fac064bf36c2656b47fff9e114",
+      "new_implementation_source": "src/qualification/native_runner/harness/build_observation.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/collection.rs|early_failed_coverage_preserves_later_completed_receipts_and_final_failure",
+      "old_selector": "harness::collection::tests::early_failed_coverage_preserves_later_completed_receipts_and_final_failure",
+      "new_selector": "native_runner::harness::collection::tests::early_failed_coverage_preserves_later_completed_receipts_and_final_failure",
+      "old_source_sha256": "947b0f474c0daadc299ebdf93b463d0fcf9ed5c44d5104164d6ecddd2b22a769",
+      "new_implementation_source": "src/qualification/native_runner/harness/collection.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/collection.rs|fatal_security_or_transport_stop_refuses_later_collection",
+      "old_selector": "harness::collection::tests::fatal_security_or_transport_stop_refuses_later_collection",
+      "new_selector": "native_runner::harness::collection::tests::fatal_security_or_transport_stop_refuses_later_collection",
+      "old_source_sha256": "947b0f474c0daadc299ebdf93b463d0fcf9ed5c44d5104164d6ecddd2b22a769",
+      "new_implementation_source": "src/qualification/native_runner/harness/collection.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/helpers.rs|exact_helper_owners_do_not_include_product_host_pilots",
+      "old_selector": "harness::helpers::tests::exact_helper_owners_do_not_include_product_host_pilots",
+      "new_selector": "native_runner::harness::helpers::tests::exact_helper_owners_do_not_include_product_host_pilots",
+      "old_source_sha256": "e699a24c83c367e541c17a75781b74602877fa54fee4f6d35b85d6cb762349e6",
+      "new_implementation_source": "src/qualification/native_runner/harness/helpers.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/helpers.rs|ignored_privileged_parent_is_required_and_never_a_verified_helper",
+      "old_selector": "harness::helpers::tests::ignored_privileged_parent_is_required_and_never_a_verified_helper",
+      "new_selector": "native_runner::harness::helpers::tests::ignored_privileged_parent_is_required_and_never_a_verified_helper",
+      "old_source_sha256": "e699a24c83c367e541c17a75781b74602877fa54fee4f6d35b85d6cb762349e6",
+      "new_implementation_source": "src/qualification/native_runner/harness/helpers.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs|app_manifest_is_closed_bounded_and_hash_bound",
+      "old_selector": "prebuilt::tests::app_manifest_is_closed_bounded_and_hash_bound",
+      "new_selector": "native_runner::prebuilt::tests::app_manifest_is_closed_bounded_and_hash_bound",
+      "old_source_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation_source": "src/qualification/native_runner/actor/prebuilt/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs|runtime_requires_exact_count_three_roles_and_resource_limits",
+      "old_selector": "prebuilt::tests::runtime_requires_exact_count_three_roles_and_resource_limits",
+      "new_selector": "native_runner::prebuilt::tests::runtime_requires_exact_count_three_roles_and_resource_limits",
+      "old_source_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation_source": "src/qualification/native_runner/actor/prebuilt/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs|launch_context_has_fixed_arguments_and_no_ambient_environment",
+      "old_selector": "prebuilt::tests::launch_context_has_fixed_arguments_and_no_ambient_environment",
+      "new_selector": "native_runner::prebuilt::tests::launch_context_has_fixed_arguments_and_no_ambient_environment",
+      "old_source_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation_source": "src/qualification/native_runner/actor/prebuilt/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs|shared_parent_context_is_unverified_and_one_mapping_is_retained",
+      "old_selector": "prebuilt::tests::shared_parent_context_is_unverified_and_one_mapping_is_retained",
+      "new_selector": "native_runner::prebuilt::tests::shared_parent_context_is_unverified_and_one_mapping_is_retained",
+      "old_source_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation_source": "src/qualification/native_runner/actor/prebuilt/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs|joint_input_has_named_lineage_fixed_roles_and_distinct_original_manifest",
+      "old_selector": "prebuilt::tests::joint_input_has_named_lineage_fixed_roles_and_distinct_original_manifest",
+      "new_selector": "native_runner::prebuilt::tests::joint_input_has_named_lineage_fixed_roles_and_distinct_original_manifest",
+      "old_source_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation_source": "src/qualification/native_runner/actor/prebuilt/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs|recovery_cannot_precede_job_empty_or_delete_identity_before_cleanup",
+      "old_selector": "prebuilt::tests::recovery_cannot_precede_job_empty_or_delete_identity_before_cleanup",
+      "new_selector": "native_runner::prebuilt::tests::recovery_cannot_precede_job_empty_or_delete_identity_before_cleanup",
+      "old_source_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation_source": "src/qualification/native_runner/actor/prebuilt/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/actor/prebuilt/tests.rs|normal_cleanup_needs_profile_absence_and_all_terminal_facts",
+      "old_selector": "prebuilt::tests::normal_cleanup_needs_profile_absence_and_all_terminal_facts",
+      "new_selector": "native_runner::prebuilt::tests::normal_cleanup_needs_profile_absence_and_all_terminal_facts",
+      "old_source_sha256": "f44e2099a1d965deae1ae922b16c5382e7a67c82175a9617ac921126eba27b03",
+      "new_implementation_source": "src/qualification/native_runner/actor/prebuilt/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/catalog.rs|required_cases_match_exact_owned_package_target_and_test_kind",
+      "old_selector": "service::catalog::tests::required_cases_match_exact_owned_package_target_and_test_kind",
+      "new_selector": "native_runner::service::catalog::tests::required_cases_match_exact_owned_package_target_and_test_kind",
+      "old_source_sha256": "3201f813199eef4c1530dc2b4ea12e048ecd5ff85a82fd3fbbadae09d2d1b0e2",
+      "new_implementation_source": "src/qualification/native_runner/service/catalog.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/receipt.rs|complete_bound_receipt_is_whitelisted_and_missing_or_false_facts_fail",
+      "old_selector": "service::receipt::tests::complete_bound_receipt_is_whitelisted_and_missing_or_false_facts_fail",
+      "new_selector": "native_runner::service::receipt::tests::complete_bound_receipt_is_whitelisted_and_missing_or_false_facts_fail",
+      "old_source_sha256": "ce276fc46c5c134ba056b3e87e820731dd8307ee8e2c909d0544bfd5c8aabbc1",
+      "new_implementation_source": "src/qualification/native_runner/service/receipt.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/receipt.rs|duplicate_records_and_duplicate_decoded_keys_are_refused",
+      "old_selector": "service::receipt::tests::duplicate_records_and_duplicate_decoded_keys_are_refused",
+      "new_selector": "native_runner::service::receipt::tests::duplicate_records_and_duplicate_decoded_keys_are_refused",
+      "old_source_sha256": "ce276fc46c5c134ba056b3e87e820731dd8307ee8e2c909d0544bfd5c8aabbc1",
+      "new_implementation_source": "src/qualification/native_runner/service/receipt.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/packages/tests.rs|short_id_requires_exact_member_name_manifest_and_target_join",
+      "old_selector": "harness::packages::tests::short_id_requires_exact_member_name_manifest_and_target_join",
+      "new_selector": "native_runner::harness::packages::tests::short_id_requires_exact_member_name_manifest_and_target_join",
+      "old_source_sha256": "738abdf9742c5863e3926738c02c732260670bc18506f1e93642373fd90e2a59",
+      "new_implementation_source": "src/qualification/native_runner/harness/packages/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/packages/tests.rs|metadata_nonmember_duplicate_registry_and_missing_version_cannot_assign_role",
+      "old_selector": "harness::packages::tests::metadata_nonmember_duplicate_registry_and_missing_version_cannot_assign_role",
+      "new_selector": "native_runner::harness::packages::tests::metadata_nonmember_duplicate_registry_and_missing_version_cannot_assign_role",
+      "old_source_sha256": "738abdf9742c5863e3926738c02c732260670bc18506f1e93642373fd90e2a59",
+      "new_implementation_source": "src/qualification/native_runner/harness/packages/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/harness/packages/tests.rs|shared_runtime_id_requires_exact_context_target_kind_and_source",
+      "old_selector": "harness::packages::tests::shared_runtime_id_requires_exact_context_target_kind_and_source",
+      "new_selector": "native_runner::harness::packages::tests::shared_runtime_id_requires_exact_context_target_kind_and_source",
+      "old_source_sha256": "738abdf9742c5863e3926738c02c732260670bc18506f1e93642373fd90e2a59",
+      "new_implementation_source": "src/qualification/native_runner/harness/packages/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|normal_is_component_only_exit_two_and_sanitizes_private_fields",
+      "old_selector": "service::summary::tests::normal_is_component_only_exit_two_and_sanitizes_private_fields",
+      "new_selector": "native_runner::service::summary::tests::normal_is_component_only_exit_two_and_sanitizes_private_fields",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|after_grant_requires_cleanup_and_explicit_no_child_unknown_job",
+      "old_selector": "service::summary::tests::after_grant_requires_cleanup_and_explicit_no_child_unknown_job",
+      "new_selector": "native_runner::service::summary::tests::after_grant_requires_cleanup_and_explicit_no_child_unknown_job",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|missing_cleanup_or_source_run_binding_never_qualifies_either_profile",
+      "old_selector": "service::summary::tests::missing_cleanup_or_source_run_binding_never_qualifies_either_profile",
+      "new_selector": "native_runner::service::summary::tests::missing_cleanup_or_source_run_binding_never_qualifies_either_profile",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|sole_runtime_receipt_policy_rejects_every_missing_fact",
+      "old_selector": "service::summary::tests::sole_runtime_receipt_policy_rejects_every_missing_fact",
+      "new_selector": "native_runner::service::summary::tests::sole_runtime_receipt_policy_rejects_every_missing_fact",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|inventory_footer_log_and_report_must_agree",
+      "old_selector": "service::summary::tests::inventory_footer_log_and_report_must_agree",
+      "new_selector": "native_runner::service::summary::tests::inventory_footer_log_and_report_must_agree",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|closed_cli_refuses_missing_duplicate_or_unknown_arguments_before_io",
+      "old_selector": "service::summary::tests::closed_cli_refuses_missing_duplicate_or_unknown_arguments_before_io",
+      "new_selector": "native_runner::service::summary::tests::closed_cli_refuses_missing_duplicate_or_unknown_arguments_before_io",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|failed_footer_with_success_counts_and_matching_hash_is_refused",
+      "old_selector": "service::summary::tests::failed_footer_with_success_counts_and_matching_hash_is_refused",
+      "new_selector": "native_runner::service::summary::tests::failed_footer_with_success_counts_and_matching_hash_is_refused",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    },
+    {
+      "old_case_id": "humanymous-native-runner|bin|humanymous-native-runner|scripts/ci/windows-native-runner/src/service/summary/tests.rs|run_binding_requires_canonical_positive_decimal_string",
+      "old_selector": "service::summary::tests::run_binding_requires_canonical_positive_decimal_string",
+      "new_selector": "native_runner::service::summary::tests::run_binding_requires_canonical_positive_decimal_string",
+      "old_source_sha256": "13d5ca4ffcf333e89990dc5dda1f9bd5a5e6475388d7dd21374ba22c50ef4d1f",
+      "new_implementation_source": "src/qualification/native_runner/service/summary/tests.rs"
+    }
+  ]
+}

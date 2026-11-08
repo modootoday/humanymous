@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-08T01:35:46Z
+updated: 2026-11-08T02:19:20Z
 files:
   - {path: native-selector-validation-summary.json, sha256: afc912e9f5877c6df843d816ba6a09a9ce4a8682c697e3e42356e87220f7fe08, bytes: 12855, store: repo}
   - {path: native-selector-scan-triage-source.json, sha256: 5b5bdd18c40b2c18032b1c888ee8e74759f0c0a024751acb22db5e0538315f6a, bytes: 2088, store: repo}
@@ -75,6 +75,17 @@ files:
   - {path: observer-producer-candidate/source-inputs.json, sha256: 82874252fa51f44460b7bc1b7d3cbec7065840c919d076e003a999c90a570862, bytes: 4202, store: repo}
   - {path: observer-producer-candidate/windows_process.rs, sha256: e38d70e92431e4c0d54f0642bb1ceb326ab604b0d9f26528246a1812b62327f5, bytes: 6441, store: repo}
   - {path: observer-producer-candidate/windows_service.rs, sha256: 06da47ad9d4761d8d2d597a08720d644f3628d7ef2d6e95d0fb2d0e470096d80, bytes: 3855, store: repo}
+  - {path: cli-consumer-candidate/evidence.rs, sha256: d735407ed7cee6275ff42b608482194a6023177f521d83cccde63f5842275cd0, bytes: 17357, store: repo}
+  - {path: cli-consumer-candidate/evidence/source_inputs.rs, sha256: 758e4a3d240b772c435826e1c7e730071539c7686ecf68a00e3e1bbbbff77ed4, bytes: 5443, store: repo}
+  - {path: cli-consumer-candidate/harness.rs, sha256: 72e37e7ce8eb9e9b546eb6ce2a018a9e8cc69995f855d7f5f6164ff645cf746d, bytes: 26141, store: repo}
+  - {path: cli-consumer-candidate/harness/packages.rs, sha256: bc4c64d78dad4e08cd29cd5bc02fd6c394d310907206718285e98382e4740dbd, bytes: 5634, store: repo}
+  - {path: cli-consumer-candidate/harness/packages/roles.rs, sha256: 3a72c8813f1fb9fbf5dad849822c70bc76903d5eef703fe2359086036af2c789, bytes: 9208, store: repo}
+  - {path: cli-consumer-candidate/harness/packages/tests.rs, sha256: e8f4c6b17ef0eff22d00e7b1afed210ac76fb0943d84fcc0810e9953dbe0ac9a, bytes: 9337, store: repo}
+  - {path: cli-consumer-candidate/harness/build_observation.rs, sha256: f13ca80660dfeb84e1f3eaa6757516ab5f919a2071adff5398f3d3d59037cfaf, bytes: 8328, store: repo}
+  - {path: cli-consumer-candidate/harness/helpers.rs, sha256: 007fbe77f9788528c319df3f31cab64f792171cfdb4595f2058fc66b34713489, bytes: 4916, store: repo}
+  - {path: cli-consumer-candidate/service/catalog.rs, sha256: 745971f461d141662a6d19f1e6ba59488f581856df726c7af6668168ab7a69ce, bytes: 2731, store: repo}
+  - {path: cli-consumer-candidate/native-cli-consumer.patch, sha256: 6d4ebfc83094c7e30a18656069a9218a2673295cf03ebd2c6365d4675ab82535, bytes: 34267, store: repo}
+  - {path: cli-consumer-candidate/source-and-test-map.json, sha256: 9c0e006dc487d8160e15d321fcd250893e450624e53f2e8535ceb3f3b1cc2393, bytes: 43117, store: repo}
 ---
 
 # Cross OS runner research

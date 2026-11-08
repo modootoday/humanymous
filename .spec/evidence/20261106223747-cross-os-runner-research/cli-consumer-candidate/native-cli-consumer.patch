@@ -1,0 +1,537 @@
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/evidence.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/evidence.rs
+index f50fc3a8..7b6cdc52 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/evidence.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/evidence.rs
+@@ -26,14 +26,13 @@ fn sources(path: &Path, files: &mut BTreeMap<String, String>) -> io::Result<()>
+             return Err(io::Error::other("linked runner source"));
+         }
+         if kind.is_dir() {
+-            if entry.file_name() != "target" {
++            if !["target", ".git", ".spec.local"].iter().any(|name| entry.file_name() == *name) {
+                 sources(&path, files)?;
+             }
+-        } else if path
+-            .extension()
+-            .is_some_and(|e| e == "rs" || e == "toml" || e == "lock")
+-        {
++        } else if kind.is_file() {
+             files.insert(path.to_string_lossy().replace('\\', "/"), digest(&path)?);
++        } else {
++            return Err(io::Error::other("nonregular source inventory entry"));
+         }
+     }
+     Ok(())
+@@ -67,12 +66,9 @@ pub fn source(workspace: bool) -> io::Result<Value> {
+         files.insert(path.to_owned(), digest(Path::new(path))?);
+     }
+     let directories = &[
+-        "crates/sdk/humanymous-runtime/src",
+-        "crates/sdk/humanymous-runtime/tests",
+-        "crates/cli/src",
+-        "crates/integrations/humanymous-platform/src",
+-        "crates/sdk/humanymous-core/src",
+-        "scripts/ci/windows-native-runner",
++        "crates/sdk",
++        "crates/apps/humanymous-cli",
++        "crates/integrations/humanymous-platform",
+     ];
+     if workspace {
+         let metadata = Command::new("cargo")
+@@ -101,7 +97,6 @@ pub fn source(workspace: bool) -> io::Result<Value> {
+                 .ok_or_else(|| io::Error::other("workspace member outside checkout"))?;
+             sources(directory, &mut files)?;
+         }
+-        sources(Path::new("scripts/ci/windows-native-runner"), &mut files)?;
+     } else {
+         for path in directories {
+             sources(Path::new(path), &mut files)?;
+@@ -126,7 +121,7 @@ pub fn source(workspace: bool) -> io::Result<Value> {
+         if [
+             "crates/sdk/humanymous-runtime/",
+             "crates/integrations/humanymous-platform/",
+-            "scripts/ci/windows-native-runner/",
++            "crates/apps/humanymous-cli/",
+         ]
+         .iter()
+         .any(|prefix| path.starts_with(prefix))
+@@ -144,7 +139,7 @@ pub fn source(workspace: bool) -> io::Result<Value> {
+         }
+     }
+     Ok(
+-        json!({"source_sha":sha,"dirty":!dirty.stdout.is_empty(),"files":files,"github":github,"own_source_git_bytes":git_bytes}),
++        json!({"schema":"humanymous.native-runner-source/2","lock_scope":"workspace-root-only","runner_role":{"package":"humanymous-cli","target":"humanymous-native-runner","kind":["bin"],"source":"crates/apps/humanymous-cli/src/bin/native_runner/main.rs","implementation":"crates/apps/humanymous-cli/src/qualification/native_runner/mod.rs","required_feature":"qualification-native-runner","authority_proven":false},"source_sha":sha,"dirty":!dirty.stdout.is_empty(),"files":files,"github":github,"own_source_git_bytes":git_bytes}),
+     )
+ }
+ pub fn verify_snapshot(snapshot: &Value) -> io::Result<()> {
+@@ -249,7 +244,7 @@ pub fn summary(input: &Path, output: &Path) -> io::Result<()> {
+     let ignored = accounting::observed_total(&rows, "ignored")?;
+     let zero = rows.iter().filter(|r| r["discovered"] == 0).count();
+     let failed = accounting::observed_total(&rows, "failed")?;
+-    let summary = json!({"schema":"humanymous.native-runner-summary/1","scope":"four-package-native-process-component","status":report["status"],"qualification":"component-only","full_runtime_qualified":false,"source_sha":report["source_sha"],"validated_worktree_dirty":report["source"]["dirty"],"raw_report_sha256":digest(input)?,"os":report["os"],"arch":report["arch"],"errors":report["errors"],"skips":report["skips"],"missing_required_cases":report["missing_required_cases"],"unsupported":report["unsupported"],"documentation_examples_executed":report["documentation_examples_executed"],"harnesses":rows,"passed_tests":passed,"raw_ignored_tests":ignored,"zero_test_harnesses":zero,"own_source_git_bytes":report["source"]["own_source_git_bytes"]});
++    let summary = json!({"schema":"humanymous.native-runner-summary/1","scope":"runtime-cli-native-process-component","status":report["status"],"qualification":"component-only","full_runtime_qualified":false,"source_sha":report["source_sha"],"validated_worktree_dirty":report["source"]["dirty"],"raw_report_sha256":digest(input)?,"os":report["os"],"arch":report["arch"],"errors":report["errors"],"skips":report["skips"],"missing_required_cases":report["missing_required_cases"],"unsupported":report["unsupported"],"documentation_examples_executed":report["documentation_examples_executed"],"harnesses":rows,"passed_tests":passed,"raw_ignored_tests":ignored,"zero_test_harnesses":zero,"own_source_git_bytes":report["source"]["own_source_git_bytes"]});
+     let mut summary = summary;
+     let unknown_counts = rows
+         .iter()
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/evidence/source_inputs.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/evidence/source_inputs.rs
+index 3613655b..ca1a184a 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/evidence/source_inputs.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/evidence/source_inputs.rs
+@@ -1,10 +1,18 @@
+ //! Required manifest and compiled-data custody shared by both inventory modes.
+ use super::{BTreeMap, Path, digest, fs, io};
+ 
+-const REQUIRED_INPUTS: [&str; 3] = [
++const REQUIRED_INPUTS: [&str; 11] = [
+     "crates/sdk/humanymous-core/Cargo.toml",
+     "crates/sdk/humanymous-core/src/signals/wire/unicode.json",
+     "crates/sdk/humanymous-core/src/signals/observation/registry.json",
++    "Cargo.toml",
++    "Cargo.lock",
++    "rust-toolchain.toml",
++    "crates/sdk/humanymous-runtime/Cargo.toml",
++    "crates/integrations/humanymous-platform/Cargo.toml",
++    "crates/apps/humanymous-cli/Cargo.toml",
++    "crates/apps/humanymous-cli/src/bin/native_runner/main.rs",
++    "crates/apps/humanymous-cli/src/qualification/native_runner/mod.rs",
+ ];
+ 
+ pub(super) fn require_coverage(
+@@ -94,7 +102,7 @@ mod tests {
+         fixture(root);
+         let mut original = BTreeMap::new();
+         collect(root, &mut original).unwrap();
+-        assert_eq!(original.len(), 4);
++        assert_eq!(original.len(), REQUIRED_INPUTS.len() + 1);
+         // Same verifier with an explicit fixture root; never change process cwd.
+         let snapshot = serde_json::json!({"files": original});
+         super::super::verify_snapshot_at(&snapshot, root).unwrap();
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/harness.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/harness.rs
+index 44e47f37..fc88461e 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/harness.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/harness.rs
+@@ -148,7 +148,17 @@ fn artifacts(messages: &str, test: bool) -> io::Result<Value> {
+         }
+         if let Some(exe) = row["executable"].as_str() {
+             let path = Path::new(exe).canonicalize()?;
+-            entries.insert(path.clone(),json!({"executable":path,"sha256":evidence::digest(&path)?,"package_id":row["package_id"],"target":row["target"]["name"],"kind":row["target"]["kind"]}));
++            let entry = json!({"executable":path,"sha256":evidence::digest(&path)?,"package_id":row["package_id"],"target":row["target"]["name"],"kind":row["target"]["kind"],"source_path":row["target"]["src_path"],"profile_test":row["profile"]["test"],"features":row["features"]});
++            if !entry["features"].is_array() || !entry["source_path"].is_string()
++                || entry["package_id"].as_str().is_none_or(str::is_empty)
++            {
++                return Err(io::Error::other("incomplete compiler role observation"));
++            }
++            if let Some(previous) = entries.insert(path.clone(), entry.clone())
++                && previous != entry
++            {
++                return Err(io::Error::other("conflicting executable compiler observations"));
++            }
+         }
+     }
+     if entries.is_empty() {
+@@ -203,7 +213,7 @@ fn execute_inner(
+         .as_array()
+         .ok_or_else(|| io::Error::other("test manifest array required"))?;
+     let mut rows = Vec::new();
+-    *progress = json!({"required_harnesses":entries.len(),"executed_harnesses":0,"harnesses":[],"complete":false,"scope":"four-package-native-process-component"});
++    *progress = json!({"required_harnesses":entries.len(),"executed_harnesses":0,"harnesses":[],"complete":false,"scope":"runtime-cli-native-process-component"});
+     if scope == Scope::Workspace {
+         progress["scope"] = "workspace-default-features".into();
+     }
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages.rs
+index 8c739768..76f481fe 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages.rs
+@@ -28,6 +28,8 @@ pub(crate) enum Role {
+     GatewayBinary,
+     AuthorityBinary,
+     CliBinary,
++    RunnerBinary,
++    RunnerHarness,
+ }
+ impl Packages {
+     pub(crate) fn load(source: &Value, base: &Path) -> io::Result<Self> {
+@@ -87,6 +89,14 @@ impl Packages {
+             }
+         }
+         evidence::verify_snapshot(source)?;
++        // Optional external compiler-ledger observation. This never authorizes
++        // actor dispatch: the launcher must separately authenticate its origin.
++        // Absence is NOT replaced with current_exe or a fabricated compiler row.
++        if let Some(artifact) = source.get("runner_artifact") {
++            let executable = artifact["executable"].as_str().map(Path::new)
++                .ok_or_else(|| io::Error::other("runner artifact observation absent"))?;
++            packages.verify_runner_artifact(artifact, executable)?;
++        }
+         Ok(packages)
+     }
+ 
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/roles.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/roles.rs
+index 67edccf3..05c1edc7 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/roles.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/roles.rs
+@@ -65,17 +65,17 @@ impl Role {
+             ),
+             Self::CliService => (
+                 "humanymous-cli",
+-                "crates/cli",
+-                "service_process",
++                "crates/apps/humanymous-cli",
++                "cli-service-process",
+                 "test",
+-                "tests/service_process.rs",
++                "src/qualification/tests/cli_service_process.rs",
+             ),
+             Self::CliRuntimeService => (
+                 "humanymous-cli",
+-                "crates/cli",
+-                "runtime_service_process",
++                "crates/apps/humanymous-cli",
++                "cli-runtime-service-process",
+                 "test",
+-                "tests/runtime_service_process.rs",
++                "src/qualification/tests/cli_runtime_service_process.rs",
+             ),
+             Self::GatewayBinary => (
+                 "humanymous-runtime",
+@@ -93,11 +93,31 @@ impl Role {
+             ),
+             Self::CliBinary => (
+                 "humanymous-cli",
+-                "crates/cli",
++                "crates/apps/humanymous-cli",
+                 "humanymous",
+                 "bin",
+                 "src/main.rs",
+             ),
++            Self::RunnerBinary | Self::RunnerHarness => (
++                "humanymous-cli",
++                "crates/apps/humanymous-cli",
++                "humanymous-native-runner",
++                "bin",
++                "src/bin/native_runner/main.rs",
++            ),
++        }
++    }
++
++    fn test_profile(self) -> bool {
++        !matches!(self, Self::GatewayBinary | Self::AuthorityBinary | Self::CliBinary | Self::RunnerBinary)
++    }
++
++    fn required_features(self) -> &'static [&'static str] {
++        match self {
++            Self::CliService => &["service-pilot"],
++            Self::CliRuntimeService => &["runtime-service-pilot"],
++            Self::RunnerBinary | Self::RunnerHarness => &["qualification-native-runner"],
++            _ => &[],
+         }
+     }
+ }
+@@ -116,6 +136,17 @@ impl Packages {
+                 != Some(self.root.join(directory).join("Cargo.toml").as_path())
+             || entry["target"] != target_name
+             || entry["kind"] != json!([kind])
++            || entry["profile_test"] != role.test_profile()
++            || entry["source_path"].as_str().map(Path::new)
++                != Some(self.root.join(directory).join(source).as_path())
++        {
++            return false;
++        }
++        let Some(features) = entry["features"].as_array() else {
++            return false;
++        };
++        if features.iter().any(|value| value.as_str().is_none())
++            || role.required_features().iter().any(|required| !features.iter().any(|value| value.as_str() == Some(*required)))
+         {
+             return false;
+         }
+@@ -129,6 +160,33 @@ impl Packages {
+         found.len() == 1
+             && found[0]["src_path"].as_str().map(Path::new)
+                 == Some(self.root.join(directory).join(source).as_path())
++            && role.required_features().iter().all(|required| {
++                found[0]["required-features"].as_array().is_some_and(|declared| {
++                    declared.iter().any(|value| value.as_str() == Some(*required))
++                })
++            })
++    }
++
++    /// Join an actual compiler ledger row to a file; never process/host authority.
++    /// Actor dispatch still requires its separately owned source-bound admission.
++    pub(crate) fn verify_runner_artifact(&self, entry: &Value, executable: &Path) -> std::io::Result<()> {
++        let selected = executable.canonicalize()?;
++        let recorded = entry["executable"].as_str().map(Path::new)
++            .ok_or_else(|| std::io::Error::other("runner artifact path absent"))?.canonicalize()?;
++        if self.matches(entry, Role::RunnerHarness) || !self.matches(entry, Role::RunnerBinary) || selected != recorded
++            || entry["sha256"] != crate::native_runner::evidence::digest(&selected)?
++        {
++            return Err(std::io::Error::other("runner compiler role/artifact mismatch"));
++        }
++        Ok(())
++    }
++
++    #[cfg(test)]
++    pub(crate) fn fixture_entry(role: Role) -> Value {
++        let packages = Self::fixture();
++        let (name, directory, target, kind, source) = role.spec();
++        let package = packages.entries.values().find(|package| package["name"] == name).unwrap();
++        json!({"package_id":package["id"],"target":target,"kind":[kind],"source_path":packages.root.join(directory).join(source),"profile_test":role.test_profile(),"features":role.required_features()})
+     }
+ 
+     #[cfg(test)]
+@@ -148,6 +206,7 @@ impl Packages {
+             Role::GatewayBinary,
+             Role::AuthorityBinary,
+             Role::CliBinary,
++            Role::RunnerBinary,
+         ] {
+             let (name, directory, target, kind, source) = role.spec();
+             let id = match name {
+@@ -161,7 +220,7 @@ impl Packages {
+             };
+             let record = records.entry(name).or_insert_with(|| json!({"id":id,"name":name,"version":"0.1.0","manifest_path":root.join(directory).join("Cargo.toml"),"source":null,"targets":[]}));
+             record["targets"].as_array_mut().unwrap().push(
+-                json!({"name":target,"kind":[kind],"src_path":root.join(directory).join(source)}),
++                json!({"name":target,"kind":[kind],"src_path":root.join(directory).join(source),"required-features":role.required_features()}),
+             );
+         }
+         let records: Vec<_> = records.into_values().collect();
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/tests.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/tests.rs
+index 9a127ed4..4a5a53d6 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/tests.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/packages/tests.rs
+@@ -7,7 +7,7 @@ const RUNTIME: &str = "path+file:///C:/workspaces/humanymous/crates/sdk/humanymo
+ #[test]
+ fn short_id_requires_exact_member_name_manifest_and_target_join() {
+     let packages = Packages::fixture();
+-    let entry = json!({"package_id":PLATFORM,"target":"humanymous_platform","kind":["lib"]});
++    let entry = Packages::fixture_entry(Role::PlatformLibrary);
+     assert!(packages.matches(&entry, Role::PlatformLibrary));
+     for (field, value) in [
+         ("package_id", json!("unknown#humanymous-platform@0.1.0")),
+@@ -42,7 +42,7 @@ fn metadata_nonmember_duplicate_registry_and_missing_version_cannot_assign_role(
+     let members: Vec<_> = packages.entries.keys().cloned().collect();
+     let metadata =
+         json!({"workspace_root":packages.root,"workspace_members":members,"packages":records});
+-    let entry = json!({"package_id":PLATFORM,"target":"humanymous_platform","kind":["lib"]});
++    let entry = Packages::fixture_entry(Role::PlatformLibrary);
+     let mut nonmember = metadata.clone();
+     nonmember["workspace_members"]
+         .as_array_mut()
+@@ -90,7 +90,7 @@ fn shared_runtime_id_requires_exact_context_target_kind_and_source() {
+         ("audit-key-backups", Role::AuditKeyBackups),
+         ("audit-key-custody", Role::AuditKeyCustody),
+     ] {
+-        let entry = json!({"package_id":RUNTIME,"target":name,"kind":["test"]});
++        let entry = Packages::fixture_entry(role);
+         assert!(packages.matches(&entry, role));
+         let mut wrong_kind = entry.clone();
+         wrong_kind["kind"] = json!(["bin"]);
+@@ -131,13 +131,12 @@ fn shared_runtime_id_requires_exact_context_target_kind_and_source() {
+         targets.push(repeated);
+         assert!(!duplicate.matches(&entry, role));
+     }
+-    let library = json!({"package_id":RUNTIME,"target":"humanymous_runtime","kind":["lib"]});
++    let library = Packages::fixture_entry(Role::RuntimeLibrary);
+     assert!(packages.matches(&library, Role::RuntimeLibrary));
+     assert!(!packages.matches(&library, Role::AuthorityNative));
+     assert!(!packages.matches(&library, Role::GatewayNative));
+-    let gateway_bin = json!({"package_id":RUNTIME,"target":"humanymous-runtime","kind":["bin"]});
+-    let authority_bin =
+-        json!({"package_id":RUNTIME,"target":"humanymous-authority","kind":["bin"]});
++    let gateway_bin = Packages::fixture_entry(Role::GatewayBinary);
++    let authority_bin = Packages::fixture_entry(Role::AuthorityBinary);
+     assert!(packages.matches(&gateway_bin, Role::GatewayBinary));
+     assert!(!packages.matches(&gateway_bin, Role::AuthorityBinary));
+     assert!(packages.matches(&authority_bin, Role::AuthorityBinary));
+@@ -154,4 +153,55 @@ fn shared_runtime_id_requires_exact_context_target_kind_and_source() {
+             Role::AuthorityNative
+         ));
+     }
++    // Same CLI package and bin-kind are insufficient: normal actor and unit
++    // harness differ by the ACTUAL compiler profile, with exact feature/source.
++    let packages = Packages::fixture();
++    for role in [Role::RunnerBinary, Role::RunnerHarness, Role::CliBinary, Role::CliService, Role::CliRuntimeService] {
++        let entry = Packages::fixture_entry(role);
++        assert!(packages.matches(&entry, role));
++        for other in [Role::RunnerBinary, Role::RunnerHarness, Role::CliBinary, Role::CliService, Role::CliRuntimeService] {
++            assert_eq!(packages.matches(&entry, other), role == other);
++        }
++        for (key, value) in [
++            ("source_path", json!(packages.root.join("crates/apps/humanymous-cli/src/lib.rs"))),
++            ("profile_test", json!(!entry["profile_test"].as_bool().unwrap())),
++            ("package_id", json!("counterfeit-humanymous-cli")),
++        ] {
++            let mut wrong = entry.clone();
++            wrong[key] = value;
++            assert!(!packages.matches(&wrong, role));
++        }
++        if role != Role::CliBinary {
++            let mut missing = entry.clone();
++            missing["features"] = json!([]);
++            assert!(!packages.matches(&missing, role));
++        }
++    }
++    let mut runner = Packages::fixture_entry(Role::RunnerBinary);
++    runner["features"] = json!(["qualification-lab-runner"]);
++    assert!(!packages.matches(&runner, Role::RunnerBinary));
++    let mut wrong_source = Packages::fixture();
++    let targets = wrong_source.entries.get_mut("opaque-humanymous-cli").unwrap()["targets"].as_array_mut().unwrap();
++    let runner = targets.iter_mut().find(|target| target["name"] == "humanymous-native-runner").unwrap();
++    runner["src_path"] = json!(wrong_source.root.join("crates/apps/humanymous-cli/src/main.rs"));
++    assert!(!wrong_source.matches(&Packages::fixture_entry(Role::RunnerBinary), Role::RunnerBinary));
++    let directory = crate::native_runner::fixture::Directory::new().unwrap();
++    let executable = directory.path().join("synthetic-artifact");
++    std::fs::write(&executable, b"synthetic artifact bytes; never executed").unwrap();
++    let selected = Packages::fixture_entry(Role::RunnerBinary);
++    let cargo = json!({"reason":"compiler-artifact","package_id":selected["package_id"],"target":{"name":selected["target"],"kind":selected["kind"],"src_path":selected["source_path"]},"profile":{"test":false},"features":selected["features"],"executable":executable});
++    let parsed = super::super::artifacts(&cargo.to_string(), false).unwrap();
++    assert_eq!(parsed[0]["profile_test"], false);
++    assert_eq!(parsed[0]["source_path"], selected["source_path"]);
++    packages.verify_runner_artifact(&parsed[0], &executable).unwrap();
++    let mut wrong_hash = parsed[0].clone();
++    wrong_hash["sha256"] = json!("0".repeat(64));
++    assert!(packages.verify_runner_artifact(&wrong_hash, &executable).is_err());
++    let mut harness = parsed[0].clone();
++    harness["profile_test"] = json!(true);
++    assert!(packages.matches(&harness, Role::RunnerHarness));
++    assert!(packages.verify_runner_artifact(&harness, &executable).is_err());
++    let mut missing = cargo;
++    missing.as_object_mut().unwrap().remove("features");
++    assert!(super::super::artifacts(&missing.to_string(), false).is_err());
+ }
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/build_observation.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/build_observation.rs
+index 6d40e817..8ac3a9bb 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/build_observation.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/build_observation.rs
+@@ -14,7 +14,33 @@ fn environment_hash(name: &str) -> Value {
+     }
+ }
+ pub(super) fn input_key(source: &Value, release: bool, native: bool) -> io::Result<Value> {
+-    let inputs = json!({"source_sha":source["source_sha"],"source_files_sha256":hash(&serde_json::to_vec(&source["files"])?),"root_lock_sha256":source["files"]["Cargo.lock"],"runner_lock_sha256":source["files"]["scripts/ci/windows-native-runner/Cargo.lock"],"declared_toolchain_sha256":source["files"]["rust-toolchain.toml"],"os":std::env::consts::OS,"arch":std::env::consts::ARCH,"host_abi":if cfg!(target_env="msvc"){"msvc"}else if cfg!(target_env="gnu"){"gnu"}else if cfg!(target_env="musl"){"musl"}else{"unspecified"},"profile":if release{"release"}else{"debug"},"features":if native{json!(crate::native_runner::service::catalog::FEATURES)}else{json!([])},"rustflags":environment_hash("RUSTFLAGS"),"encoded_rustflags":environment_hash("CARGO_ENCODED_RUSTFLAGS"),"toolchain_override":environment_hash("RUSTUP_TOOLCHAIN"),"target_override":environment_hash("CARGO_BUILD_TARGET")});
++    if source["schema"] != "humanymous.native-runner-source/2"
++        || source["lock_scope"] != "workspace-root-only"
++    {
++        return Err(io::Error::other("current shared-workspace source schema required"));
++    }
++    let required = |path: &str| -> io::Result<String> {
++        digest(&source["files"][path]).map(str::to_owned)
++            .ok_or_else(|| io::Error::other("required build input digest absent"))
++    };
++    let inputs = json!({
++        "schema":"humanymous.native-runner-build-input/2",
++        "lock_scope":"workspace-root-only",
++        "source_sha":source["source_sha"],
++        "source_files_sha256":hash(&serde_json::to_vec(&source["files"])?),
++        "root_lock_sha256":required("Cargo.lock")?,
++        "cli_manifest_sha256":required("crates/apps/humanymous-cli/Cargo.toml")?,
++        "runner_composition_sha256":required("crates/apps/humanymous-cli/src/bin/native_runner/main.rs")?,
++        "runner_implementation_sha256":required("crates/apps/humanymous-cli/src/qualification/native_runner/mod.rs")?,
++        "runner_feature_recipe":["qualification-native-runner"],
++        "declared_toolchain_sha256":required("rust-toolchain.toml")?,
++        "os":std::env::consts::OS,"arch":std::env::consts::ARCH,
++        "host_abi":if cfg!(target_env="msvc"){"msvc"}else if cfg!(target_env="gnu"){"gnu"}else if cfg!(target_env="musl"){"musl"}else{"unspecified"},
++        "profile":if release{"release"}else{"debug"},
++        "features":if native{json!(crate::native_runner::service::catalog::FEATURES)}else{json!([])},
++        "rustflags":environment_hash("RUSTFLAGS"),"encoded_rustflags":environment_hash("CARGO_ENCODED_RUSTFLAGS"),
++        "toolchain_override":environment_hash("RUSTUP_TOOLCHAIN"),"target_override":environment_hash("CARGO_BUILD_TARGET")
++    });
+     Ok(
+         json!({"sha256":hash(&serde_json::to_vec(&inputs)?),"inputs":inputs,"actual_rustc_version":"not-observed","input_key_complete":false,"cache_reuse_proven":false}),
+     )
+@@ -55,7 +81,7 @@ pub(crate) fn project(raw: &Value) -> Value {
+         fingerprints.insert(key.to_owned(),json!({"present":input[key]["present"].as_bool(),"sha256":digest(&input[key]["sha256"])}));
+     }
+     let rows=raw["commands"].as_array().map(|rows|rows.iter().map(|row|json!({"phase":match row["phase"].as_str(){Some("product-binaries")=>Some("product-binaries"),Some("test-discovery")=>Some("test-discovery"),_=>None},"compiler_artifact_events":row["compiler_artifact_events"].as_u64(),"fresh":row["fresh"].as_u64(),"rebuilt":row["rebuilt"].as_u64(),"unknown":row["unknown"].as_u64(),"cargo_child_elapsed_ms":row["cargo_child_elapsed_ms"].as_u64()})).collect::<Vec<_>>()).unwrap_or_default();
+-    let mut result = json!({"input_key_sha256":digest(&raw["input_key"]["sha256"]),"source_files_sha256":digest(&input["source_files_sha256"]),"root_lock_sha256":digest(&input["root_lock_sha256"]),"runner_lock_sha256":digest(&input["runner_lock_sha256"]),"declared_toolchain_sha256":digest(&input["declared_toolchain_sha256"]),"profile":match input["profile"].as_str(){Some("debug")=>Some("debug"),Some("release")=>Some("release"),_=>None},"fingerprints":fingerprints,"commands":rows,"input_key_complete":false,"cache_reuse_proven":false,"html_timings_requested":true,"html_timings_retrieved":false});
++    let mut result = json!({"schema":"humanymous.native-runner-build-observation/2","lock_scope":if input["lock_scope"]=="workspace-root-only"{Some("workspace-root-only")}else{None},"input_key_sha256":digest(&raw["input_key"]["sha256"]),"source_files_sha256":digest(&input["source_files_sha256"]),"root_lock_sha256":digest(&input["root_lock_sha256"]),"cli_manifest_sha256":digest(&input["cli_manifest_sha256"]),"runner_composition_sha256":digest(&input["runner_composition_sha256"]),"runner_implementation_sha256":digest(&input["runner_implementation_sha256"]),"declared_toolchain_sha256":digest(&input["declared_toolchain_sha256"]),"profile":match input["profile"].as_str(){Some("debug")=>Some("debug"),Some("release")=>Some("release"),_=>None},"fingerprints":fingerprints,"commands":rows,"input_key_complete":false,"cache_reuse_proven":false,"html_timings_requested":true,"html_timings_retrieved":false});
+     result["features"] = if input["features"] == json!([]) {
+         json!([])
+     } else if input["features"] == json!(crate::native_runner::service::catalog::FEATURES) {
+@@ -93,5 +119,20 @@ mod tests {
+         let output = project(&raw);
+         assert!(!output.to_string().contains("PRIVATE"));
+         assert_eq!(output["commands"][0]["fresh"], 1);
++        assert!(output.get("runner_lock_sha256").is_none());
++        assert_eq!(output["input_key_complete"], false);
++        let mut source = json!({"schema":"humanymous.native-runner-source/2","lock_scope":"workspace-root-only","files":{}});
++        for key in ["Cargo.lock", "crates/apps/humanymous-cli/Cargo.toml", "crates/apps/humanymous-cli/src/bin/native_runner/main.rs", "crates/apps/humanymous-cli/src/qualification/native_runner/mod.rs", "rust-toolchain.toml"] {
++            source["files"][key] = json!("a".repeat(64));
++        }
++        let current = input_key(&source, false, true).unwrap();
++        assert_eq!(current["inputs"]["root_lock_sha256"], "a".repeat(64));
++        for key in ["Cargo.lock", "crates/apps/humanymous-cli/src/bin/native_runner/main.rs"] {
++            let mut missing = source.clone();
++            missing["files"].as_object_mut().unwrap().remove(key);
++            assert!(input_key(&missing, false, true).is_err());
++        }
++        source["lock_scope"] = json!("standalone-runner");
++        assert!(input_key(&source, false, true).is_err());
+     }
+ }
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/helpers.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/helpers.rs
+index c13a5c83..346558cb 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/harness/helpers.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/harness/helpers.rs
+@@ -76,9 +76,9 @@ mod tests {
+     use super::*;
+     #[test]
+     fn exact_helper_owners_do_not_include_product_host_pilots() {
+-        let support = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/integrations/humanymous-platform#0.1.0","kind":["lib"],"target":"humanymous_platform"});
++        let support = Packages::fixture_entry(Role::PlatformLibrary);
+         assert_eq!(captured(&support, &Packages::fixture()).unwrap().1.len(), 6);
+-        let audit = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["lib"],"target":"humanymous_runtime"});
++        let audit = Packages::fixture_entry(Role::RuntimeLibrary);
+         assert_eq!(
+             captured(&audit, &Packages::fixture()).unwrap().0,
+             "audit::storage::wal::tests::process_lock_probe"
+@@ -92,7 +92,7 @@ mod tests {
+     }
+     #[test]
+     fn ignored_privileged_parent_is_required_and_never_a_verified_helper() {
+-        let entry = json!({"package_id":"path+file:///C:/workspaces/humanymous/crates/sdk/humanymous-runtime#0.1.0","kind":["test"],"target":"authority-native-process"});
++        let entry = Packages::fixture_entry(Role::AuthorityNative);
+         let log = "test unix_other_user_is_denied_by_actual_socket_acl ... ignored, Docker only\n";
+         let scope = external_scope(&entry, log, true, &Packages::fixture()).unwrap();
+         assert_eq!(scope["ignored_subprocess_helpers"], 0);
+diff --git a/crates/apps/humanymous-cli/src/qualification/native_runner/service/catalog.rs b/crates/apps/humanymous-cli/src/qualification/native_runner/service/catalog.rs
+index a6ab40a9..e8a54789 100644
+--- a/crates/apps/humanymous-cli/src/qualification/native_runner/service/catalog.rs
++++ b/crates/apps/humanymous-cli/src/qualification/native_runner/service/catalog.rs
+@@ -20,7 +20,7 @@ impl Case {
+ }
+ pub(crate) static CASES: [Case; 2] = [
+     Case {
+-        target: "service_process",
++        target: "cli-service-process",
+         test: "native_service_install_upgrade_rollback_and_remove",
+         id: "native-service-lifecycle",
+         field: "service_execution",
+@@ -28,7 +28,7 @@ pub(crate) static CASES: [Case; 2] = [
+         windows_only: false,
+     },
+     Case {
+-        target: "runtime_service_process",
++        target: "cli-runtime-service-process",
+         test: "native_runtime_service_lifecycle_and_missing_credential_fail_closed",
+         id: "native-runtime-service-lifecycle-and-missing-credential",
+         field: "runtime_service_execution",
+@@ -60,12 +60,16 @@ mod tests {
+     fn required_cases_match_exact_owned_package_target_and_test_kind() {
+         let packages = crate::native_runner::harness::packages::Packages::fixture();
+         for case in &CASES {
+-            let mut entry =
+-                json!({"package_id":"opaque-humanymous-cli","target":case.target,"kind":["test"]});
++            let role = if case.target == "cli-service-process" {
++                crate::native_runner::harness::packages::Role::CliService
++            } else {
++                crate::native_runner::harness::packages::Role::CliRuntimeService
++            };
++            let mut entry = crate::native_runner::harness::packages::Packages::fixture_entry(role);
+             assert_eq!(required_case(&entry, &packages).unwrap().test, case.test);
+             entry["package_id"] = json!("path+file:///other#humanymous-cli-extension@0.1.0");
+             assert!(required_case(&entry, &packages).is_none());
+         }
+-        assert!(required_case(&json!({"package_id":"opaque-humanymous-cli","target":"service_process","kind":["bin"]}), &packages).is_none());
++        assert!(required_case(&json!({"package_id":"opaque-humanymous-cli","target":"cli-service-process","kind":["bin"]}), &packages).is_none());
+     }
+ }
