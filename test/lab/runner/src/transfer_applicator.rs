@@ -659,6 +659,37 @@ fn chrono_like_utc() -> String {
     format!("{secs}")
 }
 
+/// Fail-closed refuse of documented non-product-binding Cap shapes for Unlock B.
+///
+/// Citations: cap-ready/w2-h2-product-binding/COMMANDS.md §2 (capture run
+/// 42479169280 forbidden as product-binding) and harness.json
+/// `forbidden_reburns`. Does not invent an allowlist of good argv — only
+/// rejects known capture/feeder reburns so Root-named GRANT.pilot_command
+/// cannot accidentally Cap-spam component receipts.
+fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
+    let normalized = pilot.split_whitespace().collect::<Vec<_>>().join(" ");
+    let lower = normalized.to_ascii_lowercase();
+    if lower.contains("native-component") && lower.contains("capture") {
+        return Err(
+            "Unlock B grant.pilot_command refused: native-component capture is pass_component_hosted only (run 42479169280); not hosted gateway H2 product-binding; never invent product_binding from observe_h2"
+                .into(),
+        );
+    }
+    if lower.contains("humanymous-lab-runner") || lower.contains("lab-runner") {
+        let feeder = ["--browser-product", "--collector", "--mount-probe", "--authority-node-ipc"]
+            .iter()
+            .any(|flag| lower.contains(flag));
+        let require_full = lower.contains("--require-full");
+        if feeder && require_full {
+            return Err(
+                "Unlock B grant.pilot_command refused: lab-runner feeder --require-full Cap spam is not W2 H2 product-binding; Root must name hosted gateway binding argv"
+                    .into(),
+            );
+        }
+    }
+    Ok(())
+}
+
 fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Result<()> {
     let expected_schema = unlock.grant_schema();
     if grant.get("schema").and_then(Value::as_str) != Some(expected_schema) {
@@ -685,6 +716,7 @@ fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Resu
                     .into(),
             );
         }
+        refuse_forbidden_unlock_b_pilot_command(pilot)?;
     }
     if unlock == UnlockLetter::A {
         let release = grant
@@ -947,6 +979,24 @@ mod tests {
                 .exists()
         );
         let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn unlock_b_grant_refuses_capture_component_pilot_command() {
+        let err = refuse_forbidden_unlock_b_pilot_command(
+            "cargo run --locked -p humanymous-delivery -- native-component capture",
+        )
+        .expect_err("capture refused");
+        assert!(err.to_string().contains("native-component capture"));
+        let err = refuse_forbidden_unlock_b_pilot_command(
+            "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --collector --require-full",
+        )
+        .expect_err("feeder require-full refused");
+        assert!(err.to_string().contains("feeder"));
+        refuse_forbidden_unlock_b_pilot_command(
+            "root-named-hosted-gateway-h2-product-binding-pilot",
+        )
+        .expect("non-forbidden Root argv accepted without inventing allowlist");
     }
 
     #[test]

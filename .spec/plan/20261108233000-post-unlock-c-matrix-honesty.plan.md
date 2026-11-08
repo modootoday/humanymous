@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap-ready probe (Cap=0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T14:45:00Z
+updated: 2026-11-08T14:55:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -73,19 +73,23 @@ Tracked: this plan.
 
 ## 5. Residual / next
 
-Unlock **B** one-grant-apply scaffolding remains Cap-ready
-(`unlock_b_preimage_ready=true`) but **blocked**: documented hosted gateway H2
-product-binding `pilot_command` was **not found** (search receipt
-`…/20261108233000-cursor-post-c-closer/PILOT-COMMAND-SEARCH.json`). Capture run
-`42479169280` stays `pass_component_hosted` only — forbidden as product-binding
-argv (COMMANDS.md §2). Never invent folklore pilot argv. Cap burn=0.
+Unlock **B** Cap-ready pack remains blocked on Root-named `GRANT.pilot_command`.
+Re-search @ tip `98f001b1`: **no** code-defined lab-runner/runtime Cap flag for
+hosted H2 product-binding (selectors remain collector/browser/go/mount/authority
+only). Cap burn=0.
 
-Unlock **A** L2 residual taken this turn: lab-runner transfer applicator now
-recognizes unlock=`A` fail-closed (`entries: []` ⇒ `unlock_a_preimage_ready=false`;
-empty destinations refuse; writes `UNLOCK-A-APPLIED` only after real candidates).
-Still **not Cap-executable** without Root path release.
+Landed Cap=0 shorteners (this turn):
 
-Root: fill Unlock B `GRANT.pilot_command` (hosted gateway H2 product-binding Cap
-argv) → transfer-apply → Cap=1 once; else Unlock A path release + non-empty
-destinations. Cap free now. No `--authority-node-ipc` Cap spam reburn.
+1. `refuse_forbidden_unlock_b_pilot_command` — fail-closed refuse of documented
+   capture `native-component capture` and lab-runner feeder `--require-full`
+   shapes (COMMANDS.md §2 / harness `forbidden_reburns`).
+2. `unlock-probe` `w2_h2_cap_cli` — when `UNLOCK-B-APPLIED` carries Root
+   `pilot_command`, status=`bound` and echoes that exact argv for Cap=1; never
+   invents a Cap selector.
+3. G5 matrix summary honesty — runtime/witness require_full summary cells match
+   combinations (`pass_component_desktop`); M3 Desktop summary cells
+   `required_unavailable` (not stale `unrun`).
+
+Root: fill Unlock B `GRANT.pilot_command` → transfer-apply → Cap=1 once using
+echoed `w2_h2_cap_cli.pilot_command`; else Unlock A path release. Cap free.
 product=0.
