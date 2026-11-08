@@ -408,7 +408,7 @@ mod tests {
             std::process::Command::new(std::env::current_exe().unwrap())
                 .args([
                     "--exact",
-                    "storage::wal::tests::process_lock_probe",
+                    "audit::storage::wal::tests::process_lock_probe",
                     "--ignored",
                 ])
                 .env("HUMANYMOUS_WAL_LOCK_PROBE", &dir),
