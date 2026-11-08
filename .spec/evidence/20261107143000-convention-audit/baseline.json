@@ -237,6 +237,15 @@
       "private_review_sha256": "9d7d428875d58be4c3336d4d3cf1543f02cd30d0b75b83d2146378356b1d39a8",
       "source_fix": "c3c2a6e67891b6a1ea816f712267c73fb06b4190",
       "source_fix_review_sha256": "96f3451de30b39bf14f89a365d36c35bcce0e8700081ce41d70fd62a53a76200"
+    },
+    {
+      "id": "CA-TOOLS-FEATURE-01",
+      "priority": "P1",
+      "owner": "Root",
+      "state": "CLOSED proposal-level missing report normal dependency; actual isolated normal report compilation remains OPEN",
+      "trigger": "qualification-report=[] omits Platform/testing used outside cfg(test) by legacy report parser",
+      "required_delta": "Explicit dep:humanymous-platform plus humanymous-platform/testing only; no attacker/Gateway broadening; isolated normal-only report check",
+      "actual_normal_compile": false
     }
   ],
   "evidence_references": {
@@ -2030,6 +2039,41 @@
     "unit": "446oldsource-target/440physical;143sourcehashes+446locations0issues;15bins;528newcollection candidates0selectorcollision;actualperOSsemanticlist unqualified",
     "inputs": "35rows/34paths exactqueue;35Gitpins+78readerhashes0issues; genericownershipdecisionRESOLVED",
     "remaining": "Final per-reader/caller/role-feature/unsafe/release/native identity/extracted closure and actualold/new inventories; newRoot279filemapreview pending",
+    "goal_complete": false
+  },
+  "tools_root_proposal_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-root-feature-review-001.json",
+        "sha256": "3748f9394cda33948f1c111ac2fbbb0c7f309682198a5923066bb054a912a695",
+        "bytes": 3119
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/origin-root-referrer-design-review-001.json",
+        "sha256": "996ecfd877a4a6023fa7e5e28dab4d0984a5615bfd601b0f5fb350ffebdb5218",
+        "bytes": 2241
+      }
+    ],
+    "files": "279trackedexact; sourcehash/bytes/Gitobject/modesmatch; onlyintentionalmanifest/ignoremerges; noRustdestinationcollision",
+    "features": "P1reportPlatform/testingomissioncorrectedproposalonly;17keys; finalnormal/profile/unsafe/releaseproofOPEN",
+    "origin": "Conditionalroot-onlyRefererprivacyamendment;strictserverandalltransportconstraintsretained; actualbrowsercausality/successunproven",
+    "goal_complete": false
+  },
+  "sgd_and_origin_source_followup": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/sgd-source-review-001.json",
+        "sha256": "ca1b7dfedd9f105bfe987c887896e37c74dcea1ee6de338ab8333a5522660476",
+        "bytes": 2668
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/collector-origin-root-source-review-002.json",
+        "sha256": "694f7de6ba5907469bbba6961a2f65f79689f1ee50dfc5ae0203468a56aea8d5",
+        "bytes": 1032
+      }
+    ],
+    "sgd": "c9ba source-only noP0P1; temporary narrow expect conditionalRootexception; P2 ownership/explicitcleanup/errorcategories/boundaries requested; actual NOT qualified",
+    "origin": "fc9source/privacy/testmeaning reviewed; actualbrowser/mock/type/wire/causality NOT qualified",
     "goal_complete": false
   }
 }

@@ -2045,3 +2045,70 @@ Root solely owns OLD6LIB list-only allocation; audit launched no compiler or tes
 Actual relocated regressions/native/Docker/product qualification and complete
 migration remain OPEN. The new279-row Root file-map proposal is queued for
 independent source review; no relocation is accepted by this map review.
+
+## Root Tools relocation/feature proposal and Origin privacy review
+
+The279-row/13-context file-map proposal exactly covers the current tracked path
+set. All source sizes/SHA256/raw Git objects match observed9cb6e435; canonical
+Git objects also agree and all original modes are100644. Actions246Rust moves/
+13manifest merges/6resource moves/7owned-document moves/3identical-ignore merges/
+4conditional lock retirements account for every row. No case-fold destination
+collision exists outside the explicit manifest/identical /target/ merges. The
+layout_request support path is under src/qualification/tests/support. This map
+is not the outside-context supplements or complete relocation/execution freeze.
+
+P1 CA-TOOLS-FEATURE-01 was found before Cargo implementation: qualification-report
+was empty although its retained legacy/mod.rs normally imports Platform/testing
+decode_strict_json at9 and calls it at186. Development unification could hide
+that missing normal edge. Root corrected the private proposal to ONLY explicit
+Platform+testing, without attacker/Gateway activation; original/corrected raw
+proposals are retained. The proposal omission is CLOSED; actual isolated normal
+report compilation remains OPEN. Other inspected role edges match originals,
+with17 public feature keys/default empty and original production native-security/
+Windowsservice dependencies. Final versions/subfeatures/OS cfg and crate-root
+unsafe/negative/release/native-role controls are not qualified by this read.
+Current CLI qualification->facade->Go->Runtime is acyclic; final facade/Adapters
+normal/build/optional/target declarations must not point back to CLI.
+
+A Root-requested client-only origin-root referrer experiment was source-reviewed
+conditionally: it explicitly changes prior suppress-all-Referer privacy. Only
+canonical same-origin root may be used, never document path/query/fragment or
+ambient/client fallback. Keep mode/credentials/redirect/cache/signing/ACK/bounds/
+deadlines and reserved Origin/Referer rejection unchanged; no server fallback,
+CORS or scoring change. Real-Request/mockFetch must check root-only values for
+bootstrap/effect and exclude a sensitive document URL. The [Fetch Standard](https://fetch.spec.whatwg.org/#append-a-request-origin-header)
+does not prove the deployment browser causal hypothesis. Actual browser/Docker
+wire observations remain required; no implementation or success was accepted.
+The new5d68 terminal result reported by Root/Lab is not independently re-audited
+by this design read.
+
+Audit launched no compiler/test/browser/native action. Root OLD6LIB completion,
+SGD c9ba source/lint review and matched benchmark evidence remain review queue
+items, not results silently promoted by these proposal checks. Whole migration
+qualification stays OPEN.
+
+## SGD source and committed client experiment follow-up
+
+All four c9ba2d24 SGD Rust sources were read; no concrete P0/P1 numerical/cap/
+admission defect was identified. The narrow non-test dead_code expectation on
+private sgd may be an explicit temporary Root exception until a genuine offline
+composition caller; test-build warnings and unrelated modules stay unaffected.
+No fake caller/public export or production integration completion is accepted.
+P2 cleanup correction was requested: the test pilot Drop deletes four fixed
+names without tracking successful ownership and ignores cleanup errors. Track
+owned creations/partial obligations, preserve foreign collisions and assert an
+explicit finish outcome. Specific negative error categories, sigmoid finite-
+negative saturation and128/129version boundaries also need meaningful controls
+before complete pilot qualification. The12 authored cases are not actual passes.
+
+Committed fc9ad67f client diff matches the reviewed origin-root privacy change.
+MockFetch checks root/cache for bootstrap/effect. The real-Request URL fixture
+sets a sensitive document path/query/fragment, captures both Requests and restores
+original history state+URL before unwrapping observations/assertions. SoT explicitly
+changes no-Referer privacy to root-only and retains fail-closed UA suppression.
+No additional source P0/P1 was identified. WASM type/mock/browser/network execution,
+causality of prior null and full product remain unqualified by this source review.
+
+Audit launched no compiler/test/browser/native action. New Root list-only186-name
+receipt and matched performance result still require independent raw review;
+their reported success is not silently promoted here.
