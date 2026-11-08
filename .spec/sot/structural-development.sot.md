@@ -258,6 +258,24 @@ Earlier receipts remain unchanged; source transformation is not byte preservatio
 or proof of semantic equivalence. The newer tree requires fresh source-bound
 qualification and cannot inherit the historical1765-file maintenance receipt.
 
+Audit found the package-level deny did not enforce the accepted forbid policy on
+13 other safe compiled roots. Root added explicit forbid(unsafe_code) to the
+isolated library, primary binary, ten integration roots and example. The27-target
+layout now has26 safe forbid roots and the one native-runner deny root, preserving
+its two existing actor allowances. Per-root injected forbidden-unsafe compile
+negative controls remain required; source attributes alone do not execute them.
+
+To preserve former portable library unit collection, Root admits the Runtime
+qualification support contexts under cfg(any(unix,test)); normal unsupported
+Windows Runtime execution remains the original fallback. First discovery exposed
+a missing network contract matches import after the split; Root corrected that
+private import. The next Windows list-only invocation discovered30 cases,
+including former replay/verifier, network accounting and Defender library cases
+plus four Runtime-pilot cases. No cases were executed by that invocation. Three
+unused actual-provider methods/helpers remain in this Windows test composition;
+their scope needs explicit refinement before strict qualification, without
+suppressing the retained portable cases or pretending Unix actor execution.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
