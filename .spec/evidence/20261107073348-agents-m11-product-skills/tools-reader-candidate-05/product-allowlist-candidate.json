@@ -1,0 +1,124 @@
+{
+  "schema": "humanymous.stage-eval-source.v1",
+  "repo_root": "__FROZEN_CANONICAL_ROOT__",
+  "source_commit": "5f1010d42f4938ed2ea30ce2e84945af7aedb180",
+  "kind": "product",
+  "input_selection_complete": true,
+  "expected_skill_names": [
+    "humanymous"
+  ],
+  "files": [
+    {
+      "path": ".agents/evals/product/install-plan/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 588,
+      "sha256": "27778c7b635704c1b59c009cb9bf0a5f1ed50f9a02860db8165295cf1a19b918"
+    },
+    {
+      "path": ".agents/evals/product/install-plan/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 220,
+      "sha256": "4ecb2418417b340327ee0d690ef63a20a2f51e139ab7af648c1d3c1fdc5e1703"
+    },
+    {
+      "path": ".agents/evals/product/install-plan/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 478,
+      "sha256": "a3742b2f23565950eefb029e62dad17438b153f582423c4ae2ed7407f2d91e1a"
+    },
+    {
+      "path": ".agents/evals/product/readiness/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 574,
+      "sha256": "c664c3a7d68170543d406176b74773536f0c8c54d86f4794aaffeb09e70ddfe5"
+    },
+    {
+      "path": ".agents/evals/product/readiness/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 156,
+      "sha256": "b02d9c32282ab3d30f13191fbec92cd60f5debe49612419042b0913fecd3fd80"
+    },
+    {
+      "path": ".agents/evals/product/readiness/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 434,
+      "sha256": "8cba333c6373430c2c70c632c2c9c4960cce999b1e2c207243fed9beee92a9a2"
+    },
+    {
+      "path": ".agents/evals/product/README.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1469,
+      "sha256": "255662f752a22e02002f56b424ca582b3f2336efd4a604108a04c15541b10c87"
+    },
+    {
+      "path": ".agents/evals/product/unrelated-ui/graders/behavior.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 346,
+      "sha256": "f853c217ad8f3f63f525adc521b6cef8690f90b8973858f03f94afd96f55f9aa"
+    },
+    {
+      "path": ".agents/evals/product/unrelated-ui/graders/discovery.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 180,
+      "sha256": "829abafca6c0d0fa3a6a993050e72e01b2cec3d54a6a7735fb0961b0a00820da"
+    },
+    {
+      "path": ".agents/evals/product/unrelated-ui/prompt.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 316,
+      "sha256": "a806ce976d27df341a390a8f5af15fc634acc4136d5e9a8b7576d601633837fe"
+    },
+    {
+      "path": "LICENSE",
+      "owner": "repository",
+      "presence": "required",
+      "bytes": 11353,
+      "sha256": "28153ab6c3197253563f1ae0932a89a758d2d0f9c667d59da2e41c01c9cbfeb1"
+    },
+    {
+      "path": "skills/references/adapters.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2746,
+      "sha256": "6e2cc2ad417c8d441df6a8ccac9f891c464b89554b7dfc2e21629d3572ee366d"
+    },
+    {
+      "path": "skills/references/installation.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2658,
+      "sha256": "d61688100b9c0db630306ab0f9a27fd490b8ac1780131f88352fb13379e68c6d"
+    },
+    {
+      "path": "skills/references/operations.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2205,
+      "sha256": "015642b84019e645684372330547d24b487eef9882b372cf8eee5054b5ef100c"
+    },
+    {
+      "path": "skills/references/qualification.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 1677,
+      "sha256": "85ba9bf8901016fc4bb970de693e15d71825ceb1a961e44ee5964b0e5f5e7eff"
+    },
+    {
+      "path": "skills/SKILL.md",
+      "owner": "agents-meta",
+      "presence": "required",
+      "bytes": 2628,
+      "sha256": "3a07cf4c5a312e2863c8d0190025099175779937435829a8c38d83b8b3fb2654"
+    }
+  ]
+}

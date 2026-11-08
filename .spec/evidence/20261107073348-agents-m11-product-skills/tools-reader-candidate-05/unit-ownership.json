@@ -1,0 +1,32 @@
+{
+  "schema": "humanymous.stage-materializer-unit-ownership.v1",
+  "status": "STATIC_ONLY_NOT_RUN",
+  "old_root_actual_list_cases_still_required": 97,
+  "old_integration_ids_still_required": 33,
+  "old_filesystem_provider_cases_still_required": 10,
+  "preserved_files": [
+    {
+      "source": "package_selection.rs",
+      "preserved_test_function_ids": [
+        "fixed_eval_case_and_grader_closure_is_required",
+        "another_profile_or_executable_is_not_a_stage_resource",
+        "false_completeness_unknown_fields_and_aliases_refuse",
+        "tighter_caps_and_duplicate_json_keys_remain_failures"
+      ]
+    },
+    {
+      "source": "package_stage.rs",
+      "preserved_test_function_ids": []
+    },
+    {
+      "source": "command.rs",
+      "preserved_test_function_ids": []
+    }
+  ],
+  "new_pure_unit_ids": [
+    "maintenance_command::package_materialize::tests::changed_license_is_refused_without_refresh_or_normalization",
+    "maintenance_command::package_materialize::tests::duplicate_or_unknown_allowlist_fields_still_refuse",
+    "maintenance_command::package_materialize::tests::root_binding_is_exact_and_does_not_guess_an_unrelated_checkout",
+    "maintenance_command::package_materialize::tests::reviewed_marker_binds_explicit_root_without_changing_pins"
+  ]
+}

@@ -1,0 +1,294 @@
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/package_selection.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/package_selection.rs
+index 97393be1..1708fd15 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/package_selection.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/package_selection.rs
+@@ -1,13 +1,13 @@
+ //! Fixed skill/evaluation staging input contract; no filesystem or source authority.
+ use crate::maintenance::selected_inputs::{FrozenSelection, Input, Limits, Root};
+-use serde::Deserialize;
++use serde::{Deserialize, Serialize};
+ use std::{collections::BTreeSet, path::PathBuf};
+ 
+ pub const MAX_REQUEST: u64 = 2 * 1024 * 1024;
+ pub const MAX_TEXT: u64 = 8 * 1024 * 1024;
+ pub const MAX_INPUTS: usize = 510; // Two generated metadata files keep output <=512.
+ 
+-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq)]
++#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
+ #[serde(rename_all = "lowercase")]
+ pub enum Kind {
+     Product,
+@@ -39,7 +39,7 @@ impl Kind {
+         }
+     }
+ }
+-#[derive(Debug, Deserialize)]
++#[derive(Debug, Deserialize, Serialize)]
+ #[serde(deny_unknown_fields)]
+ pub struct Request {
+     pub schema: String,
+@@ -50,7 +50,7 @@ pub struct Request {
+     pub expected_skill_names: Vec<String>,
+     pub files: Vec<Pin>,
+ }
+-#[derive(Debug, Deserialize)]
++#[derive(Debug, Deserialize, Serialize)]
+ #[serde(deny_unknown_fields)]
+ pub struct Pin {
+     pub path: String,
+@@ -78,6 +78,17 @@ pub fn cap(path: &str) -> u64 {
+     }
+ }
+ 
++/// Compare raw bytes before any parsing or rewriting; shared by staging and
++/// request materialization so changed legal bytes cannot be silently repinned.
++pub fn verify_pin(pin: &Pin, captured: &[u8]) -> Result<String, &'static str> {
++    use sha2::{Digest, Sha256};
++    let sha256 = format!("{:x}", Sha256::digest(captured));
++    if captured.len() as u64 != pin.bytes || sha256 != pin.sha256 {
++        return Err("stage_captured_source_mismatch");
++    }
++    Ok(sha256)
++}
++
+ pub fn decode(bytes: &[u8]) -> Result<Request, &'static str> {
+     if bytes.len() as u64 > MAX_REQUEST {
+         return Err("stage_request_size");
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/package_stage.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/package_stage.rs
+index 27b17a25..ef5e2b79 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/package_stage.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/package_stage.rs
+@@ -1,6 +1,6 @@
+ //! Bounded explicit skill/eval staging; no ambient inventory or source authentication.
+ #[path = "package_selection.rs"]
+-mod selection;
++pub(super) mod selection;
+ use crate::maintenance::{
+     inventory,
+     package::{self, Entry, Receipt, SourceReceipt},
+@@ -19,7 +19,7 @@ fn hash(bytes: &[u8]) -> String {
+     format!("{:x}", Sha256::digest(bytes))
+ }
+ 
+-fn output_path(repo: &Path, output: &Path) -> Result<PathBuf, Box<dyn std::error::Error>> {
++pub(super) fn output_path(repo: &Path, output: &Path) -> Result<PathBuf, Box<dyn std::error::Error>> {
+     if !output.is_absolute() || output.components().any(|c| matches!(c, Component::CurDir | Component::ParentDir))
+         || output.to_str().is_none_or(|s| s.len() > 4096 || s.chars().any(char::is_control))
+         || output.components().any(|c| matches!(c, Component::Normal(name) if [".agents", ".codex", ".claude", ".grok", ".gemini"].iter().any(|blocked| name.to_string_lossy().eq_ignore_ascii_case(blocked))))
+@@ -63,10 +63,7 @@ pub fn stage_request_file(
+         if actual > MAX_REQUEST + MAX_TEXT + MAX_INPUTS as u64 + 1 {
+             return Err("stage_actual_read_cap".into());
+         }
+-        let sha256 = hash(&captured);
+-        if captured.len() as u64 != pin.bytes || sha256 != pin.sha256 {
+-            return Err("stage_captured_source_mismatch".into());
+-        }
++        let sha256 = selection::verify_pin(pin, &captured)?;
+         let text = String::from_utf8(captured).map_err(|_| "stage_input_utf8")?;
+         if text.contains('\r') {
+             return Err("stage_input_non_lf".into());
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
+index 638710a8..ab5ad7e3 100644
+--- a/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/command.rs
+@@ -16,6 +16,9 @@ use std::{env, path::Path, process::ExitCode};
+ #[path = "package_stage.rs"]
+ mod package_stage;
+ 
++#[path = "package_materialize.rs"]
++mod package_materialize;
++
+ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+     match args.first().map(String::as_str) {
+         Some("local-skill-eval") if args.len() == 4 => {
+@@ -110,6 +113,14 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             sessions::storage::release(Path::new(&args[1]),&args[2],&args[3],&args[4],&args[5])?;
+             println!("{}",serde_json::json!({"schema":"humanymous.session-release.v1","released":true,"runtime_qualified":false}));Ok(true)
+         }
++        Some("prepare-stage-request") if args.len() == 7 => {
++            let receipt = package_materialize::materialize(
++                Path::new(&args[1]), &args[2], Path::new(&args[3]),
++                &args[4], &args[5], Path::new(&args[6]),
++            )?;
++            println!("{}", serde_json::to_string_pretty(&receipt)?);
++            Ok(true)
++        }
+         Some("stage-eval") if args.len() == 3 => {
+             let receipt = package_stage::stage_request_file(Path::new(&args[1]), Path::new(&args[2]))?;
+             println!("{}", serde_json::to_string_pretty(&receipt)?);
+@@ -136,7 +147,7 @@ fn run(args: &[String]) -> Result<bool, Box<dyn std::error::Error>> {
+             &args[4],
+         ),
+         _ => Err(
+-            "usage: agent-maintenance evidence-layout-plan REQUEST_JSON | windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check-request ABSOLUTE_REQUEST_JSON | check ROOT | routing ROOT | product-content-check-request ABSOLUTE_REQUEST_JSON | thread-content-check-request ABSOLUTE_REQUEST_JSON | lane-content-check-request ABSOLUTE_REQUEST_JSON | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | stage-eval ABSOLUTE_REQUEST_JSON ABSOLUTE_NEW_OUTPUT | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
++            "usage: agent-maintenance evidence-layout-plan REQUEST_JSON | windows-doctor [--probe] | selected-inputs REQUEST_JSON | paired-check RESULT_JSON [product|developer] | language-check-request ABSOLUTE_REQUEST_JSON | check ROOT | routing ROOT | product-content-check-request ABSOLUTE_REQUEST_JSON | thread-content-check-request ABSOLUTE_REQUEST_JSON | lane-content-check-request ABSOLUTE_REQUEST_JSON | session-list ROOT | session-claim ROOT REQUEST_JSON_FILE | session-release ROOT LANE PROVIDER SESSION NOTE | prepare-stage-request ABS_ALLOWLIST REVIEWED_SHA256 ABS_FROZEN_ROOT EXPECTED_SOURCE_COMMIT product|developer ABS_NEW_REQUEST | stage-eval ABSOLUTE_REQUEST_JSON ABSOLUTE_NEW_OUTPUT | normalize ROOT | observe-skills PATH | eval ROOT CLI NEW_OUTPUT SUITE"
+                 .into(),
+         ),
+     }
+diff --git a/crates/apps/humanymous-cli/src/qualification/maintenance/package_materialize.rs b/crates/apps/humanymous-cli/src/qualification/maintenance/package_materialize.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/apps/humanymous-cli/src/qualification/maintenance/package_materialize.rs
+@@ -0,0 +1,162 @@
++//! Explicit reviewed-allowlist materialization, not source or provider authentication.
++use super::package_stage::{output_path, selection};
++use crate::maintenance::selected_inputs::{Clock, Limits, SystemClock, capture_source_file};
++use serde::Serialize;
++use sha2::{Digest, Sha256};
++use std::{fs::OpenOptions, io::Write, path::{Path, PathBuf}};
++
++const ROOT_BINDING: &str = "__FROZEN_CANONICAL_ROOT__";
++const MAX_READ: u64 = 2 * selection::MAX_REQUEST + selection::MAX_TEXT + selection::MAX_INPUTS as u64 + 2;
++
++#[derive(Serialize)]
++pub struct Receipt {
++    pub schema: &'static str,
++    pub kind: String,
++    pub reviewed_allowlist_sha256: String,
++    pub reviewed_root: PathBuf,
++    pub repo_root: PathBuf,
++    pub declared_source_commit: String,
++    pub request_path: PathBuf,
++    pub request_sha256: String,
++    pub request_bytes: usize,
++    pub inputs: Vec<selection::Pin>,
++    pub actual_read_bytes: u64,
++    pub elapsed_micros: u128,
++    pub raw_pins_match_review: bool,
++    pub materialization_complete: bool,
++    pub canonical_tree_complete: bool,
++    pub source_commit_verified: bool,
++    pub owner_identity_verified: bool,
++    pub provider_identity_qualified: bool,
++    pub qualified_complete: bool,
++    pub staging_executed: bool,
++    pub identity_status: &'static str,
++}
++
++fn hash(bytes: &[u8]) -> String { format!("{:x}", Sha256::digest(bytes)) }
++
++/// Deserialize with the EXISTING strict type, then bind only an explicit reviewed
++/// marker or an already identical root. All remaining validation uses decode.
++fn bind_reviewed(
++    bytes: &[u8], frozen_root: &Path, source_commit: &str, kind: &str,
++) -> Result<(selection::Request, PathBuf), &'static str> {
++    if bytes.len() as u64 > selection::MAX_REQUEST { return Err("materialize_allowlist_cap"); }
++    let mut request: selection::Request = serde_json::from_slice(bytes)
++        .map_err(|_| "materialize_allowlist_json")?;
++    let reviewed_root = request.repo_root.clone();
++    if reviewed_root != Path::new(ROOT_BINDING) && reviewed_root != frozen_root {
++        return Err("materialize_unreviewed_root_rebind");
++    }
++    if request.source_commit != source_commit || request.kind.name() != kind {
++        return Err("materialize_epoch_or_kind_mismatch");
++    }
++    request.repo_root = frozen_root.to_path_buf();
++    let bound = serde_json::to_vec(&request).map_err(|_| "materialize_request_json")?;
++    let validated = selection::decode(&bound)?;
++    Ok((validated, reviewed_root))
++}
++
++/// Caller supplies a review-pinned allowlist and explicit frozen extraction.
++/// Changed input bytes, including LICENSE, fail; there is no repin/retry branch.
++pub fn materialize(
++    allowlist: &Path, reviewed_sha256: &str, frozen_root: &Path,
++    source_commit: &str, kind: &str, new_request: &Path,
++) -> Result<Receipt, Box<dyn std::error::Error>> {
++    let mut clock = SystemClock::default();
++    let (allowlist_bytes, allowlist_read) = capture_source_file(allowlist, selection::MAX_REQUEST, &mut clock)?;
++    let allowlist_sha256 = hash(&allowlist_bytes);
++    if allowlist_sha256 != reviewed_sha256 { return Err("materialize_review_hash_mismatch".into()); }
++    let (mut request, reviewed_root) = bind_reviewed(&allowlist_bytes, frozen_root, source_commit, kind)?;
++    let destination = output_path(&request.repo_root, new_request)?;
++    let mut actual = allowlist_read.actual_read_bytes;
++    for pin in &mut request.files {
++        let (captured, read) = capture_source_file(
++            &request.repo_root.join(&pin.path), pin.bytes.max(1), &mut clock,
++        )?;
++        actual = actual.checked_add(read.actual_read_bytes).ok_or("materialize_read_overflow")?;
++        if actual > MAX_READ { return Err("materialize_read_cap".into()); }
++        // Derive the outgoing raw pin ONLY after matching the reviewed expectation.
++        // Never normalize license/text bytes or replace a mismatching expectation.
++        let sha256 = selection::verify_pin(pin, &captured)?;
++        pin.bytes = captured.len() as u64;
++        pin.sha256 = sha256;
++    }
++    let mut outgoing = serde_json::to_vec_pretty(&request)?;
++    outgoing.push(b'\n');
++    if outgoing.len() as u64 > selection::MAX_REQUEST { return Err("materialize_request_cap".into()); }
++    // Reuse the same strict parser for exactly the bytes that will be staged.
++    selection::decode(&outgoing)?;
++    if clock.elapsed() >= Limits::default().max_elapsed { return Err("materialize_deadline".into()); }
++    let mut file = OpenOptions::new().write(true).create_new(true).open(&destination)?;
++    file.write_all(&outgoing)?;
++    file.sync_all()?;
++    drop(file);
++    let (read_back, read) = capture_source_file(&destination, outgoing.len() as u64, &mut clock)?;
++    actual = actual.checked_add(read.actual_read_bytes).ok_or("materialize_read_overflow")?;
++    if actual > MAX_READ || read_back != outgoing || clock.elapsed() >= Limits::default().max_elapsed {
++        return Err("materialize_readback_or_budget".into());
++    }
++    let request_sha256 = hash(&read_back);
++    Ok(Receipt {
++        schema: "humanymous.stage-request-materialization.v1",
++        kind: request.kind.name().into(), reviewed_allowlist_sha256: allowlist_sha256,
++        reviewed_root, repo_root: request.repo_root, declared_source_commit: request.source_commit,
++        request_path: destination, request_sha256, request_bytes: read_back.len(), inputs: request.files,
++        actual_read_bytes: actual, elapsed_micros: clock.elapsed().as_micros(),
++        raw_pins_match_review: true, materialization_complete: true,
++        canonical_tree_complete: false, source_commit_verified: false,
++        owner_identity_verified: false, provider_identity_qualified: false,
++        qualified_complete: false, staging_executed: false,
++        identity_status: "unsupported_source_identity; review-hash and selected raw-byte matches only",
++    })
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    #[test]
++    fn changed_license_is_refused_without_refresh_or_normalization() {
++        let original = b"Reviewed license\n";
++        let pin = selection::Pin { path: "LICENSE".into(), owner: "repository".into(),
++            presence: "required".into(), bytes: original.len() as u64, sha256: hash(original) };
++        assert_eq!(selection::verify_pin(&pin, original).unwrap(), pin.sha256);
++        assert!(selection::verify_pin(&pin, b"Reviewed license\r\n").is_err());
++        assert!(selection::verify_pin(&pin, b"reviewed license\n").is_err());
++        assert_eq!(pin.sha256, hash(original));
++        assert_eq!(pin.bytes, original.len() as u64);
++    }
++    #[test]
++    fn duplicate_or_unknown_allowlist_fields_still_refuse() {
++        let root = std::env::temp_dir();
++        assert!(bind_reviewed(br#"{"schema":"x","schema":"y"}"#, &root, "a", "product").is_err());
++        assert!(bind_reviewed(br#"{"unexpected":"PRIVATE_SENTINEL"}"#, &root, "a", "product").is_err());
++    }
++    #[test]
++    fn root_binding_is_exact_and_does_not_guess_an_unrelated_checkout() {
++        let value = serde_json::json!({"schema":"humanymous.stage-eval-source.v1",
++            "repo_root":"__UNREVIEWED_OTHER_ROOT__", "source_commit":"a".repeat(40), "kind":"product",
++            "input_selection_complete":true,"expected_skill_names":["fixture"],"files":[]});
++        let error = bind_reviewed(&serde_json::to_vec(&value).unwrap(), &std::env::temp_dir(), &"a".repeat(40), "product").unwrap_err();
++        assert_eq!(error, "materialize_unreviewed_root_rebind");
++    }
++    #[test]
++    fn reviewed_marker_binds_explicit_root_without_changing_pins() {
++        let mut paths = vec!["LICENSE".to_owned(), "skills/SKILL.md".into(), ".agents/evals/product/README.md".into()];
++        for case in selection::Kind::Product.cases() {
++            for tail in ["prompt.md", "graders/behavior.md", "graders/discovery.md"] {
++                paths.push(format!(".agents/evals/product/{case}/{tail}"));
++            }
++        }
++        let value = serde_json::json!({"schema":"humanymous.stage-eval-source.v1",
++            "repo_root":ROOT_BINDING,"source_commit":"a".repeat(40),"kind":"product",
++            "input_selection_complete":true,"expected_skill_names":["fixture"],
++            "files":paths.iter().map(|path|serde_json::json!({"path":path,
++                "owner":if path=="LICENSE" {"repository"} else {"agents-meta"},
++                "presence":"required","bytes":0,"sha256":hash(b"")})).collect::<Vec<_>>()});
++        let root = std::env::temp_dir();
++        let (request, reviewed_root) = bind_reviewed(&serde_json::to_vec(&value).unwrap(), &root, &"a".repeat(40), "product").unwrap();
++        assert_eq!(request.repo_root, root);
++        assert_eq!(reviewed_root, Path::new(ROOT_BINDING));
++        assert!(request.files.iter().all(|pin| pin.sha256 == hash(b"") && pin.bytes == 0));
++    }
++}

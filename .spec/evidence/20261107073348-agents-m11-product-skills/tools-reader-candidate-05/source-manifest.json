@@ -1,0 +1,84 @@
+{
+  "schema": "humanymous.stage-materializer-candidate-05.v1",
+  "basis": "three observed Root-isolated source files after candidate04 admission; .base hashes are preimage authority",
+  "status": "NOT_COMPILED_NOT_EXECUTED_NOT_INTEGRATED",
+  "owner_review_status": "PENDING_ROOT_REVIEW",
+  "root_source_edited": false,
+  "compiler_or_native_executed": false,
+  "old_root_actual_cases_still_required": 97,
+  "old_integration_ids_still_required": 33,
+  "new_pure_materializer_cases": 4,
+  "outside_canonical_closure_gate_required": true,
+  "source_authentication": "UNSUPPORTED",
+  "coordinator_canon_changed": false,
+  "legal_pin_preserved": {
+    "bytes": 11353,
+    "sha256": "28153ab6c3197253563f1ae0932a89a758d2d0f9c667d59da2e41c01c9cbfeb1"
+  },
+  "delivery_env": {
+    "product": "HUMANYMOUS_MAINTENANCE_PRODUCT_STAGE_REQUEST",
+    "developer": "HUMANYMOUS_MAINTENANCE_DEVELOPER_STAGE_REQUEST"
+  },
+  "files": [
+    {
+      "path": "candidate.patch",
+      "bytes": 16620,
+      "sha256": "9c3d0ccea3a6d25be76c7c8e956353ccb8dfc5c1a5a042029965d15a264bc7a1"
+    },
+    {
+      "path": "command.rs",
+      "bytes": 8427,
+      "sha256": "87287f0fd9115b0edcb4e10697931eadde7bb10691e0b4a6cc3c9e320c5121b1"
+    },
+    {
+      "path": "command.rs.base",
+      "bytes": 7876,
+      "sha256": "fbfe8759e4e8c0bf50ec654c1a6297e2401983287def217db8c4849d9239e08c"
+    },
+    {
+      "path": "developer-allowlist-candidate.json",
+      "bytes": 10375,
+      "sha256": "a41fb1e6654b4750ff74ba3544722076997108bbf6a941495385d00b065bd8eb"
+    },
+    {
+      "path": "package_materialize.rs",
+      "bytes": 8743,
+      "sha256": "deaef8e87a8d6b0375541747db13ceda24b378b11a7ce7b397ee300dc358a3f5"
+    },
+    {
+      "path": "package_selection.rs",
+      "bytes": 9065,
+      "sha256": "da4756b46de121a79c2c057385173f698997b3774a13139dc2166a299cdff1bb"
+    },
+    {
+      "path": "package_selection.rs.base",
+      "bytes": 8544,
+      "sha256": "2e75cad25c69a225aa7378b188808e563ede4c937e2212a78049644691f11eb1"
+    },
+    {
+      "path": "package_stage.rs",
+      "bytes": 6137,
+      "sha256": "a8572146a3b3cd942aa71d1a2ba6db05bbb51a5a38446fd097e34201bc17edec"
+    },
+    {
+      "path": "package_stage.rs.base",
+      "bytes": 6239,
+      "sha256": "9ab8a5c4de56a28352dbc3e77f3f17098a3c0fe10a898d3c7c06c1193b993d28"
+    },
+    {
+      "path": "product-allowlist-candidate.json",
+      "bytes": 4022,
+      "sha256": "58df7cc9d3d27d89fac1eea1a89450a98d5ec4c6dda8ef6ff45847a62eb33423"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7906,
+      "sha256": "559aa1da2563cc0b008392f021913e5b19cb93cb648abb124c971479dab2acfa"
+    },
+    {
+      "path": "unit-ownership.json",
+      "bytes": 1284,
+      "sha256": "d368968a923a76ab425295d311147abc9a677b5016c3e298b3a1c41e7a04368b"
+    }
+  ]
+}
