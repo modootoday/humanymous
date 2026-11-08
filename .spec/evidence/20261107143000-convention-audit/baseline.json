@@ -2745,5 +2745,17 @@
     "sha256": "98ca63e2fdfc821cb8a0b9848761d91d25032a0494d8019e379919d9cf4cc47c",
     "bytes": 2260,
     "goal_complete": false
+  },
+  "script_invocation_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/script-invocation-review-025.json",
+    "sha256": "53e64ef23e6536ca2923c6276e450c38ded0ddfb66a25856609253eefb9710fe",
+    "bytes": 1324,
+    "goal_complete": false
+  },
+  "branch_custody_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/branch-custody-review-026.json",
+    "sha256": "327609ddc930627e9f6863a61204b614a75826c3b2c1c13a2226b391fddf1707",
+    "bytes": 1788,
+    "goal_complete": false
   }
 }

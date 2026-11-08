@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 2426918301c34e5eec5f662fdfeead64732dd0ed6a130cb6450a6275e9265f58, bytes: 153388, store: repo}
+  - {path: baseline.json, sha256: 935ed9e1a84ac77c206719c37f7f1ef76e2d4861385cbedce66007ed157bce4c, bytes: 153930, store: repo}
 ---
 
 # Convention audit baseline
@@ -3045,3 +3045,19 @@ strict success was observed by this audit at this source checkpoint. Existing
 build/install lifetime gates remain. Private node-capture-preliminary-review-023.json
 and node-capture-source-review-024.json bind bounded source reads; full capture,
 host execution, ABI and CA-LIFETIME closure remain OPEN.
+Mandatory shared-branch policy: verify actual branch codex/rust in
+C:/workspaces/humanymous before every write. Do not create/switch branches,
+create worktrees, push or delete refs. Root owns common Cargo/lock/toolchain and
+final source application; isolated primary source remains read-only to audit.
+Continue exact owned audit paths and serial attributed git-ops only. No new
+compiler/native/runtime/Docker/SDK workload is authorized for this audit.
+
+Actual direct custody recheck finds46baseline private-report references with
+0missing/hash/size mismatches. Node capture candidate inventory is exactly5files:
+all5postimage hashes/sizes and5patch hashes match;2existing preimage hashes/sizes
+match and3new files have no preimage. This does not establish transitive execution
+input custody. Private branch-custody-review-026.json binds this observation.
+Additional8script-invocation indicator sites resolve to Git configuration1,
+.NET Release configuration2 and nginx configuration5, not script bodies. Private
+script-invocation-review-025.json records source hashes and discarded prefix/
+extension false positives; no complete foreign-code conformance is claimed.
