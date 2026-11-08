@@ -3,7 +3,7 @@ id: sot:root/cross-os-runners
 title: Cross OS runner qualification and infrastructure research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-07T05:56:42Z
+updated: 2026-11-08T16:12:00Z
 verify: manual
 rel:
   depends_on: [sot:root/delivery, sot:root/adapter-ecosystem]
@@ -11,9 +11,21 @@ rel:
 
 # Cross OS runner qualification
 
-Document version: 0.4.0. Research checked 2026-11-07 KST. Accepted execution
+Document version: 0.4.1. Research checked 2026-11-07 KST; audit Cargo selectors
+remeasured 2026-11-08 against the live 29-member workspace. Accepted execution
 design; remote results must be attached separately. This does not certify the
 unfinished Rust runtime or change detection scoring.
+
+## Live audit package selectors (measured 2026-11-08)
+
+Audit is not package `humanymous-audit`. Workspace member `humanymous-runtime`
+owns feature `audit` and named integration tests `audit-key-custody`,
+`audit-durable-witness`, and `audit-key-backups` under
+`crates/sdk/humanymous-runtime/tests/audit/`. Historical
+`package#humanymous-audit@,targetkey_custody` wording below is obsolete; use
+`package#humanymous-runtime@` with the live `audit-*` test target names.
+Evidence: `.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
+Component/unit success is not Docker product e2e success.
 
 ## Problem and decision
 
@@ -477,8 +489,9 @@ metadata, covers their Rust/manifests/lock inputs plus this isolated runner and
 root toolchain/manifest/lock, and checks expected runner
 architecture against the actual compiled native executable architecture.
 
-Only audit package#humanymous-audit@,targetkey_custody,kind[test] may classify the
-existing two named ignored subprocess entrypoints. Exact rawignored names are
+Only audit package#humanymous-runtime@,targetaudit-key-custody,kind[test]
+(required-features=[audit]) may classify the existing two named ignored
+subprocess entrypoints. Exact rawignored names are
 child_lock_probe/child_interrupted_writer. Parent cases competing_process_cannot_
 load_or_create and process_exit_releases_lock_and_rotation_pending_requires_recovery
 must each actually pass; child_lock_probe actual nested pass must appear. Exactly
@@ -497,11 +510,12 @@ Workspace initial compile failed for missing CMake PATH. Existing Rust cef-pilot
 toolchain discovery supplied a process-local PATH without disabling sandboxing;
 retry discovered73 harnesses and executed10, then failed exact unknown ignored
 child_witness_probe in audit durable_witness. Its nested summary is preserved.
-Audit owner is preparing captured subprocess output/assertions for durable_witness
-and key_backups. The accepted next contract is limited to audit kind[test]:
-durable_witness helper child_witness_probe with parent
-witness_process_lifetime_and_interrupted_recovery; key_backups helper
-child_retire_without_pin_acknowledgement with parent
+Audit owner is preparing captured subprocess output/assertions for
+audit-durable-witness and audit-key-backups. The accepted next contract is
+limited to audit package#humanymous-runtime@ kind[test]
+(required-features=[audit]): audit-durable-witness helper child_witness_probe
+with parent witness_process_lifetime_and_interrupted_recovery;
+audit-key-backups helper child_retire_without_pin_acknowledgement with parent
 crash_reconcile_preserves_consumed_authorization. Each requires exactly one raw
 ignored entry with that exact name, its exact parent actually passed, exit0,
 one summary with passed+1=discovered and failed/measured/filtered0. Parent captures

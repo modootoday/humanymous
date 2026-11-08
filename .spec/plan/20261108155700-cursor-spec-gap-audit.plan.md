@@ -3,7 +3,7 @@ id: plan:root/20261108155700
 title: Cursor spec gap audit against live Rust layout
 status: active
 created: 2026-11-08T15:57:00Z
-updated: 2026-11-08T16:08:00Z
+updated: 2026-11-08T16:12:00Z
 rel:
   depends_on: [sot:root/crate-architecture, sot:root/runtime-application, sot:root/adapter-authority, sot:root/structural-development, sot:root/audit-key-custody, sot:root/native-security, sot:root/resource-watermark]
 ---
@@ -39,9 +39,16 @@ documents as proposed deltas only.
 
 Closed under this plan: audit-key-custody / native-security package IDs,
 resource-watermark package supersession, and local untracked ghost-dir hygiene.
-Remaining Root/foreign items: cross-os-runners selectors, dirty
-convention-audit historical snippets, optional roadmap index notes, optional
-platform SoT. See evidence `proposed-patches.md` and `wave2-residuals.json`.
+
+## Wave-2b residual closure (measured)
+
+Closed: `cross-os-runners.sot.md` audit package selectors retargeted from
+`humanymous-audit` / `key_custody` to live `humanymous-runtime` /
+`audit-key-custody` (plus `audit-durable-witness` / `audit-key-backups`
+normative contract IDs). Detection freeze preserved; no runner invention.
+Remaining Root/foreign items: dirty convention-audit historical snippets,
+optional roadmap index notes, optional platform SoT. See evidence
+`proposed-patches.md` and `wave2b-cross-os-runners.json`.
 
 ## Verification
 
