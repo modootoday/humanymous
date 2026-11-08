@@ -83,11 +83,16 @@ product green. No detection-score edits.
 
 ## 5. Verification
 
-- Cap=1: clippy `-D warnings`; `missing_client_is_challenge_and_missing_planes_are_not_ready`
+- Cap=1 pure: clippy `-D warnings`; `missing_client_is_challenge_and_missing_planes_are_not_ready`
   still 422 without provenance; new pure unit(s) for partial-still-422 and
   complete-receipt gate pass (capability only; not product).
-- Collector runtime_pilot / fixture expected 422 after partial collect: unchanged.
-- Hosted browser/product: **not** claimed. `product=0`.
+- Cap=1 Desktop browser-product `--require-full` @ `05fd59cb`: exit 2 / 49/0;
+  selected `actual_runtime_session_report_and_required_capability_fail_closed`;
+  `required.collector` 422:ack_false after collect 200; counts as
+  `pass_component_desktop` only (not `pass_component_hosted`; hosted browser-product
+  `workflow_dispatch:null`). Evidence:
+  `.spec.local/root/evidence/20261108213000-g2-collector-provenance/cap1-browser-pilot/`.
+- Matrix M3 G2 cells stay `required_unavailable`. `product=0`.
 
 ## 6. Critique reflected
 
@@ -101,5 +106,8 @@ product green. No detection-score edits.
 
 ## 7. Residual
 
-Full loader/distribution, cookie/streaming profiles, actual browser product lab
-binding, and matrix G2 cell clearance remain open. Detection freeze.
+Full loader/distribution, cookie/streaming profiles, complete-guard browser
+authorize measurement, hosted browser-product requal (dispatch currently null),
+and matrix G2/`required_unavailable` clearance remain open. Next coordinator
+gap after this Cap=1 recording: G4 (AT/CEF; blocked_claim) with W2/G1 hosted H2
+product binding still residual. Detection freeze.
