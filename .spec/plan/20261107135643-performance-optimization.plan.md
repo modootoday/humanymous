@@ -12,6 +12,17 @@ rel:
 
 ## Bottom-up next admission
 
+Root's next request is an authored final8 Rust performance-comparison candidate.
+performance-record-candidate-v1 now contains a preimage-bound seven-line delivery
+composition addition, bounded strict parser/comparator and two retained real
+historical fixtures. Six meaningful tests are authored. Scope/cache/layout/venue
+mismatches refuse ratios; request-only metrics remain unresolved; no historical
+measurement becomes final8 or hosted evidence. The SoT binds candidate hashes and
+the exact application contract. Formatting and raw-fixture hashes are checked;
+compilation, six test outcomes, strict Clippy and real file/CLI pilot remain
+pending Root's scoped execution allocation. No new heavy/local/hosted workload,
+common Cargo edits or immutable-source writes are authorized by this proposal.
+
 The subsequent explicit Root allocation completed the10-command Runtime manifest
 A/B comparison on2026-11-08 KST, controller session95887 terminal exit0. All10
 checks succeeded within107.729seconds; both3128-file source sets retained zero

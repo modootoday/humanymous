@@ -1095,6 +1095,66 @@ roots are returned without deletion or source amendment. This component check
 does not qualify native execution, runtime throughput, linked builds, workspace
 regression, GPU, or Docker product e2e. No renewed execution lease is implied.
 
+## Final8 performance record comparison candidate
+
+Root requested an authored Rust candidate, not another benchmark. Candidate
+performance-record-candidate-v1 resides only in this owner's private evidence
+scope. The immutable tools-integration-5f1010d4 source remains read-only. Proposed
+application adds performance_comparison.rs and its two fixtures under
+crates/apps/humanymous-cli/src/qualification/delivery/, plus seven composition
+lines in delivery/mod.rs. That exact preimage SHA256 is
+688390f3697767793f8f9a72724d7d10e0573146de21bc701c8772a2af4efcf6;
+replacement SHA256 is27189b7163c18fed1f15a098cabf9872b22aca56fef3156693d98f6cb8dc7032.
+New module/fixture paths must be absent before root applies them. No manifest,
+lock, profile, dependency, production source or isolated-source write occurred.
+
+The proposed performance-compare BEFORE.json AFTER.json command runs before Git
+discovery and reads at most65537bytes per file, refusing records above65536bytes.
+Embedded raw JSON is limited to16384bytes. This bounds consumed record bytes,
+not filesystem-open latency, adversarial filesystem identity or an OS deadline.
+Strict typed records refuse missing, duplicate and unknown envelope/terminal
+fields, altered raw SHA256, unknown cache/layout/venue/timing/coverage, nonpositive
+or over24hour observations, unsuccessful/incomplete/timed-out terminals and
+malformed UTC timestamps. Direct command metrics additionally need resolved
+configuration, workload/features, lock and compiler identities consistent with
+the declared scope. Current request-only command metrics deliberately fail this
+condition; the candidate does not change their producer or infer effective config.
+
+Pair comparison requires equal declared layout, venue, cache, timing boundary,
+workload, controlled-input, lock, compiler, configuration, host allocation,
+feature and input-coverage identities. Different variant/source labels remain
+visible; duplicate raw evidence is refused. Local and hosted records are distinct
+venues and cannot produce a cross-venue ratio. Likewise historical and final8,
+empty-artifact and unchanged-fresh, wrapper and direct timing cannot be silently
+pooled. One valid pair emits only observed wall reduction, including a negative
+value for regressions, together with explicit scope and false cache-authority,
+product-qualification, independent-attestation and general-speedup flags.
+Declared hashes are not authenticated source/host/cache proof. Owners must bind
+their selected input receipts; this parser cannot turn a declaration into one.
+
+The two fixtures preserve exact raw terminal bytes from the actual5d68cd39 A1/B1
+experiment and declare historical layout. Their controlled-input hash selects
+the3127 unchanged repository files, excluding the explicitly varied Runtime
+manifest; configuration/tool records and allocation identity are separately
+bound. This is repository/lock coverage, not complete registry/linker attestation.
+No new final8 or hosted measurement is fabricated. Six authored tests cover the
+real pair and regression direction; each control mismatch including local/hosted;
+bad/missing/duplicate/oversize data and checksum; rehashed failed/unfinished or
+malformed terminal evidence; duplicate raw fields; and refusal to upgrade an
+unresolved command metric through a sidecar. Test mutations are refusal cases,
+not measured performance results.
+
+New module SHA256 is0f7404e2e53c2b1b4b6302d5ea070679f5201ce7cae52c3897d16728bacc8f42.
+Private preimage.json is1454bytes, SHA256
+7f7ff2cdd0ce1fd6ebc3ac50699b19735f38bf016fb2b5563cbd313b908bd7e3,
+and binds all four candidate/fixture files. Module rustfmt/check and independent
+fixture raw-hash checks passed. Composition preserves unrelated preimage bytes
+apart from LF representation and seven added lines; its existing formatting was
+not rewritten. Cargo tests, strict Clippy and actual bounded file/CLI refusal
+pilots are not run. Root must apply against the exact preimage and allocate the
+scoped final8 delivery tests/pilot before any implementation qualification. No
+compiler, runtime, Docker, hosted, browser or SDK allocation is consumed here.
+
 ## Runtime measurement profiles awaiting owner allocation
 
 These are proposed contracts, not executable tests or new deployment claims.

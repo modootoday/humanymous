@@ -12,6 +12,17 @@ files:
 
 # Build and canonical-function performance evidence
 
+## Final8 comparison source candidate (not executed)
+
+Private performance-record-candidate-v1/preimage.json is1454bytes, SHA256
+7f7ff2cdd0ce1fd6ebc3ac50699b19735f38bf016fb2b5563cbd313b908bd7e3.
+It binds a new Rust comparison module, seven-line delivery composition change and
+two historical real-timing fixtures. Application preimage and behavioral contract
+are recorded in the performance SoT. Six tests are authored, not passed; only
+module formatting and original raw-fixture hash equality were checked. No final8
+or hosted speedup, application, compilation, allocation or registered private
+store attachment is asserted. Root owns application and scoped execution.
+
 ## Runtime optionalization CLI check (measured)
 
 Root's finite allocation ran10 serial native Windows checks against sibling
