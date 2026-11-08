@@ -227,6 +227,37 @@ passed (123 other cases filtered), and strict Delivery Clippy passed. Actual Uni
 moved-role output has not yet been produced; synthetic parser tests do not replace
 that required hosted run. Workflow candidates must check Cargo exit separately.
 
+Root adopted38 reviewed private role-composition rows only into the isolated
+candidate. Simulation, offline ledger verification, real network execution and
+legacy report contexts now link their necessary single physical implementations.
+The first strict check found an explicit-path child-module lookup for verification
+JSON; Root fixed that private path. Strict checks for the replay, report and
+verifier executables then passed. Actual discovery found8 replay,11 report and16
+verifier compiled cases. Replay8 and verifier16 all passed; report9 pure cases
+passed while its two actual native file-publication cases were explicitly filtered
+for later hosted qualification. Repeated source cases in separate roles are not
+additional independent coverage. The private ignored run ordinal remains validated
+as nullable signed integer but is no longer retained in unused record storage;
+aggregate/render behavior tests passed, without asserting actual native publication.
+
+Root narrowed isolated feature dependencies to match those implementations:
+qualification-attacker activates Core, qualification-wargame-verify additionally
+activates Platform testing, and qualification-runtime-pilot carries the actual
+Runtime audit/gateway plus process/client dependencies. The pure replay normal/
+build Cargo tree reports Runtime native-security only, without audit/gateway;
+mandatory base CLI dependencies remain. Locked all-target strict Clippy for the
+three-role profile passed after this change. The older feature proposal is not
+the final implementation manifest and must be reconciled before live cutover.
+
+A refreshed274-row private transformation view hashes original ZIP bytes and
+current destinations:117 preserved,156 transformed requiring semantic review,
+one documented network-case split, zero unexplained missing destinations. It
+records the one stale populated earlier DATA checker pin and fills eleven
+previously unpinned supplemental-source observations from the original archive.
+Earlier receipts remain unchanged; source transformation is not byte preservation
+or proof of semantic equivalence. The newer tree requires fresh source-bound
+qualification and cannot inherit the historical1765-file maintenance receipt.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
