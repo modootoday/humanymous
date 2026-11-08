@@ -86,8 +86,18 @@ the sole Job handle privately. No OpenJobObject(name), duplicate/inherited Job
 handle, named-job collision, parent-process substitution or foreign Job attachment.
 
 Build one attribute entry PROC_THREAD_ATTRIBUTE_JOB_LIST containing that actual
-Job handle. Use explicit executable path, closed bounded argv/environment/cwd,
-EXTENDED_STARTUPINFO_PRESENT|CREATE_UNICODE_ENVIRONMENT and bInheritHandles=false.
+Job handle. The minimum QUALIFICATION image is a fixed admitted Rust Windows
+CONSOLE PE executable (IMAGE_SUBSYSTEM_WINDOWS_CUI=3), not a GUI/service/arbitrary
+executable profile. Check the actual held source-bound image/PE subsystem before
+launch; argv or a reported subsystem cannot establish it. Use explicit executable
+path, closed bounded argv/environment/cwd, EXACT flags
+EXTENDED_STARTUPINFO_PRESENT|CREATE_UNICODE_ENVIRONMENT|DETACHED_PROCESS
+(0x00080408), and bInheritHandles=false. Initialize STARTUPINFOEX fully, cb matching
+the extended structure, NO STARTF_USESTDHANDLES, hStdInput/hStdOutput/hStdError=NULL,
+no reserved/desktop/title/stdio attributes. Neither CREATE_NEW_CONSOLE nor
+CREATE_NO_WINDOW is combined with DETACHED_PROCESS. inherit=false ALONE was not
+enough to justify the previous no-console/no-stdio claim; this explicit CUI profile
+supersedes that incomplete statement and still needs actual qualification.
 NO CREATE_BREAKAWAY_FROM_JOB, parent-process or token substitution. JOB_LIST
 associates the new process before its first execution; no running-child
 AssignProcessToJobObject race and no cooperative grant accepted as containment.
@@ -264,6 +274,11 @@ genuine Windows2025 x64 source-bound Rust fixture under original outer owner.
 
 1. Actual JOB_LIST membership before any fixture work marker; one real ordinary
    CreateProcess descendant under same Job. No parent assignment barrier credited.
+   Independently test both a console-attached parent and a parent with redirected
+   stdin/stdout/stderr: exact detached CUI helper must not acquire the parent's
+   console/standard handles or deliver a marker into redirected parent streams.
+   Use separately reviewed observation APIs; no new console unsafe calls enter
+   B2's ten scopes. Unsupported observation cannot count as a passing negative.
 2. Explicit child breakaway request denied/contained; nested host Job incompatibility
    refuses without fallback. Broker escape is outside fixed profile, never probed
    against third-party services or reported prevented by Job-only evidence.
@@ -295,3 +310,80 @@ Primary references checked:
 [JOB_LIST and explicit inheritance](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute),
 [Job association, nesting and broker ceiling](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects),
 [termination request semantics](https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-terminatejobobject).
+
+# B2-P qualification helper alternative, no added unsafe proposal
+
+Root requested evaluation, NOT source/manifest/helper acceptance. Select as a
+viable QUALIFICATION-ONLY next candidate: JOB_LIST-spawn the exact admitted
+humanymous-delivery CONSOLE artifact in a fixed capture-helper mode, detached as
+above with NO inherited handles. Inside that process, ordinary safe Rust
+std::process::Command creates one fixed admitted Cargo child with piped stdio;
+normal descendants inherit the actual Job association. No CreateProcess raw
+HANDLE_LIST, inherited parent stdio or new unsafe scope is required by this
+architecture. It does not cover SCM/WMI/external-broker process trees.
+
+Existing Delivery command.rs/workspace.rs provide command/artifact context, but
+their output()/status() shortcuts are NOT the bounded retained helper contract.
+No such new fixed helper mode is claimed implemented by this proposal. Delivery
+owner must separately author/accept that exact mode in the existing binary;
+Root alone can grant its source and compiler resource window. No new crate/helper
+executable or source write is authorized here.
+
+Proposed closed mode takes only source-bound recipe ID and explicit admitted
+artifact/output locator DATA, never arbitrary program/argv/shell text. Cargo
+executable must be selected by original trusted toolchain/artifact association,
+absolute path/digest; no PATH search/wildcard or report-selected Cargo. Fixed
+manifest/package/target/features/operation are Root-frozen recipe, no generic
+command passthrough. The helper may not run a build while Root has not allocated
+the corresponding compiler lease. Normal runner self-rebuild hazards stay open.
+
+Before Job launch, parent reserves finite output storage in its actual owned
+namespace and retains that allocation/creation obligations through all outcomes.
+Helper opens only explicit NEW named stdout/stderr/control files, no overwrite,
+append-existing or random retry. Choose stdout/stderr8MiB EACH with overflow
+sentinels and finite aggregate16MiB plus fixed bounded control metadata; final
+limits are profile constants recorded before launch, not supplied unbounded
+lengths. Memory buffers/queues and stored bytes share the same finite caps. Any
+file-create/ACL/provider/budget ambiguity refuses; B1 primitive alone does not
+manufacture that output namespace. No inherited file or credential handles.
+
+Reuse actual CaptureAttempt/Worker code after the single common-controller
+extraction: retain real Child/stdin/stdout/stderr/JoinHandles/results; start readers
+before large writes, bound per-stream/aggregate allocation, stop on overflow,
+actual join every started worker and classify panic/disconnect/setup/write/read
+failures independently. Cargo exit0 is not EOF or worker join, and an unbounded
+Command::output is forbidden. No caller bool sets joined/success. Retain failure
+owner and output obligations; write only bounded nonsecret DATA observations.
+
+The parent keeps the ORIGINAL invocation clock/Job/actual helper process and
+supervises the entire helper+Cargotree. Rust Instant is not serialized/reconstructed.
+Any helper-local work cap is subordinate scheduling DATA, NEVER a replacement
+original deadline or a parent budget renewal. Late startup/blocked helper cannot
+extend parent's run/cleanup limits. Parent can request OWN Job stop on failure or
+original expiry; repeated stop retains first cause. Source-bound helper reports
+are DATA only, never native source/admitted parent/NativeProof/Ready capability.
+
+For successful component observation, helper must actually join workers, record
+bounded footer/counts/issues through the admitted output plan and exit naturally;
+parent verifies same source/artifact/recipe/output association, actual helper exit,
+Job0 and original deadline. It records reported worker facts as source-bound
+qualification DATA, not an independent kernel/production worker proof. A boolean
+footer, exit0 or symbolic lifecycle cannot create a native terminal receipt.
+
+If parent kills helper while readers/writer/join are pending, worker processes
+may be gone at Job0 but Rust joins were NOT observed. Never convert Job kill,
+EOF or OS thread reclamation into ReadersJoined or successful capture. Retain
+failure/join issues and output reservation; report Unknown/unproven74 as needed,
+no automatic fresh attempt/storage release/cleanup success. This qualification
+mode therefore does not solve production retained-worker recovery by itself.
+
+Required actual cases: finite normal stdout/stderr+real joins; cap overflow on
+each stream; descendant retains unread pipe; pending large input; partial worker/
+file setup; helper panic/lost footer; original deadline killing blocked helper;
+Job0 with missing joins still failure; output replacement/oversize/stale recipe
+refusal. Console-attached and redirected-parent cases above remain separate.
+No helper/source/manifest/unsafe/native grant or product/provider/Ready acceptance
+is implied. Root/X review and actual original-owner manufacturer remain pending.
+
+Additional primary references: [process flags](https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags)
+and [STARTUPINFO standard-handle semantics](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow).
