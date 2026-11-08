@@ -25,7 +25,7 @@ fn main() {
         Some("cleanup") => orchestration::cleanup_expired().map(|()| 0),
         Some("audit") => audit::run(&args[1..]),
         Some("matrix-plan") => clean_room_matrix::plan(&args[1..]),
-        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH]".into()),
+        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe | --authority-node-ipc] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH]".into()),
     };
     match result {
         Ok(code) => std::process::exit(code),

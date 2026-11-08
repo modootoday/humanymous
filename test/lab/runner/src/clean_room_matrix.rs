@@ -10,12 +10,25 @@ use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-clean-room-matrix-plan/1";
 
+/// Root paths that must move before authority-node-ipc Cap CLI may serialize.
+const AUTHORITY_NODE_IPC_ROOT_ASK_PATHS: &[&str] = &[
+    "deployments/lab/INTEGRATION.md",
+    "deployments/lab/authority/**",
+    "build/rust/authority-lab.Dockerfile",
+    "build/rust/authority-lab.Dockerfile.dockerignore",
+    "test/lab/runner/src/snapshot.rs",
+    "adapters/node/src/**",
+    "crates/authority/**",
+];
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Disposition {
     RefuseCap,
     HoldComponent,
     SerializeWhenUnlocked,
     OutOfRunnerScope,
+    /// Cap selector is known but Root-blocked; never Cap-serialize.
+    BlockedClaim,
 }
 
 impl Disposition {
@@ -25,6 +38,7 @@ impl Disposition {
             Self::HoldComponent => "hold_component",
             Self::SerializeWhenUnlocked => "serialize_cap_when_unlocked",
             Self::OutOfRunnerScope => "out_of_lab_runner_scope",
+            Self::BlockedClaim => "blocked_claim",
         }
     }
 }
@@ -88,6 +102,7 @@ fn plan_matrix(matrix: &Value) -> Result<Value> {
     let mut hold = 0u64;
     let mut serialize = 0u64;
     let mut out_of_scope = 0u64;
+    let mut blocked_claim = 0u64;
     for cell in combinations {
         let planned = plan_cell(cell)?;
         match planned["disposition"].as_str() {
@@ -95,6 +110,7 @@ fn plan_matrix(matrix: &Value) -> Result<Value> {
             Some("hold_component") => hold += 1,
             Some("serialize_cap_when_unlocked") => serialize += 1,
             Some("out_of_lab_runner_scope") => out_of_scope += 1,
+            Some("blocked_claim") => blocked_claim += 1,
             _ => {}
         }
         cells.push(planned);
@@ -112,6 +128,7 @@ fn plan_matrix(matrix: &Value) -> Result<Value> {
             "never_invent_pass_product_clean_room": true,
             "required_unavailable_refuses_cap": true,
             "component_status_holds_no_require_full_reburn": true,
+            "blocked_claim_never_serializes": true,
             "detection_freeze": true,
         },
         "source_matrix": {
@@ -126,6 +143,7 @@ fn plan_matrix(matrix: &Value) -> Result<Value> {
             "hold_component": hold,
             "serialize_cap_when_unlocked": serialize,
             "out_of_lab_runner_scope": out_of_scope,
+            "blocked_claim": blocked_claim,
         },
         "cells": cells,
     }))
@@ -176,7 +194,26 @@ fn plan_cell(cell: &Value) -> Result<Value> {
     object.insert("reason".into(), json!(reason));
     object.insert("cap_execute".into(), json!(false));
     object.insert("pass_product_clean_room".into(), json!(false));
+    object.insert("cap_cli_status".into(), json!(cap_cli_status(scenario)));
     object.insert("command".into(), command);
+    if disposition == Disposition::BlockedClaim {
+        object.insert(
+            "root_ask".into(),
+            json!({
+                "scenario": scenario,
+                "cap_cli_status": "blocked_claim",
+                "why": [
+                    "deployments/lab/INTEGRATION.md: lab-runner must not execute authority/pilot.mjs (foreign prototype debt)",
+                    "test/lab/runner freeze allowlist excludes deployments/lab/authority/pilot.mjs and authority-lab Dockerfile inputs",
+                    "compose.authority.yaml remains a historical/component composition; Cap --require-full alone cannot close G1/G5/G6",
+                    "never invent pass_product_clean_room"
+                ],
+                "exact_paths": AUTHORITY_NODE_IPC_ROOT_ASK_PATHS,
+                "allocate": "Rust-authored lab-runner authority Cap pilot + freeze allowlist expansion, or INTEGRATION amendment authorizing Docker build-only authority inputs; then release Cap CLI execute path to cursor-integration",
+                "after_unlock": "matrix-plan may serialize run --evidence BUNDLE --authority-node-ipc --require-full once; Cap=1 burns once with honest exit2/component receipts only"
+            }),
+        );
+    }
     Ok(Value::Object(object))
 }
 
@@ -252,11 +289,32 @@ fn decide(
             Value::Null,
         );
     }
+    match cap_cli_status(scenario) {
+        "blocked_claim" => {
+            return (
+                Disposition::BlockedClaim,
+                format!(
+                    "scenario={scenario} Cap CLI is blocked_claim (Root-owned); selector recognized but not Cap-serializable until Root allocates Rust authority Cap pilot + freeze allowlist / INTEGRATION amendment; bare --require-full would Cap-spam wrong composition; never invent pass_product_clean_room"
+                ),
+                Value::Null,
+            );
+        }
+        "bound" => {}
+        _ => {
+            return (
+                Disposition::RefuseCap,
+                format!(
+                    "scenario={scenario} has no lab-runner Cap CLI binding; bare --require-full preimage would Cap-spam the wrong composition; hold until Root allocates a bound path or matrix remaps; never invent pass_product_clean_room"
+                ),
+                Value::Null,
+            );
+        }
+    }
     if !scenario_has_cap_cli_binding(gate, scenario) {
         return (
             Disposition::RefuseCap,
             format!(
-                "scenario={scenario} has no lab-runner Cap CLI binding; bare --require-full preimage would Cap-spam the wrong composition; hold until Root allocates a bound path or matrix remaps; never invent pass_product_clean_room"
+                "scenario={scenario} Cap CLI status is bound but gate={gate} has no serializer rule; refuse closed; never invent pass_product_clean_room"
             ),
             Value::Null,
         );
@@ -270,9 +328,23 @@ fn decide(
     (Disposition::SerializeWhenUnlocked, reason, command)
 }
 
-/// Only scenarios with an explicit lab-runner Cap selector may serialize.
-/// Unbound names (e.g. authority-node-ipc) must not inherit bare `--require-full`.
+/// Cap CLI status for a matrix scenario. `blocked_claim` is recognized but
+/// Root-owned; only `bound` may serialize.
+fn cap_cli_status(scenario: &str) -> &'static str {
+    match scenario {
+        "browser-product" | "collector-component" | "go-product" | "topology-fixture" => "bound",
+        "authority-node-ipc" => "blocked_claim",
+        _ => "absent",
+    }
+}
+
+/// Only scenarios with an executable lab-runner Cap selector may serialize.
+/// `authority-node-ipc` is recognized (`blocked_claim`) but must not inherit
+/// bare `--require-full` until Root unlocks an executable Cap path.
 fn scenario_has_cap_cli_binding(gate: &str, scenario: &str) -> bool {
+    if cap_cli_status(scenario) != "bound" {
+        return false;
+    }
     match scenario {
         "browser-product" | "collector-component" | "go-product" => true,
         "topology-fixture" if gate == "lab_runner_topology_or_controls" => true,
@@ -290,6 +362,7 @@ fn lab_runner_command(gate: &str, scenario: &str) -> Value {
         "browser-product" => args.push("--browser-product".into()),
         "collector-component" => args.push("--collector".into()),
         "go-product" => args.push("--go-product".into()),
+        "authority-node-ipc" => args.push("--authority-node-ipc".into()),
         "topology-fixture" if gate == "lab_runner_topology_or_controls" => {
             args.push("--topology-only".into());
         }
@@ -383,7 +456,7 @@ mod tests {
     }
 
     #[test]
-    fn unbound_authority_node_ipc_refuses_bare_require_full_preimage() {
+    fn authority_node_ipc_is_blocked_claim_and_never_serializes() {
         let (disposition, reason, command) = decide(
             "unrun",
             "lab_runner_require_full",
@@ -392,8 +465,8 @@ mod tests {
             true,
             false,
         );
-        assert_eq!(disposition, Disposition::RefuseCap);
-        assert!(reason.contains("no lab-runner Cap CLI binding"));
+        assert_eq!(disposition, Disposition::BlockedClaim);
+        assert!(reason.contains("blocked_claim"));
         assert!(reason.contains("never invent pass_product_clean_room"));
         assert!(command.is_null());
     }
@@ -455,10 +528,28 @@ mod tests {
         assert_eq!(plan["cap_execute"], false);
         assert_eq!(plan["pass_product_clean_room"], 0);
         assert_eq!(plan["full_product_qualified"], false);
-        assert_eq!(plan["summary"]["refuse_cap"], 2);
+        assert_eq!(plan["summary"]["refuse_cap"], 1);
         assert_eq!(plan["summary"]["hold_component"], 1);
         assert_eq!(plan["summary"]["serialize_cap_when_unlocked"], 1);
         assert_eq!(plan["summary"]["out_of_lab_runner_scope"], 1);
+        assert_eq!(plan["summary"]["blocked_claim"], 1);
         assert_eq!(plan["honesty"]["never_invent_pass_product_clean_room"], true);
+        assert_eq!(plan["honesty"]["blocked_claim_never_serializes"], true);
+        let authority = plan["cells"]
+            .as_array()
+            .expect("cells")
+            .iter()
+            .find(|cell| cell["scenario"] == "authority-node-ipc")
+            .expect("authority cell");
+        assert_eq!(authority["disposition"], "blocked_claim");
+        assert_eq!(authority["cap_cli_status"], "blocked_claim");
+        assert!(authority["command"].is_null());
+        assert!(
+            authority["root_ask"]["exact_paths"]
+                .as_array()
+                .expect("paths")
+                .iter()
+                .any(|path| path.as_str() == Some("deployments/lab/INTEGRATION.md"))
+        );
     }
 }

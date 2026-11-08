@@ -548,6 +548,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut browser_product = false;
     let mut go_product = false;
     let mut mount_probe = false;
+    let mut authority_node_ipc = false;
     let mut full = false;
     let mut require_go_component = false;
     let mut index = 0;
@@ -564,11 +565,22 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--go-product" => go_product = true,
             "--mount-probe" => mount_probe = true,
             "--topology-only" => topology_only = true,
+            "--authority-node-ipc" => authority_node_ipc = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
             _ => return Err("unknown runner argument".into()),
         }
         index += 1;
+    }
+    if authority_node_ipc {
+        // Cap CLI selector is recognized for matrix honesty, but INTEGRATION.md
+        // forbids lab-runner from executing deployments/lab/authority/pilot.mjs.
+        // Fail closed until Root allocates a Rust Cap pilot + freeze allowlist.
+        let _ = evidence;
+        return Err(
+            "authority-node-ipc Cap CLI is blocked_claim: deployments/lab/INTEGRATION.md forbids lab-runner execution of deployments/lab/authority/pilot.mjs; freeze allowlist excludes authority pilot/Dockerfile inputs; Root must allocate Rust-authored Cap pilot under deployments/lab/authority/** (or INTEGRATION amendment) + build/rust/authority-lab.Dockerfile allowlist in test/lab/runner/src/snapshot.rs (+ adapters/node/src/** as needed) before Cap can serialize/burn; never invent pass_product_clean_room"
+                .into(),
+        );
     }
     let evidence = evidence.ok_or("--evidence required")?.canonicalize()?;
     if mount_probe

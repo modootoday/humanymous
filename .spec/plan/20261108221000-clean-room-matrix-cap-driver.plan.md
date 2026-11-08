@@ -3,7 +3,7 @@ id: plan:root/20261108221000-clean-room-matrix-cap-driver
 title: Lab-runner clean-room matrix Cap planner (fail-closed; no Cap burn)
 status: active
 created: 2026-11-08T13:15:00Z
-updated: 2026-11-08T13:20:03Z
+updated: 2026-11-08T13:30:00Z
 rel:
   depends_on:
     - plan:root/20261108220600-cap-ready-g4-w2-harness
@@ -18,7 +18,8 @@ rel:
 Brief: While G4/W2 unlock remains Root-blocked and Cap is free, Cursor lands a
 **dry-run** lab-runner `matrix-plan` driver that Cap=1 can later serialize. Fail-closed
 SoT honesty for matrix cells. Detection freeze. No Cap burn. product=0. Never invent
-`pass_product_clean_room`.
+`pass_product_clean_room`. Authority Cap CLI recorded as `blocked_claim` with exact
+Root path ask (INTEGRATION forbids runner `pilot.mjs`).
 
 ## 1. Problem
 
@@ -63,6 +64,20 @@ Cap=1 (2026-11-08T13:20:03Z): sole prior serialize cell
 (`authority-node-ipc|lab_runner_require_full`) was a **false positive** — no Cap
 CLI binding; bare `--require-full` would Cap-spam wrong composition. Cap burn=0.
 Planner now refuses unbound scenarios (serialize=0). Matrix cell stays `unrun`.
+
+Follow-on Spec honesty (2026-11-08T13:30:00Z): `authority-node-ipc` Cap CLI status
+is **`blocked_claim`** (selector recognized; never Cap-serialize). Fail-closed
+`--authority-node-ipc` refuses before Docker. Exact Root path ask:
+
+- `deployments/lab/INTEGRATION.md` (amend runner-never-executes, or authorize Cap exception)
+- `deployments/lab/authority/**` (Rust Cap pilot replacement for `pilot.mjs`)
+- `build/rust/authority-lab.Dockerfile` (+ `.dockerignore`)
+- `test/lab/runner/src/snapshot.rs` freeze allowlist expansion
+- `adapters/node/src/**` (build inputs if Node adapter retained in image)
+- `crates/authority/**` if Rust IPC pilot lives there
+
+Cap burn remains 0 until G4/W2 unlock **or** Root unlocks executable authority Cap
+path. Never invent `pass_product_clean_room`.
 
 Root allocates G4 or W2 unlock → Cursor Cap=1 burns matching `cap-ready/` pack;
 matrix-plan then guides subsequent Cap serialization without Cap spam.
