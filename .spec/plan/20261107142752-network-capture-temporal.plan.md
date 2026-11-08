@@ -498,6 +498,24 @@ exposing owner constructors. Exact72pure/5actual test anchors and remaining
 epoch/fleet/Runtime/Docker gates are recorded. No source/import/manifest/move or
 compiler action occurred; the existing source claim stays until Root's freeze.
 
+## Private ingress TLS/H2 observation integration candidate
+
+Following Root's mandatory current-path/evidence-only work assignment, candidate
+evidence:root/20261108043216 contains6exact-preimage-bound Rust files against
+read-only tools-integration-5f1010d4. No main/integrated source or Gateway edit.
+Network's pure DATA projection never sets reliability/native-proof flags;
+Capture's private borrowed H2HeadersObservation requires actual live same-owner
+h2/Ended stream, exact request fields/count, no ambiguous singleton or trailer.
+Every snapshot rechecks owner cancellation/deadline. Its output is TLS/H2-only
+historical DATA, never a live authority/Ready lease or missing-plane default.
+No Network->Capture dependency, body-digest/flow-control/original-hop claim,
+Runtime activation or detection change. Runtime interface coordination is open.
+Twelve pure and2compile-fail fixtures are authored UNRUN; one existing actual H2
+case gains owner/mismatch/revocation checks without changing the5case denominator.
+Private files were formatted; compiler/Clippy/provider/product gates remain
+UNRUN and need Root's separate allocation. Root alone verifies and applies the
+three replacement preimages and three new files from the registered manifest.
+
 ## Selected formatter repair after CORE-SLICE-01
 
 Root reported the Nativeguard batch's final global fmt failure at correlation/

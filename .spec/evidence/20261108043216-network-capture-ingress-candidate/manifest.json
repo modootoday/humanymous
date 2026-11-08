@@ -1,0 +1,83 @@
+{
+  "schema": "humanymous.ingress.preimage-candidate/0.1",
+  "observed_utc": "2026-11-08T04:40:03.4748412Z",
+  "branch": "codex/rust",
+  "isolated_preimage_root": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "candidate_root": ".spec.local/root/evidence/20261108043216-network-capture-ingress-candidate/candidate",
+  "files": [
+    {
+      "target": "crates/sdk/humanymous-runtime/src/capture/tls/mod.rs",
+      "action": "replace",
+      "preimage_sha256": "1b7a33a8e542db5a424aeaa68f4d4931c90a223e0aa56754320b882e3da279d7",
+      "candidate_sha256": "171cf0177520b7f800b52e8c3ab4f1c4df495f14592efcb79f9d4c9785112117",
+      "bytes": 316,
+      "lf_only": true
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/capture/tls/observation.rs",
+      "action": "create",
+      "preimage_sha256": null,
+      "candidate_sha256": "e16cfa5c3bf7fe1595c1ab77783addb24bb600c42389b1c175790571c998571c",
+      "bytes": 7637,
+      "lf_only": true
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/network/ingress/mod.rs",
+      "action": "create",
+      "preimage_sha256": null,
+      "candidate_sha256": "3e633231d305d561fcfd80f3d386a39ba1949d473f13018cbcc0df8eefe9a7be",
+      "bytes": 7396,
+      "lf_only": true
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/network/ingress/tests.rs",
+      "action": "create",
+      "preimage_sha256": null,
+      "candidate_sha256": "6239d5b6fea248ab35cd823aa0f35051cb26b2958b8d42b44c54a80e1c0ff803",
+      "bytes": 3790,
+      "lf_only": true
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/network/mod.rs",
+      "action": "replace",
+      "preimage_sha256": "c41921f17de36168339794339bcef3649f72457e7e5e8bc007b1345425479461",
+      "candidate_sha256": "0f4a488c35619ec877a3fe7d912958282588c391f9af64812f67d6d68bec4ce5",
+      "bytes": 240,
+      "lf_only": true
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/tests/capture/hosted_transport.rs",
+      "action": "replace",
+      "preimage_sha256": "ca1d9a0e266343f09ccbcdaf32c032b228265f59a3392db690a480d5a5b8c963",
+      "candidate_sha256": "798bed3f0b8cfc92febdedbfdc66439baa91733a76349f75d1b075244af30d4e",
+      "bytes": 16394,
+      "lf_only": true
+    }
+  ],
+  "preimages_still_match": true,
+  "new_targets_absent": true,
+  "main_source_applied": false,
+  "gateway_edits": false,
+  "manifest_edits": false,
+  "tests": {
+    "actual_fixture_cases": 5,
+    "actual_existing_case_extended": 1,
+    "compile_fail_docs_authored": 2,
+    "pure_authored": 12,
+    "executed": 0
+  },
+  "checks": {
+    "compiler": "NOT_RUN",
+    "docker": "NOT_RUN",
+    "clippy": "NOT_RUN",
+    "native_or_hosted": "NOT_RUN",
+    "standalone_rustfmt": "passed for authored files and private fixture copy"
+  },
+  "authority": "Root alone checks preimages and applies source to coherent integration; no native proof or scoring promotion",
+  "scopes": [
+    "TLS/H2 observation only",
+    "No H2 serving/flow-control/body-digest claim",
+    "No original-hop attestation",
+    "No Runtime readiness or origin authority"
+  ]
+}
