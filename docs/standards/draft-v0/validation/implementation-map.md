@@ -56,6 +56,16 @@ Lock files were excluded and normal Cargo package verification was skipped;
 this does not establish registry readiness, native authority or full-suite
 execution. A compile-time privacy check does not mint an observation receipt.
 
+Later bounded components retain their own scope: Core source `42ecee7d` records
+160 library and 17 integration tests, including 15 SGD cases, without Go bit
+parity or model-activation qualification. The two matched CLI check pairs at
+`5d68cd39` measure dependency-related check cost, not full builds or Runtime
+performance. Lab source `f8aec286` records 44 default Windows cases plus one
+separate checkout case after a canonical-input correction; complete tool prehash
+and hostile custody remain unqualified. WASM/static checks do not execute a
+browser. Planned Tools composition and the accepted one-library/seven-export-role
+adapters design are not implemented packages or new conformance evidence.
+
 The first pure public-role data parser is implemented at source `2e9934fe`, with
 19 scoped Windows parser tests passing and 79 other library tests filtered out,
 as retained at `e8f71220`. A separate source `be9eec6d` run, retained at `8c8fc504`,

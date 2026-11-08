@@ -9,6 +9,14 @@
 {
   "kind": "implementation-evidence",
   "paths": ["../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
+  "summary": "Record bounded42ecee7d Core/SGD tests, independently reviewed CLI check-only A/B measurements, and f8aec286 Windows/WASM checks with corrected-input and custody limits. Record actual5d68cd39 browser-proxy Origin null-class failure separately from queued f8 run; Tools and one-library/seven-exclusive-export adapters remain designs. No live detection, full-build, browser success or deployment claim.",
+  "generic_wire_changed": false,
+  "full_product_qualified": false,
+  "fresh_render_required": true
+},
+{
+  "kind": "implementation-evidence",
+  "paths": ["../../reference/production-vs-reference.md", "../../reference/browser-collector.md", "validation/implementation-map.md"],
   "summary": "Record8e51e558 same-crate privacy controls and source-only extracted archive/consumer checks without normalCargoPackage/registry/native/full-suite claims. Record8dceaf48 actual edc30181 bootstrap Origin-family rejection separately, leaving absent/null/other and comparison branch unobserved; no browser success or source64 qualification transfer.",
   "generic_wire_changed": false,
   "full_product_qualified": false,

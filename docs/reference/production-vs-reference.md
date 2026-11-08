@@ -55,6 +55,30 @@ These archives omitted lock files and skipped Cargo package verification;
 they are not normal `cargo package` verification, registry availability,
 native execution or a full library test result.
 
+At source `42ecee7d`, the Core component result includes 160 library tests and
+17 integration tests, with 15 SGD tests including three file cases. Formatting,
+check and strict Clippy passed; independent review is retained at `b71f2f00`.
+This does not establish unchanged-Go bit parity, bootstrap deployment, model
+activation or live detection performance.
+
+The matched Runtime dependency experiment at source `5d68cd39`, retained at
+`cc4758` and independently reviewed at `90b125d2`, measured two cold-artifact
+CLI `cargo check` pairs. Wall time fell by 45.385% and 46.455%, with artifact
+events falling from 117 to 62; six warm checks rebuilt no artifacts. These are
+bounded check measurements, not full-build or Runtime latency improvements.
+
+Lab source `f8aec286` passed 44 default Windows cases and the separately selected
+checkout case that is ignored by default. The corrected canonical source-root
+environment passed after an initial failure, which remains in the record.
+Formatting, check and strict Clippy passed, but complete tool prehash and hostile
+custody are not established. The separate WASM check and strict Clippy success
+on unchanged source inputs also does not execute a browser or qualify deployment.
+
+Tools relocation and the accepted adapters design of one Rust library with seven
+mutually exclusive export roles remain unimplemented plans at this checkpoint.
+Draft module/root inventories are not executed-test denominators or available
+registry packages.
+
 A first pure public-role data parser is implemented at source `2e9934fe`.
 Its scoped Windows component run passed 19 parser tests, with 79 other library
 tests filtered out, retained at `e8f71220`;

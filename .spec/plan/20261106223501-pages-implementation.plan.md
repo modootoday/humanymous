@@ -2593,3 +2593,21 @@ Evidence07052815/privacy-extracted-browser-current-docs.json binds finalsix
 publicpathhashes after all three prepared batches. Earlier ownbatch pathhashes
 remain intermediate workingtree snapshots, not this finalprose state. Frozen
 checker88pages/errors0; no newcompiler/build/preview/GHA/publish, docsUNRENDERED.
+
+### Bounded Model/CLI/Lab checks and separate browser failure status
+
+Current public status/map record actual42ecee7d Core160lib+17integration including
+15SGD/3filecases, not unchanged-Go bitparity/bootstrap/activation; independently
+reviewed CLIcheckA/B two coldartifactpairs45.385/46.455percent,117to62events,
+sixwarm0rebuild, not fullbuild/runtimeperformance. Labf8 default44+required1
+passed after canonicalENV correction, initialfailure retained, with toolprehash/
+hostilecustody limits and no inference from static/WASM checks to browser success.
+
+Actual5d68/run42425474990 remains failed16/18 with Bproxy OriginNULLclass only;
+G/RuntimeOriginbytes and success remain unobserved. Queuedf8run42429778301 has no
+terminaloutcome consumed here; soleLabmonitor unchanged. Tools draft inventories
+and acceptedoneRLIB/sevenexclusiveexportroles are not implementation or executed
+denominators. Evidence07052815/current-component-status-reconciliation.json binds
+four exact changedpathhashes, accepted sources and provenance limits, including
+57c3 retrospective invocation flags rather than authenticated perphase starts.
+Frozenchecker88pages/errors0/diffcheckpass; no new workload/render/deployment.

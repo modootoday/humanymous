@@ -137,6 +137,15 @@ establish a successful bootstrap or qualify later Runtime source `64f74c7a`.
 Further diagnostic source changes are not new browser execution evidence and do
 not authorize relaxing the rejection predicate.
 
+The later [run `42425474990`](https://github.com/modootoday/humanymous/actions/runs/42425474990)
+at source `5d68cd39` failed with 16 passing and two failing product assertions.
+Its finite diagnostic was `browser_bootstrap_origin_browser_proxy_null`, observing
+the browser-proxy Origin null class. It does not establish the Origin bytes
+received by the Gate proxy or Runtime, identify an older source's failure cause,
+or qualify a successful witness exchange. A newer source `f8aec286` run,
+`42429778301`, was queued; no terminal outcome for it is consumed here.
+Local source checks and WASM compilation are separate from that browser run.
+
 ```console
 cargo test --locked -p humanymous-collector
 cargo build --locked -p humanymous-collector --target wasm32-unknown-unknown --release
