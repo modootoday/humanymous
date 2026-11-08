@@ -1,5 +1,11 @@
 # Local Docker environment — the detector vs the bots
 
+**Environment matrix (all assumed usage stacks):** see
+[`lab/ENVIRONMENTS.md`](lab/ENVIRONMENTS.md) — per-adapter homes under
+`adapters/<name>/`, lab scenarios under `lab/scenarios/`, project prefix
+`humanymous-*` (never reuse `humanymous-pages-preview`). Compose authorship is
+not Rust product e2e success.
+
 A complete humanymous stack in containers, defined as **modular compose fragments**.
 The detection stack (Core engine + reverse-proxy Gate + a demo origin) runs long and
 is viewable from the host; the bots (the automation catalog) run on demand and are

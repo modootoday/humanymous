@@ -1,0 +1,3 @@
+# Synthetic origin/canary controls only (topology-fixture evidence).
+include:
+  - path: ../../compose.yaml

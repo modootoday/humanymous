@@ -1,0 +1,20 @@
+# .NET Kestrel/host component pilot scaffold (network-none Linux candidate).
+# Windows FDD/JIT and NativeAOT tuples are host/OS pilots — not this Compose file.
+# No owned Linux Dockerfile yet; image tag fail-closed.
+services:
+  host-pilot:
+    image: ${HUMANYMOUS_DOTNET_IMAGE:?source-bound local image tag required — Linux Dockerfile not in-tree}
+    network_mode: none
+    user: "65532:65532"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,mode=1777,size=256m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 1g
+    profiles: [host-pilot]
+    labels:
+      org.humanymous.evidence: dotnet-host-pilot-scaffold
+      org.humanymous.full_product_qualified: "false"
+      org.humanymous.status: image-required-not_run

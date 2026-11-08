@@ -1,0 +1,17 @@
+# Go fixture export (hosted/untouched upstream context). Not Gate product e2e.
+# Build context MUST be a verified fixture checkout, never the Humanymous root.
+# Product composition: deployments/lab/scenarios/go-product/ + lab-runner --go-product.
+services:
+  fixture-export:
+    image: ${HUMANYMOUS_GO_FIXTURE_IMAGE:?source-bound fixture export image tag required}
+    build:
+      context: ${HUMANYMOUS_GO_FIXTURE_CONTEXT:?verified untouched go-httpbin checkout required}
+      dockerfile: ${HUMANYMOUS_GO_FIXTURE_DOCKERFILE:-Dockerfile}
+      # When using the repo recipe against a fixture tree, copy adapters/go/Dockerfile.fixture
+      # into that context or set HUMANYMOUS_GO_FIXTURE_DOCKERFILE to an absolute path the
+      # Docker daemon can read. Never point context at the Humanymous workspace root.
+    network_mode: none
+    profiles: [fixture-export]
+    labels:
+      org.humanymous.evidence: go-fixture-export
+      org.humanymous.full_product_qualified: "false"

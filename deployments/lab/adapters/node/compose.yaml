@@ -1,0 +1,2 @@
+include:
+  - path: ../../../../adapters/node/compose.yaml

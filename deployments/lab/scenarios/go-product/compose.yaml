@@ -1,0 +1,11 @@
+# Bounded Go Gate product profile (requires verified fixture + lab-runner).
+# Volume labels match compose.rust.witness.yaml ownership (writer mounts only).
+include:
+  - path: ../../compose.rust.yaml
+  - path: ../../compose.rust.go.yaml
+volumes:
+  writer-key: &owned-volume
+    labels:
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:?expiry required}"
+  writer-wal: *owned-volume

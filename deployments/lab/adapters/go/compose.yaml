@@ -1,0 +1,2 @@
+include:
+  - path: ../../../../adapters/go/compose.yaml

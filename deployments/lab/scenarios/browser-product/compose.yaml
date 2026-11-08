@@ -1,0 +1,10 @@
+# Browser B product profile (same-origin / DNS canary). Not host Playwright authority.
+include:
+  - path: ../../compose.rust.yaml
+  - path: ../../compose.rust.browser.yaml
+volumes:
+  writer-key: &owned-volume
+    labels:
+      org.humanymous.owner: rust-product-lab
+      org.humanymous.expires: "${HM_LAB_EXPIRES:?expiry required}"
+  writer-wal: *owned-volume

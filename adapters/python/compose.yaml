@@ -1,0 +1,20 @@
+# Python WSGI/ASGI component pilot scaffold (network-none).
+# No owned Dockerfile yet — image tag is fail-closed until a source-bound image exists.
+# Host interpreter pilots remain cargo host-pilot; this stack is for future Docker parity.
+services:
+  host-pilot:
+    image: ${HUMANYMOUS_PYTHON_IMAGE:?source-bound local image tag required — no Dockerfile in-tree yet}
+    network_mode: none
+    user: "65532:65532"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,mode=1777,size=256m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 512m
+    profiles: [host-pilot]
+    labels:
+      org.humanymous.evidence: python-host-pilot-scaffold
+      org.humanymous.full_product_qualified: "false"
+      org.humanymous.status: image-required-not_run

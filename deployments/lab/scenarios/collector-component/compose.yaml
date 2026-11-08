@@ -1,0 +1,3 @@
+# Collector WASM browser component (network-none). Distinct from browser-product.
+include:
+  - path: ../../compose.collector.yaml

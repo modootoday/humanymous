@@ -1,0 +1,19 @@
+# Native ABI component pilot scaffold (network-none).
+# Header/compiler/dynamic-consumer pilots are mostly hosted; image fail-closed until owned.
+services:
+  abi-pilot:
+    image: ${HUMANYMOUS_NATIVE_ABI_IMAGE:?source-bound local image tag required — no Dockerfile in-tree yet}
+    network_mode: none
+    user: "65532:65532"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,mode=1777,size=128m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 256m
+    profiles: [abi-pilot]
+    labels:
+      org.humanymous.evidence: native-abi-component-scaffold
+      org.humanymous.full_product_qualified: "false"
+      org.humanymous.status: image-required-not_run

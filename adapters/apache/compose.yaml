@@ -1,0 +1,24 @@
+# Apache HTTPD native component pilot (network-none). Not product e2e.
+# Project: docker compose -p humanymous-apache-native -f adapters/apache/compose.yaml …
+services:
+  native-pilot:
+    image: ${HUMANYMOUS_APACHE_IMAGE:?source-bound local image tag required}
+    build:
+      context: ../..
+      dockerfile: adapters/apache/Dockerfile.native
+      target: pilot
+      args:
+        HUMANYMOUS_SOURCE_REV: ${HUMANYMOUS_SOURCE_REV:?exact checkout SHA required}
+        HUMANYMOUS_SOURCE_MANIFEST_SHA256: ${HUMANYMOUS_SOURCE_MANIFEST_SHA256:?frozen source manifest SHA256 required}
+    network_mode: none
+    user: "65532:65532"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,mode=1777,size=256m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 1g
+    labels:
+      org.humanymous.evidence: apache-component-pilot
+      org.humanymous.full_product_qualified: "false"

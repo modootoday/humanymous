@@ -1,0 +1,22 @@
+# Node/Bun host-process component pilot (network-none). Not product e2e.
+# Project: docker compose -p humanymous-node-pilot -f adapters/node/compose.yaml …
+services:
+  host-pilot:
+    image: ${HUMANYMOUS_NODE_IMAGE:?source-bound local image tag required}
+    build:
+      context: ../..
+      dockerfile: adapters/node/Dockerfile.pilot
+    network_mode: none
+    user: "65532:65532"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,mode=1777,size=256m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 1g
+    environment:
+      CARGO_NET_OFFLINE: "true"
+    labels:
+      org.humanymous.evidence: node-host-process-component
+      org.humanymous.full_product_qualified: "false"

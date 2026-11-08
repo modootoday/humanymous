@@ -1,0 +1,3 @@
+# Canonical Rust controls + runtime/wargame pilots (compose.rust.yaml).
+include:
+  - path: ../../compose.rust.yaml

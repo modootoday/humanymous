@@ -1,0 +1,5 @@
+# Go-oracle detector-vs-bots stack (historical e2e authority path).
+# Lives at deployments/compose.yaml; this file includes it for matrix discovery.
+# Project: humanymous-oracle-* — never humanymous-pages-preview.
+include:
+  - path: ../../../compose.yaml

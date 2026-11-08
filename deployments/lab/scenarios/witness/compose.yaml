@@ -1,0 +1,3 @@
+include:
+  - path: ../../compose.rust.yaml
+  - path: ../../compose.rust.witness.yaml

@@ -1,0 +1,2 @@
+include:
+  - path: ../../../../adapters/python/compose.yaml

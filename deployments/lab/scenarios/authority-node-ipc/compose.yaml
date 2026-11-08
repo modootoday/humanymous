@@ -1,0 +1,3 @@
+# Rust authority + Node IPC component (not browser/product).
+include:
+  - path: ../../compose.authority.yaml
