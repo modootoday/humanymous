@@ -8,7 +8,7 @@ PROVIDER="${1:-}"
 SUBJECT="${2:-}"
 BODY="${3:-}"
 [[ -n "$PROVIDER" && -n "$SUBJECT" ]] || {
-  echo "usage: $0 <claude|grok|codex|gemini> <subject> [body]" >&2
+  echo "usage: $0 <claude|grok|codex|gemini|cursor> <subject> [body]" >&2
   exit 1
 }
 
@@ -18,6 +18,7 @@ case "$PROVIDER" in
   grok)   DISPLAY="Grok"; EMAIL="grok@x.ai" ;;
   codex)  DISPLAY="codex"; EMAIL="codex@openai.com" ;;
   gemini) DISPLAY="Gemini CLI"; EMAIL="gemini-cli@users.noreply.github.com" ;;
+  cursor) DISPLAY="Cursor Agent"; EMAIL="cursoragent@cursor.com" ;;
   *) echo "unknown provider: $PROVIDER" >&2; exit 1 ;;
 esac
 

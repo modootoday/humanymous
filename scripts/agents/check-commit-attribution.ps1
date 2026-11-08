@@ -27,6 +27,7 @@ $KnownEmailOrId = @(
   "grok@x.ai",
   "noreply@x.ai",
   "gemini-cli@users.noreply.github.com",
+  "cursoragent@cursor.com",
   # legacy (pre community-email / pre project-local canons) — still accepted
   "304785771+grokkybara[bot]@users.noreply.github.com",
   "grokkybara[bot]@users.noreply.github.com",

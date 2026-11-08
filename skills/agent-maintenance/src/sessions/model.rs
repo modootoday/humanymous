@@ -76,7 +76,7 @@ impl Claim {
         if !valid_id(&self.lane) || !catalog.contains(&self.lane) || self.status != "active" {
             return Err("unknown lane or non-active claim".into());
         }
-        if !["claude", "grok", "codex", "gemini", "human"].contains(&self.provider.as_str()) {
+        if !["claude", "grok", "codex", "gemini", "cursor", "human"].contains(&self.provider.as_str()) {
             return Err("unknown provider".into());
         }
         for (label, text, limit) in [("session", &self.session, 128), ("goal", &self.goal, 4096)] {

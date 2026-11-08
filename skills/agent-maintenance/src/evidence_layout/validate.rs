@@ -109,7 +109,7 @@ pub fn plan(request: &Request) -> Plan {
     );
     need(
         &mut errors,
-        ["codex", "claude", "grok", "gemini", "human"].contains(&request.owner.provider.as_str()),
+        ["codex", "claude", "grok", "gemini", "cursor", "human"].contains(&request.owner.provider.as_str()),
         "owner_provider",
     );
     let paths = [
