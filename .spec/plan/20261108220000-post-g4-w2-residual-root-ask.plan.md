@@ -3,7 +3,7 @@ id: plan:root/20261108220000-post-g4-w2-residual-root-ask
 title: Post-G4/W2 residual inventory — consolidated ROOT-ASK (Cap free)
 status: active
 created: 2026-11-08T13:01:00Z
-updated: 2026-11-08T13:01:00Z
+updated: 2026-11-08T13:06:00Z
 rel:
   depends_on:
     - plan:root/20261108215600-g4-at-cef-blocked-claim
@@ -65,3 +65,7 @@ Root/coordinator must allocate either (a) G4 CEF/AT interactive pilots with
 exact path release, or (b) W2 hosted H2 product-binding measurement + N06
 readiness join. Cursor waits on Cap-free; no architecture invention; detection
 freeze.
+
+Follow-on Cap-ready prep (no Cap burn; no idle ROOT-ASK re-push):
+`plan:root/20261108220600-cap-ready-g4-w2-harness` + private
+`.spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/`.
