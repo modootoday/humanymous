@@ -12,6 +12,27 @@ rel:
 
 ## Mission and current authority
 
+### Read-only isolated8 input / public-boundary candidate (2026-11-08)
+
+Root assigns a preimage-bound candidate against read-only
+tools-integration-5f1010d4, not direct source application. All writes stay in this
+owner's uniquely claimed resource-watermark evidence paths on codex/rust; no
+branch/worktree/ref changes, manifests, Model SGD or scoring edits. Candidate
+outputs add an external consumer test entry, package-local JSON/digest inputs and
+watermark module public-boundary rustdoc examples. The exact input hashes and
+absent destination preconditions must match before root applies any output.
+
+Positive consumer controls and compile-fail examples cover private frame
+Candidates/Budget, Limits fields, Ledger custody, Record construction and secret
+bytes. External tests cover a fixed IEEE frame vector, all truncations/single-bit
+damage, duplicate/ambiguous carriers, strict versus legacy split, JSON scalar/
+object preservation, opaque prefix preservation, cross-session/asset/bucket/key
+identity, CRC-valid forged tags, ledger commit/cancel/TTL/restart boundaries and
+unsupported MIME families. Fixtures live wholly under core/tests/watermark;
+include paths never reach the repository root or another package. This is not
+WASM/PNG implementation or full apply/trace qualification. Test code and
+compile-fail examples are authored only; root must allocate actual execution.
+
 ### Accepted eight-package baseline handoff (2026-11-08 KST)
 
 The human accepted the public package baseline in structural-development.

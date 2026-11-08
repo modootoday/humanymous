@@ -1,0 +1,14 @@
+{
+  "schema": "humanymous.watermark.public-boundary/1",
+  "provenance": "Fixed IEEE CRC32 check vector and explicit legacy carrier layout; identity metadata is synthetic test data, not recorded human traffic.",
+  "crc_carrier_hex": "313233343536373839",
+  "crc_frame_hex": "484d574d0009313233343536373839cbf43926",
+  "layout_carrier_hex": "01020304a0a1a2a3a4a5a6a7a8a9",
+  "layout_tag_id": 16909060,
+  "session_id": "fixture-session-alpha",
+  "other_session_id": "fixture-session-beta",
+  "asset_id": "/assets/fixture.bin",
+  "other_asset_id": "/assets/other.bin",
+  "bucket": 20300,
+  "json_inputs": ["42", "{\"user\":\"kim\",\"roles\":[\"a\",\"b\"]}"]
+}

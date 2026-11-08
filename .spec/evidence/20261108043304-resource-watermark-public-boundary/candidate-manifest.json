@@ -1,0 +1,144 @@
+{
+  "schema": "humanymous.preimage-bound.watermark-public-boundary/1",
+  "branch": "codex/rust",
+  "input_root": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4",
+  "input_root_read_only": true,
+  "input_watermark_files": [
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec.rs",
+      "bytes": 381,
+      "sha256": "a818fdc1ebd2abd69f424f2e440433dabf96d6d0fc72a8fa0bcf256a6ed95da4"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/base32.rs",
+      "bytes": 3144,
+      "sha256": "e38228ff1b56abba28e6d3131d118f9f67bd0b0bec9b36d77f76dedfafe40dcf"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/binary.rs",
+      "bytes": 2075,
+      "sha256": "1fa41827a7ded9e80e011c1585f6912eb22edc39d2db90db84394021ed98499d"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/mime.rs",
+      "bytes": 5808,
+      "sha256": "42560253ff31980bb0cdf39a19308f91c73cfb69a2b2cd7c4d9b83aa90aa6457"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/text.rs",
+      "bytes": 3824,
+      "sha256": "1fe851a45776138bb46fa7a6cf0b30285de82cfc9875a1ab77178e323294caf1"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/codec/text/tests.rs",
+      "bytes": 2098,
+      "sha256": "c4214e87281c8a3b3ab6c95c7e901ac96e13357585a5cf6c04a064afd4ec6612"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/error.rs",
+      "bytes": 2843,
+      "sha256": "89e7282543ab5ce239f192a747ed34421e0187d2c2a6466cf6f318688a3a59bd"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/frame.rs",
+      "bytes": 5376,
+      "sha256": "d7069f0b3341f47a8395952372c6b6fb98a8129d75c37f33644cace37f6b865a"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/frame/tests.rs",
+      "bytes": 2638,
+      "sha256": "92a24c4d4e4d8112f5ed1a0ba6cc78a112277dc4fcb602f866e02cf6fad89c0b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger.rs",
+      "bytes": 6553,
+      "sha256": "b1c2cfa277df3115a963fcd333c7f918c560562c2cb2317e43c2f07e5b971b56"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger/reservation.rs",
+      "bytes": 2922,
+      "sha256": "50aea0cc98d41e2b19ece6f8dfd05413ace8b9b079cc1c2eff1de1730b435683"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger/state.rs",
+      "bytes": 1395,
+      "sha256": "6ff5ad56c31fd7504e723d541b8541dd92220c580d3197640378ed0ebe2af95f"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/ledger/tests.rs",
+      "bytes": 8502,
+      "sha256": "048726f52c4ff465b4b30f3ebbdffc557bcc56c1182d0efa863a702bb5a4153b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/mod.rs",
+      "bytes": 411,
+      "sha256": "56e17457fab81afb3e3125d3e41839a70e47ddbe6c9918df1b35d63118adb73e"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/payload.rs",
+      "bytes": 4874,
+      "sha256": "94ecfefc57e9821c9a7240bf493d515ef3c90e0316e6a2af1db0b161e53b5fad"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/payload/tests.rs",
+      "bytes": 4696,
+      "sha256": "3b96bdd2ec0c5953f41fdbaafb5e91012ea4a0c398910a7226cbe2a1f54f5d76"
+    }
+  ],
+  "context_input_hashes": [
+    {
+      "path": "crates/sdk/humanymous-core/Cargo.toml",
+      "sha256": "de7c7f85d9e7d92f04f9d715c04360bbd1bc062dbbc4b367778c475675f38b1b"
+    },
+    {
+      "path": "crates/sdk/humanymous-core/src/lib.rs",
+      "sha256": "e234b7aac64e287b2bde79faaa01c99e05e546f42cb4723ce53fe7c787bf1513"
+    }
+  ],
+  "changes": [
+    {
+      "path": "crates/sdk/humanymous-core/src/watermark/mod.rs",
+      "preimage_exists": true,
+      "preimage_sha256": "56e17457fab81afb3e3125d3e41839a70e47ddbe6c9918df1b35d63118adb73e",
+      "output_sha256": "59ed938e16959a774864d1f5016c946727b6fd0f9673711b1f637426d55cdefb",
+      "output_bytes": 3353
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/watermark.rs",
+      "preimage_exists": false,
+      "preimage_sha256": null,
+      "output_sha256": "a5ce56029c83e02d8dce63f921cb46cbfaddeca29837c46d4f72214c7a099950",
+      "output_bytes": 117
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/watermark/fixtures/public-boundary.json",
+      "preimage_exists": false,
+      "preimage_sha256": null,
+      "output_sha256": "10c1e43c846532a7d0e6ddebd4579d6266778ab16ad06de920acd2dc4b67221d",
+      "output_bytes": 656
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/watermark/fixtures/public-boundary.sha256",
+      "preimage_exists": false,
+      "preimage_sha256": null,
+      "output_sha256": "90f2c2d58172c1fb734eb472f5a1e5c87828c390521b594d50533d38d14a5276",
+      "output_bytes": 65
+    },
+    {
+      "path": "crates/sdk/humanymous-core/tests/watermark/public_boundary.rs",
+      "preimage_exists": false,
+      "preimage_sha256": null,
+      "output_sha256": "945c079d8cf978e30e220849518b0e21838f15a7e7308ac268a30eee4bf21b5d",
+      "output_bytes": 10157
+    }
+  ],
+  "application": "Root only; atomically validate all present-preimage hashes and all absent-file preconditions before applying outputs. Reject partial/stale application; do not overwrite model/scoring/common manifests.",
+  "public_tests_authored": 10,
+  "rustdoc_positive_controls": 1,
+  "rustdoc_compile_fail_cases": 8,
+  "rust_tests_executed": 0,
+  "compiler_execution": "NOT_RUN",
+  "local_heavy_allocation": "NONE",
+  "source_application": "NOT_APPLIED",
+  "retained_unqualified": "WASM/PNG, high-level authenticated trace/issuance, resource/file/HTTP/Docker pilots; original full14goal not complete"
+}
