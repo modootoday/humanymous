@@ -198,12 +198,16 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
         }
     }
     if name == "h2-hosted-venue-validation.yml" {
-        // Specfold Cap=1 N06 hosted venue — manual github-hosted only; never ACT spoof.
+        // Specfold Cap=1 N06 hosted venue — codex/rust path-filtered push or dispatch; never ACT spoof.
         require(
             doc["on"].as_object().is_some_and(|events| {
-                events.len() == 1 && events.contains_key("workflow_dispatch")
-            }),
-            "hosted venue Cap must remain manual Specfold dispatch only",
+                events.len() == 2
+                    && events.contains_key("workflow_dispatch")
+                    && events.contains_key("push")
+            }) && strings(&doc["on"]["push"]["branches"]) == ["codex/rust".into()].into()
+                && strings(&doc["on"]["push"]["paths"])
+                    == [".github/workflows/h2-hosted-venue-validation.yml".into()].into(),
+            "hosted venue Cap must remain Specfold codex/rust path-filtered push + dispatch",
         )?;
         require(
             jobs.len() == 2
@@ -1793,7 +1797,7 @@ mod tests {
         for mutation in 0..4 {
             let mut changed = original.clone();
             match mutation {
-                0 => changed["on"]["push"] = json!({"branches":["codex/rust"]}),
+                0 => changed["on"]["push"]["branches"] = json!(["main"]),
                 1 => changed["jobs"]["cap"]["runs-on"] = json!("ubuntu-24.04"),
                 2 => {
                     let steps = changed["jobs"]["cap"]["steps"].as_array_mut().unwrap();

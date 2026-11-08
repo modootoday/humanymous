@@ -1,8 +1,13 @@
 # N06 hosted-venue Cap=1 Specfold (github-hosted Linux only).
 # Component Cap green != product; never invent pass_product_clean_room / desktop_as_hosted.
-# Manual dispatch only — Cap=1 once; no ACT / Desktop spoof.
+# Specfold burn: push this workflow file on codex/rust (path-filtered) or workflow_dispatch
+# once registered on default branch. Refuse ACT / Desktop spoof.
 name: CI / H2 hosted venue Cap
 'on':
+  push:
+    branches: [codex/rust]
+    paths:
+    - .github/workflows/h2-hosted-venue-validation.yml
   workflow_dispatch:
 permissions:
   contents: read
