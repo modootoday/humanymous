@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: f68b6dc7c0be008d9b7355fa5721cb30d0c6fcf72ae7ac9fbd2eb9d5c75b41e4, bytes: 148306, store: repo}
+  - {path: baseline.json, sha256: 20540e8b4894a62dd65b7b6e69b00802d31e7030618987f2bc0854bbbac903e6, bytes: 150356, store: repo}
 ---
 
 # Convention audit baseline
@@ -2908,3 +2908,35 @@ Both raw first3c92 and fix9cfa source epochs are independently preserved in audi
 snapshots. Private localcompiler-exit-fix-review-011.json binds this direction;
 Root retains integration and execution allocation, full hosted/tree/CA-LIFETIME/
 native4/whole-root gates remain OPEN. No executor was requested or run by audit.
+
+CA-LOCAL-RECEIPT-MUTABILITY-01 (P2, Root/Delivery) is a separate candidate API
+invariant gap at preserved revision2 SHA9cfaec5e, not an observed exploit/native
+failure. LocalObservation exposes pub records:Vec and pub failures:Vec. Callers
+holding its mutable owner can clear prior causes, delete failed rows or alter
+record labels/argv/env; start/report rely on those vectors being sticky/complete.
+After source restoration, clearing the gates permits retrying the same case and
+removing the first failed attempt. The new pure policy control protects only the
+slice supplied to it, not these public owning fields. No compiler run is claimed.
+
+Root and Delivery received the minimal correction: keep owner vectors private,
+expose only shared slices/getters for raw receipt persistence, no mutable/reset or
+early extraction API. Add a sibling-to-local_compiler compile-negative mutation
+control with positive read-only access and sticky first-cause regression; private
+access from descendant unit tests alone cannot establish the boundary. Original
+expected-exit source correction remains valid at its named scope. Private
+localcompiler-receipt-mutability-review-012.json binds this new finding to the
+independently preserved source; actual fixture/compiler/native/full-root gates
+remain OPEN and audit has no source/executor grant.
+
+CA-LOCAL-RECEIPT-MUTABILITY-01 follow-up: revision3 source26090B/SHA9a25d3bc453398b38d0ee7a13ca4c855f648d1f3bd0286be21d63062b7617583
+makes both owner vectors private and exposes only shared records()/failures()
+slices. No mutable getter/reset/clear/early extraction API exists in this delta.
+All4 authored sibling controls were read: positive shared access; two private-
+field mutation refusals; one shared-getter argv mutation refusal. They must mount
+as siblings, not descendants. This corrects the named source API gap, not actual
+compiler proof:4controls and9pure fixtures remain NOTRUN. The expected101 policy
+fix and shared capture semantics are unchanged. Old9cfa and new9a25 source epochs,
+patch and fixture bodies are preserved independently. Private
+localcompiler-receipt-owner-fix-review-013.json binds correction/source limits;
+Root retains actual integration/allocation and full compiler/hosted/tree/native/
+CA-LIFETIME gates remain OPEN.

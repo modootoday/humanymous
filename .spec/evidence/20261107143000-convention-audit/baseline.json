@@ -280,6 +280,22 @@
       "owner_notified": true,
       "fixed_source_sha256": "9cfaec5efee0bb1793ae1f4621f64ccd2dd44699da7213f3652f04dfa2a17e2b",
       "actual_regression_verified": false
+    },
+    {
+      "id": "CA-LOCAL-RECEIPT-MUTABILITY-01",
+      "priority": "P2",
+      "owner": "Root/Delivery",
+      "state": "Named candidate API gap source-corrected revision3; actual sibling compile controls pending",
+      "source_sha256": "9cfaec5efee0bb1793ae1f4621f64ccd2dd44699da7213f3652f04dfa2a17e2b",
+      "trigger": "LocalObservation exposes pub records Vec and pub failures Vec while start/report gates rely on empty failures and exactly5records; caller can clear first failures/remove failed rows/edit receipt associations",
+      "effect": "Declared sticky first-cause/raw-record ownership is not enforced at module API; clear/remove enables same-case retries and loss of first attempt",
+      "scope": "Trusted local compiler-observation API contract, not a remote exploit or native authority claim",
+      "required_fix": "Private owner vectors with shared-slice read-only getters, no mutating/reset/early-extraction API; actual receipt/source associations remain internally owned",
+      "required_regression": "Sibling-to-local_compiler negative mutation/field-access controls with positive read-only API, plus sticky first-failure behavior. Tests inside descendant unit module alone do not prove privacy.",
+      "runtime_or_exploit_observed": false,
+      "owners_notified": true,
+      "fixed_source_sha256": "9a25d3bc453398b38d0ee7a13ca4c855f648d1f3bd0286be21d63062b7617583",
+      "actual_regression_verified": false
     }
   ],
   "evidence_references": {
@@ -2650,6 +2666,18 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/localcompiler-exit-fix-review-011.json",
     "sha256": "d204751e990cbd5b4576b697a9da5dbdf519c59b532771203ac8ef8ac42c1116",
     "bytes": 1726,
+    "goal_complete": false
+  },
+  "localcompiler_receipt_mutability_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/localcompiler-receipt-mutability-review-012.json",
+    "sha256": "eaee10387bdf09646caddf097c405a3882f197c5893141b62e6a5aced0a6260a",
+    "bytes": 1945,
+    "goal_complete": false
+  },
+  "localcompiler_receipt_owner_fix_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/localcompiler-receipt-owner-fix-review-013.json",
+    "sha256": "265b7ade31361b639e6c51158391c343f40643b52e258d76f9d4b608e290ee73",
+    "bytes": 2658,
     "goal_complete": false
   }
 }
