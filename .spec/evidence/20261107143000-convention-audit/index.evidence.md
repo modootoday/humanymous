@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: 23d496e8df38b82b11a00ca7e26b340ed9c985fc1be5b97c02923b142140b1ce, bytes: 145473, store: repo}
+  - {path: baseline.json, sha256: 7d9bc554dfa685b666683d25c7dcb327a0263db0cd0d7281552a868644d417f7, bytes: 145759, store: repo}
 ---
 
 # Convention audit baseline
@@ -2805,3 +2805,23 @@ default-feature absence and exact unsafe negatives remain UNRUN/unqualified.
 No NTFS/cross-SID/original-clock/provider/namespace/Ready or full migration pass.
 Private browser-artifact-b1-implementation-review-006.json binds both distinct
 checkpoints and raw logs; no source-success transfer between epochs is inferred.
+
+B1 positive-control follow-up: actual no-run borrow API doctest1pass and the same
+2 compile-fail examples rerun successfully, each block0fail/0ignore/1filtered.
+This confirms API availability alongside private-field/lone-into_file refusal;
+those negatives are reruns, not two extra unique cases. Receipt before/after
+create_file.rs SHA b58ad0743275242bd69f2ab538d725c50c713db19d955ed2e9d19eea3e102ec6
+matches current selected source. It is single-file scope, not the prior1795full
+source seal or a new strict/native execution. Actual default-feature absence,
+exact unsafe/safe-sibling/linkage negative controls and4native fixtures still need
+results; Root received the explicit remaining allocation request.
+
+B2 plan1d0fa96c now specifies the detached fixed-console/no-stdio flag profile and
+qualification-only helper finite8MiB/stream/16MiB aggregate output direction.
+Successful helper capture requires real joins; killed-helper OS termination does
+not imply those joins. This addresses proposal direction only: B2/native bodies,
+original outer owner, real console/pipe/failure fixtures, build-target/temp storage
+and full capture/provider qualification stay unapproved/unverified. The plan's
+old header still labels B1 unapproved without a historical epoch despite6aea9fcc;
+Root was notified for owner correction. Audit did not edit foreign canon. Private
+b1-positive-b2-profile-followup-007.json binds actual doc logs/source and new plan.

@@ -2606,5 +2606,11 @@
     "sha256": "14cc451ee15ab88cb9230f7e28365c7cb42346bc00e4669f984e5b1e83a9c612",
     "bytes": 8908,
     "goal_complete": false
+  },
+  "b1_positive_b2_profile_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b1-positive-b2-profile-followup-007.json",
+    "sha256": "66acf12a52355d2f12558725f1ea0df2949789e79ad4428bdd69d903af1fdc1c",
+    "bytes": 3087,
+    "goal_complete": false
   }
 }
