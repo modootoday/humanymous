@@ -2591,7 +2591,8 @@
     "sha256": "2f48afbc4acc12e135735c4ee9f002c4ab052df4ce66ab8414c158bf591b650c",
     "bytes": 3732,
     "scope": "Unapproved B2 proposal/body acceptance conditions and console/stdio completeness gap; no runtime finding or execution",
-    "goal_complete": false
+    "goal_complete": false,
+    "current_disposition": "dc276288 corrected B1status prose; detached-profile and B2P directions reviewed; B2stillunapproved, no actualbackend/outermanufacturer/native proof"
   },
   "b2_b2p_bounded_review": {
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-b2p-bounded-review-002.json",
@@ -2617,6 +2618,12 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/adapter-candidate-b1-feature-review-008.json",
     "sha256": "0c87401063db186dfd90c308bade4038e5faef13813d735b56502f16fecc0d5c",
     "bytes": 6110,
+    "goal_complete": false
+  },
+  "adapter_declarations_b2_status_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/adapter-declarations-b2-status-review-009.json",
+    "sha256": "dbc2264c846bb392c8dc1efecfd020417c2fb077c2f12142ac27ebf90d4fd616",
+    "bytes": 2835,
     "goal_complete": false
   }
 }

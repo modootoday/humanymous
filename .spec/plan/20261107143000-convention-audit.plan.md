@@ -3087,3 +3087,25 @@ linkage controls and4native fixtures still need results. Root assigned Delivery
 candidate-only local compiler-observation preparation; audit requested no executor
 or new source grant. Private adapter-candidate-b1-feature-review-008.json binds maps,
 producer review and actual feature logs without transferring old source success.
+
+Adapters declaration/reader follow-up: all171 case-matrix rows are unique by old
+source/attribute/name and new source/name; anchored function declarations exist
+in both preserved trees. Distribution94 library-context,53 integration,17
+qualification-bin,7example. All53 recorded literals appear in source and resolve
+to existing files inside candidate root (39module/4resource/10CoreDATA rows).
+This is lexical source preservation, not syntax/type/Cargo registration, actual
+selector reconciliation, execution, test-effect or full semantic/SRP qualification.
+
+The flagged B2 header status mismatch is prose-corrected by dc276288: conditional
+B1/isolated implementation and still-unapproved B2 are now distinguished. Earlier
+source critiques remain historical. No extra native/unsafe grant is inferred.
+
+Current indexed working-tree draft evidence:root/20261108034133 has one2773-byte
+attachment, SHA68e62dda9606230677257503e2785c527cf642dbf5dd5c30a391347b279db479,
+matching its index. Its separate CEF1793/B1feature1795 hashes, selected counts and
+component limits agree with independently read private raw checkpoints. Queries
+positive example performs pure wire-byte conversion/function binding, not a native
+query. Owner draft was Git-untracked at observation; no committed/publication
+claim is made. It cannot replace raw custody, compiler-read closure or actual
+native/runtime gates. Private adapter-declarations-b2-status-review-009.json binds
+these observations; full objective remains active.
