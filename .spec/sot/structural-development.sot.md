@@ -111,6 +111,38 @@ after correction; the actual eight-replica read-only check also passed. Isolated
 replacement-ref, missing-object and process-bound negative execution remains a
 hosted qualification requirement; schema units do not prove those process cases.
 
+## Isolated Tools implementation assembly
+
+Root assembled an isolated implementation candidate from exact source5f1010d4,
+retaining the original archive SHA-256
+8b4dd85edde2262c448de51e85030f716871a9090672620f97d8f7c5dcbbf28d.
+No shared Cargo or original implementation path was moved. In that candidate,
+274 original files moved once,37 Rust literal path sites were adjusted by their
+resolved original targets,14 reviewed composition roots were linked and the13
+original manifests were retained outside the candidate. The unified CLI manifest
+and workspace metadata now resolve21 members. The first default CLI library/bin
+check passed, then the locked Delivery role check passed. The all-target/all-
+feature check failed at maintenance integration linkage; after linking actual
+private contexts, it exposed ten remaining manifest-concatenated mutable inputs.
+Those errors remain assigned to the maintenance reader implementation owner.
+
+A separate locked executable-target check excluding maintenance first failed at
+the report import, which still referenced the former attacker library instead of
+the linked legacy leaf. Root corrected that import in the isolated candidate;
+the subsequent selected executable check passed with warnings. Warnings include
+unused exports and unreachable private qualification surfaces; they must be
+resolved by narrower real module composition, not blanket allowances. Neither
+the failed all-target check nor this warning-bearing pass is strict qualification.
+Actual source-preservation, case census, per-role strict checks, extracted-package
+and runtime gates remain open before live cutover.
+
+Independent audit also found nonregular DATA inputs were checked only after
+open. Root added a regular-file/size check before open while preserving held-file
+post-read checks; no hostile-race guarantee follows. Strict Delivery Clippy passed
+after this source correction. The Git cleanup wait/join can still outlive the
+poll deadline if a descendant retains stdout; hard process-tree containment and
+the isolated negative probe remain unresolved and must not be claimed complete.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.

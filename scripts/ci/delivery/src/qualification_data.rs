@@ -120,6 +120,11 @@ fn read(root: &Path, relative: &str) -> Result<Vec<u8>> {
             )?;
         }
     }
+    let selected = std::fs::symlink_metadata(&path).map_err(|_| "DATA input metadata missing")?;
+    require(
+        selected.is_file() && selected.len() <= 1_048_576,
+        "DATA file type/bound refused before open",
+    )?;
     let file = std::fs::File::open(&path).map_err(|_| "DATA input open failed")?;
     let before = file.metadata().map_err(|_| "DATA metadata failed")?;
     require(
