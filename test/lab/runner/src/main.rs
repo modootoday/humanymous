@@ -6,6 +6,7 @@ mod browser_expectations;
 mod browser_outcome;
 #[path = "../../browser_wire.rs"]
 mod browser_wire;
+mod clean_room_matrix;
 mod docker;
 mod fixture;
 #[path = "../../mount_policy.rs"]
@@ -23,7 +24,8 @@ fn main() {
         Some("provider-preflight") => provider::run(&args[1..]),
         Some("cleanup") => orchestration::cleanup_expired().map(|()| 0),
         Some("audit") => audit::run(&args[1..]),
-        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST".into()),
+        Some("matrix-plan") => clean_room_matrix::plan(&args[1..]),
+        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH]".into()),
     };
     match result {
         Ok(code) => std::process::exit(code),
