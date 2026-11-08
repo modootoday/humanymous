@@ -1,7 +1,71 @@
 //! Exact committed DATA replicas; this check grants no runtime or OS authority.
 use crate::{Result, require, source};
 use serde_json::{Value, json};
-use std::{collections::BTreeSet, io::Read, path::Path};
+use std::{
+    collections::BTreeSet,
+    io::Read,
+    path::Path,
+    process::{Command, Stdio},
+    sync::mpsc,
+    time::{Duration, Instant},
+};
+
+fn producer_git(root: &Path, args: &[&str], cap: usize, deadline: Instant) -> Result<Vec<u8>> {
+    let mut child = Command::new("git")
+        .arg("--no-replace-objects")
+        .args(args)
+        .current_dir(root)
+        .env("GIT_NO_REPLACE_OBJECTS", "1")
+        .env("GIT_NO_LAZY_FETCH", "1")
+        .env_remove("GIT_DIR")
+        .env_remove("GIT_WORK_TREE")
+        .env_remove("GIT_OBJECT_DIRECTORY")
+        .env_remove("GIT_ALTERNATE_OBJECT_DIRECTORIES")
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .map_err(|_| "DATA Git start failed")?;
+    let stdout = child.stdout.take().ok_or("DATA Git stdout missing")?;
+    let (send, receive) = mpsc::sync_channel(1);
+    let reader = std::thread::spawn(move || {
+        let mut bytes = Vec::new();
+        let result = stdout.take(cap as u64 + 1).read_to_end(&mut bytes);
+        let _ = send.send(result.map(|_| bytes));
+    });
+    let mut bytes = None;
+    let result =
+        loop {
+            if Instant::now() >= deadline {
+                break Err("DATA Git deadline exceeded".into());
+            }
+            match receive.try_recv() {
+                Ok(Ok(output)) if output.len() <= cap => bytes = Some(output),
+                Ok(_) => break Err("DATA Git output bound/read refused".into()),
+                Err(mpsc::TryRecvError::Disconnected) if bytes.is_none() => {
+                    break Err("DATA Git reader failed".into());
+                }
+                _ => {}
+            }
+            match child.try_wait() {
+                Ok(Some(status)) if !status.success() => break Err(
+                    "DATA producer object unavailable; explicit retained-object admission required"
+                        .into(),
+                ),
+                Ok(Some(_)) if bytes.is_some() => break Ok(bytes.take().unwrap()),
+                Err(_) => break Err("DATA Git wait failed".into()),
+                _ => {}
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        };
+    if result.is_err() {
+        let _ = child.kill();
+    }
+    let waited = child.wait();
+    let joined = reader.join();
+    require(waited.is_ok() && joined.is_ok(), "DATA Git cleanup failed")?;
+    result
+}
 
 const PACKAGE: &str = "crates/apps/humanymous-cli";
 const COMMIT: &str = "3137c905ac4e52b8b345fa2306af9e4ef4d42b48";
@@ -134,6 +198,7 @@ fn records(manifest: &Value) -> Result<Vec<&Value>> {
 }
 
 pub fn check(root: &Path) -> Result<Value> {
+    let deadline = Instant::now() + Duration::from_secs(30);
     require(
         root.is_absolute()
             && root
@@ -163,16 +228,24 @@ pub fn check(root: &Path) -> Result<Value> {
             "DATA replica hash mismatch",
         )?;
         let object = format!("{COMMIT}:{producer}");
-        let blob = crate::command::text(root, "git", &["rev-parse", &object])?;
+        let blob = String::from_utf8(producer_git(
+            root,
+            &["rev-parse", "--verify", &object],
+            128,
+            deadline,
+        )?)
+        .map_err(|_| "DATA Git object encoding refused")?;
         require(
             row["producer_git_blob"] == blob.trim(),
             "DATA producer blob mismatch",
         )?;
-        let original = crate::command::output(root, "git", &["cat-file", "blob", blob.trim()])?;
-        require(
-            original.status.success() && original.stdout == bytes,
-            "DATA producer byte mismatch",
+        let original = producer_git(
+            root,
+            &["cat-file", "blob", blob.trim()],
+            bytes.len(),
+            deadline,
         )?;
+        require(original == bytes, "DATA producer byte mismatch")?;
     }
     Ok(
         json!({"schema":"humanymous.cli-qualification-data-check/1", "replicas":8,

@@ -97,6 +97,20 @@ de66ea4c3f44f793e296c08027e2eeb7155011d4657282edcc20c986324bea87.
 No source fixture was rewritten and runtime_qualified remains false. This new
 Delivery module must join Root's final Tools movement map before consolidation.
 
+Independent Delivery review found that the initial Git lookup inherited replace
+objects and unbounded subprocess capture. Root corrected both producer resolution
+and blob reading with --no-replace-objects, GIT_NO_REPLACE_OBJECTS=1 and
+GIT_NO_LAZY_FETCH=1; ambient Git directory/object overrides are removed. A private
+bounded stdout reader caps object IDs at128bytes and blob bytes at the already
+verified replica length, under one30second monotonic deadline. Failure kills and
+reaps the direct Git child and joins its reader. Missing original objects refuse
+with explicit retained-object admission required: a shallow checkout must fetch
+or retain the reviewed original commit separately before using this offline gate.
+There is no current-tree or network fallback. Two units and strict Clippy passed
+after correction; the actual eight-replica read-only check also passed. Isolated
+replacement-ref, missing-object and process-bound negative execution remains a
+hosted qualification requirement; schema units do not prove those process cases.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
