@@ -2556,3 +2556,28 @@ callback after one actual Authority observation, require WAL ALLOW and zero orig
 versus timely one-origin. They remain ignored hosted-only, NOT_RUN by this audit.
 No new production/host success follows from this source inspection. Private
 closed-invariant-consolidation-review-001.json binds the reviewed source view.
+
+## Tools workflow revision2 independent source review
+
+All10 candidate workflow hashes/sizes reproduce. Independent YAML structural
+comparison finds215 original steps retained in order,66 changed run scalars,
+5 changed env blocks and2 added finite-result guards. Workflow/job fields and
+other original step fields match. No permission/trigger/runner/timeout widening
+is observed. Both guards retain toolchain/cancellation conditions without
+continue-on-error; original Cargo failure and finite result validation remain
+separate required facts, not a shell pipeline masking Cargo exit.
+
+Four full Lab runs include ignored tests and all three required root/recipe
+variables. The full Pages run includes its ignored corpus gate and reviewed root/
+corpus pin. Current Lab has exactly2 ignored checkout cases; Pages1. Canonical
+recipe/corpus bytes match the fixed reviewed pins. Full hosted include-ignored
+case census, exact original identities and positive outputs still require actual
+execution; old default-suite or one-case results do not qualify these commands.
+
+The candidate's observed CLI manifest fcceb05a is historical; current b7db8e40
+differs. Delivery retained both observations rather than silently refreshing
+identity, and reports its13 role/bin/feature joins remain intact. This audit does
+not infer whole-manifest semantic equivalence. Final source freeze/rejoin, nested
+Cargo/path rewiring, admitted3137 Git objects for offline DATA, whole Rust policy
+and exact-source hosted checks remain OPEN. No live apply/compiler/dispatch was
+performed. Private tools-workflow-candidate-review-001.json binds this review.

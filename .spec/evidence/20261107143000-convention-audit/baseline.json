@@ -2359,5 +2359,15 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/closed-invariant-consolidation-review-001.json",
     "bytes": 3070,
     "handoff": "Stale summary corrected to distinguish accepted source from missing actual host qualification"
+  },
+  "tools_workflow_candidate_review": {
+    "actual_hosted_or_policy_qualified": false,
+    "result": "10YAMLfiles/215oldsteps preserved;66run+5envchanges/2finiteguards;10hashes exact",
+    "identity": "Historical manifestfcceb05a differs from currentb7db8e40; owner retains both views and final freeze/rejoin pending",
+    "sha256": "2c2f415a0e75ea66c42b26baad9880d9df4152ef5c41f1f509675c438590218b",
+    "bytes": 1748,
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-workflow-candidate-review-001.json",
+    "revision": 2,
+    "goal_complete": false
   }
 }
