@@ -53,15 +53,17 @@ const HOSTED_CAP_EXIT0_REL: &str =
 const N06_READINESS_CLOSER_REL: &str =
     ".spec.local/root/evidence/20261109005000-cursor-n06-owner-join/CLOSER.json";
 
-const G2_COMPONENT_RECEIPT_REL: &str = ".spec.local/root/evidence/20261108213000-g2-collector-provenance/cap1-browser-pilot/cap1-receipt.json";
+/// Desktop collector Cap1 component receipt (≠ G2 product-binding).
+pub const G2_COMPONENT_RECEIPT_REL: &str = ".spec.local/root/evidence/20261108213000-g2-collector-provenance/cap1-browser-pilot/cap1-receipt.json";
 
 const G5_COMPONENT_SUMMARY_REL: &str =
     ".spec.local/root/evidence/cursor-product-custody-witness/attempt-5/summary.json";
 
-/// Hosted / product-binding topology still Root-allocated for G2 close.
+/// Component observation surfaces (≠ Cap topology). Cap product-binding topology
+/// is `g2_collector_product_binding::REQUIRED_CAP_TOPOLOGY` (Cap-ready until TRANSFER).
 pub const G2_PRODUCT_BINDING_TOPOLOGY: &[&str] = &[
     "deployments/lab/compose.rust.collector.yaml",
-    "deployments/lab/compose.browser-product.yaml",
+    "deployments/lab/compose.rust.browser.yaml",
 ];
 
 /// Authenticated witness transport product paths remain Root-allocated (G5).
@@ -237,6 +239,12 @@ pub(super) fn run_g2_collector_product_binding_readiness(lab: &mut Lab) -> Resul
     })?;
     validate_g2_component_receipt(&receipt)?;
     let missing_topology = missing_g2_product_binding_topology(&root);
+    let missing_cap_topology =
+        super::g2_collector_product_binding::missing_cap_topology(&root);
+    // Cap CLI Cap=0 scaffold exists; Cap CLI+live topology still absent until TRANSFER.
+    let g2_cap_cli_scaffolded = true;
+    let g2_cap_topology_live = missing_cap_topology.is_empty();
+    let no_g2_cap_cli_with_topology = !g2_cap_topology_live;
     // Compose files may exist as component surfaces; product-binding still open.
     let product_binding_ready = false;
     let readiness = json!({
@@ -247,6 +255,8 @@ pub(super) fn run_g2_collector_product_binding_readiness(lab: &mut Lab) -> Resul
         "cap_burn": false,
         "cap_selector": G2_CAP_SELECTOR,
         "pilot_command": G2_PILOT_COMMAND,
+        "cap_cli_selector": super::g2_collector_product_binding::CAP_SELECTOR,
+        "cap_cli_pilot_command": super::g2_collector_product_binding::CODE_DEFINED_PILOT_COMMAND,
         "product": 0,
         "pass_product_clean_room": 0,
         "g2_closed": false,
@@ -257,9 +267,13 @@ pub(super) fn run_g2_collector_product_binding_readiness(lab: &mut Lab) -> Resul
         "product_binding_ready": product_binding_ready,
         "missing_product_binding_topology": missing_topology,
         "topology_surfaces_present": G2_PRODUCT_BINDING_TOPOLOGY,
+        "missing_cap_topology": missing_cap_topology,
+        "required_cap_topology": super::g2_collector_product_binding::REQUIRED_CAP_TOPOLOGY,
+        "g2_cap_cli_scaffolded": g2_cap_cli_scaffolded,
+        "g2_cap_topology_live": g2_cap_topology_live,
         "cap_realloc_policy": "only_real_structural_next_feeder",
-        "no_g2_cap_cli_with_topology": true,
-        "note": "Desktop collector Cap1 component ≠ G2 product-binding; Cap=0; Cap free conserved after Unlock A EXIT0; never invent pass_product_clean_room"
+        "no_g2_cap_cli_with_topology": no_g2_cap_cli_with_topology,
+        "note": "Desktop collector Cap1 component ≠ G2 product-binding; Cap CLI Cap=0 scaffolded; Cap topology Cap-ready until TRANSFER; Cap free conserved after Unlock A EXIT0; never invent pass_product_clean_room"
     });
     snapshot::write(
         &lab.evidence,

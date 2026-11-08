@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T17:50:00Z
+updated: 2026-11-08T18:05:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -105,10 +105,12 @@ Cap=0 BrowserReady honesty refuse-closes without inventing AT.
 Matrix-plan after A/B/C: `serialize_cap_when_unlocked=0`. No
 hosted/W2/authority/A Cap reburn without structural delta. Cap free=**false**.
 
-**Decision @ `e38ce6c5` tip audit: `hard_stop_root_ask`.** No Cursor-claimable
-Cap=0 product-feeder remains that is not already closed by the honesty CLIs
-above. Cap burn=0. No more empty honesty CLI mirrors. Cap=1 forbidden while
-Cap free=false.
+**Decision @ `e38ce6c5` tip audit: `hard_stop_root_ask` for AUTH/AT.** Cap=0
+honesty CLIs remain closed. Cap=0 **G2 Cap CLI Cap-ready structural feeder**
+landed @ tip `8a129ab7`+ (Cap CLI `--g2-collector-product-binding` scaffold +
+Cap-ready topology pack; Cap realloc **eligible** not executed; Cap free still
+**false**; Cap burn=0). Cap=1 forbidden while Cap free=false without Cap
+realloc + live Cap topology TRANSFER. Do not duplicate CONSOLIDATED-ROOT-ASK.
 
 Cap=0 CONSOLIDATED-ROOT-ASK (supersedes Cap-free-era packet):
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/CONSOLIDATED-ROOT-ASK.md`
@@ -129,7 +131,9 @@ Bound receipts: tip `e54c51e6` (hard-stop) / honesty tip `e38ce6c5`; hosted Cap
 **42500919761**; Unlock A Cap EXIT0; BrowserReady honesty `34493ff0`; G2/G5
 honesty `14268686`. Tip-reconfirm receipt:
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/HARD-STOP-RECEIPT.json`
-(matrix tip-bound; AUTH/AT still absent).
+(matrix tip-bound; AUTH/AT still absent). G2 Cap-ready feeder:
+`.spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/` + plan
+`20261109030000-g2-collector-product-binding-cap-ready.plan.md`.
 
 Never invent `pass_product_clean_room`, CEF binary, `desktop_as_hosted`,
 BrowserReady, or Root ownership tokens. Capture `observe_h2` still forbidden as
@@ -137,5 +141,6 @@ product-binding. Evidence:
 `.spec.local/root/evidence/20261109022100-cursor-cap0-g2-g5-honesty/`,
 `.spec.local/root/evidence/20261109023000-cursor-cap0-browser-ready-honesty/`,
 `.spec.local/root/evidence/20261109024500-cursor-cap0-n06-owner-auth-honesty/`,
+`.spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/`,
 and
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/`.

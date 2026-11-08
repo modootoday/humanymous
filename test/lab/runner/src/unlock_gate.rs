@@ -17,6 +17,11 @@ use crate::orchestration::cap0_product_honesty::{
     G5_PILOT_COMMAND, G5_ROOT_ASK_PATHS, INTERACTIVE_AT_HANDOFF_CANDIDATES,
     N06_OWNER_AUTH_CAP_SELECTOR, N06_OWNER_AUTH_PILOT_COMMAND, cap_free_after_unlock_a,
 };
+use crate::orchestration::g2_collector_product_binding::{
+    CAP_READY_PACK_REL as G2_CAP_READY_PACK, CAP_SELECTOR as G2_CAP_CLI_SELECTOR,
+    CODE_DEFINED_PILOT_COMMAND as G2_CAP_CLI_PILOT, CONTRACT_REL as G2_CAP_CONTRACT,
+    REQUIRED_CAP_TOPOLOGY as G2_REQUIRED_CAP_TOPOLOGY, missing_cap_topology as g2_missing_cap_topology,
+};
 use crate::orchestration::g4_cef_at::{
     CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CEF_BUNDLE_ENV,
     CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT, PATH_RELEASE_SURFACES,
@@ -145,14 +150,31 @@ impl UnlockProbe {
                 "free": cap_free_after_unlock_a(root).unwrap_or(false),
                 "realloc_policy": "only_real_structural_next_feeder_after_exit0_honesty",
                 "no_cap_spam_abc": true,
-                "g2_g5_cap_cli_with_topology": false,
+                "g2_g5_cap_cli_with_topology": g2_missing_cap_topology(root).is_empty(),
+                "g2_cap_cli_scaffolded": true,
+                "g2_cap_topology_live": g2_missing_cap_topology(root).is_empty(),
+            },
+            "g2_collector_product_binding_cap_cli": {
+                "selector": G2_CAP_CLI_SELECTOR,
+                "pilot_command": G2_CAP_CLI_PILOT,
+                "code_defined_pilot_command": G2_CAP_CLI_PILOT,
+                "status": if g2_missing_cap_topology(root).is_empty() {
+                    "cap_cli_topology_live_cap1_requires_realloc"
+                } else {
+                    "cap0_scaffold_topology_cap_ready"
+                },
+                "required_cap_topology": G2_REQUIRED_CAP_TOPOLOGY,
+                "missing_cap_topology": g2_missing_cap_topology(root),
+                "contract": G2_CAP_CONTRACT,
+                "cap_ready_pack": G2_CAP_READY_PACK,
+                "note": "Cap CLI Cap=0 scaffolded; Cap topology Cap-ready until TRANSFER; Cap=1 only after Cap realloc + live topology; never invent pass_product_clean_room"
             },
             "g2_collector_product_binding_cap0": {
                 "selector": G2_CAP_SELECTOR,
                 "pilot_command": G2_PILOT_COMMAND,
                 "status": "cap0_honesty_only",
                 "topology_surfaces": G2_PRODUCT_BINDING_TOPOLOGY,
-                "note": "Cap=0 readiness only; Desktop collector component ≠ G2 product; no Cap=1 without Cap free + claimable Cap CLI+topology"
+                "note": "Cap=0 readiness only; Desktop collector component ≠ G2 product; Cap CLI Cap=0 scaffolded separately; no Cap=1 without Cap realloc + live Cap CLI+topology"
             },
             "g5_witness_transport_cap0": {
                 "selector": G5_CAP_SELECTOR,
@@ -203,6 +225,8 @@ impl UnlockProbe {
                 "capture_component_is_not_product_binding": true,
                 "cap_realloc_only_structural_feeder": true,
                 "g2_g5_cap0_not_product": true,
+                "g2_cap_cli_scaffolded_not_product": true,
+                "code_defined_g2_collector_product_binding_cap_cli": true,
                 "g4_component_not_browser_ready": true,
                 "never_invent_interactive_at_tokens": true,
                 "hosted_unlock_a_n06_readiness_not_owner_join": true,

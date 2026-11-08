@@ -49,6 +49,7 @@ mod browser;
 mod browser_actor;
 mod browser_failure;
 pub(crate) mod cap0_product_honesty;
+pub(crate) mod g2_collector_product_binding;
 pub(crate) mod g4_cef_at;
 mod go;
 mod go_fixture;
@@ -74,6 +75,7 @@ struct Lab {
     w2_h2_product_binding: bool,
     w2_h2_hosted_venue: bool,
     n06_owner_join_readiness: bool,
+    g2_collector_product_binding: bool,
     g2_collector_product_binding_readiness: bool,
     g5_witness_transport_honesty: bool,
     browser_ready_interactive_at_honesty: bool,
@@ -147,6 +149,22 @@ impl Lab {
                 "n06-owner-join-readiness Cap has no Docker compose topology; Cap=0 readiness/auth handoff only; never invent pass_product_clean_room or Root ownership tokens"
                     .into(),
             );
+        }
+        if self.g2_collector_product_binding {
+            // Cap topology is Cap-ready until TRANSFER; Cap CLI refuse-closed when absent.
+            let mut command = vec![
+                "compose".into(),
+                "-p".into(),
+                self.project.clone(),
+                "-f".into(),
+                self.config_file(
+                    "deployments/lab/compose.g2-collector-product-binding.yaml",
+                )?,
+                "--profile".into(),
+                "g2-collector-product-binding".into(),
+            ];
+            command.extend(args.iter().map(|s| (*s).to_owned()));
+            return Ok(command);
         }
         if self.g2_collector_product_binding_readiness {
             return Err(
@@ -345,6 +363,9 @@ impl Lab {
         }
         if self.n06_owner_join_readiness {
             return h2_product_binding::run_n06_owner_join_readiness(self);
+        }
+        if self.g2_collector_product_binding {
+            return g2_collector_product_binding::run(self);
         }
         if self.g2_collector_product_binding_readiness {
             return cap0_product_honesty::run_g2_collector_product_binding_readiness(self);
@@ -642,6 +663,7 @@ impl Lab {
         // owned project left no Docker resources. Never invent compose down.
         if self.g4_cef_at
             || self.n06_owner_join_readiness
+            || self.g2_collector_product_binding
             || self.g2_collector_product_binding_readiness
             || self.g5_witness_transport_honesty
             || self.browser_ready_interactive_at_honesty
@@ -699,6 +721,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut w2_h2_product_binding = false;
     let mut w2_h2_hosted_venue = false;
     let mut n06_owner_join_readiness = false;
+    let mut g2_collector_product_binding = false;
     let mut g2_collector_product_binding_readiness = false;
     let mut g5_witness_transport_honesty = false;
     let mut browser_ready_interactive_at_honesty = false;
@@ -724,6 +747,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--w2-h2-product-binding" => w2_h2_product_binding = true,
             "--w2-h2-hosted-venue" => w2_h2_hosted_venue = true,
             "--n06-owner-join-readiness" => n06_owner_join_readiness = true,
+            "--g2-collector-product-binding" => g2_collector_product_binding = true,
             "--g2-collector-product-binding-readiness" => {
                 g2_collector_product_binding_readiness = true
             }
@@ -748,6 +772,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
@@ -776,6 +801,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || authority_node_ipc
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
@@ -802,6 +828,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || authority_node_ipc
             || w2_h2_product_binding
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
@@ -826,6 +853,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || authority_node_ipc
             || w2_h2_product_binding
             || w2_h2_hosted_venue
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
@@ -836,6 +864,32 @@ pub fn run(args: &[String]) -> Result<i32> {
         {
             return Err(
                 "n06-owner-join-readiness Cap requires its own fresh profile; refuse hosted Cap reburn / Unlock A invent / foreign Cap selectors; Cap=0 without Root auth; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+    if g2_collector_product_binding {
+        // Cap CLI Cap=0 scaffold: Cap free / topology refuse-closed inside Cap module
+        // before Docker. Cap=1 only after Cap realloc + live Cap topology TRANSFER.
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || n06_owner_join_readiness
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
+            || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "g2-collector-product-binding Cap requires its own fresh profile; refuse readiness/--require-full Cap spam; Cap=0 scaffold refuse-closed without Cap realloc+topology; never invent pass_product_clean_room"
                     .into(),
             );
         }
@@ -851,6 +905,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
@@ -875,6 +930,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
@@ -899,6 +955,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || n06_owner_auth_handoff_honesty
@@ -923,6 +980,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
@@ -952,6 +1010,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || w2_h2_product_binding
             || w2_h2_hosted_venue
             || n06_owner_join_readiness
+            || g2_collector_product_binding
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || browser_ready_interactive_at_honesty
@@ -1034,6 +1093,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         w2_h2_product_binding,
         w2_h2_hosted_venue,
         n06_owner_join_readiness,
+        g2_collector_product_binding,
         g2_collector_product_binding_readiness,
         g5_witness_transport_honesty,
         browser_ready_interactive_at_honesty,
@@ -1090,6 +1150,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         || w2_h2_product_binding
         || w2_h2_hosted_venue
         || n06_owner_join_readiness
+        || g2_collector_product_binding
         || g2_collector_product_binding_readiness
         || g5_witness_transport_honesty
         || browser_ready_interactive_at_honesty
@@ -1115,6 +1176,10 @@ pub fn run(args: &[String]) -> Result<i32> {
         ("w2_h2_product_binding", "w2-h2-product-binding-component"),
         ("w2_h2_hosted_venue", "w2-h2-hosted-venue-component"),
         ("n06_owner_join_readiness", "n06-owner-join-readiness"),
+        (
+            "g2_collector_product_binding",
+            "g2-collector-product-binding-cap",
+        ),
         (
             "g2_collector_product_binding_readiness",
             "g2-collector-product-binding-readiness",

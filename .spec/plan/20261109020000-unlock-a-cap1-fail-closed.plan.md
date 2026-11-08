@@ -3,7 +3,7 @@ id: plan:root/20261109020000-unlock-a-cap1-fail-closed
 title: Unlock A G4 CEF/AT Cap=1 (missing CEF then realloc with host bundle + Desktop baseline)
 status: active
 created: 2026-11-08T16:58:00Z
-updated: 2026-11-08T17:50:00Z
+updated: 2026-11-08T18:05:00Z
 rel:
   depends_on:
     - plan:root/20261108233000-post-unlock-c-matrix-honesty
@@ -76,16 +76,16 @@ transport honesty gates landed (component bound; product still open). Cap=0
 BrowserReady / interactive AT honesty gate landed
 (`--browser-ready-interactive-at-honesty` EXIT0; Unlock A g4 component bound;
 `browser_ready=false`; Root AT handoff absent). Matrix serialize after A/B/C =
-**0** (hold components). Cap free=**false**. No Cap realloc (no Root owner-auth
-/ interactive AT; no claimable Cap CLI+topology; no A/B/C Cap spam).
+**0** (hold components). Cap free=**false**. No Cap realloc executed this turn
+(AUTH/AT still Root; A/B/C Cap spam forbidden). Cap=0 **G2 Cap CLI Cap-ready
+structural feeder** landed (Cap CLI scaffold + Cap-ready topology pack;
+`CAP-REALLOC-ELIGIBLE`; Cap free still false; Cap burn=0). See plan
+`20261109030000-g2-collector-product-binding-cap-ready.plan.md`.
 
-**Decision: `hard_stop_root_ask`.** Tip audit @ `e38ce6c5` found no residual
-Cursor-claimable Cap=0 product-feeder. Cap=0 CONSOLIDATED-ROOT-ASK filed at
-`.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/`.
-Tip-reconfirm @ `e54c51e6`: AUTH/AT still absent; Cap free=false; short
-`HARD-STOP-RECEIPT.json` only (no duplicate CONSOLIDATED-ROOT-ASK). Clean-room
-matrix tip-bound to `e54c51e6` with Cap=0 honesty path binding. No Cap=1.
-No more empty honesty CLIs. product=0.
+**Decision: `hard_stop_root_ask` for AUTH/AT** remains; tip-reconfirm @
+`e54c51e6` AUTH/AT still absent (no duplicate CONSOLIDATED-ROOT-ASK). Cap=1
+still forbidden while Cap free=false without Cap realloc + live G2 Cap topology
+TRANSFER. product=0.
 
 1. Root places `AUTH-HANDOFF.json` schema
    `humanymous.root-n06-owner-join-auth-handoff/1`
