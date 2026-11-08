@@ -2965,3 +2965,21 @@ arithmetic reproduces PowerShell's integer Math.Min overload rounding, explainin
 90.039..90.316s windows. All actual observations stay below nominal90s. This closes
 the requested provenance explanation only, without rerun or hard90/OS-containment
 qualification. Full convention audit goal remains active.
+### Fresh independent hosted5d68 browser failure audit
+
+Fresh completed GitHub jobs128563546997 and128562725233 match cached raw logs
+and official ZIP bytes: product51081bytes SHA85ccbc12, preflight105317bytes
+SHA044361d4. All17 indexed owner raw files reproduce hashes/sizes. The sole
+product typed projection matches exact official log text. Git SCOPES tree hash
+8ababbd9 independently recomputes from literal5d68 objects. Preflight20steps
+succeed, including40Lab,121Delivery and3Unix proxy producer tests with6filtered.
+
+The Docker product reaches the actual browser actor:16of18assertions pass and2
+fail. The typed diagnostic reports inventory67/select1/filter66, DNSsucceeded,
+selected test/process failure and browser_bootstrap_origin_browser_proxy_null.
+Nine required results remain unavailable and full_product_qualified is false.
+The B null-class diagnostic does not authenticate received G/Runtime Origin bytes
+or prove a historical/referrer cause. Original private ledger remains unrecovered;
+logged image IDs and source-manifest/private-report hashes are source-reported
+claims, without independent image or private-ledger custody. No witness-order
+success, current-source reuse, product green or release readiness follows.

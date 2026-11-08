@@ -2148,5 +2148,17 @@
     "remaining": "4Labpinsrefresh,currentinventorydelta,actualnewgraph/feature/privacy/product qualification",
     "clock": "Six raw command hashes and integerMathMin rounding reproduced;allactualunder90;nohard90claim",
     "goal_complete": false
+  },
+  "browser_5d68_actual_review": {
+    "evidence": {
+      "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-5d68-actual-review-001.json",
+      "sha256": "c1061ae4f10d792276f3c0f56157af84bcf8d3114c51ed1831d521c60e2446db",
+      "bytes": 7015
+    },
+    "fresh_logs": "Product51081B/preflight105317B exactcached+ZIP;17ownerrawhashsize0issues",
+    "source": "GitSCOPES SHA8ababbd9 independently reproduced",
+    "result": "Preflightsuccess;product16pass2fail/18;actor67/select1/filter66/DNSsuccess;Bnullcode;9requiredunavailable",
+    "limits": "No original private ledger/image custody/receivedRuntimeheaderauth/historicalcause;fullproductfalse",
+    "goal_complete": false
   }
 }
