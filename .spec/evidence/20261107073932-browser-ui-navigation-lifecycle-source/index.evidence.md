@@ -51,8 +51,9 @@ files:
   - {path: cargo-artifact-role-join.md, sha256: acc14d1f20f6cc7f6bcb88f84bad954288f5c56a05a6697ec8721c91fb465666, bytes: 6134, store: repo}
   - {path: cargo-artifact-role-join.json, sha256: 48efe7084fe060f163be2bfb238193c4ec433cc8866c3685b3c132cbd3ada94d, bytes: 4070, store: repo}
   - {path: cargo-artifact-role-join.patch, sha256: 58405dce9c5c028f56a9af2638abd6567b17fbbd190724138018a06b5ab1f743, bytes: 21916, store: repo}
-  - {path: meari-030-review.md, sha256: 927f8a3700cda0a7c48c75c1dbf012b58fff522d766ec3f85fd43f81e2527731, bytes: 10498, store: repo}
+  - {path: meari-030-review.md, sha256: 131405ca7e879a080b823f211cc7b0a7e5fd7892ebbe99c28a760587fbeaeb98, bytes: 10502, store: repo}
   - {path: meari-030-review.json, sha256: f517f6f2321bc3bc1056c503ff28c281b9722f8817758870ba74c9d64715ee8b, bytes: 14412, store: repo}
+  - {path: meari-030-spec-link-repair.json, sha256: 6142e892e950138368af6c56758ea11c691ef1ddab9321fe53d52d31974e0008, bytes: 1057, store: repo}
 ---
 
 # Navigation lifecycle source checkpoint

@@ -43,7 +43,7 @@ hashing against the official blobs; raw test logs were not transformed or fetche
 | Timing | Stages distinguish event receipt/layout/raster/copy/surface/present return; no compositor display acknowledgement. | Keep displayed latency unknown. GPU encoding, queue completion and present return are different observations. |
 
 The new public APIs and their boundaries are documented in the
-[pinned renderer guide](https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/.spec/guide/native-window-renderer-selection-and-latency-probe.guide.md)
+[pinned renderer guide](https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/%2Espec/guide/native-window-renderer-selection-and-latency-probe.guide.md)
 and [CHANGELOG](https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/CHANGELOG.md).
 
 Upstream reports Linux x86_64 tests and synthetic present-return measurements.
@@ -53,7 +53,7 @@ CEF HWND/focus/IME/AccessKit/DPI/shutdown, Wayland, real device loss and display
 visibility are explicitly unverified there. These reports neither resolve our
 150–200 ms user-observed Meari lag nor qualify this Browser. Upstream test counts
 and software-renderer observations are not added to our passing-test denominator.
-[Pinned upstream evidence](https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/.spec/evidence/20261107174455-native-window-rendering-validation/index.evidence.md).
+[Pinned upstream evidence](https://github.com/modootoday/meari/blob/ef3d2d0a8acd2bc3c01ce40258d70a33c7e819a4/%2Espec/evidence/20261107174455-native-window-rendering-validation/index.evidence.md).
 
 ## Toolchain and distribution
 

@@ -1,0 +1,31 @@
+{
+  "review_json_unchanged_from_commit": "1e8f0865edf476d37bcdc022971526f5840b04f2",
+  "after": {
+    "docs": 304,
+    "errors": 0,
+    "command": "spec check --no-local --json",
+    "warnings": 0,
+    "scope": "all public documents; no path filter"
+  },
+  "unfiltered_private_inclusive_before": {
+    "status": "not green; foreign/private inventory untouched; not claimed fixed",
+    "errors": 251399,
+    "command": "spec check",
+    "warnings": 32,
+    "docs": 527
+  },
+  "repair": "Percent-encode dot in two remote URLs; both HTTP HEAD200; original upstream paths remain in unchanged review JSON",
+  "schema": "humanymous.browser-meari-review-spec-repair/1",
+  "before": {
+    "rules": [
+      "L2"
+    ],
+    "errors": 2,
+    "command": "spec check --no-local --json",
+    "warnings": 0,
+    "docs": 304
+  },
+  "product_execution": "not_run",
+  "attachment_status": "meari-030-review.json already registered in index at observation; no P2 in full public checks",
+  "cause": "Spec L2 interpreted two unescaped remote dot-spec paths as local citations"
+}
