@@ -1,0 +1,95 @@
+{
+  "schema": "b1-file-create-candidate-v1",
+  "status": "ACTUAL_RUST_SOURCE_NOT_COMPILED",
+  "isolated_platform_input": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4/crates/integrations/humanymous-platform",
+  "input_preimages": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "2fb46278617a6c79e501e4cc99506aa32372e5e3aa013ff617b5aef62206958a",
+      "bytes": 1309
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "a09ceaebdda226a7e843862594d5ab332f58a4a92a4196a9c2fdfb8a0c7d7318",
+      "bytes": 383
+    },
+    {
+      "path": "src/windows_object/mod.rs",
+      "sha256": "102016dc8c1a4a08cdd57b5fb2e55db09f3daaeda31eb4a85d184994c26c260e",
+      "bytes": 4748
+    },
+    {
+      "path": "src/windows_object/create.rs",
+      "sha256": "c323434eacc915e561aed5d48307bf2e8a3c02adf66cb7ba9a39c9185b90bbec",
+      "bytes": 2080
+    },
+    {
+      "path": "src/windows_object/query.rs",
+      "sha256": "e7921656c28da7f9671aed55390dddc7fffc0279e5eaeceed71e31f6317d6c53",
+      "bytes": 6994
+    },
+    {
+      "path": "src/windows_object/tests.rs",
+      "sha256": "cb5c5008b0e0e83dd47d20d2ea150d8b61ec5d8aae13d1e5f000e75c7d59daa7",
+      "bytes": 2092
+    }
+  ],
+  "candidate_files": [
+    {
+      "path": "mod.rs",
+      "sha256": "1c932af20cc6d1ee5b31de58a8b19c45f70cc49a63d029833c690702326fe615",
+      "bytes": 4890
+    },
+    {
+      "path": "create_file.rs",
+      "sha256": "d21f62efc35e85278823c6f16da6be05daf1304a9d235aac616ec84856c4fd23",
+      "bytes": 7396
+    },
+    {
+      "path": "create_file/native_tests.rs",
+      "sha256": "91429219ecdd937fb1bac6cf81f982a039a174063c78a5261aeafcd6016d3dbe",
+      "bytes": 6511
+    }
+  ],
+  "accepted_scope": "windows_object::create_file::create_native",
+  "unsafe_scopes_added": 1,
+  "unsafe_calls": [
+    "CreateFileW",
+    "OwnedHandle::from_raw_handle"
+  ],
+  "existing_six_changed": false,
+  "cargo_changed": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "upstream_api_inputs": [
+    {
+      "path": "windows-permissions-0.2.4/src/structures/sd.rs",
+      "sha256": "1a921bd8f360bc88f4fef9952628a2cca8bd6d72d05a57c8bf95f9aa3455b48f"
+    },
+    {
+      "path": "windows-permissions-0.2.4/src/utilities.rs",
+      "sha256": "b4acea55ec70a986a8ecdf2f09c53ac17e32c501bd7d18e00de9c665d4684999"
+    },
+    {
+      "path": "windows-permissions-0.2.4/src/wrappers/get_security_info.rs",
+      "sha256": "7eda343e17073b855dbe61a1560c629b9aa1e24493b52bd4d1ae7d7eac69e136"
+    },
+    {
+      "path": "windows-sys-0.61.2/src/Windows/Win32/Storage/FileSystem/mod.rs",
+      "sha256": "b44686d7dcd877df4e539d2a5152a3ec212757efb111139cb0a108c8bad7624a"
+    }
+  ],
+  "pure_tests": [
+    "locator_rejects_devices_aliases_ads_and_traversal_before_creation",
+    "locator_preserves_legitimate_unicode_and_bounds_utf16_components"
+  ],
+  "required_ignored_native_parents": [
+    "actual_descriptor_is_present_on_first_owned_file_before_any_repair",
+    "actual_share0_denial_does_not_substitute_for_descriptor_readback",
+    "actual_create_new_collision_preserves_existing_bytes_and_descriptor",
+    "actual_rejected_validation_keeps_owner_and_drop_never_deletes"
+  ],
+  "original_budget_gate": "Caller manufacturer absent; NOT_RUN",
+  "provider_namespace_ready": "Unsupported",
+  "b2": "UNAPPROVED"
+}
