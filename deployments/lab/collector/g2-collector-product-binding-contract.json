@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.lab-g2-collector-product-binding-contract/1",
+  "record_kind": "g2-collector-product-binding-cap-contract",
+  "cap_selector": "--g2-collector-product-binding",
+  "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g2-collector-product-binding",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "g2_closed": false,
+  "detection_freeze": true,
+  "required_cap_topology": [
+    "deployments/lab/compose.g2-collector-product-binding.yaml",
+    "build/rust/g2-collector-product-binding-lab.Dockerfile"
+  ],
+  "component_receipt": ".spec.local/root/evidence/20261108213000-g2-collector-provenance/cap1-browser-pilot/cap1-receipt.json",
+  "forbidden": [
+    "invent pass_product_clean_room",
+    "browser-product --require-full Cap spam",
+    "collector feeder Cap spam",
+    "Cap=1 while Cap free=false without Cap realloc",
+    "invent Cap free / BrowserReady / n06_owner_join"
+  ],
+  "honesty": {
+    "desktop_collector_component_is_not_product": true,
+    "cap0_scaffold_not_product": true,
+    "cap_realloc_only_structural_feeder": true
+  }
+}

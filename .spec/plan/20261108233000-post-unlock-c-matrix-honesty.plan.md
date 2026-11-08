@@ -107,19 +107,21 @@ hosted/W2/authority/A Cap reburn without structural delta. Cap free=**false**.
 
 **Decision @ `e38ce6c5` tip audit: `hard_stop_root_ask` for AUTH/AT.** Cap=0
 honesty CLIs remain closed. Cap=0 **G2 Cap CLI Cap-ready structural feeder**
-landed @ tip `76819bb4`+ / TRANSFER helper `1f296c90` (Cap CLI
-`--g2-collector-product-binding` scaffold + Cap-ready topology pack + Cap=0 G2
-transfer-probe/apply helper / `ROOT-ONE-STEP.md`; Cap realloc **eligible** not
-executed; Cap free still **false**; Cap burn=0; scope=`root_transfer_required`;
-G2 GRANT still absent). Cap=0 **G5 Cap CLI Cap-ready twin** landed (Cap CLI
-`--g5-witness-transport` + Cap-ready pack + UnlockLetter::G5 TRANSFER helper +
-`ROOT-ONE-STEP.md`; Cap realloc eligible not executed; Cap free=false;
+landed @ tip `76819bb4`+ / TRANSFER helper `1f296c90`. **G2 Cap-ready GRANT
+apply + transfer-apply + Cap realloc + Cap=1 EXIT0** landed under standing
+autonomy (schema
+`humanymous.cursor-g2-collector-product-binding-transfer-grant/1` → live Cap
+topology; Cap realloc
+`humanymous.cursor-g2-collector-product-binding-cap-realloc/1`; Cap=1
+`--g2-collector-product-binding` EXIT0 passed=7 cleanup_passed; counts_as
+`pass_component_desktop_cap_topology` only; Cap free after Cap=1=**false**;
+product=**0**; evidence
+`20261109034100-cursor-g2-cap-cleanup-realloc`). Cap=0 **G5 Cap CLI Cap-ready
+twin** still Cap-ready (GRANT/TRANSFER not applied this turn;
 `authenticated_witness_transport=false`; plan
-`20261109031000-g5-witness-transport-cap-ready`). Cap=1 forbidden while Cap
-free=false without Cap realloc + live Cap topology TRANSFER. Clean-room /
-fail-closed product=0 / Cap free=false / G2 Cap-ready+TRANSFER wait / G5
-Cap-ready status canonized in claimable Cap=0 plans. Do not duplicate
-CONSOLIDATED-ROOT-ASK.
+`20261109031000-g5-witness-transport-cap-ready`). Clean-room / fail-closed
+product=0 / Cap free=false / G2 Cap=1 component ≠ product / G5 Cap-ready
+status canonized. AUTH/AT still Root. Do not duplicate CONSOLIDATED-ROOT-ASK.
 
 Cap=0 CONSOLIDATED-ROOT-ASK (supersedes Cap-free-era packet):
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/CONSOLIDATED-ROOT-ASK.md`

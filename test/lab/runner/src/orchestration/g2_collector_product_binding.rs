@@ -215,28 +215,82 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         // Cap=0 EXIT0 honesty: Cap CLI scaffolded, Cap burn refused (no Docker).
         return Ok(());
     }
-    // Cap=1 path reserved: Cap free or Cap realloc + live topology. Cap burn still
-    // refuse-closed here until a future Cap cycle executes Docker under realloc.
-    // Cap=0 scaffold never invents product or Cap=1 Docker success.
+
+    // Cap=1 Docker burn: live Cap topology + Cap free OR documented G2 Cap realloc.
+    // Component Cap green ≠ pass_product_clean_room. Detection freeze.
+    let realloc_path = realloc
+        .as_ref()
+        .map(|path| path.display().to_string())
+        .unwrap_or_default();
+    lab.stage = "g2_collector_product_binding_compose_config";
+    let config = lab.compose(&["config", "--format", "json"], true)?.stdout;
+    let parsed: Value = serde_json::from_str(&config)?;
+    snapshot::write(
+        &lab.evidence,
+        "g2-collector-product-binding-resolved-compose.json",
+        &parsed,
+    )?;
+    lab.case(
+        "g2-no-published-ports",
+        parsed["services"]
+            .as_object()
+            .ok_or("services absent")?
+            .values()
+            .all(|service| service.get("ports").is_none()),
+        json!(snapshot::digest(config.as_bytes())),
+    )?;
+    eprintln!("lab: building immutable g2-collector-product-binding-lab image (Cap=1)");
+    lab.stage = "g2_collector_product_binding_build";
+    lab.compose(&["build", "g2-collector-product-binding-pilot"], true)?;
+    lab.stage = "g2_collector_product_binding_up";
+    lab.compose(&["up", "-d", "g2-collector-product-binding-pilot"], true)?;
+    let container = lab.inspect("g2-collector-product-binding-pilot")?;
+    lab.case(
+        "g2-network-none",
+        container["HostConfig"]["NetworkMode"] == "none",
+        json!("compose.g2-collector-product-binding.yaml network_mode=none"),
+    )?;
+    let exit_code = container["State"]["ExitCode"].as_i64().unwrap_or(-1);
+    let running = container["State"]["Running"] == true;
+    lab.case(
+        "g2-pilot-oneshot-or-running",
+        running || exit_code == 0,
+        json!({"running": running, "exit_code": exit_code}),
+    )?;
     lab.components["g2_collector_product_binding"] = json!({
-        "status": "cap1_path_reserved_not_burned",
+        "status": "executed",
         "kind": "g2-collector-product-binding-cap",
         "product": 0,
         "pass_product_clean_room": 0,
         "g2_closed": false,
-        "cap": 0,
+        "g2_matrix_cell_moved": false,
+        "cap": 1,
         "cap_free": cap_free,
-        "note": "Live topology + Cap realloc observed but Cap=0 scaffold does not Cap-burn; Cap=1 is next Cap cycle only"
+        "cap_realloc": realloc.is_some(),
+        "cap_realloc_path": realloc_path,
+        "cap_selector": CAP_SELECTOR,
+        "contract": CONTRACT_REL,
+        "pilot_exit_code": exit_code,
+        "pilot_running": running,
+        "counts_as": "pass_component_desktop_cap_topology",
+        "note": "Cap=1 Docker oneshot component only; Desktop collector ≠ G2 product; never invent pass_product_clean_room"
     });
     snapshot::write(
         &lab.evidence,
         "g2-collector-product-binding-component.json",
         &lab.components["g2_collector_product_binding"],
     )?;
-    Err(
-        "g2-collector-product-binding Cap refused: Cap=0 scaffold does not Cap-burn Docker; Cap=1 only after Cap realloc cycle with jobs=1; never invent pass_product_clean_room"
-            .into(),
-    )
+    lab.case(
+        "g2-cap1-component-not-product",
+        true,
+        json!({
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "g2_closed": false,
+            "counts_as": "pass_component_desktop_cap_topology"
+        }),
+    )?;
+    Ok(())
 }
 
 #[cfg(test)]

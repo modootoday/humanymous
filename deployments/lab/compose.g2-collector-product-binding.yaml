@@ -1,0 +1,19 @@
+# G2 collector product-binding Cap topology (Cap=0 Cap-ready; Cap=1 after Cap realloc).
+# Distinct from Desktop collector component / browser-product --require-full Cap spam.
+# Detection freeze. Lab-only; no published ports. network_mode=none loopback measure.
+# Never invent pass_product_clean_room / Cap free / BrowserReady.
+services:
+  g2-collector-product-binding-pilot:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/g2-collector-product-binding-lab:${HM_LAB_IMAGE_TAG:-local}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:-../..}
+      dockerfile: build/rust/g2-collector-product-binding-lab.Dockerfile
+    network_mode: none
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    labels:
+      org.humanymous.evidence: rust-g2-collector-product-binding
+    profiles: [g2-collector-product-binding]

@@ -1,0 +1,8 @@
+{
+  "schema": "humanymous.lab-g2-collector-product-binding-measure-receipt/1",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "g2_closed": false,
+  "counts_as": "pass_component_desktop_cap_topology",
+  "note": "Cap topology oneshot scaffold; never invent product"
+}

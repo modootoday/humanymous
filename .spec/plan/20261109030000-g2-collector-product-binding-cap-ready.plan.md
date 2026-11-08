@@ -3,7 +3,7 @@ id: plan:root/20261109030000-g2-collector-product-binding-cap-ready
 title: G2 collector product-binding Cap CLI Cap=0 scaffold + Cap-ready topology
 status: active
 created: 2026-11-08T18:00:00Z
-updated: 2026-11-08T18:25:00Z
+updated: 2026-11-08T18:40:00Z
 rel:
   depends_on:
     - plan:root/20261108233000-post-unlock-c-matrix-honesty
@@ -16,13 +16,11 @@ rel:
 
 # G2 Cap CLI Cap=0 scaffold + Cap-ready topology feeder
 
-Brief: Cap free=**false** after Unlock A EXIT0. Prior Cap=0 G2 readiness bound
-Desktop collector component only (`no_g2_cap_cli_with_topology`). This plan lands
-the **structural next feeder**: Cap CLI `--g2-collector-product-binding` Cap=0
-scaffold + Cap-ready compose/Dockerfile/contract TRANSFER pack + Cap=0 G2
-transfer-probe/apply helper (Root one-step). Cap realloc is **eligible** but
-**not executed** (live topology absent; scope=`root_transfer_required`). Cap
-burn=**0**. `product=0`. Never invent `pass_product_clean_room`. Detection freeze.
+Brief: Cap free=**false** after Unlock A EXIT0. Cap=0 Cap CLI
+`--g2-collector-product-binding` + Cap-ready TRANSFER pack landed first. Standing
+autonomy Cap-ready GRANT apply + transfer-apply placed live Cap topology; Cap
+realloc + Cap=1 EXIT0 landed (component Cap topology only;
+`pass_product_clean_room=0`). Cap free after Cap=1=**false**. Detection freeze.
 
 Private evidence:
 `.spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/`
@@ -78,32 +76,29 @@ Private Cap-ready:
 - `…/TRANSFER-PROBE.json` (`g2_collector_product_binding_preimage_ready=true`)
 - `…/CAP-REALLOC-ELIGIBLE.json` · `SCOPE-VERDICT.json`
 
-## 4. Verification (this turn)
+## 4. Verification (landed)
 
-- Branch `codex/rust` @ `76819bb4`+
-- Cap CLI Cap=0 scaffold bound; Cap topology live=**false**
-- Scope verdict: **root_transfer_required**
-- Cap=0 G2 transfer-probe EXIT0 · preimage_ready=**true**
-- Cap free before/after: **false** / **false**
-- Cap realloc attempted: **false** (eligible only)
-- Cap EXIT: **none** / Cap burn=**0**
-- product: **0** · `pass_product_clean_room`: **0**
+- Branch `codex/rust` @ `ac2a4da8`+
+- Cap-ready GRANT apply (standing autonomy): `GRANT.TEMPLATE` → `GRANT.json`
+  schema `humanymous.cursor-g2-collector-product-binding-transfer-grant/1`
+- transfer-apply UnlockLetter::G2 **applied=true** · live Cap topology present
+- Cap realloc schema `humanymous.cursor-g2-collector-product-binding-cap-realloc/1`
+  executed (live topology + compose-down cleanup structural delta)
+- Cap free before / after realloc / after Cap=1: **false** / **true** / **false**
+- Cap=1 once jobs=1: EXIT **0** passed=7 cleanup_passed
+  (prior EXIT1 cleanup_failed → Cap realloc; no Cap spam)
+- product: **0** · `pass_product_clean_room`: **0** · `g2_closed`: **false**
+- counts_as: `pass_component_desktop_cap_topology` only
 - AUTH/AT handoffs: **absent** (not forged)
+- Evidence: `.spec.local/root/evidence/20261109034100-cursor-g2-cap-cleanup-realloc/`
 
 ## 5. Exact next closer
 
-1. Root one-step `ROOT-ONE-STEP.md`: copy `GRANT.TEMPLATE.json` → `GRANT.json`,
-   then lab-runner `transfer-apply` (schema
-   `humanymous.cursor-g2-collector-product-binding-transfer-grant/1`) with matching
-   candidateSha256 for Cap topology destinations.
-2. Cap realloc receipt schema
-   `humanymous.cursor-g2-collector-product-binding-cap-realloc/1`.
-3. Cap=1 once: `cargo run --locked -p humanymous-lab-runner -- run --evidence
-   BUNDLE --g2-collector-product-binding` (jobs=1).
-4. Separately: Root AUTH-HANDOFF and/or AT-HANDOFF for N06/BrowserReady (unchanged
-   blocked_on_root; do not forge).
-5. Cap=0 G5 Cap CLI Cap-ready twin landed separately (plan
-   `20261109031000-g5-witness-transport-cap-ready`); Cap free still false;
-   product=0; do not Cap=1 either feeder without Cap realloc + live topology.
+1. Bind G2 Cap=1 component receipt into clean-room matrix honesty (still
+   product=0; never invent `pass_product_clean_room`).
+2. Prefer Cap=0 G5 Cap-ready GRANT apply + transfer + Cap realloc + Cap=1 once
+   when Cap free restored / Cap-ready pack Cap-ready (separate GRANT schema).
+3. Separately: Root AUTH-HANDOFF and/or AT-HANDOFF for N06/BrowserReady
+   (blocked_on_root shrunk; do not forge).
 
 Never invent `pass_product_clean_room`.

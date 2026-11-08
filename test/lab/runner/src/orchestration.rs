@@ -681,12 +681,11 @@ impl Lab {
         // Host-only Caps never open compose topology; still recheck Desktop
         // engine affinity (HUMANYMOUS_DOCKER_DESKTOP_BASELINE) then prove the
         // owned project left no Docker resources. Never invent compose down.
+        // G2/G5 Cap=1 Docker burns use compose topology → compose down path below.
         if self.g4_cef_at
             || self.n06_owner_join_readiness
-            || self.g2_collector_product_binding
             || self.g2_collector_product_binding_readiness
             || self.g5_witness_transport_honesty
-            || self.g5_witness_transport
             || self.browser_ready_interactive_at_honesty
             || self.n06_owner_auth_handoff_honesty
         {
