@@ -2160,5 +2160,29 @@
     "result": "Preflightsuccess;product16pass2fail/18;actor67/select1/filter66/DNSsuccess;Bnullcode;9requiredunavailable",
     "limits": "No original private ledger/image custody/receivedRuntimeheaderauth/historicalcause;fullproductfalse",
     "goal_complete": false
+  },
+  "lab_source_pin_actual_review": {
+    "evidence": {
+      "path": ".spec.local/root/evidence/20261107143000-convention-audit/lab-source-pin-actual-review-001.json",
+      "sha256": "dc58a5c06c00914ead7cb761d923effc679489e220717214e32122053b7cb9f8",
+      "bytes": 2323
+    },
+    "source": "f8aec28651919e97ef924afa8d633e3c4df38805",
+    "actual": "45inventory;44defaultpass1ignored;separateexactignored1pass44filtered;fmt/check/Clippy0",
+    "binding": "55raw;14964savedinputs;3158ZIP/input/Git0issues;175opaqueIDs+11806registryroots+10toolrecords0issues",
+    "clock": "Recordedoriginal390/450epoch;continuation362187ms/terminal385515ms;nonewslot",
+    "limits": "Initialtoolhashesabsent;noUnixsymlink/OS/Docker/browser/newTools/productqualification",
+    "goal_complete": false
+  },
+  "adapters_role_design_review": {
+    "evidence": {
+      "path": ".spec.local/root/evidence/20261107143000-convention-audit/adapters-role-design-review-001.json",
+      "sha256": "dc3839f0312e042f582a959676df15d1aaea145e1c5e94091e0fb22e2126c585",
+      "bytes": 2319
+    },
+    "scope": "Design/sourceonly;sevenexclusiveexportroles;oneRLIB",
+    "pins": "12manifest+25restricted+4unsafe sourcehashes0issues;81lexicalsites79lines exact",
+    "remaining": "Actual role/feature/artifact/privacy/unsafe/native/product gates unqualified",
+    "goal_complete": false
   }
 }

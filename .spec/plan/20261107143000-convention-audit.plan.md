@@ -2245,3 +2245,43 @@ or prove a historical/referrer cause. Original private ledger remains unrecovere
 logged image IDs and source-manifest/private-report hashes are source-reported
 claims, without independent image or private-ledger custody. No witness-order
 success, current-source reuse, product green or release readiness follows.
+### Lab source-pin actual Windows component verification
+
+Audit independently checked ea311b61/finalf8aec286:45 registered tests; default
+44pass/1ignored; separate exact ignored actual-source test1pass/44filtered.
+Formatter, all-target check and strict all-target Clippy exit0; actual argv/PID
+result records and log footers agree. All55 raw hashes/sizes reproduce:51sealed
+registered leaves plus4large unregistered originals retained under original epoch.
+The original module-resolution, formatting, noncanonical-root gate failure and
+invalid mixed-type29928difference artifact remain preserved. Only explicit env
+path spelling changed for the successful required gate, without source/assertion
+change. Recorded362187ms continuation and385515ms terminal stay within the same
+original390000/450000ms work/settlement epoch; no proposed new slot was used.
+
+All14964 saved input records match before/after. Every3158 ZIP source file matches
+pre-execution SHA256/size and exact f8 Git blob bytes. The11806 registry file paths
+join selected roots;175 opaque package IDs match metadata. Ten tool/config records
+match postfailure-beforecanonical to aftercanonical. Initial compilation lacks
+prior tool hashes; no full compiler/child/config/OS custody follows. Windows does
+not execute the Unix symlink negative. Accept only this local component and
+required actual-source gate; hosted Docker/browser, relocated Tools graph,
+package/native/product and full migration qualification remain OPEN.
+### Adapters accepted role and visibility design source review
+
+Independent read-only review of the Root-accepted e9af84e1/c06b6e17 design found
+no additional established blocker beyond its explicit freeze/actual gates. One
+RLIB and exactly seven mutually exclusive export roles use explicit same-lib
+cdylib override and separate role outputs. Default SDK is not native admission.
+Supported role/safe-context and invalid-combination CI must replace blind
+all-features before moves. Six qualification bins, eight integrations and two
+examples remain distinct; dependencies must not return to CLI.
+
+All12 manifest hashes and29 operation/visibility source hashes match. Independent
+lexical restricted-visibility census reproduces81sites on79lines in25files with
+zero location differences. This is not AST/privacy proof. Original crate-local
+capabilities must remain context-owned; owning positive and same-crate sibling
+negative compiles, safe forbid/native unsafe operation controls, SDK/generated
+code, final-byte/symbol/loader/role custody and actual host/package pilots remain
+required. Existing managed/Python/Ruby naming gaps are acknowledged implementation
+work, not fixed by proposed filenames. No moves or audit compiler/native action
+occurred; source freeze and complete migration qualification remain OPEN.
