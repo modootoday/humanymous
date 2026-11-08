@@ -58,6 +58,13 @@ fn run() -> Result<()> {
     let explicit: Vec<_> = std::env::args().skip(1).collect();
     if explicit
         .first()
+        .is_some_and(|value| value == "browser-proxy-result")
+    {
+        require(explicit.len() == 2, "usage: browser-proxy-result LOG")?;
+        return source_pin_result::check_proxy(Path::new(&explicit[1]));
+    }
+    if explicit
+        .first()
         .is_some_and(|value| value == "source-pin-result")
     {
         require(explicit.len() == 2, "usage: source-pin-result LOG")?;

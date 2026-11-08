@@ -217,6 +217,16 @@ are currently hardcoded source labels, not canonical machine IDs or proof of
 owner admission. Lab is sealing exact source-specific evidence and proposed
 requirement routing. No CI-green, full-product or release-ready claim follows.
 
+Delivery also requires a distinct browser-proxy-result LOG guard for the four
+exact moved Unix proxy test names; the one-case source-pin guard cannot stand in
+for it. The checker shares only its private bounded parsing implementation and
+has two fixed caller-owned case sets, not a user-supplied test selector surface.
+All four successful case lines and the exact four-pass summary are mandatory;
+missing, substituted, duplicate or empty selections refuse. Three parser tests
+passed (123 other cases filtered), and strict Delivery Clippy passed. Actual Unix
+moved-role output has not yet been produced; synthetic parser tests do not replace
+that required hosted run. Workflow candidates must check Cargo exit separately.
+
 The user accepts bottom-up implementation and explicit ownership of every chat.
 This SoT governs development order, layer contracts and title conventions. The
 linked bottom-up plan records detailed gates, clusters and preserved constraints.
