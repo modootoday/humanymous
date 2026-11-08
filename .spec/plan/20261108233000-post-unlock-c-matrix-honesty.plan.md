@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T17:25:00Z
+updated: 2026-11-08T17:32:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -104,11 +104,13 @@ hosted/W2/authority/A Cap reburn without structural delta. Cap free=**false**.
 
 Next Root-gated / Cap-conserving closer:
 
-1. Root interactive AT Windows tuple (BrowserReady path)
+1. Root interactive AT Windows tuple handoff (BrowserReady path; Cap=0 honesty
+   already refuse-closed without inventing AT)
 2. Else Root N06 owner-integration auth handoff + exact path release
    (`configuration.rs` / `service/readiness.rs` / `application.rs`)
 
 Never invent `pass_product_clean_room`, CEF binary, `desktop_as_hosted`,
 BrowserReady, or Root ownership tokens. Capture `observe_h2` still forbidden as
 product-binding. Evidence:
-`.spec.local/root/evidence/20261109022100-cursor-cap0-g2-g5-honesty/`.
+`.spec.local/root/evidence/20261109022100-cursor-cap0-g2-g5-honesty/` and
+`.spec.local/root/evidence/20261109023000-cursor-cap0-browser-ready-honesty/`.

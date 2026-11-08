@@ -11,17 +11,21 @@
 //! folklore pilot argv. Never invents product. Capture `observe_h2` ≠
 //! product-binding. A11y/`--require-full` Cap spam forbidden.
 use crate::docker::Result;
+use crate::orchestration::cap0_product_honesty::{
+    BROWSER_READY_CAP_SELECTOR, BROWSER_READY_PILOT_COMMAND, BROWSER_READY_ROOT_ASK_PATHS,
+    G2_CAP_SELECTOR, G2_PILOT_COMMAND, G2_PRODUCT_BINDING_TOPOLOGY, G5_CAP_SELECTOR,
+    G5_PILOT_COMMAND, G5_ROOT_ASK_PATHS, INTERACTIVE_AT_HANDOFF_CANDIDATES,
+    cap_free_after_unlock_a,
+};
 use crate::orchestration::g4_cef_at::{
     CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CEF_BUNDLE_ENV,
     CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT, PATH_RELEASE_SURFACES,
     REQUIRED_CAP_MODULE,
 };
-use crate::orchestration::cap0_product_honesty::{
-    G2_CAP_SELECTOR, G2_PILOT_COMMAND, G2_PRODUCT_BINDING_TOPOLOGY, G5_CAP_SELECTOR,
-    G5_PILOT_COMMAND, G5_ROOT_ASK_PATHS, cap_free_after_unlock_a,
-};
 use crate::orchestration::h2_product_binding::{
     CAP_SELECTOR as W2_H2_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND,
+    N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES, N06_OWNER_JOIN_CAP_SELECTOR,
+    N06_OWNER_JOIN_PILOT_COMMAND, N06_OWNER_JOIN_ROOT_ASK_PATHS,
 };
 use crate::snapshot;
 use crate::transfer_preimage;
@@ -157,6 +161,24 @@ impl UnlockProbe {
                 "root_ask_paths": G5_ROOT_ASK_PATHS,
                 "note": "Cap=0 honesty only; custody/witness component ≠ authenticated transport product; no Cap=1 without Cap free + claimable Cap CLI+topology"
             },
+            "n06_owner_join_cap0": {
+                "selector": N06_OWNER_JOIN_CAP_SELECTOR,
+                "pilot_command": N06_OWNER_JOIN_PILOT_COMMAND,
+                "status": "cap0_honesty_only",
+                "n06_owner_join": false,
+                "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
+                "auth_handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
+                "note": "Cap=0 readiness only; hosted Cap EXIT0 + Unlock A EXIT0 bound ≠ owner join; Root auth handoff still required; never invent Root tokens"
+            },
+            "browser_ready_interactive_at_cap0": {
+                "selector": BROWSER_READY_CAP_SELECTOR,
+                "pilot_command": BROWSER_READY_PILOT_COMMAND,
+                "status": "cap0_honesty_only",
+                "browser_ready": false,
+                "root_ask_paths": BROWSER_READY_ROOT_ASK_PATHS,
+                "handoff_candidates": INTERACTIVE_AT_HANDOFF_CANDIDATES,
+                "note": "Cap=0 honesty only; Unlock A g4_cef_at executed ≠ BrowserReady; Root interactive AT Windows tuple still required; never invent AT tokens"
+            },
             "product": 0,
             "pass_product": 0,
             "pass_product_clean_room": 0,
@@ -172,6 +194,8 @@ impl UnlockProbe {
                 "capture_component_is_not_product_binding": true,
                 "cap_realloc_only_structural_feeder": true,
                 "g2_g5_cap0_not_product": true,
+                "g4_component_not_browser_ready": true,
+                "never_invent_interactive_at_tokens": true,
             },
         })
     }

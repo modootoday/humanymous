@@ -58,8 +58,7 @@ pub const MISSING_N06_PRODUCT_LIFT: &[&str] = &[
 pub const N06_OWNER_JOIN_CAP_SELECTOR: &str = "--n06-owner-join-readiness";
 
 /// Exact owner-join readiness Cap argv shape (never invents join=true / pass_product).
-pub const N06_OWNER_JOIN_PILOT_COMMAND: &str =
-    "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-join-readiness";
+pub const N06_OWNER_JOIN_PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-join-readiness";
 
 /// Hosted Cap EXIT0 receipt schema (component only; binds to owner-join readiness).
 pub const HOSTED_CAP_EXIT0_SCHEMA: &str = "humanymous.cursor-n06-hosted-venue-cap1-exit0/1";
@@ -106,8 +105,7 @@ pub const REQUIRED_HOSTED_VENUE_TOPOLOGY: &[&str] = &[
 ];
 
 /// Owner-join readiness receipt schema (never invents product; Cap-ready for Root).
-pub const N06_OWNER_JOIN_RECEIPT_SCHEMA: &str =
-    "humanymous.lab-h2-n06-owner-join-readiness/1";
+pub const N06_OWNER_JOIN_RECEIPT_SCHEMA: &str = "humanymous.lab-h2-n06-owner-join-readiness/1";
 
 /// Allowed hosted venue markers on an owner-join / hosted measure receipt.
 pub const HOSTED_VENUE_MARKERS: &[&str] = &[
@@ -190,8 +188,7 @@ pub fn original_h2_measured_from_receipt(receipt: &Value) -> Result<bool> {
             .ok_or("w2-h2-product-binding Cap refused: measured=true without tls_h2_status")?;
         if status == 422 {
             return Err(
-                "w2-h2-product-binding Cap refused: measured=true but tls_h2_status=422"
-                    .into(),
+                "w2-h2-product-binding Cap refused: measured=true but tls_h2_status=422".into(),
             );
         }
         let control = receipt
@@ -211,10 +208,7 @@ pub fn original_h2_measured_from_receipt(receipt: &Value) -> Result<bool> {
 }
 
 /// Fail-closed: refuse invented `original_h2_measured=true` without receipt.
-pub fn refuse_invented_original_h2_measured(
-    measured: bool,
-    receipt: Option<&Value>,
-) -> Result<()> {
+pub fn refuse_invented_original_h2_measured(measured: bool, receipt: Option<&Value>) -> Result<()> {
     if !measured {
         return Ok(());
     }
@@ -375,7 +369,9 @@ pub fn validate_hosted_cap_exit0_receipt(receipt: &Value) -> Result<()> {
         );
     }
     if receipt.get("desktop_as_hosted").and_then(Value::as_bool) == Some(true) {
-        return Err("N06 owner-join refused: hosted Cap EXIT0 desktop_as_hosted=true forbidden".into());
+        return Err(
+            "N06 owner-join refused: hosted Cap EXIT0 desktop_as_hosted=true forbidden".into(),
+        );
     }
     if receipt.get("n06_owner_join").and_then(Value::as_bool) == Some(true) {
         return Err(
@@ -385,8 +381,7 @@ pub fn validate_hosted_cap_exit0_receipt(receipt: &Value) -> Result<()> {
     }
     if receipt.get("actual_hosted_linux").and_then(Value::as_bool) != Some(true) {
         return Err(
-            "N06 owner-join refused: hosted Cap EXIT0 must record actual_hosted_linux=true"
-                .into(),
+            "N06 owner-join refused: hosted Cap EXIT0 must record actual_hosted_linux=true".into(),
         );
     }
     Ok(())
@@ -487,20 +482,11 @@ pub fn bind_unlock_a_status_into_n06_readiness(
     let obj = readiness
         .as_object_mut()
         .ok_or("N06 owner-join readiness refused: readiness must be a JSON object")?;
-    obj.insert(
-        "unlock_a_cap_exit0_bound".into(),
-        json!(true),
-    );
-    obj.insert(
-        "unlock_a_cap_exit".into(),
-        json!(0),
-    );
+    obj.insert("unlock_a_cap_exit0_bound".into(), json!(true));
+    obj.insert("unlock_a_cap_exit".into(), json!(0));
     obj.insert("unlock_a_cap_free".into(), json!(false));
     obj.insert("unlock_a_browser_ready".into(), json!(false));
-    obj.insert(
-        "unlock_a_g4_cef_at_component".into(),
-        json!("executed"),
-    );
+    obj.insert("unlock_a_g4_cef_at_component".into(), json!("executed"));
     obj.insert(
         "unlock_a_counts_as".into(),
         json!("pass_component_g4_cef_at_executed"),
@@ -509,10 +495,7 @@ pub fn bind_unlock_a_status_into_n06_readiness(
         "unlock_a_closer".into(),
         json!(UNLOCK_A_CAP_EXIT0_CLOSER_REL),
     );
-    obj.insert(
-        "cap_free".into(),
-        json!(false),
-    );
+    obj.insert("cap_free".into(), json!(false));
     obj.insert("browser_ready".into(), json!(false));
     obj.insert(
         "note".into(),
@@ -578,14 +561,17 @@ pub fn require_n06_owner_join_auth_handoff(root: &Path) -> Result<Value> {
             path.display()
         )
     })?;
-    if handoff.get("schema").and_then(Value::as_str) != Some(N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA)
-    {
+    if handoff.get("schema").and_then(Value::as_str) != Some(N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA) {
         return Err(
             "N06 owner-join Cap refused: auth handoff schema mismatch; never invent Root ownership tokens"
                 .into(),
         );
     }
-    if handoff.get("n06_owner_join_authorized").and_then(Value::as_bool) != Some(true) {
+    if handoff
+        .get("n06_owner_join_authorized")
+        .and_then(Value::as_bool)
+        != Some(true)
+    {
         return Err(
             "N06 owner-join Cap refused: auth handoff does not authorize n06_owner_join; Cap=0"
                 .into(),
@@ -746,7 +732,11 @@ pub(super) fn run_n06_owner_join_readiness(lab: &mut Lab) -> Result<()> {
     bind_unlock_a_status_into_n06_readiness(&mut readiness, &unlock_a)?;
     validate_n06_owner_join_receipt(&readiness)?;
     snapshot::write(&lab.evidence, "n06-owner-join-readiness.json", &readiness)?;
-    snapshot::write(&lab.evidence, "n06-owner-join-unlock-a-bound.json", &unlock_a)?;
+    snapshot::write(
+        &lab.evidence,
+        "n06-owner-join-unlock-a-bound.json",
+        &unlock_a,
+    )?;
     lab.case(
         "n06-owner-join-hosted-cap-component-bound",
         readiness.get("hosted_cap_component_green") == Some(&json!(true))
@@ -929,10 +919,7 @@ pub(super) fn run_hosted_venue(lab: &mut Lab) -> Result<()> {
     )?;
     let measured = original_h2_measured_from_receipt(&receipt)?;
     refuse_invented_original_h2_measured(measured, Some(&receipt))?;
-    let venue = receipt
-        .get("venue")
-        .and_then(Value::as_str)
-        .unwrap_or("");
+    let venue = receipt.get("venue").and_then(Value::as_str).unwrap_or("");
     lab.stage = "h2_hosted_venue_measure_venue";
     if !HOSTED_VENUE_MARKERS.contains(&venue) {
         return Err(format!(
@@ -1338,7 +1325,10 @@ mod tests {
         let readiness = n06_owner_join_readiness_from_hosted_cap(&hosted).expect("bind");
         assert_eq!(readiness["n06_owner_join"], false);
         assert_eq!(readiness["product"], 0);
-        assert_eq!(readiness["hosted_cap_exit0_run_id"], HOSTED_CAP_EXIT0_RUN_ID);
+        assert_eq!(
+            readiness["hosted_cap_exit0_run_id"],
+            HOSTED_CAP_EXIT0_RUN_ID
+        );
         assert_eq!(readiness["cap_executable_for_join"], false);
         assert!(validate_n06_owner_join_receipt(&readiness).is_ok());
 

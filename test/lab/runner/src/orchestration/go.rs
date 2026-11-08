@@ -670,6 +670,7 @@ fn execute(lab: &mut Lab, contract: &Value, ledger: &mut [Value]) -> Result<()> 
             n06_owner_join_readiness: false,
             g2_collector_product_binding_readiness: false,
             g5_witness_transport_honesty: false,
+            browser_ready_interactive_at_honesty: false,
             g4_cef_at: false,
             go_component_verified: false,
             stage: "go_case",

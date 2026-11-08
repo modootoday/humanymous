@@ -3,7 +3,7 @@ id: plan:root/20261109020000-unlock-a-cap1-fail-closed
 title: Unlock A G4 CEF/AT Cap=1 (missing CEF then realloc with host bundle + Desktop baseline)
 status: active
 created: 2026-11-08T16:58:00Z
-updated: 2026-11-08T17:25:00Z
+updated: 2026-11-08T17:32:00Z
 rel:
   depends_on:
     - plan:root/20261108233000-post-unlock-c-matrix-honesty
@@ -70,9 +70,12 @@ R-A4. **No N06/W2/authority Cap reburn** without new structural delta.
 Cap=0 honesty landed: matrix A/B/C earned-only remap; N06 readiness binds
 Unlock A Cap EXIT0 closer + hosted Cap EXIT0 (join still open). Cap=0 G2
 collector product-binding readiness + G5 witness transport honesty gates landed
-(component bound; product still open). Matrix serialize after A/B/C = **0**
-(hold components). Cap free=**false**. No Cap realloc (no claimable G2/G5 Cap
-CLI+topology; no A/B/C Cap spam).
+(component bound; product still open). Cap=0 BrowserReady / interactive AT
+honesty gate landed (`--browser-ready-interactive-at-honesty` EXIT0; Unlock A
+g4 component bound; `browser_ready=false`; Root AT handoff absent). Matrix
+serialize after A/B/C = **0** (hold components). Cap free=**false**. No Cap
+realloc (no Root interactive AT tuple; no claimable Cap CLI+topology; no A/B/C
+Cap spam).
 
-1. Root interactive AT Windows tuple for BrowserReady path
+1. Root interactive AT Windows tuple handoff for BrowserReady path
 2. Else Root N06 owner-integration auth handoff (Cap=0 readiness without auth)
