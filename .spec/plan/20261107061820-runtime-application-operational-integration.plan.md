@@ -20,6 +20,57 @@ dual-control and missing-required fail-closed remain invariant.
 
 ## Steps
 
+### Required observer source candidate — preimage-bound, unapplied
+
+Root assigned remaining Runtime service integration under a uniquely claimed
+evidence path while tools-integration-5f1010d4 remains read-only. The candidate
+bundle is observed-activation-candidate under evidence:root/20261107061821;
+candidate.json binds three existing preimages and two required-absent Rust files.
+Five candidate Rust paths alter gateway/service only. No actual source/Cargo,
+branch/ref, worktree, isolated baseline or another owner's dirty path was changed.
+All work remains on codex/rust, checked before writes; source application is for
+Root's review/queue and the actual verified Cursor integrator, not concurrent
+Codex/Root source application. This is not a transfer document or a completed goal.
+
+The concrete consumer begins with an exact boxed Configuration, calls only the
+original native_preparation once, and retains the original typed unavailable
+reason without unseal, secret generation, writer opening or bind. Attempt reuse
+is terminal, conserves first failure and keeps the same resource allocation.
+Cancellation/revocation retain the original guard and resources without claiming
+join/drain/flush. Existing private Guard Drop still revokes before resources drop.
+Six authored units cover actual unavailable-provider input retention, attempt
+reuse, Offer-before-preparation, repeated Offer refusal and idempotent cancellation.
+These are attempt-level negatives, NOT authenticated wire-replay/native tests.
+
+Authority separately proposed its consuming into_prepared method and opaque
+AuthenticatedObserverReceipt in evidence:root/20261108043317. This candidate's
+bind_authenticated_receipt consumes exactly those original types, delegates
+same-owner/OfferPending/no-loss checks to Authority, and stores the returned
+original PreparedObserverSession or ObserverStartupFailure with the same Box.
+No bool, DATA decoder, Job observation or callback constructs a receipt/NativeProof.
+The Authority receipt candidate is an explicit UNAPPLIED dependency; this consumer
+does not compile against the unchanged baseline without it. The obsolete local
+ReceiptBound dead-code expectation is removed only because this typed consumer
+now stores that original session; receipt production itself remains unavailable.
+
+offer_ack_once still explicitly refuses absent the original concrete transport;
+it sends nothing and creates no secret. No activation/Ready factory is added.
+NativeProof/ReceiptOrigin remain empty in Authority, including tests. Original
+installer/namespace/S/O/P/W/config binding, process-wide claim, conserved transport
+deadlines, real credential receipt, retained partial-host/writer resources and
+same-gate private Ready remain missing upstream/next-slice gates. Per-attempt
+reuse protection is not a native process-wide one-claim implementation. B2 Job/
+token/process observations cannot substitute for native preparation or Ready.
+
+interface-map.md records exact existing and candidate signatures for Root to
+relay to CLI, plus the proposed original Authority-owned borrowed credential
+exchange signature, clearly unaccepted/unimplemented. No generic backend or
+duplicate protocol is created. CLI remains DATA-only until joint provider review.
+Standalone candidate rustfmt passed; compiler/Clippy/tests/native/runtime/Docker/
+browser/SDK/hosted execution is NOT_RUN, with no allocation assumed. Root must
+review original ownership, check preimages/dependencies and allocate scoped
+validation before source application or any integration success claim.
+
 ### Final six-context freeze handoff after selected validation
 
 Root's fixture policy662cf7a and Native checkpoint49d60cf6 are incorporated in

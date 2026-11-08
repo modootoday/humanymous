@@ -3,7 +3,7 @@ id: evidence:root/20261107061821
 title: Runtime application operational integration
 status: active
 created: 2026-11-07T06:18:21Z
-updated: 2026-11-07T22:10:15Z
+updated: 2026-11-08T04:50:06Z
 rel:
   governs: [crates/runtime/**]
   depends_on: [sot:root/runtime-application]
@@ -33,6 +33,13 @@ files:
   - {path: bootstrap-1f87-source-diagnosis.json, sha256: d3e28870defe36c1991c1c3c2ce6567d0724096e5484da4687ca28c249fed8d3, bytes: 2187, store: repo}
   - {path: runtime-six-context-freeze.json, sha256: 7e91388d0ba255f1e43c64e3fedd3b95c1fd59eb03e5187bdad15c102a2f0bed, bytes: 85901, store: repo}
   - {path: status.json, sha256: 039a1e869f8b318d998f6225cefb498e7f4de7259b9ded21b3e9a13b89f56f11, bytes: 6774, store: repo}
+  - {path: observed-activation-candidate/candidate.json, sha256: 4a8dc1848b9772d94969957d0dad9be0ab0bd05d582b18501cd71b421f0f39ff, bytes: 4064, store: repo}
+  - {path: observed-activation-candidate/interface-map.md, sha256: 580f663e925026b7056a23e90737369f72607c8a33c48d7f4e35a912bf5dff44, bytes: 6892, store: repo}
+  - {path: observed-activation-candidate/files/crates/sdk/humanymous-runtime/src/gateway/service.rs, sha256: cc9938a9ad4461b267b4df3193d52e8788a95ebd4fbb99797b009e4cff934d19, bytes: 13985, store: repo}
+  - {path: observed-activation-candidate/files/crates/sdk/humanymous-runtime/src/gateway/service/observed.rs, sha256: f0f4d6927c528c865ac8bf36760b88c8967af33e7c98d80b20aab01e713b8570, bytes: 2884, store: repo}
+  - {path: observed-activation-candidate/files/crates/sdk/humanymous-runtime/src/gateway/service/observed/admission.rs, sha256: 61f78f5c4be7e41cad1e8befb6c2004eb407772365273064afaac2ff3bc9bb9a, bytes: 9648, store: repo}
+  - {path: observed-activation-candidate/files/crates/sdk/humanymous-runtime/src/gateway/service/observed/retained.rs, sha256: 6d5e159b81893d9934f021cb81d07a05afa8e20c95ce56d29d538b40aa01fad0, bytes: 1912, store: repo}
+  - {path: observed-activation-candidate/files/crates/sdk/humanymous-runtime/src/gateway/service/observed/admission/tests.rs, sha256: b0ae49e230c1691288c88a22d8277557cfc3f1caa123c1c37d8696fab6a3d497, bytes: 4023, store: repo}
 ---
 
 # Runtime application operational integration

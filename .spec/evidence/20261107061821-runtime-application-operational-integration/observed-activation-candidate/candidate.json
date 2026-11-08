@@ -1,0 +1,75 @@
+{
+  "schema": "humanymous.runtime-observed-candidate/1",
+  "status": "Source candidate authored, UNAPPLIED/UNCOMPILED/UNRUN; requires original Authority receipt candidate before compiling",
+  "baseline": "readonly tools-integration-5f1010d4",
+  "preimages": [
+    {
+      "target_path": "crates/sdk/humanymous-runtime/src/gateway/service.rs",
+      "preimage_sha256": "d3c2fa8028476ca2dd8d8457f63677d9aec696006ce5c1cf10e52ba80a5e29c5",
+      "preimage_bytes": 13856
+    },
+    {
+      "target_path": "crates/sdk/humanymous-runtime/src/gateway/service/observed.rs",
+      "preimage_sha256": "0c75a27137fa64331fd10d05f2f38921c5c6c9790666e48ef32e856660c14fad",
+      "preimage_bytes": 2791
+    },
+    {
+      "target_path": "crates/sdk/humanymous-runtime/src/gateway/service/observed/retained.rs",
+      "preimage_sha256": "33dd4d61fd6a65bfababcdc62db6a34bf9de0de6adf055bb04beefce41f3b985",
+      "preimage_bytes": 1508
+    }
+  ],
+  "new_files": [],
+  "authority_dependency": "Original native_preparation remains Unsupported; no consuming OfferACK/same-gate receipt producer exists",
+  "no_nativeproof_factory": true,
+  "no_ready_factory": true,
+  "no_scoring_changes": true,
+  "changes": [
+    {
+      "target": "crates/sdk/humanymous-runtime/src/gateway/service.rs",
+      "candidate": "files/crates/sdk/humanymous-runtime/src/gateway/service.rs",
+      "required_absent": false,
+      "preimage_sha256": "d3c2fa8028476ca2dd8d8457f63677d9aec696006ce5c1cf10e52ba80a5e29c5",
+      "postimage_sha256": "cc9938a9ad4461b267b4df3193d52e8788a95ebd4fbb99797b009e4cff934d19"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/gateway/service/observed.rs",
+      "candidate": "files/crates/sdk/humanymous-runtime/src/gateway/service/observed.rs",
+      "required_absent": false,
+      "preimage_sha256": "0c75a27137fa64331fd10d05f2f38921c5c6c9790666e48ef32e856660c14fad",
+      "postimage_sha256": "f0f4d6927c528c865ac8bf36760b88c8967af33e7c98d80b20aab01e713b8570"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/gateway/service/observed/admission.rs",
+      "candidate": "files/crates/sdk/humanymous-runtime/src/gateway/service/observed/admission.rs",
+      "required_absent": true,
+      "preimage_sha256": null,
+      "postimage_sha256": "61f78f5c4be7e41cad1e8befb6c2004eb407772365273064afaac2ff3bc9bb9a"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/gateway/service/observed/retained.rs",
+      "candidate": "files/crates/sdk/humanymous-runtime/src/gateway/service/observed/retained.rs",
+      "required_absent": false,
+      "preimage_sha256": "33dd4d61fd6a65bfababcdc62db6a34bf9de0de6adf055bb04beefce41f3b985",
+      "postimage_sha256": "6d5e159b81893d9934f021cb81d07a05afa8e20c95ce56d29d538b40aa01fad0"
+    },
+    {
+      "target": "crates/sdk/humanymous-runtime/src/gateway/service/observed/admission/tests.rs",
+      "candidate": "files/crates/sdk/humanymous-runtime/src/gateway/service/observed/admission/tests.rs",
+      "required_absent": true,
+      "preimage_sha256": null,
+      "postimage_sha256": "b0ae49e230c1691288c88a22d8277557cfc3f1caa123c1c37d8696fab6a3d497"
+    }
+  ],
+  "interface_map": "interface-map.md",
+  "interface_map_sha256": "580f663e925026b7056a23e90737369f72607c8a33c48d7f4e35a912bf5dff44",
+  "authority_candidate_manifest": ".spec/evidence/20261108043317-adapter-authority-namespace-admission-candidate/manifest.json",
+  "tests_authored": 6,
+  "test_scope": "Actual unavailable original provider and attempt reuse/resource cancellation only; no authenticated receipt/native/wire replay success",
+  "compiler_executed": false,
+  "runtime_executed": false,
+  "branch": "codex/rust",
+  "source_application_by": "Root review/queue; actual cursor-integrator only after verified claim; no parallel Root/Codex application",
+  "authority_candidate_manifest_sha256": "b6e7808422d7a8937afce44b4da63e00eb315c81537ae2e37d0538e2b24e32e9",
+  "api_scope": "Concrete pre-unseal missing-provider/attempt lifetime and opaque receipt consumer only; actual Offer transport/partial host/Ready still unavailable"
+}
