@@ -3063,3 +3063,27 @@ and full capture/provider qualification stay unapproved/unverified. The plan's
 old header still labels B1 unapproved without a historical epoch despite6aea9fcc;
 Root was notified for owner correction. Audit did not edit foreign canon. Private
 b1-positive-b2-profile-followup-007.json binds actual doc logs/source and new plan.
+
+Broader Adapters preserved-candidate audit:124 preimages,112 mapped postimages,
+17 generated files and141 source patch hashes reproduce. Three extra physical
+files are exactly separately mapped original resource moves, with3 more patch
+hashes and producer Git-blob joins verified. Total candidate132 files, no duplicate
+mapped path or unexpected file after all maps. Five frozen Core fixture replicas
+join exact producer blobs/hashes/size; no CRLF normalization or repinning. Read8
+positive/negative privacy pairs (16 authored controls), all NOTCOMPILED. Framework
+Admission body is byte-equivalent after only new context forbid and doc crate
+paths; private permit/acquire64/Drop logic remains.81 visibility rows are inventory,
+not a pass on all boundaries. Header/host-package/managed-loader/actual-artifact/
+coherent graph activation blockers remain. No global semantic/SRP/ABI/runtime pass.
+
+Fresh B1 feature-documentation matrix has1795 equal before/after rows, SHA9e4eb2470600f4fcfd5c6d74c6393bc0dcd26801f22e827d3307e8a092b59d22.
+Raw default profile:1compilefail module absence. Queries-only:1positive existing
+query/wire example and2compilefail creation-API absence/private observation.
+Create feature:1positiveNoRun and the same2compilefail examples. All0fail/0ignore;
+default/queries0filtered, create1filtered perblock. These are external API absence
+compiler observations, not dependency/read closure or native query/create. Old
+missing-absence observation is superseded at this scope; exact unsafe/safe-sibling/
+linkage controls and4native fixtures still need results. Root assigned Delivery
+candidate-only local compiler-observation preparation; audit requested no executor
+or new source grant. Private adapter-candidate-b1-feature-review-008.json binds maps,
+producer review and actual feature logs without transferring old source success.
