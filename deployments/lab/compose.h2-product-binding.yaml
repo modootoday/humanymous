@@ -1,0 +1,18 @@
+# Unlock B Cap topology — W2 H2 product-binding (original_h2 serve path).
+# Distinct from capture-component observe_h2. Component Cap green != product.
+# Detection freeze. Lab-only; no published ports.
+services:
+  h2-product-binding-pilot:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/h2-product-binding-lab:${HM_LAB_IMAGE_TAG:-local}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:-../..}
+      dockerfile: build/rust/h2-product-binding-lab.Dockerfile
+    network_mode: none
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    labels:
+      org.humanymous.evidence: rust-w2-h2-product-binding
+    profiles: [h2-product-binding]

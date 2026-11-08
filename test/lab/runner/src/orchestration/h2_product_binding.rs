@@ -1,10 +1,8 @@
 //! Unlock B Cap CLI — W2 H2 product-binding (fail-closed).
 //!
-//! Cap-ready pack transfers contract docs only. Desktop/hosted-honest Cap
-//! topology (compose + Dockerfile for gateway serve + `required.original_h2`)
-//! is Root-allocated and absent from the claimed Cursor Cap surface. Cap CLI
-//! refuses before Docker when those prerequisites are missing. Capture
-//! `observe_h2` is never product-binding. Never invent `pass_product_clean_room`.
+//! Cap topology (compose + Dockerfile for gateway serve + `required.original_h2`)
+//! is Cap-ready under claimed Cursor surface after Unlock B topology transfer.
+//! Capture `observe_h2` is never product-binding. Never invent `pass_product_clean_room`.
 use super::Lab;
 use crate::{docker::Result, snapshot};
 use serde_json::json;
@@ -20,8 +18,7 @@ pub const CODE_DEFINED_PILOT_COMMAND: &str =
 /// Contract destination written by Unlock B transfer-apply.
 pub const CONTRACT_REL: &str = "deployments/lab/gateway/h2-product-binding-contract.json";
 
-/// Cap topology Root must allocate before Cap can measure hosted gateway binding.
-/// These paths are intentionally absent from Cap-ready pack entries (contract-only).
+/// Cap topology required before Cap can Docker-coordinate product-binding composition.
 pub const REQUIRED_CAP_TOPOLOGY: &[&str] = &[
     "deployments/lab/compose.h2-product-binding.yaml",
     "build/rust/h2-product-binding-lab.Dockerfile",
@@ -47,7 +44,7 @@ const FREEZE_PREIMAGES: &[(&str, &str)] = &[
     ),
 ];
 
-/// Missing Cap topology paths (Root-only; not inventable under claimed lab-runner).
+/// Missing Cap topology paths.
 pub fn missing_cap_topology(root: &Path) -> Vec<&'static str> {
     REQUIRED_CAP_TOPOLOGY
         .iter()
@@ -56,14 +53,14 @@ pub fn missing_cap_topology(root: &Path) -> Vec<&'static str> {
         .collect()
 }
 
-/// Fail-closed Cap topology gate — cite missing Root paths; no Docker burn.
+/// Fail-closed Cap topology gate — cite missing paths; no Docker burn.
 pub fn require_cap_topology(root: &Path) -> Result<()> {
     let missing = missing_cap_topology(root);
     if missing.is_empty() {
         return Ok(());
     }
     Err(format!(
-        "w2-h2-product-binding Cap refused: missing Root Cap topology ({missing}); Cap-ready pack destinations are contract docs only (no compose/Dockerfile); gateway freeze pins are observation surfaces not Cap pilot topology; never invent pass_product_clean_room from capture observe_h2",
+        "w2-h2-product-binding Cap refused: missing Cap topology ({missing}); Cap CLI refuse-closed before Docker; gateway freeze pins are observation surfaces not Cap pilot topology; never invent pass_product_clean_room from capture observe_h2",
         missing = missing.join(", ")
     )
     .into())
@@ -92,7 +89,8 @@ pub fn require_freeze_preimages(root: &Path) -> Result<()> {
     Ok(())
 }
 
-/// Cap=1 entry: refuse-closed when Cap topology / freeze prerequisites fail.
+/// Cap=1 entry: refuse-closed when Cap topology / freeze prerequisites fail;
+/// otherwise Docker-coordinate Cap composition (component only).
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
     let root = snapshot::root()?;
     require_freeze_preimages(&root)?;
@@ -104,7 +102,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
             "pass_product_clean_room": 0,
             "missing_cap_topology": missing_cap_topology(&root),
             "contract": CONTRACT_REL,
-            "note": "component refuse only; Cap-ready pack is contract-only; capture observe_h2 ≠ product-binding; never invent pass_product_clean_room"
+            "note": "component refuse only; capture observe_h2 ≠ product-binding; never invent pass_product_clean_room"
         });
         snapshot::write(
             &lab.evidence,
@@ -113,18 +111,55 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
         )?;
         return Err(error);
     }
-    // Topology present: still fail-closed until Root-authored Cap pilot harness lands.
+
+    lab.stage = "h2_product_binding_compose_config";
+    let config = lab
+        .compose(&["config", "--format", "json"], true)?
+        .stdout;
+    let parsed: serde_json::Value = serde_json::from_str(&config)?;
+    snapshot::write(&lab.evidence, "resolved-compose.json", &parsed)?;
+    lab.case(
+        "h2-product-binding-no-published-ports",
+        parsed["services"]
+            .as_object()
+            .ok_or("services absent")?
+            .values()
+            .all(|s| s.get("ports").is_none()),
+        json!(snapshot::digest(config.as_bytes())),
+    )?;
+    eprintln!("lab: building immutable h2-product-binding-lab image (Cap)");
+    lab.stage = "h2_product_binding_build";
+    lab.compose(&["build", "h2-product-binding-pilot"], true)?;
+    // Cap oneshot (exits 0). Do not use compose --wait.
+    lab.stage = "h2_product_binding_up";
+    lab.compose(&["up", "-d", "h2-product-binding-pilot"], true)?;
+    let container = lab.inspect("h2-product-binding-pilot")?;
+    lab.case(
+        "h2-product-binding-network-none",
+        container["HostConfig"]["NetworkMode"] == "none",
+        json!("compose.h2-product-binding.yaml network_mode=none"),
+    )?;
+    let exit_code = container["State"]["ExitCode"].as_i64().unwrap_or(-1);
+    let running = container["State"]["Running"] == true;
+    lab.case(
+        "h2-product-binding-pilot-oneshot-or-running",
+        running || exit_code == 0,
+        json!({"running": running, "exit_code": exit_code}),
+    )?;
     lab.components["w2_h2_product_binding"] = json!({
-        "status": "refused",
+        "status": "executed",
         "kind": "w2-h2-product-binding-component",
         "product": 0,
         "pass_product_clean_room": 0,
-        "note": "Cap topology files present but hosted gateway H2 serve+required.original_h2 Cap pilot harness not wired; never invent pass_product_clean_room"
+        "original_h2_measured": false,
+        "note": "component Cap composition only; never invent readiness original_h2 or pass_product_clean_room; capture observe_h2 ≠ product-binding"
     });
-    Err(
-        "w2-h2-product-binding Cap refused: Cap topology markers present but serve+required.original_h2 Cap pilot harness absent; never invent pass_product_clean_room"
-            .into(),
-    )
+    snapshot::write(
+        &lab.evidence,
+        "w2-h2-product-binding-component.json",
+        &lab.components["w2_h2_product_binding"],
+    )?;
+    Ok(())
 }
 
 #[cfg(test)]
@@ -149,12 +184,12 @@ mod tests {
     }
 
     #[test]
-    fn live_workspace_missing_cap_topology() {
+    fn live_workspace_cap_topology_present_after_unlock_b() {
         let root = snapshot::root().expect("root");
         let missing = missing_cap_topology(&root);
         assert!(
-            !missing.is_empty(),
-            "Cap topology must remain absent until Root allocates; Cap burn stays refuse-closed"
+            missing.is_empty(),
+            "Cap topology must be present after Unlock B topology transfer; missing={missing:?}"
         );
     }
 

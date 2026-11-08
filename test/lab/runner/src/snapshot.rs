@@ -196,6 +196,9 @@ fn allowed(path: &str) -> bool {
                 | "build/rust/browser-product.Dockerfile.dockerignore"
                 | "build/rust/authority-lab.Dockerfile"
                 | "build/rust/authority-lab.Dockerfile.dockerignore"
+                | "build/rust/h2-product-binding-lab.Dockerfile"
+                | "build/rust/h2-product-binding-lab.Dockerfile.dockerignore"
+                | "deployments/lab/gateway/h2-product-binding-contract.json"
                 | "deployments/lab/authority/package.json"
                 | "deployments/lab/authority/package-lock.json"
                 | "deployments/lab/authority/pilot.mjs"
@@ -250,6 +253,9 @@ mod tests {
             "deployments/lab/authority/package-lock.json",
             "build/rust/authority-lab.Dockerfile",
             "build/rust/authority-lab.Dockerfile.dockerignore",
+            "build/rust/h2-product-binding-lab.Dockerfile",
+            "build/rust/h2-product-binding-lab.Dockerfile.dockerignore",
+            "deployments/lab/gateway/h2-product-binding-contract.json",
             "adapters/node/src/index.cjs",
         ] {
             assert!(allowed(path));
