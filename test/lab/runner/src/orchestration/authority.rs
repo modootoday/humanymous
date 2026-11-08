@@ -8,9 +8,7 @@ use serde_json::json;
 /// Cap=1 authority composition: build/run compose.authority.yaml from freeze.
 pub fn run(lab: &mut Lab) -> Result<()> {
     lab.stage = "authority_compose_config";
-    let config = lab
-        .compose(&["config", "--format", "json"], true)?
-        .stdout;
+    let config = lab.compose(&["config", "--format", "json"], true)?.stdout;
     let parsed: serde_json::Value = serde_json::from_str(&config)?;
     snapshot::write(&lab.evidence, "resolved-compose.json", &parsed)?;
     lab.case(

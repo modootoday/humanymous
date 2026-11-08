@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T15:17:00Z
+updated: 2026-11-08T15:20:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -28,7 +28,7 @@ Never invent `pass_product_clean_room`.
 | --- | --- | --- |
 | 1 | Unlock B / G1 W2 H2 product-binding | **Cap EXIT 0 component** — allowlist cites `deployments/lab/gateway/h2-product-binding-contract.json`; prior EXIT 1 @ `20261109000700`; reburn justified by structural allowlist delta; `counts_as=pass_component_desktop`; product=0 |
 | 2 | N06 readiness join | **blocked** — `original_h2_measured=false`; component Cap ≠ measured hosted binding |
-| 3 | Unlock A / G4 CEF/AT | **blocked / prep only** — no `UNLOCK-A-APPLIED.json`; Cap-ready g4 pack waiting Root path release |
+| 3 | Unlock A / G4 CEF/AT | **blocked / Cap CLI refuse-closed** — Cap CLI `--g4-cef-at` code-defined (mirrors B/C); no `UNLOCK-A-APPLIED`; empty entries; exact missing: path release `crates/browser/**` and/or `scripts/ci/cef-pilot/**`, Cap CLI GRANT pilot, `HUMANYMOUS_CEF_PILOT_BUNDLE`; Cap burn=0 |
 
 ## 2. Decision rules
 
@@ -70,12 +70,15 @@ Tracked: this plan.
 
 ## 5. Residual / next
 
-Cap free. Next Root-gated closer:
+Cap free (Unlock A Cap burn=0 this turn). Cap CLI `--g4-cef-at` refuse-closed
+citing exact missing path release + CEF bundle. Next Root-gated closer:
 
 1. Unlock **A** GRANT + exact path release (`crates/browser/**` and/or
-   `scripts/ci/cef-pilot/**`) then Cap=1 matching g4 pack — **or**
+   `scripts/ci/cef-pilot/**`) + Cap CLI `--g4-cef-at` pilot +
+   `HUMANYMOUS_CEF_PILOT_BUNDLE` then Cap=1 matching g4 pack — **or**
 2. Measured hosted gateway H2 binding → N06 readiness join eligibility
-   (still not automatic `pass_product_clean_room`)
+   (still not automatic `pass_product_clean_room`; `original_h2_measured=false`)
 
+No W2/authority Cap reburn without new structural delta.
 Never invent `pass_product_clean_room`. Capture `observe_h2` still forbidden as
 product-binding.

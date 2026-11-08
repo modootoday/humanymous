@@ -48,6 +48,7 @@ mod authority;
 mod browser;
 mod browser_actor;
 mod browser_failure;
+pub(crate) mod g4_cef_at;
 mod go;
 mod go_fixture;
 mod go_public;
@@ -70,6 +71,7 @@ struct Lab {
     mount_probe: bool,
     authority_node_ipc: bool,
     w2_h2_product_binding: bool,
+    g4_cef_at: bool,
     go_component_verified: bool,
     stage: &'static str,
     cases: Vec<Value>,
@@ -117,6 +119,13 @@ impl Lab {
             ];
             command.extend(args.iter().map(|s| (*s).to_owned()));
             return Ok(command);
+        }
+        if self.g4_cef_at {
+            // G4 Cap is host CEF/AT refuse-closed; no Docker compose topology.
+            return Err(
+                "g4-cef-at Cap has no Docker compose topology; Cap CLI refuse-closed to host CEF/AT prerequisites only; never invent pass_product_clean_room"
+                    .into(),
+            );
         }
         let mut command = vec![
             "compose".into(),
@@ -278,6 +287,9 @@ impl Lab {
         }
         if self.w2_h2_product_binding {
             return h2_product_binding::run(self);
+        }
+        if self.g4_cef_at {
+            return g4_cef_at::run(self);
         }
         if self.go_product {
             return go::run(self);
@@ -588,6 +600,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut mount_probe = false;
     let mut authority_node_ipc = false;
     let mut w2_h2_product_binding = false;
+    let mut g4_cef_at = false;
     let mut full = false;
     let mut require_go_component = false;
     let mut index = 0;
@@ -606,6 +619,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--topology-only" => topology_only = true,
             "--authority-node-ipc" => authority_node_ipc = true,
             "--w2-h2-product-binding" => w2_h2_product_binding = true,
+            "--g4-cef-at" => g4_cef_at = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
             _ => return Err("unknown runner argument".into()),
@@ -621,6 +635,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || go_product
             || mount_probe
             || w2_h2_product_binding
+            || g4_cef_at
             || full
             || require_go_component
         {
@@ -642,11 +657,35 @@ pub fn run(args: &[String]) -> Result<i32> {
             || go_product
             || mount_probe
             || authority_node_ipc
+            || g4_cef_at
             || full
             || require_go_component
         {
             return Err(
                 "w2-h2-product-binding Cap requires its own fresh profile; refuse foreign Cap selectors and capture/feeder reburns; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+    if g4_cef_at {
+        // Cap CLI bound only after Unlock A transfer-apply with code-defined pilot.
+        crate::unlock_gate::require_g4_cef_at_unlocked(&root)?;
+        // Refuse before CEF when freeze/module/bundle prerequisites fail (Cap conservation).
+        g4_cef_at::require_freeze_preimages(&root)?;
+        g4_cef_at::require_cap_module(&root)?;
+        g4_cef_at::require_cef_bundle()?;
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || full
+            || require_go_component
+        {
+            return Err(
+                "g4-cef-at Cap requires its own fresh profile; refuse foreign Cap selectors and a11y/--require-full Cap spam; never invent pass_product_clean_room"
                     .into(),
             );
         }
@@ -718,6 +757,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         mount_probe,
         authority_node_ipc,
         w2_h2_product_binding,
+        g4_cef_at,
         go_component_verified: false,
         stage: "initialization",
         cases: Vec::new(),
@@ -758,13 +798,17 @@ pub fn run(args: &[String]) -> Result<i32> {
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
     let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
-    let mut evidence_types =
-        if browser_product || go_product || mount_probe || authority_node_ipc || w2_h2_product_binding
-        {
-            vec![]
-        } else {
-            vec!["topology-control"]
-        };
+    let mut evidence_types = if browser_product
+        || go_product
+        || mount_probe
+        || authority_node_ipc
+        || w2_h2_product_binding
+        || g4_cef_at
+    {
+        vec![]
+    } else {
+        vec!["topology-control"]
+    };
     for (component, kind) in [
         ("runtime", "runtime-process"),
         ("wargame", "supervisor-owned-runtime-child-http1"),
@@ -777,10 +821,8 @@ pub fn run(args: &[String]) -> Result<i32> {
             "same-origin-browser-runtime-isolated-pilot",
         ),
         ("authority_node_ipc", "authority-node-ipc-component"),
-        (
-            "w2_h2_product_binding",
-            "w2-h2-product-binding-component",
-        ),
+        ("w2_h2_product_binding", "w2-h2-product-binding-component"),
+        ("g4_cef_at", "g4-cef-at-component"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {

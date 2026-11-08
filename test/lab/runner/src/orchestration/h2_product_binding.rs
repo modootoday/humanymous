@@ -113,9 +113,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
     }
 
     lab.stage = "h2_product_binding_compose_config";
-    let config = lab
-        .compose(&["config", "--format", "json"], true)?
-        .stdout;
+    let config = lab.compose(&["config", "--format", "json"], true)?.stdout;
     let parsed: serde_json::Value = serde_json::from_str(&config)?;
     snapshot::write(&lab.evidence, "resolved-compose.json", &parsed)?;
     lab.case(
@@ -164,7 +162,7 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::{CODE_DEFINED_PILOT_COMMAND, CAP_SELECTOR, missing_cap_topology};
+    use super::{CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, missing_cap_topology};
     use crate::snapshot;
     use std::fs;
 

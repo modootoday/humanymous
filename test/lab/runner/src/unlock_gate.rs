@@ -5,17 +5,24 @@
 //! Cap module presence. Unlock B is true only when Root-authored
 //! `UNLOCK-B-APPLIED.json` exists (written by Unlock-B transfer-apply after a
 //! grant with non-empty `pilot_command` naming the code-defined Cap CLI
-//! `--w2-h2-product-binding`). Unlock A stays false unless Root-authored
-//! `UNLOCK-A-APPLIED.json` exists — never invent path release or folklore
-//! pilot argv. Never invents product. Capture `observe_h2` ≠ product-binding.
+//! `--w2-h2-product-binding`). Unlock A is true only when Root-authored
+//! `UNLOCK-A-APPLIED.json` exists with Cap CLI `--g4-cef-at` pilot after
+//! path-release destinations — never invent path release, CEF bundle, or
+//! folklore pilot argv. Never invents product. Capture `observe_h2` ≠
+//! product-binding. A11y/`--require-full` Cap spam forbidden.
 use crate::docker::Result;
+use crate::orchestration::g4_cef_at::{
+    CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CEF_BUNDLE_ENV,
+    CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT, PATH_RELEASE_SURFACES,
+    REQUIRED_CAP_MODULE,
+};
 use crate::orchestration::h2_product_binding::{
     CAP_SELECTOR as W2_H2_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND,
 };
 use crate::snapshot;
 use crate::transfer_preimage;
 use serde_json::{Value, json};
-use std::{fs, path::Path};
+use std::{env, fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-unlock-gate/1";
 
@@ -59,12 +66,20 @@ pub struct UnlockProbe {
     /// Cap argv echoed from UNLOCK-B-APPLIED when present; code-defined Cap CLI preferred.
     pub w2_h2_pilot_command: Option<String>,
     pub reason_b: String,
+    /// Cap CLI status for G4 CEF/AT (bound only after Unlock A + Cap CLI pilot).
+    pub g4_cef_at_cap_cli_status: &'static str,
+    /// Cap argv echoed from UNLOCK-A-APPLIED when present; code-defined Cap CLI preferred.
+    pub g4_cef_at_pilot_command: Option<String>,
+    pub reason_a: String,
 }
 
 impl UnlockProbe {
     pub fn to_json(&self, root: &Path, manifest: Option<&Path>) -> Value {
         let unlock_a_manifest = root.join(DEFAULT_UNLOCK_A_MANIFEST);
         let unlock_b_manifest = root.join(DEFAULT_UNLOCK_B_MANIFEST);
+        let cef_bundle_present = env::var_os(CEF_BUNDLE_ENV)
+            .as_ref()
+            .is_some_and(|value| !value.is_empty());
         json!({
             "schema": SCHEMA,
             "record_kind": "lab-runner-unlock-gate",
@@ -87,11 +102,7 @@ impl UnlockProbe {
                 "any": self.any,
             },
             "reasons": {
-                "A": if self.a_g4_cef_at {
-                    "UNLOCK-A-APPLIED present"
-                } else {
-                    "no UNLOCK-A-APPLIED; G4 CEF/AT path release absent; transfer applicator wired fail-closed (empty destinations refuse)"
-                },
+                "A": self.reason_a,
                 "B": self.reason_b,
                 "C": self.reason_c,
             },
@@ -108,6 +119,18 @@ impl UnlockProbe {
                 "reason": self.reason_b,
                 "note": "Cap CLI --w2-h2-product-binding is the code-defined GRANT.pilot_command; refuse capture observe_h2 and feeder --require-full; Cap topology compose/Dockerfile remain Root-allocated"
             },
+            "g4_cef_at_cap_cli": {
+                "selector": G4_CEF_CAP_SELECTOR,
+                "status": self.g4_cef_at_cap_cli_status,
+                "pilot_command": self.g4_cef_at_pilot_command,
+                "code_defined_pilot_command": G4_CODE_DEFINED_PILOT,
+                "reason": self.reason_a,
+                "path_release_surfaces": PATH_RELEASE_SURFACES,
+                "required_cap_module": REQUIRED_CAP_MODULE,
+                "cef_bundle_env": CEF_BUNDLE_ENV,
+                "cef_bundle_present": cef_bundle_present,
+                "note": "Cap CLI --g4-cef-at is the code-defined GRANT.pilot_command; refuse a11y/--require-full Cap spam; empty transfer entries + missing path release + missing CEF bundle keep blocked_claim"
+            },
             "cap": {
                 "burn_authorized_by_unlock_gate": self.any,
                 "burn_this_turn": false,
@@ -122,6 +145,8 @@ impl UnlockProbe {
                 "never_invent_unlock_b_pilot_command": true,
                 "code_defined_w2_h2_cap_cli": true,
                 "never_invent_unlock_a_path_release": true,
+                "code_defined_g4_cef_at_cap_cli": true,
+                "never_cap_spam_a11y_require_full": true,
                 "capture_component_is_not_product_binding": true,
             },
         })
@@ -180,6 +205,8 @@ pub fn probe(args: &[String]) -> Result<i32> {
                 "authority_cap_cli_status": status.authority_cap_cli_status,
                 "w2_h2_cap_cli_status": status.w2_h2_cap_cli_status,
                 "w2_h2_pilot_command": status.w2_h2_pilot_command,
+                "g4_cef_at_cap_cli_status": status.g4_cef_at_cap_cli_status,
+                "g4_cef_at_pilot_command": status.g4_cef_at_pilot_command,
                 "cap_burn": false,
                 "pass_product_clean_room": 0,
             })
@@ -192,7 +219,7 @@ pub fn probe(args: &[String]) -> Result<i32> {
 
 /// Probe unlock state for Cap-ready / fail-closed Cap CLI.
 pub fn probe_root(root: &Path, manifest: Option<&Path>) -> Result<UnlockProbe> {
-    let a = root.join(UNLOCK_A_RECEIPT).is_file();
+    let (a, reason_a, g4_status, g4_pilot) = probe_unlock_a(root)?;
     let (b, reason_b, w2_status, w2_pilot) = probe_unlock_b(root)?;
     let (c, reason_c, cli_status) = probe_unlock_c(root, manifest)?;
     Ok(UnlockProbe {
@@ -205,7 +232,111 @@ pub fn probe_root(root: &Path, manifest: Option<&Path>) -> Result<UnlockProbe> {
         w2_h2_cap_cli_status: w2_status,
         w2_h2_pilot_command: w2_pilot,
         reason_b,
+        g4_cef_at_cap_cli_status: g4_status,
+        g4_cef_at_pilot_command: g4_pilot,
+        reason_a,
     })
+}
+
+/// Unlock A Cap surface: bound only when UNLOCK-A-APPLIED carries Cap CLI pilot.
+fn probe_unlock_a(root: &Path) -> Result<(bool, String, &'static str, Option<String>)> {
+    let receipt_path = root.join(UNLOCK_A_RECEIPT);
+    let manifest_path = root.join(DEFAULT_UNLOCK_A_MANIFEST);
+    let empty_entries = manifest_entries_empty(&manifest_path);
+    let cef_bundle_present = env::var_os(CEF_BUNDLE_ENV)
+        .as_ref()
+        .is_some_and(|value| !value.is_empty());
+    if !receipt_path.is_file() {
+        return Ok((
+            false,
+            format!(
+                "no UNLOCK-A-APPLIED; Unlock A Cap CLI {G4_CEF_CAP_SELECTOR} exists but GRANT.pilot_command + path-release destinations + transfer-apply still required; exact missing: path release {} OR browser-ui execution admission; empty transfer-manifest entries={empty_entries}; {CEF_BUNDLE_ENV} present={cef_bundle_present}; never invent path release or Cap-spam a11y/--require-full",
+                PATH_RELEASE_SURFACES.join(" and/or ")
+            ),
+            "blocked_claim",
+            None,
+        ));
+    }
+    let raw = fs::read_to_string(&receipt_path)
+        .map_err(|error| format!("UNLOCK-A-APPLIED read failed: {error}"))?;
+    let receipt: Value =
+        serde_json::from_str(&raw).map_err(|error| format!("UNLOCK-A-APPLIED json: {error}"))?;
+    let pilot = receipt
+        .get("pilot_command")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_owned);
+    let Some(pilot) = pilot else {
+        return Ok((
+            false,
+            format!(
+                "UNLOCK-A-APPLIED present but pilot_command empty/absent; fail-closed blocked_claim; exact missing Cap CLI {G4_CEF_CAP_SELECTOR}; never invent pilot_command; {CEF_BUNDLE_ENV} present={cef_bundle_present}"
+            ),
+            "blocked_claim",
+            None,
+        ));
+    };
+    if !pilot.contains(G4_CEF_CAP_SELECTOR) {
+        return Ok((
+            false,
+            format!(
+                "UNLOCK-A-APPLIED pilot_command lacks Cap CLI {G4_CEF_CAP_SELECTOR}; refuse a11y/feeder folklore; code-defined pilot is {G4_CODE_DEFINED_PILOT}; {CEF_BUNDLE_ENV} present={cef_bundle_present}"
+            ),
+            "blocked_claim",
+            Some(pilot),
+        ));
+    }
+    let missing: Vec<&str> = REQUIRED_CAP_MODULE
+        .iter()
+        .copied()
+        .filter(|relative| !root.join(relative).is_file())
+        .collect();
+    if !missing.is_empty() {
+        return Ok((
+            false,
+            format!(
+                "UNLOCK-A-APPLIED present but Cap module/freeze destinations missing ({}); transfer incomplete; Cap CLI stays blocked_claim; {CEF_BUNDLE_ENV} present={cef_bundle_present}",
+                missing.join(", ")
+            ),
+            "blocked_claim",
+            Some(pilot),
+        ));
+    }
+    if !cef_bundle_present {
+        // Unlock measured true for grant/apply, but Cap day still refuse-closed on bundle.
+        return Ok((
+            true,
+            format!(
+                "UNLOCK-A-APPLIED present with Cap CLI {G4_CEF_CAP_SELECTOR}; Cap=1 may attempt matching g4-cef-at pack but Cap day refuse-closed until {CEF_BUNDLE_ENV} is set; path release surfaces {}; component≠product",
+                PATH_RELEASE_SURFACES.join(" and/or ")
+            ),
+            "bound",
+            Some(pilot),
+        ));
+    }
+    Ok((
+        true,
+        format!(
+            "UNLOCK-A-APPLIED present with Cap CLI {G4_CEF_CAP_SELECTOR} and {CEF_BUNDLE_ENV}; Cap=1 may burn matching g4-cef-at pack once; component≠product; never Cap-spam a11y/--require-full"
+        ),
+        "bound",
+        Some(pilot),
+    ))
+}
+
+fn manifest_entries_empty(manifest_path: &Path) -> bool {
+    let Ok(raw) = fs::read_to_string(manifest_path) else {
+        return true;
+    };
+    let Ok(manifest) = serde_json::from_str::<Value>(&raw) else {
+        return true;
+    };
+    manifest
+        .get("entries")
+        .and_then(Value::as_array)
+        .map(|entries| entries.is_empty())
+        .unwrap_or(true)
 }
 
 /// Unlock B Cap surface: bound only when UNLOCK-B-APPLIED carries Cap CLI pilot.
@@ -223,8 +354,8 @@ fn probe_unlock_b(root: &Path) -> Result<(bool, String, &'static str, Option<Str
     }
     let raw = fs::read_to_string(&receipt_path)
         .map_err(|error| format!("UNLOCK-B-APPLIED read failed: {error}"))?;
-    let receipt: Value = serde_json::from_str(&raw)
-        .map_err(|error| format!("UNLOCK-B-APPLIED json: {error}"))?;
+    let receipt: Value =
+        serde_json::from_str(&raw).map_err(|error| format!("UNLOCK-B-APPLIED json: {error}"))?;
     let pilot = receipt
         .get("pilot_command")
         .and_then(Value::as_str)
@@ -336,6 +467,11 @@ pub fn w2_h2_cap_cli_status(root: &Path) -> Result<&'static str> {
     Ok(probe_root(root, None)?.w2_h2_cap_cli_status)
 }
 
+/// Cap CLI status for `--g4-cef-at` (bound only after Unlock A apply).
+pub fn g4_cef_at_cap_cli_status(root: &Path) -> Result<&'static str> {
+    Ok(probe_root(root, None)?.g4_cef_at_cap_cli_status)
+}
+
 /// Fail-closed refuse for `--authority-node-ipc` until Unlock C is measured true.
 ///
 /// After Unlock C TRANSFER apply, Cap orchestration may burn once. Until then
@@ -366,9 +502,26 @@ pub fn require_w2_h2_product_binding_unlocked(root: &Path) -> Result<()> {
     .into())
 }
 
+/// Fail-closed refuse for `--g4-cef-at` until Unlock A is measured true.
+pub fn require_g4_cef_at_unlocked(root: &Path) -> Result<()> {
+    let status = probe_root(root, None)?;
+    if status.a_g4_cef_at {
+        return Ok(());
+    }
+    Err(format!(
+        "g4-cef-at Cap CLI is blocked_claim: {}; exact missing includes path release {} and/or env:{CEF_BUNDLE_ENV}; never invent pass_product_clean_room; never Cap-spam a11y/--require-full",
+        status.reason_a,
+        PATH_RELEASE_SURFACES.join(" and/or ")
+    )
+    .into())
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{UNLOCK_B_RECEIPT, UNLOCK_C_REQUIRED_PATHS, probe_root};
+    use super::{UNLOCK_A_RECEIPT, UNLOCK_B_RECEIPT, UNLOCK_C_REQUIRED_PATHS, probe_root};
+    use crate::orchestration::g4_cef_at::{
+        CAP_SELECTOR as G4_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G4_PILOT,
+    };
     use crate::orchestration::h2_product_binding::{CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND};
     use crate::snapshot;
     use serde_json::json;
@@ -382,11 +535,76 @@ mod tests {
         assert!(!status.any);
         assert_eq!(status.authority_cap_cli_status, "blocked_claim");
         assert_eq!(status.w2_h2_cap_cli_status, "blocked_claim");
+        assert_eq!(status.g4_cef_at_cap_cli_status, "blocked_claim");
         assert!(status.w2_h2_pilot_command.is_none());
+        assert!(status.g4_cef_at_pilot_command.is_none());
+        assert!(status.reason_a.contains("crates/browser/**"));
+        assert!(status.reason_a.contains("HUMANYMOUS_CEF_PILOT_BUNDLE"));
         assert_eq!(
             status.to_json(&directory, None)["pass_product_clean_room"],
             0
         );
+        let _ = fs::remove_dir_all(&directory);
+    }
+
+    #[test]
+    fn unlock_a_receipt_with_cap_cli_pilot_binds_when_module_present() {
+        let directory = tempfile_dir("hm-unlock-gate-a-");
+        let receipt_path = directory.join(UNLOCK_A_RECEIPT);
+        fs::create_dir_all(receipt_path.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &receipt_path,
+            serde_json::to_string_pretty(&json!({
+                "schema": "humanymous.cursor-unlock-a-applied/1",
+                "unlock": "A",
+                "applied": true,
+                "pilot_command": G4_PILOT,
+                "pass_product_clean_room": 0
+            }))
+            .expect("json"),
+        )
+        .expect("write");
+        for relative in [
+            "test/lab/runner/src/orchestration/g4_cef_at.rs",
+            "crates/browser/native/desktop/pilot-contract.json",
+        ] {
+            let path = directory.join(relative);
+            fs::create_dir_all(path.parent().expect("parent")).expect("mkdir");
+            fs::write(&path, b"present\n").expect("write");
+        }
+        let status = probe_root(&directory, None).expect("probe");
+        assert!(status.a_g4_cef_at);
+        assert!(status.any);
+        assert_eq!(status.g4_cef_at_cap_cli_status, "bound");
+        assert_eq!(status.g4_cef_at_pilot_command.as_deref(), Some(G4_PILOT));
+        assert_eq!(
+            status.to_json(&directory, None)["g4_cef_at_cap_cli"]["selector"],
+            G4_CAP_SELECTOR
+        );
+        let _ = fs::remove_dir_all(&directory);
+    }
+
+    #[test]
+    fn unlock_a_receipt_without_cap_selector_stays_blocked() {
+        let directory = tempfile_dir("hm-unlock-gate-a-bad-");
+        let receipt_path = directory.join(UNLOCK_A_RECEIPT);
+        fs::create_dir_all(receipt_path.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &receipt_path,
+            serde_json::to_string_pretty(&json!({
+                "schema": "humanymous.cursor-unlock-a-applied/1",
+                "unlock": "A",
+                "applied": true,
+                "pilot_command": "cargo run --manifest-path scripts/ci/cef-pilot/Cargo.toml --locked",
+                "pass_product_clean_room": 0
+            }))
+            .expect("json"),
+        )
+        .expect("write");
+        let status = probe_root(&directory, None).expect("probe");
+        assert!(!status.a_g4_cef_at);
+        assert_eq!(status.g4_cef_at_cap_cli_status, "blocked_claim");
+        assert!(status.reason_a.contains(G4_CAP_SELECTOR));
         let _ = fs::remove_dir_all(&directory);
     }
 

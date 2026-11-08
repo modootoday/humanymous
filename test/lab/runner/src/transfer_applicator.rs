@@ -4,10 +4,14 @@
 //! transfer manifest. Apply requires an explicit Root grant and still aborts on
 //! any preimage mismatch. Unlock B additionally requires a non-empty
 //! `pilot_command` in the grant (Root-named hosted gateway binding). Unlock A
-//! refuses empty destinations / empty entry lists (Root CEF/AT path release).
+//! requires non-empty path-release destinations **and** the code-defined Cap
+//! CLI `--g4-cef-at` pilot; empty destinations / empty entry lists refuse.
 //! Never invents `pass_product_clean_room` or folklore pilot argv. Cap burn is
 //! a separate step after a successful transfer.
 use crate::docker::Result;
+use crate::orchestration::g4_cef_at::{
+    CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT,
+};
 use crate::snapshot;
 use serde_json::{Map, Value, json};
 use std::{
@@ -405,12 +409,12 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
         "checks": checks,
         "next": if unlock_preimage_ready {
             match unlock {
-                UnlockLetter::A => "Root issues Unlock-A GRANT with non-empty path-release destinations; transfer-apply then Cap=1 matching g4-cef-at pack",
+                UnlockLetter::A => "Root issues Unlock-A GRANT with non-empty path-release destinations + Cap CLI --g4-cef-at pilot_command; transfer-apply then Cap=1 matching g4-cef-at pack (refuse-closed if HUMANYMOUS_CEF_PILOT_BUNDLE absent)",
                 UnlockLetter::B => "Root issues Unlock-B GRANT with non-empty pilot_command; transfer-apply then Cap=1 matching w2-h2-product-binding pack",
                 UnlockLetter::C => "Root issues transfer grant; transfer-apply then Cap=1 --authority-node-ipc",
             }
         } else if unlock == UnlockLetter::A && entries.is_empty() {
-            "Unlock A scaffold: wait Root CEF/AT path release + candidate bodies; empty entries keep unlock_a_preimage_ready=false"
+            "Unlock A scaffold: wait Root CEF/AT path release (crates/browser/** and/or scripts/ci/cef-pilot/**) + candidate bodies + Cap CLI --g4-cef-at GRANT; empty entries keep unlock_a_preimage_ready=false; Cap day also requires HUMANYMOUS_CEF_PILOT_BUNDLE"
         } else {
             "Abort transfer; refresh candidate-pack or wait Root structural delta"
         },
@@ -525,12 +529,19 @@ fn apply_transfer(
                     .into(),
             );
         }
+        let Some(pilot) = pilot_command else {
+            return Err(
+                "Unlock A apply refused: grant.pilot_command must be non-empty Cap CLI --g4-cef-at; never invent pilot_command"
+                    .into(),
+            );
+        };
         let receipt = json!({
             "schema": "humanymous.cursor-unlock-a-applied/1",
             "unlock": "A",
             "applied": true,
             "applied_utc": chrono_like_utc(),
             "grant": grant_path,
+            "pilot_command": pilot,
             "destinations_written": written,
             "cap_burn_authorized": true,
             "cap_burn_limit": 1,
@@ -541,6 +552,7 @@ fn apply_transfer(
                 "detection_freeze": true,
                 "a11y_non_motor": true,
                 "never_cap_spam_a11y_require_full": true,
+                "cef_bundle_required_at_cap_day": true,
             },
         });
         let receipt_path = workspace.join(UNLOCK_A_APPLIED_REL);
@@ -636,7 +648,7 @@ fn apply_transfer(
         } else {
             match unlock {
                 UnlockLetter::A => {
-                    "Cap=1 burn matching cap-ready/g4-cef-at pack after measured CEF/AT; matrix honesty retained; product=0"
+                    "Cap=1 burn matching cap-ready/g4-cef-at pack using grant pilot_command; Cap day refuse-closed if HUMANYMOUS_CEF_PILOT_BUNDLE absent; matrix honesty retained; product=0"
                 }
                 UnlockLetter::B => {
                     "Cap=1 burn matching cap-ready/w2-h2-product-binding pack using grant pilot_command; matrix honesty retained; product=0"
@@ -657,6 +669,65 @@ fn chrono_like_utc() -> String {
         .map(|d| d.as_secs())
         .unwrap_or(0);
     format!("{secs}")
+}
+
+/// Fail-closed refuse of documented Cap-spam / folklore Cap shapes for Unlock A.
+///
+/// Citations: cap-ready/g4-cef-at/COMMANDS.md §3 and harness.json
+/// `forbidden_reburns`. Only the code-defined Cap CLI `--g4-cef-at` is accepted
+/// as lab-runner Unlock A pilot; a11y/`--require-full` and foreign Cap
+/// selectors stay refuse-closed.
+fn refuse_forbidden_unlock_a_pilot_command(pilot: &str) -> Result<()> {
+    let normalized = pilot.split_whitespace().collect::<Vec<_>>().join(" ");
+    let lower = normalized.to_ascii_lowercase();
+    if lower.contains(G4_CEF_CAP_SELECTOR)
+        && (lower.contains("humanymous-lab-runner") || lower.contains("lab-runner"))
+    {
+        if lower.contains("--require-full")
+            || [
+                "--browser-product",
+                "--collector",
+                "--mount-probe",
+                "--authority-node-ipc",
+                "--w2-h2-product-binding",
+                "--go-product",
+            ]
+            .iter()
+            .any(|flag| lower.contains(flag))
+        {
+            return Err(
+                "Unlock A grant.pilot_command refused: --g4-cef-at Cap requires its own fresh profile; refuse foreign Cap selectors / --require-full; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+        return Ok(());
+    }
+    if lower.contains("humanymous-lab-runner") || lower.contains("lab-runner") {
+        let feeder = [
+            "--browser-product",
+            "--collector",
+            "--mount-probe",
+            "--authority-node-ipc",
+            "--w2-h2-product-binding",
+            "--go-product",
+        ]
+        .iter()
+        .any(|flag| lower.contains(flag));
+        let require_full = lower.contains("--require-full");
+        if feeder || require_full {
+            return Err(format!(
+                "Unlock A grant.pilot_command refused: lab-runner feeder / --require-full Cap spam is not G4 CEF/AT; use code-defined {G4_CODE_DEFINED_PILOT}"
+            )
+            .into());
+        }
+    }
+    if !lower.contains(G4_CEF_CAP_SELECTOR) {
+        return Err(format!(
+            "Unlock A grant.pilot_command refused: must embed Cap CLI {G4_CEF_CAP_SELECTOR}; code-defined pilot is {G4_CODE_DEFINED_PILOT}; never invent CEF folklore argv"
+        )
+        .into());
+    }
+    Ok(())
 }
 
 /// Fail-closed refuse of documented non-product-binding Cap shapes for Unlock B.
@@ -685,6 +756,7 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
                 "--collector",
                 "--mount-probe",
                 "--authority-node-ipc",
+                "--g4-cef-at",
                 "--go-product",
             ]
             .iter()
@@ -703,6 +775,7 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
             "--collector",
             "--mount-probe",
             "--authority-node-ipc",
+            "--g4-cef-at",
             "--go-product",
         ]
         .iter()
@@ -754,10 +827,22 @@ fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Resu
             .unwrap_or(false);
         if !release {
             return Err(
-                "Unlock A grant.path_release_required must name Root CEF/AT paths; never invent path release; template alone is not a live grant"
+                "Unlock A grant.path_release_required must name Root CEF/AT paths (crates/browser/** and/or scripts/ci/cef-pilot/**); never invent path release; template alone is not a live grant"
                     .into(),
             );
         }
+        let pilot = grant
+            .get("pilot_command")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .unwrap_or("");
+        if pilot.is_empty() {
+            return Err(
+                "Unlock A grant.pilot_command must be a non-empty Cap CLI --g4-cef-at argv; never invent pilot_command; template alone is not a live grant"
+                    .into(),
+            );
+        }
+        refuse_forbidden_unlock_a_pilot_command(pilot)?;
     }
     let destinations = grant
         .get("destinations")
@@ -1096,9 +1181,7 @@ mod tests {
         .expect_err("null pilot refused");
         assert!(err.to_string().contains("pilot_command"));
         assert_eq!(
-            root.join("workspace")
-                .join(UNLOCK_B_APPLIED_REL)
-                .exists(),
+            root.join("workspace").join(UNLOCK_B_APPLIED_REL).exists(),
             false
         );
         let _ = fs::remove_dir_all(root);
@@ -1163,6 +1246,7 @@ mod tests {
             "allow_apply": true,
             "unlock": "A",
             "path_release_required": ["scripts/ci/cef-pilot/**"],
+            "pilot_command": G4_CODE_DEFINED_PILOT,
             "destinations": []
         });
         let grant_path = root.join("grant.json");
@@ -1180,11 +1264,73 @@ mod tests {
         .expect_err("empty destinations refused");
         assert!(err.to_string().contains("destinations"));
         assert_eq!(
-            root.join("workspace")
-                .join(UNLOCK_A_APPLIED_REL)
-                .exists(),
+            root.join("workspace").join(UNLOCK_A_APPLIED_REL).exists(),
             false
         );
         let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn unlock_a_grant_refuses_missing_pilot_command() {
+        let root = temp_dir("a-no-pilot");
+        let body = b"cef pilot notes\n";
+        write(
+            &root.join("pack/candidate/scripts/ci/cef-pilot/NOTES.md"),
+            body,
+        );
+        let manifest = json!({
+            "schema": "humanymous.cursor-unlock-a-g4-cef-at-candidate/1",
+            "unlock": "A",
+            "entries": [
+                {
+                    "destination": "scripts/ci/cef-pilot/NOTES.md",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/scripts/ci/cef-pilot/NOTES.md",
+                    "candidateSha256": snapshot::digest(body),
+                }
+            ]
+        });
+        let manifest_path = root.join("pack/transfer-manifest.json");
+        write(
+            &manifest_path,
+            serde_json::to_string_pretty(&manifest).unwrap().as_bytes(),
+        );
+        let probe =
+            probe_manifest(&manifest, &root.join("workspace"), &manifest_path).expect("probe");
+        let grant = json!({
+            "schema": GRANT_SCHEMA_A,
+            "root_authorized": true,
+            "allow_apply": true,
+            "unlock": "A",
+            "path_release_required": ["scripts/ci/cef-pilot/**"],
+            "destinations": ["scripts/ci/cef-pilot/NOTES.md"]
+        });
+        let grant_path = root.join("grant.json");
+        write(
+            &grant_path,
+            serde_json::to_string_pretty(&grant).unwrap().as_bytes(),
+        );
+        let err = apply_transfer(
+            &manifest,
+            &probe,
+            Some(grant_path.to_str().unwrap()),
+            &root.join("workspace"),
+            false,
+        )
+        .expect_err("missing pilot refused");
+        assert!(err.to_string().contains("pilot_command"));
+        assert!(err.to_string().contains(G4_CEF_CAP_SELECTOR));
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn unlock_a_grant_refuses_a11y_require_full_spam() {
+        let err = refuse_forbidden_unlock_a_pilot_command(
+            "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-product --require-full",
+        )
+        .expect_err("a11y spam refused");
+        assert!(err.to_string().contains("Cap spam") || err.to_string().contains("g4-cef-at"));
+        let ok = refuse_forbidden_unlock_a_pilot_command(G4_CODE_DEFINED_PILOT);
+        assert!(ok.is_ok());
     }
 }
