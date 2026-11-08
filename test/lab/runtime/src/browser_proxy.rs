@@ -344,8 +344,14 @@ mod tests {
     #[test]
     fn asset_response_max_covers_measured_debug_collector_wasm() {
         // Attempt-3 Desktop image: humanymous/browser-product:hm-rust-lab-f87186e0695e4771
-        const MEASURED_ATTEMPT3_WASM_BYTES: u64 = 40_915_031;
-        assert!(ASSET_RESPONSE_MAX > MEASURED_ATTEMPT3_WASM_BYTES + 65_536);
+        // Runtime operand keeps this from folding into clippy::assertions_on_constants
+        // (attempt-4 browser_gate_build -D warnings failure on a const-only assert!).
+        let measured_attempt3_wasm_bytes = std::hint::black_box(40_915_031u64);
+        let required = measured_attempt3_wasm_bytes.saturating_add(65_536);
+        assert!(
+            ASSET_RESPONSE_MAX > required,
+            "ASSET_RESPONSE_MAX ({ASSET_RESPONSE_MAX}) must exceed measured debug wasm + 64KiB margin ({required})"
+        );
     }
     #[test]
     fn origin_classes_initialize_zeroes_and_never_retain_foreign_values() {
