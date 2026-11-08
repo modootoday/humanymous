@@ -3023,3 +3023,25 @@ code, final-byte/symbol/loader/role custody and actual host/package pilots remai
 required. Existing managed/Python/Ruby naming gaps are acknowledged implementation
 work, not fixed by proposed filenames. No moves or audit compiler/native action
 occurred; source freeze and complete migration qualification remain OPEN.
+### New Lab reader relocation delta and native consumer contract
+
+The qualified f8 source adds two compile-time DATA readers not represented by the
+older literal-reader census. Under Root v2, source_pin.rs18's unchanged
+../collector-runtime-pilot-source.json resolves to
+src/qualification/collector-runtime-pilot-source.json; accepted DATA destination:
+qualification/pins/collector-runtime-pilot-source.json. source_pin/tests.rs172's unchanged
+../../safe-diagnostics.json resolves to src/qualification/safe-diagnostics.json,
+while its accepted resource is qualification/lab/safe-diagnostics.json. Both
+readers need exact atomic rewrites at relocation; refresh the census after the
+removed Collector implementation include and these additions. Existing #[path]
+module layout remains coherent. This is a prospective integration gate, not an
+established defect in the current unmoved and component-tested source. Root was
+notified; no new resource ownership decision or duplicate fallback is needed.
+
+Independent native c8e11ee6 consumer-contract review matches all61 selectors,
+source hashes, implementation destinations and inherited cfg to CLI33de, whose
+map SHA157af43e reproduces. The complete plan keeps exact artifact roles, actual
+features/profile.test, same-source executable association, versioned workspace
+lock custody and production Packages::load/negative native controls NOT_RUN.
+Source61 and historical Runtime fixtures do not qualify the new CLI/native graph.
+Full source freeze, relocated-reader compilation and actual product remain OPEN.

@@ -2184,5 +2184,22 @@
     "pins": "12manifest+25restricted+4unsafe sourcehashes0issues;81lexicalsites79lines exact",
     "remaining": "Actual role/feature/artifact/privacy/unsafe/native/product gates unqualified",
     "goal_complete": false
+  },
+  "tools_new_reader_and_native_contract_review": {
+    "evidence": [
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-source-pin-reader-delta-review-001.json",
+        "sha256": "c892388443c0e471199222dfd92ef1682e1eb612064d7c2c96f90e86f32c7bfc",
+        "bytes": 1929
+      },
+      {
+        "path": ".spec.local/root/evidence/20261107143000-convention-audit/native-cli-contract-review-001.json",
+        "sha256": "f834bdb99555f761b3f9e78a9b9b0141e9a5645a4b9f459a2ed715eb201104a6",
+        "bytes": 808
+      }
+    ],
+    "reader_delta": "Two new Lab DATA includes require exact mapped-path rewrites; current source is qualified, relocation notperformed",
+    "native": "61cases exactlyjoin33de source map; actualartifactroles/features/profiletest/productionloader remain NOT_RUN",
+    "goal_complete": false
   }
 }
