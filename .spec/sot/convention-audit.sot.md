@@ -4099,3 +4099,29 @@ while Pending also post-checks time. Authored delayed-return regression uses exa
 original cleanup10 unchanged. Private b2-drain-source-fix-review-034.json preserves
 corrected state/facade bytes separately. Source gap corrected; actual tests remain
 NOTRUN, final frozen inventory/approval pending, CA-B2-DRAIN-01 stays OPEN.
+
+### Authority candidate DATA-policy findings
+
+CA-AUTH-LEDGER-CLOCK-01 (P2, Authority/Root) is OPEN: ReviewLedger::reserve updates
+last_mono/last_wall only on successful insertion. A valid later Replay refusal
+leaves watermarks unchanged, so a fresh valid reserve with time rolled back above
+last SUCCESS can pass. Example within1s budget/capacity>=2: success at0ms/wall2000,
+Replay at200ms/wall2200, fresh reserve100ms/wall2100. Capacity refusal also does
+not latch newer samples. Require clock watermark observation before replay/capacity
+refusal without consuming tombstones, plus rollback-after-refusal regressions.
+
+CA-AUTH-PROCESS-REPLAY-01 (P2, Authority/Root) is OPEN: same-process tombstones use
+binding::role, whose hash includes role tag AND base_plan. Keeping SID/PID/creation/
+epoch while changing a signed plan changes that key; cross-position process joins
+are absent. This contradicts the candidate's same-process-epoch republish refusal.
+Require a separate role-neutral process-instance commitment excluding plan, compare
+both positions, retain full role/plan binding in signed transcripts, and test fresh
+grant/channel/nonces with same process+changed plan and cross-role reuse.
+
+Private authority-policy-gap-review-035.json preserves initial policy/tests/docs/
+manifest and existing binding source bytes. Authority and Root were notified.
+NativeProof and ReceiptOrigin remain private EMPTY types, native_admission remains
+Unsupported and consuming receipt epoch check is pointer-identical/phase/loss
+checked. These are proposed DATA-policy defects, not native authority bypass or
+actual host failures. Candidate13tests remain authored NOTRUN; no whole candidate
+source, protocol approval or full migration qualification is inferred.

@@ -306,6 +306,22 @@
       "observed": "State only retains original cleanup; no drain cap/effective limit",
       "native_failure_observed": false,
       "goal_complete": false
+    },
+    {
+      "id": "CA-AUTH-LEDGER-CLOCK-01",
+      "owner": "authority/root",
+      "severity": "P2",
+      "state": "OPEN candidate DATA-policy correction and regression pending",
+      "native_proof_bypass_claimed": false,
+      "goal_complete": false
+    },
+    {
+      "id": "CA-AUTH-PROCESS-REPLAY-01",
+      "owner": "authority/root",
+      "severity": "P2",
+      "state": "OPEN candidate DATA-policy correction and regression pending",
+      "native_proof_bypass_claimed": false,
+      "goal_complete": false
     }
   ],
   "evidence_references": {
@@ -2814,6 +2830,12 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-drain-source-fix-review-034.json",
     "sha256": "b4b5e67acc598642e71d5a3275195f658e7b72fd92b03601c66c2d77cd285689",
     "bytes": 1343,
+    "goal_complete": false
+  },
+  "authority_policy_gap_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/authority-policy-gap-review-035.json",
+    "sha256": "29c49e0a3e74c00193e8ba7547361b4724820215f57d84a31c35bc91d5ba1707",
+    "bytes": 3272,
     "goal_complete": false
   }
 }
