@@ -3401,3 +3401,17 @@ source corrections for both findings are accepted; actual check/fmt/strict/tests
 remain NOTRUN. Both CA-AUTH findings stay OPEN for allocated regression evidence.
 Private empty proof/receipt and Unsupported native producer remain unchanged;
 no full protocol/producer/hosted/Ready qualification follows from these fixes.
+
+Delivery revision4 bounded source re-audit reads full local_input/borroweddriver,
+full compiler delta from preserved revision3 and actual environment recording.
+All4proposal manifest hash/size entries match. Independently supplied capture
+hashes/epoch gate strict bounded serde before allocation; source row/env bounds
+and native ASCII-case key collisions are refused. Each compiler case uses a fresh
+case-specific target directory. env_clear plus actual get_envs capture includes
+computed overrides, not merely input launch entries. Revision3 expected101 and
+private immutable failure/record protections remain unchanged in the full delta.
+Six meaningful new parser/admission tests are authored NOTRUN. Private
+localcompiler-rev4-review-037.json binds hashes/scope. Previous20units/4privacy
+observations do not transfer to revision4. Actual check/fmt/strict/6newcases/real3B1
+scenarios and whole compiler/hosted/CA-LIFETIME gates remain OPEN; no source
+application, allocation, protocol/provider or executor grant follows from review.

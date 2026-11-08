@@ -2844,5 +2844,11 @@
     "bytes": 2097,
     "owner_commit": "f6a4ad91c87831ca851dd1bd3c5525d4f5abcac5",
     "goal_complete": false
+  },
+  "localcompiler_rev4_source_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/localcompiler-rev4-review-037.json",
+    "sha256": "339562984878e1e56c07d443f2264dc033c495ff15bdaa94cf45a70660353772",
+    "bytes": 1955,
+    "goal_complete": false
   }
 }
