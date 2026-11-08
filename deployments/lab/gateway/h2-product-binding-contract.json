@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.lab-h2-product-binding-cap-pilot-contract/1",
   "id": "w2-h2-product-binding-cap",
-  "status": "desktop_lab_measured_awaiting_n06_owner_hosted_join",
+  "status": "hosted_venue_topology_landed_awaiting_actual_hosted_linux_cap",
   "unlock": "B",
   "gap": "G1",
   "wake": "W2",
@@ -65,17 +65,18 @@
     "counts_as": "pass_component_desktop_measure",
     "not": ["pass_component_hosted", "pass_product_clean_room", "desktop_as_hosted", "n06_owner_join"]
   },
-  "hosted_venue_cap_topology_required": [
+  "hosted_venue_cap_topology": [
     "deployments/lab/compose.h2-hosted-venue.yaml",
-    "build/rust/h2-hosted-venue-lab.Dockerfile"
+    "build/rust/h2-hosted-venue-lab.Dockerfile",
+    "build/rust/h2-hosted-venue-lab.Dockerfile.dockerignore"
   ],
+  "hosted_venue_cap_cli": "--w2-h2-hosted-venue",
+  "hosted_venue_pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-hosted-venue",
   "n06_owner_join_receipt_schema": "humanymous.lab-h2-n06-owner-join-readiness/1",
   "missing_for_n06_product_lift": [
-    "Owner-integration readiness join authorization after measured binding (SoT N06 / R14-D6)",
-    "Root-hosted venue qualification (Desktop lab measure ≠ desktop_as_hosted / hosted product)",
-    "Matrix G1 / pass_product_clean_room admission by Root after measured binding",
-    "Hosted Cap topology transfer: deployments/lab/compose.h2-hosted-venue.yaml + build/rust/h2-hosted-venue-lab.Dockerfile",
-    "actual_hosted_linux Cap venue (Specfold/github-hosted); Desktop Cap refuse-closed for hosted join"
+    "actual_hosted_linux Cap venue (Specfold/github-hosted); Desktop Cap refuse-closed Cap=0",
+    "Owner-integration readiness join authorization after hosted measured binding (SoT N06 / R14-D6)",
+    "Matrix G1 / pass_product_clean_room admission by Root after measured hosted binding"
   ],
   "honesty": {
     "product": 0,

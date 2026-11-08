@@ -1,0 +1,26 @@
+# N06 hosted-venue Cap topology — H2 measure on Specfold/github-hosted Linux.
+# Distinct from Desktop loopback compose.h2-product-binding.yaml (network_mode=none).
+# Requires actual_hosted_linux. Never claim desktop_as_hosted. Detection freeze.
+# Component Cap green != product; N06 owner join still Root after hosted measure.
+services:
+  h2-hosted-venue-pilot:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/h2-hosted-venue-lab:${HM_LAB_IMAGE_TAG:-local}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:-../..}
+      dockerfile: build/rust/h2-hosted-venue-lab.Dockerfile
+    # Hosted venue uses lab internal network — not Desktop network_mode=none folklore.
+    networks: [lab]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    labels:
+      org.humanymous.evidence: rust-n06-h2-hosted-venue
+      org.humanymous.venue: hosted
+    profiles: [h2-hosted-venue]
+    environment:
+      HUMANYMOUS_H2_MEASURE_VENUE: hosted_linux_specfold
+networks:
+  lab:
+    internal: true

@@ -31,19 +31,23 @@ Measure binary: `humanymous-h2-product-binding-measure` (features
 `gateway,hosted-pilot`). Emits receipt schema
 `humanymous.lab-h2-product-binding-measure-receipt/1`.
 
-## Hosted venue Cap topology (N06 Cap-ready — not landed)
+## Hosted venue Cap topology (N06 — transferred; Cap venue pending)
 
-Exact destinations Cap cites until Root transfer + `actual_hosted_linux`:
+Live Cap topology transferred (GRANT → transfer-apply). Cap CLI:
+`--w2-h2-hosted-venue`. Cap=1 only when `actual_hosted_linux=true`
+(Specfold/github-hosted). Desktop Cap refuse-closed (Cap=0; no
+`GITHUB_ACTIONS` spoof).
 
 | Path | Role |
 | --- | --- |
 | `deployments/lab/compose.h2-hosted-venue.yaml` | Hosted Cap compose (not Desktop loopback) |
 | `build/rust/h2-hosted-venue-lab.Dockerfile` | Hosted Cap image |
+| `build/rust/h2-hosted-venue-lab.Dockerfile.dockerignore` | Hosted Cap build context |
 
 Owner-join readiness schema:
 `humanymous.lab-h2-n06-owner-join-readiness/1` (always
-`n06_owner_join=false` after Desktop measure). Cap-ready pack:
-`.spec.local/root/evidence/20261109003000-cursor-n06-original-h2-measure/cap-ready-hosted-venue/`.
+`n06_owner_join=false` until hosted measure + Root join). Evidence:
+`.spec.local/root/evidence/20261109010000-cursor-n06-hosted-venue-apply/`.
 
 ## Already landed (not product)
 
@@ -78,7 +82,6 @@ receipt validates (TLS/H2 status ≠ 422 `required_capability`). That is **not**
 
 Still Root for N06 product lift:
 
-1. Owner-integration readiness join (SoT N06 / R14-D6)
-2. Hosted venue qualification + Cap topology transfer (Desktop ≠ hosted)
-3. `actual_hosted_linux` Cap once with fail-closed hosted measure
-4. Matrix G1 admission after measured hosted binding
+1. Specfold/`actual_hosted_linux` Cap=1 once with `--w2-h2-hosted-venue` (topology already transferred)
+2. Owner-integration readiness join (SoT N06 / R14-D6) after hosted measure
+3. Matrix G1 admission after measured hosted binding

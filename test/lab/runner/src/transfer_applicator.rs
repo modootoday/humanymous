@@ -28,8 +28,15 @@ const APPLY_SCHEMA_B: &str = "humanymous.lab-unlock-b-transfer-apply/1";
 const PROBE_SCHEMA_A: &str = "humanymous.lab-unlock-a-transfer-probe/1";
 const GRANT_SCHEMA_A: &str = "humanymous.cursor-unlock-a-transfer-grant/1";
 const APPLY_SCHEMA_A: &str = "humanymous.lab-unlock-a-transfer-apply/1";
+const PROBE_SCHEMA_N06: &str = "humanymous.lab-n06-hosted-venue-transfer-probe/1";
+const GRANT_SCHEMA_N06: &str = "humanymous.cursor-n06-hosted-venue-transfer-grant/1";
+const APPLY_SCHEMA_N06: &str = "humanymous.lab-n06-hosted-venue-transfer-apply/1";
 const UNLOCK_A_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/g4-cef-at/UNLOCK-A-APPLIED.json";
 const UNLOCK_B_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/w2-h2-product-binding/UNLOCK-B-APPLIED.json";
+const N06_HOSTED_VENUE_APPLIED_REL: &str = ".spec.local/root/evidence/20261109003000-cursor-n06-original-h2-measure/cap-ready-hosted-venue/N06-HOSTED-VENUE-APPLIED.json";
+const N06_HOSTED_VENUE_CAP_SELECTOR: &str = "--w2-h2-hosted-venue";
+const N06_HOSTED_VENUE_PILOT: &str =
+    "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-hosted-venue";
 
 /// Compatibility alias used by Unlock-C unit tests.
 #[cfg(test)]
@@ -44,6 +51,7 @@ enum UnlockLetter {
     A,
     B,
     C,
+    N06,
 }
 
 impl UnlockLetter {
@@ -51,6 +59,7 @@ impl UnlockLetter {
         match manifest.get("unlock").and_then(Value::as_str) {
             Some("A") => Ok(Self::A),
             Some("B") => Ok(Self::B),
+            Some("N06") => Ok(Self::N06),
             Some("C") | None => Ok(Self::C),
             Some(other) => Err(format!("unsupported manifest.unlock={other}").into()),
         }
@@ -61,6 +70,7 @@ impl UnlockLetter {
             Self::A => PROBE_SCHEMA_A,
             Self::B => PROBE_SCHEMA_B,
             Self::C => PROBE_SCHEMA_C,
+            Self::N06 => PROBE_SCHEMA_N06,
         }
     }
 
@@ -69,6 +79,7 @@ impl UnlockLetter {
             Self::A => APPLY_SCHEMA_A,
             Self::B => APPLY_SCHEMA_B,
             Self::C => APPLY_SCHEMA_C,
+            Self::N06 => APPLY_SCHEMA_N06,
         }
     }
 
@@ -77,6 +88,7 @@ impl UnlockLetter {
             Self::A => GRANT_SCHEMA_A,
             Self::B => GRANT_SCHEMA_B,
             Self::C => GRANT_SCHEMA_C,
+            Self::N06 => GRANT_SCHEMA_N06,
         }
     }
 
@@ -85,6 +97,7 @@ impl UnlockLetter {
             Self::A => "unlock_a_preimage_ready",
             Self::B => "unlock_b_preimage_ready",
             Self::C => "unlock_c_preimage_ready",
+            Self::N06 => "n06_hosted_venue_preimage_ready",
         }
     }
 
@@ -93,6 +106,7 @@ impl UnlockLetter {
             Self::A => "lab-runner-unlock-a-transfer-probe",
             Self::B => "lab-runner-unlock-b-transfer-probe",
             Self::C => "lab-runner-unlock-c-transfer-probe",
+            Self::N06 => "lab-runner-n06-hosted-venue-transfer-probe",
         }
     }
 
@@ -101,6 +115,7 @@ impl UnlockLetter {
             Self::A => "lab-runner-unlock-a-transfer-apply",
             Self::B => "lab-runner-unlock-b-transfer-apply",
             Self::C => "lab-runner-unlock-c-transfer-apply",
+            Self::N06 => "lab-runner-n06-hosted-venue-transfer-apply",
         }
     }
 
@@ -109,6 +124,7 @@ impl UnlockLetter {
             Self::A => "A",
             Self::B => "B",
             Self::C => "C",
+            Self::N06 => "N06",
         }
     }
 }
@@ -183,7 +199,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         && !dry_run
     {
         return Err(format!(
-            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; Unlock A requires Root path-release destinations; never invent pass_product_clean_room",
+            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; Unlock A requires Root path-release destinations; N06 requires hosted-venue Cap CLI pilot; never invent pass_product_clean_room",
             unlock.ready_key()
         )
         .into());
@@ -213,6 +229,7 @@ fn emit_report(report: &Value, emit_path: Option<&str>) -> Result<()> {
                 "unlock_c_preimage_ready": report.get("unlock_c_preimage_ready"),
                 "unlock_b_preimage_ready": report.get("unlock_b_preimage_ready"),
                 "unlock_a_preimage_ready": report.get("unlock_a_preimage_ready"),
+                "n06_hosted_venue_preimage_ready": report.get("n06_hosted_venue_preimage_ready"),
                 "applied": report.get("applied").cloned().unwrap_or(json!(false)),
                 "cap_execute": false,
                 "pass_product_clean_room": 0,
@@ -402,7 +419,9 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
             "capture_component_is_not_product_binding": true,
             "unlock_b_requires_non_empty_pilot_command": unlock == UnlockLetter::B,
             "unlock_a_requires_root_path_release_destinations": unlock == UnlockLetter::A,
+            "n06_requires_hosted_venue_cap_cli_pilot": unlock == UnlockLetter::N06,
             "never_invent_pilot_command": true,
+            "never_invent_desktop_as_hosted": true,
         },
         "mismatches": mismatches,
         "missing_candidates": missing_candidates,
@@ -412,6 +431,7 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
                 UnlockLetter::A => "Root issues Unlock-A GRANT with non-empty path-release destinations + Cap CLI --g4-cef-at pilot_command; transfer-apply then Cap=1 matching g4-cef-at pack (refuse-closed if HUMANYMOUS_CEF_PILOT_BUNDLE absent)",
                 UnlockLetter::B => "Root issues Unlock-B GRANT with non-empty pilot_command; transfer-apply then Cap=1 matching w2-h2-product-binding pack",
                 UnlockLetter::C => "Root issues transfer grant; transfer-apply then Cap=1 --authority-node-ipc",
+                UnlockLetter::N06 => "Root/autonomy GRANT with Cap CLI --w2-h2-hosted-venue; transfer-apply then Cap=1 only when actual_hosted_linux; Desktop Cap=0 fail-closed",
             }
         } else if unlock == UnlockLetter::A && entries.is_empty() {
             "Unlock A scaffold: wait Root CEF/AT path release (crates/browser/** and/or scripts/ci/cef-pilot/**) + candidate bodies + Cap CLI --g4-cef-at GRANT; empty entries keep unlock_a_preimage_ready=false; Cap day also requires HUMANYMOUS_CEF_PILOT_BUNDLE"
@@ -615,6 +635,52 @@ fn apply_transfer(
         written.push(UNLOCK_B_APPLIED_REL);
     }
 
+    if unlock == UnlockLetter::N06 && !dry_run {
+        let Some(pilot) = pilot_command else {
+            return Err(
+                "N06 hosted-venue apply refused: grant.pilot_command must be non-empty Cap CLI --w2-h2-hosted-venue; never invent pilot_command"
+                    .into(),
+            );
+        };
+        let receipt = json!({
+            "schema": "humanymous.cursor-n06-hosted-venue-applied/1",
+            "unlock": "N06",
+            "applied": true,
+            "applied_utc": chrono_like_utc(),
+            "grant": grant_path,
+            "pilot_command": pilot,
+            "destinations_written": written,
+            "cap_burn_authorized": true,
+            "cap_burn_limit": 1,
+            "requires_actual_hosted_linux": true,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "honesty": {
+                "never_invent_pass_product_clean_room": true,
+                "desktop_as_hosted": "forbidden",
+                "detection_freeze": true,
+                "n06_join_requires_hosted_measured_binding_and_owner_integration": true,
+                "desktop_measure_is_not_hosted_product": true,
+                "no_github_actions_spoof": true,
+            },
+        });
+        let receipt_path = workspace.join(N06_HOSTED_VENUE_APPLIED_REL);
+        if let Some(parent) = receipt_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("mkdir {}: {error}", parent.display()))?;
+        }
+        fs::write(
+            &receipt_path,
+            format!(
+                "{}\n",
+                serde_json::to_string_pretty(&receipt)
+                    .map_err(|error| format!("n06 hosted-venue receipt encode: {error}"))?
+            ),
+        )
+        .map_err(|error| format!("write N06-HOSTED-VENUE-APPLIED: {error}"))?;
+        written.push(N06_HOSTED_VENUE_APPLIED_REL);
+    }
+
     let mut report = Map::new();
     report.insert("schema".into(), json!(unlock.apply_schema()));
     report.insert("record_kind".into(), json!(unlock.record_kind_apply()));
@@ -637,6 +703,7 @@ fn apply_transfer(
             "authority_cap_green_is_not_product": true,
             "capture_component_is_not_product_binding": true,
             "cap_burn_is_separate_step": true,
+            "never_invent_desktop_as_hosted": true,
         }),
     );
     report.insert("planned".into(), json!(planned));
@@ -655,6 +722,9 @@ fn apply_transfer(
                 }
                 UnlockLetter::C => {
                     "Cap=1 burn matching cap-ready/authority-node-ipc pack; matrix honesty retained"
+                }
+                UnlockLetter::N06 => {
+                    "Cap=1 once only when actual_hosted_linux using --w2-h2-hosted-venue; Desktop Cap=0 fail-closed with exact runner requirement; never invent pass_product_clean_room or desktop_as_hosted"
                 }
             }
         }),
@@ -690,6 +760,7 @@ fn refuse_forbidden_unlock_a_pilot_command(pilot: &str) -> Result<()> {
                 "--mount-probe",
                 "--authority-node-ipc",
                 "--w2-h2-product-binding",
+                "--w2-h2-hosted-venue",
                 "--go-product",
             ]
             .iter()
@@ -709,6 +780,7 @@ fn refuse_forbidden_unlock_a_pilot_command(pilot: &str) -> Result<()> {
             "--mount-probe",
             "--authority-node-ipc",
             "--w2-h2-product-binding",
+            "--w2-h2-hosted-venue",
             "--go-product",
         ]
         .iter()
@@ -757,6 +829,7 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
                 "--mount-probe",
                 "--authority-node-ipc",
                 "--g4-cef-at",
+                "--w2-h2-hosted-venue",
                 "--go-product",
             ]
             .iter()
@@ -776,6 +849,7 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
             "--mount-probe",
             "--authority-node-ipc",
             "--g4-cef-at",
+            "--w2-h2-hosted-venue",
             "--go-product",
         ]
         .iter()
@@ -787,6 +861,47 @@ fn refuse_forbidden_unlock_b_pilot_command(pilot: &str) -> Result<()> {
                     .into(),
             );
         }
+    }
+    Ok(())
+}
+
+fn refuse_forbidden_n06_hosted_venue_pilot_command(pilot: &str) -> Result<()> {
+    let normalized = pilot.split_whitespace().collect::<Vec<_>>().join(" ");
+    let lower = normalized.to_ascii_lowercase();
+    if lower.contains(N06_HOSTED_VENUE_CAP_SELECTOR)
+        && (lower.contains("humanymous-lab-runner") || lower.contains("lab-runner"))
+    {
+        if lower.contains("--require-full")
+            || [
+                "--browser-product",
+                "--collector",
+                "--mount-probe",
+                "--authority-node-ipc",
+                "--w2-h2-product-binding",
+                "--g4-cef-at",
+                "--go-product",
+            ]
+            .iter()
+            .any(|flag| lower.contains(flag))
+        {
+            return Err(
+                "N06 hosted-venue grant.pilot_command refused: --w2-h2-hosted-venue Cap requires its own fresh profile; refuse foreign Cap selectors / Desktop measure reburn; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+        return Ok(());
+    }
+    if lower.contains("native-component") && lower.contains("capture") {
+        return Err(
+            "N06 hosted-venue grant.pilot_command refused: capture observe_h2 is not hosted venue Cap; never invent product from observe_h2"
+                .into(),
+        );
+    }
+    if !lower.contains(N06_HOSTED_VENUE_CAP_SELECTOR) {
+        return Err(format!(
+            "N06 hosted-venue grant.pilot_command refused: must embed Cap CLI {N06_HOSTED_VENUE_CAP_SELECTOR}; code-defined pilot is {N06_HOSTED_VENUE_PILOT}; never invent desktop_as_hosted"
+        )
+        .into());
     }
     Ok(())
 }
@@ -818,6 +933,30 @@ fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Resu
             );
         }
         refuse_forbidden_unlock_b_pilot_command(pilot)?;
+    }
+    if unlock == UnlockLetter::N06 {
+        let pilot = grant
+            .get("pilot_command")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .unwrap_or("");
+        if pilot.is_empty() {
+            return Err(
+                "N06 hosted-venue grant.pilot_command must be a non-empty Cap CLI --w2-h2-hosted-venue argv; never invent pilot_command; template alone is not a live grant"
+                    .into(),
+            );
+        }
+        refuse_forbidden_n06_hosted_venue_pilot_command(pilot)?;
+        if grant
+            .get("requires_actual_hosted_linux")
+            .and_then(Value::as_bool)
+            != Some(true)
+        {
+            return Err(
+                "N06 hosted-venue grant.requires_actual_hosted_linux must be true; Desktop Cap cannot invent hosted venue"
+                    .into(),
+            );
+        }
     }
     if unlock == UnlockLetter::A {
         let release = grant

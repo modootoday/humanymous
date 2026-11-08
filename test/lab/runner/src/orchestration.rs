@@ -71,6 +71,7 @@ struct Lab {
     mount_probe: bool,
     authority_node_ipc: bool,
     w2_h2_product_binding: bool,
+    w2_h2_hosted_venue: bool,
     g4_cef_at: bool,
     go_component_verified: bool,
     stage: &'static str,
@@ -116,6 +117,20 @@ impl Lab {
                 self.config_file("deployments/lab/compose.h2-product-binding.yaml")?,
                 "--profile".into(),
                 "h2-product-binding".into(),
+            ];
+            command.extend(args.iter().map(|s| (*s).to_owned()));
+            return Ok(command);
+        }
+        if self.w2_h2_hosted_venue {
+            // Hosted Cap topology; Cap CLI refuse-closed unless actual_hosted_linux.
+            let mut command = vec![
+                "compose".into(),
+                "-p".into(),
+                self.project.clone(),
+                "-f".into(),
+                self.config_file("deployments/lab/compose.h2-hosted-venue.yaml")?,
+                "--profile".into(),
+                "h2-hosted-venue".into(),
             ];
             command.extend(args.iter().map(|s| (*s).to_owned()));
             return Ok(command);
@@ -287,6 +302,9 @@ impl Lab {
         }
         if self.w2_h2_product_binding {
             return h2_product_binding::run(self);
+        }
+        if self.w2_h2_hosted_venue {
+            return h2_product_binding::run_hosted_venue(self);
         }
         if self.g4_cef_at {
             return g4_cef_at::run(self);
@@ -600,6 +618,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut mount_probe = false;
     let mut authority_node_ipc = false;
     let mut w2_h2_product_binding = false;
+    let mut w2_h2_hosted_venue = false;
     let mut g4_cef_at = false;
     let mut full = false;
     let mut require_go_component = false;
@@ -619,6 +638,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--topology-only" => topology_only = true,
             "--authority-node-ipc" => authority_node_ipc = true,
             "--w2-h2-product-binding" => w2_h2_product_binding = true,
+            "--w2-h2-hosted-venue" => w2_h2_hosted_venue = true,
             "--g4-cef-at" => g4_cef_at = true,
             "--require-full" => full = true,
             "--require-go-component" => require_go_component = true,
@@ -635,6 +655,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || go_product
             || mount_probe
             || w2_h2_product_binding
+            || w2_h2_hosted_venue
             || g4_cef_at
             || full
             || require_go_component
@@ -657,12 +678,34 @@ pub fn run(args: &[String]) -> Result<i32> {
             || go_product
             || mount_probe
             || authority_node_ipc
+            || w2_h2_hosted_venue
             || g4_cef_at
             || full
             || require_go_component
         {
             return Err(
                 "w2-h2-product-binding Cap requires its own fresh profile; refuse foreign Cap selectors and capture/feeder reburns; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+    if w2_h2_hosted_venue {
+        // N06 Cap CLI: topology + actual_hosted_linux; Desktop Cap refuse-closed (no spoof).
+        h2_product_binding::require_freeze_preimages(&root)?;
+        h2_product_binding::require_hosted_venue_for_n06_join(&root)?;
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "w2-h2-hosted-venue Cap requires its own fresh profile; refuse Desktop measure reburn and foreign Cap selectors; never invent pass_product_clean_room or desktop_as_hosted"
                     .into(),
             );
         }
@@ -681,6 +724,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || mount_probe
             || authority_node_ipc
             || w2_h2_product_binding
+            || w2_h2_hosted_venue
             || full
             || require_go_component
         {
@@ -757,6 +801,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         mount_probe,
         authority_node_ipc,
         w2_h2_product_binding,
+        w2_h2_hosted_venue,
         g4_cef_at,
         go_component_verified: false,
         stage: "initialization",
@@ -803,6 +848,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         || mount_probe
         || authority_node_ipc
         || w2_h2_product_binding
+        || w2_h2_hosted_venue
         || g4_cef_at
     {
         vec![]
@@ -822,6 +868,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         ),
         ("authority_node_ipc", "authority-node-ipc-component"),
         ("w2_h2_product_binding", "w2-h2-product-binding-component"),
+        ("w2_h2_hosted_venue", "w2-h2-hosted-venue-component"),
         ("g4_cef_at", "g4-cef-at-component"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"

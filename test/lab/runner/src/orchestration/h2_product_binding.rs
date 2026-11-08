@@ -16,6 +16,21 @@ pub const CAP_SELECTOR: &str = "--w2-h2-product-binding";
 pub const CODE_DEFINED_PILOT_COMMAND: &str =
     "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-product-binding";
 
+/// N06 hosted-venue Cap selector (Specfold/github-hosted only; Desktop refuse-closed).
+pub const HOSTED_VENUE_CAP_SELECTOR: &str = "--w2-h2-hosted-venue";
+
+/// Exact hosted-venue Cap argv shape for N06 GRANT.pilot_command.
+pub const HOSTED_VENUE_PILOT_COMMAND: &str =
+    "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-hosted-venue";
+
+/// Exact runner requirement for Cap-executable hosted venue (no GITHUB_ACTIONS spoof).
+pub const HOSTED_VENUE_RUNNER_REQUIREMENT: &[&str] = &[
+    "GITHUB_ACTIONS=true",
+    "RUNNER_OS=Linux",
+    "RUNNER_ENVIRONMENT=github-hosted",
+    "ACT unset (not act local)",
+];
+
 /// Contract destination written by Unlock B transfer-apply.
 pub const CONTRACT_REL: &str = "deployments/lab/gateway/h2-product-binding-contract.json";
 
@@ -37,6 +52,7 @@ pub const MISSING_N06_PRODUCT_LIFT: &[&str] = &[
 
 /// Cap topology required before hosted-venue N06 Cap may Docker-coordinate.
 /// Distinct from Desktop `compose.h2-product-binding.yaml` (loopback / network_mode=none).
+/// Dockerignore is transferred with Cap topology but not a Cap-day gate path.
 pub const REQUIRED_HOSTED_VENUE_TOPOLOGY: &[&str] = &[
     "deployments/lab/compose.h2-hosted-venue.yaml",
     "build/rust/h2-hosted-venue-lab.Dockerfile",
@@ -347,6 +363,123 @@ pub fn require_freeze_preimages(root: &Path) -> Result<()> {
 
 /// Cap=1 entry: refuse-closed when Cap topology / freeze prerequisites fail;
 /// otherwise Docker-coordinate Cap measure (component only).
+/// N06 hosted-venue Cap — refuse-closed unless `actual_hosted_linux` + topology.
+/// Never invents `desktop_as_hosted` / `pass_product_clean_room`. No GITHUB_ACTIONS spoof.
+pub(super) fn run_hosted_venue(lab: &mut Lab) -> Result<()> {
+    let root = snapshot::root()?;
+    require_freeze_preimages(&root)?;
+    if let Err(error) = require_hosted_venue_for_n06_join(&root) {
+        let missing = missing_hosted_venue_topology(&root);
+        lab.components["w2_h2_hosted_venue"] = json!({
+            "status": "refused",
+            "kind": "w2-h2-hosted-venue-component",
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "desktop_as_hosted": false,
+            "n06_owner_join": false,
+            "actual_hosted_linux": crate::docker::actual_hosted_linux(),
+            "missing_hosted_venue_topology": missing,
+            "runner_requirement": HOSTED_VENUE_RUNNER_REQUIREMENT,
+            "cap_selector": HOSTED_VENUE_CAP_SELECTOR,
+            "pilot_command": HOSTED_VENUE_PILOT_COMMAND,
+            "cap_burn": false,
+            "note": "hosted venue Cap refuse-closed; Desktop ≠ Specfold; never invent pass_product_clean_room or desktop_as_hosted"
+        });
+        snapshot::write(
+            &lab.evidence,
+            "w2-h2-hosted-venue-refuse.json",
+            &lab.components["w2_h2_hosted_venue"],
+        )?;
+        return Err(error);
+    }
+
+    lab.stage = "h2_hosted_venue_compose_config";
+    let config = lab.compose(&["config", "--format", "json"], true)?.stdout;
+    let parsed: serde_json::Value = serde_json::from_str(&config)?;
+    snapshot::write(&lab.evidence, "resolved-hosted-compose.json", &parsed)?;
+    lab.case(
+        "h2-hosted-venue-no-published-ports",
+        parsed["services"]
+            .as_object()
+            .ok_or("services absent")?
+            .values()
+            .all(|s| s.get("ports").is_none()),
+        json!(snapshot::digest(config.as_bytes())),
+    )?;
+    eprintln!("lab: building immutable h2-hosted-venue-lab measure image (Cap)");
+    lab.stage = "h2_hosted_venue_build";
+    lab.compose(&["build", "h2-hosted-venue-pilot"], true)?;
+    lab.stage = "h2_hosted_venue_up";
+    lab.compose(&["up", "-d", "h2-hosted-venue-pilot"], true)?;
+    let container = lab.inspect("h2-hosted-venue-pilot")?;
+    let id = container["Id"]
+        .as_str()
+        .ok_or("h2-hosted-venue pilot container id missing")?
+        .to_owned();
+    let mut exit_code = container["State"]["ExitCode"].as_i64().unwrap_or(-1);
+    let mut running = container["State"]["Running"] == true;
+    if running {
+        for _ in 0..60 {
+            std::thread::sleep(std::time::Duration::from_millis(500));
+            let state: Value = serde_json::from_str(&lab.docker.call(&["inspect", &id])?)?;
+            exit_code = state[0]["State"]["ExitCode"].as_i64().unwrap_or(-1);
+            running = state[0]["State"]["Running"] == true;
+            if !running {
+                break;
+            }
+        }
+    }
+    lab.case(
+        "h2-hosted-venue-pilot-measure-oneshot",
+        !running && (exit_code == 0 || exit_code == 1),
+        json!({"running": running, "exit_code": exit_code}),
+    )?;
+    let logs = lab.docker.call(&["logs", "--tail", "20", &id])?;
+    snapshot::write(
+        &lab.evidence,
+        "h2-hosted-venue-measure-logs.json",
+        &json!({"logs": logs}),
+    )?;
+    let receipt = parse_measure_receipt(&logs)?;
+    snapshot::write(
+        &lab.evidence,
+        "hosted-original-h2-measure-receipt.json",
+        &receipt,
+    )?;
+    let measured = original_h2_measured_from_receipt(&receipt)?;
+    refuse_invented_original_h2_measured(measured, Some(&receipt))?;
+    let venue = receipt
+        .get("venue")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    if !HOSTED_VENUE_MARKERS.contains(&venue) {
+        return Err(format!(
+            "N06 hosted-venue Cap refused: measure venue must be one of ({}); got {venue:?}; never invent desktop_as_hosted",
+            HOSTED_VENUE_MARKERS.join("|")
+        )
+        .into());
+    }
+    lab.components["w2_h2_hosted_venue"] = json!({
+        "status": "executed",
+        "kind": "w2-h2-hosted-venue-component",
+        "product": 0,
+        "pass_product_clean_room": 0,
+        "original_h2_measured": measured,
+        "desktop_as_hosted": false,
+        "n06_owner_join": false,
+        "actual_hosted_linux": true,
+        "venue": venue,
+        "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+        "note": "hosted venue Cap measure only; N06 owner-integration join still Root; never invent pass_product_clean_room"
+    });
+    snapshot::write(
+        &lab.evidence,
+        "w2-h2-hosted-venue-component.json",
+        &lab.components["w2_h2_hosted_venue"],
+    )?;
+    Ok(())
+}
+
 pub(super) fn run(lab: &mut Lab) -> Result<()> {
     let root = snapshot::root()?;
     require_freeze_preimages(&root)?;
@@ -499,10 +632,10 @@ pub(super) fn run(lab: &mut Lab) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, HOSTED_VENUE_MARKERS, MEASURE_RECEIPT_SCHEMA,
-        MISSING_N06_PRODUCT_LIFT, N06_OWNER_JOIN_RECEIPT_SCHEMA, REQUIRED_HOSTED_VENUE_TOPOLOGY,
-        missing_cap_topology, missing_hosted_venue_topology, n06_owner_join_readiness_receipt,
-        original_h2_measured_from_receipt, parse_measure_receipt,
+        CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND, HOSTED_VENUE_CAP_SELECTOR, HOSTED_VENUE_MARKERS,
+        HOSTED_VENUE_PILOT_COMMAND, MEASURE_RECEIPT_SCHEMA, MISSING_N06_PRODUCT_LIFT,
+        N06_OWNER_JOIN_RECEIPT_SCHEMA, REQUIRED_HOSTED_VENUE_TOPOLOGY, missing_cap_topology,
+        n06_owner_join_readiness_receipt, original_h2_measured_from_receipt, parse_measure_receipt,
         refuse_invented_original_h2_measured, refuse_n06_product_lift_from_desktop_measure,
         require_hosted_venue_for_n06_join, validate_n06_owner_join_receipt,
     };
@@ -536,12 +669,17 @@ mod tests {
     }
 
     #[test]
-    fn hosted_venue_topology_still_missing_on_desktop() {
+    fn hosted_venue_cap_refuses_without_actual_hosted_linux() {
         let root = snapshot::root().expect("root");
-        let missing = missing_hosted_venue_topology(&root);
-        assert_eq!(missing, REQUIRED_HOSTED_VENUE_TOPOLOGY.to_vec());
+        // Topology may be present after N06 transfer-apply; Cap still refuse-closed on Desktop.
         let err = require_hosted_venue_for_n06_join(&root).expect_err("desktop refuse");
-        assert!(err.to_string().contains("actual_hosted_linux=false"));
+        assert!(
+            err.to_string().contains("actual_hosted_linux=false"),
+            "Desktop Cap must refuse hosted venue; got {err}"
+        );
+        assert!(!crate::docker::actual_hosted_linux());
+        assert!(HOSTED_VENUE_PILOT_COMMAND.contains(HOSTED_VENUE_CAP_SELECTOR));
+        assert_eq!(REQUIRED_HOSTED_VENUE_TOPOLOGY.len(), 2);
     }
 
     #[test]
