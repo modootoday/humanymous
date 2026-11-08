@@ -3,10 +3,10 @@ id: sot:root/adapter-ecosystem
 title: Cross-platform adapter ecosystem
 status: active
 created: 2026-11-06T21:21:09Z
-updated: 2026-11-06T21:27:12Z
+updated: 2026-11-08T15:57:00Z
 verify: manual
 rel:
-  depends_on: [sot:root/rust-migration]
+  depends_on: [sot:root/rust-migration, sot:root/crate-architecture]
 ---
 
 # Cross-platform adapter ecosystem
@@ -14,6 +14,20 @@ rel:
 Detailed server/framework expansion and the latest Rust-authored-code constraint
 are canonical in [[sot:root/server-adapter-expansion]]. Browser-observation helpers
 are a separate lab-tool concern, not substitutes for Node/nginx-like integration.
+
+## Live Rust adapter surface map (measured 2026-11-08)
+
+Workspace adapter-related members currently include
+`humanymous-framework-adapter`, `humanymous-node-adapter`,
+`humanymous-python-adapter`, `humanymous-ruby-adapter`,
+`humanymous-nginx-adapter`, `humanymous-apache-adapter` (+
+`humanymous-apache-native`), `humanymous-dotnet-adapter` (+ export),
+`humanymous-adapter-go`, and `humanymous-native-abi` (+ export). Shared decision
+IPC is owned by `humanymous-runtime` authority, not a separate authority
+package. Listing a language family below does not imply that member is
+product-qualified. Prefer [[sot:root/crate-architecture]] live-layout correction
+and evidence
+`.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/` for package IDs.
 
 ## Rule
 

@@ -3,7 +3,7 @@ id: sot:root/crate-architecture
 title: Rust crate naming and architecture review
 status: active
 created: 2026-11-06T23:16:00Z
-updated: 2026-11-06T23:16:00Z
+updated: 2026-11-08T15:57:00Z
 verify: manual
 rel:
   depends_on: [sot:root/rust-migration, sot:root/delivery, sot:root/adapter-ecosystem]
@@ -15,6 +15,37 @@ Version 0.1.0, official sources checked 2026-11-07 KST. Research-only review by
 three agents, synthesized against the actual 13-package metadata snapshot.
 This does not authorize an automatic package rename, merge or publish. Ongoing
 key-module workspace integration is a separate implementation checkpoint.
+
+## Live layout correction (measured 2026-11-08)
+
+The historical 13-package DAG below is retained as research chronology. It is
+**not** the live Cargo membership map. Locked `cargo metadata --no-deps` on
+`codex/rust` reports **29** workspace members. Context consolidation accepted in
+`structural-development` is the live wiring:
+
+| Live package | Context modules (source roots) |
+| --- | --- |
+| `humanymous-core` | `behavior`, `challenge`, `integrity`, `model`, `scoring`, `signals`, `watermark` under `crates/sdk/humanymous-core/src/` |
+| `humanymous-runtime` | `gateway` (default), `authority`, `audit`, `capture`, `network`, `native_security` under `crates/sdk/humanymous-runtime/src/` |
+
+Import identifiers follow the live packages (`humanymous_core::…`,
+`humanymous_runtime::…`), not retired crate names such as `humanymous_audit` or
+`humanymous_integrity`. Binary `humanymous-authority` and audit helper bins are
+targets of package `humanymous-runtime`, not separate packages. Packages
+`humanymous-audit`, `humanymous-authority`, `humanymous-watermark`, and
+`humanymous-native-security` are **absent** from the live workspace member set.
+
+Empty directory trees under top-level `crates/{audit,authority,behavior,capture,
+challenge,integrity,model,native-security,network,runtime,scoring,signals,
+watermark,test-support,windows-object-bridge}` currently contain zero files.
+They are ghost skeletons and must not be governed, verified, or edited as live
+implementation roots. Prefer the SDK paths above. Measurement receipt:
+`.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
+
+Boundary recommendations in later sections (shared application owner, startup
+secret lifecycle, publication closure, frozen scoring) remain in force. Package
+counts, import examples, and “standalone native-security package” wording that
+conflict with this correction are historical.
 
 ## Findings and recommendation
 

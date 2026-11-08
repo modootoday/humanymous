@@ -3,14 +3,23 @@ id: sot:root/adapter-service-contract
 title: Experimental adapter decision service protocol
 status: active
 created: 2026-11-06T22:15:00Z
-updated: 2026-11-07T06:16:49Z
+updated: 2026-11-08T15:57:00Z
 verify: manual
 rel:
   governs: [adapters/node/**, adapters/contracts/**, crates/node-adapter/**]
-  depends_on: [sot:root/adapter-ecosystem]
+  depends_on: [sot:root/adapter-ecosystem, sot:root/adapter-authority]
 ---
 
 # Experimental adapter decision service protocol
+
+## Live authority client owner (measured 2026-11-08)
+
+Shared adapter decision clients consume `humanymous_runtime::authority::client`
+from package `humanymous-runtime` (feature `authority`). Do not invent a
+separate `humanymous-authority` library dependency for host adapters. Node
+package path governance above is unchanged. Detail:
+[[sot:root/adapter-authority]] and evidence
+`.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
 
 ## Rule
 

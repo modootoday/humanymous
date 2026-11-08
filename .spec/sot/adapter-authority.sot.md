@@ -3,14 +3,26 @@ id: sot:root/adapter-authority
 title: Adapter authority
 status: active
 created: 2026-11-06T22:50:11Z
-updated: 2026-11-07T03:30:26Z
+updated: 2026-11-08T15:57:00Z
 verify: [manual]
 rel:
-  governs: [crates/authority/**]
+  governs: [crates/sdk/humanymous-runtime/src/authority/**, crates/sdk/humanymous-runtime/tests/authority/**]
   depends_on: [sot:root/adapter-service-contract]
 ---
 
 # Adapter authority
+
+## Live package layout (measured 2026-11-08)
+
+Authority is not a standalone Cargo package. The live owner is workspace member
+`humanymous-runtime` with feature `authority`, module path
+`humanymous_runtime::authority`, and binary target `humanymous-authority` from
+the same package. Empty directory tree `crates/authority/**` is a ghost skeleton
+(zero files) and must not be treated as an implementation root or verify path.
+Historical prose that names `crates/authority` or package `humanymous-authority`
+as a separate member is retained only as chronology; live wiring uses the
+runtime paths above. See evidence
+`.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
 
 ## Explicit other-user qualification receipt
 

@@ -3,14 +3,25 @@ id: sot:root/runtime-application
 title: Runtime application and session owner
 status: active
 created: 2026-11-07T00:20:25Z
-updated: 2026-11-07T06:18:20Z
+updated: 2026-11-08T15:57:00Z
 verify: [cargo test -p humanymous-runtime --locked, cargo clippy -p humanymous-runtime --all-targets --locked -- -D warnings]
 rel:
-  governs: [crates/runtime/**]
+  governs: [crates/sdk/humanymous-runtime/**]
   depends_on: [sot:root/rust-migration, sot:root/adapter-authority, sot:root/server-adapter-expansion]
 ---
 
 # Runtime application and session owner
+
+## Live package layout (measured 2026-11-08)
+
+Application/session ownership lives in workspace package `humanymous-runtime`
+under context feature modules, primarily `gateway` (default), with sibling
+`authority`, `audit`, `capture`, `network`, and `native-security` features.
+Empty directory tree `crates/runtime/**` is a ghost skeleton (zero files) and is
+not an implementation root. Prefer import paths
+`humanymous_runtime::gateway::...` and `humanymous_core::integrity::...`.
+Component/unit success for this package is not Docker product e2e success.
+Evidence: `.spec.local/root/evidence/20261108155700-cursor-spec-gap-audit/`.
 
 ## Rule
 
@@ -43,7 +54,7 @@ The initial plaintext listener accepts only origin=`http://` plus exact configur
 authority, without trailing slash/path/query. Browser routes require the explicit
 browser configuration; this does not expand loopback bind scope.
 
-Use `humanymous_integrity::request::browser::{Binding, canonical, PROTOCOL,
+Use `humanymous_core::integrity::request::browser::{Binding, canonical, PROTOCOL,
 MAX_SAFE_INTEGER}` from root commit53abb0b and ACK API from fabed20. Binding has
 exact fields installation,tenant,origin_identity,revision,authority,session,
 method,target,counter,bucket,deadline,content_type,application_authorization,
