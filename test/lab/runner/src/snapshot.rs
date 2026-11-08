@@ -30,7 +30,9 @@ impl Snapshot {
     pub(crate) fn source_binding(&self) -> Result<source_pin::SourceBinding> {
         source_pin::SourceBinding::bind(
             &self.0,
-            self.1.as_ref().ok_or("required selected build source absent")?,
+            self.1
+                .as_ref()
+                .ok_or("required selected build source absent")?,
         )
     }
 }

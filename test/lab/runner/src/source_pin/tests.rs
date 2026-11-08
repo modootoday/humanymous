@@ -48,14 +48,11 @@ pub(crate) fn fixture() -> Fixture {
         ]
         })
     });
-    let root = std::env::temp_dir()
-        .canonicalize()
-        .unwrap()
-        .join(format!(
-            "hm-source-pin-test-{}-{}",
-            std::process::id(),
-            NEXT.fetch_add(1, Ordering::Relaxed),
-        ));
+    let root = std::env::temp_dir().canonicalize().unwrap().join(format!(
+        "hm-source-pin-test-{}-{}",
+        std::process::id(),
+        NEXT.fetch_add(1, Ordering::Relaxed),
+    ));
     fs::create_dir(&root).unwrap();
     let path = root.join(PATH);
     fs::create_dir_all(path.parent().unwrap()).unwrap();
@@ -79,14 +76,11 @@ pub(crate) fn fixture() -> Fixture {
 fn source_identity_context_and_revalidation_are_required() {
     let fixture = fixture();
     let binding = &fixture.binding;
-    let empty_root = std::env::temp_dir()
-        .canonicalize()
-        .unwrap()
-        .join(format!(
-            "hm-rust-lab-pin-missing-{}-{}",
-            std::process::id(),
-            NEXT.fetch_add(1, Ordering::Relaxed),
-        ));
+    let empty_root = std::env::temp_dir().canonicalize().unwrap().join(format!(
+        "hm-rust-lab-pin-missing-{}-{}",
+        std::process::id(),
+        NEXT.fetch_add(1, Ordering::Relaxed),
+    ));
     fs::create_dir(&empty_root).unwrap();
     let empty = super::super::Snapshot::temporary(empty_root.clone());
     assert!(empty.source_binding().is_err());

@@ -177,7 +177,11 @@ pub(super) fn from_stdout(
 mod tests {
     use super::*;
 
-    fn from_stdout(bytes: &[u8], fixture: &Value, expected: &Value) -> (Value, Option<&'static str>) {
+    fn from_stdout(
+        bytes: &[u8],
+        fixture: &Value,
+        expected: &Value,
+    ) -> (Value, Option<&'static str>) {
         let source = crate::snapshot::source_pin::tests::fixture();
         super::from_stdout(bytes, fixture, expected, Some(&source.binding))
     }

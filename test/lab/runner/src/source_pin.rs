@@ -61,9 +61,7 @@ fn regular(metadata: &Metadata) -> bool {
 }
 
 fn read(root: &Path, relative: &str) -> Result<Vec<u8>> {
-    if !root.is_absolute()
-        || root.canonicalize()? != root
-        || !regular(&fs::symlink_metadata(root)?)
+    if !root.is_absolute() || root.canonicalize()? != root || !regular(&fs::symlink_metadata(root)?)
     {
         return Err("explicit canonical source root required".into());
     }
@@ -105,7 +103,11 @@ impl SourceBinding {
         Self::with_profile(root, selected, profile())
     }
 
-    fn with_profile(root: &Path, selected: &SelectedSource, profile: &'static Value) -> Result<Self> {
+    fn with_profile(
+        root: &Path,
+        selected: &SelectedSource,
+        profile: &'static Value,
+    ) -> Result<Self> {
         let binding = Self {
             root: root.into(),
             selected: selected.clone(),
