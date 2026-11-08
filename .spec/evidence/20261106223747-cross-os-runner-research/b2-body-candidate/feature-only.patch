@@ -1,0 +1,10 @@
+diff --git a/crates/integrations/humanymous-platform/Cargo.toml b/crates/integrations/humanymous-platform/Cargo.toml
+--- a/crates/integrations/humanymous-platform/Cargo.toml
++++ b/crates/integrations/humanymous-platform/Cargo.toml
+@@ -16,1 +16,6 @@
+ windows-file-create = ["windows-object"]
++windows-supervisor = [
++    "dep:windows-sys",
++    "windows-sys/Win32_System_Threading",
++    "windows-sys/Win32_System_JobObjects",
++]

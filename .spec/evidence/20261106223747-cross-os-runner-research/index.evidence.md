@@ -3,7 +3,7 @@ id: evidence:root/20261106223747
 title: Cross OS runner research
 status: active
 created: 2026-11-06T22:37:47Z
-updated: 2026-11-08T03:28:05Z
+updated: 2026-11-08T04:51:22Z
 files:
   - {path: native-selector-validation-summary.json, sha256: afc912e9f5877c6df843d816ba6a09a9ce4a8682c697e3e42356e87220f7fe08, bytes: 12855, store: repo}
   - {path: native-selector-scan-triage-source.json, sha256: 5b5bdd18c40b2c18032b1c888ee8e74759f0c0a024751acb22db5e0538315f6a, bytes: 2088, store: repo}
@@ -97,6 +97,16 @@ files:
   - {path: b1-file-create-candidate/create_file/native_tests.rs, sha256: 91429219ecdd937fb1bac6cf81f982a039a174063c78a5261aeafcd6016d3dbe, bytes: 6511, store: repo}
   - {path: b1-file-create-candidate/source-inputs.json, sha256: be0270c5811337df49d98049b5491fe42e0e24ab221e7150b9c5b482e4cb5c7b, bytes: 3312, store: repo}
   - {path: b1-file-create-candidate/b1-file-create.patch, sha256: 01831889b1e2204d9790da3e5398438293f9c8fbbce7f0c74dd3d7f633e9ef1b, bytes: 15422, store: repo}
+  - {path: b2-body-candidate/mod.rs, sha256: 07440a0d00e130a076f3718fbbb0eab181ea9864959b8b10119eb74254e7862f, bytes: 372, store: repo}
+  - {path: b2-body-candidate/facade.rs, sha256: 83fe057c00eaa12d90de820e5de6edbb00cdfed91e4e0b3aaaec91481205bbbc, bytes: 12631, store: repo}
+  - {path: b2-body-candidate/state.rs, sha256: f9ac5a1391f747e24b05730f055df84d7141c9856e38a0fa01ec802d1d239a9c, bytes: 9161, store: repo}
+  - {path: b2-body-candidate/launch.rs, sha256: 621ff1978daa11b0b86a1b1b881e965835d062103a0b9af58d9333faa910a41e, bytes: 8079, store: repo}
+  - {path: b2-body-candidate/native.rs, sha256: b4e76b3065a1c2f688f8bc31b27100bfcd72653794ea96e4e8aeb07e033fd176, bytes: 11173, store: repo}
+  - {path: b2-body-candidate/native_tests.rs, sha256: 364023e2e733b8ee8bd09fb08a90e557246463f7a4b77497c306668130311e6b, bytes: 8036, store: repo}
+  - {path: b2-body-candidate/platform-module.patch, sha256: e3d5eab7cef6c066c23c7596e8562d36e323172f49fc9319cad4091d89961a1c, bytes: 52650, store: repo}
+  - {path: b2-body-candidate/feature-only.patch, sha256: 4cdbe6991b32bcff3c3a292641d05fe0d3491a825045bf8fda5b687cf3c81a97, bytes: 429, store: repo}
+  - {path: b2-body-candidate/integration-deltas.md, sha256: 9eddc4fd8134e0d7be7b72d61065513c85a3c8e33eef27d81fd530e66d68789d, bytes: 3973, store: repo}
+  - {path: b2-body-candidate/source-inputs.json, sha256: 75906ab63943a6776034115a433cbc00cade3c4b2bc8fef94a6505f1e4a2d999, bytes: 7370, store: repo}
 ---
 
 # Cross OS runner research

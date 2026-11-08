@@ -1,0 +1,182 @@
+{
+  "schema": "b2-supervisor-body-candidate-v1",
+  "status": "AUTHORING_AUTHORIZED_BODY_UNAPPROVED_NOT_COMPILED",
+  "branch": "codex/rust",
+  "isolated_platform_read_only": ".spec.local/root/evidence/20261108054000-core-consolidation/tools-integration-5f1010d4/crates/integrations/humanymous-platform",
+  "input_preimages": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "04a2677de1a1a54c31c550d7ec7503111bdacce71caa6c8a644f8c7e07e024d3",
+      "bytes": 1301
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "d9fa1eb244d3e81f45c4fed6b525b97b0be056945d29c67b0b07803dde537c78",
+      "bytes": 575
+    },
+    {
+      "path": "src/windows_object/mod.rs",
+      "sha256": "fce9dbc3a3cd03f1d437cda2f4f0058ef5c287a58db9449bac69505866664e96",
+      "bytes": 5100
+    },
+    {
+      "path": "src/windows_object/create.rs",
+      "sha256": "c323434eacc915e561aed5d48307bf2e8a3c02adf66cb7ba9a39c9185b90bbec",
+      "bytes": 2080
+    },
+    {
+      "path": "src/windows_object/query.rs",
+      "sha256": "e7921656c28da7f9671aed55390dddc7fffc0279e5eaeceed71e31f6317d6c53",
+      "bytes": 6994
+    },
+    {
+      "path": "src/windows_object/create_file.rs",
+      "sha256": "b58ad0743275242bd69f2ab538d725c50c713db19d955ed2e9d19eea3e102ec6",
+      "bytes": 8651
+    },
+    {
+      "path": "src/windows_object/create_file/native_tests.rs",
+      "sha256": "bb76334100137fac133c5022124965ecdf491724825cafdf787120c2a6b095b6",
+      "bytes": 6998
+    },
+    {
+      "path": "src/testing/process/capture_attempt.rs",
+      "sha256": "db2b5d86ac68ce9814ca645d9ed495fac902385e43ce8f83f8394cba9d3aafea",
+      "bytes": 16221
+    },
+    {
+      "path": "src/testing/process/owned_child.rs",
+      "sha256": "a8f4e2ea596be1d76d09f51ca0b80498e53c3039eed1739f05e6fc636ccd2745",
+      "bytes": 4324
+    },
+    {
+      "path": "src/testing/process/capture_attempt/worker.rs",
+      "sha256": "3779051325885b93599b7905bcae7608305401dc24b742a49a3e3b2369fe88f9",
+      "bytes": 2166
+    },
+    {
+      "path": "src/testing/tree_lifecycle.rs",
+      "sha256": "58fb0b44bfd6810c40f929c5c1fcc9ac93e01d48d5912c80c738727e771831e7",
+      "bytes": 7417
+    }
+  ],
+  "candidate_rust": [
+    {
+      "path": "mod.rs",
+      "sha256": "07440a0d00e130a076f3718fbbb0eab181ea9864959b8b10119eb74254e7862f",
+      "bytes": 372,
+      "destination": "crates/integrations/humanymous-platform/src/windows_supervisor/mod.rs",
+      "destination_absent": true
+    },
+    {
+      "path": "facade.rs",
+      "sha256": "83fe057c00eaa12d90de820e5de6edbb00cdfed91e4e0b3aaaec91481205bbbc",
+      "bytes": 12631,
+      "destination": "crates/integrations/humanymous-platform/src/windows_supervisor/facade.rs",
+      "destination_absent": true
+    },
+    {
+      "path": "state.rs",
+      "sha256": "f9ac5a1391f747e24b05730f055df84d7141c9856e38a0fa01ec802d1d239a9c",
+      "bytes": 9161,
+      "destination": "crates/integrations/humanymous-platform/src/windows_supervisor/state.rs",
+      "destination_absent": true
+    },
+    {
+      "path": "launch.rs",
+      "sha256": "621ff1978daa11b0b86a1b1b881e965835d062103a0b9af58d9333faa910a41e",
+      "bytes": 8079,
+      "destination": "crates/integrations/humanymous-platform/src/windows_supervisor/launch.rs",
+      "destination_absent": true
+    },
+    {
+      "path": "native.rs",
+      "sha256": "b4e76b3065a1c2f688f8bc31b27100bfcd72653794ea96e4e8aeb07e033fd176",
+      "bytes": 11173,
+      "destination": "crates/integrations/humanymous-platform/src/windows_supervisor/native.rs",
+      "destination_absent": true
+    },
+    {
+      "path": "native_tests.rs",
+      "sha256": "364023e2e733b8ee8bd09fb08a90e557246463f7a4b77497c306668130311e6b",
+      "bytes": 8036,
+      "destination": "crates/integrations/humanymous-platform/src/windows_supervisor/native_tests.rs",
+      "destination_absent": true
+    }
+  ],
+  "proposed_unsafe_function_scopes": [
+    "create_job_owned",
+    "configure_job",
+    "query_job",
+    "terminate_owned_job",
+    "is_owned_process_in_job",
+    "make_job_attribute_list",
+    "drop_job_attribute_list",
+    "create_process_in_job",
+    "poll_owned_process",
+    "terminate_owned_process"
+  ],
+  "proposed_scope_count": 10,
+  "lexical_unsafe_block_count": 17,
+  "root_module_allow_count": 0,
+  "unsafe_send_sync_count": 0,
+  "windows_flags": "0x00080408",
+  "pure_test_selectors": [
+    "windows_supervisor::facade::tests::policy_accepts_only_kill_on_close_and_not_breakaway_or_other_flags",
+    "windows_supervisor::state::tests::original_pair_and_first_failure_never_renew_on_recovery",
+    "windows_supervisor::state::tests::invalid_or_expired_profiles_cannot_start",
+    "windows_supervisor::state::tests::closed_state_and_late_completion_cannot_mint_timely_success",
+    "windows_supervisor::state::tests::first_loss_drain_is_clamped_sticky_and_refuses_exact_limit",
+    "windows_supervisor::state::tests::delayed_nonzero_native_return_cannot_move_first_loss_past_original_run",
+    "windows_supervisor::launch::tests::command_quotes_unicode_backslashes_and_quotes_without_extra_arguments",
+    "windows_supervisor::launch::tests::held_image_profile_rejects_gui_dll_machine_and_optional_magic",
+    "windows_supervisor::native::tests::exact_detached_profile_has_no_breakaway_console_or_stdio_bits"
+  ],
+  "required_ignored_native_parents": [
+    "windows_supervisor::native_tests::actual_job_list_membership_and_natural_zero_exit_are_observed",
+    "windows_supervisor::native_tests::actual_signaled_exit_259_is_terminal_and_not_still_active",
+    "windows_supervisor::native_tests::actual_direct_exit_does_not_complete_a_live_descendant_job",
+    "windows_supervisor::native_tests::actual_retained_recovery_keeps_original_pair_and_first_stop",
+    "windows_supervisor::native_tests::actual_post_create_validation_refusal_keeps_owned_cleanup_target",
+    "windows_supervisor::native_tests::actual_owner_death_kills_nested_job_without_forging_join_proof",
+    "windows_supervisor::native_tests::actual_detached_cui_helper_does_not_consume_parent_standard_input"
+  ],
+  "ignored_subprocess_helpers": [
+    "windows_supervisor::native_tests::child_exit_zero",
+    "windows_supervisor::native_tests::child_exit_259",
+    "windows_supervisor::native_tests::child_wait",
+    "windows_supervisor::native_tests::child_leaves_descendant",
+    "windows_supervisor::native_tests::child_owner_dies",
+    "windows_supervisor::native_tests::child_probes_standard_streams"
+  ],
+  "all_tests": "NOT_RUN",
+  "compiler_or_formatter": "NOT_RUN",
+  "native_execution": "NOT_RUN",
+  "live_or_isolated_source_edits": false,
+  "cargo_or_lock_edits": false,
+  "body_approval": "PENDING_ROOT_AND_X",
+  "original_invocation_namespace_ready_producer": "ABSENT; no proof factory",
+  "b2p_and_common_owner_extraction": "SEPARATE_SOURCE_DELTA_REQUIREMENTS",
+  "patches": [
+    {
+      "path": "platform-module.patch",
+      "sha256": "e3d5eab7cef6c066c23c7596e8562d36e323172f49fc9319cad4091d89961a1c",
+      "bytes": 52650
+    },
+    {
+      "path": "feature-only.patch",
+      "sha256": "4cdbe6991b32bcff3c3a292641d05fe0d3491a825045bf8fda5b687cf3c81a97",
+      "bytes": 429
+    }
+  ],
+  "integration_delta": {
+    "path": "integration-deltas.md",
+    "sha256": "9eddc4fd8134e0d7be7b72d61065513c85a3c8e33eef27d81fd530e66d68789d",
+    "bytes": 3973
+  },
+  "doc_tests": {
+    "positive_no_run": 1,
+    "privacy_compile_fail": 2,
+    "status": "NOT_RUN"
+  }
+}

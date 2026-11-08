@@ -1,0 +1,1037 @@
+diff --git a/crates/integrations/humanymous-platform/src/lib.rs b/crates/integrations/humanymous-platform/src/lib.rs
+--- a/crates/integrations/humanymous-platform/src/lib.rs
++++ b/crates/integrations/humanymous-platform/src/lib.rs
+@@ -14,1 +14,5 @@
+ pub mod windows_object;
++
++/// Opt-in owned Windows qualification tree; no provider or Ready authority.
++#[cfg(all(windows, feature = "windows-supervisor"))]
++pub mod windows_supervisor;
+diff --git a/crates/integrations/humanymous-platform/src/windows_supervisor/mod.rs b/crates/integrations/humanymous-platform/src/windows_supervisor/mod.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/integrations/humanymous-platform/src/windows_supervisor/mod.rs
+@@ -0,0 +1,15 @@
++//! UNAPPROVED B2 body candidate. Low-level owned containment, never NativeProof.
++#![deny(unsafe_code)]
++#![cfg(windows)]
++
++mod facade;
++mod launch;
++mod native;
++mod state;
++
++pub use facade::{OwnedTree, RetainedTree, TerminalTree, TreeObservation};
++pub use launch::QualificationHelper;
++pub use state::{BudgetLimits, FirstFailure, Issue, Phase};
++
++#[cfg(test)]
++mod native_tests;
+diff --git a/crates/integrations/humanymous-platform/src/windows_supervisor/facade.rs b/crates/integrations/humanymous-platform/src/windows_supervisor/facade.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/integrations/humanymous-platform/src/windows_supervisor/facade.rs
+@@ -0,0 +1,257 @@
++//! Safe concrete owner. No generic provider, raw PID or symbolic proof input.
++#![forbid(unsafe_code)]
++
++use super::{launch::{PreparedLaunch, QualificationHelper}, native::{self, JobObservation, ProcessObservation, Query}, state::{BudgetLimits, FirstFailure, Issue, Phase, State}};
++use std::{path::Path, time::Instant};
++
++struct Owner {
++    // Drop closes sole Job handle first; kill-on-close is NOT a cleanup receipt.
++    job: Option<native::Job>,
++    process: Option<native::Process>,
++    launch: Option<PreparedLaunch>,
++    state: State,
++    create_entered: bool,
++    membership: Option<bool>,
++    exit: Option<u32>,
++    population: Option<u32>,
++}
++
++/// Owns real Job/process/thread/image guards and original local clock.
++/// The independent caller/outer budget and admitted source remain preconditions.
++/// The public low-level signature is usable without importing raw native fields:
++/// ```no_run
++/// use humanymous_platform::windows_supervisor::{OwnedTree, RetainedTree, QualificationHelper, BudgetLimits};
++/// let _: fn(&std::path::Path, &std::path::Path, QualificationHelper, BudgetLimits)
++///     -> Result<OwnedTree, RetainedTree> = OwnedTree::launch;
++/// ```
++/// Caller DATA cannot construct an actual owning tree:
++/// ```compile_fail,E0451
++/// use humanymous_platform::windows_supervisor::OwnedTree;
++/// let _forged = OwnedTree { owner: todo!() };
++/// ```
++#[must_use = "retain the actual tree until explicitly settled or reported Unknown"]
++pub struct OwnedTree { owner: Box<Owner> }
++
++/// Actual partial owner on error; move recovery never renews the original pair.
++/// ```compile_fail,E0616
++/// use humanymous_platform::windows_supervisor::RetainedTree;
++/// fn forbidden(owner: RetainedTree) { let _ = owner.tree; }
++/// ```
++#[must_use = "failure retains the actual tree; Drop is not cleanup success"]
++pub struct RetainedTree { tree: OwnedTree }
++impl RetainedTree {
++    /// Move the SAME actual owner into in-process recovery, without PID reopening.
++    pub fn into_owner(self) -> OwnedTree { self.tree }
++    /// Restricted diagnostic view, not permission to launch/activate anything.
++    pub fn observation(&self) -> TreeObservation { self.tree.observation() }
++}
++
++/// Fully observed minimum-profile resource closure, with execution kept separate.
++/// This is not provider, original invocation, worker/capture or NativeProof status.
++pub struct TerminalTree { tree: OwnedTree }
++impl TerminalTree {
++    /// Natural exit0, original run observation and no sticky failure.
++    pub fn execution_succeeded(&self) -> bool {
++        self.tree.owner.exit == Some(0) && self.tree.owner.state.first.is_none()
++    }
++    /// Actual component diagnostic facts; this does not expose raw handles.
++    pub fn observation(&self) -> TreeObservation { self.tree.observation() }
++}
++
++/// Read-only observations; callers cannot supply them to manufacture completion.
++#[derive(Clone, Copy)]
++pub struct TreeObservation {
++    phase: Phase,
++    exit: Option<u32>,
++    population: Option<u32>,
++    first: Option<FirstFailure>,
++    started: Instant,
++    run: Instant,
++    cleanup: Instant,
++    effective_cleanup: Instant,
++}
++impl TreeObservation {
++    /// Last owning phase.
++    pub fn phase(&self) -> Phase { self.phase }
++    /// Actual process signal followed by exit-code query, including valid259.
++    pub fn direct_exit(&self) -> Option<u32> { self.exit }
++    /// Separately queried Job population; direct exit is not Job emptiness.
++    pub fn active_processes(&self) -> Option<u32> { self.population }
++    /// Sticky first issue and observation time.
++    pub fn first_failure(&self) -> Option<FirstFailure> { self.first }
++    /// Original local start/run/cleanup DATA; no outer supervisor is inferred.
++    pub fn original_instants(&self) -> (Instant, Instant, Instant) { (self.started, self.run, self.cleanup) }
++    /// Sticky min(original cleanup, first loss plus accepted finite drain).
++    pub fn effective_cleanup(&self) -> Instant { self.effective_cleanup }
++}
++
++fn exact_policy(flags: u32) -> bool { flags == 0x2000 }
++
++impl OwnedTree {
++    /// Start ONE fixed Rust x64/CUI qualification-helper mode. The caller must
++    /// separately admit this exact helper artifact/source/namespace and retain an
++    /// independent ORIGINAL outer watchdog across every potentially blocking call.
++    /// No inherited handles, stdio, arbitrary argv, shell or environment input.
++    pub fn launch(executable: &Path, cwd: &Path, helper: QualificationHelper, limits: BudgetLimits) -> Result<Self, RetainedTree> {
++        let started = Instant::now(); // FIRST entry action, before image/native I/O.
++        let state = match State::new(started, limits) {
++            Ok(state) => state,
++            Err(issue) => State::refused(started, issue),
++        };
++        // Allocate the retained-owner box BEFORE any actual native process exists.
++        let mut tree = Self { owner: Box::new(Owner { job: None, process: None, launch: None,
++            state, create_entered: false, membership: None, exit: None, population: None }) };
++        if tree.owner.state.first.is_some() { return Err(RetainedTree { tree }); }
++        if let Err(issue) = tree.start(executable, cwd, helper) {
++            tree.owner.state.observe_time(Instant::now(), false);
++            tree.owner.state.record(issue, Instant::now());
++            tree.owner.state.phase = Phase::Closing;
++            return Err(RetainedTree { tree });
++        }
++        Ok(tree)
++    }
++
++    fn start(&mut self, executable: &Path, cwd: &Path, helper: QualificationHelper) -> Result<(), Issue> {
++        self.start_allowed()?;
++        self.owner.launch = Some(PreparedLaunch::prepare(executable, cwd, helper)?);
++        self.start_allowed()?;
++        self.owner.job = Some(native::create_job_owned().map_err(|_| Issue::NativeCall)?);
++        self.owner.state.phase = Phase::JobCreated;
++        self.start_allowed()?;
++        let job = self.owner.job.as_ref().ok_or(Issue::NativeCall)?;
++        native::configure_job(job).map_err(|_| Issue::NativeCall)?;
++        match native::query_job(job, Query::Policy).map_err(|_| Issue::NativeCall)? {
++            JobObservation::Policy(flags) if exact_policy(flags) => (),
++            _ => return Err(Issue::Containment),
++        }
++        self.owner.state.phase = Phase::Configured;
++        self.start_allowed()?;
++        let job = self.owner.job.as_ref().ok_or(Issue::NativeCall)?;
++        let attributes = native::make_job_attribute_list(job).map_err(|_| Issue::NativeCall)?;
++        if !self.owner.state.permits_start(Instant::now()) { return Err(Issue::RunExpired); }
++        self.owner.create_entered = true;
++        self.owner.state.phase = Phase::CreateEntered;
++        let result = native::create_process_in_job(&attributes, self.owner.launch.as_mut().ok_or(Issue::InvalidInput)?);
++        // Attribute backing and borrowed Job stay live through creation and Delete.
++        drop(attributes);
++        self.owner.process = Some(result.map_err(|_| Issue::NativeCall)?);
++        self.owner.state.phase = Phase::Created;
++        self.start_allowed()?;
++        let process = self.owner.process.as_ref().ok_or(Issue::NativeCall)?;
++        if !process.complete() { return Err(Issue::NativeCall); }
++        let job = self.owner.job.as_ref().ok_or(Issue::NativeCall)?;
++        self.owner.membership = Some(native::is_owned_process_in_job(job, process).map_err(|_| Issue::NativeCall)?);
++        if self.owner.membership != Some(true) { return Err(Issue::Containment); }
++        match native::query_job(job, Query::Policy).map_err(|_| Issue::NativeCall)? {
++            JobObservation::Policy(flags) if exact_policy(flags) => (),
++            _ => return Err(Issue::Containment),
++        }
++        self.owner.state.phase = Phase::Running;
++        self.start_allowed()
++    }
++
++    fn start_allowed(&mut self) -> Result<(), Issue> {
++        let now = Instant::now();
++        self.owner.state.observe_time(now, false);
++        if !self.owner.state.permits_start(now) { return Err(Issue::RunExpired); }
++        Ok(())
++    }
++
++    /// Query SAME actual owners. Zero-time waits are not universal hard bounds.
++    /// Errors borrow this owner; they cannot detach or discard its resources.
++    pub fn poll(&mut self) -> Result<TreeObservation, Issue> {
++        let result = self.poll_inner();
++        if let Err(issue) = result {
++            self.owner.state.observe_time(Instant::now(), false);
++            self.owner.state.record(issue, Instant::now());
++            self.owner.state.phase = Phase::Closing;
++        }
++        result.map(|()| self.observation())
++    }
++
++    fn poll_inner(&mut self) -> Result<(), Issue> {
++        let previously_complete = self.native_complete();
++        self.owner.state.observe_time(Instant::now(), previously_complete);
++        if self.owner.exit.is_none()
++            && let Some(process) = self.owner.process.as_ref()
++        {
++            match native::poll_owned_process(process).map_err(|_| Issue::NativeCall)? {
++                ProcessObservation::Pending => self.owner.state.observe_time(Instant::now(), false),
++                ProcessObservation::Exited(code) => {
++                    self.owner.exit = Some(code);
++                    self.owner.state.direct_exit_observed(code, Instant::now());
++                }
++            }
++        }
++        if let Some(job) = self.owner.job.as_ref() {
++            match native::query_job(job, Query::Population).map_err(|_| Issue::NativeCall)? {
++                JobObservation::Population(active) => self.owner.population = Some(active),
++                _ => return Err(Issue::NativeCall),
++            }
++        }
++        let complete = self.native_complete();
++        self.owner.state.observe_time(Instant::now(), complete);
++        Ok(())
++    }
++
++    fn native_complete(&self) -> bool {
++        if !self.owner.create_entered {
++            return self.owner.job.is_none() || self.owner.population == Some(0);
++        }
++        self.owner.membership == Some(true) && self.owner.exit.is_some() && self.owner.population == Some(0)
++    }
++
++    /// Request OWN containment stop once; request success never implies exit/Job0.
++    pub fn request_stop(&mut self) -> Result<(), Issue> {
++        let now = Instant::now();
++        self.owner.state.observe_time(now, false);
++        self.owner.state.phase = Phase::Closing;
++        if now >= self.owner.state.effective_cleanup { return Err(Issue::CleanupExpired); }
++        if self.owner.state.stop_requested { return Ok(()); }
++        self.owner.state.stop_requested = true;
++        self.owner.state.record(Issue::StopRequested, now);
++        let mut failed = false;
++        if let Some(job) = self.owner.job.as_ref() { failed |= native::terminate_owned_job(job).is_err(); }
++        if self.owner.membership != Some(true) && self.owner.exit.is_none()
++            && let Some(process) = self.owner.process.as_ref()
++        { failed |= native::terminate_owned_process(process).is_err(); }
++        if failed { self.owner.state.record(Issue::NativeCall, Instant::now()); return Err(Issue::NativeCall); }
++        Ok(())
++    }
++
++    /// No caller facts accepted: query again after closing new launches, require
++    /// actual direct signal AND Job0 within original cleanup. NO workers exist
++    /// in this minimum profile; this never certifies a nonempty capture request.
++    pub fn settle(mut self) -> Result<TerminalTree, RetainedTree> {
++        self.owner.state.phase = Phase::Closing;
++        if self.poll().is_err() || !self.native_complete() || self.owner.state.cleanup_missed {
++            return Err(RetainedTree { tree: self });
++        }
++        Ok(TerminalTree { tree: self })
++    }
++
++    /// Snapshot only. No activation, cleanup or original invocation authority.
++    pub fn observation(&self) -> TreeObservation {
++        TreeObservation { phase: self.owner.state.phase, exit: self.owner.exit, population: self.owner.population,
++            first: self.owner.state.first, started: self.owner.state.started, run: self.owner.state.run, cleanup: self.owner.state.cleanup,
++            effective_cleanup: self.owner.state.effective_cleanup }
++    }
++
++    #[cfg(test)]
++    pub(super) fn reject_after_actual_create(mut self) -> RetainedTree {
++        // Controlled validation refusal ONLY; not an injected Windows API failure.
++        self.owner.state.record(Issue::Containment, Instant::now());
++        self.owner.state.phase = Phase::Closing;
++        RetainedTree { tree: self }
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    #[test]
++    fn policy_accepts_only_kill_on_close_and_not_breakaway_or_other_flags() {
++        assert!(exact_policy(0x2000));
++        for flags in [0, 0x800, 0x1000, 0x2800, 0x3000, 0x2001] { assert!(!exact_policy(flags)); }
++    }
++}
+diff --git a/crates/integrations/humanymous-platform/src/windows_supervisor/state.rs b/crates/integrations/humanymous-platform/src/windows_supervisor/state.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/integrations/humanymous-platform/src/windows_supervisor/state.rs
+@@ -0,0 +1,185 @@
++//! Safe owning bookkeeping. Pure state tests cannot manufacture native facts.
++#![forbid(unsafe_code)]
++
++use std::time::{Duration, Instant};
++
++/// Static issues; no executable path, identity or command text is exposed.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum Issue {
++    /// Invalid finite qualification data.
++    InvalidInput,
++    /// The selected held image is not the fixed supported x64 console profile.
++    ImageProfile,
++    /// A native call failed or its result could not be trusted.
++    NativeCall,
++    /// Kernel policy/membership differed from the requested profile.
++    Containment,
++    /// Original run budget expired before complete observations.
++    RunExpired,
++    /// Original cleanup budget expired before complete observations.
++    CleanupExpired,
++    /// Stop was requested; later exit0 is not natural success.
++    StopRequested,
++    /// Actual signaled process returned a nonzero code.
++    UnsuccessfulExit,
++}
++
++/// First local failure observation only; not a cleanup or authority receipt.
++#[derive(Clone, Copy, Debug)]
++pub struct FirstFailure {
++    /// Immutable first reason.
++    pub issue: Issue,
++    /// Original local monotonic failure observation.
++    pub at: Instant,
++}
++
++/// Closed low-level owner phase, not authenticated native source admission.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum Phase {
++    /// Validation/image preparation only.
++    Preflight,
++    /// Actual Job has been retained.
++    JobCreated,
++    /// Exact Job policy has been queried.
++    Configured,
++    /// The native create call may have had effects.
++    CreateEntered,
++    /// Actual returned process/thread owners are retained.
++    Created,
++    /// Actual membership was confirmed.
++    Running,
++    /// New launch is closed; cleanup observation only.
++    Closing,
++}
++
++/// Finite requested durations are DATA, not an original outer supervisor proof.
++pub struct BudgetLimits { run: Duration, cleanup: Duration, drain: Duration }
++impl BudgetLimits {
++    /// Select positive run and total cleanup durations, maximum one hour.
++    /// Cleanup is measured from ORIGINAL start, not from a later failure.
++    pub fn new(run: Duration, cleanup: Duration, drain: Duration) -> Result<Self, Issue> {
++        if run.is_zero() || cleanup < run || cleanup > Duration::from_secs(3600)
++            || drain.is_zero() || drain > cleanup || drain > Duration::from_secs(60)
++        {
++            return Err(Issue::InvalidInput);
++        }
++        Ok(Self { run, cleanup, drain })
++    }
++}
++
++pub(super) struct State {
++    pub(super) started: Instant,
++    pub(super) run: Instant,
++    pub(super) cleanup: Instant,
++    pub(super) effective_cleanup: Instant,
++    drain: Duration,
++    pub(super) phase: Phase,
++    pub(super) first: Option<FirstFailure>,
++    pub(super) stop_requested: bool,
++    pub(super) cleanup_missed: bool,
++    run_met: bool,
++    cleanup_met: bool,
++}
++impl State {
++    pub(super) fn new(started: Instant, limits: BudgetLimits) -> Result<Self, Issue> {
++        let run = started.checked_add(limits.run).ok_or(Issue::InvalidInput)?;
++        let cleanup = started.checked_add(limits.cleanup).ok_or(Issue::InvalidInput)?;
++        Ok(Self { started, run, cleanup, effective_cleanup: cleanup, drain: limits.drain,
++            phase: Phase::Preflight, first: None, stop_requested: false, cleanup_missed: false, run_met: false, cleanup_met: false })
++    }
++    pub(super) fn refused(started: Instant, issue: Issue) -> Self {
++        Self { started, run: started, cleanup: started, effective_cleanup: started, drain: Duration::ZERO, phase: Phase::Closing,
++            first: Some(FirstFailure { issue, at: started }), stop_requested: false,
++            cleanup_missed: true, run_met: false, cleanup_met: false }
++    }
++    pub(super) fn record(&mut self, issue: Issue, now: Instant) {
++        if self.first.is_none() {
++            self.first = Some(FirstFailure { issue, at: now });
++            self.effective_cleanup = self.cleanup.min(now.checked_add(self.drain).unwrap_or(now));
++        }
++    }
++    pub(super) fn observe_time(&mut self, now: Instant, complete: bool) {
++        self.run_met |= complete && now < self.run;
++        if now >= self.run && !self.run_met { self.record(Issue::RunExpired, self.run); self.phase = Phase::Closing; }
++        self.cleanup_met |= complete && now < self.effective_cleanup;
++        if now >= self.effective_cleanup && !self.cleanup_met {
++            self.record(Issue::CleanupExpired, self.effective_cleanup); self.cleanup_missed = true;
++        }
++    }
++    pub(super) fn permits_start(&self, now: Instant) -> bool {
++        now < self.run && self.first.is_none() && self.phase != Phase::Closing
++    }
++    pub(super) fn direct_exit_observed(&mut self, code: u32, now: Instant) {
++        // Native success may return late. Known expiry linearizes BEFORE a
++        // subsequently observed nonzero status, preserving original_run+drain.
++        self.observe_time(now, false);
++        if code != 0 { self.record(Issue::UnsuccessfulExit, now); }
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    #[test]
++    fn original_pair_and_first_failure_never_renew_on_recovery() {
++        let start = Instant::now();
++        let mut state = State::new(start, BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(2), Duration::from_secs(1)).unwrap()).unwrap();
++        state.record(Issue::NativeCall, start);
++        state.observe_time(start + Duration::from_secs(3), false);
++        assert_eq!(state.first.unwrap().issue, Issue::NativeCall);
++        assert_eq!(state.first.unwrap().at, start);
++        assert_eq!(state.run, start + Duration::from_secs(1));
++        assert_eq!(state.cleanup, start + Duration::from_secs(2));
++        assert!(state.cleanup_missed);
++        assert!(!state.permits_start(start));
++    }
++    #[test]
++    fn invalid_or_expired_profiles_cannot_start() {
++        assert!(BudgetLimits::new(Duration::ZERO, Duration::from_secs(1), Duration::from_secs(1)).is_err());
++        assert!(BudgetLimits::new(Duration::from_secs(2), Duration::from_secs(1), Duration::from_secs(1)).is_err());
++        assert!(BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(3601), Duration::from_secs(1)).is_err());
++        assert!(BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(2), Duration::ZERO).is_err());
++        assert!(BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(120), Duration::from_secs(61)).is_err());
++        assert!(BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(2), Duration::from_secs(3)).is_err());
++        let start = Instant::now();
++        let state = State::new(start, BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(2), Duration::from_secs(1)).unwrap()).unwrap();
++        assert!(!state.permits_start(start + Duration::from_secs(1)));
++    }
++    #[test]
++    fn closed_state_and_late_completion_cannot_mint_timely_success() {
++        let start = Instant::now();
++        let mut state = State::new(start, BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(2), Duration::from_secs(1)).unwrap()).unwrap();
++        state.phase = Phase::Closing;
++        assert!(!state.permits_start(start));
++        state.observe_time(start + Duration::from_secs(3), true);
++        assert_eq!(state.first.unwrap().issue, Issue::RunExpired);
++        assert!(state.cleanup_missed);
++    }
++    #[test]
++    fn first_loss_drain_is_clamped_sticky_and_refuses_exact_limit() {
++        let start = Instant::now();
++        let mut state = State::new(start, BudgetLimits::new(Duration::from_secs(20), Duration::from_secs(30), Duration::from_secs(3)).unwrap()).unwrap();
++        state.record(Issue::NativeCall, start + Duration::from_secs(2));
++        assert_eq!(state.effective_cleanup, start + Duration::from_secs(5));
++        state.record(Issue::StopRequested, start + Duration::from_secs(4));
++        assert_eq!(state.effective_cleanup, start + Duration::from_secs(5));
++        assert_eq!(state.cleanup, start + Duration::from_secs(30));
++        state.observe_time(start + Duration::from_secs(5), false);
++        assert!(state.cleanup_missed);
++        assert_eq!(state.first.unwrap().issue, Issue::NativeCall);
++        let mut earlier = State::new(start, BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(4), Duration::from_secs(3)).unwrap()).unwrap();
++        earlier.record(Issue::NativeCall, start + Duration::from_secs(2));
++        assert_eq!(earlier.effective_cleanup, start + Duration::from_secs(4));
++    }
++    #[test]
++    fn delayed_nonzero_native_return_cannot_move_first_loss_past_original_run() {
++        let start = Instant::now();
++        let mut state = State::new(start, BudgetLimits::new(Duration::from_secs(1), Duration::from_secs(10), Duration::from_secs(3)).unwrap()).unwrap();
++        state.observe_time(start + Duration::from_millis(900), false);
++        state.direct_exit_observed(1, start + Duration::from_secs(3));
++        assert_eq!(state.first.unwrap().issue, Issue::RunExpired);
++        assert_eq!(state.first.unwrap().at, start + Duration::from_secs(1));
++        assert_eq!(state.effective_cleanup, start + Duration::from_secs(4));
++        assert_eq!(state.cleanup, start + Duration::from_secs(10));
++    }
++}
+diff --git a/crates/integrations/humanymous-platform/src/windows_supervisor/launch.rs b/crates/integrations/humanymous-platform/src/windows_supervisor/launch.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/integrations/humanymous-platform/src/windows_supervisor/launch.rs
+@@ -0,0 +1,162 @@
++//! Closed qualification-helper DATA and actual held x64/CUI image inspection.
++#![forbid(unsafe_code)]
++
++use super::state::Issue;
++use std::{ffi::OsStr, fs::{File, OpenOptions}, io::{Read, Seek, SeekFrom}, os::windows::{ffi::OsStrExt, fs::{MetadataExt, OpenOptionsExt}}, path::Path};
++
++/// Fixed Rust fixture modes; no arbitrary program arguments or command callback.
++/// The caller must independently admit the actual test-helper artifact/source.
++#[derive(Clone, Copy)]
++pub enum QualificationHelper {
++    /// Fixed helper returns naturally.
++    ExitZero,
++    /// Fixed helper has actual terminal exit259.
++    Exit259,
++    /// Fixed helper waits until its OWN enclosing Job is stopped.
++    Wait,
++    /// Fixed helper leaves one ordinary CreateProcess descendant running.
++    LeaveDescendant,
++    /// Fixed helper creates a nested owned tree then exits without Drop.
++    OwnerDies,
++    /// Fixed helper probes detached standard streams without native console APIs.
++    ProbeStandardStreams,
++}
++impl QualificationHelper {
++    fn selector(self) -> &'static str {
++        match self {
++            Self::ExitZero => "windows_supervisor::native_tests::child_exit_zero",
++            Self::Exit259 => "windows_supervisor::native_tests::child_exit_259",
++            Self::Wait => "windows_supervisor::native_tests::child_wait",
++            Self::LeaveDescendant => "windows_supervisor::native_tests::child_leaves_descendant",
++            Self::OwnerDies => "windows_supervisor::native_tests::child_owner_dies",
++            Self::ProbeStandardStreams => "windows_supervisor::native_tests::child_probes_standard_streams",
++        }
++    }
++}
++
++pub(super) struct PreparedLaunch {
++    pub(super) image: Vec<u16>,
++    pub(super) command: Vec<u16>,
++    pub(super) cwd: Vec<u16>,
++    pub(super) environment: [u16; 2],
++    _image_guard: File,
++    _cwd_guard: File,
++}
++
++fn wide(value: &OsStr) -> Result<Vec<u16>, Issue> {
++    let mut units: Vec<_> = value.encode_wide().take(32768).collect();
++    if units.is_empty() || units.len() >= 32768 || units.contains(&0) { return Err(Issue::InvalidInput); }
++    units.push(0);
++    Ok(units)
++}
++
++fn local_locator(path: &Path) -> Result<(), Issue> {
++    let units: Vec<_> = path.as_os_str().encode_wide().take(32768).collect();
++    if units.len() < 4 || units.len() >= 32768
++        || !((65..=90).contains(&units[0]) || (97..=122).contains(&units[0]))
++        || units[1..3] != [58, 92]
++        || units[3..].split(|unit| *unit == 92).any(|part| part.is_empty()
++            || part == [46] || part == [46, 46]
++            || part.last().is_some_and(|unit| *unit == 32 || *unit == 46)
++            || part.iter().any(|unit| *unit < 32 || [34, 42, 47, 58, 60, 62, 63, 124].contains(unit)))
++    { return Err(Issue::InvalidInput); }
++    Ok(())
++}
++
++fn quote(units: &[u16], output: &mut Vec<u16>) -> Result<(), Issue> {
++    if units.contains(&0) || units.len() > 4096 { return Err(Issue::InvalidInput); }
++    output.push(34);
++    let mut slashes = 0;
++    for unit in units {
++        if *unit == 92 { slashes += 1; continue; }
++        let count = if *unit == 34 { slashes * 2 + 1 } else { slashes };
++        output.extend(std::iter::repeat_n(92, count));
++        output.push(*unit);
++        slashes = 0;
++    }
++    output.extend(std::iter::repeat_n(92, slashes * 2));
++    output.push(34);
++    if output.len() >= 32767 { return Err(Issue::InvalidInput); }
++    Ok(())
++}
++
++fn cui_header(dos: &[u8; 64], coff: &[u8; 24], optional: &[u8; 70]) -> Result<(), Issue> {
++    let machine = u16::from_le_bytes([coff[4], coff[5]]);
++    let attributes = u16::from_le_bytes([coff[22], coff[23]]);
++    if &dos[..2] != b"MZ" || &coff[..4] != b"PE\0\0" || machine != 0x8664
++        || attributes & 0x2000 != 0 || u16::from_le_bytes([optional[0], optional[1]]) != 0x20b
++        || u16::from_le_bytes([optional[68], optional[69]]) != 3
++    { return Err(Issue::ImageProfile); }
++    Ok(())
++}
++
++impl PreparedLaunch {
++    pub(super) fn prepare(executable: &Path, cwd: &Path, helper: QualificationHelper) -> Result<Self, Issue> {
++        if !executable.is_absolute() || !cwd.is_absolute() { return Err(Issue::InvalidInput); }
++        local_locator(executable)?;
++        local_locator(cwd)?;
++        let mut image_guard = OpenOptions::new().access_mode(0x120089).share_mode(1)
++            .custom_flags(0x00200000).open(executable).map_err(|_| Issue::ImageProfile)?;
++        let metadata = image_guard.metadata().map_err(|_| Issue::ImageProfile)?;
++        if !metadata.is_file() || metadata.file_attributes() & 0x400 != 0 || metadata.len() > 1024 * 1024 * 1024 {
++            return Err(Issue::ImageProfile);
++        }
++        let mut dos = [0; 64];
++        image_guard.read_exact(&mut dos).map_err(|_| Issue::ImageProfile)?;
++        let offset = u32::from_le_bytes(dos[60..64].try_into().map_err(|_| Issue::ImageProfile)?) as u64;
++        if !(64..=1024 * 1024).contains(&offset) { return Err(Issue::ImageProfile); }
++        image_guard.seek(SeekFrom::Start(offset)).map_err(|_| Issue::ImageProfile)?;
++        let mut coff = [0; 24];
++        image_guard.read_exact(&mut coff).map_err(|_| Issue::ImageProfile)?;
++        let optional_size = u16::from_le_bytes([coff[20], coff[21]]) as u64;
++        if !(70..=4096).contains(&optional_size) || offset + 24 + optional_size > metadata.len() { return Err(Issue::ImageProfile); }
++        let mut optional = [0; 70];
++        image_guard.read_exact(&mut optional).map_err(|_| Issue::ImageProfile)?;
++        cui_header(&dos, &coff, &optional)?;
++        let cwd_guard = OpenOptions::new().access_mode(0x20001).share_mode(3)
++            .custom_flags(0x02200000).open(cwd).map_err(|_| Issue::InvalidInput)?;
++        let metadata = cwd_guard.metadata().map_err(|_| Issue::InvalidInput)?;
++        if !metadata.is_dir() || metadata.file_attributes() & 0x400 != 0 { return Err(Issue::InvalidInput); }
++        let image = wide(executable.as_os_str())?;
++        let cwd = wide(cwd.as_os_str())?;
++        let mut command = Vec::new();
++        quote(&image[..image.len() - 1], &mut command)?;
++        for argument in ["--exact", helper.selector(), "--ignored", "--test-threads=1"] {
++            command.push(32);
++            quote(&argument.encode_utf16().collect::<Vec<_>>(), &mut command)?;
++        }
++        command.push(0);
++        Ok(Self { image, command, cwd, environment: [0, 0], _image_guard: image_guard, _cwd_guard: cwd_guard })
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    #[test]
++    fn command_quotes_unicode_backslashes_and_quotes_without_extra_arguments() {
++        let mut output = Vec::new();
++        quote(&"資料\\\"tail\\".encode_utf16().collect::<Vec<_>>(), &mut output).unwrap();
++        let mut expected = vec![34]; expected.extend("資料".encode_utf16());
++        expected.extend([92, 92, 92, 34]); expected.extend("tail".encode_utf16()); expected.extend([92, 92, 34]);
++        assert_eq!(output, expected);
++        assert!(quote(&[0], &mut Vec::new()).is_err());
++        assert!(wide(OsStr::new("a\0b")).is_err());
++        assert!(local_locator(Path::new(r"C:\資料\fixture.exe")).is_ok());
++        for path in [r"\\server\share\fixture.exe", r"C:\a\..\fixture.exe", r"C:\a\x:stream", r"C:\a\tail."] {
++            assert!(local_locator(Path::new(path)).is_err());
++        }
++    }
++    #[test]
++    fn held_image_profile_rejects_gui_dll_machine_and_optional_magic() {
++        let mut dos = [0; 64]; dos[..2].copy_from_slice(b"MZ");
++        let mut coff = [0; 24]; coff[..4].copy_from_slice(b"PE\0\0"); coff[4..6].copy_from_slice(&0x8664_u16.to_le_bytes());
++        let mut optional = [0; 70]; optional[..2].copy_from_slice(&0x20b_u16.to_le_bytes()); optional[68] = 3;
++        cui_header(&dos, &coff, &optional).unwrap();
++        optional[68] = 2; assert!(cui_header(&dos, &coff, &optional).is_err()); optional[68] = 3;
++        coff[23] = 0x20; assert!(cui_header(&dos, &coff, &optional).is_err()); coff[23] = 0;
++        coff[4] = 0; assert!(cui_header(&dos, &coff, &optional).is_err());
++        coff[4..6].copy_from_slice(&0x8664_u16.to_le_bytes()); optional[0] = 0;
++        assert!(cui_header(&dos, &coff, &optional).is_err());
++    }
++}
+diff --git a/crates/integrations/humanymous-platform/src/windows_supervisor/native.rs b/crates/integrations/humanymous-platform/src/windows_supervisor/native.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/integrations/humanymous-platform/src/windows_supervisor/native.rs
+@@ -0,0 +1,209 @@
++//! UNAPPROVED bodies: exactly ten proposed function-local native scopes.
++#![deny(unsafe_code)]
++
++use super::launch::PreparedLaunch;
++use std::{ffi::c_void, marker::PhantomData, mem::size_of, os::windows::io::{AsRawHandle, FromRawHandle, OwnedHandle}, ptr::{null, null_mut}};
++use windows_sys::Win32::{
++    Foundation::{HANDLE, INVALID_HANDLE_VALUE, WAIT_OBJECT_0, WAIT_TIMEOUT},
++    System::{
++        JobObjects::{CreateJobObjectW, IsProcessInJob, QueryInformationJobObject, SetInformationJobObject, TerminateJobObject,
++            JOBOBJECT_EXTENDED_LIMIT_INFORMATION, JOBOBJECT_BASIC_ACCOUNTING_INFORMATION,
++            JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE, JobObjectExtendedLimitInformation, JobObjectBasicAccountingInformation},
++        Threading::{InitializeProcThreadAttributeList, UpdateProcThreadAttribute, DeleteProcThreadAttributeList,
++            CreateProcessW, WaitForSingleObject, GetExitCodeProcess, TerminateProcess,
++            LPPROC_THREAD_ATTRIBUTE_LIST, PROC_THREAD_ATTRIBUTE_JOB_LIST, STARTUPINFOEXW, PROCESS_INFORMATION,
++            EXTENDED_STARTUPINFO_PRESENT, CREATE_UNICODE_ENVIRONMENT, DETACHED_PROCESS},
++    },
++};
++
++#[derive(Clone, Copy, Debug)]
++pub(super) enum NativeError { Call, Output, AttributeSize }
++pub(super) struct Job(OwnedHandle);
++pub(super) struct Process {
++    process: Option<OwnedHandle>,
++    thread: Option<OwnedHandle>,
++    pub(super) pid: u32,
++}
++impl Process {
++    pub(super) fn complete(&self) -> bool { self.process.is_some() && self.thread.is_some() && self.pid != 0 }
++}
++pub(super) enum Query { Policy, Population }
++pub(super) enum JobObservation { Policy(u32), Population(u32) }
++pub(super) enum ProcessObservation { Pending, Exited(u32) }
++
++#[repr(C, align(16))]
++#[derive(Clone)]
++struct Aligned([u8; 16]);
++pub(super) struct Attributes<'j> {
++    pointer: LPPROC_THREAD_ATTRIBUTE_LIST,
++    _storage: Box<[Aligned]>,
++    _jobs: Box<[HANDLE; 1]>,
++    initialized: bool,
++    _job: PhantomData<&'j Job>,
++}
++impl Drop for Attributes<'_> {
++    fn drop(&mut self) { drop_job_attribute_list(self); }
++}
++fn failure() -> NativeError { let _immediate = std::io::Error::last_os_error(); NativeError::Call }
++
++#[allow(unsafe_code)]
++pub(super) fn create_job_owned() -> Result<Job, NativeError> {
++    // SAFETY: no name/security pointer, new unnamed noninherited owned handle.
++    let raw = unsafe { CreateJobObjectW(null(), null()) };
++    if raw.is_null() { return Err(failure()); }
++    // SAFETY: adopt this exact successful native owner once, with no gap.
++    Ok(Job(unsafe { OwnedHandle::from_raw_handle(raw) }))
++}
++
++#[allow(unsafe_code)]
++pub(super) fn configure_job(job: &Job) -> Result<(), NativeError> {
++    let mut info = JOBOBJECT_EXTENDED_LIMIT_INFORMATION::default();
++    info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
++    // SAFETY: fixed valid initialized input, exact class/size, borrowed owned Job.
++    let ok = unsafe { SetInformationJobObject(job.0.as_raw_handle(), JobObjectExtendedLimitInformation,
++        std::ptr::from_ref(&info).cast(), size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32) };
++    if ok == 0 { return Err(failure()); }
++    Ok(())
++}
++
++#[allow(unsafe_code)]
++pub(super) fn query_job(job: &Job, query: Query) -> Result<JobObservation, NativeError> {
++    let mut returned = 0;
++    match query {
++        Query::Policy => {
++            let mut info = JOBOBJECT_EXTENDED_LIMIT_INFORMATION::default();
++            // SAFETY: closed class, initialized correctly sized fixed output.
++            let ok = unsafe { QueryInformationJobObject(job.0.as_raw_handle(), JobObjectExtendedLimitInformation,
++                std::ptr::from_mut(&mut info).cast(), size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32, &mut returned) };
++            if ok == 0 { return Err(failure()); }
++            if returned as usize != size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() { return Err(NativeError::Output); }
++            Ok(JobObservation::Policy(info.BasicLimitInformation.LimitFlags))
++        }
++        Query::Population => {
++            let mut info = JOBOBJECT_BASIC_ACCOUNTING_INFORMATION::default();
++            // SAFETY: second and only other closed class/output.
++            let ok = unsafe { QueryInformationJobObject(job.0.as_raw_handle(), JobObjectBasicAccountingInformation,
++                std::ptr::from_mut(&mut info).cast(), size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32, &mut returned) };
++            if ok == 0 { return Err(failure()); }
++            if returned as usize != size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() { return Err(NativeError::Output); }
++            Ok(JobObservation::Population(info.ActiveProcesses))
++        }
++    }
++}
++
++#[allow(unsafe_code)]
++pub(super) fn terminate_owned_job(job: &Job) -> Result<(), NativeError> {
++    // SAFETY: SAME owned Job only, no completion inferred.
++    if unsafe { TerminateJobObject(job.0.as_raw_handle(), 1) } == 0 { return Err(failure()); }
++    Ok(())
++}
++
++#[allow(unsafe_code)]
++pub(super) fn is_owned_process_in_job(job: &Job, process: &Process) -> Result<bool, NativeError> {
++    let process = process.process.as_ref().ok_or(NativeError::Output)?;
++    let mut inside = 0;
++    // SAFETY: both borrowed actual owners, valid BOOL output, no imported PID.
++    if unsafe { IsProcessInJob(process.as_raw_handle(), job.0.as_raw_handle(), &mut inside) } == 0 { return Err(failure()); }
++    Ok(inside != 0)
++}
++
++#[allow(unsafe_code)]
++pub(super) fn make_job_attribute_list(job: &Job) -> Result<Attributes<'_>, NativeError> {
++    let mut bytes = 0;
++    // SAFETY: documented required-size probe, exactly one attribute, flags0.
++    let probe = unsafe { InitializeProcThreadAttributeList(null_mut(), 1, 0, &mut bytes) };
++    let error = std::io::Error::last_os_error(); // capture BEFORE allocation/API.
++    if probe != 0 || error.raw_os_error() != Some(122) || bytes == 0 || bytes > 65536 {
++        return Err(NativeError::AttributeSize);
++    }
++    let blocks = bytes.div_ceil(size_of::<Aligned>());
++    let mut storage = vec![Aligned([0; 16]); blocks].into_boxed_slice();
++    let jobs = Box::new([job.0.as_raw_handle()]);
++    let pointer = storage[0].0.as_mut_ptr().cast::<c_void>();
++    let mut owner = Attributes { pointer, _storage: storage, _jobs: jobs, initialized: false, _job: PhantomData };
++    let capacity = owner._storage.len() * size_of::<Aligned>();
++    let mut provided = capacity;
++    // SAFETY: stable16-aligned allocation has at least required bytes; no move of
++    // backing allocations, exact one-attribute init. Job borrow outlives Delete.
++    if unsafe { InitializeProcThreadAttributeList(owner.pointer, 1, 0, &mut provided) } == 0 { return Err(failure()); }
++    owner.initialized = true; // only actual native success enables deletion.
++    if provided == 0 || provided > capacity { return Err(NativeError::AttributeSize); }
++    // SAFETY: stable boxed actual Job handle array, valid through Create and Delete.
++    let ok = unsafe { UpdateProcThreadAttribute(owner.pointer, 0, PROC_THREAD_ATTRIBUTE_JOB_LIST as usize,
++        owner._jobs.as_ptr().cast(), size_of::<HANDLE>(), null_mut(), null()) };
++    if ok == 0 { return Err(failure()); } // Drop deletes initialized list once.
++    Ok(owner)
++}
++
++#[allow(unsafe_code)]
++fn drop_job_attribute_list(attributes: &mut Attributes<'_>) {
++    if attributes.initialized {
++        attributes.initialized = false;
++        // SAFETY: exact successfully initialized list, last use has ended; backing
++        // storage, boxed Job array and borrowed Job remain alive through Delete.
++        unsafe { DeleteProcThreadAttributeList(attributes.pointer) };
++    }
++}
++
++pub(super) const FLAGS: u32 = EXTENDED_STARTUPINFO_PRESENT | CREATE_UNICODE_ENVIRONMENT | DETACHED_PROCESS;
++
++#[allow(unsafe_code)]
++pub(super) fn create_process_in_job(attributes: &Attributes<'_>, launch: &mut PreparedLaunch) -> Result<Process, NativeError> {
++    let mut startup = STARTUPINFOEXW::default();
++    startup.StartupInfo.cb = size_of::<STARTUPINFOEXW>() as u32;
++    startup.lpAttributeList = attributes.pointer;
++    // All default standard handles are NULL and STARTF_USESTDHANDLES is absent.
++    let mut info = PROCESS_INFORMATION::default();
++    // SAFETY: explicit bounded owned UTF16 strings/environment and initialized
++    // structures live throughout synchronous call; stable JOB_LIST backing/job
++    // lifetime, inherit=false, exact0x80408/no other attribute or parent/token.
++    let ok = unsafe { CreateProcessW(launch.image.as_ptr(), launch.command.as_mut_ptr(), null(), null(), 0,
++        FLAGS, launch.environment.as_ptr().cast(), launch.cwd.as_ptr(), &startup.StartupInfo, &mut info) };
++    if ok == 0 { return Err(failure()); } // failed outputs are NOT interpreted.
++    // SAFETY: immediately adopt each exact successful valid returned owner ONCE.
++    // Success contract provides both; anomalous partial output is retained as
++    // Options for safe caller cleanup, never filled by reopening its PID.
++    let process = if !info.hProcess.is_null() && info.hProcess != INVALID_HANDLE_VALUE {
++        Some(unsafe { OwnedHandle::from_raw_handle(info.hProcess) })
++    } else { None };
++    let thread = if !info.hThread.is_null() && info.hThread != INVALID_HANDLE_VALUE {
++        Some(unsafe { OwnedHandle::from_raw_handle(info.hThread) })
++    } else { None };
++    Ok(Process { process, thread, pid: info.dwProcessId })
++}
++
++#[allow(unsafe_code)]
++pub(super) fn poll_owned_process(process: &Process) -> Result<ProcessObservation, NativeError> {
++    let process = process.process.as_ref().ok_or(NativeError::Output)?;
++    // SAFETY: same retained actual handle, zero-time observation only.
++    let wait = unsafe { WaitForSingleObject(process.as_raw_handle(), 0) };
++    if wait == WAIT_TIMEOUT { return Ok(ProcessObservation::Pending); }
++    if wait != WAIT_OBJECT_0 { return Err(failure()); }
++    let mut code = 0;
++    // SAFETY: only AFTER process signal;259 is a valid actual terminal exit.
++    if unsafe { GetExitCodeProcess(process.as_raw_handle(), &mut code) } == 0 { return Err(failure()); }
++    Ok(ProcessObservation::Exited(code))
++}
++
++#[allow(unsafe_code)]
++pub(super) fn terminate_owned_process(process: &Process) -> Result<(), NativeError> {
++    let process = process.process.as_ref().ok_or(NativeError::Output)?;
++    // SAFETY: SAME returned actual owner, partial-failure cleanup request only.
++    if unsafe { TerminateProcess(process.as_raw_handle(), 1) } == 0 { return Err(failure()); }
++    Ok(())
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use windows_sys::Win32::System::Threading::{CREATE_BREAKAWAY_FROM_JOB, CREATE_NEW_CONSOLE, CREATE_NO_WINDOW, CREATE_SUSPENDED, STARTF_USESTDHANDLES};
++    #[test]
++    fn exact_detached_profile_has_no_breakaway_console_or_stdio_bits() {
++        assert_eq!(FLAGS, 0x80408);
++        assert_eq!(FLAGS & (CREATE_BREAKAWAY_FROM_JOB | CREATE_NEW_CONSOLE | CREATE_NO_WINDOW | CREATE_SUSPENDED), 0);
++        let startup = STARTUPINFOEXW::default();
++        assert_eq!(startup.StartupInfo.dwFlags & STARTF_USESTDHANDLES, 0);
++        assert!(startup.StartupInfo.hStdInput.is_null() && startup.StartupInfo.hStdOutput.is_null() && startup.StartupInfo.hStdError.is_null());
++        assert_eq!(std::mem::align_of::<Aligned>(), 16);
++    }
++}
+diff --git a/crates/integrations/humanymous-platform/src/windows_supervisor/native_tests.rs b/crates/integrations/humanymous-platform/src/windows_supervisor/native_tests.rs
+new file mode 100644
+--- /dev/null
++++ b/crates/integrations/humanymous-platform/src/windows_supervisor/native_tests.rs
+@@ -0,0 +1,170 @@
++//! REQUIRED native fixture SOURCE; no local execution or body approval implied.
++#![forbid(unsafe_code)]
++
++use super::*;
++use std::{io::{Read, Write}, process::{Command, Stdio}, thread, time::{Duration, Instant}};
++
++fn launch(helper: QualificationHelper) -> OwnedTree {
++    // current_exe/cwd are locators ONLY. Root must independently admit this exact
++    // immutable helper artifact, ordinary actor and ORIGINAL outer supervisor.
++    let executable = std::env::current_exe().expect("actual fixture executable locator");
++    let cwd = std::env::current_dir().expect("explicit allocated fixture cwd");
++    let limits = BudgetLimits::new(Duration::from_secs(5), Duration::from_secs(10), Duration::from_secs(3)).unwrap();
++    match OwnedTree::launch(&executable, &cwd, helper, limits) {
++        Ok(tree) => tree,
++        Err(retained) => panic!("native fixture launch refused: {:?}", retained.observation().first_failure()),
++    }
++}
++
++fn wait_population_zero(tree: &mut OwnedTree) {
++    loop {
++        let observation = tree.poll().expect("actual native query");
++        if observation.direct_exit().is_some() && observation.active_processes() == Some(0) { return; }
++        assert!(Instant::now() < observation.effective_cleanup(), "effective original cleanup expired; retained owner not complete");
++        thread::sleep(Duration::from_millis(2));
++    }
++}
++
++fn terminal(tree: OwnedTree) -> TerminalTree {
++    match tree.settle() { Ok(terminal) => terminal, Err(_) => panic!("actual native terminal conjunction missing") }
++}
++
++#[test]
++#[ignore = "required actual B2 parent: genuine Windows2025 source-bound ordinary fixture with independent original outer owner"]
++fn actual_job_list_membership_and_natural_zero_exit_are_observed() {
++    let mut tree = launch(QualificationHelper::ExitZero);
++    wait_population_zero(&mut tree);
++    let result = terminal(tree);
++    assert_eq!(result.observation().direct_exit(), Some(0));
++    assert_eq!(result.observation().active_processes(), Some(0));
++    assert!(result.execution_succeeded());
++}
++
++#[test]
++#[ignore = "required actual B2 parent: terminal259 is valid only after actual process signal"]
++fn actual_signaled_exit_259_is_terminal_and_not_still_active() {
++    let mut tree = launch(QualificationHelper::Exit259);
++    wait_population_zero(&mut tree);
++    let result = terminal(tree);
++    assert_eq!(result.observation().direct_exit(), Some(259));
++    assert!(!result.execution_succeeded());
++}
++
++#[test]
++#[ignore = "required actual B2 parent: ordinary CreateProcess descendant keeps Job nonempty after direct exit"]
++fn actual_direct_exit_does_not_complete_a_live_descendant_job() {
++    let mut tree = launch(QualificationHelper::LeaveDescendant);
++    loop {
++        let observation = tree.poll().unwrap();
++        if observation.direct_exit() == Some(0) {
++            assert!(observation.active_processes().is_some_and(|count| count > 0));
++            break;
++        }
++        assert!(Instant::now() < observation.original_instants().1);
++        thread::sleep(Duration::from_millis(2));
++    }
++    let retained = match tree.settle() { Err(retained) => retained, Ok(_) => panic!("direct exit falsely accepted as Job0") };
++    let mut tree = retained.into_owner();
++    tree.request_stop().unwrap();
++    wait_population_zero(&mut tree);
++    assert!(!terminal(tree).execution_succeeded());
++}
++
++#[test]
++#[ignore = "required actual B2 parent: recovery moves SAME owners without fresh budget or PID lookup"]
++fn actual_retained_recovery_keeps_original_pair_and_first_stop() {
++    let tree = launch(QualificationHelper::Wait);
++    let original = tree.observation().original_instants();
++    let retained = match tree.settle() { Err(retained) => retained, Ok(_) => panic!("running helper settled") };
++    let mut tree = retained.into_owner();
++    tree.request_stop().unwrap();
++    let first = tree.observation().first_failure().unwrap();
++    tree.request_stop().unwrap();
++    assert_eq!(tree.observation().first_failure().unwrap().at, first.at);
++    assert_eq!(tree.observation().original_instants(), original);
++    wait_population_zero(&mut tree);
++    let result = terminal(tree);
++    assert!(!result.execution_succeeded());
++    assert_eq!(result.observation().original_instants(), original);
++}
++
++#[test]
++#[ignore = "required actual B2 parent: controlled post-create validation refusal retains real Job/process/thread owners"]
++fn actual_post_create_validation_refusal_keeps_owned_cleanup_target() {
++    let tree = launch(QualificationHelper::Wait);
++    let original = tree.observation().original_instants();
++    let retained = tree.reject_after_actual_create();
++    assert_eq!(retained.observation().first_failure().unwrap().issue, Issue::Containment);
++    let mut tree = retained.into_owner();
++    tree.request_stop().unwrap();
++    wait_population_zero(&mut tree);
++    let result = terminal(tree);
++    assert_eq!(result.observation().original_instants(), original);
++    assert_eq!(result.observation().first_failure().unwrap().issue, Issue::Containment);
++    assert!(!result.execution_succeeded());
++}
++
++#[test]
++#[ignore = "required actual B2 parent: separate outer Job observes nested owner death, never duplicates inner Job handle"]
++fn actual_owner_death_kills_nested_job_without_forging_join_proof() {
++    let mut tree = launch(QualificationHelper::OwnerDies);
++    wait_population_zero(&mut tree);
++    let result = terminal(tree);
++    assert_eq!(result.observation().direct_exit(), Some(71));
++    assert!(!result.execution_succeeded());
++    // No reader/worker/journal/provider fact is produced by this minimum profile.
++}
++
++#[test]
++#[ignore = "required actual B2 parent: run separately with console-attached and redirected parent; outer fixture verifies no leaked marker"]
++fn actual_detached_cui_helper_does_not_consume_parent_standard_input() {
++    let mut tree = launch(QualificationHelper::ProbeStandardStreams);
++    wait_population_zero(&mut tree);
++    assert!(terminal(tree).execution_succeeded());
++    // No marker on PARENT redirected streams must be checked by independent
++    // outer fixture; this test alone does not establish that second observation.
++}
++
++// Subprocess helpers: NOT standalone required-parent passes or native authority.
++#[test]
++#[ignore = "B2 subprocess helper only; exact closed selector, do not run standalone"]
++fn child_exit_zero() {}
++
++#[test]
++#[ignore = "B2 subprocess helper only; exact closed selector, do not run standalone"]
++fn child_exit_259() { std::process::exit(259); }
++
++#[test]
++#[ignore = "B2 subprocess helper only; exact closed selector, do not run standalone"]
++fn child_wait() { thread::sleep(Duration::from_secs(60)); }
++
++#[test]
++#[ignore = "B2 subprocess helper only; actual ordinary child inherits Job, no broker spawn"]
++fn child_leaves_descendant() {
++    let executable = std::env::current_exe().unwrap();
++    let mut child = Command::new(executable).args(["--exact", "windows_supervisor::native_tests::child_wait", "--ignored", "--test-threads=1"])
++        .stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null()).spawn().unwrap();
++    assert!(child.try_wait().unwrap().is_none());
++    // Deliberate fixture: direct parent exits with an actual live descendant.
++    // Root owns Job; this Pending poll is NOT a descendant reap claim.
++    std::process::exit(0);
++}
++
++#[test]
++#[ignore = "B2 subprocess helper only; OS owner death closes last inner Job handle"]
++fn child_owner_dies() {
++    let _inner = launch(QualificationHelper::Wait);
++    // Skip Rust Drop deliberately. Windows closes owned handles on process exit;
++    // separate actual outer Job population observation is still REQUIRED.
++    std::process::exit(71);
++}
++
++#[test]
++#[ignore = "B2 subprocess helper only; ordinary std IO does not mint a console/native proof"]
++fn child_probes_standard_streams() {
++    let mut byte = [0];
++    let count = std::io::stdin().read(&mut byte).unwrap_or(0);
++    if count != 0 { std::process::exit(73); }
++    let _stdout = std::io::stdout().write_all(b"b2-parent-stream-leak-marker");
++    let _stderr = std::io::stderr().write_all(b"b2-parent-stream-leak-marker");
++}
