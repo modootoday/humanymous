@@ -24,8 +24,8 @@
     },
     {
       "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-pilot.candidate.rs",
-      "sha256": "c3ec0a5873215540e7f043d2b58ef8c1370b5d03ce00b29dff2b498c5a30abf5",
-      "bytes": 6943
+      "sha256": "ed3439c67e770306ef9141cd64fd4a78288b2d16439490dc1a11f69e35d3f3e2",
+      "bytes": 12161
     }
   ],
   "proposed_operation": "humanymous_core::model::training::offline::fit_offline",
@@ -49,5 +49,6 @@
     "Go1.26.3 FMA/bit oracle remains unqualified; strict public time split differs from original bootstrap random split",
     "Fresh formatter/compiler/actual process pilot allocation; existing Core177/SGD15 not inherited"
   ],
-  "details": "plan:root/20261107140000 Concrete offline Core/CLI candidate section"
+  "details": "plan:root/20261107140000 Concrete offline Core/CLI candidate section",
+  "lifecycle_limits": "Cooperative pre-spawn clock and observed output thresholds only; requires separately qualified outer process-tree/time/output/storage supervisor; incomplete custody retained and fails; NOT_RUN"
 }

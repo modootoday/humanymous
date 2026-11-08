@@ -1026,7 +1026,8 @@ NativeReady, GPU/network or scoring paths changed. Core177/SGD15 remain historic
 - offline-cli.candidate.rs -> proposed final CLI src/offline_train.rs;
   offline-cli-tests.candidate.rs -> final CLI src/offline_train/tests.rs.
 - offline-cli-pilot.candidate.rs -> final CLI tests/offline_training.rs; real
-  CARGO_BIN_EXE_humanymous child, finite30seconds/log<=1MiB, explicit cleanup.
+  CARGO_BIN_EXE_humanymous child, cooperative30second/1MiB observation thresholds,
+  explicit cleanup; hard bounds require an outer hosted supervisor.
   Existing live composition root is crates/cli/src/main.rs; final intended family
   root is crates/apps/humanymous-cli. That directory currently has qualification
   data but no live Cargo/src. Root's accepted21member candidate/final8 movement
@@ -1114,8 +1115,9 @@ Existing privateSGD tests remain reused, not duplicated into another trainer.
 
 CLI units cover exact numeric flag parsing, absent review, duplicate/incomplete/
 unknown flags and activation option refusal. Actual-process source uses OWNcreated
-input/log files and controlled child's fresh output obligations, finite timeout,
-kill+wait only owned child and explicit finishResult (Drop only unwind fallback).
+input/log files and controlled child's fresh output obligations, cooperative
+elapsed/output monitoring, retained child custody and explicit incomplete-settlement
+failure; finishResult is checked (Drop only unwind fallback).
 Accepted process checks Go MlpBundle decode, train-only mean, Calreset, unsigned/
 activationfalse receipt/digest, deterministic second output and unchanged existing
 sentinel. Six negative processes: cross-boundary time tie, quarantine, disappearing
@@ -1149,3 +1151,36 @@ cohort promotion gates, correction/drift/calibration lifecycle, signed admission
 gold-anchor management, dual-control/activation and Docker product validation
 remain separate unfinished responsibilities. This concrete caller/API candidate
 advances offline training independently of NativeReady, not whole ML completion.
+
+### X lifecycle review correction of offline process pilot candidate
+
+Baseline7f478912 pilot before/after byte counts and SHA256 are retained by
+ offline-cli-pilot-lifecycle-review.json. Only evidence source/manifest/plan changed;
+no live API, Cargo, Root snapshot, compiler/formatter or hosted work. All9candidate
+tests remain NOT_RUN; historical177/15passes are not inherited.
+
+The ORIGINALInstant now starts before output/log preparation and spawn. Returned
+Child is installed into Owned before any fallible observation. try_wait and log
+metadata errors no longer unwrap/drop the child; they enter explicit stop/reap
+polling. There is no blocking wait() call. Stop uses the SAMEoriginal clock and
+cooperative35second cleanup threshold, never a newly started grace clock. A kill
+error is retained while polling for terminal status. Any unconfirmed termination
+keeps the Child in Owned; finish refuses custody/cleanup success. On unwinding,
+actual optional Child handle, directory and tracked paths move into a persistent
+process-lifetime registry and PID/path/incomplete status are reported. This is
+retention/escalation, NOTsettlement, cleanup or a promise of eventual reaping.
+Spawn-error/no-handle and ambiguous output-ownership observation likewise report
+incomplete custody and preserve paths. A returned terminal status permits safe
+local cleanup; observation/threshold errors still fail the test even after reap.
+
+30second monitoring,35second cleanup and1MiB log size are COOPERATIVEobservation
+thresholds ONLY. Spawn, kill, try_wait, file/metadata calls and scheduling may block
+past checks; no same-process Rust std controller here guarantees hard lifetime.
+A child may write arbitrarily more between polls. Terminal log size is rechecked,
+but that still is not a hard byte/storage cap. Direct-child handling does not prove
+descendant containment. No hard time/output claim is made without an independently
+configured/qualified OUTERhosted supervisor providing process-tree/time controls
+and distinct output/storage enforcement. None is implemented or qualified by this
+source correction. Failure-path/fault-injection, supervisor escalation and real
+cleanup qualification remain unresolved execution gates; no hosted/compile loan
+was granted or consumed here. Core offline/unsigned/noactivation contract unchanged.

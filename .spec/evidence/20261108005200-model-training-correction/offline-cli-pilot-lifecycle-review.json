@@ -1,0 +1,34 @@
+{
+  "schema": "humanymous.offline-cli-pilot-lifecycle-review/1",
+  "status": "SOURCE_ONLY_CORRECTION_NOT_EXECUTED",
+  "baseline_commit": "7f4789121484a4fe0143083ffd893d564131a89a",
+  "before": {
+    "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-pilot.candidate.rs",
+    "sha256": "c3ec0a5873215540e7f043d2b58ef8c1370b5d03ce00b29dff2b498c5a30abf5",
+    "bytes": 6943
+  },
+  "after": {
+    "bytes": 12161,
+    "sha256": "ed3439c67e770306ef9141cd64fd4a78288b2d16439490dc1a11f69e35d3f3e2",
+    "path": ".spec/evidence/20261108005200-model-training-correction/offline-cli-pilot.candidate.rs"
+  },
+  "changes": [
+    "Original Instant begins before path/log preparation and spawn",
+    "Child installed in Owned before fallible observation; no try_wait unwrap",
+    "Observation errors request stop and poll original clock to35seconds; no blocking wait()",
+    "Unconfirmed exit/spawn-no-handle/output-observation ambiguity report incomplete custody and retain paths/actual optional Child in process-lifetime registry",
+    "Explicit finish refuses incomplete custody; Drop never deletes its artifacts or silently drops retained child",
+    "Poll1MiB is observation threshold, including terminal observation, never hard output/storage cap"
+  ],
+  "unresolved_os_limits": [
+    "spawn/kill/try_wait/metadata/file I/O/scheduler can block beyond cooperative elapsed checks",
+    "No hard time/lifetime or output-byte guarantee; child may exceed threshold between polls",
+    "Only direct Child custody; no process-tree containment proof",
+    "Retained registry is not confirmed exit, cleanup or eventual reaping; test fails and logs PID/path for supervisor escalation",
+    "Spawn returning error supplies no Child handle; cannot claim OS-level absence of partially created process",
+    "Execution requires separately configured/qualified outer hosted supervisor for process-tree/time controls and distinct output/storage enforcement",
+    "New failure paths and retained custody not fault-injected or executed; all9candidate tests remain NOT_RUN"
+  ],
+  "live_source_api_cargo_changes": false,
+  "compiler_formatter_hosted_execution": false
+}
