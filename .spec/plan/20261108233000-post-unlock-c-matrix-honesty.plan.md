@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap-ready probe (Cap=0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T14:30:00Z
+updated: 2026-11-08T14:40:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -73,6 +73,14 @@ Tracked: this plan.
 
 ## 5. Residual / next
 
-Root authorize **B** (hosted gateway H2 product-binding + N06 + `UNLOCK-B-APPLIED`)
-preferred, else **A** (G4 CEF/AT path release + `UNLOCK-A-APPLIED`). Then Cap=1
-matching Cap-ready pack once. Cap free now.
+Unlock **B** now has Unlock-C-style one-grant-apply scaffolding under
+`cap-ready/w2-h2-product-binding/candidate-pack/` (`TRANSFER.md`,
+`transfer-manifest.json`, `GRANT.TEMPLATE.json`). Lab-runner transfer-apply
+accepts schema `humanymous.cursor-unlock-b-transfer-grant/1` only with
+**non-empty** `pilot_command`. Autonomy GRANT attempt with null pilot was
+refused (Cap=0). Unlock **A** has scaffold-only TRANSFER/GRANT.TEMPLATE (not
+Cap-executable without path release).
+
+Root: fill Unlock B `GRANT.pilot_command` (hosted gateway H2 product-binding Cap
+argv) → transfer-apply → Cap=1 once; else Unlock A path release. Cap free now.
+No `--authority-node-ipc` Cap spam reburn.

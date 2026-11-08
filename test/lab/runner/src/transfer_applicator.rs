@@ -1,20 +1,99 @@
-//! Fail-closed Unlock C candidate-pack transfer probe / applicator helper.
+//! Fail-closed Unlock B/C candidate-pack transfer probe / applicator helper.
 //!
 //! Default is probe-only: verify live preimages and candidate digests against a
 //! transfer manifest. Apply requires an explicit Root grant and still aborts on
-//! any preimage mismatch. Never invents `pass_product_clean_room`. Cap burn is
-//! a separate step after a successful transfer.
+//! any preimage mismatch. Unlock B additionally requires a non-empty
+//! `pilot_command` in the grant (Root-named hosted gateway binding). Never
+//! invents `pass_product_clean_room`. Cap burn is a separate step after a
+//! successful transfer.
 use crate::docker::Result;
 use crate::snapshot;
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 use std::{
     fs,
     path::{Path, PathBuf},
 };
 
-const PROBE_SCHEMA: &str = "humanymous.lab-unlock-c-transfer-probe/1";
-const GRANT_SCHEMA: &str = "humanymous.cursor-unlock-c-transfer-grant/1";
-const APPLY_SCHEMA: &str = "humanymous.lab-unlock-c-transfer-apply/1";
+const PROBE_SCHEMA_C: &str = "humanymous.lab-unlock-c-transfer-probe/1";
+const GRANT_SCHEMA_C: &str = "humanymous.cursor-unlock-c-transfer-grant/1";
+const APPLY_SCHEMA_C: &str = "humanymous.lab-unlock-c-transfer-apply/1";
+const PROBE_SCHEMA_B: &str = "humanymous.lab-unlock-b-transfer-probe/1";
+const GRANT_SCHEMA_B: &str = "humanymous.cursor-unlock-b-transfer-grant/1";
+const APPLY_SCHEMA_B: &str = "humanymous.lab-unlock-b-transfer-apply/1";
+const UNLOCK_B_APPLIED_REL: &str = ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/w2-h2-product-binding/UNLOCK-B-APPLIED.json";
+
+/// Compatibility alias used by Unlock-C unit tests.
+#[cfg(test)]
+const PROBE_SCHEMA: &str = PROBE_SCHEMA_C;
+#[cfg(test)]
+const GRANT_SCHEMA: &str = GRANT_SCHEMA_C;
+#[cfg(test)]
+const APPLY_SCHEMA: &str = APPLY_SCHEMA_C;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum UnlockLetter {
+    B,
+    C,
+}
+
+impl UnlockLetter {
+    fn from_manifest(manifest: &Value) -> Result<Self> {
+        match manifest.get("unlock").and_then(Value::as_str) {
+            Some("B") => Ok(Self::B),
+            Some("C") | None => Ok(Self::C),
+            Some(other) => Err(format!("unsupported manifest.unlock={other}").into()),
+        }
+    }
+
+    fn probe_schema(self) -> &'static str {
+        match self {
+            Self::B => PROBE_SCHEMA_B,
+            Self::C => PROBE_SCHEMA_C,
+        }
+    }
+
+    fn apply_schema(self) -> &'static str {
+        match self {
+            Self::B => APPLY_SCHEMA_B,
+            Self::C => APPLY_SCHEMA_C,
+        }
+    }
+
+    fn grant_schema(self) -> &'static str {
+        match self {
+            Self::B => GRANT_SCHEMA_B,
+            Self::C => GRANT_SCHEMA_C,
+        }
+    }
+
+    fn ready_key(self) -> &'static str {
+        match self {
+            Self::B => "unlock_b_preimage_ready",
+            Self::C => "unlock_c_preimage_ready",
+        }
+    }
+
+    fn record_kind_probe(self) -> &'static str {
+        match self {
+            Self::B => "lab-runner-unlock-b-transfer-probe",
+            Self::C => "lab-runner-unlock-c-transfer-probe",
+        }
+    }
+
+    fn record_kind_apply(self) -> &'static str {
+        match self {
+            Self::B => "lab-runner-unlock-b-transfer-apply",
+            Self::C => "lab-runner-unlock-c-transfer-apply",
+        }
+    }
+
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::B => "B",
+            Self::C => "C",
+        }
+    }
+}
 
 /// Probe Unlock C transfer readiness, or apply after Root grant.
 pub fn run(args: &[String]) -> Result<i32> {
@@ -59,6 +138,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         .map(PathBuf::from)
         .unwrap_or_else(|| snapshot::root().unwrap_or_else(|_| PathBuf::from(".")));
     let manifest = read_json(&manifest_path)?;
+    let unlock = UnlockLetter::from_manifest(&manifest)?;
     let probe = probe_manifest(&manifest, &workspace, Path::new(&manifest_path))?;
     let report = if apply {
         apply_transfer(
@@ -73,7 +153,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     };
     emit_report(&report, emit_path.as_deref())?;
     let ready = report
-        .get("unlock_c_preimage_ready")
+        .get(unlock.ready_key())
         .and_then(Value::as_bool)
         .unwrap_or(false);
     // Probe always exits 0 with honesty fields; apply refuses (exit 1) when not ready/granted.
@@ -85,7 +165,8 @@ pub fn run(args: &[String]) -> Result<i32> {
         && !dry_run
     {
         return Err(format!(
-            "transfer-apply refused: unlock_c_preimage_ready={ready}; require matching grant + preimages; never invent pass_product_clean_room"
+            "transfer-apply refused: {}={ready}; require matching grant + preimages; Unlock B also requires non-empty pilot_command; never invent pass_product_clean_room",
+            unlock.ready_key()
         )
         .into());
     }
@@ -112,6 +193,7 @@ fn emit_report(report: &Value, emit_path: Option<&str>) -> Result<()> {
                 "schema": report.get("schema").cloned().unwrap_or(Value::Null),
                 "emit": path,
                 "unlock_c_preimage_ready": report.get("unlock_c_preimage_ready"),
+                "unlock_b_preimage_ready": report.get("unlock_b_preimage_ready"),
                 "applied": report.get("applied").cloned().unwrap_or(json!(false)),
                 "cap_execute": false,
                 "pass_product_clean_room": 0,
@@ -132,6 +214,7 @@ fn pack_dir(manifest_path: &Path) -> PathBuf {
 }
 
 fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> Result<Value> {
+    let unlock = UnlockLetter::from_manifest(manifest)?;
     let entries = manifest
         .get("entries")
         .and_then(Value::as_array)
@@ -270,14 +353,15 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
         }));
     }
 
-    let unlock_c_preimage_ready = mismatches.is_empty()
+    let unlock_preimage_ready = mismatches.is_empty()
         && missing_candidates.is_empty()
         && ready_count == entries.len() as u64
         && !entries.is_empty();
 
-    Ok(json!({
-        "schema": PROBE_SCHEMA,
-        "record_kind": "lab-runner-unlock-c-transfer-probe",
+    let mut report = json!({
+        "schema": unlock.probe_schema(),
+        "record_kind": unlock.record_kind_probe(),
+        "unlock": unlock.as_str(),
         "manifest": manifest_path.to_string_lossy(),
         "workspace": workspace.to_string_lossy(),
         "applied": false,
@@ -285,7 +369,6 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
         "product": 0,
         "pass_product_clean_room": 0,
         "full_product_qualified": false,
-        "unlock_c_preimage_ready": unlock_c_preimage_ready,
         "summary": {
             "entries": entries.len(),
             "ready": ready_count,
@@ -297,16 +380,25 @@ fn probe_manifest(manifest: &Value, workspace: &Path, manifest_path: &Path) -> R
             "probe_does_not_apply": true,
             "apply_requires_root_grant": true,
             "authority_cap_green_is_not_product": true,
+            "capture_component_is_not_product_binding": true,
+            "unlock_b_requires_non_empty_pilot_command": unlock == UnlockLetter::B,
         },
         "mismatches": mismatches,
         "missing_candidates": missing_candidates,
         "checks": checks,
-        "next": if unlock_c_preimage_ready {
-            "Root issues transfer grant; transfer-apply then Cap=1 --authority-node-ipc"
+        "next": if unlock_preimage_ready {
+            match unlock {
+                UnlockLetter::B => "Root issues Unlock-B GRANT with non-empty pilot_command; transfer-apply then Cap=1 matching w2-h2-product-binding pack",
+                UnlockLetter::C => "Root issues transfer grant; transfer-apply then Cap=1 --authority-node-ipc",
+            }
         } else {
             "Abort transfer; refresh candidate-pack or wait Root structural delta"
         },
-    }))
+    });
+    if let Some(object) = report.as_object_mut() {
+        object.insert(unlock.ready_key().into(), json!(unlock_preimage_ready));
+    }
+    Ok(report)
 }
 
 fn apply_transfer(
@@ -316,21 +408,19 @@ fn apply_transfer(
     workspace: &Path,
     dry_run: bool,
 ) -> Result<Value> {
+    let unlock = UnlockLetter::from_manifest(manifest)?;
     let grant_path = grant_path.ok_or("transfer-apply requires --grant")?;
     let grant = read_json(grant_path)?;
-    validate_grant(&grant, manifest)?;
+    validate_grant(&grant, manifest, unlock)?;
     let ready = probe
-        .get("unlock_c_preimage_ready")
+        .get(unlock.ready_key())
         .and_then(Value::as_bool)
         .unwrap_or(false);
     if !ready {
         let mut refused = probe.clone();
         if let Some(object) = refused.as_object_mut() {
-            object.insert("schema".into(), json!(APPLY_SCHEMA));
-            object.insert(
-                "record_kind".into(),
-                json!("lab-runner-unlock-c-transfer-apply"),
-            );
+            object.insert("schema".into(), json!(unlock.apply_schema()));
+            object.insert("record_kind".into(), json!(unlock.record_kind_apply()));
             object.insert("applied".into(), json!(false));
             object.insert("dry_run".into(), json!(dry_run));
             object.insert("grant".into(), json!(grant_path));
@@ -357,6 +447,11 @@ fn apply_transfer(
         .and_then(Value::as_array)
         .ok_or("grant.destinations array required")?;
     let allowed: Vec<&str> = allowed.iter().filter_map(Value::as_str).collect();
+    let pilot_command = grant
+        .get("pilot_command")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
 
     let mut planned = Vec::new();
     let mut written = Vec::new();
@@ -403,25 +498,70 @@ fn apply_transfer(
         }
     }
 
+    if unlock == UnlockLetter::B && !dry_run {
+        let Some(pilot) = pilot_command else {
+            return Err(
+                "Unlock B apply refused: grant.pilot_command must be non-empty; never invent pilot_command"
+                    .into(),
+            );
+        };
+        let receipt = json!({
+            "schema": "humanymous.cursor-unlock-b-applied/1",
+            "unlock": "B",
+            "applied": true,
+            "applied_utc": chrono_like_utc(),
+            "grant": grant_path,
+            "pilot_command": pilot,
+            "destinations_written": written,
+            "cap_burn_authorized": true,
+            "cap_burn_limit": 1,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "honesty": {
+                "never_invent_pass_product_clean_room": true,
+                "detection_freeze": true,
+                "capture_component_is_not_product_binding": true,
+                "n06_join_requires_measured_binding": true,
+            },
+        });
+        let receipt_path = workspace.join(UNLOCK_B_APPLIED_REL);
+        if let Some(parent) = receipt_path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("mkdir {}: {error}", parent.display()))?;
+        }
+        fs::write(
+            &receipt_path,
+            format!(
+                "{}\n",
+                serde_json::to_string_pretty(&receipt)
+                    .map_err(|error| format!("unlock-b receipt encode: {error}"))?
+            ),
+        )
+        .map_err(|error| format!("write UNLOCK-B-APPLIED: {error}"))?;
+        written.push(UNLOCK_B_APPLIED_REL);
+    }
+
     let mut report = Map::new();
-    report.insert("schema".into(), json!(APPLY_SCHEMA));
-    report.insert(
-        "record_kind".into(),
-        json!("lab-runner-unlock-c-transfer-apply"),
-    );
+    report.insert("schema".into(), json!(unlock.apply_schema()));
+    report.insert("record_kind".into(), json!(unlock.record_kind_apply()));
+    report.insert("unlock".into(), json!(unlock.as_str()));
     report.insert("applied".into(), json!(!dry_run));
     report.insert("dry_run".into(), json!(dry_run));
     report.insert("grant".into(), json!(grant_path));
-    report.insert("unlock_c_preimage_ready".into(), json!(true));
+    report.insert(unlock.ready_key().into(), json!(true));
     report.insert("cap_execute".into(), json!(false));
     report.insert("product".into(), json!(0));
     report.insert("pass_product_clean_room".into(), json!(0));
     report.insert("full_product_qualified".into(), json!(false));
+    if let Some(pilot) = pilot_command {
+        report.insert("pilot_command".into(), json!(pilot));
+    }
     report.insert(
         "honesty".into(),
         json!({
             "never_invent_pass_product_clean_room": true,
             "authority_cap_green_is_not_product": true,
+            "capture_component_is_not_product_binding": true,
             "cap_burn_is_separate_step": true,
         }),
     );
@@ -432,15 +572,32 @@ fn apply_transfer(
         json!(if dry_run {
             "Re-run without --dry-run after Root confirms grant; then Cap=1"
         } else {
-            "Cap=1 burn matching cap-ready/authority-node-ipc pack; matrix honesty retained"
+            match unlock {
+                UnlockLetter::B => {
+                    "Cap=1 burn matching cap-ready/w2-h2-product-binding pack using grant pilot_command; matrix honesty retained; product=0"
+                }
+                UnlockLetter::C => {
+                    "Cap=1 burn matching cap-ready/authority-node-ipc pack; matrix honesty retained"
+                }
+            }
         }),
     );
     Ok(Value::Object(report))
 }
 
-fn validate_grant(grant: &Value, manifest: &Value) -> Result<()> {
-    if grant.get("schema").and_then(Value::as_str) != Some(GRANT_SCHEMA) {
-        return Err(format!("grant.schema must be {GRANT_SCHEMA}").into());
+fn chrono_like_utc() -> String {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let secs = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0);
+    format!("{secs}")
+}
+
+fn validate_grant(grant: &Value, manifest: &Value, unlock: UnlockLetter) -> Result<()> {
+    let expected_schema = unlock.grant_schema();
+    if grant.get("schema").and_then(Value::as_str) != Some(expected_schema) {
+        return Err(format!("grant.schema must be {expected_schema}").into());
     }
     if grant.get("root_authorized").and_then(Value::as_bool) != Some(true) {
         return Err("grant.root_authorized must be true".into());
@@ -448,8 +605,21 @@ fn validate_grant(grant: &Value, manifest: &Value) -> Result<()> {
     if grant.get("allow_apply").and_then(Value::as_bool) != Some(true) {
         return Err("grant.allow_apply must be true".into());
     }
-    if grant.get("unlock").and_then(Value::as_str) != Some("C") {
-        return Err("grant.unlock must be C".into());
+    if grant.get("unlock").and_then(Value::as_str) != Some(unlock.as_str()) {
+        return Err(format!("grant.unlock must be {}", unlock.as_str()).into());
+    }
+    if unlock == UnlockLetter::B {
+        let pilot = grant
+            .get("pilot_command")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .unwrap_or("");
+        if pilot.is_empty() {
+            return Err(
+                "Unlock B grant.pilot_command must be a non-empty Root-named Cap argv; never invent pilot_command; template alone is not a live grant"
+                    .into(),
+            );
+        }
     }
     let destinations = grant
         .get("destinations")
@@ -584,11 +754,13 @@ mod tests {
             probe_manifest(&manifest, &root.join("workspace"), &manifest_path).expect("probe");
         assert_eq!(probe["unlock_c_preimage_ready"], false);
         assert_eq!(probe["pass_product_clean_room"], 0);
-        assert!(probe["mismatches"]
-            .as_array()
-            .expect("mismatches")
-            .iter()
-            .any(|item| item["reason"] == "preimage_mismatch"));
+        assert!(
+            probe["mismatches"]
+                .as_array()
+                .expect("mismatches")
+                .iter()
+                .any(|item| item["reason"] == "preimage_mismatch")
+        );
         let _ = fs::remove_dir_all(root);
     }
 
@@ -640,9 +812,11 @@ mod tests {
         assert_eq!(report["pass_product_clean_room"], 0);
         assert_eq!(report["product"], 0);
         assert_eq!(report["cap_execute"], false);
-        assert!(!root
-            .join("workspace/deployments/lab/authority/CAP-PILOT.md")
-            .exists());
+        assert!(
+            !root
+                .join("workspace/deployments/lab/authority/CAP-PILOT.md")
+                .exists()
+        );
         let live = fs::read_to_string(root.join("workspace/deployments/lab/INTEGRATION.md"))
             .expect("live");
         assert_eq!(live, "live-integration-body\n");
@@ -685,9 +859,83 @@ mod tests {
         let live = fs::read_to_string(root.join("workspace/deployments/lab/INTEGRATION.md"))
             .expect("live");
         assert_eq!(live, "candidate-integration-body\n");
-        assert!(root
-            .join("workspace/deployments/lab/authority/CAP-PILOT.md")
-            .exists());
+        assert!(
+            root.join("workspace/deployments/lab/authority/CAP-PILOT.md")
+                .exists()
+        );
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn unlock_b_grant_refuses_null_pilot_command() {
+        let root = temp_dir("b-null-pilot");
+        let contract = b"{\"pilot_command\":null}\n";
+        let notes = b"h2 binding notes\n";
+        write(
+            &root.join("pack/candidate/deployments/lab/gateway/h2-product-binding-contract.json"),
+            contract,
+        );
+        write(
+            &root.join("pack/candidate/deployments/lab/gateway/H2-PRODUCT-BINDING.md"),
+            notes,
+        );
+        let manifest = json!({
+            "schema": "humanymous.cursor-unlock-b-h2-binding-candidate/1",
+            "unlock": "B",
+            "entries": [
+                {
+                    "destination": "deployments/lab/gateway/h2-product-binding-contract.json",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/deployments/lab/gateway/h2-product-binding-contract.json",
+                    "candidateSha256": snapshot::digest(contract),
+                },
+                {
+                    "destination": "deployments/lab/gateway/H2-PRODUCT-BINDING.md",
+                    "preimageSha256": Value::Null,
+                    "candidateRelative": "candidate/deployments/lab/gateway/H2-PRODUCT-BINDING.md",
+                    "candidateSha256": snapshot::digest(notes),
+                }
+            ]
+        });
+        let manifest_path = root.join("pack/transfer-manifest.json");
+        write(
+            &manifest_path,
+            serde_json::to_string_pretty(&manifest).unwrap().as_bytes(),
+        );
+        let probe =
+            probe_manifest(&manifest, &root.join("workspace"), &manifest_path).expect("probe");
+        assert_eq!(probe["unlock_b_preimage_ready"], true);
+        let grant = json!({
+            "schema": GRANT_SCHEMA_B,
+            "root_authorized": true,
+            "allow_apply": true,
+            "unlock": "B",
+            "pilot_command": null,
+            "destinations": [
+                "deployments/lab/gateway/h2-product-binding-contract.json",
+                "deployments/lab/gateway/H2-PRODUCT-BINDING.md"
+            ]
+        });
+        let grant_path = root.join("grant.json");
+        write(
+            &grant_path,
+            serde_json::to_string_pretty(&grant).unwrap().as_bytes(),
+        );
+        let err = apply_transfer(
+            &manifest,
+            &probe,
+            Some(grant_path.to_str().unwrap()),
+            &root.join("workspace"),
+            false,
+        )
+        .expect_err("null pilot refused");
+        assert!(err.to_string().contains("pilot_command"));
+        assert_eq!(
+            root.join("workspace")
+                .join(UNLOCK_B_APPLIED_REL)
+                .exists(),
+            false
+        );
         let _ = fs::remove_dir_all(root);
     }
 }
