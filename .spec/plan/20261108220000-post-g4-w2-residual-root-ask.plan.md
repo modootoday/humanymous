@@ -3,7 +3,7 @@ id: plan:root/20261108220000-post-g4-w2-residual-root-ask
 title: Post-G4/W2 residual inventory — consolidated ROOT-ASK (Cap free)
 status: active
 created: 2026-11-08T13:01:00Z
-updated: 2026-11-08T13:40:00Z
+updated: 2026-11-08T14:13:17Z
 rel:
   depends_on:
     - plan:root/20261108215600-g4-at-cef-blocked-claim
@@ -17,12 +17,11 @@ rel:
 
 # Post-G4/W2 residual inventory — Cap free / wait Root
 
-Brief: Fresh tip `28a1b1f5` — unlock still **false**. Cap free. product=0.
-Detection freeze. Never invent `pass_product_clean_room`. Consolidated ROOT-ASK
-lists **three mutually sufficient unlocks** (any one wakes Cap=1). This turn
-adds Unlock C **candidate-pack** (reviewable diffs + preimage hashes) under
-claimed evidence — not live Root-path writes. Live Codex Root may transfer
-without Cursor inventing ownership.
+Brief: Tip `bb2516af`+ — Unlock C TRANSFER applied (user GRANT + phrases cited);
+Cap=1 `--authority-node-ipc` EXIT 0 component green; product=0;
+`pass_product_clean_room` not invented. Detection freeze. G1/G5/G6 still open.
+A/B unlocks remain available for other Cap burns. Cap conserved until next Root
+allocation.
 
 Private packet (update in place):  
 `.spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/CONSOLIDATED-ROOT-ASK.md`

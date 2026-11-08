@@ -3,7 +3,7 @@ id: plan:root/20261108220600-cap-ready-g4-w2-harness
 title: Cap-ready G4/W2 harness prep (unlock→Cap burn shortener)
 status: active
 created: 2026-11-08T13:06:00Z
-updated: 2026-11-08T13:40:00Z
+updated: 2026-11-08T14:13:17Z
 rel:
   depends_on:
     - plan:root/20261108220000-post-g4-w2-residual-root-ask
@@ -16,10 +16,9 @@ rel:
 
 # Cap-ready G4 / W2 H2 harness prep
 
-Brief: Wake-check still blocked at tip `28a1b1f5` (no G4 path release, no W2 H2
-product-binding, authority Cap still `blocked_claim`). Cap free. product=0.
-This plan mirrors Cap-ready checklists so one Cap can run when Root allocates —
-**not** Cap spam, **not** `pass_product_clean_room`. Detection freeze.
+Brief: Tip `bb2516af`+ — Unlock C applied + Cap=1 authority-node-ipc EXIT 0
+(component only). G4/W2 still Root-blocked. product=0. Cap conserved after this
+burn. Never invent `pass_product_clean_room`. Detection freeze.
 
 Private full receipts (gitignored):  
 `.spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/`
@@ -29,10 +28,10 @@ Unlock C candidate TRANSFER (this turn):
 
 ## 1. Problem
 
-No Root/Codex unlock commits beyond tip `28a1b1f5`. Remaining product closers
-stay Root-blocked. Cap free alone cannot close product. Next Cursor value while
-blocked is Unlock C **reviewable candidate diffs** Root can transfer — not idle
-ROOT-ASK re-push and not Cap spam.
+No Root GRANT / live transfer beyond tip `bb2516af`. Remaining product closers
+stay Root-blocked. Cap free alone cannot close product. Candidate-pack
+preimages now match live workspace; next Root value is GRANT+transfer (or A/B
+unlock) — not Cap spam.
 
 ## 2. Decision rules
 
@@ -111,8 +110,10 @@ Cap=1 when unlocked:
 
 ## 6. Authority Cap-ready (unlock C)
 
-Tip `28a1b1f5`: `--authority-node-ipc` is `blocked_claim` (EXIT 1 before Docker).
+Tip `bb2516af`: `--authority-node-ipc` is `blocked_claim` (EXIT 1 before Docker).
 Private pack: `cap-ready/authority-node-ipc/`.
+`transfer-probe` reports `unlock_c_preimage_ready=true` after 2026-11-08T14:13:17Z
+refresh (`snapshot.rs` preimage `dc743752…`); GRANT.json still missing.
 
 **Candidate pack (reviewable diffs for Root transfer):**  
 `cap-ready/authority-node-ipc/candidate-pack/` (`TRANSFER.md`,

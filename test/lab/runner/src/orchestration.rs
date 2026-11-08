@@ -44,6 +44,7 @@ fn safe_diagnostics(cases: &[Value]) -> Value {
         .collect();
     json!({"schema":"humanymous.lab-safe-diagnostics/1","failures":failures,"failure_count":failed.len(),"partial":failed.len()>512})
 }
+mod authority;
 mod browser;
 mod browser_actor;
 mod browser_failure;
@@ -66,6 +67,7 @@ struct Lab {
     source_binding: Option<snapshot::source_pin::SourceBinding>,
     go_product: bool,
     mount_probe: bool,
+    authority_node_ipc: bool,
     go_component_verified: bool,
     stage: &'static str,
     cases: Vec<Value>,
@@ -86,6 +88,20 @@ impl Lab {
             .into_owned())
     }
     fn compose_args(&self, args: &[&str]) -> Result<Vec<String>> {
+        // Authority Cap uses its own compose only (not the full product topology).
+        if self.authority_node_ipc {
+            let mut command = vec![
+                "compose".into(),
+                "-p".into(),
+                self.project.clone(),
+                "-f".into(),
+                self.config_file("deployments/lab/compose.authority.yaml")?,
+                "--profile".into(),
+                "authority".into(),
+            ];
+            command.extend(args.iter().map(|s| (*s).to_owned()));
+            return Ok(command);
+        }
         let mut command = vec![
             "compose".into(),
             "-p".into(),
@@ -240,6 +256,9 @@ impl Lab {
     fn execute(&mut self) -> Result<()> {
         if self.mount_probe {
             return mount_probe::run(self);
+        }
+        if self.authority_node_ipc {
+            return authority::run(self);
         }
         if self.go_product {
             return go::run(self);
@@ -573,14 +592,21 @@ pub fn run(args: &[String]) -> Result<i32> {
         index += 1;
     }
     if authority_node_ipc {
-        // Cap CLI selector is recognized for matrix honesty. Fail closed through
-        // unlock_gate until Unlock C TRANSFER apply + Cap orchestration wire.
-        let _ = evidence;
-        crate::unlock_gate::refuse_authority_cap_until_unlocked(&root)?;
-        return Err(
-            "authority-node-ipc Cap CLI refused after unlock gate (unreachable without Cap wire); never invent pass_product_clean_room"
-                .into(),
-        );
+        // Cap CLI bound only after Unlock C TRANSFER apply (fail-closed).
+        crate::unlock_gate::require_authority_cap_unlocked(&root)?;
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || full
+            || require_go_component
+        {
+            return Err(
+                "authority-node-ipc Cap requires its own fresh profile; refuse foreign Cap selectors; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
     }
     let evidence = evidence.ok_or("--evidence required")?.canonicalize()?;
     if mount_probe
@@ -647,6 +673,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         source_binding,
         go_product,
         mount_probe,
+        authority_node_ipc,
         go_component_verified: false,
         stage: "initialization",
         cases: Vec::new(),
@@ -687,7 +714,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     )?;
     let failed = lab.cases.iter().any(|c| c["status"] == "failed");
     let assessment = requirement.assess(failed, lab.go_component_verified, cleanup_verified);
-    let mut evidence_types = if browser_product || go_product || mount_probe {
+    let mut evidence_types = if browser_product || go_product || mount_probe || authority_node_ipc {
         vec![]
     } else {
         vec!["topology-control"]
@@ -703,6 +730,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "browser_product",
             "same-origin-browser-runtime-isolated-pilot",
         ),
+        ("authority_node_ipc", "authority-node-ipc-component"),
     ] {
         if lab.components[component].is_object() && lab.components[component]["status"] != "not_run"
         {

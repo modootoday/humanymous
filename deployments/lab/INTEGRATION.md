@@ -1,4 +1,4 @@
-# Rust product-lab runner contract
+﻿# Rust product-lab runner contract
 
 Local engine canon is .spec/sot/rust-migration.sot.md, Local Docker engine
 identity and cleanup, and .agents/rules/96-docker-engine-affinity.md. The local
@@ -244,9 +244,18 @@ separate sequential red-catalog lane stage.
 
 Existing run.py/cleanup.py/audit.py, clients/*.py and authority/pilot.mjs are
 historical foreign-language prototype debt. Canonical compose.rust.yaml and the
-new runner never execute them. Retire them after old evidence consumers move;
-their older successes cannot qualify new source. Node prototype is not the
-current Rust adapter implementation.
+new runner never host-execute them (no spawn/shell of those files from the
+lab-runner process). Cap CLI `--authority-node-ipc` may Docker-coordinate
+`deployments/lab/compose.authority.yaml` built from freeze-allowlisted inputs
+(`build/rust/authority-lab.Dockerfile` (+ dockerignore),
+`deployments/lab/authority/**` Cap inputs, `adapters/node/src/**` as needed).
+Container ENTRYPOINT execution inside that image is not runner host execution.
+Prefer a Root-allocated Rust Cap pilot that retires `pilot.mjs` from the Cap
+path; until then Cap may measure the existing authority-lab composition only as
+component evidence. Authority Cap green alone is never `pass_product_clean_room`
+and cannot invent G1/G5/G6 product cells. Retire foreign prototypes after old
+evidence consumers move; their older successes cannot qualify new source. Node
+prototype is not the current Rust adapter implementation.
 
 First v2 checkpoint4f89ec3: Rust runner unit4 and Clippy passed; actual Docker
 topology-only25 assertions passed, including live cross-namespace direct-IP

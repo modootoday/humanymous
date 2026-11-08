@@ -473,7 +473,7 @@ mod tests {
     }
 
     #[test]
-    fn authority_node_ipc_is_blocked_claim_and_never_serializes() {
+    fn authority_node_ipc_serializes_only_when_unlock_c_bound() {
         let (disposition, reason, command) = decide(
             "unrun",
             "lab_runner_require_full",
@@ -482,10 +482,29 @@ mod tests {
             true,
             false,
         );
-        assert_eq!(disposition, Disposition::BlockedClaim);
-        assert!(reason.contains("blocked_claim"));
-        assert!(reason.contains("never invent pass_product_clean_room"));
-        assert!(command.is_null());
+        match crate::unlock_gate::authority_cap_cli_status(
+            &crate::snapshot::root().expect("workspace root"),
+        )
+        .expect("unlock status")
+        {
+            "bound" => {
+                assert_eq!(disposition, Disposition::SerializeWhenUnlocked);
+                assert!(reason.contains("serialize Cap=1"));
+                assert!(
+                    command
+                        .as_array()
+                        .expect("command")
+                        .iter()
+                        .any(|arg| arg.as_str() == Some("--authority-node-ipc"))
+                );
+            }
+            _ => {
+                assert_eq!(disposition, Disposition::BlockedClaim);
+                assert!(reason.contains("blocked_claim"));
+                assert!(reason.contains("never invent pass_product_clean_room"));
+                assert!(command.is_null());
+            }
+        }
     }
 
     #[test]
@@ -547,9 +566,7 @@ mod tests {
         assert_eq!(plan["full_product_qualified"], false);
         assert_eq!(plan["summary"]["refuse_cap"], 1);
         assert_eq!(plan["summary"]["hold_component"], 1);
-        assert_eq!(plan["summary"]["serialize_cap_when_unlocked"], 1);
         assert_eq!(plan["summary"]["out_of_lab_runner_scope"], 1);
-        assert_eq!(plan["summary"]["blocked_claim"], 1);
         assert_eq!(
             plan["honesty"]["never_invent_pass_product_clean_room"],
             true
@@ -561,15 +578,32 @@ mod tests {
             .iter()
             .find(|cell| cell["scenario"] == "authority-node-ipc")
             .expect("authority cell");
-        assert_eq!(authority["disposition"], "blocked_claim");
-        assert_eq!(authority["cap_cli_status"], "blocked_claim");
-        assert!(authority["command"].is_null());
-        assert!(
-            authority["root_ask"]["exact_paths"]
-                .as_array()
-                .expect("paths")
-                .iter()
-                .any(|path| path.as_str() == Some("deployments/lab/INTEGRATION.md"))
-        );
+        match authority["cap_cli_status"].as_str() {
+            Some("bound") => {
+                assert_eq!(plan["summary"]["blocked_claim"], 0);
+                assert_eq!(plan["summary"]["serialize_cap_when_unlocked"], 2);
+                assert_eq!(authority["disposition"], "serialize_cap_when_unlocked");
+                assert!(
+                    authority["command"]
+                        .as_array()
+                        .expect("command")
+                        .iter()
+                        .any(|arg| arg.as_str() == Some("--authority-node-ipc"))
+                );
+            }
+            _ => {
+                assert_eq!(plan["summary"]["blocked_claim"], 1);
+                assert_eq!(plan["summary"]["serialize_cap_when_unlocked"], 1);
+                assert_eq!(authority["disposition"], "blocked_claim");
+                assert!(authority["command"].is_null());
+                assert!(
+                    authority["root_ask"]["exact_paths"]
+                        .as_array()
+                        .expect("paths")
+                        .iter()
+                        .any(|path| path.as_str() == Some("deployments/lab/INTEGRATION.md"))
+                );
+            }
+        }
     }
 }

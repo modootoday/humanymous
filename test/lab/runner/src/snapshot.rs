@@ -181,8 +181,7 @@ fn allowed(path: &str) -> bool {
         )
         || ((path.starts_with("crates/") || path.starts_with("test/lab/"))
             && matches!(extension, "rs" | "toml" | "lock" | "json"))
-        || path
-            == "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm"
+        || path == "crates/sdk/humanymous-core/src/watermark/codec/fixtures/minimal_module.wasm"
         || (path.starts_with("deployments/lab/")
             && matches!(extension, "yaml" | "Dockerfile" | "dockerignore"))
         || (path.starts_with("docs/tooling/") && matches!(extension, "rs" | "toml"))
@@ -195,7 +194,14 @@ fn allowed(path: &str) -> bool {
                 | "build/rust/collector-browser.Dockerfile.dockerignore"
                 | "build/rust/browser-product.Dockerfile"
                 | "build/rust/browser-product.Dockerfile.dockerignore"
+                | "build/rust/authority-lab.Dockerfile"
+                | "build/rust/authority-lab.Dockerfile.dockerignore"
+                | "deployments/lab/authority/package.json"
+                | "deployments/lab/authority/package-lock.json"
+                | "deployments/lab/authority/pilot.mjs"
         )
+        || (path.starts_with("adapters/node/src/")
+            && matches!(extension, "cjs" | "mjs" | "cts" | "mts" | "json"))
         || matches!(
             path,
             "web/js/features/mouse.js" | "web/js/features/keystroke.js" | "web/js/advanced.js"
@@ -231,12 +237,22 @@ mod tests {
     fn source_allowlist_excludes_private_and_foreign_execution() {
         for path in [
             ".spec.local/key.json",
-            "deployments/lab/authority/pilot.mjs",
             "test/lab/run.py",
             "crates/x/secret.pem",
             ".git/config",
         ] {
             assert!(!allowed(path));
+        }
+        // Cap freeze inputs (Unlock C): Docker COPY only; runner still never host-executes pilot.mjs.
+        for path in [
+            "deployments/lab/authority/pilot.mjs",
+            "deployments/lab/authority/package.json",
+            "deployments/lab/authority/package-lock.json",
+            "build/rust/authority-lab.Dockerfile",
+            "build/rust/authority-lab.Dockerfile.dockerignore",
+            "adapters/node/src/index.cjs",
+        ] {
+            assert!(allowed(path));
         }
         for path in [
             "Cargo.lock",

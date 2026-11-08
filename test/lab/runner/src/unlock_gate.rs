@@ -201,20 +201,15 @@ pub fn authority_cap_cli_status(root: &Path) -> Result<&'static str> {
     Ok(probe_root(root, manifest.as_deref())?.authority_cap_cli_status)
 }
 
-/// Fail-closed refuse for `--authority-node-ipc` until Unlock C + Cap wire.
+/// Fail-closed refuse for `--authority-node-ipc` until Unlock C is measured true.
 ///
-/// Unlock C transfer alone is not Cap execute: live `orchestration` must also
-/// link `authority` after Root applies TRANSFER. Until that wire exists, Cap
-/// stays refused (no Docker burn, no invented product).
-pub fn refuse_authority_cap_until_unlocked(root: &Path) -> Result<()> {
+/// After Unlock C TRANSFER apply, Cap orchestration may burn once. Until then
+/// Cap stays `blocked_claim` (no Docker burn, no invented product).
+pub fn require_authority_cap_unlocked(root: &Path) -> Result<()> {
     let manifest = resolve_manifest(root, None)?;
     let status = probe_root(root, manifest.as_deref())?;
     if status.c_authority_cap {
-        return Err(format!(
-            "authority-node-ipc Unlock C measured true but Cap orchestration wire is not live in this binary; Root must complete orchestration.rs + authority module linkage after TRANSFER before Cap=1 burn; never invent pass_product_clean_room ({})",
-            status.reason_c
-        )
-        .into());
+        return Ok(());
     }
     Err(format!(
         "authority-node-ipc Cap CLI is blocked_claim: {}; deployments/lab/INTEGRATION.md forbids host-exec of pilot.mjs until Cap Docker path is transferred; never invent pass_product_clean_room",

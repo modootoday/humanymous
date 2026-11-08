@@ -1,0 +1,24 @@
+{
+  "schema": "humanymous.lab-authority-cap-pilot-contract/1",
+  "id": "authority-node-ipc-cap",
+  "status": "candidate_for_root_transfer",
+  "cli_selector": "--authority-node-ipc",
+  "compose": "deployments/lab/compose.authority.yaml",
+  "dockerfile": "build/rust/authority-lab.Dockerfile",
+  "profile": "authority",
+  "service": "authority-pilot",
+  "network_mode": "none",
+  "runner_host_exec_pilot_mjs": false,
+  "container_entrypoint_may_run_pilot_mjs_until_rust_retirement": true,
+  "preferred_retirement": {
+    "entrypoint": "/usr/local/bin/humanymous-authority-cap-pilot",
+    "optional_crate_paths": ["crates/authority/**", "crates/sdk/humanymous-runtime/**"],
+    "note": "Rust Cap pilot must drive Express/Hono adapter IPC cases without Node pilot.mjs; Root allocates authorship"
+  },
+  "honesty": {
+    "product": 0,
+    "pass_product_clean_room": 0,
+    "component_green_is_not_product": true,
+    "gaps_still_open_after_cap_green": ["G1", "G5", "G6"]
+  }
+}
