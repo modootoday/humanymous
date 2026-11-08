@@ -259,13 +259,13 @@
       "id": "CA-BROWSER-ROLE-CALLER-01",
       "priority": "P2",
       "owner": "Root/Browser",
-      "state": "OPEN: d08 role-loop/features/snapshot/schema direction corrected; actual Cargo artifact provenance join still missing",
+      "state": "Named source+component correction verified at3acfa668; actual role/contract/native qualification remainsOPEN",
       "trigger": "After3-to1 composition, harness repeats default package build, has no sequential per-role preserved outputs, requires retired nested manifests, and protocol argv enable only native-pilot-tests while native modules require their role feature",
       "runtime_failure_observed": false,
       "required_fix": "Actual sequential bootstrap/desktop role features and preserve-copy/hash joins; merged snapshots; separate result schema; exact module-prefixed executed test census; required negative role controls",
       "root_correction_assigned": true,
-      "remaining": "Fixed debugDLL path not joined to exact compiler-artifact/opaque package/target/source/profile/features/build-finished",
-      "latest_review": "browser-role-caller-followup-004.json"
+      "remaining": "Actual native role Cargo ledger-to-built/copied DLL proof, contract producer/equality and v2consumer migration; no fullCEF/runtime qualification",
+      "latest_review": "browser-artifact-b1-implementation-review-006.json"
     }
   ],
   "evidence_references": {
@@ -2571,7 +2571,7 @@
     "Root_decision": "CONDITIONALLY_ACCEPTED exact low-level implementation direction by6aea9fcc; evidence-only candidate authoring, no actual integration/execute grant",
     "source_or_native_execution": false,
     "goal_complete": false,
-    "current_disposition": "Root6aea9fcc conditionally accepts exact low-level implementation direction; evidence-only candidate authorized, actual source/compile/native remains pending, B2 unapproved",
+    "current_disposition": "Root conditional direction followed by isolated source integration: pure2+compilefail2 at1795snapshot, raw strictcorrected0.25s separately; actualnative4/defaultfeature/unsafe-negative/provider gatesOPEN",
     "historical_review_decision": "Original7e341dcb review/private report wasPENDING beforeRoot6aea9fcc; retained immutable"
   },
   "browser_role_caller_followup": {
@@ -2599,6 +2599,12 @@
     "bytes": 7217,
     "scope": "Root-requested ten-operation/body conditions + qualification-only helper assessment; no source/unsafe/execution approval",
     "Root_console_direction": "Proposed DETACHED_PROCESS fixed console helper, initialized no-stdio startup; actual fixtures pending",
+    "goal_complete": false
+  },
+  "browser_artifact_b1_implementation_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-artifact-b1-implementation-review-006.json",
+    "sha256": "14cc451ee15ab88cb9230f7e28365c7cb42346bc00e4669f984e5b1e83a9c612",
+    "bytes": 8908,
     "goal_complete": false
   }
 }

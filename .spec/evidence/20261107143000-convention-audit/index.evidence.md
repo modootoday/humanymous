@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: ede92ae2cb01dacaf4e9f41a65c22b75e781d1ec41413a0e9c840ce4c8a994f4, bytes: 145104, store: repo}
+  - {path: baseline.json, sha256: 23d496e8df38b82b11a00ca7e26b340ed9c985fc1be5b97c02923b142140b1ce, bytes: 145473, store: repo}
 ---
 
 # Convention audit baseline
@@ -2781,3 +2781,27 @@ not prove a hard disk cap. Original InvocationOwner, full capture/lifetime/stora
 provider/W/channel/Ready and actual hosted fixtures remain OPEN/Unsupported.
 Private b2-b2p-bounded-review-002.json records exact operation conditions and
 failure matrix. This is a review, not B2/B2-P acceptance or source/executor grant.
+
+Browser3acfa668 named source/component correction verified: all7 candidate and
+preserved-preimage hashes/sizes match. Metadata and ledger now join opaque package,
+manifest/target/source/types/workspace, exact role features, build-vs-test/fresh/
+executable profile, unique actual DLL and final successful build-finished; actual
+filename is contained and preserved, with source/metadata drift refusal. Five
+actual selected cases each pass1/0fail/0ignore/20filtered:4 pure metadata/artifact/
+privacy plus1 synthetic copy.1793 before/after rows agree, SHAa5b685e32d1984683e8907d2ec90b9974a49c958bfbe783ceb1179206620c958.
+The guessed-debug-path source defect is corrected; actual role-DLL ledger/build/
+copy/link/load, producer contract/equality, v2consumer and CEF/UI remain OPEN.
+Profile.test=false is checked and other profile fields recorded, not full tool/
+environment/config closure. Cache fresh=true is explicitly unsupported.
+
+B104110973 candidate3files match hashes/sizes. Reviewed fixed native create,
+descriptor borrow/preallocation, immediate one-owner+obligation return, borrowed-
+only API and bounded Unicode-preserving locator direction. Root's integrated
+checkpoint1795 has zero before/after tuple differences, SHA4a906e881d3b8297c5a6fa2c88a3232484b45ce27344bb7e3aae8fcfe4530ac5.
+Actual pure2pass/8filtered and negative doctest2pass/1filtered are separate; the
+zero-test merged-doctest block is not counted. Initial err_expect lint failure
+and corrected0.25s footer are retained separately. Four required native fixtures,
+default-feature absence and exact unsafe negatives remain UNRUN/unqualified.
+No NTFS/cross-SID/original-clock/provider/namespace/Ready or full migration pass.
+Private browser-artifact-b1-implementation-review-006.json binds both distinct
+checkpoints and raw logs; no source-success transfer between epochs is inferred.
