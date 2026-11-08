@@ -238,6 +238,28 @@ fn actual_h2_continuation_and_stream_binding() {
         let req = conn.h2_request(1).unwrap();
         assert_eq!(req.fingerprint().pseudo_string(), "m,a,s,p");
         assert_eq!(req.fields()[1].1, b"capture.invalid");
+        let claim = humanymous_runtime::network::ingress::H2Claim {
+            stream: 1,
+            method: "GET",
+            authority: "capture.invalid",
+            target: "/",
+            body_bytes: 0,
+        };
+        {
+            let live = conn.observe_h2(&claim).unwrap();
+            let snapshot = live.snapshot().unwrap();
+            assert_eq!(snapshot.negotiated_alpn, b"h2");
+            assert_eq!(snapshot.stream, 1);
+            assert!(snapshot.header.order_reliable && snapshot.header.casing_reliable);
+        }
+        let wrong = humanymous_runtime::network::ingress::H2Claim {
+            authority: "other.invalid",
+            ..claim
+        };
+        assert!(matches!(
+            conn.observe_h2(&wrong),
+            Err(humanymous_runtime::network::ingress::Refusal::RequestMismatch)
+        ));
         // Minimal actual h2 response: SETTINGS, ACK client settings, HEADERS200.
         conn.write_plaintext(
             &[
@@ -248,6 +270,13 @@ fn actual_h2_continuation_and_stream_binding() {
             .concat(),
         )
         .unwrap();
+        let cancellation = conn.cancellation().unwrap();
+        let live = conn.observe_h2(&claim).unwrap();
+        cancellation.cancel().unwrap();
+        assert!(matches!(
+            live.snapshot(),
+            Err(humanymous_runtime::network::ingress::Refusal::OwnerUnavailable)
+        ));
     });
     let mut client = client(addr, config);
     for part in wire(1).chunks(3) {
