@@ -406,6 +406,37 @@ It does not assert that all depicted modules or production edges are qualified.
 
 ## Naming and responsibility
 
+## Explicit maintenance staging in the isolated Tools assembly
+
+Root adopted maintenance candidate04 from commit
+0f446953b7e326d647ab8f3dea7379a7c44027f3 into the owned isolated
+tools-integration-5f1010d4 assembly. All declared attachment hashes and all six
+replacement preimages matched before eight Rust files were adopted. No live
+workspace path or manifest was moved by this checkpoint.
+
+The stage-eval command now requires an explicit request and fresh output path.
+It consumes finite required source pins, verifies the same captured bytes before
+parsing, and validates the prepared artifact before creating output. Repository
+and agents-meta owner labels are declarations, not authenticated identities.
+Canonical tree completeness, provider/source authentication, runtime qualification
+and release authorization remain false. The existing cooperative clock and
+CA-LIFETIME-01 limitations remain; this is not a hard process lifetime guarantee.
+
+Scoped maintenance all-target strict Clippy exited zero. Actual test discovery
+listed97 cases; only the four new pure selection parser tests were executed:
+4 passed,0 failed,0 ignored,93 filtered. The initial mistyped binary selector was
+rejected by Cargo and retained separately; the corrected manifest-selected binary
+is humanymous-agent-maintenance. Both actual package subprocess cases remain
+hosted-only and unexecuted. Their Command::output buffering/wait limitation is
+still open. These observations do not transfer the earlier full-source seal.
+
+Raw logs are retained under the owned private core-consolidation evidence root:
+tools-maintenance-candidate04-clippy.log,
+tools-maintenance-candidate04-list.log (rejected selector),
+tools-maintenance-candidate04-list-corrected.log and
+tools-maintenance-candidate04-selection.log. A final source-bound evidence seal
+and actual hosted staging qualification remain required before live cutover.
+
 ### Public package family redesign: accepted baseline v0
 
 The user requests a small public family anchored by humanymous,
