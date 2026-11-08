@@ -440,6 +440,7 @@ pub(super) fn run_hosted_venue(lab: &mut Lab) -> Result<()> {
         "h2-hosted-venue-measure-logs.json",
         &json!({"logs": logs}),
     )?;
+    lab.stage = "h2_hosted_venue_measure_receipt";
     let receipt = parse_measure_receipt(&logs)?;
     snapshot::write(
         &lab.evidence,
@@ -452,13 +453,70 @@ pub(super) fn run_hosted_venue(lab: &mut Lab) -> Result<()> {
         .get("venue")
         .and_then(Value::as_str)
         .unwrap_or("");
+    lab.stage = "h2_hosted_venue_measure_venue";
     if !HOSTED_VENUE_MARKERS.contains(&venue) {
         return Err(format!(
-            "N06 hosted-venue Cap refused: measure venue must be one of ({}); got {venue:?}; never invent desktop_as_hosted",
+            "N06 hosted-venue Cap refused: measure venue must be one of ({}); got {venue:?}; HUMANYMOUS_H2_MEASURE_VENUE must flow into measure receipt; never invent desktop_as_hosted",
             HOSTED_VENUE_MARKERS.join("|")
         )
         .into());
     }
+    if receipt.get("desktop_as_hosted").and_then(Value::as_bool) == Some(true)
+        || receipt.get("product").and_then(Value::as_u64) != Some(0)
+        || receipt
+            .get("pass_product_clean_room")
+            .and_then(Value::as_u64)
+            != Some(0)
+    {
+        return Err(
+            "N06 hosted-venue Cap refused: measure invented desktop_as_hosted/product/pass_product_clean_room"
+                .into(),
+        );
+    }
+    lab.case(
+        "h2-hosted-venue-measure-receipt-validated",
+        true,
+        json!({
+            "original_h2_measured": measured,
+            "venue": venue,
+            "tls_h2_status": receipt.get("tls_h2_status"),
+            "plaintext_control_status": receipt.get("plaintext_control_status"),
+            "desktop_as_hosted": false,
+            "exit_code": exit_code
+        }),
+    )?;
+    if measured {
+        lab.case(
+            "h2-hosted-venue-original-h2-measured",
+            measured && exit_code == 0,
+            json!({
+                "original_h2_measured": measured,
+                "venue": venue,
+                "missing_n06_product_lift": MISSING_N06_PRODUCT_LIFT,
+                "reason": "hosted Cap TLS measure receipt validated; component only; not product"
+            }),
+        )?;
+    } else {
+        lab.case(
+            "h2-hosted-venue-original-h2-not-measured",
+            false,
+            json!({
+                "original_h2_measured": measured,
+                "venue": venue,
+                "reason": "hosted Cap measure ran but original_h2_measured=false; refuse component green"
+            }),
+        )?;
+    }
+    lab.case(
+        "h2-hosted-venue-n06-owner-join-still-open",
+        true,
+        json!({
+            "n06_owner_join": false,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "reason": "hosted Cap measure ≠ N06 owner join / pass_product; Root join still open"
+        }),
+    )?;
     lab.components["w2_h2_hosted_venue"] = json!({
         "status": "executed",
         "kind": "w2-h2-hosted-venue-component",
@@ -667,6 +725,14 @@ mod tests {
             missing.is_empty(),
             "Cap topology must be present after Unlock B topology transfer; missing={missing:?}"
         );
+    }
+
+    #[test]
+    fn hosted_venue_markers_include_dockerfile_env() {
+        // build/rust/h2-hosted-venue-lab.Dockerfile sets HUMANYMOUS_H2_MEASURE_VENUE=
+        // hosted_linux_specfold; measure receipt must emit that marker (not desktop_lab_loopback).
+        assert!(HOSTED_VENUE_MARKERS.contains(&"hosted_linux_specfold"));
+        assert!(!HOSTED_VENUE_MARKERS.contains(&"desktop_lab_loopback"));
     }
 
     #[test]

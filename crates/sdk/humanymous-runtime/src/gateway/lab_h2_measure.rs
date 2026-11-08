@@ -34,6 +34,31 @@ const FLAG_END_STREAM: u8 = 0x1;
 const FLAG_END_HEADERS: u8 = 0x4;
 const PREFACE: &[u8] = b"PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 const RECEIPT_SCHEMA: &str = "humanymous.lab-h2-product-binding-measure-receipt/1";
+const DESKTOP_VENUE: &str = "desktop_lab_loopback";
+const DESKTOP_NETWORK: &str = "loopback_network_mode_none";
+const HOSTED_NETWORK: &str = "lab_internal_loopback_tls";
+const HOSTED_VENUES: &[&str] = &[
+    "hosted_linux_specfold",
+    "github-hosted-linux",
+    "root-hosted-linux",
+];
+
+/// Resolve measure venue from `HUMANYMOUS_H2_MEASURE_VENUE`.
+/// Default Desktop loopback; hosted Cap Dockerfile sets a hosted marker.
+/// Unknown values fail closed — never invent `desktop_as_hosted`.
+fn measure_venue() -> Result<(String, &'static str), String> {
+    match std::env::var("HUMANYMOUS_H2_MEASURE_VENUE") {
+        Err(std::env::VarError::NotPresent) => Ok((DESKTOP_VENUE.into(), DESKTOP_NETWORK)),
+        Ok(value) if value.is_empty() || value == DESKTOP_VENUE => {
+            Ok((DESKTOP_VENUE.into(), DESKTOP_NETWORK))
+        }
+        Ok(value) if HOSTED_VENUES.contains(&value.as_str()) => Ok((value, HOSTED_NETWORK)),
+        Ok(value) => Err(format!(
+            "unknown HUMANYMOUS_H2_MEASURE_VENUE={value}; refuse inventing venue or desktop_as_hosted"
+        )),
+        Err(error) => Err(format!("HUMANYMOUS_H2_MEASURE_VENUE: {error}")),
+    }
+}
 
 #[derive(Default)]
 struct MemoryAudit;
@@ -66,6 +91,9 @@ pub fn run() -> i32 {
             if measured { 0 } else { 1 }
         }
         Err(error) => {
+            let (venue, network) = measure_venue().unwrap_or_else(|_| {
+                (DESKTOP_VENUE.into(), DESKTOP_NETWORK)
+            });
             println!(
                 "{}",
                 json!({
@@ -74,7 +102,8 @@ pub fn run() -> i32 {
                     "product": 0,
                     "pass_product_clean_room": 0,
                     "desktop_as_hosted": false,
-                    "venue": "desktop_lab_loopback",
+                    "venue": venue,
+                    "network": network,
                     "error": error,
                     "note": "fail-closed measure; never invent pass_product_clean_room or desktop_as_hosted"
                 })
@@ -154,6 +183,8 @@ async fn measure_async() -> Result<Value, String> {
     let _ = tokio::time::timeout(BUDGET, server).await;
 
     let measured = status != 422;
+    let (venue, network) = measure_venue()?;
+    let hosted = HOSTED_VENUES.contains(&venue.as_str());
     Ok(json!({
         "schema": RECEIPT_SCHEMA,
         "kind": "w2-h2-product-binding-measure",
@@ -161,13 +192,17 @@ async fn measure_async() -> Result<Value, String> {
         "required_original_h2": true,
         "plaintext_control_status": control_status,
         "tls_h2_status": status,
-        "venue": "desktop_lab_loopback",
+        "venue": venue,
         "desktop_as_hosted": false,
         "product": 0,
         "pass_product_clean_room": 0,
-        "network": "loopback_network_mode_none",
-        "note": if measured {
+        "network": network,
+        "note": if measured && hosted {
+            "Hosted-venue Cap TLS listen+client measure cleared original_h2 observation gate; component only; N06 owner join still Root; never invent pass_product_clean_room or desktop_as_hosted"
+        } else if measured {
             "Desktop lab TLS listen+client measure cleared original_h2 observation gate; not hosted product; N06 readiness/owner join still Root"
+        } else if hosted {
+            "Hosted-venue Cap TLS measure ran but original_h2 gate still 422; keep original_h2_measured=false; never invent pass_product_clean_room"
         } else {
             "Desktop lab TLS measure ran but original_h2 gate still 422; keep original_h2_measured=false"
         }
