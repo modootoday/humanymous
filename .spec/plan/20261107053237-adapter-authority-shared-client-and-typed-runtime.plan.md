@@ -1330,3 +1330,14 @@ is a review proposal, not accepted production wire or trust anchoring. Local sou
 inspection corrected initial integration module-path attempt without any compiler
 run. No previous test pass transferred. Native production admission, W retention/
 JOIN, actual secret receipt, Ready and all current-source pilots remain open.
+
+### Independent review: DATA refusal corrections after1fe41ab4
+
+Confirmed two bounded defects: Replay/Capacity did not advance trusted clock
+watermarks; replay keys included role/base_plan and lacked cross-position checks.
+Fixed only evidence candidates, clockwatermarks before refusal, role-neutral
+SID/PID/creation/epoch commitments and both-position comparisons. Fullsignedrole/plan
+transcript unchanged. Three added regressions (including four clockrefusal cases),
+16authored NOT_RUN total. No proof bypass or producer: native_admissionUnsupported
+unchanged. Root asked to hold initial DATApolicy adoption; receiptseam/preimages
+unchanged, revised manifest and source sent reviewer. No allocation/execution.

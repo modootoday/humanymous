@@ -18,14 +18,14 @@
       "preimage_sha256": "2144cb30ab6db6cdf535c55b89b16a24d91c9b8c5edf865e936a0155e08bade1",
       "required_absent": false,
       "candidate": "authorization-tests.after.rs",
-      "after_sha256": "83d186a09b2c76fadb39e367346b48c19d0963692ea18d7f12c1a2928bb4f37e"
+      "after_sha256": "8117492d753afdc2b60c2091bf9756163a6341f2fe5d755d4496f9f082a6b437"
     },
     {
       "target": "crates/sdk/humanymous-runtime/src/authority/startup/authorization/admission_policy.rs",
       "preimage_sha256": null,
       "required_absent": true,
       "candidate": "admission_policy.rs",
-      "after_sha256": "55d78d0bb91e91dc22c7a79feb19002b29f50b743f26586d4f4329c5de00eb2e"
+      "after_sha256": "2148d3c34f2d7b0d12f7684d809845f54141891d7aa9b732c894cafda3bd9998"
     },
     {
       "target": "crates/sdk/humanymous-runtime/src/authority/startup/observer.rs",
@@ -49,7 +49,8 @@
       "after_sha256": "aaa6c7355689e1f9c2be8094c519422fd56155fba5c89f07cffd10a5ee0a2efb"
     }
   ],
-  "test_cases_authored": 13,
+  "test_cases_authored": 16,
   "metadata": "admission_policy_tests.rs is supplemental readable source, tests inline in authorization-tests.after.rs; do not apply as second test target",
-  "remaining": "Root application and protocol review, allocated component checks; original native/W/Ready/hosted production gates open"
+  "remaining": "Root application and protocol review, allocated component checks; original native/W/Ready/hosted production gates open",
+  "review_correction": "Initial1fe41ab4 clock-watermark and role/plan replay-key gaps fixed;16cases authored NOT_RUN. Originalpreimages and receiptseam unchanged."
 }

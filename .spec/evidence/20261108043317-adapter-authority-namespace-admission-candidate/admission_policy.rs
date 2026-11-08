@@ -1,6 +1,6 @@
 //! Candidate DATA admission checks. No native ownership, protected store or Ready.
 //! The transcript is a review proposal, not a replacement accepted wire protocol.
-use super::{SignatureCheckedAuthorization, binding};
+use super::{RoleData, SignatureCheckedAuthorization, binding};
 use ed25519_dalek::{Signature, VerifyingKey};
 use sha2::{Digest, Sha256};
 use std::{convert::Infallible, sync::{Arc, Mutex}, time::{Duration, Instant}};
@@ -161,6 +161,19 @@ pub struct ReviewedData {
     startup_cap_ms: u32,
 }
 
+fn process_identity(role: &RoleData) -> [u8; 32] {
+    // Replay identity deliberately excludes role tag, plan, service name and image.
+    // Full role/plan bindings remain independently signed in BOTH transcripts.
+    let mut h = Sha256::new();
+    h.update(b"humanymous.observer-bootstrap.admission-candidate/1/process-identity\0");
+    h.update([role.sid.len() as u8]); // already bounded by strict bundle verification.
+    h.update(&role.sid);
+    h.update(role.pid.to_be_bytes());
+    h.update(role.creation.to_be_bytes());
+    h.update(role.epoch);
+    h.finalize().into()
+}
+
 /// Check original record/delegation, both instance bindings and fresh challenge DATA.
 /// Native protection, actual TokenUser/process retention, CSPRNG origin and W
 /// cancellation/JOIN remain independent mandatory inputs, not inferred here.
@@ -214,8 +227,8 @@ pub fn review_data(
     verify(&policy.peer_key, &response.peer_signature, &transcript(1, checked, original, policy))?;
     verify(&w.key, &response.witness_signature, &transcript(2, checked, original, policy))?;
     Ok(ReviewedData {
-        grant: *checked.grant_id(), service: binding::role(checked.service()),
-        observer: binding::role(checked.observer()), channel: policy.channel,
+        grant: *checked.grant_id(), service: process_identity(checked.service()),
+        observer: process_identity(checked.observer()), channel: policy.channel,
         peer_nonce: policy.peer_nonce, witness_nonce: policy.witness_nonce, wall_ms: now_ms,
         expiry_ms: w.not_after_ms.min(checked.not_after_ms()),
         startup_cap_ms: checked.startup_cap_ms(),
@@ -272,8 +285,13 @@ impl ReviewLedger {
             state.expired = true;
             return Err(Refusal::Expired);
         }
+        // Trusted observations count even when no tombstone can be inserted.
+        // Replay/capacity refusal must not permit a later clock rollback.
+        state.last_mono = now;
+        state.last_wall = wall_ms;
         if state.entries.iter().any(|old| old.grant == data.grant
             || old.service == data.service || old.observer == data.observer
+            || old.service == data.observer || old.observer == data.service
             || old.channel == data.channel || old.peer_nonce == data.peer_nonce
             || old.witness_nonce == data.witness_nonce || old.peer_nonce == data.witness_nonce
             || old.witness_nonce == data.peer_nonce)
@@ -281,8 +299,6 @@ impl ReviewLedger {
             return Err(Refusal::Replay);
         }
         if state.entries.len() == self.capacity { return Err(Refusal::Capacity); }
-        state.last_mono = now;
-        state.last_wall = wall_ms;
         state.entries.push(data);
         Ok(ReviewReservation { _state: self.state.clone() })
     }

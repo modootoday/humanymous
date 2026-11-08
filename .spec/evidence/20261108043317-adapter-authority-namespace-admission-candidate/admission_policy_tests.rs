@@ -1,6 +1,6 @@
 //! Authored component tests only; none creates native proof or Ready.
 use super::{check, fixture};
-use super::super::{admission_policy::*, binding, SignatureCheckedAuthorization};
+use super::super::{admission_policy::*, binding, ExpectedAuthorizationData, SignatureCheckedAuthorization};
 use ed25519_dalek::{Signer, SigningKey};
 use std::time::{Duration, Instant};
 
@@ -8,11 +8,15 @@ fn case() -> (SignatureCheckedAuthorization, OriginalNamespaceData, OriginalPinD
     case_for(0, 0)
 }
 fn case_for(grant: u8, instance: u8) -> (SignatureCheckedAuthorization, OriginalNamespaceData, OriginalPinData, ChannelPolicyData) {
+    case_variant(grant, instance, |_| {})
+}
+fn case_variant(grant: u8, instance: u8, edit: fn(&mut ExpectedAuthorizationData)) -> (SignatureCheckedAuthorization, OriginalNamespaceData, OriginalPinData, ChannelPolicyData) {
     let mut expected = fixture::expected(false);
     expected.attempt.grant_id = [9 + grant; 32];
     expected.attempt.credential_epoch = [10 + grant; 16];
     expected.service.epoch = [7 + instance; 16];
     expected.observer.epoch = [8 + instance; 16];
+    edit(&mut expected);
     let records = fixture::records(&mut expected);
     let checked = check(&records, &expected, 2000).unwrap();
     let original = OriginalNamespaceData {
@@ -196,4 +200,53 @@ fn reservation_rechecks_witness_expiry_and_signed_startup_cap_without_renewal() 
     assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &r, 2000).unwrap(), now, 2000), Err(Refusal::Expired)));
     assert!(matches!(ReviewLedger::new(129, now, Duration::from_secs(1), 2000), Err(Refusal::Binding)));
     assert!(matches!(ReviewLedger::new(1, now, Duration::ZERO, 2000), Err(Refusal::Binding)));
+}
+
+#[test]
+fn replay_and_capacity_refusals_advance_both_clock_watermarks_and_latch_rollback() {
+    let now = Instant::now();
+    for capacity_refusal in [false, true] {
+        for mono_rollback in [false, true] {
+            let ledger = ReviewLedger::new(if capacity_refusal { 1 } else { 2 }, now, Duration::from_secs(1), 2000).unwrap();
+            let (c, o, pin, p) = case();
+            drop(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), now, 2000).unwrap());
+            let (c, o, pin, p) = if capacity_refusal { case_for(4, 1) } else { case() };
+            let refused = ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2020).unwrap(), now + Duration::from_millis(20), 2020);
+            assert!(matches!((capacity_refusal, refused), (true, Err(Refusal::Capacity)) | (false, Err(Refusal::Replay))));
+            let (c, o, pin, p) = case_for(8, 2);
+            let rollback_mono = now + Duration::from_millis(if mono_rollback { 10 } else { 21 });
+            let rollback_wall = if mono_rollback { 2021 } else { 2010 };
+            assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), rollback_mono, rollback_wall), Err(Refusal::Expired)));
+            assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2030).unwrap(), now + Duration::from_millis(30), 2030), Err(Refusal::Expired)));
+        }
+    }
+}
+
+#[test]
+fn fresh_signed_base_plans_do_not_change_same_process_epoch_replay_identity() {
+    let now = Instant::now(); let ledger = ReviewLedger::new(2, now, Duration::from_secs(1), 2000).unwrap();
+    let (c, o, pin, p) = case();
+    drop(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), now, 2000).unwrap());
+    let (c, o, pin, p) = case_variant(4, 0, |e| {
+        e.service.base_plan[0] ^= 1; e.observer.base_plan[0] ^= 1;
+    });
+    // Fully valid fresh signed delegation/records and challenges; only native
+    // process epoch reuse should refuse. Full role/plan transcript remains bound.
+    let reviewed = review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap();
+    assert!(matches!(ledger.reserve(reviewed, now, 2000), Err(Refusal::Replay)));
+}
+
+#[test]
+fn swapping_signed_role_positions_does_not_reset_process_epoch_consumption() {
+    let now = Instant::now(); let ledger = ReviewLedger::new(2, now, Duration::from_secs(1), 2000).unwrap();
+    let (c, o, pin, p) = case();
+    drop(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), now, 2000).unwrap());
+    let (c, o, pin, p) = case_variant(4, 0, |e| {
+        std::mem::swap(&mut e.service.sid, &mut e.observer.sid);
+        std::mem::swap(&mut e.service.pid, &mut e.observer.pid);
+        std::mem::swap(&mut e.service.creation, &mut e.observer.creation);
+        std::mem::swap(&mut e.service.epoch, &mut e.observer.epoch);
+    });
+    let reviewed = review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap();
+    assert!(matches!(ledger.reserve(reviewed, now, 2000), Err(Refusal::Replay)));
 }

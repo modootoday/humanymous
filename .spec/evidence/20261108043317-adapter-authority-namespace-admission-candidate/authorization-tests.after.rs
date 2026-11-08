@@ -472,19 +472,23 @@ fn public_fixture_domain_vectors_have_stable_artifact_bytes() {
 mod admission_policy_tests {
     //! Authored component tests only; none creates native proof or Ready.
     use super::{check, fixture};
-    use super::super::{admission_policy::*, binding, SignatureCheckedAuthorization};
+    use super::super::{admission_policy::*, binding, ExpectedAuthorizationData, SignatureCheckedAuthorization};
     use ed25519_dalek::{Signer, SigningKey};
     use std::time::{Duration, Instant};
-    
+
     fn case() -> (SignatureCheckedAuthorization, OriginalNamespaceData, OriginalPinData, ChannelPolicyData) {
         case_for(0, 0)
     }
     fn case_for(grant: u8, instance: u8) -> (SignatureCheckedAuthorization, OriginalNamespaceData, OriginalPinData, ChannelPolicyData) {
+        case_variant(grant, instance, |_| {})
+    }
+    fn case_variant(grant: u8, instance: u8, edit: fn(&mut ExpectedAuthorizationData)) -> (SignatureCheckedAuthorization, OriginalNamespaceData, OriginalPinData, ChannelPolicyData) {
         let mut expected = fixture::expected(false);
         expected.attempt.grant_id = [9 + grant; 32];
         expected.attempt.credential_epoch = [10 + grant; 16];
         expected.service.epoch = [7 + instance; 16];
         expected.observer.epoch = [8 + instance; 16];
+        edit(&mut expected);
         let records = fixture::records(&mut expected);
         let checked = check(&records, &expected, 2000).unwrap();
         let original = OriginalNamespaceData {
@@ -509,7 +513,7 @@ mod admission_policy_tests {
         };
         (checked, original, pin, policy)
     }
-    
+
     // Independent test encoder intentionally does not call production transcript().
     fn message(role: u8, c: &SignatureCheckedAuthorization, o: &OriginalNamespaceData, p: &ChannelPolicyData) -> Vec<u8> {
         let mut out = b"humanymous.observer-bootstrap.admission-candidate/1/challenge\0".to_vec();
@@ -529,7 +533,7 @@ mod admission_policy_tests {
             witness_signature: SigningKey::from_bytes(&[12; 32]).sign(&message(2, c, o, p)).to_bytes(),
         }
     }
-    
+
     #[test]
     fn verified_data_and_reservation_still_cannot_mint_native_admission() {
         let (c, o, pin, p) = case(); let r = response(&c, &o, &p);
@@ -540,7 +544,7 @@ mod admission_policy_tests {
         assert!(matches!(crate::authority::startup::observer::native_preparation(),
             Err(crate::authority::startup::observer::NativePreparationUnavailable::Unsupported)));
     }
-    
+
     #[test]
     fn original_namespace_key_epoch_scope_delegation_and_generation_substitution_refuse() {
         let changes: &[fn(&mut OriginalNamespaceData)] = &[
@@ -553,14 +557,14 @@ mod admission_policy_tests {
             assert!(matches!(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000), Err(Refusal::Original)));
         }
     }
-    
+
     #[test]
     fn matching_fake_record_digest_still_cannot_replace_the_signed_installer_delegation() {
         let (c, mut o, mut pin, p) = case(); o.installer_key[0] ^= 1;
         pin.record_digest = original_digest(&o);
         assert!(matches!(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000), Err(Refusal::Original)));
     }
-    
+
     #[test]
     fn every_channel_and_witness_field_mutation_invalidates_original_signatures() {
         let changes: &[fn(&mut ChannelPolicyData)] = &[
@@ -574,7 +578,7 @@ mod admission_policy_tests {
             assert!(matches!(review_data(&c, &o, &pin, &p, &r, 2000), Err(Refusal::Signature)));
         }
     }
-    
+
     #[test]
     fn wrong_key_weak_signature_and_cross_role_reflection_refuse() {
         let (c, o, pin, p) = case();
@@ -586,7 +590,7 @@ mod admission_policy_tests {
         r.peer_signature = SigningKey::from_bytes(&[13; 32]).sign(&message(1, &c, &o, &p)).to_bytes();
         assert!(matches!(review_data(&c, &o, &pin, &p, &r, 2000), Err(Refusal::Signature)));
     }
-    
+
     #[test]
     fn witness_role_alias_zero_nonce_and_unbounded_sid_refuse_before_encoding() {
         let changes: &[fn(&mut ChannelPolicyData)] = &[
@@ -600,7 +604,7 @@ mod admission_policy_tests {
             assert!(matches!(review_data(&c, &o, &pin, &p, &r, 2000), Err(Refusal::Binding)));
         }
     }
-    
+
     #[test]
     fn invalid_signature_cannot_burn_legitimate_reservation_and_drop_cannot_restore_it() {
         let (c, o, pin, p) = case(); let good = response(&c, &o, &p);
@@ -611,7 +615,7 @@ mod admission_policy_tests {
         assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &good, 2000).unwrap(), now, 2000), Err(Refusal::Replay)));
         assert!(matches!(ReviewLedger::recover(b"successful ACK cursor"), Err(Refusal::Recovery)));
     }
-    
+
     #[test]
     fn concurrent_exact_replay_has_only_one_ephemeral_reservation_not_native_consumption() {
         let (c, o, pin, p) = case(); let r = response(&c, &o, &p);
@@ -625,7 +629,7 @@ mod admission_policy_tests {
         });
         assert_eq!(wins, 1);
     }
-    
+
     #[test]
     fn absolute_deadline_and_wall_rollback_are_latched_and_cannot_renew() {
         let (c, o, pin, p) = case(); let r = response(&c, &o, &p);
@@ -637,7 +641,7 @@ mod admission_policy_tests {
         assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &r, 2000).unwrap(), now + budget, 2000), Err(Refusal::Expired)));
         assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &r, 2000).unwrap(), now, 2000), Err(Refusal::Expired)));
     }
-    
+
     #[test]
     fn witness_expiry_exact_boundary_future_commit_and_unbounded_lease_refuse() {
         let (c, o, pin, mut p) = case(); let r = response(&c, &o, &p);
@@ -646,7 +650,7 @@ mod admission_policy_tests {
         p.witness.not_after_ms = 5001;
         assert!(matches!(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000), Err(Refusal::Expired)));
     }
-    
+
     #[test]
     fn fresh_grant_cannot_republish_same_process_epoch_and_capacity_never_evicts_tombstones() {
         let now = Instant::now(); let ledger = ReviewLedger::new(1, now, Duration::from_secs(1), 2000).unwrap();
@@ -658,7 +662,7 @@ mod admission_policy_tests {
         let (c, o, pin, p) = case_for(4, 1);
         assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), now, 2000), Err(Refusal::Capacity)));
     }
-    
+
     #[test]
     fn reservation_rechecks_witness_expiry_and_signed_startup_cap_without_renewal() {
         let (c, o, pin, p) = case(); let r = response(&c, &o, &p); let now = Instant::now();
@@ -669,5 +673,54 @@ mod admission_policy_tests {
         assert!(matches!(ReviewLedger::new(129, now, Duration::from_secs(1), 2000), Err(Refusal::Binding)));
         assert!(matches!(ReviewLedger::new(1, now, Duration::ZERO, 2000), Err(Refusal::Binding)));
     }
-    
+
+    #[test]
+    fn replay_and_capacity_refusals_advance_both_clock_watermarks_and_latch_rollback() {
+        let now = Instant::now();
+        for capacity_refusal in [false, true] {
+            for mono_rollback in [false, true] {
+                let ledger = ReviewLedger::new(if capacity_refusal { 1 } else { 2 }, now, Duration::from_secs(1), 2000).unwrap();
+                let (c, o, pin, p) = case();
+                drop(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), now, 2000).unwrap());
+                let (c, o, pin, p) = if capacity_refusal { case_for(4, 1) } else { case() };
+                let refused = ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2020).unwrap(), now + Duration::from_millis(20), 2020);
+                assert!(matches!((capacity_refusal, refused), (true, Err(Refusal::Capacity)) | (false, Err(Refusal::Replay))));
+                let (c, o, pin, p) = case_for(8, 2);
+                let rollback_mono = now + Duration::from_millis(if mono_rollback { 10 } else { 21 });
+                let rollback_wall = if mono_rollback { 2021 } else { 2010 };
+                assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), rollback_mono, rollback_wall), Err(Refusal::Expired)));
+                assert!(matches!(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2030).unwrap(), now + Duration::from_millis(30), 2030), Err(Refusal::Expired)));
+            }
+        }
+    }
+
+    #[test]
+    fn fresh_signed_base_plans_do_not_change_same_process_epoch_replay_identity() {
+        let now = Instant::now(); let ledger = ReviewLedger::new(2, now, Duration::from_secs(1), 2000).unwrap();
+        let (c, o, pin, p) = case();
+        drop(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), now, 2000).unwrap());
+        let (c, o, pin, p) = case_variant(4, 0, |e| {
+            e.service.base_plan[0] ^= 1; e.observer.base_plan[0] ^= 1;
+        });
+        // Fully valid fresh signed delegation/records and challenges; only native
+        // process epoch reuse should refuse. Full role/plan transcript remains bound.
+        let reviewed = review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap();
+        assert!(matches!(ledger.reserve(reviewed, now, 2000), Err(Refusal::Replay)));
+    }
+
+    #[test]
+    fn swapping_signed_role_positions_does_not_reset_process_epoch_consumption() {
+        let now = Instant::now(); let ledger = ReviewLedger::new(2, now, Duration::from_secs(1), 2000).unwrap();
+        let (c, o, pin, p) = case();
+        drop(ledger.reserve(review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap(), now, 2000).unwrap());
+        let (c, o, pin, p) = case_variant(4, 0, |e| {
+            std::mem::swap(&mut e.service.sid, &mut e.observer.sid);
+            std::mem::swap(&mut e.service.pid, &mut e.observer.pid);
+            std::mem::swap(&mut e.service.creation, &mut e.observer.creation);
+            std::mem::swap(&mut e.service.epoch, &mut e.observer.epoch);
+        });
+        let reviewed = review_data(&c, &o, &pin, &p, &response(&c, &o, &p), 2000).unwrap();
+        assert!(matches!(ledger.reserve(reviewed, now, 2000), Err(Refusal::Replay)));
+    }
+
 }

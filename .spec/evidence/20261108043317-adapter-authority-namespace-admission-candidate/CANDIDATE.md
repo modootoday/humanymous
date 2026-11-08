@@ -67,7 +67,7 @@ No B2 facade is copied or treated as such a producer.
 
 ## Authored tests and actual missing execution
 
-Thirteen new cases: twelve signature/original/replay/recovery/time/capacity/atomic
+Sixteen new cases: fifteen signature/original/replay/recovery/time/capacity/atomic
 policy cases plus one same-epoch/phase/revocation model test. The positive DATA case
 explicitly requires NativeUnsupported and the unchanged unsupported native producer.
 Test signatures use public deterministic test-only seeds and a separate transcript
@@ -83,3 +83,13 @@ TokenUser/rights/launch-file ownership, durable one-claim lock/recovery, live ch
 and independent W cancellation/JOIN, framed aggregate startup, secret receipt,
 Runtime Ready and final hosted/Docker gates are OPEN. This candidate closes none
 of these production evidence gates.
+
+## Independent source review correction
+
+Initial candidate1fe41ab4 had two bounded DATA-policy defects. Trusted monotonic/
+wall samples now advance before Replay/Capacity refusals, with rollback permanently
+latched. Replay process identity now excludes role/plan and binds SID/PID/creation/
+epoch, compares both positions; complete role/plan transcript binding is retained.
+Three regression tests cover four rollback/refusal combinations, changed signed
+base plans under fresh grants/challenges and swapped signed role identities.
+These fixes are authored, NOT_RUN; native_admission still always Unsupported.
