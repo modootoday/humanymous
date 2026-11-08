@@ -2850,5 +2850,11 @@
     "sha256": "339562984878e1e56c07d443f2264dc033c495ff15bdaa94cf45a70660353772",
     "bytes": 1955,
     "goal_complete": false
+  },
+  "b2_frozen_delivery_followup": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-frozen-review-038.json",
+    "sha256": "453829801f9c23fe62d0f0122efe51b3103ab5425f4ef791a0d048dc04d1f24e",
+    "bytes": 1193,
+    "goal_complete": false
   }
 }

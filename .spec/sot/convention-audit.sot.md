@@ -4153,3 +4153,18 @@ localcompiler-rev4-review-037.json binds hashes/scope. Previous20units/4privacy
 observations do not transfer to revision4. Actual check/fmt/strict/6newcases/real3B1
 scenarios and whole compiler/hosted/CA-LIFETIME gates remain OPEN; no source
 application, allocation, protocol/provider or executor grant follows from review.
+
+B2 frozen delivery join independently checks11current isolated Platform preimage
+hash/size rows,6Rust candidate postimages,2patches and integration-delta bytes with
+0mismatches; all6new destinations remain absent. Reconstructing each new file's
+added text from platform-module.patch equals its candidate text exactly. Final
+native11173B source was read in full:10function-local allowances/17unsafe blocks,
+without module-wide override. Finalfacade adds1positive-no-run/2privacy compilefail
+docs and a cfg(test) controlled rejection hook; the latter is not an injected
+Windows API failure. Required inventory is9pure,7ignored native parents and6ignored
+helpers; all tests/formatter/compiler/native execution remain NOTRUN. Private
+b2-frozen-review-038.json and copied source-inputs bind this delivery epoch.
+Body approval remains PENDING_ROOT_AND_X and no source application or unsafe grant
+is inferred. Specific drain fixes are reviewed, actual regression evidence still
+required. Normal common-owner extraction, B2-P, real namespace/W/Ready/provider,
+outer supervision and full CA-LIFETIME/migration gates remain OPEN.
