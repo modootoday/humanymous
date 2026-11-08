@@ -820,3 +820,189 @@ unqualified. No bootstrap CLI/process, GPU, activation, correction/cohort/time
 admission or Docker product e2e success follows from this real kernel qualification.
 Temporary private non-test dead_code expectation still requires removal when the
 real offline composition caller is wired. Whole ML migration remains incomplete.
+
+## Next verification design: unchanged Go1.26.3 SGD endpoint oracle
+
+Status: REVIEW_ONLY_NO_EXECUTION. Core177/SGD15 is real Rust component proof,
+not Go SGD bit parity. No compiler, Go command, data generator or source change
+is authorized by this design. Root retains the current sole Lab execution lease.
+
+### Unchanged surfaces and their observability ceiling
+
+Use ORIGINAL cmd/ml-train and cmd/mlcorrect-train/main.go+gate.go, internal/mltrain,
+behavior, mlserve and signals, with byte hashes and Git archive closure. No authored
+Go, wrapper Go main, modified tests, source instrumentation, foreign template,
+-gcflags arithmetic override or patched expectations. Existing Go tests may run
+unchanged but their pass footer exposes only their assertions, not internal arrays.
+
+- ml-train -data requires>=100rows; its seed creates a PRE-SPLIT GoRng, shuffles
+  all rows once, val=firstfloor(n/5), train=remaining. Train then constructs a NEW
+  GoRng with the SAMEseed; do NOTcontinue the split RNG into initialization. This
+  separation is outside the kernel's single-stream init+epoch contract. The -gen
+  path consumes different data-generation draws, so this oracle uses -data ONLY.
+- mlcorrect-train reads anchor then optional oracle, stable TS-sort and cut
+  n-floor(n*testFrac); Train uses a fresh seed stream and valid base. It writes a
+  candidate only if ORIGINALcohort/TPR gates pass. Keep default gates unchanged.
+- Both output final mean/std, all weights/biases, calibration, dimensions/schema
+  and clock-generated version as JSON. These floats can be decoded to f32 bits.
+  Cold epochs0 exposes initialization weights; warm epochs0 exposes copied weights,
+  new train statistics and reset calibration. Those are actual final output
+  observations, not snapshots of an in-progress training state.
+- Neither CLI emits per-row extracted features, shuffled IDs, RNG draws/state,
+  hidden pre/activation, logit, p, derivatives or per-update weights. All such
+  proposed Rust trace fields MUSTstay Rust-derived/unobserved-in-Go. Epoch1/3 runs
+  yield independent endpoint observations, not a replay transcript within one run.
+- stderr metrics are rounded3decimal places (cohort FPR4); exact Go evaluation
+  probability/rate bits remain unobserved. Warm stderr cohort human/FP integers,
+  train/test counts and gate outcome AREobserved. Rust re-evaluating the emitted
+  Go bundle does not magically observe Go Predict bits. No new telemetry implied.
+
+### Exact synthetic numeric data and warm base (Rust generation only)
+
+Propose320JSONL rows in original order i=0..319, no blanks, LF, explicit required
+label/behavior and metadata. All behavior fields zero except mouse.meanCurvature:
+label=1 iff i%2==0; j=(i/4)%4; curvature=(label==1 ? 0.75 : 0.25)+j/64.
+All values are exact binary rationals. ts=10000+i; source=catalog for1, pass for0;
+cohort=synthetic-a iff i%4==1, synthetic-b iff i%4==3, synthetic-bot otherwise.
+Example row0 is {"label":1,"behavior":{"mouse":{"meanCurvature":0.75}},
+"ts":10000,"cohort":"synthetic-bot","source":"catalog"}. Rust's actual generator
+will serialize complete/default behavior consistently and pin the resulting bytes,
+not manually concatenate floating-point executable foreign code. No real human/
+accessibility evidence is implied by these intentionally synthetic cohort names.
+
+Restricted fixture feature vector is analytically27zeros except index1=curvature:
+all log1p inputs0 and presence flags false. Record exact f64 JSON values and
+expected f32 bits plus shared feature order/schema in a separate Rust manifest.
+Parse the SAMEdata bytes through each program. Rust must assert its extracted
+vectors match that analytic manifest. Go per-row vectors remain source-inferred,
+not directly observed; emitted27mean/std values are actual aggregate observations.
+This fixture isolates SGD from nonzero log1p differences. Existing unchanged Go
+behavior tests and retained Rust feature fixtures are supplementary, not proof of
+new arbitrary Go feature inputs. A later nonzero-log fixture needs its own review
+and cannot inherit this restricted feature-domain claim.
+
+Warm base: hidden1, featureDim27, correct shared schema; w1[0][1]=8 and other w1=0,
+b1=[8],w2=[1],b2=-8; mean27zeros,std27ones; calA=2,calB=-0.5;
+version=synthetic-oracle-base. Root-reviewed Rust generator writes/pins complete
+JSON and exact float bits. No Go tool needed to construct it. Correction split
+at0.25 yields240train/80test,40test humans,20per synthetic human cohort. Increasing
+TS avoids the legacy tie ambiguity. New train statistics and calA=1/calB=0 are
+expected evenepochs0. This separable base is intended to satisfy DEFAULT0.005FPR,
+0.80TPR,min20support gates without relaxation; if any gate fails, retain exit3/no
+candidate and stop, do not change data, thresholds or assertions during the epoch.
+Do not describe this as functional continuity of the original calibrated base.
+
+### Bounded proposed run matrix and exact commands (NOT_RUN)
+
+Root would first allocate a Rust-authored qualifier under existing private
+training/sgd/oracle.rs, test-only and existing qualification feature, not a public
+API forwarding facade. It genuinely generates numeric data and orchestrates the
+unchanged binaries, with explicit allocated execution opt-in; no hidden downloads
+or default Cargo test subprocess launch. A separately reviewed ignored qualification
+test selector is acceptable only when run explicitly with --ignored; ignored is
+NEVERcounted as a pass. No source for this qualifier exists yet.
+
+The Rust controller supervises std::process::Command children, creates ONLYowned
+fresh directories/files, caps JSONL<=1MiB, each artifact<=1MiB, each log<=4MiB,
+<=7CLI invocations, one child at a time, jobs1, no network, one epoch Stopwatch.
+It records actual StartTime/dispatch and terminal timestamps/elapsed/PID/exits and
+settles children/drains before cleanup/lease return. Per-stage times and overall
+390/450style limits are Root allocations, not automatically granted here.
+Pre-snapshot source ANDselected resolved module/tool/config data BEFOREexecution,
+then post-snapshot; do not repeat the prior post-only registry audit limitation.
+
+Direct original commands below use a fresh immutable archive as cwd, an allocated
+absolute Go1.26.3 executable and an OWNEDoutput directory (paths are review tokens):
+
+    <go1263> version
+    <go1263> env -json GOVERSION GOOS GOARCH GOAMD64 GOEXPERIMENT GOFLAGS GOTOOLCHAIN CGO_ENABLED GOROOT GOMOD GOMODCACHE GOCACHE
+    <go1263> build -mod=readonly -trimpath -buildvcs=false -p=1 -o <owned>/ml-train.exe ./cmd/ml-train
+    <go1263> build -mod=readonly -trimpath -buildvcs=false -p=1 -o <owned>/mlcorrect-train.exe ./cmd/mlcorrect-train
+    <go1263> version -m <owned>/ml-train.exe
+    <go1263> version -m <owned>/mlcorrect-train.exe
+    <owned>/ml-train.exe -data <owned>/samples.jsonl -out <owned>/cold-h1-e0.json -hidden 1 -epochs 0 -lr 0.03125 -seed 2
+    <owned>/ml-train.exe -data <owned>/samples.jsonl -out <owned>/cold-h1-e1.json -hidden 1 -epochs 1 -lr 0.03125 -seed 2
+    <owned>/ml-train.exe -data <owned>/samples.jsonl -out <owned>/cold-h1-e3.json -hidden 1 -epochs 3 -lr 0.03125 -seed 2
+    <owned>/ml-train.exe -data <owned>/samples.jsonl -out <owned>/cold-h3-e3.json -hidden 3 -epochs 3 -lr 0.03125 -seed -1
+    <owned>/mlcorrect-train.exe -anchor <owned>/samples.jsonl -base <owned>/base.json -out <owned>/warm-e0.json -hidden 1 -epochs 0 -lr 0.03125 -seed 2
+    <owned>/mlcorrect-train.exe -anchor <owned>/samples.jsonl -base <owned>/base.json -out <owned>/warm-e1.json -hidden 1 -epochs 1 -lr 0.03125 -seed 2
+    <owned>/mlcorrect-train.exe -anchor <owned>/samples.jsonl -base <owned>/base.json -out <owned>/warm-e3.json -hidden 1 -epochs 3 -lr 0.03125 -seed 2
+    <go1263> test -mod=readonly -p=1 -count=1 ./internal/mltrain -run '^(TestTrainAndEvaluate_Separable|TestWarmStart_UsesBaseAndKeepsShape)$'
+    <go1263> test -mod=readonly -p=1 -count=1 ./internal/behavior -run '^Test(Extract_|SchemaHash_)'
+
+Use child env GOTOOLCHAIN=local,GOPROXY=off,GOSUMDB=off,GOWORK=off,GOENV=off,
+GOMAXPROCS=1,CGO_ENABLED=0,GOOS=windows,GOARCH=amd64,GOAMD64=v1;
+GOFLAGS/GOEXPERIMENT explicitly empty for first tuple. Set exclusive GOCACHE and
+preexisting pinned offline GOMODCACHE; cache absence or wrong Go version refuses
+before tests. No go mod tidy/get, toolchain upgrade or dependency/source edits.
+Module graph/checksums/source files actually resolved by these unchanged packages
+must be captured with their commands when allocated; include Go stdlib+tool/compiler
+binaries and go env, go.mod/go.sum, base/input/output bytes and binary build info.
+No production path, existing output overwrite, real gate signing/staging or cleanup
+of shared caches. Original Go uses os.WriteFile, so supervisor precreates OWNEDfresh
+output DIRECTORY, checks each output absent and never points Go at a sentinel.
+
+### Comparison, FMA and identity decisions
+
+Cold comparator reproduces pre-split Shuffle(seed), val/train selection/order,
+train-only standardize, then fresh Train(seed). Warm comparator reproduces source
+stable-sort/cut on unique TS with train-only standardize and supplied base. Record
+all derived ID orders/draw counters as RUST_DERIVED; Go prints only coarse counts.
+No standardization leakage from holdout. Input float64LR0.03125 casts exactlyf32.
+
+For each successful final Go JSON: preserve raw bytes/SHA, reject malformed or
+nonfinite/shape/schema mismatches, decode every mean/std/W1/B1/W2/B2/Cal field to
+f32.to_bits; compare every bit to Rust, abs0/rel0, no negative-zero canonicalization.
+Compare dimension/schema exactly. CLI version is clock-generated, not flag-settable:
+validate its original prefix/shape against captured run time and pass the OBSERVED
+version into the Rust config for fieldwise artifact comparison. Record that version
+was observed input to the comparison, not a predicted deterministic value. Do not
+mask numerical fields, compare pretty JSON bytes across different serializers, or
+claim deterministic raw Go bytes across changing version timestamps. Warm stdout
+SHA digest must independently match the exact emitted candidate bytes.
+
+Stop on the FIRSTnumeric difference and report case, field/index, Go/Rust bits,
+source/tool/binary/input/base hashes, exact build flags, target/CPU capabilities
+and decoded values. No tolerance waiver, golden rewrite, source patch, -N/-l or
+FMA-disabling flags to manufacture equality. Go1.26.3 may fuse operations; Rust
+explicit non-FMA source order is not proof the Go target chooses it. Record actual
+CPU model/ISA/FMA capability, OS/arch, GOAMD64, compiler and Rust target-cpu/features/
+profile/RUSTFLAGS/config; a matching tuple qualifies only those7endpoint cases.
+Other CPUs/targets/optimizations remain unqualified. If desired, preserve Go
+objdump/compiler assembly as diagnostics without claiming it observes runtime data.
+No new Go intermediate observation is inferred from matching final bits.
+
+## Proposed deliberate offline Core boundary for a real Rust CLI caller
+
+This is an API REVIEWproposal ONLY; no exports, source/Cargo changes or fake
+calls. The Go oracle can use the genuinely exercised private kernel in a Core
+qualification test; it does not justify exposing SGD internals to consumers.
+
+The future real CLI should call ONEreviewed composition operation under Core
+model::training::offline, tentatively fit_offline(train_rows, holdout_rows,
+config,limits,base)->Result<OfflineTrainingReport,OfflineTrainingError>. Its public
+numeric row DTO borrows FeatureVector+binary label and is explicitly NOTproof of
+source authentication; caller owns reading/admission/cohort/time/provenance review.
+The function validates both datasets/support/limits, computes TRAINONLYstatistics,
+uses the private SGD kernel, loads existing Mlp and reduces existing evaluation,
+then returns an owned OFFLINEcandidate MlpBundle, exact Counts and bounded training
+summary (effective shape/epochs/LR/update/draw counts). It does REALcomposition,
+not a forwarding-only re-export. Keep raw GoRng/Snapshot/InitialWeights/update and
+final permutation diagnostics private/test-only. Expose only deliberate DTOs and
+stable error categories; no broad pub use sgd::* or facade-wide training export.
+Candidate return is never activation authority or a required-cohort promotion pass.
+
+Core remains pure: no filesystem/process/Go/time/network/backend/GPU code in that
+public operation. CLI owns bounded real files, exact-byte output/create_new/nooverwrite,
+cleanup reporting, user-facing config and exit codes. Immutable borrowed base and
+new statistics/calibration caveat remain explicit. Require actual CLI command wiring
+and its real accepted/rejected process pilots IN THE SAMEintegration slice before
+removing temporary non-test expect(dead_code); never remove via a fake reachability
+call or by widening all private types. Root approves public naming/error/versioning
+and source ownership before any implementation. Existing public Record/statistics/
+evaluation types may be reused deliberately, but are not an excuse to freeze an
+accidental full training API. A minimal accepted numeric CLI bridge does not yet
+supply temporal split/tie semantics, per-cohort support/FPR/AUT, correction/drift/
+calibration, authenticated labels, gold-anchor lifecycle, dual-control, production
+activation or Docker product validation. Track each separately; whole ML remains
+incomplete even if every oracle endpoint and bootstrap caller later passes.

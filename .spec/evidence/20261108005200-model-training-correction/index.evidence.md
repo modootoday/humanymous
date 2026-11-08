@@ -3,7 +3,7 @@ id: evidence:root/20261108005200
 title: Model training correction read-only source inventory
 status: active
 created: 2026-11-07T14:00:00Z
-updated: 2026-11-08T00:12:07Z
+updated: 2026-11-08T00:22:44Z
 rel:
   depends_on: [sot:root/model-training-correction, plan:root/20261107140000]
 files:
@@ -26,6 +26,7 @@ files:
   - {path: sgd-format-second-admission.json, sha256: 4ce2ec7bdc009be3cd93225f10350958c7600adb9afe9e9a0f14f0d0cf7c8fa5, bytes: 4008, store: repo}
   - {path: sgd-review-fixes-source.json, sha256: 1c997880092da87d88c1389bd9f85608ca45371ed35e85886a1e286a36e7ab70, bytes: 2537, store: repo}
   - {path: sgd-first-actual-validation.json, sha256: be033c879f1298a32f0c5b975e24e4099dec5049a6f737cdca8280e825dec059, bytes: 19785, store: repo}
+  - {path: go-sgd-oracle-caller-design.json, sha256: ff4426deff4b5aaae09882f1266fc5cb9b2567d91465dd84fff8aa6f80b119cc, bytes: 3317, store: repo}
 ---
 
 # Read-only source inventory

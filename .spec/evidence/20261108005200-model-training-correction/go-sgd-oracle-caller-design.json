@@ -1,0 +1,111 @@
+{
+  "schema": "humanymous.unchanged-go-sgd-oracle-and-caller-design/1",
+  "status": "REVIEW_ONLY_NO_SOURCE_OR_EXECUTION",
+  "sources": [
+    {
+      "sha256": "de595b07923ecf0253a365960edb040c6308f58822d00d97a808b32089029f4c",
+      "path": "cmd/ml-train/main.go"
+    },
+    {
+      "sha256": "dc5c9c842edc2a9f3951a3d124951cbbeae04ae8c2b3eb084c31e3cdc3d5f65b",
+      "path": "cmd/mlcorrect-train/main.go"
+    },
+    {
+      "sha256": "c25c2a7fffe71fe2097265ea5410d98e6c827394df66d170472d04d1c20e9cf2",
+      "path": "cmd/mlcorrect-train/gate.go"
+    },
+    {
+      "sha256": "2b8bb225fc965320887b48acfdc92539886ec2cc0d78a24f8cffd48442d1e1f3",
+      "path": "cmd/mlcorrect-train/gate_test.go"
+    },
+    {
+      "sha256": "55ecd6e3d270c6a83584390efd82b6e16dfeb920a1e46f8a952b2825b99b8846",
+      "path": "internal/mltrain/train.go"
+    },
+    {
+      "sha256": "50bcbdc205134fb3d8a3fc22e026c33b860237c7719ff07b1c1b076533615601",
+      "path": "internal/mltrain/train_test.go"
+    },
+    {
+      "sha256": "b10f323c1e8c78da1bb4c71e4e10ae14a757b7c480a103a6ec52fe18e0a22f3c",
+      "path": "internal/mltrain/record.go"
+    },
+    {
+      "sha256": "3782fda96411cc603bd28a7ad47afe8a0c686b916e0a8c94a07ed6fb651dc288",
+      "path": "internal/behavior/features.go"
+    },
+    {
+      "sha256": "12712e5c8d1d2de8205c047093a3268de23f82f84e5e6c5535525e5344f7a1eb",
+      "path": "internal/behavior/features_test.go"
+    },
+    {
+      "sha256": "0d3f922fbaf962587390bce8bb472b45a981a87e2c12f5d084134e45ea48eb2f",
+      "path": "internal/mlserve/mlp.go"
+    },
+    {
+      "sha256": "9df5e4f5846bc766c727a915393ea48aca1a1d5131c4c4cc08fd7086d2bb3f73",
+      "path": "internal/signals/signals.go"
+    },
+    {
+      "sha256": "9e5df32ef0cf7af3032837d476d819b5b4c262437e28ab4d7d4b9e8ae7c00a33",
+      "path": "go.mod"
+    },
+    {
+      "sha256": "a80909e62d52c69dce561a72d8067f082b9c499850bd1fb1cd61c0825e4f6886",
+      "path": "go.sum"
+    },
+    {
+      "sha256": "df8eed499eae69be7c838f0994138c48b3be13bb0d22634d5fa58f95bd856e3b",
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd.rs"
+    }
+  ],
+  "matrix": {
+    "learning_rate": 0.03125,
+    "cold": [
+      {
+        "hidden": 1,
+        "epochs": 0,
+        "seed": 2
+      },
+      {
+        "hidden": 1,
+        "epochs": 1,
+        "seed": 2
+      },
+      {
+        "hidden": 1,
+        "epochs": 3,
+        "seed": 2
+      },
+      {
+        "hidden": 3,
+        "epochs": 3,
+        "seed": -1
+      }
+    ],
+    "cli_invocations": 7,
+    "rows": 320,
+    "warm": [
+      0,
+      1,
+      3
+    ]
+  },
+  "observable": [
+    "Final bundle mean/std/weights/bias/calibration bits and dimensions/schema/version",
+    "Warm cohort human/FP integer counts and train/test totals, gate outcome and raw output digest"
+  ],
+  "unobserved_in_go": [
+    "Per-row feature vectors",
+    "Shuffled ID sequence",
+    "RNG state/draw counters",
+    "Hidden/logit/p/gradients/update intermediates",
+    "Exact probabilities/evaluation rate bits (stderr rounded)"
+  ],
+  "public_api": "PROPOSED real fit_offline composition only; no public/API/source change before Root review",
+  "details": "plan:root/20261107140000 Next verification design section",
+  "execution": "NOT_RUN",
+  "new_foreign_code": false,
+  "upstream_patch": false,
+  "production_activation": false
+}
