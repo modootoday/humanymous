@@ -282,5 +282,15 @@ After Runtime6-to1 source64f74c7ac64a8f5380172504bf73a8d03b961afc, the current
 root-reported count is29 workspace+4 standalone=33 packages. New Runtime modules
 under crates/sdk/humanymous-runtime remain root-owned, together with common Cargo and pending
 privacy/consumer/native gates. No agents-meta source claim expands to those paths.
-The eight-package destination and pending13-responsibility Tools slice are unchanged;
-no Tools move has begun. Earlier counts/proofs remain historical source records.
+The eight-package destination and pending13-responsibility Tools slice are unchanged.
+No live Tools cutover is recorded here. Root's isolated assembly has since adopted
+maintenance candidates01-05; the explicit1791-file seal and source/test ownership
+join are recorded in `.agents/evals/tools-epoch-rebind-20261108024914.md`. The seal
+binds actual strict compilation,8 selected pure passes with93 filtered and101-case
+discovery, not native boundary success. A subsequent coordinator-only delta needs
+its next freeze/rejoin. Earlier counts/proofs remain historical source records.
+
+The independent join corrects a classification error in earlier candidate READMEs:
+the10 direct owned-FS/provider cases are selected_inputs6+session_storage4, while
+evidence_layout_cli4 belong to the23 separate integration cases. All33 original
+case IDs remain required. Historical evidence bytes are retained unchanged.
