@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T14:17:10Z
 updated: 2026-11-07T14:17:10Z
 files:
-  - {path: baseline.json, sha256: df198cd8b6c11dd1ac543a0f01cd3cac1ced8ead20e1831940118c1386f9ebba, bytes: 133461, store: repo}
+  - {path: baseline.json, sha256: ecf0eece6faed4a211b53267cb285639deebad5743bcd35d004630eac2a175cd, bytes: 135688, store: repo}
 ---
 
 # Convention audit baseline
@@ -2421,3 +2421,79 @@ compilation, actual output or whole migration qualification. Private
 signals-consolidation-review-001.json retains immutable per-file identities.
 The in-progress maintenance candidate04 was read only as mutable draft context;
 no final candidate correctness or executed result is claimed without its seal.
+
+## CA-TOOLS-NATIVE-SELECTOR-01: new graph role and native source mismatch
+
+P2, Root/Native, OPEN in the mutable isolated candidate. Delivery's five changed
+files now contain seven explicit CLI package/bin/role-feature invocation sites;
+remaining arguments are preserved. These source rewires are not actual execution.
+Downstream Native role specs still root CliService/CliRuntimeService/CliBinary at
+crates/cli. Required service CASES select service_process/runtime_service_process,
+while current CLI declares cli-service-process/cli-runtime-service-process under
+src/qualification/tests. Exact role matching compares manifest, target, kind and
+source; those old specs cannot join the new actual target tuples. Its synthetic
+fixture derives from the same old specs and cannot itself detect manifest drift.
+
+Native source(false), used by pilot/service, scans old CLI src and runner paths.
+The first still exists but is empty; the latter contains only.gitignore/Cargo.lock.
+The manifest/Core-DATA helper does not add moved CLI Rust implementation. Thus
+native-mode source coverage omits moved implementation. Workspace source(true)
+has dynamic member enumeration and is a distinct branch. Initial immediate-failure
+wording was corrected after checking retained directories: no such actual failure
+was observed; missing-directory behavior depends on final extracted topology.
+
+Native cb9adcd8's nine declared candidate hashes/sizes reproduce. Its source
+direction updates CLI roles/CASES, roots/11required inputs and root-lock schema,
+addressing these named gaps. This is preliminary review, not adoption/compilation/
+full61 mapping or native regression acceptance. Required-feature inclusion is
+implemented, not whole feature-set equality; Native confirms exact final recipe
+remains a freeze/actual gate. Actor authority is not granted by artifact DATA.
+Root received concrete locations and required atomic corrections; keep wrong-
+sibling/package/kind/src/profile/feature/artifact negatives and real source omission
+controls. Private tools-native-selector-review-001.json retains five current source
+files and the correction. Old strict02 cannot qualify these later changes.
+
+CA-TOOLS-NATIVE-SELECTOR-01 follow-up: all nine current mutable Native files now
+match cb9adcd8 candidate hashes. The named CLI role/target/source mismatch has a
+source repair in that assembly; no old strict02 success transfers to it.
+Independent static join preserves all61 old canonical case IDs with zero set
+or native_runner:: prefix differences; all18 declared existing test function names
+remain. Actual migrated --list contains exactly the same61 selectors. This list
+is discovery, not execution. One existing metadata-role case now creates/reads/
+hashes an owned synthetic file; it must not be scheduled as pure memory-only.
+
+All18 unique selected raw unit logs match summary hashes and exact required name/
+1passed/0failed/0ignored/60filtered footers. These are observed component results,
+not fully source-qualified regression: actual terminal/source-before-after receipt
+joining remains pending owner seal. Production metadata loader/native actor are
+explicitly false; no full61 execution, actual OS/service or product success follows.
+Wrong profile/source/features/artifact negatives are authored inside existing IDs;
+required-feature inclusion remains distinct from whole recipe equality. Private
+tools-native-selector-followup-002.json binds these observations and limitations.
+
+## Maintenance selected staging candidate and source-view admission
+
+At0f446953 candidate04, all19 declared attachment hashes/sizes reproduce.
+Example product16inputs/28028bytes and developer40inputs/65367bytes have all56
+pin occurrences exact in the isolated candidate and no CR bytes. Live worktree
+mismatches only LICENSE in both requests: declared11353bytes/SHA28153ab6 versus
+live11555bytes/SHA6f2c88af with202CR bytes. Current Git, producer5f101 Git and isolated
+LICENSE share blob6003040460732f9754e2a6b3b94aa0395dcf6cd5. These are correct
+frozen/Git pins, not a candidate defect; neither legal-byte normalization nor
+automatic pin refresh was performed. Placeholder root is explicitly not fallback.
+
+Source review confirms finite selected reads, same captured hash/size then UTF8/
+LF/semantic checks before fresh output, one cooperative clock and false source/
+provider/qualification flags. Prepared staging preserves nonoverwrite/partial-
+output retention. Hard syscall and Command::output lifetime remain OPEN. Old root/
+kind stage signature has no fallback, so explicit per-kind request callers must
+join the final frozen extraction. Existing93 plus4new pure parser cases implies
+expected97 only if adopted; actual census, original33 integration IDs and two
+hosted package boundaries remain required, not inferred passes. Private
+maintenance-candidate04-review-001.json binds this limited source/pin review.
+
+CA-TOOLS-NATIVE-SELECTOR-01 is CLOSED only for the named source mismatch at the
+observed cb9 adoption. All61 selector discovery and18 raw component results remain
+as previously bounded. Root explicitly confirms no full source-closure seal for
+those18; actual native actor/SCM/production loader and final recipe gates remain
+OPEN. Later formatting must not inherit the older exact candidate-byte observation.

@@ -246,6 +246,14 @@
       "trigger": "qualification-report=[] omits Platform/testing used outside cfg(test) by legacy report parser",
       "required_delta": "Explicit dep:humanymous-platform plus humanymous-platform/testing only; no attacker/Gateway broadening; isolated normal-only report check",
       "actual_normal_compile": false
+    },
+    {
+      "id": "CA-TOOLS-NATIVE-SELECTOR-01",
+      "priority": "P2",
+      "owner": "Root/Native",
+      "state": "CLOSED named source mismatch at observed cb9adcd8 adoption; actual61-selector list preserved and18raw selected results observed; full source/terminal receipt join and production/native regression remain OPEN",
+      "required": "Atomic CLI manifest/target/kind/src/profile/features/artifact rewires and native source(false) moved implementation coverage; actual new-graph controls",
+      "actual_native_failure_observed": false
     }
   ],
   "evidence_references": {
@@ -2414,5 +2422,32 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/signals-consolidation-review-001.json",
     "bytes": 8937,
     "sha256": "ff51dd1ef872687f005d792d5b23ca91a425c5b17d7ab81d2f4451dd1906f366"
+  },
+  "tools_native_selector_source_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-native-selector-review-001.json",
+    "sha256": "7b2e508cb4c7b2edec42c04bd818415a5742f0b574c7d2f38efdfb01173ef54c",
+    "goal_complete": false,
+    "bytes": 2779,
+    "candidate": "cb9adcd8 nine declared hashes exact; preliminary source direction only",
+    "correction": "Legacy dirs exist: native source omission confirmed, immediate missing-dir failure not observed"
+  },
+  "tools_native_selector_followup": {
+    "source": "9currentfiles equal candidate; named selector/source correction observed",
+    "case_map": "61old IDs/newprefixes and actual61list exact;18existing changed-file test names retained",
+    "sha256": "4e3e0ccf8ce0598ab9e84f5833a16ad875877df465c1c9a48526f36f559a0ab5",
+    "native_actor_and_loader_executed": false,
+    "raw_logs": "18unique exact1pass/60filtered logs hashed/read; full source-terminal closure pending",
+    "goal_complete": false,
+    "bytes": 8303,
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-native-selector-followup-002.json"
+  },
+  "maintenance_candidate04_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/maintenance-candidate04-review-001.json",
+    "sha256": "6b98c659cb1f035e76a70d3cec4f2de01ec5fc4b13633a5a653e53491ebab084",
+    "pins": "All56pin occurrences exact in isolatedGitview; liveLICENSE differsby202CR bytes in bothrequests",
+    "source": "19attachments exact; finite selected staging direction reviewed only",
+    "actual97_census_or_hosted_boundary": "NOT_RUN by audit",
+    "goal_complete": false,
+    "bytes": 2013
   }
 }
