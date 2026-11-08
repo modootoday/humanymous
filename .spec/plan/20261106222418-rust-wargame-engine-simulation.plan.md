@@ -15,6 +15,20 @@ rel:
 
 ### Tools role-composition Rust candidate (evidence-only, not integrated)
 
+Follow-up Windows portable-test scope candidate is registered in the SAME private
+evidence as windows-scope.patch (SHA256
+33ecba96c7b6661f33ddb4431161633f2371da0c5fdbdf305c145708479c39ed) and
+windows-scope-rust.zip (SHA256
+a678cfbad186021904197f489c6924f7f376b4f4d38b7074d37f37e02654bf8f), with new
+two-file input pins. It cfg(unix)-scopes only digest/OwnedRuntime::spawn/
+VerifiedSnapshot::read and their exclusive imports. Keep portable type/readiness/
+rollback tests and runtime root cfg(any(unix,test)) links; non-Unix production
+fallback remains exit2. No blanket allowances, fake calls or dropped IDs.
+Source-local two test names remain; full role/OS case census is still required.
+Root reported actual isolated adoption and checks, but this follow-up author ran
+only evidence parsing/patch checks, not compiler/Clippy/tests. Original artifacts
+remain pinned to their original input; do not reapply them to an evolved assembly.
+
 Root requested actual Rust candidate diffs after isolated14bin checks showed
 private full-context composition warnings. Private evidence20261108013000 holds
 candidate.patch,37proposed Rust sources in candidate-rust.zip, exact26Root input
