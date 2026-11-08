@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.sgd-review-fixes-source/1",
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "previous_formatted_source": "7406195f9816fc8e21c6fc8d9daa420c7773ecae",
+  "source_files": [
+    {
+      "bytes": 346,
+      "sha256": "9998718b575d0844257ca0061ffb4929da863725a3490b91710437c60f50b4e6",
+      "path": "crates/sdk/humanymous-core/src/model/training/mod.rs"
+    },
+    {
+      "bytes": 10321,
+      "sha256": "df8eed499eae69be7c838f0994138c48b3be13bb0d22634d5fa58f95bd856e3b",
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd.rs"
+    },
+    {
+      "bytes": 19045,
+      "sha256": "b00fac79292ae7ef82899e4635e57b8541818f674959d8f7014d05c2ada7a7b0",
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs"
+    },
+    {
+      "bytes": 11934,
+      "sha256": "33854607897d2640461101fe47d0a1e0332bbfd072ecc8275aa941c37ffa6700",
+      "path": "crates/sdk/humanymous-core/src/model/training/sgd/pilot.rs"
+    }
+  ],
+  "changes": [
+    "Track only successfully create_new-created pilot input/output/partial files",
+    "Explicit fallible finish asserted; Drop is fallback only; untracked collision prevents cleanup success",
+    "Seven negative cases assert exact PilotError including TrainError::Nonfinite",
+    "Actual collision test preserves unowned entry and observes cleanup failure before creator removes it",
+    "Finite negative sigmoid saturation regression; version128/129byte boundaries",
+    "Accepted exact let-chain collapsible_if correction preserves validation predicate order/error"
+  ],
+  "authored_tests": 15,
+  "compiler_test_formatter": "NOT_RUN_ON_THIS_SOURCE",
+  "prior_root_clippy_failure": {
+    "root_reported_exit": 101,
+    "raw": ".spec.local/root/evidence/20261108054000-core-consolidation/collector-origin-root/fc9-clippy.stderr",
+    "finding": "clippy::collapsible_if in SGD validate on immutable fc9 source",
+    "sha256": "5384a975817c7407894e8e278ef3fa81077af1edfba715f5be24fb15dfae170f",
+    "scope": "first failure retained; no claim other lints absent"
+  },
+  "temporary_dead_code_expect": "Root explicitly accepted private non-test module scope pending real offline composition caller; remove at caller integration; no fake calls/public export",
+  "custody_limit": "Simple owned pilot ledger, no hostile-race/native file identity custody claim",
+  "live_owned_handles": [],
+  "target_leases": [],
+  "next": "New source-bound formatter/check, focused15SGD including3actualfiletests, fullCore, all-target/all-feature check and strictClippy under Root allocation"
+}

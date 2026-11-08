@@ -159,8 +159,8 @@ fn validate(
             return Err(TrainError::Nonfinite);
         }
     }
-    if let Some(base) = base {
-        if base.validate().is_err()
+    if let Some(base) = base
+        && (base.validate().is_err()
             || base.hidden != hidden as i64
             || base.schema_hash != expected_schema
             || base
@@ -172,10 +172,9 @@ fn validate(
                 .chain(&base.mean)
                 .chain(&base.std)
                 .chain([&base.b2, &base.cal_a, &base.cal_b])
-                .any(|v| !v.is_finite())
-        {
-            return Err(TrainError::WarmBase);
-        }
+                .any(|v| !v.is_finite()))
+    {
+        return Err(TrainError::WarmBase);
     }
     Ok(Effective {
         hidden,

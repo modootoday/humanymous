@@ -36,6 +36,7 @@ fn offline_files(
     train_path: &Path,
     holdout_path: &Path,
     output_path: &Path,
+    owner: &OwnedDirectory,
     parser_limits: Limits,
     config: TrainConfig<'_>,
     limits: TrainLimits,
@@ -86,10 +87,7 @@ fn offline_files(
         return Err(PilotError::Support);
     }
     let bytes = serde_json::to_vec(&result.candidate).map_err(|_| PilotError::Evaluation)?;
-    let mut file = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(output_path)
+    let mut file = owner.create_file(output_path)
         .map_err(|_| PilotError::Output {
             owned_unpublished: false,
         })?;
@@ -122,7 +120,11 @@ fn offline_files(
     Ok(expected)
 }
 
-struct OwnedDirectory(PathBuf);
+struct OwnedDirectory {
+    path: PathBuf,
+    created: std::cell::RefCell<Vec<PathBuf>>,
+    finished: std::cell::Cell<bool>,
+}
 
 impl OwnedDirectory {
     fn new() -> Self {
@@ -134,7 +136,11 @@ impl OwnedDirectory {
                 NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
             ));
             match std::fs::create_dir(&path) {
-                Ok(()) => return Self(path),
+                Ok(()) => return Self {
+                    path,
+                    created: std::cell::RefCell::new(Vec::new()),
+                    finished: std::cell::Cell::new(false),
+                },
                 Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => continue,
                 Err(e) => panic!("owned pilot directory: {e}"),
             }
@@ -142,31 +148,44 @@ impl OwnedDirectory {
         panic!("owned pilot directory capacity");
     }
     fn path(&self, name: &str) -> PathBuf {
-        self.0.join(name)
+        self.path.join(name)
     }
-    fn write(&self, name: &str, bytes: &[u8]) {
-        let mut file = OpenOptions::new()
+    fn create_file(&self, path: &Path) -> std::io::Result<File> {
+        if self.finished.get() || path.parent() != Some(self.path.as_path()) {
+            return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "outside owned pilot directory"));
+        }
+        let file = OpenOptions::new()
             .write(true)
             .create_new(true)
-            .open(self.path(name))
-            .unwrap();
-        file.write_all(bytes).unwrap();
+            .open(path)?;
+        // Track immediately after successful creation, before fallible writes.
+        // This simple pilot ledger is not hostile-race/native file custody.
+        self.created.borrow_mut().push(path.to_path_buf());
+        Ok(file)
+    }
+    fn write(&self, name: &str, bytes: &[u8]) -> std::io::Result<()> {
+        let mut file = self.create_file(&self.path(name))?;
+        file.write_all(bytes)
+    }
+    fn finish(&self) -> std::io::Result<()> {
+        if self.finished.get() { return Ok(()); }
+        let mut created = self.created.borrow_mut();
+        while let Some(path) = created.last() {
+            std::fs::remove_file(path)?;
+            created.pop();
+        }
+        // An untracked collision prevents directory removal and is reported.
+        std::fs::remove_dir(&self.path)?;
+        self.finished.set(true);
+        Ok(())
     }
 }
 
 impl Drop for OwnedDirectory {
     fn drop(&mut self) {
-        // Fixed names under a directory this process successfully created, no
-        // recursive deletion, foreign paths, or deleting an unowned collision.
-        for name in [
-            "train.jsonl",
-            "holdout.jsonl",
-            "candidate.json",
-            "repeat.json",
-        ] {
-            let _ = std::fs::remove_file(self.path(name));
-        }
-        let _ = std::fs::remove_dir(&self.0);
+        // Unwind fallback only. Tests must assert explicit finish(), so ignored
+        // fallback errors cannot turn cleanup failure into a passing receipt.
+        let _ = self.finish();
     }
 }
 
@@ -205,13 +224,14 @@ fn pilot_config() -> TrainConfig<'static> {
 #[test]
 fn actual_file_training_roundtrip_is_reproducible_and_never_overwrites_sentinel() {
     let dir = OwnedDirectory::new();
-    dir.write("train.jsonl", &records(0, 64, false));
-    dir.write("holdout.jsonl", &records(1000, 16, false));
+    dir.write("train.jsonl", &records(0, 64, false)).unwrap();
+    dir.write("holdout.jsonl", &records(1000, 16, false)).unwrap();
     let run = |name| {
         offline_files(
             &dir.path("train.jsonl"),
             &dir.path("holdout.jsonl"),
             &dir.path(name),
+            &dir,
             Limits::default(),
             pilot_config(),
             TrainLimits::default(),
@@ -233,6 +253,7 @@ fn actual_file_training_roundtrip_is_reproducible_and_never_overwrites_sentinel(
         })
     );
     assert_eq!(std::fs::read(dir.path("candidate.json")).unwrap(), sentinel);
+    dir.finish().unwrap();
 }
 
 #[test]
@@ -263,19 +284,47 @@ fn actual_file_late_invalid_quarantine_support_and_capacity_fail_before_output()
             5 => limits.work_units = 1,
             _ => config.learning_rate = f32::MAX,
         }
-        dir.write("train.jsonl", &training);
-        dir.write("holdout.jsonl", &validation);
-        assert!(
+        dir.write("train.jsonl", &training).unwrap();
+        dir.write("holdout.jsonl", &validation).unwrap();
+        let expected = match case {
+            0 | 3 | 4 => PilotError::Input,
+            1 => PilotError::Admission,
+            2 => PilotError::Support,
+            5 => PilotError::Training(TrainError::Limit),
+            _ => PilotError::Training(TrainError::Nonfinite),
+        };
+        assert_eq!(
             offline_files(
                 &dir.path("train.jsonl"),
                 &dir.path("holdout.jsonl"),
                 &dir.path("candidate.json"),
+                &dir,
                 parser,
                 config,
                 limits
-            )
-            .is_err()
+            ),
+            Err(expected)
         );
         assert!(!dir.path("candidate.json").exists());
+        dir.finish().unwrap();
     }
+}
+
+#[test]
+fn actual_collision_is_unowned_and_cleanup_failure_is_reported() {
+    let dir = OwnedDirectory::new();
+    let collision = dir.path("candidate.json");
+    let mut foreign = OpenOptions::new().create_new(true).write(true).open(&collision).unwrap();
+    foreign.write_all(b"unowned sentinel").unwrap();
+    drop(foreign);
+    assert_eq!(dir.write("candidate.json", b"replacement").unwrap_err().kind(), std::io::ErrorKind::AlreadyExists);
+    assert!(dir.created.borrow().is_empty());
+    let failure = dir.finish().expect_err("unowned entry must prevent cleanup success");
+    assert!(dir.path.exists());
+    assert!(!dir.finished.get());
+    assert_eq!(std::fs::read(&collision).unwrap(), b"unowned sentinel");
+    // The fixture that created the collision settles its own file explicitly.
+    assert_ne!(failure.kind(), std::io::ErrorKind::NotFound);
+    std::fs::remove_file(collision).unwrap();
+    dir.finish().unwrap();
 }

@@ -743,3 +743,37 @@ file pilot, Core regression, compiler check and strict Clippy remain NOT_RUN.
 No retained formatter/compiler handle or target lease. Next command matrix remains
 focused12SGD -> fullCore -> all-target/all-feature check -> strictClippy, jobs1,
 under a NEWsource-bound execution allocation; no such commands ran in this window.
+
+### Accepted X P2 source corrections after formatter checkpoint
+
+Root accepted the exact temporary non-test private-module expect(dead_code), with
+removal when the actual offline composition caller exists; no fake caller/public
+export or general lint policy is introduced. Test linting remains active. Root
+then allocated concrete P2 fixes AFTER7406195f's separate formatter receipt.
+
+OwnedDirectory now records only successful create_new input/output creations,
+including outputs before fallible writes so partial-output cleanup obligations
+are retained. Explicit finish returns Result and is asserted by each actual-file
+pilot. Drop only attempts fallback and cannot certify cleanup. A collision fixture
+creates an entry outside this ledger, checks AlreadyExists and empty ownership,
+requires cleanup to report failure, verifies unchanged sentinel bytes, then has
+that fixture creator remove its own entry before successful finish. No blind
+four-name deletion or recursive cleanup remains. This simple pilot ownership
+ledger makes no hostile-race/native file identity/custody claim.
+
+All7negative actual-file cases now compare exact PilotError: Input for malformed/
+record/byte caps, Admission for quarantine, Support for absent class, Training(Limit)
+for work cap and Training(Nonfinite) for numeric overflow. Added finite-negative
+logit exp-overflow/sigmoid0 regression and version128/129byte acceptance/refusal.
+Authored denominator is now15tests (12numeric+3actual-file), ALL NOT_RUN on this
+new tuple. Root's immutable fc9 Collector strictClippy failed101 at the SGD nested
+warm-base condition; its raw failure hash is pinned by sgd-review-fixes-source.json.
+Only the specifically authorized collapsible_if let-chain correction was applied,
+with the same predicates, left-to-right order and WarmBase error. No lint allow,
+cap-lints or unrelated fixes. Root reports the corresponding WASMcheck passed;
+that does not qualify these new changes or establish remaining Clippy cleanliness.
+
+No formatter/compiler/tests were started for these amendments. Previous formatter
+pass applies ONLY7406195f; next needs fresh format/check plus15focused tests, full
+Core and all-target/all-feature check/strictClippy under separate source-bound
+Root allocation. No owned compiler handle or target lease is retained.

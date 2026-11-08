@@ -561,6 +561,36 @@ fn finite_input_overflows_and_invalid_config_never_mutate_inputs() {
 }
 
 #[test]
+fn finite_negative_logit_allows_exp_overflow_sigmoid_zero() {
+    let x = [0.0; FEATURE_DIM];
+    let mut b = base();
+    b.b1[0] = -1.0;
+    b.b2 = -1000.0;
+    let got = run(&[TrainingRow { features: &x, label: 0 }], Some(&b)).unwrap();
+    assert_eq!(got.candidate.b2.to_bits(), (-1000.0_f32).to_bits());
+    assert_eq!(got.candidate.w2, b.w2);
+    let prediction = Mlp::from_bundle(got.candidate).unwrap().predict(&x);
+    assert!(!prediction.abstain);
+    assert_eq!(prediction.p_bot.to_bits(), 0.0_f32.to_bits());
+}
+
+#[test]
+fn version_utf8_byte_capacity_accepts_128_and_rejects_129() {
+    let accepted = "v".repeat(128);
+    let rejected = "v".repeat(129);
+    let b = base();
+    let before = bits(&b);
+    let mut c = config();
+    c.epochs = 0;
+    c.version = &accepted;
+    let got = train(c, &[], &stats(), &schema_hash(), Some(&b), TrainLimits::default()).unwrap();
+    assert_eq!(got.candidate.version.len(), 128);
+    c.version = &rejected;
+    assert_eq!(train(c, &[], &stats(), &schema_hash(), Some(&b), TrainLimits::default()).unwrap_err(), TrainError::Config);
+    assert_eq!(bits(&b), before);
+}
+
+#[test]
 fn rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator() {
     // Dataset stream is separate from training's seed2 stream, as in the Go test.
     let mut data_rng = GoRng::new(1, 1_000_000).unwrap();
