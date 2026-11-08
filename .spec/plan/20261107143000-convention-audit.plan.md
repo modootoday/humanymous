@@ -2973,3 +2973,49 @@ Original-I/O/held namespace/genesis/provider/Ready remain Unsupported; B2 remain
 UNAPPROVED. Prior pending/needs-work source records stay historical. Private
 cef-regressions-b1-decision-followup-005.json binds this new decision and raw9-file
 regression checkpoint; compiler/tool/read/lifetime/storage/full migration OPEN.
+
+B2 preliminary design re-audit: full plan20261108043000 read with bounded existing
+OwnedDirectChild/tree_lifecycle roots. Ten proposed unsafe scopes remain UNAPPROVED;
+B1's later6aea9fcc conditional decision does not carry to B2. Older draft wording
+that B1 is unapproved is historical and was flagged for epoch labeling.
+
+One P2 design completeness gap before launch-body acceptance: 'no inherited stdio'
+is not fully specified by bInheritHandles=false and the proposed extended/unicode
+flags. Windows default console attachment is a separate behavior. Root received
+an exact console/standard-handle policy amendment and genuine console-attached/
+redirected-parent fixture requirements. This is not an observed runtime failure.
+[Microsoft console creation](https://learn.microsoft.com/en-us/windows/console/creation-of-a-console)
+and [CreateProcessW](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw)
+support the distinction. No silent flag/unsafe expansion was accepted.
+
+Body-review conditions include stable owned aligned attribute AND Job-list array
+storage through deletion, mutable bounded command line, initialized exact outputs,
+immediate handle adoption/error capture, retained partial owner and private actual
+completion observations. Shared lifecycle extraction cannot make symbolic facts
+into native terminal proof. No-pipe minimum cannot satisfy requested nonempty
+capture/retained-pipe gates; outer original owner, real workers, broker ceiling,
+hosted negative cases and full lifecycle qualification remain OPEN. No compiler,
+native call or unsafe source was authored. Private
+b2-preliminary-boundary-review-001.json binds inputs/limits/primary sources.
+
+Root-requested B2/B2-P bounded follow-up reviews all10 proposed native operations
+separately. Exact body conditions cover typed/sentinel outputs, stable aligned
+attribute AND Job-list backing through deletion, partial initialization cleanup,
+mutable command line, immediate independent process/thread adoption, retained
+failure owners and non-renewable deadlines. No source body/unsafe grant is implied.
+Root's proposed DETACHED_PROCESS fixed-console/no-stdio profile addresses the
+console-policy direction; amended canon and real console-attached/redirected-parent
+fixtures are still required. It is not a tested GUI/service/general capture mode.
+
+A fixed admitted Rust helper using safe std Command+pipes is a defensible
+QUALIFICATION-ONLY B2-P direction. Actual helper Cargo exit and every started
+reader join precede bounded report publication; parent separately observes helper
+signal/Job0/original obligations. Killed helper cannot prove Rust joins or success,
+even if OS tree termination is established; missing proof remains failed/Unknown74.
+Report booleans cannot manufacture Runtime native facts. No unbounded raw tee;
+bytes/counts must be bounded before writes, while Cargo target/temp disk use still
+needs separate actual storage enforcement/admission. Buffer/time/poll limits do
+not prove a hard disk cap. Original InvocationOwner, full capture/lifetime/storage,
+provider/W/channel/Ready and actual hosted fixtures remain OPEN/Unsupported.
+Private b2-b2p-bounded-review-002.json records exact operation conditions and
+failure matrix. This is a review, not B2/B2-P acceptance or source/executor grant.

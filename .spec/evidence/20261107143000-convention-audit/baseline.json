@@ -2585,5 +2585,20 @@
     "sha256": "b574aa5ef7d7482f96a60a8f1a5d683f7ec5f62d40c24b3ab4bc5b8db6a4b2f6",
     "bytes": 4365,
     "goal_complete": false
+  },
+  "b2_preliminary_boundary_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-preliminary-boundary-review-001.json",
+    "sha256": "2f48afbc4acc12e135735c4ee9f002c4ab052df4ce66ab8414c158bf591b650c",
+    "bytes": 3732,
+    "scope": "Unapproved B2 proposal/body acceptance conditions and console/stdio completeness gap; no runtime finding or execution",
+    "goal_complete": false
+  },
+  "b2_b2p_bounded_review": {
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/b2-b2p-bounded-review-002.json",
+    "sha256": "642a30c585e22ca0ec4f904f5f0c1d7d13cd032ddf0fa018e8606bc422e46b2d",
+    "bytes": 7217,
+    "scope": "Root-requested ten-operation/body conditions + qualification-only helper assessment; no source/unsafe/execution approval",
+    "Root_console_direction": "Proposed DETACHED_PROCESS fixed console helper, initialized no-stdio startup; actual fixtures pending",
+    "goal_complete": false
   }
 }
