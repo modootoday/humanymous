@@ -3229,3 +3229,27 @@ counters and individual assertion records remain unavailable. Image/source-manif
 private-ledger hashes stay source-reported. Do not infer complete privacy/product
 qualification. Historical f8 41/43 with two failures remains preserved. Private
 browser-3137-actual-review-001.json binds the fresh logs and precise limitations.
+
+## Independent current Tools strict compilation and maintenance census
+
+Root's tools-stage-all-role-strict-01 receipt records actual PID32900, OS start
+2026-11-08T01:54:25.3567968Z, terminal01:54:25.7963163Z and exit0. The invocation
+selects the isolated CLI with locked/offline all-targets/all-features Clippy and
+-Dwarnings. Raw stderr finishes in0.27s (warm). Independent before/after comparison
+confirms1781 path/hash/size records with zero differences; current candidate
+matches every recorded path. Current selected Cargo shim hash also matches its
+invocation record. This is not an independent resolved-driver/registry/config/
+environment closure or a directory-inventory/hostile-race guarantee.
+
+Accept scoped Windows compilation/lint observation only. No tests executed;
+all-features compilation does not establish normal-only per-role feature isolation.
+Forbidden-unsafe negatives, extracted package and real native/hosted/product
+qualification remain OPEN. No actual process is claimed live by this review.
+
+Independent maintenance list join finds all76 original exact selectors from the
+retained legacy map, plus7 command-owned readers and10 qualification_tests owned-
+filesystem cases, totaling93 registered tests. No missing original selectors.
+This discharges the previously pending list-preservation check for this role;
+execution and the separate full33 integration-role denominator remain OPEN.
+Private tools-all-role-strict-review-001.json hashes the eight reviewed evidence
+files and preserves the limits. Whole migration completion remains unproven.

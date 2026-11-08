@@ -2331,5 +2331,15 @@
     "path": ".spec.local/root/evidence/20261107143000-convention-audit/browser-3137-actual-review-001.json",
     "private_ledger_recovered": false,
     "run": 42432665570
+  },
+  "tools_all_role_strict_and_census_review": {
+    "goal_complete": false,
+    "path": ".spec.local/root/evidence/20261107143000-convention-audit/tools-all-role-strict-review-001.json",
+    "census": "All76 original maintenance exact names present plus7reader+10ownedFS=93listed",
+    "source": "1781 before/after exact; current recorded-path drift0",
+    "external_input_closure_proven": false,
+    "actual": "Windows all-target/all-feature CLI strictClippy exit0, warm0.27s; no tests",
+    "sha256": "4f9a1abacd803fa7a5461ab9ac27398c761ed50aa4638251d78847b37b7fad84",
+    "bytes": 2915
   }
 }
