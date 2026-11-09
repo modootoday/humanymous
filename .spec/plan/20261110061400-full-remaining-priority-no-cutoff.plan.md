@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T22:55:00Z
+updated: 2026-11-09T23:00:00Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | fa9f862a93272055feae65091ece15f8bcf3e4ea (Decision B; Cap0 tipbind readiness postpush) |
+| tip | 9075d2937a712524a5b5cb282cda4919406d76b2 (Decision B; Cap0 Cap1-hold landers + matrix tipbind) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
@@ -47,17 +47,17 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist / `cap_day_bound`) / **absent** |
-| matrix tip_bind | LIVE tip-bound **fa9f862a** (closed residual drift `905f2e22`→`fa9f862a`); tip_bind.ok=**true** |
+| matrix tip_bind | LIVE tip-bound **9075d293** (closed residual drift `fa9f862a`→`9075d293`); tip_bind.ok=**true** |
 | Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |
 | Cap burn this turn | **0** |
-| Cap0∥ remaining | **none** (tipbind readiness; residual postpush tip-drift closed) |
-| Cap0 advanced (this wave) | ranks **1,2,7,9,10,13,52,72** Cap0 tipbind readiness / Cap-ready templates / UnlockC digests |
+| Cap0∥ remaining | **none** (Cap1-hold landers expanded; residual matrix tip-drift closed; wait Root AT/AUTH) |
+| Cap0 advanced (this wave) | ranks **3–6,9,13,14–17,23–24,35,38,39–47,48–51,53–54,56–61,71–72** Cap1-hold landers + browser Cap0 + G1–G9 Cap0-prep + tipbind |
 | Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** (14=PM Cap1 spent component; product still open) |
-| CONSOLIDATED closer | `.spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/` |
+| CONSOLIDATED closer | `.spec.local/root/evidence/20261110075800-cursor-cap0-cap1hold-landers/` |
 | goal_complete | **false** |
 
 ## 2. Decision rules (no cutoff)
@@ -225,7 +225,9 @@ Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/
 | Cap=0 evidence | .spec.local/root/evidence/20261110061400-cursor-full-priority-no-cutoff/ |
 | Cap0∥ wave | .spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/ |
 | Cap0 reaudit wave | .spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/ |
-| CONSOLIDATED closer | .spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/ |
+| Cap0 Cap1-hold landers | .spec.local/root/evidence/20261110075800-cursor-cap0-cap1hold-landers/ |
+| CONSOLIDATED closer | .spec.local/root/evidence/20261110075800-cursor-cap0-cap1hold-landers/ |
+| Prior tipbind readiness | .spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/ |
 | Prior Decision B closer | .spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/ |
 | Prior Cap0∥ closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |
 | Supersedes truncated tables | plan:root/20261110060500-code-sot-gap-browser-priority-reorder, plan:root/20261110044500-production-status-priority-reorder |
