@@ -2,12 +2,12 @@
   "schema": "humanymous.cursor-clean-room-product-matrix/1",
   "record_kind": "docker-clean-room-product-gap-matrix",
   "not_a_handover_document": true,
-  "observed_utc": "2026-11-09T21:44:30Z",
+  "observed_utc": "2026-11-09T21:46:00Z",
   "branch": "codex/rust",
   "workspace": "C:/workspaces/humanymous",
-  "head_sha": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
-  "prior_head_sha_cap0_tip_bind": "c65b2fac6d6803443673013362615e37adb1a09f",
-  "tip_bind_note": "Cap=0 CONSOLIDATED closer tip-bound LIVE tip 7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2; Cap realloc LAST CHECK no feeder Cap burn=0; Cap free=false; product=0; pass_product_clean_room=0; BrowserReady=false; Cap0∥ remaining none; never invent product",
+  "head_sha": "3fd6a9abec2815ec3fddb3e5564817917705d995",
+  "prior_head_sha_cap0_tip_bind": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "tip_bind_note": "Cap=0 post-commit tip-bind hygiene LIVE tip 3fd6a9abec2815ec3fddb3e5564817917705d995 after CONSOLIDATED closer; Cap free=false; product=0; pass_product_clean_room=0; BrowserReady=false; Cap0∥ remaining none; never invent product",
   "provider": "cursor",
   "session": "cursor-integrator",
   "lane": "cursor-integration",
@@ -4993,7 +4993,7 @@
     },
     "tip_bind_7efbcc1e_cap0_consolidated_closer": {
       "decision": "cap0_consolidated_closer_tip_bind",
-      "head_sha": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+      "head_sha": "3fd6a9abec2815ec3fddb3e5564817917705d995",
       "prior_head_sha": "c65b2fac6d6803443673013362615e37adb1a09f",
       "cap": 0,
       "cap_burn": 0,
@@ -5005,10 +5005,23 @@
       "auth_present": false,
       "at_present": false,
       "cap0_parallel_remaining": [],
-      "observed_utc": "2026-11-09T21:44:30Z",
+      "observed_utc": "2026-11-09T21:46:00Z",
       "reason": "Cap=0 CONSOLIDATED closer tip-bound to LIVE tip; Cap realloc LAST CHECK no Cursor-executable feeder; Cap burn=0; never invent product",
       "closer": ".spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/",
       "exact_next_closer": "Root AT-HANDOFF (humanymous.root-interactive-at-windows-tuple/1) + AUTH-HANDOFF (humanymous.root-n06-owner-join-auth-handoff/1) + documented Cap realloc → Cap free=true → Cap=1 once --clean-room-product"
+    },
+    "tip_bind_3fd6a9ab_cap0_consolidated_closer_postcommit": {
+      "decision": "cap0_consolidated_closer_postcommit_tip_bind",
+      "head_sha": "3fd6a9abec2815ec3fddb3e5564817917705d995",
+      "prior_head_sha": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+      "cap": 0,
+      "cap_burn": 0,
+      "cap_free": false,
+      "product": 0,
+      "pass_product_clean_room": 0,
+      "browser_ready": false,
+      "observed_utc": "2026-11-09T21:46:00Z",
+      "reason": "Post-commit Cap=0 tip-bind hygiene after CONSOLIDATED closer; no product invent"
     }
   }
 }

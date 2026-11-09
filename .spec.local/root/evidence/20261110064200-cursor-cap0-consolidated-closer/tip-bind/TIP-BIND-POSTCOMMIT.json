@@ -1,0 +1,16 @@
+{
+  "schema": "humanymous.cursor-cap0-tip-bind-honesty/1",
+  "observed_utc": "2026-11-09T21:46:00Z",
+  "prior_head": "3fd6a9abec2815ec3fddb3e5564817917705d995",
+  "live_head_at_write": "3fd6a9abec2815ec3fddb3e5564817917705d995",
+  "matrix_head_sha": "3fd6a9abec2815ec3fddb3e5564817917705d995",
+  "action": "postcommit_tip_bind_hygiene",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "tip_bind_ok": true,
+  "note": "post-commit Cap=0 tip-bind hygiene after CONSOLIDATED closer; product remains 0; Cap0∥ remaining none"
+}
