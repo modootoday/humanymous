@@ -43,7 +43,9 @@ const G2_READINESS_SCHEMA: &str = "humanymous.lab-g2-collector-product-binding-r
 const G5_HONESTY_SCHEMA: &str = "humanymous.lab-g5-witness-transport-honesty/1";
 const BROWSER_READY_HONESTY_SCHEMA: &str = "humanymous.lab-browser-ready-interactive-at-honesty/1";
 const N06_OWNER_AUTH_HONESTY_SCHEMA: &str = "humanymous.lab-n06-owner-auth-handoff-honesty/1";
-const UNLOCK_A_CLOSER_SCHEMA: &str = "humanymous.cursor-unlock-a-desktop-baseline-realloc-closer/1";
+/// Unlock A Cap free probe authority CLOSER schema.
+pub const UNLOCK_A_CLOSER_SCHEMA: &str =
+    "humanymous.cursor-unlock-a-desktop-baseline-realloc-closer/1";
 const INTERACTIVE_AT_HANDOFF_SCHEMA: &str = "humanymous.root-interactive-at-windows-tuple/1";
 
 const HOSTED_CAP_EXIT0_REL: &str =
@@ -88,7 +90,8 @@ pub const INTERACTIVE_AT_HANDOFF_CANDIDATES: &[&str] = &[
     ".spec.local/root/grants/interactive-at-windows-tuple/GRANT.json",
 ];
 
-const UNLOCK_A_CLOSER_REL: &str =
+/// Unlock A Cap free probe authority CLOSER relative path.
+pub const UNLOCK_A_CLOSER_REL: &str =
     ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json";
 
 /// Cap conservation after Unlock A EXIT0 — realloc only with structural feeder.
@@ -240,8 +243,7 @@ pub(super) fn run_g2_collector_product_binding_readiness(lab: &mut Lab) -> Resul
     })?;
     validate_g2_component_receipt(&receipt)?;
     let missing_topology = missing_g2_product_binding_topology(&root);
-    let missing_cap_topology =
-        super::g2_collector_product_binding::missing_cap_topology(&root);
+    let missing_cap_topology = super::g2_collector_product_binding::missing_cap_topology(&root);
     // Cap CLI Cap=0 scaffold exists; Cap CLI+live topology still absent until TRANSFER.
     let g2_cap_cli_scaffolded = true;
     let g2_cap_topology_live = missing_cap_topology.is_empty();
@@ -727,11 +729,7 @@ fn validate_n06_readiness_closer(closer: &Value) -> Result<()> {
                 .into(),
         );
     }
-    if closer
-        .get("unlock_a_cap_exit")
-        .and_then(Value::as_u64)
-        != Some(0)
-    {
+    if closer.get("unlock_a_cap_exit").and_then(Value::as_u64) != Some(0) {
         return Err(
             "N06 owner-auth handoff honesty refused: readiness closer missing Unlock A Cap EXIT0"
                 .into(),
