@@ -2,12 +2,12 @@
   "schema": "humanymous.cursor-clean-room-product-matrix/1",
   "record_kind": "docker-clean-room-product-gap-matrix",
   "not_a_handover_document": true,
-  "observed_utc": "2026-11-09T23:10:08Z",
+  "observed_utc": "2026-11-09T23:10:52Z",
   "branch": "codex/rust",
   "workspace": "C:/workspaces/humanymous",
-  "head_sha": "998ae019220af38174b7fc5337dcbf9fe08364f9",
-  "prior_head_sha_cap0_tip_bind": "fa9f862a93272055feae65091ece15f8bcf3e4ea",
-  "tip_bind_note": "Cap=0 tip-bind LIVE tip 998ae019220af38174b7fc5337dcbf9fe08364f9 (plan/PRIORITY/matrix honesty 9332d652→998ae019 Cap-free-restore packet); Cap free=false; product=0; BrowserReady=false; never invent product",
+  "head_sha": "870813b600567ff658a05f0557dac074ff3bd00a",
+  "prior_head_sha_cap0_tip_bind": "998ae019220af38174b7fc5337dcbf9fe08364f9",
+  "tip_bind_note": "Cap=0 postcommit tip-bind LIVE tip 870813b600567ff658a05f0557dac074ff3bd00a after Cap-free-restore packet; Cap free=false; product=0; BrowserReady=false",
   "provider": "cursor",
   "session": "cursor-integrator",
   "lane": "cursor-integration",
@@ -3215,7 +3215,7 @@
       "note": "Oracle Desktop full e2e including swarm = component_pass_desktop_oracle; never invent pass_product_clean_room"
     }
   },
-  "tip_bind": "998ae019",
+  "tip_bind": "870813b6",
   "product": 0,
   "pass_product_clean_room": 0,
   "cells": [
@@ -5062,6 +5062,13 @@
       "cap_free": false,
       "product": 0,
       "note": "Cap0 Cap-free-restore packet + tip-bind; ≠ pass_product_clean_room"
+    },
+    "tip_bind_870813b6_postcommit_cap_free_restore": {
+      "head_sha": "870813b600567ff658a05f0557dac074ff3bd00a",
+      "observed_utc": "2026-11-09T23:10:52Z",
+      "cap_free": false,
+      "product": 0,
+      "note": "postcommit tip-bind; != pass_product"
     }
   }
 }
