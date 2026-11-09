@@ -342,9 +342,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2-docker-product/topology-fixture/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2-docker-product/topology-fixture/run-receipt.json",
       "notes": "humanymous/lab-fixtures:p2-611af74e2d49 built; not lab-runner --require-full. MUST be Docker clean-room for product count (rule 60 + ENVIRONMENTS + red-blue-validate + SoT clean-room canon). Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -516,9 +514,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2b-docker-accelerate/rust-controls/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2b-docker-accelerate/rust-controls/run-receipt.json",
       "notes": "MUST be Docker clean-room for product count (rule 60 + ENVIRONMENTS + red-blue-validate + SoT clean-room canon). Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -549,9 +545,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -632,9 +626,7 @@
         ".spec.local/root/evidence/20261109005000-cursor-n06-owner-join/CLOSER.json"
       ],
       "notes": "Unlock B Desktop measure Cap=1 --w2-h2-product-binding @ 4a5d0135 EXIT 0 (evidence 20261109004100). original_h2_measured=true from validated Desktop lab TLS receipt — counts as pass_component_desktop_measure ONLY. Hosted Cap --w2-h2-hosted-venue Specfold EXIT0 run 42500919761 @ d483c40f = pass_component_hosted_measure ONLY — component green ≠ product / ≠ n06_owner_join / ≠ pass_product_clean_room. N06 owner join still open (Cursor readiness Cap CLI --n06-owner-join-readiness Cap=0 without Root auth handoff). No W2 Desktop measure / hosted Cap reburn without structural delta. Unlock A GRANT+apply bound; Cap realloc after host CEF bundle discovery (evidence 20261109020200); Cap=1 --g4-cef-at EXIT1 component_executed_cleanup_failed (g4_cef_at executed; HUMANYMOUS_CEF_PILOT_BUNDLE present; cleanup missing Desktop baseline); Cap free=false; BrowserReady=false; no invent pass_product; no W2/authority Cap reburn; product=0.",
-      "gap_binding": [
-        "G1"
-      ],
+      "gap_binding": "G1",
       "full_product_qualified": false,
       "pass_product": false,
       "pass_product_clean_room": false,
@@ -662,9 +654,7 @@
         ".spec.local/root/evidence/20261109005000-cursor-n06-owner-join/CLOSER.json"
       ],
       "notes": "Specfold Cap=1 --w2-h2-hosted-venue EXIT 0 run 42500919761 @ d483c40f (passed=8). Counts as pass_component_hosted_measure ONLY — hosted Cap component green ≠ pass_product_clean_room / ≠ n06_owner_join / ≠ matrix product. N06 owner-join readiness Cap=0 without Root auth handoff. Unlock A Cap realloc + Cap=1 --g4-cef-at EXIT1 (20261109020200): CEF bundle present + g4_cef_at component executed; cleanup_failed Desktop baseline; Cap free=false; hosted Cap reburn forbidden without structural delta; product=0.",
-      "gap_binding": [
-        "G1"
-      ],
+      "gap_binding": "G1",
       "full_product_qualified": false,
       "pass_product": false,
       "pass_product_clean_room": false,
@@ -684,9 +674,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json",
       "notes": "MUST be Docker clean-room for product count (rule 60 + ENVIRONMENTS + red-blue-validate + SoT clean-room canon). Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -1162,9 +1150,7 @@
       "full_product_qualified": false,
       "pass_product": false,
       "observed_utc": "2026-11-08T10:22:16Z",
-      "gap_binding": [
-        "G5"
-      ]
+      "gap_binding": "G5"
     },
     {
       "id": "desktop-linux|none|witness|compose_config",
@@ -1222,9 +1208,7 @@
       "full_product_qualified": false,
       "pass_product": false,
       "observed_utc": "2026-11-08T10:22:16Z",
-      "gap_binding": [
-        "G5"
-      ]
+      "gap_binding": "G5"
     },
     {
       "id": "desktop-linux|none|m3-full-product|lab_runner_require_full",
@@ -1553,9 +1537,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/nginx-execution-summary.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/nginx-execution-summary.json",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -1586,9 +1568,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/cleanup-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/cleanup-receipt.json",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -1602,9 +1582,7 @@
       "counts_as_product": false,
       "status": "n/a",
       "prior_status": "n/a",
-      "evidence": [
-        "deployments/lab/ENVIRONMENTS.md"
-      ],
+      "evidence": "deployments/lab/ENVIRONMENTS.md",
       "notes": "Adapter-conformance feeds product later; nginx native pilot itself is not rust-product-lab require-full. Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room."
     },
     {
@@ -1807,9 +1785,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-s12-product-compose/"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-s12-product-compose/",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -1823,9 +1799,7 @@
       "counts_as_product": false,
       "status": "unrun",
       "prior_status": "unrun",
-      "evidence": [
-        "deployments/lab/ENVIRONMENTS.md"
-      ],
+      "evidence": "deployments/lab/ENVIRONMENTS.md",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room."
     },
     {
@@ -1839,9 +1813,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-s12-product-compose/"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-s12-product-compose/",
       "notes": "Linux Compose is scaffold; Windows host pilots separate. Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -1872,9 +1844,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-s12-product-compose/"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-s12-product-compose/",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -1888,9 +1858,7 @@
       "counts_as_product": false,
       "status": "unrun",
       "prior_status": "unrun",
-      "evidence": [
-        "deployments/lab/ENVIRONMENTS.md"
-      ],
+      "evidence": "deployments/lab/ENVIRONMENTS.md",
       "notes": "ABI scaffold; image-required not_run. Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room."
     },
     {
@@ -2306,38 +2274,6 @@
         "gate": "red_blue_up",
         "env": "desktop-linux",
         "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_attack",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_attack",
-        "env": "desktop-linux",
-        "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_e2e_assert",
-        "env": "desktop-linux",
-        "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_gate_e2e",
-        "env": "desktop-linux",
-        "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_swarm",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_swarm",
-        "env": "desktop-linux",
-        "adapter": "none"
       }
     ],
     "product_open_needs_execution": [
@@ -2450,38 +2386,6 @@
         "status": "blocked",
         "scenario": "oracle-detector-bots",
         "gate": "red_blue_up",
-        "env": "desktop-linux",
-        "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_attack",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_attack",
-        "env": "desktop-linux",
-        "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_e2e_assert",
-        "env": "desktop-linux",
-        "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_gate_e2e",
-        "env": "desktop-linux",
-        "adapter": "none"
-      },
-      {
-        "id": "desktop-linux|none|oracle-detector-bots|red_blue_swarm",
-        "status": "unrun",
-        "scenario": "oracle-detector-bots",
-        "gate": "red_blue_swarm",
         "env": "desktop-linux",
         "adapter": "none"
       }
@@ -3341,9 +3245,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2-docker-product/topology-fixture/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2-docker-product/topology-fixture/run-receipt.json",
       "notes": "humanymous/lab-fixtures:p2-611af74e2d49 built; not lab-runner --require-full. MUST be Docker clean-room for product count (rule 60 + ENVIRONMENTS + red-blue-validate + SoT clean-room canon). Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -3515,9 +3417,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2b-docker-accelerate/rust-controls/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2b-docker-accelerate/rust-controls/run-receipt.json",
       "notes": "MUST be Docker clean-room for product count (rule 60 + ENVIRONMENTS + red-blue-validate + SoT clean-room canon). Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -3548,9 +3448,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -3631,9 +3529,7 @@
         ".spec.local/root/evidence/20261109005000-cursor-n06-owner-join/CLOSER.json"
       ],
       "notes": "Unlock B Desktop measure Cap=1 --w2-h2-product-binding @ 4a5d0135 EXIT 0 (evidence 20261109004100). original_h2_measured=true from validated Desktop lab TLS receipt — counts as pass_component_desktop_measure ONLY. Hosted Cap --w2-h2-hosted-venue Specfold EXIT0 run 42500919761 @ d483c40f = pass_component_hosted_measure ONLY — component green ≠ product / ≠ n06_owner_join / ≠ pass_product_clean_room. N06 owner join still open (Cursor readiness Cap CLI --n06-owner-join-readiness Cap=0 without Root auth handoff). No W2 Desktop measure / hosted Cap reburn without structural delta. Unlock A GRANT+apply bound; Cap realloc after host CEF bundle discovery (evidence 20261109020200); Cap=1 --g4-cef-at EXIT1 component_executed_cleanup_failed (g4_cef_at executed; HUMANYMOUS_CEF_PILOT_BUNDLE present; cleanup missing Desktop baseline); Cap free=false; BrowserReady=false; no invent pass_product; no W2/authority Cap reburn; product=0.",
-      "gap_binding": [
-        "G1"
-      ],
+      "gap_binding": "G1",
       "full_product_qualified": false,
       "pass_product": false,
       "pass_product_clean_room": false,
@@ -3661,9 +3557,7 @@
         ".spec.local/root/evidence/20261109005000-cursor-n06-owner-join/CLOSER.json"
       ],
       "notes": "Specfold Cap=1 --w2-h2-hosted-venue EXIT 0 run 42500919761 @ d483c40f (passed=8). Counts as pass_component_hosted_measure ONLY — hosted Cap component green ≠ pass_product_clean_room / ≠ n06_owner_join / ≠ matrix product. N06 owner-join readiness Cap=0 without Root auth handoff. Unlock A Cap realloc + Cap=1 --g4-cef-at EXIT1 (20261109020200): CEF bundle present + g4_cef_at component executed; cleanup_failed Desktop baseline; Cap free=false; hosted Cap reburn forbidden without structural delta; product=0.",
-      "gap_binding": [
-        "G1"
-      ],
+      "gap_binding": "G1",
       "full_product_qualified": false,
       "pass_product": false,
       "pass_product_clean_room": false,
@@ -3683,9 +3577,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p2b-docker-accelerate/authority-node-ipc/run-receipt.json",
       "notes": "MUST be Docker clean-room for product count (rule 60 + ENVIRONMENTS + red-blue-validate + SoT clean-room canon). Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -4161,9 +4053,7 @@
       "full_product_qualified": false,
       "pass_product": false,
       "observed_utc": "2026-11-08T10:22:16Z",
-      "gap_binding": [
-        "G5"
-      ]
+      "gap_binding": "G5"
     },
     {
       "id": "desktop-linux|none|witness|compose_config",
@@ -4221,9 +4111,7 @@
       "full_product_qualified": false,
       "pass_product": false,
       "observed_utc": "2026-11-08T10:22:16Z",
-      "gap_binding": [
-        "G5"
-      ]
+      "gap_binding": "G5"
     },
     {
       "id": "desktop-linux|none|m3-full-product|lab_runner_require_full",
@@ -4537,9 +4425,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/nginx-execution-summary.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/nginx-execution-summary.json",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -4570,9 +4456,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/cleanup-receipt.json"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-p3-adapter-pilots/nginx/attempt-4/cleanup-receipt.json",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -4586,9 +4470,7 @@
       "counts_as_product": false,
       "status": "n/a",
       "prior_status": "n/a",
-      "evidence": [
-        "deployments/lab/ENVIRONMENTS.md"
-      ],
+      "evidence": "deployments/lab/ENVIRONMENTS.md",
       "notes": "Adapter-conformance feeds product later; nginx native pilot itself is not rust-product-lab require-full. Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room."
     },
     {
@@ -4791,9 +4673,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-s12-product-compose/"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-s12-product-compose/",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -4807,9 +4687,7 @@
       "counts_as_product": false,
       "status": "unrun",
       "prior_status": "unrun",
-      "evidence": [
-        "deployments/lab/ENVIRONMENTS.md"
-      ],
+      "evidence": "deployments/lab/ENVIRONMENTS.md",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room."
     },
     {
@@ -4823,9 +4701,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-s12-product-compose/"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-s12-product-compose/",
       "notes": "Linux Compose is scaffold; Windows host pilots separate. Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -4856,9 +4732,7 @@
       "counts_as_product": false,
       "status": "pass_component_desktop",
       "prior_status": "pass_component_only",
-      "evidence": [
-        ".spec.local/root/evidence/cursor-s12-product-compose/"
-      ],
+      "evidence": ".spec.local/root/evidence/cursor-s12-product-compose/",
       "notes": "Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room. Desktop component retained as pass_component_desktop; NOT promoted to product."
     },
     {
@@ -4872,9 +4746,7 @@
       "counts_as_product": false,
       "status": "unrun",
       "prior_status": "unrun",
-      "evidence": [
-        "deployments/lab/ENVIRONMENTS.md"
-      ],
+      "evidence": "deployments/lab/ENVIRONMENTS.md",
       "notes": "ABI scaffold; image-required not_run. Component-eligible; Desktop/hosted/fixture prep does not count as pass_product_clean_room."
     },
     {
