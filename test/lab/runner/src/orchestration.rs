@@ -50,17 +50,18 @@ mod browser_actor;
 mod browser_failure;
 pub(crate) mod cap0_product_honesty;
 pub(crate) mod clean_room_product;
+pub(crate) mod clean_room_product_matrix;
 pub(crate) mod g2_collector_product_binding;
 pub(crate) mod g4_cef_at;
 pub(crate) mod g5_witness_transport;
 pub(crate) mod g6_origin_audit_binding;
-pub(crate) mod red_blue_product;
 mod go;
 mod go_fixture;
 mod go_public;
 pub(crate) mod h2_product_binding;
 mod mount_probe;
 mod public_receipts;
+pub(crate) mod red_blue_product;
 mod requirement;
 mod startup_failure;
 mod witness;
@@ -86,6 +87,7 @@ struct Lab {
     clean_room_product: bool,
     g6_origin_audit_binding: bool,
     red_blue_product: bool,
+    clean_room_product_matrix: bool,
     require_full: bool,
     browser_ready_interactive_at_honesty: bool,
     n06_owner_auth_handoff_honesty: bool,
@@ -166,9 +168,7 @@ impl Lab {
                 "-p".into(),
                 self.project.clone(),
                 "-f".into(),
-                self.config_file(
-                    "deployments/lab/compose.g2-collector-product-binding.yaml",
-                )?,
+                self.config_file("deployments/lab/compose.g2-collector-product-binding.yaml")?,
                 "--profile".into(),
                 "g2-collector-product-binding".into(),
             ];
@@ -187,9 +187,7 @@ impl Lab {
                 "-p".into(),
                 self.project.clone(),
                 "-f".into(),
-                self.config_file(
-                    "deployments/lab/compose.g5-witness-transport.yaml",
-                )?,
+                self.config_file("deployments/lab/compose.g5-witness-transport.yaml")?,
                 "--profile".into(),
                 "g5-witness-transport".into(),
             ];
@@ -237,6 +235,19 @@ impl Lab {
                 self.config_file("deployments/lab/compose.red-blue-product.yaml")?,
                 "--profile".into(),
                 "red-blue-product".into(),
+            ];
+            command.extend(args.iter().map(|s| (*s).to_owned()));
+            return Ok(command);
+        }
+        if self.clean_room_product_matrix {
+            let mut command = vec![
+                "compose".into(),
+                "-p".into(),
+                self.project.clone(),
+                "-f".into(),
+                self.config_file("deployments/lab/compose.clean-room-product-matrix.yaml")?,
+                "--profile".into(),
+                "clean-room-product-matrix".into(),
             ];
             command.extend(args.iter().map(|s| (*s).to_owned()));
             return Ok(command);
@@ -447,6 +458,9 @@ impl Lab {
         }
         if self.red_blue_product {
             return red_blue_product::run(self, self.require_full);
+        }
+        if self.clean_room_product_matrix {
+            return clean_room_product_matrix::run(self, self.require_full);
         }
         if self.browser_ready_interactive_at_honesty {
             return cap0_product_honesty::run_browser_ready_interactive_at_honesty(self);
@@ -740,11 +754,15 @@ impl Lab {
         // Cap=0 red-blue-product honesty never opens compose when Cap topology
         // is absent; host-only cleanup. Cap=1 with live topology uses compose down.
         let red_blue_host_only = self.red_blue_product
-            && red_blue_product::missing_cap_topology(
-                std::path::Path::new(&self.docker.root),
-            )
-            .len()
+            && red_blue_product::missing_cap_topology(std::path::Path::new(&self.docker.root))
+                .len()
                 == red_blue_product::REQUIRED_CAP_TOPOLOGY.len();
+        let product_matrix_host_only = self.clean_room_product_matrix
+            && clean_room_product_matrix::missing_cap_topology(std::path::Path::new(
+                &self.docker.root,
+            ))
+            .len()
+                == clean_room_product_matrix::REQUIRED_CAP_TOPOLOGY.len();
         if self.g4_cef_at
             || self.n06_owner_join_readiness
             || self.g2_collector_product_binding_readiness
@@ -752,6 +770,7 @@ impl Lab {
             || self.browser_ready_interactive_at_honesty
             || self.n06_owner_auth_handoff_honesty
             || red_blue_host_only
+            || product_matrix_host_only
         {
             self.docker.recheck_engine()?;
             let filter = format!("label=com.docker.compose.project={}", self.project);
@@ -812,6 +831,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut clean_room_product = false;
     let mut g6_origin_audit_binding = false;
     let mut red_blue_product = false;
+    let mut clean_room_product_matrix = false;
     let mut browser_ready_interactive_at_honesty = false;
     let mut n06_owner_auth_handoff_honesty = false;
     let mut g4_cef_at = false;
@@ -844,6 +864,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--clean-room-product" => clean_room_product = true,
             "--g6-origin-audit-binding" => g6_origin_audit_binding = true,
             "--red-blue-product" => red_blue_product = true,
+            "--clean-room-product-matrix" => clean_room_product_matrix = true,
             "--browser-ready-interactive-at-honesty" => browser_ready_interactive_at_honesty = true,
             "--n06-owner-auth-handoff-honesty" => n06_owner_auth_handoff_honesty = true,
             "--g4-cef-at" => g4_cef_at = true,
@@ -871,6 +892,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -904,6 +926,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -935,6 +958,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -964,6 +988,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -994,6 +1019,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1024,6 +1050,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1053,6 +1080,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1082,6 +1110,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1112,6 +1141,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
@@ -1141,6 +1171,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || g4_cef_at
             || full
@@ -1170,6 +1201,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1242,6 +1274,37 @@ pub fn run(args: &[String]) -> Result<i32> {
         }
     }
 
+    if clean_room_product_matrix {
+        // Cap=0 require-full honesty / Cap=1 product-matrix feeder after Cap realloc.
+        // Distinct from spent --clean-room-product Cap twin; --require-full intentional.
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || n06_owner_join_readiness
+            || g2_collector_product_binding
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
+            || g5_witness_transport
+            || clean_room_product
+            || g6_origin_audit_binding
+            || red_blue_product
+            || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
+            || g4_cef_at
+            || require_go_component
+        {
+            return Err(
+                "clean-room-product-matrix Cap requires its own fresh profile; refuse spent CR Cap twin / G2/G5/G6/RB Cap twin spam; Cap=0 require-full honesty lists missing product cells; Cap=1 after Cap realloc is product-matrix feeder; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+
     if g4_cef_at {
         // Cap CLI bound only after Unlock A transfer-apply with code-defined pilot.
         crate::unlock_gate::require_g4_cef_at_unlocked(&root)?;
@@ -1265,6 +1328,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || clean_room_product
             || g6_origin_audit_binding
             || red_blue_product
+            || clean_room_product_matrix
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || full
@@ -1352,6 +1416,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         clean_room_product,
         g6_origin_audit_binding,
         red_blue_product,
+        clean_room_product_matrix,
         require_full: full,
         browser_ready_interactive_at_honesty,
         n06_owner_auth_handoff_honesty,
@@ -1411,9 +1476,10 @@ pub fn run(args: &[String]) -> Result<i32> {
         || g2_collector_product_binding_readiness
         || g5_witness_transport_honesty
         || g5_witness_transport
-            || clean_room_product
-            || g6_origin_audit_binding
-            || red_blue_product
+        || clean_room_product
+        || g6_origin_audit_binding
+        || red_blue_product
+        || clean_room_product_matrix
         || browser_ready_interactive_at_honesty
         || n06_owner_auth_handoff_honesty
         || g4_cef_at
@@ -1449,18 +1515,10 @@ pub fn run(args: &[String]) -> Result<i32> {
             "g5_witness_transport_honesty",
             "g5-witness-transport-honesty",
         ),
-        (
-            "g5_witness_transport",
-            "g5-witness-transport-cap",
-        ),
-        (
-            "clean_room_product",
-            "clean-room-product-cap",
-        ),
-        (
-            "red_blue_product",
-            "red-blue-product-cap",
-        ),
+        ("g5_witness_transport", "g5-witness-transport-cap"),
+        ("clean_room_product", "clean-room-product-cap"),
+        ("red_blue_product", "red-blue-product-cap"),
+        ("clean_room_product_matrix", "clean-room-product-matrix-cap"),
         (
             "browser_ready_interactive_at_honesty",
             "browser-ready-interactive-at-honesty",

@@ -1,0 +1,72 @@
+{
+  "schema": "humanymous.cursor-clean-room-product-matrix-cap-realloc/1",
+  "record_kind": "clean-room-product-matrix-cap-realloc",
+  "observed_utc": "2026-11-09T21:58:12Z",
+  "branch": "codex/rust",
+  "head": "7dbd697080621c744b331d2528a1844826bf8c35",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "provider": "cursor",
+  "execution_client": "cursor",
+  "cap_profile": "clean-room-product-matrix",
+  "cap_selector": "--clean-room-product-matrix",
+  "cap_free_before": false,
+  "cap_free_after": true,
+  "cap_realloc": true,
+  "cap_realloc_executed": true,
+  "cap_burn": 1,
+  "cap_exit": 2,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "structural_delta": {
+    "kind": "clean_room_product_matrix_cap_cli_plus_live_topology_transfer",
+    "grant_schema": "humanymous.cursor-clean-room-product-matrix-transfer-grant/1",
+    "transfer_apply": ".spec.local/root/evidence/20261110065000-cursor-clean-room-product-matrix-cap-ready/cap-ready/clean-room-product-matrix/candidate-pack/TRANSFER-APPLY.json",
+    "grant": ".spec.local/root/evidence/20261110065000-cursor-clean-room-product-matrix-cap-ready/cap-ready/clean-room-product-matrix/candidate-pack/GRANT.json",
+    "unlock_pm_applied": ".spec.local/root/evidence/20261110065000-cursor-clean-room-product-matrix-cap-ready/cap-ready/clean-room-product-matrix/UNLOCK-PM-APPLIED.json",
+    "cap_cli": "test/lab/runner/src/orchestration/clean_room_product_matrix.rs",
+    "live_topology": [
+      "deployments/lab/compose.clean-room-product-matrix.yaml",
+      "build/rust/clean-room-product-matrix-lab.Dockerfile",
+      "build/rust/clean-room-product-matrix-lab.Dockerfile.dockerignore",
+      "deployments/lab/product/clean-room-product-matrix-contract.json",
+      "deployments/lab/product/clean-room-product-matrix-measure-receipt.scaffold.json",
+      "deployments/lab/product/clean-room-product-matrix-cap-pilot.sh"
+    ],
+    "not_spent_clean_room_product_cap_twin": true,
+    "not_g2_g5_g6_rb_cap_twin": true,
+    "bound_e2e_exit0": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+    "bound_cr": ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json",
+    "bound_rb": ".spec.local/root/evidence/20261110050000-cursor-red-blue-product-cap-realloc/CAP1-RECEIPT.json",
+    "auth_at": "absent_refuse_not_forged",
+    "new_allowlist_inputs": [
+      "compose.clean-room-product-matrix.yaml",
+      "clean-room-product-matrix Cap CLI --require-full",
+      "e2e EXIT0 desktop-oracle hold bind",
+      "AUTH/AT refuse honesty"
+    ]
+  },
+  "authority": {
+    "user_autonomy": true,
+    "root_note_required": false,
+    "schema_source": "GRANT.TEMPLATE.json + ROOT-ONE-STEP.md + CAP-REALLOC-ELIGIBLE.json",
+    "user_phrase": "Standing autonomy: Cap-ready GRANT apply + Cap-ready path transfers with matching preimages; Cap realloc after live topology; Cap=1 once",
+    "note": "Standing user autonomy Cap-ready GRANT+TRANSFER unlocked NEW product-matrix Cap topology; Cap realloc restores Cap free for one Cap=1 on --clean-room-product-matrix --require-full only; distinct from spent --clean-room-product Cap twin; AUTH/AT refuse; never invent pass_product_clean_room"
+  },
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_cap_free_without_realloc": true,
+    "never_invent_browser_ready": true,
+    "never_forge_auth_at": true,
+    "detection_freeze": true,
+    "topology_apply_does_not_invent_cap_free": true,
+    "cap_realloc_restores_cap_free_for_one_burn": true,
+    "not_spent_clean_room_product_cap_twin": true,
+    "not_g2_g5_g6_rb_cap_twin_spam": true
+  },
+  "next": "Cap=1 EXIT2 feeder landed; Cap free after burn=false; product=0; Root AUTH/AT still required for BrowserReady/N06; never invent pass_product_clean_room",
+  "cap1_receipt": ".spec.local/root/evidence/20261110065100-cursor-clean-room-product-matrix-cap-realloc/CAP1-RECEIPT.json",
+  "cap1_bundle": ".spec.local/root/evidence/20261110065100-cursor-clean-room-product-matrix-cap-realloc/cap1-bundle-r2"
+}

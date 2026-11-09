@@ -1,0 +1,9 @@
+{
+  "schema": "humanymous.lab-clean-room-product-matrix-measure-receipt/1",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "counts_as": "clean_room_product_matrix_require_full_feeder_not_product",
+  "note": "Scaffold only; Cap=1 measure fills runtime fields; never invent pass_product_clean_room"
+}

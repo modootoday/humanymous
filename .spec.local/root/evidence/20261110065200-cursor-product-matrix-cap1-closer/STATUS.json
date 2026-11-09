@@ -1,0 +1,28 @@
+{
+  "schema": "humanymous.cursor-product-matrix-cap1-closer-status/1",
+  "observed_utc": "2026-11-09T22:00:03Z",
+  "head": "7dbd697080621c744b331d2528a1844826bf8c35",
+  "branch": "codex/rust",
+  "cap_free_before": false,
+  "cap_free_after_realloc": true,
+  "cap_free_after_burn": false,
+  "cap_realloc_attempted": true,
+  "cap_realloc_executed": true,
+  "cap_exit": 2,
+  "cap_burn": 1,
+  "cap_selector": "--clean-room-product-matrix --require-full",
+  "structural_feeder": "clean-room-product-matrix Cap CLI + NEW Cap topology TRANSFER (not spent CR twin)",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "auth_present": false,
+  "at_present": false,
+  "goal_complete": false,
+  "exact_next_closer": "Root AT-HANDOFF + AUTH-HANDOFF + NEW Cap-ready structural feeder / Cap realloc \u2192 Cap free=true \u2192 Cap=1 product path; never invent pass_product_clean_room / BrowserReady",
+  "blocked_on_root": true,
+  "blocked_on_root_for": [
+    "AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1",
+    "AUTH-HANDOFF humanymous.root-n06-owner-join-auth-handoff/1",
+    "pass_product_clean_room still 0 after Cap1 component feeder"
+  ]
+}

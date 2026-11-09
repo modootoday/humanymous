@@ -1,0 +1,38 @@
+{
+  "schema": "humanymous.lab-clean-room-product-matrix-contract/1",
+  "record_kind": "clean-room-product-matrix-cap-contract",
+  "cap_selector": "--clean-room-product-matrix",
+  "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --clean-room-product-matrix --require-full",
+  "require_full_required": true,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "detection_freeze": true,
+  "not_spent_clean_room_product_cap_twin": true,
+  "not_g2_g5_g6_rb_cap_twin": true,
+  "required_cap_topology": [
+    "deployments/lab/compose.clean-room-product-matrix.yaml",
+    "build/rust/clean-room-product-matrix-lab.Dockerfile"
+  ],
+  "bound_e2e_exit0": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+  "bound_cr_cap1": ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json",
+  "bound_rb_cap1": ".spec.local/root/evidence/20261110050000-cursor-red-blue-product-cap-realloc/CAP1-RECEIPT.json",
+  "matrix": ".spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/matrix.json",
+  "product_oneshot_when_cap_free": [
+    "bash scripts/e2e-docker.sh",
+    "make e2e",
+    "pwsh -File scripts/e2e-docker.ps1"
+  ],
+  "forbidden": [
+    "invent pass_product_clean_room",
+    "spent --clean-room-product Cap twin spam",
+    "G2/G5/G6/RB Cap twin spam",
+    "Cap=1 while Cap free=false without Cap realloc",
+    "invent Cap free / BrowserReady / AUTH/AT"
+  ],
+  "honesty": {
+    "cap0_require_full_lists_missing_product_cells": true,
+    "binds_e2e_exit0_component_hold_not_product": true,
+    "auth_at_refuse_not_forged": true,
+    "cap_realloc_only_structural_feeder": true
+  }
+}

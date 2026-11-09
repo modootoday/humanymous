@@ -1,0 +1,20 @@
+{
+  "schema": "humanymous.cursor-full-priority-pm-cap-wave-honesty/1",
+  "observed_utc": "2026-11-09T22:00:03Z",
+  "tip": "7dbd697080621c744b331d2528a1844826bf8c35",
+  "cap_free_before": false,
+  "cap_free_after_realloc": true,
+  "cap_free_after_burn": false,
+  "cap_realloc": true,
+  "cap_exit": 2,
+  "cap_burn": 1,
+  "structural_feeder": "clean-room-product-matrix",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "ranks": {
+    "9": "Cap realloc executed via NEW product-matrix feeder",
+    "14": "Cap=1 once product-matrix require-full feeder EXIT2; product still 0"
+  },
+  "goal_complete": false
+}

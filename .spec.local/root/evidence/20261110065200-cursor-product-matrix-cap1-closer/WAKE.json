@@ -1,0 +1,24 @@
+{
+  "schema": "humanymous.cursor-at-auth-wake-cap0/1",
+  "tip": "7dbd697080621c744b331d2528a1844826bf8c35",
+  "observed_utc": "2026-11-09T22:00:03Z",
+  "cap": 0,
+  "cap_burn": 1,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "at": {
+    "path": ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+    "present": false,
+    "applied": false,
+    "status": "absent_ROOT-ONE-STEP"
+  },
+  "auth": {
+    "path": ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+    "present": false,
+    "applied": false,
+    "status": "absent_ROOT-ONE-STEP"
+  },
+  "note": "LIVE tip wake; AT/AUTH still absent; never forge"
+}

@@ -1,0 +1,21 @@
+# Clean-room product-matrix Cap topology (Cap=0 Cap-ready; Cap=1 after Cap realloc).
+# Product-matrix require-full feeder — NOT a spent --clean-room-product Cap twin
+# and NOT a G2/G5/G6/RB Cap twin.
+# Cap Docker freeze allowlists deployments/lab/** only.
+# Binds e2e EXIT0 desktop-oracle holds + AUTH/AT refuse honestly.
+# Detection freeze. Lab-only; no published ports on the measure pilot.
+services:
+  clean-room-product-matrix-pilot:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/clean-room-product-matrix-lab:${HM_LAB_IMAGE_TAG:-local}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:-../..}
+      dockerfile: build/rust/clean-room-product-matrix-lab.Dockerfile
+    network_mode: none
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    labels:
+      org.humanymous.evidence: rust-clean-room-product-matrix
+    profiles: [clean-room-product-matrix]

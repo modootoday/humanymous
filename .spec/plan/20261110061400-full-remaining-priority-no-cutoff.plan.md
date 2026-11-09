@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T21:44:30Z
+updated: 2026-11-09T22:00:03Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -220,3 +220,22 @@ Receipt: `.spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-clos
 | Supersedes truncated tables | plan:root/20261110060500-code-sot-gap-browser-priority-reorder, plan:root/20261110044500-production-status-priority-reorder |
 | Matrix | .spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/ |
 | LIVE canvas | canvases/humanymous-live-roadmap.canvas.tsx |
+
+## LIVE PM Cap wave honesty (2026-11-09T22:00:03Z)
+
+| Field | Measured |
+| --- | --- |
+| tip (pre-commit) | 7dbd697080621c744b331d2528a1844826bf8c35 |
+| Cap free before | **false** |
+| Cap free after realloc | **true** |
+| Cap free after Cap=1 burn | **false** |
+| Cap realloc | **yes** `humanymous.cursor-clean-room-product-matrix-cap-realloc/1` |
+| Cap EXIT | **2** (require-full feeder not product) |
+| Cap burn | **1** once `--clean-room-product-matrix --require-full` |
+| Structural feeder | NEW product-matrix Cap CLI+topology (not spent CR twin) |
+| product / pass_product_clean_room | **0** / **0** |
+| BrowserReady / AUTH / AT | **false** / absent / absent |
+| Rank 9 U-CAP-REALLOC | Cap0 feeder landed + realloc executed this wave |
+| Rank 14 U-CAP1-CR-ONCE | Cap1 preferred path burned via product-matrix feeder; product still 0 |
+| goal_complete | **false** |
+
