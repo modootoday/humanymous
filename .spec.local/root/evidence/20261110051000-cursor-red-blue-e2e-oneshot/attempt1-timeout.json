@@ -1,0 +1,23 @@
+{
+  "schema": "humanymous.cursor-red-blue-e2e-attempt/1",
+  "attempt": 1,
+  "observed_utc": "2026-11-09T20:19:18Z",
+  "command": "bash scripts/e2e-docker.sh",
+  "runner": "Git Bash + Windows docker.exe --context desktop-linux",
+  "project": "hmn-e2e",
+  "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+  "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+  "ostype": "linux",
+  "source_tip": "0329ef44a8844dfa76f9e70d781a52dda9baef1b",
+  "compose": "deployments/compose.yaml",
+  "images_requested": ["humanymous/core:local", "humanymous/gate:local", "humanymous/bots:local"],
+  "phase": "build-images",
+  "exit": 124,
+  "timeout_seconds": 600,
+  "root_cause": "build context transfer ~4.9GB from unignored target-* workdirs before bake completed",
+  "fix": "add target-*/ to .dockerignore; retry with E2E_BUILD_TIMEOUT=1800",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "cap_burn": 0,
+  "cap_free": false
+}

@@ -38,6 +38,12 @@ web/detector.wasm
 .spec.local/
 .specfold/
 target/
+# Agent/local Cargo target trees (untracked Cap0/lab workdirs); never ship in image context
+target-*/
+# Adapters (incl. nginx .build-cache / node_modules) — not part of core/gate/bots images
+adapters/
+**/node_modules/
+**/.build-cache/
 .cache/
 .tmp/
 .local-trust/

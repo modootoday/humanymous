@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.cursor-red-blue-product-cap1-matrix-bind-status/1",
+  "observed_utc": "2026-11-09T20:07:57Z",
+  "branch": "codex/rust",
+  "head": "0329ef44a8844dfa76f9e70d781a52dda9baef1b",
+  "complete": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_burn": 0,
+  "tip_bind": "0329ef44",
+  "counts_as": "red_blue_product_require_full_feeder_not_product",
+  "cap1_exit": 2,
+  "auth_present": false,
+  "at_present": false,
+  "browser_ready": false,
+  "blocked_on_root": true,
+  "exact_next_closer": "Docker red-blue-validate / e2e-docker oneshot for red_blue_* matrix cells; Root AUTH-HANDOFF or AT-HANDOFF Cap=0 measured apply; never invent pass_product_clean_room",
+  "honesty": {
+    "never_invent_cap_free": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_forge_auth_at": true,
+    "never_invent_browser_ready": true,
+    "detection_freeze": true
+  }
+}

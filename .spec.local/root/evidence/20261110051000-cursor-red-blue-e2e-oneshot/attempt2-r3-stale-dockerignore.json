@@ -1,0 +1,17 @@
+{
+  "schema": "humanymous.cursor-red-blue-e2e-attempt/1",
+  "attempt": 3,
+  "observed_utc": "2026-11-09T20:30:00Z",
+  "command": "bash scripts/e2e-docker.sh",
+  "runner": "Git Bash + Windows docker.exe --context desktop-linux",
+  "project": "hmn-e2e",
+  "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+  "source_tip": "0329ef44a8844dfa76f9e70d781a52dda9baef1b",
+  "phase": "build-images",
+  "aborted": true,
+  "root_cause": "bake started before build/gate.Dockerfile.dockerignore Cap=0 context-bloat exclusions were on disk; gate context transfer climbed past 3GB (target/adapters). Stopped and retrying with fixed per-Dockerfile dockerignores.",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "cap_burn": 0,
+  "cap_free": false
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "humanymous.cursor-docker-context-probe/1",
+  "observed_utc": "2026-11-09T20:30:00Z",
+  "dockerfile": "build/gate.Dockerfile",
+  "dockerignore": "build/gate.Dockerfile.dockerignore",
+  "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+  "transferring_context": "68.37kB",
+  "prior_bloated_context": "2.18GB+ (attempt2) / ~4.9GB (attempt1)",
+  "note": "Cap=0 dockerignore fix validated; gate context collapsed; ready for ONE bounded e2e-docker restart"
+}

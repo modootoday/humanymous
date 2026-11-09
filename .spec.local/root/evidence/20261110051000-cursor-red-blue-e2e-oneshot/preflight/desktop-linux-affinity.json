@@ -1,0 +1,16 @@
+{
+    "schema":  "humanymous.docker-engine-affinity/1",
+    "observed_utc":  "2026-11-09T20:08:45Z",
+    "executable":  "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe",
+    "context":  "desktop-linux",
+    "endpoint":  "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "engine_id":  "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+    "ostype":  "linux",
+    "server_version":  "29.9.2",
+    "name":  "docker-desktop",
+    "client_version":  "29.9.2",
+    "required_endpoint":  "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "required_ostype":  "linux",
+    "affinity_ok":  true,
+    "note":  "Windows Docker Desktop Linux engine preflight for red_blue e2e oneshot; rule 96; Cap free=false; non-Cap Docker path"
+}

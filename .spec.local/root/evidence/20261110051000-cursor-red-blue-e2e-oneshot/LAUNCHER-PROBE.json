@@ -1,0 +1,13 @@
+{
+    "schema":  "humanymous.cursor-e2e-launch-probe/1",
+    "observed_utc":  "2026-11-09T20:35:02Z",
+    "affinity_only_exit":  0,
+    "mutex_refuse_exit":  2,
+    "expect_affinity":  0,
+    "expect_mutex_refuse":  2,
+    "never_exit_neg1":  true,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "cap_free":  false,
+    "fix":  "scripts/e2e-docker-launch.ps1"
+}

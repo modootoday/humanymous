@@ -1,0 +1,85 @@
+{
+  "schema": "humanymous.cursor-e2e-exit-neg1-root-cause/1",
+  "observed_utc": "2026-11-09T20:33:30Z",
+  "branch": "codex/rust",
+  "head": "0329ef44a8844dfa76f9e70d781a52dda9baef1b",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "symptom": {
+    "exit_code_unsigned": 4294967295,
+    "exit_code_signed": -1,
+    "meaning": "PowerShell/native wrapper terminated without a real docker/bash status; NOT a Docker affinity failure and NOT pass_product"
+  },
+  "terminals": {
+    "647783": {
+      "title": "Retry Docker e2e after dockerignore fix (r2)",
+      "pattern": "bash run-e2e-r2.sh 2>&1 | Tee-Object -FilePath console-r2.log",
+      "exit": 1,
+      "note": "Aborted mid build-context transfer (~2.18GB); status=aborted. Distinct from -1; context bloat / host abort."
+    },
+    "512849": {
+      "title": "Start e2e r3 redirected to log",
+      "pattern": "bash run-e2e-r3.sh *> console-r3.log",
+      "exit": 4294967295,
+      "ended_at": "2026-11-09T20:30:44Z",
+      "note": "Exclusive *> redirect held console-r3.log; later killed during storm stop → -1."
+    },
+    "791183": {
+      "title": "Run ONE bounded e2e-docker r3",
+      "pattern": "bash run-e2e-r3.sh 2>&1 | Tee-Object -FilePath console-r3.log",
+      "exit": 4294967295,
+      "smoking_gun": "out-file IOException: console-r3.log is being used by another process; FINAL_LASTEXITCODE=-1",
+      "note": "Concurrent Tee-Object onto the same path already locked by 512849 *> redirect."
+    },
+    "512850": {
+      "title": "Run e2e r4 with fixed dockerignore",
+      "pattern": "bash run-e2e-r4.sh *> console-r4.log",
+      "exit": 4294967295,
+      "note": "Host wrapper reported -1 after ~36s while orphaned bake/attack continued writing console-r4.log; storm + exclusive redirect / process loss."
+    }
+  },
+  "root_cause": {
+    "primary": "concurrent_powershell_log_lock",
+    "detail": "Two or more host wrappers launched e2e against a shared console-rN.log. Exclusive *> redirection and Tee-Object/Out-File cannot share the file; PowerShell raises IOException and surfaces LASTEXITCODE=-1 (unsigned 4294967295).",
+    "contributing": [
+      "retry storm (r2/r3/r4 overlapping)",
+      "fixed console log paths instead of unique RUN_ID logs",
+      "manual Stop-Process also yields 4294967295 when killing a locked wrapper"
+    ],
+    "not_root_cause": [
+      "Docker Desktop affinity (engine 578836b2… / npipe desktop-linux repeatedly OK)",
+      "OOM (no evidence; builds progressed)",
+      "dockerignore alone (necessary for context size; not the -1 exit)",
+      "AUTH/AT missing (orthogonal Cap=0 product blockers)"
+    ]
+  },
+  "fix": {
+    "path": "scripts/e2e-docker-launch.ps1",
+    "behaviors": [
+      "single-flight mutex under .agent-runs/e2e/single-flight.lock (second launch EXIT 2 refuse-closed)",
+      "unique host-console.log per E2E_RUN_ID",
+      "Start-Transcript append instead of exclusive *> / shared Tee-Object",
+      "DOCKER_CONTEXT=desktop-linux + docker.exe PATH prepend (rule 96)",
+      "preserve real bash scripts/e2e-docker.sh exit code"
+    ]
+  },
+  "prior_real_docker_progress_when_launcher_survived": {
+    "runId": "20261109T203000Z-hmn-e2e-rb-r3",
+    "status": "failed",
+    "phase": "pass-wargame",
+    "exit": 1,
+    "note": "Attack 70/70 + gate-e2e PASSed before pass-wargame FAIL; proves Desktop docker path can run when wrapper does not die with -1. Still NOT pass_product_clean_room."
+  },
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_cap_free": true,
+    "detection_freeze": true,
+    "retry_storm_stopped": true
+  },
+  "next": "Use scripts/e2e-docker-launch.ps1 for ONE bounded Desktop attempt; Cap free=false; product=0 until pass_product_clean_room measured; AUTH/AT still Root"
+}

@@ -1,0 +1,416 @@
+[e2e-docker] pre-flight: freeing lab subnets (removing any conflicting stack)...
+
+========== [e2e-docker] START validate-compose @ 2026-11-09T20:20:33Z (timeout 60s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml config -q
+========== [e2e-docker] PASS validate-compose elapsed=0s ==========
+
+========== [e2e-docker] START build-images @ 2026-11-09T20:20:33Z (timeout 1800s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml --profile attack --profile gate-test --profile pass-test --profile swarm --progress plain build core gate bots
+ Image humanymous/gate:local Building 
+ Image humanymous/bots:local Building 
+ Image humanymous/core:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.38kB done
+#1 DONE 0.0s
+
+#2 [gate internal] load build definition from gate.Dockerfile
+#2 transferring dockerfile: 2.38kB done
+#2 DONE 0.1s
+
+#3 [bots internal] load build definition from bots.Dockerfile
+#3 transferring dockerfile: 7.38kB done
+#3 DONE 0.1s
+
+#4 [core internal] load build definition from core.Dockerfile
+#4 transferring dockerfile: 2.88kB done
+#4 DONE 0.1s
+
+#5 [gate internal] load metadata for gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#5 ...
+
+#6 [bots internal] load metadata for docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#6 DONE 0.1s
+
+#5 [core internal] load metadata for gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#5 ...
+
+#7 [bots internal] load metadata for docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#7 DONE 0.2s
+
+#8 [bots internal] load metadata for docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#8 DONE 0.1s
+
+#9 [bots internal] load build context
+#9 DONE 0.0s
+
+#10 [bots curl-impersonate 1/1] FROM docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#10 resolve docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64 0.1s done
+#10 DONE 0.1s
+
+#11 [bots gobuild  1/10] FROM docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#11 resolve docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 0.1s done
+#11 DONE 0.2s
+
+#12 [bots stage-2  1/20] FROM docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#12 resolve docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3 0.2s done
+#12 DONE 0.2s
+
+#5 [gate internal] load metadata for gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#5 DONE 0.5s
+
+#11 [core gobuild  1/10] FROM docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#11 resolve docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 0.1s done
+#11 DONE 0.2s
+
+#13 [core internal] load .dockerignore
+#13 transferring context: 1.41kB done
+#13 DONE 0.1s
+
+#14 [core stage-1 1/6] FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#14 resolve gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#14 resolve gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35 0.2s done
+#14 resolve gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35 0.2s done
+#14 DONE 0.2s
+
+#15 [gate stage-1 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [core internal] load build context
+#16 transferring context: 44.64MB 4.8s
+#16 ...
+
+#9 [bots internal] load build context
+#9 transferring context: 37.66kB 5.6s done
+#9 DONE 5.6s
+
+#17 [bots stage-2 10/20] COPY --from=curl-impersonate /usr/local/lib/ /app/curl-impersonate/lib/
+#17 CACHED
+
+#18 [bots stage-2  5/20] COPY --from=gobuild /out/gate      /app/bin/gate
+#18 CACHED
+
+#19 [bots gobuild  7/10] COPY pkg ./pkg
+#19 CACHED
+
+#20 [bots stage-2 19/20] COPY --from=gobuild /src/configs/ml /app/demo-keys-seed/ml
+#20 CACHED
+
+#21 [bots stage-2 15/20] COPY scripts/assert-*.mjs /app/scripts/
+#21 CACHED
+
+#22 [bots gobuild  4/10] RUN go mod download
+#22 CACHED
+
+#23 [bots stage-2 12/20] COPY --from=curl-impersonate /lib/libz.so.1.2.13 /lib/libz.so.1.2.13
+#23 CACHED
+
+#24 [bots stage-2  9/20] COPY --from=curl-impersonate     /usr/local/bin/curl-impersonate     /usr/local/bin/curl-impersonate-chrome     /usr/local/bin/curl_chrome99_android     /usr/local/bin/curl_chrome116     /app/curl-impersonate/bin/
+#24 CACHED
+
+#25 [bots stage-2  4/20] COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
+#25 CACHED
+
+#26 [bots gobuild  8/10] COPY scripts/gen-demo-keys ./scripts/gen-demo-keys
+#26 CACHED
+
+#27 [bots gobuild  2/10] WORKDIR /src
+#27 CACHED
+
+#28 [bots stage-2 11/20] COPY --from=curl-impersonate /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
+#28 CACHED
+
+#29 [bots stage-2  6/20] COPY test/package.json test/package-lock.json /app/test/
+#29 CACHED
+
+#30 [bots gobuild  9/10] COPY scripts/gen-ml-demo-bundle ./scripts/gen-ml-demo-bundle
+#30 CACHED
+
+#31 [bots gobuild 10/10] RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/  && CGO_ENABLED=0 go run ./scripts/gen-demo-keys  && mkdir -p /src/configs/ml  && CGO_ENABLED=0 go run ./cmd/ml-train -gen 12000 -out /src/configs/ml/behavioral.json  && CGO_ENABLED=0 go run ./scripts/gen-ml-demo-bundle -bundle /src/configs/ml/behavioral.json -outdir /src/configs/ml
+#31 CACHED
+
+#32 [bots stage-2  7/20] RUN dpkg-divert --local --rename --add /usr/bin/update-mime-database  && ln -s /bin/true /usr/bin/update-mime-database  && apt-get update  && apt-get install -y --no-install-recommends       ca-certificates       fonts-dejavu-core       fonts-liberation       libasound2       libatk-bridge2.0-0       libatk1.0-0       libcairo2       libcups2       libdbus-1-3       libdbus-glib-1-2       libdrm2       libgbm1       libglib2.0-0       libgtk-3-0       libnspr4       libnss3       libpango-1.0-0       libx11-6       libx11-xcb1       libxcb1       libxcomposite1       libxdamage1       libxext6       libxfixes3       libxkbcommon0       libxrandr2       libxshmfence1       libxt6       libxtst6       xauth       xvfb  && cd /app/test  && npm ci --no-audit --no-fund  && ./node_modules/.bin/playwright-core install chromium firefox  && rm /usr/bin/update-mime-database  && dpkg-divert --local --rename --remove /usr/bin/update-mime-database  && rm -rf       /root/.npm       /tmp/*       /var/cache/apt/*       /var/lib/apt/lists/*       /usr/share/doc/*       /usr/share/man/*
+#32 CACHED
+
+#33 [bots stage-2 17/20] COPY --from=gobuild /src/deployments/patissuers /app/demo-keys-seed/patissuers
+#33 CACHED
+
+#34 [bots gobuild  6/10] COPY internal ./internal
+#34 CACHED
+
+#35 [bots stage-2 13/20] RUN ln -sf libz.so.1.2.13 /lib/libz.so.1  && ln -sf ld-musl-x86_64.so.1 /lib/libc.musl-x86_64.so.1  && sed -i '1s|^#!.*|#!/bin/bash|' /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/curl-impersonate/bin/*
+#35 CACHED
+
+#36 [bots gobuild  3/10] COPY go.mod go.sum ./
+#36 CACHED
+
+#37 [bots gobuild  5/10] COPY cmd ./cmd
+#37 CACHED
+
+#38 [bots stage-2 14/20] COPY test /app/test
+#38 CACHED
+
+#39 [bots stage-2 18/20] COPY --from=gobuild /src/deployments/webauthncreds /app/demo-keys-seed/webauthncreds
+#39 CACHED
+
+#40 [bots stage-2  2/20] WORKDIR /app
+#40 CACHED
+
+#41 [bots stage-2  3/20] COPY --from=gobuild /out/redteam   /app/bin/redteam
+#41 CACHED
+
+#42 [bots stage-2  8/20] RUN mkdir -p /app/curl-impersonate/bin /app/curl-impersonate/lib /lib
+#42 CACHED
+
+#43 [bots stage-2 16/20] COPY deployments/bots/ /app/
+#43 CACHED
+
+#44 [bots stage-2 20/20] RUN sed -i 's/\r$//' /app/*.sh /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/*.sh /app/curl-impersonate/bin/*
+#44 CACHED
+
+#16 [core internal] load build context
+#16 ...
+
+#45 [bots] exporting to image
+#45 exporting layers done
+#45 exporting manifest sha256:73e83707c732bcc2bb48cc5c0a864f68f85b087773c5b76e59cb11f3e579e2f5 done
+#45 exporting config sha256:b6d13bf4b9a3b2f26040841e1cb73716017260e2d8dfbd9fc7b409395449ec02 done
+#45 exporting attestation manifest sha256:e81bbfc7e1226a65be811d7d65d045562a561380d90e70497da0433d4e51ee71 0.1s done
+#45 exporting manifest list sha256:b827b61dfb6165e524720ad6bdb7b54526d12575a628b5af20d86c04cc700095
+#45 exporting manifest list sha256:b827b61dfb6165e524720ad6bdb7b54526d12575a628b5af20d86c04cc700095 0.1s done
+#45 naming to docker.io/humanymous/bots:local done
+#45 unpacking to docker.io/humanymous/bots:local 0.0s done
+#45 DONE 0.2s
+
+#16 [core internal] load build context
+#16 ...
+
+#46 [bots] resolving provenance for metadata file
+#46 DONE 0.2s
+
+#16 [core internal] load build context
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 102.07MB 10.3s
+#16 transferring context: 141.80MB 15.3s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 181.68MB 20.4s
+#16 transferring context: 220.40MB 25.4s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=30s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 260.69MB 30.4s
+#16 transferring context: 300.39MB 35.4s
+#16 ...
+
+#47 [gate internal] load build context
+#47 transferring context: 291.26MB 40.6s
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 380.43MB 45.5s
+#16 ...
+
+#47 [gate internal] load build context
+#47 transferring context: 372.16MB 50.7s
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 459.08MB 55.7s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=60s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 498.21MB 60.8s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 534.47MB 65.8s
+#16 transferring context: 571.69MB 70.8s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 607.55MB 75.8s
+#16 transferring context: 644.12MB 80.8s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 680.59MB 85.8s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=90s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 719.93MB 90.8s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 759.62MB 95.8s
+#16 transferring context: 800.11MB 100.9s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 840.02MB 105.9s
+#16 transferring context: 878.53MB 111.0s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 915.08MB 116.0s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=120s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 950.23MB 121.0s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 986.53MB 126.0s
+#16 transferring context: 1.02GB 131.0s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.06GB 136.0s
+#16 transferring context: 1.10GB 141.0s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.14GB 146.1s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=150s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 1.17GB 151.2s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.21GB 156.2s
+#16 transferring context: 1.25GB 161.3s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.29GB 166.3s
+#16 transferring context: 1.33GB 171.3s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.37GB 176.4s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=180s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 1.41GB 181.5s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.45GB 186.5s
+#16 transferring context: 1.49GB 191.5s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.52GB 196.5s
+#16 transferring context: 1.57GB 201.6s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.61GB 206.6s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=211s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 1.65GB 211.6s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.69GB 216.7s
+#16 transferring context: 1.72GB 221.7s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.76GB 226.8s
+#16 transferring context: 1.80GB 231.8s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.84GB 236.8s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=241s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 1.88GB 241.9s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 1.92GB 246.9s
+#16 transferring context: 1.97GB 252.0s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 2.01GB 257.1s
+#16 transferring context: 2.04GB 262.1s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 2.08GB 267.2s
+[e2e-docker] HEARTBEAT phase=build-images elapsed=271s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T202100Z-hmn-e2e-rb-r2/e2e.log
+#16 transferring context: 2.12GB 272.2s
+#16 ...
+
+#47 [gate internal] load build context
+#47 ...
+
+#16 [core internal] load build context
+#16 transferring context: 2.16GB 277.3s
+#16 transferring context: 2.18GB 282.4s
