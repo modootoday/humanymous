@@ -1,4 +1,4 @@
----
+﻿---
 id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | 4c198f30771d937673525dd739cb7f7dcc7910c5 (Decision B; SoT/code honesty sync tipbind after Cap-free-restore postpush; product=0) |
+| tip | e195f1b75144f13c0ce74d679467a6f559993379 (Decision B; SoT/code honesty sync postcommit tipbind; product=0) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
@@ -47,7 +47,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / CEF env / apps/humanymous-browser / crates/browser | **bound** (durable allowlist) / **unset** (`HUMANYMOUS_CEF_PILOT_BUNDLE`) / **absent** / **present** |
-| matrix tip_bind | LIVE tip-bound **4c198f30** (closed residual `d4179a9c`→`4c198f30` SoT/code sync; prior Cap-free-restore `9332d652`→`998ae019`→`d4179a9c`); tip_bind.ok=**true** |
+| matrix tip_bind | LIVE tip-bound **e195f1b7** (closed residual `4c198f30`→`e195f1b7` postcommit; prior Cap-free-restore chain held); tip_bind.ok=**true** |
 | Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
