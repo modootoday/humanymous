@@ -1,0 +1,184 @@
+{
+    "schema":  "humanymous.cursor-cap0-cap-free-mechanism-deepread/1",
+    "record_kind":  "cap0_cap_free_mechanism_deepread",
+    "observed_utc":  "2026-11-09T23:28:30Z",
+    "branch":  "codex/rust",
+    "tip":  "a241d8dfca2c64b20f4b6ef81f460db7c8818c7a",
+    "prior_cap_free_restore_packet":  ".spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/",
+    "provider":  "cursor",
+    "session":  "cursor-integrator",
+    "lane":  "cursor-integration",
+    "execution_client":  "cursor",
+    "cap":  0,
+    "cap_burn":  0,
+    "cap_free":  false,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "browser_ready":  false,
+    "at_present":  false,
+    "auth_present":  false,
+    "n06_owner_join":  false,
+    "unlock_c":  false,
+    "goal_complete":  false,
+    "new_vs_20261110080500":  [
+                                  "tip a241d8df remeasured Cap free still false",
+                                  "authority CLOSER sha256 measured",
+                                  "no Rust writer of Unlock A CLOSER.cap_free=true",
+                                  "Cap CLI has no free-restore/realloc subcommand",
+                                  "PM Cap realloc claimed cap_free_after=true without updating Unlock A authority CLOSER",
+                                  "Cap=1 gates OR(cap_free OR realloc-receipt); standing autonomy still requires Cap free=true for Cap burn",
+                                  "fresh unlock-probe: cap.free=false; Unlock C blocked_claim; AT/AUTH absent"
+                              ],
+    "cap_free_mechanism":  {
+                               "probe_fn":  "test/lab/runner/src/orchestration/cap0_product_honesty.rs::cap_free_after_unlock_a",
+                               "authority_file":  ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json",
+                               "authority_schema":  "humanymous.cursor-unlock-a-desktop-baseline-realloc-closer/1",
+                               "authority_sha256":  "1a37052f5b6bec02376df2c3ee3c54f093cbd114d7b84a50e92fc4d0387cb137",
+                               "required_fields":  {
+                                                       "cap_exit":  0,
+                                                       "cap_free":  true
+                                                   },
+                               "measured":  {
+                                                "cap_exit":  0,
+                                                "cap_free":  false,
+                                                "cap":  1,
+                                                "cleanup_passed":  true,
+                                                "desktop_baseline_set":  true,
+                                                "head":  "b60f809d7cfb73c559f6308aa7c9c786541e91bb"
+                                            },
+                               "rust_writer_of_authority_cap_free_true":  null,
+                               "note":  "cap_free_after_unlock_a true IFF cap_exit=0 AND cap_free=true on authority CLOSER; Cursor never invents that flip"
+                           },
+    "cap_cli_restore_attempt":  {
+                                    "binary":  "target-cursor-cap0-enum/debug/humanymous-lab-runner.exe",
+                                    "usage_surface":  "run | engine-preflight | audit | fixture | cleanup | provider-preflight | matrix-plan | matrix-completeness | transfer-probe | transfer-apply | transfer-verify | unlock-probe",
+                                    "free_restore_subcommand":  null,
+                                    "realloc_subcommand":  null,
+                                    "unlock_probe_emit":  ".spec.local/root/evidence/20261110082400-cursor-cap0-cap-free-mechanism-deepread/UNLOCK-PROBE.json",
+                                    "unlock_probe_cap_free":  false,
+                                    "unlock_probe_burn_this_turn":  false,
+                                    "unlock_c_status":  "blocked_claim",
+                                    "browser_ready":  false,
+                                    "at_auth":  "absent",
+                                    "verdict":  "no_cursor_executable_cap_free_restore",
+                                    "reason":  "No Cap CLI free-restore; transfer-apply does_not_invent_cap_free; Unlock A CLOSER stays cap_free=false; inventing CLOSER.cap_free=true FORBIDDEN"
+                                },
+    "pm_realloc_divergence":  {
+                                  "realloc_receipt":  ".spec.local/root/evidence/20261110065100-cursor-clean-room-product-matrix-cap-realloc/CAP-REALLOC.json",
+                                  "claimed_cap_free_after":  true,
+                                  "authority_closer_cap_free_after_pm":  false,
+                                  "note":  "PM twin spent/FORBIDDEN; realloc receipt claim ≠ Unlock A probe; Cap burn via realloc OR-path already EXIT2; reburn forbidden"
+                              },
+    "cap_free_restore_finding":  {
+                                     "cursor_executable_path":  null,
+                                     "verdict":  "blocked_root_bytes_required",
+                                     "documented_path":  "Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply → NEW non-twin Cap-ready GRANT→TRANSFER matching LIVE preimages → Cap realloc that UPDATES Unlock A CLOSER.cap_free=true → Cap free=true → Cap=1 once product path",
+                                     "requires_root_only_grant_content":  true,
+                                     "forbids_cursor_invent_closer_cap_free":  true
+                                 },
+    "root_exact_bytes_needed":  {
+                                    "at_handoff":  {
+                                                       "path":  ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+                                                       "schema":  "humanymous.root-interactive-at-windows-tuple/1",
+                                                       "present":  false
+                                                   },
+                                    "auth_handoff":  {
+                                                         "path":  ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+                                                         "schema":  "humanymous.root-n06-owner-join-auth-handoff/1",
+                                                         "present":  false
+                                                     },
+                                    "unlock_c_rematch":  {
+                                                             "mismatch_count":  6,
+                                                             "unchanged_vs_20261110080500":  true,
+                                                             "mismatches":  [
+                                                                                {
+                                                                                    "destination":  "build/rust/authority-lab.Dockerfile",
+                                                                                    "liveSha256":  "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3",
+                                                                                    "expectedSha256":  "d51e39354daf9b7aee6df52b79738e8e4e304a63972b3e6b9ce51654f36d717e",
+                                                                                    "live_kind":  "preimage_mismatch",
+                                                                                    "root_must_set_preimageSha256_to":  "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3"
+                                                                                },
+                                                                                {
+                                                                                    "destination":  "deployments/lab/INTEGRATION.md",
+                                                                                    "liveSha256":  "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315",
+                                                                                    "expectedSha256":  "86dc9500c3cca6821b89e8a7bd0a1f9b9bcc0fb43362e524b15ed9dbbbbeeb82",
+                                                                                    "live_kind":  "preimage_mismatch",
+                                                                                    "root_must_set_preimageSha256_to":  "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315"
+                                                                                },
+                                                                                {
+                                                                                    "destination":  "deployments/lab/authority/cap-pilot-contract.json",
+                                                                                    "liveSha256":  "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f",
+                                                                                    "expectedSha256":  null,
+                                                                                    "live_kind":  "unexpected_live",
+                                                                                    "root_must_set_preimageSha256_to":  "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f"
+                                                                                },
+                                                                                {
+                                                                                    "destination":  "deployments/lab/authority/CAP-PILOT.md",
+                                                                                    "liveSha256":  "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570",
+                                                                                    "expectedSha256":  null,
+                                                                                    "live_kind":  "unexpected_live",
+                                                                                    "root_must_set_preimageSha256_to":  "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570"
+                                                                                },
+                                                                                {
+                                                                                    "destination":  "test/lab/runner/src/snapshot.rs",
+                                                                                    "liveSha256":  "04fafd385cb067bbb75fdaa332c8f570429ce0cae5e74eb487b9dc8d3845d00e",
+                                                                                    "expectedSha256":  "dc74375296c461d1a995744f7b29b13d996bfc20c6f7eaf3fea9f5c5f7771ea6",
+                                                                                    "live_kind":  "preimage_mismatch",
+                                                                                    "root_must_set_preimageSha256_to":  "04fafd385cb067bbb75fdaa332c8f570429ce0cae5e74eb487b9dc8d3845d00e"
+                                                                                },
+                                                                                {
+                                                                                    "destination":  "test/lab/runner/src/orchestration/authority.rs",
+                                                                                    "liveSha256":  "bfadc77fbeb4f0912dbd247feca947e6dfba9f188b3ba2c99449ee07b2f4d1da",
+                                                                                    "expectedSha256":  null,
+                                                                                    "live_kind":  "unexpected_live",
+                                                                                    "root_must_set_preimageSha256_to":  "bfadc77fbeb4f0912dbd247feca947e6dfba9f188b3ba2c99449ee07b2f4d1da"
+                                                                                }
+                                                                            ],
+                                                             "note":  "Root rematch transfer-manifest preimageSha256 to these LIVE digests OR re-issue TRANSFER"
+                                                         },
+                                    "new_non_twin_cap_ready":  {
+                                                                   "present":  false,
+                                                                   "spent_forbidden_twins":  [
+                                                                                                 "G2",
+                                                                                                 "G5",
+                                                                                                 "CR",
+                                                                                                 "G6",
+                                                                                                 "RB",
+                                                                                                 "PM"
+                                                                                             ],
+                                                                   "note":  "NEW feeder only; twin reburn FORBIDDEN; Cap burn=0 until Cap free probe true"
+                                                               },
+                                    "unlock_a_closer_cap_free_flip":  {
+                                                                          "path":  ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json",
+                                                                          "current_cap_free":  false,
+                                                                          "required_for_probe":  true,
+                                                                          "cursor_may_edit":  false,
+                                                                          "note":  "Only Root-authorized Cap realloc/structural write may set cap_free=true; no Cap CLI subcommand does this today"
+                                                                      }
+                                },
+    "spent_forbidden_twins":  [
+                                  "G2",
+                                  "G5",
+                                  "CR",
+                                  "G6",
+                                  "RB",
+                                  "PM"
+                              ],
+    "cap1_result":  null,
+    "exact_next_closer":  "Root land AT-HANDOFF + AUTH-HANDOFF schema bytes; rematch Unlock C LIVE preimages OR issue NEW non-twin Cap-ready GRANT→TRANSFER; Cap realloc must update Unlock A CLOSER.cap_free=true before Cap=1 product path; Cap burn=0 until then",
+    "honesty":  {
+                    "never_invent_pass_product_clean_room":  true,
+                    "never_invent_browser_ready":  true,
+                    "never_invent_cap_free":  true,
+                    "never_forge_auth_at":  true,
+                    "never_forge_grant_bytes":  true,
+                    "never_edit_unlock_a_closer_cap_free":  true,
+                    "detection_freeze":  true,
+                    "no_cap1_this_wave":  true,
+                    "no_cap_twin_reburn_g2_g5_cr_g6_rb_pm":  true,
+                    "cap_burn_0_while_cap_free_false":  true,
+                    "component_ne_product":  true,
+                    "tip_bind_ne_product":  true,
+                    "decision_b":  true
+                }
+}

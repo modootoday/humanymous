@@ -1,0 +1,190 @@
+{
+  "authority_cap_cli": {
+    "reason": "Unlock C false: live destinations do not match candidate digests in transfer-manifest; Cap CLI stays blocked_claim",
+    "selector": "--authority-node-ipc",
+    "status": "blocked_claim"
+  },
+  "browser_ready_interactive_at_cap0": {
+    "browser_ready": false,
+    "handoff_candidates": [
+      ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+      ".spec.local/root/grants/interactive-at-windows-tuple/GRANT.json"
+    ],
+    "note": "Cap=0 honesty only; Unlock A g4_cef_at executed ≠ BrowserReady; Root interactive AT Windows tuple still required; never invent AT tokens",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty",
+    "root_ask_paths": [
+      "crates/browser/**",
+      "scripts/ci/cef-pilot/**",
+      "crates/apps/humanymous-browser/**"
+    ],
+    "selector": "--browser-ready-interactive-at-honesty",
+    "status": "cap0_honesty_only"
+  },
+  "cap": {
+    "burn_authorized_by_unlock_gate": true,
+    "burn_this_turn": false,
+    "free": false,
+    "g2_cap_cli_scaffolded": true,
+    "g2_cap_topology_live": true,
+    "g2_g5_cap_cli_with_topology": true,
+    "g5_cap_cli_scaffolded": true,
+    "g5_cap_topology_live": true,
+    "no_cap_spam_abc": true,
+    "realloc_policy": "only_real_structural_next_feeder_after_exit0_honesty"
+  },
+  "g2_collector_product_binding_cap0": {
+    "note": "Cap=0 readiness only; Desktop collector component ≠ G2 product; Cap CLI Cap=0 scaffolded separately; no Cap=1 without Cap realloc + live Cap CLI+topology",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g2-collector-product-binding-readiness",
+    "selector": "--g2-collector-product-binding-readiness",
+    "status": "cap0_honesty_only",
+    "topology_surfaces": [
+      "deployments/lab/compose.rust.collector.yaml",
+      "deployments/lab/compose.rust.browser.yaml"
+    ]
+  },
+  "g2_collector_product_binding_cap_cli": {
+    "cap_ready_pack": ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/candidate-pack/",
+    "code_defined_pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g2-collector-product-binding",
+    "contract": "deployments/lab/collector/g2-collector-product-binding-contract.json",
+    "missing_cap_topology": [],
+    "note": "Cap CLI Cap=0 scaffolded; Cap topology Cap-ready until TRANSFER; Cap=1 only after Cap realloc + live topology; never invent pass_product_clean_room",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g2-collector-product-binding",
+    "required_cap_topology": [
+      "deployments/lab/compose.g2-collector-product-binding.yaml",
+      "build/rust/g2-collector-product-binding-lab.Dockerfile"
+    ],
+    "selector": "--g2-collector-product-binding",
+    "status": "cap_cli_topology_live_cap1_requires_realloc"
+  },
+  "g4_cef_at_cap_cli": {
+    "cef_bundle_env": "HUMANYMOUS_CEF_PILOT_BUNDLE",
+    "cef_bundle_present": false,
+    "code_defined_pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g4-cef-at",
+    "note": "Cap CLI --g4-cef-at is the code-defined GRANT.pilot_command; refuse a11y/--require-full Cap spam; empty transfer entries + missing path release + missing CEF bundle keep blocked_claim",
+    "path_release_surfaces": [
+      "crates/browser/**",
+      "scripts/ci/cef-pilot/**"
+    ],
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g4-cef-at",
+    "reason": "UNLOCK-A-APPLIED present with Cap CLI --g4-cef-at; Cap=1 may attempt matching g4-cef-at pack but Cap day refuse-closed until HUMANYMOUS_CEF_PILOT_BUNDLE is set; path release surfaces crates/browser/** and/or scripts/ci/cef-pilot/**; component≠product",
+    "required_cap_module": [
+      "test/lab/runner/src/orchestration/g4_cef_at.rs",
+      "crates/browser/native/desktop/pilot-contract.json"
+    ],
+    "selector": "--g4-cef-at",
+    "status": "bound"
+  },
+  "g5_witness_transport_cap0": {
+    "note": "Cap=0 honesty only; custody/witness component ≠ authenticated transport product; Cap CLI Cap=0 scaffolded separately; no Cap=1 without Cap realloc + live Cap CLI+topology",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g5-witness-transport-honesty",
+    "root_ask_paths": [
+      "crates/audit/**",
+      "crates/sdk/humanymous-runtime/src/audit/**",
+      "deployments/lab/compose.rust.witness.yaml",
+      ".spec/sot/audit-key-custody.sot.md"
+    ],
+    "selector": "--g5-witness-transport-honesty",
+    "status": "cap0_honesty_only"
+  },
+  "g5_witness_transport_cap_cli": {
+    "authenticated_witness_transport": false,
+    "cap_ready_pack": ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/candidate-pack/",
+    "code_defined_pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g5-witness-transport",
+    "contract": "deployments/lab/witness/g5-witness-transport-contract.json",
+    "missing_cap_topology": [],
+    "note": "Cap CLI Cap=0 scaffolded; Cap topology Cap-ready until TRANSFER; Cap=1 only after Cap realloc + live topology; authenticated_witness_transport=false until Cap measured; never invent pass_product_clean_room",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --g5-witness-transport",
+    "required_cap_topology": [
+      "deployments/lab/compose.g5-witness-transport.yaml",
+      "build/rust/g5-witness-transport-lab.Dockerfile"
+    ],
+    "selector": "--g5-witness-transport",
+    "status": "cap_cli_topology_live_cap1_requires_realloc"
+  },
+  "honesty": {
+    "authenticated_witness_transport_false_until_cap_measured": true,
+    "cap_burn_only_after_unlock": true,
+    "cap_realloc_only_structural_feeder": true,
+    "capture_component_is_not_product_binding": true,
+    "code_defined_g2_collector_product_binding_cap_cli": true,
+    "code_defined_g4_cef_at_cap_cli": true,
+    "code_defined_g5_witness_transport_cap_cli": true,
+    "code_defined_w2_h2_cap_cli": true,
+    "detection_freeze": true,
+    "g2_cap_cli_scaffolded_not_product": true,
+    "g2_g5_cap0_not_product": true,
+    "g4_component_not_browser_ready": true,
+    "g5_cap_cli_scaffolded_not_product": true,
+    "hosted_unlock_a_n06_readiness_not_owner_join": true,
+    "never_cap_spam_a11y_require_full": true,
+    "never_invent_interactive_at_tokens": true,
+    "never_invent_n06_owner_auth_tokens": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_unlock_a_path_release": true,
+    "never_invent_unlock_b_pilot_command": true
+  },
+  "manifest": "\\\\?\\C:\\workspaces\\humanymous\\.spec.local\\root\\evidence\\20261108192100-cursor-tls-h2-at-gap-inventory\\cap-ready\\authority-node-ipc\\candidate-pack\\transfer-manifest.json",
+  "n06_owner_auth_handoff_cap0": {
+    "auth_handoff_candidates": [
+      ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+      ".spec.local/root/grants/n06-owner-join/GRANT.json"
+    ],
+    "n06_owner_join": false,
+    "note": "Cap=0 honesty only; hosted Cap EXIT0 + Unlock A EXIT0 + N06 readiness ≠ owner join; Root owner-auth handoff still required; never invent Root tokens",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-auth-handoff-honesty",
+    "root_ask_paths": [
+      "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+      "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
+      "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+      ".spec/sot/network-capture.sot.md",
+      ".spec/plan/20261108210000-r14-h2-serving-consumer.plan.md"
+    ],
+    "selector": "--n06-owner-auth-handoff-honesty",
+    "status": "cap0_honesty_only"
+  },
+  "n06_owner_join_cap0": {
+    "auth_handoff_candidates": [
+      ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+      ".spec.local/root/grants/n06-owner-join/GRANT.json"
+    ],
+    "n06_owner_join": false,
+    "note": "Cap=0 readiness only; hosted Cap EXIT0 + Unlock A EXIT0 bound ≠ owner join; Root auth handoff still required; never invent Root tokens",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-join-readiness",
+    "root_ask_paths": [
+      "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+      "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
+      "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+      ".spec/sot/network-capture.sot.md",
+      ".spec/plan/20261108210000-r14-h2-serving-consumer.plan.md"
+    ],
+    "selector": "--n06-owner-join-readiness",
+    "status": "cap0_honesty_only"
+  },
+  "pass_product": 0,
+  "pass_product_clean_room": 0,
+  "product": 0,
+  "reasons": {
+    "A": "UNLOCK-A-APPLIED present with Cap CLI --g4-cef-at; Cap=1 may attempt matching g4-cef-at pack but Cap day refuse-closed until HUMANYMOUS_CEF_PILOT_BUNDLE is set; path release surfaces crates/browser/** and/or scripts/ci/cef-pilot/**; component≠product",
+    "B": "UNLOCK-B-APPLIED present with Cap CLI --w2-h2-product-binding; Cap=1 may attempt matching w2-h2-product-binding pack (refuse-closed if Cap topology absent); component≠product",
+    "C": "Unlock C false: live destinations do not match candidate digests in transfer-manifest; Cap CLI stays blocked_claim"
+  },
+  "record_kind": "lab-runner-unlock-gate",
+  "root": "\\\\?\\C:\\workspaces\\humanymous",
+  "schema": "humanymous.lab-unlock-gate/1",
+  "unlock": {
+    "A_g4_cef_at": true,
+    "B_w2_h2_product_binding": true,
+    "C_authority_cap": false,
+    "any": true
+  },
+  "unlock_a_manifest": "\\\\?\\C:\\workspaces\\humanymous\\.spec.local\\root\\evidence\\20261108192100-cursor-tls-h2-at-gap-inventory\\cap-ready\\g4-cef-at\\candidate-pack\\transfer-manifest.json",
+  "unlock_b_manifest": "\\\\?\\C:\\workspaces\\humanymous\\.spec.local\\root\\evidence\\20261108192100-cursor-tls-h2-at-gap-inventory\\cap-ready\\w2-h2-product-binding\\candidate-pack\\transfer-manifest.json",
+  "w2_h2_cap_cli": {
+    "code_defined_pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-product-binding",
+    "note": "Cap CLI --w2-h2-product-binding is the code-defined GRANT.pilot_command; refuse capture observe_h2 and feeder --require-full; Cap topology compose/Dockerfile remain Root-allocated",
+    "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --w2-h2-product-binding",
+    "reason": "UNLOCK-B-APPLIED present with Cap CLI --w2-h2-product-binding; Cap=1 may attempt matching w2-h2-product-binding pack (refuse-closed if Cap topology absent); component≠product",
+    "selector": "--w2-h2-product-binding",
+    "status": "bound"
+  }
+}

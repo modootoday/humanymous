@@ -1,0 +1,19 @@
+{
+    "schema":  "humanymous.cursor-cap0-cap-free-mechanism-deepread-status/1",
+    "tip":  "a241d8dfca2c64b20f4b6ef81f460db7c8818c7a",
+    "observed_utc":  "2026-11-09T23:28:30Z",
+    "cap":  0,
+    "cap_burn":  0,
+    "cap_free":  false,
+    "product":  0,
+    "browser_ready":  false,
+    "at_present":  false,
+    "auth_present":  false,
+    "unlock_c":  false,
+    "cap_free_restore_attempt":  "no_cursor_executable_path",
+    "cap1_result":  null,
+    "goal_complete":  false,
+    "packet":  ".spec.local/root/evidence/20261110082400-cursor-cap0-cap-free-mechanism-deepread/CAP-FREE-MECHANISM-DEEPREAD.json",
+    "unlock_probe":  ".spec.local/root/evidence/20261110082400-cursor-cap0-cap-free-mechanism-deepread/UNLOCK-PROBE.json",
+    "exact_next_closer":  "Root land AT-HANDOFF + AUTH-HANDOFF schema bytes; rematch Unlock C LIVE preimages OR issue NEW non-twin Cap-ready GRANT→TRANSFER; Cap realloc must update Unlock A CLOSER.cap_free=true before Cap=1 product path; Cap burn=0 until then"
+}
