@@ -1,0 +1,39 @@
+{
+    "schema":  "humanymous.cursor-cap1-hold-landers/1",
+    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "observed_utc":  "2026-11-09T22:54:15Z",
+    "cap_free":  false,
+    "cap_burn":  0,
+    "status":  "HOLD_prepare_only_no_Cap1_burn",
+    "landers":  [
+                    {
+                        "rank":  14,
+                        "id":  "U-CAP1-CR-ONCE",
+                        "selector":  "--clean-room-product / --clean-room-product-matrix --require-full",
+                        "feeder":  ".spec.local/root/evidence/20261110065000-cursor-clean-room-product-matrix-cap-ready/",
+                        "status":  "spent_component_EXIT2_hold",
+                        "note":  "PM Cap1 EXIT2 feeder spent; product still 0; Cap-ready lander tip-bound only"
+                    },
+                    {
+                        "rank":  15,
+                        "id":  "U-CAP1-W2H2-ALT",
+                        "selector":  "--w2-h2-product-binding",
+                        "feeder":  ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/w2-h2-product-binding/",
+                        "status":  "Unlock_B_bound_hold",
+                        "note":  "Decision B Cap1 without AUTH/AT cannot close product; Cap burn=0"
+                    },
+                    {
+                        "rank":  16,
+                        "id":  "U-RB-SCENARIO-LAND",
+                        "selector":  "--red-blue-product --require-full",
+                        "feeder":  ".spec.local/root/evidence/20261110044800-cursor-red-blue-product-cap-ready/",
+                        "status":  "GRANT_present_cap_free_false",
+                        "note":  "missing_sot_scenario red-blue-product; Cap1 HOLD"
+                    }
+                ],
+    "honesty":  {
+                    "never_cap1_when_cap_free_false":  true,
+                    "component_ne_product":  true,
+                    "never_invent_pass_product_clean_room":  true
+                }
+}

@@ -1,0 +1,113 @@
+{
+    "schema":  "humanymous.cursor-full-remaining-rank-board-tipbind-readiness/1",
+    "observed_utc":  "2026-11-09T22:54:56Z",
+    "branch":  "codex/rust",
+    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "decision":  "B",
+    "cap":  0,
+    "cap_burn":  0,
+    "cap_free":  false,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "browser_ready":  false,
+    "auth_present":  false,
+    "at_present":  false,
+    "n06_owner_join":  false,
+    "unlock":  {
+                   "C":  false,
+                   "B":  true,
+                   "A":  true
+               },
+    "prior_cap0_exhaust_claim_tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "reaudit_verdict":  "Cap0∥ product-closing inventory still exhausted AFTER closing residual matrix tip-drift ef8f1eea→905f2e22; Unlock C rematch + AT/AUTH Cap-ready templates advanced; Cap burn=0",
+    "cap0_parallel_remaining_after_wave":  [
+
+                                           ],
+    "classes":  {
+                    "Cap1_hold":  [
+                                      14,
+                                      15,
+                                      16,
+                                      17,
+                                      23,
+                                      24,
+                                      35,
+                                      38,
+                                      48,
+                                      54,
+                                      58,
+                                      60,
+                                      61,
+                                      71
+                                  ],
+                    "Cap0_claimable_now":  [
+
+                                           ],
+                    "Root_blocked":  [
+                                         1,
+                                         4,
+                                         5,
+                                         6,
+                                         7,
+                                         8,
+                                         9,
+                                         18,
+                                         19,
+                                         20,
+                                         21,
+                                         22,
+                                         27,
+                                         28,
+                                         31,
+                                         32,
+                                         33,
+                                         34,
+                                         39,
+                                         40,
+                                         41,
+                                         42,
+                                         43,
+                                         44,
+                                         52,
+                                         55,
+                                         64
+                                     ],
+                    "depri_twin":  [
+                                       36,
+                                       37,
+                                       45,
+                                       46,
+                                       47,
+                                       69,
+                                       73,
+                                       74,
+                                       75,
+                                       76,
+                                       77,
+                                       78,
+                                       79,
+                                       80
+                                   ]
+                },
+    "ranks_cap0_advanced_this_turn":  [
+                                          1,
+                                          2,
+                                          7,
+                                          9,
+                                          10,
+                                          13,
+                                          52,
+                                          72
+                                      ],
+    "exact_next_closer":  "Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply → NEW non-twin Cap realloc → Cap free=true → Cap=1 product path toward pass_product_clean_room",
+    "goal_complete":  false,
+    "honesty":  {
+                    "component_exit0_ne_product":  true,
+                    "no_cap_twin_reburn_73_80":  true,
+                    "never_invent_cap_free":  true,
+                    "detection_freeze":  true,
+                    "never_invent_browser_ready":  true,
+                    "never_forge_auth_at":  true,
+                    "never_invent_pass_product_clean_room":  true
+                }
+}

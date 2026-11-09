@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.root-interactive-at-windows-tuple/1",
+  "browser_ready_authorized": true,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "note": "TEMPLATE only — Root authors the live AT-HANDOFF.json. Cursor Cap=0 handoff-apply validates+binds; never invents BrowserReady / product. Place live file at .spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json (or grants twin).",
+  "windows_tuple": {
+    "os": "windows",
+    "interactive_at": true,
+    "ime": true,
+    "a11y": true,
+    "dpi": true,
+    "fill_by_root": true
+  },
+  "path_release_surfaces_if_cursor_applies_measured_join": [
+    "crates/browser/**",
+    "scripts/ci/cef-pilot/**",
+    "crates/apps/humanymous-browser/**"
+  ],
+  "honesty": {
+    "never_invent_browser_ready": true,
+    "never_invent_pass_product_clean_room": true,
+    "unlock_a_ne_browser_ready": true,
+    "detection_freeze": true
+  }
+}

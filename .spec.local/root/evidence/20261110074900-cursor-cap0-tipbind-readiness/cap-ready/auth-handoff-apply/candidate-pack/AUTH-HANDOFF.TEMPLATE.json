@@ -1,0 +1,21 @@
+{
+    "schema":  "humanymous.root-n06-owner-join-auth-handoff/1",
+    "n06_owner_join_authorized":  true,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "n06_owner_join":  false,
+    "note":  "TEMPLATE only — Root authors the live AUTH-HANDOFF.json. Cursor Cap=0 honesty/join validates+binds; never invents n06_owner_join / product. Place live file at .spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json (or grants twin).",
+    "path_release_surfaces_if_cursor_applies_measured_join":  [
+                                                                  "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+                                                                  "crates/sdk/humanymous-runtime/src/gateway/service/readiness.rs",
+                                                                  "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+                                                                  ".spec/sot/network-capture.sot.md",
+                                                                  ".spec/plan/20261108210000-r14-h2-serving-consumer.plan.md"
+                                                              ],
+    "honesty":  {
+                    "handoff_authorize_ne_join":  true,
+                    "detection_freeze":  true,
+                    "never_invent_n06_owner_join":  true,
+                    "never_invent_pass_product_clean_room":  true
+                }
+}

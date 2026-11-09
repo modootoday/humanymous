@@ -1,0 +1,23 @@
+{
+    "schema":  "humanymous.cursor-matrix-tip-bind/1",
+    "rank":  13,
+    "id":  "U-MATRIX-TIPBIND",
+    "klass":  "Cap0_parallel",
+    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "observed_utc":  "2026-11-09T22:54:15Z",
+    "prior_matrix_head_sha":  "ef8f1eea8f145628ac6ad34a5db96dd86b5e9cde",
+    "matrix_head_sha":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "tip_bind_ok":  true,
+    "matrix_path":  ".spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/matrix.json",
+    "matrix_completeness":  ".spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/matrix-tipbind/MATRIX-COMPLETENESS.json",
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "browser_ready":  false,
+    "cap_free":  false,
+    "cap_burn":  0,
+    "note":  "Cap0 residual tip-drift closed: matrix head_sha ef8f1eea → LIVE 905f2e22; tip_bind.ok=true ≠ pass_product",
+    "honesty":  {
+                    "never_invent_pass_product_clean_room":  true,
+                    "tip_bind_ne_product":  true
+                }
+}

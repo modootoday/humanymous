@@ -1,0 +1,69 @@
+{
+    "schema":  "humanymous.cursor-unlock-c-rematch-diag/1",
+    "rank":  10,
+    "id":  "U-UNLOCK-C-DIAG",
+    "klass":  "Cap0_parallel",
+    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "observed_utc":  "2026-11-09T22:54:15Z",
+    "unlock_c":  false,
+    "cap_burn":  0,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "transfer_probe":  ".spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/unlock-c-rematch/TRANSFER-PROBE.json",
+    "unlock_c_preimage_ready":  false,
+    "mismatch_count":  6,
+    "mismatches":  {
+                       "value":  [
+                                     {
+                                         "destination":  "build/rust/authority-lab.Dockerfile",
+                                         "live_kind":  "preimage_mismatch",
+                                         "liveSha256":  "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3",
+                                         "expectedSha256":  "d51e39354daf9b7aee6df52b79738e8e4e304a63972b3e6b9ce51654f36d717e",
+                                         "candidateSha256":  "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3"
+                                     },
+                                     {
+                                         "destination":  "deployments/lab/INTEGRATION.md",
+                                         "live_kind":  "preimage_mismatch",
+                                         "liveSha256":  "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315",
+                                         "expectedSha256":  "86dc9500c3cca6821b89e8a7bd0a1f9b9bcc0fb43362e524b15ed9dbbbbeeb82",
+                                         "candidateSha256":  "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315"
+                                     },
+                                     {
+                                         "destination":  "deployments/lab/authority/cap-pilot-contract.json",
+                                         "live_kind":  "unexpected_live",
+                                         "liveSha256":  "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f",
+                                         "expectedSha256":  null,
+                                         "candidateSha256":  "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f"
+                                     },
+                                     {
+                                         "destination":  "deployments/lab/authority/CAP-PILOT.md",
+                                         "live_kind":  "unexpected_live",
+                                         "liveSha256":  "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570",
+                                         "expectedSha256":  null,
+                                         "candidateSha256":  "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570"
+                                     },
+                                     {
+                                         "destination":  "test/lab/runner/src/snapshot.rs",
+                                         "live_kind":  "preimage_mismatch",
+                                         "liveSha256":  "04fafd385cb067bbb75fdaa332c8f570429ce0cae5e74eb487b9dc8d3845d00e",
+                                         "expectedSha256":  "dc74375296c461d1a995744f7b29b13d996bfc20c6f7eaf3fea9f5c5f7771ea6",
+                                         "candidateSha256":  "a682030be2872bffa9a2017e5647dd07977e4e1d86cb16a0da89c77a7d7b4f84"
+                                     },
+                                     {
+                                         "destination":  "test/lab/runner/src/orchestration/authority.rs",
+                                         "live_kind":  "unexpected_live",
+                                         "liveSha256":  "bfadc77fbeb4f0912dbd247feca947e6dfba9f188b3ba2c99449ee07b2f4d1da",
+                                         "expectedSha256":  null,
+                                         "candidateSha256":  "3137f15bb30747334b783991f941c42b9b73ba5c8438357fca426296f9050712"
+                                     }
+                                 ],
+                       "Count":  6
+                   },
+    "status":  "Cap0_done_digest_mismatch_remeasured_tip_905f2e22",
+    "root_ask":  "Root rematch Unlock C transfer-manifest digests or re-issue TRANSFER; Cursor Cap0 diagnosis only; never forge Unlock C apply",
+    "honesty":  {
+                    "never_invent_unlock_c":  true,
+                    "never_cap_burn_on_blocked_claim":  true,
+                    "detection_freeze":  true
+                }
+}

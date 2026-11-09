@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T22:43:28Z
+updated: 2026-11-09T22:55:00Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | 955f5505895815d714b1c8ad660a5db449a6621b (Decision B; Cap0 reaudit) |
+| tip | 905f2e22aea4796978ccf9a92b5b01d9520b6394 (Decision B; Cap0 tipbind readiness) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
@@ -46,18 +46,18 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | AUTH-HANDOFF | **absent** (`humanymous.root-n06-owner-join-auth-handoff/1`) |
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
-| CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist / env_bound) / **absent** |
-| matrix tip_bind | LIVE tip-bound **955f5505** (closed residual drift `3fd6a9ab`→`955f5505`); tip_bind.ok=**true** |
-| Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch diagnosis only |
+| CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist / `cap_day_bound`) / **absent** |
+| matrix tip_bind | LIVE tip-bound **905f2e22** (closed residual drift `ef8f1eea`→`905f2e22`); tip_bind.ok=**true** |
+| Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |
 | Cap burn this turn | **0** |
-| Cap0∥ remaining | **none** (reaudit confirmed; residual tip-drift closed) |
-| Cap0 advanced (this wave) | ranks **1,2,7,9,10,13,52,72** Cap0 reaudit wake/CEF/UnlockC/matrix tip-bind/docs |
+| Cap0∥ remaining | **none** (tipbind readiness; residual postpush tip-drift closed) |
+| Cap0 advanced (this wave) | ranks **1,2,7,9,10,13,52,72** Cap0 tipbind readiness / Cap-ready templates / UnlockC digests |
 | Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** (14=PM Cap1 spent component; product still open) |
-| CONSOLIDATED closer | `.spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/` |
+| CONSOLIDATED closer | `.spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/` |
 | goal_complete | **false** |
 
 ## 2. Decision rules (no cutoff)

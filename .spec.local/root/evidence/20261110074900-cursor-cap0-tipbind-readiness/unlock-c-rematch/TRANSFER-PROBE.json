@@ -1,0 +1,206 @@
+{
+  "applied": false,
+  "cap_execute": false,
+  "checks": [
+    {
+      "candidate": {
+        "bytes": 1552,
+        "candidateSha256": "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "build/rust/authority-lab.Dockerfile",
+      "live": {
+        "expectedSha256": "d51e39354daf9b7aee6df52b79738e8e4e304a63972b3e6b9ce51654f36d717e",
+        "kind": "preimage_mismatch",
+        "liveSha256": "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3",
+        "ok": false
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "bytes": 800,
+        "candidateSha256": "442882e9eee3832488750b07665c5d46e74af81969d22e774679386f4a3b4435",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "build/rust/authority-lab.Dockerfile.dockerignore",
+      "live": {
+        "kind": "preimage_match",
+        "liveSha256": "442882e9eee3832488750b07665c5d46e74af81969d22e774679386f4a3b4435",
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "candidate": {
+        "bytes": 564,
+        "candidateSha256": "72fd8dff9a709fde0f966fb0fff6ffddf199ce56e23c14480d47faa73b52ab73",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "deployments/lab/compose.authority.yaml",
+      "live": {
+        "kind": "preimage_match",
+        "liveSha256": "72fd8dff9a709fde0f966fb0fff6ffddf199ce56e23c14480d47faa73b52ab73",
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "candidate": {
+        "bytes": 21822,
+        "candidateSha256": "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "deployments/lab/INTEGRATION.md",
+      "live": {
+        "expectedSha256": "86dc9500c3cca6821b89e8a7bd0a1f9b9bcc0fb43362e524b15ed9dbbbbeeb82",
+        "kind": "preimage_mismatch",
+        "liveSha256": "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315",
+        "ok": false
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "bytes": 973,
+        "candidateSha256": "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "deployments/lab/authority/cap-pilot-contract.json",
+      "live": {
+        "kind": "unexpected_live",
+        "liveSha256": "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f",
+        "ok": false
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "bytes": 1399,
+        "candidateSha256": "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "deployments/lab/authority/CAP-PILOT.md",
+      "live": {
+        "kind": "unexpected_live",
+        "liveSha256": "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570",
+        "ok": false
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "bytes": 11442,
+        "candidateSha256": "a682030be2872bffa9a2017e5647dd07977e4e1d86cb16a0da89c77a7d7b4f84",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "test/lab/runner/src/snapshot.rs",
+      "live": {
+        "expectedSha256": "dc74375296c461d1a995744f7b29b13d996bfc20c6f7eaf3fea9f5c5f7771ea6",
+        "kind": "preimage_mismatch",
+        "liveSha256": "04fafd385cb067bbb75fdaa332c8f570429ce0cae5e74eb487b9dc8d3845d00e",
+        "ok": false
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "bytes": 2193,
+        "candidateSha256": "3137f15bb30747334b783991f941c42b9b73ba5c8438357fca426296f9050712",
+        "kind": "candidate_match",
+        "ok": true
+      },
+      "destination": "test/lab/runner/src/orchestration/authority.rs",
+      "live": {
+        "kind": "unexpected_live",
+        "liveSha256": "bfadc77fbeb4f0912dbd247feca947e6dfba9f188b3ba2c99449ee07b2f4d1da",
+        "ok": false
+      },
+      "ok": false
+    }
+  ],
+  "full_product_qualified": false,
+  "honesty": {
+    "apply_requires_root_grant": true,
+    "authority_cap_green_is_not_product": true,
+    "capture_component_is_not_product_binding": true,
+    "cr_requires_clean_room_product_cap_cli_pilot": false,
+    "cr_topology_apply_does_not_invent_cap_free": false,
+    "g2_requires_collector_product_binding_cap_cli_pilot": false,
+    "g2_topology_apply_does_not_invent_cap_free": false,
+    "g5_requires_witness_transport_cap_cli_pilot": false,
+    "g5_topology_apply_does_not_invent_authenticated_transport": false,
+    "g5_topology_apply_does_not_invent_cap_free": false,
+    "g6_requires_origin_audit_binding_cap_cli_pilot": false,
+    "g6_topology_apply_does_not_invent_cap_free": false,
+    "n06_requires_hosted_venue_cap_cli_pilot": false,
+    "never_invent_desktop_as_hosted": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_pilot_command": true,
+    "pm_requires_clean_room_product_matrix_require_full_cap_cli_pilot": false,
+    "pm_topology_apply_does_not_invent_cap_free": false,
+    "probe_does_not_apply": true,
+    "rb_requires_red_blue_product_require_full_cap_cli_pilot": false,
+    "rb_topology_apply_does_not_invent_cap_free": false,
+    "unlock_a_requires_root_path_release_destinations": false,
+    "unlock_b_requires_non_empty_pilot_command": false
+  },
+  "manifest": ".spec.local/root/evidence/20261108192100-cursor-tls-h2-at-gap-inventory/cap-ready/authority-node-ipc/candidate-pack/transfer-manifest.json",
+  "mismatches": [
+    {
+      "destination": "build/rust/authority-lab.Dockerfile",
+      "expectedSha256": "d51e39354daf9b7aee6df52b79738e8e4e304a63972b3e6b9ce51654f36d717e",
+      "liveSha256": "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3",
+      "reason": "preimage_mismatch"
+    },
+    {
+      "destination": "deployments/lab/INTEGRATION.md",
+      "expectedSha256": "86dc9500c3cca6821b89e8a7bd0a1f9b9bcc0fb43362e524b15ed9dbbbbeeb82",
+      "liveSha256": "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315",
+      "reason": "preimage_mismatch"
+    },
+    {
+      "destination": "deployments/lab/authority/cap-pilot-contract.json",
+      "liveSha256": "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f",
+      "reason": "expected_absent_but_live_present"
+    },
+    {
+      "destination": "deployments/lab/authority/CAP-PILOT.md",
+      "liveSha256": "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570",
+      "reason": "expected_absent_but_live_present"
+    },
+    {
+      "destination": "test/lab/runner/src/snapshot.rs",
+      "expectedSha256": "dc74375296c461d1a995744f7b29b13d996bfc20c6f7eaf3fea9f5c5f7771ea6",
+      "liveSha256": "04fafd385cb067bbb75fdaa332c8f570429ce0cae5e74eb487b9dc8d3845d00e",
+      "reason": "preimage_mismatch"
+    },
+    {
+      "destination": "test/lab/runner/src/orchestration/authority.rs",
+      "liveSha256": "bfadc77fbeb4f0912dbd247feca947e6dfba9f188b3ba2c99449ee07b2f4d1da",
+      "reason": "expected_absent_but_live_present"
+    }
+  ],
+  "missing_candidates": [],
+  "next": "Abort transfer; refresh candidate-pack or wait Root structural delta",
+  "pass_product_clean_room": 0,
+  "product": 0,
+  "record_kind": "lab-runner-unlock-c-transfer-probe",
+  "schema": "humanymous.lab-unlock-c-transfer-probe/1",
+  "summary": {
+    "entries": 8,
+    "mismatches": 6,
+    "missing_candidates": 0,
+    "ready": 2
+  },
+  "unlock": "C",
+  "unlock_c_preimage_ready": false,
+  "workspace": "C:\\workspaces\\humanymous"
+}

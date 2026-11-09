@@ -1,0 +1,32 @@
+{
+    "schema":  "humanymous.lab-auth-handoff-apply/1",
+    "record_kind":  "lab-auth-handoff-apply",
+    "kind":  "auth",
+    "observed_utc":  "2026-11-09T22:54:15Z",
+    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "applied":  false,
+    "auth_handoff_present":  false,
+    "n06_owner_join":  false,
+    "cap":  0,
+    "cap_burn":  0,
+    "cap_free":  false,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "handoff_candidates":  [
+                               ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+                               ".spec.local/root/grants/n06-owner-join/GRANT.json"
+                           ],
+    "status":  "refuse_closed_auth_absent",
+    "cli_note":  "handoff-apply Cap=0 helper supports --kind at only; AUTH measured absent via Test-Path + wake",
+    "honesty":  {
+                    "cap0_only":  true,
+                    "never_invent_pass_product_clean_room":  true,
+                    "never_forge_auth_handoff":  true,
+                    "never_invent_cap_free":  true,
+                    "never_invent_n06_owner_join":  true,
+                    "detection_freeze":  true
+                },
+    "next_honesty":  "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-auth-handoff-honesty",
+    "next_honesty_selector":  "--n06-owner-auth-handoff-honesty",
+    "note":  "AUTH-HANDOFF absent at LIVE tip 905f2e22; Cap=0 ROOT-ONE-STEP waits for Root schema humanymous.root-n06-owner-join-auth-handoff/1; never invent n06_owner_join / AUTH tokens"
+}

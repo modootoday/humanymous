@@ -1,0 +1,105 @@
+{
+    "schema":  "humanymous.cursor-cap-realloc-eligibility-checklist/1",
+    "rank":  9,
+    "id":  "U-CAP-REALLOC",
+    "klass":  "Root_blocked",
+    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "observed_utc":  "2026-11-09T22:54:15Z",
+    "decision":  "Cap_burn_0_no_realloc",
+    "cap_free_before":  false,
+    "cap_free_after":  false,
+    "cap_realloc_attempted":  false,
+    "cap_realloc_executed":  false,
+    "cap_burn":  0,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "browser_ready":  false,
+    "unlock_a_closer_cap_free":  false,
+    "unlock_a_closer":  ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json",
+    "status":  "REMEASURE_cap_free_false_no_NEW_non_twin_feeder_with_matching_GRANT_TRANSFER_preimages",
+    "eligibility_checklist":  [
+                                  {
+                                      "check":  "Cap free currently false",
+                                      "measured":  true,
+                                      "required_for_realloc_restore":  true
+                                  },
+                                  {
+                                      "check":  "NEW non-twin Cap-ready pack (not G2/G5/CR/G6/RB/PM spent)",
+                                      "measured":  false,
+                                      "required":  true
+                                  },
+                                  {
+                                      "check":  "GRANT.json present with matching pilot_command",
+                                      "measured":  false,
+                                      "required":  true
+                                  },
+                                  {
+                                      "check":  "TRANSFER/transfer-manifest preimages match LIVE destinations",
+                                      "measured":  false,
+                                      "required":  true
+                                  },
+                                  {
+                                      "check":  "AT-HANDOFF Cap-ready for BrowserReady path",
+                                      "measured":  false,
+                                      "required_for_product":  true
+                                  },
+                                  {
+                                      "check":  "AUTH-HANDOFF Cap-ready for N06 path",
+                                      "measured":  false,
+                                      "required_for_product":  true
+                                  },
+                                  {
+                                      "check":  "Unlock C preimage ready",
+                                      "measured":  false,
+                                      "note":  "6 digest mismatches; not Cap-ready realloc feeder"
+                                  },
+                                  {
+                                      "check":  "component twin 73-80 reburn forbidden",
+                                      "measured":  true,
+                                      "required":  true
+                                  }
+                              ],
+    "candidates_considered":  [
+                                  {
+                                      "status":  "absent",
+                                      "id":  "AT-HANDOFF",
+                                      "reason":  "Root schema humanymous.root-interactive-at-windows-tuple/1 missing"
+                                  },
+                                  {
+                                      "status":  "absent",
+                                      "id":  "AUTH-HANDOFF",
+                                      "reason":  "Root schema humanymous.root-n06-owner-join-auth-handoff/1 missing"
+                                  },
+                                  {
+                                      "status":  "blocked_claim",
+                                      "id":  "Unlock C authority-node-ipc",
+                                      "reason":  "transfer-probe unlock_c_preimage_ready=false; 6 digest mismatches; Root rematch required; not Cap-ready realloc"
+                                  },
+                                  {
+                                      "status":  "spent_forbidden",
+                                      "id":  "PM product-matrix Cap",
+                                      "reason":  "PM Cap1 EXIT2 feeder spent; Cap twin spam forbidden"
+                                  },
+                                  {
+                                      "status":  "spent_forbidden",
+                                      "id":  "G2/G5/CR/G6/RB Cap twin",
+                                      "reason":  "Decision B forbids Cap twin reburn"
+                                  },
+                                  {
+                                      "status":  "absent",
+                                      "id":  "NEW Cap-ready GRANT→TRANSFER→realloc",
+                                      "reason":  "No Cap-ready matching preimage for NEW non-twin structural feeder"
+                                  }
+                              ],
+    "next_cap1_serial":  "HOLD until Root AUTH/AT land + documented Cap realloc (NEW non-twin) restores Cap free=true; Cap burn=0 this turn",
+    "honesty":  {
+                    "decision_b":  true,
+                    "never_invent_browser_ready":  true,
+                    "never_invent_cap_free":  true,
+                    "never_invent_pass_product_clean_room":  true,
+                    "no_cap1_this_wave":  true,
+                    "no_cap_twin_reburn_g2_g5_cr_g6_rb_pm":  true,
+                    "detection_freeze":  true,
+                    "never_forge_auth_at":  true
+                }
+}

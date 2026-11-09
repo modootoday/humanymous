@@ -1,14 +1,17 @@
 {
-  "schema": "humanymous.cursor-full-priority-tip-bind/1",
-  "tip": "955f5505895815d714b1c8ad660a5db449a6621b",
-  "observed_utc": "2026-11-09T22:43:28Z",
-  "branch": "codex/rust",
-  "cap_free": false,
-  "cap_burn": 0,
-  "product": 0,
-  "pass_product_clean_room": 0,
-  "browser_ready": false,
-  "tip_bind_ok": true,
-  "matrix_head_sha": "955f5505895815d714b1c8ad660a5db449a6621b",
-  "note": "FULL priority Cap0 reaudit tip-bound to LIVE tip 955f5505; matrix tip-drift closed; product=0"
+    "schema":  "humanymous.cursor-full-priority-tip-bind/1",
+    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "observed_utc":  "2026-11-09T22:55:34Z",
+    "prior_tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "matrix_head_sha":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "browser_ready":  false,
+    "cap_free":  false,
+    "cap_burn":  0,
+    "note":  "FULL priority Cap0 tipbind readiness tip-bound to LIVE tip 905f2e22; matrix tip-drift closed; product=0",
+    "honesty":  {
+                    "never_invent_pass_product_clean_room":  true,
+                    "tip_bind_ne_product":  true
+                }
 }

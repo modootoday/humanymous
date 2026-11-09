@@ -1,0 +1,60 @@
+{
+  "allowlist_relative": "test/lab/runner/cef-cap-day-allowlist.json",
+  "browser_ready": false,
+  "cap": 0,
+  "cap0_helpers": {
+    "cef_bundle_bind": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-bind",
+    "cef_bundle_probe": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-probe"
+  },
+  "cap_burn": 0,
+  "cap_day_present": true,
+  "cef_bundle_env": "HUMANYMOUS_CEF_PILOT_BUNDLE",
+  "cef_bundle_env_present": false,
+  "cef_bundle_env_value": null,
+  "durable_bind_present": true,
+  "durable_bind_relative": ".spec.local/lab/cef-cap-day-bind.json",
+  "exact_missing": [],
+  "exact_missing_for_cap_day": [],
+  "honesty": {
+    "cap0_only": true,
+    "detection_freeze": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cef_binary": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_set_env_from_probe": true
+  },
+  "host_candidates": [
+    {
+      "absolute": "\\\\?\\C:\\workspaces\\humanymous\\.spec.local\\root\\evidence\\20261107004558-browser-ui-cef-native\\bundle",
+      "complete": true,
+      "libcef_bytes": 294315008,
+      "missing": [],
+      "present": true,
+      "relative": ".spec.local/root/evidence/20261107004558-browser-ui-cef-native/bundle"
+    },
+    {
+      "absolute": "\\\\?\\C:\\workspaces\\humanymous\\.spec.local\\ct\\debug",
+      "complete": true,
+      "libcef_bytes": 294315008,
+      "missing": [],
+      "present": true,
+      "relative": ".spec.local/ct/debug"
+    }
+  ],
+  "note": "Cap=0 probe only; Unlock A g4 component ≠ BrowserReady; Cap day presence via process env or durable allowlisted bind; never invent CEF binary or BrowserReady",
+  "pass_product_clean_room": 0,
+  "path_release_surfaces": [
+    "crates/browser/**",
+    "scripts/ci/cef-pilot/**"
+  ],
+  "private_host_bundle_found": true,
+  "product": 0,
+  "record_kind": "lab-cef-bundle-probe",
+  "resolution_source": "durable_bind",
+  "resolved_absolute": "\\\\?\\C:\\workspaces\\humanymous\\.spec.local\\root\\evidence\\20261107004558-browser-ui-cef-native\\bundle",
+  "resolved_relative": ".spec.local/root/evidence/20261107004558-browser-ui-cef-native/bundle",
+  "schema": "humanymous.lab-cef-bundle-probe/1",
+  "selected_private_host_relative": ".spec.local/root/evidence/20261107004558-browser-ui-cef-native/bundle",
+  "selected_reason": "complete private evidence CEF runtime (archive.json + libcef.dll + locales); not invented; Cap day uses env or durable cef-bundle-bind",
+  "status": "cap_day_bound"
+}
