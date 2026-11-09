@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T21:14:00Z
+updated: 2026-11-09T21:44:30Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -35,20 +35,26 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | c65b2fac6d6803443673013362615e37adb1a09f |
+| tip | 7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2 |
 | branch | `codex/rust` |
 | product / pass_product_clean_room | **0** / **0** |
-| Cap free | **false** |
-| AUTH-HANDOFF | **absent** |
-| AT-HANDOFF | **absent** |
+| Cap free before / after | **false** / **false** |
+| Cap realloc LAST CHECK | **no** Cursor-executable feeder → Cap burn=**0** (no realloc) |
+| Cap EXIT | **none** |
+| AUTH-HANDOFF | **absent** (`humanymous.root-n06-owner-join-auth-handoff/1`) |
+| AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist) / **absent** |
-| matrix tip_bind | rebound → c65b2fac Cap=0 honesty; tip_bind.ok=**true** |
+| matrix tip_bind | prior honesty tip c65b2fac; LIVE closer tip-bound 7efbcc1e; tip_bind.ok=**true** (closer) |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |
 | Cap burn this turn | **0** |
-| Cap0 advanced (this wave) | ranks **2,3,4,10,13** prior; **5,6,9,11,12,17–38,49–57,59,62,63,65–68,70,72** Cap0 honesty this wave; **1,7** wake absent |
+| Cap0∥ remaining | **none** |
+| Cap0 advanced (this wave) | ranks **2,3,4,10,13** prior; **5,6,9,11,12,17–38,49–57,59,62,63,65–68,70,72** Cap0 honesty this wave; **1,7** wake absent remeasured |
+| Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** |
+| CONSOLIDATED closer | `.spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/` |
+| goal_complete | **false** |
 
 ## 2. Decision rules (no cutoff)
 
@@ -165,14 +171,15 @@ Class counts: {"Root_blocked": 27, "Cap0_parallel": 24, "Cap1_serial": 15, "Depr
 | 79 | U-TWIN-G789-FEEDER | G7/G8/G9 Cap-ready invention before M3 | Deprioritized_component_twin | pre_M3_forbidden | [] | No Cursor Cap-ready feeder; invent forbidden |
 | 80 | U-TWIN-DESKTOP-ORACLE | Full e2e desktop oracle ≠ product claim | Deprioritized_component_twin | component_pass_desktop_oracle | [] | Honesty hold: EXIT0 oracle class is not pass_product |
 
-## 5. Cap=0 parallel tracks (now)
+## 5. Cap=0 parallel tracks (exhausted)
 
 | Track | Units | Exit |
 | --- | --- | --- |
-| T1 Browser wake | ranks 1–6 Cap0 surfaces + honesty | BrowserReady=false receipt; never forge |
-| T2 AUTH/N06 wake | ranks 7–8 | n06_owner_join=false receipt |
-| T3 Unlock C + tip-bind | ranks 10, 13 | C blocked_claim honest; tip_bind.ok |
-| T4 Full priority plan + LIVE canvas | this plan | N=80 visible; no truncation |
+| T1 Browser wake | ranks 1–6 Cap0 surfaces + honesty | Cap0 done/honesty; BrowserReady=false; AT still Root |
+| T2 AUTH/N06 wake | ranks 7–8 | Cap0 wake absent; AUTH still Root |
+| T3 Unlock C + tip-bind | ranks 10, 13 | Cap0 done; C blocked_claim; tip_bind closer ok |
+| T4 Full priority plan + LIVE canvas | this plan | N=80 visible; Cap0-done vs Root-open; no truncation |
+| Cap0∥ remaining | — | **none** — wait Root AT/AUTH + Cap realloc |
 
 ## 6. Cap=1 serial (HOLD)
 
@@ -187,15 +194,29 @@ Hold until Cap realloc → Cap free=true. Then **one** burn:
 - Unlock A∨B true ≠ Cap free ≠ BrowserReady ≠ product green
 - tip_bind.ok=true ≠ pass_product_clean_room
 - Cap1 CR/G2/G5/G6 EXIT0 = component topology only
+- e2e EXIT0 desktop oracle ≠ Cap realloc ≠ pass_product
+- CEF Cap-day bind ≠ Cap free ≠ BrowserReady
+- pressure-guard Cap=0 ≠ Cap realloc
 - Full table completeness ≠ product completion
+- Cap0∥ inventory done ≠ goal complete
 - No forge AUTH/AT; no invent Cap free / BrowserReady / pass_product
 
-## 8. Wiring
+## 8. Exact next closer (Cap0 CONSOLIDATED)
+
+Root AT-HANDOFF (`humanymous.root-interactive-at-windows-tuple/1`) + AUTH-HANDOFF
+(`humanymous.root-n06-owner-join-auth-handoff/1`) + documented Cap realloc →
+Cap free=true → Cap=1 once `--clean-room-product`. Cap burn=0 until then.
+
+Receipt: `.spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/`
+
+## 9. Wiring
 
 | Artifact | Path |
 | --- | --- |
 | This plan | .spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md |
 | Cap=0 evidence | .spec.local/root/evidence/20261110061400-cursor-full-priority-no-cutoff/ |
+| Cap0∥ wave | .spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/ |
+| CONSOLIDATED closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |
 | Supersedes truncated tables | plan:root/20261110060500-code-sot-gap-browser-priority-reorder, plan:root/20261110044500-production-status-priority-reorder |
 | Matrix | .spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/ |
 | LIVE canvas | canvases/humanymous-live-roadmap.canvas.tsx |

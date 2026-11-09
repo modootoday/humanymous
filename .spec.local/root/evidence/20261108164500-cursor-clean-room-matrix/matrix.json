@@ -2,12 +2,12 @@
   "schema": "humanymous.cursor-clean-room-product-matrix/1",
   "record_kind": "docker-clean-room-product-gap-matrix",
   "not_a_handover_document": true,
-  "observed_utc": "2026-11-09T21:41:05Z",
+  "observed_utc": "2026-11-09T21:44:30Z",
   "branch": "codex/rust",
   "workspace": "C:/workspaces/humanymous",
-  "head_sha": "c65b2fac6d6803443673013362615e37adb1a09f",
-  "prior_head_sha_cap0_tip_bind": "dbfef453173305212e39094a72a8852d56c72d92",
-  "tip_bind_note": "Cap=0 post-commit tip-bind LIVE tip c65b2fac6d6803443673013362615e37adb1a09f after Cap0 FULL parallel honesty wave; Cap free=false; product=0; pass_product_clean_room=0; BrowserReady=false; never invent product",
+  "head_sha": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "prior_head_sha_cap0_tip_bind": "c65b2fac6d6803443673013362615e37adb1a09f",
+  "tip_bind_note": "Cap=0 CONSOLIDATED closer tip-bound LIVE tip 7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2; Cap realloc LAST CHECK no feeder Cap burn=0; Cap free=false; product=0; pass_product_clean_room=0; BrowserReady=false; Cap0∥ remaining none; never invent product",
   "provider": "cursor",
   "session": "cursor-integrator",
   "lane": "cursor-integration",
@@ -4990,6 +4990,25 @@
       "browser_ready": false,
       "observed_utc": "2026-11-09T21:41:05Z",
       "reason": "Post-commit Cap=0 tip-bind hygiene after FULL parallel honesty wave; no product invent"
+    },
+    "tip_bind_7efbcc1e_cap0_consolidated_closer": {
+      "decision": "cap0_consolidated_closer_tip_bind",
+      "head_sha": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+      "prior_head_sha": "c65b2fac6d6803443673013362615e37adb1a09f",
+      "cap": 0,
+      "cap_burn": 0,
+      "cap_free": false,
+      "cap_realloc_attempted": false,
+      "product": 0,
+      "pass_product_clean_room": 0,
+      "browser_ready": false,
+      "auth_present": false,
+      "at_present": false,
+      "cap0_parallel_remaining": [],
+      "observed_utc": "2026-11-09T21:44:30Z",
+      "reason": "Cap=0 CONSOLIDATED closer tip-bound to LIVE tip; Cap realloc LAST CHECK no Cursor-executable feeder; Cap burn=0; never invent product",
+      "closer": ".spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/",
+      "exact_next_closer": "Root AT-HANDOFF (humanymous.root-interactive-at-windows-tuple/1) + AUTH-HANDOFF (humanymous.root-n06-owner-join-auth-handoff/1) + documented Cap realloc → Cap free=true → Cap=1 once --clean-room-product"
     }
   }
 }

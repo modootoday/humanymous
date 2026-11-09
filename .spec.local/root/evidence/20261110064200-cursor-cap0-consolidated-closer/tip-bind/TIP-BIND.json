@@ -1,0 +1,17 @@
+{
+  "schema": "humanymous.cursor-cap0-tip-bind-honesty/1",
+  "observed_utc": "2026-11-09T21:44:30Z",
+  "live_head": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "closer_bound_to": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "wave_prior_tip": "dbfef453173305212e39094a72a8852d56c72d92",
+  "matrix_head_sha": "c65b2fac6d6803443673013362615e37adb1a09f",
+  "action": "consolidated_closer_tipbind_live",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "tip_bind_ok": true,
+  "note": "CONSOLIDATED closer receipts tip-bound to LIVE tip 7efbcc1e; Cap=0 honesty; product remains 0; post-commit may lag=1 for hygiene only"
+}

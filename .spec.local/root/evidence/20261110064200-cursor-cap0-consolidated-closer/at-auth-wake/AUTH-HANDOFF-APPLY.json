@@ -1,0 +1,29 @@
+{
+  "schema": "humanymous.lab-auth-handoff-apply-cap0/1",
+  "kind": "auth",
+  "tip": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "observed_utc": "2026-11-09T21:44:30Z",
+  "applied": false,
+  "auth_handoff_present": false,
+  "status": "refuse_closed_auth_absent",
+  "note": "AUTH-HANDOFF absent at LIVE tip; Cap=0 ROOT-ONE-STEP waits for Root schema humanymous.root-n06-owner-join-auth-handoff/1; handoff-apply supports --kind at only; AUTH wake uses --n06-owner-auth-handoff-honesty when present",
+  "handoff_candidates": [
+    ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+    ".spec.local/root/grants/n06-owner-join/GRANT.json"
+  ],
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "n06_owner_join": false,
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "detection_freeze": true,
+    "no_cap1_this_wave": true,
+    "no_cap_twin_reburn_73_80": true
+  }
+}

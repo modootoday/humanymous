@@ -1,0 +1,102 @@
+{
+  "schema": "humanymous.cursor-cap-realloc-eligibility-last-check/1",
+  "rank": 9,
+  "id": "U-CAP-REALLOC",
+  "klass": "Root_blocked",
+  "tip": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "observed_utc": "2026-11-09T21:44:30Z",
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_realloc_attempted": false,
+  "cap_realloc_executed": false,
+  "cap_burn": 0,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "cursor_executable_structural_feeder_restoring_cap_free_without_root": false,
+  "candidates_considered": [
+    {
+      "id": "AUTH-HANDOFF",
+      "source": "LIVE wake",
+      "status": "absent",
+      "reason": "Root schema humanymous.root-n06-owner-join-auth-handoff/1 missing; never forge"
+    },
+    {
+      "id": "AT-HANDOFF",
+      "source": "LIVE wake handoff-apply --kind at",
+      "status": "absent",
+      "reason": "Root schema humanymous.root-interactive-at-windows-tuple/1 missing; never forge BrowserReady"
+    },
+    {
+      "id": "Cap0-parallel-wave-feeders",
+      "source": ".spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave",
+      "status": "honesty_only_not_cap_realloc",
+      "reason": "Wave Cap0 honesty/scaffolding/residuals; no live Cap topology TRANSFER with matching preimage"
+    },
+    {
+      "id": "pressure-guard-delta",
+      "source": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/CAP0-PRESSURE-GUARD.json",
+      "status": "cap0_infrastructure_not_cap_realloc",
+      "reason": "Desktop VM pressure guard Cap=0 only; does not restore Cap free"
+    },
+    {
+      "id": "cef-cap-day-bind",
+      "source": ".spec.local/lab/cef-cap-day-bind.json",
+      "status": "presence_bound_ne_cap_free",
+      "reason": "Durable CEF Cap-day allowlist bound; Unlock A ≠ Cap free / BrowserReady"
+    },
+    {
+      "id": "e2e-EXIT0-desktop-oracle",
+      "source": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+      "status": "component_pass_desktop_oracle_ne_cap_realloc",
+      "reason": "EXIT0 oracle class is not Cap realloc feeder and not pass_product"
+    },
+    {
+      "id": "humanymous-browser-path-transfer",
+      "source": ".spec.local/root/evidence/20261110062100-cursor-browser-cef-capday-bind/path-transfer/PATH-TRANSFER-DECISION.json",
+      "status": "entries_empty",
+      "reason": "No Cap-ready matching preimage; leave Cap-ready + ROOT-ONE-STEP"
+    },
+    {
+      "id": "Unlock-C authority-node-ipc",
+      "status": "blocked_claim",
+      "reason": "Unlock C false: live destinations do not match candidate digests; Cap CLI stays blocked_claim"
+    },
+    {
+      "id": "clean-room-product Cap twin",
+      "status": "spent_forbidden",
+      "reason": "CR Cap1 spent; Cap twin spam forbidden ranks 73–80"
+    },
+    {
+      "id": "G2/G5/G6 Cap twin",
+      "status": "spent_forbidden",
+      "reason": "Cap twin spam forbidden"
+    },
+    {
+      "id": "red-blue-product Cap twin",
+      "status": "spent_forbidden",
+      "reason": "RB Cap1 feeder spent"
+    },
+    {
+      "id": "documented live Cap topology TRANSFER",
+      "status": "absent",
+      "reason": "No Cursor-executable structural realloc with matching preimage without Root"
+    }
+  ],
+  "documented_realloc_allows_cap_free": false,
+  "decision": "Cap_burn_0_no_realloc",
+  "status": "LAST_CHECK_cap_free_false_no_cursor_executable_feeder",
+  "next_cap1_serial": "HOLD until Cap free=true via Root AUTH/AT + documented Cap realloc; then once --clean-room-product; NEVER Cap twin spam",
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "detection_freeze": true,
+    "no_cap1_this_wave": true,
+    "no_cap_twin_reburn_73_80": true,
+    "pressure_guard_ne_cap_free": true,
+    "cef_cap_day_ne_cap_free": true,
+    "e2e_exit0_ne_cap_realloc": true
+  }
+}

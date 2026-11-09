@@ -1,0 +1,140 @@
+{
+  "schema": "humanymous.cursor-cap0-consolidated-closer/1",
+  "decision": "cap0_consolidated_closer_blocked_on_root_auth_at_cap_realloc",
+  "observed_utc": "2026-11-09T21:44:30Z",
+  "branch": "codex/rust",
+  "head": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "lane": "cursor-integration",
+  "session": "cursor-integrator",
+  "provider": "cursor",
+  "execution_client": "cursor",
+  "cap": 0,
+  "cap_exit": null,
+  "cap_burn": 0,
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_realloc_attempted": false,
+  "cap_realloc_executed": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "auth_present": false,
+  "at_present": false,
+  "cef_cap_day_present": true,
+  "blocked_on_root": true,
+  "goal_complete": false,
+  "complete": false,
+  "full_product_qualified": false,
+  "detection_freeze": true,
+  "cap0_parallel_remaining": [],
+  "exact_ranks_still_root_or_cap1": {
+    "root_critical": [1, 4, 5, 6, 7, 8, 9],
+    "cap1_hold": [14, 15, 16],
+    "cap1_hold_plus": [17, 18, 23, 24, 35, 38, 48, 54, 58, 60, 61, 71],
+    "note": "Ranks 1,4–9,14–16+ remain Root/Cap1; Cap0∥ inventory exhausted"
+  },
+  "handoff_schemas": {
+    "at": "humanymous.root-interactive-at-windows-tuple/1",
+    "auth": "humanymous.root-n06-owner-join-auth-handoff/1"
+  },
+  "cap_realloc_requirement": "Documented Cap realloc restoring Cap free=true (new Cap-ready pack with matching preimages or Cap1 cleanup_failed structural delta) before Cap=1 once --clean-room-product; Cap free only via documented realloc — never invent",
+  "cap0_parallel_done_inventory": {
+    "prior": [2, 3, 4, 10, 13],
+    "this_wave_done_new": [5, 6, 9, 11, 12, 25, 26, 29, 30, 49, 50, 51, 53, 56, 57, 59, 62, 63, 65, 66, 67, 68, 70, 72],
+    "this_wave_honesty_root_or_cap1_no_burn": [17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 52, 54, 55],
+    "wake_absent_remeasured": [1, 7],
+    "remaining_after_wave": []
+  },
+  "wave_evidence": ".spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/",
+  "auth_at_wake": {
+    "done": true,
+    "auth_present": false,
+    "at_present": false,
+    "applied": false,
+    "wake": ".spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/at-auth-wake/WAKE.json",
+    "at_apply": ".spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/at-auth-wake/AT-HANDOFF-APPLY.json",
+    "auth_apply": ".spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/at-auth-wake/AUTH-HANDOFF-APPLY.json"
+  },
+  "cap_realloc_last_check": {
+    "path": ".spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/cap-realloc-eligibility/CAP-REALLOC-ELIGIBILITY-LAST-CHECK.json",
+    "cursor_executable_feeder": false,
+    "decision": "Cap_burn_0_no_realloc"
+  },
+  "e2e_tip_bind": {
+    "done": true,
+    "exit": 0,
+    "counts_as": "component_pass_desktop_oracle",
+    "not_pass_product": true,
+    "not_cap_realloc": true,
+    "evidence": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json"
+  },
+  "cap_free_blockers": [
+    "No Cursor-executable structural feeder from Cap0 wave / pressure / CEF Cap-day / e2e EXIT0 restoring Cap free without Root",
+    "No new Cap-ready GRANT+TRANSFER with matching preimage",
+    "G2/G5/CR/G6/RB Cap twins already spent; Cap twin spam forbidden",
+    "AUTH/AT handoffs absent"
+  ],
+  "root_asks": [
+    {
+      "id": "interactive-at-windows-tuple",
+      "preferred": true,
+      "schema": "humanymous.root-interactive-at-windows-tuple/1",
+      "handoff_candidates": [
+        ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+        ".spec.local/root/grants/interactive-at-windows-tuple/GRANT.json"
+      ],
+      "required_fields": {
+        "browser_ready_authorized": true,
+        "product": 0,
+        "pass_product_clean_room": 0
+      }
+    },
+    {
+      "id": "n06-owner-auth",
+      "preferred": true,
+      "schema": "humanymous.root-n06-owner-join-auth-handoff/1",
+      "handoff_candidates": [
+        ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+        ".spec.local/root/grants/n06-owner-join/GRANT.json"
+      ],
+      "required_fields": {
+        "n06_owner_join_authorized": true,
+        "product": 0,
+        "pass_product_clean_room": 0
+      }
+    },
+    {
+      "id": "cap-realloc-structural-feeder",
+      "preferred": true,
+      "note": "Documented Cap realloc restoring Cap free=true before Cap=1 --clean-room-product once"
+    }
+  ],
+  "exact_next_closer": "Root AT-HANDOFF (humanymous.root-interactive-at-windows-tuple/1) + AUTH-HANDOFF (humanymous.root-n06-owner-join-auth-handoff/1) + documented Cap realloc → Cap free=true → Cap=1 once --clean-room-product; Cap burn=0 this turn; never invent pass_product_clean_room / BrowserReady",
+  "forbidden": [
+    "invent n06_owner_join=true",
+    "invent BrowserReady=true",
+    "invent pass_product_clean_room",
+    "invent Cap free without structural realloc",
+    "Cap=1 while Cap free=false",
+    "G2/G5/CR/G6/RB Cap twin spam ranks 73–80",
+    "promote component_pass_desktop_oracle to pass_product",
+    "mark goal complete"
+  ],
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "never_invent_browser_ready": true,
+    "component_ne_product": true,
+    "detection_freeze": true,
+    "no_cap_twin_reburn_73_80": true
+  },
+  "plan": ".spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md",
+  "priority_status": ".spec.local/root/evidence/20261110061400-cursor-full-priority-no-cutoff/STATUS.json",
+  "canvas": "C:/Users/smile/.cursor/projects/c-workspaces-humanymous/canvases/humanymous-live-roadmap.canvas.tsx",
+  "supersedes": [
+    ".spec.local/root/evidence/20261110060000-cursor-cap0-e2e-exit0-closer/CONSOLIDATED-CLOSER.json",
+    ".spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/consolidated-root-ask.json"
+  ]
+}
