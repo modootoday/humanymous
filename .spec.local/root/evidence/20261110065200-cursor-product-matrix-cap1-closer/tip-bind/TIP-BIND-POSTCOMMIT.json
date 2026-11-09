@@ -1,0 +1,18 @@
+{
+  "schema": "humanymous.cursor-product-matrix-cap1-tip-bind-postcommit/1",
+  "observed_utc": "2026-11-09T22:02:53Z",
+  "branch": "codex/rust",
+  "tip": "12a8315a3e0f32e9a1f8cbe8ce23c002a2056a71",
+  "tip_bind_ok": true,
+  "cap_free_before": false,
+  "cap_free_after_realloc": true,
+  "cap_free_after_burn": false,
+  "cap_realloc": true,
+  "cap_exit": 2,
+  "cap_burn": 1,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "goal_complete": false,
+  "commit": "12a8315a feat(lab): Cap-ready product-matrix feeder Cap realloc Cap=1 once"
+}

@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.cursor-product-matrix-cap1-closer-status/1",
   "observed_utc": "2026-11-09T22:00:03Z",
-  "head": "7dbd697080621c744b331d2528a1844826bf8c35",
+  "head": "12a8315a3e0f32e9a1f8cbe8ce23c002a2056a71",
   "branch": "codex/rust",
   "cap_free_before": false,
   "cap_free_after_realloc": true,

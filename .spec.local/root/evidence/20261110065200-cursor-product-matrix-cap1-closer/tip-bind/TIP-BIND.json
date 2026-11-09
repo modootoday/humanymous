@@ -1,0 +1,26 @@
+{
+  "schema": "humanymous.cursor-product-matrix-cap1-tip-bind/1",
+  "observed_utc": "2026-11-09T22:03:00Z",
+  "branch": "codex/rust",
+  "tip": "12a8315a3e0f32e9a1f8cbe8ce23c002a2056a71",
+  "tip_bind_ok": true,
+  "cap_free_before": false,
+  "cap_free_after_realloc": true,
+  "cap_free_after_burn": false,
+  "cap_realloc": true,
+  "cap_exit": 2,
+  "cap_burn": 1,
+  "cap_selector": "--clean-room-product-matrix --require-full",
+  "structural_feeder": "clean-room-product-matrix Cap CLI + NEW Cap topology TRANSFER (not spent CR twin)",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "auth_present": false,
+  "at_present": false,
+  "goal_complete": false,
+  "commits": [
+    "12a8315a feat(lab): Cap-ready product-matrix feeder Cap realloc Cap=1 once"
+  ],
+  "exact_next_closer": "Root AT-HANDOFF + AUTH-HANDOFF + NEW Cap-ready structural feeder / Cap realloc → Cap free=true → Cap=1 product path toward pass_product_clean_room; never invent product/BrowserReady",
+  "blocked_on_root": true
+}
