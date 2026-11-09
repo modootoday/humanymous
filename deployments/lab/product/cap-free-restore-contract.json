@@ -1,0 +1,42 @@
+{
+  "schema": "humanymous.lab-cap-free-restore-contract/1",
+  "record_kind": "cap-free-restore-cap-contract",
+  "feeder": "product-cap-free-restore",
+  "grant_schema": "humanymous.root-cap-free-restore-grant/1",
+  "cap_realloc_cli": "cap-realloc-apply",
+  "pilot_command": "cargo run --locked -p humanymous-lab-runner -- cap-realloc-apply --grant GRANT.json --manifest transfer-manifest.json",
+  "unlock_a_closer": ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "detection_freeze": true,
+  "required_for_cap_free_restore": [
+    "Root GRANT.json (never GRANT.TEMPLATE.json)",
+    "TRANSFER manifest preimageSha256 matching LIVE destinations",
+    "authorize_cap_free_restore=true",
+    "new_non_twin=true",
+    "spent G2/G5/CR/G6/RB/PM twin reburn FORBIDDEN"
+  ],
+  "destinations": [
+    "deployments/lab/product/cap-free-restore-contract.json"
+  ],
+  "forbidden": [
+    "invent Cap free without Root GRANT→TRANSFER",
+    "apply GRANT.TEMPLATE.json as live grant",
+    "Cap1 inside Cap-free-apply",
+    "spent twin feeder G2/G5/CR/G6/RB/PM",
+    "invent pass_product_clean_room / BrowserReady / AUTH / AT"
+  ],
+  "honesty": {
+    "cap0_scaffold_not_cap_free": true,
+    "contract_presence_ne_cap_free": true,
+    "never_invent_cap_free": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_forge_auth_at": true,
+    "refuse_spent_twin_reburn_g2_g5_cr_g6_rb_pm": true
+  },
+  "note": "Cap0 scaffold only. Cap free stays false until Root lands GRANT.json + LIVE-matching TRANSFER and Cursor runs cap-realloc-apply."
+}

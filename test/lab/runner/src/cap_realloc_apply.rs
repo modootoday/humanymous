@@ -61,6 +61,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let manifest_path = manifest_path.ok_or(
         "cap-realloc-apply requires --manifest PATH (TRANSFER preimages must match LIVE); never invent Cap free",
     )?;
+    refuse_grant_template_path(Path::new(&grant_path))?;
 
     let root = match workspace {
         Some(path) => Path::new(&path).canonicalize().map_err(|error| {
@@ -95,6 +96,23 @@ pub fn run(args: &[String]) -> Result<i32> {
         .into());
     }
     Ok(0)
+}
+
+/// Cap0 fail-closed: Root must copy GRANT.TEMPLATE.json → GRANT.json.
+/// Never treat a `*.TEMPLATE.json` path as an authorized Cap-free-restore grant.
+fn refuse_grant_template_path(grant_path: &Path) -> Result<()> {
+    let name = grant_path
+        .file_name()
+        .and_then(|value| value.to_str())
+        .unwrap_or("");
+    let lowered = name.to_ascii_lowercase();
+    if lowered.contains(".template.") || lowered.ends_with(".template.json") {
+        return Err(
+            "cap-realloc-apply refused: grant path is GRANT.TEMPLATE (or *.TEMPLATE.json); Root must copy to GRANT.json with LIVE-matching TRANSFER; never invent Cap free"
+                .into(),
+        );
+    }
+    Ok(())
 }
 
 fn load_json(path: &Path, label: &str) -> Result<Value> {
@@ -577,5 +595,15 @@ mod tests {
             .expect_err("must refuse");
         assert!(err.to_string().contains("authorize_cap_free_restore"));
         let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn grant_template_filename_refuses_closed() {
+        let err = refuse_grant_template_path(Path::new(
+            ".spec.local/root/evidence/demo/GRANT.TEMPLATE.json",
+        ))
+        .expect_err("must refuse template grant path");
+        assert!(err.to_string().contains("GRANT.TEMPLATE"));
+        assert!(refuse_grant_template_path(Path::new("GRANT.json")).is_ok());
     }
 }
