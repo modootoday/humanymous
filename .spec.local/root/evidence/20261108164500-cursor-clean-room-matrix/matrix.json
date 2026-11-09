@@ -2,10 +2,10 @@
     "schema":  "humanymous.cursor-clean-room-product-matrix/1",
     "record_kind":  "docker-clean-room-product-gap-matrix",
     "not_a_handover_document":  true,
-    "observed_utc":  "2026-11-09T20:07:57Z",
+    "observed_utc":  "2026-11-09T20:39:12Z",
     "branch":  "codex/rust",
     "workspace":  "C:/workspaces/humanymous",
-    "head_sha":  "0329ef44a8844dfa76f9e70d781a52dda9baef1b",
+    "head_sha":  "118bbeecd65fc928adc9c2597f435a338f3c529e",
     "prior_head_sha_cap0_tip_bind":  "4b0644287e384cc6f7bdb3ca01ddfef53393454c",
     "tip_bind_note":  "Cap=0 tip-bind Cap=1 --red-blue-product --require-full EXIT2 (6/0) feeder honesty after tip 0329ef44; Cap free=false (spent); product=0; counts_as=red_blue_product_require_full_feeder_not_product; Docker e2e oneshot still required",
     "provider":  "cursor",
@@ -3157,7 +3157,19 @@
                                                           "browser_ready":  false,
                                                           "unlock_c_skipped":  true,
                                                           "note":  "Cap=0 tip-bind RB Cap=1 EXIT2 feeder into clean-room matrix; feeder ≠ product; Cap free=false; never invent pass_product_clean_room"
-                                                      }
+                                                      },
+                  "bounded_e2e_skip_swarm_exit0_118bbeec":  {
+                                                                "observed_utc":  "2026-11-09T20:39:12Z",
+                                                                "head_sha":  "118bbeecd65fc928adc9c2597f435a338f3c529e",
+                                                                "exit":  0,
+                                                                "skip_swarm":  true,
+                                                                "cap_free":  false,
+                                                                "product":  0,
+                                                                "pass_product_clean_room":  0,
+                                                                "counts_as":  "oracle_red_blue_desktop_component_not_product",
+                                                                "launcher":  "scripts/e2e-docker-launch.ps1",
+                                                                "note":  "Launcher preserved EXIT=0 (not -1); four red_blue_* remapped to pass_component_desktop; swarm still unrun; never invent pass_product_clean_room"
+                                                            }
               },
     "residuals":  {
                       "g2_cap1_desktop_cap_topology":  {
@@ -3222,7 +3234,7 @@
                                                                  "note":  "Cap=1 Docker oneshot require-full feeder EXIT2 component only; never invent pass_product_clean_room; Docker e2e oneshot still required for red_blue_*"
                                                              }
                   },
-    "tip_bind":  "0329ef44",
+    "tip_bind":  "118bbeec",
     "product":  0,
     "pass_product_clean_room":  0
 }

@@ -1,0 +1,65 @@
+{
+    "schema":  "humanymous.cursor-red-blue-e2e-bounded-receipt/1",
+    "observed_utc":  "2026-11-09T20:38:40Z",
+    "branch":  "codex/rust",
+    "head":  "118bbeecd65fc928adc9c2597f435a338f3c529e",
+    "session":  "cursor-integrator",
+    "lane":  "cursor-integration",
+    "cap":  0,
+    "cap_burn":  0,
+    "cap_free":  false,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "command":  "pwsh -NoProfile -File scripts/e2e-docker-launch.ps1 -SkipSwarm -RunId 20261109T203600Z-hmn-e2e-bounded",
+    "runner":  "scripts/e2e-docker-launch.ps1 → bash scripts/e2e-docker.sh",
+    "project":  "hmn-e2e",
+    "run_id":  "20261109T203600Z-hmn-e2e-bounded",
+    "compose":  "deployments/compose.yaml",
+    "topology":  "hmn-e2e web + lab-a/b/c; SkipSwarm=1 SkipOverlays=1",
+    "images":  [
+                   "humanymous/core:local",
+                   "humanymous/gate:local",
+                   "humanymous/bots:local"
+               ],
+    "engine":  {
+                   "context":  "desktop-linux",
+                   "endpoint":  "npipe:////./pipe/dockerDesktopLinuxEngine",
+                   "engine_id":  "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+                   "ostype":  "linux",
+                   "server_version":  "29.9.2"
+               },
+    "exit":  0,
+    "exit_is_real_not_neg1":  true,
+    "phases_passed":  [
+                          "validate-compose",
+                          "build-images",
+                          "start-defenders",
+                          "attack-catalog",
+                          "attack-assert",
+                          "gate-conformance",
+                          "pass-contract",
+                          "pass-wargame"
+                      ],
+    "phases_skipped":  [
+                           "swarm",
+                           "overlays"
+                       ],
+    "counts_as":  "oracle_red_blue_desktop_component_not_product",
+    "matrix_cells_advanced":  [
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_up",
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_attack",
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e"
+                              ],
+    "matrix_cells_still_open":  [
+                                    "desktop-linux|none|oracle-detector-bots|red_blue_swarm"
+                                ],
+    "honesty":  {
+                    "never_invent_pass_product_clean_room":  true,
+                    "oracle_ne_rust_m3":  true,
+                    "skip_swarm_ne_full_suite":  true,
+                    "launcher_exit_preserved":  true,
+                    "detection_freeze":  true
+                },
+    "exact_next_closer":  "ONE full bash scripts/e2e-docker.sh via e2e-docker-launch.ps1 without SkipSwarm for red_blue_swarm; Cap free=false; AUTH/AT Root; product stays 0 until pass_product_clean_room measured"
+}
