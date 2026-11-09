@@ -1,0 +1,71 @@
+{
+  "schema": "humanymous.cursor-red-blue-full-e2e-attempt4-exit0/1",
+  "observed_utc": "2026-11-09T20:59:10Z",
+  "branch": "codex/rust",
+  "head_at_run": "57719cad",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "command": "pwsh -NoProfile -File scripts/e2e-docker-launch.ps1 -RunId 20261109T205600Z-hmn-e2e-full-r4",
+  "skip_swarm": false,
+  "skip_overlays": true,
+  "exit": 0,
+  "engine": {
+    "context": "desktop-linux",
+    "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+    "ostype": "linux",
+    "server_version": "29.9.2"
+  },
+  "pressure_guard": {
+    "preflight": "PASS",
+    "before_attack_catalog": "PASS",
+    "before_swarm": "PASS",
+    "bots_shm_size": "1g",
+    "bots_memory": "12g",
+    "overlay": "deployments/lab/compose.e2e-desktop-pressure.yaml"
+  },
+  "human_baseline": {
+    "verdict": "CHALLENGE",
+    "risk": 44.2,
+    "outcome": "TN"
+  },
+  "phases": {
+    "pressure-guard-preflight": "PASS",
+    "validate-compose": "PASS",
+    "build-images": "PASS",
+    "start-defenders": "PASS",
+    "settle-defenders": "PASS",
+    "pressure-guard-before-attack": "PASS",
+    "attack-catalog": "PASS",
+    "attack-assert": "PASS",
+    "gate-conformance": "PASS",
+    "pass-contract": "PASS",
+    "restart-core": "PASS",
+    "pass-wargame": "PASS",
+    "pressure-guard-before-swarm": "PASS",
+    "swarm": "PASS",
+    "swarm-assert": "PASS",
+    "overlays": "skipped E2E_SKIP_OVERLAYS=1"
+  },
+  "red_blue_swarm": "component_pass_desktop_oracle",
+  "counts_as": "oracle_red_blue_desktop_full_component_including_swarm_not_pass_product_clean_room",
+  "prior_attempts": {
+    "attempt1": "EXIT1 HR-16+DNS → settle-defenders",
+    "attempt2": "EXIT137 bots SIGKILL → Cap0 pressure guard",
+    "attempt3": "EXIT1 compose run unknown --shm-size → lab overlay"
+  },
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "component_ne_product": true,
+    "detection_freeze": true,
+    "auth_present": false,
+    "at_present": false,
+    "browser_ready": false
+  },
+  "exact_next_closer": "Root AUTH/AT + Cap realloc for Cap=1 clean-room-product / documented product path; Cap free remains false; never invent pass_product_clean_room"
+}

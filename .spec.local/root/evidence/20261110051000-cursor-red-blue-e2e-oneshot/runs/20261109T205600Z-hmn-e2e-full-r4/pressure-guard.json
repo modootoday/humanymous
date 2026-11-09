@@ -1,0 +1,25 @@
+{
+  "schema": "humanymous.e2e-desktop-pressure-guard/1",
+  "observed_utc": "2026-11-09T20:55:59.1943625Z",
+  "result": "PASS",
+  "pass_product_clean_room": 0,
+  "product": 0,
+  "swarm_enabled": true,
+  "probe_image": "humanymous/bots:local",
+  "thresholds_mb": {
+    "min_vm_mem_available": 16384,
+    "min_vm_swap_free": 512,
+    "min_vm_mem_total": 16384,
+    "min_host_free": 4096
+  },
+  "observed_mb": {
+    "vm_mem_total": 31755,
+    "vm_mem_available": 29567,
+    "vm_swap_total": 8192,
+    "vm_swap_free": 8192,
+    "host_mem_total": 64858,
+    "host_mem_free": 35240
+  },
+  "refuse_reasons": [],
+  "note": "Fail-closed Cap=0 guard against Desktop VM EXIT137; never invents pass_product_clean_room"
+}

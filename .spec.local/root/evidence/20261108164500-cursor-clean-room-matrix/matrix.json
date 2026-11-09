@@ -2,12 +2,12 @@
   "schema": "humanymous.cursor-clean-room-product-matrix/1",
   "record_kind": "docker-clean-room-product-gap-matrix",
   "not_a_handover_document": true,
-  "observed_utc": "2026-11-09T20:45:35Z",
+  "observed_utc": "2026-11-09T20:59:20Z",
   "branch": "codex/rust",
   "workspace": "C:/workspaces/humanymous",
-  "head_sha": "4d5c1c148372ddd99be1cb1c08cd6dec9f4f14eb",
-  "prior_head_sha_cap0_tip_bind": "118bbeecd65fc928adc9c2597f435a338f3c529e",
-  "tip_bind_note": "Cap=0 tip-bind after full Docker e2e r7 (swarm PASS + proxy_rotation; overall EXIT1 overlays); all five oracle red_blue_* → pass_component_desktop; Cap free=false; product=0; never invent pass_product_clean_room",
+  "head_sha": "57719cad",
+  "prior_head_sha_cap0_tip_bind": "4d5c1c148372ddd99be1cb1c08cd6dec9f4f14eb",
+  "tip_bind_note": "Cap=0 tip-bind after full e2e-docker-launch r4 EXIT0 (pressure guard + settle + swarm proxy_rotation; overlays skipped); all five oracle red_blue_* → pass_component_desktop; Cap free=false; product=0; pass_product_clean_room=0; never invent product",
   "provider": "cursor",
   "session": "cursor-integrator",
   "lane": "cursor-integration",
@@ -1434,9 +1434,12 @@
       "evidence": [
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-SWARM-EXIT1-OVERLAYS.json",
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/console-r7.log",
-        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json"
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/CAP0-PRESSURE-GUARD.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/STATUS.json"
       ],
-      "notes": "Docker Desktop e2e measured: bounded SkipSwarm EXIT0 + full r7 swarm PASS (proxy_rotation; overall EXIT1 overlays pool-overlap). counts_as=oracle_red_blue_desktop_component_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
+      "notes": "Docker Desktop full e2e r4 EXIT0 (Cap0 pressure guard + settle + swarm proxy_rotation; overlays skipped). counts_as=oracle_red_blue_desktop_full_component_including_swarm_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
     },
     {
       "id": "desktop-linux|none|oracle-detector-bots|red_blue_attack",
@@ -1452,9 +1455,12 @@
       "evidence": [
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-SWARM-EXIT1-OVERLAYS.json",
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/console-r7.log",
-        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json"
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/CAP0-PRESSURE-GUARD.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/STATUS.json"
       ],
-      "notes": "Docker Desktop e2e measured: bounded SkipSwarm EXIT0 + full r7 swarm PASS (proxy_rotation; overall EXIT1 overlays pool-overlap). counts_as=oracle_red_blue_desktop_component_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
+      "notes": "Docker Desktop full e2e r4 EXIT0 (Cap0 pressure guard + settle + swarm proxy_rotation; overlays skipped). counts_as=oracle_red_blue_desktop_full_component_including_swarm_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
     },
     {
       "id": "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
@@ -1470,9 +1476,12 @@
       "evidence": [
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-SWARM-EXIT1-OVERLAYS.json",
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/console-r7.log",
-        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json"
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/CAP0-PRESSURE-GUARD.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/STATUS.json"
       ],
-      "notes": "Docker Desktop e2e measured: bounded SkipSwarm EXIT0 + full r7 swarm PASS (proxy_rotation; overall EXIT1 overlays pool-overlap). counts_as=oracle_red_blue_desktop_component_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
+      "notes": "Docker Desktop full e2e r4 EXIT0 (Cap0 pressure guard + settle + swarm proxy_rotation; overlays skipped). counts_as=oracle_red_blue_desktop_full_component_including_swarm_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
     },
     {
       "id": "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e",
@@ -1488,9 +1497,12 @@
       "evidence": [
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-SWARM-EXIT1-OVERLAYS.json",
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/console-r7.log",
-        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json"
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/CAP0-PRESSURE-GUARD.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/STATUS.json"
       ],
-      "notes": "Docker Desktop e2e measured: bounded SkipSwarm EXIT0 + full r7 swarm PASS (proxy_rotation; overall EXIT1 overlays pool-overlap). counts_as=oracle_red_blue_desktop_component_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
+      "notes": "Docker Desktop full e2e r4 EXIT0 (Cap0 pressure guard + settle + swarm proxy_rotation; overlays skipped). counts_as=oracle_red_blue_desktop_full_component_including_swarm_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
     },
     {
       "id": "desktop-linux|none|oracle-detector-bots|red_blue_swarm",
@@ -1506,9 +1518,12 @@
       "evidence": [
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-SWARM-EXIT1-OVERLAYS.json",
         ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/console-r7.log",
-        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json"
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/CAP0-PRESSURE-GUARD.json",
+        ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/STATUS.json"
       ],
-      "notes": "Docker Desktop e2e measured: bounded SkipSwarm EXIT0 + full r7 swarm PASS (proxy_rotation; overall EXIT1 overlays pool-overlap). counts_as=oracle_red_blue_desktop_component_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
+      "notes": "Docker Desktop full e2e r4 EXIT0 (Cap0 pressure guard + settle + swarm proxy_rotation; overlays skipped). counts_as=oracle_red_blue_desktop_full_component_including_swarm_not_product ONLY. Never invent pass_product_clean_room; oracle != Rust M3."
     },
     {
       "id": "desktop-linux|nginx|adapter-home-pilot|compose_config",

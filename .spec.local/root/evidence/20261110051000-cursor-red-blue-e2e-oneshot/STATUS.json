@@ -1,8 +1,8 @@
 {
   "schema": "humanymous.cursor-red-blue-e2e-oneshot-status/1",
-  "observed_utc": "2026-11-09T20:47:45Z",
+  "observed_utc": "2026-11-09T20:59:15Z",
   "branch": "codex/rust",
-  "head": "4d5c1c14",
+  "head": "57719cad",
   "complete": false,
   "product": 0,
   "pass_product_clean_room": 0,
@@ -11,7 +11,8 @@
   "cap_burn": 0,
   "retry_storm_stopped": true,
   "exit_neg1_root_cause": "concurrent_powershell_log_lock",
-  "fix_landed": "scripts/e2e-docker-launch.ps1 + scripts/e2e-docker.sh settle-defenders",
+  "exit137_mitigation": "Cap0 Desktop VM pressure guard + lab shm/mem overlay",
+  "fix_landed": "scripts/e2e-docker-launch.ps1 pressure guard + scripts/e2e-docker.sh settle-defenders/pressure_guard + deployments/lab/compose.e2e-desktop-pressure.yaml",
   "bounded_e2e": {
     "run_id": "20261109T203600Z-hmn-e2e-bounded",
     "exit": 0,
@@ -35,6 +36,22 @@
       "human": "CHALLENGE TN",
       "cause": "bots_sigkill_137_desktop_vm_pressure_hypothesis",
       "swarm": "unrun"
+    },
+    "attempt3": {
+      "run_id": "20261109T205400Z-hmn-e2e-full-r3",
+      "exit": 1,
+      "phase": "attack-catalog",
+      "cause": "compose_run_unknown_flag_shm_size",
+      "note": "Cap0 script defect before catalog; fixed via lab overlay"
+    },
+    "attempt4": {
+      "run_id": "20261109T205600Z-hmn-e2e-full-r4",
+      "exit": 0,
+      "settle": "PASS",
+      "human": "CHALLENGE TN risk=44.2",
+      "swarm": "PASS proxy_rotation",
+      "pressure_guard": "PASS",
+      "counts_as": "oracle_red_blue_desktop_full_component_including_swarm_not_product"
     }
   },
   "docker_engine": {
@@ -49,12 +66,13 @@
       "desktop-linux|none|oracle-detector-bots|red_blue_up",
       "desktop-linux|none|oracle-detector-bots|red_blue_attack",
       "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
-      "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e"
-    ],
-    "still_open": [
+      "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e",
       "desktop-linux|none|oracle-detector-bots|red_blue_swarm"
     ],
-    "red_blue_swarm": "unrun"
+    "still_open_product": [
+      "pass_product_clean_room cells (AUTH/AT/BrowserReady Cap path)"
+    ],
+    "red_blue_swarm": "component_pass_desktop_oracle"
   },
   "auth_present": false,
   "at_present": false,
@@ -63,7 +81,7 @@
   "blocked_on_root_reasons": [
     "AUTH/AT absent",
     "Cap free=false without documented realloc",
-    "pass_product_clean_room unproven"
+    "pass_product_clean_room unproven (oracle component EXIT0 != product)"
   ],
-  "exact_next_closer": "Cap=0 Desktop VM memory/pressure guard for bots catalog EXIT 137 then ONE full e2e-docker-launch.ps1 without SkipSwarm for red_blue_swarm; Cap free=false; AUTH/AT Root; never invent pass_product_clean_room"
+  "exact_next_closer": "Root AUTH/AT + Cap realloc for Cap=1 clean-room-product burn; Cap free=false; never invent pass_product_clean_room"
 }
