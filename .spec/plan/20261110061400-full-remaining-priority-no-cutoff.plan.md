@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | 905f2e22aea4796978ccf9a92b5b01d9520b6394 (Decision B; Cap0 tipbind readiness) |
+| tip | fa9f862a93272055feae65091ece15f8bcf3e4ea (Decision B; Cap0 tipbind readiness postpush) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
@@ -47,7 +47,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist / `cap_day_bound`) / **absent** |
-| matrix tip_bind | LIVE tip-bound **905f2e22** (closed residual drift `ef8f1eea`→`905f2e22`); tip_bind.ok=**true** |
+| matrix tip_bind | LIVE tip-bound **fa9f862a** (closed residual drift `905f2e22`→`fa9f862a`); tip_bind.ok=**true** |
 | Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |

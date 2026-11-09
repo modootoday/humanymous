@@ -2,12 +2,12 @@
     "schema":  "humanymous.cursor-clean-room-product-matrix/1",
     "record_kind":  "docker-clean-room-product-gap-matrix",
     "not_a_handover_document":  true,
-    "observed_utc":  "2026-11-09T22:53:30Z",
+    "observed_utc":  "2026-11-09T22:56:46Z",
     "branch":  "codex/rust",
     "workspace":  "C:/workspaces/humanymous",
-    "head_sha":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
-    "prior_head_sha_cap0_tip_bind":  "ef8f1eea8f145628ac6ad34a5db96dd86b5e9cde",
-    "tip_bind_note":  "Cap=0 tip-bind LIVE tip 905f2e22aea4796978ccf9a92b5b01d9520b6394 after Cap0 readiness remeasure; Cap free=false; product=0; BrowserReady=false; never invent product",
+    "head_sha":  "fa9f862a93272055feae65091ece15f8bcf3e4ea",
+    "prior_head_sha_cap0_tip_bind":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "tip_bind_note":  "Cap=0 post-push tip-bind LIVE tip fa9f862a93272055feae65091ece15f8bcf3e4ea after Cap0 tipbind readiness; Cap free=false; product=0; BrowserReady=false; never invent product",
     "provider":  "cursor",
     "session":  "cursor-integrator",
     "lane":  "cursor-integration",
@@ -3215,7 +3215,7 @@
                                                                               "note":  "Oracle Desktop full e2e including swarm = component_pass_desktop_oracle; never invent pass_product_clean_room"
                                                                           }
                   },
-    "tip_bind":  "905f2e22",
+    "tip_bind":  "fa9f862a",
     "product":  0,
     "pass_product_clean_room":  0,
     "cells":  [
@@ -5046,6 +5046,17 @@
                                                                              "pass_product_clean_room":  0,
                                                                              "browser_ready":  false,
                                                                              "cap_free":  false
-                                                                         }
+                                                                         },
+                            "tip_bind_fa9f862a_cap0_tipbind_readiness_postpush":  {
+                                                                                      "head_sha":  "fa9f862a93272055feae65091ece15f8bcf3e4ea",
+                                                                                      "prior_head_sha":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+                                                                                      "observed_utc":  "2026-11-09T22:56:46Z",
+                                                                                      "decision":  "cap0_tipbind_readiness_postpush",
+                                                                                      "note":  "Cap0 postpush tip-bind: matrix head_sha 905f2e22 → LIVE fa9f862a; tip_bind.ok≠pass_product; Cap burn=0",
+                                                                                      "product":  0,
+                                                                                      "pass_product_clean_room":  0,
+                                                                                      "browser_ready":  false,
+                                                                                      "cap_free":  false
+                                                                                  }
                         }
 }

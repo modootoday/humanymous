@@ -1,0 +1,21 @@
+{
+    "schema":  "humanymous.cursor-cap0-tipbind-readiness-postpush/1",
+    "tip":  "fa9f862a93272055feae65091ece15f8bcf3e4ea",
+    "prior_tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+    "observed_utc":  "2026-11-09T22:56:46Z",
+    "matrix_head_sha":  "fa9f862a93272055feae65091ece15f8bcf3e4ea",
+    "tip_bind_ok":  true,
+    "cap_free":  false,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "browser_ready":  false,
+    "auth_present":  false,
+    "at_present":  false,
+    "cap_burn":  0,
+    "note":  "postpush tip-bind after Cap0 readiness commit; ≠ pass_product",
+    "honesty":  {
+                    "tip_bind_ne_product":  true,
+                    "never_invent_cap_free":  true,
+                    "never_invent_pass_product_clean_room":  true
+                }
+}
