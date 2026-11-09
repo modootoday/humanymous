@@ -43,7 +43,7 @@ Receipt: `.spec.local/root/evidence/20261110083200-cursor-parallel-serial-goal/G
 
 | Field | Measured |
 | --- | --- |
-| tip | 1985cd1c059abb8d2b51e4929d1815c2c689e885 (postcommit parallel-serial goal tipbind; Cap realloc CLI absorbed at fdad3865; product=0) |
+| tip | 05681d949c55325cc3b5beaf7faed803630ad4a0 (LIVE tipbind residual close after parallel-serial goal push; product=0) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
@@ -55,7 +55,7 @@ Receipt: `.spec.local/root/evidence/20261110083200-cursor-parallel-serial-goal/G
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / CEF env / apps/humanymous-browser / crates/browser | **bound** (durable allowlist) / **unset** (`HUMANYMOUS_CEF_PILOT_BUNDLE`) / **absent** / **present** |
-| matrix tip_bind | LIVE tip-bound **1985cd1c** (Cap realloc CLI + parallel-serial goal Cap0 tipbind); tip_bind.ok=**true** |
+| matrix tip_bind | LIVE tip-bound **05681d94** (Cap realloc CLI + parallel-serial goal Cap0 tipbind); tip_bind.ok=**true** |
 | Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet (no spam) |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
@@ -268,7 +268,7 @@ Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/
 
 | Field | Measured |
 | --- | --- |
-| tip | ad8b68a21d22e83477b00eba08c36ddcc6f78e99 |
+| tip | 05681d949c55325cc3b5beaf7faed803630ad4a0 (LIVE tipbind residual close after parallel-serial goal push; product=0) |
 | decision | **B** |
 | Cap burn | **0** |
 | Cap EXIT | **none** |

@@ -1,8 +1,8 @@
 {
     "schema":  "humanymous.cursor-full-remaining-priority-no-cutoff/1",
-    "observed_utc":  "2026-11-09T23:38:00Z",
+    "observed_utc":  "2026-11-09T23:40:00Z",
     "branch":  "codex/rust",
-    "tip":  "1985cd1c059abb8d2b51e4929d1815c2c689e885",
+    "tip":  "05681d949c55325cc3b5beaf7faed803630ad4a0",
     "prior_tip_bind":  "e195f1b75144f13c0ce74d679467a6f559993379",
     "cap":  0,
     "cap_burn":  0,
@@ -36,7 +36,7 @@
                    "pass_product_clean_room":  0,
                    "missing_sot_scenario":  "red-blue-product",
                    "tip_bind_ok":  true,
-                   "tip_bind_expect_head":  "1985cd1c059abb8d2b51e4929d1815c2c689e885"
+                   "tip_bind_expect_head":  "05681d949c55325cc3b5beaf7faed803630ad4a0"
                },
     "total_unit_count_N":  80,
     "no_quantity_cap":  true,
@@ -789,5 +789,5 @@
     "cef_cap_day_durable_bind":  true,
     "crates_browser_present":  true,
     "workspace_members_measured":  29,
-    "prior_tip_bind_parallel_serial":  "fdad38658af0056bd8677c8e4ea48a8c83a84a4f"
+    "prior_tip_bind_parallel_serial":  "1985cd1c059abb8d2b51e4929d1815c2c689e885"
 }
