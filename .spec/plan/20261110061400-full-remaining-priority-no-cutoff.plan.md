@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T23:15:00Z
+updated: 2026-11-09T23:32:00Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -31,33 +31,41 @@ Private evidence:
 
 Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
+## 0. Parallel-serial GOAL (tip-bound)
+
+**goal_name:** Cap0∥+Cap1serial → pass_product_clean_room
+
+**goal_text_exact:** FULL end-state: achieve pass_product_clean_room + Docker clean-room full matrix + red-blue-validate (Docker-only). Execution contract: Cap0∥ — run ALL claimable Cap0 honesty / Cap-ready / prep / tooling in parallel (including Cap realloc apply CLI absorb when landed); Cap1/Docker — SERIAL only when Cap free=true AND NEW non-twin Cap-ready matching GRANT→TRANSFER (no twin G2/G5/CR/G6/RB/PM reburn); Root_blocked — Cap-ready/handoff prep + wake only, never forge AUTH/AT/Cap free/BrowserReady/pass_product; Cap burn=0 while Cap free=false. goal_complete=false until product gates verified.
+
+Receipt: `.spec.local/root/evidence/20261110083200-cursor-parallel-serial-goal/GOAL-PARALLEL-SERIAL.json`
+
 ## 1. LIVE Cap=0 probe (tip-bind)
 
 | Field | Measured |
 | --- | --- |
-| tip | 9a3a5fe5d09557ca7da07cb93862ee6c7f20253e (Decision B; SoT/code honesty sync postpush tipbind; product=0) |
+| tip | fdad38658af0056bd8677c8e4ea48a8c83a84a4f (Cap realloc apply CLI landed + parallel-serial goal tipbind; product=0) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
 | Cap free before / after | **false** / **false** (spent false→true→false on prior PM Cap1) |
-| Cap realloc LAST CHECK | **no** NEW non-twin Cap-ready with matching GRANT→TRANSFER preimages → Cap burn=**0** |
+| Cap realloc LAST CHECK | **no** NEW non-twin Cap-ready with matching GRANT→TRANSFER preimages → Cap burn=**0**; Cap0 `cap-realloc-apply` CLI **landed** (absorb; live apply HOLD) |
 | Cap EXIT this turn | **none** |
 | prior Cap1 PM | EXIT **2** · 6/0 · `--clean-room-product-matrix --require-full` · feeder≠product |
 | AUTH-HANDOFF | **absent** (`humanymous.root-n06-owner-join-auth-handoff/1`) |
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / CEF env / apps/humanymous-browser / crates/browser | **bound** (durable allowlist) / **unset** (`HUMANYMOUS_CEF_PILOT_BUNDLE`) / **absent** / **present** |
-| matrix tip_bind | LIVE tip-bound **e195f1b7** (closed residual `4c198f30`→`e195f1b7` postcommit; prior Cap-free-restore chain held); tip_bind.ok=**true** |
-| Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet |
+| matrix tip_bind | LIVE tip-bound **fdad3865** (Cap realloc CLI + parallel-serial goal Cap0 tipbind); tip_bind.ok=**true** |
+| Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet (no spam) |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |
 | Cap burn this turn | **0** |
-| Cap0∥ remaining | **none** (Cap1-hold landers expanded; residual matrix tip-drift closed; wait Root AT/AUTH) |
-| Cap0 advanced (this wave) | ranks **3–6,9,13,14–17,23–24,35,38,39–47,48–51,53–54,56–61,71–72** Cap1-hold landers + browser Cap0 + G1–G9 Cap0-prep + tipbind |
+| Cap0∥ remaining | goal inventory + Cap realloc CLI absorb + tipbind + Cap1 HOLD (product-closing Cap0 still 0) |
+| Cap0 advanced (this wave) | parallel-serial GOAL define; Cap realloc apply CLI absorb (5 tests); pending inventory A–H; Cap free/AUTH/AT inspect; tipbind; Cap1 HOLD |
 | Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** (14=PM Cap1 spent component; product still open) |
-| CONSOLIDATED closer | `.spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/` |
+| CONSOLIDATED closer | `.spec.local/root/evidence/20261110083200-cursor-parallel-serial-goal/` |
 | goal_complete | **false** |
 
 ## 2. Decision rules (no cutoff)
@@ -227,8 +235,10 @@ Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/
 | Cap0 reaudit wave | .spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/ |
 | Cap0 Cap1-hold landers | .spec.local/root/evidence/20261110075800-cursor-cap0-cap1hold-landers/ |
 | Cap0 Cap-free-restore | .spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/ |
+| Cap0 Cap-free-apply CLI | .spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/ |
+| Cap0∥+Cap1serial goal | .spec.local/root/evidence/20261110083200-cursor-parallel-serial-goal/ |
 | SoT/code honesty sync | .spec.local/root/evidence/20261110080900-cursor-sot-code-sync/ |
-| CONSOLIDATED closer | .spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/ |
+| CONSOLIDATED closer | .spec.local/root/evidence/20261110083200-cursor-parallel-serial-goal/ |
 | Prior tipbind readiness | .spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/ |
 | Prior Decision B closer | .spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/ |
 | Prior Cap0∥ closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |
