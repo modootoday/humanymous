@@ -2,11 +2,11 @@
   "schema": "humanymous.cursor-clean-room-product-matrix/1",
   "record_kind": "docker-clean-room-product-gap-matrix",
   "not_a_handover_document": true,
-  "observed_utc": "2026-11-09T21:19:06Z",
+  "observed_utc": "2026-11-09T21:21:38Z",
   "branch": "codex/rust",
   "workspace": "C:/workspaces/humanymous",
-  "head_sha": "726f59c889ad260ac9ea0433099306df53a9cb3d",
-  "prior_head_sha_cap0_tip_bind": "6373c4360784b381907267370c183c703326005c",
+  "head_sha": "3bc8940f6e4806ea6b33e2394e968eed80c2a936",
+  "prior_head_sha_cap0_tip_bind": "726f59c889ad260ac9ea0433099306df53a9cb3d",
   "tip_bind_note": "Cap=0 tip-bind settled tip 6373c436 after full e2e-docker-launch r4 EXIT0 (pressure guard + settle + swarm proxy_rotation; overlays skipped); red_blue_* honesty=component_pass_desktop_oracle; matrix status remains pass_component_desktop; Cap free=false; product=0; pass_product_clean_room=0; never invent product",
   "provider": "cursor",
   "session": "cursor-integrator",
@@ -3215,7 +3215,7 @@
       "note": "Oracle Desktop full e2e including swarm = component_pass_desktop_oracle; never invent pass_product_clean_room"
     }
   },
-  "tip_bind": "726f59c8",
+  "tip_bind": "3bc8940f",
   "product": 0,
   "pass_product_clean_room": 0,
   "cells": [
@@ -4932,6 +4932,21 @@
       "auth_present": false,
       "at_present": false,
       "reason": "Cap=0 tip-bind honesty after full-priority-no-cutoff plan; no product invent",
+      "plan": ".spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md"
+    },
+    "tip_bind_3bc8940f_cap0_full_priority_no_cutoff": {
+      "observed_utc": "2026-11-09T21:21:38Z",
+      "head_sha": "3bc8940f6e4806ea6b33e2394e968eed80c2a936",
+      "prior_head_sha": "726f59c889ad260ac9ea0433099306df53a9cb3d",
+      "cap": 0,
+      "cap_burn": 0,
+      "cap_free": false,
+      "product": 0,
+      "pass_product_clean_room": 0,
+      "browser_ready": false,
+      "auth_present": false,
+      "at_present": false,
+      "note": "Cap=0 tip-bind after sibling 3bc8940f Cap0 AT apply plumbing; handoffs still absent; no product invent",
       "plan": ".spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md"
     }
   }

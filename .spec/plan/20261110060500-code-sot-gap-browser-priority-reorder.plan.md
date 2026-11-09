@@ -1,9 +1,10 @@
 ---
 id: plan:root/20261110060500-code-sot-gap-browser-priority-reorder
 title: Cap=0 CODE↔SoT gap survey — BrowserReady first-class priority reorder
-status: active
+status: superseded
 created: 2026-11-09T21:05:00Z
-updated: 2026-11-09T21:25:00Z
+updated: 2026-11-09T21:14:00Z
+superseded_by: plan:root/20261110061400-full-remaining-priority-no-cutoff
 rel:
   depends_on:
     - plan:root/20261110044500-production-status-priority-reorder
