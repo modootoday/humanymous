@@ -208,6 +208,8 @@ fn allowed(path: &str) -> bool {
                 | "build/rust/clean-room-product-lab.Dockerfile.dockerignore"
                 | "build/rust/g6-origin-audit-binding-lab.Dockerfile"
                 | "build/rust/g6-origin-audit-binding-lab.Dockerfile.dockerignore"
+                | "build/rust/red-blue-product-lab.Dockerfile"
+                | "build/rust/red-blue-product-lab.Dockerfile.dockerignore"
                 | "deployments/lab/gateway/h2-product-binding-contract.json"
                 | "deployments/lab/collector/g2-collector-product-binding-contract.json"
                 | "deployments/lab/collector/g2-collector-product-binding-measure-receipt.scaffold.json"
@@ -221,6 +223,9 @@ fn allowed(path: &str) -> bool {
                 | "deployments/lab/origin/g6-origin-audit-binding-contract.json"
                 | "deployments/lab/origin/g6-origin-audit-binding-measure-receipt.scaffold.json"
                 | "deployments/lab/origin/g6-origin-audit-binding-cap-pilot.sh"
+                | "deployments/lab/product/red-blue-product-contract.json"
+                | "deployments/lab/product/red-blue-product-measure-receipt.scaffold.json"
+                | "deployments/lab/product/red-blue-product-cap-pilot.sh"
                 | "deployments/lab/authority/package.json"
                 | "deployments/lab/authority/package-lock.json"
                 | "deployments/lab/authority/pilot.mjs"
@@ -285,6 +290,8 @@ mod tests {
             "build/rust/clean-room-product-lab.Dockerfile.dockerignore",
             "build/rust/g6-origin-audit-binding-lab.Dockerfile",
             "build/rust/g6-origin-audit-binding-lab.Dockerfile.dockerignore",
+            "build/rust/red-blue-product-lab.Dockerfile",
+            "build/rust/red-blue-product-lab.Dockerfile.dockerignore",
             "deployments/lab/gateway/h2-product-binding-contract.json",
             "deployments/lab/collector/g2-collector-product-binding-contract.json",
             "deployments/lab/collector/g2-collector-product-binding-measure-receipt.scaffold.json",
@@ -298,6 +305,9 @@ mod tests {
             "deployments/lab/origin/g6-origin-audit-binding-contract.json",
             "deployments/lab/origin/g6-origin-audit-binding-measure-receipt.scaffold.json",
             "deployments/lab/origin/g6-origin-audit-binding-cap-pilot.sh",
+            "deployments/lab/product/red-blue-product-contract.json",
+            "deployments/lab/product/red-blue-product-measure-receipt.scaffold.json",
+            "deployments/lab/product/red-blue-product-cap-pilot.sh",
             "adapters/node/src/index.cjs",
         ] {
             assert!(allowed(path));

@@ -32,12 +32,14 @@ const SOT_REQUIRED_SCENARIOS: &[&str] = &[
     "g5-witness-transport",
     "clean-room-product",
     "g6-origin-audit-binding",
+    "red-blue-product",
 ];
 
 const G2_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/candidate-pack/GRANT.json";
 const G5_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/candidate-pack/GRANT.json";
 const G6_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109040600-cursor-g6-cap-ready-feeder/cap-ready/g6-origin-audit-binding/candidate-pack/GRANT.json";
 const CR_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109040000-cursor-clean-room-product-cap-ready/cap-ready/clean-room-product/candidate-pack/GRANT.json";
+const RB_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261110044800-cursor-red-blue-product-cap-ready/cap-ready/red-blue-product/candidate-pack/GRANT.json";
 const AUTH_HANDOFF_CANDIDATES: &[&str] = &[
     ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
     ".spec.local/root/grants/n06-owner-join/GRANT.json",
@@ -229,14 +231,22 @@ fn wake_state(root: &Path) -> Value {
     let g5_grant = path_exists(root, G5_GRANT_CANDIDATE);
     let g6_grant = path_exists(root, G6_GRANT_CANDIDATE);
     let cr_grant = path_exists(root, CR_GRANT_CANDIDATE);
+    let rb_grant = path_exists(root, RB_GRANT_CANDIDATE);
     let auth = first_present(root, AUTH_HANDOFF_CANDIDATES);
     let at = first_present(root, AT_HANDOFF_CANDIDATES);
     // Unlock A EXIT0 spent Cap; Cap free stays false unless a Cap-cycle realloc
     // authorizes one burn. Cursor must not invent Cap free without documented
     // Cap realloc receipt. GRANT presence alone ≠ Cap free.
     let cap_free = false;
-    let note = if !(g2_grant || g5_grant || g6_grant || cr_grant || auth.is_some() || at.is_some()) {
-        "Live G2/G5/G6/CR GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
+    let note = if !(g2_grant
+        || g5_grant
+        || g6_grant
+        || cr_grant
+        || rb_grant
+        || auth.is_some()
+        || at.is_some())
+    {
+        "Live G2/G5/G6/CR/RB GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
     } else {
         "GRANT and/or handoff presence observed; Cap free stays false until Cap realloc authorizes one Cap=1; AUTH/AT still Root when absent; never invent pass_product_clean_room"
     };
@@ -249,6 +259,8 @@ fn wake_state(root: &Path) -> Value {
         "g6_grant_candidate": G6_GRANT_CANDIDATE,
         "cr_grant_present": cr_grant,
         "cr_grant_candidate": CR_GRANT_CANDIDATE,
+        "rb_grant_present": rb_grant,
+        "rb_grant_candidate": RB_GRANT_CANDIDATE,
         "auth_handoff_present": auth.is_some(),
         "auth_handoff_path": auth,
         "at_handoff_present": at.is_some(),
@@ -317,6 +329,21 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
             return (
                 "cap_free_false",
                 "G6 GRANT present but Cap free=false until Cap realloc after live topology".into(),
+            );
+        }
+    }
+    let rb = wake["rb_grant_present"].as_bool().unwrap_or(false);
+    if scenario == "red-blue-product" {
+        if !rb {
+            return (
+                "root_grant_rb",
+                "RB GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1 --red-blue-product --require-full".into(),
+            );
+        }
+        if !cap_free {
+            return (
+                "cap_free_false",
+                "RB GRANT present but Cap free=false until Cap realloc after live topology; Cap=0 require-full honesty only".into(),
             );
         }
     }
