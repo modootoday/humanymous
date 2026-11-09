@@ -1,0 +1,27 @@
+{
+  "schema": "humanymous.cursor-full-priority-decision-b-honesty/1",
+  "observed_utc": "2026-11-09T22:05:45Z",
+  "tip": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
+  "decision": "B",
+  "cap_burn": 0,
+  "cap_exit": null,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "auth_present": false,
+  "at_present": false,
+  "missing_product_cells": 47,
+  "product_matrix_open_cells": 16,
+  "prior_pm_cap_exit": 2,
+  "ranks": {
+    "1": "Root AT absent hard-stop",
+    "7": "Root AUTH absent hard-stop",
+    "9": "Cap free false after PM spend",
+    "14": "PM Cap1 EXIT2 feeder spent; product still 0",
+    "15": "W2H2 Cap1 hold — Decision B needs AUTH/AT",
+    "18": "browser-product open cells → BrowserReady/AT"
+  },
+  "product_blockers": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/PRODUCT-BLOCKERS.md",
+  "goal_complete": false
+}

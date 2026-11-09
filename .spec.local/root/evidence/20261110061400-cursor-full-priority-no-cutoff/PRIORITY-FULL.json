@@ -1,8 +1,8 @@
 {
   "schema": "humanymous.cursor-full-remaining-priority-no-cutoff/1",
-  "observed_utc": "2026-11-09T21:44:30Z",
+  "observed_utc": "2026-11-09T22:05:45Z",
   "branch": "codex/rust",
-  "tip": "7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2",
+  "tip": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
   "prior_tip_bind": "c65b2fac6d6803443673013362615e37adb1a09f",
   "cap": 0,
   "cap_burn": 0,
@@ -10,7 +10,7 @@
   "cap_realloc_last_check": false,
   "cap0_parallel_remaining": [],
   "goal_complete": false,
-  "consolidated_closer": ".spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/CONSOLIDATED-CLOSER.json",
+  "consolidated_closer": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/DECISION.json",
   "product": 0,
   "pass_product_clean_room": 0,
   "browser_ready": false,
@@ -116,7 +116,7 @@
       "klass": "Root_blocked",
       "blocker": "cap_free_false",
       "depends_on": "[]",
-      "why": "Cap free=false after G2/G5/CR/G6 spends; never invent Cap free"
+      "why": "Cap free=false after G2/G5/CR/G6/RB/PM spends; NEW non-twin feeder only; never invent Cap free"
     },
     {
       "rank": 10,
@@ -152,25 +152,25 @@
       "klass": "Cap0_parallel",
       "blocker": "tip_drift",
       "depends_on": "[]",
-      "why": "Honesty bind; tip_bind.ok after rebind; ≠ pass_product"
+      "why": "Cap0 done; tip_bind.ok=ad8b68a2 Decision B; ≠ pass_product"
     },
     {
       "rank": 14,
       "id": "U-CAP1-CR-ONCE",
-      "unit": "Cap=1 once: --clean-room-product (preferred)",
+      "unit": "Cap=1 once: --clean-room-product / product-matrix (preferred)",
       "klass": "Cap1_serial",
-      "blocker": "cap_free_false",
+      "blocker": "cap_free_false+AUTH_AT_absent+PM_spent_component",
       "depends_on": "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
-      "why": "Sole preferred Cap burn toward product cells; HOLD until realloc"
+      "why": "PM Cap1 EXIT2 feeder spent; product still 0; HOLD until AUTH/AT + NEW Cap realloc"
     },
     {
       "rank": 15,
       "id": "U-CAP1-W2H2-ALT",
       "unit": "Cap=1 alternate: Unlock-B --w2-h2-product-binding once",
       "klass": "Cap1_serial",
-      "blocker": "cap_free_false",
-      "depends_on": "[U-CAP-REALLOC]",
-      "why": "Only if AUTH/AT still absent after realloc; never twin spam"
+      "blocker": "cap_free_false+Decision_B_hold",
+      "depends_on": "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
+      "why": "Decision B: Cap1 without AUTH/AT cannot close product cells; never twin spam"
     },
     {
       "rank": 16,
@@ -178,26 +178,26 @@
       "unit": "Land missing SoT scenario red-blue-product into matrix",
       "klass": "Cap1_serial",
       "blocker": "cap_free_false+missing_sot_scenario",
-      "depends_on": "[U-CAP-REALLOC]",
-      "why": "missing_sot_scenario_count=1; GRANT present; Cap free blocks"
+      "depends_on": "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
+      "why": "missing_sot_scenario_count=1; GRANT present; Cap free + AUTH/AT block"
     },
     {
       "rank": 17,
       "id": "U-CR-CLASS-CLEANROOM",
       "unit": "CR cell class: clean-room-product → pass_product_clean_room",
       "klass": "Cap1_serial",
-      "blocker": "measured_component_hold+cap_topology",
-      "depends_on": "[U-CAP1-CR-ONCE]",
-      "why": "Sole product authority status; Cap twin hold ≠ product"
+      "blocker": "measured_component_hold+cap_topology_spent",
+      "depends_on": "[U-CAP1-CR-ONCE,U-AUTH-HANDOFF,U-AT-HANDOFF]",
+      "why": "Sole product authority status; Cap twin/PM hold ≠ product"
     },
     {
       "rank": 18,
       "id": "U-CR-CLASS-BROWSER",
       "unit": "CR cell class: browser-product (desktop+hosted require-full/a11y)",
-      "klass": "Cap1_serial",
-      "blocker": "measured_component_hold+fail_hosted",
-      "depends_on": "[U-BROWSERREADY-JOIN,U-CAP-REALLOC]",
-      "why": "Desktop component holds; hosted fail_needs_structural_delta"
+      "klass": "Root_blocked",
+      "blocker": "BrowserReady_AT_absent+fail_hosted",
+      "depends_on": "[U-BROWSERREADY-JOIN,U-AT-HANDOFF]",
+      "why": "Decision B: open cells need BrowserReady/AT; hosted fail_needs_structural_delta"
     },
     {
       "rank": 19,
@@ -759,9 +759,9 @@
     }
   ],
   "class_counts": {
-    "Root_blocked": 27,
+    "Root_blocked": 28,
     "Cap0_parallel": 24,
-    "Cap1_serial": 15,
+    "Cap1_serial": 14,
     "Deprioritized_component_twin": 14
   },
   "honesty": {
@@ -777,5 +777,7 @@
   "supersedes_priority_tables": [
     "plan:root/20261110060500-code-sot-gap-browser-priority-reorder",
     "plan:root/20261110044500-production-status-priority-reorder"
-  ]
+  ],
+  "decision": "B",
+  "product_blockers": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/PRODUCT-BLOCKERS.md"
 }

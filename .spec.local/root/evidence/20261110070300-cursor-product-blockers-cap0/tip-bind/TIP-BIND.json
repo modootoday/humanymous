@@ -1,0 +1,17 @@
+{
+  "schema": "humanymous.cursor-tip-bind/1",
+  "observed_utc": "2026-11-09T22:05:45Z",
+  "branch": "codex/rust",
+  "tip": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
+  "tip_bind_ok": true,
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "decision": "B",
+  "artifact": "PRODUCT-BLOCKERS.md",
+  "exact_next_closer": "Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply BrowserReady/N06 → Cap realloc (NEW feeder not spent twin) → Cap free=true → Cap=1 product path; Cap burn=0; never invent product/BrowserReady",
+  "note": "Cap=0 Decision B hard closer tip-bound to LIVE tip ad8b68a2 after Cap1 PM EXIT2"
+}

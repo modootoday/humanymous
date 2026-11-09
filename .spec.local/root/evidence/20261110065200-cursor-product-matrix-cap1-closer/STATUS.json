@@ -18,11 +18,13 @@
   "auth_present": false,
   "at_present": false,
   "goal_complete": false,
-  "exact_next_closer": "Root AT-HANDOFF + AUTH-HANDOFF + NEW Cap-ready structural feeder / Cap realloc \u2192 Cap free=true \u2192 Cap=1 product path; never invent pass_product_clean_room / BrowserReady",
+  "exact_next_closer": "Decision B Cap=0 PRODUCT-BLOCKERS tip-bound ad8b68a2: Root AT-HANDOFF + AUTH-HANDOFF \u2192 Cap0 apply BrowserReady/N06 \u2192 Cap realloc (NEW non-twin) \u2192 Cap=1 product; Cap burn=0; never invent pass_product_clean_room / BrowserReady",
+  "decision_b": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/",
   "blocked_on_root": true,
   "blocked_on_root_for": [
     "AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1",
     "AUTH-HANDOFF humanymous.root-n06-owner-join-auth-handoff/1",
-    "pass_product_clean_room still 0 after Cap1 component feeder"
+    "pass_product_clean_room still 0 after Cap1 component feeder",
+    "Decision B: all open product cells need AUTH/AT/BrowserReady or Root structural"
   ]
 }

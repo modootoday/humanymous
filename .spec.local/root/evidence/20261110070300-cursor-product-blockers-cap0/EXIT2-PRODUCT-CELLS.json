@@ -1,0 +1,136 @@
+{
+  "schema": "humanymous.cursor-exit2-product-cells-extract/1",
+  "observed_utc": "2026-11-09T22:05:45Z",
+  "tip": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
+  "source_cap1_receipt": ".spec.local/root/evidence/20261110065100-cursor-clean-room-product-matrix-cap-realloc/CAP1-RECEIPT.json",
+  "source_honesty": ".spec.local/root/evidence/20261110065100-cursor-clean-room-product-matrix-cap-realloc/cap1-bundle-r2/clean-room-product-matrix-require-full-honesty.json",
+  "source_lab_report": ".spec.local/root/evidence/20261110065100-cursor-clean-room-product-matrix-cap-realloc/cap1-bundle-r2/lab-report.json",
+  "cap_selector": "--clean-room-product-matrix --require-full",
+  "cap_exit": 2,
+  "passed": 6,
+  "failed": 0,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "auth_at_refuse": {
+    "at_present": false,
+    "auth_present": false,
+    "browser_ready": false,
+    "n06_owner_join": false,
+    "status": "absent_ROOT-ONE-STEP_refuse"
+  },
+  "clean_room_required_non_product": 47,
+  "missing_product_cells_count": 47,
+  "product_matrix_open_cells_count": 16,
+  "missing_by_scenario": {
+    "topology-fixture": 5,
+    "rust-controls": 5,
+    "authority-node-ipc": 4,
+    "w2-h2-product-binding": 1,
+    "w2-h2-hosted-venue": 1,
+    "go-product": 6,
+    "browser-product": 5,
+    "custody": 2,
+    "runtime": 2,
+    "witness": 2,
+    "m3-full-product": 5,
+    "oracle-detector-bots": 5,
+    "g2-collector-product-binding": 1,
+    "g5-witness-transport": 1,
+    "clean-room-product": 1,
+    "g6-origin-audit-binding": 1
+  },
+  "product_matrix_open_cells": [
+    {
+      "id": "desktop-linux|none|browser-product|source_bound_image_build",
+      "status": "pass_component_desktop",
+      "blocker_class": "BrowserReady_AT"
+    },
+    {
+      "id": "desktop-linux|none|browser-product|compose_lifecycle",
+      "status": "pass_component_desktop",
+      "blocker_class": "BrowserReady_AT"
+    },
+    {
+      "id": "desktop-linux|none|browser-product|lab_runner_require_full",
+      "status": "pass_component_desktop",
+      "blocker_class": "BrowserReady_AT"
+    },
+    {
+      "id": "hosted-linux-github|none|browser-product|lab_runner_require_full",
+      "status": "fail",
+      "blocker_class": "Root_structural_plus_BrowserReady"
+    },
+    {
+      "id": "desktop-linux|none|browser-product|a11y_non_motor_checks",
+      "status": "pass_component_desktop",
+      "blocker_class": "BrowserReady_AT"
+    },
+    {
+      "id": "desktop-linux|none|m3-full-product|lab_runner_require_full",
+      "status": "required_unavailable",
+      "blocker_class": "Root_structural_G1_G9_plus_BrowserReady"
+    },
+    {
+      "id": "hosted-linux-github|none|m3-full-product|lab_runner_require_full",
+      "status": "fail",
+      "blocker_class": "Root_structural"
+    },
+    {
+      "id": "desktop-linux|none|m3-full-product|a11y_non_motor_checks",
+      "status": "required_unavailable",
+      "blocker_class": "Root_structural_G1_G9"
+    },
+    {
+      "id": "desktop-linux|none|m3-full-product|owned_cleanup",
+      "status": "required_unavailable",
+      "blocker_class": "Root_structural_G1_G9"
+    },
+    {
+      "id": "desktop-linux|none|m3-full-product|source_image_topology_binding",
+      "status": "required_unavailable",
+      "blocker_class": "Root_structural_G1_G9"
+    },
+    {
+      "id": "desktop-linux|none|oracle-detector-bots|red_blue_up",
+      "status": "pass_component_desktop",
+      "blocker_class": "Cap1_after_product_cells_cap_free_false"
+    },
+    {
+      "id": "desktop-linux|none|oracle-detector-bots|red_blue_attack",
+      "status": "pass_component_desktop",
+      "blocker_class": "Cap1_after_product_cells_cap_free_false"
+    },
+    {
+      "id": "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
+      "status": "pass_component_desktop",
+      "blocker_class": "Cap1_after_product_cells_cap_free_false"
+    },
+    {
+      "id": "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e",
+      "status": "pass_component_desktop",
+      "blocker_class": "Cap1_after_product_cells_cap_free_false"
+    },
+    {
+      "id": "desktop-linux|none|oracle-detector-bots|red_blue_swarm",
+      "status": "pass_component_desktop",
+      "blocker_class": "Cap1_after_product_cells_cap_free_false"
+    },
+    {
+      "id": "desktop-linux|none|clean-room-product|lab_runner_require_full",
+      "status": "pass_component_desktop_cap_topology",
+      "blocker_class": "spent_cap_twin_needs_AUTH_AT_plus_Cap_realloc"
+    }
+  ],
+  "required_unavailable": [
+    "full Gate TLS/H2/capture",
+    "session-bound real browser collector",
+    "Pass recovery",
+    "human/keyboard/assistive controls",
+    "runtime binary authenticated witness transport",
+    "cross-namespace origin/audit effect product binding",
+    "signed remote target attestation",
+    "native OS qualification",
+    "provider deployment"
+  ],
+  "all_open_product_cells_need_auth_at_browser_ready_or_root_structural": true
+}

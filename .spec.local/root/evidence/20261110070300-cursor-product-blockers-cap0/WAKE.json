@@ -1,0 +1,26 @@
+{
+  "schema": "humanymous.cursor-at-auth-wake-cap0/1",
+  "tip": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
+  "observed_utc": "2026-11-09T22:05:45Z",
+  "cap": 0,
+  "cap_burn": 0,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "at": {
+    "path": ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+    "schema": "humanymous.root-interactive-at-windows-tuple/1",
+    "present": false,
+    "applied": false,
+    "status": "absent_ROOT-ONE-STEP"
+  },
+  "auth": {
+    "path": ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+    "schema": "humanymous.root-n06-owner-join-auth-handoff/1",
+    "present": false,
+    "applied": false,
+    "status": "absent_ROOT-ONE-STEP"
+  },
+  "note": "Decision B Cap=0 wake on tip ad8b68a2; AT/AUTH still absent; never forge"
+}

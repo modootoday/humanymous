@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T22:00:03Z
+updated: 2026-11-09T22:05:45Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -35,25 +35,28 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | 7efbcc1e2530e5d823a17ba8bcbcc6f1d035a4e2 |
+| tip | ad8b68a21d22e83477b00eba08c36ddcc6f78e99 |
 | branch | `codex/rust` |
+| decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
-| Cap free before / after | **false** / **false** |
-| Cap realloc LAST CHECK | **no** Cursor-executable feeder → Cap burn=**0** (no realloc) |
-| Cap EXIT | **none** |
+| Cap free before / after | **false** / **false** (spent false→true→false on prior PM Cap1) |
+| Cap realloc LAST CHECK | **no** Cursor-executable NEW non-twin feeder → Cap burn=**0** |
+| Cap EXIT this turn | **none** |
+| prior Cap1 PM | EXIT **2** · 6/0 · `--clean-room-product-matrix --require-full` · feeder≠product |
 | AUTH-HANDOFF | **absent** (`humanymous.root-n06-owner-join-auth-handoff/1`) |
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist) / **absent** |
-| matrix tip_bind | prior honesty tip c65b2fac; LIVE closer tip-bound 7efbcc1e; tip_bind.ok=**true** (closer) |
+| matrix tip_bind | LIVE tip-bound **ad8b68a2**; tip_bind.ok=**true**; Decision B PRODUCT-BLOCKERS |
 | required / clean_room_required / product | 84 / 47 / 0 |
+| missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |
 | Cap burn this turn | **0** |
 | Cap0∥ remaining | **none** |
-| Cap0 advanced (this wave) | ranks **2,3,4,10,13** prior; **5,6,9,11,12,17–38,49–57,59,62,63,65–68,70,72** Cap0 honesty this wave; **1,7** wake absent remeasured |
-| Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** |
-| CONSOLIDATED closer | `.spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/` |
+| Cap0 advanced (this wave) | Decision B hard closer + FULL rank rebind; ranks **1,7** wake absent remeasured |
+| Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** (14=PM Cap1 spent component; product still open) |
+| CONSOLIDATED closer | `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/` |
 | goal_complete | **false** |
 
 ## 2. Decision rules (no cutoff)
@@ -84,7 +87,7 @@ individually; individual matrix cells remain under those classes (84 required /
 | Root_blocked | Root AUTH/AT/structural/TRANSFER; Cap=0 wake/honesty only |
 | Deprioritized_component_twin | Listed complete; must not burn Cap or invent product |
 
-Class counts: {"Root_blocked": 27, "Cap0_parallel": 24, "Cap1_serial": 15, "Deprioritized_component_twin": 14}
+Class counts: {"Root_blocked": 28, "Cap0_parallel": 24, "Cap1_serial": 14, "Deprioritized_component_twin": 14}
 
 ## 4. FULL priority table 1..N (N=80)
 
@@ -98,16 +101,16 @@ Class counts: {"Root_blocked": 27, "Cap0_parallel": 24, "Cap1_serial": 15, "Depr
 | 6 | U-BROWSERREADY-JOIN | BrowserReady measured join (interactive AT honesty→true) | Root_blocked | root_at_handoff | [U-AT-HANDOFF,U-CEF-BUNDLE,U-MEARI-CEF-QUAL] | Apex BrowserReady closer; never invent true |
 | 7 | U-AUTH-HANDOFF | AUTH-HANDOFF (N06 owner-join schema) | Root_blocked | root_auth_handoff | [] | Hard-stop for N06; Cap=0 wake measured absent; Cap0 sibling of AT |
 | 8 | U-N06-JOIN | N06 owner-join measured apply | Root_blocked | root_auth_handoff | [U-AUTH-HANDOFF] | n06_owner_join=false until AUTH present + Cap=0 apply |
-| 9 | U-CAP-REALLOC | Cap realloc via live Cap topology TRANSFER | Root_blocked | cap_free_false | [] | Cap free=false after G2/G5/CR/G6 spends; never invent Cap free |
-| 10 | U-UNLOCK-C-DIAG | Unlock C Cap=0 digest mismatch diagnosis | Cap0_parallel | blocked_claim_digest_mismatch | [] | C=false; live digests≠candidate; no Cap burn / no forge |
-| 11 | U-UNLOCK-A-RESIDUAL | Unlock A residual honesty (g4 bound ≠ BrowserReady) | Cap0_parallel | Unlock_A_true_ne_BrowserReady | [U-BROWSERREADY-JOIN] | A=true already; residual is close BrowserReady not re-unlock |
-| 12 | U-UNLOCK-B-RESIDUAL | Unlock B residual honesty (w2-h2 bound ≠ product) | Cap0_parallel | Unlock_B_true_ne_product | [U-CAP-REALLOC] | B=true already; residual is product Cap burn after realloc |
-| 13 | U-MATRIX-TIPBIND | Matrix tip-bind head_sha→LIVE tip (Cap=0 hygiene) | Cap0_parallel | tip_drift | [] | Honesty bind; tip_bind.ok after rebind; ≠ pass_product |
-| 14 | U-CAP1-CR-ONCE | Cap=1 once: --clean-room-product (preferred) | Cap1_serial | cap_free_false | [U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF] | Sole preferred Cap burn toward product cells; HOLD until realloc |
-| 15 | U-CAP1-W2H2-ALT | Cap=1 alternate: Unlock-B --w2-h2-product-binding once | Cap1_serial | cap_free_false | [U-CAP-REALLOC] | Only if AUTH/AT still absent after realloc; never twin spam |
-| 16 | U-RB-SCENARIO-LAND | Land missing SoT scenario red-blue-product into matrix | Cap1_serial | cap_free_false+missing_sot_scenario | [U-CAP-REALLOC] | missing_sot_scenario_count=1; GRANT present; Cap free blocks |
-| 17 | U-CR-CLASS-CLEANROOM | CR cell class: clean-room-product → pass_product_clean_room | Cap1_serial | measured_component_hold+cap_topology | [U-CAP1-CR-ONCE] | Sole product authority status; Cap twin hold ≠ product |
-| 18 | U-CR-CLASS-BROWSER | CR cell class: browser-product (desktop+hosted require-full/a11y) | Cap1_serial | measured_component_hold+fail_hosted | [U-BROWSERREADY-JOIN,U-CAP-REALLOC] | Desktop component holds; hosted fail_needs_structural_delta |
+| 9 | U-CAP-REALLOC | Cap realloc via live Cap topology TRANSFER | Root_blocked | cap_free_false | [] | Cap free=false after G2/G5/CR/G6/RB/PM spends; NEW non-twin feeder only; never invent Cap free |
+| 10 | U-UNLOCK-C-DIAG | Unlock C Cap=0 digest mismatch diagnosis | Cap0_parallel | blocked_claim_digest_mismatch | [] | Cap0 done; C=false; live digests≠candidate; no Cap burn / no forge |
+| 11 | U-UNLOCK-A-RESIDUAL | Unlock A residual honesty (g4 bound ≠ BrowserReady) | Cap0_parallel | Unlock_A_true_ne_BrowserReady | [U-BROWSERREADY-JOIN] | Cap0 done; A=true already; residual is close BrowserReady not re-unlock |
+| 12 | U-UNLOCK-B-RESIDUAL | Unlock B residual honesty (w2-h2 bound ≠ product) | Cap0_parallel | Unlock_B_true_ne_product | [U-CAP-REALLOC] | Cap0 done; B=true already; residual is product Cap burn after realloc |
+| 13 | U-MATRIX-TIPBIND | Matrix tip-bind head_sha→LIVE tip (Cap=0 hygiene) | Cap0_parallel | tip_drift | [] | Cap0 done; tip_bind.ok=ad8b68a2 Decision B; ≠ pass_product |
+| 14 | U-CAP1-CR-ONCE | Cap=1 once: --clean-room-product / product-matrix (preferred) | Cap1_serial | cap_free_false+AUTH_AT_absent+PM_spent_component | [U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF] | PM Cap1 EXIT2 feeder spent; product still 0; HOLD until AUTH/AT + NEW Cap realloc |
+| 15 | U-CAP1-W2H2-ALT | Cap=1 alternate: Unlock-B --w2-h2-product-binding once | Cap1_serial | cap_free_false+Decision_B_hold | [U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF] | Decision B: Cap1 without AUTH/AT cannot close product cells; never twin spam |
+| 16 | U-RB-SCENARIO-LAND | Land missing SoT scenario red-blue-product into matrix | Cap1_serial | cap_free_false+missing_sot_scenario | [U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF] | missing_sot_scenario_count=1; GRANT present; Cap free + AUTH/AT block |
+| 17 | U-CR-CLASS-CLEANROOM | CR cell class: clean-room-product → pass_product_clean_room | Cap1_serial | measured_component_hold+cap_topology_spent | [U-CAP1-CR-ONCE,U-AUTH-HANDOFF,U-AT-HANDOFF] | Sole product authority status; Cap twin/PM hold ≠ product |
+| 18 | U-CR-CLASS-BROWSER | CR cell class: browser-product (desktop+hosted require-full/a11y) | Root_blocked | BrowserReady_AT_absent+fail_hosted | [U-BROWSERREADY-JOIN,U-AT-HANDOFF] | Decision B: open cells need BrowserReady/AT; hosted fail_needs_structural_delta |
 | 19 | U-CR-CLASS-M3FULL | CR cell class: m3-full-product (root_structural_g1_g9) | Root_blocked | root_structural_g1_g9 | [U-G1,U-G3,U-BROWSERREADY-JOIN,U-G2,U-G5,U-G6] | required_unavailable until Root structural G1–G9 deltas |
 | 20 | U-CR-CLASS-G2 | CR cell class: g2-collector-product-binding PRODUCT re-qualify | Root_blocked | measured_component_hold+cap_topology_spent | [U-AUTH-HANDOFF,U-AT-HANDOFF,U-CAP-REALLOC] | Cap1 twin spent; product cell still open |
 | 21 | U-CR-CLASS-G5 | CR cell class: g5-witness-transport PRODUCT re-qualify | Root_blocked | measured_component_hold+cap_topology_spent | [U-CAP-REALLOC] | Cap1 twin spent; authenticated witness product still open |
@@ -181,19 +184,22 @@ Class counts: {"Root_blocked": 27, "Cap0_parallel": 24, "Cap1_serial": 15, "Depr
 | T4 Full priority plan + LIVE canvas | this plan | N=80 visible; Cap0-done vs Root-open; no truncation |
 | Cap0∥ remaining | — | **none** — wait Root AT/AUTH + Cap realloc |
 
-## 6. Cap=1 serial (HOLD)
+## 6. Cap=1 serial (HOLD) — Decision B
 
-Hold until Cap realloc → Cap free=true. Then **one** burn:
+Hold until Root AUTH/AT + Cap realloc → Cap free=true. Then **one** burn:
 
-1. Preferred: --clean-room-product (rank 14) with AUTH/AT present
-2. Alternate: Unlock-B --w2-h2-product-binding once (rank 15)
-3. Forbidden: ranks 73–80 Cap twin / spam paths
+1. Preferred: product Cap path with AUTH/AT present (rank 14 residual; PM feeder already spent as component)
+2. Alternate: Unlock-B --w2-h2-product-binding once (rank 15) **only after** AUTH/AT — Cap1 alone cannot close product
+3. Forbidden: ranks 73–80 Cap twin / spam paths **including spent PM twin**
+
+Decision B (2026-11-09T22:05:45Z tip ad8b68a2): Cap burn=0; no Cap0/Cap-ready feeder
+closes product cells without AUTH/AT/BrowserReady.
 
 ## 7. Explicit non-claims
 
 - Unlock A∨B true ≠ Cap free ≠ BrowserReady ≠ product green
 - tip_bind.ok=true ≠ pass_product_clean_room
-- Cap1 CR/G2/G5/G6 EXIT0 = component topology only
+- Cap1 CR/G2/G5/G6/PM EXIT0/EXIT2 = component topology / feeder only
 - e2e EXIT0 desktop oracle ≠ Cap realloc ≠ pass_product
 - CEF Cap-day bind ≠ Cap free ≠ BrowserReady
 - pressure-guard Cap=0 ≠ Cap realloc
@@ -201,13 +207,14 @@ Hold until Cap realloc → Cap free=true. Then **one** burn:
 - Cap0∥ inventory done ≠ goal complete
 - No forge AUTH/AT; no invent Cap free / BrowserReady / pass_product
 
-## 8. Exact next closer (Cap0 CONSOLIDATED)
+## 8. Exact next closer (Cap0 Decision B CONSOLIDATED)
 
 Root AT-HANDOFF (`humanymous.root-interactive-at-windows-tuple/1`) + AUTH-HANDOFF
-(`humanymous.root-n06-owner-join-auth-handoff/1`) + documented Cap realloc →
-Cap free=true → Cap=1 once `--clean-room-product`. Cap burn=0 until then.
+(`humanymous.root-n06-owner-join-auth-handoff/1`) → Cap=0 apply BrowserReady/N06 →
+documented Cap realloc (NEW structural feeder, not spent G2/G5/CR/G6/RB/PM twin) →
+Cap free=true → Cap=1 product path toward `pass_product_clean_room`. Cap burn=0 until then.
 
-Receipt: `.spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/`
+Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/`
 
 ## 9. Wiring
 
@@ -216,7 +223,8 @@ Receipt: `.spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-clos
 | This plan | .spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md |
 | Cap=0 evidence | .spec.local/root/evidence/20261110061400-cursor-full-priority-no-cutoff/ |
 | Cap0∥ wave | .spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/ |
-| CONSOLIDATED closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |
+| CONSOLIDATED closer | .spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/ |
+| Prior Cap0∥ closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |
 | Supersedes truncated tables | plan:root/20261110060500-code-sot-gap-browser-priority-reorder, plan:root/20261110044500-production-status-priority-reorder |
 | Matrix | .spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/ |
 | LIVE canvas | canvases/humanymous-live-roadmap.canvas.tsx |
@@ -237,5 +245,23 @@ Receipt: `.spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-clos
 | BrowserReady / AUTH / AT | **false** / absent / absent |
 | Rank 9 U-CAP-REALLOC | Cap0 feeder landed + realloc executed this wave |
 | Rank 14 U-CAP1-CR-ONCE | Cap1 preferred path burned via product-matrix feeder; product still 0 |
+| goal_complete | **false** |
+
+## Decision B Cap=0 hard closer (2026-11-09T22:05:45Z)
+
+| Field | Measured |
+| --- | --- |
+| tip | ad8b68a21d22e83477b00eba08c36ddcc6f78e99 |
+| decision | **B** |
+| Cap burn | **0** |
+| Cap EXIT | **none** |
+| Cap free | **false** |
+| product / pass_product_clean_room / BrowserReady | **0** / **0** / **false** |
+| AUTH / AT wake | absent / absent |
+| EXIT2 missing product cells | **47** (all counts_as_product=false) |
+| product_matrix_open_cells | **16** (all need AUTH/AT/BrowserReady or Root structural / Cap free) |
+| Cap0∥ remaining | **none** |
+| exact next closer | Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply → Cap realloc (NEW non-twin) → Cap=1 product |
+| receipt | `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/` |
 | goal_complete | **false** |
 
