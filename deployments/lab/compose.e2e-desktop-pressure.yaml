@@ -1,0 +1,31 @@
+# Cap=0 Desktop VM EXIT137 containment overlay (oracle e2e path).
+# Applied by scripts/e2e-docker.sh when E2E_DESKTOP_PRESSURE!=0 (default on).
+# Fail-closed preflight lives in scripts/; this only bounds bots catalog memory
+# and Chromium /dev/shm so a mid-catalog OOM kills bots, not the whole VM.
+# Never invents pass_product_clean_room. Detection freeze.
+services:
+  bots:
+    shm_size: ${E2E_BOTS_SHM_SIZE:-1g}
+    mem_limit: ${E2E_BOTS_MEMORY:-12g}
+    cpus: ${E2E_BOTS_CPUS:-2}
+  gate-e2e:
+    shm_size: ${E2E_BOTS_SHM_SIZE:-1g}
+    mem_limit: ${E2E_BOTS_MEMORY:-12g}
+  pass-e2e:
+    shm_size: ${E2E_BOTS_SHM_SIZE:-1g}
+    mem_limit: ${E2E_BOTS_MEMORY:-12g}
+  pass-wargame:
+    shm_size: ${E2E_BOTS_SHM_SIZE:-1g}
+    mem_limit: ${E2E_BOTS_MEMORY:-12g}
+  bot-swarm-a:
+    shm_size: ${E2E_BOTS_SHM_SIZE:-1g}
+    mem_limit: ${E2E_SWARM_MEMORY:-4g}
+    cpus: ${E2E_SWARM_CPUS:-1}
+  bot-swarm-b:
+    shm_size: ${E2E_BOTS_SHM_SIZE:-1g}
+    mem_limit: ${E2E_SWARM_MEMORY:-4g}
+    cpus: ${E2E_SWARM_CPUS:-1}
+  bot-swarm-c:
+    shm_size: ${E2E_BOTS_SHM_SIZE:-1g}
+    mem_limit: ${E2E_SWARM_MEMORY:-4g}
+    cpus: ${E2E_SWARM_CPUS:-1}

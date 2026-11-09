@@ -13,8 +13,15 @@
   "landed": [
     "scripts/e2e-docker-launch.ps1 Desktop VM MemAvailable/SwapFree/MemTotal + host free fail-closed refuse EXIT2",
     "scripts/e2e-docker.sh pressure_guard at preflight + before-attack-catalog + before-swarm",
-    "bots/gate/pass compose run --shm-size=1g --memory=12g containment (serial catalog; CARGO_BUILD_JOBS=1)"
+    "deployments/lab/compose.e2e-desktop-pressure.yaml bots shm_size=1g mem_limit=12g (compose run lacks --shm-size on Desktop)",
+    "serial catalog; CARGO_BUILD_JOBS=1"
   ],
+  "attempt3_flag_abort": {
+    "run_id": "20261109T205400Z-hmn-e2e-full-r3",
+    "exit": 1,
+    "cause": "compose_run_unknown_flag_shm_size",
+    "note": "Cap0 script defect before catalog; not product; not EXIT137; overlay replaces CLI flags"
+  },
   "probe": {
     "command": "pwsh -NoProfile -File scripts/e2e-docker-launch.ps1 -PressureOnly -RunId 20261109T205000Z-pressure-probe",
     "exit": 0,

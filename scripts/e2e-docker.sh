@@ -30,6 +30,11 @@ COMPOSE_FILES=(-f deployments/compose.yaml)
 if [[ -f deployments/compose.ci.yaml && "${E2E_USE_CI_COMPOSE:-0}" == "1" ]]; then
   COMPOSE_FILES+=(-f deployments/compose.ci.yaml)
 fi
+# Cap=0 Desktop EXIT137 containment: shm/mem_limit via lab overlay (compose run
+# on Desktop lacks --shm-size/--memory flags). Disable with E2E_DESKTOP_PRESSURE=0.
+if [[ "${E2E_DESKTOP_PRESSURE:-1}" != "0" && -f deployments/lab/compose.e2e-desktop-pressure.yaml ]]; then
+  COMPOSE_FILES+=(-f deployments/lab/compose.e2e-desktop-pressure.yaml)
+fi
 COMPOSE=(docker compose -p "$PROJECT" "${COMPOSE_FILES[@]}")
 
 SKIP_SWARM="${E2E_SKIP_SWARM:-0}"
@@ -275,16 +280,14 @@ echo "========== [e2e-docker] PASS settle-defenders elapsed=$(( $(date +%s) - CU
 # Re-check after build/defenders: prefer refuse over mid-catalog EXIT137.
 pressure_guard before-attack-catalog
 
-run_step attack-catalog "$STEP_TIMEOUT" "${COMPOSE[@]}" run --rm -T \
-  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" bots
+# Resource bounds come from deployments/lab/compose.e2e-desktop-pressure.yaml
+# (compose run on Desktop rejects --shm-size/--memory CLI flags).
+run_step attack-catalog "$STEP_TIMEOUT" "${COMPOSE[@]}" run --rm -T bots
 run_step attack-assert 120 "${COMPOSE[@]}" run --rm -T attack-assert
-run_step gate-conformance 300 "${COMPOSE[@]}" run --rm -T \
-  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" gate-e2e
-run_step pass-contract 300 "${COMPOSE[@]}" run --rm -T \
-  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" pass-e2e
+run_step gate-conformance 300 "${COMPOSE[@]}" run --rm -T gate-e2e
+run_step pass-contract 300 "${COMPOSE[@]}" run --rm -T pass-e2e
 run_step restart-core 120 "${COMPOSE[@]}" restart core
-run_step pass-wargame 600 "${COMPOSE[@]}" run --rm -T \
-  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" pass-wargame
+run_step pass-wargame 600 "${COMPOSE[@]}" run --rm -T pass-wargame
 
 if [[ "$SKIP_SWARM" != "1" ]]; then
   pressure_guard before-swarm
