@@ -1,0 +1,22 @@
+{
+  "schema": "humanymous.cursor-cap0-e2e-exit0-closer-status/1",
+  "observed_utc": "2026-11-09T21:06:41Z",
+  "head": "6373c4360784b381907267370c183c703326005c",
+  "branch": "codex/rust",
+  "complete": false,
+  "goal_complete": false,
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_realloc": false,
+  "cap_exit": null,
+  "cap_burn": 0,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "auth_present": false,
+  "at_present": false,
+  "e2e_exit0_tip_bind_done": true,
+  "red_blue_swarm": "component_pass_desktop_oracle",
+  "blocked_on_root": true,
+  "exact_next_closer": "Root AUTH-HANDOFF (humanymous.root-n06-owner-join-auth-handoff/1) or AT-HANDOFF (humanymous.root-interactive-at-windows-tuple/1) + documented Cap realloc -> Cap free=true -> Cap=1 once --clean-room-product jobs=1; Cap burn=0 this turn; never invent pass_product_clean_room / BrowserReady"
+}

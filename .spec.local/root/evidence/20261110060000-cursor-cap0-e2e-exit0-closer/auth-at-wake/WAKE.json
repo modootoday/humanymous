@@ -1,0 +1,58 @@
+{
+  "schema": "humanymous.cursor-auth-at-wake/1",
+  "observed_utc": "2026-11-09T21:06:41Z",
+  "branch": "codex/rust",
+  "head": "6373c4360784b381907267370c183c703326005c",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "provider": "cursor",
+  "execution_client": "cursor",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "auth_at_wake": true,
+  "auth_handoff": {
+    "path": ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+    "present": false,
+    "applied": false,
+    "n06_owner_join": false,
+    "honesty_exit": 0,
+    "honesty_bundle": ".spec.local/root/evidence/20261110060000-cursor-cap0-e2e-exit0-closer/n06-auth-exit0/",
+    "note": "Cap=0 wake tip 6373c436; AUTH-HANDOFF absent; refuse forge; N06 honesty EXIT0 Cap-conserving"
+  },
+  "at_handoff": {
+    "path": ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+    "present": false,
+    "applied": false,
+    "browser_ready": false,
+    "honesty_exit": 0,
+    "honesty_bundle": ".spec.local/root/evidence/20261110060000-cursor-cap0-e2e-exit0-closer/browser-ready-exit0/",
+    "note": "Cap=0 wake tip 6373c436; AT-HANDOFF absent; refuse forge BrowserReady; AT honesty EXIT0 Cap-conserving"
+  },
+  "private_bundle_scan": {
+    "note": "Deep scan under .spec.local: 0 AUTH-HANDOFF.json / 0 AT-HANDOFF.json; unlock-probe EXIT0; Cap free=false",
+    "deep_auth_count": 0,
+    "deep_at_count": 0,
+    "unlock_probe_exit": 0,
+    "unlock_probe_path": ".spec.local/root/evidence/20261110060000-cursor-cap0-e2e-exit0-closer/unlock-probe/UNLOCK.json",
+    "cef_like_auth_at_handoff_found": false
+  },
+  "blocked_on_root": true,
+  "blocked_on_root_for": [
+    "AUTH-HANDOFF for N06 owner join",
+    "AT-HANDOFF for BrowserReady / interactive AT Windows tuple",
+    "Cap realloc structural delta with matching Cap-ready preimage (pressure-guard Cap0 != Cap free restore; G2/G5/CR/G6/RB Cap twins spent)"
+  ],
+  "honesty": {
+    "detection_freeze": true,
+    "never_forge_auth_handoff": true,
+    "never_forge_at_handoff": true,
+    "never_invent_browser_ready": true,
+    "never_invent_n06_owner_join": true,
+    "never_invent_cap_free": true,
+    "never_invent_pass_product_clean_room": true
+  },
+  "next": "Root AUTH/AT or new Cap-ready structural feeder with matching preimage -> Cap realloc -> Cap free=true -> Cap=1 once --clean-room-product"
+}

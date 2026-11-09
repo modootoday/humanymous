@@ -1,0 +1,37 @@
+{
+  "schema": "humanymous.cursor-cap-realloc-feeder-scan/1",
+  "observed_utc": "2026-11-09T21:06:41Z",
+  "head": "6373c4360784b381907267370c183c703326005c",
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_burn": 0,
+  "cap_realloc_executed": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "spent_structural_feeders": [
+    ".spec.local/root/evidence/20261109034100-cursor-g2-cap-cleanup-realloc/CAP-REALLOC.json",
+    ".spec.local/root/evidence/20261109035200-cursor-g5-desktop-baseline-realloc/CAP-REALLOC.json",
+    ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP-REALLOC.json",
+    ".spec.local/root/evidence/20261109040700-cursor-g6-cap-realloc/CAP-REALLOC.json",
+    ".spec.local/root/evidence/20261110050000-cursor-red-blue-product-cap-realloc/CAP-REALLOC.json"
+  ],
+  "spent_cap_cells": [
+    "G2",
+    "G5",
+    "CR",
+    "G6",
+    "RB"
+  ],
+  "pressure_guard_landed": true,
+  "pressure_guard_evidence": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/CAP0-PRESSURE-GUARD.json",
+  "pressure_guard_restores_cap_free": false,
+  "next_product_structural_feeder_found": false,
+  "next_product_structural_feeder": null,
+  "note": "LIVE tip 6373c436: pressure-guard Cap0 landed; oracle e2e EXIT0 component_pass_desktop_oracle; G2/G5/CR/G6/RB Cap twins spent; AUTH/AT absent; Cap free stays false; no Cap twin spam",
+  "honesty": {
+    "never_auth_forge_as_cap_realloc": true,
+    "never_g2_g5_cr_g6_rb_cap_twin_spam": true,
+    "never_invent_cap_free": true,
+    "detection_freeze": true
+  }
+}

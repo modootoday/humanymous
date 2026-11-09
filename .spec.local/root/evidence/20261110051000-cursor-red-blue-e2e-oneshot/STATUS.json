@@ -1,8 +1,8 @@
 {
   "schema": "humanymous.cursor-red-blue-e2e-oneshot-status/1",
-  "observed_utc": "2026-11-09T20:59:15Z",
+  "observed_utc": "2026-11-09T21:06:41Z",
   "branch": "codex/rust",
-  "head": "57719cad",
+  "head": "6373c4360784b381907267370c183c703326005c",
   "complete": false,
   "product": 0,
   "pass_product_clean_room": 0,
@@ -83,5 +83,7 @@
     "Cap free=false without documented realloc",
     "pass_product_clean_room unproven (oracle component EXIT0 != product)"
   ],
-  "exact_next_closer": "Root AUTH/AT + Cap realloc for Cap=1 clean-room-product burn; Cap free=false; never invent pass_product_clean_room"
+  "exact_next_closer": "Root AUTH-HANDOFF (humanymous.root-n06-owner-join-auth-handoff/1) or AT-HANDOFF (humanymous.root-interactive-at-windows-tuple/1) + documented Cap realloc -> Cap free=true -> Cap=1 once --clean-room-product jobs=1; Cap burn=0 this turn; never invent pass_product_clean_room / BrowserReady",
+  "tip_bind_head": "6373c4360784b381907267370c183c703326005c",
+  "consolidated_closer": ".spec.local/root/evidence/20261110060000-cursor-cap0-e2e-exit0-closer/CONSOLIDATED-CLOSER.json"
 }

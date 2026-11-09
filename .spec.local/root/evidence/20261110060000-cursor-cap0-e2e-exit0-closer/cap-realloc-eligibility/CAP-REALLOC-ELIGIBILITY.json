@@ -1,0 +1,62 @@
+{
+  "schema": "humanymous.cursor-cap-realloc-eligibility/1",
+  "observed_utc": "2026-11-09T21:06:41Z",
+  "head": "6373c4360784b381907267370c183c703326005c",
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_realloc_executed": false,
+  "cap_burn": 0,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "cursor_executable_live_topology_transfer": false,
+  "candidates_considered": [
+    {
+      "id": "pressure-guard-delta",
+      "status": "cap0_infrastructure_not_cap_realloc",
+      "reason": "Desktop VM pressure guard landed Cap=0 for oracle e2e EXIT137 mitigation; not Cap=1 cleanup_failed structural delta; not Cap-ready GRANT+TRANSFER with matching preimage; Cap free not restored"
+    },
+    {
+      "id": "clean-room-product Cap twin",
+      "status": "spent_forbidden",
+      "reason": "CR Cap1 EXIT0 already spent; Cap twin spam forbidden without new Cap-ready product feeder"
+    },
+    {
+      "id": "red-blue-product Cap twin",
+      "status": "spent_forbidden",
+      "reason": "RB Cap1 EXIT2 feeder already spent; Cap free after burn=false"
+    },
+    {
+      "id": "G2/G5/G6 Cap twin",
+      "status": "spent_forbidden",
+      "reason": "Cap twin spam forbidden"
+    },
+    {
+      "id": "AUTH-HANDOFF",
+      "status": "absent",
+      "reason": "Root-blocked; never forge"
+    },
+    {
+      "id": "AT-HANDOFF",
+      "status": "absent",
+      "reason": "Root-blocked; never forge BrowserReady"
+    },
+    {
+      "id": "Unlock-C authority-node-ipc",
+      "status": "blocked_claim",
+      "reason": "live digests != candidate; no transfer-apply"
+    },
+    {
+      "id": "RB live topology cleanup delta",
+      "status": "no_new_cleanup_failed_delta",
+      "reason": "No new Cap=1 cleanup_failed structural fix awaiting realloc; RB/CR Cap burns already completed"
+    }
+  ],
+  "documented_realloc_allows_cap_free": false,
+  "next_cap1_serial": "HOLD until Cap free=true via Root AUTH/AT + documented Cap realloc; then once --clean-room-product; NEVER Cap twin spam",
+  "honesty": {
+    "never_invent_cap_free": true,
+    "never_invent_pass_product_clean_room": true,
+    "detection_freeze": true,
+    "pressure_guard_ne_cap_free": true
+  }
+}

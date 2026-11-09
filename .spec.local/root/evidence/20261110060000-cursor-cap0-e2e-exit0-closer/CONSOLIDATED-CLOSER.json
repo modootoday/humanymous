@@ -1,0 +1,104 @@
+{
+  "schema": "humanymous.cursor-cap0-consolidated-closer/1",
+  "decision": "cap0_consolidated_closer_blocked_on_root_auth_at_cap_realloc",
+  "observed_utc": "2026-11-09T21:06:41Z",
+  "branch": "codex/rust",
+  "head": "6373c4360784b381907267370c183c703326005c",
+  "lane": "cursor-integration",
+  "session": "cursor-integrator",
+  "provider": "cursor",
+  "execution_client": "cursor",
+  "cap": 0,
+  "cap_exit": null,
+  "cap_burn": 0,
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_realloc": false,
+  "cap_realloc_executed": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "n06_owner_join": false,
+  "blocked_on_root": true,
+  "goal_complete": false,
+  "detection_freeze": true,
+  "e2e_tip_bind": {
+    "done": true,
+    "exit": 0,
+    "counts_as": "component_pass_desktop_oracle",
+    "matrix_status": "pass_component_desktop",
+    "not_pass_product": true,
+    "evidence": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/FULL-ATTEMPT4-EXIT0.json",
+    "matrix": ".spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/matrix.json"
+  },
+  "auth_at_wake": {
+    "done": true,
+    "auth_present": false,
+    "at_present": false,
+    "n06_honesty_exit": 0,
+    "browser_ready_honesty_exit": 0,
+    "applied": false,
+    "wake": ".spec.local/root/evidence/20261110060000-cursor-cap0-e2e-exit0-closer/auth-at-wake/WAKE.json"
+  },
+  "cap_free_blockers": [
+    "No new Cap-ready GRANT+TRANSFER with matching preimage",
+    "pressure-guard delta is Cap=0 infrastructure only (does not restore Cap free)",
+    "G2/G5/CR/G6/RB Cap twins already spent; Cap twin spam forbidden",
+    "No Cap=1 cleanup_failed structural delta awaiting realloc"
+  ],
+  "root_asks": [
+    {
+      "id": "n06-owner-auth",
+      "preferred": true,
+      "schema": "humanymous.root-n06-owner-join-auth-handoff/1",
+      "handoff_candidates": [
+        ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+        ".spec.local/root/grants/n06-owner-join/GRANT.json"
+      ],
+      "required_fields": {
+        "n06_owner_join_authorized": true,
+        "product": 0,
+        "pass_product_clean_room": 0
+      }
+    },
+    {
+      "id": "interactive-at-windows-tuple",
+      "preferred": false,
+      "schema": "humanymous.root-interactive-at-windows-tuple/1",
+      "handoff_candidates": [
+        ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+        ".spec.local/root/grants/interactive-at-windows-tuple/GRANT.json"
+      ],
+      "required_fields": {
+        "browser_ready_authorized": true,
+        "product": 0,
+        "pass_product_clean_room": 0
+      }
+    },
+    {
+      "id": "cap-realloc-structural-feeder",
+      "preferred": true,
+      "note": "Documented Cap realloc restoring Cap free=true (new Cap-ready pack with matching preimages or Cap1 cleanup_failed structural delta) before Cap=1 --clean-room-product once"
+    }
+  ],
+  "exact_next_closer": "Root AUTH-HANDOFF (humanymous.root-n06-owner-join-auth-handoff/1) or AT-HANDOFF (humanymous.root-interactive-at-windows-tuple/1) + documented Cap realloc -> Cap free=true -> Cap=1 once --clean-room-product jobs=1; Cap burn=0 this turn; never invent pass_product_clean_room / BrowserReady",
+  "forbidden": [
+    "invent n06_owner_join=true",
+    "invent BrowserReady=true",
+    "invent pass_product_clean_room",
+    "invent Cap free without structural realloc",
+    "Cap=1 while Cap free=false",
+    "G2/G5/CR/G6/RB Cap twin spam",
+    "promote component_pass_desktop_oracle to pass_product"
+  ],
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "never_invent_browser_ready": true,
+    "component_ne_product": true,
+    "detection_freeze": true
+  },
+  "canvas": "C:/Users/smile/.cursor/projects/c-workspaces-humanymous/canvases/humanymous-live-roadmap.canvas.tsx",
+  "supersedes": ".spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/consolidated-root-ask.json"
+}
