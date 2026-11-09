@@ -527,12 +527,12 @@ fn completeness_report(
         },
         "cells": cells,
         "blocked_on_root": [
-            "G6 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g6-origin-audit-binding (non-spent structural feeder)",
             "AUTH-HANDOFF humanymous.root-n06-owner-join-auth-handoff/1",
             "AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1",
+            "Root structural allocation for G1/G3/G4/G7/G8/G9 product deltas (G2/G5/CR/G6 Cap topology holds ≠ product)",
             "optional: Cap-ready SoT path transfer for clean-room usage-condition gate slices"
         ],
-        "next": "Prefer Cap-ready G5 GRANT apply + Cap realloc + Cap=1 once, or AUTH/AT handoff; Cap realloc only after live topology; product remains 0 until pass_product_clean_room measured",
+        "next": "No Cap-ready G7/G8/G9 Cursor feeder; G2/G5/CR/G6 Cap twins spent; prefer Root AUTH-HANDOFF or AT-HANDOFF then Cap=0 measured apply only; never Cap twin spam / invent pass_product_clean_room; product remains 0 until pass_product_clean_room measured",
     }))
 }
 

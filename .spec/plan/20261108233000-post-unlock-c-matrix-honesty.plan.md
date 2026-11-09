@@ -3,7 +3,7 @@ id: plan:root/20261108233000-post-unlock-c-matrix-honesty
 title: Post-Unlock-C matrix honesty + Unlock B Cap (component EXIT 0)
 status: active
 created: 2026-11-08T14:30:00Z
-updated: 2026-11-08T19:05:00Z
+updated: 2026-11-09T03:45:00Z
 rel:
   depends_on:
     - plan:root/20261108230100-bottom-up-inner-outer-parallelization
@@ -163,3 +163,13 @@ product-binding. Evidence:
 `.spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/`,
 and
 `.spec.local/root/evidence/20261109025000-cursor-cap0-hard-stop-root-ask/`.
+
+### Tip `809e2290` post-G6 Cap wave
+
+G2/G5/CR/G6 Cap=1 component holds spent. Cap free=**false**. AUTH/AT absent.
+G7/G8/G9 Cap-ready Cursor feeder=**none**. Cap=0 tip-bound product-gate
+enumeration + hard-stop: plan
+`20261109041000-cap0-product-gate-enumeration-hard-stop.plan.md`; private
+evidence `20261109041000-cursor-cap0-product-enumeration/` +
+`20261109041100-cursor-hard-stop-tip-bound/`. Next closer remains Root
+AUTH-HANDOFF or AT-HANDOFF only (Cap=0 measured apply). No Cap twin spam.
