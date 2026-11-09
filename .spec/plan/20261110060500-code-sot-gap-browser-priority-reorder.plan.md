@@ -3,7 +3,7 @@ id: plan:root/20261110060500-code-sot-gap-browser-priority-reorder
 title: Cap=0 CODE↔SoT gap survey — BrowserReady first-class priority reorder
 status: active
 created: 2026-11-09T21:05:00Z
-updated: 2026-11-09T21:05:00Z
+updated: 2026-11-09T21:25:00Z
 rel:
   depends_on:
     - plan:root/20261110044500-production-status-priority-reorder
@@ -34,23 +34,35 @@ Private evidence:
 
 | Field | Measured |
 | --- | --- |
-| tip | `6373c4360784b381907267370c183c703326005c` |
+| tip | `726f59c889ad260ac9ea0433099306df53a9cb3d` (Browser PRIORITY#1 Cap=0 track base) |
 | branch | `codex/rust` |
 | product / pass_product_clean_room | **0** / **0** |
 | Cap free | **false** |
 | AUTH-HANDOFF | **absent** |
 | AT-HANDOFF | **absent** |
 | BrowserReady / n06_owner_join | **false** / **false** |
-| matrix-completeness | EXIT0; required=84; clean_room_required=47; product=0 |
-| tip_bind.ok | **true** (matrix `head_sha` == LIVE tip) |
+| matrix-completeness | EXIT0; required=84; clean_room_required=47; product=0; **`browser_ready_stack.rank=1` first-class** |
+| tip_bind.ok | **true** (matrix `head_sha` tip-bound @ `726f59c8`) |
 | missing SoT scenario | `red-blue-product` (1; Cap free=false blocker) |
 | Unlock A / B / C | true / true / false (`unlock_any=true`) |
+| `handoff-apply --kind at` | EXIT0; AT absent; refuse_closed; BrowserReady=false |
+| `cef-bundle-probe` | EXIT0; exact missing `env:HUMANYMOUS_CEF_PILOT_BUNDLE`; private host **found** |
 | `--browser-ready-interactive-at-honesty` | EXIT0; BrowserReady=false; AT absent |
 | `--n06-owner-auth-handoff-honesty` | EXIT0; n06_owner_join=false; AUTH absent |
 | `--n06-owner-join-readiness` | EXIT0; join open; BrowserReady=false |
-| `unlock-probe` | EXIT0; Cap free=false; g4 bound; CEF bundle absent |
+| `unlock-probe` | EXIT0; Cap free=false; g4 bound; CEF env absent |
+| Unlock C Cap=0 diagnose | blocked_claim; mismatches `snapshot.rs` + `authority.rs` |
 | Cap burn this turn | **0** |
 | full e2e EXIT0 class | `component_pass_desktop_oracle` only (not product) |
+
+### Cap=0 Browser PRIORITY#1 landings (shorten AT→BrowserReady)
+
+| Deliverable | Status |
+| --- | --- |
+| AT-HANDOFF apply helper / ROOT-ONE-STEP twin | **ready** — `handoff-apply --kind at` + `cap-ready/at-handoff-apply/` |
+| CEF bundle presence probe | **ready** — env absent exact missing; private host complete |
+| `crates/apps/humanymous-browser` path-transfer | Cap-ready pack only (`applied=false`); live path still absent |
+| BrowserReady first-class matrix tip-bind | **landed** — `browser_ready_stack` rank 1 cell blocker |
 
 ## 2. Pain diagnosis (why browser was invisible)
 

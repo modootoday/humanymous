@@ -2,11 +2,11 @@
   "schema": "humanymous.cursor-clean-room-product-matrix/1",
   "record_kind": "docker-clean-room-product-gap-matrix",
   "not_a_handover_document": true,
-  "observed_utc": "2026-11-09T21:06:41Z",
+  "observed_utc": "2026-11-09T21:19:06Z",
   "branch": "codex/rust",
   "workspace": "C:/workspaces/humanymous",
-  "head_sha": "6373c4360784b381907267370c183c703326005c",
-  "prior_head_sha_cap0_tip_bind": "57719cad",
+  "head_sha": "726f59c889ad260ac9ea0433099306df53a9cb3d",
+  "prior_head_sha_cap0_tip_bind": "6373c4360784b381907267370c183c703326005c",
   "tip_bind_note": "Cap=0 tip-bind settled tip 6373c436 after full e2e-docker-launch r4 EXIT0 (pressure guard + settle + swarm proxy_rotation; overlays skipped); red_blue_* honesty=component_pass_desktop_oracle; matrix status remains pass_component_desktop; Cap free=false; product=0; pass_product_clean_room=0; never invent product",
   "provider": "cursor",
   "session": "cursor-integrator",
@@ -3215,7 +3215,7 @@
       "note": "Oracle Desktop full e2e including swarm = component_pass_desktop_oracle; never invent pass_product_clean_room"
     }
   },
-  "tip_bind": "6373c436",
+  "tip_bind": "726f59c8",
   "product": 0,
   "pass_product_clean_room": 0,
   "cells": [
@@ -4918,6 +4918,21 @@
       "at_handoff_present": false,
       "browser_ready": false,
       "note": "Full Docker Desktop e2e EXIT0 tip-bound as component_pass_desktop_oracle ONLY; oracle component ≠ pass_product_clean_room; Cap free=false; Cap burn=0"
+    },
+    "tip_bind_726f59c8_cap0_full_priority_no_cutoff": {
+      "observed_utc": "2026-11-09T21:19:06Z",
+      "head_sha": "726f59c889ad260ac9ea0433099306df53a9cb3d",
+      "prior_head_sha": "6373c4360784b381907267370c183c703326005c",
+      "cap": 0,
+      "cap_burn": 0,
+      "cap_free": false,
+      "product": 0,
+      "pass_product_clean_room": 0,
+      "browser_ready": false,
+      "auth_present": false,
+      "at_present": false,
+      "reason": "Cap=0 tip-bind honesty after full-priority-no-cutoff plan; no product invent",
+      "plan": ".spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md"
     }
   }
 }

@@ -7,9 +7,11 @@ mod browser_expectations;
 mod browser_outcome;
 #[path = "../../browser_wire.rs"]
 mod browser_wire;
+mod cef_bundle_probe;
 mod clean_room_matrix;
 mod docker;
 mod fixture;
+mod handoff_apply;
 #[path = "../../mount_policy.rs"]
 mod mount_policy;
 mod orchestration;
@@ -40,7 +42,9 @@ fn main() {
         }
         Some("transfer-verify") => transfer_preimage::verify(&args[1..]),
         Some("unlock-probe") => unlock_gate::probe(&args[1..]),
-        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe | --authority-node-ipc | --w2-h2-product-binding | --w2-h2-hosted-venue | --n06-owner-join-readiness | --g2-collector-product-binding | --g2-collector-product-binding-readiness | --g5-witness-transport | --g5-witness-transport-honesty | --clean-room-product | --g6-origin-audit-binding | --red-blue-product | --browser-ready-interactive-at-honesty | --n06-owner-auth-handoff-honesty | --g4-cef-at] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH] | matrix-completeness --matrix PATH [--emit PATH] [--expect-head SHA] [--workspace PATH] | transfer-probe --manifest PATH [--workspace PATH] [--emit PATH] | transfer-apply --manifest PATH --grant PATH [--workspace PATH] [--dry-run] [--emit PATH] | transfer-verify --manifest PATH [--root PATH] [--emit PATH] [--expect-applied] | unlock-probe [--manifest PATH] [--root PATH] [--emit PATH]".into()),
+        Some("handoff-apply") => handoff_apply::run(&args[1..]),
+        Some("cef-bundle-probe") => cef_bundle_probe::run(&args[1..]),
+        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe | --authority-node-ipc | --w2-h2-product-binding | --w2-h2-hosted-venue | --n06-owner-join-readiness | --g2-collector-product-binding | --g2-collector-product-binding-readiness | --g5-witness-transport | --g5-witness-transport-honesty | --clean-room-product | --g6-origin-audit-binding | --red-blue-product | --browser-ready-interactive-at-honesty | --n06-owner-auth-handoff-honesty | --g4-cef-at] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH] | matrix-completeness --matrix PATH [--emit PATH] [--expect-head SHA] [--workspace PATH] | transfer-probe --manifest PATH [--workspace PATH] [--emit PATH] | transfer-apply --manifest PATH --grant PATH [--workspace PATH] [--dry-run] [--emit PATH] | transfer-verify --manifest PATH [--root PATH] [--emit PATH] [--expect-applied] | unlock-probe [--manifest PATH] [--root PATH] [--emit PATH] | handoff-apply --kind at [--workspace PATH] [--dry-run] [--emit PATH] | cef-bundle-probe [--workspace PATH] [--emit PATH]".into()),
     };
     match result {
         Ok(code) => std::process::exit(code),

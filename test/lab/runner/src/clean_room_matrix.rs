@@ -44,9 +44,8 @@ const AUTH_HANDOFF_CANDIDATES: &[&str] = &[
     ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
     ".spec.local/root/grants/n06-owner-join/GRANT.json",
 ];
-const AT_HANDOFF_CANDIDATES: &[&str] = &[
-    ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
-];
+const AT_HANDOFF_CANDIDATES: &[&str] =
+    &[".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json"];
 
 /// Root paths that must move before authority-node-ipc Cap CLI may serialize.
 const AUTHORITY_NODE_IPC_ROOT_ASK_PATHS: &[&str] = &[
@@ -166,9 +165,9 @@ pub fn completeness(args: &[String]) -> Result<i32> {
         index += 1;
     }
     let matrix_path = matrix_path.ok_or("--matrix required")?;
-    let workspace_root = workspace
-        .map(std::path::PathBuf::from)
-        .unwrap_or_else(|| crate::snapshot::root().unwrap_or_else(|_| std::path::PathBuf::from(".")));
+    let workspace_root = workspace.map(std::path::PathBuf::from).unwrap_or_else(|| {
+        crate::snapshot::root().unwrap_or_else(|_| std::path::PathBuf::from("."))
+    });
     let raw =
         fs::read_to_string(&matrix_path).map_err(|error| format!("matrix read failed: {error}"))?;
     let matrix: Value =
@@ -293,7 +292,8 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
         if !g2 {
             return (
                 "root_grant_g2",
-                "G2 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1".into(),
+                "G2 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1"
+                    .into(),
             );
         }
         if !cap_free {
@@ -307,7 +307,8 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
         if !g5 {
             return (
                 "root_grant_g5",
-                "G5 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1".into(),
+                "G5 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1"
+                    .into(),
             );
         }
         if !cap_free {
@@ -322,7 +323,8 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
         if !g6 {
             return (
                 "root_grant_g6",
-                "G6 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1".into(),
+                "G6 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1"
+                    .into(),
             );
         }
         if !cap_free {
@@ -347,15 +349,16 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
             );
         }
     }
-    if scenario.contains("n06") || scenario == "w2-h2-hosted-venue" {
-        if !auth {
-            return (
-                "root_auth_handoff",
-                "AUTH-HANDOFF absent; N06 owner join / hosted product binding cannot invent join".into(),
-            );
-        }
+    if (scenario.contains("n06") || scenario == "w2-h2-hosted-venue") && !auth {
+        return (
+            "root_auth_handoff",
+            "AUTH-HANDOFF absent; N06 owner join / hosted product binding cannot invent join"
+                .into(),
+        );
     }
-    if matches!(scenario, "g4-cef-at" | "browser-product") && status == "required_unavailable" && !at
+    if matches!(scenario, "g4-cef-at" | "browser-product")
+        && status == "required_unavailable"
+        && !at
     {
         return (
             "root_at_handoff",
@@ -423,10 +426,7 @@ fn completeness_report(
         .and_then(Value::as_array)
         .ok_or("matrix.combinations array required")?;
     let wake = wake_state(workspace_root);
-    let matrix_head = matrix
-        .get("head_sha")
-        .and_then(Value::as_str)
-        .unwrap_or("");
+    let matrix_head = matrix.get("head_sha").and_then(Value::as_str).unwrap_or("");
     let tip_bind_ok = match expect_head {
         Some(expected) => matrix_head.starts_with(expected) || expected.starts_with(matrix_head),
         None => true,
@@ -439,7 +439,11 @@ fn completeness_report(
     let mut pass_product = 0u64;
     let present_scenarios: std::collections::BTreeSet<String> = combinations
         .iter()
-        .filter_map(|cell| cell.get("scenario").and_then(Value::as_str).map(str::to_string))
+        .filter_map(|cell| {
+            cell.get("scenario")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+        })
         .collect();
 
     for cell in combinations {
@@ -509,6 +513,42 @@ fn completeness_report(
         .collect();
 
     let completeness_ok = missing_scenarios.is_empty() && tip_bind_ok && pass_product == 0;
+    let at_present = wake["at_handoff_present"].as_bool().unwrap_or(false);
+    let auth_present = wake["auth_handoff_present"].as_bool().unwrap_or(false);
+    let humanymous_browser_app_present =
+        path_exists(workspace_root, "crates/apps/humanymous-browser/Cargo.toml");
+    let cef_env_present = std::env::var_os("HUMANYMOUS_CEF_PILOT_BUNDLE")
+        .as_ref()
+        .is_some_and(|value| !value.is_empty());
+    // First-class BrowserReady stack blocker (PRIORITY #1) — not buried under
+    // AT-HANDOFF token-only or lumped G1/G3/G4. Unlock A ≠ BrowserReady.
+    let browser_ready_stack = json!({
+        "rank": 1,
+        "first_class": true,
+        "browser_ready": false,
+        "blocker": if at_present { "root_at_present_await_measured_join" } else { "root_at_handoff" },
+        "blocker_detail": if at_present {
+            "AT-HANDOFF present; Cap=0 measured apply + BrowserReady honesty join still required; never invent BrowserReady"
+        } else {
+            "AT-HANDOFF absent; BrowserReady/interactive AT remains false; Cap=0 handoff-apply refuse-closed"
+        },
+        "surfaces": {
+            "at_handoff_present": at_present,
+            "at_handoff_path": wake.get("at_handoff_path").cloned().unwrap_or(Value::Null),
+            "cef_bundle_env_present": cef_env_present,
+            "cef_bundle_env": "HUMANYMOUS_CEF_PILOT_BUNDLE",
+            "crates_browser_present": path_exists(workspace_root, "crates/browser/Cargo.toml"),
+            "cef_pilot_present": path_exists(workspace_root, "scripts/ci/cef-pilot/Cargo.toml"),
+            "humanymous_browser_app_present": humanymous_browser_app_present,
+            "humanymous_browser_app_path": "crates/apps/humanymous-browser",
+            "unlock_a_ne_browser_ready": true
+        },
+        "cap0_helpers": {
+            "handoff_apply": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind at",
+            "cef_bundle_probe": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-probe",
+            "browser_ready_honesty": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty"
+        }
+    });
     Ok(json!({
         "schema": COMPLETENESS_SCHEMA,
         "record_kind": "lab-runner-clean-room-matrix-completeness",
@@ -520,19 +560,24 @@ fn completeness_report(
         "pass_product_clean_room": pass_product,
         "full_product_qualified": false,
         "m3_claim": false,
+        "browser_ready": false,
         "tip_bind": {
             "matrix_head_sha": matrix_head,
             "expect_head": expect_head,
             "ok": tip_bind_ok,
         },
         "wake": wake,
+        "browser_ready_stack": browser_ready_stack,
         "honesty": {
             "never_invent_pass_product_clean_room": true,
             "never_invent_cap_free": true,
             "never_forge_grant_auth_at": true,
+            "never_invent_browser_ready": true,
             "detection_freeze": true,
             "component_ne_product": true,
             "cap_realloc_requires_live_topology": true,
+            "browser_ready_stack_first_class": true,
+            "unlock_a_ne_browser_ready": true
         },
         "source_matrix": {
             "schema": matrix.get("schema").cloned().unwrap_or(Value::Null),
@@ -551,15 +596,19 @@ fn completeness_report(
             "completeness_ok_fail_closed": completeness_ok,
             "blocker_counts": blocker_counts,
             "product": 0,
+            "browser_ready": false,
+            "browser_ready_stack_rank": 1,
+            "at_handoff_present": at_present,
+            "auth_handoff_present": auth_present
         },
         "cells": cells,
         "blocked_on_root": [
+            "PRIORITY#1 BrowserReady stack: AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1 + CEF bundle env + crates/browser/** / scripts/ci/cef-pilot/** (+ crates/apps/humanymous-browser consolidation)",
             "AUTH-HANDOFF humanymous.root-n06-owner-join-auth-handoff/1",
-            "AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1",
             "Root structural allocation for G1/G3/G4/G7/G8/G9 product deltas (G2/G5/CR/G6 Cap topology holds ≠ product)",
             "optional: Cap-ready SoT path transfer for clean-room usage-condition gate slices"
         ],
-        "next": "No Cap-ready G7/G8/G9 Cursor feeder; G2/G5/CR/G6 Cap twins spent; prefer Root AUTH-HANDOFF or AT-HANDOFF then Cap=0 measured apply only; never Cap twin spam / invent pass_product_clean_room; product remains 0 until pass_product_clean_room measured",
+        "next": "PRIORITY#1 BrowserReady stack: Root AT-HANDOFF then Cap=0 handoff-apply + honesty; CEF env still Cap-day; never Cap twin spam / invent pass_product_clean_room / BrowserReady; product remains 0 until pass_product_clean_room measured",
     }))
 }
 
@@ -885,7 +934,9 @@ fn lab_runner_command(gate: &str, scenario: &str) -> Value {
 
 #[cfg(test)]
 mod tests {
-    use super::{Disposition, completeness_report, decide, honest_blocker, plan_matrix, wake_state};
+    use super::{
+        Disposition, completeness_report, decide, honest_blocker, plan_matrix, wake_state,
+    };
     use serde_json::json;
     use std::path::{Path, PathBuf};
 
