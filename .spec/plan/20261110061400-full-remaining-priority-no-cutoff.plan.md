@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | `dbfef453173305212e39094a72a8852d56c72d92` |
+| tip | c65b2fac6d6803443673013362615e37adb1a09f |
 | branch | `codex/rust` |
 | product / pass_product_clean_room | **0** / **0** |
 | Cap free | **false** |
@@ -43,7 +43,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | AT-HANDOFF | **absent** |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist) / **absent** |
-| matrix tip_bind | rebound → `dbfef453` Cap=0 honesty; tip_bind.ok=**true** |
+| matrix tip_bind | rebound → c65b2fac Cap=0 honesty; tip_bind.ok=**true** |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |

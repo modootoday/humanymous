@@ -2,12 +2,12 @@
   "schema": "humanymous.cursor-clean-room-product-matrix/1",
   "record_kind": "docker-clean-room-product-gap-matrix",
   "not_a_handover_document": true,
-  "observed_utc": "2026-11-09T21:39:42Z",
+  "observed_utc": "2026-11-09T21:41:05Z",
   "branch": "codex/rust",
   "workspace": "C:/workspaces/humanymous",
-  "head_sha": "dbfef453173305212e39094a72a8852d56c72d92",
-  "prior_head_sha_cap0_tip_bind": "2c0b166f57a6d5fedff9e6ad0ec3303bc10c1260",
-  "tip_bind_note": "Cap=0 tip-bind LIVE tip dbfef453173305212e39094a72a8852d56c72d92 after Cap0 FULL parallel honesty wave; Cap free=false; product=0; pass_product_clean_room=0; BrowserReady=false; never invent product",
+  "head_sha": "c65b2fac6d6803443673013362615e37adb1a09f",
+  "prior_head_sha_cap0_tip_bind": "dbfef453173305212e39094a72a8852d56c72d92",
+  "tip_bind_note": "Cap=0 post-commit tip-bind LIVE tip c65b2fac6d6803443673013362615e37adb1a09f after Cap0 FULL parallel honesty wave; Cap free=false; product=0; pass_product_clean_room=0; BrowserReady=false; never invent product",
   "provider": "cursor",
   "session": "cursor-integrator",
   "lane": "cursor-integration",
@@ -4977,6 +4977,19 @@
       "observed_utc": "2026-11-09T21:39:42Z",
       "reason": "Cap=0 tip-bind honesty after Cap0 FULL 1..80 parallel honesty wave; no product invent",
       "wave_evidence": ".spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/"
+    },
+    "tip_bind_c65b2fac_cap0_full_parallel_postcommit": {
+      "decision": "cap0_tip_bind_full_parallel_postcommit",
+      "head_sha": "c65b2fac6d6803443673013362615e37adb1a09f",
+      "prior_head_sha": "dbfef453173305212e39094a72a8852d56c72d92",
+      "cap": 0,
+      "cap_burn": 0,
+      "cap_free": false,
+      "product": 0,
+      "pass_product_clean_room": 0,
+      "browser_ready": false,
+      "observed_utc": "2026-11-09T21:41:05Z",
+      "reason": "Post-commit Cap=0 tip-bind hygiene after FULL parallel honesty wave; no product invent"
     }
   }
 }
