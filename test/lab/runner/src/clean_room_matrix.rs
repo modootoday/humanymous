@@ -520,6 +520,7 @@ fn completeness_report(
     let cef_env_present = std::env::var_os("HUMANYMOUS_CEF_PILOT_BUNDLE")
         .as_ref()
         .is_some_and(|value| !value.is_empty());
+    let cef_cap_day_present = crate::cef_bundle::cap_day_present(workspace_root).unwrap_or(false);
     // First-class BrowserReady stack blocker (PRIORITY #1) — not buried under
     // AT-HANDOFF token-only or lumped G1/G3/G4. Unlock A ≠ BrowserReady.
     let browser_ready_stack = json!({
@@ -536,7 +537,9 @@ fn completeness_report(
             "at_handoff_present": at_present,
             "at_handoff_path": wake.get("at_handoff_path").cloned().unwrap_or(Value::Null),
             "cef_bundle_env_present": cef_env_present,
+            "cef_cap_day_present": cef_cap_day_present,
             "cef_bundle_env": "HUMANYMOUS_CEF_PILOT_BUNDLE",
+            "cef_durable_bind": crate::cef_bundle::CAP_DAY_BIND_RELATIVE,
             "crates_browser_present": path_exists(workspace_root, "crates/browser/Cargo.toml"),
             "cef_pilot_present": path_exists(workspace_root, "scripts/ci/cef-pilot/Cargo.toml"),
             "humanymous_browser_app_present": humanymous_browser_app_present,
@@ -545,6 +548,7 @@ fn completeness_report(
         },
         "cap0_helpers": {
             "handoff_apply": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind at",
+            "cef_bundle_bind": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-bind",
             "cef_bundle_probe": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-probe",
             "browser_ready_honesty": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty"
         }

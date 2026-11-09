@@ -20,17 +20,19 @@ use crate::orchestration::cap0_product_honesty::{
 use crate::orchestration::g2_collector_product_binding::{
     CAP_READY_PACK_REL as G2_CAP_READY_PACK, CAP_SELECTOR as G2_CAP_CLI_SELECTOR,
     CODE_DEFINED_PILOT_COMMAND as G2_CAP_CLI_PILOT, CONTRACT_REL as G2_CAP_CONTRACT,
-    REQUIRED_CAP_TOPOLOGY as G2_REQUIRED_CAP_TOPOLOGY, missing_cap_topology as g2_missing_cap_topology,
-};
-use crate::orchestration::g5_witness_transport::{
-    CAP_READY_PACK_REL as G5_CAP_READY_PACK, CAP_SELECTOR as G5_CAP_CLI_SELECTOR,
-    CODE_DEFINED_PILOT_COMMAND as G5_CAP_CLI_PILOT, CONTRACT_REL as G5_CAP_CONTRACT,
-    REQUIRED_CAP_TOPOLOGY as G5_REQUIRED_CAP_TOPOLOGY, missing_cap_topology as g5_missing_cap_topology,
+    REQUIRED_CAP_TOPOLOGY as G2_REQUIRED_CAP_TOPOLOGY,
+    missing_cap_topology as g2_missing_cap_topology,
 };
 use crate::orchestration::g4_cef_at::{
     CAP_SELECTOR as G4_CEF_CAP_SELECTOR, CEF_BUNDLE_ENV,
     CODE_DEFINED_PILOT_COMMAND as G4_CODE_DEFINED_PILOT, PATH_RELEASE_SURFACES,
     REQUIRED_CAP_MODULE,
+};
+use crate::orchestration::g5_witness_transport::{
+    CAP_READY_PACK_REL as G5_CAP_READY_PACK, CAP_SELECTOR as G5_CAP_CLI_SELECTOR,
+    CODE_DEFINED_PILOT_COMMAND as G5_CAP_CLI_PILOT, CONTRACT_REL as G5_CAP_CONTRACT,
+    REQUIRED_CAP_TOPOLOGY as G5_REQUIRED_CAP_TOPOLOGY,
+    missing_cap_topology as g5_missing_cap_topology,
 };
 use crate::orchestration::h2_product_binding::{
     CAP_SELECTOR as W2_H2_CAP_SELECTOR, CODE_DEFINED_PILOT_COMMAND,
@@ -40,7 +42,7 @@ use crate::orchestration::h2_product_binding::{
 use crate::snapshot;
 use crate::transfer_preimage;
 use serde_json::{Value, json};
-use std::{env, fs, path::Path};
+use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-unlock-gate/1";
 
@@ -95,9 +97,7 @@ impl UnlockProbe {
     pub fn to_json(&self, root: &Path, manifest: Option<&Path>) -> Value {
         let unlock_a_manifest = root.join(DEFAULT_UNLOCK_A_MANIFEST);
         let unlock_b_manifest = root.join(DEFAULT_UNLOCK_B_MANIFEST);
-        let cef_bundle_present = env::var_os(CEF_BUNDLE_ENV)
-            .as_ref()
-            .is_some_and(|value| !value.is_empty());
+        let cef_bundle_present = crate::cef_bundle::cap_day_present(root).unwrap_or(false);
         json!({
             "schema": SCHEMA,
             "record_kind": "lab-runner-unlock-gate",
@@ -353,14 +353,12 @@ fn probe_unlock_a(root: &Path) -> Result<(bool, String, &'static str, Option<Str
     let receipt_path = root.join(UNLOCK_A_RECEIPT);
     let manifest_path = root.join(DEFAULT_UNLOCK_A_MANIFEST);
     let empty_entries = manifest_entries_empty(&manifest_path);
-    let cef_bundle_present = env::var_os(CEF_BUNDLE_ENV)
-        .as_ref()
-        .is_some_and(|value| !value.is_empty());
+    let cef_bundle_present = crate::cef_bundle::cap_day_present(root).unwrap_or(false);
     if !receipt_path.is_file() {
         return Ok((
             false,
             format!(
-                "no UNLOCK-A-APPLIED; Unlock A Cap CLI {G4_CEF_CAP_SELECTOR} exists but GRANT.pilot_command + path-release destinations + transfer-apply still required; exact missing: path release {} OR browser-ui execution admission; empty transfer-manifest entries={empty_entries}; {CEF_BUNDLE_ENV} present={cef_bundle_present}; never invent path release or Cap-spam a11y/--require-full",
+                "no UNLOCK-A-APPLIED; Unlock A Cap CLI {G4_CEF_CAP_SELECTOR} exists but GRANT.pilot_command + path-release destinations + transfer-apply still required; exact missing: path release {} OR browser-ui execution admission; empty transfer-manifest entries={empty_entries}; {CEF_BUNDLE_ENV} Cap-day present={cef_bundle_present}; never invent path release or Cap-spam a11y/--require-full",
                 PATH_RELEASE_SURFACES.join(" and/or ")
             ),
             "blocked_claim",
@@ -418,7 +416,8 @@ fn probe_unlock_a(root: &Path) -> Result<(bool, String, &'static str, Option<Str
         return Ok((
             true,
             format!(
-                "UNLOCK-A-APPLIED present with Cap CLI {G4_CEF_CAP_SELECTOR}; Cap=1 may attempt matching g4-cef-at pack but Cap day refuse-closed until {CEF_BUNDLE_ENV} is set; path release surfaces {}; component≠product",
+                "UNLOCK-A-APPLIED present with Cap CLI {G4_CEF_CAP_SELECTOR}; Cap=1 may attempt matching g4-cef-at pack but Cap day refuse-closed until {CEF_BUNDLE_ENV} is set or durable Cap-day bind {}; path release surfaces {}; component≠product",
+                crate::cef_bundle::CAP_DAY_BIND_RELATIVE,
                 PATH_RELEASE_SURFACES.join(" and/or ")
             ),
             "bound",

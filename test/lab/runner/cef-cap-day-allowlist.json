@@ -1,0 +1,31 @@
+{
+  "schema": "humanymous.lab-cef-cap-day-allowlist/1",
+  "record_kind": "lab-cef-cap-day-allowlist",
+  "cap": 0,
+  "env": "HUMANYMOUS_CEF_PILOT_BUNDLE",
+  "durable_bind_relative": ".spec.local/lab/cef-cap-day-bind.json",
+  "host_candidates": [
+    ".spec.local/root/evidence/20261107004558-browser-ui-cef-native/bundle",
+    ".spec.local/ct/debug"
+  ],
+  "required_files": [
+    "libcef.dll",
+    "archive.json",
+    "humanymous_cef_bootstrap.exe",
+    "humanymous_cef_bootstrap.dll",
+    "humanymous_cef_desktop.dll",
+    "chrome_elf.dll",
+    "icudtl.dat",
+    "resources.pak",
+    "locales"
+  ],
+  "honesty": {
+    "never_invent_browser_ready": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_cef_binary": true,
+    "detection_freeze": true,
+    "cap0_only": true,
+    "process_env_preferred_over_durable_bind": true
+  },
+  "note": "Cap-day CEF presence may bind only these allowlisted complete private host trees via cef-bundle-bind; durable bind ≠ BrowserReady; Cap burn stays 0"
+}

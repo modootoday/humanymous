@@ -3,12 +3,12 @@
 //! Cap selector mirrors Unlock B/C. Cap burn remains refuse-closed until
 //! Root path release + transfer-apply writes `UNLOCK-A-APPLIED` with the
 //! code-defined pilot, and Cap day still refuses when
-//! `HUMANYMOUS_CEF_PILOT_BUNDLE` is absent. Never invents
-//! `pass_product_clean_room` or Cap-spams a11y/`--require-full`.
+//! `HUMANYMOUS_CEF_PILOT_BUNDLE` (or durable Cap-day bind) is absent. Never
+//! invents `pass_product_clean_room` or Cap-spams a11y/`--require-full`.
 use super::Lab;
 use crate::{docker::Result, snapshot};
 use serde_json::json;
-use std::{env, fs, path::Path};
+use std::{fs, path::Path};
 
 /// Code-defined Cap selector (mirrors Unlock B `--w2-h2-product-binding`).
 pub const CAP_SELECTOR: &str = "--g4-cef-at";
@@ -50,12 +50,12 @@ pub fn missing_cap_prerequisites(root: &Path) -> Vec<String> {
     for relative in missing_cap_module(root) {
         missing.push(relative.to_string());
     }
-    if env::var_os(CEF_BUNDLE_ENV)
-        .as_ref()
-        .map(|value| value.is_empty())
-        .unwrap_or(true)
-    {
-        missing.push(format!("env:{CEF_BUNDLE_ENV}"));
+    let cap_day = crate::cef_bundle::cap_day_present(root).unwrap_or(false);
+    if !cap_day {
+        missing.push(format!(
+            "env:{CEF_BUNDLE_ENV}|durable:{}",
+            crate::cef_bundle::CAP_DAY_BIND_RELATIVE
+        ));
     }
     missing
 }
@@ -73,15 +73,17 @@ pub fn require_cap_module(root: &Path) -> Result<()> {
     .into())
 }
 
-/// Fail-closed CEF bundle gate — cite exact env; no CEF burn.
+/// Fail-closed CEF bundle gate — cite exact env / durable Cap-day bind; no CEF burn.
 pub fn require_cef_bundle() -> Result<()> {
-    match env::var_os(CEF_BUNDLE_ENV) {
-        Some(value) if !value.is_empty() => Ok(()),
-        _ => Err(format!(
-            "g4-cef-at Cap refused: missing CEF bundle env {CEF_BUNDLE_ENV}; Cap CLI refuse-closed before CEF process pilot; path release still requires crates/browser/** and/or scripts/ci/cef-pilot/**; never invent pass_product_clean_room"
-        )
-        .into()),
+    let root = snapshot::root()?;
+    if crate::cef_bundle::cap_day_present(&root)? {
+        return Ok(());
     }
+    Err(format!(
+        "g4-cef-at Cap refused: missing CEF bundle env {CEF_BUNDLE_ENV} (or durable Cap-day bind {}); Cap CLI refuse-closed before CEF process pilot; path release still requires crates/browser/** and/or scripts/ci/cef-pilot/**; never invent pass_product_clean_room",
+        crate::cef_bundle::CAP_DAY_BIND_RELATIVE
+    )
+    .into())
 }
 
 /// Verify Cap-ready freeze pins match live workspace bytes.
@@ -195,15 +197,15 @@ mod tests {
 
     #[test]
     fn cef_bundle_refuse_message_cites_exact_env_and_paths() {
-        // Do not mutate process env (forbid unsafe-code). When bundle is absent
-        // Cap refuses with exact env + path-release surfaces; when present,
-        // require_cef_bundle succeeds.
+        // Do not mutate process env (forbid unsafe-code). When Cap-day presence
+        // is absent Cap refuses with exact env + path-release surfaces; when
+        // present via env or durable bind, require_cef_bundle succeeds.
         match require_cef_bundle() {
             Ok(()) => {
+                let root = snapshot::root().expect("root");
                 assert!(
-                    std::env::var_os(CEF_BUNDLE_ENV)
-                        .as_ref()
-                        .is_some_and(|value| !value.is_empty())
+                    crate::cef_bundle::cap_day_present(&root).expect("cap_day"),
+                    "require_cef_bundle Ok requires Cap-day presence"
                 );
             }
             Err(error) => {
@@ -224,11 +226,8 @@ mod tests {
             "Cap module must be present after Unlock A Cap CLI land; missing={missing:?}"
         );
         let missing_prereq = missing_cap_prerequisites(&root);
-        if std::env::var_os(CEF_BUNDLE_ENV)
-            .as_ref()
-            .map(|value| value.is_empty())
-            .unwrap_or(true)
-        {
+        let cap_day = crate::cef_bundle::cap_day_present(&root).expect("cap_day");
+        if !cap_day {
             assert!(
                 missing_prereq
                     .iter()
