@@ -1,785 +1,783 @@
 {
-    "schema":  "humanymous.cursor-full-remaining-priority-no-cutoff/1",
-    "observed_utc":  "2026-11-09T22:43:28Z",
-    "branch":  "codex/rust",
-    "tip":  "905f2e22aea4796978ccf9a92b5b01d9520b6394",
-    "prior_tip_bind":  "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
-    "cap":  0,
-    "cap_burn":  0,
-    "cap_free":  false,
-    "cap_realloc_last_check":  false,
-    "cap0_parallel_remaining":  [
-
-                                ],
-    "goal_complete":  false,
-    "consolidated_closer":  ".spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/STATUS.json",
-    "product":  0,
-    "pass_product_clean_room":  0,
-    "browser_ready":  false,
-    "auth_present":  false,
-    "at_present":  false,
-    "n06_owner_join":  false,
-    "cef_bundle_present":  true,
-    "humanymous_browser_app_present":  false,
-    "unlock":  {
-                   "A":  true,
-                   "B":  true,
-                   "C":  false,
-                   "any":  true
-               },
-    "matrix":  {
-                   "required_cells":  84,
-                   "clean_room_required":  47,
-                   "pass_product_clean_room":  0,
-                   "missing_sot_scenario":  "red-blue-product",
-                   "tip_bind_ok":  true,
-                   "tip_bind_expect_head":  "955f5505895815d714b1c8ad660a5db449a6621b"
-               },
-    "total_unit_count_N":  80,
-    "no_quantity_cap":  true,
-    "truncation":  "NONE — full 1..N ordered; strict total order (no shared ranks)",
-    "units":  [
-                  {
-                      "rank":  1,
-                      "id":  "U-AT-HANDOFF",
-                      "unit":  "AT-HANDOFF (root interactive AT Windows tuple)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_at_handoff",
-                      "depends_on":  "[]",
-                      "why":  "Hard-stop for BrowserReady; Cap=0 wake measured absent"
-                  },
-                  {
-                      "rank":  2,
-                      "id":  "U-CEF-BUNDLE",
-                      "unit":  "CEF pilot bundle (HUMANYMOUS_CEF_PILOT_BUNDLE)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_at_handoff+bundle_absent",
-                      "depends_on":  "[U-AT-HANDOFF]",
-                      "why":  "G4 Cap CLI bound but bundle unset; Unlock A ≠ ready"
-                  },
-                  {
-                      "rank":  3,
-                      "id":  "U-BROWSER-SURFACES",
-                      "unit":  "crates/browser/** + scripts/ci/cef-pilot/** Cap=0 wake surfaces",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "path_release/AT",
-                      "depends_on":  "[]",
-                      "why":  "Keep Browser stack visible; honesty refuse; path-disjoint Cap=0"
-                  },
-                  {
-                      "rank":  4,
-                      "id":  "U-HUMANUMOUS-BROWSER-PKG",
-                      "unit":  "Package consolidation 3→1 crates/apps/humanymous-browser",
-                      "klass":  "Root_blocked",
-                      "blocker":  "structural_missing_apps_path",
-                      "depends_on":  "[U-BROWSER-SURFACES]",
-                      "why":  "SoT census requires apps path; live tree still crates/browser only"
-                  },
-                  {
-                      "rank":  5,
-                      "id":  "U-MEARI-CEF-QUAL",
-                      "unit":  "Meari+CEF UI real qualification (nav/keyboard/IME/AT/DPI/sandbox)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "BrowserReady=false",
-                      "depends_on":  "[U-AT-HANDOFF,U-CEF-BUNDLE]",
-                      "why":  "Component pilots ≠ BrowserReady; external browse disabled"
-                  },
-                  {
-                      "rank":  6,
-                      "id":  "U-BROWSERREADY-JOIN",
-                      "unit":  "BrowserReady measured join (interactive AT honesty→true)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_at_handoff",
-                      "depends_on":  "[U-AT-HANDOFF,U-CEF-BUNDLE,U-MEARI-CEF-QUAL]",
-                      "why":  "Apex BrowserReady closer; never invent true"
-                  },
-                  {
-                      "rank":  7,
-                      "id":  "U-AUTH-HANDOFF",
-                      "unit":  "AUTH-HANDOFF (N06 owner-join schema)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_auth_handoff",
-                      "depends_on":  "[]",
-                      "why":  "Hard-stop for N06; Cap=0 wake measured absent; Cap0 sibling of AT"
-                  },
-                  {
-                      "rank":  8,
-                      "id":  "U-N06-JOIN",
-                      "unit":  "N06 owner-join measured apply",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_auth_handoff",
-                      "depends_on":  "[U-AUTH-HANDOFF]",
-                      "why":  "n06_owner_join=false until AUTH present + Cap=0 apply"
-                  },
-                  {
-                      "rank":  9,
-                      "id":  "U-CAP-REALLOC",
-                      "unit":  "Cap realloc via live Cap topology TRANSFER",
-                      "klass":  "Root_blocked",
-                      "blocker":  "cap_free_false",
-                      "depends_on":  "[]",
-                      "why":  "Cap free=false after G2/G5/CR/G6/RB/PM spends; NEW non-twin feeder only; never invent Cap free"
-                  },
-                  {
-                      "rank":  10,
-                      "id":  "U-UNLOCK-C-DIAG",
-                      "unit":  "Unlock C Cap=0 digest mismatch diagnosis",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "blocked_claim_digest_mismatch",
-                      "depends_on":  "[]",
-                      "why":  "C=false; live digests≠candidate; no Cap burn / no forge"
-                  },
-                  {
-                      "rank":  11,
-                      "id":  "U-UNLOCK-A-RESIDUAL",
-                      "unit":  "Unlock A residual honesty (g4 bound ≠ BrowserReady)",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "Unlock_A_true_ne_BrowserReady",
-                      "depends_on":  "[U-BROWSERREADY-JOIN]",
-                      "why":  "A=true already; residual is close BrowserReady not re-unlock"
-                  },
-                  {
-                      "rank":  12,
-                      "id":  "U-UNLOCK-B-RESIDUAL",
-                      "unit":  "Unlock B residual honesty (w2-h2 bound ≠ product)",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "Unlock_B_true_ne_product",
-                      "depends_on":  "[U-CAP-REALLOC]",
-                      "why":  "B=true already; residual is product Cap burn after realloc"
-                  },
-                  {
-                      "rank":  13,
-                      "id":  "U-MATRIX-TIPBIND",
-                      "unit":  "Matrix tip-bind head_sha→LIVE tip (Cap=0 hygiene)",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "tip_drift",
-                      "depends_on":  "[]",
-                      "why":  "Cap0 done; tip_bind.ok=955f5505 Decision B post-push; ≠ pass_product"
-                  },
-                  {
-                      "rank":  14,
-                      "id":  "U-CAP1-CR-ONCE",
-                      "unit":  "Cap=1 once: --clean-room-product / product-matrix (preferred)",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "cap_free_false+AUTH_AT_absent+PM_spent_component",
-                      "depends_on":  "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
-                      "why":  "PM Cap1 EXIT2 feeder spent; product still 0; HOLD until AUTH/AT + NEW Cap realloc"
-                  },
-                  {
-                      "rank":  15,
-                      "id":  "U-CAP1-W2H2-ALT",
-                      "unit":  "Cap=1 alternate: Unlock-B --w2-h2-product-binding once",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "cap_free_false+Decision_B_hold",
-                      "depends_on":  "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
-                      "why":  "Decision B: Cap1 without AUTH/AT cannot close product cells; never twin spam"
-                  },
-                  {
-                      "rank":  16,
-                      "id":  "U-RB-SCENARIO-LAND",
-                      "unit":  "Land missing SoT scenario red-blue-product into matrix",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "cap_free_false+missing_sot_scenario",
-                      "depends_on":  "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
-                      "why":  "missing_sot_scenario_count=1; GRANT present; Cap free + AUTH/AT block"
-                  },
-                  {
-                      "rank":  17,
-                      "id":  "U-CR-CLASS-CLEANROOM",
-                      "unit":  "CR cell class: clean-room-product → pass_product_clean_room",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "measured_component_hold+cap_topology_spent",
-                      "depends_on":  "[U-CAP1-CR-ONCE,U-AUTH-HANDOFF,U-AT-HANDOFF]",
-                      "why":  "Sole product authority status; Cap twin/PM hold ≠ product"
-                  },
-                  {
-                      "rank":  18,
-                      "id":  "U-CR-CLASS-BROWSER",
-                      "unit":  "CR cell class: browser-product (desktop+hosted require-full/a11y)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "BrowserReady_AT_absent+fail_hosted",
-                      "depends_on":  "[U-BROWSERREADY-JOIN,U-AT-HANDOFF]",
-                      "why":  "Decision B: open cells need BrowserReady/AT; hosted fail_needs_structural_delta"
-                  },
-                  {
-                      "rank":  19,
-                      "id":  "U-CR-CLASS-M3FULL",
-                      "unit":  "CR cell class: m3-full-product (root_structural_g1_g9)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_structural_g1_g9",
-                      "depends_on":  "[U-G1,U-G3,U-BROWSERREADY-JOIN,U-G2,U-G5,U-G6]",
-                      "why":  "required_unavailable until Root structural G1–G9 deltas"
-                  },
-                  {
-                      "rank":  20,
-                      "id":  "U-CR-CLASS-G2",
-                      "unit":  "CR cell class: g2-collector-product-binding PRODUCT re-qualify",
-                      "klass":  "Root_blocked",
-                      "blocker":  "measured_component_hold+cap_topology_spent",
-                      "depends_on":  "[U-AUTH-HANDOFF,U-AT-HANDOFF,U-CAP-REALLOC]",
-                      "why":  "Cap1 twin spent; product cell still open"
-                  },
-                  {
-                      "rank":  21,
-                      "id":  "U-CR-CLASS-G5",
-                      "unit":  "CR cell class: g5-witness-transport PRODUCT re-qualify",
-                      "klass":  "Root_blocked",
-                      "blocker":  "measured_component_hold+cap_topology_spent",
-                      "depends_on":  "[U-CAP-REALLOC]",
-                      "why":  "Cap1 twin spent; authenticated witness product still open"
-                  },
-                  {
-                      "rank":  22,
-                      "id":  "U-CR-CLASS-G6",
-                      "unit":  "CR cell class: g6-origin-audit-binding PRODUCT re-qualify",
-                      "klass":  "Root_blocked",
-                      "blocker":  "measured_component_hold+cap_topology_spent",
-                      "depends_on":  "[U-CAP-REALLOC]",
-                      "why":  "Cap1 twin spent; L5 origin/audit product still open"
-                  },
-                  {
-                      "rank":  23,
-                      "id":  "U-CR-CLASS-W2H2",
-                      "unit":  "CR cell class: w2-h2-product-binding (+ hosted venue)",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[U-CAP1-W2H2-ALT]",
-                      "why":  "Unlock B bound; product promotion still Cap1 after realloc"
-                  },
-                  {
-                      "rank":  24,
-                      "id":  "U-CR-CLASS-AUTHIPC",
-                      "unit":  "CR cell class: authority-node-ipc require-full",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "Unlock_C_blocked_claim",
-                      "depends_on":  "[U-UNLOCK-C-DIAG,U-AUTHORITY-C-TRANSFER]",
-                      "why":  "Component holds; Unlock C digest mismatch blocks Cap path"
-                  },
-                  {
-                      "rank":  25,
-                      "id":  "U-CR-CLASS-CUSTODY",
-                      "unit":  "CR cell class: custody → product auth",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[U-AUDIT-PRODUCT]",
-                      "why":  "Custody pilots ≠ product auth; Cap0 path-disjoint OK"
-                  },
-                  {
-                      "rank":  26,
-                      "id":  "U-CR-CLASS-RUNTIME",
-                      "unit":  "CR cell class: runtime require-full product",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[U-RUNTIME-GATE]",
-                      "why":  "Component Docker/process ≠ full Gate/browser/Pass"
-                  },
-                  {
-                      "rank":  27,
-                      "id":  "U-CR-CLASS-WITNESS",
-                      "unit":  "CR cell class: witness require-full product",
-                      "klass":  "Root_blocked",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[U-CR-CLASS-G5]",
-                      "why":  "Witness product waits G5 product re-qualify"
-                  },
-                  {
-                      "rank":  28,
-                      "id":  "U-CR-CLASS-COLLECTOR",
-                      "unit":  "CR cell class: collector-component → session-bound product",
-                      "klass":  "Root_blocked",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[U-CR-CLASS-G2,U-COLLECTOR-WASM]",
-                      "why":  "Collector component ≠ session-bound browser product"
-                  },
-                  {
-                      "rank":  29,
-                      "id":  "U-CR-CLASS-TOPOLOGY",
-                      "unit":  "CR cell class: topology-fixture clean-room gates",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[]",
-                      "why":  "Component holds; Cap0 hygiene/parallel; not product closer alone"
-                  },
-                  {
-                      "rank":  30,
-                      "id":  "U-CR-CLASS-RUSTCTL",
-                      "unit":  "CR cell class: rust-controls clean-room gates",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[]",
-                      "why":  "Component holds; Cap0 parallel; not product closer alone"
-                  },
-                  {
-                      "rank":  31,
-                      "id":  "U-CR-CLASS-GO-FAIL",
-                      "unit":  "CR cell class: go-product desktop fail_needs_structural_delta",
-                      "klass":  "Root_blocked",
-                      "blocker":  "fail_needs_structural_delta",
-                      "depends_on":  "[]",
-                      "why":  "lab_runner_require_go_component fail; Cap retry forbidden pre-delta"
-                  },
-                  {
-                      "rank":  32,
-                      "id":  "U-CR-CLASS-GO-HOSTED",
-                      "unit":  "CR cell class: go-product hosted blocked_hosted_linux",
-                      "klass":  "Root_blocked",
-                      "blocker":  "blocked_hosted_linux",
-                      "depends_on":  "[]",
-                      "why":  "Hosted Linux allocation / Specfold provenance required"
-                  },
-                  {
-                      "rank":  33,
-                      "id":  "U-CR-CLASS-HOSTED-BROWSER",
-                      "unit":  "CR cell class: hosted browser-product require-full fail",
-                      "klass":  "Root_blocked",
-                      "blocker":  "fail_needs_structural_delta",
-                      "depends_on":  "[U-BROWSERREADY-JOIN]",
-                      "why":  "Hosted browser fail needs Root structural delta"
-                  },
-                  {
-                      "rank":  34,
-                      "id":  "U-CR-CLASS-HOSTED-M3",
-                      "unit":  "CR cell class: hosted m3-full-product require-full fail",
-                      "klass":  "Root_blocked",
-                      "blocker":  "fail_needs_structural_delta",
-                      "depends_on":  "[U-CR-CLASS-M3FULL]",
-                      "why":  "Hosted M3 fail needs Root structural delta"
-                  },
-                  {
-                      "rank":  35,
-                      "id":  "U-CR-CLASS-ORACLE-RB",
-                      "unit":  "CR cell class: oracle-detector-bots red-blue phases",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "cap_free_false+blocked_root_claim",
-                      "depends_on":  "[U-RB-VALIDATE,U-RB-SCENARIO-LAND]",
-                      "why":  "red_blue_* unrun/blocked; host≠completion; Cap free required"
-                  },
-                  {
-                      "rank":  36,
-                      "id":  "U-CR-CLASS-ENGINE",
-                      "unit":  "CR cell class: engine-affinity (component hold)",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[]",
-                      "why":  "Already component pass; not on product critical path"
-                  },
-                  {
-                      "rank":  37,
-                      "id":  "U-CR-BLOCKER-MCH",
-                      "unit":  "CR blocker class: measured_component_hold (~71 cells) promotion ban",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "measured_component_hold",
-                      "depends_on":  "[]",
-                      "why":  "Honesty class: never promote component/fixture to product"
-                  },
-                  {
-                      "rank":  38,
-                      "id":  "U-CR-BLOCKER-CAPFREE-ADAPTERS",
-                      "unit":  "CR blocker class: cap_free_false adapter-home-pilot unrun",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "cap_free_false",
-                      "depends_on":  "[U-CAP-REALLOC]",
-                      "why":  "apache/python/ruby/dotnet/native adapter_pilot_contract unrun"
-                  },
-                  {
-                      "rank":  39,
-                      "id":  "U-G1",
-                      "unit":  "G1 TLS/H2 capture + session binding product",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_structural_g1_g9",
-                      "depends_on":  "[]",
-                      "why":  "Structural required_unavailable; network-capture SoT"
-                  },
-                  {
-                      "rank":  40,
-                      "id":  "U-G2",
-                      "unit":  "G2 session-bound collector product (not Cap twin)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_grant_g2+AUTH/AT",
-                      "depends_on":  "[U-AUTH-HANDOFF,U-AT-HANDOFF,U-CAP-REALLOC]",
-                      "why":  "Cap topology spent; product still open"
-                  },
-                  {
-                      "rank":  41,
-                      "id":  "U-G3",
-                      "unit":  "G3 Pass recovery (SoT-36)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "detection_freeze+Root_only",
-                      "depends_on":  "[]",
-                      "why":  "Detection freeze; Cursor must not invent Pass deltas"
-                  },
-                  {
-                      "rank":  42,
-                      "id":  "U-G4",
-                      "unit":  "G4 interactive AT / CEF product close",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_at_handoff",
-                      "depends_on":  "[U-BROWSERREADY-JOIN]",
-                      "why":  "First-class critical path continuation after BrowserReady"
-                  },
-                  {
-                      "rank":  43,
-                      "id":  "U-G5",
-                      "unit":  "G5 authenticated witness transport product",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_grant_g5",
-                      "depends_on":  "[U-CAP-REALLOC]",
-                      "why":  "Cap twin spent; product re-qualify required"
-                  },
-                  {
-                      "rank":  44,
-                      "id":  "U-G6",
-                      "unit":  "G6 L5 origin · audit binding product",
-                      "klass":  "Root_blocked",
-                      "blocker":  "root_structural_g1_g9",
-                      "depends_on":  "[U-CAP-REALLOC,U-AUDIT-PRODUCT]",
-                      "why":  "Cap twin spent; cross-namespace product still open"
-                  },
-                  {
-                      "rank":  45,
-                      "id":  "U-G7",
-                      "unit":  "G7 remote attestation",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "post_M3_outer",
-                      "depends_on":  "[U-M3]",
-                      "why":  "Deprioritized until M3 product cells; no Cap-ready invent"
-                  },
-                  {
-                      "rank":  46,
-                      "id":  "U-G8",
-                      "unit":  "G8 native OS tuples",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "post_M3_outer",
-                      "depends_on":  "[U-M3]",
-                      "why":  "Deprioritized until M3 product cells"
-                  },
-                  {
-                      "rank":  47,
-                      "id":  "U-G9",
-                      "unit":  "G9 provider deployment",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "publication_unauthorized",
-                      "depends_on":  "[U-M3,U-M6]",
-                      "why":  "Publication unauthorized; post-product"
-                  },
-                  {
-                      "rank":  48,
-                      "id":  "U-RB-VALIDATE",
-                      "unit":  "red-blue-validate Docker require-full (product)",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "cap_free_false",
-                      "depends_on":  "[U-CR-CLASS-CLEANROOM,U-RB-SCENARIO-LAND]",
-                      "why":  "Docker-only completion; host/loopback ≠ authority"
-                  },
-                  {
-                      "rank":  49,
-                      "id":  "U-COLLECTOR-WASM",
-                      "unit":  "Collector WASM session-bound browser binding",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "G2_product_open",
-                      "depends_on":  "[U-G2]",
-                      "why":  "WASM source live; product binding waits G2/AUTH/AT"
-                  },
-                  {
-                      "rank":  50,
-                      "id":  "U-RUNTIME-GATE",
-                      "unit":  "Runtime / gate fail-closed full composition",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "component_ne_full_Gate",
-                      "depends_on":  "[]",
-                      "why":  "Component process/Docker OK; full Gate+browser+Pass open"
-                  },
-                  {
-                      "rank":  51,
-                      "id":  "U-AUDIT-PRODUCT",
-                      "unit":  "Audit / custody dual-control product auth",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "component_ne_product_auth",
-                      "depends_on":  "[]",
-                      "why":  "Custody witness hold; dual-control erasure Root product"
-                  },
-                  {
-                      "rank":  52,
-                      "id":  "U-AUTHORITY-C-TRANSFER",
-                      "unit":  "Authority Unlock C path transfer (Root digest rematch)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "blocked_claim",
-                      "depends_on":  "[U-UNLOCK-C-DIAG]",
-                      "why":  "Root must rematch digests or re-issue TRANSFER"
-                  },
-                  {
-                      "rank":  53,
-                      "id":  "U-ADAPTER-NGINX",
-                      "unit":  "Adapter nginx Desktop residual pilots",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "component_hold",
-                      "depends_on":  "[]",
-                      "why":  "Path-disjoint Cap=0; not M3 closer alone"
-                  },
-                  {
-                      "rank":  54,
-                      "id":  "U-ADAPTER-HOME-UNRUN",
-                      "unit":  "Adapter home-pilot unrun pack (apache/python/ruby/dotnet/native)",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "cap_free_false",
-                      "depends_on":  "[U-CAP-REALLOC,U-CR-BLOCKER-CAPFREE-ADAPTERS]",
-                      "why":  "Five adapter_pilot_contract cells unrun under Cap free=false"
-                  },
-                  {
-                      "rank":  55,
-                      "id":  "U-PKG-ADAPTERS",
-                      "unit":  "Package consolidation humanymous-adapters (12 contexts→1)",
-                      "klass":  "Root_blocked",
-                      "blocker":  "structural_consolidation",
-                      "depends_on":  "[]",
-                      "why":  "structural-dev census; Root/integration path release"
-                  },
-                  {
-                      "rank":  56,
-                      "id":  "U-M1",
-                      "unit":  "M1 shared contracts · package structure residuals",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "in_progress",
-                      "depends_on":  "[]",
-                      "why":  "Path-disjoint Cap=0 OK; shared Cargo Root-only"
-                  },
-                  {
-                      "rank":  57,
-                      "id":  "U-M2",
-                      "unit":  "M2 component runtime qualification residuals",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "component_ne_product",
-                      "depends_on":  "[]",
-                      "why":  "Component pilots continue; deprioritize Cap twin spam"
-                  },
-                  {
-                      "rank":  58,
-                      "id":  "U-M3",
-                      "unit":  "M3 composed product e2e (clean-room apex)",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "G1-G9+product=0",
-                      "depends_on":  "[U-CR-CLASS-M3FULL,U-RB-VALIDATE]",
-                      "why":  "Not qualified; critical-path apex after product cells"
-                  },
-                  {
-                      "rank":  59,
-                      "id":  "U-M4",
-                      "unit":  "M4 Pages · Draft v0",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "in_progress",
-                      "depends_on":  "[]",
-                      "why":  "Parallel Cap=0 when paths disjoint"
-                  },
-                  {
-                      "rank":  60,
-                      "id":  "U-M5",
-                      "unit":  "M5 shared main integration",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "held_by_M1-M4",
-                      "depends_on":  "[U-M1,U-M2,U-M3,U-M4]",
-                      "why":  "Serial final after M1–M4 gates"
-                  },
-                  {
-                      "rank":  61,
-                      "id":  "U-M6",
-                      "unit":  "M6 main-only · approved Pages",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "not_started",
-                      "depends_on":  "[U-M5]",
-                      "why":  "After M5; retire obsolete only with evidence"
-                  },
-                  {
-                      "rank":  62,
-                      "id":  "U-FM0",
-                      "unit":  "Feature M0 Specfold / agents hygiene residual",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "maintain",
-                      "depends_on":  "[]",
-                      "why":  "Implemented maintain; final agents cleanup ties M11"
-                  },
-                  {
-                      "rank":  63,
-                      "id":  "U-FM1",
-                      "unit":  "Feature M1 pure engine / model / Pass residuals",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "detection_freeze",
-                      "depends_on":  "[]",
-                      "why":  "Partial; detection freeze on scoring; Cap0 tests OK"
-                  },
-                  {
-                      "rank":  64,
-                      "id":  "U-FM2",
-                      "unit":  "Feature M2 network/raw capture residuals",
-                      "klass":  "Root_blocked",
-                      "blocker":  "overlaps_G1",
-                      "depends_on":  "[U-G1]",
-                      "why":  "TLS ClientHello/H2/session binding open"
-                  },
-                  {
-                      "rank":  65,
-                      "id":  "U-FM3",
-                      "unit":  "Feature M3 audit/keys/state residuals",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "overlaps_audit",
-                      "depends_on":  "[U-AUDIT-PRODUCT]",
-                      "why":  "Witness/rotation/dual-control/backup open"
-                  },
-                  {
-                      "rank":  66,
-                      "id":  "U-FM4",
-                      "unit":  "Feature M4 Core/Gate + authority residuals",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "bounded_runtime",
-                      "depends_on":  "[U-RUNTIME-GATE,U-AUTHORITY-C-TRANSFER]",
-                      "why":  "Collector/capture/RIT/proxy/admin paths incomplete"
-                  },
-                  {
-                      "rank":  67,
-                      "id":  "U-FM5",
-                      "unit":  "Feature M5 Rust collector residuals",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "overlaps_G2",
-                      "depends_on":  "[U-COLLECTOR-WASM,U-G2]",
-                      "why":  "Loader/session/RIT/recovery/Pass/API matrix open"
-                  },
-                  {
-                      "rank":  68,
-                      "id":  "U-FM6",
-                      "unit":  "Feature M6 server adapters residuals",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "partial_research",
-                      "depends_on":  "[U-ADAPTER-HOME-UNRUN,U-PKG-ADAPTERS]",
-                      "why":  "Peer/route/header/stream/authority open"
-                  },
-                  {
-                      "rank":  69,
-                      "id":  "U-FM10",
-                      "unit":  "Feature M10 Cross-OS / OIDC / Pages",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "post_product_wiring",
-                      "depends_on":  "[U-M4,U-M6]",
-                      "why":  "Scoped wiring; full runners/registry after product"
-                  },
-                  {
-                      "rank":  70,
-                      "id":  "U-FM11",
-                      "unit":  "Feature M11 Rust-only / supply chain / agents",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "partial",
-                      "depends_on":  "[U-FM0]",
-                      "why":  "Foreign disposition/CVE/SBOM/agents eval Cap0 OK"
-                  },
-                  {
-                      "rank":  71,
-                      "id":  "U-FM12",
-                      "unit":  "Feature M12 retain only final main",
-                      "klass":  "Cap1_serial",
-                      "blocker":  "deferred",
-                      "depends_on":  "[U-M5,U-M6]",
-                      "why":  "Main update + Pages verify + branch removal serial"
-                  },
-                  {
-                      "rank":  72,
-                      "id":  "U-DOCS-SOT-DRIFT",
-                      "unit":  "Docs/SoT drift remediation (roadmap vs LIVE tip)",
-                      "klass":  "Cap0_parallel",
-                      "blocker":  "tip_doc_drift",
-                      "depends_on":  "[U-MATRIX-TIPBIND]",
-                      "why":  "Cap=0 honesty docs; never invent product green in docs"
-                  },
-                  {
-                      "rank":  73,
-                      "id":  "U-TWIN-G2",
-                      "unit":  "G2 Cap1 component twin reburn",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "spent_twin",
-                      "depends_on":  "[]",
-                      "why":  "Spent; product still 0; forbidden Cap spam"
-                  },
-                  {
-                      "rank":  74,
-                      "id":  "U-TWIN-G5",
-                      "unit":  "G5 Cap1 component twin reburn",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "spent_twin",
-                      "depends_on":  "[]",
-                      "why":  "Spent; product still 0; forbidden Cap spam"
-                  },
-                  {
-                      "rank":  75,
-                      "id":  "U-TWIN-CR",
-                      "unit":  "CR Cap1 component twin reburn",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "spent_twin",
-                      "depends_on":  "[]",
-                      "why":  "Spent topology hold; never reburn"
-                  },
-                  {
-                      "rank":  76,
-                      "id":  "U-TWIN-G6",
-                      "unit":  "G6 Cap1 component twin reburn",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "spent_twin",
-                      "depends_on":  "[]",
-                      "why":  "Spent; product still 0; forbidden Cap spam"
-                  },
-                  {
-                      "rank":  77,
-                      "id":  "U-TWIN-A11Y-CAP",
-                      "unit":  "a11y / --require-full Cap spam loops",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "cap_spam",
-                      "depends_on":  "[]",
-                      "why":  "Does not shorten product path; Cap free=false"
-                  },
-                  {
-                      "rank":  78,
-                      "id":  "U-TWIN-DOCS-SPAM",
-                      "unit":  "Documentation-only / CONSOLIDATED-ROOT-ASK spam",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "busywork",
-                      "depends_on":  "[]",
-                      "why":  "Does not shorten critical path"
-                  },
-                  {
-                      "rank":  79,
-                      "id":  "U-TWIN-G789-FEEDER",
-                      "unit":  "G7/G8/G9 Cap-ready invention before M3",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "pre_M3_forbidden",
-                      "depends_on":  "[]",
-                      "why":  "No Cursor Cap-ready feeder; invent forbidden"
-                  },
-                  {
-                      "rank":  80,
-                      "id":  "U-TWIN-DESKTOP-ORACLE",
-                      "unit":  "Full e2e desktop oracle ≠ product claim",
-                      "klass":  "Deprioritized_component_twin",
-                      "blocker":  "component_pass_desktop_oracle",
-                      "depends_on":  "[]",
-                      "why":  "Honesty hold: EXIT0 oracle class is not pass_product"
-                  }
-              ],
-    "class_counts":  {
-                         "Root_blocked":  28,
-                         "Cap0_parallel":  24,
-                         "Cap1_serial":  14,
-                         "Deprioritized_component_twin":  14
-                     },
-    "honesty":  {
-                    "detection_freeze":  true,
-                    "never_invent_pass_product_clean_room":  true,
-                    "never_invent_cap_free":  true,
-                    "never_invent_browser_ready":  true,
-                    "never_forge_auth_at":  true,
-                    "no_cap1_this_lane":  true,
-                    "no_component_cap_twin_spam":  true
-                },
-    "plan":  ".spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md",
-    "supersedes_priority_tables":  [
-                                       "plan:root/20261110060500-code-sot-gap-browser-priority-reorder",
-                                       "plan:root/20261110044500-production-status-priority-reorder"
-                                   ],
-    "decision":  "B",
-    "product_blockers":  ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/PRODUCT-BLOCKERS.md"
+  "schema": "humanymous.cursor-full-remaining-priority-no-cutoff/1",
+  "observed_utc": "2026-11-09T23:10:08Z",
+  "branch": "codex/rust",
+  "tip": "998ae019220af38174b7fc5337dcbf9fe08364f9",
+  "prior_tip_bind": "905f2e22aea4796978ccf9a92b5b01d9520b6394",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "cap_realloc_last_check": false,
+  "cap0_parallel_remaining": [],
+  "goal_complete": false,
+  "consolidated_closer": ".spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "auth_present": false,
+  "at_present": false,
+  "n06_owner_join": false,
+  "cef_bundle_present": true,
+  "humanymous_browser_app_present": false,
+  "unlock": {
+    "A": true,
+    "B": true,
+    "C": false,
+    "any": true
+  },
+  "matrix": {
+    "required_cells": 84,
+    "clean_room_required": 47,
+    "pass_product_clean_room": 0,
+    "missing_sot_scenario": "red-blue-product",
+    "tip_bind_ok": true,
+    "tip_bind_expect_head": "998ae019220af38174b7fc5337dcbf9fe08364f9"
+  },
+  "total_unit_count_N": 80,
+  "no_quantity_cap": true,
+  "truncation": "NONE — full 1..N ordered; strict total order (no shared ranks)",
+  "units": [
+    {
+      "rank": 1,
+      "id": "U-AT-HANDOFF",
+      "unit": "AT-HANDOFF (root interactive AT Windows tuple)",
+      "klass": "Root_blocked",
+      "blocker": "root_at_handoff",
+      "depends_on": "[]",
+      "why": "Hard-stop for BrowserReady; Cap=0 wake measured absent"
+    },
+    {
+      "rank": 2,
+      "id": "U-CEF-BUNDLE",
+      "unit": "CEF pilot bundle (HUMANYMOUS_CEF_PILOT_BUNDLE)",
+      "klass": "Root_blocked",
+      "blocker": "root_at_handoff+bundle_absent",
+      "depends_on": "[U-AT-HANDOFF]",
+      "why": "G4 Cap CLI bound but bundle unset; Unlock A ≠ ready"
+    },
+    {
+      "rank": 3,
+      "id": "U-BROWSER-SURFACES",
+      "unit": "crates/browser/** + scripts/ci/cef-pilot/** Cap=0 wake surfaces",
+      "klass": "Cap0_parallel",
+      "blocker": "path_release/AT",
+      "depends_on": "[]",
+      "why": "Keep Browser stack visible; honesty refuse; path-disjoint Cap=0"
+    },
+    {
+      "rank": 4,
+      "id": "U-HUMANUMOUS-BROWSER-PKG",
+      "unit": "Package consolidation 3→1 crates/apps/humanymous-browser",
+      "klass": "Root_blocked",
+      "blocker": "structural_missing_apps_path",
+      "depends_on": "[U-BROWSER-SURFACES]",
+      "why": "SoT census requires apps path; live tree still crates/browser only"
+    },
+    {
+      "rank": 5,
+      "id": "U-MEARI-CEF-QUAL",
+      "unit": "Meari+CEF UI real qualification (nav/keyboard/IME/AT/DPI/sandbox)",
+      "klass": "Root_blocked",
+      "blocker": "BrowserReady=false",
+      "depends_on": "[U-AT-HANDOFF,U-CEF-BUNDLE]",
+      "why": "Component pilots ≠ BrowserReady; external browse disabled"
+    },
+    {
+      "rank": 6,
+      "id": "U-BROWSERREADY-JOIN",
+      "unit": "BrowserReady measured join (interactive AT honesty→true)",
+      "klass": "Root_blocked",
+      "blocker": "root_at_handoff",
+      "depends_on": "[U-AT-HANDOFF,U-CEF-BUNDLE,U-MEARI-CEF-QUAL]",
+      "why": "Apex BrowserReady closer; never invent true"
+    },
+    {
+      "rank": 7,
+      "id": "U-AUTH-HANDOFF",
+      "unit": "AUTH-HANDOFF (N06 owner-join schema)",
+      "klass": "Root_blocked",
+      "blocker": "root_auth_handoff",
+      "depends_on": "[]",
+      "why": "Hard-stop for N06; Cap=0 wake measured absent; Cap0 sibling of AT"
+    },
+    {
+      "rank": 8,
+      "id": "U-N06-JOIN",
+      "unit": "N06 owner-join measured apply",
+      "klass": "Root_blocked",
+      "blocker": "root_auth_handoff",
+      "depends_on": "[U-AUTH-HANDOFF]",
+      "why": "n06_owner_join=false until AUTH present + Cap=0 apply"
+    },
+    {
+      "rank": 9,
+      "id": "U-CAP-REALLOC",
+      "unit": "Cap realloc via live Cap topology TRANSFER",
+      "klass": "Root_blocked",
+      "blocker": "cap_free_false",
+      "depends_on": "[]",
+      "why": "Cap free=false after G2/G5/CR/G6/RB/PM spends; NEW non-twin feeder only; never invent Cap free"
+    },
+    {
+      "rank": 10,
+      "id": "U-UNLOCK-C-DIAG",
+      "unit": "Unlock C Cap=0 digest mismatch diagnosis",
+      "klass": "Cap0_parallel",
+      "blocker": "blocked_claim_digest_mismatch",
+      "depends_on": "[]",
+      "why": "C=false; live digests≠candidate; no Cap burn / no forge"
+    },
+    {
+      "rank": 11,
+      "id": "U-UNLOCK-A-RESIDUAL",
+      "unit": "Unlock A residual honesty (g4 bound ≠ BrowserReady)",
+      "klass": "Cap0_parallel",
+      "blocker": "Unlock_A_true_ne_BrowserReady",
+      "depends_on": "[U-BROWSERREADY-JOIN]",
+      "why": "A=true already; residual is close BrowserReady not re-unlock"
+    },
+    {
+      "rank": 12,
+      "id": "U-UNLOCK-B-RESIDUAL",
+      "unit": "Unlock B residual honesty (w2-h2 bound ≠ product)",
+      "klass": "Cap0_parallel",
+      "blocker": "Unlock_B_true_ne_product",
+      "depends_on": "[U-CAP-REALLOC]",
+      "why": "B=true already; residual is product Cap burn after realloc"
+    },
+    {
+      "rank": 13,
+      "id": "U-MATRIX-TIPBIND",
+      "unit": "Matrix tip-bind head_sha→LIVE tip (Cap=0 hygiene)",
+      "klass": "Cap0_parallel",
+      "blocker": "tip_drift",
+      "depends_on": "[]",
+      "why": "Cap0 done; tip_bind.ok=955f5505 Decision B post-push; ≠ pass_product"
+    },
+    {
+      "rank": 14,
+      "id": "U-CAP1-CR-ONCE",
+      "unit": "Cap=1 once: --clean-room-product / product-matrix (preferred)",
+      "klass": "Cap1_serial",
+      "blocker": "cap_free_false+AUTH_AT_absent+PM_spent_component",
+      "depends_on": "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
+      "why": "PM Cap1 EXIT2 feeder spent; product still 0; HOLD until AUTH/AT + NEW Cap realloc"
+    },
+    {
+      "rank": 15,
+      "id": "U-CAP1-W2H2-ALT",
+      "unit": "Cap=1 alternate: Unlock-B --w2-h2-product-binding once",
+      "klass": "Cap1_serial",
+      "blocker": "cap_free_false+Decision_B_hold",
+      "depends_on": "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
+      "why": "Decision B: Cap1 without AUTH/AT cannot close product cells; never twin spam"
+    },
+    {
+      "rank": 16,
+      "id": "U-RB-SCENARIO-LAND",
+      "unit": "Land missing SoT scenario red-blue-product into matrix",
+      "klass": "Cap1_serial",
+      "blocker": "cap_free_false+missing_sot_scenario",
+      "depends_on": "[U-CAP-REALLOC,U-AUTH-HANDOFF,U-AT-HANDOFF]",
+      "why": "missing_sot_scenario_count=1; GRANT present; Cap free + AUTH/AT block"
+    },
+    {
+      "rank": 17,
+      "id": "U-CR-CLASS-CLEANROOM",
+      "unit": "CR cell class: clean-room-product → pass_product_clean_room",
+      "klass": "Cap1_serial",
+      "blocker": "measured_component_hold+cap_topology_spent",
+      "depends_on": "[U-CAP1-CR-ONCE,U-AUTH-HANDOFF,U-AT-HANDOFF]",
+      "why": "Sole product authority status; Cap twin/PM hold ≠ product"
+    },
+    {
+      "rank": 18,
+      "id": "U-CR-CLASS-BROWSER",
+      "unit": "CR cell class: browser-product (desktop+hosted require-full/a11y)",
+      "klass": "Root_blocked",
+      "blocker": "BrowserReady_AT_absent+fail_hosted",
+      "depends_on": "[U-BROWSERREADY-JOIN,U-AT-HANDOFF]",
+      "why": "Decision B: open cells need BrowserReady/AT; hosted fail_needs_structural_delta"
+    },
+    {
+      "rank": 19,
+      "id": "U-CR-CLASS-M3FULL",
+      "unit": "CR cell class: m3-full-product (root_structural_g1_g9)",
+      "klass": "Root_blocked",
+      "blocker": "root_structural_g1_g9",
+      "depends_on": "[U-G1,U-G3,U-BROWSERREADY-JOIN,U-G2,U-G5,U-G6]",
+      "why": "required_unavailable until Root structural G1–G9 deltas"
+    },
+    {
+      "rank": 20,
+      "id": "U-CR-CLASS-G2",
+      "unit": "CR cell class: g2-collector-product-binding PRODUCT re-qualify",
+      "klass": "Root_blocked",
+      "blocker": "measured_component_hold+cap_topology_spent",
+      "depends_on": "[U-AUTH-HANDOFF,U-AT-HANDOFF,U-CAP-REALLOC]",
+      "why": "Cap1 twin spent; product cell still open"
+    },
+    {
+      "rank": 21,
+      "id": "U-CR-CLASS-G5",
+      "unit": "CR cell class: g5-witness-transport PRODUCT re-qualify",
+      "klass": "Root_blocked",
+      "blocker": "measured_component_hold+cap_topology_spent",
+      "depends_on": "[U-CAP-REALLOC]",
+      "why": "Cap1 twin spent; authenticated witness product still open"
+    },
+    {
+      "rank": 22,
+      "id": "U-CR-CLASS-G6",
+      "unit": "CR cell class: g6-origin-audit-binding PRODUCT re-qualify",
+      "klass": "Root_blocked",
+      "blocker": "measured_component_hold+cap_topology_spent",
+      "depends_on": "[U-CAP-REALLOC]",
+      "why": "Cap1 twin spent; L5 origin/audit product still open"
+    },
+    {
+      "rank": 23,
+      "id": "U-CR-CLASS-W2H2",
+      "unit": "CR cell class: w2-h2-product-binding (+ hosted venue)",
+      "klass": "Cap1_serial",
+      "blocker": "measured_component_hold",
+      "depends_on": "[U-CAP1-W2H2-ALT]",
+      "why": "Unlock B bound; product promotion still Cap1 after realloc"
+    },
+    {
+      "rank": 24,
+      "id": "U-CR-CLASS-AUTHIPC",
+      "unit": "CR cell class: authority-node-ipc require-full",
+      "klass": "Cap1_serial",
+      "blocker": "Unlock_C_blocked_claim",
+      "depends_on": "[U-UNLOCK-C-DIAG,U-AUTHORITY-C-TRANSFER]",
+      "why": "Component holds; Unlock C digest mismatch blocks Cap path"
+    },
+    {
+      "rank": 25,
+      "id": "U-CR-CLASS-CUSTODY",
+      "unit": "CR cell class: custody → product auth",
+      "klass": "Cap0_parallel",
+      "blocker": "measured_component_hold",
+      "depends_on": "[U-AUDIT-PRODUCT]",
+      "why": "Custody pilots ≠ product auth; Cap0 path-disjoint OK"
+    },
+    {
+      "rank": 26,
+      "id": "U-CR-CLASS-RUNTIME",
+      "unit": "CR cell class: runtime require-full product",
+      "klass": "Cap0_parallel",
+      "blocker": "measured_component_hold",
+      "depends_on": "[U-RUNTIME-GATE]",
+      "why": "Component Docker/process ≠ full Gate/browser/Pass"
+    },
+    {
+      "rank": 27,
+      "id": "U-CR-CLASS-WITNESS",
+      "unit": "CR cell class: witness require-full product",
+      "klass": "Root_blocked",
+      "blocker": "measured_component_hold",
+      "depends_on": "[U-CR-CLASS-G5]",
+      "why": "Witness product waits G5 product re-qualify"
+    },
+    {
+      "rank": 28,
+      "id": "U-CR-CLASS-COLLECTOR",
+      "unit": "CR cell class: collector-component → session-bound product",
+      "klass": "Root_blocked",
+      "blocker": "measured_component_hold",
+      "depends_on": "[U-CR-CLASS-G2,U-COLLECTOR-WASM]",
+      "why": "Collector component ≠ session-bound browser product"
+    },
+    {
+      "rank": 29,
+      "id": "U-CR-CLASS-TOPOLOGY",
+      "unit": "CR cell class: topology-fixture clean-room gates",
+      "klass": "Cap0_parallel",
+      "blocker": "measured_component_hold",
+      "depends_on": "[]",
+      "why": "Component holds; Cap0 hygiene/parallel; not product closer alone"
+    },
+    {
+      "rank": 30,
+      "id": "U-CR-CLASS-RUSTCTL",
+      "unit": "CR cell class: rust-controls clean-room gates",
+      "klass": "Cap0_parallel",
+      "blocker": "measured_component_hold",
+      "depends_on": "[]",
+      "why": "Component holds; Cap0 parallel; not product closer alone"
+    },
+    {
+      "rank": 31,
+      "id": "U-CR-CLASS-GO-FAIL",
+      "unit": "CR cell class: go-product desktop fail_needs_structural_delta",
+      "klass": "Root_blocked",
+      "blocker": "fail_needs_structural_delta",
+      "depends_on": "[]",
+      "why": "lab_runner_require_go_component fail; Cap retry forbidden pre-delta"
+    },
+    {
+      "rank": 32,
+      "id": "U-CR-CLASS-GO-HOSTED",
+      "unit": "CR cell class: go-product hosted blocked_hosted_linux",
+      "klass": "Root_blocked",
+      "blocker": "blocked_hosted_linux",
+      "depends_on": "[]",
+      "why": "Hosted Linux allocation / Specfold provenance required"
+    },
+    {
+      "rank": 33,
+      "id": "U-CR-CLASS-HOSTED-BROWSER",
+      "unit": "CR cell class: hosted browser-product require-full fail",
+      "klass": "Root_blocked",
+      "blocker": "fail_needs_structural_delta",
+      "depends_on": "[U-BROWSERREADY-JOIN]",
+      "why": "Hosted browser fail needs Root structural delta"
+    },
+    {
+      "rank": 34,
+      "id": "U-CR-CLASS-HOSTED-M3",
+      "unit": "CR cell class: hosted m3-full-product require-full fail",
+      "klass": "Root_blocked",
+      "blocker": "fail_needs_structural_delta",
+      "depends_on": "[U-CR-CLASS-M3FULL]",
+      "why": "Hosted M3 fail needs Root structural delta"
+    },
+    {
+      "rank": 35,
+      "id": "U-CR-CLASS-ORACLE-RB",
+      "unit": "CR cell class: oracle-detector-bots red-blue phases",
+      "klass": "Cap1_serial",
+      "blocker": "cap_free_false+blocked_root_claim",
+      "depends_on": "[U-RB-VALIDATE,U-RB-SCENARIO-LAND]",
+      "why": "red_blue_* unrun/blocked; host≠completion; Cap free required"
+    },
+    {
+      "rank": 36,
+      "id": "U-CR-CLASS-ENGINE",
+      "unit": "CR cell class: engine-affinity (component hold)",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "measured_component_hold",
+      "depends_on": "[]",
+      "why": "Already component pass; not on product critical path"
+    },
+    {
+      "rank": 37,
+      "id": "U-CR-BLOCKER-MCH",
+      "unit": "CR blocker class: measured_component_hold (~71 cells) promotion ban",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "measured_component_hold",
+      "depends_on": "[]",
+      "why": "Honesty class: never promote component/fixture to product"
+    },
+    {
+      "rank": 38,
+      "id": "U-CR-BLOCKER-CAPFREE-ADAPTERS",
+      "unit": "CR blocker class: cap_free_false adapter-home-pilot unrun",
+      "klass": "Cap1_serial",
+      "blocker": "cap_free_false",
+      "depends_on": "[U-CAP-REALLOC]",
+      "why": "apache/python/ruby/dotnet/native adapter_pilot_contract unrun"
+    },
+    {
+      "rank": 39,
+      "id": "U-G1",
+      "unit": "G1 TLS/H2 capture + session binding product",
+      "klass": "Root_blocked",
+      "blocker": "root_structural_g1_g9",
+      "depends_on": "[]",
+      "why": "Structural required_unavailable; network-capture SoT"
+    },
+    {
+      "rank": 40,
+      "id": "U-G2",
+      "unit": "G2 session-bound collector product (not Cap twin)",
+      "klass": "Root_blocked",
+      "blocker": "root_grant_g2+AUTH/AT",
+      "depends_on": "[U-AUTH-HANDOFF,U-AT-HANDOFF,U-CAP-REALLOC]",
+      "why": "Cap topology spent; product still open"
+    },
+    {
+      "rank": 41,
+      "id": "U-G3",
+      "unit": "G3 Pass recovery (SoT-36)",
+      "klass": "Root_blocked",
+      "blocker": "detection_freeze+Root_only",
+      "depends_on": "[]",
+      "why": "Detection freeze; Cursor must not invent Pass deltas"
+    },
+    {
+      "rank": 42,
+      "id": "U-G4",
+      "unit": "G4 interactive AT / CEF product close",
+      "klass": "Root_blocked",
+      "blocker": "root_at_handoff",
+      "depends_on": "[U-BROWSERREADY-JOIN]",
+      "why": "First-class critical path continuation after BrowserReady"
+    },
+    {
+      "rank": 43,
+      "id": "U-G5",
+      "unit": "G5 authenticated witness transport product",
+      "klass": "Root_blocked",
+      "blocker": "root_grant_g5",
+      "depends_on": "[U-CAP-REALLOC]",
+      "why": "Cap twin spent; product re-qualify required"
+    },
+    {
+      "rank": 44,
+      "id": "U-G6",
+      "unit": "G6 L5 origin · audit binding product",
+      "klass": "Root_blocked",
+      "blocker": "root_structural_g1_g9",
+      "depends_on": "[U-CAP-REALLOC,U-AUDIT-PRODUCT]",
+      "why": "Cap twin spent; cross-namespace product still open"
+    },
+    {
+      "rank": 45,
+      "id": "U-G7",
+      "unit": "G7 remote attestation",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "post_M3_outer",
+      "depends_on": "[U-M3]",
+      "why": "Deprioritized until M3 product cells; no Cap-ready invent"
+    },
+    {
+      "rank": 46,
+      "id": "U-G8",
+      "unit": "G8 native OS tuples",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "post_M3_outer",
+      "depends_on": "[U-M3]",
+      "why": "Deprioritized until M3 product cells"
+    },
+    {
+      "rank": 47,
+      "id": "U-G9",
+      "unit": "G9 provider deployment",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "publication_unauthorized",
+      "depends_on": "[U-M3,U-M6]",
+      "why": "Publication unauthorized; post-product"
+    },
+    {
+      "rank": 48,
+      "id": "U-RB-VALIDATE",
+      "unit": "red-blue-validate Docker require-full (product)",
+      "klass": "Cap1_serial",
+      "blocker": "cap_free_false",
+      "depends_on": "[U-CR-CLASS-CLEANROOM,U-RB-SCENARIO-LAND]",
+      "why": "Docker-only completion; host/loopback ≠ authority"
+    },
+    {
+      "rank": 49,
+      "id": "U-COLLECTOR-WASM",
+      "unit": "Collector WASM session-bound browser binding",
+      "klass": "Cap0_parallel",
+      "blocker": "G2_product_open",
+      "depends_on": "[U-G2]",
+      "why": "WASM source live; product binding waits G2/AUTH/AT"
+    },
+    {
+      "rank": 50,
+      "id": "U-RUNTIME-GATE",
+      "unit": "Runtime / gate fail-closed full composition",
+      "klass": "Cap0_parallel",
+      "blocker": "component_ne_full_Gate",
+      "depends_on": "[]",
+      "why": "Component process/Docker OK; full Gate+browser+Pass open"
+    },
+    {
+      "rank": 51,
+      "id": "U-AUDIT-PRODUCT",
+      "unit": "Audit / custody dual-control product auth",
+      "klass": "Cap0_parallel",
+      "blocker": "component_ne_product_auth",
+      "depends_on": "[]",
+      "why": "Custody witness hold; dual-control erasure Root product"
+    },
+    {
+      "rank": 52,
+      "id": "U-AUTHORITY-C-TRANSFER",
+      "unit": "Authority Unlock C path transfer (Root digest rematch)",
+      "klass": "Root_blocked",
+      "blocker": "blocked_claim",
+      "depends_on": "[U-UNLOCK-C-DIAG]",
+      "why": "Root must rematch digests or re-issue TRANSFER"
+    },
+    {
+      "rank": 53,
+      "id": "U-ADAPTER-NGINX",
+      "unit": "Adapter nginx Desktop residual pilots",
+      "klass": "Cap0_parallel",
+      "blocker": "component_hold",
+      "depends_on": "[]",
+      "why": "Path-disjoint Cap=0; not M3 closer alone"
+    },
+    {
+      "rank": 54,
+      "id": "U-ADAPTER-HOME-UNRUN",
+      "unit": "Adapter home-pilot unrun pack (apache/python/ruby/dotnet/native)",
+      "klass": "Cap1_serial",
+      "blocker": "cap_free_false",
+      "depends_on": "[U-CAP-REALLOC,U-CR-BLOCKER-CAPFREE-ADAPTERS]",
+      "why": "Five adapter_pilot_contract cells unrun under Cap free=false"
+    },
+    {
+      "rank": 55,
+      "id": "U-PKG-ADAPTERS",
+      "unit": "Package consolidation humanymous-adapters (12 contexts→1)",
+      "klass": "Root_blocked",
+      "blocker": "structural_consolidation",
+      "depends_on": "[]",
+      "why": "structural-dev census; Root/integration path release"
+    },
+    {
+      "rank": 56,
+      "id": "U-M1",
+      "unit": "M1 shared contracts · package structure residuals",
+      "klass": "Cap0_parallel",
+      "blocker": "in_progress",
+      "depends_on": "[]",
+      "why": "Path-disjoint Cap=0 OK; shared Cargo Root-only"
+    },
+    {
+      "rank": 57,
+      "id": "U-M2",
+      "unit": "M2 component runtime qualification residuals",
+      "klass": "Cap0_parallel",
+      "blocker": "component_ne_product",
+      "depends_on": "[]",
+      "why": "Component pilots continue; deprioritize Cap twin spam"
+    },
+    {
+      "rank": 58,
+      "id": "U-M3",
+      "unit": "M3 composed product e2e (clean-room apex)",
+      "klass": "Cap1_serial",
+      "blocker": "G1-G9+product=0",
+      "depends_on": "[U-CR-CLASS-M3FULL,U-RB-VALIDATE]",
+      "why": "Not qualified; critical-path apex after product cells"
+    },
+    {
+      "rank": 59,
+      "id": "U-M4",
+      "unit": "M4 Pages · Draft v0",
+      "klass": "Cap0_parallel",
+      "blocker": "in_progress",
+      "depends_on": "[]",
+      "why": "Parallel Cap=0 when paths disjoint"
+    },
+    {
+      "rank": 60,
+      "id": "U-M5",
+      "unit": "M5 shared main integration",
+      "klass": "Cap1_serial",
+      "blocker": "held_by_M1-M4",
+      "depends_on": "[U-M1,U-M2,U-M3,U-M4]",
+      "why": "Serial final after M1–M4 gates"
+    },
+    {
+      "rank": 61,
+      "id": "U-M6",
+      "unit": "M6 main-only · approved Pages",
+      "klass": "Cap1_serial",
+      "blocker": "not_started",
+      "depends_on": "[U-M5]",
+      "why": "After M5; retire obsolete only with evidence"
+    },
+    {
+      "rank": 62,
+      "id": "U-FM0",
+      "unit": "Feature M0 Specfold / agents hygiene residual",
+      "klass": "Cap0_parallel",
+      "blocker": "maintain",
+      "depends_on": "[]",
+      "why": "Implemented maintain; final agents cleanup ties M11"
+    },
+    {
+      "rank": 63,
+      "id": "U-FM1",
+      "unit": "Feature M1 pure engine / model / Pass residuals",
+      "klass": "Cap0_parallel",
+      "blocker": "detection_freeze",
+      "depends_on": "[]",
+      "why": "Partial; detection freeze on scoring; Cap0 tests OK"
+    },
+    {
+      "rank": 64,
+      "id": "U-FM2",
+      "unit": "Feature M2 network/raw capture residuals",
+      "klass": "Root_blocked",
+      "blocker": "overlaps_G1",
+      "depends_on": "[U-G1]",
+      "why": "TLS ClientHello/H2/session binding open"
+    },
+    {
+      "rank": 65,
+      "id": "U-FM3",
+      "unit": "Feature M3 audit/keys/state residuals",
+      "klass": "Cap0_parallel",
+      "blocker": "overlaps_audit",
+      "depends_on": "[U-AUDIT-PRODUCT]",
+      "why": "Witness/rotation/dual-control/backup open"
+    },
+    {
+      "rank": 66,
+      "id": "U-FM4",
+      "unit": "Feature M4 Core/Gate + authority residuals",
+      "klass": "Cap0_parallel",
+      "blocker": "bounded_runtime",
+      "depends_on": "[U-RUNTIME-GATE,U-AUTHORITY-C-TRANSFER]",
+      "why": "Collector/capture/RIT/proxy/admin paths incomplete"
+    },
+    {
+      "rank": 67,
+      "id": "U-FM5",
+      "unit": "Feature M5 Rust collector residuals",
+      "klass": "Cap0_parallel",
+      "blocker": "overlaps_G2",
+      "depends_on": "[U-COLLECTOR-WASM,U-G2]",
+      "why": "Loader/session/RIT/recovery/Pass/API matrix open"
+    },
+    {
+      "rank": 68,
+      "id": "U-FM6",
+      "unit": "Feature M6 server adapters residuals",
+      "klass": "Cap0_parallel",
+      "blocker": "partial_research",
+      "depends_on": "[U-ADAPTER-HOME-UNRUN,U-PKG-ADAPTERS]",
+      "why": "Peer/route/header/stream/authority open"
+    },
+    {
+      "rank": 69,
+      "id": "U-FM10",
+      "unit": "Feature M10 Cross-OS / OIDC / Pages",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "post_product_wiring",
+      "depends_on": "[U-M4,U-M6]",
+      "why": "Scoped wiring; full runners/registry after product"
+    },
+    {
+      "rank": 70,
+      "id": "U-FM11",
+      "unit": "Feature M11 Rust-only / supply chain / agents",
+      "klass": "Cap0_parallel",
+      "blocker": "partial",
+      "depends_on": "[U-FM0]",
+      "why": "Foreign disposition/CVE/SBOM/agents eval Cap0 OK"
+    },
+    {
+      "rank": 71,
+      "id": "U-FM12",
+      "unit": "Feature M12 retain only final main",
+      "klass": "Cap1_serial",
+      "blocker": "deferred",
+      "depends_on": "[U-M5,U-M6]",
+      "why": "Main update + Pages verify + branch removal serial"
+    },
+    {
+      "rank": 72,
+      "id": "U-DOCS-SOT-DRIFT",
+      "unit": "Docs/SoT drift remediation (roadmap vs LIVE tip)",
+      "klass": "Cap0_parallel",
+      "blocker": "tip_doc_drift",
+      "depends_on": "[U-MATRIX-TIPBIND]",
+      "why": "Cap=0 honesty docs; never invent product green in docs"
+    },
+    {
+      "rank": 73,
+      "id": "U-TWIN-G2",
+      "unit": "G2 Cap1 component twin reburn",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "spent_twin",
+      "depends_on": "[]",
+      "why": "Spent; product still 0; forbidden Cap spam"
+    },
+    {
+      "rank": 74,
+      "id": "U-TWIN-G5",
+      "unit": "G5 Cap1 component twin reburn",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "spent_twin",
+      "depends_on": "[]",
+      "why": "Spent; product still 0; forbidden Cap spam"
+    },
+    {
+      "rank": 75,
+      "id": "U-TWIN-CR",
+      "unit": "CR Cap1 component twin reburn",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "spent_twin",
+      "depends_on": "[]",
+      "why": "Spent topology hold; never reburn"
+    },
+    {
+      "rank": 76,
+      "id": "U-TWIN-G6",
+      "unit": "G6 Cap1 component twin reburn",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "spent_twin",
+      "depends_on": "[]",
+      "why": "Spent; product still 0; forbidden Cap spam"
+    },
+    {
+      "rank": 77,
+      "id": "U-TWIN-A11Y-CAP",
+      "unit": "a11y / --require-full Cap spam loops",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "cap_spam",
+      "depends_on": "[]",
+      "why": "Does not shorten product path; Cap free=false"
+    },
+    {
+      "rank": 78,
+      "id": "U-TWIN-DOCS-SPAM",
+      "unit": "Documentation-only / CONSOLIDATED-ROOT-ASK spam",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "busywork",
+      "depends_on": "[]",
+      "why": "Does not shorten critical path"
+    },
+    {
+      "rank": 79,
+      "id": "U-TWIN-G789-FEEDER",
+      "unit": "G7/G8/G9 Cap-ready invention before M3",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "pre_M3_forbidden",
+      "depends_on": "[]",
+      "why": "No Cursor Cap-ready feeder; invent forbidden"
+    },
+    {
+      "rank": 80,
+      "id": "U-TWIN-DESKTOP-ORACLE",
+      "unit": "Full e2e desktop oracle ≠ product claim",
+      "klass": "Deprioritized_component_twin",
+      "blocker": "component_pass_desktop_oracle",
+      "depends_on": "[]",
+      "why": "Honesty hold: EXIT0 oracle class is not pass_product"
+    }
+  ],
+  "class_counts": {
+    "Root_blocked": 28,
+    "Cap0_parallel": 24,
+    "Cap1_serial": 14,
+    "Deprioritized_component_twin": 14
+  },
+  "honesty": {
+    "detection_freeze": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_cap_free": true,
+    "never_invent_browser_ready": true,
+    "never_forge_auth_at": true,
+    "no_cap1_this_lane": true,
+    "no_component_cap_twin_spam": true
+  },
+  "plan": ".spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md",
+  "supersedes_priority_tables": [
+    "plan:root/20261110060500-code-sot-gap-browser-priority-reorder",
+    "plan:root/20261110044500-production-status-priority-reorder"
+  ],
+  "decision": "B",
+  "product_blockers": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/PRODUCT-BLOCKERS.md"
 }

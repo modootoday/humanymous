@@ -1,0 +1,146 @@
+{
+  "schema": "humanymous.cursor-cap0-consolidated-cap-free-restore/1",
+  "record_kind": "cap0_consolidated_cap_free_restore_packet",
+  "observed_utc": "2026-11-09T23:10:08Z",
+  "branch": "codex/rust",
+  "tip": "998ae019220af38174b7fc5337dcbf9fe08364f9",
+  "prior_tip_bind_residual": "9332d652af93c38fdc9c04decab17c33aaae3376",
+  "provider": "cursor",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "at_present": false,
+  "auth_present": false,
+  "n06_owner_join": false,
+  "unlock_c": false,
+  "goal_complete": false,
+  "cap_free_mechanism": {
+    "probe_fn": "test/lab/runner/src/orchestration/cap0_product_honesty.rs::cap_free_after_unlock_a",
+    "authority_file": ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json",
+    "required_fields": {
+      "cap_exit": 0,
+      "cap_free": true
+    },
+    "measured": {
+      "cap_exit": 0,
+      "cap_free": false
+    },
+    "note": "Cap free remains false until Cap realloc writes structural restore; Cursor never invents CLOSER.cap_free=true"
+  },
+  "cap_free_restore_finding": {
+    "cursor_executable_new_non_twin_grant_transfer": null,
+    "verdict": "none",
+    "reason": "No NEW non-twin Cap-ready with matching GRANT→TRANSFER preimages at LIVE tip; AT/AUTH absent; Unlock C 6 digest mismatches; spent twins G2/G5/CR/G6/RB/PM reburn FORBIDDEN",
+    "documented_path": "Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply → NEW non-twin Cap-ready GRANT→TRANSFER matching LIVE preimages → Cap realloc (updates Cap free mechanism) → Cap free=true → Cap=1 once product path (not twin spam)",
+    "requires_root_only_grant_content": true
+  },
+  "root_must_match_live_preimages": {
+    "unlock_c_mismatch_count": 6,
+    "mismatches_unchanged_vs_20261110074900": true,
+    "mismatches": [
+      {
+        "destination": "build/rust/authority-lab.Dockerfile",
+        "live_kind": "preimage_mismatch",
+        "liveSha256": "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3",
+        "expectedSha256": "d51e39354daf9b7aee6df52b79738e8e4e304a63972b3e6b9ce51654f36d717e",
+        "root_must_set_preimageSha256_to": "1a926ad99874885b84b1bbebaec0056fdd92ab1ff30989ae1741c9e6cb427cc3"
+      },
+      {
+        "destination": "deployments/lab/INTEGRATION.md",
+        "live_kind": "preimage_mismatch",
+        "liveSha256": "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315",
+        "expectedSha256": "86dc9500c3cca6821b89e8a7bd0a1f9b9bcc0fb43362e524b15ed9dbbbbeeb82",
+        "root_must_set_preimageSha256_to": "b7fa7dc2fad1e3b24f247dea657499e4a4dcac04f45d66e948665112bb001315"
+      },
+      {
+        "destination": "deployments/lab/authority/cap-pilot-contract.json",
+        "live_kind": "unexpected_live",
+        "liveSha256": "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f",
+        "expectedSha256": null,
+        "root_must_set_preimageSha256_to": "07acf975acdf7732083d6569ae13a43716c274477600204201991493f7b7a42f"
+      },
+      {
+        "destination": "deployments/lab/authority/CAP-PILOT.md",
+        "live_kind": "unexpected_live",
+        "liveSha256": "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570",
+        "expectedSha256": null,
+        "root_must_set_preimageSha256_to": "097747547f88cf39e8dfc609f7e7e6bafe77176bd3c28ce41589857c1fc1a570"
+      },
+      {
+        "destination": "test/lab/runner/src/snapshot.rs",
+        "live_kind": "preimage_mismatch",
+        "liveSha256": "04fafd385cb067bbb75fdaa332c8f570429ce0cae5e74eb487b9dc8d3845d00e",
+        "expectedSha256": "dc74375296c461d1a995744f7b29b13d996bfc20c6f7eaf3fea9f5c5f7771ea6",
+        "root_must_set_preimageSha256_to": "04fafd385cb067bbb75fdaa332c8f570429ce0cae5e74eb487b9dc8d3845d00e"
+      },
+      {
+        "destination": "test/lab/runner/src/orchestration/authority.rs",
+        "live_kind": "unexpected_live",
+        "liveSha256": "bfadc77fbeb4f0912dbd247feca947e6dfba9f188b3ba2c99449ee07b2f4d1da",
+        "expectedSha256": null,
+        "root_must_set_preimageSha256_to": "bfadc77fbeb4f0912dbd247feca947e6dfba9f188b3ba2c99449ee07b2f4d1da"
+      }
+    ],
+    "note": "Root rematch transfer-manifest preimageSha256 to these LIVE digests OR re-issue TRANSFER; Cursor leaves existing 6-digest packet (no spam rematch apply)"
+  },
+  "at_auth_root_schemas": {
+    "AT": {
+      "schema": "humanymous.root-interactive-at-windows-tuple/1",
+      "candidates": [
+        ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+        ".spec.local/root/grants/interactive-at-windows-tuple/GRANT.json"
+      ],
+      "present": false,
+      "cursor_action_when_present": "Cap0 handoff-apply; never forge AT bytes"
+    },
+    "AUTH": {
+      "schema": "humanymous.root-n06-owner-join-auth-handoff/1",
+      "candidates": [
+        ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
+        ".spec.local/root/grants/n06-owner-join/GRANT.json"
+      ],
+      "present": false,
+      "cursor_action_when_present": "Cap0 handoff-apply; never forge AUTH bytes"
+    }
+  },
+  "spent_forbidden_twins": [
+    "G2",
+    "G5",
+    "CR",
+    "G6",
+    "RB",
+    "PM"
+  ],
+  "do_not_invent_grant_bytes": true,
+  "live_canvas": "absent (canvases/humanymous-live-roadmap.canvas.tsx not in workspace)",
+  "other_provider_evidence_tips_recent": [
+    {
+      "name": "root-n06-owner-join-auth-handoff",
+      "mtime_utc_approx": "2026-11-09T22:12:49.944233Z"
+    },
+    {
+      "name": "root-interactive-at-windows-tuple",
+      "mtime_utc_approx": "2026-11-09T22:12:47.139644Z"
+    }
+  ],
+  "exact_next_closer": "Root land AT-HANDOFF + AUTH-HANDOFF with schema bytes + rematch Unlock C LIVE preimages OR issue NEW non-twin Cap-ready GRANT→TRANSFER; Cursor Cap0 apply then Cap realloc only when Cap free mechanism can honestly become true",
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "never_forge_grant_bytes": true,
+    "detection_freeze": true,
+    "no_cap1_this_wave": true,
+    "no_cap_twin_reburn_g2_g5_cr_g6_rb_pm": true,
+    "cap_burn_0_while_cap_free_false": true,
+    "component_ne_product": true,
+    "tip_bind_ne_product": true,
+    "decision_b": true
+  }
+}

@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | 9332d652af93c38fdc9c04decab17c33aaae3376 (Decision B; Cap0 Cap1-hold landers postpush tipbind) |
+| tip | 998ae019220af38174b7fc5337dcbf9fe08364f9 (Decision B; Cap0 Cap-free-restore packet + tipbind; product=0) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
@@ -47,7 +47,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
 | CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist / `cap_day_bound`) / **absent** |
-| matrix tip_bind | LIVE tip-bound **9332d652** (closed residual drift `fa9f862a`→`9075d293`→`07798b52`→`9332d652`); tip_bind.ok=**true** |
+| matrix tip_bind | LIVE tip-bound **998ae019** (closed residual `9332d652`→`998ae019` Cap-free-restore); tip_bind.ok=**true** |
 | Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
@@ -57,7 +57,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | Cap0∥ remaining | **none** (Cap1-hold landers expanded; residual matrix tip-drift closed; wait Root AT/AUTH) |
 | Cap0 advanced (this wave) | ranks **3–6,9,13,14–17,23–24,35,38,39–47,48–51,53–54,56–61,71–72** Cap1-hold landers + browser Cap0 + G1–G9 Cap0-prep + tipbind |
 | Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** (14=PM Cap1 spent component; product still open) |
-| CONSOLIDATED closer | `.spec.local/root/evidence/20261110075800-cursor-cap0-cap1hold-landers/` |
+| CONSOLIDATED closer | `.spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/` |
 | goal_complete | **false** |
 
 ## 2. Decision rules (no cutoff)

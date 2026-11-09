@@ -1,0 +1,38 @@
+{
+  "schema": "humanymous.cursor-cap0-cap-free-restore-status/1",
+  "observed_utc": "2026-11-09T23:10:08Z",
+  "tip": "998ae019220af38174b7fc5337dcbf9fe08364f9",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "at_present": false,
+  "auth_present": false,
+  "cap_free_restore_finding": null,
+  "cap_free_restore_packet": ".spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/CONSOLIDATED-CAP-FREE-RESTORE.md",
+  "cap0_actions": [
+    "tip_bind_plan_priority_matrix_to_998ae019",
+    "consolidated_cap_free_restore_packet"
+  ],
+  "cap1_actions": [],
+  "unlock_c_rematch_apply": false,
+  "unlock_c_note": "6 digests unchanged; leave existing packet",
+  "goal_complete": false,
+  "exact_next_closer": "Root land AT-HANDOFF + AUTH-HANDOFF with schema bytes + rematch Unlock C LIVE preimages OR issue NEW non-twin Cap-ready GRANT→TRANSFER; Cursor Cap0 apply then Cap realloc only when Cap free mechanism can honestly become true",
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "never_forge_grant_bytes": true,
+    "detection_freeze": true,
+    "no_cap1_this_wave": true,
+    "no_cap_twin_reburn_g2_g5_cr_g6_rb_pm": true,
+    "cap_burn_0_while_cap_free_false": true,
+    "component_ne_product": true,
+    "tip_bind_ne_product": true,
+    "decision_b": true
+  }
+}
