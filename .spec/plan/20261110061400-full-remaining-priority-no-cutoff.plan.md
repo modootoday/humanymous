@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | `28bf31458a8b214b609d16f6ae1b28e66c8401bd` |
+| tip | `2c0b166f57a6d5fedff9e6ad0ec3303bc10c1260` |
 | branch | `codex/rust` |
 | product / pass_product_clean_room | **0** / **0** |
 | Cap free | **false** |
