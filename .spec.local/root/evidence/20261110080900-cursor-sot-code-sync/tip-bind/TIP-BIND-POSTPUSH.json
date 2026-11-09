@@ -1,0 +1,17 @@
+{
+  "schema": "humanymous.cursor-tip-bind/1",
+  "observed_utc": "2026-11-09T23:22:00Z",
+  "branch": "codex/rust",
+  "tip": "9a3a5fe5d09557ca7da07cb93862ee6c7f20253e",
+  "prior_tip": "e195f1b75144f13c0ce74d679467a6f559993379",
+  "tip_bind_ok": true,
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "decision": "B",
+  "phase": "postpush",
+  "note": "postpush tip-bind after SoT/code honesty sync push"
+}
