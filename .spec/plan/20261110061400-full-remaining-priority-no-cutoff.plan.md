@@ -35,19 +35,20 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | `c4b164edd3e354537cd5a7a44436b800aa2a7c64` |
+| tip | `28bf31458a8b214b609d16f6ae1b28e66c8401bd` |
 | branch | `codex/rust` |
 | product / pass_product_clean_room | **0** / **0** |
 | Cap free | **false** |
 | AUTH-HANDOFF | **absent** |
 | AT-HANDOFF | **absent** |
 | BrowserReady / n06_owner_join | **false** / **false** |
-| CEF bundle / apps/humanymous-browser | **absent** / **absent** |
-| matrix tip_bind | rebound `726f59c8` → `3bc8940f` Cap=0 honesty; tip_bind.ok=**true** |
+| CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist) / **absent** |
+| matrix tip_bind | rebound → `28bf3145` Cap=0 honesty; tip_bind.ok=**true** |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |
 | Cap burn this turn | **0** |
+| Cap0 advanced (this wave) | ranks **2,3,4,10,13** done; **1,7** wake-only (absent) |
 
 ## 2. Decision rules (no cutoff)
 
