@@ -1,0 +1,538 @@
+[e2e-docker] pre-flight: freeing lab subnets (removing any conflicting stack)...
+[e2e-docker] pre-flight: tearing down stack 'hmn-e2e' holding hmn-e2e_lab-a
+
+========== [e2e-docker] START validate-compose @ 2026-11-09T20:41:08Z (timeout 60s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml config -q
+========== [e2e-docker] PASS validate-compose elapsed=1s ==========
+
+========== [e2e-docker] START build-images @ 2026-11-09T20:41:09Z (timeout 600s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml --profile attack --profile gate-test --profile pass-test --profile swarm --progress plain build core gate bots
+ Image humanymous/core:local Building 
+ Image humanymous/bots:local Building 
+ Image humanymous/gate:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.38kB done
+#1 DONE 0.0s
+
+#2 [gate internal] load build definition from gate.Dockerfile
+#2 transferring dockerfile: 2.81kB done
+#2 DONE 0.1s
+
+#3 [core internal] load build definition from core.Dockerfile
+#3 transferring dockerfile: 2.88kB done
+#3 DONE 0.1s
+
+#4 [bots internal] load build definition from bots.Dockerfile
+#4 transferring dockerfile: 7.75kB done
+#4 DONE 0.1s
+
+#5 [gate internal] load metadata for gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#5 DONE 0.2s
+
+#6 [gate internal] load metadata for docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#6 DONE 0.2s
+
+#7 [bots internal] load metadata for docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#7 DONE 0.1s
+
+#8 [gate internal] load build context
+#8 DONE 0.0s
+
+#9 [core internal] load .dockerignore
+#9 transferring context: 1.55kB done
+#9 DONE 0.1s
+
+#10 [bots internal] load metadata for docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#10 DONE 0.2s
+
+#11 [bots internal] load build context
+#11 DONE 0.0s
+
+#12 [bots stage-2  1/20] FROM docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#12 ...
+
+#13 [core internal] load build context
+#13 DONE 0.0s
+
+#14 [bots curl-impersonate 1/1] FROM docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#14 resolve docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64 0.1s done
+#14 DONE 0.1s
+
+#12 [bots stage-2  1/20] FROM docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#12 resolve docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#12 resolve docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3 0.2s done
+#12 DONE 0.2s
+
+#15 [gate builder 1/7] FROM docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#15 resolve docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 0.2s done
+#15 DONE 0.2s
+
+#16 [core stage-1 1/6] FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#16 resolve gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35 0.2s done
+#16 DONE 0.3s
+
+#11 [bots internal] load build context
+#11 transferring context: 37.66kB 0.0s done
+#11 DONE 0.1s
+
+#13 [core internal] load build context
+#13 transferring context: 97.63kB 0.0s done
+#13 DONE 0.1s
+
+#8 [gate internal] load build context
+#8 transferring context: 68.48kB 0.0s done
+#8 DONE 0.2s
+
+#17 [gate builder 4/7] RUN go mod download
+#17 CACHED
+
+#18 [gate builder 6/7] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/gate ./cmd/gate/
+#18 CACHED
+
+#19 [gate builder 3/7] COPY go.mod go.sum ./
+#19 CACHED
+
+#20 [gate builder 7/7] RUN mkdir -p /out/data /out/acme-cache
+#20 CACHED
+
+#21 [gate builder 5/7] COPY . .
+#21 CACHED
+
+#22 [gate stage-1 3/6] COPY --from=builder /out/gate /app/gate
+#22 CACHED
+
+#23 [gate stage-1 5/6] COPY --from=builder --chown=65532:65532 /out/data /data
+#23 CACHED
+
+#24 [gate stage-1 4/6] COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
+#24 CACHED
+
+#25 [bots stage-2 13/20] RUN ln -sf libz.so.1.2.13 /lib/libz.so.1  && ln -sf ld-musl-x86_64.so.1 /lib/libc.musl-x86_64.so.1  && sed -i '1s|^#!.*|#!/bin/bash|' /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/curl-impersonate/bin/*
+#25 CACHED
+
+#26 [bots stage-2 14/20] COPY test /app/test
+#26 CACHED
+
+#27 [bots stage-2 16/20] COPY deployments/bots/ /app/
+#27 CACHED
+
+#28 [bots gobuild 10/10] RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/  && CGO_ENABLED=0 go run ./scripts/gen-demo-keys  && mkdir -p /src/configs/ml  && CGO_ENABLED=0 go run ./cmd/ml-train -gen 12000 -out /src/configs/ml/behavioral.json  && CGO_ENABLED=0 go run ./scripts/gen-ml-demo-bundle -bundle /src/configs/ml/behavioral.json -outdir /src/configs/ml
+#28 CACHED
+
+#29 [bots stage-2 12/20] COPY --from=curl-impersonate /lib/libz.so.1.2.13 /lib/libz.so.1.2.13
+#29 CACHED
+
+#30 [bots stage-2 15/20] COPY scripts/assert-*.mjs /app/scripts/
+#30 CACHED
+
+#31 [bots stage-2  6/20] COPY test/package.json test/package-lock.json /app/test/
+#31 CACHED
+
+#32 [bots stage-2  2/20] WORKDIR /app
+#32 CACHED
+
+#33 [bots stage-2  5/20] COPY --from=gobuild /out/gate      /app/bin/gate
+#33 CACHED
+
+#34 [bots gobuild  4/10] RUN go mod download
+#34 CACHED
+
+#35 [bots stage-2 17/20] COPY --from=gobuild /src/deployments/patissuers /app/demo-keys-seed/patissuers
+#35 CACHED
+
+#36 [bots gobuild  3/10] COPY go.mod go.sum ./
+#36 CACHED
+
+#37 [bots gobuild  6/10] COPY internal ./internal
+#37 CACHED
+
+#38 [bots stage-2  3/20] COPY --from=gobuild /out/redteam   /app/bin/redteam
+#38 CACHED
+
+#39 [bots stage-2 10/20] COPY --from=curl-impersonate /usr/local/lib/ /app/curl-impersonate/lib/
+#39 CACHED
+
+#40 [bots stage-2  9/20] COPY --from=curl-impersonate     /usr/local/bin/curl-impersonate     /usr/local/bin/curl-impersonate-chrome     /usr/local/bin/curl_chrome99_android     /usr/local/bin/curl_chrome116     /app/curl-impersonate/bin/
+#40 CACHED
+
+#41 [bots gobuild  7/10] COPY pkg ./pkg
+#41 CACHED
+
+#42 [bots stage-2  8/20] RUN mkdir -p /app/curl-impersonate/bin /app/curl-impersonate/lib /lib
+#42 CACHED
+
+#43 [bots gobuild  8/10] COPY scripts/gen-demo-keys ./scripts/gen-demo-keys
+#43 CACHED
+
+#44 [bots stage-2 19/20] COPY --from=gobuild /src/configs/ml /app/demo-keys-seed/ml
+#44 CACHED
+
+#45 [bots gobuild  9/10] COPY scripts/gen-ml-demo-bundle ./scripts/gen-ml-demo-bundle
+#45 CACHED
+
+#46 [bots stage-2 11/20] COPY --from=curl-impersonate /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
+#46 CACHED
+
+#47 [bots stage-2  7/20] RUN dpkg-divert --local --rename --add /usr/bin/update-mime-database  && ln -s /bin/true /usr/bin/update-mime-database  && apt-get update  && apt-get install -y --no-install-recommends       ca-certificates       fonts-dejavu-core       fonts-liberation       libasound2       libatk-bridge2.0-0       libatk1.0-0       libcairo2       libcups2       libdbus-1-3       libdbus-glib-1-2       libdrm2       libgbm1       libglib2.0-0       libgtk-3-0       libnspr4       libnss3       libpango-1.0-0       libx11-6       libx11-xcb1       libxcb1       libxcomposite1       libxdamage1       libxext6       libxfixes3       libxkbcommon0       libxrandr2       libxshmfence1       libxt6       libxtst6       xauth       xvfb  && cd /app/test  && npm ci --no-audit --no-fund  && ./node_modules/.bin/playwright-core install chromium firefox  && rm /usr/bin/update-mime-database  && dpkg-divert --local --rename --remove /usr/bin/update-mime-database  && rm -rf       /root/.npm       /tmp/*       /var/cache/apt/*       /var/lib/apt/lists/*       /usr/share/doc/*       /usr/share/man/*
+#47 CACHED
+
+#48 [bots gobuild  5/10] COPY cmd ./cmd
+#48 CACHED
+
+#49 [bots stage-2  4/20] COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
+#49 CACHED
+
+#50 [bots stage-2 18/20] COPY --from=gobuild /src/deployments/webauthncreds /app/demo-keys-seed/webauthncreds
+#50 CACHED
+
+#51 [bots stage-2 20/20] RUN sed -i 's/\r$//' /app/*.sh /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/*.sh /app/curl-impersonate/bin/*
+#51 CACHED
+
+#52 [gate stage-1 6/6] COPY --from=builder --chown=65532:65532 /out/acme-cache /acme-cache
+#52 CACHED
+
+#53 [core builder 7/8] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/server ./cmd/server/
+#53 CACHED
+
+#54 [core builder 8/8] RUN mkdir -p /acme-cache && chown 65532:65532 /acme-cache
+#54 CACHED
+
+#55 [core builder 3/8] COPY go.mod go.sum ./
+#55 CACHED
+
+#56 [core builder 4/8] RUN go mod download
+#56 CACHED
+
+#57 [core builder 5/8] COPY . .
+#57 CACHED
+
+#58 [core stage-1 3/6] COPY --from=builder /out/server /app/server
+#58 CACHED
+
+#59 [core stage-1 5/6] COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
+#59 CACHED
+
+#60 [core stage-1 2/6] WORKDIR /app
+#60 CACHED
+
+#61 [core stage-1 4/6] COPY --from=builder /src/web /app/web
+#61 CACHED
+
+#62 [core builder 6/8] RUN GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/  && cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" web/js/wasm_exec.js
+#62 CACHED
+
+#63 [bots builder 2/7] WORKDIR /src
+#63 CACHED
+
+#64 [core stage-1 6/6] COPY --from=builder --chown=65532:65532 /acme-cache /acme-cache
+#64 CACHED
+
+#65 [gate] exporting to image
+#65 exporting layers
+#65 exporting layers done
+#65 exporting manifest sha256:e0f38975f1a649db783232ad1f72ac538a1b894f855e15e809dc5d2d0d099515 0.0s done
+#65 exporting config sha256:08d1c68a8398fb3edf1b7b1addf3fe8c518d4bec870d7c0564f62cc9b33dfbe6 0.0s done
+#65 exporting attestation manifest sha256:9c294994dbd166426a78e54c86a7f5b24116beccfdd494498ecca20049ef7b8b
+#65 exporting attestation manifest sha256:9c294994dbd166426a78e54c86a7f5b24116beccfdd494498ecca20049ef7b8b 0.2s done
+#65 exporting manifest list sha256:524f4fc8ce67027510d6fc36b8f88ab15f0dff31e753649b99f7ac53e8d81d67
+#65 ...
+
+#66 [core] exporting to image
+#66 exporting layers done
+#66 exporting manifest sha256:57f1b3dae86db09ba2732ac09e4f69f0aae94cfe364cf06facb83d6f6cc5504f 0.0s done
+#66 exporting config sha256:2455764220b4e311afd4b08214ced062d9b8c5082d432b85e08f431f074ee06a 0.0s done
+#66 exporting attestation manifest sha256:13c2e10122813170ee908a0137e422c86a865fb4b135ed5d2644fcab0dca90c8 0.2s done
+#66 exporting manifest list sha256:86d1487a057ab68ad8be2284f828ceb3c18c2937530351364c65b92d38e51919 0.1s done
+#66 naming to docker.io/humanymous/core:local 0.0s done
+#66 unpacking to docker.io/humanymous/core:local 0.1s done
+#66 DONE 0.6s
+
+#65 [gate] exporting to image
+#65 exporting manifest list sha256:524f4fc8ce67027510d6fc36b8f88ab15f0dff31e753649b99f7ac53e8d81d67 0.1s done
+#65 naming to docker.io/humanymous/gate:local 0.0s done
+#65 unpacking to docker.io/humanymous/gate:local 0.1s done
+#65 DONE 0.6s
+
+#67 [bots] exporting to image
+#67 exporting layers done
+#67 exporting manifest sha256:73e83707c732bcc2bb48cc5c0a864f68f85b087773c5b76e59cb11f3e579e2f5 0.0s done
+#67 exporting config sha256:b6d13bf4b9a3b2f26040841e1cb73716017260e2d8dfbd9fc7b409395449ec02 0.0s done
+#67 exporting attestation manifest sha256:1c59c43e1f0a4ccd8a1eb90f0d0aee66cd704ab8b6e64158e9c99172b9b07733 0.2s done
+#67 exporting manifest list sha256:60e6cc4fe71272defacdb083f6a25b77993c3ebb444500150974cfd30277c77f 0.1s done
+#67 naming to docker.io/humanymous/bots:local 0.0s done
+#67 unpacking to docker.io/humanymous/bots:local 0.0s done
+#67 DONE 0.6s
+
+#68 [core] resolving provenance for metadata file
+#68 DONE 0.2s
+
+#69 [gate] resolving provenance for metadata file
+#69 DONE 0.2s
+
+#70 [bots] resolving provenance for metadata file
+#70 DONE 0.0s
+ Image humanymous/bots:local Built 
+ Image humanymous/core:local Built 
+ Image humanymous/gate:local Built 
+========== [e2e-docker] PASS build-images elapsed=3s ==========
+
+========== [e2e-docker] START start-defenders @ 2026-11-09T20:41:12Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml up -d --no-build core origin gate
+ Network hmn-e2e_lab-b Creating 
+ Volume hmn-e2e_gate-settings Creating 
+ Network hmn-e2e_lab-c Creating 
+ Network hmn-e2e_web Creating 
+ Network hmn-e2e_lab-b Creating 
+ Volume hmn-e2e_gate-settings Creating 
+ Network hmn-e2e_lab-c Creating 
+ Network hmn-e2e_web Creating 
+ Volume hmn-e2e_gate-settings Created 
+ Volume hmn-e2e_gate-settings Created 
+ Network hmn-e2e_web Created 
+ Network hmn-e2e_web Created 
+ Container hmn-e2e-origin-1 Creating 
+ Network hmn-e2e_lab-b Created 
+ Network hmn-e2e_lab-b Created 
+ Network hmn-e2e_lab-c Created 
+ Network hmn-e2e_lab-c Created 
+ Container hmn-e2e-core-1 Creating 
+ Container hmn-e2e-origin-1 Created 
+ Container hmn-e2e-gate-1 Creating 
+ Container hmn-e2e-core-1 Created 
+ Container hmn-e2e-gate-1 Created 
+ Container hmn-e2e-core-1 Starting 
+ Container hmn-e2e-origin-1 Starting 
+ Container hmn-e2e-core-1 Started 
+ Container hmn-e2e-origin-1 Started 
+ Container hmn-e2e-gate-1 Starting 
+ Container hmn-e2e-gate-1 Started 
+========== [e2e-docker] PASS start-defenders elapsed=2s ==========
+
+========== [e2e-docker] START attack-catalog @ 2026-11-09T20:41:14Z (timeout 900s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T bots
+ Container hmn-e2e-bots-run-b5bab87700da Creating 
+ Container hmn-e2e-bots-run-b5bab87700da Created 
+[bots] waiting for the detector engine at https://core:8443 ...
+[bots] detector engine is up (after 2s)
+[bots] launching the automation catalog (HM_RUNS=1) ...
+human #0: DENY (risk=65.7, rule=HR-16) [FP]
+bot:nonbrowser-ua #0: CHALLENGE (risk=54.4, rule=-) [TP]
+(node:33) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+bot:http-client #0: DENY (risk=68.2, rule=HR-18) [TP]
+bot:tls-parrot #0: DENY (risk=70.8, rule=HR-18) [TP]
+bot:curl-impersonate-chrome #0: DENY (risk=48.5, rule=HR-18) [TP]
+bot:curl-impersonate-chrome99-android #0: DENY (risk=48.5, rule=HR-18) [TP]
+bot:tls-static #0: DENY (risk=46.4, rule=HR-18) [TP]
+bot:pq-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:alps-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:cert-compression-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:ech-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:sec-chua-absent #0: CHALLENGE (risk=45.1, rule=HR-23) [TP]
+bot:sec-fetch-absent #0: CHALLENGE (risk=55.4, rule=HR-23) [TP]
+bot:rit-absent #0: CHALLENGE (risk=35.9, rule=HR-17) [TP]
+bot:rit-replay #0: DENY (risk=54.4, rule=HR-18) [TP]
+bot:rit-tamper #0: DENY (risk=67.8, rule=HR-16) [TP]
+bot:ua-rotate #0: DENY (risk=62.5, rule=HR-18) [TP]
+bot:xff-spoof #0: CHALLENGE (risk=8.5, rule=HR-23) [TP]
+bot:no-interaction #0: CHALLENGE (risk=71.5, rule=HR-12) [TP]
+bot:untrusted-events #0: CHALLENGE (risk=82.7, rule=HR-23) [TP]
+bot:selenium #0: DENY (risk=76.8, rule=HR-1) [TP]
+bot:puppeteer #0: DENY (risk=75.6, rule=HR-7) [TP]
+bot:playwright #0: DENY (risk=75.6, rule=HR-7) [TP]
+[e2e-docker] HEARTBEAT phase=attack-catalog elapsed=30s log=C:\workspaces\humanymous\.agent-runs\e2e/20261109T204100Z-hmn-e2e-full/e2e.log
+bot:undetected-chromedriver #0: NO_RESPONSE (risk=undefined, rule=-) [FN]
+ERROR bot:direct-cdp #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:tls-rotate #0: Command failed: /app/bin/redteam -attack tls-rotate -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:ja4-churn #0: Command failed: /app/bin/redteam -attack ja4-churn -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:grease-absent-js #0: Command failed: /app/bin/redteam -attack grease-absent-js -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:video-scrape #0: fetch failed
+ERROR bot:watermark-strip #0: fetch failed
+ERROR bot:flood #0: Command failed: /app/bin/redteam -attack flood -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+bot:h2-rapid-reset #0: DENY (risk=undefined, rule=h2-mitigated) [TP]
+ERROR bot:h2-flow-control #0: Command failed: /app/bin/redteam -attack h2-flow-control -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:h2-priority-absent #0: Command failed: /app/bin/redteam -attack h2-priority-absent -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:puppeteer-stealth #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:playwright-stealth #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:patchright #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:rebrowser-cdp-stripped #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:mobile-ua-desktop-profile #0: fetch failed
+ERROR bot:near-ceiling-audio-24k #0: fetch failed
+ERROR bot:near-ceiling-no-widevine #0: fetch failed
+ERROR bot:browser-use-cdp #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:multi-axis-rotate #0: Command failed: /app/bin/redteam -attack multi-axis-rotate -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:webgpu-mismatch #0: fetch failed
+ERROR bot:headless-ua-token #0: fetch failed
+ERROR bot:signal-forgery #0: Command failed: /app/bin/redteam -attack signal-forgery -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:browser-tls-h1 #0: Command failed: /app/bin/redteam -attack browser-tls-h1 -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:machine-keystroke #0: fetch failed
+ERROR bot:teleport-click #0: fetch failed
+ERROR bot:bezier-mouse #0: fetch failed
+ERROR bot:fixed-typing #0: fetch failed
+ERROR bot:ai-burst-silence #0: fetch failed
+ERROR bot:nodriver #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:xvfb-headful #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:anti-detect-browser #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:camoufox #0: page.goto: NS_ERROR_UNKNOWN_HOST
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:ai-agent #0: page.goto: net::ERR_NAME_NOT_RESOLVED at https://core:8443/
+Call log:
+  - navigating to "https://core:8443/", waiting until "domcontentloaded"
+
+ERROR bot:ai-full-cadence #0: fetch failed
+ERROR bot:distributed-proxy #0: Command failed: /app/bin/redteam -attack distributed -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:privacy-evasion #0: Command failed: /app/bin/redteam -attack privacy-evasion -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:squid-forward #0: Command failed: /app/bin/redteam -attack squid-forward -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:openvpn-exit #0: Command failed: /app/bin/redteam -attack openvpn-exit -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:wireguard-hop #0: Command failed: /app/bin/redteam -attack wireguard-hop -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:tor-exit #0: Command failed: /app/bin/redteam -attack tor-exit -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:anon-proxy-chain #0: Command failed: /app/bin/redteam -attack anon-proxy-chain -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:elite-anon-proxy #0: Command failed: /app/bin/redteam -attack elite-anon-proxy -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:cdn-ip-spoof #0: Command failed: /app/bin/redteam -attack cdn-ip-spoof -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:proxy-ua-rotate #0: Command failed: /app/bin/redteam -attack proxy-ua-rotate -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:fp-churn-proxy #0: Command failed: /app/bin/redteam -attack fp-churn-proxy -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:stacked-proxy-vpn #0: Command failed: /app/bin/redteam -attack stacked-proxy-vpn -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR bot:socks-exit-hop #0: Command failed: /app/bin/redteam -attack socks-exit-hop -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+ERROR ceiling:native-coherent #0: Command failed: /app/bin/redteam -attack coherent-ceiling -host core:8443
+redteam: dial tcp: lookup core on 127.0.0.11:53: server misbehaving
+
+
+wrote /app/test/e2e/results.json (72 records)
+
+=== summary ===
+human: {"DENY":1}
+bot:nonbrowser-ua: {"CHALLENGE":1}
+bot:http-client: {"DENY":1}
+bot:tls-parrot: {"DENY":1}
+bot:curl-impersonate-chrome: {"DENY":1}
+bot:curl-impersonate-chrome99-android: {"DENY":1}
+bot:tls-static: {"DENY":1}
+bot:pq-absent: {"CHALLENGE":1}
+bot:alps-absent: {"CHALLENGE":1}
+bot:cert-compression-absent: {"CHALLENGE":1}
+bot:ech-absent: {"CHALLENGE":1}
+bot:sec-chua-absent: {"CHALLENGE":1}
+bot:sec-fetch-absent: {"CHALLENGE":1}
+bot:rit-absent: {"CHALLENGE":1}
+bot:rit-replay: {"DENY":1}
+bot:rit-tamper: {"DENY":1}
+bot:ua-rotate: {"DENY":1}
+bot:xff-spoof: {"CHALLENGE":1}
+bot:no-interaction: {"CHALLENGE":1}
+bot:untrusted-events: {"CHALLENGE":1}
+bot:selenium: {"DENY":1}
+bot:puppeteer: {"DENY":1}
+bot:playwright: {"DENY":1}
+bot:undetected-chromedriver: {"NO_RESPONSE":1}
+bot:h2-rapid-reset: {"DENY":1}
+
+=== Red/Blue cost-escalation ladder (cheap -> expensive) ===
+  baseline (human) : DENY  -> FALSE-POSITIVE (a human was denied!)
+
+  [T0] trivial — $0, a script, no browser
+       non-browser HTTP/uTLS clients, header/token tricks, and the cheapest behavior tells
+       expect: reliable
+       must-block: 19/19 blocked = 100% of attempted
+
+  [T1] low — $, off-the-shelf tools on defaults
+       naive automation frameworks, single-axis TLS/engine churn, and cheap resource/DoS abuse
+       expect: reliable
+       must-block: 4/5 blocked = 80% of attempted — INCOMPLETE: 9/14 profile(s) did not run
+
+  [T2] moderate — $$, stealth plugins / patched natives / behavioral humanizers
+       stealth-patched automation, multi-axis rotation, fingerprint-spoof contradictions, and mouse/keystroke humanizers
+       expect: reliable
+
+  [T3] high — $$$, real browser engine + proxy/AI infrastructure
+       real-engine anti-detect, AI cadence, residential/anonymous proxy chains, Squid/OpenVPN/WireGuard/Tor/SOCKS, CDN IP spoof, fp-churn evasion
+       expect: degrades gracefully — scores + challenges/denies at lower confidence
+
+  [T4] very high — $$$$, an engine-level spoof or a real human behind residential proxies
+       a fully coherent BotBrowser-class spoof, or genuine human behavior on a real engine — not separable by DETECTION alone
+       expect: NOT solved (stated ceiling) — the coherent case SCORES ALLOW; mitigated only by rate limiting + cross-session reputation
+
+  Reading it: Blue should hold 100% through T2 and score/challenge (not necessarily
+  DENY) at T3; any bot reaching ALLOW below T4 is a regression. T4 is the documented
+  detection ceiling — a real human on a real engine, mitigated by rate/reputation only.
+
+FAIL: 47 catalog record(s) errored or skipped
+[bots] wrote /artifacts/core-results.json
+[bots] attack run complete (runner exit 1).
+
+[e2e-docker] FAIL phase=attack-catalog exit=1
+[e2e-docker] tearing down stack...
+ Network hmn-e2e_lab-a Removing 
+ Network hmn-e2e_lab-a Removed 

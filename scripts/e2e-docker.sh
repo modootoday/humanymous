@@ -148,6 +148,46 @@ run_step build-images "$BUILD_TIMEOUT" "${COMPOSE[@]}" \
   --profile attack --profile gate-test --profile pass-test --profile swarm \
   --progress plain build core gate bots
 run_step start-defenders 120 "${COMPOSE[@]}" up -d --no-build core origin gate
+
+# Cap=0 Desktop flake guard: rapid preflight down -v + up can leave Docker
+# embedded DNS and core RIT briefly unstable. Observed failure mode on
+# desktop-linux: human.mjs DENY via HR-16 (l5.rit.header_tampered) on a cold
+# core that only answered HTTPS for ~2s, then mid-catalog SERVFAIL
+# (lookup core on 127.0.0.11:53: server misbehaving). Do NOT touch scoring
+# (detection freeze). Require consecutive HTTPS successes from the bots/lab-a
+# network namespace, then a short settle pause before the catalog.
+CURRENT_STEP="settle-defenders"
+CURRENT_STEP_STARTED="$(date +%s)"
+write_status running 0
+echo
+echo "========== [e2e-docker] START settle-defenders @ $(date -u +%Y-%m-%dT%H:%M:%SZ) =========="
+settle_streak=0
+settle_ok=0
+for settle_i in $(seq 1 30); do
+  if "${COMPOSE[@]}" --profile attack run --rm -T --no-deps --entrypoint node bots \
+    -e 'const https=require("https");https.get("https://core:8443/api/session",{rejectUnauthorized:false},r=>{r.resume();process.exit((r.statusCode||500)<500?0:1)}).on("error",()=>process.exit(1));' \
+    >/dev/null 2>&1; then
+    settle_streak=$((settle_streak + 1))
+    echo "[e2e-docker] settle probe #${settle_i} ok streak=${settle_streak}"
+    if [[ "$settle_streak" -ge 3 ]]; then
+      settle_ok=1
+      break
+    fi
+  else
+    settle_streak=0
+    echo "[e2e-docker] settle probe #${settle_i} fail; reset streak"
+  fi
+  sleep 2
+done
+if [[ "$settle_ok" -ne 1 ]]; then
+  write_status failed 1
+  echo "[e2e-docker] FAIL settle-defenders: never reached 3 consecutive HTTPS successes"
+  exit 1
+fi
+echo "[e2e-docker] settle-defenders: stable; pausing 8s for Desktop DNS/RIT"
+sleep 8
+echo "========== [e2e-docker] PASS settle-defenders elapsed=$(( $(date +%s) - CURRENT_STEP_STARTED ))s =========="
+
 run_step attack-catalog "$STEP_TIMEOUT" "${COMPOSE[@]}" run --rm -T bots
 run_step attack-assert 120 "${COMPOSE[@]}" run --rm -T attack-assert
 run_step gate-conformance 300 "${COMPOSE[@]}" run --rm -T gate-e2e

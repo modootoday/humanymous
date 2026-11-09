@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.cursor-red-blue-cap0-tipbind-skipswarm-exit0/1",
+  "observed_utc": "2026-11-09T20:40:30Z",
+  "branch": "codex/rust",
+  "head": "4d5c1c14",
+  "head_full": "4d5c1c14",
+  "tip_note": "Settled tip ~4d5c1c14 / 118bbeec; Cap0 tip-bind of bounded SkipSwarm EXIT0 honesty",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "execution_client": "cursor",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "bound_receipt": ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/BOUNDED-EXIT0.json",
+  "bound_run_id": "20261109T203600Z-hmn-e2e-bounded",
+  "bound_exit": 0,
+  "skip_swarm": true,
+  "counts_as": "oracle_red_blue_desktop_component_not_product",
+  "honesty": {
+    "component_ne_product": true,
+    "skip_swarm_ne_full_suite": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_forge_auth_at": true,
+    "cap_free_only_via_documented_realloc": true,
+    "detection_freeze": true
+  },
+  "matrix": {
+    "advanced_component": [
+      "desktop-linux|none|oracle-detector-bots|red_blue_up",
+      "desktop-linux|none|oracle-detector-bots|red_blue_attack",
+      "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
+      "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e"
+    ],
+    "still_open": [
+      "desktop-linux|none|oracle-detector-bots|red_blue_swarm"
+    ]
+  },
+  "engine": {
+    "context": "desktop-linux",
+    "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "engine_id": "578836b2-d812-4a41-91a8-6ed2ae05b7fa",
+    "ostype": "linux",
+    "server_version": "29.9.2"
+  },
+  "exact_next_closer": "ONE full pwsh -File scripts/e2e-docker-launch.ps1 without SkipSwarm for red_blue_swarm"
+}

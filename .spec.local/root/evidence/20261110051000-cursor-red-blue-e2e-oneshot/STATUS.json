@@ -1,14 +1,42 @@
 {
   "schema": "humanymous.cursor-red-blue-e2e-oneshot-status/1",
-  "observed_utc": "2026-11-09T20:45:35Z",
+  "observed_utc": "2026-11-09T20:47:45Z",
   "branch": "codex/rust",
-  "head": "4d5c1c148372ddd99be1cb1c08cd6dec9f4f14eb",
+  "head": "4d5c1c14",
   "complete": false,
   "product": 0,
   "pass_product_clean_room": 0,
   "cap_free_before": false,
   "cap_free_after": false,
   "cap_burn": 0,
+  "retry_storm_stopped": true,
+  "exit_neg1_root_cause": "concurrent_powershell_log_lock",
+  "fix_landed": "scripts/e2e-docker-launch.ps1 + scripts/e2e-docker.sh settle-defenders",
+  "bounded_e2e": {
+    "run_id": "20261109T203600Z-hmn-e2e-bounded",
+    "exit": 0,
+    "skip_swarm": true,
+    "counts_as": "oracle_red_blue_desktop_component_not_product",
+    "never_exit_neg1": true,
+    "tip_bound": "CAP0-TIPBIND-SKIPSWARM-EXIT0.json"
+  },
+  "full_e2e": {
+    "attempt1": {
+      "run_id": "20261109T204100Z-hmn-e2e-full",
+      "exit": 1,
+      "phase": "attack-catalog",
+      "cause": "human_fp_hr16_rit_cold + desktop_dns_servfail"
+    },
+    "attempt2": {
+      "run_id": "20261109T204500Z-hmn-e2e-full-r2",
+      "exit": 137,
+      "phase": "attack-catalog",
+      "settle": "PASS",
+      "human": "CHALLENGE TN",
+      "cause": "bots_sigkill_137_desktop_vm_pressure_hypothesis",
+      "swarm": "unrun"
+    }
+  },
   "docker_engine": {
     "context": "desktop-linux",
     "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
@@ -16,30 +44,26 @@
     "ostype": "linux",
     "server_version": "29.9.2"
   },
-  "full_swarm_run": {
-    "run_id": "20261109T204000Z-hmn-e2e-rb-r7",
-    "overall_exit": 1,
-    "red_blue_phases_passed": true,
-    "swarm_passed": true,
-    "swarm_proxy_rotation": true,
-    "overlays_failed": true,
-    "counts_as": "oracle_red_blue_desktop_component_not_product"
-  },
-  "bounded_skip_swarm": {
-    "run_id": "20261109T203600Z-hmn-e2e-bounded",
-    "exit": 0,
-    "note": "prior Cap0 launcher SkipSwarm EXIT0; swarm cell closed by full r7"
+  "matrix": {
+    "component_advanced": [
+      "desktop-linux|none|oracle-detector-bots|red_blue_up",
+      "desktop-linux|none|oracle-detector-bots|red_blue_attack",
+      "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
+      "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e"
+    ],
+    "still_open": [
+      "desktop-linux|none|oracle-detector-bots|red_blue_swarm"
+    ],
+    "red_blue_swarm": "unrun"
   },
   "auth_present": false,
   "at_present": false,
   "browser_ready": false,
   "blocked_on_root": true,
-  "exact_next_closer": "Root AUTH-HANDOFF or AT-HANDOFF Cap=0 measured apply; Cap free=false until documented Cap realloc; overlays pool-overlap cleanup optional; never invent pass_product_clean_room",
-  "honesty": {
-    "never_invent_cap_free": true,
-    "never_invent_pass_product_clean_room": true,
-    "never_forge_auth_at": true,
-    "never_invent_browser_ready": true,
-    "detection_freeze": true
-  }
+  "blocked_on_root_reasons": [
+    "AUTH/AT absent",
+    "Cap free=false without documented realloc",
+    "pass_product_clean_room unproven"
+  ],
+  "exact_next_closer": "Cap=0 Desktop VM memory/pressure guard for bots catalog EXIT 137 then ONE full e2e-docker-launch.ps1 without SkipSwarm for red_blue_swarm; Cap free=false; AUTH/AT Root; never invent pass_product_clean_room"
 }

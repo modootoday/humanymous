@@ -1,0 +1,391 @@
+[e2e-docker] pre-flight: freeing lab subnets (removing any conflicting stack)...
+
+========== [e2e-docker] START validate-compose @ 2026-11-09T20:45:02Z (timeout 60s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml config -q
+========== [e2e-docker] PASS validate-compose elapsed=0s ==========
+
+========== [e2e-docker] START build-images @ 2026-11-09T20:45:02Z (timeout 600s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml --profile attack --profile gate-test --profile pass-test --profile swarm --progress plain build core gate bots
+ Image humanymous/gate:local Building 
+ Image humanymous/bots:local Building 
+ Image humanymous/core:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.38kB done
+#1 DONE 0.0s
+
+#2 [gate internal] load build definition from gate.Dockerfile
+#2 transferring dockerfile: 2.81kB done
+#2 DONE 0.1s
+
+#3 [core internal] load build definition from core.Dockerfile
+#3 transferring dockerfile: 2.88kB done
+#3 DONE 0.1s
+
+#4 [core internal] load metadata for gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#4 ...
+
+#5 [bots internal] load build definition from bots.Dockerfile
+#5 transferring dockerfile: 7.75kB done
+#5 DONE 0.2s
+
+#6 [gate internal] load metadata for docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#6 DONE 0.2s
+
+#7 [bots internal] load metadata for docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#7 DONE 0.1s
+
+#8 [bots internal] load metadata for docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#8 DONE 0.2s
+
+#9 [bots internal] load build context
+#9 DONE 0.0s
+
+#10 [bots curl-impersonate 1/1] FROM docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#10 resolve docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64 0.1s done
+#10 DONE 0.1s
+
+#11 [bots stage-2  1/20] FROM docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#11 resolve docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#11 resolve docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3 0.1s done
+#11 DONE 0.1s
+
+#12 [bots gobuild  1/10] FROM docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#12 resolve docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 0.1s done
+#12 DONE 0.1s
+
+#9 [bots internal] load build context
+#9 transferring context: 37.66kB 0.0s done
+#9 DONE 0.1s
+
+#13 [bots stage-2 11/20] COPY --from=curl-impersonate /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
+#13 CACHED
+
+#14 [bots stage-2 18/20] COPY --from=gobuild /src/deployments/webauthncreds /app/demo-keys-seed/webauthncreds
+#14 CACHED
+
+#15 [bots stage-2 14/20] COPY test /app/test
+#15 CACHED
+
+#16 [bots stage-2 19/20] COPY --from=gobuild /src/configs/ml /app/demo-keys-seed/ml
+#16 CACHED
+
+#17 [bots stage-2  4/20] COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
+#17 CACHED
+
+#18 [bots gobuild 10/10] RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/  && CGO_ENABLED=0 go run ./scripts/gen-demo-keys  && mkdir -p /src/configs/ml  && CGO_ENABLED=0 go run ./cmd/ml-train -gen 12000 -out /src/configs/ml/behavioral.json  && CGO_ENABLED=0 go run ./scripts/gen-ml-demo-bundle -bundle /src/configs/ml/behavioral.json -outdir /src/configs/ml
+#18 CACHED
+
+#19 [bots stage-2 15/20] COPY scripts/assert-*.mjs /app/scripts/
+#19 CACHED
+
+#20 [bots stage-2  2/20] WORKDIR /app
+#20 CACHED
+
+#21 [bots stage-2  6/20] COPY test/package.json test/package-lock.json /app/test/
+#21 CACHED
+
+#22 [bots stage-2  9/20] COPY --from=curl-impersonate     /usr/local/bin/curl-impersonate     /usr/local/bin/curl-impersonate-chrome     /usr/local/bin/curl_chrome99_android     /usr/local/bin/curl_chrome116     /app/curl-impersonate/bin/
+#22 CACHED
+
+#23 [bots gobuild  5/10] COPY cmd ./cmd
+#23 CACHED
+
+#24 [bots stage-2 16/20] COPY deployments/bots/ /app/
+#24 CACHED
+
+#25 [bots stage-2  7/20] RUN dpkg-divert --local --rename --add /usr/bin/update-mime-database  && ln -s /bin/true /usr/bin/update-mime-database  && apt-get update  && apt-get install -y --no-install-recommends       ca-certificates       fonts-dejavu-core       fonts-liberation       libasound2       libatk-bridge2.0-0       libatk1.0-0       libcairo2       libcups2       libdbus-1-3       libdbus-glib-1-2       libdrm2       libgbm1       libglib2.0-0       libgtk-3-0       libnspr4       libnss3       libpango-1.0-0       libx11-6       libx11-xcb1       libxcb1       libxcomposite1       libxdamage1       libxext6       libxfixes3       libxkbcommon0       libxrandr2       libxshmfence1       libxt6       libxtst6       xauth       xvfb  && cd /app/test  && npm ci --no-audit --no-fund  && ./node_modules/.bin/playwright-core install chromium firefox  && rm /usr/bin/update-mime-database  && dpkg-divert --local --rename --remove /usr/bin/update-mime-database  && rm -rf       /root/.npm       /tmp/*       /var/cache/apt/*       /var/lib/apt/lists/*       /usr/share/doc/*       /usr/share/man/*
+#25 CACHED
+
+#26 [bots gobuild  4/10] RUN go mod download
+#26 CACHED
+
+#27 [bots stage-2 10/20] COPY --from=curl-impersonate /usr/local/lib/ /app/curl-impersonate/lib/
+#27 CACHED
+
+#28 [bots stage-2 12/20] COPY --from=curl-impersonate /lib/libz.so.1.2.13 /lib/libz.so.1.2.13
+#28 CACHED
+
+#29 [bots stage-2  3/20] COPY --from=gobuild /out/redteam   /app/bin/redteam
+#29 CACHED
+
+#30 [bots stage-2 13/20] RUN ln -sf libz.so.1.2.13 /lib/libz.so.1  && ln -sf ld-musl-x86_64.so.1 /lib/libc.musl-x86_64.so.1  && sed -i '1s|^#!.*|#!/bin/bash|' /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/curl-impersonate/bin/*
+#30 CACHED
+
+#31 [bots gobuild  6/10] COPY internal ./internal
+#31 CACHED
+
+#32 [bots stage-2  5/20] COPY --from=gobuild /out/gate      /app/bin/gate
+#32 CACHED
+
+#33 [bots gobuild  8/10] COPY scripts/gen-demo-keys ./scripts/gen-demo-keys
+#33 CACHED
+
+#34 [bots gobuild  2/10] WORKDIR /src
+#34 CACHED
+
+#35 [bots gobuild  9/10] COPY scripts/gen-ml-demo-bundle ./scripts/gen-ml-demo-bundle
+#35 CACHED
+
+#36 [bots gobuild  3/10] COPY go.mod go.sum ./
+#36 CACHED
+
+#37 [bots stage-2  8/20] RUN mkdir -p /app/curl-impersonate/bin /app/curl-impersonate/lib /lib
+#37 CACHED
+
+#38 [bots gobuild  7/10] COPY pkg ./pkg
+#38 CACHED
+
+#39 [bots stage-2 17/20] COPY --from=gobuild /src/deployments/patissuers /app/demo-keys-seed/patissuers
+#39 CACHED
+
+#40 [bots stage-2 20/20] RUN sed -i 's/\r$//' /app/*.sh /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/*.sh /app/curl-impersonate/bin/*
+#40 CACHED
+
+#41 [bots] exporting to image
+#41 exporting layers done
+#41 exporting manifest sha256:73e83707c732bcc2bb48cc5c0a864f68f85b087773c5b76e59cb11f3e579e2f5 done
+#41 exporting config sha256:b6d13bf4b9a3b2f26040841e1cb73716017260e2d8dfbd9fc7b409395449ec02 done
+#41 exporting attestation manifest sha256:61509dd7daacb6820b17382e56458adb3e2ecce7abd709f8017d8cb839cb2c1b 0.1s done
+#41 exporting manifest list sha256:ae907a4c0d54ed0b029d9b1dac4ae245345276d879fa1afe3d568e646ec0cd56
+#41 exporting manifest list sha256:ae907a4c0d54ed0b029d9b1dac4ae245345276d879fa1afe3d568e646ec0cd56 0.0s done
+#41 naming to docker.io/humanymous/bots:local done
+#41 unpacking to docker.io/humanymous/bots:local 0.0s done
+#41 DONE 0.2s
+
+#4 [core internal] load metadata for gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#4 DONE 1.1s
+
+#42 [bots] resolving provenance for metadata file
+#42 DONE 0.0s
+
+#43 [gate internal] load build context
+#43 DONE 0.0s
+
+#44 [core internal] load .dockerignore
+#44 transferring context: 1.55kB done
+#44 DONE 0.1s
+
+#12 [core builder 1/7] FROM docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#12 resolve docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 0.2s done
+#12 DONE 0.3s
+
+#43 [gate internal] load build context
+#43 ...
+
+#45 [gate stage-1 1/6] FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#45 resolve gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35 0.1s done
+#45 DONE 0.2s
+
+#43 [gate internal] load build context
+#43 transferring context: 3.84MB 0.8s done
+#43 DONE 0.8s
+
+#34 [gate builder 2/7] WORKDIR /src
+#34 CACHED
+
+#46 [gate builder 3/7] COPY go.mod go.sum ./
+#46 CACHED
+
+#47 [gate builder 4/7] RUN go mod download
+#47 CACHED
+
+#48 [gate builder 5/7] COPY . .
+#48 DONE 0.2s
+
+#49 [core internal] load build context
+#49 transferring context: 57.44MB 4.2s done
+#49 DONE 4.3s
+
+#50 [gate builder 6/7] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/gate ./cmd/gate/
+#50 ...
+
+#47 [core builder 4/7] RUN go mod download
+#47 CACHED
+
+#34 [core builder 2/7] WORKDIR /src
+#34 CACHED
+
+#51 [core stage-1 4/6] COPY --from=builder /src/web /app/web
+#51 CACHED
+
+#52 [core builder 8/8] RUN mkdir -p /acme-cache && chown 65532:65532 /acme-cache
+#52 CACHED
+
+#53 [core stage-1 5/6] COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
+#53 CACHED
+
+#54 [core stage-1 2/6] WORKDIR /app
+#54 CACHED
+
+#55 [core builder 7/8] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/server ./cmd/server/
+#55 CACHED
+
+#56 [core builder 3/8] COPY go.mod go.sum ./
+#56 CACHED
+
+#57 [core builder 6/8] RUN GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/  && cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" web/js/wasm_exec.js
+#57 CACHED
+
+#58 [core builder 4/8] RUN go mod download
+#58 CACHED
+
+#59 [core stage-1 3/6] COPY --from=builder /out/server /app/server
+#59 CACHED
+
+#60 [core builder 5/8] COPY . .
+#60 CACHED
+
+#61 [core stage-1 6/6] COPY --from=builder --chown=65532:65532 /acme-cache /acme-cache
+#61 CACHED
+
+#62 [core] exporting to image
+#62 exporting layers done
+#62 exporting manifest sha256:57f1b3dae86db09ba2732ac09e4f69f0aae94cfe364cf06facb83d6f6cc5504f done
+#62 exporting config sha256:2455764220b4e311afd4b08214ced062d9b8c5082d432b85e08f431f074ee06a done
+#62 exporting attestation manifest sha256:e40eb47ed9708e29201d2f6cabc69fd36cdb9e5e3b660d82c6f97c80f3a882ef 0.1s done
+#62 exporting manifest list sha256:96154bddd85ad201c1287f59eeb45eb09512eef9d494278112b2cf82020bfc82 0.1s done
+#62 naming to docker.io/humanymous/core:local
+#62 naming to docker.io/humanymous/core:local done
+#62 unpacking to docker.io/humanymous/core:local 0.0s done
+#62 DONE 0.2s
+
+#50 [gate builder 6/7] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/gate ./cmd/gate/
+#50 ...
+
+#63 [core] resolving provenance for metadata file
+#63 DONE 0.0s
+
+#50 [gate builder 6/7] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/gate ./cmd/gate/
+#50 DONE 4.5s
+
+#64 [gate builder 7/7] RUN mkdir -p /out/data /out/acme-cache
+#64 DONE 0.4s
+
+#65 [gate stage-1 4/6] COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
+#65 CACHED
+
+#66 [gate stage-1 5/6] COPY --from=builder --chown=65532:65532 /out/data /data
+#66 CACHED
+
+#54 [gate stage-1 2/6] WORKDIR /app
+#54 CACHED
+
+#67 [gate stage-1 3/6] COPY --from=builder /out/gate /app/gate
+#67 CACHED
+
+#68 [gate stage-1 6/6] COPY --from=builder --chown=65532:65532 /out/acme-cache /acme-cache
+#68 CACHED
+
+#69 [gate] exporting to image
+#69 exporting layers done
+#69 exporting manifest sha256:e0f38975f1a649db783232ad1f72ac538a1b894f855e15e809dc5d2d0d099515 0.0s done
+#69 exporting config sha256:08d1c68a8398fb3edf1b7b1addf3fe8c518d4bec870d7c0564f62cc9b33dfbe6
+#69 exporting config sha256:08d1c68a8398fb3edf1b7b1addf3fe8c518d4bec870d7c0564f62cc9b33dfbe6 0.0s done
+#69 exporting attestation manifest sha256:6ceeddd58b8f47cbcb9eef286f4e72c6e196263a3991853fc0db89de8955746a 0.1s done
+#69 exporting manifest list sha256:efedb58b637c0e48287e0e0a156de52f9c3f84740204bc6ef9c9367c54c3a9ea
+#69 exporting manifest list sha256:efedb58b637c0e48287e0e0a156de52f9c3f84740204bc6ef9c9367c54c3a9ea 0.0s done
+#69 naming to docker.io/humanymous/gate:local 0.0s done
+#69 unpacking to docker.io/humanymous/gate:local 0.0s done
+#69 DONE 0.3s
+
+#70 [gate] resolving provenance for metadata file
+#70 DONE 0.0s
+ Image humanymous/core:local Built 
+ Image humanymous/gate:local Built 
+ Image humanymous/bots:local Built 
+========== [e2e-docker] PASS build-images elapsed=10s ==========
+
+========== [e2e-docker] START start-defenders @ 2026-11-09T20:45:12Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml up -d --no-build core origin gate
+ Network hmn-e2e_lab-a Creating 
+ Network hmn-e2e_web Creating 
+ Network hmn-e2e_lab-b Creating 
+ Network hmn-e2e_lab-c Creating 
+ Network hmn-e2e_lab-b Creating 
+ Network hmn-e2e_lab-a Creating 
+ Network hmn-e2e_web Creating 
+ Volume hmn-e2e_gate-settings Creating 
+ Network hmn-e2e_lab-c Creating 
+ Volume hmn-e2e_gate-settings Creating 
+ Volume hmn-e2e_gate-settings Created 
+ Volume hmn-e2e_gate-settings Created 
+ Network hmn-e2e_lab-b Created 
+ Network hmn-e2e_lab-b Created 
+ Network hmn-e2e_lab-a Created 
+ Network hmn-e2e_lab-a Created 
+ Network hmn-e2e_web Created 
+ Network hmn-e2e_web Created 
+ Container hmn-e2e-origin-1 Creating 
+ Network hmn-e2e_lab-c Created 
+ Network hmn-e2e_lab-c Created 
+ Container hmn-e2e-core-1 Creating 
+ Container hmn-e2e-origin-1 Created 
+ Container hmn-e2e-gate-1 Creating 
+ Container hmn-e2e-core-1 Created 
+ Container hmn-e2e-gate-1 Created 
+ Container hmn-e2e-origin-1 Starting 
+ Container hmn-e2e-core-1 Starting 
+ Container hmn-e2e-origin-1 Started 
+ Container hmn-e2e-gate-1 Starting 
+ Container hmn-e2e-core-1 Started 
+ Container hmn-e2e-gate-1 Started 
+========== [e2e-docker] PASS start-defenders elapsed=2s ==========
+
+========== [e2e-docker] START settle-defenders @ 2026-11-09T20:45:14Z ==========
+[e2e-docker] settle probe #1 ok streak=1
+[e2e-docker] settle probe #2 ok streak=2
+[e2e-docker] settle probe #3 ok streak=3
+[e2e-docker] settle-defenders: stable; pausing 8s for Desktop DNS/RIT
+========== [e2e-docker] PASS settle-defenders elapsed=15s ==========
+
+========== [e2e-docker] START attack-catalog @ 2026-11-09T20:45:29Z (timeout 900s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T bots
+ Container hmn-e2e-bots-run-e8d44854ec7f Creating 
+ Container hmn-e2e-bots-run-e8d44854ec7f Created 
+[bots] waiting for the detector engine at https://core:8443 ...
+[bots] detector engine is up (after 2s)
+[bots] launching the automation catalog (HM_RUNS=1) ...
+human #0: CHALLENGE (risk=42.9, rule=-) [TN]
+bot:nonbrowser-ua #0: CHALLENGE (risk=54.4, rule=-) [TP]
+(node:33) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+bot:http-client #0: DENY (risk=68.2, rule=HR-18) [TP]
+bot:tls-parrot #0: DENY (risk=70.8, rule=HR-18) [TP]
+bot:curl-impersonate-chrome #0: DENY (risk=48.5, rule=HR-18) [TP]
+bot:curl-impersonate-chrome99-android #0: DENY (risk=48.5, rule=HR-18) [TP]
+bot:tls-static #0: DENY (risk=46.4, rule=HR-18) [TP]
+bot:pq-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:alps-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:cert-compression-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:ech-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:sec-chua-absent #0: CHALLENGE (risk=45.1, rule=HR-23) [TP]
+bot:sec-fetch-absent #0: CHALLENGE (risk=55.4, rule=HR-23) [TP]
+bot:rit-absent #0: CHALLENGE (risk=35.9, rule=HR-17) [TP]
+bot:rit-replay #0: DENY (risk=54.4, rule=HR-18) [TP]
+bot:rit-tamper #0: DENY (risk=67.8, rule=HR-16) [TP]
+bot:ua-rotate #0: DENY (risk=62.5, rule=HR-18) [TP]
+bot:xff-spoof #0: CHALLENGE (risk=8.5, rule=HR-23) [TP]
+bot:no-interaction #0: CHALLENGE (risk=71.5, rule=HR-12) [TP]
+bot:untrusted-events #0: CHALLENGE (risk=82.7, rule=HR-23) [TP]
+bot:selenium #0: DENY (risk=76.8, rule=HR-1) [TP]
+bot:puppeteer #0: DENY (risk=75.6, rule=HR-7) [TP]
+bot:playwright #0: DENY (risk=75.6, rule=HR-7) [TP]
+[e2e-docker] HEARTBEAT phase=attack-catalog elapsed=30s log=C:\workspaces\humanymous\.agent-runs\e2e/20261109T204500Z-hmn-e2e-full-r2/e2e.log
+bot:undetected-chromedriver #0: DENY (risk=65, rule=HR-7) [TP]
+bot:direct-cdp #0: DENY (risk=75.6, rule=HR-7) [TP]
+bot:tls-rotate #0: DENY (risk=67.8, rule=HR-14) [TP]
+bot:ja4-churn #0: DENY (risk=45.1, rule=HR-14) [TP]
+bot:grease-absent-js #0: CHALLENGE (risk=61.1, rule=HR-23) [TP]
+bot:video-scrape #0: DENY (risk=68.2, rule=HR-18) [TP]
+bot:watermark-strip #0: DENY (risk=100, rule=wm-traced) [TP]
+bot:flood #0: CHALLENGE (risk=63.4, rule=HR-17) [TP]
+bot:h2-rapid-reset #0: DENY (risk=83.5, rule=HR-2) [TP]
+bot:h2-flow-control #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:h2-priority-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:puppeteer-stealth #0: DENY (risk=64.6, rule=HR-8) [TP]
+bot:playwright-stealth #0: DENY (risk=64.6, rule=HR-8) [TP]
+bot:patchright #0: DENY (risk=62.6, rule=HR-9) [TP]
+[e2e-docker] HEARTBEAT phase=attack-catalog elapsed=60s log=C:\workspaces\humanymous\.agent-runs\e2e/20261109T204500Z-hmn-e2e-full-r2/e2e.log
+
+[e2e-docker] FAIL phase=attack-catalog exit=137
+[e2e-docker] tearing down stack...
