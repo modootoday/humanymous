@@ -280,14 +280,15 @@ fn honesty_bundle(root: &Path, require_full: bool) -> Result<Value> {
         .to_string();
     let missing = missing_product_cells(&matrix);
     let red_blue_open = red_blue_product_open_cells(&missing);
-    let tip_bound = !matrix_head.is_empty() && tip.starts_with(&matrix_head[..matrix_head.len().min(tip.len()).min(8)])
-        || tip == matrix_head
-        || matrix_head.starts_with(&tip[..tip.len().min(8)]);
+    let tip_bound_exact = tip == matrix_head;
+    let tip_bound_prefix_ok = !matrix_head.is_empty()
+        && !tip.is_empty()
+        && (tip.starts_with(&matrix_head) || matrix_head.starts_with(&tip));
     Ok(json!({
         "tip": tip,
         "matrix_head_sha": matrix_head,
-        "tip_bound_exact": tip == matrix_head,
-        "tip_bound_prefix_ok": tip_bound,
+        "tip_bound_exact": tip_bound_exact,
+        "tip_bound_prefix_ok": tip_bound_prefix_ok,
         "matrix": MATRIX_REL,
         "red_blue_skill": RED_BLUE_SKILL_REL,
         "require_full": require_full,
