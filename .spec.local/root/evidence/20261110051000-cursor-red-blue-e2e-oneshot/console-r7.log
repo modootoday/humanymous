@@ -1,0 +1,912 @@
+[e2e-docker] live log: /c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T204000Z-hmn-e2e-rb-r7/e2e.log
+[e2e-docker] live status: /c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T204000Z-hmn-e2e-rb-r7/status.json
+[e2e-docker] pre-flight: freeing lab subnets (removing any conflicting stack)...
+
+========== [e2e-docker] START validate-compose @ 2026-11-09T20:39:09Z (timeout 60s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml config -q
+========== [e2e-docker] PASS validate-compose elapsed=0s ==========
+
+========== [e2e-docker] START build-images @ 2026-11-09T20:39:09Z (timeout 1800s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml --profile attack --profile gate-test --profile pass-test --profile swarm --progress plain build core gate bots
+ Image humanymous/core:local Building 
+ Image humanymous/gate:local Building 
+ Image humanymous/bots:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.38kB done
+#1 DONE 0.0s
+
+#2 [gate internal] load build definition from gate.Dockerfile
+#2 transferring dockerfile: 2.81kB done
+#2 DONE 0.1s
+
+#3 [bots internal] load build definition from bots.Dockerfile
+#3 transferring dockerfile: 7.75kB done
+#3 DONE 0.1s
+
+#4 [bots internal] load metadata for docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#4 ...
+
+#5 [core internal] load build definition from core.Dockerfile
+#5 transferring dockerfile: 2.88kB done
+#5 DONE 0.1s
+
+#6 [core internal] load metadata for docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#6 ...
+
+#7 [gate internal] load metadata for gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#7 DONE 0.5s
+
+#8 [bots internal] load metadata for docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#8 DONE 1.2s
+
+#6 [core internal] load metadata for docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#6 DONE 1.3s
+
+#9 [gate internal] load build context
+#9 DONE 0.0s
+
+#4 [bots internal] load metadata for docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#4 DONE 1.3s
+
+#10 [bots internal] load build context
+#10 DONE 0.0s
+
+#11 [core internal] load .dockerignore
+#11 transferring context: 1.55kB done
+#11 DONE 0.1s
+
+#12 [core builder 1/7] FROM docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#12 resolve docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#12 ...
+
+#13 [core internal] load build context
+#13 DONE 0.0s
+
+#14 [core stage-1 1/6] FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#14 resolve gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+#14 resolve gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35 0.3s done
+#14 DONE 0.4s
+
+#15 [bots curl-impersonate 1/1] FROM docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64
+#15 resolve docker.io/lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64 0.2s done
+#15 DONE 0.2s
+
+#12 [bots builder 1/7] FROM docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587
+#12 resolve docker.io/library/golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 0.3s done
+#12 DONE 0.3s
+
+#16 [bots stage-2  1/20] FROM docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3
+#16 resolve docker.io/library/node:22-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe134a7bc8d6f5ca4403205b2966bd488f6b3 0.3s done
+#16 DONE 0.3s
+
+#10 [bots internal] load build context
+#10 transferring context: 37.66kB 0.0s done
+#10 DONE 0.1s
+
+#17 [bots stage-2  2/20] WORKDIR /app
+#17 CACHED
+
+#18 [bots stage-2  5/20] COPY --from=gobuild /out/gate      /app/bin/gate
+#18 CACHED
+
+#19 [bots stage-2  7/20] RUN dpkg-divert --local --rename --add /usr/bin/update-mime-database  && ln -s /bin/true /usr/bin/update-mime-database  && apt-get update  && apt-get install -y --no-install-recommends       ca-certificates       fonts-dejavu-core       fonts-liberation       libasound2       libatk-bridge2.0-0       libatk1.0-0       libcairo2       libcups2       libdbus-1-3       libdbus-glib-1-2       libdrm2       libgbm1       libglib2.0-0       libgtk-3-0       libnspr4       libnss3       libpango-1.0-0       libx11-6       libx11-xcb1       libxcb1       libxcomposite1       libxdamage1       libxext6       libxfixes3       libxkbcommon0       libxrandr2       libxshmfence1       libxt6       libxtst6       xauth       xvfb  && cd /app/test  && npm ci --no-audit --no-fund  && ./node_modules/.bin/playwright-core install chromium firefox  && rm /usr/bin/update-mime-database  && dpkg-divert --local --rename --remove /usr/bin/update-mime-database  && rm -rf       /root/.npm       /tmp/*       /var/cache/apt/*       /var/lib/apt/lists/*       /usr/share/doc/*       /usr/share/man/*
+#19 CACHED
+
+#20 [bots stage-2  4/20] COPY --from=gobuild /out/tlsparrot /app/bin/tlsparrot
+#20 CACHED
+
+#21 [bots stage-2 14/20] COPY test /app/test
+#21 CACHED
+
+#22 [bots stage-2 11/20] COPY --from=curl-impersonate /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
+#22 CACHED
+
+#23 [bots gobuild  7/10] COPY pkg ./pkg
+#23 CACHED
+
+#24 [bots stage-2  3/20] COPY --from=gobuild /out/redteam   /app/bin/redteam
+#24 CACHED
+
+#25 [bots stage-2 10/20] COPY --from=curl-impersonate /usr/local/lib/ /app/curl-impersonate/lib/
+#25 CACHED
+
+#26 [bots stage-2 12/20] COPY --from=curl-impersonate /lib/libz.so.1.2.13 /lib/libz.so.1.2.13
+#26 CACHED
+
+#27 [bots gobuild 10/10] RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/redteam   ./cmd/redteam/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/tlsparrot ./cmd/tlsparrot/  && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/gate  ./cmd/gate/  && CGO_ENABLED=0 go run ./scripts/gen-demo-keys  && mkdir -p /src/configs/ml  && CGO_ENABLED=0 go run ./cmd/ml-train -gen 12000 -out /src/configs/ml/behavioral.json  && CGO_ENABLED=0 go run ./scripts/gen-ml-demo-bundle -bundle /src/configs/ml/behavioral.json -outdir /src/configs/ml
+#27 CACHED
+
+#28 [bots stage-2  9/20] COPY --from=curl-impersonate     /usr/local/bin/curl-impersonate     /usr/local/bin/curl-impersonate-chrome     /usr/local/bin/curl_chrome99_android     /usr/local/bin/curl_chrome116     /app/curl-impersonate/bin/
+#28 CACHED
+
+#29 [bots gobuild  5/10] COPY cmd ./cmd
+#29 CACHED
+
+#30 [bots gobuild  9/10] COPY scripts/gen-ml-demo-bundle ./scripts/gen-ml-demo-bundle
+#30 CACHED
+
+#31 [bots stage-2  6/20] COPY test/package.json test/package-lock.json /app/test/
+#31 CACHED
+
+#32 [bots stage-2 18/20] COPY --from=gobuild /src/deployments/webauthncreds /app/demo-keys-seed/webauthncreds
+#32 CACHED
+
+#33 [bots gobuild  8/10] COPY scripts/gen-demo-keys ./scripts/gen-demo-keys
+#33 CACHED
+
+#34 [bots stage-2 17/20] COPY --from=gobuild /src/deployments/patissuers /app/demo-keys-seed/patissuers
+#34 CACHED
+
+#35 [bots gobuild  3/10] COPY go.mod go.sum ./
+#35 CACHED
+
+#36 [bots stage-2 13/20] RUN ln -sf libz.so.1.2.13 /lib/libz.so.1  && ln -sf ld-musl-x86_64.so.1 /lib/libc.musl-x86_64.so.1  && sed -i '1s|^#!.*|#!/bin/bash|' /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/curl-impersonate/bin/*
+#36 CACHED
+
+#37 [bots stage-2 19/20] COPY --from=gobuild /src/configs/ml /app/demo-keys-seed/ml
+#37 CACHED
+
+#38 [bots stage-2  8/20] RUN mkdir -p /app/curl-impersonate/bin /app/curl-impersonate/lib /lib
+#38 CACHED
+
+#39 [bots stage-2 15/20] COPY scripts/assert-*.mjs /app/scripts/
+#39 CACHED
+
+#40 [bots builder 2/7] WORKDIR /src
+#40 CACHED
+
+#41 [bots stage-2 16/20] COPY deployments/bots/ /app/
+#41 CACHED
+
+#42 [bots gobuild  4/10] RUN go mod download
+#42 CACHED
+
+#43 [bots gobuild  6/10] COPY internal ./internal
+#43 CACHED
+
+#44 [bots stage-2 20/20] RUN sed -i 's/\r$//' /app/*.sh /app/curl-impersonate/bin/curl_chrome*  && chmod +x /app/*.sh /app/curl-impersonate/bin/*
+#44 CACHED
+
+#45 [bots] exporting to image
+#45 exporting layers 0.0s done
+#45 exporting manifest sha256:73e83707c732bcc2bb48cc5c0a864f68f85b087773c5b76e59cb11f3e579e2f5 done
+#45 exporting config sha256:b6d13bf4b9a3b2f26040841e1cb73716017260e2d8dfbd9fc7b409395449ec02 done
+#45 exporting attestation manifest sha256:f7eb4639389d215d38c8852f8954307f767f2ac37853cc4554633ea8591ffb87 0.1s done
+#45 exporting manifest list sha256:5706777e129c54d52fe11f8d39b0a4087b60f5762518d5310651261d98c63b4b
+#45 exporting manifest list sha256:5706777e129c54d52fe11f8d39b0a4087b60f5762518d5310651261d98c63b4b 0.0s done
+#45 naming to docker.io/humanymous/bots:local done
+#45 unpacking to docker.io/humanymous/bots:local 0.0s done
+#45 DONE 0.2s
+
+#13 [core internal] load build context
+#13 ...
+
+#9 [gate internal] load build context
+#9 transferring context: 3.84MB 0.8s done
+#9 DONE 0.8s
+
+#40 [gate builder 2/7] WORKDIR /src
+#40 CACHED
+
+#46 [gate builder 3/7] COPY go.mod go.sum ./
+#46 CACHED
+
+#47 [gate builder 4/7] RUN go mod download
+#47 CACHED
+
+#13 [core internal] load build context
+#13 ...
+
+#48 [bots] resolving provenance for metadata file
+#48 DONE 0.2s
+
+#13 [core internal] load build context
+#13 ...
+
+#49 [gate builder 5/7] COPY . .
+#49 DONE 0.2s
+
+#13 [core internal] load build context
+#13 transferring context: 53.99MB 3.9s done
+#13 DONE 4.0s
+
+#47 [core builder 4/7] RUN go mod download
+#47 CACHED
+
+#50 [core builder 8/8] RUN mkdir -p /acme-cache && chown 65532:65532 /acme-cache
+#50 CACHED
+
+#51 [core builder 4/8] RUN go mod download
+#51 CACHED
+
+#52 [core builder 3/8] COPY go.mod go.sum ./
+#52 CACHED
+
+#53 [core builder 7/8] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/server ./cmd/server/
+#53 CACHED
+
+#54 [core stage-1 5/6] COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
+#54 CACHED
+
+#55 [core builder 5/8] COPY . .
+#55 CACHED
+
+#56 [core stage-1 3/6] COPY --from=builder /out/server /app/server
+#56 CACHED
+
+#57 [core stage-1 4/6] COPY --from=builder /src/web /app/web
+#57 CACHED
+
+#40 [core builder 2/7] WORKDIR /src
+#40 CACHED
+
+#58 [core stage-1 2/6] WORKDIR /app
+#58 CACHED
+
+#59 [core builder 6/8] RUN GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/  && cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" web/js/wasm_exec.js
+#59 CACHED
+
+#60 [core stage-1 6/6] COPY --from=builder --chown=65532:65532 /acme-cache /acme-cache
+#60 CACHED
+
+#61 [core] exporting to image
+#61 exporting layers done
+#61 exporting manifest sha256:57f1b3dae86db09ba2732ac09e4f69f0aae94cfe364cf06facb83d6f6cc5504f done
+#61 exporting config sha256:2455764220b4e311afd4b08214ced062d9b8c5082d432b85e08f431f074ee06a done
+#61 exporting attestation manifest sha256:5f03b41f4d1522f3818ce6d31f60f38f055c5bfdd776dc0af1027d4d907e93d7
+#61 exporting attestation manifest sha256:5f03b41f4d1522f3818ce6d31f60f38f055c5bfdd776dc0af1027d4d907e93d7 0.1s done
+#61 exporting manifest list sha256:ae8f54ef097039e663f71e3089daad3fb5585f5ca6881735cc6c1a5180d3a4b3 0.0s done
+#61 naming to docker.io/humanymous/core:local done
+#61 unpacking to docker.io/humanymous/core:local
+#61 unpacking to docker.io/humanymous/core:local 0.0s done
+#61 DONE 0.2s
+
+#62 [gate builder 6/7] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/gate ./cmd/gate/
+#62 ...
+
+#63 [core] resolving provenance for metadata file
+#63 DONE 0.0s
+
+#62 [gate builder 6/7] RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=dev" -o /out/gate ./cmd/gate/
+#62 DONE 4.9s
+
+#64 [gate builder 7/7] RUN mkdir -p /out/data /out/acme-cache
+#64 DONE 0.3s
+
+#65 [gate stage-1 3/6] COPY --from=builder /out/gate /app/gate
+#65 CACHED
+
+#66 [gate stage-1 5/6] COPY --from=builder --chown=65532:65532 /out/data /data
+#66 CACHED
+
+#58 [gate stage-1 2/6] WORKDIR /app
+#58 CACHED
+
+#67 [gate stage-1 4/6] COPY --from=builder /src/LICENSE /src/NOTICE /src/THIRD_PARTY_LICENSES.md /app/
+#67 CACHED
+
+#68 [gate stage-1 6/6] COPY --from=builder --chown=65532:65532 /out/acme-cache /acme-cache
+#68 CACHED
+
+#69 [gate] exporting to image
+#69 exporting layers done
+#69 exporting manifest sha256:e0f38975f1a649db783232ad1f72ac538a1b894f855e15e809dc5d2d0d099515 0.0s done
+#69 exporting config sha256:08d1c68a8398fb3edf1b7b1addf3fe8c518d4bec870d7c0564f62cc9b33dfbe6 0.0s done
+#69 exporting attestation manifest sha256:40b48d95a108c4cb4f305cea15e2537632b8ca9258332af7907c8caa51fd1d33 0.1s done
+#69 exporting manifest list sha256:e9a62928e568700e905717e1208a7ec97a185c9ef2aec822bd9592d8e4c55f10
+#69 exporting manifest list sha256:e9a62928e568700e905717e1208a7ec97a185c9ef2aec822bd9592d8e4c55f10 0.0s done
+#69 naming to docker.io/humanymous/gate:local done
+#69 unpacking to docker.io/humanymous/gate:local 0.0s done
+#69 DONE 0.2s
+
+#70 [gate] resolving provenance for metadata file
+#70 DONE 0.0s
+ Image humanymous/core:local Built 
+ Image humanymous/gate:local Built 
+ Image humanymous/bots:local Built 
+========== [e2e-docker] PASS build-images elapsed=10s ==========
+
+========== [e2e-docker] START start-defenders @ 2026-11-09T20:39:19Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml up -d --no-build core origin gate
+ Volume hmn-e2e_gate-settings Creating 
+ Volume hmn-e2e_gate-settings Creating 
+ Network hmn-e2e_web Creating 
+ Network hmn-e2e_lab-a Creating 
+ Network hmn-e2e_web Creating 
+ Network hmn-e2e_lab-c Creating 
+ Network hmn-e2e_lab-a Creating 
+ Network hmn-e2e_lab-b Creating 
+ Network hmn-e2e_lab-b Creating 
+ Network hmn-e2e_lab-c Creating 
+ Volume hmn-e2e_gate-settings Created 
+ Volume hmn-e2e_gate-settings Created 
+ Network hmn-e2e_web Created 
+ Network hmn-e2e_web Created 
+ Container hmn-e2e-origin-1 Creating 
+ Network hmn-e2e_lab-b Created 
+ Network hmn-e2e_lab-b Created 
+ Network hmn-e2e_lab-c Created 
+ Network hmn-e2e_lab-c Created 
+ Network hmn-e2e_lab-a Created 
+ Network hmn-e2e_lab-a Created 
+ Container hmn-e2e-core-1 Creating 
+ Container hmn-e2e-origin-1 Created 
+ Container hmn-e2e-gate-1 Creating 
+ Container hmn-e2e-core-1 Created 
+ Container hmn-e2e-gate-1 Created 
+ Container hmn-e2e-core-1 Starting 
+ Container hmn-e2e-origin-1 Starting 
+ Container hmn-e2e-core-1 Started 
+ Container hmn-e2e-origin-1 Started 
+ Container hmn-e2e-gate-1 Starting 
+ Container hmn-e2e-gate-1 Started 
+========== [e2e-docker] PASS start-defenders elapsed=2s ==========
+
+========== [e2e-docker] START attack-catalog @ 2026-11-09T20:39:21Z (timeout 1200s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T bots
+ Container hmn-e2e-bots-run-392d7683df62 Creating 
+ Container hmn-e2e-bots-run-392d7683df62 Created 
+[bots] waiting for the detector engine at https://core:8443 ...
+[bots] detector engine is up (after 2s)
+[bots] launching the automation catalog (HM_RUNS=1) ...
+human #0: CHALLENGE (risk=42.9, rule=-) [TN]
+bot:nonbrowser-ua #0: CHALLENGE (risk=54.4, rule=-) [TP]
+(node:33) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+bot:http-client #0: DENY (risk=68.2, rule=HR-18) [TP]
+bot:tls-parrot #0: DENY (risk=70.8, rule=HR-18) [TP]
+bot:curl-impersonate-chrome #0: DENY (risk=48.5, rule=HR-18) [TP]
+bot:curl-impersonate-chrome99-android #0: DENY (risk=48.5, rule=HR-18) [TP]
+bot:tls-static #0: DENY (risk=46.4, rule=HR-18) [TP]
+bot:pq-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:alps-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:cert-compression-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:ech-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:sec-chua-absent #0: CHALLENGE (risk=45.1, rule=HR-23) [TP]
+bot:sec-fetch-absent #0: CHALLENGE (risk=55.4, rule=HR-23) [TP]
+bot:rit-absent #0: CHALLENGE (risk=35.9, rule=HR-17) [TP]
+bot:rit-replay #0: DENY (risk=54.4, rule=HR-18) [TP]
+bot:rit-tamper #0: DENY (risk=67.8, rule=HR-16) [TP]
+bot:ua-rotate #0: DENY (risk=62.5, rule=HR-18) [TP]
+bot:xff-spoof #0: CHALLENGE (risk=8.5, rule=HR-23) [TP]
+bot:no-interaction #0: CHALLENGE (risk=71.5, rule=HR-12) [TP]
+bot:untrusted-events #0: CHALLENGE (risk=82.7, rule=HR-23) [TP]
+bot:selenium #0: DENY (risk=76.8, rule=HR-1) [TP]
+bot:puppeteer #0: DENY (risk=75.6, rule=HR-7) [TP]
+bot:playwright #0: DENY (risk=75.6, rule=HR-7) [TP]
+[e2e-docker] HEARTBEAT phase=attack-catalog elapsed=30s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T204000Z-hmn-e2e-rb-r7/e2e.log
+bot:undetected-chromedriver #0: DENY (risk=65, rule=HR-7) [TP]
+bot:direct-cdp #0: DENY (risk=75.6, rule=HR-7) [TP]
+bot:tls-rotate #0: DENY (risk=67.8, rule=HR-14) [TP]
+bot:ja4-churn #0: DENY (risk=45.1, rule=HR-14) [TP]
+bot:grease-absent-js #0: CHALLENGE (risk=61.1, rule=HR-23) [TP]
+bot:video-scrape #0: DENY (risk=68.2, rule=HR-18) [TP]
+bot:watermark-strip #0: DENY (risk=100, rule=wm-traced) [TP]
+bot:flood #0: CHALLENGE (risk=63.4, rule=HR-17) [TP]
+bot:h2-rapid-reset #0: DENY (risk=69.9, rule=HR-2) [TP]
+bot:h2-flow-control #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:h2-priority-absent #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:puppeteer-stealth #0: DENY (risk=64.6, rule=HR-8) [TP]
+bot:playwright-stealth #0: DENY (risk=64.6, rule=HR-8) [TP]
+bot:patchright #0: DENY (risk=62.6, rule=HR-9) [TP]
+[e2e-docker] HEARTBEAT phase=attack-catalog elapsed=60s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T204000Z-hmn-e2e-rb-r7/e2e.log
+bot:rebrowser-cdp-stripped #0: DENY (risk=65, rule=HR-7) [TP]
+bot:mobile-ua-desktop-profile #0: CHALLENGE (risk=74.2, rule=HR-22) [TP]
+bot:near-ceiling-audio-24k #0: CHALLENGE (risk=65.7, rule=HR-22) [TP]
+bot:near-ceiling-no-widevine #0: CHALLENGE (risk=62.6, rule=HR-23) [TP]
+bot:browser-use-cdp #0: DENY (risk=65, rule=HR-7) [TP]
+bot:multi-axis-rotate #0: DENY (risk=45.1, rule=HR-14) [TP]
+bot:webgpu-mismatch #0: CHALLENGE (risk=76.8, rule=HR-22) [TP]
+bot:headless-ua-token #0: CHALLENGE (risk=82.1, rule=HR-12) [TP]
+bot:signal-forgery #0: CHALLENGE (risk=61.1, rule=HR-23) [TP]
+bot:browser-tls-h1 #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:machine-keystroke #0: CHALLENGE (risk=75.2, rule=HR-23) [TP]
+bot:teleport-click #0: CHALLENGE (risk=75.5, rule=HR-12) [TP]
+bot:bezier-mouse #0: CHALLENGE (risk=71.5, rule=HR-23) [TP]
+bot:fixed-typing #0: CHALLENGE (risk=71.3, rule=HR-23) [TP]
+bot:ai-burst-silence #0: CHALLENGE (risk=74.6, rule=HR-23) [TP]
+bot:nodriver #0: DENY (risk=43.3, rule=HR-9) [TP]
+bot:xvfb-headful #0: DENY (risk=43.3, rule=HR-9) [TP]
+[e2e-docker] HEARTBEAT phase=attack-catalog elapsed=90s log=/c/workspaces/humanymous/.spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/runs/20261109T204000Z-hmn-e2e-rb-r7/e2e.log
+bot:anti-detect-browser #0: DENY (risk=19.1, rule=HR-9) [TP]
+bot:camoufox #0: CHALLENGE (risk=79.7, rule=HR-12) [TP]
+bot:ai-agent #0: DENY (risk=72.1, rule=HR-16) [TP]
+bot:ai-full-cadence #0: DENY (risk=77.4, rule=HR-20) [TP]
+bot:distributed-proxy #0: DENY (risk=8.5, rule=HR-19) [TP]
+bot:privacy-evasion #0: DENY (risk=8.5, rule=HR-19) [TP]
+bot:squid-forward #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:openvpn-exit #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:wireguard-hop #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:tor-exit #0: DENY (risk=59.6, rule=HR-19) [TP]
+bot:anon-proxy-chain #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:elite-anon-proxy #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:cdn-ip-spoof #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:proxy-ua-rotate #0: DENY (risk=30, rule=HR-19) [TP]
+bot:fp-churn-proxy #0: DENY (risk=0, rule=HR-19) [TP]
+bot:stacked-proxy-vpn #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+bot:socks-exit-hop #0: CHALLENGE (risk=0, rule=HR-24) [TP]
+ceiling:native-coherent #0: ALLOW (risk=0, rule=-) [CEILING]
+
+wrote /app/test/e2e/results.json (72 records)
+
+=== summary ===
+human: {"CHALLENGE":1}
+bot:nonbrowser-ua: {"CHALLENGE":1}
+bot:http-client: {"DENY":1}
+bot:tls-parrot: {"DENY":1}
+bot:curl-impersonate-chrome: {"DENY":1}
+bot:curl-impersonate-chrome99-android: {"DENY":1}
+bot:tls-static: {"DENY":1}
+bot:pq-absent: {"CHALLENGE":1}
+bot:alps-absent: {"CHALLENGE":1}
+bot:cert-compression-absent: {"CHALLENGE":1}
+bot:ech-absent: {"CHALLENGE":1}
+bot:sec-chua-absent: {"CHALLENGE":1}
+bot:sec-fetch-absent: {"CHALLENGE":1}
+bot:rit-absent: {"CHALLENGE":1}
+bot:rit-replay: {"DENY":1}
+bot:rit-tamper: {"DENY":1}
+bot:ua-rotate: {"DENY":1}
+bot:xff-spoof: {"CHALLENGE":1}
+bot:no-interaction: {"CHALLENGE":1}
+bot:untrusted-events: {"CHALLENGE":1}
+bot:selenium: {"DENY":1}
+bot:puppeteer: {"DENY":1}
+bot:playwright: {"DENY":1}
+bot:undetected-chromedriver: {"DENY":1}
+bot:direct-cdp: {"DENY":1}
+bot:tls-rotate: {"DENY":1}
+bot:ja4-churn: {"DENY":1}
+bot:grease-absent-js: {"CHALLENGE":1}
+bot:video-scrape: {"DENY":1}
+bot:watermark-strip: {"DENY":1}
+bot:flood: {"CHALLENGE":1}
+bot:h2-rapid-reset: {"DENY":1}
+bot:h2-flow-control: {"CHALLENGE":1}
+bot:h2-priority-absent: {"CHALLENGE":1}
+bot:puppeteer-stealth: {"DENY":1}
+bot:playwright-stealth: {"DENY":1}
+bot:patchright: {"DENY":1}
+bot:rebrowser-cdp-stripped: {"DENY":1}
+bot:mobile-ua-desktop-profile: {"CHALLENGE":1}
+bot:near-ceiling-audio-24k: {"CHALLENGE":1}
+bot:near-ceiling-no-widevine: {"CHALLENGE":1}
+bot:browser-use-cdp: {"DENY":1}
+bot:multi-axis-rotate: {"DENY":1}
+bot:webgpu-mismatch: {"CHALLENGE":1}
+bot:headless-ua-token: {"CHALLENGE":1}
+bot:signal-forgery: {"CHALLENGE":1}
+bot:browser-tls-h1: {"CHALLENGE":1}
+bot:machine-keystroke: {"CHALLENGE":1}
+bot:teleport-click: {"CHALLENGE":1}
+bot:bezier-mouse: {"CHALLENGE":1}
+bot:fixed-typing: {"CHALLENGE":1}
+bot:ai-burst-silence: {"CHALLENGE":1}
+bot:nodriver: {"DENY":1}
+bot:xvfb-headful: {"DENY":1}
+bot:anti-detect-browser: {"DENY":1}
+bot:camoufox: {"CHALLENGE":1}
+bot:ai-agent: {"DENY":1}
+bot:ai-full-cadence: {"DENY":1}
+bot:distributed-proxy: {"DENY":1}
+bot:privacy-evasion: {"DENY":1}
+bot:squid-forward: {"CHALLENGE":1}
+bot:openvpn-exit: {"CHALLENGE":1}
+bot:wireguard-hop: {"CHALLENGE":1}
+bot:tor-exit: {"DENY":1}
+bot:anon-proxy-chain: {"CHALLENGE":1}
+bot:elite-anon-proxy: {"CHALLENGE":1}
+bot:cdn-ip-spoof: {"CHALLENGE":1}
+bot:proxy-ua-rotate: {"DENY":1}
+bot:fp-churn-proxy: {"DENY":1}
+bot:stacked-proxy-vpn: {"CHALLENGE":1}
+bot:socks-exit-hop: {"CHALLENGE":1}
+ceiling:native-coherent: {"ALLOW":1}
+
+=== Red/Blue cost-escalation ladder (cheap -> expensive) ===
+  baseline (human) : CHALLENGE  -> ok (not denied)
+
+  [T0] trivial — $0, a script, no browser
+       non-browser HTTP/uTLS clients, header/token tricks, and the cheapest behavior tells
+       expect: reliable
+       must-block: 19/19 blocked = 100% of attempted
+
+  [T1] low — $, off-the-shelf tools on defaults
+       naive automation frameworks, single-axis TLS/engine churn, and cheap resource/DoS abuse
+       expect: reliable
+       must-block: 14/14 blocked = 100% of attempted
+
+  [T2] moderate — $$, stealth plugins / patched natives / behavioral humanizers
+       stealth-patched automation, multi-axis rotation, fingerprint-spoof contradictions, and mouse/keystroke humanizers
+       expect: reliable
+       must-block: 18/18 blocked = 100% of attempted
+
+  [T3] high — $$$, real browser engine + proxy/AI infrastructure
+       real-engine anti-detect, AI cadence, residential/anonymous proxy chains, Squid/OpenVPN/WireGuard/Tor/SOCKS, CDN IP spoof, fp-churn evasion
+       expect: degrades gracefully — scores + challenges/denies at lower confidence
+       must-block: 19/19 blocked = 100% of attempted
+
+  [T4] very high — $$$$, an engine-level spoof or a real human behind residential proxies
+       a fully coherent BotBrowser-class spoof, or genuine human behavior on a real engine — not separable by DETECTION alone
+       expect: NOT solved (stated ceiling) — the coherent case SCORES ALLOW; mitigated only by rate limiting + cross-session reputation
+       ceiling: ceiling:native-coherent -> ALLOW  (ALLOW = the honest ceiling, as expected)
+
+  Reading it: Blue should hold 100% through T2 and score/challenge (not necessarily
+  DENY) at T3; any bot reaching ALLOW below T4 is a regression. T4 is the documented
+  detection ceiling — a real human on a real engine, mitigated by rate/reputation only.
+[bots] wrote /artifacts/core-results.json
+[bots] attack run complete (runner exit 0).
+========== [e2e-docker] PASS attack-catalog elapsed=113s ==========
+
+========== [e2e-docker] START attack-assert @ 2026-11-09T20:41:14Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T attack-assert
+ Container hmn-e2e-attack-assert-run-7efd0cfada28 Creating 
+ Container hmn-e2e-attack-assert-run-7efd0cfada28 Created 
+bots 70/70 blocked | escaped 0 | human FP 0 | errored 0 | skipped 0 | profiles 72
+PASS: engine war gate (complete catalog, all bots blocked, no false positive)
+========== [e2e-docker] PASS attack-assert elapsed=1s ==========
+
+========== [e2e-docker] START gate-conformance @ 2026-11-09T20:41:15Z (timeout 300s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T gate-e2e
+ Container hmn-e2e-gate-e2e-run-3926d56cd174 Creating 
+ Container hmn-e2e-gate-e2e-run-3926d56cd174 Created 
+[gate-e2e] starting a throwaway Gate on loopback ...
+[gate-e2e] Gate edge is up (after 1s)
+(node:26) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS html-injection — injected bundle + preserved origin bytes
+PASS no-store-on-html — no-store
+PASS bot-scored-deny — verdict=DENY rule=HR-7
+PASS bot-blocked-at-edge — status=403
+PASS origin-not-contacted — hits delta=0
+PASS synthetic-baseline-challenged — verdict=CHALLENGE status=401
+PASS origin-direct-hit-blocked — status=421 (cloaking rejects unproxied)
+PASS spoof-xff-blocked — status=403
+PASS spoof-origin-auth-blocked — status=403
+PASS strict-route-fail-closed — status=401 (unscored strict -> challenge)
+PASS challenge-does-not-issue-verdict-token — none issued
+PASS token-fastpath-allow — status=200 explicit fixture
+PASS token-theft-not-honored — cleared=true status=200 (binding mismatch -> cleared + re-scored)
+PASS token-forgery-not-honored — cleared=true status=200 (bad sig -> cleared)
+PASS beacon-replay-rejected — first=200 replay=409
+PASS smuggling-blocked — HTTP/1.1 400 Bad Request
+PASS upgrade-tunnel-blocked — status=403 (no prior verdict)
+PASS decision-sweep-blocked — many sessions/one fingerprint -> DENY
+PASS unsafe-method-fail-closed — GET=200 POST=401
+PASS admin-off-public-and-authed — public=404 unauth=404
+PASS console-add-ban — status=200
+PASS rbac-auditor-readonly — auditorBan=403
+PASS dual-control-two-principal — pending=200 self=403 commit=200
+PASS permanent-ban-ignores-body-approver — status=200 body={"approvalId":"a54b00d0e495bfbf43f357ad","needsRole":"approver","pending":true}
+
+PASS cidr-ban-dual-control — status=200 body={"approvalId":"5753d0ef2ec6bbae54f51a82","needsRole":"approver","pending":true}
+
+PASS bulk-permanent-rejected — status=400 body=bulk bans must be temporary and bounded (0/negative/over-cap needs dual-control)
+
+PASS overcap-ban-dual-control — status=200 body={"approvalId":"b3acaa14a2d551358269baea","needsRole":"approver","pending":true}
+
+PASS auditor-cannot-approve-ban — status=403 body=role auditor not permitted
+
+PASS negative-duration-rejected — status=400 body=durationSec must be >= 0
+
+PASS invalid-ban-key-rejected — emptyIP=400 garbageCIDR=400
+PASS self-lift-closed — unauth=404 op=200
+PASS console-integrity-verifies — ok=true records=62
+PASS integrity-witnessed — witnessed=true
+PASS console-audit-stream — count=30
+PASS console-pseudonymized — 26 subject ids, all pseudonymized
+PASS admin-reads-meta-audited — admin.access events present
+PASS console-serves — live console HTML served + dev token injected
+PASS console-policy — 5 routes, hard=120
+PASS settings-empty-overlay-freeze — status=200 attached=true empty=true
+PASS settings-mutation-guards — auditor=403 stale=409 classC=400
+PASS console-erasure-dual-control — pending=200 nonDpo=403 dpo=200
+PASS console-chain-still-intact — ok=true records=75
+PASS killswitch-dual-control — req=200 self=403 commit=200 monitor=true
+
+=== 43/43 passed ===
+[gate-e2e] conformance complete (exit 0).
+========== [e2e-docker] PASS gate-conformance elapsed=2s ==========
+
+========== [e2e-docker] START pass-contract @ 2026-11-09T20:41:17Z (timeout 300s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T pass-e2e
+ Container hmn-e2e-pass-e2e-run-fa9a08308156 Creating 
+ Container hmn-e2e-pass-e2e-run-fa9a08308156 Created 
+(node:1) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[1] aligned + nonce-bound PoW + keyboard trace -> {"ok":true,"riskScore":0,"verdict":"CHALLENGE"}
+[2] no cryptographic preflight -> {"ok":false,"reason":"no cryptographic preflight","triesLeft":3}
+[3] uniform key timing -> {"ok":false,"reason":"uniform key timing","triesLeft":3}
+[4] path/offset mismatch -> {"ok":false,"reason":"the keys are not all in the slot","triesLeft":3}
+[5] wrong challenge nonce -> {"ok":false,"reason":"stale or missing challenge","triesLeft":3}
+
+PASS E2E OK: crypto preflight, alignment, event trace, and nonce binding
+========== [e2e-docker] PASS pass-contract elapsed=1s ==========
+
+========== [e2e-docker] START restart-core @ 2026-11-09T20:41:18Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml restart core
+ Container hmn-e2e-core-1 Restarting 
+ Container hmn-e2e-core-1 Started 
+========== [e2e-docker] PASS restart-core elapsed=1s ==========
+
+========== [e2e-docker] START pass-wargame @ 2026-11-09T20:41:19Z (timeout 600s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T pass-wargame
+ Container hmn-e2e-pass-wargame-run-29dde3651935 Creating 
+ Container hmn-e2e-pass-wargame-run-29dde3651935 Created 
+=== humanymous Pass: 3-row red/blue wargame ===
+
+(node:1) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  PASS    accessible-keyboard-human  risk=0 
+challenge-clears-to-allow:  solved=true engineVerdict=ALLOW → UPGRADED to ALLOW (Pass cleared the challenge)
+known-bot-solves-pass:      cleared=true engineVerdict=DENY → NOT laundered (stays DENY)
+
+machine-forge: clear=true risk=14.3 verdict=CHALLENGE (behavioral tell folded in)
+mobile-forge:  clear=true risk=16.9 verdict=CHALLENGE (touch claim, no device-motion → flagged)
+
+
+volume-forge (naive flood — cost climbs, then the identity gate BLOCKS it):
+  #0 pow=19 attestReq=false clear=true risk=12.5 
+  #1 pow=20 attestReq=false clear=true risk=45 
+  #2 pow=19 attestReq=true clear=false risk=0 attestation required
+  #3 pow=20 attestReq=true clear=false risk=0 attestation required
+  #4 pow=20 attestReq=true clear=false risk=0 attestation required
+  #5 pow=20 attestReq=true clear=false risk=0 attestation required
+  #6 pow=20 attestReq=true clear=false risk=0 attestation required
+  #7 pow=20 attestReq=true clear=false risk=0 attestation required
+  → 2 cleared then 6 BLOCKED (identity gate engaged)
+
+token-flood (fetches tokens — throughput capped by per-fingerprint issuance):
+  #0 attestReq=false token=false clear=true 
+  #1 attestReq=false token=false clear=true 
+  #2 attestReq=true token=true clear=true 
+  #3 attestReq=true token=true clear=true 
+  #4 attestReq=true token=false clear=false attestation required
+  #5 attestReq=true token=false clear=false attestation required
+  #6 attestReq=true token=false clear=false attestation required
+  #7 attestReq=true token=false clear=false attestation required
+  → 4 cleared then 4 BLOCKED (issuance budget capped throughput)
+
+  BLOCKED  read-dom-forge-no-crypto   no cryptographic preflight
+  BLOCKED  no-attestation-or-pow      no cryptographic preflight
+  BLOCKED  dispatch-untrusted         untrusted events
+  BYPASS   replay-trace-first-use     
+  BLOCKED  replay-trace-second-use    duplicate interaction trace
+  BYPASS   keyboard-forge-with-pow    
+  BYPASS   cdp-inject-with-pow        
+
+A11Y PASS {"keyboardGroup":true,"screenReaderLive":true,"rowSliders":true,"noCanvas":true,"noAnimationLoop":true,"noTimeLimitCopy":true}
+
+=== blue KPI scoreboard ===
+bypass-rate: 48.1% over 27 red/bot attempts
+per-strategy: {
+  'cdp-inject': 1,
+  'challenge-clears': 1,
+  'dispatch-untrusted': 0,
+  'keyboard-forge': 1,
+  'known-bot': 1,
+  'machine-forge': 1,
+  'mobile-forge': 1,
+  'no-attestation': 0,
+  'read-dom-forge': 0,
+  'replay-trace': 0.5,
+  'token-flood': 0.5,
+  'volume-forge': 0.25
+}
+per-difficulty: { d0: 1, d3: 0.48148148148148145 }
+human pass floor: 100.0% over 1 attempts
+
+blocked 4/7 single-shot classes · posture held · human floor ok · identity-gate engaged · behavioral folded in (machine 14.3 vs human 0) · mobile-guard flagged (risk 16.9) · engine-fusion held (bot→DENY, genuine CHALLENGE→ALLOW)
+promotion gate: PASS
+rounds 1-8 in force: ① nonce-bound PoW + anti-replay · ③ velocity→PoW-cost + engine risk (no lockout) · ① rate-limited attestation identity-gate · ④ SOFT motor-trace scoring + ⑧ mobile device-motion consistency (both never gate the accessible lane) · ⑤/⑥/⑦ engine fusion verified LIVE both ways — a genuine CHALLENGE→ALLOW, a known bot→DENY despite clearing the puzzle.
+honest floor: a PERFECT single forgery from a FRESH identity with human-like dynamics still clears the puzzle — it cannot be blocked at the trace level without excluding real AT users. It is now bounded by attestation issuance rate + folded engine risk, and the engine still DENIES it the moment any independent bot signal (JA4/L1-L7/correlation) appears. Remaining wins are engine-side, in the full real-browser-vs-bot redteam suite — not this node puzzle harness.
+========== [e2e-docker] PASS pass-wargame elapsed=19s ==========
+
+========== [e2e-docker] START swarm-reset @ 2026-11-09T20:41:38Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T swarm-reset
+ Container hmn-e2e-swarm-reset-run-98d8d4457295 Creating 
+ Container hmn-e2e-swarm-reset-run-98d8d4457295 Created 
+========== [e2e-docker] PASS swarm-reset elapsed=1s ==========
+
+========== [e2e-docker] START swarm @ 2026-11-09T20:41:39Z (timeout 300s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml --profile swarm up --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c
+ Container hmn-e2e-bot-swarm-c-1 Creating 
+ Container hmn-e2e-bot-swarm-a-1 Creating 
+ Container hmn-e2e-bot-swarm-b-1 Creating 
+ Container hmn-e2e-bot-swarm-b-1 Created 
+ Container hmn-e2e-bot-swarm-a-1 Created 
+ Container hmn-e2e-bot-swarm-c-1 Created 
+Attaching to bot-swarm-a-1, bot-swarm-b-1, bot-swarm-c-1
+ Container hmn-e2e-bot-swarm-b-1 Starting 
+ Container hmn-e2e-bot-swarm-a-1 Starting 
+ Container hmn-e2e-bot-swarm-c-1 Starting 
+bot-swarm-b-1  | [swarm] fda1cd493408 @ 172.31.0.4 waiting for https://core:8443 ...
+ Container hmn-e2e-bot-swarm-b-1 Started 
+bot-swarm-b-1  | [swarm] emitting 5 sessions with shared fp=swarm-shared-fp-0001
+bot-swarm-b-1  | (node:23) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+bot-swarm-b-1  | (Use `node --trace-warnings ...` to show where the warning was created)
+bot-swarm-b-1  | [swarm] #0 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-b-1  | [swarm] #1 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-b-1  | [swarm] #2 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-b-1  | [swarm] #3 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-b-1  | [swarm] #4 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-a-1  | [swarm] ccfa343ca662 @ 172.30.0.5 waiting for https://core:8443 ...
+bot-swarm-a-1  | [swarm] emitting 5 sessions with shared fp=swarm-shared-fp-0001
+[Kbot-swarm-b-1 exited with code 0
+ Container hmn-e2e-bot-swarm-a-1 Started 
+bot-swarm-a-1  | (node:23) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+bot-swarm-a-1  | (Use `node --trace-warnings ...` to show where the warning was created)
+bot-swarm-a-1  | [swarm] #0 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-a-1  | [swarm] #1 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-a-1  | [swarm] #2 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-a-1  | [swarm] #3 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-a-1  | [swarm] #4 verdict=ALLOW risk=21.3 rule=- corr=[-]
+bot-swarm-c-1  | [swarm] bed3da17bfb5 @ 172.32.0.4 waiting for https://core:8443 ...
+[Kbot-swarm-a-1 exited with code 0
+bot-swarm-c-1  | [swarm] emitting 5 sessions with shared fp=swarm-shared-fp-0001
+ Container hmn-e2e-bot-swarm-c-1 Started 
+bot-swarm-c-1  | (node:23) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+bot-swarm-c-1  | (Use `node --trace-warnings ...` to show where the warning was created)
+bot-swarm-c-1  | [swarm] #0 verdict=DENY risk=21.3 rule=HR-19 corr=[proxy_rotation]
+bot-swarm-c-1  | [swarm] #1 verdict=DENY risk=21.3 rule=HR-19 corr=[proxy_rotation]
+bot-swarm-c-1  | [swarm] #2 verdict=DENY risk=21.3 rule=HR-19 corr=[proxy_rotation]
+bot-swarm-c-1  | [swarm] #3 verdict=DENY risk=21.3 rule=HR-19 corr=[proxy_rotation]
+bot-swarm-c-1  | [swarm] #4 verdict=DENY risk=21.3 rule=HR-19 corr=[proxy_rotation]
+[Kbot-swarm-c-1 exited with code 0
+========== [e2e-docker] PASS swarm elapsed=1s ==========
+
+========== [e2e-docker] START swarm-assert @ 2026-11-09T20:41:40Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml run --rm -T swarm-assert
+ Container hmn-e2e-swarm-assert-run-a6f3124d0e1c Creating 
+ Container hmn-e2e-swarm-assert-run-a6f3124d0e1c Created 
+========== [e2e-docker] PASS swarm-assert elapsed=4s ==========
+
+========== [e2e-docker] START stop-base-before-overlays @ 2026-11-09T20:41:44Z (timeout 120s) ==========
+[e2e-docker] COMMAND docker compose -p hmn-e2e -f deployments/compose.yaml --profile swarm down -v
+ Container hmn-e2e-bot-swarm-c-1 Stopping 
+ Container hmn-e2e-core-1 Stopping 
+ Container hmn-e2e-bot-swarm-a-1 Stopping 
+ Container hmn-e2e-gate-1 Stopping 
+ Container hmn-e2e-bot-swarm-b-1 Stopping 
+ Container hmn-e2e-bot-swarm-c-1 Stopped 
+ Container hmn-e2e-bot-swarm-c-1 Removing 
+ Container hmn-e2e-bot-swarm-a-1 Stopped 
+ Container hmn-e2e-bot-swarm-a-1 Removing 
+ Container hmn-e2e-bot-swarm-b-1 Stopped 
+ Container hmn-e2e-bot-swarm-b-1 Removing 
+ Container hmn-e2e-bot-swarm-c-1 Removed 
+ Container hmn-e2e-bot-swarm-a-1 Removed 
+ Container hmn-e2e-bot-swarm-b-1 Removed 
+ Container hmn-e2e-core-1 Stopped 
+ Container hmn-e2e-core-1 Removing 
+ Container hmn-e2e-core-1 Removed 
+ Container hmn-e2e-gate-1 Stopped 
+ Container hmn-e2e-gate-1 Removing 
+ Container hmn-e2e-gate-1 Removed 
+ Container hmn-e2e-origin-1 Stopping 
+ Container hmn-e2e-origin-1 Stopped 
+ Container hmn-e2e-origin-1 Removing 
+ Container hmn-e2e-origin-1 Removed 
+ Network hmn-e2e_web Removing 
+ Network hmn-e2e_lab-c Removing 
+ Volume hmn-e2e_gate-settings Removing 
+ Network hmn-e2e_lab-b Removing 
+ Network hmn-e2e_lab-a Removing 
+ Network hmn-e2e_lab-a Resource is still in use 
+ Volume hmn-e2e_gate-settings Removed 
+ Network hmn-e2e_lab-c Removed 
+ Network hmn-e2e_web Removed 
+ Network hmn-e2e_lab-b Removed 
+========== [e2e-docker] PASS stop-base-before-overlays elapsed=2s ==========
+
+========== [e2e-docker] START overlays @ 2026-11-09T20:41:46Z (timeout 1200s) ==========
+[e2e-docker] COMMAND env E2E_BASE_PROJECT=hmn-e2e E2E_PROJECT_NAME=hmn-e2e-overlay sh scripts/ci-overlays.sh
+[overlay] PLAN redis-ha -> proxyproto -> webbotauth -> privacypass -> webauthn -> redis-hardened -> audit-ch(clickhouse) -> ml -> core-fleet
+::group::overlay redis-ha
+[overlay] START name=redis-ha attempt=1 timeout=240s
+ Image redis:7-alpine Pulling 
+ 100397b92304 Pulling fs layer 0B
+ ed20a3352991 Pulling fs layer 0B
+ eced4433665e Pulling fs layer 0B
+ ee92a57da343 Pulling fs layer 0B
+ 4f4fb700ef54 Pulling fs layer 0B
+ 871d48e9bf6b Pulling fs layer 0B
+ 322b6e6144f6 Pulling fs layer 0B
+ 4f4fb700ef54 Already exists 0B
+ 322b6e6144f6 Downloading 948B
+ 322b6e6144f6 Download complete 0B
+ eced4433665e Downloading 1.049MB
+ 100397b92304 Download complete 0B
+ eced4433665e Downloading 3.146MB
+ ee92a57da343 Download complete 0B
+ eced4433665e Downloading 4.194MB
+ eced4433665e Downloading 6.291MB
+ 871d48e9bf6b Downloading 2.097MB
+ ed20a3352991 Download complete 0B
+ eced4433665e Downloading 7.34MB
+ eced4433665e Downloading 8.389MB
+ eced4433665e Downloading 10.49MB
+ 871d48e9bf6b Download complete 0B
+ 871d48e9bf6b Extracting 1B
+ eced4433665e Downloading 11.53MB
+ 322b6e6144f6 Extracting 1B
+ 871d48e9bf6b Pull complete 0B
+ d5050497c244 Downloading 24.69kB
+ eced4433665e Download complete 0B
+ 322b6e6144f6 Pull complete 0B
+ d5050497c244 Download complete 0B
+ 5602e6b31c82 Download complete 0B
+ ed20a3352991 Pull complete 0B
+ eced4433665e Extracting 1B
+ eced4433665e Pull complete 0B
+ 4f4fb700ef54 Pull complete 0B
+ ee92a57da343 Pull complete 0B
+ 100397b92304 Pull complete 0B
+ Image redis:7-alpine Pulled 
+ Network hmn-e2e-overlay_lab-a Creating 
+ Volume hmn-e2e-overlay_gate-settings Creating 
+ Network hmn-e2e-overlay_lab-a Creating 
+ Network hmn-e2e-overlay_lab-c Creating 
+ Network hmn-e2e-overlay_lab-b Creating 
+ Volume hmn-e2e-overlay_gate-settings Creating 
+ Network hmn-e2e-overlay_web Creating 
+ Network hmn-e2e-overlay_lab-c Creating 
+ Network hmn-e2e-overlay_lab-b Creating 
+ Network hmn-e2e-overlay_web Creating 
+ Network hmn-e2e-overlay_lab-a Error Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ network:lab-a failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space 
+ Network hmn-e2e-overlay_web Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Volume hmn-e2e-overlay_gate-settings Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/volumes/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Network hmn-e2e-overlay_lab-b Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Network hmn-e2e-overlay_lab-c Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+[overlay] FAIL name=redis-ha phase=up attempt=1
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+[overlay] START name=redis-ha attempt=2 timeout=240s
+ Network hmn-e2e-overlay_web Creating 
+ Network hmn-e2e-overlay_web Creating 
+ Network hmn-e2e-overlay_lab-b Creating 
+ Network hmn-e2e-overlay_lab-a Creating 
+ Volume hmn-e2e-overlay_gate-settings Creating 
+ Volume hmn-e2e-overlay_gate-settings Creating 
+ Network hmn-e2e-overlay_lab-b Creating 
+ Network hmn-e2e-overlay_lab-a Creating 
+ Network hmn-e2e-overlay_lab-c Creating 
+ Network hmn-e2e-overlay_lab-c Creating 
+ Volume hmn-e2e-overlay_gate-settings Created 
+ Volume hmn-e2e-overlay_gate-settings Created 
+ Network hmn-e2e-overlay_lab-a Error Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ network:lab-a failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space 
+ Network hmn-e2e-overlay_web Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Network hmn-e2e-overlay_lab-b Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Network hmn-e2e-overlay_lab-c Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+[overlay] FAIL name=redis-ha phase=up attempt=2
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+[overlay] START name=redis-ha attempt=3 timeout=240s
+ Network hmn-e2e-overlay_lab-a Creating 
+ Volume hmn-e2e-overlay_gate-settings Creating 
+ Volume hmn-e2e-overlay_gate-settings Creating 
+ Network hmn-e2e-overlay_lab-a Creating 
+ Network hmn-e2e-overlay_lab-b Creating 
+ Network hmn-e2e-overlay_lab-b Creating 
+ Network hmn-e2e-overlay_lab-c Creating 
+ Network hmn-e2e-overlay_lab-c Creating 
+ Network hmn-e2e-overlay_web Creating 
+ Network hmn-e2e-overlay_web Creating 
+ Network hmn-e2e-overlay_lab-a Error Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ network:lab-a failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space 
+ Network hmn-e2e-overlay_web Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Network hmn-e2e-overlay_lab-c Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Volume hmn-e2e-overlay_gate-settings Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/volumes/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+ Network hmn-e2e-overlay_lab-b Error error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/networks/create": failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+failed to create network hmn-e2e-overlay_lab-a: Error response from daemon: invalid pool request: Pool overlaps with other one on this address space
+[overlay] FAIL name=redis-ha phase=up attempt=3
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+::endgroup::
+overlay redis-ha FAILED after 3 attempts
+[e2e-docker] FAIL phase=overlays exit=1
+[e2e-docker] tearing down stack...
+ Network hmn-e2e_lab-a Removing 
+ Network hmn-e2e_lab-a Resource is still in use 
+E2E_EXIT=1

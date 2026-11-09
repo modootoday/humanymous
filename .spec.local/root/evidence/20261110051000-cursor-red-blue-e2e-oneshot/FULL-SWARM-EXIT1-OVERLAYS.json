@@ -1,0 +1,72 @@
+{
+    "schema":  "humanymous.cursor-red-blue-e2e-full-swarm-receipt/1",
+    "observed_utc":  "2026-11-09T20:43:50Z",
+    "branch":  "codex/rust",
+    "head":  "4d5c1c148372ddd99be1cb1c08cd6dec9f4f14eb",
+    "session":  "cursor-integrator",
+    "lane":  "cursor-integration",
+    "provider":  "cursor",
+    "execution_client":  "cursor",
+    "cap":  0,
+    "cap_burn":  0,
+    "cap_free":  false,
+    "product":  0,
+    "pass_product_clean_room":  0,
+    "command":  "bash scripts/e2e-docker.sh (detached r7; no SkipSwarm)",
+    "runner":  "Git Bash + Windows docker.exe --context desktop-linux",
+    "project":  "hmn-e2e",
+    "run_id":  "20261109T204000Z-hmn-e2e-rb-r7",
+    "compose":  "deployments/compose.yaml",
+    "topology":  "hmn-e2e web + lab-a/b/c + swarm profile; overlays attempted then failed pool-overlap",
+    "images":  [
+                   "humanymous/core:local",
+                   "humanymous/gate:local",
+                   "humanymous/bots:local"
+               ],
+    "engine":  {
+                   "endpoint":  "npipe:////./pipe/dockerDesktopLinuxEngine",
+                   "context":  "desktop-linux",
+                   "ostype":  "linux",
+                   "server_version":  "29.9.2",
+                   "engine_id":  "578836b2-d812-4a41-91a8-6ed2ae05b7fa"
+               },
+    "overall_exit":  1,
+    "overlays_failed":  true,
+    "overlays_error":  "invalid pool request: Pool overlaps with other one on this address space (hmn-e2e-overlay_lab-a)",
+    "phases_passed":  [
+                          "validate-compose",
+                          "build-images",
+                          "start-defenders",
+                          "attack-catalog",
+                          "attack-assert",
+                          "gate-conformance",
+                          "pass-contract",
+                          "restart-core",
+                          "pass-wargame",
+                          "swarm-reset",
+                          "swarm",
+                          "swarm-assert",
+                          "stop-base-before-overlays"
+                      ],
+    "phases_failed":  [
+                          "overlays"
+                      ],
+    "swarm_proxy_rotation_observed":  true,
+    "counts_as":  "oracle_red_blue_desktop_component_not_product",
+    "matrix_cells_advanced":  [
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_up",
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_attack",
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_e2e_assert",
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_gate_e2e",
+                                  "desktop-linux|none|oracle-detector-bots|red_blue_swarm"
+                              ],
+    "honesty":  {
+                    "overall_exit1_overlays_ne_red_blue_fail":  true,
+                    "oracle_ne_rust_m3":  true,
+                    "swarm_measured_with_proxy_rotation":  true,
+                    "detection_freeze":  true,
+                    "never_invent_pass_product_clean_room":  true
+                },
+    "evidence_log":  ".spec.local/root/evidence/20261110051000-cursor-red-blue-e2e-oneshot/console-r7.log",
+    "exact_next_closer":  "Cap=0 overlays pool-overlap cleanup OR Root AUTH/AT for product path; Cap free=false; never invent pass_product_clean_room"
+}
