@@ -1,0 +1,63 @@
+{
+  "schema": "humanymous.cursor-cap-realloc-eligibility-reaudit/1",
+  "rank": 9,
+  "id": "U-CAP-REALLOC",
+  "klass": "Root_blocked",
+  "tip": "955f5505895815d714b1c8ad660a5db449a6621b",
+  "observed_utc": "2026-11-09T22:43:01Z",
+  "decision": "Cap_burn_0_no_realloc",
+  "cap_free_before": false,
+  "cap_free_after": false,
+  "cap_realloc_attempted": false,
+  "cap_realloc_executed": false,
+  "cap_burn": 0,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "unlock_a_closer_cap_free": false,
+  "unlock_a_closer": ".spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json",
+  "status": "REAUDIT_cap_free_false_no_NEW_non_twin_feeder_with_matching_GRANT_TRANSFER_preimages",
+  "candidates_considered": [
+    {
+      "id": "AT-HANDOFF",
+      "status": "absent",
+      "reason": "Root schema humanymous.root-interactive-at-windows-tuple/1 missing"
+    },
+    {
+      "id": "AUTH-HANDOFF",
+      "status": "absent",
+      "reason": "Root schema humanymous.root-n06-owner-join-auth-handoff/1 missing"
+    },
+    {
+      "id": "Unlock C authority-node-ipc",
+      "status": "blocked_claim",
+      "reason": "transfer-probe unlock_c_preimage_ready=false; 6 digest mismatches; Root rematch required; not Cap-ready realloc"
+    },
+    {
+      "id": "PM product-matrix Cap",
+      "status": "spent_forbidden",
+      "reason": "PM Cap1 EXIT2 feeder spent; Cap twin spam forbidden"
+    },
+    {
+      "id": "G2/G5/CR/G6/RB Cap twin",
+      "status": "spent_forbidden",
+      "reason": "Decision B forbids Cap twin reburn"
+    },
+    {
+      "id": "NEW Cap-ready GRANT→TRANSFER→realloc",
+      "status": "absent",
+      "reason": "No Cap-ready matching preimage for NEW non-twin structural feeder"
+    }
+  ],
+  "next_cap1_serial": "HOLD until Root AUTH/AT land + documented Cap realloc (NEW non-twin) restores Cap free=true; Cap burn=0 this turn",
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "detection_freeze": true,
+    "no_cap1_this_wave": true,
+    "no_cap_twin_reburn_g2_g5_cr_g6_rb_pm": true,
+    "decision_b": true
+  }
+}

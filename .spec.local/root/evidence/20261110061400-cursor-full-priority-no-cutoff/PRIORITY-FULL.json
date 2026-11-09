@@ -1,16 +1,16 @@
 {
   "schema": "humanymous.cursor-full-remaining-priority-no-cutoff/1",
-  "observed_utc": "2026-11-09T22:05:45Z",
+  "observed_utc": "2026-11-09T22:43:28Z",
   "branch": "codex/rust",
-  "tip": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
-  "prior_tip_bind": "c65b2fac6d6803443673013362615e37adb1a09f",
+  "tip": "955f5505895815d714b1c8ad660a5db449a6621b",
+  "prior_tip_bind": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
   "cap": 0,
   "cap_burn": 0,
   "cap_free": false,
   "cap_realloc_last_check": false,
   "cap0_parallel_remaining": [],
   "goal_complete": false,
-  "consolidated_closer": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/DECISION.json",
+  "consolidated_closer": ".spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/STATUS.json",
   "product": 0,
   "pass_product_clean_room": 0,
   "browser_ready": false,
@@ -31,7 +31,7 @@
     "pass_product_clean_room": 0,
     "missing_sot_scenario": "red-blue-product",
     "tip_bind_ok": true,
-    "tip_bind_expect_head": "c65b2fac6d6803443673013362615e37adb1a09f"
+    "tip_bind_expect_head": "955f5505895815d714b1c8ad660a5db449a6621b"
   },
   "total_unit_count_N": 80,
   "no_quantity_cap": true,
@@ -152,7 +152,7 @@
       "klass": "Cap0_parallel",
       "blocker": "tip_drift",
       "depends_on": "[]",
-      "why": "Cap0 done; tip_bind.ok=ad8b68a2 Decision B; ≠ pass_product"
+      "why": "Cap0 done; tip_bind.ok=955f5505 Decision B post-push; ≠ pass_product"
     },
     {
       "rank": 14,

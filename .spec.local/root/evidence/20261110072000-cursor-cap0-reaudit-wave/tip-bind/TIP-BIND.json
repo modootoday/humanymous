@@ -1,0 +1,13 @@
+{
+  "schema": "humanymous.cursor-cap0-reaudit-tip-bind/1",
+  "tip": "955f5505895815d714b1c8ad660a5db449a6621b",
+  "observed_utc": "2026-11-09T22:43:01Z",
+  "branch": "codex/rust",
+  "cap_free": false,
+  "cap_burn": 0,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "tip_bind_ok": true,
+  "note": "Cap0 reaudit wave tip-bound to LIVE tip 955f5505; Decision B; Cap burn=0; product=0"
+}

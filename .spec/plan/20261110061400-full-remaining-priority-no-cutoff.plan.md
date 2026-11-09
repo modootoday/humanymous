@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T22:05:45Z
+updated: 2026-11-09T22:43:28Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -35,28 +35,29 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | ad8b68a21d22e83477b00eba08c36ddcc6f78e99 |
+| tip | 955f5505895815d714b1c8ad660a5db449a6621b (Decision B; Cap0 reaudit) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
 | Cap free before / after | **false** / **false** (spent false→true→false on prior PM Cap1) |
-| Cap realloc LAST CHECK | **no** Cursor-executable NEW non-twin feeder → Cap burn=**0** |
+| Cap realloc LAST CHECK | **no** NEW non-twin Cap-ready with matching GRANT→TRANSFER preimages → Cap burn=**0** |
 | Cap EXIT this turn | **none** |
 | prior Cap1 PM | EXIT **2** · 6/0 · `--clean-room-product-matrix --require-full` · feeder≠product |
 | AUTH-HANDOFF | **absent** (`humanymous.root-n06-owner-join-auth-handoff/1`) |
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
-| CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist) / **absent** |
-| matrix tip_bind | LIVE tip-bound **ad8b68a2**; tip_bind.ok=**true**; Decision B PRODUCT-BLOCKERS |
+| CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist / env_bound) / **absent** |
+| matrix tip_bind | LIVE tip-bound **955f5505** (closed residual drift `3fd6a9ab`→`955f5505`); tip_bind.ok=**true** |
+| Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch diagnosis only |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
 | missing SoT scenario | `red-blue-product` (1) |
 | Unlock A / B / C | true / true / false |
 | Cap burn this turn | **0** |
-| Cap0∥ remaining | **none** |
-| Cap0 advanced (this wave) | Decision B hard closer + FULL rank rebind; ranks **1,7** wake absent remeasured |
+| Cap0∥ remaining | **none** (reaudit confirmed; residual tip-drift closed) |
+| Cap0 advanced (this wave) | ranks **1,2,7,9,10,13,52,72** Cap0 reaudit wake/CEF/UnlockC/matrix tip-bind/docs |
 | Exact ranks still Root/Cap1 | **1, 4–9, 14–16+** (14=PM Cap1 spent component; product still open) |
-| CONSOLIDATED closer | `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/` |
+| CONSOLIDATED closer | `.spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/` |
 | goal_complete | **false** |
 
 ## 2. Decision rules (no cutoff)
@@ -223,7 +224,9 @@ Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/
 | This plan | .spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md |
 | Cap=0 evidence | .spec.local/root/evidence/20261110061400-cursor-full-priority-no-cutoff/ |
 | Cap0∥ wave | .spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/ |
-| CONSOLIDATED closer | .spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/ |
+| Cap0 reaudit wave | .spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/ |
+| CONSOLIDATED closer | .spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/ |
+| Prior Decision B closer | .spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/ |
 | Prior Cap0∥ closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |
 | Supersedes truncated tables | plan:root/20261110060500-code-sot-gap-browser-priority-reorder, plan:root/20261110044500-production-status-priority-reorder |
 | Matrix | .spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/ |

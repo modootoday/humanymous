@@ -1,16 +1,14 @@
 {
-  "schema": "humanymous.cursor-tip-bind/1",
-  "observed_utc": "2026-11-09T22:05:45Z",
+  "schema": "humanymous.cursor-full-priority-tip-bind/1",
+  "tip": "955f5505895815d714b1c8ad660a5db449a6621b",
+  "observed_utc": "2026-11-09T22:43:28Z",
   "branch": "codex/rust",
-  "tip": "ad8b68a21d22e83477b00eba08c36ddcc6f78e99",
-  "tip_bind_ok": true,
-  "cap": 0,
-  "cap_burn": 0,
   "cap_free": false,
+  "cap_burn": 0,
   "product": 0,
   "pass_product_clean_room": 0,
   "browser_ready": false,
-  "decision": "B",
-  "exact_next_closer": "Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply BrowserReady/N06 → Cap realloc (NEW feeder not spent twin) → Cap free=true → Cap=1 product path; Cap burn=0; never invent product/BrowserReady",
-  "note": "FULL priority Decision B tip-bound to LIVE tip ad8b68a2 after Cap1 PM EXIT2 deep-read"
+  "tip_bind_ok": true,
+  "matrix_head_sha": "955f5505895815d714b1c8ad660a5db449a6621b",
+  "note": "FULL priority Cap0 reaudit tip-bound to LIVE tip 955f5505; matrix tip-drift closed; product=0"
 }

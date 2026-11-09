@@ -1,0 +1,35 @@
+{
+  "applied": false,
+  "at_handoff_present": false,
+  "browser_ready": false,
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "dry_run": false,
+  "handoff_candidates": [
+    ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+    ".spec.local/root/grants/interactive-at-windows-tuple/GRANT.json"
+  ],
+  "honesty": {
+    "cap0_only": true,
+    "detection_freeze": true,
+    "never_forge_at_handoff": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_invent_pass_product_clean_room": true
+  },
+  "kind": "at",
+  "next_honesty": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty",
+  "next_honesty_selector": "--browser-ready-interactive-at-honesty",
+  "note": "AT-HANDOFF absent; Cap=0 ROOT-ONE-STEP twin waits for Root schema humanymous.root-interactive-at-windows-tuple/1; never invent BrowserReady / AT tokens",
+  "pass_product_clean_room": 0,
+  "product": 0,
+  "record_kind": "lab-at-handoff-apply",
+  "root_ask_paths": [
+    "crates/browser/**",
+    "scripts/ci/cef-pilot/**",
+    "crates/apps/humanymous-browser/**"
+  ],
+  "schema": "humanymous.lab-at-handoff-apply/1",
+  "status": "refuse_closed_at_absent"
+}
