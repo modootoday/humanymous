@@ -1,0 +1,22 @@
+# Red-blue product Cap topology (Cap=0 Cap-ready; Cap=1 after Cap realloc).
+# Product/red-blue feeder — NOT a G2/G5/CR/G6 Cap twin.
+# Cap Docker freeze allowlists deployments/lab/** only — do not include
+# scenarios/oracle-detector-bots (resolves to deployments/compose.yaml outside freeze).
+# Subsequent product oneshot: bash scripts/e2e-docker.sh / make e2e for red_blue_* cells.
+# Cap=0 require-full honesty lists missing product cells tip-bound.
+# Detection freeze. Lab-only; no published ports on the measure pilot.
+services:
+  red-blue-product-pilot:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/red-blue-product-lab:${HM_LAB_IMAGE_TAG:-local}
+    build:
+      context: ${HM_LAB_BUILD_CONTEXT:-../..}
+      dockerfile: build/rust/red-blue-product-lab.Dockerfile
+    network_mode: none
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    labels:
+      org.humanymous.evidence: rust-red-blue-product
+    profiles: [red-blue-product]

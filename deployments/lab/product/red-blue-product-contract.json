@@ -1,0 +1,35 @@
+{
+  "schema": "humanymous.lab-red-blue-product-contract/1",
+  "record_kind": "red-blue-product-cap-contract",
+  "cap_selector": "--red-blue-product",
+  "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --red-blue-product --require-full",
+  "require_full_required": true,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "detection_freeze": true,
+  "not_g2_g5_cr_g6_cap_twin": true,
+  "required_cap_topology": [
+    "deployments/lab/compose.red-blue-product.yaml",
+    "build/rust/red-blue-product-lab.Dockerfile"
+  ],
+  "red_blue_validate_skill": ".agents/skills/red-blue-validate/SKILL.md",
+  "product_oneshot_when_cap_free": [
+    "bash scripts/e2e-docker.sh",
+    "make e2e",
+    "pwsh -File scripts/e2e-docker.ps1"
+  ],
+  "bound_cr_cap1": ".spec.local/root/evidence/20261109040100-cursor-clean-room-product-cleanup-realloc/CAP1-RECEIPT.json",
+  "bound_g6_cap1": ".spec.local/root/evidence/20261109040700-cursor-g6-cap-realloc/CAP1-RECEIPT.json",
+  "matrix": ".spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/matrix.json",
+  "forbidden": [
+    "invent pass_product_clean_room",
+    "G2/G5/CR/G6 Cap twin spam",
+    "Cap=1 while Cap free=false without Cap realloc",
+    "invent Cap free / BrowserReady / AUTH/AT"
+  ],
+  "honesty": {
+    "cap0_require_full_lists_missing_product_cells": true,
+    "cap1_feeder_not_pass_component_desktop_cap_topology_twin": true,
+    "cap_realloc_only_structural_feeder": true
+  }
+}

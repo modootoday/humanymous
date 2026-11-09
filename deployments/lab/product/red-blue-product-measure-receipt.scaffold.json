@@ -1,0 +1,8 @@
+{
+  "schema": "humanymous.lab-red-blue-product-measure-receipt/1",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "counts_as": "red_blue_product_require_full_feeder_not_product",
+  "not_pass_component_desktop_cap_topology_twin": true,
+  "note": "Cap=1 require-full product/red-blue feeder scaffold; never invent pass_product_clean_room; subsequent Docker red-blue-validate oneshot still required"
+}

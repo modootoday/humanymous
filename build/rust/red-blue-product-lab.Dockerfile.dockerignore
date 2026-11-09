@@ -1,0 +1,6 @@
+# Cap freeze context for red-blue-product lab image.
+target/
+.spec.local/
+.git/
+**/*.md
+**/node_modules/
