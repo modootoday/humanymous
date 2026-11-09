@@ -667,6 +667,14 @@ moved once into crates/apps/humanymous-browser; the two nested manifests were
 preserved outside the assembly. Rust implementation is under src/native with one
 physical shared scheme. Only the isolated workspace changes21 to19; live remains29.
 
+LIVE residual (remeasured 2026-11-09T23:15:00Z tip `4c198f30`): the isolated
+`crates/apps/humanymous-browser` consolidation is **not** present in the live
+tree. Live browser surface remains `crates/browser/**` (present) plus
+`scripts/ci/cef-pilot/**`; `crates/apps/` currently holds `humanymous-cli` only.
+Package-census target `humanymous-browser` stays a Root/integration structural
+open (plan rank U-HUMANUMOUS-BROWSER-PKG). Isolated assembly ≠ live cutover;
+BrowserReady remains false.
+
 The first locked default test refused the stale lock. Root retained this failure
 and used offline workspace-only lock resolution. All634 external
 name/version/source/checksum tuples remain identical. The isolated lock changes

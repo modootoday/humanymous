@@ -3,7 +3,7 @@ id: plan:root/20261110061400-full-remaining-priority-no-cutoff
 title: Cap=0 FULL remaining priority 1..N — no quantity cutoff
 status: active
 created: 2026-11-09T21:14:00Z
-updated: 2026-11-09T23:00:00Z
+updated: 2026-11-09T23:15:00Z
 rel:
   depends_on:
     - plan:root/20261110060500-code-sot-gap-browser-priority-reorder
@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | d4179a9c6003890390aa30934b8db9c636808a82 (Decision B; Cap0 Cap-free-restore postpush tipbind; product=0) |
+| tip | 4c198f30771d937673525dd739cb7f7dcc7910c5 (Decision B; SoT/code honesty sync tipbind after Cap-free-restore postpush; product=0) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
@@ -46,8 +46,8 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 | AUTH-HANDOFF | **absent** (`humanymous.root-n06-owner-join-auth-handoff/1`) |
 | AT-HANDOFF | **absent** (`humanymous.root-interactive-at-windows-tuple/1`) |
 | BrowserReady / n06_owner_join | **false** / **false** |
-| CEF Cap-day / apps/humanymous-browser | **bound** (durable allowlist / `cap_day_bound`) / **absent** |
-| matrix tip_bind | LIVE tip-bound **998ae019** (closed residual `9332d652`→`998ae019` Cap-free-restore); tip_bind.ok=**true** |
+| CEF Cap-day / CEF env / apps/humanymous-browser / crates/browser | **bound** (durable allowlist) / **unset** (`HUMANYMOUS_CEF_PILOT_BUNDLE`) / **absent** / **present** |
+| matrix tip_bind | LIVE tip-bound **4c198f30** (closed residual `d4179a9c`→`4c198f30` SoT/code sync; prior Cap-free-restore `9332d652`→`998ae019`→`d4179a9c`); tip_bind.ok=**true** |
 | Unlock C | **false** · transfer-probe 6 digest mismatches · Cap0 rematch digests packet |
 | required / clean_room_required / product | 84 / 47 / 0 |
 | missing product cells (EXIT2) | **47** clean-room-required non-product; **16** product_matrix_open_cells |
@@ -226,7 +226,9 @@ Receipt: `.spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/
 | Cap0∥ wave | .spec.local/root/evidence/20261110063500-cursor-full-cap0-parallel-wave/ |
 | Cap0 reaudit wave | .spec.local/root/evidence/20261110072000-cursor-cap0-reaudit-wave/ |
 | Cap0 Cap1-hold landers | .spec.local/root/evidence/20261110075800-cursor-cap0-cap1hold-landers/ |
-| CONSOLIDATED closer | .spec.local/root/evidence/20261110075800-cursor-cap0-cap1hold-landers/ |
+| Cap0 Cap-free-restore | .spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/ |
+| SoT/code honesty sync | .spec.local/root/evidence/20261110080900-cursor-sot-code-sync/ |
+| CONSOLIDATED closer | .spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/ |
 | Prior tipbind readiness | .spec.local/root/evidence/20261110074900-cursor-cap0-tipbind-readiness/ |
 | Prior Decision B closer | .spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/ |
 | Prior Cap0∥ closer | .spec.local/root/evidence/20261110064200-cursor-cap0-consolidated-closer/ |

@@ -883,10 +883,42 @@ diagnostic consumer batches retain separate frozen sources and terminal gates.
 | --- | --- | --- |
 | M1 shared contracts and package structure | In progress | Finish native owner/context/epoch/identity boundaries and source-bound units without weakening security |
 | M2 component runtime qualification | In progress | Complete current-source adapter, CEF and Cross-OS actual pilots; failures/unknown/ignored cases resolved or explicitly outside the approved product contract |
-| M3 composed product e2e | Not qualified | Actual isolated Docker browser/runtime/Authority/audit/origin/witness composition, required adversarial and accessibility checks, exact cleanup and source/image binding |
+| M3 composed product e2e | Not qualified | Actual isolated Docker browser/runtime/Authority/audit/origin/witness composition, required adversarial and accessibility checks, exact cleanup and source/image binding. Cursor inventory 20261108192100 classifies remaining FullProduct blockers G1–G9 (TLS/H2/capture, session-bound collector, Pass recovery, interactive AT, authenticated witness transport, L5 origin/audit binding, remote attestation, native OS, provider deployment) as Root-only: matrix cells stay `required_unavailable` / blocked until Root allocates; Cap=1 browser/collector/controls feeders do not close M3; `pass_product_clean_room` remains 0 and `full_product_qualified` remains false. No architecture invented here. |
 | M4 current Pages and Draft v0 | In progress | Complete current-source manual reviews, fresh dual-base builds/archive transport, browser and required AT validation; no unsupported public claims |
 | M5 shared main integration | Held by M1-M4 | Exact final candidate passes all mandatory gates, then normal integration and post-merge verification |
 | M6 main-only and approved Pages | Not started | Verify integrated main and approved serving, then retire authorized obsolete branches/files without losing required evidence |
+
+### LIVE Cap=0 product honesty board (remeasured)
+
+Measured 2026-11-09T23:15:00Z on `codex/rust` tip
+`4c198f30771d937673525dd739cb7f7dcc7910c5` (after Cap-free-restore postpush tipbind).
+Detection freeze. Never invent `pass_product_clean_room` / Cap free / AUTH / AT /
+BrowserReady.
+
+| Field | Measured |
+| --- | --- |
+| product / `pass_product_clean_room` / `full_product_qualified` | 0 / 0 / false |
+| Cap free / Cap burn this board | false / 0 |
+| BrowserReady | false |
+| AUTH-HANDOFF / AT-HANDOFF | absent / absent |
+| Unlock A / B / C | true / true / false |
+| Decision | B (open product cells need AUTH/AT/BrowserReady or Root structural) |
+| Cap1 | HOLD (twins G2/G5/CR/G6/RB/PM spent; no NEW non-twin feeder) |
+| Cap0∥ remaining / Cap0 claimable | none / none |
+| LIVE workspace members | 29 (+ four standalone qualification tools historically noted) |
+| Browser live path | `crates/browser/**` present; `crates/apps/humanymous-browser` absent |
+| CEF | Cap-day durable bind present; process env `HUMANYMOUS_CEF_PILOT_BUNDLE` unset |
+| Matrix | required 84 / clean-room-required 47 / product 0; tip_bind.ok to LIVE tip |
+| Exact next closer | Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply → NEW non-twin Cap realloc → Cap free=true → Cap=1 product path |
+| goal_complete | false |
+
+Canon pointers: `plan:root/20261110061400-full-remaining-priority-no-cutoff`,
+`sot:root/clean-room-usage-matrix`,
+`.spec.local/root/evidence/20261110080500-cursor-cap0-cap-free-restore/`,
+`.spec.local/root/evidence/20261110080900-cursor-sot-code-sync/`.
+
+Historical 2026-11-07 “36 workspace members” briefing below is an epoch snapshot,
+not the LIVE member count above.
 
 M1-M4 may progress in parallel under separate file ownership. M5 and M6 are
 ordered final gates. Package publication, release tags and OIDC token exchange

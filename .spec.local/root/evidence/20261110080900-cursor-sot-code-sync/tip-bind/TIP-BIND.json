@@ -1,0 +1,21 @@
+{
+  "schema": "humanymous.cursor-tip-bind/1",
+  "observed_utc": "2026-11-09T23:15:00Z",
+  "branch": "codex/rust",
+  "tip": "4c198f30771d937673525dd739cb7f7dcc7910c5",
+  "prior_tip": "d4179a9c6003890390aa30934b8db9c636808a82",
+  "tip_bind_ok": true,
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "auth_present": false,
+  "at_present": false,
+  "decision": "B",
+  "artifact": "MEASUREMENT.json",
+  "wave": "cursor-sot-code-sync",
+  "exact_next_closer": "Root AT-HANDOFF + AUTH-HANDOFF → Cap0 apply BrowserReady/N06 → Cap realloc (NEW feeder not spent twin) → Cap free=true → Cap=1 product path; Cap burn=0; never invent product/BrowserReady",
+  "note": "SoT/code honesty sync tip-bound LIVE tip 4c198f30; AT/AUTH absent; Cap free false; detection freeze residual filed; hard-stop Cap1"
+}

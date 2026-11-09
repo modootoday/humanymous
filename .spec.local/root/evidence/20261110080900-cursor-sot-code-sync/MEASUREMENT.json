@@ -1,0 +1,113 @@
+{
+  "schema": "humanymous.cursor-sot-code-sync-measurement/1",
+  "observed_utc": "2026-11-09T23:15:00Z",
+  "branch": "codex/rust",
+  "workspace": "C:/workspaces/humanymous",
+  "provider": "cursor",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "execution_client": "cursor",
+  "tip_before_commit": "4c198f30771d937673525dd739cb7f7dcc7910c5",
+  "prior_tip_bind": "d4179a9c6003890390aa30934b8db9c636808a82",
+  "known_last_claimed_tip": "998ae019220af38174b7fc5337dcbf9fe08364f9",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "full_product_qualified": false,
+  "cap_free": false,
+  "cap_burn": 0,
+  "browser_ready": false,
+  "auth_present": false,
+  "at_present": false,
+  "n06_owner_join": false,
+  "unlock": { "A": true, "B": true, "C": false },
+  "decision": "B",
+  "cap1": "HOLD",
+  "twins_spent": ["G2", "G5", "CR", "G6", "RB", "PM"],
+  "cap0_claimable": [],
+  "cap0_parallel_remaining": [],
+  "matrix": {
+    "required_cells": 84,
+    "clean_room_required": 47,
+    "pass_product_clean_room": 0,
+    "product_matrix_open_cells": 16,
+    "missing_sot_scenario": "red-blue-product",
+    "head_sha": "4c198f30771d937673525dd739cb7f7dcc7910c5",
+    "tip_bind_ok": true
+  },
+  "code_surfaces": {
+    "crates_browser_present": true,
+    "crates_apps_humanymous_browser_present": false,
+    "crates_apps_members": ["humanymous-cli"],
+    "workspace_members_measured": 29,
+    "cef_env_HUMANYMOUS_CEF_PILOT_BUNDLE": false,
+    "cef_cap_day_durable_bind_path": ".spec.local/lab/cef-cap-day-bind.json",
+    "cef_cap_day_durable_bind_present": true,
+    "at_handoff_path": ".spec.local/root/evidence/root-interactive-at-windows-tuple/AT-HANDOFF.json",
+    "auth_handoff_path": ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json"
+  },
+  "drift_closed": [
+    {
+      "surface": ".spec/plan/20261110061400-full-remaining-priority-no-cutoff.plan.md",
+      "was": "tip d4179a9c / CEF Cap-day only / matrix tip 998ae019 residual",
+      "now": "tip 4c198f30; CEF Cap-day vs env vs apps/browser path honesty; matrix tip 4c198f30"
+    },
+    {
+      "surface": ".spec/sot/clean-room-usage-matrix.sot.md",
+      "was": "tip bind only 10de63c1; Cap spends G2+G5+CR only",
+      "now": "LIVE Cap=0 status board tip 4c198f30; spent G2/G5/CR/G6/RB/PM; product=0 gates"
+    },
+    {
+      "surface": ".spec/sot/program-roadmap.sot.md",
+      "was": "no LIVE Cap0 product honesty board; historical 36-member briefing readable as current",
+      "now": "LIVE Cap0 board tip 4c198f30; 29 members; browser path/CEF honesty; M3 not qualified"
+    },
+    {
+      "surface": ".spec/sot/container-test-environments.sot.md",
+      "was": "inventory pointer 20261108163200 only",
+      "now": "adds tip-bound 20261108164500 matrix + clean-room-usage-matrix SoT pointer; product=0"
+    },
+    {
+      "surface": ".spec/sot/structural-development.sot.md",
+      "was": "isolated crates/apps/humanymous-browser read as live without residual",
+      "now": "LIVE residual: apps/humanymous-browser absent; crates/browser present"
+    },
+    {
+      "surface": "canvases/humanymous-live-roadmap.canvas.tsx",
+      "was": "tip 905f2e22; closer 20261110072000; cefBundlePresent=true conflating Cap-day",
+      "now": "tip 4c198f30; closer Cap-free-restore; cef env false + Cap-day durable true"
+    },
+    {
+      "surface": ".spec.local/root/evidence/20261110061400-cursor-full-priority-no-cutoff/{PRIORITY-FULL,STATUS,tip-bind}",
+      "was": "tip d4179a9c / cef_bundle_present true",
+      "now": "tip 4c198f30; cef_env false; cef_cap_day_durable_bind true"
+    },
+    {
+      "surface": ".spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/matrix.json",
+      "was": "head_sha d4179a9c",
+      "now": "head_sha 4c198f30"
+    }
+  ],
+  "docs": {
+    "public_docs_overclaim_scan": "no pass_product/BrowserReady=true/Cap free=true claims found under docs/",
+    "updated": []
+  },
+  "detection_freeze": {
+    "scoring_law_changed": false,
+    "residual_note": "detection-freeze/RESIDUAL.md",
+    "verdict": "no_measured_scoring_SoT_rewrite; freeze preserved; residual = code must realign to SoT if future divergence appears"
+  },
+  "exact_next_closer": "Root AT-HANDOFF (humanymous.root-interactive-at-windows-tuple/1) + AUTH-HANDOFF (humanymous.root-n06-owner-join-auth-handoff/1) → Cap0 apply BrowserReady/N06 → documented Cap realloc (NEW non-twin, not spent G2/G5/CR/G6/RB/PM) → Cap free=true → Cap=1 product path toward pass_product_clean_room",
+  "goal_complete": false,
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "detection_freeze": true,
+    "no_cap1_this_wave": true,
+    "no_cap_twin_reburn": true,
+    "component_ne_product": true,
+    "tip_bind_ne_product": true,
+    "decision_b": true
+  }
+}

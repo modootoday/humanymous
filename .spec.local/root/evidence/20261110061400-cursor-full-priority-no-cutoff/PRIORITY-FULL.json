@@ -1,9 +1,9 @@
 {
   "schema": "humanymous.cursor-full-remaining-priority-no-cutoff/1",
-  "observed_utc": "2026-11-09T23:11:19Z",
+  "observed_utc": "2026-11-09T23:15:00Z",
   "branch": "codex/rust",
-  "tip": "d4179a9c6003890390aa30934b8db9c636808a82",
-  "prior_tip_bind": "870813b600567ff658a05f0557dac074ff3bd00a",
+  "tip": "4c198f30771d937673525dd739cb7f7dcc7910c5",
+  "prior_tip_bind": "d4179a9c6003890390aa30934b8db9c636808a82",
   "cap": 0,
   "cap_burn": 0,
   "cap_free": false,
@@ -17,7 +17,7 @@
   "auth_present": false,
   "at_present": false,
   "n06_owner_join": false,
-  "cef_bundle_present": true,
+  "cef_bundle_present": false,
   "humanymous_browser_app_present": false,
   "unlock": {
     "A": true,
@@ -31,7 +31,7 @@
     "pass_product_clean_room": 0,
     "missing_sot_scenario": "red-blue-product",
     "tip_bind_ok": true,
-    "tip_bind_expect_head": "d4179a9c6003890390aa30934b8db9c636808a82"
+    "tip_bind_expect_head": "4c198f30771d937673525dd739cb7f7dcc7910c5"
   },
   "total_unit_count_N": 80,
   "no_quantity_cap": true,
@@ -779,5 +779,9 @@
     "plan:root/20261110044500-production-status-priority-reorder"
   ],
   "decision": "B",
-  "product_blockers": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/PRODUCT-BLOCKERS.md"
+  "product_blockers": ".spec.local/root/evidence/20261110070300-cursor-product-blockers-cap0/PRODUCT-BLOCKERS.md",
+  "cef_env_present": false,
+  "cef_cap_day_durable_bind": true,
+  "crates_browser_present": true,
+  "workspace_members_measured": 29
 }

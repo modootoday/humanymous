@@ -1,17 +1,18 @@
 {
   "schema": "humanymous.cursor-full-priority-tip-bind/1",
-  "tip": "d4179a9c6003890390aa30934b8db9c636808a82",
-  "observed_utc": "2026-11-09T23:11:19Z",
-  "prior_tip": "870813b600567ff658a05f0557dac074ff3bd00a",
-  "matrix_head_sha": "d4179a9c6003890390aa30934b8db9c636808a82",
+  "tip": "4c198f30771d937673525dd739cb7f7dcc7910c5",
+  "observed_utc": "2026-11-09T23:15:00Z",
+  "prior_tip": "d4179a9c6003890390aa30934b8db9c636808a82",
+  "matrix_head_sha": "4c198f30771d937673525dd739cb7f7dcc7910c5",
   "product": 0,
   "pass_product_clean_room": 0,
   "browser_ready": false,
   "cap_free": false,
   "cap_burn": 0,
-  "note": "postpush tip-bind LIVE d4179a9c; Cap-free-restore; product=0",
+  "note": "SoT/code honesty sync tip-bound LIVE tip 4c198f30; Cap free=false; product=0; BrowserReady=false; AT/AUTH absent",
   "honesty": {
     "never_invent_pass_product_clean_room": true,
-    "tip_bind_ne_product": true
+    "tip_bind_ne_product": true,
+    "detection_freeze": true
   }
 }

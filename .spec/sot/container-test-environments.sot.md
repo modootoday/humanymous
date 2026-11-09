@@ -51,12 +51,18 @@ Inventory-only gap record (not a product pass; `pass_product_count=0` as of
 
 `.spec.local/root/evidence/20261108163200-cursor-product-completion-matrix/`
 
-Treat that path as **inventory / gap tracking only** until required cells are
-actually measured `pass_product`. Do not promote its `pass_component_only`,
-`unrun`, `blocked`, or historical hosted rows into product or M3 green.
-Program roadmap M3 composed product e2e remains **Not qualified** until an
-allocated clean-room composition measures required adversarial/a11y
-denominators with exact source/image/topology binding.
+Live Cap=0 tip-bound usage matrix (still `pass_product_clean_room=0` as of tip
+`4c198f30771d937673525dd739cb7f7dcc7910c5`):
+
+`.spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/`
+
+Treat those paths as **inventory / gap tracking only** until required cells are
+actually measured `pass_product`. Do not promote their `pass_component_only`,
+`unrun`, `blocked`, Cap topology component holds, or historical hosted rows into
+product or M3 green. Program roadmap M3 composed product e2e remains **Not
+qualified** until an allocated clean-room composition measures required
+adversarial/a11y denominators with exact source/image/topology binding.
+Measured Cap free=false; BrowserReady=false; AUTH/AT absent.
 
 | Pointer | Role |
 | --- | --- |
@@ -66,6 +72,8 @@ denominators with exact source/image/topology binding.
 | skill `red-blue-validate` | Docker product measure checklist; legacy oracle recipes ≠ Rust full-product runner proof |
 | `.agents/rules/96-docker-engine-affinity.md` | Desktop `desktop-linux` binding before local mutation |
 | `.spec.local/root/evidence/20261108163200-cursor-product-completion-matrix/` | Inventory-only completion gap matrix until `pass_product` cells exist |
+| `.spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/` | Cap=0 tip-bound clean-room matrix; product cells remain 0 |
+| `sot:root/clean-room-usage-matrix` | Completeness vocabulary + LIVE Cap=0 status board |
 
 Live lab tree (measured): `deployments/lab/{compose.yaml,compose.*.yaml,topology/,authority/,clients/,adapters/,scenarios/,providers/,ENVIRONMENTS.md,INTEGRATION.md}`.
 The earlier “proposed future layout” wording is superseded by this measured tree;

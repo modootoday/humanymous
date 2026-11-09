@@ -1,0 +1,49 @@
+{
+  "schema": "humanymous.cursor-spec-check-unavailable/1",
+  "observed_utc": "2026-11-09T23:20:30Z",
+  "branch": "codex/rust",
+  "tip": "4c198f30771d937673525dd739cb7f7dcc7910c5",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "provider": "cursor",
+  "execution_client": "cursor",
+  "verdict": "spec_check_unavailable_hung",
+  "scoring_law_changed": false,
+  "detection_freeze": true,
+  "attempts": [
+    {
+      "shell_id": "854909",
+      "command": "spec check .spec/sot/clean-room-usage-matrix.sot.md (among verify steps)",
+      "result": "hung_then_killed_exit_-1"
+    },
+    {
+      "shell_id": "804721",
+      "command": "prior bounded/full spec check (coordinator note)",
+      "result": "exit_-1_hung"
+    },
+    {
+      "shell_id": "854910",
+      "command": "spec check <edited sot/plan paths> --json",
+      "result": "hung_~161s_exit_4294967295_no_stdout"
+    }
+  ],
+  "disposition": "Do not retry this turn. File-level honesty verification against measured Cap0 product gates substitutes for unavailable spec CLI. Residual only — not a product green and not permission to invent pass_product/BrowserReady/Cap free/AUTH/AT.",
+  "substitute_gate": "file_level_SoT_plan_canvas_receipt_honesty_vs_measured_state",
+  "measured_gates": {
+    "product": 0,
+    "pass_product_clean_room": 0,
+    "cap_free": false,
+    "browser_ready": false,
+    "auth_present": false,
+    "at_present": false
+  },
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "never_invent_browser_ready": true,
+    "never_invent_cap_free": true,
+    "never_forge_auth_at": true,
+    "detection_freeze": true,
+    "no_cap1_this_wave": true,
+    "spec_check_ne_product": true
+  }
+}
