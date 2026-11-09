@@ -1,0 +1,9 @@
+{
+  "schema": "humanymous.lab-g6-origin-audit-binding-measure-receipt/1",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "origin_audit_product_binding": false,
+  "g6_closed": false,
+  "counts_as": "pass_component_desktop_cap_topology",
+  "note": "Cap topology oneshot scaffold; never invent origin/audit product"
+}

@@ -1,0 +1,6 @@
+# Cap freeze context for G6 origin-audit-binding lab image.
+target/
+.spec.local/
+.git/
+**/*.md
+**/node_modules/

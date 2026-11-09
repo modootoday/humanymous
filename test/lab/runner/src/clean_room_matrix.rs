@@ -30,10 +30,14 @@ const SOT_REQUIRED_SCENARIOS: &[&str] = &[
     "w2-h2-product-binding",
     "g2-collector-product-binding",
     "g5-witness-transport",
+    "clean-room-product",
+    "g6-origin-audit-binding",
 ];
 
 const G2_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109030000-cursor-g2-cap-ready-feeder/cap-ready/g2-collector-product-binding/candidate-pack/GRANT.json";
 const G5_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109031000-cursor-g5-cap-ready-feeder/cap-ready/g5-witness-transport/candidate-pack/GRANT.json";
+const G6_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109040600-cursor-g6-cap-ready-feeder/cap-ready/g6-origin-audit-binding/candidate-pack/GRANT.json";
+const CR_GRANT_CANDIDATE: &str = ".spec.local/root/evidence/20261109040000-cursor-clean-room-product-cap-ready/cap-ready/clean-room-product/candidate-pack/GRANT.json";
 const AUTH_HANDOFF_CANDIDATES: &[&str] = &[
     ".spec.local/root/evidence/root-n06-owner-join-auth-handoff/AUTH-HANDOFF.json",
     ".spec.local/root/grants/n06-owner-join/GRANT.json",
@@ -223,25 +227,28 @@ fn is_measured_component_status(status: &str) -> bool {
 fn wake_state(root: &Path) -> Value {
     let g2_grant = path_exists(root, G2_GRANT_CANDIDATE);
     let g5_grant = path_exists(root, G5_GRANT_CANDIDATE);
+    let g6_grant = path_exists(root, G6_GRANT_CANDIDATE);
+    let cr_grant = path_exists(root, CR_GRANT_CANDIDATE);
     let auth = first_present(root, AUTH_HANDOFF_CANDIDATES);
     let at = first_present(root, AT_HANDOFF_CANDIDATES);
     // Unlock A EXIT0 spent Cap; Cap free stays false unless a Cap-cycle realloc
     // authorizes one burn. Cursor must not invent Cap free without documented
     // Cap realloc receipt. GRANT presence alone ≠ Cap free.
     let cap_free = false;
-    let note = match (g2_grant, g5_grant, auth.is_some(), at.is_some()) {
-        (false, false, false, false) => {
-            "Live G2/G5 GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
-        }
-        _ => {
-            "GRANT and/or handoff presence observed; Cap free stays false until Cap realloc authorizes one Cap=1; AUTH/AT still Root when absent; never invent pass_product_clean_room"
-        }
+    let note = if !(g2_grant || g5_grant || g6_grant || cr_grant || auth.is_some() || at.is_some()) {
+        "Live G2/G5/G6/CR GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
+    } else {
+        "GRANT and/or handoff presence observed; Cap free stays false until Cap realloc authorizes one Cap=1; AUTH/AT still Root when absent; never invent pass_product_clean_room"
     };
     json!({
         "g2_grant_present": g2_grant,
         "g2_grant_candidate": G2_GRANT_CANDIDATE,
         "g5_grant_present": g5_grant,
         "g5_grant_candidate": G5_GRANT_CANDIDATE,
+        "g6_grant_present": g6_grant,
+        "g6_grant_candidate": G6_GRANT_CANDIDATE,
+        "cr_grant_present": cr_grant,
+        "cr_grant_candidate": CR_GRANT_CANDIDATE,
         "auth_handoff_present": auth.is_some(),
         "auth_handoff_path": auth,
         "at_handoff_present": at.is_some(),
@@ -295,6 +302,21 @@ fn honest_blocker(scenario: &str, status: &str, wake: &Value) -> (&'static str, 
             return (
                 "cap_free_false",
                 "G5 GRANT present but Cap free=false until Cap realloc after live topology".into(),
+            );
+        }
+    }
+    let g6 = wake["g6_grant_present"].as_bool().unwrap_or(false);
+    if scenario == "g6-origin-audit-binding" {
+        if !g6 {
+            return (
+                "root_grant_g6",
+                "G6 GRANT.json absent; Cap topology TRANSFER + Cap realloc required before Cap=1".into(),
+            );
+        }
+        if !cap_free {
+            return (
+                "cap_free_false",
+                "G6 GRANT present but Cap free=false until Cap realloc after live topology".into(),
             );
         }
     }
@@ -505,7 +527,7 @@ fn completeness_report(
         },
         "cells": cells,
         "blocked_on_root": [
-            "G5 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g5-witness-transport (when Cap-ready twin still open)",
+            "G6 GRANT.json → TRANSFER-apply → Cap realloc → Cap=1 once --g6-origin-audit-binding (non-spent structural feeder)",
             "AUTH-HANDOFF humanymous.root-n06-owner-join-auth-handoff/1",
             "AT-HANDOFF humanymous.root-interactive-at-windows-tuple/1",
             "optional: Cap-ready SoT path transfer for clean-room usage-condition gate slices"

@@ -53,6 +53,7 @@ pub(crate) mod clean_room_product;
 pub(crate) mod g2_collector_product_binding;
 pub(crate) mod g4_cef_at;
 pub(crate) mod g5_witness_transport;
+pub(crate) mod g6_origin_audit_binding;
 mod go;
 mod go_fixture;
 mod go_public;
@@ -82,6 +83,7 @@ struct Lab {
     g5_witness_transport_honesty: bool,
     g5_witness_transport: bool,
     clean_room_product: bool,
+    g6_origin_audit_binding: bool,
     browser_ready_interactive_at_honesty: bool,
     n06_owner_auth_handoff_honesty: bool,
     g4_cef_at: bool,
@@ -206,6 +208,19 @@ impl Lab {
                 self.config_file("deployments/lab/compose.clean-room-product.yaml")?,
                 "--profile".into(),
                 "clean-room-product".into(),
+            ];
+            command.extend(args.iter().map(|s| (*s).to_owned()));
+            return Ok(command);
+        }
+        if self.g6_origin_audit_binding {
+            let mut command = vec![
+                "compose".into(),
+                "-p".into(),
+                self.project.clone(),
+                "-f".into(),
+                self.config_file("deployments/lab/compose.g6-origin-audit-binding.yaml")?,
+                "--profile".into(),
+                "g6-origin-audit-binding".into(),
             ];
             command.extend(args.iter().map(|s| (*s).to_owned()));
             return Ok(command);
@@ -410,6 +425,9 @@ impl Lab {
         }
         if self.clean_room_product {
             return clean_room_product::run(self);
+        }
+        if self.g6_origin_audit_binding {
+            return g6_origin_audit_binding::run(self);
         }
         if self.browser_ready_interactive_at_honesty {
             return cap0_product_honesty::run_browser_ready_interactive_at_honesty(self);
@@ -764,6 +782,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     let mut g5_witness_transport_honesty = false;
     let mut g5_witness_transport = false;
     let mut clean_room_product = false;
+    let mut g6_origin_audit_binding = false;
     let mut browser_ready_interactive_at_honesty = false;
     let mut n06_owner_auth_handoff_honesty = false;
     let mut g4_cef_at = false;
@@ -794,6 +813,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--g5-witness-transport-honesty" => g5_witness_transport_honesty = true,
             "--g5-witness-transport" => g5_witness_transport = true,
             "--clean-room-product" => clean_room_product = true,
+            "--g6-origin-audit-binding" => g6_origin_audit_binding = true,
             "--browser-ready-interactive-at-honesty" => browser_ready_interactive_at_honesty = true,
             "--n06-owner-auth-handoff-honesty" => n06_owner_auth_handoff_honesty = true,
             "--g4-cef-at" => g4_cef_at = true,
@@ -819,6 +839,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -850,6 +871,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -879,6 +901,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -906,6 +929,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -934,6 +958,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -962,6 +987,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -989,6 +1015,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1016,6 +1043,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1044,6 +1072,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
             || full
@@ -1071,6 +1100,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || g4_cef_at
             || full
@@ -1098,6 +1128,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g2_collector_product_binding_readiness
             || g5_witness_transport_honesty
             || g5_witness_transport
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || g4_cef_at
@@ -1110,6 +1141,36 @@ pub fn run(args: &[String]) -> Result<i32> {
             );
         }
     }
+    if g6_origin_audit_binding {
+        // Cap CLI Cap=0 scaffold: Cap free / topology refuse-closed inside Cap module
+        // before Docker. Cap=1 only after Cap realloc + live Cap topology TRANSFER.
+        if collector
+            || topology_only
+            || browser_product
+            || go_product
+            || mount_probe
+            || authority_node_ipc
+            || w2_h2_product_binding
+            || w2_h2_hosted_venue
+            || n06_owner_join_readiness
+            || g2_collector_product_binding
+            || g2_collector_product_binding_readiness
+            || g5_witness_transport_honesty
+            || g5_witness_transport
+            || clean_room_product
+            || browser_ready_interactive_at_honesty
+            || n06_owner_auth_handoff_honesty
+            || g4_cef_at
+            || full
+            || require_go_component
+        {
+            return Err(
+                "g6-origin-audit-binding Cap requires its own fresh profile; refuse G2/G5/CR twin/--require-full Cap spam; Cap=0 scaffold refuse-closed without Cap realloc+topology; never invent pass_product_clean_room"
+                    .into(),
+            );
+        }
+    }
+
     if g4_cef_at {
         // Cap CLI bound only after Unlock A transfer-apply with code-defined pilot.
         crate::unlock_gate::require_g4_cef_at_unlocked(&root)?;
@@ -1131,6 +1192,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             || g5_witness_transport_honesty
             || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
             || browser_ready_interactive_at_honesty
             || n06_owner_auth_handoff_honesty
             || full
@@ -1216,6 +1278,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         g5_witness_transport_honesty,
         g5_witness_transport,
         clean_room_product,
+        g6_origin_audit_binding,
         browser_ready_interactive_at_honesty,
         n06_owner_auth_handoff_honesty,
         g4_cef_at,
@@ -1275,6 +1338,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         || g5_witness_transport_honesty
         || g5_witness_transport
             || clean_room_product
+            || g6_origin_audit_binding
         || browser_ready_interactive_at_honesty
         || n06_owner_auth_handoff_honesty
         || g4_cef_at
