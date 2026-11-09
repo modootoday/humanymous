@@ -1,7 +1,7 @@
 {
   "schema": "humanymous.cursor-cap0-cap-free-restore-status/1",
-  "observed_utc": "2026-11-09T23:10:52Z",
-  "tip": "870813b600567ff658a05f0557dac074ff3bd00a",
+  "observed_utc": "2026-11-09T23:11:19Z",
+  "tip": "d4179a9c6003890390aa30934b8db9c636808a82",
   "cap": 0,
   "cap_burn": 0,
   "cap_free": false,

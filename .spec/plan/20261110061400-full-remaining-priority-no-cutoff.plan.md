@@ -35,7 +35,7 @@ Machine table: PRIORITY-FULL.json (authoritative) · PRIORITY-FULL.tsv
 
 | Field | Measured |
 | --- | --- |
-| tip | 870813b600567ff658a05f0557dac074ff3bd00a (Decision B; Cap0 Cap-free-restore postcommit tipbind; product=0) |
+| tip | d4179a9c6003890390aa30934b8db9c636808a82 (Decision B; Cap0 Cap-free-restore postpush tipbind; product=0) |
 | branch | `codex/rust` |
 | decision | **B** (all remaining product cells need AUTH/AT/BrowserReady or Root structural; Cap burn=**0**) |
 | product / pass_product_clean_room | **0** / **0** |
