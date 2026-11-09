@@ -43,9 +43,22 @@ LOG_ROOT="${E2E_LOG_ROOT:-$ROOT/.agent-runs/e2e}"
 RUN_DIR="$LOG_ROOT/$RUN_ID"
 LOG_FILE="${E2E_LOG_FILE:-$RUN_DIR/e2e.log}"
 STATUS_FILE="$RUN_DIR/status.json"
+PRESSURE_FILE="$RUN_DIR/pressure-guard-bash.json"
 CURRENT_STEP="initializing"
 CURRENT_STEP_STARTED="$(date +%s)"
 FINAL_STATUS="failed"
+# Cap=0 Desktop EXIT137 containment: shm + bots cgroup memory (compose run flags).
+BOTS_SHM_SIZE="${E2E_BOTS_SHM_SIZE:-1g}"
+BOTS_MEMORY="${E2E_BOTS_MEMORY:-12g}"
+PRESSURE_GUARD="${E2E_PRESSURE_GUARD:-1}"
+if [[ "$SKIP_SWARM" == "1" ]]; then
+  MIN_VM_MEM_AVAILABLE_MB="${E2E_MIN_VM_MEM_AVAILABLE_MB:-12288}"
+else
+  MIN_VM_MEM_AVAILABLE_MB="${E2E_MIN_VM_MEM_AVAILABLE_MB:-16384}"
+fi
+MIN_VM_SWAP_FREE_MB="${E2E_MIN_VM_SWAP_FREE_MB:-512}"
+MIN_VM_MEM_TOTAL_MB="${E2E_MIN_VM_MEM_TOTAL_MB:-16384}"
+export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-1}"
 
 mkdir -p "$RUN_DIR"
 printf '%s\n' "$LOG_FILE" >"$LOG_ROOT/latest.log.path"
@@ -122,6 +135,76 @@ on_exit() {
 }
 trap on_exit EXIT
 
+# Cap=0 Desktop VM memory/pressure guard (fail-closed). Prefer EXIT 2 refuse over
+# mid-catalog bots SIGKILL (EXIT 137) when MemAvailable/swap are already low.
+# Never invents pass_product_clean_room.
+pressure_guard() {
+  local phase="$1"
+  if [[ "$PRESSURE_GUARD" == "0" ]]; then
+    echo "[e2e-docker] pressure-guard skipped (E2E_PRESSURE_GUARD=0) phase=$phase"
+    return 0
+  fi
+  local meminfo="" img="" candidate
+  for candidate in humanymous/bots:local busybox:1.36 busybox:latest alpine:3.20; do
+    if docker image inspect "$candidate" >/dev/null 2>&1; then
+      if meminfo="$(docker run --rm --network none --entrypoint cat "$candidate" /proc/meminfo 2>/dev/null)"; then
+        img="$candidate"
+        break
+      fi
+    fi
+  done
+  if [[ -z "$meminfo" && -r /proc/meminfo ]]; then
+    meminfo="$(cat /proc/meminfo)"
+    img="host:/proc/meminfo"
+  fi
+  local mem_total_kb mem_avail_kb swap_free_kb swap_total_kb
+  mem_total_kb="$(printf '%s\n' "$meminfo" | awk '/^MemTotal:/ {print $2; exit}')"
+  mem_avail_kb="$(printf '%s\n' "$meminfo" | awk '/^MemAvailable:/ {print $2; exit}')"
+  swap_free_kb="$(printf '%s\n' "$meminfo" | awk '/^SwapFree:/ {print $2; exit}')"
+  swap_total_kb="$(printf '%s\n' "$meminfo" | awk '/^SwapTotal:/ {print $2; exit}')"
+  local vm_total_mb=0 vm_avail_mb=0 vm_swap_free_mb=0 vm_swap_total_mb=0
+  [[ -n "$mem_total_kb" ]] && vm_total_mb=$((mem_total_kb / 1024))
+  [[ -n "$mem_avail_kb" ]] && vm_avail_mb=$((mem_avail_kb / 1024))
+  [[ -n "$swap_free_kb" ]] && vm_swap_free_mb=$((swap_free_kb / 1024))
+  [[ -n "$swap_total_kb" ]] && vm_swap_total_mb=$((swap_total_kb / 1024))
+
+  local reasons=()
+  if [[ -z "$meminfo" ]]; then reasons+=("meminfo_unreadable"); fi
+  if [[ -z "$mem_avail_kb" ]]; then reasons+=("MemAvailable_missing")
+  elif [[ "$vm_avail_mb" -lt "$MIN_VM_MEM_AVAILABLE_MB" ]]; then
+    reasons+=("MemAvailable_MB=${vm_avail_mb}<min=${MIN_VM_MEM_AVAILABLE_MB}")
+  fi
+  if [[ -z "$mem_total_kb" ]]; then reasons+=("MemTotal_missing")
+  elif [[ "$vm_total_mb" -lt "$MIN_VM_MEM_TOTAL_MB" ]]; then
+    reasons+=("MemTotal_MB=${vm_total_mb}<min=${MIN_VM_MEM_TOTAL_MB}")
+  fi
+  if [[ -z "$swap_free_kb" ]]; then reasons+=("SwapFree_missing")
+  elif [[ "$vm_swap_free_mb" -lt "$MIN_VM_SWAP_FREE_MB" ]]; then
+    reasons+=("SwapFree_MB=${vm_swap_free_mb}<min=${MIN_VM_SWAP_FREE_MB}")
+  fi
+
+  local result="PASS"
+  if [[ "${#reasons[@]}" -gt 0 ]]; then result="REFUSE"; fi
+  local reason_json="[]"
+  if [[ "${#reasons[@]}" -gt 0 ]]; then
+    reason_json="$(printf '%s\n' "${reasons[@]}" | awk 'BEGIN{printf "["} {gsub(/"/,"\\\""); printf sep "\"" $0 "\""; sep=","} END{printf "]"}')"
+  fi
+  printf '{"schema":"humanymous.e2e-desktop-pressure-guard-bash/1","phase":"%s","result":"%s","pass_product_clean_room":0,"product":0,"probe_image":"%s","thresholds_mb":{"min_vm_mem_available":%s,"min_vm_swap_free":%s,"min_vm_mem_total":%s},"observed_mb":{"vm_mem_total":%s,"vm_mem_available":%s,"vm_swap_total":%s,"vm_swap_free":%s},"refuse_reasons":%s,"bots_shm_size":"%s","bots_memory":"%s","updatedAt":"%s"}\n' \
+    "$phase" "$result" "$img" \
+    "$MIN_VM_MEM_AVAILABLE_MB" "$MIN_VM_SWAP_FREE_MB" "$MIN_VM_MEM_TOTAL_MB" \
+    "$vm_total_mb" "$vm_avail_mb" "$vm_swap_total_mb" "$vm_swap_free_mb" \
+    "$reason_json" "$BOTS_SHM_SIZE" "$BOTS_MEMORY" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    >"$PRESSURE_FILE"
+
+  if [[ "$result" != "PASS" ]]; then
+    echo "[e2e-docker] REFUSE pressure-guard phase=$phase reasons=${reasons[*]} (receipt=$PRESSURE_FILE)"
+    echo "[e2e-docker] Fail-closed: raise Desktop VM memory/swap or free pressure before full e2e. product=0."
+    write_status failed 2
+    exit 2
+  fi
+  echo "[e2e-docker] pressure-guard PASS phase=$phase vmAvailMB=$vm_avail_mb swapFreeMB=$vm_swap_free_mb botsMem=$BOTS_MEMORY shm=$BOTS_SHM_SIZE"
+}
+
 # preflight_clean frees the fixed lab subnets before we build/up, so a leftover stack (our own prior
 # run, a `make up` under the default `deployments` project, or any other holder) can't block us with
 # an opaque "Pool overlaps". This gives local the clean-slate guarantee CI gets from an ephemeral
@@ -141,6 +224,7 @@ preflight_clean() {
   done
   docker network prune -f >/dev/null 2>&1 || true
 }
+pressure_guard preflight
 preflight_clean
 
 run_step validate-compose 60 "${COMPOSE[@]}" config -q
@@ -188,14 +272,22 @@ echo "[e2e-docker] settle-defenders: stable; pausing 8s for Desktop DNS/RIT"
 sleep 8
 echo "========== [e2e-docker] PASS settle-defenders elapsed=$(( $(date +%s) - CURRENT_STEP_STARTED ))s =========="
 
-run_step attack-catalog "$STEP_TIMEOUT" "${COMPOSE[@]}" run --rm -T bots
+# Re-check after build/defenders: prefer refuse over mid-catalog EXIT137.
+pressure_guard before-attack-catalog
+
+run_step attack-catalog "$STEP_TIMEOUT" "${COMPOSE[@]}" run --rm -T \
+  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" bots
 run_step attack-assert 120 "${COMPOSE[@]}" run --rm -T attack-assert
-run_step gate-conformance 300 "${COMPOSE[@]}" run --rm -T gate-e2e
-run_step pass-contract 300 "${COMPOSE[@]}" run --rm -T pass-e2e
+run_step gate-conformance 300 "${COMPOSE[@]}" run --rm -T \
+  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" gate-e2e
+run_step pass-contract 300 "${COMPOSE[@]}" run --rm -T \
+  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" pass-e2e
 run_step restart-core 120 "${COMPOSE[@]}" restart core
-run_step pass-wargame 600 "${COMPOSE[@]}" run --rm -T pass-wargame
+run_step pass-wargame 600 "${COMPOSE[@]}" run --rm -T \
+  --shm-size="$BOTS_SHM_SIZE" --memory="$BOTS_MEMORY" pass-wargame
 
 if [[ "$SKIP_SWARM" != "1" ]]; then
+  pressure_guard before-swarm
   run_step swarm-reset 120 "${COMPOSE[@]}" run --rm -T swarm-reset
   run_step swarm 300 "${COMPOSE[@]}" --profile swarm up \
     --abort-on-container-failure bot-swarm-a bot-swarm-b bot-swarm-c

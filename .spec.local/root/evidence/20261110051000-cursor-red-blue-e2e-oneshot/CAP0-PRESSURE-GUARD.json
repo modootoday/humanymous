@@ -1,0 +1,38 @@
+{
+  "schema": "humanymous.cursor-red-blue-cap0-pressure-guard/1",
+  "observed_utc": "2026-11-09T20:53:30Z",
+  "branch": "codex/rust",
+  "head_before_commit": "39fe9479",
+  "session": "cursor-integrator",
+  "lane": "cursor-integration",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "landed": [
+    "scripts/e2e-docker-launch.ps1 Desktop VM MemAvailable/SwapFree/MemTotal + host free fail-closed refuse EXIT2",
+    "scripts/e2e-docker.sh pressure_guard at preflight + before-attack-catalog + before-swarm",
+    "bots/gate/pass compose run --shm-size=1g --memory=12g containment (serial catalog; CARGO_BUILD_JOBS=1)"
+  ],
+  "probe": {
+    "command": "pwsh -NoProfile -File scripts/e2e-docker-launch.ps1 -PressureOnly -RunId 20261109T205000Z-pressure-probe",
+    "exit": 0,
+    "result": "PASS",
+    "vm_mem_available_mb": 29890,
+    "vm_swap_free_mb": 8192,
+    "host_mem_free_mb": 33522,
+    "thresholds_swarm_mb": {
+      "min_vm_mem_available": 16384,
+      "min_vm_swap_free": 512,
+      "min_vm_mem_total": 16384,
+      "min_host_free": 4096
+    }
+  },
+  "honesty": {
+    "never_invent_pass_product_clean_room": true,
+    "detection_freeze": true,
+    "guard_ne_product": true
+  },
+  "exact_next_closer": "ONE full pwsh -File scripts/e2e-docker-launch.ps1 without SkipSwarm (mutex, jobs=1) after Cap0 pressure guard commit"
+}
