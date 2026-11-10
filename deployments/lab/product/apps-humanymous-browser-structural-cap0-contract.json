@@ -1,0 +1,70 @@
+{
+  "schema": "humanymous.lab-apps-humanymous-browser-structural-cap0-contract/1",
+  "record_kind": "apps-humanymous-browser-structural-cap0-contract",
+  "feeder": "product-apps-humanymous-browser-structural",
+  "rank": 4,
+  "id": "U-HUMANUMOUS-BROWSER-PKG",
+  "cap": 0,
+  "cap_burn": 0,
+  "cap_free": false,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "detection_freeze": true,
+  "structural_targets": [
+    "crates/apps/humanymous-browser",
+    "apps/humanymous-browser"
+  ],
+  "live_measured": {
+    "apps_humanymous_browser": false,
+    "crates_apps_humanymous_browser": false,
+    "crates_browser": true,
+    "cef_pilot": true,
+    "cef_cap_day_present": true,
+    "cef_bundle_env_present": false
+  },
+  "root_must_land": {
+    "structural_path": "crates/apps/humanymous-browser (SoT census) and/or apps/humanymous-browser (rank-4 alias)",
+    "path_release_note": "Cursor collaboration scope does not release apps/humanymous-browser or crates/apps/humanymous-browser create; Cap0 contract only — no source invent under Root structural path; never forge BrowserReady",
+    "related_live_digests": [
+      {
+        "destination": "crates/browser/native/desktop/pilot-contract.json",
+        "liveSha256": "eac4fab4466ae524a84dc3f33ffe70e6ab7537025bba9e7d94a93f052aa8f85a"
+      },
+      {
+        "destination": "scripts/ci/cef-pilot/Cargo.toml",
+        "liveSha256": "1dc5243ef268a1739f46c8d1b139e6e43153edcac19b55ad63bb93baf7399e17"
+      },
+      {
+        "destination": "scripts/ci/cef-pilot/Cargo.lock",
+        "liveSha256": "4b1ef6e951d720b4901b7583c155eee36fba17891ca64f0568b20d9a4607c929"
+      },
+      {
+        "destination": "deployments/lab/product/apps-humanymous-browser-structural-cap0-contract.json",
+        "note": "self; Root GRANT/TRANSFER expectedSha256 must rematch after land"
+      }
+    ]
+  },
+  "prior_cap_ready_ask": ".spec.local/root/evidence/20261110084600-cursor-cap0-root-blocked-cap-ready/cap-ready/apps-humanymous-browser/CAP-READY-ASK.json",
+  "destinations": [
+    "deployments/lab/product/apps-humanymous-browser-structural-cap0-contract.json"
+  ],
+  "forbidden": [
+    "invent BrowserReady",
+    "create crates/apps/humanymous-browser or apps/humanymous-browser without Root path release/TRANSFER",
+    "invent Cap free / AUTH / AT / pass_product_clean_room",
+    "spent Cap twin reburn 73-80 / G2/G5/CR/G6/RB/PM",
+    "re-probe CEF Cap-day as BrowserReady"
+  ],
+  "honesty": {
+    "cap0_scaffold_not_browser_ready": true,
+    "contract_presence_ne_structural_land": true,
+    "never_invent_browser_ready": true,
+    "never_invent_pass_product_clean_room": true,
+    "never_forge_auth_at": true,
+    "never_invent_cap_free": true,
+    "cef_cap_day_ne_browser_ready": true,
+    "no_cap_twin_reburn_73_80": true
+  },
+  "note": "Cap0 path-disjoint product-lab scaffold under claimed deployments/lab/product/**. Structural package land remains Root; Cursor does not invent BrowserReady."
+}

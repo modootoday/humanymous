@@ -1,9 +1,9 @@
 {
     "schema":  "humanymous.cursor-full-remaining-priority-no-cutoff/1",
-    "observed_utc":  "2026-11-10T01:06:25Z",
+    "observed_utc":  "2026-11-10T01:12:30Z",
     "branch":  "codex/rust",
-    "tip":  "cdc693b65f3dc1bbee92ff68d5ec127d94e0ae74",
-    "prior_tip_bind":  "3301fe86be0cae6f2b6b64780dc1ad23662948d1",
+    "tip":  "f8e50ce3677b476fbb49a3150587db9395fdc243",
+    "prior_tip_bind":  "cdc693b65f3dc1bbee92ff68d5ec127d94e0ae74",
     "cap":  0,
     "cap_burn":  0,
     "cap_free":  false,
@@ -33,7 +33,7 @@
                    "pass_product_clean_room":  0,
                    "missing_sot_scenario":  null,
                    "tip_bind_ok":  true,
-                   "tip_bind_expect_head":  "cdc693b65f3dc1bbee92ff68d5ec127d94e0ae74"
+                   "tip_bind_expect_head":  "f8e50ce3677b476fbb49a3150587db9395fdc243"
                },
     "total_unit_count_N":  80,
     "no_quantity_cap":  true,
@@ -53,9 +53,9 @@
                       "id":  "U-CEF-BUNDLE",
                       "unit":  "CEF pilot bundle (HUMANYMOUS_CEF_PILOT_BUNDLE)",
                       "klass":  "Root_blocked",
-                      "blocker":  "root_at_handoff+bundle_absent",
+                      "blocker":  "cap_day_bound_env_unset",
                       "depends_on":  "[U-AT-HANDOFF]",
-                      "why":  "G4 Cap CLI bound but bundle unset; Unlock A ≠ ready"
+                      "why":  "CEF Cap-day durable bind measured present; HUMANYMOUS_CEF_PILOT_BUNDLE env still unset; Unlock A/Cap-day != BrowserReady"
                   },
                   {
                       "rank":  3,
@@ -73,7 +73,7 @@
                       "klass":  "Root_blocked",
                       "blocker":  "structural_missing_apps_path",
                       "depends_on":  "[U-BROWSER-SURFACES]",
-                      "why":  "SoT census requires apps path; live tree still crates/browser only"
+                      "why":  "SoT census requires apps path; Cap0 product-lab structural contract landed under deployments/lab/product/; live package path still absent; BrowserReady false"
                   },
                   {
                       "rank":  5,
