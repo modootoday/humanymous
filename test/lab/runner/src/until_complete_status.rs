@@ -33,13 +33,15 @@ const CAP_FREE_GRANT_CANDIDATES: &[&str] = &[
     "deployments/lab/product/GRANT.json",
 ];
 
-/// Cap-free-restore LIVE TRANSFER manifest candidates.
+/// Cap-free-restore LIVE TRANSFER manifest candidates (never Cap0 candidate-pack scaffold).
 const CAP_FREE_MANIFEST_CANDIDATES: &[&str] = &[
     ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/transfer-manifest.json",
-    ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/transfer-manifest.json",
     ".spec.local/root/grants/cap-free-restore/transfer-manifest.json",
     "deployments/lab/product/transfer-manifest.json",
 ];
+
+/// Cap0 Cap-ready scaffold only — present ≠ LIVE-matching TRANSFER for Cap free restore.
+const CAP_FREE_CANDIDATE_PACK_MANIFEST: &str = ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/transfer-manifest.json";
 
 const TEMPLATE_GRANT_MARKERS: &[&str] = &[
     ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/GRANT.TEMPLATE.json",
@@ -317,6 +319,10 @@ fn grant_status(root: &Path) -> Value {
 
 fn transfer_present(root: &Path) -> bool {
     first_live_file(root, CAP_FREE_MANIFEST_CANDIDATES).is_some()
+}
+
+fn candidate_pack_transfer_present(root: &Path) -> bool {
+    root.join(CAP_FREE_CANDIDATE_PACK_MANIFEST).is_file()
 }
 
 /// Fail-closed: only accept measured product=1 receipts that are not component-only.
@@ -644,6 +650,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
     );
     let grant = grant_status(root);
     let transfer_ok = transfer_present(root);
+    let candidate_pack_transfer = candidate_pack_transfer_present(root);
 
     let (browser_ready, browser_ready_path) = measured_browser_ready(root);
     let (pass_product, pass_product_path) = measured_pass_product(root);
@@ -818,6 +825,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "pwsh -File scripts/e2e-docker-launch.ps1 / --red-blue-product --require-full"
         ],
         "transfer_manifest_present": transfer_ok,
+        "candidate_pack_transfer_present": candidate_pack_transfer,
+        "transfer_live_matching": transfer_ok,
         "status": status,
         "pilot_command": PILOT_COMMAND,
         "next": next,
@@ -836,6 +845,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "never_invent_pass_product_clean_room": true,
             "never_invent_browser_ready": true,
             "never_invent_cap_free": true,
+            "never_count_candidate_pack_transfer_as_live": true,
             "never_invent_docker_e2e_validate_product": true,
             "host_loopback_ne_product": true,
             "never_forge_auth_at": true,
@@ -1178,6 +1188,38 @@ mod tests {
         .expect("write");
         let report = measure(&root).expect("measure");
         assert_eq!(report["pass_product_clean_room"], 0);
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn candidate_pack_transfer_is_not_live_matching() {
+        let root = temp_root("candidate-pack-xfer");
+        write_unlock_a(&root, false);
+
+        let scaffold = root.join(CAP_FREE_CANDIDATE_PACK_MANIFEST);
+        fs::create_dir_all(scaffold.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &scaffold,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.cursor-cap-free-restore-candidate/1",
+                "entries": [{
+                    "destination": "deployments/lab/product/cap-free-restore-contract.json",
+                    "preimageSha256": "00"
+                }]
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let report = measure(&root).expect("measure");
+        assert_eq!(report["candidate_pack_transfer_present"], true);
+        assert_eq!(report["transfer_manifest_present"], false);
+        assert_eq!(report["transfer_live_matching"], false);
+        assert_eq!(report["ready_for_cap0_chain"], false);
+        assert_eq!(
+            report["honesty"]["never_count_candidate_pack_transfer_as_live"],
+            true
+        );
         let _ = fs::remove_dir_all(&root);
     }
 }

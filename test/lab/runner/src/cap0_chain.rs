@@ -34,10 +34,9 @@ const CAP_FREE_GRANT_CANDIDATES: &[&str] = &[
     "deployments/lab/product/GRANT.json",
 ];
 
-/// Cap-free-restore LIVE TRANSFER manifest candidates (never TEMPLATE path).
+/// Cap-free-restore LIVE TRANSFER manifest candidates (never TEMPLATE / candidate-pack scaffold).
 const CAP_FREE_MANIFEST_CANDIDATES: &[&str] = &[
     ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/transfer-manifest.json",
-    ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/transfer-manifest.json",
     ".spec.local/root/grants/cap-free-restore/transfer-manifest.json",
     "deployments/lab/product/transfer-manifest.json",
 ];
