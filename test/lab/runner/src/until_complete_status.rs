@@ -1036,10 +1036,23 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         }),
         json!({
             "id": "Unlock-C",
-            "klass": "Cap0_digest_mismatch",
+            "klass": if unlock_c {
+                "Cap0_unlock_c_bound"
+            } else if unlock.reason_c.contains("candidate digests") {
+                "Cap0_digest_mismatch"
+            } else if unlock.reason_c.contains("transfer-manifest absent") {
+                "Cap0_manifest_absent"
+            } else if unlock.reason_c.contains("required Cap destinations missing") {
+                "Cap0_transfer_not_applied"
+            } else {
+                "Cap0_blocked_claim"
+            },
             "closed": unlock_c,
             "unlock_c": unlock_c,
-            "reason": unlock.reason_c
+            "authority_cap_cli_status": unlock.authority_cap_cli_status,
+            "reason": unlock.reason_c,
+            "default_manifest": unlock_gate::DEFAULT_UNLOCK_C_MANIFEST,
+            "note": "Unlock C fail-closed until Root LIVE TRANSFER matches candidate digests; never forge manifest or GRANT"
         }),
         json!({
             "id": "apps_humanymous_browser",

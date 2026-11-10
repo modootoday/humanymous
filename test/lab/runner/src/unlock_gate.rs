@@ -329,9 +329,13 @@ pub fn probe(args: &[String]) -> Result<i32> {
 
 /// Probe unlock state for Cap-ready / fail-closed Cap CLI.
 pub fn probe_root(root: &Path, manifest: Option<&Path>) -> Result<UnlockProbe> {
+    let resolved = match manifest {
+        Some(path) => Some(path.to_path_buf()),
+        None => resolve_manifest(root, None)?,
+    };
     let (a, reason_a, g4_status, g4_pilot) = probe_unlock_a(root)?;
     let (b, reason_b, w2_status, w2_pilot) = probe_unlock_b(root)?;
-    let (c, reason_c, cli_status) = probe_unlock_c(root, manifest)?;
+    let (c, reason_c, cli_status) = probe_unlock_c(root, resolved.as_deref())?;
     Ok(UnlockProbe {
         a_g4_cef_at: a,
         b_w2_h2_product_binding: b,
