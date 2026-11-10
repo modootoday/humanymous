@@ -159,18 +159,30 @@ pub(crate) fn prep(root: &Path) -> Result<Value> {
     let launcher_ps1 = root.join("scripts/e2e-docker-launch.ps1").is_file();
     let launcher_sh = root.join("scripts/e2e-docker.sh").is_file();
     let topology = json!({
+        "compose_clean_room_product": root
+            .join("deployments/lab/compose.clean-room-product.yaml")
+            .is_file(),
+        "dockerfile_clean_room_product": root
+            .join("build/rust/clean-room-product-lab.Dockerfile")
+            .is_file(),
+        "compose_clean_room_product_matrix": root
+            .join("deployments/lab/compose.clean-room-product-matrix.yaml")
+            .is_file(),
+        "dockerfile_clean_room_product_matrix": root
+            .join("build/rust/clean-room-product-matrix-lab.Dockerfile")
+            .is_file(),
         "compose_red_blue_product": root
             .join("deployments/lab/compose.red-blue-product.yaml")
             .is_file(),
         "dockerfile_red_blue_product": root
             .join("build/rust/red-blue-product-lab.Dockerfile")
             .is_file(),
-        "compose_clean_room_product": root
-            .join("deployments/lab/compose.clean-room-product.yaml")
-            .is_file(),
         "compose_product": root.join("deployments/compose.yaml").is_file(),
         "e2e_docker_launch_ps1": launcher_ps1,
         "e2e_docker_sh": launcher_sh,
+        "docker_e2e_product_contract": root
+            .join("deployments/lab/product/docker-e2e-product-contract.json")
+            .is_file(),
         "cap0_topology_ne_product": true,
         "host_loopback_ne_product": true
     });
@@ -305,6 +317,15 @@ mod tests {
             report["cap1_serial_preferred_order"][2]["id"],
             "U-DOCKER-E2E-VALIDATE"
         );
+        assert!(report["docker_e2e_topology_honesty"]
+            .get("compose_clean_room_product_matrix")
+            .is_some());
+        assert!(report["docker_e2e_topology_honesty"]
+            .get("dockerfile_clean_room_product_matrix")
+            .is_some());
+        assert!(report["docker_e2e_topology_honesty"]
+            .get("docker_e2e_product_contract")
+            .is_some());
         let _ = fs::remove_dir_all(&root);
     }
 }

@@ -232,6 +232,8 @@ fn allowed(path: &str) -> bool {
                 | "deployments/lab/product/clean-room-product-matrix-measure-receipt.scaffold.json"
                 | "deployments/lab/product/clean-room-product-matrix-cap-pilot.sh"
                 | "deployments/lab/product/docker-e2e-product-measure-receipt.scaffold.json"
+                | "deployments/lab/product/docker-e2e-product-contract.json"
+                | "deployments/lab/product/docker-e2e-product-cap-pilot.sh"
                 | "deployments/lab/product/cap-free-restore-contract.json"
                 | "deployments/lab/product/apps-humanymous-browser-structural-cap0-contract.json"
                 | "deployments/lab/authority/package.json"
@@ -322,6 +324,8 @@ mod tests {
             "deployments/lab/product/clean-room-product-matrix-measure-receipt.scaffold.json",
             "deployments/lab/product/clean-room-product-matrix-cap-pilot.sh",
             "deployments/lab/product/docker-e2e-product-measure-receipt.scaffold.json",
+            "deployments/lab/product/docker-e2e-product-contract.json",
+            "deployments/lab/product/docker-e2e-product-cap-pilot.sh",
             "deployments/lab/product/cap-free-restore-contract.json",
             "deployments/lab/product/apps-humanymous-browser-structural-cap0-contract.json",
             "adapters/node/src/index.cjs",

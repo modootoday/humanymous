@@ -80,8 +80,12 @@ const DOCKER_E2E_LAUNCHER_CANDIDATES: &[&str] = &[
     "scripts/e2e-docker.ps1",
 ];
 
-/// Cap1 Docker e2e / red-blue topology honesty (present ≠ product green).
+/// Cap1 serial Docker e2e / clean-room / matrix topology honesty (present ≠ product green).
 const DOCKER_E2E_TOPOLOGY_CANDIDATES: &[&str] = &[
+    "deployments/lab/compose.clean-room-product.yaml",
+    "build/rust/clean-room-product-lab.Dockerfile",
+    "deployments/lab/compose.clean-room-product-matrix.yaml",
+    "build/rust/clean-room-product-matrix-lab.Dockerfile",
     "deployments/lab/compose.red-blue-product.yaml",
     "build/rust/red-blue-product-lab.Dockerfile",
     "deployments/compose.yaml",
@@ -527,7 +531,7 @@ fn docker_e2e_launcher_readiness(root: &Path) -> Value {
         "topology": topology,
         "cap0_readiness_ne_product": true,
         "host_loopback_ne_product": true,
-        "note": "Cap0 launcher/topology honesty only; Cap1 Docker burn after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; never invent docker_e2e_validate_product"
+        "note": "Cap0 launcher/topology honesty only (clean-room→matrix→red-blue/Docker e2e); Cap1 Docker burn after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; never invent docker_e2e_validate_product"
     })
 }
 
@@ -839,6 +843,33 @@ mod tests {
             report["distinct_from_cap0_chain_inspect_only"]["inspect_only_covers"],
             "AT/AUTH/GRANT/TRANSFER presence+schema wake only"
         );
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn docker_e2e_topology_honesty_covers_cap1_serial_clean_room_matrix() {
+        assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES
+            .iter()
+            .any(|p| *p == "deployments/lab/compose.clean-room-product.yaml"));
+        assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES
+            .iter()
+            .any(|p| *p == "deployments/lab/compose.clean-room-product-matrix.yaml"));
+        assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES
+            .iter()
+            .any(|p| *p == "deployments/lab/compose.red-blue-product.yaml"));
+        assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES.len() >= 7);
+        let root = temp_root("topo");
+        write_unlock_a(&root, false);
+        let report = measure(&root).expect("measure");
+        let topology = report["docker_e2e_launcher_readiness"]["topology"]
+            .as_array()
+            .expect("topology");
+        assert_eq!(topology.len(), DOCKER_E2E_TOPOLOGY_CANDIDATES.len());
+        assert_eq!(
+            report["docker_e2e_launcher_readiness"]["topology_present"],
+            false
+        );
+        assert_eq!(report["docker_e2e_validate_product"], false);
         let _ = fs::remove_dir_all(&root);
     }
 

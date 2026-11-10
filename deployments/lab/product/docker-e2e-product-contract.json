@@ -1,0 +1,56 @@
+{
+  "schema": "humanymous.lab-docker-e2e-product-contract/1",
+  "record_kind": "docker-e2e-product-cap-contract",
+  "cap_selector": "pwsh -File scripts/e2e-docker-launch.ps1 / --red-blue-product --require-full",
+  "pilot_command": "pwsh -File scripts/e2e-docker-launch.ps1",
+  "require_full_required": true,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "docker_e2e_validate_product": false,
+  "detection_freeze": true,
+  "completion_authority": "docker_only",
+  "host_loopback_ne_product": true,
+  "required_cap_topology": [
+    "deployments/lab/compose.clean-room-product.yaml",
+    "build/rust/clean-room-product-lab.Dockerfile",
+    "deployments/lab/compose.clean-room-product-matrix.yaml",
+    "build/rust/clean-room-product-matrix-lab.Dockerfile",
+    "deployments/lab/compose.red-blue-product.yaml",
+    "build/rust/red-blue-product-lab.Dockerfile",
+    "deployments/compose.yaml"
+  ],
+  "preferred_launcher": "scripts/e2e-docker-launch.ps1",
+  "alternate_launchers": [
+    "bash scripts/e2e-docker.sh",
+    "make e2e",
+    "pwsh -File scripts/e2e-docker.ps1"
+  ],
+  "cap0_probes_allowed_without_product": [
+    "pwsh -File scripts/e2e-docker-launch.ps1 -AffinityOnly",
+    "pwsh -File scripts/e2e-docker-launch.ps1 -PressureOnly"
+  ],
+  "cap1_serial_order": 3,
+  "pressure_guard_required": true,
+  "single_flight_mutex_required": true,
+  "affinity": "desktop-linux",
+  "measure_receipt_scaffold": "deployments/lab/product/docker-e2e-product-measure-receipt.scaffold.json",
+  "red_blue_validate_skill": ".agents/skills/red-blue-validate/SKILL.md",
+  "forbidden": [
+    "invent docker_e2e_validate_product",
+    "invent pass_product_clean_room",
+    "host node test/e2e/runner.mjs as product",
+    "host node test/gate/e2e.mjs as product",
+    "Cap1 while Cap free=false without Cap realloc",
+    "invent Cap free / BrowserReady / AUTH/AT",
+    "spent Cap twin 73-80 reburn"
+  ],
+  "honesty": {
+    "cap0_contract_presence_ne_product": true,
+    "cap0_affinity_pressure_ne_product": true,
+    "component_ne_product": true,
+    "host_loopback_ne_product": true,
+    "never_invent_docker_e2e_validate_product": true,
+    "never_invent_pass_product_clean_room": true
+  },
+  "note": "Cap0 lander contract only. Cap1 after Cap free: clean-room → matrix --require-full → e2e-docker-launch.ps1 / --red-blue-product --require-full; never invent docker_e2e_validate_product."
+}
