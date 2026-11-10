@@ -6,11 +6,11 @@
 //! Never invents Cap free / product / AUTH / AT. Never Cap1 Docker-burns.
 use crate::docker::Result;
 use crate::orchestration::cap0_product_honesty::{
-    UNLOCK_A_CLOSER_REL, UNLOCK_A_CLOSER_SCHEMA, cap_free_after_unlock_a,
+    cap_free_after_unlock_a, UNLOCK_A_CLOSER_REL, UNLOCK_A_CLOSER_SCHEMA,
 };
 use crate::snapshot;
 use crate::transfer_preimage;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-cap-realloc-apply/1";
@@ -399,6 +399,12 @@ pub(crate) fn apply_cap_free_restore(
             "applied": false,
             "dry_run": dry_run,
             "status": "refuse_closed_preimage_mismatch",
+            "error_code": "refuse_closed_preimage_mismatch",
+            "apply_path_error": {
+                "error_code": "refuse_closed_preimage_mismatch",
+                "machine_code": "refuse_closed_preimage_mismatch",
+                "root_must": "Rematch transfer-manifest preimageSha256 to liveSha256 in preimage_rematch.root_must_set_preimageSha256_to"
+            },
             "unlock_a_closer": UNLOCK_A_CLOSER_REL,
             "grant_schema": GRANT_SCHEMA,
             "grant": grant_path.to_string_lossy(),
@@ -634,6 +640,11 @@ mod tests {
         let report = apply_cap_free_restore(&root, &grant_path, &manifest_path, false)
             .expect("structured refuse");
         assert_eq!(report["status"], "refuse_closed_preimage_mismatch");
+        assert_eq!(report["error_code"], "refuse_closed_preimage_mismatch");
+        assert_eq!(
+            report["apply_path_error"]["error_code"],
+            "refuse_closed_preimage_mismatch"
+        );
         assert_eq!(report["preimages_match"], false);
         assert_eq!(report["cap_free"], false);
         assert_eq!(report["product"], 0);
@@ -642,12 +653,10 @@ mod tests {
             report["preimage_rematch"]["mismatches"][0]["root_must_set_preimageSha256_to"],
             live
         );
-        assert!(
-            report["error"]
-                .as_str()
-                .unwrap_or("")
-                .contains("root_must_set_preimageSha256_to=")
-        );
+        assert!(report["error"]
+            .as_str()
+            .unwrap_or("")
+            .contains("root_must_set_preimageSha256_to="));
         assert!(!cap_free_after_unlock_a(&root).expect("probe"));
         let _ = fs::remove_dir_all(&root);
     }

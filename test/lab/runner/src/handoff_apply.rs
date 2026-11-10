@@ -5,16 +5,16 @@
 //! / product / Cap free / AT or AUTH tokens. Cap burn stays 0.
 use crate::docker::Result;
 use crate::orchestration::cap0_product_honesty::{
-    BROWSER_READY_CAP_SELECTOR, BROWSER_READY_PILOT_COMMAND, BROWSER_READY_ROOT_ASK_PATHS,
-    INTERACTIVE_AT_HANDOFF_CANDIDATES, N06_OWNER_AUTH_CAP_SELECTOR, N06_OWNER_AUTH_PILOT_COMMAND,
-    UNLOCK_A_CLOSER_REL, cap_free_after_unlock_a,
+    cap_free_after_unlock_a, BROWSER_READY_CAP_SELECTOR, BROWSER_READY_PILOT_COMMAND,
+    BROWSER_READY_ROOT_ASK_PATHS, INTERACTIVE_AT_HANDOFF_CANDIDATES, N06_OWNER_AUTH_CAP_SELECTOR,
+    N06_OWNER_AUTH_PILOT_COMMAND, UNLOCK_A_CLOSER_REL,
 };
 use crate::orchestration::h2_product_binding::{
     N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES, N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA,
     N06_OWNER_JOIN_ROOT_ASK_PATHS,
 };
 use crate::snapshot;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use std::{fs, path::Path};
 
 const AT_SCHEMA: &str = "humanymous.lab-at-handoff-apply/1";
@@ -59,9 +59,7 @@ pub fn run(args: &[String]) -> Result<i32> {
         }
         index += 1;
     }
-    let kind = kind.ok_or(
-        "handoff-apply requires --kind at|auth|browser-ready-join",
-    )?;
+    let kind = kind.ok_or("handoff-apply requires --kind at|auth|browser-ready-join")?;
 
     let root = match workspace {
         Some(path) => Path::new(&path).canonicalize().map_err(|error| {
@@ -138,6 +136,21 @@ fn field_diag(label: &str, observed: &str, expected: &str) -> String {
     format!("{label}: observed={observed} expected={expected}")
 }
 
+/// Stable machine-parseable apply-path error codes for Cap0 refuse paths.
+/// Mirrors refuse `status` so Root can rematch without tipbind spam.
+fn apply_path_error(error_code: &str, root_must: &str) -> Value {
+    json!({
+        "error_code": error_code,
+        "machine_code": error_code,
+        "root_must": root_must,
+        "cap0_only": true,
+        "never_invent_cap_free": true,
+        "never_invent_browser_ready": true,
+        "never_invent_pass_product_clean_room": true,
+        "never_forge_auth_at": true
+    })
+}
+
 /// Cap0 latency cutter: schema/field mismatch messages include observed values
 /// so Root can fix AT-HANDOFF without another inspect cycle.
 pub(crate) fn validate_at_handoff(handoff: &Value) -> Result<()> {
@@ -173,7 +186,9 @@ pub(crate) fn validate_at_handoff(handoff: &Value) -> Result<()> {
             "handoff-apply refused: AT-HANDOFF invented product/pass_product_clean_room; {}; {}",
             field_diag(
                 "product",
-                &product.map(|v| v.to_string()).unwrap_or_else(|| "<missing>".into()),
+                &product
+                    .map(|v| v.to_string())
+                    .unwrap_or_else(|| "<missing>".into()),
                 "0"
             ),
             field_diag(
@@ -223,7 +238,9 @@ pub(crate) fn validate_auth_handoff(handoff: &Value) -> Result<()> {
             "handoff-apply refused: AUTH-HANDOFF invented product/pass_product_clean_room; {}; {}",
             field_diag(
                 "product",
-                &product.map(|v| v.to_string()).unwrap_or_else(|| "<missing>".into()),
+                &product
+                    .map(|v| v.to_string())
+                    .unwrap_or_else(|| "<missing>".into()),
                 "0"
             ),
             field_diag(
@@ -265,6 +282,11 @@ pub(crate) fn apply_at_handoff(root: &Path, dry_run: bool) -> Result<Value> {
             "handoff_candidates": INTERACTIVE_AT_HANDOFF_CANDIDATES,
             "root_ask_paths": BROWSER_READY_ROOT_ASK_PATHS,
             "status": "refuse_closed_at_absent",
+            "error_code": "refuse_closed_at_absent",
+            "apply_path_error": apply_path_error(
+                "refuse_closed_at_absent",
+                "Place LIVE AT-HANDOFF.json with schema humanymous.root-interactive-at-windows-tuple/1 (never TEMPLATE)"
+            ),
             "next_honesty": BROWSER_READY_PILOT_COMMAND,
             "next_honesty_selector": BROWSER_READY_CAP_SELECTOR,
             "note": "AT-HANDOFF absent; Cap=0 ROOT-ONE-STEP twin waits for Root schema humanymous.root-interactive-at-windows-tuple/1; never invent BrowserReady / AT tokens",
@@ -314,6 +336,7 @@ pub(crate) fn apply_at_handoff(root: &Path, dry_run: bool) -> Result<Value> {
         "browser_ready_authorized": true,
         "root_ask_paths": BROWSER_READY_ROOT_ASK_PATHS,
         "status": if dry_run { "validated_dry_run" } else { "measured_apply_bound" },
+        "error_code": Value::Null,
         "next_honesty": BROWSER_READY_PILOT_COMMAND,
         "next_honesty_selector": BROWSER_READY_CAP_SELECTOR,
         "next_join": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind browser-ready-join",
@@ -350,6 +373,11 @@ pub(crate) fn apply_auth_handoff(root: &Path, dry_run: bool) -> Result<Value> {
             "handoff_candidates": N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES,
             "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
             "status": "refuse_closed_auth_absent",
+            "error_code": "refuse_closed_auth_absent",
+            "apply_path_error": apply_path_error(
+                "refuse_closed_auth_absent",
+                "Place LIVE AUTH-HANDOFF.json with schema humanymous.root-n06-owner-join-auth-handoff/1 (never TEMPLATE)"
+            ),
             "next_honesty": N06_OWNER_AUTH_PILOT_COMMAND,
             "next_honesty_selector": N06_OWNER_AUTH_CAP_SELECTOR,
             "note": "AUTH-HANDOFF absent; Cap=0 ROOT-ONE-STEP twin waits for Root schema humanymous.root-n06-owner-join-auth-handoff/1; never invent n06_owner_join / AUTH tokens",
@@ -399,6 +427,7 @@ pub(crate) fn apply_auth_handoff(root: &Path, dry_run: bool) -> Result<Value> {
         "n06_owner_join_authorized": true,
         "root_ask_paths": N06_OWNER_JOIN_ROOT_ASK_PATHS,
         "status": if dry_run { "validated_dry_run" } else { "measured_apply_bound" },
+        "error_code": Value::Null,
         "next_honesty": N06_OWNER_AUTH_PILOT_COMMAND,
         "next_honesty_selector": N06_OWNER_AUTH_CAP_SELECTOR,
         "note": "AUTH-HANDOFF schema validated and Cap=0 measured-bound; n06_owner_join remains false until honesty join measures it; never invent n06_owner_join from handoff alone",
@@ -442,6 +471,11 @@ pub(crate) fn apply_browser_ready_join(root: &Path, dry_run: bool) -> Result<Val
             "cef_cap_day_present": cef_cap_day_present,
             "cef_bundle_env_present": cef_env_present,
             "status": "refuse_closed_unlock_a_absent",
+            "error_code": "refuse_closed_unlock_a_absent",
+            "apply_path_error": apply_path_error(
+                "refuse_closed_unlock_a_absent",
+                "Ensure Unlock A CLOSER exists at .spec.local/root/evidence/20261109020800-cursor-unlock-a-desktop-baseline-realloc/CLOSER.json"
+            ),
             "root_ask_paths": BROWSER_READY_ROOT_ASK_PATHS,
             "note": "BrowserReady join refused: Unlock A Cap EXIT0 closer absent; Cap=0; never invent BrowserReady",
             "honesty": {
@@ -475,6 +509,11 @@ pub(crate) fn apply_browser_ready_join(root: &Path, dry_run: bool) -> Result<Val
             "cef_cap_day_present": cef_cap_day_present,
             "cef_bundle_env_present": cef_env_present,
             "status": "refuse_closed_at_absent",
+            "error_code": "refuse_closed_at_absent",
+            "apply_path_error": apply_path_error(
+                "refuse_closed_at_absent",
+                "Place LIVE AT-HANDOFF.json before browser-ready-join; Unlock A ≠ BrowserReady"
+            ),
             "root_ask_paths": BROWSER_READY_ROOT_ASK_PATHS,
             "next_at_apply": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind at",
             "next_honesty": BROWSER_READY_PILOT_COMMAND,
@@ -540,6 +579,7 @@ pub(crate) fn apply_browser_ready_join(root: &Path, dry_run: bool) -> Result<Val
         "cef_bundle_env_present": cef_env_present,
         "prerequisites_complete": prerequisites_complete,
         "status": status,
+        "error_code": Value::Null,
         "root_ask_paths": BROWSER_READY_ROOT_ASK_PATHS,
         "next_honesty": BROWSER_READY_PILOT_COMMAND,
         "next_honesty_selector": BROWSER_READY_CAP_SELECTOR,
@@ -583,6 +623,11 @@ mod tests {
         assert_eq!(report["product"], 0);
         assert_eq!(report["at_handoff_present"], false);
         assert_eq!(report["status"], "refuse_closed_at_absent");
+        assert_eq!(report["error_code"], "refuse_closed_at_absent");
+        assert_eq!(
+            report["apply_path_error"]["error_code"],
+            "refuse_closed_at_absent"
+        );
         let _ = fs::remove_dir_all(&root);
     }
 

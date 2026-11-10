@@ -12,17 +12,16 @@ use crate::cap_realloc_apply;
 use crate::docker::Result;
 use crate::handoff_apply;
 use crate::orchestration::cap0_product_honesty::{
-    INTERACTIVE_AT_HANDOFF_CANDIDATES, UNLOCK_A_CLOSER_REL, cap_free_after_unlock_a,
+    cap_free_after_unlock_a, INTERACTIVE_AT_HANDOFF_CANDIDATES, UNLOCK_A_CLOSER_REL,
 };
 use crate::orchestration::h2_product_binding::N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES;
 use crate::snapshot;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-cap0-chain/1";
 const INSPECT_SCHEMA: &str = "humanymous.lab-cap0-chain-inspect/1";
-const PILOT_COMMAND: &str =
-    "cargo run --locked -p humanymous-lab-runner -- cap0-chain [--inspect-only|--dry-run] [--workspace PATH] [--emit PATH] [--grant PATH] [--manifest PATH]";
+const PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- cap0-chain [--inspect-only|--dry-run] [--workspace PATH] [--emit PATH] [--grant PATH] [--manifest PATH]";
 const INTERACTIVE_AT_HANDOFF_SCHEMA: &str = "humanymous.root-interactive-at-windows-tuple/1";
 const N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA: &str = "humanymous.root-n06-owner-join-auth-handoff/1";
 const GRANT_SCHEMA: &str = "humanymous.root-cap-free-restore-grant/1";
@@ -79,8 +78,7 @@ pub fn run(args: &[String]) -> Result<i32> {
             }
             "--manifest" => {
                 index += 1;
-                manifest_override =
-                    Some(args.get(index).ok_or("--manifest path missing")?.clone());
+                manifest_override = Some(args.get(index).ok_or("--manifest path missing")?.clone());
             }
             "--dry-run" => dry_run = true,
             "--inspect-only" => inspect_only = true,
@@ -221,6 +219,32 @@ fn step_ok(report: &Value) -> bool {
             && report.get("would_set_cap_free").and_then(Value::as_bool) == Some(true))
 }
 
+/// Prefer report.error_code; fall back to refuse status for Cap0 apply-path machine codes.
+fn step_error_code(report: &Value) -> Value {
+    if let Some(code) = report.get("error_code") {
+        if !code.is_null() {
+            return code.clone();
+        }
+    }
+    match report.get("status").and_then(Value::as_str) {
+        Some(status) if status.starts_with("refuse_closed") || status == "skipped_prior_refuse" => {
+            json!(status)
+        }
+        _ => Value::Null,
+    }
+}
+
+fn push_step(steps: &mut Vec<Value>, step: u32, kind: &str, ok: bool, report: Value) {
+    let error_code = step_error_code(&report);
+    steps.push(json!({
+        "step": step,
+        "kind": kind,
+        "ok": ok,
+        "error_code": error_code,
+        "report": report
+    }));
+}
+
 fn honesty_block() -> Value {
     json!({
         "never_invent_pass_product_clean_room": true,
@@ -330,7 +354,9 @@ fn validate_manifest_present(root: &Path, relative: &str) -> Value {
                     });
                 }
                 match crate::transfer_preimage::verify_manifest(root, &path) {
-                    Ok(report) if report.get("preimages_match").and_then(Value::as_bool) == Some(true) => {
+                    Ok(report)
+                        if report.get("preimages_match").and_then(Value::as_bool) == Some(true) =>
+                    {
                         json!({
                             "id": "TRANSFER-manifest",
                             "present": true,
@@ -537,12 +563,7 @@ fn run_chain(
     // 1) AT
     let at_report = handoff_apply::apply_at_handoff(root, dry_run)?;
     let at_ok = step_ok(&at_report);
-    steps.push(json!({
-        "step": 1,
-        "kind": "at",
-        "ok": at_ok,
-        "report": at_report
-    }));
+    push_step(&mut steps, 1, "at", at_ok, at_report);
     if !at_ok {
         stopped_at = Some("at");
     }
@@ -554,6 +575,7 @@ fn run_chain(
         json!({
             "schema": "humanymous.lab-browser-ready-join-apply/1",
             "status": "skipped_prior_refuse",
+            "error_code": "skipped_prior_refuse",
             "applied": false,
             "browser_ready": false,
             "product": 0,
@@ -561,12 +583,7 @@ fn run_chain(
         })
     };
     let join_ok = stopped_at.is_none() && step_ok(&join_report);
-    steps.push(json!({
-        "step": 2,
-        "kind": "browser-ready-join",
-        "ok": join_ok,
-        "report": join_report
-    }));
+    push_step(&mut steps, 2, "browser-ready-join", join_ok, join_report);
     if stopped_at.is_none() && !join_ok {
         stopped_at = Some("browser-ready-join");
     }
@@ -578,6 +595,7 @@ fn run_chain(
         json!({
             "schema": "humanymous.lab-auth-handoff-apply/1",
             "status": "skipped_prior_refuse",
+            "error_code": "skipped_prior_refuse",
             "applied": false,
             "n06_owner_join": false,
             "product": 0,
@@ -585,12 +603,7 @@ fn run_chain(
         })
     };
     let auth_ok = stopped_at.is_none() && step_ok(&auth_report);
-    steps.push(json!({
-        "step": 3,
-        "kind": "auth",
-        "ok": auth_ok,
-        "report": auth_report
-    }));
+    push_step(&mut steps, 3, "auth", auth_ok, auth_report);
     if stopped_at.is_none() && !auth_ok {
         stopped_at = Some("auth");
     }
@@ -600,6 +613,7 @@ fn run_chain(
         json!({
             "schema": "humanymous.lab-cap-realloc-apply/1",
             "status": "skipped_prior_refuse",
+            "error_code": "skipped_prior_refuse",
             "applied": false,
             "cap_free": false,
             "product": 0,
@@ -610,6 +624,7 @@ fn run_chain(
             json!({
                 "schema": "humanymous.lab-cap-realloc-apply/1",
                 "status": "refuse_closed_grant_template",
+                "error_code": "refuse_closed_grant_template",
                 "applied": false,
                 "cap_free": false,
                 "product": 0,
@@ -638,6 +653,7 @@ fn run_chain(
                 Err(error) => json!({
                     "schema": "humanymous.lab-cap-realloc-apply/1",
                     "status": "refuse_closed_cap_realloc",
+                    "error_code": "refuse_closed_cap_realloc",
                     "applied": false,
                     "cap_free": false,
                     "product": 0,
@@ -653,6 +669,7 @@ fn run_chain(
         json!({
             "schema": "humanymous.lab-cap-realloc-apply/1",
             "status": "refuse_closed_grant_template",
+            "error_code": "refuse_closed_grant_template",
             "applied": false,
             "cap_free": false,
             "product": 0,
@@ -665,6 +682,7 @@ fn run_chain(
         json!({
             "schema": "humanymous.lab-cap-realloc-apply/1",
             "status": "refuse_closed_grant_or_manifest_absent",
+            "error_code": "refuse_closed_grant_or_manifest_absent",
             "applied": false,
             "cap_free": false,
             "product": 0,
@@ -675,12 +693,13 @@ fn run_chain(
         })
     };
     let realloc_ok = stopped_at.is_none() && step_ok(&realloc_report);
-    steps.push(json!({
-        "step": 4,
-        "kind": "cap-realloc-apply",
-        "ok": realloc_ok,
-        "report": realloc_report
-    }));
+    push_step(
+        &mut steps,
+        4,
+        "cap-realloc-apply",
+        realloc_ok,
+        realloc_report,
+    );
     if stopped_at.is_none() && !realloc_ok {
         stopped_at = Some("cap-realloc-apply");
     }
@@ -852,7 +871,11 @@ mod tests {
         assert_eq!(report["status"], "refuse_closed_at_step_at");
         assert_eq!(report["stopped_at"], "at");
         assert_eq!(report["steps"][0]["ok"], false);
-        assert_eq!(report["steps"][1]["report"]["status"], "skipped_prior_refuse");
+        assert_eq!(report["steps"][0]["error_code"], "refuse_closed_at_absent");
+        assert_eq!(
+            report["steps"][1]["report"]["status"],
+            "skipped_prior_refuse"
+        );
         assert_eq!(
             report["root_apply_diagnostics"]["at_handoff"]["required_schema"],
             INTERACTIVE_AT_HANDOFF_SCHEMA
