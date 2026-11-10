@@ -233,11 +233,14 @@ fn wake_state(root: &Path) -> Value {
     let rb_grant = path_exists(root, RB_GRANT_CANDIDATE);
     let auth = first_present(root, AUTH_HANDOFF_CANDIDATES);
     let at = first_present(root, AT_HANDOFF_CANDIDATES);
-    // Unlock A EXIT0 spent Cap; Cap free stays false unless a Cap-cycle realloc
-    // authorizes one burn. Cursor must not invent Cap free without documented
-    // Cap realloc receipt. GRANT presence alone ≠ Cap free.
-    let cap_free = false;
-    let note = if !(g2_grant
+    // Measure Cap free from Unlock A CLOSER only (cap_free_after_unlock_a). Never
+    // invent true; never hardcode false when CLOSER already restored Cap free.
+    // GRANT presence alone ≠ Cap free.
+    let cap_free = crate::orchestration::cap0_product_honesty::cap_free_after_unlock_a(root)
+        .unwrap_or(false);
+    let note = if cap_free {
+        "Unlock A CLOSER.cap_free=true measured; Cap1 serial may proceed once LIVE topology/handoffs allow; never invent pass_product_clean_room / BrowserReady"
+    } else if !(g2_grant
         || g5_grant
         || g6_grant
         || cr_grant
@@ -247,7 +250,7 @@ fn wake_state(root: &Path) -> Value {
     {
         "Live G2/G5/G6/CR/RB GRANT + AUTH/AT absent → Cap realloc not executable; Cap free conserved false; never forge handoffs"
     } else {
-        "GRANT and/or handoff presence observed; Cap free stays false until Cap realloc authorizes one Cap=1; AUTH/AT still Root when absent; never invent pass_product_clean_room"
+        "GRANT and/or handoff presence observed; Cap free measured false until Cap-free-restore / Cap realloc authorizes Cap=1; AUTH/AT still Root when absent; never invent pass_product_clean_room"
     };
     json!({
         "g2_grant_present": g2_grant,
@@ -1049,12 +1052,65 @@ mod tests {
     #[test]
     fn wake_state_does_not_invent_cap_free_or_handoffs() {
         let wake = wake_state(Path::new("."));
+        // Live Unlock A CLOSER currently measures Cap free=false; never invent true.
         assert_eq!(wake["cap_free"], false);
         assert_eq!(wake["cap_realloc_without_live_topology_authorized"], false);
         assert_eq!(wake["g2_grant_present"], false);
         assert_eq!(wake["g5_grant_present"], false);
         assert_eq!(wake["auth_handoff_present"], false);
         assert_eq!(wake["at_handoff_present"], false);
+    }
+
+    #[test]
+    fn wake_state_measures_cap_free_from_unlock_a_closer_not_hardcoded() {
+        use crate::orchestration::cap0_product_honesty::{
+            UNLOCK_A_CLOSER_REL, UNLOCK_A_CLOSER_SCHEMA,
+        };
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("time")
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!("hmn-matrix-wake-cap-free-{nanos}"));
+        let closer = root.join(UNLOCK_A_CLOSER_REL);
+        std::fs::create_dir_all(closer.parent().expect("parent")).expect("mkdir");
+        std::fs::write(
+            &closer,
+            serde_json::to_vec_pretty(&json!({
+                "schema": UNLOCK_A_CLOSER_SCHEMA,
+                "cap_exit": 0,
+                "cap_free": true,
+                "product": 0,
+                "pass_product_clean_room": 0,
+                "browser_ready": false
+            }))
+            .expect("encode"),
+        )
+        .expect("write closer");
+        let wake = wake_state(&root);
+        assert_eq!(
+            wake["cap_free"], true,
+            "wake_state must measure Cap free from Unlock A CLOSER after Cap-free-restore"
+        );
+        assert_eq!(wake["at_handoff_present"], false);
+        assert_eq!(wake["auth_handoff_present"], false);
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn red_blue_product_blocker_prefers_cap_free_when_grant_present() {
+        let wake = json!({
+            "g2_grant_present": false,
+            "g5_grant_present": false,
+            "g6_grant_present": false,
+            "rb_grant_present": true,
+            "auth_handoff_present": false,
+            "at_handoff_present": false,
+            "cap_free": false
+        });
+        let (blocker, detail) = honest_blocker("red-blue-product", "unrun", &wake);
+        assert_eq!(blocker, "cap_free_false");
+        assert!(detail.contains("Cap free=false"));
+        assert!(!detail.contains("GRANT.json absent"));
     }
 
     #[test]
