@@ -256,6 +256,69 @@ mod tests {
         assert_eq!(trace.hard_rules.iter().filter(|rule| rule.won).count(), 1);
         assert_eq!(result, engine.score(&mut report).unwrap());
     }
+
+    /// Cap0 honesty: frozen SoT hard rules must evaluate known automation fixtures
+    /// as Deny/HR-1 without changing weights, thresholds, or predicates.
+    #[test]
+    fn known_automation_fixtures_evaluate_honestly_under_frozen_hard_rules() {
+        let engine = Engine::default();
+        for artifact in [
+            "l1.artifact.selenium",
+            "l1.artifact.playwright",
+            "l1.artifact.phantom",
+        ] {
+            let mut report = SessionReport::default();
+            report.network.signals = Some(vec![Signal::new(
+                artifact,
+                serde_json::json!(true),
+                Verdict::Bot,
+                1.0,
+                Source::Server,
+                "known-automation-fixture",
+            )]);
+            let result = engine.score(&mut report).unwrap();
+            assert_eq!(
+                (result.hard_rule_fired.as_str(), result.verdict.as_str()),
+                ("HR-1", "DENY"),
+                "frozen HR-1 must Deny known automation fixture {artifact}"
+            );
+        }
+
+        // Non-BOT artifact evidence must not invent HR-1 Deny.
+        let mut ok_report = SessionReport::default();
+        ok_report.network.signals = Some(vec![Signal::new(
+            "l1.artifact.selenium",
+            serde_json::json!(false),
+            Verdict::Ok,
+            1.0,
+            Source::Server,
+            "non-bot-fixture",
+        )]);
+        let ok_result = engine.score(&mut ok_report).unwrap();
+        assert_ne!(
+            ok_result.hard_rule_fired.as_str(),
+            "HR-1",
+            "OK selenium fixture must not invent HR-1"
+        );
+
+        // Webdriver alone is not the hard automation-artifact rule.
+        let mut wd_report = SessionReport::default();
+        wd_report.client.user_agent = "Mozilla/5.0".into();
+        wd_report.client.signals = Some(vec![Signal::new(
+            "l1.navigator.webdriver",
+            serde_json::json!(true),
+            Verdict::Bot,
+            1.0,
+            Source::Js,
+            "webdriver-only-fixture",
+        )]);
+        let wd_result = engine.score(&mut wd_report).unwrap();
+        assert_ne!(
+            wd_result.hard_rule_fired.as_str(),
+            "HR-1",
+            "webdriver-only must not be scored as HR-1 artifact"
+        );
+    }
     #[test]
     fn invalid_numeric_configuration_and_contributions_fail_closed() {
         let engine = Engine {
