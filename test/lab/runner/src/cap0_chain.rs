@@ -413,7 +413,7 @@ fn validate_manifest_present(root: &Path, relative: &str) -> Value {
 }
 
 /// Cap0 latency cutter: presence + schema validators only (no apply side effects).
-fn run_inspect(
+pub(crate) fn run_inspect(
     root: &Path,
     grant_override: Option<&str>,
     manifest_override: Option<&str>,
@@ -545,7 +545,7 @@ fn run_inspect(
     }))
 }
 
-fn run_chain(
+pub(crate) fn run_chain(
     root: &Path,
     dry_run: bool,
     grant_override: Option<&str>,
