@@ -551,6 +551,7 @@ fn completeness_report(
         },
         "cap0_helpers": {
             "cap0_chain": "cargo run --locked -p humanymous-lab-runner -- cap0-chain",
+            "cap0_chain_inspect_only": "cargo run --locked -p humanymous-lab-runner -- cap0-chain --inspect-only",
             "cap0_chain_dry_run": "cargo run --locked -p humanymous-lab-runner -- cap0-chain --dry-run",
             "handoff_apply_at": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind at",
             "handoff_apply_auth": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind auth",

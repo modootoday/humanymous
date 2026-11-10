@@ -126,66 +126,119 @@ fn refuse_template_bytes(label: &str, bytes: &[u8]) -> Result<()> {
     Ok(())
 }
 
-fn validate_at_handoff(handoff: &Value) -> Result<()> {
-    if handoff.get("schema").and_then(Value::as_str) != Some(INTERACTIVE_AT_HANDOFF_SCHEMA) {
-        return Err(
-            "handoff-apply refused: AT-HANDOFF schema mismatch; require humanymous.root-interactive-at-windows-tuple/1; never invent Root AT tokens"
-                .into(),
-        );
+fn observed_schema(handoff: &Value) -> String {
+    handoff
+        .get("schema")
+        .and_then(Value::as_str)
+        .unwrap_or("<missing>")
+        .to_string()
+}
+
+fn field_diag(label: &str, observed: &str, expected: &str) -> String {
+    format!("{label}: observed={observed} expected={expected}")
+}
+
+/// Cap0 latency cutter: schema/field mismatch messages include observed values
+/// so Root can fix AT-HANDOFF without another inspect cycle.
+pub(crate) fn validate_at_handoff(handoff: &Value) -> Result<()> {
+    let observed = observed_schema(handoff);
+    if observed.as_str() != INTERACTIVE_AT_HANDOFF_SCHEMA {
+        return Err(format!(
+            "handoff-apply refused: AT-HANDOFF schema mismatch; {}; never invent Root AT tokens",
+            field_diag("schema", &observed, INTERACTIVE_AT_HANDOFF_SCHEMA)
+        )
+        .into());
     }
-    if handoff
+    let authorized = handoff
         .get("browser_ready_authorized")
-        .and_then(Value::as_bool)
-        != Some(true)
-    {
-        return Err(
-            "handoff-apply refused: AT-HANDOFF browser_ready_authorized must be true; Cap=0 measured apply only"
-                .into(),
-        );
+        .and_then(Value::as_bool);
+    if authorized != Some(true) {
+        let observed_auth = match authorized {
+            Some(true) => "true",
+            Some(false) => "false",
+            None => "<missing>",
+        };
+        return Err(format!(
+            "handoff-apply refused: AT-HANDOFF browser_ready_authorized must be true; {}; Cap=0 measured apply only",
+            field_diag("browser_ready_authorized", observed_auth, "true")
+        )
+        .into());
     }
-    if handoff.get("product").and_then(Value::as_u64) != Some(0)
-        || handoff
-            .get("pass_product_clean_room")
-            .and_then(Value::as_u64)
-            != Some(0)
-    {
-        return Err(
-            "handoff-apply refused: AT-HANDOFF invented product/pass_product_clean_room".into(),
-        );
+    let product = handoff.get("product").and_then(Value::as_u64);
+    let pass_product = handoff
+        .get("pass_product_clean_room")
+        .and_then(Value::as_u64);
+    if product != Some(0) || pass_product != Some(0) {
+        return Err(format!(
+            "handoff-apply refused: AT-HANDOFF invented product/pass_product_clean_room; {}; {}",
+            field_diag(
+                "product",
+                &product.map(|v| v.to_string()).unwrap_or_else(|| "<missing>".into()),
+                "0"
+            ),
+            field_diag(
+                "pass_product_clean_room",
+                &pass_product
+                    .map(|v| v.to_string())
+                    .unwrap_or_else(|| "<missing>".into()),
+                "0"
+            )
+        )
+        .into());
     }
     Ok(())
 }
 
-fn validate_auth_handoff(handoff: &Value) -> Result<()> {
-    if handoff.get("schema").and_then(Value::as_str) != Some(N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA) {
-        return Err(
-            "handoff-apply refused: AUTH-HANDOFF schema mismatch; require humanymous.root-n06-owner-join-auth-handoff/1; never invent Root AUTH tokens"
-                .into(),
-        );
+/// Cap0 latency cutter: AUTH schema/field mismatches include observed values.
+pub(crate) fn validate_auth_handoff(handoff: &Value) -> Result<()> {
+    let observed = observed_schema(handoff);
+    if observed.as_str() != N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA {
+        return Err(format!(
+            "handoff-apply refused: AUTH-HANDOFF schema mismatch; {}; never invent Root AUTH tokens",
+            field_diag("schema", &observed, N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA)
+        )
+        .into());
     }
-    if handoff
+    let authorized = handoff
         .get("n06_owner_join_authorized")
-        .and_then(Value::as_bool)
-        != Some(true)
-    {
-        return Err(
-            "handoff-apply refused: AUTH-HANDOFF n06_owner_join_authorized must be true; Cap=0 measured apply only"
-                .into(),
-        );
+        .and_then(Value::as_bool);
+    if authorized != Some(true) {
+        let observed_auth = match authorized {
+            Some(true) => "true",
+            Some(false) => "false",
+            None => "<missing>",
+        };
+        return Err(format!(
+            "handoff-apply refused: AUTH-HANDOFF n06_owner_join_authorized must be true; {}; Cap=0 measured apply only",
+            field_diag("n06_owner_join_authorized", observed_auth, "true")
+        )
+        .into());
     }
-    if handoff.get("product").and_then(Value::as_u64) != Some(0)
-        || handoff
-            .get("pass_product_clean_room")
-            .and_then(Value::as_u64)
-            != Some(0)
-    {
-        return Err(
-            "handoff-apply refused: AUTH-HANDOFF invented product/pass_product_clean_room".into(),
-        );
+    let product = handoff.get("product").and_then(Value::as_u64);
+    let pass_product = handoff
+        .get("pass_product_clean_room")
+        .and_then(Value::as_u64);
+    if product != Some(0) || pass_product != Some(0) {
+        return Err(format!(
+            "handoff-apply refused: AUTH-HANDOFF invented product/pass_product_clean_room; {}; {}",
+            field_diag(
+                "product",
+                &product.map(|v| v.to_string()).unwrap_or_else(|| "<missing>".into()),
+                "0"
+            ),
+            field_diag(
+                "pass_product_clean_room",
+                &pass_product
+                    .map(|v| v.to_string())
+                    .unwrap_or_else(|| "<missing>".into()),
+                "0"
+            )
+        )
+        .into());
     }
     if handoff.get("n06_owner_join").and_then(Value::as_bool) == Some(true) {
         return Err(
-            "handoff-apply refused: AUTH-HANDOFF invented n06_owner_join=true; Cap=0 measured apply never invents join"
+            "handoff-apply refused: AUTH-HANDOFF invented n06_owner_join=true observed=true expected=false; Cap=0 measured apply never invents join"
                 .into(),
         );
     }
@@ -697,6 +750,71 @@ mod tests {
         fs::write(&path, serde_json::to_vec_pretty(&handoff).expect("encode")).expect("write");
         let err = apply_at_handoff(&root, false).expect_err("template refuse");
         assert!(err.to_string().contains("TEMPLATE"));
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn at_schema_mismatch_includes_observed_expected() {
+        let root = temp_root("at-schema");
+        let relative = INTERACTIVE_AT_HANDOFF_CANDIDATES[0];
+        let path = root.join(relative);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent).expect("mkdir");
+        }
+        let handoff = json!({
+            "schema": "humanymous.wrong-at-schema/0",
+            "browser_ready_authorized": true,
+            "product": 0,
+            "pass_product_clean_room": 0
+        });
+        fs::write(&path, serde_json::to_vec_pretty(&handoff).expect("encode")).expect("write");
+        let err = apply_at_handoff(&root, false).expect_err("schema refuse");
+        let text = err.to_string();
+        assert!(text.contains("observed=humanymous.wrong-at-schema/0"));
+        assert!(text.contains(&format!("expected={INTERACTIVE_AT_HANDOFF_SCHEMA}")));
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn auth_schema_mismatch_includes_observed_expected() {
+        let root = temp_root("auth-schema");
+        let relative = N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES[0];
+        let path = root.join(relative);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent).expect("mkdir");
+        }
+        let handoff = json!({
+            "schema": "humanymous.wrong-auth-schema/0",
+            "n06_owner_join_authorized": true,
+            "n06_owner_join": false,
+            "product": 0,
+            "pass_product_clean_room": 0
+        });
+        fs::write(&path, serde_json::to_vec_pretty(&handoff).expect("encode")).expect("write");
+        let err = apply_auth_handoff(&root, false).expect_err("schema refuse");
+        let text = err.to_string();
+        assert!(text.contains("observed=humanymous.wrong-auth-schema/0"));
+        assert!(text.contains(&format!("expected={N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA}")));
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn at_missing_authorized_field_includes_diag() {
+        let root = temp_root("at-authz");
+        let relative = INTERACTIVE_AT_HANDOFF_CANDIDATES[0];
+        let path = root.join(relative);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent).expect("mkdir");
+        }
+        let handoff = json!({
+            "schema": INTERACTIVE_AT_HANDOFF_SCHEMA,
+            "product": 0,
+            "pass_product_clean_room": 0
+        });
+        fs::write(&path, serde_json::to_vec_pretty(&handoff).expect("encode")).expect("write");
+        let err = apply_at_handoff(&root, false).expect_err("authz refuse");
+        let text = err.to_string();
+        assert!(text.contains("browser_ready_authorized: observed=<missing> expected=true"));
         let _ = fs::remove_dir_all(&root);
     }
 }

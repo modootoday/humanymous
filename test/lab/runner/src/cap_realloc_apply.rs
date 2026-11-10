@@ -147,7 +147,7 @@ fn feeder_is_spent_twin(grant: &Value) -> bool {
         .any(|twin| feeder.eq_ignore_ascii_case(twin) || unlock.eq_ignore_ascii_case(twin))
 }
 
-fn validate_grant(grant: &Value) -> Result<()> {
+pub(crate) fn validate_grant(grant: &Value) -> Result<()> {
     if grant.get("schema").and_then(Value::as_str) != Some(GRANT_SCHEMA) {
         return Err(format!(
             "cap-realloc-apply refused: grant.schema must be {GRANT_SCHEMA}; never invent Cap free"
@@ -231,23 +231,89 @@ fn validate_grant(grant: &Value) -> Result<()> {
     Ok(())
 }
 
-fn require_manifest_preimages_match(root: &Path, manifest_path: &Path) -> Result<Value> {
-    let report = transfer_preimage::verify_manifest(root, manifest_path)?;
-    if report.get("preimages_match").and_then(Value::as_bool) != Some(true) {
-        return Err(
-            "cap-realloc-apply refused: TRANSFER preimageSha256 mismatch vs LIVE; Cap free stays false; never invent Cap free"
-                .into(),
-        );
+/// Build Root rematch packet from transfer-verify entries so Cap-free GRANT
+/// authors can set `preimageSha256` to LIVE digests without another inspect loop.
+pub(crate) fn preimage_rematch_packet(report: &Value) -> Value {
+    let entries = report
+        .get("entries")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut mismatches = Vec::new();
+    for entry in entries {
+        if entry.get("preimage_match").and_then(Value::as_bool) == Some(true) {
+            continue;
+        }
+        let destination = entry
+            .get("destination")
+            .and_then(Value::as_str)
+            .unwrap_or("<missing>");
+        let expected = entry
+            .get("preimageSha256")
+            .and_then(Value::as_str)
+            .unwrap_or("<missing>");
+        let live = entry
+            .get("liveSha256")
+            .and_then(Value::as_str)
+            .unwrap_or("<missing>");
+        let kind = if live == "<missing>" {
+            "destination_absent"
+        } else {
+            "preimage_mismatch"
+        };
+        mismatches.push(json!({
+            "destination": destination,
+            "kind": kind,
+            "manifest_preimageSha256": expected,
+            "liveSha256": live,
+            "root_must_set_preimageSha256_to": if live == "<missing>" { Value::Null } else { json!(live) },
+            "note": if live == "<missing>" {
+                "LIVE destination absent; Root must land destination bytes before Cap-free TRANSFER"
+            } else {
+                "Root rematch transfer-manifest preimageSha256 to liveSha256; Cap free stays false until match"
+            }
+        }));
     }
-    let summary = report.get("summary").cloned().unwrap_or_else(|| json!({}));
-    let entries = summary.get("entries").and_then(Value::as_u64).unwrap_or(0);
-    if entries == 0 {
-        return Err(
-            "cap-realloc-apply refused: TRANSFER manifest entries empty; never invent Cap free"
-                .into(),
-        );
+    json!({
+        "mismatch_count": mismatches.len(),
+        "mismatches": mismatches,
+        "never_invent_cap_free": true,
+        "never_invent_pass_product_clean_room": true
+    })
+}
+
+fn format_preimage_mismatch_error(rematch: &Value) -> String {
+    let count = rematch
+        .get("mismatch_count")
+        .and_then(Value::as_u64)
+        .unwrap_or(0);
+    let mut lines = vec![format!(
+        "cap-realloc-apply refused: TRANSFER preimageSha256 mismatch vs LIVE ({count} entries); Cap free stays false; never invent Cap free"
+    )];
+    if let Some(mismatches) = rematch.get("mismatches").and_then(Value::as_array) {
+        for entry in mismatches {
+            let destination = entry
+                .get("destination")
+                .and_then(Value::as_str)
+                .unwrap_or("?");
+            let expected = entry
+                .get("manifest_preimageSha256")
+                .and_then(Value::as_str)
+                .unwrap_or("?");
+            let live = entry
+                .get("liveSha256")
+                .and_then(Value::as_str)
+                .unwrap_or("?");
+            let set_to = entry
+                .get("root_must_set_preimageSha256_to")
+                .and_then(Value::as_str)
+                .unwrap_or("<absent>");
+            lines.push(format!(
+                "destination={destination} manifest_preimageSha256={expected} liveSha256={live} root_must_set_preimageSha256_to={set_to}"
+            ));
+        }
     }
-    Ok(report)
+    lines.join("; ")
 }
 
 fn read_unlock_a_closer(root: &Path) -> Result<Value> {
@@ -301,7 +367,51 @@ pub(crate) fn apply_cap_free_restore(
 ) -> Result<Value> {
     let grant = load_json(grant_path, "grant")?;
     validate_grant(&grant)?;
-    let preimage_report = require_manifest_preimages_match(root, manifest_path)?;
+    let preimage_report = transfer_preimage::verify_manifest(root, manifest_path)?;
+    let summary = preimage_report
+        .get("summary")
+        .cloned()
+        .unwrap_or_else(|| json!({}));
+    let entry_count = summary.get("entries").and_then(Value::as_u64).unwrap_or(0);
+    if entry_count == 0 {
+        return Err(
+            "cap-realloc-apply refused: TRANSFER manifest entries empty; never invent Cap free"
+                .into(),
+        );
+    }
+    if preimage_report
+        .get("preimages_match")
+        .and_then(Value::as_bool)
+        != Some(true)
+    {
+        let rematch = preimage_rematch_packet(&preimage_report);
+        let error = format_preimage_mismatch_error(&rematch);
+        return Ok(json!({
+            "schema": SCHEMA,
+            "record_kind": "lab-cap-realloc-apply",
+            "cap": 0,
+            "cap_burn": 0,
+            "cap_free": false,
+            "cap_free_before": cap_free_after_unlock_a(root).unwrap_or(false),
+            "cap_free_after": false,
+            "product": 0,
+            "pass_product_clean_room": 0,
+            "applied": false,
+            "dry_run": dry_run,
+            "status": "refuse_closed_preimage_mismatch",
+            "unlock_a_closer": UNLOCK_A_CLOSER_REL,
+            "grant_schema": GRANT_SCHEMA,
+            "grant": grant_path.to_string_lossy(),
+            "manifest": manifest_path.to_string_lossy(),
+            "preimages_match": false,
+            "preimage_summary": summary,
+            "preimage_rematch": rematch,
+            "error": error,
+            "cap1_inside_apply": false,
+            "note": "TRANSFER preimageSha256 mismatch vs LIVE; Root rematch digests in preimage_rematch; Cap free stays false; never invent Cap free",
+            "honesty": honesty_block()
+        }));
+    }
     let mut closer = read_unlock_a_closer(root)?;
     let already_free = closer.get("cap_free").and_then(Value::as_bool) == Some(true);
     let cap_free_before = cap_free_after_unlock_a(root)?;
@@ -521,9 +631,23 @@ mod tests {
             serde_json::to_vec_pretty(&bad).expect("encode"),
         )
         .expect("rewrite");
-        let err = apply_cap_free_restore(&root, &grant_path, &manifest_path, false)
-            .expect_err("must refuse mismatch");
-        assert!(err.to_string().contains("preimageSha256 mismatch"));
+        let report = apply_cap_free_restore(&root, &grant_path, &manifest_path, false)
+            .expect("structured refuse");
+        assert_eq!(report["status"], "refuse_closed_preimage_mismatch");
+        assert_eq!(report["preimages_match"], false);
+        assert_eq!(report["cap_free"], false);
+        assert_eq!(report["product"], 0);
+        assert_eq!(report["preimage_rematch"]["mismatch_count"], 1);
+        assert_eq!(
+            report["preimage_rematch"]["mismatches"][0]["root_must_set_preimageSha256_to"],
+            live
+        );
+        assert!(
+            report["error"]
+                .as_str()
+                .unwrap_or("")
+                .contains("root_must_set_preimageSha256_to=")
+        );
         assert!(!cap_free_after_unlock_a(&root).expect("probe"));
         let _ = fs::remove_dir_all(&root);
     }
