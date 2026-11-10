@@ -450,7 +450,59 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
     (false, None)
 }
 
-/// Fail-closed Docker-only e2e product measure. Host/loopback runners never close.
+/// True when a receipt is Cap0 AffinityOnly / PressureOnly / mutex / pressure
+/// probe (or marks itself as such). Those EXIT0 probes never close Docker e2e
+/// product — only Cap1 full `e2e-docker-launch.ps1` / red-blue product can.
+fn docker_e2e_receipt_is_cap0_probe_not_product(value: &Value) -> bool {
+    if value.get("cap0_probe_ne_product").and_then(Value::as_bool) == Some(true)
+        || value.get("affinity_pressure_ne_product").and_then(Value::as_bool) == Some(true)
+        || value.get("cap0_affinity_pressure_ne_product").and_then(Value::as_bool) == Some(true)
+    {
+        return true;
+    }
+    let mode = value
+        .get("mode")
+        .or_else(|| value.get("probe_mode"))
+        .or_else(|| value.get("launcher_mode"))
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let mode_l = mode.to_ascii_lowercase();
+    if mode_l.contains("affinityonly")
+        || mode_l.contains("pressureonly")
+        || mode_l == "affinity_only"
+        || mode_l == "pressure_only"
+        || mode_l.contains("mutex_only")
+        || mode_l.contains("pressure_guard_only")
+    {
+        return true;
+    }
+    let schema = value.get("schema").and_then(Value::as_str).unwrap_or("");
+    if schema.contains("pressure-guard") || schema.contains("launcher-cap0-probe") {
+        return true;
+    }
+    let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
+    let counts_l = counts.to_ascii_lowercase();
+    if counts_l.contains("affinity")
+        || counts_l.contains("pressure")
+        || counts_l.contains("mutex")
+        || counts_l.contains("cap0_probe")
+        || counts_l.contains("probe_not_product")
+    {
+        return true;
+    }
+    let authority = value
+        .get("completion_authority")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let authority_l = authority.to_ascii_lowercase();
+    authority_l.contains("affinity")
+        || authority_l.contains("pressure")
+        || authority_l.contains("mutex_only")
+        || authority_l.contains("cap0_probe")
+}
+
+/// Fail-closed Docker-only e2e product measure. Host/loopback runners and Cap0
+/// AffinityOnly/PressureOnly/mutex/pressure probes never close.
 fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
     for relative in DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES {
         let path = root.join(relative);
@@ -488,6 +540,10 @@ fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
             continue;
         }
         if value.get("host_loopback_ne_product").and_then(Value::as_bool) == Some(false) {
+            continue;
+        }
+        // Cap0 AffinityOnly / PressureOnly / mutex / pressure EXIT0 ≠ product oneshot.
+        if docker_e2e_receipt_is_cap0_probe_not_product(&value) {
             continue;
         }
         return (true, Some((*relative).to_string()));
@@ -529,9 +585,23 @@ fn docker_e2e_launcher_readiness(root: &Path) -> Value {
         "topology_present": topology_ok,
         "launchers": launchers,
         "topology": topology,
+        "pressure_guard_required": true,
+        "single_flight_mutex_required": true,
+        "product_oneshot_when_cap_free": [
+            "pwsh -File scripts/e2e-docker-launch.ps1",
+            "bash scripts/e2e-docker.sh",
+            "make e2e",
+            "pwsh -File scripts/e2e-docker.ps1"
+        ],
+        "cap0_probes_allowed_without_product": [
+            "pwsh -File scripts/e2e-docker-launch.ps1 -AffinityOnly",
+            "pwsh -File scripts/e2e-docker-launch.ps1 -PressureOnly"
+        ],
         "cap0_readiness_ne_product": true,
+        "cap0_affinity_pressure_ne_product": true,
+        "cap0_mutex_pressure_probe_ne_product_oneshot": true,
         "host_loopback_ne_product": true,
-        "note": "Cap0 launcher/topology honesty only (clean-room→matrix→red-blue/Docker e2e); Cap1 Docker burn after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; never invent docker_e2e_validate_product"
+        "note": "Cap0 launcher/topology honesty only (clean-room→matrix→red-blue/Docker e2e); AffinityOnly/PressureOnly/mutex/pressure EXIT0 ≠ product oneshot; Cap1 Docker burn after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; never invent docker_e2e_validate_product"
     })
 }
 
@@ -776,7 +846,9 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "cap_burn_0_while_cap_free_false": true,
             "no_cap_twin_reburn_73_80": true,
             "fail_closed_exit_1_while_incomplete": true,
-            "component_ne_product": true
+            "component_ne_product": true,
+            "cap0_affinity_pressure_ne_product": true,
+            "cap0_mutex_pressure_probe_ne_product_oneshot": true
         }
     }))
 }
@@ -894,6 +966,68 @@ mod tests {
         .expect("write");
         let report = measure(&root).expect("measure");
         assert_eq!(report["docker_e2e_validate_product"], false);
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn affinity_only_pressure_only_probe_receipt_never_closes_product_oneshot() {
+        let root = temp_root("affinity-pressure");
+        write_unlock_a(&root, false);
+        let receipt = root.join(DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(receipt.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &receipt,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-docker-e2e-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "docker_e2e_validate_product": true,
+                "green": true,
+                "completion_authority": "docker_only",
+                "mode": "AffinityOnly",
+                "counts_as": "cap0_AffinityOnly_probe_not_product",
+                "cap0_probe_ne_product": true
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+        let report = measure(&root).expect("measure");
+        assert_eq!(report["docker_e2e_validate_product"], false);
+        assert_eq!(
+            report["docker_e2e_launcher_readiness"]["cap0_mutex_pressure_probe_ne_product_oneshot"],
+            true
+        );
+        assert_eq!(
+            report["docker_e2e_launcher_readiness"]["pressure_guard_required"],
+            true
+        );
+        assert_eq!(
+            report["docker_e2e_launcher_readiness"]["single_flight_mutex_required"],
+            true
+        );
+        assert_eq!(
+            report["honesty"]["cap0_mutex_pressure_probe_ne_product_oneshot"],
+            true
+        );
+
+        fs::write(
+            &receipt,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.e2e-desktop-pressure-guard/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "docker_e2e_validate_product": true,
+                "green": true,
+                "result": "PASS",
+                "completion_authority": "docker_only",
+                "mode": "PressureOnly",
+                "counts_as": "cap0_PressureOnly_probe_not_product"
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+        let report2 = measure(&root).expect("measure");
+        assert_eq!(report2["docker_e2e_validate_product"], false);
         let _ = fs::remove_dir_all(&root);
     }
 

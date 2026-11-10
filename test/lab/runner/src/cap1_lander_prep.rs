@@ -232,7 +232,9 @@ pub(crate) fn prep(root: &Path) -> Result<Value> {
             "no_cap_twin_reburn_73_80": true,
             "cap0_only": true,
             "serialize_ne_execute": true,
-            "component_ne_product": true
+            "component_ne_product": true,
+            "cap0_affinity_pressure_ne_product": true,
+            "cap0_mutex_pressure_probe_ne_product_oneshot": true
         }
     }))
 }

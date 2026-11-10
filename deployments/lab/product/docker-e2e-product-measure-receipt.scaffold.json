@@ -16,5 +16,7 @@
   "cap1_serial_order": 3,
   "pressure_guard_required": true,
   "single_flight_mutex_required": true,
-  "note": "Cap0 scaffold only; Cap1 after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; host/loopback node runners ≠ product; never invent docker_e2e_validate_product / pass_product_clean_room"
+  "cap0_affinity_pressure_ne_product": true,
+  "cap0_mutex_pressure_probe_ne_product_oneshot": true,
+  "note": "Cap0 scaffold only; AffinityOnly/PressureOnly/mutex/pressure EXIT0 ≠ product oneshot; Cap1 after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; host/loopback node runners ≠ product; never invent docker_e2e_validate_product / pass_product_clean_room"
 }

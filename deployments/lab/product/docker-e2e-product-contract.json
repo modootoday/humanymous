@@ -47,10 +47,11 @@
   "honesty": {
     "cap0_contract_presence_ne_product": true,
     "cap0_affinity_pressure_ne_product": true,
+    "cap0_mutex_pressure_probe_ne_product_oneshot": true,
     "component_ne_product": true,
     "host_loopback_ne_product": true,
     "never_invent_docker_e2e_validate_product": true,
     "never_invent_pass_product_clean_room": true
   },
-  "note": "Cap0 lander contract only. Cap1 after Cap free: clean-room → matrix --require-full → e2e-docker-launch.ps1 / --red-blue-product --require-full; never invent docker_e2e_validate_product."
+  "note": "Cap0 lander contract only. AffinityOnly/PressureOnly/mutex/pressure EXIT0 ≠ product oneshot. Cap1 after Cap free: clean-room → matrix --require-full → e2e-docker-launch.ps1 / --red-blue-product --require-full; never invent docker_e2e_validate_product."
 }
