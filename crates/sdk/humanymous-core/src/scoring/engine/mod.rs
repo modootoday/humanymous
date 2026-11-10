@@ -669,6 +669,84 @@ mod tests {
             "partial container residual must not invent HR-23"
         );
     }
+
+    /// Cap0 honesty: frozen numeric scoring bands (ALLOW / CHALLENGE / DENY)
+    /// must map risk without inventing a hard-rule override. Soft multi-layer
+    /// fixtures only — does not redo Deny/Challenge HR Cap0 units. Detection
+    /// freeze: no weight/threshold/predicate change.
+    #[test]
+    fn scoring_band_fixtures_evaluate_honestly_under_frozen_thresholds() {
+        let engine = Engine::default();
+
+        // ALLOW band: client present, soft OK evidence, risk below ChallengeAt.
+        let allow = score_fixture(&engine, &[]);
+        assert_eq!(
+            (allow.verdict.as_str(), allow.hard_rule_fired.as_str()),
+            ("ALLOW", ""),
+            "frozen ALLOW band must not invent a hard rule on soft client fixture"
+        );
+        assert!(
+            allow.risk_score < engine.policy.challenge_at,
+            "ALLOW fixture risk must stay below ChallengeAt"
+        );
+
+        // CHALLENGE band: single soft L5 residual (~30) crosses ChallengeAt without HR.
+        let challenge = score_fixture(&engine, &[("l5.traffic.tls_no_permutation", true)]);
+        assert_eq!(
+            (challenge.verdict.as_str(), challenge.hard_rule_fired.as_str()),
+            ("CHALLENGE", ""),
+            "frozen CHALLENGE band must Challenge soft residual without hard rule"
+        );
+        assert!(
+            challenge.risk_score >= engine.policy.challenge_at
+                && challenge.risk_score < engine.policy.deny_at,
+            "CHALLENGE fixture risk must sit in [ChallengeAt, DenyAt)"
+        );
+
+        // DENY band: multi-layer soft residuals combine above DenyAt without HR.
+        let deny = score_fixture(
+            &engine,
+            &[
+                ("l5.abuse.flood", true),
+                ("l2.webgl.swiftshader", false),
+                ("l7.pass.flood", true),
+            ],
+        );
+        assert_eq!(
+            (deny.verdict.as_str(), deny.hard_rule_fired.as_str()),
+            ("DENY", ""),
+            "frozen DENY band must Deny soft multi-layer residual without hard rule"
+        );
+        assert!(
+            deny.risk_score >= engine.policy.deny_at,
+            "DENY fixture risk must reach DenyAt"
+        );
+
+        // Sub-ChallengeAt soft residual must not invent CHALLENGE/DENY bands.
+        let mut soft = SessionReport::default();
+        soft.client.user_agent = "Mozilla/5.0".into();
+        soft.client.signals = Some(vec![Signal::new(
+            "l1.navigator.webdriver",
+            serde_json::json!(true),
+            Verdict::Suspicious,
+            1.0,
+            Source::Js,
+            "below-challenge-soft-fixture",
+        )]);
+        let below_band = engine.score(&mut soft).unwrap();
+        assert_eq!(
+            (
+                below_band.verdict.as_str(),
+                below_band.hard_rule_fired.as_str()
+            ),
+            ("ALLOW", ""),
+            "sub-ChallengeAt soft residual must stay ALLOW without hard rule"
+        );
+        assert!(
+            below_band.risk_score < engine.policy.challenge_at,
+            "sub-ChallengeAt soft residual must not invent Challenge band"
+        );
+    }
     #[test]
     fn invalid_numeric_configuration_and_contributions_fail_closed() {
         let engine = Engine {
