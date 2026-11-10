@@ -1,9 +1,9 @@
 {
     "schema":  "humanymous.cursor-full-remaining-priority-no-cutoff/1",
-    "observed_utc":  "2026-11-10T01:12:30Z",
+    "observed_utc":  "2026-11-10T01:14:00Z",
     "branch":  "codex/rust",
-    "tip":  "f8e50ce3677b476fbb49a3150587db9395fdc243",
-    "prior_tip_bind":  "cdc693b65f3dc1bbee92ff68d5ec127d94e0ae74",
+    "tip":  "7b737453d72ff091836bec3db0053a19d97ca674",
+    "prior_tip_bind":  "f8e50ce3677b476fbb49a3150587db9395fdc243",
     "cap":  0,
     "cap_burn":  0,
     "cap_free":  false,
@@ -33,7 +33,7 @@
                    "pass_product_clean_room":  0,
                    "missing_sot_scenario":  null,
                    "tip_bind_ok":  true,
-                   "tip_bind_expect_head":  "f8e50ce3677b476fbb49a3150587db9395fdc243"
+                   "tip_bind_expect_head":  "7b737453d72ff091836bec3db0053a19d97ca674"
                },
     "total_unit_count_N":  80,
     "no_quantity_cap":  true,
