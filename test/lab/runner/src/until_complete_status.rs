@@ -12,8 +12,9 @@
 //! red-blue-validate product + clean-room Docker e2e
 //! (`e2e-docker-launch` / lab-runner product path), with
 //! `pass_product_clean_room=true`, Docker clean-room full matrix `--require-full`
-//! green, and BrowserReady only when measured true. Host/loopback, component Cap
-//! EXIT0, AffinityOnly/PressureOnly, SkipSwarm-only ≠ DoD. Detection freeze:
+//! green, and BrowserReady only when measured true. Host/loopback, host gate
+//! e2e (`node test/gate/e2e.mjs`), component Cap EXIT0, AffinityOnly/PressureOnly,
+//! SkipSwarm-only ≠ DoD. Detection freeze:
 //! do not change scoring weights/thresholds/hard-rules; honesty proves existing
 //! SoT detection correctly evaluates implementable automation (bots/catalog).
 use crate::cap_realloc_apply;
@@ -466,6 +467,10 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
         if counts.contains("component") {
             continue;
         }
+        // Host/loopback node runners (test/e2e/runner.mjs, test/gate/e2e.mjs) ≠ DoD.
+        if receipt_is_host_loopback_or_gate_e2e_not_dod(&value) {
+            continue;
+        }
         // SkipSwarm-only catalog/subset ≠ DoD detection-eval proof.
         if receipt_is_skip_swarm_only_not_dod(&value) {
             continue;
@@ -473,6 +478,70 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
         return (true, Some((*relative).to_string()));
     }
     (false, None)
+}
+
+/// True when a receipt is host/loopback or host gate-e2e (or marks itself as
+/// such). Host `node test/e2e/runner.mjs` / `node test/gate/e2e.mjs` never close
+/// DoD detection-eval — Docker-only e2e / `--red-blue-product --require-full`
+/// is required (rule 60 / test AGENTS.md).
+fn receipt_is_host_loopback_or_gate_e2e_not_dod(value: &Value) -> bool {
+    if value
+        .get("host_loopback_ne_product")
+        .and_then(Value::as_bool)
+        == Some(false)
+        || value.get("host_loopback_ne_dod").and_then(Value::as_bool) == Some(false)
+        || value.get("host_gate_e2e_ne_dod").and_then(Value::as_bool) == Some(false)
+    {
+        return true;
+    }
+    let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
+    let counts_l = counts.to_ascii_lowercase();
+    if counts_l.contains("host")
+        || counts_l.contains("loopback")
+        || counts_l.contains("gate_e2e")
+        || counts_l.contains("gate-e2e")
+        || counts_l.contains("gate/e2e")
+    {
+        return true;
+    }
+    let authority = value
+        .get("completion_authority")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let authority_l = authority.to_ascii_lowercase();
+    if authority_l.contains("host")
+        || authority_l.contains("loopback")
+        || authority_l.contains("gate_e2e")
+        || authority_l.contains("gate-e2e")
+        || authority_l.contains("gate/e2e")
+        || authority_l.contains("runner.mjs")
+        || authority_l.contains("e2e.mjs")
+    {
+        return true;
+    }
+    for key in [
+        "runner",
+        "command",
+        "pilot_command",
+        "launcher",
+        "mode",
+        "probe_mode",
+        "runner_mode",
+    ] {
+        let raw = value.get(key).and_then(Value::as_str).unwrap_or("");
+        let raw_l = raw.to_ascii_lowercase();
+        if raw_l.contains("test/e2e/runner.mjs")
+            || raw_l.contains("test/gate/e2e.mjs")
+            || raw_l.contains("node test/e2e")
+            || raw_l.contains("node test/gate")
+            || (raw_l.contains("host") && raw_l.contains("e2e"))
+            || raw_l.contains("host_loopback")
+            || raw_l.contains("host-loopback")
+        {
+            return true;
+        }
+    }
+    false
 }
 
 /// True when a receipt is SkipSwarm-only (or marks itself as such). SkipSwarm
@@ -609,22 +678,11 @@ fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
             continue;
         }
         let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
-        if counts.contains("component") || counts.contains("host") || counts.contains("loopback") {
+        if counts.contains("component") {
             continue;
         }
-        // Explicit refuse: host/loopback authority never counts as Docker product.
-        let authority = value
-            .get("completion_authority")
-            .and_then(Value::as_str)
-            .unwrap_or("");
-        if authority.contains("host") || authority.contains("loopback") {
-            continue;
-        }
-        if value
-            .get("host_loopback_ne_product")
-            .and_then(Value::as_bool)
-            == Some(false)
-        {
+        // Explicit refuse: host/loopback + host gate-e2e never count as Docker product.
+        if receipt_is_host_loopback_or_gate_e2e_not_dod(&value) {
             continue;
         }
         // Cap0 AffinityOnly / PressureOnly / mutex / pressure EXIT0 ≠ product oneshot.
@@ -813,7 +871,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "invent_forbidden": true,
             "path": red_blue_path,
             "blocks": ["Cap1 --red-blue-product --require-full feeder", "DoD detection-eval proof"],
-            "note": "DoD detection-eval proof: lab-runner --red-blue-product --require-full proves currently implemented automation-detection correctly evaluates implementable bots/catalog on this deployment; host/loopback/SkipSwarm-only ≠ DoD; detection freeze (no scoring change)"
+            "note": "DoD detection-eval proof: lab-runner --red-blue-product --require-full proves currently implemented automation-detection correctly evaluates implementable bots/catalog on this deployment; host/loopback / host gate e2e / SkipSwarm-only ≠ DoD; detection freeze (no scoring change)"
         }),
         json!({
             "id": "docker_e2e_validate_product",
@@ -832,7 +890,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             ],
             "launcher_readiness": docker_e2e_readiness,
             "host_loopback_ne_product": true,
-            "note": "DoD detection-eval proof: Docker-only e2e via e2e-docker-launch.ps1 (mutex+pressure) / e2e-docker.sh proves clean-room product evaluation; AffinityOnly/PressureOnly/component Cap EXIT0 / host node test/e2e/runner.mjs ≠ DoD; Cap1 after Cap free"
+            "note": "DoD detection-eval proof: Docker-only e2e via e2e-docker-launch.ps1 (mutex+pressure) / e2e-docker.sh proves clean-room product evaluation; AffinityOnly/PressureOnly/component Cap EXIT0 / host node test/e2e/runner.mjs / host node test/gate/e2e.mjs ≠ DoD; Cap1 after Cap free"
         }),
         json!({
             "id": "Unlock-C",
@@ -904,7 +962,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "measured_only": true,
         "never_invent": true,
         "detection_freeze": true,
-        "summary": "Currently implemented automation-detection tech is correctly evaluated on this deployment via red-blue-validate product + clean-room Docker e2e; host/loopback / component Cap EXIT0 / AffinityOnly/PressureOnly / SkipSwarm-only ≠ DoD",
+        "summary": "Currently implemented automation-detection tech is correctly evaluated on this deployment via red-blue-validate product + clean-room Docker e2e; host/loopback / host gate e2e / component Cap EXIT0 / AffinityOnly/PressureOnly / SkipSwarm-only ≠ DoD",
         "gates": [
             {
                 "id": "pass_product_clean_room",
@@ -941,6 +999,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         ],
         "non_dod": [
             "host/loopback node test/e2e/runner.mjs",
+            "host node test/gate/e2e.mjs",
             "component Cap EXIT0",
             "AffinityOnly / PressureOnly launcher probes",
             "SkipSwarm-only",
@@ -1003,6 +1062,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "never_invent_docker_e2e_validate_product": true,
             "host_loopback_ne_product": true,
             "host_loopback_ne_dod": true,
+            "host_gate_e2e_ne_dod": true,
             "component_ne_dod": true,
             "affinity_pressure_ne_dod": true,
             "skip_swarm_only_ne_dod": true,
@@ -1077,6 +1137,7 @@ mod tests {
         assert_eq!(report["definition_of_done"]["verified"], false);
         assert_eq!(report["definition_of_done"]["detection_freeze"], true);
         assert_eq!(report["honesty"]["host_loopback_ne_dod"], true);
+        assert_eq!(report["honesty"]["host_gate_e2e_ne_dod"], true);
         assert_eq!(report["honesty"]["component_ne_dod"], true);
         assert_eq!(
             report["honesty"]["dod_is_honest_measurement_not_scoring_change"],
@@ -1163,6 +1224,73 @@ mod tests {
         .expect("write");
         let report = measure(&root).expect("measure");
         assert_eq!(report["docker_e2e_validate_product"], false);
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn host_gate_e2e_receipt_never_closes_red_blue_or_docker_dod() {
+        let root = temp_root("host-gate-e2e");
+        write_unlock_a(&root, false);
+
+        let rb = root.join(RED_BLUE_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(rb.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &rb,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-red-blue-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "red_blue_validate_product": true,
+                "green": true,
+                "completion_authority": "host_node_test_gate_e2e",
+                "command": "node test/gate/e2e.mjs",
+                "counts_as": "host_gate_e2e_debug_not_product"
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let e2e = root.join(DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(e2e.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &e2e,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-docker-e2e-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "docker_e2e_validate_product": true,
+                "green": true,
+                "completion_authority": "host_loopback",
+                "runner": "node test/e2e/runner.mjs",
+                "counts_as": "host_loopback_runner_mjs_not_product"
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let report = measure(&root).expect("measure");
+        let incompletes = report["incompletes"].as_array().expect("incompletes");
+        let red_blue = incompletes
+            .iter()
+            .find(|item| item.get("id") == Some(&json!("red_blue_validate_product")))
+            .expect("red_blue incomplete");
+        assert_eq!(red_blue["closed"], false);
+        assert_eq!(red_blue["green"], false);
+        assert_eq!(report["docker_e2e_validate_product"], false);
+        assert_eq!(report["definition_of_done"]["gates"][3]["closed"], false);
+        assert_eq!(report["definition_of_done"]["gates"][4]["closed"], false);
+        assert_eq!(report["dod_verified"], false);
+        assert_eq!(report["goal_complete"], false);
+        assert_eq!(report["honesty"]["host_gate_e2e_ne_dod"], true);
+        assert_eq!(report["honesty"]["host_loopback_ne_dod"], true);
+        let non_dod = report["definition_of_done"]["non_dod"]
+            .as_array()
+            .expect("non_dod");
+        assert!(
+            non_dod
+                .iter()
+                .any(|item| item.as_str() == Some("host node test/gate/e2e.mjs"))
+        );
         let _ = fs::remove_dir_all(&root);
     }
 

@@ -51,6 +51,7 @@
     "cap0_mutex_pressure_probe_ne_product_oneshot": true,
     "component_ne_product": true,
     "host_loopback_ne_product": true,
+    "host_gate_e2e_ne_dod": true,
     "skip_swarm_only_ne_dod": true,
     "never_invent_docker_e2e_validate_product": true,
     "never_invent_pass_product_clean_room": true
