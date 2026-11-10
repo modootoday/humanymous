@@ -86,6 +86,19 @@ const BROWSER_READY_RECEIPT_CANDIDATES: &[&str] = &[
     ".spec.local/lab/product/browser-ready-measure-receipt.json",
 ];
 
+const BROWSER_PRODUCT_MEASURED_RECEIPT_CANDIDATES: &[&str] = &[
+    ".spec.local/lab/product/browser-product-measured-e2e.json",
+    ".spec.local/lab/product/browser-product-measured-e2e-measure-receipt.json",
+];
+
+const HUMANUMOUS_BROWSER_APP_E2E_RECEIPT_CANDIDATES: &[&str] = &[
+    ".spec.local/lab/product/humanymous-browser-measured-e2e.json",
+    ".spec.local/lab/product/humanymous-browser-app-measure-receipt.json",
+];
+
+const BROWSER_PRODUCT_MEASURED_E2E_CONTRACT: &str =
+    "deployments/lab/product/browser-product-measured-e2e-cap0-contract.json";
+
 /// Cap1 Docker e2e launcher preimages (Windows Desktop mutex+pressure guard).
 const DOCKER_E2E_LAUNCHER_CANDIDATES: &[&str] = &[
     "scripts/e2e-docker-launch.ps1",
@@ -898,6 +911,36 @@ fn measured_browser_ready(root: &Path) -> (bool, Option<String>) {
     measured_bool_receipt(root, BROWSER_READY_RECEIPT_CANDIDATES, "browser_ready")
 }
 
+fn measured_browser_product_e2e(root: &Path) -> (bool, Option<String>) {
+  measured_bool_receipt(
+    root,
+    BROWSER_PRODUCT_MEASURED_RECEIPT_CANDIDATES,
+    "browser_product_measured_e2e",
+  )
+}
+
+fn measured_humanymous_browser_app_e2e(root: &Path) -> (bool, Option<String>) {
+  measured_bool_receipt(
+    root,
+    HUMANUMOUS_BROWSER_APP_E2E_RECEIPT_CANDIDATES,
+    "humanymous_browser_app_measured_e2e",
+  )
+}
+
+fn browser_product_measured_e2e_honesty(root: &Path) -> Value {
+  let contract = root.join(BROWSER_PRODUCT_MEASURED_E2E_CONTRACT);
+  json!({
+      "contract_present": contract.is_file(),
+      "contract_path": BROWSER_PRODUCT_MEASURED_E2E_CONTRACT,
+      "cap0_contract_presence_ne_product": true,
+      "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-product --require-full",
+      "matrix_scenario": "browser-product",
+      "cursor_ide_browser_ne_product": true,
+      "cef_cap_day_ne_browser_ready": true,
+      "note": "Cap0 contract + matrix cell honesty; measured receipt required for DoD; never invent BrowserReady"
+  })
+}
+
 fn apps_browser_present(root: &Path) -> (bool, Option<String>) {
     for relative in APPS_BROWSER_STRUCTURAL {
         let path = root.join(relative);
@@ -937,6 +980,10 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
     let candidate_pack_transfer = candidate_pack_transfer_present(root);
 
     let (browser_ready, browser_ready_path) = measured_browser_ready(root);
+    let (browser_product_e2e_green, browser_product_e2e_path) = measured_browser_product_e2e(root);
+    let (humanymous_browser_e2e_green, humanymous_browser_e2e_path) =
+        measured_humanymous_browser_app_e2e(root);
+    let browser_product_honesty = browser_product_measured_e2e_honesty(root);
     let (pass_product, pass_product_path) = measured_pass_product(root);
     let (matrix_green, matrix_path) = measured_matrix_green(root);
     let (red_blue_green, red_blue_path) = measured_red_blue_product(root);
@@ -1060,7 +1107,11 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "closed": apps_present,
             "present": apps_present,
             "path": apps_path,
-            "note": "package path still absent unless Root lands crates/apps/humanymous-browser; Cursor scope does not grant create"
+            "blocks": [
+                "humanymous_browser_app_measured_e2e",
+                "product browser surface"
+            ],
+            "note": "package path still absent unless Root lands crates/apps/humanymous-browser; Cursor scope does not grant create; lab-runner --browser-product --require-full ≠ humanymous-browser app DoD until landed"
         }),
     ];
 
@@ -1083,15 +1134,26 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "HOLD"
     };
 
-    let product_gates_verified =
-        pass_product == 1 && matrix_green && red_blue_green && docker_e2e_green && browser_ready;
+    let humanymous_browser_e2e_required = apps_present;
+    let humanymous_browser_e2e_ok =
+        !humanymous_browser_e2e_required || humanymous_browser_e2e_green;
+
+    let product_gates_verified = pass_product == 1
+        && matrix_green
+        && red_blue_green
+        && docker_e2e_green
+        && browser_ready
+        && browser_product_e2e_green
+        && humanymous_browser_e2e_ok;
     // DoD = measured detection-eval proof + product gates; never invent.
     let dod_verified = product_gates_verified
         && red_blue_green
         && docker_e2e_green
         && pass_product == 1
         && matrix_green
-        && browser_ready;
+        && browser_ready
+        && browser_product_e2e_green
+        && humanymous_browser_e2e_ok;
     let goal_complete = incomplete_count == 0 && product_gates_verified && dod_verified;
 
     let status = if goal_complete {
@@ -1150,6 +1212,22 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
                 "dod_role": "detection_eval_proof",
                 "selector": "pwsh -File scripts/e2e-docker-launch.ps1",
                 "closed": docker_e2e_green
+            },
+            {
+                "id": "browser_product_measured_e2e",
+                "required": true,
+                "dod_role": "real_browser_detection_eval",
+                "selector": "--browser-product --require-full",
+                "closed": browser_product_e2e_green,
+                "path": browser_product_e2e_path,
+                "note": "lab matrix browser-product cell; cursor-ide-browser / host IDE ≠ product"
+            },
+            {
+                "id": "humanymous_browser_app_measured_e2e",
+                "required": humanymous_browser_e2e_required,
+                "closed": humanymous_browser_e2e_green,
+                "path": humanymous_browser_e2e_path,
+                "note": "when crates/apps/humanymous-browser landed; absent=Root_structural hold"
             }
         ],
         "non_dod": [
@@ -1160,7 +1238,10 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "SkipSwarm-only",
             "red-blue or matrix without --require-full",
             "Docker e2e product oneshot without mutex+pressure",
-            "candidate-pack GRANT/TRANSFER scaffold"
+            "candidate-pack GRANT/TRANSFER scaffold",
+            "cursor-ide-browser MCP without lab-runner measured receipt",
+            "CEF Cap-day / g4-cef-at Cap EXIT0 without BrowserReady receipt",
+            "lab-runner --browser-product without --require-full"
         ],
         "verified": dod_verified
     });
@@ -1174,6 +1255,9 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "product": if pass_product == 1 { 1 } else { 0 },
         "pass_product_clean_room": pass_product,
         "browser_ready": browser_ready,
+        "browser_product_measured_e2e": browser_product_e2e_green,
+        "humanymous_browser_app_measured_e2e": humanymous_browser_e2e_green,
+        "browser_product_measured_e2e_honesty": browser_product_honesty,
         "docker_e2e_validate_product": docker_e2e_green,
         "docker_e2e_launcher_readiness": docker_e2e_readiness,
         "goal_complete": goal_complete,
@@ -1207,6 +1291,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
                 "ready_for_cap0_chain",
                 "ready_for_cap1",
                 "Docker e2e launcher/topology Cap0 honesty",
+                "browser_product_measured_e2e Cap0 contract honesty",
                 "goal_complete fail-closed"
             ]
         },
@@ -1236,7 +1321,9 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "fail_closed_exit_1_while_incomplete": true,
             "component_ne_product": true,
             "cap0_affinity_pressure_ne_product": true,
-            "cap0_mutex_pressure_probe_ne_product_oneshot": true
+            "cap0_mutex_pressure_probe_ne_product_oneshot": true,
+            "never_invent_browser_product_measured_e2e": true,
+            "cursor_ide_browser_ne_product": true
         }
     }))
 }

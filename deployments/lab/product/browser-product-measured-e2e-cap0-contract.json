@@ -1,0 +1,66 @@
+{
+  "schema": "humanymous.lab-browser-product-measured-e2e-cap0-contract/1",
+  "record_kind": "browser-product-measured-e2e-cap-contract",
+  "cap_selector": "--browser-product --require-full",
+  "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-product --require-full",
+  "matrix_scenario": "browser-product",
+  "require_full_required": true,
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "browser_ready": false,
+  "browser_product_measured_e2e": false,
+  "humanymous_browser_app_measured_e2e": false,
+  "detection_freeze": true,
+  "completion_authority": "docker_lab_runner_browser_product",
+  "required_cap_topology": [
+    "build/rust/browser-product.Dockerfile",
+    "deployments/lab/compose.rust.browser.yaml",
+    "deployments/lab/scenarios/browser-product/.env.example"
+  ],
+  "structural_dependency": {
+    "apps_humanymous_browser_paths": [
+      "crates/apps/humanymous-browser",
+      "apps/humanymous-browser"
+    ],
+    "contract_ref": "deployments/lab/product/apps-humanymous-browser-structural-cap0-contract.json",
+    "cursor_may_not_invent_package": true
+  },
+  "humanymous_browser_surface_when_landed": {
+    "required_receipt_candidates": [
+      ".spec.local/lab/product/humanymous-browser-measured-e2e.json",
+      ".spec.local/lab/product/humanymous-browser-app-measure-receipt.json"
+    ],
+    "forbidden_surrogate": [
+      "host node test/e2e/runner.mjs",
+      "cursor-ide-browser MCP without lab-runner measured receipt",
+      "CEF Cap-day EXIT0 without BrowserReady receipt"
+    ]
+  },
+  "measure_receipt_scaffold": "deployments/lab/product/browser-product-measured-e2e-measure-receipt.scaffold.json",
+  "cap1_serial_after": [
+    "--clean-room-product-matrix --require-full",
+    "pwsh -File scripts/e2e-docker-launch.ps1",
+    "--red-blue-product --require-full"
+  ],
+  "forbidden": [
+    "invent browser_product_measured_e2e",
+    "invent BrowserReady",
+    "invent pass_product_clean_room",
+    "host/loopback browser as product",
+    "cursor-ide-browser as DoD without measured receipt",
+    "component browser-product Cap EXIT0 without --require-full as DoD",
+    "invent crates/apps/humanymous-browser",
+    "Cap1 while Cap free=false without Cap realloc",
+    "spent Cap twin 73-80 reburn"
+  ],
+  "honesty": {
+    "cap0_contract_presence_ne_product": true,
+    "matrix_browser_product_cell_ne_humanymous_browser_app_until_root_lands": true,
+    "cef_cap_day_ne_browser_ready": true,
+    "host_loopback_ne_product": true,
+    "never_invent_browser_ready": true,
+    "never_invent_browser_product_measured_e2e": true,
+    "unlock_a_ne_browser_ready": true
+  },
+  "note": "Cap0 lander contract: matrix browser-product --require-full proves automation signals on lab browser drivers; humanymous-browser app surface requires Root structural land + separate measured receipt; never invent BrowserReady."
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "humanymous.lab-browser-product-measured-e2e-receipt/1",
+  "record_kind": "browser-product-measured-e2e-scaffold",
+  "browser_product_measured_e2e": false,
+  "browser_ready": false,
+  "pass_product_clean_room": 0,
+  "product": 0,
+  "require_full": true,
+  "scaffold_only": true,
+  "note": "Scaffold only; never invent browser_product_measured_e2e or BrowserReady."
+}

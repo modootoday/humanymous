@@ -17,7 +17,7 @@ use crate::orchestration::red_blue_product::{
     CODE_DEFINED_PILOT_COMMAND as RB_PILOT, PRODUCT_ONESHOT as RB_ONESHOT,
 };
 use crate::snapshot;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-cap1-lander-prep/1";
@@ -120,6 +120,16 @@ fn landers(cap_free: bool) -> Value {
             "note": "Cap1 step1 sole product authority class; Cap twin hold ≠ product; Cap0 Cap-ready lander only"
         },
         {
+            "rank": 22,
+            "id": "U-BROWSER-PRODUCT-MEASURED",
+            "selector": "--browser-product --require-full",
+            "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-product --require-full",
+            "matrix_scenario": "browser-product",
+            "serial_order": 4,
+            "status": armed,
+            "note": "Cap1 browser-product matrix cell after clean-room/red-blue/Docker e2e feeders when Cap free; Cap0 contract honesty only until measured receipt; host IDE / cursor-ide-browser ≠ product; humanymous-browser app needs Root structural land"
+        },
+        {
             "rank": 48,
             "id": "U-DOCKER-E2E-VALIDATE",
             "selector": "Docker-only e2e / red-blue-validate product (e2e-docker-launch.ps1)",
@@ -188,8 +198,16 @@ pub(crate) fn prep(root: &Path) -> Result<Value> {
         "docker_e2e_product_contract": root
             .join("deployments/lab/product/docker-e2e-product-contract.json")
             .is_file(),
+        "browser_product_measured_e2e_contract": root
+            .join("deployments/lab/product/browser-product-measured-e2e-cap0-contract.json")
+            .is_file(),
+        "browser_product_dockerfile": root.join("build/rust/browser-product.Dockerfile").is_file(),
+        "compose_rust_browser": root
+            .join("deployments/lab/compose.rust.browser.yaml")
+            .is_file(),
         "cap0_topology_ne_product": true,
-        "host_loopback_ne_product": true
+        "host_loopback_ne_product": true,
+        "cursor_ide_browser_ne_product": true
     });
 
     Ok(json!({
@@ -236,6 +254,8 @@ pub(crate) fn prep(root: &Path) -> Result<Value> {
             "affinity_pressure_ne_dod": true,
             "skip_swarm_only_ne_dod": true,
             "dod_requires_red_blue_product_and_docker_e2e": true,
+            "dod_requires_browser_product_measured_e2e_when_cap1_serial": true,
+            "never_invent_browser_product_measured_e2e": true,
             "dod_is_honest_measurement_not_scoring_change": true,
             "never_forge_auth_at": true,
             "detection_freeze": true,
@@ -299,11 +319,13 @@ mod tests {
             report["landers"][0]["status"],
             "HOLD_prepare_only_no_Cap1_burn"
         );
-        assert!(report["landers"]
-            .as_array()
-            .expect("landers")
-            .iter()
-            .all(|lander| lander.get("pilot_command").is_some()));
+        assert!(
+            report["landers"]
+                .as_array()
+                .expect("landers")
+                .iter()
+                .all(|lander| lander.get("pilot_command").is_some())
+        );
         let _ = fs::remove_dir_all(&root);
     }
 
@@ -330,15 +352,21 @@ mod tests {
             report["cap1_serial_preferred_order"][2]["id"],
             "U-DOCKER-E2E-VALIDATE"
         );
-        assert!(report["docker_e2e_topology_honesty"]
-            .get("compose_clean_room_product_matrix")
-            .is_some());
-        assert!(report["docker_e2e_topology_honesty"]
-            .get("dockerfile_clean_room_product_matrix")
-            .is_some());
-        assert!(report["docker_e2e_topology_honesty"]
-            .get("docker_e2e_product_contract")
-            .is_some());
+        assert!(
+            report["docker_e2e_topology_honesty"]
+                .get("compose_clean_room_product_matrix")
+                .is_some()
+        );
+        assert!(
+            report["docker_e2e_topology_honesty"]
+                .get("dockerfile_clean_room_product_matrix")
+                .is_some()
+        );
+        assert!(
+            report["docker_e2e_topology_honesty"]
+                .get("docker_e2e_product_contract")
+                .is_some()
+        );
         let _ = fs::remove_dir_all(&root);
     }
 }

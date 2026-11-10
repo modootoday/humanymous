@@ -236,6 +236,9 @@ fn allowed(path: &str) -> bool {
                 | "deployments/lab/product/docker-e2e-product-cap-pilot.sh"
                 | "deployments/lab/product/cap-free-restore-contract.json"
                 | "deployments/lab/product/apps-humanymous-browser-structural-cap0-contract.json"
+                | "deployments/lab/product/browser-product-measured-e2e-cap0-contract.json"
+                | "deployments/lab/product/browser-product-measured-e2e-measure-receipt.scaffold.json"
+                | "deployments/lab/product/browser-product-measured-e2e-cap-pilot.sh"
                 | "deployments/lab/authority/package.json"
                 | "deployments/lab/authority/package-lock.json"
                 | "deployments/lab/authority/pilot.mjs"
@@ -328,6 +331,9 @@ mod tests {
             "deployments/lab/product/docker-e2e-product-cap-pilot.sh",
             "deployments/lab/product/cap-free-restore-contract.json",
             "deployments/lab/product/apps-humanymous-browser-structural-cap0-contract.json",
+            "deployments/lab/product/browser-product-measured-e2e-cap0-contract.json",
+            "deployments/lab/product/browser-product-measured-e2e-measure-receipt.scaffold.json",
+            "deployments/lab/product/browser-product-measured-e2e-cap-pilot.sh",
             "adapters/node/src/index.cjs",
         ] {
             assert!(allowed(path));
