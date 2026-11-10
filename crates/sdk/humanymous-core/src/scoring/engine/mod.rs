@@ -424,6 +424,158 @@ mod tests {
             );
         }
     }
+
+    fn score_chrome_fixture(
+        engine: &Engine,
+        signals: &[(&str, bool)],
+        ja4_engine: &str,
+        h2_engine: &str,
+    ) -> ScoreResult {
+        let mut report = SessionReport::default();
+        report.client.user_agent =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0"
+                .into();
+        report.network.ja4_engine = ja4_engine.into();
+        report.network.h2_engine = h2_engine.into();
+        let mut client = vec![Signal::new(
+            "l1.navigator.webdriver",
+            serde_json::json!(false),
+            Verdict::Ok,
+            1.0,
+            Source::Js,
+            "client-presence-anchor",
+        )];
+        let mut network = Vec::new();
+        for &(id, on_network) in signals {
+            let signal = bot_signal(id, on_network, "remaining-deny-fixture");
+            if on_network {
+                network.push(signal);
+            } else {
+                client.push(signal);
+            }
+        }
+        report.client.signals = Some(client);
+        if !network.is_empty() {
+            report.network.signals = Some(network);
+        }
+        engine.score(&mut report).unwrap()
+    }
+
+    /// Cap0 honesty: remaining frozen Deny hard rules (beyond HR-1 and the
+    /// cycle34 multi-signal set) must fire on complete fixtures and must not
+    /// invent Deny on incomplete pairs. Detection freeze: no weight/threshold/
+    /// predicate change.
+    #[test]
+    fn remaining_deny_fixtures_evaluate_honestly_under_frozen_hard_rules() {
+        let engine = Engine::default();
+
+        // HR-2: UA claims Chrome but TLS + HTTP/2 both resolve elsewhere.
+        let hr2 = score_chrome_fixture(&engine, &[], "firefox", "firefox");
+        assert_eq!(
+            (hr2.hard_rule_fired.as_str(), hr2.verdict.as_str()),
+            ("HR-2", "DENY"),
+            "frozen HR-2 must Deny dual TLS/H2 engine mismatch"
+        );
+        let hr2_incomplete = score_chrome_fixture(&engine, &[], "firefox", "chrome");
+        assert_ne!(
+            hr2_incomplete.hard_rule_fired.as_str(),
+            "HR-2",
+            "single-axis TLS mismatch must not invent HR-2"
+        );
+
+        // HR-5: RIT tamper plus TLS engine mismatch (wins before lone HR-16).
+        let hr5 = score_chrome_fixture(
+            &engine,
+            &[("l5.rit.header_tampered", true)],
+            "firefox",
+            "chrome",
+        );
+        assert_eq!(
+            (hr5.hard_rule_fired.as_str(), hr5.verdict.as_str()),
+            ("HR-5", "DENY"),
+            "frozen HR-5 must Deny RIT+TLS mismatch"
+        );
+        let hr5_incomplete =
+            score_chrome_fixture(&engine, &[("l5.rit.header_tampered", true)], "chrome", "chrome");
+        assert_ne!(
+            hr5_incomplete.hard_rule_fired.as_str(),
+            "HR-5",
+            "RIT alone must not invent HR-5"
+        );
+
+        let cases: &[(&str, &[(&str, bool)])] = &[
+            (
+                "HR-6",
+                &[
+                    ("l3.guard.native_hooked", false),
+                    ("l1.navigator.webdriver", false),
+                ],
+            ),
+            (
+                "HR-8",
+                &[
+                    ("l3.integrity.native_tostring", false),
+                    ("l1.window.outer_eq_inner", false),
+                ],
+            ),
+            (
+                "HR-13",
+                &[
+                    ("l3.guard.console_disabled", false),
+                    ("l1.window.outer_eq_inner", false),
+                ],
+            ),
+            (
+                "HR-15",
+                &[
+                    ("l5.traffic.ua_rotation", true),
+                    ("l5.traffic.ip_hop", true),
+                ],
+            ),
+            ("HR-19", &[("l7.pow.too_fast", true)]),
+            (
+                "HR-20",
+                &[
+                    ("l4.mouse.click_no_trajectory", false),
+                    ("l4.agent.burst_silence", false),
+                ],
+            ),
+        ];
+        for &(rule, signals) in cases {
+            let result = score_fixture(&engine, signals);
+            assert_eq!(
+                (result.hard_rule_fired.as_str(), result.verdict.as_str()),
+                (rule, "DENY"),
+                "frozen {rule} must Deny complete remaining fixture"
+            );
+        }
+
+        // HR-18: browser UA with zero client execution evidence (HTTP parrot).
+        let mut parrot = SessionReport::default();
+        parrot.client.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0".into();
+        let hr18 = engine.score(&mut parrot).unwrap();
+        assert_eq!(
+            (hr18.hard_rule_fired.as_str(), hr18.verdict.as_str()),
+            ("HR-18", "DENY"),
+            "frozen HR-18 must Deny browser UA with no JS evidence"
+        );
+
+        let incomplete: &[(&str, &[(&str, bool)])] = &[
+            ("HR-6", &[("l3.guard.native_hooked", false)]),
+            ("HR-8", &[("l3.integrity.native_tostring", false)]),
+            ("HR-13", &[("l3.guard.console_disabled", false)]),
+            ("HR-15", &[("l5.traffic.ua_rotation", true)]),
+            ("HR-20", &[("l4.mouse.click_no_trajectory", false)]),
+        ];
+        for &(rule, signals) in incomplete {
+            let result = score_fixture(&engine, signals);
+            assert_ne!(
+                result.hard_rule_fired.as_str(),
+                rule,
+                "incomplete fixture must not invent {rule}"
+            );
+        }
+    }
     #[test]
     fn invalid_numeric_configuration_and_contributions_fail_closed() {
         let engine = Engine {
