@@ -547,10 +547,13 @@ fn completeness_report(
             "unlock_a_ne_browser_ready": true
         },
         "cap0_helpers": {
-            "handoff_apply": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind at",
+            "handoff_apply_at": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind at",
+            "handoff_apply_auth": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind auth",
+            "handoff_apply_browser_ready_join": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind browser-ready-join",
             "cef_bundle_bind": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-bind",
             "cef_bundle_probe": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-probe",
-            "browser_ready_honesty": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty"
+            "browser_ready_honesty": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty",
+            "n06_owner_auth_honesty": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --n06-owner-auth-handoff-honesty"
         }
     });
     Ok(json!({
