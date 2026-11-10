@@ -747,6 +747,104 @@ mod tests {
             "sub-ChallengeAt soft residual must not invent Challenge band"
         );
     }
+
+    /// Cap0 honesty: a11y constraint — never gate Pass/CHALLENGE on motor
+    /// richness or speed. Sparse/absent L4 motor evidence with present client
+    /// stays ALLOW; soft Suspicious motor-poverty alone must not invent
+    /// CHALLENGE/DENY; Pass-upgrade clears soft CHALLENGE without requiring
+    /// motor richness. Does not redo Deny/Challenge HR or scoring-band Cap0.
+    /// Detection freeze: no weight/threshold/predicate change.
+    #[test]
+    fn a11y_motor_richness_does_not_gate_pass_or_challenge_under_freeze() {
+        let engine = Engine::default();
+
+        // Assistive / sparse-motor fixture: client present, no L4 richness.
+        let sparse = score_fixture(&engine, &[]);
+        assert_eq!(
+            (sparse.verdict.as_str(), sparse.hard_rule_fired.as_str()),
+            ("ALLOW", ""),
+            "sparse motor must stay ALLOW without inventing a hard rule"
+        );
+        assert!(
+            sparse.risk_score < engine.policy.challenge_at,
+            "sparse motor must stay below ChallengeAt"
+        );
+
+        // Soft Suspicious motor-poverty marker alone must not invent bands.
+        let mut poverty = SessionReport::default();
+        poverty.client.user_agent = "Mozilla/5.0".into();
+        poverty.client.signals = Some(vec![
+            Signal::new(
+                "l1.navigator.webdriver",
+                serde_json::json!(false),
+                Verdict::Ok,
+                1.0,
+                Source::Js,
+                "client-presence-anchor",
+            ),
+            Signal::new(
+                "l4.mouse.samples",
+                serde_json::json!(0),
+                Verdict::Suspicious,
+                0.6,
+                Source::Wasm,
+                "a11y-motor-poverty-fixture",
+            ),
+        ]);
+        let poverty_result = engine.score(&mut poverty).unwrap();
+        assert_eq!(
+            (
+                poverty_result.verdict.as_str(),
+                poverty_result.hard_rule_fired.as_str()
+            ),
+            ("ALLOW", ""),
+            "soft motor-poverty must stay ALLOW without inventing a hard rule"
+        );
+        assert!(
+            poverty_result.risk_score < engine.policy.challenge_at,
+            "soft motor-poverty must not invent Challenge band"
+        );
+
+        // Soft non-motor CHALLENGE upgrades via Pass without motor richness.
+        let mut pass = SessionReport::default();
+        pass.client.user_agent = "Mozilla/5.0".into();
+        pass.client.signals = Some(vec![Signal::new(
+            "l1.navigator.webdriver",
+            serde_json::json!(false),
+            Verdict::Ok,
+            1.0,
+            Source::Js,
+            "client-presence-anchor",
+        )]);
+        pass.network.signals = Some(vec![
+            Signal::new(
+                "l5.traffic.tls_no_permutation",
+                serde_json::json!(true),
+                Verdict::Bot,
+                1.0,
+                Source::Server,
+                "soft-challenge-non-motor",
+            ),
+            Signal::new(
+                "l7.pass.solved",
+                serde_json::json!(true),
+                Verdict::Ok,
+                1.0,
+                Source::Server,
+                "a11y-pass-upgrade",
+            ),
+        ]);
+        let pass_result = engine.score(&mut pass).unwrap();
+        assert_eq!(
+            (
+                pass_result.verdict.as_str(),
+                pass_result.hard_rule_fired.as_str()
+            ),
+            ("ALLOW", "Pass-upgrade"),
+            "Pass-upgrade must clear soft CHALLENGE without motor richness"
+        );
+    }
+
     #[test]
     fn invalid_numeric_configuration_and_contributions_fail_closed() {
         let engine = Engine {
