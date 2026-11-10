@@ -24,6 +24,7 @@
   "matrix": ".spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/matrix.json",
   "forbidden": [
     "invent pass_product_clean_room",
+    "SkipSwarm-only catalog/subset as DoD detection-eval",
     "G2/G5/CR/G6 Cap twin spam",
     "Cap=1 while Cap free=false without Cap realloc",
     "invent Cap free / BrowserReady / AUTH/AT"
@@ -31,6 +32,7 @@
   "honesty": {
     "cap0_require_full_lists_missing_product_cells": true,
     "cap1_feeder_not_pass_component_desktop_cap_topology_twin": true,
-    "cap_realloc_only_structural_feeder": true
+    "cap_realloc_only_structural_feeder": true,
+    "skip_swarm_only_ne_dod": true
   }
 }

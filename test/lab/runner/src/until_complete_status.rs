@@ -20,17 +20,16 @@ use crate::cap_realloc_apply;
 use crate::docker::Result;
 use crate::handoff_apply;
 use crate::orchestration::cap0_product_honesty::{
-    cap_free_after_unlock_a, INTERACTIVE_AT_HANDOFF_CANDIDATES,
+    INTERACTIVE_AT_HANDOFF_CANDIDATES, cap_free_after_unlock_a,
 };
 use crate::orchestration::h2_product_binding::N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES;
 use crate::snapshot;
 use crate::unlock_gate;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::{fs, path::Path};
 
 const SCHEMA: &str = "humanymous.lab-until-complete-status/1";
-const PILOT_COMMAND: &str =
-    "cargo run --locked -p humanymous-lab-runner -- until-complete-status [--workspace PATH] [--emit PATH]";
+const PILOT_COMMAND: &str = "cargo run --locked -p humanymous-lab-runner -- until-complete-status [--workspace PATH] [--emit PATH]";
 const INTERACTIVE_AT_HANDOFF_SCHEMA: &str = "humanymous.root-interactive-at-windows-tuple/1";
 const N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA: &str = "humanymous.root-n06-owner-join-auth-handoff/1";
 const GRANT_SCHEMA: &str = "humanymous.root-cap-free-restore-grant/1";
@@ -161,10 +160,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     }
     println!("{rendered}");
 
-    let goal_complete = report
-        .get("goal_complete")
-        .and_then(Value::as_bool)
-        == Some(true);
+    let goal_complete = report.get("goal_complete").and_then(Value::as_bool) == Some(true);
     if goal_complete {
         Ok(0)
     } else {
@@ -422,7 +418,9 @@ fn measured_matrix_green(root: &Path) -> (bool, Option<String>) {
         };
         let green = value.get("green").and_then(Value::as_bool) == Some(true)
             || value.get("matrix_green").and_then(Value::as_bool) == Some(true)
-            || value.get("docker_clean_room_full_matrix_green").and_then(Value::as_bool)
+            || value
+                .get("docker_clean_room_full_matrix_green")
+                .and_then(Value::as_bool)
                 == Some(true);
         if !green {
             continue;
@@ -451,7 +449,10 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
             continue;
         };
         let green = value.get("green").and_then(Value::as_bool) == Some(true)
-            || value.get("red_blue_validate_product").and_then(Value::as_bool) == Some(true)
+            || value
+                .get("red_blue_validate_product")
+                .and_then(Value::as_bool)
+                == Some(true)
             || value.get("product").and_then(Value::as_u64) == Some(1);
         if !green {
             continue;
@@ -465,9 +466,61 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
         if counts.contains("component") {
             continue;
         }
+        // SkipSwarm-only catalog/subset ≠ DoD detection-eval proof.
+        if receipt_is_skip_swarm_only_not_dod(&value) {
+            continue;
+        }
         return (true, Some((*relative).to_string()));
     }
     (false, None)
+}
+
+/// True when a receipt is SkipSwarm-only (or marks itself as such). SkipSwarm
+/// catalog/subset EXIT0 never closes DoD detection-eval — full Docker e2e /
+/// `--red-blue-product --require-full` is required.
+fn receipt_is_skip_swarm_only_not_dod(value: &Value) -> bool {
+    if value.get("skip_swarm_only_ne_dod").and_then(Value::as_bool) == Some(true)
+        && value.get("skip_swarm_only").and_then(Value::as_bool) == Some(true)
+    {
+        return true;
+    }
+    if value.get("skip_swarm_only").and_then(Value::as_bool) == Some(true)
+        || value.get("skip_swarm").and_then(Value::as_bool) == Some(true)
+    {
+        return true;
+    }
+    let mode = value
+        .get("mode")
+        .or_else(|| value.get("probe_mode"))
+        .or_else(|| value.get("runner_mode"))
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let mode_l = mode.to_ascii_lowercase();
+    if mode_l.contains("skipswarm")
+        || mode_l.contains("skip_swarm")
+        || mode_l == "skip-swarm"
+        || mode_l.contains("swarm_only")
+    {
+        return true;
+    }
+    let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
+    let counts_l = counts.to_ascii_lowercase();
+    if counts_l.contains("skipswarm")
+        || counts_l.contains("skip_swarm")
+        || counts_l.contains("skip-swarm")
+        || counts_l.contains("swarm_only_not_product")
+        || counts_l.contains("swarm_only_ne_dod")
+    {
+        return true;
+    }
+    let authority = value
+        .get("completion_authority")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let authority_l = authority.to_ascii_lowercase();
+    authority_l.contains("skipswarm")
+        || authority_l.contains("skip_swarm")
+        || authority_l.contains("swarm_only")
 }
 
 /// True when a receipt is Cap0 AffinityOnly / PressureOnly / mutex / pressure
@@ -475,8 +528,14 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
 /// product — only Cap1 full `e2e-docker-launch.ps1` / red-blue product can.
 fn docker_e2e_receipt_is_cap0_probe_not_product(value: &Value) -> bool {
     if value.get("cap0_probe_ne_product").and_then(Value::as_bool) == Some(true)
-        || value.get("affinity_pressure_ne_product").and_then(Value::as_bool) == Some(true)
-        || value.get("cap0_affinity_pressure_ne_product").and_then(Value::as_bool) == Some(true)
+        || value
+            .get("affinity_pressure_ne_product")
+            .and_then(Value::as_bool)
+            == Some(true)
+        || value
+            .get("cap0_affinity_pressure_ne_product")
+            .and_then(Value::as_bool)
+            == Some(true)
     {
         return true;
     }
@@ -536,7 +595,10 @@ fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
             continue;
         };
         let green = value.get("green").and_then(Value::as_bool) == Some(true)
-            || value.get("docker_e2e_validate_product").and_then(Value::as_bool) == Some(true)
+            || value
+                .get("docker_e2e_validate_product")
+                .and_then(Value::as_bool)
+                == Some(true)
             || value.get("docker_e2e_product").and_then(Value::as_bool) == Some(true);
         if !green {
             continue;
@@ -547,8 +609,7 @@ fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
             continue;
         }
         let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
-        if counts.contains("component") || counts.contains("host") || counts.contains("loopback")
-        {
+        if counts.contains("component") || counts.contains("host") || counts.contains("loopback") {
             continue;
         }
         // Explicit refuse: host/loopback authority never counts as Docker product.
@@ -559,11 +620,19 @@ fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
         if authority.contains("host") || authority.contains("loopback") {
             continue;
         }
-        if value.get("host_loopback_ne_product").and_then(Value::as_bool) == Some(false) {
+        if value
+            .get("host_loopback_ne_product")
+            .and_then(Value::as_bool)
+            == Some(false)
+        {
             continue;
         }
         // Cap0 AffinityOnly / PressureOnly / mutex / pressure EXIT0 ≠ product oneshot.
         if docker_e2e_receipt_is_cap0_probe_not_product(&value) {
+            continue;
+        }
+        // SkipSwarm-only catalog/subset ≠ Docker e2e DoD proof.
+        if receipt_is_skip_swarm_only_not_dod(&value) {
             continue;
         }
         return (true, Some((*relative).to_string()));
@@ -801,11 +870,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "HOLD"
     };
 
-    let product_gates_verified = pass_product == 1
-        && matrix_green
-        && red_blue_green
-        && docker_e2e_green
-        && browser_ready;
+    let product_gates_verified =
+        pass_product == 1 && matrix_green && red_blue_green && docker_e2e_green && browser_ready;
     // DoD = measured detection-eval proof + product gates; never invent.
     let dod_verified = product_gates_verified
         && red_blue_green
@@ -1045,15 +1111,21 @@ mod tests {
 
     #[test]
     fn docker_e2e_topology_honesty_covers_cap1_serial_clean_room_matrix() {
-        assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES
-            .iter()
-            .any(|p| *p == "deployments/lab/compose.clean-room-product.yaml"));
-        assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES
-            .iter()
-            .any(|p| *p == "deployments/lab/compose.clean-room-product-matrix.yaml"));
-        assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES
-            .iter()
-            .any(|p| *p == "deployments/lab/compose.red-blue-product.yaml"));
+        assert!(
+            DOCKER_E2E_TOPOLOGY_CANDIDATES
+                .iter()
+                .any(|p| *p == "deployments/lab/compose.clean-room-product.yaml")
+        );
+        assert!(
+            DOCKER_E2E_TOPOLOGY_CANDIDATES
+                .iter()
+                .any(|p| *p == "deployments/lab/compose.clean-room-product-matrix.yaml")
+        );
+        assert!(
+            DOCKER_E2E_TOPOLOGY_CANDIDATES
+                .iter()
+                .any(|p| *p == "deployments/lab/compose.red-blue-product.yaml")
+        );
         assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES.len() >= 7);
         let root = temp_root("topo");
         write_unlock_a(&root, false);
@@ -1153,6 +1225,64 @@ mod tests {
         .expect("write");
         let report2 = measure(&root).expect("measure");
         assert_eq!(report2["docker_e2e_validate_product"], false);
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn skip_swarm_only_receipt_never_closes_detection_eval_dod() {
+        let root = temp_root("skip-swarm");
+        write_unlock_a(&root, false);
+
+        let rb = root.join(RED_BLUE_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(rb.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &rb,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-red-blue-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "red_blue_validate_product": true,
+                "green": true,
+                "mode": "SkipSwarm",
+                "counts_as": "skip_swarm_only_ne_dod_not_product",
+                "skip_swarm_only": true
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let e2e = root.join(DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(e2e.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &e2e,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-docker-e2e-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "docker_e2e_validate_product": true,
+                "green": true,
+                "completion_authority": "skip_swarm_only",
+                "counts_as": "skip_swarm_catalog_subset_not_product",
+                "skip_swarm_only": true
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let report = measure(&root).expect("measure");
+        let incompletes = report["incompletes"].as_array().expect("incompletes");
+        let red_blue = incompletes
+            .iter()
+            .find(|item| item.get("id") == Some(&json!("red_blue_validate_product")))
+            .expect("red_blue incomplete");
+        assert_eq!(red_blue["closed"], false);
+        assert_eq!(red_blue["green"], false);
+        assert_eq!(report["docker_e2e_validate_product"], false);
+        assert_eq!(report["definition_of_done"]["gates"][3]["closed"], false);
+        assert_eq!(report["definition_of_done"]["gates"][4]["closed"], false);
+        assert_eq!(report["dod_verified"], false);
+        assert_eq!(report["goal_complete"], false);
+        assert_eq!(report["honesty"]["skip_swarm_only_ne_dod"], true);
         let _ = fs::remove_dir_all(&root);
     }
 
