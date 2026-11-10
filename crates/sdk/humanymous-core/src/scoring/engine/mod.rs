@@ -326,11 +326,7 @@ mod tests {
             serde_json::json!(true),
             Verdict::Bot,
             1.0,
-            if network {
-                Source::Server
-            } else {
-                Source::Js
-            },
+            if network { Source::Server } else { Source::Js },
             notes,
         )
     }
@@ -371,7 +367,10 @@ mod tests {
         let cases: &[(&str, &[(&str, bool)])] = &[
             (
                 "HR-3",
-                &[("l4.event.untrusted", false), ("l1.navigator.webdriver", false)],
+                &[
+                    ("l4.event.untrusted", false),
+                    ("l1.navigator.webdriver", false),
+                ],
             ),
             (
                 "HR-4",
@@ -433,8 +432,7 @@ mod tests {
     ) -> ScoreResult {
         let mut report = SessionReport::default();
         report.client.user_agent =
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0"
-                .into();
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0".into();
         report.network.ja4_engine = ja4_engine.into();
         report.network.h2_engine = h2_engine.into();
         let mut client = vec![Signal::new(
@@ -495,8 +493,12 @@ mod tests {
             ("HR-5", "DENY"),
             "frozen HR-5 must Deny RIT+TLS mismatch"
         );
-        let hr5_incomplete =
-            score_chrome_fixture(&engine, &[("l5.rit.header_tampered", true)], "chrome", "chrome");
+        let hr5_incomplete = score_chrome_fixture(
+            &engine,
+            &[("l5.rit.header_tampered", true)],
+            "chrome",
+            "chrome",
+        );
         assert_ne!(
             hr5_incomplete.hard_rule_fired.as_str(),
             "HR-5",
@@ -552,7 +554,8 @@ mod tests {
 
         // HR-18: browser UA with zero client execution evidence (HTTP parrot).
         let mut parrot = SessionReport::default();
-        parrot.client.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0".into();
+        parrot.client.user_agent =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0".into();
         let hr18 = engine.score(&mut parrot).unwrap();
         assert_eq!(
             (hr18.hard_rule_fired.as_str(), hr18.verdict.as_str()),
@@ -575,6 +578,96 @@ mod tests {
                 "incomplete fixture must not invent {rule}"
             );
         }
+    }
+
+    /// Cap0 honesty: frozen Challenge hard rules (HR-10/11/12/17/22/23/24)
+    /// must Challenge on complete fixtures and must not invent Challenge on
+    /// incomplete multi-signal sets. Detection freeze: no weight/threshold/
+    /// predicate change. Does not redo HR-1 or Deny Cap0 units.
+    #[test]
+    fn challenge_fixtures_evaluate_honestly_under_frozen_hard_rules() {
+        let engine = Engine::default();
+
+        // HR-10: missing client-side evidence challenges.
+        let hr10 = engine.score(&mut SessionReport::default()).unwrap();
+        assert_eq!(
+            (hr10.hard_rule_fired.as_str(), hr10.verdict.as_str()),
+            ("HR-10", "CHALLENGE"),
+            "frozen HR-10 must Challenge empty client fixture"
+        );
+
+        let cases: &[(&str, &[(&str, bool)])] = &[
+            ("HR-17", &[("l5.rit.stale_replay", true)]),
+            ("HR-12", &[("l4.event.no_interaction", false)]),
+            ("HR-22", &[("l2.adv.audio_24k", false)]),
+            ("HR-24", &[("l5.header.proxy_hop", true)]),
+        ];
+        for &(rule, signals) in cases {
+            let result = score_fixture(&engine, signals);
+            assert_eq!(
+                (result.hard_rule_fired.as_str(), result.verdict.as_str()),
+                (rule, "CHALLENGE"),
+                "frozen {rule} must Challenge complete fixture"
+            );
+        }
+
+        // HR-11: consistent browser from a datacenter ASN.
+        let hr11 = score_chrome_fixture(
+            &engine,
+            &[("l5.ip.datacenter_asn", true)],
+            "chrome",
+            "chrome",
+        );
+        assert_eq!(
+            (hr11.hard_rule_fired.as_str(), hr11.verdict.as_str()),
+            ("HR-11", "CHALLENGE"),
+            "frozen HR-11 must Challenge datacenter ASN under consistent browser"
+        );
+        let hr11_incomplete = score_chrome_fixture(&engine, &[], "chrome", "chrome");
+        assert_ne!(
+            hr11_incomplete.hard_rule_fired.as_str(),
+            "HR-11",
+            "consistent browser without datacenter ASN must not invent HR-11"
+        );
+        let hr11_mismatch = score_chrome_fixture(
+            &engine,
+            &[("l5.ip.datacenter_asn", true)],
+            "firefox",
+            "chrome",
+        );
+        assert_ne!(
+            hr11_mismatch.hard_rule_fired.as_str(),
+            "HR-11",
+            "TLS mismatch must not invent HR-11"
+        );
+
+        // HR-23: Chrome UA with all three Chromium-container residuals.
+        let hr23 = score_chrome_fixture(
+            &engine,
+            &[
+                ("l2.adv.no_widevine", false),
+                ("l2.adv.no_media_devices", false),
+                ("l2.adv.no_voices", false),
+            ],
+            "chrome",
+            "chrome",
+        );
+        assert_eq!(
+            (hr23.hard_rule_fired.as_str(), hr23.verdict.as_str()),
+            ("HR-23", "CHALLENGE"),
+            "frozen HR-23 must Challenge complete container residual set"
+        );
+        let hr23_incomplete = score_chrome_fixture(
+            &engine,
+            &[("l2.adv.no_widevine", false)],
+            "chrome",
+            "chrome",
+        );
+        assert_ne!(
+            hr23_incomplete.hard_rule_fired.as_str(),
+            "HR-23",
+            "partial container residual must not invent HR-23"
+        );
     }
     #[test]
     fn invalid_numeric_configuration_and_contributions_fail_closed() {
