@@ -26,10 +26,9 @@ const INTERACTIVE_AT_HANDOFF_SCHEMA: &str = "humanymous.root-interactive-at-wind
 const N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA: &str = "humanymous.root-n06-owner-join-auth-handoff/1";
 const GRANT_SCHEMA: &str = "humanymous.root-cap-free-restore-grant/1";
 
-/// Cap-free-restore LIVE GRANT candidates (never `*.TEMPLATE.json`).
+/// Cap-free-restore LIVE GRANT candidates (never `*.TEMPLATE.json` / candidate-pack scaffold).
 const CAP_FREE_GRANT_CANDIDATES: &[&str] = &[
     ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/GRANT.json",
-    ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/GRANT.json",
     ".spec.local/root/grants/cap-free-restore/GRANT.json",
     "deployments/lab/product/GRANT.json",
 ];
@@ -40,6 +39,9 @@ const CAP_FREE_MANIFEST_CANDIDATES: &[&str] = &[
     ".spec.local/root/grants/cap-free-restore/transfer-manifest.json",
     "deployments/lab/product/transfer-manifest.json",
 ];
+
+/// Cap0 Cap-ready scaffold only — present ≠ LIVE GRANT for Cap free restore.
+const CAP_FREE_CANDIDATE_PACK_GRANT: &str = ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/GRANT.json";
 
 const TEMPLATE_GRANT_MARKERS: &[&str] = &[
     ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/GRANT.TEMPLATE.json",
@@ -168,6 +170,11 @@ fn first_live_file(root: &Path, candidates: &[&str]) -> Option<String> {
     })
 }
 
+fn is_candidate_pack_scaffold_path(path: &str) -> bool {
+    let normalized = path.replace('\\', "/");
+    normalized.contains("/candidate-pack/") || normalized.ends_with("/candidate-pack")
+}
+
 fn template_grant_present(root: &Path) -> Option<String> {
     TEMPLATE_GRANT_MARKERS
         .iter()
@@ -175,15 +182,22 @@ fn template_grant_present(root: &Path) -> Option<String> {
         .map(|relative| (*relative).to_string())
 }
 
+fn candidate_pack_grant_present(root: &Path) -> bool {
+    root.join(CAP_FREE_CANDIDATE_PACK_GRANT).is_file()
+}
+
 fn resolve_grant_manifest(
     root: &Path,
     grant_override: Option<&str>,
     manifest_override: Option<&str>,
 ) -> (Option<String>, Option<String>, Option<String>) {
+    // Cap0 scaffold under candidate-pack/ is never LIVE GRANT/TRANSFER, including --grant/--manifest overrides.
     let grant = grant_override
+        .filter(|path| !is_candidate_pack_scaffold_path(path))
         .map(|path| path.to_string())
         .or_else(|| first_live_file(root, CAP_FREE_GRANT_CANDIDATES));
     let manifest = manifest_override
+        .filter(|path| !is_candidate_pack_scaffold_path(path))
         .map(|path| path.to_string())
         .or_else(|| first_live_file(root, CAP_FREE_MANIFEST_CANDIDATES));
     let template_only = if grant.is_none() {
@@ -251,6 +265,8 @@ fn honesty_block() -> Value {
         "never_invent_cap_free": true,
         "never_forge_auth_at": true,
         "never_apply_template_grant": true,
+        "never_count_candidate_pack_grant_as_live": true,
+        "never_count_candidate_pack_transfer_as_live": true,
         "refuse_spent_twin_reburn_g2_g5_cr_g6_rb_pm": true,
         "detection_freeze": true,
         "cap0_only": true,
@@ -510,6 +526,7 @@ pub(crate) fn run_inspect(
     } else {
         "inspect_incomplete"
     };
+    let candidate_pack_grant = candidate_pack_grant_present(root);
 
     Ok(json!({
         "schema": INSPECT_SCHEMA,
@@ -528,6 +545,7 @@ pub(crate) fn run_inspect(
         "artifacts": artifacts,
         "blockers": blockers,
         "blocker_count": blockers.len(),
+        "candidate_pack_grant_present": candidate_pack_grant,
         "chain_order": ["at", "browser-ready-join", "auth", "cap-realloc-apply"],
         "pilot_command": PILOT_COMMAND,
         "next": if ready_for_apply {
@@ -1298,6 +1316,50 @@ mod tests {
         );
         assert_eq!(report["product"], 0);
         assert_eq!(report["cap_free"], false);
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn candidate_pack_grant_is_not_live_for_inspect_or_override() {
+        let root = temp_root("candidate-pack-grant");
+        write_unlock_a(&root);
+
+        let scaffold = root.join(CAP_FREE_CANDIDATE_PACK_GRANT);
+        fs::create_dir_all(scaffold.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &scaffold,
+            serde_json::to_vec_pretty(&json!({
+                "schema": GRANT_SCHEMA,
+                "root_authorized": true,
+                "allow_apply": true,
+                "authorize_cap_free_restore": true,
+                "new_non_twin": true,
+                "cap_burn_authorized": false,
+                "cap1_inside_apply": false,
+                "product": 0,
+                "pass_product_clean_room": 0,
+                "feeder": "product-cap-free-restore",
+                "unlock_a_closer": UNLOCK_A_CLOSER_REL,
+                "destinations": ["deployments/lab/product/cap-free-restore-contract.json"]
+            }))
+            .expect("encode"),
+        )
+        .expect("write scaffold grant");
+
+        let inspect = run_inspect(&root, None, None).expect("inspect");
+        assert_eq!(inspect["candidate_pack_grant_present"], true);
+        assert_eq!(inspect["ready_for_apply"], false);
+        assert_eq!(inspect["artifacts"][2]["id"], "Cap-free-GRANT");
+        assert_eq!(inspect["artifacts"][2]["present"], false);
+        assert_eq!(
+            inspect["honesty"]["never_count_candidate_pack_grant_as_live"],
+            true
+        );
+
+        let override_inspect =
+            run_inspect(&root, Some(CAP_FREE_CANDIDATE_PACK_GRANT), None).expect("override");
+        assert_eq!(override_inspect["artifacts"][2]["present"], false);
+        assert_eq!(override_inspect["ready_for_apply"], false);
         let _ = fs::remove_dir_all(&root);
     }
 }

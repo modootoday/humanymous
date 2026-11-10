@@ -3,6 +3,11 @@
 //! When Cap free=false: HOLD packet with Cap1 serial landers prepared (no Cap1 burn).
 //! When Cap free=true: arm Cap1 serial command preimages without executing Cap1.
 //! Never invents Cap free / BrowserReady / AUTH / AT / pass_product / Cap burn.
+//!
+//! Cap1 serial after Cap free is the DoD detection-eval path: clean-room-product →
+//! matrix `--require-full` → Docker e2e (`e2e-docker-launch`) + `--red-blue-product
+//! --require-full`. Component Cap EXIT0 / host/loopback / AffinityOnly ≠ DoD.
+//! Detection freeze: serialize only; do not change scoring.
 use crate::docker::Result;
 use crate::orchestration::cap0_product_honesty::cap_free_after_unlock_a;
 use crate::orchestration::clean_room_product_matrix::{
@@ -226,6 +231,12 @@ pub(crate) fn prep(root: &Path) -> Result<Value> {
             "never_invent_cap_free": true,
             "never_invent_docker_e2e_validate_product": true,
             "host_loopback_ne_product": true,
+            "host_loopback_ne_dod": true,
+            "component_ne_dod": true,
+            "affinity_pressure_ne_dod": true,
+            "skip_swarm_only_ne_dod": true,
+            "dod_requires_red_blue_product_and_docker_e2e": true,
+            "dod_is_honest_measurement_not_scoring_change": true,
             "never_forge_auth_at": true,
             "detection_freeze": true,
             "no_cap1_this_wave": true,

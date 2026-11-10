@@ -6,6 +6,16 @@
 //! only covers handoff/GRANT presence+schema). Never invents Cap free /
 //! BrowserReady / AUTH / AT / pass_product / Cap burn / goal_complete /
 //! docker_e2e_validate_product.
+//!
+//! Definition of Done (DoD; all measured; never invent): currently implemented
+//! automation-detection tech is correctly evaluated on this deployment via
+//! red-blue-validate product + clean-room Docker e2e
+//! (`e2e-docker-launch` / lab-runner product path), with
+//! `pass_product_clean_room=true`, Docker clean-room full matrix `--require-full`
+//! green, and BrowserReady only when measured true. Host/loopback, component Cap
+//! EXIT0, AffinityOnly/PressureOnly, SkipSwarm-only ≠ DoD. Detection freeze:
+//! do not change scoring weights/thresholds/hard-rules; honesty proves existing
+//! SoT detection correctly evaluates implementable automation (bots/catalog).
 use crate::cap_realloc_apply;
 use crate::docker::Result;
 use crate::handoff_apply;
@@ -25,10 +35,9 @@ const INTERACTIVE_AT_HANDOFF_SCHEMA: &str = "humanymous.root-interactive-at-wind
 const N06_OWNER_JOIN_AUTH_HANDOFF_SCHEMA: &str = "humanymous.root-n06-owner-join-auth-handoff/1";
 const GRANT_SCHEMA: &str = "humanymous.root-cap-free-restore-grant/1";
 
-/// Cap-free-restore LIVE GRANT candidates (never `*.TEMPLATE.json`).
+/// Cap-free-restore LIVE GRANT candidates (never `*.TEMPLATE.json` / candidate-pack scaffold).
 const CAP_FREE_GRANT_CANDIDATES: &[&str] = &[
     ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/GRANT.json",
-    ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/GRANT.json",
     ".spec.local/root/grants/cap-free-restore/GRANT.json",
     "deployments/lab/product/GRANT.json",
 ];
@@ -40,7 +49,8 @@ const CAP_FREE_MANIFEST_CANDIDATES: &[&str] = &[
     "deployments/lab/product/transfer-manifest.json",
 ];
 
-/// Cap0 Cap-ready scaffold only — present ≠ LIVE-matching TRANSFER for Cap free restore.
+/// Cap0 Cap-ready scaffold only — present ≠ LIVE GRANT / LIVE TRANSFER for Cap free restore.
+const CAP_FREE_CANDIDATE_PACK_GRANT: &str = ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/GRANT.json";
 const CAP_FREE_CANDIDATE_PACK_MANIFEST: &str = ".spec.local/root/evidence/20261110082900-cursor-cap0-cap-free-apply/cap-ready/cap-free-restore/candidate-pack/transfer-manifest.json";
 
 const TEMPLATE_GRANT_MARKERS: &[&str] = &[
@@ -319,6 +329,10 @@ fn grant_status(root: &Path) -> Value {
 
 fn transfer_present(root: &Path) -> bool {
     first_live_file(root, CAP_FREE_MANIFEST_CANDIDATES).is_some()
+}
+
+fn candidate_pack_grant_present(root: &Path) -> bool {
+    root.join(CAP_FREE_CANDIDATE_PACK_GRANT).is_file()
 }
 
 fn candidate_pack_transfer_present(root: &Path) -> bool {
@@ -650,6 +664,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
     );
     let grant = grant_status(root);
     let transfer_ok = transfer_present(root);
+    let candidate_pack_grant = candidate_pack_grant_present(root);
     let candidate_pack_transfer = candidate_pack_transfer_present(root);
 
     let (browser_ready, browser_ready_path) = measured_browser_ready(root);
@@ -692,40 +707,50 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         json!({
             "id": "BrowserReady",
             "klass": "measured_join",
+            "dod_gate": true,
             "closed": browser_ready,
             "value": browser_ready,
             "invent_forbidden": true,
-            "path": browser_ready_path
+            "path": browser_ready_path,
+            "note": "DoD: BrowserReady only when measured true; never invent"
         }),
         json!({
             "id": "pass_product_clean_room",
             "klass": "Cap1_serial",
+            "dod_gate": true,
             "closed": pass_product == 1,
             "value": pass_product,
             "invent_forbidden": true,
-            "path": pass_product_path
+            "path": pass_product_path,
+            "note": "DoD gate: measured pass_product_clean_room=true after Cap1 --clean-room-product; never invent"
         }),
         json!({
             "id": "docker_clean_room_full_matrix_green",
             "klass": "Cap1_serial",
+            "dod_gate": true,
             "closed": matrix_green,
             "green": matrix_green,
             "invent_forbidden": true,
-            "path": matrix_path
+            "path": matrix_path,
+            "note": "DoD gate: Cap1 --clean-room-product-matrix --require-full green; component Cap EXIT0 ≠ DoD"
         }),
         json!({
             "id": "red_blue_validate_product",
             "klass": "Cap1_serial",
+            "dod_gate": true,
+            "dod_role": "detection_eval_proof",
             "closed": red_blue_green,
             "green": red_blue_green,
             "invent_forbidden": true,
             "path": red_blue_path,
-            "blocks": ["Cap1 --red-blue-product --require-full feeder"],
-            "note": "lab-runner red-blue product feeder; distinct from Docker-only e2e incomplete"
+            "blocks": ["Cap1 --red-blue-product --require-full feeder", "DoD detection-eval proof"],
+            "note": "DoD detection-eval proof: lab-runner --red-blue-product --require-full proves currently implemented automation-detection correctly evaluates implementable bots/catalog on this deployment; host/loopback/SkipSwarm-only ≠ DoD; detection freeze (no scoring change)"
         }),
         json!({
             "id": "docker_e2e_validate_product",
             "klass": "Cap1_serial_docker_only",
+            "dod_gate": true,
+            "dod_role": "detection_eval_proof",
             "closed": docker_e2e_green,
             "green": docker_e2e_green,
             "invent_forbidden": true,
@@ -733,11 +758,12 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "blocks": [
                 "Docker clean-room/full e2e",
                 "red-blue-validate product",
-                "scripts/e2e-docker-launch.ps1"
+                "scripts/e2e-docker-launch.ps1",
+                "DoD detection-eval proof"
             ],
             "launcher_readiness": docker_e2e_readiness,
             "host_loopback_ne_product": true,
-            "note": "Docker-only completion authority via e2e-docker-launch.ps1 (mutex+pressure) / e2e-docker.sh; host node test/e2e/runner.mjs ≠ product; Cap1 after Cap free"
+            "note": "DoD detection-eval proof: Docker-only e2e via e2e-docker-launch.ps1 (mutex+pressure) / e2e-docker.sh proves clean-room product evaluation; AffinityOnly/PressureOnly/component Cap EXIT0 / host node test/e2e/runner.mjs ≠ DoD; Cap1 after Cap free"
         }),
         json!({
             "id": "Unlock-C",
@@ -780,7 +806,14 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         && red_blue_green
         && docker_e2e_green
         && browser_ready;
-    let goal_complete = incomplete_count == 0 && product_gates_verified;
+    // DoD = measured detection-eval proof + product gates; never invent.
+    let dod_verified = product_gates_verified
+        && red_blue_green
+        && docker_e2e_green
+        && pass_product == 1
+        && matrix_green
+        && browser_ready;
+    let goal_complete = incomplete_count == 0 && product_gates_verified && dod_verified;
 
     let status = if goal_complete {
         "goal_complete"
@@ -791,14 +824,64 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
     };
 
     let next = if goal_complete {
-        "goal_complete measured; stop"
+        "goal_complete measured (DoD detection-eval verified); stop"
     } else if ready_for_cap0_chain && !cap_free {
-        "Artifacts ready; run cap0-chain (no --inspect-only) to restore Cap free; then Cap1 serial clean-room → matrix --require-full → Docker e2e / --red-blue-product --require-full via e2e-docker-launch.ps1; never invent Cap free / pass_product / docker_e2e"
+        "Artifacts ready; run cap0-chain (no --inspect-only) to restore Cap free; then Cap1 serial clean-room → matrix --require-full → Docker e2e / --red-blue-product --require-full via e2e-docker-launch.ps1; DoD requires measured detection-eval; never invent Cap free / pass_product / docker_e2e"
     } else if cap_free {
-        "Cap free=true; Cap1 serial armed — cap1-lander-prep then once: --clean-room-product → --clean-room-product-matrix --require-full → Docker e2e (e2e-docker-launch.ps1) / --red-blue-product --require-full; never invent pass_product / docker_e2e / BrowserReady"
+        "Cap free=true; Cap1 serial armed — cap1-lander-prep then once: --clean-room-product → --clean-room-product-matrix --require-full → Docker e2e (e2e-docker-launch.ps1) / --red-blue-product --require-full; DoD = honest evaluation of implementable automation on this deployment; never invent pass_product / docker_e2e / BrowserReady"
     } else {
-        "Root place LIVE AT-HANDOFF + AUTH-HANDOFF + Cap-free-restore GRANT.json (not TEMPLATE) + LIVE-matching TRANSFER; re-run until-complete-status; Cap1 HOLD (clean-room+matrix+Docker e2e+red-blue); Cap burn=0"
+        "Root place LIVE AT-HANDOFF + AUTH-HANDOFF + Cap-free-restore GRANT.json (not TEMPLATE) + LIVE-matching TRANSFER; re-run until-complete-status; Cap1 HOLD; Cap burn=0; DoD unverified until Cap1 red-blue product + Docker e2e green"
     };
+
+    let definition_of_done = json!({
+        "schema": "humanymous.lab-definition-of-done/1",
+        "measured_only": true,
+        "never_invent": true,
+        "detection_freeze": true,
+        "summary": "Currently implemented automation-detection tech is correctly evaluated on this deployment via red-blue-validate product + clean-room Docker e2e; host/loopback / component Cap EXIT0 / AffinityOnly/PressureOnly / SkipSwarm-only ≠ DoD",
+        "gates": [
+            {
+                "id": "pass_product_clean_room",
+                "required": true,
+                "closed": pass_product == 1,
+                "value": pass_product
+            },
+            {
+                "id": "docker_clean_room_full_matrix_green",
+                "required": true,
+                "selector": "--clean-room-product-matrix --require-full",
+                "closed": matrix_green
+            },
+            {
+                "id": "BrowserReady",
+                "required": true,
+                "closed": browser_ready,
+                "note": "only when measured true"
+            },
+            {
+                "id": "red_blue_validate_product",
+                "required": true,
+                "dod_role": "detection_eval_proof",
+                "selector": "--red-blue-product --require-full",
+                "closed": red_blue_green
+            },
+            {
+                "id": "docker_e2e_validate_product",
+                "required": true,
+                "dod_role": "detection_eval_proof",
+                "selector": "pwsh -File scripts/e2e-docker-launch.ps1",
+                "closed": docker_e2e_green
+            }
+        ],
+        "non_dod": [
+            "host/loopback node test/e2e/runner.mjs",
+            "component Cap EXIT0",
+            "AffinityOnly / PressureOnly launcher probes",
+            "SkipSwarm-only",
+            "candidate-pack GRANT/TRANSFER scaffold"
+        ],
+        "verified": dod_verified
+    });
 
     Ok(json!({
         "schema": SCHEMA,
@@ -813,6 +896,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "docker_e2e_launcher_readiness": docker_e2e_readiness,
         "goal_complete": goal_complete,
         "product_gates_verified": product_gates_verified,
+        "definition_of_done": definition_of_done,
+        "dod_verified": dod_verified,
         "incomplete_count": incomplete_count,
         "incompletes": incompletes,
         "open_incomplete_ids": open.iter().filter_map(|item| item.get("id").cloned()).collect::<Vec<_>>(),
@@ -825,6 +910,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "pwsh -File scripts/e2e-docker-launch.ps1 / --red-blue-product --require-full"
         ],
         "transfer_manifest_present": transfer_ok,
+        "candidate_pack_grant_present": candidate_pack_grant,
         "candidate_pack_transfer_present": candidate_pack_transfer,
         "transfer_live_matching": transfer_ok,
         "status": status,
@@ -833,7 +919,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "distinct_from_cap0_chain_inspect_only": {
             "inspect_only_covers": "AT/AUTH/GRANT/TRANSFER presence+schema wake only",
             "this_command_covers": [
-                "ten incompletes including docker_e2e_validate_product",
+                "ten incompletes including DoD detection-eval (red_blue_validate_product + docker_e2e_validate_product)",
+                "definition_of_done",
                 "cap_free",
                 "ready_for_cap0_chain",
                 "ready_for_cap1",
@@ -845,13 +932,19 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "never_invent_pass_product_clean_room": true,
             "never_invent_browser_ready": true,
             "never_invent_cap_free": true,
+            "never_count_candidate_pack_grant_as_live": true,
             "never_count_candidate_pack_transfer_as_live": true,
             "never_invent_docker_e2e_validate_product": true,
             "host_loopback_ne_product": true,
+            "host_loopback_ne_dod": true,
+            "component_ne_dod": true,
+            "affinity_pressure_ne_dod": true,
+            "skip_swarm_only_ne_dod": true,
             "never_forge_auth_at": true,
             "never_invent_goal_complete": true,
             "never_apply_template_grant": true,
             "detection_freeze": true,
+            "dod_is_honest_measurement_not_scoring_change": true,
             "cap0_only": true,
             "cap_burn_0_while_cap_free_false": true,
             "no_cap_twin_reburn_73_80": true,
@@ -908,12 +1001,34 @@ mod tests {
         assert_eq!(report["ready_for_cap1"], false);
         assert_eq!(report["goal_complete"], false);
         assert_eq!(report["product_gates_verified"], false);
+        assert_eq!(report["dod_verified"], false);
         assert_eq!(report["pass_product_clean_room"], 0);
         assert_eq!(report["browser_ready"], false);
         assert_eq!(report["docker_e2e_validate_product"], false);
         assert_eq!(report["incomplete_count"], 10);
         assert_eq!(report["cap1_serial"], "HOLD");
         assert_eq!(report["status"], "incompletes_remain");
+        assert_eq!(report["definition_of_done"]["verified"], false);
+        assert_eq!(report["definition_of_done"]["detection_freeze"], true);
+        assert_eq!(report["honesty"]["host_loopback_ne_dod"], true);
+        assert_eq!(report["honesty"]["component_ne_dod"], true);
+        assert_eq!(
+            report["honesty"]["dod_is_honest_measurement_not_scoring_change"],
+            true
+        );
+        let incompletes = report["incompletes"].as_array().expect("incompletes");
+        let red_blue = incompletes
+            .iter()
+            .find(|item| item.get("id") == Some(&json!("red_blue_validate_product")))
+            .expect("red_blue incomplete");
+        assert_eq!(red_blue["dod_gate"], true);
+        assert_eq!(red_blue["dod_role"], "detection_eval_proof");
+        let docker_e2e = incompletes
+            .iter()
+            .find(|item| item.get("id") == Some(&json!("docker_e2e_validate_product")))
+            .expect("docker_e2e incomplete");
+        assert_eq!(docker_e2e["dod_gate"], true);
+        assert_eq!(docker_e2e["dod_role"], "detection_eval_proof");
         assert!(
             report["open_incomplete_ids"]
                 .as_array()
@@ -1112,7 +1227,7 @@ mod tests {
         )
         .expect("write");
 
-        let grant_rel = CAP_FREE_GRANT_CANDIDATES[2];
+        let grant_rel = CAP_FREE_GRANT_CANDIDATES[1];
         let grant_path = root.join(grant_rel);
         fs::create_dir_all(grant_path.parent().expect("parent")).expect("mkdir");
         fs::write(
@@ -1218,6 +1333,46 @@ mod tests {
         assert_eq!(report["ready_for_cap0_chain"], false);
         assert_eq!(
             report["honesty"]["never_count_candidate_pack_transfer_as_live"],
+            true
+        );
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn candidate_pack_grant_is_not_live_matching() {
+        let root = temp_root("candidate-pack-grant");
+        write_unlock_a(&root, false);
+
+        let scaffold = root.join(CAP_FREE_CANDIDATE_PACK_GRANT);
+        fs::create_dir_all(scaffold.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &scaffold,
+            serde_json::to_vec_pretty(&json!({
+                "schema": GRANT_SCHEMA,
+                "root_authorized": true,
+                "allow_apply": true,
+                "authorize_cap_free_restore": true,
+                "new_non_twin": true,
+                "cap_burn_authorized": false,
+                "cap1_inside_apply": false,
+                "product": 0,
+                "pass_product_clean_room": 0,
+                "feeder": "product-cap-free-restore",
+                "unlock_a_closer": UNLOCK_A_CLOSER_REL,
+                "destinations": ["deployments/lab/product/cap-free-restore-contract.json"]
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let report = measure(&root).expect("measure");
+        assert_eq!(report["candidate_pack_grant_present"], true);
+        assert_eq!(report["incompletes"][2]["id"], "Cap-free-restore-GRANT");
+        assert_eq!(report["incompletes"][2]["present"], false);
+        assert_eq!(report["incompletes"][2]["closed"], false);
+        assert_eq!(report["ready_for_cap0_chain"], false);
+        assert_eq!(
+            report["honesty"]["never_count_candidate_pack_grant_as_live"],
             true
         );
         let _ = fs::remove_dir_all(&root);
