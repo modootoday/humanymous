@@ -547,9 +547,12 @@ fn completeness_report(
             "unlock_a_ne_browser_ready": true
         },
         "cap0_helpers": {
+            "cap0_chain": "cargo run --locked -p humanymous-lab-runner -- cap0-chain",
+            "cap0_chain_dry_run": "cargo run --locked -p humanymous-lab-runner -- cap0-chain --dry-run",
             "handoff_apply_at": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind at",
             "handoff_apply_auth": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind auth",
             "handoff_apply_browser_ready_join": "cargo run --locked -p humanymous-lab-runner -- handoff-apply --kind browser-ready-join",
+            "cap_realloc_apply": "cargo run --locked -p humanymous-lab-runner -- cap-realloc-apply --grant GRANT.json --manifest transfer-manifest.json",
             "cef_bundle_bind": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-bind",
             "cef_bundle_probe": "cargo run --locked -p humanymous-lab-runner -- cef-bundle-probe",
             "browser_ready_honesty": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --browser-ready-interactive-at-honesty",
@@ -615,7 +618,7 @@ fn completeness_report(
             "Root structural allocation for G1/G3/G4/G7/G8/G9 product deltas (G2/G5/CR/G6 Cap topology holds ≠ product)",
             "optional: Cap-ready SoT path transfer for clean-room usage-condition gate slices"
         ],
-        "next": "PRIORITY#1 BrowserReady stack: Root AT-HANDOFF then Cap=0 handoff-apply + honesty; CEF env still Cap-day; never Cap twin spam / invent pass_product_clean_room / BrowserReady; product remains 0 until pass_product_clean_room measured",
+        "next": "PRIORITY#1 BrowserReady stack: Root AT-HANDOFF + AUTH-HANDOFF + Cap-free GRANT → Cap=0 cap0-chain (at→browser-ready-join→auth→cap-realloc-apply); CEF env still Cap-day; Cap1 HOLD; never Cap twin spam / invent pass_product_clean_room / BrowserReady; product remains 0 until pass_product_clean_room measured",
     }))
 }
 

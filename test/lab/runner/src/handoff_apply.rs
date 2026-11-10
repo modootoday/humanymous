@@ -192,7 +192,7 @@ fn validate_auth_handoff(handoff: &Value) -> Result<()> {
     Ok(())
 }
 
-fn apply_at_handoff(root: &Path, dry_run: bool) -> Result<Value> {
+pub(crate) fn apply_at_handoff(root: &Path, dry_run: bool) -> Result<Value> {
     let cap_free = cap_free_after_unlock_a(root)?;
     let present = first_present(root, INTERACTIVE_AT_HANDOFF_CANDIDATES);
     let Some(relative) = present else {
@@ -277,7 +277,7 @@ fn apply_at_handoff(root: &Path, dry_run: bool) -> Result<Value> {
     }))
 }
 
-fn apply_auth_handoff(root: &Path, dry_run: bool) -> Result<Value> {
+pub(crate) fn apply_auth_handoff(root: &Path, dry_run: bool) -> Result<Value> {
     let cap_free = cap_free_after_unlock_a(root)?;
     let present = first_present(root, N06_OWNER_JOIN_AUTH_HANDOFF_CANDIDATES);
     let Some(relative) = present else {
@@ -361,7 +361,7 @@ fn apply_auth_handoff(root: &Path, dry_run: bool) -> Result<Value> {
     }))
 }
 
-fn apply_browser_ready_join(root: &Path, dry_run: bool) -> Result<Value> {
+pub(crate) fn apply_browser_ready_join(root: &Path, dry_run: bool) -> Result<Value> {
     let cap_free = cap_free_after_unlock_a(root)?;
     let unlock_a_present = root.join(UNLOCK_A_CLOSER_REL).is_file();
     let at_present = first_present(root, INTERACTIVE_AT_HANDOFF_CANDIDATES);

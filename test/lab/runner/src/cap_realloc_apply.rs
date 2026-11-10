@@ -293,7 +293,7 @@ fn write_unlock_a_closer_cap_free(root: &Path, closer: &mut Value) -> Result<()>
     Ok(())
 }
 
-fn apply_cap_free_restore(
+pub(crate) fn apply_cap_free_restore(
     root: &Path,
     grant_path: &Path,
     manifest_path: &Path,
