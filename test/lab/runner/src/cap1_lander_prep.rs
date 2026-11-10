@@ -80,9 +80,10 @@ fn landers(cap_free: bool) -> Value {
             "selector": "--clean-room-product-matrix --require-full",
             "pilot_command": PM_PILOT,
             "product_oneshot_when_cap_free": PM_ONESHOT,
+            "serial_order": 2,
             "twin_forbidden": ["CR", "PM"],
             "status": armed,
-            "note": "Preferred Cap1 product-matrix feeder after Cap free; Cap0 prep only until Cap free=true; never invent pass_product_clean_room"
+            "note": "Cap1 step2 product-matrix feeder after Cap free; Cap0 prep only until Cap free=true; never invent pass_product_clean_room"
         },
         {
             "rank": 15,
@@ -98,27 +99,38 @@ fn landers(cap_free: bool) -> Value {
             "selector": "--red-blue-product --require-full",
             "pilot_command": RB_PILOT,
             "product_oneshot_when_cap_free": RB_ONESHOT,
+            "serial_order": 3,
             "twin_forbidden": ["RB"],
             "status": armed,
-            "note": "RB Cap1 feeder; twin reburn forbidden; Cap0 land-prep only"
+            "note": "Cap1 step3 RB feeder then Docker e2e oneshot; twin reburn forbidden; Cap0 land-prep only"
         },
         {
             "rank": 17,
             "id": "U-CR-CLASS-CLEANROOM",
             "selector": "--clean-room-product → pass_product_clean_room",
             "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --clean-room-product --require-full",
+            "serial_order": 1,
             "twin_forbidden": ["CR"],
             "status": armed,
-            "note": "Sole product authority class; Cap twin hold ≠ product; Cap0 Cap-ready lander only"
+            "note": "Cap1 step1 sole product authority class; Cap twin hold ≠ product; Cap0 Cap-ready lander only"
         },
         {
             "rank": 48,
-            "id": "U-RB-VALIDATE",
-            "selector": "red-blue-validate Docker require-full (product)",
-            "pilot_command": "skill red-blue-validate (Docker only)",
-            "product_oneshot_when_cap_free": ["bash scripts/e2e-docker.sh", "make e2e"],
+            "id": "U-DOCKER-E2E-VALIDATE",
+            "selector": "Docker-only e2e / red-blue-validate product (e2e-docker-launch.ps1)",
+            "pilot_command": "pwsh -File scripts/e2e-docker-launch.ps1",
+            "product_oneshot_when_cap_free": [
+                "pwsh -File scripts/e2e-docker-launch.ps1",
+                "bash scripts/e2e-docker.sh",
+                "make e2e",
+                "pwsh -File scripts/e2e-docker.ps1"
+            ],
+            "serial_order": 3,
+            "pressure_guard": true,
+            "single_flight_mutex": true,
+            "affinity": "desktop-linux",
             "status": armed,
-            "note": "Docker-only completion authority; host/loopback ≠ product; Cap1 after Cap free"
+            "note": "Docker-only completion authority; mutex+pressure via e2e-docker-launch.ps1; host/loopback ≠ product; Cap1 after Cap free; Cap0 AffinityOnly/PressureOnly probes allowed without inventing docker_e2e_validate_product"
         },
         {
             "rank": 58,
@@ -126,7 +138,7 @@ fn landers(cap_free: bool) -> Value {
             "selector": "M3 composed product e2e (clean-room apex)",
             "pilot_command": null,
             "status": if cap_free { "await_product_cells_then_M3" } else { "G1_G9_product_0_hold" },
-            "note": "Apex after product cells green; Cap0 lander only; never invent M3"
+            "note": "Apex after product cells + Docker e2e green; Cap0 lander only; never invent M3"
         }
     ])
 }
@@ -139,10 +151,29 @@ pub(crate) fn prep(root: &Path) -> Result<Value> {
         "HOLD_prepare_only_no_Cap1_burn"
     };
     let next = if cap_free {
-        "Cap free measured true; Cap1 serial may execute preferred lander once (PM --require-full / matrix / red-blue-validate); never Cap twin 73-80 reburn; never invent pass_product_clean_room"
+        "Cap free measured true; Cap1 serial once: --clean-room-product → --clean-room-product-matrix --require-full → Docker e2e (pwsh -File scripts/e2e-docker-launch.ps1) / --red-blue-product --require-full; never Cap twin 73-80 reburn; never invent pass_product / docker_e2e / BrowserReady"
     } else {
-        "Cap free=false; Cap1 HOLD; Cap burn=0; re-run after Cap0 cap0-chain restores Cap free via NEW non-twin GRANT→TRANSFER; never invent Cap free / pass_product"
+        "Cap free=false; Cap1 HOLD (clean-room+matrix+Docker e2e+red-blue); Cap burn=0; re-run after Cap0 cap0-chain restores Cap free via NEW non-twin GRANT→TRANSFER; Cap0 AffinityOnly/PressureOnly launcher probes ok; never invent Cap free / pass_product / docker_e2e"
     };
+
+    let launcher_ps1 = root.join("scripts/e2e-docker-launch.ps1").is_file();
+    let launcher_sh = root.join("scripts/e2e-docker.sh").is_file();
+    let topology = json!({
+        "compose_red_blue_product": root
+            .join("deployments/lab/compose.red-blue-product.yaml")
+            .is_file(),
+        "dockerfile_red_blue_product": root
+            .join("build/rust/red-blue-product-lab.Dockerfile")
+            .is_file(),
+        "compose_clean_room_product": root
+            .join("deployments/lab/compose.clean-room-product.yaml")
+            .is_file(),
+        "compose_product": root.join("deployments/compose.yaml").is_file(),
+        "e2e_docker_launch_ps1": launcher_ps1,
+        "e2e_docker_sh": launcher_sh,
+        "cap0_topology_ne_product": true,
+        "host_loopback_ne_product": true
+    });
 
     Ok(json!({
         "schema": SCHEMA,
@@ -153,28 +184,43 @@ pub(crate) fn prep(root: &Path) -> Result<Value> {
         "product": 0,
         "pass_product_clean_room": 0,
         "browser_ready": false,
+        "docker_e2e_validate_product": false,
         "cap1_executed": false,
         "cap1_burn_authorized": false,
         "status": status,
         "landers": landers(cap_free),
+        "cap1_serial_preferred_order": [
+            {"order": 1, "id": "U-CR-CLASS-CLEANROOM", "selector": "--clean-room-product"},
+            {"order": 2, "id": "U-CAP1-CR-ONCE", "selector": "--clean-room-product-matrix --require-full"},
+            {"order": 3, "id": "U-DOCKER-E2E-VALIDATE", "selector": "pwsh -File scripts/e2e-docker-launch.ps1 / --red-blue-product --require-full"}
+        ],
         "preferred_when_cap_free": {
-            "rank": 14,
-            "id": "U-CAP1-CR-ONCE",
-            "pilot_command": PM_PILOT,
+            "rank": 17,
+            "id": "U-CR-CLASS-CLEANROOM",
+            "pilot_command": "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --clean-room-product --require-full",
+            "then": [
+                PM_PILOT,
+                "pwsh -File scripts/e2e-docker-launch.ps1",
+                RB_PILOT
+            ],
             "product_oneshot": PM_ONESHOT
         },
+        "docker_e2e_topology_honesty": topology,
         "pilot_command": PILOT_COMMAND,
         "next": next,
         "honesty": {
             "never_invent_pass_product_clean_room": true,
             "never_invent_browser_ready": true,
             "never_invent_cap_free": true,
+            "never_invent_docker_e2e_validate_product": true,
+            "host_loopback_ne_product": true,
             "never_forge_auth_at": true,
             "detection_freeze": true,
             "no_cap1_this_wave": true,
             "no_cap_twin_reburn_73_80": true,
             "cap0_only": true,
-            "serialize_ne_execute": true
+            "serialize_ne_execute": true,
+            "component_ne_product": true
         }
     }))
 }
@@ -250,7 +296,15 @@ mod tests {
             report["landers"][0]["status"],
             "cap_free_true_armed_no_burn"
         );
-        assert_eq!(report["preferred_when_cap_free"]["pilot_command"], PM_PILOT);
+        assert_eq!(
+            report["preferred_when_cap_free"]["pilot_command"],
+            "cargo run --locked -p humanymous-lab-runner -- run --evidence BUNDLE --clean-room-product --require-full"
+        );
+        assert_eq!(report["docker_e2e_validate_product"], false);
+        assert_eq!(
+            report["cap1_serial_preferred_order"][2]["id"],
+            "U-DOCKER-E2E-VALIDATE"
+        );
         let _ = fs::remove_dir_all(&root);
     }
 }

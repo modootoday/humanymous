@@ -1,0 +1,20 @@
+{
+  "schema": "humanymous.lab-docker-e2e-product-measure-receipt/1",
+  "product": 0,
+  "pass_product_clean_room": 0,
+  "docker_e2e_validate_product": false,
+  "green": false,
+  "completion_authority": "docker_only_pending",
+  "host_loopback_ne_product": true,
+  "counts_as": "docker_e2e_scaffold_not_product",
+  "preferred_launcher": "scripts/e2e-docker-launch.ps1",
+  "alternate_launchers": [
+    "bash scripts/e2e-docker.sh",
+    "make e2e",
+    "pwsh -File scripts/e2e-docker.ps1"
+  ],
+  "cap1_serial_order": 3,
+  "pressure_guard_required": true,
+  "single_flight_mutex_required": true,
+  "note": "Cap0 scaffold only; Cap1 after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; host/loopback node runners ≠ product; never invent docker_e2e_validate_product / pass_product_clean_room"
+}

@@ -50,7 +50,10 @@ pub const MATRIX_REL: &str =
 pub const RED_BLUE_SKILL_REL: &str = ".agents/skills/red-blue-validate/SKILL.md";
 
 /// Preferred Cap=1 product oneshot after Cap free restores (Docker-only).
+/// Windows Desktop: prefer e2e-docker-launch.ps1 (mutex + pressure guard).
+/// Host/loopback `node test/e2e/runner.mjs` ≠ completion authority.
 pub const PRODUCT_ONESHOT: &[&str] = &[
+    "pwsh -File scripts/e2e-docker-launch.ps1",
     "bash scripts/e2e-docker.sh",
     "make e2e",
     "pwsh -File scripts/e2e-docker.ps1",

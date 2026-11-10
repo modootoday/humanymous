@@ -1,10 +1,11 @@
 //! Cap=0 until-complete status cutter.
 //!
-//! Measures the nine incompletes that block UNTIL_ZERO_INCOMPLETE, plus Cap free,
-//! `ready_for_cap0_chain`, and `ready_for_cap1`, as machine-readable JSON.
-//! Distinct from `cap0-chain --inspect-only` (which only covers handoff/GRANT
-//! presence+schema). Never invents Cap free / BrowserReady / AUTH / AT /
-//! pass_product / Cap burn / goal_complete.
+//! Measures the ten incompletes that block PRODUCT COMPLETION (including
+//! Docker-only e2e), plus Cap free, `ready_for_cap0_chain`, and `ready_for_cap1`,
+//! as machine-readable JSON. Distinct from `cap0-chain --inspect-only` (which
+//! only covers handoff/GRANT presence+schema). Never invents Cap free /
+//! BrowserReady / AUTH / AT / pass_product / Cap burn / goal_complete /
+//! docker_e2e_validate_product.
 use crate::cap_realloc_apply;
 use crate::docker::Result;
 use crate::handoff_apply;
@@ -61,9 +62,29 @@ const RED_BLUE_PRODUCT_RECEIPT_CANDIDATES: &[&str] = &[
     ".spec.local/lab/product/red-blue-product-measure-receipt.json",
 ];
 
+/// Docker-only e2e / red-blue-validate product receipts (host/loopback ≠ completion).
+const DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES: &[&str] = &[
+    ".spec.local/lab/product/docker-e2e-validate-product.json",
+    ".spec.local/lab/product/docker-e2e-product-measure-receipt.json",
+];
+
 const BROWSER_READY_RECEIPT_CANDIDATES: &[&str] = &[
     ".spec.local/lab/product/browser-ready.json",
     ".spec.local/lab/product/browser-ready-measure-receipt.json",
+];
+
+/// Cap1 Docker e2e launcher preimages (Windows Desktop mutex+pressure guard).
+const DOCKER_E2E_LAUNCHER_CANDIDATES: &[&str] = &[
+    "scripts/e2e-docker-launch.ps1",
+    "scripts/e2e-docker.sh",
+    "scripts/e2e-docker.ps1",
+];
+
+/// Cap1 Docker e2e / red-blue topology honesty (present ≠ product green).
+const DOCKER_E2E_TOPOLOGY_CANDIDATES: &[&str] = &[
+    "deployments/lab/compose.red-blue-product.yaml",
+    "build/rust/red-blue-product-lab.Dockerfile",
+    "deployments/compose.yaml",
 ];
 
 /// Structural land targets for apps/humanymous-browser incomplete.
@@ -78,8 +99,9 @@ const APPS_BROWSER_STRUCTURAL: &[&str] = &[
 ///
 /// Usage: `until-complete-status [--workspace PATH] [--emit PATH]`
 ///
-/// Exit 0 only when `goal_complete=true` (all nine incompletes closed with
-/// measured evidence). Exit 1 when any incomplete remains (fail-closed).
+/// Exit 0 only when `goal_complete=true` (all ten incompletes closed with
+/// measured evidence, including Docker-only e2e). Exit 1 when any incomplete
+/// remains (fail-closed).
 pub fn run(args: &[String]) -> Result<i32> {
     let mut workspace = None;
     let mut emit_path = None;
@@ -424,6 +446,91 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
     (false, None)
 }
 
+/// Fail-closed Docker-only e2e product measure. Host/loopback runners never close.
+fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
+    for relative in DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES {
+        let path = root.join(relative);
+        if !path.is_file() {
+            continue;
+        }
+        let Ok(bytes) = fs::read(&path) else {
+            continue;
+        };
+        let Ok(value) = serde_json::from_slice::<Value>(&bytes) else {
+            continue;
+        };
+        let green = value.get("green").and_then(Value::as_bool) == Some(true)
+            || value.get("docker_e2e_validate_product").and_then(Value::as_bool) == Some(true)
+            || value.get("docker_e2e_product").and_then(Value::as_bool) == Some(true);
+        if !green {
+            continue;
+        }
+        if value.get("product").and_then(Value::as_u64) != Some(1)
+            && value.get("pass_product_clean_room").and_then(Value::as_u64) != Some(1)
+        {
+            continue;
+        }
+        let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
+        if counts.contains("component") || counts.contains("host") || counts.contains("loopback")
+        {
+            continue;
+        }
+        // Explicit refuse: host/loopback authority never counts as Docker product.
+        let authority = value
+            .get("completion_authority")
+            .and_then(Value::as_str)
+            .unwrap_or("");
+        if authority.contains("host") || authority.contains("loopback") {
+            continue;
+        }
+        if value.get("host_loopback_ne_product").and_then(Value::as_bool) == Some(false) {
+            continue;
+        }
+        return (true, Some((*relative).to_string()));
+    }
+    (false, None)
+}
+
+fn docker_e2e_launcher_readiness(root: &Path) -> Value {
+    let launchers: Vec<Value> = DOCKER_E2E_LAUNCHER_CANDIDATES
+        .iter()
+        .map(|relative| {
+            json!({
+                "path": relative,
+                "present": root.join(relative).is_file(),
+                "preferred_windows": *relative == "scripts/e2e-docker-launch.ps1"
+            })
+        })
+        .collect();
+    let topology: Vec<Value> = DOCKER_E2E_TOPOLOGY_CANDIDATES
+        .iter()
+        .map(|relative| {
+            json!({
+                "path": relative,
+                "present": root.join(relative).is_file()
+            })
+        })
+        .collect();
+    let launcher_ok = launchers
+        .iter()
+        .any(|item| item.get("present").and_then(Value::as_bool) == Some(true));
+    let preferred_ok = root.join("scripts/e2e-docker-launch.ps1").is_file();
+    let topology_ok = topology
+        .iter()
+        .all(|item| item.get("present").and_then(Value::as_bool) == Some(true));
+    json!({
+        "launcher_present": launcher_ok,
+        "preferred_windows_launcher_present": preferred_ok,
+        "preferred_windows_launcher": "scripts/e2e-docker-launch.ps1",
+        "topology_present": topology_ok,
+        "launchers": launchers,
+        "topology": topology,
+        "cap0_readiness_ne_product": true,
+        "host_loopback_ne_product": true,
+        "note": "Cap0 launcher/topology honesty only; Cap1 Docker burn after Cap free via e2e-docker-launch.ps1 (mutex+pressure) or lab-runner --red-blue-product --require-full; never invent docker_e2e_validate_product"
+    })
+}
+
 fn measured_browser_ready(root: &Path) -> (bool, Option<String>) {
     measured_bool_receipt(root, BROWSER_READY_RECEIPT_CANDIDATES, "browser_ready")
 }
@@ -468,6 +575,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
     let (pass_product, pass_product_path) = measured_pass_product(root);
     let (matrix_green, matrix_path) = measured_matrix_green(root);
     let (red_blue_green, red_blue_path) = measured_red_blue_product(root);
+    let (docker_e2e_green, docker_e2e_path) = measured_docker_e2e_product(root);
+    let docker_e2e_readiness = docker_e2e_launcher_readiness(root);
 
     let unlock = unlock_gate::probe_root(root, None)?;
     let unlock_c = unlock.c_authority_cap;
@@ -529,7 +638,25 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "closed": red_blue_green,
             "green": red_blue_green,
             "invent_forbidden": true,
-            "path": red_blue_path
+            "path": red_blue_path,
+            "blocks": ["Cap1 --red-blue-product --require-full feeder"],
+            "note": "lab-runner red-blue product feeder; distinct from Docker-only e2e incomplete"
+        }),
+        json!({
+            "id": "docker_e2e_validate_product",
+            "klass": "Cap1_serial_docker_only",
+            "closed": docker_e2e_green,
+            "green": docker_e2e_green,
+            "invent_forbidden": true,
+            "path": docker_e2e_path,
+            "blocks": [
+                "Docker clean-room/full e2e",
+                "red-blue-validate product",
+                "scripts/e2e-docker-launch.ps1"
+            ],
+            "launcher_readiness": docker_e2e_readiness,
+            "host_loopback_ne_product": true,
+            "note": "Docker-only completion authority via e2e-docker-launch.ps1 (mutex+pressure) / e2e-docker.sh; host node test/e2e/runner.mjs ≠ product; Cap1 after Cap free"
         }),
         json!({
             "id": "Unlock-C",
@@ -567,7 +694,11 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "HOLD"
     };
 
-    let product_gates_verified = pass_product == 1 && matrix_green && red_blue_green && browser_ready;
+    let product_gates_verified = pass_product == 1
+        && matrix_green
+        && red_blue_green
+        && docker_e2e_green
+        && browser_ready;
     let goal_complete = incomplete_count == 0 && product_gates_verified;
 
     let status = if goal_complete {
@@ -581,11 +712,11 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
     let next = if goal_complete {
         "goal_complete measured; stop"
     } else if ready_for_cap0_chain && !cap_free {
-        "Artifacts ready; run cap0-chain (no --inspect-only) to restore Cap free; then Cap1 serial; never invent Cap free / pass_product"
+        "Artifacts ready; run cap0-chain (no --inspect-only) to restore Cap free; then Cap1 serial clean-room → matrix --require-full → Docker e2e / --red-blue-product --require-full via e2e-docker-launch.ps1; never invent Cap free / pass_product / docker_e2e"
     } else if cap_free {
-        "Cap free=true; Cap1 serial armed — run cap1-lander-prep then preferred Cap1 lander once; never invent pass_product_clean_room"
+        "Cap free=true; Cap1 serial armed — cap1-lander-prep then once: --clean-room-product → --clean-room-product-matrix --require-full → Docker e2e (e2e-docker-launch.ps1) / --red-blue-product --require-full; never invent pass_product / docker_e2e / BrowserReady"
     } else {
-        "Root place LIVE AT-HANDOFF + AUTH-HANDOFF + Cap-free-restore GRANT.json (not TEMPLATE) + LIVE-matching TRANSFER; re-run until-complete-status; Cap1 HOLD; Cap burn=0"
+        "Root place LIVE AT-HANDOFF + AUTH-HANDOFF + Cap-free-restore GRANT.json (not TEMPLATE) + LIVE-matching TRANSFER; re-run until-complete-status; Cap1 HOLD (clean-room+matrix+Docker e2e+red-blue); Cap burn=0"
     };
 
     Ok(json!({
@@ -597,6 +728,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "product": if pass_product == 1 { 1 } else { 0 },
         "pass_product_clean_room": pass_product,
         "browser_ready": browser_ready,
+        "docker_e2e_validate_product": docker_e2e_green,
+        "docker_e2e_launcher_readiness": docker_e2e_readiness,
         "goal_complete": goal_complete,
         "product_gates_verified": product_gates_verified,
         "incomplete_count": incomplete_count,
@@ -605,6 +738,11 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "ready_for_cap0_chain": ready_for_cap0_chain,
         "ready_for_cap1": ready_for_cap1,
         "cap1_serial": cap1_serial,
+        "cap1_serial_preferred_order": [
+            "--clean-room-product",
+            "--clean-room-product-matrix --require-full",
+            "pwsh -File scripts/e2e-docker-launch.ps1 / --red-blue-product --require-full"
+        ],
         "transfer_manifest_present": transfer_ok,
         "status": status,
         "pilot_command": PILOT_COMMAND,
@@ -612,10 +750,11 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "distinct_from_cap0_chain_inspect_only": {
             "inspect_only_covers": "AT/AUTH/GRANT/TRANSFER presence+schema wake only",
             "this_command_covers": [
-                "nine incompletes",
+                "ten incompletes including docker_e2e_validate_product",
                 "cap_free",
                 "ready_for_cap0_chain",
                 "ready_for_cap1",
+                "Docker e2e launcher/topology Cap0 honesty",
                 "goal_complete fail-closed"
             ]
         },
@@ -623,6 +762,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "never_invent_pass_product_clean_room": true,
             "never_invent_browser_ready": true,
             "never_invent_cap_free": true,
+            "never_invent_docker_e2e_validate_product": true,
+            "host_loopback_ne_product": true,
             "never_forge_auth_at": true,
             "never_invent_goal_complete": true,
             "never_apply_template_grant": true,
@@ -630,7 +771,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "cap0_only": true,
             "cap_burn_0_while_cap_free_false": true,
             "no_cap_twin_reburn_73_80": true,
-            "fail_closed_exit_1_while_incomplete": true
+            "fail_closed_exit_1_while_incomplete": true,
+            "component_ne_product": true
         }
     }))
 }
@@ -670,7 +812,7 @@ mod tests {
     }
 
     #[test]
-    fn empty_workspace_reports_nine_incompletes_fail_closed() {
+    fn empty_workspace_reports_ten_incompletes_fail_closed() {
         let root = temp_root("empty");
         write_unlock_a(&root, false);
         let report = measure(&root).expect("measure");
@@ -682,13 +824,45 @@ mod tests {
         assert_eq!(report["product_gates_verified"], false);
         assert_eq!(report["pass_product_clean_room"], 0);
         assert_eq!(report["browser_ready"], false);
-        assert_eq!(report["incomplete_count"], 9);
+        assert_eq!(report["docker_e2e_validate_product"], false);
+        assert_eq!(report["incomplete_count"], 10);
         assert_eq!(report["cap1_serial"], "HOLD");
         assert_eq!(report["status"], "incompletes_remain");
+        assert!(
+            report["open_incomplete_ids"]
+                .as_array()
+                .expect("ids")
+                .iter()
+                .any(|id| id == "docker_e2e_validate_product")
+        );
         assert_eq!(
             report["distinct_from_cap0_chain_inspect_only"]["inspect_only_covers"],
             "AT/AUTH/GRANT/TRANSFER presence+schema wake only"
         );
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn host_loopback_docker_e2e_receipt_never_closes() {
+        let root = temp_root("host-e2e");
+        write_unlock_a(&root, false);
+        let receipt = root.join(DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(receipt.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &receipt,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-docker-e2e-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "docker_e2e_validate_product": true,
+                "completion_authority": "host_loopback_node_runner",
+                "counts_as": "host_loopback_debug_not_product"
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+        let report = measure(&root).expect("measure");
+        assert_eq!(report["docker_e2e_validate_product"], false);
         let _ = fs::remove_dir_all(&root);
     }
 

@@ -60,7 +60,10 @@ pub const RB_CAP1_RECEIPT_REL: &str =
     ".spec.local/root/evidence/20261110050000-cursor-red-blue-product-cap-realloc/CAP1-RECEIPT.json";
 
 /// Preferred Cap=1 product oneshot after Cap free restores (Docker-only).
+/// Windows Desktop: prefer e2e-docker-launch.ps1 (mutex + pressure guard).
+/// Host/loopback `node test/e2e/runner.mjs` ≠ completion authority.
 pub const PRODUCT_ONESHOT: &[&str] = &[
+    "pwsh -File scripts/e2e-docker-launch.ps1",
     "bash scripts/e2e-docker.sh",
     "make e2e",
     "pwsh -File scripts/e2e-docker.ps1",
