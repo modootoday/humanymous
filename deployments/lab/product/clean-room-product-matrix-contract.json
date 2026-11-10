@@ -18,6 +18,7 @@
   "bound_rb_cap1": ".spec.local/root/evidence/20261110050000-cursor-red-blue-product-cap-realloc/CAP1-RECEIPT.json",
   "matrix": ".spec.local/root/evidence/20261108164500-cursor-clean-room-matrix/matrix.json",
   "product_oneshot_when_cap_free": [
+    "pwsh -File scripts/e2e-docker-launch.ps1",
     "bash scripts/e2e-docker.sh",
     "make e2e",
     "pwsh -File scripts/e2e-docker.ps1"
