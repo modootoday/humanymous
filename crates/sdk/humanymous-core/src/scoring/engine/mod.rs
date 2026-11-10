@@ -319,6 +319,111 @@ mod tests {
             "webdriver-only must not be scored as HR-1 artifact"
         );
     }
+
+    fn bot_signal(id: &str, network: bool, notes: &str) -> Signal {
+        Signal::new(
+            id,
+            serde_json::json!(true),
+            Verdict::Bot,
+            1.0,
+            if network {
+                Source::Server
+            } else {
+                Source::Js
+            },
+            notes,
+        )
+    }
+
+    fn score_fixture(engine: &Engine, signals: &[(&str, bool)]) -> ScoreResult {
+        let mut report = SessionReport::default();
+        // Browser UA + a non-BOT client tell so HR-10/HR-18 do not preempt Deny fixtures.
+        report.client.user_agent = "Mozilla/5.0".into();
+        let mut client = vec![Signal::new(
+            "l1.navigator.webdriver",
+            serde_json::json!(false),
+            Verdict::Ok,
+            1.0,
+            Source::Js,
+            "client-presence-anchor",
+        )];
+        let mut network = Vec::new();
+        for &(id, on_network) in signals {
+            let signal = bot_signal(id, on_network, "multi-signal-deny-fixture");
+            if on_network {
+                network.push(signal);
+            } else {
+                client.push(signal);
+            }
+        }
+        report.client.signals = Some(client);
+        if !network.is_empty() {
+            report.network.signals = Some(network);
+        }
+        engine.score(&mut report).unwrap()
+    }
+
+    /// Cap0 honesty: multi-signal Deny hard rules beyond HR-1 must fire on
+    /// complete frozen fixtures and must not invent Deny on incomplete pairs.
+    #[test]
+    fn multi_signal_deny_fixtures_evaluate_honestly_under_frozen_hard_rules() {
+        let engine = Engine::default();
+        let cases: &[(&str, &[(&str, bool)])] = &[
+            (
+                "HR-3",
+                &[("l4.event.untrusted", false), ("l1.navigator.webdriver", false)],
+            ),
+            (
+                "HR-4",
+                &[
+                    ("l1.navigator.webdriver", false),
+                    ("l3.integrity.native_tostring", false),
+                ],
+            ),
+            (
+                "HR-7",
+                &[
+                    ("l1.ua.headless_token", true),
+                    ("l1.navigator.webdriver", false),
+                ],
+            ),
+            (
+                "HR-9",
+                &[
+                    ("l1.cdp.runtime_enable", false),
+                    ("l1.navigator.webdriver", false),
+                ],
+            ),
+            ("HR-16", &[("l5.rit.header_tampered", true)]),
+            ("HR-14", &[("l5.traffic.engine_rotation", true)]),
+            ("HR-21", &[("l5.h2dos.rapid_reset", true)]),
+        ];
+
+        for &(rule, signals) in cases {
+            let result = score_fixture(&engine, signals);
+            assert_eq!(
+                (result.hard_rule_fired.as_str(), result.verdict.as_str()),
+                (rule, "DENY"),
+                "frozen {rule} must Deny complete multi-signal fixture"
+            );
+        }
+
+        // Incomplete pairs must not invent the paired Deny rule.
+        let incomplete: &[(&str, &[(&str, bool)])] = &[
+            ("HR-3", &[("l4.event.untrusted", false)]),
+            ("HR-4", &[("l3.integrity.native_tostring", false)]),
+            ("HR-7", &[("l1.ua.headless_token", true)]),
+            ("HR-9", &[("l1.cdp.runtime_enable", false)]),
+        ];
+        for &(rule, signals) in incomplete {
+            let result = score_fixture(&engine, signals);
+            assert_ne!(
+                result.hard_rule_fired.as_str(),
+                rule,
+                "incomplete fixture must not invent {rule}"
+            );
+        }
+    }
     #[test]
     fn invalid_numeric_configuration_and_contributions_fail_closed() {
         let engine = Engine {
