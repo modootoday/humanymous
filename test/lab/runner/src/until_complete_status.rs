@@ -14,7 +14,8 @@
 //! `pass_product_clean_room=true`, Docker clean-room full matrix `--require-full`
 //! green, and BrowserReady only when measured true. Host/loopback, host gate
 //! e2e (`node test/gate/e2e.mjs`), component Cap EXIT0, AffinityOnly/PressureOnly,
-//! SkipSwarm-only ≠ DoD. Detection freeze:
+//! SkipSwarm-only, red-blue/matrix without `--require-full`, and Docker e2e
+//! product oneshots without mutex+pressure ≠ DoD. Detection freeze:
 //! do not change scoring weights/thresholds/hard-rules; honesty proves existing
 //! SoT detection correctly evaluates implementable automation (bots/catalog).
 use crate::cap_realloc_apply;
@@ -432,6 +433,10 @@ fn measured_matrix_green(root: &Path) -> (bool, Option<String>) {
         {
             continue;
         }
+        // DoD matrix gate requires `--require-full`; subset/partial ≠ DoD.
+        if receipt_is_without_require_full_not_dod(&value) {
+            continue;
+        }
         return (true, Some((*relative).to_string()));
     }
     (false, None)
@@ -475,9 +480,142 @@ fn measured_red_blue_product(root: &Path) -> (bool, Option<String>) {
         if receipt_is_skip_swarm_only_not_dod(&value) {
             continue;
         }
+        // DoD red-blue proof requires `--require-full`; partial catalog ≠ DoD.
+        if receipt_is_without_require_full_not_dod(&value) {
+            continue;
+        }
         return (true, Some((*relative).to_string()));
     }
     (false, None)
+}
+
+/// Fail-closed: DoD matrix / red-blue gates require `--require-full` on measured
+/// product receipts. Partial catalog/subset or explicit `require_full: false` never
+/// closes detection-eval (detection freeze; no scoring change).
+fn receipt_is_without_require_full_not_dod(value: &Value) -> bool {
+    if value
+        .get("require_full_without_dod")
+        .and_then(Value::as_bool)
+        == Some(true)
+        || value
+            .get("catalog_subset")
+            .and_then(Value::as_bool)
+            == Some(true)
+        || value
+            .get("partial_catalog")
+            .and_then(Value::as_bool)
+            == Some(true)
+    {
+        return true;
+    }
+    if value.get("require_full").and_then(Value::as_bool) == Some(false) {
+        return true;
+    }
+    let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
+    let counts_l = counts.to_ascii_lowercase();
+    if counts_l.contains("without_require_full")
+        || counts_l.contains("require_full_false")
+        || counts_l.contains("subset_not_full")
+        || counts_l.contains("partial_catalog")
+        || counts_l.contains("catalog_subset")
+    {
+        return true;
+    }
+    let selector = value
+        .get("cap_selector")
+        .or_else(|| value.get("selector"))
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let selector_l = selector.to_ascii_lowercase();
+    if selector_l.contains("red-blue") && !selector_l.contains("require-full") && !selector.is_empty()
+    {
+        return true;
+    }
+    if selector_l.contains("clean-room-product-matrix")
+        && !selector_l.contains("require-full")
+        && !selector.is_empty()
+    {
+        return true;
+    }
+    let claims_dod_green = value.get("green").and_then(Value::as_bool) == Some(true)
+        || value
+            .get("red_blue_validate_product")
+            .and_then(Value::as_bool)
+            == Some(true)
+        || value
+            .get("docker_clean_room_full_matrix_green")
+            .and_then(Value::as_bool)
+            == Some(true)
+        || value.get("matrix_green").and_then(Value::as_bool) == Some(true);
+    let product_measured = value.get("product").and_then(Value::as_u64) == Some(1)
+        || value.get("pass_product_clean_room").and_then(Value::as_u64) == Some(1);
+    if claims_dod_green && product_measured {
+        return value.get("require_full").and_then(Value::as_bool) != Some(true);
+    }
+    false
+}
+
+/// Fail-closed: Cap1 Docker e2e product oneshot requires single-flight mutex +
+/// pressure guard (Windows `e2e-docker-launch.ps1` path). Missing/false never
+/// closes `docker_e2e_validate_product`.
+fn docker_e2e_receipt_lacks_mutex_pressure_not_product(value: &Value) -> bool {
+    if value
+        .get("single_flight_mutex_required")
+        .and_then(Value::as_bool)
+        == Some(false)
+        || value
+            .get("pressure_guard_required")
+            .and_then(Value::as_bool)
+            == Some(false)
+    {
+        return true;
+    }
+    let counts = value.get("counts_as").and_then(Value::as_str).unwrap_or("");
+    let counts_l = counts.to_ascii_lowercase();
+    if counts_l.contains("without_mutex")
+        || counts_l.contains("without_pressure")
+        || counts_l.contains("alternate_launcher_only")
+        || counts_l.contains("make_e2e_only")
+    {
+        return true;
+    }
+    let launcher = value
+        .get("launcher")
+        .or_else(|| value.get("preferred_launcher"))
+        .or_else(|| value.get("command"))
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let launcher_l = launcher.to_ascii_lowercase();
+    if (launcher_l.contains("make e2e")
+        || launcher_l.contains("e2e-docker.sh")
+        || launcher_l.contains("e2e-docker.ps1"))
+        && value.get("single_flight_mutex_passed").and_then(Value::as_bool) != Some(true)
+    {
+        return true;
+    }
+    let claims_product = value.get("green").and_then(Value::as_bool) == Some(true)
+        || value
+            .get("docker_e2e_validate_product")
+            .and_then(Value::as_bool)
+            == Some(true)
+        || value.get("docker_e2e_product").and_then(Value::as_bool) == Some(true);
+    let product_measured = value.get("product").and_then(Value::as_u64) == Some(1)
+        || value.get("pass_product_clean_room").and_then(Value::as_u64) == Some(1);
+    if claims_product && product_measured {
+        let mutex_ok = value.get("single_flight_mutex_passed").and_then(Value::as_bool)
+            == Some(true)
+            || value
+                .get("single_flight_mutex_executed")
+                .and_then(Value::as_bool)
+                == Some(true);
+        let pressure_ok = value.get("pressure_guard_passed").and_then(Value::as_bool) == Some(true)
+            || value
+                .get("pressure_guard_executed")
+                .and_then(Value::as_bool)
+                == Some(true);
+        return !(mutex_ok && pressure_ok);
+    }
+    false
 }
 
 /// True when a receipt is host/loopback or host gate-e2e (or marks itself as
@@ -691,6 +829,10 @@ fn measured_docker_e2e_product(root: &Path) -> (bool, Option<String>) {
         }
         // SkipSwarm-only catalog/subset ≠ Docker e2e DoD proof.
         if receipt_is_skip_swarm_only_not_dod(&value) {
+            continue;
+        }
+        // Alternate launchers / make e2e without mutex+pressure ≠ product oneshot.
+        if docker_e2e_receipt_lacks_mutex_pressure_not_product(&value) {
             continue;
         }
         return (true, Some((*relative).to_string()));
@@ -962,7 +1104,7 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
         "measured_only": true,
         "never_invent": true,
         "detection_freeze": true,
-        "summary": "Currently implemented automation-detection tech is correctly evaluated on this deployment via red-blue-validate product + clean-room Docker e2e; host/loopback / host gate e2e / component Cap EXIT0 / AffinityOnly/PressureOnly / SkipSwarm-only ≠ DoD",
+        "summary": "Currently implemented automation-detection tech is correctly evaluated on this deployment via red-blue-validate product + clean-room Docker e2e; host/loopback / host gate e2e / component Cap EXIT0 / AffinityOnly/PressureOnly / SkipSwarm-only / red-blue or matrix without --require-full / Docker e2e without mutex+pressure ≠ DoD",
         "gates": [
             {
                 "id": "pass_product_clean_room",
@@ -1003,6 +1145,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "component Cap EXIT0",
             "AffinityOnly / PressureOnly launcher probes",
             "SkipSwarm-only",
+            "red-blue or matrix without --require-full",
+            "Docker e2e product oneshot without mutex+pressure",
             "candidate-pack GRANT/TRANSFER scaffold"
         ],
         "verified": dod_verified
@@ -1066,6 +1210,8 @@ pub(crate) fn measure(root: &Path) -> Result<Value> {
             "component_ne_dod": true,
             "affinity_pressure_ne_dod": true,
             "skip_swarm_only_ne_dod": true,
+            "require_full_ne_dod_when_absent_on_product_receipt": true,
+            "docker_e2e_mutex_pressure_required_for_product_oneshot": true,
             "never_forge_auth_at": true,
             "never_invent_goal_complete": true,
             "never_apply_template_grant": true,
@@ -1353,6 +1499,78 @@ mod tests {
         .expect("write");
         let report2 = measure(&root).expect("measure");
         assert_eq!(report2["docker_e2e_validate_product"], false);
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn red_blue_without_require_full_never_closes_detection_eval_dod() {
+        let root = temp_root("rb-no-req-full");
+        write_unlock_a(&root, false);
+
+        let rb = root.join(RED_BLUE_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(rb.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &rb,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-red-blue-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "red_blue_validate_product": true,
+                "green": true,
+                "require_full": false,
+                "counts_as": "red_blue_partial_catalog_not_dod"
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let report = measure(&root).expect("measure");
+        assert_eq!(report["docker_e2e_validate_product"], false);
+        let incompletes = report["incompletes"].as_array().expect("incompletes");
+        let red_blue = incompletes
+            .iter()
+            .find(|item| item.get("id") == Some(&json!("red_blue_validate_product")))
+            .expect("red_blue incomplete");
+        assert_eq!(red_blue["closed"], false);
+        assert_eq!(red_blue["green"], false);
+        assert_eq!(report["dod_verified"], false);
+        assert_eq!(
+            report["honesty"]["require_full_ne_dod_when_absent_on_product_receipt"],
+            true
+        );
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn docker_e2e_without_mutex_pressure_never_closes_product_oneshot() {
+        let root = temp_root("e2e-no-mutex");
+        write_unlock_a(&root, false);
+
+        let e2e = root.join(DOCKER_E2E_PRODUCT_RECEIPT_CANDIDATES[0]);
+        fs::create_dir_all(e2e.parent().expect("parent")).expect("mkdir");
+        fs::write(
+            &e2e,
+            serde_json::to_vec_pretty(&json!({
+                "schema": "humanymous.lab-docker-e2e-product-measure-receipt/1",
+                "product": 1,
+                "pass_product_clean_room": 1,
+                "docker_e2e_validate_product": true,
+                "green": true,
+                "completion_authority": "docker_only",
+                "launcher": "make e2e",
+                "counts_as": "make_e2e_only_without_mutex"
+            }))
+            .expect("encode"),
+        )
+        .expect("write");
+
+        let report = measure(&root).expect("measure");
+        assert_eq!(report["docker_e2e_validate_product"], false);
+        assert_eq!(
+            report["honesty"]["docker_e2e_mutex_pressure_required_for_product_oneshot"],
+            true
+        );
+        assert_eq!(report["dod_verified"], false);
         let _ = fs::remove_dir_all(&root);
     }
 

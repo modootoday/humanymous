@@ -34,6 +34,7 @@
     "cap0_require_full_lists_missing_product_cells": true,
     "binds_e2e_exit0_component_hold_not_product": true,
     "auth_at_refuse_not_forged": true,
-    "cap_realloc_only_structural_feeder": true
+    "cap_realloc_only_structural_feeder": true,
+    "require_full_ne_dod_when_absent_on_product_receipt": true
   }
 }

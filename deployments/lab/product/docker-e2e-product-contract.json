@@ -41,6 +41,8 @@
     "host node test/e2e/runner.mjs as product",
     "host node test/gate/e2e.mjs as product",
     "SkipSwarm-only catalog/subset as DoD detection-eval",
+    "red-blue or matrix without --require-full as DoD detection-eval",
+    "Docker e2e product oneshot without single-flight mutex+pressure guard",
     "Cap1 while Cap free=false without Cap realloc",
     "invent Cap free / BrowserReady / AUTH/AT",
     "spent Cap twin 73-80 reburn"
@@ -54,7 +56,9 @@
     "host_gate_e2e_ne_dod": true,
     "skip_swarm_only_ne_dod": true,
     "never_invent_docker_e2e_validate_product": true,
-    "never_invent_pass_product_clean_room": true
+    "never_invent_pass_product_clean_room": true,
+    "docker_e2e_mutex_pressure_required_for_product_oneshot": true,
+    "require_full_ne_dod_when_absent_on_product_receipt": true
   },
   "note": "Cap0 lander contract only. AffinityOnly/PressureOnly/mutex/pressure EXIT0 ≠ product oneshot. SkipSwarm-only ≠ DoD detection-eval. Cap1 after Cap free: clean-room → matrix --require-full → e2e-docker-launch.ps1 / --red-blue-product --require-full; never invent docker_e2e_validate_product."
 }

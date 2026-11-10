@@ -37,6 +37,7 @@
     "cap_realloc_only_structural_feeder": true,
     "skip_swarm_only_ne_dod": true,
     "host_loopback_ne_dod": true,
-    "host_gate_e2e_ne_dod": true
+    "host_gate_e2e_ne_dod": true,
+    "require_full_ne_dod_when_absent_on_product_receipt": true
   }
 }
