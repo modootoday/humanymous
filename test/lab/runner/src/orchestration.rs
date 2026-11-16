@@ -1580,14 +1580,55 @@ fn collector_outcome(success: bool, exit: Option<i64>, stdout: &str, stderr: &st
         "collector_runner_panic"
     } else if any("No such file or directory") {
         "collector_missing_file"
-    } else if any("Read-only file system") || any("Permission denied") {
-        "collector_filesystem_denied"
+    } else if denied(stdout) || denied(stderr) {
+        collector_denial(stdout, stderr)
     } else if stdout.trim().is_empty() && stderr.trim().is_empty() {
         "collector_silent_exit"
     } else if success {
         "collector_no_summary_exit_zero"
     } else {
         "collector_no_summary_exit_nonzero"
+    }
+}
+fn denied(text: &str) -> bool {
+    let text = text.to_ascii_lowercase();
+    text.contains("read-only file system") || text.contains("permission denied")
+}
+/// Names a denied write by origin, runner stage and kind, from public markers only.
+fn collector_denial(stdout: &str, stderr: &str) -> &'static str {
+    let both = [stdout, stderr];
+    let any = |needle: &str| both.iter().any(|text| text.contains(needle));
+    let read_only = both
+        .iter()
+        .any(|text| text.to_ascii_lowercase().contains("read-only file system"));
+    if any("Error response from daemon") || any("OCI runtime") {
+        return if read_only {
+            "collector_daemon_read_only"
+        } else {
+            "collector_daemon_permission"
+        };
+    }
+    let started_tests = both.iter().any(|text| {
+        text.lines().any(|line| {
+            line.strip_prefix("running ")
+                .and_then(|rest| rest.split_once(" test"))
+                .is_some_and(|(count, _)| count.parse::<u64>().is_ok())
+        })
+    });
+    let stage = if started_tests {
+        2
+    } else if any("Running headless tests") {
+        1
+    } else {
+        0
+    };
+    match (stage, read_only) {
+        (0, true) => "collector_setup_read_only",
+        (0, false) => "collector_setup_permission",
+        (1, true) => "collector_browser_start_read_only",
+        (1, false) => "collector_browser_start_permission",
+        (_, true) => "collector_tests_read_only",
+        (_, false) => "collector_tests_permission",
     }
 }
 fn successful_test_count(output: &str) -> Option<u64> {
@@ -1719,7 +1760,7 @@ mod tests {
                 false,
                 "",
                 "mkdir: Read-only file system",
-                "collector_filesystem_denied",
+                "collector_setup_read_only",
             ),
             (
                 true,
@@ -1734,6 +1775,50 @@ mod tests {
                 "collector_no_summary_exit_nonzero",
             ),
         ];
+        let denial = [
+            (
+                "",
+                "Error response from daemon: read-only file system",
+                "collector_daemon_read_only",
+            ),
+            (
+                "",
+                "Error response from daemon: permission denied",
+                "collector_daemon_permission",
+            ),
+            (
+                "",
+                "Permission denied (os error 13)",
+                "collector_setup_permission",
+            ),
+            (
+                "Running headless tests in Firefox",
+                "Read-only file system",
+                "collector_browser_start_read_only",
+            ),
+            (
+                "Running headless tests in Firefox",
+                "Permission denied",
+                "collector_browser_start_permission",
+            ),
+            (
+                "Running headless tests\n\nrunning 66 tests\n",
+                "Read-only file system",
+                "collector_tests_read_only",
+            ),
+            (
+                "Running headless tests\n\nrunning 1 test\n",
+                "Permission denied",
+                "collector_tests_permission",
+            ),
+        ];
+        for (stdout, stderr, code) in denial {
+            assert_eq!(
+                outcome(false, Some(1), stdout, stderr),
+                code,
+                "{stdout:?} {stderr:?}"
+            );
+        }
         assert_eq!(outcome(false, Some(137), "running", ""), "collector_killed");
         assert_eq!(outcome(false, Some(126), "", ""), "collector_exec_error");
         assert_eq!(
