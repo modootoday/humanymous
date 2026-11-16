@@ -229,7 +229,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             require(
                 jobs[job]["steps"].as_array().is_some_and(|steps| {
                     steps.iter().any(|step| {
-                        step["uses"] == "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
+                        step["uses"] == "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
                             && step["with"]["ref"] == "${{ github.sha }}"
                             && step["with"]["persist-credentials"] == false
                     })
@@ -333,7 +333,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                     && jobs[job]["steps"].as_array().is_some_and(|steps| {
                         steps.iter().any(|step| {
                             step["uses"]
-                                == "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
+                                == "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
                                 && step["with"]["ref"] == "${{ github.sha }}"
                                 && step["with"]["persist-credentials"] == false
                         })
@@ -470,7 +470,7 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
             require(
                 jobs[job]["steps"].as_array().is_some_and(|steps| {
                     steps.iter().any(|step| {
-                        step["uses"] == "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
+                        step["uses"] == "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
                             && step["with"]["ref"] == "${{ github.sha }}"
                             && step["with"]["persist-credentials"] == false
                     })
@@ -1988,7 +1988,7 @@ mod tests {
             assert!(!pinned(action));
         }
         assert!(pinned(
-            "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803"
+            "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
         ));
     }
     #[test]
