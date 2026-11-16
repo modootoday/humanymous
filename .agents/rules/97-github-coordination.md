@@ -30,7 +30,10 @@ The pull-request flow is active (owner decision 2026-11-16,
 `sot:root/common-automation-rules` C1). A cloud session works on its own
 `<provider>/<slug>` branch (`claude/`, `codex/`, ...), pushes it, and opens or
 updates a pull request into `codex/rust`. The pull request body carries
-`Agent-Provider:`, the work package and the lane. The owner merges. Until the
+`Agent-Provider:`, the work package and the lane. Phase 2 (owner direction
+2026-11-16): when `delivery merge-gate <base> <head>` reports no human-gated
+path, the session turns on auto-merge (merge commit) and moves on; otherwise it
+adds the `needs-human` label and moves on, and the owner merges. Until the
 `main-protected` ruleset is applied, the session still does not push to
 `codex/rust` or `main` directly. Blocked work goes into the pull request body or
 a `needs-owner` Issue, and the session moves to the next unit.

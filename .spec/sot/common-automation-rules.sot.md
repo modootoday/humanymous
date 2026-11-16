@@ -3,7 +3,7 @@ id: sot:root/common-automation-rules
 title: Common automation rules (humanymous copy and project profile)
 status: active
 created: 2026-11-16T07:44:00Z
-updated: 2026-11-16T07:44:00Z
+updated: 2026-11-16T08:05:00Z
 verify: ["spec check --no-local", "cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml", "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy"]
 rel:
   depends_on: [sot:root/delivery, sot:root/milestones]
@@ -23,8 +23,10 @@ The owner adopted the rules for humanymous on 2026-11-16, in this repository's
 session, and confirmed the open items O6 (base branch `codex/rust`) and O7
 (owner noreply identity). From that date the owner also directed that rules and
 decisions the shared design session relays count as the owner's own, which
-supersedes C0.3 for humanymous. Merge, release, tag, secret values and ruleset
-or settings application stay with the owner.
+supersedes C0.3 for humanymous. Release, tag, secret values and ruleset or
+settings application stay with the owner. The owner turned on Phase 2 merging
+the same day (section 12): auto-merge for pull requests outside the
+human-gated paths, owner merge for the rest.
 
 They apply to new commits. History is not rewritten.
 
@@ -150,7 +152,8 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 | Machine-local state (C9.2) | `.agents/sessions/ACTIVE.md`, `.agents/sessions/claims/`, `.agent-runs/`, `.spec.local/` |
 | Document language | English |
 | Roadmap source | [[sot:root/milestones]], [[sot:root/program-roadmap]], [[plan:root/20261116060213]], [[plan:root/20261116070000]] |
-| Merging phase | Phase 1; stays there until a real product e2e harness gates pull requests |
+| Merging phase | Phase 2 from 2026-11-16 (owner direction): an agent turns on GitHub auto-merge (merge commit) for its own pull request when `delivery merge-gate <base> <head>` finds no human-gated path; otherwise it adds `needs-human` and leaves the merge to the owner. The `Merge gate` job (`.github/workflows/merge-gate.yml`) enforces the same path check on every pull request: it turns auto-merge off and adds `needs-human` (C2.10). Required checks still decide when an auto-merge lands |
+| Human-gated paths (C2.10) | `scripts/ci/human-gated-paths.json`: workflows, rulesets, settings, labels, Dependabot, CODEOWNERS, this SoT, the gate itself, the workflow catalog, `Cargo.lock`, toolchain, release changelog config, Go sources and modules, Rust scoring and signals, audit and gateway control, public standards docs, `SECURITY.md` |
 | Human-gated areas | detection scoring; erasure, kill switch, permanent ban; handoff, grant and Cap artifacts; release, tag, Pages deploy, merge to `main`; audit key custody; public standard docs; Go retirement decisions |
 
 ## Owner tasks (not automatable here)
@@ -158,5 +161,6 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 - Apply the ruleset, label and repository settings files from the owner's computer after they merge.
 - Register `HUMANYMOUS_DENY_TERMS` as an Actions secret and as a Dependabot secret.
 - Enable secret scanning and push protection.
+- Apply `allow_auto_merge: true` from `.github/settings/repository.json`; auto-merge cannot be turned on before that.
 - Confirm the exact `validate / ready` context on the first pull request; rename in one pull request with the ruleset if it differs (C3.5).
 - Bring `.github/dependabot.yml` to `main` (Dependabot reads the default branch only).

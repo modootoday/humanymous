@@ -54,7 +54,9 @@ The contract below says what that means in practice.
 Full unit list. Ranks follow [[plan:root/20261110061400]]. Only A units run
 unattended. An A unit ends with a pushed topic branch and an open or updated
 pull request (C1.6). A unit blocked on the owner gets a `needs-owner` Issue and
-the run moves to the next unit; it does not stop to ask.
+the run moves to the next unit; it does not stop to ask. Phase 2: the session
+turns on auto-merge when `delivery merge-gate` finds no human-gated path, and
+labels the pull request `needs-human` otherwise.
 
 | # | Unit | Milestones | Class | Unblocking artifact / action |
 | ---: | --- | --- | --- | --- |
