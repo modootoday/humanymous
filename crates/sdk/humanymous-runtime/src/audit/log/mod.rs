@@ -377,6 +377,28 @@ mod tests {
         }
         fs::remove_dir(dir).unwrap();
     }
+    /// Legacy sink.go refused an empty event type before the action; so does
+    /// `emit_and_act`, without advancing the chain.
+    #[test]
+    fn empty_event_type_is_refused_before_the_action() {
+        let dir = dir();
+        let mut log = Log::open(
+            Wal::open(&dir, WalOptions::default()).unwrap(),
+            config(),
+            None,
+            true,
+        )
+        .unwrap();
+        let mut acted = false;
+        let refused = log.emit_and_act(Record::default(), |_| acted = true);
+        assert!(refused.is_err());
+        assert!(!acted, "the action must not run for a refused record");
+        assert!(log.records().unwrap().is_empty());
+        let first = log.append(event()).unwrap();
+        assert_eq!(first.seq, 1, "a refusal must not consume a sequence number");
+        drop(log);
+        clean(&dir);
+    }
     #[test]
     fn seals_checkpoints_restarts_and_detects_authenticated_tampering() {
         let dir = dir();

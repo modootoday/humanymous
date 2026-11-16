@@ -15,8 +15,8 @@
  },
  "totals": {
   "missing": 52,
-  "partial": 105,
-  "ported_unit": 155,
+  "partial": 104,
+  "ported_unit": 156,
   "not_applicable": 2
  },
  "by_package": {
@@ -107,8 +107,8 @@
    "ported_unit": 5
   },
   "internal/network": {
-   "ported_unit": 17,
-   "partial": 3
+   "ported_unit": 18,
+   "partial": 2
   },
   "internal/pass": {
    "ported_unit": 3
@@ -4808,19 +4808,20 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action"
    ],
    "go_test_map": {},
    "gaps": [
-    "no Rust test asserts that an empty event_type is refused before the action",
     "no separate Emit (no-action) helper"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails.",
+   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails or the event type is empty, and a refusal consumes no sequence number.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action": "passed"
    }
   },
   {
@@ -5544,7 +5545,7 @@
   },
   {
    "baseline_path": "internal/network/report.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/network/report/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/report/claims.rs",
@@ -5553,22 +5554,22 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::browser_tls_over_h1_needs_hello_browser_ja4_and_h1",
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::forwarded_address_scope_matches_go_including_ipv4_mapped_v6",
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::json_alpn_replacement_is_per_invalid_go_byte",
     "crates/sdk/humanymous-runtime/src/network/report/claims.rs::version_boundaries_edge_exclusion_and_go_integer_overflow_are_preserved"
    ],
    "go_test_map": {},
-   "gaps": [
-    "browser_tls_over_h1 residual branch has no exercising test or fixture case"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "All other report signals match Go.",
+   "notes": "All report signals match the frozen Go corpus; the browser_tls_over_h1 residual, absent from that corpus, is pinned by flipping corpus inputs one predicate term at a time (hello, browser JA4 engine, h1).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::forwarded_address_scope_matches_go_including_ipv4_mapped_v6": "passed",
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::json_alpn_replacement_is_per_invalid_go_byte": "passed",
     "crates/sdk/humanymous-runtime/src/network/report/claims.rs::version_boundaries_edge_exclusion_and_go_integer_overflow_are_preserved": "passed",
-    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go": "passed",
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::browser_tls_over_h1_needs_hello_browser_ja4_and_h1": "passed"
    }
   },
   {

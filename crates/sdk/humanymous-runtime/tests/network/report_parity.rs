@@ -37,3 +37,58 @@ fn all_report_signals_and_admin_observations_match_go() {
         );
     }
 }
+
+/// The `browser_tls_over_h1` residual (legacy report.go: `obs.Hello != nil &&
+/// isBrowserEngine(nr.JA4Engine) && !h.IsH2`) has no case in the frozen Go
+/// corpus, so it is pinned here by flipping corpus inputs one predicate term
+/// at a time.
+#[test]
+fn browser_tls_over_h1_needs_hello_browser_ja4_and_h1() {
+    const ID: &str = "l5.http.browser_tls_over_h1";
+    let cases: Vec<Value> =
+        serde_json::from_str(include_str!("../fixtures/network/reports.json")).unwrap();
+    let fired = |input: &Value| -> Option<String> {
+        let observation: Observation = serde_json::from_value(input.clone()).unwrap();
+        build(&observation)
+            .signals
+            .unwrap_or_default()
+            .into_iter()
+            .find(|signal| signal.id == ID)
+            .map(|signal| signal.verdict.as_str().to_owned())
+    };
+    let mut browsers = 0;
+    let mut others = 0;
+    for case in &cases {
+        let input = &case["input"];
+        if input["hello"].is_null() {
+            continue;
+        }
+        let mut h1 = input.clone();
+        h1["header"]["is_h2"] = json!(false);
+        let browser = matches!(
+            case["expected"]["ja4Engine"].as_str(),
+            Some("chrome" | "firefox" | "safari")
+        );
+        if browser {
+            browsers += 1;
+            assert_eq!(fired(&h1).as_deref(), Some("SUSPICIOUS"));
+            let mut no_hello = h1.clone();
+            no_hello["hello"] = Value::Null;
+            assert_eq!(
+                fired(&no_hello),
+                None,
+                "a CDN-terminated hello never trips it"
+            );
+        } else {
+            others += 1;
+            assert_eq!(fired(&h1), None, "non-browser JA4 engines never trip it");
+        }
+        if input["header"]["is_h2"] == json!(true) {
+            assert_eq!(fired(input), None, "h2 delivery never trips it");
+        }
+    }
+    assert!(
+        browsers > 0 && others > 0,
+        "corpus must exercise both branches"
+    );
+}
