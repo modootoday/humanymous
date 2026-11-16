@@ -852,6 +852,40 @@ pub fn document(name: &str, doc: &Value) -> Result<()> {
                 == REQUIRED.iter().map(|id| (*id).into()).collect(),
             "required aggregate coverage changed",
         )?;
+        let merge = &jobs["merge-ready"];
+        require(
+            strings(&merge["needs"])
+                == crate::merge_ready::SUCCESS
+                    .iter()
+                    .chain(crate::merge_ready::PILOTS)
+                    .map(|id| (*id).into())
+                    .collect()
+                && merge["if"] == "always()"
+                && merge.get("continue-on-error").is_none()
+                && merge["steps"].as_array().is_some_and(|steps| {
+                    steps.iter().any(|step| {
+                        step["run"] == "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- merge-ready"
+                            && step["env"]["NEEDS_JSON"] == "${{ toJSON(needs) }}"
+                            && step.get("if").is_none()
+                    })
+                }),
+            "merge aggregate coverage changed",
+        )?;
+        for id in crate::merge_ready::PILOTS {
+            let job = &jobs[*id];
+            require(
+                job["outputs"][crate::merge_ready::OUTPUT]
+                    == "${{ steps.merge_signal.outputs.signal }}"
+                    && job["steps"].as_array().is_some_and(|steps| {
+                        steps.iter().any(|step| {
+                            step["id"] == "merge_signal"
+                                && step["run"]
+                                    == format!("cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- merge-signal {id}")
+                        })
+                    }),
+                format!("pilot merge signal missing: {id}"),
+            )?;
+        }
         for id in REQUIRED {
             let job = &jobs[*id];
             require(
