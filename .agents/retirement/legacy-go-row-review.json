@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 54,
+  "missing": 52,
   "partial": 107,
-  "ported_unit": 151,
+  "ported_unit": 153,
   "not_applicable": 2
  },
  "by_package": {
@@ -104,8 +104,7 @@
    "ported_unit": 4
   },
   "internal/mltrain": {
-   "ported_unit": 1,
-   "missing": 2,
+   "ported_unit": 3,
    "partial": 2
   },
   "internal/network": {
@@ -7639,35 +7638,53 @@
   },
   {
    "baseline_path": "internal/mltrain/sink_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/sink.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle"
+   ],
    "go_test_map": {
-    "TestTraceSink_AppendRoundTrip": null,
+    "TestTraceSink_AppendRoundTrip": "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back",
     "TestTraceSink_NilIsNoop": null,
-    "TestTraceSink_AppendsAcrossReopen": null
+    "TestTraceSink_AppendsAcrossReopen": "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle"
    },
    "gaps": [
-    "Append-only TraceSink writer"
+    "TestTraceSink_NilIsNoop has no counterpart by design: an absent sink is Option::None in Rust, not a nil receiver"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "record.rs reads JSONL but no append sink exists; SoT row \"mltrain sink\" says no implementation.",
-   "test_verification": {}
+   "notes": "Round trip reads back through the shared read_jsonl reader.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle": "passed"
+   }
   },
   {
    "baseline_path": "internal/mltrain/sink.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Opt-in append writer with reopen preservation, count and close"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/sink.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::relative_parent_directory_and_symlink_targets_are_refused",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::inadmissible_records_are_refused_without_writing"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust TraceSink found.",
-   "test_verification": {}
+   "notes": "TraceSink: owner-only append writer, per-handle count, consuming close. Deliberate fail-closed differences: absolute path without parent components, symlink/non-regular refusal, shared Record::sample admission before write. Go nil-receiver no-op becomes Option at the composition root; no Core caller is wired yet.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::relative_parent_directory_and_symlink_targets_are_refused": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::inadmissible_records_are_refused_without_writing": "passed"
+   }
   },
   {
    "baseline_path": "internal/mltrain/train_test.go",

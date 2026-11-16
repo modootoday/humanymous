@@ -2,6 +2,7 @@
 pub mod evaluate;
 pub mod record;
 pub mod rng;
+pub mod sink;
 // The offline composition root is a separately allocated migration slice.
 #[cfg_attr(
     not(test),
