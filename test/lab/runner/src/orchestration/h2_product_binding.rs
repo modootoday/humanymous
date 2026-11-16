@@ -1397,11 +1397,21 @@ mod tests {
         });
         assert!(validate_unlock_a_cap_exit0_closer(&invent_ready).is_err());
 
-        let root = snapshot::root().expect("root");
-        let live = load_unlock_a_cap_exit0_closer(&root).expect("live Unlock A closer");
-        assert_eq!(live["cap_exit"], 0);
-        assert_eq!(live["browser_ready"], false);
-        assert_eq!(live["cap_free"], false);
+        // Hermetic loader roundtrip: the live closer is private run state, not a
+        // unit-test input. An absent closer still refuses; a valid one loads.
+        let root = tempfile_dir("unlock-a-closer-");
+        let err = load_unlock_a_cap_exit0_closer(&root).expect_err("absent closer refuses");
+        assert!(err.to_string().contains("closer absent"));
+        let path = root.join(UNLOCK_A_CAP_EXIT0_CLOSER_REL);
+        fs::create_dir_all(path.parent().expect("closer parent")).expect("closer dir");
+        fs::write(&path, serde_json::to_vec(&unlock_a).expect("closer json")).expect("write");
+        let loaded = load_unlock_a_cap_exit0_closer(&root).expect("Unlock A closer");
+        assert_eq!(loaded["cap_exit"], 0);
+        assert_eq!(loaded["browser_ready"], false);
+        assert_eq!(loaded["cap_free"], false);
+        fs::write(&path, serde_json::to_vec(&invent_ready).expect("json")).expect("write");
+        assert!(load_unlock_a_cap_exit0_closer(&root).is_err());
+        let _ = fs::remove_dir_all(&root);
     }
 
     #[test]
