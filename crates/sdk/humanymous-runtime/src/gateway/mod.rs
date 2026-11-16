@@ -6,12 +6,14 @@ pub mod configuration;
 pub mod connection_cap;
 pub mod control;
 pub mod credential;
+pub mod external_input;
 pub mod guard;
 pub mod http;
 #[cfg(feature = "hosted-pilot")]
 pub mod lab_h2_measure;
 pub mod logging;
 pub mod management;
+pub mod pass_proof;
 pub mod pass_store;
 pub mod request;
 pub mod seams;

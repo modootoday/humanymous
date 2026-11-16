@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 67,
-  "partial": 99,
-  "ported_unit": 146,
+  "missing": 63,
+  "partial": 101,
+  "ported_unit": 148,
   "not_applicable": 2
  },
  "by_package": {
@@ -39,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 16,
-   "partial": 20,
-   "ported_unit": 6
+   "missing": 13,
+   "partial": 21,
+   "ported_unit": 8
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -78,8 +78,8 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 44,
-   "missing": 20,
+   "partial": 45,
+   "missing": 19,
    "not_applicable": 1,
    "ported_unit": 20
   },
@@ -643,37 +643,62 @@
   },
   {
    "baseline_path": "cmd/server/external_input_receipt_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestExternalInputReceiptBindsCanonicalCoreEvidence": null,
-    "TestExternalInputReceiptFailsClosedWithoutWASMEvidence": null,
-    "TestExternalInputReceiptConfigurationIsExplicit": null,
-    "TestExternalInputReceiptNeverUsesOperationalLog": null
-   },
-   "gaps": [
-    "score receipt writer and its fail-closed/explicit-config rules"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused"
+   ],
+   "go_test_map": {
+    "TestExternalInputReceiptBindsCanonicalCoreEvidence": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence",
+    "TestExternalInputReceiptFailsClosedWithoutWASMEvidence": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence",
+    "TestExternalInputReceiptConfigurationIsExplicit": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit",
+    "TestExternalInputReceiptNeverUsesOperationalLog": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust external-input score receipt; plan B11 lab replacement still required.",
-   "test_verification": {}
+   "notes": "The operational-log isolation case is structural in Rust: the writer has no logger dependency, and the test pins that only the receipt file is written.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/external_input_receipt.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused"
+   ],
    "go_test_map": {},
    "gaps": [
-    "configureExternalInputReceipts directory",
-    "exclusive bounded JSON receipt write binding core evidence"
+    "Not wired: no Rust Core score handler calls the writer for external-input labelled sessions (B11 lab replacement)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart found (grep external_input in crates/test/lab).",
-   "test_verification": {}
+   "notes": "Lab-only exclusive receipt writer: absolute real directory, bounded detector WASM digest, session reference instead of raw id, score-trace digest over the same NUL-joined fields as Go. The report digest is over the Rust wire encoding; encoding parity with Go belongs to the differential parity harness. The temporary file uses a random name and is always removed.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/h1capture.go",
@@ -1254,19 +1279,30 @@
   },
   {
    "baseline_path": "cmd/server/pass_proof.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::non_finite_samples_refuse",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names"
+   ],
    "go_test_map": {},
    "gaps": [
-    "traceDigest",
-    "realEventOK trusted/uniform timing/coalesced/raw-stream checks",
-    "allIntegerMs/stddev helpers"
+    "realEventOK (the real-event pre-filter on pointer/keyboard timing microstructure) and its statistics helpers are not ported: gating Pass on motor timing is an accessibility decision reserved for the owner",
+    "No Rust Pass handler consumes the digest yet; PassStore::reserve_trace takes it"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "No Rust pass proof validation found.",
-   "test_verification": {}
+   "notes": "PassProof wire model and trace_digest are ported; the digest is byte-identical to Go (golden vectors from Go 1.25.3). Deliberate difference: a non-finite or out-of-range sample returns None instead of an implementation-defined integer.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::non_finite_samples_refuse": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/pass_scoring.go",
@@ -1965,30 +2001,55 @@
   },
   {
    "baseline_path": "internal/gate/attestfloor_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_rejects_wrong_bind_expiry_and_garbage_receipts",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag"
+   ],
    "go_test_map": {
     "TestAttestFloorDemotesUnattestedAllow": null,
     "TestAttestFloorStepUpProofPasses": null,
     "TestAttestFloorStickyAllowLaunderingClosed": null,
-    "TestStepUpProofNotLiftable": null,
-    "TestStepUpDomainSeparation": null,
+    "TestStepUpProofNotLiftable": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding",
+    "TestStepUpDomainSeparation": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated",
     "TestStepUpEndpointMintsProof": null,
     "TestStepUpCrossPlaneKeyMismatch": null,
     "TestStepUpCrossPlaneSidDivergence": null,
     "TestWebAuthnFanoutCap": null,
     "TestWebAuthnFanoutCapUnmarkedRoutesUntouched": null,
     "TestNewServerRefusesAttestedCatchAll": null,
-    "TestCohortShadowBounded": null,
-    "TestCohortShadowFlagsSharedGenerator": null,
-    "TestStepUpTokenVerify": null
+    "TestCohortShadowBounded": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
+    "TestCohortShadowFlagsSharedGenerator": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
+    "TestStepUpTokenVerify": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_rejects_wrong_bind_expiry_and_garbage_receipts"
    },
-   "gaps": [],
+   "gaps": [
+    "The attested-route floor (demoting an unattested ALLOW, sticky-allow laundering) is unported: it changes route verdict policy and needs the Runtime route owner",
+    "The /__hmn/stepup receipt-to-proof endpoint and its cross-plane key and session checks are unported",
+    "WebAuthn fan-out cap and the attested catch-all configuration refusal are unported"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No attested-route floor, step-up proof/receipt, WebAuthn fanout cap or cohort shadow in Rust.",
-   "test_verification": {}
+   "notes": "Token and cohort kernel cases are mapped. The HTTP-level 401 and origin-not-contacted assertions belong to the unported floor.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_step_up_proof_fails_binding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_rejects_wrong_bind_expiry_and_garbage_receipts": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/ban_integration_test.go",
