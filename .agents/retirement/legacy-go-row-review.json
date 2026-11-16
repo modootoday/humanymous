@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 118,
-  "partial": 89,
-  "ported_unit": 105,
+  "missing": 116,
+  "partial": 90,
+  "ported_unit": 106,
   "not_applicable": 2
  },
  "by_package": {
@@ -77,10 +77,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 38,
-   "missing": 45,
+   "partial": 39,
+   "missing": 43,
    "not_applicable": 1,
-   "ported_unit": 1
+   "ported_unit": 2
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -2363,33 +2363,59 @@
   },
   {
    "baseline_path": "internal/gate/proxyproto_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv4_source_and_keeps_payload",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::local_command_keeps_socket_peer",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::rejects_garbage_wrong_version_truncation_and_short_blocks",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries"
+   ],
    "go_test_map": {
-    "TestReadProxyV2RecoversIPAndKeepsPayload": null,
-    "TestReadProxyV2LocalCommand": null,
-    "TestReadProxyV2RejectsGarbage": null,
-    "TestProxyListenerTrustGate": null,
-    "TestParseCIDRsRejectsBroad": null
+    "TestReadProxyV2RecoversIPAndKeepsPayload": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv4_source_and_keeps_payload",
+    "TestReadProxyV2LocalCommand": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::local_command_keeps_socket_peer",
+    "TestReadProxyV2RejectsGarbage": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::rejects_garbage_wrong_version_truncation_and_short_blocks",
+    "TestProxyListenerTrustGate": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp",
+    "TestParseCIDRsRejectsBroad": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No PROXY v2 listener or trusted CIDR parsing in Rust (B26).",
-   "test_verification": {}
+   "notes": "Every Go case is ported against the Network-owned PROXY v2 kernel (B26). The Rust allowlist additionally refuses an empty list, more than 256 entries and non-canonical prefixes.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv4_source_and_keeps_payload": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::local_command_keeps_socket_peer": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::rejects_garbage_wrong_version_truncation_and_short_blocks": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/proxyproto.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "gateway listener wiring with a configured allowlist and read deadline (needs the public-role profile, B01/B26)"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No PROXY v2 listener or trusted CIDR parsing in Rust (B26).",
-   "test_verification": {}
+   "notes": "Header decoding, the /8 minimum allowlist and the trust gate are ported as a pure Network kernel; no listener uses it yet, and it never creates TLS provenance (network-capture N01).",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::trust_gate_over_real_tcp": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::recovers_ipv6_source": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::unspecified_and_udp_families_keep_socket_peer": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/recon.go",
