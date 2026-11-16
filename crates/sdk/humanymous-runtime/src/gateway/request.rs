@@ -1,11 +1,15 @@
 //! Small request-derivation helpers (legacy internal/gate/request.go at
 //! baseline 981d25c): route class for policy and audit, saturating latency,
-//! per-request correlation ids and a stable upstream error class.
+//! per-request correlation ids and a stable upstream error class, plus the
+//! watermark day bucket and keyed IP pseudonym from cmd/server/helpers.go.
 //!
 //! The client subnet lives in `token::client_subnet`; the session id comes from
 //! signed RIT headers, not the legacy `hsid` cookie.
 use super::Rejection;
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
 use std::io;
+use std::net::IpAddr;
 use std::time::Duration;
 
 /// Coarse route class (SoT-19 §7); not a detection signal.
@@ -82,6 +86,25 @@ pub fn upstream_error_class(error: &io::Error) -> &'static str {
         _ if error.to_string().contains("failed to lookup address") => "dns",
         _ => "unreachable",
     }
+}
+
+/// Unix day used as the low-resolution watermark issue time (legacy
+/// cmd/server/helpers.go `dayBucket`). Times before the epoch clamp to day 0.
+pub fn day_bucket(now_unix: i64) -> u64 {
+    u64::try_from(now_unix / 86_400).unwrap_or(0)
+}
+
+/// Keyed pseudonym of the socket peer for the watermark ledger (legacy
+/// `trafficIPHash`, PRIV-1): first 8 bytes of HMAC-SHA256(key, "ipwm|" + ip),
+/// hex. `None` for an empty key, which would make the pseudonym reversible.
+pub fn traffic_ip_hash(key: &[u8], ip: IpAddr) -> Option<String> {
+    if key.is_empty() {
+        return None;
+    }
+    let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(key).ok()?;
+    mac.update(b"ipwm|");
+    mac.update(ip.to_string().as_bytes());
+    Some(hex::encode(&mac.finalize().into_bytes()[..8]))
 }
 
 #[cfg(test)]

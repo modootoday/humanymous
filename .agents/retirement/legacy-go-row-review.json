@@ -831,24 +831,29 @@
    "baseline_path": "cmd/server/helpers.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/request.rs",
     "crates/sdk/humanymous-runtime/src/network/traffic/consistency.rs",
     "crates/sdk/humanymous-runtime/src/network/traffic/record.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::day_bucket_matches_go_and_clamps_pre_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::traffic_ip_hash_matches_go_golden_and_needs_a_key",
     "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::oracle_subnet_and_hash_transforms_retain_text_quirks",
     "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::two_ja4_resumption_values_are_tolerated_but_three_rotate"
    ],
    "go_test_map": {},
    "gaps": [
-    "readFile helper",
-    "dayBucket-salted trafficIPHash wiring"
+    "readFile static-asset helper (Core page/demo, B05)",
+    "watermark ledger wiring of traffic_ip_hash"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "JA4 stable-part and subnet/hash transforms exist in network/traffic; the small Go helpers have no direct counterpart.",
+   "notes": "JA4 stable-part and subnet/hash transforms exist in network/traffic; the small Go helpers have no direct counterpart. dayBucket and the keyed trafficIPHash pseudonym are ported in gateway/request.rs with a Go 1.25.3 golden; an empty key is refused.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::oracle_subnet_and_hash_transforms_retain_text_quirks": "passed",
-    "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::two_ja4_resumption_values_are_tolerated_but_three_rotate": "passed"
+    "crates/sdk/humanymous-runtime/src/network/traffic/tests.rs::two_ja4_resumption_values_are_tolerated_but_three_rotate": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::day_bucket_matches_go_and_clamps_pre_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::traffic_ip_hash_matches_go_golden_and_needs_a_key": "passed"
    }
   },
   {

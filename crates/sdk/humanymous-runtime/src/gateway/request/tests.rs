@@ -101,3 +101,23 @@ fn upstream_errors_map_to_stable_classes_without_raw_text() {
         "unreachable"
     );
 }
+
+#[test]
+fn traffic_ip_hash_matches_go_golden_and_needs_a_key() {
+    // Regenerated with Go 1.25.3 from the legacy trafficIPHash construction.
+    let key = b"0123456789abcdef0123456789abcdef";
+    let ip = "203.0.113.9".parse().unwrap();
+    assert_eq!(
+        traffic_ip_hash(key, ip).as_deref(),
+        Some("7bcf9fc29a76291b")
+    );
+    assert_ne!(traffic_ip_hash(b"other", ip), traffic_ip_hash(key, ip));
+    assert_eq!(traffic_ip_hash(b"", ip), None);
+}
+
+#[test]
+fn day_bucket_matches_go_and_clamps_pre_epoch() {
+    assert_eq!(day_bucket(1_700_000_000), 19675);
+    assert_eq!(day_bucket(86_399), 0);
+    assert_eq!(day_bucket(-1), 0);
+}
