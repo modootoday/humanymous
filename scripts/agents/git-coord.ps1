@@ -222,7 +222,7 @@ function Action-Commit {
     }
     if ($LASTEXITCODE -ne 0) { throw "git commit failed ($LASTEXITCODE)" }
     $sha = git rev-parse --short HEAD
-    Write-Host "OK committed $sha (provider $useProvider: name it in the pull request body)"
+    Write-Host "OK committed $sha (provider ${useProvider}: name it in the pull request body)"
   } finally {
     Remove-Item $tmp -Force -ErrorAction SilentlyContinue
   }
