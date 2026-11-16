@@ -25,6 +25,7 @@ pub mod smuggle;
 pub mod startup;
 pub mod tls;
 pub mod token;
+pub mod verdict_store;
 pub mod virtual_usb;
 
 pub use crate::authority::Rejection;

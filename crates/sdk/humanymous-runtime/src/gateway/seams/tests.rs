@@ -80,3 +80,19 @@ fn limiter_counts_classifies_and_reconfigures_through_the_seam() {
     r.configure(Duration::from_secs(1), 2, 3, T0).unwrap();
     assert_eq!((r.level(2), r.level(3)), (Level::Soft, Level::Hard));
 }
+
+#[test]
+fn verdict_store_serves_through_the_seam() {
+    use crate::gateway::verdict_store::{Sticky, Verdict, VerdictStore};
+    let ledger: Box<dyn VerdictLedger> = Box::new(VerdictStore::new(Duration::from_secs(60)));
+    let t0 = Duration::from_secs(100);
+    let deny = Sticky {
+        verdict: Verdict::Deny,
+        updated: t0,
+        ..Sticky::default()
+    };
+    assert!(ledger.set("s", deny.clone()));
+    assert_eq!(ledger.get("s", t0), deny);
+    ledger.gc(t0 + Duration::from_secs(61));
+    assert_eq!(ledger.get("s", t0).verdict, Verdict::Unknown);
+}

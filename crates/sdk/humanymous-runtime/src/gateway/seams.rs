@@ -8,9 +8,9 @@
 //! the compile-time proof that the seam cannot silently drift.
 //!
 //! Dual-controlled bans (`ban::Store::add_controlled`) are deliberately not on
-//! the seam: a shared backend must route them through audit control too. The
-//! sticky-verdict ledger has no Rust store yet.
+//! the seam: a shared backend must route them through audit control too.
 use super::ban::{Entry, Key, Outcome, Refusal, Store};
+use super::verdict_store::{Sticky, VerdictStore};
 use crate::network::history::Unavailable;
 use crate::network::history::rate::{ConfigurationEffect, Level, Limiter, Observation};
 use std::time::Duration;
@@ -37,6 +37,29 @@ pub trait BanLedger {
     fn lift(&mut self, key: &Key) -> Result<bool, Refusal>;
     /// Active bans.
     fn list(&mut self, now: Duration) -> Vec<Entry>;
+}
+
+/// Sticky-verdict contract (SoT-21 §2). A shared implementation must treat
+/// an absent or stale entry as `Unknown`, never as a grant.
+pub trait VerdictLedger {
+    /// Record or update a session's verdict; false when not stored.
+    fn set(&self, sid: &str, sticky: Sticky) -> bool;
+    /// The session's verdict, `Unknown` when absent or stale.
+    fn get(&self, sid: &str, now: Duration) -> Sticky;
+    /// Evict expired entries.
+    fn gc(&self, now: Duration);
+}
+
+impl VerdictLedger for VerdictStore {
+    fn set(&self, sid: &str, sticky: Sticky) -> bool {
+        VerdictStore::set(self, sid, sticky)
+    }
+    fn get(&self, sid: &str, now: Duration) -> Sticky {
+        VerdictStore::get(self, sid, now)
+    }
+    fn gc(&self, now: Duration) {
+        VerdictStore::gc(self, now)
+    }
 }
 
 /// Fingerprint-keyed rate counter that drives automatic bans (SoT-17).

@@ -2350,24 +2350,35 @@
    "baseline_path": "internal/gate/enforce.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/application.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/application.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent"
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::clock_regression_does_not_expire_entries",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::engine_verdicts_map_like_go",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::get_honours_ttl_inclusively_and_absent_is_unknown",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::saturation_stops_tracking_new_sessions_but_updates_existing"
    ],
    "go_test_map": {},
    "gaps": [
-    "sticky VerdictStore with TTL/GC",
+    "Verdict-to-action mapping is not ported: legacy action() let an Unknown verdict pass on safe public routes, which conflicts with fail-closed enforcement (intended difference, owner decision)",
     "unsafe-method challenge mapping per route policy",
     "monitor vs enforce action naming"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust maps ALLOW/DENY/CHALLENGE and records fail_closed, but without sticky verdicts or route-policy action mapping.",
+   "notes": "Rust maps ALLOW/DENY/CHALLENGE and records fail_closed, but without sticky verdicts or route-policy action mapping. Sticky VerdictStore (bounded, TTL, GC, saturation degrades to not-tracking) and mapVerdict are ported in gateway/verdict_store.rs.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::clock_regression_does_not_expire_entries": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::engine_verdicts_map_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::get_honours_ttl_inclusively_and_absent_is_unknown": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::saturation_stops_tracking_new_sessions_but_updates_existing": "passed"
    }
   },
   {
@@ -2528,29 +2539,30 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store.rs",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
-    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
-    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed",
-    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl"
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed"
    ],
    "go_test_map": {
-    "TestVerdictStoreGC": null,
+    "TestVerdictStoreGC": "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts",
     "TestBanStoreGCSweepsStrikesAndExpired": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
     "TestSweepDetectorGC": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
     "TestServerGCRunsWithoutPanic": null
    },
    "gaps": [
-    "The Go sticky VerdictStore has no Rust counterpart, so its TTL sweep is unported",
     "No Runtime composite GC owner (Go Server.GC) sweeps every kernel"
    ],
    "retire_basis": null,
@@ -2563,7 +2575,8 @@
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store/tests.rs::gc_sweeps_expired_sticky_verdicts": "passed"
    }
   },
   {
@@ -3032,29 +3045,31 @@
    "baseline_path": "internal/gate/seams.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/seams.rs",
     "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/seams.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/verdict_store.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::ban_store_enforces_through_the_seam",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::limiter_counts_classifies_and_reconfigures_through_the_seam",
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::monitor_mode_never_bans_through_the_seam",
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::temporary_ban_and_broad_key_refusal_through_the_seam",
-    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::limiter_counts_classifies_and_reconfigures_through_the_seam"
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::verdict_store_serves_through_the_seam"
    ],
    "go_test_map": {},
    "gaps": [
-    "VerdictLedger: no sticky-verdict store in Rust",
     "No shared (fleet) implementation; Redis backends are B23"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "BanLedger (including the monitor-only rate observation) and RateLimiter (including hot configure) are Rust traits implemented by the local stores, which is the compile-time proof Go had. Deliberate difference: dual-controlled bans are not on the seam.",
+   "notes": "BanLedger (including the monitor-only rate observation) and RateLimiter (including hot configure) are Rust traits implemented by the local stores, which is the compile-time proof Go had. Deliberate difference: dual-controlled bans are not on the seam. VerdictLedger seam added and implemented by VerdictStore.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::ban_store_enforces_through_the_seam": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::monitor_mode_never_bans_through_the_seam": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::temporary_ban_and_broad_key_refusal_through_the_seam": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::limiter_counts_classifies_and_reconfigures_through_the_seam": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::limiter_counts_classifies_and_reconfigures_through_the_seam": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::verdict_store_serves_through_the_seam": "passed"
    }
   },
   {
