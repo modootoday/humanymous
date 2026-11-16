@@ -302,6 +302,38 @@ mod tests {
             assert_eq!(refusal, Some(Rejection::new(400, "http_framing")), "{name}");
         }
     }
+    /// Legacy cmd/server/h1capture.go peeked lowercased header names in wire
+    /// order before net/http lost it; this parser keeps order and casing itself.
+    #[test]
+    fn header_wire_order_and_casing_are_retained() {
+        let frame = "GET /a?b=1 HTTP/1.1\r\nUser-Agent: x\r\nhost: app\r\nAccept-Language: en\r\nACCEPT: */*\r\nContent-Length: 0";
+        let (request, length) = parse_headers(frame.as_bytes()).unwrap();
+        assert_eq!(length, 0);
+        let names: Vec<&str> = request.headers.iter().map(|(n, _)| n.as_str()).collect();
+        assert_eq!(
+            names,
+            [
+                "User-Agent",
+                "host",
+                "Accept-Language",
+                "ACCEPT",
+                "Content-Length"
+            ]
+        );
+        let peeked: Vec<String> = names.iter().map(|n| n.to_ascii_lowercase()).collect();
+        assert_eq!(
+            peeked,
+            [
+                "user-agent",
+                "host",
+                "accept-language",
+                "accept",
+                "content-length"
+            ]
+        );
+        assert_eq!(request.header("Accept"), Some("*/*"));
+        assert_eq!(request.target, "/a?b=1");
+    }
     #[test]
     fn origin_response_preserves_cookie_bytes_and_rejects_ambiguity() {
         let bytes=b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\nConnection: close\r\n\r\nok";

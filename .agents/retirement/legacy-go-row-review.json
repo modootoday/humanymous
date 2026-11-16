@@ -651,7 +651,9 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/http.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::header_wire_order_and_casing_are_retained"
+   ],
    "go_test_map": {},
    "gaps": [
     "peek-and-replay into a normalized HTTP server",
@@ -660,8 +662,10 @@
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust gateway parses raw HTTP/1.1 itself and retains original header name/order/casing in Request.headers; no dedicated order-capture test found.",
-   "test_verification": {}
+   "notes": "Rust gateway parses raw HTTP/1.1 itself and retains original header name/order/casing in Request.headers, pinned by a wire-order test; HeaderInfo.order_reliable wiring is not ported.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::header_wire_order_and_casing_are_retained": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/h2capture.go",
