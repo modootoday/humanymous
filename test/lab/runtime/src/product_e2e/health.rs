@@ -11,6 +11,12 @@ fn reachable(address: &str) -> bool {
 pub fn healthy(role: Option<&str>) -> bool {
     match role {
         Some("gate") => reachable(super::GATE),
+        // Witness-required Gate: liveness and the runtime's serving-epoch latch.
+        // The marker is withdrawn once an audit append (for example a lost
+        // witness counter-signature) has failed the epoch closed.
+        Some("gate-witnessed") => {
+            Path::new(super::SERVING_MARKER).is_file() && reachable(super::GATE)
+        }
         // Never the application port: every application contact is an origin record.
         Some("origin") => reachable(super::OBSERVE),
         Some("witness") => Path::new(super::witness::READY_MARKER).is_file(),
@@ -29,5 +35,11 @@ mod tests {
     fn unknown_roles_are_unhealthy() {
         assert!(!super::healthy(None));
         assert!(!super::healthy(Some("authority")));
+    }
+    #[test]
+    fn witnessed_gate_requires_the_serving_marker() {
+        // No marker exists outside a witnessed Gate container.
+        assert!(!std::path::Path::new(super::super::SERVING_MARKER).exists());
+        assert!(!super::healthy(Some("gate-witnessed")));
     }
 }

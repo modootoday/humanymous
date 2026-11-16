@@ -11,6 +11,13 @@
 !adapters/
 !adapters/go/
 !adapters/go/pilot-contract.json
+# Read-only legacy differential oracles the collector WASM test build imports.
+!web/
+!web/js/
+!web/js/features/
+!web/js/features/mouse.js
+!web/js/features/keystroke.js
+!web/js/advanced.js
 !test/lab/runtime/
 !test/lab/runtime/Cargo.toml
 !test/lab/runtime/Cargo.lock

@@ -16,7 +16,7 @@
 # library ServiceHost::bind_with_witness in the lab supervisor.
 #
 # Health checks use exec form and a Rust actor subcommand; no shell runs.
-# Authority and browser are absent. This is never pass_product_clean_room.
+# Authority is absent. This is never pass_product_clean_room.
 x-health: &health
   interval: 2s
   timeout: 5s
@@ -81,9 +81,13 @@ services:
     mem_limit: 256m
     cpus: 1
     tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    # Readiness, not liveness: the probe also requires the runtime's
+    # serving-epoch latch (ServiceHost::epoch_health), mirrored to a private
+    # tmpfs marker. Three failures after first health mark it unhealthy.
     healthcheck:
       <<: *health
-      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "gate"]
+      retries: 3
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "gate-witnessed"]
     profiles: [witnessed]
   worigin:
     extends: {file: topology/sandbox.yaml, service: sandbox}
@@ -108,8 +112,56 @@ services:
       wgate: {condition: service_healthy}
       worigin: {condition: service_healthy}
     profiles: [witnessed]
+  # Profile "browser" (increment 3): a real browser in its own network
+  # namespace runs the Rust WASM collector's feature-gated runtime pilot test
+  # against a witness-required Gate. bgate composes the runtime library with
+  # a required external witness and an owned lab frontend proxy on :8080 (the
+  # gateway itself stays loopback-only); bwitness counter-signs its audit
+  # checkpoints through the runner broker. The browser reaches only bgate:8080
+  # through its own strict local proxy and a deny-only local resolver.
+  bwitness:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-witness"]
+    user: "65533:65533"
+    init: true
+    network_mode: none
+    stdin_open: true
+    profiles: [browser]
+  bgate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--browser-gate"]
+    init: true
+    networks: [browser]
+    stdin_open: true
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 2
+    tmpfs:
+      - "/tmp:rw,noexec,nosuid,size=64m,mode=1777"
+      - "/writer/keys:rw,noexec,nosuid,size=4m,mode=0700,uid=65532,gid=65532"
+      - "/writer/wal:rw,noexec,nosuid,size=32m,mode=0700,uid=65532,gid=65532"
+    profiles: [browser]
+  browser:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e-browser:local
+    init: true
+    networks: [browser]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
+    pids_limit: 512
+    mem_limit: 2g
+    cpus: 2
+    tmpfs:
+      - "/tmp:rw,noexec,nosuid,size=512m,mode=1777"
+      - "/dev/shm:rw,noexec,nosuid,nodev,size=256m"
+    profiles: [browser]
 networks:
   product:
     internal: true
   witnessed:
     internal: true
+  browser:
+    internal: true
+    enable_ipv6: false

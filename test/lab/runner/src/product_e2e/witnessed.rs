@@ -26,13 +26,18 @@ const AWAITING_LOSS: &str = "awaiting_dependency_loss";
 const DEPENDENCY_LOST: &str = "dependency-lost\n";
 
 /// Shared broker state; `pending` counts requests forwarded but unanswered.
+/// `roles` keeps the Gate's own typed supervisor frames (they carry a `role`
+/// and are never witness requests); `head` is the latest checkpoint the
+/// witness counter-signed, the independent pin a clean drain needs.
 #[derive(Default)]
-struct State {
-    lost: bool,
+pub(super) struct State {
+    pub(super) lost: bool,
     pending: usize,
-    gate_to_witness: BTreeMap<String, usize>,
-    witness_to_gate: BTreeMap<String, usize>,
-    injected_unavailable: usize,
+    pub(super) gate_to_witness: BTreeMap<String, usize>,
+    pub(super) witness_to_gate: BTreeMap<String, usize>,
+    pub(super) injected_unavailable: usize,
+    pub(super) roles: Vec<Value>,
+    pub(super) head: Option<Value>,
 }
 
 fn kind(frame: &[u8], key: &str) -> String {
@@ -42,7 +47,7 @@ fn kind(frame: &[u8], key: &str) -> String {
         .unwrap_or_else(|| "untyped".into())
 }
 
-fn frames(output: ChildStdout) -> mpsc::Receiver<std::io::Result<Vec<u8>>> {
+pub(super) fn frames(output: ChildStdout) -> mpsc::Receiver<std::io::Result<Vec<u8>>> {
     let (send, receive) = mpsc::sync_channel(4);
     std::thread::spawn(move || {
         let mut reader = BufReader::new(output);
@@ -77,7 +82,7 @@ fn unavailable(gate: &Mutex<ChildStdin>) -> std::io::Result<()> {
 }
 
 /// Start both relay directions after the identity handshake.
-fn relay(
+pub(super) fn relay(
     state: Arc<Mutex<State>>,
     gate_in: Arc<Mutex<ChildStdin>>,
     mut witness_in: ChildStdin,
@@ -89,9 +94,13 @@ fn relay(
         while let Ok(Ok(frame)) = from_witness.recv() {
             let Ok(mut st) = s.lock() else { return };
             st.pending = st.pending.saturating_sub(1);
-            *st.witness_to_gate
-                .entry(kind(&frame, "status"))
-                .or_default() += 1;
+            let status = kind(&frame, "status");
+            if status == "signed"
+                && let Ok(value) = serde_json::from_slice::<Value>(&frame)
+            {
+                st.head = Some(value["checkpoint"].clone());
+            }
+            *st.witness_to_gate.entry(status).or_default() += 1;
             let Ok(mut gate) = g.lock() else { return };
             if gate.write_all(&frame).and_then(|_| gate.flush()).is_err() {
                 return;
@@ -111,6 +120,12 @@ fn relay(
     std::thread::spawn(move || {
         while let Ok(Ok(frame)) = from_gate.recv() {
             let Ok(mut st) = state.lock() else { return };
+            if let Ok(value) = serde_json::from_slice::<Value>(&frame)
+                && value["role"].is_string()
+            {
+                st.roles.push(value);
+                continue;
+            }
             *st.gate_to_witness
                 .entry(kind(&frame, "operation"))
                 .or_default() += 1;
@@ -134,7 +149,7 @@ fn relay(
     });
 }
 
-fn attach(lab: &mut Lab, name: &str) -> Result<(ManagedChild, ChildStdin, ChildStdout)> {
+pub(super) fn attach(lab: &mut Lab, name: &str) -> Result<(ManagedChild, ChildStdin, ChildStdout)> {
     let mut command = Command::new("docker");
     command
         .args([
@@ -152,22 +167,29 @@ fn attach(lab: &mut Lab, name: &str) -> Result<(ManagedChild, ChildStdin, ChildS
     Ok(ManagedChild::spawn_duplex(&mut command)?)
 }
 
-fn next(receive: &mpsc::Receiver<std::io::Result<Vec<u8>>>, what: &str) -> Result<Value> {
+pub(super) fn next(
+    receive: &mpsc::Receiver<std::io::Result<Vec<u8>>>,
+    what: &str,
+) -> Result<Value> {
     let frame = receive
         .recv_timeout(Duration::from_secs(120))
         .map_err(|_| format!("{what}: no frame"))??;
     Ok(serde_json::from_slice(&frame)?)
 }
 
-fn wait_healthy(lab: &mut Lab, name: &str, seconds: u64) -> Result<Value> {
+pub(super) fn wait_health(lab: &mut Lab, name: &str, target: &str, seconds: u64) -> Result<Value> {
     let until = Instant::now() + Duration::from_secs(seconds);
     loop {
         let health = lab.json(&["inspect", "--format", "{{json .State.Health.Status}}", name])?;
-        if health == "healthy" || Instant::now() > until {
+        if health == target || Instant::now() > until {
             return Ok(health);
         }
         std::thread::sleep(Duration::from_millis(500));
     }
+}
+
+fn wait_healthy(lab: &mut Lab, name: &str, seconds: u64) -> Result<Value> {
+    wait_health(lab, name, "healthy", seconds)
 }
 
 /// Wait for one stdout line carrying `phase`, then return remaining lines.
@@ -342,8 +364,12 @@ pub(super) fn run(lab: &mut Lab, image: &str) -> Result<Value> {
         }
         let after = lab.inspect(WITNESS)?;
         let lost = state.lock().map_err(|_| "broker state")?.lost;
+        // Before any request after the loss: the latch has not failed yet,
+        // because the runtime only learns of the loss on its next append.
+        let wgate = lab.inspect(WGATE)?;
         report["witness_after_loss"] = json!({"state":after["state"],"exit_code":after["exit_code"],
-            "broker_observed_witness_stream_closed":lost});
+            "broker_observed_witness_stream_closed":lost,
+            "wgate_health_before_next_append":wgate["health"]});
         driver_in.write_all(DEPENDENCY_LOST.as_bytes())?;
         driver_in.flush()?;
     }
@@ -363,9 +389,17 @@ pub(super) fn run(lab: &mut Lab, image: &str) -> Result<Value> {
         "humanymous.product-e2e-witnessed-driver/1",
     )
     .unwrap_or(Value::Null);
+    // Readiness probe: the runtime's serving-epoch latch, mirrored to a marker.
+    // Docker marks the container unhealthy after three failed probes.
+    let health_after = if paused {
+        wait_health(lab, WGATE, "unhealthy", 60)?
+    } else {
+        Value::Null
+    };
     let wgate_after = lab.inspect(WGATE)?;
-    report["wgate_after_loss"] = json!({"state":wgate_after["state"],"health":wgate_after["health"],
-        "note":"the health probe is TCP liveness only; it does not observe witness loss"});
+    report["wgate_after_loss"] = json!({"state":wgate_after["state"],"health":health_after,
+        "probe":"gate-witnessed: TCP connect and the serving marker mirrored from ServiceHost::epoch_health",
+        "note":"the latch fails on the first failed audit append after the loss, not at the moment the witness stops"});
     let logs = lab.docker(&["logs", WGATE], 60, false)?;
     let readiness = last_json_line(&logs.stderr, "humanymous.product-e2e-gate-ready/1")
         .map_or(Value::Null, |value| value["readiness"].clone());
@@ -397,8 +431,12 @@ pub(super) fn run(lab: &mut Lab, image: &str) -> Result<Value> {
         && report["driver"]["driver_error"].is_null();
     let loss_pass = report["witness_after_loss"]["state"] == "exited"
         && report["witness_after_loss"]["broker_observed_witness_stream_closed"] == true;
+    let readiness_withdrawn = report["wgate_after_loss"]["health"] == "unhealthy"
+        && report["wgate_after_loss"]["state"] == "running";
+    report["wgate_readiness_withdrawn_after_failed_append"] = json!(readiness_withdrawn);
     let pass = driver_pass
         && loss_pass
+        && readiness_withdrawn
         && signed > 0
         && checks.iter().all(|(_, p)| *p)
         && report["health_before_driver"]["witness"] == "healthy"

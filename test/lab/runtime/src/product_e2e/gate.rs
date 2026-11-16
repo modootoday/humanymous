@@ -2,7 +2,9 @@
 //! the container tmpfs. `run` starts the shipped gateway binary with private
 //! inherited configuration. `witnessed` composes the same library `ServiceHost`
 //! with a required external witness, because the shipped binary has no witness
-//! input (`src/gateway/main.rs` calls `ServiceHost::bind` only). The passphrase
+//! input (`src/gateway/main.rs` calls `ServiceHost::bind` only). `witnessed`
+//! also mirrors the runtime's live epoch latch (`ServiceHost::epoch_health`)
+//! into a private tmpfs marker for the exec readiness probe. The passphrase
 //! never leaves this process and, for `run`, its child pipe.
 use ed25519_dalek::SigningKey;
 use humanymous_runtime::{
@@ -174,6 +176,26 @@ pub fn witnessed() -> Result<()> {
         .build()?;
     runtime.block_on(async move {
         let host = ServiceHost::bind_with_witness(configuration, external).await?;
+        let health = host.epoch_health();
+        if !health.serving() {
+            return Err("serving epoch failed closed before readiness".into());
+        }
+        // Readiness marker for the exec health probe. It exists only while the
+        // runtime's own fail-closed latch reports serving; a marker that cannot
+        // be withdrawn ends the process, so the probe never outlives the latch.
+        fs::write(super::SERVING_MARKER, b"serving\n")?;
+        tokio::spawn(async move {
+            while health.serving() {
+                tokio::time::sleep(Duration::from_millis(200)).await;
+            }
+            eprintln!(
+                "{}",
+                json!({"schema":"humanymous.product-e2e-gate-epoch/1","serving":false})
+            );
+            if fs::remove_file(super::SERVING_MARKER).is_err() {
+                std::process::exit(70);
+            }
+        });
         eprintln!(
             "{}",
             json!({"schema":"humanymous.product-e2e-gate-ready/1",

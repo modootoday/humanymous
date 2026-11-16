@@ -32,6 +32,9 @@ pub const GATE: &str = "127.0.0.1:18443";
 pub const ORIGIN: &str = "127.0.0.1:18080";
 /// Lab-only origin observation endpoint; never configured as a Gate origin.
 pub const OBSERVE: &str = "127.0.0.1:18081";
+/// Witnessed Gate readiness marker on its private tmpfs. Present only while
+/// the runtime's serving-epoch latch reports serving.
+pub const SERVING_MARKER: &str = "/tmp/product-e2e-gate.serving";
 
 pub fn address(text: &str) -> SocketAddr {
     text.parse().expect("fixed loopback address")

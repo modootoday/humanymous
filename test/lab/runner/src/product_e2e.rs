@@ -3,7 +3,10 @@
 //! adds shell-free health checks with `service_healthy` dependencies, an
 //! origin-loss-after-readiness case, and a witness-required Gate whose audit
 //! checkpoints are counter-signed by an independent witness container, with a
-//! witness-loss-after-readiness case.
+//! witness-loss-after-readiness case. Increment 3 adds a real browser that
+//! runs the Rust WASM collector against a witness-required Gate from its own
+//! network namespace, and turns the witnessed Gate probe into a readiness
+//! probe over the runtime's serving-epoch latch.
 //!
 //! Venue: an explicitly named cloud container whose own Linux engine listens on
 //! the local Unix socket. It never claims Windows Docker Desktop affinity or a
@@ -16,6 +19,7 @@ use std::{
     time::{Duration, Instant},
 };
 
+mod browser;
 mod witnessed;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -33,6 +37,7 @@ const ORIGIN_LOST_ATTACKER: &str = "humanymous-lab-product-e2e-attacker-origin-l
 struct Options {
     emit: PathBuf,
     build_ca: Option<PathBuf>,
+    build_proxy: Option<String>,
     keep_image: bool,
 }
 
@@ -40,6 +45,7 @@ fn options(args: &[String]) -> Result<Options> {
     let mut venue = None;
     let mut emit = None;
     let mut build_ca = None;
+    let mut build_proxy = None;
     let mut keep_image = false;
     let mut rest = args.iter();
     while let Some(flag) = rest.next() {
@@ -47,6 +53,7 @@ fn options(args: &[String]) -> Result<Options> {
             "--venue" => venue = rest.next().cloned(),
             "--emit" => emit = rest.next().map(PathBuf::from),
             "--build-ca" => build_ca = rest.next().map(PathBuf::from),
+            "--build-proxy" => build_proxy = rest.next().cloned(),
             "--keep-image" => keep_image = true,
             _ => return Err(format!("unknown product-e2e argument {flag}").into()),
         }
@@ -61,9 +68,17 @@ fn options(args: &[String]) -> Result<Options> {
     if build_ca.as_ref().is_some_and(|path| !path.is_file()) {
         return Err("--build-ca must name an existing file".into());
     }
+    // Build-only egress for venues whose containers reach the network only
+    // through a host-loopback proxy; never applied to a lab container.
+    if build_proxy.as_ref().is_some_and(|proxy| {
+        !(proxy.starts_with("http://127.0.0.1:") || proxy.starts_with("http://[::1]:"))
+    }) {
+        return Err("--build-proxy must be a host-loopback http:// proxy".into());
+    }
     Ok(Options {
         emit,
         build_ca,
+        build_proxy,
         keep_image,
     })
 }
@@ -303,9 +318,9 @@ pub fn run(args: &[String]) -> Result<i32> {
     let source = json!({"commit":commit,"branch":branch,"tree_clean":dirty==0,"dirty_entries":dirty,
         "dockerfile":DOCKERFILE,"compose":COMPOSE});
     let engine = lab.engine()?;
-    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":2,
+    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":3,
         "status":"started","pass_product_clean_room":false,"product_complete":false,
-        "label":"partial topology: gate + origin + attacker, and a witness-required gate with an independent witness container; not product e2e completion",
+        "label":"partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, and a real browser running the Rust WASM collector against a witnessed gate; not product e2e completion",
         "source":source,"venue":engine,
         "components":{
           "gate":{"present":true,"real":true,"binary":"humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs)",
@@ -319,14 +334,20 @@ pub fn run(args: &[String]) -> Result<i32> {
           "audit":{"present":true,"scope":"witnessed topology only","binary":"humanymous-runtime-pilot --product-witness: audit::checkpoint::service::serve with its own sealed identity and head state",
                   "independence":"separate container, UID 65533, network none, own tmpfs custody and passphrase; the runner brokers typed frames over private stdio",
                   "not_qualified":"identity is first-contact pinned through the broker, the head pin is not persisted outside the witness, tmpfs gives no power-loss durability"},
-          "browser":{"present":false,"note":"no browser or WASM collector; collect reports are client-asserted fixtures"}},
+          "browser":{"present":"see browser.pass and browser.actor","scope":"browser profile only",
+                  "binary":"humanymous-runtime-pilot --browser-driver: Firefox ESR through geckodriver, driven by the Rust wasm-bindgen-test-runner 0.2.130",
+                  "collector":"crates/collector built for wasm32-unknown-unknown with feature runtime-pilot; one fixture-selected test (crates/collector/src/browser/transport/runtime_pilot.rs) uses the real BrowserSession and BrowserCollector",
+                  "gate":"humanymous-runtime-pilot --browser-gate: the runtime library ServiceHost::bind_with_witness with an owned lab frontend proxy on :8080; the gateway itself stays loopback-only",
+                  "main_and_witnessed_drivers":"collect reports in the gate and witnessed topologies remain client-asserted fixtures"}},
         "constraint":"Configuration::validate requires loopback listen and origin (crates/sdk/humanymous-runtime/src/gateway/configuration.rs:127-128) and the accept loop drops non-loopback peers (crates/sdk/humanymous-runtime/src/gateway/application.rs:352 and 374), so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
         "clean_room":false,
         "clean_room_gaps":["engine venue is a cloud container, not Windows desktop-linux or genuine GitHub-hosted Linux",
           "single shared loopback namespace for gate, origin and attacker; origin is not reachable only through a Gate backend network",
-          "authority and browser roles are absent; the Gate cannot use a remote authority",
+          "the authority role is absent; the Gate cannot use a remote authority",
+          "the browser reaches the browser Gate through an owned lab proxy pair (browser-local and Gate frontend), not original client TLS/H2; the browser Gate is the runtime library, not the shipped binary",
           "the witnessed gate is the runtime library composed by a lab supervisor, not the shipped binary",
-          "health probes are liveness only (TCP connect or a witness-ready marker); they do not observe witness loss"]});
+          "the shipped-binary gate probe is TCP liveness only: crates/sdk/humanymous-runtime/src/gateway/main.rs:21 writes readiness once and exposes no live serving-epoch latch to its supervisor; only the witnessed gate probe reads ServiceHost::epoch_health",
+          "readiness withdrawal is lazy: the serving-epoch latch fails on the first failed audit append after a witness loss, not when the witness stops"]});
     let config = lab.docker(
         &[
             "compose",
@@ -342,33 +363,30 @@ pub fn run(args: &[String]) -> Result<i32> {
     receipt["source"]["resolved_compose_sha256"] =
         json!(crate::snapshot::digest(config.stdout.as_bytes()));
     let started = Instant::now();
-    let mut build: Vec<String> = [
-        "build",
-        "--file",
-        DOCKERFILE,
-        "--tag",
-        IMAGE,
-        "--label",
-        &format!("org.humanymous.source={commit}"),
-    ]
-    .map(str::to_owned)
-    .to_vec();
-    if let Some(ca) = &options.build_ca {
-        build.extend([
-            "--secret".to_owned(),
-            format!("id=egress_ca,src={}", ca.display()),
-        ]);
+    if options.build_ca.is_some() {
         receipt["build_egress_trust_anchor"] =
             json!("venue CA bundle supplied as a build-only secret for dependency fetch");
     }
-    build.push(".".into());
-    let build_args: Vec<&str> = build.iter().map(String::as_str).collect();
-    if lab.docker(&build_args, 3600, false)?.success {
-        receipt["build_seconds"] = json!(started.elapsed().as_secs());
-    } else {
+    if options.build_proxy.is_some() {
+        receipt["build_egress_proxy"] = json!(
+            "venue host-loopback HTTPS proxy supplied as a build-only proxy argument; builds used the host network; lab containers never do"
+        );
+    }
+    if !build_image(&mut lab, &options, &commit, None, IMAGE)? {
         receipt["status"] = json!("build_failed");
         return finish(&mut lab, receipt, &options, false);
     }
+    receipt["build_seconds"] = json!(started.elapsed().as_secs());
+    let started = Instant::now();
+    let browser_built = build_image(
+        &mut lab,
+        &options,
+        &commit,
+        Some("browser"),
+        browser::BROWSER_IMAGE,
+    )?;
+    receipt["browser_build_seconds"] = json!(started.elapsed().as_secs());
+    receipt["browser_build_success"] = json!(browser_built);
     let image = lab
         .docker(
             &["image", "inspect", "--format", "{{.Id}}", IMAGE],
@@ -388,6 +406,28 @@ pub fn run(args: &[String]) -> Result<i32> {
         .trim()
         .to_owned();
     receipt["image"] = json!({"tag":IMAGE,"id":image,"size_bytes":size.parse::<u64>().ok()});
+    let browser_image = if browser_built {
+        let id = lab
+            .docker(
+                &[
+                    "image",
+                    "inspect",
+                    "--format",
+                    "{{.Id}} {{.Size}}",
+                    browser::BROWSER_IMAGE,
+                ],
+                60,
+                true,
+            )?
+            .stdout;
+        let mut parts = id.split_whitespace();
+        let (id, size) = (parts.next().unwrap_or("").to_owned(), parts.next());
+        receipt["browser_image"] = json!({"tag":browser::BROWSER_IMAGE,"id":id,
+            "size_bytes":size.and_then(|s| s.parse::<u64>().ok())});
+        Some(id)
+    } else {
+        None
+    };
     let compose = ["compose", "--file", COMPOSE, "--project-name", PROJECT];
     let up = [
         &compose[..],
@@ -455,13 +495,25 @@ pub fn run(args: &[String]) -> Result<i32> {
     };
     let witnessed_pass = witnessed["pass"] == true;
     receipt["witnessed"] = witnessed;
-    receipt["status"] = json!(
-        if driver_pass && topology_pass && origin_lost_pass && witnessed_pass {
-            "partial_topology_measured"
-        } else {
-            "partial_topology_failed"
-        }
-    );
+    let browser = match &browser_image {
+        Some(browser_image) => match browser::run(&mut lab, &image, browser_image) {
+            Ok(report) => report,
+            Err(error) => json!({"pass":false,"error":error.to_string()}),
+        },
+        None => json!({"pass":false,"error":"browser image build failed"}),
+    };
+    let browser_pass = browser["pass"] == true;
+    receipt["components"]["browser"]["present"] =
+        json!(browser["actor"]["test_exit_code"].is_number());
+    receipt["browser"] = browser;
+    receipt["status"] =
+        json!(
+            if driver_pass && topology_pass && origin_lost_pass && witnessed_pass && browser_pass {
+                "partial_topology_measured"
+            } else {
+                "partial_topology_failed"
+            }
+        );
     finish(&mut lab, receipt, &options, true)
 }
 
@@ -505,6 +557,47 @@ fn origin_loss(lab: &mut Lab, compose: &[&str]) -> Result<Value> {
     )
 }
 
+/// Build one target of the product e2e Dockerfile from the source tree.
+fn build_image(
+    lab: &mut Lab,
+    options: &Options,
+    commit: &str,
+    target: Option<&str>,
+    tag: &str,
+) -> Result<bool> {
+    let mut build: Vec<String> = [
+        "build",
+        "--file",
+        DOCKERFILE,
+        "--tag",
+        tag,
+        "--label",
+        &format!("org.humanymous.source={commit}"),
+    ]
+    .map(str::to_owned)
+    .to_vec();
+    if let Some(target) = target {
+        build.extend(["--target".to_owned(), target.to_owned()]);
+    }
+    if let Some(ca) = &options.build_ca {
+        build.extend([
+            "--secret".to_owned(),
+            format!("id=egress_ca,src={}", ca.display()),
+        ]);
+    }
+    if let Some(proxy) = &options.build_proxy {
+        build.extend([
+            "--network".to_owned(),
+            "host".to_owned(),
+            "--build-arg".to_owned(),
+            format!("https_proxy={proxy}"),
+        ]);
+    }
+    build.push(".".into());
+    let build_args: Vec<&str> = build.iter().map(String::as_str).collect();
+    Ok(lab.docker(&build_args, 3600, false)?.success)
+}
+
 fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -> Result<i32> {
     let mut cleanup = json!({});
     if started {
@@ -518,6 +611,8 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
             "driver",
             "--profile",
             "witnessed",
+            "--profile",
+            "browser",
             "down",
             "--volumes",
             "--remove-orphans",
@@ -527,7 +622,13 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
         cleanup["compose_down"] = json!(lab.docker(&down, 120, false)?.success);
         let removed = lab
             .docker(
-                &["rm", "--force", ATTACKER, ORIGIN_LOST_ATTACKER],
+                &[
+                    "rm",
+                    "--force",
+                    ATTACKER,
+                    ORIGIN_LOST_ATTACKER,
+                    browser::BROWSER,
+                ],
                 60,
                 false,
             )?
@@ -548,6 +649,10 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
     }
     if !options.keep_image {
         cleanup["image_removed"] = json!(lab.docker(&["image", "rm", IMAGE], 120, false)?.success);
+        cleanup["browser_image_removed"] = json!(
+            lab.docker(&["image", "rm", browser::BROWSER_IMAGE], 120, false)?
+                .success
+        );
     }
     let after = lab.engine()?;
     let stable = after["engine_id"] == receipt["venue"]["engine_id"];
@@ -642,6 +747,23 @@ mod tests {
             fresh.display().to_string(),
         ];
         assert!(options(&args).is_ok());
+    }
+    #[test]
+    fn build_proxy_is_host_loopback_only() {
+        let fresh = std::env::temp_dir().join(format!("product-e2e-proxy-{}", std::process::id()));
+        let with = |proxy: &str| {
+            options(&[
+                "--venue".into(),
+                "cloud-container".into(),
+                "--emit".into(),
+                fresh.display().to_string(),
+                "--build-proxy".into(),
+                proxy.into(),
+            ])
+        };
+        assert!(with("http://127.0.0.1:3128").is_ok());
+        assert!(with("http://proxy.example:3128").is_err());
+        assert!(with("https://127.0.0.1:3128").is_err());
     }
     #[test]
     fn driver_receipt_is_found_by_schema_not_position() {
