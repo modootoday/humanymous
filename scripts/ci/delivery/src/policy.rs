@@ -1164,17 +1164,12 @@ pub fn pins(root: &Path) -> Result<()> {
     for (index, action) in actions.into_iter().enumerate() {
         let (name, sha) = action.rsplit_once('@').ok_or("bad action")?;
         let parts: Vec<_> = name.split('/').collect();
-        let url = format!(
-            "https://api.github.com/repos/{}/{}/commits/{sha}",
-            parts[0], parts[1]
-        );
-        let body = public_commit(&url, token.as_deref()).map_err(|e| {
+        public_commit(parts[0], parts[1], sha, token.as_deref()).map_err(|e| {
             format!(
                 "public action commit lookup {}/{total_actions} failed for {action}: {e}",
                 index + 1
             )
         })?;
-        verify_public_commit(&body, sha)?;
         let suffix = if parts.len() > 2 {
             format!("/{}/", parts[2..].join("/"))
         } else {
@@ -1207,30 +1202,42 @@ pub fn pins(root: &Path) -> Result<()> {
     Ok(())
 }
 
-/// Read a public commit, authenticated when a workflow token is present. Some
-/// upstream organizations reject the installation identity by IP allow list;
-/// only then is the same public request repeated once without the token.
-fn public_commit(url: &str, token: Option<&str>) -> Result<String> {
-    let get = |token: Option<&str>| {
+/// Prove a public commit exists, through the API authenticated by the workflow
+/// token when present. Some upstream organizations reject the installation
+/// identity (an IP allow list answers 403), and the unauthenticated API shares
+/// the runner IP's 60 requests per hour. Only on that 403 is the same identity
+/// proven from the public commit patch, whose first line names the full SHA.
+fn public_commit(owner: &str, repo: &str, sha: &str, token: Option<&str>) -> Result<()> {
+    let read = |url: &str, token: Option<&str>| -> std::result::Result<String, ureq::Error> {
         let request = ureq::get(url)
             .header("User-Agent", "humanymous-delivery")
             .header("Accept", "application/vnd.github+json");
-        match token {
+        let mut response = match token {
             Some(token) => request
                 .header("Authorization", &format!("Bearer {token}"))
-                .call(),
-            None => request.call(),
+                .call()?,
+            None => request.call()?,
+        };
+        response.body_mut().read_to_string()
+    };
+    let api = format!("https://api.github.com/repos/{owner}/{repo}/commits/{sha}");
+    match read(&api, token) {
+        Ok(body) => verify_public_commit(&body, sha),
+        Err(ureq::Error::StatusCode(403)) => {
+            let patch = format!("https://github.com/{owner}/{repo}/commit/{sha}.patch");
+            let body = read(&patch, None).map_err(|e| format!("api 403, patch: {e}"))?;
+            verify_public_patch(&body, sha)
         }
-    };
-    let response = match (get(token), token) {
-        (Err(ureq::Error::StatusCode(403)), Some(_)) => get(None),
-        (result, _) => result,
-    };
-    response
-        .map_err(|e| e.to_string())?
-        .body_mut()
-        .read_to_string()
-        .map_err(|e| e.to_string())
+        Err(error) => Err(error.to_string()),
+    }
+}
+
+fn verify_public_patch(body: &str, expected_sha: &str) -> Result<()> {
+    let first = body.lines().next().unwrap_or_default();
+    require(
+        first.split(' ').nth(1) == Some(expected_sha) && first.starts_with("From "),
+        "action commit identity mismatch",
+    )
 }
 
 fn verify_public_commit(body: &str, expected_sha: &str) -> Result<()> {
@@ -1899,6 +1906,22 @@ mod tests {
         assert!(document("release.yml", release).is_err());
         assert!(catalog(&manifest, &changed).is_err());
     }
+    #[test]
+    fn public_commit_patch_requires_exact_identity() {
+        let sha = "ed142fd0673e97e23eac54620cfb913e5ce36c25";
+        let line = format!("From {sha} Mon Sep 17 00:00:00 2001\nFrom: a\n");
+        assert!(verify_public_patch(&line, sha).is_ok());
+        for body in [
+            String::new(),
+            format!("From {} Mon Sep 17 00:00:00 2001\n", &sha[..39]),
+            format!("Subject: x\nFrom {sha} Mon Sep 17 00:00:00 2001\n"),
+            format!("Xrom {sha} Mon\n"),
+            "<html>rate limited</html>".into(),
+        ] {
+            assert!(verify_public_patch(&body, sha).is_err(), "{body}");
+        }
+    }
+
     #[test]
     fn public_commit_json_requires_exact_identity() {
         let sha = "ed142fd0673e97e23eac54620cfb913e5ce36c25";
