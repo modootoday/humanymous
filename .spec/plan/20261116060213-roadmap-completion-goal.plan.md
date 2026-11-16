@@ -141,3 +141,9 @@ unattended.
   turns unhealthy after witness loss, but only after the first failed append.
   Still open: Authority, the shipped binary's witness and live readiness,
   original client TLS, a DNS canary, and the clean-room split.
+- 2026-11-16: unit 35 increment 4 added an owned DNS canary (zero browser
+  arrivals, positive controls answered) and replaced the client-asserted
+  collect fixtures with the real collector's captured report
+  ([[evidence:root/20261116113042]]). Outcomes matched increment 3. The engine
+  answered COLLECTED for a report carrying a webdriver BOT signal; that is an
+  owner observation under the detection freeze, not a harness change.
