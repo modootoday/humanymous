@@ -1,5 +1,7 @@
 //! Bounded keyed measurement history; no signal or verdict authority.
 pub mod anomaly;
+pub mod cohort;
+pub mod interarrival;
 pub mod rate;
 pub mod sweep;
 use std::time::Duration;

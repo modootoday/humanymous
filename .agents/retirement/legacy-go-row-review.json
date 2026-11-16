@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 91,
-  "partial": 96,
-  "ported_unit": 125,
+  "missing": 90,
+  "partial": 95,
+  "ported_unit": 127,
   "not_applicable": 2
  },
  "by_package": {
@@ -77,10 +77,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 43,
-   "missing": 34,
+   "partial": 42,
+   "missing": 33,
    "not_applicable": 1,
-   "ported_unit": 7
+   "ported_unit": 9
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -1715,28 +1715,39 @@
   },
   {
    "baseline_path": "internal/gate/anomaly_shadow.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/network/history/anomaly/mod.rs"
+    "crates/sdk/humanymous-runtime/src/network/history/anomaly/mod.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_warmup_suppresses_early_flags",
+    "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::gc_uses_strict_ttl_and_reset_retains_clock",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history",
-    "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::gc_uses_strict_ttl_and_reset_retains_clock"
+    "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_warmup_suppresses_early_flags",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::last_seen_bound_refuses_new_fingerprints_after_sweep",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r261_first_hit_only_seeds_last_seen",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r262_r264_warmup_then_spike_flags_on_whole_millisecond_gaps",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r265_empty_fingerprint_is_ignored",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::time_regression_and_bad_configuration_are_refused"
    ],
    "go_test_map": {},
    "gaps": [
-    "per-fingerprint inter-arrival shadow observer wiring",
-    "log-only outlier reporting",
-    "last-seen map bounding/GC"
+    "Runtime serving wiring of the observer (log sink) is not connected"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Generic median/MAD history is ported from internal/anomaly; the Gate shadow observer is not wired.",
+   "notes": "Per-fingerprint whole-millisecond inter-arrival over the legacy detector parameters; returns the measurement instead of logging. Deliberate difference: the last-seen map is a hard bound that refuses new fingerprints when full after an idle sweep.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::gc_uses_strict_ttl_and_reset_retains_clock": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_warmup_suppresses_early_flags": "passed"
+    "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_warmup_suppresses_early_flags": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::last_seen_bound_refuses_new_fingerprints_after_sweep": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r261_first_hit_only_seeds_last_seen": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r262_r264_warmup_then_spike_flags_on_whole_millisecond_gaps": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r265_empty_fingerprint_is_ignored": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::time_regression_and_bad_configuration_are_refused": "passed"
    }
   },
   {
@@ -1873,15 +1884,49 @@
   },
   {
    "baseline_path": "internal/gate/cohort_shadow.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r253_empty_behavior_is_ignored_without_allocation",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r254_empty_cohort_key_or_session_is_ignored",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r255_near_identical_vectors_collide_including_ieee_edges",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r256_human_spread_separates_buckets",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::signature_keeps_low_sixteen_bits_like_go",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::non_finite_moment_has_no_signature",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::cohort_and_signature_bounds_refuse_instead_of_growing",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::time_regression_and_bad_configuration_are_refused"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "Runtime serving wiring of the observer (log sink) is not connected"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No cohort behavioral-signature shadow observer in Rust.",
-   "test_verification": {}
+   "notes": "Pure measurement kernel returning Flagged instead of logging; no verdict, ban or enforcement access. Deliberate differences: caller-ordered time, bounded signatures per cohort, non-finite moments yield no signature.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r253_empty_behavior_is_ignored_without_allocation": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r254_empty_cohort_key_or_session_is_ignored": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r255_near_identical_vectors_collide_including_ieee_edges": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r256_human_spread_separates_buckets": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::signature_keeps_low_sixteen_bits_like_go": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::non_finite_moment_has_no_signature": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::cohort_and_signature_bounds_refuse_instead_of_growing": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::time_regression_and_bad_configuration_are_refused": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/config.go",
@@ -3035,63 +3080,78 @@
    "baseline_path": "internal/gate/wargame_axis_shadow_rate_r251_test.go",
    "disposition": "partial",
    "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/mod.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_mad_floor_prevents_constant_stream_overflag",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_warmup_suppresses_early_flags",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::exact_window_and_cutpoint_boundaries_are_preserved",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_empty_key_is_ignored_without_normal_count_or_clock_advance",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_window_expiry_does_not_accumulate_spaced_requests",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r253_empty_behavior_is_ignored_without_allocation",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r254_empty_cohort_key_or_session_is_ignored",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r255_near_identical_vectors_collide_including_ieee_edges",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r256_human_spread_separates_buckets",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r261_first_hit_only_seeds_last_seen",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r265_empty_fingerprint_is_ignored",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_per_key_isolation_uses_ordered_caller_time",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::exact_window_and_cutpoint_boundaries_are_preserved",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::expansion_gap_and_reset_do_not_fabricate_retrospective_hits",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_sliding_window_classifies_twelve_fast_hits_as_hard"
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r272_rotating_ip_keys_split_while_stable_fingerprint_aggregates",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r273_shared_owner_loses_no_concurrent_hits",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_empty_key_is_ignored_without_normal_count_or_clock_advance",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_per_key_isolation_uses_ordered_caller_time",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_sliding_window_classifies_twelve_fast_hits_as_hard",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_window_expiry_does_not_accumulate_spaced_requests"
    ],
    "go_test_map": {
-    "TestWargameR251_CohortFlagsIdenticalFarm": null,
-    "TestWargameR252_CohortSoloSessionNoFlag": null,
-    "TestWargameR253_CohortEmptyBehaviorIgnored": null,
-    "TestWargameR254_CohortEmptyKeyIgnored": null,
-    "TestWargameR255_CohortSignatureBucketsNearCollide": null,
-    "TestWargameR256_CohortSignatureHumanSpread": null,
-    "TestWargameR257_CohortFlagReleasesSidSet": null,
-    "TestWargameR258_CohortPostFlagIgnoresMoreSids": null,
-    "TestWargameR259_CohortGCEvictsIdle": null,
-    "TestWargameR260_CohortNeverTouchesVerdictAPI": null,
-    "TestWargameR261_AnomalyFirstHitNoOutlier": null,
+    "TestWargameR251_CohortFlagsIdenticalFarm": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once",
+    "TestWargameR252_CohortSoloSessionNoFlag": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag",
+    "TestWargameR253_CohortEmptyBehaviorIgnored": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r253_empty_behavior_is_ignored_without_allocation",
+    "TestWargameR254_CohortEmptyKeyIgnored": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r254_empty_cohort_key_or_session_is_ignored",
+    "TestWargameR255_CohortSignatureBucketsNearCollide": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r255_near_identical_vectors_collide_including_ieee_edges",
+    "TestWargameR256_CohortSignatureHumanSpread": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r256_human_spread_separates_buckets",
+    "TestWargameR257_CohortFlagReleasesSidSet": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set",
+    "TestWargameR258_CohortPostFlagIgnoresMoreSids": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained",
+    "TestWargameR259_CohortGCEvictsIdle": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
+    "TestWargameR260_CohortNeverTouchesVerdictAPI": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only",
+    "TestWargameR261_AnomalyFirstHitNoOutlier": "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r261_first_hit_only_seeds_last_seen",
     "TestWargameR262_AnomalyWarmupNoFlag": "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_warmup_suppresses_early_flags",
     "TestWargameR263_AnomalySteadySeriesNoOverflag": "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_mad_floor_prevents_constant_stream_overflag",
     "TestWargameR264_AnomalySpikeFlags": "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history",
-    "TestWargameR265_AnomalyEmptyFPIgnored": null,
-    "TestWargameR266_AnomalyGCShrinks": null,
+    "TestWargameR265_AnomalyEmptyFPIgnored": "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r265_empty_fingerprint_is_ignored",
+    "TestWargameR266_AnomalyGCShrinks": "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
     "TestWargameR267_RateEmptyKeyZero": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_empty_key_is_ignored_without_normal_count_or_clock_advance",
     "TestWargameR268_RateCountsWithinWindow": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_sliding_window_classifies_twelve_fast_hits_as_hard",
     "TestWargameR269_RateWindowExpiry": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_window_expiry_does_not_accumulate_spaced_requests",
     "TestWargameR270_RateSoftHardLevels": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::exact_window_and_cutpoint_boundaries_are_preserved",
     "TestWargameR271_RateFingerprintNotIPAlone": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_per_key_isolation_uses_ordered_caller_time",
-    "TestWargameR272_RateIPRotateSameFPAggregates": null,
-    "TestWargameR273_RateConcurrentHits": null,
+    "TestWargameR272_RateIPRotateSameFPAggregates": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r272_rotating_ip_keys_split_while_stable_fingerprint_aggregates",
+    "TestWargameR273_RateConcurrentHits": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r273_shared_owner_loses_no_concurrent_hits",
     "TestWargameR274_RateGCBoundedScan": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
     "TestWargameR275_RateResetClears": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::expansion_gap_and_reset_do_not_fabricate_retrospective_hits",
     "TestWargameR276_RedisRateLimiterLevelDelegates": null,
     "TestWargameR277_RedisRateLimiterGCLocalFallback": null,
-    "TestWargameR278_BanStoreUsesHardRate": null,
-    "TestWargameR279_ShadowDoesNotAutoBan": null,
-    "TestWargameR280_AxisDClose": null
+    "TestWargameR278_BanStoreUsesHardRate": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
+    "TestWargameR279_ShadowDoesNotAutoBan": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only",
+    "TestWargameR280_AxisDClose": "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only"
    },
    "gaps": [
-    "cohort shadow (R251-R260)",
-    "anomaly shadow wrapper first-hit/empty/GC (R261,R265,R266)",
-    "concurrent limiter use (R273)",
-    "Redis limiter (R276,R277)",
-    "ban store hard-rate and shadow no-autoban (R278,R279)"
+    "Redis rate limiter (R276,R277) depends on the unported Redis store"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Generic anomaly and rate primitives map; Gate wiring does not.",
+   "notes": "Cohort, inter-arrival, rate and ban rows map to Rust tests; only the Redis limiter rows remain.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_mad_floor_prevents_constant_stream_overflag": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history": "passed",
@@ -3102,7 +3162,23 @@
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_empty_key_is_ignored_without_normal_count_or_clock_advance": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_per_key_isolation_uses_ordered_caller_time": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_sliding_window_classifies_twelve_fast_hits_as_hard": "passed",
-    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_window_expiry_does_not_accumulate_spaced_requests": "passed"
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::oracle_window_expiry_does_not_accumulate_spaced_requests": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r253_empty_behavior_is_ignored_without_allocation": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r254_empty_cohort_key_or_session_is_ignored": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r255_near_identical_vectors_collide_including_ieee_edges": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r256_human_spread_separates_buckets": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r257_flag_releases_session_set": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r258_post_flag_sessions_are_not_retained": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r260_r279_r280_shadow_outcome_is_measurement_only": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r261_first_hit_only_seeds_last_seen": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r265_empty_fingerprint_is_ignored": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r272_rotating_ip_keys_split_while_stable_fingerprint_aggregates": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r273_shared_owner_loses_no_concurrent_hits": "passed"
    }
   },
   {

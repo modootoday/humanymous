@@ -255,3 +255,35 @@ fn constructor_rejects_vec_layout_overflow_without_allocating_hits() {
     assert!(Config::new(ticks(1), 1, 2, limits).is_ok());
     // Constructors only: never construct a Limiter or allocate timestamp storage.
 }
+
+#[test]
+fn legacy_r272_rotating_ip_keys_split_while_stable_fingerprint_aggregates() {
+    let mut rate = limiter(1, 100, 200, 8, 300, 1);
+    let now = ticks(0);
+    assert_eq!(counted(rate.observe("ip:1.1.1.1", now).unwrap()).0, 1);
+    assert_eq!(counted(rate.observe("ip:2.2.2.2", now).unwrap()).0, 1);
+    rate.observe("ja4|devfp", now).unwrap();
+    let (count, ..) = counted(rate.observe("ja4|devfp", Duration::from_millis(1)).unwrap());
+    assert_eq!(count, 2, "a fingerprint-stable key aggregates rotating IPs");
+}
+
+#[test]
+fn legacy_r273_shared_owner_loses_no_concurrent_hits() {
+    use std::sync::{Arc, Mutex};
+    let rate = Arc::new(Mutex::new(limiter(1, 10_000, 20_000, 1, 100, 1)));
+    let now = ticks(0);
+    let workers: Vec<_> = (0..50)
+        .map(|_| {
+            let rate = Arc::clone(&rate);
+            std::thread::spawn(move || {
+                counted(rate.lock().unwrap().observe("conc", now).unwrap()).0
+            })
+        })
+        .collect();
+    let max = workers
+        .into_iter()
+        .map(|w| w.join().unwrap())
+        .max()
+        .unwrap();
+    assert_eq!(max, 50, "single-owner state under a lock keeps every hit");
+}
