@@ -316,39 +316,17 @@ jobs:
     if: ${{ !cancelled() && needs.policy.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 40
+    # Shipping guard only. The Rust runtime candidate is built and Trivy-scanned
+    # by rust-images; the retired Go core/gate builders no longer exist here.
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
         fetch-depth: 1
-    - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
-      with:
-        cache-binary: false
     - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
       with:
         toolchain: 1.99.1
     - run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- image-sources
-    - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
-      with:
-        context: .
-        file: build/${{ matrix.name }}.Dockerfile
-        push: false
-        load: true
-        tags: humanymous-${{ matrix.name }}:validation
-    - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
-      with:
-        cache: 'false'
-        image-ref: humanymous-${{ matrix.name }}:validation
-        exit-code: '1'
-        severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-        ignore-unfixed: false
-    strategy:
-      max-parallel: 1
-      fail-fast: false
-      matrix:
-        name:
-        - core
-        - gate
   packages:
     needs: [policy, images]
     if: ${{ !cancelled() && needs.policy.result == 'success' }}

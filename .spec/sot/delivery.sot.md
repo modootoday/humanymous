@@ -1661,3 +1661,16 @@ These are pure proxy producer/counter cases, not network/provider/browser or
 whole-product qualification. Existing preflight and full browser product gates
 remain required; this addition supplies no failure tolerance or qualification
 for the older1f87 or edc30181 executions.
+
+### Retired Go core/gate image builders (2026-11-16)
+
+build/core.Dockerfile, build/gate.Dockerfile and its .dockerignore are removed
+from codex/rust. The rust-validation `images` job keeps only the
+`image-sources` shipping guard; it no longer builds or scans Go images. The Rust
+runtime candidate stays built and Trivy-scanned by `rust-images`, and the release
+matrix keeps its single runtime identity. Removal satisfies only the
+retired-input precondition: candidate qualification flags stay false and
+promotion still needs actual build, nonroot, CVE, platform and full-product
+receipts. The frozen Go oracle checks out 981d25c and keeps building its own
+core/gate images from that tree. Legacy deployments/compose recipes that still
+name the removed builders are oracle-only and leave with the Go tree.

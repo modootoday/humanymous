@@ -119,10 +119,9 @@ gh run watch   # when run id known
 
 1. **validate** runs the shared required Rust workflow; **readiness** checks the
    exact source, native Node artifacts, registry trust and crate publication waves.
-2. **images** matrix (`fail-fast: false`): `build/core.Dockerfile` →
-   `ghcr.io/<owner>/humanymous-core`, `build/gate.Dockerfile` → `…/humanymous-gate`
-   (amd64+arm64), tags include SemVer + **`latest`** + sha, SBOM, provenance, cosign OIDC.
-3. **images-ok**: both digests present; imagetools inspect version + `latest`.
+2. **images** matrix: `build/rust/runtime-candidate.Dockerfile` →
+   `ghcr.io/<owner>/humanymous-runtime` (amd64+arm64; the Go core/gate builders are retired), tags include SemVer + **`latest`** + sha, SBOM, provenance, cosign OIDC.
+3. **images-ok**: the runtime digest is present; imagetools inspect version + `latest`.
 4. **gh-release** (`needs: [images, images-ok]`): git-cliff → GitHub Release body.
    Concurrent releases use `concurrency.group: release` with **cancel-in-progress: false**.
 5. **crates** publishes dependency-ordered waves through OIDC after readiness and
