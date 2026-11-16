@@ -31,7 +31,7 @@ test('bots runtime installs only locked headful Chromium and Firefox', async () 
   );
   assert.match(
     dockerfile,
-    /^FROM golang:1\.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS gobuild$/m,
+    /^FROM golang:1\.26-alpine@sha256:ecb67f987aa1a57794c91d19ade7ae0209f2f0f5496aaef9e6ae85ddf92d02ab AS gobuild$/m,
   );
   assert.match(
     dockerfile,
@@ -100,7 +100,7 @@ test('standard images use immutable compact build and runtime bases', async () =
     const dockerfile = await source(path);
     assert.match(
       dockerfile,
-      /^FROM --platform=\$BUILDPLATFORM golang:1\.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS builder$/m,
+      /^FROM --platform=\$BUILDPLATFORM golang:1\.26-alpine@sha256:ecb67f987aa1a57794c91d19ade7ae0209f2f0f5496aaef9e6ae85ddf92d02ab AS builder$/m,
     );
     assert.match(
       dockerfile,

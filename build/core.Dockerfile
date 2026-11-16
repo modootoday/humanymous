@@ -8,7 +8,7 @@
 # Pin the builder to the BUILD platform and cross-compile to the TARGET arch, so
 # multi-arch (amd64+arm64) release builds compile natively instead of emulating
 # under QEMU (SoT-31 R6). The binary is static (CGO off), so this is free.
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine@sha256:ecb67f987aa1a57794c91d19ade7ae0209f2f0f5496aaef9e6ae85ddf92d02ab AS builder
 ARG TARGETOS
 ARG TARGETARCH
 WORKDIR /src
