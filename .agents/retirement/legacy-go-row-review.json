@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 107,
-  "partial": 94,
-  "ported_unit": 111,
+  "missing": 91,
+  "partial": 96,
+  "ported_unit": 125,
   "not_applicable": 2
  },
  "by_package": {
@@ -95,7 +95,8 @@
    "missing": 6
   },
   "internal/mlcorrect": {
-   "missing": 16
+   "ported_unit": 14,
+   "partial": 2
   },
   "internal/mlserve": {
    "ported_unit": 4
@@ -6297,267 +6298,467 @@
   },
   {
    "baseline_path": "internal/mlcorrect/bundle_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support"
+   ],
    "go_test_map": {
-    "TestStage_AcceptsValidBundle": null,
-    "TestStage_RejectsStaleSchema": null,
-    "TestStage_DigestMismatch": null,
+    "TestStage_AcceptsValidBundle": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle",
+    "TestStage_RejectsStaleSchema": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema",
+    "TestStage_DigestMismatch": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest",
     "TestStage_SignatureRequiredWhenKeyConfigured": null,
-    "TestPromoteAndRollback": null,
-    "TestPromote_RequiresStaged": null
+    "TestPromoteAndRollback": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only",
+    "TestPromote_RequiresStaged": "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate"
    },
    "gaps": [
-    "SHA256/Ed25519 bundle staging, schema pin, promote/rollback"
+    "TestStage_SignatureRequiredWhenKeyConfigured needs Ed25519 in humanymous-core (dependency change)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "Bundles are in-memory MlpBundle JSON bytes; promote/rollback assert lab identities.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/bundle.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/bundle.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_empty_oversized_and_malformed_buffers",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::concurrent_lifecycle_transitions_keep_identities_consistent"
+   ],
    "go_test_map": {},
    "gaps": [
-    "SHA256/Ed25519 bundle staging, schema pin, promote/rollback"
+    "Ed25519 signature verification (ed25519-dalek is not a humanymous-core dependency; a configured key fails closed)",
+    "promote/rollback never activate a model (lab identities only, per SoT)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Exact-byte SHA-256 identity, schema pin, explicit unsigned lab policy and staged/active/previous transitions with Go's rollback semantics.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_accepts_a_valid_bundle": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_a_stale_schema": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_enforces_the_pinned_digest": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::signed_policy_fails_closed_without_ed25519_support": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_and_rollback_move_lab_identities_only": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::promote_requires_a_staged_candidate": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::stage_rejects_empty_oversized_and_malformed_buffers": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/bundle/tests.rs::concurrent_lifecycle_transitions_keep_identities_consistent": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/calibrate_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestConformal_HoldsBudget": null,
-    "TestConformal_RaisesWhenHumansOverFlagged": null,
-    "TestConformal_BotsDoNotMoveThreshold": null,
-    "TestConformal_FloorHolds": null
-   },
-   "gaps": [
-    "Human-only conformal/ACI threshold calibration"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_holds_budget_on_uniform_humans",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_rises_when_humans_are_over_flagged",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_ignores_bot_observations",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_floor_holds_when_humans_are_never_flagged"
+   ],
+   "go_test_map": {
+    "TestConformal_HoldsBudget": "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_holds_budget_on_uniform_humans",
+    "TestConformal_RaisesWhenHumansOverFlagged": "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_rises_when_humans_are_over_flagged",
+    "TestConformal_BotsDoNotMoveThreshold": "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_ignores_bot_observations",
+    "TestConformal_FloorHolds": "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_floor_holds_when_humans_are_never_flagged"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "Same assertions and values; the seed-7 Float32 stream is replayed through the pinned GoRng.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_holds_budget_on_uniform_humans": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_rises_when_humans_are_over_flagged": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_ignores_bot_observations": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_floor_holds_when_humans_are_never_flagged": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/calibrate.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Human-only conformal/ACI threshold calibration"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/calibration.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_holds_budget_on_uniform_humans",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_rises_when_humans_are_over_flagged",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_ignores_bot_observations",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_floor_holds_when_humans_are_never_flagged",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_applies_legacy_defaults_and_rejects_nonfinite_configuration",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_rejects_invalid_probabilities_without_state_change"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Human-only clamped ACI state with EMA and counts; bot and invalid observations never move theta; nonfinite configuration and invalid probabilities fail closed.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_holds_budget_on_uniform_humans": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_rises_when_humans_are_over_flagged": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_ignores_bot_observations": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_floor_holds_when_humans_are_never_flagged": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_applies_legacy_defaults_and_rejects_nonfinite_configuration": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/calibration/tests.rs::conformal_threshold_rejects_invalid_probabilities_without_state_change": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/canary_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestCanaryGuard_TripsOnHumanFPBreach": null,
-    "TestCanaryGuard_GraduatesBreachFree": null,
-    "TestCanaryGuard_TripsOnDriftAndPoisoning": null,
-    "TestController_ArmCanary_RollsBackOnOverFlagging": null
-   },
-   "gaps": [
-    "Canary arm/trip/graduate and rollback callback"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_once_on_human_fp_breach_after_min_observe",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_graduates_after_breach_free_probation_and_then_is_inert",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_on_drift_and_on_pass_poisoning",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_armed_canary_trips_on_sustained_over_flagging"
+   ],
+   "go_test_map": {
+    "TestCanaryGuard_TripsOnHumanFPBreach": "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_once_on_human_fp_breach_after_min_observe",
+    "TestCanaryGuard_GraduatesBreachFree": "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_graduates_after_breach_free_probation_and_then_is_inert",
+    "TestCanaryGuard_TripsOnDriftAndPoisoning": "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_on_drift_and_on_pass_poisoning",
+    "TestController_ArmCanary_RollsBackOnOverFlagging": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_armed_canary_trips_on_sustained_over_flagging"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "Same budgets and calls; the controller test also asserts exactly one callback.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_once_on_human_fp_breach_after_min_observe": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_graduates_after_breach_free_probation_and_then_is_inert": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_on_drift_and_on_pass_poisoning": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_armed_canary_trips_on_sustained_over_flagging": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/canary.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/canary.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_once_on_human_fp_breach_after_min_observe",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_graduates_after_breach_free_probation_and_then_is_inert",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_on_drift_and_on_pass_poisoning",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_callback_runs_outside_the_lock_and_may_reenter",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_defaults_off_snapshot_and_rejects_invalid_inputs"
+   ],
    "go_test_map": {},
    "gaps": [
-    "Canary arm/trip/graduate and rollback callback"
+    "Rollback callback is a lab notification only; no runtime rollback is performed"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Arm, trip and graduate with a one-shot callback invoked outside the lock.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_once_on_human_fp_breach_after_min_observe": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_graduates_after_breach_free_probation_and_then_is_inert": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_trips_on_drift_and_on_pass_poisoning": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_callback_runs_outside_the_lock_and_may_reenter": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/canary/tests.rs::canary_defaults_off_snapshot_and_rejects_invalid_inputs": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/controller_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestController_FireThresholdStartsAtTheta0": null,
-    "TestController_CalibrationRaisesThresholdOnOverFlaggedHumans": null,
-    "TestController_AmbiguousDoesNotCalibrate": null,
-    "TestController_DriftFiresOnStuddPlusCovariate": null,
-    "TestController_PassSolveAnomalySurfaces": null
-   },
-   "gaps": [
-    "Integrated correction controller and snapshots"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_proposal_starts_at_theta0",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_calibration_raises_proposal_on_over_flagged_humans",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_ambiguous_outcomes_do_not_calibrate_or_count_labels",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_drift_fires_on_studd_plus_covariate",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_surfaces_pass_solve_anomaly"
+   ],
+   "go_test_map": {
+    "TestController_FireThresholdStartsAtTheta0": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_proposal_starts_at_theta0",
+    "TestController_CalibrationRaisesThresholdOnOverFlaggedHumans": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_calibration_raises_proposal_on_over_flagged_humans",
+    "TestController_AmbiguousDoesNotCalibrate": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_ambiguous_outcomes_do_not_calibrate_or_count_labels",
+    "TestController_DriftFiresOnStuddPlusCovariate": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_drift_fires_on_studd_plus_covariate",
+    "TestController_PassSolveAnomalySurfaces": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_surfaces_pass_solve_anomaly"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "FireThreshold assertions use proposed_fire_threshold(); values are unchanged.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_proposal_starts_at_theta0": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_calibration_raises_proposal_on_over_flagged_humans": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_ambiguous_outcomes_do_not_calibrate_or_count_labels": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_drift_fires_on_studd_plus_covariate": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_surfaces_pass_solve_anomaly": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/controller.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/controller.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_proposal_starts_at_theta0",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_calibration_raises_proposal_on_over_flagged_humans",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_ambiguous_outcomes_do_not_calibrate_or_count_labels",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_drift_fires_on_studd_plus_covariate",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_surfaces_pass_solve_anomaly",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_rejects_invalid_probability_before_any_monitor_changes",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_snapshot_does_not_count_drift_events",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_wires_into_lab_runtime_without_moving_the_served_threshold"
+   ],
    "go_test_map": {},
    "gaps": [
-    "Integrated correction controller and snapshots"
+    "Deliberately not a ThresholdProvider (SoT: proposals never become a production provider); exposes proposed_fire_threshold() instead"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Implements the existing FeatureObserver and ShadowObserver seams; a test shows the served threshold stays 0.5.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_proposal_starts_at_theta0": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_calibration_raises_proposal_on_over_flagged_humans": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_ambiguous_outcomes_do_not_calibrate_or_count_labels": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_drift_fires_on_studd_plus_covariate": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_surfaces_pass_solve_anomaly": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_rejects_invalid_probability_before_any_monitor_changes": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_snapshot_does_not_count_drift_events": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_wires_into_lab_runtime_without_moving_the_served_threshold": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/drift_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestPageHinkley_DetectsRise": null,
-    "TestPSI_StableVsShifted": null,
-    "TestDriftMonitor_2of3Gate": null
-   },
-   "gaps": [
-    "Page-Hinkley, PSI and 2-of-3 drift gate"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::page_hinkley_detects_a_sustained_rise_without_false_alarms",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::psi_is_zero_for_identical_and_large_for_shifted_distributions",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::drift_gate_requires_two_of_three_agreeing_arms"
+   ],
+   "go_test_map": {
+    "TestPageHinkley_DetectsRise": "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::page_hinkley_detects_a_sustained_rise_without_false_alarms",
+    "TestPSI_StableVsShifted": "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::psi_is_zero_for_identical_and_large_for_shifted_distributions",
+    "TestDriftMonitor_2of3Gate": "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::drift_gate_requires_two_of_three_agreeing_arms"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "Same streams, thresholds and assertions.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::page_hinkley_detects_a_sustained_rise_without_false_alarms": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::psi_is_zero_for_identical_and_large_for_shifted_distributions": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::drift_gate_requires_two_of_three_agreeing_arms": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/drift.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Page-Hinkley, PSI and 2-of-3 drift gate"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/drift.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::page_hinkley_detects_a_sustained_rise_without_false_alarms",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::psi_is_zero_for_identical_and_large_for_shifted_distributions",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::drift_gate_requires_two_of_three_agreeing_arms",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::page_hinkley_defaults_reset_and_rejects_nonfinite",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::psi_rejects_mismatched_empty_and_invalid_fractions",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::drift_monitor_rejects_invalid_inputs_and_peek_does_not_count_events"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Page-Hinkley, PSI and the 2-of-3 gate; a non-counting peek keeps snapshots from mutating event counts.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::page_hinkley_detects_a_sustained_rise_without_false_alarms": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::psi_is_zero_for_identical_and_large_for_shifted_distributions": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::drift_gate_requires_two_of_three_agreeing_arms": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::page_hinkley_defaults_reset_and_rejects_nonfinite": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::psi_rejects_mismatched_empty_and_invalid_fractions": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/drift/tests.rs::drift_monitor_rejects_invalid_inputs_and_peek_does_not_count_events": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/features_monitor_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestFeatureMonitor_FreezesReferenceThenEvaluates": null,
-    "TestFeatureMonitor_StableTrafficBelowShiftThreshold": null,
-    "TestFeatureMonitor_ShiftedTrafficHighPSI": null,
-    "TestController_FeatureObserverDrivesCovariateArm": null
-   },
-   "gaps": [
-    "Frozen-reference per-feature PSI monitor"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_freezes_reference_before_evaluating",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_keeps_stable_traffic_below_shift_threshold",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_reports_high_psi_for_shifted_traffic",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_feature_observer_drives_covariate_arm"
+   ],
+   "go_test_map": {
+    "TestFeatureMonitor_FreezesReferenceThenEvaluates": "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_freezes_reference_before_evaluating",
+    "TestFeatureMonitor_StableTrafficBelowShiftThreshold": "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_keeps_stable_traffic_below_shift_threshold",
+    "TestFeatureMonitor_ShiftedTrafficHighPSI": "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_reports_high_psi_for_shifted_traffic",
+    "TestController_FeatureObserverDrivesCovariateArm": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_feature_observer_drives_covariate_arm"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "The NormFloat64 streams (seeds 1-4) are replayed through GoRng.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_freezes_reference_before_evaluating": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_keeps_stable_traffic_below_shift_threshold": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_reports_high_psi_for_shifted_traffic": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_feature_observer_drives_covariate_arm": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/features_monitor.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Frozen-reference per-feature PSI monitor"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/features.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_freezes_reference_before_evaluating",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_keeps_stable_traffic_below_shift_threshold",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_reports_high_psi_for_shifted_traffic",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_rejects_invalid_windows_shapes_and_values",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::quantile_edges_and_bucket_lookup_follow_legacy_clamping"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Frozen reference with per-feature quantile buckets and a rolling max-PSI window bounded to 1..=4096; wrong width or nonfinite features are typed errors.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_freezes_reference_before_evaluating": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_keeps_stable_traffic_below_shift_threshold": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_reports_high_psi_for_shifted_traffic": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::feature_monitor_rejects_invalid_windows_shapes_and_values": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/features/tests.rs::quantile_edges_and_bucket_lookup_follow_legacy_clamping": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/oracle_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestConfirm_LabelMapping": null,
-    "TestPassGuard_CapsFraction": null,
-    "TestPassGuard_AnomalyStopsIngestion": null
-   },
-   "gaps": [
-    "Label oracle, Pass-fraction cap and solve-anomaly quarantine"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::confirm_maps_outcomes_to_labels_and_auto_admission",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_caps_the_pass_fraction_of_a_batch",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_anomaly_stops_pass_ingestion"
+   ],
+   "go_test_map": {
+    "TestConfirm_LabelMapping": "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::confirm_maps_outcomes_to_labels_and_auto_admission",
+    "TestPassGuard_CapsFraction": "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_caps_the_pass_fraction_of_a_batch",
+    "TestPassGuard_AnomalyStopsIngestion": "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_anomaly_stops_pass_ingestion"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "Same assertions; the cap range covers the float32 result.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::confirm_maps_outcomes_to_labels_and_auto_admission": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_caps_the_pass_fraction_of_a_batch": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_anomaly_stops_pass_ingestion": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/oracle.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Label oracle, Pass-fraction cap and solve-anomaly quarantine"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/oracle.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::confirm_maps_outcomes_to_labels_and_auto_admission",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_caps_the_pass_fraction_of_a_batch",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_anomaly_stops_pass_ingestion",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_defaults_full_fraction_and_rejects_invalid_inputs"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Outcome-to-label mapping (ambiguous never auto-labelled), float32 Pass-fraction cap and solve-rate anomaly quarantine; batch counts above 100000 are rejected.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::confirm_maps_outcomes_to_labels_and_auto_admission": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_caps_the_pass_fraction_of_a_batch": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_anomaly_stops_pass_ingestion": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/oracle/tests.rs::pass_guard_defaults_full_fraction_and_rejects_invalid_inputs": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/shadow_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestShadowComparator_TracksDivergence": null,
-    "TestShadowComparator_AgreementAndAbstain": null,
-    "TestController_ObserveShadow_FeedsSnapshot": null
-   },
-   "gaps": [
-    "Shadow comparator divergence/agreement counts"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_tracks_directional_divergence",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_counts_agreement_and_candidate_abstention",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_shadow_observer_feeds_snapshot"
+   ],
+   "go_test_map": {
+    "TestShadowComparator_TracksDivergence": "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_tracks_directional_divergence",
+    "TestShadowComparator_AgreementAndAbstain": "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_counts_agreement_and_candidate_abstention",
+    "TestController_ObserveShadow_FeedsSnapshot": "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_shadow_observer_feeds_snapshot"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction module; SoT model-training-correction lists it as required, not retired.",
-   "test_verification": {}
+   "notes": "Same values and assertions.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_tracks_directional_divergence": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_counts_agreement_and_candidate_abstention": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/controller/tests.rs::controller_shadow_observer_feeds_snapshot": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/shadow.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Shadow comparator divergence/agreement counts"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/shadow.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_tracks_directional_divergence",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_counts_agreement_and_candidate_abstention",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_counts_lenient_candidates_and_active_abstention",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_rejects_invalid_pairs_without_counting_them"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart; SoT model-training-correction keeps it in scope (only observer/provider seams exist in model/inference).",
-   "test_verification": {}
+   "notes": "Comparable-pair counts, abstention directions, mean absolute delta, fire agreement and direction counts over inference::Prediction.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_tracks_directional_divergence": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_counts_agreement_and_candidate_abstention": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_counts_lenient_candidates_and_active_abstention": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/shadow/tests.rs::shadow_comparator_rejects_invalid_pairs_without_counting_them": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlserve/mlp_test.go",
