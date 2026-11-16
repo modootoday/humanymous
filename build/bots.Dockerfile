@@ -17,7 +17,7 @@
 FROM lwthiker/curl-impersonate:0.6-chrome@sha256:4039d9d38b0182dc2b8550b1320da2fd0e7b9720f21f299fa0e40cbfba95cc64 AS curl-impersonate
 
 # ---- Go attack + gate binaries ----------------------------------------
-FROM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS gobuild
+FROM golang:1.26-alpine@sha256:ecb67f987aa1a57794c91d19ade7ae0209f2f0f5496aaef9e6ae85ddf92d02ab AS gobuild
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
