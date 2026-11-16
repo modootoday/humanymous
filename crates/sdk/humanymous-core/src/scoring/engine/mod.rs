@@ -872,4 +872,64 @@ mod tests {
             Err(ScoringError::NonFiniteContribution)
         );
     }
+
+    /// Net-policy disarm of HR-19 and HR-24 (legacy `netClassMode`). Every
+    /// expected row was produced by the Go engine at baseline 981d25c with the
+    /// same single BOT network signal and a probed client.
+    #[test]
+    fn net_policy_disarms_residual_classes_like_go() {
+        let policies: [(&str, Option<&[(&str, &str)]>); 5] = [
+            ("nil", None),
+            ("empty", Some(&[])),
+            ("corr_monitor", Some(&[("net.correlation", "monitor")])),
+            ("hop_enforce", Some(&[("net.proxy.hop", "enforce")])),
+            ("hop_blank", Some(&[("net.proxy.hop", "")])),
+        ];
+        let go = [
+            (
+                "l5.correlation.proxy_rotation",
+                ["HR-19", "HR-19", "", "HR-19", "HR-19"],
+            ),
+            (
+                "l5.correlation.fp_churn_proxy",
+                ["HR-19", "HR-19", "", "HR-19", "HR-19"],
+            ),
+            ("l7.pow.too_fast", ["HR-19"; 5]),
+            ("l5.header.proxy_hop", ["HR-24", "", "", "HR-24", ""]),
+        ];
+        for (signal, expected) in go {
+            for ((name, policy), rule) in policies.iter().zip(expected) {
+                let engine = Engine {
+                    net_policy: policy.map(|entries| {
+                        entries
+                            .iter()
+                            .map(|(class, mode)| ((*class).to_owned(), (*mode).to_owned()))
+                            .collect()
+                    }),
+                    ..Engine::default()
+                };
+                let mut report = SessionReport::default();
+                report.client.environment.probed = true;
+                report.network.signals = Some(vec![Signal::new(
+                    signal,
+                    serde_json::json!(true),
+                    Verdict::Bot,
+                    1.0,
+                    Source::Server,
+                    "",
+                )]);
+                let result = engine.score(&mut report).unwrap();
+                let verdict = match rule {
+                    "HR-19" => "DENY",
+                    "HR-24" => "CHALLENGE",
+                    _ => "ALLOW",
+                };
+                assert_eq!(
+                    (result.hard_rule_fired.as_str(), result.verdict.as_str()),
+                    (rule, verdict),
+                    "{signal} under {name} policy"
+                );
+            }
+        }
+    }
 }
