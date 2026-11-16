@@ -395,6 +395,8 @@ jobs:
         toolchain: 1.99.1
     - name: Execute actual Node and Bun host component groups
       run: cargo run --locked -p humanymous-delivery -- component node-host
+    - name: Produce same-run native qualification receipt
+      run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- node-qualification
     - name: Verify native package qualification and archive
       if: ${{ !cancelled() }}
       run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- node

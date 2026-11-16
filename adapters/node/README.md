@@ -7,8 +7,10 @@ declarations. Historical handwritten src/ and test/ files are excluded from the
 archive. New implementation and tests are Rust1.99.1/edition2024.
 
 Qualification is in progress. Windows and isolated Linux component measurements
-are separate from full product acceptance; releaseQualifiedTuples remains empty
-and npm publication is gated. Later source edits await resumed verification.
+are separate from full product acceptance. releaseQualifiedTuples lists only
+linux-x64-gnu, and each delivery run must re-prove it with a same-run receipt
+from actual Node/Bun host runs. That receipt has no production browser ALLOW
+evidence. npm publication stays gated, and other tuples remain unqualified.
 
 `createExpressServer(optionsJson, app)` returns an owned HTTP server. Its guard
 runs before the existing app's parsers/effects and rejects unsupported upgrade/

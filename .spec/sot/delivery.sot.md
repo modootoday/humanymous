@@ -1661,3 +1661,28 @@ These are pure proxy producer/counter cases, not network/provider/browser or
 whole-product qualification. Existing preflight and full browser product gates
 remain required; this addition supplies no failure tolerance or qualification
 for the older1f87 or edc30181 executions.
+
+### Same-run Node native qualification producer (2026-11-16)
+
+The `node` job adds `node-qualification` between the node-host component and
+`node`. It writes target/node-native/qualification.json only from this job's
+executions on the exact clean GITHUB_SHA: the newest node-host component bundle
+(passed, unchanged source/manifest/lock/toolchain, cleanup observed) whose stage
+logs must still match their recorded digests, and its own package build and
+inspection. It re-runs the owning host-row parser over the test log, re-checks
+image source labels, and takes the tuple from the inspected image (linux/amd64
+plus the provisioned linux-x64-gnu host-glue addon). The component now records
+the SHA256 of the authority executable copied from the stopped tested container;
+production rows print their observed CHALLENGE or DENY verdict. Per runtime,
+test_count and verdict_counts cover only the two production-application-http
+rows; ALLOW is 0, not inferred from synthetic evidence. Synthetic and unavailable
+cases stay in a separate per-profile count. Host Node 24/Bun 1.3.14 must load
+both production loaders without host-pilot, and provenance must list the tested
+tuple's binary. full_native_qualified is derived from these checks, and the
+producer runs node_receipt before it writes the public summary.
+releaseQualifiedTuples lists only linux-x64-gnu. The component still cannot
+create the receipt itself. The receipt scope excludes production browser ALLOW
+and full-product qualification. The tested addon is the debug host-pilot build
+of the same source. Node then rebuilds the release package and must reproduce
+the same provenance bytes, so the bound artifact is source-bound, not
+byte-identical to the tested one.

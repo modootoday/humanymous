@@ -8,6 +8,8 @@ use std::{
 };
 mod native;
 pub use native::{native_artifacts, native_artifacts_bound};
+mod node_qualification;
+pub use node_qualification::produce as node_qualification;
 
 pub fn metadata(root: &Path) -> Result<Value> {
     serde_json::from_str(&command::text(
