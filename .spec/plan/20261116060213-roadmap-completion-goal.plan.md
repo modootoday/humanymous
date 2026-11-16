@@ -3,7 +3,7 @@ id: plan:root/20261116060213
 title: Roadmap completion goal and unattended execution contract
 status: active
 created: 2026-11-16T06:02:13Z
-updated: 2026-11-16T07:14:14Z
+updated: 2026-11-16T10:55:00Z
 rel:
   depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix]
 ---
@@ -123,3 +123,13 @@ unattended.
   gives results symmetric to Go, and Go is retired at that merge. They chose a
   differential parity gate as the measure (units 37–38). Unit 24 no longer
   includes per-row retirement.
+- 2026-11-16: unit 35 increments 1 and 2 ran the real Rust Gate in Docker
+  with a recording origin, an attacker, an independent audit witness, health
+  checks and dependency loss after readiness; every assertion passed
+  ([[evidence:root/20261116095026]], [[evidence:root/20261116103304]]). The
+  topology is partial and not clean-room. Authority cannot run as a separate
+  container (the Gate decides in-process), the clean-room L5 split needs an
+  owner decision on the loopback-only listen and origin checks, and the
+  browser and WASM collector are not wired. Unit 36 stays open: the scaffold
+  pilots are wired into the Cap0 chain, transfer applicator and snapshot code,
+  and five of them stand in for components unit 35 does not cover yet.
