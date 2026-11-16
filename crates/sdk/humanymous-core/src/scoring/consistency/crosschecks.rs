@@ -184,4 +184,26 @@ mod tests {
                 .consistent
         );
     }
+
+    /// Go TestRuleCrossCheckIDsResolve (internal/scoring/resolution_test.go at
+    /// baseline 981d25c): every cross-check id a hard rule references is a
+    /// weighted cross-check, so a typo cannot silently disable the rule.
+    #[test]
+    fn rule_cross_check_ids_resolve() {
+        let source = include_str!("../promotion/mod.rs");
+        let mut seen = Vec::new();
+        for (index, _) in source.match_indices("cross_fail(\"") {
+            let rest = &source[index + "cross_fail(\"".len()..];
+            let id = &rest[..rest.find('"').unwrap()];
+            assert!(
+                WEIGHTS.iter().any(|(known, _)| *known == id),
+                "hard rule references unknown cross-check id {id}"
+            );
+            if !seen.contains(&id) {
+                seen.push(id);
+            }
+        }
+        seen.sort_unstable();
+        assert_eq!(seen, ["x.browser_no_js", "x.ua_vs_h2", "x.ua_vs_ja4"]);
+    }
 }

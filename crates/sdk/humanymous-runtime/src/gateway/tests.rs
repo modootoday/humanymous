@@ -413,6 +413,8 @@ fn audit_is_minimized_and_failure_poison_is_permanent() {
     let cfg = config();
     let audit = Audit::default();
     let mut app = Application::new(config(), Default::default(), Box::new(audit.clone())).unwrap();
+    let health = app.epoch_health();
+    assert!(health.serving());
     let issued = issue(&mut app, 10_000);
     collected(&mut app, &cfg, &issued, 10_000);
     let req = protected(&cfg, &issued, 2, 10_000);
@@ -420,6 +422,7 @@ fn audit_is_minimized_and_failure_poison_is_permanent() {
         app.decide(&req, || Ok(10_000)).unwrap(),
         Decision::Origin { .. }
     ));
+    assert!(health.serving());
     let serialized = serde_json::to_string(&*audit.records.lock().unwrap()).unwrap();
     for secret in [
         issued["session"].as_str().unwrap(),
@@ -435,8 +438,13 @@ fn audit_is_minimized_and_failure_poison_is_permanent() {
         app.decide(&req, || Ok(10_000)).err().unwrap().code,
         "durable_audit"
     );
+    assert!(!health.serving() && !app.epoch_health().serving());
     audit.fail.store(false, Ordering::SeqCst);
     assert!(app.decide(&req, || Ok(10_000)).is_err());
+    assert!(
+        !health.serving(),
+        "a poisoned epoch never reports serving again"
+    );
     assert!(
         app.decide(&request("POST", "/_humanymous/session", vec![]), || Ok(
             10_000
@@ -466,7 +474,13 @@ fn deadline_after_append_and_clock_rollback_never_release_origin() {
         "deadline"
     );
     assert_eq!(audit.records.lock().unwrap().len(), 2);
+    let health = app.epoch_health();
+    assert!(
+        health.serving(),
+        "a deadline refusal does not poison the epoch"
+    );
     assert!(app.decide(&req, || Ok(9_999)).is_err());
+    assert!(!health.serving(), "clock rollback fails the epoch closed");
 }
 #[test]
 fn report_rejects_server_planes_and_uses_registry_scores() {

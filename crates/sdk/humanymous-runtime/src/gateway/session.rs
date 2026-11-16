@@ -9,6 +9,10 @@ use humanymous_core::integrity::request::{self, CanonicalInput, VerifyParams};
 use humanymous_core::signals::report::ClientReport;
 use serde::Serialize;
 use std::collections::HashMap;
+use std::sync::{
+    Arc,
+    atomic::{AtomicBool, Ordering},
+};
 use zeroize::Zeroizing;
 mod admission;
 use admission::Window;
@@ -106,11 +110,29 @@ pub fn canonical(config: &Configuration, request: &Request, id: &str, deadline: 
     text
 }
 
+/// Read-only, cloneable view of one serving epoch's fail-closed latch.
+///
+/// `serving` turns false, permanently for the process, once an audit append
+/// failure or a clock rollback has poisoned the epoch. A true value only means
+/// no such failure has been observed yet: it is not proof that durable audit or
+/// a remote witness is reachable now, because failures surface on the next
+/// append.
+#[derive(Clone, Debug)]
+pub struct EpochHealth(Arc<AtomicBool>);
+
+impl EpochHealth {
+    /// False once the epoch has failed closed; it never returns to true.
+    pub fn serving(&self) -> bool {
+        !self.0.load(Ordering::Acquire)
+    }
+}
+
 /// One serialized application epoch. Callers never evict live sessions.
 pub struct Sessions {
     entries: HashMap<String, Session>,
     last_now: u64,
     poisoned: bool,
+    failed_closed: Arc<AtomicBool>,
 }
 
 impl Default for Sessions {
@@ -126,13 +148,24 @@ impl Sessions {
             entries: HashMap::new(),
             last_now: 0,
             poisoned: false,
+            failed_closed: Arc::new(AtomicBool::new(false)),
         }
+    }
+
+    /// Shared view of this epoch's fail-closed latch.
+    pub fn health(&self) -> EpochHealth {
+        EpochHealth(self.failed_closed.clone())
+    }
+
+    fn fail_closed(&mut self) {
+        self.poisoned = true;
+        self.failed_closed.store(true, Ordering::Release);
     }
 
     /// Reject rollback without reviving expired/consumed work.
     pub fn observe(&mut self, now: u64) -> Result<(), Rejection> {
         if self.poisoned || now < self.last_now || now > 9_007_199_254_740_991 {
-            self.poisoned = true;
+            self.fail_closed();
             return Err(Rejection::new(503, "session_epoch"));
         }
         self.last_now = now;
@@ -443,7 +476,7 @@ impl Sessions {
 
     /// Fail closed for the lifetime of this process after an audit failure.
     pub fn poison(&mut self) {
-        self.poisoned = true;
+        self.fail_closed();
     }
     pub(in crate::gateway) fn invalidate_all(&mut self) -> Result<(), Rejection> {
         if self.poisoned {

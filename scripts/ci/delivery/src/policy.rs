@@ -1046,6 +1046,7 @@ pub fn check(root: &Path) -> Result<()> {
             .filter(|p| p.ends_with(".rs") || p.ends_with(".yml") || p.ends_with(".toml"))
             .map(str::to_owned),
     )?;
+    crate::parity::check(root)?;
     println!("Rust workflow authorization/LF policy passed");
     Ok(())
 }

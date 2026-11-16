@@ -1,0 +1,189 @@
+# Roadmap unit 35: real Rust product e2e partial topology.
+# All containers run one source-built image. Run via: humanymous-lab-runner product-e2e.
+#
+# Default services (increment 1, plus health checks): the shipped
+# humanymous-runtime gateway (gate), an owned recording origin and an
+# attacker/driver. The gateway only accepts loopback listen/origin addresses
+# and loopback peers, so origin and attacker join the gate container's network
+# namespace. That namespace sits on one internal network: no published ports,
+# no egress.
+#
+# Profile "witnessed" (increment 2): a witness-required Gate (wgate) whose
+# sealed WAL checkpoints are counter-signed by an independent witness
+# container (separate UID, no network, own tmpfs custody). The runner is the
+# trusted broker that relays typed audit frames between their private stdio.
+# The shipped gateway binary has no witness input, so wgate composes the same
+# library ServiceHost::bind_with_witness in the lab supervisor.
+#
+# Health checks use exec form and a Rust actor subcommand; no shell runs.
+# Authority is absent. This is never pass_product_clean_room.
+x-health: &health
+  interval: 2s
+  timeout: 5s
+  retries: 30
+  start_period: 120s
+  start_interval: 1s
+services:
+  gate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-gate"]
+    init: true
+    networks: [product]
+    pids_limit: 64
+    mem_limit: 256m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "gate"]
+  origin:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-origin"]
+    init: true
+    network_mode: "service:gate"
+    depends_on:
+      gate: {condition: service_healthy}
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "origin"]
+  attacker:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-driver"]
+    init: true
+    network_mode: "service:gate"
+    depends_on:
+      gate: {condition: service_healthy}
+      origin: {condition: service_healthy}
+    profiles: [driver]
+  witness:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-witness"]
+    user: "65533:65533"
+    init: true
+    network_mode: none
+    stdin_open: true
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "witness"]
+    profiles: [witnessed]
+  wgate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-gate-witnessed"]
+    init: true
+    networks: [witnessed]
+    stdin_open: true
+    pids_limit: 64
+    mem_limit: 256m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+    # Readiness, not liveness: the probe also requires the runtime's
+    # serving-epoch latch (ServiceHost::epoch_health), mirrored to a private
+    # tmpfs marker. Three failures after first health mark it unhealthy.
+    healthcheck:
+      <<: *health
+      retries: 3
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "gate-witnessed"]
+    profiles: [witnessed]
+  worigin:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-origin"]
+    init: true
+    network_mode: "service:wgate"
+    depends_on:
+      wgate: {condition: service_healthy}
+    healthcheck:
+      <<: *health
+      test: ["CMD", "/usr/local/bin/humanymous-runtime-pilot", "--product-health", "origin"]
+    profiles: [witnessed]
+  wdriver:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-driver-witnessed"]
+    init: true
+    network_mode: "service:wgate"
+    stdin_open: true
+    depends_on:
+      wgate: {condition: service_healthy}
+      worigin: {condition: service_healthy}
+    profiles: [witnessed]
+  # Profile "browser" (increment 3): a real browser in its own network
+  # namespace runs the Rust WASM collector's feature-gated runtime pilot test
+  # against a witness-required Gate. bgate composes the runtime library with
+  # a required external witness and an owned lab frontend proxy on :8080 (the
+  # gateway itself stays loopback-only); bwitness counter-signs its audit
+  # checkpoints through the runner broker. The browser reaches only bgate:8080
+  # through its own strict local proxy and a deny-only local resolver.
+  bwitness:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-witness"]
+    user: "65533:65533"
+    init: true
+    network_mode: none
+    stdin_open: true
+    profiles: [browser]
+  bgate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--browser-gate"]
+    init: true
+    networks: [browser]
+    stdin_open: true
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 2
+    tmpfs:
+      - "/tmp:rw,noexec,nosuid,size=64m,mode=1777"
+      - "/writer/keys:rw,noexec,nosuid,size=4m,mode=0700,uid=65532,gid=65532"
+      - "/writer/wal:rw,noexec,nosuid,size=32m,mode=0700,uid=65532,gid=65532"
+    profiles: [browser]
+  browser:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e-browser:local
+    init: true
+    networks: [browser]
+    dns: [127.0.0.1]
+    dns_opt: ["attempts:1", "timeout:1", "ndots:0"]
+    pids_limit: 512
+    mem_limit: 2g
+    cpus: 2
+    tmpfs:
+      - "/tmp:rw,noexec,nosuid,size=512m,mode=1777"
+      - "/dev/shm:rw,noexec,nosuid,nodev,size=256m"
+    profiles: [browser]
+  # Increment 4: an owned DNS canary, a real UDP :53 listener on its own
+  # internal network that the browser is not attached to. The browser actor is
+  # given the canary's address as its outside resolver control. dnsprobe runs
+  # positive controls from the canary's network before and after the browser,
+  # so a zero arrival count from the browser is observed against a live
+  # listener. No health check: an exec probe would itself be an arrival.
+  dnscanary:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-dns-canary"]
+    init: true
+    networks: [dnscanary]
+    profiles: [browser]
+  dnsprobe:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    init: true
+    networks: [dnscanary]
+    profiles: [browser]
+networks:
+  product:
+    internal: true
+  witnessed:
+    internal: true
+  browser:
+    internal: true
+    enable_ipv6: false
+  dnscanary:
+    internal: true
+    enable_ipv6: false

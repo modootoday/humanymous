@@ -1,0 +1,516 @@
+{
+  "schema": "humanymous.parity-surfaces/1",
+  "baseline": {
+    "commit": "981d25cf71a5a54855d7e2b4359e832a9d5998e5",
+    "go": "1.25.3"
+  },
+  "package_source": ".agents/retirement/legacy-go-row-review.json",
+  "provenance_vocabulary": {
+    "go-regenerated-at-baseline": "the unchanged Go baseline regenerates these exact bytes (baseline_path names the Go-side golden file)",
+    "go-recorded-differential": "recorded from the frozen Go oracle in the named record; the exporter was not retained, so the bytes are bound but not reproducible from the baseline tree alone"
+  },
+  "surfaces": [
+    {
+      "id": "behavior-features",
+      "compares": "feature extraction values and schema",
+      "go_packages": [
+        "internal/behavior"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/behavior/feature_parity.rs",
+          "functions": [
+            "schema_and_all_extraction_values_match_go"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/behavior/fixtures/features.json",
+          "sha256": "e4757db0f9b8a9249868de17e72685061f4e86a2a9e2b2809a233c49eb02a491",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "challenge-attestation",
+      "compares": "attestation verdicts",
+      "go_packages": [
+        "internal/attestation"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/challenge/attestation_parity.rs",
+          "functions": [
+            "matches_go_attestation_vectors"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/challenge/fixtures/attestation.json",
+          "sha256": "bb0f1ea2979aa2537931bc97843d2e68c778443921f88a237dbe4e251fee22c4",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "challenge-proof-of-work",
+      "compares": "proof-of-work wire format and verification",
+      "go_packages": [
+        "internal/pow"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/challenge/proof_of_work_parity.rs",
+          "functions": [
+            "matches_go_oracle"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/challenge/fixtures/proof_of_work.json",
+          "sha256": "26941932d627f79f4f9c2b2165c8d9fe54aef78ccbb297bf3a1ba37c86cb61b3",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "integrity-request-and-verifier",
+      "compares": "canonical request bytes, token rotation, RIT verifier precedence and signals",
+      "go_packages": [
+        "internal/integrity"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/integrity/request_parity.rs",
+          "functions": [
+            "matches_go_canonical_and_rotation_protocols"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-core/tests/integrity/verification_parity.rs",
+          "functions": [
+            "verifier_signals_and_precedence_match_go"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/integrity/fixtures/request.json",
+          "sha256": "6ee2be626741c3168b03a9da9948545c5d831aa0d6a8a805368112f630cbde58",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/integrity/fixtures/verification.json",
+          "sha256": "d623988f446c2d11fce701c9b070f06771f8a10ba3cc264dec794906928908ff",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "resource-signed-urls",
+      "compares": "signed URL bytes and expiry boundaries",
+      "go_packages": [
+        "internal/resource"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/integrity/resource_parity.rs",
+          "functions": [
+            "signed_urls_and_expiry_match_go"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/integrity/fixtures/resource.json",
+          "sha256": "6d6d27e642bcf4ce1ac45b3dbe57f9787170f50526a532285486100463c0e7df",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "model-inference",
+      "compares": "model artifact schema and float32 inference",
+      "go_packages": [
+        "internal/mlserve"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/model/inference_parity.rs",
+          "functions": [
+            "existing_models_and_forward_values_match_go"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/model/fixtures/inference.json",
+          "sha256": "5b6764eac0aadcba60ed619126b7174b012e40be6deb8f32bfc7995ba354a9fe",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "scoring",
+      "compares": "verdicts, scores, traces, derivation and L6 cross-checks",
+      "go_packages": [
+        "internal/scoring"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/scoring/behavior_parity.rs",
+          "functions": [
+            "heuristic_thresholds_and_model_annotations_match_go"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs",
+          "functions": [
+            "crosscheck_order_predicates_weights_and_notes_match_go"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-core/tests/scoring/derivation_parity.rs",
+          "functions": [
+            "all_probe_derivation_paths_match_go"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+          "functions": [
+            "complete_engine_results_and_traces_match_go",
+            "original_freeze_goldens_remain_unchanged"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/behavior.json",
+          "sha256": "c30b64c72d5ba5f279ec8e09109d05d6d247283fbbbaa1df1957e6ef39f15509",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/crosschecks.json",
+          "sha256": "605c8968e636537dc9f3ed397f6990a4dedddf43496bde5d3dcd2ceda91b73c3",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/derivation.json",
+          "sha256": "a2df6bdb401cd49f5e63ade51cbfb82140856bf8dbf19c059fa13684f9bbdd97",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/engine.json",
+          "sha256": "27e5d6e8e96e0e312a98da52e0077b2681ab980c217997dc47ffb6beb7ef13bf",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/bot-webdriver-cdp-hr9.json",
+          "sha256": "a0c735e3852725d6eb3e07f32805785a372dd057cb01a5e517c4da37b0b207f0",
+          "provenance": "go-regenerated-at-baseline",
+          "baseline_path": "test/fixtures/scoring/bot-webdriver-cdp-hr9.json"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/go-http-client.json",
+          "sha256": "f5a63afa9af0cb18dc507bf8783da1bdfbe776647b0ebd8d656c7a5afa8234c3",
+          "provenance": "go-regenerated-at-baseline",
+          "baseline_path": "test/fixtures/scoring/go-http-client.json"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/human-chrome-allow.json",
+          "sha256": "767bff0359ae529a85905966c4031267922b35ba7d04e35d7d048d2208105e92",
+          "provenance": "go-regenerated-at-baseline",
+          "baseline_path": "test/fixtures/scoring/human-chrome-allow.json"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/no-client-hr10.json",
+          "sha256": "24171cf678624ea0d4887e9e0b6efa09003dc8ae1f0bfaf17f90cb2bd92b7cfc",
+          "provenance": "go-regenerated-at-baseline",
+          "baseline_path": "test/fixtures/scoring/no-client-hr10.json"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/selenium-hr1.json",
+          "sha256": "89cca577764e3dc9f65b17f7c68a3a55f9d26d280ed9464ebcd32f52d540ec75",
+          "provenance": "go-regenerated-at-baseline",
+          "baseline_path": "test/fixtures/scoring/selenium-hr1.json"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/scoring/fixtures/frozen/ua-tls-h2-hr2.json",
+          "sha256": "b68f591571ff76b6a3f029966585e43530d34c7de8087889f67784e0751f376b",
+          "provenance": "go-regenerated-at-baseline",
+          "baseline_path": "test/fixtures/scoring/ua-tls-h2-hr2.json"
+        }
+      ]
+    },
+    {
+      "id": "signals-wire",
+      "compares": "signal constructors and session report wire shape",
+      "go_packages": [
+        "internal/signals"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-core/tests/signals/observation_parity.rs",
+          "functions": [
+            "all_definitions_and_constructor_boundaries_match_go"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-core/tests/signals/report_parity.rs",
+          "functions": [
+            "complete_report_shape_and_defaults_match_go"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-core/tests/signals/fixtures/observations.json",
+          "sha256": "02fe6436254a243448e095855337e5ab5238771a96cd8314ed8061ae816a6e44",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-core/tests/signals/fixtures/reports.json",
+          "sha256": "84c7f771d7f70ff4473a5ced3c46a8074c58deb0fa89ec4f89688c2c8c247f13",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "audit-records",
+      "compares": "audit record wire shape, hashes, Merkle proofs, checkpoints and verifier precedence",
+      "go_packages": [
+        "internal/audit"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs",
+          "functions": [
+            "checkpoint_keys_signature_bytes_and_hmacs_match_go",
+            "stateful_witness_keeps_go_signatures_for_valid_append_only_heads"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/audit/merkle_parity.rs",
+          "functions": [
+            "roots_and_every_inclusion_and_consistency_path_match_go"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs",
+          "functions": [
+            "canonical_bytes_and_record_hashes_match_go_without_mutating_records"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs",
+          "functions": [
+            "every_verifier_result_and_priority_matches_go"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/checkpoints.json",
+          "sha256": "a28b057c83ed946d407e05fa4c7766ede4700c737617d27d231d46f0180716ef",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/merkle.json",
+          "sha256": "c0a755b9264539ebad9a1dc999ccaa77c6e088c4c440762293a97cde7560f067",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/records.json",
+          "sha256": "7175918e0ab3121b62f1ab8cbbd8d9b23b8382353a37273d10f2f95629499cdc",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/audit/verification.json",
+          "sha256": "508f619c652d97be515f12a04f517acedc5b5b3ec959f6d2e6de5fad0a119300",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    },
+    {
+      "id": "network-l5",
+      "compares": "TLS/JA4 observation, HTTP/2 profile, passive monitor and L5 report",
+      "go_packages": [
+        "internal/network"
+      ],
+      "tests": [
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/network/h2_parity.rs",
+          "functions": [
+            "h2_wire_profile_matches_go"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/network/monitor_parity.rs",
+          "functions": [
+            "passive_monitor_matches_go_for_every_chunk_and_threshold"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/network/report_parity.rs",
+          "functions": [
+            "all_report_signals_and_admin_observations_match_go"
+          ]
+        },
+        {
+          "file": "crates/sdk/humanymous-runtime/tests/network/tls_parity.rs",
+          "functions": [
+            "raw_observation_and_ja4_match_frozen_go"
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/network/h2.json",
+          "sha256": "5d2958a8dc33a81283d75cb67116e6e9762bfbc928db0a4ce820bc572836a866",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/network/monitor.json",
+          "sha256": "e0c640671f8ebe0cbf47f0ec893ede98255710f5b9eb95448c33b81d6f9f874f",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/network/reports.json",
+          "sha256": "f4b534f80e214eb4b37f34cacc12aba3c3081aaeb920cf3be242752199fcf06e",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        },
+        {
+          "path": "crates/sdk/humanymous-runtime/tests/fixtures/network/tls.json",
+          "sha256": "048c7fb450ff33db5a91f1b8f6ddc9e480504b3a767971519b94ccc37c6e9540",
+          "provenance": "go-recorded-differential",
+          "record": "plan:root/20261106194012"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "go_package": "cmd/gate",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 5, partial 2"
+    },
+    {
+      "go_package": "cmd/ml-train",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 1"
+    },
+    {
+      "go_package": "cmd/mlcorrect-train",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 3"
+    },
+    {
+      "go_package": "cmd/redteam",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 1, partial 2"
+    },
+    {
+      "go_package": "cmd/report",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 1"
+    },
+    {
+      "go_package": "cmd/server",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 22, partial 18, ported_unit 2"
+    },
+    {
+      "go_package": "cmd/tlsparrot",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 1"
+    },
+    {
+      "go_package": "cmd/wasm",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 1"
+    },
+    {
+      "go_package": "internal/abuse",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 2"
+    },
+    {
+      "go_package": "internal/anomaly",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 2"
+    },
+    {
+      "go_package": "internal/collector",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 3"
+    },
+    {
+      "go_package": "internal/correlation",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 2, ported_unit 2"
+    },
+    {
+      "go_package": "internal/detect",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 1, ported_unit 4"
+    },
+    {
+      "go_package": "internal/gate",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 45, not_applicable 1, partial 39"
+    },
+    {
+      "go_package": "internal/httpx",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: not_applicable 1"
+    },
+    {
+      "go_package": "internal/livefeed",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2"
+    },
+    {
+      "go_package": "internal/logger",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 6"
+    },
+    {
+      "go_package": "internal/mlcorrect",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 16"
+    },
+    {
+      "go_package": "internal/mltrain",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2, partial 2, ported_unit 1"
+    },
+    {
+      "go_package": "internal/pass",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 3"
+    },
+    {
+      "go_package": "internal/redis",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2"
+    },
+    {
+      "go_package": "internal/report",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 3"
+    },
+    {
+      "go_package": "internal/trafficguard",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 4"
+    },
+    {
+      "go_package": "internal/watermark",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 4, partial 3, ported_unit 7"
+    },
+    {
+      "go_package": "pkg/origincloak",
+      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2"
+    }
+  ]
+}

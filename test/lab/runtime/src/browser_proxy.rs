@@ -47,7 +47,9 @@ pub struct ProxyConfig {
     pub browser: bool,
 }
 #[derive(Clone, Default)]
-pub struct Receipts(Arc<Mutex<BTreeMap<String, u64>>>);
+pub struct Receipts(Arc<Mutex<BTreeMap<String, u64>>>, Arc<Mutex<Vec<Vec<u8>>>>);
+/// Collect entities retained per proxy; the pilot posts exactly one.
+const COLLECT_CAPTURE_MAX: usize = 4;
 impl Receipts {
     fn hit(&self, key: &str) {
         if let Ok(mut counts) = self.0.lock() {
@@ -56,6 +58,18 @@ impl Receipts {
     }
     pub fn snapshot(&self) -> BTreeMap<String, u64> {
         self.0.lock().map(|v| v.clone()).unwrap_or_default()
+    }
+    /// Retain the exact collect entity the runtime received, bounded.
+    fn capture(&self, body: &[u8]) {
+        if let Ok(mut reports) = self.1.lock()
+            && reports.len() < COLLECT_CAPTURE_MAX
+        {
+            reports.push(body.to_vec());
+        }
+    }
+    /// Collect entities in arrival order, as forwarded to the runtime.
+    pub fn collect_entities(&self) -> Vec<Vec<u8>> {
+        self.1.lock().map(|v| v.clone()).unwrap_or_default()
     }
 }
 
@@ -192,6 +206,11 @@ async fn exchange(socket: &mut TcpStream, config: &ProxyConfig, receipts: &Recei
     let (frame, api) = request(socket, config.browser).await?;
     if api {
         record_wire(receipts, frame.header("origin"), frame.header("referer"))?;
+        // The Gate frontend keeps the exact report entity the real collector
+        // posted, so other topologies replay collector bytes, not fixtures.
+        if !config.browser && fixture()["routes"]["collect"].as_str() == Some(&frame.target) {
+            receipts.capture(&frame.body);
+        }
     }
     let upstream = if api {
         config.upstream
