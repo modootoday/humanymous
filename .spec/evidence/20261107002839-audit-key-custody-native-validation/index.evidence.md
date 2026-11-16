@@ -7,7 +7,7 @@ updated: 2026-11-07T03:39:00Z
 files:
   - {path: facts.json, sha256: 9eb4ba8dcd732e15d335f1f84d916dda299e11dc33ee6bf1870975f2b618667f, bytes: 2499, store: repo}
 rel:
-  governs: [crates/audit/src/keys/**]
+  governs: [crates/sdk/humanymous-runtime/src/audit/keys/**]
   depends_on: [sot:root/audit-key-custody]
 ---
 

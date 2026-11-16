@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T11:55:14Z
 updated: 2026-11-07T11:55:14Z
 rel:
-  governs: [crates/audit/src/checkpoint/signing]
+  governs: [crates/sdk/humanymous-runtime/src/audit/checkpoint/signing]
   depends_on: [sot:root/audit-key-custody]
 ---
 

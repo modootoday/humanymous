@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T11:52:40Z
 updated: 2026-11-07T11:52:40Z
 rel:
-  governs: [crates/audit/src/storage/framing/preflight]
+  governs: [crates/sdk/humanymous-runtime/src/audit/storage/framing/preflight]
   depends_on: [sot:root/audit-key-custody]
 ---
 

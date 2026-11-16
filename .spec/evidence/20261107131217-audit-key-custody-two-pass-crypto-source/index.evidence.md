@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T13:12:17Z
 updated: 2026-11-07T13:12:17Z
 rel:
-  governs: [crates/audit/src/verification/scan]
+  governs: [crates/sdk/humanymous-runtime/src/audit/verification/scan]
   depends_on: [sot:root/audit-key-custody]
 ---
 

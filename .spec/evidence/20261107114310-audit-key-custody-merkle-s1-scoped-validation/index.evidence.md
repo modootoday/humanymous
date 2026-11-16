@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T11:43:10Z
 updated: 2026-11-07T11:43:36Z
 rel:
-  governs: [crates/audit/src/merkle]
+  governs: [crates/sdk/humanymous-runtime/src/audit/merkle]
   depends_on: [sot:root/audit-key-custody]
 files:
   - {path: facts.json, sha256: 9e645104bf3f5499132d1b04f40698dc7b0bf18d1d332a1ef7354f5fd135911a, bytes: 1114, store: repo}

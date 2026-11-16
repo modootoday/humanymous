@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T11:09:02Z
 updated: 2026-11-07T11:09:02Z
 rel:
-  governs: [crates/audit/src/record]
+  governs: [crates/sdk/humanymous-runtime/src/audit/record]
   depends_on: [sot:root/audit-key-custody]
 ---
 

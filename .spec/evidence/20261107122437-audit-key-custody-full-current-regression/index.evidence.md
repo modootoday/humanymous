@@ -5,7 +5,7 @@ status: active
 created: 2026-11-07T12:24:37Z
 updated: 2026-11-07T12:26:32Z
 rel:
-  governs: [crates/audit]
+  governs: [crates/sdk/humanymous-runtime/src/audit]
   depends_on: [sot:root/audit-key-custody]
 files:
   - {path: facts.json, sha256: 062260a150dc307e54a4cb638f7c2b4ba8752bff4e9899f314ed181f858f967c, bytes: 5603, store: repo}

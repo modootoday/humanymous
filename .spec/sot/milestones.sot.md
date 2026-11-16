@@ -18,7 +18,9 @@ identifiers, scopes, statuses and exit gates. Other SoTs, plans, evidence and
 public docs cite milestone ids from here. They must not keep a competing status
 table. Ordering and dependency rationale lives in
 [[sot:root/program-roadmap]]. Priority lists inside one wave live in the current
-active priority plan ([[plan:root/20261110061400]]). Dated sections in the
+active priority plan ([[plan:root/20261110061400]]). The goal, its blocker
+classes and the unattended execution contract live in
+[[plan:root/20261116060213]]. Dated sections in the
 roadmap and earlier plans are historical snapshots.
 
 ### Goal and definition of done
