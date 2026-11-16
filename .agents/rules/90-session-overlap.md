@@ -19,4 +19,9 @@ Durable state lives in the board + `.agents/lessons/` — not only in one provid
 
 Cloud and scheduled sessions use the GitHub replacements in `97-github-coordination.md`.
 
+**Pull-request flow** (owner decision 2026-11-16, `sot:root/common-automation-rules`
+C1): changes reach `codex/rust` through a pull request from a `<provider>/<slug>`
+topic branch, and the owner merges. An open agent pull request that names a lane
+holds that lane (C1.5), like a board claim.
+
 Skill: `coordinate-sessions`. Protocol: `.agents/sessions/PROTOCOL.md`.

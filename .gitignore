@@ -15,8 +15,8 @@
 /.grok/
 /.gemini/
 /.agent-rules/
-/CLAUDE.md
 /GEMINI.md
+# Root CLAUDE.md is tracked as a pointer to AGENTS.md (common automation rules C9.1).
 
 # Claude Code personal overrides (never commit)
 .claude/settings.local.json

@@ -14,6 +14,12 @@ A `git-ops` claim does not waive these restrictions. A cloud or scheduled sessio
 without this checkout follows `97-github-coordination.md` instead. Isolated Root source is
 read-only; candidate edits remain under the author's exact claimed evidence paths.
 
+Pull-request flow (owner decision 2026-11-16, `sot:root/common-automation-rules`):
+`codex/rust` and `main` take changes only through pull requests once the
+`main-protected` ruleset is applied. A session in its own clone pushes a
+`<provider>/<slug>` topic branch and opens a pull request; the owner merges.
+In the shared local checkout, Root still performs branch and ref work.
+
 ## Rules
 
 1. Before `git add`, `commit`, `pull`/`rebase`/`merge` that updates HEAD, `push`, `stash`,

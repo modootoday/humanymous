@@ -3,9 +3,9 @@ id: plan:root/20261116070000
 title: GitHub infrastructure coordination for cloud and scheduled sessions
 status: active
 created: 2026-11-16T06:54:38Z
-updated: 2026-11-16T06:54:38Z
+updated: 2026-11-16T07:46:00Z
 rel:
-  depends_on: [plan:root/20261116060213, evidence:root/20261116081000]
+  depends_on: [plan:root/20261116060213, evidence:root/20261116081000, sot:root/common-automation-rules]
 ---
 
 # GitHub infrastructure coordination for cloud and scheduled sessions
@@ -41,9 +41,9 @@ is the always-on part.
 | ---: | --- | --- | --- |
 | 1 | Untrack `.spec.local` and add the CI guard | A | done 2026-11-16 |
 | 2 | Rule 97, with pointers from AGENTS.md and rules 90, 91 and 96 | A | done 2026-11-16 |
-| 3 | Create the `needs-owner` and `bug` labels; file the open owner decisions (AT-HANDOFF, Unlock A re-measure, TRANSFER, 208 Go rows, unit 25, unit 33) as Issues | P | needs owner permission for outward GitHub writes |
-| 4 | Commit `.github/rulesets/*.json` for `main` and `codex/rust`. Required checks: the aggregate of `rust-validation.yml`, and later the product e2e job | A to draft, P to apply | open |
-| 5 | Activate the PR flow: agent branches, PR into `codex/rust`, a person merges. Update rule 91 and `GIT-PROTOCOL.md` at that point | R + P | open |
+| 3 | Labels as `.github/labels.json` (owner applies, C2.7); file the open owner decisions as `needs-owner` Issues | A (file), P (apply) | labels file committed 2026-11-16; Issues are routine since the owner's 2026-11-16 unattended direction |
+| 4 | Commit `.github/rulesets/*.json` for `main` and `codex/rust` plus `v-tags`; required checks `validate / ready`, `Public surface`, `Secret scan`, later the product e2e job | A to draft, P to apply | files committed 2026-11-16; owner applies |
+| 5 | PR flow: `<provider>/<slug>` branches, PR into `codex/rust`, the owner merges (Phase 1). Rules 90, 91, 95, 97 and `GIT-PROTOCOL.md` updated | A (branch, push, PR), P (merge) | active from 2026-11-16 by owner direction; enforced once the ruleset is applied |
 | 6 | Replace `git-coord`/`session-board` scripts with Rust, then retire the board files | A after 5 | open (unit 33) |
 | 7 | Cloud environment setup script that copies the CI toolchain steps | A | open |
 
@@ -51,3 +51,10 @@ is the always-on part.
 
 - 2026-11-16: steps 1 and 2 landed. No ref, label, Issue or ruleset was created
   on GitHub.
+- 2026-11-16: the owner adopted the common automation rules v1.2
+  ([[sot:root/common-automation-rules]]), confirmed `codex/rust` as the base
+  and the owner noreply commit identity, and directed unattended work: topic
+  branch push and pull requests are routine; merge, release, tag, secret values
+  and ruleset or settings application stay with the owner and are recorded in
+  the pull request body or `needs-owner` Issues. Settings files, `Public
+  surface`, `Secret scan` and `Settings drift` landed on a `claude/` branch.

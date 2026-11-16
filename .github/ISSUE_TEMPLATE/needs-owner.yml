@@ -1,0 +1,29 @@
+name: Owner decision needed
+description: A decision or action only the repository owner can take (merge, release, ruleset, secret, human-gated area).
+title: "[needs-owner] "
+labels: ["needs-owner"]
+body:
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision or action needed
+      description: State the one decision or action, and the options with a recommendation.
+    validations:
+      required: true
+  - type: textarea
+    id: blocked
+    attributes:
+      label: What is blocked
+      description: The work item, plan unit or pull request that waits on this. Automation skips it until this issue closes.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Links to runs, pull requests or tracked evidence. No secrets, personal addresses or local paths.
+  - type: input
+    id: provider
+    attributes:
+      label: Agent-Provider
+      description: claude, codex, cursor, grok, gemini or human.

@@ -70,6 +70,9 @@ staged path belongs to the same agreed transaction.
 2. `git fetch` then if behind: rebase/merge **under git-ops** (never parallel).
 3. Push once; on rejection, stop — re-fetch, do not force.
 4. Release `git-ops` immediately after success or failure (leave note on failure).
+5. Pull-request flow (`sot:root/common-automation-rules` C1): push a
+   `<provider>/<slug>` topic branch and open a pull request into `codex/rust`.
+   Do not push `codex/rust` or `main` directly; the owner merges.
 
 ## Parallel coding vs serial git
 

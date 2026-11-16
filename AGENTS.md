@@ -80,6 +80,13 @@ Accepted Cursor collaboration: rule `.agents/rules/95-cursor-collaboration.md`.
 Cursor applies integration source/common Cargo only after actual path transfer;
 Root coordinates design/allocation/review and ref operations. No handover document.
 
+**Pull-request flow** (owner decision 2026-11-16; canon `.spec/sot/common-automation-rules.sot.md`):
+changes reach `codex/rust` through a pull request from a `<provider>/<slug>` topic
+branch; the owner merges. Topic-branch push and pull requests are routine for a
+session in its own clone. Merge, release, tag, secret values and ruleset or
+settings application stay with the owner; blockers go in the PR body or a
+`needs-owner` Issue.
+
 Several LLM chats may run on this repo **at once**. Before non-trivial edits:
 
 1. `pwsh -File scripts/agents/session-board.ps1 list` (or `bash scripts/agents/session-board.sh list`)

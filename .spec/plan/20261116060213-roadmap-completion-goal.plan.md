@@ -3,9 +3,9 @@ id: plan:root/20261116060213
 title: Roadmap completion goal and unattended execution contract
 status: active
 created: 2026-11-16T06:02:13Z
-updated: 2026-11-16T07:14:14Z
+updated: 2026-11-16T07:48:00Z
 rel:
-  depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix]
+  depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix, sot:root/common-automation-rules]
 ---
 
 # Roadmap completion goal and unattended execution contract
@@ -47,12 +47,14 @@ The contract below says what that means in practice.
 | D | Needs a Cap=1 Docker product run; the Cap-free GRANT and a matching TRANSFER must exist first | Root |
 | R | Needs Root or human authority (handoffs, dual-control, structural ownership, reviewed dispositions) | Root / owner |
 | H | Needs hardware or an OS that this container lacks (Windows CEF + interactive AT, macOS, GPU, native tuples) | owner with that host |
-| P | Needs ref or publication authorization (push, main merge, Pages deploy, release) | user |
+| P | Needs merge, release, tag, Pages deploy, secret values, or ruleset/settings application ([[sot:root/common-automation-rules]] C2.7, C7, C8) | owner |
 
 ## Steps
 
 Full unit list. Ranks follow [[plan:root/20261110061400]]. Only A units run
-unattended.
+unattended. An A unit ends with a pushed topic branch and an open or updated
+pull request (C1.6). A unit blocked on the owner gets a `needs-owner` Issue and
+the run moves to the next unit; it does not stop to ask.
 
 | # | Unit | Milestones | Class | Unblocking artifact / action |
 | ---: | --- | --- | --- | --- |
@@ -85,7 +87,7 @@ unattended.
 | 27 | Pages and Draft v0 current-source review | IM4 | R+P | manual review and deploy approval |
 | 28 | IM5 main integration | IM5 | P | user authorizes merge after 1–27 |
 | 29 | IM6 main-only and approved Pages | IM6, FM12 | P | follows 28 |
-| 30 | Push of agent commits on `codex/rust` | — | P | user approves push (AGENTS.md reserves ref work for Root) |
+| 30 | Push of agent commits | — | A | routine since 2026-11-16: push a `<provider>/<slug>` branch and open a pull request into `codex/rust`; the owner merges |
 | 31 | TLS drain refusal-propagation race (flaky gateway TLS test) | FM4, IM2 | R | `cursor-integration` owner decides code vs test under the runtime-application drain contract |
 | 32 | Make the lab-runner Unlock-A test hermetic (it now needs an untracked private closer) | IM2 | R | product-lab with Root: fixture or explicit ignore with a reason |
 | 33 | `git_coord` test needs `pwsh`; Rust replacement of the coordination scripts | FM11 | R | agents-meta owner; scripts stay until replaced and qualified |
@@ -123,3 +125,9 @@ unattended.
   gives results symmetric to Go, and Go is retired at that merge. They chose a
   differential parity gate as the measure (units 37–38). Unit 24 no longer
   includes per-row retirement.
+- 2026-11-16: the owner made the run unattended under the common automation
+  rules ([[sot:root/common-automation-rules]]). Topic-branch push and pull
+  requests became class A (unit 30). Class P narrowed to merge, release, tag,
+  Pages deploy, secret values and ruleset or settings application. Blockers are
+  recorded in pull request bodies or `needs-owner` Issues, and the run
+  continues with the next unit.
