@@ -202,7 +202,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Gate operational logging kernel with explicit settings, sinks and a static fatal class. Deliberate differences: empty level refused, file paths must be absolute without .., no global logger or environment reads.",
+   "notes": "Gate operational logging kernel with explicit settings, sinks and a static fatal class. Deliberate differences: empty level refused, file paths must be absolute without .., no global logger or environment reads. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file": "passed",
@@ -976,7 +976,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Core logging is off by default; observability allowlists the method and omits path and panic material. Plain and JSONL lines match the Go golden strings for ASCII text.",
+   "notes": "Core logging is off by default; observability allowlists the method and omits path and panic material. Plain and JSONL lines match the Go golden strings for ASCII text. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_logging_off_by_default": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_rejects_invalid_explicit_config": "passed",
@@ -1353,7 +1353,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Bounded trace-replay and session store. Deliberate differences: at the session cap new sessions are refused instead of served unstored; ids and KPI labels are bounded; sessions mutate under the lock. No timing or motor checks.",
+   "notes": "Bounded trace-replay and session store. Deliberate differences: at the session cap new sessions are refused instead of served unstored; ids and KPI labels are bounded; sessions mutate under the lock. No timing or motor checks. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::distinct_digests_are_independent": "passed",
@@ -1551,7 +1551,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Session key/seed/token/verify kernels exist; gateway uses its own browser binding instead of the legacy live canonical (plan B06).",
+   "notes": "Session key/seed/token/verify kernels exist; gateway uses its own browser binding instead of the legacy live canonical (plan B06). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (RIT bootstrap; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/integrity/request/token.rs::token_binds_every_input_and_exact_encoding": "passed",
     "crates/sdk/humanymous-core/src/integrity/request/verification.rs::valid_roundtrip_tamper_replay_and_bootstrap": "passed",
@@ -1609,7 +1609,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Random identifiers are fresh lowercase hex and fail closed on entropy failure (503 or a typed refusal) instead of Go panicking into a 500.",
+   "notes": "Random identifiers are fresh lowercase hex and fail closed on entropy failure (503 or a typed refusal) instead of Go panicking into a 500. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh": "passed"
@@ -1983,7 +1983,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Per-fingerprint whole-millisecond inter-arrival over the legacy detector parameters; returns the measurement instead of logging. Deliberate difference: the last-seen map is a hard bound that refuses new fingerprints when full after an idle sweep.",
+   "notes": "Per-fingerprint whole-millisecond inter-arrival over the legacy detector parameters; returns the measurement instead of logging. Deliberate difference: the last-seen map is a hard bound that refuses new fingerprints when full after an idle sweep. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::gc_uses_strict_ttl_and_reset_retains_clock": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/anomaly/tests.rs::oracle_outlier_flags_against_prior_history": "passed",
@@ -2163,7 +2163,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Store, strike escalation with 7-day decay, expiry, list, GC and bounded capacity are ported over network/history/rate; permanent and broad bans consume a retained dual-control grant.",
+   "notes": "Store, strike escalation with 7-day decay, expiry, list, GC and bounded capacity are ported over network/history/rate; permanent and broad bans consume a retained dual-control grant. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#23; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::strikes_decay_after_seven_days": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban": "passed",
@@ -2199,7 +2199,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Pure measurement kernel returning Flagged instead of logging; no verdict, ban or enforcement access. Deliberate differences: caller-ordered time, bounded signatures per cohort, non-finite moments yield no signature.",
+   "notes": "Pure measurement kernel returning Flagged instead of logging; no verdict, ban or enforcement access. Deliberate differences: caller-ordered time, bounded signatures per cohort, non-finite moments yield no signature. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r251_identical_farm_flags_once": "passed",
     "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r252_solo_session_does_not_flag": "passed",
@@ -2236,7 +2236,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust has an exact route inventory and bounded resource budgets only (B12 P).",
+   "notes": "Rust has an exact route inventory and bounded resource budgets only (B12 P). Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (rate no-defaults; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::configuration_and_readiness_are_honest": "passed"
@@ -2379,7 +2379,7 @@
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust maps ALLOW/DENY/CHALLENGE and records fail_closed, but without sticky verdicts or route-policy action mapping. Sticky VerdictStore (bounded, TTL, GC, saturation degrades to not-tracking) and mapVerdict are ported in gateway/verdict_store.rs.",
+   "notes": "Rust maps ALLOW/DENY/CHALLENGE and records fail_closed, but without sticky verdicts or route-policy action mapping. Sticky VerdictStore (bounded, TTL, GC, saturation degrades to not-tracking) and mapVerdict are ported in gateway/verdict_store.rs. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::audit_is_minimized_and_failure_poison_is_permanent": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed",
@@ -2616,7 +2616,7 @@
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Spoof scan, inbound strip and origin-cloak token/grace are ported as pure kernels in gateway/guard.rs; the existing Rust forwarder strips only its own x-humanymous-* namespace.",
+   "notes": "Spoof scan, inbound strip and origin-cloak token/grace are ported as pure kernels in gateway/guard.rs; the existing Rust forwarder strips only its own x-humanymous-* namespace. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity": "passed",
@@ -2795,7 +2795,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "RFC 9578 type 0x0002 verifier (RSA-PSS-SHA384 via ring) with Go-identical token_key_id and a bounded double-spend store. Deliberate difference: PSS salt must be 48 bytes (Go also accepted 0), pinned by OpenSSL vectors.",
+   "notes": "RFC 9578 type 0x0002 verifier (RSA-PSS-SHA384 via ring) with Go-identical token_key_id and a bounded double-spend store. Deliberate difference: PSS salt must be 48 bytes (Go also accepted 0), pinned by OpenSSL vectors. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_verified": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered": "passed",
@@ -3334,7 +3334,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Strict framing refusal is stricter than Go; no smuggle audit event is emitted. Reason classification and the HR-23 record builder are ported in gateway/smuggle.rs.",
+   "notes": "Strict framing refusal is stricter than Go; no smuggle audit event is emitted. Reason classification and the HR-23 record builder are ported in gateway/smuggle.rs. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence": "passed",
@@ -3873,7 +3873,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests.",
+   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#20; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent": "passed",
@@ -4170,7 +4170,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "ES256 assertion verifier with origin/RP ID binding and strictly advancing counters. Deliberate differences: P-256 only, user presence required, exact JSON field names.",
+   "notes": "ES256 assertion verifier with origin/RP ID binding and strictly advancing counters. Deliberate differences: P-256 only, user presence required, exact JSON field names. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_verified": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected": "passed",
@@ -4263,7 +4263,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "RFC 9421 Ed25519 verifier with exact request-line coverage, 1h lifetime bound and single-use nonces. Deliberate differences: strict configuration and parsing, a presented credential without a directory is refused, static reasons.",
+   "notes": "RFC 9421 Ed25519 verifier with exact request-line coverage, 1h lifetime bound and single-use nonces. Deliberate differences: strict configuration and parsing, a presented credential without a directory is refused, static reasons. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_trusted": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged": "passed",
@@ -4380,7 +4380,7 @@
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust challenges missing client evidence on all routes, without balanced-route fail-open.",
+   "notes": "Rust challenges missing client evidence on all routes, without balanced-route fail-open. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/tests.rs::missing_client_is_challenge_and_missing_planes_are_not_ready": "passed"
    }
@@ -4522,7 +4522,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Append/seal, periodic checkpoint, witness counter-sign, WAL replay and fail-closed poisoning are ported. The Rust design drops the memory ring on purpose.",
+   "notes": "Append/seal, periodic checkpoint, witness counter-sign, WAL replay and fail-closed poisoning are ported. The Rust design drops the memory ring on purpose. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
@@ -4959,7 +4959,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails or the event type is empty, and a refusal consumes no sequence number.",
+   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails or the event type is empty, and a refusal consumes no sequence number. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
@@ -5049,7 +5049,7 @@
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "",
+   "notes": " Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
     "crates/sdk/humanymous-runtime/src/audit/storage/framing.rs::framed_corruption_is_never_a_recoverable_tail": "passed",
@@ -7057,7 +7057,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Attribute flattening into the canonical record is covered; slog grouping is a Go API adapter.",
+   "notes": "Attribute flattening into the canonical record is covered; slog grouping is a Go API adapter. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24, DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed"
@@ -7091,7 +7091,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Four of seven Go tests map one-to-one.",
+   "notes": "Four of seven Go tests map one-to-one. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
@@ -7119,7 +7119,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger.",
+   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24, DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
@@ -7176,7 +7176,7 @@
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Three of four Go tests map one-to-one.",
+   "notes": "Three of four Go tests map one-to-one. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (DIFF; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
@@ -7200,7 +7200,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Deliberate fail-closed difference: file sink paths must be absolute without parent components; Go resolved relative paths against the working directory.",
+   "notes": "Deliberate fail-closed difference: file sink paths must be absolute without parent components; Go resolved relative paths against the working directory. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
@@ -8722,7 +8722,7 @@
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Token, epoch, symmetric grace and constant-time validation match Go bytes (golden regenerated with Go 1.25.3). Deliberate difference: origin keys under 32 bytes are refused.",
+   "notes": "Token, epoch, symmetric grace and constant-time validation match Go bytes (golden regenerated with Go 1.25.3). Deliberate difference: origin keys under 32 bytes are refused. Owner decision 2026-11-16: the current fail-closed Rust behavior is accepted as an intended Go/Rust difference (#24; .agents/retirement/owner-decisions-2026-11-16.md); signal IDs and scoring are unchanged.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex": "passed",

@@ -414,103 +414,253 @@
   "gaps": [
     {
       "go_package": "cmd/gate",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 5, partial 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 3, partial 2, ported_unit 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "cmd/ml-train",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 1"
+      "reason": "no Go-recorded golden vectors; FM11 rows: partial 1",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "cmd/mlcorrect-train",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 3"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 3",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "cmd/redteam",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 1, partial 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 1, partial 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "cmd/report",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 1"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 1",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "cmd/server",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 22, partial 18, ported_unit 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 11, partial 21, ported_unit 10",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "cmd/tlsparrot",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 1"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 1",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "cmd/wasm",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 1"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 1",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/abuse",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/anomaly",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/collector",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 3"
+      "reason": "no Go-recorded golden vectors; FM11 rows: partial 3",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/correlation",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 2, ported_unit 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: partial 2, ported_unit 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/detect",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: partial 1, ported_unit 4"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 5",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/gate",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 45, not_applicable 1, partial 39"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 18, not_applicable 1, partial 46, ported_unit 20",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/httpx",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: not_applicable 1"
+      "reason": "no Go-recorded golden vectors; FM11 rows: not_applicable 1",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/livefeed",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/logger",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 6"
+      "reason": "no Go-recorded golden vectors; FM11 rows: partial 4, ported_unit 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/mlcorrect",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 16"
+      "reason": "no Go-recorded golden vectors; FM11 rows: partial 2, ported_unit 14",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/mltrain",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2, partial 2, ported_unit 1"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 5",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/pass",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 3"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 3",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/redis",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/report",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 3"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 3",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/trafficguard",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: ported_unit 4"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 4",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "internal/watermark",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 4, partial 3, ported_unit 7"
+      "reason": "no Go-recorded golden vectors; FM11 rows: missing 4, partial 3, ported_unit 7",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     },
     {
       "go_package": "pkg/origincloak",
-      "reason": "no Go-recorded golden vectors yet; FM11 rows: missing 2"
+      "reason": "no Go-recorded golden vectors; FM11 rows: ported_unit 2",
+      "acceptance": {
+        "decision": "accepted gap: no Go vector; parity evidence is the Rust unit tests mapped in the FM11 ledger, and unported rows stay open there",
+        "by": "owner",
+        "date": "2026-11-16",
+        "record": ".agents/retirement/owner-decisions-2026-11-16.md"
+      }
     }
   ]
 }
