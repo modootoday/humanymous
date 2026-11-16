@@ -1,0 +1,43 @@
+# Authored workflow; canon: .spec/sot/common-automation-rules.sot.md (C2.10, C7.2, C7.3)
+# Phase 2 path check: a pull request that touches a human-gated path
+# (scripts/ci/human-gated-paths.json) has auto-merge turned off and gets the
+# `needs-human` label. It never merges and is not a required check.
+name: CI / Merge gate
+'on':
+  pull_request:
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - ready_for_review
+    - auto_merge_enabled
+    - unlabeled
+permissions:
+  contents: read
+concurrency:
+  group: merge-gate-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  gate:
+    name: Merge gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Refuse auto-merge on human-gated paths
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        RANGE_BASE: ${{ github.event.pull_request.base.sha }}
+        RANGE_HEAD: ${{ github.event.pull_request.head.sha }}
+      run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- merge-gate "$RANGE_BASE" "$RANGE_HEAD" --enforce

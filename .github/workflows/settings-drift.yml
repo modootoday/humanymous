@@ -1,0 +1,40 @@
+# Authored workflow; canon: .spec/sot/common-automation-rules.sot.md (C2.6-C2.11)
+# Compares live rulesets and labels with the files; changes nothing.
+# Not a required check. The weekly schedule waits for the main merge, because
+# scheduled runs use the default branch and main is frozen.
+name: CI / Settings drift
+'on':
+  push:
+    branches:
+    - codex/rust
+    paths:
+    - .github/rulesets/**
+    - .github/labels.json
+    - .github/settings/**
+    - .github/workflows/settings-drift.yml
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: settings-drift
+  cancel-in-progress: false
+jobs:
+  drift:
+    name: Settings drift
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Compare live settings with the files
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- settings-drift --issue

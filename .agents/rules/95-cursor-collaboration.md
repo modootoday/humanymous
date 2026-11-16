@@ -27,7 +27,9 @@ before Git writes; never invent a provider, identity or email. Do not claim Curs
 connected or discovery-qualified before a real workspace session is observed.
 
 All Git mutations require the serial `git-ops` mutex and owned-path attribution.
-Cursor may commit its owned reviewed paths; no autonomous push, ref deletion,
+Cursor may commit its owned reviewed paths and, under the pull-request flow
+(`sot:root/common-automation-rules` C1), push a `cursor/<slug>` topic branch and
+open a pull request; the owner merges. No push to `codex/rust` or `main`, ref deletion,
 publication, runtime/native/heavy workload or hosted allocation follows. Root
 controls those explicit user permissions and execution allocations. Preserve
 immutable source/evidence epochs and incomplete migration gates.

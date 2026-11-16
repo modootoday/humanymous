@@ -26,20 +26,26 @@ Canon and phases: `plan:root/20261116070000` (GitHub infrastructure coordination
 
 ## Branches and refs
 
-Until Root activates the pull-request flow (phase 2 of the plan: rulesets
-committed **and** applied, required checks named), a cloud session writes only to
-the branch its owner assigned, which today is `codex/rust`. It pushes only while
-an owner push permission is in force. Once activated, a session works on its own
-`claude/`, `codex/` or similar branch and opens a pull request. A person still
-merges.
+The pull-request flow is active (owner decision 2026-11-16,
+`sot:root/common-automation-rules` C1). A cloud session works on its own
+`<provider>/<slug>` branch (`claude/`, `codex/`, ...), pushes it, and opens or
+updates a pull request into `codex/rust`. The pull request body carries
+`Agent-Provider:`, the work package and the lane. Phase 2 (owner direction
+2026-11-16): when `delivery merge-gate <base> <head>` reports no human-gated
+path, the session turns on auto-merge (merge commit) and moves on; otherwise it
+adds the `needs-human` label and moves on, and the owner merges. Until the
+`main-protected` ruleset is applied, the session still does not push to
+`codex/rust` or `main` directly. Blocked work goes into the pull request body or
+a `needs-owner` Issue, and the session moves to the next unit.
 
-Release, tag, OIDC exchange, Pages deploy, main merge and ruleset application
-stay with a person (rule 93).
+Merge, release, tag, OIDC exchange, Pages deploy, secret values and ruleset or
+settings application stay with the owner (rule 93, common rules C2.7, C7, C8).
 
 ## Commits
 
-Rule 92 applies: no vendor co-author trailer; the provider is named in the PR
-body and the branch name. `git-coord.sh preflight` is recommended. The
+Rule 92 applies: no vendor co-author trailer; author and committer are the
+owner's noreply identity, set with repo-local `git config`; the provider is
+named in the PR body and the branch name. `git-coord.sh preflight` is recommended. The
 PowerShell path is optional in this mode, because the container has no `pwsh`
 and no shared board. Stage only owned paths.
 

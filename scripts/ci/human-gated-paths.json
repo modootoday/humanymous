@@ -1,0 +1,39 @@
+{
+  "schema": "humanymous.human-gated-paths/1",
+  "canon": "sot:root/common-automation-rules (C2.10, C7.3, section 12 human-gated areas)",
+  "prefixes": [
+    ".github/workflows/",
+    ".github/rulesets/",
+    ".github/settings/",
+    "crates/sdk/humanymous-core/src/scoring/",
+    "crates/sdk/humanymous-core/src/signals/",
+    "crates/sdk/humanymous-runtime/src/audit/",
+    "crates/sdk/humanymous-runtime/src/gateway/control/",
+    "docs/standards/",
+    "internal/scoring/",
+    "internal/signals/",
+    "internal/detect/",
+    "internal/network/",
+    "internal/collector/",
+    "cmd/wasm/",
+    "cmd/server/"
+  ],
+  "files": [
+    ".github/labels.json",
+    ".github/dependabot.yml",
+    ".github/CODEOWNERS",
+    ".spec/sot/common-automation-rules.sot.md",
+    "scripts/ci/human-gated-paths.json",
+    "scripts/ci/delivery/src/merge_gate.rs",
+    "scripts/ci/workflows.json",
+    "cliff.toml",
+    "Cargo.lock",
+    "rust-toolchain.toml",
+    "go.mod",
+    "go.sum",
+    "SECURITY.md"
+  ],
+  "suffixes": [
+    ".go"
+  ]
+}

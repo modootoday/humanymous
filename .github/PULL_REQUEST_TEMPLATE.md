@@ -1,28 +1,36 @@
 <!--
-  Thanks for contributing to humanymous!
-  Security fixes must NOT go through a public PR — follow SECURITY.md (private disclosure).
+  Security fixes must NOT go through a public PR: follow SECURITY.md (private disclosure).
+  Agent pull requests come from a `<provider>/<slug>` branch and fill every field below.
 -->
+
+Agent-Provider: <!-- claude | codex | cursor | grok | gemini | human -->
+Work package: <!-- plan unit, lane or issue, e.g. plan:root/20261116070000 step 5 -->
+Lane: <!-- one lane from .agents/sessions/lanes.json -->
 
 ## Summary
 
-<!-- What does this PR change, and why? Link any related issue (e.g. "Closes #123"). -->
+<!-- What changes, and why. Link related issues (e.g. "Closes #123"). -->
 
 ## Type of change
 
 - [ ] Bug fix
-- [ ] New feature / new detection signal
+- [ ] New feature
 - [ ] Documentation
 - [ ] Tooling / CI / build
 - [ ] Refactor (no behaviour change)
 
-## Checklist
+## Checks
 
-- [ ] Unit tests pass locally: `go test ./...`
-- [ ] The WASM build succeeds: `GOOS=js GOARCH=wasm go build -o web/detector.wasm ./cmd/wasm/`
-- [ ] **Detection catalog unaffected**: I did not change frozen upstream detection weights or thresholds; the bots-vs-engine catalog still passes (all bots blocked, no false positives) and the Gate conformance suite is green. (New signals: I opened an issue first and kept the existing catalog passing.)
-- [ ] The commit subject follows [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, …).
-- [ ] Docs are updated for any user-facing or behavioural change.
+- [ ] Scoped `cargo test --locked`, `cargo fmt --check` and Clippy pass for the changed crates.
+- [ ] `spec check --no-local` passes.
+- [ ] **Detection freeze**: no scoring weights, thresholds, hard-rule predicates or verdict bands changed (or the owner asked for it).
+- [ ] Commit subjects follow Conventional Commits; no `Co-authored-by` unless `@users.noreply.github.com`; author and committer are noreply addresses.
+- [ ] Product e2e claims come only from the Docker runner (rule 60), with source, image and topology recorded.
+
+## Needs the owner
+
+<!-- Merge, release, tag, ruleset or settings application, secrets, human-gated areas.
+     Add the `needs-human` label when the change touches .github/workflows, .github/rulesets,
+     .github/settings, .github/labels.json or the common-rules SoT. -->
 
 ## Notes for reviewers
-
-<!-- Anything reviewers should know: trade-offs, follow-ups, areas needing extra scrutiny. -->
