@@ -153,7 +153,7 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | `cmd/server/playground_test.go` | missing | not A | OPEN | playground/launch lab replacement has no allocated owner or module | plan 20261107205817 B11 (lab-only role) |
 | `cmd/server/powhandler.go` | partial | not A | COMP | Pass handlers, single-use instance state and accessible UI are unallocated | plan 20261107205817 B08 (M) |
 | `cmd/server/resource_handlers.go` | partial | not A | COMP | resource/trace/traffic handlers need scoped authorized storage | plan 20261107205817 B07 (M) |
-| `cmd/server/rit.go` | partial | not A | COMP | Core demo role, public listener and collect composition are unallocated | plan 20261107205817 B01/B05/B06 (M) |
+| `cmd/server/rit.go` | partial | A ported (tests in the boundary-tests change), rest not A | COMP | Core demo role, public listener and collect composition are unallocated | plan 20261107205817 B01/B05/B06 (M) |
 | `cmd/server/server.go` | partial | not A | COMP | Core demo role, public listener and collect composition are unallocated | plan 20261107205817 B01/B05/B06 (M) |
 | `cmd/server/sot31_test.go` | partial | not A | DIFF | address-keyed registry is structurally absent in Rust; owner must accept the difference | row note (SoT-31) |
 | `cmd/server/tlsconn.go` | partial | not A | COMP | Core demo role, public listener and collect composition are unallocated | plan 20261107205817 B01/B05/B06 (M) |
@@ -193,7 +193,7 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | `internal/logger/logger.go` | partial | not A | DIFF | synchronous emission instead of a bounded async queue | gateway/logging.rs documented difference |
 | `internal/logger/logger_test.go` | partial | not A | DIFF | synchronous emission instead of a bounded async queue | gateway/logging.rs documented difference |
 | `internal/logger/sink_test.go` | partial | not A | DIFF | synchronous emission instead of a bounded async queue | gateway/logging.rs documented difference |
-| `internal/network/fuzz_test.go` | partial | not A | DEP | coverage-guided fuzzing needs a new dev-dependency | no cargo-fuzz/proptest in Cargo.lock |
+| `internal/network/fuzz_test.go` | partial | A ported (tests in the boundary-tests change), rest not A | DEP | coverage-guided fuzzing needs a new dev-dependency | no cargo-fuzz/proptest in Cargo.lock |
 | `internal/redis/client.go` | missing | not A | REDIS | RESP client would be a new fleet client with no owner | plan 20261107205817 B23 (M) |
 | `internal/redis/client_test.go` | missing | not A | REDIS | RESP client would be a new fleet client with no owner | plan 20261107205817 B23 (M) |
 | `internal/resource/classify.go` | missing | not A | SOT | tier gating has no accepted SoT, gates heavy media on liveness (a11y question) and emits l5.media/l5.embed signals (freeze) | plan 20261107205817 B07; legacy SoT-10 unavailable |
@@ -207,7 +207,7 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | `internal/watermark/inject.go` | missing | not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
 | `internal/watermark/ledger.go` | partial | not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
 | `internal/watermark/lsb_test.go` | missing | not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
-| `internal/watermark/watermark_test.go` | partial | not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
+| `internal/watermark/watermark_test.go` | partial | A ported (tests in the boundary-tests change), rest not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
 
 ## Citation check
 
@@ -273,3 +273,10 @@ Spot-checks of the re-check reports against the Go source:
   defaults. Rust `rate::Config::new` refuses zero
   (`invalid_config_has_no_defaults_or_overflowing_ttl`), a deliberate no-defaults
   difference.
+
+Reconciliation, row by row: this table and the independent re-check agree on
+145 of the 148 rows. The other 3 (`cmd/server/rit.go`,
+`internal/network/fuzz_test.go`, `internal/watermark/watermark_test.go`) were
+not A here and had test-only class A items in the re-check. Those items are
+implemented and pass, and the rows are marked accordingly. No row is left with
+an unresolved disagreement.
