@@ -133,3 +133,11 @@ unattended.
   browser and WASM collector are not wired. Unit 36 stays open: the scaffold
   pilots are wired into the Cap0 chain, transfer applicator and snapshot code,
   and five of them stand in for components unit 35 does not cover yet.
+- 2026-11-16: unit 35 increment 3 drove a real Firefox through the Rust
+  `wasm-bindgen-test-runner` and ran the real Rust WASM collector against a
+  witnessed runtime Gate in Docker. Session, collect, CHALLENGE and 422 paths
+  answered as the fixtures expected, Origin and Referer held, and the audit
+  stayed fully witnessed ([[evidence:root/20261116110546]]). Readiness now
+  turns unhealthy after witness loss, but only after the first failed append.
+  Still open: Authority, the shipped binary's witness and live readiness,
+  original client TLS, a DNS canary, and the clean-room split.
