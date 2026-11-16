@@ -86,6 +86,10 @@ unattended.
 | 28 | IM5 main integration | IM5 | P | user authorizes merge after 1–27 |
 | 29 | IM6 main-only and approved Pages | IM6, FM12 | P | follows 28 |
 | 30 | Push of agent commits on `codex/rust` | — | P | user approves push (AGENTS.md reserves ref work for Root) |
+| 31 | TLS drain refusal-propagation race (flaky gateway TLS test) | FM4, IM2 | R | `cursor-integration` owner decides code vs test under the runtime-application drain contract |
+| 32 | Make the lab-runner Unlock-A test hermetic (it now needs an untracked private closer) | IM2 | R | product-lab with Root: fixture or explicit ignore with a reason |
+| 33 | `git_coord` test needs `pwsh`; Rust replacement of the coordination scripts | FM11 | R | agents-meta owner; scripts stay until replaced and qualified |
+| 34 | Workspace Clippy `-D warnings` clean | FM0 | A | done 2026-11-16 |
 
 ## Record
 
@@ -96,4 +100,6 @@ unattended.
   docker_clean_room_full_matrix_green, red_blue_validate_product,
   docker_e2e_validate_product, Unlock-C, apps_humanymous_browser. Also product
   0, `cap_free` false, `cap_burn` 0. Gate results are in
-  [[evidence:root/20261116055601]] and the follow-up evidence of this session.
+  [[evidence:root/20261116055601]] and [[evidence:root/20261116060831]].
+- 2026-11-16: the unattended run stopped after class A units 1–4 and 34. Every
+  open unit (5–33) is D, R, H or P.
