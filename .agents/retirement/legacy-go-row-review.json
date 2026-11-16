@@ -15,8 +15,8 @@
  },
  "totals": {
   "missing": 74,
-  "partial": 96,
-  "ported_unit": 142,
+  "partial": 95,
+  "ported_unit": 143,
   "not_applicable": 2
  },
  "by_package": {
@@ -78,10 +78,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 41,
+   "partial": 40,
    "missing": 27,
    "not_applicable": 1,
-   "ported_unit": 16
+   "ported_unit": 17
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -2416,7 +2416,8 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/guard.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::clean_request_has_no_spoof",
@@ -2428,12 +2429,13 @@
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace",
     "crates/sdk/humanymous-runtime/src/gateway/http/stream.rs::complete_chunk_stream_reframes_and_strips_forged_gateway_fields",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names",
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser.rs::real_shared_client_consumption_ack_and_origin_fidelity"
    ],
    "go_test_map": {},
    "gaps": [
-    "Forwarding composition does not yet call strip_inbound or attach the origin-cloak header",
-    "HR-27b spoof audit record is not emitted"
+    "Forwarding does not yet attach the origin-cloak header",
+    "The HR-27b spoof record (gateway/smuggle.rs::spoof_record) is not yet appended by the gateway"
    ],
    "retire_basis": null,
    "confidence": "low",
@@ -2448,7 +2450,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::spoofed_trust_headers_are_reported_and_stripped": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_is_hmac_hex": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::token_matches_go_golden_bytes": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/guard/tests.rs::valid_with_symmetric_grace": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::spoof_record_lists_only_static_header_names": "passed"
    }
   },
   {
@@ -3117,22 +3120,27 @@
   },
   {
    "baseline_path": "internal/gate/smuggle.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::smuggle_record_matches_legacy_shape"
    ],
    "go_test_map": {},
    "gaps": [
-    "HR-23 smuggle audit record"
+    "The gateway refuses ambiguous framing in the parser before a session exists and does not yet append the HR-23 record"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Strict framing refusal is stricter than Go; no smuggle audit event is emitted.",
+   "notes": "Strict framing refusal is stricter than Go; no smuggle audit event is emitted. Reason classification and the HR-23 record builder are ported in gateway/smuggle.rs.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::smuggle_record_matches_legacy_shape": "passed"
    }
   },
   {

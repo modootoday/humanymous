@@ -18,6 +18,7 @@ pub mod service;
 pub mod session;
 pub mod settings;
 pub mod shipping;
+pub mod smuggle;
 pub mod startup;
 pub mod tls;
 pub mod token;
