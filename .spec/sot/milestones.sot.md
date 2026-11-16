@@ -3,7 +3,7 @@ id: sot:root/milestones
 title: Canonical milestone register
 status: active
 created: 2026-11-16T05:56:01Z
-updated: 2026-11-16T05:56:01Z
+updated: 2026-11-16T07:15:00Z
 verify: ["spec check --no-local"]
 rel:
   depends_on: [sot:root/program-roadmap, sot:root/clean-room-usage-matrix, sot:root/rust-migration]
@@ -84,7 +84,7 @@ past Component-only for runtime, product or native scope.
 | FM8 | Product Docker wargame | Component-only | Live Gate, browser and Pass, egress, origin and audit, attack/ordinary/human/AT denominators |
 | FM9 | Automation, mobile, provider and standards | Research | Owned execution, wire format and vectors, interoperability, security/privacy/a11y review |
 | FM10 | Cross-OS, OIDC and Pages | Partial | Three full runners, final-source six-tuple, registry and package trust, docs freshness, Pages artifact |
-| FM11 | Rust-only, supply chain, agents and skills | Partial | Each of the 314 legacy Go responsibility rows has exact Rust behavior with actual evidence, or a reviewed retirement disposition. Go image builders migrate. CVE, SBOM and image scan. Agents and skills evaluation |
+| FM11 | Rust-only, supply chain, agents and skills | Partial | Each of the 314 legacy Go responsibility rows has exact Rust behavior with actual evidence, or a reviewed retirement disposition. Go image builders migrate. CVE, SBOM and image scan. Agents and skills evaluation. Row review 2026-11-16 (`.agents/retirement/legacy-go-row-review.json`, [[evidence:root/20261116071500]]): 104 ported_unit, 90 partial, 118 missing, 2 not_applicable, 0 retire |
 | FM12 | Retain only final main | Deferred | Follows IM5 and IM6 |
 
 ### Browser and native tool track

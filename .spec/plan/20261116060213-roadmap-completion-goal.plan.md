@@ -3,7 +3,7 @@ id: plan:root/20261116060213
 title: Roadmap completion goal and unattended execution contract
 status: active
 created: 2026-11-16T06:02:13Z
-updated: 2026-11-16T06:02:13Z
+updated: 2026-11-16T07:15:00Z
 rel:
   depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix]
 ---
@@ -79,7 +79,7 @@ unattended.
 | 21 | G9 provider deployment | FM9 | P | publication unauthorized |
 | 22 | Adapter home pilots (Apache, Python, Ruby, .NET, native) | FM6 | D | follows 9 |
 | 23 | Cross-OS full runners (Windows, macOS, Linux six-tuple) | FM10, IM2 | H | hosted runners |
-| 24 | Legacy Go: 255 pending + 59 mapped rows need Rust proof or a reviewed disposition | FM11 | R | the review owner named on each row in `.agents/retirement/legacy-go-owner-routing.json` |
+| 24 | Legacy Go: 314 rows reviewed (104 ported_unit, 90 partial, 118 missing, 2 n/a); each still needs actual evidence, a Rust port, or a Root retirement decision | FM11 | A (port) + R (retire) | review done 2026-11-16, [[evidence:root/20261116071500]] |
 | 25 | Go Gate/Core image builders migrate to Rust images | FM11 | R+P | release lane; parity evidence comes from 12–13 |
 | 26 | CVE, SBOM and image scan | FM11 | A after 25 | runs once images are final |
 | 27 | Pages and Draft v0 current-source review | IM4 | R+P | manual review and deploy approval |
@@ -111,3 +111,6 @@ unattended.
   closer, and the product labs turned out to be scaffolds (units 35–36). Units
   31 (TLS drain race) and 32 (hermetic Unlock A test) were fixed. The owner chose
   FM11 (unit 24) as the next structural work.
+- 2026-11-16: FM11 row review landed as
+  `.agents/retirement/legacy-go-row-review.json`. No row is retired; the
+  missing and partial rows are now explicit port or retirement work.
