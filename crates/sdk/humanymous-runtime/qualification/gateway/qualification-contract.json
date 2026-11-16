@@ -7,9 +7,9 @@
   "library": {
     "target": "lib",
     "expected_counts": {
-      "linux": 102,
-      "macos": 102,
-      "windows": 98
+      "linux": 106,
+      "macos": 106,
+      "windows": 102
     },
     "common_test_names": [
       "gateway::service::authorization::tests::checked_fixture_retains_same_configuration_and_public_data",
@@ -109,7 +109,11 @@
       "gateway::shipping::tests::providers::bounded_optional_declarations_preserve_order_without_provider_observations",
       "gateway::shipping::tests::providers::duplicate_unknown_and_wrong_type_provider_declarations_refuse",
       "gateway::shipping::tests::providers::seventh_provider_is_refused_before_decoding_or_collecting_its_value",
-      "gateway::shipping::tests::providers::repeated_epoch_generation_and_digests_remain_data_not_replay_authority"
+      "gateway::shipping::tests::providers::repeated_epoch_generation_and_digests_remain_data_not_replay_authority",
+      "gateway::tests::fresh_collector_provenance_gates_required_collector",
+      "gateway::tls::h2::tests::body_owner_retains_stream_one_data_only",
+      "gateway::tls::h2::tests::h2_response_frames_end_stream_on_empty_body",
+      "gateway::tls::h2::tests::settings_and_ack_frames_are_well_formed"
     ],
     "unix_extra_test_names": [
       "gateway::tests::service::hosted_only_witnessed_settings_commit_invalidates_sessions_and_restores",
