@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 116,
-  "partial": 90,
-  "ported_unit": 106,
+  "missing": 113,
+  "partial": 92,
+  "ported_unit": 107,
   "not_applicable": 2
  },
  "by_package": {
@@ -77,10 +77,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 39,
-   "missing": 43,
+   "partial": 41,
+   "missing": 40,
    "not_applicable": 1,
-   "ported_unit": 2
+   "ported_unit": 3
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -1815,34 +1815,60 @@
   },
   {
    "baseline_path": "internal/gate/ban_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::temporary_ban_expires",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::permanent_ban_persists_and_resists_single_operator_lift",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::list_returns_only_active_bans"
+   ],
    "go_test_map": {
-    "TestAutoBanEscalation": null,
-    "TestBanExpiry": null,
-    "TestPermanentBanAndLift": null,
-    "TestBanList": null
+    "TestAutoBanEscalation": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control",
+    "TestBanExpiry": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::temporary_ban_expires",
+    "TestPermanentBanAndLift": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::permanent_ban_persists_and_resists_single_operator_lift",
+    "TestBanList": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::list_returns_only_active_bans"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust ban escalation, expiry, permanent ban/lift or list.",
-   "test_verification": {}
+   "notes": "Ported against gateway::ban. Intended differences (owner issue): the fourth auto strike stays 24h and flags dual control instead of a permanent ban; permanent bans need a consumed PermanentBan grant; permanent lift is refused until a control action exists.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_escalates_and_permanent_tier_needs_dual_control": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::temporary_ban_expires": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::permanent_ban_persists_and_resists_single_operator_lift": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::list_returns_only_active_bans": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/ban.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::strikes_decay_after_seven_days",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::capacity_refuses_instead_of_evicting",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::broad_ban_needs_matching_grant"
+   ],
    "go_test_map": {},
    "gaps": [
-    "ban store, strike escalation, permanent/lift/list/GC"
+    "front-of-path enforcement and audit events in the Gate composition (B13/B18)",
+    "BanLedger seam for a shared fleet ledger (B23)",
+    "dual-controlled lift of permanent bans (no control action defined)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Only the underlying rate counter (network/history/rate) and typed PermanentBan control action exist; no ban enforcement (B18 M).",
-   "test_verification": {}
+   "notes": "Store, strike escalation with 7-day decay, expiry, list, GC and bounded capacity are ported over network/history/rate; permanent and broad bans consume a retained dual-control grant.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::strikes_decay_after_seven_days": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::capacity_refuses_instead_of_evicting": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::dual_control::broad_ban_needs_matching_grant": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/cohort_shadow.go",
@@ -3084,9 +3110,13 @@
   },
   {
    "baseline_path": "internal/gate/wargame_escalation_r161_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds"
+   ],
    "go_test_map": {
     "TestWargameR161_PendingBanNotEnforcedUntilCommit": null,
     "TestWargameR162_CommitThenEdgeDenies": null,
@@ -3108,8 +3138,8 @@
     "TestWargameR178_ApprovalTicketDiffersByApprover": null,
     "TestWargameR179_ApprovalTicketDiffersByKind": null,
     "TestWargameR180_HasRoleDPOSuperset": null,
-    "TestWargameR181_ValidBanKeyRejectsSchemeOnlyFPSpace": null,
-    "TestWargameR182_ValidBanKeyAcceptsIPv4Mapped": null,
+    "TestWargameR181_ValidBanKeyRejectsSchemeOnlyFPSpace": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR182_ValidBanKeyAcceptsIPv4Mapped": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR183_CIDRHostBitsValid": null,
     "TestWargameR184_RejectUnknownScheme": null,
     "TestWargameR185_RejectBareIPWithoutScheme": null,
@@ -3126,14 +3156,19 @@
     "TestWargameR196_SecCHUAAffectsBindKey": null,
     "TestWargameR197_SmuggleCRInHeaderValue": null,
     "TestWargameR198_MultiHeaderObsFoldAnyKey": null,
-    "TestWargameR199_SeriesRegressionValidBanKeyMatrix": null,
+    "TestWargameR199_SeriesRegressionValidBanKeyMatrix": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR200_SeriesClosePackageGreen": null
    },
-   "gaps": [],
+   "gaps": [
+    "approval, token, step-up and route-policy cases",
+    "R169 lone chunked TE accepted by Go (Rust refuses; owner issue)"
+   ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban, approval, token, step-up and route-policy cases have no Rust counterpart; R169 (TE chunked alone OK) conflicts with Rust refusing all TE.",
-   "test_verification": {}
+   "notes": "Ban-key validation rounds R181, R182 and R199 are ported; other rounds have no Rust counterpart yet.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/wargame_escalation_r51_test.go",
@@ -3143,26 +3178,27 @@
     "crates/sdk/humanymous-runtime/src/audit/control/operations.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback",
+    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field",
-    "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback"
    ],
    "go_test_map": {
-    "TestWargameR051_EmptyIPBanKeyRejected": null,
-    "TestWargameR052_EmptyFPBanKeyRejected": null,
-    "TestWargameR053_EmptyCIDRBanKeyRejected": null,
-    "TestWargameR054_WhitespaceOnlyIPRejected": null,
-    "TestWargameR055_InvalidIPv4OctetsRejected": null,
-    "TestWargameR056_IPKeyWithEmbeddedNewlineRejected": null,
-    "TestWargameR057_IPKeyWithSemicolonPayloadRejected": null,
-    "TestWargameR058_WrongCaseIPPrefixRejected": null,
-    "TestWargameR059_IPWithCIDRSuffixRejected": null,
-    "TestWargameR060_GarbageCIDRRejected": null,
-    "TestWargameR061_IPWithPercentNullStyleRejected": null,
-    "TestWargameR062_ShortFingerprintRejected": null,
-    "TestWargameR063_ValidIPv6BanKeyAccepted": null,
-    "TestWargameR064_ValidCIDRBanKeyAccepted": null,
-    "TestWargameR065_WorldCIDRStillBroad": null,
+    "TestWargameR051_EmptyIPBanKeyRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR052_EmptyFPBanKeyRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR053_EmptyCIDRBanKeyRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR054_WhitespaceOnlyIPRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR055_InvalidIPv4OctetsRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR056_IPKeyWithEmbeddedNewlineRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR057_IPKeyWithSemicolonPayloadRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR058_WrongCaseIPPrefixRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR059_IPWithCIDRSuffixRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR060_GarbageCIDRRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR061_IPWithPercentNullStyleRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR062_ShortFingerprintRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR063_ValidIPv6BanKeyAccepted": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR064_ValidCIDRBanKeyAccepted": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR065_WorldCIDRStillBroad": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR066_HTTPEmptyIPBan400": null,
     "TestWargameR067_HTTPNewlineIPBan400": null,
     "TestWargameR068_HTTPGarbageCIDRBan400": null,
@@ -3180,7 +3216,7 @@
     "TestWargameR080_KillswitchRequiresDistinctApprover": null
    },
    "gaps": [
-    "ban key validation (R051-R070)",
+    "HTTP 400 for invalid ban keys and bulk skip (R066-R070)",
     "role rules for approval/erasure/killswitch (R075,R076,R079,R080)",
     "pending list and unknown id (R072,R077)"
    ],
@@ -3190,7 +3226,8 @@
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::exact_time_bounds_and_canonical_ids_are_required": "passed",
     "crates/sdk/humanymous-runtime/src/audit/control/policy.rs::two_independent_signatures_bind_every_operation_field": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/control_operations.rs::durable_consumption_rejects_replay_and_whole_file_rollback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed"
    }
   },
   {
