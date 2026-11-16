@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 71,
-  "partial": 96,
-  "ported_unit": 145,
+  "missing": 67,
+  "partial": 99,
+  "ported_unit": 146,
   "not_applicable": 2
  },
  "by_package": {
@@ -78,10 +78,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 41,
-   "missing": 24,
+   "partial": 44,
+   "missing": 20,
    "not_applicable": 1,
-   "ported_unit": 19
+   "ported_unit": 20
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -1992,19 +1992,37 @@
   },
   {
    "baseline_path": "internal/gate/ban_integration_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban"
+   ],
    "go_test_map": {
-    "TestAutoBanEndToEnd": null,
-    "TestFingerprintAutoBan": null,
-    "TestConsoleBanManagement": null
+    "TestAutoBanEndToEnd": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address",
+    "TestFingerprintAutoBan": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood",
+    "TestConsoleBanManagement": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle"
    },
-   "gaps": [],
+   "gaps": [
+    "No Runtime ban gate wired into request routing: the HTTP 403, origin-not-contacted and audit-only modes are unported",
+    "No ban.applied audit emission and no audit-chain verification after an auto-ban",
+    "No Runtime owner composes the ip:+fp: key set per request",
+    "Authenticated admin bans API (add/list/lift), RBAC and Retry-After are unported"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust ban store, auto-ban or console ban management; rate primitive in network/history/rate only.",
-   "test_verification": {}
+   "notes": "Kernel-level ports only; temporary auto and manual bans need no dual control, permanent and cidr bans do (pinned by existing dual-control tests).",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::auto_ban_flood_blocks_source_and_spares_other_address": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::fingerprint_key_bans_ip_rotating_flood": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::manual_temporary_ban_lifecycle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::already_banned_source_reports_existing_ban": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/ban_test.go",
@@ -2426,20 +2444,46 @@
   },
   {
    "baseline_path": "internal/gate/gc_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/mod.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/mod.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl"
+   ],
    "go_test_map": {
     "TestVerdictStoreGC": null,
-    "TestBanStoreGCSweepsStrikesAndExpired": null,
-    "TestSweepDetectorGC": null,
+    "TestBanStoreGCSweepsStrikesAndExpired": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans",
+    "TestSweepDetectorGC": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed",
     "TestServerGCRunsWithoutPanic": null
    },
-   "gaps": [],
+   "gaps": [
+    "The Go sticky VerdictStore has no Rust counterpart, so its TTL sweep is unported",
+    "No Runtime composite GC owner (Go Server.GC) sweeps every kernel"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "The GC targets (verdict, ban, sweep stores) do not exist in Rust.",
-   "test_verification": {}
+   "notes": "Each kernel GC is tested on its own; an expired ban drops at once while its strike survives until STRIKE_DECAY.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::gc_sweeps_stale_strikes_and_expired_bans": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::bounded_gc_cursor_progresses_and_ttl_equality_survives": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/cohort/tests.rs::r259_idle_cohort_is_evicted_strictly_after_ten_minutes": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/interarrival/tests.rs::r266_gc_drops_last_seen_strictly_after_idle": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/guard.go",
@@ -3279,56 +3323,127 @@
   },
   {
    "baseline_path": "internal/gate/wargame_axis_cred_r201_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth.rs",
+    "crates/sdk/humanymous-runtime/src/network/proxy/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::key_id_matches_go_spki_hash_and_header_forms",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::rfc_salt_length_and_shape_are_enforced",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::wargame_r205_correctly_signed_wrong_token_type_is_invalid",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::wargame_r238_junk_after_quoted_token_is_malformed_and_spends_nothing",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r235_pat_does_not_launder_wba_forgery",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r236_webauthn_does_not_bypass_proxy_trust_config",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r240_axis_close_regression_lock",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::absent_directory_refuses_instead_of_bypassing",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::lifetime_window_edges_follow_go",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::profile_and_shape_are_enforced",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::wargame_r237_covers_request_line_helper",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::wargame_r239_bad_directory_line_refuses_whole_directory",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::rp_id_binding_and_counter_policy",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::wargame_r219_counter_must_strictly_increase",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::local_command_keeps_socket_peer",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::rejects_garbage_wrong_version_truncation_and_short_blocks"
+   ],
    "go_test_map": {
-    "TestWargameR201_PATDoubleSpendNonce": null,
-    "TestWargameR202_PATTamperedAuthenticator": null,
-    "TestWargameR203_PATUnknownIssuerNoTrust": null,
-    "TestWargameR204_PATAbsentIsNoneNotDeny": null,
-    "TestWargameR205_PATWrongTokenType": null,
-    "TestWargameR206_PATMalformedPrivateTokenHeader": null,
-    "TestWargameR207_PATDistinctNoncesIndependent": null,
-    "TestWargameR208_PATBareBase64Form": null,
-    "TestWargameR209_ProxyParseRejectsWorldCIDR": null,
-    "TestWargameR210_ProxyParseRejectsV6World": null,
-    "TestWargameR211_ProxyParseRejectsNearWorld": null,
-    "TestWargameR212_ProxyParseAcceptsBalancerSlash24": null,
-    "TestWargameR213_ProxyUntrustedPeerIgnoresHeader": null,
-    "TestWargameR214_ProxyV2GarbageNotHeader": null,
-    "TestWargameR215_ProxyV2LocalNoSpoofAddr": null,
-    "TestWargameR216_WebAuthnOriginMismatch": null,
-    "TestWargameR217_WebAuthnZeroCounterNoUpgrade": null,
-    "TestWargameR218_WebAuthnCounterReplay": null,
-    "TestWargameR219_WebAuthnCounterMustStrictlyIncrease": null,
-    "TestWargameR220_WebAuthnRpIDMismatch": null,
-    "TestWargameR221_WebAuthnNoneAbsent": null,
-    "TestWargameR222_WebAuthnUnknownCred": null,
-    "TestWargameR223_WBAForgedAllowlistedKeyID": null,
-    "TestWargameR224_WBAAuthorityBinding": null,
-    "TestWargameR225_WBAPathBinding": null,
-    "TestWargameR226_WBAMethodBinding": null,
-    "TestWargameR227_WBANonceSingleUse": null,
-    "TestWargameR228_WBAAuthorityOnlyNotTrusted": null,
-    "TestWargameR229_WBANoCreatedExpiresNeutral": null,
-    "TestWargameR230_WBAOverlongExpiresNeutral": null,
-    "TestWargameR231_WBAUnknownKeyNeutralNotDeny": null,
-    "TestWargameR232_WBAAbsentSignatureNone": null,
-    "TestWargameR233_WBAWrongAlgNeutral": null,
-    "TestWargameR234_WBAWrongTagNeutral": null,
-    "TestWargameR235_PATDoesNotLaunderWBAForgery": null,
-    "TestWargameR236_WebAuthnDoesNotBypassProxyTrustConfig": null,
-    "TestWargameR237_CoversRequestLineHelper": null,
-    "TestWargameR238_PATHeaderInjectionAfterToken": null,
-    "TestWargameR239_StaticKeyDirectoryIgnoresBadLines": null,
-    "TestWargameR240_AxisCloseRegression": null
+    "TestWargameR201_PATDoubleSpendNonce": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend",
+    "TestWargameR202_PATTamperedAuthenticator": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered",
+    "TestWargameR203_PATUnknownIssuerNoTrust": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer",
+    "TestWargameR204_PATAbsentIsNoneNotDeny": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none",
+    "TestWargameR205_PATWrongTokenType": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::wargame_r205_correctly_signed_wrong_token_type_is_invalid",
+    "TestWargameR206_PATMalformedPrivateTokenHeader": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::rfc_salt_length_and_shape_are_enforced",
+    "TestWargameR207_PATDistinctNoncesIndependent": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::key_id_matches_go_spki_hash_and_header_forms",
+    "TestWargameR208_PATBareBase64Form": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::key_id_matches_go_spki_hash_and_header_forms",
+    "TestWargameR209_ProxyParseRejectsWorldCIDR": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries",
+    "TestWargameR210_ProxyParseRejectsV6World": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries",
+    "TestWargameR211_ProxyParseRejectsNearWorld": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries",
+    "TestWargameR212_ProxyParseAcceptsBalancerSlash24": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries",
+    "TestWargameR213_ProxyUntrustedPeerIgnoresHeader": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries",
+    "TestWargameR214_ProxyV2GarbageNotHeader": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::rejects_garbage_wrong_version_truncation_and_short_blocks",
+    "TestWargameR215_ProxyV2LocalNoSpoofAddr": "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::local_command_keeps_socket_peer",
+    "TestWargameR216_WebAuthnOriginMismatch": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding",
+    "TestWargameR217_WebAuthnZeroCounterNoUpgrade": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::rp_id_binding_and_counter_policy",
+    "TestWargameR218_WebAuthnCounterReplay": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected",
+    "TestWargameR219_WebAuthnCounterMustStrictlyIncrease": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::wargame_r219_counter_must_strictly_increase",
+    "TestWargameR220_WebAuthnRpIDMismatch": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::rp_id_binding_and_counter_policy",
+    "TestWargameR221_WebAuthnNoneAbsent": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none",
+    "TestWargameR222_WebAuthnUnknownCred": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential",
+    "TestWargameR223_WBAForgedAllowlistedKeyID": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged",
+    "TestWargameR224_WBAAuthorityBinding": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority",
+    "TestWargameR225_WBAPathBinding": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line",
+    "TestWargameR226_WBAMethodBinding": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line",
+    "TestWargameR227_WBANonceSingleUse": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use",
+    "TestWargameR228_WBAAuthorityOnlyNotTrusted": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected",
+    "TestWargameR229_WBANoCreatedExpiresNeutral": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound",
+    "TestWargameR230_WBAOverlongExpiresNeutral": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::lifetime_window_edges_follow_go",
+    "TestWargameR231_WBAUnknownKeyNeutralNotDeny": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key",
+    "TestWargameR232_WBAAbsentSignatureNone": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::absent_directory_refuses_instead_of_bypassing",
+    "TestWargameR233_WBAWrongAlgNeutral": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::profile_and_shape_are_enforced",
+    "TestWargameR234_WBAWrongTagNeutral": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::profile_and_shape_are_enforced",
+    "TestWargameR235_PATDoesNotLaunderWBAForgery": "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r235_pat_does_not_launder_wba_forgery",
+    "TestWargameR236_WebAuthnDoesNotBypassProxyTrustConfig": "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r236_webauthn_does_not_bypass_proxy_trust_config",
+    "TestWargameR237_CoversRequestLineHelper": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::wargame_r237_covers_request_line_helper",
+    "TestWargameR238_PATHeaderInjectionAfterToken": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::wargame_r238_junk_after_quoted_token_is_malformed_and_spends_nothing",
+    "TestWargameR239_StaticKeyDirectoryIgnoresBadLines": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::wargame_r239_bad_directory_line_refuses_whole_directory",
+    "TestWargameR240_AxisCloseRegression": "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r240_axis_close_regression_lock"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "PAT, PROXY v2, WebAuthn and Web Bot Auth are all absent in Rust.",
-   "test_verification": {}
+   "notes": "Intended differences pinned (issue needs-owner): R238 junk after a quoted token is Invalid(Malformed) and spends no nonce; R239 a bad directory line refuses the whole directory; R231 an empty directory is a config error; R232 a signature without a directory is Neutral(NotConfigured); R227 replay is Neutral(Replay); R206 is Invalid(Malformed). R214/R215 read from an in-memory cursor; the read deadline belongs to the caller.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::key_id_matches_go_spki_hash_and_header_forms": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::rfc_salt_length_and_shape_are_enforced": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::wargame_r205_correctly_signed_wrong_token_type_is_invalid": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::wargame_r238_junk_after_quoted_token_is_malformed_and_spends_nothing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r235_pat_does_not_launder_wba_forgery": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r236_webauthn_does_not_bypass_proxy_trust_config": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/tests.rs::compositions::wargame_r240_axis_close_regression_lock": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::absent_directory_refuses_instead_of_bypassing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::lifetime_window_edges_follow_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::profile_and_shape_are_enforced": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::wargame_r237_covers_request_line_helper": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::wargame_r239_bad_directory_line_refuses_whole_directory": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::rp_id_binding_and_counter_policy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::wargame_r219_counter_must_strictly_increase": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::allowlist_rejects_broad_and_malformed_entries": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::local_command_keeps_socket_peer": "passed",
+    "crates/sdk/humanymous-runtime/src/network/proxy/tests.rs::rejects_garbage_wrong_version_truncation_and_short_blocks": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/wargame_axis_redis_r241_test.go",
@@ -3976,18 +4091,26 @@
   },
   {
    "baseline_path": "internal/gate/ws4_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed"
+   ],
    "go_test_map": {
     "TestIncidentEnumerationCap": null,
-    "TestIncidentHandleOpaque": null
+    "TestIncidentHandleOpaque": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed"
    },
-   "gaps": [],
+   "gaps": [
+    "The per-operator incident lookup cap (429 near 120/min), admin incident resolution and the recon.decision_probing audit record have no Rust counterpart"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No incident lookup cap or opaque handle in Rust.",
-   "test_verification": {}
+   "notes": "Incident handles are HMAC-keyed INC- tokens that do not reveal the sequence number.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/ws5_test.go",
