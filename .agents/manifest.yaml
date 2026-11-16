@@ -94,6 +94,7 @@ rules:
   - 94-chat-coordination.md
   - 95-cursor-collaboration.md
   - 96-docker-engine-affinity.md
+  - 97-github-coordination.md
 
 sessions:
   protocol: .agents/sessions/PROTOCOL.md

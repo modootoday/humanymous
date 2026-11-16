@@ -63,6 +63,13 @@ separately. Local Windows, local WSL, local `act` and GitHub-hosted results rema
 distinct. Never spoof GitHub environment variables to bypass hosted-only guards
 or label a local execution as hosted evidence.
 
+## Cloud containers
+
+A cloud session's Linux container may run its own Docker daemon. Record that
+venue as a cloud container, with its endpoint, engine ID and versions, apart from
+local Windows, WSL, `act` and GitHub-hosted results. It is not a GitHub-hosted
+runner and never stands in for one. Rule 97 covers coordination there.
+
 ## Image cleanup authorization
 
 Run `image prune -a` only after an explicit user request for that image cleanup,

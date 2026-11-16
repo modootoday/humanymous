@@ -17,4 +17,6 @@ paths are explicitly disjoint and both claims document that.
 
 Durable state lives in the board + `.agents/lessons/` — not only in one provider’s chat memory.
 
+Cloud and scheduled sessions use the GitHub replacements in `97-github-coordination.md`.
+
 Skill: `coordinate-sessions`. Protocol: `.agents/sessions/PROTOCOL.md`.

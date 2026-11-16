@@ -10,7 +10,8 @@ coordinate with Root, never switch automatically. Do not create/switch branches,
 create worktrees, or recreate deleted validation refs. Owners do not push/delete
 refs themselves. Root performs explicitly user-authorized ref work; Cursor applies
 integration source only after recorded ownership transfer under rule95.
-A `git-ops` claim does not waive these restrictions. Isolated Root source is
+A `git-ops` claim does not waive these restrictions. A cloud or scheduled session
+without this checkout follows `97-github-coordination.md` instead. Isolated Root source is
 read-only; candidate edits remain under the author's exact claimed evidence paths.
 
 ## Rules
