@@ -230,3 +230,8 @@ taken from the sweep table alone:
 - DIFF, FREEZE, DUAL and KEYS follow the goal contract: an intended Go/Rust
   difference goes to the owner, detection scoring is frozen, dual control
   needs two human controllers, and audit keys are not touched.
+
+Coverage: the "Remaining rows" table names exactly the 148 ledger rows whose
+disposition is `missing` or `partial`, each once (set comparison of
+`baseline_path` against the table's first column: equal, 148 = 148), and every
+row carries a class, a category and a citation. No open row is unclassified.
