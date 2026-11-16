@@ -20,6 +20,7 @@ mod nginx;
 mod notices;
 mod package;
 mod pages;
+mod parity;
 mod pilot;
 mod policy;
 mod public_surface;

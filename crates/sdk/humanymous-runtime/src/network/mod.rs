@@ -4,6 +4,7 @@ pub mod history;
 pub mod http;
 pub mod http2;
 pub mod ingress;
+pub mod proxy;
 pub mod report;
 pub mod residual;
 pub mod tcp;

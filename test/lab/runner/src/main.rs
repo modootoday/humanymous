@@ -20,6 +20,7 @@ mod handoff_apply;
 #[path = "../../mount_policy.rs"]
 mod mount_policy;
 mod orchestration;
+mod product_e2e;
 mod provider;
 mod snapshot;
 mod transfer_applicator;
@@ -33,6 +34,7 @@ fn main() {
         Some("run") => orchestration::run(&args[1..]),
         Some("fixture") => fixture::run(&args[1..]).map(|()| 0),
         Some("engine-preflight")=>docker::engine_preflight(&args[1..]),
+        Some("product-e2e") => product_e2e::run(&args[1..]),
         Some("provider-preflight") => provider::run(&args[1..]),
         Some("cleanup") => orchestration::cleanup_expired().map(|()| 0),
         Some("audit") => audit::run(&args[1..]),
@@ -56,7 +58,7 @@ fn main() {
         Some("until-complete-status") => until_complete_status::run(&args[1..]),
         Some("cef-bundle-probe") => cef_bundle_probe::run(&args[1..]),
         Some("cef-bundle-bind") => cef_bundle::run_bind(&args[1..]),
-        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe | --authority-node-ipc | --w2-h2-product-binding | --w2-h2-hosted-venue | --n06-owner-join-readiness | --g2-collector-product-binding | --g2-collector-product-binding-readiness | --g5-witness-transport | --g5-witness-transport-honesty | --clean-room-product | --g6-origin-audit-binding | --red-blue-product | --clean-room-product-matrix | --browser-ready-interactive-at-honesty | --n06-owner-auth-handoff-honesty | --g4-cef-at] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH] | matrix-completeness --matrix PATH [--emit PATH] [--expect-head SHA] [--workspace PATH] | transfer-probe --manifest PATH [--workspace PATH] [--emit PATH] | transfer-apply --manifest PATH --grant PATH [--workspace PATH] [--dry-run] [--emit PATH] | transfer-verify --manifest PATH [--root PATH] [--emit PATH] [--expect-applied] | unlock-probe [--manifest PATH] [--root PATH] [--emit PATH] | handoff-apply --kind at|auth|browser-ready-join [--workspace PATH] [--dry-run] [--emit PATH] | cap-realloc-apply --grant PATH --manifest PATH [--workspace PATH] [--dry-run] [--emit PATH] | cap0-chain [--workspace PATH] [--inspect-only|--dry-run] [--emit PATH] [--grant PATH] [--manifest PATH] | cap0-apply-when-ready [--workspace PATH] [--emit PATH] [--grant PATH] [--manifest PATH] [--dry-run] [--then-cap1-lander-prep] | cap1-lander-prep [--workspace PATH] [--emit PATH] | until-complete-status [--workspace PATH] [--emit PATH] | cef-bundle-probe [--workspace PATH] [--emit PATH] | cef-bundle-bind [--workspace PATH] [--dry-run] [--emit PATH]".into()),
+        _ => Err("usage: humanymous-lab-runner run --evidence BUNDLE [--collector | --browser-product | --go-product | --mount-probe | --authority-node-ipc | --w2-h2-product-binding | --w2-h2-hosted-venue | --n06-owner-join-readiness | --g2-collector-product-binding | --g2-collector-product-binding-readiness | --g5-witness-transport | --g5-witness-transport-honesty | --clean-room-product | --g6-origin-audit-binding | --red-blue-product | --clean-room-product-matrix | --browser-ready-interactive-at-honesty | --n06-owner-auth-handoff-honesty | --g4-cef-at] [--require-full | --require-go-component] | engine-preflight --evidence BUNDLE | product-e2e --venue cloud-container --emit PATH [--build-ca PATH] [--keep-image] |audit --evidence BUNDLE | fixture ROLE | cleanup | provider-preflight MANIFEST | matrix-plan --matrix PATH [--emit PATH] | matrix-completeness --matrix PATH [--emit PATH] [--expect-head SHA] [--workspace PATH] | transfer-probe --manifest PATH [--workspace PATH] [--emit PATH] | transfer-apply --manifest PATH --grant PATH [--workspace PATH] [--dry-run] [--emit PATH] | transfer-verify --manifest PATH [--root PATH] [--emit PATH] [--expect-applied] | unlock-probe [--manifest PATH] [--root PATH] [--emit PATH] | handoff-apply --kind at|auth|browser-ready-join [--workspace PATH] [--dry-run] [--emit PATH] | cap-realloc-apply --grant PATH --manifest PATH [--workspace PATH] [--dry-run] [--emit PATH] | cap0-chain [--workspace PATH] [--inspect-only|--dry-run] [--emit PATH] [--grant PATH] [--manifest PATH] | cap0-apply-when-ready [--workspace PATH] [--emit PATH] [--grant PATH] [--manifest PATH] [--dry-run] [--then-cap1-lander-prep] | cap1-lander-prep [--workspace PATH] [--emit PATH] | until-complete-status [--workspace PATH] [--emit PATH] | cef-bundle-probe [--workspace PATH] [--emit PATH] | cef-bundle-bind [--workspace PATH] [--dry-run] [--emit PATH]".into()),
     };
     match result {
         Ok(code) => std::process::exit(code),

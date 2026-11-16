@@ -1,0 +1,952 @@
+{
+  "build_egress_trust_anchor": "venue CA bundle supplied as a build-only secret for dependency fetch",
+  "build_seconds": 152,
+  "clean_room": false,
+  "clean_room_gaps": [
+    "engine venue is a cloud container, not Windows desktop-linux or genuine GitHub-hosted Linux",
+    "single shared loopback namespace for gate, origin and attacker; origin is not reachable only through a Gate backend network",
+    "authority, independent audit witness and browser roles are absent"
+  ],
+  "cleanup": {
+    "attacker_container_removed": true,
+    "compose_down": true,
+    "containers_remaining": 0,
+    "image_removed": true
+  },
+  "components": {
+    "attacker": {
+      "binary": "humanymous-runtime-pilot --product-driver (Rust HTTP/1.1 driver)",
+      "present": true,
+      "real": true
+    },
+    "audit": {
+      "note": "no independent audit service or witness; only the gate's embedded WAL ran",
+      "present": false
+    },
+    "authority": {
+      "note": "humanymous-authority service not deployed in this increment",
+      "present": false
+    },
+    "browser": {
+      "note": "no browser or WASM collector; collect reports are client-asserted fixtures",
+      "present": false
+    },
+    "gate": {
+      "binary": "humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs)",
+      "embedded_durable_audit": "runtime-owned sealed WAL with synthetic owned custody on tmpfs; no external witness",
+      "present": true,
+      "real": true
+    },
+    "origin": {
+      "binary": "humanymous-runtime-pilot --product-origin (Rust recording origin)",
+      "present": true,
+      "real": true
+    }
+  },
+  "constraint": "Configuration::validate requires loopback listen and origin and the accept loop drops non-loopback peers, so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
+  "driver": {
+    "cases": [
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 401,
+        "gate_local_body": {
+          "error": "session"
+        },
+        "id": "no_session_protected_route",
+        "observed_status": 401,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 401,
+        "gate_local_body": {
+          "error": "session"
+        },
+        "id": "forged_trust_headers_without_session",
+        "observed_status": 401,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 409,
+        "gate_local_body": {
+          "error": "route_inventory"
+        },
+        "id": "route_outside_inventory",
+        "observed_status": 409,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "reserved_route"
+        },
+        "id": "reserved_admin_route",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "authority"
+        },
+        "id": "foreign_host_authority",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_cl_te",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_duplicate_cl",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_identical_duplicate_cl",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_te_chunked_alone",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_obs_fold",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 422,
+        "gate_local_body": {
+          "error": "required_capability"
+        },
+        "id": "missing_raw_tls_capability",
+        "observed_status": 422,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 422,
+        "gate_local_body": {
+          "error": "required_capability"
+        },
+        "id": "missing_collector_capability",
+        "observed_status": 422,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 1,
+        "expected_status": 200,
+        "gate_local_body": null,
+        "id": "signed_session_effect_forwarded",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "id": "origin_observed_exact_request",
+        "origin_body_length": 6,
+        "origin_body_sha256": "dcb576426a17b7df13907007cb02a1f1dfc12fc6c69f603717abca59d03b888e",
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "origin_method": "POST",
+        "origin_target": "/effect",
+        "pass": true
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "request_integrity"
+        },
+        "id": "replay_of_forwarded_request",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "request_integrity"
+        },
+        "id": "signed_body_mutation",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "verdict": "CHALLENGE"
+        },
+        "id": "uncollected_session_effect",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": {
+          "verdict": "CHALLENGE"
+        },
+        "id": "signed_forged_trust_headers",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "origin_header_names": null,
+        "pass": true,
+        "sent_headers": [
+          "X-Forwarded-For",
+          "Forwarded",
+          "X-Real-Ip",
+          "X-Hmny-Origin-Auth",
+          "X-Hmn-Verdict",
+          "Cf-Connecting-Ip"
+        ],
+        "strip_path_exercised": false
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_forwarded_for",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Forwarded-For"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_forwarded",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "Forwarded"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_real_ip",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Real-Ip"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_hmny_origin_auth",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Hmny-Origin-Auth"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_hmn_verdict",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Hmn-Verdict"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": {
+          "verdict": "CHALLENGE"
+        },
+        "id": "signed_forged_cf_connecting_ip",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "origin_header_names": null,
+        "pass": true,
+        "sent_headers": [
+          "Cf-Connecting-Ip"
+        ],
+        "strip_path_exercised": false
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_client_x_humanymous_header",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Humanymous-Verdict"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_benign_header_control",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding",
+          "X-Lab-Marker"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Lab-Marker"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "id": "global_no_forbidden_header_at_origin",
+        "malformed_origin_contacts": 0,
+        "origin_records_total": 8,
+        "pass": true
+      }
+    ],
+    "client_report": "client-asserted fixture report; no browser or collector executed",
+    "driver_error": null,
+    "failed": 0,
+    "observations": {
+      "origin_socket_reachable_from_attacker_namespace": true
+    },
+    "passed": 27,
+    "schema": "humanymous.product-e2e-driver/1"
+  },
+  "driver_exit_success": true,
+  "gate_readiness": {
+    "listen": "127.0.0.1:18443",
+    "profile": {
+      "administration": false,
+      "administration_writable": false,
+      "audit_external_witness": false,
+      "audit_startup_recovery": null,
+      "audit_witness_independence_qualified": false,
+      "audit_witness_required_durability": null,
+      "browser_collector": false,
+      "browser_cookie_credentials": false,
+      "browser_recovery": false,
+      "browser_session": false,
+      "client_asserted_report_ingestion": true,
+      "operational": {
+        "rate_per_second": 1000,
+        "session_capacity": 64,
+        "session_rate_per_second": 100,
+        "session_ttl_ms": 60000,
+        "timeout_ms": 5000
+      },
+      "operational_revision": null,
+      "original_h2": false,
+      "product_qualified": false,
+      "profile": "experimental-loopback-http1",
+      "raw_header_order": true,
+      "raw_tls": false,
+      "revision": "r1",
+      "rit": true,
+      "routes": [
+        {
+          "method": "POST",
+          "path": "/effect",
+          "ready": true,
+          "response_profile": "buffered",
+          "rit_profile": "native_full"
+        },
+        {
+          "method": "POST",
+          "path": "/tls",
+          "ready": false,
+          "response_profile": "buffered",
+          "rit_profile": "native_full"
+        },
+        {
+          "method": "POST",
+          "path": "/collector",
+          "ready": false,
+          "response_profile": "buffered",
+          "rit_profile": "native_full"
+        }
+      ]
+    }
+  },
+  "image": {
+    "id": "sha256:905f574fa8a9d33933cf7400b929d7d9dd64962999b0a5e5890cbc01f1438254",
+    "size_bytes": 132165360,
+    "tag": "humanymous/product-e2e:local"
+  },
+  "increment": 1,
+  "label": "partial topology: gate + origin + attacker; not product e2e completion",
+  "pass_product_clean_room": false,
+  "product_complete": false,
+  "roadmap_unit": 35,
+  "schema": "humanymous.product-e2e-receipt/1",
+  "source": {
+    "branch": "claude/product-e2e",
+    "commit": "528b77ab2a4deb380236724e8845f8e89460646f",
+    "compose": "deployments/lab/compose.product-e2e.yaml",
+    "dirty_entries": 0,
+    "dockerfile": "build/rust/product-e2e.Dockerfile",
+    "resolved_compose_sha256": "01dc982d888dc046841d9337a1490cbddf896b71ea253b8fc9d3055ca909c3ae",
+    "tree_clean": true
+  },
+  "status": "partial_topology_measured",
+  "topology": {
+    "assertions": [
+      {
+        "id": "network_internal_no_egress",
+        "pass": true
+      },
+      {
+        "id": "no_published_ports",
+        "pass": true
+      },
+      {
+        "id": "origin_and_attacker_share_gate_namespace",
+        "pass": true
+      },
+      {
+        "id": "all_containers_run_built_image",
+        "pass": true
+      },
+      {
+        "id": "hardened_sandbox",
+        "pass": true
+      }
+    ],
+    "containers": [
+      {
+        "cap_drop": [
+          "ALL"
+        ],
+        "exit_code": 0,
+        "id": "5fc3a82c80e91957b09092da5c2426cff8d075e58262a7805c0e0f4dd087fefa",
+        "image": "sha256:905f574fa8a9d33933cf7400b929d7d9dd64962999b0a5e5890cbc01f1438254",
+        "init": true,
+        "name": "humanymous-lab-product-e2e-gate-1",
+        "network_mode": "humanymous-lab-product-e2e_product",
+        "port_bindings": {},
+        "published_ports": {},
+        "read_only_rootfs": true,
+        "state": "running",
+        "user": "65532:65532"
+      },
+      {
+        "cap_drop": [
+          "ALL"
+        ],
+        "exit_code": 0,
+        "id": "e0f3ff3d38e06bedb5ba641989d0a303cb2c4b9f5a9b072a480d65969cf5ddf0",
+        "image": "sha256:905f574fa8a9d33933cf7400b929d7d9dd64962999b0a5e5890cbc01f1438254",
+        "init": true,
+        "name": "humanymous-lab-product-e2e-origin-1",
+        "network_mode": "container:5fc3a82c80e91957b09092da5c2426cff8d075e58262a7805c0e0f4dd087fefa",
+        "port_bindings": {},
+        "published_ports": {},
+        "read_only_rootfs": true,
+        "state": "running",
+        "user": "65532:65532"
+      },
+      {
+        "cap_drop": [
+          "ALL"
+        ],
+        "exit_code": 0,
+        "id": "a5ed0085c393dcd8f889264f82a5af150e1e5674a0935c1f827a70a3d9a5aacb",
+        "image": "sha256:905f574fa8a9d33933cf7400b929d7d9dd64962999b0a5e5890cbc01f1438254",
+        "init": true,
+        "name": "humanymous-lab-product-e2e-attacker",
+        "network_mode": "container:5fc3a82c80e91957b09092da5c2426cff8d075e58262a7805c0e0f4dd087fefa",
+        "port_bindings": {},
+        "published_ports": {},
+        "read_only_rootfs": true,
+        "state": "exited",
+        "user": "65532:65532"
+      }
+    ],
+    "network": {
+      "driver": "bridge",
+      "internal": true,
+      "name": "humanymous-lab-product-e2e_product"
+    },
+    "project": "humanymous-lab-product-e2e"
+  },
+  "transcript": [
+    {
+      "argv": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "rev-parse",
+        "--abbrev-ref",
+        "HEAD"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "status",
+        "--porcelain",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "show"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "inspect",
+        "default",
+        "--format",
+        "{{json .Endpoints.docker.Host}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "info",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "config"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "build",
+        "--file",
+        "build/rust/product-e2e.Dockerfile",
+        "--tag",
+        "humanymous/product-e2e:local",
+        "--label",
+        "org.humanymous.source=528b77ab2a4deb380236724e8845f8e89460646f",
+        "--secret",
+        "id=egress_ca,src=<venue-ca-bundle>",
+        "."
+      ],
+      "exit": 0,
+      "seconds": 152,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "inspect",
+        "--format",
+        "{{.Id}}",
+        "humanymous/product-e2e:local"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "inspect",
+        "--format",
+        "{{.Size}}",
+        "humanymous/product-e2e:local"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "up",
+        "--detach",
+        "--no-build",
+        "--pull",
+        "never",
+        "gate",
+        "origin"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "run",
+        "--no-deps",
+        "--no-TTY",
+        "--pull",
+        "never",
+        "--name",
+        "humanymous-lab-product-e2e-attacker",
+        "attacker"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "logs",
+        "humanymous-lab-product-e2e-gate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-gate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-origin-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-attacker"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "network",
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e_product"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "down",
+        "--volumes",
+        "--remove-orphans",
+        "--timeout",
+        "5"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "rm",
+        "--force",
+        "humanymous-lab-product-e2e-attacker"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "ps",
+        "--all",
+        "--quiet",
+        "--filter",
+        "label=com.docker.compose.project=humanymous-lab-product-e2e"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "rm",
+        "humanymous/product-e2e:local"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "show"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "inspect",
+        "default",
+        "--format",
+        "{{json .Endpoints.docker.Host}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "info",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    }
+  ],
+  "venue": {
+    "client_version": "29.9.2",
+    "endpoint": "unix:///var/run/docker.sock",
+    "engine_id": "c7f5a196-202c-4d3d-b816-145fcff2acd0",
+    "engine_id_stable": true,
+    "github_hosted": false,
+    "info_server_version": "29.9.2",
+    "kind": "cloud-container",
+    "os_type": "linux",
+    "selected_context": "default",
+    "selected_context_endpoint": "unix:///var/run/docker.sock",
+    "server_api_version": "1.56",
+    "server_version": "29.9.2",
+    "windows_desktop_affinity_claimed": false
+  }
+}

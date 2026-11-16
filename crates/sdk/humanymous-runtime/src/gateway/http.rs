@@ -224,6 +224,7 @@ pub fn origin_request(request: &Request, authority: &str) -> Vec<u8> {
                 | "proxy-authorization"
                 | "proxy-authenticate"
         ) || lower.starts_with("x-humanymous-")
+            || crate::gateway::guard::is_internal(name)
             || lower == "authorization"
                 && !matches!(
                     crate::gateway::browser::profile(request),
@@ -263,6 +264,86 @@ mod tests {
         ] {
             assert!(parse_headers(frame.as_bytes()).is_err(), "{frame}");
         }
+    }
+    /// Every legacy Go `smuggleScan` case (internal/gate round3_test.go and
+    /// smuggle_wargame_test.go at baseline 981d25c) replayed as wire bytes.
+    /// Go's single "chunked" Transfer-Encoding passes its scan; this profile
+    /// refuses every Transfer-Encoding, which is stricter, never looser.
+    #[test]
+    fn legacy_go_smuggle_scan_cases_are_refused_on_the_wire() {
+        const HEAD: &str = "POST / HTTP/1.1\r\nHost: app\r\n";
+        let clean = format!("{HEAD}Content-Length: 5");
+        assert!(parse_headers(clean.as_bytes()).is_ok(), "clean");
+        for (name, fields) in [
+            ("cl+te", "Content-Length: 5\r\nTransfer-Encoding: chunked"),
+            ("dup-cl", "Content-Length: 5\r\nContent-Length: 6"),
+            ("cl-identical-dup", "Content-Length: 5\r\nContent-Length: 5"),
+            ("te-not-chunked", "Transfer-Encoding: chunked, chunked"),
+            (
+                "te-multi-chunked",
+                "Transfer-Encoding: chunked\r\nTransfer-Encoding: chunked",
+            ),
+            ("te-empty", "Transfer-Encoding: "),
+            ("te-identity", "Transfer-Encoding: identity"),
+            ("te-gzip-chunked", "Transfer-Encoding: gzip, chunked"),
+            ("te-chunked-alone", "Transfer-Encoding: chunked"),
+            (
+                "obs-fold",
+                "Content-Length: 0\r\nX-Custom: ok\r\n Injected: yes",
+            ),
+            (
+                "obs-fold-tab",
+                "Content-Length: 0\r\nX-Custom: ok\r\n\tInjected: yes",
+            ),
+            ("obs-fold-lf-only", "Content-Length: 0\r\nX-Foo: a\nb"),
+            ("bare-cr", "Content-Length: 0\r\nX-Foo: a\rb"),
+        ] {
+            let frame = format!("{HEAD}{fields}");
+            let refusal = parse_headers(frame.as_bytes()).err();
+            assert_eq!(refusal, Some(Rejection::new(400, "http_framing")), "{name}");
+        }
+    }
+    /// Legacy cmd/server/h1capture.go peeked lowercased header names in wire
+    /// order before net/http lost it; this parser keeps order and casing itself.
+    #[test]
+    fn header_wire_order_and_casing_are_retained() {
+        let frame = "GET /a?b=1 HTTP/1.1\r\nUser-Agent: x\r\nhost: app\r\nAccept-Language: en\r\nACCEPT: */*\r\nContent-Length: 0";
+        let (request, length) = parse_headers(frame.as_bytes()).unwrap();
+        assert_eq!(length, 0);
+        let names: Vec<&str> = request.headers.iter().map(|(n, _)| n.as_str()).collect();
+        assert_eq!(
+            names,
+            [
+                "User-Agent",
+                "host",
+                "Accept-Language",
+                "ACCEPT",
+                "Content-Length"
+            ]
+        );
+        let peeked: Vec<String> = names.iter().map(|n| n.to_ascii_lowercase()).collect();
+        assert_eq!(
+            peeked,
+            [
+                "user-agent",
+                "host",
+                "accept-language",
+                "accept",
+                "content-length"
+            ]
+        );
+        assert_eq!(request.header("Accept"), Some("*/*"));
+        assert_eq!(request.target, "/a?b=1");
+    }
+    #[test]
+    fn origin_request_drops_forged_trust_headers() {
+        let frame = "GET / HTTP/1.1\r\nHost: app\r\nX-Forwarded-For: 1.2.3.4\r\nforwarded: for=5.6.7.8\r\nX-Real-IP: 9.9.9.9\r\nCF-Connecting-IP: 1.1.1.1\r\nX-Hmny-Origin-Auth: forged\r\nX-Hmn-Verdict: ALLOW\r\nAccept: */*\r\nContent-Length: 0";
+        let (request, _) = parse_headers(frame.as_bytes()).unwrap();
+        let text = String::from_utf8(origin_request(&request, "origin")).unwrap();
+        assert_eq!(
+            text,
+            "GET / HTTP/1.1\r\nHost: origin\r\nContent-Length: 0\r\nConnection: close\r\nAccept: */*\r\n\r\n"
+        );
     }
     #[test]
     fn origin_response_preserves_cookie_bytes_and_rejects_ambiguity() {

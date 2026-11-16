@@ -102,6 +102,10 @@ async fn dispatch(native_identity: bool) {
     assert_eq!(records.len(), 2);
     let decision = &records[1];
     assert_eq!(decision.event_type, "runtime.decision");
+    assert!(
+        ["upgrade", "html", "api", "static"].contains(&decision.route_class.as_str()),
+        "decision records carry the legacy route class"
+    );
     let status = String::from_utf8_lossy(response.split(|byte| *byte == b'\n').next().unwrap());
     eprintln!(
         "TLS fixture native={native_identity} status={} verdict={} risk={} origin_effect={origin_effect}",

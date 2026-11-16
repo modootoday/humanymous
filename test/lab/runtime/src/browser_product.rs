@@ -114,9 +114,28 @@ pub fn gate() -> Result<()> {
         if plan.needs_checkpoint_append(){return Err("normal browser shutdown unexpectedly requires checkpoint repair".into());}
         let history=plan.history();
         let records:Vec<_>=history.records().iter().map(|record|json!({"seq":record.seq,"event_type":record.event_type,"verdict":record.verdict})).collect();
-        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","expected":expected,"stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
+        service::write_frame(&mut io::stdout(),&json!({"role":"browser_gate_result","expected":expected,"stopped":exit.stopped,"origin_effects":installation.origin.effects(),"proxy_hits":receipts.snapshot(),"collector_reports":collector_reports(&receipts.collect_entities()),"audit_sequence":history.sequence(),"audit_records":records,"audit_checkpoints":history.checkpoints(),"offline_log_authenticated":true,"witness_coverage":plan.coverage(),"checkpoint_repair_performed":false,"full_product_qualified":false}))?;
         Ok::<(),Box<dyn std::error::Error>>(())
     })
+}
+
+/// Largest collect entity carried inside the bounded private result frame.
+const REPORT_FRAME_MAX: usize = 48 * 1024;
+
+/// Exact collect entities as received at the Gate frontend: digest, length and
+/// (within the frame bound) the bytes. They hold no session secret: the
+/// browser transport binds the session in headers, not in the report.
+fn collector_reports(entities: &[Vec<u8>]) -> Vec<serde_json::Value> {
+    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use sha2::{Digest, Sha256};
+    entities
+        .iter()
+        .map(|bytes| {
+            let fits = bytes.len() <= REPORT_FRAME_MAX;
+            json!({"sha256":format!("{:x}",Sha256::digest(bytes)),"bytes":bytes.len(),
+                "base64":fits.then(|| STANDARD.encode(bytes)),"oversize":!fits})
+        })
+        .collect()
 }
 
 pub fn stop() -> Result<()> {

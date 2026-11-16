@@ -872,4 +872,153 @@ mod tests {
             Err(ScoringError::NonFiniteContribution)
         );
     }
+
+    /// Net-policy disarm of HR-19 and HR-24 (legacy `netClassMode`). Every
+    /// expected row was produced by the Go engine at baseline 981d25c with the
+    /// same single BOT network signal and a probed client.
+    #[test]
+    fn net_policy_disarms_residual_classes_like_go() {
+        type Overlay = Option<&'static [(&'static str, &'static str)]>;
+        let policies: [(&str, Overlay); 5] = [
+            ("nil", None),
+            ("empty", Some(&[])),
+            ("corr_monitor", Some(&[("net.correlation", "monitor")])),
+            ("hop_enforce", Some(&[("net.proxy.hop", "enforce")])),
+            ("hop_blank", Some(&[("net.proxy.hop", "")])),
+        ];
+        let go = [
+            (
+                "l5.correlation.proxy_rotation",
+                ["HR-19", "HR-19", "", "HR-19", "HR-19"],
+            ),
+            (
+                "l5.correlation.fp_churn_proxy",
+                ["HR-19", "HR-19", "", "HR-19", "HR-19"],
+            ),
+            ("l7.pow.too_fast", ["HR-19"; 5]),
+            ("l5.header.proxy_hop", ["HR-24", "", "", "HR-24", ""]),
+        ];
+        for (signal, expected) in go {
+            for ((name, policy), rule) in policies.iter().zip(expected) {
+                let engine = Engine {
+                    net_policy: policy.map(|entries| {
+                        entries
+                            .iter()
+                            .map(|(class, mode)| ((*class).to_owned(), (*mode).to_owned()))
+                            .collect()
+                    }),
+                    ..Engine::default()
+                };
+                let mut report = SessionReport::default();
+                report.client.environment.probed = true;
+                report.network.signals = Some(vec![Signal::new(
+                    signal,
+                    serde_json::json!(true),
+                    Verdict::Bot,
+                    1.0,
+                    Source::Server,
+                    "",
+                )]);
+                let result = engine.score(&mut report).unwrap();
+                let verdict = match rule {
+                    "HR-19" => "DENY",
+                    "HR-24" => "CHALLENGE",
+                    _ => "ALLOW",
+                };
+                assert_eq!(
+                    (result.hard_rule_fired.as_str(), result.verdict.as_str()),
+                    (rule, verdict),
+                    "{signal} under {name} policy"
+                );
+            }
+        }
+    }
+
+    /// Ports of legacy internal/scoring/runtime_test.go (baseline 981d25c)
+    /// overlay cases. They exercise existing policy, rule-mode and net-policy
+    /// inputs only; no weight, threshold, predicate or band changes.
+    mod overlays {
+        use super::*;
+
+        fn net(classes: &[(&str, &str)]) -> Engine {
+            Engine {
+                net_policy: Some(
+                    classes
+                        .iter()
+                        .map(|(class, mode)| ((*class).into(), (*mode).into()))
+                        .collect(),
+                ),
+                ..Default::default()
+            }
+        }
+
+        /// Go TestChallengeAtRaisedWeakensVerdict: a score-band CHALLENGE with
+        /// no hard rule becomes ALLOW when ChallengeAt is raised to 99.
+        #[test]
+        fn challenge_at_raised_weakens_verdict() {
+            let fixture = [("l5.traffic.tls_no_permutation", true)];
+            let default = score_fixture(&Engine::default(), &fixture);
+            assert_eq!(
+                (default.verdict.as_str(), default.hard_rule_fired.as_str()),
+                ("CHALLENGE", "")
+            );
+            let raised = Engine {
+                policy: Policy {
+                    challenge_at: 99.0,
+                    deny_at: 100.0,
+                    ..Default::default()
+                },
+                ..Default::default()
+            };
+            let got = score_fixture(&raised, &fixture);
+            assert_eq!(
+                (got.verdict.as_str(), got.hard_rule_fired.as_str()),
+                ("ALLOW", "")
+            );
+            assert_eq!(got.risk_score, default.risk_score);
+        }
+
+        /// Go TestRuleModeMonitorContinuesPastHR12: a monitored HR-12 never wins.
+        #[test]
+        fn rule_mode_monitor_continues_past_hr12() {
+            let fixture = [("l4.event.no_interaction", false)];
+            let baseline = score_fixture(&Engine::default(), &fixture);
+            assert_eq!(baseline.hard_rule_fired, "HR-12");
+            let monitored = Engine {
+                rule_modes: [("HR-12".to_owned(), "monitor".to_owned())].into(),
+                ..Default::default()
+            };
+            assert_ne!(score_fixture(&monitored, &fixture).hard_rule_fired, "HR-12");
+        }
+
+        /// Go TestNetPolicyMonitorDisarmsHR24ProxyHop.
+        #[test]
+        fn net_policy_monitor_disarms_hr24_proxy_hop() {
+            let fixture = [("l5.header.proxy_hop", true)];
+            assert_eq!(
+                score_fixture(&Engine::default(), &fixture).hard_rule_fired,
+                "HR-24"
+            );
+            let monitored = net(&[("net.proxy.hop", "monitor")]);
+            assert_ne!(score_fixture(&monitored, &fixture).hard_rule_fired, "HR-24");
+        }
+
+        /// Go TestNetPolicyMonitorDisarmsHR19CorrelationNotPow: correlation
+        /// monitor disarms proxy rotation but never the PoW integrity tell.
+        #[test]
+        fn net_policy_monitor_disarms_hr19_correlation_not_pow() {
+            let rotation = [("l5.correlation.proxy_rotation", true)];
+            assert_eq!(
+                score_fixture(&Engine::default(), &rotation).hard_rule_fired,
+                "HR-19"
+            );
+            let monitored = net(&[("net.correlation", "monitor")]);
+            assert_ne!(
+                score_fixture(&monitored, &rotation).hard_rule_fired,
+                "HR-19"
+            );
+            let pow = [("l7.pow.too_fast", false)];
+            assert_eq!(score_fixture(&monitored, &pow).hard_rule_fired, "HR-19");
+        }
+    }
 }

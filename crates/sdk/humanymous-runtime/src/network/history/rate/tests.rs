@@ -224,6 +224,20 @@ fn invalid_config_has_no_defaults_or_overflowing_ttl() {
     assert!(Config::new(ticks(1), 3, 2, limits).is_err());
 }
 
+/// Go TestValidateRefusesNonPositiveRateHard (internal/gate/settings at
+/// baseline 981d25c): a hard cutpoint of zero is refused, with or without a
+/// soft cutpoint below it.
+#[test]
+fn validate_refuses_non_positive_rate_hard() {
+    let limits = Limits::new(1, 1, 1, Duration::MAX, 100, 1).unwrap();
+    assert_eq!(
+        Config::new(ticks(10), 1, 0, limits).err(),
+        Some(Unavailable::InvalidConfiguration)
+    );
+    assert!(Config::new(ticks(10), 0, 0, limits).is_err());
+    assert!(Config::new(ticks(10), 1, 1, limits).is_ok());
+}
+
 #[test]
 fn tightening_defers_key_trim_and_expansion_overflow_preserves_config() {
     let mut rate = limiter(10, 3, 5, 2, 4, 2);
@@ -254,4 +268,80 @@ fn constructor_rejects_vec_layout_overflow_without_allocating_hits() {
     let limits = Limits::new(1, maximum, 1, ticks(1), usize::MAX, 1).unwrap();
     assert!(Config::new(ticks(1), 1, 2, limits).is_ok());
     // Constructors only: never construct a Limiter or allocate timestamp storage.
+}
+
+#[test]
+fn legacy_r272_rotating_ip_keys_split_while_stable_fingerprint_aggregates() {
+    let mut rate = limiter(1, 100, 200, 8, 300, 1);
+    let now = ticks(0);
+    assert_eq!(counted(rate.observe("ip:1.1.1.1", now).unwrap()).0, 1);
+    assert_eq!(counted(rate.observe("ip:2.2.2.2", now).unwrap()).0, 1);
+    rate.observe("ja4|devfp", now).unwrap();
+    let (count, ..) = counted(rate.observe("ja4|devfp", Duration::from_millis(1)).unwrap());
+    assert_eq!(count, 2, "a fingerprint-stable key aggregates rotating IPs");
+}
+
+#[test]
+fn legacy_r273_shared_owner_loses_no_concurrent_hits() {
+    use std::sync::{Arc, Mutex};
+    let rate = Arc::new(Mutex::new(limiter(1, 10_000, 20_000, 1, 100, 1)));
+    let now = ticks(0);
+    let workers: Vec<_> = (0..50)
+        .map(|_| {
+            let rate = Arc::clone(&rate);
+            std::thread::spawn(move || {
+                counted(rate.lock().unwrap().observe("conc", now).unwrap()).0
+            })
+        })
+        .collect();
+    let max = workers
+        .into_iter()
+        .map(|w| w.join().unwrap())
+        .max()
+        .unwrap();
+    assert_eq!(max, 50, "single-owner state under a lock keeps every hit");
+}
+
+/// Legacy cmd/server pass_handler_test `TestPassVelocityThresholds`: soft 4,
+/// hard 8 keeps a second attempt normal, elevates the fourth, floods the eighth.
+#[test]
+fn legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth() {
+    let mut rate = limiter(30, 4, 8, 1, 8, 1);
+    let levels: Vec<Level> = (0..8)
+        .map(|_| counted(rate.observe("k", ticks(0)).unwrap()).1)
+        .collect();
+    assert_eq!(levels[1], Level::Normal);
+    assert_eq!(levels[3], Level::Soft);
+    assert_eq!(levels[7], Level::Hard);
+}
+
+/// Legacy cmd/server pass_handler_test `TestAttestIssuanceBudget`: equal soft
+/// and hard cutpoints of 3 allow two issuances and refuse the third.
+#[test]
+fn legacy_attest_issuance_budget_refuses_the_third_issuance() {
+    let mut rate = limiter(30, 3, 3, 1, 3, 1);
+    let levels: Vec<Level> = (0..3)
+        .map(|_| counted(rate.observe("fp", ticks(0)).unwrap()).1)
+        .collect();
+    assert_eq!(levels, [Level::Normal, Level::Normal, Level::Hard]);
+}
+
+/// Legacy cmd/server pass wargame R336/R337 on the 30 s, soft 4, hard 8 pass
+/// governor: three attempts a second apart stay normal; ten at 10 ms are hard.
+#[test]
+fn legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots() {
+    let mut rate = limiter(30, 4, 8, 2, 10, 1);
+    for i in 0..3 {
+        let (count, level, _) = counted(rate.observe("fp|human", ticks(i)).unwrap());
+        assert_eq!(level, Level::Normal, "human attempt {count}");
+    }
+    let mut level = Level::Normal;
+    for i in 0..10 {
+        level = counted(
+            rate.observe("fp|bot", ticks(3) + Duration::from_millis(i * 10))
+                .unwrap(),
+        )
+        .1;
+    }
+    assert_eq!(level, Level::Hard);
 }

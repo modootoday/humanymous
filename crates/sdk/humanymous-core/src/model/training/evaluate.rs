@@ -1,6 +1,11 @@
 //! Pure offline metric reduction; no predictor installation or promotion policy.
 use crate::model::inference::Prediction;
 
+mod temporal;
+pub use temporal::{
+    CohortPrediction, CohortStat, SplitError, TimedPrediction, aut, cohort_fpr, time_split,
+};
+
 /// A reviewed label paired with an output from the existing inference boundary.
 /// Constructing this value does not authenticate the label's provenance.
 #[derive(Debug, Clone, Copy)]
