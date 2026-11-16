@@ -1,6 +1,7 @@
 //! Go↔Rust differential surface manifest: every recorded Go vector stays bound
 //! to the frozen baseline, to the Rust test that replays it, and to the FM11
-//! ledger package it covers; packages without vectors are named gaps.
+//! ledger package it covers; packages without vectors are named gaps that
+//! carry a recorded owner acceptance.
 use crate::{Result, command, require, source};
 use serde_json::Value;
 use std::{collections::BTreeSet, path::Path};
@@ -161,6 +162,12 @@ pub fn validate<'a>(
     for gap in manifest["gaps"].as_array().ok_or("parity gaps missing")? {
         let package = text(&gap["go_package"], "gap package")?;
         text(&gap["reason"], "gap reason")?;
+        text(&gap["acceptance"]["decision"], "gap acceptance decision")?;
+        let record = text(&gap["acceptance"]["record"], "gap acceptance record")?;
+        require(
+            source::safe_relative(record) && root.join(record).is_file(),
+            format!("parity gap {package} acceptance record {record} is missing"),
+        )?;
         require(
             packages.contains(package),
             format!("parity gap {package} is outside the FM11 ledger"),
@@ -251,13 +258,23 @@ mod tests {
                 }),
             ),
             (
+                "unaccepted",
+                Box::new(|m, _| {
+                    m["gaps"][0].as_object_mut().unwrap().remove("acceptance");
+                }),
+            ),
+            (
+                "record",
+                Box::new(|m, _| m["gaps"][0]["acceptance"]["record"] = "absent.md".into()),
+            ),
+            (
                 "double",
                 Box::new(|m, _| {
                     let package = m["surfaces"][0]["go_packages"][0].clone();
-                    m["gaps"]
-                        .as_array_mut()
-                        .unwrap()
-                        .push(serde_json::json!({"go_package": package, "reason": "x"}));
+                    let acceptance = m["gaps"][0]["acceptance"].clone();
+                    m["gaps"].as_array_mut().unwrap().push(
+                        serde_json::json!({"go_package": package, "reason": "x", "acceptance": acceptance}),
+                    );
                 }),
             ),
             (

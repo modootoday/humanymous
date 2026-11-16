@@ -3,7 +3,7 @@ id: plan:root/20261116060213
 title: Roadmap completion goal and unattended execution contract
 status: active
 created: 2026-11-16T06:02:13Z
-updated: 2026-11-16T10:55:00Z
+updated: 2026-11-16T14:30:00Z
 rel:
   depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix, sot:root/common-automation-rules]
 ---
@@ -173,3 +173,13 @@ labels the pull request `needs-human` otherwise.
   packages remain named gaps. Unit 35 is blocked: the remote product runner
   needs a signed-nonce installation identity in the runtime (runtime SoT delta,
   class R) and running it is class D.
+- 2026-11-16: the owner merged PRs #30, #29, #25, #19, #31, #21, #28, #27 and
+  #12 into `codex/rust`, and closed the superseded #13, #14, #17, #18 and #26.
+  For unit 37 the owner accepted the 25 vectorless Go packages as gaps covered
+  by the FM11-mapped Rust unit tests, without new Go code. The owner also
+  accepted the current fail-closed Rust behavior for every recorded intended
+  difference (the ten DIFF rows, the lone chunked request body, the ban store,
+  the shadow, guard, credential, logging and Pass store items, the RIT
+  bootstrap signal and the rate no-defaults rule). Signal IDs and scoring are
+  unchanged. The record is `.agents/retirement/owner-decisions-2026-11-16.md`,
+  and `delivery policy` requires each gap to cite it.
