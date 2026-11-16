@@ -67,6 +67,12 @@ impl Application {
     pub fn readiness(&self) -> serde_json::Value {
         self.config.readiness()
     }
+    /// Live fail-closed latch of this serving epoch; see [`EpochHealth`].
+    ///
+    /// [`EpochHealth`]: crate::gateway::session::EpochHealth
+    pub fn epoch_health(&self) -> crate::gateway::session::EpochHealth {
+        self.sessions.health()
+    }
     /// Consume one durably committed resource change in this serialized owner.
     /// Frozen scoring is untouched and a poisoned epoch cannot be revived.
     pub fn apply_committed_settings(
@@ -292,6 +298,9 @@ impl Application {
             tenant_id: self.config.scope.tenant.clone(),
             request_id,
             correlation_id: hex::encode(hash.finalize()),
+            route_class: crate::gateway::request::route_class(&req.headers)
+                .as_str()
+                .into(),
             config_version: self.config.scope.revision.clone(),
             verdict: verdict.clone(),
             risk_score: risk as i64,

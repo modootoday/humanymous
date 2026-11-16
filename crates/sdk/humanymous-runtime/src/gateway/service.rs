@@ -313,6 +313,12 @@ impl ServiceHost {
     pub fn readiness(&self) -> &Readiness {
         &self.readiness
     }
+    /// Live fail-closed latch for a supervisor's readiness probe. It turns false
+    /// after an audit append failure (including a lost required witness) has
+    /// poisoned the serving epoch; it never turns true again in this process.
+    pub fn epoch_health(&self) -> crate::gateway::session::EpochHealth {
+        self.application.epoch_health()
+    }
     /// Authenticated persisted operational revision, absent when not configured.
     pub fn operational_revision(&self) -> Option<u64> {
         self.application.operational_revision()
