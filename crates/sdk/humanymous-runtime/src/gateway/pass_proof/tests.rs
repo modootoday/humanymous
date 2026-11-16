@@ -57,6 +57,20 @@ fn digest_ignores_instance_fields_and_collides_on_sub_quantum_replay() {
     );
 }
 
+/// Legacy TestTraceDigestDistinguishesDifferentMotion.
+#[test]
+fn distinct_key_durations_produce_distinct_digests() {
+    let a = PassProof {
+        key_durs: vec![137.0, 89.0, 211.0, 123.0],
+        ..PassProof::default()
+    };
+    let b = PassProof {
+        key_durs: vec![140.0, 92.0, 205.0, 119.0],
+        ..PassProof::default()
+    };
+    assert_ne!(trace_digest(&a), trace_digest(&b));
+}
+
 #[test]
 fn non_finite_samples_refuse() {
     for bad in [f64::NAN, f64::INFINITY, -f64::INFINITY, 1e300] {
