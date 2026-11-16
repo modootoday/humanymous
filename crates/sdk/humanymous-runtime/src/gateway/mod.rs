@@ -14,6 +14,7 @@ pub mod settings;
 pub mod shipping;
 pub mod startup;
 pub mod tls;
+pub mod token;
 
 pub use crate::authority::Rejection;
 

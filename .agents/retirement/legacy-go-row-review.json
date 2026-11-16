@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 113,
-  "partial": 92,
-  "ported_unit": 107,
+  "missing": 107,
+  "partial": 94,
+  "ported_unit": 111,
   "not_applicable": 2
  },
  "by_package": {
@@ -77,10 +77,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 41,
-   "missing": 40,
+   "partial": 43,
+   "missing": 34,
    "not_applicable": 1,
-   "ported_unit": 3
+   "ported_unit": 7
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -2046,29 +2046,43 @@
   },
   {
    "baseline_path": "internal/gate/epoch_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::epoch_rotation_grants_one_grace_bucket"
+   ],
    "go_test_map": {
-    "TestTokenEpochRotation": null
+    "TestTokenEpochRotation": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::epoch_rotation_grants_one_grace_bucket"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No token epoch rotation in Rust; service/epoch.rs is unrelated readiness gating.",
-   "test_verification": {}
+   "notes": "Wall-clock epoch buckets with one grace bucket and per-node bump are ported with explicit caller time.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::epoch_rotation_grants_one_grace_bucket": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/epoch.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::epoch_rotation_grants_one_grace_bucket",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::epochs_follow_the_wall_clock_bucket"
+   ],
    "go_test_map": {},
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No wall-clock token epoch manager; gateway/service/epoch.rs is a readiness/admission gate, not token epochs.",
-   "test_verification": {}
+   "notes": "gateway::token::Epochs derives e<unix/900+bump> from caller time; no ticker or persistence, as in Go.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::epoch_rotation_grants_one_grace_bucket": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::epochs_follow_the_wall_clock_bucket": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/erasure.go",
@@ -2226,15 +2240,23 @@
   },
   {
    "baseline_path": "internal/gate/incident.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "resolver over the audit log and per-operator lookup cap (admin API, B19)"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No opaque incident handle or resolver in Rust.",
-   "test_verification": {}
+   "notes": "The keyed opaque handle INC-<10 hex> is ported; resolution needs the admin API.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::incident_handles_are_stable_opaque_and_keyed": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/inject_test.go",
@@ -2445,15 +2467,25 @@
   },
   {
    "baseline_path": "internal/gate/recon.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "constant response-time floor in the Gate response path"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No sweep detector or constant-time floor in Rust.",
-   "test_verification": {}
+   "notes": "Bounded sliding-window sweep detector is ported in network/history/sweep; the constant floor belongs to the unported Gate composition.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::bounds_clock_and_empty_inputs_fail_closed": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/redisledger_test.go",
@@ -2543,28 +2575,31 @@
   },
   {
    "baseline_path": "internal/gate/round3_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/mod.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire"
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::sessions_spread_beyond_the_window_do_not_accumulate"
    ],
    "go_test_map": {
     "TestSmuggleScan": "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire",
-    "TestSweepDetector": null,
-    "TestSweepWindowExpiry": null
+    "TestSweepDetector": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector",
+    "TestSweepWindowExpiry": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::sessions_spread_beyond_the_window_do_not_accumulate"
    },
-   "gaps": [
-    "sweep detector"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Framing refusal is ported and every TestSmuggleScan case is replayed on the wire; sweep detection is not.",
+   "notes": "All three tests are ported; Rust refuses every Transfer-Encoding (owner issue #20).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::many_sessions_from_one_binding_trip_the_detector": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::sessions_spread_beyond_the_window_do_not_accumulate": "passed"
    }
   },
   {
@@ -2834,34 +2869,67 @@
   },
   {
    "baseline_path": "internal/gate/token_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::expired_token_is_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::forged_token_fails_signature",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_token_fails_fingerprint_binding",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_is_single_use_across_bindings",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::token_is_bound_to_subnet_and_session",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::verdict_token_round_trip"
+   ],
    "go_test_map": {
-    "TestVerdictTokenRoundTrip": null,
-    "TestVerdictTokenBindingMismatch": null,
-    "TestVerdictTokenSubnetAndSidBinding": null,
-    "TestVerdictTokenForgery": null,
-    "TestVerdictTokenExpiry": null,
-    "TestNonceReplay": null
+    "TestVerdictTokenRoundTrip": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::verdict_token_round_trip",
+    "TestVerdictTokenBindingMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_token_fails_fingerprint_binding",
+    "TestVerdictTokenSubnetAndSidBinding": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::token_is_bound_to_subnet_and_session",
+    "TestVerdictTokenForgery": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::forged_token_fails_signature",
+    "TestVerdictTokenExpiry": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::expired_token_is_rejected",
+    "TestNonceReplay": "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_is_single_use_across_bindings"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No verdict token, binding key or nonce cache in Rust.",
-   "test_verification": {}
+   "notes": "Ported against gateway::token with the Go wire format. Rust refuses an empty expected session, empty nonce, separator-bearing fields and short keys (stricter than Go).",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::expired_token_is_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::forged_token_fails_signature": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::lifted_token_fails_fingerprint_binding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_is_single_use_across_bindings": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::token_is_bound_to_subnet_and_session": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::verdict_token_round_trip": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/token.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/token.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::malformed_and_ambiguous_tokens_fail_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "hmn_vt/hmn_su cookies and X-Hmn-Stepup-Receipt header handling in the Gate composition (B16/B17)",
+    "owner approval of tokens as a trust upgrade (B17)"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No verdict/step-up token or receipt in Rust (B17 M).",
-   "test_verification": {}
+   "notes": "Verdict and step-up tokens, receipts, bindings, subnets and the bounded nonce cache are ported as a pure kernel; no route issues or accepts them yet.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::step_up_and_verdict_tokens_are_domain_separated": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::receipt_checks_session_expiry_with_skew_and_domain": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::malformed_and_ambiguous_tokens_fail_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::bindings_and_subnets_match_legacy_shapes": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests.rs::nonce_cache_expires_and_saturates_closed": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/upstream_error_test.go",

@@ -1,6 +1,7 @@
 //! Bounded keyed measurement history; no signal or verdict authority.
 pub mod anomaly;
 pub mod rate;
+pub mod sweep;
 use std::time::Duration;
 
 /// Missing history/measurement, never a healthy normal observation.
