@@ -67,9 +67,11 @@ impl Application {
                     changed.map_err(|_| io::Error::other("shutdown controller closed"))?;
                     let request = *shutdown.borrow();
                     if let Some(request) = request {
-                        tokio::time::timeout(request.drain_timeout(), &mut pending).await
+                        // Drain and deadline expiry stay failures. A drained connection's
+                        // own refusal is that connection's outcome, as in plaintext serving.
+                        let _connection_outcome = tokio::time::timeout(request.drain_timeout(), &mut pending).await
                             .map_err(|_| io::Error::other("TLS shutdown drain incomplete"))?
-                            .map_err(|_| io::Error::other("TLS request deadline incomplete"))??;
+                            .map_err(|_| io::Error::other("TLS request deadline incomplete"))?;
                         true
                     } else { let _ = pending.await; false }
                 }
