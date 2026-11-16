@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
           persist-credentials: false
@@ -86,7 +86,7 @@ jobs:
     needs: go
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
           persist-credentials: false
@@ -174,7 +174,7 @@ jobs:
       COMPOSE_ANSI: never
       BUILDKIT_PROGRESS: plain
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: 981d25cf71a5a54855d7e2b4359e832a9d5998e5
           persist-credentials: false

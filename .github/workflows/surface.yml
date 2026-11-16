@@ -25,7 +25,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -50,7 +50,7 @@ jobs:
       GITLEAKS_VERSION: 8.28.0
       GITLEAKS_SHA256: a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb
     steps:
-    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
         fetch-depth: 0
