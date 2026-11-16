@@ -727,6 +727,16 @@ impl Lab {
             )?;
             let passed_count = successful_test_count(&result.stdout);
             let has_tests = passed_count.is_some();
+            if !(result.success && has_tests) {
+                // Name the failure mode publicly without exposing raw output.
+                let exit = self
+                    .docker
+                    .transcript
+                    .last()
+                    .and_then(|entry| entry["exit"].as_i64());
+                self.stage =
+                    collector_outcome(result.success, exit, &result.stdout, &result.stderr);
+            }
             self.components["collector"] = json!({"status":if result.success && has_tests{"passed"}else{"failed"},"evidence_type":"collector-component","passed_count":passed_count,"ordinary_human":false,"sandbox_qualified":false});
             self.case(
                 "collector-component",
@@ -1551,6 +1561,35 @@ pub fn run(args: &[String]) -> Result<i32> {
     );
     Ok(assessment.exit_code)
 }
+/// Enumerated, content-free classification of a failed collector run. Raw
+/// stdout and stderr stay in the private transcript.
+fn collector_outcome(success: bool, exit: Option<i64>, stdout: &str, stderr: &str) -> &'static str {
+    let both = [stdout, stderr];
+    let any = |needle: &str| both.iter().any(|text| text.contains(needle));
+    if exit == Some(137) {
+        "collector_killed"
+    } else if matches!(exit, Some(125..=127)) {
+        "collector_exec_error"
+    } else if any("test result: FAILED") {
+        "collector_tests_failed"
+    } else if any("timed out") || any("Timed out") {
+        "collector_timeout"
+    } else if any("geckodriver") || any("failed to bind") || any("WebDriver") {
+        "collector_driver"
+    } else if any("panicked at") {
+        "collector_runner_panic"
+    } else if any("No such file or directory") {
+        "collector_missing_file"
+    } else if any("Read-only file system") || any("Permission denied") {
+        "collector_filesystem_denied"
+    } else if stdout.trim().is_empty() && stderr.trim().is_empty() {
+        "collector_silent_exit"
+    } else if success {
+        "collector_no_summary_exit_zero"
+    } else {
+        "collector_no_summary_exit_nonzero"
+    }
+}
 fn successful_test_count(output: &str) -> Option<u64> {
     output
         .lines()
@@ -1645,6 +1684,78 @@ pub fn cleanup_expired() -> Result<()> {
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn collector_failures_are_named_by_enumerated_public_codes() {
+        use super::collector_outcome as outcome;
+        let cases = [
+            (
+                false,
+                "test result: FAILED. 3 passed; 1 failed;",
+                "",
+                "collector_tests_failed",
+            ),
+            (
+                false,
+                "",
+                "Timed out waiting for the test suite",
+                "collector_timeout",
+            ),
+            (false, "", "failed to bind geckodriver", "collector_driver"),
+            (
+                false,
+                "",
+                "thread 'main' panicked at src/main.rs",
+                "collector_runner_panic",
+            ),
+            (true, "", "", "collector_silent_exit"),
+            (false, "", "", "collector_silent_exit"),
+            (
+                false,
+                "",
+                "error: cannot open wasm: No such file or directory",
+                "collector_missing_file",
+            ),
+            (
+                false,
+                "",
+                "mkdir: Read-only file system",
+                "collector_filesystem_denied",
+            ),
+            (
+                true,
+                "running 3 tests",
+                "",
+                "collector_no_summary_exit_zero",
+            ),
+            (
+                false,
+                "running 3 tests",
+                "",
+                "collector_no_summary_exit_nonzero",
+            ),
+        ];
+        assert_eq!(outcome(false, Some(137), "running", ""), "collector_killed");
+        assert_eq!(outcome(false, Some(126), "", ""), "collector_exec_error");
+        assert_eq!(
+            outcome(
+                false,
+                Some(1),
+                "test result: FAILED. 1 passed; 1 failed;",
+                ""
+            ),
+            "collector_tests_failed"
+        );
+        for (success, stdout, stderr, code) in cases {
+            assert_eq!(outcome(success, Some(1), stdout, stderr), code);
+            let safe = super::safe_diagnostics(&[serde_json::json!(
+                {"id":"execution","status":"failed","error_code":code,"detail":stderr}
+            )]);
+            assert_eq!(
+                safe["failures"][0]["error_code"], code,
+                "{code} not in contract"
+            );
+        }
+    }
     #[test]
     fn public_diagnostics_never_copy_detail_or_arbitrary_error_text() {
         let input = vec![
