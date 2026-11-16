@@ -259,3 +259,17 @@ The re-check also found an intended Go/Rust difference for the owner. Go
 Rust follows `internal/integrity.Verify` and emits `l5.rit.ok` with
 `"bootstrap"`. Reconciling them touches signal IDs (detection freeze), so it is
 category DIFF.
+
+Spot-checks of the re-check reports against the Go source:
+
+- **`TestWargameR117_IntegrityEmptyClass`:** its body is only
+  `assertBanKeyRejected(t, "ip:")`. It is now mapped to the existing
+  `gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds`,
+  which rejects `"ip:"`, and the admin gap narrows to R111–R116.
+- **`internal/gate/enforce.go` `Verdict.action`:** an unknown verdict on a
+  public safe-method route returns `pass` (fail open), which is an owner-level
+  difference under fail-closed.
+- **`internal/gate/config.go` `rlWindow`/`rlSoft`/`rlHard`:** these fall back to
+  defaults. Rust `rate::Config::new` refuses zero
+  (`invalid_config_has_no_defaults_or_overflowing_ttl`), a deliberate no-defaults
+  difference.

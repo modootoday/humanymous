@@ -3963,6 +3963,7 @@
     "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs"
    ],
    "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r087_step_up_not_valid_as_verdict",
@@ -4025,7 +4026,7 @@
     "TestWargameR114_CheckpointsAuthRequired": null,
     "TestWargameR115_MetricsAuthRequired": null,
     "TestWargameR116_OperatorCannotListAsUnscoped": null,
-    "TestWargameR117_IntegrityEmptyClass": null,
+    "TestWargameR117_IntegrityEmptyClass": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR118_BanKeyIPv4LoopbackAllowed": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed",
     "TestWargameR119_BanKeyRejectsTabChar": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
     "TestWargameR120_FPWithSpacesRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected"
@@ -4033,7 +4034,7 @@
    "gaps": [
     "route preset/default resolution R083-R085 (plan 20261107205817 B12: C, open contract)",
     "HTML inject R108-R110 (B15: M)",
-    "admin whoami/keys/checkpoints/metrics/integrity auth R111-R117 (B19: M)"
+    "admin whoami/keys/checkpoints/metrics/auth R111-R116 (B19: M)"
    ],
    "retire_basis": null,
    "confidence": "low",
