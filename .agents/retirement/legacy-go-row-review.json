@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
+  "ported_unit": 165,
+  "partial": 95,
   "missing": 52,
-  "partial": 97,
-  "ported_unit": 163,
   "not_applicable": 2
  },
  "by_package": {
@@ -40,8 +40,8 @@
   },
   "cmd/server": {
    "missing": 11,
-   "partial": 22,
-   "ported_unit": 9
+   "partial": 21,
+   "ported_unit": 10
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -74,8 +74,7 @@
    "ported_unit": 2
   },
   "internal/detect": {
-   "partial": 1,
-   "ported_unit": 4
+   "ported_unit": 5
   },
   "internal/gate": {
    "partial": 46,
@@ -1217,13 +1216,16 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay",
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_attest_issuance_budget_refuses_the_third_issuance"
    ],
    "go_test_map": {
     "TestReserveTraceBlocksReplay": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay",
@@ -1231,13 +1233,13 @@
     "TestTraceDigestDistinguishesDifferentMotion": "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests",
     "TestPoWInstanceBinding": "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
     "TestPassVelocitySignalsRegistered": null,
-    "TestPassVelocityThresholds": null,
-    "TestAttestIssuanceBudget": null,
+    "TestPassVelocityThresholds": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth",
+    "TestAttestIssuanceBudget": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_attest_issuance_budget_refuses_the_third_issuance",
     "TestBehaviorTimingTells": null
    },
    "gaps": [
-    "pass velocity/flood signal wiring (ids exist only in registry.json)",
-    "attest issuance budget",
+    "pass velocity/flood signal wiring (ids exist only in registry.json; detection freeze)",
+    "attest issuance budget wiring into a Pass handler (limiter cutpoints are ported)",
     "behavior timing tells (a11y: not to be ported as gates)"
    ],
    "retire_basis": null,
@@ -1247,7 +1249,9 @@
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_attest_issuance_budget_refuses_the_third_issuance": "passed"
    }
   },
   {
@@ -1366,36 +1370,37 @@
   },
   {
    "baseline_path": "cmd/server/pass_wargame_axis_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots"
    ],
    "go_test_map": {
     "TestWargameR333_PassTraceReplayBlocked": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked",
     "TestWargameR334_PassTraceDigestIgnoresChallengeWrapper": "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
     "TestWargameR335_PassPoWBoundToChallengeNonce": "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
-    "TestWargameR336_PassVelocityHumanFloor": null,
-    "TestWargameR337_PassVelocityFloodElevates": null,
+    "TestWargameR336_PassVelocityHumanFloor": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots",
+    "TestWargameR337_PassVelocityFloodElevates": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots",
     "TestWargameR338_PassAxisHandlerClose": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock"
    },
-   "gaps": [
-    "R336/R337 velocity floor/flood"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Core pass tests r322-r332 cover the pure challenge, not these handler-axis rounds.",
+   "notes": "Core pass tests r322-r332 cover the pure challenge, not these handler-axis rounds. R336/R337 exercise only the 30 s soft 4 / hard 8 limiter and are ported against network/history/rate.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots": "passed"
    }
   },
   {
@@ -3814,7 +3819,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r195_accept_language_affects_bind_key",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key"
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
    ],
    "go_test_map": {
     "TestWargameR161_PendingBanNotEnforcedUntilCommit": null,
@@ -3856,19 +3862,18 @@
     "TestWargameR197_SmuggleCRInHeaderValue": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value",
     "TestWargameR198_MultiHeaderObsFoldAnyKey": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key",
     "TestWargameR199_SeriesRegressionValidBanKeyMatrix": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
-    "TestWargameR200_SeriesClosePackageGreen": null
+    "TestWargameR200_SeriesClosePackageGreen": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
    },
    "gaps": [
     "pending/commit/lift ban effects and meta-audit R161-R167 (B18/B19: M; dual control, plan 20261116060213 unit 19)",
     "route preset resolution R171-R173 (B12: C)",
     "HMAC approval ticket and DPO role superset R178-R180 (B20/B21: M; dual-control redesign)",
     "admin HTTP ban key refusal and concurrency R186-R190 (B19: M)",
-    "R169 lone chunked TE: the classifier agrees with Go but the Rust HTTP parser refuses it (owner issue)",
-    "R200 package-green meta round has no Rust counterpart"
+    "R169 lone chunked TE: the classifier agrees with Go but the Rust HTTP parser refuses it (owner issue)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels.",
+   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent": "passed",
@@ -3888,7 +3893,8 @@
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r195_accept_language_affects_bind_key": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence": "passed"
    }
   },
   {

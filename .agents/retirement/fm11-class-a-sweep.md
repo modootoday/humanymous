@@ -34,7 +34,7 @@ pass (`go test ./internal/gate -run '^(<mapped names>)$' -count=1`, 90 PASS,
 | `docs(retirement): close the browser-runner gap on detect/bridge.go` | internal/detect/bridge.go (partial to ported_unit) | 2 existing wasm_bindgen_tests, run in real headless Firefox by the hosted firefox-component job 133289839043 (66 passed, 0 ignored) |
 
 Ledger totals: before 52 missing, 101 partial, 159 ported_unit, 2 n/a;
-after 52 missing, 96 partial, 164 ported_unit, 2 n/a.
+after 52 missing, 96 partial, 164 ported_unit, 2 n/a; after the personal re-read below, 95 partial and 165 ported_unit.
 
 ## Conclusion
 
@@ -113,7 +113,7 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | `internal/gate/wargame_axis_redis_r241_test.go` | missing | not A | REDIS | no owner-qualified fleet coordinator; Redis client would also be a new dependency | plan 20261107205817 B23 (M) |
 | `internal/gate/wargame_axis_shadow_rate_r251_test.go` | partial | not A | REDIS | no owner-qualified fleet coordinator; Redis client would also be a new dependency | plan 20261107205817 B23 (M) |
 | `internal/gate/wargame_escalation_r121_test.go` | partial | A ported, rest not A | ADMIN | remaining rounds are admin RBAC, erasure/kill/bulk-ban HTTP and witness key projection | plan 20261107205817 B19/B20/B21; plan 20261116060213 unit 19 |
-| `internal/gate/wargame_escalation_r161_test.go` | partial | A ported, rest not A | ADMIN | remaining rounds are pending/commit ban effects, approval tickets, route presets and admin HTTP | plan 20261107205817 B18/B19/B20/B12; plan 20261116060213 unit 19 |
+| `internal/gate/wargame_escalation_r161_test.go` | partial | A ported (R200 mapped on re-read), rest not A | ADMIN | remaining rounds are pending/commit ban effects, approval tickets, route presets and admin HTTP | plan 20261107205817 B18/B19/B20/B12; plan 20261116060213 unit 19 |
 | `internal/gate/wargame_escalation_r51_test.go` | partial | not A | ADMIN | authenticated admin TCP RBAC endpoints absent; Root/Authority must approve credentials/RBAC first | plan 20261107205817 B19 (M) + B21 |
 | `internal/gate/wargame_escalation_r81_test.go` | partial | A ported, rest not A | ADMIN | remaining rounds are admin HTTP, route preset (C) or inject (M) | plan 20261107205817 B12/B15/B19 (rows partly ported here) |
 | `internal/gate/wargame_r01_ban_test.go` | partial | not A | ADMIN | authenticated admin TCP RBAC endpoints absent; Root/Authority must approve credentials/RBAC first | plan 20261107205817 B19 (M) + B21 |
@@ -145,10 +145,10 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | `cmd/server/ops.go` | partial | not A | COMP | operator explain/counters/healthz route and auth are unallocated | plan 20261107205817 B09 (M) |
 | `cmd/server/ops_test.go` | partial | not A | COMP | operator explain/counters/healthz route and auth are unallocated | plan 20261107205817 B09 (M) |
 | `cmd/server/pass_handler.go` | partial | not A | COMP | Pass handlers, single-use instance state and accessible UI are unallocated | plan 20261107205817 B08 (M) |
-| `cmd/server/pass_handler_test.go` | partial | not A | FREEZE | pass velocity/behavior timing emission changes verdicts or gates Pass on motor timing | rust-migration SoT parity rule 5 (a11y) + plan 20261107205817 B08 |
+| `cmd/server/pass_handler_test.go` | partial | A ported (limiter cutpoints), rest not A | FREEZE | pass velocity/behavior timing emission changes verdicts or gates Pass on motor timing | rust-migration SoT parity rule 5 (a11y) + plan 20261107205817 B08 |
 | `cmd/server/pass_proof.go` | partial | not A | FREEZE | pass velocity/behavior timing emission changes verdicts or gates Pass on motor timing | rust-migration SoT parity rule 5 (a11y) + plan 20261107205817 B08 |
 | `cmd/server/pass_scoring.go` | missing | not A | FREEZE | pass velocity/behavior timing emission changes verdicts or gates Pass on motor timing | rust-migration SoT parity rule 5 (a11y) + plan 20261107205817 B08 |
-| `cmd/server/pass_wargame_axis_test.go` | partial | not A | FREEZE | pass velocity/behavior timing emission changes verdicts or gates Pass on motor timing | rust-migration SoT parity rule 5 (a11y) + plan 20261107205817 B08 |
+| `cmd/server/pass_wargame_axis_test.go` | now ported_unit | A ported (re-read) | FREEZE | R336/R337 test only the limiter and are ported; no gap remains | rust-migration SoT parity rule 5 (a11y) + plan 20261107205817 B08 |
 | `cmd/server/playground.go` | missing | not A | OPEN | playground/launch lab replacement has no allocated owner or module | plan 20261107205817 B11 (lab-only role) |
 | `cmd/server/playground_test.go` | missing | not A | OPEN | playground/launch lab replacement has no allocated owner or module | plan 20261107205817 B11 (lab-only role) |
 | `cmd/server/powhandler.go` | partial | not A | COMP | Pass handlers, single-use instance state and accessible UI are unallocated | plan 20261107205817 B08 (M) |
@@ -233,7 +233,7 @@ taken from the sweep table alone:
   needs two human controllers, and audit keys are not touched.
 
 Coverage: the "Remaining rows" table names exactly the 148 ledger rows whose
-disposition is `missing` or `partial`, each once (set comparison of
+disposition was `missing` or `partial` at the sweep, each once (set comparison of
 `baseline_path` against the table's first column: equal, 148 = 148), and every
 row carries a class, a category and a citation. No open row is unclassified.
 
@@ -280,3 +280,39 @@ Reconciliation, row by row: this table and the independent re-check agree on
 not A here and had test-only class A items in the re-check. Those items are
 implemented and pass, and the rows are marked accordingly. No row is left with
 an unresolved disagreement.
+
+## Personal re-read against the Go source
+
+After the re-check, every Go test function in the 148 rows that had no Rust
+counterpart (226 tests, `go_test_map` value null) was read in full at 981d25c.
+The gap text of every non-test row was also read against the Rust tree. Five
+test-only class A items turned up:
+
+- **`TestPassVelocityThresholds`, `TestAttestIssuanceBudget`** in
+  `cmd/server/pass_handler_test.go`, and
+- **R336 and R337** in `cmd/server/pass_wargame_axis_test.go`.
+
+  These four call only `abuse.NewLimiter` with the Pass cutpoints (30 s, 4/8 and
+  3/3). The Go limiter is already ported to `network/history/rate`, so they are
+  ported there as three tests. Signal emission and Pass wiring stay not A.
+  `pass_wargame_axis_test.go` has no gap left and becomes `ported_unit`.
+- **R200** (`TestWargameR200_SeriesClosePackageGreen`) re-asserts that
+  duplicate chunked TE is refused and that `ip:` is rejected while a valid IP is
+  accepted. Existing tests cover all three
+  (`smuggle/tests.rs::scan_classifies_in_legacy_precedence` and the ban-key
+  matrix), so it is mapped without new code.
+
+Everything else read stays not A, for the categories in the table. Some checks:
+
+- R083–R085 and R171–R173 resolve route presets (B12, open contract).
+- R108–R110 and `inject_test.go` need an HTML inject owner. Rust has none (B15: M).
+- `settings/classify_test.go` has no Rust classifier, and it classifies
+  scoring overlays.
+- The playground and headerinfo loopback/trusted-proxy helpers have no Rust
+  owner. The playground is lab role B11, and trusted proxy identity is
+  deliberately absent.
+- `resource_test.go` emits `l5.media`/`l5.embed` signals with no accepted SoT.
+- R276/R277 go through the Redis rate-limiter wrapper.
+
+The ledger `totals` and `by_package` counts are recomputed from the rows. The
+`internal/detect` count was stale from the `bridge.go` change.

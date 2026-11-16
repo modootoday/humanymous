@@ -301,3 +301,47 @@ fn legacy_r273_shared_owner_loses_no_concurrent_hits() {
         .unwrap();
     assert_eq!(max, 50, "single-owner state under a lock keeps every hit");
 }
+
+/// Legacy cmd/server pass_handler_test `TestPassVelocityThresholds`: soft 4,
+/// hard 8 keeps a second attempt normal, elevates the fourth, floods the eighth.
+#[test]
+fn legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth() {
+    let mut rate = limiter(30, 4, 8, 1, 8, 1);
+    let levels: Vec<Level> = (0..8)
+        .map(|_| counted(rate.observe("k", ticks(0)).unwrap()).1)
+        .collect();
+    assert_eq!(levels[1], Level::Normal);
+    assert_eq!(levels[3], Level::Soft);
+    assert_eq!(levels[7], Level::Hard);
+}
+
+/// Legacy cmd/server pass_handler_test `TestAttestIssuanceBudget`: equal soft
+/// and hard cutpoints of 3 allow two issuances and refuse the third.
+#[test]
+fn legacy_attest_issuance_budget_refuses_the_third_issuance() {
+    let mut rate = limiter(30, 3, 3, 1, 3, 1);
+    let levels: Vec<Level> = (0..3)
+        .map(|_| counted(rate.observe("fp", ticks(0)).unwrap()).1)
+        .collect();
+    assert_eq!(levels, [Level::Normal, Level::Normal, Level::Hard]);
+}
+
+/// Legacy cmd/server pass wargame R336/R337 on the 30 s, soft 4, hard 8 pass
+/// governor: three attempts a second apart stay normal; ten at 10 ms are hard.
+#[test]
+fn legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots() {
+    let mut rate = limiter(30, 4, 8, 2, 10, 1);
+    for i in 0..3 {
+        let (count, level, _) = counted(rate.observe("fp|human", ticks(i)).unwrap());
+        assert_eq!(level, Level::Normal, "human attempt {count}");
+    }
+    let mut level = Level::Normal;
+    for i in 0..10 {
+        level = counted(
+            rate.observe("fp|bot", ticks(3) + Duration::from_millis(i * 10))
+                .unwrap(),
+        )
+        .1;
+    }
+    assert_eq!(level, Level::Hard);
+}
