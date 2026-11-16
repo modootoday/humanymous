@@ -3,13 +3,16 @@ pub mod application;
 pub mod ban;
 pub mod browser;
 pub mod configuration;
+pub mod connection_cap;
 pub mod control;
 pub mod credential;
 pub mod guard;
 pub mod http;
 #[cfg(feature = "hosted-pilot")]
 pub mod lab_h2_measure;
+pub mod logging;
 pub mod management;
+pub mod pass_store;
 pub mod service;
 pub mod session;
 pub mod settings;
