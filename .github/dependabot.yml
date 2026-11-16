@@ -1,8 +1,41 @@
-# Dependabot — keep dependencies and CI actions patched (audit: OpenSSF Scorecard
-# "Dependency-Update-Tool" + "Vulnerabilities" baseline for a public security tool).
+# Dependabot keeps dependencies and CI actions patched (common automation rules
+# C5.4). Agent work lands on `codex/rust` until the Rust migration reaches
+# `main`, so the Rust and Actions entries target it. Dependabot reads this file
+# from the default branch only: these entries take effect once the file is on
+# `main` (an owner merge; Dependabot and security fixes are allowed there).
 version: 2
 updates:
-  # Go modules (engine + Gate + tooling).
+  # Rust workspace and the standalone CI tool crates that carry a lockfile.
+  - package-ecosystem: "cargo"
+    directories:
+      - "/"
+      - "/scripts/ci/cef-pilot"
+      - "/scripts/ci/docs-review"
+      - "/scripts/ci/local-parity"
+      - "/scripts/ci/windows-native-runner"
+    target-branch: "codex/rust"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "build"
+      prefix-development: "build"
+      include: "scope"
+
+  # GitHub Actions used by CI and release (pinned to full commit SHAs).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "codex/rust"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Frozen Go oracle on `main`; retired at the parity-gated main merge.
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
@@ -11,12 +44,7 @@ updates:
     groups:
       go-dependencies:
         patterns: ["*"]
-    labels: ["dependencies", "go"]
-
-  # GitHub Actions used by CI + release (also lets Dependabot pin actions to SHAs).
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    labels: ["dependencies", "ci"]
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "build"
+      include: "scope"

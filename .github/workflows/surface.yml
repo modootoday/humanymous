@@ -1,0 +1,75 @@
+# Authored workflow; canon: .spec/sot/common-automation-rules.sot.md (C3, C4)
+# Owns the shared required checks `Public surface` and `Secret scan`.
+# No paths filter (C3.3) and no job condition that skips pull requests (C3.2).
+name: CI / Surface
+'on':
+  push:
+    branches:
+    - main
+    - codex/rust
+  pull_request: null
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: surface-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+defaults:
+  run:
+    shell: bash
+jobs:
+  public-surface:
+    name: Public surface
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+      with:
+        toolchain: 1.99.1
+    - name: Scan the landing range (fails closed without the deny secret)
+      env:
+        HUMANYMOUS_DENY_TERMS: ${{ secrets.HUMANYMOUS_DENY_TERMS }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        PR_BODY: ${{ github.event.pull_request.body }}
+        RANGE_BASE: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
+        RANGE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+      run: cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- public-surface "$RANGE_BASE" "$RANGE_HEAD"
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      GITLEAKS_VERSION: 8.28.0
+      GITLEAKS_SHA256: a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Install checksum-verified Gitleaks
+      run: |
+        set -euo pipefail
+        dir="$RUNNER_TEMP/gitleaks"
+        mkdir -p "$dir"
+        curl -fsSL -o "$dir/gitleaks.tar.gz" "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+        echo "${GITLEAKS_SHA256}  $dir/gitleaks.tar.gz" | sha256sum --check --strict
+        tar -xzf "$dir/gitleaks.tar.gz" -C "$dir" gitleaks
+        echo "$dir" >> "$GITHUB_PATH"
+    - name: Scan the landing range
+      env:
+        RANGE_BASE: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
+        RANGE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+      run: |
+        set -euo pipefail
+        if [ -z "${RANGE_BASE//0/}" ] || [ "$RANGE_BASE" = "$RANGE_HEAD" ]; then
+          RANGE_BASE="$RANGE_HEAD~1"
+        fi
+        gitleaks git --no-banner --redact --exit-code 1 --log-opts="$RANGE_BASE..$RANGE_HEAD" .

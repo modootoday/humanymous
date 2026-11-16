@@ -21,10 +21,12 @@ mod package;
 mod pages;
 mod pilot;
 mod policy;
+mod public_surface;
 mod qualification_data;
 mod registry;
 mod remote;
 mod service_component;
+mod settings_drift;
 mod source;
 mod source_pin_result;
 mod supply;
@@ -113,6 +115,8 @@ fn run() -> Result<()> {
         "native-component" => components::native(&root, argument(1)?),
         "action-pins" => policy::pins(&root),
         "commit-trailers" => trailers::check(&root, argument(1)?),
+        "public-surface" => public_surface::check(&root, argument(1)?, argument(2)?),
+        "settings-drift" => settings_drift::check(&root, args.get(1).map(String::as_str) == Some("--issue")),
         "jobs" => policy::jobs(&std::env::var("NEEDS_JSON").map_err(|e| e.to_string())?),
         "package" => package::check(&root),
         "image-sources" => package::image_sources(&root),

@@ -1,0 +1,6 @@
+[
+  {"name": "bug", "color": "d73a4a", "description": "Something does not work as documented"},
+  {"name": "needs-owner", "color": "b60205", "description": "Waiting for an owner decision; automation skips this item"},
+  {"name": "needs-human", "color": "fbca04", "description": "Automation must not merge or build on this change"},
+  {"name": "dependencies", "color": "0366d6", "description": "Dependency update"}
+]
