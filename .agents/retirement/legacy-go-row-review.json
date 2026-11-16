@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 74,
-  "partial": 95,
+  "missing": 73,
+  "partial": 96,
   "ported_unit": 143,
   "not_applicable": 2
  },
@@ -78,8 +78,8 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 40,
-   "missing": 27,
+   "partial": 41,
+   "missing": 26,
    "not_applicable": 1,
    "ported_unit": 17
   },
@@ -2875,15 +2875,32 @@
   },
   {
    "baseline_path": "internal/gate/seams.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/seams.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::ban_store_enforces_through_the_seam",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::monitor_mode_never_bans_through_the_seam",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::temporary_ban_and_broad_key_refusal_through_the_seam",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::limiter_counts_classifies_and_reconfigures_through_the_seam"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "VerdictLedger: no sticky-verdict store in Rust",
+    "No shared (fleet) implementation; Redis backends are B23"
+   ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "No BanLedger/VerdictLedger/RateLimiter seams; Rust rate Limiter is a concrete local type.",
-   "test_verification": {}
+   "notes": "BanLedger (including the monitor-only rate observation) and RateLimiter (including hot configure) are Rust traits implemented by the local stores, which is the compile-time proof Go had. Deliberate difference: dual-controlled bans are not on the seam.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::ban_store_enforces_through_the_seam": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::monitor_mode_never_bans_through_the_seam": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::temporary_ban_and_broad_key_refusal_through_the_seam": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/seams/tests.rs::limiter_counts_classifies_and_reconfigures_through_the_seam": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/settings_engine.go",
