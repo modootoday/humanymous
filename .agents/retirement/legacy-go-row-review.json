@@ -15,8 +15,8 @@
  },
  "totals": {
   "missing": 52,
-  "partial": 107,
-  "ported_unit": 153,
+  "partial": 105,
+  "ported_unit": 155,
   "not_applicable": 2
  },
  "by_package": {
@@ -104,8 +104,7 @@
    "ported_unit": 4
   },
   "internal/mltrain": {
-   "ported_unit": 3,
-   "partial": 2
+   "ported_unit": 5
   },
   "internal/network": {
    "ported_unit": 17,
@@ -7688,62 +7687,70 @@
   },
   {
    "baseline_path": "internal/mltrain/train_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs",
     "crates/sdk/humanymous-core/src/model/training/sgd.rs",
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs"
+    "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator",
-    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function"
+    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy"
    ],
    "go_test_map": {
     "TestTrainAndEvaluate_Separable": "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator",
     "TestWarmStart_UsesBaseAndKeepsShape": "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function",
-    "TestTesseractSplit_TrainPastTestFuture": null,
-    "TestCohortFPR_IsPerCohort": null,
-    "TestAUT_BoundedAndFull": null
+    "TestTesseractSplit_TrainPastTestFuture": "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future",
+    "TestCohortFPR_IsPerCohort": "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort",
+    "TestAUT_BoundedAndFull": "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy"
    },
-   "gaps": [
-    "TesseractSplit time split",
-    "CohortFPR per-cohort FPR",
-    "AUT metric"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "SGD/standardize/evaluate exist; time split, cohort FPR and AUT not found.",
+   "notes": "Cohort and AUT tests use fixed predictions with exact expected values instead of a trained model, because the Rust reductions take predictions from the existing inference boundary and never run a forward pass.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator": "passed",
-    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function": "passed"
+    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy": "passed"
    }
   },
   {
    "baseline_path": "internal/mltrain/train.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/training/sgd.rs",
     "crates/sdk/humanymous-core/src/model/training/standardize.rs",
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs"
+    "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator",
     "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved",
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs::confusion_counts_preserve_inclusive_half_boundary_and_float32_rates"
+    "crates/sdk/humanymous-core/src/model/training/evaluate.rs::confusion_counts_preserve_inclusive_half_boundary_and_float32_rates",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_refuses_what_go_left_to_its_caller",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy"
    ],
    "go_test_map": {},
-   "gaps": [
-    "CohortFPR",
-    "TesseractSplit",
-    "AUT"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Standardize, Train (SGD, warm start), Forward and Evaluate ported.",
+   "notes": "Standardize, Train (SGD, warm start), Forward and Evaluate ported earlier; TesseractSplit, CohortFPR and AUT ported as time_split, cohort_fpr and aut in evaluate/temporal.rs. Deliberate fail-closed differences: time_split refuses bad fractions, missing timestamps and empty test windows; empty AUT is unavailable (None), not 0. The offline composition root remains a separately allocated slice.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/training/evaluate.rs::confusion_counts_preserve_inclusive_half_boundary_and_float32_rates": "passed",
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator": "passed",
-    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved": "passed"
+    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_refuses_what_go_left_to_its_caller": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy": "passed"
    }
   },
   {
