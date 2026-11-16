@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 63,
+  "missing": 62,
   "partial": 101,
-  "ported_unit": 148,
+  "ported_unit": 149,
   "not_applicable": 2
  },
  "by_package": {
@@ -39,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 13,
+   "missing": 12,
    "partial": 21,
-   "ported_unit": 8
+   "ported_unit": 9
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -1442,46 +1442,57 @@
   },
   {
    "baseline_path": "cmd/server/powhandler_launder_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestPoWTooFastCannotBeLaunderedByDelayedResubmit": null
-   },
-   "gaps": [
-    "too-fast PoW tracking across delayed resubmit"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit"
+   ],
+   "go_test_map": {
+    "TestPoWTooFastCannotBeLaunderedByDelayedResubmit": "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Engine consumes l7.pow.too_fast, but no Rust PoW handler emits it.",
-   "test_verification": {}
+   "notes": "Kernel-level port using the real Rust PoW issue/solve/verify and an injected clock instead of a sleep; the HTTP response shape is part of the powhandler.go gap.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/powhandler.go",
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs",
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/target.rs"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/target.rs",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/target.rs::frozen_thresholds_and_nonfinite_risk",
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
-    "crates/sdk/humanymous-core/tests/challenge/proof_of_work_parity.rs::matches_go_oracle"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::floor_matches_go",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::plausible_solve_is_solved_and_boundary_is_inclusive",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unverified_or_unissued_submissions_change_nothing",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unrepresentable_difficulty_and_clock_regression_fail_closed"
    ],
    "go_test_map": {},
    "gaps": [
     "PoW header issuance",
     "/pow HTTP handler",
-    "plausibleBrowserSolve too-fast emission",
-    "powSolvedSignal publication"
+    "Emitting the l7.pow.too_fast and pow.solved signals into a session report and re-scoring (no Rust Core session handler)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Pure PoW challenge/target ported with Go oracle parity; handler is missing (plan B08).",
+   "notes": "plausibleBrowserSolve and the sticky too-fast decision are ported unchanged (3,000,000 hashes/s floor). Deliberate differences: an unrepresentable difficulty or a clock regression counts as too fast (fail closed).",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/target.rs::frozen_thresholds_and_nonfinite_risk": "passed",
-    "crates/sdk/humanymous-core/tests/challenge/proof_of_work_parity.rs::matches_go_oracle": "passed"
+    "crates/sdk/humanymous-core/tests/challenge/proof_of_work_parity.rs::matches_go_oracle": "passed",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::floor_matches_go": "passed",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::too_fast_cannot_be_laundered_by_delayed_resubmit": "passed",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::plausible_solve_is_solved_and_boundary_is_inclusive": "passed",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unverified_or_unissued_submissions_change_nothing": "passed",
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/solve_time/tests.rs::unrepresentable_difficulty_and_clock_regression_fail_closed": "passed"
    }
   },
   {
