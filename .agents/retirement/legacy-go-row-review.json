@@ -5208,23 +5208,23 @@
   },
   {
    "baseline_path": "internal/detect/bridge.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/collector/src/browser/reflection.rs",
     "crates/collector/src/browser/integrity.rs"
    ],
    "rust_tests": [
-    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets"
+    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets",
+    "crates/collector/src/browser/integrity.rs::failing_navigator_getter_propagates_and_removes_real_frame"
    ],
    "go_test_map": {},
-   "gaps": [
-    "cited Rust test is wasm_bindgen_test only; not run in this review (needs a browser runner)"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "safeGet/navBool/navString are reflection helpers and isNativeFn is browser/integrity.rs. The reflection test is a wasm_bindgen_test, so it needs a browser runner. Downgraded from ported_unit: no cited test ran natively.",
+   "confidence": "high",
+   "notes": "safeGet/navBool/navString are reflection helpers and isNativeFn is browser/integrity.rs. Both cited wasm_bindgen_tests ran in real headless Firefox in the hosted firefox-component job (collector-component.yml, wasm-bindgen-test-runner 0.2.130): 66 passed, 0 failed, 0 ignored, job 133289839043 at badfe27 on 2026-11-16.",
    "test_verification": {
-    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets": "not_run: wasm_bindgen_test (browser runner)"
+    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets": "passed: hosted Firefox wasm-bindgen-test-runner, job 133289839043",
+    "crates/collector/src/browser/integrity.rs::failing_navigator_getter_propagates_and_removes_real_frame": "passed: hosted Firefox wasm-bindgen-test-runner, job 133289839043"
    }
   },
   {

@@ -31,13 +31,14 @@ pass (`go test ./internal/gate -run '^(<mapped names>)$' -count=1`, 90 PASS,
 | `test(core): port scoring overlay and rule-table resolution tests` | internal/scoring runtime_test, hardrules, resolution_test (partial to ported_unit) | 6 in scoring/engine, scoring/promotion, scoring/consistency |
 | `test(runtime): pin empty audit HMAC key refusal` | internal/audit verifier_p0_test (partial to ported_unit); chain.go gap closed | 1 in audit/log |
 | `test(runtime): pin non-positive rate hard cutpoint refusal` | internal/gate/settings/settings_test (gap closed; row stays partial) | 1 in network/history/rate |
+| `docs(retirement): close the browser-runner gap on detect/bridge.go` | internal/detect/bridge.go (partial to ported_unit) | 2 existing wasm_bindgen_tests, run in real headless Firefox by the hosted firefox-component job 133289839043 (66 passed, 0 ignored) |
 
 Ledger totals: before 52 missing, 101 partial, 159 ported_unit, 2 n/a;
-after 52 missing, 97 partial, 163 ported_unit, 2 n/a.
+after 52 missing, 96 partial, 164 ported_unit, 2 n/a.
 
 ## Conclusion
 
-No class A gap remains among the 149 missing or partial rows below. Each
+No class A gap remains among the 148 missing or partial rows below. Each
 remaining row is blocked by one category; where a row has several gaps, the
 category is its dominant blocker and the row note in the ledger lists the rest.
 
@@ -53,7 +54,6 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | DEP | 9 | New dependency or Cargo manifest change (Ed25519 in core, fuzzing, TLS/H2 attack clients) |
 | DUAL | 4 | Dual control (roadmap unit 19) |
 | KEYS | 1 | Audit keys |
-| HOST | 1 | Needs a browser runner |
 
 ## Remaining rows
 
@@ -186,7 +186,6 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | `internal/collector/session.go` | partial | not A | COMP | first-network pinning, labels, RIT/PoW session state belong to the unallocated Core session composition | plan 20261107205817 B06 (P/C) |
 | `internal/correlation/correlation.go` | partial | not A | REDIS | Redis EVAL coordinator absent; only the AtomicCoordinator seam exists | plan 20261107205817 B23 (M) |
 | `internal/correlation/correlation_shared_test.go` | partial | not A | REDIS | Redis EVAL coordinator absent; only the AtomicCoordinator seam exists | plan 20261107205817 B23 (M) |
-| `internal/detect/bridge.go` | partial | not A | HOST | cited test only runs in a real browser | client-collector SoT; wasm_bindgen_test needs a browser runner |
 | `internal/livefeed/hub.go` | missing | not A | OPEN | playground/launch lab replacement has no allocated owner or module | plan 20261107205817 B11 (lab-only role) |
 | `internal/livefeed/hub_test.go` | missing | not A | OPEN | playground/launch lab replacement has no allocated owner or module | plan 20261107205817 B11 (lab-only role) |
 | `internal/logger/handler.go` | partial | not A | DIFF | synchronous emission instead of a bounded async queue | gateway/logging.rs documented difference |
@@ -208,3 +207,26 @@ category is its dominant blocker and the row note in the ledger lists the rest.
 | `internal/watermark/ledger.go` | partial | not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
 | `internal/watermark/lsb_test.go` | missing | not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
 | `internal/watermark/watermark_test.go` | partial | not A | SOT | PNG LSB/multi and apply/recover/trace wait for PNG allocation/alpha qualification and runtime-owned trace auth | plan 20261107135500 lines 150-163; resource-watermark SoT section 6 |
+
+## Citation check
+
+Each remaining row's citation was checked against its source document, not
+taken from the sweep table alone:
+
+- 116 rows cite `plan:root/20261107205817` B-rows. 104 of those B-rows carry an
+  `M` (missing composition) or `C` (contract choice) disposition. The other 12
+  cite B11 (lab-only playground and live feed), B24 (Redis/ClickHouse audit
+  projections) or B26 (PROXYv2). The plan header covers all of them: "DESIGN
+  ONLY ... no source/import/path/Cargo change ... Root must canonize the
+  explicit new public contracts below".
+- DEP: `Cargo.lock` has no `cargo-fuzz`, `libfuzzer-sys`, `proptest` or
+  `arbitrary`. `ed25519-dalek` is locked for another crate but is not a
+  `humanymous-core` dependency, and AGENTS.md reserves Cargo manifest changes
+  for root integration.
+- SOT: `sot:root/model-training-correction` is `status: draft` and lists the
+  gate as needs-work. The active resource-watermark SoT section 6 grants only
+  payload/carrier and ledger: "Design acceptance is distinct from execution
+  allocation".
+- DIFF, FREEZE, DUAL and KEYS follow the goal contract: an intended Go/Rust
+  difference goes to the owner, detection scoring is frozen, dual control
+  needs two human controllers, and audit keys are not touched.
