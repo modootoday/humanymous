@@ -6,6 +6,7 @@ pub mod configuration;
 pub mod connection_cap;
 pub mod control;
 pub mod credential;
+pub mod external_input;
 pub mod guard;
 pub mod http;
 #[cfg(feature = "hosted-pilot")]

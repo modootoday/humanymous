@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 67,
+  "missing": 65,
   "partial": 99,
-  "ported_unit": 146,
+  "ported_unit": 148,
   "not_applicable": 2
  },
  "by_package": {
@@ -39,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 16,
+   "missing": 14,
    "partial": 20,
-   "ported_unit": 6
+   "ported_unit": 8
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -643,37 +643,62 @@
   },
   {
    "baseline_path": "cmd/server/external_input_receipt_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestExternalInputReceiptBindsCanonicalCoreEvidence": null,
-    "TestExternalInputReceiptFailsClosedWithoutWASMEvidence": null,
-    "TestExternalInputReceiptConfigurationIsExplicit": null,
-    "TestExternalInputReceiptNeverUsesOperationalLog": null
-   },
-   "gaps": [
-    "score receipt writer and its fail-closed/explicit-config rules"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused"
+   ],
+   "go_test_map": {
+    "TestExternalInputReceiptBindsCanonicalCoreEvidence": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence",
+    "TestExternalInputReceiptFailsClosedWithoutWASMEvidence": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence",
+    "TestExternalInputReceiptConfigurationIsExplicit": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit",
+    "TestExternalInputReceiptNeverUsesOperationalLog": "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust external-input score receipt; plan B11 lab replacement still required.",
-   "test_verification": {}
+   "notes": "The operational-log isolation case is structural in Rust: the writer has no logger dependency, and the test pins that only the receipt file is written.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/external_input_receipt.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused"
+   ],
    "go_test_map": {},
    "gaps": [
-    "configureExternalInputReceipts directory",
-    "exclusive bounded JSON receipt write binding core evidence"
+    "Not wired: no Rust Core score handler calls the writer for external-input labelled sessions (B11 lab replacement)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart found (grep external_input in crates/test/lab).",
-   "test_verification": {}
+   "notes": "Lab-only exclusive receipt writer: absolute real directory, bounded detector WASM digest, session reference instead of raw id, score-trace digest over the same NUL-joined fields as Go. The report digest is over the Rust wire encoding; encoding parity with Go belongs to the differential parity harness. The temporary file uses a random name and is always removed.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_binds_canonical_core_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::fails_closed_without_wasm_evidence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::configuration_is_explicit": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::receipt_channel_writes_only_the_receipt_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/external_input/tests.rs::labels_outside_the_run_shape_are_ignored_or_refused": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/h1capture.go",
