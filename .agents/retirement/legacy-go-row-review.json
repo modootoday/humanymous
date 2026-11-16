@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 60,
-  "partial": 103,
-  "ported_unit": 149,
+  "missing": 54,
+  "partial": 107,
+  "ported_unit": 151,
   "not_applicable": 2
  },
  "by_package": {
@@ -93,7 +93,8 @@
    "missing": 2
   },
   "internal/logger": {
-   "missing": 6
+   "ported_unit": 2,
+   "partial": 4
   },
   "internal/mlcorrect": {
    "ported_unit": 14,
@@ -6889,100 +6890,172 @@
   },
   {
    "baseline_path": "internal/logger/handler.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation"
+   ],
    "go_test_map": {},
    "gaps": [
-    "slog-style handler with attrs/groups"
+    "slog.Handler attrs/groups nesting has no counterpart: Rust callers pass a flat attribute slice to OperationalLogger::emit"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust operational logger found; plan B27 marks operational logs \"M\".",
-   "test_verification": {}
+   "notes": "Attribute flattening into the canonical record is covered; slog grouping is a Go API adapter.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/logger_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another"
+   ],
    "go_test_map": {
-    "TestPlainAndJSONLShareCanonicalRecord": null,
-    "TestLevelValidationAndFiltering": null,
-    "TestSanitizesHostileTextAndCapsPhysicalLines": null,
+    "TestPlainAndJSONLShareCanonicalRecord": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "TestLevelValidationAndFiltering": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
+    "TestSanitizesHostileTextAndCapsPhysicalLines": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
     "TestConcurrentProducersProduceIntactJSONLines": null,
     "TestQueueSaturationDoesNotBlockProducer": null,
-    "TestOneFailedSinkDoesNotSuppressAnother": null,
+    "TestOneFailedSinkDoesNotSuppressAnother": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
     "TestFlushAndCloseAreBoundedAndIdempotent": null
    },
    "gaps": [
-    "Bounded queue, plain/JSONL canonical record, level filter, sanitization, multi-sink isolation, bounded flush/close"
+    "Concurrency, queue saturation and bounded close tests have no counterpart because emission is synchronous behind &mut (deliberate difference)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Four of seven Go tests map one-to-one.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/logger.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files"
+   ],
    "go_test_map": {},
    "gaps": [
-    "Bounded queue, plain/JSONL canonical record, level filter, sanitization, multi-sink isolation, bounded flush/close"
+    "Bounded asynchronous queue and bounded flush/close are not ported: Rust emits synchronously and counts write errors (deliberate difference documented in gateway/logging.rs)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust operational logging runtime found (plan B27 \"M\").",
-   "test_verification": {}
+   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/record.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Canonical record schema 1.0.0 and size cap"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::timestamps_trim_fraction_and_handle_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::identity_defaults_unknown_and_sanitizes"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Canonical record (schema version, field cap, record byte cap, sanitizing and truncation marking) lives in gateway/logging/record.rs.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::timestamps_trim_fraction_and_handle_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::identity_defaults_unknown_and_sanitizes": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/sink_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink"
+   ],
    "go_test_map": {
-    "TestFileSinkAppendsOnReopen": null,
-    "TestFileSinkRejectsSamePathAndNonRegularTargets": null,
-    "TestFileSinkRejectsSymlink": null,
+    "TestFileSinkAppendsOnReopen": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
+    "TestFileSinkRejectsSamePathAndNonRegularTargets": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
+    "TestFileSinkRejectsSymlink": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
     "TestFlushHonorsContextWhenSinkIsBlocked": null
    },
    "gaps": [
-    "File sink append/reopen, symlink and non-regular rejection, context-bounded flush"
+    "Context-bounded flush has no counterpart: Rust emission is synchronous (deliberate difference documented in gateway/logging.rs)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Three of four Go tests map one-to-one.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/sink.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "File/stream sinks with path safety"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::relative_and_parent_paths_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Deliberate fail-closed difference: file sink paths must be absolute without parent components; Go resolved relative paths against the working directory.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::relative_and_parent_paths_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/bundle_test.go",
