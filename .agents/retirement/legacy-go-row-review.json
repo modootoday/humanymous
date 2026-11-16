@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 65,
-  "partial": 99,
+  "missing": 64,
+  "partial": 100,
   "ported_unit": 148,
   "not_applicable": 2
  },
@@ -39,8 +39,8 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 14,
-   "partial": 20,
+   "missing": 13,
+   "partial": 21,
    "ported_unit": 8
   },
   "cmd/tlsparrot": {
@@ -1279,19 +1279,30 @@
   },
   {
    "baseline_path": "cmd/server/pass_proof.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_matches_go_golden",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::non_finite_samples_refuse",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names"
+   ],
    "go_test_map": {},
    "gaps": [
-    "traceDigest",
-    "realEventOK trusted/uniform timing/coalesced/raw-stream checks",
-    "allIntegerMs/stddev helpers"
+    "realEventOK (the real-event pre-filter on pointer/keyboard timing microstructure) and its statistics helpers are not ported: gating Pass on motor timing is an accessibility decision reserved for the owner",
+    "No Rust Pass handler consumes the digest yet; PassStore::reserve_trace takes it"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "No Rust pass proof validation found.",
-   "test_verification": {}
+   "notes": "PassProof wire model and trace_digest are ported; the digest is byte-identical to Go (golden vectors from Go 1.25.3). Deliberate difference: a non-finite or out-of-range sample returns None instead of an implementation-defined integer.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_matches_go_golden": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::non_finite_samples_refuse": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::wire_model_uses_legacy_field_names": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/pass_scoring.go",
