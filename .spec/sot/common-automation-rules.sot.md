@@ -3,7 +3,7 @@ id: sot:root/common-automation-rules
 title: Common automation rules (humanymous copy and project profile)
 status: active
 created: 2026-11-16T07:44:00Z
-updated: 2026-11-16T08:05:00Z
+updated: 2026-11-16T14:40:00Z
 verify: ["spec check --no-local", "cargo test --locked --manifest-path scripts/ci/delivery/Cargo.toml", "cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- policy"]
 rel:
   depends_on: [sot:root/delivery, sot:root/milestones]
@@ -48,7 +48,7 @@ They apply to new commits. History is not rewritten.
 
 ## 2. Branch protection and repository settings
 
-- C2.1 The protection rules are a ruleset named `main-protected`, stored as JSON under `.github/rulesets/`. The file is the canon. It is applied from the owner's computer (C2.7). Agents cannot apply it and do not try.
+- C2.1 The protection rules are the rulesets `main-protected` (for `main`) and `codex-rust-protected` (for `codex/rust`), stored as JSON under `.github/rulesets/`. The file is the canon. It is applied from the owner's computer (C2.7). Agents cannot apply it and do not try.
 - C2.2 Minimum rules: `deletion`, `non_fast_forward`, `pull_request`, `required_status_checks`.
 - C2.3 The ruleset covers every base branch agents open pull requests against, not only the default branch.
 - C2.4 Release tags are protected by a `v-tags` ruleset (no update, no deletion, no non-fast-forward) as soon as a release workflow exists.
@@ -140,9 +140,9 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 | Base branch for agent work | `codex/rust` (O6, owner confirmed 2026-11-16). `main` is frozen except Dependabot and security fixes until the parity-gated main merge in [[sot:root/milestones]] |
 | Merge method | merge commit |
 | Lock unit (C1.5) | lane (`.agents/sessions/lanes.json`); `detection-core` and `gate-edge` mutually exclusive |
-| Ruleset files | `.github/rulesets/main-protected.json` (`main` and `codex/rust`), `.github/rulesets/v-tags.json` |
+| Ruleset files | `.github/rulesets/main-protected.json` (`main`), `.github/rulesets/codex-rust-protected.json` (`codex/rust`), `.github/rulesets/v-tags.json` |
 | Settings files | `.github/labels.json`, `.github/settings/repository.json` |
-| Project gate checks | `validate / ready` (the `ready` aggregate of the reusable Rust validation, called by job `validate`; exact context to be confirmed on the first pull request) |
+| Project gate checks | `validate / merge-ready` (the merge aggregate of the reusable Rust validation, called by job `validate`; owner decision on issue #16, option 1). It needs policy, native, msrv, quality, nginx, images, packages, node, advisories and documentation to succeed, and the Docker and browser pilots to show no regression: zero failed assertions and no error other than the honest component-only block. `validate / ready` stays the release gate and is not a merge check |
 | Shared checks | `Public surface`, `Secret scan` in `.github/workflows/surface.yml` |
 | Deny secret | `HUMANYMOUS_DENY_TERMS` (Actions and Dependabot) |
 | Public surface implementation | Rust: `delivery public-surface <base> <head>` in `scripts/ci/delivery` |
@@ -162,5 +162,6 @@ Each repository has `SECURITY.md`, a pull request template with an `Agent-Provid
 - Register `HUMANYMOUS_DENY_TERMS` as an Actions secret and as a Dependabot secret.
 - Enable secret scanning and push protection.
 - Apply `allow_auto_merge: true` from `.github/settings/repository.json`; auto-merge cannot be turned on before that.
-- Confirm the exact `validate / ready` context on the first pull request; rename in one pull request with the ruleset if it differs (C3.5).
+- Confirm the exact `validate / merge-ready` context on the first pull request; rename in one pull request with the ruleset if it differs (C3.5).
+- Apply `main-protected` only once `main` carries the `merge-ready` job (the parity-gated main merge). Until then `main`'s own CI has no such check, and requiring it would block Dependabot and security fixes there.
 - Bring `.github/dependabot.yml` to `main` (Dependabot reads the default branch only).

@@ -14,6 +14,7 @@ mod image_scan;
 mod lab_diagnostics;
 mod lab_receipts;
 mod merge_gate;
+mod merge_ready;
 mod metrics;
 mod mount_probe;
 mod nginx;
@@ -120,6 +121,8 @@ fn run() -> Result<()> {
         "merge-gate" => merge_gate::check(&root, argument(1)?, argument(2)?, args.get(3).map(String::as_str) == Some("--enforce")),
         "public-surface" => public_surface::check(&root, argument(1)?, argument(2)?),
         "settings-drift" => settings_drift::check(&root, args.get(1).map(String::as_str) == Some("--issue")),
+        "merge-ready" => merge_ready::check(&std::env::var("NEEDS_JSON").map_err(|e| e.to_string())?),
+        "merge-signal" => merge_ready::signal(&root, argument(1)?),
         "jobs" => policy::jobs(&std::env::var("NEEDS_JSON").map_err(|e| e.to_string())?),
         "package" => package::check(&root),
         "image-sources" => package::image_sources(&root),

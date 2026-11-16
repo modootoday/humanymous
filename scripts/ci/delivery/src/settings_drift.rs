@@ -247,7 +247,11 @@ mod tests {
     #[test]
     fn committed_settings_files_parse() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
-        for name in ["main-protected.json", "v-tags.json"] {
+        for name in [
+            "main-protected.json",
+            "codex-rust-protected.json",
+            "v-tags.json",
+        ] {
             let file = crate::read_json(&root.join(".github/rulesets").join(name)).unwrap();
             assert!(file["name"].is_string() && file["rules"].is_array());
         }
