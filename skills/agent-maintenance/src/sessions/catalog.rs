@@ -160,7 +160,7 @@ mod tests {
             )),
         );
         assert!(r.errors.is_empty(), "{:?}", r.errors);
-        assert_eq!(r.lane_count, 25);
+        assert_eq!(r.lane_count, 27);
     }
     fn catalog() -> Catalog {
         Catalog::parse(r#"{"schema_version":1,"writer_mode":"legacy-coexistence","lanes":[{"id":"agents-meta","kind":"shared","primary_paths":[".agents/**"]}]}"#).unwrap()
