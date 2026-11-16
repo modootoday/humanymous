@@ -1,0 +1,37 @@
+# Roadmap unit 35, first increment: real Rust product e2e partial topology.
+# Three containers from one source-built image: the real humanymous-runtime
+# gateway (gate), an owned recording origin and an attacker/driver.
+# The gateway only accepts loopback listen/origin addresses and loopback peers,
+# so origin and attacker join the gate container's network namespace. That
+# namespace sits on one internal network: no published ports, no egress.
+# Authority, independent audit service and browser are absent. This is never
+# pass_product_clean_room. Run via: humanymous-lab-runner product-e2e.
+services:
+  gate:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-gate"]
+    init: true
+    networks: [product]
+    pids_limit: 64
+    mem_limit: 256m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777"]
+  origin:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-origin"]
+    init: true
+    network_mode: "service:gate"
+    depends_on: [gate]
+  attacker:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-driver"]
+    init: true
+    network_mode: "service:gate"
+    depends_on: [gate, origin]
+    profiles: [driver]
+networks:
+  product:
+    internal: true

@@ -27,6 +27,8 @@ mod origin;
 #[cfg(unix)]
 mod process;
 #[cfg(unix)]
+mod product_e2e;
+#[cfg(unix)]
 mod provisioning;
 #[cfg(unix)]
 mod scenario;
@@ -54,6 +56,9 @@ fn main() {
         Some("--browser-stop") => {
             browser_product::stop().expect("owned public head/shutdown control")
         }
+        Some("--product-origin") => product_e2e::origin().expect("owned recording origin"),
+        Some("--product-gate") => product_e2e::gate().expect("owned Gate supervisor"),
+        Some("--product-driver") => product_e2e::driver().expect("product e2e driver"),
         Some("--wargame") => wargame::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")
