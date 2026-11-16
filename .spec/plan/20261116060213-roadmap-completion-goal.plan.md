@@ -147,3 +147,9 @@ unattended.
   ([[evidence:root/20261116113042]]). Outcomes matched increment 3. The engine
   answered COLLECTED for a report carrying a webdriver BOT signal; that is an
   owner observation under the detection freeze, not a harness change.
+- 2026-11-16: unit 35 increment 5 tried to run the shipped CLI runtime host
+  as the witnessed Gate and stopped before Docker
+  ([[evidence:root/20261116114735]]). The Unix host has no witness input and
+  non-Windows secret providers return Unsupported, so it needs a Linux
+  secret provider (needs-human) and R1/R3 review; live diagnostic readiness
+  needs a SoT delta. It fixed the Unix `runtime-service` build (E0107).
