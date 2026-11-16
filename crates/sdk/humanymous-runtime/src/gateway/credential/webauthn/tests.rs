@@ -4,11 +4,11 @@ use super::*;
 use rcgen::{KeyPair, PKCS_ECDSA_P256_SHA256, PKCS_ECDSA_P384_SHA384, PublicKeyData, SigningKey};
 use serde_json::json;
 
-const CRED: &str = "cred-abc";
+pub(in crate::gateway::credential) const CRED: &str = "cred-abc";
 const CLIENT_DATA: &str =
     r#"{"type":"webauthn.get","challenge":"Y2g","origin":"https://example.com"}"#;
 
-fn key() -> KeyPair {
+pub(in crate::gateway::credential) fn key() -> KeyPair {
     KeyPair::generate_for(&PKCS_ECDSA_P256_SHA256).unwrap()
 }
 /// Go `makeAuthData`: zero rpIdHash, flags UP|UV, big-endian counter.
@@ -31,11 +31,15 @@ fn assertion_with(key: &KeyPair, id: &str, data: &[u8], client: &str) -> String 
     STANDARD.encode(body.to_string())
 }
 /// Go `signAssertion`.
-fn sign_assertion(key: &KeyPair, id: &str, counter: u32) -> String {
+pub(in crate::gateway::credential) fn sign_assertion(
+    key: &KeyPair,
+    id: &str,
+    counter: u32,
+) -> String {
     assertion_with(key, id, &auth_data(counter, 0x05), CLIENT_DATA)
 }
 /// Go `webauthnDir`.
-fn registry(id: &str, key: &KeyPair) -> Registry {
+pub(in crate::gateway::credential) fn registry(id: &str, key: &KeyPair) -> Registry {
     let spki = URL_SAFE_NO_PAD.encode(key.subject_public_key_info());
     Registry::parse(&format!("{id} {spki}")).unwrap()
 }
@@ -247,4 +251,21 @@ fn registry_configuration_is_strict() {
         Registry::parse(&format!("{line}\n{line}")).err(),
         Some(ConfigError::Duplicate)
     );
+}
+
+/// Wargame R219 (legacy wargame_axis_cred_r201_test.go): the counter must
+/// strictly increase. Each assertion is freshly signed (ECDSA is randomized),
+/// so an equal counter is refused by the counter rule, not by byte replay.
+#[test]
+fn wargame_r219_counter_must_strictly_increase() {
+    let key = key();
+    let mut r = registry(CRED, &key);
+    assert_eq!(r.verify(Some(&sign_assertion(&key, CRED, 10))), verified());
+    let same = sign_assertion(&key, CRED, 10);
+    assert_eq!(r.verify(Some(&same)), rejected(Reason::Replay));
+    assert_eq!(
+        r.verify(Some(&sign_assertion(&key, CRED, 9))),
+        rejected(Reason::Replay)
+    );
+    assert_eq!(r.verify(Some(&sign_assertion(&key, CRED, 11))), verified());
 }

@@ -261,4 +261,4 @@ pub fn verify(registry: Option<&mut Registry>, header: Option<&str>) -> Verdict 
 }
 
 #[cfg(test)]
-mod tests;
+pub(super) mod tests;

@@ -191,6 +191,107 @@ fn keys_are_canonical() {
     );
 }
 
+/// Kernel half of legacy ban_integration_test.go: one request through the
+/// Go `banGate` order (check every key, then meter every key). Returns
+/// whether the request was blocked by an active ban.
+fn gate(store: &mut Store, keys: &[Key], now: Duration) -> bool {
+    if keys.iter().any(|k| store.check(k, now).is_some()) {
+        return true;
+    }
+    for k in keys {
+        store.observe(k, now).unwrap();
+    }
+    false
+}
+
+/// Go TestAutoBanEndToEnd (kernel part): a flood from one address past the
+/// hard cutpoint auto-bans that address, later requests stay blocked, and an
+/// unrelated address is not collaterally banned. The HTTP edge, origin
+/// accounting and audit-chain halves have no Rust owner yet.
+#[test]
+fn auto_ban_flood_blocks_source_and_spares_other_address() {
+    let mut s = store();
+    let flooder = [key("ip:203.0.113.9")];
+    let blocked_at = (0..20u64)
+        .find(|i| gate(&mut s, &flooder, T0 + Duration::from_millis(*i)))
+        .expect("flood was never auto-banned");
+    assert!(blocked_at <= 6, "hard=5 must ban within the flood");
+    let entry = s.check(&flooder[0], T0 + Duration::from_secs(1)).cloned();
+    assert!(entry.is_some_and(|e| e.source == Source::Auto && e.strike == 1));
+    assert!(gate(&mut s, &flooder, T0 + Duration::from_secs(2)));
+    let other = [key("ip:198.51.100.2")];
+    assert!(!gate(&mut s, &other, T0 + Duration::from_secs(2)));
+    assert!(s.check(&other[0], T0 + Duration::from_secs(2)).is_none());
+}
+
+/// Go TestFingerprintAutoBan (kernel part): an IP-rotating flood that keeps
+/// one header fingerprint is banned by its `fp:` key, so a never-seen address
+/// carrying the same fingerprint is blocked. The Rust test composes the keys
+/// as Go `banGate` did; Runtime has no wired ban gate yet.
+#[test]
+fn fingerprint_key_bans_ip_rotating_flood() {
+    let mut s = store();
+    let fp = crate::gateway::token::bind_key(
+        "Mozilla/5.0 Chrome/126.0 Safari/537.36",
+        "en-US,en;q=0.9",
+        r#""Chromium";v="126""#,
+    )
+    .unwrap();
+    let fp = key(&format!("fp:{fp}"));
+    for i in 0..20u8 {
+        let ip = key(&format!("ip:10.0.0.{i}"));
+        gate(
+            &mut s,
+            &[ip, fp.clone()],
+            T0 + Duration::from_millis(u64::from(i)),
+        );
+    }
+    let fresh = key("ip:172.16.9.9");
+    let now = T0 + Duration::from_secs(1);
+    assert!(gate(&mut s, &[fresh.clone(), fp.clone()], now));
+    assert!(s.check(&fresh, now).is_none());
+    let listed = s.list(now);
+    assert!(listed.iter().any(|b| b.key == fp));
+    assert!(listed.iter().all(|b| b.key.as_str().starts_with("fp:")));
+}
+
+/// Go TestConsoleBanManagement (kernel part): add a temporary narrow ban,
+/// enforce it with a remaining term (the Retry-After source), list it, lift
+/// it, and pass again. The authenticated admin API and RBAC are not ported.
+#[test]
+fn manual_temporary_ban_lifecycle() {
+    let mut s = store();
+    let k = key("ip:192.0.2.44");
+    let entry = s
+        .add_temporary(&k, "manual investigation", Some("INC-9"), HOUR, T0)
+        .unwrap();
+    assert_eq!(entry.source, Source::Manual);
+    assert_eq!(entry.incident.as_deref(), Some("INC-9"));
+    let now = T0 + Duration::from_secs(10);
+    assert!(gate(&mut s, std::slice::from_ref(&k), now));
+    let remaining = s.check(&k, now).map(|b| b.remaining(now));
+    assert_eq!(remaining, Some(HOUR - Duration::from_secs(10)));
+    assert!(s.list(now).iter().any(|b| b.key == k));
+    assert_eq!(s.lift(&k), Ok(true));
+    assert!(!gate(&mut s, std::slice::from_ref(&k), now));
+    assert_eq!(s.lift(&k), Ok(false));
+}
+
+/// Go TestBanStoreGCSweepsStrikesAndExpired: GC drops an expired auto-ban
+/// at once, keeps its strike until `STRIKE_DECAY`, then drops the strike.
+#[test]
+fn gc_sweeps_stale_strikes_and_expired_bans() {
+    let mut s = store();
+    let k = key("ip:1.2.3.4");
+    let (entry, _) = flood(&mut s, &k, T0);
+    assert_eq!(entry.until, Some(entry.created + HOUR));
+    assert_eq!((s.bans.len(), s.strikes.len()), (1, 1));
+    s.gc(T0 + 2 * HOUR).unwrap();
+    assert_eq!((s.bans.len(), s.strikes.len()), (0, 1));
+    s.gc(T0 + STRIKE_DECAY + 2 * HOUR).unwrap();
+    assert_eq!((s.bans.len(), s.strikes.len()), (0, 0));
+}
+
 #[cfg(unix)]
 mod dual_control {
     use super::*;
