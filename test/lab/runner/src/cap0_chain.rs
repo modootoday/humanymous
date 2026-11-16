@@ -84,10 +84,10 @@ pub fn run(args: &[String]) -> Result<i32> {
             "--dry-run" => dry_run = true,
             "--inspect-only" => inspect_only = true,
             _ => {
-                return Err(format!(
+                return Err(
                     "usage: cap0-chain [--workspace PATH] [--inspect-only|--dry-run] [--emit PATH] [--grant PATH] [--manifest PATH]; never invent Cap free / BrowserReady / AUTH / AT"
-                )
-                .into());
+                        .into(),
+                );
             }
         }
         index += 1;
@@ -234,10 +234,10 @@ fn step_ok(report: &Value) -> bool {
 
 /// Prefer report.error_code; fall back to refuse status for Cap0 apply-path machine codes.
 fn step_error_code(report: &Value) -> Value {
-    if let Some(code) = report.get("error_code") {
-        if !code.is_null() {
-            return code.clone();
-        }
+    if let Some(code) = report.get("error_code")
+        && !code.is_null()
+    {
+        return code.clone();
     }
     match report.get("status").and_then(Value::as_str) {
         Some(status) if status.starts_with("refuse_closed") || status == "skipped_prior_refuse" => {

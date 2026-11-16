@@ -1421,18 +1421,15 @@ mod tests {
     fn docker_e2e_topology_honesty_covers_cap1_serial_clean_room_matrix() {
         assert!(
             DOCKER_E2E_TOPOLOGY_CANDIDATES
-                .iter()
-                .any(|p| *p == "deployments/lab/compose.clean-room-product.yaml")
+                .contains(&"deployments/lab/compose.clean-room-product.yaml")
         );
         assert!(
             DOCKER_E2E_TOPOLOGY_CANDIDATES
-                .iter()
-                .any(|p| *p == "deployments/lab/compose.clean-room-product-matrix.yaml")
+                .contains(&"deployments/lab/compose.clean-room-product-matrix.yaml")
         );
         assert!(
             DOCKER_E2E_TOPOLOGY_CANDIDATES
-                .iter()
-                .any(|p| *p == "deployments/lab/compose.red-blue-product.yaml")
+                .contains(&"deployments/lab/compose.red-blue-product.yaml")
         );
         assert!(DOCKER_E2E_TOPOLOGY_CANDIDATES.len() >= 7);
         let root = temp_root("topo");
