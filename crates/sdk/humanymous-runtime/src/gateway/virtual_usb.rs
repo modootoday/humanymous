@@ -226,7 +226,7 @@ pub fn read(root: &Path) -> Result<Vec<Run>, Invalid> {
         let modified = info.modified().map_or(0, unix);
         candidates.push((path, modified, info));
     }
-    candidates.sort_by(|a, b| b.1.cmp(&a.1));
+    candidates.sort_by_key(|c| std::cmp::Reverse(c.1));
     candidates.truncate(MAX_RUNS);
     let mut runs = Vec::with_capacity(candidates.len());
     for (path, modified, info) in candidates {
