@@ -28,6 +28,7 @@ mod service_component;
 mod source;
 mod source_pin_result;
 mod supply;
+mod trailers;
 mod workspace;
 
 use std::path::{Path, PathBuf};
@@ -111,6 +112,7 @@ fn run() -> Result<()> {
         "component" => components::run(&root, argument(1)?),
         "native-component" => components::native(&root, argument(1)?),
         "action-pins" => policy::pins(&root),
+        "commit-trailers" => trailers::check(&root, argument(1)?),
         "jobs" => policy::jobs(&std::env::var("NEEDS_JSON").map_err(|e| e.to_string())?),
         "package" => package::check(&root),
         "image-sources" => package::image_sources(&root),

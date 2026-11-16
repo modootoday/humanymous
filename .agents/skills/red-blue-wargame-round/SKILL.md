@@ -86,7 +86,7 @@ Update series `LEDGER.md` (template: `assets/ledger-template.md`).
 
 1. Review all `fix` WIP as logical batches (not 50 empty commits).
 2. `git-coord` preflight → claim → stage **product+test only** (not SCRATCH noise).
-3. Conventional commit + provider `Co-Authored-By` (rule `92`).
+3. Conventional commit, no vendor co-author trailer (rule `92`).
 4. Promote durable process lessons to `.agents/lessons/HARD-WON.md` if new.
 
 ## Relationship to other skills

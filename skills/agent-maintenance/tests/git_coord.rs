@@ -127,6 +127,6 @@ fn single_literal_owned_path_commits_without_consuming_foreign_staging() {
         "foreign.txt"
     );
     let message = repo.git(&["show", "-s", "--format=%B", "HEAD"]);
-    assert!(message.contains("Co-Authored-By: codex <codex@openai.com>"));
-    assert!(message.contains("X-Agent-Provider: codex"));
+    assert!(!message.to_ascii_lowercase().contains("co-authored-by:"));
+    assert!(!message.contains("X-Agent-Provider:"));
 }

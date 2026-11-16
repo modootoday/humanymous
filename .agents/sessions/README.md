@@ -11,7 +11,7 @@ and “done” claims. This directory is the **shared, provider-neutral board**.
 | `LANES.md` | yes | Stable work-lane catalog (what may run in parallel) |
 | `PROTOCOL.md` | yes | Start / claim / work / release rules |
 | `GIT-PROTOCOL.md` | yes | Exclusive git writes (commit/push/rebase) |
-| `COMMIT-CONVENTION.md` | yes | Conventional Commits + required Co-Authored-By provider trailers |
+| `COMMIT-CONVENTION.md` | yes | Conventional Commits; no vendor co-author trailer; provider in the PR body |
 | `ACTIVE.example.md` | yes | Template for the live board |
 | `ACTIVE.md` | **no** (gitignored) | Live claims — every agent reads/writes this |
 | `claims/*.json` | **no** (gitignored) | Machine-readable claim records |

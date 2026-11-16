@@ -24,8 +24,9 @@ read-only; candidate edits remain under the author's exact claimed evidence path
 5. **Never** force-push shared branches or amend already-pushed commits without user OK.
 6. If `.git/index.lock` exists, do not start another git write — wait or diagnose.
 7. On push rejection: stop, re-fetch under `git-ops`, no force.
-8. **Attribution:** every agent commit MUST carry `Co-Authored-By` for the provider
-   (rule `92-git-commit-attribution.md`, canon `COMMIT-CONVENTION.md`). Prefer
+8. **Attribution:** no vendor `Co-authored-by` trailer; provider attribution goes
+   in the pull request body (rule `92-git-commit-attribution.md`, canon
+   `COMMIT-CONVENTION.md`). Prefer
    `git-coord commit -Provider …`.
 
 ## Public metadata bytes

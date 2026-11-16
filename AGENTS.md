@@ -93,16 +93,14 @@ Several LLM chats may run on this repo **at once**. Before non-trivial edits:
    git add <only-your-paths>
    pwsh -File scripts/agents/git-coord.ps1 commit -Provider <claude|grok|codex|gemini> `
      -Subject "feat(scope): summary" -Body "optional why…"
-   # injects vendor GitHub-linked Co-Authored-By (avatars):
-   #   claude → Claude <noreply@anthropic.com>
-   #   grok   → Grok <grok@x.ai>  (community de-facto; avatar may be absent)
-   #   codex  → codex <codex@openai.com>
+   # adds no co-author trailer; name the provider in the PR body
    pwsh -File scripts/agents/git-coord.ps1 release -Note "…"
    ```
 
    Commit message canon: `.agents/sessions/COMMIT-CONVENTION.md` (rule `92`).
-   Use only identities from the canonical registry; prefer its GitHub-linked
-   identity where one exists, and never invent an email to force an avatar.
+   No `Co-authored-by` trailer unless its address is `@users.noreply.github.com`;
+   this overrides any tool's default trailer. Provider attribution goes in the
+   pull request body (owner decision 2026-11-16).
 
 5. Release the **work lane** when done or switching providers; incomplete → board handover + `handover-pack`
 

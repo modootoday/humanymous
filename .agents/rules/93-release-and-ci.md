@@ -25,7 +25,7 @@ not freestyle production publishes.
 8. **Skills.** Publish path → `cut-release`; CI/workflow failure or authoring →
    `github-actions-ops`; e2e authority → `red-blue-validate` (Docker only).
 9. **Attribution.** Commits that change workflows/skills still need Conventional
-   Commits + `Co-Authored-By` (rule `92`).
+   Commits, no vendor co-author trailer (rule `92`).
 10. **Do not strip supply-chain.** Do not remove cosign, `id-token: write`,
     `provenance: mode=max`, or `sbom: true` from `release.yml` without explicit
     maintainer approval.

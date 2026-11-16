@@ -254,7 +254,9 @@ history). **These are constraints, not suggestions.** Full narratives stay in Cl
 23. Hold `git-ops` only for the transaction (TTL ~30m). Never leave it claimed while coding.
 24. If `.git/index.lock` exists, wait — do not start a second writer.
 25. On non-fast-forward push: stop, fetch, rebase/merge under `git-ops`; never force `main`.
-26. **Every agent commit must attribute the provider** via `Co-Authored-By` in the project
+26. *(Superseded 2026-11-16 by the owner decision in rule `92`: no vendor
+    `Co-authored-by` trailer; provider attribution goes in the PR body. Kept for
+    history.)* **Every agent commit must attribute the provider** via `Co-Authored-By` in the project
     registry (`COMMIT-CONVENTION.md` / rule `92`). Use `git-coord commit -Provider …`.
     Claude Code’s default trailer is not enough alone for multi-provider tracking — use
     the canonical vendor/community identity from the registry; never invent a local

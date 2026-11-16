@@ -38,7 +38,8 @@ stay with a person (rule 93).
 
 ## Commits
 
-Rule 92 attribution still applies. `git-coord.sh preflight` is recommended. The
+Rule 92 applies: no vendor co-author trailer; the provider is named in the PR
+body and the branch name. `git-coord.sh preflight` is recommended. The
 PowerShell path is optional in this mode, because the container has no `pwsh`
 and no shared board. Stage only owned paths.
 

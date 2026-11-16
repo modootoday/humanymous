@@ -114,7 +114,7 @@ function Action-Preflight {
   }
 
   Write-Host "NOTE agent commits MUST use: git-coord commit -Provider <claude|grok|codex|gemini> -Subject 'type: …'"
-  Write-Host "     (injects Co-Authored-By per .agents/sessions/COMMIT-CONVENTION.md)"
+  Write-Host "     (no co-author trailer per rule 92; name the provider in the PR body)"
   Write-Host "=== preflight done (claim git-ops before add/commit/push) ==="
 }
 
@@ -197,13 +197,11 @@ function Action-Commit {
     throw "Subject must be Conventional Commits, e.g. feat(scope): summary"
   }
 
-  $trailer = "Co-Authored-By: $($id.Display) <$($id.Email)>"
-  $xprov = "X-Agent-Provider: $useProvider"
   $msg = $subjectText.TrimEnd() + "`n"
   if ($bodyText -and $bodyText.Trim().Length -gt 0) {
     $msg += "`n" + $bodyText.Trim() + "`n"
   }
-  $msg += "`n" + $trailer + "`n" + $xprov + "`n"
+  # Rule 92: no co-author trailer; provider attribution goes in the PR body.
 
   $tmp = Join-Path $env:TEMP ("hmn-commit-" + [guid]::NewGuid().ToString("N") + ".txt")
   Set-Content -Path $tmp -Value $msg -Encoding utf8
@@ -224,7 +222,7 @@ function Action-Commit {
     }
     if ($LASTEXITCODE -ne 0) { throw "git commit failed ($LASTEXITCODE)" }
     $sha = git rev-parse --short HEAD
-    Write-Host "OK committed $sha with $trailer"
+    Write-Host "OK committed $sha (provider $useProvider: name it in the pull request body)"
   } finally {
     Remove-Item $tmp -Force -ErrorAction SilentlyContinue
   }

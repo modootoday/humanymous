@@ -82,10 +82,10 @@ pwsh -File scripts/agents/git-coord.ps1 release -Note "commit <sha>"
 if ($LASTEXITCODE -ne 0) { throw 'Git release failed' }
 ```
 
-- **Required trailer:** vendor GitHub-linked `Co-Authored-By` (avatar-capable), e.g.
-  `Claude <noreply@anthropic.com>`, `Grok <grok@x.ai>`,
-  `codex <codex@openai.com>` — full registry in `COMMIT-CONVENTION.md`.
-- Do not use bare `git commit -m` without that trailer; do not invent unowned emails.
+- **No vendor trailer:** no `Co-authored-by` unless the address is
+  `@users.noreply.github.com`, and no `X-Agent-Provider`. Name the provider in the
+  pull request body (`Agent-Provider:`) and branch name. Canon: `COMMIT-CONVENTION.md`.
+- Check a range: `cargo run --locked --manifest-path scripts/ci/delivery/Cargo.toml -- commit-trailers <base>..<head>`.
 - Read-only `git status`/`diff`/`log` — no claim.
 - Shared index contains another writer's staged work: use `git-coord commit -OnlyPaths @('own/literal/path')`; never restore/unstage their files. Cursor claims released common Cargo/source integration paths; Root retains roadmap/design/allocation/review. Follow rule95 and actual claims, never inferred ownership.
 - If preflight reports `index.lock` or active `git-ops` → wait.

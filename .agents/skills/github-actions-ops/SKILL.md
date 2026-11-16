@@ -46,7 +46,7 @@ as a cosmetic cleanup: trusted-publisher identity includes that filename.
 - **`e2e-infra`**: required Rust workflows, Compose and image/advisory validation
 - **`release`**: `release.yml`, `cliff.toml`  
 - **`agents-meta`**: agent-layout verify job only  
-- Commits: `git-coord` + Conventional Commits + Co-Authored-By (`92`)
+- Commits: `git-coord` + Conventional Commits, no vendor co-author trailer (`92`)
 
 ## Authoring constraints
 
