@@ -26,10 +26,20 @@ const FIXTURE: &str = "crates/collector/pilot/fixture.json";
 /// (`test/lab/runtime/src/installation/witnessed.rs`). Its writer identity
 /// frame omits the node, so the broker names the witness's expected writer.
 const NODE: &str = "isolated-node";
-/// A private address outside every owned network. The browser actor requires
-/// its UDP route to be refused; no canary container listens there.
-const UNROUTED_DNS: &str = "10.255.255.254";
 const DNS_NAME: &str = "product-e2e-browser.invalid";
+/// Increment 4: the owned DNS canary and its positive-control probes. The
+/// canary sits on its own internal network; its address is the browser
+/// actor's outside resolver control, so the actor requires its UDP route to
+/// be refused, and the canary must log no arrival from the browser.
+const DNSCANARY: &str = "humanymous-lab-product-e2e-dnscanary-1";
+pub(super) const DNSPROBE_BEFORE: &str = "humanymous-lab-product-e2e-dnsprobe-before";
+pub(super) const DNSPROBE_AFTER: &str = "humanymous-lab-product-e2e-dnsprobe-after";
+const CANARY_SCHEMA: &str = "humanymous.product-e2e-dns-canary/1";
+const PROBE_SCHEMA: &str = "humanymous.product-e2e-dns-probe/1";
+const CANARY_CONTROL_NAME: &str = "product-e2e-canary-control.invalid";
+/// Wrapper schema the drivers read on stdin (`test/lab/runtime/src/product_e2e/report.rs`).
+const REPORT_SCHEMA: &str = "humanymous.product-e2e-collector-report/1";
+const REPORT_SOURCE: &str = "humanymous-collector BrowserCollector::snapshot_json in Firefox ESR (wasm32, feature runtime-pilot), POSTed to /_humanymous/browser/collect and captured at the browser Gate frontend proxy";
 
 fn role(state: &Mutex<State>, name: &str, seconds: u64) -> Result<Value> {
     let until = Instant::now() + Duration::from_secs(seconds);
@@ -194,8 +204,129 @@ pub(super) fn outcome(
     checks
 }
 
+/// Every JSON line of one schema, in order.
+fn schema_lines(text: &str, schema: &str) -> Vec<Value> {
+    text.lines()
+        .filter_map(|line| serde_json::from_str::<Value>(line.trim()).ok())
+        .filter(|value| value["schema"] == schema)
+        .collect()
+}
+
+/// Pure judgement over the DNS canary: a live listener whose only arrivals are
+/// the answered positive controls from its own network, none from the
+/// browser, while the browser's own resolution failed at its deny resolver
+/// and its UDP route to the canary was refused.
+pub(super) fn dns_canary_checks(
+    canary_log: &[Value],
+    probes: &[Value],
+    browser_ip: Option<&str>,
+    actor: &Value,
+    canary: &Value,
+    browser: &Value,
+) -> Vec<(&'static str, bool)> {
+    let arrivals: Vec<&Value> = canary_log
+        .iter()
+        .filter(|line| line["event"] == "arrival")
+        .collect();
+    let sources: Vec<&Value> = probes.iter().map(|probe| &probe["source"]).collect();
+    vec![
+        (
+            "dns_canary_listening",
+            canary_log.iter().any(|line| line["event"] == "listening"),
+        ),
+        (
+            "dns_canary_positive_controls_answered",
+            probes.len() == 2
+                && probes
+                    .iter()
+                    .all(|probe| probe["answered"] == true && probe["rcode"] == 3),
+        ),
+        (
+            "dns_canary_arrivals_only_from_positive_controls",
+            arrivals.len() == probes.len()
+                && arrivals
+                    .iter()
+                    .all(|arrival| sources.contains(&&arrival["source"])),
+        ),
+        (
+            "dns_canary_zero_arrivals_from_browser",
+            browser_ip.is_some_and(|ip| arrivals.iter().all(|arrival| arrival["source"] != ip)),
+        ),
+        (
+            "dns_canary_on_a_network_the_browser_is_not_on",
+            canary["network_mode"]
+                .as_str()
+                .is_some_and(|mode| !mode.is_empty() && !mode.starts_with("container:"))
+                && canary["network_mode"] != browser["network_mode"],
+        ),
+        (
+            "browser_dns_resolution_failed_at_its_deny_resolver",
+            actor["dns_control"]["local_deny_observed"] == true
+                && actor["dns_control"]["lookup_error_kind"].is_string(),
+        ),
+        (
+            "browser_udp_route_to_canary_refused",
+            actor["dns_control"]["outside_udp_denied"]["kind"].is_string(),
+        ),
+    ]
+}
+
+/// The captured collect entity as a driver stdin line, plus a receipt summary
+/// that omits the bytes. Exactly one entity, carried within the frame bound,
+/// is required; otherwise the drivers get no report and no fixture.
+pub(super) fn collector_report(gate: &Value) -> (Value, Option<String>) {
+    let captured = gate["collector_reports"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let summary = json!({"captured":captured.len(),"source":REPORT_SOURCE,
+        "entities":captured.iter().map(|c| json!({"sha256":c["sha256"],"bytes":c["bytes"],"oversize":c["oversize"]})).collect::<Vec<_>>()});
+    let line = match captured.as_slice() {
+        [one] if one["base64"].is_string() => Some(
+            json!({"schema":REPORT_SCHEMA,"base64":one["base64"],"sha256":one["sha256"],
+                "bytes":one["bytes"],"source":REPORT_SOURCE})
+            .to_string(),
+        ),
+        _ => None,
+    };
+    (summary, line)
+}
+
+/// One positive-control probe from the canary's own network.
+fn probe(lab: &mut Lab, compose: &[&str], name: &str, canary: &str) -> Result<Value> {
+    let run = [
+        compose,
+        &[
+            "run",
+            "--rm",
+            "--no-deps",
+            "--no-TTY",
+            "--interactive=false",
+            "--pull",
+            "never",
+            "--name",
+            name,
+            "dnsprobe",
+            "--product-dns-probe",
+            canary,
+            CANARY_CONTROL_NAME,
+        ],
+    ]
+    .concat();
+    let output = lab.docker(&run, 120, false)?;
+    Ok(schema_lines(&output.stdout, PROBE_SCHEMA)
+        .pop()
+        .unwrap_or(Value::Null))
+}
+
 /// Run the browser topology. Every container is torn down by `finish`.
-pub(super) fn run(lab: &mut Lab, image: &str, browser_image: &str) -> Result<Value> {
+/// Returns the report and, when exactly one was captured, the real collector
+/// report line the product drivers submit.
+pub(super) fn run(
+    lab: &mut Lab,
+    image: &str,
+    browser_image: &str,
+) -> Result<(Value, Option<String>)> {
     let fixture: Value = serde_json::from_slice(&std::fs::read(lab.root.join(FIXTURE))?)?;
     let expected = crate::browser_expectations::from_fixture(&fixture)?;
     let compose = [
@@ -253,6 +384,35 @@ pub(super) fn run(lab: &mut Lab, image: &str, browser_image: &str) -> Result<Val
     let gate_tuple = format!("{address}:8080");
     let runtime = ready["runtime"].as_str().ok_or("runtime tuple")?.to_owned();
     let backend = ready["backend"].as_str().ok_or("backend tuple")?.to_owned();
+    // The canary listens before the browser starts; a positive control from
+    // its own network proves the listener answers.
+    let up = [
+        &compose[..],
+        &[
+            "up",
+            "--detach",
+            "--no-build",
+            "--pull",
+            "never",
+            "dnscanary",
+        ],
+    ]
+    .concat();
+    lab.docker(&up, 120, true)?;
+    let until = Instant::now() + Duration::from_secs(60);
+    while !schema_lines(
+        &lab.docker(&["logs", DNSCANARY], 30, false)?.stdout,
+        CANARY_SCHEMA,
+    )
+    .iter()
+    .any(|line| line["event"] == "listening")
+        && Instant::now() < until
+    {
+        std::thread::sleep(Duration::from_millis(250));
+    }
+    let canary = lab.json(&["inspect", "--format", "{{json .}}", DNSCANARY])?;
+    let canary_ip = ipv4(&canary).ok_or("dnscanary must have exactly one internal IPv4")?;
+    let mut probes = vec![probe(lab, &compose, DNSPROBE_BEFORE, &canary_ip)?];
     let drive = [
         &compose[..],
         &[
@@ -269,7 +429,7 @@ pub(super) fn run(lab: &mut Lab, image: &str, browser_image: &str) -> Result<Val
             &gate_tuple,
             &runtime,
             &backend,
-            UNROUTED_DNS,
+            &canary_ip,
             DNS_NAME,
         ],
     ]
@@ -277,6 +437,16 @@ pub(super) fn run(lab: &mut Lab, image: &str, browser_image: &str) -> Result<Val
     let driven = lab.docker(&drive, 300, false)?;
     let actor =
         last_json_line(&driven.stdout, "humanymous.browser-product-actor/1").unwrap_or(Value::Null);
+    // The listener must still answer after the browser ran, then stop it and
+    // read every arrival it logged.
+    probes.push(probe(lab, &compose, DNSPROBE_AFTER, &canary_ip)?);
+    let canary_stopped = lab
+        .docker(&["stop", "--time", "2", DNSCANARY], 60, false)?
+        .success;
+    let canary_log = schema_lines(
+        &lab.docker(&["logs", DNSCANARY], 30, false)?.stdout,
+        CANARY_SCHEMA,
+    );
     report["browser_exit_success"] = json!(driven.success);
     report["browser_steps"] = json!(steps(&driven.stderr));
     // Drain with the independently pinned latest witness head, then read the
@@ -307,9 +477,30 @@ pub(super) fn run(lab: &mut Lab, image: &str, browser_image: &str) -> Result<Val
     let drained = gate_guard.wait(Duration::from_secs(20)).ok();
     report["gate_exit_success"] = json!(drained.is_some_and(|s| s.success()));
     let mut containers = Vec::new();
-    for name in [BWITNESS, BGATE, BROWSER] {
+    for name in [BWITNESS, BGATE, BROWSER, DNSCANARY] {
         containers.push(lab.inspect(name)?);
     }
+    let browser_ip = ipv4(&lab.json(&["inspect", "--format", "{{json .}}", BROWSER])?);
+    let dns = dns_canary_checks(
+        &canary_log,
+        &probes,
+        browser_ip.as_deref(),
+        &actor,
+        &containers[3],
+        &containers[2],
+    );
+    let arrivals: Vec<&Value> = canary_log
+        .iter()
+        .filter(|line| line["event"] == "arrival")
+        .collect();
+    report["dns_canary"] = json!({"canary_address":canary_ip,"browser_address":browser_ip,
+        "canary_stopped":canary_stopped,"positive_controls":probes,"arrivals":arrivals,
+        "arrivals_total":arrivals.len(),
+        "browser_actor_dns_control":actor["dns_control"],
+        "assertions":dns.iter().map(|(id,pass)|json!({"id":id,"pass":pass})).collect::<Vec<_>>(),
+        "pass":dns.iter().all(|(_, p)| *p)});
+    let (summary, report_line) = collector_report(&gate_result);
+    report["collector_report"] = summary;
     let network = lab.json(&[
         "network",
         "inspect",
@@ -333,6 +524,17 @@ pub(super) fn run(lab: &mut Lab, image: &str, browser_image: &str) -> Result<Val
     report["witness_counter_signatures_relayed"] = json!(signed);
     report["expected"] = expected;
     report["actor"] = actor;
+    // The receipt keeps digests and lengths; the bytes go only to the drivers.
+    let mut gate_result = gate_result;
+    if let Some(entities) = gate_result["collector_reports"].as_array_mut() {
+        for entity in entities {
+            entity["base64"] = json!(
+                entity["base64"]
+                    .is_string()
+                    .then_some("<omitted; see sha256>")
+            );
+        }
+    }
     report["gate"] = gate_result;
     report["topology"] = json!({"network":{"name":network["Name"],"internal":network["Internal"]},
         "containers":containers,
@@ -346,10 +548,12 @@ pub(super) fn run(lab: &mut Lab, image: &str, browser_image: &str) -> Result<Val
             && signed > 0
             && shape.iter().all(|(_, p)| *p)
             && checks.iter().all(|(_, p)| *p)
+            && dns.iter().all(|(_, p)| *p)
+            && report_line.is_some()
     );
     let _ = witness_guard.stop();
     let _ = gate_guard.stop();
-    Ok(report)
+    Ok((report, report_line))
 }
 
 #[cfg(test)]
@@ -395,6 +599,63 @@ mod tests {
             json!({"status":"failed","summary_verified":false,"test_process_success":false});
         let checks = outcome(&failed, &Value::Null, &expected, &fixture, None);
         assert!(!checks[1].1);
+    }
+    fn canary_case() -> (Vec<Value>, Vec<Value>, Value, Value, Value) {
+        let log = vec![
+            json!({"event":"listening"}),
+            json!({"event":"arrival","source":"172.31.0.3"}),
+            json!({"event":"arrival","source":"172.31.0.4"}),
+        ];
+        let probes = vec![
+            json!({"source":"172.31.0.3","answered":true,"rcode":3}),
+            json!({"source":"172.31.0.4","answered":true,"rcode":3}),
+        ];
+        let actor = json!({"dns_control":{"local_deny_observed":true,"lookup_error_kind":"Other",
+            "outside_udp_denied":{"kind":"NetworkUnreachable"}}});
+        (
+            log,
+            probes,
+            actor,
+            json!({"network_mode":"net_dnscanary"}),
+            json!({"network_mode":"net_browser"}),
+        )
+    }
+    #[test]
+    fn dns_canary_requires_live_listener_and_no_browser_arrival() {
+        let (log, probes, actor, canary, browser) = canary_case();
+        let check = |log: &[Value], probes: &[Value], ip: Option<&str>, canary: &Value| {
+            dns_canary_checks(log, probes, ip, &actor, canary, &browser)
+        };
+        let ip = Some("172.30.0.5");
+        assert!(check(&log, &probes, ip, &canary).iter().all(|(_, p)| *p));
+        // Zero arrivals with a dead listener is not a denial observation.
+        assert!(!check(&[], &[], ip, &canary)[1].1);
+        let mut leaked = log.clone();
+        leaked.push(json!({"event":"arrival","source":"172.30.0.5"}));
+        let checks = check(&leaked, &probes, ip, &canary);
+        assert!(!checks[2].1 && !checks[3].1);
+        assert!(!check(&log, &probes, None, &canary)[3].1);
+        assert!(!check(&log, &probes, ip, &browser)[4].1);
+        let mut silent = probes.clone();
+        silent[1]["answered"] = json!(false);
+        assert!(!check(&log, &silent, ip, &canary)[1].1);
+    }
+    #[test]
+    fn collector_report_line_requires_exactly_one_carried_entity() {
+        let one = json!({"collector_reports":[{"sha256":"ab","bytes":2,"base64":"e30=","oversize":false}]});
+        let (summary, line) = collector_report(&one);
+        assert_eq!(summary["captured"], 1);
+        assert!(summary.to_string().find("e30=").is_none());
+        let line: Value = serde_json::from_str(&line.unwrap()).unwrap();
+        assert_eq!(line["schema"], REPORT_SCHEMA);
+        assert_eq!(line["base64"], "e30=");
+        assert!(collector_report(&Value::Null).1.is_none());
+        let big =
+            json!({"collector_reports":[{"sha256":"ab","bytes":2,"base64":null,"oversize":true}]});
+        assert!(collector_report(&big).1.is_none());
+        let two =
+            json!({"collector_reports":[one["collector_reports"][0], one["collector_reports"][0]]});
+        assert!(collector_report(&two).1.is_none());
     }
     #[test]
     fn steps_keep_only_finite_labels() {

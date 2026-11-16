@@ -256,7 +256,8 @@ pub(super) fn assertions(
 }
 
 /// Run the witnessed topology and its witness-loss-after-readiness case.
-pub(super) fn run(lab: &mut Lab, image: &str) -> Result<Value> {
+/// `report_line` is the captured collector report line (with its newline), or empty.
+pub(super) fn run(lab: &mut Lab, image: &str, report_line: &str) -> Result<Value> {
     let compose = [
         "compose",
         "--file",
@@ -337,6 +338,14 @@ pub(super) fn run(lab: &mut Lab, image: &str) -> Result<Value> {
     .concat();
     lab.docker(&create_driver, 120, true)?;
     let (mut driver_guard, mut driver_in, driver_out) = attach(lab, WDRIVER)?;
+    // First stdin line: the real collector report, or an empty line so the
+    // driver records its absence instead of waiting for one.
+    driver_in.write_all(if report_line.is_empty() {
+        b"\n"
+    } else {
+        report_line.as_bytes()
+    })?;
+    driver_in.flush()?;
     let driver_lines = lines(driver_out);
     let mut seen = Vec::new();
     let until = Instant::now() + Duration::from_secs(240);

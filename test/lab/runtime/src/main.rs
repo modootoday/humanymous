@@ -70,6 +70,10 @@ fn main() {
         Some("--product-driver-origin-lost") => {
             product_e2e::driver_origin_lost().expect("origin-loss product e2e driver")
         }
+        Some("--product-dns-canary") => product_e2e::dns_canary().expect("owned DNS canary"),
+        Some("--product-dns-probe") => {
+            product_e2e::dns_probe().expect("owned DNS canary positive control")
+        }
         Some("--wargame") => wargame::run(),
         Some("--witness-transaction") => {
             witness::transaction().expect("private witness transaction")

@@ -1,7 +1,8 @@
 //! Attacker/driver: real HTTP/1.1 bytes through the Gate, judged only by the
 //! observed Gate status and the origin's own records. Session identifiers,
 //! keys and tokens are never written to the receipt.
-use crate::client::{report, request, sign, wire};
+use super::report::{self, Captured};
+use crate::client::{request, sign, wire};
 use humanymous_runtime::gateway::{configuration::Configuration, guard, http::Request};
 use serde_json::{Value, json};
 use std::{
@@ -76,9 +77,32 @@ fn header_names(record: &Value) -> Vec<String> {
 struct Driver {
     config: Configuration,
     cases: Vec<Value>,
+    /// The real collector report from the browser topology; never a fixture.
+    report: std::result::Result<Captured, String>,
+    /// Every collect exchange: the Gate's status and verdict, as observed.
+    collects: Vec<Value>,
 }
 
 impl Driver {
+    /// Read the captured collector report the runner supplies on stdin.
+    fn new() -> Result<Self> {
+        Ok(Self {
+            config: driver_configuration()?,
+            cases: Vec::new(),
+            report: report::from_stdin(),
+            collects: Vec::new(),
+        })
+    }
+
+    /// Receipt description of the report every collected session submitted.
+    fn client_report(&self) -> Value {
+        match &self.report {
+            Ok(captured) => json!({"kind":"real Rust WASM collector report replayed",
+                "provenance":captured.provenance,"collect_observations":self.collects}),
+            Err(error) => json!({"kind":"absent","error":error,"fixture_fallback":false}),
+        }
+    }
+
     /// Send bytes; record expected/observed status and the origin delta.
     fn case(
         &mut self,
@@ -115,9 +139,17 @@ impl Driver {
 
     fn collected(&mut self) -> Result<Value> {
         let issued = self.session()?;
-        let mut collect = request("/_humanymous/collect", report(&issued));
+        let entity = match &self.report {
+            Ok(captured) => captured.bind(issued["session"].as_str().ok_or("session id")?),
+            Err(error) => return Err(format!("no real collector report: {error}").into()),
+        };
+        let mut collect = request("/_humanymous/collect", entity);
         sign(&self.config, &mut collect, &issued, 1);
         let response = exchange(super::GATE, &wire(&collect))?;
+        // Observation, not an expectation: what the Gate made of the report.
+        self.collects
+            .push(json!({"observed_status":status(&response),
+            "gate_verdict":body(&response).map_or(Value::Null, |b| b["verdict"].clone())}));
         if status(&response) != Some(200) {
             return Err(format!("collect refused: {:?}", status(&response)).into());
         }
@@ -197,6 +229,14 @@ impl Driver {
         let clean = self.signed("/effect", b"effect", false)?;
         let clean_bytes = wire(&clean);
         let (_, new) = self.case("signed_session_effect_forwarded", 200, &clean_bytes, 1)?;
+        if new.is_empty() {
+            // Recorded, never silently dropped: with no forwarded request the
+            // origin exactness check was not exercised and cannot pass.
+            self.cases.push(
+                json!({"id":"origin_observed_exact_request","origin_records":0,
+                "exercised":false,"pass":false}),
+            );
+        }
         if let Some(record) = new.first() {
             let names = header_names(record);
             let host = record["headers"]
@@ -275,10 +315,7 @@ const SMUGGLING: &[(&str, &str)] = &[
 pub fn run() -> Result<()> {
     wait_for(super::OBSERVE)?;
     wait_for(super::GATE)?;
-    let mut driver = Driver {
-        config: driver_configuration()?,
-        cases: Vec::new(),
-    };
+    let mut driver = Driver::new()?;
     let outcome = driver.run();
     let all = records()?;
     let leaked: Vec<String> = all
@@ -301,7 +338,7 @@ pub fn run() -> Result<()> {
         "cases":driver.cases,"passed":driver.cases.len()-failed,"failed":failed,
         "driver_error":outcome.as_ref().err().map(|e|e.to_string()),
         "observations":{"origin_socket_reachable_from_attacker_namespace":bypass},
-        "client_report":"client-asserted fixture report; no browser or collector executed"});
+        "client_report":driver.client_report()});
     println!("{receipt}");
     if failed > 0 || outcome.is_err() {
         return Err("product e2e assertions failed".into());
@@ -326,10 +363,7 @@ pub const DEPENDENCY_LOST: &str = "dependency-lost";
 pub fn witnessed() -> Result<()> {
     wait_for(super::OBSERVE)?;
     wait_for(super::GATE)?;
-    let mut driver = Driver {
-        config: driver_configuration()?,
-        cases: Vec::new(),
-    };
+    let mut driver = Driver::new()?;
     let outcome = witnessed_cases(&mut driver);
     finish(driver, outcome, "humanymous.product-e2e-witnessed-driver/1")
 }
@@ -388,10 +422,7 @@ impl Driver {
 /// must not report success, and the origin must actually be unreachable.
 pub fn origin_lost() -> Result<()> {
     wait_for(super::GATE)?;
-    let mut driver = Driver {
-        config: driver_configuration()?,
-        cases: Vec::new(),
-    };
+    let mut driver = Driver::new()?;
     let unreachable = |address| {
         TcpStream::connect_timeout(&super::address(address), Duration::from_secs(2)).is_err()
     };
@@ -424,7 +455,7 @@ fn finish(driver: Driver, outcome: Result<()>, schema: &str) -> Result<()> {
     let receipt = json!({"schema":schema,"cases":driver.cases,
         "passed":driver.cases.len()-failed,"failed":failed,
         "driver_error":outcome.as_ref().err().map(|e|e.to_string()),
-        "client_report":"client-asserted fixture report; no browser or collector executed"});
+        "client_report":driver.client_report()});
     println!("{receipt}");
     if failed > 0 || outcome.is_err() {
         return Err("product e2e assertions failed".into());

@@ -97,19 +97,30 @@ struct Lab {
 impl Lab {
     /// Bounded direct invocation; the engine endpoint is always explicit.
     fn docker(&mut self, args: &[&str], seconds: u64, required: bool) -> Result<Output> {
+        self.docker_input(args, b"", seconds, required)
+    }
+
+    /// As `docker`, with private stdin bytes that the transcript never records.
+    fn docker_input(
+        &mut self,
+        args: &[&str],
+        input: &[u8],
+        seconds: u64,
+        required: bool,
+    ) -> Result<Output> {
         let mut command = Command::new("docker");
         if args.first() != Some(&"context") {
             command.args(["--host", ENDPOINT]);
         }
         command.args(args).current_dir(&self.root);
-        self.capture(command, args, seconds, required)
+        self.capture(command, args, input, seconds, required)
     }
 
     fn git(&mut self, args: &[&str]) -> Result<String> {
         let mut command = Command::new("git");
         command.args(args).current_dir(&self.root);
         Ok(self
-            .capture(command, args, 30, true)?
+            .capture(command, args, b"", 30, true)?
             .stdout
             .trim()
             .to_owned())
@@ -119,13 +130,14 @@ impl Lab {
         &mut self,
         mut command: Command,
         args: &[&str],
+        input: &[u8],
         seconds: u64,
         required: bool,
     ) -> Result<Output> {
         let started = Instant::now();
         let captured = capture_with_stderr(
             &mut command,
-            b"",
+            input,
             Duration::from_secs(seconds),
             16 * 1024 * 1024,
         )?;
@@ -140,6 +152,7 @@ impl Lab {
             .collect();
         let success = captured.status.success();
         self.transcript.push(json!({"argv":args,"exit":captured.status.code(),
+            "stdin_bytes":input.len(),"input_recorded":false,
             "seconds":started.elapsed().as_secs(),"stderr_tail":if success { Value::Null } else { json!(tail) }}));
         if required && !success {
             return Err(format!("{} failed: {:?}", args.join(" "), captured.status.code()).into());
@@ -318,9 +331,9 @@ pub fn run(args: &[String]) -> Result<i32> {
     let source = json!({"commit":commit,"branch":branch,"tree_clean":dirty==0,"dirty_entries":dirty,
         "dockerfile":DOCKERFILE,"compose":COMPOSE});
     let engine = lab.engine()?;
-    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":3,
+    let mut receipt = json!({"schema":"humanymous.product-e2e-receipt/1","roadmap_unit":35,"increment":4,
         "status":"started","pass_product_clean_room":false,"product_complete":false,
-        "label":"partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, and a real browser running the Rust WASM collector against a witnessed gate; not product e2e completion",
+        "label":"partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, and a real browser running the Rust WASM collector against a witnessed gate with an owned DNS canary; the other topologies replay the real collector report; not product e2e completion",
         "source":source,"venue":engine,
         "components":{
           "gate":{"present":true,"real":true,"binary":"humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs)",
@@ -338,7 +351,8 @@ pub fn run(args: &[String]) -> Result<i32> {
                   "binary":"humanymous-runtime-pilot --browser-driver: Firefox ESR through geckodriver, driven by the Rust wasm-bindgen-test-runner 0.2.130",
                   "collector":"crates/collector built for wasm32-unknown-unknown with feature runtime-pilot; one fixture-selected test (crates/collector/src/browser/transport/runtime_pilot.rs) uses the real BrowserSession and BrowserCollector",
                   "gate":"humanymous-runtime-pilot --browser-gate: the runtime library ServiceHost::bind_with_witness with an owned lab frontend proxy on :8080; the gateway itself stays loopback-only",
-                  "main_and_witnessed_drivers":"collect reports in the gate and witnessed topologies remain client-asserted fixtures"}},
+                  "main_and_witnessed_drivers":"collect reports in the gate, origin-loss and witnessed topologies are the browser topology's captured real collector report, sessionId rebound per session; the drivers' HTTP request headers remain synthetic",
+                  "dns_canary":"humanymous-runtime-pilot --product-dns-canary: a real UDP :53 listener on its own internal network, with positive controls from that network before and after the browser"}},
         "constraint":"Configuration::validate requires loopback listen and origin (crates/sdk/humanymous-runtime/src/gateway/configuration.rs:127-128) and the accept loop drops non-loopback peers (crates/sdk/humanymous-runtime/src/gateway/application.rs:352 and 374), so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
         "clean_room":false,
         "clean_room_gaps":["engine venue is a cloud container, not Windows desktop-linux or genuine GitHub-hosted Linux",
@@ -428,6 +442,26 @@ pub fn run(args: &[String]) -> Result<i32> {
     } else {
         None
     };
+    // Increment 4: the browser topology runs first, because its real collector
+    // report is the one every collected session in the other topologies submits.
+    let (browser, report_line) = match &browser_image {
+        Some(browser_image) => match browser::run(&mut lab, &image, browser_image) {
+            Ok(result) => result,
+            Err(error) => (json!({"pass":false,"error":error.to_string()}), None),
+        },
+        None => (
+            json!({"pass":false,"error":"browser image build failed"}),
+            None,
+        ),
+    };
+    let browser_pass = browser["pass"] == true;
+    receipt["components"]["browser"]["present"] =
+        json!(browser["actor"]["test_exit_code"].is_number());
+    receipt["browser"] = browser;
+    receipt["collect_report_source"] = json!({"real_collector_report_captured":report_line.is_some(),
+        "fixture_fallback":false,
+        "note":"every collected session in the gate, origin-loss and witnessed drivers submits the browser topology's captured collector report with only sessionId rebound; without one those sessions fail"});
+    let stdin_report = report_line.map(|line| line + "\n").unwrap_or_default();
     let compose = ["compose", "--file", COMPOSE, "--project-name", PROJECT];
     let up = [
         &compose[..],
@@ -457,7 +491,7 @@ pub fn run(args: &[String]) -> Result<i32> {
     ]
     .concat();
     // Without --no-deps: compose itself enforces the service_healthy edges.
-    let driven = lab.docker(&drive, 600, false)?;
+    let driven = lab.docker_input(&drive, stdin_report.as_bytes(), 600, false)?;
     let driver = last_json_line(&driven.stdout, "humanymous.product-e2e-driver/1");
     let gate_log = lab.docker(&["logs", GATE_CONTAINER], 60, false)?;
     receipt["gate_readiness"] =
@@ -486,26 +520,15 @@ pub fn run(args: &[String]) -> Result<i32> {
             .is_some_and(|d| d["failed"] == 0 && d["driver_error"].is_null());
     receipt["driver"] = driver.unwrap_or(Value::Null);
     receipt["driver_exit_success"] = json!(driven.success);
-    let origin_lost = origin_loss(&mut lab, &compose)?;
+    let origin_lost = origin_loss(&mut lab, &compose, &stdin_report)?;
     let origin_lost_pass = origin_lost["pass"] == true;
     receipt["origin_loss_after_readiness"] = origin_lost;
-    let witnessed = match witnessed::run(&mut lab, &image) {
+    let witnessed = match witnessed::run(&mut lab, &image, &stdin_report) {
         Ok(report) => report,
         Err(error) => json!({"pass":false,"error":error.to_string()}),
     };
     let witnessed_pass = witnessed["pass"] == true;
     receipt["witnessed"] = witnessed;
-    let browser = match &browser_image {
-        Some(browser_image) => match browser::run(&mut lab, &image, browser_image) {
-            Ok(report) => report,
-            Err(error) => json!({"pass":false,"error":error.to_string()}),
-        },
-        None => json!({"pass":false,"error":"browser image build failed"}),
-    };
-    let browser_pass = browser["pass"] == true;
-    receipt["components"]["browser"]["present"] =
-        json!(browser["actor"]["test_exit_code"].is_number());
-    receipt["browser"] = browser;
     receipt["status"] =
         json!(
             if driver_pass && topology_pass && origin_lost_pass && witnessed_pass && browser_pass {
@@ -518,7 +541,7 @@ pub fn run(args: &[String]) -> Result<i32> {
 }
 
 /// Stop the origin after readiness, then require the Gate to fail closed.
-fn origin_loss(lab: &mut Lab, compose: &[&str]) -> Result<Value> {
+fn origin_loss(lab: &mut Lab, compose: &[&str], report: &str) -> Result<Value> {
     let stopped = lab
         .docker(&["stop", "--time", "2", ORIGIN_CONTAINER], 60, false)?
         .success;
@@ -538,7 +561,7 @@ fn origin_loss(lab: &mut Lab, compose: &[&str]) -> Result<Value> {
         ],
     ]
     .concat();
-    let driven = lab.docker(&drive, 300, false)?;
+    let driven = lab.docker_input(&drive, report.as_bytes(), 300, false)?;
     let driver = last_json_line(
         &driven.stdout,
         "humanymous.product-e2e-origin-lost-driver/1",
@@ -628,6 +651,8 @@ fn finish(lab: &mut Lab, mut receipt: Value, options: &Options, started: bool) -
                     ATTACKER,
                     ORIGIN_LOST_ATTACKER,
                     browser::BROWSER,
+                    browser::DNSPROBE_BEFORE,
+                    browser::DNSPROBE_AFTER,
                 ],
                 60,
                 false,

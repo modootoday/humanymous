@@ -6,14 +6,22 @@
 //!
 //! The gateway validates loopback-only listen and origin addresses and refuses
 //! non-loopback peers, so origin and attacker share the Gate container's
-//! network namespace on an internal Docker network. Authority and a browser
-//! are absent.
+//! network namespace on an internal Docker network. Authority is absent.
+//!
+//! Increment 4: an owned DNS canary for the browser topology, and drivers
+//! whose collect reports are the bytes the real Rust WASM collector posted
+//! from Firefox in the browser topology (supplied by the runner on stdin),
+//! never a hand-written report.
+mod dns_canary;
 mod driver;
 mod gate;
 mod health;
 mod origin;
+mod report;
 mod witness;
 
+pub use dns_canary::probe as dns_probe;
+pub use dns_canary::run as dns_canary;
 pub use driver::origin_lost as driver_origin_lost;
 pub use driver::run as driver;
 pub use driver::witnessed as driver_witnessed;

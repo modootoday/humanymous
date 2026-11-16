@@ -157,11 +157,33 @@ services:
       - "/tmp:rw,noexec,nosuid,size=512m,mode=1777"
       - "/dev/shm:rw,noexec,nosuid,nodev,size=256m"
     profiles: [browser]
+  # Increment 4: an owned DNS canary, a real UDP :53 listener on its own
+  # internal network that the browser is not attached to. The browser actor is
+  # given the canary's address as its outside resolver control. dnsprobe runs
+  # positive controls from the canary's network before and after the browser,
+  # so a zero arrival count from the browser is observed against a live
+  # listener. No health check: an exec probe would itself be an arrival.
+  dnscanary:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    command: ["--product-dns-canary"]
+    init: true
+    networks: [dnscanary]
+    profiles: [browser]
+  dnsprobe:
+    extends: {file: topology/sandbox.yaml, service: sandbox}
+    image: humanymous/product-e2e:local
+    init: true
+    networks: [dnscanary]
+    profiles: [browser]
 networks:
   product:
     internal: true
   witnessed:
     internal: true
   browser:
+    internal: true
+    enable_ipv6: false
+  dnscanary:
     internal: true
     enable_ipv6: false
