@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 60,
-  "partial": 103,
-  "ported_unit": 149,
+  "ported_unit": 165,
+  "partial": 95,
+  "missing": 52,
   "not_applicable": 2
  },
  "by_package": {
@@ -40,8 +40,8 @@
   },
   "cmd/server": {
    "missing": 11,
-   "partial": 22,
-   "ported_unit": 9
+   "partial": 21,
+   "ported_unit": 10
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -59,8 +59,8 @@
    "ported_unit": 2
   },
   "internal/audit": {
-   "partial": 10,
-   "ported_unit": 15,
+   "partial": 7,
+   "ported_unit": 18,
    "missing": 3
   },
   "internal/behavior": {
@@ -74,8 +74,7 @@
    "ported_unit": 2
   },
   "internal/detect": {
-   "partial": 1,
-   "ported_unit": 4
+   "ported_unit": 5
   },
   "internal/gate": {
    "partial": 46,
@@ -93,7 +92,8 @@
    "missing": 2
   },
   "internal/logger": {
-   "missing": 6
+   "ported_unit": 2,
+   "partial": 4
   },
   "internal/mlcorrect": {
    "ported_unit": 14,
@@ -103,13 +103,11 @@
    "ported_unit": 4
   },
   "internal/mltrain": {
-   "ported_unit": 1,
-   "missing": 2,
-   "partial": 2
+   "ported_unit": 5
   },
   "internal/network": {
-   "ported_unit": 17,
-   "partial": 3
+   "ported_unit": 19,
+   "partial": 1
   },
   "internal/pass": {
    "ported_unit": 3
@@ -129,8 +127,7 @@
    "ported_unit": 1
   },
   "internal/scoring": {
-   "ported_unit": 18,
-   "partial": 3
+   "ported_unit": 21
   },
   "internal/signals": {
    "ported_unit": 5
@@ -1218,26 +1215,31 @@
    "baseline_path": "cmd/server/pass_handler_test.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_attest_issuance_budget_refuses_the_third_issuance"
    ],
    "go_test_map": {
     "TestReserveTraceBlocksReplay": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay",
-    "TestTraceDigestIgnoresOffsetsAndNonce": null,
-    "TestTraceDigestDistinguishesDifferentMotion": null,
+    "TestTraceDigestIgnoresOffsetsAndNonce": "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
+    "TestTraceDigestDistinguishesDifferentMotion": "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests",
     "TestPoWInstanceBinding": "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
     "TestPassVelocitySignalsRegistered": null,
-    "TestPassVelocityThresholds": null,
-    "TestAttestIssuanceBudget": null,
+    "TestPassVelocityThresholds": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth",
+    "TestAttestIssuanceBudget": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_attest_issuance_budget_refuses_the_third_issuance",
     "TestBehaviorTimingTells": null
    },
    "gaps": [
-    "trace digest (pass_proof.go)",
-    "pass velocity/flood signal wiring (ids exist only in registry.json)",
-    "attest issuance budget",
+    "pass velocity/flood signal wiring (ids exist only in registry.json; detection freeze)",
+    "attest issuance budget wiring into a Pass handler (limiter cutpoints are ported)",
     "behavior timing tells (a11y: not to be ported as gates)"
    ],
    "retire_basis": null,
@@ -1245,7 +1247,11 @@
    "notes": "Only PoW session binding has a core analog (handler composes sid|pass|nonce). Generic rate limiter exists in network/history/rate but no pass-specific wiring.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::distinct_key_durations_produce_distinct_digests": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_pass_velocity_cutpoints_elevate_fourth_and_flood_eighth": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_attest_issuance_budget_refuses_the_third_issuance": "passed"
    }
   },
   {
@@ -1364,34 +1370,37 @@
   },
   {
    "baseline_path": "cmd/server/pass_wargame_axis_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots"
    ],
    "go_test_map": {
     "TestWargameR333_PassTraceReplayBlocked": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked",
-    "TestWargameR334_PassTraceDigestIgnoresChallengeWrapper": null,
+    "TestWargameR334_PassTraceDigestIgnoresChallengeWrapper": "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay",
     "TestWargameR335_PassPoWBoundToChallengeNonce": "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
-    "TestWargameR336_PassVelocityHumanFloor": null,
-    "TestWargameR337_PassVelocityFloodElevates": null,
+    "TestWargameR336_PassVelocityHumanFloor": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots",
+    "TestWargameR337_PassVelocityFloodElevates": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots",
     "TestWargameR338_PassAxisHandlerClose": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock"
    },
-   "gaps": [
-    "R334 trace digest wrapper",
-    "R336/R337 velocity floor/flood"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Core pass tests r322-r332 cover the pure challenge, not these handler-axis rounds.",
+   "notes": "Core pass tests r322-r332 cover the pure challenge, not these handler-axis rounds. R336/R337 exercise only the 30 s soft 4 / hard 8 limiter and are ported against network/history/rate.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_proof/tests.rs::digest_ignores_instance_fields_and_collides_on_sub_quantum_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::legacy_r336_r337_pass_governor_spares_human_pace_and_floods_bots": "passed"
    }
   },
   {
@@ -3206,27 +3215,28 @@
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs",
     "crates/sdk/humanymous-runtime/src/gateway/settings.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/config.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
-    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate"
+    "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard"
    ],
    "go_test_map": {
     "TestValidateRefusesIntegrityOff": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "TestValidateRefusesHROff": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "TestValidateRefusesNetTCPEnforce": "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets",
     "TestValidateScoringBounds": "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision",
-    "TestValidateRefusesNonPositiveRateHard": null,
+    "TestValidateRefusesNonPositiveRateHard": "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard",
     "TestResolveEmptyOverlayIdentity": null,
     "TestResolveOverlayScoringAndKill": null,
     "TestFileStoreRoundTrip": "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate"
    },
    "gaps": [
-    "overlay resolution identity",
-    "scoring/kill overlay resolution",
-    "explicit non-positive rate-hard test"
+    "overlay resolution identity (no scoring/route/net overlay model: Rust settings are resource-only by design, plan 20261107205817 B20 M)",
+    "scoring/kill overlay resolution (detection freeze; kill effects are dual-controlled, plan 20261116060213 unit 19)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -3234,7 +3244,8 @@
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/gateway/configuration/operational.rs::operational_schema_excludes_frozen_detection_policy_and_secrets": "passed",
     "crates/sdk/humanymous-runtime/src/gateway/settings/store.rs::crash_selection_applies_only_the_journal_committed_candidate": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/settings.rs::untrusted_snapshot_cannot_change_scope_scoring_or_overflow_revision": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/rate/tests.rs::validate_refuses_non_positive_rate_hard": "passed"
    }
   },
   {
@@ -3674,21 +3685,43 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
     "crates/sdk/humanymous-runtime/src/audit/storage/witness_recovery/tests.rs::rollback_fork_bad_hmac_wrong_witness_and_missing_chain_fail_closed",
-    "crates/sdk/humanymous-runtime/src/audit/verification/scan/tests/crypto.rs::checkpoint_beyond_eof_and_missing_required_witness_never_imply_coverage"
+    "crates/sdk/humanymous-runtime/src/audit/verification/scan/tests/crypto.rs::checkpoint_beyond_eof_and_missing_required_witness_never_imply_coverage",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r121_credential_like_fingerprint_is_a_valid_key",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r122_token_like_fingerprint_keys",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r123_bind_derivation_is_total_and_stable",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r124_world_cidr_is_valid_and_broad",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r125_proxy_tlv_bytes_are_no_ban_key",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r126_public_test_net_ip_parses",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r148_empty_cidr_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r149_fresh_store_lists_no_bans",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r150_gc_empty_and_expired",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r093_r151_headerless_client_has_no_bind_key",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r152_sweep_gc",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r153_token_malformed_no_dot",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r154_token_malformed_bad_b64",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r155_step_up_malformed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r156_receipt_malformed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r157_epoch_rejects_unknown_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r158_sid_mismatch_on_verdict",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r159_bind_mismatch_on_verdict",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r160_expired_verdict"
    ],
    "go_test_map": {
-    "TestWargameR121_WebAuthnNoneDoesNotTrust": null,
-    "TestWargameR122_PATDoubleSpendDistinctFromNone": null,
-    "TestWargameR123_WebBotAuthNoneDistinct": null,
-    "TestWargameR124_ProxyProtoGarbageRejected": null,
-    "TestWargameR125_ProxyProtoLocalCommand": null,
-    "TestWargameR126_TrustGateRequiresProxyNet": null,
+    "TestWargameR121_WebAuthnNoneDoesNotTrust": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r121_credential_like_fingerprint_is_a_valid_key",
+    "TestWargameR122_PATDoubleSpendDistinctFromNone": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r122_token_like_fingerprint_keys",
+    "TestWargameR123_WebBotAuthNoneDistinct": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r123_bind_derivation_is_total_and_stable",
+    "TestWargameR124_ProxyProtoGarbageRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r124_world_cidr_is_valid_and_broad",
+    "TestWargameR125_ProxyProtoLocalCommand": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r125_proxy_tlv_bytes_are_no_ban_key",
+    "TestWargameR126_TrustGateRequiresProxyNet": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r126_public_test_net_ip_parses",
     "TestWargameR127_AuditEmptyChainNotHMACUnchecked": "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
     "TestWargameR128_SelfVerifyEmptyFails": "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
     "TestWargameR129_WrongHMACClass": "crates/sdk/humanymous-runtime/src/audit/storage/witness_recovery/tests.rs::rollback_fork_bad_hmac_wrong_witness_and_missing_chain_fail_closed",
@@ -3710,45 +3743,84 @@
     "TestWargameR145_ApprovalsListAuthRequired": null,
     "TestWargameR146_ConsoleUnauth404": null,
     "TestWargameR147_MaxBodyCapDoesNotPanic": "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch",
-    "TestWargameR148_SecurityHeadersAddOnlyContract": null,
-    "TestWargameR149_ReadinessIndependentOfBans": null,
-    "TestWargameR150_GCDoesNotPanicEmpty": null,
-    "TestWargameR151_VerdictStoreGCEmpty": null,
-    "TestWargameR152_SweepGC": null,
-    "TestWargameR153_TokenMalformedNoDot": null,
-    "TestWargameR154_TokenMalformedBadB64": null,
-    "TestWargameR155_StepUpMalformed": null,
-    "TestWargameR156_ReceiptMalformed": null,
-    "TestWargameR157_EpochRejectsUnknownEpoch": null,
-    "TestWargameR158_SidMismatchOnVerdict": null,
-    "TestWargameR159_BindMismatchOnVerdict": null,
-    "TestWargameR160_ExpiredVerdict": null
+    "TestWargameR148_SecurityHeadersAddOnlyContract": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r148_empty_cidr_rejected",
+    "TestWargameR149_ReadinessIndependentOfBans": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r149_fresh_store_lists_no_bans",
+    "TestWargameR150_GCDoesNotPanicEmpty": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r150_gc_empty_and_expired",
+    "TestWargameR151_VerdictStoreGCEmpty": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r093_r151_headerless_client_has_no_bind_key",
+    "TestWargameR152_SweepGC": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r152_sweep_gc",
+    "TestWargameR153_TokenMalformedNoDot": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r153_token_malformed_no_dot",
+    "TestWargameR154_TokenMalformedBadB64": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r154_token_malformed_bad_b64",
+    "TestWargameR155_StepUpMalformed": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r155_step_up_malformed",
+    "TestWargameR156_ReceiptMalformed": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r156_receipt_malformed",
+    "TestWargameR157_EpochRejectsUnknownEpoch": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r157_epoch_rejects_unknown_epoch",
+    "TestWargameR158_SidMismatchOnVerdict": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r158_sid_mismatch_on_verdict",
+    "TestWargameR159_BindMismatchOnVerdict": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r159_bind_mismatch_on_verdict",
+    "TestWargameR160_ExpiredVerdict": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r160_expired_verdict"
    },
    "gaps": [
-    "credential gates, PROXY v2, erasure/kill/bulk-ban RBAC",
-    "admin endpoint auth",
-    "tokens/step-up/receipt/epoch",
-    "GC of Gate stores",
-    "security headers"
+    "audit witness public-key projection R131 (audit keys; not touched)",
+    "erasure/kill/bulk-ban RBAC and HTTP R132-R140 (B19/B20/B21: M; dual control, plan 20261116060213 unit 19)",
+    "admin policy/proof/incidents/approvals/console auth R141-R146 (B19/B21: M)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Only audit verification and body-cap cases have Rust counterparts.",
+   "notes": "Ban-key residuals (R121, R122, R124-R126, R148), store GC/list (R149, R150), bind (R123, R151), sweep (R152) and token rounds (R153-R160) are ported against the pure kernels. Rust token keys must be at least 32 bytes, so the Go 29-byte seeds are padded.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/storage/witness_recovery/tests.rs::rollback_fork_bad_hmac_wrong_witness_and_missing_chain_fail_closed": "passed",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
     "crates/sdk/humanymous-runtime/src/audit/verification/scan/tests/crypto.rs::checkpoint_beyond_eof_and_missing_required_witness_never_imply_coverage": "passed",
-    "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/tests/browser/contract.rs::shared_lab_request_limit_413_has_no_ack_and_closes_client_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r121_credential_like_fingerprint_is_a_valid_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r122_token_like_fingerprint_keys": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r123_bind_derivation_is_total_and_stable": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r124_world_cidr_is_valid_and_broad": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r125_proxy_tlv_bytes_are_no_ban_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r126_public_test_net_ip_parses": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r148_empty_cidr_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r149_fresh_store_lists_no_bans": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r150_gc_empty_and_expired": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r093_r151_headerless_client_has_no_bind_key": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r152_sweep_gc": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r153_token_malformed_no_dot": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r154_token_malformed_bad_b64": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r155_step_up_malformed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r156_receipt_malformed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r157_epoch_rejects_unknown_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r158_sid_mismatch_on_verdict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r159_bind_mismatch_on_verdict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r160_expired_verdict": "passed"
    }
   },
   {
    "baseline_path": "internal/gate/wargame_escalation_r161_test.go",
    "disposition": "partial",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/ban.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/ban.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r169_te_chunked_alone_ok",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r170_cl_alone_ok",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r174_step_up_expired",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r175_step_up_bind_mismatch",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r176_step_up_sid_mismatch",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r177_receipt_bad_sig",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r183_cidr_host_bits_valid",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r184_reject_unknown_scheme",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r185_reject_bare_ip_without_scheme",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r191_double_lift_safe",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r192_list_bans_includes_manual",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r194_token_round_trip_epoch_current",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r195_accept_language_affects_bind_key",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
    ],
    "go_test_map": {
     "TestWargameR161_PendingBanNotEnforcedUntilCommit": null,
@@ -3758,49 +3830,71 @@
     "TestWargameR165_FPBanTemporaryDirect": null,
     "TestWargameR166_MetaAuditOnBanList": null,
     "TestWargameR167_KillswitchEngageBlocksEnforcementPath": null,
-    "TestWargameR168_SmuggleAndBanIndependent": null,
-    "TestWargameR169_TEChunkedAloneOK": null,
-    "TestWargameR170_CLAloneOK": null,
+    "TestWargameR168_SmuggleAndBanIndependent": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent",
+    "TestWargameR169_TEChunkedAloneOK": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r169_te_chunked_alone_ok",
+    "TestWargameR170_CLAloneOK": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r170_cl_alone_ok",
     "TestWargameR171_StrictPathLogin": null,
     "TestWargameR172_NestedStrictUnderAdmin": null,
     "TestWargameR173_OffRouteExactOnly": null,
-    "TestWargameR174_StepUpExpired": null,
-    "TestWargameR175_StepUpBindMismatch": null,
-    "TestWargameR176_StepUpSidMismatch": null,
-    "TestWargameR177_ReceiptBadSig": null,
+    "TestWargameR174_StepUpExpired": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r174_step_up_expired",
+    "TestWargameR175_StepUpBindMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r175_step_up_bind_mismatch",
+    "TestWargameR176_StepUpSidMismatch": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r176_step_up_sid_mismatch",
+    "TestWargameR177_ReceiptBadSig": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r177_receipt_bad_sig",
     "TestWargameR178_ApprovalTicketDiffersByApprover": null,
     "TestWargameR179_ApprovalTicketDiffersByKind": null,
     "TestWargameR180_HasRoleDPOSuperset": null,
     "TestWargameR181_ValidBanKeyRejectsSchemeOnlyFPSpace": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
     "TestWargameR182_ValidBanKeyAcceptsIPv4Mapped": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
-    "TestWargameR183_CIDRHostBitsValid": null,
-    "TestWargameR184_RejectUnknownScheme": null,
-    "TestWargameR185_RejectBareIPWithoutScheme": null,
+    "TestWargameR183_CIDRHostBitsValid": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r183_cidr_host_bits_valid",
+    "TestWargameR184_RejectUnknownScheme": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r184_reject_unknown_scheme",
+    "TestWargameR185_RejectBareIPWithoutScheme": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r185_reject_bare_ip_without_scheme",
     "TestWargameR186_HTTPRejectUnknownScheme": null,
     "TestWargameR187_HTTPRejectBareIP": null,
     "TestWargameR188_ConcurrentCreateDistinctIDs": null,
     "TestWargameR189_PendingParamsImmutableSnapshot": null,
     "TestWargameR190_OperatorLiftOtherKeyNoopOrOK": null,
-    "TestWargameR191_DoubleLiftSafe": null,
-    "TestWargameR192_ListBansIncludesManual": null,
-    "TestWargameR193_EscalationMonotonicNonIncreasingDurationOrPermanent": null,
-    "TestWargameR194_TokenRoundTripEpochCurrent": null,
-    "TestWargameR195_AcceptLanguageAffectsBindKey": null,
-    "TestWargameR196_SecCHUAAffectsBindKey": null,
-    "TestWargameR197_SmuggleCRInHeaderValue": null,
-    "TestWargameR198_MultiHeaderObsFoldAnyKey": null,
+    "TestWargameR191_DoubleLiftSafe": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r191_double_lift_safe",
+    "TestWargameR192_ListBansIncludesManual": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r192_list_bans_includes_manual",
+    "TestWargameR193_EscalationMonotonicNonIncreasingDurationOrPermanent": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
+    "TestWargameR194_TokenRoundTripEpochCurrent": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r194_token_round_trip_epoch_current",
+    "TestWargameR195_AcceptLanguageAffectsBindKey": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r195_accept_language_affects_bind_key",
+    "TestWargameR196_SecCHUAAffectsBindKey": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key",
+    "TestWargameR197_SmuggleCRInHeaderValue": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value",
+    "TestWargameR198_MultiHeaderObsFoldAnyKey": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key",
     "TestWargameR199_SeriesRegressionValidBanKeyMatrix": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
-    "TestWargameR200_SeriesClosePackageGreen": null
+    "TestWargameR200_SeriesClosePackageGreen": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence"
    },
    "gaps": [
-    "approval, token, step-up and route-policy cases",
-    "R169 lone chunked TE accepted by Go (Rust refuses; owner issue)"
+    "pending/commit/lift ban effects and meta-audit R161-R167 (B18/B19: M; dual control, plan 20261116060213 unit 19)",
+    "route preset resolution R171-R173 (B12: C)",
+    "HMAC approval ticket and DPO role superset R178-R180 (B20/B21: M; dual-control redesign)",
+    "admin HTTP ban key refusal and concurrency R186-R190 (B19: M)",
+    "R169 lone chunked TE: the classifier agrees with Go but the Rust HTTP parser refuses it (owner issue)"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Ban-key validation rounds R181, R182 and R199 are ported; other rounds have no Rust counterpart yet.",
+   "notes": "Ban-key validation (R181-R185, R199), store lift/list (R191, R192), escalation (R193, deliberate 24h fourth tier), smuggle classifier (R168-R170, R197, R198) and step-up/receipt/bind rounds (R174-R177, R194-R196) are ported against the pure kernels. R200 re-asserts duplicate chunked TE refusal and ip: key validity, covered by the smuggle precedence and ban-key matrix tests.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r168_smuggle_and_ban_independent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r169_te_chunked_alone_ok": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r170_cl_alone_ok": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r174_step_up_expired": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r175_step_up_bind_mismatch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r176_step_up_sid_mismatch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r177_receipt_bad_sig": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r183_cidr_host_bits_valid": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r184_reject_unknown_scheme": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r185_reject_bare_ip_without_scheme": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r191_double_lift_safe": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r192_list_bans_includes_manual": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r194_token_round_trip_epoch_current": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r195_accept_language_affects_bind_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r196_sec_ch_ua_affects_bind_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r197_smuggle_cr_in_header_value": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r198_multi_header_obs_fold_any_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests.rs::scan_classifies_in_legacy_precedence": "passed"
    }
   },
   {
@@ -3868,10 +3962,38 @@
    "disposition": "partial",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/http.rs",
-    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/configuration.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r087_step_up_not_valid_as_verdict",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r088_receipt_not_valid_as_step_up_cookie",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r089_step_up_cookie_not_valid_as_receipt",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r090_receipt_sid_mismatch_typed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r091_receipt_expired_typed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r092_receipt_skew_leeway_allows_slight_drift",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r093_r151_headerless_client_has_no_bind_key",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r094_token_bind_includes_subnet",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r095_token_bind_includes_ua",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r096_smuggle_te_identity",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r097_smuggle_te_gzip_chunked_list",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r098_smuggle_obs_fold_lf_only",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r101_sweep_does_not_flag_single_session",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r102_sweep_flags_burst",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r103_sweep_window_resets",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r105_zero_duration_is_not_a_single_operator_permanent_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected"
    ],
    "go_test_map": {
     "TestWargameR081_PathDotDotAdminStaysStrict": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
@@ -3879,28 +4001,28 @@
     "TestWargameR083_PathPrefixNotConfusedWithOffRoute": null,
     "TestWargameR084_PathCaseSensitiveStrict": null,
     "TestWargameR085_DefaultBalancedForUnknown": null,
-    "TestWargameR086_VerdictNotValidAsStepUp": null,
-    "TestWargameR087_StepUpNotValidAsVerdict": null,
-    "TestWargameR088_ReceiptNotValidAsStepUpCookie": null,
-    "TestWargameR089_StepUpCookieNotValidAsReceipt": null,
-    "TestWargameR090_ReceiptSIDMismatchTyped": null,
-    "TestWargameR091_ReceiptExpiredTyped": null,
-    "TestWargameR092_ReceiptSkewLeewayAllowsSlightDrift": null,
-    "TestWargameR093_EmptyBindKeySkipsCollapse": null,
-    "TestWargameR094_TokenBindIncludesSubnet": null,
-    "TestWargameR095_TokenBindIncludesUA": null,
-    "TestWargameR096_SmuggleTEIdentity": null,
-    "TestWargameR097_SmuggleTEGzipChunkedList": null,
-    "TestWargameR098_SmuggleObsFoldLFOnly": null,
+    "TestWargameR086_VerdictNotValidAsStepUp": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up",
+    "TestWargameR087_StepUpNotValidAsVerdict": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r087_step_up_not_valid_as_verdict",
+    "TestWargameR088_ReceiptNotValidAsStepUpCookie": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r088_receipt_not_valid_as_step_up_cookie",
+    "TestWargameR089_StepUpCookieNotValidAsReceipt": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r089_step_up_cookie_not_valid_as_receipt",
+    "TestWargameR090_ReceiptSIDMismatchTyped": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r090_receipt_sid_mismatch_typed",
+    "TestWargameR091_ReceiptExpiredTyped": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r091_receipt_expired_typed",
+    "TestWargameR092_ReceiptSkewLeewayAllowsSlightDrift": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r092_receipt_skew_leeway_allows_slight_drift",
+    "TestWargameR093_EmptyBindKeySkipsCollapse": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r093_r151_headerless_client_has_no_bind_key",
+    "TestWargameR094_TokenBindIncludesSubnet": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r094_token_bind_includes_subnet",
+    "TestWargameR095_TokenBindIncludesUA": "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r095_token_bind_includes_ua",
+    "TestWargameR096_SmuggleTEIdentity": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r096_smuggle_te_identity",
+    "TestWargameR097_SmuggleTEGzipChunkedList": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r097_smuggle_te_gzip_chunked_list",
+    "TestWargameR098_SmuggleObsFoldLFOnly": "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r098_smuggle_obs_fold_lf_only",
     "TestWargameR099_SmuggleCLIdenticalDup": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
     "TestWargameR100_SmuggleCLTEOrderIndependent": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
-    "TestWargameR101_SweepDoesNotFlagSingleSession": null,
-    "TestWargameR102_SweepFlagsBurst": null,
-    "TestWargameR103_SweepWindowResets": null,
-    "TestWargameR104_TempBanNotPermanent": null,
-    "TestWargameR105_PermanentBanHasZeroUntil": null,
-    "TestWargameR106_LiftRemovesBan": null,
-    "TestWargameR107_AutoBanEscalatesStrike": null,
+    "TestWargameR101_SweepDoesNotFlagSingleSession": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r101_sweep_does_not_flag_single_session",
+    "TestWargameR102_SweepFlagsBurst": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r102_sweep_flags_burst",
+    "TestWargameR103_SweepWindowResets": "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r103_sweep_window_resets",
+    "TestWargameR104_TempBanNotPermanent": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent",
+    "TestWargameR105_PermanentBanHasZeroUntil": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r105_zero_duration_is_not_a_single_operator_permanent_ban",
+    "TestWargameR106_LiftRemovesBan": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban",
+    "TestWargameR107_AutoBanEscalatesStrike": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms",
     "TestWargameR108_InjectIdempotentDouble": null,
     "TestWargameR109_NoHTMLNoInject": null,
     "TestWargameR110_OversizeHeadGivesUp": null,
@@ -3910,24 +4032,44 @@
     "TestWargameR114_CheckpointsAuthRequired": null,
     "TestWargameR115_MetricsAuthRequired": null,
     "TestWargameR116_OperatorCannotListAsUnscoped": null,
-    "TestWargameR117_IntegrityEmptyClass": null,
-    "TestWargameR118_BanKeyIPv4LoopbackAllowed": null,
-    "TestWargameR119_BanKeyRejectsTabChar": null,
-    "TestWargameR120_FPWithSpacesRejected": null
+    "TestWargameR117_IntegrityEmptyClass": "crates/sdk/humanymous-runtime/src/gateway/ban/tests.rs::ban_key_rejection_matrix_matches_go_wargame_rounds",
+    "TestWargameR118_BanKeyIPv4LoopbackAllowed": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed",
+    "TestWargameR119_BanKeyRejectsTabChar": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char",
+    "TestWargameR120_FPWithSpacesRejected": "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected"
    },
    "gaps": [
-    "route preset/default resolution",
-    "token/step-up/receipt separation",
-    "sweep",
-    "bans",
-    "inject",
-    "admin whoami/keys/checkpoints/metrics auth"
+    "route preset/default resolution R083-R085 (plan 20261107205817 B12: C, open contract)",
+    "HTML inject R108-R110 (B15: M)",
+    "admin whoami/keys/checkpoints/metrics/auth R111-R116 (B19: M)"
    ],
    "retire_basis": null,
    "confidence": "low",
-   "notes": "Rust refuses traversal/encoded targets and CL ambiguity; most cases have no counterpart.",
+   "notes": "Token/step-up/receipt separation, bind key, smuggle classifier, sweep and ban-store rounds are ported against the pure kernels in gateway/token, gateway/smuggle, network/history/sweep and gateway/ban. Deliberate differences pinned: R105 (no single-operator permanent ban) and R107 (fourth strike stays 24h and needs dual control).",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r086_verdict_not_valid_as_step_up": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r087_step_up_not_valid_as_verdict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r088_receipt_not_valid_as_step_up_cookie": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r089_step_up_cookie_not_valid_as_receipt": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r090_receipt_sid_mismatch_typed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r091_receipt_expired_typed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r092_receipt_skew_leeway_allows_slight_drift": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r093_r151_headerless_client_has_no_bind_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r094_token_bind_includes_subnet": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/token/tests/wargame.rs::wargame_r095_token_bind_includes_ua": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r096_smuggle_te_identity": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r097_smuggle_te_gzip_chunked_list": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/smuggle/tests/wargame.rs::wargame_r098_smuggle_obs_fold_lf_only": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r101_sweep_does_not_flag_single_session": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r102_sweep_flags_burst": "passed",
+    "crates/sdk/humanymous-runtime/src/network/history/sweep/tests.rs::wargame_r103_sweep_window_resets": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r104_temp_ban_not_permanent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r105_zero_duration_is_not_a_single_operator_permanent_ban": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r106_lift_removes_ban": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r107_r193_escalation_terms": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r118_ban_key_ipv4_loopback_allowed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r119_ban_key_rejects_tab_char": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/ban/tests/wargame.rs::wargame_r120_fp_with_spaces_rejected": "passed"
    }
   },
   {
@@ -4286,7 +4428,7 @@
   },
   {
    "baseline_path": "internal/audit/audit_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
@@ -4298,7 +4440,8 @@
     "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs::canonical_bytes_and_record_hashes_match_go_without_mutating_records",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer",
-    "crates/sdk/humanymous-runtime/src/audit/keys/vault.rs::shred_snapshot_restart_and_corrupt_restore_fail_closed"
+    "crates/sdk/humanymous-runtime/src/audit/keys/vault.rs::shred_snapshot_restart_and_corrupt_restore_fail_closed",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action"
    ],
    "go_test_map": {
     "TestVerifyRejectsMerkleRootMismatch": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
@@ -4308,12 +4451,10 @@
     "TestTruncationDetected": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
     "TestCheckpointRollbackDetected": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
     "TestCryptoShred": "crates/sdk/humanymous-runtime/src/audit/keys/vault.rs::shred_snapshot_restart_and_corrupt_restore_fail_closed",
-    "TestSinkRefusesUnaudited": null,
+    "TestSinkRefusesUnaudited": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action",
     "TestSinkAuditBeforeEffect": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer"
    },
-   "gaps": [
-    "Log::append rejects an empty event_type, but no Rust test asserts that refusal (Go TestSinkRefusesUnaudited)"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
    "notes": "Tamper/truncation/rollback/Merkle-mismatch classes come from the 840-case Go verifier fixture (hash-break, seq-gap, checkpoint-mismatch), not from one Rust test per scenario.",
@@ -4322,7 +4463,8 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
     "crates/sdk/humanymous-runtime/tests/audit/record_parity.rs::canonical_bytes_and_record_hashes_match_go_without_mutating_records": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action": "passed"
    }
   },
   {
@@ -4370,13 +4512,13 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witnessed_heads_survive_restart_and_missing_signatures_block_boot",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witness_refusal_is_not_silently_downgraded_to_writer_only",
-    "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs::checkpoint_keys_signature_bytes_and_hmacs_match_go"
+    "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs::checkpoint_keys_signature_bytes_and_hmacs_match_go",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append"
    ],
    "go_test_map": {},
    "gaps": [
-    "no bounded in-memory ring window or Recent(n)/Len accessors (Rust reads records from disk)",
-    "no in-memory-only Log without a WAL",
-    "empty-HMAC append refusal returns an error but has no Rust test"
+    "no bounded in-memory ring window or Recent(n)/Len accessors (Rust reads records from disk; intentional design difference, needs owner acceptance)",
+    "no in-memory-only Log without a WAL (intentional design difference, needs owner acceptance)"
    ],
    "retire_basis": null,
    "confidence": "medium",
@@ -4386,34 +4528,33 @@
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witness_refusal_is_not_silently_downgraded_to_writer_only": "passed",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witnessed_heads_survive_restart_and_missing_signatures_block_boot": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs::checkpoint_keys_signature_bytes_and_hmacs_match_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/checkpoint_parity.rs::checkpoint_keys_signature_bytes_and_hmacs_match_go": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append": "passed"
    }
   },
   {
    "baseline_path": "internal/audit/id_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::event_ids_are_unique_across_many_mints"
    ],
    "go_test_map": {
     "TestNewEventIDIsUUIDv7": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
-    "TestNewEventIDUnique": null,
+    "TestNewEventIDUnique": "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::event_ids_are_unique_across_many_mints",
     "TestAppendStampsIDAndTS": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering"
    },
-   "gaps": [
-    "no Rust test for event-id uniqueness across many mints",
-    "no Rust test that Append keeps caller-set event_id/ts (stamp.rs only fills empty fields)",
-    "ts format is asserted only to end in 'Z', not to parse as RFC3339"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
    "notes": "seals_checkpoints... asserts the UUIDv7 version and variant nibbles on the first appended record.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/stamp.rs::event_ids_are_unique_across_many_mints": "passed"
    }
   },
   {
@@ -4809,24 +4950,25 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action"
    ],
    "go_test_map": {},
    "gaps": [
-    "no Rust test asserts that an empty event_type is refused before the action",
     "no separate Emit (no-action) helper"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails.",
+   "notes": "Log::emit_and_act runs the action only after a durable append and checkpoint; the action is skipped when sealing fails or the event type is empty, and a refusal consumes no sequence number.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::checkpoint_disk_failure_prevents_action_and_poisons_writer": "passed",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::seals_checkpoints_restarts_and_detects_authenticated_tampering": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_event_type_is_refused_before_the_action": "passed"
    }
   },
   {
    "baseline_path": "internal/audit/verifier_p0_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs",
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs"
@@ -4834,25 +4976,25 @@
    "rust_tests": [
     "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
-    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witness_refusal_is_not_silently_downgraded_to_writer_only"
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witness_refusal_is_not_silently_downgraded_to_writer_only",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append"
    ],
    "go_test_map": {
     "TestSelfVerifyRequiresWitness": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
     "TestVerifyEmptyChainFails": "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved",
-    "TestAppendPanicsWithoutHMAC": null,
+    "TestAppendPanicsWithoutHMAC": "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append",
     "TestVerifyNilHMACSkipsSecondaryLayer": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go",
     "TestVerifyAloneDoesNotCheckWitness": "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go"
    },
-   "gaps": [
-    "no Rust test that append with an empty HMAC key fails closed"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "The Go fixture holds hmac-unchecked (90) and witness-invalid (45) cases for verify vs verify_with_witness.",
+   "notes": "The Go fixture holds hmac-unchecked (90) and witness-invalid (45) cases for verify vs verify_with_witness. Deliberate difference: Go panicked on the first Append with an empty HMAC key; Rust refuses the key when the log opens, so no record is ever sealed without the MAC. The Go test re-ran green at 981d25c with go1.25.3.",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::witness_refusal_is_not_silently_downgraded_to_writer_only": "passed",
     "crates/sdk/humanymous-runtime/src/audit/verification/mod.rs::absence_is_not_anchoring_and_error_priority_is_preserved": "passed",
-    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/audit/verification_parity.rs::every_verifier_result_and_priority_matches_go": "passed",
+    "crates/sdk/humanymous-runtime/src/audit/log/mod.rs::empty_hmac_key_is_refused_before_any_append": "passed"
    }
   },
   {
@@ -5073,23 +5215,23 @@
   },
   {
    "baseline_path": "internal/detect/bridge.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/collector/src/browser/reflection.rs",
     "crates/collector/src/browser/integrity.rs"
    ],
    "rust_tests": [
-    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets"
+    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets",
+    "crates/collector/src/browser/integrity.rs::failing_navigator_getter_propagates_and_removes_real_frame"
    ],
    "go_test_map": {},
-   "gaps": [
-    "cited Rust test is wasm_bindgen_test only; not run in this review (needs a browser runner)"
-   ],
+   "gaps": [],
    "retire_basis": null,
-   "confidence": "medium",
-   "notes": "safeGet/navBool/navString are reflection helpers and isNativeFn is browser/integrity.rs. The reflection test is a wasm_bindgen_test, so it needs a browser runner. Downgraded from ported_unit: no cited test ran natively.",
+   "confidence": "high",
+   "notes": "safeGet/navBool/navString are reflection helpers and isNativeFn is browser/integrity.rs. Both cited wasm_bindgen_tests ran in real headless Firefox in the hosted firefox-component job (collector-component.yml, wasm-bindgen-test-runner 0.2.130): 66 passed, 0 failed, 0 ignored, job 133289839043 at badfe27 on 2026-11-16.",
    "test_verification": {
-    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets": "not_run: wasm_bindgen_test (browser runner)"
+    "crates/collector/src/browser/reflection.rs::primitive_tags_truthiness_and_numeric_budgets": "passed: hosted Firefox wasm-bindgen-test-runner, job 133289839043",
+    "crates/collector/src/browser/integrity.rs::failing_navigator_getter_propagates_and_removes_real_frame": "passed: hosted Firefox wasm-bindgen-test-runner, job 133289839043"
    }
   },
   {
@@ -5315,13 +5457,14 @@
   },
   {
    "baseline_path": "internal/network/h2split_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs",
     "crates/sdk/humanymous-runtime/tests/network/report_parity.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go"
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::browser_tls_over_h1_needs_hello_browser_ja4_and_h1"
    ],
    "go_test_map": {
     "TestH2UnknownUnderBrowserResidual": "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
@@ -5333,16 +5476,15 @@
     "TestCertCompressionAbsentResidual": "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
     "TestH2PriorityAbsentResidual": "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
     "TestECHAbsentResidual": "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
-    "TestBrowserTLSOverH1Residual": null
+    "TestBrowserTLSOverH1Residual": "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::browser_tls_over_h1_needs_hello_browser_ja4_and_h1"
    },
-   "gaps": [
-    "l5.http.browser_tls_over_h1 emission is in assembly.rs but never exercised: absent from all 1024 report_parity fixture expectations"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
    "notes": "The other nine residual IDs appear in the frozen Go report fixture.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go": "passed",
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::browser_tls_over_h1_needs_hello_browser_ja4_and_h1": "passed"
    }
   },
   {
@@ -5545,7 +5687,7 @@
   },
   {
    "baseline_path": "internal/network/report.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/network/report/mod.rs",
     "crates/sdk/humanymous-runtime/src/network/report/claims.rs",
@@ -5554,22 +5696,22 @@
    ],
    "rust_tests": [
     "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go",
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::browser_tls_over_h1_needs_hello_browser_ja4_and_h1",
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::forwarded_address_scope_matches_go_including_ipv4_mapped_v6",
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::json_alpn_replacement_is_per_invalid_go_byte",
     "crates/sdk/humanymous-runtime/src/network/report/claims.rs::version_boundaries_edge_exclusion_and_go_integer_overflow_are_preserved"
    ],
    "go_test_map": {},
-   "gaps": [
-    "browser_tls_over_h1 residual branch has no exercising test or fixture case"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "All other report signals match Go.",
+   "notes": "All report signals match the frozen Go corpus; the browser_tls_over_h1 residual, absent from that corpus, is pinned by flipping corpus inputs one predicate term at a time (hello, browser JA4 engine, h1).",
    "test_verification": {
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::forwarded_address_scope_matches_go_including_ipv4_mapped_v6": "passed",
     "crates/sdk/humanymous-runtime/src/network/report/assembly.rs::json_alpn_replacement_is_per_invalid_go_byte": "passed",
     "crates/sdk/humanymous-runtime/src/network/report/claims.rs::version_boundaries_edge_exclusion_and_go_integer_overflow_are_preserved": "passed",
-    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go": "passed"
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::all_report_signals_and_admin_observations_match_go": "passed",
+    "crates/sdk/humanymous-runtime/tests/network/report_parity.rs::browser_tls_over_h1_needs_hello_browser_ja4_and_h1": "passed"
    }
   },
   {
@@ -5942,31 +6084,36 @@
   },
   {
    "baseline_path": "internal/scoring/hardrules.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs",
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::known_automation_fixtures_evaluate_honestly_under_frozen_hard_rules",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::multi_signal_deny_fixtures_evaluate_honestly_under_frozen_hard_rules",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::remaining_deny_fixtures_evaluate_honestly_under_frozen_hard_rules",
-    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_fixtures_evaluate_honestly_under_frozen_hard_rules"
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_fixtures_evaluate_honestly_under_frozen_hard_rules",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed"
    ],
    "go_test_map": {},
-   "gaps": [
-    "net-policy monitor disarm (net.proxy.hop -> HR-24, net.correlation -> HR-19 but not PoW) is implemented but untested: engine_parity passes only an empty net map"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "All 24 hard-rule predicates are matched by the Go-oracle corpus.",
+   "notes": "All 24 hard-rule predicates are matched by the Go-oracle corpus; the net-policy monitor disarm is pinned by the engine overlays tests.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::known_automation_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::multi_signal_deny_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::remaining_deny_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow": "passed",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed": "passed"
    }
   },
   {
@@ -6011,63 +6158,69 @@
   },
   {
    "baseline_path": "internal/scoring/resolution_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs",
-    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs"
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs",
+    "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::all_rust_producer_signal_ids_resolve",
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::escaped_quotes_do_not_disarm_the_producer_scan",
-    "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs::crosscheck_order_predicates_weights_and_notes_match_go"
+    "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs::crosscheck_order_predicates_weights_and_notes_match_go",
+    "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs::rule_cross_check_ids_resolve",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed"
    ],
    "go_test_map": {
     "TestRuleSignalIDsResolve": "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::all_rust_producer_signal_ids_resolve",
-    "TestRuleCrossCheckIDsResolve": null,
-    "TestPromotionRulesWellFormed": null
+    "TestRuleCrossCheckIDsResolve": "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs::rule_cross_check_ids_resolve",
+    "TestPromotionRulesWellFormed": "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed"
    },
-   "gaps": [
-    "no scan proving cross-check IDs referenced by rules resolve (the producer scan matches only three-part lN.group.item literals)",
-    "no well-formedness test over the promotion rule table"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "The Rust producer scan covers scoring sources and every other crate.",
+   "notes": "The Rust producer scan covers scoring sources and every other crate. The cross-check scan reads the hard-rule source and checks every cross_fail id against the weighted cross-check table; Rust fn pointers make Go's nil-predicate case unrepresentable. The Go tests re-ran green at 981d25c with go1.25.3.",
    "test_verification": {
     "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs::crosscheck_order_predicates_weights_and_notes_match_go": "passed",
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::all_rust_producer_signal_ids_resolve": "passed",
-    "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::escaped_quotes_do_not_disarm_the_producer_scan": "passed"
+    "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::escaped_quotes_do_not_disarm_the_producer_scan": "passed",
+    "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs::rule_cross_check_ids_resolve": "passed",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed": "passed"
    }
   },
   {
    "baseline_path": "internal/scoring/runtime_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs",
     "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs",
     "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::rule_mode_monitor_continues_past_hr12",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_at_raised_weakens_verdict",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow"
    ],
    "go_test_map": {
     "TestConfigureEmptyIdenticalToNewEngine": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
     "TestRuleModeMonitorContinuesPastHR12": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
     "TestWeightMultiplierZeroKillsContribution": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
-    "TestChallengeAtRaisedWeakensVerdict": null,
-    "TestNetPolicyMonitorDisarmsHR24ProxyHop": null,
-    "TestNetPolicyMonitorDisarmsHR19CorrelationNotPow": null
+    "TestChallengeAtRaisedWeakensVerdict": "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_at_raised_weakens_verdict",
+    "TestNetPolicyMonitorDisarmsHR24ProxyHop": "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop",
+    "TestNetPolicyMonitorDisarmsHR19CorrelationNotPow": "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow"
    },
-   "gaps": [
-    "raised ChallengeAt policy override untested",
-    "net-policy monitor for HR-24/HR-19 untested",
-    "fixture rule-mode monitor covers HR-2/HR-3/HR-10 only, not HR-12"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "947 fixture cases set monitor modes and weight multipliers (l6.ua_tls_mismatch=0).",
+   "notes": "947 fixture cases set monitor modes and weight multipliers (l6.ua_tls_mismatch=0). The engine overlays tests add the raised ChallengeAt band, an HR-12 rule-mode monitor and the net.proxy.hop / net.correlation monitors (the PoW HR-19 tell stays armed). The Go tests re-ran green at 981d25c with go1.25.3.",
    "test_verification": {
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::rule_mode_monitor_continues_past_hr12": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_at_raised_weakens_verdict": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow": "passed"
    }
   },
   {
@@ -6889,100 +7042,172 @@
   },
   {
    "baseline_path": "internal/logger/handler.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation"
+   ],
    "go_test_map": {},
    "gaps": [
-    "slog-style handler with attrs/groups"
+    "slog.Handler attrs/groups nesting has no counterpart: Rust callers pass a flat attribute slice to OperationalLogger::emit"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust operational logger found; plan B27 marks operational logs \"M\".",
-   "test_verification": {}
+   "notes": "Attribute flattening into the canonical record is covered; slog grouping is a Go API adapter.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/logger_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another"
+   ],
    "go_test_map": {
-    "TestPlainAndJSONLShareCanonicalRecord": null,
-    "TestLevelValidationAndFiltering": null,
-    "TestSanitizesHostileTextAndCapsPhysicalLines": null,
+    "TestPlainAndJSONLShareCanonicalRecord": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "TestLevelValidationAndFiltering": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
+    "TestSanitizesHostileTextAndCapsPhysicalLines": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
     "TestConcurrentProducersProduceIntactJSONLines": null,
     "TestQueueSaturationDoesNotBlockProducer": null,
-    "TestOneFailedSinkDoesNotSuppressAnother": null,
+    "TestOneFailedSinkDoesNotSuppressAnother": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
     "TestFlushAndCloseAreBoundedAndIdempotent": null
    },
    "gaps": [
-    "Bounded queue, plain/JSONL canonical record, level filter, sanitization, multi-sink isolation, bounded flush/close"
+    "Concurrency, queue saturation and bounded close tests have no counterpart because emission is synchronous behind &mut (deliberate difference)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Four of seven Go tests map one-to-one.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/logger.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files"
+   ],
    "go_test_map": {},
    "gaps": [
-    "Bounded queue, plain/JSONL canonical record, level filter, sanitization, multi-sink isolation, bounded flush/close"
+    "Bounded asynchronous queue and bounded flush/close are not ported: Rust emits synchronously and counts write errors (deliberate difference documented in gateway/logging.rs)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust operational logging runtime found (plan B27 \"M\").",
-   "test_verification": {}
+   "notes": "Open/level validation/filtering, multi-sink isolation and per-sink stats are ported in OperationalLogger.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::level_threshold_filters": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::one_failed_sink_does_not_suppress_another": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/record.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Canonical record schema 1.0.0 and size cap"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::timestamps_trim_fraction_and_handle_epoch",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::identity_defaults_unknown_and_sanitizes"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Canonical record (schema version, field cap, record byte cap, sanitizing and truncation marking) lives in gateway/logging/record.rs.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::timestamps_trim_fraction_and_handle_epoch": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::invalid_event_and_field_cap_mark_truncation": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::identity_defaults_unknown_and_sanitizes": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/sink_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink"
+   ],
    "go_test_map": {
-    "TestFileSinkAppendsOnReopen": null,
-    "TestFileSinkRejectsSamePathAndNonRegularTargets": null,
-    "TestFileSinkRejectsSymlink": null,
+    "TestFileSinkAppendsOnReopen": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
+    "TestFileSinkRejectsSamePathAndNonRegularTargets": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
+    "TestFileSinkRejectsSymlink": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
     "TestFlushHonorsContextWhenSinkIsBlocked": null
    },
    "gaps": [
-    "File sink append/reopen, symlink and non-regular rejection, context-bounded flush"
+    "Context-bounded flush has no counterpart: Rust emission is synchronous (deliberate difference documented in gateway/logging.rs)"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Three of four Go tests map one-to-one.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed"
+   }
   },
   {
    "baseline_path": "internal/logger/sink.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "File/stream sinks with path safety"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::relative_and_parent_paths_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart.",
-   "test_verification": {}
+   "notes": "Deliberate fail-closed difference: file sink paths must be absolute without parent components; Go resolved relative paths against the working directory.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_appends_on_reopen": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_same_path_and_non_regular_targets": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::relative_and_parent_paths_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure": "passed"
+   }
   },
   {
    "baseline_path": "internal/mlcorrect/bundle_test.go",
@@ -7566,94 +7791,120 @@
   },
   {
    "baseline_path": "internal/mltrain/sink_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/sink.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle"
+   ],
    "go_test_map": {
-    "TestTraceSink_AppendRoundTrip": null,
+    "TestTraceSink_AppendRoundTrip": "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back",
     "TestTraceSink_NilIsNoop": null,
-    "TestTraceSink_AppendsAcrossReopen": null
+    "TestTraceSink_AppendsAcrossReopen": "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle"
    },
    "gaps": [
-    "Append-only TraceSink writer"
+    "TestTraceSink_NilIsNoop has no counterpart by design: an absent sink is Option::None in Rust, not a nil receiver"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "record.rs reads JSONL but no append sink exists; SoT row \"mltrain sink\" says no implementation.",
-   "test_verification": {}
+   "notes": "Round trip reads back through the shared read_jsonl reader.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle": "passed"
+   }
   },
   {
    "baseline_path": "internal/mltrain/sink.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {},
-   "gaps": [
-    "Opt-in append writer with reopen preservation, count and close"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/training/sink.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::relative_parent_directory_and_symlink_targets_are_refused",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::inadmissible_records_are_refused_without_writing"
+   ],
+   "go_test_map": {},
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust TraceSink found.",
-   "test_verification": {}
+   "notes": "TraceSink: owner-only append writer, per-handle count, consuming close. Deliberate fail-closed differences: absolute path without parent components, symlink/non-regular refusal, shared Record::sample admission before write. Go nil-receiver no-op becomes Option at the composition root; no Core caller is wired yet.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::append_round_trip_creates_parent_and_reads_back": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::reopen_appends_and_count_is_per_handle": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::relative_parent_directory_and_symlink_targets_are_refused": "passed",
+    "crates/sdk/humanymous-core/src/model/training/sink/tests.rs::inadmissible_records_are_refused_without_writing": "passed"
+   }
   },
   {
    "baseline_path": "internal/mltrain/train_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs",
     "crates/sdk/humanymous-core/src/model/training/sgd.rs",
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs"
+    "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator",
-    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function"
+    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy"
    ],
    "go_test_map": {
     "TestTrainAndEvaluate_Separable": "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator",
     "TestWarmStart_UsesBaseAndKeepsShape": "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function",
-    "TestTesseractSplit_TrainPastTestFuture": null,
-    "TestCohortFPR_IsPerCohort": null,
-    "TestAUT_BoundedAndFull": null
+    "TestTesseractSplit_TrainPastTestFuture": "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future",
+    "TestCohortFPR_IsPerCohort": "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort",
+    "TestAUT_BoundedAndFull": "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy"
    },
-   "gaps": [
-    "TesseractSplit time split",
-    "CohortFPR per-cohort FPR",
-    "AUT metric"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "SGD/standardize/evaluate exist; time split, cohort FPR and AUT not found.",
+   "notes": "Cohort and AUT tests use fixed predictions with exact expected values instead of a trained model, because the Rust reductions take predictions from the existing inference boundary and never run a forward pass.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator": "passed",
-    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function": "passed"
+    "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::warm_zero_epochs_copies_every_weight_but_new_stats_and_calibration_change_function": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy": "passed"
    }
   },
   {
    "baseline_path": "internal/mltrain/train.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/model/training/sgd.rs",
     "crates/sdk/humanymous-core/src/model/training/standardize.rs",
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs"
+    "crates/sdk/humanymous-core/src/model/training/evaluate.rs",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator",
     "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved",
-    "crates/sdk/humanymous-core/src/model/training/evaluate.rs::confusion_counts_preserve_inclusive_half_boundary_and_float32_rates"
+    "crates/sdk/humanymous-core/src/model/training/evaluate.rs::confusion_counts_preserve_inclusive_half_boundary_and_float32_rates",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_refuses_what_go_left_to_its_caller",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy"
    ],
    "go_test_map": {},
-   "gaps": [
-    "CohortFPR",
-    "TesseractSplit",
-    "AUT"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Standardize, Train (SGD, warm start), Forward and Evaluate ported.",
+   "notes": "Standardize, Train (SGD, warm start), Forward and Evaluate ported earlier; TesseractSplit, CohortFPR and AUT ported as time_split, cohort_fpr and aut in evaluate/temporal.rs. Deliberate fail-closed differences: time_split refuses bad fractions, missing timestamps and empty test windows; empty AUT is unavailable (None), not 0. The offline composition root remains a separately allocated slice.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/model/training/evaluate.rs::confusion_counts_preserve_inclusive_half_boundary_and_float32_rates": "passed",
     "crates/sdk/humanymous-core/src/model/training/sgd/tests.rs::rust_derived_legacy_separable_dataset_learns_and_reuses_existing_evaluator": "passed",
-    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved": "passed"
+    "crates/sdk/humanymous-core/src/model/training/standardize.rs::population_variance_feature_order_and_input_bytes_are_preserved": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_trains_on_the_past_and_tests_on_the_future": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::split_refuses_what_go_left_to_its_caller": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::cohort_fpr_is_per_cohort": "passed",
+    "crates/sdk/humanymous-core/src/model/training/evaluate/temporal/tests.rs::aut_averages_time_ordered_bucket_accuracy": "passed"
    }
   },
   {

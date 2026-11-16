@@ -318,3 +318,5 @@ fn lifted_step_up_proof_fails_binding() {
         Err(Reason::BindingMismatch)
     );
 }
+
+mod wargame;

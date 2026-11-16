@@ -76,3 +76,5 @@ fn spoof_record_lists_only_static_header_names() {
     );
     assert!(!r.fail_reason.contains("attacker-text"));
 }
+
+mod wargame;

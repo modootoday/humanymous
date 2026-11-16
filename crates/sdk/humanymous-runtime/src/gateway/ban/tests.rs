@@ -453,3 +453,5 @@ mod dual_control {
         assert_eq!(s.lift(&range), Ok(true));
     }
 }
+
+mod wargame;
