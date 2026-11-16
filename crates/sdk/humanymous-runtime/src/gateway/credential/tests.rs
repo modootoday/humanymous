@@ -76,3 +76,91 @@ fn ring_algorithms_exist_and_unknown_pairs_fail_closed() {
         &[0; 70],
     ));
 }
+
+/// Cross-kernel compositions from legacy wargame_axis_cred_r201_test.go
+/// (R235, R236, R240). The kernels share no state; these pin that one plane's
+/// success never changes another plane's refusal.
+mod compositions {
+    use super::super::privacy_pass::{self, tests as pat};
+    use super::super::web_bot_auth::{self, tests as wba};
+    use super::super::webauthn::{self, tests as wan};
+    use crate::network::proxy::{Allowlist, Refusal};
+
+    fn pat_verified(verdict: &privacy_pass::Verdict) -> bool {
+        matches!(verdict, privacy_pass::Verdict::Verified { .. })
+    }
+    fn webauthn_verified() -> webauthn::Verdict {
+        webauthn::Verdict::Verified {
+            credential_id: wan::CRED.into(),
+        }
+    }
+
+    #[test]
+    fn wargame_r235_pat_does_not_launder_wba_forgery() {
+        let mut pv = pat::verifier(pat::ISSUER_A_SPKI);
+        assert!(pat_verified(&pv.verify(Some(&pat::mint()), pat::NOW)));
+        let dir = wba::directory(wba::KID, &wba::signer(1));
+        let target = wba::request("example.com", "GET", "/data");
+        let forged = wba::sign_wba(&target, wba::KID, &wba::signer(2), wba::NOW, "n1");
+        assert_eq!(
+            wba::check(target, &forged, &dir, &mut wba::nonces()),
+            web_bot_auth::Verdict::Forged {
+                keyid: wba::KID.into()
+            }
+        );
+    }
+
+    #[test]
+    fn wargame_r236_webauthn_does_not_bypass_proxy_trust_config() {
+        assert_eq!(Allowlist::parse("0.0.0.0/0"), Err(Refusal::TooBroad));
+        let key = wan::key();
+        let mut r = wan::registry(wan::CRED, &key);
+        assert_eq!(
+            r.verify(Some(&wan::sign_assertion(&key, wan::CRED, 7))),
+            webauthn_verified()
+        );
+        assert_eq!(Allowlist::parse("0.0.0.0/0"), Err(Refusal::TooBroad));
+    }
+
+    /// R240 axis-close lock: PAT double spend, PROXY world trust, zero
+    /// WebAuthn counter and authority-only Web Bot Auth coverage.
+    #[test]
+    fn wargame_r240_axis_close_regression_lock() {
+        let mut pv = pat::verifier(pat::ISSUER_A_SPKI);
+        let token = pat::mint();
+        assert!(pat_verified(&pv.verify(Some(&token), pat::NOW)));
+        assert!(matches!(
+            pv.verify(Some(&token), pat::NOW),
+            privacy_pass::Verdict::Invalid {
+                reason: privacy_pass::Reason::DoubleSpend,
+                ..
+            }
+        ));
+        assert_eq!(Allowlist::parse("0.0.0.0/0"), Err(Refusal::TooBroad));
+        let key = wan::key();
+        let mut r = wan::registry(wan::CRED, &key);
+        assert!(matches!(
+            r.verify(Some(&wan::sign_assertion(&key, wan::CRED, 0))),
+            webauthn::Verdict::Invalid {
+                reason: webauthn::Reason::Replay,
+                ..
+            }
+        ));
+        let signer = wba::signer(1);
+        let dir = wba::directory(wba::KID, &signer);
+        let target = wba::request("example.com", "GET", "/admin");
+        let inner = format!(
+            r#"("@authority");created={};keyid="{}";alg="ed25519";tag="web-bot-auth""#,
+            wba::NOW,
+            wba::KID
+        );
+        let headers = wba::sign(&inner, &["@authority"], &target, &signer);
+        assert_eq!(
+            wba::check(target, &headers, &dir, &mut wba::nonces()),
+            web_bot_auth::Verdict::Neutral {
+                reason: web_bot_auth::Reason::Coverage,
+                keyid: None
+            }
+        );
+    }
+}

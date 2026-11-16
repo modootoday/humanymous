@@ -292,6 +292,9 @@ impl Application {
             tenant_id: self.config.scope.tenant.clone(),
             request_id,
             correlation_id: hex::encode(hash.finalize()),
+            route_class: crate::gateway::request::route_class(&req.headers)
+                .as_str()
+                .into(),
             config_version: self.config.scope.revision.clone(),
             verdict: verdict.clone(),
             risk_score: risk as i64,

@@ -36,7 +36,7 @@ const ISSUER_A_KEY: &str = concat!(
     "Y/3+GHwXiIaSMUZbmP2dWEIQRN1sjbXHI+XqvmizlWHj0eZp4jZDaMVUhO2cqw1qcX2f",
 );
 /// Issuer A SubjectPublicKeyInfo DER (rsaEncryption).
-const ISSUER_A_SPKI: &str = concat!(
+pub(in crate::gateway::credential) const ISSUER_A_SPKI: &str = concat!(
     "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAygRNNevNuJl1InL7cX/r4cGCoe7uGCIT",
     "mcPR9fno/+Q666KGPXh1Yyxx1pfsxkhvsuUDg961XmqajQKJa0PNnZIDthOb8NPCjbVFmmOjKo27",
     "NJwTlQy6AlfLrHP54eARWVai+8Rd2jGYujgHsjppDE2gKc5R2xcT7VDkzyq21UZzXMOkuPan3pDR",
@@ -53,7 +53,7 @@ const ISSUER_B_SPKI: &str = concat!(
     "hnYLd2/2Ee4Nq+bLZ4nrsf+egkMcMleYcAWAAceuoZe2CrJF7uuUtF9Cp47rT0N2xxKmVzUu6Yx2",
     "kxdnqwIDAQAB",
 );
-const NOW: Duration = Duration::from_secs(1_700_000_000);
+pub(in crate::gateway::credential) const NOW: Duration = Duration::from_secs(1_700_000_000);
 const PREFIX_HEADER: &str = "PrivateToken token=\"";
 
 /// Go `pubPEM`.
@@ -93,10 +93,10 @@ fn header(raw: &[u8]) -> String {
     format!("{PREFIX_HEADER}{}\"", STANDARD.encode(raw))
 }
 /// Go `mintPAT`: zero nonce and challenge digest.
-fn mint() -> String {
+pub(in crate::gateway::credential) fn mint() -> String {
     header(&mint_raw(0, [0; 32], SignatureScheme::RSA_PSS_SHA384))
 }
-fn verifier(spki_b64: &str) -> Verifier {
+pub(in crate::gateway::credential) fn verifier(spki_b64: &str) -> Verifier {
     Verifier::from_pem(&pem(spki_b64)).unwrap()
 }
 fn issuer_a() -> String {
@@ -295,6 +295,39 @@ fn openssl_vectors_pin_rfc_salt_length() {
     );
     assert_eq!(
         v.verify(Some(&token(SALT_48)), NOW),
+        Verdict::Verified { key_id: issuer_a() }
+    );
+}
+
+/// Wargame R205 (legacy wargame_axis_cred_r201_test.go): a token of another
+/// type that is correctly PSS-signed by a configured issuer is still refused
+/// by the type gate, before any signature check or spend.
+#[test]
+fn wargame_r205_correctly_signed_wrong_token_type_is_invalid() {
+    let mut v = verifier(ISSUER_A_SPKI);
+    let mut raw = 0x0001u16.to_be_bytes().to_vec();
+    raw.extend_from_slice(&[0; 64]);
+    raw.extend_from_slice(&key_id(ISSUER_A_SPKI));
+    let signature = pss_sign(&raw, SignatureScheme::RSA_PSS_SHA384);
+    raw.extend_from_slice(&signature);
+    assert_eq!(
+        v.verify(Some(&header(&raw)), NOW),
+        invalid(Reason::TokenType)
+    );
+}
+
+/// Wargame R238: junk parameters after a quoted token. Go accepted either a
+/// verified or an invalid result. Rust difference (fail closed): the closing
+/// quote stays attached once the value is cut at `;`, so the token is
+/// `Invalid(Malformed)`, and that refusal spends no nonce.
+#[test]
+fn wargame_r238_junk_after_quoted_token_is_malformed_and_spends_nothing() {
+    let mut v = verifier(ISSUER_A_SPKI);
+    let token = mint();
+    let junked = format!("{token}; evil=1");
+    assert_eq!(v.verify(Some(&junked), NOW), invalid(Reason::Malformed));
+    assert_eq!(
+        v.verify(Some(&token), NOW),
         Verdict::Verified { key_id: issuer_a() }
     );
 }

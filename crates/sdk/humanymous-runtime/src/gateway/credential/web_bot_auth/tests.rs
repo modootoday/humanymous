@@ -4,24 +4,28 @@ use super::*;
 use crate::gateway::token::MAX_NONCES;
 use ed25519_dalek::{Signer, SigningKey};
 
-const KID: &str = "test-agent-key-1";
-const NOW: u64 = 1_700_000_000;
+pub(in crate::gateway::credential) const KID: &str = "test-agent-key-1";
+pub(in crate::gateway::credential) const NOW: u64 = 1_700_000_000;
 const COMPONENTS: [&str; 3] = ["@authority", "@method", "@path"];
 
-fn now() -> Duration {
+pub(in crate::gateway::credential) fn now() -> Duration {
     Duration::from_secs(NOW)
 }
-fn nonces() -> Nonces {
+pub(in crate::gateway::credential) fn nonces() -> Nonces {
     Nonces::new(Duration::from_secs(3600), MAX_NONCES)
 }
-fn signer(seed: u8) -> SigningKey {
+pub(in crate::gateway::credential) fn signer(seed: u8) -> SigningKey {
     SigningKey::from_bytes(&[seed; 32])
 }
-fn directory(kid: &str, key: &SigningKey) -> KeyDirectory {
+pub(in crate::gateway::credential) fn directory(kid: &str, key: &SigningKey) -> KeyDirectory {
     let public = URL_SAFE_NO_PAD.encode(key.verifying_key().to_bytes());
     KeyDirectory::parse(&format!("{kid} {public}")).unwrap()
 }
-fn request<'a>(authority: &'a str, method: &'a str, path: &'a str) -> Request<'a> {
+pub(in crate::gateway::credential) fn request<'a>(
+    authority: &'a str,
+    method: &'a str,
+    path: &'a str,
+) -> Request<'a> {
     Request {
         authority,
         method,
@@ -31,7 +35,7 @@ fn request<'a>(authority: &'a str, method: &'a str, path: &'a str) -> Request<'a
     }
 }
 /// Sign `inner` over the request line with the verifier's own base builder.
-fn sign(
+pub(in crate::gateway::credential) fn sign(
     inner: &str,
     components: &[&str],
     target: &Request<'_>,
@@ -42,7 +46,7 @@ fn sign(
     (format!("sig1={inner}"), format!("sig1=:{signature}:"))
 }
 /// Go `signWebBotAuth`.
-fn sign_wba(
+pub(in crate::gateway::credential) fn sign_wba(
     target: &Request<'_>,
     kid: &str,
     key: &SigningKey,
@@ -57,7 +61,7 @@ fn sign_wba(
     }
     sign(&inner, &COMPONENTS, target, key)
 }
-fn check(
+pub(in crate::gateway::credential) fn check(
     target: Request<'_>,
     headers: &(String, String),
     directory: &KeyDirectory,
@@ -409,5 +413,35 @@ fn directory_configuration_is_strict() {
     assert_eq!(
         KeyDirectory::parse(&format!("{KID} {key}\n{KID} {key}")).err(),
         Some(ConfigError::Duplicate)
+    );
+}
+
+/// Wargame R237 (legacy wargame_axis_cred_r201_test.go): the coverage helper
+/// requires exactly the request line, with no unverifiable extra component.
+#[test]
+fn wargame_r237_covers_request_line_helper() {
+    assert!(!covers_request_line(&["@authority"]));
+    assert!(covers_request_line(&COMPONENTS));
+    assert!(!covers_request_line(&[
+        "@authority",
+        "@method",
+        "@path",
+        "content-digest"
+    ]));
+}
+
+/// Wargame R239 with Go's exact directory text. Go skipped `badline` and
+/// loaded the good entry. Rust difference (fail closed, see module docs): a
+/// malformed line refuses the whole directory as `Syntax`, so no partially
+/// read allowlist is ever trusted; comments and blanks are still skipped.
+#[test]
+fn wargame_r239_bad_directory_line_refuses_whole_directory() {
+    let key = URL_SAFE_NO_PAD.encode(signer(1).verifying_key().to_bytes());
+    let good = format!("# comment\n\n{KID} {key}\n");
+    assert!(KeyDirectory::parse(&good).is_ok_and(|d| d.lookup(KID).is_some()));
+    let go_spec = format!("# comment\n\nbadline\n{KID} {key}\n");
+    assert_eq!(
+        KeyDirectory::parse(&go_spec).err(),
+        Some(ConfigError::Syntax)
     );
 }
