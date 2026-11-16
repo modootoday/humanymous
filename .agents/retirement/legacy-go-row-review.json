@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 76,
-  "partial": 94,
+  "missing": 74,
+  "partial": 96,
   "ported_unit": 142,
   "not_applicable": 2
  },
@@ -39,8 +39,8 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 18,
-   "partial": 18,
+   "missing": 16,
+   "partial": 20,
    "ported_unit": 6
   },
   "cmd/tlsparrot": {
@@ -1065,42 +1065,76 @@
   },
   {
    "baseline_path": "cmd/server/mlcorrect_ops_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::absent_controller_is_a_noop_except_for_the_trace",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality"
+   ],
    "go_test_map": {
-    "TestFeedPassOutcome_SolvedRaisesThresholdOnOverFlaggedHumans": null,
-    "TestFeedPassOutcome_FailedIsNotABotLabel": null,
-    "TestFeedPassOutcome_NilControllerIsNoop": null,
-    "TestFeedPassOutcome_SolvedWritesHumanTrace": null,
-    "TestCohortOf_InputModality": null,
+    "TestFeedPassOutcome_SolvedRaisesThresholdOnOverFlaggedHumans": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans",
+    "TestFeedPassOutcome_FailedIsNotABotLabel": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label",
+    "TestFeedPassOutcome_NilControllerIsNoop": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::absent_controller_is_a_noop_except_for_the_trace",
+    "TestFeedPassOutcome_SolvedWritesHumanTrace": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace",
+    "TestCohortOf_InputModality": "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality",
     "TestHandleMLCorrect_GateAndShape": null
    },
    "gaps": [
-    "pass outcome calibration feed",
-    "cohort derivation",
-    "mlcorrect operator view"
+    "TestHandleMLCorrect_GateAndShape: operator endpoint not ported"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "SoT model-training-correction lists mlcorrect calibration/oracle as not implemented.",
-   "test_verification": {}
+   "notes": "Five of six legacy cases map to Rust tests.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::absent_controller_is_a_noop_except_for_the_trace": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/mlcorrect_ops.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed.rs",
+    "crates/sdk/humanymous-core/src/model/correction/controller.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::absent_controller_is_a_noop_except_for_the_trace",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality"
+   ],
    "go_test_map": {},
    "gaps": [
-    "handleMLCorrect operator endpoint",
-    "feedPassOutcome calibration/human trace",
-    "cohortOf input modality"
+    "handleMLCorrect operator endpoint (admin-gated JSON snapshot) is not ported",
+    "JSONL oracle-trace sink is not ported; the caller receives HumanTrace"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust correction modules exist yet.",
-   "test_verification": {}
+   "notes": "feedPassOutcome and cohortOf are ported as a pure lab-only kernel; it never mutates a verdict or installs a threshold. Deliberate difference: an invalid prediction is an error instead of being fed.",
+   "test_verification": {
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_raises_threshold_on_over_flagged_humans": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::failed_pass_is_not_a_bot_label": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::absent_controller_is_a_noop_except_for_the_trace": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::solved_pass_yields_one_labeled_cohort_tagged_human_trace": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::abstaining_model_does_not_calibrate": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::invalid_prediction_fails_closed_without_calibrating": "passed",
+    "crates/sdk/humanymous-core/src/model/correction/pass_feed/tests.rs::cohort_follows_input_modality": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/ops_test.go",
