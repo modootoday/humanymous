@@ -4,7 +4,7 @@
 # the adjacent gate.Dockerfile.dockerignore re-includes cmd/gate.
 # Cross-compile to the target arch on the build platform (SoT-31 R6) so multi-arch
 # release builds compile natively instead of emulating under QEMU. Static, CGO off.
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine@sha256:ecb67f987aa1a57794c91d19ade7ae0209f2f0f5496aaef9e6ae85ddf92d02ab AS builder
 ARG TARGETOS
 ARG TARGETARCH
 WORKDIR /src
