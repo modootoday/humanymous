@@ -1,0 +1,2606 @@
+{
+  "browser": {
+    "actor": {
+      "connection_refusals": {
+        "backend_bridge_port_unreachable": {
+          "kind": "ConnectionRefused",
+          "os_error": 111
+        },
+        "backend_loopback_unreachable": {
+          "kind": "ConnectionRefused",
+          "os_error": 111
+        },
+        "metadata_egress_refused": {
+          "kind": "NetworkUnreachable",
+          "os_error": 101
+        },
+        "runtime_bridge_port_unreachable": {
+          "kind": "ConnectionRefused",
+          "os_error": 111
+        },
+        "runtime_loopback_unreachable": {
+          "kind": "ConnectionRefused",
+          "os_error": 111
+        }
+      },
+      "declared_filtered": 66,
+      "declared_selected": 1,
+      "dns_control": {
+        "local_deny_observed": true,
+        "lookup_error_kind": "Uncategorized",
+        "outside_udp_denied": {
+          "kind": "NetworkUnreachable",
+          "os_error": 101
+        },
+        "query_hash": "06ad0962f73806dadd5f7d91e586f8dc99a4f1dd6f889a0c2c83c2181501a2e4",
+        "timeout_counted_as_denial": false
+      },
+      "dns_finish": "succeeded",
+      "dns_policy": {
+        "forwards": 0,
+        "invalid": 20,
+        "question_hash_counts": {
+          "06ad0962f73806dadd5f7d91e586f8dc99a4f1dd6f889a0c2c83c2181501a2e4": 2
+        },
+        "received": 22
+      },
+      "expected": {
+        "audit_records": [
+          {
+            "event_type": "runtime.decision",
+            "seq": 1,
+            "verdict": "CHALLENGE"
+          },
+          {
+            "event_type": "runtime.decision",
+            "seq": 2,
+            "verdict": "CHALLENGE"
+          },
+          {
+            "event_type": "runtime.collect",
+            "seq": 3,
+            "verdict": "COLLECTED"
+          }
+        ],
+        "audit_sequence": 3,
+        "effect_requests": 2,
+        "origin_effects": 0,
+        "request_counts": {
+          "collect": 1,
+          "effect": 2,
+          "required_collector": 1,
+          "session": 1
+        },
+        "responses": {
+          "collect": {
+            "ack": true,
+            "status": 200
+          },
+          "effect": {
+            "ack": true,
+            "status": 403
+          },
+          "required_collector": {
+            "ack": false,
+            "status": 422
+          }
+        }
+      },
+      "full_product_qualified": false,
+      "hardening": {
+        "cap_eff": "0",
+        "docker_socket_absent": true,
+        "net_namespace": "net:[4026532497]",
+        "no_new_privs": true,
+        "root_erofs": true,
+        "uid": "65532\t65532\t65532\t65532"
+      },
+      "namespace_controls": {
+        "backend_bridge_port_unreachable": true,
+        "backend_loopback_unreachable": true,
+        "external_dns_local_policy_refused": true,
+        "external_dns_udp_no_route": true,
+        "foreign_proxy_authority_refused": true,
+        "metadata_egress_refused": true,
+        "no_default_ipv4_route": true,
+        "runtime_bridge_port_unreachable": true,
+        "runtime_loopback_unreachable": true,
+        "unknown_proxy_api_refused": true
+      },
+      "parser_summary_matched": true,
+      "proxy_hits": {
+        "/_humanymous/browser/collect": 1,
+        "/_humanymous/browser/session": 1,
+        "/effect": 2,
+        "/requires-collector": 1,
+        "assets": 8,
+        "completed": 13,
+        "refused_or_failed": 2,
+        "response:/_humanymous/browser/collect:200:ack_true": 1,
+        "response:/_humanymous/browser/session:200:ack_false": 1,
+        "response:/effect:403:ack_true": 2,
+        "response:/requires-collector:422:ack_false": 1,
+        "wire_origin_absent": 0,
+        "wire_origin_matched": 5,
+        "wire_origin_null": 0,
+        "wire_origin_other": 0,
+        "wire_referer_absent": 0,
+        "wire_referer_other": 0,
+        "wire_referer_present": 5,
+        "wire_referer_root_matched": 5
+      },
+      "schema": "humanymous.browser-product-actor/1",
+      "selected_test": "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
+      "status": "passed",
+      "summary_verified": true,
+      "test_exit_code": 0,
+      "test_inventory": [
+        "browser::tests::actual_browser_report_and_iframe_cleanup",
+        "browser::transport::tests::actual_final_url_keeps_empty_query_and_encoded_query_data",
+        "browser::transport::tests::actual_request_response_apis_bind_final_bytes_and_advance_on_valid_ack",
+        "browser::transport::tests::bad_local_requests_never_fetch_or_consume_and_valid_request_still_works",
+        "browser::transport::tests::bootstrap_future_drop_and_timeout_abort_the_actual_request_signal",
+        "browser::transport::tests::network_bad_ack_missing_ack_body_error_and_overflow_all_close_without_retry",
+        "browser::transport::tests::pending_request_is_single_flight_and_explicit_close_or_future_drop_aborts",
+        "browser::transport::tests::real_same_origin_fetch_to_missing_owned_route_cannot_create_a_session",
+        "browser::behavior::tests::drop_releases_callbacks_and_pairing_buffers",
+        "browser::behavior::tests::failing_remove_is_reported_and_retained_callbacks_are_inactive",
+        "browser::behavior::tests::malformed_event_fails_report_but_always_detaches",
+        "browser::behavior::tests::optional_coalesced_probe_failure_keeps_the_frozen_fallback",
+        "browser::behavior::tests::partial_registration_failure_removes_every_attempted_callback",
+        "browser::behavior::tests::passive_dispatch_preserves_counts_privacy_and_frozen_stop",
+        "browser::behavior::tests::recursive_event_dispatch_is_a_collection_error_not_a_borrow_panic",
+        "browser::behavior::tests::reentrant_stop_clears_raw_state_after_the_active_callback_returns",
+        "browser::cdp::tests::actual_collector_probe_is_explicit_cached_and_cannot_run_after_stop",
+        "browser::cdp::tests::deferred_console_serialization_keeps_managed_callbacks_alive_but_inert",
+        "browser::cdp::tests::missing_and_throwing_console_methods_are_not_negative_probe_success",
+        "browser::cdp::tests::synthetic_stack_and_proxy_callbacks_are_actual_observations",
+        "browser::guard::forwarding::tests::call_receiver_return_and_constructor_new_target_are_forwarded",
+        "browser::guard::forwarding::tests::nested_forwarded_calls_do_not_hold_an_epoch_borrow_across_user_code",
+        "browser::guard::forwarding::tests::overlapping_same_realm_activation_is_rejected_until_owned_stop",
+        "browser::guard::forwarding::tests::real_collector_requires_explicit_opt_in_and_restores_intrinsic_references",
+        "browser::guard::forwarding::tests::replacement_is_not_overwritten_and_descriptor_changes_are_preserved",
+        "browser::guard::forwarding::tests::thrown_value_is_identical_and_failed_second_install_rolls_back_first",
+        "browser::guard::forwarding::tests::unrestoreable_proxy_stays_inert_and_continues_forwarding_safely",
+        "browser::resources::timer::tests::native_promise_deadline_keeps_void_false_null_rejection_and_timeout_distinct",
+        "browser::resources::timer::tests::reused_deadline_stays_expired_for_later_stages",
+        "browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed",
+        "behavior::oracle_tests::key_reducer_matches_oracle_including_repeat_and_unknown_releases",
+        "behavior::oracle_tests::pointer_reducer_matches_unchanged_oracle_across_caps_and_geometry",
+        "browser::advanced::tests::advanced_actual_capability_stage",
+        "browser::advanced::tests::advanced_actual_media_stage",
+        "browser::advanced::tests::advanced_actual_profile_stage",
+        "browser::advanced::tests::advanced_audio_read_failure_still_closes_and_unclosed_audio_rejects",
+        "browser::advanced::tests::advanced_device_kinds_gpu_battery_connection_and_memory_void",
+        "browser::advanced::tests::advanced_eme_audio_display_and_timezone_vectors",
+        "browser::advanced::tests::advanced_export_attempts_actual_owned_browser_surfaces",
+        "browser::advanced::tests::advanced_legacy_gpu_info_and_eme_timeout_keep_frozen_fallbacks",
+        "browser::advanced::tests::advanced_rejections_timeouts_and_oversized_devices_do_not_become_success_values",
+        "browser::advanced::tests::advanced_voice_event_is_owned_and_preserves_existing_handler",
+        "browser::advanced::tests::advanced_webgl_uses_only_vendor_without_experimental_fallback",
+        "browser::advanced::tests::missing_optional_advanced_apis_keep_original_wire_sentinels",
+        "browser::guard::tests::actual_collector_snapshot_carries_only_partial_guard_measurement",
+        "browser::guard::tests::actual_mutations_count_only_direct_unmarked_scripts_and_stop_drains",
+        "browser::guard::tests::dropped_guard_detaches_and_failed_registration_is_rejected",
+        "browser::guard::tests::guard_native_baseline_and_read_time_counts_never_fabricate_dynamic_coverage",
+        "browser::guard::tests::malformed_guard_enumeration_and_native_text_fail_capture",
+        "browser::guard::tests::native_marker_matches_legacy_browser_regexp_on_character_boundaries",
+        "session::tests::ambiguity_expiry_rollback_and_counter_exhaustion_clear_secret_state",
+        "session::tests::forged_ack_protocol_counter_status_and_mac_poison_the_epoch",
+        "session::tests::malformed_keys_protocol_clocks_and_timeout_cannot_create_an_epoch",
+        "session::tests::one_flight_and_authenticated_consumption_advance_exactly_once_even_on_http_error",
+        "session::tests::rejected_local_binding_does_not_reserve_or_advance_a_counter",
+        "session::tests::request_binding_is_the_shared_codec_not_a_parallel_canonicalizer",
+        "session::tests::strict_bootstrap_rejects_missing_unknown_duplicate_fields_and_scope_changes",
+        "browser::environment::tests::environment_export_observes_owned_browser_and_first_party_http",
+        "browser::environment::tests::environment_privacy_bait_fetch_and_timeout_cleanup",
+        "browser::environment::tests::environment_required_dom_failure_cleans_bait_and_rejects",
+        "browser::environment::tests::environment_timer_cancel_and_invalid_privacy_are_explicit",
+        "browser::guard::observer::tests::disconnect_failure_preserves_an_inert_reachable_callback",
+        "browser::guard::observer::tests::malformed_delivery_invalidates_snapshot_but_still_detaches",
+        "browser::guard::observer::tests::marker_truthiness_and_delivery_budgets_do_not_inspect_script_payload",
+        "browser::guard::observer::tests::reentrant_observation_invalidates_without_a_refcell_or_closure_panic",
+        "browser::integrity::tests::failing_navigator_getter_propagates_and_removes_real_frame",
+        "browser::reflection::tests::primitive_tags_truthiness_and_numeric_budgets"
+      ],
+      "test_output": "Set WASM_BINDGEN_TEST_TIMEOUT to 90 seconds...\nRunning headless tests in Firefox on `http://127.0.0.1:38925/`\nTry find `webdriver.json` for configure browser's capabilities:\nOk\nLoading Wasm module...\n\nrunning 1 test\ntest browser::transport::runtime_pilot::actual_runtime_session_report_and_required_capability_fail_closed ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 66 filtered out; finished in 0.09s\n\n",
+      "test_process_success": true,
+      "test_stderr": ""
+    },
+    "assertions": [
+      {
+        "id": "browser_wasm_test_inventory_matched",
+        "pass": true
+      },
+      {
+        "id": "browser_wasm_test_passed",
+        "pass": true
+      },
+      {
+        "id": "browser_namespace_and_egress_controls",
+        "pass": true
+      },
+      {
+        "id": "browser_gate_zero_origin_effect",
+        "pass": true
+      },
+      {
+        "id": "browser_gate_audit_matches_fixture",
+        "pass": true
+      },
+      {
+        "id": "browser_gate_audit_fully_witnessed",
+        "pass": true
+      },
+      {
+        "id": "browser_gate_clean_drain",
+        "pass": true
+      },
+      {
+        "id": "browser_request_count_collect",
+        "pass": true
+      },
+      {
+        "id": "browser_request_count_effect",
+        "pass": true
+      },
+      {
+        "id": "browser_request_count_required_collector",
+        "pass": true
+      },
+      {
+        "id": "browser_request_count_session",
+        "pass": true
+      }
+    ],
+    "broker": {
+      "frame_contents_recorded": false,
+      "gate_roles": [
+        "browser_gate_ready",
+        "browser_gate_result"
+      ],
+      "gate_to_witness_operations": {
+        "counter_sign": 3
+      },
+      "injected_unavailable": 0,
+      "signatures_fabricated": 0,
+      "witness_to_gate_statuses": {
+        "ready": 1,
+        "signed": 3
+      }
+    },
+    "browser_exit_success": true,
+    "browser_steps": [
+      "actor_browser_hardening",
+      "actor_browser_config",
+      "actor_browser_dns_bind",
+      "actor_browser_dns_probe",
+      "actor_browser_namespace",
+      "actor_browser_proxy",
+      "actor_browser_inventory",
+      "actor_browser_test",
+      "actor_browser_test_passed",
+      "actor_browser_negative_proxy",
+      "actor_browser_dns_finish",
+      "actor_browser_dns_finished"
+    ],
+    "drain_requested": true,
+    "expected": {
+      "audit_records": [
+        {
+          "event_type": "runtime.decision",
+          "seq": 1,
+          "verdict": "CHALLENGE"
+        },
+        {
+          "event_type": "runtime.decision",
+          "seq": 2,
+          "verdict": "CHALLENGE"
+        },
+        {
+          "event_type": "runtime.collect",
+          "seq": 3,
+          "verdict": "COLLECTED"
+        }
+      ],
+      "audit_sequence": 3,
+      "effect_requests": 2,
+      "origin_effects": 0,
+      "request_counts": {
+        "collect": 1,
+        "effect": 2,
+        "required_collector": 1,
+        "session": 1
+      },
+      "responses": {
+        "collect": {
+          "ack": true,
+          "status": 200
+        },
+        "effect": {
+          "ack": true,
+          "status": 403
+        },
+        "required_collector": {
+          "ack": false,
+          "status": 422
+        }
+      }
+    },
+    "gate": {
+      "audit_checkpoints": [
+        {
+          "merkle_root": "0d91d30ab4fe38abf47d5447801ba30057ccfed9e89ac46112fc236b376ef394",
+          "node_id": "isolated-node",
+          "prev_checkpoint_hash": "",
+          "root": "0dbeb5a14cfea35b4cc8b2c9796d119e84ff61c87946c2f74242ca4a323534ac",
+          "sig": "0f4d3710f4bae8286f884270343b532a58154180e4c234bc89baff78011548623ab639107f793ec1aa209602eb87c02ccf42d5d2d1ebf24ccf50d5f1d49ea708",
+          "tree_size": 1,
+          "witness_sig": "81bebf66fe7cca2600f47c708bfc5c6f26538df78bfa7db0cac20270652639ff8cfcba59e2a007b51495f581e4a3b6f6ce2f2340dc178d7042d46c0cb0583706"
+        },
+        {
+          "merkle_root": "df52fc58bd0a3efd452b3cb48a481aea100ff02221fbe15cd99ca60096829c94",
+          "node_id": "isolated-node",
+          "prev_checkpoint_hash": "0f4d3710f4bae8286f884270343b532a58154180e4c234bc89baff78011548623ab639107f793ec1aa209602eb87c02ccf42d5d2d1ebf24ccf50d5f1d49ea708",
+          "root": "44aff4d6c21c56d2082998071d0f0fbd2c0527b94d010d39af6808a0434c9e8e",
+          "sig": "d5aea48e1ad796d2c4a30f92944da412e101c1ae1928ef248d2c9261a351c2997e3f475bd27176f1bd85542752dafcbd7d53ce05b17ddb5d317dc6acba814104",
+          "tree_size": 2,
+          "witness_sig": "32de106921f7625ab3e394d7f4dfdd97432d12a138c1809e51cf1ea60e9e4c8213ab933457f25883b005b3a70e71d0a8fd33c0e33b94c9eb0b9278e54558a20f"
+        },
+        {
+          "merkle_root": "18ee619d8850c2f1b903d666903acb15e34ddb7ae7103039f826235db8514307",
+          "node_id": "isolated-node",
+          "prev_checkpoint_hash": "d5aea48e1ad796d2c4a30f92944da412e101c1ae1928ef248d2c9261a351c2997e3f475bd27176f1bd85542752dafcbd7d53ce05b17ddb5d317dc6acba814104",
+          "root": "19e422306d95bbb628b5e1e66a17f9507eeabaabc9cc2c6d317fd3a26697a779",
+          "sig": "1f61d09d67f583ca82e95a0088e607a1ef447f624047c34cd433e9c96fc2ff0b4dbc0ae798e0bd98c0b43f56b30568edb013157f92203e912c9b5d3622898e00",
+          "tree_size": 3,
+          "witness_sig": "05ff9dd57ef32b7ee634e9335b6a6cde7c1ca7aa0ef940489af93df6ce2f792ffe674981a927e894687c3ad700aaadc0541ae4df74a6b0cdf88384510c9d2e05"
+        }
+      ],
+      "audit_records": [
+        {
+          "event_type": "runtime.decision",
+          "seq": 1,
+          "verdict": "CHALLENGE"
+        },
+        {
+          "event_type": "runtime.decision",
+          "seq": 2,
+          "verdict": "CHALLENGE"
+        },
+        {
+          "event_type": "runtime.collect",
+          "seq": 3,
+          "verdict": "COLLECTED"
+        }
+      ],
+      "audit_sequence": 3,
+      "checkpoint_repair_performed": false,
+      "expected": {
+        "audit_records": [
+          {
+            "event_type": "runtime.decision",
+            "seq": 1,
+            "verdict": "CHALLENGE"
+          },
+          {
+            "event_type": "runtime.decision",
+            "seq": 2,
+            "verdict": "CHALLENGE"
+          },
+          {
+            "event_type": "runtime.collect",
+            "seq": 3,
+            "verdict": "COLLECTED"
+          }
+        ],
+        "audit_sequence": 3,
+        "effect_requests": 2,
+        "origin_effects": 0,
+        "request_counts": {
+          "collect": 1,
+          "effect": 2,
+          "required_collector": 1,
+          "session": 1
+        },
+        "responses": {
+          "collect": {
+            "ack": true,
+            "status": 200
+          },
+          "effect": {
+            "ack": true,
+            "status": 403
+          },
+          "required_collector": {
+            "ack": false,
+            "status": 422
+          }
+        }
+      },
+      "full_product_qualified": false,
+      "offline_log_authenticated": true,
+      "origin_effects": 0,
+      "proxy_hits": {
+        "/_humanymous/browser/collect": 1,
+        "/_humanymous/browser/session": 1,
+        "/effect": 2,
+        "/requires-collector": 1,
+        "completed": 5,
+        "response:/_humanymous/browser/collect:200:ack_true": 1,
+        "response:/_humanymous/browser/session:200:ack_false": 1,
+        "response:/effect:403:ack_true": 2,
+        "response:/requires-collector:422:ack_false": 1,
+        "wire_origin_absent": 0,
+        "wire_origin_matched": 5,
+        "wire_origin_null": 0,
+        "wire_origin_other": 0,
+        "wire_referer_absent": 0,
+        "wire_referer_other": 0,
+        "wire_referer_present": 5,
+        "wire_referer_root_matched": 5
+      },
+      "role": "browser_gate_result",
+      "stopped": true,
+      "witness_coverage": {
+        "ambiguous_tail_len": 0,
+        "authenticated_external_head": {
+          "merkle_root": "18ee619d8850c2f1b903d666903acb15e34ddb7ae7103039f826235db8514307",
+          "node_id": "isolated-node",
+          "prev_checkpoint_hash": "d5aea48e1ad796d2c4a30f92944da412e101c1ae1928ef248d2c9261a351c2997e3f475bd27176f1bd85542752dafcbd7d53ce05b17ddb5d317dc6acba814104",
+          "root": "19e422306d95bbb628b5e1e66a17f9507eeabaabc9cc2c6d317fd3a26697a779",
+          "sig": "1f61d09d67f583ca82e95a0088e607a1ef447f624047c34cd433e9c96fc2ff0b4dbc0ae798e0bd98c0b43f56b30568edb013157f92203e912c9b5d3622898e00",
+          "tree_size": 3,
+          "witness_sig": "05ff9dd57ef32b7ee634e9335b6a6cde7c1ca7aa0ef940489af93df6ce2f792ffe674981a927e894687c3ad700aaadc0541ae4df74a6b0cdf88384510c9d2e05"
+        },
+        "authentication": {
+          "hmac_checked": true,
+          "witness_checked": true,
+          "writer_checked": true
+        },
+        "durable_sequence": 3,
+        "fully_witnessed": true,
+        "local_latest_checkpoint": {
+          "merkle_root": "18ee619d8850c2f1b903d666903acb15e34ddb7ae7103039f826235db8514307",
+          "node_id": "isolated-node",
+          "prev_checkpoint_hash": "d5aea48e1ad796d2c4a30f92944da412e101c1ae1928ef248d2c9261a351c2997e3f475bd27176f1bd85542752dafcbd7d53ce05b17ddb5d317dc6acba814104",
+          "root": "19e422306d95bbb628b5e1e66a17f9507eeabaabc9cc2c6d317fd3a26697a779",
+          "sig": "1f61d09d67f583ca82e95a0088e607a1ef447f624047c34cd433e9c96fc2ff0b4dbc0ae798e0bd98c0b43f56b30568edb013157f92203e912c9b5d3622898e00",
+          "tree_size": 3,
+          "witness_sig": "05ff9dd57ef32b7ee634e9335b6a6cde7c1ca7aa0ef940489af93df6ce2f792ffe674981a927e894687c3ad700aaadc0541ae4df74a6b0cdf88384510c9d2e05"
+        },
+        "witnessed_through": 3
+      }
+    },
+    "gate_exit_success": true,
+    "gate_ready": {
+      "frontend": "0.0.0.0:8080",
+      "hardening": {
+        "cap_eff": "0",
+        "docker_socket_absent": true,
+        "net_namespace": "net:[4026532327]",
+        "no_new_privs": true,
+        "root_erofs": true,
+        "uid": "65532\t65532\t65532\t65532"
+      },
+      "profile": {
+        "administration": false,
+        "administration_writable": false,
+        "audit_external_witness": true,
+        "audit_startup_recovery": null,
+        "audit_witness_independence_qualified": false,
+        "audit_witness_required_durability": "file_and_directory",
+        "browser_collector": false,
+        "browser_cookie_credentials": false,
+        "browser_recovery": false,
+        "browser_session": true,
+        "client_asserted_report_ingestion": true,
+        "operational": {
+          "rate_per_second": 1000,
+          "session_capacity": 16,
+          "session_rate_per_second": 100,
+          "session_ttl_ms": 60000,
+          "timeout_ms": 5000
+        },
+        "operational_revision": null,
+        "original_h2": false,
+        "product_qualified": false,
+        "profile": "experimental-loopback-http1",
+        "raw_header_order": true,
+        "raw_tls": false,
+        "revision": "r1",
+        "rit": true,
+        "routes": [
+          {
+            "method": "POST",
+            "path": "/effect",
+            "ready": true,
+            "response_profile": "buffered",
+            "rit_profile": "browser_auth_only"
+          },
+          {
+            "method": "POST",
+            "path": "/requires-collector",
+            "ready": false,
+            "response_profile": "buffered",
+            "rit_profile": "browser_auth_only"
+          }
+        ]
+      }
+    },
+    "handshake": {
+      "node_named_by_broker": "isolated-node",
+      "witness_identity_announced": true,
+      "witness_public_distinct_from_writer": true,
+      "writer_identity_announced": true
+    },
+    "pass": true,
+    "topology": {
+      "assertions": [
+        {
+          "id": "browser_network_internal_no_egress",
+          "pass": true
+        },
+        {
+          "id": "browser_no_published_ports",
+          "pass": true
+        },
+        {
+          "id": "browser_has_its_own_network_namespace",
+          "pass": true
+        },
+        {
+          "id": "bwitness_has_no_network_and_own_uid",
+          "pass": true
+        },
+        {
+          "id": "bwitness_shares_no_volume_with_bgate",
+          "pass": true
+        },
+        {
+          "id": "browser_runs_browser_image_and_gate_witness_run_built_image",
+          "pass": true
+        },
+        {
+          "id": "browser_hardened_sandbox",
+          "pass": true
+        }
+      ],
+      "containers": [
+        {
+          "cap_drop": [
+            "ALL"
+          ],
+          "depends_on": "",
+          "exit_code": 0,
+          "health": null,
+          "healthcheck_test": null,
+          "id": "7eacade928e0723708e7ca98347b608d1ab2068ce7fdd9f713adaf773f0929e0",
+          "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+          "init": true,
+          "mounts": [],
+          "name": "humanymous-lab-product-e2e-bwitness-1",
+          "network_mode": "none",
+          "port_bindings": {},
+          "published_ports": {},
+          "read_only_rootfs": true,
+          "state": "running",
+          "user": "65533:65533"
+        },
+        {
+          "cap_drop": [
+            "ALL"
+          ],
+          "depends_on": "",
+          "exit_code": 0,
+          "health": null,
+          "healthcheck_test": null,
+          "id": "7809c8ed885c8798fd88ad2da84f09fd3356b5b2d525711b381b313074e67be9",
+          "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+          "init": true,
+          "mounts": [],
+          "name": "humanymous-lab-product-e2e-bgate-1",
+          "network_mode": "humanymous-lab-product-e2e_browser",
+          "port_bindings": {},
+          "published_ports": {},
+          "read_only_rootfs": true,
+          "state": "exited",
+          "user": "65532:65532"
+        },
+        {
+          "cap_drop": [
+            "ALL"
+          ],
+          "depends_on": "",
+          "exit_code": 0,
+          "health": null,
+          "healthcheck_test": null,
+          "id": "20647f287ef1dde454a6ca3dc1c29424bc007dc8220312eec1f92b99edcc5c27",
+          "image": "sha256:97e293bbd272e512674b3c4dd8c6274ff68fea49b87685c04ec63c0e28d7a28d",
+          "init": true,
+          "mounts": [],
+          "name": "humanymous-lab-product-e2e-browser",
+          "network_mode": "humanymous-lab-product-e2e_browser",
+          "port_bindings": {},
+          "published_ports": {},
+          "read_only_rootfs": true,
+          "state": "exited",
+          "user": "65532:65532"
+        }
+      ],
+      "network": {
+        "internal": true,
+        "name": "humanymous-lab-product-e2e_browser"
+      }
+    },
+    "witness_counter_signatures_relayed": 3
+  },
+  "browser_build_seconds": 0,
+  "browser_build_success": true,
+  "browser_image": {
+    "id": "sha256:97e293bbd272e512674b3c4dd8c6274ff68fea49b87685c04ec63c0e28d7a28d",
+    "size_bytes": 839450564,
+    "tag": "humanymous/product-e2e-browser:local"
+  },
+  "build_egress_proxy": "venue host-loopback HTTPS proxy supplied as a build-only proxy argument; builds used the host network; lab containers never do",
+  "build_egress_trust_anchor": "venue CA bundle supplied as a build-only secret for dependency fetch",
+  "build_seconds": 1,
+  "clean_room": false,
+  "clean_room_gaps": [
+    "engine venue is a cloud container, not Windows desktop-linux or genuine GitHub-hosted Linux",
+    "single shared loopback namespace for gate, origin and attacker; origin is not reachable only through a Gate backend network",
+    "the authority role is absent; the Gate cannot use a remote authority",
+    "the browser reaches the browser Gate through an owned lab proxy pair (browser-local and Gate frontend), not original client TLS/H2; the browser Gate is the runtime library, not the shipped binary",
+    "the witnessed gate is the runtime library composed by a lab supervisor, not the shipped binary",
+    "the shipped-binary gate probe is TCP liveness only: crates/sdk/humanymous-runtime/src/gateway/main.rs:21 writes readiness once and exposes no live serving-epoch latch to its supervisor; only the witnessed gate probe reads ServiceHost::epoch_health",
+    "readiness withdrawal is lazy: the serving-epoch latch fails on the first failed audit append after a witness loss, not when the witness stops"
+  ],
+  "cleanup": {
+    "attacker_container_removed": true,
+    "browser_image_removed": true,
+    "compose_down": true,
+    "containers_remaining": 0,
+    "image_removed": true
+  },
+  "components": {
+    "attacker": {
+      "binary": "humanymous-runtime-pilot --product-driver (Rust HTTP/1.1 driver)",
+      "present": true,
+      "real": true
+    },
+    "audit": {
+      "binary": "humanymous-runtime-pilot --product-witness: audit::checkpoint::service::serve with its own sealed identity and head state",
+      "independence": "separate container, UID 65533, network none, own tmpfs custody and passphrase; the runner brokers typed frames over private stdio",
+      "not_qualified": "identity is first-contact pinned through the broker, the head pin is not persisted outside the witness, tmpfs gives no power-loss durability",
+      "present": true,
+      "scope": "witnessed topology only"
+    },
+    "authority": {
+      "gate_can_use_remote_authority": false,
+      "present": false,
+      "reason": "the gateway decides in-process: crates/sdk/humanymous-runtime/src/gateway/service.rs:287 builds Application::new with its own Engine and crates/sdk/humanymous-runtime/src/gateway/application.rs:474 calls self.decide_request; the gateway has no authority client. humanymous-authority (src/authority/main.rs) serves adapter decisions over a restricted native IPC listener only (src/authority/transport/mod.rs:60, no TCP fallback)"
+    },
+    "browser": {
+      "binary": "humanymous-runtime-pilot --browser-driver: Firefox ESR through geckodriver, driven by the Rust wasm-bindgen-test-runner 0.2.130",
+      "collector": "crates/collector built for wasm32-unknown-unknown with feature runtime-pilot; one fixture-selected test (crates/collector/src/browser/transport/runtime_pilot.rs) uses the real BrowserSession and BrowserCollector",
+      "gate": "humanymous-runtime-pilot --browser-gate: the runtime library ServiceHost::bind_with_witness with an owned lab frontend proxy on :8080; the gateway itself stays loopback-only",
+      "main_and_witnessed_drivers": "collect reports in the gate and witnessed topologies remain client-asserted fixtures",
+      "present": true,
+      "scope": "browser profile only"
+    },
+    "gate": {
+      "binary": "humanymous-runtime (crates/sdk/humanymous-runtime, src/gateway/main.rs)",
+      "embedded_durable_audit": "runtime-owned sealed WAL with synthetic owned custody on tmpfs; the shipped binary has no witness input",
+      "present": true,
+      "real": true
+    },
+    "origin": {
+      "binary": "humanymous-runtime-pilot --product-origin (Rust recording origin)",
+      "present": true,
+      "real": true
+    },
+    "witnessed_gate": {
+      "composition": "humanymous-runtime-pilot --product-gate-witnessed: the humanymous-runtime library ServiceHost::bind_with_witness with require_external_witness=true",
+      "present": true,
+      "real": "runtime library, lab composition root",
+      "why_not_the_shipped_binary": "crates/sdk/humanymous-runtime/src/gateway/main.rs:16 calls ServiceHost::bind(config) only, and crates/cli/src/runtime_host/platform.rs:49 passes no witness on Unix; no shipped executable injects an ExternalWitness"
+    }
+  },
+  "constraint": "Configuration::validate requires loopback listen and origin (crates/sdk/humanymous-runtime/src/gateway/configuration.rs:127-128) and the accept loop drops non-loopback peers (crates/sdk/humanymous-runtime/src/gateway/application.rs:352 and 374), so origin and attacker share the gate container network namespace; origin network isolation is therefore absent",
+  "driver": {
+    "cases": [
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 401,
+        "gate_local_body": {
+          "error": "session"
+        },
+        "id": "no_session_protected_route",
+        "observed_status": 401,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 401,
+        "gate_local_body": {
+          "error": "session"
+        },
+        "id": "forged_trust_headers_without_session",
+        "observed_status": 401,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 409,
+        "gate_local_body": {
+          "error": "route_inventory"
+        },
+        "id": "route_outside_inventory",
+        "observed_status": 409,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "reserved_route"
+        },
+        "id": "reserved_admin_route",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "authority"
+        },
+        "id": "foreign_host_authority",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_cl_te",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_duplicate_cl",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_identical_duplicate_cl",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_te_chunked_alone",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 400,
+        "gate_local_body": {
+          "error": "http_framing"
+        },
+        "id": "smuggling_obs_fold",
+        "observed_status": 400,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 422,
+        "gate_local_body": {
+          "error": "required_capability"
+        },
+        "id": "missing_raw_tls_capability",
+        "observed_status": 422,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 422,
+        "gate_local_body": {
+          "error": "required_capability"
+        },
+        "id": "missing_collector_capability",
+        "observed_status": 422,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 1,
+        "expected_status": 200,
+        "gate_local_body": null,
+        "id": "signed_session_effect_forwarded",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "id": "origin_observed_exact_request",
+        "origin_body_length": 6,
+        "origin_body_sha256": "dcb576426a17b7df13907007cb02a1f1dfc12fc6c69f603717abca59d03b888e",
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "origin_method": "POST",
+        "origin_target": "/effect",
+        "pass": true
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "request_integrity"
+        },
+        "id": "replay_of_forwarded_request",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "error": "request_integrity"
+        },
+        "id": "signed_body_mutation",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "expected_origin_delta": 0,
+        "expected_status": 403,
+        "gate_local_body": {
+          "verdict": "CHALLENGE"
+        },
+        "id": "uncollected_session_effect",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "pass": true,
+        "transport_error": null
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": {
+          "verdict": "CHALLENGE"
+        },
+        "id": "signed_forged_trust_headers",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "origin_header_names": null,
+        "pass": true,
+        "sent_headers": [
+          "X-Forwarded-For",
+          "Forwarded",
+          "X-Real-Ip",
+          "X-Hmny-Origin-Auth",
+          "X-Hmn-Verdict",
+          "Cf-Connecting-Ip"
+        ],
+        "strip_path_exercised": false
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_forwarded_for",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Forwarded-For"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_forwarded",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "Forwarded"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_real_ip",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Real-Ip"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_hmny_origin_auth",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Hmny-Origin-Auth"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_forged_x_hmn_verdict",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Hmn-Verdict"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": {
+          "verdict": "CHALLENGE"
+        },
+        "id": "signed_forged_cf_connecting_ip",
+        "observed_status": 403,
+        "origin_delta": 0,
+        "origin_header_names": null,
+        "pass": true,
+        "sent_headers": [
+          "Cf-Connecting-Ip"
+        ],
+        "strip_path_exercised": false
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_client_x_humanymous_header",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Humanymous-Verdict"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "gate_local_body": null,
+        "id": "signed_benign_header_control",
+        "observed_status": 200,
+        "origin_delta": 1,
+        "origin_header_names": [
+          "Host",
+          "Content-Length",
+          "Connection",
+          "Content-Type",
+          "sec-ch-ua",
+          "User-Agent",
+          "Accept",
+          "Sec-Fetch-Site",
+          "Accept-Encoding",
+          "X-Lab-Marker"
+        ],
+        "pass": true,
+        "sent_headers": [
+          "X-Lab-Marker"
+        ],
+        "strip_path_exercised": true
+      },
+      {
+        "forbidden_headers_at_origin": [],
+        "id": "global_no_forbidden_header_at_origin",
+        "malformed_origin_contacts": 0,
+        "origin_records_total": 8,
+        "pass": true
+      }
+    ],
+    "client_report": "client-asserted fixture report; no browser or collector executed",
+    "driver_error": null,
+    "failed": 0,
+    "observations": {
+      "origin_socket_reachable_from_attacker_namespace": true
+    },
+    "passed": 27,
+    "schema": "humanymous.product-e2e-driver/1"
+  },
+  "driver_exit_success": true,
+  "gate_readiness": {
+    "listen": "127.0.0.1:18443",
+    "profile": {
+      "administration": false,
+      "administration_writable": false,
+      "audit_external_witness": false,
+      "audit_startup_recovery": null,
+      "audit_witness_independence_qualified": false,
+      "audit_witness_required_durability": null,
+      "browser_collector": false,
+      "browser_cookie_credentials": false,
+      "browser_recovery": false,
+      "browser_session": false,
+      "client_asserted_report_ingestion": true,
+      "operational": {
+        "rate_per_second": 1000,
+        "session_capacity": 64,
+        "session_rate_per_second": 100,
+        "session_ttl_ms": 60000,
+        "timeout_ms": 5000
+      },
+      "operational_revision": null,
+      "original_h2": false,
+      "product_qualified": false,
+      "profile": "experimental-loopback-http1",
+      "raw_header_order": true,
+      "raw_tls": false,
+      "revision": "r1",
+      "rit": true,
+      "routes": [
+        {
+          "method": "POST",
+          "path": "/effect",
+          "ready": true,
+          "response_profile": "buffered",
+          "rit_profile": "native_full"
+        },
+        {
+          "method": "POST",
+          "path": "/tls",
+          "ready": false,
+          "response_profile": "buffered",
+          "rit_profile": "native_full"
+        },
+        {
+          "method": "POST",
+          "path": "/collector",
+          "ready": false,
+          "response_profile": "buffered",
+          "rit_profile": "native_full"
+        }
+      ]
+    }
+  },
+  "image": {
+    "id": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+    "size_bytes": 132436050,
+    "tag": "humanymous/product-e2e:local"
+  },
+  "increment": 3,
+  "label": "partial topology: gate + origin + attacker, a witness-required gate with an independent witness container, and a real browser running the Rust WASM collector against a witnessed gate; not product e2e completion",
+  "origin_loss_after_readiness": {
+    "driver": {
+      "cases": [
+        {
+          "id": "origin_absent_after_readiness",
+          "origin_unreachable": true,
+          "pass": true
+        },
+        {
+          "expectation": "Gate answers with a 5xx; no success is reported",
+          "gate_local_body": {
+            "error": "origin_connect"
+          },
+          "id": "origin_lost_signed_effect_fails_closed",
+          "observed_status": 503,
+          "pass": true,
+          "transport_error": null
+        }
+      ],
+      "client_report": "client-asserted fixture report; no browser or collector executed",
+      "driver_error": null,
+      "failed": 0,
+      "passed": 2,
+      "schema": "humanymous.product-e2e-origin-lost-driver/1"
+    },
+    "driver_exit_success": true,
+    "gate_health_after": "healthy",
+    "gate_state_after": "running",
+    "origin_state": "exited",
+    "origin_stopped": true,
+    "pass": true
+  },
+  "pass_product_clean_room": false,
+  "product_complete": false,
+  "roadmap_unit": 35,
+  "schema": "humanymous.product-e2e-receipt/1",
+  "source": {
+    "branch": "claude/product-e2e-3",
+    "commit": "a7354c8047235c08c4f98f95bc3e38b56b7f1dee",
+    "compose": "deployments/lab/compose.product-e2e.yaml",
+    "dirty_entries": 0,
+    "dockerfile": "build/rust/product-e2e.Dockerfile",
+    "resolved_compose_sha256": "78ccd264fd076ed94b3d2ba42f7e9dc769833d28763cefb1f3962b59e9d97c2b",
+    "tree_clean": true
+  },
+  "status": "partial_topology_measured",
+  "topology": {
+    "assertions": [
+      {
+        "id": "network_internal_no_egress",
+        "pass": true
+      },
+      {
+        "id": "no_published_ports",
+        "pass": true
+      },
+      {
+        "id": "origin_and_attacker_share_gate_namespace",
+        "pass": true
+      },
+      {
+        "id": "all_containers_run_built_image",
+        "pass": true
+      },
+      {
+        "id": "hardened_sandbox",
+        "pass": true
+      },
+      {
+        "id": "gate_and_origin_exec_form_health_probe",
+        "pass": true
+      },
+      {
+        "id": "gate_and_origin_healthy_before_driver",
+        "pass": true
+      },
+      {
+        "id": "origin_depends_on_gate_service_healthy",
+        "pass": true
+      },
+      {
+        "id": "attacker_depends_on_gate_and_origin_service_healthy",
+        "pass": true
+      }
+    ],
+    "containers": [
+      {
+        "cap_drop": [
+          "ALL"
+        ],
+        "depends_on": "",
+        "exit_code": 0,
+        "health": "healthy",
+        "healthcheck_test": [
+          "CMD",
+          "/usr/local/bin/humanymous-runtime-pilot",
+          "--product-health",
+          "gate"
+        ],
+        "id": "7fd6b2c351cf4dd4f2d58823b682b54b5255587899a95e6aad3783725609224c",
+        "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+        "init": true,
+        "mounts": [],
+        "name": "humanymous-lab-product-e2e-gate-1",
+        "network_mode": "humanymous-lab-product-e2e_product",
+        "port_bindings": {},
+        "published_ports": {},
+        "read_only_rootfs": true,
+        "state": "running",
+        "user": "65532:65532"
+      },
+      {
+        "cap_drop": [
+          "ALL"
+        ],
+        "depends_on": "gate:service_healthy:false",
+        "exit_code": 0,
+        "health": "healthy",
+        "healthcheck_test": [
+          "CMD",
+          "/usr/local/bin/humanymous-runtime-pilot",
+          "--product-health",
+          "origin"
+        ],
+        "id": "f9b2a350300d2230c55b3ee91be5ae516d2f51d9fb0df1bff31676b83990faf5",
+        "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+        "init": true,
+        "mounts": [],
+        "name": "humanymous-lab-product-e2e-origin-1",
+        "network_mode": "container:7fd6b2c351cf4dd4f2d58823b682b54b5255587899a95e6aad3783725609224c",
+        "port_bindings": {},
+        "published_ports": {},
+        "read_only_rootfs": true,
+        "state": "running",
+        "user": "65532:65532"
+      },
+      {
+        "cap_drop": [
+          "ALL"
+        ],
+        "depends_on": "gate:service_healthy:false,origin:service_healthy:false",
+        "exit_code": 0,
+        "health": null,
+        "healthcheck_test": null,
+        "id": "94d2f41f6029abf0da82475f52f6102e803d989e9116f3f79086aceab9e3f9c9",
+        "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+        "init": true,
+        "mounts": [],
+        "name": "humanymous-lab-product-e2e-attacker",
+        "network_mode": "container:7fd6b2c351cf4dd4f2d58823b682b54b5255587899a95e6aad3783725609224c",
+        "port_bindings": {},
+        "published_ports": {},
+        "read_only_rootfs": true,
+        "state": "exited",
+        "user": "65532:65532"
+      }
+    ],
+    "network": {
+      "driver": "bridge",
+      "internal": true,
+      "name": "humanymous-lab-product-e2e_product"
+    },
+    "project": "humanymous-lab-product-e2e"
+  },
+  "transcript": [
+    {
+      "argv": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "rev-parse",
+        "--abbrev-ref",
+        "HEAD"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "status",
+        "--porcelain",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "show"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "inspect",
+        "default",
+        "--format",
+        "{{json .Endpoints.docker.Host}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "info",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "config"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "build",
+        "--file",
+        "build/rust/product-e2e.Dockerfile",
+        "--tag",
+        "humanymous/product-e2e:local",
+        "--label",
+        "org.humanymous.source=a7354c8047235c08c4f98f95bc3e38b56b7f1dee",
+        "--secret",
+        "id=egress_ca,src=<venue-ca-bundle>",
+        "--network",
+        "host",
+        "--build-arg",
+        "https_proxy=<venue-proxy>",
+        "."
+      ],
+      "exit": 0,
+      "seconds": 1,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "build",
+        "--file",
+        "build/rust/product-e2e.Dockerfile",
+        "--tag",
+        "humanymous/product-e2e-browser:local",
+        "--label",
+        "org.humanymous.source=a7354c8047235c08c4f98f95bc3e38b56b7f1dee",
+        "--target",
+        "browser",
+        "--secret",
+        "id=egress_ca,src=<venue-ca-bundle>",
+        "--network",
+        "host",
+        "--build-arg",
+        "https_proxy=<venue-proxy>",
+        "."
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "inspect",
+        "--format",
+        "{{.Id}}",
+        "humanymous/product-e2e:local"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "inspect",
+        "--format",
+        "{{.Size}}",
+        "humanymous/product-e2e:local"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "inspect",
+        "--format",
+        "{{.Id}} {{.Size}}",
+        "humanymous/product-e2e-browser:local"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "up",
+        "--detach",
+        "--no-build",
+        "--pull",
+        "never",
+        "--wait",
+        "--wait-timeout",
+        "180",
+        "gate",
+        "origin"
+      ],
+      "exit": 0,
+      "seconds": 3,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "run",
+        "--no-TTY",
+        "--pull",
+        "never",
+        "--name",
+        "humanymous-lab-product-e2e-attacker",
+        "attacker"
+      ],
+      "exit": 0,
+      "seconds": 1,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "logs",
+        "humanymous-lab-product-e2e-gate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-gate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-origin-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-attacker"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "network",
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e_product"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "stop",
+        "--time",
+        "2",
+        "humanymous-lab-product-e2e-origin-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-origin-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "run",
+        "--no-deps",
+        "--no-TTY",
+        "--pull",
+        "never",
+        "--name",
+        "humanymous-lab-product-e2e-attacker-origin-lost",
+        "attacker",
+        "--product-driver-origin-lost"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-gate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "--profile",
+        "witnessed",
+        "create",
+        "--no-build",
+        "--pull",
+        "never",
+        "witness",
+        "wgate"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "start",
+        "--attach",
+        "--interactive",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "input_recorded": false,
+      "transport": "private-duplex"
+    },
+    {
+      "argv": [
+        "start",
+        "--attach",
+        "--interactive",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "input_recorded": false,
+      "transport": "private-duplex"
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "--profile",
+        "witnessed",
+        "up",
+        "--detach",
+        "--no-recreate",
+        "--no-build",
+        "--pull",
+        "never",
+        "--wait",
+        "--wait-timeout",
+        "180",
+        "worigin"
+      ],
+      "exit": 0,
+      "seconds": 2,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "--profile",
+        "witnessed",
+        "create",
+        "--no-recreate",
+        "--no-build",
+        "--pull",
+        "never",
+        "wdriver"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "start",
+        "--attach",
+        "--interactive",
+        "humanymous-lab-product-e2e-wdriver-1"
+      ],
+      "input_recorded": false,
+      "transport": "private-duplex"
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "stop",
+        "--time",
+        "2",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .State.Health.Status}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "logs",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-witness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-wgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-worigin-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-wdriver-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "network",
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e_witnessed"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "--profile",
+        "browser",
+        "create",
+        "--no-build",
+        "--pull",
+        "never",
+        "bwitness",
+        "bgate"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "start",
+        "--attach",
+        "--interactive",
+        "humanymous-lab-product-e2e-bwitness-1"
+      ],
+      "input_recorded": false,
+      "transport": "private-duplex"
+    },
+    {
+      "argv": [
+        "start",
+        "--attach",
+        "--interactive",
+        "humanymous-lab-product-e2e-bgate-1"
+      ],
+      "input_recorded": false,
+      "transport": "private-duplex"
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-bgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "--profile",
+        "browser",
+        "run",
+        "--no-deps",
+        "--no-TTY",
+        "--interactive=false",
+        "--pull",
+        "never",
+        "--name",
+        "humanymous-lab-product-e2e-browser",
+        "browser",
+        "--browser-driver",
+        "172.20.0.2:8080",
+        "127.0.0.1:41605",
+        "127.0.0.1:41485",
+        "10.255.255.254",
+        "product-e2e-browser.invalid"
+      ],
+      "exit": 0,
+      "seconds": 6,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "exec",
+        "humanymous-lab-product-e2e-bgate-1",
+        "/usr/local/bin/humanymous-runtime-pilot",
+        "--browser-stop",
+        "{\"merkle_root\":\"18ee619d8850c2f1b903d666903acb15e34ddb7ae7103039f826235db8514307\",\"node_id\":\"isolated-node\",\"prev_checkpoint_hash\":\"d5aea48e1ad796d2c4a30f92944da412e101c1ae1928ef248d2c9261a351c2997e3f475bd27176f1bd85542752dafcbd7d53ce05b17ddb5d317dc6acba814104\",\"root\":\"19e422306d95bbb628b5e1e66a17f9507eeabaabc9cc2c6d317fd3a26697a779\",\"sig\":\"1f61d09d67f583ca82e95a0088e607a1ef447f624047c34cd433e9c96fc2ff0b4dbc0ae798e0bd98c0b43f56b30568edb013157f92203e912c9b5d3622898e00\",\"tree_size\":3,\"witness_sig\":\"05ff9dd57ef32b7ee634e9335b6a6cde7c1ca7aa0ef940489af93df6ce2f792ffe674981a927e894687c3ad700aaadc0541ae4df74a6b0cdf88384510c9d2e05\"}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-bwitness-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-bgate-1"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e-browser"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "network",
+        "inspect",
+        "--format",
+        "{{json .}}",
+        "humanymous-lab-product-e2e_browser"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "compose",
+        "--file",
+        "deployments/lab/compose.product-e2e.yaml",
+        "--project-name",
+        "humanymous-lab-product-e2e",
+        "--profile",
+        "driver",
+        "--profile",
+        "witnessed",
+        "--profile",
+        "browser",
+        "down",
+        "--volumes",
+        "--remove-orphans",
+        "--timeout",
+        "5"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "rm",
+        "--force",
+        "humanymous-lab-product-e2e-attacker",
+        "humanymous-lab-product-e2e-attacker-origin-lost",
+        "humanymous-lab-product-e2e-browser"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "ps",
+        "--all",
+        "--quiet",
+        "--filter",
+        "label=com.docker.compose.project=humanymous-lab-product-e2e"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "rm",
+        "humanymous/product-e2e:local"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "image",
+        "rm",
+        "humanymous/product-e2e-browser:local"
+      ],
+      "exit": 0,
+      "seconds": 1,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "show"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "context",
+        "inspect",
+        "default",
+        "--format",
+        "{{json .Endpoints.docker.Host}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    },
+    {
+      "argv": [
+        "info",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "seconds": 0,
+      "stderr_tail": null
+    }
+  ],
+  "venue": {
+    "client_version": "29.9.2",
+    "endpoint": "unix:///var/run/docker.sock",
+    "engine_id": "c7f5a196-202c-4d3d-b816-145fcff2acd0",
+    "engine_id_stable": true,
+    "github_hosted": false,
+    "info_server_version": "29.9.2",
+    "kind": "cloud-container",
+    "os_type": "linux",
+    "selected_context": "default",
+    "selected_context_endpoint": "unix:///var/run/docker.sock",
+    "server_api_version": "1.56",
+    "server_version": "29.9.2",
+    "windows_desktop_affinity_claimed": false
+  },
+  "witnessed": {
+    "broker": {
+      "frame_contents_recorded": false,
+      "gate_to_witness_operations": {
+        "counter_sign": 4
+      },
+      "injected_unavailable_after_loss": 1,
+      "signatures_fabricated": 0,
+      "witness_to_gate_statuses": {
+        "ready": 1,
+        "signed": 3
+      }
+    },
+    "driver": {
+      "cases": [
+        {
+          "expected_origin_delta": 0,
+          "expected_status": 401,
+          "gate_local_body": {
+            "error": "session"
+          },
+          "id": "witnessed_no_session_protected_route",
+          "observed_status": 401,
+          "origin_delta": 0,
+          "pass": true,
+          "transport_error": null
+        },
+        {
+          "expected_origin_delta": 1,
+          "expected_status": 200,
+          "gate_local_body": null,
+          "id": "witnessed_signed_effect_forwarded",
+          "observed_status": 200,
+          "origin_delta": 1,
+          "pass": true,
+          "transport_error": null
+        },
+        {
+          "expectation": "no 2xx status and no origin effect",
+          "gate_local_body": {
+            "error": "durable_audit"
+          },
+          "id": "witness_lost_presigned_effect_fails_closed",
+          "observed_status": 503,
+          "origin_delta": 0,
+          "pass": true,
+          "transport_error": null
+        },
+        {
+          "id": "witness_lost_session_issue_observed",
+          "observation_only": true,
+          "observed_status": 503,
+          "pass": true,
+          "transport_error": null
+        },
+        {
+          "expectation": "no 2xx status and no origin effect",
+          "gate_local_body": {
+            "error": "session_epoch"
+          },
+          "id": "witness_lost_unsigned_request_fails_closed",
+          "observed_status": 503,
+          "origin_delta": 0,
+          "pass": true,
+          "transport_error": null
+        }
+      ],
+      "client_report": "client-asserted fixture report; no browser or collector executed",
+      "driver_error": null,
+      "failed": 0,
+      "passed": 5,
+      "schema": "humanymous.product-e2e-witnessed-driver/1"
+    },
+    "driver_exit_success": true,
+    "driver_reached_loss_phase": true,
+    "handshake": {
+      "witness_identity_announced": true,
+      "witness_public_distinct_from_writer": true,
+      "writer_identity_announced": true
+    },
+    "health_before_driver": {
+      "wgate": "healthy",
+      "witness": "healthy"
+    },
+    "pass": true,
+    "topology": {
+      "assertions": [
+        {
+          "id": "witnessed_network_internal_no_egress",
+          "pass": true
+        },
+        {
+          "id": "witnessed_no_published_ports",
+          "pass": true
+        },
+        {
+          "id": "witness_has_no_network_and_own_uid",
+          "pass": true
+        },
+        {
+          "id": "witness_shares_no_volume_with_gate",
+          "pass": true
+        },
+        {
+          "id": "worigin_and_wdriver_share_wgate_namespace",
+          "pass": true
+        },
+        {
+          "id": "all_witnessed_containers_run_built_image",
+          "pass": true
+        },
+        {
+          "id": "wgate_readiness_reports_external_witness",
+          "pass": true
+        }
+      ],
+      "containers": [
+        {
+          "cap_drop": [
+            "ALL"
+          ],
+          "depends_on": "",
+          "exit_code": 143,
+          "health": "unhealthy",
+          "healthcheck_test": [
+            "CMD",
+            "/usr/local/bin/humanymous-runtime-pilot",
+            "--product-health",
+            "witness"
+          ],
+          "id": "12f40808a7a86843669e91fb5807d301594c86883b48db68bdec42ec351474ff",
+          "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+          "init": true,
+          "mounts": [],
+          "name": "humanymous-lab-product-e2e-witness-1",
+          "network_mode": "none",
+          "port_bindings": {},
+          "published_ports": {},
+          "read_only_rootfs": true,
+          "state": "exited",
+          "user": "65533:65533"
+        },
+        {
+          "cap_drop": [
+            "ALL"
+          ],
+          "depends_on": "",
+          "exit_code": 0,
+          "health": "unhealthy",
+          "healthcheck_test": [
+            "CMD",
+            "/usr/local/bin/humanymous-runtime-pilot",
+            "--product-health",
+            "gate-witnessed"
+          ],
+          "id": "b61c2d71ea0ba17c1fe163cdb95cadeed6e441a80ac16921c7d6201da9acadb9",
+          "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+          "init": true,
+          "mounts": [],
+          "name": "humanymous-lab-product-e2e-wgate-1",
+          "network_mode": "humanymous-lab-product-e2e_witnessed",
+          "port_bindings": {},
+          "published_ports": {},
+          "read_only_rootfs": true,
+          "state": "running",
+          "user": "65532:65532"
+        },
+        {
+          "cap_drop": [
+            "ALL"
+          ],
+          "depends_on": "wgate:service_healthy:false",
+          "exit_code": 0,
+          "health": "healthy",
+          "healthcheck_test": [
+            "CMD",
+            "/usr/local/bin/humanymous-runtime-pilot",
+            "--product-health",
+            "origin"
+          ],
+          "id": "063f2f09f8a374891da5c32f1e859ecab9f1a7347d0f19715e0c305e97be97e2",
+          "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+          "init": true,
+          "mounts": [],
+          "name": "humanymous-lab-product-e2e-worigin-1",
+          "network_mode": "container:b61c2d71ea0ba17c1fe163cdb95cadeed6e441a80ac16921c7d6201da9acadb9",
+          "port_bindings": {},
+          "published_ports": {},
+          "read_only_rootfs": true,
+          "state": "running",
+          "user": "65532:65532"
+        },
+        {
+          "cap_drop": [
+            "ALL"
+          ],
+          "depends_on": "worigin:service_healthy:false,wgate:service_healthy:false",
+          "exit_code": 0,
+          "health": null,
+          "healthcheck_test": null,
+          "id": "6f1bebf44ea70f866224141577a453649bf006b118416dcba34fbf40539c9dfa",
+          "image": "sha256:75ad5d0aa717c9e6d3df81b90d708fbc0941a46a5d347466f3a2b213ec4893bc",
+          "init": true,
+          "mounts": [],
+          "name": "humanymous-lab-product-e2e-wdriver-1",
+          "network_mode": "container:b61c2d71ea0ba17c1fe163cdb95cadeed6e441a80ac16921c7d6201da9acadb9",
+          "port_bindings": {},
+          "published_ports": {},
+          "read_only_rootfs": true,
+          "state": "exited",
+          "user": "65532:65532"
+        }
+      ],
+      "network": {
+        "internal": true,
+        "name": "humanymous-lab-product-e2e_witnessed"
+      }
+    },
+    "wgate_after_loss": {
+      "health": "unhealthy",
+      "note": "the latch fails on the first failed audit append after the loss, not at the moment the witness stops",
+      "probe": "gate-witnessed: TCP connect and the serving marker mirrored from ServiceHost::epoch_health",
+      "state": "running"
+    },
+    "wgate_readiness": {
+      "listen": "127.0.0.1:18443",
+      "profile": {
+        "administration": false,
+        "administration_writable": false,
+        "audit_external_witness": true,
+        "audit_startup_recovery": null,
+        "audit_witness_independence_qualified": false,
+        "audit_witness_required_durability": "file_and_directory",
+        "browser_collector": false,
+        "browser_cookie_credentials": false,
+        "browser_recovery": false,
+        "browser_session": false,
+        "client_asserted_report_ingestion": true,
+        "operational": {
+          "rate_per_second": 1000,
+          "session_capacity": 64,
+          "session_rate_per_second": 100,
+          "session_ttl_ms": 60000,
+          "timeout_ms": 5000
+        },
+        "operational_revision": null,
+        "original_h2": false,
+        "product_qualified": false,
+        "profile": "experimental-loopback-http1",
+        "raw_header_order": true,
+        "raw_tls": false,
+        "revision": "r1",
+        "rit": true,
+        "routes": [
+          {
+            "method": "POST",
+            "path": "/effect",
+            "ready": true,
+            "response_profile": "buffered",
+            "rit_profile": "native_full"
+          },
+          {
+            "method": "POST",
+            "path": "/tls",
+            "ready": false,
+            "response_profile": "buffered",
+            "rit_profile": "native_full"
+          },
+          {
+            "method": "POST",
+            "path": "/collector",
+            "ready": false,
+            "response_profile": "buffered",
+            "rit_profile": "native_full"
+          }
+        ]
+      }
+    },
+    "wgate_readiness_withdrawn_after_failed_append": true,
+    "witness_after_loss": {
+      "broker_observed_witness_stream_closed": true,
+      "exit_code": 143,
+      "state": "exited",
+      "wgate_health_before_next_append": "healthy"
+    },
+    "witness_before_loss": {
+      "health": "healthy",
+      "state": "running"
+    },
+    "witness_counter_signatures_relayed": 3,
+    "worigin_up_waited_healthy": true
+  }
+}

@@ -3,7 +3,7 @@ id: plan:root/20261116060213
 title: Roadmap completion goal and unattended execution contract
 status: active
 created: 2026-11-16T06:02:13Z
-updated: 2026-11-16T07:14:14Z
+updated: 2026-11-16T10:55:00Z
 rel:
   depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix]
 ---
@@ -79,7 +79,7 @@ unattended.
 | 21 | G9 provider deployment | FM9 | P | publication unauthorized |
 | 22 | Adapter home pilots (Apache, Python, Ruby, .NET, native) | FM6 | D | follows 9 |
 | 23 | Cross-OS full runners (Windows, macOS, Linux six-tuple) | FM10, IM2 | H | hosted runners |
-| 24 | Legacy Go: 314 rows reviewed (104 ported_unit, 90 partial, 118 missing, 2 n/a); each product row needs a Rust port with actual evidence. No per-row retirement (owner decision 2026-11-16) | FM11 | A | review done 2026-11-16, [[evidence:root/20261116071500]] |
+| 24 | Legacy Go: 314 rows reviewed (104 ported_unit, 90 partial, 118 missing, 2 n/a); each product row needs a Rust port with actual evidence. No per-row retirement (owner decision 2026-11-16) | FM11 | A done; residual R/H/P | review done 2026-11-16, [[evidence:root/20261116071500]]; class A sweep 2026-11-16 ported every authorized gap (163 ported_unit, 97 partial, 52 missing); each remaining row is classified with a cited blocker in `.agents/retirement/fm11-class-a-sweep.md` |
 | 25 | Go Gate/Core image builders migrate to Rust images | FM11 | R+P | release lane; parity evidence comes from 12–13 |
 | 26 | CVE, SBOM and image scan | FM11 | A after 25 | runs once images are final |
 | 27 | Pages and Draft v0 current-source review | IM4 | R+P | manual review and deploy approval |
@@ -90,8 +90,8 @@ unattended.
 | 32 | Make the lab-runner Unlock-A test hermetic (it now needs an untracked private closer) | IM2 | R | product-lab with Root: fixture or explicit ignore with a reason |
 | 33 | `git_coord` test needs `pwsh`; Rust replacement of the coordination scripts | FM11 | R | agents-meta owner; scripts stay until replaced and qualified |
 | 34 | Workspace Clippy `-D warnings` clean | FM0 | A | done 2026-11-16 |
-| 35 | Real Rust Docker product e2e harness (Gate + origin + authority + audit + browser + attacker), replacing the scaffold product labs | IM3, FM8 | A (large) | none; the current product labs `cat` fixed receipts ([[evidence:root/20261116062411]]) |
-| 36 | Retire scaffold `*-cap-pilot.sh` shell pilots | FM11 | A after 35 | replaced by 35 |
+| 35 | Real Rust Docker product e2e harness (Gate + origin + authority + audit + browser + attacker), replacing the scaffold product labs | IM3, FM8 | A done (increments 1–5); residual R+H | partial topology measured in Docker (Gate, origin, attacker, witness, health, real browser and WASM collector, DNS canary); residual needs Authority as a service (Gate decides in-process), the clean-room loopback policy, a Unix witness input for the CLI host (R1/R3), a Linux secret provider (needs-human) and a readiness SoT delta ([[evidence:root/20261116114735]]) |
+| 36 | Retire scaffold `*-cap-pilot.sh` shell pilots | FM11 | R (Cap) | the pilots are wired into the Cap0 chain, transfer applicator and snapshots; five stand in for components 35 cannot run yet |
 | 37 | Go↔Rust differential parity harness: golden vectors recorded from the frozen Go baseline, compared against Rust outputs in CI | FM1, FM11 | A (harness); R (approving an intended difference) | definition-of-done item 5 in [[sot:root/milestones]] |
 | 38 | Merge `codex/rust` into `main` and delete the Go tree in the same change | IM5, FM12 | P | owner approval once items 1–5 hold |
 
@@ -123,6 +123,40 @@ unattended.
   gives results symmetric to Go, and Go is retired at that merge. They chose a
   differential parity gate as the measure (units 37–38). Unit 24 no longer
   includes per-row retirement.
+- 2026-11-16: unit 35 increments 1 and 2 ran the real Rust Gate in Docker
+  with a recording origin, an attacker, an independent audit witness, health
+  checks and dependency loss after readiness; every assertion passed
+  ([[evidence:root/20261116095026]], [[evidence:root/20261116103304]]). The
+  topology is partial and not clean-room. Authority cannot run as a separate
+  container (the Gate decides in-process), the clean-room L5 split needs an
+  owner decision on the loopback-only listen and origin checks, and the
+  browser and WASM collector are not wired. Unit 36 stays open: the scaffold
+  pilots are wired into the Cap0 chain, transfer applicator and snapshot code,
+  and five of them stand in for components unit 35 does not cover yet.
+- 2026-11-16: unit 35 increment 3 drove a real Firefox through the Rust
+  `wasm-bindgen-test-runner` and ran the real Rust WASM collector against a
+  witnessed runtime Gate in Docker. Session, collect, CHALLENGE and 422 paths
+  answered as the fixtures expected, Origin and Referer held, and the audit
+  stayed fully witnessed ([[evidence:root/20261116110546]]). Readiness now
+  turns unhealthy after witness loss, but only after the first failed append.
+  Still open: Authority, the shipped binary's witness and live readiness,
+  original client TLS, a DNS canary, and the clean-room split.
+- 2026-11-16: unit 35 increment 4 added an owned DNS canary (zero browser
+  arrivals, positive controls answered) and replaced the client-asserted
+  collect fixtures with the real collector's captured report
+  ([[evidence:root/20261116113042]]). Outcomes matched increment 3. The engine
+  answered COLLECTED for a report carrying a webdriver BOT signal; that is an
+  owner observation under the detection freeze, not a harness change.
+- 2026-11-16: unit 35 increment 5 tried to run the shipped CLI runtime host
+  as the witnessed Gate and stopped before Docker
+  ([[evidence:root/20261116114735]]). The Unix host has no witness input and
+  non-Windows secret providers return Unsupported, so it needs a Linux
+  secret provider (needs-human) and R1/R3 review; live diagnostic readiness
+  needs a SoT delta. It fixed the Unix `runtime-service` build (E0107).
+- 2026-11-16: units 24, 35 and 36 reclassified in the table. The class A parts
+  are done (unit 35 increments 1–5; the FM11 class A sweep on PR #21, with
+  all 90 mapped Go gate wargame tests passing at 981d25c). Every residual has
+  a cited R, H or Cap blocker, consolidated in the needs-owner issue.
 - 2026-11-16: unit 37 harness landed. `scripts/ci/parity-surfaces.json` binds
   27 Go vectors to the baseline, the Rust parity tests and the FM11 packages,
   and `delivery policy` enforces it ([[evidence:root/20261116090000]]). 25

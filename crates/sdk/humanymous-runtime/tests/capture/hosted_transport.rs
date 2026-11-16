@@ -126,7 +126,17 @@ fn h1_idle_refusal(tail: H1Tail) {
         // This is a component barrier, not a durable-audit or origin witness.
         consumed.send(()).unwrap();
         observe_change.recv_timeout(BUDGET).unwrap();
-        let error = conn.check_h1_idle().unwrap_err();
+        // Loopback delivery of the tail is asynchronous: until it arrives the
+        // connection really is idle, so poll within the budget. The probe
+        // must still refuse with the exact reason below.
+        let deadline = Instant::now() + BUDGET;
+        let error = loop {
+            match conn.check_h1_idle() {
+                Err(error) => break error,
+                Ok(()) if Instant::now() < deadline => thread::sleep(Duration::from_millis(5)),
+                Ok(()) => panic!("the tail never reached the idle probe"),
+            }
+        };
         match tail {
             H1Tail::Fin => assert_eq!(error.kind(), io::ErrorKind::UnexpectedEof),
             H1Tail::BufferedPlaintext => {

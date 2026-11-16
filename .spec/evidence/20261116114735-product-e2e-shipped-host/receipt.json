@@ -1,0 +1,86 @@
+{
+  "schema": "humanymous.evidence.shipped-runtime-host-observation.v1",
+  "status": "blocked_before_docker",
+  "source_commit": "d649b9a5dfafa7ada26082a80ecb336cab5c838d",
+  "source_tree_clean": true,
+  "venue": {
+    "kind": "cloud-session-native-process",
+    "os": "Linux",
+    "arch": "x86_64",
+    "uid": 0,
+    "docker_used": false
+  },
+  "artifact": {
+    "build": "cargo build --locked -p humanymous-cli --features runtime-service --bin humanymous",
+    "toolchain": "rustc 1.99.1",
+    "profile": "dev",
+    "binary": "humanymous",
+    "sha256": "52f9664b8ebe676f73eaac5351dd9e63e68010012a84e8de9c6324f9077bff98",
+    "build_at_parent_63a83ff": {
+      "compiled": false,
+      "error": "E0107",
+      "location": "crates/cli/src/runtime_host/platform.rs:55",
+      "note": "output::<HostReadiness> turbofish on an impl-Trait parameter"
+    }
+  },
+  "invocation": "humanymous runtime-host --plan <private-plan> --plan-sha256 <digest>",
+  "host_plan": {
+    "schema": "humanymous.runtime-host.v1",
+    "mode": "foreground",
+    "observer": null,
+    "files_mode": "0600",
+    "directories_mode": "0700"
+  },
+  "cases": [
+    {
+      "name": "witness_required",
+      "audit_require_external_witness": true,
+      "audit_allow_new": true,
+      "plan_sha256": "f792e9f11bafd36e69d8385ba780d370ea555f090e8ee41ffeecc435a0200da2",
+      "configuration_sha256": "61c750b0a98a32847de7bfde62074fe9333815833f715b874434d23c66c0af0d",
+      "exit_code": 1,
+      "stdout": {
+        "schema": "humanymous.runtime-host.failure.v1",
+        "generation": "generation-1",
+        "executable_sha256": "52f9664b8ebe676f73eaac5351dd9e63e68010012a84e8de9c6324f9077bff98",
+        "stage": null,
+        "drained": null,
+        "audit_flushed": null,
+        "stopped": false,
+        "product_qualified": false
+      },
+      "stderr": "refused: required independent witness provider unavailable",
+      "audit_or_key_directory_created": false,
+      "readiness_published": false
+    },
+    {
+      "name": "witness_not_required",
+      "audit_require_external_witness": false,
+      "audit_allow_new": true,
+      "plan_sha256": "e5f1fb71f934302c98863e02eb199c242bc2d0183e83e8bc9be9b2d3bc2b9f5f",
+      "configuration_sha256": "947921111088d7decf5a298c8de599349105c48d19d53a7d65837ae3457edcce",
+      "exit_code": 1,
+      "stdout": {
+        "schema": "humanymous.runtime-host.failure.v1",
+        "generation": "generation-1",
+        "executable_sha256": "52f9664b8ebe676f73eaac5351dd9e63e68010012a84e8de9c6324f9077bff98",
+        "stage": null,
+        "drained": null,
+        "audit_flushed": null,
+        "stopped": false,
+        "product_qualified": false
+      },
+      "stderr": "refused: protected service credential unavailable",
+      "audit_or_key_directory_created": false,
+      "readiness_published": false
+    }
+  ],
+  "docker": {
+    "daemon_started": false,
+    "images_built": 0,
+    "containers_run": 0
+  },
+  "pass_product_clean_room": false,
+  "product_complete": false,
+  "clean_room": false
+}

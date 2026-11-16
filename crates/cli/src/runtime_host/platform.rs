@@ -52,7 +52,7 @@ fn foreground(plan: HostPlan) -> io::Result<()> {
             None,
             &supervisor,
             shutdown,
-            output::<HostReadiness>,
+            |readiness: &HostReadiness| output(readiness),
         )
         .await;
         signal.abort();
