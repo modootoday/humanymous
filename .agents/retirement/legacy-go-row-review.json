@@ -14,9 +14,9 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 73,
+  "missing": 71,
   "partial": 96,
-  "ported_unit": 143,
+  "ported_unit": 145,
   "not_applicable": 2
  },
  "by_package": {
@@ -79,9 +79,9 @@
   },
   "internal/gate": {
    "partial": 41,
-   "missing": 26,
+   "missing": 24,
    "not_applicable": 1,
-   "ported_unit": 17
+   "ported_unit": 19
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -1765,31 +1765,61 @@
   },
   {
    "baseline_path": "internal/gate/admin_vusb_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::disabled_by_default",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::reads_only_bounded_terminal_summary",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::rejects_unknown_fields_and_schema_violations"
+   ],
    "go_test_map": {
-    "TestAdminVirtualUSBDisabledByDefault": null,
-    "TestAdminVirtualUSBReadsOnlyBoundedTerminalSummary": null,
-    "TestAdminVirtualUSBRejectsUnboundedOrUnknownResultSchema": null
+    "TestAdminVirtualUSBDisabledByDefault": "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::disabled_by_default",
+    "TestAdminVirtualUSBReadsOnlyBoundedTerminalSummary": "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::reads_only_bounded_terminal_summary",
+    "TestAdminVirtualUSBRejectsUnboundedOrUnknownResultSchema": "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::rejects_unknown_fields_and_schema_violations"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust virtual-USB result reader or admin view found.",
-   "test_verification": {}
+   "notes": "All three legacy cases map to Rust tests.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::disabled_by_default": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::reads_only_bounded_terminal_summary": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::rejects_unknown_fields_and_schema_violations": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/admin_vusb.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::disabled_by_default",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::reads_only_bounded_terminal_summary",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::rejects_unknown_fields_and_schema_violations",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::trailing_json_and_oversize_files_fail_closed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::non_canonical_partial_results_are_accepted",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::missing_root_and_empty_runs",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::symlinked_results_and_roots_are_refused"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "The admin HTTP route serving the view is not wired (admin API, B19)"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust virtual-USB result reader or admin view found.",
-   "test_verification": {}
+   "notes": "Bounded, symlink-refusing, schema-only reader and admin view for virtual-USB lab ladder results. Deliberate difference: run directories are visited in name order so the candidate bound is deterministic.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::disabled_by_default": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::reads_only_bounded_terminal_summary": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::rejects_unknown_fields_and_schema_violations": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::trailing_json_and_oversize_files_fail_closed": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::non_canonical_partial_results_are_accepted": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::missing_root_and_empty_runs": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/virtual_usb/tests.rs::symlinked_results_and_roots_are_refused": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/admin.go",
