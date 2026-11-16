@@ -1,6 +1,7 @@
 {
  "schema": "humanymous.legacy-go-row-review/1",
  "status": "reviewed dispositions; unit-level only; no runtime proof, no deletion authorized",
+ "retirement_policy": "owner decision 2026-11-16: no per-row retirement; Go is retired when codex/rust merges into main after Go-Rust differential parity (sot:root/milestones). retire_candidate is not used.",
  "baseline_routing": ".agents/retirement/legacy-go-owner-routing.json",
  "reviewed_source_commit": "6a578eedd13537bed5df090f22a12f5119cbf059",
  "reviewed_utc": "2026-11-16",

@@ -3,7 +3,7 @@ id: sot:root/milestones
 title: Canonical milestone register
 status: active
 created: 2026-11-16T05:56:01Z
-updated: 2026-11-16T06:52:38Z
+updated: 2026-11-16T07:14:14Z
 verify: ["spec check --no-local"]
 rel:
   depends_on: [sot:root/program-roadmap, sot:root/clean-room-usage-matrix, sot:root/rust-migration]
@@ -34,6 +34,22 @@ candidate source:
    clean-room-required cell of [[sot:root/clean-room-usage-matrix]].
 3. `red-blue-validate` passes in Docker only.
 4. IM5 main integration and IM6 main-only state are verified.
+5. Go↔Rust differential parity holds: for the same inputs, the Rust product
+   gives the same results as the frozen Go baseline (`981d25c`) on every
+   compared surface (verdicts, scores, wire formats, audit records). Expected
+   outputs are recorded from the Go baseline as golden vectors. A difference
+   passes only as a recorded, owner-approved intended change; it never passes by
+   dropping the comparison. Detection freeze applies.
+
+### Go retirement and main merge (owner decision 2026-11-16)
+
+- `codex/rust` reaches `main` by **merge**, when Rust is complete and gives
+  results symmetric to Go (item 5 together with items 1–4).
+- Go is retired **at that merge**, not earlier. Until then the Go tree stays as
+  the oracle. No legacy Go row is retired one by one: the FM11 row ledger
+  (`.agents/retirement/legacy-go-row-review.json`) closes only with Rust
+  behavior and evidence for every row that has a product responsibility.
+- The merge and the Go deletion stay owner-approved (human-gated).
 
 Package publication, release tags and OIDC token exchange are not part of done.
 They stay unauthorized unless the user authorizes them separately.
@@ -84,7 +100,7 @@ past Component-only for runtime, product or native scope.
 | FM8 | Product Docker wargame | Component-only | Live Gate, browser and Pass, egress, origin and audit, attack/ordinary/human/AT denominators |
 | FM9 | Automation, mobile, provider and standards | Research | Owned execution, wire format and vectors, interoperability, security/privacy/a11y review |
 | FM10 | Cross-OS, OIDC and Pages | Partial | Three full runners, final-source six-tuple, registry and package trust, docs freshness, Pages artifact |
-| FM11 | Rust-only, supply chain, agents and skills | Partial | Each of the 314 legacy Go responsibility rows has exact Rust behavior with actual evidence, or a reviewed retirement disposition. Go image builders migrate. CVE, SBOM and image scan. Agents and skills evaluation. Row review 2026-11-16 (`.agents/retirement/legacy-go-row-review.json`, [[evidence:root/20261116071500]]): 104 ported_unit, 90 partial, 118 missing, 2 not_applicable, 0 retire |
+| FM11 | Rust-only, supply chain, agents and skills | Partial | Each of the 314 legacy Go responsibility rows has exact Rust behavior with actual evidence (no per-row retirement; Go is retired at the main merge). Go image builders migrate. CVE, SBOM and image scan. Agents and skills evaluation. Row review 2026-11-16 (`.agents/retirement/legacy-go-row-review.json`, [[evidence:root/20261116071500]]): 104 ported_unit, 90 partial, 118 missing, 2 not_applicable, 0 retire |
 | FM12 | Retain only final main | Deferred | Follows IM5 and IM6 |
 
 ### Browser and native tool track

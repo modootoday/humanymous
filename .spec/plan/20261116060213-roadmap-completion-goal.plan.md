@@ -3,7 +3,7 @@ id: plan:root/20261116060213
 title: Roadmap completion goal and unattended execution contract
 status: active
 created: 2026-11-16T06:02:13Z
-updated: 2026-11-16T06:52:38Z
+updated: 2026-11-16T07:14:14Z
 rel:
   depends_on: [sot:root/milestones, sot:root/program-roadmap, plan:root/20261110061400, sot:root/clean-room-usage-matrix]
 ---
@@ -13,7 +13,7 @@ rel:
 ## Goal
 
 **goal:** reach `goal_complete=true` as defined in [[sot:root/milestones]]
-(FM1–FM11 exit gates, Docker clean-room `pass_product_clean_room` for every
+(FM1–FM11 exit gates, Go↔Rust differential parity, Docker clean-room `pass_product_clean_room` for every
 clean-room-required cell, Docker `red-blue-validate`, IM5 and IM6).
 
 The user set this goal on 2026-11-16 and asked for unattended execution. An
@@ -79,7 +79,7 @@ unattended.
 | 21 | G9 provider deployment | FM9 | P | publication unauthorized |
 | 22 | Adapter home pilots (Apache, Python, Ruby, .NET, native) | FM6 | D | follows 9 |
 | 23 | Cross-OS full runners (Windows, macOS, Linux six-tuple) | FM10, IM2 | H | hosted runners |
-| 24 | Legacy Go: 314 rows reviewed (104 ported_unit, 90 partial, 118 missing, 2 n/a); each still needs actual evidence, a Rust port, or a Root retirement decision | FM11 | A (port) + R (retire) | review done 2026-11-16, [[evidence:root/20261116071500]] |
+| 24 | Legacy Go: 314 rows reviewed (104 ported_unit, 90 partial, 118 missing, 2 n/a); each product row needs a Rust port with actual evidence. No per-row retirement (owner decision 2026-11-16) | FM11 | A | review done 2026-11-16, [[evidence:root/20261116071500]] |
 | 25 | Go Gate/Core image builders migrate to Rust images | FM11 | R+P | release lane; parity evidence comes from 12–13 |
 | 26 | CVE, SBOM and image scan | FM11 | A after 25 | runs once images are final |
 | 27 | Pages and Draft v0 current-source review | IM4 | R+P | manual review and deploy approval |
@@ -92,6 +92,8 @@ unattended.
 | 34 | Workspace Clippy `-D warnings` clean | FM0 | A | done 2026-11-16 |
 | 35 | Real Rust Docker product e2e harness (Gate + origin + authority + audit + browser + attacker), replacing the scaffold product labs | IM3, FM8 | A (large) | none; the current product labs `cat` fixed receipts ([[evidence:root/20261116062411]]) |
 | 36 | Retire scaffold `*-cap-pilot.sh` shell pilots | FM11 | A after 35 | replaced by 35 |
+| 37 | Go↔Rust differential parity harness: golden vectors recorded from the frozen Go baseline, compared against Rust outputs in CI | FM1, FM11 | A (harness); R (approving an intended difference) | definition-of-done item 5 in [[sot:root/milestones]] |
+| 38 | Merge `codex/rust` into `main` and delete the Go tree in the same change | IM5, FM12 | P | owner approval once items 1–5 hold |
 
 ## Record
 
@@ -117,3 +119,7 @@ unattended.
 - 2026-11-16: 158 force-added `.spec.local` files were untracked after a
   consumer measurement showed no test or gate change, and CI `delivery policy`
   now refuses tracked private evidence ([[evidence:root/20261116081000]]).
+- 2026-11-16: the owner decided that `codex/rust` merges into `main` when Rust
+  gives results symmetric to Go, and Go is retired at that merge. They chose a
+  differential parity gate as the measure (units 37–38). Unit 24 no longer
+  includes per-row retirement.
