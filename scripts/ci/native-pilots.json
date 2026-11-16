@@ -70,6 +70,25 @@
       "helpers": []
     },
     {
+      "id": "platform-controlled-capture",
+      "package": "humanymous-platform",
+      "target": "humanymous_platform",
+      "kind": "lib",
+      "os": ["linux"],
+      "executor": "native-pilots",
+      "cargo": ["--lib", "--features", "testing"],
+      "privilege": "user",
+      "outer_grant": true,
+      "tests": [
+        "testing::process::capture_attempt::actual_tests::retained_normal_stdout_stderr_and_actual_joins",
+        "testing::process::capture_attempt::actual_tests::retained_synthetic_pending_stdin_expires_original_run",
+        "testing::process::capture_attempt::actual_tests::retained_stdout_cap_is_sticky",
+        "testing::process::capture_attempt::actual_tests::retained_stderr_cap_is_sticky",
+        "testing::process::capture_attempt::actual_tests::retained_stop_request_preserves_observed_exit_zero"
+      ],
+      "helpers": []
+    },
+    {
       "id": "node-host-process",
       "package": "humanymous-node-adapter",
       "target": "host_process",

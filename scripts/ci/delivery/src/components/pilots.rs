@@ -68,9 +68,14 @@ pub fn validate(value: &Value) -> Result<()> {
                             .map(String::as_str)
                             .collect::<Vec<_>>()
                             .as_slice(),
-                        ["--lib"] | ["--test", _] | ["--bin", _]
+                        ["--lib"] | ["--lib", "--features", _] | ["--test", _] | ["--bin", _]
                     ) && matches!(pilot["privilege"].as_str(), Some("user" | "root")),
                     "pilot cargo selection or privilege invalid",
+                )?;
+                require(
+                    pilot.get("outer_grant").is_none()
+                        || (pilot["outer_grant"] == true && pilot["privilege"] == "user"),
+                    "outer-grant pilots run unprivileged with an explicit true flag",
                 )?;
             }
             Some("job") => require(
@@ -206,11 +211,107 @@ fn private_dir(base: &Path, label: &str, mode: u32) -> Result<PathBuf> {
     Ok(dir)
 }
 
+/// Cooperative controlled-capture grant, in the closed shape the platform
+/// barrier accepts: the exact selector, a fresh 128-bit nonce and the PID of
+/// the directly spawned test process. It grants no production capability.
+pub fn grant_bytes(nonce: &str, selector: &str, pid: u32) -> Result<Vec<u8>> {
+    require(
+        nonce.len() == 32
+            && nonce
+                .bytes()
+                .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+            && nonce.bytes().any(|b| b != b'0')
+            && pid != 0,
+        "controlled grant identity invalid",
+    )?;
+    serde_json::to_vec(&json!({"schema":"humanymous.controlled-capture-grant/1","nonce":nonce,"selector":selector,"pid":pid}))
+        .map_err(|e| e.to_string())
+}
+
+fn nonce() -> Result<String> {
+    use std::io::Read;
+    let mut bytes = [0u8; 16];
+    fs::File::open("/dev/urandom")
+        .and_then(|mut file| file.read_exact(&mut bytes))
+        .map_err(|e| e.to_string())?;
+    Ok(bytes.iter().map(|b| format!("{b:02x}")).collect())
+}
+
+/// Outer supervisor for controlled-capture parents: spawns the test process
+/// directly in its own process group (so the grant names the real test PID),
+/// publishes the grant atomically and kills the whole group at the deadline.
+#[cfg(unix)]
+fn supervise(
+    program: &Path,
+    name: &str,
+    root: &Path,
+    private: &Path,
+    log: &Path,
+) -> Result<(Option<i32>, bool)> {
+    use std::os::unix::process::CommandExt;
+    let grant = private.join("grant.json");
+    let nonce = nonce()?;
+    let stdout = fs::File::create(log).map_err(|e| e.to_string())?;
+    let stderr = fs::File::create(log.with_extension("stderr.log")).map_err(|e| e.to_string())?;
+    let mut child = Command::new(program)
+        .args(["--exact", name, "--ignored", "--test-threads=1"])
+        .current_dir(root)
+        .env("HUMANYMOUS_CAPTURE_OUTER_GRANT", &grant)
+        .env("HUMANYMOUS_CAPTURE_OUTER_NONCE", &nonce)
+        .stdin(Stdio::null())
+        .stdout(stdout)
+        .stderr(stderr)
+        .process_group(0)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    let staged = private.join("grant.staged");
+    let published = fs::write(&staged, grant_bytes(&nonce, name, child.id())?)
+        .and_then(|()| fs::rename(&staged, &grant));
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(900);
+    let mut expired = published.is_err();
+    let status = loop {
+        if let Some(status) = child.try_wait().map_err(|e| e.to_string())? {
+            break status;
+        }
+        if expired || std::time::Instant::now() >= deadline {
+            expired = true;
+            let _ = Command::new("kill")
+                .args(["-KILL", &format!("-{}", child.id())])
+                .status();
+            break child.wait().map_err(|e| e.to_string())?;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    };
+    published.map_err(|e| e.to_string())?;
+    Ok((status.code(), !expired && status.success()))
+}
+#[cfg(not(unix))]
+fn supervise(_: &Path, _: &str, _: &Path, _: &Path, _: &Path) -> Result<(Option<i32>, bool)> {
+    Err("controlled outer-grant supervision is implemented for Unix runners only".into())
+}
+
 fn execute(root: &Path, dir: &Path, pilot: &Value, exe: &Path, name: &str) -> Result<Value> {
     let id = pilot["id"].as_str().unwrap_or_default();
     let scratch = std::env::var_os("RUNNER_TEMP")
         .map(PathBuf::from)
         .unwrap_or_else(std::env::temp_dir);
+    if pilot["outer_grant"] == true {
+        let log = dir.join(format!("pilot-{id}-{}.log", name.replace("::", "-")));
+        let private = private_dir(&scratch, &format!("humanymous-{id}"), 0o700)?;
+        let (code, success) = supervise(exe, name, root, &private, &log)?;
+        let stdout = fs::read_to_string(&log).map_err(|e| e.to_string())?;
+        let ok = success && passed(&stdout, name);
+        if !ok {
+            print!("{stdout}");
+            eprint!(
+                "{}",
+                fs::read_to_string(log.with_extension("stderr.log")).unwrap_or_default()
+            );
+        }
+        return Ok(
+            json!({"pilot":id,"name":name,"status":if ok {"passed"} else {"failed"},"exit_code":code,"stdout_sha256":source::file(&log)?}),
+        );
+    }
     let mut program = exe.to_path_buf();
     let mut prefix: Vec<String> = Vec::new();
     if pilot["privilege"] == "root" {
@@ -323,6 +424,37 @@ mod tests {
             }
         }
         assert!(verify_job_executors(&root, &value).is_err());
+    }
+    #[test]
+    fn controlled_grant_is_closed_and_bound_to_identity() {
+        let nonce = "0a".repeat(16);
+        let bytes = grant_bytes(&nonce, "a::b", 7).unwrap();
+        let value: Value = serde_json::from_slice(&bytes).unwrap();
+        assert_eq!(value.as_object().unwrap().len(), 4);
+        assert_eq!(value["schema"], "humanymous.controlled-capture-grant/1");
+        assert_eq!(
+            (value["selector"].clone(), value["pid"].clone()),
+            (json!("a::b"), json!(7))
+        );
+        assert!(grant_bytes(&"0".repeat(32), "a", 7).is_err());
+        assert!(grant_bytes(&"A".repeat(32), "a", 7).is_err());
+        assert!(grant_bytes(&nonce, "a", 0).is_err());
+        assert_eq!(super::nonce().unwrap().len(), 32);
+    }
+    #[test]
+    fn outer_grant_requires_unprivileged_explicit_flag() {
+        let mut value = declarations().unwrap();
+        let index = value["pilots"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|p| p["outer_grant"] == true)
+            .unwrap();
+        value["pilots"][index]["privilege"] = json!("root");
+        assert!(validate(&value).is_err());
+        value["pilots"][index]["privilege"] = json!("user");
+        value["pilots"][index]["outer_grant"] = json!("yes");
+        assert!(validate(&value).is_err());
     }
     #[test]
     fn single_test_footer_must_be_exact() {
