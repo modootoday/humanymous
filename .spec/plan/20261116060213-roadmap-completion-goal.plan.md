@@ -157,3 +157,9 @@ unattended.
   are done (unit 35 increments 1–5; the FM11 class A sweep on PR #21, with
   all 90 mapped Go gate wargame tests passing at 981d25c). Every residual has
   a cited R, H or Cap blocker, consolidated in the needs-owner issue.
+- 2026-11-16: unit 37 harness landed. `scripts/ci/parity-surfaces.json` binds
+  27 Go vectors to the baseline, the Rust parity tests and the FM11 packages,
+  and `delivery policy` enforces it ([[evidence:root/20261116090000]]). 25
+  packages remain named gaps. Unit 35 is blocked: the remote product runner
+  needs a signed-nonce installation identity in the runtime (runtime SoT delta,
+  class R) and running it is class D.
