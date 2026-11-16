@@ -15,8 +15,8 @@
  },
  "totals": {
   "missing": 52,
-  "partial": 101,
-  "ported_unit": 159,
+  "partial": 98,
+  "ported_unit": 162,
   "not_applicable": 2
  },
  "by_package": {
@@ -128,8 +128,7 @@
    "ported_unit": 1
   },
   "internal/scoring": {
-   "ported_unit": 18,
-   "partial": 3
+   "ported_unit": 21
   },
   "internal/signals": {
    "ported_unit": 5
@@ -6075,31 +6074,36 @@
   },
   {
    "baseline_path": "internal/scoring/hardrules.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs",
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::known_automation_fixtures_evaluate_honestly_under_frozen_hard_rules",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::multi_signal_deny_fixtures_evaluate_honestly_under_frozen_hard_rules",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::remaining_deny_fixtures_evaluate_honestly_under_frozen_hard_rules",
-    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_fixtures_evaluate_honestly_under_frozen_hard_rules"
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_fixtures_evaluate_honestly_under_frozen_hard_rules",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed"
    ],
    "go_test_map": {},
-   "gaps": [
-    "net-policy monitor disarm (net.proxy.hop -> HR-24, net.correlation -> HR-19 but not PoW) is implemented but untested: engine_parity passes only an empty net map"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "All 24 hard-rule predicates are matched by the Go-oracle corpus.",
+   "notes": "All 24 hard-rule predicates are matched by the Go-oracle corpus; the net-policy monitor disarm is pinned by the engine overlays tests.",
    "test_verification": {
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::known_automation_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::multi_signal_deny_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::remaining_deny_fixtures_evaluate_honestly_under_frozen_hard_rules": "passed",
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow": "passed",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed": "passed"
    }
   },
   {
@@ -6144,63 +6148,69 @@
   },
   {
    "baseline_path": "internal/scoring/resolution_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs",
-    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs"
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs",
+    "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs"
    ],
    "rust_tests": [
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::all_rust_producer_signal_ids_resolve",
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::escaped_quotes_do_not_disarm_the_producer_scan",
-    "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs::crosscheck_order_predicates_weights_and_notes_match_go"
+    "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs::crosscheck_order_predicates_weights_and_notes_match_go",
+    "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs::rule_cross_check_ids_resolve",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed"
    ],
    "go_test_map": {
     "TestRuleSignalIDsResolve": "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::all_rust_producer_signal_ids_resolve",
-    "TestRuleCrossCheckIDsResolve": null,
-    "TestPromotionRulesWellFormed": null
+    "TestRuleCrossCheckIDsResolve": "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs::rule_cross_check_ids_resolve",
+    "TestPromotionRulesWellFormed": "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed"
    },
-   "gaps": [
-    "no scan proving cross-check IDs referenced by rules resolve (the producer scan matches only three-part lN.group.item literals)",
-    "no well-formedness test over the promotion rule table"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "The Rust producer scan covers scoring sources and every other crate.",
+   "notes": "The Rust producer scan covers scoring sources and every other crate. The cross-check scan reads the hard-rule source and checks every cross_fail id against the weighted cross-check table; Rust fn pointers make Go's nil-predicate case unrepresentable. The Go tests re-ran green at 981d25c with go1.25.3.",
    "test_verification": {
     "crates/sdk/humanymous-core/tests/scoring/crosscheck_parity.rs::crosscheck_order_predicates_weights_and_notes_match_go": "passed",
     "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::all_rust_producer_signal_ids_resolve": "passed",
-    "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::escaped_quotes_do_not_disarm_the_producer_scan": "passed"
+    "crates/sdk/humanymous-core/tests/signals/registry_integrity.rs::escaped_quotes_do_not_disarm_the_producer_scan": "passed",
+    "crates/sdk/humanymous-core/src/scoring/consistency/crosschecks.rs::rule_cross_check_ids_resolve": "passed",
+    "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs::promotion_rules_well_formed": "passed"
    }
   },
   {
    "baseline_path": "internal/scoring/runtime_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-core/src/scoring/engine/mod.rs",
     "crates/sdk/humanymous-core/src/scoring/promotion/mod.rs",
     "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::rule_mode_monitor_continues_past_hr12",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_at_raised_weakens_verdict",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow"
    ],
    "go_test_map": {
     "TestConfigureEmptyIdenticalToNewEngine": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
     "TestRuleModeMonitorContinuesPastHR12": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
     "TestWeightMultiplierZeroKillsContribution": "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go",
-    "TestChallengeAtRaisedWeakensVerdict": null,
-    "TestNetPolicyMonitorDisarmsHR24ProxyHop": null,
-    "TestNetPolicyMonitorDisarmsHR19CorrelationNotPow": null
+    "TestChallengeAtRaisedWeakensVerdict": "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_at_raised_weakens_verdict",
+    "TestNetPolicyMonitorDisarmsHR24ProxyHop": "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop",
+    "TestNetPolicyMonitorDisarmsHR19CorrelationNotPow": "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow"
    },
-   "gaps": [
-    "raised ChallengeAt policy override untested",
-    "net-policy monitor for HR-24/HR-19 untested",
-    "fixture rule-mode monitor covers HR-2/HR-3/HR-10 only, not HR-12"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "947 fixture cases set monitor modes and weight multipliers (l6.ua_tls_mismatch=0).",
+   "notes": "947 fixture cases set monitor modes and weight multipliers (l6.ua_tls_mismatch=0). The engine overlays tests add the raised ChallengeAt band, an HR-12 rule-mode monitor and the net.proxy.hop / net.correlation monitors (the PoW HR-19 tell stays armed). The Go tests re-ran green at 981d25c with go1.25.3.",
    "test_verification": {
-    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed"
+    "crates/sdk/humanymous-core/tests/scoring/engine_parity.rs::complete_engine_results_and_traces_match_go": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::rule_mode_monitor_continues_past_hr12": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::challenge_at_raised_weakens_verdict": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr24_proxy_hop": "passed",
+    "crates/sdk/humanymous-core/src/scoring/engine/mod.rs::net_policy_monitor_disarms_hr19_correlation_not_pow": "passed"
    }
   },
   {

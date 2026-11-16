@@ -384,3 +384,34 @@ pub(in crate::scoring) fn evaluations(context: &RuleContext<'_>) -> Vec<HardRule
         })
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Go TestPromotionRulesWellFormed (internal/scoring/resolution_test.go at
+    /// baseline 981d25c): non-empty table, unique non-empty ids, a verdict
+    /// verb and a rationale on every rule. Rust function pointers cannot be
+    /// nil, so Go's nil-predicate case is enforced by the type system.
+    #[test]
+    fn promotion_rules_well_formed() {
+        assert!(!RULES.is_empty());
+        let mut ids: Vec<&str> = RULES.iter().map(|rule| rule.id).collect();
+        for rule in &RULES {
+            assert!(
+                rule.id.starts_with("HR-") && rule.id.len() > 3,
+                "{}",
+                rule.id
+            );
+            assert!(!rule.why.is_empty(), "{} has no rationale", rule.id);
+            assert!(
+                matches!(rule.verdict.as_str(), "DENY" | "CHALLENGE" | "ALLOW"),
+                "{}",
+                rule.id
+            );
+        }
+        ids.sort_unstable();
+        ids.dedup();
+        assert_eq!(ids.len(), RULES.len(), "duplicate hard-rule id");
+    }
+}
