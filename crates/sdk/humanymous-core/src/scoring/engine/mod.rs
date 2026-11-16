@@ -878,7 +878,8 @@ mod tests {
     /// same single BOT network signal and a probed client.
     #[test]
     fn net_policy_disarms_residual_classes_like_go() {
-        let policies: [(&str, Option<&[(&str, &str)]>); 5] = [
+        type Overlay = Option<&'static [(&'static str, &'static str)]>;
+        let policies: [(&str, Overlay); 5] = [
             ("nil", None),
             ("empty", Some(&[])),
             ("corr_monitor", Some(&[("net.correlation", "monitor")])),
