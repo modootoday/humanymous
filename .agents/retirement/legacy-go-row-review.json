@@ -14,15 +14,16 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 88,
+  "missing": 76,
   "partial": 95,
-  "ported_unit": 129,
+  "ported_unit": 141,
   "not_applicable": 2
  },
  "by_package": {
   "cmd/gate": {
-   "missing": 5,
-   "partial": 2
+   "missing": 3,
+   "partial": 2,
+   "ported_unit": 2
   },
   "cmd/ml-train": {
    "partial": 1
@@ -38,9 +39,9 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 22,
+   "missing": 18,
    "partial": 18,
-   "ported_unit": 2
+   "ported_unit": 6
   },
   "cmd/tlsparrot": {
    "missing": 1
@@ -78,9 +79,9 @@
   },
   "internal/gate": {
    "partial": 42,
-   "missing": 33,
+   "missing": 27,
    "not_applicable": 1,
-   "ported_unit": 9
+   "ported_unit": 15
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -149,44 +150,72 @@
  "rows": [
   {
    "baseline_path": "cmd/gate/logging_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestEnvOrDefault": null,
-    "TestOpenGateLoggerWritesConsolePlainAndJSONLFile": null,
-    "TestOpenGateLoggerRejectsInvalidConfigBeforeUse": null,
-    "TestOpenGateLoggerRejectsFileOpenFailure": null,
-    "TestGateFatalClassDoesNotReflectDynamicErrorText": null
-   },
-   "gaps": [
-    "console stream/format validation",
-    "plain+JSONL file sinks",
-    "file-open failure refusal",
-    "static fatal class without dynamic error text"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text"
+   ],
+   "go_test_map": {
+    "TestEnvOrDefault": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback",
+    "TestOpenGateLoggerWritesConsolePlainAndJSONLFile": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file",
+    "TestOpenGateLoggerRejectsInvalidConfigBeforeUse": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
+    "TestOpenGateLoggerRejectsFileOpenFailure": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure",
+    "TestGateFatalClassDoesNotReflectDynamicErrorText": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust operational logger (console/plain/jsonl sinks) found; gateway main only prints a fixed static error string. Shipping plan B27 lists operational logs as M.",
-   "test_verification": {}
+   "notes": "All five legacy cases have Rust counterparts.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text": "passed"
+   }
   },
   {
    "baseline_path": "cmd/gate/logging.go",
-   "disposition": "missing",
+   "disposition": "ported_unit",
    "rust_paths": [
-    "crates/sdk/humanymous-runtime/src/gateway/main.rs"
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
    ],
-   "rust_tests": [],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_fatal_record_carries_only_the_static_class",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_normalizes_selectors_core_does_not",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles"
+   ],
    "go_test_map": {},
    "gaps": [
-    "SoT-40 operational logger adapter (level, console stream/format, plain/jsonl file sinks)",
-    "env fallback selectors",
-    "gateFatalf static error-class mapping"
+    "Not wired into the Gate or Core process composition",
+    "Synchronous emit: no bounded async queue or per-level drop counters"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "Rust gateway main.rs emits only a fixed static error string to stderr (\"humanymous-runtime: <static>\"), no configurable logging. Plan B27 marks this missing.",
-   "test_verification": {}
+   "notes": "Gate operational logging kernel with explicit settings, sinks and a static fatal class. Deliberate differences: empty level refused, file paths must be absolute without .., no global logger or environment reads.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::environment_value_or_fallback": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_writes_console_plain_and_jsonl_file": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_invalid_config_before_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_rejects_file_open_failure": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::fatal_class_does_not_reflect_dynamic_error_text": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_fatal_record_carries_only_the_static_class": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::gate_normalizes_selectors_core_does_not": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::empty_level_is_refused_for_both_roles": "passed"
+   }
   },
   {
    "baseline_path": "cmd/gate/main.go",
@@ -859,42 +888,80 @@
   },
   {
    "baseline_path": "cmd/server/logging_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
-   "go_test_map": {
-    "TestLoggingOffByDefault": null,
-    "TestLoggingRejectsInvalidExplicitConfig": null,
-    "TestLogSettingPrecedence": null,
-    "TestLoggingAccumulatesPlainAndJSONLFiles": null,
-    "TestObservabilityOmitsPathAndPanicMaterial": null,
-    "TestCanonicalExternalInputLabel": null
-   },
-   "gaps": [
-    "operational logger config/precedence/sinks",
-    "request observability middleware"
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs"
    ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_logging_off_by_default",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_rejects_invalid_explicit_config",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::setting_precedence",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::observability_omits_path_and_panic_material",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::canonical_external_input_label_bounds"
+   ],
+   "go_test_map": {
+    "TestLoggingOffByDefault": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_logging_off_by_default",
+    "TestLoggingRejectsInvalidExplicitConfig": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_rejects_invalid_explicit_config",
+    "TestLogSettingPrecedence": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::setting_precedence",
+    "TestLoggingAccumulatesPlainAndJSONLFiles": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files",
+    "TestObservabilityOmitsPathAndPanicMaterial": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::observability_omits_path_and_panic_material",
+    "TestCanonicalExternalInputLabel": "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::canonical_external_input_label_bounds"
+   },
+   "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust operational logging; plan B27.",
-   "test_verification": {}
+   "notes": "All six legacy cases have Rust counterparts.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_logging_off_by_default": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_rejects_invalid_explicit_config": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::setting_precedence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::observability_omits_path_and_panic_material": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::canonical_external_input_label_bounds": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/logging.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/record.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/sink.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_logging_off_by_default",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_rejects_invalid_explicit_config",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::setting_precedence",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::observability_omits_path_and_panic_material",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::canonical_external_input_label_bounds",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::relative_and_parent_paths_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink"
+   ],
    "go_test_map": {},
    "gaps": [
-    "Core logger configuration and sinks",
-    "flag/env precedence",
-    "observability middleware without path/panic material",
-    "canonical external input label"
+    "Not wired into the Gate or Core process composition",
+    "Synchronous emit: no bounded async queue or per-level drop counters",
+    "HTTP 500 write on a recovered panic is left to the caller"
    ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Rust counterpart found.",
-   "test_verification": {}
+   "notes": "Core logging is off by default; observability allowlists the method and omits path and panic material. Plain and JSONL lines match the Go golden strings for ASCII text.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_logging_off_by_default": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_rejects_invalid_explicit_config": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::setting_precedence": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::core_accumulates_plain_and_jsonl_files": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::observability_omits_path_and_panic_material": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::canonical_external_input_label_bounds": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::relative_and_parent_paths_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::plain_and_jsonl_share_canonical_record": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::sanitizes_hostile_text_and_caps_physical_lines": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/logging/tests.rs::file_sink_rejects_symlink": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/main.go",
@@ -924,19 +991,31 @@
   },
   {
    "baseline_path": "cmd/server/maxconns_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::connection_concurrency_is_capped",
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::limit_bounds_are_refused",
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::permits_are_counted_and_released_on_drop",
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::close_refuses_new_and_waiting_acquisitions"
+   ],
    "go_test_map": {
-    "TestConnConcurrencyIsCapped": null
+    "TestConnConcurrencyIsCapped": "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::connection_concurrency_is_capped"
    },
    "gaps": [
-    "concurrent accepted-connection cap"
+    "Not wired into the gateway accept loops"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust gateway has rate_per_second admission and per-connection timeout_ms, but no concurrent-connection cap found.",
-   "test_verification": {}
+   "notes": "Semaphore-backed connection cap tested over real loopback TCP; a resource bound only, never a signal.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::connection_concurrency_is_capped": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::limit_bounds_are_refused": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::permits_are_counted_and_released_on_drop": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/connection_cap/tests.rs::close_refuses_new_and_waiting_acquisitions": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/ml_setup_test.go",
@@ -1074,12 +1153,15 @@
   {
    "baseline_path": "cmd/server/pass_handler_test.go",
    "disposition": "partial",
-   "rust_paths": [],
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs"
+   ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay"
    ],
    "go_test_map": {
-    "TestReserveTraceBlocksReplay": null,
+    "TestReserveTraceBlocksReplay": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay",
     "TestTraceDigestIgnoresOffsetsAndNonce": null,
     "TestTraceDigestDistinguishesDifferentMotion": null,
     "TestPoWInstanceBinding": "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
@@ -1089,16 +1171,17 @@
     "TestBehaviorTimingTells": null
    },
    "gaps": [
-    "trace digest and replay reservation",
+    "trace digest (pass_proof.go)",
     "pass velocity/flood signal wiring (ids exist only in registry.json)",
     "attest issuance budget",
-    "behavior timing tells"
+    "behavior timing tells (a11y: not to be ported as gates)"
    ],
    "retire_basis": null,
    "confidence": "medium",
    "notes": "Only PoW session binding has a core analog (handler composes sid|pass|nonce). Generic rate limiter exists in network/history/rate but no pass-specific wiring.",
    "test_verification": {
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay": "passed"
    }
   },
   {
@@ -1165,46 +1248,75 @@
   },
   {
    "baseline_path": "cmd/server/pass_store.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::distinct_digests_are_independent",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::replay_window_reopens_only_after_ttl_and_sweep",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::clock_rollback_never_expires_a_trace",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::trace_registry_saturation_fails_closed_then_drains",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::session_is_created_once_and_mutated_under_lock",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::session_ids_are_bounded",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::session_cap_sweeps_stale_then_refuses_fresh_overflow",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::record_counts_label_outcome_difficulty",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::record_bounds_labels_and_key_space"
+   ],
    "go_test_map": {},
    "gaps": [
-    "pass session store",
-    "trace replay reservation with TTL",
-    "pass nonce",
-    "KPI recording"
+    "traceDigest (pass_proof.go) is not ported; the store takes an opaque 32-byte digest",
+    "KPI aggregation of handlePassKPI is not ported"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "No Rust pass store found.",
-   "test_verification": {}
+   "notes": "Bounded trace-replay and session store. Deliberate differences: at the session cap new sessions are refused instead of served unstored; ids and KPI labels are bounded; sessions mutate under the lock. No timing or motor checks.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::reserve_trace_blocks_replay": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::distinct_digests_are_independent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::replay_window_reopens_only_after_ttl_and_sweep": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::clock_rollback_never_expires_a_trace": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::trace_registry_saturation_fails_closed_then_drains": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::session_is_created_once_and_mutated_under_lock": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::session_ids_are_bounded": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::session_cap_sweeps_stale_then_refuses_fresh_overflow": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::record_counts_label_outcome_difficulty": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::record_bounds_labels_and_key_space": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/pass_wargame_axis_test.go",
    "disposition": "partial",
-   "rust_paths": [],
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs"
+   ],
    "rust_tests": [
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock"
    ],
    "go_test_map": {
-    "TestWargameR333_PassTraceReplayBlocked": null,
+    "TestWargameR333_PassTraceReplayBlocked": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked",
     "TestWargameR334_PassTraceDigestIgnoresChallengeWrapper": null,
     "TestWargameR335_PassPoWBoundToChallengeNonce": "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time",
     "TestWargameR336_PassVelocityHumanFloor": null,
     "TestWargameR337_PassVelocityFloodElevates": null,
-    "TestWargameR338_PassAxisHandlerClose": null
+    "TestWargameR338_PassAxisHandlerClose": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock"
    },
    "gaps": [
-    "R333/R334 trace replay",
-    "R336/R337 velocity floor/flood",
-    "R338 handler close"
+    "R334 trace digest wrapper",
+    "R336/R337 velocity floor/flood"
    ],
    "retire_basis": null,
    "confidence": "low",
    "notes": "Core pass tests r322-r332 cover the pure challenge, not these handler-axis rounds.",
    "test_verification": {
-    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed"
+    "crates/sdk/humanymous-core/src/challenge/proof_of_work/challenge.rs::work_binds_session_and_time": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r333_trace_replay_blocked": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::wargame_r338_replay_lock": "passed"
    }
   },
   {
@@ -2407,33 +2519,77 @@
   },
   {
    "baseline_path": "internal/gate/privacypass_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_verified",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend"
+   ],
    "go_test_map": {
-    "TestPATVerified": null,
-    "TestPATTampered": null,
-    "TestPATUnknownIssuer": null,
-    "TestPATNone": null,
-    "TestPATDoubleSpend": null
+    "TestPATVerified": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_verified",
+    "TestPATTampered": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered",
+    "TestPATUnknownIssuer": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer",
+    "TestPATNone": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none",
+    "TestPATDoubleSpend": "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Privacy Pass verifier in Rust (B25).",
-   "test_verification": {}
+   "notes": "All five legacy cases ported with fixed RSA-2048 fixtures.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_verified": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/privacypass.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_verified",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::key_id_matches_go_spki_hash_and_header_forms",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::rfc_salt_length_and_shape_are_enforced",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::challenge_binding_when_configured",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::issuer_configuration_is_strict",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::openssl_vectors_pin_rfc_salt_length"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "Challenge binding is off by default until Runtime issues PrivateToken challenges",
+    "Not wired into request routing; Runtime composition owns that"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Privacy Pass verifier in Rust (B25).",
-   "test_verification": {}
+   "notes": "RFC 9578 type 0x0002 verifier (RSA-PSS-SHA384 via ring) with Go-identical token_key_id and a bounded double-spend store. Deliberate difference: PSS salt must be 48 bytes (Go also accepted 0), pinned by OpenSSL vectors.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_verified": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_tampered": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_unknown_issuer": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::pat_double_spend": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::key_id_matches_go_spki_hash_and_header_forms": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::spent_nonce_expires_after_ttl": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::rfc_salt_length_and_shape_are_enforced": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::challenge_binding_when_configured": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::issuer_configuration_is_strict": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/privacy_pass/tests.rs::openssl_vectors_pin_rfc_salt_length": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/prodhardening_test.go",
@@ -3490,68 +3646,174 @@
   },
   {
    "baseline_path": "internal/gate/webauthn_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_verified",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding"
+   ],
    "go_test_map": {
-    "TestWebAuthnVerified": null,
-    "TestWebAuthnReplayRejected": null,
-    "TestWebAuthnUnknownCredential": null,
-    "TestWebAuthnNone": null,
-    "TestWebAuthnOriginBinding": null
+    "TestWebAuthnVerified": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_verified",
+    "TestWebAuthnReplayRejected": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected",
+    "TestWebAuthnUnknownCredential": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential",
+    "TestWebAuthnNone": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none",
+    "TestWebAuthnOriginBinding": "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No WebAuthn verifier in Rust Runtime (B25).",
-   "test_verification": {}
+   "notes": "All five legacy cases ported with identical authData and clientData vectors.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_verified": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/webauthn.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_verified",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::rp_id_binding_and_counter_policy",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::client_data_and_flags_are_enforced",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::malformed_headers_are_invalid_not_absent",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::absent_registry_refuses_instead_of_bypassing",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::registry_configuration_is_strict"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "No server-issued challenge; replay relies on the signature counter, as in Go",
+    "Not wired into request routing; Runtime composition owns that"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No WebAuthn verifier in Rust Runtime (B25).",
-   "test_verification": {}
+   "notes": "ES256 assertion verifier with origin/RP ID binding and strictly advancing counters. Deliberate differences: P-256 only, user presence required, exact JSON field names.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_verified": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_replay_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_unknown_credential": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::webauthn_origin_binding": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::rp_id_binding_and_counter_policy": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::client_data_and_flags_are_enforced": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::malformed_headers_are_invalid_not_absent": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::absent_registry_refuses_instead_of_bypassing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/webauthn/tests.rs::registry_configuration_is_strict": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/webbotauth_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_trusted",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_expired",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound"
+   ],
    "go_test_map": {
-    "TestVerifyAgentTrusted": null,
-    "TestVerifyAgentForged": null,
-    "TestVerifyAgentTamperedAuthority": null,
-    "TestVerifyAgentReplayDifferentRequestLine": null,
-    "TestVerifyAgentNonceSingleUse": null,
-    "TestVerifyAgentAuthorityOnlyRejected": null,
-    "TestVerifyAgentUnknownKey": null,
-    "TestVerifyAgentExpired": null,
-    "TestVerifyAgentNone": null,
-    "TestVerifyAgentLifetimeBound": null
+    "TestVerifyAgentTrusted": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_trusted",
+    "TestVerifyAgentForged": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged",
+    "TestVerifyAgentTamperedAuthority": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority",
+    "TestVerifyAgentReplayDifferentRequestLine": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line",
+    "TestVerifyAgentNonceSingleUse": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use",
+    "TestVerifyAgentAuthorityOnlyRejected": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected",
+    "TestVerifyAgentUnknownKey": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key",
+    "TestVerifyAgentExpired": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_expired",
+    "TestVerifyAgentNone": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_none",
+    "TestVerifyAgentLifetimeBound": "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound"
    },
    "gaps": [],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Web Bot Auth HTTP signature verifier in Rust (B25).",
-   "test_verification": {}
+   "notes": "All ten legacy cases ported with fixed Ed25519 seeds.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_trusted": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_expired": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/webbotauth.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "ported_unit",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/mod.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_trusted",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_expired",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_none",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::lifetime_window_edges_follow_go",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::absent_directory_refuses_instead_of_bypassing",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::profile_and_shape_are_enforced",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::covered_set_must_be_exact_and_any_order_verifies",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::signature_without_nonce_is_trusted_and_bad_length_is_forged",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::directory_configuration_is_strict"
+   ],
    "go_test_map": {},
-   "gaps": [],
+   "gaps": [
+    "Live JWKS key-directory fetch remains a future seam, as in Go",
+    "Not wired into request routing; Runtime composition owns that"
+   ],
    "retire_basis": null,
    "confidence": "high",
-   "notes": "No Web Bot Auth HTTP signature verifier in Rust (B25).",
-   "test_verification": {}
+   "notes": "RFC 9421 Ed25519 verifier with exact request-line coverage, 1h lifetime bound and single-use nonces. Deliberate differences: strict configuration and parsing, a presented credential without a directory is refused, static reasons.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_trusted": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_forged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_tampered_authority": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_replay_different_request_line": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_nonce_single_use": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_authority_only_rejected": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_unknown_key": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_expired": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_none": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::verify_agent_lifetime_bound": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::lifetime_window_edges_follow_go": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::absent_directory_refuses_instead_of_bypassing": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::profile_and_shape_are_enforced": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::covered_set_must_be_exact_and_any_order_verifies": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::signature_without_nonce_is_trusted_and_bad_length_is_forged": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/credential/web_bot_auth/tests.rs::directory_configuration_is_strict": "passed"
+   }
   },
   {
    "baseline_path": "internal/gate/ws12_test.go",
