@@ -14,8 +14,8 @@
   "not_applicable": "Go-only helper without product responsibility"
  },
  "totals": {
-  "missing": 62,
-  "partial": 101,
+  "missing": 61,
+  "partial": 102,
   "ported_unit": 149,
   "not_applicable": 2
  },
@@ -39,8 +39,8 @@
    "ported_unit": 1
   },
   "cmd/server": {
-   "missing": 12,
-   "partial": 21,
+   "missing": 11,
+   "partial": 22,
    "ported_unit": 9
   },
   "cmd/tlsparrot": {
@@ -1581,21 +1581,30 @@
   },
   {
    "baseline_path": "cmd/server/sot31_test.go",
-   "disposition": "missing",
-   "rust_paths": [],
-   "rust_tests": [],
+   "disposition": "partial",
+   "rust_paths": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/request.rs",
+    "crates/sdk/humanymous-runtime/src/gateway/session.rs"
+   ],
+   "rust_tests": [
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh"
+   ],
    "go_test_map": {
-    "TestRandHex": null,
+    "TestRandHex": "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh",
     "TestConnRegistryRemoveClearsAllMaps": null
    },
    "gaps": [
-    "randHex helper",
-    "address-keyed conn registry cleanup"
+    "No address-keyed connection registry exists to clear: Rust binds H2 fingerprints and abuse state to the connection owner, so the leak class is structurally absent but has no counterpart test"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust binds capture to the connection owner instead of an address-keyed registry; no counterpart tests and no retirement quote.",
-   "test_verification": {}
+   "notes": "Random identifiers are fresh lowercase hex and fail closed on entropy failure (503 or a typed refusal) instead of Go panicking into a 500.",
+   "test_verification": {
+    "crates/sdk/humanymous-runtime/src/gateway/pass_store/tests.rs::nonce_is_36_hex_and_fresh": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/request/tests.rs::correlation_ids_are_sixteen_hex_and_fresh": "passed"
+   }
   },
   {
    "baseline_path": "cmd/server/tlsconn.go",
