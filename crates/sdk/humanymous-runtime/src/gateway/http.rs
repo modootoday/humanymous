@@ -264,6 +264,44 @@ mod tests {
             assert!(parse_headers(frame.as_bytes()).is_err(), "{frame}");
         }
     }
+    /// Every legacy Go `smuggleScan` case (internal/gate round3_test.go and
+    /// smuggle_wargame_test.go at baseline 981d25c) replayed as wire bytes.
+    /// Go's single "chunked" Transfer-Encoding passes its scan; this profile
+    /// refuses every Transfer-Encoding, which is stricter, never looser.
+    #[test]
+    fn legacy_go_smuggle_scan_cases_are_refused_on_the_wire() {
+        const HEAD: &str = "POST / HTTP/1.1\r\nHost: app\r\n";
+        let clean = format!("{HEAD}Content-Length: 5");
+        assert!(parse_headers(clean.as_bytes()).is_ok(), "clean");
+        for (name, fields) in [
+            ("cl+te", "Content-Length: 5\r\nTransfer-Encoding: chunked"),
+            ("dup-cl", "Content-Length: 5\r\nContent-Length: 6"),
+            ("cl-identical-dup", "Content-Length: 5\r\nContent-Length: 5"),
+            ("te-not-chunked", "Transfer-Encoding: chunked, chunked"),
+            (
+                "te-multi-chunked",
+                "Transfer-Encoding: chunked\r\nTransfer-Encoding: chunked",
+            ),
+            ("te-empty", "Transfer-Encoding: "),
+            ("te-identity", "Transfer-Encoding: identity"),
+            ("te-gzip-chunked", "Transfer-Encoding: gzip, chunked"),
+            ("te-chunked-alone", "Transfer-Encoding: chunked"),
+            (
+                "obs-fold",
+                "Content-Length: 0\r\nX-Custom: ok\r\n Injected: yes",
+            ),
+            (
+                "obs-fold-tab",
+                "Content-Length: 0\r\nX-Custom: ok\r\n\tInjected: yes",
+            ),
+            ("obs-fold-lf-only", "Content-Length: 0\r\nX-Foo: a\nb"),
+            ("bare-cr", "Content-Length: 0\r\nX-Foo: a\rb"),
+        ] {
+            let frame = format!("{HEAD}{fields}");
+            let refusal = parse_headers(frame.as_bytes()).err();
+            assert_eq!(refusal, Some(Rejection::new(400, "http_framing")), "{name}");
+        }
+    }
     #[test]
     fn origin_response_preserves_cookie_bytes_and_rejects_ambiguity() {
         let bytes=b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\nConnection: close\r\n\r\nok";

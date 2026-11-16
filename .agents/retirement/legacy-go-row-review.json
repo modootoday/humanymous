@@ -15,8 +15,8 @@
  },
  "totals": {
   "missing": 118,
-  "partial": 90,
-  "ported_unit": 104,
+  "partial": 89,
+  "ported_unit": 105,
   "not_applicable": 2
  },
  "by_package": {
@@ -77,9 +77,10 @@
    "ported_unit": 4
   },
   "internal/gate": {
-   "partial": 39,
+   "partial": 38,
    "missing": 45,
-   "not_applicable": 1
+   "not_applicable": 1,
+   "ported_unit": 1
   },
   "internal/httpx": {
    "not_applicable": 1
@@ -2491,22 +2492,23 @@
     "crates/sdk/humanymous-runtime/src/gateway/http.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire"
    ],
    "go_test_map": {
-    "TestSmuggleScan": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "TestSmuggleScan": "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire",
     "TestSweepDetector": null,
     "TestSweepWindowExpiry": null
    },
    "gaps": [
-    "sweep detector",
-    "explicit obs-fold and multi-TE cases"
+    "sweep detector"
    ],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Framing refusal is ported; sweep detection is not.",
+   "notes": "Framing refusal is ported and every TestSmuggleScan case is replayed on the wire; sweep detection is not.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire": "passed"
    }
   },
   {
@@ -2734,24 +2736,24 @@
   },
   {
    "baseline_path": "internal/gate/smuggle_wargame_test.go",
-   "disposition": "partial",
+   "disposition": "ported_unit",
    "rust_paths": [
     "crates/sdk/humanymous-runtime/src/gateway/http.rs"
    ],
    "rust_tests": [
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire"
    ],
    "go_test_map": {
-    "TestSmuggleScanResidualWargame": "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization"
+    "TestSmuggleScanResidualWargame": "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire"
    },
-   "gaps": [
-    "explicit TE identity/empty/gzip-chunked and LF-only obs-fold cases"
-   ],
+   "gaps": [],
    "retire_basis": null,
    "confidence": "medium",
-   "notes": "Rust refuses all Transfer-Encoding and duplicate headers; only CL+TE and duplicate CL are tested.",
+   "notes": "Every case is replayed as wire bytes and refused with one http_framing code; Go returns a per-case smuggleReason. Rust refuses all Transfer-Encoding, which is stricter than Go.",
    "test_verification": {
-    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed"
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::strict_framing_rejects_smuggling_and_normalization": "passed",
+    "crates/sdk/humanymous-runtime/src/gateway/http.rs::legacy_go_smuggle_scan_cases_are_refused_on_the_wire": "passed"
    }
   },
   {
