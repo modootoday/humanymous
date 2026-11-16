@@ -712,6 +712,11 @@ impl Lab {
                 collector["HostConfig"]["NetworkMode"] == "none",
                 json!("no external browser traffic"),
             )?;
+            self.case(
+                "collector-tmpfs",
+                collector_writable_tmp(&collector["HostConfig"]),
+                json!("read-only root with a writable /tmp tmpfs for the test runner"),
+            )?;
             self.stage = "collector_process";
             let result = self.docker.invoke(
                 &[
@@ -1590,6 +1595,14 @@ fn collector_outcome(success: bool, exit: Option<i64>, stdout: &str, stderr: &st
         "collector_no_summary_exit_nonzero"
     }
 }
+/// The collector needs a read-only root and a tmpfs on /tmp; otherwise the
+/// runner cannot create its temp dir.
+fn collector_writable_tmp(host: &Value) -> bool {
+    host["ReadonlyRootfs"] == true
+        && host["Tmpfs"]
+            .as_object()
+            .is_some_and(|mounts| mounts.contains_key("/tmp"))
+}
 fn denied(text: &str) -> bool {
     let text = text.to_ascii_lowercase();
     text.contains("read-only file system") || text.contains("permission denied")
@@ -1622,9 +1635,13 @@ fn collector_denial(stdout: &str, stderr: &str) -> &'static str {
     } else {
         0
     };
+    // The runner prints its timeout line only after creating its temp dir.
+    let tempdir_made = any("Set WASM_BINDGEN_TEST_TIMEOUT");
     match (stage, read_only) {
-        (0, true) => "collector_setup_read_only",
-        (0, false) => "collector_setup_permission",
+        (0, true) if !tempdir_made => "collector_tempdir_read_only",
+        (0, false) if !tempdir_made => "collector_tempdir_permission",
+        (0, true) => "collector_driver_start_read_only",
+        (0, false) => "collector_driver_start_permission",
         (1, true) => "collector_browser_start_read_only",
         (1, false) => "collector_browser_start_permission",
         (_, true) => "collector_tests_read_only",
@@ -1760,7 +1777,7 @@ mod tests {
                 false,
                 "",
                 "mkdir: Read-only file system",
-                "collector_setup_read_only",
+                "collector_tempdir_read_only",
             ),
             (
                 true,
@@ -1789,7 +1806,22 @@ mod tests {
             (
                 "",
                 "Permission denied (os error 13)",
-                "collector_setup_permission",
+                "collector_tempdir_permission",
+            ),
+            (
+                "",
+                "Error: Read-only file system (os error 30)",
+                "collector_tempdir_read_only",
+            ),
+            (
+                "Set WASM_BINDGEN_TEST_TIMEOUT to 90 seconds...",
+                "Read-only file system",
+                "collector_driver_start_read_only",
+            ),
+            (
+                "Set WASM_BINDGEN_TEST_TIMEOUT to 90 seconds...",
+                "Permission denied",
+                "collector_driver_start_permission",
             ),
             (
                 "Running headless tests in Firefox",
@@ -1820,6 +1852,15 @@ mod tests {
             );
         }
         assert_eq!(outcome(false, Some(137), "running", ""), "collector_killed");
+        let tmp = serde_json::json!({"ReadonlyRootfs":true,"Tmpfs":{"/tmp":"rw,size=512m"}});
+        assert!(super::collector_writable_tmp(&tmp));
+        let shm_only = serde_json::json!({"ReadonlyRootfs":true,"Tmpfs":{"/dev/shm":"rw"}});
+        assert!(!super::collector_writable_tmp(&shm_only));
+        assert!(!super::collector_writable_tmp(
+            &serde_json::json!({"ReadonlyRootfs":true})
+        ));
+        let writable_root = serde_json::json!({"ReadonlyRootfs":false,"Tmpfs":{"/tmp":"rw"}});
+        assert!(!super::collector_writable_tmp(&writable_root));
         assert_eq!(outcome(false, Some(126), "", ""), "collector_exec_error");
         assert_eq!(
             outcome(
